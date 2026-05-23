@@ -13,8 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "useDefineForClassFields": true,
-    "noEmit": true,
-    "types": ["vite/client"]
+    "noEmit": true
   },
   "include": ["src"]
 }
