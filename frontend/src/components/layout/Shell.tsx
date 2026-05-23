@@ -130,11 +130,10 @@ export function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="logo">
-        <div className="logo-mark">
-          مدارك <span style={{ fontSize: 14, color: 'var(--purple)' }}>AI</span>
-        </div>
-        <div className="logo-sub">جامعة الزاوية · منصة التعليم الذكي</div>
+      <div className="logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <img src="/logo.svg" alt="مدارك" style={{ width: '80px', height: '80px', marginBottom: '10px' }} />
+        <div className="logo-mark">مدارك AI</div>
+        <div className="logo-sub">جامعة الزاوية</div>
       </div>
 
       <div className="role-tabs" aria-label="الدور النشط">
