@@ -47,6 +47,7 @@ const ROLE_HOME: Record<AppRole, string> = {
   STUDENT: '/student/dashboard',
   TEACHER: '/teacher/dashboard',
   ADMIN: '/admin/dashboard',
+  QUALITY: '/quality/dashboard',
 };
 const homeFor = (r: AppRole): string => ROLE_HOME[r];
 
@@ -92,6 +93,7 @@ export default function AuthPage() {
       STUDENT: 'student@zu.edu.ly',
       TEACHER: 'teacher@zu.edu.ly',
       ADMIN: 'admin@zu.edu.ly',
+      QUALITY: 'quality@zu.edu.ly',
     };
     loginForm.setValue('email', emails[r]);
     loginForm.setValue('password', '1234');
@@ -228,7 +230,7 @@ export default function AuthPage() {
               <div className="auth-field">
                 <label>نوع الحساب</label>
                 <div className="auth-role-grid">
-                  {(['STUDENT', 'TEACHER', 'ADMIN'] as AppRole[]).map((r) => (
+                  {(['STUDENT', 'TEACHER', 'ADMIN'] as Array<Exclude<AppRole, 'QUALITY'>>).map((r) => (
                     <button
                       key={r}
                       type="button"

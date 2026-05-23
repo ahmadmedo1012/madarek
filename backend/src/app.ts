@@ -22,6 +22,7 @@ import offeringsRoutes from './http/routes/offerings.routes.js';
 import meRoutes from './http/routes/me.routes.js';
 import catalogRoutes from './http/routes/catalog.routes.js';
 import aiRoutes from './http/routes/ai.routes.js';
+import learningRoutes from './http/routes/learning.routes.js';
 import { AppError } from './lib/errors.js';
 
 // Resolve frontend build path from this file's location.
@@ -70,6 +71,7 @@ export function createApp() {
   app.use('/api/v1/offerings', offeringsRoutes);
   app.use('/api/v1', meRoutes);
   app.use('/api/v1', catalogRoutes);
+  app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
   app.use('/api/v1/ai', aiRoutes);
 
   // 404 for unknown API paths

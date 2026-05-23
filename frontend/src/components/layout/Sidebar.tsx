@@ -42,7 +42,7 @@ export function Sidebar() {
         </div>
 
         <div className="role-tabs" role="tablist" aria-label="الدور">
-          {(['STUDENT', 'TEACHER', 'ADMIN'] as AppRole[]).map((r) => (
+          {(['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY'] as AppRole[]).map((r) => (
             <button
               key={r}
               type="button"

@@ -42,6 +42,13 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/digital': 'التحول الرقمي',
   '/admin/reports': 'التقارير',
   '/admin/settings': 'الإعدادات',
+  '/quality/dashboard': 'لوحة الجودة',
+  '/quality/courses': 'جودة المقررات',
+  '/quality/professors': 'تقييم الأساتذة',
+  '/quality/engagement': 'الانخراط والحضور',
+  '/quality/reports': 'تقارير الجودة',
+  '/quality/curriculum': 'مراجعة المناهج',
+  '/quality/alerts': 'تنبيهات الجودة',
 };
 
 export function AppShell({ children }: { children?: ReactNode }) {
@@ -73,6 +80,7 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
       STUDENT: '/student/dashboard',
       TEACHER: '/teacher/dashboard',
       ADMIN: '/admin/dashboard',
+      QUALITY: '/quality/dashboard',
     };
     return <Navigate to={home[user.role]} replace />;
   }

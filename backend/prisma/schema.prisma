@@ -30,6 +30,7 @@ enum Role {
   STUDENT
   TEACHER
   ADMIN
+  QUALITY
 }
 
 enum AcademicRank {
@@ -130,39 +131,39 @@ enum AiMessageRole {
 //  Identity & access
 // ────────────────────────────────────────────────────────────────
 model User {
-  id                String    @id @default(cuid())
-  email             String    @unique
-  passwordHash      String
-  role              Role
-  firstName         String
-  lastName          String
-  avatarColor       String?   // hex like "#4F8EF7"
-  avatarInitials    String?   // computed Arabic 2-letter initials
-  emailVerifiedAt   DateTime?
-  isActive          Boolean   @default(true)
-  tokenVersion      Int       @default(0) // incremented to revoke all refresh tokens
-  failedLoginCount  Int       @default(0)
-  lockedUntil       DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String
+  role             Role
+  firstName        String
+  lastName         String
+  avatarColor      String? // hex like "#4F8EF7"
+  avatarInitials   String? // computed Arabic 2-letter initials
+  emailVerifiedAt  DateTime?
+  isActive         Boolean   @default(true)
+  tokenVersion     Int       @default(0) // incremented to revoke all refresh tokens
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  studentProfile    StudentProfile?
-  teacherProfile    TeacherProfile?
+  studentProfile StudentProfile?
+  teacherProfile TeacherProfile?
 
-  enrollments       Enrollment[]         @relation("StudentEnrollments")
-  taughtOfferings   CourseOffering[]     @relation("TeacherOfferings")
+  enrollments       Enrollment[]       @relation("StudentEnrollments")
+  taughtOfferings   CourseOffering[]   @relation("TeacherOfferings")
   submissions       Submission[]
-  grades            Grade[]              @relation("StudentGrades")
+  grades            Grade[]            @relation("StudentGrades")
   attendanceRecords AttendanceRecord[]
-  uploadedMaterials Material[]           @relation("MaterialUploader")
-  notifications    Notification[]
-  sentMessages      Message[]            @relation("MessageSender")
-  receivedMessages  Message[]            @relation("MessageReceiver")
+  uploadedMaterials Material[]         @relation("MaterialUploader")
+  notifications     Notification[]
+  sentMessages      Message[]          @relation("MessageSender")
+  receivedMessages  Message[]          @relation("MessageReceiver")
   posts             Post[]
   postComments      PostComment[]
   postReactions     PostReaction[]
   studyRoomMembers  StudyRoomMember[]
-  studyRoomsOwned   StudyRoom[]          @relation("StudyRoomOwner")
+  studyRoomsOwned   StudyRoom[]        @relation("StudyRoomOwner")
   loans             Loan[]
   moocEnrollments   MoocEnrollment[]
   jobApplications   JobApplication[]
@@ -172,6 +173,10 @@ model User {
   labSessions       LabSession[]
   aiConversations   AiConversation[]
   auditLogs         AuditLog[]
+  watchEvents       WatchEvent[]       @relation("StudentWatchEvents")
+  masteries         StudentMastery[]   @relation("StudentMasteries")
+  researchPapers    ResearchPaper[]    @relation("StudentPapers")
+  reviewedPapers    ResearchPaper[]    @relation("ProfessorReviewedPapers")
 
   @@index([role])
   @@index([email])
@@ -214,11 +219,11 @@ model TeacherProfile {
 //  Academic structure
 // ────────────────────────────────────────────────────────────────
 model Faculty {
-  id          String       @id @default(cuid())
-  name        String       @unique
+  id          String           @id @default(cuid())
+  name        String           @unique
   nameEn      String?
   iconEmoji   String?
-  createdAt   DateTime     @default(now())
+  createdAt   DateTime         @default(now())
   departments Department[]
   students    StudentProfile[]
 }
@@ -239,40 +244,43 @@ model Department {
 }
 
 model Course {
-  id           String           @id @default(cuid())
-  code         String           @unique
+  id           String             @id @default(cuid())
+  code         String             @unique
   name         String
   nameEn       String?
   description  String?
-  credits      Int              @default(3)
+  credits      Int                @default(3)
   iconEmoji    String?
   themeColor   String?
   departmentId String
-  department   Department       @relation(fields: [departmentId], references: [id])
+  department   Department         @relation(fields: [departmentId], references: [id])
   offerings    CourseOffering[]
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  concepts     KnowledgeConcept[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
 
   @@index([departmentId])
 }
 
 model CourseOffering {
-  id         String              @id @default(cuid())
-  courseId   String
-  course     Course              @relation(fields: [courseId], references: [id])
-  teacherId  String
-  teacher    User                @relation("TeacherOfferings", fields: [teacherId], references: [id])
-  term       String              // e.g. "2024-FALL"
-  room       String?
-  capacity   Int                 @default(40)
-  createdAt  DateTime            @default(now())
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  teacherId String
+  teacher   User     @relation("TeacherOfferings", fields: [teacherId], references: [id])
+  term      String // e.g. "2024-FALL"
+  room      String?
+  capacity  Int      @default(40)
+  createdAt DateTime @default(now())
 
-  enrollments Enrollment[]
-  schedule    ScheduleSlot[]
-  materials   Material[]
-  assignments Assignment[]
-  attendance  AttendanceSession[]
-  grades      Grade[]
+  enrollments    Enrollment[]
+  schedule       ScheduleSlot[]
+  materials      Material[]
+  assignments    Assignment[]
+  attendance     AttendanceSession[]
+  grades         Grade[]
+  lectures       Lecture[]
+  researchPapers ResearchPaper[]
 
   @@unique([courseId, term, teacherId])
   @@index([teacherId])
@@ -297,9 +305,9 @@ model ScheduleSlot {
   id         String         @id @default(cuid())
   offeringId String
   offering   CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
-  dayOfWeek  Int            // 0=Sunday … 6=Saturday (Arabic week starts Sunday)
-  startTime  String         // "08:00"
-  endTime    String         // "09:30"
+  dayOfWeek  Int // 0=Sunday … 6=Saturday (Arabic week starts Sunday)
+  startTime  String // "08:00"
+  endTime    String // "09:30"
   room       String?
 
   @@index([offeringId])
@@ -433,14 +441,14 @@ model Notification {
 }
 
 model Message {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   fromUserId String
-  fromUser   User     @relation("MessageSender", fields: [fromUserId], references: [id])
+  fromUser   User      @relation("MessageSender", fields: [fromUserId], references: [id])
   toUserId   String
-  toUser     User     @relation("MessageReceiver", fields: [toUserId], references: [id])
+  toUser     User      @relation("MessageReceiver", fields: [toUserId], references: [id])
   body       String
   readAt     DateTime?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
 
   @@index([toUserId, readAt])
   @@index([fromUserId])
@@ -450,13 +458,13 @@ model Message {
 //  Social: posts, comments, study rooms
 // ────────────────────────────────────────────────────────────────
 model Post {
-  id        String         @id @default(cuid())
+  id        String   @id @default(cuid())
   authorId  String
-  author    User           @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
   body      String
   hashtags  String[]
   imageUrl  String?
-  createdAt DateTime       @default(now())
+  createdAt DateTime @default(now())
 
   comments  PostComment[]
   reactions PostReaction[]
@@ -515,7 +523,7 @@ model Book {
   id              String   @id @default(cuid())
   title           String
   author          String
-  category        String   // prog | net | db | ai | sec
+  category        String // prog | net | db | ai | sec
   iconEmoji       String?
   themeColor      String?
   rating          Decimal? @db.Decimal(2, 1)
@@ -569,20 +577,20 @@ model UserAchievement {
 //  Skills & certificates
 // ────────────────────────────────────────────────────────────────
 model Skill {
-  id        String      @id @default(cuid())
-  name      String      @unique
-  category  String?
-  icon      String?
-  users     UserSkill[]
+  id       String      @id @default(cuid())
+  name     String      @unique
+  category String?
+  icon     String?
+  users    UserSkill[]
 }
 
 model UserSkill {
   userId      String
-  user        User    @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
   skillId     String
-  skill       Skill   @relation(fields: [skillId], references: [id])
-  level       Int     @default(1) // 1..5
-  progressPct Int     @default(0)
+  skill       Skill    @relation(fields: [skillId], references: [id])
+  level       Int      @default(1) // 1..5
+  progressPct Int      @default(0)
   updatedAt   DateTime @updatedAt
 
   @@id([userId, skillId])
@@ -608,20 +616,20 @@ model Certificate {
 //  External courses (MOOCs)
 // ────────────────────────────────────────────────────────────────
 model MoocCourse {
-  id              String           @id @default(cuid())
-  title           String
-  organization    String
-  iconEmoji       String?
-  category        String
-  durationHours   Int
-  level           String
-  rating          Decimal          @db.Decimal(2, 1)
-  enrolled        Int              @default(0)
-  hasCertificate  Boolean          @default(true)
-  jobReady        Boolean          @default(true)
-  externalUrl     String?
-  createdAt       DateTime         @default(now())
-  enrollments     MoocEnrollment[]
+  id             String           @id @default(cuid())
+  title          String
+  organization   String
+  iconEmoji      String?
+  category       String
+  durationHours  Int
+  level          String
+  rating         Decimal          @db.Decimal(2, 1)
+  enrolled       Int              @default(0)
+  hasCertificate Boolean          @default(true)
+  jobReady       Boolean          @default(true)
+  externalUrl    String?
+  createdAt      DateTime         @default(now())
+  enrollments    MoocEnrollment[]
 
   @@index([category])
 }
@@ -643,17 +651,17 @@ model MoocEnrollment {
 //  Jobs
 // ────────────────────────────────────────────────────────────────
 model Job {
-  id          String           @id @default(cuid())
-  title       String
-  company     String
-  location    String
-  type        JobType
-  salary      String?
-  description String?
-  iconEmoji   String?
-  category    String           // tech | intern | remote
-  postedAt    DateTime         @default(now())
-  expiresAt   DateTime?
+  id           String           @id @default(cuid())
+  title        String
+  company      String
+  location     String
+  type         JobType
+  salary       String?
+  description  String?
+  iconEmoji    String?
+  category     String // tech | intern | remote
+  postedAt     DateTime         @default(now())
+  expiresAt    DateTime?
   applications JobApplication[]
 
   @@index([category])
@@ -680,7 +688,7 @@ model JobApplication {
 model VirtualLab {
   id               String       @id @default(cuid())
   name             String
-  platform         String?      // "Cisco Packet Tracer", "Arduino Sim"…
+  platform         String? // "Cisco Packet Tracer", "Arduino Sim"…
   category         String
   iconEmoji        String?
   totalExperiments Int          @default(0)
@@ -761,4 +769,152 @@ model AuditLog {
   @@index([userId])
   @@index([action])
   @@index([createdAt])
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Flipped Classroom — Lectures, Chapters, Checkpoints
+//  Each lecture is a video + chaptered transcript + mid-video
+//  checkpoints. Watch events feed the knowledge-tracing model.
+// ════════════════════════════════════════════════════════════════
+
+model Lecture {
+  id            String         @id @default(cuid())
+  offeringId    String
+  offering      CourseOffering @relation(fields: [offeringId], references: [id])
+  title         String
+  description   String?
+  ordinal       Int            @default(0)
+  durationSec   Int            @default(0)
+  videoUrl      String
+  posterUrl     String?
+  transcriptUrl String?
+  createdAt     DateTime       @default(now())
+
+  chapters    LectureChapter[]
+  checkpoints LectureCheckpoint[]
+  watchEvents WatchEvent[]
+
+  @@index([offeringId])
+  @@index([ordinal])
+}
+
+model LectureChapter {
+  id        String            @id @default(cuid())
+  lectureId String
+  lecture   Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  title     String
+  startSec  Int
+  endSec    Int
+  ordinal   Int               @default(0)
+  conceptId String?
+  concept   KnowledgeConcept? @relation(fields: [conceptId], references: [id])
+
+  @@index([lectureId])
+}
+
+model LectureCheckpoint {
+  id           String            @id @default(cuid())
+  lectureId    String
+  lecture      Lecture           @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  conceptId    String?
+  concept      KnowledgeConcept? @relation(fields: [conceptId], references: [id])
+  triggerSec   Int
+  question     String
+  options      Json
+  correctIndex Int
+  explanation  String?
+
+  @@index([lectureId])
+}
+
+model WatchEvent {
+  id         String   @id @default(cuid())
+  lectureId  String
+  lecture    Lecture  @relation(fields: [lectureId], references: [id])
+  studentId  String
+  student    User     @relation("StudentWatchEvents", fields: [studentId], references: [id])
+  watchedSec Int
+  totalSec   Int
+  completed  Boolean  @default(false)
+  replays    Int      @default(0)
+  lastSeenAt DateTime @default(now())
+
+  @@unique([lectureId, studentId])
+  @@index([studentId])
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Educational Matrix — concepts, mastery, gap-detection
+// ════════════════════════════════════════════════════════════════
+
+model KnowledgeConcept {
+  id       String             @id @default(cuid())
+  courseId String
+  course   Course             @relation(fields: [courseId], references: [id])
+  name     String
+  parentId String?
+  parent   KnowledgeConcept?  @relation("ConceptTree", fields: [parentId], references: [id])
+  children KnowledgeConcept[] @relation("ConceptTree")
+  ordinal  Int                @default(0)
+
+  chapters    LectureChapter[]
+  checkpoints LectureCheckpoint[]
+  masteries   StudentMastery[]
+
+  @@index([courseId])
+}
+
+model StudentMastery {
+  id            String           @id @default(cuid())
+  studentId     String
+  student       User             @relation("StudentMasteries", fields: [studentId], references: [id])
+  conceptId     String
+  concept       KnowledgeConcept @relation(fields: [conceptId], references: [id])
+  level         Decimal          @db.Decimal(4, 3) // 0.000 — 1.000
+  attempts      Int              @default(0)
+  correct       Int              @default(0)
+  lastUpdatedAt DateTime         @default(now())
+
+  @@unique([studentId, conceptId])
+  @@index([studentId])
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Research Papers workflow
+//  Upload → simulated plagiarism + AI-detection → professor grade
+// ════════════════════════════════════════════════════════════════
+
+enum ResearchPaperStatus {
+  UPLOADED
+  SCANNING
+  CHECKS_PASSED
+  CHECKS_FAILED
+  GRADED
+  PUBLISHED
+}
+
+model ResearchPaper {
+  id            String              @id @default(cuid())
+  studentId     String
+  student       User                @relation("StudentPapers", fields: [studentId], references: [id])
+  reviewerId    String?
+  reviewer      User?               @relation("ProfessorReviewedPapers", fields: [reviewerId], references: [id])
+  offeringId    String?
+  offering      CourseOffering?     @relation(fields: [offeringId], references: [id])
+  title         String
+  abstract      String?
+  fileUrl       String?
+  status        ResearchPaperStatus @default(UPLOADED)
+  plagiarismPct Decimal?            @db.Decimal(4, 1)
+  aiContentPct  Decimal?            @db.Decimal(4, 1)
+  grade         Decimal?            @db.Decimal(4, 1)
+  feedback      String?
+  uploadedAt    DateTime            @default(now())
+  scannedAt     DateTime?
+  gradedAt      DateTime?
+  publishedAt   DateTime?
+
+  @@index([studentId])
+  @@index([reviewerId])
+  @@index([status])
 }

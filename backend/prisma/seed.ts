@@ -8,6 +8,7 @@
  *   student@zu.edu.ly  → STUDENT (أحمد الزروق)
  *   teacher@zu.edu.ly  → TEACHER (د. سالم البوسيفي)
  *   admin@zu.edu.ly    → ADMIN   (إدارة الجامعة)
+ *   quality@zu.edu.ly  → QUALITY (ضمان الجودة)
  */
 
 import {
@@ -115,6 +116,21 @@ async function main() {
       lastName: 'الجامعة',
       avatarInitials: 'إد',
       avatarColor: '#9B6FE8',
+      emailVerifiedAt: new Date(),
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: 'quality@zu.edu.ly' },
+    update: {},
+    create: {
+      email: 'quality@zu.edu.ly',
+      passwordHash: password,
+      role: Role.QUALITY,
+      firstName: 'ضمان',
+      lastName: 'الجودة',
+      avatarInitials: 'جو',
+      avatarColor: '#D4A537',
       emailVerifiedAt: new Date(),
     },
   });
@@ -339,6 +355,195 @@ async function main() {
       { title: 'دوائر كهربائية حية', subject: 'هندسة كهربائية', type: ArExperienceType.AR, iconEmoji: '⚡', themeColor: '#F5A623' },
       { title: 'جولة في الفضاء الافتراضي', subject: 'فلك وفيزياء', type: ArExperienceType.VR, iconEmoji: '🌍', themeColor: '#2EC4B6' },
     ],
+  });
+
+  // ════════════════════════════════════════════════════════════
+  //  Flipped Classroom: lectures + chapters + checkpoints
+  //  + Educational Matrix: concepts + per-student mastery
+  //  Built on the Software Engineering offering.
+  // ════════════════════════════════════════════════════════════
+  const seCourse = courses.find((c) => c.code === 'SE301')!;
+  const seOffering = await prisma.courseOffering.findFirstOrThrow({
+    where: { courseId: seCourse.id, term },
+  });
+
+  // Knowledge concept tree for Software Engineering
+  const conceptDefs: Array<{ name: string; ordinal: number }> = [
+    { name: 'مقدمة في هندسة البرمجيات', ordinal: 1 },
+    { name: 'دورة حياة تطوير البرمجيات', ordinal: 2 },
+    { name: 'تحليل المتطلبات', ordinal: 3 },
+    { name: 'مخططات UML — Use Case', ordinal: 4 },
+    { name: 'مخططات UML — Class Diagram', ordinal: 5 },
+    { name: 'نماذج التصميم', ordinal: 6 },
+    { name: 'اختبار البرمجيات', ordinal: 7 },
+    { name: 'الصيانة والتطوير', ordinal: 8 },
+  ];
+
+  const concepts = [];
+  for (const c of conceptDefs) {
+    const created = await prisma.knowledgeConcept.create({
+      data: { courseId: seCourse.id, name: c.name, ordinal: c.ordinal },
+    });
+    concepts.push(created);
+  }
+
+  // 3 lectures with chapters and embedded checkpoints
+  const lectureDefs = [
+    {
+      title: 'مقدمة هندسة البرمجيات',
+      description: 'تعريف الهندسة، أهميتها، ودورة حياة المشروع البرمجي.',
+      ordinal: 1,
+      durationSec: 600,
+      chapters: [
+        { title: 'ما هي هندسة البرمجيات؟', startSec: 0, endSec: 180, conceptIdx: 0 },
+        { title: 'دورة حياة تطوير البرمجيات', startSec: 180, endSec: 420, conceptIdx: 1 },
+        { title: 'النماذج: Waterfall, Agile', startSec: 420, endSec: 600, conceptIdx: 1 },
+      ],
+      checkpoints: [
+        {
+          triggerSec: 200,
+          conceptIdx: 1,
+          question: 'أي نموذج من نماذج التطوير يُعتمد على التكرار والاستجابة السريعة للتغيير؟',
+          options: ['Waterfall', 'V-Model', 'Agile', 'Spiral'],
+          correctIndex: 2,
+          explanation: 'نموذج Agile يعتمد على دورات قصيرة (Sprints) وتعاون مستمر مع العميل.',
+        },
+      ],
+    },
+    {
+      title: 'تحليل المتطلبات ومخططات UML',
+      description: 'كيف نلتقط متطلبات المستخدم ونمثلها بمخططات Use Case و Class Diagram.',
+      ordinal: 2,
+      durationSec: 720,
+      chapters: [
+        { title: 'تحليل المتطلبات', startSec: 0, endSec: 240, conceptIdx: 2 },
+        { title: 'مخططات Use Case', startSec: 240, endSec: 480, conceptIdx: 3 },
+        { title: 'مخططات Class Diagram', startSec: 480, endSec: 720, conceptIdx: 4 },
+      ],
+      checkpoints: [
+        {
+          triggerSec: 280,
+          conceptIdx: 3,
+          question: 'في مخطط Use Case، ماذا يمثّل العنصر الذي يبدو كرجل تخطيطي (Stick figure)؟',
+          options: ['وظيفة (Use Case)', 'علاقة Include', 'فاعل (Actor)', 'حدّ النظام'],
+          correctIndex: 2,
+          explanation: 'الفاعل (Actor) يمثّل أي مستخدم أو نظام يتفاعل مع النظام الذي ندرسه.',
+        },
+        {
+          triggerSec: 560,
+          conceptIdx: 4,
+          question: 'ما الذي يمثّله السهم ذو الرأس المثلث المُفرَّغ في Class Diagram؟',
+          options: ['Aggregation', 'Composition', 'Inheritance', 'Dependency'],
+          correctIndex: 2,
+          explanation: 'السهم ذو الرأس المثلث المفرَّغ يدلّ على علاقة وراثة (Inheritance / Generalization).',
+        },
+      ],
+    },
+    {
+      title: 'نماذج التصميم وأفضل الممارسات',
+      description: 'تطبيق نماذج التصميم Singleton, Factory, Observer لحل مشاكل برمجية شائعة.',
+      ordinal: 3,
+      durationSec: 540,
+      chapters: [
+        { title: 'لماذا نماذج التصميم؟', startSec: 0, endSec: 120, conceptIdx: 5 },
+        { title: 'Singleton و Factory', startSec: 120, endSec: 360, conceptIdx: 5 },
+        { title: 'Observer ومبادئ SOLID', startSec: 360, endSec: 540, conceptIdx: 5 },
+      ],
+      checkpoints: [
+        {
+          triggerSec: 250,
+          conceptIdx: 5,
+          question: 'ما الهدف الأساسي من نموذج Singleton؟',
+          options: [
+            'إنشاء أكثر من نسخة من الصنف',
+            'ضمان وجود نسخة وحيدة فقط من الصنف',
+            'فصل واجهة الصنف عن تنفيذه',
+            'تعيين سلوك ديناميكي للأصناف',
+          ],
+          correctIndex: 1,
+          explanation: 'Singleton يضمن وجود نسخة وحيدة من الصنف في كامل التطبيق ويوفّر نقطة وصول عالمية إليها.',
+        },
+      ],
+    },
+  ];
+
+  for (const def of lectureDefs) {
+    const lec = await prisma.lecture.create({
+      data: {
+        offeringId: seOffering.id,
+        title: def.title,
+        description: def.description,
+        ordinal: def.ordinal,
+        durationSec: def.durationSec,
+        videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+        posterUrl: '/brand/madarek-mark.svg',
+      },
+    });
+    let chOrd = 0;
+    for (const ch of def.chapters) {
+      await prisma.lectureChapter.create({
+        data: {
+          lectureId: lec.id,
+          title: ch.title,
+          startSec: ch.startSec,
+          endSec: ch.endSec,
+          ordinal: chOrd++,
+          conceptId: concepts[ch.conceptIdx]?.id,
+        },
+      });
+    }
+    for (const cp of def.checkpoints) {
+      await prisma.lectureCheckpoint.create({
+        data: {
+          lectureId: lec.id,
+          triggerSec: cp.triggerSec,
+          conceptId: concepts[cp.conceptIdx]?.id,
+          question: cp.question,
+          options: cp.options,
+          correctIndex: cp.correctIndex,
+          explanation: cp.explanation,
+        },
+      });
+    }
+  }
+
+  // Per-student mastery — simulated, plausible distribution.
+  // Strong on basics, weaker on UML and design patterns.
+  const masteryDistribution = [0.85, 0.80, 0.65, 0.45, 0.40, 0.35, 0.55, 0.70];
+  for (let i = 0; i < concepts.length; i++) {
+    const concept = concepts[i]!;
+    const level = masteryDistribution[i] ?? 0.5;
+    await prisma.studentMastery.upsert({
+      where: { studentId_conceptId: { studentId: student.id, conceptId: concept.id } },
+      update: { level },
+      create: {
+        studentId: student.id,
+        conceptId: concept.id,
+        level,
+        attempts: 8 + i,
+        correct: Math.round((8 + i) * level),
+      },
+    });
+  }
+
+  // ─── Sample research paper in graded state ─────────────────
+  await prisma.researchPaper.create({
+    data: {
+      studentId: student.id,
+      reviewerId: teacher.id,
+      offeringId: seOffering.id,
+      title: 'تطبيق أنماط التصميم في مشاريع الويب الحديثة',
+      abstract:
+        'يستعرض هذا البحث استخدام أنماط التصميم Singleton، Factory، و Observer في تطبيقات الويب التفاعلية المبنية بـ React.js، مع دراسة حالة على تطبيقات الجامعات الذكية.',
+      status: 'GRADED',
+      plagiarismPct: 8.2,
+      aiContentPct: 12.5,
+      grade: 17,
+      feedback: 'بحث جيد التنظيم. يُنصح بتعميق دراسة الحالة بمزيد من البيانات الكمية.',
+      uploadedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+      scannedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000 + 60_000),
+      gradedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    },
   });
 
   console.log('✅ Seed complete.');

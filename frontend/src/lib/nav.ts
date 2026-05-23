@@ -4,7 +4,7 @@ import {
   Globe, GraduationCap, Briefcase, Bell, Building2,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, MessageSquare, Microscope, School,
-  FileText, Settings,
+  FileText, Settings, ShieldCheck, Activity, Compass, BookMarked,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -31,8 +31,10 @@ export const STUDENT_NAV: NavGroup[] = [
   {
     label: 'التعلم الذكي',
     items: [
+      { to: '/student/matrix', icon: Compass, label: 'المصفوفة التعليمية', badge: { text: 'جديد', tone: 'brand' } },
       { to: '/student/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
+      { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
       { to: '/student/gamification', icon: Trophy, label: 'الإنجازات والنقاط' },
       { to: '/student/skills', icon: Target, label: 'المهارات والشهادات' },
       { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
@@ -109,14 +111,36 @@ export const ADMIN_NAV: NavGroup[] = [
   },
 ];
 
+export const QUALITY_NAV: NavGroup[] = [
+  {
+    label: 'مركز ضمان الجودة',
+    items: [
+      { to: '/quality/dashboard', icon: ShieldCheck, label: 'لوحة الجودة' },
+      { to: '/quality/courses', icon: BookOpen, label: 'جودة المقررات' },
+      { to: '/quality/professors', icon: School, label: 'تقييم الأساتذة' },
+      { to: '/quality/engagement', icon: Activity, label: 'الانخراط والحضور' },
+    ],
+  },
+  {
+    label: 'التقارير',
+    items: [
+      { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
+      { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
+      { to: '/quality/alerts', icon: Bell, label: 'تنبيهات حرجة' },
+    ],
+  },
+];
+
 export const NAV_BY_ROLE: Record<AppRole, NavGroup[]> = {
   STUDENT: STUDENT_NAV,
   TEACHER: TEACHER_NAV,
   ADMIN: ADMIN_NAV,
+  QUALITY: QUALITY_NAV,
 };
 
 export const ROLE_LABELS: Record<AppRole, string> = {
   STUDENT: 'طالب',
   TEACHER: 'أستاذ',
   ADMIN: 'إداري',
+  QUALITY: 'جودة',
 };

@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
+import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import StudentDashboardPage from './pages/student/DashboardPage';
 import StudentCoursesPage from './pages/student/CoursesPage';
@@ -10,40 +11,28 @@ import MoocPage from './pages/student/MoocPage';
 import JobsPage from './pages/student/JobsPage';
 import AiAssistantPage from './pages/student/AiAssistantPage';
 import {
-  GamificationPage,
-  SkillsPage,
-  AlertsPage,
-  SchedulePage,
-  ResultsPage,
-  LabsPage,
-  ArVrPage,
-  SocialPage,
-  DownloadsPage,
-  UniversityInfoPage,
+  GamificationPage, SkillsPage, AlertsPage, SchedulePage, ResultsPage,
+  LabsPage, ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
 } from './pages/student/MorePages';
 import {
-  TeacherDashboardPage,
-  TeacherSchedulePage,
-  AttendancePage,
-  GradesPage,
-  MaterialsPage,
-  ResearchPage,
-  StudentsListPage,
-  PerformancePage,
-  AssignmentsPage,
-  MessagesPage,
+  TeacherDashboardPage, TeacherSchedulePage, AttendancePage, GradesPage,
+  MaterialsPage, ResearchPage, StudentsListPage, PerformancePage,
+  AssignmentsPage, MessagesPage,
 } from './pages/teacher/TeacherPages';
 import { AdminDashboardPage, AdminPlaceholder } from './pages/admin/AdminPages';
+import { QualityDashboardPage, QualityCoursesPage, QualityPlaceholder } from './pages/quality/QualityPages';
 import { useAuthStore } from './stores/auth.store';
 
+/** Resolves the home path for an authenticated user, or `/` for guests. */
 function HomeRedirect() {
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
   if (!isHydrated) return null;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) return <LandingPage />;
   if (user.role === 'STUDENT') return <Navigate to="/student/dashboard" replace />;
   if (user.role === 'TEACHER') return <Navigate to="/teacher/dashboard" replace />;
-  return <Navigate to="/admin/dashboard" replace />;
+  if (user.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
+  return <Navigate to="/quality/dashboard" replace />;
 }
 
 export default function App() {
@@ -73,6 +62,9 @@ export default function App() {
               <Route path="/student/social" element={<SocialPage />} />
               <Route path="/student/downloads" element={<DownloadsPage />} />
               <Route path="/student/university" element={<UniversityInfoPage />} />
+              {/* Phase-3 placeholders that will get real pages soon */}
+              <Route path="/student/matrix" element={<UniversityInfoPage />} />
+              <Route path="/student/research" element={<UniversityInfoPage />} />
             </Route>
           </Route>
 
@@ -105,9 +97,22 @@ export default function App() {
               <Route path="/admin/courses" element={<AdminPlaceholder title="إدارة المقررات" />} />
               <Route path="/admin/analysis" element={<AdminPlaceholder title="تحليل الأداء" />} />
               <Route path="/admin/digital" element={<AdminPlaceholder title="التحول الرقمي" />} />
-              <Route path="/admin/reports" element={<AdminPlaceholder title="التقارير" />} />
-              <Route path="/admin/settings" element={<AdminPlaceholder title="الإعدادات" />} />
+              <Route path="/admin/reports" element={<AdminPlaceholder title="التقارير الرسمية" />} />
+              <Route path="/admin/settings" element={<AdminPlaceholder title="إعدادات المنصة" />} />
               <Route path="/admin/alerts" element={<AlertsPage />} />
+            </Route>
+          </Route>
+
+          {/* Quality (4th sector) */}
+          <Route element={<ProtectedRoute allow={['QUALITY', 'ADMIN']} />}>
+            <Route element={<AppShell />}>
+              <Route path="/quality/dashboard" element={<QualityDashboardPage />} />
+              <Route path="/quality/courses" element={<QualityCoursesPage />} />
+              <Route path="/quality/professors" element={<QualityPlaceholder title="تقييم الأساتذة" subtitle="مؤشرات الاستجابة، رفع المواد، تقييمات الطلاب." />} />
+              <Route path="/quality/engagement" element={<QualityPlaceholder title="الانخراط والحضور" subtitle="نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة." />} />
+              <Route path="/quality/reports" element={<QualityPlaceholder title="تقارير الجودة" subtitle="تقارير دورية يمكن تصديرها." />} />
+              <Route path="/quality/curriculum" element={<QualityPlaceholder title="مراجعة المناهج" subtitle="فحص اكتمال محتوى المقررات." />} />
+              <Route path="/quality/alerts" element={<AlertsPage />} />
             </Route>
           </Route>
 
