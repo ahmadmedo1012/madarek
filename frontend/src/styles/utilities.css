@@ -1,0 +1,70 @@
+/* ═════════════════════════════════════════════════════════════
+   Utility classes — used to remove inline styles in pages.
+   Tiny on purpose: only what the app actually uses.
+   ───────────────────────────────────────────────────────────── */
+
+/* Layout */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-width: 0; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.shrink-0 { flex-shrink: 0; }
+
+/* Gap (4-px step) */
+.gap-1 { gap: var(--sp-1); }
+.gap-2 { gap: var(--sp-2); }
+.gap-3 { gap: var(--sp-3); }
+.gap-4 { gap: var(--sp-4); }
+.gap-5 { gap: var(--sp-5); }
+.gap-6 { gap: var(--sp-6); }
+
+/* Margin top utilities (used sparingly) */
+.mt-1 { margin-top: var(--sp-1); }
+.mt-2 { margin-top: var(--sp-2); }
+.mt-3 { margin-top: var(--sp-3); }
+.mt-4 { margin-top: var(--sp-4); }
+.mt-5 { margin-top: var(--sp-5); }
+.mt-6 { margin-top: var(--sp-6); }
+.mb-2 { margin-bottom: var(--sp-2); }
+.mb-3 { margin-bottom: var(--sp-3); }
+.mb-4 { margin-bottom: var(--sp-4); }
+.mb-6 { margin-bottom: var(--sp-6); }
+
+/* Width helpers */
+.w-full { width: 100%; }
+.max-w-md { max-width: 480px; }
+.text-center { text-align: center; }
+.truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Typography helpers */
+.text-xs { font-size: var(--fs-xs); }
+.text-sm { font-size: var(--fs-sm); }
+.text-base { font-size: var(--fs-base); }
+.text-md { font-size: var(--fs-md); }
+.text-lg { font-size: var(--fs-lg); }
+.text-xl { font-size: var(--fs-xl); }
+.text-2xl { font-size: var(--fs-2xl); }
+.font-medium { font-weight: var(--fw-medium); }
+.font-semibold { font-weight: var(--fw-semibold); }
+.font-bold { font-weight: var(--fw-bold); }
+.font-mono { font-family: var(--font-mono); }
+.text-muted { color: var(--text-muted); }
+.text-subtle { color: var(--text-subtle); }
+.text-accent { color: var(--accent); }
+.text-green { color: var(--green); }
+.text-amber { color: var(--amber); }
+.text-red { color: var(--red); }
+
+/* Hide / show responsive */
+.hide-on-mobile { display: initial; }
+.show-on-mobile { display: none; }
+@media (max-width: 600px) {
+  .hide-on-mobile { display: none !important; }
+  .show-on-mobile { display: initial; }
+}

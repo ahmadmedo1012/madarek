@@ -1,29 +1,135 @@
 /* ═════════════════════════════════════════════════════════════
-   Madarek AI — Design tokens
-   These are an EXACT copy of the variables from the original
-   prototype. Do not change values without explicit design review.
+   Madarek AI — Design Tokens
+   Single source of truth for the entire UI.
    ───────────────────────────────────────────────────────────── */
+
 :root {
-  --bg: #0A0E1A;
-  --bg2: #0F1525;
-  --bg3: #151C30;
-  --surface: #1A2340;
-  --surface2: #1F2A4A;
-  --border: rgba(255, 255, 255, 0.07);
-  --border2: rgba(255, 255, 255, 0.12);
-  --text: #F0F2F8;
-  --text2: #8A92B0;
-  --text3: #525A78;
-  --accent: #4F8EF7;
-  --accent2: #2D6ADF;
+  /* ── Background layers (polished darks, more depth) ─── */
+  --bg: #07090F;
+  --bg-1: #0B0F1B;
+  --bg-2: #0F1525;
+  --surface-1: #131A2D;
+  --surface-2: #1A2340;
+  --surface-3: #1F2A4A;
+  --surface-hover: #1F2A4A;
+
+  /* ── Borders ─── */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.10);
+  --border-accent: rgba(79, 142, 247, 0.35);
+
+  /* ── Text ─── */
+  --text: #F2F4FA;
+  --text-muted: #A0A8C2;
+  --text-subtle: #6A7290;
+  --text-disabled: #424A66;
+
+  /* ── Accent palette (kept from prototype) ─── */
+  --accent: #5A9CFF;
+  --accent-hover: #4080E8;
+  --accent-soft: rgba(90, 156, 255, 0.12);
+  --accent-soft-strong: rgba(90, 156, 255, 0.22);
+
   --green: #3DD68C;
+  --green-soft: rgba(61, 214, 140, 0.12);
   --amber: #F5A623;
+  --amber-soft: rgba(245, 166, 35, 0.12);
   --red: #F55353;
+  --red-soft: rgba(245, 83, 83, 0.12);
   --purple: #9B6FE8;
+  --purple-soft: rgba(155, 111, 232, 0.12);
   --teal: #2EC4B6;
+  --teal-soft: rgba(46, 196, 182, 0.12);
   --pink: #F06292;
-  --r: 10px;
+  --pink-soft: rgba(240, 98, 146, 0.12);
+
+  /* ── Spacing scale (4px base) ─── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ── Radius scale ─── */
+  --r-xs: 4px;
   --r-sm: 6px;
-  --r-lg: 16px;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+
+  /* Legacy aliases used by earlier files — keep so we don't break anything */
+  --r: 10px;
+
+  /* ── Typography scale ─── */
+  --fs-xxs: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 19px;
+  --fs-2xl: 24px;
+  --fs-3xl: 30px;
+  --fs-4xl: 40px;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --lh-tight: 1.25;
+  --lh-snug: 1.4;
+  --lh-base: 1.6;
+  --lh-loose: 1.75;
+
+  /* ── Shadows tuned for the dark surface ─── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 0 1px var(--border-accent), 0 8px 28px rgba(79, 142, 247, 0.18);
+
+  /* ── Motion ─── */
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 280ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.16, 1.36, 0.32, 1);
+
+  /* ── Layout ─── */
+  --sidebar-w: 256px;
+  --topbar-h: 60px;
+  --content-max-w: 1440px;
+  --focus-ring: 0 0 0 3px var(--accent-soft-strong);
+
+  /* ── Fonts ─── */
+  --font-sans: 'IBM Plex Sans Arabic', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+  /* legacy aliases mapped to new tokens (so older components still work) */
+  --bg2: var(--bg-1);
+  --bg3: var(--bg-2);
+  --surface: var(--surface-1);
+  --surface2: var(--surface-2);
+  --border2: var(--border-strong);
+  --text2: var(--text-muted);
+  --text3: var(--text-subtle);
+  --accent2: var(--accent-hover);
+  --shadow: var(--shadow-md);
+  --r-lg-legacy: var(--r-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

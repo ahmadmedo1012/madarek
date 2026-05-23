@@ -1,31 +1,54 @@
 import type { CSSProperties, ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import { Icon } from '../Icon';
 
-export type ThemeColor =
-  | 'blue'
-  | 'green'
-  | 'amber'
-  | 'red'
-  | 'purple'
-  | 'teal'
-  | 'pink';
+export type ThemeColor = 'blue' | 'green' | 'amber' | 'red' | 'purple' | 'teal' | 'pink';
 
+/* ─── Card ──────────────────────────────────────────────── */
 export function Card({
   title,
-  dotColor,
+  subtitle,
+  icon,
+  actions,
   children,
+  flush,
+  compact,
+  lift,
+  className,
   style,
 }: {
   title?: ReactNode;
-  dotColor?: string;
+  subtitle?: ReactNode;
+  icon?: LucideIcon;
+  actions?: ReactNode;
   children?: ReactNode;
+  flush?: boolean;
+  compact?: boolean;
+  lift?: boolean;
+  className?: string;
   style?: CSSProperties;
 }) {
+  const cls = ['card', flush && 'flush', compact && 'compact', lift && 'lift', className]
+    .filter(Boolean)
+    .join(' ');
   return (
-    <div className="card" style={style}>
-      {title !== undefined && (
-        <div className="card-title">
-          <span className="dot" style={dotColor ? { background: dotColor } : undefined} />
-          {title}
+    <div className={cls} style={style}>
+      {(title || actions) && (
+        <div className="card-header">
+          <div>
+            {title && (
+              <div className="card-title">
+                {icon && (
+                  <span className="card-title-icon">
+                    <Icon icon={icon} size={16} />
+                  </span>
+                )}
+                <span>{title}</span>
+              </div>
+            )}
+            {subtitle && <div className="card-subtitle">{subtitle}</div>}
+          </div>
+          {actions && <div className="card-actions">{actions}</div>}
         </div>
       )}
       {children}
@@ -33,96 +56,172 @@ export function Card({
   );
 }
 
+/* ─── Metric / KPI card ─────────────────────────────────── */
 export function MetricCard({
   label,
   value,
   change,
+  changeDirection,
+  icon,
   color = 'blue',
 }: {
   label: ReactNode;
   value: ReactNode;
   change?: ReactNode;
+  changeDirection?: 'up' | 'dn';
+  icon?: LucideIcon;
   color?: ThemeColor;
 }) {
   return (
-    <div className={`metric-card ${color}`}>
-      <div className="metric-lbl">{label}</div>
-      <div className={`metric-val ${color}`}>{value}</div>
-      {change !== undefined && <div className="metric-chg">{change}</div>}
+    <div className={`metric ${color}`}>
+      <div className="metric-head">
+        <span className="metric-label">{label}</span>
+        {icon && (
+          <span className="metric-icon">
+            <Icon icon={icon} size={18} />
+          </span>
+        )}
+      </div>
+      <div className="metric-value">{value}</div>
+      {change !== undefined && (
+        <div className="metric-change">
+          {changeDirection && <span className={changeDirection}>{changeDirection === 'up' ? '↑' : '↓'}</span>}
+          <span>{change}</span>
+        </div>
+      )}
     </div>
   );
 }
 
+/* ─── Badge ─────────────────────────────────────────────── */
 export function Badge({
   color = 'blue',
+  icon,
   children,
 }: {
-  color?: ThemeColor;
+  color?: ThemeColor | 'muted';
+  icon?: LucideIcon;
   children: ReactNode;
 }) {
-  return <span className={`badge badge-${color}`}>{children}</span>;
+  return (
+    <span className={`badge ${color}`}>
+      {icon && <Icon icon={icon} size={11} strokeWidth={2} />}
+      {children}
+    </span>
+  );
 }
 
+/* ─── Progress ──────────────────────────────────────────── */
 export function ProgressBar({
   value,
-  color = 'var(--accent)',
+  color,
+  label,
+  showValue = true,
 }: {
-  value: number; // 0..100
+  value: number;
   color?: string;
+  label?: ReactNode;
+  showValue?: boolean;
 }) {
   const v = Math.max(0, Math.min(100, value));
+  const fillStyle: CSSProperties = { width: `${v}%`, ...(color ? { background: color } : {}) };
   return (
-    <div className="prog-track" role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={100}>
-      <div className="prog-fill" style={{ width: `${v}%`, background: color }} />
+    <div className="progress">
+      {(label !== undefined || showValue) && (
+        <div className="progress-head">
+          {label !== undefined ? <span>{label}</span> : <span />}
+          {showValue && <span className="font-mono text-xs" style={{ color: color ?? 'var(--accent)' }}>{v}%</span>}
+        </div>
+      )}
+      <div className="progress-track" role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={100}>
+        <div className="progress-fill" style={fillStyle} />
+      </div>
     </div>
   );
 }
 
+/* ─── Alert row ─────────────────────────────────────────── */
 export type AlertColor = 'red' | 'amber' | 'blue' | 'green' | 'purple';
+
 export function AlertRow({
   color = 'blue',
   icon,
   title,
   description,
   time,
-  children,
+  actions,
 }: {
   color?: AlertColor;
-  icon?: ReactNode;
+  icon?: LucideIcon;
   title?: ReactNode;
   description?: ReactNode;
   time?: ReactNode;
-  children?: ReactNode;
+  actions?: ReactNode;
 }) {
   return (
-    <div className={`alert-row ${color}`}>
-      {icon !== undefined && <div className="alert-icon">{icon}</div>}
-      <div style={{ flex: 1 }}>
-        {title !== undefined && <div className="alert-title">{title}</div>}
-        {description !== undefined && <div className="alert-desc">{description}</div>}
-        {time !== undefined && <div className="alert-time">{time}</div>}
-        {children}
+    <div className={`alert ${color}`}>
+      {icon && (
+        <span className="alert-icon">
+          <Icon icon={icon} size={16} />
+        </span>
+      )}
+      <div className="alert-body">
+        {title && <div className="alert-title">{title}</div>}
+        {description && <div className="alert-desc">{description}</div>}
+        {time && <div className="alert-time">{time}</div>}
       </div>
+      {actions}
     </div>
   );
 }
 
+/* ─── User avatar ───────────────────────────────────────── */
 export function UserAvatar({
   initials,
-  color = 'linear-gradient(135deg, var(--accent), var(--purple))',
-  size = 34,
+  color,
+  size = 36,
 }: {
   initials: string;
   color?: string;
   size?: number;
 }) {
   return (
-    <div
-      className="user-avatar"
-      style={{ width: size, height: size, fontSize: Math.round(size * 0.4), background: color }}
+    <span
+      className="avatar"
+      style={{
+        width: size,
+        height: size,
+        fontSize: Math.round(size * 0.4),
+        ...(color ? { background: color } : {}),
+      }}
       aria-label={initials}
     >
       {initials}
-    </div>
+    </span>
   );
+}
+
+/* ─── Pill (filter buttons) ─────────────────────────────── */
+export function Pill({
+  on,
+  icon,
+  children,
+  onClick,
+}: {
+  on?: boolean;
+  icon?: LucideIcon;
+  children: ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <button type="button" className={`pill${on ? ' on' : ''}`} onClick={onClick}>
+      {icon && <Icon icon={icon} size={13} />}
+      {children}
+    </button>
+  );
+}
+
+/* ─── Section title (uppercase divider) ────────────────── */
+export function SectionTitle({ children }: { children: ReactNode }) {
+  return <div className="section-title">{children}</div>;
 }

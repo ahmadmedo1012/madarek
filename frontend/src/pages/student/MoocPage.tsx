@@ -1,51 +1,56 @@
-import { useMoocs } from '../../hooks/useResources';
+import { GraduationCap, Award, Users2, Clock } from 'lucide-react';
+import { Card, Badge } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
+import { useMoocs } from '../../hooks/useResources';
 
 export default function MoocPage() {
   const { data, isPending, isError } = useMoocs();
   return (
     <div className="page">
+      <div className="page-header">
+        <div className="page-title-block">
+          <h1 className="page-title">كورسات خارجية</h1>
+          <p className="page-subtitle">شراكات مع منصات عالمية وبرامج معتمدة من جامعة الزاوية.</p>
+        </div>
+      </div>
+
       {isPending ? (
-        <LoadingState />
+        <Card><LoadingState /></Card>
       ) : isError ? (
-        <ErrorState />
+        <Card><ErrorState /></Card>
       ) : !data?.length ? (
-        <EmptyState title="لا توجد كورسات" />
+        <Card><EmptyState icon={GraduationCap} title="لا توجد كورسات متاحة حالياً" /></Card>
       ) : (
         <div className="grid-3">
           {data.map((m) => (
-            <div className="course-card" key={m.id}>
-              <div className="course-thumb" style={{ background: 'rgba(79,142,247,.12)', fontSize: 36 }}>
+            <div className="thumb-card" key={m.id}>
+              <div
+                className="thumb-card-image"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(90,156,255,.18), rgba(155,111,232,.08))',
+                  height: 110,
+                }}
+              >
                 {m.iconEmoji ?? '🎓'}
               </div>
-              <div className="course-body">
-                <div className="course-name">{m.title}</div>
-                <div style={{ fontSize: 10, color: 'var(--accent)', marginBottom: 6 }}>{m.organization}</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-                  <span className="badge badge-blue">{m.durationHours} ساعة</span>
-                  <span className="badge badge-purple">{m.level}</span>
-                  {m.hasCertificate && <span className="badge badge-amber">🏅 شهادة</span>}
+              <div className="thumb-card-body">
+                <div className="thumb-card-title">{m.title}</div>
+                <div className="text-xs text-accent">{m.organization}</div>
+
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <Badge color="blue" icon={Clock}>{m.durationHours} ساعة</Badge>
+                  <Badge color="purple">{m.level}</Badge>
+                  {m.hasCertificate && <Badge color="amber" icon={Award}>شهادة</Badge>}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ color: 'var(--amber)', fontSize: 11 }}>★ {m.rating}</span>
-                  <span style={{ fontSize: 10, color: 'var(--text3)' }}>{m.enrolled.toLocaleString('ar-LY')} مسجل</span>
+
+                <div className="flex items-center justify-between mt-3">
+                  <span className="text-amber text-xs font-mono">★ {m.rating}</span>
+                  <span className="text-xs text-subtle flex items-center gap-1">
+                    <Users2 size={12} /> {m.enrolled.toLocaleString('ar-LY')}
+                  </span>
                 </div>
-                <button
-                  type="button"
-                  style={{
-                    width: '100%',
-                    background: 'var(--accent)',
-                    border: 'none',
-                    borderRadius: 'var(--r-sm)',
-                    padding: 7,
-                    color: '#fff',
-                    fontSize: 12,
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                  }}
-                >
-                  سجّل الآن
-                </button>
+
+                <button type="button" className="btn primary mt-3 w-full">سجّل الآن</button>
               </div>
             </div>
           ))}

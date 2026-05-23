@@ -1,5 +1,8 @@
-import { useJobs } from '../../hooks/useResources';
+import { Briefcase, MapPin, BadgeCheck } from 'lucide-react';
+import { Card, Badge } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
+import { Icon } from '../../components/Icon';
+import { useJobs } from '../../hooks/useResources';
 
 const TYPE_LABELS: Record<string, string> = {
   FULL_TIME: 'دوام كامل',
@@ -13,59 +16,49 @@ export default function JobsPage() {
   const { data, isPending, isError } = useJobs();
   return (
     <div className="page">
+      <div className="page-header">
+        <div className="page-title-block">
+          <h1 className="page-title">فرص عمل</h1>
+          <p className="page-subtitle">وظائف وتدريب مدفوع مفتوحة لطلاب وخرّيجي جامعة الزاوية.</p>
+        </div>
+      </div>
+
       {isPending ? (
-        <LoadingState />
+        <Card><LoadingState /></Card>
       ) : isError ? (
-        <ErrorState />
+        <Card><ErrorState /></Card>
       ) : !data?.length ? (
-        <EmptyState title="لا توجد فرص متاحة" />
+        <Card><EmptyState icon={Briefcase} title="لا توجد فرص متاحة حالياً" /></Card>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="flex-col gap-3">
           {data.map((j) => (
-            <div className="exam-card" key={j.id}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <Card lift key={j.id} compact>
+              <div className="flex items-start gap-4">
                 <div
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 'var(--r)',
-                    background: 'var(--surface2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 22,
-                    flexShrink: 0,
+                    width: 48, height: 48, borderRadius: 'var(--r-md)',
+                    background: 'var(--accent-soft)', color: 'var(--accent)',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 22, flexShrink: 0,
                   }}
                 >
                   {j.iconEmoji ?? '💼'}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{j.title}</div>
-                  <div style={{ fontSize: 11, color: 'var(--accent)', margin: '3px 0 6px' }}>{j.company}</div>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    <span className="badge badge-teal">{j.location}</span>
-                    <span className="badge badge-blue">{TYPE_LABELS[j.type]}</span>
-                    {j.salary && <span className="badge badge-green">{j.salary}</span>}
+                <div className="flex-1">
+                  <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{j.title}</div>
+                  <div className="text-xs text-accent mt-1 mb-2">{j.company}</div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge color="teal" icon={MapPin}>{j.location}</Badge>
+                    <Badge color="blue">{TYPE_LABELS[j.type] ?? j.type}</Badge>
+                    {j.salary && <Badge color="green">{j.salary}</Badge>}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  style={{
-                    background: 'var(--accent)',
-                    border: 'none',
-                    borderRadius: 'var(--r-sm)',
-                    padding: '8px 14px',
-                    color: '#fff',
-                    fontSize: 11,
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    alignSelf: 'center',
-                  }}
-                >
-                  تقدّم
+                <button type="button" className="btn primary shrink-0">
+                  <Icon icon={BadgeCheck} size={14} />
+                  تقدّم الآن
                 </button>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

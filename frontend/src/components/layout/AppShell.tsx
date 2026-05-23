@@ -1,6 +1,7 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { Sidebar, Topbar } from './Shell';
+import { Sidebar } from './Sidebar';
+import { Topbar } from './Topbar';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { LoadingState } from '../primitives/States';
@@ -50,7 +51,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
       <Sidebar />
       <main className="main">
         <Topbar title={title} />
-        <div className="content">{children ?? <Outlet />}</div>
+        <div className="content">
+          <div className="content-inner">{children ?? <Outlet />}</div>
+        </div>
       </main>
     </>
   );
@@ -61,7 +64,6 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   const user = useAuthStore((s) => s.user);
   const location = useLocation();
 
-  // Wait for persist hydration so we don't briefly redirect to /auth on refresh.
   if (!isHydrated) return <LoadingState />;
   if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
   if (allow && !allow.includes(user.role)) {
@@ -72,11 +74,9 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
     };
     return <Navigate to={home[user.role]} replace />;
   }
-
   return <Outlet />;
 }
 
-/** Wrapper that re-fetches the current user once on mount; useful as a soft sanity check. */
 export function HydrateMe() {
   useMe();
   return null;

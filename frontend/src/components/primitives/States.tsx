@@ -1,35 +1,74 @@
+import type { LucideIcon } from 'lucide-react';
+import { Inbox, AlertTriangle } from 'lucide-react';
+import { Icon } from '../Icon';
+
 export function LoadingState({ label = 'جارٍ التحميل…' }: { label?: string }) {
   return (
-    <div className="center-flex">
+    <div className="state" role="status" aria-live="polite">
       <div className="spinner" aria-hidden />
-      <div>{label}</div>
+      <div className="state-desc mt-2">{label}</div>
     </div>
   );
 }
 
 export function EmptyState({
-  icon = '📭',
+  icon = Inbox,
   title = 'لا توجد نتائج',
-  hint,
+  description,
+  action,
 }: {
-  icon?: string;
+  icon?: LucideIcon;
   title?: string;
-  hint?: string;
+  description?: string;
+  action?: React.ReactNode;
 }) {
   return (
-    <div className="center-flex">
-      <div style={{ fontSize: 36 }}>{icon}</div>
-      <div style={{ fontSize: 13, color: 'var(--text2)' }}>{title}</div>
-      {hint && <div style={{ fontSize: 11, color: 'var(--text3)' }}>{hint}</div>}
+    <div className="state">
+      <div className="state-icon">
+        <Icon icon={icon} size={22} />
+      </div>
+      <div className="state-title">{title}</div>
+      {description && <div className="state-desc">{description}</div>}
+      {action && <div className="mt-4">{action}</div>}
     </div>
   );
 }
 
-export function ErrorState({ message = 'حدث خطأ غير متوقع' }: { message?: string }) {
+export function ErrorState({
+  message = 'حدث خطأ غير متوقع',
+}: {
+  message?: string;
+}) {
   return (
-    <div className="center-flex" role="alert">
-      <div style={{ fontSize: 32 }}>⚠️</div>
-      <div style={{ color: 'var(--red)', fontSize: 13 }}>{message}</div>
+    <div className="state" role="alert">
+      <div className="state-icon" style={{ background: 'var(--red-soft)', color: 'var(--red)' }}>
+        <Icon icon={AlertTriangle} size={22} />
+      </div>
+      <div className="state-title">{message}</div>
+      <div className="state-desc">حاول مرة أخرى أو تحقق من اتصالك بالشبكة.</div>
     </div>
+  );
+}
+
+export function Skeleton({
+  width,
+  height = 14,
+  rounded = 'var(--r-sm)',
+}: {
+  width?: string | number;
+  height?: string | number;
+  rounded?: string;
+}) {
+  return (
+    <span
+      className="skeleton"
+      style={{
+        display: 'inline-block',
+        width: width ?? '100%',
+        height,
+        borderRadius: rounded,
+      }}
+      aria-hidden
+    />
   );
 }
