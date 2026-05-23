@@ -1,0 +1,29 @@
+/* ═════════════════════════════════════════════════════════════
+   Madarek AI — Design tokens
+   These are an EXACT copy of the variables from the original
+   prototype. Do not change values without explicit design review.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --bg: #0A0E1A;
+  --bg2: #0F1525;
+  --bg3: #151C30;
+  --surface: #1A2340;
+  --surface2: #1F2A4A;
+  --border: rgba(255, 255, 255, 0.07);
+  --border2: rgba(255, 255, 255, 0.12);
+  --text: #F0F2F8;
+  --text2: #8A92B0;
+  --text3: #525A78;
+  --accent: #4F8EF7;
+  --accent2: #2D6ADF;
+  --green: #3DD68C;
+  --amber: #F5A623;
+  --red: #F55353;
+  --purple: #9B6FE8;
+  --teal: #2EC4B6;
+  --pink: #F06292;
+  --r: 10px;
+  --r-sm: 6px;
+  --r-lg: 16px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}

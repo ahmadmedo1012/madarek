@@ -1,0 +1,56 @@
+# ════════════════════════════════════════════════════════════════
+# Madarek AI — Render blueprint (single-service deployment)
+# ════════════════════════════════════════════════════════════════
+# One web service runs both the Express API and serves the React build.
+# The service binds to $PORT (provided by Render). All routes under
+# /api/* go to the API; everything else is served by the SPA.
+#
+# Push to GitHub → "New + → Blueprint" in Render → pick this file.
+# Render auto-detects subsequent commits to `main` and re-deploys.
+# ────────────────────────────────────────────────────────────────
+
+services:
+  - type: web
+    name: madarek
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # ── Database (Neon) ─────────────────────────────────────
+      # The single Neon connection string is used for runtime AND
+      # migrations. Set the actual value in the Render dashboard.
+      - key: DATABASE_URL
+        sync: false
+      # ── JWT secrets (auto-generated on first deploy) ───────
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_TTL
+        value: 15m
+      - key: JWT_REFRESH_TTL
+        value: 7d
+      # ── CORS / cookies ─────────────────────────────────────
+      # Same-origin production deployment — CORS allow-list still set
+      # for safety net + local Vite dev.
+      - key: CORS_ORIGINS
+        value: https://madarek.onrender.com,http://localhost:5173
+      - key: COOKIE_SECURE
+        value: 'true'
+      # ── Static serving ─────────────────────────────────────
+      - key: SERVE_STATIC
+        value: 'true'
+      # ── Rate limits ────────────────────────────────────────
+      - key: RATE_LIMIT_WINDOW_MS
+        value: '900000'
+      - key: RATE_LIMIT_MAX
+        value: '300'
+      - key: AUTH_RATE_LIMIT_MAX
+        value: '10'
