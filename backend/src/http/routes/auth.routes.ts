@@ -19,9 +19,8 @@ const REFRESH_COOKIE = 'mdrk_refresh';
 const setRefreshCookie = (res: import('express').Response, token: string) => {
   res.cookie(REFRESH_COOKIE, token, {
     httpOnly: true,
-    secure: env.COOKIE_SECURE,
+    secure: env.cookieSecure,
     sameSite: 'strict',
-    domain: env.COOKIE_DOMAIN,
     path: '/api/v1/auth',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });

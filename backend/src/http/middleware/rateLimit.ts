@@ -1,19 +1,20 @@
 import rateLimit from 'express-rate-limit';
-import { env } from '../../env.js';
 
-/** Global rate limiter — applied to the whole API. */
+const FIFTEEN_MIN = 15 * 60 * 1000;
+
+/** 300 req / 15 min / IP — global API limit. */
 export const globalRateLimiter = rateLimit({
-  windowMs: env.RATE_LIMIT_WINDOW_MS,
-  max: env.RATE_LIMIT_MAX,
+  windowMs: FIFTEEN_MIN,
+  max: 300,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { error: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests' } },
 });
 
-/** Stricter limit for /auth/* — protects against brute-force. */
+/** 10 req / 15 min / IP — protects /auth/login from brute force. */
 export const authRateLimiter = rateLimit({
-  windowMs: env.RATE_LIMIT_WINDOW_MS,
-  max: env.AUTH_RATE_LIMIT_MAX,
+  windowMs: FIFTEEN_MIN,
+  max: 10,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   skipSuccessfulRequests: true,

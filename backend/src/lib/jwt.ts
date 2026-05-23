@@ -13,8 +13,8 @@ export interface RefreshTokenPayload {
   type: 'refresh';
 }
 
-const accessOpts: SignOptions = { expiresIn: env.JWT_ACCESS_TTL as SignOptions['expiresIn'] };
-const refreshOpts: SignOptions = { expiresIn: env.JWT_REFRESH_TTL as SignOptions['expiresIn'] };
+const accessOpts: SignOptions = { expiresIn: env.jwtAccessTtl as SignOptions['expiresIn'] };
+const refreshOpts: SignOptions = { expiresIn: env.jwtRefreshTtl as SignOptions['expiresIn'] };
 
 export const signAccessToken = (userId: string, role: Role) =>
   jwt.sign({ sub: userId, role, type: 'access' } satisfies AccessTokenPayload, env.JWT_ACCESS_SECRET, accessOpts);
