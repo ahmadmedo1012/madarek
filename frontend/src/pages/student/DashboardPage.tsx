@@ -58,8 +58,8 @@ export default function StudentDashboardPage() {
               maintainAspectRatio: false,
               plugins: { legend: { display: false } },
               scales: {
-                x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#525A78', font: { size: 10, family: 'IBM Plex Sans Arabic' } } },
-                y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#525A78', font: { size: 10 } }, min: 0, max: 100 },
+                x: { grid: { color: 'rgba(13,31,60,0.06)' }, ticks: { color: 'var(--text3)', font: { size: 10, family: 'IBM Plex Sans Arabic' } } },
+                y: { grid: { color: 'rgba(13,31,60,0.06)' }, ticks: { color: 'var(--text3)', font: { size: 10 } }, min: 0, max: 100 },
               },
             }}
             height={140}
