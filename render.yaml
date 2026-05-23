@@ -5,7 +5,10 @@ services:
     plan: free
     region: oregon
     rootDir: .
-    buildCommand: npm install && npm run build
+    # `--include=dev` is required because Render sets NODE_ENV=production
+    # before `npm install` runs, which would otherwise skip devDependencies
+    # (typescript, vite, @types/*, prisma CLI, …) that we need for the build.
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api/v1/health
     autoDeploy: true
