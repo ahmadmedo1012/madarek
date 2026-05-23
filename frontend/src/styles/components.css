@@ -910,3 +910,81 @@
   .auth-brand-hero { font-size: var(--fs-xl); margin-top: var(--sp-5); }
   .auth-features, .auth-brand-footer, .auth-brand-tag { display: none; }
 }
+
+
+/* ─── Resume-learning strip ────────────────────────────── */
+.resume-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  position: relative;
+  overflow: hidden;
+}
+.resume-strip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 100% at 100% 50%, var(--accent-soft), transparent 60%);
+  pointer-events: none;
+}
+.resume-thumb {
+  width: 96px;
+  height: 64px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.resume-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.resume-eyebrow {
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-semibold);
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.resume-title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin-bottom: var(--sp-1);
+  letter-spacing: -0.1px;
+}
+.resume-meta {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  align-items: center;
+}
+.resume-progress {
+  flex: 1;
+  max-width: 240px;
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+.resume-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--r-full);
+}
+.resume-cta { position: relative; z-index: 1; flex-shrink: 0; }
+
+@media (max-width: 700px) {
+  .resume-strip { flex-wrap: wrap; }
+  .resume-thumb { width: 56px; height: 56px; }
+  .resume-cta { width: 100%; }
+  .resume-cta .btn { width: 100%; justify-content: center; }
+}

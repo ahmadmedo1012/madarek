@@ -1,23 +1,24 @@
-import { Line } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement,
   LineElement, Filler, Tooltip, Legend, ArcElement,
 } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
+import { Link } from 'react-router-dom';
 import {
   BookOpen, CheckCircle2, Award, Clock,
-  Calendar, Bell, ChevronLeft,
+  Calendar, Bell, ChevronLeft, Play, PlayCircle,
+  Compass, AlertCircle, ArrowLeft,
   Cog, Cpu, Database, Network, Globe, Shield,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyEnrollments } from '../../hooks/useResources';
+import { useMyEnrollments, useResume, useGaps } from '../../hooks/useResources';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement);
 
-// Map course codes/names to a meaningful Lucide icon — used everywhere.
+// Map course code to a meaningful Lucide icon — used everywhere.
 const courseIcon = (codeOrName: string): LucideIcon => {
   const s = codeOrName.toLowerCase();
   if (s.includes('se') || s.includes('برمج')) return Cog;
@@ -29,8 +30,16 @@ const courseIcon = (codeOrName: string): LucideIcon => {
   return BookOpen;
 };
 
+function fmtDuration(sec: number) {
+  const m = Math.round(sec / 60);
+  return `${m} دقيقة`;
+}
+
 export default function StudentDashboardPage() {
   const enrollments = useMyEnrollments();
+  const resume = useResume();
+  const gaps = useGaps();
+
   const isLoading = enrollments.isPending;
   const data = enrollments.data;
 
@@ -41,10 +50,23 @@ export default function StudentDashboardPage() {
           <h1 className="page-title">مرحباً بعودتك، أحمد</h1>
           <p className="page-subtitle">إليك نظرة موجزة على أدائك ومواعيدك القادمة.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge>الفصل الدراسي · 2024 خريف</Badge>
-        </div>
+        <Badge>الفصل الدراسي · 2024 خريف</Badge>
       </div>
+
+      {/* Resume Learning strip — most important next action */}
+      {resume.data && (
+        <ResumeStrip
+          mode={resume.data.mode}
+          progressPct={resume.data.progressPct}
+          title={resume.data.lecture.title}
+          courseName={resume.data.lecture.course.name}
+          courseCode={resume.data.lecture.course.code}
+          durationSec={resume.data.lecture.durationSec}
+          courseColor={resume.data.lecture.course.themeColor ?? undefined}
+          courseId={resume.data.lecture.course.id}
+          lectureId={resume.data.lecture.id}
+        />
+      )}
 
       {/* KPIs */}
       {isLoading ? (
@@ -83,8 +105,8 @@ export default function StudentDashboardPage() {
         </div>
       )}
 
+      {/* Charts row */}
       <div className="grid-2-1">
-        {/* Weekly performance chart */}
         <Card title="الأداء الأسبوعي" subtitle="درجات النشاط اليومي خلال آخر سبعة أيام">
           <div style={{ height: 220, position: 'relative' }}>
             <Line
@@ -94,20 +116,19 @@ export default function StudentDashboardPage() {
                   {
                     label: 'الأداء %',
                     data: [62, 78, 55, 90, 71, 44, 83],
-                    borderColor: 'var(--accent)',
+                    borderColor: 'rgb(61,107,214)',
                     backgroundColor: (ctx) => {
                       const chart = ctx.chart;
                       const { ctx: c, chartArea } = chart;
                       if (!chartArea) return 'transparent';
                       const grad = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                      grad.addColorStop(0, 'rgba(61,107,214,0.18)');
+                      grad.addColorStop(0, 'rgba(61,107,214,0.20)');
                       grad.addColorStop(1, 'rgba(61,107,214,0.00)');
                       return grad;
                     },
                     borderWidth: 2,
-                    pointBackgroundColor: 'var(--accent)',
+                    pointBackgroundColor: 'rgb(61,107,214)',
                     pointBorderColor: 'transparent',
-                    pointBorderWidth: 0,
                     pointRadius: 3,
                     pointHoverRadius: 5,
                     tension: 0.4,
@@ -121,11 +142,11 @@ export default function StudentDashboardPage() {
                 plugins: {
                   legend: { display: false },
                   tooltip: {
-                    backgroundColor: 'var(--surface-1)',
-                    borderColor: 'var(--border-strong)',
+                    backgroundColor: '#11131A',
+                    borderColor: 'rgba(255,255,255,.12)',
                     borderWidth: 1,
-                    titleColor: 'var(--text)',
-                    bodyColor: 'var(--text-muted)',
+                    titleColor: '#E7E9EE',
+                    bodyColor: '#9EA4B8',
                     padding: 10,
                     cornerRadius: 8,
                     titleFont: { family: 'IBM Plex Sans Arabic', size: 12 },
@@ -136,12 +157,12 @@ export default function StudentDashboardPage() {
                   x: {
                     grid: { display: false },
                     border: { display: false },
-                    ticks: { color: 'var(--chart-text)', font: { size: 11, family: 'IBM Plex Sans Arabic' } },
+                    ticks: { color: '#6A7088', font: { size: 11, family: 'IBM Plex Sans Arabic' } },
                   },
                   y: {
-                    grid: { color: 'var(--chart-grid)' },
+                    grid: { color: 'rgba(255,255,255,0.05)' },
                     border: { display: false },
-                    ticks: { color: 'var(--chart-text)', font: { size: 11 }, stepSize: 25 },
+                    ticks: { color: '#6A7088', font: { size: 11 }, stepSize: 25 },
                     min: 0,
                     max: 100,
                   },
@@ -151,8 +172,7 @@ export default function StudentDashboardPage() {
           </div>
         </Card>
 
-        {/* Subject completion donut */}
-        <Card title="توزّع الإنجاز" subtitle="نسبة كل مادة من إجمالي تقدمك">
+        <Card title="توزّع الإنجاز" subtitle="نسبة كل مادة من إجمالي تقدّمك">
           <div style={{ height: 220, position: 'relative' }}>
             {isLoading ? (
               <LoadingState />
@@ -169,7 +189,7 @@ export default function StudentDashboardPage() {
                         '#3D6BD6', '#5B3CA8', '#3DD68C', '#F5A623',
                         '#2EC4B6', '#F06292',
                       ],
-                      borderColor: 'var(--surface-1)',
+                      borderColor: '#11131A',
                       borderWidth: 2,
                     },
                   ],
@@ -182,10 +202,9 @@ export default function StudentDashboardPage() {
                     legend: {
                       position: 'bottom',
                       labels: {
-                        color: 'var(--text-muted)',
+                        color: '#9EA4B8',
                         font: { family: 'IBM Plex Sans Arabic', size: 11 },
-                        boxWidth: 8,
-                        boxHeight: 8,
+                        boxWidth: 8, boxHeight: 8,
                         usePointStyle: true,
                         padding: 8,
                       },
@@ -198,8 +217,8 @@ export default function StudentDashboardPage() {
         </Card>
       </div>
 
+      {/* Two-column: progress and today */}
       <div className="grid-2-1">
-        {/* Per-subject progress */}
         <Card title="تقدّمك في كل مادة">
           {isLoading ? (
             <ListSkeleton rows={6} />
@@ -230,7 +249,6 @@ export default function StudentDashboardPage() {
           )}
         </Card>
 
-        {/* Today's plan */}
         <Card title="جدول اليوم" icon={Calendar}>
           <div className="flex-col gap-2">
             <TodayItem time="08:00" name="نظم المعلومات" room="قاعة 301" status="next" />
@@ -240,6 +258,50 @@ export default function StudentDashboardPage() {
           </div>
         </Card>
       </div>
+
+      {/* Top knowledge gaps — links to the matrix */}
+      <Card
+        title="فجواتك المعرفية"
+        subtitle="مفاهيم بحاجة لمراجعة، مع توصيات الفيديوهات المناسبة"
+        icon={Compass}
+        actions={
+          <Link to="/student/matrix" className="btn ghost sm">
+            عرض المصفوفة كاملة
+            <Icon icon={ArrowLeft} size={13} />
+          </Link>
+        }
+      >
+        {gaps.isPending ? (
+          <ListSkeleton rows={3} />
+        ) : gaps.isError ? (
+          <ErrorState />
+        ) : !gaps.data?.length ? (
+          <EmptyState icon={CheckCircle2} title="لا توجد فجوات حالياً — أحسنت!" />
+        ) : (
+          <div className="flex-col gap-2">
+            {gaps.data.slice(0, 3).map((g) => (
+              <div className="list-row" key={g.conceptId}>
+                <span style={{ color: 'var(--warning)' }}>
+                  <Icon icon={AlertCircle} size={16} />
+                </span>
+                <div className="list-row-body">
+                  <div className="list-row-title">{g.conceptName}</div>
+                  <div className="list-row-sub">{g.courseName}</div>
+                </div>
+                <div className="font-mono text-xs" style={{ color: 'var(--warning)' }}>
+                  {Math.round(g.level * 100)}%
+                </div>
+                {g.recommendedLectureId ? (
+                  <Link to={`/student/lectures/${g.recommendedLectureId}`} className="btn outline sm">
+                    <Icon icon={Play} size={13} />
+                    سدّ الفجوة
+                  </Link>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Recent results */}
       <Card title="آخر النتائج" subtitle="الاختبارات والتقييمات المسجَّلة هذا الشهر">
@@ -264,9 +326,11 @@ export default function StudentDashboardPage() {
         </div>
       </Card>
 
-      {/* Notifications strip */}
+      {/* Notifications */}
       <Card title="إشعارات حديثة" icon={Bell} actions={
-        <button type="button" className="btn ghost sm">عرض الكل <Icon icon={ChevronLeft} size={13} /></button>
+        <button type="button" className="btn ghost sm">
+          عرض الكل <Icon icon={ChevronLeft} size={13} />
+        </button>
       }>
         <div className="flex-col gap-2">
           <div className="alert amber">
@@ -295,6 +359,59 @@ export default function StudentDashboardPage() {
           </div>
         </div>
       </Card>
+    </div>
+  );
+}
+
+/* ─── Continue Learning strip ──────────────────────────── */
+function ResumeStrip({
+  mode, progressPct, title, courseName, courseCode, durationSec, courseColor, courseId, lectureId,
+}: {
+  mode: 'continue' | 'start';
+  progressPct: number;
+  title: string;
+  courseName: string;
+  courseCode: string;
+  durationSec: number;
+  courseColor?: string;
+  courseId: string;
+  lectureId: string;
+}) {
+  const Cmp = courseIcon(courseCode);
+  void courseId;
+  return (
+    <div className="resume-strip">
+      <div className="resume-thumb" style={{ background: courseColor ? `${courseColor}20` : 'var(--accent-soft)' }}>
+        <span style={{ color: courseColor ?? 'var(--accent)' }}>
+          <Icon icon={Cmp} size={26} />
+        </span>
+      </div>
+      <div className="resume-info">
+        <div className="resume-eyebrow">
+          {mode === 'continue' ? 'متابعة المشاهدة' : 'ابدأ مادتك التالية'}
+        </div>
+        <div className="resume-title">{title}</div>
+        <div className="resume-meta">
+          <span>{courseName}</span>
+          <span>·</span>
+          <span className="font-mono">{fmtDuration(durationSec)}</span>
+          {mode === 'continue' && (
+            <>
+              <span>·</span>
+              <div className="resume-progress" aria-hidden>
+                <div className="resume-progress-fill" style={{ width: `${progressPct}%` }} />
+              </div>
+              <span className="font-mono text-xxs">{progressPct}%</span>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="resume-cta">
+        <Link to={`/student/lectures/${lectureId}`} className="btn primary">
+          <Icon icon={mode === 'continue' ? Play : PlayCircle} size={14} />
+          {mode === 'continue' ? 'متابعة' : 'ابدأ الآن'}
+        </Link>
+      </div>
     </div>
   );
 }

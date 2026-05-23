@@ -247,3 +247,136 @@ export function useAiChat() {
       unwrap<{ conversationId: string; reply: string }>(api.post('/ai/chat', input)),
   });
 }
+
+
+// ── Educational Matrix ─────────────────────────────────────────
+export interface MatrixCourse {
+  courseId: string;
+  courseCode: string;
+  courseName: string;
+  themeColor?: string | null;
+  offeringId: string;
+  concepts: Array<{ id: string; name: string; level: number; attempts: number }>;
+}
+export function useMatrix() {
+  return useQuery({
+    queryKey: ['me', 'matrix'],
+    queryFn: () => unwrap<MatrixCourse[]>(api.get('/me/matrix')),
+  });
+}
+
+export interface Gap {
+  conceptId: string;
+  conceptName: string;
+  courseId: string;
+  courseName: string;
+  courseColor?: string | null;
+  level: number;
+  recommendedLectureId: string | null;
+  recommendedLectureTitle: string | null;
+}
+export function useGaps() {
+  return useQuery({
+    queryKey: ['me', 'gaps'],
+    queryFn: () => unwrap<Gap[]>(api.get('/me/gaps')),
+  });
+}
+
+// ── Resume learning ────────────────────────────────────────────
+export interface ResumeLecture {
+  mode: 'continue' | 'start';
+  progressPct: number;
+  watchedSec: number;
+  lecture: {
+    id: string;
+    title: string;
+    durationSec: number;
+    ordinal: number;
+    course: { id: string; name: string; code: string; themeColor?: string | null };
+    offeringId: string;
+  };
+}
+export function useResume() {
+  return useQuery({
+    queryKey: ['me', 'resume'],
+    queryFn: () => unwrap<ResumeLecture | null>(api.get('/me/resume')),
+  });
+}
+
+// ── Lectures ───────────────────────────────────────────────────
+export interface Lecture {
+  id: string;
+  offeringId: string;
+  title: string;
+  description?: string | null;
+  ordinal: number;
+  durationSec: number;
+  videoUrl: string;
+  posterUrl?: string | null;
+  createdAt: string;
+  _count?: { chapters: number; checkpoints: number };
+  watchEvents?: Array<{ watchedSec: number; totalSec: number; completed: boolean }>;
+}
+export function useOfferingLectures(offeringId: string | undefined) {
+  return useQuery({
+    queryKey: ['offerings', offeringId, 'lectures'],
+    queryFn: () => unwrap<Lecture[]>(api.get(`/offerings/${offeringId}/lectures`)),
+    enabled: Boolean(offeringId),
+  });
+}
+
+export interface LectureChapter {
+  id: string;
+  title: string;
+  startSec: number;
+  endSec: number;
+  ordinal: number;
+  conceptId: string | null;
+  concept: { id: string; name: string } | null;
+}
+export interface LectureCheckpoint {
+  id: string;
+  triggerSec: number;
+  question: string;
+  options: string[];
+  conceptId: string | null;
+}
+export interface LectureDetail extends Lecture {
+  chapters: LectureChapter[];
+  checkpoints: LectureCheckpoint[];
+  offering: {
+    id: string;
+    course: { id: string; name: string; code: string; themeColor?: string | null };
+    teacher: { id: string; firstName: string; lastName: string };
+  };
+}
+export function useLecture(lectureId: string | undefined) {
+  return useQuery({
+    queryKey: ['lectures', lectureId],
+    queryFn: () => unwrap<LectureDetail>(api.get(`/lectures/${lectureId}`)),
+    enabled: Boolean(lectureId),
+  });
+}
+export function useReportWatch() {
+  return useMutation({
+    mutationFn: (input: { lectureId: string; watchedSec: number; totalSec: number; completed?: boolean }) =>
+      unwrap(
+        api.post(`/lectures/${input.lectureId}/watch`, {
+          watchedSec: input.watchedSec,
+          totalSec: input.totalSec,
+          completed: input.completed,
+        }),
+      ),
+  });
+}
+export function useAnswerCheckpoint() {
+  return useMutation({
+    mutationFn: (input: { lectureId: string; checkpointId: string; answerIndex: number }) =>
+      unwrap<{ correct: boolean; correctIndex: number; explanation?: string }>(
+        api.post(
+          `/lectures/${input.lectureId}/checkpoints/${input.checkpointId}/answer`,
+          { answerIndex: input.answerIndex },
+        ),
+      ),
+  });
+}

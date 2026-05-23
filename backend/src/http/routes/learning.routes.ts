@@ -138,6 +138,83 @@ router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), as
 // ════════════════════════════════════════════════════════════════
 // Educational Matrix (per-student)
 // ════════════════════════════════════════════════════════════════
+router.get('/me/resume', async (req, res, next) => {
+  try {
+    if (req.user!.role !== Role.STUDENT) {
+      res.json({ data: null });
+      return;
+    }
+
+    // 1. Most-recently-watched, not yet completed lecture takes priority.
+    const recent = await prisma.watchEvent.findFirst({
+      where: { studentId: req.user!.id, completed: false },
+      orderBy: { lastSeenAt: 'desc' },
+      include: {
+        lecture: {
+          include: {
+            offering: { include: { course: { select: { id: true, name: true, code: true, themeColor: true } } } },
+          },
+        },
+      },
+    });
+    if (recent) {
+      const pct = recent.totalSec > 0 ? Math.round((recent.watchedSec / recent.totalSec) * 100) : 0;
+      res.json({
+        data: {
+          mode: 'continue',
+          progressPct: pct,
+          watchedSec: recent.watchedSec,
+          lecture: {
+            id: recent.lecture.id,
+            title: recent.lecture.title,
+            durationSec: recent.lecture.durationSec,
+            ordinal: recent.lecture.ordinal,
+            course: recent.lecture.offering.course,
+            offeringId: recent.lecture.offeringId,
+          },
+        },
+      });
+      return;
+    }
+
+    // 2. No in-progress: first lecture of an enrolled offering with lectures.
+    const enrollments = await prisma.enrollment.findMany({
+      where: { studentId: req.user!.id },
+      include: {
+        offering: {
+          include: {
+            course: { select: { id: true, name: true, code: true, themeColor: true } },
+            lectures: { orderBy: { ordinal: 'asc' }, take: 1 },
+          },
+        },
+      },
+    });
+    for (const e of enrollments) {
+      const lec = e.offering.lectures[0];
+      if (lec) {
+        res.json({
+          data: {
+            mode: 'start',
+            progressPct: 0,
+            watchedSec: 0,
+            lecture: {
+              id: lec.id,
+              title: lec.title,
+              durationSec: lec.durationSec,
+              ordinal: lec.ordinal,
+              course: e.offering.course,
+              offeringId: e.offering.id,
+            },
+          },
+        });
+        return;
+      }
+    }
+    res.json({ data: null });
+  } catch (e) { next(e); }
+});
+
+
 router.get('/me/matrix', async (req, res, next) => {
   try {
     if (req.user!.role !== Role.STUDENT) {
