@@ -1,29 +1,245 @@
 /* ═════════════════════════════════════════════════════════════
-   Madarek AI — Design tokens
-   These are an EXACT copy of the variables from the original
-   prototype. Do not change values without explicit design review.
+
+   Madarek AI — Updated Design Tokens
+
+   Professional, elegant color palette with improved readability
+
+   and modern aesthetic for academic platform
+
    ───────────────────────────────────────────────────────────── */
+
 :root {
-  --bg: #0A0E1A;
-  --bg2: #0F1525;
-  --bg3: #151C30;
-  --surface: #1A2340;
-  --surface2: #1F2A4A;
-  --border: rgba(255, 255, 255, 0.07);
-  --border2: rgba(255, 255, 255, 0.12);
-  --text: #F0F2F8;
-  --text2: #8A92B0;
-  --text3: #525A78;
-  --accent: #4F8EF7;
-  --accent2: #2D6ADF;
-  --green: #3DD68C;
-  --amber: #F5A623;
-  --red: #F55353;
-  --purple: #9B6FE8;
-  --teal: #2EC4B6;
-  --pink: #F06292;
-  --r: 10px;
+   
+  /* ── Background Colors ── */
+   
+  --bg: #FAFBFC;
+   
+  --bg2: #F5F7FA;
+   
+  --bg3: #EEF1F6;
+   
+  --surface: #FFFFFF;
+   
+  --surface2: #F8FAFC;
+   
+
+   
+  /* ── Border Colors ── */
+   
+  --border: rgba(15, 23, 42, 0.08);
+   
+  --border2: rgba(15, 23, 42, 0.12);
+   
+
+   
+  /* ── Text Colors ── */
+   
+  --text: #0F172A;
+   
+  --text2: #64748B;
+   
+  --text3: #94A3B8;
+   
+
+   
+  /* ── Primary Accent (Professional Blue) ── */
+   
+  --accent: #2563EB;
+   
+  --accent2: #1D4ED8;
+   
+  --accent-light: #EFF6FF;
+   
+
+   
+  /* ── Secondary Colors ── */
+   
+  --green: #10B981;
+   
+  --green-light: #ECFDF5;
+   
+  --amber: #F59E0B;
+   
+  --amber-light: #FFFBEB;
+   
+  --red: #EF4444;
+   
+  --red-light: #FEE2E2;
+   
+
+   
+  /* ── Accent Colors ── */
+   
+  --teal: #14B8A6;
+   
+  --indigo: #6366F1;
+   
+  --purple: #8B5CF6;
+   
+
+   
+  /* ── Border Radius ── */
+   
+  --r: 8px;
+   
   --r-sm: 6px;
-  --r-lg: 16px;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+   
+  --r-lg: 12px;
+   
+
+   
+  /* ── Shadows ── */
+   
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+   
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+   
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+   
+
+   
+  /* ── Transitions ── */
+   
+  --transition: all 0.2s ease;
+   
 }
+
+
+
+/* ── Light Mode (Default) ── */
+
+@media (prefers-color-scheme: light) {
+   
+  :root {
+     
+    --bg: #FAFBFC;
+     
+    --bg2: #F5F7FA;
+     
+    --bg3: #EEF1F6;
+     
+    --surface: #FFFFFF;
+     
+    --surface2: #F8FAFC;
+     
+    --border: rgba(15, 23, 42, 0.08);
+     
+    --border2: rgba(15, 23, 42, 0.12);
+     
+    --text: #0F172A;
+     
+    --text2: #64748B;
+     
+    --text3: #94A3B8;
+     
+  }
+   
+}
+
+
+
+/* ── Dark Mode (Optional) ── */
+
+@media (prefers-color-scheme: dark) {
+   
+  :root {
+     
+    --bg: #0F172A;
+     
+    --bg2: #1E293B;
+     
+    --bg3: #334155;
+     
+    --surface: #1E293B;
+     
+    --surface2: #334155;
+     
+    --border: rgba(255, 255, 255, 0.08);
+     
+    --border2: rgba(255, 255, 255, 0.12);
+     
+    --text: #F1F5F9;
+     
+    --text2: #CBD5E1;
+     
+    --text3: #94A3B8;
+     
+  }
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
