@@ -10,6 +10,9 @@ import LibraryPage from './pages/student/LibraryPage';
 import MoocPage from './pages/student/MoocPage';
 import JobsPage from './pages/student/JobsPage';
 import AiAssistantPage from './pages/student/AiAssistantPage';
+import CourseDetailPage from './pages/student/CourseDetailPage';
+import LecturePlayerPage from './pages/student/LecturePlayerPage';
+import MatrixPage from './pages/student/MatrixPage';
 import {
   GamificationPage, SkillsPage, AlertsPage, SchedulePage, ResultsPage,
   LabsPage, ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
@@ -62,8 +65,11 @@ export default function App() {
               <Route path="/student/social" element={<SocialPage />} />
               <Route path="/student/downloads" element={<DownloadsPage />} />
               <Route path="/student/university" element={<UniversityInfoPage />} />
-              {/* Phase-3 placeholders that will get real pages soon */}
-              <Route path="/student/matrix" element={<UniversityInfoPage />} />
+              {/* Course detail + lectures */}
+              <Route path="/student/courses/:offeringId" element={<CourseDetailPage />} />
+              <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />
+              {/* Educational Matrix */}
+              <Route path="/student/matrix" element={<MatrixPage />} />
               <Route path="/student/research" element={<UniversityInfoPage />} />
             </Route>
           </Route>

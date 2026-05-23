@@ -16,6 +16,8 @@ router.use(authMiddleware);
 function decToNum<T>(o: T): T {
   if (o === null || o === undefined) return o;
   if (typeof o === 'object') {
+    // Pass-through for native types we shouldn't traverse.
+    if (o instanceof Date) return o;
     if (Array.isArray(o)) return o.map(decToNum) as never;
     const obj = o as unknown as { toNumber?: () => number; constructor?: { name?: string } };
     if (typeof obj.toNumber === 'function' && obj.constructor?.name === 'Decimal') {
@@ -31,6 +33,39 @@ function decToNum<T>(o: T): T {
 // ════════════════════════════════════════════════════════════════
 // Lectures (per offering)
 // ════════════════════════════════════════════════════════════════
+router.get('/offerings/:id/full', async (req, res, next) => {
+  try {
+    const id = req.params.id!;
+    const offering = await prisma.courseOffering.findUnique({
+      where: { id },
+      include: {
+        course: { include: { department: { include: { faculty: true } } } },
+        teacher: { select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
+        schedule: true,
+        materials: { orderBy: { createdAt: 'desc' }, take: 10 },
+        assignments: { orderBy: { dueAt: 'asc' } },
+        lectures: {
+          orderBy: { ordinal: 'asc' },
+          include: {
+            _count: { select: { chapters: true, checkpoints: true } },
+            watchEvents: req.user!.role === Role.STUDENT
+              ? { where: { studentId: req.user!.id }, take: 1 }
+              : false,
+          },
+        },
+        _count: { select: { enrollments: true } },
+      },
+    });
+    if (!offering) throw AppError.notFound();
+    // Replace BigInt material sizes with strings for JSON compatibility.
+    const safe = {
+      ...offering,
+      materials: offering.materials.map((m) => ({ ...m, sizeBytes: m.sizeBytes.toString() })),
+    };
+    res.json({ data: decToNum(safe) });
+  } catch (e) { next(e); }
+});
+
 router.get('/offerings/:id/lectures', async (req, res, next) => {
   try {
     const offeringId = req.params.id!;

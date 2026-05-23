@@ -23,6 +23,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/student/alerts': 'الإشعارات',
   '/student/downloads': 'مركز التحميلات',
   '/student/university': 'جامعة الزاوية',
+  '/student/matrix': 'المصفوفة التعليمية',
+  '/student/research': 'بحوثي العلمية',
   '/teacher/dashboard': 'لوحة الأستاذ',
   '/teacher/schedule': 'جدول المحاضرات',
   '/teacher/attendance': 'الحضور والغياب',

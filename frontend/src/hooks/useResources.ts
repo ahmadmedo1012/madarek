@@ -380,3 +380,34 @@ export function useAnswerCheckpoint() {
       ),
   });
 }
+
+
+// ── Course offering detail (full) ──────────────────────────────
+export interface OfferingFull {
+  id: string;
+  term: string;
+  room?: string | null;
+  course: {
+    id: string;
+    name: string;
+    code: string;
+    iconEmoji?: string | null;
+    themeColor?: string | null;
+    description?: string | null;
+    credits: number;
+    department: { id: string; name: string; faculty: { id: string; name: string } };
+  };
+  teacher: { id: string; firstName: string; lastName: string; avatarInitials?: string | null; avatarColor?: string | null };
+  schedule: Array<{ id: string; dayOfWeek: number; startTime: string; endTime: string; room?: string | null }>;
+  materials: Array<{ id: string; name: string; type: string; sizeBytes: string; createdAt: string }>;
+  assignments: Array<{ id: string; title: string; type: string; dueAt: string; weight: number; maxScore: number }>;
+  lectures: Array<Lecture & { _count: { chapters: number; checkpoints: number } }>;
+  _count: { enrollments: number };
+}
+export function useOfferingFull(offeringId: string | undefined) {
+  return useQuery({
+    queryKey: ['offerings', offeringId, 'full'],
+    queryFn: () => unwrap<OfferingFull>(api.get(`/offerings/${offeringId}/full`)),
+    enabled: Boolean(offeringId),
+  });
+}

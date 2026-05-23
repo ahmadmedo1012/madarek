@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import {
   BookOpen, CheckCircle2, Clock, AlertTriangle, ClipboardList,
   Cog, Cpu, Database, Network, Globe, Shield,
@@ -73,7 +74,7 @@ export default function StudentCoursesPage() {
             const Cmp = courseIcon(c.code ?? c.name);
             const tint = c.themeColor ?? '#3D6BD6';
             return (
-              <div className="thumb-card" key={e.id}>
+              <Link to={`/student/courses/${e.offering.id}`} className="thumb-card" key={e.id}>
                 <div className="thumb-card-image" style={{ background: `${tint}10` }}>
                   <span style={{ color: tint }}>
                     <Icon icon={Cmp} size={28} strokeWidth={1.6} />
@@ -86,7 +87,7 @@ export default function StudentCoursesPage() {
                     <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
