@@ -1,7 +1,21 @@
-import { GraduationCap, Award, Users2, Clock } from 'lucide-react';
+import {
+  GraduationCap, Award, Users2, Clock, Star,
+  Code, Database, Palette, Languages, Briefcase,
+  type LucideIcon,
+} from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
+import { Icon } from '../../components/Icon';
 import { useMoocs } from '../../hooks/useResources';
+
+const moocIcon = (cat: string): LucideIcon => {
+  if (cat === 'prog') return Code;
+  if (cat === 'data' || cat === 'db') return Database;
+  if (cat === 'design') return Palette;
+  if (cat === 'lang') return Languages;
+  if (cat === 'business') return Briefcase;
+  return GraduationCap;
+};
 
 export default function MoocPage() {
   const { data, isPending, isError } = useMoocs();
@@ -22,38 +36,37 @@ export default function MoocPage() {
         <Card><EmptyState icon={GraduationCap} title="لا توجد كورسات متاحة حالياً" /></Card>
       ) : (
         <div className="grid-3">
-          {data.map((m) => (
-            <div className="thumb-card" key={m.id}>
-              <div
-                className="thumb-card-image"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(90,156,255,.18), rgba(155,111,232,.08))',
-                  height: 110,
-                }}
-              >
-                {m.iconEmoji ?? '🎓'}
-              </div>
-              <div className="thumb-card-body">
-                <div className="thumb-card-title">{m.title}</div>
-                <div className="text-xs text-accent">{m.organization}</div>
-
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <Badge color="blue" icon={Clock}>{m.durationHours} ساعة</Badge>
-                  <Badge color="purple">{m.level}</Badge>
-                  {m.hasCertificate && <Badge color="amber" icon={Award}>شهادة</Badge>}
-                </div>
-
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-amber text-xs font-mono">★ {m.rating}</span>
-                  <span className="text-xs text-subtle flex items-center gap-1">
-                    <Users2 size={12} /> {m.enrolled.toLocaleString('ar-LY')}
+          {data.map((m) => {
+            const Cmp = moocIcon(m.category);
+            return (
+              <div className="thumb-card" key={m.id}>
+                <div className="thumb-card-image" style={{ background: 'var(--accent-soft)', height: 96 }}>
+                  <span style={{ color: 'var(--accent)' }}>
+                    <Icon icon={Cmp} size={32} strokeWidth={1.6} />
                   </span>
                 </div>
+                <div className="thumb-card-body">
+                  <div className="thumb-card-title">{m.title}</div>
+                  <div className="thumb-card-sub">{m.organization}</div>
 
-                <button type="button" className="btn primary mt-3 w-full">سجّل الآن</button>
+                  <div className="flex items-center gap-3 text-xs text-subtle font-mono" style={{ marginTop: 'var(--sp-2)' }}>
+                    <span className="flex items-center gap-1"><Icon icon={Clock} size={12} /> {m.durationHours}س</span>
+                    <span className="flex items-center gap-1"><Icon icon={Star} size={12} strokeWidth={2.2} /> {m.rating}</span>
+                    <span className="flex items-center gap-1"><Icon icon={Users2} size={12} /> {m.enrolled.toLocaleString('ar-LY')}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
+                    <Badge>{m.level}</Badge>
+                    {m.hasCertificate && <Badge color="gold" icon={Award}>شهادة</Badge>}
+                  </div>
+
+                  <button type="button" className="btn primary" style={{ width: '100%', marginTop: 'var(--sp-3)' }}>
+                    سجّل الآن
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, MessageCircle, Sparkles, BadgeCheck } from 'lucide-react';
-import { Card, Badge, UserAvatar } from '../../components/primitives';
+import { Bot, Send, Sparkles, BadgeCheck, type LucideIcon } from 'lucide-react';
+import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useAiChat } from '../../hooks/useResources';
@@ -9,16 +9,20 @@ interface ChatMsg { role: 'bot' | 'user'; text: string }
 
 const SUGGESTIONS = [
   'كيف أحسّن درجتي في الذكاء الاصطناعي؟',
-  'شرح خوارزمية الفرز السريع',
+  'اشرح لي خوارزمية الفرز السريع',
   'ما الفرق بين SQL و NoSQL؟',
   'نصائح لإدارة الوقت أثناء الامتحانات',
+  'كيف أبني محفظة مشاريع قوية؟',
 ];
 
-const EXPERTS = [
-  { name: 'د. خالد المبروك', dept: 'نظم المعلومات', initials: 'خم', color: '#5A9CFF' },
-  { name: 'د. سالم الشريف', dept: 'الذكاء الاصطناعي', initials: 'سش', color: '#9B6FE8' },
-  { name: 'د. فاطمة العجيلي', dept: 'قواعد البيانات', initials: 'فع', color: '#3DD68C' },
+const EXPERTS: Array<{ name: string; dept: string; initials: string; }> = [
+  { name: 'د. خالد المبروك', dept: 'نظم المعلومات', initials: 'خم' },
+  { name: 'د. سالم الشريف', dept: 'الذكاء الاصطناعي', initials: 'سش' },
+  { name: 'د. فاطمة العجيلي', dept: 'قواعد البيانات', initials: 'فع' },
+  { name: 'د. عياض الهنقاري', dept: 'هندسة البرمجيات', initials: 'عه' },
 ];
+
+type Side = 'suggestions' | 'experts';
 
 export default function AiAssistantPage() {
   const user = useAuthStore((s) => s.user);
@@ -28,10 +32,11 @@ export default function AiAssistantPage() {
     {
       role: 'bot',
       text:
-        'مرحباً! أنا مساعدك الدراسي الذكي. يمكنني مساعدتك في شرح المحاضرات، الإجابة على أسئلتك الأكاديمية، وتحليل أدائك. كيف أستطيع مساعدتك اليوم؟',
+        'مرحباً! أنا مساعدك الدراسي الذكي. يمكنني شرح المحاضرات، مراجعة الواجبات، أو اقتراح خطة دراسة بناءً على أدائك. كيف أساعدك اليوم؟',
     },
   ]);
   const [input, setInput] = useState('');
+  const [side, setSide] = useState<Side>('suggestions');
   const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,7 +53,7 @@ export default function AiAssistantPage() {
       setConversationId(res.conversationId);
       setMessages((m) => [...m, { role: 'bot', text: res.reply }]);
     } catch {
-      setMessages((m) => [...m, { role: 'bot', text: '⚠️ تعذّر الاتصال بالمساعد الآن. حاول لاحقاً.' }]);
+      setMessages((m) => [...m, { role: 'bot', text: 'تعذّر الاتصال بالمساعد الآن. حاول لاحقاً.' }]);
     }
   };
 
@@ -58,21 +63,21 @@ export default function AiAssistantPage() {
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">المساعد الدراسي الذكي</h1>
-          <p className="page-subtitle">اطرح سؤالاً أكاديمياً، اطلب شرحاً، أو احصل على نصيحة دراسية مخصصة.</p>
+          <h1 className="page-title">المساعد الذكي</h1>
+          <p className="page-subtitle">اطرح سؤالاً أكاديمياً، اطلب شرحاً، أو احصل على توصية دراسية.</p>
         </div>
-        <Badge color="purple" icon={Sparkles}>AI</Badge>
+        <Badge color="gold" icon={Sparkles}>AI</Badge>
       </div>
 
       <div className="grid-2-1">
-        <Card icon={Bot} title="محادثة جديدة" subtitle="مدعوم بنماذج تعليمية متخصصة">
+        <Card title="محادثة جديدة" icon={Bot}>
           <div className="chat-area" ref={scroller}>
             {messages.map((m, i) => (
               <div key={i} className={`chat-msg ${m.role}`}>
                 {m.role === 'bot' ? (
                   <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
                 ) : (
-                  <UserAvatar initials={initials} size={30} color="var(--surface-2)" />
+                  <UserAvatar initials={initials} size={28} color="var(--surface-3)" />
                 )}
                 <div className="chat-bubble">{m.text}</div>
               </div>
@@ -81,7 +86,7 @@ export default function AiAssistantPage() {
               <div className="chat-msg bot">
                 <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
                 <div className="chat-bubble">
-                  <span className="text-subtle">جارٍ التفكير…</span>
+                  <span style={{ color: 'var(--text-subtle)' }}>جارٍ التفكير…</span>
                 </div>
               </div>
             )}
@@ -90,7 +95,7 @@ export default function AiAssistantPage() {
           <div className="chat-input-row">
             <input
               className="chat-input"
-              placeholder="اكتب سؤالك هنا…"
+              placeholder="اكتب سؤالك…"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') void send(); }}
@@ -103,13 +108,22 @@ export default function AiAssistantPage() {
               disabled={!input.trim() || chat.isPending}
               aria-label="إرسال"
             >
-              <Icon icon={Send} size={16} />
+              <Icon icon={Send} size={15} />
             </button>
           </div>
         </Card>
 
-        <div className="flex-col gap-4">
-          <Card icon={MessageCircle} title="أسئلة مقترحة">
+        <Card title={side === 'suggestions' ? 'أسئلة مقترحة' : 'خبراء متاحون'} actions={
+          <Tabs<Side>
+            value={side}
+            onChange={setSide}
+            items={[
+              { value: 'suggestions', label: 'مقترحة' },
+              { value: 'experts', label: 'الخبراء' },
+            ]}
+          />
+        }>
+          {side === 'suggestions' ? (
             <div className="flex-col gap-2">
               {SUGGESTIONS.map((q) => (
                 <button
@@ -117,30 +131,28 @@ export default function AiAssistantPage() {
                   type="button"
                   onClick={() => void send(q)}
                   className="list-row"
-                  style={{ textAlign: 'right', cursor: 'pointer' }}
+                  style={{ textAlign: 'right', cursor: 'pointer', border: 0, background: 'transparent' }}
                 >
                   <Icon icon={Sparkles} size={14} />
-                  <span className="list-row-body text-sm">{q}</span>
+                  <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>
                 </button>
               ))}
             </div>
-          </Card>
-
-          <Card icon={BadgeCheck} title="اسأل خبيراً">
+          ) : (
             <div className="flex-col gap-2">
               {EXPERTS.map((e) => (
                 <div className="list-row" key={e.name}>
-                  <UserAvatar initials={e.initials} color={e.color} size={32} />
+                  <UserAvatar initials={e.initials} size={32} />
                   <div className="list-row-body">
                     <div className="list-row-title">{e.name}</div>
                     <div className="list-row-sub">{e.dept}</div>
                   </div>
-                  <Badge color="green">متاح</Badge>
+                  <Badge color="green" icon={BadgeCheck}>متاح</Badge>
                 </div>
               ))}
             </div>
-          </Card>
-        </div>
+          )}
+        </Card>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 /* ═════════════════════════════════════════════════════════════
-   Utility classes — used to remove inline styles in pages.
-   Tiny on purpose: only what the app actually uses.
+   Utility classes — minimal, used to remove inline styles.
    ───────────────────────────────────────────────────────────── */
 
 /* Layout */
@@ -15,8 +14,9 @@
 .justify-center { justify-content: center; }
 .justify-end { justify-content: flex-end; }
 .shrink-0 { flex-shrink: 0; }
+.grow { flex-grow: 1; }
 
-/* Gap (4-px step) */
+/* Gap */
 .gap-1 { gap: var(--sp-1); }
 .gap-2 { gap: var(--sp-2); }
 .gap-3 { gap: var(--sp-3); }
@@ -24,7 +24,7 @@
 .gap-5 { gap: var(--sp-5); }
 .gap-6 { gap: var(--sp-6); }
 
-/* Margin top utilities (used sparingly) */
+/* Margin */
 .mt-1 { margin-top: var(--sp-1); }
 .mt-2 { margin-top: var(--sp-2); }
 .mt-3 { margin-top: var(--sp-3); }
@@ -36,13 +36,14 @@
 .mb-4 { margin-bottom: var(--sp-4); }
 .mb-6 { margin-bottom: var(--sp-6); }
 
-/* Width helpers */
+/* Width */
 .w-full { width: 100%; }
 .max-w-md { max-width: 480px; }
+
+/* Text */
 .text-center { text-align: center; }
 .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* Typography helpers */
+.text-xxs { font-size: var(--fs-xxs); }
 .text-xs { font-size: var(--fs-xs); }
 .text-sm { font-size: var(--fs-sm); }
 .text-base { font-size: var(--fs-base); }
@@ -53,15 +54,15 @@
 .font-medium { font-weight: var(--fw-medium); }
 .font-semibold { font-weight: var(--fw-semibold); }
 .font-bold { font-weight: var(--fw-bold); }
-.font-mono { font-family: var(--font-mono); }
+.font-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .text-muted { color: var(--text-muted); }
 .text-subtle { color: var(--text-subtle); }
 .text-accent { color: var(--accent); }
-.text-green { color: var(--green); }
-.text-amber { color: var(--amber); }
-.text-red { color: var(--red); }
+.text-green { color: var(--success); }
+.text-amber { color: var(--warning); }
+.text-red { color: var(--danger); }
 
-/* Hide / show responsive */
+/* Responsive show/hide */
 .hide-on-mobile { display: initial; }
 .show-on-mobile { display: none; }
 @media (max-width: 600px) {

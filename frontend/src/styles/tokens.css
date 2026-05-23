@@ -1,49 +1,17 @@
 /* ═════════════════════════════════════════════════════════════
    Madarek AI — Design Tokens
-   Single source of truth for the entire UI.
+   Single source of truth. Themed via [data-theme="dark"|"light"].
+   No legacy aliases; every component reads these tokens directly.
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Background layers (polished darks, more depth) ─── */
-  --bg: #07090F;
-  --bg-1: #0B0F1B;
-  --bg-2: #0F1525;
-  --surface-1: #131A2D;
-  --surface-2: #1A2340;
-  --surface-3: #1F2A4A;
-  --surface-hover: #1F2A4A;
+  /* ── Brand (mode-invariant) ───────────────────────────── */
+  --brand-blue: #2952C8;
+  --brand-blue-deep: #1E3A8A;
+  --brand-purple: #5B3CA8;
+  --brand-gold: #D4A537;
 
-  /* ── Borders ─── */
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.10);
-  --border-accent: rgba(79, 142, 247, 0.35);
-
-  /* ── Text ─── */
-  --text: #F2F4FA;
-  --text-muted: #A0A8C2;
-  --text-subtle: #6A7290;
-  --text-disabled: #424A66;
-
-  /* ── Accent palette (kept from prototype) ─── */
-  --accent: #5A9CFF;
-  --accent-hover: #4080E8;
-  --accent-soft: rgba(90, 156, 255, 0.12);
-  --accent-soft-strong: rgba(90, 156, 255, 0.22);
-
-  --green: #3DD68C;
-  --green-soft: rgba(61, 214, 140, 0.12);
-  --amber: #F5A623;
-  --amber-soft: rgba(245, 166, 35, 0.12);
-  --red: #F55353;
-  --red-soft: rgba(245, 83, 83, 0.12);
-  --purple: #9B6FE8;
-  --purple-soft: rgba(155, 111, 232, 0.12);
-  --teal: #2EC4B6;
-  --teal-soft: rgba(46, 196, 182, 0.12);
-  --pink: #F06292;
-  --pink-soft: rgba(240, 98, 146, 0.12);
-
-  /* ── Spacing scale (4px base) ─── */
+  /* ── Spacing (4-px scale) ─────────────────────────────── */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
@@ -56,75 +24,152 @@
   --sp-12: 48px;
   --sp-16: 64px;
 
-  /* ── Radius scale ─── */
+  /* ── Radius ───────────────────────────────────────────── */
   --r-xs: 4px;
   --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --r-xl: 20px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
   --r-full: 9999px;
 
-  /* Legacy aliases used by earlier files — keep so we don't break anything */
-  --r: 10px;
-
-  /* ── Typography scale ─── */
-  --fs-xxs: 10px;
-  --fs-xs: 11px;
-  --fs-sm: 12px;
-  --fs-base: 13px;
-  --fs-md: 14px;
-  --fs-lg: 16px;
-  --fs-xl: 19px;
+  /* ── Typography ───────────────────────────────────────── */
+  --fs-xxs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 14px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
   --fs-2xl: 24px;
   --fs-3xl: 30px;
-  --fs-4xl: 40px;
 
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  --lh-tight: 1.25;
+  --lh-tight: 1.2;
   --lh-snug: 1.4;
-  --lh-base: 1.6;
-  --lh-loose: 1.75;
+  --lh-base: 1.55;
+  --lh-loose: 1.7;
 
-  /* ── Shadows tuned for the dark surface ─── */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.30);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.45);
-  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.55);
-  --shadow-glow: 0 0 0 1px var(--border-accent), 0 8px 28px rgba(79, 142, 247, 0.18);
-
-  /* ── Motion ─── */
+  /* ── Motion ──────────────────────────────────────────── */
   --t-fast: 120ms;
   --t-base: 180ms;
   --t-slow: 280ms;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-spring: cubic-bezier(0.16, 1.36, 0.32, 1);
 
-  /* ── Layout ─── */
-  --sidebar-w: 256px;
-  --topbar-h: 60px;
-  --content-max-w: 1440px;
-  --focus-ring: 0 0 0 3px var(--accent-soft-strong);
+  /* ── Layout ──────────────────────────────────────────── */
+  --sidebar-w: 244px;
+  --sidebar-w-collapsed: 64px;
+  --topbar-h: 56px;
+  --content-max-w: 1400px;
 
-  /* ── Fonts ─── */
-  --font-sans: 'IBM Plex Sans Arabic', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Space Mono', 'JetBrains Mono', ui-monospace, monospace;
+  /* ── Fonts ───────────────────────────────────────────── */
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
 
-  /* legacy aliases mapped to new tokens (so older components still work) */
-  --bg2: var(--bg-1);
-  --bg3: var(--bg-2);
-  --surface: var(--surface-1);
-  --surface2: var(--surface-2);
-  --border2: var(--border-strong);
-  --text2: var(--text-muted);
-  --text3: var(--text-subtle);
-  --accent2: var(--accent-hover);
-  --shadow: var(--shadow-md);
-  --r-lg-legacy: var(--r-lg);
+/* ═════════════════════════════════════════════════════════════
+   DARK THEME (default)
+   ═════════════════════════════════════════════════════════════ */
+:root,
+[data-theme='dark'] {
+  /* Surfaces */
+  --bg: #0A0B0F;
+  --surface-1: #11131A;
+  --surface-2: #181B25;
+  --surface-3: #1F2330;
+
+  /* Borders / hairlines */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  /* Text */
+  --text: #E7E9EE;
+  --text-muted: #9EA4B8;
+  --text-subtle: #6A7088;
+
+  /* Accent */
+  --accent: #3D6BD6;
+  --accent-hover: #5982E1;
+  --accent-soft: rgba(61, 107, 214, 0.14);
+  --accent-fg: #FFFFFF;
+
+  /* Gold (sparing, premium accent) */
+  --gold: #D4A537;
+  --gold-soft: rgba(212, 165, 55, 0.12);
+
+  /* Semantic */
+  --success: #3DD68C;
+  --success-soft: rgba(61, 214, 140, 0.10);
+  --warning: #F5A623;
+  --warning-soft: rgba(245, 166, 35, 0.10);
+  --danger: #F55353;
+  --danger-soft: rgba(245, 83, 83, 0.10);
+  --info: #5B6FE0;
+  --info-soft: rgba(91, 111, 224, 0.10);
+
+  /* Shadows (heavier, depth-on-dark) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.6);
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgba(61, 107, 214, 0.35);
+
+  /* Selection */
+  --selection-bg: rgba(61, 107, 214, 0.35);
+
+  /* Chart palette (used only by Chart.js — not for UI) */
+  --chart-grid: rgba(255, 255, 255, 0.05);
+  --chart-text: #6A7088;
+}
+
+/* ═════════════════════════════════════════════════════════════
+   LIGHT THEME — premium, restrained, NOT pure white
+   ═════════════════════════════════════════════════════════════ */
+[data-theme='light'] {
+  --bg: #F7F8FA;
+  --surface-1: #FFFFFF;
+  --surface-2: #F2F4F8;
+  --surface-3: #E8ECF2;
+
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.14);
+
+  --text: #0F172A;
+  --text-muted: #475569;
+  --text-subtle: #8694AC;
+
+  --accent: #2952C8;
+  --accent-hover: #1E3FA5;
+  --accent-soft: rgba(41, 82, 200, 0.10);
+  --accent-fg: #FFFFFF;
+
+  --gold: #B8861E;
+  --gold-soft: rgba(184, 134, 30, 0.10);
+
+  --success: #15803D;
+  --success-soft: rgba(21, 128, 61, 0.08);
+  --warning: #B45309;
+  --warning-soft: rgba(180, 83, 9, 0.08);
+  --danger: #B91C1C;
+  --danger-soft: rgba(185, 28, 28, 0.08);
+  --info: #1D4ED8;
+  --info-soft: rgba(29, 78, 216, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 36px rgba(15, 23, 42, 0.10);
+  --shadow-xl: 0 24px 60px rgba(15, 23, 42, 0.16);
+
+  --focus-ring: 0 0 0 3px rgba(41, 82, 200, 0.20);
+  --selection-bg: rgba(41, 82, 200, 0.18);
+
+  --chart-grid: rgba(15, 23, 42, 0.06);
+  --chart-text: #8694AC;
 }
 
 @media (prefers-reduced-motion: reduce) {

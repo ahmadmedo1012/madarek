@@ -1,0 +1,122 @@
+import {
+  LayoutDashboard, Calendar, BookOpen, BarChart3, Download,
+  Bot, Library, Trophy, Target, FlaskConical,
+  Globe, GraduationCap, Briefcase, Bell, Building2,
+  Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
+  ClipboardList, MessageSquare, Microscope, School,
+  FileText, Settings,
+  type LucideIcon,
+} from 'lucide-react';
+import type { AppRole } from '../stores/auth.store';
+
+export interface NavItem {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  badge?: { text: string; tone?: 'brand' | 'gold' | 'default' };
+}
+export interface NavGroup { label: string; items: NavItem[]; }
+
+export const STUDENT_NAV: NavGroup[] = [
+  {
+    label: 'الرئيسية',
+    items: [
+      { to: '/student/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم' },
+      { to: '/student/schedule', icon: Calendar, label: 'الجدول الدراسي' },
+      { to: '/student/courses', icon: BookOpen, label: 'مواد مسجلة' },
+      { to: '/student/results', icon: BarChart3, label: 'النتائج والتقييمات' },
+      { to: '/student/downloads', icon: Download, label: 'مركز التحميلات' },
+    ],
+  },
+  {
+    label: 'التعلم الذكي',
+    items: [
+      { to: '/student/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
+      { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
+      { to: '/student/gamification', icon: Trophy, label: 'الإنجازات والنقاط' },
+      { to: '/student/skills', icon: Target, label: 'المهارات والشهادات' },
+      { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
+    ],
+  },
+  {
+    label: 'المجتمع والتطوير',
+    items: [
+      { to: '/student/social', icon: Globe, label: 'الشبكة الاجتماعية' },
+      { to: '/student/mooc', icon: GraduationCap, label: 'كورسات خارجية' },
+      { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
+      { to: '/student/alerts', icon: Bell, label: 'الإشعارات', badge: { text: '4' } },
+      { to: '/student/university', icon: Building2, label: 'جامعة الزاوية' },
+    ],
+  },
+];
+
+export const TEACHER_NAV: NavGroup[] = [
+  {
+    label: 'لوحة التدريس',
+    items: [
+      { to: '/teacher/dashboard', icon: LayoutDashboard, label: 'لوحة الأستاذ' },
+      { to: '/teacher/schedule', icon: Calendar, label: 'جدول المحاضرات' },
+      { to: '/teacher/attendance', icon: ClipboardCheck, label: 'الحضور والغياب' },
+      { to: '/teacher/grades', icon: ListChecks, label: 'درجات الطلاب' },
+      { to: '/teacher/materials', icon: Upload, label: 'المواد الدراسية' },
+    ],
+  },
+  {
+    label: 'متابعة الطلاب',
+    items: [
+      { to: '/teacher/students', icon: Users, label: 'قائمة الطلاب' },
+      { to: '/teacher/performance', icon: TrendingUp, label: 'الأداء والتحليل' },
+      { to: '/teacher/assignments', icon: ClipboardList, label: 'الواجبات والاختبارات' },
+      { to: '/teacher/messages', icon: MessageSquare, label: 'الرسائل', badge: { text: '7' } },
+    ],
+  },
+  {
+    label: 'الأكاديمي',
+    items: [
+      { to: '/teacher/research', icon: Microscope, label: 'البحث العلمي' },
+      { to: '/teacher/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
+      { to: '/teacher/library', icon: Library, label: 'المكتبة' },
+      { to: '/teacher/alerts', icon: Bell, label: 'الإشعارات' },
+    ],
+  },
+];
+
+export const ADMIN_NAV: NavGroup[] = [
+  {
+    label: 'الإدارة العامة',
+    items: [
+      { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة الإدارة' },
+      { to: '/admin/students', icon: GraduationCap, label: 'إدارة الطلاب' },
+      { to: '/admin/teachers', icon: School, label: 'إدارة الأساتذة' },
+      { to: '/admin/faculties', icon: Building2, label: 'الكليات والأقسام' },
+      { to: '/admin/courses', icon: BookOpen, label: 'إدارة المقررات' },
+    ],
+  },
+  {
+    label: 'التقارير والتحليل',
+    items: [
+      { to: '/admin/analysis', icon: BarChart3, label: 'تحليل الأداء' },
+      { to: '/admin/digital', icon: TrendingUp, label: 'التحول الرقمي' },
+      { to: '/admin/reports', icon: FileText, label: 'التقارير' },
+    ],
+  },
+  {
+    label: 'النظام',
+    items: [
+      { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
+      { to: '/admin/alerts', icon: Bell, label: 'الإشعارات' },
+    ],
+  },
+];
+
+export const NAV_BY_ROLE: Record<AppRole, NavGroup[]> = {
+  STUDENT: STUDENT_NAV,
+  TEACHER: TEACHER_NAV,
+  ADMIN: ADMIN_NAV,
+};
+
+export const ROLE_LABELS: Record<AppRole, string> = {
+  STUDENT: 'طالب',
+  TEACHER: 'أستاذ',
+  ADMIN: 'إداري',
+};

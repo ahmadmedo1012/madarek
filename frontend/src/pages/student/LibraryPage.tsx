@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Search, Library as LibraryIcon, BookOpen, Bookmark, Clock,
-  Code, Network, Database, Bot, ShieldCheck,
+  Code, Network, Database, Bot, ShieldCheck, Star,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Pill, Badge } from '../../components/primitives';
@@ -18,6 +18,12 @@ const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'sec', label: 'أمن', icon: ShieldCheck },
 ];
 
+const categoryIcon = (cat: string): LucideIcon => {
+  return CATEGORIES.find((c) => c.id === cat)?.icon ?? LibraryIcon;
+};
+
+const categoryLabel = (cat: string) => CATEGORIES.find((c) => c.id === cat)?.label ?? cat;
+
 export default function LibraryPage() {
   const [cat, setCat] = useState('all');
   const [q, setQ] = useState('');
@@ -32,10 +38,17 @@ export default function LibraryPage() {
         </div>
       </div>
 
+      <div className="grid-4">
+        <MetricCard icon={LibraryIcon} label="إجمالي الكتب" value="1,247" color="brand" />
+        <MetricCard icon={BookOpen} label="مستعارة منك" value="3" color="green" />
+        <MetricCard icon={Clock} label="تنتهي قريباً" value="1" color="amber" />
+        <MetricCard icon={Bookmark} label="محفوظة" value="12" color="purple" />
+      </div>
+
       <Card compact>
         <div className="flex gap-3 items-center flex-wrap">
           <div className="topbar-search" style={{ width: '100%', maxWidth: 320 }}>
-            <span className="topbar-search-icon"><Icon icon={Search} size={15} /></span>
+            <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
             <input
               type="text"
               placeholder="ابحث عن كتاب أو مؤلف…"
@@ -53,13 +66,6 @@ export default function LibraryPage() {
         </div>
       </Card>
 
-      <div className="grid-4">
-        <MetricCard icon={LibraryIcon} label="إجمالي الكتب" value={data?.length ?? '—'} color="blue" />
-        <MetricCard icon={BookOpen} label="مستعارة منك" value="3" color="green" />
-        <MetricCard icon={Clock} label="تنتهي قريباً" value="1" color="amber" />
-        <MetricCard icon={Bookmark} label="محفوظة" value="12" color="purple" />
-      </div>
-
       {isPending ? (
         <Card><LoadingState /></Card>
       ) : isError ? (
@@ -68,31 +74,33 @@ export default function LibraryPage() {
         <Card><EmptyState icon={LibraryIcon} title="لا توجد كتب تطابق البحث" description="جرّب كلمات بحث مختلفة أو إزالة التصنيفات." /></Card>
       ) : (
         <div className="grid-auto-200">
-          {data.map((b) => (
-            <div className="thumb-card" key={b.id}>
-              <div
-                className="thumb-card-image"
-                style={{
-                  background: b.themeColor
-                    ? `linear-gradient(135deg, ${b.themeColor}30 0%, ${b.themeColor}08 100%)`
-                    : 'linear-gradient(135deg, rgba(90,156,255,.18), rgba(155,111,232,.08))',
-                  height: 110,
-                }}
-              >
-                {b.iconEmoji ?? '📕'}
-              </div>
-              <div className="thumb-card-body">
-                <div className="thumb-card-title" style={{ minHeight: 36 }}>{b.title}</div>
-                <div className="thumb-card-sub">{b.author}</div>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-amber font-mono text-xs">★ {b.rating ?? '—'}</span>
-                  {b.availableCopies > 0
-                    ? <Badge color="green">متاح</Badge>
-                    : <Badge color="red">مستعار</Badge>}
+          {data.map((b) => {
+            const Cmp = categoryIcon(b.category);
+            const tint = b.themeColor ?? '#3D6BD6';
+            return (
+              <div className="thumb-card" key={b.id}>
+                <div className="thumb-card-image" style={{ background: `${tint}10`, height: 100 }}>
+                  <span style={{ color: tint }}>
+                    <Icon icon={Cmp} size={32} strokeWidth={1.6} />
+                  </span>
+                </div>
+                <div className="thumb-card-body">
+                  <div className="thumb-card-title" style={{ minHeight: 36 }}>{b.title}</div>
+                  <div className="thumb-card-sub">{b.author}</div>
+                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
+                    <span className="text-xs text-subtle flex items-center gap-1 font-mono">
+                      <Icon icon={Star} size={11} strokeWidth={2.2} />
+                      {b.rating ?? '—'}
+                    </span>
+                    <Badge color={b.availableCopies > 0 ? 'green' : undefined}>
+                      {b.availableCopies > 0 ? 'متاح' : 'مستعار'}
+                    </Badge>
+                  </div>
+                  <div className="text-xxs text-subtle">{categoryLabel(b.category)}</div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

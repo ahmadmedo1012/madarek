@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 
-export type ThemeColor = 'blue' | 'green' | 'amber' | 'red' | 'purple' | 'teal' | 'pink';
+export type ThemeColor = 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand';
 
 /* ─── Card ──────────────────────────────────────────────── */
 export function Card({
@@ -13,7 +13,7 @@ export function Card({
   children,
   flush,
   compact,
-  lift,
+  bordered,
   className,
   style,
 }: {
@@ -24,25 +24,21 @@ export function Card({
   children?: ReactNode;
   flush?: boolean;
   compact?: boolean;
-  lift?: boolean;
+  bordered?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
-  const cls = ['card', flush && 'flush', compact && 'compact', lift && 'lift', className]
+  const cls = ['card', flush && 'flush', compact && 'compact', bordered && 'bordered', className]
     .filter(Boolean)
     .join(' ');
   return (
     <div className={cls} style={style}>
       {(title || actions) && (
         <div className="card-header">
-          <div>
+          <div className="card-title-block">
             {title && (
               <div className="card-title">
-                {icon && (
-                  <span className="card-title-icon">
-                    <Icon icon={icon} size={16} />
-                  </span>
-                )}
+                {icon && <Icon icon={icon} size={14} className="card-title-icon" />}
                 <span>{title}</span>
               </div>
             )}
@@ -56,14 +52,14 @@ export function Card({
   );
 }
 
-/* ─── Metric / KPI card ─────────────────────────────────── */
+/* ─── Metric / KPI ──────────────────────────────────────── */
 export function MetricCard({
   label,
   value,
   change,
   changeDirection,
   icon,
-  color = 'blue',
+  color,
 }: {
   label: ReactNode;
   value: ReactNode;
@@ -72,15 +68,12 @@ export function MetricCard({
   icon?: LucideIcon;
   color?: ThemeColor;
 }) {
+  const cls = ['metric', color && color !== 'brand' && color].filter(Boolean).join(' ');
   return (
-    <div className={`metric ${color}`}>
+    <div className={cls}>
       <div className="metric-head">
         <span className="metric-label">{label}</span>
-        {icon && (
-          <span className="metric-icon">
-            <Icon icon={icon} size={18} />
-          </span>
-        )}
+        {icon && <Icon icon={icon} size={16} className="metric-icon" />}
       </div>
       <div className="metric-value">{value}</div>
       {change !== undefined && (
@@ -93,18 +86,19 @@ export function MetricCard({
   );
 }
 
-/* ─── Badge ─────────────────────────────────────────────── */
+/* ─── Badge (default: neutral. color = explicit only) ─── */
 export function Badge({
-  color = 'blue',
+  color,
   icon,
   children,
 }: {
-  color?: ThemeColor | 'muted';
+  color?: ThemeColor;
   icon?: LucideIcon;
   children: ReactNode;
 }) {
+  const cls = ['badge', color].filter(Boolean).join(' ');
   return (
-    <span className={`badge ${color}`}>
+    <span className={cls}>
       {icon && <Icon icon={icon} size={11} strokeWidth={2} />}
       {children}
     </span>
@@ -124,27 +118,30 @@ export function ProgressBar({
   showValue?: boolean;
 }) {
   const v = Math.max(0, Math.min(100, value));
-  const fillStyle: CSSProperties = { width: `${v}%`, ...(color ? { background: color } : {}) };
   return (
     <div className="progress">
       {(label !== undefined || showValue) && (
         <div className="progress-head">
           {label !== undefined ? <span>{label}</span> : <span />}
-          {showValue && <span className="font-mono text-xs" style={{ color: color ?? 'var(--accent)' }}>{v}%</span>}
+          {showValue && (
+            <span className="font-mono text-xs" style={{ color: color ?? 'var(--text-muted)' }}>
+              {v}%
+            </span>
+          )}
         </div>
       )}
       <div className="progress-track" role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={100}>
-        <div className="progress-fill" style={fillStyle} />
+        <div className="progress-fill" style={{ width: `${v}%`, ...(color ? { background: color } : {}) }} />
       </div>
     </div>
   );
 }
 
-/* ─── Alert row ─────────────────────────────────────────── */
-export type AlertColor = 'red' | 'amber' | 'blue' | 'green' | 'purple';
+/* ─── Alert row (color = colored dot, body neutral) ──── */
+export type AlertColor = 'red' | 'amber' | 'green' | 'purple' | 'brand';
 
 export function AlertRow({
-  color = 'blue',
+  color = 'brand',
   icon,
   title,
   description,
@@ -160,8 +157,13 @@ export function AlertRow({
 }) {
   return (
     <div className={`alert ${color}`}>
+      {icon ? (
+        <span className="alert-dot" style={{ display: 'none' }} />
+      ) : (
+        <span className="alert-dot" aria-hidden />
+      )}
       {icon && (
-        <span className="alert-icon">
+        <span style={{ color: `var(--${color === 'brand' ? 'accent' : color === 'red' ? 'danger' : color === 'amber' ? 'warning' : color === 'green' ? 'success' : 'brand-purple'})`, marginTop: 2 }}>
           <Icon icon={icon} size={16} />
         </span>
       )}
@@ -201,7 +203,7 @@ export function UserAvatar({
   );
 }
 
-/* ─── Pill (filter buttons) ─────────────────────────────── */
+/* ─── Pill ─────────────────────────────────────────────── */
 export function Pill({
   on,
   icon,
@@ -221,7 +223,35 @@ export function Pill({
   );
 }
 
-/* ─── Section title (uppercase divider) ────────────────── */
+/* ─── Section title ─────────────────────────────────────── */
 export function SectionTitle({ children }: { children: ReactNode }) {
   return <div className="section-title">{children}</div>;
+}
+
+/* ─── Tabs (segmented control) ──────────────────────────── */
+export function Tabs<T extends string>({
+  value,
+  onChange,
+  items,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  items: Array<{ value: T; label: string }>;
+}) {
+  return (
+    <div className="tabs" role="tablist">
+      {items.map((it) => (
+        <button
+          key={it.value}
+          type="button"
+          role="tab"
+          aria-selected={value === it.value}
+          className={`tab${value === it.value ? ' on' : ''}`}
+          onClick={() => onChange(it.value)}
+        >
+          {it.label}
+        </button>
+      ))}
+    </div>
+  );
 }

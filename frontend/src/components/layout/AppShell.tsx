@@ -2,6 +2,7 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { useThemeSync } from './ThemeToggle';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { LoadingState } from '../primitives/States';
@@ -13,37 +14,38 @@ const PAGE_TITLES: Record<string, string> = {
   '/student/results': 'النتائج والتقييمات',
   '/student/ai': 'المساعد الذكي',
   '/student/library': 'المكتبة الإلكترونية',
-  '/student/gamification': 'نقاط ومكافآت',
-  '/student/skills': 'تطوير المهارات',
+  '/student/gamification': 'الإنجازات والنقاط',
+  '/student/skills': 'المهارات والشهادات',
   '/student/labs': 'المعامل الافتراضية',
   '/student/social': 'الشبكة الاجتماعية',
   '/student/mooc': 'كورسات خارجية',
-  '/student/jobs': 'فرص عمل',
+  '/student/jobs': 'فرص العمل',
   '/student/alerts': 'الإشعارات',
-  '/student/downloads': 'تحميل المواد',
+  '/student/downloads': 'مركز التحميلات',
   '/student/university': 'جامعة الزاوية',
   '/teacher/dashboard': 'لوحة الأستاذ',
-  '/teacher/schedule': 'جدول محاضراتي',
+  '/teacher/schedule': 'جدول المحاضرات',
   '/teacher/attendance': 'الحضور والغياب',
   '/teacher/grades': 'درجات الطلاب',
-  '/teacher/materials': 'رفع المواد',
-  '/teacher/students': 'قائمة طلابي',
-  '/teacher/performance': 'أداء وتحليل',
-  '/teacher/assignments': 'واجبات واختبارات',
-  '/teacher/messages': 'رسائل الطلاب',
-  '/teacher/research': 'أبحاثي وترقيتي',
+  '/teacher/materials': 'المواد الدراسية',
+  '/teacher/students': 'قائمة الطلاب',
+  '/teacher/performance': 'الأداء والتحليل',
+  '/teacher/assignments': 'الواجبات والاختبارات',
+  '/teacher/messages': 'الرسائل',
+  '/teacher/research': 'البحث العلمي',
   '/admin/dashboard': 'لوحة الإدارة',
   '/admin/students': 'إدارة الطلاب',
   '/admin/teachers': 'إدارة الأساتذة',
   '/admin/faculties': 'الكليات والأقسام',
   '/admin/courses': 'إدارة المقررات',
-  '/admin/analysis': 'تحليل الأداء العام',
+  '/admin/analysis': 'تحليل الأداء',
   '/admin/digital': 'التحول الرقمي',
-  '/admin/reports': 'التقارير الرسمية',
-  '/admin/settings': 'إعدادات المنصة',
+  '/admin/reports': 'التقارير',
+  '/admin/settings': 'الإعدادات',
 };
 
 export function AppShell({ children }: { children?: ReactNode }) {
+  useThemeSync();
   const location = useLocation();
   const title = PAGE_TITLES[location.pathname] ?? 'مدارك AI';
   return (

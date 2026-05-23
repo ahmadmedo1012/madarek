@@ -4,30 +4,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import {
-  Bot,
-  BarChart3,
-  FlaskConical,
-  Trophy,
-  Briefcase,
-  Globe,
-  Mail,
-  Lock,
-  User,
-  GraduationCap,
-  School,
-  Building2,
-  Sparkles,
-  AlertCircle,
+  Bot, BarChart3, FlaskConical, Briefcase,
+  Mail, Lock, User,
+  GraduationCap, School, Building2,
+  AlertCircle, ArrowLeft,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { BrandMark } from '../components/BrandMark';
 import { useLogin, useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
+import { useThemeSync } from '../components/layout/ThemeToggle';
 import type { AppRole } from '../stores/auth.store';
 
 type Tab = 'login' | 'register';
 
 const loginSchema = z.object({
-  email: z.string().email('بريد غير صالح'),
+  email: z.string().email('بريد إلكتروني غير صالح'),
   password: z.string().min(1, 'مطلوب'),
 });
 
@@ -35,7 +27,7 @@ const registerSchema = z
   .object({
     firstName: z.string().min(1, 'مطلوب'),
     lastName: z.string().min(1, 'مطلوب'),
-    email: z.string().email('بريد غير صالح'),
+    email: z.string().email('بريد إلكتروني غير صالح'),
     password: z.string().min(8, '8 أحرف على الأقل'),
     confirm: z.string(),
     role: z.enum(['STUDENT', 'TEACHER', 'ADMIN']),
@@ -59,6 +51,7 @@ const ROLE_HOME: Record<AppRole, string> = {
 const homeFor = (r: AppRole): string => ROLE_HOME[r];
 
 export default function AuthPage() {
+  useThemeSync();
   const [tab, setTab] = useState<Tab>('login');
   const [role, setRole] = useState<AppRole>('STUDENT');
   const navigate = useNavigate();
@@ -113,27 +106,36 @@ export default function AuthPage() {
       <div className="auth-card">
         {/* ─── Brand pane ─── */}
         <div className="auth-brand">
-          <div className="auth-brand-logo">
-            <div className="auth-brand-mark">M</div>
-            <div>
-              <div className="auth-brand-title">مدارك AI</div>
-              <div className="auth-brand-subtitle">جامعة الزاوية</div>
+          <div>
+            <div className="auth-brand-header">
+              <BrandMark size={44} />
+              <div>
+                <div className="auth-brand-name">
+                  مدارك <span className="ai-tag">AI</span>
+                </div>
+                <div className="auth-brand-uni">جامعة الزاوية · تأسست 1988</div>
+              </div>
             </div>
+
+            <h1 className="auth-brand-hero">
+              منصة موحدة لإدارة الحياة الأكاديمية الرقمية.
+            </h1>
+            <p className="auth-brand-tag">
+              من إدارة المقررات والحضور إلى المعامل الافتراضية وفرص التوظيف،
+              مدعومة بأدوات تعليمية ذكية.
+            </p>
+
+            <ul className="auth-features">
+              <li><span className="auth-feat-icon"><Icon icon={Bot} size={14} /></span> مساعد دراسي مدعوم بالذكاء الاصطناعي</li>
+              <li><span className="auth-feat-icon"><Icon icon={BarChart3} size={14} /></span> تحليل أداء وتغذية راجعة مستمرة</li>
+              <li><span className="auth-feat-icon"><Icon icon={FlaskConical} size={14} /></span> معامل افتراضية تفاعلية</li>
+              <li><span className="auth-feat-icon"><Icon icon={Briefcase} size={14} /></span> ربط مباشر بسوق العمل الليبي</li>
+            </ul>
           </div>
 
-          <h1 className="auth-brand-hero">منصة التعليم الذكي للجامعات الليبية</h1>
-          <p className="auth-brand-hero-sub">
-            أدوات أكاديمية متكاملة مدعومة بالذكاء الاصطناعي — من إدارة المقررات إلى المعامل الافتراضية وفرص العمل.
-          </p>
-
-          <ul className="auth-brand-features">
-            <li><span className="auth-feat-icon"><Icon icon={Bot} size={16} /></span> مساعد ذكاء اصطناعي أكاديمي</li>
-            <li><span className="auth-feat-icon"><Icon icon={BarChart3} size={16} /></span> تحليل الأداء في الوقت الفعلي</li>
-            <li><span className="auth-feat-icon"><Icon icon={FlaskConical} size={16} /></span> معامل افتراضية تفاعلية</li>
-            <li><span className="auth-feat-icon"><Icon icon={Trophy} size={16} /></span> نظام تحفيز ومكافآت</li>
-            <li><span className="auth-feat-icon"><Icon icon={Briefcase} size={16} /></span> ربط بسوق العمل الليبي</li>
-            <li><span className="auth-feat-icon"><Icon icon={Globe} size={16} /></span> تعليم هجين متكامل</li>
-          </ul>
+          <div className="auth-brand-footer">
+            © {new Date().getFullYear()} جامعة الزاوية. جميع الحقوق محفوظة.
+          </div>
         </div>
 
         {/* ─── Form pane ─── */}
@@ -150,26 +152,27 @@ export default function AuthPage() {
           {tab === 'login' ? (
             <form onSubmit={onLogin} className="flex-col" noValidate>
               <div className="auth-form-title">أهلاً بعودتك</div>
-              <div className="auth-form-sub">سجّل دخولك للوصول إلى منصة مدارك الأكاديمية</div>
+              <div className="auth-form-sub">أدخل بياناتك للوصول إلى حسابك الأكاديمي.</div>
 
               {login.isError && (
                 <div className="auth-error">
                   <Icon icon={AlertCircle} size={14} />
-                  <span>البريد أو كلمة المرور غير صحيحة. جرّب: student@zu.edu.ly / 1234</span>
+                  <span>البريد أو كلمة المرور غير صحيحة.</span>
                 </div>
               )}
 
               <div className="auth-field">
-                <label htmlFor="login-email">البريد الإلكتروني الجامعي</label>
+                <label htmlFor="login-email">البريد الإلكتروني</label>
                 <div className="auth-input-wrap">
                   <input
                     id="login-email"
                     type="email"
                     className="auth-input has-icon"
                     placeholder="example@zu.edu.ly"
+                    autoComplete="email"
                     {...loginForm.register('email')}
                   />
-                  <span className="auth-input-icon"><Icon icon={Mail} size={15} /></span>
+                  <span className="auth-input-icon"><Icon icon={Mail} size={14} /></span>
                 </div>
               </div>
 
@@ -181,27 +184,28 @@ export default function AuthPage() {
                     type="password"
                     className="auth-input has-icon"
                     placeholder="••••••••"
+                    autoComplete="current-password"
                     {...loginForm.register('password')}
                   />
-                  <span className="auth-input-icon"><Icon icon={Lock} size={15} /></span>
+                  <span className="auth-input-icon"><Icon icon={Lock} size={14} /></span>
                 </div>
               </div>
 
               <button type="button" className="auth-forgot">نسيت كلمة المرور؟</button>
 
               <button type="submit" className="auth-btn" disabled={login.isPending}>
-                <Icon icon={Sparkles} size={16} />
-                {login.isPending ? 'جارٍ الدخول…' : 'دخول إلى المنصة'}
+                {login.isPending ? 'جارٍ الدخول…' : 'تسجيل الدخول'}
+                {!login.isPending && <Icon icon={ArrowLeft} size={14} />}
               </button>
 
-              <div className="auth-divider">أو جرّب الحسابات التجريبية</div>
+              <div className="auth-divider">حسابات تجريبية</div>
 
               <div className="auth-demo">
                 <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('STUDENT')}>
-                  <Icon icon={GraduationCap} size={15} /> دخول كطالب
+                  <Icon icon={GraduationCap} size={14} /> طالب
                 </button>
                 <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('TEACHER')}>
-                  <Icon icon={School} size={15} /> دخول كأستاذ
+                  <Icon icon={School} size={14} /> أستاذ
                 </button>
               </div>
 
@@ -212,7 +216,7 @@ export default function AuthPage() {
           ) : (
             <form onSubmit={onRegister} className="flex-col" noValidate>
               <div className="auth-form-title">إنشاء حساب جديد</div>
-              <div className="auth-form-sub">انضم إلى آلاف الطلاب والأساتذة على منصة مدارك</div>
+              <div className="auth-form-sub">انضم إلى منصة مدارك الأكاديمية.</div>
 
               {register.isError && (
                 <div className="auth-error">
@@ -234,11 +238,7 @@ export default function AuthPage() {
                         registerForm.setValue('role', r);
                       }}
                     >
-                      <Icon
-                        icon={r === 'STUDENT' ? GraduationCap : r === 'TEACHER' ? School : Building2}
-                        size={20}
-                        className="auth-role-icon"
-                      />
+                      <Icon icon={r === 'STUDENT' ? GraduationCap : r === 'TEACHER' ? School : Building2} size={18} />
                       {r === 'STUDENT' ? 'طالب' : r === 'TEACHER' ? 'أستاذ' : 'إداري'}
                     </button>
                   ))}
@@ -250,7 +250,7 @@ export default function AuthPage() {
                   <label>الاسم الأول</label>
                   <div className="auth-input-wrap">
                     <input className="auth-input has-icon" placeholder="أحمد" {...registerForm.register('firstName')} />
-                    <span className="auth-input-icon"><Icon icon={User} size={15} /></span>
+                    <span className="auth-input-icon"><Icon icon={User} size={14} /></span>
                   </div>
                 </div>
                 <div className="auth-field">
@@ -260,10 +260,10 @@ export default function AuthPage() {
               </div>
 
               <div className="auth-field">
-                <label>البريد الإلكتروني الجامعي</label>
+                <label>البريد الإلكتروني</label>
                 <div className="auth-input-wrap">
                   <input className="auth-input has-icon" type="email" placeholder="example@zu.edu.ly" {...registerForm.register('email')} />
-                  <span className="auth-input-icon"><Icon icon={Mail} size={15} /></span>
+                  <span className="auth-input-icon"><Icon icon={Mail} size={14} /></span>
                 </div>
               </div>
 
@@ -303,7 +303,7 @@ export default function AuthPage() {
               {role === 'TEACHER' && (
                 <>
                   <div className="auth-field">
-                    <label>الكلية / القسم</label>
+                    <label>الكلية والقسم</label>
                     <select className="auth-input" {...registerForm.register('departmentId')}>
                       <option value="">اختر القسم</option>
                       {(faculties ?? []).flatMap((f) =>
@@ -315,7 +315,7 @@ export default function AuthPage() {
                   </div>
                   <div className="auth-field">
                     <label>التخصص الأكاديمي</label>
-                    <input className="auth-input" placeholder="علوم الحاسوب والذكاء الاصطناعي" {...registerForm.register('specialty')} />
+                    <input className="auth-input" placeholder="علوم الحاسوب" {...registerForm.register('specialty')} />
                   </div>
                   <div className="auth-field">
                     <label>الرتبة الأكاديمية</label>
@@ -334,18 +334,18 @@ export default function AuthPage() {
                   <label>كلمة المرور</label>
                   <div className="auth-input-wrap">
                     <input className="auth-input has-icon" type="password" placeholder="8 أحرف على الأقل" {...registerForm.register('password')} />
-                    <span className="auth-input-icon"><Icon icon={Lock} size={15} /></span>
+                    <span className="auth-input-icon"><Icon icon={Lock} size={14} /></span>
                   </div>
                 </div>
                 <div className="auth-field">
                   <label>تأكيد كلمة المرور</label>
-                  <input className="auth-input" type="password" placeholder="أعد إدخال كلمة المرور" {...registerForm.register('confirm')} />
+                  <input className="auth-input" type="password" placeholder="أعد الإدخال" {...registerForm.register('confirm')} />
                 </div>
               </div>
 
               <button type="submit" className="auth-btn" disabled={register.isPending}>
-                <Icon icon={Sparkles} size={16} />
                 {register.isPending ? 'جارٍ إنشاء الحساب…' : 'إنشاء الحساب'}
+                {!register.isPending && <Icon icon={ArrowLeft} size={14} />}
               </button>
 
               <div className="auth-terms">
