@@ -63,55 +63,56 @@ export default function StudentDashboardPage() {
       <div className="grid-2-1">
         {/* Weekly chart */}
         <Card title="الأداء الأسبوعي" subtitle="آخر سبعة أيام" icon={TrendingUp}>
-          <Line
-            data={{
-              labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
-              datasets: [
-                {
-                  label: 'الأداء %',
-                  data: [62, 78, 55, 90, 71, 44, 83],
-                  borderColor: '#5A9CFF',
-                  backgroundColor: 'rgba(90,156,255,0.10)',
-                  borderWidth: 2,
-                  pointBackgroundColor: '#5A9CFF',
-                  pointBorderColor: '#0F1525',
-                  pointBorderWidth: 2,
-                  pointRadius: 4,
-                  pointHoverRadius: 6,
-                  tension: 0.4,
-                  fill: true,
+          <div style={{ height: 240, position: 'relative' }}>
+            <Line
+              data={{
+                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+                datasets: [
+                  {
+                    label: 'الأداء %',
+                    data: [62, 78, 55, 90, 71, 44, 83],
+                    borderColor: '#5A9CFF',
+                    backgroundColor: 'rgba(90,156,255,0.10)',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#5A9CFF',
+                    pointBorderColor: '#0F1525',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.4,
+                    fill: true,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    backgroundColor: '#0F1525',
+                    borderColor: 'rgba(255,255,255,.1)',
+                    borderWidth: 1,
+                    padding: 10,
+                    titleFont: { family: 'IBM Plex Sans Arabic', size: 12 },
+                    bodyFont: { family: 'IBM Plex Sans Arabic', size: 12 },
+                  },
                 },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  backgroundColor: '#0F1525',
-                  borderColor: 'rgba(255,255,255,.1)',
-                  borderWidth: 1,
-                  padding: 10,
-                  titleFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-                  bodyFont: { family: 'IBM Plex Sans Arabic', size: 12 },
+                scales: {
+                  x: {
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    ticks: { color: '#6A7290', font: { size: 10, family: 'IBM Plex Sans Arabic' } },
+                  },
+                  y: {
+                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    ticks: { color: '#6A7290', font: { size: 10 } },
+                    min: 0,
+                    max: 100,
+                  },
                 },
-              },
-              scales: {
-                x: {
-                  grid: { color: 'rgba(255,255,255,0.04)' },
-                  ticks: { color: '#6A7290', font: { size: 10, family: 'IBM Plex Sans Arabic' } },
-                },
-                y: {
-                  grid: { color: 'rgba(255,255,255,0.04)' },
-                  ticks: { color: '#6A7290', font: { size: 10 } },
-                  min: 0,
-                  max: 100,
-                },
-              },
-            }}
-            height={140}
-          />
+              }}
+            />
+          </div>
         </Card>
 
         {/* Per-subject progress */}
