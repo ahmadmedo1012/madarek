@@ -8,6 +8,7 @@ import './styles/utilities.css';
 import './styles/landing.css';
 import './styles/pdf.css';
 import './styles/refinement.css';
+import './styles/evolution.css';
 
 import App from './App';
 

@@ -1,5 +1,6 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { useThemeSync } from './ThemeToggle';
@@ -88,12 +89,39 @@ export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
   const location = useLocation();
   const title = resolveTitle(location.pathname);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Toggle topbar scrolled state when content scrolls past 4px
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        setScrolled(el.scrollTop > 4);
+      });
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Reset scroll position on route change so each page starts at top
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    setScrolled(false);
+  }, [location.pathname]);
+
   return (
     <>
       <Sidebar />
       <main className="main">
-        <Topbar title={title} />
-        <div className="content">
+        <Topbar title={title} scrolled={scrolled} />
+        <div className="content" ref={contentRef}>
           <div className="content-inner">{children ?? <Outlet />}</div>
         </div>
       </main>

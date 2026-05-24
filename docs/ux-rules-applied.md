@@ -71,3 +71,85 @@ existing styles. Every rule below is traceable to a toolkit query.
 
 Build cost: **+1.3 KB gz** total (95→101 KB gzipped).
 No JS changes for the refinement layer — pure CSS overlay.
+
+
+## Evolution pass (commit after `bb6c061`)
+
+Premium polish layer — `frontend/src/styles/evolution.css`, loaded
+last after refinement. Inspired by Linear, Vercel, Raycast, Stripe
+Dashboard, Notion. Single motion language, layered surfaces, refined
+typography.
+
+### What changed
+
+**Motion system (single easing across the platform)**
+- `--ease-expo: cubic-bezier(0.16, 1, 0.3, 1)` — Linear/Vercel signature
+- `--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1)` for accents
+- `--t-page: 360ms` for page entrance
+- `--t-hover: 140ms` for hovers
+- `--t-press: 80ms` for button feedback
+- Page enter: `opacity 0→1, translateY(8px)→0` over 360ms
+- Card hover-lift: `translateY(-1px)` + `shadow-md`
+- Dropdown entrance: scale + opacity from 0.98 over 140ms
+- Modal entrance: scale 0.96→1 over 200ms
+
+**Layered surfaces**
+- New `--surface-overlay` token for floating panels (search dropdown,
+  user menu) with frosted-glass backdrop
+- `--inner-highlight` (1px white at 4% alpha at top) gives cards
+  Linear/Apple depth signal in dark mode
+- `--shadow-glow-blue` for primary-button hover (subtle accent halo)
+
+**Typography refinement**
+- `font-feature-settings: "ss01", "kern", "liga"` (IBM Plex
+  stylistic alternates)
+- `font-variant-numeric: tabular-nums` on all numeric chrome
+  (metrics, leaderboard, stats, kbd hints)
+- `letter-spacing: -0.018em` on display sizes (h1–h4, page-title,
+  hero text) for tighter feel
+- Page title: very subtle text gradient (text → text-muted) for depth
+- AI tag: gradient fill (accent → purple) for premium feel
+
+**Sidebar nav: Linear-style active bar**
+- 3px-wide accent bar slides in from inline-start when item activates
+- 220ms ease-expo transform — feels intentional, not flashy
+
+**Topbar scroll shadow**
+- Topbar starts borderless
+- AppShell tracks `.content` scrollTop via rAF-throttled listener
+- `.topbar.scrolled` adds 1px border-bottom + tiny shadow
+- Resets on route change so each page starts clean
+
+**Theme switch animation**
+- Surfaces and key components transition `background-color`,
+  `border-color`, `color`, `box-shadow` over 240ms ease-expo
+- Hover transitions stay snappy at 140ms (override)
+
+**Skeleton + scrollbar**
+- Shimmer slowed to 1.8s ease-in-out (was 1.4s linear) — calmer
+- Scrollbar 8px, thumb is `border-strong`, hover lifts to `text-subtle`
+
+**Accessibility / motion safety**
+- `prefers-reduced-motion`: disables backdrop-filter (avoids stutter
+  on browsers that otherwise reduce motion but keep blur)
+- `:focus-visible`: 2px solid accent + 2px offset, slightly more
+  offset on buttons (3px) for tactile feedback
+
+### Cost
+
+| | Before | After | Δ |
+|---|---|---|---|
+| CSS gz | 16.43 KB | **17.70 KB** | +1.27 KB |
+| JS gz | 132.43 KB | **132.62 KB** | +0.19 KB (scroll listener) |
+| New files | — | `evolution.css` | 1 |
+| Modified | — | `main.tsx`, `AppShell.tsx`, `Topbar.tsx` | 3 |
+
+### Lineage
+
+- Active-bar nav indicator pattern → Linear/Vercel
+- Frosted-glass dropdown surface → Raycast/macOS
+- Page enter ease-expo → Linear, Vercel, Stripe
+- Card inner-highlight 1px top → Apple, modern macOS apps
+- Tabular numerals on metrics → Stripe Dashboard
+- Slow shimmer (1.8s) → Notion / Linear
+- Topbar scroll shadow → GitHub, Linear, Vercel dashboards

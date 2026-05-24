@@ -13,9 +13,10 @@ import { useUnreadNotifications } from '../../hooks/useResources';
 interface TopbarProps {
   title: ReactNode;
   rightSlot?: ReactNode;
+  scrolled?: boolean;
 }
 
-export function Topbar({ title, rightSlot }: TopbarProps) {
+export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   const toggle = useUiStore((s) => s.toggleSidebar);
   const user = useAuthStore((s) => s.user);
   const role = user?.role;
@@ -56,7 +57,7 @@ export function Topbar({ title, rightSlot }: TopbarProps) {
   const profilePath = role === 'STUDENT' ? '/student/profile' : null;
 
   return (
-    <header className="topbar">
+    <header className={`topbar${scrolled ? ' scrolled' : ''}`}>
       <button
         type="button"
         className="topbar-mobile-toggle"
