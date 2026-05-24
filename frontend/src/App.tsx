@@ -23,7 +23,7 @@ import {
   AssignmentsPage, MessagesPage,
 } from './pages/teacher/TeacherPages';
 import { AdminDashboardPage, AdminPlaceholder } from './pages/admin/AdminPages';
-import { QualityDashboardPage, QualityCoursesPage, QualityPlaceholder } from './pages/quality/QualityPages';
+import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
 import { useAuthStore } from './stores/auth.store';
 
 /** Resolves the home path for an authenticated user, or `/` for guests. */
@@ -114,11 +114,11 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/quality/dashboard" element={<QualityDashboardPage />} />
               <Route path="/quality/courses" element={<QualityCoursesPage />} />
-              <Route path="/quality/professors" element={<QualityPlaceholder title="تقييم الأساتذة" subtitle="مؤشرات الاستجابة، رفع المواد، تقييمات الطلاب." />} />
-              <Route path="/quality/engagement" element={<QualityPlaceholder title="الانخراط والحضور" subtitle="نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة." />} />
-              <Route path="/quality/reports" element={<QualityPlaceholder title="تقارير الجودة" subtitle="تقارير دورية يمكن تصديرها." />} />
-              <Route path="/quality/curriculum" element={<QualityPlaceholder title="مراجعة المناهج" subtitle="فحص اكتمال محتوى المقررات." />} />
-              <Route path="/quality/alerts" element={<AlertsPage />} />
+              <Route path="/quality/professors" element={<QualityProfessorsPage />} />
+              <Route path="/quality/engagement" element={<QualityEngagementPage />} />
+              <Route path="/quality/reports" element={<QualityReportsPage />} />
+              <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
+              <Route path="/quality/alerts" element={<QualityAlertsPage />} />
             </Route>
           </Route>
 
