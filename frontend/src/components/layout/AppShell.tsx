@@ -60,6 +60,13 @@ const PAGE_TITLES: Record<string, string> = {
   '/vision': 'الابتكارات القادمة',
   '/training': 'التطوير الذاتي',
   '/achievements': 'الإنجازات والشهادات',
+  '/community': 'المجتمع الجامعي',
+  '/teacher/community': 'المجتمع الجامعي',
+  '/admin/community': 'المجتمع الجامعي',
+  '/quality/community': 'المجتمع الجامعي',
+  '/teacher/intelligence': 'الذكاء الأكاديمي',
+  '/student/online-exams': 'الاختبارات الإلكترونية',
+  '/quality/exam-moderation': 'مراجعة الاختبارات',
 };
 
 /** Resolve a topbar title for any path, including dynamic routes. */
@@ -71,6 +78,9 @@ function resolveTitle(pathname: string): string {
   if (/^\/document\/[^/]+$/.test(pathname)) return 'عارض المستندات';
   if (/^\/training\/[^/]+\/lesson\/[^/]+$/.test(pathname)) return 'درس تدريبي';
   if (/^\/training\/[^/]+$/.test(pathname)) return 'مسار تدريبي';
+  if (/^\/teacher\/intelligence\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
+  if (/^\/student\/online-exams\/[^/]+$/.test(pathname)) return 'اختبار جارٍ';
+  if (/^\/admin\/permissions\/[^/]+$/.test(pathname)) return 'إدارة الصلاحيات';
   return 'منصة الزاوية';
 }
 

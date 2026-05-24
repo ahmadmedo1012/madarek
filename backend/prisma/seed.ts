@@ -147,7 +147,7 @@ async function main() {
     },
   });
 
-  await prisma.user.upsert({
+  const admin = await prisma.user.upsert({
     where: { email: 'admin@zu.edu.ly' },
     update: {},
     create: {
@@ -162,7 +162,7 @@ async function main() {
     },
   });
 
-  await prisma.user.upsert({
+  const quality = await prisma.user.upsert({
     where: { email: 'quality@zu.edu.ly' },
     update: {},
     create: {
@@ -993,6 +993,259 @@ async function main() {
       });
     }
   }
+
+  // ════════════════════════════════════════════════════════════════
+  //  Governance: default role permissions + a sample admin override
+  // ════════════════════════════════════════════════════════════════
+  const ROLE_CAPS: Record<Role, string[]> = {
+    STUDENT: ['EXAMS_TAKE'],
+    TEACHER: ['RESEARCH_GRADE_OWN', 'RESEARCH_PUBLISH', 'EXAMS_AUTHOR', 'CURRICULUM_EDIT_OWN', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN'],
+    ADMIN: ['USERS_MANAGE', 'ROLES_ASSIGN', 'TEACHERS_VERIFY', 'ANNOUNCE_PLATFORM', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN', 'CURRICULUM_EDIT_ANY', 'RESEARCH_PUBLISH'],
+    QUALITY: ['QUALITY_VIEW', 'QUALITY_REPORT', 'EXAMS_MODERATE', 'ANNOUNCE_FACULTY'],
+  };
+  for (const [role, caps] of Object.entries(ROLE_CAPS)) {
+    for (const cap of caps) {
+      await prisma.rolePermission.upsert({
+        where: { role_capability: { role: role as Role, capability: cap as never } },
+        update: {},
+        create: { role: role as Role, capability: cap as never },
+      });
+    }
+  }
+
+  // Mark the seed teacher's profile as verified + with realistic onboarding data
+  await prisma.teacherProfile.update({
+    where: { userId: teacher.id },
+    data: {
+      degreeLevel: 'PHD',
+      yearsExperience: 12,
+      certifications: [
+        { title: 'دكتوراه في علوم الحاسوب', issuer: 'جامعة مانشستر', year: 2014 },
+        { title: 'شهادة Oracle Certified Professional', issuer: 'Oracle', year: 2018 },
+        { title: 'تدريب الذكاء الاصطناعي للتعليم', issuer: 'Stanford Online', year: 2023 },
+      ],
+      subjectKeywords: ['Software Engineering', 'AI', 'Machine Learning', 'Database Systems', 'هندسة البرمجيات', 'الذكاء الاصطناعي'],
+      verifiedAt: new Date(),
+      verifiedById: admin.id,
+    },
+  });
+
+  // ════════════════════════════════════════════════════════════════
+  //  Question bank + sample exam template
+  // ════════════════════════════════════════════════════════════════
+  const swCategory = await prisma.questionCategory.upsert({
+    where: { slug: 'software-engineering' },
+    update: {},
+    create: {
+      slug: 'software-engineering',
+      title: 'هندسة البرمجيات',
+      description: 'بنك أسئلة هندسة البرمجيات — موحد لكليات الهندسة وتقنية المعلومات',
+      facultyId: faculties[0]!.id, // IT
+      isShared: true,
+      iconEmoji: '💻',
+    },
+  });
+  const generalCategory = await prisma.questionCategory.upsert({
+    where: { slug: 'general-academic' },
+    update: {},
+    create: {
+      slug: 'general-academic',
+      title: 'مهارات أكاديمية عامة',
+      description: 'أسئلة عامة قابلة لإعادة الاستخدام عبر الكليات',
+      isShared: true,
+      iconEmoji: '🎓',
+    },
+  });
+
+  const seedQuestions = [
+    {
+      category: swCategory.id, type: 'MCQ' as const, prompt: 'ما هي المرحلة الأولى في دورة حياة تطوير البرمجيات (SDLC)؟',
+      choices: ['التحليل والتخطيط', 'التصميم', 'الترميز', 'الاختبار'], correct: 0, difficulty: 'EASY' as const, points: 1,
+    },
+    {
+      category: swCategory.id, type: 'MCQ' as const, prompt: 'أي نموذج تطوير برمجي يعمل بدورات قصيرة متكررة؟',
+      choices: ['الشلال (Waterfall)', 'الحلزوني (Spiral)', 'أجايل (Agile)', 'V-Model'], correct: 2, difficulty: 'MEDIUM' as const, points: 2,
+    },
+    {
+      category: swCategory.id, type: 'TRUE_FALSE' as const, prompt: 'مبدأ Single Responsibility هو أحد مبادئ SOLID.',
+      choices: ['صحيح', 'خطأ'], correct: 0, difficulty: 'EASY' as const, points: 1,
+    },
+    {
+      category: swCategory.id, type: 'SHORT' as const, prompt: 'ما هي اللغة الأكثر استخداماً لتطوير الواجهات الأمامية للويب؟',
+      correct: 'JavaScript', difficulty: 'EASY' as const, points: 1,
+    },
+    {
+      category: swCategory.id, type: 'MCQ' as const, prompt: 'ما الفرق بين Stack و Queue؟',
+      choices: ['Stack: LIFO، Queue: FIFO', 'Stack: FIFO، Queue: LIFO', 'لا فرق', 'كلاهما LIFO'], correct: 0, difficulty: 'MEDIUM' as const, points: 2,
+    },
+    {
+      category: swCategory.id, type: 'ESSAY' as const, prompt: 'اشرح بالتفصيل الفرق بين الاختبار اليدوي والاختبار الآلي، مع ذكر متى تستخدم كل نوع.',
+      difficulty: 'HARD' as const, points: 5,
+    },
+    {
+      category: generalCategory.id, type: 'MCQ' as const, prompt: 'ما النسبة القصوى المقبولة للتشابه (الانتحال) في البحث العلمي على منصة جامعة الزاوية؟',
+      choices: ['5%', '10%', '15%', '25%'], correct: 2, difficulty: 'EASY' as const, points: 1,
+    },
+    {
+      category: generalCategory.id, type: 'TRUE_FALSE' as const, prompt: 'استراتيجية الصف المعكوس تتطلب دراسة ذاتية قبل المحاضرة.',
+      choices: ['صحيح', 'خطأ'], correct: 0, difficulty: 'EASY' as const, points: 1,
+    },
+  ];
+
+  // Wipe and reseed for idempotence
+  await prisma.examAnswer.deleteMany({});
+  await prisma.examAttempt.deleteMany({});
+  await prisma.examTemplateQuestion.deleteMany({});
+  await prisma.examTemplate.deleteMany({});
+  await prisma.question.deleteMany({});
+
+  const createdQuestions: { id: string; type: string }[] = [];
+  for (const sq of seedQuestions) {
+    const q = await prisma.question.create({
+      data: {
+        categoryId: sq.category,
+        type: sq.type,
+        prompt: sq.prompt,
+        choices: sq.choices ?? undefined,
+        correctAnswer: sq.correct !== undefined ? sq.correct : undefined,
+        difficulty: sq.difficulty,
+        points: sq.points,
+        authorId: teacher.id,
+        isApproved: true, // pre-approved for demo
+        moderatedById: quality.id,
+      },
+    });
+    createdQuestions.push({ id: q.id, type: q.type });
+  }
+
+  // Build a published sample exam for the demo offering
+  const demoOffering = await prisma.courseOffering.findFirst({
+    where: { teacherId: teacher.id },
+    include: { course: { select: { name: true } } },
+  });
+  if (demoOffering) {
+    const exam = await prisma.examTemplate.create({
+      data: {
+        offeringId: demoOffering.id,
+        title: `اختبار قصير — ${demoOffering.course.name}`,
+        kind: 'QUIZ',
+        description: 'اختبار قصير لمراجعة المفاهيم الأساسية. مدة الاختبار 30 دقيقة.',
+        durationMin: 30,
+        passingScore: 50,
+        randomized: true,
+        status: 'PUBLISHED',
+        authorId: teacher.id,
+        moderatedById: quality.id,
+        moderationNote: 'تمت الموافقة — أسئلة متوازنة وتدرج المستوى مناسب',
+        questions: {
+          create: createdQuestions.slice(0, 5).map((q, i) => ({ questionId: q.id, order: i + 1 })),
+        },
+      },
+    });
+    // Pending-review unified faculty exam (so QUALITY has something to moderate)
+    await prisma.examTemplate.create({
+      data: {
+        facultyId: faculties[0]!.id,
+        title: 'اختبار موحد — أساسيات هندسة البرمجيات (كلية تقنية المعلومات)',
+        kind: 'MIDTERM',
+        description: 'اختبار نصفي موحد على مستوى الكلية — في انتظار مراجعة مكتب الجودة.',
+        durationMin: 60,
+        passingScore: 60,
+        randomized: true,
+        status: 'PENDING_REVIEW',
+        authorId: teacher.id,
+        questions: {
+          create: createdQuestions.map((q, i) => ({ questionId: q.id, order: i + 1 })),
+        },
+      },
+    });
+    void exam;
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  //  Announcements + competitions + events
+  // ════════════════════════════════════════════════════════════════
+  await prisma.announcement.deleteMany({});
+  await prisma.competition.deleteMany({});
+  await prisma.campusEvent.deleteMany({});
+
+  await prisma.announcement.createMany({
+    data: [
+      {
+        authorId: admin.id, scope: 'PLATFORM', scopeId: null,
+        title: 'إطلاق منصة جامعة الزاوية للتعليم الذكي',
+        body: 'يسرّ جامعة الزاوية بالتعاون مع وزارة التعليم العالي والبحث العلمي إعلان إطلاق المنصة التعليمية الذكية بشكل رسمي. يستطيع جميع الطلاب والأساتذة الاستفادة من الميزات الجديدة فوراً.',
+        pinned: true, iconEmoji: '🎉',
+      },
+      {
+        authorId: admin.id, scope: 'PLATFORM', scopeId: null,
+        title: 'موعد التسجيل للفصل الدراسي الجديد',
+        body: 'يبدأ التسجيل للفصل الدراسي الجديد يوم الأحد القادم. يُرجى من جميع الطلاب مراجعة جدولهم الدراسي قبل اعتماده.',
+        iconEmoji: '📅',
+      },
+      {
+        authorId: teacher.id, scope: 'FACULTY', scopeId: faculties[0]!.id,
+        title: 'محاضرة افتراضية مع خبير عالمي في الذكاء الاصطناعي',
+        body: 'تستضيف كلية تقنية المعلومات محاضرة عن بُعد مع البروفيسور أندرو نج يوم الخميس عبر منصة الزاوية. الحضور مفتوح لجميع طلاب الكلية.',
+        iconEmoji: '🎤',
+      },
+      {
+        authorId: quality.id, scope: 'PLATFORM', scopeId: null,
+        title: 'بدء جولة ضمان الجودة الفصلية',
+        body: 'مكتب ضمان الجودة سيبدأ جولته الفصلية لمراجعة المقررات والمحاضرات المنشورة. جميع البيانات متاحة في لوحة الجودة.',
+        iconEmoji: '✅',
+      },
+    ],
+  });
+
+  await prisma.competition.createMany({
+    data: [
+      {
+        title: 'مسابقة أفضل بحث طلابي في الذكاء الاصطناعي',
+        description: 'تستقبل جامعة الزاوية البحوث الطلابية في مجال الذكاء الاصطناعي وتطبيقاته. الفائز يحصل على منحة لحضور مؤتمر دولي.',
+        category: 'بحث', prize: 'منحة مؤتمر دولي + 2,000 د.ل',
+        deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        organizerId: teacher.id, iconEmoji: '🔬', themeColor: '#7B3AED',
+      },
+      {
+        title: 'هاكاثون منصة الزاوية الأول',
+        description: 'هاكاثون 48 ساعة لتطوير حلول رقمية لتحديات الجامعة. مفتوح لجميع الطلاب من جميع الكليات.',
+        category: 'برمجة', prize: '5,000 د.ل + فرصة تدريب',
+        deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        organizerId: admin.id, iconEmoji: '💻', themeColor: '#2952C8',
+      },
+      {
+        title: 'مسابقة الإلقاء العلمي بالإنجليزية',
+        description: 'قدّم بحثك في 3 دقائق باللغة الإنجليزية. تنميةً لمهارات العرض والتواصل العلمي الدولي.',
+        category: 'إلقاء', prize: 'دورة TOEFL مجانية + شهادة',
+        deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
+        organizerId: teacher.id, iconEmoji: '🎤', themeColor: '#D4A537',
+      },
+    ],
+  });
+
+  await prisma.campusEvent.createMany({
+    data: [
+      {
+        title: 'يوم المهنة 2026', description: 'فعالية يوم كامل تجمع الطلاب بأكثر من 30 شركة ومؤسسة وطنية. فرص توظيف وتدريب للخريجين والطلاب في السنوات النهائية.',
+        location: 'القاعة الكبرى — الحرم الجامعي الرئيسي', startsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        endsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 8 * 60 * 60 * 1000),
+        capacity: 500, organizerId: admin.id, iconEmoji: '💼', themeColor: '#0E5C2F',
+      },
+      {
+        title: 'ندوة: مستقبل التعليم في ليبيا', description: 'ندوة حوارية مع وزارة التعليم العالي والبحث العلمي حول رؤية التعليم 2030.',
+        location: 'مدرج كلية الهندسة', startsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        endsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 3 * 60 * 60 * 1000),
+        capacity: 200, organizerId: quality.id, iconEmoji: '🎓', themeColor: '#2952C8',
+      },
+      {
+        title: 'ورشة عمل: مهارات البحث العلمي', description: 'ورشة عملية لمدة 4 ساعات تغطي صياغة سؤال البحث، البحث في قواعد البيانات، والاقتباس الصحيح.',
+        location: 'مكتبة الجامعة المركزية', startsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+        endsAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000),
+        capacity: 60, organizerId: teacher.id, iconEmoji: '📚', themeColor: '#7B3AED',
+      },
+    ],
+  });
 
   console.log('✅ Seed complete.');
 }

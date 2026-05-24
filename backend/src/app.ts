@@ -24,6 +24,10 @@ import catalogRoutes from './http/routes/catalog.routes.js';
 import aiRoutes from './http/routes/ai.routes.js';
 import learningRoutes from './http/routes/learning.routes.js';
 import trainingRoutes from './http/routes/training.routes.js';
+import teacherRoutes from './http/routes/teacher.routes.js';
+import examsRoutes from './http/routes/exams.routes.js';
+import socialRoutes from './http/routes/social.routes.js';
+import permissionsRoutes from './http/routes/permissions.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
 import { AppError } from './lib/errors.js';
 
@@ -75,6 +79,10 @@ export function createApp() {
   app.use('/api/v1', catalogRoutes);
   app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
   app.use('/api/v1', trainingRoutes); // /training/* (catalog, lessons, badges, certificates, leaderboard)
+  app.use('/api/v1', teacherRoutes);  // /teacher/* (offerings, students, risks, attendance, curriculum)
+  app.use('/api/v1', examsRoutes);    // /exams/*, /question-bank/*
+  app.use('/api/v1', socialRoutes);   // /announcements/*, /competitions/*, /events/*
+  app.use('/api/v1', permissionsRoutes); // /me/permissions, /admin/users/*
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
 

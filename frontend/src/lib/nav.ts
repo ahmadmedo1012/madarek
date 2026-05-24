@@ -5,7 +5,7 @@ import {
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, MessageSquare, Microscope, School,
   FileText, Settings, ShieldCheck, Activity, Compass, BookMarked,
-  Radio, Wallet, MapPin, Sparkles, Mic2, UserCircle,
+  Radio, Wallet, MapPin, Sparkles, Mic2, UserCircle, Brain, Megaphone,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -34,6 +34,7 @@ export const STUDENT_NAV: NavGroup[] = [
     items: [
       { to: '/student/matrix', icon: Compass, label: 'المصفوفة التعليمية', badge: { text: 'جديد', tone: 'brand' } },
       { to: '/student/exams', icon: ClipboardCheck, label: 'تحليل الامتحانات' },
+      { to: '/student/online-exams', icon: FileText, label: 'الاختبارات الإلكترونية', badge: { text: 'جديد', tone: 'brand' } },
       { to: '/student/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
@@ -46,6 +47,7 @@ export const STUDENT_NAV: NavGroup[] = [
     label: 'المجتمع والتطوير',
     items: [
       { to: '/student/social', icon: Globe, label: 'الشبكة الاجتماعية' },
+      { to: '/community', icon: Megaphone, label: 'المجتمع الجامعي', badge: { text: 'جديد', tone: 'brand' } },
       { to: '/student/webinars', icon: Mic2, label: 'الندوات وورش العمل' },
       { to: '/student/mooc', icon: GraduationCap, label: 'كورسات خارجية' },
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
@@ -75,6 +77,7 @@ export const TEACHER_NAV: NavGroup[] = [
     label: 'لوحة التدريس',
     items: [
       { to: '/teacher/dashboard', icon: LayoutDashboard, label: 'لوحة الأستاذ' },
+      { to: '/teacher/intelligence', icon: Brain, label: 'الذكاء الأكاديمي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/teacher/schedule', icon: Calendar, label: 'جدول المحاضرات' },
       { to: '/teacher/attendance', icon: ClipboardCheck, label: 'الحضور والغياب' },
       { to: '/teacher/grades', icon: ListChecks, label: 'درجات الطلاب' },
@@ -96,6 +99,7 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/teacher/research', icon: Microscope, label: 'البحث العلمي' },
       { to: '/teacher/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/teacher/library', icon: Library, label: 'المكتبة' },
+      { to: '/teacher/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/teacher/alerts', icon: Bell, label: 'الإشعارات' },
     ],
   },
@@ -127,8 +131,9 @@ export const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
-    label: 'النظام',
+    label: 'النظام والمجتمع',
     items: [
+      { to: '/admin/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
       { to: '/admin/alerts', icon: Bell, label: 'الإشعارات' },
     ],
@@ -152,11 +157,18 @@ export const QUALITY_NAV: NavGroup[] = [
     ],
   },
   {
-    label: 'التقارير',
+    label: 'الرقابة والمراجعة',
     items: [
-      { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
+      { to: '/quality/exam-moderation', icon: ClipboardCheck, label: 'مراجعة الاختبارات', badge: { text: 'جديد', tone: 'brand' } },
       { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
       { to: '/quality/alerts', icon: Bell, label: 'تنبيهات حرجة' },
+    ],
+  },
+  {
+    label: 'التقارير والمجتمع',
+    items: [
+      { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
+      { to: '/quality/community', icon: Megaphone, label: 'المجتمع الجامعي' },
     ],
   },
   {

@@ -2472,3 +2472,309 @@
   color: #D4A537;
   font-size: var(--fs-sm);
 }
+
+
+/* ────────────────────────────────────────────────────────
+   Academic Intelligence — risk rows, curriculum chapters
+   ──────────────────────────────────────────────────────── */
+.risk-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+.risk-row-name {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.risk-row-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+.risk-row-suggestion {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.risk-row-score {
+  flex-shrink: 0;
+  text-align: center;
+  min-width: 64px;
+}
+.risk-row-pct {
+  font-size: 22px;
+  font-weight: var(--fw-bold);
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+.risk-row-label {
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+  margin-top: 2px;
+}
+
+.curriculum-chapter {
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+.curriculum-chapter-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-2);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+}
+.curriculum-topics {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.curriculum-topics li {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+/* ────────────────────────────────────────────────────────
+   Online exams
+   ──────────────────────────────────────────────────────── */
+.exam-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-1);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  margin-bottom: var(--sp-3);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.exam-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+}
+.exam-timer.urgent {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+  animation: pulse-urgent 1.2s ease-in-out infinite;
+}
+@keyframes pulse-urgent {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+.exam-prompt {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+  line-height: var(--lh-loose);
+}
+.exam-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.exam-choice:hover { background: var(--surface-3); }
+.exam-choice.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.exam-choice input[type="radio"] {
+  margin-top: 3px;
+  accent-color: var(--accent);
+}
+
+/* Moderation row */
+.moderation-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  border-right: 3px solid #D4A537;
+}
+.moderation-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  margin-bottom: 4px;
+}
+.moderation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+
+/* ────────────────────────────────────────────────────────
+   Community: announcements, events
+   ──────────────────────────────────────────────────────── */
+.announcement-card {
+  position: relative;
+  padding: var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.announcement-card.pinned {
+  border-color: #D4A537;
+  background: linear-gradient(135deg, rgba(212, 165, 55, 0.06) 0%, transparent 60%);
+}
+.announcement-pin {
+  position: absolute;
+  top: 8px; left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(212, 165, 55, 0.18);
+  color: #D4A537;
+  font-size: 10px;
+  font-weight: var(--fw-semibold);
+}
+.announcement-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+.announcement-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+.announcement-title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin: 0 0 4px 0;
+}
+.announcement-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.announcement-body {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-loose);
+  margin: 0;
+}
+
+.event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+.event-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ────────────────────────────────────────────────────────
+   Admin governance: teacher onboarding + permissions editor
+   ──────────────────────────────────────────────────────── */
+.teacher-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  width: 100%;
+  text-align: right;
+  font-family: inherit;
+  color: inherit;
+  transition: all 0.12s ease;
+}
+.teacher-row:hover { background: var(--surface-3); }
+.teacher-row.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.teacher-row-name { font-weight: var(--fw-semibold); font-size: var(--fs-sm); }
+.teacher-row-email { color: var(--text-subtle); }
+
+.cert-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+
+.suggested-course-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+
+.permissions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.perm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.perm-row.state-granted { border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.06); }
+.perm-row.state-revoked { border-color: rgba(212, 165, 55, 0.4); background: rgba(212, 165, 55, 0.06); }
+.perm-row.state-role    { border-color: var(--border); }
+.perm-row-info { display: flex; flex-direction: column; gap: 4px; }
+.perm-row-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+.perm-row-key { font-size: 10px; color: var(--text-subtle); padding: 2px 6px; background: var(--surface-1); border-radius: var(--r-sm); display: inline-block; width: max-content; }
+.perm-row-state { display: flex; align-items: center; gap: 6px; }
+.perm-row-actions { display: flex; gap: 6px; }

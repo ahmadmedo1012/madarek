@@ -127,6 +127,94 @@ enum AiMessageRole {
   SYSTEM
 }
 
+// ─── Phase: governance + exams + social ─────────────────────────
+enum DegreeLevel {
+  BACHELORS
+  MASTERS
+  PHD
+}
+
+enum Capability {
+  // Research
+  RESEARCH_GRADE_OWN      // grade papers in offerings I teach
+  RESEARCH_GRADE_ANY      // grade any paper (admin override)
+  RESEARCH_PUBLISH        // publish to library
+  // Exams
+  EXAMS_AUTHOR            // create exam templates + questions
+  EXAMS_MODERATE          // approve / reject exam templates
+  EXAMS_TAKE              // take exams (default for students)
+  // Curriculum
+  CURRICULUM_EDIT_OWN     // edit lectures/chapters in my offerings
+  CURRICULUM_EDIT_ANY     // edit any course curriculum
+  // Governance
+  USERS_MANAGE            // create/disable user accounts
+  ROLES_ASSIGN            // assign role + capabilities
+  TEACHERS_VERIFY         // verify teacher profiles for onboarding
+  // Quality
+  QUALITY_VIEW            // read quality dashboards
+  QUALITY_REPORT          // file quality reports
+  // Communications
+  ANNOUNCE_PLATFORM       // platform-wide announcements
+  ANNOUNCE_FACULTY        // faculty/department/course announcements
+  COMPETITIONS_RUN        // create competitions
+  EVENTS_RUN              // create campus events
+}
+
+enum QuestionType {
+  MCQ
+  TRUE_FALSE
+  SHORT
+  ESSAY
+}
+
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ExamKind {
+  QUIZ
+  MIDTERM
+  FINAL
+  PRACTICE
+}
+
+enum ExamStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  PUBLISHED
+  CLOSED
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  EXPIRED
+}
+
+enum AnnouncementScope {
+  PLATFORM
+  FACULTY
+  DEPARTMENT
+  OFFERING
+}
+
+enum CompetitionStatus {
+  OPEN
+  CLOSED
+  JUDGED
+}
+
+enum RsvpStatus {
+  GOING
+  MAYBE
+  NO
+}
+
 // ────────────────────────────────────────────────────────────────
 //  Identity & access
 // ────────────────────────────────────────────────────────────────
@@ -181,6 +269,22 @@ model User {
   trainingEnrollments TrainingEnrollment[]
   badges            UserBadge[]
   pointsLedger      PointsLedger[]
+  // Governance
+  permissionGrants  UserPermission[]   @relation("UserPermissionUser")
+  permissionGrantedBy UserPermission[] @relation("UserPermissionGranter")
+  verifiedTeachers  TeacherProfile[]   @relation("TeacherProfileVerifier")
+  // Exams
+  authoredQuestions Question[]         @relation("QuestionAuthor")
+  moderatedQuestions Question[]        @relation("QuestionModerator")
+  authoredExams     ExamTemplate[]     @relation("ExamAuthor")
+  moderatedExams    ExamTemplate[]     @relation("ExamModerator")
+  examAttempts      ExamAttempt[]
+  // Social
+  announcements     Announcement[]
+  competitionsRun   Competition[]      @relation("CompetitionOrganizer")
+  competitionEntries CompetitionEntry[]
+  eventsRun         CampusEvent[]      @relation("EventOrganizer")
+  eventRsvps        EventRSVP[]
 
   @@index([role])
   @@index([email])
@@ -206,17 +310,26 @@ model StudentProfile {
 }
 
 model TeacherProfile {
-  userId       String       @id
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialty    String
-  rank         AcademicRank @default(LECTURER)
-  departmentId String
-  department   Department   @relation(fields: [departmentId], references: [id])
-  bio          String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  userId           String       @id
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialty        String
+  rank             AcademicRank @default(LECTURER)
+  departmentId     String
+  department       Department   @relation(fields: [departmentId], references: [id])
+  bio              String?
+  // Onboarding / suitability detection
+  degreeLevel      DegreeLevel  @default(MASTERS)
+  yearsExperience  Int          @default(0)
+  certifications   Json?        // [{ title, issuer, year }]
+  subjectKeywords  String[]     @default([]) // ["AI", "Machine Learning", "Statistics"]
+  verifiedAt       DateTime?
+  verifiedById     String?
+  verifiedBy       User?        @relation("TeacherProfileVerifier", fields: [verifiedById], references: [id])
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   @@index([departmentId])
+  @@index([verifiedById])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -230,6 +343,8 @@ model Faculty {
   createdAt   DateTime         @default(now())
   departments Department[]
   students    StudentProfile[]
+  questionCategories QuestionCategory[]
+  examTemplates      ExamTemplate[]
 }
 
 model Department {
@@ -242,6 +357,7 @@ model Department {
   students  StudentProfile[]
   teachers  TeacherProfile[]
   createdAt DateTime         @default(now())
+  questionCategories QuestionCategory[]
 
   @@unique([facultyId, name])
   @@index([facultyId])
@@ -285,6 +401,7 @@ model CourseOffering {
   grades         Grade[]
   lectures       Lecture[]
   researchPapers ResearchPaper[]
+  examTemplates  ExamTemplate[]
 
   @@unique([courseId, term, teacherId])
   @@index([teacherId])
@@ -1087,4 +1204,268 @@ model PointsLedger {
 
   @@index([userId])
   @@index([userId, createdAt])
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  Governance: capabilities + role/user permissions
+// ════════════════════════════════════════════════════════════════
+//  Two-layer model:
+//    1. RolePermission — defaults granted by Role
+//    2. UserPermission — explicit overrides per user (grant or revoke)
+//
+//  Effective caps = (RolePermission for user.role) ∪ (UserPermission grants)
+//                   ∖ (UserPermission revokes)
+// ────────────────────────────────────────────────────────────────
+
+model RolePermission {
+  role       Role
+  capability Capability
+
+  @@id([role, capability])
+  @@index([role])
+}
+
+model UserPermission {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation("UserPermissionUser", fields: [userId], references: [id], onDelete: Cascade)
+  capability   Capability
+  // grant=true means this cap is explicitly given even if role doesn't have it.
+  // grant=false means this cap is explicitly revoked even if role has it.
+  grant        Boolean    @default(true)
+  grantedAt    DateTime   @default(now())
+  grantedById  String?
+  grantedBy    User?      @relation("UserPermissionGranter", fields: [grantedById], references: [id])
+  reason       String?
+
+  @@unique([userId, capability])
+  @@index([userId])
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Unified exams + question bank
+// ════════════════════════════════════════════════════════════════
+
+model QuestionCategory {
+  id            String      @id @default(cuid())
+  slug          String      @unique
+  title         String
+  description   String?
+  facultyId     String?
+  faculty       Faculty?    @relation(fields: [facultyId], references: [id])
+  departmentId  String?
+  department    Department? @relation(fields: [departmentId], references: [id])
+  isShared      Boolean     @default(false) // visible across faculties
+  iconEmoji     String?
+  createdAt     DateTime    @default(now())
+
+  questions     Question[]
+
+  @@index([facultyId])
+  @@index([departmentId])
+}
+
+model Question {
+  id              String          @id @default(cuid())
+  categoryId      String
+  category        QuestionCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  type            QuestionType
+  prompt          String          @db.Text
+  // For MCQ/TF: array of choice strings. For SHORT/ESSAY: null.
+  choices         Json?
+  // For MCQ: index into choices. For TF: 0=true, 1=false. For SHORT: model answer string. For ESSAY: rubric.
+  correctAnswer   Json?
+  difficulty      DifficultyLevel @default(MEDIUM)
+  points          Int             @default(1)
+  tags            String[]        @default([])
+  authorId        String
+  author          User            @relation("QuestionAuthor", fields: [authorId], references: [id])
+  isApproved      Boolean         @default(false)
+  moderatedById   String?
+  moderatedBy     User?           @relation("QuestionModerator", fields: [moderatedById], references: [id])
+  moderationNote  String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  templateLinks   ExamTemplateQuestion[]
+  examAnswers    ExamAnswer[]
+
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([difficulty])
+  @@index([isApproved])
+}
+
+model ExamTemplate {
+  id              String         @id @default(cuid())
+  offeringId      String?
+  offering        CourseOffering? @relation(fields: [offeringId], references: [id])
+  facultyId       String?        // faculty-wide unified exam
+  faculty         Faculty?       @relation(fields: [facultyId], references: [id])
+  title           String
+  kind            ExamKind       @default(QUIZ)
+  description     String?        @db.Text
+  durationMin     Int            @default(45)
+  passingScore    Int            @default(50)
+  randomized      Boolean        @default(true)
+  status          ExamStatus     @default(DRAFT)
+  authorId        String
+  author          User           @relation("ExamAuthor", fields: [authorId], references: [id])
+  moderatedById   String?
+  moderatedBy     User?          @relation("ExamModerator", fields: [moderatedById], references: [id])
+  moderationNote  String?
+  openAt          DateTime?
+  closeAt         DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  questions       ExamTemplateQuestion[]
+  attempts        ExamAttempt[]
+
+  @@index([offeringId])
+  @@index([facultyId])
+  @@index([authorId])
+  @@index([status])
+}
+
+model ExamTemplateQuestion {
+  id           String       @id @default(cuid())
+  templateId   String
+  template     ExamTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     Question     @relation(fields: [questionId], references: [id])
+  order        Int
+  pointsOverride Int?       // override the question's default points
+
+  @@unique([templateId, questionId])
+  @@unique([templateId, order])
+  @@index([templateId])
+}
+
+model ExamAttempt {
+  id           String        @id @default(cuid())
+  templateId   String
+  template     ExamTemplate  @relation(fields: [templateId], references: [id])
+  studentId    String
+  student      User          @relation(fields: [studentId], references: [id])
+  startedAt    DateTime      @default(now())
+  submittedAt  DateTime?
+  expiresAt    DateTime
+  status       AttemptStatus @default(IN_PROGRESS)
+  score        Decimal?      @db.Decimal(6, 2)
+  maxScore     Decimal       @db.Decimal(6, 2)
+
+  answers      ExamAnswer[]
+
+  @@index([templateId])
+  @@index([studentId])
+  @@index([status])
+}
+
+model ExamAnswer {
+  id            String      @id @default(cuid())
+  attemptId     String
+  attempt       ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId    String
+  question      Question    @relation(fields: [questionId], references: [id])
+  // Student input — interpreted per question type
+  answerText    String?     @db.Text
+  choiceIndex   Int?
+  isCorrect     Boolean?    // null = pending manual review
+  awardedPoints Decimal?    @db.Decimal(6, 2)
+  feedback      String?
+  answeredAt    DateTime    @default(now())
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Social / community
+// ════════════════════════════════════════════════════════════════
+
+model Announcement {
+  id          String            @id @default(cuid())
+  authorId    String
+  author      User              @relation(fields: [authorId], references: [id])
+  scope       AnnouncementScope
+  scopeId     String?           // facultyId / departmentId / offeringId
+  title       String
+  body        String            @db.Text
+  pinned      Boolean           @default(false)
+  publishedAt DateTime          @default(now())
+  expiresAt   DateTime?
+  iconEmoji   String?
+
+  @@index([scope, scopeId])
+  @@index([publishedAt])
+}
+
+model Competition {
+  id           String              @id @default(cuid())
+  title        String
+  description  String              @db.Text
+  category     String              // "بحث" | "برمجة" | "ابتكار" | "محاضرة" | "تصميم" ...
+  prize        String?
+  deadline     DateTime
+  organizerId  String
+  organizer    User                @relation("CompetitionOrganizer", fields: [organizerId], references: [id])
+  status       CompetitionStatus   @default(OPEN)
+  iconEmoji    String?
+  themeColor   String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  entries      CompetitionEntry[]
+
+  @@index([status])
+  @@index([deadline])
+}
+
+model CompetitionEntry {
+  id            String      @id @default(cuid())
+  competitionId String
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  title         String
+  body          String      @db.Text
+  fileUrl       String?
+  submittedAt   DateTime    @default(now())
+  score         Int?        // judging score, null until judged
+
+  @@unique([competitionId, userId])
+  @@index([competitionId])
+}
+
+model CampusEvent {
+  id           String       @id @default(cuid())
+  title        String
+  description  String       @db.Text
+  location     String
+  startsAt     DateTime
+  endsAt       DateTime
+  capacity     Int          @default(100)
+  organizerId  String
+  organizer    User         @relation("EventOrganizer", fields: [organizerId], references: [id])
+  iconEmoji    String?
+  themeColor   String?
+  createdAt    DateTime     @default(now())
+
+  rsvps        EventRSVP[]
+
+  @@index([startsAt])
+}
+
+model EventRSVP {
+  eventId   String
+  event     CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  status    RsvpStatus  @default(GOING)
+  rsvpedAt  DateTime    @default(now())
+
+  @@id([eventId, userId])
+  @@index([userId])
 }

@@ -27,6 +27,10 @@ import LivePage from './pages/student/LivePage';
 import PaymentPage from './pages/student/PaymentPage';
 import CampusMapPage from './pages/student/CampusMapPage';
 import TrainingCatalogPage, { TrainingTrackPage, TrainingLessonPage, AchievementsPage } from './pages/student/TrainingPages';
+import TeacherIntelligencePage, { TeacherOfferingDetailPage } from './pages/teacher/TeacherIntelligencePage';
+import OnlineExamsPage, { ExamTakerPage, ExamModerationPage } from './pages/exams/OnlineExamsPages';
+import CommunityPage from './pages/community/CommunityPages';
+import { AdminTeachersPage, AdminPermissionsPage } from './pages/admin/AdminGovernancePages';
 import {
   TeacherSchedulePage, AttendancePage, GradesPage,
   MaterialsPage, ResearchPage, StudentsListPage, PerformancePage,
@@ -94,6 +98,11 @@ export default function App() {
               <Route path="/training/:slug" element={<TrainingTrackPage />} />
               <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />
               <Route path="/achievements" element={<AchievementsPage />} />
+              {/* Online exams */}
+              <Route path="/student/online-exams" element={<OnlineExamsPage />} />
+              <Route path="/student/online-exams/:id" element={<ExamTakerPage />} />
+              {/* Community */}
+              <Route path="/community" element={<CommunityPage />} />
             </Route>
           </Route>
 
@@ -113,6 +122,11 @@ export default function App() {
               <Route path="/teacher/ai" element={<AiAssistantPage />} />
               <Route path="/teacher/library" element={<LibraryPage />} />
               <Route path="/teacher/alerts" element={<AlertsPage />} />
+              {/* Academic Intelligence */}
+              <Route path="/teacher/intelligence" element={<TeacherIntelligencePage />} />
+              <Route path="/teacher/intelligence/:offeringId" element={<TeacherOfferingDetailPage />} />
+              {/* Community shared */}
+              <Route path="/teacher/community" element={<CommunityPage />} />
             </Route>
           </Route>
 
@@ -121,7 +135,9 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
               <Route path="/admin/students" element={<AdminPlaceholder title="إدارة الطلاب" />} />
-              <Route path="/admin/teachers" element={<AdminPlaceholder title="إدارة الأساتذة" />} />
+              <Route path="/admin/teachers" element={<AdminTeachersPage />} />
+              <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
+              <Route path="/admin/community" element={<CommunityPage />} />
               <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
               <Route path="/admin/courses" element={<AdminCoursesPage />} />
               <Route path="/admin/analysis" element={<AdminPlaceholder title="تحليل الأداء" />} />
@@ -142,6 +158,8 @@ export default function App() {
               <Route path="/quality/reports" element={<QualityReportsPage />} />
               <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
               <Route path="/quality/alerts" element={<QualityAlertsPage />} />
+              <Route path="/quality/exam-moderation" element={<ExamModerationPage />} />
+              <Route path="/quality/community" element={<CommunityPage />} />
             </Route>
           </Route>
 

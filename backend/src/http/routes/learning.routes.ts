@@ -7,6 +7,8 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { extractPaperText } from '../../lib/pdf.js';
+import { assertOwnsResearchPaper } from '../../lib/permissions.js';
+import { requireCapability } from '../middleware/requireCapability.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -523,9 +525,12 @@ const gradePaperSchema = z.object({
   feedback: z.string().max(4000).optional(),
 }).strict();
 
-router.post('/research/:id/grade', requireRole(Role.TEACHER, Role.ADMIN), validate(gradePaperSchema), async (req, res, next) => {
+router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESEARCH_GRADE_ANY'), validate(gradePaperSchema), async (req, res, next) => {
   try {
     const id = req.params.id!;
+    // Per-row ownership: teacher must own the offering the paper belongs to,
+    // unless they hold RESEARCH_GRADE_ANY.
+    await assertOwnsResearchPaper(id, req.user!.id, req.user!.role);
     const updated = await prisma.researchPaper.update({
       where: { id },
       data: {
@@ -766,7 +771,7 @@ router.delete('/research/annotations/:id', async (req, res, next) => {
 // ════════════════════════════════════════════════════════════════
 // Quality oversight (read-only views of institutional health)
 // ════════════════════════════════════════════════════════════════
-router.get('/quality/overview', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
+router.get('/quality/overview', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
     const [users, courses, offerings, attendance, papers, lectures] = await Promise.all([
       prisma.user.groupBy({ by: ['role'], _count: { _all: true } }),
@@ -789,7 +794,7 @@ router.get('/quality/overview', requireRole(Role.QUALITY, Role.ADMIN), async (_r
   } catch (e) { next(e); }
 });
 
-router.get('/quality/courses', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
+router.get('/quality/courses', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
     const offerings = await prisma.courseOffering.findMany({
       include: {
@@ -803,7 +808,7 @@ router.get('/quality/courses', requireRole(Role.QUALITY, Role.ADMIN), async (_re
   } catch (e) { next(e); }
 });
 
-router.get('/quality/professors', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
+router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
     const teachers = await withRetry(() => prisma.user.findMany({
       where: { role: Role.TEACHER },
@@ -866,7 +871,7 @@ router.get('/quality/professors', requireRole(Role.QUALITY, Role.ADMIN), async (
   } catch (e) { next(e); }
 });
 
-router.get('/quality/engagement', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
+router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
     const [attendance, watchEvents, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveEvents] = await withRetry(() => Promise.all([
       prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
@@ -931,7 +936,7 @@ router.get('/quality/engagement', requireRole(Role.QUALITY, Role.ADMIN), async (
   } catch (e) { next(e); }
 });
 
-router.get('/quality/curriculum', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
+router.get('/quality/curriculum', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
     const faculties = await withRetry(() => prisma.faculty.findMany({
       include: {
