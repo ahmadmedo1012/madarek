@@ -1,0 +1,272 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Users,
+  AlertTriangle, MessageSquare, FileText, Upload, Bell,
+  CheckCircle2, Filter, Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
+import { Card, Badge, UserAvatar } from '../../components/primitives';
+import { Icon } from '../../components/Icon';
+
+type FeedFilter = 'all' | 'submissions' | 'questions' | 'attendance' | 'research' | 'content';
+
+interface FeedItem {
+  id: string;
+  kind: FeedFilter;
+  iconKind: 'avatar' | 'icon';
+  authorName: string;
+  authorInitials?: string;
+  iconCmp?: LucideIcon;
+  iconTone?: 'amber' | 'red' | 'green' | 'purple' | 'gold';
+  meta: string; // course / time
+  time: string;
+  body: React.ReactNode;
+  actions: Array<{ label: string; primary?: boolean; to?: string; icon?: LucideIcon }>;
+}
+
+const FEED: FeedItem[] = [
+  {
+    id: '1',
+    kind: 'submissions',
+    iconKind: 'avatar',
+    authorName: 'علي الفقيه',
+    authorInitials: 'عف',
+    meta: 'هندسة البرمجيات · SE301',
+    time: 'منذ 5 دقائق',
+    body: <span>سلّم <strong>مشروع UML للتصميم</strong> — ينتظر تقييمك.</span>,
+    actions: [{ label: 'مراجعة الواجب', primary: true, to: '/teacher/grades', icon: FileText }],
+  },
+  {
+    id: '2',
+    kind: 'questions',
+    iconKind: 'avatar',
+    authorName: 'مريم الفاخري',
+    authorInitials: 'مف',
+    meta: 'نظم المعلومات',
+    time: 'منذ 12 دقيقة',
+    body: <span>«أستاذ، هل يمكن إعادة شرح موضوع <strong>Normalization</strong>؟ أنا محتارة في 3NF.»</span>,
+    actions: [
+      { label: 'الرد', primary: true, to: '/teacher/messages', icon: MessageSquare },
+      { label: 'تجاهل' },
+    ],
+  },
+  {
+    id: '3',
+    kind: 'attendance',
+    iconKind: 'icon',
+    authorName: 'تنبيه حضور',
+    iconCmp: AlertTriangle,
+    iconTone: 'red',
+    meta: 'قواعد البيانات · CS302',
+    time: 'منذ ساعة',
+    body: <span>5 طلاب غابوا 3 محاضرات متتالية — يحتاجون متابعة قبل تجاوز الحد.</span>,
+    actions: [
+      { label: 'عرض الطلاب', primary: true, to: '/teacher/attendance', icon: Users },
+      { label: 'إرسال تذكير' },
+    ],
+  },
+  {
+    id: '4',
+    kind: 'research',
+    iconKind: 'avatar',
+    authorName: 'يوسف البركي',
+    authorInitials: 'يب',
+    meta: 'بحث جامعي · هندسة البرمجيات',
+    time: 'منذ 3 ساعات',
+    body: (
+      <span>
+        رفع بحث «تطبيق نمط <strong>Observer</strong> في تطبيقات Real-Time» — اجتاز الفحص الأوتوماتيكي
+        (انتحال 6.4%، AI 11.2%) وينتظر تقييمك.
+      </span>
+    ),
+    actions: [{ label: 'تقييم البحث', primary: true, to: '/teacher/research', icon: Sparkles }],
+  },
+  {
+    id: '5',
+    kind: 'submissions',
+    iconKind: 'avatar',
+    authorName: 'سارة المحجوب',
+    authorInitials: 'سم',
+    meta: 'هندسة البرمجيات · SE301',
+    time: 'منذ 4 ساعات',
+    body: <span>سلّمت <strong>تقرير دراسة حالة Design Patterns</strong>.</span>,
+    actions: [{ label: 'مراجعة', primary: true, to: '/teacher/grades', icon: FileText }],
+  },
+  {
+    id: '6',
+    kind: 'content',
+    iconKind: 'icon',
+    authorName: 'تذكير محتوى',
+    iconCmp: Upload,
+    iconTone: 'amber',
+    meta: 'شبكات الحاسوب',
+    time: 'منذ 6 ساعات',
+    body: <span>محاضرة الأسبوع القادم لم تُرفع بعد. الطلاب سيحتاجونها قبل الأحد.</span>,
+    actions: [{ label: 'رفع المحتوى', primary: true, to: '/teacher/materials', icon: Upload }],
+  },
+  {
+    id: '7',
+    kind: 'questions',
+    iconKind: 'avatar',
+    authorName: 'خالد المزوغي',
+    authorInitials: 'خم',
+    meta: 'نظم المعلومات',
+    time: 'منذ يوم',
+    body: <span>«هل سيتم تغطية موضوع <strong>Indexing</strong> في الاختبار النهائي؟»</span>,
+    actions: [{ label: 'الرد', primary: true, to: '/teacher/messages', icon: MessageSquare }],
+  },
+  {
+    id: '8',
+    kind: 'research',
+    iconKind: 'icon',
+    authorName: 'فحص أوتوماتيكي',
+    iconCmp: AlertTriangle,
+    iconTone: 'red',
+    meta: 'بحث جامعي · CS302',
+    time: 'منذ يوم',
+    body: <span>3 بحوث رفضها فحص الانتحال — تجاوزت 25%. يحتاجون توجيهاً منك.</span>,
+    actions: [{ label: 'مراجعة الحالات', primary: true, to: '/teacher/research', icon: AlertTriangle }],
+  },
+  {
+    id: '9',
+    kind: 'content',
+    iconKind: 'icon',
+    authorName: 'إنجاز',
+    iconCmp: CheckCircle2,
+    iconTone: 'green',
+    meta: 'هندسة البرمجيات',
+    time: 'منذ يومين',
+    body: <span>اكتملت رقمنة 78% من محتوى المقرر — هدف الفصل 80% تقريباً.</span>,
+    actions: [{ label: 'عرض التقرير', to: '/teacher/performance' }],
+  },
+];
+
+const FILTER_OPTIONS: Array<{ value: FeedFilter; label: string }> = [
+  { value: 'all', label: 'الكل' },
+  { value: 'submissions', label: 'تسليمات' },
+  { value: 'questions', label: 'أسئلة الطلاب' },
+  { value: 'attendance', label: 'حضور' },
+  { value: 'research', label: 'بحوث' },
+  { value: 'content', label: 'محتوى' },
+];
+
+export function TeacherDashboardPage() {
+  const [filter, setFilter] = useState<FeedFilter>('all');
+  const visible = filter === 'all' ? FEED : FEED.filter((f) => f.kind === filter);
+
+  return (
+    <div className="page">
+      <div className="page-header">
+        <div className="page-title-block">
+          <h1 className="page-title">لوحة الأستاذ</h1>
+          <p className="page-subtitle">
+            كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية.
+          </p>
+        </div>
+        <Badge color="brand">
+          {visible.length} عنصر يحتاج متابعة
+        </Badge>
+      </div>
+
+      {/* Compact KPI strip */}
+      <div className="compact-kpis">
+        <CompactKpi label="طلاب" value="143" trend="‏4% هذا الأسبوع" trendColor="var(--success)" />
+        <CompactKpi label="متوسط الأداء" value="71%" trend="‏5%" trendColor="var(--success)" />
+        <CompactKpi label="حضور" value="78%" trend="‏3%" trendColor="var(--danger)" />
+        <CompactKpi label="بحاجة تقييم" value="12" trend="واجبات + بحوث" trendColor="var(--text-subtle)" />
+      </div>
+
+      {/* Filter toolbar */}
+      <div className="feed-toolbar">
+        <div className="flex items-center gap-2">
+          <Icon icon={Filter} size={14} className="text-subtle" />
+          <span className="text-xs text-subtle">تصفية:</span>
+          {FILTER_OPTIONS.map((o) => (
+            <button
+              key={o.value}
+              type="button"
+              className={`pill${filter === o.value ? ' on' : ''}`}
+              onClick={() => setFilter(o.value)}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <Link to="/teacher/alerts" className="btn ghost sm">
+          <Icon icon={Bell} size={13} />
+          الإشعارات الكاملة
+        </Link>
+      </div>
+
+      {/* The feed */}
+      <div className="feed">
+        {visible.length === 0 ? (
+          <Card>
+            <div className="state">
+              <div className="state-icon" style={{ background: 'var(--success-soft)', color: 'var(--success)' }}>
+                <Icon icon={CheckCircle2} size={20} />
+              </div>
+              <div className="state-title">لا متطلبات الآن — أحسنت!</div>
+              <div className="state-desc">سيظهر هنا أي عنصر جديد فور وصوله.</div>
+            </div>
+          </Card>
+        ) : (
+          visible.map((item) => <FeedRow key={item.id} item={item} />)
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CompactKpi({ label, value, trend, trendColor }: {
+  label: string; value: string; trend: string; trendColor: string;
+}) {
+  return (
+    <div className="compact-kpi">
+      <div className="compact-kpi-label">{label}</div>
+      <div className="compact-kpi-value">{value}</div>
+      <div className="compact-kpi-trend" style={{ color: trendColor }}>{trend}</div>
+    </div>
+  );
+}
+
+function FeedRow({ item }: { item: FeedItem }) {
+  return (
+    <div className="feed-item">
+      {item.iconKind === 'avatar' && item.authorInitials ? (
+        <UserAvatar initials={item.authorInitials} size={40} />
+      ) : (
+        <div className={`feed-item-avatar ${item.iconTone ?? ''}`}>
+          {item.iconCmp ? <Icon icon={item.iconCmp} size={18} /> : null}
+        </div>
+      )}
+      <div className="feed-item-body">
+        <div className="feed-item-head">
+          <span className="feed-item-author">{item.authorName}</span>
+          <span className="feed-item-meta">·</span>
+          <span className="feed-item-meta">{item.meta}</span>
+          <span className="feed-item-meta" style={{ marginLeft: 'auto' }}>{item.time}</span>
+        </div>
+        <div className="feed-item-text">{item.body}</div>
+        {item.actions.length > 0 && (
+          <div className="feed-item-actions">
+            {item.actions.map((a, i) => (
+              a.to ? (
+                <Link key={i} to={a.to} className={`btn ${a.primary ? 'primary' : ''} sm`}>
+                  {a.icon && <Icon icon={a.icon} size={13} />}
+                  {a.label}
+                </Link>
+              ) : (
+                <button key={i} type="button" className={`btn ${a.primary ? 'primary' : ''} sm`}>
+                  {a.icon && <Icon icon={a.icon} size={13} />}
+                  {a.label}
+                </button>
+              )
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -9,7 +9,10 @@ import { Card, MetricCard, Badge, AlertRow, ProgressBar, UserAvatar, SectionTitl
 import { Icon } from '../../components/Icon';
 import ResearchReviewPage from './ResearchReviewPage';
 
-export function TeacherDashboardPage() {
+/** Legacy KPI-grid teacher dashboard. Kept for reference but no longer routed —
+ *  the route now uses the social-feed dashboard from TeacherDashboardPage.tsx.
+ */
+export function TeacherDashboardPageLegacy() {
   return (
     <div className="page">
       <div className="page-header">

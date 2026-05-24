@@ -23,10 +23,11 @@ import LivePage from './pages/student/LivePage';
 import PaymentPage from './pages/student/PaymentPage';
 import CampusMapPage from './pages/student/CampusMapPage';
 import {
-  TeacherDashboardPage, TeacherSchedulePage, AttendancePage, GradesPage,
+  TeacherSchedulePage, AttendancePage, GradesPage,
   MaterialsPage, ResearchPage, StudentsListPage, PerformancePage,
   AssignmentsPage, MessagesPage,
 } from './pages/teacher/TeacherPages';
+import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage';
 import { AdminDashboardPage, AdminPlaceholder } from './pages/admin/AdminPages';
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
