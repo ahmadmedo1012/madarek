@@ -457,6 +457,39 @@ export function usePublishedResearch() {
   });
 }
 
+// ── My profile (real student/teacher data) ────────────────────
+export interface MyProfile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
+  avatarColor: string | null;
+  avatarInitials: string | null;
+  emailVerifiedAt: string | null;
+  createdAt: string;
+  student: {
+    universityId: string;
+    year: number;
+    gpa: number;
+    totalXp: number;
+    level: number;
+    faculty: { id: string; name: string; nameEn: string | null } | null;
+    department: { id: string; name: string; nameEn: string | null } | null;
+  } | null;
+  teacher: {
+    specialty: string | null;
+    rank: string | null;
+    department: { name: string; facultyName: string | undefined } | null;
+  } | null;
+}
+export function useMyProfile() {
+  return useQuery({
+    queryKey: ['me', 'profile'],
+    queryFn: () => unwrap<MyProfile>(api.get('/me/profile')),
+  });
+}
+
 export function useUploadPaper() {
   const qc = useQueryClient();
   return useMutation({

@@ -364,6 +364,19 @@
   .exam-row { padding: var(--sp-3); }
 }
 
+/* ─── University Info chips ─────────────────────────────── */
+.faculty-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.faculty-chip-row:hover { border-color: var(--border); background: var(--surface-1); }
+
 /* ─── Table ─────────────────────────────────────────────── */
 .tbl-wrap {
   overflow-x: auto;

@@ -24,24 +24,26 @@ export function AdminDashboardPage() {
       </div>
 
       <div className="grid-4">
-        <MetricCard icon={Building2} label="الكليات" value="29" change="موزّعة على الجامعة" color="brand" />
+        <MetricCard icon={Building2} label="الكليات" value="29" change="موزّعة على 9 مدن" color="brand" />
         <MetricCard icon={GraduationCap} label="الطلاب" value={s.totalStudents.toLocaleString('ar-LY')} change="مسجَّل في النظام" color="green" />
         <MetricCard icon={School} label="هيئة التدريس" value={s.totalTeachers.toLocaleString('ar-LY')} change="عضو" color="amber" />
         <MetricCard icon={BookOpen} label="المقررات" value={s.totalCourses.toLocaleString('ar-LY')} change={`${s.totalEnrollments} تسجيل`} color="purple" />
       </div>
 
       <div className="grid-2-1">
-        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3}>
+        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle="أعلى 8 كليات من حيث عدد الطلاب">
           <div className="flex-col gap-3">
             {[
-              { f: 'كلية تقنية المعلومات', c: 4200 },
-              { f: 'كلية الهندسة', c: 6800 },
-              { f: 'كلية الطب', c: 5400 },
-              { f: 'كلية الاقتصاد', c: 8200 },
-              { f: 'كلية القانون', c: 5100 },
-              { f: 'كلية العلوم', c: 4800 },
+              { f: 'كلية الاقتصاد · الزاوية', c: 6800 },
+              { f: 'كلية الهندسة · الزاوية', c: 5200 },
+              { f: 'كلية الطب البشري', c: 4800 },
+              { f: 'كلية التربية · الفروع الخمسة', c: 4500 },
+              { f: 'كلية الآداب · الزاوية', c: 4100 },
+              { f: 'كلية القانون · الزاوية', c: 3700 },
+              { f: 'كلية تقنية المعلومات', c: 2900 },
+              { f: 'كلية العلوم · الزاوية', c: 2500 },
             ].map((r) => (
-              <ProgressBar key={r.f} value={(r.c / 8200) * 100} label={r.f} showValue={false} />
+              <ProgressBar key={r.f} value={(r.c / 6800) * 100} label={`${r.f} — ${r.c.toLocaleString('ar-LY')}`} showValue={false} />
             ))}
           </div>
         </Card>
@@ -51,7 +53,8 @@ export function AdminDashboardPage() {
             <Stat label="معدل النجاح العام" value="76%" trend="up" />
             <Stat label="الحضور التراكمي" value="82%" trend="up" />
             <Stat label="رضا الطلاب" value="4.3 / 5" trend="up" />
-            <Stat label="مقررات رقمية" value="68%" trend="up" />
+            <Stat label="الترتيب في ليبيا" value="#6" trend="up" />
+            <Stat label="QS العربي 2026" value="#251–300" trend="up" />
           </div>
         </Card>
       </div>

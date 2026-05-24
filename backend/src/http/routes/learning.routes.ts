@@ -187,6 +187,64 @@ router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), as
 // ════════════════════════════════════════════════════════════════
 // Educational Matrix (per-student)
 // ════════════════════════════════════════════════════════════════
+router.get('/me/profile', async (req, res, next) => {
+  try {
+    const user = await withRetry(() => prisma.user.findUnique({
+      where: { id: req.user!.id },
+      include: {
+        studentProfile: {
+          include: {
+            faculty: { select: { id: true, name: true, nameEn: true } },
+            department: { select: { id: true, name: true, nameEn: true } },
+          },
+        },
+        teacherProfile: {
+          include: {
+            department: { include: { faculty: { select: { name: true } } } },
+          },
+        },
+      },
+    }));
+    if (!user) throw AppError.notFound();
+    res.json({
+      data: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        avatarColor: user.avatarColor,
+        avatarInitials: user.avatarInitials,
+        emailVerifiedAt: user.emailVerifiedAt,
+        createdAt: user.createdAt,
+        student: user.studentProfile
+          ? {
+              universityId: user.studentProfile.universityId,
+              year: user.studentProfile.year,
+              gpa: Number(user.studentProfile.gpa ?? 0),
+              totalXp: user.studentProfile.totalXp,
+              level: user.studentProfile.level,
+              faculty: user.studentProfile.faculty,
+              department: user.studentProfile.department,
+            }
+          : null,
+        teacher: user.teacherProfile
+          ? {
+              specialty: user.teacherProfile.specialty,
+              rank: user.teacherProfile.rank,
+              department: user.teacherProfile.department
+                ? {
+                    name: user.teacherProfile.department.name,
+                    facultyName: user.teacherProfile.department.faculty?.name,
+                  }
+                : null,
+            }
+          : null,
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 router.get('/me/resume', async (req, res, next) => {
   try {
     if (req.user!.role !== Role.STUDENT) {

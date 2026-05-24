@@ -6,7 +6,7 @@ import {
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
-import { useMyAchievements, useMyEnrollments, useMyResearch } from '../../hooks/useResources';
+import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
 
 interface AcademicLink {
   key: 'research-gate' | 'google-scholar' | 'orcid';
@@ -42,6 +42,7 @@ export default function ProfilePage() {
   const enrollments = useMyEnrollments();
   const achievements = useMyAchievements();
   const research = useMyResearch();
+  const profile = useMyProfile();
 
   // Persist link state in localStorage so the demo "binding" survives refresh.
   const [links, setLinks] = useState<Record<string, string>>(() => {
@@ -233,14 +234,35 @@ export default function ProfilePage() {
         <div className="grid-2">
           <ProfileField label="الاسم الكامل" value={`${user.firstName} ${user.lastName}`} icon={User} />
           <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
-          <ProfileField label="الكلية" value="كلية تقنية المعلومات" icon={GraduationCap} />
-          <ProfileField label="القسم" value="علوم الحاسوب" icon={BookOpen} />
-          <ProfileField label="الرقم الجامعي" value="UZ-2024-00001" icon={Hash} mono />
-          <ProfileField label="السنة الدراسية" value="السنة الثالثة" icon={Award} />
+          <ProfileField
+            label="الكلية"
+            value={profile.data?.student?.faculty?.name ?? 'كلية تقنية المعلومات'}
+            icon={GraduationCap}
+          />
+          <ProfileField
+            label="القسم"
+            value={profile.data?.student?.department?.name ?? 'علوم الحاسوب'}
+            icon={BookOpen}
+          />
+          <ProfileField
+            label="الرقم الجامعي"
+            value={profile.data?.student?.universityId ?? '—'}
+            icon={Hash}
+            mono
+          />
+          <ProfileField
+            label="السنة الدراسية"
+            value={
+              profile.data?.student?.year
+                ? ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'][profile.data.student.year - 1] ?? `السنة ${profile.data.student.year}`
+                : '—'
+            }
+            icon={Award}
+          />
         </div>
         <div className="text-xxs text-subtle" style={{ marginTop: 'var(--sp-4)', padding: 'var(--sp-2) var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
           هذه البيانات مصدرها سجلات الجامعة. لتحديثها تواصل مع شؤون الطلاب على{' '}
-          <span className="font-mono" style={{ color: 'var(--accent)' }}>support@zu.edu.ly</span>.
+          <span className="font-mono" style={{ color: 'var(--accent)' }}>info@zu.edu.ly</span>.
         </div>
       </Card>
 

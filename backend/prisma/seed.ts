@@ -31,15 +31,25 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // ─── Faculties & Departments ─────────────────────────────────
+  // Mirrors the official faculty list of University of Zawia (29 colleges total).
+  // We seed a representative subset that covers each region (Zawia + branches).
+  // NOTE: Original 6 names are preserved verbatim to avoid orphaning rows in
+  // existing deployed databases. New ones are appended.
   const faculties = await Promise.all(
     [
-      { name: 'كلية تقنية المعلومات', nameEn: 'IT', iconEmoji: '💻' },
+      { name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻' },
       { name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: '⚙️' },
       { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬' },
       { name: 'كلية الطب', nameEn: 'Medicine', iconEmoji: '⚕️' },
       { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼' },
       { name: 'كلية القانون', nameEn: 'Law', iconEmoji: '⚖️' },
-    ].map((f) => prisma.faculty.upsert({ where: { name: f.name }, create: f, update: {} })),
+      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚' },
+      { name: 'كلية الصيدلة', nameEn: 'Pharmacy', iconEmoji: '💊' },
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓' },
+      { name: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering', iconEmoji: '⛽' },
+      { name: 'كلية التربية البدنية وعلوم الرياضة', nameEn: 'Physical Education', iconEmoji: '⚽' },
+      { name: 'كلية الطب البيطري والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences', iconEmoji: '🌾' },
+    ].map((f) => prisma.faculty.upsert({ where: { name: f.name }, create: f, update: { nameEn: f.nameEn, iconEmoji: f.iconEmoji } })),
   );
 
   const itFaculty = faculties[0]!;
@@ -51,6 +61,27 @@ async function main() {
   const isDept = await prisma.department.upsert({
     where: { facultyId_name: { facultyId: itFaculty.id, name: 'نظم المعلومات' } },
     create: { name: 'نظم المعلومات', nameEn: 'Information Systems', facultyId: itFaculty.id },
+    update: {},
+  });
+
+  // Add a few representative departments for the new faculties so admin/quality
+  // dashboards have realistic structure to walk.
+  const engFaculty = faculties[1]!;
+  await prisma.department.upsert({
+    where: { facultyId_name: { facultyId: engFaculty.id, name: 'الهندسة المدنية' } },
+    create: { name: 'الهندسة المدنية', nameEn: 'Civil Engineering', facultyId: engFaculty.id },
+    update: {},
+  });
+  await prisma.department.upsert({
+    where: { facultyId_name: { facultyId: engFaculty.id, name: 'الهندسة الكهربائية' } },
+    create: { name: 'الهندسة الكهربائية', nameEn: 'Electrical Engineering', facultyId: engFaculty.id },
+    update: {},
+  });
+
+  const medFaculty = faculties[3]!;
+  await prisma.department.upsert({
+    where: { facultyId_name: { facultyId: medFaculty.id, name: 'الطب البشري' } },
+    create: { name: 'الطب البشري', nameEn: 'Human Medicine', facultyId: medFaculty.id },
     update: {},
   });
 

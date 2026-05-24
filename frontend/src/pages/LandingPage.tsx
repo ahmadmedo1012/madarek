@@ -115,16 +115,16 @@ export default function LandingPage() {
             <div className="landing-stat-label">كلية أكاديمية</div>
           </div>
           <div>
-            <div className="landing-stat-value">42K+</div>
+            <div className="landing-stat-value">50K+</div>
             <div className="landing-stat-label">طالب مسجَّل</div>
           </div>
           <div>
-            <div className="landing-stat-value">1.6K</div>
+            <div className="landing-stat-value">2.5K</div>
             <div className="landing-stat-label">عضو هيئة تدريس</div>
           </div>
           <div>
-            <div className="landing-stat-value">68%</div>
-            <div className="landing-stat-label">المقررات الرقمية</div>
+            <div className="landing-stat-value">#6</div>
+            <div className="landing-stat-label">على مستوى ليبيا</div>
           </div>
         </section>
 
@@ -281,13 +281,39 @@ export default function LandingPage() {
       </main>
 
       <footer className="landing-footer">
-        <div className="landing-footer-text">
-          © {new Date().getFullYear()} جامعة الزاوية — مدارك AI. جميع الحقوق محفوظة.
+        <div className="landing-footer-grid">
+          <div className="landing-footer-block">
+            <div className="landing-footer-title">جامعة الزاوية</div>
+            <p className="landing-footer-desc">
+              مؤسسة تعليمية حكومية تأسست عام 1988، معتمدة من وزارة التعليم العالي والبحث العلمي.
+            </p>
+          </div>
+          <div className="landing-footer-block">
+            <div className="landing-footer-title">العنوان</div>
+            <div className="landing-footer-line">شارع جمال عبد الناصر</div>
+            <div className="landing-footer-line">مدينة الزاوية، ليبيا</div>
+          </div>
+          <div className="landing-footer-block">
+            <div className="landing-footer-title">التواصل</div>
+            <div className="landing-footer-line font-mono">‎+218 91 9235939</div>
+            <div className="landing-footer-line font-mono">info@zu.edu.ly</div>
+          </div>
+          <div className="landing-footer-block">
+            <div className="landing-footer-title">روابط</div>
+            <a className="landing-footer-link" href="https://www.zu.edu.ly" target="_blank" rel="noreferrer">الموقع الرسمي</a>
+            <a className="landing-footer-link" href="https://zu.edu.ly/result" target="_blank" rel="noreferrer">النتائج الدراسية</a>
+            <Link to="/auth" className="landing-footer-link">تسجيل الدخول</Link>
+          </div>
         </div>
-        <div className="landing-footer-meta">
-          <span>سياسة الخصوصية</span>
-          <span>شروط الاستخدام</span>
-          <span>اتصل بنا</span>
+        <div className="landing-footer-bottom">
+          <div className="landing-footer-text">
+            © {new Date().getFullYear()} جامعة الزاوية — مدارك AI. جميع الحقوق محفوظة.
+          </div>
+          <div className="landing-footer-meta">
+            <span>سياسة الخصوصية</span>
+            <span>شروط الاستخدام</span>
+            <span>ico@zu.edu.ly · للتعاون الدولي</span>
+          </div>
         </div>
       </footer>
     </div>
