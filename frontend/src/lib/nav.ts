@@ -5,7 +5,7 @@ import {
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, MessageSquare, Microscope, School,
   FileText, Settings, ShieldCheck, Activity, Compass, BookMarked,
-  Radio, Wallet, MapPin,
+  Radio, Wallet, MapPin, Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -59,6 +59,12 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/student/map', icon: MapPin, label: 'خريطة الحرم' },
     ],
   },
+  {
+    label: 'رؤية المنصة',
+    items: [
+      { to: '/vision', icon: Sparkles, label: 'الابتكارات القادمة', badge: { text: '12', tone: 'gold' } },
+    ],
+  },
 ];
 
 export const TEACHER_NAV: NavGroup[] = [
@@ -90,6 +96,12 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/teacher/alerts', icon: Bell, label: 'الإشعارات' },
     ],
   },
+  {
+    label: 'رؤية المنصة',
+    items: [
+      { to: '/vision', icon: Sparkles, label: 'الابتكارات القادمة', badge: { text: '12', tone: 'gold' } },
+    ],
+  },
 ];
 
 export const ADMIN_NAV: NavGroup[] = [
@@ -118,6 +130,12 @@ export const ADMIN_NAV: NavGroup[] = [
       { to: '/admin/alerts', icon: Bell, label: 'الإشعارات' },
     ],
   },
+  {
+    label: 'رؤية المنصة',
+    items: [
+      { to: '/vision', icon: Sparkles, label: 'الابتكارات القادمة', badge: { text: '12', tone: 'gold' } },
+    ],
+  },
 ];
 
 export const QUALITY_NAV: NavGroup[] = [
@@ -136,6 +154,12 @@ export const QUALITY_NAV: NavGroup[] = [
       { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
       { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
       { to: '/quality/alerts', icon: Bell, label: 'تنبيهات حرجة' },
+    ],
+  },
+  {
+    label: 'رؤية المنصة',
+    items: [
+      { to: '/vision', icon: Sparkles, label: 'الابتكارات القادمة', badge: { text: '12', tone: 'gold' } },
     ],
   },
 ];

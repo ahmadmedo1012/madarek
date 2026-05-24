@@ -29,6 +29,7 @@ import {
 } from './pages/teacher/TeacherPages';
 import { AdminDashboardPage, AdminPlaceholder } from './pages/admin/AdminPages';
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
+import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
 import { useAuthStore } from './stores/auth.store';
 
 /** Resolves the home path for an authenticated user, or `/` for guests. */
@@ -127,6 +128,14 @@ export default function App() {
               <Route path="/quality/reports" element={<QualityReportsPage />} />
               <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
               <Route path="/quality/alerts" element={<QualityAlertsPage />} />
+            </Route>
+          </Route>
+
+          {/* Vision (accessible to all authenticated roles) */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppShell />}>
+              <Route path="/vision" element={<VisionGalleryPage />} />
+              <Route path="/vision/:slug" element={<VisionDetailPage />} />
             </Route>
           </Route>
 

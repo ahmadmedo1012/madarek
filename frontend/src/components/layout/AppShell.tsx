@@ -54,6 +54,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/quality/reports': 'تقارير الجودة',
   '/quality/curriculum': 'مراجعة المناهج',
   '/quality/alerts': 'تنبيهات الجودة',
+  '/vision': 'الابتكارات القادمة',
 };
 
 export function AppShell({ children }: { children?: ReactNode }) {
