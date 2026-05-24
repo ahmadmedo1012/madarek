@@ -264,7 +264,7 @@ export default function LibraryPage() {
                   </div>
                   {p.fileUrl && (
                     <Link
-                      to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library')}`}
+                      to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library')}&paper=${encodeURIComponent(p.id)}`}
                       className="btn primary sm"
                     >
                       <Icon icon={FileText} size={13} />

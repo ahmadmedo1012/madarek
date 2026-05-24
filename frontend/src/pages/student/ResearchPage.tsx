@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   BookMarked, Upload, ShieldCheck, Bot as BotIcon, FileText,
   CheckCircle2, XCircle, AlertCircle, ScanSearch, X, ChevronLeft,
-  Sparkles, BarChart3, Clock, type LucideIcon,
+  Sparkles, BarChart3, Clock, MessageSquare, type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
@@ -239,6 +240,16 @@ function PaperRow({
             <p className="text-xs" style={{ color: 'var(--text-muted)', lineHeight: 'var(--lh-base)' }}>
               {paper.feedback}
             </p>
+          )}
+          {paper.fileUrl && (
+            <RouterLink
+              to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/student/research')}&paper=${encodeURIComponent(paper.id)}`}
+              className="btn outline sm"
+              style={{ marginTop: 6, alignSelf: 'flex-start' }}
+            >
+              <Icon icon={MessageSquare} size={13} />
+              مراجعة البحث مع ملاحظات الأستاذ
+            </RouterLink>
           )}
         </div>
       )}

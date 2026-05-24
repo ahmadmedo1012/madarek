@@ -177,6 +177,7 @@ model User {
   masteries         StudentMastery[]   @relation("StudentMasteries")
   researchPapers    ResearchPaper[]    @relation("StudentPapers")
   reviewedPapers    ResearchPaper[]    @relation("ProfessorReviewedPapers")
+  paperAnnotations  PaperAnnotation[]
 
   @@index([role])
   @@index([email])
@@ -913,8 +914,26 @@ model ResearchPaper {
   scannedAt     DateTime?
   gradedAt      DateTime?
   publishedAt   DateTime?
+  annotations   PaperAnnotation[]
 
   @@index([studentId])
   @@index([reviewerId])
   @@index([status])
+}
+
+// Inline feedback on a research paper. Teachers/reviewers leave page-anchored
+// comments; the student sees them when reading the graded paper.
+model PaperAnnotation {
+  id        String        @id @default(cuid())
+  paperId   String
+  paper     ResearchPaper @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id])
+  page      Int           // 1-indexed PDF page
+  comment   String        @db.Text
+  color     String?       // hex like "#F5A623" — UI tint; null → default
+  createdAt DateTime      @default(now())
+
+  @@index([paperId])
+  @@index([authorId])
 }

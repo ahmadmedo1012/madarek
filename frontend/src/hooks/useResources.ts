@@ -298,6 +298,29 @@ export function useAdminReports() {
   });
 }
 
+export interface AdminCourse {
+  id: string;
+  code: string;
+  name: string;
+  credits: number;
+  themeColor: string | null;
+  faculty: string | null;
+  facultyEmoji: string | null;
+  department: string | null;
+  offeringCount: number;
+  conceptCount: number;
+  totalEnrollments: number;
+  totalLectures: number;
+  totalMaterials: number;
+  recentOfferings: Array<{ id: string; term: string; enrollments: number; lectures: number; teacher: string | null }>;
+}
+export function useAdminCourses() {
+  return useQuery({
+    queryKey: ['admin', 'courses'],
+    queryFn: () => unwrap<AdminCourse[]>(api.get('/admin/courses')),
+  });
+}
+
 // ── AI ─────────────────────────────────────────────────────────
 export function useAiChat() {
   return useMutation({
@@ -512,6 +535,47 @@ export function usePublishedResearch() {
   return useQuery({
     queryKey: ['research', 'published'],
     queryFn: () => unwrap<ResearchPaper[]>(api.get('/research/published')),
+  });
+}
+
+// ── Paper annotations ─────────────────────────────────────────
+export interface PaperAnnotation {
+  id: string;
+  paperId: string;
+  page: number;
+  comment: string;
+  color: string | null;
+  createdAt: string;
+  author: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
+    avatarColor: string | null;
+    avatarInitials: string | null;
+  };
+}
+export function useAnnotations(paperId: string | undefined) {
+  return useQuery({
+    queryKey: ['annotations', paperId],
+    enabled: !!paperId,
+    queryFn: () => unwrap<PaperAnnotation[]>(api.get(`/research/${paperId}/annotations`)),
+  });
+}
+export function useCreateAnnotation(paperId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { page: number; comment: string; color?: string }) =>
+      unwrap<PaperAnnotation>(api.post(`/research/${paperId}/annotations`, input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['annotations', paperId] }),
+  });
+}
+export function useDeleteAnnotation(paperId: string | undefined) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (annotationId: string) =>
+      api.delete(`/research/annotations/${annotationId}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['annotations', paperId] }),
   });
 }
 

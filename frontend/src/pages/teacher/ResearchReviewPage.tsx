@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Microscope, TrendingUp, FileText, ShieldCheck, Bot as BotIcon,
-  ScanSearch, CheckCircle2, X, Sparkles, BookMarked, BarChart3,
+  ScanSearch, CheckCircle2, X, Sparkles, BookMarked, BarChart3, MessageSquare,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
@@ -131,10 +132,21 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
         <span className="text-subtle">·</span>
         <span className="text-subtle">رُفع {fmtDate(paper.uploadedAt)}</span>
       </div>
-      <button type="button" className="btn primary sm" onClick={onOpen}>
-        <Icon icon={FileText} size={13} />
-        مراجعة وتقييم
-      </button>
+      <div className="flex items-center gap-2 flex-wrap">
+        <button type="button" className="btn primary sm" onClick={onOpen}>
+          <Icon icon={FileText} size={13} />
+          مراجعة وتقييم
+        </button>
+        {paper.fileUrl && (
+          <RouterLink
+            to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/teacher/research')}&paper=${encodeURIComponent(paper.id)}`}
+            className="btn outline sm"
+          >
+            <Icon icon={MessageSquare} size={13} />
+            قراءة وكتابة ملاحظات
+          </RouterLink>
+        )}
+      </div>
     </div>
   );
 }

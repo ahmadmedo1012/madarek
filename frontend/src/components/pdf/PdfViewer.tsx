@@ -20,6 +20,12 @@ interface PdfViewerProps {
   title?: string;
   /** When true, the viewer fills its parent. When false, uses an internal max-height. */
   fill?: boolean;
+  /** External handle to navigate the viewer (parent calls .jumpToPage). */
+  controlRef?: React.MutableRefObject<{ jumpToPage: (n: number) => void } | null>;
+  /** Called whenever current page changes — parent can mirror this. */
+  onPageChange?: (page: number) => void;
+  /** Called once the document is loaded — parent gets total pages. */
+  onDocumentLoaded?: (numPages: number) => void;
 }
 
 interface DocState {
@@ -27,7 +33,7 @@ interface DocState {
   numPages: number;
 }
 
-export default function PdfViewer({ src, title, fill = true }: PdfViewerProps) {
+export default function PdfViewer({ src, title, fill = true, controlRef, onPageChange, onDocumentLoaded }: PdfViewerProps) {
   const [doc, setDoc] = useState<DocState | null>(null);
   const [page, setPage] = useState(1);
   const [scale, setScale] = useState<number | 'fit-width'>('fit-width');
@@ -65,6 +71,7 @@ export default function PdfViewer({ src, title, fill = true }: PdfViewerProps) {
         setDoc({ pdf, numPages: pdf.numPages });
         setPage(1);
         setLoading(false);
+        onDocumentLoaded?.(pdf.numPages);
       },
       (err) => {
         if (cancelled) return;
@@ -79,6 +86,21 @@ export default function PdfViewer({ src, title, fill = true }: PdfViewerProps) {
       task.destroy();
     };
   }, [src]);
+
+  // Notify parent on page change
+  useEffect(() => { onPageChange?.(page); }, [page, onPageChange]);
+
+  // Expose imperative jump-to-page for the parent (annotations panel).
+  useEffect(() => {
+    if (!controlRef) return;
+    controlRef.current = {
+      jumpToPage: (n: number) => {
+        const max = doc?.numPages ?? 1;
+        setPage(Math.max(1, Math.min(max, n)));
+      },
+    };
+    return () => { if (controlRef) controlRef.current = null; };
+  }, [controlRef, doc]);
 
   // ── Render current page ──────────────────────────────────────────
   const renderPage = useCallback(async () => {

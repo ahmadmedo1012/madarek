@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { LoanStatus, Role } from '@prisma/client';
+import { LoanStatus, Prisma, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -497,6 +497,61 @@ router.get('/admin/reports', requireRole(Role.ADMIN), async (_req, res, next) =>
         topCourses: courseStats,
       },
     });
+  } catch (e) { next(e); }
+});
+
+// ── Admin: courses list with full counts ─────────────────────
+const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
+  department: { select: { name: true, faculty: { select: { name: true, iconEmoji: true } } } },
+  _count: { select: { offerings: true, concepts: true } },
+  offerings: {
+    select: {
+      id: true,
+      term: true,
+      _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
+      teacher: { select: { firstName: true, lastName: true } },
+    },
+    orderBy: { term: 'desc' },
+    take: 3,
+  },
+});
+
+router.get('/admin/courses', requireRole(Role.ADMIN), async (_req, res, next) => {
+  try {
+    const courses = await prisma.course.findMany({
+      orderBy: [{ code: 'asc' }],
+      include: adminCourseInclude,
+    });
+
+    const data = courses.map((c) => {
+      const totalEnrollments = c.offerings.reduce((s, o) => s + o._count.enrollments, 0);
+      const totalLectures = c.offerings.reduce((s, o) => s + o._count.lectures, 0);
+      const totalMaterials = c.offerings.reduce((s, o) => s + o._count.materials, 0);
+      return {
+        id: c.id,
+        code: c.code,
+        name: c.name,
+        credits: c.credits,
+        themeColor: c.themeColor,
+        faculty: c.department?.faculty?.name ?? null,
+        facultyEmoji: c.department?.faculty?.iconEmoji ?? null,
+        department: c.department?.name ?? null,
+        offeringCount: c._count.offerings,
+        conceptCount: c._count.concepts,
+        totalEnrollments,
+        totalLectures,
+        totalMaterials,
+        recentOfferings: c.offerings.map((o) => ({
+          id: o.id,
+          term: o.term,
+          enrollments: o._count.enrollments,
+          lectures: o._count.lectures,
+          teacher: o.teacher ? `${o.teacher.firstName} ${o.teacher.lastName}` : null,
+        })),
+      };
+    });
+
+    res.json({ data });
   } catch (e) { next(e); }
 });
 

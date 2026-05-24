@@ -577,6 +577,84 @@ router.get('/research/published', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// ─── Paper annotations ────────────────────────────────────────
+// Permission model:
+//   - GET: paper student, paper reviewer, ADMIN, QUALITY can read
+//   - POST: only TEACHER (must be paper reviewer) or ADMIN can write
+//   - DELETE: only the annotation author or ADMIN
+
+const annotationCreateSchema = z.object({
+  page: z.number().int().min(1).max(2000),
+  comment: z.string().min(1).max(2000),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+}).strict();
+
+router.get('/research/:id/annotations', async (req, res, next) => {
+  try {
+    const paper = await prisma.researchPaper.findUnique({
+      where: { id: req.params.id! },
+      select: { studentId: true, reviewerId: true },
+    });
+    if (!paper) throw AppError.notFound();
+    const role = req.user!.role;
+    const uid = req.user!.id;
+    const allowed =
+      role === Role.ADMIN ||
+      role === Role.QUALITY ||
+      paper.studentId === uid ||
+      paper.reviewerId === uid;
+    if (!allowed) throw AppError.forbidden('Not allowed to view annotations on this paper');
+
+    const data = await prisma.paperAnnotation.findMany({
+      where: { paperId: req.params.id! },
+      orderBy: [{ page: 'asc' }, { createdAt: 'asc' }],
+      include: {
+        author: { select: { id: true, firstName: true, lastName: true, role: true, avatarColor: true, avatarInitials: true } },
+      },
+    });
+    res.json({ data });
+  } catch (e) { next(e); }
+});
+
+router.post('/research/:id/annotations', requireRole(Role.TEACHER, Role.ADMIN), validate(annotationCreateSchema), async (req, res, next) => {
+  try {
+    const paper = await prisma.researchPaper.findUnique({
+      where: { id: req.params.id! },
+      select: { id: true, reviewerId: true },
+    });
+    if (!paper) throw AppError.notFound();
+    if (req.user!.role === Role.TEACHER && paper.reviewerId !== req.user!.id) {
+      throw AppError.forbidden('Only the assigned reviewer can annotate this paper');
+    }
+
+    const created = await prisma.paperAnnotation.create({
+      data: {
+        paperId: paper.id,
+        authorId: req.user!.id,
+        page: req.body.page,
+        comment: req.body.comment,
+        color: req.body.color ?? null,
+      },
+      include: {
+        author: { select: { id: true, firstName: true, lastName: true, role: true, avatarColor: true, avatarInitials: true } },
+      },
+    });
+    res.status(201).json({ data: created });
+  } catch (e) { next(e); }
+});
+
+router.delete('/research/annotations/:id', async (req, res, next) => {
+  try {
+    const note = await prisma.paperAnnotation.findUnique({ where: { id: req.params.id! } });
+    if (!note) throw AppError.notFound();
+    if (note.authorId !== req.user!.id && req.user!.role !== Role.ADMIN) {
+      throw AppError.forbidden('You can only delete your own annotations');
+    }
+    await prisma.paperAnnotation.delete({ where: { id: note.id } });
+    res.json({ data: { ok: true } });
+  } catch (e) { next(e); }
+});
+
 // ════════════════════════════════════════════════════════════════
 // Quality oversight (read-only views of institutional health)
 // ════════════════════════════════════════════════════════════════

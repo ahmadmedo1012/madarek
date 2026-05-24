@@ -1,16 +1,22 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Icon } from '../components/Icon';
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.
 const PdfViewer = lazy(() => import('../components/pdf/PdfViewer'));
+const AnnotationsPanel = lazy(() => import('../components/pdf/AnnotationsPanel'));
 
 export default function DocumentViewerPage() {
   const params = useParams<{ filename: string }>();
   const [search] = useSearchParams();
   const title = search.get('title') ?? undefined;
   const back = search.get('back') ?? '/student/library?tab=research';
+  const paperId = search.get('paper') ?? undefined;
+
+  const controlRef = useRef<{ jumpToPage: (n: number) => void } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numPages, setNumPages] = useState(1);
 
   if (!params.filename) {
     return (
@@ -36,16 +42,36 @@ export default function DocumentViewerPage() {
         </div>
       </div>
 
-      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
-        <Suspense
-          fallback={
-            <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
-              <span className="text-sm text-muted">جاري تحضير عارض المستندات…</span>
-            </div>
-          }
-        >
-          <PdfViewer src={src} title={title} fill />
-        </Suspense>
+      <div className="document-viewer-layout">
+        <div className="document-viewer-main">
+          <Suspense
+            fallback={
+              <div className="card" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
+                <span className="text-sm text-muted">جاري تحضير عارض المستندات…</span>
+              </div>
+            }
+          >
+            <PdfViewer
+              src={src}
+              title={title}
+              fill
+              controlRef={controlRef}
+              onPageChange={setCurrentPage}
+              onDocumentLoaded={setNumPages}
+            />
+          </Suspense>
+        </div>
+
+        {paperId && (
+          <Suspense fallback={null}>
+            <AnnotationsPanel
+              paperId={paperId}
+              currentPage={currentPage}
+              numPages={numPages}
+              onJumpToPage={(n) => controlRef.current?.jumpToPage(n)}
+            />
+          </Suspense>
+        )}
       </div>
     </div>
   );

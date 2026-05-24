@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Building2, GraduationCap, School, BookOpen,
   BarChart3, Settings, FileText, Users, TrendingUp,
@@ -6,7 +7,7 @@ import {
 } from 'lucide-react';
 import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
 import { LoadingState, ErrorState } from '../../components/primitives/States';
-import { useAdminStats, useAdminFaculties, useAdminReports } from '../../hooks/useResources';
+import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
 
 export function AdminDashboardPage() {
   const stats = useAdminStats();
@@ -312,5 +313,115 @@ function LegendDot({ color, label }: { color: string; label: string }) {
       <span style={{ width: 10, height: 10, borderRadius: 999, background: color, display: 'inline-block' }} />
       {label}
     </span>
+  );
+}
+
+/* ─── Admin: Courses ─────────────────────────────────────── */
+export function AdminCoursesPage() {
+  const { data, isPending, isError } = useAdminCourses();
+  const [filter, setFilter] = useState<'all' | string>('all');
+
+  if (isPending) {
+    return (
+      <div className="page">
+        <PageHeader title="إدارة المقررات" subtitle="جميع المقررات الجامعية مع إحصائيات حية." />
+        <Card><LoadingState /></Card>
+      </div>
+    );
+  }
+  if (isError || !data) {
+    return (
+      <div className="page">
+        <PageHeader title="إدارة المقررات" subtitle="جميع المقررات الجامعية مع إحصائيات حية." />
+        <Card><ErrorState /></Card>
+      </div>
+    );
+  }
+
+  const faculties = Array.from(new Set(data.map((c) => c.faculty).filter(Boolean))) as string[];
+  const visible = filter === 'all' ? data : data.filter((c) => c.faculty === filter);
+
+  const totalEnroll = data.reduce((s, c) => s + c.totalEnrollments, 0);
+  const totalLec = data.reduce((s, c) => s + c.totalLectures, 0);
+  const totalMat = data.reduce((s, c) => s + c.totalMaterials, 0);
+  const avgCredits = data.length ? Math.round((data.reduce((s, c) => s + c.credits, 0) / data.length) * 10) / 10 : 0;
+
+  return (
+    <div className="page">
+      <PageHeader title="إدارة المقررات" subtitle={`${data.length} مقرر · ${totalEnroll.toLocaleString('ar-LY')} تسجيل`} />
+
+      <div className="grid-4">
+        <MetricCard icon={BookOpen} label="إجمالي المقررات" value={data.length} color="brand" />
+        <MetricCard icon={GraduationCap} label="تسجيلات الطلاب" value={totalEnroll.toLocaleString('ar-LY')} color="green" />
+        <MetricCard icon={FileText} label="المحاضرات + المواد" value={(totalLec + totalMat).toLocaleString('ar-LY')} color="purple" />
+        <MetricCard icon={Award} label="متوسط الساعات" value={avgCredits} color="gold" />
+      </div>
+
+      {/* Faculty filter pills */}
+      <Card compact>
+        <div className="filter-bar">
+          <button type="button" className={`pill${filter === 'all' ? ' on' : ''}`} onClick={() => setFilter('all')}>
+            الكل ({data.length})
+          </button>
+          {faculties.map((f) => {
+            const count = data.filter((c) => c.faculty === f).length;
+            return (
+              <button key={f} type="button" className={`pill${filter === f ? ' on' : ''}`} onClick={() => setFilter(f)}>
+                {f} ({count})
+              </button>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Courses table */}
+      <Card title={`المقررات (${visible.length})`} icon={BookOpen}>
+        <div className="tbl-wrap">
+          <table className="tbl">
+            <thead>
+              <tr>
+                <th style={{ width: 90 }}>الكود</th>
+                <th>اسم المقرر</th>
+                <th>الكلية / القسم</th>
+                <th style={{ width: 80, textAlign: 'center' }}>س.م</th>
+                <th style={{ width: 110, textAlign: 'center' }}>تسجيلات</th>
+                <th style={{ width: 100, textAlign: 'center' }}>محاضرات</th>
+                <th style={{ width: 100, textAlign: 'center' }}>الفصول</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map((c) => (
+                <tr key={c.id}>
+                  <td className="font-mono text-subtle">{c.code}</td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      {c.themeColor && (
+                        <span style={{ width: 6, height: 24, borderRadius: 3, background: c.themeColor, display: 'inline-block' }} />
+                      )}
+                      <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
+                    </div>
+                  </td>
+                  <td>
+                    {c.faculty ? (
+                      <div className="flex items-center gap-1">
+                        {c.facultyEmoji && <span>{c.facultyEmoji}</span>}
+                        <span className="text-xs text-muted">{c.faculty}</span>
+                        {c.department && <span className="text-xxs text-subtle">· {c.department}</span>}
+                      </div>
+                    ) : (
+                      <span className="text-xxs text-subtle">—</span>
+                    )}
+                  </td>
+                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.credits}</td>
+                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.totalEnrollments}</td>
+                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.totalLectures}</td>
+                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.offeringCount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
   );
 }
