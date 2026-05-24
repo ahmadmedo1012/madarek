@@ -287,51 +287,8 @@ export function ResultsPage() {
   );
 }
 
-/* ─── Labs ─────────────────────────────────────────────── */
-const LABS = [
-  { name: 'معمل الشبكات الافتراضي', platform: 'Cisco Packet Tracer', count: 18, progress: 65, status: 'نشط' as const },
-  { name: 'معمل الكيمياء الرقمي', platform: 'ChemSim', count: 24, progress: 30 },
-  { name: 'معمل الدوائر الكهربائية', platform: 'Tinkercad', count: 15, progress: 0 },
-  { name: 'معمل الأحياء الجزيئي', platform: 'BioModel', count: 12, progress: 0 },
-  { name: 'معمل الفيزياء الفلكية', platform: 'PhysSim', count: 8, progress: 50 },
-  { name: 'معمل الروبوتيكا', platform: 'Arduino Sim', count: 20, progress: 10 },
-];
-
-export function LabsPage() {
-  return (
-    <div className="page">
-      <div className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">المعامل الافتراضية</h1>
-          <p className="page-subtitle">تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية.</p>
-        </div>
-      </div>
-
-      <div className="grid-3">
-        {LABS.map((l) => (
-          <Card key={l.name} compact bordered>
-            <div className="flex items-start justify-between" style={{ marginBottom: 'var(--sp-3)' }}>
-              <div className="metric-icon" style={{ color: 'var(--accent)' }}>
-                <Icon icon={FlaskConical} size={20} />
-              </div>
-              {l.status === 'نشط' && <Badge color="green">نشط</Badge>}
-            </div>
-            <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{l.name}</div>
-            <div className="text-xs text-subtle" style={{ marginTop: 4 }}>{l.platform} · {l.count} تجربة</div>
-            {l.progress > 0 && (
-              <div style={{ marginTop: 'var(--sp-3)' }}>
-                <ProgressBar value={l.progress} showValue />
-              </div>
-            )}
-            <button type="button" className={`btn ${l.status === 'نشط' ? 'primary' : 'outline'}`} style={{ width: '100%', marginTop: 'var(--sp-3)' }}>
-              {l.status === 'نشط' ? 'استكمال' : 'بدء التجربة'}
-            </button>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-}
+/* ─── Labs / AR-VR ─────────────────────────────────────── */
+// LabsPage moved to its own file (LabsPage.tsx).
 
 /* ─── AR/VR ────────────────────────────────────────────── */
 const AR = [

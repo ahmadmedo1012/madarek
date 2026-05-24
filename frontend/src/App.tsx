@@ -16,8 +16,12 @@ import MatrixPage from './pages/student/MatrixPage';
 import StudentResearchPage from './pages/student/ResearchPage';
 import {
   GamificationPage, SkillsPage, AlertsPage, SchedulePage, ResultsPage,
-  LabsPage, ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
+  ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
 } from './pages/student/MorePages';
+import LabsPage from './pages/student/LabsPage';
+import LivePage from './pages/student/LivePage';
+import PaymentPage from './pages/student/PaymentPage';
+import CampusMapPage from './pages/student/CampusMapPage';
 import {
   TeacherDashboardPage, TeacherSchedulePage, AttendancePage, GradesPage,
   MaterialsPage, ResearchPage, StudentsListPage, PerformancePage,
@@ -66,6 +70,9 @@ export default function App() {
               <Route path="/student/social" element={<SocialPage />} />
               <Route path="/student/downloads" element={<DownloadsPage />} />
               <Route path="/student/university" element={<UniversityInfoPage />} />
+              <Route path="/student/live" element={<LivePage />} />
+              <Route path="/student/payment" element={<PaymentPage />} />
+              <Route path="/student/map" element={<CampusMapPage />} />
               {/* Course detail + lectures */}
               <Route path="/student/courses/:offeringId" element={<CourseDetailPage />} />
               <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />

@@ -5,6 +5,7 @@ import {
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, MessageSquare, Microscope, School,
   FileText, Settings, ShieldCheck, Activity, Compass, BookMarked,
+  Radio, Wallet, MapPin,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -48,6 +49,14 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
       { to: '/student/alerts', icon: Bell, label: 'الإشعارات', badge: { text: '4' } },
       { to: '/student/university', icon: Building2, label: 'جامعة الزاوية' },
+    ],
+  },
+  {
+    label: 'الخدمات الجامعية',
+    items: [
+      { to: '/student/live', icon: Radio, label: 'البث المباشر', badge: { text: 'Live', tone: 'brand' } },
+      { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
+      { to: '/student/map', icon: MapPin, label: 'خريطة الحرم' },
     ],
   },
 ];
