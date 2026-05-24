@@ -50,3 +50,5 @@ backend/prisma/*.db-journal
 # Misc
 *.local
 .eslintcache
+stitch*.zip
+"stitch (1).zip"
