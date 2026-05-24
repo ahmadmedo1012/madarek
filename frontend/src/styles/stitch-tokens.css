@@ -1,0 +1,391 @@
+/* ═══════════════════════════════════════════════════════════════
+   Stitch-aligned design tokens — overrides loaded after evolution.css
+   ───────────────────────────────────────────────────────────────
+   Strategy: keep token NAMES identical so every component still
+   works, just tune the VALUES toward Stitch's institutional palette
+   and add a softer Arabic font (Cairo) on top of IBM Plex.
+
+   Source: stitch (1).zip — 8 mockups covering landing, login,
+   student/teacher/admin dashboards, lesson, AI chat, virtual lab.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Font: Cairo first, IBM Plex fallback ────────────── */
+  --font-sans:
+    'Cairo',
+    'IBM Plex Sans Arabic',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+/* ── Light theme: deeper navy, slate-cool surfaces ────── */
+[data-theme='light'] {
+  /* Surfaces — slightly cooler/more institutional */
+  --bg: #F4F6F9;
+  --surface-1: #FFFFFF;
+  --surface-2: #EEF1F6;
+  --surface-3: #E1E6EE;
+
+  /* Borders — softer */
+  --border: rgba(15, 23, 42, 0.06);
+  --border-strong: rgba(15, 23, 42, 0.10);
+
+  /* Brand accent — deeper, more institutional */
+  --accent: #1A2540;
+  --accent-hover: #0D2A4D;
+  --accent-soft: rgba(26, 37, 64, 0.08);
+  --accent-border: rgba(26, 37, 64, 0.32);
+  --accent-fg: #FFFFFF;
+
+  /* Text — keep readable */
+  --text: #0F172A;
+  --text-muted: #475569;
+  --text-subtle: #8694AC;
+
+  /* Shadows — softer, longer (Stitch signature) */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 24px 48px rgba(15, 23, 42, 0.12);
+
+  --focus-ring: 0 0 0 3px rgba(26, 37, 64, 0.18);
+  --selection-bg: rgba(26, 37, 64, 0.18);
+}
+
+/* ── Dark theme: keep existing depth, just shift accent ── */
+[data-theme='dark'] {
+  /* Brand accent — slightly lighter than light-mode for contrast on dark surfaces */
+  --accent: #4C7BD9;
+  --accent-hover: #6E94E5;
+  --accent-soft: rgba(76, 123, 217, 0.14);
+  --accent-border: rgba(76, 123, 217, 0.45);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Typography refinement for Cairo
+   ═══════════════════════════════════════════════════════════════ */
+
+body {
+  font-family: var(--font-sans);
+  /* Cairo benefits from a touch more letter-spacing on body */
+  letter-spacing: -0.005em;
+}
+
+/* Display headings — Cairo wants slightly tighter tracking */
+h1, h2, h3, .page-title, .auth-brand-hero, .landing-title, .track-hero-title,
+.this-week-title {
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.022em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Card style refinement — Stitch is shadow-led, not border-led
+   ═══════════════════════════════════════════════════════════════ */
+
+.card {
+  background: var(--surface-1);
+  /* Lighter border + heavier soft shadow */
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  /* Slightly tighter radius — Stitch sits at 12-14px */
+  border-radius: 12px;
+}
+
+[data-theme='light'] .card {
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Cards inside grid layouts already exist — refine padding density */
+.card { padding: var(--sp-5); }
+.card.compact { padding: var(--sp-3) var(--sp-4); }
+
+@media (max-width: 720px) {
+  .card { padding: var(--sp-4); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Button style — Stitch is pill-shaped + deep navy primary
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn {
+  border-radius: 10px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.005em;
+}
+
+[data-theme='light'] .btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(26, 37, 64, 0.16);
+}
+[data-theme='light'] .btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 6px 18px rgba(26, 37, 64, 0.24);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Status badges — Stitch is soft-bg + dark-text pastel
+   ═══════════════════════════════════════════════════════════════ */
+
+.badge {
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0;
+  border-radius: var(--r-sm);
+  /* Stitch badges are slightly larger and pillier */
+  padding: 3px 10px;
+  font-size: 11px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Stat numbers — Stitch uses bold confident sizes
+   ═══════════════════════════════════════════════════════════════ */
+
+.metric-value, .kpi-value, .leaderboard-points,
+.risk-row-pct, .stat-value, .landing-stat-value,
+.this-week-emphasis {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+}
+
+/* MetricCard value — bigger, more confident */
+.metric-value {
+  font-size: 28px;
+  line-height: 1.1;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Sidebar nav — Stitch active item has a "filled pill" style
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .nav-item.on {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+[data-theme='light'] .nav-item.on::before {
+  background: rgba(255, 255, 255, 0.85);
+}
+[data-theme='light'] .nav-item.on .nav-icon { color: var(--accent-fg); }
+
+/* ═══════════════════════════════════════════════════════════════
+   Topbar — slightly more presence
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .topbar {
+  background: rgba(255, 255, 255, 0.85);
+}
+.topbar-title {
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.012em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Auth page — Stitch login composition refinement
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Stitch login is reversed from ours: form on left, brand on right.
+   In RTL that means form-pane reads first (right side of card).
+   Switch the visual order so form gets primary attention. */
+[data-theme='light'] .auth-overlay {
+  background:
+    radial-gradient(1200px 600px at 80% -20%, rgba(26, 37, 64, 0.05), transparent 60%),
+    var(--bg);
+}
+
+.auth-card {
+  /* Stitch card has heavier soft shadow, thinner border */
+  box-shadow: var(--shadow-xl);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+[data-theme='light'] .auth-brand {
+  /* Make the aside lighter and more elegant — pure surface, not a separate panel */
+  background: var(--surface-1);
+  border-inline-end: 1px solid var(--border);
+}
+[data-theme='light'] .auth-form-pane {
+  background: var(--surface-2);
+}
+
+.auth-brand-name {
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+}
+
+.auth-brand-hero {
+  font-size: clamp(24px, 2.4vw, 30px);
+  line-height: 1.25;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+}
+
+.auth-features li {
+  /* Stitch list items are lighter, more breathing room */
+  padding: 8px 0;
+  font-size: var(--fs-sm);
+}
+
+.auth-form-title {
+  font-size: 22px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+}
+
+.auth-tab.on {
+  background: var(--surface-1);
+  font-weight: var(--fw-semibold);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GPA hero card — Stitch student dashboard signature
+   ═══════════════════════════════════════════════════════════════ */
+.gpa-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+[data-theme='light'] .gpa-hero {
+  background: linear-gradient(135deg, var(--surface-1) 0%, var(--accent-soft) 200%);
+}
+.gpa-hero-ring-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+.gpa-hero-ring {
+  display: block;
+}
+.gpa-hero-ring-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.gpa-hero-label {
+  font-size: 9px;
+  color: var(--text-subtle);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.2px;
+}
+.gpa-hero-value {
+  font-size: 32px;
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.gpa-hero-body {
+  flex: 1;
+  min-width: 0;
+}
+.gpa-hero-title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.gpa-hero-subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--sp-3);
+}
+.gpa-hero-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--surface-3);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: var(--sp-3);
+}
+.gpa-hero-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+  border-radius: 999px;
+  transition: width 600ms var(--ease-expo);
+}
+.gpa-hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.gpa-hero-meta > span:first-child {
+  font-size: 11px;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .gpa-hero {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .gpa-hero-ring-wrap { margin: 0 auto; }
+  .gpa-hero-meta {
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .gpa-hero-meta .btn { width: 100%; justify-content: center; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   AI quick-action chips — Stitch chat composition
+   ═══════════════════════════════════════════════════════════════ */
+.ai-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 0;
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.ai-quick-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition:
+    background var(--t-hover) var(--ease-expo),
+    color var(--t-hover) var(--ease-expo),
+    transform 80ms var(--ease-expo);
+}
+.ai-quick-chip:hover {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.ai-quick-chip:active {
+  transform: scale(0.97);
+}
+@media (max-width: 600px) {
+  .ai-quick-chip { font-size: var(--fs-sm); padding: 9px 14px; min-height: 36px; }
+}

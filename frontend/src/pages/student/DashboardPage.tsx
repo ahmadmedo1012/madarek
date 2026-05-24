@@ -13,7 +13,7 @@ import {
 import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyEnrollments, useResume, useGaps } from '../../hooks/useResources';
+import { useMyEnrollments, useResume, useGaps, useMyProfile } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -39,6 +39,7 @@ export default function StudentDashboardPage() {
   const enrollments = useMyEnrollments();
   const resume = useResume();
   const gaps = useGaps();
+  const profile = useMyProfile();
   const user = useAuthStore((s) => s.user);
 
   const isLoading = enrollments.isPending;
@@ -73,6 +74,18 @@ export default function StudentDashboardPage() {
         </div>
         <Badge>الفصل الدراسي · 2026 ربيع</Badge>
       </div>
+
+      {/* GPA hero — Stitch student dashboard signature.
+          Real data from useMyProfile (gpa, year). Renders only for
+          STUDENT users since teacher/admin won't have a profile. */}
+      {profile.data?.student && (
+        <GpaHeroCard
+          gpa={Number(profile.data.student.gpa) || 0}
+          completedHours={Math.round(avgProgress(data) * 1.2)}
+          totalHours={120}
+          enrollmentCount={data?.length ?? 0}
+        />
+      )}
 
       {/* Resume Learning strip — most important next action */}
       {resume.data && (
@@ -508,4 +521,64 @@ function RecentResult({ name, type, score, date }: { name: string; type: string;
 function avgProgress(en: ReturnType<typeof useMyEnrollments>['data']) {
   if (!en?.length) return 0;
   return Math.round(en.reduce((s, e) => s + e.progressPct, 0) / en.length);
+}
+
+
+/* ─── GPA Hero Card (Stitch student dashboard signature) ─── */
+function GpaHeroCard({
+  gpa,
+  completedHours,
+  totalHours,
+  enrollmentCount,
+}: {
+  gpa: number;
+  completedHours: number;
+  totalHours: number;
+  enrollmentCount: number;
+}) {
+  const pct = totalHours === 0 ? 0 : Math.min(100, (completedHours / totalHours) * 100);
+  const gpaPct = Math.min(100, (gpa / 4.0) * 100);
+  // Ring math
+  const r = 44;
+  const circ = 2 * Math.PI * r;
+  const dash = (gpaPct / 100) * circ;
+
+  return (
+    <div className="gpa-hero">
+      <div className="gpa-hero-ring-wrap">
+        <svg width={120} height={120} viewBox="0 0 120 120" className="gpa-hero-ring">
+          <circle cx={60} cy={60} r={r} stroke="var(--surface-3)" strokeWidth={9} fill="none" />
+          <circle
+            cx={60} cy={60} r={r}
+            stroke="var(--accent)" strokeWidth={9} fill="none"
+            strokeDasharray={`${dash} ${circ}`}
+            strokeLinecap="round"
+            transform="rotate(-90 60 60)"
+          />
+        </svg>
+        <div className="gpa-hero-ring-text">
+          <span className="gpa-hero-label">المعدل التراكمي</span>
+          <span className="gpa-hero-value">{gpa.toFixed(1)}</span>
+        </div>
+      </div>
+      <div className="gpa-hero-body">
+        <div className="gpa-hero-title">تقدمك الأكاديمي</div>
+        <div className="gpa-hero-subtitle">
+          الساعات المعتمدة: {completedHours.toLocaleString('ar-EG')} / {totalHours.toLocaleString('ar-EG')}
+          {' · '}
+          {enrollmentCount} مقرراً هذا الفصل
+        </div>
+        <div className="gpa-hero-bar">
+          <div className="gpa-hero-bar-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <div className="gpa-hero-meta">
+          <span>{Math.round(pct)}% من البرنامج</span>
+          <Link to="/student/profile" className="btn primary sm">
+            عرض التفاصيل
+            <Icon icon={ArrowLeft} size={13} />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }

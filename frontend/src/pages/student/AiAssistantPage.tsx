@@ -161,6 +161,22 @@ export default function AiAssistantPage() {
             )}
           </div>
 
+          {/* Quick-action chips above the input — Stitch signature */}
+          <div className="ai-quick-actions">
+            <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المادة')}>
+              لخّص الفصل الأخير
+            </button>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')}>
+              اشرح مفهوماً
+            </button>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')}>
+              اختبار قصير
+            </button>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسية إضافية')}>
+              موارد إضافية
+            </button>
+          </div>
+
           <div className="chat-input-row">
             <input
               className="chat-input"

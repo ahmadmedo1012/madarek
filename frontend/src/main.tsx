@@ -9,6 +9,7 @@ import './styles/landing.css';
 import './styles/pdf.css';
 import './styles/refinement.css';
 import './styles/evolution.css';
+import './styles/stitch-tokens.css';
 
 import App from './App';
 
