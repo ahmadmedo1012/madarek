@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma migrate deploy",
+    "prisma:deploy": "node scripts/migrate-deploy.mjs",
     "prisma:seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate"
   },
