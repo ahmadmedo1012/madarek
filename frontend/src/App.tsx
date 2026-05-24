@@ -14,6 +14,9 @@ import CourseDetailPage from './pages/student/CourseDetailPage';
 import LecturePlayerPage from './pages/student/LecturePlayerPage';
 import MatrixPage from './pages/student/MatrixPage';
 import StudentResearchPage from './pages/student/ResearchPage';
+import ProfilePage from './pages/student/ProfilePage';
+import WebinarsPage from './pages/student/WebinarsPage';
+import ExamsPage from './pages/student/ExamsPage';
 import {
   GamificationPage, SkillsPage, AlertsPage, SchedulePage, ResultsPage,
   ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
@@ -81,6 +84,9 @@ export default function App() {
               {/* Educational Matrix */}
               <Route path="/student/matrix" element={<MatrixPage />} />
               <Route path="/student/research" element={<StudentResearchPage />} />
+              <Route path="/student/profile" element={<ProfilePage />} />
+              <Route path="/student/webinars" element={<WebinarsPage />} />
+              <Route path="/student/exams" element={<ExamsPage />} />
             </Route>
           </Route>
 

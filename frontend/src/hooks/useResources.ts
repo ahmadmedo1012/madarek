@@ -450,6 +450,13 @@ export function useResearchQueue() {
   });
 }
 
+export function usePublishedResearch() {
+  return useQuery({
+    queryKey: ['research', 'published'],
+    queryFn: () => unwrap<ResearchPaper[]>(api.get('/research/published')),
+  });
+}
+
 export function useUploadPaper() {
   const qc = useQueryClient();
   return useMutation({

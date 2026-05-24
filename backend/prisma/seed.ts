@@ -561,6 +561,66 @@ async function main() {
     },
   });
 
+  // Three published papers to populate the public library archive.
+  // Spec: published papers go into the university's electronic library.
+  await prisma.researchPaper.create({
+    data: {
+      studentId: student.id,
+      reviewerId: teacher.id,
+      offeringId: seOffering.id,
+      title: 'استخدام التعلم العميق في تشخيص الأمراض الجلدية: مراجعة منهجية',
+      abstract:
+        'مراجعة منهجية تستعرض 27 دراسة حديثة (2020-2025) في توظيف الشبكات العصبية الالتفافية لتصنيف صور الأمراض الجلدية، مع تحليل دقّة النماذج وحدود التطبيق السريري.',
+      status: 'PUBLISHED',
+      plagiarismPct: 4.1,
+      aiContentPct: 7.8,
+      grade: 18,
+      feedback: 'بحث متميّز يُنصح بنشره في مجلة محكّمة.',
+      uploadedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+      scannedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000 + 60_000),
+      gradedAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000),
+      publishedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prisma.researchPaper.create({
+    data: {
+      studentId: student.id,
+      reviewerId: teacher.id,
+      offeringId: seOffering.id,
+      title: 'تأثير استراتيجية الصف المعكوس على تحصيل طلاب الهندسة في جامعة الزاوية',
+      abstract:
+        'دراسة شبه تجريبية على 84 طالباً من أقسام الهندسة، تقارن متوسط التحصيل بين فصلين أحدهما اعتمد الصف المعكوس مدعوماً بمنصة مدارك. النتائج تُظهر فرقاً ذا دلالة إحصائية لصالح المجموعة التجريبية.',
+      status: 'PUBLISHED',
+      plagiarismPct: 5.6,
+      aiContentPct: 4.3,
+      grade: 19,
+      feedback: 'دراسة دقيقة منهجياً وتمثّل إضافة حقيقية للحقل.',
+      uploadedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+      scannedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000 + 60_000),
+      gradedAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000),
+      publishedAt: new Date(Date.now() - 75 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prisma.researchPaper.create({
+    data: {
+      studentId: student.id,
+      reviewerId: teacher.id,
+      offeringId: seOffering.id,
+      title: 'تحليل أمن تطبيقات الجوّال المصرفية الليبية',
+      abstract:
+        'فحص أمني لأبرز ثلاثة تطبيقات مصرفية محلية، تحت أربعة محاور: تشفير الاتصال، إدارة الجلسة، تخزين البيانات الحساسة، ومقاومة الهندسة العكسية. تقدّم الدراسة توصيات عملية لرفع المستوى الأمني.',
+      status: 'PUBLISHED',
+      plagiarismPct: 3.8,
+      aiContentPct: 9.2,
+      grade: 16,
+      feedback: 'تطبيق ميداني قيّم. يُحسّن بإضافة مقابلات مع مسؤولي الأمن.',
+      uploadedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
+      scannedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000 + 60_000),
+      gradedAt: new Date(Date.now() - 110 * 24 * 60 * 60 * 1000),
+      publishedAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000),
+    },
+  });
+
   // ─── Watch event so the dashboard "Continue Learning" makes sense ──
   const firstLecture = await prisma.lecture.findFirstOrThrow({
     where: { offeringId: seOffering.id },

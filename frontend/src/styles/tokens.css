@@ -97,6 +97,7 @@
   --accent: #3D6BD6;
   --accent-hover: #5982E1;
   --accent-soft: rgba(61, 107, 214, 0.14);
+  --accent-border: rgba(61, 107, 214, 0.45);
   --accent-fg: #FFFFFF;
 
   /* Gold (sparing, premium accent) */
@@ -149,6 +150,7 @@
   --accent: #2952C8;
   --accent-hover: #1E3FA5;
   --accent-soft: rgba(41, 82, 200, 0.10);
+  --accent-border: rgba(41, 82, 200, 0.40);
   --accent-fg: #FFFFFF;
 
   --gold: #B8861E;

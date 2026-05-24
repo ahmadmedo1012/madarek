@@ -7,10 +7,10 @@ import { Card, MetricCard, Badge } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 
 const FEES = [
-  { label: 'رسوم التسجيل · فصل 2024 خريف', amount: 850, paid: true, date: '14 سبتمبر 2024' },
-  { label: 'رسوم خدمات أكاديمية', amount: 120, paid: true, date: '14 سبتمبر 2024' },
-  { label: 'رسوم استعارة المكتبة', amount: 30, paid: true, date: '20 سبتمبر 2024' },
-  { label: 'رسوم بطاقة الطالب', amount: 25, paid: true, date: '14 سبتمبر 2024' },
+  { label: 'رسوم التسجيل · فصل 2026 ربيع', amount: 850, paid: true, date: '8 فبراير 2026' },
+  { label: 'رسوم خدمات أكاديمية', amount: 120, paid: true, date: '8 فبراير 2026' },
+  { label: 'رسوم استعارة المكتبة', amount: 30, paid: true, date: '15 فبراير 2026' },
+  { label: 'رسوم بطاقة الطالب', amount: 25, paid: true, date: '8 فبراير 2026' },
   { label: 'رسوم التسجيل · فصل 2025 ربيع', amount: 850, paid: false, date: 'تستحق 15 يناير' },
   { label: 'رسوم المعامل العملية', amount: 180, paid: false, date: 'تستحق 25 يناير' },
 ];

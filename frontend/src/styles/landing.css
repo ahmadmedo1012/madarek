@@ -238,6 +238,75 @@
   line-height: var(--lh-base);
 }
 
+/* ── Section subtitle helper ─────────────────────────── */
+.landing-section-sub {
+  margin: var(--sp-3) auto 0;
+  max-width: 640px;
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ── Pilot results stats ─────────────────────────────── */
+.landing-pilot {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+  margin-top: var(--sp-7);
+}
+.landing-pilot-stat {
+  position: relative;
+  text-align: center;
+  padding: var(--sp-6) var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  transition: transform var(--t-base) var(--ease), border-color var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+}
+.landing-pilot-stat:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-md);
+}
+.landing-pilot-stat.highlight {
+  background: linear-gradient(180deg, var(--accent-soft), var(--surface-1));
+  border-color: var(--accent-border);
+}
+.landing-pilot-value {
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -1.2px;
+  font-variant-numeric: tabular-nums;
+}
+.landing-pilot-stat.highlight .landing-pilot-value { color: var(--gold); }
+.landing-pilot-value span {
+  font-size: 0.55em;
+  margin-inline-start: 4px;
+  color: var(--text-subtle);
+  font-weight: var(--fw-medium);
+}
+.landing-pilot-label {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin-top: var(--sp-3);
+  letter-spacing: -0.2px;
+}
+.landing-pilot-note {
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  margin-top: var(--sp-1);
+}
+@media (max-width: 900px) {
+  .landing-pilot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .landing-pilot { grid-template-columns: 1fr; }
+}
+
 /* ── Proof / Testimonial ────────────────────────────────── */
 .landing-proof {
   background: var(--surface-1);

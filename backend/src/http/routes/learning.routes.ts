@@ -464,6 +464,24 @@ router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN), asyn
   } catch (e) { next(e); }
 });
 
+// Public archive of published student papers — surfaces them in the library.
+router.get('/research/published', async (_req, res, next) => {
+  try {
+    const data = await withRetry(() => prisma.researchPaper.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { publishedAt: 'desc' },
+      take: 60,
+      include: {
+        student: {
+          select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
+        },
+        offering: { include: { course: { select: { name: true, code: true } } } },
+      },
+    }));
+    res.json({ data: decToNum(data) });
+  } catch (e) { next(e); }
+});
+
 // ════════════════════════════════════════════════════════════════
 // Quality oversight (read-only views of institutional health)
 // ════════════════════════════════════════════════════════════════

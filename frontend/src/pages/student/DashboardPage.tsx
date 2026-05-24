@@ -15,6 +15,7 @@ import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitive
 import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useMyEnrollments, useResume, useGaps } from '../../hooks/useResources';
+import { useAuthStore } from '../../stores/auth.store';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement);
 
@@ -39,18 +40,27 @@ export default function StudentDashboardPage() {
   const enrollments = useMyEnrollments();
   const resume = useResume();
   const gaps = useGaps();
+  const user = useAuthStore((s) => s.user);
 
   const isLoading = enrollments.isPending;
   const data = enrollments.data;
+
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 6) return 'سهرة سعيدة';
+    if (h < 12) return 'صباح الخير';
+    if (h < 18) return 'مساء النور';
+    return 'مساء الخير';
+  })();
 
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">مرحباً بعودتك، أحمد</h1>
+          <h1 className="page-title">{greeting}، {user?.firstName ?? 'بعودتك'}</h1>
           <p className="page-subtitle">إليك نظرة موجزة على أدائك ومواعيدك القادمة.</p>
         </div>
-        <Badge>الفصل الدراسي · 2024 خريف</Badge>
+        <Badge>الفصل الدراسي · 2026 ربيع</Badge>
       </div>
 
       {/* Resume Learning strip — most important next action */}

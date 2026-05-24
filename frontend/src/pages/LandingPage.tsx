@@ -178,13 +178,44 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Proof */}
+        {/* Real pilot results — from the spec's English course experiment */}
         <section className="landing-section">
-          <div className="landing-proof">
+          <div className="landing-section-head">
+            <div className="landing-section-eyebrow">نتائج ميدانية حقيقية</div>
+            <h2 className="landing-section-title">ما حقّقناه فعلياً قبل أن نأتي إليكم</h2>
+            <p className="landing-section-sub">
+              اعتمدنا استراتيجية الصف المعكوس على مادة اللغة الإنجليزية مع طلاب من جنوب ليبيا،
+              بمشاركة خبراء دوليين. الأرقام أدناه هي نتائج تلك التجربة الفعلية.
+            </p>
+          </div>
+          <div className="landing-pilot">
+            <div className="landing-pilot-stat">
+              <div className="landing-pilot-value">40<span>%</span></div>
+              <div className="landing-pilot-label">تحسّن الاستيعاب</div>
+              <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div>
+            </div>
+            <div className="landing-pilot-stat">
+              <div className="landing-pilot-value">70<span>%</span></div>
+              <div className="landing-pilot-label">زيادة في المشاركة</div>
+              <div className="landing-pilot-note">داخل الحلقات النقاشية</div>
+            </div>
+            <div className="landing-pilot-stat">
+              <div className="landing-pilot-value">30<span>%</span></div>
+              <div className="landing-pilot-label">تحسّن في الالتزام</div>
+              <div className="landing-pilot-note">بمتابعة الجلسات</div>
+            </div>
+            <div className="landing-pilot-stat highlight">
+              <div className="landing-pilot-value">90<span>%</span></div>
+              <div className="landing-pilot-label">تحقيق أهداف التعلّم</div>
+              <div className="landing-pilot-note">ضمن الإطار الزمني المحدّد</div>
+            </div>
+          </div>
+
+          <div className="landing-proof" style={{ marginTop: 'var(--sp-5)' }}>
             <p className="landing-proof-quote">
-              تجربة المعامل الافتراضية على ٤٠ طالباً في جامعة سرت أظهرت تفوّقاً واضحاً للفريق
+              «تجربة المعامل الافتراضية على ٤٠ طالباً في جامعة سرت أظهرت تفوّقاً واضحاً للفريق
               الذي استخدم المنصة على فريق التعليم التقليدي. هذا ما نطمح لأن نقدّمه على
-              مستوى جامعة الزاوية بأكملها.
+              مستوى جامعة الزاوية بأكملها.»
             </p>
             <div className="landing-proof-source">— من دراسة جامعة سرت، ٢٠٢٤</div>
           </div>

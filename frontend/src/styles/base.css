@@ -353,6 +353,71 @@ button { font-family: inherit; cursor: pointer; }
   box-sizing: content-box;
 }
 
+/* ─── Topbar user menu ──────────────────────────────────── */
+.topbar-user { position: relative; }
+.topbar-user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  background: var(--surface-1);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  font-family: inherit;
+}
+.topbar-user-trigger:hover { background: var(--surface-2); border-color: var(--border-strong); }
+.topbar-user-name { font-size: var(--fs-xs); font-weight: var(--fw-medium); }
+
+.topbar-user-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-end: 0;
+  min-width: 240px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  z-index: 200;
+  animation: menuIn var(--t-base) var(--ease);
+}
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.topbar-user-menu-header {
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.topbar-user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px var(--sp-3);
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  text-align: start;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.topbar-user-menu-item:hover { background: var(--surface-2); }
+.topbar-user-menu-item.danger { color: var(--danger); }
+.topbar-user-menu-item.danger:hover { background: var(--danger-soft); }
+.topbar-user-menu-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+@media (max-width: 600px) {
+  .topbar-user-trigger { padding-inline-end: 4px; }
+}
+
 /* ── Content surface ─────────────────────────────────────── */
 .content {
   flex: 1;

@@ -5,7 +5,7 @@ import {
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, MessageSquare, Microscope, School,
   FileText, Settings, ShieldCheck, Activity, Compass, BookMarked,
-  Radio, Wallet, MapPin, Sparkles,
+  Radio, Wallet, MapPin, Sparkles, Mic2, UserCircle,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -33,6 +33,7 @@ export const STUDENT_NAV: NavGroup[] = [
     label: 'التعلم الذكي',
     items: [
       { to: '/student/matrix', icon: Compass, label: 'المصفوفة التعليمية', badge: { text: 'جديد', tone: 'brand' } },
+      { to: '/student/exams', icon: ClipboardCheck, label: 'تحليل الامتحانات' },
       { to: '/student/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
@@ -45,6 +46,7 @@ export const STUDENT_NAV: NavGroup[] = [
     label: 'المجتمع والتطوير',
     items: [
       { to: '/student/social', icon: Globe, label: 'الشبكة الاجتماعية' },
+      { to: '/student/webinars', icon: Mic2, label: 'الندوات وورش العمل' },
       { to: '/student/mooc', icon: GraduationCap, label: 'كورسات خارجية' },
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
       { to: '/student/alerts', icon: Bell, label: 'الإشعارات', badge: { text: '4' } },
@@ -54,6 +56,7 @@ export const STUDENT_NAV: NavGroup[] = [
   {
     label: 'الخدمات الجامعية',
     items: [
+      { to: '/student/profile', icon: UserCircle, label: 'ملفي الشخصي' },
       { to: '/student/live', icon: Radio, label: 'البث المباشر', badge: { text: 'Live', tone: 'brand' } },
       { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
       { to: '/student/map', icon: MapPin, label: 'خريطة الحرم' },
