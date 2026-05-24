@@ -727,10 +727,35 @@ export function UniversityInfoPage() {
         </div>
       </Card>
 
-      {/* Research focus */}
-      <Card title="مجالات البحث العلمي" icon={Microscope}>
+      {/* Degree levels + sample programs — straight from zu.edu.ly catalog */}
+      <Card title="الشهادات والبرامج الأكاديمية" icon={Microscope} subtitle="درجات أكاديمية معتمدة وبرامج معلنة على الموقع الرسمي">
+        <div className="grid-3" style={{ gap: 'var(--sp-3)', marginBottom: 'var(--sp-4)' }}>
+          {[
+            { ar: 'الإجازة الجامعية', en: 'Bachelor / Licence' },
+            { ar: 'الدراسات العليا', en: "Master's" },
+            { ar: 'الدراسات الدقيقة', en: 'PhD / Doctorate' },
+          ].map((d) => (
+            <div key={d.en} style={{
+              padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
+              borderRight: '3px solid var(--accent)',
+            }}>
+              <div className="text-sm" style={{ fontWeight: 600 }}>{d.ar}</div>
+              <div className="text-xxs text-subtle font-mono">{d.en}</div>
+            </div>
+          ))}
+        </div>
+        <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>
+          أمثلة على البرامج المتاحة:
+        </div>
         <div className="flex flex-wrap gap-2">
-          {['الذكاء الاصطناعي', 'علوم الحياة', 'الطاقة المتجددة', 'علم المواد', 'الطب الحيوي', 'الهندسة المدنية', 'علوم الحاسوب', 'الاقتصاد الإسلامي', 'الدراسات الإفريقية', 'هندسة النفط والغاز'].map((t) => (
+          {[
+            'بكالوريوس محاسبة',
+            'القانون العام',
+            'التربية البدنية وعلوم الرياضة',
+            'هندسة الطاقات المتجددة',
+            'الصيدلة',
+            'هندسة النفط والغاز والطاقة المتجددة',
+          ].map((t) => (
             <Badge key={t}>{t}</Badge>
           ))}
         </div>

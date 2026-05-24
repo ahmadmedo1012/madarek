@@ -675,3 +675,176 @@ export function usePublishPaper() {
     },
   });
 }
+
+
+// ── Training (Self-Development) ───────────────────────────────
+export type TrainingCategory =
+  | 'ONBOARDING' | 'ACADEMIC' | 'FLIPPED' | 'STUDY_SKILLS' | 'RESEARCH'
+  | 'CAREER' | 'COMMUNICATION' | 'ENGLISH' | 'PROGRAMMING' | 'PRODUCTIVITY' | 'VISION';
+
+export type TrainingLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+export type BadgeRarity = 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
+export type Tier = 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
+
+export interface TrainingTrackCard {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn?: string | null;
+  summary: string;
+  category: TrainingCategory;
+  level: TrainingLevel;
+  iconEmoji?: string | null;
+  themeColor?: string | null;
+  estMinutes: number;
+  pointsAward: number;
+  totalLessons: number;
+  enrolled: boolean;
+  completedLessons: number;
+  isCompleted: boolean;
+  progressPct: number;
+}
+export function useTrainingCatalog() {
+  return useQuery({
+    queryKey: ['training', 'catalog'],
+    queryFn: () => unwrap<TrainingTrackCard[]>(api.get('/training/catalog')),
+  });
+}
+
+export interface TrainingLessonView {
+  id: string;
+  order: number;
+  title: string;
+  summary?: string | null;
+  contentMarkdown: string;
+  estMinutes: number;
+  pointsAward: number;
+  quizQuestion?: string | null;
+  isCompleted: boolean;
+}
+export interface TrainingTrackDetail {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn?: string | null;
+  summary: string;
+  category: TrainingCategory;
+  level: TrainingLevel;
+  iconEmoji?: string | null;
+  themeColor?: string | null;
+  estMinutes: number;
+  pointsAward: number;
+  enrolled: boolean;
+  isCompleted: boolean;
+  completedAt?: string | null;
+  lessons: TrainingLessonView[];
+}
+export function useTrainingTrack(slug: string | undefined) {
+  return useQuery({
+    queryKey: ['training', 'track', slug],
+    enabled: !!slug,
+    queryFn: () => unwrap<TrainingTrackDetail>(api.get(`/training/tracks/${slug}`)),
+  });
+}
+
+export function useEnrollTrack() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (slug: string) =>
+      unwrap<{ id: string; trackId: string; startedAt: string }>(
+        api.post(`/training/tracks/${slug}/enroll`),
+      ),
+    onSuccess: (_d, slug) => {
+      qc.invalidateQueries({ queryKey: ['training', 'catalog'] });
+      qc.invalidateQueries({ queryKey: ['training', 'track', slug] });
+      qc.invalidateQueries({ queryKey: ['training', 'me'] });
+    },
+  });
+}
+
+export interface CompleteLessonResult {
+  newlyCompleted: boolean;
+  pointsAwarded: number;
+  totalPoints: number;
+  level: { level: number; tier: Tier; toNext: number; pctIntoLevel: number };
+  newBadges: Array<{ slug: string; title: string; iconEmoji: string }>;
+}
+export function useCompleteLesson() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ lessonId, quizAnswer }: { lessonId: string; quizAnswer?: string }) =>
+      unwrap<CompleteLessonResult>(
+        api.post(`/training/lessons/${lessonId}/complete`, { quizAnswer }),
+      ),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['training'] });
+    },
+  });
+}
+
+export interface TrainingMeSummary {
+  points: number;
+  level: { level: number; tier: Tier; toNext: number; pctIntoLevel: number };
+  badgeCount: number;
+  certificateCount: number;
+  tracksEnrolled: number;
+  tracksCompleted: number;
+  recentBadges: Array<{ slug: string; title: string; iconEmoji: string; rarity: BadgeRarity; earnedAt: string }>;
+}
+export function useTrainingMe() {
+  return useQuery({
+    queryKey: ['training', 'me'],
+    queryFn: () => unwrap<TrainingMeSummary>(api.get('/training/me')),
+  });
+}
+
+export interface UserBadgeRow {
+  slug: string;
+  title: string;
+  description: string;
+  iconEmoji: string;
+  themeColor?: string | null;
+  rarity: BadgeRarity;
+  earnedAt: string | null;
+  isEarned: boolean;
+}
+export function useMyBadges() {
+  return useQuery({
+    queryKey: ['training', 'me', 'badges'],
+    queryFn: () => unwrap<UserBadgeRow[]>(api.get('/training/me/badges')),
+  });
+}
+
+export interface TrainingCertificate {
+  id: string;
+  title: string;
+  issuer: string;
+  issuedAt: string | null;
+  hours: number;
+  status: 'ONGOING' | 'COMPLETED';
+  trackSlug: string | null;
+  iconEmoji: string | null;
+  themeColor: string | null;
+}
+export function useMyTrainingCerts() {
+  return useQuery({
+    queryKey: ['training', 'me', 'certificates'],
+    queryFn: () => unwrap<TrainingCertificate[]>(api.get('/training/me/certificates')),
+  });
+}
+
+export interface LeaderboardRow {
+  rank: number;
+  userId: string;
+  name: string;
+  avatarColor?: string | null;
+  avatarInitials?: string | null;
+  points: number;
+  level: { level: number; tier: Tier; toNext: number; pctIntoLevel: number };
+}
+export function useTrainingLeaderboard() {
+  return useQuery({
+    queryKey: ['training', 'leaderboard'],
+    queryFn: () => unwrap<LeaderboardRow[]>(api.get('/training/leaderboard')),
+  });
+}

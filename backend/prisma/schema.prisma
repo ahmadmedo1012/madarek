@@ -178,6 +178,9 @@ model User {
   researchPapers    ResearchPaper[]    @relation("StudentPapers")
   reviewedPapers    ResearchPaper[]    @relation("ProfessorReviewedPapers")
   paperAnnotations  PaperAnnotation[]
+  trainingEnrollments TrainingEnrollment[]
+  badges            UserBadge[]
+  pointsLedger      PointsLedger[]
 
   @@index([role])
   @@index([email])
@@ -608,9 +611,12 @@ model Certificate {
   status      CertificateStatus @default(ONGOING)
   externalUrl String?
   fileUrl     String?
+  trackId     String?
+  track       TrainingTrack?    @relation(fields: [trackId], references: [id])
   createdAt   DateTime          @default(now())
 
   @@index([userId])
+  @@index([trackId])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -937,4 +943,148 @@ model PaperAnnotation {
 
   @@index([paperId])
   @@index([authorId])
+}
+
+
+// ────────────────────────────────────────────────────────────────
+//  Training tracks & rewards (Self-Development module)
+// ────────────────────────────────────────────────────────────────
+//  TrainingTrack       a self-contained learning path (e.g. "Research Skills")
+//  TrainingLesson      ordered lessons inside a track, optional check-question
+//  TrainingEnrollment  student joins a track
+//  LessonProgress      one row per completed lesson per enrollment
+//  Badge / UserBadge   visual milestones (per-track + cross-cutting)
+//  PointsLedger        append-only audit of every point award
+// ────────────────────────────────────────────────────────────────
+
+enum TrainingTrackCategory {
+  ONBOARDING
+  ACADEMIC
+  FLIPPED
+  STUDY_SKILLS
+  RESEARCH
+  CAREER
+  COMMUNICATION
+  ENGLISH
+  PROGRAMMING
+  PRODUCTIVITY
+  VISION
+}
+
+model TrainingTrack {
+  id           String                @id @default(cuid())
+  slug         String                @unique
+  title        String
+  titleEn      String?
+  summary      String                @db.Text
+  category     TrainingTrackCategory
+  level        String                @default("BEGINNER") // BEGINNER | INTERMEDIATE | ADVANCED
+  iconEmoji    String?
+  themeColor   String?
+  estMinutes   Int                   @default(60)
+  pointsAward  Int                   @default(200)
+  order        Int                   @default(0)
+  isPublished  Boolean               @default(true)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  lessons      TrainingLesson[]
+  enrollments  TrainingEnrollment[]
+  badges       Badge[]
+  certificates Certificate[]
+
+  @@index([category])
+  @@index([order])
+}
+
+model TrainingLesson {
+  id              String           @id @default(cuid())
+  trackId         String
+  track           TrainingTrack    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  order           Int
+  title           String
+  summary         String?
+  contentMarkdown String           @db.Text
+  estMinutes      Int              @default(8)
+  pointsAward     Int              @default(5)
+  quizQuestion    String?
+  quizAnswer      String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  progresses      LessonProgress[]
+
+  @@unique([trackId, order])
+  @@index([trackId])
+}
+
+model TrainingEnrollment {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  trackId     String
+  track       TrainingTrack    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  startedAt   DateTime         @default(now())
+  completedAt DateTime?
+
+  progresses  LessonProgress[]
+
+  @@unique([userId, trackId])
+  @@index([userId])
+  @@index([trackId])
+}
+
+model LessonProgress {
+  id            String              @id @default(cuid())
+  enrollmentId  String
+  enrollment    TrainingEnrollment  @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lessonId      String
+  lesson        TrainingLesson      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt   DateTime            @default(now())
+  pointsAwarded Int                 @default(0)
+
+  @@unique([enrollmentId, lessonId])
+  @@index([enrollmentId])
+}
+
+model Badge {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  description String
+  iconEmoji   String
+  themeColor  String?
+  rarity      String         @default("COMMON") // COMMON | RARE | EPIC | LEGENDARY
+  trackId     String?
+  track       TrainingTrack? @relation(fields: [trackId], references: [id])
+  createdAt   DateTime       @default(now())
+
+  users       UserBadge[]
+
+  @@index([trackId])
+}
+
+model UserBadge {
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  badgeId  String
+  badge    Badge    @relation(fields: [badgeId], references: [id])
+  earnedAt DateTime @default(now())
+
+  @@id([userId, badgeId])
+  @@index([userId])
+}
+
+model PointsLedger {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  points    Int
+  reason    String
+  refType   String?
+  refId     String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
 }

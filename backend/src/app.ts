@@ -23,6 +23,7 @@ import meRoutes from './http/routes/me.routes.js';
 import catalogRoutes from './http/routes/catalog.routes.js';
 import aiRoutes from './http/routes/ai.routes.js';
 import learningRoutes from './http/routes/learning.routes.js';
+import trainingRoutes from './http/routes/training.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
 import { AppError } from './lib/errors.js';
 
@@ -73,6 +74,7 @@ export function createApp() {
   app.use('/api/v1', meRoutes);
   app.use('/api/v1', catalogRoutes);
   app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
+  app.use('/api/v1', trainingRoutes); // /training/* (catalog, lessons, badges, certificates, leaderboard)
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
 

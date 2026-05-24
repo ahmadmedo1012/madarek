@@ -58,6 +58,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/quality/curriculum': 'مراجعة المناهج',
   '/quality/alerts': 'تنبيهات الجودة',
   '/vision': 'الابتكارات القادمة',
+  '/training': 'التطوير الذاتي',
+  '/achievements': 'الإنجازات والشهادات',
 };
 
 /** Resolve a topbar title for any path, including dynamic routes. */
@@ -67,6 +69,8 @@ function resolveTitle(pathname: string): string {
   if (/^\/student\/lectures\/[^/]+$/.test(pathname)) return 'مشغّل المحاضرة';
   if (/^\/vision\/[^/]+$/.test(pathname)) return 'ابتكار قادم';
   if (/^\/document\/[^/]+$/.test(pathname)) return 'عارض المستندات';
+  if (/^\/training\/[^/]+\/lesson\/[^/]+$/.test(pathname)) return 'درس تدريبي';
+  if (/^\/training\/[^/]+$/.test(pathname)) return 'مسار تدريبي';
   return 'منصة الزاوية';
 }
 

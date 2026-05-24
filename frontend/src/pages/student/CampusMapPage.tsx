@@ -36,7 +36,7 @@ const TYPE_LABEL: Record<Building['type'], string> = {
 const BUILDINGS: Building[] = [
   { id: 'b1', name: 'كلية تقنية المعلومات', type: 'academic', description: 'مبنى A · 3 طوابق · يضم أقسام علوم الحاسوب ونظم المعلومات.', x: 22, y: 35, rooms: 18, hours: '07:00 — 21:00' },
   { id: 'b2', name: 'كلية الهندسة', type: 'academic', description: 'مبنى B · 4 طوابق · أقسام الميكانيكية والكهربائية والمدنية.', x: 50, y: 28, rooms: 24, hours: '07:00 — 21:00' },
-  { id: 'b3', name: 'كلية الطب', type: 'academic', description: 'مبنى C · 5 طوابق · مع المعامل التشريحية.', x: 75, y: 35, rooms: 30, hours: '06:30 — 22:00' },
+  { id: 'b3', name: 'كلية الطب البشري', type: 'academic', description: 'مبنى C · 5 طوابق · مع المعامل التشريحية.', x: 75, y: 35, rooms: 30, hours: '06:30 — 22:00' },
   { id: 'l1', name: 'معامل الحاسوب الافتراضية', type: 'lab', description: 'معمل 1 و 2 · شبكات و قواعد بيانات · سعة 60 جهاز.', x: 30, y: 60, rooms: 4, hours: '08:00 — 20:00' },
   { id: 'l2', name: 'معامل العلوم التطبيقية', type: 'lab', description: 'كيمياء وفيزياء وأحياء · للأقسام العلمية.', x: 65, y: 65, rooms: 8, hours: '08:00 — 18:00' },
   { id: 'lib', name: 'المكتبة المركزية', type: 'library', description: 'مكتبة الجامعة الإلكترونية والمطبوعة · قاعات قراءة.', x: 50, y: 50, rooms: 6, hours: '08:00 — 23:00' },

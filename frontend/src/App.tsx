@@ -26,6 +26,7 @@ import LabsPage from './pages/student/LabsPage';
 import LivePage from './pages/student/LivePage';
 import PaymentPage from './pages/student/PaymentPage';
 import CampusMapPage from './pages/student/CampusMapPage';
+import TrainingCatalogPage, { TrainingTrackPage, TrainingLessonPage, AchievementsPage } from './pages/student/TrainingPages';
 import {
   TeacherSchedulePage, AttendancePage, GradesPage,
   MaterialsPage, ResearchPage, StudentsListPage, PerformancePage,
@@ -88,6 +89,11 @@ export default function App() {
               <Route path="/student/profile" element={<ProfilePage />} />
               <Route path="/student/webinars" element={<WebinarsPage />} />
               <Route path="/student/exams" element={<ExamsPage />} />
+              {/* Self-Development (Training & Rewards) */}
+              <Route path="/training" element={<TrainingCatalogPage />} />
+              <Route path="/training/:slug" element={<TrainingTrackPage />} />
+              <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />
+              <Route path="/achievements" element={<AchievementsPage />} />
             </Route>
           </Route>
 

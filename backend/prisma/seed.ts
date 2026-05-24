@@ -31,16 +31,24 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // ─── Faculties & Departments ─────────────────────────────────
-  // Mirrors the official faculty list of University of Zawia (29 colleges total).
+  // Mirrors the official faculty list of University of Zawia per
+  // `zu_university_report.md` (29 colleges total — 11 inside-campus + 18 branch).
   // We seed a representative subset that covers each region (Zawia + branches).
-  // NOTE: Original 6 names are preserved verbatim to avoid orphaning rows in
-  // existing deployed databases. New ones are appended.
+  // NOTE: Order of the first 4 entries (IT, Engineering, Sciences, Medicine)
+  // is load-bearing — index references below assume it.
+
+  // One-time rename: legacy "كلية الطب" row (pre-source-alignment) → source-correct name.
+  await prisma.faculty.updateMany({
+    where: { name: 'كلية الطب' },
+    data: { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
+  });
+
   const faculties = await Promise.all(
     [
       { name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻' },
       { name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: '⚙️' },
       { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬' },
-      { name: 'كلية الطب', nameEn: 'Medicine', iconEmoji: '⚕️' },
+      { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
       { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼' },
       { name: 'كلية القانون', nameEn: 'Law', iconEmoji: '⚖️' },
       { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚' },
@@ -49,6 +57,9 @@ async function main() {
       { name: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering', iconEmoji: '⛽' },
       { name: 'كلية التربية البدنية وعلوم الرياضة', nameEn: 'Physical Education', iconEmoji: '⚽' },
       { name: 'كلية الطب البيطري والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences', iconEmoji: '🌾' },
+      // Source-true additions — both inside-campus per zu_university_report.md
+      { name: 'كلية طب الأسنان والجراحة الفموية', nameEn: 'Dentistry & Oral Surgery', iconEmoji: '🦷' },
+      { name: 'كلية التقنية الطبية', nameEn: 'Medical Technology', iconEmoji: '🩺' },
     ].map((f) => prisma.faculty.upsert({ where: { name: f.name }, create: f, update: { nameEn: f.nameEn, iconEmoji: f.iconEmoji } })),
   );
 
@@ -681,6 +692,307 @@ async function main() {
       completed: false,
     },
   });
+
+  // ─── Training tracks (Self-Development module) ───────────────
+  // 11 tracks covering the categories required by the project brief.
+  // Lessons are short, realistic, university-grade content. Each lesson
+  // worth 5 points; track completion grants its `pointsAward`.
+  type LessonSeed = { title: string; summary: string; content: string; estMinutes?: number; quiz?: { q: string; a: string } };
+  type TrackSeed = {
+    slug: string;
+    title: string;
+    titleEn: string;
+    summary: string;
+    category:
+      | 'ONBOARDING' | 'ACADEMIC' | 'FLIPPED' | 'STUDY_SKILLS' | 'RESEARCH'
+      | 'CAREER' | 'COMMUNICATION' | 'ENGLISH' | 'PROGRAMMING' | 'PRODUCTIVITY' | 'VISION';
+    level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+    iconEmoji: string;
+    themeColor: string;
+    estMinutes: number;
+    pointsAward: number;
+    order: number;
+    lessons: LessonSeed[];
+    badge: { slug: string; title: string; description: string; iconEmoji: string; rarity?: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' };
+  };
+
+  const TRACKS: TrackSeed[] = [
+    {
+      slug: 'platform-onboarding',
+      title: 'كيف تستخدم منصة الزاوية',
+      titleEn: 'Platform Onboarding',
+      summary: 'جولة سريعة على واجهات المنصة: المحاضرات، المصفوفة التعليمية، البحوث، المكتبة، والإحصاءات.',
+      category: 'ONBOARDING', level: 'BEGINNER', iconEmoji: '🧭', themeColor: '#2952C8',
+      estMinutes: 25, pointsAward: 150, order: 1,
+      lessons: [
+        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصة جامعة الزاوية للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما النطاق الرسمي لإيميل الجامعة؟', a: 'zu.edu.ly' } },
+        { title: 'لوحة التحكم الرئيسية', summary: 'فهم العناصر في الصفحة الرئيسية', content: 'لوحة التحكم تعرض: المقررات الحالية، نسبة الإنجاز، الإشعارات، والمساعد الذكي. كل بطاقة قابلة للنقر وتأخذك إلى التفاصيل.' },
+        { title: 'المصفوفة التعليمية', summary: 'كيف تعمل وكيف تستفيد منها', content: 'المصفوفة التعليمية تتبع فهمك لكل مفهوم على حدة وتقترح فيديوهات لسد أي فجوة معرفية تظهر في امتحاناتك أو نقاط التفاعل.' },
+        { title: 'البحوث والمكتبة', summary: 'رفع البحث والبحث في المكتبة', content: 'يمكنك رفع بحثك من قسم البحوث، وستجري المنصة فحص انتحال وفحص ذكاء اصطناعي قبل الإرسال للأستاذ. المكتبة تتيح البحث عبر آلاف الأبحاث المنشورة.', quiz: { q: 'ما النسبة القصوى المقبولة للانتحال في البحث؟', a: '15' } },
+        { title: 'الإشعارات والرسائل', summary: 'متابعة كل جديد', content: 'سترى الجرس في الأعلى يحمل عدد الإشعارات غير المقروءة، ويتحدّث تلقائياً كل دقيقة. الرسائل المباشرة بينك وبين الأستاذ متوفرة في تبويب الرسائل.' },
+      ],
+      badge: { slug: 'badge-onboarded', title: 'مرحباً بك على المنصة', description: 'أكملت جولة التعرف على المنصة', iconEmoji: '🎉', rarity: 'COMMON' },
+    },
+    {
+      slug: 'academic-methodology',
+      title: 'منهجية الدراسة الجامعية',
+      titleEn: 'Academic Methodology',
+      summary: 'مهارات البحث الأكاديمي، التفكير النقدي، وكتابة التقارير الجامعية.',
+      category: 'ACADEMIC', level: 'INTERMEDIATE', iconEmoji: '🎓', themeColor: '#0E5C2F',
+      estMinutes: 45, pointsAward: 250, order: 2,
+      lessons: [
+        { title: 'مبادئ التفكير النقدي', summary: 'تحليل المعلومات وتقييم المصادر', content: 'التفكير النقدي يبدأ بطرح الأسئلة: من؟ ماذا؟ متى؟ لماذا؟ كيف؟ على أي معلومة قبل قبولها. المصادر الأكاديمية الموثوقة تأتي من مجلات مفهرسة، كتب أكاديمية، وقواعد بيانات معترف بها مثل Scopus وWeb of Science.' },
+        { title: 'صياغة سؤال البحث', summary: 'من الفكرة العامة إلى السؤال الدقيق', content: 'سؤال البحث الجيد محدد، قابل للقياس، ومرتبط بمشكلة قائمة. ابدأ بسؤال عام ثم ضيقه تدريجياً. مثال: من "تأثير التكنولوجيا" إلى "أثر استخدام منصات التعليم المدمج على درجات طلاب الهندسة في جامعة الزاوية".', quiz: { q: 'كم عدد خصائص سؤال البحث الجيد؟', a: '3' } },
+        { title: 'مراجعة الأدبيات', summary: 'كيف تكتشف ما تم نشره من قبل', content: 'مراجعة الأدبيات هي خريطة المعرفة الموجودة. ابحث في Google Scholar وResearchGate باستخدام كلمات مفتاحية دقيقة. اقرأ الملخصات أولاً، ثم المقدمات، ثم النتائج.' },
+        { title: 'هيكل التقرير الأكاديمي', summary: 'IMRaD ولماذا يستخدم', content: 'IMRaD = Introduction, Methods, Results, and Discussion. هذا الهيكل القياسي يتيح للقارئ فهم بحثك بسرعة. كل قسم له هدف محدد.', quiz: { q: 'ماذا تعني الحروف IMRaD؟', a: 'Introduction Methods Results Discussion' } },
+        { title: 'الأخلاقيات الأكاديمية', summary: 'الانتحال والأمانة العلمية', content: 'الانتحال يدمر مسيرتك الأكاديمية. وثّق كل اقتباس، استخدم علامات التنصيص، وادرج المرجع كاملاً. منصتنا تستخدم منظومات كشف انتحال متقدمة.' },
+      ],
+      badge: { slug: 'badge-scholar', title: 'باحث مبتدئ', description: 'أتقنت مبادئ المنهجية الأكاديمية', iconEmoji: '📚', rarity: 'RARE' },
+    },
+    {
+      slug: 'flipped-classroom',
+      title: 'استراتيجية الصف المعكوس',
+      titleEn: 'Flipped Classroom Mastery',
+      summary: 'كيف تستفيد من نموذج الصف المعكوس الذي تعتمده الجامعة لرفع التحصيل.',
+      category: 'FLIPPED', level: 'BEGINNER', iconEmoji: '🔄', themeColor: '#7B3AED',
+      estMinutes: 30, pointsAward: 150, order: 3,
+      lessons: [
+        { title: 'ما هو الصف المعكوس', summary: 'الفكرة الأصلية للدكتور إريك مازور', content: 'الصف المعكوس استراتيجية ابتكرها د. إريك مازور من جامعة هارفارد. الفكرة: الطالب يدرس الشروحات في فيديوهات قبل المحاضرة، وتتحول المحاضرة إلى مناقشة وتطبيق.', quiz: { q: 'من مبتكر استراتيجية الصف المعكوس؟', a: 'إريك مازور' } },
+        { title: 'الدراسة الذاتية الفعّالة', summary: 'كيف تشاهد الفيديو وتستوعب', content: 'لا تشاهد الفيديو سلبياً. توقف عند كل نقطة، اكتب ملاحظات بكلماتك، وحاول حل أسئلة التفاعل قبل عرض الإجابة. هذا يضاعف الاستيعاب.' },
+        { title: 'الاستفادة من القاعة', summary: 'المشاركة الفعّالة في النقاش', content: 'القاعة في الصف المعكوس مساحة للتطبيق، وليست لإعادة شرح ما درسته. اطرح الأسئلة التي عجزت عن حلها، وشارك في حلقات المناقشة.' },
+        { title: 'نقاط التفاعل في الفيديو', summary: 'لماذا توقف الفيديوهات لتسأل', content: 'نقاط التفاعل تُجبرك على التوقف والتفكير. إجابتك تُسجَّل في المصفوفة التعليمية لتحديد فجواتك المعرفية تلقائياً.' },
+      ],
+      badge: { slug: 'badge-flipped', title: 'متقن الصف المعكوس', description: 'أكملت تدريب استراتيجية الصف المعكوس', iconEmoji: '🔄', rarity: 'COMMON' },
+    },
+    {
+      slug: 'study-skills',
+      title: 'مهارات الدراسة الفعّالة',
+      titleEn: 'Effective Study Skills',
+      summary: 'إدارة الوقت، التذكر طويل المدى، تقنيات المذاكرة المثبتة علمياً.',
+      category: 'STUDY_SKILLS', level: 'BEGINNER', iconEmoji: '⏰', themeColor: '#D4A537',
+      estMinutes: 35, pointsAward: 200, order: 4,
+      lessons: [
+        { title: 'تقنية بومودورو', summary: '25 دقيقة تركيز + 5 دقائق راحة', content: 'تقنية بومودورو ابتكرها فرانشيسكو شيريلو. تعمل على دورات: 25 دقيقة عمل مركز، ثم 5 دقائق راحة. بعد 4 دورات خذ راحة أطول (15-30 دقيقة). تساعد على مكافحة التشتت والإرهاق.', quiz: { q: 'كم دقيقة تركيز في كل دورة بومودورو؟', a: '25' } },
+        { title: 'التكرار المتباعد', summary: 'كيف تتذكر للأبد وليس للامتحان فقط', content: 'منحنى النسيان لإبنغهاوس يقول: ننسى 70% من المعلومة خلال 24 ساعة بدون مراجعة. التكرار المتباعد يعكس هذا: راجع بعد يوم، 3 أيام، أسبوع، شهر. أدوات مثل Anki تؤتمت العملية.' },
+        { title: 'قانون باريتو في الدراسة', summary: '20% من الجهد = 80% من النتيجة', content: 'في كل مادة هناك 20% من المفاهيم تشكل 80% من الامتحان. حدد هذه المفاهيم بالنظر في الامتحانات السابقة وأسئلة الأستاذ المتكررة، وركز جهدك عليها.' },
+        { title: 'الكتابة اليدوية vs الطباعة', summary: 'لماذا الكتابة بخط اليد أفضل للتذكر', content: 'دراسات جامعة برينستون أثبتت: الطلاب الذين يدوّنون ملاحظاتهم بخط اليد يتذكرون 30% أكثر من الذين يكتبون على اللابتوب. الكتابة اليدوية تجبر الدماغ على معالجة المعلومة وإعادة صياغتها.' },
+      ],
+      badge: { slug: 'badge-disciplined', title: 'منظِّم الوقت', description: 'أتقنت مهارات الدراسة الفعّالة', iconEmoji: '⏱️', rarity: 'COMMON' },
+    },
+    {
+      slug: 'research-skills',
+      title: 'مهارات البحث العلمي',
+      titleEn: 'Research Skills',
+      summary: 'كتابة البحث، الاقتباس الصحيح، النشر في ResearchGate وGoogle Scholar.',
+      category: 'RESEARCH', level: 'INTERMEDIATE', iconEmoji: '🔬', themeColor: '#0E5C2F',
+      estMinutes: 50, pointsAward: 300, order: 5,
+      lessons: [
+        { title: 'بنية البحث العلمي', summary: 'من العنوان إلى المراجع', content: 'البحث العلمي القياسي يحتوي: عنوان، ملخص (Abstract)، مقدمة، مراجعة أدبيات، منهجية، نتائج، نقاش، خلاصة، مراجع. كل قسم له طول وتنسيق محدد.' },
+        { title: 'البحث في قواعد البيانات', summary: 'Scopus, IEEE, PubMed, Google Scholar', content: 'استخدم عوامل البحث المنطقية: AND، OR، NOT. ضع الجمل بين علامات تنصيص للبحث الدقيق. صفّ النتائج حسب التاريخ أو الاستشهادات.' },
+        { title: 'الاقتباس وأنماطه', summary: 'APA, MLA, Chicago, IEEE', content: 'كل تخصص له نمط اقتباس مفضل: APA للعلوم الاجتماعية، MLA للآداب، IEEE للهندسة. استخدم Zotero أو Mendeley لإدارة المراجع تلقائياً.', quiz: { q: 'أي نمط اقتباس يستخدم في الهندسة؟', a: 'IEEE' } },
+        { title: 'فحص الانتحال', summary: 'لماذا منصتنا تفحص قبل الإرسال', content: 'الانتحال جريمة أكاديمية. منصتنا مرتبطة بأنظمة فحص متقدمة، وتطبق حد 15% كحد أقصى للتشابه. نسبة أعلى تعني رفض البحث تلقائياً.' },
+        { title: 'النشر على ResearchGate وGoogle Scholar', summary: 'بناء بصمتك الأكاديمية', content: 'افتح حساباً مهنياً على ResearchGate وGoogle Scholar باستخدام إيميلك الجامعي. ارفع بحوثك المقبولة، اربطها بـ ORCID. هذا يبني سمعتك العلمية تدريجياً.' },
+      ],
+      badge: { slug: 'badge-researcher', title: 'باحث', description: 'أنهيت تدريب مهارات البحث العلمي', iconEmoji: '🔬', rarity: 'EPIC' },
+    },
+    {
+      slug: 'career-skills',
+      title: 'مهارات سوق العمل',
+      titleEn: 'Career Skills',
+      summary: 'كتابة السيرة الذاتية، المقابلات الوظيفية، LinkedIn، التشبيك المهني.',
+      category: 'CAREER', level: 'INTERMEDIATE', iconEmoji: '💼', themeColor: '#2952C8',
+      estMinutes: 40, pointsAward: 250, order: 6,
+      lessons: [
+        { title: 'بناء سيرة ذاتية احترافية', summary: 'CV من صفحة واحدة يفتح أبواباً', content: 'سيرتك الذاتية تُقرأ في 7 ثوانٍ. ضع المعلومات الأهم في الأعلى: الاسم، التواصل، ملخص في 3 أسطر، المهارات الفنية، الخبرات. تجنب الصور وعلامات التنصيص الزائدة.' },
+        { title: 'كتابة خطاب التغطية', summary: 'لماذا تستحق هذه الوظيفة', content: 'خطاب التغطية يجيب على سؤال: لماذا أنت بالذات؟ اربط مهاراتك بمتطلبات الإعلان، أعطِ مثالاً واحداً ملموساً، واختم بدعوة لمقابلة.' },
+        { title: 'المقابلة الشخصية', summary: 'STAR والأسئلة المتوقعة', content: 'استخدم تقنية STAR للإجابة على الأسئلة السلوكية: Situation، Task، Action، Result. تحضّر للأسئلة الكلاسيكية: حدثنا عن نفسك، نقاط ضعفك، لماذا تتركنا.', quiz: { q: 'ماذا تعني تقنية STAR؟', a: 'Situation Task Action Result' } },
+        { title: 'بناء حساب LinkedIn فعّال', summary: 'الواجهة المهنية الرقمية', content: 'صورة شخصية محترفة، عنوان واضح، ملخص في 4 أسطر يحكي قصتك. أضف خبراتك بصيغة الإنجاز وليس الواجبات: "زدت X بنسبة Y" بدلاً من "كنت مسؤولاً عن X".' },
+      ],
+      badge: { slug: 'badge-career-ready', title: 'جاهز لسوق العمل', description: 'أتقنت مهارات سوق العمل', iconEmoji: '💼', rarity: 'RARE' },
+    },
+    {
+      slug: 'communication',
+      title: 'مهارات التواصل',
+      titleEn: 'Communication Skills',
+      summary: 'العرض الفعّال، الاستماع النشط، كتابة الرسائل المهنية.',
+      category: 'COMMUNICATION', level: 'BEGINNER', iconEmoji: '🗣️', themeColor: '#D4A537',
+      estMinutes: 30, pointsAward: 200, order: 7,
+      lessons: [
+        { title: 'فن العرض التقديمي', summary: 'قاعدة 10/20/30 لـ Guy Kawasaki', content: 'العروض الناجحة: 10 شرائح كحد أقصى، 20 دقيقة، خط 30 نقطة. أقل شرائح وأقل كلمات وخط أكبر = جمهور أكثر تركيزاً.', quiz: { q: 'كم شريحة كحد أقصى وفق قاعدة Guy Kawasaki؟', a: '10' } },
+        { title: 'الاستماع النشط', summary: 'لماذا التواصل = الاستماع', content: 'الاستماع النشط يعني: لا تقاطع، أعد صياغة ما سمعت بكلماتك للتأكد من الفهم، اطرح أسئلة استيضاحية. هذا يبني الثقة ويمنع سوء الفهم.' },
+        { title: 'كتابة الإيميل المهني', summary: 'موجز، واضح، يحترم وقت القارئ', content: 'موضوع واضح، تحية مناسبة، فقرة افتتاحية بهدف الرسالة، تفاصيل، طلب محدد، ختام مهذب. لا تكتب فقرات طويلة - استخدم النقاط.' },
+        { title: 'لغة الجسد', summary: 'ما يقوله جسدك بدون كلمات', content: 'النظر في العينين يبني الثقة، الكتفان المستقيمان يدلان على الثقة، الابتسامة المعتدلة تكسر الجمود. تجنب تقاطع اليدين فهو يدل على الانغلاق.' },
+      ],
+      badge: { slug: 'badge-communicator', title: 'متواصل فعّال', description: 'أكملت تدريب مهارات التواصل', iconEmoji: '🗣️', rarity: 'COMMON' },
+    },
+    {
+      slug: 'english-academic',
+      title: 'الإنجليزية الأكاديمية',
+      titleEn: 'Academic English',
+      summary: 'قراءة الأبحاث الإنجليزية، الكتابة الأكاديمية، المصطلحات التقنية.',
+      category: 'ENGLISH', level: 'INTERMEDIATE', iconEmoji: '🌍', themeColor: '#7B3AED',
+      estMinutes: 60, pointsAward: 350, order: 8,
+      lessons: [
+        { title: 'لماذا الإنجليزية الأكاديمية مهمة', summary: '95% من الأبحاث العالمية بالإنجليزية', content: 'الإنجليزية لغة المعرفة العالمية. أكثر من 95% من الأبحاث المنشورة في أعلى المجلات بالإنجليزية. إتقانها يفتح لك العالم.' },
+        { title: 'قراءة البحث العلمي', summary: 'استراتيجية القراءة الذكية', content: 'لا تقرأ البحث من البداية للنهاية. ابدأ بـ Abstract، ثم Conclusion، ثم Figures، ثم Methods فقط إذا كان البحث ذا صلة. هذا يوفر 70% من وقتك.' },
+        { title: 'مصطلحات أكاديمية شائعة', summary: 'Methodology, Hypothesis, Significant', content: 'تعلم المصطلحات الأكاديمية الأساسية: Methodology (المنهجية)، Hypothesis (الفرضية)، Significant (ذو دلالة إحصائية). ميِّز بين Significant و"important" في السياق العلمي.', quiz: { q: 'بالإنجليزية: ما المصطلح المرادف للفرضية؟', a: 'Hypothesis' } },
+        { title: 'الكتابة بأسلوب أكاديمي', summary: 'موضوعي، واضح، بصيغة المبني للمجهول حين يلزم', content: 'الكتابة الأكاديمية موضوعية: استخدم "The study found..." بدلاً من "I think...". تجنب الجمل الطويلة وعبارات اللغة العامية. المبني للمجهول مناسب لوصف المنهجية.' },
+        { title: 'تجربتنا مع الإنجليزية في جنوب ليبيا', summary: '40% تحسن في الاستيعاب', content: 'في تجربتنا مع طلاب جنوب ليبيا باستخدام استراتيجية الصف المعكوس، حقق الطلاب: 40% تحسن في الاستيعاب، 70% زيادة في المشاركة، 90% تحقيق لأهداف التعلم. الالتزام بالمنهج هو المفتاح.' },
+      ],
+      badge: { slug: 'badge-english', title: 'إنجليزية أكاديمية', description: 'أتقنت أساسيات الإنجليزية الأكاديمية', iconEmoji: '🌍', rarity: 'EPIC' },
+    },
+    {
+      slug: 'programming-basics',
+      title: 'أساسيات البرمجة',
+      titleEn: 'Programming Basics',
+      summary: 'مفاهيم البرمجة، Python، التفكير الحسابي، حل المسائل.',
+      category: 'PROGRAMMING', level: 'BEGINNER', iconEmoji: '💻', themeColor: '#2952C8',
+      estMinutes: 55, pointsAward: 300, order: 9,
+      lessons: [
+        { title: 'ما هي البرمجة', summary: 'تعليمات للحاسوب لحل مسائل', content: 'البرمجة هي كتابة تعليمات منطقية للحاسوب لإنجاز مهام. الحاسوب يفهم لغات معينة (Python, JavaScript, C++)، وكل لغة لها قواعد نحوية (Syntax) محددة.' },
+        { title: 'المتغيرات وأنواع البيانات', summary: 'String, Integer, Float, Boolean', content: 'المتغير صندوق له اسم يحفظ قيمة. أنواع البيانات الأساسية: نصوص (String) "Ahmed"، أعداد صحيحة (Integer) 25، أعداد عشرية (Float) 3.14، صواب/خطأ (Boolean) True/False.', quiz: { q: 'ما نوع البيانات لرقم 3.14؟', a: 'Float' } },
+        { title: 'الجمل الشرطية', summary: 'if, else, elif', content: 'الشروط تجعل البرنامج يتخذ قرارات. مثال: if grade >= 60: print("نجح") else: print("راسب"). البرنامج يقرأ الشرط، فإذا كان صحيحاً ينفذ الكتلة الأولى، وإلا الكتلة الثانية.' },
+        { title: 'الحلقات التكرارية', summary: 'for, while', content: 'الحلقات تكرر تنفيذ كود. for لتكرار محدد: for i in range(10). while للتكرار حتى يتحقق شرط: while balance > 0. الحلقات هي قوة البرمجة الحقيقية.' },
+        { title: 'الدوال', summary: 'تجزئة الكود لقطع قابلة لإعادة الاستخدام', content: 'الدالة كتلة كود لها اسم وتقبل مدخلات وتنتج مخرجات. مثال: def average(a, b): return (a + b) / 2. تستخدمها مرة بعد مرة بدون إعادة كتابة الكود.' },
+      ],
+      badge: { slug: 'badge-coder', title: 'مبرمج مبتدئ', description: 'أكملت أساسيات البرمجة', iconEmoji: '💻', rarity: 'RARE' },
+    },
+    {
+      slug: 'productivity',
+      title: 'الإنتاجية والتعلم الذاتي',
+      titleEn: 'Productivity & Self-Learning',
+      summary: 'إدارة المهام، التوازن النفسي، تقنيات التعلم المستمر.',
+      category: 'PRODUCTIVITY', level: 'BEGINNER', iconEmoji: '⚡', themeColor: '#0E5C2F',
+      estMinutes: 30, pointsAward: 180, order: 10,
+      lessons: [
+        { title: 'إدارة المهام بطريقة GTD', summary: 'Getting Things Done لـ ديفيد ألن', content: 'GTD = اجمع المهام، وضحها، رتبها حسب السياق، راجعها أسبوعياً، ثم نفذها. أدوات: Notion، Todoist، أو حتى دفتر ورقي.' },
+        { title: 'مصفوفة أيزنهاور', summary: 'مهم vs عاجل', content: 'كل مهمة تنتمي لأحد أربع خانات: مهم وعاجل (نفّذ فوراً)، مهم وغير عاجل (خطّط له)، غير مهم وعاجل (فوّضه)، غير مهم وغير عاجل (احذفه).', quiz: { q: 'كم خانة في مصفوفة أيزنهاور؟', a: '4' } },
+        { title: 'التعلم مدى الحياة', summary: 'لماذا التخرج ليس النهاية', content: 'سوق العمل يتغير كل 5 سنوات. المهنيون الناجحون يخصصون 5 ساعات أسبوعياً للتعلم: قراءة، دورات، بودكاست، حضور مؤتمرات.' },
+        { title: 'التوازن والاحتراق المهني', summary: 'علامات الإنذار وخطوات التعافي', content: 'الاحتراق علامات: إرهاق دائم، انفصال عاطفي، شعور بعدم الإنجاز. الوقاية: نوم كافٍ، تمارين رياضية، علاقات اجتماعية، هوايات خارج الدراسة.' },
+      ],
+      badge: { slug: 'badge-productive', title: 'منتج', description: 'أتقنت أدوات الإنتاجية الشخصية', iconEmoji: '⚡', rarity: 'COMMON' },
+    },
+    {
+      slug: 'vision-ai-data',
+      title: 'الذكاء الاصطناعي وعلم البيانات',
+      titleEn: 'AI & Data Science (Vision Track)',
+      summary: 'مسار متخصص ضمن رؤية جامعة الزاوية المستقبلية.',
+      category: 'VISION', level: 'ADVANCED', iconEmoji: '🤖', themeColor: '#7B3AED',
+      estMinutes: 70, pointsAward: 400, order: 11,
+      lessons: [
+        { title: 'مقدمة في الذكاء الاصطناعي', summary: 'تعريفات وتاريخ موجز', content: 'الذكاء الاصطناعي = أنظمة حاسوبية تحاكي القدرات الذهنية البشرية. تعلم آلي (ML) هو فرع منه، وتعلم عميق (DL) فرع من ML. ChatGPT مبني على نموذج Transformer من 2017.' },
+        { title: 'تعلم الآلة مقابل التعلم العميق', summary: 'متى نستخدم كل منهما', content: 'تعلم الآلة الكلاسيكي مناسب للبيانات المهيكلة وكميات قليلة. التعلم العميق يحتاج بيانات ضخمة وقوة حسابية كبيرة، لكنه يتفوق في الصور واللغة.' },
+        { title: 'علم البيانات والإحصاء', summary: 'الأساس الذي يقوم عليه كل شيء', content: 'علم البيانات يدمج الإحصاء والبرمجة والمعرفة المجالية. أدوات: Python (pandas, numpy)، R، SQL. مهارة قراءة البيانات أهم من إتقان الأدوات.' },
+        { title: 'تتبع المعرفة (Knowledge Tracing)', summary: 'الخوارزمية وراء مصفوفتنا التعليمية', content: 'خوارزميات تتبع المعرفة تنتج نموذج معرفة الطالب بمرور الوقت. مسابقة Kaggle لشركة Riiid (2020) كانت محطة فاصلة. المنصة تستخدم نموذجاً مشابهاً لتحديد فجواتك المعرفية.', quiz: { q: 'ما اسم الشركة الكورية صاحبة مسابقة تتبع المعرفة على Kaggle؟', a: 'Riiid' } },
+        { title: 'الذكاء الاصطناعي في التعليم', summary: 'مستقبل التعلم المخصص', content: 'الذكاء الاصطناعي سيغير التعليم: مدرسون افتراضيون، محتوى مخصص لكل طالب، تقييم لحظي، اكتشاف الفجوات قبل أن تظهر في الامتحان. منصة الزاوية خطوة في هذا الاتجاه.' },
+      ],
+      badge: { slug: 'badge-ai-pioneer', title: 'رائد ذكاء اصطناعي', description: 'أنهيت المسار المتخصص في الذكاء الاصطناعي', iconEmoji: '🤖', rarity: 'LEGENDARY' },
+    },
+  ];
+
+  console.log(`📚 Seeding ${TRACKS.length} training tracks...`);
+  for (const t of TRACKS) {
+    const track = await prisma.trainingTrack.upsert({
+      where: { slug: t.slug },
+      update: {
+        title: t.title, titleEn: t.titleEn, summary: t.summary,
+        category: t.category, level: t.level, iconEmoji: t.iconEmoji,
+        themeColor: t.themeColor, estMinutes: t.estMinutes,
+        pointsAward: t.pointsAward, order: t.order, isPublished: true,
+      },
+      create: {
+        slug: t.slug, title: t.title, titleEn: t.titleEn, summary: t.summary,
+        category: t.category, level: t.level, iconEmoji: t.iconEmoji,
+        themeColor: t.themeColor, estMinutes: t.estMinutes,
+        pointsAward: t.pointsAward, order: t.order, isPublished: true,
+      },
+    });
+    // Replace lessons (idempotent re-seed)
+    await prisma.trainingLesson.deleteMany({ where: { trackId: track.id } });
+    for (let i = 0; i < t.lessons.length; i++) {
+      const l = t.lessons[i]!;
+      await prisma.trainingLesson.create({
+        data: {
+          trackId: track.id,
+          order: i + 1,
+          title: l.title,
+          summary: l.summary,
+          contentMarkdown: l.content,
+          estMinutes: l.estMinutes ?? Math.ceil(t.estMinutes / t.lessons.length),
+          pointsAward: 5,
+          quizQuestion: l.quiz?.q ?? null,
+          quizAnswer: l.quiz?.a ?? null,
+        },
+      });
+    }
+    // Track-completion badge
+    await prisma.badge.upsert({
+      where: { slug: t.badge.slug },
+      update: {
+        title: t.badge.title, description: t.badge.description,
+        iconEmoji: t.badge.iconEmoji, rarity: t.badge.rarity ?? 'COMMON',
+        themeColor: t.themeColor, trackId: track.id,
+      },
+      create: {
+        slug: t.badge.slug, title: t.badge.title, description: t.badge.description,
+        iconEmoji: t.badge.iconEmoji, rarity: t.badge.rarity ?? 'COMMON',
+        themeColor: t.themeColor, trackId: track.id,
+      },
+    });
+  }
+
+  // Cross-cutting badges (not tied to a specific track)
+  for (const b of [
+    { slug: 'badge-first-step', title: 'الخطوة الأولى', description: 'أنهيت أول درس على الإطلاق', iconEmoji: '👣', rarity: 'COMMON' },
+    { slug: 'badge-polymath', title: 'متعدد المعارف', description: 'أنهيت 3 مسارات في فئات مختلفة', iconEmoji: '🧠', rarity: 'EPIC' },
+    { slug: 'badge-marathoner', title: 'الماراثوني', description: '7 أيام متتالية من التعلم', iconEmoji: '🏃', rarity: 'RARE' },
+    { slug: 'badge-perfectionist', title: 'الكامل', description: 'أنهيت مسارا بإجابات صحيحة 100%', iconEmoji: '💯', rarity: 'EPIC' },
+    { slug: 'badge-zu-pioneer', title: 'رائد جامعة الزاوية', description: 'أكملت 5 مسارات على المنصة', iconEmoji: '🏆', rarity: 'LEGENDARY' },
+  ]) {
+    await prisma.badge.upsert({
+      where: { slug: b.slug },
+      update: { title: b.title, description: b.description, iconEmoji: b.iconEmoji, rarity: b.rarity },
+      create: { slug: b.slug, title: b.title, description: b.description, iconEmoji: b.iconEmoji, rarity: b.rarity },
+    });
+  }
+
+  // Demo: enroll the seed student in the onboarding track and complete first 2 lessons
+  const onboardingTrack = await prisma.trainingTrack.findUnique({
+    where: { slug: 'platform-onboarding' },
+    include: { lessons: { orderBy: { order: 'asc' }, take: 2 } },
+  });
+  if (onboardingTrack) {
+    const enrollment = await prisma.trainingEnrollment.upsert({
+      where: { userId_trackId: { userId: student.id, trackId: onboardingTrack.id } },
+      update: {},
+      create: { userId: student.id, trackId: onboardingTrack.id },
+    });
+    for (const lesson of onboardingTrack.lessons) {
+      const existing = await prisma.lessonProgress.findUnique({
+        where: { enrollmentId_lessonId: { enrollmentId: enrollment.id, lessonId: lesson.id } },
+      });
+      if (!existing) {
+        await prisma.lessonProgress.create({
+          data: { enrollmentId: enrollment.id, lessonId: lesson.id, pointsAwarded: 5 },
+        });
+        await prisma.pointsLedger.create({
+          data: {
+            userId: student.id, points: 5,
+            reason: 'lesson_completed', refType: 'TrainingLesson', refId: lesson.id,
+          },
+        });
+      }
+    }
+    // Award the first-step badge
+    const firstStep = await prisma.badge.findUnique({ where: { slug: 'badge-first-step' } });
+    if (firstStep) {
+      await prisma.userBadge.upsert({
+        where: { userId_badgeId: { userId: student.id, badgeId: firstStep.id } },
+        update: {},
+        create: { userId: student.id, badgeId: firstStep.id },
+      });
+    }
+  }
 
   console.log('✅ Seed complete.');
 }
