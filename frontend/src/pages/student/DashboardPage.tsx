@@ -1,11 +1,10 @@
-import { Line, Doughnut } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import {
-  Chart as ChartJS, CategoryScale, LinearScale, PointElement,
-  LineElement, Filler, Tooltip, Legend, ArcElement,
+  Chart as ChartJS, ArcElement, Tooltip, Legend,
 } from 'chart.js';
 import { Link } from 'react-router-dom';
 import {
-  BookOpen, CheckCircle2, Award, Clock,
+  BookOpen, CheckCircle2,
   Calendar, Bell, ChevronLeft, Play, PlayCircle,
   Compass, AlertCircle, ArrowLeft,
   Cog, Cpu, Database, Network, Globe, Shield,
@@ -17,7 +16,7 @@ import { Icon } from '../../components/Icon';
 import { useMyEnrollments, useResume, useGaps } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ArcElement);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Map course code to a meaningful Lucide icon — used everywhere.
 const courseIcon = (codeOrName: string): LucideIcon => {
@@ -58,7 +57,19 @@ export default function StudentDashboardPage() {
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">{greeting}، {user?.firstName ?? 'بعودتك'}</h1>
-          <p className="page-subtitle">إليك نظرة موجزة على أدائك ومواعيدك القادمة.</p>
+          <p className="page-subtitle">
+            {(() => {
+              const enrolled = data?.length ?? 0;
+              const activeGaps = gaps.data?.length ?? 0;
+              if (resume.data && activeGaps > 0)
+                return `لديك محاضرة لاستئنافها و${activeGaps === 1 ? 'فجوة معرفية واحدة' : `${activeGaps} فجوات معرفية`} بحاجة لمراجعة.`;
+              if (resume.data)
+                return `محاضرة "${resume.data.lecture.title}" بانتظارك للاستكمال.`;
+              if (enrolled === 0)
+                return 'لا توجد مواد مسجَّلة بعد. تحدث مع مرشدك الأكاديمي.';
+              return 'فصل دراسي هادئ. لا توجد مهام عاجلة.';
+            })()}
+          </p>
         </div>
         <Badge>الفصل الدراسي · 2026 ربيع</Badge>
       </div>
@@ -78,7 +89,9 @@ export default function StudentDashboardPage() {
         />
       )}
 
-      {/* KPIs */}
+      {/* KPIs — sourced from real data; intentionally broken into "course state"
+          pair (left) and "academic standing" pair (right) so it reads as two
+          editorial groups instead of one repetitive 4-up grid. */}
       {isLoading ? (
         <KpiSkeleton />
       ) : (
@@ -87,29 +100,46 @@ export default function StudentDashboardPage() {
             icon={BookOpen}
             label="مواد مسجَّلة"
             value={data?.length ?? 0}
-            change="هذا الفصل"
+            change={
+              data && data.length > 0
+                ? `${data.filter((e) => e.progressPct >= 50).length} منها تجاوزت المنتصف`
+                : 'لا توجد بعد'
+            }
             color="brand"
           />
           <MetricCard
             icon={CheckCircle2}
             label="نسبة الإنجاز"
             value={`${avgProgress(data)}%`}
-            change="‏12% منذ الشهر الماضي"
-            changeDirection="up"
+            change={
+              avgProgress(data) >= 70
+                ? 'تقدّمك ممتاز هذا الفصل'
+                : avgProgress(data) >= 40
+                ? 'استمر — أنت في الطريق الصحيح'
+                : 'بحاجة لرفع الإيقاع قليلاً'
+            }
             color="green"
           />
           <MetricCard
-            icon={Award}
-            label="المعدل التراكمي"
-            value="3.4"
-            change="من 4.0"
-            color="gold"
+            icon={AlertCircle}
+            label="فجوات نشطة"
+            value={gaps.data?.length ?? 0}
+            change={
+              !gaps.data || gaps.data.length === 0
+                ? 'مصفوفتك التعليمية نظيفة'
+                : 'افتح المصفوفة لسدّها'
+            }
+            color={gaps.data && gaps.data.length > 0 ? 'amber' : 'green'}
           />
           <MetricCard
-            icon={Clock}
-            label="ساعات الدراسة"
-            value="142"
-            change="آخر 30 يوماً"
+            icon={Compass}
+            label="الفصل الدراسي"
+            value={resume.data?.lecture.course.code ?? '—'}
+            change={
+              resume.data
+                ? `قيد المتابعة: ${resume.data.lecture.course.name}`
+                : 'لا توجد محاضرة قيد المتابعة'
+            }
             color="purple"
           />
         </div>
@@ -117,68 +147,78 @@ export default function StudentDashboardPage() {
 
       {/* Charts row */}
       <div className="grid-2-1">
-        <Card title="الأداء الأسبوعي" subtitle="درجات النشاط اليومي خلال آخر سبعة أيام">
-          <div style={{ height: 220, position: 'relative' }}>
-            <Line
-              data={{
-                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
-                datasets: [
-                  {
-                    label: 'الأداء %',
-                    data: [62, 78, 55, 90, 71, 44, 83],
-                    borderColor: 'rgb(61,107,214)',
-                    backgroundColor: (ctx) => {
-                      const chart = ctx.chart;
-                      const { ctx: c, chartArea } = chart;
-                      if (!chartArea) return 'transparent';
-                      const grad = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                      grad.addColorStop(0, 'rgba(61,107,214,0.20)');
-                      grad.addColorStop(1, 'rgba(61,107,214,0.00)');
-                      return grad;
-                    },
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgb(61,107,214)',
-                    pointBorderColor: 'transparent',
-                    pointRadius: 3,
-                    pointHoverRadius: 5,
-                    tension: 0.4,
-                    fill: true,
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { display: false },
-                  tooltip: {
-                    backgroundColor: '#11131A',
-                    borderColor: 'rgba(255,255,255,.12)',
-                    borderWidth: 1,
-                    titleColor: '#E7E9EE',
-                    bodyColor: '#9EA4B8',
-                    padding: 10,
-                    cornerRadius: 8,
-                    titleFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-                    bodyFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-                  },
-                },
-                scales: {
-                  x: {
-                    grid: { display: false },
-                    border: { display: false },
-                    ticks: { color: '#6A7088', font: { size: 11, family: 'IBM Plex Sans Arabic' } },
-                  },
-                  y: {
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    border: { display: false },
-                    ticks: { color: '#6A7088', font: { size: 11 }, stepSize: 25 },
-                    min: 0,
-                    max: 100,
-                  },
-                },
-              }}
-            />
+        {/* "This week" — editorial panel built from real student data,
+            replacing the previous synthetic line chart. Shows what
+            actually demands attention: an active gap, an unfinished
+            lecture, and a contextual academic note. */}
+        <Card>
+          <div className="this-week">
+            <div className="this-week-eyebrow">هذا الأسبوع</div>
+            <h3 className="this-week-title">
+              {gaps.data && gaps.data.length > 0
+                ? `${gaps.data.length} ${gaps.data.length === 1 ? 'فجوة' : 'فجوات'} في مصفوفتك التعليمية`
+                : resume.data
+                ? 'محاضرة قيد المتابعة'
+                : 'لا توجد مهام عاجلة'}
+            </h3>
+            {gaps.data && gaps.data.length > 0 ? (
+              <p className="this-week-body">
+                المصفوفة اكتشفت{' '}
+                <span className="this-week-emphasis">{gaps.data.length}</span>{' '}
+                مفهوماً يحتاج مراجعة قبل أن يؤثّر على درجاتك.
+                أبرزها:{' '}
+                <span className="this-week-emphasis">
+                  «{gaps.data[0]?.conceptName ?? 'مفهوم أساسي'}»
+                </span>
+                {gaps.data[0]?.courseName
+                  ? ` في ${gaps.data[0].courseName}`
+                  : ''}.
+              </p>
+            ) : resume.data ? (
+              <p className="this-week-body">
+                توقفت عند الدقيقة{' '}
+                <span className="this-week-emphasis">
+                  {Math.round(resume.data.progressPct)}%
+                </span>{' '}
+                من «{resume.data.lecture.title}» في{' '}
+                {resume.data.lecture.course.name}. استئنافها يستغرق{' '}
+                {fmtDuration(
+                  resume.data.lecture.durationSec * (1 - resume.data.progressPct / 100),
+                )}{' '}
+                تقريباً.
+              </p>
+            ) : (
+              <p className="this-week-body">
+                لا توجد مادة تنتظرك ولا فجوات نشطة في المصفوفة. وقت جيد
+                لمراجعة بحوثك أو استكشاف مسار تطوير ذاتي جديد.
+              </p>
+            )}
+            <div className="this-week-actions">
+              {gaps.data && gaps.data.length > 0 && (
+                <Link to="/student/matrix" className="btn primary sm">
+                  فتح المصفوفة
+                  <Icon icon={ChevronLeft} size={13} />
+                </Link>
+              )}
+              {!gaps.data?.length && resume.data && (
+                <Link
+                  to={`/student/lectures/${resume.data.lecture.id}`}
+                  className="btn primary sm"
+                >
+                  استكمال المحاضرة
+                  <Icon icon={Play} size={13} />
+                </Link>
+              )}
+              {!gaps.data?.length && !resume.data && (
+                <Link to="/training" className="btn ghost sm">
+                  تصفّح المسارات
+                  <Icon icon={ChevronLeft} size={13} />
+                </Link>
+              )}
+              <span className="this-week-hint">
+                المصفوفة التعليمية تتعلم منك تلقائياً عند كل تفاعل.
+              </span>
+            </div>
           </div>
         </Card>
 
@@ -187,7 +227,11 @@ export default function StudentDashboardPage() {
             {isLoading ? (
               <LoadingState />
             ) : !data?.length ? (
-              <EmptyState icon={BookOpen} title="لا توجد مواد مسجَّلة" />
+              <EmptyState
+                icon={BookOpen}
+                title="لم يتم تسجيلك في أي مقرر بعد"
+                description="تواصل مع المرشد الأكاديمي في كليتك لإضافة المقررات لهذا الفصل."
+              />
             ) : (
               <Doughnut
                 data={{
@@ -286,7 +330,11 @@ export default function StudentDashboardPage() {
         ) : gaps.isError ? (
           <ErrorState />
         ) : !gaps.data?.length ? (
-          <EmptyState icon={CheckCircle2} title="لا توجد فجوات حالياً — أحسنت!" />
+          <EmptyState
+            icon={CheckCircle2}
+            title="مصفوفتك التعليمية نظيفة"
+            description="لم تكتشف المصفوفة أي فجوة معرفية في تفاعلاتك الأخيرة. استمر بهذا الإيقاع."
+          />
         ) : (
           <div className="flex-col gap-2">
             {gaps.data.slice(0, 3).map((g) => (

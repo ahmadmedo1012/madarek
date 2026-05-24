@@ -101,7 +101,11 @@ export default function MatrixPage() {
       ) : matrix.isError ? (
         <Card><ErrorState /></Card>
       ) : !matrix.data?.length ? (
-        <Card><EmptyState icon={Compass} title="لا توجد مفاهيم مسجَّلة بعد" /></Card>
+        <Card><EmptyState
+          icon={Compass}
+          title="مصفوفتك تبدأ بالتشكّل قريباً"
+          description="بعد مشاهدتك لأول محاضرة وحلّك لأول نقطة تفاعل، تبدأ المصفوفة برسم خريطة معرفتك بشكل تلقائي."
+        /></Card>
       ) : (
         <div className="flex-col gap-4">
           {matrix.data.map((c) => {

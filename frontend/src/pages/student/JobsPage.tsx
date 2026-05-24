@@ -42,7 +42,11 @@ export default function JobsPage() {
       ) : isError ? (
         <Card><ErrorState /></Card>
       ) : !data?.length ? (
-        <Card><EmptyState icon={Briefcase} title="لا توجد فرص متاحة حالياً" /></Card>
+        <Card><EmptyState
+          icon={Briefcase}
+          title="لا توجد فرص نشطة هذا الأسبوع"
+          description="نضيف فرص التوظيف والتدريب من شركات وطنية وعربية بشكل دوري. ستصلك إشعارات الفرص الملائمة لتخصصك تلقائياً."
+        /></Card>
       ) : (
         <div className="flex-col gap-3">
           {data.map((j) => {

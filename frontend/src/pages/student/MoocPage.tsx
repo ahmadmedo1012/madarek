@@ -33,7 +33,11 @@ export default function MoocPage() {
       ) : isError ? (
         <Card><ErrorState /></Card>
       ) : !data?.length ? (
-        <Card><EmptyState icon={GraduationCap} title="لا توجد كورسات متاحة حالياً" /></Card>
+        <Card><EmptyState
+          icon={GraduationCap}
+          title="لا توجد كورسات خارجية مرتبطة الآن"
+          description="هذا القسم يضم كورسات Coursera وedX المعتمدة من الجامعة. سيتم إضافة كورسات جديدة قبل بداية الفصل القادم."
+        /></Card>
       ) : (
         <div className="grid-3">
           {data.map((m) => {

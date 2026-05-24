@@ -172,7 +172,11 @@ export default function CourseDetailPage() {
       <div className="grid-2-1">
         <Card title="المواد المرفقة" icon={FileText}>
           {!data.materials.length ? (
-            <EmptyState icon={FileText} title="لا توجد مواد بعد" />
+            <EmptyState
+              icon={FileText}
+              title="الأستاذ لم يرفع مواد بعد"
+              description="ستظهر هنا الملفات والمراجع فور رفعها — العروض التقديمية، أوراق العمل، والقراءات."
+            />
           ) : (
             <div className="flex-col gap-2">
               {data.materials.map((m) => (
@@ -210,7 +214,11 @@ export default function CourseDetailPage() {
 
       <Card title="الواجبات" icon={ClipboardList}>
         {!data.assignments.length ? (
-          <EmptyState icon={ClipboardList} title="لا توجد واجبات نشطة" />
+          <EmptyState
+            icon={ClipboardList}
+            title="لا توجد واجبات نشطة"
+            description="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
+          />
         ) : (
           <div className="tbl-wrap">
             <table className="tbl">

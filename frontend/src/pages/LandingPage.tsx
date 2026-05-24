@@ -278,6 +278,22 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA */}
+        {/* Editorial: a short signed note. Adds product personality and
+            breaks the feature-grid → CTA → footer rhythm typical of
+            template-feel landing pages. */}
+        <section className="landing-note" aria-label="ملاحظة من فريق العمل">
+          <div className="landing-note-mark" aria-hidden>✦</div>
+          <p className="landing-note-body">
+            بنينا هذه المنصة لأن طلابنا يستحقون تجربة تعليمية أكثر من مجرد ملفات
+            PDF منشورة على بوابة قديمة. كل زر، كل بطاقة، كل شاشة هنا — مكتوب
+            من الصفر، ومُختبَر مع طلاب وأساتذة فعليين من كليات الجامعة.
+          </p>
+          <div className="landing-note-sign">
+            — فريق هندسة المنصة، جامعة الزاوية ·{' '}
+            <span className="font-mono">2026</span>
+          </div>
+        </section>
+
         <section className="landing-final">
           <h2 className="landing-final-title">جاهز لبدء رحلتك في منصة الزاوية؟</h2>
           <p className="landing-final-desc">
