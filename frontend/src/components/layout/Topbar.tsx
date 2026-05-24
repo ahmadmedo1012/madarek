@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Search, Bell, Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
+import { Bell, Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
+import { GlobalSearch } from './GlobalSearch';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
@@ -67,11 +68,7 @@ export function Topbar({ title, rightSlot }: TopbarProps) {
 
       <div className="topbar-title">{title}</div>
 
-      <label className="topbar-search">
-        <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
-        <input type="text" placeholder="بحث في المنصة…" aria-label="بحث" />
-        <span className="topbar-search-shortcut">/</span>
-      </label>
+      <GlobalSearch />
 
       <div className="topbar-actions">
         {rightSlot ?? (showAiButton && (

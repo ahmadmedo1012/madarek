@@ -278,8 +278,11 @@ button { font-family: inherit; cursor: pointer; }
   font-weight: var(--fw-semibold);
   letter-spacing: -0.1px;
   color: var(--text);
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

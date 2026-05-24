@@ -28,6 +28,7 @@ import teacherRoutes from './http/routes/teacher.routes.js';
 import examsRoutes from './http/routes/exams.routes.js';
 import socialRoutes from './http/routes/social.routes.js';
 import permissionsRoutes from './http/routes/permissions.routes.js';
+import searchRoutes from './http/routes/search.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
 import { AppError } from './lib/errors.js';
 
@@ -83,6 +84,7 @@ export function createApp() {
   app.use('/api/v1', examsRoutes);    // /exams/*, /question-bank/*
   app.use('/api/v1', socialRoutes);   // /announcements/*, /competitions/*, /events/*
   app.use('/api/v1', permissionsRoutes); // /me/permissions, /admin/users/*
+  app.use('/api/v1', searchRoutes);   // /search/global
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
 

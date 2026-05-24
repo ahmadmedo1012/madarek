@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Bot, BarChart3, FlaskConical, Briefcase,
   Mail, Lock, User,
   GraduationCap, School, Building2,
-  AlertCircle, ArrowLeft,
+  AlertCircle, ArrowLeft, Home,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { BrandMark } from '../components/BrandMark';
@@ -106,6 +106,12 @@ export default function AuthPage() {
 
   return (
     <div className="auth-overlay">
+      {/* Persistent back-to-home — always visible, never traps the user */}
+      <Link to="/" className="auth-back-home" aria-label="العودة للصفحة الرئيسية">
+        <Icon icon={Home} size={14} />
+        <span>الصفحة الرئيسية</span>
+      </Link>
+
       <div className="auth-card">
         {/* ─── Brand pane ─── */}
         <div className="auth-brand">
@@ -116,7 +122,7 @@ export default function AuthPage() {
               <span>وزارة التعليم العالي والبحث العلمي · ليبيا</span>
             </div>
 
-            <div className="auth-brand-header">
+            <Link to="/" className="auth-brand-header" aria-label="العودة للصفحة الرئيسية">
               <BrandMark size={44} />
               <div>
                 <div className="auth-brand-name">
@@ -124,7 +130,7 @@ export default function AuthPage() {
                 </div>
                 <div className="auth-brand-uni">جامعة الزاوية · تأسست 1988</div>
               </div>
-            </div>
+            </Link>
 
             <h1 className="auth-brand-hero">
               المنصة الرسمية للتعليم الذكي بجامعة الزاوية.
@@ -227,6 +233,12 @@ export default function AuthPage() {
                 </button>
                 <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('TEACHER')}>
                   <Icon icon={School} size={14} /> أستاذ
+                </button>
+                <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('ADMIN')}>
+                  <Icon icon={Building2} size={14} /> الإدارة
+                </button>
+                <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('QUALITY')}>
+                  <Icon icon={AlertCircle} size={14} /> الجودة
                 </button>
               </div>
 
