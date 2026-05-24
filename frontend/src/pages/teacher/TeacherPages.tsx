@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import ResearchReviewPage from './ResearchReviewPage';
 
 export function TeacherDashboardPage() {
   return (
@@ -296,33 +297,7 @@ export function MaterialsPage() {
 }
 
 export function ResearchPage() {
-  return (
-    <div className="page">
-      <PageHeader title="البحث العلمي" subtitle="إدارة منشوراتك العلمية وملف الترقية." />
-      <div className="grid-3">
-        <MetricCard icon={Microscope} label="منشورات محكَّمة" value="14" color="brand" />
-        <MetricCard icon={TrendingUp} label="الاستشهادات" value="186" color="green" />
-        <MetricCard icon={FileText} label="مشاريع جارية" value="3" color="amber" />
-      </div>
-      <Card title="منشورات حديثة" icon={Microscope}>
-        <div className="flex-col gap-2">
-          {[
-            { t: 'تطبيقات الذكاء الاصطناعي في التعليم العالي', j: 'Journal of AI in Education', y: 2025 },
-            { t: 'تحسين أداء قواعد البيانات الموزعة', j: 'IEEE Access', y: 2024 },
-            { t: 'دراسة مقارنة لخوارزميات التعلم العميق', j: 'مجلة الجامعة', y: 2024 },
-          ].map((p, i) => (
-            <div key={i} className="list-row">
-              <span className="list-row-meta">{p.y}</span>
-              <div className="list-row-body">
-                <div className="list-row-title">{p.t}</div>
-                <div className="list-row-sub">{p.j}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
-  );
+  return <ResearchReviewPage />;
 }
 
 export function StudentsListPage() {

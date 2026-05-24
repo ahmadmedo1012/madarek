@@ -19,9 +19,23 @@ function decToNum<T>(o: T): T {
     // Pass-through for native types we shouldn't traverse.
     if (o instanceof Date) return o;
     if (Array.isArray(o)) return o.map(decToNum) as never;
-    const obj = o as unknown as { toNumber?: () => number; constructor?: { name?: string } };
-    if (typeof obj.toNumber === 'function' && obj.constructor?.name === 'Decimal') {
+    // Prisma Decimal exposes toNumber() — convert to plain number.
+    const obj = o as unknown as { toNumber?: () => number; s?: number; e?: number; d?: number[] };
+    if (typeof obj.toNumber === 'function') {
       return obj.toNumber() as never;
+    }
+    // Fallback: detect serialized Decimal shape { s, e, d:[...] }
+    if (
+      typeof obj.s === 'number' &&
+      typeof obj.e === 'number' &&
+      Array.isArray(obj.d) &&
+      Object.keys(o).length <= 3
+    ) {
+      // Reconstruct a number from the Decimal internal representation.
+      // s = sign, e = exponent, d = digits array.
+      const digits = obj.d.join('');
+      const num = Number(`${obj.s < 0 ? '-' : ''}${digits.slice(0, obj.e + 1)}.${digits.slice(obj.e + 1) || '0'}`);
+      return (Number.isFinite(num) ? num : 0) as never;
     }
     const out: Record<string, unknown> = {};
     for (const k of Object.keys(o as object)) out[k] = decToNum((o as Record<string, unknown>)[k]);
@@ -403,6 +417,40 @@ router.post('/research/:id/grade', requireRole(Role.TEACHER, Role.ADMIN), valida
         status: 'GRADED',
         gradedAt: new Date(),
       },
+    });
+    res.json({ data: decToNum(updated) });
+  } catch (e) { next(e); }
+});
+
+// Teacher / admin queue: papers passing checks, awaiting grade.
+router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN), async (_req, res, next) => {
+  try {
+    const data = await prisma.researchPaper.findMany({
+      where: { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] } },
+      orderBy: { uploadedAt: 'desc' },
+      include: {
+        student: {
+          select: {
+            id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true, email: true,
+          },
+        },
+        offering: { include: { course: { select: { name: true, code: true } } } },
+      },
+    });
+    res.json({ data: decToNum(data) });
+  } catch (e) { next(e); }
+});
+
+// Publish a graded paper to the library.
+router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+  try {
+    const id = req.params.id!;
+    const paper = await prisma.researchPaper.findUnique({ where: { id } });
+    if (!paper) throw AppError.notFound();
+    if (paper.status !== 'GRADED') throw AppError.conflict('Paper must be graded before publishing');
+    const updated = await prisma.researchPaper.update({
+      where: { id },
+      data: { status: 'PUBLISHED', publishedAt: new Date() },
     });
     res.json({ data: decToNum(updated) });
   } catch (e) { next(e); }

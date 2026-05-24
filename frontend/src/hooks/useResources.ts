@@ -411,3 +411,84 @@ export function useOfferingFull(offeringId: string | undefined) {
     enabled: Boolean(offeringId),
   });
 }
+
+
+// ── Research papers ────────────────────────────────────────────
+export type PaperStatus =
+  | 'UPLOADED' | 'SCANNING' | 'CHECKS_PASSED' | 'CHECKS_FAILED' | 'GRADED' | 'PUBLISHED';
+
+export interface ResearchPaper {
+  id: string;
+  title: string;
+  abstract?: string | null;
+  fileUrl?: string | null;
+  status: PaperStatus;
+  plagiarismPct?: number | null;
+  aiContentPct?: number | null;
+  grade?: number | null;
+  feedback?: string | null;
+  uploadedAt: string;
+  scannedAt?: string | null;
+  gradedAt?: string | null;
+  publishedAt?: string | null;
+  student: { id: string; firstName: string; lastName: string; avatarInitials?: string | null; avatarColor?: string | null; email?: string };
+  reviewer?: { id: string; firstName: string; lastName: string } | null;
+  offering?: { id: string; course: { name: string; code: string } } | null;
+}
+
+export function useMyResearch() {
+  return useQuery({
+    queryKey: ['me', 'research'],
+    queryFn: () => unwrap<ResearchPaper[]>(api.get('/me/research')),
+  });
+}
+
+export function useResearchQueue() {
+  return useQuery({
+    queryKey: ['research', 'queue'],
+    queryFn: () => unwrap<ResearchPaper[]>(api.get('/research/queue')),
+  });
+}
+
+export function useUploadPaper() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { title: string; abstract?: string; offeringId?: string; fileUrl?: string }) =>
+      unwrap<ResearchPaper>(api.post('/me/research', input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['me', 'research'] }),
+  });
+}
+
+export function useScanPaper() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => unwrap<ResearchPaper>(api.post(`/research/${id}/scan`)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['me', 'research'] });
+      qc.invalidateQueries({ queryKey: ['research', 'queue'] });
+    },
+  });
+}
+
+export function useGradePaper() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; grade: number; feedback?: string }) =>
+      unwrap<ResearchPaper>(api.post(`/research/${input.id}/grade`, { grade: input.grade, feedback: input.feedback })),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['research', 'queue'] });
+      qc.invalidateQueries({ queryKey: ['me', 'research'] });
+    },
+  });
+}
+
+export function usePublishPaper() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => unwrap<ResearchPaper>(api.post(`/research/${id}/publish`)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['research', 'queue'] });
+      qc.invalidateQueries({ queryKey: ['me', 'research'] });
+    },
+  });
+}

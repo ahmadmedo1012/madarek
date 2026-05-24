@@ -13,6 +13,7 @@ import AiAssistantPage from './pages/student/AiAssistantPage';
 import CourseDetailPage from './pages/student/CourseDetailPage';
 import LecturePlayerPage from './pages/student/LecturePlayerPage';
 import MatrixPage from './pages/student/MatrixPage';
+import StudentResearchPage from './pages/student/ResearchPage';
 import {
   GamificationPage, SkillsPage, AlertsPage, SchedulePage, ResultsPage,
   LabsPage, ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
@@ -70,7 +71,7 @@ export default function App() {
               <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />
               {/* Educational Matrix */}
               <Route path="/student/matrix" element={<MatrixPage />} />
-              <Route path="/student/research" element={<UniversityInfoPage />} />
+              <Route path="/student/research" element={<StudentResearchPage />} />
             </Route>
           </Route>
 
