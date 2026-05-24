@@ -57,10 +57,19 @@ const PAGE_TITLES: Record<string, string> = {
   '/vision': 'الابتكارات القادمة',
 };
 
+/** Resolve a topbar title for any path, including dynamic routes. */
+function resolveTitle(pathname: string): string {
+  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname]!;
+  if (/^\/student\/courses\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
+  if (/^\/student\/lectures\/[^/]+$/.test(pathname)) return 'مشغّل المحاضرة';
+  if (/^\/vision\/[^/]+$/.test(pathname)) return 'ابتكار قادم';
+  return 'مدارك AI';
+}
+
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
   const location = useLocation();
-  const title = PAGE_TITLES[location.pathname] ?? 'مدارك AI';
+  const title = resolveTitle(location.pathname);
   return (
     <>
       <Sidebar />

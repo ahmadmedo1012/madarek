@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import {
-  Sparkles, ArrowLeft, ChevronLeft, Bell, type LucideIcon,
+  Sparkles, ArrowLeft, ChevronLeft, Bell, CheckCircle2, type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
@@ -85,6 +86,7 @@ export function VisionGalleryPage() {
 export function VisionDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const concept = VISION_CONCEPTS.find((c) => c.slug === slug);
+  const [notified, setNotified] = useState(false);
   if (!concept) return <Navigate to="/vision" replace />;
 
   return (
@@ -219,15 +221,22 @@ export function VisionDetailPage() {
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
-              نبّهني عند إطلاق هذه الميزة
+              {notified ? 'تم تفعيل التنبيه' : 'نبّهني عند إطلاق هذه الميزة'}
             </div>
             <div className="text-xs text-subtle" style={{ marginTop: 2 }}>
-              ستتلقى إشعاراً على بريدك الجامعي فور توفّر النسخة التجريبية.
+              {notified
+                ? 'سنُعلمك على بريدك الجامعي فور توفّر النسخة التجريبية.'
+                : 'ستتلقى إشعاراً على بريدك الجامعي فور توفّر النسخة التجريبية.'}
             </div>
           </div>
-          <button type="button" className="btn primary">
-            <Icon icon={Bell} size={13} />
-            تفعيل التنبيه
+          <button
+            type="button"
+            className={notified ? 'btn outline' : 'btn primary'}
+            onClick={() => setNotified((v) => !v)}
+            disabled={notified}
+          >
+            <Icon icon={notified ? CheckCircle2 : Bell} size={13} />
+            {notified ? 'مُفعَّل' : 'تفعيل التنبيه'}
           </button>
         </div>
       </Card>

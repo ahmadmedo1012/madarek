@@ -55,6 +55,7 @@ export default function AuthPage() {
   useThemeSync();
   const [tab, setTab] = useState<Tab>('login');
   const [role, setRole] = useState<AppRole>('STUDENT');
+  const [forgotNotice, setForgotNotice] = useState(false);
   const navigate = useNavigate();
   const login = useLogin();
   const register = useRegister();
@@ -193,7 +194,19 @@ export default function AuthPage() {
                 </div>
               </div>
 
-              <button type="button" className="auth-forgot">نسيت كلمة المرور؟</button>
+              <button
+                type="button"
+                className="auth-forgot"
+                onClick={() => setForgotNotice(true)}
+              >
+                نسيت كلمة المرور؟
+              </button>
+              {forgotNotice && (
+                <div className="auth-error" style={{ background: 'var(--accent-soft)', color: 'var(--accent)', borderColor: 'transparent', marginTop: 'calc(-1 * var(--sp-3))' }}>
+                  <Icon icon={AlertCircle} size={14} />
+                  <span>تواصل مع شؤون الطلاب على <strong>support@zu.edu.ly</strong> لإعادة تعيين كلمة المرور.</span>
+                </div>
+              )}
 
               <button type="submit" className="auth-btn" disabled={login.isPending}>
                 {login.isPending ? 'جارٍ الدخول…' : 'تسجيل الدخول'}

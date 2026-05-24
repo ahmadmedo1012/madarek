@@ -379,8 +379,16 @@ router.post('/research/:id/scan', async (req, res, next) => {
     const id = req.params.id!;
     const paper = await prisma.researchPaper.findUnique({ where: { id } });
     if (!paper) throw AppError.notFound();
+    // Students may only scan their own papers.
+    if (req.user!.role === Role.STUDENT && paper.studentId !== req.user!.id) {
+      throw AppError.forbidden();
+    }
     if (req.user!.role !== Role.STUDENT && req.user!.role !== Role.TEACHER && req.user!.role !== Role.ADMIN) {
       throw AppError.forbidden();
+    }
+    // Refuse to re-scan papers already graded or published.
+    if (paper.status === 'GRADED' || paper.status === 'PUBLISHED') {
+      throw AppError.conflict('Cannot rescan a graded paper');
     }
     // Deterministic-looking results derived from id hash.
     const seed = paper.id.charCodeAt(0) + paper.id.charCodeAt(2);

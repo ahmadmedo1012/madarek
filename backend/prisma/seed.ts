@@ -526,7 +526,7 @@ async function main() {
     });
   }
 
-  // ─── Sample research paper in graded state ─────────────────
+  // ─── Sample research papers across statuses ────────────────
   await prisma.researchPaper.create({
     data: {
       studentId: student.id,
@@ -543,6 +543,38 @@ async function main() {
       uploadedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
       scannedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000 + 60_000),
       gradedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    },
+  });
+  // A second paper that already passed checks but waits for review.
+  await prisma.researchPaper.create({
+    data: {
+      studentId: student.id,
+      offeringId: seOffering.id,
+      title: 'تحليل أداء قواعد البيانات NoSQL في تطبيقات Real-Time',
+      abstract:
+        'مقارنة عملية بين MongoDB، Redis، و Cassandra في حالات استخدام محادثة لحظية وقياس زمن الاستجابة تحت أحمال متفاوتة.',
+      status: 'CHECKS_PASSED',
+      plagiarismPct: 6.4,
+      aiContentPct: 11.2,
+      uploadedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      scannedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 60_000),
+    },
+  });
+
+  // ─── Watch event so the dashboard "Continue Learning" makes sense ──
+  const firstLecture = await prisma.lecture.findFirstOrThrow({
+    where: { offeringId: seOffering.id },
+    orderBy: { ordinal: 'asc' },
+  });
+  await prisma.watchEvent.upsert({
+    where: { lectureId_studentId: { lectureId: firstLecture.id, studentId: student.id } },
+    update: {},
+    create: {
+      lectureId: firstLecture.id,
+      studentId: student.id,
+      watchedSec: Math.round(firstLecture.durationSec * 0.3),
+      totalSec: firstLecture.durationSec,
+      completed: false,
     },
   });
 

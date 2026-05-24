@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Search, Bell, Menu, Sparkles } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
@@ -14,10 +14,16 @@ export function Topbar({ title, rightSlot }: TopbarProps) {
   const toggle = useUiStore((s) => s.toggleSidebar);
   const role = useAuthStore((s) => s.user?.role);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const aiPath = role === 'TEACHER' ? '/teacher/ai' : '/student/ai';
+  const alertsPath =
+    role === 'TEACHER' ? '/teacher/alerts' :
+    role === 'ADMIN' ? '/admin/alerts' :
+    role === 'QUALITY' ? '/quality/alerts' :
+    '/student/alerts';
   const onAiPage = location.pathname.endsWith('/ai');
-  const showAiButton = role !== 'ADMIN' && !onAiPage;
+  const showAiButton = role !== 'ADMIN' && role !== 'QUALITY' && !onAiPage;
 
   return (
     <header className="topbar">
@@ -45,9 +51,14 @@ export function Topbar({ title, rightSlot }: TopbarProps) {
             <span className="hide-on-mobile">اسأل AI</span>
           </NavLink>
         ))}
-        <button type="button" className="topbar-notif" aria-label="الإشعارات">
+        <button
+          type="button"
+          className="topbar-notif"
+          aria-label="الإشعارات"
+          onClick={() => navigate(alertsPath)}
+        >
           <Icon icon={Bell} size={16} />
-          <span className="topbar-notif-badge">4</span>
+          <span className="topbar-notif-badge" aria-hidden>4</span>
         </button>
       </div>
     </header>
