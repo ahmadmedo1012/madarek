@@ -110,18 +110,24 @@ export default function AuthPage() {
         {/* ─── Brand pane ─── */}
         <div className="auth-brand">
           <div>
+            {/* Ministry strip — official affiliation */}
+            <div className="auth-ministry-strip">
+              <span className="auth-ministry-emblem" aria-hidden>🇱🇾</span>
+              <span>وزارة التعليم العالي والبحث العلمي · ليبيا</span>
+            </div>
+
             <div className="auth-brand-header">
               <BrandMark size={44} />
               <div>
                 <div className="auth-brand-name">
-                  مدارك <span className="ai-tag">AI</span>
+                  منصة <span className="ai-tag">الزاوية</span>
                 </div>
                 <div className="auth-brand-uni">جامعة الزاوية · تأسست 1988</div>
               </div>
             </div>
 
             <h1 className="auth-brand-hero">
-              منصة موحدة لإدارة الحياة الأكاديمية الرقمية.
+              المنصة الرسمية للتعليم الذكي بجامعة الزاوية.
             </h1>
             <p className="auth-brand-tag">
               من إدارة المقررات والحضور إلى المعامل الافتراضية وفرص التوظيف،
@@ -137,7 +143,7 @@ export default function AuthPage() {
           </div>
 
           <div className="auth-brand-footer">
-            © {new Date().getFullYear()} جامعة الزاوية. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} جامعة الزاوية · جميع الحقوق محفوظة
           </div>
         </div>
 
@@ -231,7 +237,7 @@ export default function AuthPage() {
           ) : (
             <form onSubmit={onRegister} className="flex-col" noValidate>
               <div className="auth-form-title">إنشاء حساب جديد</div>
-              <div className="auth-form-sub">انضم إلى منصة مدارك الأكاديمية.</div>
+              <div className="auth-form-sub">انضم إلى منصة الزاوية الأكاديمية.</div>
 
               {register.isError && (
                 <div className="auth-error">

@@ -1,8 +1,8 @@
 {
-  "name": "madarek",
+  "name": "zu-platform",
   "version": "1.0.0",
   "private": true,
-  "description": "Madarek AI — Arabic-RTL educational platform for the University of Zawia.",
+  "description": "منصة جامعة الزاوية للتعليم الذكي — Arabic-RTL learning platform for University of Zawia (Ministry of Higher Education, Libya).",
   "engines": {
     "node": ">=20"
   },

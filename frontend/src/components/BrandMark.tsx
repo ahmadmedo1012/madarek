@@ -1,12 +1,12 @@
 /**
- * The Madarek brain-shield mark.
+ * The University of Zawia platform crest.
  * Imported as a static asset URL so the SVG can be cached separately
  * and the JS bundle stays small.
  */
 export function BrandMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <img
-      src="/brand/madarek-mark.svg"
+      src="/brand/zu-mark.svg"
       width={size}
       height={size}
       alt=""

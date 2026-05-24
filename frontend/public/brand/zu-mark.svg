@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="University of Zawia">
+  <defs>
+    <linearGradient id="zu-grad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0E5C2F"/>
+      <stop offset="1" stop-color="#0A4524"/>
+    </linearGradient>
+    <linearGradient id="zu-accent" x1="32" y1="6" x2="32" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#D4A537"/>
+      <stop offset="1" stop-color="#B8861E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer shield — UoZ green -->
+  <path
+    d="M32 4 L56 11 L56 32 C56 46 46 56 32 60 C18 56 8 46 8 32 L8 11 Z"
+    fill="url(#zu-grad)"
+    stroke="#0A4524"
+    stroke-width="1.2"
+    stroke-linejoin="round"/>
+
+  <!-- Inner field — soft cream tint -->
+  <path
+    d="M32 9 L52 15 L52 32 C52 44 43 52 32 55 C21 52 12 44 12 32 L12 15 Z"
+    fill="#F7F3E8"
+    fill-opacity="0.06"/>
+
+  <!-- Open book base — symbolizes learning -->
+  <path
+    d="M16 38 L32 36 L48 38 L48 46 L32 44 L16 46 Z"
+    fill="url(#zu-accent)"
+    stroke="#8A6213"
+    stroke-width="0.6"
+    stroke-linejoin="round"/>
+  <line x1="32" y1="36" x2="32" y2="44" stroke="#8A6213" stroke-width="0.6"/>
+
+  <!-- Z monogram — clean serif style -->
+  <path
+    d="M22 16 L42 16 L42 20 L28 30 L42 30 L42 34 L22 34 L22 30 L36 20 L22 20 Z"
+    fill="#FFFFFF"
+    fill-opacity="0.95"/>
+
+  <!-- Star — Libyan heritage motif -->
+  <path
+    d="M32 49.5 L33.4 52.4 L36.6 52.8 L34.3 55.0 L34.8 58.2 L32 56.7 L29.2 58.2 L29.7 55.0 L27.4 52.8 L30.6 52.4 Z"
+    fill="#FFFFFF"
+    fill-opacity="0.85"/>
+</svg>

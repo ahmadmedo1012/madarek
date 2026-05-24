@@ -66,12 +66,22 @@ export default function LandingPage() {
 
   return (
     <div className="landing">
+      {/* Ministry affiliation strip — official identifier across the top */}
+      <div className="ministry-strip">
+        <div className="ministry-strip-inner">
+          <span className="ministry-strip-emblem" aria-hidden>🇱🇾</span>
+          <span className="ministry-strip-text">
+            دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
+          </span>
+        </div>
+      </div>
+
       <header className="landing-header">
-        <Link to="/" className="landing-brand" aria-label="مدارك AI">
+        <Link to="/" className="landing-brand" aria-label="منصة جامعة الزاوية للتعليم الذكي">
           <BrandMark size={36} />
           <div className="landing-brand-text">
             <span className="landing-brand-name">
-              مدارك <span className="ai-tag">AI</span>
+              منصة <span className="ai-tag">الزاوية</span>
             </span>
             <span className="landing-brand-uni">جامعة الزاوية · 1988</span>
           </div>
@@ -88,15 +98,15 @@ export default function LandingPage() {
         <section className="landing-hero">
           <div className="landing-eyebrow">
             <Icon icon={Sparkles} size={13} />
-            مبادرة وطنية للتعليم الذكي
+            المنصة الرسمية للتعلم الذكي بجامعة الزاوية
           </div>
           <h1 className="landing-title">
             جامعة ذكية <span className="accent">في يدك</span>،<br />
             ومنظومة تعليم رقمية متكاملة.
           </h1>
           <p className="landing-subtitle">
-            مدارك AI منصة تعليمية مدمجة لجامعة الزاوية، تجمع المحاضرات المسجَّلة، والمعامل
-            الافتراضية، والمصفوفة التعليمية الشخصية، في تجربة واحدة لكل طالب وأستاذ
+            منصة جامعة الزاوية للتعليم الذكي — منصة وطنية تعليمية تجمع المحاضرات المسجَّلة، والمعامل
+            الافتراضية، والمصفوفة التعليمية الشخصية، في تجربة موحَّدة لكل طالب وأستاذ
             ومؤسسة جامعية.
           </p>
           <div className="landing-cta-row">
@@ -269,7 +279,7 @@ export default function LandingPage() {
 
         {/* Final CTA */}
         <section className="landing-final">
-          <h2 className="landing-final-title">جاهز لبدء رحلتك في مدارك؟</h2>
+          <h2 className="landing-final-title">جاهز لبدء رحلتك في منصة الزاوية؟</h2>
           <p className="landing-final-desc">
             سجّل دخولك بحساب جامعة الزاوية، أو جرّب المنصة بحساب تجريبي.
           </p>
@@ -307,7 +317,7 @@ export default function LandingPage() {
         </div>
         <div className="landing-footer-bottom">
           <div className="landing-footer-text">
-            © {new Date().getFullYear()} جامعة الزاوية — مدارك AI. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} جامعة الزاوية · وزارة التعليم العالي والبحث العلمي · جميع الحقوق محفوظة
           </div>
           <div className="landing-footer-meta">
             <span>سياسة الخصوصية</span>

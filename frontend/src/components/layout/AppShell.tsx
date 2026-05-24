@@ -67,7 +67,7 @@ function resolveTitle(pathname: string): string {
   if (/^\/student\/lectures\/[^/]+$/.test(pathname)) return 'مشغّل المحاضرة';
   if (/^\/vision\/[^/]+$/.test(pathname)) return 'ابتكار قادم';
   if (/^\/document\/[^/]+$/.test(pathname)) return 'عارض المستندات';
-  return 'مدارك AI';
+  return 'منصة الزاوية';
 }
 
 export function AppShell({ children }: { children?: ReactNode }) {

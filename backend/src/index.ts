@@ -15,7 +15,7 @@ async function main() {
 
   const app = createApp();
   const server = app.listen(env.PORT, () => {
-    logger.info(`🚀 Madarek API listening on http://0.0.0.0:${env.PORT} (${env.NODE_ENV})`);
+    logger.info(`🚀 ZU Platform API listening on http://0.0.0.0:${env.PORT} (${env.NODE_ENV})`);
   });
 
   const shutdown = async (signal: string) => {

@@ -20,13 +20,13 @@ export function VisionGalleryPage() {
       <div className="vision-hero">
         <div className="vision-eyebrow">
           <Icon icon={Sparkles} size={12} />
-          رؤية مدارك المستقبلية
+          رؤية المنصة المستقبلية
         </div>
         <h1 className="vision-title">
           12 ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.
         </h1>
         <p className="vision-tagline">
-          هذه نظرة على المسار التقني لمنصة مدارك خلال السنوات الثلاث القادمة —
+          هذه نظرة على المسار التقني للمنصة خلال السنوات الثلاث القادمة —
           من الذكاء الاصطناعي والميتافيرس إلى البلوكشين والترجمة الفورية.
         </p>
       </div>

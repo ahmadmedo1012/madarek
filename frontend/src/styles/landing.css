@@ -18,6 +18,30 @@
   padding: 0 var(--sp-6);
 }
 
+/* ── Ministry affiliation strip ─────────────────────────── */
+.ministry-strip {
+  background: linear-gradient(90deg, #0E5C2F 0%, #0A4524 100%);
+  color: #F2F8F4;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+}
+.ministry-strip-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 7px var(--sp-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ministry-strip-emblem { font-size: 14px; }
+.ministry-strip-text strong { font-weight: var(--fw-semibold); color: #FFFFFF; }
+@media (max-width: 600px) {
+  .ministry-strip-inner { padding: 6px var(--sp-3); font-size: var(--fs-xxs); }
+}
+
 /* ── Header ─────────────────────────────────────────────── */
 .landing-header {
   display: flex;

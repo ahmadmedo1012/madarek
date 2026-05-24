@@ -6,6 +6,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+import { extractPaperText } from '../../lib/pdf.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -455,7 +456,14 @@ const createPaperSchema = z.object({
   title: z.string().min(3).max(280),
   abstract: z.string().max(4000).optional(),
   offeringId: z.string().cuid().optional(),
-  fileUrl: z.string().url().max(500).optional(),
+  // Accept either an absolute URL or a path under our /api/v1/files/papers/ namespace.
+  fileUrl: z.string()
+    .max(500)
+    .refine(
+      (s) => /^https?:\/\//i.test(s) || s.startsWith('/api/v1/files/papers/'),
+      { message: 'fileUrl must be a full URL or a /api/v1/files/papers/<filename>.pdf path' },
+    )
+    .optional(),
 }).strict();
 
 router.post('/me/research', validate(createPaperSchema), async (req, res, next) => {
@@ -490,6 +498,12 @@ router.post('/research/:id/scan', async (req, res, next) => {
     const plagiarismPct = Number((((seed * 7) % 18) + 3).toFixed(1)); // 3 - 21
     const aiContentPct = Number((((seed * 11) % 22) + 4).toFixed(1)); // 4 - 26
     const passed = plagiarismPct < 15 && aiContentPct < 25;
+
+    // Best-effort full-text extraction so the paper becomes searchable
+    // in the library archive after scanning. Local files only (those
+    // served by /api/v1/files/papers/...).
+    const extractedText = await extractPaperText(paper.fileUrl);
+
     const updated = await prisma.researchPaper.update({
       where: { id },
       data: {
@@ -497,6 +511,7 @@ router.post('/research/:id/scan', async (req, res, next) => {
         plagiarismPct,
         aiContentPct,
         scannedAt: new Date(),
+        ...(extractedText ? { extractedText } : {}),
       },
     });
     res.json({ data: decToNum(updated) });
