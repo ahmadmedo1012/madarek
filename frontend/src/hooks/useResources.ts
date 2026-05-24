@@ -61,6 +61,18 @@ export function useMarkNotifRead() {
   });
 }
 
+// Unread count from response meta — backend returns it on the notifications endpoint.
+export function useUnreadNotifications() {
+  return useQuery({
+    queryKey: ['notifications', 'unread-count'],
+    queryFn: async () => {
+      const res = await api.get<{ data: Notification[]; meta: { unread: number } }>('/notifications?limit=1');
+      return res.data.meta?.unread ?? 0;
+    },
+    refetchInterval: 60_000, // refresh every minute
+  });
+}
+
 // ── Library ────────────────────────────────────────────────────
 export interface Book {
   id: string;

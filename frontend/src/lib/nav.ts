@@ -49,7 +49,7 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/student/webinars', icon: Mic2, label: 'الندوات وورش العمل' },
       { to: '/student/mooc', icon: GraduationCap, label: 'كورسات خارجية' },
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
-      { to: '/student/alerts', icon: Bell, label: 'الإشعارات', badge: { text: '4' } },
+      { to: '/student/alerts', icon: Bell, label: 'الإشعارات' },
       { to: '/student/university', icon: Building2, label: 'جامعة الزاوية' },
     ],
   },

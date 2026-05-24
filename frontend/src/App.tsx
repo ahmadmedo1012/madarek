@@ -17,6 +17,7 @@ import StudentResearchPage from './pages/student/ResearchPage';
 import ProfilePage from './pages/student/ProfilePage';
 import WebinarsPage from './pages/student/WebinarsPage';
 import ExamsPage from './pages/student/ExamsPage';
+import DocumentViewerPage from './pages/DocumentViewerPage';
 import {
   GamificationPage, SkillsPage, AlertsPage, SchedulePage, ResultsPage,
   ArVrPage, SocialPage, DownloadsPage, UniversityInfoPage,
@@ -143,6 +144,7 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/vision" element={<VisionGalleryPage />} />
               <Route path="/vision/:slug" element={<VisionDetailPage />} />
+              <Route path="/document/:filename" element={<DocumentViewerPage />} />
             </Route>
           </Route>
 

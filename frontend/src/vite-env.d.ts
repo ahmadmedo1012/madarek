@@ -16,3 +16,10 @@ declare module '*.svg' {
   const url: string;
   export default url;
 }
+
+// Vite ?url suffix turns any import into a same-origin URL string —
+// used by the PDF viewer to load the worker as a module.
+declare module '*?url' {
+  const url: string;
+  export default url;
+}

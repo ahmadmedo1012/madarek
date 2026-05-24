@@ -7,6 +7,7 @@ import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout } from '../../hooks/useAuth';
+import { useUnreadNotifications } from '../../hooks/useResources';
 
 interface TopbarProps {
   title: ReactNode;
@@ -23,6 +24,8 @@ export function Topbar({ title, rightSlot }: TopbarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const logoutM = useLogout();
+  const unreadQ = useUnreadNotifications();
+  const unread = unreadQ.data ?? 0;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +87,11 @@ export function Topbar({ title, rightSlot }: TopbarProps) {
           onClick={() => navigate(alertsPath)}
         >
           <Icon icon={Bell} size={16} />
-          <span className="topbar-notif-badge" aria-hidden>4</span>
+          {unread > 0 && (
+            <span className="topbar-notif-badge" aria-label={`${unread} غير مقروء`}>
+              {unread > 99 ? '99+' : unread}
+            </span>
+          )}
         </button>
 
         {user && (

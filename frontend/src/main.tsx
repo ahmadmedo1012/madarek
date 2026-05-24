@@ -6,6 +6,7 @@ import './styles/base.css';
 import './styles/components.css';
 import './styles/utilities.css';
 import './styles/landing.css';
+import './styles/pdf.css';
 
 import App from './App';
 

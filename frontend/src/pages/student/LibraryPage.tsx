@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Search, Library as LibraryIcon, BookOpen, Bookmark, Clock,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap,
@@ -249,7 +250,7 @@ export default function LibraryPage() {
                       {p.abstract}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 text-xxs text-subtle" style={{ flexWrap: 'wrap' }}>
+                  <div className="flex items-center gap-2 text-xxs text-subtle" style={{ flexWrap: 'wrap', marginBottom: 'var(--sp-3)' }}>
                     {p.plagiarismPct != null && (
                       <span className="font-mono">انتحال: {p.plagiarismPct}%</span>
                     )}
@@ -261,6 +262,15 @@ export default function LibraryPage() {
                       تم التحقق من النشر
                     </span>
                   </div>
+                  {p.fileUrl && (
+                    <Link
+                      to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library')}`}
+                      className="btn primary sm"
+                    >
+                      <Icon icon={FileText} size={13} />
+                      اقرأ البحث كاملاً
+                    </Link>
+                  )}
                 </article>
               ))}
             </div>

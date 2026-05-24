@@ -354,12 +354,22 @@ async function main() {
   }
 
   // ─── Notifications ──────────────────────────────────────────
+  // Realistic mix of notification types with proper time spread.
+  const D = (days: number, hours = 0) => new Date(Date.now() - (days * 24 + hours) * 60 * 60 * 1000);
   await prisma.notification.createMany({
     data: [
-      { userId: student.id, type: NotificationType.URGENT, icon: '⚠️', title: 'موعد تسليم المشروع النهائي', body: 'مشروع نظم المعلومات يجب تسليمه خلال 3 أيام' },
-      { userId: student.id, type: NotificationType.ACADEMIC, icon: '📅', title: 'تذكير — محاضرة شبكات الحاسوب', body: 'الأحد 8:00 صباحاً — قاعة 301' },
-      { userId: student.id, type: NotificationType.SYSTEM, icon: '🔧', title: 'تحديث منصة مدارك AI', body: 'تم إضافة ميزات جديدة للمساعد الذكي' },
-      { userId: student.id, type: NotificationType.SOCIAL, icon: '💬', title: 'رد على منشورك', body: 'د. سالم البوسيفي علّق على سؤالك' },
+      // Most recent — unread
+      { userId: student.id, type: NotificationType.URGENT, icon: '⚠️', title: 'موعد تسليم بحث هندسة البرمجيات', body: 'يجب رفع البحث قبل نهاية يوم الخميس', createdAt: D(0, 1) },
+      { userId: student.id, type: NotificationType.ACADEMIC, icon: '🎓', title: 'تم نشر بحثك في مكتبة الجامعة', body: '«تطبيق أنماط التصميم في مشاريع الويب الحديثة» متاح الآن للزملاء', createdAt: D(0, 4) },
+      { userId: student.id, type: NotificationType.ACADEMIC, icon: '📊', title: 'فجوة معرفية جديدة', body: 'تم رصد ضعف في مفهوم «التعقيد الزمني» — اطّلع على الفيديو المقترح', createdAt: D(0, 7) },
+      { userId: student.id, type: NotificationType.SOCIAL, icon: '💬', title: 'رد جديد من د. سالم البوسيفي', body: 'علّق على سؤالك في حلقة النقاش', createdAt: D(1) },
+      // Older — some read
+      { userId: student.id, type: NotificationType.ACADEMIC, icon: '📅', title: 'محاضرة شبكات الحاسوب', body: 'الأحد 8:00 صباحاً — قاعة A-301', createdAt: D(1, 5), readAt: D(1, 4) },
+      { userId: student.id, type: NotificationType.SYSTEM, icon: '✨', title: 'ميزة جديدة: تحليل الامتحانات', body: 'يمكنك الآن مراجعة كل امتحان أديتَه ومعرفة فجواتك المعرفية', createdAt: D(2), readAt: D(2) },
+      { userId: student.id, type: NotificationType.ACADEMIC, icon: '🎤', title: 'ندوة دولية: مستقبل AI في التعليم', body: 'انضم إلى الندوة يوم 12 يونيو مع متحدثين من Stanford', createdAt: D(3), readAt: D(3) },
+      { userId: student.id, type: NotificationType.URGENT, icon: '⏰', title: 'تذكير — اختبار قواعد البيانات', body: 'بعد 5 أيام · القاعة الرئيسية', createdAt: D(4), readAt: D(4) },
+      { userId: student.id, type: NotificationType.ACADEMIC, icon: '🏆', title: 'حصلت على شارة جديدة', body: '«مساهم نشط» — أكملتَ 5 محاضرات هذا الأسبوع', createdAt: D(5), readAt: D(5) },
+      { userId: student.id, type: NotificationType.SYSTEM, icon: '📚', title: 'تم تحديث المكتبة الإلكترونية', body: 'أضيف 4 بحوث جديدة في تخصصك', createdAt: D(7), readAt: D(7) },
     ],
   });
 
@@ -603,6 +613,7 @@ async function main() {
       abstract:
         'مراجعة منهجية تستعرض 27 دراسة حديثة (2020-2025) في توظيف الشبكات العصبية الالتفافية لتصنيف صور الأمراض الجلدية، مع تحليل دقّة النماذج وحدود التطبيق السريري.',
       status: 'PUBLISHED',
+      fileUrl: '/api/v1/files/papers/sample.pdf',
       plagiarismPct: 4.1,
       aiContentPct: 7.8,
       grade: 18,
@@ -622,6 +633,7 @@ async function main() {
       abstract:
         'دراسة شبه تجريبية على 84 طالباً من أقسام الهندسة، تقارن متوسط التحصيل بين فصلين أحدهما اعتمد الصف المعكوس مدعوماً بمنصة مدارك. النتائج تُظهر فرقاً ذا دلالة إحصائية لصالح المجموعة التجريبية.',
       status: 'PUBLISHED',
+      fileUrl: '/api/v1/files/papers/sample.pdf',
       plagiarismPct: 5.6,
       aiContentPct: 4.3,
       grade: 19,
@@ -641,6 +653,7 @@ async function main() {
       abstract:
         'فحص أمني لأبرز ثلاثة تطبيقات مصرفية محلية، تحت أربعة محاور: تشفير الاتصال، إدارة الجلسة، تخزين البيانات الحساسة، ومقاومة الهندسة العكسية. تقدّم الدراسة توصيات عملية لرفع المستوى الأمني.',
       status: 'PUBLISHED',
+      fileUrl: '/api/v1/files/papers/sample.pdf',
       plagiarismPct: 3.8,
       aiContentPct: 9.2,
       grade: 16,
