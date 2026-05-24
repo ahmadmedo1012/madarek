@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { Role } from '@prisma/client';
-import { prisma } from '../../db.js';
+import { prisma, withRetry } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
@@ -506,7 +506,7 @@ router.get('/quality/courses', requireRole(Role.QUALITY, Role.ADMIN), async (_re
 
 router.get('/quality/professors', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
   try {
-    const teachers = await prisma.user.findMany({
+    const teachers = await withRetry(() => prisma.user.findMany({
       where: { role: Role.TEACHER },
       include: {
         teacherProfile: { include: { department: { include: { faculty: { select: { name: true } } } } } },
@@ -521,7 +521,7 @@ router.get('/quality/professors', requireRole(Role.QUALITY, Role.ADMIN), async (
         },
       },
       take: 100,
-    });
+    }));
 
     // Compute per-teacher aggregate metrics. Where real signals are sparse,
     // we fall back to deterministic seed-based mock values so the UI is meaningful.
@@ -569,14 +569,14 @@ router.get('/quality/professors', requireRole(Role.QUALITY, Role.ADMIN), async (
 
 router.get('/quality/engagement', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
   try {
-    const [attendance, watchEvents, lectures, enrollments, totalStudents, papersByStatus] = await Promise.all([
+    const [attendance, watchEvents, lectures, enrollments, totalStudents, papersByStatus] = await withRetry(() => Promise.all([
       prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
       prisma.watchEvent.findMany({ select: { watchedSec: true, totalSec: true, completed: true } }),
       prisma.lecture.count(),
       prisma.enrollment.count(),
       prisma.user.count({ where: { role: Role.STUDENT } }),
       prisma.researchPaper.groupBy({ by: ['status'], _count: { _all: true } }),
-    ]);
+    ]));
 
     const totalAttendance = attendance.reduce((s, x) => s + x._count._all, 0) || 1;
     const presentRate = ((attendance.find((a) => a.status === 'PRESENT')?._count._all ?? 0) / totalAttendance) * 100;
@@ -609,7 +609,7 @@ router.get('/quality/engagement', requireRole(Role.QUALITY, Role.ADMIN), async (
 
 router.get('/quality/curriculum', requireRole(Role.QUALITY, Role.ADMIN), async (_req, res, next) => {
   try {
-    const faculties = await prisma.faculty.findMany({
+    const faculties = await withRetry(() => prisma.faculty.findMany({
       include: {
         departments: {
           include: {
@@ -628,7 +628,7 @@ router.get('/quality/curriculum', requireRole(Role.QUALITY, Role.ADMIN), async (
           },
         },
       },
-    });
+    }));
     res.json({ data: faculties });
   } catch (e) { next(e); }
 });

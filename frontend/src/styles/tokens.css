@@ -48,16 +48,19 @@
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  --lh-tight: 1.2;
+  /* Refined for Arabic display: bodies need a touch more leading,
+     headings a touch tighter. */
+  --lh-tight: 1.18;
   --lh-snug: 1.4;
-  --lh-base: 1.55;
-  --lh-loose: 1.7;
+  --lh-base: 1.65;
+  --lh-loose: 1.85;
 
   /* ── Motion ──────────────────────────────────────────── */
   --t-fast: 120ms;
-  --t-base: 180ms;
-  --t-slow: 280ms;
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-base: 200ms;
+  --t-slow: 320ms;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1); /* refined Apple-style ease */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Layout ──────────────────────────────────────────── */
   --sidebar-w: 244px;

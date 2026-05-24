@@ -1,94 +1,18 @@
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
-  AlertTriangle, BookOpen, Calendar, Upload, Microscope,
+  AlertTriangle, Calendar, Upload,
   TrendingUp, MessageSquare, Send, FileText,
-  Cog, Database, Network,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, AlertRow, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
+import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import ResearchReviewPage from './ResearchReviewPage';
 
-/** Legacy KPI-grid teacher dashboard. Kept for reference but no longer routed —
- *  the route now uses the social-feed dashboard from TeacherDashboardPage.tsx.
+/* The teacher dashboard now lives in TeacherDashboardPage.tsx
+ * (social-media feed style). The previous KPI-grid version was
+ * removed during the polish pass — it was unused and added 100 lines
+ * of legacy code that didn't match the new visual language.
  */
-export function TeacherDashboardPageLegacy() {
-  return (
-    <div className="page">
-      <div className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">لوحة الأستاذ</h1>
-          <p className="page-subtitle">نظرة شاملة على فصلك الحالي وأداء طلابك.</p>
-        </div>
-      </div>
-
-      <div className="grid-4">
-        <MetricCard icon={Users} label="إجمالي الطلاب" value="143" change="في 4 مواد" color="brand" />
-        <MetricCard icon={BarChart3} label="متوسط الأداء" value="71%" change="‏5% منذ الفصل الماضي" changeDirection="up" color="green" />
-        <MetricCard icon={ClipboardCheck} label="متوسط الحضور" value="78%" change="‏3% هذا الأسبوع" changeDirection="dn" color="amber" />
-        <MetricCard icon={ClipboardList} label="واجبات قيد التصحيح" value="12" change="بحاجة لمراجعة" color="purple" />
-      </div>
-
-      <div className="grid-2-1">
-        <Card title="المواد التي تدرّسها" icon={BookOpen}>
-          <div className="flex-col gap-2">
-            {[
-              { name: 'هندسة البرمجيات', code: 'SE301', students: 42, avg: 78, icon: Cog },
-              { name: 'نظم المعلومات', code: 'IS301', students: 38, avg: 84, icon: Database },
-              { name: 'شبكات الحاسوب', code: 'NET301', students: 35, avg: 68, icon: Network },
-              { name: 'قواعد البيانات', code: 'CS302', students: 28, avg: 72, icon: Database },
-            ].map((s) => (
-              <div className="list-row" key={s.code}>
-                <span className="metric-icon" style={{ color: 'var(--accent)' }}>
-                  <Icon icon={s.icon} size={16} />
-                </span>
-                <div className="list-row-body">
-                  <div className="list-row-title">{s.name}</div>
-                  <div className="list-row-sub">{s.code} · {s.students} طالب</div>
-                </div>
-                <div className="text-xs font-mono" style={{ color: s.avg >= 75 ? 'var(--success)' : 'var(--warning)' }}>
-                  متوسط {s.avg}%
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card title="طلاب يحتاجون متابعة" icon={AlertTriangle}>
-          <div className="flex-col gap-2">
-            {[
-              { name: 'علي الفقيه', course: 'قواعد البيانات', issue: 'حضور 50%', tone: 'red' as const },
-              { name: 'فاطمة عبد الله', course: 'الشبكات', issue: 'متوسط 52', tone: 'red' as const },
-              { name: 'محمد الزين', course: 'هندسة البرمجيات', issue: 'لم يسلّم 3 واجبات', tone: 'amber' as const },
-              { name: 'هدى أبو راس', course: 'نظم المعلومات', issue: 'انخفاض مفاجئ', tone: 'amber' as const },
-            ].map((s, i) => (
-              <div className="list-row" key={i}>
-                <UserAvatar initials={s.name.split(' ').map((p) => p[0]).join('')} size={32} />
-                <div className="list-row-body">
-                  <div className="list-row-title">{s.name}</div>
-                  <div className="list-row-sub">{s.course} · {s.issue}</div>
-                </div>
-                <Badge color={s.tone}>تنبيه</Badge>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-
-      <Card title="نشاطات اليوم" icon={Calendar}>
-        <div className="flex-col gap-2">
-          <AlertRow color="brand" icon={Calendar} title="محاضرة هندسة البرمجيات"
-            description="9:00 — 10:30 · قاعة 205 · 42 طالب"
-            time="الآن" />
-          <AlertRow color="amber" icon={ClipboardList} title="تصحيح اختبار قواعد البيانات"
-            description="28 ورقة بانتظار التصحيح — موعد رد النتائج خلال 3 أيام" />
-          <AlertRow icon={MessageSquare} title="7 رسائل من الطلاب"
-            description="أحدثها من علي الفقيه بخصوص الواجب الأخير" />
-        </div>
-      </Card>
-    </div>
-  );
-}
 
 /* ─── Generic placeholder structure ─── */
 function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {

@@ -27,11 +27,16 @@
   border-radius: var(--r-lg);
   padding: var(--sp-5);
   position: relative;
-  transition: border-color var(--t-fast) var(--ease);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .card.compact { padding: var(--sp-4); }
 .card.flush { padding: 0; }
-.card.bordered:hover { border-color: var(--border-strong); }
+.card.bordered:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+
+@media (max-width: 600px) {
+  .card { padding: var(--sp-4); border-radius: var(--r-md); }
+  .card.compact { padding: var(--sp-3); }
+}
 
 .card-header {
   display: flex;
@@ -229,7 +234,10 @@
 .tab.on { background: var(--surface-1); color: var(--text); box-shadow: var(--shadow-sm); }
 
 /* ─── Table ─────────────────────────────────────────────── */
-.tbl-wrap { overflow-x: auto; }
+.tbl-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .tbl {
   width: 100%;
   border-collapse: collapse;
@@ -256,8 +264,12 @@
 .tbl tr:last-child td { border: none; }
 .tbl tbody tr { transition: background var(--t-fast) var(--ease); }
 .tbl tbody tr:hover td { background: var(--surface-2); color: var(--text); }
-.tbl-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: var(--fw-semibold); color: var(--text); }
+.tbl-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; }
 .tbl-strong { color: var(--text); font-weight: var(--fw-medium); }
+@media (max-width: 700px) {
+  .tbl th, .tbl td { padding: var(--sp-2) var(--sp-3); }
+  .tbl th { font-size: 10px; }
+}
 
 /* ─── Badges (default neutral, color = explicit) ────────── */
 .badge {
@@ -433,11 +445,15 @@
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
-  transition: border-color var(--t-fast) var(--ease);
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
   display: flex;
   flex-direction: column;
 }
-.thumb-card:hover { border-color: var(--border-strong); }
+.thumb-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
 .thumb-card-image {
   height: 88px;
   display: flex;

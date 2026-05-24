@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 
@@ -121,7 +121,27 @@ export function QualityDashboardPage() {
   const ov = useOverview();
   const eg = useEngagement();
 
-  if (ov.isPending || eg.isPending) return <LoadingState />;
+  if (ov.isPending || eg.isPending) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">مركز ضمان الجودة</h1>
+            <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
+          </div>
+        </div>
+        <KpiSkeleton />
+        <div className="grid-2-1">
+          <Card><ChartSkeleton /></Card>
+          <Card><ChartSkeleton height={180} /></Card>
+        </div>
+        <div className="grid-2-1">
+          <Card><ListSkeleton rows={5} /></Card>
+          <Card><ListSkeleton rows={3} /></Card>
+        </div>
+      </div>
+    );
+  }
   if (ov.isError || !ov.data || eg.isError || !eg.data) return <ErrorState />;
   const d = ov.data;
   const e = eg.data;
@@ -246,7 +266,9 @@ export function QualityCoursesPage() {
           <p className="page-subtitle">تتبّع جودة كل مقرر: المحاضرات، المواد، الواجبات، التسجيلات.</p>
         </div>
       </div>
-      {c.isPending ? <LoadingState /> :
+      {c.isPending ? (
+        <Card title="المقررات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={7} /></Card>
+      ) :
        c.isError ? <ErrorState /> :
        !c.data?.length ? <Card><EmptyState title="لا مقررات" /></Card> : (
         <Card title="المقررات النشطة" icon={BookOpen}>
@@ -293,7 +315,20 @@ export function QualityCoursesPage() {
    ════════════════════════════════════════════════════════════════ */
 export function QualityProfessorsPage() {
   const p = useProfessors();
-  if (p.isPending) return <LoadingState />;
+  if (p.isPending) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">تقييم الأساتذة</h1>
+            <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
+          </div>
+        </div>
+        <KpiSkeleton />
+        <Card title="هيئة التدريس" icon={School}><TableSkeleton rows={5} cols={8} /></Card>
+      </div>
+    );
+  }
   if (p.isError || !p.data) return <ErrorState />;
 
   const avgSat = p.data.length ? p.data.reduce((s, t) => s + t.satisfaction, 0) / p.data.length : 0;

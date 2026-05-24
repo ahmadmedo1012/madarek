@@ -6,7 +6,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, ProgressBar } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull } from '../../hooks/useResources';
 
@@ -36,7 +36,23 @@ export default function CourseDetailPage() {
   const { offeringId } = useParams<{ offeringId: string }>();
   const { data, isPending, isError } = useOfferingFull(offeringId);
 
-  if (isPending) return <LoadingState />;
+  if (isPending) {
+    return (
+      <div className="page">
+        <Skeleton width={140} height={32} rounded="var(--r-md)" />
+        <Card><div style={{ display: 'flex', gap: 'var(--sp-4)' }}>
+          <Skeleton width={64} height={64} rounded="var(--r-lg)" />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <Skeleton width={80} height={14} />
+            <Skeleton width="60%" height={24} />
+            <Skeleton width="40%" height={12} />
+          </div>
+        </div></Card>
+        <KpiSkeleton />
+        <Card><ListSkeleton rows={3} /></Card>
+      </div>
+    );
+  }
   if (isError || !data) return <ErrorState />;
 
   const Cmp = courseIcon(data.course.code ?? data.course.name);

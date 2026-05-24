@@ -96,3 +96,29 @@ export function ListSkeleton({ rows = 5 }: { rows?: number }) {
     </div>
   );
 }
+
+/** Skeleton placeholder for a chart container of arbitrary height. */
+export function ChartSkeleton({ height = 220 }: { height?: number }) {
+  return (
+    <div style={{ height, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8 }}>
+      {[60, 80, 50, 95, 70, 45, 85].map((pct, i) => (
+        <Skeleton key={i} width={`${pct}%`} height={8} />
+      ))}
+    </div>
+  );
+}
+
+/** Skeleton for a table — N rows × M columns. */
+export function TableSkeleton({ rows = 4, cols = 5 }: { rows?: number; cols?: number }) {
+  return (
+    <div className="flex-col gap-2" style={{ padding: 'var(--sp-3) 0' }}>
+      {Array.from({ length: rows }).map((_, r) => (
+        <div key={r} className="flex gap-3 items-center" style={{ padding: 'var(--sp-2) 0' }}>
+          {Array.from({ length: cols }).map((_, c) => (
+            <Skeleton key={c} width={c === 0 ? 140 : c === cols - 1 ? 60 : 80} height={12} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
