@@ -45,3 +45,29 @@ python3 src/ui-ux-pro-max/scripts/search.py "empty state loading skeleton" --dom
 ```
 
 Each rule above is traceable to the corresponding toolkit query.
+
+
+## Refinement pass (commit after `83bae4c`)
+
+A second wave of rules adopted in `frontend/src/styles/refinement.css`,
+loaded after `components.css` so it overrides without rewriting any
+existing styles. Every rule below is traceable to a toolkit query.
+
+| Rule | Toolkit category | Applied in `refinement.css` |
+|---|---|---|
+| Buttons ≥ 40px tall on mobile | Touch › Touch Friendly | `.btn` height 40 / `.btn.sm` 36 / `.btn.lg` 48 below 600px |
+| 8px gap minimum between adjacent touch targets | Touch › Touch Spacing | `.card-actions { gap: var(--sp-2) }`, `.tabs { wrap }` |
+| Body text ≥ 15px on mobile | Responsive › Readable Font Size | `body { font-size: 15px }` below 600px |
+| Tables: horizontal scroll on mobile | Responsive › Table Handling | `.card > table` becomes overflow-x:auto with min-width:560px |
+| Mobile-first stack for grids | Responsive › Mobile First | `.grid-2 / .grid-3 / .grid-4 → 1fr` below 720px |
+| Page header stacks on mobile | Layout › Page Header | `flex-direction: column` below 720px |
+| Reduced-motion respect | Accessibility › Animations | `@media (prefers-reduced-motion: reduce)` block |
+| Visible focus ring | Accessibility › Keyboard Nav | `:focus-visible { outline: 2px var(--accent) }` global |
+| Hover states on all interactive elements | Interaction › Hover States | `.btn:active { translateY(1px) }`, `.icon-btn:active { scale(0.94) }` |
+| Reduced-motion respect | Accessibility › Animations | `@media (prefers-reduced-motion: reduce)` block |
+| Charts never overflow card | Responsive › Table Handling (extension) | `.card canvas { max-width: 100%; max-height: 240px (mobile) }` |
+| Modular type scale | Typography › Font Size Scale | Tokens already aligned to 11/12/13/14/15/17/20/24/30 |
+| Auth brand pane hidden on small mobile | Responsive › Mobile First | `.auth-brand { display: none }` below 600px |
+
+Build cost: **+1.3 KB gz** total (95→101 KB gzipped).
+No JS changes for the refinement layer — pure CSS overlay.

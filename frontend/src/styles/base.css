@@ -494,7 +494,7 @@ button { font-family: inherit; cursor: pointer; }
   .sidebar.open { transform: translateX(0); }
   .main { width: 100%; }
   .topbar-mobile-toggle { display: inline-flex; }
-  .topbar-search { display: none; }
+  /* Search stays visible on tablet — toolkit rule: search must remain accessible */
   .sidebar-backdrop {
     display: none;
     position: fixed;
