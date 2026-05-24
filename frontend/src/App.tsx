@@ -32,7 +32,7 @@ import {
   AssignmentsPage, MessagesPage,
 } from './pages/teacher/TeacherPages';
 import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage';
-import { AdminDashboardPage, AdminPlaceholder } from './pages/admin/AdminPages';
+import { AdminDashboardPage, AdminPlaceholder, AdminFacultiesPage, AdminReportsPage } from './pages/admin/AdminPages';
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
 import { useAuthStore } from './stores/auth.store';
@@ -116,11 +116,11 @@ export default function App() {
               <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
               <Route path="/admin/students" element={<AdminPlaceholder title="إدارة الطلاب" />} />
               <Route path="/admin/teachers" element={<AdminPlaceholder title="إدارة الأساتذة" />} />
-              <Route path="/admin/faculties" element={<AdminPlaceholder title="الكليات والأقسام" />} />
+              <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
               <Route path="/admin/courses" element={<AdminPlaceholder title="إدارة المقررات" />} />
               <Route path="/admin/analysis" element={<AdminPlaceholder title="تحليل الأداء" />} />
               <Route path="/admin/digital" element={<AdminPlaceholder title="التحول الرقمي" />} />
-              <Route path="/admin/reports" element={<AdminPlaceholder title="التقارير الرسمية" />} />
+              <Route path="/admin/reports" element={<AdminReportsPage />} />
               <Route path="/admin/settings" element={<AdminPlaceholder title="إعدادات المنصة" />} />
               <Route path="/admin/alerts" element={<AlertsPage />} />
             </Route>

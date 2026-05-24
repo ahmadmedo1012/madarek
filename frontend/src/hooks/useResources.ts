@@ -193,6 +193,22 @@ export function usePosts() {
     queryFn: () => unwrap<Post[]>(api.get('/posts?limit=20')),
   });
 }
+export function useCreatePost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { body: string; hashtags?: string[] }) =>
+      unwrap<Post>(api.post('/posts', input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
+  });
+}
+export function useReactToPost() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { postId: string; kind: 'like' | 'save' }) =>
+      api.post(`/posts/${input.postId}/react`, { kind: input.kind }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
+  });
+}
 
 // ── Labs / AR ──────────────────────────────────────────────────
 export interface VirtualLab {
@@ -249,6 +265,36 @@ export function useAdminStats() {
   return useQuery({
     queryKey: ['admin', 'stats'],
     queryFn: () => unwrap<AdminStats>(api.get('/admin/stats')),
+  });
+}
+
+export interface AdminFaculty {
+  id: string;
+  name: string;
+  nameEn: string | null;
+  iconEmoji: string | null;
+  departmentCount: number;
+  studentCount: number;
+  teacherCount: number;
+  courseCount: number;
+  departments: Array<{ id: string; name: string; students: number; teachers: number; courses: number }>;
+}
+export function useAdminFaculties() {
+  return useQuery({
+    queryKey: ['admin', 'faculties'],
+    queryFn: () => unwrap<AdminFaculty[]>(api.get('/admin/faculties')),
+  });
+}
+
+export interface AdminReports {
+  headline: { totalPapers: number; publishedPapers: number; totalUsers: number; activeStudents: number };
+  paperTrend: Array<{ month: string; submitted: number; graded: number; published: number }>;
+  topCourses: Array<{ code: string; name: string; enrollments: number; lectures: number }>;
+}
+export function useAdminReports() {
+  return useQuery({
+    queryKey: ['admin', 'reports'],
+    queryFn: () => unwrap<AdminReports>(api.get('/admin/reports')),
   });
 }
 

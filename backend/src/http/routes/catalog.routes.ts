@@ -392,4 +392,112 @@ router.get('/admin/stats', requireRole(Role.ADMIN), async (_req, res, next) => {
   }
 });
 
+// ── Admin: faculties with student / teacher / dept / course counts ──
+router.get('/admin/faculties', requireRole(Role.ADMIN), async (_req, res, next) => {
+  try {
+    const faculties = await prisma.faculty.findMany({
+      orderBy: { name: 'asc' },
+      include: {
+        departments: {
+          select: {
+            id: true,
+            name: true,
+            _count: { select: { courses: true, students: true, teachers: true } },
+          },
+        },
+      },
+    });
+
+    const data = faculties.map((f) => {
+      const studentCount = f.departments.reduce((s, d) => s + d._count.students, 0);
+      const teacherCount = f.departments.reduce((s, d) => s + d._count.teachers, 0);
+      const courseCount = f.departments.reduce((s, d) => s + d._count.courses, 0);
+      return {
+        id: f.id,
+        name: f.name,
+        nameEn: f.nameEn,
+        iconEmoji: f.iconEmoji,
+        departmentCount: f.departments.length,
+        studentCount,
+        teacherCount,
+        courseCount,
+        departments: f.departments.map((d) => ({
+          id: d.id,
+          name: d.name,
+          students: d._count.students,
+          teachers: d._count.teachers,
+          courses: d._count.courses,
+        })),
+      };
+    });
+
+    res.json({ data });
+  } catch (e) { next(e); }
+});
+
+// ── Admin: institutional reports
+router.get('/admin/reports', requireRole(Role.ADMIN), async (_req, res, next) => {
+  try {
+    const now = new Date();
+    const monthStart = (n: number) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - n, 1);
+      return d;
+    };
+
+    // 1) Paper publishing trend — last 6 months
+    const sixMonthsAgo = monthStart(5);
+    const allRecentPapers = await prisma.researchPaper.findMany({
+      where: {
+        OR: [
+          { publishedAt: { gte: sixMonthsAgo } },
+          { gradedAt: { gte: sixMonthsAgo } },
+          { uploadedAt: { gte: sixMonthsAgo } },
+        ],
+      },
+      select: { status: true, publishedAt: true, gradedAt: true, uploadedAt: true },
+    });
+
+    const monthBuckets = Array.from({ length: 6 }, (_, i) => {
+      const start = monthStart(5 - i);
+      const end = monthStart(4 - i);
+      const label = start.toLocaleDateString('ar-LY', { month: 'short' });
+      const submitted = allRecentPapers.filter((p) => p.uploadedAt >= start && p.uploadedAt < end).length;
+      const graded = allRecentPapers.filter((p) => p.gradedAt && p.gradedAt >= start && p.gradedAt < end).length;
+      const published = allRecentPapers.filter((p) => p.publishedAt && p.publishedAt >= start && p.publishedAt < end).length;
+      return { month: label, submitted, graded, published };
+    });
+
+    // 2) Top performing courses — by completion rate
+    const offerings = await prisma.courseOffering.findMany({
+      include: {
+        course: { select: { name: true, code: true } },
+        _count: { select: { enrollments: true, lectures: true } },
+      },
+      take: 50,
+    });
+    const courseStats = offerings.map((o) => ({
+      code: o.course.code,
+      name: o.course.name,
+      enrollments: o._count.enrollments,
+      lectures: o._count.lectures,
+    })).sort((a, b) => b.enrollments - a.enrollments).slice(0, 8);
+
+    // 3) Headline counts
+    const [totalPapers, publishedPapers, totalUsers, activeStudents] = await Promise.all([
+      prisma.researchPaper.count(),
+      prisma.researchPaper.count({ where: { status: 'PUBLISHED' } }),
+      prisma.user.count(),
+      prisma.user.count({ where: { role: Role.STUDENT } }),
+    ]);
+
+    res.json({
+      data: {
+        headline: { totalPapers, publishedPapers, totalUsers, activeStudents },
+        paperTrend: monthBuckets,
+        topCourses: courseStats,
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 export default router;

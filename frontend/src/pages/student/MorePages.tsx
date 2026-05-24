@@ -5,10 +5,12 @@ import {
   CheckCircle2, MessageCircle, Heart, Repeat2, Bookmark,
   TrendingUp, Building2, Users2, GraduationCap, Microscope,
 } from 'lucide-react';
+import { useState } from 'react';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost } from '../../hooks/useResources';
+import { useAuthStore } from '../../stores/auth.store';
 
 /* ─── Gamification ─────────────────────────────────────── */
 export function GamificationPage() {
@@ -332,13 +334,40 @@ export function ArVrPage() {
 }
 
 /* ─── Social ───────────────────────────────────────────── */
-const POSTS = [
-  { author: 'مريم الفاخري', initials: 'مف', time: 'منذ 10 دقائق', text: 'حصلت على شهادة Python Professional من كورسات المنصة! من كان يظن أن الطالبة اللي كانت تخاف من البرمجة ستصل لهذا المستوى', likes: 48, comments: 12 },
-  { author: 'يوسف البركي', initials: 'يب', time: 'منذ 45 دقيقة', text: 'جربت المعمل الافتراضي لأول مرة اليوم — التجربة كانت مذهلة! صممت شبكة LAN كاملة بدون الحاجة لأي معدات حقيقية.', likes: 31, comments: 7 },
-  { author: 'سارة المحجوب', initials: 'سم', time: 'منذ ساعتين', text: 'شاركت ملخص محاضرات مادة الذكاء الاصطناعي الكاملة في المكتبة. 40 صفحة بأمثلة عملية — للاستفادة الجميع!', likes: 95, comments: 24 },
-];
-
 export function SocialPage() {
+  const posts = usePosts();
+  const createPost = useCreatePost();
+  const reactToPost = useReactToPost();
+  const user = useAuthStore((s) => s.user);
+  const [draft, setDraft] = useState('');
+  const [reactedIds, setReactedIds] = useState<Set<string>>(new Set());
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!draft.trim() || createPost.isPending) return;
+    // Extract simple #hashtags from the body for proper persistence.
+    const tags = (draft.match(/#[\u0600-\u06FF\w_]+/g) ?? []).map((t) => t.slice(1));
+    createPost.mutate(
+      { body: draft.trim(), hashtags: tags },
+      { onSuccess: () => setDraft('') },
+    );
+  };
+
+  const onLike = (id: string) => {
+    if (reactedIds.has(id)) return;
+    reactToPost.mutate({ postId: id, kind: 'like' });
+    setReactedIds(new Set([...reactedIds, id]));
+  };
+
+  const fmtTime = (iso: string) => {
+    const d = new Date(iso);
+    const diffSec = Math.round((Date.now() - +d) / 1000);
+    if (diffSec < 60) return 'الآن';
+    if (diffSec < 3600) return `منذ ${Math.round(diffSec / 60)} دقيقة`;
+    if (diffSec < 86400) return `منذ ${Math.round(diffSec / 3600)} ساعة`;
+    return d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
+  };
+
   return (
     <div className="page">
       <div className="page-header">
@@ -350,25 +379,97 @@ export function SocialPage() {
 
       <div className="grid-2-1">
         <div className="flex-col gap-3">
-          {POSTS.map((p) => (
-            <div className="post" key={p.author}>
-              <div className="post-header">
-                <UserAvatar initials={p.initials} size={36} />
-                <div className="flex-1">
-                  <div className="post-author">{p.author}</div>
-                  <div className="post-time">{p.time}</div>
+          {/* Composer */}
+          {user && (
+            <Card compact>
+              <form onSubmit={submit} className="flex-col gap-3">
+                <div className="flex items-start gap-3">
+                  <UserAvatar
+                    initials={user.avatarInitials ?? `${user.firstName[0] ?? ''}${user.lastName[0] ?? ''}`}
+                    color={user.avatarColor ?? undefined}
+                    size={36}
+                  />
+                  <textarea
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder="ماذا يدور في ذهنك؟ (يمكنك استخدام #هاشتاج)"
+                    rows={2}
+                    style={{
+                      flex: 1,
+                      resize: 'vertical',
+                      minHeight: 48,
+                      padding: 'var(--sp-2) var(--sp-3)',
+                      background: 'var(--surface-2)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 'var(--r-md)',
+                      color: 'var(--text)',
+                      fontFamily: 'inherit',
+                      fontSize: 'var(--fs-sm)',
+                      lineHeight: 'var(--lh-base)',
+                    }}
+                  />
                 </div>
-                <button type="button" className="btn outline sm">+ متابعة</button>
-              </div>
-              <div className="post-body">{p.text}</div>
-              <div className="post-actions">
-                <button type="button" className="post-action"><Icon icon={Heart} size={13} /> {p.likes}</button>
-                <button type="button" className="post-action"><Icon icon={MessageCircle} size={13} /> {p.comments}</button>
-                <button type="button" className="post-action"><Icon icon={Repeat2} size={13} /> مشاركة</button>
-                <button type="button" className="post-action"><Icon icon={Bookmark} size={13} /> حفظ</button>
-              </div>
-            </div>
-          ))}
+                <div className="flex items-center justify-between">
+                  <span className="text-xxs text-subtle">{draft.length} / 2000</span>
+                  <button
+                    type="submit"
+                    className="btn primary sm"
+                    disabled={!draft.trim() || createPost.isPending}
+                  >
+                    {createPost.isPending ? 'جاري النشر…' : 'نشر'}
+                  </button>
+                </div>
+              </form>
+            </Card>
+          )}
+
+          {posts.isPending ? (
+            <Card><LoadingState /></Card>
+          ) : posts.isError ? (
+            <Card><ErrorState /></Card>
+          ) : !posts.data?.length ? (
+            <Card>
+              <EmptyState
+                icon={MessageCircle}
+                title="لا منشورات بعد"
+                description="كن أول من يشارك تجربته أو سؤاله."
+              />
+            </Card>
+          ) : (
+            posts.data.map((p) => {
+              const initials = p.author.avatarInitials ?? `${p.author.firstName[0] ?? ''}${p.author.lastName[0] ?? ''}`;
+              const reacted = reactedIds.has(p.id);
+              return (
+                <div className="post" key={p.id}>
+                  <div className="post-header">
+                    <UserAvatar initials={initials} color={p.author.avatarColor ?? undefined} size={36} />
+                    <div className="flex-1">
+                      <div className="post-author">{p.author.firstName} {p.author.lastName}</div>
+                      <div className="post-time">{fmtTime(p.createdAt)}</div>
+                    </div>
+                  </div>
+                  <div className="post-body">{p.body}</div>
+                  {p.hashtags && p.hashtags.length > 0 && (
+                    <div className="flex flex-wrap gap-1" style={{ marginTop: 6 }}>
+                      {p.hashtags.map((t) => (
+                        <span key={t} className="text-xxs font-mono" style={{ color: 'var(--accent)' }}>#{t}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="post-actions">
+                    <button type="button" className={`post-action${reacted ? ' on' : ''}`} onClick={() => onLike(p.id)}>
+                      <Icon icon={Heart} size={13} />
+                      {p._count.reactions + (reacted ? 1 : 0)}
+                    </button>
+                    <button type="button" className="post-action">
+                      <Icon icon={MessageCircle} size={13} />
+                      {p._count.comments}
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         <Card title="الأكثر تداولاً" icon={TrendingUp}>

@@ -377,6 +377,38 @@
 }
 .faculty-chip-row:hover { border-color: var(--border); background: var(--surface-1); }
 
+/* ─── Admin trend bars ──────────────────────────────────── */
+.trend-row {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.trend-label { font-size: var(--fs-xs); color: var(--text-muted); font-family: var(--font-mono); }
+.trend-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.trend-bar {
+  height: 14px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  padding-inline-start: 6px;
+  min-width: 8px;
+  transition: width var(--t-base) var(--ease);
+}
+.trend-submitted { background: linear-gradient(90deg, var(--accent), var(--accent-hover)); }
+.trend-graded    { background: linear-gradient(90deg, var(--gold), #E2B85B); }
+.trend-published { background: linear-gradient(90deg, var(--success), #4FE3A0); }
+.trend-bar-val {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: white;
+  font-weight: var(--fw-semibold);
+}
+
 /* ─── Table ─────────────────────────────────────────────── */
 .tbl-wrap {
   overflow-x: auto;
@@ -763,6 +795,8 @@
   transition: color var(--t-fast) var(--ease);
 }
 .post-action:hover { color: var(--accent); }
+.post-action.on { color: var(--danger); }
+.post-action.on svg { fill: currentColor; }
 
 /* ═════════════════════════════════════════════════════════════
    AUTH (folded in from auth.css — keeps theming cohesive)
