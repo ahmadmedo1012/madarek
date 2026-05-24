@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search, Library as LibraryIcon, BookOpen, Bookmark, Clock,
@@ -8,7 +8,7 @@ import {
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useBooks, usePublishedResearch } from '../../hooks/useResources';
+import { useBooks, usePublishedResearch, useResearchSearch, type ResearchSearchHit } from '../../hooks/useResources';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -29,22 +29,25 @@ export default function LibraryPage() {
   const [tab, setTab] = useState<Tab>('books');
   const [cat, setCat] = useState('all');
   const [q, setQ] = useState('');
+  const [debouncedQ, setDebouncedQ] = useState('');
+
+  // Debounce the search input — wait 250ms of idle typing before firing.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(q.trim()), 250);
+    return () => clearTimeout(t);
+  }, [q]);
 
   const books = useBooks({ category: cat === 'all' ? undefined : cat, q });
   const research = usePublishedResearch();
+  const search = useResearchSearch(debouncedQ);
   const isResearchTab = tab === 'research';
 
-  // research filtered by query (client-side)
-  const filteredResearch =
-    research.data?.filter((p) => {
-      if (!q.trim()) return true;
-      const needle = q.trim().toLowerCase();
-      return (
-        p.title.toLowerCase().includes(needle) ||
-        (p.abstract ?? '').toLowerCase().includes(needle) ||
-        `${p.student.firstName} ${p.student.lastName}`.toLowerCase().includes(needle)
-      );
-    }) ?? [];
+  // When the research tab is active and the user has typed >=2 chars, show
+  // server-side search results (with snippets). Otherwise show the full archive.
+  const researchInUse = isResearchTab && debouncedQ.length >= 2 && search.data;
+  const visibleResearch = researchInUse
+    ? search.data!.data
+    : research.data ?? [];
 
   return (
     <div className="page">
@@ -174,32 +177,36 @@ export default function LibraryPage() {
                 <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
                 <input
                   type="text"
-                  placeholder="ابحث في عنوان البحث، المؤلف، أو الملخص…"
+                  placeholder="ابحث في عنوان البحث، الملخص، أو محتوى البحث الكامل…"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                 />
               </div>
               <div className="text-xs text-subtle" style={{ marginInlineStart: 'auto' }}>
-                {filteredResearch.length} بحث منشور
+                {researchInUse
+                  ? `${visibleResearch.length} نتيجة لـ "${debouncedQ}"`
+                  : `${visibleResearch.length} بحث منشور`}
               </div>
             </div>
           </Card>
 
-          {research.isPending ? (
+          {(researchInUse ? search.isPending : research.isPending) ? (
             <Card><LoadingState /></Card>
-          ) : research.isError ? (
+          ) : (researchInUse ? search.isError : research.isError) ? (
             <Card><ErrorState /></Card>
-          ) : !filteredResearch.length ? (
+          ) : !visibleResearch.length ? (
             <Card>
               <EmptyState
                 icon={FileText}
                 title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
-                description={q ? 'جرّب كلمات أخرى.' : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
+                description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
               />
             </Card>
           ) : (
             <div className="flex-col gap-3">
-              {filteredResearch.map((p) => (
+              {visibleResearch.map((p) => {
+                const hit = researchInUse ? (p as ResearchSearchHit) : null;
+                return (
                 <article
                   key={p.id}
                   style={{
@@ -239,17 +246,30 @@ export default function LibraryPage() {
                         )}
                       </div>
                     </div>
-                    {p.grade != null && (
+                    {hit && (
+                      <Badge color={hit.matchedIn === 'title' ? 'green' : hit.matchedIn === 'abstract' ? 'gold' : 'purple'}>
+                        {hit.matchedIn === 'title' ? 'تطابق في العنوان' : hit.matchedIn === 'abstract' ? 'تطابق في الملخص' : 'تطابق في المتن'}
+                      </Badge>
+                    )}
+                    {!hit && p.grade != null && (
                       <Badge color={p.grade >= 17 ? 'green' : p.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
                         {p.grade}/20
                       </Badge>
                     )}
                   </div>
-                  {p.abstract && (
+
+                  {/* Show snippet when searching, abstract otherwise */}
+                  {hit && hit.snippet ? (
+                    <p
+                      className="text-sm text-muted research-snippet"
+                      style={{ lineHeight: 'var(--lh-base)', marginBottom: 'var(--sp-2)' }}
+                      dangerouslySetInnerHTML={{ __html: hit.snippet }}
+                    />
+                  ) : p.abstract ? (
                     <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-base)', marginBottom: 'var(--sp-2)' }}>
                       {p.abstract}
                     </p>
-                  )}
+                  ) : null}
                   <div className="flex items-center gap-2 text-xxs text-subtle" style={{ flexWrap: 'wrap', marginBottom: 'var(--sp-3)' }}>
                     {p.plagiarismPct != null && (
                       <span className="font-mono">انتحال: {p.plagiarismPct}%</span>
@@ -272,7 +292,8 @@ export default function LibraryPage() {
                     </Link>
                   )}
                 </article>
-              ))}
+                );
+              })}
             </div>
           )}
         </>

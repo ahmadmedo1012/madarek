@@ -538,6 +538,27 @@ export function usePublishedResearch() {
   });
 }
 
+// Cross-document search across published papers (title + abstract + body).
+// Returns papers with matchedIn ('title' | 'abstract' | 'body') + a snippet
+// containing <mark> tags around the search term.
+export interface ResearchSearchHit extends ResearchPaper {
+  matchedIn: 'title' | 'abstract' | 'body';
+  snippet: string | null;
+}
+export function useResearchSearch(query: string) {
+  const trimmed = query.trim();
+  return useQuery({
+    queryKey: ['research', 'search', trimmed],
+    enabled: trimmed.length >= 2,
+    queryFn: async () => {
+      const res = await api.get<{ data: ResearchSearchHit[]; meta: { query: string; total: number } }>(
+        `/research/search?q=${encodeURIComponent(trimmed)}`,
+      );
+      return res.data;
+    },
+  });
+}
+
 // ── Paper annotations ─────────────────────────────────────────
 export interface PaperAnnotation {
   id: string;

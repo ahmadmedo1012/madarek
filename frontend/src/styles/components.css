@@ -250,6 +250,13 @@
 .tab.on .tab-count { background: var(--accent-soft); color: var(--accent); }
 .research-card { transition: border-color var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease); }
 .research-card:hover { border-color: var(--accent-border); box-shadow: var(--shadow-sm); }
+.research-snippet mark {
+  background: var(--gold-soft);
+  color: var(--gold);
+  padding: 0 3px;
+  border-radius: 2px;
+  font-weight: var(--fw-semibold);
+}
 
 /* ─── Webinar / Workshop card ───────────────────────────── */
 .webinar-card {

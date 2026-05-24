@@ -914,6 +914,7 @@ model ResearchPaper {
   scannedAt     DateTime?
   gradedAt      DateTime?
   publishedAt   DateTime?
+  extractedText String?             @db.Text
   annotations   PaperAnnotation[]
 
   @@index([studentId])

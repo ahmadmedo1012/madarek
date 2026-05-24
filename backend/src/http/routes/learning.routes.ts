@@ -577,6 +577,99 @@ router.get('/research/published', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// ─── Cross-document search across published papers ──────────
+// Searches title + abstract + extractedText (when available) and returns
+// papers ranked by where the match occurred (title > abstract > body).
+// For each match a contextual snippet is generated with the search term
+// surrounded by `<mark>…</mark>` for the UI to render highlighted.
+const SNIPPET_RADIUS = 80; // chars of context on each side of the first hit
+
+function buildSnippet(text: string, q: string): string | null {
+  const lower = text.toLowerCase();
+  const idx = lower.indexOf(q.toLowerCase());
+  if (idx === -1) return null;
+  const start = Math.max(0, idx - SNIPPET_RADIUS);
+  const end = Math.min(text.length, idx + q.length + SNIPPET_RADIUS);
+  const before = start === 0 ? '' : '…';
+  const after = end === text.length ? '' : '…';
+  const slice = text.slice(start, end);
+  // Highlight ALL occurrences in the slice (not just the first one).
+  const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  const highlighted = slice.replace(re, (m) => `<mark>${m}</mark>`);
+  return `${before}${highlighted}${after}`;
+}
+
+router.get('/research/search', async (req, res, next) => {
+  try {
+    const q = String(req.query.q ?? '').trim();
+    if (!q) {
+      res.json({ data: [], meta: { query: '', total: 0 } });
+      return;
+    }
+    if (q.length < 2) {
+      res.json({ data: [], meta: { query: q, total: 0, error: 'too_short' } });
+      return;
+    }
+
+    // ILIKE on three fields is sufficient at our demo scale and works for
+    // both Arabic and English. Tsvector/GIN can be layered on top later
+    // if the dataset grows.
+    const papers = await withRetry(() => prisma.researchPaper.findMany({
+      where: {
+        status: 'PUBLISHED',
+        OR: [
+          { title:         { contains: q, mode: 'insensitive' } },
+          { abstract:      { contains: q, mode: 'insensitive' } },
+          { extractedText: { contains: q, mode: 'insensitive' } },
+        ],
+      },
+      orderBy: { publishedAt: 'desc' },
+      take: 50,
+      include: {
+        student: {
+          select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
+        },
+        offering: { include: { course: { select: { name: true, code: true } } } },
+      },
+    }));
+
+    type Match = 'title' | 'abstract' | 'body';
+    const results = papers.map((p) => {
+      let matchedIn: Match = 'body';
+      let snippet: string | null = null;
+      if (p.title.toLowerCase().includes(q.toLowerCase())) {
+        matchedIn = 'title';
+        snippet = buildSnippet(p.title, q);
+      } else if (p.abstract && p.abstract.toLowerCase().includes(q.toLowerCase())) {
+        matchedIn = 'abstract';
+        snippet = buildSnippet(p.abstract, q);
+      } else if (p.extractedText) {
+        matchedIn = 'body';
+        snippet = buildSnippet(p.extractedText, q);
+      }
+
+      const rank = matchedIn === 'title' ? 3 : matchedIn === 'abstract' ? 2 : 1;
+      return { paper: p, matchedIn, snippet, rank };
+    });
+
+    // Sort by rank (title first), then publishedAt desc.
+    results.sort((a, b) => {
+      if (a.rank !== b.rank) return b.rank - a.rank;
+      const aDate = a.paper.publishedAt?.getTime() ?? 0;
+      const bDate = b.paper.publishedAt?.getTime() ?? 0;
+      return bDate - aDate;
+    });
+
+    const data = results.map((r) => ({
+      ...decToNum(r.paper),
+      matchedIn: r.matchedIn,
+      snippet: r.snippet,
+    }));
+
+    res.json({ data, meta: { query: q, total: data.length } });
+  } catch (e) { next(e); }
+});
+
 // ─── Paper annotations ────────────────────────────────────────
 // Permission model:
 //   - GET: paper student, paper reviewer, ADMIN, QUALITY can read
