@@ -11,6 +11,7 @@ import {
   AlertCircle, Sparkles, Briefcase, Building2, Users,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
+import { CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import {
   useTeacherSuggestions,
@@ -163,7 +164,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
   const { data, isLoading } = useTeacherSuggestions(teacherId);
   const verify = useVerifyTeacher();
 
-  if (isLoading) return <Card>جارٍ التحميل…</Card>;
+  if (isLoading) return <CardSkeleton lines={5} />;
   if (!data) return <Card>لا يوجد ملف أستاذ.</Card>;
 
   return (
@@ -270,7 +271,7 @@ export function AdminPermissionsPage() {
   const { data } = useUserPermissions(id);
   const setCap = useSetCapability();
 
-  if (!data) return <div className="page"><Card>جارٍ التحميل…</Card></div>;
+  if (!data) return <DetailSkeleton />;
 
   const allCaps = Object.keys(CAP_LABEL) as AppCapability[];
   const overridesByCap = new Map(data.overrides.map((o) => [o.capability, o]));

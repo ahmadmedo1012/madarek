@@ -17,6 +17,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../components/primitives';
+import { PageSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import {
   useTrainingCatalog, useTrainingTrack, useEnrollTrack, useCompleteLesson,
@@ -243,7 +244,7 @@ export function TrainingTrackPage() {
   const { data: track, isLoading } = useTrainingTrack(slug);
   const enroll = useEnrollTrack();
 
-  if (isLoading) return <div className="page"><Card>جارٍ التحميل…</Card></div>;
+  if (isLoading) return <PageSkeleton />;
   if (!track) return <div className="page"><Card>المسار غير موجود.</Card></div>;
 
   const completedCount = track.lessons.filter((l) => l.isCompleted).length;
@@ -346,7 +347,7 @@ export function TrainingLessonPage() {
   const [quizAnswer, setQuizAnswer] = useState('');
   const [feedback, setFeedback] = useState<{ ok: boolean; msg: string; reward?: { points: number; level: number; tier: Tier; badges: Array<{ title: string; iconEmoji: string }> } } | null>(null);
 
-  if (!track) return <div className="page"><Card>جارٍ التحميل…</Card></div>;
+  if (!track) return <DetailSkeleton />;
 
   const lesson = track.lessons.find((l) => l.id === lessonId);
   if (!lesson) return <div className="page"><Card>الدرس غير موجود.</Card></div>;

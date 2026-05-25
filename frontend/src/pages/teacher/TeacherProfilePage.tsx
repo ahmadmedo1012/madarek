@@ -21,6 +21,7 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
+import { DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import {
   useMyTeacherProfile, useUpdateTeacherProfile,
@@ -50,7 +51,7 @@ export default function TeacherProfilePage() {
     websiteUrl: string;
   } | null>(null);
 
-  if (isLoading) return <div className="page"><Card>جارٍ التحميل…</Card></div>;
+  if (isLoading) return <DetailSkeleton />;
   if (!profile) {
     return (
       <div className="page">

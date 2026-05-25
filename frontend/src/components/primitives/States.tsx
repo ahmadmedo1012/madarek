@@ -122,3 +122,82 @@ export function TableSkeleton({ rows = 4, cols = 5 }: { rows?: number; cols?: nu
     </div>
   );
 }
+
+
+/**
+ * Generic single-card skeleton — drop-in replacement for
+ * `<Card>جارٍ التحميل…</Card>` patterns.
+ */
+export function CardSkeleton({ lines = 3, withTitle = true }: { lines?: number; withTitle?: boolean }) {
+  return (
+    <div className="card" aria-busy="true" aria-live="polite">
+      {withTitle && (
+        <div style={{ marginBottom: 'var(--sp-3)' }}>
+          <Skeleton width={180} height={16} />
+        </div>
+      )}
+      <div className="flex-col gap-2">
+        {Array.from({ length: lines }).map((_, i) => (
+          <Skeleton key={i} width={i === lines - 1 ? '60%' : '100%'} height={12} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Full-page skeleton — for routes whose entire payload is one
+ * blocking query. Renders a header skeleton + KPI strip + 2 cards.
+ * Use when there's nothing meaningful to show until data lands.
+ */
+export function PageSkeleton({ kpis = true }: { kpis?: boolean }) {
+  return (
+    <div className="page" aria-busy="true" aria-live="polite">
+      {/* Page header skeleton */}
+      <div className="page-header">
+        <div className="page-title-block">
+          <Skeleton width={260} height={28} />
+          <div style={{ marginTop: 8 }}>
+            <Skeleton width={420} height={12} />
+          </div>
+        </div>
+        <Skeleton width={120} height={24} rounded="var(--r-full)" />
+      </div>
+
+      {kpis && <KpiSkeleton />}
+      <CardSkeleton lines={4} />
+      <CardSkeleton lines={3} />
+    </div>
+  );
+}
+
+/**
+ * Detail-page skeleton (e.g. teacher profile, exam details).
+ * Header + meta band + 3 detail cards.
+ */
+export function DetailSkeleton() {
+  return (
+    <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page-header">
+        <div className="page-title-block">
+          <Skeleton width={300} height={28} />
+          <div style={{ marginTop: 8 }}>
+            <Skeleton width={480} height={12} />
+          </div>
+        </div>
+      </div>
+      <div className="card">
+        <div className="flex items-center gap-3" style={{ marginBottom: 'var(--sp-3)' }}>
+          <Skeleton width={64} height={64} rounded="50%" />
+          <div className="flex-col gap-2" style={{ flex: 1 }}>
+            <Skeleton width="60%" height={18} />
+            <Skeleton width="40%" height={12} />
+          </div>
+        </div>
+      </div>
+      <KpiSkeleton />
+      <CardSkeleton lines={3} />
+      <CardSkeleton lines={5} />
+    </div>
+  );
+}

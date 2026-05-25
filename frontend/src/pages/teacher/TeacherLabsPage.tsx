@@ -21,6 +21,7 @@ import {
   ExternalLink, ChevronLeft, AlertCircle, type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
+import { CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
 
@@ -88,7 +89,7 @@ export default function TeacherLabsPage() {
         </div>
       </Card>
 
-      {isLoading && <Card>جارٍ التحميل…</Card>}
+      {isLoading && <CardSkeleton lines={5} />}
 
       {labs && labs.length === 0 && (
         <Card>

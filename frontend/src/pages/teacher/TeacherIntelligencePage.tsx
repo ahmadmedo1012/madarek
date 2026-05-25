@@ -15,6 +15,7 @@ import {
   CheckCircle2, AlertCircle, type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../components/primitives';
+import { DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import {
   useTeacherOfferings, useTeacherStudents, useOfferingAnalytics,
@@ -138,7 +139,7 @@ export function TeacherOfferingDetailPage() {
   const suggest = useCurriculumSuggest();
   const [tab, setTab] = useState<'students' | 'curriculum'>('students');
 
-  if (!offering) return <div className="page"><Card>جارٍ التحميل…</Card></div>;
+  if (!offering) return <DetailSkeleton />;
   const accent = offering.course.themeColor ?? 'var(--accent)';
 
   const onSuggest = () => suggest.mutate(offeringId!);

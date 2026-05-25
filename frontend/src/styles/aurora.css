@@ -435,3 +435,56 @@
     -webkit-backdrop-filter: blur(12px);
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Skeleton shimmer — strong, clear, theme-aware
+   ───────────────────────────────────────────────────────────────
+   Existing .skeleton uses surface-1 → surface-2 gradient, but the
+   contrast was barely visible against PRD v2's warm-gray surfaces
+   and Aurora's deep navy. Override with stronger gradients per
+   theme — still subtle, but discernible at a glance.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(28, 25, 23, 0.06) 0%,
+    rgba(28, 25, 23, 0.12) 50%,
+    rgba(28, 25, 23, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+[data-theme='dark'] .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* Skeleton-line (search dropdown loading) consistent with .skeleton */
+.skeleton-line, .search-shimmer {
+  animation-duration: 1.6s;
+  animation-timing-function: ease-in-out;
+}
+
+/* Reduced motion: static placeholder, no shimmer */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='light'] .skeleton {
+    animation: none;
+    background: rgba(28, 25, 23, 0.08);
+  }
+  [data-theme='dark'] .skeleton {
+    animation: none;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .skeleton-line, .search-shimmer { animation: none !important; }
+}

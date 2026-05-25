@@ -10,6 +10,7 @@ import {
   ArrowDownToLine, AlertCircle,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
+import { PageSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 
@@ -90,7 +91,7 @@ export function AdminSyncPage() {
   const trigger = useTriggerSync();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
-  if (isLoading) return <div className="page"><Card>جارٍ التحميل…</Card></div>;
+  if (isLoading) return <PageSkeleton />;
   if (!data) return <div className="page"><Card>لا توجد بيانات</Card></div>;
 
   const lastRun = data.latestRun;

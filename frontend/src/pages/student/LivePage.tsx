@@ -11,6 +11,7 @@
 import { useMemo } from 'react';
 import { Radio, Calendar, CheckCircle2, AlertCircle, ExternalLink, Clock } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
+import { CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
@@ -46,7 +47,7 @@ export default function LivePage() {
         <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
       </div>
 
-      {isLoading && <Card>جارٍ التحميل…</Card>}
+      {isLoading && <CardSkeleton lines={4} />}
 
       {/* Live now */}
       {live.length > 0 && (
