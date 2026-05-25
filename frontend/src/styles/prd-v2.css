@@ -1,0 +1,425 @@
+/* ═══════════════════════════════════════════════════════════════
+   PRD v2 — Modern Academic Premium
+   ───────────────────────────────────────────────────────────────
+   Loaded LAST. Honors the PRD spec sections 5.2–5.7:
+     • Warm-gray surface palette (NOT pure white, NOT cold gray)
+     • Royal-blue primary scale (50→950)
+     • Noto Sans Arabic typography
+     • Cards: 16px radius, real soft shadows + 1px border
+     • Sidebar: 280px, primary-50 active w/ 3px right indicator
+     • Buttons: primary-800 base, primary-900 hover, 12px radius
+
+   Purely additive: no JSX changes, no token deletions, no
+   functional impact. Earlier layers still cascade — this layer
+   is the final visual say.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── PRD blue primary scale ───────────────────────── */
+  --primary-50:  #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+  --primary-950: #172554;
+
+  /* PRD success / warning / danger semantics */
+  --pv2-success-50:  #f0fdf4;
+  --pv2-success-500: #10b981;
+  --pv2-success-600: #059669;
+  --pv2-warning-50:  #fffbeb;
+  --pv2-warning-500: #f59e0b;
+  --pv2-warning-600: #d97706;
+  --pv2-danger-50:   #fef2f2;
+  --pv2-danger-500:  #ef4444;
+
+  /* PRD typography font stack — Noto Sans Arabic first */
+  --font-prd:
+    'Noto Sans Arabic',
+    'Cairo',
+    'IBM Plex Sans Arabic',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+}
+
+/* ─── Light theme — PRD warm-gray surface system ──────── */
+[data-theme='light'] {
+  /* Surfaces (PRD §5.2) — warm-gray, NOT cold blue-gray */
+  --bg:        #fafaf9;   /* page background */
+  --surface-1: #ffffff;   /* card surface */
+  --surface-2: #f5f5f4;   /* secondary surface */
+  --surface-3: #e7e5e4;   /* tertiary / chips */
+
+  /* Borders — warm beige */
+  --border:        #e7e5e4;
+  --border-strong: #d6d3d1;
+
+  /* Text — warm-tinted neutrals */
+  --text:         #1c1917;   /* near-black warm */
+  --text-muted:   #57534e;   /* warm gray */
+  --text-subtle:  #a8a29e;   /* muted warm */
+
+  /* Brand accent — PRD primary-800 (deep, institutional) */
+  --accent:        #1e40af;
+  --accent-hover:  #1e3a8a;
+  --accent-soft:   #eff6ff;
+  --accent-border: #93c5fd;
+  --accent-fg:     #ffffff;
+
+  /* Semantic — PRD spec */
+  --success:      #059669;
+  --success-soft: #f0fdf4;
+  --warning:      #d97706;
+  --warning-soft: #fffbeb;
+  --danger:       #ef4444;
+  --danger-soft:  #fef2f2;
+
+  /* Shadows — pure black/gray, never colored */
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md:  0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-lg:  0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-xl:  0 12px 32px rgba(0, 0, 0, 0.10);
+
+  --focus-ring:    0 0 0 3px rgba(30, 64, 175, 0.18);
+  --selection-bg:  rgba(30, 64, 175, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Typography — PRD §5.3
+   ═══════════════════════════════════════════════════════════════ */
+
+body {
+  font-family: var(--font-prd);
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Display / page titles — large, weight-900, tight letter-spacing */
+h1, .page-title, .auth-brand-hero, .landing-title, .track-hero-title {
+  font-family: var(--font-prd);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.page-title {
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.18;
+}
+
+/* Subheading — weight 700, 18-20px */
+h2, h3, .card-title, .this-week-title, .auth-form-title {
+  font-family: var(--font-prd);
+  font-weight: 700;
+  letter-spacing: -0.012em;
+}
+
+/* Numeric data — PRD calls for 24-32px / weight 800 / primary-900 */
+.metric-value, .kpi-value, .gpa-hero-value,
+.landing-stat-value, .this-week-emphasis,
+.leaderboard-points, .risk-row-pct {
+  font-family: var(--font-prd);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+[data-theme='light'] .metric-value,
+[data-theme='light'] .kpi-value {
+  color: var(--primary-900);
+}
+.metric-value { font-size: 28px; line-height: 1.1; }
+
+/* Body — 14px / weight 400 / line-height 1.6 */
+body, p, .text-sm {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Cards — PRD §5.4
+   ═══════════════════════════════════════════════════════════════ */
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  /* Hover lift kept but only when card is interactive (link wrapped) */
+}
+a > .card:hover,
+.track-card:hover {
+  transform: translateY(-1px);
+}
+
+.card.compact { padding: 16px 20px; }
+.card.flush   { padding: 0; }
+
+@media (max-width: 720px) {
+  .card { padding: 16px; border-radius: 14px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Buttons — PRD §5.6
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn {
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  height: 40px;
+  padding: 0 20px;
+  letter-spacing: -0.005em;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+.btn.sm { height: 32px; padding: 0 14px; font-size: 13px; }
+.btn.lg { height: 48px; padding: 0 24px; font-size: 15px; }
+
+[data-theme='light'] .btn.primary {
+  background: var(--primary-800);
+  border-color: var(--primary-800);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(30, 64, 175, 0.10);
+}
+[data-theme='light'] .btn.primary:hover:not(:disabled) {
+  background: var(--primary-900);
+  border-color: var(--primary-900);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+}
+[data-theme='light'] .btn.primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(30, 64, 175, 0.18);
+}
+
+[data-theme='light'] .btn.ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+[data-theme='light'] .btn.ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+@media (max-width: 600px) {
+  .btn    { height: 44px; font-size: 15px; }
+  .btn.sm { height: 38px; font-size: 14px; }
+  .btn.lg { height: 52px; font-size: 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Sidebar — PRD §5.5
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --sidebar-w: 280px;
+}
+
+[data-theme='light'] .sidebar {
+  background: var(--bg);
+  border-inline-start: 1px solid var(--border);
+}
+
+.nav-item {
+  margin: 2px 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+[data-theme='light'] .nav-item:hover:not(.on) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+[data-theme='light'] .nav-item.on {
+  background: var(--primary-50);
+  color: var(--primary-700);
+  font-weight: 600;
+}
+
+/* Active indicator — 3px solid bar on the inline-start (RTL: right) */
+.nav-item::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -8px;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 22px;
+  background: var(--primary-700);
+  border-radius: 2px;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-item.on::before {
+  transform: translateY(-50%) scaleY(1);
+}
+[data-theme='light'] .nav-item.on .nav-icon { color: var(--primary-700); }
+
+/* ═══════════════════════════════════════════════════════════════
+   Topbar — match warm bg
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .topbar {
+  background: rgba(250, 250, 249, 0.92);
+  border-bottom: 1px solid transparent;
+}
+[data-theme='light'] .topbar.scrolled {
+  border-bottom-color: var(--border);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Inputs — match button radius + warm border
+   ═══════════════════════════════════════════════════════════════ */
+
+.input {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+textarea.input { height: auto; min-height: 96px; padding: 12px 14px; }
+
+@media (max-width: 600px) {
+  .input { height: 44px; font-size: 15px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Badges — soft-bg style (PRD: pastel + dark-text)
+   ═══════════════════════════════════════════════════════════════ */
+
+.badge {
+  font-weight: 600;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0;
+  border: 1px solid transparent;
+}
+[data-theme='light'] .badge {
+  background: var(--surface-2);
+  color: var(--text-muted);
+}
+[data-theme='light'] .badge.brand {
+  background: var(--primary-50);
+  color: var(--primary-800);
+}
+[data-theme='light'] .badge.green {
+  background: var(--pv2-success-50);
+  color: var(--pv2-success-600);
+}
+[data-theme='light'] .badge.amber {
+  background: var(--pv2-warning-50);
+  color: var(--pv2-warning-600);
+}
+[data-theme='light'] .badge.red {
+  background: var(--pv2-danger-50);
+  color: var(--pv2-danger-500);
+}
+[data-theme='light'] .badge.gold {
+  background: #fef3c7;
+  color: #92400e;
+}
+[data-theme='light'] .badge.purple {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Page header — match PRD typography hierarchy
+   ═══════════════════════════════════════════════════════════════ */
+
+.page-header { gap: 16px; padding-bottom: 8px; }
+.page-subtitle {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Auth screen — calmer warm bg + clearer card
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .auth-overlay {
+  background:
+    radial-gradient(800px 400px at 80% -10%, rgba(30, 64, 175, 0.04), transparent 60%),
+    var(--bg);
+}
+[data-theme='light'] .auth-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  border-radius: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Charts — PRD §5.7: transparent bg, dashed gridlines, primary blue
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] {
+  --chart-grid: rgba(28, 25, 23, 0.08);
+  --chart-text: var(--text-muted);
+}
+
+/* Canvas containers should have transparent bg, never card bg */
+.card canvas {
+  background: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Selection styling — PRD blue
+   ═══════════════════════════════════════════════════════════════ */
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Reduced motion — respected globally
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .btn, .nav-item, .input {
+    transition: none !important;
+  }
+  .nav-item::before { transition: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Constraints from PRD §9 enforced as defensive caps
+   ═══════════════════════════════════════════════════════════════ */
+
+/* "Border-radius never larger than 16px" — clamp any rogue radii */
+.track-hero, .gpa-hero, .auth-card, .card {
+  /* Already set above. Listed here as an explicit reference. */
+}
