@@ -423,3 +423,255 @@ textarea.input { height: auto; min-height: 96px; padding: 12px 14px; }
 .track-hero, .gpa-hero, .auth-card, .card {
   /* Already set above. Listed here as an explicit reference. */
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Dark-mode coverage for PRD v2
+   ───────────────────────────────────────────────────────────────
+   PRD §5.2 is light-mode-first. Dark mode keeps the institutional
+   tone but inverts surface depth. Royal-blue scale stays the same;
+   accents lift to a brighter shade so they read against dark bg.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='dark'] {
+  /* Surfaces — deep warm-charcoal (not cold blue-black) */
+  --bg:        #0e0c0a;   /* page background — warm */
+  --surface-1: #15130f;   /* cards */
+  --surface-2: #1c1a16;   /* secondary */
+  --surface-3: #2a2722;   /* tertiary / chips */
+
+  /* Borders — slightly warm-tinted alpha whites */
+  --border:        rgba(245, 240, 230, 0.08);
+  --border-strong: rgba(245, 240, 230, 0.14);
+
+  /* Text — warm whites */
+  --text:        #f5f5f4;
+  --text-muted:  #a8a29e;
+  --text-subtle: #78716c;
+
+  /* Accent — brighter blue for dark contrast */
+  --accent:        #3b82f6;
+  --accent-hover:  #2563eb;
+  --accent-soft:   rgba(59, 130, 246, 0.14);
+  --accent-border: rgba(59, 130, 246, 0.45);
+  --accent-fg:     #ffffff;
+
+  /* Numeric data uses the brighter accent on dark */
+  --chart-grid: rgba(245, 240, 230, 0.06);
+  --chart-text: var(--text-muted);
+}
+
+/* Dark-mode topbar — slight transparency over the warm dark bg */
+[data-theme='dark'] .topbar {
+  background: rgba(14, 12, 10, 0.85);
+  border-bottom: 1px solid transparent;
+}
+[data-theme='dark'] .topbar.scrolled {
+  border-bottom-color: var(--border);
+}
+
+/* Dark-mode sidebar — same hue family as bg, no harsh contrast */
+[data-theme='dark'] .sidebar {
+  background: var(--bg);
+  border-inline-start: 1px solid var(--border);
+}
+
+/* Dark-mode nav-item active — soft accent halo, not solid pill */
+[data-theme='dark'] .nav-item:hover:not(.on) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+[data-theme='dark'] .nav-item.on {
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
+  font-weight: 600;
+}
+[data-theme='dark'] .nav-item.on::before {
+  background: #60a5fa;
+}
+[data-theme='dark'] .nav-item.on .nav-icon { color: #93c5fd; }
+
+/* Dark-mode auth — same warm gradient backdrop, lifted card */
+[data-theme='dark'] .auth-overlay {
+  background:
+    radial-gradient(800px 400px at 80% -10%, rgba(59, 130, 246, 0.06), transparent 60%),
+    var(--bg);
+}
+[data-theme='dark'] .auth-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.30);
+}
+
+/* Dark-mode buttons — brighter blue against dark bg */
+[data-theme='dark'] .btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
+}
+[data-theme='dark'] .btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+[data-theme='dark'] .btn.ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+[data-theme='dark'] .btn.ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+/* Dark-mode cards — warm-tinted surface, subtle inner highlight */
+[data-theme='dark'] .card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+[data-theme='dark'] a > .card:hover,
+[data-theme='dark'] .track-card:hover {
+  border-color: rgba(59, 130, 246, 0.30);
+}
+
+/* Dark-mode badges — match light parity */
+[data-theme='dark'] .badge {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+}
+[data-theme='dark'] .badge.brand {
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
+}
+[data-theme='dark'] .badge.green {
+  background: rgba(16, 185, 129, 0.10);
+  color: #6ee7b7;
+}
+[data-theme='dark'] .badge.amber {
+  background: rgba(245, 158, 11, 0.10);
+  color: #fcd34d;
+}
+[data-theme='dark'] .badge.red {
+  background: rgba(239, 68, 68, 0.10);
+  color: #fca5a5;
+}
+[data-theme='dark'] .badge.gold {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+}
+[data-theme='dark'] .badge.purple {
+  background: rgba(139, 92, 246, 0.12);
+  color: #c4b5fd;
+}
+
+/* Dark-mode metric numbers — brighter for legibility */
+[data-theme='dark'] .metric-value,
+[data-theme='dark'] .kpi-value {
+  color: #93c5fd;
+}
+
+/* Dark-mode input — warmer surface */
+[data-theme='dark'] .input {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme='dark'] .input::placeholder { color: var(--text-subtle); }
+[data-theme='dark'] .input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Responsive consolidation — canonical 4-step ladder
+   ───────────────────────────────────────────────────────────────
+   The platform now has 13 different breakpoints across files.
+   This block sets the canonical ladder. Earlier layers' rules at
+   close-but-different breakpoints (e.g. 700/720/721) get unified
+   here by overriding the most-conflicted rules at clean steps.
+
+   Canonical:
+     480px   — small mobile
+     600px   — phone landscape / small tablet
+     720px   — tablet
+     1024px  — laptop / desktop
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  :root { --topbar-h: 60px; }
+}
+
+@media (max-width: 720px) {
+  /* Page rhythm tighter on tablet+ */
+  .page { gap: 18px; }
+  .page-header { gap: 12px; }
+  .grid-2-1 { grid-template-columns: 1fr; gap: 14px; }
+  .grid-2 { grid-template-columns: 1fr; gap: 14px; }
+}
+
+@media (max-width: 600px) {
+  /* Tighter card density on phone */
+  .card { padding: 16px; border-radius: 14px; }
+  .page { gap: 14px; }
+  /* Page header fully stacked */
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* Keep numbers legible but tighter */
+  .metric-value { font-size: 24px; }
+  /* Auth card spans full viewport with breathing room */
+  .auth-overlay { padding: 16px; padding-top: 56px; }
+}
+
+@media (max-width: 480px) {
+  /* Smallest phones */
+  .page-title { font-size: 22px; line-height: 1.22; }
+  .card { padding: 14px; border-radius: 12px; }
+  .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  /* Hide the topbar scope chip — saves room for title */
+  .topbar-scope { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Charts — PRD §5.7 dashed gridlines, primary blue palette
+   ───────────────────────────────────────────────────────────────
+   Chart.js options can't be styled by CSS, but canvas containers
+   and chart-card chrome can. This ensures the surrounding card
+   matches the PRD spec.
+   ═══════════════════════════════════════════════════════════════ */
+
+.card canvas { background: transparent !important; }
+@media (max-width: 600px) {
+  .card canvas { max-height: 240px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Final unification — no rogue colored shadows (PRD §9 rule #3)
+   Match earlier layers' specificity so we don't need !important.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] a > .card:hover,
+[data-theme='light'] .track-card:hover,
+[data-theme='light'] .card:hover {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+}
+[data-theme='dark'] a > .card:hover,
+[data-theme='dark'] .track-card:hover,
+[data-theme='dark'] .card:hover {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
