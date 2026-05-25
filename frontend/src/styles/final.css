@@ -1,0 +1,289 @@
+/* ═══════════════════════════════════════════════════════════════
+   Final unification layer
+   ───────────────────────────────────────────────────────────────
+   Loaded LAST. Consolidates conflicting rules from
+   components.css / refinement.css / evolution.css / stitch-tokens.css
+   into a single coherent end-state per token.
+
+   Rule of this file: every rule here is a "this value, period" fix.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Buttons: single canonical sizing across the platform ─── */
+.btn {
+  /* Size */
+  height: 36px;
+  padding: 0 14px;
+  /* Shape */
+  border-radius: 10px;
+  /* Typography */
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  /* Motion */
+  transition:
+    background-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 80ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn.sm { height: 30px; padding: 0 10px; font-size: var(--fs-xs); }
+.btn.lg { height: 44px; padding: 0 18px; font-size: var(--fs-base); }
+.btn.block { width: 100%; }
+
+/* Mobile: bigger touch targets, but a calmer canonical ladder */
+@media (max-width: 600px) {
+  .btn { height: 42px; padding: 0 16px; font-size: var(--fs-base); }
+  .btn.sm { height: 36px; padding: 0 12px; font-size: var(--fs-sm); }
+  .btn.lg { height: 48px; padding: 0 20px; font-size: var(--fs-md); }
+}
+
+/* Primary in light mode: deeper shadow than ghost; uses navy */
+[data-theme='light'] .btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.10);
+}
+[data-theme='light'] .btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  box-shadow: 0 4px 12px rgba(26, 37, 64, 0.22);
+}
+
+/* ─── Cards: single canonical padding ladder ─── */
+.card {
+  padding: 20px;            /* desktop default */
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.card.compact { padding: 12px 16px; }
+.card.flush { padding: 0; }
+
+@media (max-width: 720px) {
+  .card { padding: 16px; border-radius: 12px; }
+}
+
+/* ─── Inputs: unify height with .btn so rows align ─── */
+.input {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: var(--fs-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  transition: border-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.input::placeholder { color: var(--text-subtle); }
+
+textarea.input {
+  height: auto;
+  min-height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+@media (max-width: 600px) {
+  .input { height: 42px; font-size: var(--fs-base); padding: 0 14px; }
+  textarea.input { padding: 12px 14px; }
+}
+
+/* ─── Badge sizing parity ─── */
+.badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+/* ─── Page rhythm: consistent vertical gap ─── */
+.page { gap: 24px; }
+@media (max-width: 720px) { .page { gap: 18px; } }
+@media (max-width: 480px) { .page { gap: 14px; } }
+
+/* ─── Page header: clean stack on mobile ─── */
+@media (max-width: 720px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .page-header > .badge { align-self: flex-start; }
+}
+
+/* ─── Mobile typography cleanup ─── */
+@media (max-width: 600px) {
+  .page-title { font-size: 22px; }
+  .page-subtitle { font-size: 14px; line-height: 1.65; }
+  body { font-size: 14px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Dark-mode coverage for newly-added components
+   (gpa-hero + ai-quick-chip + ministry-strip)
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='dark'] .gpa-hero {
+  background: linear-gradient(135deg, var(--surface-1) 0%, rgba(76, 123, 217, 0.06) 200%);
+  border-color: var(--border);
+}
+[data-theme='dark'] .gpa-hero-bar { background: rgba(255, 255, 255, 0.06); }
+[data-theme='dark'] .gpa-hero-value { color: var(--accent); }
+
+[data-theme='dark'] .ai-quick-chip {
+  background: rgba(76, 123, 217, 0.10);
+  color: var(--accent);
+  border-color: rgba(76, 123, 217, 0.32);
+}
+[data-theme='dark'] .ai-quick-chip:hover {
+  background: var(--accent);
+  color: #FFFFFF;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Scrollbar consistency
+   ═══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 127, 0.20);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(127, 127, 127, 0.35); background-clip: padding-box; }
+@media (max-width: 600px) {
+  ::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Mobile sidebar drawer polish
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .sidebar {
+    box-shadow: -16px 0 48px rgba(0, 0, 0, 0.18);
+  }
+  [data-theme='light'] .sidebar { box-shadow: -16px 0 48px rgba(15, 23, 42, 0.12); }
+  .sidebar-backdrop { backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Topbar: consistent height, content-flush border
+   ═══════════════════════════════════════════════════════════════ */
+.topbar {
+  height: 60px;
+  padding: 0 20px;
+}
+@media (max-width: 720px) {
+  .topbar { height: 56px; padding: 0 12px; }
+}
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+@media (max-width: 600px) {
+  .topbar-title { font-size: 14px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Tables: graceful overflow on small screens
+   ═══════════════════════════════════════════════════════════════ */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -16px;          /* on mobile, let table reach card edges */
+  padding: 0 16px;
+}
+@media (min-width: 721px) {
+  .table-wrap { margin: 0; padding: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Smooth transitions for theme switching (last word)
+   ═══════════════════════════════════════════════════════════════ */
+html, body, .card, .btn, .input, .nav-item, .topbar, .sidebar,
+.metric, .badge, .pill, .filter-pill,
+.gpa-hero, .ai-quick-chip, .kpi-strip, .kpi-cell {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 220ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Reduced-motion (toolkit accessibility rule)
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html, body, .card, .btn, .input, .nav-item, .topbar, .sidebar,
+  .metric, .badge, .pill, .filter-pill,
+  .gpa-hero, .ai-quick-chip, .kpi-strip, .kpi-cell {
+    transition-duration: 0.01ms !important;
+  }
+  .gpa-hero-bar-fill { transition-duration: 0.01ms !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Polish: small visible bug fixes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* The auth demo button row — ensure consistent gap on all sizes */
+.auth-demo { gap: 8px; }
+
+/* Page-header badge wrapping on small screens */
+@media (max-width: 480px) {
+  .page-header > .badge { font-size: 10px; padding: 3px 8px; }
+}
+
+/* Metric value letter-spacing was set to -0.025em globally;
+   make labels the visual opposite — slightly looser */
+.metric-label, .kpi-label, .gpa-hero-label {
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+/* Avatars in cards never overflow on tight cards */
+.avatar { flex-shrink: 0; }
+
+/* Long Arabic words break gracefully (rare but real) */
+.text-muted, .page-subtitle, .auth-brand-tag, .this-week-body {
+  overflow-wrap: anywhere;
+}
+
+/* AI chat bubbles: max-width safety on narrow viewports */
+.chat-bubble { max-width: 100%; word-wrap: break-word; overflow-wrap: anywhere; }
+
+/* Quick-action chip row: scroll horizontally on tight screens
+   instead of wrapping awkwardly */
+.ai-quick-actions {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.ai-quick-actions::-webkit-scrollbar { display: none; }
+.ai-quick-chip { flex-shrink: 0; }
+
+/* Track cards equal-height inside a grid row — never warps */
+.track-grid > * { display: flex; }
+.track-card { flex: 1; }
+
+/* Search dropdown: pin to viewport on narrow screens */
+@media (max-width: 540px) {
+  .search-dropdown {
+    position: fixed;
+    top: 70px;
+    inset-inline-start: 8px;
+    inset-inline-end: 8px;
+    max-height: calc(100vh - 80px);
+  }
+}

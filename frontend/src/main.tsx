@@ -10,6 +10,7 @@ import './styles/pdf.css';
 import './styles/refinement.css';
 import './styles/evolution.css';
 import './styles/stitch-tokens.css';
+import './styles/final.css';
 
 import App from './App';
 
