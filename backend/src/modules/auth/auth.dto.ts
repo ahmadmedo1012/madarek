@@ -20,7 +20,14 @@ export const registerSchema = z
 
 export const loginSchema = z
   .object({
-    email: z.string().email().max(120),
+    /**
+     * Identifier — either an email address (existing accounts) OR a
+     * university registration number (new student onboarding).
+     * The auth service detects which one it is by shape:
+     * an '@' character means email; otherwise it's a reg-number lookup
+     * against StudentProfile.universityId.
+     */
+    email: z.string().min(1).max(120),
     password: z.string().min(1).max(72),
   })
   .strict();

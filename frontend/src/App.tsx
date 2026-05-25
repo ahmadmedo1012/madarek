@@ -31,6 +31,7 @@ import TeacherIntelligencePage, { TeacherOfferingDetailPage } from './pages/teac
 import OnlineExamsPage, { ExamTakerPage, ExamModerationPage } from './pages/exams/OnlineExamsPages';
 import CommunityPage from './pages/community/CommunityPages';
 import { AdminTeachersPage, AdminPermissionsPage } from './pages/admin/AdminGovernancePages';
+import { AdminSyncPage } from './pages/admin/AdminSyncPage';
 import {
   TeacherSchedulePage, AttendancePage, GradesPage,
   MaterialsPage, ResearchPage, StudentsListPage, PerformancePage,
@@ -137,6 +138,7 @@ export default function App() {
               <Route path="/admin/students" element={<AdminPlaceholder title="إدارة الطلاب" />} />
               <Route path="/admin/teachers" element={<AdminTeachersPage />} />
               <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
+              <Route path="/admin/sync" element={<AdminSyncPage />} />
               <Route path="/admin/community" element={<CommunityPage />} />
               <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
               <Route path="/admin/courses" element={<AdminCoursesPage />} />

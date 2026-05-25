@@ -5,7 +5,7 @@ import {
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, MessageSquare, Microscope, School,
   FileText, Settings, ShieldCheck, Activity, Compass, BookMarked,
-  Radio, Wallet, MapPin, Sparkles, Mic2, UserCircle, Brain, Megaphone,
+  Radio, Wallet, MapPin, Sparkles, Mic2, UserCircle, Brain, Megaphone, RefreshCw,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -134,6 +134,7 @@ export const ADMIN_NAV: NavGroup[] = [
     label: 'النظام والمجتمع',
     items: [
       { to: '/admin/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      { to: '/admin/sync', icon: RefreshCw, label: 'مزامنة الجامعة', badge: { text: 'جديد', tone: 'gold' } },
       { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
       { to: '/admin/alerts', icon: Bell, label: 'الإشعارات' },
     ],

@@ -2,6 +2,7 @@ import { createApp } from './app.js';
 import { env } from './env.js';
 import { logger } from './logger.js';
 import { prisma } from './db.js';
+import { startScheduler, stopScheduler } from './scheduler.js';
 
 async function main() {
   // Verify DB connectivity at boot — fail fast.
@@ -18,8 +19,13 @@ async function main() {
     logger.info(`🚀 ZU Platform API listening on http://0.0.0.0:${env.PORT} (${env.NODE_ENV})`);
   });
 
+  // Start the daily university-data sync ticker
+  startScheduler();
+  logger.info('🗓️  Scheduler started (daily sync)');
+
   const shutdown = async (signal: string) => {
     logger.info({ signal }, 'Shutting down…');
+    stopScheduler();
     server.close(async () => {
       await prisma.$disconnect();
       process.exit(0);

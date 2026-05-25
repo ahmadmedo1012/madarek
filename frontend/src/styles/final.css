@@ -287,3 +287,116 @@ html, body, .card, .btn, .input, .nav-item, .topbar, .sidebar,
     max-height: calc(100vh - 80px);
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Admin sync page rows
+   ═══════════════════════════════════════════════════════════════ */
+.run-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-radius: 10px;
+}
+.run-row-status {
+  flex-shrink: 0;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-1);
+  overflow: hidden;
+}
+.category-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  text-align: start;
+  color: var(--text);
+  transition: background var(--t-fast) var(--ease-expo);
+}
+.category-row-head:hover { background: var(--surface-2); }
+.category-row-body {
+  padding: 8px 16px 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fact-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 140px auto;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.fact-row:last-child { border-bottom: 0; }
+.fact-key {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-subtle);
+  background: var(--surface-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fact-value { color: var(--text); }
+.fact-source {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-subtle);
+}
+@media (max-width: 720px) {
+  .fact-row { grid-template-columns: 1fr; gap: 4px; }
+  .fact-source { justify-self: start; }
+}
+
+/* Spinning icon (used by sync trigger button) */
+.spin { animation: spin 1.4s linear infinite; }
+@keyframes spin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+
+
+/* ─── Topbar scope badge (student faculty) ──────── */
+.topbar-title { display: inline-flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+.topbar-scope {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 720px) {
+  .topbar-scope { display: none; }
+}

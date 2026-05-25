@@ -92,7 +92,20 @@ export const registerUser = async (input: RegisterInput) => {
 };
 
 export const loginUser = async (email: string, password: string) => {
-  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+  // Identifier may be an email OR a university registration number.
+  // We discriminate by '@' presence — emails always contain it, reg-numbers don't.
+  const identifier = email.trim();
+  let user;
+  if (identifier.includes('@')) {
+    user = await prisma.user.findUnique({ where: { email: identifier.toLowerCase() } });
+  } else {
+    // Reg-number path: look up StudentProfile.universityId, return its parent User.
+    const profile = await prisma.studentProfile.findUnique({
+      where: { universityId: identifier },
+      include: { user: true },
+    });
+    user = profile?.user ?? null;
+  }
   if (!user) throw AppError.invalidCredentials();
 
   if (user.lockedUntil && user.lockedUntil > new Date()) {

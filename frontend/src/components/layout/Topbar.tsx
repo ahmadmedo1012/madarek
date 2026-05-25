@@ -8,7 +8,7 @@ import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout } from '../../hooks/useAuth';
-import { useUnreadNotifications } from '../../hooks/useResources';
+import { useUnreadNotifications, useMyProfile } from '../../hooks/useResources';
 
 interface TopbarProps {
   title: ReactNode;
@@ -28,6 +28,10 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   const logoutM = useLogout();
   const unreadQ = useUnreadNotifications();
   const unread = unreadQ.data ?? 0;
+  // PRD: student should see their college as a quick scope indicator.
+  // Only fetched for students — useMyProfile is no-op for other roles.
+  const profileQ = useMyProfile();
+  const studentFacultyName = role === 'STUDENT' ? profileQ.data?.student?.faculty?.name ?? null : null;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +71,14 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
         <Icon icon={Menu} size={18} />
       </button>
 
-      <div className="topbar-title">{title}</div>
+      <div className="topbar-title">
+        {title}
+        {studentFacultyName && (
+          <span className="topbar-scope" title={`الكلية: ${studentFacultyName}`}>
+            {studentFacultyName}
+          </span>
+        )}
+      </div>
 
       <GlobalSearch />
 

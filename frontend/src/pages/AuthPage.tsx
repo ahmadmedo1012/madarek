@@ -19,7 +19,14 @@ import type { AppRole } from '../stores/auth.store';
 type Tab = 'login' | 'register';
 
 const loginSchema = z.object({
-  email: z.string().email('بريد إلكتروني غير صالح'),
+  email: z
+    .string()
+    .min(3, 'الحقل قصير جداً')
+    .max(120, 'الحقل طويل جداً')
+    .refine(
+      (v) => v.includes('@') ? z.string().email().safeParse(v).success : true,
+      { message: 'بريد إلكتروني غير صالح' },
+    ),
   password: z.string().min(1, 'مطلوب'),
 });
 
@@ -177,14 +184,14 @@ export default function AuthPage() {
               )}
 
               <div className="auth-field">
-                <label htmlFor="login-email">البريد الإلكتروني</label>
+                <label htmlFor="login-email">البريد الإلكتروني أو رقم القيد</label>
                 <div className="auth-input-wrap">
                   <input
                     id="login-email"
-                    type="email"
+                    type="text"
                     className="auth-input has-icon"
-                    placeholder="example@zu.edu.ly"
-                    autoComplete="email"
+                    placeholder="example@zu.edu.ly أو UZ-2024-XXXXX"
+                    autoComplete="username"
                     {...loginForm.register('email')}
                   />
                   <span className="auth-input-icon"><Icon icon={Mail} size={14} /></span>

@@ -1469,3 +1469,53 @@ model EventRSVP {
   @@id([eventId, userId])
   @@index([userId])
 }
+
+
+// ════════════════════════════════════════════════════════════════
+//  University data synchronization (PRD: daily sync from zu.edu.ly)
+// ════════════════════════════════════════════════════════════════
+//  UniversityFact   key/value store of public institutional facts
+//                   (vision, mission, contact, grade scale, etc.)
+//  SyncRun          audit log of every sync attempt
+// ────────────────────────────────────────────────────────────────
+
+enum SyncRunStatus {
+  RUNNING
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+model UniversityFact {
+  /// Stable key — e.g. "name", "foundingYear", "phone.primary",
+  /// "address", "vision", "mission", "grade.scale.excellent".
+  key       String   @id
+  /// Localized display value (Arabic by default; English-tagged keys for English).
+  value     String   @db.Text
+  /// Group: general | identity | contact | strategic | grading | colleges | calendar | other
+  category  String   @default("general")
+  /// Where the value came from: "zu.edu.ly:about" | "zu.edu.ly:faculty" | "manual"
+  source    String   @default("zu.edu.ly")
+  syncedAt  DateTime @default(now())
+  /// Marked stale if a sync run could not refresh it.
+  isStale   Boolean  @default(false)
+
+  @@index([category])
+}
+
+model SyncRun {
+  id           String        @id @default(cuid())
+  startedAt    DateTime      @default(now())
+  completedAt  DateTime?
+  status       SyncRunStatus @default(RUNNING)
+  source       String        @default("static-markdown")
+  factsAdded   Int           @default(0)
+  factsUpdated Int           @default(0)
+  errorMsg     String?       @db.Text
+  durationMs   Int?
+  /// Free-form notes / fields the run could not resolve.
+  notes        String?       @db.Text
+
+  @@index([startedAt])
+  @@index([status])
+}

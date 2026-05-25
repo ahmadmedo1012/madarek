@@ -64,6 +64,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/community': 'المجتمع الجامعي',
   '/teacher/community': 'المجتمع الجامعي',
   '/admin/community': 'المجتمع الجامعي',
+  '/admin/sync': 'مزامنة الجامعة',
   '/quality/community': 'المجتمع الجامعي',
   '/teacher/intelligence': 'الذكاء الأكاديمي',
   '/student/online-exams': 'الاختبارات الإلكترونية',
