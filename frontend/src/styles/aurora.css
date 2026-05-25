@@ -1,0 +1,437 @@
+/* ═══════════════════════════════════════════════════════════════
+   Aurora — "Futuristic Academic Dark"
+   ───────────────────────────────────────────────────────────────
+   Applied ONLY in dark mode (`[data-theme='dark']`).
+   Light mode keeps PRD v2 (warm-gray + royal-blue) unchanged.
+
+   This layer adds:
+     - Deep space-navy palette (#0A0E1A → #0F1629)
+     - Gold + blue + teal + purple accent system
+     - Animated aurora-mesh background (CSS-only)
+     - Glassmorphism cards
+     - Gradient gold text on display headings
+     - Glowing nav active state
+     - AI orbiting-ring badge
+     - Stagger entrance via animation-delay
+     - Reduced-motion safe (all animations disabled)
+
+   Performance: transforms + opacity only. No width/height/top/left
+   animations. backdrop-filter only on overlay surfaces.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Tokens (dark mode override) ────────────────────── */
+[data-theme='dark'] {
+  /* Surfaces — deep space navy with subtle indigo undertone */
+  --bg:        #0A0E1A;
+  --surface-1: #0F1629;
+  --surface-2: #131C36;
+  --surface-3: #1B2547;
+
+  /* Glass surface (used for floating panels/dropdowns) */
+  --color-bg-glass: rgba(255, 255, 255, 0.05);
+
+  /* Accent system — gold primary for CTAs, blue for interactivity,
+     teal for success/progress, purple for AI/smart */
+  --accent:        #F5B845;   /* gold — was #3b82f6 blue in PRD v2 dark */
+  --accent-hover:  #E5A427;
+  --accent-soft:   rgba(245, 184, 69, 0.14);
+  --accent-border: rgba(245, 184, 69, 0.45);
+  --accent-fg:     #0A0E1A;   /* dark text on gold */
+
+  --color-accent-blue:   #4A9EFF;
+  --color-accent-teal:   #00D4B4;
+  --color-accent-purple: #8B5CF6;
+
+  --color-glow-gold: rgba(245, 184, 69, 0.20);
+  --color-glow-blue: rgba(74, 158, 255, 0.18);
+  --color-glow-purple: rgba(139, 92, 246, 0.20);
+
+  /* Text — slight blue undertone for premium feel */
+  --text:         #F0F4FF;
+  --text-muted:   #8892AA;
+  --text-subtle:  #5C6680;
+
+  --border:        rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  --selection-bg: rgba(245, 184, 69, 0.25);
+}
+
+/* ─── Body in dark mode: aurora animated mesh ────────── */
+[data-theme='dark'] body {
+  font-family: 'Tajawal', 'Noto Sans Arabic', 'Cairo', system-ui, sans-serif;
+  background: var(--bg);
+  /* Aurora layers — radial-gradients positioned offscreen, slowly drifting */
+  background-image:
+    radial-gradient(60% 50% at 20% 10%, rgba(74, 158, 255, 0.10) 0%, transparent 60%),
+    radial-gradient(50% 40% at 80% 0%,  rgba(139, 92, 246, 0.10) 0%, transparent 55%),
+    radial-gradient(70% 60% at 50% 100%, rgba(0, 212, 180, 0.06) 0%, transparent 60%);
+  background-attachment: fixed;
+  background-size: 200% 200%, 200% 200%, 200% 200%;
+  background-position: 0 0, 100% 0, 50% 100%;
+  animation: aurora-drift 30s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0%   { background-position: 0 0,         100% 0,         50% 100%; }
+  50%  { background-position: 30% 20%,     70% 30%,        40% 70%; }
+  100% { background-position: 60% 40%,     40% 60%,        60% 60%; }
+}
+
+/* Subtle noise texture overlay — pure SVG, ~6% opacity */
+[data-theme='dark'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+}
+
+/* Make sure content sits above the texture overlay */
+[data-theme='dark'] #root,
+[data-theme='dark'] .auth-overlay {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Glassmorphism cards (dark mode only) ───────────── */
+[data-theme='dark'] .card {
+  background: rgba(15, 22, 41, 0.70);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+[data-theme='dark'] a > .card,
+[data-theme='dark'] .track-card {
+  transition:
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-theme='dark'] a > .card:hover,
+[data-theme='dark'] .track-card:hover {
+  border-color: rgba(245, 184, 69, 0.35);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(245, 184, 69, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Topbar — frosted glass over the aurora */
+[data-theme='dark'] .topbar {
+  background: rgba(10, 14, 26, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Sidebar — same glass treatment, inline-end border */
+[data-theme='dark'] .sidebar {
+  background: rgba(10, 14, 26, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Buttons — gold primary with glow ───────────────── */
+[data-theme='dark'] .btn.primary {
+  background: linear-gradient(135deg, #F5B845 0%, #E5A427 100%);
+  border-color: transparent;
+  color: #0A0E1A;
+  font-weight: 700;
+  box-shadow:
+    0 4px 14px rgba(245, 184, 69, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+[data-theme='dark'] .btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #FFD166 0%, #F5B845 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 20px rgba(245, 184, 69, 0.40),
+    0 0 0 1px rgba(245, 184, 69, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+}
+[data-theme='dark'] .btn.ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+[data-theme='dark'] .btn.ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ─── Sidebar nav — glowing gold active state ─────── */
+[data-theme='dark'] .nav-item:hover:not(.on) {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+[data-theme='dark'] .nav-item.on {
+  background: linear-gradient(90deg, rgba(245, 184, 69, 0.16), rgba(245, 184, 69, 0.04));
+  color: #F5B845;
+  font-weight: 700;
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 184, 69, 0.18),
+    0 0 18px rgba(245, 184, 69, 0.10);
+}
+[data-theme='dark'] .nav-item.on::before {
+  background: linear-gradient(180deg, #F5B845, #E5A427);
+  box-shadow: 0 0 10px rgba(245, 184, 69, 0.55);
+}
+[data-theme='dark'] .nav-item.on .nav-icon { color: #F5B845; }
+
+/* ─── Topbar AI button — purple glow ─────────────────── */
+[data-theme='dark'] .topbar-actions .btn.primary {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  color: #fff;
+  box-shadow:
+    0 4px 14px rgba(139, 92, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+[data-theme='dark'] .topbar-actions .btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 100%);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.40);
+}
+
+/* ─── Display headings — gradient gold text ─────── */
+[data-theme='dark'] .page-title,
+[data-theme='dark'] .auth-brand-hero,
+[data-theme='dark'] .landing-title,
+[data-theme='dark'] .track-hero-title,
+[data-theme='dark'] .this-week-title {
+  background: linear-gradient(135deg, #F5B845 0%, #FFD166 50%, #FF8C42 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Page subtitles stay readable plain text */
+[data-theme='dark'] .page-subtitle {
+  color: var(--text-muted);
+  -webkit-text-fill-color: var(--text-muted);
+}
+
+/* ─── Numbers / KPIs — gold gradient too ─────────── */
+[data-theme='dark'] .metric-value,
+[data-theme='dark'] .kpi-value,
+[data-theme='dark'] .gpa-hero-value,
+[data-theme='dark'] .landing-stat-value {
+  background: linear-gradient(180deg, #FFD166 0%, #F5B845 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Badges in dark — colored glows ─────────────── */
+[data-theme='dark'] .badge.brand,
+[data-theme='dark'] .badge.purple {
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.25);
+}
+[data-theme='dark'] .badge.gold {
+  background: rgba(245, 184, 69, 0.14);
+  color: #F5B845;
+  box-shadow: 0 0 12px rgba(245, 184, 69, 0.20);
+}
+
+/* ─── Inputs — frosted with cyan focus glow ───── */
+[data-theme='dark'] .input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: var(--text);
+}
+[data-theme='dark'] .input:focus {
+  border-color: #4A9EFF;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.18);
+}
+
+/* ─── Search dropdown — frosted glass ────────────── */
+[data-theme='dark'] .search-dropdown,
+[data-theme='dark'] .topbar-user-menu {
+  background: rgba(15, 22, 41, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+}
+
+/* ─── Auth overlay — aurora-tinted backdrop ─────── */
+[data-theme='dark'] .auth-overlay {
+  background:
+    radial-gradient(60% 40% at 20% 10%, rgba(74, 158, 255, 0.14), transparent 60%),
+    radial-gradient(50% 40% at 80% 90%, rgba(139, 92, 246, 0.14), transparent 60%),
+    var(--bg);
+}
+[data-theme='dark'] .auth-card {
+  background: rgba(15, 22, 41, 0.80);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.50),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Page enter — staggered cascade for top-level cards ───
+   Pure CSS; uses inline --i index OR cascades by :nth-child if not provided */
+[data-theme='dark'] .page > .card,
+[data-theme='dark'] .page > .grid-2,
+[data-theme='dark'] .page > .grid-3,
+[data-theme='dark'] .page > .grid-4,
+[data-theme='dark'] .page > .grid-2-1,
+[data-theme='dark'] .page > .track-grid,
+[data-theme='dark'] .page > .kpi-strip,
+[data-theme='dark'] .page > section {
+  animation: card-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+[data-theme='dark'] .page > *:nth-child(1) { animation-delay:   0ms; }
+[data-theme='dark'] .page > *:nth-child(2) { animation-delay:  60ms; }
+[data-theme='dark'] .page > *:nth-child(3) { animation-delay: 120ms; }
+[data-theme='dark'] .page > *:nth-child(4) { animation-delay: 180ms; }
+[data-theme='dark'] .page > *:nth-child(5) { animation-delay: 240ms; }
+[data-theme='dark'] .page > *:nth-child(6) { animation-delay: 300ms; }
+[data-theme='dark'] .page > *:nth-child(7) { animation-delay: 360ms; }
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Inside-grid cascade: each grid item enters after its neighbors */
+[data-theme='dark'] .grid-2 > *,
+[data-theme='dark'] .grid-3 > *,
+[data-theme='dark'] .grid-4 > *,
+[data-theme='dark'] .track-grid > *,
+[data-theme='dark'] .kpi-strip > * {
+  animation: card-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+[data-theme='dark'] .grid-2 > *:nth-child(1),
+[data-theme='dark'] .grid-3 > *:nth-child(1),
+[data-theme='dark'] .grid-4 > *:nth-child(1),
+[data-theme='dark'] .track-grid > *:nth-child(1),
+[data-theme='dark'] .kpi-strip > *:nth-child(1) { animation-delay:   0ms; }
+[data-theme='dark'] .grid-2 > *:nth-child(2),
+[data-theme='dark'] .grid-3 > *:nth-child(2),
+[data-theme='dark'] .grid-4 > *:nth-child(2),
+[data-theme='dark'] .track-grid > *:nth-child(2),
+[data-theme='dark'] .kpi-strip > *:nth-child(2) { animation-delay:  80ms; }
+[data-theme='dark'] .grid-2 > *:nth-child(3),
+[data-theme='dark'] .grid-3 > *:nth-child(3),
+[data-theme='dark'] .grid-4 > *:nth-child(3),
+[data-theme='dark'] .track-grid > *:nth-child(3),
+[data-theme='dark'] .kpi-strip > *:nth-child(3) { animation-delay: 160ms; }
+[data-theme='dark'] .grid-2 > *:nth-child(4),
+[data-theme='dark'] .grid-3 > *:nth-child(4),
+[data-theme='dark'] .grid-4 > *:nth-child(4),
+[data-theme='dark'] .track-grid > *:nth-child(4),
+[data-theme='dark'] .kpi-strip > *:nth-child(4) { animation-delay: 240ms; }
+
+/* ─── AI orbiting ring (for AI-flagged elements) ──── */
+[data-theme='dark'] .ai-orbit {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme='dark'] .ai-orbit::before,
+[data-theme='dark'] .ai-orbit::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: var(--color-accent-purple);
+  animation: ai-spin 4s linear infinite;
+}
+[data-theme='dark'] .ai-orbit::after {
+  inset: -8px;
+  border-top-color: rgba(139, 92, 246, 0.40);
+  animation-direction: reverse;
+  animation-duration: 6s;
+}
+@keyframes ai-spin { to { transform: rotate(360deg); } }
+
+/* ─── AI-content card mark ──────────────────────── */
+[data-theme='dark'] .ai-generated {
+  border-inline-start: 3px solid var(--color-accent-purple);
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.06) 0%,
+    transparent 30%
+  );
+}
+
+/* ─── Progress bars — flowing shimmer ──────────────── */
+[data-theme='dark'] .gpa-hero-bar-fill,
+[data-theme='dark'] .progress > div {
+  background: linear-gradient(90deg, #F5B845 0%, #FFD166 50%, #F5B845 100%);
+  background-size: 200% 100%;
+  animation: shimmer-flow 2.4s linear infinite;
+}
+@keyframes shimmer-flow {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ─── AI tag (used in landing brand) ─── */
+[data-theme='dark'] .ai-tag {
+  background: linear-gradient(135deg, #F5B845, #8B5CF6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ─── Notification bell pulse ─── */
+[data-theme='dark'] .topbar-notif-badge {
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: notif-pulse 2.4s ease-in-out infinite;
+}
+@keyframes notif-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  50%      { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+}
+
+/* ─── Reduced-motion: kill ALL the new motion ─────── */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='dark'] body { animation: none !important; }
+  [data-theme='dark'] .page > *,
+  [data-theme='dark'] .grid-2 > *,
+  [data-theme='dark'] .grid-3 > *,
+  [data-theme='dark'] .grid-4 > *,
+  [data-theme='dark'] .track-grid > *,
+  [data-theme='dark'] .kpi-strip > * {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  [data-theme='dark'] .ai-orbit::before,
+  [data-theme='dark'] .ai-orbit::after { animation: none !important; }
+  [data-theme='dark'] .gpa-hero-bar-fill,
+  [data-theme='dark'] .progress > div {
+    animation: none !important;
+    background: #F5B845;
+  }
+  [data-theme='dark'] .topbar-notif-badge { animation: none !important; }
+}
+
+/* ─── Mobile: reduce backdrop-filter heaviness ─── */
+@media (max-width: 720px) {
+  [data-theme='dark'] .card {
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+  }
+  [data-theme='dark'] .topbar,
+  [data-theme='dark'] .sidebar {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}

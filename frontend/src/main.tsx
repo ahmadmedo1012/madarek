@@ -12,6 +12,7 @@ import './styles/evolution.css';
 import './styles/stitch-tokens.css';
 import './styles/final.css';
 import './styles/prd-v2.css';
+import './styles/aurora.css';
 
 import App from './App';
 
