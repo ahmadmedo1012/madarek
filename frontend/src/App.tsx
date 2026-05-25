@@ -28,6 +28,9 @@ import PaymentPage from './pages/student/PaymentPage';
 import CampusMapPage from './pages/student/CampusMapPage';
 import TrainingCatalogPage, { TrainingTrackPage, TrainingLessonPage, AchievementsPage } from './pages/student/TrainingPages';
 import TeacherIntelligencePage, { TeacherOfferingDetailPage } from './pages/teacher/TeacherIntelligencePage';
+import TeacherProfilePage from './pages/teacher/TeacherProfilePage';
+import TeacherLivePage from './pages/teacher/TeacherLivePage';
+import TeacherLabsPage from './pages/teacher/TeacherLabsPage';
 import OnlineExamsPage, { ExamTakerPage, ExamModerationPage } from './pages/exams/OnlineExamsPages';
 import CommunityPage from './pages/community/CommunityPages';
 import { AdminTeachersPage, AdminPermissionsPage } from './pages/admin/AdminGovernancePages';
@@ -126,6 +129,10 @@ export default function App() {
               {/* Academic Intelligence */}
               <Route path="/teacher/intelligence" element={<TeacherIntelligencePage />} />
               <Route path="/teacher/intelligence/:offeringId" element={<TeacherOfferingDetailPage />} />
+              {/* Teacher profile + role-aware live + labs */}
+              <Route path="/teacher/profile" element={<TeacherProfilePage />} />
+              <Route path="/teacher/live" element={<TeacherLivePage />} />
+              <Route path="/teacher/labs" element={<TeacherLabsPage />} />
               {/* Community shared */}
               <Route path="/teacher/community" element={<CommunityPage />} />
             </Route>

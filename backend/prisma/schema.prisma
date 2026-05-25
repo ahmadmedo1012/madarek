@@ -279,6 +279,7 @@ model User {
   authoredExams     ExamTemplate[]     @relation("ExamAuthor")
   moderatedExams    ExamTemplate[]     @relation("ExamModerator")
   examAttempts      ExamAttempt[]
+  liveSessions      LiveSession[]      @relation("LiveSessionTeacher")
   // Social
   announcements     Announcement[]
   competitionsRun   Competition[]      @relation("CompetitionOrganizer")
@@ -321,6 +322,12 @@ model TeacherProfile {
   degreeLevel      DegreeLevel  @default(MASTERS)
   yearsExperience  Int          @default(0)
   certifications   Json?        // [{ title, issuer, year }]
+  publications     Json?        // [{ title, venue, year, url? }]
+  awards           Json?        // [{ title, year, issuer? }]
+  profileImageUrl  String?
+  officeLocation   String?      // e.g. "مبنى الكلية - مكتب 305"
+  officeHours      String?      // e.g. "الأحد والثلاثاء 10-12"
+  websiteUrl       String?
   subjectKeywords  String[]     @default([]) // ["AI", "Machine Learning", "Statistics"]
   verifiedAt       DateTime?
   verifiedById     String?
@@ -402,6 +409,7 @@ model CourseOffering {
   lectures       Lecture[]
   researchPapers ResearchPaper[]
   examTemplates  ExamTemplate[]
+  liveSessions   LiveSession[]
 
   @@unique([courseId, term, teacherId])
   @@index([teacherId])
@@ -1518,4 +1526,45 @@ model SyncRun {
 
   @@index([startedAt])
   @@index([status])
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  Live streaming sessions (PRD: teacher controls, students watch)
+// ════════════════════════════════════════════════════════════════
+//  A LiveSession is created by a teacher tied to one of their offerings.
+//  Students enrolled in that offering see the session in their watch
+//  list. The teacher controls lifecycle: SCHEDULED → LIVE → ENDED.
+// ────────────────────────────────────────────────────────────────
+
+enum LiveSessionStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+  CANCELLED
+}
+
+model LiveSession {
+  id            String             @id @default(cuid())
+  offeringId    String
+  offering      CourseOffering     @relation(fields: [offeringId], references: [id])
+  teacherId     String
+  teacher       User               @relation("LiveSessionTeacher", fields: [teacherId], references: [id])
+  title         String
+  description   String?            @db.Text
+  topic         String?            // optional sub-topic (e.g. "OOP — Polymorphism")
+  scheduledAt   DateTime
+  startedAt     DateTime?
+  endedAt       DateTime?
+  status        LiveSessionStatus  @default(SCHEDULED)
+  // Provider URL — could be Zoom, BigBlueButton, Jitsi link, etc.
+  joinUrl       String?
+  // Recording reference (post-session)
+  recordingUrl  String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([offeringId])
+  @@index([teacherId])
+  @@index([status, scheduledAt])
 }

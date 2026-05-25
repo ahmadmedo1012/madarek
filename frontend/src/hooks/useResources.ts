@@ -1216,3 +1216,120 @@ export function useTeacherSuggestions(teacherId: string | undefined) {
     queryFn: () => unwrap<TeacherSuggestionResponse>(api.get(`/admin/teachers/${teacherId}/suggestions`)),
   });
 }
+
+
+// ── Teacher profile + live sessions ──────────────────────────
+export interface TeacherFullProfile {
+  userId: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarColor: string | null;
+  avatarInitials: string | null;
+  specialty: string;
+  rank: string;
+  bio: string | null;
+  degreeLevel: 'BACHELORS' | 'MASTERS' | 'PHD';
+  yearsExperience: number;
+  certifications: Array<{ title: string; issuer: string; year: number }>;
+  publications: Array<{ title: string; venue?: string; year: number; url?: string }>;
+  awards: Array<{ title: string; year: number; issuer?: string }>;
+  profileImageUrl: string | null;
+  officeLocation: string | null;
+  officeHours: string | null;
+  websiteUrl: string | null;
+  subjectKeywords: string[];
+  verifiedAt: string | null;
+  department: string;
+  faculty: string;
+  courses: Array<{
+    offeringId: string;
+    code: string;
+    name: string;
+    iconEmoji: string | null;
+    themeColor: string | null;
+    credits: number;
+    enrolled: number;
+    term: string;
+  }>;
+  workload: {
+    courseCount: number;
+    totalCredits: number;
+    totalEnrolled: number;
+  };
+}
+export function useMyTeacherProfile() {
+  return useQuery({
+    queryKey: ['me', 'teacher-profile'],
+    queryFn: () => unwrap<TeacherFullProfile>(api.get('/me/teacher-profile')),
+  });
+}
+
+export interface UpdateTeacherProfilePayload {
+  bio?: string | null;
+  officeLocation?: string | null;
+  officeHours?: string | null;
+  websiteUrl?: string | null;
+  publications?: Array<{ title: string; venue?: string; year: number; url?: string }>;
+  awards?: Array<{ title: string; year: number; issuer?: string }>;
+}
+export function useUpdateTeacherProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: UpdateTeacherProfilePayload) =>
+      unwrap<{ userId: string; updatedAt: string }>(api.patch('/me/teacher-profile', body)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['me', 'teacher-profile'] }),
+  });
+}
+
+export interface LiveSessionRow {
+  id: string;
+  offeringId: string;
+  teacherId: string;
+  title: string;
+  description: string | null;
+  topic: string | null;
+  scheduledAt: string;
+  startedAt: string | null;
+  endedAt: string | null;
+  status: 'SCHEDULED' | 'LIVE' | 'ENDED' | 'CANCELLED';
+  joinUrl: string | null;
+  recordingUrl: string | null;
+  offering: {
+    id: string;
+    course: { name: string; code: string; iconEmoji: string | null; themeColor: string | null };
+  };
+  teacher: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
+}
+export function useLiveSessions() {
+  return useQuery({
+    queryKey: ['live', 'sessions'],
+    queryFn: () => unwrap<LiveSessionRow[]>(api.get('/live/sessions')),
+    refetchInterval: 30_000,
+  });
+}
+
+export function useCreateLiveSession() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      offeringId: string;
+      title: string;
+      description?: string;
+      topic?: string;
+      scheduledAt: string;
+      joinUrl?: string;
+    }) => unwrap<LiveSessionRow>(api.post('/live/sessions', body)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['live', 'sessions'] }),
+  });
+}
+
+export function useLifecycleLiveSession() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, action }: { id: string; action: 'START' | 'END' | 'CANCEL' }) =>
+      unwrap<LiveSessionRow>(api.post(`/live/sessions/${id}/lifecycle`, { action })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['live', 'sessions'] }),
+  });
+}

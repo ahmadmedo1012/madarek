@@ -67,6 +67,9 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/sync': 'مزامنة الجامعة',
   '/quality/community': 'المجتمع الجامعي',
   '/teacher/intelligence': 'الذكاء الأكاديمي',
+  '/teacher/profile': 'الملف الأكاديمي',
+  '/teacher/live': 'إدارة البث المباشر',
+  '/teacher/labs': 'المعامل الافتراضية',
   '/student/online-exams': 'الاختبارات الإلكترونية',
   '/quality/exam-moderation': 'مراجعة الاختبارات',
 };

@@ -400,3 +400,93 @@ html, body, .card, .btn, .input, .nav-item, .topbar, .sidebar,
 @media (max-width: 720px) {
   .topbar-scope { display: none; }
 }
+
+
+/* ─── Teacher profile — header + meta + supporting rows ─── */
+.teacher-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.teacher-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  margin: 0 0 6px 0;
+  color: var(--text);
+}
+.teacher-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: rgba(14, 92, 47, 0.10);
+  color: #0E5C2F;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+[data-theme='dark'] .teacher-verified {
+  background: rgba(74, 222, 128, 0.16);
+  color: #4ADE80;
+}
+.teacher-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.teacher-contact {
+  color: var(--text-subtle);
+}
+
+/* ─── Key/value rows (used in profile + admin) ──────── */
+.kv-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* ─── Publication row ──────────────────────────────── */
+.publication-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-radius: 10px;
+}
+
+/* ─── Form grid + labels (used in TeacherLivePage) ──── */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .form-grid-2 { grid-template-columns: 1fr; }
+}
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0;
+}
+
+/* ─── Live session row spacing on mobile ──────────── */
+@media (max-width: 720px) {
+  .run-row { flex-wrap: wrap; }
+  .run-row > div:last-child { width: 100%; }
+}

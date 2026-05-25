@@ -1,155 +1,150 @@
-import { useEffect, useRef, useState } from 'react';
-import { Radio, Eye, Send, Calendar, Bell } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
+/**
+ * Student-facing live sessions list.
+ *
+ * Path: /student/live
+ * Restricted: STUDENT (route-level).
+ *
+ * Watch-only by design — students cannot create, schedule, or end
+ * sessions. They see only sessions for offerings they are enrolled
+ * in, and can join the teacher-provided URL.
+ */
+import { useMemo } from 'react';
+import { Radio, Calendar, CheckCircle2, AlertCircle, ExternalLink, Clock } from 'lucide-react';
+import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
-
-const SIMULATED_MSGS: Array<{ author: string; body: string; initials: string }> = [
-  { author: 'مريم الفاخري', initials: 'مف', body: 'هل سيتم تغطية موضوع الـ Singleton اليوم؟' },
-  { author: 'يوسف البركي', initials: 'يب', body: 'أستاذ، الصوت غير واضح من فضلك' },
-  { author: 'سارة المحجوب', initials: 'سم', body: 'شكراً، الصوت أوضح الآن 👍' },
-  { author: 'خالد المزوغي', initials: 'خم', body: 'هل سترفع الشرائح بعد المحاضرة؟' },
-  { author: 'نور الأمين', initials: 'نأ', body: 'سؤال: ما الفرق بين Factory و Abstract Factory؟' },
-  { author: 'عمر الزبيدي', initials: 'عز', body: 'محاضرة ممتازة 🙏' },
-  { author: 'أسماء البوسيفي', initials: 'أب', body: 'هل من ملاحظات على الواجب الأخير؟' },
-  { author: 'رانيا المقرحي', initials: 'رم', body: 'هل سنحلّ مسائل تطبيقية؟' },
-];
+import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
 export default function LivePage() {
-  const [chat, setChat] = useState<Array<{ author: string; body: string; initials: string }>>([]);
-  const [viewers, setViewers] = useState(127);
-  const [input, setInput] = useState('');
-  const scroller = useRef<HTMLDivElement>(null);
+  const { data: sessions, isLoading } = useLiveSessions();
 
-  // Stream simulated chat messages over time.
-  useEffect(() => {
-    let i = 0;
-    const id = setInterval(() => {
-      setChat((c) => [...c, SIMULATED_MSGS[i % SIMULATED_MSGS.length]!]);
-      i += 1;
-      // Slight viewer drift.
-      setViewers((v) => v + Math.floor(Math.random() * 5) - 2);
-    }, 3500);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
-  }, [chat]);
-
-  const sendMyMessage = () => {
-    if (!input.trim()) return;
-    setChat((c) => [...c, { author: 'أنا', body: input.trim(), initials: 'أنا' }]);
-    setInput('');
-  };
+  const live = useMemo(() => sessions?.filter((s) => s.status === 'LIVE') ?? [], [sessions]);
+  const upcoming = useMemo(() => sessions?.filter((s) => s.status === 'SCHEDULED') ?? [], [sessions]);
+  const recent = useMemo(
+    () => sessions?.filter((s) => s.status === 'ENDED').slice(0, 8) ?? [],
+    [sessions],
+  );
 
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">البث المباشر</h1>
-          <p className="page-subtitle">محاضرات حيّة ومناقشات مع الأساتذة في الوقت الفعلي.</p>
+          <h1 className="page-title">المحاضرات المباشرة</h1>
+          <p className="page-subtitle">
+            ينظِّم الأساتذة محاضرات حية لمقرراتك. ستجد هنا الجلسات النشطة والقادمة فقط لمقرراتك المسجَّلة.
+          </p>
         </div>
-        <Badge color="red">على الهواء الآن</Badge>
+        {live.length > 0 ? (
+          <Badge color="red"><Icon icon={Radio} size={11} /> على الهواء الآن</Badge>
+        ) : (
+          <Badge>لا توجد جلسات نشطة</Badge>
+        )}
       </div>
 
       <div className="grid-3">
-        <MetricCard icon={Radio} label="بث نشط الآن" value="2" change="من 4 محاضرات" color="red" />
-        <MetricCard icon={Eye} label="مشاهد متزامن" value={viewers.toString()} color="brand" />
-        <MetricCard icon={Calendar} label="مجدولة هذا الأسبوع" value="12" color="purple" />
+        <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />
+        <MetricCard icon={Calendar} label="جلسات قادمة" value={upcoming.length.toString()} color="amber" />
+        <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
       </div>
 
-      <div className="live-shell">
-        <div>
-          <div className="live-frame">
-            <video
-              src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-            <div className="live-pulse">
-              <span className="live-pulse-dot" />
-              مباشر
-            </div>
-            <div className="live-viewers">
-              <Icon icon={Eye} size={11} /> {viewers.toLocaleString('ar-LY')}
-            </div>
-          </div>
+      {isLoading && <Card>جارٍ التحميل…</Card>}
 
-          <div className="lecture-meta">
-            <div>
-              <div className="flex items-center gap-2" style={{ marginBottom: 4 }}>
-                <Badge>SE301</Badge>
-                <span className="text-xs text-subtle">حصة مباشرة</span>
-              </div>
-              <div className="lecture-meta-title">حلقة نقاش: نماذج التصميم في تطبيقات الويب</div>
-              <div className="lecture-meta-sub">
-                د. سالم البوسيفي · هندسة البرمجيات · بدأت قبل 18 دقيقة
-              </div>
-            </div>
-            <button type="button" className="btn outline">
-              <Icon icon={Bell} size={13} />
-              تذكير قبل البدء
-            </button>
-          </div>
-        </div>
-
-        <Card title="الدردشة المباشرة" subtitle={`${viewers} مشارك`}>
-          <div className="live-chat">
-            <div className="live-chat-list" ref={scroller}>
-              {chat.length === 0 && (
-                <div className="text-xs text-subtle">سيظهر الدردشة هنا فور بدء المشاركة…</div>
-              )}
-              {chat.map((m, i) => (
-                <div key={i} className="live-chat-msg flex items-start gap-2">
-                  <UserAvatar
-                    initials={m.initials}
-                    size={22}
-                    color={m.author === 'أنا' ? 'var(--accent)' : 'var(--surface-3)'}
-                  />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <span className="author">{m.author}:</span>
-                    <span className="body"> {m.body}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="chat-input-row" style={{ marginTop: 0, paddingTop: 'var(--sp-3)' }}>
-              <input
-                className="chat-input"
-                placeholder="شارك في النقاش…"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') sendMyMessage(); }}
-              />
-              <button type="button" className="chat-send" onClick={sendMyMessage} aria-label="إرسال">
-                <Icon icon={Send} size={14} />
-              </button>
-            </div>
+      {/* Live now */}
+      {live.length > 0 && (
+        <Card title="مباشرة الآن" icon={Radio} subtitle="انضمّ إلى أيّ جلسة بنقرة واحدة">
+          <div className="flex-col gap-2">
+            {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
           </div>
         </Card>
-      </div>
+      )}
 
-      <Card title="بثوث قادمة" icon={Calendar}>
-        <div className="flex-col gap-2">
-          {[
-            { c: 'CS302', t: 'حلقة نقاش: تحسين أداء قواعد البيانات', d: 'الأحد 10:00 ص', who: 'د. فاطمة العجيلي' },
-            { c: 'NET301', t: 'ندوة: مستقبل الشبكات اللاسلكية', d: 'الاثنين 13:00', who: 'د. سالم الشريف' },
-            { c: 'IS301', t: 'محاضرة مسجلة + جلسة أسئلة', d: 'الثلاثاء 11:00', who: 'د. محمد الطاهر' },
-          ].map((s, i) => (
-            <div key={i} className="list-row">
-              <Badge>{s.c}</Badge>
-              <div className="list-row-body">
-                <div className="list-row-title">{s.t}</div>
-                <div className="list-row-sub">{s.who}</div>
-              </div>
-              <span className="list-row-meta">{s.d}</span>
-              <button type="button" className="btn outline sm">تذكير</button>
-            </div>
-          ))}
-        </div>
+      {/* Upcoming */}
+      <Card title="جلسات قادمة" icon={Calendar}>
+        {upcoming.length === 0 ? (
+          <div className="empty-state">
+            <Icon icon={Calendar} size={24} className="text-subtle" />
+            <p className="text-sm text-muted">
+              لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك.
+            </p>
+          </div>
+        ) : (
+          <div className="flex-col gap-2">
+            {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+          </div>
+        )}
       </Card>
+
+      {/* Recent */}
+      {recent.length > 0 && (
+        <Card title="جلسات منتهية" icon={CheckCircle2} subtitle="آخر 8 جلسات — قد تتوفر لها تسجيلات">
+          <div className="flex-col gap-2">
+            {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+          </div>
+        </Card>
+      )}
+
+      {!isLoading && sessions && sessions.length === 0 && (
+        <Card>
+          <div className="empty-state">
+            <Icon icon={AlertCircle} size={28} className="text-subtle" />
+            <p className="text-sm text-muted" style={{ textAlign: 'center', maxWidth: 380 }}>
+              لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً.
+            </p>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function StudentSessionRow({
+  session: s,
+  canJoin,
+}: {
+  session: LiveSessionRow;
+  canJoin?: boolean;
+}) {
+  const accent = s.offering.course.themeColor ?? 'var(--accent)';
+  const ended = s.status === 'ENDED' || s.status === 'CANCELLED';
+  return (
+    <div className="run-row" style={{ borderInlineStart: `3px solid ${accent}` }}>
+      <span style={{ fontSize: 22, flexShrink: 0 }}>{s.offering.course.iconEmoji ?? '📡'}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="text-sm" style={{ fontWeight: 600, marginBottom: 2 }}>
+          {s.title}
+        </div>
+        <div className="text-xs text-muted">
+          {s.offering.course.code} · {s.offering.course.name}
+          {s.topic ? ` · ${s.topic}` : ''}
+        </div>
+        <div className="text-xxs text-subtle">
+          <Icon icon={Clock} size={10} />{' '}
+          {new Date(s.scheduledAt).toLocaleString('ar-EG', {
+            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+          })}
+          {' · '}
+          الأستاذ: د. {s.teacher.firstName} {s.teacher.lastName}
+        </div>
+      </div>
+      {s.status === 'LIVE' && (
+        <Badge color="red"><Icon icon={Radio} size={11} /> مباشر</Badge>
+      )}
+      {s.status === 'SCHEDULED' && <Badge color="amber">مجدولة</Badge>}
+      {ended && <Badge color="green">منتهية</Badge>}
+      {canJoin && s.joinUrl && (
+        <a
+          href={s.joinUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="btn primary sm"
+        >
+          <Icon icon={ExternalLink} size={12} /> انضمام
+        </a>
+      )}
+      {ended && s.recordingUrl && (
+        <a href={s.recordingUrl} target="_blank" rel="noreferrer" className="btn sm">
+          <Icon icon={ExternalLink} size={12} /> التسجيل
+        </a>
+      )}
     </div>
   );
 }

@@ -97,10 +97,18 @@ export const TEACHER_NAV: NavGroup[] = [
     label: 'الأكاديمي',
     items: [
       { to: '/teacher/research', icon: Microscope, label: 'البحث العلمي' },
+      { to: '/teacher/live', icon: Radio, label: 'البث المباشر', badge: { text: 'Live', tone: 'brand' } },
+      { to: '/teacher/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
       { to: '/teacher/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/teacher/library', icon: Library, label: 'المكتبة' },
       { to: '/teacher/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/teacher/alerts', icon: Bell, label: 'الإشعارات' },
+    ],
+  },
+  {
+    label: 'حسابي',
+    items: [
+      { to: '/teacher/profile', icon: UserCircle, label: 'الملف الأكاديمي' },
     ],
   },
   {
