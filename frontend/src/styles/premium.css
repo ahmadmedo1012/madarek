@@ -1,0 +1,411 @@
+/* ═══════════════════════════════════════════════════════════════
+   Premium polish layer — homepage refinement
+   Inspired by the calm, cinematic flow of premium product sites.
+   Loaded last so it can refine earlier landing.css rules.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Smooth scroll + anchor breathing room ── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Reveal-on-scroll system ── */
+.reveal-up {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  filter: blur(2px);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+/* Stagger delays for grid children */
+.reveal-d-1 { transition-delay: 60ms;  }
+.reveal-d-2 { transition-delay: 120ms; }
+.reveal-d-3 { transition-delay: 180ms; }
+.reveal-d-4 { transition-delay: 240ms; }
+.reveal-d-5 { transition-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up { opacity: 1; transform: none; filter: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Typography — premium ladder
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing {
+  /* Subtle text-rendering improvements for Arabic */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+}
+
+/* Hero title — bigger, tighter, weightier */
+.landing-title {
+  font-size: clamp(36px, 6.4vw, 76px) !important;
+  font-weight: 800 !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--text) 0%, var(--accent) 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-wrap: balance;
+}
+.landing-title .block {
+  font-size: 0.55em !important;
+  font-weight: 600 !important;
+  color: var(--text-muted) !important;
+  -webkit-text-fill-color: var(--text-muted);
+  margin-top: 12px !important;
+  letter-spacing: -0.01em;
+  display: block;
+}
+.landing-subtitle {
+  font-size: clamp(15px, 1.4vw, 18px) !important;
+  line-height: 1.7 !important;
+  color: var(--text-muted);
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+/* Section titles */
+.landing-features-title {
+  font-size: clamp(26px, 3.6vw, 42px) !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Section pacing — cinematic vertical rhythm
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-features {
+  padding-block: clamp(64px, 9vw, 120px) !important;
+  scroll-margin-top: 96px;
+}
+.landing-hero {
+  padding-block: clamp(40px, 5vw, 72px) clamp(48px, 6vw, 80px) !important;
+  gap: clamp(32px, 5vw, 80px) !important;
+}
+
+/* Alternate section backgrounds for visual rhythm — ambient, no chrome */
+#pillars   { background: linear-gradient(180deg, transparent 0%, var(--surface-1) 8%, var(--surface-1) 92%, transparent 100%); }
+#proof     { background: transparent; }
+#about     { background: linear-gradient(180deg, transparent 0%, var(--surface-1) 8%, var(--surface-1) 92%, transparent 100%); }
+
+/* ═══════════════════════════════════════════════════════════════
+   Header — sticky with backdrop blur (Samsung-grade)
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 90;
+  background: color-mix(in srgb, var(--surface-0) 80%, transparent);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  transition: background 240ms var(--ease), border-color 240ms var(--ease), padding 240ms var(--ease);
+}
+
+[data-theme="dark"] .landing-header,
+:root:not([data-theme="light"]) .landing-header {
+  background: color-mix(in srgb, #0A0E1A 75%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CTA buttons — premium polish
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-cta-row .btn {
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+  letter-spacing: 0;
+  border-radius: 999px !important;
+  height: 52px !important;
+  padding: 0 var(--sp-7) !important;
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 200ms ease;
+}
+.landing-cta-row .btn.primary {
+  background: var(--accent) !important;
+  color: #FFFFFF !important;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.12),
+    0 8px 24px -8px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.landing-cta-row .btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 16px 40px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+  background: var(--accent-hover) !important;
+}
+.landing-cta-row .btn.outline {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--border) !important;
+  box-shadow: none;
+}
+.landing-cta-row .btn.outline:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: var(--accent-soft) !important;
+  transform: translateY(-2px);
+}
+
+/* Icon flex on CTAs — RTL-aware translate on hover */
+.landing-cta-row .btn svg {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.landing-cta-row .btn.primary:hover svg {
+  transform: translateX(4px); /* arrow nudges in RTL natural direction */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Hero photograph — cinematic frame
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-hero-img {
+  border-radius: 24px !important;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 28px 60px -20px rgba(15, 22, 41, 0.30),
+    0 60px 120px -40px rgba(15, 22, 41, 0.20) !important;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.landing-hero-img:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 36px 72px -20px rgba(15, 22, 41, 0.35),
+    0 80px 140px -40px rgba(15, 22, 41, 0.25) !important;
+}
+.landing-hero-img img {
+  border-radius: 24px !important;
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: saturate(1.06) contrast(1.03) !important;
+}
+.landing-hero-img:hover img {
+  transform: scale(1.025);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Feature cards — premium hover
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-feature-card {
+  position: relative;
+  border-radius: 18px !important;
+  padding: clamp(20px, 2vw, 28px) !important;
+  transition:
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.landing-feature-card::before {
+  /* Subtle gradient sheen, hidden until hover */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 60%, transparent), color-mix(in srgb, var(--brand-gold) 35%, transparent));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 360ms var(--ease);
+  pointer-events: none;
+}
+.landing-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 16px 36px -12px rgba(15, 22, 41, 0.18);
+}
+.landing-feature-card:hover::before { opacity: 1; }
+
+.landing-feature-icon {
+  transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1), background 240ms ease;
+}
+.landing-feature-card:hover .landing-feature-icon {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.landing-feature-title {
+  font-weight: 700 !important;
+  font-size: clamp(16px, 1.4vw, 18px) !important;
+  letter-spacing: -0.01em;
+}
+.landing-feature-desc {
+  line-height: 1.7 !important;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KPI strip — refined number presentation
+   ═══════════════════════════════════════════════════════════════ */
+
+.kpi-strip {
+  border-radius: 22px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 32px -16px rgba(15, 22, 41, 0.12) !important;
+}
+.kpi-cell { transition: background 240ms ease; }
+.kpi-cell:hover { background: var(--accent-soft); }
+.kpi-value {
+  font-size: clamp(26px, 2.8vw, 38px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+}
+.kpi-label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Pilot stats — premium scale + entrance
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-pilot-stat {
+  transition:
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 360ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.landing-pilot-stat:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 16px 36px -12px rgba(15, 22, 41, 0.16) !important;
+}
+.landing-pilot-value {
+  letter-spacing: -0.04em !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Proof quote — typographic refinement
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-proof {
+  border-radius: 22px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 24px 48px -24px rgba(15, 22, 41, 0.14) !important;
+}
+.landing-proof-quote {
+  font-size: clamp(17px, 1.7vw, 22px) !important;
+  line-height: 1.7 !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Footer — calmer
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-footer {
+  padding-block: var(--sp-12) var(--sp-10) !important;
+  margin-top: clamp(40px, 5vw, 80px);
+  border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.landing-footer-links a {
+  transition: color 200ms ease;
+  position: relative;
+}
+.landing-footer-links a:hover { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════════════════
+   Header nav — better hover
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-nav a {
+  position: relative;
+  font-weight: 500;
+  font-size: 14.5px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: color 200ms ease, background 200ms ease;
+}
+.landing-nav a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Mobile premium touches
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .landing-cta-row .btn {
+    height: 48px !important;
+    padding: 0 var(--sp-6) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-title {
+    line-height: 1.08 !important;
+  }
+  .reveal-up {
+    /* Calmer mobile motion to keep frames smooth */
+    transform: translate3d(0, 18px, 0);
+    transition-duration: 560ms;
+  }
+  .landing-feature-card:hover { transform: none; }
+  .landing-hero-img:hover { transform: none; }
+  .landing-hero-img:hover img { transform: none; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Stagger reveal — children of grid wrappers
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-features-grid > .reveal-up:nth-child(1) { transition-delay: 0ms; }
+.landing-features-grid > .reveal-up:nth-child(2) { transition-delay: 80ms; }
+.landing-features-grid > .reveal-up:nth-child(3) { transition-delay: 160ms; }
+.landing-features-grid > .reveal-up:nth-child(4) { transition-delay: 240ms; }
+.landing-features-grid > .reveal-up:nth-child(5) { transition-delay: 320ms; }
+.landing-features-grid > .reveal-up:nth-child(6) { transition-delay: 400ms; }
+
+.landing-pilot > .reveal-up:nth-child(1) { transition-delay: 0ms; }
+.landing-pilot > .reveal-up:nth-child(2) { transition-delay: 100ms; }
+.landing-pilot > .reveal-up:nth-child(3) { transition-delay: 200ms; }
+.landing-pilot > .reveal-up:nth-child(4) { transition-delay: 300ms; }
+
+.kpi-strip > .kpi-cell {
+  /* When the kpi-strip itself is the reveal-up parent, children remain in flow */
+  transition: background 240ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-features-grid > .reveal-up,
+  .landing-pilot > .reveal-up {
+    transition-delay: 0ms !important;
+  }
+}

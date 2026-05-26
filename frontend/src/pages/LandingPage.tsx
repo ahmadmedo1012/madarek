@@ -10,6 +10,7 @@ import { Icon } from '../components/Icon';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { BrandMark } from '../components/BrandMark';
+import { Reveal } from '../hooks/useReveal';
 
 export default function LandingPage() {
   useThemeSync();
@@ -88,7 +89,7 @@ export default function LandingPage() {
 
         {/* ═══════════ HERO ═══════════ */}
         <section className="landing-hero">
-          <div className="landing-hero-content">
+          <Reveal as="div" className="landing-hero-content">
             <h1 className="landing-title">
               منصة مدارك:
               <span className="block">جامعة الزاوية للتعليم الذكي</span>
@@ -104,8 +105,8 @@ export default function LandingPage() {
               </Link>
               <a href="#features" className="btn outline">اكتشف المنصة</a>
             </div>
-          </div>
-          <figure className="landing-hero-img">
+          </Reveal>
+          <Reveal as="figure" className="landing-hero-img" delay={2}>
             <img
               src="/brand/zu-campus.jpg"
               srcSet="/brand/zu-campus-sm.jpg 800w, /brand/zu-campus.jpg 1400w"
@@ -118,11 +119,11 @@ export default function LandingPage() {
             <figcaption className="landing-hero-credit">
               الحرم الرئيسي · جامعة الزاوية
             </figcaption>
-          </figure>
+          </Reveal>
         </section>
 
         {/* ═══════════ STATS STRIP ═══════════ */}
-        <section className="kpi-strip">
+        <Reveal as="section" className="kpi-strip">
           <div className="kpi-cell">
             <div className="kpi-icon" style={{ background: 'rgba(41, 82, 200, 0.10)', color: '#1e40af' }}>
               <Icon icon={Building2} size={20} />
@@ -159,169 +160,141 @@ export default function LandingPage() {
               <div className="kpi-label">على مستوى ليبيا</div>
             </div>
           </div>
-        </section>
+        </Reveal>
 
         {/* ═══════════ FEATURES ═══════════ */}
         <section id="features" className="landing-features">
-          <h2 className="landing-features-title">مميزاتنا</h2>
+          <Reveal as="h2" className="landing-features-title">مميزاتنا</Reveal>
           <div className="landing-features-grid">
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon">
-                <Icon icon={Compass} size={24} />
-              </div>
-              <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
-              <p className="landing-feature-desc">
-                نموذج معرفي شخصي لكل طالب يكتشف الفجوات تلقائياً، ويربطها بدقائق المحاضرة
-                التي تشرحها — تعلّم مخصَّص، لا قالب واحد للجميع.
-              </p>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
+              <Icon icon={Compass} size={24} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon">
-                <Icon icon={Network} size={24} />
-              </div>
-              <h3 className="landing-feature-title">منظومة موحَّدة</h3>
-              <p className="landing-feature-desc">
-                دمج كامل للحضور والدرجات والامتحانات والبحوث في تجربة واحدة متاحة
-                لكل طالب وأستاذ ومسؤول جودة — بدون تطبيقات مشتّتة.
-              </p>
+            <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
+            <p className="landing-feature-desc">
+              نموذج معرفي شخصي لكل طالب يكتشف الفجوات تلقائياً، ويربطها بدقائق المحاضرة
+              التي تشرحها — تعلّم مخصَّص، لا قالب واحد للجميع.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
+              <Icon icon={Network} size={24} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon">
-                <Icon icon={Brain} size={24} />
-              </div>
-              <h3 className="landing-feature-title">ذكاء اصطناعي مساعد</h3>
-              <p className="landing-feature-desc">
-                مساعد دراسي يجيب على أسئلتك ويقترح مسارات مراجعة بناءً على أدائك
-                الفعلي — يساعد الأستاذ ويرشد الطالب بدقة.
-              </p>
+            <h3 className="landing-feature-title">منظومة موحَّدة</h3>
+            <p className="landing-feature-desc">
+              دمج كامل للحضور والدرجات والامتحانات والبحوث في تجربة واحدة متاحة
+              لكل طالب وأستاذ ومسؤول جودة — بدون تطبيقات مشتّتة.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
+              <Icon icon={Brain} size={24} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon">
-                <Icon icon={BookMarked} size={24} />
-              </div>
-              <h3 className="landing-feature-title">المعامل الافتراضية</h3>
-              <p className="landing-feature-desc">
-                بيئات محاكاة معتمدة في الجامعة لتعزيز الفهم العملي
-                — جاهزة لكليات الهندسة، تقنية المعلومات، والعلوم.
-              </p>
+            <h3 className="landing-feature-title">ذكاء اصطناعي مساعد</h3>
+            <p className="landing-feature-desc">
+              مساعد دراسي يجيب على أسئلتك ويقترح مسارات مراجعة بناءً على أدائك
+              الفعلي — يساعد الأستاذ ويرشد الطالب بدقة.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
+              <Icon icon={BookMarked} size={24} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon">
-                <Icon icon={Sparkles} size={24} />
-              </div>
-              <h3 className="landing-feature-title">البحث العلمي</h3>
-              <p className="landing-feature-desc">
-                رحلة بحث طلابي متكاملة: رفع، فحص انتحال وذكاء اصطناعي،
-                مراجعة أستاذ، ثم نشر في مكتبة الجامعة الرقمية.
-              </p>
+            <h3 className="landing-feature-title">المعامل الافتراضية</h3>
+            <p className="landing-feature-desc">
+              بيئات محاكاة معتمدة في الجامعة لتعزيز الفهم العملي
+              — جاهزة لكليات الهندسة، تقنية المعلومات، والعلوم.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
+              <Icon icon={Sparkles} size={24} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon">
-                <Icon icon={ShieldCheck} size={24} />
-              </div>
-              <h3 className="landing-feature-title">ضمان الجودة</h3>
-              <p className="landing-feature-desc">
-                لوحة رقابية مستقلة لمكتب الجودة: مؤشرات الانخراط، أداء المقررات،
-                ومراجعة المحتوى — رؤية مؤسسية شاملة.
-              </p>
+            <h3 className="landing-feature-title">البحث العلمي</h3>
+            <p className="landing-feature-desc">
+              رحلة بحث طلابي متكاملة: رفع، فحص انتحال وذكاء اصطناعي،
+              مراجعة أستاذ، ثم نشر في مكتبة الجامعة الرقمية.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
+              <Icon icon={ShieldCheck} size={24} />
             </div>
+            <h3 className="landing-feature-title">ضمان الجودة</h3>
+            <p className="landing-feature-desc">
+              لوحة رقابية مستقلة لمكتب الجودة: مؤشرات الانخراط، أداء المقررات،
+              ومراجعة المحتوى — رؤية مؤسسية شاملة.
+            </p></Reveal>
           </div>
         </section>
 
         {/* ═══════════ ROLE PILLARS ═══════════ */}
         <section id="pillars" className="landing-features">
-          <h2 className="landing-features-title">أربعة أدوار، تجربة موحَّدة</h2>
+          <Reveal as="h2" className="landing-features-title">أربعة أدوار، تجربة موحَّدة</Reveal>
           <p className="landing-subtitle" style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto var(--sp-6)' }}>
             كل دور أكاديمي يرى ما يخصّه فقط — صلاحيات مدروسة وفصل واضح بين الواجبات.
           </p>
           <div className="landing-features-grid">
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
-                <Icon icon={GraduationCap} size={20} />
-              </div>
-              <h3 className="landing-feature-title">الطالب</h3>
-              <p className="landing-feature-desc">
-                مقررات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات،
-                فرص عمل، مكتبة بحوث، اختبارات إلكترونية.
-              </p>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
+              <Icon icon={GraduationCap} size={20} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon" style={{ background: 'rgba(16, 185, 129, 0.10)', color: '#059669' }}>
-                <Icon icon={Brain} size={20} />
-              </div>
-              <h3 className="landing-feature-title">الأستاذ</h3>
-              <p className="landing-feature-desc">
-                ذكاء أكاديمي يكشف الطلاب المعرضين، إدارة المحاضرات والدرجات،
-                بث مباشر، ومعامل افتراضية بصلاحيات تحكم.
-              </p>
+            <h3 className="landing-feature-title">الطالب</h3>
+            <p className="landing-feature-desc">
+              مقررات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات،
+              فرص عمل، مكتبة بحوث، اختبارات إلكترونية.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(16, 185, 129, 0.10)', color: '#059669' }}>
+              <Icon icon={Brain} size={20} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
-                <Icon icon={Building2} size={20} />
-              </div>
-              <h3 className="landing-feature-title">الإدارة</h3>
-              <p className="landing-feature-desc">
-                إدارة الكليات والأساتذة والمقررات، تقارير، ومزامنة يومية
-                مع البيانات الرسمية لجامعة الزاوية.
-              </p>
+            <h3 className="landing-feature-title">الأستاذ</h3>
+            <p className="landing-feature-desc">
+              ذكاء أكاديمي يكشف الطلاب المعرضين، إدارة المحاضرات والدرجات،
+              بث مباشر، ومعامل افتراضية بصلاحيات تحكم.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
+              <Icon icon={Building2} size={20} />
             </div>
-            <div className="landing-feature-card">
-              <div className="landing-feature-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
-                <Icon icon={ShieldCheck} size={20} />
-              </div>
-              <h3 className="landing-feature-title">ضمان الجودة</h3>
-              <p className="landing-feature-desc">
-                رؤية للمؤشرات المؤسسية: جودة المقررات، تقييم الأساتذة،
-                مراجعة الاختبارات والمناهج، تقارير الجودة.
-              </p>
+            <h3 className="landing-feature-title">الإدارة</h3>
+            <p className="landing-feature-desc">
+              إدارة الكليات والأساتذة والمقررات، تقارير، ومزامنة يومية
+              مع البيانات الرسمية لجامعة الزاوية.
+            </p></Reveal>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
+              <Icon icon={ShieldCheck} size={20} />
             </div>
+            <h3 className="landing-feature-title">ضمان الجودة</h3>
+            <p className="landing-feature-desc">
+              رؤية للمؤشرات المؤسسية: جودة المقررات، تقييم الأساتذة،
+              مراجعة الاختبارات والمناهج، تقارير الجودة.
+            </p></Reveal>
           </div>
         </section>
 
         {/* ═══════════ PROOF / PILOT RESULTS ═══════════ */}
         <section id="proof" className="landing-features">
-          <h2 className="landing-features-title">نتائج تجربة ميدانية</h2>
+          <Reveal as="h2" className="landing-features-title">نتائج تجربة ميدانية</Reveal>
           <p className="landing-subtitle" style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto var(--sp-6)' }}>
             اعتمدنا استراتيجية الصف المعكوس على مادة اللغة الإنجليزية مع طلاب من جنوب
             ليبيا، بمشاركة خبراء دوليين. الأرقام أدناه نتائج التجربة الفعلية.
           </p>
 
           <div className="landing-pilot">
-            <div className="landing-pilot-stat">
-              <div className="landing-pilot-value">40<span>%</span></div>
-              <div className="landing-pilot-label">تحسّن الاستيعاب</div>
-              <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div>
-            </div>
-            <div className="landing-pilot-stat">
-              <div className="landing-pilot-value">70<span>%</span></div>
-              <div className="landing-pilot-label">زيادة في المشاركة</div>
-              <div className="landing-pilot-note">داخل الحلقات النقاشية</div>
-            </div>
-            <div className="landing-pilot-stat">
-              <div className="landing-pilot-value">30<span>%</span></div>
-              <div className="landing-pilot-label">تحسّن في الالتزام</div>
-              <div className="landing-pilot-note">بمتابعة الجلسات</div>
-            </div>
-            <div className="landing-pilot-stat highlight">
-              <div className="landing-pilot-value">90<span>%</span></div>
-              <div className="landing-pilot-label">تحقيق أهداف التعلّم</div>
-              <div className="landing-pilot-note">ضمن الإطار الزمني المحدّد</div>
-            </div>
+            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">40<span>%</span></div>
+            <div className="landing-pilot-label">تحسّن الاستيعاب</div>
+            <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div></Reveal>
+            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">70<span>%</span></div>
+            <div className="landing-pilot-label">زيادة في المشاركة</div>
+            <div className="landing-pilot-note">داخل الحلقات النقاشية</div></Reveal>
+            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">30<span>%</span></div>
+            <div className="landing-pilot-label">تحسّن في الالتزام</div>
+            <div className="landing-pilot-note">بمتابعة الجلسات</div></Reveal>
+            <Reveal as="div" className="landing-pilot-stat highlight"><div className="landing-pilot-value">90<span>%</span></div>
+            <div className="landing-pilot-label">تحقيق أهداف التعلّم</div>
+            <div className="landing-pilot-note">ضمن الإطار الزمني المحدّد</div></Reveal>
           </div>
 
-          <div className="landing-proof" style={{ marginTop: 'var(--sp-6)' }}>
+          <Reveal as="div" className="landing-proof" style={{ marginTop: 'var(--sp-6)' }}>
             <p className="landing-proof-quote">
               «تجربة المعامل الافتراضية على ٤٠ طالباً في جامعة سرت أظهرت تفوّقاً واضحاً
               للفريق الذي استخدم المنصة على فريق التعليم التقليدي. هذا ما نطمح لأن
               نقدّمه على مستوى جامعة الزاوية بأكملها.»
             </p>
             <div className="landing-proof-source">— من دراسة جامعة سرت، ٢٠٢٤</div>
-          </div>
+          </Reveal>
         </section>
 
         {/* ═══════════ ABOUT ═══════════ */}
         <section id="about" className="landing-features">
-          <h2 className="landing-features-title">عن المنصة</h2>
+          <Reveal as="h2" className="landing-features-title">عن المنصة</Reveal>
           <p className="landing-subtitle" style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
             مدارك هي المنصة التعليمية الرسمية لجامعة الزاوية، تأسست لتربط الطلاب
             والأساتذة والإدارة في بيئة رقمية واحدة، تحت إشراف وزارة التعليم العالي
