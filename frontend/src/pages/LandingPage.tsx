@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import {
   User, Brain, GraduationCap, Network,
   Building2, Users2, Award,
   Compass, Sparkles, ShieldCheck, BookMarked,
-  ArrowLeft,
+  ArrowLeft, Menu, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { useThemeSync } from '../components/layout/ThemeToggle';
@@ -27,6 +28,8 @@ export default function LandingPage() {
   }
 
   const year = new Date().getFullYear();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <div className="landing">
@@ -46,6 +49,15 @@ export default function LandingPage() {
             تسجيل الدخول
             <Icon icon={User} size={16} />
           </Link>
+          <button
+            type="button"
+            className="landing-burger"
+            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <Icon icon={menuOpen ? X : Menu} size={20} />
+          </button>
         </div>
         <nav className="landing-nav">
           <a href="#features">المميزات</a>
@@ -57,6 +69,20 @@ export default function LandingPage() {
           <BrandMark size={32} />
         </Link>
       </header>
+
+      {/* Mobile dropdown menu — only visible when burger is toggled on small screens */}
+      {menuOpen && (
+        <nav className="landing-mobile-menu" onClick={closeMenu}>
+          <a href="#features">المميزات</a>
+          <a href="#pillars">الأدوار</a>
+          <a href="#proof">النتائج</a>
+          <a href="#about">عن المنصة</a>
+          <Link to="/auth" className="btn primary">
+            تسجيل الدخول
+            <Icon icon={ArrowLeft} size={14} />
+          </Link>
+        </nav>
+      )}
 
       <main className="landing-shell">
 
@@ -79,15 +105,20 @@ export default function LandingPage() {
               <a href="#features" className="btn outline">اكتشف المنصة</a>
             </div>
           </div>
-          <div className="landing-hero-img">
+          <figure className="landing-hero-img">
             <img
-              src="/brand/hero-illustration.svg"
-              alt="منصة مدارك — تعليم ذكي مدعوم بالذكاء الاصطناعي"
+              src="/brand/zu-campus.jpg"
+              srcSet="/brand/zu-campus-sm.jpg 800w, /brand/zu-campus.jpg 1400w"
+              sizes="(max-width: 900px) 100vw, 600px"
+              alt="حرم جامعة الزاوية الرئيسي — البوابة الرئيسية"
               loading="eager"
-              width="600"
-              height="480"
+              width="1400"
+              height="780"
             />
-          </div>
+            <figcaption className="landing-hero-credit">
+              الحرم الرئيسي · جامعة الزاوية
+            </figcaption>
+          </figure>
         </section>
 
         {/* ═══════════ STATS STRIP ═══════════ */}

@@ -310,3 +310,280 @@
 @media (max-width: 600px) {
   .landing-proof { padding: var(--sp-5) var(--sp-4); }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PRD-aligned landing visual polish — restored & responsive
+   Ministry strip · KPI strip · Photo hero · Mobile hamburger
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Ministry affiliation strip (full-width, slim, deep navy) ── */
+.ministry-strip {
+  background: linear-gradient(90deg, #0E2148 0%, #163A7A 50%, #0E2148 100%);
+  color: #FFFFFF;
+  padding: 8px 16px;
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 0.1px;
+  border-bottom: 1px solid rgba(212, 165, 55, 0.25);
+}
+.ministry-strip-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ministry-strip-emblem {
+  font-size: 16px;
+  line-height: 1;
+}
+.ministry-strip-text strong {
+  color: #FFD166;
+  font-weight: 700;
+}
+@media (max-width: 480px) {
+  .ministry-strip { font-size: 11.5px; padding: 6px 12px; }
+}
+
+/* ── Mobile hamburger button (hidden on desktop) ── */
+.landing-burger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.landing-burger:hover {
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+
+/* ── Mobile dropdown menu ── */
+.landing-mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.landing-mobile-menu a {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.15s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.landing-mobile-menu a:last-of-type { border-bottom: 0; }
+.landing-mobile-menu a:hover { color: var(--accent); }
+.landing-mobile-menu .btn {
+  margin-top: var(--sp-2);
+  justify-content: center;
+}
+
+/* ── Hero figure (real campus photo) ── */
+.landing-hero-img {
+  position: relative;
+  margin: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.25);
+  aspect-ratio: 16 / 9;
+  background: var(--surface-2);
+}
+.landing-hero-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 20px;
+  /* subtle warm contrast lift, no aggressive filter */
+  filter: saturate(1.05) contrast(1.02);
+}
+.landing-hero-img::before {
+  /* soft top scrim so the credit chip stays readable */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(15, 22, 41, 0.35) 0%, rgba(15, 22, 41, 0) 35%, rgba(15, 22, 41, 0) 70%, rgba(15, 22, 41, 0.20) 100%);
+  border-radius: 20px;
+}
+.landing-hero-credit {
+  position: absolute;
+  inset-inline-end: 14px;
+  inset-block-end: 14px;
+  z-index: 1;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: rgba(15, 22, 41, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 6px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.2px;
+  font-weight: 500;
+}
+
+/* ── KPI strip (4 stats — joined card) ── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  margin: var(--sp-2) 0;
+}
+.kpi-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-4);
+  border-inline-end: 1px solid var(--border);
+  min-height: 92px;
+}
+.kpi-cell:last-child { border-inline-end: 0; }
+.kpi-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kpi-value {
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.kpi-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Mobile breakpoints — refined progression
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Tablet (1024px) — features/pillars 2-col */
+@media (max-width: 1024px) {
+  .landing-features-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Tablet narrow / large phone (900px) */
+@media (max-width: 900px) {
+  .landing-burger { display: inline-flex; }
+  .landing-header { padding: 12px 16px; gap: var(--sp-2); }
+  .landing-header-login .btn:not(.landing-burger) {
+    /* smaller login button on tablet */
+    padding: 0 var(--sp-3);
+    height: 40px;
+    font-size: 13px;
+  }
+  .landing-mobile-menu { display: flex; }
+  .kpi-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-cell:nth-child(2) { border-inline-end: 0; }
+  .kpi-cell:nth-child(1),
+  .kpi-cell:nth-child(2) { border-bottom: 1px solid var(--border); }
+}
+
+/* Phone (640px) */
+@media (max-width: 640px) {
+  .landing-shell {
+    padding-inline: var(--sp-4);
+  }
+  .landing-title {
+    font-size: clamp(28px, 8vw, 36px);
+  }
+  .landing-title .block {
+    font-size: 0.65em;
+    margin-top: 4px;
+  }
+  .landing-subtitle {
+    font-size: 15px;
+  }
+  .landing-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .landing-cta-row .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+  .landing-features { padding-block: var(--sp-6); }
+  .landing-features-title {
+    font-size: clamp(22px, 6vw, 28px);
+  }
+  .landing-feature-card {
+    padding: var(--sp-4);
+  }
+  .landing-hero {
+    gap: var(--sp-5);
+  }
+  .landing-hero-img {
+    aspect-ratio: 4 / 3;
+    border-radius: 14px;
+  }
+  .landing-hero-img img { border-radius: 14px; }
+  .landing-hero-credit {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+}
+
+/* Small phone (480px) — single-column safety net */
+@media (max-width: 480px) {
+  .landing-features-grid { grid-template-columns: 1fr; }
+  .kpi-strip {
+    grid-template-columns: 1fr;
+    border-radius: 14px;
+  }
+  .kpi-cell {
+    border-inline-end: 0 !important;
+    border-bottom: 1px solid var(--border);
+    min-height: 76px;
+    padding: var(--sp-4);
+  }
+  .kpi-cell:last-child { border-bottom: 0; }
+  .ministry-strip-inner { line-height: 1.4; }
+  .landing-footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-3) var(--sp-4);
+  }
+  .landing-footer-links a,
+  .landing-footer-links span {
+    text-align: center;
+  }
+}
