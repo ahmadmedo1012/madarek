@@ -48,8 +48,8 @@ export default function PaymentPage() {
         <div className="invoice-card">
           <div>
             <div className="invoice-section-label">من</div>
-            <div className="invoice-section-value">جامعة الزاوية</div>
-            <div className="text-xs text-subtle" style={{ marginTop: 4 }}>الزاوية، ليبيا · 1988</div>
+            <div className="invoice-section-value">جامعة مدارك</div>
+            <div className="text-xs text-subtle" style={{ marginTop: 4 }}>مدارك، ليبيا · 1988</div>
           </div>
           <div>
             <div className="invoice-section-label">إلى</div>

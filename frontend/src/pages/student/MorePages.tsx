@@ -563,21 +563,21 @@ const REAL_FACULTIES_OUTSIDE: Array<{ name: string; city: string }> = [
   { name: 'كلية الآداب', city: 'زوارة' },
   { name: 'كلية الاقتصاد', city: 'العجيلات' },
   { name: 'كلية العلوم', city: 'العجيلات' },
-  { name: 'كلية التربية', city: 'الزاوية' },
+  { name: 'كلية التربية', city: 'مدارك' },
   { name: 'كلية التربية', city: 'العجيلات' },
   { name: 'كلية التربية', city: 'أبي عيسى' },
   { name: 'كلية التربية', city: 'ناصر' },
   { name: 'كلية التربية', city: 'زوارة' },
   { name: 'كلية الشريعة والقانون', city: 'العجيلات' },
-  { name: 'كلية القانون', city: 'الزاوية' },
+  { name: 'كلية القانون', city: 'مدارك' },
   { name: 'كلية الطب البيطري والعلوم الزراعية', city: 'العجيلات' },
   { name: 'كلية العلوم الطبية', city: 'صرمان' },
   { name: 'كلية هندسة الموارد الطبيعية', city: 'بئر الغنم' },
   { name: 'كلية الهندسة', city: 'صبراتة' },
   { name: 'كلية الهندسة', city: 'الرقدالين' },
   { name: 'كلية الصحة العامة', city: 'العجيلات' },
-  { name: 'كلية العلوم السياسية والإعلام', city: 'الزاوية' },
-  { name: 'كلية اللغات والترجمة', city: 'الزاوية' },
+  { name: 'كلية العلوم السياسية والإعلام', city: 'مدارك' },
+  { name: 'كلية اللغات والترجمة', city: 'مدارك' },
 ];
 
 const MEMBERSHIPS = [
@@ -599,7 +599,7 @@ export function UniversityInfoPage() {
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">جامعة الزاوية</h1>
+          <h1 className="page-title">جامعة مدارك</h1>
           <p className="page-subtitle">
             مؤسسة تعليمية حكومية رائدة، تأسست عام 1988 وتمتد عبر تسع مدن في الإقليم الغربي.
           </p>
@@ -632,11 +632,11 @@ export function UniversityInfoPage() {
       {/* Quick facts grid */}
       <Card title="بطاقة تعريف" icon={Building2}>
         <div className="grid-2">
-          <FactRow label="الاسم الرسمي" value="جامعة الزاوية" />
+          <FactRow label="الاسم الرسمي" value="جامعة مدارك" />
           <FactRow label="الاسم السابق" value="جامعة السابع من أبريل" />
           <FactRow label="النوع" value="جامعة حكومية عامة" />
           <FactRow label="تاريخ التأسيس" value="1988 م (الكلية الفرعية 1983)" />
-          <FactRow label="الموقع" value="6 كم جنوب مدينة الزاوية" />
+          <FactRow label="الموقع" value="6 كم جنوب مدينة مدارك" />
           <FactRow label="المساحة" value="≈ 100 هكتار" />
           <FactRow label="الإحداثيات" value="32°45′00″N · 12°43′00″E" mono />
           <FactRow label="الألوان الرسمية" value="أخضر · أحمر · أبيض · أسود" />
@@ -644,7 +644,7 @@ export function UniversityInfoPage() {
       </Card>
 
       {/* Faculties — inside campus */}
-      <Card title="الكليات داخل الحرم الجامعي" icon={Building2} subtitle={`${REAL_FACULTIES_INSIDE.length} كلية في مدينة الزاوية`}>
+      <Card title="الكليات داخل الحرم الجامعي" icon={Building2} subtitle={`${REAL_FACULTIES_INSIDE.length} كلية في مدينة مدارك`}>
         <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
           {REAL_FACULTIES_INSIDE.map((f) => (
             <div key={f} className="faculty-chip-row">
@@ -764,7 +764,7 @@ export function UniversityInfoPage() {
       {/* Contact */}
       <Card title="معلومات التواصل" icon={Headset}>
         <div className="grid-2">
-          <FactRow label="العنوان" value="شارع جمال عبد الناصر، الزاوية، ليبيا" />
+          <FactRow label="العنوان" value="شارع جمال عبد الناصر، مدارك، ليبيا" />
           <FactRow label="الهاتف" value="‎+218 91 9235939" mono />
           <FactRow label="هاتف بديل" value="‎+218 92 6539727" mono />
           <FactRow label="البريد العام" value="info@zu.edu.ly" mono />

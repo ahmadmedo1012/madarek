@@ -24,7 +24,7 @@ export default function MoocPage() {
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">كورسات خارجية</h1>
-          <p className="page-subtitle">شراكات مع منصات عالمية وبرامج معتمدة من جامعة الزاوية.</p>
+          <p className="page-subtitle">شراكات مع منصات عالمية وبرامج معتمدة من جامعة مدارك.</p>
         </div>
       </div>
 

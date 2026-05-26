@@ -33,7 +33,7 @@ export default function JobsPage() {
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">فرص العمل</h1>
-          <p className="page-subtitle">وظائف وتدريب مدفوع مفتوحة لطلاب وخرّيجي جامعة الزاوية.</p>
+          <p className="page-subtitle">وظائف وتدريب مدفوع مفتوحة لطلاب وخرّيجي جامعة مدارك.</p>
         </div>
       </div>
 

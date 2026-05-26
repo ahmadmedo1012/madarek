@@ -3,52 +3,18 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  Bot, BarChart3, FlaskConical, Briefcase,
-  Mail, Lock, User,
-  GraduationCap, School, Building2,
-  AlertCircle, ArrowLeft, Home,
-} from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { BrandMark } from '../components/BrandMark';
-import { useLogin, useRegister } from '../hooks/useAuth';
-import { useFaculties } from '../hooks/useResources';
+import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import type { AppRole } from '../stores/auth.store';
 
-type Tab = 'login' | 'register';
-
 const loginSchema = z.object({
-  email: z
-    .string()
-    .min(3, 'الحقل قصير جداً')
-    .max(120, 'الحقل طويل جداً')
-    .refine(
-      (v) => v.includes('@') ? z.string().email().safeParse(v).success : true,
-      { message: 'بريد إلكتروني غير صالح' },
-    ),
+  email: z.string().email('بريد إلكتروني غير صالح'),
   password: z.string().min(1, 'مطلوب'),
 });
-
-const registerSchema = z
-  .object({
-    firstName: z.string().min(1, 'مطلوب'),
-    lastName: z.string().min(1, 'مطلوب'),
-    email: z.string().email('بريد إلكتروني غير صالح'),
-    password: z.string().min(8, '8 أحرف على الأقل'),
-    confirm: z.string(),
-    role: z.enum(['STUDENT', 'TEACHER', 'ADMIN']),
-    facultyId: z.string().optional(),
-    departmentId: z.string().optional(),
-    universityId: z.string().optional(),
-    year: z.coerce.number().int().min(1).max(8).optional(),
-    specialty: z.string().optional(),
-    rank: z.enum(['LECTURER', 'ASSISTANT_PROFESSOR', 'ASSOCIATE_PROFESSOR', 'PROFESSOR']).optional(),
-  })
-  .refine((d) => d.password === d.confirm, { message: 'كلمتا المرور غير متطابقتين', path: ['confirm'] });
-
 type LoginInputs = z.infer<typeof loginSchema>;
-type RegisterInputs = z.infer<typeof registerSchema>;
 
 const ROLE_HOME: Record<AppRole, string> = {
   STUDENT: '/student/dashboard',
@@ -60,339 +26,91 @@ const homeFor = (r: AppRole): string => ROLE_HOME[r];
 
 export default function AuthPage() {
   useThemeSync();
-  const [tab, setTab] = useState<Tab>('login');
-  const [role, setRole] = useState<AppRole>('STUDENT');
-  const [forgotNotice, setForgotNotice] = useState(false);
   const navigate = useNavigate();
   const login = useLogin();
-  const register = useRegister();
-  const { data: faculties } = useFaculties();
+  const [forgotNotice, setForgotNotice] = useState(false);
 
   const loginForm = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: 'student@zu.edu.ly', password: '1234' },
+    defaultValues: { email: '', password: '' },
   });
-
-  const registerForm = useForm<RegisterInputs>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: { role: 'STUDENT' },
-  });
-  const watchedFacultyId = registerForm.watch('facultyId');
-  const departments = faculties?.find((f) => f.id === watchedFacultyId)?.departments ?? [];
 
   const onLogin = loginForm.handleSubmit(async (values) => {
     try {
       const result = await login.mutateAsync(values);
       navigate(homeFor(result.user.role), { replace: true });
-    } catch { /* error rendered below */ }
-  });
-
-  const onRegister = registerForm.handleSubmit(async (values) => {
-    const { confirm: _c, ...rest } = values;
-    void _c;
-    try {
-      const result = await register.mutateAsync(rest);
-      navigate(homeFor(result.user.role), { replace: true });
-    } catch { /* error rendered below */ }
-  });
-
-  const onDemoLogin = async (r: AppRole) => {
-    const emails: Record<AppRole, string> = {
-      STUDENT: 'student@zu.edu.ly',
-      TEACHER: 'teacher@zu.edu.ly',
-      ADMIN: 'admin@zu.edu.ly',
-      QUALITY: 'quality@zu.edu.ly',
-    };
-    loginForm.setValue('email', emails[r]);
-    loginForm.setValue('password', '1234');
-    try {
-      const result = await login.mutateAsync({ email: emails[r], password: '1234' });
-      navigate(homeFor(result.user.role), { replace: true });
     } catch { /* */ }
-  };
+  });
 
   return (
-    <div className="auth-overlay">
-      {/* Persistent back-to-home — always visible, never traps the user */}
-      <Link to="/" className="auth-back-home" aria-label="العودة للصفحة الرئيسية">
-        <Icon icon={Home} size={14} />
-        <span>الصفحة الرئيسية</span>
-      </Link>
-
-      <div className="auth-card">
-        {/* ─── Brand pane ─── */}
-        <div className="auth-brand">
-          <div>
-            {/* Ministry strip — official affiliation */}
-            <div className="auth-ministry-strip">
-              <span className="auth-ministry-emblem" aria-hidden>🇱🇾</span>
-              <span>وزارة التعليم العالي والبحث العلمي · ليبيا</span>
-            </div>
-
-            <Link to="/" className="auth-brand-header" aria-label="العودة للصفحة الرئيسية">
-              <BrandMark size={44} />
-              <div>
-                <div className="auth-brand-name">
-                  منصة <span className="ai-tag">الزاوية</span>
-                </div>
-                <div className="auth-brand-uni">جامعة الزاوية · تأسست 1988</div>
-              </div>
-            </Link>
-
-            <h1 className="auth-brand-hero">
-              المنصة الرسمية للتعليم الذكي بجامعة الزاوية.
-            </h1>
-            <p className="auth-brand-tag">
-              من إدارة المقررات والحضور إلى المعامل الافتراضية وفرص التوظيف،
-              مدعومة بأدوات تعليمية ذكية.
+    <div className="auth-overlay-madarek">
+      <div className="auth-split">
+        {/* Left Side - Image Background */}
+        <div className="auth-left">
+          <div className="auth-glass-card">
+            <BrandMark size={48} />
+            <h1 className="auth-glass-title">جامعة مدارك</h1>
+            <p className="auth-glass-subtitle">منصة التعليم الذكي</p>
+            <p className="auth-glass-desc">
+              أهلاً بك في بوابتك الأكاديمية.
+              <br />
+              يرجى تسجيل الدخول للوصول إلى مواردك التعليمية.
             </p>
-
-            <ul className="auth-features">
-              <li><span className="auth-feat-icon"><Icon icon={Bot} size={14} /></span> مساعد دراسي مدعوم بالذكاء الاصطناعي</li>
-              <li><span className="auth-feat-icon"><Icon icon={BarChart3} size={14} /></span> تحليل أداء وتغذية راجعة مستمرة</li>
-              <li><span className="auth-feat-icon"><Icon icon={FlaskConical} size={14} /></span> معامل افتراضية تفاعلية</li>
-              <li><span className="auth-feat-icon"><Icon icon={Briefcase} size={14} /></span> ربط مباشر بسوق العمل الليبي</li>
-            </ul>
-          </div>
-
-          <div className="auth-brand-footer">
-            © {new Date().getFullYear()} جامعة الزاوية · جميع الحقوق محفوظة
           </div>
         </div>
 
-        {/* ─── Form pane ─── */}
-        <div className="auth-form-pane">
-          <div className="auth-tabs" role="tablist">
-            <button type="button" role="tab" className={`auth-tab${tab === 'login' ? ' on' : ''}`} onClick={() => setTab('login')}>
-              تسجيل الدخول
-            </button>
-            <button type="button" role="tab" className={`auth-tab${tab === 'register' ? ' on' : ''}`} onClick={() => setTab('register')}>
-              إنشاء حساب
-            </button>
-          </div>
-
-          {tab === 'login' ? (
-            <form onSubmit={onLogin} className="flex-col" noValidate>
-              <div className="auth-form-title">أهلاً بعودتك</div>
-              <div className="auth-form-sub">أدخل بياناتك للوصول إلى حسابك الأكاديمي.</div>
-
-              {login.isError && (
-                <div className="auth-error">
-                  <Icon icon={AlertCircle} size={14} />
-                  <span>البريد أو كلمة المرور غير صحيحة.</span>
-                </div>
-              )}
-
-              <div className="auth-field">
-                <label htmlFor="login-email">البريد الإلكتروني أو رقم القيد</label>
-                <div className="auth-input-wrap">
-                  <input
-                    id="login-email"
-                    type="text"
-                    className="auth-input has-icon"
-                    placeholder="example@zu.edu.ly أو UZ-2024-XXXXX"
-                    autoComplete="username"
-                    {...loginForm.register('email')}
-                  />
-                  <span className="auth-input-icon"><Icon icon={Mail} size={14} /></span>
-                </div>
-              </div>
-
-              <div className="auth-field">
-                <label htmlFor="login-pass">كلمة المرور</label>
-                <div className="auth-input-wrap">
-                  <input
-                    id="login-pass"
-                    type="password"
-                    className="auth-input has-icon"
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                    {...loginForm.register('password')}
-                  />
-                  <span className="auth-input-icon"><Icon icon={Lock} size={14} /></span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="auth-forgot"
-                onClick={() => setForgotNotice(true)}
-              >
-                نسيت كلمة المرور؟
-              </button>
-              {forgotNotice && (
-                <div className="auth-error" style={{ background: 'var(--accent-soft)', color: 'var(--accent)', borderColor: 'transparent', marginTop: 'calc(-1 * var(--sp-3))' }}>
-                  <Icon icon={AlertCircle} size={14} />
-                  <span>تواصل مع شؤون الطلاب على <strong>support@zu.edu.ly</strong> لإعادة تعيين كلمة المرور.</span>
-                </div>
-              )}
-
-              <button type="submit" className="auth-btn" disabled={login.isPending}>
-                {login.isPending ? 'جارٍ الدخول…' : 'تسجيل الدخول'}
-                {!login.isPending && <Icon icon={ArrowLeft} size={14} />}
-              </button>
-
-              <div className="auth-divider">حسابات تجريبية</div>
-
-              <div className="auth-demo">
-                <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('STUDENT')}>
-                  <Icon icon={GraduationCap} size={14} /> طالب
-                </button>
-                <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('TEACHER')}>
-                  <Icon icon={School} size={14} /> أستاذ
-                </button>
-                <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('ADMIN')}>
-                  <Icon icon={Building2} size={14} /> الإدارة
-                </button>
-                <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('QUALITY')}>
-                  <Icon icon={AlertCircle} size={14} /> الجودة
-                </button>
-              </div>
-
-              <div className="auth-terms">
-                بتسجيل دخولك توافق على <span>شروط الاستخدام</span> و<span>سياسة الخصوصية</span>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={onRegister} className="flex-col" noValidate>
-              <div className="auth-form-title">إنشاء حساب جديد</div>
-              <div className="auth-form-sub">انضم إلى منصة الزاوية الأكاديمية.</div>
-
-              {register.isError && (
-                <div className="auth-error">
-                  <Icon icon={AlertCircle} size={14} />
-                  <span>تعذّر إنشاء الحساب. تحقّق من البيانات وحاول مجدداً.</span>
-                </div>
-              )}
-
-              <div className="auth-field">
-                <label>نوع الحساب</label>
-                <div className="auth-role-grid">
-                  {(['STUDENT', 'TEACHER', 'ADMIN'] as Array<Exclude<AppRole, 'QUALITY'>>).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      className={`auth-role-btn${role === r ? ' on' : ''}`}
-                      onClick={() => {
-                        setRole(r);
-                        registerForm.setValue('role', r);
-                      }}
-                    >
-                      <Icon icon={r === 'STUDENT' ? GraduationCap : r === 'TEACHER' ? School : Building2} size={18} />
-                      {r === 'STUDENT' ? 'طالب' : r === 'TEACHER' ? 'أستاذ' : 'إداري'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="auth-row">
-                <div className="auth-field">
-                  <label>الاسم الأول</label>
-                  <div className="auth-input-wrap">
-                    <input className="auth-input has-icon" placeholder="أحمد" {...registerForm.register('firstName')} />
-                    <span className="auth-input-icon"><Icon icon={User} size={14} /></span>
-                  </div>
-                </div>
-                <div className="auth-field">
-                  <label>اسم العائلة</label>
-                  <input className="auth-input" placeholder="الزروق" {...registerForm.register('lastName')} />
-                </div>
-              </div>
-
+        {/* Right Side - Login Form */}
+        <div className="auth-right">
+          <div className="auth-form-container">
+            <h2 className="auth-form-title">تسجيل الدخول</h2>
+            
+            <form onSubmit={onLogin} noValidate className="auth-form">
               <div className="auth-field">
                 <label>البريد الإلكتروني</label>
                 <div className="auth-input-wrap">
-                  <input className="auth-input has-icon" type="email" placeholder="example@zu.edu.ly" {...registerForm.register('email')} />
-                  <span className="auth-input-icon"><Icon icon={Mail} size={14} /></span>
+                  <input
+                    type="email"
+                    className="auth-input has-icon-right"
+                    placeholder="example@madarek.edu.ly"
+                    {...loginForm.register('email')}
+                  />
+                  <span className="auth-input-icon"><Icon icon={Mail} size={16} /></span>
                 </div>
               </div>
 
-              {role === 'STUDENT' && (
-                <>
-                  <div className="auth-row">
-                    <div className="auth-field">
-                      <label>الكلية</label>
-                      <select className="auth-input" {...registerForm.register('facultyId')}>
-                        <option value="">اختر الكلية</option>
-                        {faculties?.map((f) => (<option key={f.id} value={f.id}>{f.name}</option>))}
-                      </select>
-                    </div>
-                    <div className="auth-field">
-                      <label>القسم</label>
-                      <select className="auth-input" {...registerForm.register('departmentId')}>
-                        <option value="">اختر القسم</option>
-                        {departments.map((d) => (<option key={d.id} value={d.id}>{d.name}</option>))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="auth-row">
-                    <div className="auth-field">
-                      <label>السنة الدراسية</label>
-                      <select className="auth-input" {...registerForm.register('year')}>
-                        {[1, 2, 3, 4, 5].map((y) => (<option key={y} value={y}>السنة {y}</option>))}
-                      </select>
-                    </div>
-                    <div className="auth-field">
-                      <label>الرقم الجامعي</label>
-                      <input className="auth-input" placeholder="UZ-2024-XXXXX" {...registerForm.register('universityId')} />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {role === 'TEACHER' && (
-                <>
-                  <div className="auth-field">
-                    <label>الكلية والقسم</label>
-                    <select className="auth-input" {...registerForm.register('departmentId')}>
-                      <option value="">اختر القسم</option>
-                      {(faculties ?? []).flatMap((f) =>
-                        f.departments.map((d) => (
-                          <option key={d.id} value={d.id}>{f.name} — {d.name}</option>
-                        )),
-                      )}
-                    </select>
-                  </div>
-                  <div className="auth-field">
-                    <label>التخصص الأكاديمي</label>
-                    <input className="auth-input" placeholder="علوم الحاسوب" {...registerForm.register('specialty')} />
-                  </div>
-                  <div className="auth-field">
-                    <label>الرتبة الأكاديمية</label>
-                    <select className="auth-input" {...registerForm.register('rank')}>
-                      <option value="LECTURER">محاضر</option>
-                      <option value="ASSISTANT_PROFESSOR">أستاذ مساعد</option>
-                      <option value="ASSOCIATE_PROFESSOR">أستاذ مشارك</option>
-                      <option value="PROFESSOR">أستاذ</option>
-                    </select>
-                  </div>
-                </>
-              )}
-
-              <div className="auth-row">
-                <div className="auth-field">
-                  <label>كلمة المرور</label>
-                  <div className="auth-input-wrap">
-                    <input className="auth-input has-icon" type="password" placeholder="8 أحرف على الأقل" {...registerForm.register('password')} />
-                    <span className="auth-input-icon"><Icon icon={Lock} size={14} /></span>
-                  </div>
-                </div>
-                <div className="auth-field">
-                  <label>تأكيد كلمة المرور</label>
-                  <input className="auth-input" type="password" placeholder="أعد الإدخال" {...registerForm.register('confirm')} />
+              <div className="auth-field">
+                <label>كلمة المرور</label>
+                <div className="auth-input-wrap">
+                  <input
+                    type="password"
+                    className="auth-input has-icon-right"
+                    placeholder="••••••••"
+                    {...loginForm.register('password')}
+                  />
+                  <span className="auth-input-icon"><Icon icon={Lock} size={16} /></span>
                 </div>
               </div>
 
-              <button type="submit" className="auth-btn" disabled={register.isPending}>
-                {register.isPending ? 'جارٍ إنشاء الحساب…' : 'إنشاء الحساب'}
-                {!register.isPending && <Icon icon={ArrowLeft} size={14} />}
+              <div className="auth-forgot-row">
+                <button type="button" className="auth-forgot" onClick={() => setForgotNotice(true)}>
+                  نسيت كلمة المرور؟
+                </button>
+              </div>
+              {forgotNotice && <div className="auth-forgot-notice">يرجى التواصل مع الإدارة.</div>}
+
+              <button type="submit" className="auth-btn primary" disabled={login.isPending}>
+                {login.isPending ? 'جارٍ الدخول...' : 'تسجيل الدخول'}
               </button>
 
-              <div className="auth-terms">
-                بإنشاء حسابك توافق على <span>شروط الاستخدام</span> و<span>سياسة الخصوصية</span>
+              <div className="auth-divider">
+                <span>or</span>
+              </div>
+
+              <div className="auth-register-prompt">
+                ليس لديك حساب؟ <Link to="/register">إنشاء حساب جديد</Link>
               </div>
             </form>
-          )}
+          </div>
         </div>
       </div>
     </div>

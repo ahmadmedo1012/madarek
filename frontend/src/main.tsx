@@ -2,18 +2,12 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import './styles/tokens.css';
+import './styles/stitch-tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/utilities.css';
 import './styles/landing.css';
 import './styles/pdf.css';
-import './styles/refinement.css';
-import './styles/evolution.css';
-import './styles/stitch-tokens.css';
-import './styles/final.css';
-import './styles/prd-v2.css';
-import './styles/aurora.css';
-
 import App from './App';
 
 const root = document.getElementById('root');

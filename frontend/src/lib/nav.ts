@@ -53,7 +53,7 @@ export const STUDENT_NAV: NavGroup[] = [
     label: 'حسابي والخدمات',
     items: [
       { to: '/student/profile', icon: UserCircle, label: 'ملفي الشخصي' },
-      { to: '/student/university', icon: Building2, label: 'جامعة الزاوية' },
+      { to: '/student/university', icon: Building2, label: 'جامعة مدارك' },
       { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
       { to: '/student/map', icon: MapPin, label: 'خريطة الحرم' },
     ],
