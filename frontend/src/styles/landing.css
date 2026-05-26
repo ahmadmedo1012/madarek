@@ -201,3 +201,112 @@
   .landing-nav { display: none; }
   .landing-footer { flex-direction: column; gap: var(--sp-4); }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Restored sections — pilot results + proof quote + .block utility
+   ═══════════════════════════════════════════════════════════════ */
+
+/* .block utility — used in hero title for line break */
+.landing-title .block {
+  display: block;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 8px;
+  letter-spacing: -0.01em;
+}
+
+/* Pilot results — 4-column grid of large percentage stats */
+.landing-pilot {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+  padding: var(--sp-4) 0;
+}
+.landing-pilot-stat {
+  text-align: center;
+  padding: var(--sp-5) var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.landing-pilot-stat:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+.landing-pilot-stat.highlight {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, var(--accent-soft) 0%, var(--surface-1) 100%);
+}
+.landing-pilot-value {
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.landing-pilot-value span {
+  font-size: 0.55em;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-inline-start: 2px;
+}
+.landing-pilot-label {
+  margin-top: var(--sp-2);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.landing-pilot-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+
+@media (max-width: 720px) {
+  .landing-pilot { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .landing-pilot { grid-template-columns: 1fr; }
+}
+
+/* Proof / testimonial */
+.landing-proof {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: var(--sp-8) var(--sp-6);
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.landing-proof-quote {
+  font-size: clamp(15px, 1.6vw, 18px);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  max-width: 720px;
+  margin: 0 auto var(--sp-4);
+}
+.landing-proof-quote::before {
+  content: '"';
+  display: inline-block;
+  font-size: 1.5em;
+  color: var(--accent);
+  vertical-align: -0.2em;
+  margin-inline-end: 4px;
+  font-weight: 800;
+}
+.landing-proof-source {
+  font-size: 13px;
+  color: var(--text-subtle);
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 600px) {
+  .landing-proof { padding: var(--sp-5) var(--sp-4); }
+}
