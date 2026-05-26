@@ -320,14 +320,38 @@ export default function LandingPage() {
             والبحث العلمي · ليبيا. كل زر، كل بطاقة، كل شاشة مكتوبة من الصفر، ومُختبَرة
             مع طلاب وأساتذة فعليين من كليات الجامعة.
           </p>
-
-          <div className="landing-cta-row" style={{ justifyContent: 'center', marginTop: 'var(--sp-6)' }}>
-            <Link to="/auth" className="btn primary">
-              ابدأ الآن
-              <Icon icon={ArrowLeft} size={14} />
-            </Link>
-          </div>
         </section>
+
+        {/* ═══════════ FINAL CTA — conversion section ═══════════ */}
+        <Reveal as="section" className="landing-final-cta">
+          <div className="landing-final-cta-inner">
+            <div className="landing-final-cta-eyebrow">
+              <span className="landing-final-cta-dot" aria-hidden />
+              ابدأ الآن
+            </div>
+            <h2 className="landing-final-cta-title">
+              منصّتك الأكاديمية بانتظارك
+            </h2>
+            <p className="landing-final-cta-lede">
+              سجّل دخولك ببريدك الجامعي أو رقم قيدك للوصول إلى مقرراتك
+              ومتابعة تقدّمك الأكاديمي.
+            </p>
+            <div className="landing-final-cta-actions">
+              <Link to="/auth" className="btn primary landing-final-cta-btn">
+                تسجيل الدخول
+                <Icon icon={ArrowLeft} size={16} />
+              </Link>
+              <a href="#features" className="btn outline landing-final-cta-btn">
+                اكتشف المنصة
+              </a>
+            </div>
+            <div className="landing-final-cta-meta">
+              <span>🇱🇾 وزارة التعليم العالي والبحث العلمي</span>
+              <span className="landing-final-cta-divider" aria-hidden>·</span>
+              <span>جامعة الزاوية</span>
+            </div>
+          </div>
+        </Reveal>
       </main>
 
       <div className="landing-shell">
