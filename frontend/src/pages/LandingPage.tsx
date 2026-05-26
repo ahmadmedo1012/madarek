@@ -168,7 +168,13 @@ export default function LandingPage() {
 
         {/* ═══════════ FEATURES ═══════════ */}
         <section id="features" className="landing-features">
-          <Reveal as="h2" className="landing-features-title">مميزاتنا</Reveal>
+          <div className="landing-section-head">
+            <span className="landing-section-eyebrow">المميزات</span>
+            <Reveal as="h2" className="landing-features-title">منظومة متكاملة لتعليم ذكي</Reveal>
+            <p className="landing-section-lede">
+              ست أدوات أساسية تربط الطالب والأستاذ والإدارة في تجربة واحدة سلسة.
+            </p>
+          </div>
           <div className="landing-features-grid">
             <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
               <Icon icon={Compass} size={24} />
@@ -223,10 +229,13 @@ export default function LandingPage() {
 
         {/* ═══════════ ROLE PILLARS ═══════════ */}
         <section id="pillars" className="landing-features">
-          <Reveal as="h2" className="landing-features-title">أربعة أدوار، تجربة موحَّدة</Reveal>
-          <p className="landing-subtitle" style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto var(--sp-6)' }}>
-            كل دور أكاديمي يرى ما يخصّه فقط — صلاحيات مدروسة وفصل واضح بين الواجبات.
-          </p>
+          <div className="landing-section-head">
+            <span className="landing-section-eyebrow">الأدوار</span>
+            <Reveal as="h2" className="landing-features-title">أربعة أدوار، تجربة موحَّدة</Reveal>
+            <p className="landing-section-lede">
+              كل دور أكاديمي يرى ما يخصّه فقط — صلاحيات مدروسة وفصل واضح بين الواجبات.
+            </p>
+          </div>
           <div className="landing-features-grid">
             <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
               <Icon icon={GraduationCap} size={20} />
@@ -265,11 +274,14 @@ export default function LandingPage() {
 
         {/* ═══════════ PROOF / PILOT RESULTS ═══════════ */}
         <section id="proof" className="landing-features">
-          <Reveal as="h2" className="landing-features-title">نتائج تجربة ميدانية</Reveal>
-          <p className="landing-subtitle" style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto var(--sp-6)' }}>
-            اعتمدنا استراتيجية الصف المعكوس على مادة اللغة الإنجليزية مع طلاب من جنوب
-            ليبيا، بمشاركة خبراء دوليين. الأرقام أدناه نتائج التجربة الفعلية.
-          </p>
+          <div className="landing-section-head">
+            <span className="landing-section-eyebrow">دراسة ميدانية</span>
+            <Reveal as="h2" className="landing-features-title">نتائج تجربة ميدانية</Reveal>
+            <p className="landing-section-lede">
+              اعتمدنا استراتيجية الصف المعكوس على مادة اللغة الإنجليزية مع طلاب من جنوب
+              ليبيا، بمشاركة خبراء دوليين. الأرقام أدناه نتائج التجربة الفعلية.
+            </p>
+          </div>
 
           <div className="landing-pilot">
             <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">40<span>%</span></div>
@@ -298,7 +310,10 @@ export default function LandingPage() {
 
         {/* ═══════════ ABOUT ═══════════ */}
         <section id="about" className="landing-features">
-          <Reveal as="h2" className="landing-features-title">عن المنصة</Reveal>
+          <div className="landing-section-head">
+            <span className="landing-section-eyebrow">عن المنصة</span>
+            <Reveal as="h2" className="landing-features-title">منصة رسمية لجامعة عريقة</Reveal>
+          </div>
           <p className="landing-subtitle" style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
             منصة الزاوية للتعليم الذكي هي المنصة التعليمية الرسمية لجامعة الزاوية، تأسست لتربط الطلاب
             والأساتذة والإدارة في بيئة رقمية واحدة، تحت إشراف وزارة التعليم العالي
