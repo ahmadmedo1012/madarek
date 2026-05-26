@@ -7,7 +7,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  --font-sans: 'Cairo', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --gold: #C29F55;
   --gold-soft: rgba(194, 159, 85, 0.15);
   --gold-hover: #D4B268;
