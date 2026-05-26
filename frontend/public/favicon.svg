@@ -1,12 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect x="2" y="2" width="28" height="28" rx="6" fill="#1F4D9B"/>
-  <g fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8 10 L8 19"/>
-    <path d="M11 13 Q11 19 14 19 Q17 19 17 16 L17 13"/>
-    <path d="M20 13 Q22 16 20 19"/>
-    <path d="M24 10 L24 19"/>
-    <path d="M23.4 8.6 Q24.2 7.6 25 8.6" stroke-width="1.2"/>
-  </g>
-  <rect x="6" y="22" width="20" height="4" rx="1" fill="#D4A537"/>
-  <text x="16" y="25.5" text-anchor="middle" font-family="serif" font-size="3.2" font-weight="700" fill="#FFFFFF">1980</text>
+  <defs>
+    <linearGradient id="f-arch" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0E3F6C"/>
+      <stop offset="1" stop-color="#3FB6C9"/>
+    </linearGradient>
+  </defs>
+  <path d="M16 2 C 11 2, 7 6, 7 11 L 7 28 C 7 29, 8 30, 9 30 L 23 30 C 24 30, 25 29, 25 28 L 25 11 C 25 6, 21 2, 16 2 Z"
+        fill="url(#f-arch)"/>
+  <!-- mini book -->
+  <path d="M9 21 L9 18 L15 17 L16 18 L17 17 L23 18 L23 21 L16 22 Z"
+        fill="#3FB6C9" stroke="#082C52" stroke-width="0.4"/>
+  <!-- sparkle -->
+  <path d="M16 12 L17 14 L19 15 L17 16 L16 18 L15 16 L13 15 L15 14 Z"
+        fill="#FFD166"/>
 </svg>

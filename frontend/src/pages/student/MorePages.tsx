@@ -636,7 +636,7 @@ export function UniversityInfoPage() {
           <FactRow label="الاسم السابق" value="جامعة السابع من أبريل" />
           <FactRow label="النوع" value="جامعة حكومية عامة" />
           <FactRow label="تاريخ التأسيس" value="1988 م (الكلية الفرعية 1983)" />
-          <FactRow label="الموقع" value="6 كم جنوب مدينة مدارك" />
+          <FactRow label="الموقع" value="6 كم جنوب مدينة الزاوية" />
           <FactRow label="المساحة" value="≈ 100 هكتار" />
           <FactRow label="الإحداثيات" value="32°45′00″N · 12°43′00″E" mono />
           <FactRow label="الألوان الرسمية" value="أخضر · أحمر · أبيض · أسود" />
@@ -644,7 +644,7 @@ export function UniversityInfoPage() {
       </Card>
 
       {/* Faculties — inside campus */}
-      <Card title="الكليات داخل الحرم الجامعي" icon={Building2} subtitle={`${REAL_FACULTIES_INSIDE.length} كلية في مدينة مدارك`}>
+      <Card title="الكليات داخل الحرم الجامعي" icon={Building2} subtitle={`${REAL_FACULTIES_INSIDE.length} كلية في مدينة الزاوية`}>
         <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
           {REAL_FACULTIES_INSIDE.map((f) => (
             <div key={f} className="faculty-chip-row">

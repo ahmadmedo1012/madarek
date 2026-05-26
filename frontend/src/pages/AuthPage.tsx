@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Home, GraduationCap, School, Building2, AlertCircle } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { BrandMark } from '../components/BrandMark';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import type { AppRole } from '../stores/auth.store';
@@ -79,9 +78,14 @@ export default function AuthPage() {
         {/* Left side — brand + benefits */}
         <div className="auth-left">
           <div className="auth-glass-card">
-            <BrandMark size={48} />
-            <h1 className="auth-glass-title">منصة مدارك</h1>
-            <p className="auth-glass-subtitle">جامعة الزاوية للتعليم الذكي</p>
+            <img
+              src="/brand/madarek-logo-md.jpg"
+              alt="منصة الزاوية للتعليم الذكي"
+              className="auth-glass-logo"
+              width="360"
+              height="196"
+              loading="eager"
+            />
             <p className="auth-glass-desc">
               أهلاً بك في بوابتك الأكاديمية.
               <br />

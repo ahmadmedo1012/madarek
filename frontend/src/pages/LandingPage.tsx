@@ -66,7 +66,7 @@ export default function LandingPage() {
           <a href="#proof">النتائج</a>
           <a href="#about">عن المنصة</a>
         </nav>
-        <Link to="/" className="landing-brand" aria-label="منصة مدارك — جامعة الزاوية">
+        <Link to="/" className="landing-brand" aria-label="منصة الزاوية للتعليم الذكي">
           <BrandMark size={32} />
         </Link>
       </header>
@@ -91,7 +91,7 @@ export default function LandingPage() {
         <section className="landing-hero">
           <Reveal as="div" className="landing-hero-content">
             <h1 className="landing-title">
-              منصة مدارك:
+              منصة الزاوية:
               <span className="block">جامعة الزاوية للتعليم الذكي</span>
             </h1>
             <p className="landing-subtitle">
@@ -296,7 +296,7 @@ export default function LandingPage() {
         <section id="about" className="landing-features">
           <Reveal as="h2" className="landing-features-title">عن المنصة</Reveal>
           <p className="landing-subtitle" style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-            مدارك هي المنصة التعليمية الرسمية لجامعة الزاوية، تأسست لتربط الطلاب
+            منصة الزاوية للتعليم الذكي هي المنصة التعليمية الرسمية لجامعة الزاوية، تأسست لتربط الطلاب
             والأساتذة والإدارة في بيئة رقمية واحدة، تحت إشراف وزارة التعليم العالي
             والبحث العلمي · ليبيا. كل زر، كل بطاقة، كل شاشة مكتوبة من الصفر، ومُختبَرة
             مع طلاب وأساتذة فعليين من كليات الجامعة.
@@ -319,7 +319,7 @@ export default function LandingPage() {
             <a href="#pillars">الأدوار</a>
             <a href="#proof">النتائج</a>
             <a href="#about">عن المنصة</a>
-            <span>© {year} منصة مدارك · جامعة الزاوية</span>
+            <span>© {year} منصة الزاوية للتعليم الذكي · جامعة الزاوية</span>
           </div>
         </footer>
       </div>

@@ -3123,11 +3123,27 @@
   background: rgba(11, 37, 69, 0.7);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  padding: 40px;
+  border-radius: 20px;
+  padding: 36px 32px;
   text-align: center;
   color: white;
-  width: 320px;
+  width: 360px;
+  max-width: 100%;
+}
+.auth-glass-logo {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
+  border-radius: 14px;
+  /* Logo image has a near-white background; sit it on a soft cream surface so it
+     looks intentional rather than pasted on. Subtle ring to anchor it. */
+  background: linear-gradient(180deg, #FAF7F1 0%, #F2EEE3 100%);
+  padding: 16px 12px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.10),
+    0 12px 32px -10px rgba(0, 0, 0, 0.30);
 }
 .auth-glass-title {
   font-size: 24px;

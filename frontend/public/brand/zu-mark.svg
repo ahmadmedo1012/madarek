@@ -1,60 +1,81 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="University of Zawia — جامعة الزاوية">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="منصة الزاوية للتعليم الذكي">
   <!--
-    Official emblem of University of Zawia, recreated from the official badge.
-    Composition:
-      - Rounded blue badge frame (UoZ corporate blue)
-      - Stylized Arabic word "اقرأ" (Read — first divine command in Quran)
-      - Gold ribbon underneath inscribed "1980" (founding year)
+    Mark inspired by the official 'منصة الزاوية للتعليم الذكي' logo:
+      - Mosque-arch silhouette in deep navy → teal gradient
+      - Open book at the centre
+      - Sparkle / star above the book
+      - Circuit dot accents along the arch (smart-learning signal)
   -->
   <defs>
-    <linearGradient id="zu-blue" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1F4D9B"/>
-      <stop offset="1" stop-color="#163A7A"/>
+    <linearGradient id="zu-arch" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0"   stop-color="#0E3F6C"/>
+      <stop offset="0.5" stop-color="#2479A8"/>
+      <stop offset="1"   stop-color="#3FB6C9"/>
     </linearGradient>
-    <linearGradient id="zu-gold-rib" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#D4A537"/>
-      <stop offset="1" stop-color="#9F7218"/>
+    <linearGradient id="zu-arch-deep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#082C52"/>
+      <stop offset="1" stop-color="#0E3F6C"/>
     </linearGradient>
+    <linearGradient id="zu-book" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3FB6C9"/>
+      <stop offset="1" stop-color="#1F7FA7"/>
+    </linearGradient>
+    <radialGradient id="zu-sparkle" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFE694"/>
+      <stop offset="1" stop-color="#F5B845"/>
+    </radialGradient>
   </defs>
 
-  <!-- Outer rounded badge frame -->
-  <rect x="6" y="6" width="52" height="52" rx="12" fill="#FFFFFF" stroke="url(#zu-blue)" stroke-width="2.5"/>
+  <!-- Outer mosque-arch silhouette -->
+  <path
+    d="M32 4
+       C 22 4, 14 12, 14 22
+       L 14 56
+       C 14 58, 16 60, 18 60
+       L 46 60
+       C 48 60, 50 58, 50 56
+       L 50 22
+       C 50 12, 42 4, 32 4 Z"
+    fill="url(#zu-arch)"
+    stroke="#082C52"
+    stroke-width="0.8"/>
 
-  <!-- Inner blue field -->
-  <rect x="10" y="10" width="44" height="36" rx="8" fill="url(#zu-blue)"/>
+  <!-- Inner darker recess to give depth -->
+  <path
+    d="M32 9
+       C 24.5 9, 18.5 15, 18.5 22.5
+       L 18.5 55.5
+       L 45.5 55.5
+       L 45.5 22.5
+       C 45.5 15, 39.5 9, 32 9 Z"
+    fill="url(#zu-arch-deep)"/>
 
-  <!--
-    Stylized "اقرأ" calligraphy (Iqra' = Read).
-    Built from custom strokes to honour the official emblem aesthetic
-    without infringing typeface licences. White on blue field.
-  -->
-  <g fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-    <!-- alif (ا) -->
-    <path d="M19 18 L19 36"/>
-    <!-- qaf (ق) — body + dots -->
-    <path d="M26 24 Q26 36 32 36 Q38 36 38 30 L38 24"/>
-    <circle cx="32" cy="20" r="1.4" fill="#FFFFFF"/>
-    <circle cx="35" cy="20" r="1.4" fill="#FFFFFF"/>
-    <!-- ra (ر) -->
-    <path d="M44 24 Q47 30 43 36"/>
-    <!-- final hamza-bearing alif (أ) — vertical with hamza on top -->
-    <path d="M51 18 L51 36"/>
-    <path d="M50 16 Q52 14 53 16" stroke-width="2"/>
+  <!-- Circuit accents — small dots along the arch (smart learning signal) -->
+  <g fill="#3FB6C9">
+    <circle cx="20" cy="18" r="1.1"/>
+    <circle cx="44" cy="18" r="1.1"/>
+    <circle cx="17" cy="32" r="1.1"/>
+    <circle cx="47" cy="32" r="1.1"/>
+    <circle cx="17" cy="46" r="1.1"/>
+    <circle cx="47" cy="46" r="1.1"/>
   </g>
 
-  <!-- Gold ribbon strip — founding year "1980" -->
-  <g>
-    <!-- Ribbon body -->
-    <path d="M14 46 L50 46 L52 50 L50 54 L14 54 L12 50 Z" fill="url(#zu-gold-rib)" stroke="#7A560E" stroke-width="0.4"/>
-    <!-- 1980 numerals -->
-    <text x="32" y="52.4" text-anchor="middle"
-          font-family="Georgia, 'Times New Roman', serif"
-          font-size="6.5"
-          font-weight="700"
-          fill="#FFFFFF"
-          letter-spacing="0.4">1980</text>
+  <!-- Open book at centre -->
+  <g transform="translate(32, 38)">
+    <!-- Book base -->
+    <path d="M-12 4 L-12 -2 Q-12 -4 -10 -4 L-1 -4 L0 -3 L1 -4 L10 -4 Q12 -4 12 -2 L12 4 L0 5 Z"
+          fill="url(#zu-book)" stroke="#082C52" stroke-width="0.6"/>
+    <line x1="0" y1="-3" x2="0" y2="5" stroke="#082C52" stroke-width="0.6"/>
+    <!-- Page lines -->
+    <line x1="-9" y1="-1" x2="-3" y2="-1" stroke="#082C52" stroke-width="0.45" opacity="0.65"/>
+    <line x1="-9" y1="1.2"  x2="-3" y2="1.2"  stroke="#082C52" stroke-width="0.45" opacity="0.65"/>
+    <line x1="3"  y1="-1" x2="9"  y2="-1" stroke="#082C52" stroke-width="0.45" opacity="0.65"/>
+    <line x1="3"  y1="1.2"  x2="9"  y2="1.2"  stroke="#082C52" stroke-width="0.45" opacity="0.65"/>
   </g>
 
-  <!-- Subtle bottom shadow under ribbon -->
-  <ellipse cx="32" cy="58" rx="18" ry="1.2" fill="#000000" opacity="0.10"/>
+  <!-- Sparkle above the book -->
+  <g transform="translate(32, 26)">
+    <path d="M0 -4.5 L1 -1 L4.5 0 L1 1 L0 4.5 L-1 1 L-4.5 0 L-1 -1 Z"
+          fill="url(#zu-sparkle)"/>
+  </g>
 </svg>

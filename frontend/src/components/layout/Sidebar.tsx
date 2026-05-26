@@ -35,7 +35,7 @@ export function Sidebar() {
           </div>
           <div className="sidebar-brand-text">
             <div className="sidebar-brand-name">
-              منصة مدارك
+              منصة الزاوية
             </div>
             <div className="sidebar-brand-sub">جامعة الزاوية</div>
           </div>

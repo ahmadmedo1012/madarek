@@ -86,7 +86,7 @@ function resolveTitle(pathname: string): string {
   if (/^\/teacher\/intelligence\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
   if (/^\/student\/online-exams\/[^/]+$/.test(pathname)) return 'اختبار جارٍ';
   if (/^\/admin\/permissions\/[^/]+$/.test(pathname)) return 'إدارة الصلاحيات';
-  return 'منصة مدارك';
+  return 'منصة الزاوية';
 }
 
 export function AppShell({ children }: { children?: ReactNode }) {
