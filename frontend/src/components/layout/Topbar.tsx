@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Bell, Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
+import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { GlobalSearch } from './GlobalSearch';
+import { NotificationDropdown } from './NotificationDropdown';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout } from '../../hooks/useAuth';
-import { useUnreadNotifications, useMyProfile } from '../../hooks/useResources';
+import { useMyProfile } from '../../hooks/useResources';
 
 interface TopbarProps {
   title: ReactNode;
@@ -26,8 +27,6 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const logoutM = useLogout();
-  const unreadQ = useUnreadNotifications();
-  const unread = unreadQ.data ?? 0;
   // PRD: student should see their college as a quick scope indicator.
   // Only fetched for students — useMyProfile is no-op for other roles.
   const profileQ = useMyProfile();
@@ -89,19 +88,7 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
             <span className="hide-on-mobile">اسأل AI</span>
           </NavLink>
         ))}
-        <button
-          type="button"
-          className="topbar-notif"
-          aria-label="الإشعارات"
-          onClick={() => navigate(alertsPath)}
-        >
-          <Icon icon={Bell} size={16} />
-          {unread > 0 && (
-            <span className="topbar-notif-badge" aria-label={`${unread} غير مقروء`}>
-              {unread > 99 ? '99+' : unread}
-            </span>
-          )}
-        </button>
+        <NotificationDropdown alertsPath={alertsPath} />
 
         {user && (
           <div className="topbar-user" ref={menuRef}>

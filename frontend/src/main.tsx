@@ -12,6 +12,7 @@ import './styles/system.css';
 import './styles/responsive.css';
 import './styles/dashboard.css';
 import './styles/interactions.css';
+import './styles/notifications.css';
 import './styles/pdf.css';
 import App from './App';
 

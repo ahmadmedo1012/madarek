@@ -6,9 +6,9 @@
 
 :root {
   /* ── Brand (mode-invariant) ───────────────────────────── */
-  --brand-blue: #2952C8;
-  --brand-blue-deep: #1E3A8A;
-  --brand-purple: #5B3CA8;
+  --brand-blue: #4F46E5;
+  --brand-blue-deep: #3730A3;
+  --brand-purple: #7C3AED;
   --brand-gold: #D4A537;
 
   /* ── Spacing (4-px scale) ─────────────────────────────── */
@@ -78,7 +78,7 @@
   --content-max-w: 1400px;
 
   /* ── Fonts ───────────────────────────────────────────── */
-  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Cairo', 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 }
 
@@ -103,10 +103,10 @@
   --text-subtle: #6A7088;
 
   /* Accent */
-  --accent: #3D6BD6;
-  --accent-hover: #5982E1;
-  --accent-soft: rgba(61, 107, 214, 0.14);
-  --accent-border: rgba(61, 107, 214, 0.45);
+  --accent: #6366F1;
+  --accent-hover: #818CF8;
+  --accent-soft: rgba(99, 102, 241, 0.14);
+  --accent-border: rgba(99, 102, 241, 0.45);
   --accent-fg: #FFFFFF;
 
   /* Gold (sparing, premium accent) */
@@ -135,10 +135,10 @@
   --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.38);
 
   /* Focus ring */
-  --focus-ring: 0 0 0 3px rgba(61, 107, 214, 0.35);
+  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.35);
 
   /* Selection */
-  --selection-bg: rgba(61, 107, 214, 0.35);
+  --selection-bg: rgba(99, 102, 241, 0.35);
 
   /* Chart palette (used only by Chart.js — not for UI) */
   --chart-grid: rgba(255, 255, 255, 0.05);
@@ -161,10 +161,10 @@
   --text-muted: #475569;
   --text-subtle: #8694AC;
 
-  --accent: #2952C8;
-  --accent-hover: #1E3FA5;
-  --accent-soft: rgba(41, 82, 200, 0.10);
-  --accent-border: rgba(41, 82, 200, 0.40);
+  --accent: #4F46E5;
+  --accent-hover: #4338CA;
+  --accent-soft: rgba(79, 70, 229, 0.10);
+  --accent-border: rgba(79, 70, 229, 0.40);
   --accent-fg: #FFFFFF;
 
   --gold: #B8861E;
@@ -187,8 +187,8 @@
   --shadow-card: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.04);
   --shadow-card-hover: 0 0 0 1px rgba(41, 82, 200, 0.10), 0 8px 24px rgba(15, 23, 42, 0.10);
 
-  --focus-ring: 0 0 0 3px rgba(41, 82, 200, 0.20);
-  --selection-bg: rgba(41, 82, 200, 0.18);
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.20);
+  --selection-bg: rgba(79, 70, 229, 0.18);
 
   --chart-grid: rgba(15, 23, 42, 0.06);
   --chart-text: #8694AC;
