@@ -8,6 +8,7 @@ import { Home, BookOpen, Bell, User, Sparkles, ClipboardList, BarChart3, Users }
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { useAuthStore } from '../../stores/auth.store';
+import { useUiStore } from '../../stores/ui.store';
 
 type BottomItem = { to: string; label: string; icon: LucideIcon };
 
@@ -45,7 +46,11 @@ const QUALITY: BottomItem[] = [
 
 export function BottomNav() {
   const role = useAuthStore((s) => s.user?.role);
+  const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   if (!role) return null;
+  // Hide while the sidebar drawer is open on phone — they would otherwise stack
+  // on top of each other and feel cluttered.
+  if (sidebarOpen) return null;
 
   const items =
     role === 'TEACHER' ? TEACHER :

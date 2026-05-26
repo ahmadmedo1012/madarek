@@ -523,6 +523,8 @@ button { font-family: inherit; cursor: pointer; }
     transform: translateX(100%);
     transition: transform var(--t-base) var(--ease);
     box-shadow: var(--shadow-xl);
+    /* Sit above bottom-nav (z 40) and the backdrop (z 65) */
+    z-index: 70;
   }
   .sidebar.open { transform: translateX(0); }
   .main { width: 100%; }
@@ -533,7 +535,9 @@ button { font-family: inherit; cursor: pointer; }
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.55);
-    z-index: 25;
+    /* Sit above bottom-nav (z 40) so the dimming covers everything,
+       but below the drawer itself (z 70) */
+    z-index: 65;
     animation: backdrop-in var(--t-base) var(--ease);
   }
   .sidebar-backdrop.show { display: block; }
