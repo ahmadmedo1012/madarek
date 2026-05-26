@@ -21,7 +21,7 @@ export function AdminDashboardPage() {
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">لوحة الإدارة</h1>
-          <p className="page-subtitle">إحصائيات شاملة عن طلاب وأساتذة جامعة مدارك.</p>
+          <p className="page-subtitle">إحصائيات شاملة عن طلاب وأساتذة جامعة الزاوية.</p>
         </div>
       </div>
 
@@ -36,14 +36,14 @@ export function AdminDashboardPage() {
         <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle="أعلى 8 كليات من حيث عدد الطلاب">
           <div className="flex-col gap-3">
             {[
-              { f: 'كلية الاقتصاد · مدارك', c: 6800 },
-              { f: 'كلية الهندسة · مدارك', c: 5200 },
+              { f: 'كلية الاقتصاد · الزاوية', c: 6800 },
+              { f: 'كلية الهندسة · الزاوية', c: 5200 },
               { f: 'كلية الطب البشري', c: 4800 },
               { f: 'كلية التربية · الفروع الخمسة', c: 4500 },
-              { f: 'كلية الآداب · مدارك', c: 4100 },
-              { f: 'كلية القانون · مدارك', c: 3700 },
+              { f: 'كلية الآداب · الزاوية', c: 4100 },
+              { f: 'كلية القانون · الزاوية', c: 3700 },
               { f: 'كلية تقنية المعلومات', c: 2900 },
-              { f: 'كلية العلوم · مدارك', c: 2500 },
+              { f: 'كلية العلوم · الزاوية', c: 2500 },
             ].map((r) => (
               <ProgressBar key={r.f} value={(r.c / 6800) * 100} label={`${r.f} — ${r.c.toLocaleString('ar-LY')}`} showValue={false} />
             ))}

@@ -3230,3 +3230,165 @@
   .auth-split { grid-template-columns: 1fr; }
   .auth-left { display: none; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Auth glass page fixups (no functional rewrite — only repairs)
+   ───────────────────────────────────────────────────────────────
+   - Replace external Unsplash bg with a calm CSS gradient
+   - Ensure demo-account row works inside .auth-form-container
+   - Ensure back-home pill is visible above the split
+   - Mobile: collapse 2-col to 1-col; hide brand pane below 720px
+   ═══════════════════════════════════════════════════════════════ */
+
+.auth-overlay-madarek {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+/* Replace Unsplash image with a CSS-only academic gradient */
+.auth-left {
+  background-image:
+    radial-gradient(800px 600px at 30% 20%, rgba(245, 184, 69, 0.18), transparent 70%),
+    radial-gradient(600px 500px at 70% 80%, rgba(74, 158, 255, 0.20), transparent 70%),
+    linear-gradient(135deg, #0F1629 0%, #1A2540 50%, #0A0E1A 100%) !important;
+}
+.auth-left::before { display: none; }
+
+/* Back-home pill is fixed at top-end (RTL: top-right); float above split */
+.auth-overlay-madarek .auth-back-home {
+  position: fixed;
+  top: 16px;
+  inset-inline-start: 16px;
+  z-index: 1100;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1A2540;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  min-height: 36px;
+}
+.auth-overlay-madarek .auth-back-home:hover {
+  transform: translateX(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+@media (max-width: 600px) {
+  .auth-overlay-madarek .auth-back-home span { display: none; }
+  .auth-overlay-madarek .auth-back-home { padding: 8px; min-width: 36px; justify-content: center; }
+}
+
+/* Demo accounts row inside the form container */
+.auth-form-container .auth-demo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+@media (min-width: 480px) {
+  .auth-form-container .auth-demo {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.auth-form-container .auth-demo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.auth-form-container .auth-demo-btn:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+.auth-form-container .auth-demo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Field-level error message */
+.auth-field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--danger, #ef4444);
+}
+
+/* Form-level error block (already exists, but sized within glass form) */
+.auth-form-container .auth-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--danger-soft, #fef2f2);
+  color: var(--danger, #b91c1c);
+  font-size: 12px;
+}
+
+/* Divider with text — make sure label centers nicely */
+.auth-form-container .auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px;
+  font-size: 11px;
+  color: var(--text-subtle);
+  letter-spacing: 0.4px;
+}
+.auth-form-container .auth-divider::before,
+.auth-form-container .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-register-prompt {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+/* Mobile: collapse 2-col split to single column with brand pane on top */
+@media (max-width: 720px) {
+  .auth-overlay-madarek .auth-split {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+  }
+  .auth-overlay-madarek .auth-left {
+    min-height: 240px;
+    padding: 56px 16px 24px;
+  }
+  .auth-overlay-madarek .auth-glass-card {
+    padding: 24px;
+    width: auto;
+    max-width: 360px;
+  }
+  .auth-overlay-madarek .auth-right { padding: 24px; }
+  .auth-overlay-madarek .auth-form-container { padding: 24px; }
+}
+
+/* Below 480px: hide brand pane entirely, focus on form */
+@media (max-width: 480px) {
+  .auth-overlay-madarek .auth-left { display: none; }
+  .auth-overlay-madarek .auth-split { padding-top: 56px; }
+}

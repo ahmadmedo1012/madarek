@@ -55,7 +55,7 @@ export default function CampusMapPage() {
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">خريطة الحرم الجامعي</h1>
-          <p className="page-subtitle">استكشف مباني جامعة مدارك وموقع كل كلية ومعمل ومرفق.</p>
+          <p className="page-subtitle">استكشف مباني جامعة الزاوية وموقع كل كلية ومعمل ومرفق.</p>
         </div>
       </div>
 

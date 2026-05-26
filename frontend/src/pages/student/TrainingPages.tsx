@@ -100,7 +100,7 @@ export default function TrainingCatalogPage() {
         <div className="page-title-block">
           <h1 className="page-title">التطوير الذاتي</h1>
           <p className="page-subtitle">
-            مسارات تدريبية مصمَّمة من فريق جامعة مدارك لتطوير مهاراتك الأكاديمية والمهنية.
+            مسارات تدريبية مصمَّمة من فريق جامعة الزاوية لتطوير مهاراتك الأكاديمية والمهنية.
             أكمل مساراً لتحصل على شهادة معتمدة من المنصة.
           </p>
         </div>
