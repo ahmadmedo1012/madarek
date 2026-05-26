@@ -373,12 +373,5 @@ h3, .h3 { font-weight: 700; }
    BOTTOM NAV — refined polish
    ═══════════════════════════════════════════════════════════════ */
 
-.bottom-nav-item {
-  letter-spacing: 0.01em;
-}
-.bottom-nav-item svg {
-  transition: transform var(--t-fast) var(--ease-out);
-}
-.bottom-nav-item.active svg {
-  transform: scale(1.1);
-}
+/* (BottomNav refinement lives in notifications.css alongside the
+   primary .bottom-nav rules — kept consolidated there.) */

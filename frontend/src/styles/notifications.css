@@ -245,14 +245,20 @@
   inset-inline: 0;
   bottom: 0;
   z-index: 40;
-  background: color-mix(in srgb, var(--surface-1) 88%, transparent);
-  -webkit-backdrop-filter: saturate(140%) blur(14px);
-          backdrop-filter: saturate(140%) blur(14px);
-  border-top: 1px solid var(--border);
-  padding: 6px 4px max(6px, env(safe-area-inset-bottom));
-  align-items: center;
+  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+          backdrop-filter: saturate(160%) blur(18px);
+  border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  padding: 8px 10px max(10px, env(safe-area-inset-bottom)) 10px;
+  align-items: stretch;
   justify-content: space-around;
-  gap: 2px;
+  gap: 4px;
+  /* A subtle gradient line accent across the very top of the bar — looks
+     like a hairline of light. Removes the hard slab feel of a flat top
+     border. */
+  box-shadow:
+    0 -1px 0 rgba(0, 0, 0, 0.02),
+    0 -10px 24px -10px rgba(15, 22, 41, 0.08);
 }
 
 .bottom-nav-item {
@@ -260,27 +266,92 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 6px 4px;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 2px 4px;
   border: 0;
   background: transparent;
-  color: var(--text-muted);
+  color: var(--text-subtle);
   text-decoration: none;
   font-size: 10.5px;
-  font-weight: 500;
-  border-radius: var(--r-md);
-  min-height: 48px;
-  transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: var(--r-lg);
+  min-height: 52px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color 200ms var(--ease-out),
+    background 200ms var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+.bottom-nav-item:active {
+  transform: scale(0.96);
 }
 .bottom-nav-item:hover { color: var(--text); }
+
+/* Active item — branded chip with floating icon */
 .bottom-nav-item[aria-current="page"],
 .bottom-nav-item.active {
   color: var(--accent);
-  background: var(--accent-soft);
+}
+
+.bottom-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 28px;
+  border-radius: var(--r-full);
+  transition:
+    background 240ms var(--ease-out),
+    transform 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out);
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 24%, var(--surface-1)) 0%,
+    color-mix(in srgb, var(--accent) 14%, var(--surface-1)) 100%);
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 36%, transparent);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.bottom-nav-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1;
+  /* Tabular-nums via font feature is on globally; ensures any number
+     in the label aligns. */
+}
+
+.bottom-nav-item.active .bottom-nav-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* On tighter phones the labels can be condensed — let them shrink instead
+   of overflow. With 5 items × 10.5 px text + 36 px icon, even at 320 px
+   viewport, each cell has ~62 px to play with. */
+@media (max-width: 360px) {
+  .bottom-nav { padding: 6px 6px max(8px, env(safe-area-inset-bottom)) 6px; gap: 2px; }
+  .bottom-nav-icon { width: 32px; height: 26px; }
+  .bottom-nav-label { font-size: 10px; }
 }
 
 @media (max-width: 640px) {
   .bottom-nav { display: flex; }
   /* Push content above the bottom nav so it isn't clipped */
-  .content { padding-bottom: max(72px, calc(64px + env(safe-area-inset-bottom))); }
+  .content { padding-bottom: max(80px, calc(72px + env(safe-area-inset-bottom))); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-item.active .bottom-nav-icon {
+    transform: none;
+  }
 }
