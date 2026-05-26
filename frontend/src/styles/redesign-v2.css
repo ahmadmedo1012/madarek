@@ -307,3 +307,54 @@
     box-shadow: -24px 0 60px rgba(0, 0, 0, 0.40) !important;
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Final numeral hammer — guarantees Latin glyphs everywhere.
+   Lower specificity intentionally; redesign-v2 already wins for numerics.
+   This rule covers any element that hasn't been targeted explicitly.
+   ═══════════════════════════════════════════════════════════════ */
+
+* {
+  font-variant-numeric: lining-nums !important;
+  font-feature-settings: 'lnum' 1 !important;
+}
+.tbl-num, .kpi-value, .metric-value, .stat-card-value,
+.dash-gpa-value, .dash-term-pct, .landing-pilot-value,
+.invoice-num, [data-numeric] {
+  font-feature-settings: 'lnum' 1, 'tnum' 1 !important;
+  font-variant-numeric: lining-nums tabular-nums !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Landing brand block — logo mark + name + sub stack
+   ═══════════════════════════════════════════════════════════════ */
+.landing-brand {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.landing-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+.landing-brand-name {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.landing-brand-sub {
+  font-size: 11px;
+  color: var(--text-subtle);
+  font-weight: 500;
+  margin-top: 2px;
+}
+@media (max-width: 480px) {
+  .landing-brand-text { display: none; }
+}

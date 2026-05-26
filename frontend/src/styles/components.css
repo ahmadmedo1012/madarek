@@ -1068,20 +1068,24 @@
 }
 .auth-input {
   width: 100%;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
+  background: var(--surface-1);
+  border: 1.5px solid var(--border-strong);
   border-radius: var(--r-md);
-  padding: 10px var(--sp-3);
+  padding: 12px var(--sp-3);
   color: var(--text);
   font-family: inherit;
-  font-size: var(--fs-sm);
+  font-size: 14px;
   outline: none;
   direction: rtl;
-  transition: border-color var(--t-fast) var(--ease);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
-.auth-input:focus { border-color: var(--accent); }
+.auth-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
+}
 .auth-input::placeholder { color: var(--text-subtle); }
 .auth-input.has-icon { padding-right: 40px; }
+.auth-input.has-icon-right { padding-right: 40px; }
 
 .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
 
@@ -3345,12 +3349,12 @@
   z-index: 1000;
 }
 
-/* Replace Unsplash image with a CSS-only academic gradient */
+/* Indigo academic gradient — matches the redesign-v2 sidebar/welcome card */
 .auth-left {
   background-image:
-    radial-gradient(800px 600px at 30% 20%, rgba(245, 184, 69, 0.18), transparent 70%),
-    radial-gradient(600px 500px at 70% 80%, rgba(74, 158, 255, 0.20), transparent 70%),
-    linear-gradient(135deg, #0F1629 0%, #1A2540 50%, #0A0E1A 100%) !important;
+    radial-gradient(700px 500px at 25% 20%, rgba(129, 140, 248, 0.30), transparent 70%),
+    radial-gradient(500px 400px at 75% 80%, rgba(251, 191, 36, 0.16), transparent 70%),
+    linear-gradient(160deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%) !important;
 }
 .auth-left::before { display: none; }
 

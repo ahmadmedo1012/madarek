@@ -67,7 +67,11 @@ export default function LandingPage() {
           <a href="#about">عن المنصة</a>
         </nav>
         <Link to="/" className="landing-brand" aria-label="منصة الزاوية للتعليم الذكي">
-          <BrandMark size={32} />
+          <BrandMark size={36} />
+          <span className="landing-brand-text">
+            <span className="landing-brand-name">الزاوية</span>
+            <span className="landing-brand-sub">جامعة الزاوية</span>
+          </span>
         </Link>
       </header>
 
