@@ -284,11 +284,11 @@ export default function LandingPage() {
 
           <Reveal as="div" className="landing-proof" style={{ marginTop: 'var(--sp-6)' }}>
             <p className="landing-proof-quote">
-              «تجربة المعامل الافتراضية على ٤٠ طالباً في جامعة سرت أظهرت تفوّقاً واضحاً
+              «تجربة المعامل الافتراضية على 40 طالباً في جامعة سرت أظهرت تفوّقاً واضحاً
               للفريق الذي استخدم المنصة على فريق التعليم التقليدي. هذا ما نطمح لأن
               نقدّمه على مستوى جامعة الزاوية بأكملها.»
             </p>
-            <div className="landing-proof-source">— من دراسة جامعة سرت، ٢٠٢٤</div>
+            <div className="landing-proof-source">— من دراسة جامعة سرت، 2024</div>
           </Reveal>
         </section>
 

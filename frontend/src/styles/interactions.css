@@ -1,0 +1,248 @@
+/* ═══════════════════════════════════════════════════════════════
+   Interactions — refined press feedback + click motion
+   Loaded last so it overrides earlier transitions.
+   Goal: every clickable surface acknowledges the user's tap
+   with a quick, elegant scale + brightness change. The release
+   takes a touch longer than the press, which is the trick to
+   making clicks feel premium instead of dead.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Base press behaviour for ALL clickable surfaces */
+.btn,
+button:not(:disabled),
+a[href]:not(.no-press),
+[role="button"]:not(:disabled),
+.nav-item,
+.tab,
+.pill,
+.kpi-cell,
+.dash-agenda-item,
+.landing-feature-card,
+.landing-pilot-stat,
+.card-link,
+a:has(> .card),
+button:has(> .card),
+.role-tab {
+  transition-property:
+    transform, background-color, border-color, color, box-shadow, opacity, filter;
+  transition-duration:
+    var(--t-fast), var(--t-fast), var(--t-fast), var(--t-fast), var(--t-base), var(--t-fast), var(--t-fast);
+  transition-timing-function: var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Press: faster timing, slight scale + brightness change */
+.btn:active,
+button:not(:disabled):active,
+a[href]:not(.no-press):active,
+[role="button"]:not(:disabled):active,
+.nav-item:active,
+.tab:active,
+.pill:active,
+.kpi-cell:active,
+.dash-agenda-item:active,
+.landing-feature-card:active,
+.landing-pilot-stat:active,
+.card-link:active,
+a:has(> .card):active,
+button:has(> .card):active,
+.role-tab:active {
+  transition-duration: 60ms !important;
+  transform: scale(0.97);
+  filter: brightness(0.97);
+}
+
+/* Buttons — refined press scale */
+.btn:active { transform: scale(0.96); }
+.btn.primary:active {
+  box-shadow: var(--shadow-sm);
+  filter: brightness(0.95);
+}
+
+/* Inline text links — dim, don't scale */
+a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
+  transform: none;
+  filter: brightness(0.92);
+}
+
+/* Cards — gentler scale than buttons */
+.landing-feature-card:active,
+.landing-pilot-stat:active,
+.dash-agenda-item:active,
+.kpi-cell:active,
+.card-link:active {
+  transform: scale(0.992);
+}
+
+/* Pills shouldn't scale on touch */
+@media (hover: none) and (pointer: coarse) {
+  .pill:active { transform: none; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  button:active,
+  a:active,
+  [role="button"]:active,
+  .nav-item:active,
+  .card-link:active,
+  .landing-feature-card:active,
+  .landing-pilot-stat:active,
+  .dash-agenda-item:active,
+  .kpi-cell:active {
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NUMERIC FORMATTING — lining figures + tabular alignment
+   Force consistent number rendering across the platform.
+   ═══════════════════════════════════════════════════════════════ */
+
+.kpi-value,
+.metric-value,
+.stat-value,
+.dash-gpa-value,
+.dash-term-pct,
+.dash-doughnut-center,
+.dash-progress-value,
+.landing-pilot-value,
+.tbl-num,
+.tbl td:not(.tbl-text),
+.kbd,
+.invoice-num,
+.invoice-amount,
+.attendance-pct,
+.grade-num,
+.grade-pct,
+.score-pct,
+.duration-mono,
+.timestamp,
+[data-numeric="true"],
+[data-numeric] {
+  font-feature-settings: 'lnum' 1, 'tnum' 1, 'kern' 1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Force Western (Latin) digit glyphs even in RTL Arabic context */
+.kpi-value,
+.metric-value,
+.stat-value,
+.dash-gpa-value,
+.dash-term-pct,
+.dash-doughnut-center,
+.dash-progress-value,
+.landing-pilot-value,
+.tbl-num,
+.kbd,
+.invoice-num,
+.invoice-amount,
+[data-numeric="true"],
+[data-numeric] {
+  unicode-bidi: plaintext;
+}
+
+/* For Arabic strings that contain digits (e.g. "60 من 80")
+   ensure those digits use Latin glyphs */
+.dash-progress-value,
+.dash-term-foot,
+.landing-pilot-label,
+.landing-pilot-note,
+.landing-proof-source,
+.kpi-label,
+.dash-agenda-meta {
+  font-feature-settings: 'lnum' 1, 'tnum' 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL TAP / FOCUS REFINEMENT
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn, button, .nav-item, .tab, .pill, .role-tab,
+[role="button"], .card-link {
+  -webkit-user-select: none;
+          user-select: none;
+}
+
+.card p, .card span, .prose, .article-body, .lecture-body {
+  -webkit-user-select: text;
+          user-select: text;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE TRANSITION — softer + slightly longer
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes ix-page-in-soft {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    filter: blur(1px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+.content-inner {
+  animation: ix-page-in-soft 460ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-inner { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANCHOR JUMP — gentle highlight when arriving via #fragment
+   ═══════════════════════════════════════════════════════════════ */
+
+:target {
+  animation: ix-target-glow 1.4s var(--ease-out) both;
+}
+
+@keyframes ix-target-glow {
+  0%   { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 30%, transparent); }
+  60%  { box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 0%, transparent); }
+  100% { box-shadow: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :target { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS / METER — feel alive
+   ═══════════════════════════════════════════════════════════════ */
+
+.dash-term-bar > span,
+.progress-fill,
+[role="progressbar"] > span,
+.bar-fill {
+  transition: width 800ms var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTON HOVER GLOW — primary CTA feels alive without being flashy
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn.primary:hover {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.10),
+    0 8px 20px -6px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ICON-IN-BUTTON nudge — RTL-aware
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn svg {
+  transition: transform 240ms var(--ease-out);
+}
+.btn:hover svg {
+  transform: translateX(2px);
+}
