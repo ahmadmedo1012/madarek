@@ -47,90 +47,139 @@
 }
 .card-title-block { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .card-title {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
+  font-size: var(--fs-md);
+  font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.05px;
+  letter-spacing: -0.01em;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
+  line-height: 1.3;
 }
 .card-title-icon {
-  width: 14px;
-  height: 14px;
-  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
   flex-shrink: 0;
 }
 .card-subtitle {
   font-size: var(--fs-xs);
-  color: var(--text-subtle);
+  color: var(--text-muted);
   line-height: var(--lh-snug);
+  font-weight: 500;
 }
 .card-actions { display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; }
 
-/* ─── Metric / KPI cards (accent-bar style, no corner blob) ─ */
+/* ─── Metric / KPI cards — tinted-bg + icon-orb style per the plan ──
+   Background: 6% alpha tint of the color
+   Icon: 40 px rounded orb in the color
+   Value: large + tabular-nums + tight tracking
+   Layout: icon orb on the inline-end, label/value stacked on the start
+*/
 .metric {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--r-xl);
+  padding: var(--sp-5);
   position: relative;
-}
-.metric::before {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: var(--sp-5);
-  bottom: var(--sp-5);
-  width: 2px;
-  border-radius: 2px;
-  background: var(--accent);
-}
-.metric.green::before { background: var(--success); }
-.metric.amber::before { background: var(--warning); }
-.metric.red::before { background: var(--danger); }
-.metric.purple::before { background: var(--brand-purple); }
-.metric.gold::before { background: var(--gold); }
-
-.metric-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--sp-2);
-  margin-bottom: var(--sp-2);
+  gap: var(--sp-4);
+  overflow: hidden;
+  transition:
+    border-color 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
+}
+.metric::before {
+  /* Soft tinted halo from the inline-start corner — feels like the
+     metric is glowing with its own color. Replaces the old hard rail. */
+  content: '';
+  position: absolute;
+  inset-inline-start: -30px;
+  inset-block-start: -30px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+.metric.green::before  { background: radial-gradient(circle, var(--success-soft) 0%, transparent 70%); }
+.metric.amber::before  { background: radial-gradient(circle, var(--warning-soft) 0%, transparent 70%); }
+.metric.red::before    { background: radial-gradient(circle, var(--danger-soft) 0%, transparent 70%); }
+.metric.purple::before { background: radial-gradient(circle, color-mix(in srgb, var(--brand-purple) 12%, transparent) 0%, transparent 70%); }
+.metric.gold::before   { background: radial-gradient(circle, var(--gold-soft) 0%, transparent 70%); }
+
+.metric:hover {
+  border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
+  box-shadow: var(--shadow-card-hover);
+}
+
+.metric-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  flex: 1;
+  min-width: 0;
+  position: relative;
 }
 .metric-label {
   font-size: var(--fs-xs);
   color: var(--text-muted);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.01em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 .metric-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--text-subtle);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  position: relative;
+  /* Sub-icon size when used inside the orb */
 }
+.metric-icon svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+.metric.green  .metric-icon { background: var(--success-soft); color: var(--success); border-color: color-mix(in srgb, var(--success) 22%, transparent); }
+.metric.amber  .metric-icon { background: var(--warning-soft); color: var(--warning); border-color: color-mix(in srgb, var(--warning) 22%, transparent); }
+.metric.red    .metric-icon { background: var(--danger-soft);  color: var(--danger);  border-color: color-mix(in srgb, var(--danger)  22%, transparent); }
+.metric.purple .metric-icon {
+  background: color-mix(in srgb, var(--brand-purple) 12%, transparent);
+  color: var(--brand-purple);
+  border-color: color-mix(in srgb, var(--brand-purple) 22%, transparent);
+}
+.metric.gold   .metric-icon { background: var(--gold-soft);    color: var(--gold);    border-color: color-mix(in srgb, var(--gold)   22%, transparent); }
+
 .metric-value {
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.5px;
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
   line-height: 1.05;
   color: var(--text);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
+  margin-top: 2px;
 }
 .metric-change {
   font-size: var(--fs-xs);
   color: var(--text-subtle);
-  margin-top: var(--sp-2);
+  margin-top: var(--sp-1);
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1);
+  gap: 4px;
   font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
-.metric-change .up { color: var(--success); }
-.metric-change .dn { color: var(--danger); }
+.metric-change .up { color: var(--success); font-weight: 700; }
+.metric-change .dn { color: var(--danger); font-weight: 700; }
 
 /* ─── Buttons ───────────────────────────────────────────── */
 .btn {
@@ -458,23 +507,25 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1);
-  padding: 2px var(--sp-2);
-  border-radius: var(--r-sm);
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
   font-size: var(--fs-xxs);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   background: var(--surface-2);
   color: var(--text-muted);
   border: 1px solid var(--border);
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+  line-height: 1.4;
 }
-.badge.brand { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
-.badge.green { background: var(--success-soft); color: var(--success); border-color: transparent; }
-.badge.amber { background: var(--warning-soft); color: var(--warning); border-color: transparent; }
-.badge.red   { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
-.badge.gold  { background: var(--gold-soft);    color: var(--gold);    border-color: transparent; }
-.badge.purple { background: rgba(91, 60, 168, 0.10); color: var(--brand-purple); border-color: transparent; }
+.badge.brand  { background: var(--accent-soft);  color: var(--accent);  border-color: color-mix(in srgb, var(--accent)  18%, transparent); }
+.badge.green  { background: var(--success-soft); color: var(--success); border-color: color-mix(in srgb, var(--success) 18%, transparent); }
+.badge.amber  { background: var(--warning-soft); color: var(--warning); border-color: color-mix(in srgb, var(--warning) 18%, transparent); }
+.badge.red    { background: var(--danger-soft);  color: var(--danger);  border-color: color-mix(in srgb, var(--danger)  18%, transparent); }
+.badge.gold   { background: var(--gold-soft);    color: var(--gold);    border-color: color-mix(in srgb, var(--gold)    18%, transparent); }
+.badge.purple { background: color-mix(in srgb, var(--brand-purple) 12%, transparent); color: var(--brand-purple); border-color: color-mix(in srgb, var(--brand-purple) 18%, transparent); }
 
 /* ─── Section title ─────────────────────────────────────── */
 .section-title {

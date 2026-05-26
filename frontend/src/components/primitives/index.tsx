@@ -73,13 +73,17 @@ export function MetricCard({
     <div className={cls}>
       <div className="metric-head">
         <span className="metric-label">{label}</span>
-        {icon && <Icon icon={icon} size={16} className="metric-icon" />}
+        <div className="metric-value">{value}</div>
+        {change !== undefined && (
+          <div className="metric-change">
+            {changeDirection && <span className={changeDirection}>{changeDirection === 'up' ? '↑' : '↓'}</span>}
+            <span>{change}</span>
+          </div>
+        )}
       </div>
-      <div className="metric-value">{value}</div>
-      {change !== undefined && (
-        <div className="metric-change">
-          {changeDirection && <span className={changeDirection}>{changeDirection === 'up' ? '↑' : '↓'}</span>}
-          <span>{change}</span>
+      {icon && (
+        <div className="metric-icon" aria-hidden>
+          <Icon icon={icon} size={22} />
         </div>
       )}
     </div>
