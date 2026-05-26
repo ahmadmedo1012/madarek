@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard, ProgressBar } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useMyExams, useStartExam, useSubmitAnswer, useFinishExam,
   useExamModerationQueue, useModerateExam,
@@ -77,7 +78,7 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
       style={{ ['--track-accent' as never]: accent, cursor: canStart ? 'pointer' : 'default' }}
     >
       <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
-        <span style={{ fontSize: 22 }}>{exam.courseIcon ?? '📝'}</span>
+        <EmojiIcon emoji={exam.courseIcon ?? '📝'} size={22} />
       </div>
       <div className="track-card-body">
         <div className="track-card-cat">{KIND_LABEL[exam.kind]} · {exam.courseName ?? exam.facultyName ?? 'موحد'}</div>

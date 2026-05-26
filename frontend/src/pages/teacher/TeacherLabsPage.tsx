@@ -23,6 +23,7 @@ import {
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
@@ -127,7 +128,7 @@ function LabCard({ lab }: { lab: VirtualLab }) {
           {lab.category}
           {lab.platform ? ` · ${lab.platform}` : ''}
         </div>
-        <div className="track-card-title">{lab.iconEmoji ? `${lab.iconEmoji} ` : ''}{lab.name}</div>
+        <div className="track-card-title">{lab.name}</div>
         <div className="track-card-meta">
           <Badge>{lab.totalExperiments ?? 0} تجربة معدّة</Badge>
         </div>

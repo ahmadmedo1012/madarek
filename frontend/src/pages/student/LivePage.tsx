@@ -13,6 +13,7 @@ import { Radio, Calendar, CheckCircle2, AlertCircle, ExternalLink, Clock } from 
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
 export default function LivePage() {
@@ -108,7 +109,7 @@ function StudentSessionRow({
   const ended = s.status === 'ENDED' || s.status === 'CANCELLED';
   return (
     <div className="run-row" style={{ borderInlineStart: `3px solid ${accent}` }}>
-      <span style={{ fontSize: 22, flexShrink: 0 }}>{s.offering.course.iconEmoji ?? '📡'}</span>
+      <EmojiIcon emoji={s.offering.course.iconEmoji ?? '📡'} size={22} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="text-sm" style={{ fontWeight: 600, marginBottom: 2 }}>
           {s.title}

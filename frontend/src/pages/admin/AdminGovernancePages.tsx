@@ -13,6 +13,7 @@ import {
 import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
 import { CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTeacherSuggestions,
   type AppCapability,
@@ -226,7 +227,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         <div className="flex-col gap-2">
           {data.suggestedCourses.map((c) => (
             <div key={c.id} className="suggested-course-row">
-              <span style={{ fontSize: 22 }}>{c.iconEmoji ?? '📘'}</span>
+              <EmojiIcon emoji={c.iconEmoji ?? '📘'} size={22} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="text-sm" style={{ fontWeight: 600 }}>{c.name}</div>
                 <div className="text-xxs text-subtle">

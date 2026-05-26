@@ -1,0 +1,143 @@
+/**
+ * EmojiIcon
+ *
+ * Maps the legacy `iconEmoji` data field (📢, 📚, 🏆, …) to a
+ * unified Lucide icon. Used wherever the data layer still emits
+ * emoji strings — keeps the icon system consistent across the
+ * platform without rewriting backend payloads.
+ *
+ * Falls back to a sensible default (BookOpen) for unknown emojis
+ * so we never render the raw emoji glyph.
+ */
+import {
+  Megaphone,
+  Trophy,
+  Calendar,
+  BookOpen,
+  Radio,
+  Book,
+  FileText,
+  Star,
+  Beaker,
+  GraduationCap,
+  Lightbulb,
+  Briefcase,
+  Microscope,
+  Users,
+  Pen,
+  PartyPopper,
+  Globe,
+  Newspaper,
+  Heart,
+  Bell,
+  Bookmark,
+  Clock,
+  Coffee,
+  Code,
+  Gift,
+  HandHeart,
+  Library,
+  Mail,
+  Map,
+  MapPin,
+  Music,
+  Palette,
+  Phone,
+  PieChart,
+  Pin,
+  ScrollText,
+  Sparkles,
+  Target,
+  ThumbsUp,
+  Trophy as Award,
+  Wifi,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react';
+import { Icon } from './Icon';
+
+const MAP: Record<string, LucideIcon> = {
+  '📢': Megaphone,
+  '📣': Megaphone,
+  '🏆': Trophy,
+  '🏅': Award,
+  '🥇': Award,
+  '🥈': Award,
+  '🥉': Award,
+  '📅': Calendar,
+  '🗓️': Calendar,
+  '📆': Calendar,
+  '📚': BookOpen,
+  '📖': BookOpen,
+  '📕': Book,
+  '📗': Book,
+  '📘': Book,
+  '📙': Book,
+  '📒': Book,
+  '📓': Book,
+  '📔': Book,
+  '📡': Radio,
+  '📻': Radio,
+  '📝': FileText,
+  '✏️': Pen,
+  '✍️': Pen,
+  '⭐': Star,
+  '🌟': Sparkles,
+  '✨': Sparkles,
+  '🧪': Beaker,
+  '⚗️': Beaker,
+  '🔬': Microscope,
+  '🎓': GraduationCap,
+  '💡': Lightbulb,
+  '💼': Briefcase,
+  '👥': Users,
+  '🎉': PartyPopper,
+  '🎊': PartyPopper,
+  '🌍': Globe,
+  '🌐': Globe,
+  '🗺️': Map,
+  '📍': MapPin,
+  '📰': Newspaper,
+  '❤️': Heart,
+  '♥️': Heart,
+  '🔔': Bell,
+  '🔖': Bookmark,
+  '⏰': Clock,
+  '⌚': Clock,
+  '⏱️': Clock,
+  '☕': Coffee,
+  '💻': Code,
+  '⚡': Zap,
+  '🎁': Gift,
+  '🤝': HandHeart,
+  '📓📚': Library,
+  '✉️': Mail,
+  '📧': Mail,
+  '🎵': Music,
+  '🎼': Music,
+  '🎨': Palette,
+  '📞': Phone,
+  '☎️': Phone,
+  '📊': PieChart,
+  '📈': PieChart,
+  '📌': Pin,
+  '📜': ScrollText,
+  '🎯': Target,
+  '👍': ThumbsUp,
+  '📶': Wifi,
+};
+
+export function EmojiIcon({
+  emoji,
+  size = 20,
+  fallback = BookOpen,
+  className,
+}: {
+  emoji?: string | null;
+  size?: number;
+  fallback?: LucideIcon;
+  className?: string;
+}) {
+  const Cmp = (emoji && MAP[emoji]) || fallback;
+  return <Icon icon={Cmp} size={size} className={className} />;
+}

@@ -23,6 +23,7 @@ import {
 import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
 import { DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useMyTeacherProfile, useUpdateTeacherProfile,
   type TeacherFullProfile,
@@ -353,7 +354,7 @@ export default function TeacherProfilePage() {
                     color: c.themeColor ?? 'var(--accent)',
                   }}
                 >
-                  <span style={{ fontSize: 22 }}>{c.iconEmoji ?? '📚'}</span>
+                  <EmojiIcon emoji={c.iconEmoji ?? '📚'} size={22} />
                 </div>
                 <div className="track-card-body">
                   <div className="track-card-cat">{c.code} · {c.term}</div>

@@ -246,3 +246,40 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
 .btn:hover svg {
   transform: translateX(2px);
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB PANEL TRANSITION — content fades + slides slightly when
+   the active tab changes. Uses a key-based remount in the JSX
+   OR data-tab-key attribute that flips on each switch.
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes ix-tab-content-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+    filter: blur(0.5px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+.tab-panel,
+[role="tabpanel"],
+[data-tab-content] {
+  animation: ix-tab-content-in 280ms var(--ease-out) both;
+}
+
+/* When using a key on the panel root, rely on React remount —
+   each new mount re-runs the animation naturally. */
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-panel,
+  [role="tabpanel"],
+  [data-tab-content] {
+    animation: none;
+  }
+}

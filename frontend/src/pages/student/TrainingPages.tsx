@@ -19,6 +19,7 @@ import {
 import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../components/primitives';
 import { PageSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTrainingCatalog, useTrainingTrack, useEnrollTrack, useCompleteLesson,
   useTrainingMe, useMyBadges, useMyTrainingCerts, useTrainingLeaderboard,
@@ -212,7 +213,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
   return (
     <Link to={`/training/${track.slug}`} className="track-card" style={{ ['--track-accent' as never]: accent }}>
       <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
-        <span style={{ fontSize: 20 }}>{track.iconEmoji ?? '🎓'}</span>
+        <EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={20} />
       </div>
       <div className="track-card-body">
         <div className="track-card-cat">{CATEGORY_LABEL[track.category]} · {LEVEL_LABEL[track.level]}</div>
@@ -269,7 +270,7 @@ export function TrainingTrackPage() {
       {/* Hero band — track-themed */}
       <div className="track-hero" style={{ background: `linear-gradient(135deg, ${accent}26 0%, transparent 70%)`, borderRight: `3px solid ${accent}` }}>
         <div className="track-hero-icon" style={{ background: accent, color: '#fff' }}>
-          <span style={{ fontSize: 30 }}>{track.iconEmoji ?? '🎓'}</span>
+          <EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={30} />
         </div>
         <div style={{ flex: 1 }}>
           <div className="track-hero-cat">{CATEGORY_LABEL[track.category]}</div>
@@ -545,7 +546,7 @@ export function AchievementsPage() {
                   background: `${c.themeColor ?? 'var(--accent)'}1a`, color: c.themeColor ?? 'var(--accent)',
                   display: 'grid', placeItems: 'center', fontSize: 26, flexShrink: 0,
                 }}>
-                  {c.iconEmoji ?? '🏅'}
+                  <EmojiIcon emoji={c.iconEmoji ?? '🏅'} size={22} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div className="text-xxs text-subtle">شهادة إتمام مسار</div>

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useAnnouncements, useCompetitions, useCampusEvents, useRsvpEvent,
   type AnnouncementRow, type CompetitionRow, type CampusEventRow,
@@ -90,7 +91,7 @@ function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }
         <div className="announcement-pin"><Icon icon={Pin} size={12} /> مثبت</div>
       )}
       <div className="announcement-head">
-        <span className="announcement-icon">{a.iconEmoji ?? '📢'}</span>
+        <span className="announcement-icon"><EmojiIcon emoji={a.iconEmoji ?? '📢'} size={20} /></span>
         <div style={{ flex: 1 }}>
           <h3 className="announcement-title">{a.title}</h3>
           <div className="announcement-meta">
@@ -115,7 +116,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
   return (
     <div className="track-card" style={{ ['--track-accent' as never]: accent, cursor: 'default' }}>
       <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
-        <span style={{ fontSize: 24 }}>{c.iconEmoji ?? '🏆'}</span>
+        <EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={24} />
       </div>
       <div className="track-card-body">
         <div className="track-card-cat">{c.category}</div>
@@ -151,7 +152,7 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
           background: `${accent}1a`, color: accent,
           display: 'grid', placeItems: 'center', fontSize: 30,
         }}>
-          {e.iconEmoji ?? '📅'}
+          <EmojiIcon emoji={e.iconEmoji ?? '📅'} size={22} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3 style={{ fontSize: 'var(--fs-md)', margin: '0 0 6px 0' }}>{e.title}</h3>

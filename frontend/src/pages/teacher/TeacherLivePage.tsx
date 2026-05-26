@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, type LiveSessionRow,
@@ -241,7 +242,7 @@ function SessionRow({
   return (
     <div className="run-row" style={{ borderInlineStart: `3px solid ${accent}` }}>
       <span style={{ fontSize: 22, flexShrink: 0 }}>
-        {s.offering.course.iconEmoji ?? '📡'}
+        <EmojiIcon emoji={s.offering.course.iconEmoji ?? '📡'} size={22} />
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="text-sm" style={{ fontWeight: 600, marginBottom: 2 }}>{s.title}</div>
