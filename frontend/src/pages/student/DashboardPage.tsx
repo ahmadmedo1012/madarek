@@ -47,7 +47,7 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="page student-dashboard">
-      <header className="page-header">
+      <header className="page-header welcome-card">
         <h1 className="page-title">
           {greeting}، {user?.firstName ?? 'أحمد'}
         </h1>

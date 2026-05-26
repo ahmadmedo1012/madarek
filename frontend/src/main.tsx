@@ -14,6 +14,7 @@ import './styles/dashboard.css';
 import './styles/interactions.css';
 import './styles/notifications.css';
 import './styles/polish.css';
+import './styles/redesign-v2.css';
 import './styles/pdf.css';
 import App from './App';
 

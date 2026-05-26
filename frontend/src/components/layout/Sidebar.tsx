@@ -5,7 +5,7 @@ import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
 import { ThemeToggle } from './ThemeToggle';
-import { useAuthStore, type AppRole } from '../../stores/auth.store';
+import { useAuthStore } from '../../stores/auth.store';
 import { useLogout } from '../../hooks/useAuth';
 import { useUiStore } from '../../stores/ui.store';
 import { NAV_BY_ROLE, ROLE_LABELS } from '../../lib/nav';
@@ -39,21 +39,6 @@ export function Sidebar() {
             </div>
             <div className="sidebar-brand-sub">جامعة الزاوية</div>
           </div>
-        </div>
-
-        <div className="role-tabs" role="tablist" aria-label="الدور">
-          {(['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY'] as AppRole[]).map((r) => (
-            <button
-              key={r}
-              type="button"
-              role="tab"
-              className={`role-tab${r === user.role ? ' on' : ''}`}
-              disabled
-              aria-selected={r === user.role}
-            >
-              {ROLE_LABELS[r]}
-            </button>
-          ))}
         </div>
 
         {groups.map((g) => (

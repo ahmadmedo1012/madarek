@@ -78,7 +78,7 @@
   --content-max-w: 1400px;
 
   /* ── Fonts ───────────────────────────────────────────── */
-  --font-sans: 'Cairo', 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 }
 
