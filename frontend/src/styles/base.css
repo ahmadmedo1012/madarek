@@ -90,7 +90,7 @@ button { font-family: inherit; cursor: pointer; }
 
 .role-tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2px;
   padding: var(--sp-2) var(--sp-3);
   border-bottom: 1px solid var(--border);
@@ -104,6 +104,11 @@ button { font-family: inherit; cursor: pointer; }
   font-size: var(--fs-xxs);
   font-weight: var(--fw-medium);
   text-align: center;
+  /* Prevent text overflow when 4 columns fight for 244 px */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .role-tab.on {

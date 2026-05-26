@@ -579,6 +579,22 @@
   color: var(--text-muted);
   margin-bottom: var(--sp-2);
 }
+.state-icon-success {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.state-icon-warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.state-icon-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.state-icon-accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 .state-title { font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--text); }
 .state-desc { font-size: var(--fs-xs); color: var(--text-subtle); max-width: 320px; line-height: var(--lh-snug); }
 
@@ -2007,6 +2023,10 @@
   font-size: var(--fs-xxs);
   color: var(--text-subtle);
 }
+.feed-item-time {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
 .feed-item-text {
   font-size: var(--fs-sm);
   color: var(--text-muted);
@@ -2070,7 +2090,11 @@
 .compact-kpi-trend {
   font-size: var(--fs-xxs);
   margin-top: 2px;
+  color: var(--text-subtle);
 }
+.compact-kpi-trend[data-trend="positive"] { color: var(--success); }
+.compact-kpi-trend[data-trend="negative"] { color: var(--danger); }
+.compact-kpi-trend[data-trend="neutral"]  { color: var(--text-subtle); }
 
 
 /* ────────────────────────────────────────────────────────
@@ -3023,8 +3047,8 @@
    ──────────────────────────────────────────────────────── */
 .auth-back-home {
   position: fixed;
-  top: 16px;
-  inset-inline-start: 16px;
+  top: max(16px, env(safe-area-inset-top));
+  inset-inline-start: max(16px, env(safe-area-inset-left));
   z-index: 100;
   display: inline-flex;
   align-items: center;
@@ -3039,8 +3063,9 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
   border: 1px solid rgba(0, 0, 0, 0.08);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
-  /* 44px min touch target on mobile */
-  min-height: 36px;
+  min-height: 40px;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
 }
 [data-theme="dark"] .auth-back-home {
   background: rgba(20, 26, 41, 0.90);
@@ -3055,7 +3080,12 @@
 .auth-brand-header:hover .auth-brand-name { opacity: 0.85; }
 @media (max-width: 600px) {
   .auth-back-home span { display: none; }
-  .auth-back-home { padding: 8px; min-width: 36px; justify-content: center; }
+  .auth-back-home {
+    padding: 10px;
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
 }
 
 /* AuthPage Madarek Styles */

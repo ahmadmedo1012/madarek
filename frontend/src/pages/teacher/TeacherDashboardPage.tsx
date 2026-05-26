@@ -171,10 +171,10 @@ export function TeacherDashboardPage() {
 
       {/* Compact KPI strip */}
       <div className="compact-kpis">
-        <CompactKpi label="طلاب" value="143" trend="‏4% هذا الأسبوع" trendColor="var(--success)" />
-        <CompactKpi label="متوسط الأداء" value="71%" trend="‏5%" trendColor="var(--success)" />
-        <CompactKpi label="حضور" value="78%" trend="‏3%" trendColor="var(--danger)" />
-        <CompactKpi label="بحاجة تقييم" value="12" trend="واجبات + بحوث" trendColor="var(--text-subtle)" />
+        <CompactKpi label="طلاب" value="143" trend="‏4% هذا الأسبوع" trendColor="positive" />
+        <CompactKpi label="متوسط الأداء" value="71%" trend="‏5%" trendColor="positive" />
+        <CompactKpi label="حضور" value="78%" trend="‏3%" trendColor="negative" />
+        <CompactKpi label="بحاجة تقييم" value="12" trend="واجبات + بحوث" trendColor="neutral" />
       </div>
 
       {/* Filter toolbar */}
@@ -204,7 +204,7 @@ export function TeacherDashboardPage() {
         {visible.length === 0 ? (
           <Card>
             <div className="state">
-              <div className="state-icon" style={{ background: 'var(--success-soft)', color: 'var(--success)' }}>
+              <div className="state-icon state-icon-success">
                 <Icon icon={CheckCircle2} size={20} />
               </div>
               <div className="state-title">لا متطلبات الآن — أحسنت!</div>
@@ -220,13 +220,13 @@ export function TeacherDashboardPage() {
 }
 
 function CompactKpi({ label, value, trend, trendColor }: {
-  label: string; value: string; trend: string; trendColor: string;
+  label: string; value: string; trend: string; trendColor: 'positive' | 'negative' | 'neutral';
 }) {
   return (
     <div className="compact-kpi">
       <div className="compact-kpi-label">{label}</div>
       <div className="compact-kpi-value">{value}</div>
-      <div className="compact-kpi-trend" style={{ color: trendColor }}>{trend}</div>
+      <div className="compact-kpi-trend" data-trend={trendColor}>{trend}</div>
     </div>
   );
 }
@@ -246,7 +246,7 @@ function FeedRow({ item }: { item: FeedItem }) {
           <span className="feed-item-author">{item.authorName}</span>
           <span className="feed-item-meta">·</span>
           <span className="feed-item-meta">{item.meta}</span>
-          <span className="feed-item-meta" style={{ marginLeft: 'auto' }}>{item.time}</span>
+          <span className="feed-item-meta feed-item-time">{item.time}</span>
         </div>
         <div className="feed-item-text">{item.body}</div>
         {item.actions.length > 0 && (
