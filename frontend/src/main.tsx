@@ -9,6 +9,7 @@ import './styles/utilities.css';
 import './styles/landing.css';
 import './styles/premium.css';
 import './styles/system.css';
+import './styles/responsive.css';
 import './styles/pdf.css';
 import App from './App';
 
