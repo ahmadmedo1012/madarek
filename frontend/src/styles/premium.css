@@ -409,3 +409,415 @@ html {
     transition-delay: 0ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Academic Platform Overhaul — Liquid Glass & Cinematic Rhythm
+   ───────────────────────────────────────────────────────────────
+   This layer restyles the dashboards, sidebars, cards, and page
+   surfaces to elevate the institutional identity of Madarek.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Global Layout & Body Refinements ── */
+body {
+  background-image:
+    radial-gradient(1000px 800px at 10% 20%, rgba(91, 60, 168, 0.05), transparent 80%),
+    radial-gradient(800px 600px at 90% 80%, rgba(61, 107, 214, 0.05), transparent 80%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
+}
+
+[data-theme='light'] body {
+  background-image:
+    radial-gradient(1000px 800px at 10% 20%, rgba(41, 82, 200, 0.03), transparent 80%),
+    radial-gradient(800px 600px at 90% 80%, rgba(184, 134, 30, 0.02), transparent 80%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
+}
+
+/* ── Liquid Glass Card Overrides ── */
+.card,
+.gpa-hero,
+.compact-kpis,
+.feed-item,
+.track-card,
+.badge-tile {
+  background: rgba(17, 19, 26, 0.45) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.04),
+    0 12px 30px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  border-radius: var(--r-lg) !important;
+  transition: 
+    transform var(--t-slow) var(--ease),
+    box-shadow var(--t-slow) var(--ease),
+    border-color var(--t-slow) var(--ease) !important;
+}
+
+[data-theme='light'] .card,
+[data-theme='light'] .gpa-hero,
+[data-theme='light'] .compact-kpis,
+[data-theme='light'] .feed-item,
+[data-theme='light'] .track-card,
+[data-theme='light'] .badge-tile {
+  background: rgba(255, 255, 255, 0.70) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+  backdrop-filter: blur(20px) saturate(140%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 
+    0 4px 6px rgba(15, 23, 42, 0.01),
+    0 12px 30px rgba(15, 23, 42, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Card Hover Micro-interactions */
+.card:hover,
+.gpa-hero:hover,
+.feed-item:hover,
+.track-card:hover,
+.badge-tile:not(.locked):hover {
+  transform: translateY(-3px) translateZ(0);
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 
+    0 8px 12px rgba(0, 0, 0, 0.08),
+    0 20px 48px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme='light'] .card:hover,
+[data-theme='light'] .gpa-hero:hover,
+[data-theme='light'] .feed-item:hover,
+[data-theme='light'] .track-card:hover,
+[data-theme='light'] .badge-tile:not(.locked):hover {
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 
+    0 8px 12px rgba(15, 23, 42, 0.02),
+    0 20px 48px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ── Navigation Shell Glass ── */
+.sidebar {
+  background: rgba(17, 19, 26, 0.5) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  backdrop-filter: blur(24px) saturate(140%) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme='light'] .sidebar {
+  background: rgba(255, 255, 255, 0.8) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(120%) !important;
+  backdrop-filter: blur(24px) saturate(120%) !important;
+  border-left: 1px solid rgba(15, 23, 42, 0.05) !important;
+}
+
+.topbar {
+  background: rgba(10, 11, 15, 0.4) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
+  backdrop-filter: blur(16px) saturate(130%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  transition: all var(--t-base) var(--ease);
+}
+
+[data-theme='light'] .topbar {
+  background: rgba(247, 248, 250, 0.7) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Scrolled Topbar visual elevation */
+.topbar.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  background: rgba(10, 11, 15, 0.75) !important;
+}
+
+[data-theme='light'] .topbar.scrolled {
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ── Student Dashboard Specific Styles ── */
+.student-dashboard-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-4);
+}
+
+.dashboard-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-5);
+}
+
+@media (max-width: 768px) {
+  .dashboard-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+  }
+}
+
+/* GPA Card Design */
+.gpa-kpi-card {
+  padding: var(--sp-6) !important;
+}
+
+.gpa-kpi-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.gpa-kpi-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.gpa-kpi-label {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.gpa-kpi-value {
+  font-size: 54px;
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  line-height: 1;
+  margin: var(--sp-1) 0;
+  letter-spacing: -0.03em;
+}
+
+.gpa-kpi-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--gold-soft);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Academic Progress Card */
+.progress-kpi-card {
+  padding: var(--sp-6) !important;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+@media (max-width: 480px) {
+  .progress-kpi-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-4);
+  }
+}
+
+.progress-kpi-chart-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.progress-kpi-chart-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.progress-kpi-percentage {
+  font-size: 26px;
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  line-height: 1;
+}
+
+.progress-kpi-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.progress-kpi-label {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.progress-kpi-value {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  margin-top: var(--sp-1);
+}
+
+/* Semester Progress Card */
+.semester-progress-card {
+  padding: var(--sp-6) !important;
+  margin-bottom: var(--sp-6);
+}
+
+.semester-progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--sp-3);
+}
+
+.semester-progress-title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+}
+
+.semester-progress-percentage {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+}
+
+.semester-progress-bar-bg {
+  width: 100%;
+  height: 10px;
+  background: var(--surface-3);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  margin-bottom: var(--sp-3);
+}
+
+.semester-progress-bar-fill {
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-hover));
+  border-radius: var(--r-full);
+}
+
+.semester-progress-footer {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-subtle);
+  font-size: var(--fs-xs);
+}
+
+/* Upcoming Tasks Section */
+.upcoming-tasks-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.upcoming-tasks-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--sp-1);
+}
+
+.upcoming-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.upcoming-task-item {
+  padding: var(--sp-4) !important;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.task-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.task-icon-wrap.presentation {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.task-icon-wrap.assignment {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.task-icon-wrap.lab {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.task-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.task-name {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+}
+
+.task-time {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ── Interactive Navigation Menu Hover Effects ── */
+.nav-item {
+  position: relative;
+  transition: all var(--t-fast) var(--ease);
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: var(--gold);
+  border-radius: var(--r-full) 0 0 var(--r-full);
+  transition: height var(--t-fast) var(--ease);
+}
+
+.nav-item.on::before {
+  height: 60%;
+}
+
+.nav-item.on {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+
+/* ── Smooth cinematic fade-in animations for dashboards ── */
+.student-dashboard-page,
+.teacher-dashboard-page,
+.admin-dashboard-page {
+  animation: dashboardFadeIn 600ms var(--ease) both;
+}
+
+@keyframes dashboardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

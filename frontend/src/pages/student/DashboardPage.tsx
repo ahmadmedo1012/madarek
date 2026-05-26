@@ -42,38 +42,38 @@ export default function StudentDashboardPage() {
   })();
 
   return (
-    <div className="page" style={{ maxWidth: 1000, margin: '0 auto', padding: '24px' }}>
-      <div className="page-header" style={{ marginBottom: 32 }}>
+    <div className="page student-dashboard-page">
+      <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title" style={{ fontSize: 24, fontWeight: 'bold' }}>{greeting}، {user?.firstName ?? 'أحمد'}</h1>
-          <p className="page-subtitle" style={{ color: 'var(--text-muted)' }}>
+          <h1 className="page-title">{greeting}، {user?.firstName ?? 'أحمد'}</h1>
+          <p className="page-subtitle">
             لوحة متابعة تقدمك الأكاديمي.
           </p>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
-        <Card style={{ padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <div style={{ color: 'var(--text-muted)', fontSize: 14, fontWeight: '600' }}>المعدل التراكمي</div>
-              <div style={{ fontSize: 48, fontWeight: 'bold', color: 'var(--accent)', lineHeight: 1.2 }}>3.8</div>
-              <div style={{ fontSize: 14, padding: '4px 0' }}><Badge color="green">ممتاز</Badge></div>
+      <div className="dashboard-metrics-grid">
+        <Card className="gpa-kpi-card">
+          <div className="gpa-kpi-content">
+            <div className="gpa-kpi-info">
+              <div className="gpa-kpi-label">المعدل التراكمي</div>
+              <div className="gpa-kpi-value">3.8</div>
+              <div className="gpa-kpi-badge"><Badge color="green">ممتاز</Badge></div>
             </div>
-            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--gold-soft)', color: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="gpa-kpi-icon-wrap">
               <Icon icon={GraduationCap} size={24} />
             </div>
           </div>
         </Card>
 
-        <Card style={{ padding: 24, display: 'flex', alignItems: 'center', gap: 24 }}>
-          <div style={{ position: 'relative', width: 100, height: 100, flexShrink: 0 }}>
+        <Card className="progress-kpi-card">
+          <div className="progress-kpi-chart-wrap">
              <Doughnut
                 data={{
                   labels: ['منجز', 'متبقي'],
                   datasets: [{
                     data: [75, 25],
-                    backgroundColor: ['#0B2545', '#E9ECEF'],
+                    backgroundColor: ['var(--accent)', 'var(--surface-3)'],
                     borderWidth: 0,
                   }],
                 }}
@@ -84,63 +84,65 @@ export default function StudentDashboardPage() {
                   plugins: { legend: { display: false }, tooltip: { enabled: false } },
                 }}
               />
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-                <span style={{ fontSize: 24, fontWeight: 'bold', color: 'var(--accent)', lineHeight: 1 }}>75%</span>
+              <div className="progress-kpi-chart-label">
+                <span className="progress-kpi-percentage">75%</span>
               </div>
           </div>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: 14, fontWeight: '600' }}>التقدم الأكاديمي</div>
-            <div style={{ fontSize: 16, fontWeight: 'bold', color: 'var(--text)', marginTop: 4 }}>60 من 80 ساعة معتمدة</div>
+          <div className="progress-kpi-info">
+            <div className="progress-kpi-label">التقدم الأكاديمي</div>
+            <div className="progress-kpi-value">60 من 80 ساعة معتمدة</div>
           </div>
         </Card>
       </div>
 
-      <Card style={{ padding: 24, marginBottom: 24 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div style={{ fontSize: 16, fontWeight: '600' }}>تقدم الفصل الدراسي الحالي</div>
-          <div style={{ fontSize: 16, fontWeight: 'bold', color: 'var(--accent)' }}>60%</div>
+      <Card className="semester-progress-card">
+        <div className="semester-progress-header">
+          <div className="semester-progress-title">تقدم الفصل الدراسي الحالي</div>
+          <div className="semester-progress-percentage">60%</div>
         </div>
-        <div style={{ width: '100%', height: 12, background: 'var(--surface-3)', borderRadius: 6, overflow: 'hidden', marginBottom: 12 }}>
-          <div style={{ width: '60%', height: '100%', background: 'var(--gold)', borderRadius: 6 }} />
+        <div className="semester-progress-bar-bg">
+          <div className="semester-progress-bar-fill" />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-subtle)', fontSize: 14 }}>
+        <div className="semester-progress-footer">
           <span>بداية الفصل 10/09</span>
           <span>نهاية الفصل 15/01</span>
         </div>
       </Card>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 'bold' }}>المهام والفصول القادمة</h3>
+      <div className="upcoming-tasks-section">
+        <h3 className="upcoming-tasks-title">المهام والفصول القادمة</h3>
         
-        <Card style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 8, background: 'var(--accent-soft)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon icon={Presentation} size={24} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 16, fontWeight: 'bold' }}>برمجة متقدمة - قاعة 301</div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>اليوم 10:00 ص</div>
-          </div>
-        </Card>
+        <div className="upcoming-tasks-list">
+          <Card className="upcoming-task-item">
+            <div className="task-icon-wrap presentation">
+              <Icon icon={Presentation} size={24} />
+            </div>
+            <div className="task-info">
+              <div className="task-name">برمجة متقدمة - قاعة 301</div>
+              <div className="task-time">اليوم 10:00 ص</div>
+            </div>
+          </Card>
 
-        <Card style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 8, background: 'var(--gold-soft)', color: 'var(--gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon icon={FileText} size={24} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 16, fontWeight: 'bold' }}>تسليم مشروع التخرج</div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>غداً 11:59 م</div>
-          </div>
-        </Card>
+          <Card className="upcoming-task-item">
+            <div className="task-icon-wrap assignment">
+              <Icon icon={FileText} size={24} />
+            </div>
+            <div className="task-info">
+              <div className="task-name">تسليم مشروع التخرج</div>
+              <div className="task-time">غداً 11:59 م</div>
+            </div>
+          </Card>
 
-        <Card style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 8, background: 'var(--accent-soft)', color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon icon={FlaskConical} size={24} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 16, fontWeight: 'bold' }}>معمل الذكاء الاصطناعي - قاعة 205</div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>الخميس 2:00 م</div>
-          </div>
-        </Card>
+          <Card className="upcoming-task-item">
+            <div className="task-icon-wrap lab">
+              <Icon icon={FlaskConical} size={24} />
+            </div>
+            <div className="task-info">
+              <div className="task-name">معمل الذكاء الاصطناعي - قاعة 205</div>
+              <div className="task-time">الخميس 2:00 م</div>
+            </div>
+          </Card>
+        </div>
       </div>
 
     </div>
