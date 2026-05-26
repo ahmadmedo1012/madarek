@@ -283,14 +283,42 @@ button { font-family: inherit; cursor: pointer; }
   font-weight: var(--fw-semibold);
   letter-spacing: -0.1px;
   color: var(--text);
-  flex: 0 1 auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  /* The title element itself stops overflowing; its children handle their
+     own truncation. */
+  overflow: hidden;
+}
+/* The plain title string is the first child of .topbar-title;
+   wrap it in white-space + ellipsis truncation. */
+.topbar-title > :first-child:not(.topbar-scope) {
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Scope chip — student's college badge to the right of the title.
+   Styled as a discrete pill so it never visually collides with the title. */
+.topbar-scope {
+  display: inline-flex;
+  align-items: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 2px 10px;
+  border-radius: var(--r-full);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 220px;
+  flex-shrink: 1;
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .topbar-search {

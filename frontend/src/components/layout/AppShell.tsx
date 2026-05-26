@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { BottomNav } from './BottomNav';
 import { useThemeSync } from './ThemeToggle';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
@@ -129,6 +130,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
           <div className="content-inner">{children ?? <Outlet />}</div>
         </div>
       </main>
+      <BottomNav />
     </>
   );
 }

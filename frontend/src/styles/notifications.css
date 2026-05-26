@@ -14,8 +14,16 @@
 .notif-panel {
   position: absolute;
   top: calc(100% + 8px);
-  /* RTL-aware: open from the inline-start side of the bell button */
-  inset-inline-start: 0;
+  /* In RTL the topbar-actions (bell) sits on the LEFT side of the screen.
+     `inset-inline-start: 0` resolves to `right: 0` in RTL, which would anchor
+     the panel's right edge to the bell — making the panel extend leftward,
+     OFF the viewport.
+     `inset-inline-end: 0` resolves to `left: 0` in RTL, anchoring the panel's
+     LEFT edge to the bell's left edge — panel extends rightward, into the
+     viewport. */
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+  max-width: calc(100vw - 24px);
   width: min(360px, calc(100vw - 24px));
   background: var(--surface-1);
   border: 1px solid var(--border);
