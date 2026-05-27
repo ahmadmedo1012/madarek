@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "fix",
   "description": "Fix OasisWidget chat window, LangToggle functionality/icon, and Notification button icon issues identified in QA review",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "1. Fix LangToggle in frontend/src/lib/i18n.ts: Replace the current simple pill button with a button that includes a Globe icon from lucide-react, shows the full target language name (show 'English' when in Arabic mode, 'العربية' when in English mode), and ensure it actually calls setLocale which already wires into the i18n store correctly. Import Globe from lucide-react and createElement for Icon usage, or switch to JSX if the file can be renamed to .tsx.",
     "2. The LangToggle must be renamed from .ts to .tsx OR use createElement pattern with the existing Icon component. The toggle already calls setLocale correctly (the i18n system works - the QA issue was about visual indication). Make the button visually clear: globe icon + language label.",
@@ -24,5 +24,5 @@
     "Verify CSS changes use only existing custom properties from tokens.css"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Renamed i18n.ts to i18n.tsx for JSX support. Globe icon confirmed available in lucide-react (used in 6+ other files). OasisWidget.tsx already had 'as const' fix from prior commit. DashboardCustomizer.tsx already uses non-null assertion for indexed access. No changes needed to component TSX files - fixes are CSS-only for OasisWidget and NotificationDropdown."
 }
