@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "CSS cleanup and premium visual polish: remove ministry-strip styles, enhance hero section for stronger visual impact, improve overall landing page composition, and add premium styling touches for a modern EdTech feel.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "In frontend/src/styles/landing.css: Remove the entire .ministry-strip, .ministry-strip-inner, .ministry-strip-emblem, .ministry-strip-text styles block (approximately lines 558-587 equivalent - the section titled '── Ministry affiliation strip ──'). Also remove the ministry-strip responsive rule inside the @media (max-width: 480px) block.",
     "In frontend/src/styles/responsive.css: Remove the .ministry-strip-inner rule inside @media (max-width: 480px) block. Remove the .ministry-strip reference inside @media print block.",
