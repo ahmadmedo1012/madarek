@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Glassmorphism, Enhanced Shadows, Particle Effects, and Advanced Hover/Glow CSS layer - Create a new CSS file (global-icon.css) that applies glassmorphism to sidebar/cards/popups, adds strategic deep shadows, particle background effects for dashboard/landing sections, advanced hover effects (soft glow, scale, liquid-style), and enhanced Oasis widget with stronger idle glow/pulse. Also add CSS-only Lottie-style animations (morphing shapes, progress indicators, decorative elements).",
+  "status": "in_progress",
+  "steps": [
+    "Create frontend/src/styles/global-icon.css with all new visual enhancement rules",
+    "Section 1 - Glassmorphism: Apply backdrop-filter blur to .sidebar, .oasis-widget__panel, .dash-customizer-modal, .landing-hero-float-card using existing --glass-* tokens. Add a subtle frosted border effect.",
+    "Section 2 - Deep Drop Shadows: Create --shadow-deep-* tokens and apply to .card (on hover), .btn.primary, .oasis-widget__trigger, .landing-hero-float-card. Use layered shadow technique with color-mix for tinted shadows.",
+    "Section 3 - Particle Effects: CSS-only animated particles using ::before/::after and additional positioned pseudo-elements on .landing-hero, .welcome-card, and a new .particles-bg utility class. Use radial-gradient dots that float and fade with keyframe animations.",
+    "Section 4 - Advanced Hover Effects: Add glow aura on .btn.primary:hover (soft colored spread), liquid morph on .landing-bento-card:hover (border-radius animation + scale), ripple effect on .nav-item:hover using radial-gradient background animation.",
+    "Section 5 - Oasis Widget Glow Enhancement: Stronger idle glow with layered box-shadow pulsing in teal (--md-tertiary). Add a breathing animation ring around the trigger. When panel is open, add ambient glow to the panel border.",
+    "Section 6 - CSS-only Lottie-style Animations: Create @keyframes for (a) morphing blob shapes for decorative backgrounds, (b) progress ring fill animation using conic-gradient, (c) floating geometric shapes (triangles, circles, hexagons) that rotate and drift.",
+    "Section 7 - Subtle Gradients: Add gradient overlays to .card headers, .dash-stat-tile backgrounds, and the sidebar brand area using linear-gradient with brand colors at very low opacity.",
+    "Import global-icon.css in frontend/src/main.tsx after world-class.css"
+  ],
+  "acceptance_criteria": [
+    "frontend/src/styles/global-icon.css exists with all 7 sections",
+    "global-icon.css is imported last in main.tsx (after world-class.css)",
+    "All animations respect @media (prefers-reduced-motion: reduce) with animation: none / transition: none",
+    "No new CSS custom properties clash with existing tokens.css variables",
+    "npx tsc -b --noEmit passes cleanly in frontend/"
+  ],
+  "verification": ["cd frontend && npx tsc -b --noEmit"],
+  "blocked_reason": null,
+  "findings": ""
+}
