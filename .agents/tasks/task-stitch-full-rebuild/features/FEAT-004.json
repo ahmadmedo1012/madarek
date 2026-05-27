@@ -1,0 +1,39 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Global design system unification, motion system upgrade, and final mobile quality pass. Ensure every surface, card, button, typography choice, and transition across the entire platform follows a single cohesive visual language at the premium level. Fix all remaining mobile issues.",
+  "status": "pending",
+  "steps": [
+    "Step 1: Create frontend/src/styles/redesign-global.css - A final unification layer that loads after all other CSS. Contains: (a) Upgraded card system with three elevation levels (flat, raised, floating) using distinct shadow/border/background combos. (b) Premium button states - primary gets gradient background with animated shimmer on hover, outline gets gradient border-reveal on hover, ghost gets background-slide on hover. (c) Badge system upgrade - badges get a subtle inner shadow and better padding. (d) Table cells get better hover rows with accent-tinted background.",
+    "Step 2: Upgrade motion system in interactions.css - Add route-change page transition (content area fades + slides 12px on route change, uses the existing content-inner animation but make it smoother with a longer ease). Add card-flip animation utility class for cards that transition between states. Add drawer-in/drawer-out for sidebars and panels. Add notification-in (slide from top-right with spring bounce).",
+    "Step 3: Typography elevation in tokens.css - Increase --fs-base to 15px for better Arabic readability. Add a display font size tier: --fs-display: clamp(40px, 6vw, 64px) for hero/landing use. Add --lh-display: 1.1. Ensure all heading weights use 700-800 range consistently.",
+    "Step 4: Upgrade the card component visuals globally in components.css and polish.css - Every .card gets: subtle inner border highlight (1px inset shadow with white 4% on dark, black 2% on light for depth), smooth border-color transition on hover, the hover shadow becomes more diffused and colored (accent-tinted). The .metric tiles get animated number entrance (CSS counter or opacity transition).",
+    "Step 5: Fix global mobile issues in responsive.css - Audit and fix: (a) sidebar drawer animation should use transform with will-change for GPU acceleration, (b) bottom-nav icons need consistent sizing and better active state (animated dot below active icon), (c) all card paddings reduce to sp-3 on phone, (d) page-header reduces padding and accent rail thickness on phone, (e) topbar reduces to 48px height on phone with better icon alignment.",
+    "Step 6: Dark mode refinement - In tokens.css dark theme section: (a) make surfaces slightly warmer (shift from pure gray #111113 to a very subtle blue-gray #0f1117), (b) increase border visibility slightly (from 8% to 10% white), (c) make accent glow effects more visible in dark mode by increasing alpha values, (d) card shadow in dark mode uses accent-tinted shadow (very subtle blue glow) instead of pure black.",
+    "Step 7: Light mode refinement - In tokens.css light theme section: (a) make surfaces slightly warmer (add a touch of warmth to the whites for Arabic-text readability), (b) ensure contrast ratios meet WCAG AA for all text-on-surface combinations, (c) primary buttons in light mode get a subtle gradient (not flat color), (d) card borders in light mode are softer (lighter gray with 6% opacity).",
+    "Step 8: Scrollbar and selection refinement in system.css - Make scrollbar thumb use accent color at low opacity. Selection color uses brand tertiary (teal) for a unique branded feel. Add smooth scroll behavior to all scrollable containers.",
+    "Step 9: Final comprehensive mobile pass - Test all pages mentally for: overflow (add overflow-x: clip to all page containers), cramped text (ensure min font-size of 13px on phone), touch targets (all interactive elements 44px min), card stacking (ensure gaps between stacked cards are consistent at sp-3 on phone), navigation (bottom-nav must not overlap content).",
+    "Step 10: Ensure the main.tsx or index.css import order is correct: tokens.css first, then base.css, components.css, then page-specific CSS, then redesign-* files, then polish.css, premium.css, stitch-canonical.css, interactions.css, responsive.css last. Update the import order if needed."
+  ],
+  "acceptance_criteria": [
+    "All TypeScript compiles without errors (tsc --noEmit passes)",
+    "vite build succeeds without errors",
+    "All CSS files have balanced braces (no syntax errors)",
+    "Cards have three distinct elevation states (flat, raised, floating)",
+    "Buttons have upgraded hover states (gradient shimmer for primary)",
+    "Dark mode surfaces have subtle blue-gray warmth (not pure gray)",
+    "Light mode maintains WCAG AA contrast for body text",
+    "Mobile bottom-nav has animated active indicator",
+    "Scrollbar uses accent-tinted thumb color",
+    "Route-change animation is smooth (opacity + translateY)",
+    "No horizontal overflow on any page at 360px viewport width",
+    "All new/modified animations have prefers-reduced-motion fallbacks",
+    "CSS import order in main entry is logical (tokens > base > components > pages > redesign > polish > canonical > interactions > responsive)"
+  ],
+  "verification": [
+    "cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit",
+    "cd /projects/sandbox/madarek/frontend && npx vite build"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

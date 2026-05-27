@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Complete homepage visual reconstruction - rebuild the LandingPage to a premium, memorable, globally competitive level. Transform the hero section into a cinematic full-bleed experience with layered gradient backgrounds, a floating 3D card showcase (replacing the static campus photo), animated particle effects, and a dramatic typography hierarchy. Rebuild the features bento grid with richer card interiors (illustrations, gradient meshes, subtle animations). Add a new social proof / trust bar section. Enhance the AI showcase with a more dynamic chat simulation. Rebuild the final CTA with premium depth effects. All while preserving content, RTL, and routing.",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Rebuild LandingPage.tsx hero section - Replace the campus photo figure with a premium animated showcase: a floating card stack showing 3 mock dashboard screens (GPA card, AI chat bubble, learning path card) that rotate/float with CSS transforms. Add a large gradient mesh background behind the hero using CSS (radial gradients layered with noise texture). Make the hero title use a split-line animated reveal with clip-path or translateY stagger per word. Keep the CTA buttons but upgrade them to have a glass morphism container behind them.",
+    "Step 2: Create a new CSS file frontend/src/styles/redesign-landing.css that will hold all the rebuilt landing styles. Import it in the main CSS entry. This avoids conflicting with existing landing.css/premium.css - it loads AFTER them and overrides. Include: hero gradient mesh (3+ layered radial gradients with blend modes), floating card showcase animation (3D perspective transforms, staggered float keyframes), particle dot grid (using repeating-linear-gradient or radial-gradient patterns), enhanced section transitions.",
+    "Step 3: Rebuild the features bento grid cards in LandingPage.tsx - Each card gets a subtle inner gradient mesh (unique per card based on data-tone), a larger icon with animated glow ring on hover, and the card body gets better typographic hierarchy with a sub-label. The wide cards get an illustrative gradient background (abstract shapes via CSS). Add hover state: card lifts 6px, inner gradient intensifies, border glows with tone color.",
+    "Step 4: Add a new 'Trust Bar' section between features and AI showcase in LandingPage.tsx - A horizontal strip with animated logos/icons representing: University partnership, AI-powered, secure platform, 50K+ users. Use Lucide icons with animated entrance. Style with glassmorphism container, subtle glow effects.",
+    "Step 5: Rebuild the AI showcase section - Make the chat preview more dynamic: add a simulated typing animation (CSS only), make the avatar pulse with an animated gradient ring, add floating code/math symbols around the section (CSS pseudo-elements with position absolute). The text column gets a gradient heading and animated bullet list entrance.",
+    "Step 6: Rebuild the pilot results section - Each stat card becomes a 'radial stat' with a circular progress ring (CSS conic-gradient) behind the percentage value, animated on scroll. The highlight card gets a prominent gold glow treatment.",
+    "Step 7: Rebuild the final CTA section - Make it feel like a premium full-bleed surface: layered noise texture + gradient + floating geometric shapes (triangles, circles via CSS). The CTA container gets a prominent glass card with depth shadow. Add subtle animated scan-line effect across the background.",
+    "Step 8: Enhance mobile layout - Ensure the floating card showcase stacks to a single card on phone with swipe hint. Bento cards go single-column cleanly. Trust bar wraps to 2x2. Hero title respects phone sizing. All animations reduced on phone for performance.",
+    "Step 9: Update frontend/src/styles/responsive.css with any needed landing mobile overrides for the new layout.",
+    "Step 10: Ensure all new animations have prefers-reduced-motion fallbacks in the new CSS file."
+  ],
+  "acceptance_criteria": [
+    "LandingPage.tsx renders without TypeScript errors",
+    "vite build completes without errors",
+    "All new CSS has balanced braces (no syntax errors)",
+    "Hero section uses layered gradient background with animated showcase (not just a static photo)",
+    "Bento feature cards have unique gradient treatments per tone",
+    "New Trust Bar section is present between features and AI section",
+    "AI showcase has animated typing indicator and gradient avatar ring",
+    "Pilot stats use conic-gradient or similar circular progress visualization",
+    "Final CTA has depth layers (noise, gradient, floating shapes, glass container)",
+    "All animations include prefers-reduced-motion: reduce fallback",
+    "Mobile breakpoints (900px, 640px, 480px) produce clean single-column layouts without overflow"
+  ],
+  "verification": [
+    "cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit",
+    "cd /projects/sandbox/madarek/frontend && npx vite build"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
