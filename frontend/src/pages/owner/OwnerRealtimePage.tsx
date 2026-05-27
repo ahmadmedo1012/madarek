@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Radio, Bot, MonitorPlay, FileCheck, Activity } from 'lucide-react';
 import { Card, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
-import { useOwnerRealtime } from '../../hooks/useOwner';
+import { useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
 import type { RealtimeMetrics } from '../../hooks/useOwner';
 
 const FALLBACK_DATA: RealtimeMetrics = {
@@ -14,7 +14,10 @@ const FALLBACK_DATA: RealtimeMetrics = {
 
 export function OwnerRealtimePage() {
   const realtime = useOwnerRealtime();
+  const alerts = useOwnerAlerts();
   const data = realtime.data ?? FALLBACK_DATA;
+  const unresolvedAlerts = alerts.data ?? [];
+  const hasAlerts = unresolvedAlerts.length > 0;
 
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
@@ -33,9 +36,13 @@ export function OwnerRealtimePage() {
       </div>
 
       {/* Live Status */}
-      <div className="owner-live-status">
+      <div className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}`}>
         <div className="owner-live-pulse" />
-        <span className="status-text">النظام يعمل بشكل طبيعي</span>
+        <span className="status-text">
+          {hasAlerts
+            ? `يوجد ${unresolvedAlerts.length} تنبيه نشط`
+            : 'النظام يعمل بشكل طبيعي'}
+        </span>
         <span style={{ marginInlineStart: 'auto', fontSize: 'var(--fs-xs)', fontFamily: 'var(--font-mono)' }}>
           آخر تحديث: {lastUpdated.toLocaleTimeString('ar-LY')}
         </span>

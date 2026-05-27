@@ -238,19 +238,19 @@ router.get('/owner/realtime', async (_req, res, next) => {
   try {
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
 
-    const [liveNow, recentAiMessages, activeSessions, examsInProgress] = await Promise.all([
-      prisma.liveSession.count({ where: { status: 'LIVE' } }),
-      prisma.aiMessage.count({ where: { createdAt: { gte: fiveMinAgo } } }),
+    const [activeSessions, recentAiMessages, liveBroadcasts, activeExams] = await Promise.all([
       prisma.liveSession.count({ where: { status: { in: ['SCHEDULED', 'LIVE'] } } }),
+      prisma.aiMessage.count({ where: { createdAt: { gte: fiveMinAgo } } }),
+      prisma.liveSession.count({ where: { status: 'LIVE' } }),
       prisma.examAttempt.count({ where: { status: 'IN_PROGRESS' } }),
     ]);
 
     res.json({
       data: {
-        liveNow,
-        recentAiMessages,
         activeSessions,
-        examsInProgress,
+        aiRequestsPerMin: Math.round(recentAiMessages / 5),
+        liveBroadcasts,
+        activeExams,
       },
     });
   } catch (e) {
@@ -263,7 +263,7 @@ router.get('/owner/ai-metrics', async (_req, res, next) => {
   try {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const [totals, byFeature, trend] = await Promise.all([
+    const [totals, byFeatureRaw, trendRecords, successCount] = await Promise.all([
       prisma.aiTelemetry.aggregate({
         _count: { _all: true },
         _sum: { inputTokens: true, outputTokens: true },
@@ -273,27 +273,40 @@ router.get('/owner/ai-metrics', async (_req, res, next) => {
         by: ['feature'],
         _count: { _all: true },
         _sum: { inputTokens: true, outputTokens: true },
-        _avg: { latencyMs: true },
       }),
-      prisma.aiTelemetry.groupBy({
-        by: ['createdAt'],
+      prisma.aiTelemetry.findMany({
         where: { createdAt: { gte: sevenDaysAgo } },
-        _count: { _all: true },
+        select: { createdAt: true },
       }),
+      prisma.aiTelemetry.count({ where: { success: true } }),
     ]);
 
-    const successCount = await prisma.aiTelemetry.count({ where: { success: true } });
     const totalCount = totals._count._all;
-    const successRate = totalCount > 0 ? successCount / totalCount : 0;
+    const successRate = totalCount > 0 ? (successCount / totalCount) * 100 : 0;
+
+    // Transform byFeature into { feature, count, tokens }[]
+    const byFeature = byFeatureRaw.map((f) => ({
+      feature: f.feature,
+      count: f._count._all,
+      tokens: (f._sum.inputTokens || 0) + (f._sum.outputTokens || 0),
+    }));
+
+    // Bucket trend records by date
+    const trendMap = new Map<string, number>();
+    for (const record of trendRecords) {
+      const dateKey = record.createdAt.toISOString().slice(0, 10);
+      trendMap.set(dateKey, (trendMap.get(dateKey) || 0) + 1);
+    }
+    const trend = Array.from(trendMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, count]) => ({ date, count }));
 
     res.json({
       data: {
-        total: totalCount,
+        totalRequests: totalCount,
         totalTokens: (totals._sum.inputTokens || 0) + (totals._sum.outputTokens || 0),
-        inputTokens: totals._sum.inputTokens || 0,
-        outputTokens: totals._sum.outputTokens || 0,
-        avgLatencyMs: totals._avg.latencyMs || 0,
         successRate,
+        avgLatencyMs: totals._avg.latencyMs || 0,
         byFeature,
         trend,
       },
@@ -352,15 +365,14 @@ router.get('/owner/login-analytics', async (_req, res, next) => {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    const [totalLogins, successCount, failureCount, dailyBreakdown, topFailureReasons] =
+    const [total, successCount, failureCount, loginRecords, topReasonsRaw] =
       await Promise.all([
         prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
         prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo }, success: true } }),
         prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo }, success: false } }),
-        prisma.loginEvent.groupBy({
-          by: ['createdAt'],
+        prisma.loginEvent.findMany({
           where: { createdAt: { gte: thirtyDaysAgo } },
-          _count: { _all: true },
+          select: { createdAt: true, success: true },
         }),
         prisma.loginEvent.groupBy({
           by: ['reason'],
@@ -371,13 +383,35 @@ router.get('/owner/login-analytics', async (_req, res, next) => {
         }),
       ]);
 
+    // Bucket login records by date into { date, success, failure }
+    const dailyMap = new Map<string, { success: number; failure: number }>();
+    for (const record of loginRecords) {
+      const dateKey = record.createdAt.toISOString().slice(0, 10);
+      const bucket = dailyMap.get(dateKey) || { success: 0, failure: 0 };
+      if (record.success) {
+        bucket.success += 1;
+      } else {
+        bucket.failure += 1;
+      }
+      dailyMap.set(dateKey, bucket);
+    }
+    const daily = Array.from(dailyMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, counts]) => ({ date, success: counts.success, failure: counts.failure }));
+
+    // Transform topReasons from Prisma groupBy shape
+    const topReasons = topReasonsRaw.map((r) => ({
+      reason: r.reason as string,
+      count: r._count._all,
+    }));
+
     res.json({
       data: {
-        totalLogins,
+        total,
         successCount,
         failureCount,
-        dailyBreakdown,
-        topFailureReasons,
+        daily,
+        topReasons,
       },
     });
   } catch (e) {
@@ -491,26 +525,48 @@ router.get('/owner/governance', async (_req, res, next) => {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const eightWeeksAgo = new Date(Date.now() - 8 * 7 * 24 * 60 * 60 * 1000);
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
 
-    const [recentPermissions, recentRoleChanges, newUsersByWeek] = await Promise.all([
+    const [permissionChanges, roleChanges, newUsersThisMonth, recentUsers] = await Promise.all([
       prisma.userPermission.count({
         where: { grantedAt: { gte: thirtyDaysAgo } },
       }),
       prisma.auditLog.count({
         where: { action: 'ROLE_CHANGE', createdAt: { gte: thirtyDaysAgo } },
       }),
-      prisma.user.groupBy({
-        by: ['createdAt'],
+      prisma.user.count({
+        where: { createdAt: { gte: startOfMonth } },
+      }),
+      prisma.user.findMany({
         where: { createdAt: { gte: eightWeeksAgo } },
-        _count: { _all: true },
+        select: { createdAt: true },
       }),
     ]);
 
+    // Bucket users by week
+    const weeklyMap = new Map<string, number>();
+    for (const user of recentUsers) {
+      const date = user.createdAt;
+      // Get ISO week start (Monday)
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      d.setDate(diff);
+      const weekKey = d.toISOString().slice(0, 10);
+      weeklyMap.set(weekKey, (weeklyMap.get(weekKey) || 0) + 1);
+    }
+    const weeklyGrowth = Array.from(weeklyMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([week, count]) => ({ week, count }));
+
     res.json({
       data: {
-        recentPermissions,
-        recentRoleChanges,
-        newUsersByWeek,
+        permissionChanges,
+        roleChanges,
+        newUsersThisMonth,
+        weeklyGrowth,
       },
     });
   } catch (e) {
