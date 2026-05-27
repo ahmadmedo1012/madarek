@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Rebuild the Lesson Interface (LecturePlayerPage.tsx) and Learning Path (MatrixPage.tsx) to premium visual quality. The lecture player should feel like a Netflix/Coursera-grade viewing experience. The learning path matrix should feel like an interactive knowledge map with visual richness.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Step 1: Rebuild LecturePlayerPage.tsx layout - Change the video + sidebar layout to a more immersive design: video takes full width at top with a gradient overlay at bottom showing title/progress. The chapters sidebar becomes a collapsible panel that slides in from the side (on desktop) or bottom sheet (on mobile). Add a floating mini-player progress bar at the bottom that shows lecture completion.",
     "Step 2: Enhance the checkpoint overlay - Make it feel like a premium quiz modal: glass-morphism background with blur, animated entrance (scale + fade), options as large touch-friendly cards with hover states (gradient border reveal), correct/incorrect feedback with animated checkmark/X icon and color pulse.",

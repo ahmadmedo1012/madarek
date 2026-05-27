@@ -1,0 +1,272 @@
+/* ═══════════════════════════════════════════════════════════════
+   REDESIGN LECTURE — Premium Lecture Player Styles
+   Immersive video wrapper, floating progress bar, glass checkpoint
+   overlay with animations, premium meta bar, enhanced chapters.
+   Loaded AFTER redesign-dashboard.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Video Container with gradient overlay ───────────────────── */
+.lecture-video-container {
+  position: relative;
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  background: var(--md-surface-container-highest);
+}
+
+.lecture-video-container::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 80px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Floating Progress Bar ───────────────────────────────────── */
+.lecture-progress-float {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius-lg, 12px) var(--radius-lg, 12px);
+}
+
+.lecture-progress-float-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--md-tertiary-container), var(--md-secondary-container));
+  border-radius: 0 2px 2px 0;
+  transition: width 0.4s ease-out;
+}
+
+/* ── Meta Bar - glass morphism horizontal pill ───────────────── */
+.lecture-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding: var(--sp-3) var(--sp-4);
+  margin-top: var(--sp-3);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+[data-theme="light"] .lecture-meta-bar {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* ── Bookmark/Notes icon buttons ─────────────────────────────── */
+.lecture-bookmark-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--md-outline-variant);
+  background: transparent;
+  color: var(--md-on-surface-variant);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transition: opacity 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.lecture-bookmark-btn:hover {
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="light"] .lecture-bookmark-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ── Checkpoint Glass Overlay ────────────────────────────────── */
+.checkpoint-glass {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: checkpoint-glass-in 0.25s ease-out;
+}
+
+@keyframes checkpoint-glass-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Checkpoint Card Entrance Animation ──────────────────────── */
+.checkpoint-animate {
+  animation: checkpoint-card-enter 0.3s ease-out;
+}
+
+@keyframes checkpoint-card-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Checkpoint Option Cards ─────────────────────────────────── */
+.checkpoint-option-card {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-lg, 12px);
+  border: 1.5px solid var(--md-outline-variant);
+  background: var(--md-surface-container-low);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  font-size: var(--fs-sm, 14px);
+  color: var(--md-on-surface);
+  text-align: start;
+  width: 100%;
+}
+
+.checkpoint-option-card:hover:not(:disabled) {
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 2px rgba(0, 52, 97, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.checkpoint-option-card:disabled {
+  cursor: default;
+}
+
+.checkpoint-option-card.correct {
+  border-color: var(--success, #16a34a);
+  background: rgba(22, 163, 74, 0.08);
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+}
+
+.checkpoint-option-card.incorrect {
+  border-color: var(--danger, #dc2626);
+  background: rgba(220, 38, 38, 0.06);
+}
+
+/* ── Checkpoint Result Animations ────────────────────────────── */
+.checkpoint-result.correct .checkpoint-result-icon {
+  animation: checkpoint-correct-pop 0.4s ease-out;
+  color: var(--success, #16a34a);
+}
+
+@keyframes checkpoint-correct-pop {
+  0%   { transform: scale(0); opacity: 0; }
+  50%  { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.checkpoint-result.incorrect .checkpoint-result-icon {
+  animation: checkpoint-incorrect-shake 0.4s ease-out;
+  color: var(--danger, #dc2626);
+}
+
+@keyframes checkpoint-incorrect-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(4px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(2px); }
+}
+
+/* ── Active Chapter Row Enhancement ──────────────────────────── */
+.chapter-row.on {
+  border-inline-start: 3px solid var(--md-primary);
+  background: rgba(0, 52, 97, 0.06);
+  box-shadow: inset 4px 0 12px -4px rgba(0, 75, 135, 0.12);
+}
+
+[data-theme="dark"] .chapter-row.on {
+  background: rgba(163, 201, 255, 0.06);
+  box-shadow: inset 4px 0 12px -4px rgba(163, 201, 255, 0.1);
+}
+
+/* ── Mobile Breakpoints ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .lecture-video-container {
+    border-radius: 0;
+    margin-inline: calc(-1 * var(--sp-4));
+  }
+
+  .lecture-meta-bar {
+    border-radius: var(--radius-lg, 12px);
+    padding: var(--sp-2) var(--sp-3);
+  }
+
+  .lecture-meta-bar > * {
+    flex: 0 0 auto;
+  }
+
+  .checkpoint-option-card {
+    min-height: 48px;
+    padding: var(--sp-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .lecture-meta-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: var(--radius-md, 8px);
+    gap: var(--sp-2);
+  }
+
+  .lecture-bookmark-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+
+  .checkpoint-option-card {
+    min-height: 44px;
+  }
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .checkpoint-glass {
+    animation: none;
+  }
+
+  .checkpoint-animate {
+    animation: none;
+  }
+
+  .checkpoint-result.correct .checkpoint-result-icon {
+    animation: none;
+  }
+
+  .checkpoint-result.incorrect .checkpoint-result-icon {
+    animation: none;
+  }
+
+  .lecture-progress-float-fill {
+    transition: none;
+  }
+
+  .checkpoint-option-card {
+    transition: none;
+  }
+
+  .checkpoint-option-card:hover:not(:disabled) {
+    transform: none;
+  }
+}
