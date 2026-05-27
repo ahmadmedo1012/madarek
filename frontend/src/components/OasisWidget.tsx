@@ -50,15 +50,15 @@ export function OasisWidget() {
   const send = async (text?: string) => {
     const msg = (text ?? input).trim();
     if (!msg || chat.isPending) return;
-    setMessages((m) => [...m, { role: 'user', text: msg }].slice(-MAX_MESSAGES));
+    setMessages((m) => [...m, { role: 'user' as const, text: msg }].slice(-MAX_MESSAGES));
     setInput('');
     try {
       const res = await chat.mutateAsync({ conversationId, message: msg });
       setConversationId(res.conversationId);
-      setMessages((m) => [...m, { role: 'bot', text: res.reply }].slice(-MAX_MESSAGES));
+      setMessages((m) => [...m, { role: 'bot' as const, text: res.reply }].slice(-MAX_MESSAGES));
     } catch {
       const errorMsg = locale === 'ar' ? 'تعذّر الاتصال. حاول لاحقاً.' : 'Connection failed. Try again later.';
-      setMessages((m) => [...m, { role: 'bot', text: errorMsg }].slice(-MAX_MESSAGES));
+      setMessages((m) => [...m, { role: 'bot' as const, text: errorMsg }].slice(-MAX_MESSAGES));
     }
   };
 

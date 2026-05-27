@@ -49,7 +49,10 @@ export function DashboardCustomizer({ open, onClose }: { open: boolean; onClose:
     const ids = sorted.map((w) => w.id);
     const idx = ids.indexOf(id);
     if (idx <= 0) return;
-    [ids[idx - 1], ids[idx]] = [ids[idx], ids[idx - 1]];
+    const prev = ids[idx - 1]!;
+    const curr = ids[idx]!;
+    ids[idx - 1] = curr;
+    ids[idx] = prev;
     reorderWidgets(ids);
   };
 
@@ -57,7 +60,10 @@ export function DashboardCustomizer({ open, onClose }: { open: boolean; onClose:
     const ids = sorted.map((w) => w.id);
     const idx = ids.indexOf(id);
     if (idx < 0 || idx >= ids.length - 1) return;
-    [ids[idx], ids[idx + 1]] = [ids[idx + 1], ids[idx]];
+    const curr = ids[idx]!;
+    const next = ids[idx + 1]!;
+    ids[idx] = next;
+    ids[idx + 1] = curr;
     reorderWidgets(ids);
   };
 
