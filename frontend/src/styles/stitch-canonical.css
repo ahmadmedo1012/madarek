@@ -632,10 +632,6 @@ input:focus, textarea:focus, select:focus,
   .bottom-nav {
     display: flex;
   }
-  /* Add bottom padding to content so it does not get clipped by bottom-nav */
-  .content {
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════════

@@ -111,12 +111,12 @@
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border) !important;
-  will-change: transform;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
 }
 .dash-gpa-card:hover {
+  will-change: transform;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
@@ -211,12 +211,12 @@
 /* ── Progress card — Premium doughnut ────────────────────────── */
 .dash-progress-card {
   padding: var(--sp-6) !important;
-  will-change: transform;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
 }
 .dash-progress-card:hover {
+  will-change: transform;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
@@ -288,12 +288,12 @@
 
 .dash-term-card {
   padding: var(--sp-5) var(--sp-6) !important;
-  will-change: transform;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
 }
 .dash-term-card:hover {
+  will-change: transform;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }

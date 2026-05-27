@@ -326,14 +326,6 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TABLE ROW HOVER — smooth transition
-   ═══════════════════════════════════════════════════════════════ */
-
-.tbl tbody tr {
-  transition: background var(--t-fast) var(--ease);
-}
-
-/* ═══════════════════════════════════════════════════════════════
    CARD ENTRANCE — for dynamically loaded cards
    ═══════════════════════════════════════════════════════════════ */
 

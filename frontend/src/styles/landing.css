@@ -885,9 +885,6 @@
   .landing-hero::before {
     animation: none;
   }
-  .kpi-strip::after {
-    animation: none;
-  }
   .landing-section-eyebrow::before {
     animation: none;
   }
