@@ -6,6 +6,7 @@ import {
   ClipboardList, Microscope, School,
   FileText, ShieldCheck, Activity, Compass, BookMarked,
   Radio, Wallet, MapPin, Mic2, UserCircle, Brain, Megaphone, RefreshCw,
+  Palette, Settings,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -133,11 +134,31 @@ export const QUALITY_NAV: NavGroup[] = [
   },
 ];
 
+export const OWNER_NAV: NavGroup[] = [
+  {
+    label: 'لوحة المالك',
+    items: [
+      { to: '/owner/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم الرئيسية' },
+      { to: '/owner/users', icon: Users, label: 'إدارة المستخدمين' },
+      { to: '/owner/activity', icon: Activity, label: 'سجل النشاط' },
+    ],
+  },
+  {
+    label: 'المنصة',
+    items: [
+      { to: '/owner/content', icon: Palette, label: 'المحتوى والعلامة التجارية' },
+      { to: '/owner/system', icon: Settings, label: 'النظام والتشغيل' },
+      { to: '/owner/education', icon: GraduationCap, label: 'النظرة التعليمية' },
+    ],
+  },
+];
+
 export const NAV_BY_ROLE: Record<AppRole, NavGroup[]> = {
   STUDENT: STUDENT_NAV,
   TEACHER: TEACHER_NAV,
   ADMIN: ADMIN_NAV,
   QUALITY: QUALITY_NAV,
+  OWNER: OWNER_NAV,
 };
 
 export const ROLE_LABELS: Record<AppRole, string> = {
@@ -145,4 +166,5 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   TEACHER: 'أستاذ',
   ADMIN: 'إداري',
   QUALITY: 'جودة',
+  OWNER: 'مالك المنصة',
 };

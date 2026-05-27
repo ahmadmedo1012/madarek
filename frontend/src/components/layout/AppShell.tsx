@@ -73,6 +73,12 @@ const PAGE_TITLES: Record<string, string> = {
   '/teacher/labs': 'المعامل الافتراضية',
   '/student/online-exams': 'الاختبارات الإلكترونية',
   '/quality/exam-moderation': 'مراجعة الاختبارات',
+  '/owner/dashboard': 'لوحة التحكم الرئيسية',
+  '/owner/users': 'إدارة المستخدمين',
+  '/owner/activity': 'سجل النشاط',
+  '/owner/content': 'المحتوى والعلامة التجارية',
+  '/owner/system': 'النظام والتشغيل',
+  '/owner/education': 'النظرة التعليمية',
 };
 
 /** Resolve a topbar title for any path, including dynamic routes. */
@@ -148,6 +154,7 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
       TEACHER: '/teacher/dashboard',
       ADMIN: '/admin/dashboard',
       QUALITY: '/quality/dashboard',
+      OWNER: '/owner/dashboard',
     };
     return <Navigate to={home[user.role]} replace />;
   }

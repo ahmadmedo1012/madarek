@@ -31,6 +31,7 @@ const ROLE_HOME: Record<AppRole, string> = {
   TEACHER: '/teacher/dashboard',
   ADMIN: '/admin/dashboard',
   QUALITY: '/quality/dashboard',
+  OWNER: '/owner/dashboard',
 };
 const homeFor = (r: AppRole): string => ROLE_HOME[r];
 
@@ -39,6 +40,7 @@ const DEMO_EMAIL: Record<AppRole, string> = {
   TEACHER: 'teacher@zu.edu.ly',
   ADMIN: 'admin@zu.edu.ly',
   QUALITY: 'quality@zu.edu.ly',
+  OWNER: 'owner@zu.edu.ly',
 };
 
 export default function AuthPage() {

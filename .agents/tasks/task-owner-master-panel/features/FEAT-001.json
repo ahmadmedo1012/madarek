@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Add OWNER role to both backend and frontend auth systems, create owner-specific route guard, navigation config, and wire owner routes in App.tsx. This is the foundation that all subsequent features depend on.",
+  "status": "in_progress",
+  "steps": [
+    "1. Add OWNER to the Prisma Role enum in backend/prisma/schema.prisma (add 'OWNER' after 'QUALITY' in the Role enum)",
+    "2. Add OWNER to the AppRole type in frontend/src/stores/auth.store.ts: change to 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER'",
+    "3. Update frontend/src/lib/nav.ts: add OWNER_NAV NavGroup[] with navigation items for /owner/dashboard, /owner/users, /owner/activity, /owner/content, /owner/system, /owner/education. Add OWNER entry to NAV_BY_ROLE and ROLE_LABELS (label: 'مالك المنصة'). Use icons: LayoutDashboard, Users, Activity, Palette, Settings, GraduationCap from lucide-react.",
+    "4. Update the ProtectedRoute component in frontend/src/components/layout/AppShell.tsx: add OWNER to the home Record with value '/owner/dashboard'. Also add owner page titles to PAGE_TITLES map: '/owner/dashboard': 'لوحة التحكم الرئيسية', '/owner/users': 'إدارة المستخدمين', '/owner/activity': 'سجل النشاط', '/owner/content': 'المحتوى والعلامة التجارية', '/owner/system': 'النظام والتشغيل', '/owner/education': 'النظرة التعليمية'",
+    "5. Update the HomeRedirect function in frontend/src/App.tsx: add 'if (user.role === 'OWNER') return <Navigate to=\"/owner/dashboard\" replace />;' before the QUALITY fallback",
+    "6. Add owner routes section in App.tsx: import a placeholder OwnerLayout and owner page components (to be built in FEAT-002). Add a route group: <Route element={<ProtectedRoute allow={['OWNER']} />}> with <Route element={<AppShell />}> wrapper and routes for /owner/dashboard, /owner/users, /owner/activity, /owner/content, /owner/system, /owner/education",
+    "7. Create frontend/src/pages/owner/ directory with a simple barrel placeholder OwnerPages.tsx that exports stub page components (OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage) each rendering a basic <div className='page'><h1>Page Title</h1></div>. These will be fully implemented in FEAT-002.",
+    "8. Create backend/src/http/routes/owner.routes.ts with an Express Router that uses authMiddleware and requireRole('OWNER'). Add a GET /owner/stats endpoint that returns platform-wide statistics (user counts by role, course count, offering count, enrollment count, recent audit log count). Add GET /owner/users endpoint for user management (paginated, searchable, same as users.routes but OWNER-only). Add GET /owner/activity endpoint returning recent AuditLog entries paginated. Add POST /owner/users/:id/role endpoint to change a user's role. Add PATCH /owner/users/:id/status to toggle isActive.",
+    "9. Mount the owner routes in backend/src/app.ts: import ownerRoutes and add app.use('/api/v1', ownerRoutes);",
+    "10. Update backend/src/http/middleware/requireRole.ts and the backend/src/types/express.d.ts - no changes needed as they already use the Prisma Role type which will include OWNER after step 1.",
+    "11. Update the ROLE_HOME map and DEMO_EMAIL in frontend/src/pages/AuthPage.tsx to include OWNER: '/owner/dashboard' and 'owner@zu.edu.ly'. Do NOT add a demo button for OWNER - the owner access should remain hidden from the normal login page.",
+    "12. Create frontend/src/hooks/useOwner.ts with TanStack Query hooks: useOwnerStats (GET /owner/stats), useOwnerUsers (GET /owner/users with pagination params), useOwnerActivity (GET /owner/activity with pagination), useChangeUserRole mutation (POST /owner/users/:id/role), useToggleUserStatus mutation (PATCH /owner/users/:id/status)."
+  ],
+  "acceptance_criteria": [
+    "The AppRole type includes 'OWNER'",
+    "The Prisma Role enum includes OWNER",
+    "NAV_BY_ROLE has an OWNER entry with sidebar navigation groups",
+    "ProtectedRoute redirects OWNER users to /owner/dashboard",
+    "App.tsx has a protected route group for /owner/* pages accessible only to OWNER role",
+    "Backend has /api/v1/owner/* endpoints protected by OWNER role check",
+    "Owner routes are mounted in the Express app",
+    "Frontend hooks exist for fetching owner data"
+  ],
+  "verification": [
+    "Run: cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit (should pass with no errors)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

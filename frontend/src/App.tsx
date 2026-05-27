@@ -43,6 +43,7 @@ import {
 import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage';
 import { AdminDashboardPage, AdminPlaceholder, AdminFacultiesPage, AdminReportsPage, AdminCoursesPage } from './pages/admin/AdminPages';
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
+import { OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage } from './pages/owner/OwnerPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
 import { useAuthStore } from './stores/auth.store';
 
@@ -55,6 +56,7 @@ function HomeRedirect() {
   if (user.role === 'STUDENT') return <Navigate to="/student/dashboard" replace />;
   if (user.role === 'TEACHER') return <Navigate to="/teacher/dashboard" replace />;
   if (user.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
+  if (user.role === 'OWNER') return <Navigate to="/owner/dashboard" replace />;
   return <Navigate to="/quality/dashboard" replace />;
 }
 
@@ -169,6 +171,18 @@ export default function App() {
               <Route path="/quality/alerts" element={<QualityAlertsPage />} />
               <Route path="/quality/exam-moderation" element={<ExamModerationPage />} />
               <Route path="/quality/community" element={<CommunityPage />} />
+            </Route>
+          </Route>
+
+          {/* Owner (platform owner) */}
+          <Route element={<ProtectedRoute allow={['OWNER']} />}>
+            <Route element={<AppShell />}>
+              <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+              <Route path="/owner/users" element={<OwnerUsersPage />} />
+              <Route path="/owner/activity" element={<OwnerActivityPage />} />
+              <Route path="/owner/content" element={<OwnerContentPage />} />
+              <Route path="/owner/system" element={<OwnerSystemPage />} />
+              <Route path="/owner/education" element={<OwnerEducationPage />} />
             </Route>
           </Route>
 
