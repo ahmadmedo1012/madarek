@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "feat",
   "description": "Motion System Unification and Mobile Polish - Consolidate the fragmented motion/transition system into a single coherent approach. Fix mobile responsiveness issues including text clipping, cramped layouts, and ensure the bottom navigation feels premium. Add meaningful entrance animations for content areas.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Edit frontend/src/styles/interactions.css - Page transition: Keep the ix-page-in-soft keyframe as the single source of truth. Update timing to 380ms (was 460ms - slightly faster feels snappier). Remove the filter: blur(1px) from the animation (it causes performance issues on low-end mobile devices).",
     "Edit frontend/src/styles/interactions.css - Add a new tab-switch transition that is slightly more refined: change ix-tab-content-in timing from 280ms to 250ms and remove the filter: blur(0.5px) for performance.",
@@ -29,5 +29,5 @@
     "Run: grep -c 'bottom-nav {' frontend/src/styles/stitch-canonical.css to check duplicate removal (should be reduced)"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All steps implemented. Page transition reduced to 380ms with blur removed. Tab transition at 250ms with blur removed. Press feedback now 0.98 (was 0.97), .btn:active at 0.97 (was 0.96). Mobile: page-title floor 20px, metric min-height 80px, grid-auto-260 collapses at 640px, filter-bar horizontal scroll-snap added. Bottom-nav in notifications.css refined: accent mix reduced to 18%/10%, translateY/scale jank removed, will-change added. stitch-canonical.css duplicate bottom-nav block fully removed - only dark theme override and display:flex media rule remain. Dashboard cards have will-change:transform. Welcome card orbs reduced 30% (70px/56px) with slower 10s/14s animation. Safe-area bottom padding accounts for bottom-nav at 640px breakpoint."
 }
