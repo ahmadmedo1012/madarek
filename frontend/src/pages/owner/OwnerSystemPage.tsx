@@ -3,6 +3,8 @@ import { Server, Clock, AlertTriangle, Database, RefreshCw, Settings, CheckCircl
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
+import { useOwnerFeatureFlags, useToggleFeatureFlag, useOwnerSettings, useUpdateSetting, useOwnerAlerts } from '../../hooks/useOwner';
+import type { FeatureFlag, PlatformSetting } from '../../hooks/useOwner';
 
 const SYNC_HISTORY = [
   { id: '1', date: '2024-12-27 03:00', status: 'SUCCESS' as const, duration: '3.2 ث', records: 1240 },
@@ -27,36 +29,61 @@ const ERROR_LOG = [
 ];
 
 export function OwnerSystemPage() {
-  const [featureFlags, setFeatureFlags] = useState({
-    maintenance: false,
-    registration: true,
-    emailNotifications: true,
-    autoBackup: true,
-    debugMode: false,
-  });
+  const flagsQuery = useOwnerFeatureFlags();
+  const toggleFlag = useToggleFeatureFlag();
+  const settingsQuery = useOwnerSettings();
+  const updateSetting = useUpdateSetting();
+  const alertsQuery = useOwnerAlerts();
+
+  const alerts = alertsQuery.data ?? [];
+
+  // Demo fallback for feature flags
+  const defaultFlags: FeatureFlag[] = [
+    { id: '1', slug: 'maintenance', name: 'وضع الصيانة', description: 'تعطيل الوصول العام وإظهار رسالة الصيانة', enabled: false, category: 'system', updatedAt: '', updatedBy: null },
+    { id: '2', slug: 'registration', name: 'تسجيل مستخدمين جدد', description: 'السماح بإنشاء حسابات جديدة', enabled: true, category: 'system', updatedAt: '', updatedBy: null },
+    { id: '3', slug: 'email_notifications', name: 'إشعارات البريد', description: 'إرسال إشعارات البريد الإلكتروني', enabled: true, category: 'system', updatedAt: '', updatedBy: null },
+    { id: '4', slug: 'auto_backup', name: 'النسخ الاحتياطي التلقائي', description: 'نسخ احتياطي يومي تلقائي لقاعدة البيانات', enabled: true, category: 'system', updatedAt: '', updatedBy: null },
+    { id: '5', slug: 'debug_mode', name: 'وضع التصحيح', description: 'تفعيل سجلات التصحيح المفصلة', enabled: false, category: 'system', updatedAt: '', updatedBy: null },
+  ];
+  const featureFlags = flagsQuery.data ?? defaultFlags;
+
+  // Demo fallback for settings
+  const defaultSettings: PlatformSetting[] = [
+    { id: '1', key: 'SESSION_TIMEOUT', value: '3600', category: 'system', updatedAt: '', updatedBy: null },
+    { id: '2', key: 'MAX_UPLOAD_SIZE', value: '50MB', category: 'system', updatedAt: '', updatedBy: null },
+    { id: '3', key: 'RATE_LIMIT', value: '100/min', category: 'system', updatedAt: '', updatedBy: null },
+    { id: '4', key: 'MAINTENANCE_MESSAGE', value: 'المنصة تحت الصيانة، نعود قريباً', category: 'system', updatedAt: '', updatedBy: null },
+  ];
+  const settings = settingsQuery.data ?? defaultSettings;
+
+  // Local state for editing settings values
+  const [editedSettings, setEditedSettings] = useState<Record<string, string>>({});
+
+  const handleSettingChange = (key: string, value: string) => {
+    setEditedSettings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSaveSettings = () => {
+    Object.entries(editedSettings).forEach(([key, value]) => {
+      updateSetting.mutate({ key, value });
+    });
+    setEditedSettings({});
+  };
+
+  const handleFlagToggle = (flag: FeatureFlag) => {
+    toggleFlag.mutate({ slug: flag.slug, enabled: !flag.enabled });
+  };
 
   const [expandedError, setExpandedError] = useState<string | null>(null);
-
-  const [systemConfig, setSystemConfig] = useState({
-    SESSION_TIMEOUT: '3600',
-    MAX_UPLOAD_SIZE: '50MB',
-    RATE_LIMIT: '100/min',
-    MAINTENANCE_MESSAGE: 'المنصة تحت الصيانة، نعود قريباً',
-  });
-
-  const handleFlagToggle = (key: keyof typeof featureFlags) => {
-    setFeatureFlags((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleConfigChange = (key: string, value: string) => {
-    setSystemConfig((prev) => ({ ...prev, [key]: value }));
-  };
 
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">النظام والتشغيل</h1>
+          <h1 className="page-title">
+            النظام والتشغيل
+            {alerts.length > 0 && <span className="owner-badge-counter" style={{ marginInlineStart: '8px' }}>{alerts.length}</span>}
+          </h1>
           <p className="page-subtitle">إدارة البنية التحتية وحالة الخدمات</p>
         </div>
       </div>
@@ -101,11 +128,17 @@ export function OwnerSystemPage() {
       {/* Feature Flags */}
       <Card title="أعلام الميزات (Feature Flags)" icon={Settings}>
         <div style={{ padding: 'var(--sp-2) 0' }}>
-          <ToggleSwitch label="وضع الصيانة" description="تعطيل الوصول العام وإظهار رسالة الصيانة" checked={featureFlags.maintenance} onChange={() => handleFlagToggle('maintenance')} />
-          <ToggleSwitch label="تسجيل مستخدمين جدد" description="السماح بإنشاء حسابات جديدة" checked={featureFlags.registration} onChange={() => handleFlagToggle('registration')} />
-          <ToggleSwitch label="إشعارات البريد" description="إرسال إشعارات البريد الإلكتروني" checked={featureFlags.emailNotifications} onChange={() => handleFlagToggle('emailNotifications')} />
-          <ToggleSwitch label="النسخ الاحتياطي التلقائي" description="نسخ احتياطي يومي تلقائي لقاعدة البيانات" checked={featureFlags.autoBackup} onChange={() => handleFlagToggle('autoBackup')} />
-          <ToggleSwitch label="وضع التصحيح" description="تفعيل سجلات التصحيح المفصلة" checked={featureFlags.debugMode} onChange={() => handleFlagToggle('debugMode')} />
+          {flagsQuery.isLoading && <div className="owner-flag-loading">جاري التحميل...</div>}
+          {featureFlags.map((flag) => (
+            <ToggleSwitch
+              key={flag.slug}
+              label={flag.name}
+              description={flag.description ?? undefined}
+              checked={flag.enabled}
+              onChange={() => handleFlagToggle(flag)}
+              disabled={toggleFlag.isPending}
+            />
+          ))}
         </div>
       </Card>
 
@@ -130,18 +163,18 @@ export function OwnerSystemPage() {
       {/* System Config */}
       <Card title="إعدادات النظام" icon={Settings}>
         <div style={{ padding: 'var(--sp-2) 0' }}>
-          {Object.entries(systemConfig).map(([key, value]) => (
-            <div key={key} className="owner-kv-row">
-              <code>{key}</code>
+          {settings.map((setting) => (
+            <div key={setting.key} className="owner-kv-row">
+              <code>{setting.key}</code>
               <input
                 type="text"
-                value={value}
-                onChange={(e) => handleConfigChange(key, e.target.value)}
+                value={editedSettings[setting.key] ?? setting.value}
+                onChange={(e) => handleSettingChange(setting.key, e.target.value)}
               />
             </div>
           ))}
           <div style={{ paddingTop: 'var(--sp-4)' }}>
-            <button type="button" className="btn primary">
+            <button type="button" className="btn primary" onClick={handleSaveSettings} disabled={updateSetting.isPending}>
               <Icon icon={CheckCircle2} size={14} />
               حفظ الإعدادات
             </button>

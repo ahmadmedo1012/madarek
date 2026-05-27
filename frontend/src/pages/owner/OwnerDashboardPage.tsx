@@ -1,9 +1,9 @@
-import { Users, Activity, BookOpen, GraduationCap, RefreshCw, Download, ShieldAlert, Trash2 } from 'lucide-react';
+import { Users, Activity, BookOpen, GraduationCap, RefreshCw, Download, ShieldAlert, Trash2, Bot, Bell } from 'lucide-react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
-import { useOwnerStats } from '../../hooks/useOwner';
+import { useOwnerStats, useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -20,6 +20,8 @@ const DEMO_EVENTS = [
 
 export function OwnerDashboardPage() {
   const stats = useOwnerStats();
+  const realtime = useOwnerRealtime();
+  const alertsQuery = useOwnerAlerts();
   const data = stats.data ?? {
     totalUsers: 4850,
     students: 4200,
@@ -32,6 +34,9 @@ export function OwnerDashboardPage() {
     totalEnrollments: 12400,
     recentAuditLogs: 245,
   };
+  const realtimeData = realtime.data ?? { activeSessions: 328, aiRequestsPerMin: 47, liveBroadcasts: 3, activeExams: 12 };
+  const alerts = alertsQuery.data ?? [];
+  const hasAlerts = alerts.length > 0;
 
   const chartData = {
     labels: ['طلاب', 'أساتذة', 'إداريون', 'جودة'],
@@ -68,12 +73,24 @@ export function OwnerDashboardPage() {
         </div>
       </div>
 
+      {/* Live Status */}
+      <div className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}`}>
+        <div className="owner-live-pulse" />
+        <span className="status-text">{hasAlerts ? `${alerts.length} تنبيهات مفتوحة` : 'النظام يعمل بشكل طبيعي'}</span>
+      </div>
+
       {/* Metric Cards */}
       <div className="grid-4">
         <MetricCard icon={Users} label="إجمالي المستخدمين" value={data.totalUsers.toLocaleString('ar-LY')} color="brand" />
-        <MetricCard icon={Activity} label="الجلسات النشطة" value="328" color="green" />
+        <MetricCard icon={Activity} label="الجلسات النشطة" value={realtimeData.activeSessions.toString()} color="green" />
         <MetricCard icon={BookOpen} label="المقررات الدراسية" value={data.totalCourses.toString()} color="purple" />
         <MetricCard icon={GraduationCap} label="إجمالي التسجيلات" value={data.totalEnrollments.toLocaleString('ar-LY')} color="gold" />
+      </div>
+
+      {/* Extra Row */}
+      <div className="grid-4" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+        <MetricCard icon={Bot} label="طلبات AI اليوم" value={realtimeData.aiRequestsPerMin.toString() + '/دقيقة'} color="purple" />
+        <MetricCard icon={Bell} label="تنبيهات مفتوحة" value={alerts.length.toString()} color="amber" />
       </div>
 
       {/* Chart + System Health */}

@@ -188,7 +188,17 @@ export function OwnerUsersPage() {
                 <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{user.email}</td>
                 <td><Badge color={ROLE_COLORS[user.role]}>{ROLE_LABELS[user.role]}</Badge></td>
                 <td><Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge></td>
-                <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{user.createdAt}</td>
+                <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {(() => {
+                      const sevenDaysAgo = new Date();
+                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                      const isRecent = new Date(user.createdAt) > sevenDaysAgo;
+                      return isRecent ? <span className="owner-health-dot green" style={{ display: 'inline-block' }} /> : null;
+                    })()}
+                    {user.createdAt}
+                  </span>
+                </td>
                 <td>
                   <div style={{ display: 'flex', gap: '6px' }}>
                     <button type="button" className="btn ghost" style={{ fontSize: 'var(--fs-xs)', padding: '4px 8px' }} onClick={() => handleRoleChange(user)}>

@@ -6,7 +6,7 @@ import {
   ClipboardList, Microscope, School,
   FileText, ShieldCheck, Activity, Compass, BookMarked,
   Radio, Wallet, MapPin, Mic2, UserCircle, Brain, Megaphone, RefreshCw,
-  Palette, Settings,
+  Palette, Settings, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole } from '../stores/auth.store';
@@ -139,6 +139,7 @@ export const OWNER_NAV: NavGroup[] = [
     label: 'لوحة المالك',
     items: [
       { to: '/owner/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم الرئيسية' },
+      { to: '/owner/realtime', icon: Radio, label: 'المراقبة الحية', badge: { text: 'LIVE', tone: 'brand' } },
       { to: '/owner/users', icon: Users, label: 'إدارة المستخدمين' },
       { to: '/owner/activity', icon: Activity, label: 'سجل النشاط' },
     ],
@@ -149,6 +150,14 @@ export const OWNER_NAV: NavGroup[] = [
       { to: '/owner/content', icon: Palette, label: 'المحتوى والعلامة التجارية' },
       { to: '/owner/system', icon: Settings, label: 'النظام والتشغيل' },
       { to: '/owner/education', icon: GraduationCap, label: 'النظرة التعليمية' },
+    ],
+  },
+  {
+    label: 'المراقبة والتحليل',
+    items: [
+      { to: '/owner/ai', icon: Bot, label: 'مركز الذكاء الاصطناعي', badge: { text: 'AI', tone: 'gold' } },
+      { to: '/owner/alerts', icon: AlertTriangle, label: 'التنبيهات التشغيلية' },
+      { to: '/owner/governance', icon: ShieldCheck, label: 'الحوكمة المتقدمة' },
     ],
   },
 ];

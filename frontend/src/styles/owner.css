@@ -470,3 +470,183 @@
   max-height: 80px;
   overflow: auto;
 }
+
+/* ── Command Center: Live Pulse ────────────────────────────── */
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.4); }
+}
+
+.owner-live-pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse-live 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.owner-live-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.owner-live-status .status-text {
+  font-weight: var(--fw-medium);
+  color: var(--success);
+}
+
+.owner-live-status.has-alerts .status-text {
+  color: var(--warning);
+}
+
+/* ── Command Center: Alert Cards ───────────────────────────── */
+.owner-alert-card {
+  padding: var(--sp-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  border-inline-start: 4px solid var(--border);
+  margin-bottom: var(--sp-3);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+
+.owner-alert-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.owner-alert-card.critical {
+  border-inline-start-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 3%, var(--surface-1));
+}
+
+.owner-alert-card.warning {
+  border-inline-start-color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 3%, var(--surface-1));
+}
+
+.owner-alert-card.info {
+  border-inline-start-color: var(--accent);
+}
+
+.owner-alert-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+
+.owner-alert-card-header .title {
+  flex: 1;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+.owner-alert-card-header .time {
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+  color: var(--text-subtle);
+}
+
+.owner-alert-card .message {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+  margin-bottom: var(--sp-3);
+}
+
+.owner-alert-card .actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* ── Command Center: Stat Highlight ───────────────────────── */
+.owner-stat-highlight {
+  text-align: center;
+  padding: var(--sp-4);
+}
+
+.owner-stat-highlight .value {
+  font-size: 2rem;
+  font-weight: var(--fw-bold);
+  font-family: var(--font-mono);
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: var(--sp-1);
+}
+
+.owner-stat-highlight .label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* ── Command Center: AI Chart Grid ───────────────────────── */
+.owner-ai-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+
+@media (max-width: 768px) {
+  .owner-ai-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Command Center: Badge Counter ────────────────────────── */
+.owner-badge-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-full);
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  line-height: 1;
+}
+
+/* ── Command Center: Realtime Grid ────────────────────────── */
+.owner-realtime-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+
+@media (max-width: 768px) {
+  .owner-realtime-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Command Center: Governance Timeline ──────────────────── */
+.owner-governance-section {
+  padding: var(--sp-3) 0;
+}
+
+.owner-governance-section h3 {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin-bottom: var(--sp-3);
+}
+
+/* ── Feature Flag Connected ───────────────────────────────── */
+.owner-flag-loading {
+  padding: var(--sp-4);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}

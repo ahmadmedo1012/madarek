@@ -43,7 +43,7 @@ import {
 import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage';
 import { AdminDashboardPage, AdminPlaceholder, AdminFacultiesPage, AdminReportsPage, AdminCoursesPage } from './pages/admin/AdminPages';
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
-import { OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage } from './pages/owner/OwnerPages';
+import { OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage, OwnerRealtimePage, OwnerAiPage, OwnerAlertsPage, OwnerGovernancePage } from './pages/owner/OwnerPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
 import { useAuthStore } from './stores/auth.store';
 
@@ -183,6 +183,10 @@ export default function App() {
               <Route path="/owner/content" element={<OwnerContentPage />} />
               <Route path="/owner/system" element={<OwnerSystemPage />} />
               <Route path="/owner/education" element={<OwnerEducationPage />} />
+              <Route path="/owner/realtime" element={<OwnerRealtimePage />} />
+              <Route path="/owner/ai" element={<OwnerAiPage />} />
+              <Route path="/owner/alerts" element={<OwnerAlertsPage />} />
+              <Route path="/owner/governance" element={<OwnerGovernancePage />} />
             </Route>
           </Route>
 

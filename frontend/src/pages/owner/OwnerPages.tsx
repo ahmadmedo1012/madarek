@@ -4,3 +4,7 @@ export { OwnerActivityPage } from './OwnerActivityPage';
 export { OwnerContentPage } from './OwnerContentPage';
 export { OwnerSystemPage } from './OwnerSystemPage';
 export { OwnerEducationPage } from './OwnerEducationPage';
+export { OwnerRealtimePage } from './OwnerRealtimePage';
+export { OwnerAiPage } from './OwnerAiPage';
+export { OwnerAlertsPage } from './OwnerAlertsPage';
+export { OwnerGovernancePage } from './OwnerGovernancePage';

@@ -79,6 +79,10 @@ const PAGE_TITLES: Record<string, string> = {
   '/owner/content': 'المحتوى والعلامة التجارية',
   '/owner/system': 'النظام والتشغيل',
   '/owner/education': 'النظرة التعليمية',
+  '/owner/realtime': 'المراقبة الحية',
+  '/owner/ai': 'مركز الذكاء الاصطناعي',
+  '/owner/alerts': 'التنبيهات التشغيلية',
+  '/owner/governance': 'الحوكمة المتقدمة',
 };
 
 /** Resolve a topbar title for any path, including dynamic routes. */

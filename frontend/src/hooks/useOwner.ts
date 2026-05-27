@@ -102,3 +102,156 @@ export function useToggleUserStatus() {
     },
   });
 }
+
+// ── Enterprise Types ─────────────────────────────────────────────
+export interface RealtimeMetrics {
+  activeSessions: number;
+  aiRequestsPerMin: number;
+  liveBroadcasts: number;
+  activeExams: number;
+}
+
+export interface AiMetrics {
+  totalRequests: number;
+  totalTokens: number;
+  successRate: number;
+  avgLatencyMs: number;
+  byFeature: Array<{ feature: string; count: number; tokens: number }>;
+  trend: Array<{ date: string; count: number }>;
+}
+
+export interface OperationalAlert {
+  id: string;
+  severity: string;
+  category: string;
+  title: string;
+  message: string;
+  metadata: unknown;
+  resolvedAt: string | null;
+  resolvedBy: string | null;
+  createdAt: string;
+}
+
+export interface LoginAnalytics {
+  total: number;
+  successCount: number;
+  failureCount: number;
+  daily: Array<{ date: string; success: number; failure: number }>;
+  topReasons: Array<{ reason: string; count: number }>;
+}
+
+export interface PlatformSetting {
+  id: string;
+  key: string;
+  value: string;
+  category: string;
+  updatedAt: string;
+  updatedBy: string | null;
+}
+
+export interface FeatureFlag {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  enabled: boolean;
+  category: string;
+  updatedAt: string;
+  updatedBy: string | null;
+}
+
+export interface GovernanceMetrics {
+  permissionChanges: number;
+  roleChanges: number;
+  newUsersThisMonth: number;
+  weeklyGrowth: Array<{ week: string; count: number }>;
+}
+
+// ── Enterprise Hooks ─────────────────────────────────────────────
+export function useOwnerRealtime() {
+  return useQuery({
+    queryKey: ['owner', 'realtime'],
+    queryFn: () => unwrap<RealtimeMetrics>(api.get('/owner/realtime')),
+    refetchInterval: 10_000,
+    staleTime: 5_000,
+  });
+}
+
+export function useOwnerAiMetrics() {
+  return useQuery({
+    queryKey: ['owner', 'ai-metrics'],
+    queryFn: () => unwrap<AiMetrics>(api.get('/owner/ai-metrics')),
+    staleTime: 60_000,
+  });
+}
+
+export function useOwnerAlerts() {
+  return useQuery({
+    queryKey: ['owner', 'alerts'],
+    queryFn: () => unwrap<OperationalAlert[]>(api.get('/owner/alerts')),
+    staleTime: 30_000,
+  });
+}
+
+export function useResolveAlert() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      unwrap<{ id: string }>(api.post(`/owner/alerts/${id}/resolve`)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['owner', 'alerts'] });
+    },
+  });
+}
+
+export function useOwnerLoginAnalytics() {
+  return useQuery({
+    queryKey: ['owner', 'login-analytics'],
+    queryFn: () => unwrap<LoginAnalytics>(api.get('/owner/login-analytics')),
+    staleTime: 60_000,
+  });
+}
+
+export function useOwnerSettings() {
+  return useQuery({
+    queryKey: ['owner', 'settings'],
+    queryFn: () => unwrap<PlatformSetting[]>(api.get('/owner/settings')),
+  });
+}
+
+export function useUpdateSetting() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ key, value, category }: { key: string; value: string; category?: string }) =>
+      unwrap<PlatformSetting>(api.put(`/owner/settings/${key}`, { value, category })),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['owner', 'settings'] });
+    },
+  });
+}
+
+export function useOwnerFeatureFlags() {
+  return useQuery({
+    queryKey: ['owner', 'feature-flags'],
+    queryFn: () => unwrap<FeatureFlag[]>(api.get('/owner/feature-flags')),
+  });
+}
+
+export function useToggleFeatureFlag() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ slug, enabled }: { slug: string; enabled: boolean }) =>
+      unwrap<FeatureFlag>(api.put(`/owner/feature-flags/${slug}`, { enabled })),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['owner', 'feature-flags'] });
+    },
+  });
+}
+
+export function useOwnerGovernance() {
+  return useQuery({
+    queryKey: ['owner', 'governance'],
+    queryFn: () => unwrap<GovernanceMetrics>(api.get('/owner/governance')),
+    staleTime: 60_000,
+  });
+}
