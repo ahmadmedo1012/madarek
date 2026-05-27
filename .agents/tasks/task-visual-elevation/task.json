@@ -1,0 +1,7 @@
+{
+  "task_id": "task-visual-elevation",
+  "task_description": "Elevate the Madarek platform visual presentation to world-class level. Improve the design token system, fix cascade conflicts, enhance component styles, refine the landing page, unify the motion system, and polish mobile responsiveness. All changes are CSS-only, preserving functionality.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null
+}
