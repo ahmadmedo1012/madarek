@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-002",
+  "type": "refactor",
+  "description": "Redesign shared layout components (Sidebar, Topbar, BottomNav) and primitive components (Card, Badge, Button, Input) with the new Stitch design language. Premium navigation with smooth transitions, glassmorphism topbar, modern sidebar with refined active states, and elevated primitive components.",
+  "status": "completed",
+  "steps": [
+    "Read current layout components: frontend/src/components/layout/Sidebar.tsx, frontend/src/components/layout/Topbar.tsx, frontend/src/components/layout/BottomNav.tsx, frontend/src/components/layout/AppShell.tsx.",
+    "Update the Sidebar component styling in stitch-canonical.css or a dedicated section: light surface background, gold active state (secondary-container), rounded nav items (12px radius), refined brand mark area, premium footer with user info. Keep the component TSX structure but ensure class names align with the premium CSS.",
+    "Update the Topbar styling: clean surface background with subtle border, premium search input with rounded pill shape, modern notification badge, refined user menu dropdown with glassmorphism. Add a subtle backdrop-filter blur effect when scrolled.",
+    "Update BottomNav styling for mobile: glassmorphism background, rounded pill-shaped active indicator, smooth icon transitions on active state.",
+    "Read frontend/src/components/primitives/index.tsx and update the CSS in components.css for Card component: 20px border-radius, refined shadow (shadow-md on hover), subtle border, glassmorphism variant. MetricCard: modern gradient icon orbs, larger values with tabular-nums. Badge: pill shape with tonal backgrounds. ProgressBar: rounded with gradient fill.",
+    "Add premium button styles in components.css: pill-shaped primary buttons with shadow, ghost and outline variants, hover lift effect (translateY -1px), loading state animation.",
+    "Add modern input/form styles: 48px height inputs, rounded borders (10-12px radius), focus ring with primary color glow, label-above pattern.",
+    "Update the AppShell content area transition in system.css: smoother page-in animation (fade + slight upward translate), refined scrollbar styling."
+  ],
+  "acceptance_criteria": [
+    "Sidebar has light surface background in light mode, gold active nav item, 12px rounded items, refined brand area",
+    "Topbar has clean surface with subtle border, pill-shaped search, glassmorphism blur on scroll",
+    "BottomNav has glassmorphism background with pill active indicator",
+    "Cards have 20px radius, refined shadows, hover elevation",
+    "Buttons are pill-shaped with shadow and hover lift",
+    "Inputs are 48px height with rounded borders and focus glow",
+    "All changes use the design tokens from FEAT-001",
+    "TSX component structure unchanged - only CSS styling updated"
+  ],
+  "verification": [
+    "Read modified CSS files and verify all referenced CSS custom properties exist in tokens.css or stitch-canonical.css",
+    "Verify TSX components still export the same named exports and accept the same props",
+    "Verify class names in TSX match class names targeted in CSS"
+  ],
+  "blocked_reason": null,
+  "findings": "All layout and primitive component styling implemented via CSS-only changes in stitch-canonical.css (loads last in cascade). BottomNav rules override earlier notifications.css rules due to cascade order. Topbar scrolled state uses the existing scrolled prop from AppShell. Cards now use r-2xl (20px). No TSX files modified. Brace-balance verified across all 3 modified files. Existing bottom-nav rules in notifications.css (640px breakpoint) are overridden by stitch-canonical.css (900px breakpoint) to match sidebar drawer breakpoint."
+}
