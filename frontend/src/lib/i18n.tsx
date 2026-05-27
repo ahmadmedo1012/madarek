@@ -1,4 +1,5 @@
-import { createElement } from 'react';
+import { Globe } from 'lucide-react';
+import { Icon } from '../components/Icon';
 import { useI18nStore } from '../stores/i18n.store';
 import type { Locale, Dir } from '../stores/i18n.store';
 
@@ -19,7 +20,8 @@ export function useTranslation(): {
 }
 
 /**
- * LangToggle - a small pill button that toggles between ar and en.
+ * LangToggle - a pill button with Globe icon that toggles between ar and en.
+ * Shows the full target language name for clarity.
  */
 export function LangToggle() {
   const locale = useI18nStore((s) => s.locale);
@@ -29,15 +31,18 @@ export function LangToggle() {
     setLocale(locale === 'ar' ? 'en' : 'ar');
   };
 
-  return createElement(
-    'button',
-    {
-      type: 'button',
-      className: 'lang-toggle-pill',
-      onClick: handleToggle,
-      'aria-label': locale === 'ar' ? 'Switch to English' : 'التبديل للعربية',
-      title: locale === 'ar' ? 'English' : 'العربية',
-    },
-    locale === 'ar' ? 'EN' : 'ع',
+  const targetLabel = locale === 'ar' ? 'English' : '\u0627\u0644\u0639\u0631\u0628\u064A\u0629';
+
+  return (
+    <button
+      type="button"
+      className="lang-toggle-pill"
+      onClick={handleToggle}
+      aria-label={locale === 'ar' ? 'Switch to English' : '\u0627\u0644\u062A\u0628\u062F\u064A\u0644 \u0644\u0644\u0639\u0631\u0628\u064A\u0629'}
+      title={targetLabel}
+    >
+      <Icon icon={Globe} size={14} />
+      <span>{targetLabel}</span>
+    </button>
   );
 }

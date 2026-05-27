@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix OasisWidget chat window, LangToggle functionality/icon, and Notification button icon issues identified in QA review",
+  "status": "in_progress",
+  "steps": [
+    "1. Fix LangToggle in frontend/src/lib/i18n.ts: Replace the current simple pill button with a button that includes a Globe icon from lucide-react, shows the full target language name (show 'English' when in Arabic mode, 'العربية' when in English mode), and ensure it actually calls setLocale which already wires into the i18n store correctly. Import Globe from lucide-react and createElement for Icon usage, or switch to JSX if the file can be renamed to .tsx.",
+    "2. The LangToggle must be renamed from .ts to .tsx OR use createElement pattern with the existing Icon component. The toggle already calls setLocale correctly (the i18n system works - the QA issue was about visual indication). Make the button visually clear: globe icon + language label.",
+    "3. Fix NotificationDropdown in frontend/src/components/layout/NotificationDropdown.tsx: The component already has a Bell icon and badge. QA says it shows 'only a number without icon'. Verify the .topbar-notif button has both the Bell icon AND the count badge rendered correctly. The current code already does this (Icon icon={Bell} + badge span). The issue may be CSS hiding the icon. Add a CSS rule in visual-final-polish.css to ensure .topbar-notif displays the icon prominently.",
+    "4. Fix OasisWidget in frontend/src/components/OasisWidget.tsx: The chat window needs better formatting. Ensure the panel has proper sizing, clear message bubbles, readable text sizes. Add CSS improvements to the oasis-widget classes in a new section in visual-final-polish.css for better chat window clarity: fixed width/height, clear message separation, properly sized text, visible header/input areas.",
+    "5. Add CSS for oasis-widget improvements in frontend/src/styles/visual-final-polish.css: Set proper dimensions for .oasis-widget__panel (width: 360px, max-height: 520px). Style .oasis-widget__header with solid background and border. Style .oasis-widget__msg-bubble with proper padding, border-radius, and font-size. Style .oasis-widget__input-row with clear border-top. Make .oasis-widget__trigger larger and more recognizable with a gradient background."
+  ],
+  "acceptance_criteria": [
+    "LangToggle shows a Globe icon and full language name (English/العربية) and calls setLocale on click",
+    "NotificationDropdown bell icon is visually prominent alongside the count badge",
+    "OasisWidget chat panel has proper sizing (360px wide, max 520px tall) with clear header, messages, and input",
+    "OasisWidget trigger button is clearly recognizable with a visible icon",
+    "No new package dependencies added - only lucide-react icons already available",
+    "All TypeScript compiles with strict mode (no implicit any, proper literal types)"
+  ],
+  "verification": [
+    "Read the modified files and verify TypeScript is valid with strict mode and noUncheckedIndexedAccess",
+    "Verify all lucide-react imports use icons that exist in the package (Globe, Bell, Bot, Send, X are all valid)",
+    "Verify CSS changes use only existing custom properties from tokens.css"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
