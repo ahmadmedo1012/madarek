@@ -17,6 +17,7 @@ import './styles/polish.css';
 import './styles/landing-auth-v3.css';
 import './styles/stitch-canonical.css';
 import './styles/redesign-landing.css';
+import './styles/redesign-dashboard.css';
 import './styles/pdf.css';
 import './styles/owner.css';
 import App from './App';

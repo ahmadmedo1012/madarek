@@ -48,7 +48,7 @@ export function Sidebar() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
+                className={({ isActive }) => `nav-item nav-item-pill${isActive ? ' on' : ''}`}
                 onClick={closeSidebar}
               >
                 <span className="nav-icon">

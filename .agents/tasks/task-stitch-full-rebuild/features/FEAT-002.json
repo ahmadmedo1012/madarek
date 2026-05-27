@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Rebuild the Student Dashboard (DashboardPage.tsx) and global app shell (Sidebar, Topbar, BottomNav) to a dramatically higher visual quality. The dashboard should feel like a premium fintech/health app - with layered card surfaces, animated data visualizations, micro-interactions on every element, and a refined information hierarchy. The app shell should feel seamless, with the sidebar acting as a premium navigation experience and the topbar being minimal but powerful.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Step 1: Rebuild DashboardPage.tsx - Restructure the welcome card to be a full-width gradient banner with animated particle dots, a large greeting with time-aware emoji, and a 'quick actions' row of 3-4 pill buttons (e.g., 'Continue Learning', 'Today Schedule', 'AI Assistant'). Add Links to relevant routes.",
     "Step 2: Rebuild the GPA card - Make it a premium glass card with an animated circular gauge (using conic-gradient in CSS) showing the GPA as a ring progress. The center shows the GPA value with gradient text. Add a subtle pulse glow when the value is high (>3.5). Add a 'trend' indicator (up arrow with +0.2 text).",
