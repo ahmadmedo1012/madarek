@@ -267,8 +267,7 @@ label,
    ═══════════════════════════════════════════════════════════════ */
 
 /* Card surfaces - pure token usage */
-[data-theme='dark'] .card,
-:root .card {
+[data-theme='dark'] .card {
   background: var(--surface-1);
   border-color: var(--border);
 }
@@ -392,7 +391,7 @@ label,
    SECTION 7: COMPONENT VISUAL COHESION
    ═══════════════════════════════════════════════════════════════ */
 
-/* Unified card radius and transition */
+/* --r-2xl = 16px, same as --r-xl today; kept explicit for semantic intent (large containers) */
 .card,
 .metric,
 .auth-glass-card {
@@ -615,7 +614,7 @@ label,
     padding-inline: var(--sp-3) !important;
   }
   .card {
-    padding: var(--sp-3) !important;
+    padding: var(--sp-4) !important;
   }
   .metric {
     padding: var(--sp-3) !important;
@@ -644,10 +643,6 @@ label,
 
 /* --- Touch target enforcement --- */
 @media (pointer: coarse) {
-  .btn,
-  .pill,
-  .tab,
-  .nav-item,
   .filter-pill,
   .role-tab {
     min-height: 44px;
@@ -678,14 +673,6 @@ label,
 }
 
 /* --- RTL-specific mobile fixes --- */
-@media (max-width: 900px) {
-  /* Sidebar: RTL slides from right (already correct via translateX(100%)
-     in base.css for [dir=rtl] / default RTL). Reinforce logical positioning. */
-  .sidebar {
-    inset-inline-end: 0;
-    inset-inline-start: auto;
-  }
-}
 
 @media (max-width: 640px) {
   /* Topbar scope: proper ellipsis in RTL */
