@@ -105,7 +105,7 @@
   --fs-xxs: 11px;
   --fs-xs: 12px;
   --fs-sm: 13px;
-  --fs-base: 14px;
+  --fs-base: 15px;
   --fs-md: 15px;
   --fs-lg: 17px;
   --fs-xl: 20px;
@@ -270,7 +270,7 @@
   --warning: #c2410c;
   --warning-soft: rgba(194, 65, 12, 0.10);
   --danger: var(--md-error);
-  --danger-soft: var(--md-error-container);
+  --danger-soft: color-mix(in srgb, var(--md-error) 10%, transparent);
   --info: var(--md-primary);
   --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
 
