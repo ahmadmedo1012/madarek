@@ -50,7 +50,7 @@ button:has(> .card):active,
 .role-tab:active {
   transition-duration: 60ms !important;
   transition-timing-function: var(--ease-out) !important;
-  transform: scale(0.97);
+  transform: scale(0.98);
   filter: brightness(0.97);
 }
 
@@ -74,7 +74,7 @@ button:has(> .card),
 }
 
 /* Buttons — refined press scale */
-.btn:active { transform: scale(0.96); }
+.btn:active { transform: scale(0.97); }
 .btn.primary:active {
   box-shadow: var(--shadow-sm);
   filter: brightness(0.95);
@@ -235,17 +235,15 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   from {
     opacity: 0;
     transform: translate3d(0, 12px, 0);
-    filter: blur(1px);
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    filter: blur(0);
   }
 }
 
 .content-inner {
-  animation: ix-page-in-soft 460ms var(--ease-out) both;
+  animation: ix-page-in-soft 380ms var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -303,19 +301,17 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   from {
     opacity: 0;
     transform: translate3d(0, 6px, 0);
-    filter: blur(0.5px);
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    filter: blur(0);
   }
 }
 
 .tab-panel,
 [role="tabpanel"],
 [data-tab-content] {
-  animation: ix-tab-content-in 280ms var(--ease-out) both;
+  animation: ix-tab-content-in 250ms var(--ease-out) both;
 }
 
 /* When using a key on the panel root, rely on React remount —

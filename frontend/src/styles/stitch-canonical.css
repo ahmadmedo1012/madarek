@@ -618,26 +618,10 @@ input:focus, textarea:focus, select:focus,
 
 
 /* ═══════════════════════════════════════════════════════════════
-   BOTTOM NAV — glassmorphism mobile navigation bar
+   BOTTOM NAV — dark mode override + display breakpoint
+   (Canonical bottom-nav styles live in notifications.css)
    ═══════════════════════════════════════════════════════════════ */
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  inset-inline: 0;
-  z-index: 40;
-  display: none;
-  align-items: center;
-  justify-content: space-around;
-  height: 64px;
-  padding: 0 var(--sp-2);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border-top: 1px solid rgba(255, 255, 255, 0.80);
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.03), 0 -4px 16px rgba(0, 0, 0, 0.04);
-}
 [data-theme='dark'] .bottom-nav {
   background: rgba(26, 24, 37, 0.78);
   border-top: 1px solid rgba(195, 198, 209, 0.12);
@@ -652,64 +636,6 @@ input:focus, textarea:focus, select:focus,
   .content {
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
   }
-}
-
-.bottom-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 6px 12px;
-  border-radius: var(--r-lg);
-  text-decoration: none;
-  color: var(--text-muted);
-  position: relative;
-  transition:
-    color var(--t-fast) var(--ease-out),
-    transform var(--t-fast) var(--ease-out);
-  min-width: 52px;
-}
-.bottom-nav-item:active {
-  transform: scale(0.92);
-}
-
-/* Pill-shaped active indicator behind icon */
-.bottom-nav-item.active {
-  color: var(--md-primary);
-}
-.bottom-nav-item.active .bottom-nav-icon {
-  background: color-mix(in srgb, var(--md-primary) 12%, transparent);
-  border-radius: var(--r-full);
-  padding: 4px 16px;
-}
-[data-theme='dark'] .bottom-nav-item.active {
-  color: var(--md-tertiary-fixed-dim);
-}
-[data-theme='dark'] .bottom-nav-item.active .bottom-nav-icon {
-  background: color-mix(in srgb, var(--md-tertiary-fixed-dim) 14%, transparent);
-}
-
-.bottom-nav-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: auto;
-  height: 28px;
-  padding: 4px 8px;
-  border-radius: var(--r-full);
-  transition:
-    background var(--t-base) var(--ease-out),
-    padding var(--t-base) var(--ease-out),
-    transform var(--t-fast) var(--ease-out);
-}
-
-.bottom-nav-label {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  transition: color var(--t-fast) var(--ease-out);
 }
 
 /* ═══════════════════════════════════════════════════════════════

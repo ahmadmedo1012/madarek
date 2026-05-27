@@ -40,8 +40,8 @@
   position: absolute;
   inset-inline-end: -20px;
   inset-block-start: -20px;
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(45, 219, 222, 0.12) 0%, transparent 70%);
   pointer-events: none;
@@ -53,12 +53,12 @@
   position: absolute;
   inset-inline-start: 10%;
   inset-block-end: -30px;
-  width: 80px;
-  height: 80px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(254, 214, 91, 0.10) 0%, transparent 70%);
   pointer-events: none;
-  animation: dash-float 12s ease-in-out 1s infinite reverse;
+  animation: dash-float 14s ease-in-out 1s infinite reverse;
   z-index: 0;
 }
 
@@ -111,6 +111,7 @@
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border) !important;
+  will-change: transform;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
@@ -210,6 +211,7 @@
 /* ── Progress card — Premium doughnut ────────────────────────── */
 .dash-progress-card {
   padding: var(--sp-6) !important;
+  will-change: transform;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
@@ -286,6 +288,7 @@
 
 .dash-term-card {
   padding: var(--sp-5) var(--sp-6) !important;
+  will-change: transform;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
