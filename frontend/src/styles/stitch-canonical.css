@@ -404,13 +404,7 @@
   z-index: -1;
 }
 
-/* Hero gradient text on the headline */
-.landing-title {
-  background: linear-gradient(135deg, var(--md-primary), var(--md-primary-container) 60%, var(--md-tertiary) 100%);
-  -webkit-background-clip: text !important;
-          background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-}
+/* Hero title — solid text for readability (no gradient fill) */
 
 /* ═══════════════════════════════════════════════════════════════
    SECTION RHYTHM — Stitch surfaces

@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Landing Page and Auth Page Premium Elevation - Make the landing page and authentication page feel world-class. Fix the hero section to have more dramatic visual impact, refine the feature cards grid, improve the CTA section, and make the auth page feel premium and conversion-focused. Reduce competing !important rules between landing.css and premium.css.",
+  "status": "in_progress",
+  "steps": [
+    "Edit frontend/src/styles/landing.css - Hero section: (1) Change the animated gradient background (::before) to be more subtle and calmer - reduce the radial gradient opacity to 0.06/0.04/0.03 instead of 0.12/0.10/0.06. (2) Remove the floating geometric shape ::after pseudo-element entirely - it looks dated. (3) Remove .landing-hero-content::before floating circle - same issue. These decorative blobs feel template-like, not premium.",
+    "Edit frontend/src/styles/landing.css - Hero title: Remove the gradient-text-fill effect from .landing-title (the blue-to-teal gradient makes it hard to read). Instead use solid color: color: var(--text) with font-weight: 800 and let the size do the work. Remove the background/background-clip/-webkit-text-fill-color properties.",
+    "Edit frontend/src/styles/landing.css - Feature cards: (1) Remove the ::before gradient-border-on-hover mask technique from .landing-feature-card - it is too complex and flickers on some browsers. (2) Instead use a simpler hover: border-color: var(--accent-border) with box-shadow: var(--shadow-lg). (3) Reduce the hover translateY from -6px to -3px (more restrained, more premium). (4) Change feature card text-align from center to start/right (RTL) for a more editorial, less template-like feel.",
+    "Edit frontend/src/styles/landing.css - KPI strip: Simplify. Remove the ::after animated gradient underline (the gradient-shift animation is distracting). Replace with a simple border-bottom or nothing. The glassmorphism on the strip already provides enough distinction.",
+    "Edit frontend/src/styles/landing.css - Pilot stats section: Reduce hover transform from translateY(-3px) to translateY(-2px). Remove the gradient-text from .landing-pilot-value - use solid var(--accent) color instead for better readability.",
+    "Edit frontend/src/styles/landing.css - Footer: add more breathing room with padding-block: var(--sp-8) var(--sp-6).",
+    "Edit frontend/src/styles/premium.css - Remove the duplicate .landing-title gradient override (it fights with landing.css). Remove the section backgrounds for #pillars, #proof, #about - let the page be cleaner with just the natural background. Keep the reveal-up animation system, CTA button polish, and hero image cinematic treatment.",
+    "Edit frontend/src/styles/premium.css - Tone down the .landing-feature-card::before gradient sheen (it already exists in landing.css and this creates double pseudo-elements). Remove the entire .landing-feature-card rule block since landing.css handles it.",
+    "Edit frontend/src/styles/stitch-canonical.css - Remove the .landing-title override that forces another gradient text (background: linear-gradient... -webkit-background-clip: text !important). The landing title should be solid text color for readability.",
+    "Edit frontend/src/styles/landing-auth-v3.css - Auth page improvements: (1) Change the .landing-final-cta background gradient to use the Stitch palette (navy instead of indigo - #001c38 to #003461 to #004b87). The current indigo gradient (#1e1b4b to #4338ca) conflicts with the brand. (2) Update .landing-final-cta-btn.primary to use navy theme colors.",
+    "Edit frontend/src/styles/landing.css - Mobile menu refinement: Add a max-height and overflow-y: auto to .landing-mobile-menu for phones with many links. Add smooth open animation using transform/opacity."
+  ],
+  "acceptance_criteria": [
+    "Landing hero has no floating decorative blob shapes (cleaned up pseudo-elements)",
+    "Landing title uses solid text color, not gradient text fill",
+    "Feature cards use simple border-color hover instead of mask-based gradient border",
+    "KPI strip has no animated gradient underline",
+    "Premium.css does not duplicate landing-feature-card rules",
+    "Final CTA section uses navy brand colors, not indigo"
+  ],
+  "verification": [
+    "Run: grep 'text-fill-color' frontend/src/styles/landing.css to check gradient text removal from title (should be minimal, only in .block subtitle)",
+    "Run: grep 'mask-composite' frontend/src/styles/landing.css to confirm gradient border removal (should be 0)",
+    "Run: grep '#1e1b4b' frontend/src/styles/landing-auth-v3.css to confirm indigo is replaced (should be 0)",
+    "Run: grep 'landing-feature-card' frontend/src/styles/premium.css to confirm duplicate removal"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
