@@ -23,6 +23,7 @@ import './styles/redesign-matrix.css';
 import './styles/redesign-global.css';
 import './styles/pdf.css';
 import './styles/owner.css';
+import './styles/visual-final-polish.css';
 import App from './App';
 
 const root = document.getElementById('root');

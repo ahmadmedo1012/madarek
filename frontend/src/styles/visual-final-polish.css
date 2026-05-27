@@ -1,0 +1,215 @@
+/* ═══════════════════════════════════════════════════════════════
+   Visual Final Polish — Last-loaded layer for:
+     - Text overflow protection (headings, cards, tables, nav)
+     - Typography hierarchy standardization
+     - Topbar and sidebar overflow fixes
+   Loads after owner.css for maximum cascade authority.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1: TEXT OVERFLOW PROTECTION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* All headings - prevent overflow */
+h1, h2, h3, h4, h5, h6,
+.page-title,
+.card-title,
+.landing-title,
+.landing-features-title,
+.dash-section-title,
+.welcome-card .page-title,
+.landing-final-cta-title,
+.landing-bento-title,
+.landing-ai-chat-name,
+.track-hero-title {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* Card and component body text */
+.card p, .card span,
+.metric-label,
+.alert-title, .alert-desc,
+.post-body,
+.notif-item-title, .notif-item-desc,
+.dash-agenda-title,
+.landing-bento-desc,
+.landing-subtitle,
+.landing-final-cta-lede,
+.page-subtitle,
+.thumb-card-title,
+.exam-row,
+.lesson-content {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Table cells: constrained width with ellipsis */
+.tbl td,
+.tbl th {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Topbar scope chip on mobile */
+@media (max-width: 600px) {
+  .topbar-scope {
+    max-width: 140px;
+  }
+}
+
+/* Float card values */
+.landing-hero-float-card-value {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2: TYPOGRAPHY STANDARDIZATION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* === TYPOGRAPHY HIERARCHY === */
+
+/* Display/Hero headings */
+.landing-title,
+.landing-final-cta-title {
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.025em;
+}
+
+/* Section headings */
+.landing-features-title,
+.dash-section-title,
+.page-title {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Card titles - unified */
+.card-title,
+.card > h2,
+.card > h3,
+.track-hero-title,
+.landing-bento-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Labels and small headings - unified */
+.metric-label,
+.dash-eyebrow,
+.nav-section-label,
+.notif-panel-title,
+label,
+.form-label,
+.filter-pill,
+.section-title {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* Dashboard numbers - tabular, tight */
+.metric-value,
+.kpi-value,
+.dash-gpa-value,
+.dash-term-pct,
+.dash-stat-value,
+.compact-kpi-value {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+/* Helper/subtle text */
+.card-subtitle,
+.state-desc,
+.alert-desc,
+.notif-item-desc,
+.post-time,
+.achievement-desc,
+.sidebar-brand-sub {
+  font-size: var(--fs-xs);
+  line-height: var(--lh-snug);
+  color: var(--text-muted);
+}
+
+/* Body paragraph text */
+.page-subtitle,
+.landing-subtitle,
+.landing-bento-desc,
+.landing-final-cta-lede,
+.post-body,
+.lesson-content p,
+.alert-body {
+  line-height: var(--lh-base);
+  text-wrap: pretty;
+}
+
+/* Constrain long text blocks */
+.landing-subtitle,
+.page-subtitle {
+  max-width: 64ch;
+}
+
+.landing-bento-desc,
+.post-body,
+.lesson-content {
+  max-width: 72ch;
+}
+
+/* Button text */
+.btn {
+  line-height: 1;
+  font-weight: 600;
+}
+
+/* Badge text */
+.badge {
+  line-height: 1.4;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3: TOPBAR AND SIDEBAR OVERFLOW FIXES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Topbar title container - prevent overflow */
+.topbar-title {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar-title > span,
+.topbar-title > :first-child {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* AI tag in sidebar brand stays on one line */
+.sidebar-brand-name .ai-tag {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Sidebar nav label overflow */
+.nav-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
