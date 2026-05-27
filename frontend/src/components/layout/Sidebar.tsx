@@ -35,9 +35,9 @@ export function Sidebar() {
           </div>
           <div className="sidebar-brand-text">
             <div className="sidebar-brand-name">
-              منصة الزاوية
+              مدارك
             </div>
-            <div className="sidebar-brand-sub">جامعة الزاوية</div>
+            <div className="sidebar-brand-sub">التعليم الذكي</div>
           </div>
         </div>
 

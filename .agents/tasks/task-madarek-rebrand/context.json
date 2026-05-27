@@ -1,0 +1,30 @@
+{
+  "project_type": "React 18 SPA with Vite + TypeScript (EdTech platform)",
+  "language": "TypeScript/TSX + CSS",
+  "build_system": "Vite 5.4, tsc for typechecking",
+  "test_framework": "No test framework configured in frontend",
+  "build_command": "cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit",
+  "test_command": "N/A - no tests configured",
+  "verification_instructions": "Run typecheck: cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit. Verify CSS brace balance. Grep to confirm branding text changes.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "No setup needed - INTEGRATIONS_ONLY network, no npm install possible. Work with existing node_modules.",
+  "environment_constraints": "INTEGRATIONS_ONLY network mode. No npm install, no Docker, no external downloads. Must work with pre-installed dependencies only. Use AST/grep validation instead of build.",
+  "contribution_requirements": "Preserve RTL support, existing functionality, routing, and business logic. Keep references to university name in educational content/data.",
+  "key_patterns": "CSS uses custom properties from tokens.css/stitch-tokens.css. Components use lucide-react icons. Landing page uses Reveal component for scroll animations. RTL layout uses logical properties (inset-inline, margin-inline). Glass morphism pattern used throughout (var(--glass-bg), backdrop-filter).",
+  "relevant_files": [
+    "frontend/src/components/BrandMark.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/components/layout/Sidebar.tsx",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/components/layout/GlobalSearch.tsx",
+    "frontend/src/styles/landing.css",
+    "frontend/src/styles/responsive.css",
+    "frontend/src/styles/stitch-canonical.css",
+    "frontend/src/styles/premium.css",
+    "frontend/src/styles/landing-auth-v3.css",
+    "frontend/src/styles/base.css",
+    "frontend/src/styles/system.css",
+    "frontend/public/brand/madarek-mark.svg"
+  ],
+  "directory_structure": "frontend/src/components/ (shared components), frontend/src/components/layout/ (AppShell, Sidebar, Topbar, GlobalSearch), frontend/src/pages/ (page components), frontend/src/styles/ (all CSS files), frontend/public/brand/ (logo/brand assets)"
+}

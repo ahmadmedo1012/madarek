@@ -1,0 +1,8 @@
+{
+  "task_id": "task-madarek-rebrand",
+  "task_description": "Complete Madarek platform rebranding and visual redesign: replace old Z logo with madarek-mark.svg, remove ministry strip, rebrand all text from 'الزاوية' to 'مدارك', clean up dead CSS, and enhance the landing page for a premium modern EdTech feel.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null,
+  "review_fixes": "Addressed review issues #2 and #3: replaced --glass-border with --border token on sticky header for light-mode visibility, added box-shadow for depth, deleted orphaned zu-mark.svg. Issue #1 (AdminPages/MorePages/seed.ts keeping university name) was intentionally not changed per user direction."
+}

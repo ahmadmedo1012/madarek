@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "CSS cleanup and premium visual polish: remove ministry-strip styles, enhance hero section for stronger visual impact, improve overall landing page composition, and add premium styling touches for a modern EdTech feel.",
+  "status": "completed",
+  "steps": [
+    "In frontend/src/styles/landing.css: Remove the entire .ministry-strip, .ministry-strip-inner, .ministry-strip-emblem, .ministry-strip-text styles block (approximately lines 558-587 equivalent - the section titled '── Ministry affiliation strip ──'). Also remove the ministry-strip responsive rule inside the @media (max-width: 480px) block.",
+    "In frontend/src/styles/responsive.css: Remove the .ministry-strip-inner rule inside @media (max-width: 480px) block. Remove the .ministry-strip reference inside @media print block.",
+    "In frontend/src/styles/landing.css: Enhance the hero section for more premium impact: (a) Increase hero padding from 'var(--sp-12) 0' to 'clamp(80px, 10vw, 140px) 0' for more breathing room. (b) Add a more dramatic gradient background glow to .landing-hero::before with richer color stops. (c) Make the landing-title more impactful: increase max clamp to 84px, add a subtle text-shadow for depth.",
+    "In frontend/src/styles/landing.css: Improve landing header feel without the ministry strip: (a) Add a subtle bottom border to .landing-header: 'border-bottom: 1px solid var(--glass-border)' and slight glassmorphism backdrop: 'background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 50'. This makes the header float elegantly now that the strip above is gone.",
+    "Add premium visual polish: (a) In the KPI strip section, add margin-top: var(--sp-6) to give more separation from hero. (b) Ensure the landing-brand-text span has proper styling: add CSS rules for .landing-brand-text with 'display: flex; flex-direction: column; line-height: 1.2;', .landing-brand-name with 'font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -0.01em;', and .landing-brand-sub with 'font-size: 11px; color: var(--text-muted); font-weight: 500;'. This ensures the new Madarek brand text in the header looks polished.",
+    "Final CSS pass: (a) Ensure all sections have proper spacing now that ministry strip is removed. (b) Add a subtle animated gradient border or glow to the hero image for premium feel: '.landing-hero-img::after { content: \"\"; position: absolute; inset: -1px; border-radius: inherit; background: linear-gradient(135deg, rgba(0, 52, 97, 0.2), rgba(45, 219, 222, 0.15), rgba(0, 52, 97, 0.2)); z-index: -1; opacity: 0; transition: opacity 0.6s ease; }' and '.landing-hero-img:hover::after { opacity: 1; }'"
+  ],
+  "acceptance_criteria": [
+    "No .ministry-strip CSS rules exist in landing.css",
+    "No .ministry-strip references in responsive.css (except possibly in print media query removal)",
+    "Hero section has increased padding for more premium spacing",
+    "Landing header has glassmorphism sticky behavior",
+    "Landing brand text (.landing-brand-name, .landing-brand-sub) has explicit styling",
+    "All CSS files have balanced braces (no syntax errors)"
+  ],
+  "verification": [
+    "Run: grep -c 'ministry-strip' /projects/sandbox/madarek/frontend/src/styles/landing.css - should be 0",
+    "Run: grep -c 'ministry-strip' /projects/sandbox/madarek/frontend/src/styles/responsive.css - should be 0",
+    "Run: grep 'landing-brand-name' /projects/sandbox/madarek/frontend/src/styles/landing.css - should find new styles",
+    "Run: python3 -c \"import sys; css=open('/projects/sandbox/madarek/frontend/src/styles/landing.css').read(); print('BALANCED' if css.count('{')==css.count('}') else 'UNBALANCED')\"",
+    "Run: python3 -c \"import sys; css=open('/projects/sandbox/madarek/frontend/src/styles/responsive.css').read(); print('BALANCED' if css.count('{')==css.count('}') else 'UNBALANCED')\""
+  ],
+  "blocked_reason": null,
+  "findings": "All changes verified: ministry-strip fully removed from both landing.css and responsive.css (0 references remaining). Both CSS files have balanced braces. Hero padding upgraded to clamp, gradient enhanced, title max-size increased to 84px, header made sticky with glassmorphism, brand-text styles added, hero-img ::after glow added, KPI strip spacing increased."
+}
