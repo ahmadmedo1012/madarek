@@ -1,8 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
-   Student dashboard — handcrafted layout
-   No inline-style overrides. Every value reads from a token.
+   Student Dashboard — Premium Stitch Design
+   Handcrafted layout with glassmorphism, micro-interactions,
+   and premium visual treatments using 8px grid spacing.
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── Dashboard container ─────────────────────────────────────── */
 .student-dashboard {
   max-width: 1080px;
   margin-inline: auto;
@@ -13,11 +15,78 @@
 
 /* ── Eyebrow micro-label — used across the dashboard ─────────── */
 .dash-eyebrow {
-  font-size: 12px;
+  font-size: var(--fs-label-sm);
   font-weight: 600;
   color: var(--text-subtle);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WELCOME CARD — Premium gradient with floating decorative orbs
+   (gradient set by stitch-canonical.css — we add structure here)
+   ═══════════════════════════════════════════════════════════════ */
+
+.welcome-card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--sp-8) var(--sp-6) !important;
+  isolation: isolate;
+}
+
+/* Floating decorative orbs */
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  inset-inline-end: -30px;
+  inset-block-start: -30px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45, 219, 222, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+  animation: dash-float 6s ease-in-out infinite;
+  z-index: 0;
+}
+.welcome-card::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 10%;
+  inset-block-end: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 214, 91, 0.14) 0%, transparent 70%);
+  pointer-events: none;
+  animation: dash-float 8s ease-in-out 1s infinite reverse;
+  z-index: 0;
+}
+
+/* Ensure welcome card text sits above decorative elements */
+.welcome-card .page-title,
+.welcome-card .page-subtitle {
+  position: relative;
+  z-index: 1;
+}
+
+/* Welcome card typography refinement */
+.welcome-card .page-title {
+  font-size: var(--fs-headline-md) !important;
+  font-weight: 800 !important;
+  color: var(--md-on-primary) !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: var(--sp-2);
+}
+.welcome-card .page-subtitle {
+  font-size: var(--fs-md) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  line-height: 1.6 !important;
+  max-width: 50ch;
+}
+
+/* Animated entrance */
+.welcome-card {
+  animation: dash-slide-up var(--t-slow) var(--ease-out) both;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -33,80 +102,139 @@
   .dash-hero-row { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* ── GPA card ── */
+/* ── GPA card — Glassmorphism treatment ──────────────────────── */
 .dash-gpa-card {
   padding: var(--sp-6) !important;
   position: relative;
   overflow: hidden;
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border) !important;
+  transition:
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
 }
+.dash-gpa-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Golden halo - enhanced radial glow */
 .dash-gpa-card::before {
-  /* Subtle gold halo — depth without noise */
   content: '';
   position: absolute;
   inset-inline-end: -40px;
   inset-block-start: -40px;
-  width: 180px;
-  height: 180px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--gold-soft) 0%, transparent 70%);
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--gold) 20%, transparent) 0%,
+    color-mix(in srgb, var(--gold) 8%, transparent) 40%,
+    transparent 70%);
+  pointer-events: none;
+  animation: dash-pulse-soft 4s ease-in-out infinite;
+}
+
+/* Secondary ambient glow */
+.dash-gpa-card::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: -20px;
+  inset-block-end: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+    transparent 70%);
   pointer-events: none;
 }
+
 .dash-gpa-body {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--sp-4);
   position: relative;
+  z-index: 1;
 }
 .dash-gpa-text {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
 }
+
+/* GPA value - premium gradient text */
 .dash-gpa-value {
-  font-size: clamp(40px, 6vw, 56px);
+  font-size: clamp(44px, 7vw, 60px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
-  color: var(--accent);
   font-variant-numeric: tabular-nums;
   margin-block: var(--sp-2);
-  background: linear-gradient(180deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 70%, var(--gold)) 100%);
+  background: linear-gradient(
+    160deg,
+    var(--accent) 0%,
+    color-mix(in srgb, var(--accent) 60%, var(--gold)) 50%,
+    var(--gold) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: dash-fade-in var(--t-slow) var(--ease-out) 0.2s both;
 }
+
+/* GPA orb icon - animated golden orb */
 .dash-gpa-orb {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   border-radius: var(--r-xl);
-  background: var(--gold-soft);
+  background: linear-gradient(135deg, var(--gold-soft), color-mix(in srgb, var(--gold) 24%, transparent));
   color: var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid color-mix(in srgb, var(--gold) 25%, transparent);
-  transition: transform var(--t-base) var(--ease-out);
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  transition:
+    transform var(--t-base) var(--ease-spring),
+    box-shadow var(--t-base) var(--ease-out);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--gold) 15%, transparent);
 }
 .dash-gpa-card:hover .dash-gpa-orb {
-  transform: scale(1.05) rotate(-4deg);
+  transform: scale(1.08) rotate(-6deg);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--gold) 25%, transparent);
 }
 
-/* ── Progress card ── */
+/* ── Progress card — Premium doughnut ────────────────────────── */
 .dash-progress-card {
   padding: var(--sp-6) !important;
+  transition:
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+.dash-progress-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }
 .dash-progress-body {
   display: flex;
   align-items: center;
-  gap: var(--sp-5);
+  gap: var(--sp-6);
 }
+
+/* Doughnut container - modern glassy background */
 .dash-doughnut {
   position: relative;
-  width: 110px;
-  height: 110px;
+  width: 116px;
+  height: 116px;
   flex-shrink: 0;
+  background: var(--glass-bg-subtle);
+  border-radius: 50%;
+  padding: var(--sp-1);
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
 }
 .dash-doughnut-center {
   position: absolute;
@@ -114,21 +242,34 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
-  color: var(--accent);
   letter-spacing: -0.02em;
+  background: linear-gradient(160deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--gold)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.dash-progress-text { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+.dash-progress-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
 .dash-progress-value {
-  font-size: 17px;
+  font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.005em;
 }
 .dash-progress-note {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
+  padding: var(--sp-1) var(--sp-2);
+  background: var(--glass-bg-subtle);
+  border-radius: var(--r-sm);
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+  width: fit-content;
 }
 
 @media (max-width: 480px) {
@@ -137,15 +278,22 @@
     align-items: flex-start;
     text-align: start;
   }
-  .dash-doughnut { width: 96px; height: 96px; }
+  .dash-doughnut { width: 100px; height: 100px; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TERM PROGRESS CARD
+   TERM PROGRESS CARD — Premium bar with glow
    ═══════════════════════════════════════════════════════════════ */
 
 .dash-term-card {
   padding: var(--sp-5) var(--sp-6) !important;
+  transition:
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+.dash-term-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }
 .dash-term-head {
   display: flex;
@@ -153,15 +301,23 @@
   justify-content: space-between;
   margin-bottom: var(--sp-3);
 }
+
+/* Percentage display - gradient premium */
 .dash-term-pct {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
-  color: var(--accent);
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
+/* Progress bar - premium with gradient and glow */
 .dash-term-bar {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
   border-radius: var(--r-full);
   overflow: hidden;
@@ -170,32 +326,55 @@
 .dash-term-bar > span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--gold)), var(--gold));
   border-radius: var(--r-full);
-  transition: width 600ms var(--ease-out);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 35%, transparent);
+  transition: width 800ms var(--ease-out);
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 0 24px color-mix(in srgb, var(--accent) 20%, transparent);
+  position: relative;
 }
+/* Animated shimmer on the bar */
+.dash-term-bar > span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: dash-shimmer 2.5s ease-in-out infinite;
+}
+
 .dash-term-foot {
   margin-top: var(--sp-3);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   AGENDA — up-coming list
+   AGENDA — Modern items with color-coded accent border
    ═══════════════════════════════════════════════════════════════ */
 
-.dash-agenda { display: flex; flex-direction: column; gap: var(--sp-4); }
+.dash-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
 .dash-agenda-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
 }
 .dash-section-title {
-  font-size: 18px;
+  font-size: var(--fs-xl);
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.01em;
@@ -206,22 +385,45 @@
   flex-direction: column;
   gap: var(--sp-3);
 }
+
+/* Agenda items - color-coded accent border on inline-start */
 .dash-agenda-item {
-  padding: var(--sp-4) !important;
+  padding: var(--sp-4) var(--sp-5) !important;
   display: flex;
   align-items: center;
   gap: var(--sp-4);
   cursor: default;
+  position: relative;
+  border-inline-start: 3px solid transparent !important;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out),
-    border-color var(--t-base) var(--ease-out);
-}
-.dash-agenda-item:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border)) !important;
+    border-color var(--t-base) var(--ease-out),
+    background var(--t-base) var(--ease-out);
 }
 
+/* Color-coded left accent border based on tone */
+.dash-agenda-item[data-tone="accent"] {
+  border-inline-start-color: var(--accent) !important;
+}
+.dash-agenda-item[data-tone="gold"] {
+  border-inline-start-color: var(--gold) !important;
+}
+
+/* Hover elevation */
+.dash-agenda-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent) !important;
+}
+
+/* Press feedback */
+.dash-agenda-item:active {
+  transform: translateY(0px) scale(0.99);
+  transition-duration: var(--t-fast);
+}
+
+/* Icon backgrounds with gradient fills */
 .dash-agenda-icon {
   width: 48px;
   height: 48px;
@@ -230,20 +432,26 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform var(--t-base) var(--ease-out), background var(--t-base) var(--ease-out);
+  transition:
+    transform var(--t-base) var(--ease-spring),
+    background var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
 }
 .dash-agenda-item[data-tone="accent"] .dash-agenda-icon {
-  background: var(--accent-soft);
+  background: linear-gradient(135deg, var(--accent-soft), color-mix(in srgb, var(--accent) 18%, transparent));
   color: var(--accent);
   border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .dash-agenda-item[data-tone="gold"] .dash-agenda-icon {
-  background: var(--gold-soft);
+  background: linear-gradient(135deg, var(--gold-soft), color-mix(in srgb, var(--gold) 20%, transparent));
   color: var(--gold);
   border: 1px solid color-mix(in srgb, var(--gold) 25%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--gold) 10%, transparent);
 }
 .dash-agenda-item:hover .dash-agenda-icon {
-  transform: scale(1.05) rotate(-3deg);
+  transform: scale(1.06) rotate(-3deg);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .dash-agenda-text {
@@ -254,20 +462,87 @@
   flex: 1;
 }
 .dash-agenda-title {
-  font-size: 15px;
+  font-size: var(--fs-md);
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.005em;
-  /* Long titles wrap, never overflow */
   overflow-wrap: anywhere;
 }
+/* Time/meta display - mono font for timestamps */
 .dash-agenda-meta {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0;
 }
 
 @media (max-width: 480px) {
-  .dash-agenda-item { padding: var(--sp-3) !important; gap: var(--sp-3); }
+  .dash-agenda-item { padding: var(--sp-3) var(--sp-4) !important; gap: var(--sp-3); }
   .dash-agenda-icon { width: 40px; height: 40px; }
-  .dash-agenda-title { font-size: 14px; }
+  .dash-agenda-title { font-size: var(--fs-base); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MICRO-INTERACTIONS & ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Floating orbs for welcome card */
+@keyframes dash-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-12px) scale(1.04); }
+}
+
+/* Soft pulse for golden halo */
+@keyframes dash-pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* Stat value fade-in */
+@keyframes dash-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card entrance slide-up */
+@keyframes dash-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Shimmer effect on progress bars */
+@keyframes dash-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION — Accessibility fallback
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-card,
+  .welcome-card::before,
+  .welcome-card::after,
+  .dash-gpa-card::before,
+  .dash-gpa-value,
+  .dash-term-bar > span::after {
+    animation: none !important;
+  }
+
+  .dash-gpa-card,
+  .dash-progress-card,
+  .dash-term-card,
+  .dash-agenda-item,
+  .dash-gpa-orb,
+  .dash-agenda-icon {
+    transition: none !important;
+  }
+
+  .dash-gpa-card:hover,
+  .dash-progress-card:hover,
+  .dash-term-card:hover,
+  .dash-agenda-item:hover {
+    transform: none !important;
+  }
 }
