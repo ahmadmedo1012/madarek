@@ -1,0 +1,7 @@
+{
+  "task_id": "task-owner-enterprise-upgrade",
+  "task_description": "Upgrade the existing OWNER Master Control Panel into an enterprise-grade platform command center with live governance, platform intelligence, real-time monitoring, operational visibility, AI oversight, advanced analytics, and centralized platform orchestration. Includes new Prisma models, migration SQL, backend endpoints, 4 new frontend pages, upgrades to 3 existing pages, navigation updates, and command-center CSS.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

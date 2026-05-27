@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Build all new frontend pages (OwnerRealtimePage, OwnerAiPage, OwnerAlertsPage, OwnerGovernancePage), upgrade existing pages (Dashboard, System, Users), add hooks for new APIs, update navigation and routing, and expand CSS with command-center styling.",
+  "status": "completed",
+  "steps": [
+    "Step 1 - Expand hooks: Add new hooks to frontend/src/hooks/useOwner.ts: useOwnerRealtime (GET /owner/realtime, refetchInterval: 10000), useOwnerAiMetrics (GET /owner/ai-metrics), useOwnerAlerts (GET /owner/alerts), useResolveAlert mutation (POST /owner/alerts/:id/resolve), useOwnerLoginAnalytics (GET /owner/login-analytics), useOwnerSettings (GET /owner/settings), useUpdateSetting mutation (PUT /owner/settings/:key), useOwnerFeatureFlags (GET /owner/feature-flags), useToggleFeatureFlag mutation (PUT /owner/feature-flags/:slug), useOwnerGovernance (GET /owner/governance). Add proper TypeScript interfaces for all response types.",
+    "Step 2 - OwnerRealtimePage: Create frontend/src/pages/owner/OwnerRealtimePage.tsx. Live operations monitoring with auto-refreshing MetricCards showing: active sessions, AI requests/min, live broadcasts count, active exams count. Include a pulsing green dot indicator for 'LIVE' status. Use useOwnerRealtime hook. Display a mini table of recent AI activity. Add a 'last updated' timestamp that auto-updates.",
+    "Step 3 - OwnerAiPage: Create frontend/src/pages/owner/OwnerAiPage.tsx. AI oversight center showing: total AI requests MetricCard, total tokens used, success rate percentage, average latency. Include a Bar chart (chart.js) showing requests by feature (chat, quiz_gen, research_assist, translation). Include a Line chart showing AI usage over time. Use useOwnerAiMetrics hook. Display feature breakdown in a table.",
+    "Step 4 - OwnerAlertsPage: Create frontend/src/pages/owner/OwnerAlertsPage.tsx. Operational alerts management showing unresolved alerts list with severity badges (critical=red, warning=amber, info=blue), category pills, timestamps. Each alert card has a 'Resolve' button that calls useResolveAlert. Include MetricCards: total unresolved, critical count, warnings count. Group alerts by category.",
+    "Step 5 - OwnerGovernancePage: Create frontend/src/pages/owner/OwnerGovernancePage.tsx. Advanced governance with: MetricCards for permission changes, role changes, new users this month. A Line chart showing user growth (8 weeks). Login analytics section with success/failure counts and a Doughnut chart. Use useOwnerGovernance and useOwnerLoginAnalytics hooks.",
+    "Step 6 - Upgrade OwnerDashboardPage: Enhance frontend/src/pages/owner/OwnerDashboardPage.tsx. Add a 'real-time pulse' section at the top with live indicators (green dots) for system status. Add 2 more MetricCards: AI Requests Today, Unresolved Alerts. Replace DEMO_EVENTS with a connection to useOwnerActivity hook (keep demo fallback). Add a mini chart for daily activity trend.",
+    "Step 7 - Upgrade OwnerSystemPage: Modify frontend/src/pages/owner/OwnerSystemPage.tsx to connect feature flags to the API via useOwnerFeatureFlags and useToggleFeatureFlag hooks instead of local state. Connect settings to useOwnerSettings and useUpdateSetting. Add an alert indicator badge showing unresolved alert count.",
+    "Step 8 - Upgrade OwnerUsersPage: Add a 'last login' indicator column to the users table in frontend/src/pages/owner/OwnerUsersPage.tsx. Add a small activity spark indicator next to usernames for recently active users (based on createdAt). Add total users growth percentage MetricCard.",
+    "Step 9 - Update navigation: In frontend/src/lib/nav.ts, add 4 new items to OWNER_NAV: { to: '/owner/realtime', icon: Radio, label: 'المراقبة الحية' } in the first group, { to: '/owner/ai', icon: Bot, label: 'مركز الذكاء الاصطناعي' }, { to: '/owner/alerts', icon: AlertTriangle, label: 'التنبيهات التشغيلية' }, { to: '/owner/governance', icon: ShieldCheck, label: 'الحوكمة المتقدمة' } in a new third group labeled 'المراقبة والتحليل'. Import the needed icons (Radio, Bot, AlertTriangle, ShieldCheck).",
+    "Step 10 - Update routing: In frontend/src/App.tsx, add 4 new routes under the Owner section: /owner/realtime -> OwnerRealtimePage, /owner/ai -> OwnerAiPage, /owner/alerts -> OwnerAlertsPage, /owner/governance -> OwnerGovernancePage. Import these from OwnerPages.tsx barrel. Update frontend/src/pages/owner/OwnerPages.tsx to export the 4 new pages. Add PAGE_TITLES entries in AppShell.tsx for the new routes.",
+    "Step 11 - CSS upgrade: Expand frontend/src/styles/owner.css with command-center classes: .owner-live-pulse (pulsing green dot animation), .owner-realtime-grid (dense metric grid for realtime page), .owner-alert-card (card with severity left-border color), .owner-alert-card.critical/.warning/.info (severity variants), .owner-stat-highlight (larger metric display for hero numbers), .owner-ai-chart-grid (2-column grid for charts), .owner-governance-timeline (vertical timeline for permission changes), .owner-badge-counter (small notification count badge on nav items), @keyframes pulse-live (pulse animation for live indicators).",
+    "Step 12 - Register Chart.js components: In the new pages that use Bar/Line charts, register the needed Chart.js components (CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler) following the same ChartJS.register() pattern used in OwnerDashboardPage."
+  ],
+  "acceptance_criteria": [
+    "frontend/src/hooks/useOwner.ts contains all 10 new hooks with proper TypeScript types",
+    "4 new page files exist: OwnerRealtimePage.tsx, OwnerAiPage.tsx, OwnerAlertsPage.tsx, OwnerGovernancePage.tsx",
+    "Each new page renders meaningful UI with MetricCards, tables, and/or Chart.js charts",
+    "OwnerDashboardPage.tsx has real-time indicators and connects to API",
+    "OwnerSystemPage.tsx connects feature flags and settings to backend API",
+    "frontend/src/lib/nav.ts OWNER_NAV has all new navigation items",
+    "frontend/src/App.tsx has routes for all 4 new pages",
+    "frontend/src/pages/owner/OwnerPages.tsx exports all 10 owner pages",
+    "frontend/src/styles/owner.css has command-center pulse animations and alert card styles",
+    "TypeScript compilation (npx tsc -b --noEmit) passes in frontend/"
+  ],
+  "verification": [
+    "cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit"
+  ],
+  "blocked_reason": null,
+  "findings": "TypeScript compilation cannot run because node_modules are not installed (INTEGRATIONS_ONLY network mode). This is consistent with FEAT-001 findings. Structural validation (balanced braces, parentheses, brackets) passes for all modified files. All code follows existing patterns: same hook structure with useQuery/useMutation, same page layout with MetricCard/Card/table, same CSS class naming convention, same nav item structure. The import of AxiosResponse was initially added but removed as unused."
+}
