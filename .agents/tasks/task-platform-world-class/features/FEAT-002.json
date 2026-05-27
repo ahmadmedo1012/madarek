@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Floating Oasis AI assistant widget, smart search with auto-complete enhancements, dashboard customization system, and gamification UI components. This feature adds the major user-facing features: (1) A floating AI chat widget available on all pages, (2) Enhanced search with AI-powered suggestions and improved UX, (3) A dashboard widget customization system using Zustand, (4) Gamification UI elements (points display, badge animations, mini leaderboard widget).",
+  "status": "in_progress",
+  "steps": [
+    "Create `frontend/src/components/OasisWidget.tsx` - A floating AI assistant widget that: (a) Renders as a fixed-position button (bottom-left for RTL, bottom-right for LTR - read dir from i18n store) with a Bot icon from lucide-react and a pulsing glow animation. (b) On click, expands into a chat panel (350px wide, 500px tall) with the same chat interface pattern from AiAssistantPage.tsx but simplified (message list + input). (c) Uses the existing `useAiChat` hook from hooks/useResources.ts for actual AI communication. (d) Has a minimize/close button. (e) Persists open/closed state in the UI store. (f) Shows 3 quick-suggestion chips when empty. (g) Supports the reveal animation from world-class.css. (h) All text uses the i18n `t()` function for bilingual support. CSS goes in world-class.css under `.oasis-widget` namespace.",
+    "Update `frontend/src/stores/ui.store.ts` - Add `oasisOpen: boolean`, `toggleOasis()`, `openOasis()`, `closeOasis()` actions to the existing UI store.",
+    "Update `frontend/src/components/layout/AppShell.tsx` - Import and render `<OasisWidget />` inside the AppShell so it appears on all authenticated pages (after BottomNav).",
+    "Create `frontend/src/stores/dashboard.store.ts` - A Zustand store with persist middleware for dashboard customization: (a) `widgets: Array<{id: string, type: string, visible: boolean, order: number}>` with defaults for student dashboard widgets (stats, gpa, progress, term, agenda). (b) `toggleWidget(id)`, `reorderWidgets(ids)`, `resetDefaults()` actions. (c) Persist to localStorage with key 'madarek-dashboard-widgets'.",
+    "Create `frontend/src/components/DashboardCustomizer.tsx` - A modal/drawer component that: (a) Lists all available widgets with toggle switches. (b) Allows drag-like reordering (using up/down arrow buttons since we cannot add dnd libraries). (c) Has a 'Reset to defaults' button. (d) Opens via a Settings/Sliders icon button on the dashboard page header. (e) Uses i18n for all labels.",
+    "Update `frontend/src/pages/student/DashboardPage.tsx` - (a) Import dashboard store and conditionally render sections based on widget visibility. (b) Add the DashboardCustomizer trigger button in the page header. (c) Wrap each dashboard section in a container with `.reveal` class for scroll animations. (d) Add stagger delay using inline style `--stagger-index` CSS variable for entrance animations.",
+    "Create `frontend/src/components/GamificationWidget.tsx` - A compact widget showing: (a) Current XP with animated counter effect (CSS-based). (b) Current level with a radial progress ring (CSS conic-gradient). (c) Latest badge earned with a pulse/glow animation. (d) Mini 3-person leaderboard snippet. Uses data from useMyAchievements/useLeaderboard hooks. All text bilingual via i18n.",
+    "Enhance `frontend/src/components/layout/GlobalSearch.tsx` - Add: (a) AI-powered suggestion chips below the input when focused but empty (common academic queries). (b) Recent searches section (stored in localStorage via a small Zustand store or just component state). (c) Category filter pills (courses, lectures, papers, tracks) that pre-filter results. (d) Subtle slide-in animation for the dropdown using world-class.css classes. (e) Improved shimmer loading states instead of the basic shimmer spans."
+  ],
+  "acceptance_criteria": [
+    "OasisWidget renders as a floating button on all authenticated pages",
+    "Clicking the Oasis button opens a chat panel with message input",
+    "Chat panel uses useAiChat hook for AI communication",
+    "Oasis widget respects RTL/LTR positioning based on i18n locale",
+    "Dashboard store persists widget visibility preferences to localStorage",
+    "DashboardCustomizer modal allows toggling widget visibility",
+    "Dashboard sections conditionally render based on store state",
+    "GamificationWidget shows XP, level, and mini leaderboard",
+    "GlobalSearch has suggestion chips when focused and empty",
+    "GlobalSearch has category filter pills",
+    "All new components use i18n t() for text strings",
+    "TypeScript compilation passes with no errors"
+  ],
+  "verification": [
+    "Run `npx tsc -b --noEmit` in frontend/ directory to confirm type-check passes",
+    "Run `npx vite build` in frontend/ directory to confirm build succeeds"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

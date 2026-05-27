@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
+import { OasisWidget } from '../OasisWidget';
 import { useThemeSync } from './ThemeToggle';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useI18nStore } from '../../stores/i18n.store';
@@ -150,6 +151,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
         </div>
       </main>
       <BottomNav />
+      <OasisWidget />
     </>
   );
 }
