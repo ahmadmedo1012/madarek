@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Add new Prisma models (PlatformSetting, FeatureFlag, AiTelemetry, OperationalAlert, LoginEvent) to the schema and create the migration SQL file. Then expand owner.routes.ts with all new backend endpoints for realtime metrics, AI telemetry, alerts, login analytics, platform settings, feature flags, and governance.",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Add 5 new models to backend/prisma/schema.prisma at the end of the file: PlatformSetting (id, key @unique, value @db.Text, category, updatedAt @updatedAt, updatedBy, @@index([category])), FeatureFlag (id, slug @unique, name, description, enabled, category, updatedAt @updatedAt, updatedBy, @@index([category]), @@index([enabled])), AiTelemetry (id, userId, feature, model, inputTokens, outputTokens, latencyMs, success, errorMessage, createdAt, @@index on userId/feature/createdAt/success), OperationalAlert (id, severity, category, title, message @db.Text, metadata Json?, resolvedAt, resolvedBy, createdAt, @@index on severity/category/resolvedAt/createdAt), LoginEvent (id, userId, email, success, ip, userAgent, reason, createdAt, @@index on userId/success/createdAt/email).",
+    "Step 2: Create migration folder backend/prisma/migrations/20260527040000_owner_enterprise_models/ with a migration.sql file containing CREATE TABLE statements for all 5 models with proper PostgreSQL types, indexes, and constraints matching the Prisma schema definitions.",
+    "Step 3: Run 'npx prisma generate' in the backend/ directory to regenerate the Prisma client types (this works offline as it only reads the schema).",
+    "Step 4: Expand backend/src/http/routes/owner.routes.ts with these new endpoints: GET /owner/realtime (count active live sessions with status LIVE, count AI messages in last 5 min, count live sessions, count exam attempts with status IN_PROGRESS), GET /owner/ai-metrics (aggregate AiTelemetry: total count, sum tokens, success rate, group by feature, avg latency), GET /owner/alerts (find OperationalAlert where resolvedAt is null, ordered by createdAt desc, limit 50), POST /owner/alerts/:id/resolve (update resolvedAt and resolvedBy), GET /owner/login-analytics (aggregate LoginEvent: total logins, success count, failure count, group by day for last 30 days), GET /owner/settings (findMany PlatformSetting ordered by category), PUT /owner/settings/:key (upsert PlatformSetting by key with value and category from body, set updatedBy to req.user.id), GET /owner/feature-flags (findMany FeatureFlag ordered by category), PUT /owner/feature-flags/:slug (update FeatureFlag enabled field by slug, set updatedBy to req.user.id), GET /owner/governance (count UserPermission grants in last 30 days, count AuditLog where action is ROLE_CHANGE, count new users per week for last 8 weeks).",
+    "Step 5: For each new endpoint, use the existing patterns: validate() middleware for request bodies, zod schemas for validation, try/catch with next(e), response format { data } or { data, meta }. Add audit logging for mutations (resolve alert, update settings, toggle flags)."
+  ],
+  "acceptance_criteria": [
+    "backend/prisma/schema.prisma contains all 5 new models with proper field types, defaults, and indexes",
+    "backend/prisma/migrations/20260527040000_owner_enterprise_models/migration.sql exists with valid CREATE TABLE SQL",
+    "npx prisma generate succeeds in backend/ directory",
+    "backend/src/http/routes/owner.routes.ts exports a router with all 10 new endpoints plus the 5 existing ones",
+    "All new endpoints use authMiddleware and requireRole('OWNER')",
+    "TypeScript compilation (npx tsc --noEmit) passes in backend/"
+  ],
+  "verification": [
+    "cd /projects/sandbox/madarek/backend && npx prisma generate",
+    "cd /projects/sandbox/madarek/backend && npx tsc --noEmit"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

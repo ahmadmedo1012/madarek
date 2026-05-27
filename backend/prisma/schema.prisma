@@ -1569,3 +1569,84 @@ model LiveSession {
   @@index([teacherId])
   @@index([status, scheduledAt])
 }
+
+// ════════════════════════════════════════════════════════════════
+//  Owner Enterprise: platform settings, feature flags, telemetry,
+//  operational alerts, and login events
+// ════════════════════════════════════════════════════════════════
+
+model PlatformSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  category  String   @default("general")
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  @@index([category])
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  enabled     Boolean  @default(true)
+  category    String   @default("platform")
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+
+  @@index([category])
+  @@index([enabled])
+}
+
+model AiTelemetry {
+  id           String   @id @default(cuid())
+  userId       String?
+  feature      String
+  model        String?
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  latencyMs    Int      @default(0)
+  success      Boolean  @default(true)
+  errorMessage String?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([feature])
+  @@index([createdAt])
+  @@index([success])
+}
+
+model OperationalAlert {
+  id          String   @id @default(cuid())
+  severity    String
+  category    String
+  title       String
+  message     String   @db.Text
+  metadata    Json?
+  resolvedAt  DateTime?
+  resolvedBy  String?
+  createdAt   DateTime @default(now())
+
+  @@index([severity])
+  @@index([category])
+  @@index([resolvedAt])
+  @@index([createdAt])
+}
+
+model LoginEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  email     String
+  success   Boolean
+  ip        String?
+  userAgent String?
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([success])
+  @@index([createdAt])
+  @@index([email])
+}

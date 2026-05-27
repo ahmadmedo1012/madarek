@@ -233,4 +233,289 @@ router.patch(
   },
 );
 
+// ── GET /owner/realtime — live metrics snapshot ──────────────────
+router.get('/owner/realtime', async (_req, res, next) => {
+  try {
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+    const [liveNow, recentAiMessages, activeSessions, examsInProgress] = await Promise.all([
+      prisma.liveSession.count({ where: { status: 'LIVE' } }),
+      prisma.aiMessage.count({ where: { createdAt: { gte: fiveMinAgo } } }),
+      prisma.liveSession.count({ where: { status: { in: ['SCHEDULED', 'LIVE'] } } }),
+      prisma.examAttempt.count({ where: { status: 'IN_PROGRESS' } }),
+    ]);
+
+    res.json({
+      data: {
+        liveNow,
+        recentAiMessages,
+        activeSessions,
+        examsInProgress,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── GET /owner/ai-metrics — AI telemetry aggregates ──────────────
+router.get('/owner/ai-metrics', async (_req, res, next) => {
+  try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+    const [totals, byFeature, trend] = await Promise.all([
+      prisma.aiTelemetry.aggregate({
+        _count: { _all: true },
+        _sum: { inputTokens: true, outputTokens: true },
+        _avg: { latencyMs: true },
+      }),
+      prisma.aiTelemetry.groupBy({
+        by: ['feature'],
+        _count: { _all: true },
+        _sum: { inputTokens: true, outputTokens: true },
+        _avg: { latencyMs: true },
+      }),
+      prisma.aiTelemetry.groupBy({
+        by: ['createdAt'],
+        where: { createdAt: { gte: sevenDaysAgo } },
+        _count: { _all: true },
+      }),
+    ]);
+
+    const successCount = await prisma.aiTelemetry.count({ where: { success: true } });
+    const totalCount = totals._count._all;
+    const successRate = totalCount > 0 ? successCount / totalCount : 0;
+
+    res.json({
+      data: {
+        total: totalCount,
+        totalTokens: (totals._sum.inputTokens || 0) + (totals._sum.outputTokens || 0),
+        inputTokens: totals._sum.inputTokens || 0,
+        outputTokens: totals._sum.outputTokens || 0,
+        avgLatencyMs: totals._avg.latencyMs || 0,
+        successRate,
+        byFeature,
+        trend,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── GET /owner/alerts — unresolved operational alerts ────────────
+router.get('/owner/alerts', async (_req, res, next) => {
+  try {
+    const data = await prisma.operationalAlert.findMany({
+      where: { resolvedAt: null },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    res.json({ data });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── POST /owner/alerts/:id/resolve — resolve an alert ────────────
+router.post('/owner/alerts/:id/resolve', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const alert = await prisma.operationalAlert.findUnique({ where: { id } });
+    if (!alert) throw AppError.notFound('Alert not found');
+
+    const updated = await prisma.operationalAlert.update({
+      where: { id },
+      data: { resolvedAt: new Date(), resolvedBy: req.user!.id },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        action: 'ALERT_RESOLVED',
+        resourceType: 'OperationalAlert',
+        resourceId: id,
+        userId: req.user!.id,
+        metadata: { severity: alert.severity, title: alert.title },
+      },
+    });
+
+    res.json({ data: updated });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── GET /owner/login-analytics — login event aggregates ──────────
+router.get('/owner/login-analytics', async (_req, res, next) => {
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    const [totalLogins, successCount, failureCount, dailyBreakdown, topFailureReasons] =
+      await Promise.all([
+        prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
+        prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo }, success: true } }),
+        prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo }, success: false } }),
+        prisma.loginEvent.groupBy({
+          by: ['createdAt'],
+          where: { createdAt: { gte: thirtyDaysAgo } },
+          _count: { _all: true },
+        }),
+        prisma.loginEvent.groupBy({
+          by: ['reason'],
+          where: { createdAt: { gte: thirtyDaysAgo }, success: false, reason: { not: null } },
+          _count: { _all: true },
+          orderBy: { _count: { reason: 'desc' } },
+          take: 10,
+        }),
+      ]);
+
+    res.json({
+      data: {
+        totalLogins,
+        successCount,
+        failureCount,
+        dailyBreakdown,
+        topFailureReasons,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── GET /owner/settings — all platform settings ──────────────────
+router.get('/owner/settings', async (_req, res, next) => {
+  try {
+    const data = await prisma.platformSetting.findMany({
+      orderBy: [{ category: 'asc' }, { key: 'asc' }],
+    });
+
+    res.json({ data });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── PUT /owner/settings/:key — upsert a platform setting ─────────
+const upsertSettingSchema = z.object({
+  value: z.string(),
+  category: z.string().optional(),
+});
+
+router.put(
+  '/owner/settings/:key',
+  validate(upsertSettingSchema),
+  async (req, res, next) => {
+    try {
+      const { key } = req.params;
+      const { value, category } = req.body as { value: string; category?: string };
+
+      const data = await prisma.platformSetting.upsert({
+        where: { key },
+        create: { key, value, category: category || 'general', updatedBy: req.user!.id },
+        update: { value, ...(category ? { category } : {}), updatedBy: req.user!.id },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          action: 'SETTING_UPDATED',
+          resourceType: 'PlatformSetting',
+          resourceId: key,
+          userId: req.user!.id,
+          metadata: { key, value, category },
+        },
+      });
+
+      res.json({ data });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// ── GET /owner/feature-flags — all feature flags ─────────────────
+router.get('/owner/feature-flags', async (_req, res, next) => {
+  try {
+    const data = await prisma.featureFlag.findMany({
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+    });
+
+    res.json({ data });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// ── PUT /owner/feature-flags/:slug — toggle a feature flag ───────
+const toggleFlagSchema = z.object({
+  enabled: z.boolean(),
+});
+
+router.put(
+  '/owner/feature-flags/:slug',
+  validate(toggleFlagSchema),
+  async (req, res, next) => {
+    try {
+      const { slug } = req.params;
+      const { enabled } = req.body as { enabled: boolean };
+
+      const flag = await prisma.featureFlag.findUnique({ where: { slug } });
+      if (!flag) throw AppError.notFound('Feature flag not found');
+
+      const data = await prisma.featureFlag.update({
+        where: { slug },
+        data: { enabled, updatedBy: req.user!.id },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          action: 'FEATURE_FLAG_TOGGLED',
+          resourceType: 'FeatureFlag',
+          resourceId: slug,
+          userId: req.user!.id,
+          metadata: { slug, enabled, previousState: flag.enabled },
+        },
+      });
+
+      res.json({ data });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// ── GET /owner/governance — governance overview metrics ───────────
+router.get('/owner/governance', async (_req, res, next) => {
+  try {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const eightWeeksAgo = new Date(Date.now() - 8 * 7 * 24 * 60 * 60 * 1000);
+
+    const [recentPermissions, recentRoleChanges, newUsersByWeek] = await Promise.all([
+      prisma.userPermission.count({
+        where: { grantedAt: { gte: thirtyDaysAgo } },
+      }),
+      prisma.auditLog.count({
+        where: { action: 'ROLE_CHANGE', createdAt: { gte: thirtyDaysAgo } },
+      }),
+      prisma.user.groupBy({
+        by: ['createdAt'],
+        where: { createdAt: { gte: eightWeeksAgo } },
+        _count: { _all: true },
+      }),
+    ]);
+
+    res.json({
+      data: {
+        recentPermissions,
+        recentRoleChanges,
+        newUsersByWeek,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
 export default router;
