@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-002",
+  "type": "refactor",
+  "description": "Global Component Polish and Cascade Cleanup - Fix the competing !important rules across system.css, polish.css, and stitch-canonical.css. Consolidate component styles to eliminate redundancy. Upgrade cards, buttons, inputs, tables, badges, and navigation elements to premium quality. Fix hover states, add missing micro-interactions, improve skeleton loading, and ensure visual density is balanced.",
+  "status": "in_progress",
+  "steps": [
+    "Edit frontend/src/styles/system.css - Remove the duplicate .card override (lines with border-radius, border, background !important) since polish.css already handles this and stitch-canonical.css loads after both. Remove the .content-inner animation (it conflicts with interactions.css and polish.css which both also define it). Remove the sys-page-in keyframe definition since premium.css already has entrance-fade-up. Remove the duplicate .skeleton rule since components.css already defines it. Keep the sidebar, topbar, tabs, scrollbar, typography, toast/dialog, and mobile sections.",
+    "Edit frontend/src/styles/polish.css - In the CONSISTENCY LAYER section at the bottom, remove the .content-inner animation override since it fights with interactions.css. The interactions.css ix-page-in-soft animation should be the single source of truth for page transitions.",
+    "Edit frontend/src/styles/components.css - Upgrade the .card class: add box-shadow: var(--shadow-card) to give cards subtle depth even at rest. Change border-radius to var(--r-xl) (was var(--r-2xl) which will now be 16px from our token change). Add overflow: hidden for clean clipping.",
+    "Edit frontend/src/styles/components.css - Upgrade .metric class: add box-shadow: var(--shadow-card). Remove the ::before pseudo-element with the radial gradient halo (it looks dated/generic). Replace with a cleaner approach: just a subtle top-border accent line using border-top: 2px solid var(--accent-soft) for neutral ones.",
+    "Edit frontend/src/styles/components.css - Upgrade .btn class: add transition property to include box-shadow. For .btn.primary, add a subtle colored shadow: box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 4px 12px -4px color-mix(in srgb, var(--accent) 40%, transparent). On hover, deepen it.",
+    "Edit frontend/src/styles/components.css - Upgrade .tbl (table): add border-radius: var(--r-lg) to .tbl-wrap, add overflow: hidden. Add alternating row backgrounds: .tbl tbody tr:nth-child(even) td { background: var(--surface-2); } and .tbl tbody tr:nth-child(even):hover td { background: var(--surface-3); }. This makes tables look substantially more polished.",
+    "Edit frontend/src/styles/components.css - Upgrade .badge: reduce padding slightly to 2px 8px for tighter look. Add a subtle transition for hover: .badge:hover { transform: translateY(-1px); }. Reduce font-size to 10.5px.",
+    "Edit frontend/src/styles/components.css - Upgrade .input class: add height: 44px explicitly (consistent with stitch-canonical). Round to border-radius: var(--r-md). Add a subtle inner shadow on focus: box-shadow: 0 0 0 3px var(--accent-soft), inset 0 1px 2px rgba(0,0,0,0.06).",
+    "Edit frontend/src/styles/components.css - Upgrade .skeleton: change animation timing to 1.8s for a calmer, more premium feel. Add border-radius: var(--r-md). Make the gradient smoother with a wider spread.",
+    "Edit frontend/src/styles/stitch-canonical.css - In the STITCH BUTTONS section, remove the min-height: 44px from the generic .btn rule since it makes all buttons too large (pill filters, small actions). Only keep min-height on .btn.primary, .btn.outline, and .btn.ghost explicitly. Add .btn.sm { min-height: 32px; height: 32px; padding: 0 var(--sp-3); font-size: var(--fs-xs); }",
+    "Edit frontend/src/styles/interactions.css - Add smooth hover for table rows: .tbl tbody tr { transition: background var(--t-fast) var(--ease); }. Add a card entrance animation class .card-enter { animation: entrance-fade-up 400ms var(--ease-out) both; } for dynamically loaded cards.",
+    "Edit frontend/src/styles/dashboard.css - Simplify .welcome-card decorative elements: reduce the floating orb animations to be more subtle (smaller size, slower animation). Change the welcome card text to use the new --fs-2xl token for the title.",
+    "Edit frontend/src/styles/dashboard.css - Refine .dash-gpa-value: simplify the gradient to just use --accent color (the multi-color gradient mixing accent and gold looks busy). Use font-size: clamp(40px, 6vw, 52px) for a slightly smaller, more refined feel.",
+    "Edit frontend/src/styles/owner.css - Add hover states to .owner-timeline-item: on hover, add background: var(--surface-2) and border-radius: var(--r-md). Add transition to .owner-toggle-track for smoother toggling."
+  ],
+  "acceptance_criteria": [
+    "No duplicate .content-inner animation definitions across system.css, polish.css, and interactions.css - only interactions.css defines it",
+    "Cards have a resting shadow (shadow-card) for depth",
+    "Tables have alternating row backgrounds",
+    "Buttons have colored shadows that match their variant",
+    "The metric card ::before radial gradient is removed in favor of a cleaner look",
+    "No visual regression - all classes still exist and function"
+  ],
+  "verification": [
+    "Run: grep -c 'content-inner' frontend/src/styles/system.css to confirm animation removal (should be 0 or minimal)",
+    "Run: grep 'shadow-card' frontend/src/styles/components.css to confirm cards have resting shadow",
+    "Run: grep 'nth-child(even)' frontend/src/styles/components.css to confirm table alternating rows",
+    "Run: grep 'card-enter' frontend/src/styles/interactions.css to confirm new animation class exists"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

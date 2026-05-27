@@ -328,3 +328,23 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLE ROW HOVER — smooth transition
+   ═══════════════════════════════════════════════════════════════ */
+
+.tbl tbody tr {
+  transition: background var(--t-fast) var(--ease);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD ENTRANCE — for dynamically loaded cards
+   ═══════════════════════════════════════════════════════════════ */
+
+.card-enter {
+  animation: entrance-fade-up 400ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-enter { animation: none; }
+}

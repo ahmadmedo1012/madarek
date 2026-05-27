@@ -438,24 +438,7 @@ h2, .section-title,
   box-shadow: var(--shadow-card-hover);
 }
 
-/* All page transitions: consistent entrance animation timing */
-.content-inner {
-  animation: entrance-fade-up 420ms var(--ease-out) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .content-inner {
-    animation: none !important;
-  }
-  .track-card:hover,
-  .badge-tile.earned:hover,
-  .thumb-card:hover,
-  .vision-card:hover,
-  .webinar-card:hover,
-  .feed-item:hover {
-    transform: none !important;
-  }
-}
+/* Page transitions: single source of truth in interactions.css */
 
 /* Filter pill refinement for training pages */
 .filter-pill {

@@ -54,7 +54,6 @@
 
 .btn {
   border-radius: var(--r-full) !important;
-  min-height: 44px;
   font-weight: 600 !important;
   transition:
     background var(--t-fast) var(--ease-out),
@@ -65,6 +64,12 @@
 }
 .btn:active {
   transform: translateY(1px) !important;
+}
+.btn.sm {
+  min-height: 32px;
+  height: 32px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-xs);
 }
 
 .btn.primary {

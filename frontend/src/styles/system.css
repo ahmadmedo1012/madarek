@@ -22,29 +22,7 @@ body {
   font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PAGE TRANSITIONS — subtle cross-fade on route change
-   Uses premium ease-out curve for smooth entrance
-   ═══════════════════════════════════════════════════════════════ */
-
-@keyframes sys-page-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 6px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.content-inner {
-  animation: sys-page-in 340ms var(--ease-out) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .content-inner { animation: none; }
-}
+/* Page transitions handled by interactions.css (ix-page-in-soft) */
 
 /* ═══════════════════════════════════════════════════════════════
    SIDEBAR — refined active state with accent bar
@@ -208,26 +186,14 @@ body {
     backdrop-filter var(--t-base) var(--ease-out);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CARDS — global premium hover (when interactive)
-   ═══════════════════════════════════════════════════════════════ */
-
-.card {
-  border-radius: var(--r-2xl) !important;
-  border: 1px solid var(--border) !important;
-  background: var(--surface-1) !important;
-  transition:
-    box-shadow var(--t-base) var(--ease-out),
-    border-color var(--t-base) var(--ease-out),
-    transform var(--t-base) var(--ease-out);
-}
+/* Card hover handled by components.css + interactions.css */
 a > .card:hover,
 button > .card:hover,
 .card.interactive:hover,
 .card[data-interactive="true"]:hover,
 .card-link:hover .card {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
-  box-shadow: var(--shadow-card-hover) !important;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  box-shadow: var(--shadow-card-hover);
   transform: translateY(-2px);
 }
 
@@ -291,30 +257,7 @@ textarea:focus,
   box-shadow: var(--focus-ring) !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SKELETON SHIMMER — premium loading state
-   ═══════════════════════════════════════════════════════════════ */
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--surface-2) 0%,
-    color-mix(in srgb, var(--surface-2) 50%, var(--surface-3)) 50%,
-    var(--surface-2) 100%
-  ) !important;
-  background-size: 200% 100% !important;
-  animation: sys-shimmer 1.6s var(--ease-soft) infinite;
-  border-radius: var(--r-md);
-}
-
-@keyframes sys-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skeleton { animation: none; opacity: 0.7; }
-}
+/* Skeleton shimmer handled by components.css */
 
 /* ═══════════════════════════════════════════════════════════════
    PILL / BADGE / TAG — refined
