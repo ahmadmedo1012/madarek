@@ -1,0 +1,7 @@
+{
+  "task_id": "task-stitch-visual-redesign",
+  "task_description": "Complete visual transformation of the Madarek educational platform to match a Google Stitch design reference. Rebuild the design system (tokens, colors, typography, spacing, shadows, motion), redesign all shared components (sidebar, topbar, cards, buttons), and transform key pages (homepage, dashboards, learning paths) to achieve Samsung/Apple/Stripe-level premium quality.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null
+}
