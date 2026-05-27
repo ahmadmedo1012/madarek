@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Build the complete Owner Master Control Panel pages: Dashboard, Users Management, Activity Logs, Content & Branding, System Control, and Educational Overview. Each page follows the existing Stitch design patterns with premium styling, using the Card/MetricCard/Badge/ProgressBar primitives and Lucide icons. Pages use the hooks from useOwner.ts for data fetching with mock/static fallback data for a polished demo experience.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "1. Create frontend/src/pages/owner/OwnerDashboardPage.tsx - The main overview page with: (a) grid-4 of MetricCards showing total users, active users, total courses, total enrollments; (b) a grid-2-1 layout with a Card showing user distribution by role (using ProgressBar for each role count), and a Card showing system health indicators (uptime, DB status, last sync); (c) a Card with recent platform events table (last 10 audit log entries); (d) a Card with quick-action buttons (trigger sync, toggle maintenance, export report). Use Chart.js doughnut chart for user distribution. Include Arabic labels throughout. Fetch data via useOwnerStats hook with static fallback data for demo.",
     "2. Create frontend/src/pages/owner/OwnerUsersPage.tsx - Full user management page: (a) grid-4 MetricCards for total users, students, teachers, admins; (b) search input + role filter pills (all, STUDENT, TEACHER, ADMIN, QUALITY, OWNER); (c) professional data table with columns: avatar+name, email, role (as Badge), status (active/inactive Badge), joined date, actions dropdown; (d) Each row has actions: view profile, change role (with confirmation modal), toggle active status (with confirmation). Use useOwnerUsers hook with pagination. Include a ConfirmDialog component for destructive actions.",
@@ -32,5 +32,5 @@
     "Run: cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit (should pass with no errors)"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "TypeScript type-checking cannot run because node_modules are not installed (INTEGRATIONS_ONLY network mode). This is consistent with FEAT-001 findings. All code follows existing patterns exactly: uses same primitives (Card, MetricCard, Badge, ProgressBar, Pill, Tabs, UserAvatar), same Icon component, same Chart.js registration pattern from QualityPages.tsx, same page structure with page/page-header/page-title-block classes. All 6 pages created with full Arabic content, RTL layout, and static fallback data."
 }
