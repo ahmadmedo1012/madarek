@@ -1,17 +1,77 @@
 /* ═════════════════════════════════════════════════════════════
-   ZU Smart Learning Platform — Design Tokens
-   Single source of truth. Themed via [data-theme="dark"|"light"].
-   No legacy aliases; every component reads these tokens directly.
+   Madarek Design System — Unified Design Tokens
+   Single source of truth for the Google Stitch design language.
+   Themed via [data-theme="dark"|"light"].
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Brand (mode-invariant) ───────────────────────────── */
-  --brand-blue: #4F46E5;
-  --brand-blue-deep: #3730A3;
-  --brand-purple: #7C3AED;
-  --brand-gold: #D4A537;
+  /* ── Brand Colors (mode-invariant) ────────────────────── */
+  --brand-blue: #003461;
+  --brand-blue-deep: #001c38;
+  --brand-purple: #004b87;
+  --brand-gold: #fed65b;
 
-  /* ── Spacing (4-px scale) ─────────────────────────────── */
+  /* ── Stitch Primary Palette ───────────────────────────── */
+  --md-primary:                     #003461;
+  --md-on-primary:                  #ffffff;
+  --md-primary-container:           #004b87;
+  --md-on-primary-container:        #8abcff;
+  --md-primary-fixed:               #d3e4ff;
+  --md-primary-fixed-dim:           #a3c9ff;
+  --md-on-primary-fixed:            #001c38;
+  --md-on-primary-fixed-variant:    #004882;
+
+  /* ── Stitch Secondary (Gold) ──────────────────────────── */
+  --md-secondary:                   #735c00;
+  --md-on-secondary:                #ffffff;
+  --md-secondary-container:         #fed65b;
+  --md-on-secondary-container:      #745c00;
+  --md-secondary-fixed:             #ffe088;
+  --md-secondary-fixed-dim:         #e9c349;
+  --md-on-secondary-fixed:          #241a00;
+  --md-on-secondary-fixed-variant:  #574500;
+
+  /* ── Stitch Tertiary (Teal / AI) ──────────────────────── */
+  --md-tertiary:                    #003a3b;
+  --md-on-tertiary:                 #ffffff;
+  --md-tertiary-container:          #005354;
+  --md-on-tertiary-container:       #01ced1;
+  --md-tertiary-fixed:              #5af8fb;
+  --md-tertiary-fixed-dim:          #2ddbde;
+  --md-on-tertiary-fixed:           #002020;
+  --md-on-tertiary-fixed-variant:   #004f51;
+
+  /* ── Error ────────────────────────────────────────────── */
+  --md-error:                       #ba1a1a;
+  --md-on-error:                    #ffffff;
+  --md-error-container:             #ffdad6;
+  --md-on-error-container:          #93000a;
+
+  /* ── Surface (Material 3) ─────────────────────────────── */
+  --md-surface:                     #f8f9fa;
+  --md-on-surface:                  #191c1d;
+  --md-on-surface-variant:          #424750;
+  --md-surface-variant:             #e1e3e4;
+  --md-surface-bright:              #f8f9fa;
+  --md-surface-dim:                 #d9dadb;
+  --md-surface-container-lowest:    #ffffff;
+  --md-surface-container-low:       #f3f4f5;
+  --md-surface-container:           #edeeef;
+  --md-surface-container-high:      #e7e8e9;
+  --md-surface-container-highest:   #e1e3e4;
+  --md-background:                  #f8f9fa;
+  --md-on-background:               #191c1d;
+
+  /* ── Outline ──────────────────────────────────────────── */
+  --md-outline:                     #727781;
+  --md-outline-variant:             #c2c6d1;
+
+  /* ── Inverse ──────────────────────────────────────────── */
+  --md-inverse-surface:             #2e3132;
+  --md-inverse-on-surface:          #f0f1f2;
+  --md-inverse-primary:             #a3c9ff;
+
+  /* ── Spacing (8px base grid) ──────────────────────────── */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
@@ -34,6 +94,13 @@
   --r-3xl: 24px;
   --r-full: 9999px;
 
+  /* Stitch radii aliases */
+  --st-r-default: 4px;
+  --st-r-lg:      8px;
+  --st-r-xl:      12px;
+  --st-r-2xl:     16px;
+  --st-r-full:    9999px;
+
   /* ── Typography ───────────────────────────────────────── */
   --fs-xxs: 11px;
   --fs-xs: 12px;
@@ -45,13 +112,21 @@
   --fs-2xl: 24px;
   --fs-3xl: 30px;
 
+  /* Premium Arabic Typography Hierarchy */
+  --fs-display-lg: clamp(32px, 5vw, 48px);
+  --fs-headline-md: clamp(24px, 3.5vw, 32px);
+  --fs-headline-sm: clamp(20px, 2.5vw, 24px);
+  --fs-body-lg: 18px;
+  --fs-body-md: 16px;
+  --fs-label-md: 14px;
+  --fs-label-sm: 12px;
+
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  /* Refined for Arabic display: bodies need a touch more leading,
-     headings a touch tighter. */
+  /* Line heights refined for Arabic display */
   --lh-tight: 1.18;
   --lh-snug: 1.4;
   --lh-base: 1.65;
@@ -64,12 +139,11 @@
   --t-slower: 560ms;
   --t-cinema: 700ms;
 
-  /* Easing scale — single source of motion language */
-  --ease: cubic-bezier(0.32, 0.72, 0, 1);          /* refined Apple-style ease (default) */
-  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);       /* Material standard */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);       /* premium decelerate (best for entrances) */
-  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);        /* premium accelerate (best for exits) */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* light overshoot for tappable cards */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ── Layout ──────────────────────────────────────────── */
   --sidebar-w: 244px;
@@ -77,9 +151,26 @@
   --topbar-h: 56px;
   --content-max-w: 1400px;
 
+  /* Stitch layout tokens */
+  --st-container-max:   1280px;
+  --st-gutter:          24px;
+  --st-margin-desktop:  64px;
+  --st-margin-mobile:   20px;
+  --st-unit:            8px;
+
   /* ── Fonts ───────────────────────────────────────────── */
   --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ── Glassmorphism ───────────────────────────────────── */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: 12px;
+
+  /* ── AI Glow Signature Effect ────────────────────────── */
+  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
+  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -88,30 +179,31 @@
 :root,
 [data-theme='dark'] {
   /* Surfaces */
-  --bg: #0A0B0F;
-  --surface-1: #11131A;
-  --surface-2: #181B25;
-  --surface-3: #1F2330;
+  --bg: #0f0e13;
+  --surface-1: #1a1825;
+  --surface-2: #221f2e;
+  --surface-3: #2d2a3d;
 
-  /* Borders / hairlines */
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(255, 255, 255, 0.12);
+  /* Borders */
+  --border: rgba(195, 198, 209, 0.16);
+  --border-strong: rgba(195, 198, 209, 0.28);
 
   /* Text */
-  --text: #E7E9EE;
-  --text-muted: #9EA4B8;
-  --text-subtle: #6A7088;
+  --text: #eceaf5;
+  --text-muted: #b8b5cc;
+  --text-subtle: #6b6886;
 
-  /* Accent */
-  --accent: #6366F1;
-  --accent-hover: #818CF8;
-  --accent-soft: rgba(99, 102, 241, 0.14);
-  --accent-border: rgba(99, 102, 241, 0.45);
-  --accent-fg: #FFFFFF;
+  /* Accent (primary in dark mode uses fixed-dim for readability) */
+  --accent: #a3c9ff;
+  --accent-hover: #d3e4ff;
+  --accent-soft: rgba(163, 201, 255, 0.16);
+  --accent-border: rgba(163, 201, 255, 0.45);
+  --accent-fg: #001c38;
 
-  /* Gold (sparing, premium accent) */
-  --gold: #D4A537;
-  --gold-soft: rgba(212, 165, 55, 0.12);
+  /* Gold */
+  --gold: #e9c349;
+  --gold-soft: rgba(233, 195, 73, 0.16);
+  --gold-hover: #f5d565;
 
   /* Semantic */
   --success: #3DD68C;
@@ -120,80 +212,94 @@
   --warning-soft: rgba(245, 166, 35, 0.10);
   --danger: #F55353;
   --danger-soft: rgba(245, 83, 83, 0.10);
-  --info: #5B6FE0;
-  --info-soft: rgba(91, 111, 224, 0.10);
+  --info: #a3c9ff;
+  --info-soft: rgba(163, 201, 255, 0.10);
 
-  /* Shadows — refined dark-mode tier with depth + ambient layers.
-     Lower alpha than before so cards don't feel "AI-generated dark". */
+  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40), 0 1px 1px rgba(0, 0, 0, 0.20);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.30), 0 6px 16px rgba(0, 0, 0, 0.28);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.32), 0 16px 36px rgba(0, 0, 0, 0.36);
   --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.34), 0 32px 64px rgba(0, 0, 0, 0.40);
 
-  /* Card-specific subtle outlining for dark mode (replaces heavy shadows) */
   --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.38);
 
-  /* Focus ring */
-  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.35);
+  /* Focus & Selection */
+  --focus-ring: 0 0 0 3px rgba(163, 201, 255, 0.30);
+  --selection-bg: rgba(163, 201, 255, 0.25);
 
-  /* Selection */
-  --selection-bg: rgba(99, 102, 241, 0.35);
-
-  /* Chart palette (used only by Chart.js — not for UI) */
+  /* Chart */
   --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-text: #6A7088;
+  --chart-text: #6b6886;
+
+  /* Glassmorphism (dark) */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.12);
 }
 
 /* ═════════════════════════════════════════════════════════════
-   LIGHT THEME — premium, restrained, NOT pure white
+   LIGHT THEME
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  --bg: #F7F8FA;
-  --surface-1: #FFFFFF;
-  --surface-2: #F2F4F8;
-  --surface-3: #E8ECF2;
+  --bg: var(--md-background);
+  --surface-1: var(--md-surface-container-lowest);
+  --surface-2: var(--md-surface-container-low);
+  --surface-3: var(--md-surface-container);
 
-  --border: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.14);
+  --border: var(--md-outline-variant);
+  --border-strong: var(--md-outline);
 
-  --text: #0F172A;
-  --text-muted: #475569;
-  --text-subtle: #8694AC;
+  --text: var(--md-on-surface);
+  --text-muted: var(--md-on-surface-variant);
+  --text-subtle: var(--md-outline);
 
-  --accent: #4F46E5;
-  --accent-hover: #4338CA;
-  --accent-soft: rgba(79, 70, 229, 0.10);
-  --accent-border: rgba(79, 70, 229, 0.40);
-  --accent-fg: #FFFFFF;
+  --accent: var(--md-primary);
+  --accent-hover: var(--md-primary-container);
+  --accent-soft: color-mix(in srgb, var(--md-primary) 8%, transparent);
+  --accent-border: color-mix(in srgb, var(--md-primary) 35%, transparent);
+  --accent-fg: var(--md-on-primary);
 
-  --gold: #B8861E;
-  --gold-soft: rgba(184, 134, 30, 0.10);
+  --gold: var(--md-secondary-container);
+  --gold-soft: color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
+  --gold-hover: #f5d565;
 
-  --success: #15803D;
-  --success-soft: rgba(21, 128, 61, 0.08);
-  --warning: #B45309;
-  --warning-soft: rgba(180, 83, 9, 0.08);
-  --danger: #B91C1C;
-  --danger-soft: rgba(185, 28, 28, 0.08);
-  --info: #1D4ED8;
-  --info-soft: rgba(29, 78, 216, 0.08);
+  /* Semantic (light) */
+  --success: var(--md-tertiary-container);
+  --success-soft: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
+  --warning: #c2410c;
+  --warning-soft: rgba(194, 65, 12, 0.10);
+  --danger: var(--md-error);
+  --danger-soft: var(--md-error-container);
+  --info: var(--md-primary);
+  --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
 
+  /* Shadows (light) */
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03);
   --shadow-md: 0 2px 4px rgba(15, 23, 42, 0.04), 0 8px 18px rgba(15, 23, 42, 0.06);
   --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.06), 0 16px 36px rgba(15, 23, 42, 0.08);
   --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.08), 0 32px 64px rgba(15, 23, 42, 0.12);
 
   --shadow-card: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-card-hover: 0 0 0 1px rgba(41, 82, 200, 0.10), 0 8px 24px rgba(15, 23, 42, 0.10);
+  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.12), 0 8px 24px rgba(15, 23, 42, 0.10);
 
-  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.20);
-  --selection-bg: rgba(79, 70, 229, 0.18);
+  /* Focus & Selection (light) */
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);
+  --selection-bg: color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
 
+  /* Chart (light) */
   --chart-grid: rgba(15, 23, 42, 0.06);
   --chart-text: #8694AC;
+
+  /* Glassmorphism (light) */
+  --glass-bg: rgba(255, 255, 255, 0.70);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.50);
+  --glass-border: rgba(255, 255, 255, 0.80);
 }
 
+/* ═════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

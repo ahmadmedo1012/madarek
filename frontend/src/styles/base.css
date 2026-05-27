@@ -508,6 +508,33 @@ button { font-family: inherit; cursor: pointer; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-full); border: 2px solid transparent; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-subtle); background-clip: padding-box; }
 
+/* ── Glassmorphism Utilities ──────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+.glass-subtle {
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+}
+
+/* ── Gradient Surfaces ───────────────────────────────────── */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-container) 100%);
+  color: var(--md-on-primary);
+}
+.gradient-hero {
+  background:
+    radial-gradient(700px 500px at 25% 30%, rgba(45, 219, 222, 0.30), transparent 70%),
+    radial-gradient(500px 400px at 75% 70%, rgba(254, 214, 91, 0.18), transparent 70%),
+    linear-gradient(160deg, #001c38 0%, #003461 50%, #004b87 100%);
+  color: var(--md-on-primary);
+}
+
 /* ── Mobile sidebar overlay ──────────────────────────────── */
 .sidebar-backdrop { display: none; }
 

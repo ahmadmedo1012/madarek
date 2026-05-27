@@ -1,169 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════
-   STITCH CANONICAL — Material 3 design tokens from Stitch project
-   "Madarek AI EdTech Design" (id 331663920287368666)
+   STITCH CANONICAL — Component-level Stitch design rules
+   ───────────────────────────────────────────────────────────────
+   All Material 3 design tokens are defined in tokens.css.
+   This file contains only component-specific Stitch styling:
+   buttons, sidebar, topbar, cards, bento grid, AI showcase, etc.
 
-   Color roles:
+   Color roles (defined in tokens.css):
      PRIMARY    deep navy   #003461   (institutional)
      SECONDARY  warm gold   #fed65b   (achievements / active states)
      TERTIARY   dark teal   #003a3b / fixed-dim #2ddbde   (AI/Oasis)
 
-   Signature effect:
-     ai-glow    box-shadow: 0 4px 20px rgba(0, 206, 209, 0.15)
-
    Loaded last so it overrides prior layers cleanly.
    ═══════════════════════════════════════════════════════════════ */
-
-/* ═══════════════════════════════════════════════════════════════
-   STITCH RAW TOKENS (Material 3 light)
-   ═══════════════════════════════════════════════════════════════ */
-:root {
-  /* Primary */
-  --md-primary:                     #003461;
-  --md-on-primary:                  #ffffff;
-  --md-primary-container:           #004b87;
-  --md-on-primary-container:        #8abcff;
-  --md-primary-fixed:               #d3e4ff;
-  --md-primary-fixed-dim:           #a3c9ff;
-  --md-on-primary-fixed:            #001c38;
-  --md-on-primary-fixed-variant:    #004882;
-
-  /* Secondary (gold) */
-  --md-secondary:                   #735c00;
-  --md-on-secondary:                #ffffff;
-  --md-secondary-container:         #fed65b;
-  --md-on-secondary-container:      #745c00;
-  --md-secondary-fixed:             #ffe088;
-  --md-secondary-fixed-dim:         #e9c349;
-  --md-on-secondary-fixed:          #241a00;
-  --md-on-secondary-fixed-variant:  #574500;
-
-  /* Tertiary (teal — AI/Oasis) */
-  --md-tertiary:                    #003a3b;
-  --md-on-tertiary:                 #ffffff;
-  --md-tertiary-container:          #005354;
-  --md-on-tertiary-container:       #01ced1;
-  --md-tertiary-fixed:              #5af8fb;
-  --md-tertiary-fixed-dim:          #2ddbde;
-  --md-on-tertiary-fixed:           #002020;
-  --md-on-tertiary-fixed-variant:   #004f51;
-
-  /* Error */
-  --md-error:                       #ba1a1a;
-  --md-on-error:                    #ffffff;
-  --md-error-container:             #ffdad6;
-  --md-on-error-container:          #93000a;
-
-  /* Surface */
-  --md-surface:                     #f8f9fa;
-  --md-on-surface:                  #191c1d;
-  --md-on-surface-variant:          #424750;
-  --md-surface-variant:             #e1e3e4;
-  --md-surface-bright:              #f8f9fa;
-  --md-surface-dim:                 #d9dadb;
-  --md-surface-container-lowest:    #ffffff;
-  --md-surface-container-low:       #f3f4f5;
-  --md-surface-container:           #edeeef;
-  --md-surface-container-high:      #e7e8e9;
-  --md-surface-container-highest:   #e1e3e4;
-  --md-background:                  #f8f9fa;
-  --md-on-background:               #191c1d;
-
-  /* Outline */
-  --md-outline:                     #727781;
-  --md-outline-variant:             #c2c6d1;
-
-  /* Inverse */
-  --md-inverse-surface:             #2e3132;
-  --md-inverse-on-surface:          #f0f1f2;
-  --md-inverse-primary:             #a3c9ff;
-
-  /* Stitch spacing */
-  --st-container-max:   1280px;
-  --st-gutter:          24px;
-  --st-margin-desktop:  64px;
-  --st-margin-mobile:   20px;
-  --st-unit:            8px;
-
-  /* Stitch radii */
-  --st-r-default: 4px;
-  --st-r-lg:      8px;
-  --st-r-xl:      12px;
-  --st-r-2xl:     16px;
-  --st-r-full:    9999px;
-
-  /* AI glow signature effect */
-  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
-  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PLATFORM TOKEN OVERRIDES — Stitch becomes the source of truth
-   ═══════════════════════════════════════════════════════════════ */
-
-[data-theme='light'] {
-  --bg:           var(--md-background);
-  --surface-1:    var(--md-surface-container-lowest);
-  --surface-2:    var(--md-surface-container-low);
-  --surface-3:    var(--md-surface-container);
-
-  --border:        var(--md-outline-variant);
-  --border-strong: var(--md-outline);
-
-  --text:        var(--md-on-surface);
-  --text-muted:  var(--md-on-surface-variant);
-  --text-subtle: var(--md-outline);
-
-  --accent:        var(--md-primary);
-  --accent-hover:  var(--md-primary-container);
-  --accent-soft:   color-mix(in srgb, var(--md-primary) 8%, transparent);
-  --accent-border: color-mix(in srgb, var(--md-primary) 35%, transparent);
-  --accent-fg:     var(--md-on-primary);
-
-  --gold:        var(--md-secondary-container);
-  --gold-soft:   color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
-
-  --brand-blue:      var(--md-primary);
-  --brand-blue-deep: var(--md-on-primary-fixed);
-  --brand-purple:    var(--md-primary-container);
-  --brand-gold:      var(--md-secondary-container);
-
-  --focus-ring:    0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);
-  --selection-bg:  color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
-
-  --success: var(--md-tertiary-container);
-  --success-soft: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
-  --warning: #c2410c;
-  --warning-soft: rgba(194, 65, 12, 0.10);
-  --danger: var(--md-error);
-  --danger-soft: var(--md-error-container);
-  --info: var(--md-primary);
-  --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
-}
-
-[data-theme='dark'] {
-  --bg:           #0f0e13;
-  --surface-1:    #1a1825;
-  --surface-2:    #221f2e;
-  --surface-3:    #2d2a3d;
-
-  --border:        rgba(195, 198, 209, 0.16);
-  --border-strong: rgba(195, 198, 209, 0.28);
-
-  --text:        #eceaf5;
-  --text-muted:  #b8b5cc;
-  --text-subtle: #6b6886;
-
-  --accent:        var(--md-primary-fixed-dim);
-  --accent-hover:  var(--md-primary-fixed);
-  --accent-soft:   rgba(163, 201, 255, 0.16);
-  --accent-border: rgba(163, 201, 255, 0.45);
-  --accent-fg:     var(--md-on-primary-fixed);
-
-  --gold:        var(--md-secondary-fixed-dim);
-  --gold-soft:   rgba(233, 195, 73, 0.16);
-
-  --focus-ring:    0 0 0 3px rgba(163, 201, 255, 0.30);
-}
 
 /* ═══════════════════════════════════════════════════════════════
    AI GLOW — signature effect class
