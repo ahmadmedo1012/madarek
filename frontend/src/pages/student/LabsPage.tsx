@@ -8,6 +8,7 @@ import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitive
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
+import { LabBeakerIllustration } from '../../components/illustrations';
 
 interface LabExperiment {
   title: string;
@@ -129,6 +130,7 @@ export default function LabsPage() {
                 تفوّق الطلاب الذين استخدموا هذا النوع من المعامل.
               </p>
             </div>
+            <LabBeakerIllustration />
           </div>
 
           <div className="grid-3">
@@ -147,7 +149,7 @@ export default function LabsPage() {
                 const tint = l.themeColor ?? '#3D6BD6';
                 const hasExperiment = !!EXPERIMENT_LIBRARY[cat];
                 return (
-                  <div key={l.id} className="thumb-card">
+                  <div key={l.id} className="thumb-card lab-card-enhanced">
                     <div className="thumb-card-image" style={{ background: `${tint}10`, height: 96 }}>
                       <span style={{ color: tint }}><Icon icon={Cmp} size={32} strokeWidth={1.6} /></span>
                     </div>
@@ -167,6 +169,18 @@ export default function LabsPage() {
                         {hasExperiment ? 'ابدأ تجربة' : 'قريباً'}
                       </button>
                     </div>
+                    {hasExperiment && (
+                      <div className="lab-card-overlay">
+                        <button
+                          type="button"
+                          className="lab-card-overlay-btn"
+                          onClick={() => setActiveLab(l)}
+                        >
+                          <Icon icon={Play} size={14} />
+                          ابدأ التجربة
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}

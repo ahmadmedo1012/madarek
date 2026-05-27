@@ -4,6 +4,7 @@ import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useAiChat, useGaps } from '../../hooks/useResources';
+import { AiBrainIllustration } from '../../components/illustrations';
 
 interface ChatMsg { role: 'bot' | 'user'; text: string }
 
@@ -85,6 +86,7 @@ export default function AiAssistantPage() {
           <h1 className="page-title">المساعد الذكي</h1>
           <p className="page-subtitle">يفهم مستواك المعرفي ويوصي بأفضل خطوة تالية في رحلتك الدراسية.</p>
         </div>
+        <AiBrainIllustration />
         <Badge color="gold" icon={Sparkles}>AI</Badge>
       </div>
 
@@ -155,7 +157,11 @@ export default function AiAssistantPage() {
               <div className="chat-msg bot">
                 <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>
                 <div className="chat-bubble">
-                  <span style={{ color: 'var(--text-subtle)' }}>جارٍ التفكير…</span>
+                  <div className="ai-typing-indicator">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
                 </div>
               </div>
             )}
