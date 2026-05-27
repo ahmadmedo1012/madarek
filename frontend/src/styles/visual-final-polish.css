@@ -995,3 +995,131 @@ label,
   background: var(--accent-soft);
   border-color: var(--accent-border);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION: HOMEPAGE ANIMATIONS & MICRO-INTERACTIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bento card hover lift */
+.landing-bento-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.landing-bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Feature card hover */
+.landing-feature-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.landing-feature-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* CTA button pulse glow */
+.landing-final-cta-btn.primary {
+  animation: cta-pulse 2.5s ease-in-out infinite;
+}
+@keyframes cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-primary) 40%, transparent); }
+  50% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--md-primary) 0%, transparent); }
+}
+
+/* Hero showcase floating cards gentle bob */
+.landing-hero-float-card {
+  animation: hero-float 4s ease-in-out infinite;
+}
+.landing-hero-float-card:nth-child(2) { animation-delay: 1.2s; }
+.landing-hero-float-card:nth-child(3) { animation-delay: 2.4s; }
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* KPI strip entrance */
+.kpi-strip .kpi-cell {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: kpi-enter 0.5s ease forwards;
+}
+.kpi-strip .kpi-cell:nth-child(1) { animation-delay: 0.1s; }
+.kpi-strip .kpi-cell:nth-child(2) { animation-delay: 0.2s; }
+.kpi-strip .kpi-cell:nth-child(3) { animation-delay: 0.3s; }
+.kpi-strip .kpi-cell:nth-child(4) { animation-delay: 0.4s; }
+@keyframes kpi-enter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pilot stat rings rotation */
+.landing-pilot-ring {
+  animation: ring-spin 8s linear infinite;
+}
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Trust bar subtle marquee feel on hover */
+.landing-trust-item {
+  transition: transform 0.2s ease;
+}
+.landing-trust-item:hover {
+  transform: scale(1.05);
+}
+
+/* Dashboard cards stagger entrance */
+.student-dashboard .reveal {
+  animation: dash-stagger 0.5s ease forwards;
+  animation-delay: calc(var(--stagger-index, 0) * 0.1s);
+}
+@keyframes dash-stagger {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION: TEXT CLARITY & DESIGN CONSISTENCY
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Minimum body text size for readability */
+.page p, .card p, .page-subtitle, .page .text-sm {
+  font-size: max(0.875rem, 14px);
+  line-height: 1.6;
+}
+
+.page-subtitle {
+  font-size: max(0.9375rem, 15px);
+  line-height: 1.65;
+  color: var(--md-on-surface-variant);
+}
+
+/* Improved contrast for subtle text */
+.text-subtle {
+  color: var(--md-on-surface-variant);
+}
+.text-muted {
+  color: color-mix(in srgb, var(--md-on-surface) 65%, transparent);
+}
+
+/* Consistent card inner padding */
+.card {
+  padding: var(--sp-5);
+}
+
+/* Ensure grid gaps are consistent */
+.grid-2, .grid-3, .grid-4, .grid-2-1 {
+  gap: var(--sp-4);
+}
+
+/* Page content breathing room */
+.page {
+  gap: var(--sp-5);
+}
+
+/* Ensure all interactive elements have visible focus rings */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
