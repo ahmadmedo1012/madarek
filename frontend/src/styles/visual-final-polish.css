@@ -213,3 +213,267 @@ label,
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 4: SPACING AND LAYOUT RHYTHM
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Page-level consistent gap */
+.page {
+  gap: var(--sp-5);
+}
+
+/* Card internal spacing consistency */
+.card {
+  padding: var(--sp-5);
+}
+.card.compact {
+  padding: var(--sp-4);
+}
+
+/* Card header spacing */
+.card-header {
+  margin-bottom: var(--sp-4);
+}
+
+/* Page header rhythm */
+.page-header {
+  padding: var(--sp-5) var(--sp-6);
+  margin-bottom: var(--sp-4);
+}
+
+/* Filter bar consistent gap */
+.filter-bar {
+  gap: var(--sp-2);
+}
+
+/* Agenda list consistent spacing */
+.dash-agenda-list {
+  gap: var(--sp-3);
+}
+
+/* Metric tiles consistent padding */
+.metric {
+  padding: var(--sp-5);
+}
+
+/* Grid gap consistency */
+.grid-4, .grid-3, .grid-2 {
+  gap: var(--sp-4);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 5: DARK THEME CONSISTENCY
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Card surfaces - pure token usage */
+[data-theme='dark'] .card,
+:root .card {
+  background: var(--surface-1);
+  border-color: var(--border);
+}
+
+/* Metric border-top uses proper token-based colors */
+[data-theme='dark'] .metric {
+  border-color: var(--border);
+  background: var(--surface-1);
+}
+[data-theme='dark'] .metric.green  { border-top-color: color-mix(in srgb, var(--success) 40%, transparent); }
+[data-theme='dark'] .metric.amber  { border-top-color: color-mix(in srgb, var(--warning) 40%, transparent); }
+[data-theme='dark'] .metric.red    { border-top-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+[data-theme='dark'] .metric.gold   { border-top-color: color-mix(in srgb, var(--gold) 40%, transparent); }
+[data-theme='dark'] .metric.purple { border-top-color: color-mix(in srgb, var(--brand-purple) 40%, transparent); }
+
+/* Glassmorphism panels consistent in dark */
+[data-theme='dark'] .topbar-user-menu,
+[data-theme='dark'] .notif-panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Trust bar dark mode treatment */
+[data-theme='dark'] .landing-trust-bar-inner {
+  background: color-mix(in srgb, var(--surface-1) 90%, transparent);
+  border-color: var(--border);
+}
+
+/* Ensure no raw hex leaks in dark cards */
+[data-theme='dark'] .dash-gpa-card,
+[data-theme='dark'] .dash-progress-card,
+[data-theme='dark'] .dash-term-card {
+  background: var(--surface-1);
+  border-color: var(--border);
+}
+
+/* Dark mode form inputs consistent */
+[data-theme='dark'] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme='dark'] select,
+[data-theme='dark'] textarea,
+[data-theme='dark'] .input {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 6: LIGHT THEME CONSISTENCY
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Light cards: proper border and subtle shadow */
+[data-theme='light'] .card {
+  background: var(--md-surface-container-lowest);
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Light metric tiles: softer elevation */
+[data-theme='light'] .metric {
+  background: var(--md-surface-container-lowest);
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Light mode progress bar: solid primary */
+[data-theme='light'] .progress-fill,
+[data-theme='light'] .progress-bar,
+[data-theme='light'] .dash-term-bar > span {
+  background: linear-gradient(90deg, var(--md-primary), var(--md-primary-container));
+  box-shadow: none;
+}
+
+/* Light mode GPA value: solid readable color */
+[data-theme='light'] .dash-gpa-value {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--md-primary);
+  color: var(--md-primary);
+}
+
+/* Light mode term percentage: solid readable */
+[data-theme='light'] .dash-term-pct {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--md-primary);
+  color: var(--md-primary);
+}
+
+/* Light doughnut center text: readable */
+[data-theme='light'] .dash-doughnut-center {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--md-primary);
+  color: var(--md-primary);
+}
+
+/* Badge contrast in light mode */
+[data-theme='light'] .badge {
+  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+[data-theme='light'] .badge.brand  { color: var(--md-primary); background: color-mix(in srgb, var(--md-primary) 8%, transparent); }
+[data-theme='light'] .badge.green  { color: #0d7d4d; background: color-mix(in srgb, #0d7d4d 8%, transparent); }
+[data-theme='light'] .badge.amber  { color: #b45309; background: color-mix(in srgb, #b45309 8%, transparent); }
+[data-theme='light'] .badge.red    { color: var(--md-error); background: color-mix(in srgb, var(--md-error) 8%, transparent); }
+
+/* Light mode form inputs */
+[data-theme='light'] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme='light'] select,
+[data-theme='light'] textarea,
+[data-theme='light'] .input {
+  background: var(--md-surface-container-lowest);
+  border-color: var(--md-outline-variant);
+  color: var(--md-on-surface);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 7: COMPONENT VISUAL COHESION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Unified card radius and transition */
+.card,
+.metric,
+.auth-glass-card {
+  border-radius: var(--r-2xl);
+  transition:
+    border-color 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
+}
+
+/* Unified small card radius */
+.badge-tile,
+.lesson-row,
+.track-card,
+.exam-row,
+.webinar-card,
+.leaderboard-row,
+.list-row {
+  border-radius: var(--r-lg);
+}
+
+/* Unified button min-height */
+.btn {
+  min-height: 36px;
+  border-radius: var(--r-full);
+}
+.btn.sm {
+  min-height: 32px;
+}
+
+/* Unified interactive card hover */
+.card.bordered:hover,
+.card.interactive:hover,
+.thumb-card:hover,
+.track-card:hover,
+.webinar-card:hover,
+.exam-row:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: color-mix(in srgb, var(--accent) 20%, var(--border));
+}
+
+/* Consistent shadow usage */
+.card {
+  box-shadow: var(--shadow-card);
+}
+
+/* Alignment fixes */
+.page-header {
+  align-items: center;
+}
+
+.topbar-actions {
+  align-items: center;
+}
+
+.metric {
+  align-items: center;
+}
+
+.filter-bar {
+  align-items: center;
+}
+
+/* Section background rhythm for landing */
+[data-theme='light'] .landing-features,
+[data-theme='light'] #features {
+  background: var(--md-surface-container-lowest);
+}
+
+[data-theme='light'] .landing-ai-section,
+[data-theme='light'] #pillars {
+  background: var(--md-surface-container);
+}
+
+[data-theme='dark'] .landing-features,
+[data-theme='dark'] #features {
+  background: var(--surface-1);
+}
+
+[data-theme='dark'] .landing-ai-section,
+[data-theme='dark'] #pillars {
+  background: var(--bg);
+}

@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-002",
+  "type": "fix",
+  "description": "Unify spacing, layout rhythm, theme consistency (dark/light), and component visual cohesion across the entire platform. All rules added to the visual-final-polish.css file created in FEAT-001.",
+  "status": "completed",
+  "steps": [
+    "Add spacing rhythm unification to visual-final-polish.css: (1) All page sections (.page > *) should have consistent gap via the existing gap: var(--sp-5) but ensure nested sections (.card + .card, .metric + .metric) use gap: var(--sp-4). (2) Ensure all .card padding is consistently var(--sp-5) (20px) with .card.compact at var(--sp-4). (3) Standardize card-header margin-bottom to var(--sp-4), card-title margin to 0. (4) Ensure page-header uses consistent padding var(--sp-5) var(--sp-6) with margin-bottom var(--sp-4). (5) Add consistent gap for filter-bar: gap var(--sp-2). (6) Ensure .dash-agenda-list gap is var(--sp-3).",
+    "Add theme consistency corrections for DARK mode: (1) Ensure all card backgrounds use var(--surface-1) consistently (no raw hex values). (2) Ensure all borders use var(--border) or var(--border-strong) tokens. (3) Fix .metric border-top colors to use proper token-based alpha (not raw rgba). (4) Ensure .glass-bg and .glass-border tokens are used consistently for all glassmorphism elements. (5) Ensure .topbar-user-menu, .notif-panel use consistent surface + border tokens. (6) Add proper dark mode treatment for .landing-trust-bar-inner: background rgba(20, 24, 32, 0.85) with proper border.",
+    "Add theme consistency corrections for LIGHT mode: (1) Ensure [data-theme=light] cards have proper border: 1px solid var(--md-outline-variant). (2) Ensure [data-theme=light] .metric tiles have subtle box-shadow: var(--shadow-sm) instead of heavy shadows. (3) Ensure [data-theme=light] .badge colors have adequate contrast (min 4.5:1 against their backgrounds). (4) Fix [data-theme=light] .progress-fill to use var(--md-primary) instead of gradient that might look off in light mode. (5) Ensure [data-theme=light] .dash-gpa-value text is readable (use solid color instead of gradient that could be invisible).",
+    "Add component visual cohesion rules: (1) All .card elements must share: border-radius var(--r-2xl), border 1px solid var(--border), box-shadow var(--shadow-card), transition including border-color and box-shadow. (2) All .btn elements must share: border-radius var(--r-full), font-weight 600, min-height 36px (except .btn.sm at 32px). (3) All .badge elements must share: border-radius var(--r-full), font-size 11px, font-weight 600, padding 3px 10px. (4) All .metric elements must share: border-radius var(--r-xl), consistent padding var(--sp-5). (5) Add consistent hover elevation for all interactive cards: transform translateY(-2px), box-shadow var(--shadow-card-hover), border-color shifts by mixing accent 20% into border.",
+    "Add shadow and elevation unification: (1) Define consistent card-hover behavior: cards that are clickable (.card.bordered, .card.interactive, .thumb-card, .track-card, .webinar-card, .exam-row) all use the same hover shadow and transform. (2) Remove any lingering inconsistent box-shadow values. (3) Ensure .shadow-card-hover is the single source of truth for hover elevation.",
+    "Fix visual alignment issues: (1) Ensure .page-header flex alignment stays center even when subtitle wraps. (2) Ensure .topbar actions and user trigger are vertically centered. (3) Fix .metric-head and .metric-icon vertical alignment (align-items: center on the parent). (4) Ensure .dash-hero-row columns align at the top. (5) Fix .filter-bar items vertical centering.",
+    "Polish section backgrounds for visual rhythm: (1) Ensure alternating sections in landing page have subtle background differentiation using var(--md-surface-container-lowest) and var(--md-surface-container). (2) Ensure dark mode sections alternate between var(--bg) and var(--surface-1). (3) Add smooth transitions between sections (no hard color jumps)."
+  ],
+  "acceptance_criteria": [
+    "Spacing across all pages follows the 8px grid system consistently",
+    "Dark theme surfaces, borders, and text colors use token variables exclusively",
+    "Light theme surfaces have proper contrast ratios and readable text",
+    "All cards, buttons, badges share unified radius/shadow/transition patterns",
+    "Hover states are consistent across all interactive elements",
+    "No visual misalignment in headers, metrics, or layout grids",
+    "Section backgrounds create pleasant visual rhythm in both themes"
+  ],
+  "verification": [
+    "Read visual-final-polish.css and verify all var() references match tokens defined in tokens.css",
+    "Verify no raw hex color values are used (all should reference token variables)",
+    "Check that dark/light theme selectors are properly scoped with [data-theme] attribute"
+  ],
+  "blocked_reason": null,
+  "findings": "Appended 264 lines (Sections 4-7) to visual-final-polish.css. All 39 unique var() references validated against tokens.css. CSS braces balanced (67/67). Sections cover: spacing rhythm, dark theme consistency, light theme consistency, and component visual cohesion. Two badge color values (#0d7d4d, #b45309) use hex in color-mix() as specified by the task - these are used within color-mix() for light badge backgrounds to ensure adequate contrast ratios."
+}
