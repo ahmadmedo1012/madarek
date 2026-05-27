@@ -18,6 +18,7 @@ import './styles/redesign-v2.css';
 import './styles/landing-auth-v3.css';
 import './styles/stitch-canonical.css';
 import './styles/pdf.css';
+import './styles/owner.css';
 import App from './App';
 
 const root = document.getElementById('root');

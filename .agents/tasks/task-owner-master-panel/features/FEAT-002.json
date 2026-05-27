@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Build the complete Owner Master Control Panel pages: Dashboard, Users Management, Activity Logs, Content & Branding, System Control, and Educational Overview. Each page follows the existing Stitch design patterns with premium styling, using the Card/MetricCard/Badge/ProgressBar primitives and Lucide icons. Pages use the hooks from useOwner.ts for data fetching with mock/static fallback data for a polished demo experience.",
+  "status": "in_progress",
+  "steps": [
+    "1. Create frontend/src/pages/owner/OwnerDashboardPage.tsx - The main overview page with: (a) grid-4 of MetricCards showing total users, active users, total courses, total enrollments; (b) a grid-2-1 layout with a Card showing user distribution by role (using ProgressBar for each role count), and a Card showing system health indicators (uptime, DB status, last sync); (c) a Card with recent platform events table (last 10 audit log entries); (d) a Card with quick-action buttons (trigger sync, toggle maintenance, export report). Use Chart.js doughnut chart for user distribution. Include Arabic labels throughout. Fetch data via useOwnerStats hook with static fallback data for demo.",
+    "2. Create frontend/src/pages/owner/OwnerUsersPage.tsx - Full user management page: (a) grid-4 MetricCards for total users, students, teachers, admins; (b) search input + role filter pills (all, STUDENT, TEACHER, ADMIN, QUALITY, OWNER); (c) professional data table with columns: avatar+name, email, role (as Badge), status (active/inactive Badge), joined date, actions dropdown; (d) Each row has actions: view profile, change role (with confirmation modal), toggle active status (with confirmation). Use useOwnerUsers hook with pagination. Include a ConfirmDialog component for destructive actions.",
+    "3. Create frontend/src/pages/owner/OwnerActivityPage.tsx - Activity monitoring and audit trail: (a) MetricCards for total events today, logins today, failed actions, role changes; (b) filter tabs for event type (all, auth, content, roles, system); (c) timeline-style event list showing: icon, action description, user who performed it, timestamp, metadata preview. Each event type has a distinct icon/color. Use useOwnerActivity hook with pagination and type filter. Include date range filter UI.",
+    "4. Create frontend/src/pages/owner/OwnerContentPage.tsx - Content and branding control: (a) Card for Hero Content editing - textarea inputs for hero title, subtitle, CTA text with a live preview panel; (b) Card for Theme Settings - color pickers for primary, secondary, accent colors (just input type=color); (c) Card for Platform Announcements - form to create new announcement with scope selector (platform/faculty); (d) Card for Feature Toggles - list of toggleable modules (AI Assistant, Virtual Labs, Community, Live Streaming, etc.) each with a toggle switch; (e) Card for Logo/Branding upload placeholder. All use local state with save buttons that show success feedback.",
+    "5. Create frontend/src/pages/owner/OwnerSystemPage.tsx - System control page: (a) MetricCards for server status, last sync time, pending migrations, error count; (b) Card for Sync Management with sync history table and manual trigger button (reuse pattern from AdminSyncPage.tsx); (c) Card for Feature Flags with toggle switches and descriptions; (d) Card for Maintenance Mode toggle with warning/confirmation; (e) Card for Error Log showing recent errors with timestamps and stack trace expandable; (f) Card for Platform Settings with key-value editor for system config.",
+    "6. Create frontend/src/pages/owner/OwnerEducationPage.tsx - Educational overview: (a) MetricCards for total courses, total professors, active offerings, average enrollment; (b) Card with courses-per-faculty bar chart using Chart.js; (c) Card with top courses by enrollment table; (d) Card with professor workload overview (courses per teacher distribution); (e) Card with attendance and engagement trends using a line chart; (f) Card with exam status breakdown (draft, published, completed).",
+    "7. Create frontend/src/components/owner/ConfirmDialog.tsx - A reusable confirmation dialog component for destructive actions. Uses glassmorphism overlay, has title, message, confirm/cancel buttons with appropriate colors (danger red for destructive actions). Includes an onConfirm async callback.",
+    "8. Create frontend/src/components/owner/ToggleSwitch.tsx - A premium toggle switch component styled with Stitch tokens. Has label, description, checked state, onChange handler. Used in feature toggles and system controls.",
+    "9. Add owner-specific CSS to frontend/src/styles/owner.css with premium styling: owner-specific card enhancements, timeline styles for activity page, toggle switch styles, confirm dialog overlay styles, enhanced table styles for user management. Import this CSS in frontend/src/main.tsx.",
+    "10. Update the stub pages in frontend/src/pages/owner/OwnerPages.tsx to properly export all the real page components from their individual files (re-export barrel).",
+    "11. Update App.tsx imports to use the real page components from the owner directory instead of stubs."
+  ],
+  "acceptance_criteria": [
+    "Owner dashboard page renders with MetricCards, charts, and recent events",
+    "Users page has search, filter, paginated table with role/status management actions",
+    "Activity page shows audit trail with type filtering and timeline UI",
+    "Content page has editable branding controls, feature toggles, and announcement form",
+    "System page has sync management, feature flags, maintenance mode, and error logs",
+    "Education page has charts and tables for courses, professors, and engagement",
+    "ConfirmDialog component works for destructive action confirmation",
+    "ToggleSwitch component provides on/off control for feature flags",
+    "All pages follow RTL Arabic layout with Stitch design tokens",
+    "All pages use Lucide icons consistently"
+  ],
+  "verification": [
+    "Run: cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit (should pass with no errors)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
