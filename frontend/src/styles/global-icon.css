@@ -1,3 +1,9 @@
+@property --progress-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 /* ═════════════════════════════════════════════════════════════
    Global Icon — Visual Identity Enhancement Layer
    Glassmorphism, Deep Shadows, Particles, Hover FX, Glow, Animations
@@ -9,34 +15,34 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .sidebar {
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  background: var(--glass-bg);
-  border-inline-end: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border-inline-end: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 .oasis-widget__panel {
-  backdrop-filter: blur(calc(var(--glass-blur) * 1.5));
-  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.5));
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 .dash-customizer-modal {
-  backdrop-filter: blur(calc(var(--glass-blur) * 1.2));
-  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.2));
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.2));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.2));
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 .landing-hero-float-card {
-  backdrop-filter: blur(calc(var(--glass-blur) * 2));
-  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 2));
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
   box-shadow:
-    0 0 0 1px var(--glass-border),
-    inset 0 1px 0 var(--glass-border);
+    0 0 0 1px var(--glass-border, rgba(255, 255, 255, 0.12)),
+    inset 0 1px 0 var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -73,7 +79,7 @@
 
 .landing-hero-float-card:hover {
   box-shadow:
-    0 0 0 1px var(--glass-border),
+    0 0 0 1px var(--glass-border, rgba(255, 255, 255, 0.12)),
     0 8px 16px rgba(0, 0, 0, 0.14),
     0 20px 48px rgba(0, 0, 0, 0.18),
     0 32px 64px rgba(0, 0, 0, 0.12);
@@ -168,7 +174,6 @@
     radial-gradient(1.5px 1.5px at 20% 80%, var(--md-tertiary-fixed-dim) 50%, transparent 50%);
   background-size: 100% 100%;
   animation: gi-particle-float 8s var(--ease-soft) infinite;
-  will-change: transform, opacity;
 }
 
 .particles-bg::after {
@@ -180,7 +185,6 @@
     radial-gradient(1px 1px at 25% 55%, var(--accent) 50%, transparent 50%);
   background-size: 100% 100%;
   animation: gi-particle-drift 12s var(--ease-soft) infinite 2s;
-  will-change: transform, opacity;
 }
 
 .landing-hero::after {
@@ -591,18 +595,18 @@
    ═══════════════════════════════════════════════════════════════ */
 
 [data-theme='light'] .sidebar {
-  background: var(--glass-bg);
-  border-inline-end-color: var(--glass-border);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border-inline-end-color: var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 [data-theme='light'] .oasis-widget__panel {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border-color: var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 [data-theme='light'] .landing-hero-float-card {
-  background: var(--glass-bg);
-  border-color: var(--glass-border);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+  border-color: var(--glass-border, rgba(255, 255, 255, 0.12));
 }
 
 [data-theme='light'] .shadow-deep {
@@ -667,11 +671,11 @@
 }
 
 [data-theme='dark'] .sidebar {
-  backdrop-filter: blur(calc(var(--glass-blur) * 1.5));
+  backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
 }
 
 [data-theme='dark'] .oasis-widget__panel {
-  backdrop-filter: blur(calc(var(--glass-blur) * 2));
+  backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
 }
 
 /* ═══════════════════════════════════════════════════════════════

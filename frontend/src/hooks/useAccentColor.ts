@@ -28,6 +28,11 @@ interface AccentColorState {
   setAccentColor: (color: AccentColorKey) => void;
 }
 
+/**
+ * Applies accent color CSS custom properties to the document root.
+ * These intentionally override the design-token --accent value so the
+ * entire UI adapts to the user's color preference (particles, shadows, gradients, etc.).
+ */
 function applyAccentColors(color: AccentColorKey): void {
   if (typeof document === 'undefined') return;
   const values = ACCENT_PRESETS[color];

@@ -30,6 +30,10 @@ function playTone(params: {
     const ctx = getAudioContext();
     if (!ctx) return;
 
+    if (ctx.state === 'suspended') {
+      void ctx.resume();
+    }
+
     const oscillator = ctx.createOscillator();
     const gainNode = ctx.createGain();
 
