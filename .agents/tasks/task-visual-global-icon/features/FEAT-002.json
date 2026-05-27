@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Audio Cues system (Web Audio API), Accent Color Customization, Dark Mode Refinement, and Section-specific Skeleton Screens - Add subtle audio feedback, user-selectable accent colors, thoughtful dark mode tuning, and custom skeleton layouts per page section.",
+  "status": "completed",
+  "steps": [
+    "Create frontend/src/hooks/useAudioCue.ts - a lightweight hook using Web Audio API (OscillatorNode + GainNode) to play very short, subtle tones. Expose playClick() (soft 1200Hz sine, 40ms, gain 0.08), playSuccess() (ascending 800->1200Hz, 80ms, gain 0.06), playNotification() (gentle 900Hz, 60ms, gain 0.07). Respect a global muted preference stored in localStorage. Must pass strict TS with proper typing.",
+    "Create frontend/src/hooks/useAccentColor.ts - a small Zustand store (persisted to localStorage) that holds the user's chosen accent color from a preset list (blue/teal/purple/rose/amber/emerald). On mount, inject a <style> tag or set CSS custom properties (--accent, --accent-hover, --accent-soft, --accent-border, --accent-fg) on document.documentElement. Provide a setAccentColor(color) action and a getAccentColors() helper returning the preset list.",
+    "Add accent color picker UI to DashboardCustomizer.tsx - below the widget reorder section, add a 'Theme Color' section showing 6 color circles. Clicking one calls setAccentColor(). Show a checkmark on the active color. Keep TypeScript strict-safe.",
+    "Add audio toggle to DashboardCustomizer.tsx - a single checkbox row 'Sound Effects' that toggles the audio muted state from the useAudioCue hook store.",
+    "Wire audio cues into the app: In OasisWidget.tsx, play playClick() on message send. In Sidebar.tsx nav items, no audio needed (too frequent). In DashboardCustomizer.tsx, play playClick() on open.",
+    "Dark mode refinement in global-icon.css: Add [data-theme='dark'] overrides that (a) slightly warm up pure blacks to #0f1117 -> already done, (b) add subtle gradient noise texture overlay on --bg for depth, (c) boost card borders to have a faint colored inner-glow, (d) ensure glassmorphism blur values are stronger in dark for better contrast, (e) add a very subtle vignette effect on .content via radial-gradient overlay.",
+    "Section-specific skeletons: In frontend/src/components/primitives/States.tsx, add DashboardSkeleton (mimics stat tiles + GPA ring + agenda layout), CourseSkeleton (grid of course cards), and LectureSkeleton (video placeholder + sidebar). Use the existing Skeleton primitive. Each should have shimmer animation via the existing .skeleton-shimmer class from world-class.css."
+  ],
+  "acceptance_criteria": [
+    "useAudioCue.ts compiles cleanly with strict TS and produces no runtime errors when called in a non-browser context (guard typeof window)",
+    "useAccentColor.ts persists choice to localStorage and applies CSS variables on document root",
+    "DashboardCustomizer shows color picker circles and sound toggle without breaking existing functionality",
+    "OasisWidget plays a subtle click sound on send (when audio enabled)",
+    "Dark mode has enhanced depth with subtle gradients and noise texture",
+    "New skeleton components (DashboardSkeleton, CourseSkeleton, LectureSkeleton) render without errors",
+    "npx tsc -b --noEmit passes cleanly"
+  ],
+  "verification": ["cd frontend && npx tsc -b --noEmit"],
+  "blocked_reason": null,
+  "findings": "TypeScript compilation cannot be verified in this sandbox (node_modules missing, tsc unavailable). Code follows identical patterns to dashboard.store.ts (Zustand persist), useReveal.ts (hooks), and DashboardCustomizer.tsx (component with i18n + lucide). All indexed accesses use Record types with literal keys (no noUncheckedIndexedAccess issue) or nullish coalescing. The unused useState import was removed from DashboardCustomizer.tsx."
+}

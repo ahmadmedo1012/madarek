@@ -201,3 +201,110 @@ export function DetailSkeleton() {
     </div>
   );
 }
+
+/** Dashboard skeleton - mimics stat tiles + GPA ring + agenda */
+export function DashboardSkeleton() {
+  return (
+    <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page-header">
+        <div className="page-title-block">
+          <Skeleton width={200} height={24} />
+          <div style={{ marginTop: 8 }}>
+            <Skeleton width={300} height={14} />
+          </div>
+        </div>
+      </div>
+      {/* Stat tiles row */}
+      <div className="grid-4" style={{ marginBottom: 'var(--sp-6)' }}>
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="card skeleton-shimmer" style={{ padding: 'var(--sp-4)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Skeleton width={32} height={32} rounded="50%" />
+            <Skeleton width={40} height={22} />
+            <Skeleton width={80} height={11} />
+          </div>
+        ))}
+      </div>
+      {/* GPA ring placeholder */}
+      <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)', padding: 'var(--sp-5)' }}>
+        <Skeleton width={72} height={72} rounded="50%" />
+        <div className="flex-col gap-2" style={{ flex: 1 }}>
+          <Skeleton width={100} height={12} />
+          <Skeleton width={60} height={22} />
+          <Skeleton width={80} height={12} />
+        </div>
+      </div>
+      {/* Agenda items */}
+      <div className="card" style={{ marginTop: 'var(--sp-4)' }}>
+        <Skeleton width={120} height={14} />
+        <div className="flex-col gap-3" style={{ marginTop: 'var(--sp-3)' }}>
+          {[0, 1, 2].map((i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', padding: 'var(--sp-2) 0' }}>
+              <Skeleton width={36} height={36} rounded="var(--r-md)" />
+              <div className="flex-col gap-1" style={{ flex: 1 }}>
+                <Skeleton width="70%" height={12} />
+                <Skeleton width="40%" height={10} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Course list skeleton - grid of course cards */
+export function CourseSkeleton() {
+  return (
+    <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page-header">
+        <Skeleton width={160} height={24} />
+      </div>
+      <div className="grid-3" style={{ gap: 'var(--sp-4)' }}>
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="card skeleton-shimmer" style={{ padding: 'var(--sp-4)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Skeleton width="100%" height={120} rounded="var(--r-md)" />
+            <Skeleton width="80%" height={14} />
+            <Skeleton width="50%" height={11} />
+            <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+              <Skeleton width={60} height={20} rounded="var(--r-full)" />
+              <Skeleton width={40} height={20} rounded="var(--r-full)" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Lecture player skeleton - video area + sidebar */
+export function LectureSkeleton() {
+  return (
+    <div className="page" aria-busy="true" aria-live="polite">
+      <div className="page-header">
+        <Skeleton width={240} height={24} />
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 'var(--sp-4)' }}>
+        {/* Video area */}
+        <div className="card" style={{ padding: 'var(--sp-4)' }}>
+          <Skeleton width="100%" height={360} rounded="var(--r-md)" />
+          <div style={{ marginTop: 'var(--sp-4)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Skeleton width="60%" height={18} />
+            <Skeleton width="40%" height={12} />
+          </div>
+        </div>
+        {/* Sidebar */}
+        <div className="card" style={{ padding: 'var(--sp-4)' }}>
+          <Skeleton width={100} height={14} />
+          <div className="flex-col gap-2" style={{ marginTop: 'var(--sp-3)' }}>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 'var(--sp-2) 0' }}>
+                <Skeleton width={24} height={24} rounded="50%" />
+                <Skeleton width="70%" height={12} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

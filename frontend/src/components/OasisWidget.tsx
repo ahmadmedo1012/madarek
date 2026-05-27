@@ -4,6 +4,7 @@ import { Icon } from './Icon';
 import { useUiStore } from '../stores/ui.store';
 import { useI18nStore } from '../stores/i18n.store';
 import { useAiChat } from '../hooks/useResources';
+import { useAudioCue } from '../hooks/useAudioCue';
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -35,6 +36,7 @@ export function OasisWidget() {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState('');
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const playClick = useAudioCue((s) => s.playClick);
 
   const MAX_MESSAGES = 50;
 
@@ -50,6 +52,7 @@ export function OasisWidget() {
   const send = async (text?: string) => {
     const msg = (text ?? input).trim();
     if (!msg || chat.isPending) return;
+    playClick();
     setMessages((m) => [...m, { role: 'user' as const, text: msg }].slice(-MAX_MESSAGES));
     setInput('');
     try {
