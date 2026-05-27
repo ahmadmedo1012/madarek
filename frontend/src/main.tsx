@@ -16,6 +16,7 @@ import './styles/notifications.css';
 import './styles/polish.css';
 import './styles/redesign-v2.css';
 import './styles/landing-auth-v3.css';
+import './styles/stitch-canonical.css';
 import './styles/pdf.css';
 import App from './App';
 

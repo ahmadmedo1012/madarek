@@ -1,0 +1,622 @@
+/* ═══════════════════════════════════════════════════════════════
+   STITCH CANONICAL — Material 3 design tokens from Stitch project
+   "Madarek AI EdTech Design" (id 331663920287368666)
+
+   Color roles:
+     PRIMARY    deep navy   #003461   (institutional)
+     SECONDARY  warm gold   #fed65b   (achievements / active states)
+     TERTIARY   dark teal   #003a3b / fixed-dim #2ddbde   (AI/Oasis)
+
+   Signature effect:
+     ai-glow    box-shadow: 0 4px 20px rgba(0, 206, 209, 0.15)
+
+   Loaded last so it overrides prior layers cleanly.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   STITCH RAW TOKENS (Material 3 light)
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Primary */
+  --md-primary:                     #003461;
+  --md-on-primary:                  #ffffff;
+  --md-primary-container:           #004b87;
+  --md-on-primary-container:        #8abcff;
+  --md-primary-fixed:               #d3e4ff;
+  --md-primary-fixed-dim:           #a3c9ff;
+  --md-on-primary-fixed:            #001c38;
+  --md-on-primary-fixed-variant:    #004882;
+
+  /* Secondary (gold) */
+  --md-secondary:                   #735c00;
+  --md-on-secondary:                #ffffff;
+  --md-secondary-container:         #fed65b;
+  --md-on-secondary-container:      #745c00;
+  --md-secondary-fixed:             #ffe088;
+  --md-secondary-fixed-dim:         #e9c349;
+  --md-on-secondary-fixed:          #241a00;
+  --md-on-secondary-fixed-variant:  #574500;
+
+  /* Tertiary (teal — AI/Oasis) */
+  --md-tertiary:                    #003a3b;
+  --md-on-tertiary:                 #ffffff;
+  --md-tertiary-container:          #005354;
+  --md-on-tertiary-container:       #01ced1;
+  --md-tertiary-fixed:              #5af8fb;
+  --md-tertiary-fixed-dim:          #2ddbde;
+  --md-on-tertiary-fixed:           #002020;
+  --md-on-tertiary-fixed-variant:   #004f51;
+
+  /* Error */
+  --md-error:                       #ba1a1a;
+  --md-on-error:                    #ffffff;
+  --md-error-container:             #ffdad6;
+  --md-on-error-container:          #93000a;
+
+  /* Surface */
+  --md-surface:                     #f8f9fa;
+  --md-on-surface:                  #191c1d;
+  --md-on-surface-variant:          #424750;
+  --md-surface-variant:             #e1e3e4;
+  --md-surface-bright:              #f8f9fa;
+  --md-surface-dim:                 #d9dadb;
+  --md-surface-container-lowest:    #ffffff;
+  --md-surface-container-low:       #f3f4f5;
+  --md-surface-container:           #edeeef;
+  --md-surface-container-high:      #e7e8e9;
+  --md-surface-container-highest:   #e1e3e4;
+  --md-background:                  #f8f9fa;
+  --md-on-background:               #191c1d;
+
+  /* Outline */
+  --md-outline:                     #727781;
+  --md-outline-variant:             #c2c6d1;
+
+  /* Inverse */
+  --md-inverse-surface:             #2e3132;
+  --md-inverse-on-surface:          #f0f1f2;
+  --md-inverse-primary:             #a3c9ff;
+
+  /* Stitch spacing */
+  --st-container-max:   1280px;
+  --st-gutter:          24px;
+  --st-margin-desktop:  64px;
+  --st-margin-mobile:   20px;
+  --st-unit:            8px;
+
+  /* Stitch radii */
+  --st-r-default: 4px;
+  --st-r-lg:      8px;
+  --st-r-xl:      12px;
+  --st-r-2xl:     16px;
+  --st-r-full:    9999px;
+
+  /* AI glow signature effect */
+  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
+  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PLATFORM TOKEN OVERRIDES — Stitch becomes the source of truth
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] {
+  --bg:           var(--md-background);
+  --surface-1:    var(--md-surface-container-lowest);
+  --surface-2:    var(--md-surface-container-low);
+  --surface-3:    var(--md-surface-container);
+
+  --border:        var(--md-outline-variant);
+  --border-strong: var(--md-outline);
+
+  --text:        var(--md-on-surface);
+  --text-muted:  var(--md-on-surface-variant);
+  --text-subtle: var(--md-outline);
+
+  --accent:        var(--md-primary);
+  --accent-hover:  var(--md-primary-container);
+  --accent-soft:   color-mix(in srgb, var(--md-primary) 8%, transparent);
+  --accent-border: color-mix(in srgb, var(--md-primary) 35%, transparent);
+  --accent-fg:     var(--md-on-primary);
+
+  --gold:        var(--md-secondary-container);
+  --gold-soft:   color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
+
+  --brand-blue:      var(--md-primary);
+  --brand-blue-deep: var(--md-on-primary-fixed);
+  --brand-purple:    var(--md-primary-container);
+  --brand-gold:      var(--md-secondary-container);
+
+  --focus-ring:    0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);
+  --selection-bg:  color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
+
+  --success: var(--md-tertiary-container);
+  --success-soft: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
+  --warning: #c2410c;
+  --warning-soft: rgba(194, 65, 12, 0.10);
+  --danger: var(--md-error);
+  --danger-soft: var(--md-error-container);
+  --info: var(--md-primary);
+  --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
+}
+
+[data-theme='dark'] {
+  --bg:           #0f0e13;
+  --surface-1:    #1a1825;
+  --surface-2:    #221f2e;
+  --surface-3:    #2d2a3d;
+
+  --border:        rgba(195, 198, 209, 0.16);
+  --border-strong: rgba(195, 198, 209, 0.28);
+
+  --text:        #eceaf5;
+  --text-muted:  #b8b5cc;
+  --text-subtle: #6b6886;
+
+  --accent:        var(--md-primary-fixed-dim);
+  --accent-hover:  var(--md-primary-fixed);
+  --accent-soft:   rgba(163, 201, 255, 0.16);
+  --accent-border: rgba(163, 201, 255, 0.45);
+  --accent-fg:     var(--md-on-primary-fixed);
+
+  --gold:        var(--md-secondary-fixed-dim);
+  --gold-soft:   rgba(233, 195, 73, 0.16);
+
+  --focus-ring:    0 0 0 3px rgba(163, 201, 255, 0.30);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AI GLOW — signature effect class
+   ═══════════════════════════════════════════════════════════════ */
+
+.ai-glow         { box-shadow: var(--ai-glow); }
+.ai-glow-strong  { box-shadow: var(--ai-glow-strong); }
+
+/* ═══════════════════════════════════════════════════════════════
+   GRADIENT TEXT — primary → tertiary (Stitch hero treatment)
+   ═══════════════════════════════════════════════════════════════ */
+
+.gradient-text,
+.text-gradient {
+  background: linear-gradient(90deg, var(--md-primary) 0%, var(--md-tertiary) 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+[data-theme='dark'] .gradient-text,
+[data-theme='dark'] .text-gradient {
+  background: linear-gradient(90deg, var(--md-primary-fixed-dim) 0%, var(--md-tertiary-fixed-dim) 100%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SELECTION — tertiary cyan (per Stitch landing screen)
+   ═══════════════════════════════════════════════════════════════ */
+
+::selection {
+  background: var(--md-tertiary-fixed-dim);
+  color: var(--md-on-tertiary-fixed);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STITCH BUTTONS — primary navy with rounded-full pill
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn.primary {
+  background: var(--md-primary) !important;
+  color: var(--md-on-primary) !important;
+  border: 0 !important;
+  border-radius: var(--r-full) !important;
+  height: 44px;
+  padding: 0 24px !important;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 52, 97, 0.20);
+}
+.btn.primary:hover {
+  background: var(--md-primary-container) !important;
+  color: var(--md-on-primary-container) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 52, 97, 0.30);
+}
+
+.btn:not(.primary):not(.outline):not(.ghost):not(.landing-final-cta-btn) {
+  background: var(--md-surface-container-high) !important;
+  color: var(--md-on-surface) !important;
+  border: 0;
+  border-radius: var(--r-full) !important;
+}
+.btn:not(.primary):not(.outline):not(.ghost):not(.landing-final-cta-btn):hover {
+  background: var(--md-surface-container-highest) !important;
+}
+
+.btn.outline {
+  background: var(--md-surface) !important;
+  color: var(--md-primary) !important;
+  border: 1px solid var(--md-outline) !important;
+  border-radius: var(--r-full) !important;
+}
+.btn.outline:hover {
+  background: var(--md-surface-container) !important;
+  color: var(--md-primary-container) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR — Stitch uses LIGHT surface-container-low (NOT dark)
+   Active item = secondary-container (gold yellow)
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .sidebar {
+  background: var(--md-surface-container-low) !important;
+  border-inline-end: 1px solid var(--md-outline-variant) !important;
+  color: var(--md-on-surface);
+  box-shadow: none !important;
+}
+
+[data-theme='light'] .sidebar-brand {
+  background: transparent !important;
+  border-bottom: 1px solid var(--md-outline-variant) !important;
+}
+[data-theme='light'] .sidebar-brand-mark {
+  background: var(--md-primary) !important;
+  color: var(--md-on-primary) !important;
+  border-radius: var(--r-full);
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  border: 0;
+}
+[data-theme='light'] .sidebar-brand-mark img,
+[data-theme='light'] .sidebar-brand-mark svg {
+  width: 22px !important;
+  height: 22px !important;
+  filter: brightness(0) invert(1);
+}
+[data-theme='light'] .sidebar-brand-name {
+  color: var(--md-primary) !important;
+  font-weight: 600 !important;
+  font-size: 17px !important;
+}
+[data-theme='light'] .sidebar-brand-sub {
+  color: var(--md-on-surface-variant) !important;
+}
+
+/* Section labels */
+[data-theme='light'] .nav-section-label {
+  color: var(--md-on-surface-variant) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  font-size: 11px !important;
+  text-transform: none;
+}
+
+/* Nav items — Stitch active state = SECONDARY container (gold) */
+[data-theme='light'] .nav-item {
+  color: var(--md-on-surface-variant) !important;
+  border-radius: var(--r-xl) !important;
+  margin: 2px 8px !important;
+  padding: 10px 16px !important;
+  font-weight: 500 !important;
+}
+[data-theme='light'] .nav-item:hover {
+  background: var(--md-surface-container-high) !important;
+  color: var(--md-on-surface) !important;
+}
+[data-theme='light'] .nav-item.on,
+[data-theme='light'] .nav-item[aria-current="page"] {
+  background: var(--md-secondary-container) !important;
+  color: var(--md-on-secondary-container) !important;
+  font-weight: 600 !important;
+}
+[data-theme='light'] .nav-item.on::before,
+[data-theme='light'] .nav-item[aria-current="page"]::before {
+  display: none !important;
+}
+[data-theme='light'] .nav-item .nav-icon {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+[data-theme='light'] .sidebar-footer {
+  border-top: 1px solid var(--md-outline-variant) !important;
+}
+[data-theme='light'] .sidebar-user-name {
+  color: var(--md-on-surface) !important;
+}
+[data-theme='light'] .sidebar-user-role {
+  color: var(--md-on-surface-variant) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOPBAR — Stitch uses simple bg-surface + outline-variant border
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .topbar {
+  background: var(--md-surface) !important;
+  border-bottom: 1px solid var(--md-outline-variant) !important;
+}
+[data-theme='light'] .topbar-title {
+  color: var(--md-primary) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WELCOME CARD — keep navy gradient (Stitch primary)
+   ═══════════════════════════════════════════════════════════════ */
+
+.welcome-card {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-container) 100%) !important;
+  border-radius: 20px !important;
+}
+.welcome-card::before {
+  background: radial-gradient(circle, rgba(45, 219, 222, 0.20) 0%, transparent 70%) !important;
+}
+.welcome-card::after {
+  background: radial-gradient(circle, rgba(254, 214, 91, 0.16) 0%, transparent 70%) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTH LEFT panel — Stitch primary navy gradient
+   ═══════════════════════════════════════════════════════════════ */
+
+.auth-left {
+  background-image:
+    radial-gradient(700px 500px at 25% 20%, rgba(45, 219, 222, 0.30), transparent 70%),
+    radial-gradient(500px 400px at 75% 80%, rgba(254, 214, 91, 0.18), transparent 70%),
+    linear-gradient(160deg, #001c38 0%, #003461 50%, #004b87 100%) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING — final CTA section uses Stitch palette
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-final-cta {
+  background:
+    radial-gradient(700px 500px at 25% 30%, rgba(45, 219, 222, 0.30), transparent 70%),
+    radial-gradient(500px 400px at 75% 70%, rgba(254, 214, 91, 0.18), transparent 70%),
+    linear-gradient(160deg, #001c38 0%, #003461 50%, #004b87 100%) !important;
+}
+.landing-final-cta-dot {
+  background: var(--md-tertiary-fixed-dim) !important;
+  box-shadow: 0 0 10px rgba(45, 219, 222, 0.7) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING SECTION EYEBROW — tertiary teal accent
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .landing-section-eyebrow {
+  background: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
+  color: var(--md-tertiary);
+  border: 1px solid color-mix(in srgb, var(--md-tertiary-container) 25%, transparent);
+}
+[data-theme='light'] .landing-section-eyebrow::before {
+  background: var(--md-tertiary-fixed-dim);
+  box-shadow: 0 0 8px rgba(45, 219, 222, 0.7);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING HERO — Stitch decorative blur blobs
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .landing-hero {
+  position: relative;
+  overflow: hidden;
+}
+[data-theme='light'] .landing-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 500px;
+  height: 500px;
+  background: rgba(90, 248, 251, 0.20);
+  border-radius: 50%;
+  filter: blur(120px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: -1;
+}
+[data-theme='light'] .landing-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  width: 600px;
+  height: 600px;
+  background: rgba(211, 228, 255, 0.40);
+  border-radius: 50%;
+  filter: blur(150px);
+  transform: translate(33%, 33%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Hero gradient text on the headline */
+.landing-title {
+  background: linear-gradient(135deg, var(--md-primary), var(--md-primary-container) 60%, var(--md-tertiary) 100%);
+  -webkit-background-clip: text !important;
+          background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION RHYTHM — Stitch surfaces
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] #features {
+  background: var(--md-surface-container-lowest);
+}
+[data-theme='light'] #pillars {
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--md-surface-container) 8%,
+    var(--md-surface-container) 92%,
+    transparent 100%);
+}
+[data-theme='light'] #proof {
+  background: transparent;
+}
+[data-theme='light'] #about {
+  background: var(--md-surface-container-lowest);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STAT CARD — Stitch tonal containers
+   ═══════════════════════════════════════════════════════════════ */
+
+.stat-card.stat-tone-accent .stat-card-icon {
+  background: color-mix(in srgb, var(--md-primary) 8%, transparent);
+  color: var(--md-primary);
+}
+.stat-card.stat-tone-gold .stat-card-icon {
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+.stat-card.stat-tone-success .stat-card-icon {
+  background: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
+  color: var(--md-tertiary);
+}
+.stat-card.stat-tone-danger .stat-card-icon {
+  background: var(--md-error-container);
+  color: var(--md-on-error-container);
+}
+.stat-card.stat-tone-purple .stat-card-icon {
+  background: color-mix(in srgb, var(--md-primary-container) 12%, transparent);
+  color: var(--md-primary-container);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FEATURE CARDS — Stitch bento grid feel
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-feature-icon {
+  background: var(--md-primary-container) !important;
+  color: var(--md-on-primary-container) !important;
+}
+.landing-feature-card:nth-child(2) .landing-feature-icon {
+  background: var(--md-tertiary-container) !important;
+  color: var(--md-on-tertiary-container) !important;
+}
+.landing-feature-card:nth-child(3) .landing-feature-icon {
+  background: var(--md-secondary-container) !important;
+  color: var(--md-on-secondary-container) !important;
+}
+.landing-feature-card:nth-child(4) .landing-feature-icon {
+  background: var(--md-surface-variant) !important;
+  color: var(--md-on-surface-variant) !important;
+}
+.landing-feature-card:nth-child(5) .landing-feature-icon {
+  background: color-mix(in srgb, var(--md-tertiary-fixed-dim) 18%, transparent) !important;
+  color: var(--md-tertiary) !important;
+}
+.landing-feature-card:nth-child(6) .landing-feature-icon {
+  background: color-mix(in srgb, var(--md-primary-fixed-dim) 30%, transparent) !important;
+  color: var(--md-primary) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KPI STRIP — Stitch dashboard stats style
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] .kpi-strip {
+  background: var(--md-surface-container-lowest) !important;
+  border: 1px solid var(--md-outline-variant) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTH GLASS card — tertiary tint for AI feel
+   ═══════════════════════════════════════════════════════════════ */
+
+.auth-glass-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY — Stitch Display + Headline + Body scale
+   ═══════════════════════════════════════════════════════════════ */
+
+.text-display-lg, .font-display-lg {
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.text-headline-md, .font-headline-md {
+  font-size: clamp(24px, 3.5vw, 32px);
+  line-height: 1.31;
+  font-weight: 600;
+}
+.text-headline-sm, .font-headline-sm {
+  font-size: clamp(20px, 2.5vw, 24px);
+  line-height: 1.33;
+  font-weight: 600;
+}
+.text-body-lg, .font-body-lg {
+  font-size: 18px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+.text-body-md, .font-body-md {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.text-label-md, .font-label-md {
+  font-size: 14px;
+  line-height: 1.43;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+.text-label-sm, .font-label-sm {
+  font-size: 12px;
+  line-height: 1.33;
+  font-weight: 600;
+}
+
+/* Body default = 16/24 (Stitch body-md) */
+body {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM CONTROLS — Stitch focus state
+   ═══════════════════════════════════════════════════════════════ */
+
+input:focus, textarea:focus, select:focus,
+.input:focus, .input:focus-within {
+  border-color: var(--md-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--md-primary) 18%, transparent) !important;
+}
+
+/* AI input — tertiary glow */
+.ai-input:focus, .ai-input:focus-within {
+  border-color: var(--md-tertiary-fixed-dim) !important;
+  box-shadow: var(--ai-glow), 0 0 0 1px var(--md-tertiary-fixed-dim) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — sidebar uses surface-container-highest equivalent
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='dark'] .sidebar {
+  background: #221f2e !important;
+  border-inline-end: 1px solid rgba(195, 198, 209, 0.16) !important;
+}
+[data-theme='dark'] .sidebar-brand-name {
+  color: var(--md-tertiary-fixed-dim) !important;
+}
+[data-theme='dark'] .nav-item {
+  color: rgba(195, 198, 209, 0.7) !important;
+}
+[data-theme='dark'] .nav-item.on,
+[data-theme='dark'] .nav-item[aria-current="page"] {
+  background: var(--md-secondary) !important;
+  color: var(--md-on-secondary) !important;
+}
