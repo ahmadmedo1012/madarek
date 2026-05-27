@@ -149,13 +149,36 @@ router.post(
       const { id } = req.params;
       const { role } = req.body as { role: Role };
 
+      // Self-demotion guard
+      if (id === req.user!.id) {
+        throw AppError.forbidden('Cannot change your own role');
+      }
+
+      // OWNER promotion guard
+      if (role === ('OWNER' as Role)) {
+        throw AppError.forbidden('Cannot promote to OWNER via API');
+      }
+
       const user = await prisma.user.findUnique({ where: { id } });
       if (!user) throw AppError.notFound('User not found');
+
+      const oldRole = user.role;
 
       const updated = await prisma.user.update({
         where: { id },
         data: { role },
         select: { id: true, role: true },
+      });
+
+      // Audit logging
+      await prisma.auditLog.create({
+        data: {
+          action: 'ROLE_CHANGE',
+          resourceType: 'User',
+          resourceId: id,
+          userId: req.user!.id,
+          metadata: { oldRole, newRole: role },
+        },
       });
 
       res.json({ data: updated });
@@ -178,6 +201,11 @@ router.patch(
       const { id } = req.params;
       const { isActive } = req.body as { isActive: boolean };
 
+      // Self-deactivation guard
+      if (id === req.user!.id) {
+        throw AppError.forbidden('Cannot deactivate your own account');
+      }
+
       const user = await prisma.user.findUnique({ where: { id } });
       if (!user) throw AppError.notFound('User not found');
 
@@ -185,6 +213,17 @@ router.patch(
         where: { id },
         data: { isActive },
         select: { id: true, isActive: true },
+      });
+
+      // Audit logging
+      await prisma.auditLog.create({
+        data: {
+          action: 'STATUS_CHANGE',
+          resourceType: 'User',
+          resourceId: id,
+          userId: req.user!.id,
+          metadata: { isActive },
+        },
       });
 
       res.json({ data: updated });

@@ -3,7 +3,7 @@ import { Users, GraduationCap, BookOpen, ShieldCheck, Search } from 'lucide-reac
 import { Card, MetricCard, Badge, UserAvatar, Pill } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
-import { useOwnerStats, useChangeUserRole, useToggleUserStatus } from '../../hooks/useOwner';
+import { useOwnerStats, useOwnerUsers, useChangeUserRole, useToggleUserStatus } from '../../hooks/useOwner';
 
 type RoleFilter = 'ALL' | 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
 
@@ -59,13 +59,28 @@ export function OwnerUsersPage() {
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL');
   const [page, setPage] = useState(1);
 
+  // Fetch real users with fallback to demo data
+  const ownerUsers = useOwnerUsers({ page, limit: 5, q: search || undefined });
+  const liveUsers: DemoUser[] = (ownerUsers.data?.data ?? []).map((u) => ({
+    id: u.id,
+    firstName: u.firstName,
+    lastName: u.lastName,
+    email: u.email,
+    role: u.role,
+    isActive: u.isActive,
+    avatarInitials: u.avatarInitials ?? u.firstName.charAt(0) + u.lastName.charAt(0),
+    avatarColor: u.avatarColor ?? '#3b82f6',
+    createdAt: u.createdAt,
+  }));
+  const usersSource = liveUsers.length > 0 ? liveUsers : DEMO_USERS;
+
   // Confirm dialog state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState<{
     title: string; message: string; danger: boolean; onConfirm: () => void | Promise<void>;
   }>({ title: '', message: '', danger: false, onConfirm: () => {} });
 
-  const filteredUsers = DEMO_USERS.filter((u) => {
+  const filteredUsers = usersSource.filter((u) => {
     if (roleFilter !== 'ALL' && u.role !== roleFilter) return false;
     if (search && !`${u.firstName} ${u.lastName} ${u.email}`.includes(search)) return false;
     return true;

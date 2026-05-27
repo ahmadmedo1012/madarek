@@ -35,7 +35,7 @@ export function ConfirmDialog({
   };
 
   return (
-    <div className="owner-confirm-overlay" onClick={onCancel}>
+    <div className="owner-confirm-overlay" onClick={() => { if (!loading) onCancel(); }}>
       <div className="owner-confirm-dialog" onClick={(e) => e.stopPropagation()}>
         <h3>{title}</h3>
         <p>{message}</p>
