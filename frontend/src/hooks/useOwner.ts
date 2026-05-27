@@ -30,12 +30,12 @@ interface OwnerUser {
 interface AuditLogEntry {
   id: string;
   action: string;
-  entity: string;
-  entityId: string | null;
-  userId: string;
-  meta: unknown;
+  resourceType: string | null;
+  resourceId: string | null;
+  userId: string | null;
+  metadata: unknown;
   createdAt: string;
-  user?: { firstName: string; lastName: string; email: string };
+  user?: { firstName: string; lastName: string; email: string } | null;
 }
 
 interface PaginatedResponse<T> {

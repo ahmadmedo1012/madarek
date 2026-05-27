@@ -10,7 +10,7 @@ import { AppError } from '../../lib/errors.js';
 
 const router = Router();
 router.use(authMiddleware);
-router.use(requireRole('OWNER' as Role));
+router.use(requireRole(Role.OWNER));
 
 // ── GET /owner/stats — platform-wide statistics ──────────────────
 router.get('/owner/stats', async (_req, res, next) => {
@@ -32,7 +32,7 @@ router.get('/owner/stats', async (_req, res, next) => {
       prisma.user.count({ where: { role: 'TEACHER' } }),
       prisma.user.count({ where: { role: 'ADMIN' } }),
       prisma.user.count({ where: { role: 'QUALITY' } }),
-      prisma.user.count({ where: { role: 'OWNER' as Role } }),
+      prisma.user.count({ where: { role: Role.OWNER } }),
       prisma.course.count(),
       prisma.courseOffering.count(),
       prisma.enrollment.count(),
@@ -155,7 +155,7 @@ router.post(
       }
 
       // OWNER promotion guard
-      if (role === ('OWNER' as Role)) {
+      if (role === Role.OWNER) {
         throw AppError.forbidden('Cannot promote to OWNER via API');
       }
 
