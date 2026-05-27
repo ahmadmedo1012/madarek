@@ -16,6 +16,8 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
+import { formatDate } from '../../utils/numbers';
+
 export default function LivePage() {
   const { data: sessions, isLoading } = useLiveSessions();
 
@@ -120,7 +122,7 @@ function StudentSessionRow({
         </div>
         <div className="text-xxs text-subtle">
           <Icon icon={Clock} size={10} />{' '}
-          {new Date(s.scheduledAt).toLocaleString('ar-EG', {
+          {formatDate(s.scheduledAt, {
             day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
           })}
           {' · '}

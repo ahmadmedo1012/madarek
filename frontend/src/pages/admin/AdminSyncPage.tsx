@@ -13,6 +13,7 @@ import { Card, MetricCard, Badge } from '../../components/primitives';
 import { PageSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
+import { formatDate } from '../../utils/numbers';
 
 interface SyncRun {
   id: string;
@@ -185,7 +186,7 @@ export function AdminSyncPage() {
               <div style={{ flex: 1 }}>
                 <div className="text-sm">
                   <span style={{ fontWeight: 600 }}>
-                    {new Date(r.startedAt).toLocaleString('ar-EG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    {formatDate(r.startedAt, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </span>
                   <span className="text-xxs text-subtle font-mono" style={{ marginInlineStart: 8 }}>
                     {r.source}

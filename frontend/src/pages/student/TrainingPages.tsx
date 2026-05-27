@@ -20,6 +20,7 @@ import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../componen
 import { PageSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
+import { formatNum, formatDate } from '../../utils/numbers';
 import {
   useTrainingCatalog, useTrainingTrack, useEnrollTrack, useCompleteLesson,
   useTrainingMe, useMyBadges, useMyTrainingCerts, useTrainingLeaderboard,
@@ -113,7 +114,7 @@ export default function TrainingCatalogPage() {
           <MetricCard
             icon={Trophy} color="gold"
             label="نقاطك"
-            value={me.points.toLocaleString('ar-EG')}
+            value={formatNum(me.points)}
             change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`}
           />
           <MetricCard
@@ -498,7 +499,7 @@ export function AchievementsPage() {
 
       {me && (
         <div className="grid-3">
-          <MetricCard icon={Trophy} color="gold" label="مجموع النقاط" value={me.points.toLocaleString('ar-EG')} change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`} />
+          <MetricCard icon={Trophy} color="gold" label="مجموع النقاط" value={formatNum(me.points)} change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`} />
           <MetricCard icon={Award} color="purple" label="الأوسمة المحقّقة" value={me.badgeCount.toString()} change={badges ? `من ${badges.length} متاح` : undefined} />
           <MetricCard icon={Medal} color="green" label="الشهادات" value={me.certificateCount.toString()} change="معتمدة من المنصة" />
         </div>
@@ -555,7 +556,7 @@ export function AchievementsPage() {
                   <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
                     <Badge color="green"><Icon icon={CheckCircle2} size={11} /> مكتملة</Badge>
                     {c.issuedAt && (
-                      <Badge>{new Date(c.issuedAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
+                      <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
                     )}
                     <Badge>{c.hours} ساعة معتمدة</Badge>
                   </div>
@@ -580,7 +581,7 @@ export function AchievementsPage() {
                 <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={32} />
                 <span className="leaderboard-name">{r.name}</span>
                 <span className="leaderboard-tier" style={{ color: TIER_COLOR[r.level.tier] }}>L{r.level.level} · {TIER_LABEL[r.level.tier]}</span>
-                <span className="leaderboard-points"><Icon icon={Sparkles} size={11} /> {r.points.toLocaleString('ar-EG')}</span>
+                <span className="leaderboard-points"><Icon icon={Sparkles} size={11} /> {formatNum(r.points)}</span>
               </div>
             ))}
             {lb && lb.length === 0 && (

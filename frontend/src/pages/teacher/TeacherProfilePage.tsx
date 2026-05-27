@@ -28,6 +28,7 @@ import {
   useMyTeacherProfile, useUpdateTeacherProfile,
   type TeacherFullProfile,
 } from '../../hooks/useResources';
+import { formatDate } from '../../utils/numbers';
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'مُعيد / محاضر',
@@ -130,7 +131,7 @@ export default function TeacherProfilePage() {
             <h2 className="teacher-name">
               د. {profile.name}
               {profile.verifiedAt && (
-                <span className="teacher-verified" title={`موثَّق منذ ${new Date(profile.verifiedAt).toLocaleDateString('ar-EG')}`}>
+                <span className="teacher-verified" title={`موثَّق منذ ${formatDate(profile.verifiedAt)}`}>
                   <Icon icon={ShieldCheck} size={14} /> موثَّق
                 </span>
               )}

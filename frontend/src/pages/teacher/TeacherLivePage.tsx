@@ -22,6 +22,7 @@ import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, type LiveSessionRow,
 } from '../../hooks/useResources';
+import { formatDate } from '../../utils/numbers';
 
 const STATUS_LABEL: Record<LiveSessionRow['status'], string> = {
   SCHEDULED: 'مجدولة',
@@ -252,7 +253,7 @@ function SessionRow({
         </div>
         <div className="text-xxs text-subtle">
           <Icon icon={Clock} size={10} />{' '}
-          {new Date(s.scheduledAt).toLocaleString('ar-EG', {
+          {formatDate(s.scheduledAt, {
             day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
           })}
           {s.joinUrl && (

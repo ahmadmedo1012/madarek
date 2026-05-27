@@ -16,6 +16,7 @@ import {
   useAnnouncements, useCompetitions, useCampusEvents, useRsvpEvent,
   type AnnouncementRow, type CompetitionRow, type CampusEventRow,
 } from '../../hooks/useResources';
+import { formatDate, formatTime } from '../../utils/numbers';
 
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'كل المنصة', FACULTY: 'كلية', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
@@ -100,7 +101,7 @@ function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }
               {a.author.firstName} {a.author.lastName} · {ROLE_LABEL[a.author.role]}
             </span>
             <span className="text-xxs text-subtle">·</span>
-            <span className="text-xxs text-subtle">{new Date(a.publishedAt).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}</span>
+            <span className="text-xxs text-subtle">{formatDate(a.publishedAt, { day: 'numeric', month: 'short' })}</span>
           </div>
         </div>
       </div>
@@ -141,8 +142,8 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
   const start = new Date(e.startsAt);
   const end = new Date(e.endsAt);
   const rsvp = useRsvpEvent();
-  const fmtDate = (d: Date) => d.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'short' });
-  const fmtTime = (d: Date) => d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
+  const fmtDateVal = (d: Date) => formatDate(d, { weekday: 'long', day: 'numeric', month: 'short' });
+  const fmtTimeVal = (d: Date) => formatTime(d, { hour: '2-digit', minute: '2-digit' });
 
   return (
     <Card>
@@ -158,8 +159,8 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
           <h3 style={{ fontSize: 'var(--fs-md)', margin: '0 0 6px 0' }}>{e.title}</h3>
           <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-2) 0' }}>{e.description}</p>
           <div className="event-meta">
-            <span><Icon icon={CalendarDays} size={11} /> {fmtDate(start)}</span>
-            <span><Icon icon={Clock} size={11} /> {fmtTime(start)} – {fmtTime(end)}</span>
+            <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>
+            <span><Icon icon={Clock} size={11} /> {fmtTimeVal(start)} – {fmtTimeVal(end)}</span>
             <span><Icon icon={MapPin} size={11} /> {e.location}</span>
             <span><Icon icon={Users} size={11} /> {e._count.rsvps} / {e.capacity}</span>
           </div>
