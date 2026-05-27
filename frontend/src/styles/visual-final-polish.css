@@ -1052,15 +1052,6 @@ label,
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Pilot stat rings rotation */
-.landing-pilot-ring {
-  animation: ring-spin 8s linear infinite;
-}
-@keyframes ring-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 /* Trust bar subtle marquee feel on hover */
 .landing-trust-item {
   transition: transform 0.2s ease;
@@ -1083,8 +1074,12 @@ label,
    SECTION: TEXT CLARITY & DESIGN CONSISTENCY
    ═══════════════════════════════════════════════════════════════ */
 
-/* Minimum body text size for readability */
-.page p, .card p, .page-subtitle, .page .text-sm {
+/* Minimum body text size for readability (exclude compact/flush card variants) */
+.page > p,
+.page > .card:not(.compact):not(.flush) p,
+.card:not(.compact):not(.flush) p,
+.page-subtitle,
+.page > .text-sm {
   font-size: max(0.875rem, 14px);
   line-height: 1.6;
 }
@@ -1101,21 +1096,6 @@ label,
 }
 .text-muted {
   color: color-mix(in srgb, var(--md-on-surface) 65%, transparent);
-}
-
-/* Consistent card inner padding */
-.card {
-  padding: var(--sp-5);
-}
-
-/* Ensure grid gaps are consistent */
-.grid-2, .grid-3, .grid-4, .grid-2-1 {
-  gap: var(--sp-4);
-}
-
-/* Page content breathing room */
-.page {
-  gap: var(--sp-5);
 }
 
 /* Ensure all interactive elements have visible focus rings */
