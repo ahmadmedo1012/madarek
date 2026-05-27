@@ -24,23 +24,34 @@
 .card {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: var(--r-xl);
+  border-radius: var(--r-2xl);
   padding: var(--sp-5);
   position: relative;
-  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+  transition:
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-out);
 }
 .card.compact { padding: var(--sp-4); }
 .card.flush { padding: 0; }
-.card.bordered:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.card.bordered:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
 .card.glass {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
 }
+[data-theme='light'] .card.glass {
+  background: rgba(255, 255, 255, 0.70);
+  border: 1px solid rgba(255, 255, 255, 0.80);
+}
 
 @media (max-width: 600px) {
-  .card { padding: var(--sp-4); border-radius: var(--r-lg); }
+  .card { padding: var(--sp-4); border-radius: var(--r-xl); }
   .card.compact { padding: var(--sp-3); }
 }
 
@@ -56,7 +67,7 @@
   font-size: var(--fs-md);
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
@@ -590,7 +601,7 @@
   color: var(--text-muted);
 }
 .progress-track {
-  height: 5px;
+  height: 6px;
   background: var(--surface-2);
   border-radius: var(--r-full);
   overflow: hidden;
@@ -598,7 +609,7 @@
 .progress-fill {
   height: 100%;
   border-radius: var(--r-full);
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
   transition: width var(--t-slow) var(--ease);
 }
 

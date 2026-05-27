@@ -24,12 +24,13 @@ body {
 
 /* ═══════════════════════════════════════════════════════════════
    PAGE TRANSITIONS — subtle cross-fade on route change
+   Uses premium ease-out curve for smooth entrance
    ═══════════════════════════════════════════════════════════════ */
 
 @keyframes sys-page-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 6px, 0);
   }
   to {
     opacity: 1;
@@ -38,7 +39,7 @@ body {
 }
 
 .content-inner {
-  animation: sys-page-in 380ms var(--ease-out) both;
+  animation: sys-page-in 340ms var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -187,7 +188,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TOPBAR — sticky, blurred
+   TOPBAR — sticky, blurred, with scrolled distinction
    ═══════════════════════════════════════════════════════════════ */
 
 .topbar,
@@ -200,7 +201,11 @@ body {
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
-  transition: background var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out);
+  transition:
+    background var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    backdrop-filter var(--t-base) var(--ease-out);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -208,7 +213,7 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 .card {
-  border-radius: var(--r-xl) !important;
+  border-radius: var(--r-2xl) !important;
   border: 1px solid var(--border) !important;
   background: var(--surface-1) !important;
   transition:
@@ -223,7 +228,7 @@ button > .card:hover,
 .card-link:hover .card {
   border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
   box-shadow: var(--shadow-card-hover) !important;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 /* Make all `<a>` and `<button>` wrapped cards keyboard-friendly */
@@ -233,7 +238,7 @@ button:has(.card),
   display: block;
   text-decoration: none;
   color: inherit;
-  border-radius: var(--r-xl);
+  border-radius: var(--r-2xl);
   transition: transform var(--t-fast) var(--ease-out);
 }
 a:has(.card):active,
@@ -359,17 +364,17 @@ textarea:focus,
    ═══════════════════════════════════════════════════════════════ */
 
 @media (pointer: fine) {
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--border-strong) 70%, transparent);
+    background: color-mix(in srgb, var(--border-strong) 60%, transparent);
     border-radius: var(--r-full);
     border: 2px solid transparent;
     background-clip: padding-box;
     transition: background var(--t-base) var(--ease-out);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--text-subtle) 60%, transparent);
+    background: color-mix(in srgb, var(--text-subtle) 50%, transparent);
     background-clip: padding-box;
   }
 }
@@ -442,7 +447,7 @@ h3, .h3 {
   }
 
   /* Card padding gets a touch tighter on phone */
-  .card { border-radius: var(--r-lg) !important; }
+  .card { border-radius: var(--r-xl) !important; }
 
   /* Slim down dialogs to viewport */
   [role="dialog"], .dialog, .modal {
