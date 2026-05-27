@@ -95,7 +95,8 @@
   background: var(--glass-bg);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   border-radius: 0 0 var(--r-xl) var(--r-xl);
 }
 .landing-brand {
