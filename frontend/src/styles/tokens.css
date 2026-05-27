@@ -90,8 +90,8 @@
   --r-md: 8px;
   --r-lg: 12px;
   --r-xl: 16px;
-  --r-2xl: 20px;
-  --r-3xl: 24px;
+  --r-2xl: 16px;
+  --r-3xl: 20px;
   --r-full: 9999px;
 
   /* Stitch radii aliases */
@@ -105,12 +105,13 @@
   --fs-xxs: 11px;
   --fs-xs: 12px;
   --fs-sm: 13px;
-  --fs-base: 15px;
+  --fs-base: 14px;
   --fs-md: 15px;
-  --fs-lg: 17px;
-  --fs-xl: 20px;
-  --fs-2xl: 24px;
-  --fs-3xl: 30px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --fs-2xl: 28px;
+  --fs-3xl: 36px;
+  --fs-4xl: 44px;
 
   /* Premium Arabic Typography Hierarchy */
   --fs-display-lg: clamp(32px, 5vw, 48px);
@@ -133,17 +134,19 @@
   --lh-loose: 1.85;
 
   /* ── Motion ──────────────────────────────────────────── */
-  --t-fast: 120ms;
-  --t-base: 200ms;
+  --t-fast: 150ms;
+  --t-base: 220ms;
   --t-slow: 320ms;
   --t-slower: 560ms;
   --t-cinema: 700ms;
+  --t-micro: 80ms;
 
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
   /* ── Layout ──────────────────────────────────────────── */
   --sidebar-w: 244px;
@@ -171,6 +174,11 @@
   /* ── AI Glow Signature Effect ────────────────────────── */
   --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
   --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
+
+  /* ── Semantic Composition Tokens ─────────────────────── */
+  --transition-all: all var(--t-base) var(--ease);
+  --card-padding: var(--sp-5);
+  --section-gap: var(--sp-8);
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -179,19 +187,19 @@
 :root,
 [data-theme='dark'] {
   /* Surfaces */
-  --bg: #0f0e13;
-  --surface-1: #1a1825;
-  --surface-2: #221f2e;
-  --surface-3: #2d2a3d;
+  --bg: #09090b;
+  --surface-1: #111113;
+  --surface-2: #1c1c1e;
+  --surface-3: #27272a;
 
   /* Borders */
-  --border: rgba(195, 198, 209, 0.16);
-  --border-strong: rgba(195, 198, 209, 0.28);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
 
   /* Text */
-  --text: #eceaf5;
-  --text-muted: #b8b5cc;
-  --text-subtle: #6b6886;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-subtle: #71717a;
 
   /* Accent (primary in dark mode uses fixed-dim for readability) */
   --accent: #a3c9ff;
@@ -216,13 +224,13 @@
   --info-soft: rgba(163, 201, 255, 0.10);
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40), 0 1px 1px rgba(0, 0, 0, 0.20);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.30), 0 6px 16px rgba(0, 0, 0, 0.28);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.32), 0 16px 36px rgba(0, 0, 0, 0.36);
-  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.34), 0 32px 64px rgba(0, 0, 0, 0.40);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
 
-  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.38);
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* Focus & Selection */
   --focus-ring: 0 0 0 3px rgba(163, 201, 255, 0.30);
@@ -233,16 +241,16 @@
   --chart-text: #6b6886;
 
   /* Glassmorphism (dark) */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.06);
 }
 
 /* ═════════════════════════════════════════════════════════════
    LIGHT THEME
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  --bg: var(--md-background);
+  --bg: #fafafa;
   --surface-1: var(--md-surface-container-lowest);
   --surface-2: var(--md-surface-container-low);
   --surface-3: var(--md-surface-container);
@@ -281,7 +289,7 @@
   --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.08), 0 32px 64px rgba(15, 23, 42, 0.12);
 
   --shadow-card: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.12), 0 8px 24px rgba(15, 23, 42, 0.10);
+  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.08), 0 12px 32px -8px rgba(15, 23, 42, 0.12);
 
   /* Focus & Selection (light) */
   --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);

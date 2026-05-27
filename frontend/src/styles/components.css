@@ -24,9 +24,11 @@
 .card {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: var(--r-2xl);
+  border-radius: var(--r-xl);
   padding: var(--sp-5);
   position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
   transition:
     border-color var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out),
@@ -96,6 +98,7 @@
 .metric {
   background: var(--surface-1);
   border: 1px solid var(--border);
+  border-top: 2px solid var(--accent-soft);
   border-radius: var(--r-2xl);
   padding: var(--sp-5);
   position: relative;
@@ -104,30 +107,17 @@
   justify-content: space-between;
   gap: var(--sp-4);
   overflow: hidden;
+  box-shadow: var(--shadow-card);
   transition:
     border-color 240ms var(--ease-out),
     box-shadow 240ms var(--ease-out),
     transform 240ms var(--ease-out);
 }
-.metric::before {
-  /* Soft tinted halo from the inline-start corner — feels like the
-     metric is glowing with its own color. Replaces the old hard rail. */
-  content: '';
-  position: absolute;
-  inset-inline-start: -30px;
-  inset-block-start: -30px;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-  pointer-events: none;
-  opacity: 0.7;
-}
-.metric.green::before  { background: radial-gradient(circle, var(--success-soft) 0%, transparent 70%); }
-.metric.amber::before  { background: radial-gradient(circle, var(--warning-soft) 0%, transparent 70%); }
-.metric.red::before    { background: radial-gradient(circle, var(--danger-soft) 0%, transparent 70%); }
-.metric.purple::before { background: radial-gradient(circle, color-mix(in srgb, var(--brand-purple) 12%, transparent) 0%, transparent 70%); }
-.metric.gold::before   { background: radial-gradient(circle, var(--gold-soft) 0%, transparent 70%); }
+.metric.green  { border-top-color: var(--success-soft); }
+.metric.amber  { border-top-color: var(--warning-soft); }
+.metric.red    { border-top-color: var(--danger-soft); }
+.metric.purple { border-top-color: color-mix(in srgb, var(--brand-purple) 12%, transparent); }
+.metric.gold   { border-top-color: var(--gold-soft); }
 
 .metric:hover {
   border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
@@ -226,8 +216,9 @@
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-fg);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 4px 12px -4px color-mix(in srgb, var(--accent) 40%, transparent);
 }
-.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 20px -4px color-mix(in srgb, var(--accent) 50%, transparent); }
 
 .btn.ghost { background: transparent; border-color: transparent; color: var(--text-muted); }
 .btn.ghost:hover { background: var(--surface-2); color: var(--text); }
@@ -487,6 +478,8 @@
 .tbl-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  border-radius: var(--r-lg);
+  overflow: hidden;
 }
 .tbl {
   width: 100%;
@@ -513,7 +506,9 @@
 }
 .tbl tr:last-child td { border: none; }
 .tbl tbody tr { transition: background var(--t-fast) var(--ease); }
+.tbl tbody tr:nth-child(even) td { background: var(--surface-2); }
 .tbl tbody tr:hover td { background: var(--surface-2); color: var(--text); }
+.tbl tbody tr:nth-child(even):hover td { background: var(--surface-3); }
 .tbl-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; }
 .tbl-strong { color: var(--text); font-weight: var(--fw-medium); }
 @media (max-width: 700px) {
@@ -526,9 +521,9 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: var(--r-full);
-  font-size: var(--fs-xxs);
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -538,6 +533,7 @@
   transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
   line-height: 1.4;
 }
+.badge:hover { transform: translateY(-1px); }
 .badge.brand  { background: var(--accent-soft);  color: var(--accent);  border-color: color-mix(in srgb, var(--accent)  18%, transparent); }
 .badge.green  { background: var(--success-soft); color: var(--success); border-color: color-mix(in srgb, var(--success) 18%, transparent); }
 .badge.amber  { background: var(--warning-soft); color: var(--warning); border-color: color-mix(in srgb, var(--warning) 18%, transparent); }
@@ -679,10 +675,10 @@
 
 /* ─── Skeleton (shimmer) ────────────────────────────────── */
 .skeleton {
-  background: linear-gradient(90deg, var(--surface-1) 0%, var(--surface-2) 50%, var(--surface-1) 100%);
+  background: linear-gradient(90deg, var(--surface-1) 0%, var(--surface-2) 40%, var(--surface-2) 60%, var(--surface-1) 100%);
   background-size: 200% 100%;
-  border-radius: var(--r-sm);
-  animation: shimmer 1.4s var(--ease) infinite;
+  border-radius: var(--r-md);
+  animation: shimmer 1.8s var(--ease) infinite;
   display: inline-block;
 }
 @keyframes shimmer {
@@ -820,9 +816,10 @@
 /* ─── Inputs (general form) ─────────────────────────────── */
 .input {
   width: 100%;
+  height: 44px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   padding: 9px var(--sp-3);
   color: var(--text);
   font-family: inherit;
@@ -830,7 +827,7 @@
   outline: none;
   transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
-.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft), inset 0 1px 2px rgba(0,0,0,0.06); }
 .input::placeholder { color: var(--text-subtle); }
 
 /* ─── Achievement tile (gold accent for premium feel) ───── */

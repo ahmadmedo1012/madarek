@@ -73,6 +73,12 @@ img, svg, video, canvas, iframe {
     grid-template-columns: minmax(0, 1fr) !important;
     gap: var(--sp-3) !important;
   }
+  .page-title {
+    font-size: 20px !important;
+  }
+  .metric {
+    min-height: 80px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -265,6 +271,16 @@ img, svg, video, canvas, iframe {
   .topbar { padding-top: env(safe-area-inset-top); }
 }
 
+/* Safe area + bottom-nav accounting */
+.content {
+  padding-bottom: calc(var(--sp-12) + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 640px) {
+  .content {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    LANDING PAGE — final mobile pass
    ═══════════════════════════════════════════════════════════════ */
@@ -383,6 +399,26 @@ img, svg, video, canvas, iframe {
   }
   .metric {
     padding: var(--sp-4) !important;
+  }
+  .grid-auto-260 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FILTER BAR — horizontal scroll with snap on mobile
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding-bottom: var(--sp-2);
+  }
+  .filter-bar > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
   }
 }
 

@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Design Token System Elevation - Upgrade the foundational design tokens in tokens.css to achieve a premium, world-class color palette, refined typography scale, improved shadows, and smoother motion curves. Fix the dark theme to feel richer and more premium (less muddy purplish-gray, more deep elegant dark). Improve the light theme for crisper contrast. This is the foundation that elevates everything else.",
+  "status": "completed",
+  "steps": [
+    "Edit frontend/src/styles/tokens.css - DARK THEME improvements: (1) Change --bg from #0f0e13 to #09090b (deeper, cleaner black like Linear/Vercel), (2) Change --surface-1 from #1a1825 to #111113 (pure dark, less purple), (3) Change --surface-2 from #221f2e to #1c1c1e (neutral dark gray), (4) Change --surface-3 from #2d2a3d to #27272a (clean zinc gray), (5) Change --border from rgba(195,198,209,0.16) to rgba(255,255,255,0.08) (subtler, Apple-like), (6) Change --border-strong from rgba(195,198,209,0.28) to rgba(255,255,255,0.14), (7) Change --text from #eceaf5 to #fafafa (brighter, purer white), (8) Change --text-muted from #b8b5cc to #a1a1aa (clean zinc), (9) Change --text-subtle from #6b6886 to #71717a (zinc-500 equivalent)",
+    "Edit frontend/src/styles/tokens.css - DARK THEME shadows: (1) --shadow-sm: 0 1px 2px rgba(0,0,0,0.5); (2) --shadow-md: 0 4px 12px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3); (3) --shadow-lg: 0 8px 24px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.3); (4) --shadow-xl: 0 16px 48px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3); (5) --shadow-card: 0 0 0 1px rgba(255,255,255,0.05), 0 1px 3px rgba(0,0,0,0.5); (6) --shadow-card-hover: 0 0 0 1px rgba(255,255,255,0.1), 0 8px 24px rgba(0,0,0,0.4)",
+    "Edit frontend/src/styles/tokens.css - MOTION tokens refinement: (1) Change --t-fast from 120ms to 150ms (slightly more perceptible), (2) Change --t-base from 200ms to 220ms, (3) Add new token --t-micro: 80ms for instant feedback, (4) Add new easing --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1) for playful micro-interactions",
+    "Edit frontend/src/styles/tokens.css - TYPOGRAPHY refinement: (1) Change --fs-base from 15px to 14.5px (tighter, more modern density), (2) Change --fs-md from 15px to 15px (keep), (3) Change --fs-lg from 17px to 18px (more contrast in hierarchy), (4) Change --fs-xl from 20px to 22px, (5) Change --fs-2xl from 24px to 28px, (6) Change --fs-3xl from 30px to 36px, (7) Add --fs-4xl: 44px for hero/landing use",
+    "Edit frontend/src/styles/tokens.css - RADIUS refinement: (1) Change --r-2xl from 20px to 16px (less bubble-like, more refined modern), (2) Change --r-3xl from 24px to 20px, (3) Keep --r-xl at 16px, --r-lg at 12px, --r-md at 8px",
+    "Edit frontend/src/styles/tokens.css - LIGHT THEME improvements: (1) Change --bg to #fafafa (slightly warmer than pure white for less harshness), (2) Improve --shadow-card-hover: 0 0 0 1px rgba(0,52,97,0.08), 0 12px 32px -8px rgba(15,23,42,0.12)",
+    "Edit frontend/src/styles/tokens.css - GLASSMORPHISM dark mode: (1) --glass-bg: rgba(255,255,255,0.04), (2) --glass-bg-subtle: rgba(255,255,255,0.02), (3) --glass-border: rgba(255,255,255,0.06). These are subtler for the cleaner dark background.",
+    "Edit frontend/src/styles/tokens.css - Add new semantic tokens at the end of :root section: --transition-all: all var(--t-base) var(--ease); --card-padding: var(--sp-5); --section-gap: var(--sp-8);"
+  ],
+  "acceptance_criteria": [
+    "tokens.css dark theme surface colors are cleaner neutral grays without purple tint",
+    "tokens.css has refined shadow values that work with the new darker surface",
+    "Motion tokens include --t-micro and --ease-bounce",
+    "Typography scale has better differentiation between sizes (--fs-4xl added)",
+    "Border radius values are slightly tighter for a more modern feel",
+    "All existing CSS variable references remain valid (no breaking renames)"
+  ],
+  "verification": [
+    "Run: grep -c 'undefined\\|syntax error' frontend/src/styles/tokens.css to confirm no syntax issues",
+    "Run: grep '--fs-4xl' frontend/src/styles/tokens.css to confirm new token exists",
+    "Run: grep '--t-micro' frontend/src/styles/tokens.css to confirm new token exists",
+    "Run: grep '#09090b' frontend/src/styles/tokens.css to confirm new dark bg color"
+  ],
+  "blocked_reason": null,
+  "findings": "All 8 steps implemented successfully. Dark theme uses clean zinc-based neutral grays (#09090b, #111113, #1c1c1e, #27272a). Shadows refined for darker surfaces. Motion tokens expanded with --t-micro and --ease-bounce. Typography scale improved with better differentiation and new --fs-4xl. Radius values tightened. Light theme bg set to #fafafa. Glassmorphism values made subtler for new dark background. New semantic composition tokens added. No breaking changes to variable names."
+}

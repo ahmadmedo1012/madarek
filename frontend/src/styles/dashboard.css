@@ -38,27 +38,27 @@
 .welcome-card::before {
   content: '';
   position: absolute;
-  inset-inline-end: -30px;
-  inset-block-start: -30px;
-  width: 160px;
-  height: 160px;
+  inset-inline-end: -20px;
+  inset-block-start: -20px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(45, 219, 222, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(45, 219, 222, 0.12) 0%, transparent 70%);
   pointer-events: none;
-  animation: dash-float 6s ease-in-out infinite;
+  animation: dash-float 10s ease-in-out infinite;
   z-index: 0;
 }
 .welcome-card::after {
   content: '';
   position: absolute;
   inset-inline-start: 10%;
-  inset-block-end: -40px;
-  width: 120px;
-  height: 120px;
+  inset-block-end: -30px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(254, 214, 91, 0.14) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(254, 214, 91, 0.10) 0%, transparent 70%);
   pointer-events: none;
-  animation: dash-float 8s ease-in-out 1s infinite reverse;
+  animation: dash-float 14s ease-in-out 1s infinite reverse;
   z-index: 0;
 }
 
@@ -71,7 +71,7 @@
 
 /* Welcome card typography refinement */
 .welcome-card .page-title {
-  font-size: var(--fs-headline-md) !important;
+  font-size: var(--fs-2xl) !important;
   font-weight: 800 !important;
   color: var(--md-on-primary) !important;
   letter-spacing: -0.02em !important;
@@ -116,6 +116,7 @@
     box-shadow var(--t-base) var(--ease-out);
 }
 .dash-gpa-card:hover {
+  will-change: transform;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
@@ -168,7 +169,7 @@
 
 /* GPA value - premium gradient text */
 .dash-gpa-value {
-  font-size: clamp(44px, 7vw, 60px);
+  font-size: clamp(40px, 6vw, 52px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -177,8 +178,7 @@
   background: linear-gradient(
     160deg,
     var(--accent) 0%,
-    color-mix(in srgb, var(--accent) 60%, var(--gold)) 50%,
-    var(--gold) 100%
+    color-mix(in srgb, var(--accent) 80%, var(--gold)) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -216,6 +216,7 @@
     box-shadow var(--t-base) var(--ease-out);
 }
 .dash-progress-card:hover {
+  will-change: transform;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }
@@ -292,6 +293,7 @@
     box-shadow var(--t-base) var(--ease-out);
 }
 .dash-term-card:hover {
+  will-change: transform;
   transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
 }

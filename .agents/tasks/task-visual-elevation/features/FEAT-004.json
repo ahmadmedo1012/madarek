@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Motion System Unification and Mobile Polish - Consolidate the fragmented motion/transition system into a single coherent approach. Fix mobile responsiveness issues including text clipping, cramped layouts, and ensure the bottom navigation feels premium. Add meaningful entrance animations for content areas.",
+  "status": "completed",
+  "steps": [
+    "Edit frontend/src/styles/interactions.css - Page transition: Keep the ix-page-in-soft keyframe as the single source of truth. Update timing to 380ms (was 460ms - slightly faster feels snappier). Remove the filter: blur(1px) from the animation (it causes performance issues on low-end mobile devices).",
+    "Edit frontend/src/styles/interactions.css - Add a new tab-switch transition that is slightly more refined: change ix-tab-content-in timing from 280ms to 250ms and remove the filter: blur(0.5px) for performance.",
+    "Edit frontend/src/styles/interactions.css - Refine the press feedback: reduce active scale from 0.97 to 0.98 for subtle elegance (the current 0.97 feels too aggressive for a professional platform). For .btn:active, use scale(0.97) instead of 0.96.",
+    "Edit frontend/src/styles/responsive.css - Mobile improvements: (1) At 480px breakpoint, add .page-title { font-size: 20px !important; } to prevent text from being too small. (2) Ensure .metric has min-height: 80px on mobile so content doesn't cramp. (3) Add .grid-auto-260 { grid-template-columns: 1fr !important; } at 640px.",
+    "Edit frontend/src/styles/responsive.css - Add smooth scroll-snap behavior for horizontal scrolling sections on mobile: .filter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; padding-bottom: var(--sp-2); } .filter-bar > * { scroll-snap-align: start; flex-shrink: 0; }",
+    "Edit frontend/src/styles/notifications.css - Bottom nav refinement: (1) Increase the icon active background from 24%/14% mix to 18%/10% for subtlety. (2) Remove the translateY(-2px) scale(1.05) on active icon - it creates jank on older devices. Replace with just a background change and color shift. (3) Add will-change: background to .bottom-nav-icon for smooth transitions.",
+    "Edit frontend/src/styles/stitch-canonical.css - Remove the duplicate .bottom-nav definition that conflicts with notifications.css. The stitch-canonical version (loaded later in cascade) overrides the notifications.css version with different styling, creating inconsistency. Keep only the notifications.css version as the canonical one. In stitch-canonical.css, remove the entire '/* BOTTOM NAV - glassmorphism mobile navigation bar */' section EXCEPT for the [data-theme='dark'] .bottom-nav override and the @media breakpoint for display:flex.",
+    "Edit frontend/src/styles/dashboard.css - Add will-change: transform to .dash-gpa-card, .dash-progress-card, .dash-term-card for smoother hover transitions on mobile. Reduce the welcome card ::before and ::after orb sizes by 30% and slow their animation from 6s/8s to 10s/14s for a calmer feel.",
+    "Edit frontend/src/styles/responsive.css - Safe area improvements: Ensure the bottom padding accounts for both safe-area AND bottom-nav height. Add: .content { padding-bottom: calc(var(--sp-12) + env(safe-area-inset-bottom, 0px)); } at the global level, and at 640px: .content { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important; }"
+  ],
+  "acceptance_criteria": [
+    "Page transition animation is defined in only one place (interactions.css)",
+    "Press feedback uses 0.98 scale (more subtle than 0.97)",
+    "Tab content transition has no blur filter",
+    "Bottom nav has no conflicting definitions between stitch-canonical and notifications.css",
+    "Mobile filter bars can scroll horizontally with snap behavior",
+    "Dashboard welcome card orbs are calmer (slower, smaller)"
+  ],
+  "verification": [
+    "Run: grep -c 'ix-page-in-soft' frontend/src/styles/interactions.css to confirm it exists (should be >= 1)",
+    "Run: grep 'scale(0.98)' frontend/src/styles/interactions.css to confirm press scale change",
+    "Run: grep 'scroll-snap-type' frontend/src/styles/responsive.css to confirm filter bar scroll",
+    "Run: grep -c 'bottom-nav {' frontend/src/styles/stitch-canonical.css to check duplicate removal (should be reduced)"
+  ],
+  "blocked_reason": null,
+  "findings": "All steps implemented. Page transition reduced to 380ms with blur removed. Tab transition at 250ms with blur removed. Press feedback now 0.98 (was 0.97), .btn:active at 0.97 (was 0.96). Mobile: page-title floor 20px, metric min-height 80px, grid-auto-260 collapses at 640px, filter-bar horizontal scroll-snap added. Bottom-nav in notifications.css refined: accent mix reduced to 18%/10%, translateY/scale jank removed, will-change added. stitch-canonical.css duplicate bottom-nav block fully removed - only dark theme override and display:flex media rule remain. Dashboard cards have will-change:transform. Welcome card orbs reduced 30% (70px/56px) with slower 10s/14s animation. Safe-area bottom padding accounts for bottom-nav at 640px breakpoint."
+}

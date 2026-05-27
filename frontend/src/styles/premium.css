@@ -65,10 +65,6 @@ html {
   line-height: 1.04 !important;
   letter-spacing: -0.025em;
   color: var(--text);
-  background: linear-gradient(180deg, var(--text) 0%, var(--accent) 130%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
   text-wrap: balance;
 }
 .landing-title .block {
@@ -111,10 +107,7 @@ html {
   gap: clamp(32px, 5vw, 80px) !important;
 }
 
-/* Alternate section backgrounds for visual rhythm — ambient, no chrome */
-#pillars   { background: linear-gradient(180deg, transparent 0%, var(--surface-1) 8%, var(--surface-1) 92%, transparent 100%); }
-#proof     { background: transparent; }
-#about     { background: linear-gradient(180deg, transparent 0%, var(--surface-1) 8%, var(--surface-1) 92%, transparent 100%); }
+/* Alternate section backgrounds removed — cleaner with just the natural page bg */
 
 /* ═══════════════════════════════════════════════════════════════
    Header — sticky with backdrop blur (Samsung-grade)
@@ -217,42 +210,8 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Feature cards — premium hover
+   Feature cards — hover handled by landing.css
    ═══════════════════════════════════════════════════════════════ */
-
-.landing-feature-card {
-  position: relative;
-  border-radius: 18px !important;
-  padding: clamp(20px, 2vw, 28px) !important;
-  transition:
-    transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 360ms cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 360ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.landing-feature-card::before {
-  /* Subtle gradient sheen, hidden until hover */
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 60%, transparent), color-mix(in srgb, var(--brand-gold) 35%, transparent));
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 360ms var(--ease);
-  pointer-events: none;
-}
-.landing-feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.06),
-    0 16px 36px -12px rgba(15, 22, 41, 0.18);
-}
-.landing-feature-card:hover::before { opacity: 1; }
 
 .landing-feature-icon {
   transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1), background 240ms ease;
