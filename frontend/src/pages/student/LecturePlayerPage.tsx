@@ -61,6 +61,16 @@ export default function LecturePlayerPage() {
     }
   }, [currentSec, data, activeCheckpoint, answeredCheckpointIds]);
 
+  // Lock body scroll when checkpoint overlay is active (prevents iOS scroll bleed)
+  useEffect(() => {
+    if (activeCheckpoint) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [activeCheckpoint]);
+
   if (isPending) return <LoadingState />;
   if (isError || !data) return <ErrorState />;
 

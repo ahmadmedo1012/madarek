@@ -137,30 +137,7 @@ export default function StudentDashboardPage() {
               <div className="dash-css-progress-ring-fill" />
               <span className="dash-css-progress-ring-center" data-numeric="true">75%</span>
             </div>
-            {/* Keep Doughnut for chart.js compatibility -- hidden visually */}
-            <div style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-              <Doughnut
-                data={{
-                  labels: ['منجز', 'متبقي'],
-                  datasets: [{
-                    data: [75, 25],
-                    backgroundColor: [
-                      'rgba(41, 82, 200, 0.95)',
-                      'rgba(127, 145, 178, 0.18)',
-                    ],
-                    borderWidth: 0,
-                    spacing: 2,
-                  }],
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: true,
-                  cutout: '78%',
-                  plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                  animation: { duration: 800, easing: 'easeOutQuart' },
-                }}
-              />
-            </div>
+
             <div className="dash-progress-text">
               <div className="dash-eyebrow">التقدّم الأكاديمي</div>
               <div className="dash-progress-value">60 من 80 ساعة معتمدة</div>
