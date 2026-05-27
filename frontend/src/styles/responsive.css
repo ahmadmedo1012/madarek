@@ -506,3 +506,51 @@ img, svg, video, canvas, iframe {
   .landing-burger,
   .landing-mobile-menu { display: none !important; }
 }
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR GPU ACCELERATION
+   ═══════════════════════════════════════════════════════════════ */
+
+.sidebar {
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE HEADER MOBILE — reduced padding, thinner accent rail
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .page-header {
+    padding: var(--sp-3) !important;
+  }
+  .page-header::before {
+    width: 2px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOPBAR MOBILE HEIGHT — reduce to 48px on phones
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+  .topbar {
+    height: 48px !important;
+    min-height: 48px !important;
+  }
+  .topbar .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OVERFLOW PROTECTION — page and content containers
+   ═══════════════════════════════════════════════════════════════ */
+
+.page,
+.content-inner {
+  overflow-x: clip;
+}

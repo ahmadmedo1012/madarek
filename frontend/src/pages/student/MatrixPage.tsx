@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   Compass, Play, AlertCircle, Sparkles, ArrowLeft, BookOpen,
@@ -72,13 +73,13 @@ export default function MatrixPage() {
         ) : (
           <div className="flex-col gap-2">
             {gaps.data.slice(0, 5).map((g) => (
-              <div className="list-row" key={g.conceptId}>
-                <span style={{ color: 'var(--warning)' }}><Icon icon={AlertCircle} size={16} /></span>
-                <div className="list-row-body">
-                  <div className="list-row-title">{g.conceptName}</div>
-                  <div className="list-row-sub">{g.courseName}</div>
+              <div className="list-row matrix-gap-card" key={g.conceptId}>
+                <span className="matrix-gap-alert-icon"><Icon icon={AlertCircle} size={16} /></span>
+                <div className="list-row-body matrix-gap-body">
+                  <div className="list-row-title matrix-gap-title">{g.conceptName}</div>
+                  <div className="list-row-sub matrix-gap-sub">{g.courseName}</div>
                 </div>
-                <span className="font-mono text-xs" style={{ color: 'var(--warning)' }}>
+                <span className="font-mono text-xs matrix-gap-pct">
                   {Math.round(g.level * 100)}%
                 </span>
                 {g.recommendedLectureId ? (
@@ -115,7 +116,7 @@ export default function MatrixPage() {
             const masteredConcepts = c.concepts.filter((x) => x.level >= 0.8).length;
             const avgPct = totalConcepts ? Math.round((c.concepts.reduce((s, x) => s + x.level, 0) / totalConcepts) * 100) : 0;
             return (
-              <div className="matrix-course" key={c.courseId}>
+              <div className="matrix-course" key={c.courseId} style={{ '--course-tint': `${tint}10` } as React.CSSProperties}>
                 <div className="matrix-course-head">
                   <div className="matrix-course-icon" style={{ background: `${tint}15`, color: tint }}>
                     <Icon icon={Cmp} size={18} />
@@ -125,6 +126,9 @@ export default function MatrixPage() {
                     <div className="text-xs text-subtle">
                       {totalConcepts} مفهوم · أتقنت {masteredConcepts} · متوسط {avgPct}%
                     </div>
+                  </div>
+                  <div className="matrix-mini-ring" style={{ '--ring-pct': avgPct, '--ring-color': tint } as React.CSSProperties}>
+                    <span className="matrix-mini-ring-value">{avgPct}%</span>
                   </div>
                   <Link to={`/student/courses/${c.offeringId}`} className="btn ghost sm">
                     افتح المادة
@@ -138,13 +142,20 @@ export default function MatrixPage() {
                   <div className="matrix-grid">
                     {c.concepts.map((k) => {
                       const cls = levelClass(k.level, k.attempts);
+                      const dataLevel = cls.replace('lvl-', '');
+                      const cellLevel = k.attempts > 0 ? Math.round(k.level * 100) : 0;
                       return (
-                        <div className={`matrix-cell ${cls}`} key={k.id}>
+                        <div
+                          className={`matrix-cell ${cls}`}
+                          key={k.id}
+                          data-level={dataLevel}
+                          style={{ '--cell-level': cellLevel } as React.CSSProperties}
+                        >
                           <div className="matrix-name">{k.name}</div>
                           <div className="matrix-meta">
                             <span>{levelLabel(k.level, k.attempts)}</span>
                             <span className="matrix-meta-pct">
-                              {k.attempts > 0 ? `${Math.round(k.level * 100)}%` : '—'}
+                              {k.attempts > 0 ? `${Math.round(k.level * 100)}%` : '\u2014'}
                             </span>
                           </div>
                         </div>

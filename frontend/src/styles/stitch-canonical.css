@@ -991,3 +991,95 @@ label {
   flex-shrink: 0;
   margin-top: 2px;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR — Sliding pill indicator for active nav items
+   ═══════════════════════════════════════════════════════════════ */
+
+.nav-item-pill {
+  position: relative;
+  z-index: 1;
+  transition:
+    background var(--t-base) var(--ease-out),
+    color var(--t-base) var(--ease-out),
+    transform var(--t-fast) var(--ease-out) !important;
+}
+.nav-item-pill.on {
+  transition:
+    background 350ms cubic-bezier(0.2, 0, 0, 1),
+    color 350ms cubic-bezier(0.2, 0, 0, 1),
+    transform var(--t-fast) var(--ease-out) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOPBAR — gradient border-bottom on scroll state
+   ═══════════════════════════════════════════════════════════════ */
+
+.topbar {
+  position: relative;
+}
+.topbar.scrolled::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  inset-inline: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--md-primary) 0%,
+    var(--md-tertiary-fixed-dim) 50%,
+    var(--md-secondary) 100%
+  );
+  opacity: 0.5;
+  pointer-events: none;
+  animation: topbar-border-in 300ms var(--ease-out) both;
+}
+@keyframes topbar-border-in {
+  from { opacity: 0; transform: scaleX(0.8); }
+  to   { opacity: 0.5; transform: scaleX(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM NAV — animated dot indicator below active item
+   ═══════════════════════════════════════════════════════════════ */
+
+.bottom-nav-item {
+  position: relative;
+}
+.bottom-nav-item.active::after,
+.bottom-nav-item[aria-current="page"]::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--md-primary);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--md-primary) 40%, transparent);
+  animation: stitch-dot-pop 300ms var(--ease-out) both;
+}
+[dir="rtl"] .bottom-nav-item.active::after,
+[dir="rtl"] .bottom-nav-item[aria-current="page"]::after {
+  transform: translateX(50%);
+}
+@keyframes stitch-dot-pop {
+  from { transform: translateX(-50%) scale(0); opacity: 0; }
+  to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+[dir="rtl"] .bottom-nav-item.active::after {
+  animation-name: stitch-dot-pop-rtl;
+}
+@keyframes stitch-dot-pop-rtl {
+  from { transform: translateX(50%) scale(0); opacity: 0; }
+  to   { transform: translateX(50%) scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar.scrolled::after,
+  .bottom-nav-item.active::after,
+  .bottom-nav-item[aria-current="page"]::after {
+    animation: none !important;
+  }
+}

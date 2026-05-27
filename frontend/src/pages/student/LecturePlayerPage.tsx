@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   ChevronLeft, Play, ListOrdered, Sparkles, CheckCircle2, XCircle,
+  Bookmark, StickyNote,
 } from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
 import { LoadingState, ErrorState } from '../../components/primitives/States';
@@ -60,6 +61,16 @@ export default function LecturePlayerPage() {
     }
   }, [currentSec, data, activeCheckpoint, answeredCheckpointIds]);
 
+  // Lock body scroll when checkpoint overlay is active (prevents iOS scroll bleed)
+  useEffect(() => {
+    if (activeCheckpoint) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [activeCheckpoint]);
+
   if (isPending) return <LoadingState />;
   if (isError || !data) return <ErrorState />;
 
@@ -108,29 +119,38 @@ export default function LecturePlayerPage() {
       <div className="lecture-shell">
         {/* Video + meta */}
         <div>
-          <div className="lecture-video-wrap">
-            <video
-              ref={videoRef}
-              className="lecture-video"
-              src={data.videoUrl}
-              controls
-              playsInline
-              onTimeUpdate={(e) => setCurrentSec(e.currentTarget.currentTime)}
-              onEnded={() => {
-                if (data) {
-                  reportWatch.mutate({
-                    lectureId: data.id,
-                    watchedSec: data.durationSec,
-                    totalSec: data.durationSec,
-                    completed: true,
-                  });
-                }
-              }}
-              poster={data.posterUrl ?? undefined}
-            />
+          <div className="lecture-video-container">
+            <div className="lecture-video-wrap">
+              <video
+                ref={videoRef}
+                className="lecture-video"
+                src={data.videoUrl}
+                controls
+                playsInline
+                onTimeUpdate={(e) => setCurrentSec(e.currentTarget.currentTime)}
+                onEnded={() => {
+                  if (data) {
+                    reportWatch.mutate({
+                      lectureId: data.id,
+                      watchedSec: data.durationSec,
+                      totalSec: data.durationSec,
+                      completed: true,
+                    });
+                  }
+                }}
+                poster={data.posterUrl ?? undefined}
+              />
+            </div>
+            {/* Floating progress bar */}
+            <div className="lecture-progress-float">
+              <div
+                className="lecture-progress-float-fill"
+                style={{ width: `${data.durationSec > 0 ? (currentSec / data.durationSec) * 100 : 0}%` }}
+              />
+            </div>
           </div>
 
-          <div className="lecture-meta">
+          <div className="lecture-meta lecture-meta-bar">
             <div>
               <div className="flex items-center gap-2" style={{ marginBottom: 4 }}>
                 <Badge>{data.offering.course.code}</Badge>
@@ -143,6 +163,22 @@ export default function LecturePlayerPage() {
                 {' '}{data.checkpoints.length} نقطة تفاعل
               </div>
             </div>
+            <button
+              type="button"
+              className="lecture-bookmark-btn"
+              disabled
+              aria-label="إضافة علامة مرجعية"
+            >
+              <Icon icon={Bookmark} size={16} />
+            </button>
+            <button
+              type="button"
+              className="lecture-bookmark-btn"
+              disabled
+              aria-label="ملاحظات"
+            >
+              <Icon icon={StickyNote} size={16} />
+            </button>
           </div>
 
           {data.description && (
@@ -187,8 +223,8 @@ export default function LecturePlayerPage() {
 
       {/* Checkpoint overlay */}
       {activeCheckpoint && (
-        <div className="checkpoint-overlay" role="dialog" aria-modal="true">
-          <div className="checkpoint-card">
+        <div className="checkpoint-overlay checkpoint-glass" role="dialog" aria-modal="true">
+          <div className="checkpoint-card checkpoint-animate">
             <div className="checkpoint-eyebrow">
               <Icon icon={Sparkles} size={12} />
               نقطة تفاعل
@@ -209,7 +245,7 @@ export default function LecturePlayerPage() {
                   <button
                     key={i}
                     type="button"
-                    className={`checkpoint-option ${cls}`}
+                    className={`checkpoint-option checkpoint-option-card ${cls}`}
                     disabled={pickedIndex !== null}
                     onClick={() => void submitAnswer(i)}
                   >
@@ -222,7 +258,9 @@ export default function LecturePlayerPage() {
             {revealResult && (
               <div className={`checkpoint-result ${revealResult.correct ? 'correct' : 'incorrect'}`}>
                 <div className="flex items-center gap-2">
-                  <Icon icon={revealResult.correct ? CheckCircle2 : XCircle} size={14} />
+                  <span className="checkpoint-result-icon">
+                    <Icon icon={revealResult.correct ? CheckCircle2 : XCircle} size={14} />
+                  </span>
                   <strong>{revealResult.correct ? 'إجابة صحيحة!' : 'ليست الإجابة الصحيحة.'}</strong>
                 </div>
                 {revealResult.explanation && (

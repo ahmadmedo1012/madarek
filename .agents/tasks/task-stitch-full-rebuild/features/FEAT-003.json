@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Rebuild the Lesson Interface (LecturePlayerPage.tsx) and Learning Path (MatrixPage.tsx) to premium visual quality. The lecture player should feel like a Netflix/Coursera-grade viewing experience. The learning path matrix should feel like an interactive knowledge map with visual richness.",
+  "status": "completed",
+  "steps": [
+    "Step 1: Rebuild LecturePlayerPage.tsx layout - Change the video + sidebar layout to a more immersive design: video takes full width at top with a gradient overlay at bottom showing title/progress. The chapters sidebar becomes a collapsible panel that slides in from the side (on desktop) or bottom sheet (on mobile). Add a floating mini-player progress bar at the bottom that shows lecture completion.",
+    "Step 2: Enhance the checkpoint overlay - Make it feel like a premium quiz modal: glass-morphism background with blur, animated entrance (scale + fade), options as large touch-friendly cards with hover states (gradient border reveal), correct/incorrect feedback with animated checkmark/X icon and color pulse.",
+    "Step 3: Add lecture meta section enhancements - Below the video, add a premium info bar showing: instructor avatar + name, lecture number badge, duration, checkpoint count. Style as a horizontal pill bar with glass background. Add 'bookmarks' and 'notes' mock icon buttons.",
+    "Step 4: Rebuild MatrixPage.tsx - Transform the knowledge matrix from a simple grid into a visually rich 'constellation map' feel. Each course section becomes a premium expandable card with: gradient header matching course theme color, a mini progress ring, concept count badge. The concept cells become interactive tiles with animated fill based on mastery level.",
+    "Step 5: Enhance matrix cells - Each cell gets: colored border-left based on level (green/blue/amber/red), an animated progress fill as background (width = mastery %), hover state reveals a tooltip-style popover with details, smooth color transitions between states. Use CSS custom properties for per-cell colors.",
+    "Step 6: Rebuild the gaps section at top of MatrixPage - Make each gap item a premium card with: warning-toned gradient background, animated alert icon, clear CTA button with hover arrow animation. Add a progress ring showing how close to threshold the concept is.",
+    "Step 7: Create frontend/src/styles/redesign-lecture.css - Contains: immersive video wrapper styles, floating progress bar, glass checkpoint overlay with animations, chapter panel slide-in transitions, premium meta bar. All with mobile considerations.",
+    "Step 8: Create frontend/src/styles/redesign-matrix.css - Contains: constellation-style matrix grid, animated cell fills, expandable course cards with gradient headers, gap cards with warning treatment, smooth scroll and reveal animations for the grid.",
+    "Step 9: Mobile adaptations - Video goes full-width edge-to-edge on phone. Chapters become a bottom sheet (fixed bottom, slides up). Matrix cells reduce to 2-col on tablet, 1-col on phone. Gap cards stack cleanly. All touch targets 44px+.",
+    "Step 10: Add prefers-reduced-motion fallbacks for all new animations in both new CSS files."
+  ],
+  "acceptance_criteria": [
+    "LecturePlayerPage.tsx and MatrixPage.tsx compile without TypeScript errors",
+    "vite build succeeds",
+    "Lecture player has immersive full-width video with gradient overlay",
+    "Checkpoint overlay uses glassmorphism with animated entrance",
+    "Matrix cells show colored progress fill based on mastery level",
+    "Gap items have premium warning-toned card treatment",
+    "Course sections in matrix have gradient header matching theme color",
+    "Mobile layout handles video, chapters, and matrix grid cleanly",
+    "All new animations have prefers-reduced-motion fallbacks",
+    "No horizontal overflow on any screen size"
+  ],
+  "verification": [
+    "cd /projects/sandbox/madarek/frontend && npx tsc -b --noEmit",
+    "cd /projects/sandbox/madarek/frontend && npx vite build"
+  ],
+  "blocked_reason": null,
+  "findings": "Build verification (tsc and vite build) cannot run because node_modules are empty shells in this INTEGRATIONS_ONLY environment - same pre-existing constraint as FEAT-001 and FEAT-002. Verified via structural validation: CSS brace balance (both files balanced - lecture 53/53, matrix 50/50), TSX paren/brace/bracket balance (both files 0/0/0), all required imports present, all new CSS classes and data attributes present, RTL logical properties used throughout (no physical left/right), prefers-reduced-motion fallbacks in both CSS files, mobile breakpoints at 768px and 480px in both files."
+}

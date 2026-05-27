@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   User, Brain, GraduationCap, Network,
   Building2, Users2, Award,
@@ -91,7 +91,7 @@ export default function LandingPage() {
             <p className="landing-subtitle">
               منصة أكاديمية متطورة تجمع بين الابتكار والتميز لتمكين قادة المستقبل في بيئة تعليمية ذكية ومتكاملة.
             </p>
-            <div className="landing-cta-row">
+            <div className="landing-cta-glass">
               <Link to="/auth" className="btn primary">
                 ابدأ رحلتك الآن
                 <Icon icon={ArrowLeft} size={14} />
@@ -99,19 +99,42 @@ export default function LandingPage() {
               <a href="#features" className="btn outline">اكتشف المنصة</a>
             </div>
           </Reveal>
-          <Reveal as="figure" className="landing-hero-img" delay={2}>
-            <img
-              src="/brand/zu-campus.jpg"
-              srcSet="/brand/zu-campus-sm.jpg 800w, /brand/zu-campus.jpg 1400w"
-              sizes="(max-width: 900px) 100vw, 600px"
-              alt="حرم جامعة الزاوية الرئيسي — البوابة الرئيسية"
-              loading="eager"
-              width="1400"
-              height="780"
-            />
-            <figcaption className="landing-hero-credit">
-              الحرم الرئيسي · جامعة الزاوية
-            </figcaption>
+          <Reveal as="div" className="landing-hero-showcase" delay={2}>
+            {/* Floating card 1: GPA */}
+            <div className="landing-hero-float-card">
+              <div className="landing-hero-float-card-header">
+                <div className="landing-hero-float-card-icon" data-variant="gpa">
+                  <Icon icon={GraduationCap} size={16} />
+                </div>
+                <span className="landing-hero-float-card-label">المعدل التراكمي</span>
+              </div>
+              <div className="landing-hero-float-card-value">3.82</div>
+              <div className="landing-hero-float-card-sub">الفصل الحالي: ممتاز</div>
+            </div>
+            {/* Floating card 2: AI Chat */}
+            <div className="landing-hero-float-card">
+              <div className="landing-hero-float-card-header">
+                <div className="landing-hero-float-card-icon" data-variant="ai">
+                  <Icon icon={Sparkles} size={16} />
+                </div>
+                <span className="landing-hero-float-card-label">Oasis AI</span>
+              </div>
+              <div className="landing-hero-float-card-value" style={{ fontSize: 14, fontWeight: 500 }}>
+                اشرح لي الخوارزميات الجينية...
+              </div>
+              <div className="landing-hero-float-card-sub">يكتب الآن...</div>
+            </div>
+            {/* Floating card 3: Learning Path */}
+            <div className="landing-hero-float-card">
+              <div className="landing-hero-float-card-header">
+                <div className="landing-hero-float-card-icon" data-variant="path">
+                  <Icon icon={Compass} size={16} />
+                </div>
+                <span className="landing-hero-float-card-label">المسار التعليمي</span>
+              </div>
+              <div className="landing-hero-float-card-value" style={{ fontSize: 16 }}>78%</div>
+              <div className="landing-hero-float-card-sub">12 من 15 وحدة مكتملة</div>
+            </div>
           </Reveal>
         </section>
 
@@ -166,7 +189,7 @@ export default function LandingPage() {
           </div>
           <div className="landing-bento">
             {/* Card 1 — span 2 cols */}
-            <Reveal as="div" className="landing-bento-card landing-bento-wide">
+            <Reveal as="div" className="landing-bento-card landing-bento-wide" data-tone="primary">
               <div className="landing-bento-icon" data-tone="primary">
                 <Icon icon={Compass} size={28} />
               </div>
@@ -180,7 +203,7 @@ export default function LandingPage() {
               </div>
             </Reveal>
             {/* Card 2 — 1 col */}
-            <Reveal as="div" className="landing-bento-card ai-glow">
+            <Reveal as="div" className="landing-bento-card ai-glow" data-tone="tertiary">
               <div className="landing-bento-icon" data-tone="tertiary">
                 <Icon icon={Brain} size={26} />
               </div>
@@ -192,7 +215,7 @@ export default function LandingPage() {
               </div>
             </Reveal>
             {/* Card 3 — 1 col */}
-            <Reveal as="div" className="landing-bento-card">
+            <Reveal as="div" className="landing-bento-card" data-tone="secondary">
               <div className="landing-bento-icon" data-tone="secondary">
                 <Icon icon={BarChart3} size={26} />
               </div>
@@ -204,7 +227,7 @@ export default function LandingPage() {
               </div>
             </Reveal>
             {/* Card 4 — span 2 cols */}
-            <Reveal as="div" className="landing-bento-card landing-bento-wide">
+            <Reveal as="div" className="landing-bento-card landing-bento-wide" data-tone="surface">
               <div className="landing-bento-icon" data-tone="surface">
                 <Icon icon={Network} size={28} />
               </div>
@@ -219,8 +242,39 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ═══════════ TRUST BAR ═══════════ */}
+        <Reveal as="section" className="landing-trust-bar">
+          <div className="landing-trust-bar-inner">
+            <div className="landing-trust-item">
+              <div className="landing-trust-icon">
+                <Icon icon={Building2} size={22} />
+              </div>
+              <span className="landing-trust-label">شراكة جامعية</span>
+            </div>
+            <div className="landing-trust-item">
+              <div className="landing-trust-icon">
+                <Icon icon={Sparkles} size={22} />
+              </div>
+              <span className="landing-trust-label">مدعوم بالذكاء الاصطناعي</span>
+            </div>
+            <div className="landing-trust-item">
+              <div className="landing-trust-icon">
+                <Icon icon={ShieldCheck} size={22} />
+              </div>
+              <span className="landing-trust-label">منصة آمنة</span>
+            </div>
+            <div className="landing-trust-item">
+              <div className="landing-trust-icon">
+                <Icon icon={Users2} size={22} />
+              </div>
+              <span className="landing-trust-label">+50 ألف مستخدم</span>
+            </div>
+          </div>
+        </Reveal>
+
         {/* ═══════════ MADAREK AI — glassmorphism chat showcase ═══════════ */}
         <section id="ai" className="landing-ai-section">
+          <div className="landing-ai-float-symbols" aria-hidden="true" />
           <div className="landing-ai-grid">
             <Reveal as="div" className="landing-ai-chat ai-glow">
               <div className="landing-ai-chat-head">
@@ -244,6 +298,11 @@ export default function LandingPage() {
                   تأخذ أفضل الكعكات طعماً (البقاء للأصلح) وتدمج وصفاتها (التزاوج)
                   مع تغييرات بسيطة عشوائية (الطفرة). بمرور الوقت، ستحصل على الوصفة
                   المثالية. هذا هو جوهر الخوارزميات الجينية!
+                </div>
+                <div className="landing-ai-typing" aria-label="يكتب...">
+                  <span className="landing-ai-typing-dot" />
+                  <span className="landing-ai-typing-dot" />
+                  <span className="landing-ai-typing-dot" />
                 </div>
               </div>
               <div className="landing-ai-chat-foot">
@@ -335,18 +394,30 @@ export default function LandingPage() {
           </div>
 
           <div className="landing-pilot">
-            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">40<span>%</span></div>
-            <div className="landing-pilot-label">تحسّن الاستيعاب</div>
-            <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div></Reveal>
-            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">70<span>%</span></div>
-            <div className="landing-pilot-label">زيادة في المشاركة</div>
-            <div className="landing-pilot-note">داخل الحلقات النقاشية</div></Reveal>
-            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">30<span>%</span></div>
-            <div className="landing-pilot-label">تحسّن في الالتزام</div>
-            <div className="landing-pilot-note">بمتابعة الجلسات</div></Reveal>
-            <Reveal as="div" className="landing-pilot-stat highlight"><div className="landing-pilot-value">90<span>%</span></div>
-            <div className="landing-pilot-label">تحقيق أهداف التعلّم</div>
-            <div className="landing-pilot-note">ضمن الإطار الزمني المحدّد</div></Reveal>
+            <Reveal as="div" className="landing-pilot-stat">
+              <div className="landing-pilot-ring" style={{ '--ring-deg': '144deg' } as React.CSSProperties} />
+              <div className="landing-pilot-value">40<span>%</span></div>
+              <div className="landing-pilot-label">تحسّن الاستيعاب</div>
+              <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div>
+            </Reveal>
+            <Reveal as="div" className="landing-pilot-stat">
+              <div className="landing-pilot-ring" style={{ '--ring-deg': '252deg' } as React.CSSProperties} />
+              <div className="landing-pilot-value">70<span>%</span></div>
+              <div className="landing-pilot-label">زيادة في المشاركة</div>
+              <div className="landing-pilot-note">داخل الحلقات النقاشية</div>
+            </Reveal>
+            <Reveal as="div" className="landing-pilot-stat">
+              <div className="landing-pilot-ring" style={{ '--ring-deg': '108deg' } as React.CSSProperties} />
+              <div className="landing-pilot-value">30<span>%</span></div>
+              <div className="landing-pilot-label">تحسّن في الالتزام</div>
+              <div className="landing-pilot-note">بمتابعة الجلسات</div>
+            </Reveal>
+            <Reveal as="div" className="landing-pilot-stat highlight">
+              <div className="landing-pilot-ring" style={{ '--ring-deg': '324deg' } as React.CSSProperties} />
+              <div className="landing-pilot-value">90<span>%</span></div>
+              <div className="landing-pilot-label">تحقيق أهداف التعلّم</div>
+              <div className="landing-pilot-note">ضمن الإطار الزمني المحدّد</div>
+            </Reveal>
           </div>
 
           <Reveal as="div" className="landing-proof" style={{ marginTop: 'var(--sp-6)' }}>
@@ -372,6 +443,12 @@ export default function LandingPage() {
 
         {/* ═══════════ FINAL CTA — conversion section ═══════════ */}
         <Reveal as="section" className="landing-final-cta">
+          <div className="landing-final-cta-scanline" aria-hidden="true" />
+          <div className="landing-final-cta-shapes" aria-hidden="true">
+            <div className="landing-final-cta-shape" />
+            <div className="landing-final-cta-shape" />
+            <div className="landing-final-cta-shape" />
+          </div>
           <div className="landing-final-cta-inner">
             <div className="landing-final-cta-eyebrow">
               <span className="landing-final-cta-dot" aria-hidden />
