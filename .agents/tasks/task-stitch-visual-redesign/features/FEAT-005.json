@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-005",
+  "type": "feat",
+  "description": "Redesign the Learning Path (TrainingPages.tsx) and Lesson interfaces. Modern gamified learning paths with gradient progress indicators, premium lesson cards, achievement badges with glow effects, and interactive lesson player styling. Also add motion/animation system refinement and mobile responsiveness final pass across all pages.",
+  "status": "completed",
+  "steps": [
+    "Read frontend/src/pages/student/TrainingPages.tsx fully to understand the training catalog, track detail, lesson, and achievements pages.",
+    "Read frontend/src/pages/student/LecturePlayerPage.tsx (first 80 lines) to understand lesson/lecture interface.",
+    "Add new CSS section in components.css or create training-specific styles for: (a) Track catalog cards with gradient progress bar at bottom, glassmorphism hover, category badges with tonal backgrounds. (b) Track detail hero with gradient background matching track category. (c) Lesson items with lock/unlock states, modern numbering, progress indicators. (d) Achievement badges with rarity-based glow effects (common=subtle, legendary=strong gold glow). (e) Leaderboard rows with rank badges and tier-based styling.",
+    "Update the lesson player/lecture player styles: Modern video container area, refined progress timeline, checkpoint indicators with pulse animations, clean navigation between lessons.",
+    "Update frontend/src/styles/interactions.css: Refine the press feedback system with smoother easing, add micro-interaction for card hover (subtle scale(1.02) + elevation), button ripple-like feedback via box-shadow transition, nav item hover glow.",
+    "Add refined animation keyframes to premium.css or a motion section: (a) entrance animations (fade-up, fade-in, scale-in) for page elements, (b) stagger delays for list items, (c) hover animations for interactive cards, (d) loading skeleton pulse animation.",
+    "Update frontend/src/styles/responsive.css for final mobile pass: (a) Verify all bento grids collapse to single column below 640px, (b) Ensure sidebar overlay works with glassmorphism, (c) Bottom nav has proper safe-area-inset-bottom for notched phones, (d) Dashboard cards stack properly on mobile, (e) Landing hero stacks to single column with proper spacing, (f) Touch targets are minimum 44px, (g) Font sizes scale appropriately with clamp().",
+    "Update frontend/src/styles/polish.css with final consistency checks: Ensure all section headings use the same premium typography scale, all cards have consistent border-radius (20px for large, 12px for small), all interactive elements have consistent hover/active states."
+  ],
+  "acceptance_criteria": [
+    "Training catalog cards have gradient progress bars and glassmorphism hover effects",
+    "Achievement badges have rarity-based glow effects",
+    "Lesson/lecture player has modern styling with refined progress indicators",
+    "Interaction system has smooth micro-animations for hover, press, and entrance",
+    "All animations include prefers-reduced-motion fallbacks",
+    "Mobile responsive: all grids collapse properly, touch targets are 44px+, proper safe-area handling",
+    "Consistent typography and spacing across all pages",
+    "Landing page sections responsive on mobile (single column, proper spacing)",
+    "Bottom nav has glassmorphism and proper mobile safe area",
+    "RTL support maintained across all responsive breakpoints"
+  ],
+  "verification": [
+    "Read modified CSS files and verify syntactic correctness",
+    "Verify prefers-reduced-motion queries present for all new animations",
+    "Verify responsive breakpoints cover 640px, 768px, 900px, 1024px as appropriate",
+    "Verify TrainingPages.tsx component exports unchanged",
+    "Check that interactions.css targets match existing class names in components"
+  ],
+  "blocked_reason": null,
+  "findings": "All 5 CSS files modified with balanced braces verified. Training card gradient uses ::after pseudo-element at bottom (not ::before which was removed). Badge rarity glow uses attribute selectors matching inline style color values set by TSX (style={{ ['--rarity']: RARITY_COLOR[b.rarity] }}). Legendary badges get a pulsing gold glow animation. Polish.css filter-pill override uses solid accent background on .on state (was accent-soft in components.css). The content-inner animation in polish.css uses entrance-fade-up keyframe from premium.css which loads earlier in cascade. Interactions.css now uses --ease-spring for release timing and --ease-out for press timing, giving a lively bounce-back effect. Responsive.css adds training-specific mobile rules at 640px and 480px breakpoints. Bottom nav glassmorphism added via @supports for safe-area-inset-bottom. No TSX files modified. All keyframes have prefers-reduced-motion fallbacks. RTL maintained via CSS logical properties (inset-inline-start/end used for positioning)."
+}
