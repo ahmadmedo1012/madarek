@@ -45,6 +45,7 @@ const ar: TranslationDictionary = {
   'nav.community': 'المجتمع الجامعي',
   // Teacher
   'nav.teacher.dashboard': 'لوحة الأستاذ',
+  'nav.teacher.schedule': 'جدول المحاضرات',
   'nav.teacher.attendance': 'الحضور والغياب',
   'nav.teacher.grades': 'درجات الطلاب',
   'nav.teacher.materials': 'المواد الدراسية',
@@ -53,6 +54,9 @@ const ar: TranslationDictionary = {
   'nav.teacher.assignments': 'الواجبات والاختبارات',
   'nav.teacher.messages': 'الرسائل',
   'nav.teacher.research': 'البحث العلمي',
+  'nav.teacher.intelligence': 'الذكاء الأكاديمي',
+  'nav.teacher.profile': 'الملف الأكاديمي',
+  'nav.teacher.live': 'إدارة البث المباشر',
   // Admin
   'nav.admin.dashboard': 'لوحة الإدارة',
   'nav.admin.students': 'إدارة الطلاب',
@@ -63,6 +67,7 @@ const ar: TranslationDictionary = {
   'nav.admin.digital': 'التحول الرقمي',
   'nav.admin.reports': 'التقارير',
   'nav.admin.settings': 'الإعدادات',
+  'nav.admin.sync': 'مزامنة الجامعة',
   // Quality
   'nav.quality.dashboard': 'لوحة الجودة',
   'nav.quality.courses': 'جودة المقررات',
@@ -71,6 +76,9 @@ const ar: TranslationDictionary = {
   'nav.quality.reports': 'تقارير الجودة',
   'nav.quality.curriculum': 'مراجعة المناهج',
   'nav.quality.alerts': 'تنبيهات الجودة',
+  'nav.quality.exam_moderation': 'مراجعة الاختبارات',
+  // Online exams
+  'nav.online_exams': 'الاختبارات الإلكترونية',
   // Owner
   'nav.owner.dashboard': 'لوحة التحكم الرئيسية',
   'nav.owner.users': 'إدارة المستخدمين',
@@ -99,6 +107,12 @@ const ar: TranslationDictionary = {
   'page.madarek': 'مدارك',
   'page.course_details': 'تفاصيل المقرر',
   'page.lecture_player': 'مشغّل المحاضرة',
+  'page.vision_detail': 'ابتكار قادم',
+  'page.document_viewer': 'عارض المستندات',
+  'page.training_lesson': 'درس تدريبي',
+  'page.training_track': 'مسار تدريبي',
+  'page.exam_in_progress': 'اختبار جارٍ',
+  'page.admin_permissions': 'إدارة الصلاحيات',
   // Misc
   'lang.toggle': 'English',
   'theme.light': 'الوضع الفاتح',
@@ -139,6 +153,7 @@ const en: TranslationDictionary = {
   'nav.community': 'University Community',
   // Teacher
   'nav.teacher.dashboard': 'Teacher Panel',
+  'nav.teacher.schedule': 'Lecture Schedule',
   'nav.teacher.attendance': 'Attendance',
   'nav.teacher.grades': 'Student Grades',
   'nav.teacher.materials': 'Course Materials',
@@ -147,6 +162,9 @@ const en: TranslationDictionary = {
   'nav.teacher.assignments': 'Assignments & Tests',
   'nav.teacher.messages': 'Messages',
   'nav.teacher.research': 'Scientific Research',
+  'nav.teacher.intelligence': 'Academic Intelligence',
+  'nav.teacher.profile': 'Academic Profile',
+  'nav.teacher.live': 'Live Stream Management',
   // Admin
   'nav.admin.dashboard': 'Admin Panel',
   'nav.admin.students': 'Manage Students',
@@ -157,6 +175,7 @@ const en: TranslationDictionary = {
   'nav.admin.digital': 'Digital Transformation',
   'nav.admin.reports': 'Reports',
   'nav.admin.settings': 'Settings',
+  'nav.admin.sync': 'University Sync',
   // Quality
   'nav.quality.dashboard': 'Quality Panel',
   'nav.quality.courses': 'Course Quality',
@@ -165,6 +184,9 @@ const en: TranslationDictionary = {
   'nav.quality.reports': 'Quality Reports',
   'nav.quality.curriculum': 'Curriculum Review',
   'nav.quality.alerts': 'Quality Alerts',
+  'nav.quality.exam_moderation': 'Exam Moderation',
+  // Online exams
+  'nav.online_exams': 'Online Exams',
   // Owner
   'nav.owner.dashboard': 'Main Control Panel',
   'nav.owner.users': 'User Management',
@@ -193,6 +215,12 @@ const en: TranslationDictionary = {
   'page.madarek': 'Madarek',
   'page.course_details': 'Course Details',
   'page.lecture_player': 'Lecture Player',
+  'page.vision_detail': 'Upcoming Innovation',
+  'page.document_viewer': 'Document Viewer',
+  'page.training_lesson': 'Training Lesson',
+  'page.training_track': 'Training Track',
+  'page.exam_in_progress': 'Exam In Progress',
+  'page.admin_permissions': 'Manage Permissions',
   // Misc
   'lang.toggle': 'العربية',
   'theme.light': 'Light Mode',

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, X, Minimize2 } from 'lucide-react';
+import { Bot, Send, X } from 'lucide-react';
 import { Icon } from './Icon';
 import { useUiStore } from '../stores/ui.store';
 import { useI18nStore } from '../stores/i18n.store';
@@ -36,6 +36,8 @@ export function OasisWidget() {
   const [input, setInput] = useState('');
   const scrollerRef = useRef<HTMLDivElement>(null);
 
+  const MAX_MESSAGES = 50;
+
   const suggestions = locale === 'ar' ? SUGGESTIONS_AR : SUGGESTIONS_EN;
   const welcomeMsg = locale === 'ar'
     ? 'مرحباً! أنا واحة - مساعدك الذكي. كيف أساعدك؟'
@@ -48,15 +50,15 @@ export function OasisWidget() {
   const send = async (text?: string) => {
     const msg = (text ?? input).trim();
     if (!msg || chat.isPending) return;
-    setMessages((m) => [...m, { role: 'user', text: msg }]);
+    setMessages((m) => [...m, { role: 'user', text: msg }].slice(-MAX_MESSAGES));
     setInput('');
     try {
       const res = await chat.mutateAsync({ conversationId, message: msg });
       setConversationId(res.conversationId);
-      setMessages((m) => [...m, { role: 'bot', text: res.reply }]);
+      setMessages((m) => [...m, { role: 'bot', text: res.reply }].slice(-MAX_MESSAGES));
     } catch {
       const errorMsg = locale === 'ar' ? 'تعذّر الاتصال. حاول لاحقاً.' : 'Connection failed. Try again later.';
-      setMessages((m) => [...m, { role: 'bot', text: errorMsg }]);
+      setMessages((m) => [...m, { role: 'bot', text: errorMsg }].slice(-MAX_MESSAGES));
     }
   };
 
@@ -86,14 +88,6 @@ export function OasisWidget() {
               <span>{locale === 'ar' ? 'واحة' : 'Oasis'}</span>
             </div>
             <div className="oasis-widget__header-actions">
-              <button
-                type="button"
-                onClick={closeOasis}
-                aria-label={t('action.close')}
-                className="oasis-widget__btn"
-              >
-                <Icon icon={Minimize2} size={14} />
-              </button>
               <button
                 type="button"
                 onClick={closeOasis}

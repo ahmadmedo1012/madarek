@@ -11,105 +11,108 @@ import { useI18nStore } from '../../stores/i18n.store';
 import { useMe } from '../../hooks/useAuth';
 import { LoadingState } from '../primitives/States';
 
-const PAGE_TITLES: Record<string, string> = {
-  '/student/dashboard': 'لوحة التحكم',
-  '/student/schedule': 'الجدول الدراسي',
-  '/student/courses': 'المواد الدراسية',
-  '/student/results': 'النتائج والتقييمات',
-  '/student/ai': 'المساعد الذكي',
-  '/student/library': 'المكتبة الإلكترونية',
-  '/student/gamification': 'الإنجازات والنقاط',
-  '/student/skills': 'المهارات والشهادات',
-  '/student/labs': 'المعامل الافتراضية',
-  '/student/social': 'الشبكة الاجتماعية',
-  '/student/mooc': 'كورسات خارجية',
-  '/student/jobs': 'فرص العمل',
-  '/student/alerts': 'الإشعارات',
-  '/student/downloads': 'مركز التحميلات',
-  '/student/university': 'جامعة الزاوية',
-  '/student/matrix': 'المصفوفة التعليمية',
-  '/student/research': 'بحوثي العلمية',
-  '/student/profile': 'ملفي الشخصي',
-  '/student/webinars': 'الندوات وورش العمل',
-  '/student/exams': 'تحليل الامتحانات',
-  '/student/live': 'البث المباشر',
-  '/student/payment': 'الشؤون المالية',
-  '/student/map': 'خريطة الحرم الجامعي',
-  '/teacher/dashboard': 'لوحة الأستاذ',
-  '/teacher/schedule': 'جدول المحاضرات',
-  '/teacher/attendance': 'الحضور والغياب',
-  '/teacher/grades': 'درجات الطلاب',
-  '/teacher/materials': 'المواد الدراسية',
-  '/teacher/students': 'قائمة الطلاب',
-  '/teacher/performance': 'الأداء والتحليل',
-  '/teacher/assignments': 'الواجبات والاختبارات',
-  '/teacher/messages': 'الرسائل',
-  '/teacher/research': 'البحث العلمي',
-  '/admin/dashboard': 'لوحة الإدارة',
-  '/admin/students': 'إدارة الطلاب',
-  '/admin/teachers': 'إدارة الأساتذة',
-  '/admin/faculties': 'الكليات والأقسام',
-  '/admin/courses': 'إدارة المقررات',
-  '/admin/analysis': 'تحليل الأداء',
-  '/admin/digital': 'التحول الرقمي',
-  '/admin/reports': 'التقارير',
-  '/admin/settings': 'الإعدادات',
-  '/quality/dashboard': 'لوحة الجودة',
-  '/quality/courses': 'جودة المقررات',
-  '/quality/professors': 'تقييم الأساتذة',
-  '/quality/engagement': 'الانخراط والحضور',
-  '/quality/reports': 'تقارير الجودة',
-  '/quality/curriculum': 'مراجعة المناهج',
-  '/quality/alerts': 'تنبيهات الجودة',
-  '/vision': 'الابتكارات القادمة',
-  '/training': 'التطوير الذاتي',
-  '/achievements': 'الإنجازات والشهادات',
-  '/community': 'المجتمع الجامعي',
-  '/teacher/community': 'المجتمع الجامعي',
-  '/admin/community': 'المجتمع الجامعي',
-  '/admin/sync': 'مزامنة الجامعة',
-  '/quality/community': 'المجتمع الجامعي',
-  '/teacher/intelligence': 'الذكاء الأكاديمي',
-  '/teacher/profile': 'الملف الأكاديمي',
-  '/teacher/live': 'إدارة البث المباشر',
-  '/teacher/labs': 'المعامل الافتراضية',
-  '/student/online-exams': 'الاختبارات الإلكترونية',
-  '/quality/exam-moderation': 'مراجعة الاختبارات',
-  '/owner/dashboard': 'لوحة التحكم الرئيسية',
-  '/owner/users': 'إدارة المستخدمين',
-  '/owner/activity': 'سجل النشاط',
-  '/owner/content': 'المحتوى والعلامة التجارية',
-  '/owner/system': 'النظام والتشغيل',
-  '/owner/education': 'النظرة التعليمية',
-  '/owner/realtime': 'المراقبة الحية',
-  '/owner/ai': 'مركز الذكاء الاصطناعي',
-  '/owner/alerts': 'التنبيهات التشغيلية',
-  '/owner/governance': 'الحوكمة المتقدمة',
+/** Map from path to i18n key for the topbar title. */
+const PAGE_TITLE_KEYS: Record<string, string> = {
+  '/student/dashboard': 'nav.dashboard',
+  '/student/schedule': 'nav.schedule',
+  '/student/courses': 'nav.courses',
+  '/student/results': 'nav.results',
+  '/student/ai': 'nav.ai',
+  '/student/library': 'nav.library',
+  '/student/gamification': 'nav.gamification',
+  '/student/skills': 'nav.skills',
+  '/student/labs': 'nav.labs',
+  '/student/social': 'nav.social',
+  '/student/mooc': 'nav.mooc',
+  '/student/jobs': 'nav.jobs',
+  '/student/alerts': 'nav.alerts',
+  '/student/downloads': 'nav.downloads',
+  '/student/university': 'nav.university',
+  '/student/matrix': 'nav.matrix',
+  '/student/research': 'nav.research',
+  '/student/profile': 'nav.profile',
+  '/student/webinars': 'nav.webinars',
+  '/student/exams': 'nav.exams',
+  '/student/live': 'nav.live',
+  '/student/payment': 'nav.payment',
+  '/student/map': 'nav.map',
+  '/teacher/dashboard': 'nav.teacher.dashboard',
+  '/teacher/schedule': 'nav.teacher.schedule',
+  '/teacher/attendance': 'nav.teacher.attendance',
+  '/teacher/grades': 'nav.teacher.grades',
+  '/teacher/materials': 'nav.teacher.materials',
+  '/teacher/students': 'nav.teacher.students',
+  '/teacher/performance': 'nav.teacher.performance',
+  '/teacher/assignments': 'nav.teacher.assignments',
+  '/teacher/messages': 'nav.teacher.messages',
+  '/teacher/research': 'nav.teacher.research',
+  '/admin/dashboard': 'nav.admin.dashboard',
+  '/admin/students': 'nav.admin.students',
+  '/admin/teachers': 'nav.admin.teachers',
+  '/admin/faculties': 'nav.admin.faculties',
+  '/admin/courses': 'nav.admin.courses',
+  '/admin/analysis': 'nav.admin.analysis',
+  '/admin/digital': 'nav.admin.digital',
+  '/admin/reports': 'nav.admin.reports',
+  '/admin/settings': 'nav.admin.settings',
+  '/quality/dashboard': 'nav.quality.dashboard',
+  '/quality/courses': 'nav.quality.courses',
+  '/quality/professors': 'nav.quality.professors',
+  '/quality/engagement': 'nav.quality.engagement',
+  '/quality/reports': 'nav.quality.reports',
+  '/quality/curriculum': 'nav.quality.curriculum',
+  '/quality/alerts': 'nav.quality.alerts',
+  '/vision': 'nav.vision',
+  '/training': 'nav.training',
+  '/achievements': 'nav.achievements',
+  '/community': 'nav.community',
+  '/teacher/community': 'nav.community',
+  '/admin/community': 'nav.community',
+  '/admin/sync': 'nav.admin.sync',
+  '/quality/community': 'nav.community',
+  '/teacher/intelligence': 'nav.teacher.intelligence',
+  '/teacher/profile': 'nav.teacher.profile',
+  '/teacher/live': 'nav.teacher.live',
+  '/teacher/labs': 'nav.labs',
+  '/student/online-exams': 'nav.online_exams',
+  '/quality/exam-moderation': 'nav.quality.exam_moderation',
+  '/owner/dashboard': 'nav.owner.dashboard',
+  '/owner/users': 'nav.owner.users',
+  '/owner/activity': 'nav.owner.activity',
+  '/owner/content': 'nav.owner.content',
+  '/owner/system': 'nav.owner.system',
+  '/owner/education': 'nav.owner.education',
+  '/owner/realtime': 'nav.owner.realtime',
+  '/owner/ai': 'nav.owner.ai',
+  '/owner/alerts': 'nav.owner.alerts',
+  '/owner/governance': 'nav.owner.governance',
 };
 
-/** Resolve a topbar title for any path, including dynamic routes. */
-function resolveTitle(pathname: string): string {
-  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname]!;
-  if (/^\/student\/courses\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
-  if (/^\/student\/lectures\/[^/]+$/.test(pathname)) return 'مشغّل المحاضرة';
-  if (/^\/vision\/[^/]+$/.test(pathname)) return 'ابتكار قادم';
-  if (/^\/document\/[^/]+$/.test(pathname)) return 'عارض المستندات';
-  if (/^\/training\/[^/]+\/lesson\/[^/]+$/.test(pathname)) return 'درس تدريبي';
-  if (/^\/training\/[^/]+$/.test(pathname)) return 'مسار تدريبي';
-  if (/^\/teacher\/intelligence\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
-  if (/^\/student\/online-exams\/[^/]+$/.test(pathname)) return 'اختبار جارٍ';
-  if (/^\/admin\/permissions\/[^/]+$/.test(pathname)) return 'إدارة الصلاحيات';
-  return 'مدارك';
+/** Resolve a topbar title for any path, including dynamic routes, using i18n. */
+function resolveTitle(pathname: string, t: (key: string) => string): string {
+  const key = PAGE_TITLE_KEYS[pathname];
+  if (key) return t(key);
+  if (/^\/student\/courses\/[^/]+$/.test(pathname)) return t('page.course_details');
+  if (/^\/student\/lectures\/[^/]+$/.test(pathname)) return t('page.lecture_player');
+  if (/^\/vision\/[^/]+$/.test(pathname)) return t('page.vision_detail');
+  if (/^\/document\/[^/]+$/.test(pathname)) return t('page.document_viewer');
+  if (/^\/training\/[^/]+\/lesson\/[^/]+$/.test(pathname)) return t('page.training_lesson');
+  if (/^\/training\/[^/]+$/.test(pathname)) return t('page.training_track');
+  if (/^\/teacher\/intelligence\/[^/]+$/.test(pathname)) return t('page.course_details');
+  if (/^\/student\/online-exams\/[^/]+$/.test(pathname)) return t('page.exam_in_progress');
+  if (/^\/admin\/permissions\/[^/]+$/.test(pathname)) return t('page.admin_permissions');
+  return t('page.madarek');
 }
 
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
   const location = useLocation();
-  const title = resolveTitle(location.pathname);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
   const locale = useI18nStore((s) => s.locale);
   const dir = useI18nStore((s) => s.dir);
+  const t = useI18nStore((s) => s.t);
+  const title = resolveTitle(location.pathname, t);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   // Sync document dir and lang with i18n locale
   useEffect(() => {

@@ -209,7 +209,17 @@ export function GlobalSearch() {
   const showResults = loading || debounced.length >= 2;
   const showSuggestions = !loading && debounced.length < 2;
 
-  let runningIdx = 0;
+  // Compute section offsets for keyboard navigation indices (render-pure)
+  const sectionOffsets = useMemo(() => {
+    if (!results || activeCategory) return {};
+    const offsets: Record<string, number> = {};
+    let offset = 0;
+    for (const section of sections) {
+      offsets[section] = offset;
+      offset += results[section].length;
+    }
+    return offsets;
+  }, [results, activeCategory]);
 
   return (
     <div className="global-search" ref={containerRef}>
@@ -343,9 +353,8 @@ export function GlobalSearch() {
             activeCategory ? (
               <div className="search-section">
                 <div className="search-section-label">{sectionLabels[activeCategory]}</div>
-                {flatHits.map((hit) => {
-                  const idx = runningIdx++;
-                  const isActive = idx === activeIdx;
+                {flatHits.map((hit, hitIndex) => {
+                  const isActive = hitIndex === activeIdx;
                   const accent = hit.themeColor ?? 'var(--accent)';
                   return (
                     <button
@@ -354,7 +363,7 @@ export function GlobalSearch() {
                       role="option"
                       aria-selected={isActive}
                       className={`search-row${isActive ? ' active' : ''}`}
-                      onMouseEnter={() => setActiveIdx(idx)}
+                      onMouseEnter={() => setActiveIdx(hitIndex)}
                       onClick={() => goTo(hit.href)}
                     >
                       <span className="search-row-icon" style={{ background: `${accent}1a`, color: accent }}>
@@ -373,11 +382,12 @@ export function GlobalSearch() {
               sections.map((section) => {
                 const items = results[section];
                 if (items.length === 0) return null;
+                const baseIdx = sectionOffsets[section] ?? 0;
                 return (
                   <div key={section} className="search-section">
                     <div className="search-section-label">{sectionLabels[section]}</div>
-                    {items.map((hit) => {
-                      const idx = runningIdx++;
+                    {items.map((hit, itemIndex) => {
+                      const idx = baseIdx + itemIndex;
                       const isActive = idx === activeIdx;
                       const accent = hit.themeColor ?? 'var(--accent)';
                       return (
