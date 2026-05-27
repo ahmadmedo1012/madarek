@@ -542,9 +542,9 @@
   font-weight: 600;
 }
 
-/* Body default = 16/24 (Stitch body-md) */
+/* Body default — uses the design token for consistency */
 body {
-  font-size: 16px;
+  font-size: var(--fs-base);
   line-height: 1.5;
 }
 
@@ -625,8 +625,7 @@ input:focus, textarea:focus, select:focus,
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   z-index: 40;
   display: none;
   align-items: center;
