@@ -3,7 +3,7 @@ import { useState } from 'react';
 import {
   User, Brain, GraduationCap, Network,
   Building2, Users2, Award,
-  Compass, Sparkles, ShieldCheck, BookMarked,
+  Compass, Sparkles, ShieldCheck, BarChart3,
   ArrowLeft, Menu, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
@@ -166,64 +166,126 @@ export default function LandingPage() {
           </div>
         </Reveal>
 
-        {/* ═══════════ FEATURES ═══════════ */}
+        {/* ═══════════ FEATURES — Bento Grid (Stitch pattern) ═══════════ */}
         <section id="features" className="landing-features">
           <div className="landing-section-head">
-            <span className="landing-section-eyebrow">المميزات</span>
+            <span className="landing-section-eyebrow">لماذا مدارك؟</span>
             <Reveal as="h2" className="landing-features-title">منظومة متكاملة لتعليم ذكي</Reveal>
             <p className="landing-section-lede">
-              ست أدوات أساسية تربط الطالب والأستاذ والإدارة في تجربة واحدة سلسة.
+              تصميم يضع الطالب في المركز — تجربة تجمع بين التكنولوجيا المتقدمة وسهولة الاستخدام.
             </p>
           </div>
-          <div className="landing-features-grid">
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
-              <Icon icon={Compass} size={24} />
-            </div>
-            <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
-            <p className="landing-feature-desc">
-              نموذج معرفي شخصي لكل طالب يكتشف الفجوات تلقائياً، ويربطها بدقائق المحاضرة
-              التي تشرحها — تعلّم مخصَّص، لا قالب واحد للجميع.
-            </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
-              <Icon icon={Network} size={24} />
-            </div>
-            <h3 className="landing-feature-title">منظومة موحَّدة</h3>
-            <p className="landing-feature-desc">
-              دمج كامل للحضور والدرجات والامتحانات والبحوث في تجربة واحدة متاحة
-              لكل طالب وأستاذ ومسؤول جودة — بدون تطبيقات مشتّتة.
-            </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
-              <Icon icon={Brain} size={24} />
-            </div>
-            <h3 className="landing-feature-title">ذكاء اصطناعي مساعد</h3>
-            <p className="landing-feature-desc">
-              مساعد دراسي يجيب على أسئلتك ويقترح مسارات مراجعة بناءً على أدائك
-              الفعلي — يساعد الأستاذ ويرشد الطالب بدقة.
-            </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
-              <Icon icon={BookMarked} size={24} />
-            </div>
-            <h3 className="landing-feature-title">المعامل الافتراضية</h3>
-            <p className="landing-feature-desc">
-              بيئات محاكاة معتمدة في الجامعة لتعزيز الفهم العملي
-              — جاهزة لكليات الهندسة، تقنية المعلومات، والعلوم.
-            </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
-              <Icon icon={Sparkles} size={24} />
-            </div>
-            <h3 className="landing-feature-title">البحث العلمي</h3>
-            <p className="landing-feature-desc">
-              رحلة بحث طلابي متكاملة: رفع، فحص انتحال وذكاء اصطناعي،
-              مراجعة أستاذ، ثم نشر في مكتبة الجامعة الرقمية.
-            </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon">
-              <Icon icon={ShieldCheck} size={24} />
-            </div>
-            <h3 className="landing-feature-title">ضمان الجودة</h3>
-            <p className="landing-feature-desc">
-              لوحة رقابية مستقلة لمكتب الجودة: مؤشرات الانخراط، أداء المقررات،
-              ومراجعة المحتوى — رؤية مؤسسية شاملة.
-            </p></Reveal>
+          <div className="landing-bento">
+            {/* Card 1 — span 2 cols */}
+            <Reveal as="div" className="landing-bento-card landing-bento-wide">
+              <div className="landing-bento-icon" data-tone="primary">
+                <Icon icon={Compass} size={28} />
+              </div>
+              <div className="landing-bento-body">
+                <h3 className="landing-bento-title">المصفوفة التعليمية الذكية</h3>
+                <p className="landing-bento-desc">
+                  مسارات تعلم تتكيف مع مستوى تقدمك ونقاط قوتك وضعفك،
+                  لتضمن أقصى استفادة من وقتك. نموذج معرفي شخصي لكل طالب
+                  يكتشف الفجوات تلقائياً ويربطها بالدقائق التي تشرحها.
+                </p>
+              </div>
+            </Reveal>
+            {/* Card 2 — 1 col */}
+            <Reveal as="div" className="landing-bento-card ai-glow">
+              <div className="landing-bento-icon" data-tone="tertiary">
+                <Icon icon={Brain} size={26} />
+              </div>
+              <div className="landing-bento-body">
+                <h3 className="landing-bento-title">مساعد ذكاء اصطناعي</h3>
+                <p className="landing-bento-desc">
+                  Oasis — رفيق دراسي يفهم سياق دراستك ويقدم شروحات مخصصة.
+                </p>
+              </div>
+            </Reveal>
+            {/* Card 3 — 1 col */}
+            <Reveal as="div" className="landing-bento-card">
+              <div className="landing-bento-icon" data-tone="secondary">
+                <Icon icon={BarChart3} size={26} />
+              </div>
+              <div className="landing-bento-body">
+                <h3 className="landing-bento-title">تحليلات دقيقة</h3>
+                <p className="landing-bento-desc">
+                  لوحة تتبع تقدّمك لحظة بلحظة — تفاصيل المقررات والدرجات والحضور.
+                </p>
+              </div>
+            </Reveal>
+            {/* Card 4 — span 2 cols */}
+            <Reveal as="div" className="landing-bento-card landing-bento-wide">
+              <div className="landing-bento-icon" data-tone="surface">
+                <Icon icon={Network} size={28} />
+              </div>
+              <div className="landing-bento-body">
+                <h3 className="landing-bento-title">منظومة موحَّدة لكل الأدوار</h3>
+                <p className="landing-bento-desc">
+                  دمج كامل للحضور والدرجات والامتحانات والبحوث والمعامل الافتراضية —
+                  منصة متجاوبة تعمل بكفاءة على هاتفك أو حاسوبك.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ═══════════ MADAREK AI — glassmorphism chat showcase ═══════════ */}
+        <section id="ai" className="landing-ai-section">
+          <div className="landing-ai-grid">
+            <Reveal as="div" className="landing-ai-chat ai-glow">
+              <div className="landing-ai-chat-head">
+                <div className="landing-ai-avatar">
+                  <Icon icon={Sparkles} size={22} />
+                </div>
+                <div className="landing-ai-chat-info">
+                  <h4 className="landing-ai-chat-name">Oasis Assistant</h4>
+                  <p className="landing-ai-chat-status">
+                    <span className="landing-ai-chat-dot" aria-hidden />
+                    متصل الآن
+                  </p>
+                </div>
+              </div>
+              <div className="landing-ai-chat-body">
+                <div className="landing-ai-bubble landing-ai-bubble-user">
+                  لدي صعوبة في فهم مفهوم «الخوارزميات الجينية» — هل يمكنك تبسيطها؟
+                </div>
+                <div className="landing-ai-bubble landing-ai-bubble-bot ai-glow">
+                  بالطبع! تخيل أنك تحاول تحسين وصفة كعكة. في كل مرة تخبز فيها مجموعة،
+                  تأخذ أفضل الكعكات طعماً (البقاء للأصلح) وتدمج وصفاتها (التزاوج)
+                  مع تغييرات بسيطة عشوائية (الطفرة). بمرور الوقت، ستحصل على الوصفة
+                  المثالية. هذا هو جوهر الخوارزميات الجينية!
+                </div>
+              </div>
+              <div className="landing-ai-chat-foot">
+                <div className="landing-ai-input-mock">اكتب سؤالك هنا...</div>
+                <button type="button" className="landing-ai-send" aria-label="إرسال">
+                  <Icon icon={ArrowLeft} size={18} />
+                </button>
+              </div>
+            </Reveal>
+            <Reveal as="div" className="landing-ai-text" delay={1}>
+              <span className="landing-section-eyebrow">Madarek AI</span>
+              <h2 className="landing-features-title">المعلّم الذكي الخاص بك، متاح دائماً</h2>
+              <p className="landing-section-lede" style={{ textAlign: 'start', margin: 0 }}>
+                المساعد «Oasis» ليس مجرد أداة بحث، بل رفيق دراسي يفهم سياق دراستك.
+                يقدم شروحات مخصصة، يلخّص المحاضرات الطويلة، ويختبر معلوماتك بطرق تفاعلية.
+              </p>
+              <ul className="landing-ai-bullets">
+                <li>
+                  <span className="landing-ai-check"><Icon icon={ShieldCheck} size={14} /></span>
+                  شرح المفاهيم المعقدة بطرق مبسطة.
+                </li>
+                <li>
+                  <span className="landing-ai-check"><Icon icon={ShieldCheck} size={14} /></span>
+                  إنشاء اختبارات قصيرة لمراجعة المعلومات.
+                </li>
+                <li>
+                  <span className="landing-ai-check"><Icon icon={ShieldCheck} size={14} /></span>
+                  توجيه أكاديمي يعتمد على أدائك الفعلي.
+                </li>
+              </ul>
+            </Reveal>
           </div>
         </section>
 

@@ -620,3 +620,314 @@ input:focus, textarea:focus, select:focus,
   background: var(--md-secondary) !important;
   color: var(--md-on-secondary) !important;
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   STITCH BENTO GRID — features layout
+   2 cols × 2 rows: wide-narrow / narrow-wide pattern
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-bento {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(220px, auto);
+  gap: 24px;
+  max-width: var(--st-container-max);
+  margin-inline: auto;
+}
+
+.landing-bento-card {
+  background: var(--md-surface-container-lowest);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 20px;
+  padding: clamp(24px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    box-shadow 240ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 240ms cubic-bezier(0.2, 0, 0, 1),
+    transform 240ms cubic-bezier(0.2, 0, 0, 1);
+}
+.landing-bento-card:hover {
+  box-shadow: 0 12px 40px -16px rgba(0, 52, 97, 0.18);
+  border-color: color-mix(in srgb, var(--md-primary) 25%, var(--md-outline-variant));
+  transform: translateY(-3px);
+}
+.landing-bento-card.ai-glow {
+  box-shadow: var(--ai-glow);
+}
+.landing-bento-card.ai-glow:hover {
+  box-shadow: var(--ai-glow-strong);
+  border-color: var(--md-tertiary-fixed-dim);
+}
+
+.landing-bento-wide {
+  grid-column: span 2;
+}
+
+.landing-bento-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.landing-bento-icon[data-tone="primary"]   { background: var(--md-primary-container);   color: var(--md-on-primary-container);   }
+.landing-bento-icon[data-tone="tertiary"]  { background: var(--md-tertiary-container);  color: var(--md-on-tertiary-container);  }
+.landing-bento-icon[data-tone="secondary"] { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.landing-bento-icon[data-tone="surface"]   { background: var(--md-surface-variant);     color: var(--md-on-surface-variant);     }
+
+.landing-bento-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.landing-bento-title {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  color: var(--md-on-surface);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin: 0;
+}
+.landing-bento-desc {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--md-on-surface-variant);
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .landing-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .landing-bento-wide { grid-column: span 2; }
+}
+@media (max-width: 640px) {
+  .landing-bento { grid-template-columns: 1fr; gap: 16px; }
+  .landing-bento-wide { grid-column: auto; }
+  .landing-bento-card { padding: 24px; }
+  .landing-bento-icon { width: 48px; height: 48px; border-radius: 12px; }
+  .landing-bento-title { font-size: 17px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STITCH AI SHOWCASE — Madarek AI section with chat preview
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-ai-section {
+  padding-block: clamp(80px, 10vw, 120px);
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 50%, rgba(45, 219, 222, 0.05) 0%, transparent 70%),
+    var(--md-surface);
+  /* Subtle grid pattern, Stitch landing AI section uses this */
+}
+.landing-ai-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(128, 128, 128, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 128, 128, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.landing-ai-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: center;
+  max-width: var(--st-container-max);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 64px);
+}
+
+@media (max-width: 1024px) {
+  .landing-ai-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* Chat preview card */
+.landing-ai-chat {
+  background: var(--md-surface-container-lowest);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+}
+.landing-ai-chat-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--md-outline-variant);
+}
+.landing-ai-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--ai-glow);
+}
+.landing-ai-chat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.landing-ai-chat-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--md-on-surface);
+  margin: 0;
+}
+.landing-ai-chat-status {
+  font-size: 13px;
+  color: var(--md-tertiary-fixed-dim);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.landing-ai-chat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--md-tertiary-fixed-dim);
+  box-shadow: 0 0 6px var(--md-tertiary-fixed-dim);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.2); }
+}
+
+.landing-ai-chat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+}
+.landing-ai-bubble {
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  max-width: 85%;
+}
+.landing-ai-bubble-user {
+  background: var(--md-surface-container-high);
+  color: var(--md-on-surface);
+  border-radius: 16px 4px 16px 16px;
+  align-self: flex-end;
+}
+.landing-ai-bubble-bot {
+  background: color-mix(in srgb, var(--md-tertiary-container) 10%, transparent);
+  color: var(--md-on-surface);
+  border: 1px solid color-mix(in srgb, var(--md-tertiary-container) 25%, transparent);
+  border-radius: 4px 16px 16px 16px;
+  align-self: flex-start;
+  max-width: 92%;
+}
+
+.landing-ai-chat-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--md-outline-variant);
+}
+.landing-ai-input-mock {
+  flex: 1;
+  background: var(--md-surface-container);
+  border: 1px solid var(--md-outline-variant);
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--md-on-surface-variant) 60%, transparent);
+}
+.landing-ai-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+.landing-ai-send:hover {
+  background: var(--md-primary-container);
+  transform: translateY(-1px);
+}
+
+/* AI text column */
+.landing-ai-text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+.landing-ai-text .landing-section-eyebrow {
+  margin-bottom: 8px;
+}
+.landing-ai-text .landing-features-title {
+  text-align: start !important;
+  background: linear-gradient(135deg, var(--md-primary), var(--md-primary-container) 60%, var(--md-tertiary) 100%);
+  -webkit-background-clip: text !important;
+          background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.landing-ai-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.landing-ai-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--md-on-surface);
+}
+.landing-ai-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--md-primary) 10%, transparent);
+  color: var(--md-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
