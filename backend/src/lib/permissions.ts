@@ -49,6 +49,27 @@ export const DEFAULT_ROLE_CAPABILITIES: Record<Role, Capability[]> = {
     'ANNOUNCE_FACULTY',
     // NOTE: NO USERS_MANAGE, NO ROLES_ASSIGN — quality is oversight, not control.
   ],
+  OWNER: [
+    // Platform owner — Master Control Panel role.
+    // Holds the full capability set; nothing is implicitly restricted.
+    'RESEARCH_GRADE_OWN',
+    'RESEARCH_GRADE_ANY',
+    'RESEARCH_PUBLISH',
+    'EXAMS_AUTHOR',
+    'EXAMS_MODERATE',
+    'EXAMS_TAKE',
+    'CURRICULUM_EDIT_OWN',
+    'CURRICULUM_EDIT_ANY',
+    'USERS_MANAGE',
+    'ROLES_ASSIGN',
+    'TEACHERS_VERIFY',
+    'QUALITY_VIEW',
+    'QUALITY_REPORT',
+    'ANNOUNCE_PLATFORM',
+    'ANNOUNCE_FACULTY',
+    'COMPETITIONS_RUN',
+    'EVENTS_RUN',
+  ],
 };
 
 /**

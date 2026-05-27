@@ -34,7 +34,7 @@ router.get('/owner/stats', async (_req, res, next) => {
       prisma.user.count({ where: { role: 'QUALITY' } }),
       prisma.user.count({ where: { role: 'OWNER' as Role } }),
       prisma.course.count(),
-      prisma.offering.count(),
+      prisma.courseOffering.count(),
       prisma.enrollment.count(),
       prisma.auditLog.count({
         where: { createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
@@ -443,7 +443,7 @@ router.put(
   validate(upsertSettingSchema),
   async (req, res, next) => {
     try {
-      const { key } = req.params;
+      const key = req.params.key!;
       const { value, category } = req.body as { value: string; category?: string };
 
       const data = await prisma.platformSetting.upsert({

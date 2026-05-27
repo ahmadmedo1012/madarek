@@ -16,7 +16,7 @@ interface DemoEvent {
   meta: Record<string, unknown> | null;
 }
 
-const TYPE_CONFIG: Record<string, { icon: LucideIcon; colorClass: string }> = {
+const TYPE_CONFIG: Record<DemoEvent['type'], { icon: LucideIcon; colorClass: string }> = {
   login: { icon: LogIn, colorClass: 'green' },
   content: { icon: FileText, colorClass: 'blue' },
   roles: { icon: UserCog, colorClass: 'purple' },
