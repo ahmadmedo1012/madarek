@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-003",
+  "type": "fix",
+  "description": "Complete mobile responsive polish: fix overflowing elements, broken stacking, cramped cards, weak tap targets, inconsistent font sizing, and layout drift on all breakpoints. All rules added to the visual-final-polish.css file.",
+  "status": "completed",
+  "steps": [
+    "Add mobile typography corrections to visual-final-polish.css for breakpoint <=640px: (1) .landing-title font-size clamp(28px, 7vw, 36px). (2) .landing-features-title font-size clamp(22px, 5.5vw, 28px). (3) .landing-final-cta-title font-size clamp(22px, 5vw, 32px). (4) .landing-subtitle and .landing-final-cta-lede font-size 14px with line-height 1.6. (5) .dash-section-title font-size var(--fs-lg). (6) .welcome-card .page-title font-size clamp(20px, 5vw, 24px). (7) .metric-value font-size clamp(20px, 4vw, 26px). (8) All body text on mobile min font-size 14px for readability.",
+    "Add mobile layout fixes for breakpoint <=640px: (1) .landing-cta-glass must stack vertically (flex-direction: column, width: 100%) so buttons don't overflow. (2) .landing-hero must stack (grid-template-columns: 1fr) with text centered. (3) .landing-ai-grid must stack (grid-template-columns: 1fr). (4) .dash-hero-row must stack (grid-template-columns: 1fr). (5) .dash-quick-stats must reduce to 2 columns (grid-template-columns: repeat(2, 1fr)). (6) .kpi-strip must wrap properly (flex-wrap: wrap). (7) .landing-trust-bar-inner must stack vertically. (8) .owner-action-bar must wrap (flex-wrap: wrap, gap: var(--sp-2)).",
+    "Add mobile spacing and padding corrections for breakpoint <=480px: (1) .landing-shell padding-inline: var(--sp-3). (2) .card padding: var(--sp-3). (3) .metric padding: var(--sp-3). (4) .page-header padding: var(--sp-3) var(--sp-4). (5) .dash-agenda-item padding: var(--sp-3). (6) .welcome-card padding: var(--sp-5) var(--sp-4). (7) .landing-final-cta padding: var(--sp-6) var(--sp-3). (8) .auth-glass-card padding: var(--sp-4).",
+    "Add tap target enforcement for all breakpoints with (pointer: coarse): (1) All .btn, .pill, .tab, .nav-item, .filter-pill, .role-tab minimum 44px height and min-width where applicable. (2) .icon-btn minimum 44px x 44px. (3) .bottom-nav-item minimum 52px height. (4) .topbar-notif minimum 44px x 44px. (5) .landing-nav a minimum padding 12px for adequate touch area. (6) .sidebar-logout minimum 44px x 44px.",
+    "Fix mobile overflow issues: (1) .kpi-strip on mobile must have overflow-x: auto with -webkit-overflow-scrolling: touch if content exceeds viewport. (2) .landing-hero-showcase on mobile must have overflow: hidden to prevent float cards from extending past viewport. (3) .topbar-search on mobile <=600px must be display: none (already done in responsive.css but reinforce). (4) .tbl-wrap on mobile must have scroll-snap-type: x proximity for better scroll UX. (5) .filter-bar on mobile must scroll horizontally without breaking layout. (6) .landing-bento on mobile <=640px must be single column.",
+    "Fix bottom navigation spacing conflicts: (1) Ensure .content padding-bottom accounts for bottom-nav height (72px + safe-area). (2) Ensure .landing page doesn't show bottom-nav overlap (it shouldn't have bottom-nav, but verify z-index layering). (3) On <=640px where bottom-nav is visible, ensure no FAB or fixed element conflicts with the nav.",
+    "Add responsive refinements for tablet breakpoint 641px-1024px: (1) .landing-hero grid-template-columns: 1fr 1fr with reduced gap (var(--sp-6)). (2) .grid-4 becomes 2 columns. (3) .grid-3 becomes 2 columns. (4) .sidebar width: min(280px, 80vw) on tablet. (5) .landing-bento stays 2 columns. (6) .dash-quick-stats stays 4 columns but with smaller gap (var(--sp-3)).",
+    "Add RTL-specific mobile fixes: (1) Ensure .sidebar transform uses translateX(100%) for RTL slide-in from right edge. (2) Ensure .page-header::before accent rail is on inset-inline-start (which is right in RTL). (3) Ensure .topbar-scope text-overflow works in RTL direction. (4) Ensure .landing-cta-glass .btn icons don't flip incorrectly on mobile RTL. (5) Ensure .metric-icon stays on the correct side in RTL mobile layouts."
+  ],
+  "acceptance_criteria": [
+    "No text overflows the viewport on any screen size from 320px to 1440px",
+    "All interactive elements meet 44px minimum touch target on touch devices",
+    "Cards and grid layouts properly stack on mobile without content being cut off",
+    "Typography is readable at all breakpoints (min 14px body text on mobile)",
+    "Bottom navigation does not overlap content",
+    "RTL layout works correctly on all mobile breakpoints",
+    "Horizontal scroll does not appear on any page unless intentional (tables, filter bars)"
+  ],
+  "verification": [
+    "Read visual-final-polish.css and verify all media queries use correct breakpoints matching responsive.css patterns",
+    "Verify no conflicting !important overrides that would break existing responsive.css rules",
+    "Check that RTL selectors are logically correct (inset-inline-start/end, not left/right)"
+  ],
+  "blocked_reason": null,
+  "findings": "Successfully appended Section 8 (mobile responsive final polish) with 239 new lines covering: tablet breakpoint (1024px), mobile large (640px), mobile small (480px), touch target enforcement (pointer: coarse), RTL-specific mobile fixes (900px, 640px), and reduced motion preferences. All CSS braces are balanced. All var() token references are valid. No other files were modified."
+}

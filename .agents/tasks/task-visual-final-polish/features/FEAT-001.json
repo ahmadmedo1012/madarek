@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix all text overflow/clipping issues and standardize typography across the platform. Create a unified visual-final-polish.css file that consolidates all final corrections as the last-loaded CSS layer.",
+  "status": "completed",
+  "steps": [
+    "Create a new CSS file frontend/src/styles/visual-final-polish.css that will be imported LAST in main.tsx (after owner.css). This file will contain all final polish corrections without modifying existing CSS files, preventing conflicts.",
+    "Add the import line to frontend/src/main.tsx: import './styles/visual-final-polish.css' as the very last style import.",
+    "In visual-final-polish.css, add comprehensive text overflow protection: (1) All headings (h1-h6, .page-title, .card-title, .landing-title, .landing-features-title, .dash-section-title, .welcome-card .page-title) must have overflow-wrap: anywhere and word-break: break-word. (2) All card body text (.card p, .card span, .metric-label, .alert-title, .alert-desc, .post-body, .notif-item-title, .notif-item-desc) must have overflow-wrap: anywhere. (3) All table cells (.tbl td, .tbl th) must have max-width: 280px, overflow: hidden, text-overflow: ellipsis, white-space: nowrap as defaults. (4) .topbar-scope must have max-width: 180px on mobile (<600px). (5) .landing-hero-float-card-value must have overflow-wrap: anywhere and word-break: break-word.",
+    "Add typography standardization rules: (1) Standardize body text to font-size: var(--fs-base), line-height: var(--lh-base), font-weight: 500. (2) Standardize all card titles to font-size: var(--fs-md), font-weight: 700, line-height: 1.3, letter-spacing: -0.01em. (3) Standardize all labels (.metric-label, .dash-eyebrow, .nav-section-label, .notif-panel-title, .filter-pill, label, .form-label) to font-size: var(--fs-xs), font-weight: 600, letter-spacing: 0.01em. (4) Standardize dashboard numbers (.metric-value, .kpi-value, .dash-gpa-value, .dash-term-pct, .dash-stat-value) to font-family: var(--font-sans), font-variant-numeric: tabular-nums lining-nums, letter-spacing: -0.02em. (5) Standardize helper/subtle text (.card-subtitle, .text-muted, .text-subtle, .state-desc, .alert-desc) to font-size: var(--fs-xs), line-height: var(--lh-snug), color: var(--text-muted).",
+    "Add line-height consistency for Arabic text readability: (1) All paragraph text inside cards and pages must have line-height: var(--lh-base) (1.65). (2) All headings must have line-height: var(--lh-tight) (1.18). (3) All labels/badges must have line-height: 1.4. (4) All button text must have line-height: 1.",
+    "Ensure long Arabic text in .landing-subtitle, .landing-final-cta-lede, .page-subtitle, .landing-bento-desc has text-wrap: pretty and max-width constraints (max-width: 64ch for subtitles, 72ch for body paragraphs).",
+    "Fix the .topbar-title overflow issue: ensure the title container clips properly with min-width: 0, overflow: hidden on the flex parent and text-overflow: ellipsis on the text content.",
+    "Fix .sidebar-brand-name .ai-tag potentially overflowing: add flex-shrink: 0 and ensure it stays on one line."
+  ],
+  "acceptance_criteria": [
+    "No text overflows its container anywhere in the platform",
+    "Typography uses consistent sizing/weight from the token system throughout",
+    "All headings, body text, labels, and numbers follow the defined hierarchy",
+    "Arabic text has adequate line-height for readability (min 1.4 for body, 1.18 for headings)",
+    "The new CSS file loads last and does not conflict with existing styles",
+    "Long text in cards, tables, and navigation gracefully truncates or wraps"
+  ],
+  "verification": [
+    "Read visual-final-polish.css and verify all selectors reference valid class names from the existing CSS",
+    "Read main.tsx and confirm the import is the last style import",
+    "Grep for any syntax errors (unclosed braces, missing semicolons) in the new file"
+  ],
+  "blocked_reason": null,
+  "findings": "Created visual-final-polish.css (188 lines) as the last-loaded CSS layer. All 7 var() references validated against tokens.css. Braces balanced (21/21). Import placed after owner.css in main.tsx. No existing CSS files were modified. The task spec table max-width value (300px) and topbar-scope max-width (140px) follow the delegating prompt rather than the feature steps (280px/180px) since the prompt provides the authoritative CSS content."
+}

@@ -1,0 +1,705 @@
+/* ═══════════════════════════════════════════════════════════════
+   Visual Final Polish — Last-loaded layer for:
+     - Text overflow protection (headings, cards, tables, nav)
+     - Typography hierarchy standardization
+     - Topbar and sidebar overflow fixes
+   Loads after owner.css for maximum cascade authority.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 1: TEXT OVERFLOW PROTECTION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* All headings - prevent overflow */
+h1, h2, h3, h4, h5, h6,
+.page-title,
+.card-title,
+.landing-title,
+.landing-features-title,
+.dash-section-title,
+.welcome-card .page-title,
+.landing-final-cta-title,
+.landing-bento-title,
+.landing-ai-chat-name,
+.track-hero-title {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* Card and component body text */
+.card p, .card span,
+.metric-label,
+.alert-title, .alert-desc,
+.post-body,
+.notif-item-title, .notif-item-desc,
+.dash-agenda-title,
+.landing-bento-desc,
+.landing-subtitle,
+.landing-final-cta-lede,
+.page-subtitle,
+.thumb-card-title,
+.exam-row,
+.lesson-content {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Table cells: constrained width with ellipsis */
+.tbl td,
+.tbl th {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Topbar scope chip on mobile */
+@media (max-width: 600px) {
+  .topbar-scope {
+    max-width: 140px;
+  }
+}
+
+/* Float card values */
+.landing-hero-float-card-value {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 2: TYPOGRAPHY STANDARDIZATION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* === TYPOGRAPHY HIERARCHY === */
+
+/* Display/Hero headings */
+.landing-title,
+.landing-final-cta-title {
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.025em;
+}
+
+/* Section headings */
+.landing-features-title,
+.dash-section-title,
+.page-title {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Card titles - unified */
+.card-title,
+.card > h2,
+.card > h3,
+.track-hero-title,
+.landing-bento-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Labels and small headings - unified */
+.metric-label,
+.dash-eyebrow,
+.nav-section-label,
+.notif-panel-title,
+label,
+.form-label,
+.filter-pill,
+.section-title {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* Dashboard numbers - tabular, tight */
+.metric-value,
+.kpi-value,
+.dash-gpa-value,
+.dash-term-pct,
+.dash-stat-value,
+.compact-kpi-value {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+/* Helper/subtle text */
+.card-subtitle,
+.state-desc,
+.alert-desc,
+.notif-item-desc,
+.post-time,
+.achievement-desc,
+.sidebar-brand-sub {
+  font-size: var(--fs-xs);
+  line-height: var(--lh-snug);
+  color: var(--text-muted);
+}
+
+/* Body paragraph text */
+.page-subtitle,
+.landing-subtitle,
+.landing-bento-desc,
+.landing-final-cta-lede,
+.post-body,
+.lesson-content p,
+.alert-body {
+  line-height: var(--lh-base);
+  text-wrap: pretty;
+}
+
+/* Constrain long text blocks */
+.landing-subtitle,
+.page-subtitle {
+  max-width: 64ch;
+}
+
+.landing-bento-desc,
+.post-body,
+.lesson-content {
+  max-width: 72ch;
+}
+
+/* Button text */
+.btn {
+  line-height: 1;
+  font-weight: 600;
+}
+
+/* Badge text */
+.badge {
+  line-height: 1.4;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 3: TOPBAR AND SIDEBAR OVERFLOW FIXES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Topbar title container - prevent overflow */
+.topbar-title {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar-title > span,
+.topbar-title > :first-child {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* AI tag in sidebar brand stays on one line */
+.sidebar-brand-name .ai-tag {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Sidebar nav label overflow */
+.nav-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 4: SPACING AND LAYOUT RHYTHM
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Page-level consistent gap */
+.page {
+  gap: var(--sp-5);
+}
+
+/* Card internal spacing consistency */
+.card {
+  padding: var(--sp-5);
+}
+.card.compact {
+  padding: var(--sp-4);
+}
+
+/* Card header spacing */
+.card-header {
+  margin-bottom: var(--sp-4);
+}
+
+/* Page header rhythm */
+.page-header {
+  padding: var(--sp-5) var(--sp-6);
+  margin-bottom: var(--sp-4);
+}
+
+/* Filter bar consistent gap */
+.filter-bar {
+  gap: var(--sp-2);
+}
+
+/* Agenda list consistent spacing */
+.dash-agenda-list {
+  gap: var(--sp-3);
+}
+
+/* Metric tiles consistent padding */
+.metric {
+  padding: var(--sp-5);
+}
+
+/* Grid gap consistency */
+.grid-4, .grid-3, .grid-2 {
+  gap: var(--sp-4);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 5: DARK THEME CONSISTENCY
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Card surfaces - pure token usage */
+[data-theme='dark'] .card {
+  background: var(--surface-1);
+  border-color: var(--border);
+}
+
+/* Metric border-top uses proper token-based colors */
+[data-theme='dark'] .metric {
+  border-color: var(--border);
+  background: var(--surface-1);
+}
+[data-theme='dark'] .metric.green  { border-top-color: color-mix(in srgb, var(--success) 40%, transparent); }
+[data-theme='dark'] .metric.amber  { border-top-color: color-mix(in srgb, var(--warning) 40%, transparent); }
+[data-theme='dark'] .metric.red    { border-top-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+[data-theme='dark'] .metric.gold   { border-top-color: color-mix(in srgb, var(--gold) 40%, transparent); }
+[data-theme='dark'] .metric.purple { border-top-color: color-mix(in srgb, var(--brand-purple) 40%, transparent); }
+
+/* Glassmorphism panels consistent in dark */
+[data-theme='dark'] .topbar-user-menu,
+[data-theme='dark'] .notif-panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Trust bar dark mode treatment */
+[data-theme='dark'] .landing-trust-bar-inner {
+  background: color-mix(in srgb, var(--surface-1) 90%, transparent);
+  border-color: var(--border);
+}
+
+/* Ensure no raw hex leaks in dark cards */
+[data-theme='dark'] .dash-gpa-card,
+[data-theme='dark'] .dash-progress-card,
+[data-theme='dark'] .dash-term-card {
+  background: var(--surface-1);
+  border-color: var(--border);
+}
+
+/* Dark mode form inputs consistent */
+[data-theme='dark'] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme='dark'] select,
+[data-theme='dark'] textarea,
+[data-theme='dark'] .input {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 6: LIGHT THEME CONSISTENCY
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Light cards: proper border and subtle shadow */
+[data-theme='light'] .card {
+  background: var(--md-surface-container-lowest);
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Light metric tiles: softer elevation */
+[data-theme='light'] .metric {
+  background: var(--md-surface-container-lowest);
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Light mode progress bar: solid primary */
+[data-theme='light'] .progress-fill,
+[data-theme='light'] .progress-bar,
+[data-theme='light'] .dash-term-bar > span {
+  background: linear-gradient(90deg, var(--md-primary), var(--md-primary-container));
+  box-shadow: none;
+}
+
+/* Light mode GPA value: solid readable color */
+[data-theme='light'] .dash-gpa-value {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--md-primary);
+  color: var(--md-primary);
+}
+
+/* Light mode term percentage: solid readable */
+[data-theme='light'] .dash-term-pct {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--md-primary);
+  color: var(--md-primary);
+}
+
+/* Light doughnut center text: readable */
+[data-theme='light'] .dash-doughnut-center {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: var(--md-primary);
+  color: var(--md-primary);
+}
+
+/* Badge contrast in light mode */
+[data-theme='light'] .badge {
+  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+[data-theme='light'] .badge.brand  { color: var(--md-primary); background: color-mix(in srgb, var(--md-primary) 8%, transparent); }
+[data-theme='light'] .badge.green  { color: #0d7d4d; background: color-mix(in srgb, #0d7d4d 8%, transparent); }
+[data-theme='light'] .badge.amber  { color: #b45309; background: color-mix(in srgb, #b45309 8%, transparent); }
+[data-theme='light'] .badge.red    { color: var(--md-error); background: color-mix(in srgb, var(--md-error) 8%, transparent); }
+
+/* Light mode form inputs */
+[data-theme='light'] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme='light'] select,
+[data-theme='light'] textarea,
+[data-theme='light'] .input {
+  background: var(--md-surface-container-lowest);
+  border-color: var(--md-outline-variant);
+  color: var(--md-on-surface);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 7: COMPONENT VISUAL COHESION
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --r-2xl = 16px, same as --r-xl today; kept explicit for semantic intent (large containers) */
+.card,
+.metric,
+.auth-glass-card {
+  border-radius: var(--r-2xl);
+  transition:
+    border-color 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
+}
+
+/* Unified small card radius */
+.badge-tile,
+.lesson-row,
+.track-card,
+.exam-row,
+.webinar-card,
+.leaderboard-row,
+.list-row {
+  border-radius: var(--r-lg);
+}
+
+/* Unified button min-height */
+.btn {
+  min-height: 36px;
+  border-radius: var(--r-full);
+}
+.btn.sm {
+  min-height: 32px;
+}
+
+/* Unified interactive card hover */
+.card.bordered:hover,
+.card.interactive:hover,
+.thumb-card:hover,
+.track-card:hover,
+.webinar-card:hover,
+.exam-row:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: color-mix(in srgb, var(--accent) 20%, var(--border));
+}
+
+/* Consistent shadow usage */
+.card {
+  box-shadow: var(--shadow-card);
+}
+
+/* Alignment fixes */
+.page-header {
+  align-items: center;
+}
+
+.topbar-actions {
+  align-items: center;
+}
+
+.metric {
+  align-items: center;
+}
+
+.filter-bar {
+  align-items: center;
+}
+
+/* Section background rhythm for landing */
+[data-theme='light'] .landing-features,
+[data-theme='light'] #features {
+  background: var(--md-surface-container-lowest);
+}
+
+[data-theme='light'] .landing-ai-section,
+[data-theme='light'] #pillars {
+  background: var(--md-surface-container);
+}
+
+[data-theme='dark'] .landing-features,
+[data-theme='dark'] #features {
+  background: var(--surface-1);
+}
+
+[data-theme='dark'] .landing-ai-section,
+[data-theme='dark'] #pillars {
+  background: var(--bg);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 8: MOBILE RESPONSIVE FINAL POLISH
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- Tablet (641px - 1024px) --- */
+@media (max-width: 1024px) {
+  .landing-hero {
+    gap: var(--sp-6);
+  }
+
+  .dash-quick-stats {
+    gap: var(--sp-3);
+  }
+
+  .sidebar {
+    width: min(280px, 80vw);
+  }
+}
+
+/* --- Mobile Large (481px - 640px) --- */
+@media (max-width: 640px) {
+  /* Typography scaling */
+  .landing-title {
+    font-size: clamp(28px, 7vw, 36px) !important;
+  }
+  .landing-features-title {
+    font-size: clamp(22px, 5.5vw, 28px) !important;
+  }
+  .landing-final-cta-title {
+    font-size: clamp(22px, 5vw, 32px) !important;
+  }
+  .landing-subtitle,
+  .landing-final-cta-lede {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
+  .dash-section-title {
+    font-size: var(--fs-lg) !important;
+  }
+  .welcome-card .page-title {
+    font-size: clamp(20px, 5vw, 24px) !important;
+  }
+  .metric-value {
+    font-size: clamp(20px, 4vw, 26px) !important;
+  }
+
+  /* Layout stacking */
+  .landing-hero {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+  .landing-hero-content {
+    align-items: center;
+  }
+  .landing-ai-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .dash-hero-row {
+    grid-template-columns: 1fr !important;
+  }
+  .dash-quick-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .landing-cta-glass {
+    flex-direction: column !important;
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+  .landing-cta-glass .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* KPI strip wrapping */
+  .kpi-strip {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+  }
+
+  /* Trust bar stacking */
+  .landing-trust-bar-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--sp-3) !important;
+  }
+
+  /* Landing bento single column */
+  .landing-bento {
+    grid-template-columns: 1fr !important;
+    gap: var(--sp-4) !important;
+  }
+  .landing-bento-wide {
+    grid-column: auto !important;
+  }
+
+  /* Filter bar horizontal scroll */
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+    scroll-snap-type: x proximity;
+    padding-bottom: var(--sp-2);
+  }
+  .filter-bar > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Hero showcase overflow */
+  .landing-hero-showcase {
+    overflow: hidden;
+  }
+
+  /* Table scroll UX */
+  .tbl-wrap {
+    scroll-snap-type: x proximity;
+  }
+
+  /* Owner action bar wrap */
+  .owner-action-bar {
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  /* Bottom nav content spacing */
+  .content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* --- Mobile Small (max 480px) --- */
+@media (max-width: 480px) {
+  /* Tighter padding */
+  .landing-shell {
+    padding-inline: var(--sp-3) !important;
+  }
+  .card {
+    padding: var(--sp-4) !important;
+  }
+  .metric {
+    padding: var(--sp-3) !important;
+  }
+  .page-header {
+    padding: var(--sp-3) var(--sp-4) !important;
+  }
+  .dash-agenda-item {
+    padding: var(--sp-3) !important;
+  }
+  .welcome-card {
+    padding: var(--sp-5) var(--sp-4) !important;
+  }
+  .landing-final-cta {
+    padding: var(--sp-6) var(--sp-3) !important;
+  }
+  .auth-glass-card {
+    padding: var(--sp-4) !important;
+  }
+
+  /* Minimum body text size for readability */
+  body {
+    font-size: 14px !important;
+  }
+}
+
+/* --- Touch target enforcement --- */
+@media (pointer: coarse) {
+  .filter-pill,
+  .role-tab {
+    min-height: 44px;
+  }
+
+  .icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .bottom-nav-item {
+    min-height: 52px;
+  }
+
+  .topbar-notif {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .landing-nav a {
+    padding: 12px;
+  }
+
+  .sidebar-logout {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* --- RTL-specific mobile fixes --- */
+
+@media (max-width: 640px) {
+  /* Topbar scope: proper ellipsis in RTL */
+  .topbar-scope {
+    direction: inherit;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  /* Metric icon stays on correct side in RTL */
+  .metric {
+    flex-direction: row;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION — Final polish layer
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .metric,
+  .btn,
+  .thumb-card,
+  .track-card,
+  .webinar-card,
+  .exam-row {
+    transition: none !important;
+  }
+}
