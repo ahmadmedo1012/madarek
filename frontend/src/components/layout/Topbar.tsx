@@ -10,6 +10,7 @@ import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout } from '../../hooks/useAuth';
 import { useMyProfile } from '../../hooks/useResources';
+import { LangToggle } from '../../lib/i18n';
 
 interface TopbarProps {
   title: ReactNode;
@@ -89,6 +90,7 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
           </NavLink>
         ))}
         <NotificationDropdown alertsPath={alertsPath} />
+        <LangToggle />
 
         {user && (
           <div className="topbar-user" ref={menuRef}>

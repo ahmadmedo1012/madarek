@@ -1,0 +1,345 @@
+/* ============================================
+   world-class.css — Micro-interactions & LTR overrides
+   ============================================ */
+
+/* -------------------------------------------
+   1. Scroll-reveal animations
+   ------------------------------------------- */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes reveal-slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reveal-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.reveal.revealed {
+  opacity: 1;
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-up.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reveal-fade {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.reveal-fade.revealed {
+  opacity: 1;
+}
+
+/* Stagger delays for card grids */
+.reveal-stagger-1 { transition-delay: 0.05s; }
+.reveal-stagger-2 { transition-delay: 0.1s; }
+.reveal-stagger-3 { transition-delay: 0.15s; }
+.reveal-stagger-4 { transition-delay: 0.2s; }
+.reveal-stagger-5 { transition-delay: 0.25s; }
+.reveal-stagger-6 { transition-delay: 0.3s; }
+
+/* -------------------------------------------
+   2. Shimmer / pulse skeleton animations
+   ------------------------------------------- */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-elevated, #f0f0f0) 25%,
+    var(--surface-hover, #e0e0e0) 50%,
+    var(--surface-elevated, #f0f0f0) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* -------------------------------------------
+   3. Floating widget animations (Oasis AI)
+   ------------------------------------------- */
+@keyframes float-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes float-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--primary-alpha, rgba(99, 102, 241, 0.3));
+  }
+  50% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+.float-widget {
+  animation: float-bounce 3s ease-in-out infinite;
+}
+
+.float-widget-pulse {
+  animation: float-pulse 2s ease-in-out infinite;
+}
+
+/* -------------------------------------------
+   4. Gamification badge pulse/glow
+   ------------------------------------------- */
+@keyframes badge-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px 0 var(--warning, #f59e0b);
+  }
+  50% {
+    box-shadow: 0 0 12px 4px var(--warning, #f59e0b);
+  }
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.badge-animate-glow {
+  animation: badge-glow 2s ease-in-out infinite;
+}
+
+.badge-animate-pulse {
+  animation: badge-pulse 1.5s ease-in-out infinite;
+}
+
+/* -------------------------------------------
+   5. Dashboard card stagger animations
+   ------------------------------------------- */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card-stagger {
+  animation: card-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.card-stagger:nth-child(1) { animation-delay: 0.04s; }
+.card-stagger:nth-child(2) { animation-delay: 0.08s; }
+.card-stagger:nth-child(3) { animation-delay: 0.12s; }
+.card-stagger:nth-child(4) { animation-delay: 0.16s; }
+.card-stagger:nth-child(5) { animation-delay: 0.2s; }
+.card-stagger:nth-child(6) { animation-delay: 0.24s; }
+.card-stagger:nth-child(7) { animation-delay: 0.28s; }
+.card-stagger:nth-child(8) { animation-delay: 0.32s; }
+
+/* -------------------------------------------
+   6. Search dropdown slide-in
+   ------------------------------------------- */
+@keyframes search-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.search-dropdown-animated {
+  animation: search-slide-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top center;
+}
+
+/* -------------------------------------------
+   7. Lang Toggle pill styles
+   ------------------------------------------- */
+.lang-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface-elevated, #f8fafc);
+  color: var(--text, #1e293b);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.lang-toggle-pill:hover {
+  background: var(--surface-hover, #f1f5f9);
+  border-color: var(--primary, #6366f1);
+  transform: scale(1.05);
+}
+
+.lang-toggle-pill:active {
+  transform: scale(0.96);
+}
+
+/* -------------------------------------------
+   8. LTR overrides for English mode
+   ------------------------------------------- */
+[dir='ltr'] .sidebar {
+  border-right: 1px solid var(--border, #e2e8f0);
+  border-left: none;
+}
+
+[dir='ltr'] .topbar-title {
+  text-align: left;
+}
+
+[dir='ltr'] .topbar-actions {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+[dir='ltr'] .sidebar-nav-item {
+  padding-left: 16px;
+  padding-right: 12px;
+  text-align: left;
+}
+
+[dir='ltr'] .sidebar-nav-item .icon {
+  margin-right: 10px;
+  margin-left: 0;
+}
+
+[dir='ltr'] .content-inner {
+  text-align: left;
+}
+
+[dir='ltr'] .topbar-mobile-toggle {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+[dir='ltr'] .card {
+  text-align: left;
+}
+
+/* -------------------------------------------
+   9. Reduced motion preference
+   ------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-up,
+  .reveal-scale,
+  .reveal-fade,
+  .card-stagger,
+  .float-widget,
+  .float-widget-pulse,
+  .badge-animate-glow,
+  .badge-animate-pulse,
+  .skeleton-shimmer,
+  .skeleton-pulse,
+  .search-dropdown-animated {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

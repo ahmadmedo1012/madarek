@@ -6,6 +6,7 @@ import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
 import { useThemeSync } from './ThemeToggle';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
+import { useI18nStore } from '../../stores/i18n.store';
 import { useMe } from '../../hooks/useAuth';
 import { LoadingState } from '../primitives/States';
 
@@ -106,6 +107,14 @@ export function AppShell({ children }: { children?: ReactNode }) {
   const title = resolveTitle(location.pathname);
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const locale = useI18nStore((s) => s.locale);
+  const dir = useI18nStore((s) => s.dir);
+
+  // Sync document dir and lang with i18n locale
+  useEffect(() => {
+    document.documentElement.dir = dir;
+    document.documentElement.lang = locale;
+  }, [locale, dir]);
 
   // Toggle topbar scrolled state when content scrolls past 4px
   useEffect(() => {
