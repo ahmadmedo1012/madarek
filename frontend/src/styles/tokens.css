@@ -105,7 +105,7 @@
   --fs-xxs: 11px;
   --fs-xs: 12px;
   --fs-sm: 13px;
-  --fs-base: 14px;
+  --fs-base: 15px;
   --fs-md: 15px;
   --fs-lg: 18px;
   --fs-xl: 22px;
@@ -115,6 +115,8 @@
 
   /* Premium Arabic Typography Hierarchy */
   --fs-display-lg: clamp(32px, 5vw, 48px);
+  --fs-display: clamp(40px, 6vw, 64px);
+  --lh-display: 1.1;
   --fs-headline-md: clamp(24px, 3.5vw, 32px);
   --fs-headline-sm: clamp(20px, 2.5vw, 24px);
   --fs-body-lg: 18px;
@@ -187,13 +189,13 @@
 :root,
 [data-theme='dark'] {
   /* Surfaces */
-  --bg: #09090b;
-  --surface-1: #111113;
-  --surface-2: #1c1c1e;
-  --surface-3: #27272a;
+  --bg: #0f1117;
+  --surface-1: #141820;
+  --surface-2: #1c2028;
+  --surface-3: #252a34;
 
   /* Borders */
-  --border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.14);
 
   /* Text */
@@ -229,7 +231,7 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
 
-  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 0 0 1px rgba(163, 201, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* Focus & Selection */
@@ -289,7 +291,7 @@
   --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.08), 0 32px 64px rgba(15, 23, 42, 0.12);
 
   --shadow-card: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.08), 0 12px 32px -8px rgba(15, 23, 42, 0.12);
+  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.06), 0 12px 32px -8px rgba(0, 52, 97, 0.10);
 
   /* Focus & Selection (light) */
   --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);

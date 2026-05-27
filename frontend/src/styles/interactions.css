@@ -336,3 +336,159 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
 @media (prefers-reduced-motion: reduce) {
   .card-enter { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUTE-CHANGE TRANSITION UPGRADE
+   Smoother page entrance with longer duration and refined easing
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Override the content-inner animation to be smoother */
+.content-inner {
+  animation: ix-page-in-soft 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD FLIP UTILITY
+   For cards that transition between states (e.g. front/back)
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes card-flip-in {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateY(-15deg) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) rotateY(0deg) scale(1);
+  }
+}
+
+.card-flip-in {
+  animation: card-flip-in 500ms var(--ease-out) both;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DRAWER TRANSITIONS
+   Slide panels in/out from the inline-end side
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes drawer-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes drawer-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.drawer-enter {
+  animation: drawer-slide-in 380ms var(--ease-out) both;
+}
+
+.drawer-exit {
+  animation: drawer-slide-out 280ms var(--ease-in) both;
+}
+
+/* RTL: drawers slide from left */
+[dir="rtl"] .drawer-enter {
+  animation-name: drawer-slide-in;
+}
+
+@keyframes drawer-slide-in-rtl {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes drawer-slide-out-rtl {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+[dir="rtl"] .drawer-enter {
+  animation-name: drawer-slide-in-rtl;
+}
+
+[dir="rtl"] .drawer-exit {
+  animation-name: drawer-slide-out-rtl;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NOTIFICATION ENTRANCE
+   Slide from top with spring bounce
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes notif-enter-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scale(1);
+  }
+  80% {
+    transform: translateY(-2px) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.notif-enter {
+  animation: notif-enter-in 500ms var(--ease-spring) both;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREFERS-REDUCED-MOTION — Fallbacks for all new keyframes
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .content-inner {
+    animation: none;
+  }
+
+  .card-flip-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .drawer-enter,
+  .drawer-exit {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .notif-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
