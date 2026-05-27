@@ -625,6 +625,56 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   ACCENT COLOR PICKER IN CUSTOMIZER
+   ═══════════════════════════════════════════════════════════════ */
+
+.accent-picker { display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 0; }
+.accent-swatch {
+  width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent;
+  cursor: pointer; position: relative; transition: transform 0.15s ease, border-color 0.15s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.accent-swatch:hover { transform: scale(1.15); }
+.accent-swatch.active { border-color: var(--text); }
+.accent-swatch svg { color: #fff; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE REFINEMENT
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme='dark'] body {
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(163,201,255,0.02), transparent 50%),
+    linear-gradient(180deg, rgba(20,24,32,0.5) 0%, transparent 100%);
+}
+
+[data-theme='dark'] .card {
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), var(--shadow-card);
+}
+
+[data-theme='dark'] .content {
+  position: relative;
+}
+
+[data-theme='dark'] .content::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.3) 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme='dark'] .sidebar {
+  backdrop-filter: blur(calc(var(--glass-blur) * 1.5));
+}
+
+[data-theme='dark'] .oasis-widget__panel {
+  backdrop-filter: blur(calc(var(--glass-blur) * 2));
+}
+
+/* ═══════════════════════════════════════════════════════════════
    REDUCED MOTION — All animations disabled
    ═══════════════════════════════════════════════════════════════ */
 

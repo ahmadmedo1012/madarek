@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { X, ChevronUp, ChevronDown, RotateCcw, Sliders } from 'lucide-react';
+import { X, ChevronUp, ChevronDown, RotateCcw, Sliders, Check } from 'lucide-react';
 import { Icon } from './Icon';
 import { useDashboardStore } from '../stores/dashboard.store';
 import { useI18nStore } from '../stores/i18n.store';
+import { useAccentColorStore, ACCENT_COLOR_KEYS, getAccentPreset } from '../hooks/useAccentColor';
+import { useAudioCue } from '../hooks/useAudioCue';
 
 const WIDGET_LABELS_AR: Record<string, string> = {
   stats: 'الإحصائيات السريعة',
@@ -41,6 +42,11 @@ export function DashboardCustomizer({ open, onClose }: { open: boolean; onClose:
   const toggleWidget = useDashboardStore((s) => s.toggleWidget);
   const reorderWidgets = useDashboardStore((s) => s.reorderWidgets);
   const resetDefaults = useDashboardStore((s) => s.resetDefaults);
+  const activeColor = useAccentColorStore((s) => s.activeColor);
+  const setAccentColor = useAccentColorStore((s) => s.setAccentColor);
+  const muted = useAudioCue((s) => s.muted);
+  const toggleMuted = useAudioCue((s) => s.toggleMuted);
+  const playClick = useAudioCue((s) => s.playClick);
 
   const labels = locale === 'ar' ? WIDGET_LABELS_AR : WIDGET_LABELS_EN;
   const sorted = [...widgets].sort((a, b) => a.order - b.order);
@@ -116,6 +122,49 @@ export function DashboardCustomizer({ open, onClose }: { open: boolean; onClose:
             </div>
           ))}
         </div>
+
+        {/* Accent Color Picker */}
+        <section style={{ padding: 'var(--sp-3) var(--sp-4)' }}>
+          <h4 style={{ fontSize: '0.85rem', fontWeight: 600, marginBottom: 'var(--sp-2)' }}>
+            {locale === 'ar' ? 'لون التمييز' : 'Accent Color'}
+          </h4>
+          <div className="accent-picker">
+            {ACCENT_COLOR_KEYS.map((key) => {
+              const preset = getAccentPreset(key);
+              const isActive = activeColor === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className={`accent-swatch${isActive ? ' active' : ''}`}
+                  style={{ background: preset.accent }}
+                  onClick={() => {
+                    setAccentColor(key);
+                    playClick();
+                  }}
+                  aria-label={key}
+                >
+                  {isActive && <Icon icon={Check} size={14} />}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Sound Effects Toggle */}
+        <section style={{ padding: 'var(--sp-2) var(--sp-4)' }}>
+          <div className="dash-customizer-row">
+            <label className="dash-customizer-label">
+              <input
+                type="checkbox"
+                checked={!muted}
+                onChange={toggleMuted}
+                className="dash-customizer-checkbox"
+              />
+              <span>{locale === 'ar' ? 'المؤثرات الصوتية' : 'Sound Effects'}</span>
+            </label>
+          </div>
+        </section>
 
         <footer className="dash-customizer-footer">
           <button type="button" className="dash-customizer-reset" onClick={resetDefaults}>
