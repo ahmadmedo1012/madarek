@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Complete Madarek rebranding: replace old Z logo with madarek-mark.svg, remove ministry strip, update all branding text from 'الزاوية' to 'مدارك', and update all component references.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "In frontend/src/components/BrandMark.tsx: Change src from '/brand/zu-mark.svg' to '/brand/madarek-mark.svg'. Update the comment at the top to reference Madarek instead of University of Zawia.",
     "In frontend/src/pages/LandingPage.tsx: (a) Remove the entire ministry-strip div (the <div className='ministry-strip'>...</div> block, approximately lines 37-44). (b) Change landing-brand aria-label from 'منصة الزاوية للتعليم الذكي' to 'مدارك - منصة التعليم الذكي'. (c) Change landing-brand-name from 'الزاوية' to 'مدارك'. (d) Change landing-brand-sub from 'جامعة الزاوية' to 'التعليم الذكي'. (e) Change hero h1 landing-title from 'منصة الزاوية:' to 'مدارك'. (f) Change hero title .block span from 'جامعة الزاوية للتعليم الذكي' to 'منصة التعليم الذكي'. (g) Update landing-subtitle paragraph to remove ministry reference: change to 'منصة أكاديمية متطورة تجمع بين الابتكار والتميز لتمكين قادة المستقبل في بيئة تعليمية ذكية ومتكاملة.' (h) In the 'about' section: change h2 from 'منصة رسمية لجامعة عريقة' to 'تعليم ذكي بمعايير عالمية'. Change the about paragraph to: 'مدارك هي منصة تعليمية ذكية تأسست لتربط الطلاب والأساتذة والإدارة في بيئة رقمية واحدة. كل زر، كل بطاقة، كل شاشة مكتوبة من الصفر، ومُختبَرة مع طلاب وأساتذة فعليين.' (i) In landing-final-cta-meta: replace the two spans with: <span>مدارك</span> <span className='landing-final-cta-divider' aria-hidden>·</span> <span>التعليم الذكي</span>. (j) In footer: change copyright text from 'منصة الزاوية للتعليم الذكي · جامعة الزاوية' to 'مدارك · منصة التعليم الذكي'.",
@@ -27,5 +27,5 @@
     "Run: grep 'مدارك' /projects/sandbox/madarek/frontend/src/components/layout/AppShell.tsx to confirm fallback"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "TypeScript typecheck fails due to missing node_modules (INTEGRATIONS_ONLY network prevents npm install). All errors are pre-existing module resolution failures unrelated to branding changes. Verified changes via grep: no zu-mark, no ministry-strip in pages, no 'منصة الزاوية' in branding areas, PAGE_TITLES university entry preserved."
 }
