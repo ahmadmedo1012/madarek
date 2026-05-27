@@ -477,3 +477,242 @@ label,
 [data-theme='dark'] #pillars {
   background: var(--bg);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 8: MOBILE RESPONSIVE FINAL POLISH
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- Tablet (641px - 1024px) --- */
+@media (max-width: 1024px) {
+  .landing-hero {
+    gap: var(--sp-6);
+  }
+
+  .dash-quick-stats {
+    gap: var(--sp-3);
+  }
+
+  .sidebar {
+    width: min(280px, 80vw);
+  }
+}
+
+/* --- Mobile Large (481px - 640px) --- */
+@media (max-width: 640px) {
+  /* Typography scaling */
+  .landing-title {
+    font-size: clamp(28px, 7vw, 36px) !important;
+  }
+  .landing-features-title {
+    font-size: clamp(22px, 5.5vw, 28px) !important;
+  }
+  .landing-final-cta-title {
+    font-size: clamp(22px, 5vw, 32px) !important;
+  }
+  .landing-subtitle,
+  .landing-final-cta-lede {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
+  .dash-section-title {
+    font-size: var(--fs-lg) !important;
+  }
+  .welcome-card .page-title {
+    font-size: clamp(20px, 5vw, 24px) !important;
+  }
+  .metric-value {
+    font-size: clamp(20px, 4vw, 26px) !important;
+  }
+
+  /* Layout stacking */
+  .landing-hero {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+  .landing-hero-content {
+    align-items: center;
+  }
+  .landing-ai-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .dash-hero-row {
+    grid-template-columns: 1fr !important;
+  }
+  .dash-quick-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .landing-cta-glass {
+    flex-direction: column !important;
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+  .landing-cta-glass .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* KPI strip wrapping */
+  .kpi-strip {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+  }
+
+  /* Trust bar stacking */
+  .landing-trust-bar-inner {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--sp-3) !important;
+  }
+
+  /* Landing bento single column */
+  .landing-bento {
+    grid-template-columns: 1fr !important;
+    gap: var(--sp-4) !important;
+  }
+  .landing-bento-wide {
+    grid-column: auto !important;
+  }
+
+  /* Filter bar horizontal scroll */
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+    scroll-snap-type: x proximity;
+    padding-bottom: var(--sp-2);
+  }
+  .filter-bar > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Hero showcase overflow */
+  .landing-hero-showcase {
+    overflow: hidden;
+  }
+
+  /* Table scroll UX */
+  .tbl-wrap {
+    scroll-snap-type: x proximity;
+  }
+
+  /* Owner action bar wrap */
+  .owner-action-bar {
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  /* Bottom nav content spacing */
+  .content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* --- Mobile Small (max 480px) --- */
+@media (max-width: 480px) {
+  /* Tighter padding */
+  .landing-shell {
+    padding-inline: var(--sp-3) !important;
+  }
+  .card {
+    padding: var(--sp-3) !important;
+  }
+  .metric {
+    padding: var(--sp-3) !important;
+  }
+  .page-header {
+    padding: var(--sp-3) var(--sp-4) !important;
+  }
+  .dash-agenda-item {
+    padding: var(--sp-3) !important;
+  }
+  .welcome-card {
+    padding: var(--sp-5) var(--sp-4) !important;
+  }
+  .landing-final-cta {
+    padding: var(--sp-6) var(--sp-3) !important;
+  }
+  .auth-glass-card {
+    padding: var(--sp-4) !important;
+  }
+
+  /* Minimum body text size for readability */
+  body {
+    font-size: 14px !important;
+  }
+}
+
+/* --- Touch target enforcement --- */
+@media (pointer: coarse) {
+  .btn,
+  .pill,
+  .tab,
+  .nav-item,
+  .filter-pill,
+  .role-tab {
+    min-height: 44px;
+  }
+
+  .icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .bottom-nav-item {
+    min-height: 52px;
+  }
+
+  .topbar-notif {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .landing-nav a {
+    padding: 12px;
+  }
+
+  .sidebar-logout {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* --- RTL-specific mobile fixes --- */
+@media (max-width: 900px) {
+  /* Sidebar: RTL slides from right (already correct via translateX(100%)
+     in base.css for [dir=rtl] / default RTL). Reinforce logical positioning. */
+  .sidebar {
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Topbar scope: proper ellipsis in RTL */
+  .topbar-scope {
+    direction: inherit;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  /* Metric icon stays on correct side in RTL */
+  .metric {
+    flex-direction: row;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION — Final polish layer
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .metric,
+  .btn,
+  .thumb-card,
+  .track-card,
+  .webinar-card,
+  .exam-row {
+    transition: none !important;
+  }
+}
