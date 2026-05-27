@@ -1,0 +1,7 @@
+{
+  "task_id": "task-madarek-rebrand",
+  "task_description": "Complete Madarek platform rebranding and visual redesign: replace old Z logo with madarek-mark.svg, remove ministry strip, rebrand all text from 'الزاوية' to 'مدارك', clean up dead CSS, and enhance the landing page for a premium modern EdTech feel.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}
