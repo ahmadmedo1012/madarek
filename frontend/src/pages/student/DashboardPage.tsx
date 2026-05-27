@@ -10,6 +10,8 @@ import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useDashboardStore } from '../../stores/dashboard.store';
 import { DashboardCustomizer, DashboardCustomizerTrigger } from '../../components/DashboardCustomizer';
+import { GamificationWidget } from '../../components/GamificationWidget';
+import { DashboardWaveIllustration } from '../../components/illustrations';
 
 /**
  * Greeting that adapts to the local hour. Calm, conversational.
@@ -189,6 +191,7 @@ export default function StudentDashboardPage() {
           <span className="welcome-particle-dot" />
           <span className="welcome-particle-dot" />
         </div>
+        <DashboardWaveIllustration className="" />
         <div className="dash-header-row">
           <h1 className="page-title">
             {greeting.emoji} {greeting.text}، {user?.firstName ?? 'أحمد'}
@@ -226,6 +229,9 @@ export default function StudentDashboardPage() {
             .map((w, i) => renderWidget(w.id, i))}
         </section>
       )}
+
+      {/* Gamification Widget */}
+      <GamificationWidget />
 
       {/* Other widgets rendered in order */}
       {sorted

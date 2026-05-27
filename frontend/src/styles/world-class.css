@@ -322,8 +322,132 @@
 }
 
 /* -------------------------------------------
-   9. Reduced motion preference
+   9. SVG Illustration Animations
    ------------------------------------------- */
+
+/* Gentle float up/down */
+@keyframes illustration-float-anim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.illustration-float {
+  animation: illustration-float-anim 4s ease-in-out infinite;
+}
+
+/* Scale pulse */
+@keyframes illustration-pulse-anim {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+
+.illustration-pulse {
+  animation: illustration-pulse-anim 3s ease-in-out infinite;
+}
+
+/* Stroke-dashoffset draw animation */
+@keyframes illustration-draw-anim {
+  from { stroke-dashoffset: 300; }
+  to { stroke-dashoffset: 0; }
+}
+
+.illustration-draw {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: illustration-draw-anim 2s ease-out forwards;
+}
+
+/* Gradient shift via background-position */
+@keyframes illustration-gradient-shift-anim {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(15deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+.illustration-gradient-shift {
+  animation: illustration-gradient-shift-anim 6s ease-in-out infinite;
+}
+
+/* -------------------------------------------
+   9b. Lab card hover interactions
+   ------------------------------------------- */
+.lab-card-enhanced {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lab-card-enhanced:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.lab-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.lab-card-enhanced:hover .lab-card-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lab-card-overlay-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-md, 8px);
+  border: none;
+  background: var(--primary, #6366f1);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s ease;
+}
+
+.lab-card-overlay-btn:hover {
+  transform: scale(1.05);
+}
+
+/* -------------------------------------------
+   9c. AI typing indicator animation
+   ------------------------------------------- */
+.ai-typing-indicator {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.ai-typing-indicator span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary, #6366f1);
+  animation: typing-dot 1.2s ease-in-out infinite;
+}
+
+.ai-typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.ai-typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
 /* -------------------------------------------
    10. Oasis AI Widget
    ------------------------------------------- */
@@ -1016,11 +1140,22 @@
   .skeleton-shimmer,
   .skeleton-pulse,
   .search-dropdown-animated,
-  .oasis-widget__trigger {
+  .oasis-widget__trigger,
+  .illustration-float,
+  .illustration-pulse,
+  .illustration-draw,
+  .illustration-gradient-shift,
+  .lab-card-enhanced,
+  .ai-typing-indicator span {
     animation: none !important;
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .illustration-draw {
+    stroke-dashoffset: 0 !important;
+    stroke-dasharray: none !important;
   }
 }
 
