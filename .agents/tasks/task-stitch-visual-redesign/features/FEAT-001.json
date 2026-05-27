@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Rebuild the design system foundation: consolidate and upgrade tokens.css, stitch-tokens.css, and stitch-canonical.css into a unified premium design token system. Create a new comprehensive design-tokens file that implements the Google Stitch design language with modern gradients (blues, purples, teals), glassmorphism effects, 8px grid spacing, premium typography hierarchy for Arabic, refined shadows and depth system, and motion tokens for subtle animations.",
+  "status": "in_progress",
+  "steps": [
+    "Read and understand the current token cascade: frontend/src/styles/tokens.css (base tokens), frontend/src/styles/stitch-tokens.css (overrides), frontend/src/styles/stitch-canonical.css (Material 3 Stitch tokens).",
+    "Rewrite frontend/src/styles/tokens.css to be the single source of truth for the new Stitch-inspired design system. Include: (a) Premium color palette with deep navy primary (#003461), warm gold secondary (#fed65b), dark teal tertiary for AI (#003a3b), modern gradients. (b) 8px base grid spacing scale. (c) Premium Arabic typography hierarchy with display/headline/body/label sizes. (d) Modern shadow system with multiple depth levels plus glassmorphism backdrop-filter tokens. (e) Refined motion tokens (ease curves, durations). (f) Border radius scale including pill shapes. (g) Both light and dark theme color assignments.",
+    "Update frontend/src/styles/stitch-tokens.css to only contain minimal overrides or remove if consolidated into tokens.css.",
+    "Update frontend/src/styles/stitch-canonical.css to contain the Stitch-specific component-level design rules (buttons, sidebar, topbar, cards) using the new unified tokens, removing any redundant token declarations already in tokens.css.",
+    "Update frontend/src/styles/base.css to use the new token names consistently for body, sidebar, topbar, and content layout. Add CSS utility classes for glassmorphism (.glass, .glass-subtle), gradient backgrounds (.gradient-primary, .gradient-hero), and premium surface elevations.",
+    "Update frontend/src/styles/components.css to refresh card, metric, badge, progress, button, input, and tab styles using the new design tokens - rounder corners, refined shadows, modern border treatments, glassmorphism on hover states.",
+    "Ensure frontend/src/styles/redesign-v2.css is cleaned up or emptied since its sidebar/palette overrides will now conflict with the unified Stitch system (the new stitch-canonical.css takes precedence being loaded later)."
+  ],
+  "acceptance_criteria": [
+    "tokens.css contains a complete, well-organized design token system with 8px grid spacing, premium typography scale, modern color palette (navy/gold/teal), shadow depth system, motion tokens, and both light/dark themes",
+    "No duplicate or conflicting token definitions across token files",
+    "stitch-canonical.css contains component-level Stitch rules (buttons, sidebar, cards) that reference tokens from tokens.css",
+    "base.css uses new tokens for layout primitives and includes glassmorphism/gradient utility classes",
+    "components.css provides modern, premium-feeling card/button/badge/input styles",
+    "redesign-v2.css conflicts are resolved (either emptied or harmonized)",
+    "All CSS is syntactically valid"
+  ],
+  "verification": [
+    "Read all modified CSS files and verify syntactic correctness (balanced braces, valid property names, valid values)",
+    "Verify that token names used in component CSS match definitions in tokens.css",
+    "Verify no conflicting !important rules between redesign-v2.css and stitch-canonical.css"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

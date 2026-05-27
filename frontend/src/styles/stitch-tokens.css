@@ -1,45 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
-   Stitch-aligned design tokens — overrides loaded after evolution.css
+   Stitch Tokens — Minimal overrides (loaded after tokens.css)
    ───────────────────────────────────────────────────────────────
-   Strategy: keep token NAMES identical so every component still
-   works, just tune the VALUES toward Stitch's institutional palette
-   and add a softer Arabic font (Cairo) on top of IBM Plex.
+   All design tokens are now consolidated in tokens.css.
+   This file only applies the font-family to body and sets
+   typographic conventions for headings and metric values.
    ═══════════════════════════════════════════════════════════════ */
-
-:root {
-  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --gold: #C29F55;
-  --gold-soft: rgba(194, 159, 85, 0.15);
-  --gold-hover: #D4B268;
-}
-
-[data-theme='light'] {
-  --bg: #F8F9FA;
-  --surface-1: #FFFFFF;
-  --surface-2: #F1F3F5;
-  --surface-3: #E9ECEF;
-  --border: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.12);
-  --accent: #0B2545;
-  --accent-hover: #133D72;
-  --accent-soft: rgba(11, 37, 69, 0.06);
-  --accent-border: rgba(11, 37, 69, 0.2);
-  --accent-fg: #FFFFFF;
-  --text: #111827;
-  --text-muted: #4B5563;
-  --text-subtle: #9CA3AF;
-  --shadow-sm: 0 2px 4px rgba(11, 37, 69, 0.04);
-  --shadow-md: 0 8px 16px rgba(11, 37, 69, 0.06);
-  --shadow-lg: 0 16px 32px rgba(11, 37, 69, 0.08);
-  --shadow-xl: 0 24px 48px rgba(11, 37, 69, 0.12);
-}
-
-[data-theme='dark'] {
-  --accent: #4C7BD9;
-  --accent-hover: #6E94E5;
-  --accent-soft: rgba(76, 123, 217, 0.14);
-  --accent-border: rgba(76, 123, 217, 0.45);
-}
 
 body {
   font-family: var(--font-sans);
@@ -51,65 +16,8 @@ h1, h2, h3, .page-title, .auth-brand-hero, .landing-title, .track-hero-title, .t
   letter-spacing: -0.02em;
 }
 
-.card {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  border-radius: 12px;
-  padding: var(--sp-5);
-}
-
-[data-theme='light'] .card {
-  border-color: var(--border);
-  box-shadow: var(--shadow-md);
-}
-
-.btn {
-  border-radius: 8px;
-  font-weight: var(--fw-semibold);
-}
-
-[data-theme='light'] .btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-[data-theme='light'] .btn.primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
-}
-
-.badge {
-  font-weight: var(--fw-semibold);
-  border-radius: var(--r-sm);
-  padding: 3px 10px;
-  font-size: 11px;
-}
-
 .metric-value, .kpi-value, .this-week-emphasis {
   font-family: var(--font-sans);
   font-weight: var(--fw-bold);
   letter-spacing: -0.025em;
-}
-
-[data-theme='light'] .nav-item.on {
-  background: var(--accent-soft);
-  color: var(--accent);
-  border-right: 3px solid var(--gold);
-}
-[data-theme='light'] .nav-item.on::before { display: none; }
-
-.gpa-hero {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-5);
-  padding: var(--sp-5);
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow-md);
-  position: relative;
-  overflow: hidden;
-}
-[data-theme='light'] .gpa-hero {
-  background: linear-gradient(135deg, var(--surface-1) 0%, var(--surface-2) 200%);
 }

@@ -24,17 +24,23 @@
 .card {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   padding: var(--sp-5);
   position: relative;
-  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
 .card.compact { padding: var(--sp-4); }
 .card.flush { padding: 0; }
-.card.bordered:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+.card.bordered:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.card.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
 
 @media (max-width: 600px) {
-  .card { padding: var(--sp-4); border-radius: var(--r-md); }
+  .card { padding: var(--sp-4); border-radius: var(--r-lg); }
   .card.compact { padding: var(--sp-3); }
 }
 
@@ -79,7 +85,7 @@
 .metric {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: var(--r-xl);
+  border-radius: var(--r-2xl);
   padding: var(--sp-5);
   position: relative;
   display: flex;
@@ -114,7 +120,8 @@
 
 .metric:hover {
   border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .metric-head {
@@ -134,7 +141,7 @@
 .metric-icon {
   width: 44px;
   height: 44px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -189,7 +196,7 @@
   gap: var(--sp-2);
   padding: 0 var(--sp-4);
   height: 34px;
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   border: 1px solid var(--border);
   background: var(--surface-1);
   color: var(--text);
@@ -197,7 +204,7 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   white-space: nowrap;
-  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
   user-select: none;
 }
 .btn:hover { background: var(--surface-2); border-color: var(--border-strong); }
@@ -265,12 +272,12 @@
   display: inline-flex;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   padding: 3px;
 }
 .tab {
   padding: 5px var(--sp-3);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   border: 0;
   background: transparent;
   color: var(--text-muted);
@@ -281,7 +288,7 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .tab:hover:not(.on) { color: var(--text); }
 .tab.on { background: var(--surface-1); color: var(--text); box-shadow: var(--shadow-sm); }
@@ -517,7 +524,7 @@
   background: var(--surface-2);
   color: var(--text-muted);
   border: 1px solid var(--border);
-  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
   line-height: 1.4;
 }
 .badge.brand  { background: var(--accent-soft);  color: var(--accent);  border-color: color-mix(in srgb, var(--accent)  18%, transparent); }
@@ -583,7 +590,7 @@
   color: var(--text-muted);
 }
 .progress-track {
-  height: 4px;
+  height: 5px;
   background: var(--surface-2);
   border-radius: var(--r-full);
   overflow: hidden;
@@ -804,15 +811,15 @@
   width: 100%;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   padding: 9px var(--sp-3);
   color: var(--text);
   font-family: inherit;
   font-size: var(--fs-sm);
   outline: none;
-  transition: border-color var(--t-fast) var(--ease);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
-.input:focus { border-color: var(--accent); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .input::placeholder { color: var(--text-subtle); }
 
 /* ─── Achievement tile (gold accent for premium feel) ───── */
