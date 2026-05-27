@@ -375,3 +375,163 @@ h3, .h3 { font-weight: 700; }
 
 /* (BottomNav refinement lives in notifications.css alongside the
    primary .bottom-nav rules — kept consolidated there.) */
+
+/* ═══════════════════════════════════════════════════════════════
+   CONSISTENCY LAYER — unified design language across all pages
+   ═══════════════════════════════════════════════════════════════ */
+
+/* All section headings: consistent premium typography */
+.page-title,
+.card-title,
+.track-hero-title,
+.vision-title,
+.landing-features-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1, .page-title {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h2, .section-title,
+.card-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* All large cards: consistent border-radius (20px = r-2xl) */
+.card,
+.metric,
+.track-hero,
+.vision-hero,
+.vision-detail-hero,
+.auth-glass-card {
+  border-radius: var(--r-2xl) !important;
+}
+
+/* All small cards/items: consistent radius (12px = r-lg) */
+.badge-tile,
+.lesson-row,
+.track-card,
+.exam-row,
+.feed-item,
+.webinar-card,
+.leaderboard-row,
+.risk-row,
+.curriculum-chapter,
+.fee-row {
+  border-radius: var(--r-lg) !important;
+}
+
+/* All interactive elements: consistent hover state */
+.track-card:hover,
+.badge-tile.earned:hover,
+.thumb-card:hover,
+.vision-card:hover,
+.webinar-card:hover,
+.feed-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* All page transitions: consistent entrance animation timing */
+.content-inner {
+  animation: entrance-fade-up 420ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-inner {
+    animation: none !important;
+  }
+  .track-card:hover,
+  .badge-tile.earned:hover,
+  .thumb-card:hover,
+  .vision-card:hover,
+  .webinar-card:hover,
+  .feed-item:hover {
+    transform: none !important;
+  }
+}
+
+/* Filter pill refinement for training pages */
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.filter-pill:hover:not(.on) {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.filter-pill.on {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+/* Lesson content: premium readable typography */
+.lesson-content {
+  font-size: var(--fs-md);
+  line-height: 1.85;
+  color: var(--text);
+  max-width: 72ch;
+}
+.lesson-content p {
+  margin: 0 0 var(--sp-4) 0;
+}
+
+/* Reward feedback enhancement */
+.reward-feedback {
+  border-radius: var(--r-lg);
+  border: 1px solid transparent;
+}
+.reward-feedback.ok {
+  border-color: color-mix(in srgb, var(--success) 20%, transparent);
+}
+.reward-feedback.fail {
+  border-color: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+/* Lecture meta refinement */
+.lecture-meta-title {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* Consistent empty state across pages */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-8) var(--sp-4);
+  text-align: center;
+}
+
+/* Progress bar gradient fill — consistent accent gradient */
+.progress-fill,
+.progress-bar {
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--gold))) !important;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+}

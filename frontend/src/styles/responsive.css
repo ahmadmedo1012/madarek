@@ -269,6 +269,16 @@ img, svg, video, canvas, iframe {
    LANDING PAGE — final mobile pass
    ═══════════════════════════════════════════════════════════════ */
 
+@media (max-width: 900px) {
+  .landing-hero {
+    flex-direction: column !important;
+    text-align: center;
+  }
+  .landing-hero-img {
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 480px) {
   .landing-shell {
     padding-inline: var(--sp-4) !important;
@@ -290,6 +300,114 @@ img, svg, video, canvas, iframe {
     font-size: 11.5px;
     flex-wrap: wrap;
     line-height: 1.4;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TRAINING PAGES — mobile responsiveness
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .track-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--sp-3) !important;
+  }
+  .track-card {
+    padding: var(--sp-4);
+    border-radius: var(--r-xl);
+  }
+  .track-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--sp-4);
+    border-radius: var(--r-xl);
+    gap: var(--sp-3);
+  }
+  .track-hero-icon {
+    width: 56px;
+    height: 56px;
+  }
+  .track-hero-title {
+    font-size: 20px !important;
+  }
+  .track-hero-meta {
+    gap: 4px;
+  }
+  .badge-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--sp-3) !important;
+  }
+  .badge-tile {
+    padding: var(--sp-4);
+    border-radius: var(--r-lg);
+  }
+  .leaderboard-row {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .leaderboard-tier {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .badge-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .track-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .track-card-summary {
+    -webkit-line-clamp: 1;
+  }
+  .lesson-row {
+    padding: var(--sp-2) var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .lesson-row-num {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DASHBOARD CARDS — mobile stacking refinements
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .grid-4,
+  .grid-3 {
+    gap: var(--sp-3) !important;
+  }
+  .metric {
+    padding: var(--sp-4) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM NAV — glassmorphism + safe area
+   ═══════════════════════════════════════════════════════════════ */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: max(var(--sp-2), env(safe-area-inset-bottom));
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: saturate(140%) blur(16px);
+    backdrop-filter: saturate(140%) blur(16px);
+    border-top: 1px solid var(--glass-border);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR OVERLAY — glassmorphism backdrop
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .sidebar-backdrop {
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
   }
 }
 

@@ -578,6 +578,69 @@ html {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   MOTION SYSTEM — entrance animations and stagger utilities
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Entrance: fade up (default page element entrance) */
+@keyframes entrance-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Entrance: scale in (modals, popups, badges) */
+@keyframes entrance-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Entrance: simple fade (subtle elements) */
+@keyframes entrance-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Stagger delay utilities (each adds 80ms) */
+.stagger-1 { animation-delay: 80ms; }
+.stagger-2 { animation-delay: 160ms; }
+.stagger-3 { animation-delay: 240ms; }
+.stagger-4 { animation-delay: 320ms; }
+.stagger-5 { animation-delay: 400ms; }
+.stagger-6 { animation-delay: 480ms; }
+
+/* List item entrance pattern */
+.list-enter > *:nth-child(1) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 0ms; }
+.list-enter > *:nth-child(2) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 60ms; }
+.list-enter > *:nth-child(3) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 120ms; }
+.list-enter > *:nth-child(4) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 180ms; }
+.list-enter > *:nth-child(5) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 240ms; }
+.list-enter > *:nth-child(6) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 300ms; }
+.list-enter > *:nth-child(7) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 360ms; }
+.list-enter > *:nth-child(8) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 420ms; }
+.list-enter > *:nth-child(n+9) { animation: entrance-fade-up 400ms var(--ease-out) both; animation-delay: 480ms; }
+
+/* Loading skeleton pulse — verify shimmer works, add alternative pulse */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 0.3; }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    REDUCED MOTION — disable premium animations
    ═══════════════════════════════════════════════════════════════ */
 
@@ -601,5 +664,23 @@ html {
   }
   .landing-bento-card:hover .landing-bento-icon {
     transform: none;
+  }
+  /* Disable entrance animations */
+  .stagger-1,
+  .stagger-2,
+  .stagger-3,
+  .stagger-4,
+  .stagger-5,
+  .stagger-6 {
+    animation-delay: 0ms !important;
+  }
+  .list-enter > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .skeleton-pulse {
+    animation: none;
+    opacity: 0.5;
   }
 }

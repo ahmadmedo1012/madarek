@@ -49,8 +49,28 @@ a:has(> .card):active,
 button:has(> .card):active,
 .role-tab:active {
   transition-duration: 60ms !important;
+  transition-timing-function: var(--ease-out) !important;
   transform: scale(0.97);
   filter: brightness(0.97);
+}
+
+/* Release: use spring easing for a lively bounce-back */
+.btn,
+button:not(:disabled),
+a[href]:not(.no-press),
+[role="button"]:not(:disabled),
+.nav-item,
+.tab,
+.pill,
+.kpi-cell,
+.dash-agenda-item,
+.landing-feature-card,
+.landing-pilot-stat,
+.card-link,
+a:has(> .card),
+button:has(> .card),
+.role-tab {
+  transition-timing-function: var(--ease-spring);
 }
 
 /* Buttons — refined press scale */
@@ -80,6 +100,37 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   .pill:active { transform: none; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   CARD HOVER MICRO-INTERACTIONS
+   Subtle scale + elevation for interactive/bordered cards
+   ═══════════════════════════════════════════════════════════════ */
+
+.card.interactive:hover,
+.card.bordered:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: var(--shadow-card-hover);
+  border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTON HOVER GLOW — primary CTA accent glow via box-shadow
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn.primary:hover {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.10),
+    0 8px 20px -6px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAV ITEM HOVER — subtle background + glow hint
+   ═══════════════════════════════════════════════════════════════ */
+
+.nav-item:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .btn:active,
@@ -94,6 +145,10 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   .kpi-cell:active {
     transform: none !important;
     filter: none !important;
+  }
+  .card.interactive:hover,
+  .card.bordered:hover {
+    transform: none !important;
   }
 }
 
@@ -224,16 +279,6 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
 [role="progressbar"] > span,
 .bar-fill {
   transition: width 800ms var(--ease-out);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   BUTTON HOVER GLOW — primary CTA feels alive without being flashy
-   ═══════════════════════════════════════════════════════════════ */
-
-.btn.primary:hover {
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.10),
-    0 8px 20px -6px color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
 /* ═══════════════════════════════════════════════════════════════
