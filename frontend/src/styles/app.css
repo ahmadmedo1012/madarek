@@ -2905,3 +2905,365 @@ hr {
     --border-strong: rgba(15, 23, 42, 0.32);
   }
 }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   32. AUTH FORM INTERNALS (override landing-auth-v3.css)
+   ═════════════════════════════════════════════════════════════════════ */
+
+.auth-glass-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--sp-5);
+}
+
+.auth-glass-logo svg {
+  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--md-primary) 35%, transparent));
+}
+
+.auth-form-title {
+  font-size: clamp(20px, 2.4vw, 24px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.auth-glass-desc {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-5);
+  line-height: 1.6;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+.auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-subtle);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.auth-input,
+.auth-input-wrap input {
+  padding-inline-start: 44px !important;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.auth-forgot {
+  color: var(--md-primary);
+  font-weight: 600;
+}
+
+[data-theme='dark'] .auth-forgot {
+  color: var(--accent);
+}
+
+.auth-forgot:hover {
+  text-decoration: underline;
+}
+
+.auth-btn {
+  width: 100%;
+  margin-top: 4px;
+  min-height: 48px;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-4) 0;
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-demo-btn {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  text-align: start;
+  transition: all var(--t-fast) var(--ease-out);
+}
+
+.auth-demo-btn:hover {
+  background: var(--surface-3);
+  border-color: var(--md-primary);
+}
+
+.auth-error,
+.auth-field-error {
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--danger-soft);
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.auth-register-prompt {
+  text-align: center;
+  margin-top: var(--sp-4);
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.auth-register-prompt a {
+  color: var(--md-primary);
+  font-weight: 700;
+}
+
+[data-theme='dark'] .auth-register-prompt a {
+  color: var(--accent);
+}
+
+.auth-register-prompt a:hover {
+  text-decoration: underline;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   33. LANDING PAGE OVERRIDES (over restored landing.css)
+   ═════════════════════════════════════════════════════════════════════ */
+
+.landing {
+  position: fixed !important;
+  inset: 0 !important;
+  background: var(--bg) !important;
+  overflow-y: auto !important;
+  z-index: 999 !important;
+}
+
+.landing::before {
+  content: '' !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(ellipse 1400px 1000px at 0% 0%,
+      color-mix(in srgb, var(--md-primary) 14%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 1100px 800px at 100% 100%,
+      color-mix(in srgb, var(--md-tertiary-fixed-dim) 10%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 700px 600px at 50% 30%,
+      color-mix(in srgb, var(--gold) 5%, transparent) 0%,
+      transparent 70%) !important;
+}
+
+.landing-header {
+  position: sticky !important;
+  top: 0;
+  z-index: 10;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: var(--sp-4);
+  padding: 14px clamp(16px, 4vw, 48px) !important;
+  background: color-mix(in srgb, var(--bg) 75%, transparent) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  border-bottom: 1px solid var(--border) !important;
+  min-height: 68px;
+}
+
+.landing-brand-name {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--text) !important;
+}
+
+.landing-brand-sub {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--md-primary) !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+[data-theme='dark'] .landing-brand-sub {
+  color: var(--accent) !important;
+}
+
+.landing-shell {
+  max-width: 1280px !important;
+  margin: 0 auto !important;
+  padding: 0 clamp(16px, 4vw, 48px) !important;
+}
+
+.landing-title {
+  font-size: clamp(40px, 7vw, 84px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 0.95 !important;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.landing-title .block {
+  display: block !important;
+  background: linear-gradient(135deg,
+    var(--md-primary) 0%,
+    var(--md-tertiary-fixed-dim) 55%,
+    var(--gold) 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+}
+
+[data-theme='dark'] .landing-title .block {
+  background: linear-gradient(135deg,
+    var(--md-primary-fixed-dim) 0%,
+    var(--md-tertiary-fixed-dim) 55%,
+    var(--gold) 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.landing-subtitle {
+  font-size: clamp(17px, 2vw, 21px) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  color: var(--text-muted) !important;
+  max-width: 56ch !important;
+  margin-top: clamp(20px, 3vw, 32px) !important;
+}
+
+.landing-cta-glass {
+  margin-top: clamp(24px, 4vw, 40px) !important;
+}
+
+.landing-cta-glass .btn {
+  min-height: 56px !important;
+  padding: 0 32px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+.landing-bento-card {
+  padding: var(--sp-5) !important;
+  background: var(--surface-1) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-2xl) !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 24px -8px color-mix(in srgb, var(--md-primary) 12%, transparent) !important;
+  transition: border-color var(--t-base) var(--ease-out),
+              box-shadow var(--t-base) var(--ease-out),
+              transform var(--t-base) var(--ease-out) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-bento-card::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    var(--md-primary) 0%,
+    var(--md-tertiary-fixed-dim) 50%,
+    var(--gold) 100%);
+}
+
+.landing-bento-card:hover {
+  border-color: color-mix(in srgb, var(--md-primary) 30%, var(--border)) !important;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 24px 56px -12px color-mix(in srgb, var(--md-primary) 25%, transparent) !important;
+  transform: translateY(-4px);
+}
+
+.landing-final-cta {
+  position: relative;
+  padding: clamp(48px, 8vw, 96px) clamp(24px, 5vw, 56px) !important;
+  border-radius: var(--r-3xl) !important;
+  background:
+    radial-gradient(ellipse at top,
+      color-mix(in srgb, var(--md-primary) 20%, var(--surface-1)) 0%,
+      var(--surface-1) 80%) !important;
+  border: 1px solid color-mix(in srgb, var(--md-primary) 18%, var(--border)) !important;
+  text-align: center;
+  margin-top: var(--sp-7);
+  overflow: hidden;
+}
+
+.landing-final-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 0%,
+      color-mix(in srgb, var(--gold) 8%, transparent) 0%,
+      transparent 60%);
+  pointer-events: none;
+}
