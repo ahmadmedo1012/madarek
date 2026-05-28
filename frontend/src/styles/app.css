@@ -3679,3 +3679,228 @@ hr {
   color: var(--text-muted);
   gap: var(--sp-3);
 }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   35. FINAL MOBILE + RTL + DETAILS
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* On mobile, sidebar opens from inline-start (logical) */
+@media (max-width: 768px) {
+  .sidebar {
+    width: min(300px, 85vw);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.10), 0 24px 64px rgba(0, 0, 0, 0.40);
+  }
+
+  .sidebar.open,
+  .sidebar[data-open="true"] {
+    transform: translateX(0);
+  }
+
+  .topbar {
+    height: 60px;
+    padding: 0 var(--sp-3);
+  }
+
+  .topbar-search { display: none; }
+
+  .topbar-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .topbar-user-menu {
+    height: 38px;
+    padding: 3px 12px 3px 3px;
+  }
+
+  .topbar-user-menu .avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Page header padding tighter on mobile */
+  .page-header {
+    padding: var(--sp-5) var(--sp-5);
+    border-radius: var(--r-xl);
+  }
+
+  /* Card padding tighter */
+  .card,
+  .metric {
+    padding: var(--sp-4);
+    border-radius: var(--r-lg);
+  }
+
+  /* Welcome card padding tighter */
+  .welcome-card {
+    padding: var(--sp-5);
+    border-radius: var(--r-2xl);
+  }
+
+  /* Auth split collapses */
+  .auth-split {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-left { display: none; }
+
+  .auth-glass-card,
+  .auth-card {
+    border-radius: var(--r-2xl);
+    padding: var(--sp-5);
+    max-width: 100%;
+    margin: var(--sp-3);
+  }
+
+  /* Modal mobile */
+  .modal-card {
+    border-radius: var(--r-2xl);
+    width: 100%;
+    margin: 12px;
+  }
+
+  /* Metric icon smaller on mobile */
+  .metric-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .metric {
+    flex-direction: row;
+    gap: var(--sp-3);
+  }
+
+  /* Page actions full width on small screens */
+  .page-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+
+  /* Force grid-4 to single column */
+  .grid-4, .grid-3 { grid-template-columns: 1fr; }
+
+  /* Smaller titles on small mobile */
+  .page-title { font-size: clamp(20px, 5vw, 24px) !important; }
+  .welcome-card-title { font-size: clamp(20px, 5vw, 24px); }
+
+  /* Inputs */
+  input, textarea, select, .input {
+    font-size: 16px !important;
+  }
+
+  /* Hide topbar user name */
+  .topbar-user-name { display: none; }
+
+  /* Topbar minimal */
+  .topbar { padding: 0 var(--sp-2); gap: 4px; }
+}
+
+/* RTL-specific adjustments */
+[dir='rtl'] .sidebar.open,
+[dir='rtl'] .sidebar[data-open="true"] {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  [dir='rtl'] .sidebar:not(.open) {
+    transform: translateX(100%);
+  }
+
+  [dir='ltr'] .sidebar:not(.open) {
+    transform: translateX(-100%);
+  }
+}
+
+/* Make sure h1/h2/h3 inside .page-header pick up the page-title styling */
+.page-header h1 {
+  font-size: clamp(24px, 3.5vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+/* Ensure Lucide icons inherit color properly */
+svg.lucide,
+.lucide-icon {
+  flex-shrink: 0;
+}
+
+/* Better focus styles on interactive elements */
+a:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-sm);
+}
+
+/* Ensure no horizontal overflow ever */
+.page,
+.content-inner,
+.card,
+.metric,
+.welcome-card,
+.modal-body,
+.modal-card {
+  max-width: 100%;
+}
+
+/* Specific overflow fixes for grid cells */
+.grid-2 > *,
+.grid-3 > *,
+.grid-4 > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* But cards need to allow tooltips/dropdowns to overflow */
+.card,
+.metric,
+.welcome-card {
+  overflow: visible;
+}
+
+/* Re-enable overflow hidden on internal pseudo-elements */
+.card,
+.metric,
+.welcome-card {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Inner overflow hidden via clip-path for the pseudo-elements */
+.card::before,
+.metric::before,
+.metric::after,
+.welcome-card::before,
+.welcome-card::after,
+.page-header::before,
+.page-header::after {
+  z-index: 0;
+}
+
+.card > *:not(::before),
+.metric > *,
+.welcome-card > *,
+.page-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Visual cleanup: ensure consistent box-shadow rendering */
+.card,
+.metric,
+.welcome-card,
+.modal-card,
+.notif-panel,
+.auth-glass-card,
+.landing-bento-card,
+.landing-final-cta {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
