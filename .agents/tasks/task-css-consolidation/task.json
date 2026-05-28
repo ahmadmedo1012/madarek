@@ -1,0 +1,7 @@
+{
+  "task_id": "task-css-consolidation",
+  "task_description": "Create a single consolidated CSS override file (madarek-final.css) that loads last in the cascade and definitively resolves all visual conflicts, glassmorphism distortion, and specificity wars across the platform's 25+ CSS files. Also fix the deploy issue by ensuring TypeScript compiles cleanly.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001"],
+  "blocked_reason": null
+}

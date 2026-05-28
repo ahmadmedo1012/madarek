@@ -1,0 +1,25 @@
+{
+  "project_type": "Monorepo (npm workspaces) - React SPA frontend + Express backend. Arabic-RTL educational platform.",
+  "language": "TypeScript (strict + noUncheckedIndexedAccess)",
+  "build_system": "npm workspaces, Vite for frontend, tsc for type-checking",
+  "test_framework": "No test runner configured in frontend package.json",
+  "build_command": "tsc -b && vite build (in frontend workspace)",
+  "test_command": "tsc -b --noEmit (typecheck only - no tests configured)",
+  "verification_instructions": "1. Verify TypeScript compiles cleanly (no npm available - use AST/grep validation). 2. Verify CSS file is syntactically valid (balanced braces, no typos). 3. Verify main.tsx imports the new file last.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "npm install (but INTEGRATIONS_ONLY network - not possible)",
+  "environment_constraints": "INTEGRATIONS_ONLY network - no npm install, no Docker pull, no external HTTP. TypeScript compiler not available. Validation must be AST-based or grep-based.",
+  "contribution_requirements": "TypeScript strict mode with noUncheckedIndexedAccess. Do NOT modify .tsx files unless absolutely necessary.",
+  "key_patterns": "CSS uses design tokens from tokens.css (--surface-1, --border, --text, --accent, etc). stitch-canonical.css uses !important extensively. Components use BEM-like naming (oasis-widget__panel, dash-customizer-modal). Dark theme is default ([data-theme='dark']), light is opt-in.",
+  "relevant_files": [
+    "frontend/src/main.tsx",
+    "frontend/src/styles/tokens.css",
+    "frontend/src/styles/stitch-canonical.css",
+    "frontend/src/styles/global-icon.css",
+    "frontend/src/styles/world-class.css",
+    "frontend/src/styles/visual-final-polish.css",
+    "frontend/src/components/OasisWidget.tsx",
+    "frontend/src/components/DashboardCustomizer.tsx"
+  ],
+  "directory_structure": "frontend/src/styles/ - 25 CSS files loaded in cascade order via main.tsx. frontend/src/components/ - React components. frontend/src/stores/ - zustand stores."
+}

@@ -1,0 +1,514 @@
+/**
+ * madarek-final.css
+ * ==================
+ * The FINAL stylesheet in the cascade. Loads after all other CSS files
+ * (tokens.css, stitch-canonical.css, global-icon.css, etc.) and provides
+ * definitive overrides that resolve all visual conflicts.
+ *
+ * Uses !important ONLY where needed to override stitch-canonical.css and
+ * global-icon.css (specifically backdrop-filter and sidebar backgrounds).
+ * Normal cascade position handles the rest since this file loads last.
+ *
+ * All values use design tokens from tokens.css unless no token exists.
+ */
+
+/* ==========================================================================
+   SECTION A - Oasis Widget (Complete Self-Contained)
+   ========================================================================== */
+
+.oasis-widget {
+  position: fixed;
+  bottom: var(--sp-5);
+  z-index: 9999;
+}
+
+.oasis-widget--rtl {
+  left: 20px;
+}
+
+.oasis-widget--ltr {
+  right: 20px;
+}
+
+.oasis-widget__trigger {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  background: linear-gradient(135deg, var(--md-tertiary), var(--md-tertiary-fixed-dim));
+  color: var(--md-on-tertiary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
+}
+
+.oasis-widget__trigger:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-xl);
+}
+
+.oasis-widget__panel {
+  width: 360px;
+  min-height: 320px;
+  max-height: 520px;
+  background: var(--surface-1) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.oasis-widget__header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.oasis-widget__header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+.oasis-widget__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.oasis-widget__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.oasis-widget__welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+}
+
+.oasis-widget__welcome-icon {
+  color: var(--accent);
+}
+
+.oasis-widget__welcome-text {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+}
+
+.oasis-widget__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+
+.oasis-widget__chip {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+
+.oasis-widget__chip:hover {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.oasis-widget__msg {
+  display: flex;
+}
+
+.oasis-widget__msg--user {
+  justify-content: flex-end;
+}
+
+.oasis-widget__msg--bot {
+  justify-content: flex-start;
+}
+
+.oasis-widget__msg-bubble {
+  max-width: 80%;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+}
+
+.oasis-widget__msg--user .oasis-widget__msg-bubble {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.oasis-widget__msg--bot .oasis-widget__msg-bubble {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.oasis-widget__typing span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--text-muted);
+  margin: 0 2px;
+  animation: oasis-typing 1.2s infinite;
+}
+
+.oasis-widget__typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.oasis-widget__typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes oasis-typing {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+.oasis-widget__input-row {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-1);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.oasis-widget__input {
+  flex: 1;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-family: var(--font-sans);
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease-out);
+}
+
+.oasis-widget__input:focus {
+  border-color: var(--accent);
+}
+
+.oasis-widget__input::placeholder {
+  color: var(--text-subtle);
+}
+
+.oasis-widget__send {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+
+.oasis-widget__send:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.oasis-widget__send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.oasis-widget__btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+
+.oasis-widget__btn:hover {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+/* Mobile Oasis Widget */
+@media (max-width: 480px) {
+  .oasis-widget__panel {
+    width: calc(100vw - 32px);
+    bottom: 80px;
+  }
+}
+
+/* ==========================================================================
+   SECTION B - Sidebar Solid Background
+   ========================================================================== */
+
+.sidebar {
+  background: var(--surface-1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[data-theme='dark'] .sidebar {
+  background: #1a1d2e !important;
+}
+
+[data-theme='light'] .sidebar {
+  background: var(--md-surface-container-low) !important;
+}
+
+/* ==========================================================================
+   SECTION C - Bottom Nav Hide-on-Scroll
+   ========================================================================== */
+
+.bottom-nav {
+  transition: transform 300ms var(--ease-out);
+}
+
+.bottom-nav[data-hidden="true"] {
+  transform: translateY(100%);
+}
+
+@media (min-width: 769px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   SECTION D - Typography
+   ========================================================================== */
+
+body {
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  font-family: var(--font-sans);
+}
+
+h1 {
+  font-size: var(--fs-3xl);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+}
+
+h2 {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+}
+
+h3 {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+}
+
+h4 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+}
+
+h5 {
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+h6 {
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-subtle {
+  color: var(--text-subtle);
+}
+
+/* ==========================================================================
+   SECTION E - Card System
+   ========================================================================== */
+
+.card {
+  border-radius: var(--r-xl);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ==========================================================================
+   SECTION F - Button System
+   ========================================================================== */
+
+.btn {
+  border-radius: var(--r-full);
+  min-height: 36px;
+  padding: 0 var(--sp-4);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  transition: all var(--t-fast) var(--ease-out);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn.outline {
+  background: transparent;
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn.outline:hover {
+  background: var(--accent-soft);
+}
+
+/* ==========================================================================
+   SECTION G - Mobile Fixes
+   ========================================================================== */
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-bottom: 80px;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+  }
+}
+
+/* ==========================================================================
+   SECTION H - Landing Page Polish
+   ========================================================================== */
+
+.landing-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.landing-hero .btn.primary {
+  box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   SECTION I - Motion System
+   ========================================================================== */
+
+.page-enter {
+  animation: page-fade-in 300ms var(--ease-out) both;
+}
+
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   SECTION J - Neutralize Problematic Effects
+   ========================================================================== */
+
+.oasis-widget__panel {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.sidebar {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.dash-customizer-modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--surface-1) !important;
+}
+
+.morph-blob {
+  animation: none;
+}
+
+.dash-particles::before {
+  opacity: 0.2;
+}

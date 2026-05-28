@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Create madarek-final.css - a single authoritative CSS override file that loads last in the cascade and definitively resolves all visual conflicts between the 25+ existing CSS files. Also update main.tsx to import it as the final stylesheet.",
+  "status": "in_progress",
+  "steps": [
+    "Create frontend/src/styles/madarek-final.css with the following sections (use high-specificity selectors to beat stitch-canonical.css !important rules where needed):",
+    "SECTION A - Oasis Widget complete styling: .oasis-widget position fixed, z-index 9999. .oasis-widget--rtl left:20px, .oasis-widget--ltr right:20px. .oasis-widget__trigger: 52px circle, gradient background (linear-gradient from var(--md-tertiary) to var(--md-tertiary-fixed-dim)), var(--md-on-tertiary) color, clear shadow. .oasis-widget__panel: 360px wide, min-height 320px, max-height 520px, SOLID background var(--surface-1) NOT transparent, border 1px solid var(--border), border-radius var(--r-xl), box-shadow var(--shadow-xl), NO backdrop-filter (override to none!important to kill glassmorphism). All sub-components: header with var(--surface-2) bg, messages area flex column, input row with border-top. Mobile (max-width:480px): panel width calc(100vw - 32px), bottom: 80px to clear bottom nav.",
+    "SECTION B - Sidebar solid background: .sidebar background var(--surface-1)!important in dark mode. For [data-theme='dark'] .sidebar: background #1a1d2e!important, backdrop-filter none!important. For [data-theme='light'] .sidebar: background var(--md-surface-container-low)!important, backdrop-filter none!important.",
+    "SECTION C - Bottom Nav hide-on-scroll: .bottom-nav transition transform 300ms var(--ease-out). .bottom-nav[data-hidden='true'] transform translateY(100%). @media(min-width:769px) .bottom-nav display:none.",
+    "SECTION D - Typography definitive rules: body font-size var(--fs-base,15px). h1 through h6 clear hierarchy using existing --fs-* tokens. --text-muted:#b4b4bc, --text-subtle:#8f8f99 (already in tokens, reinforce in selectors). Arabic line-height: body var(--lh-base,1.65), headings var(--lh-tight,1.18).",
+    "SECTION E - Card system: .card border-radius var(--r-xl,16px), background var(--surface-1), border 1px solid var(--border), box-shadow var(--shadow-card), transition transform var(--t-base) var(--ease-out) and box-shadow var(--t-base) var(--ease-out). .card:hover transform translateY(-2px), box-shadow var(--shadow-card-hover).",
+    "SECTION F - Button system: .btn border-radius var(--r-full,9999px), min-height 36px, font-weight 600, transition. .btn.primary: background var(--accent), color var(--accent-fg). .btn.outline: background transparent, border 1.5px solid var(--accent), color var(--accent). Hover states with subtle transform and shadow.",
+    "SECTION G - Mobile fixes: html,body overflow-x hidden, max-width 100vw. Touch targets: button,a,[role='button'] min-height 44px min-width 44px (inside @media max-width:768px). .content padding-bottom 80px on mobile for bottom nav clearance.",
+    "SECTION H - Landing page polish: .landing-hero background with gradient. .landing-bento-card:hover translateY(-4px) and shadow increase. CTA buttons visible with accent background.",
+    "SECTION I - Motion system: Cards/buttons use var(--t-base,200ms) var(--ease-out). Page transitions: .page-enter opacity 0 to 1 over 300ms. Bottom nav: 300ms slide. Hover effects: var(--t-fast,150ms). @media(prefers-reduced-motion:reduce) disable all.",
+    "SECTION J - Neutralize problematic effects: .oasis-widget__panel backdrop-filter:none!important, -webkit-backdrop-filter:none!important. .sidebar backdrop-filter:none!important. .dash-customizer-modal backdrop-filter:none!important (background stays solid). Remove morph-blob animation override: .morph-blob animation:none. No heavy glow on content areas.",
+    "Add the import to frontend/src/main.tsx: add line `import './styles/madarek-final.css';` as the LAST import (after global-icon.css, before the App import)."
+  ],
+  "acceptance_criteria": [
+    "File frontend/src/styles/madarek-final.css exists and is syntactically valid CSS (balanced braces)",
+    "frontend/src/main.tsx imports madarek-final.css as the last stylesheet (after global-icon.css)",
+    "The file uses !important on backdrop-filter overrides to beat global-icon.css glassmorphism",
+    "The file uses solid background values (not transparent/glass) for .oasis-widget__panel, .sidebar, .dash-customizer-modal",
+    "All selectors reference design tokens from tokens.css (not raw hex values except where tokens dont exist)",
+    "File contains all 10 sections (A through J) as specified",
+    "No TypeScript files are modified (only CSS and main.tsx import line)"
+  ],
+  "verification": [
+    "Run: grep -c 'madarek-final.css' frontend/src/main.tsx (should return 1)",
+    "Run: grep -c '!important' frontend/src/styles/madarek-final.css (should be > 0 for backdrop-filter overrides)",
+    "Run: python3 -c to check balanced braces in the CSS file",
+    "Run: grep 'backdrop-filter.*none.*!important' frontend/src/styles/madarek-final.css (should find matches)",
+    "Verify main.tsx still has valid TypeScript syntax (no broken imports)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
