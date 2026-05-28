@@ -1,390 +1,407 @@
-/* ═════════════════════════════════════════════════════════════
-   Madarek Design System — Unified Design Tokens
-   Single source of truth for the Google Stitch design language.
-   Themed via [data-theme="dark"|"light"].
-   ───────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════════════
+   Madarek — Design Tokens
+   Source of truth: Madarik AI design system (stitch reference).
+   Premium Minimalist with Glassmorphic accents · 8pt grid · IBM Plex.
+   ─────────────────────────────────────────────────────────────────────
+   Pillars:  Intelligence · Clarity · Academic Prestige
+   Anchor:   Deep Ink (#091426)
+   Accents:  Emerald (#006c49) · Cyan (#4cd7f6)
+   Canvas:   Soft Studio neutrals (#f7f9fb → #e0e3e5)
+   ═════════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Brand Colors (mode-invariant) ────────────────────── */
-  --brand-blue: #003461;
-  --brand-blue-deep: #001c38;
-  --brand-purple: #004b87;
-  --brand-gold: #fed65b;
+  /* ── Brand colors ───────────────────────────────────── */
+  --brand-ink:        #091426;   /* primary deep ink */
+  --brand-ink-2:      #1e293b;   /* primary container */
+  --brand-emerald:    #006c49;   /* secondary / success / action */
+  --brand-emerald-2:  #6cf8bb;   /* secondary container */
+  --brand-cyan:       #4cd7f6;   /* tertiary / AI accent */
+  --brand-cyan-2:     #acedff;   /* tertiary container */
 
-  /* ── Stitch Primary Palette ───────────────────────────── */
-  --md-primary:                     #003461;
+  /* ── Material 3 surface tiers (light, soft studio) ──── */
+  --md-surface:                     #f7f9fb;
+  --md-surface-bright:              #f7f9fb;
+  --md-surface-dim:                 #d8dadc;
+  --md-surface-container-lowest:    #ffffff;
+  --md-surface-container-low:       #f2f4f6;
+  --md-surface-container:           #eceef0;
+  --md-surface-container-high:      #e6e8ea;
+  --md-surface-container-highest:   #e0e3e5;
+  --md-surface-variant:             #e0e3e5;
+  --md-background:                  #f7f9fb;
+
+  /* ── Material 3 on-surfaces ─────────────────────────── */
+  --md-on-surface:                  #191c1e;
+  --md-on-surface-variant:          #45474c;
+  --md-on-background:               #191c1e;
+  --md-outline:                     #75777d;
+  --md-outline-variant:             #c5c6cd;
+  --md-inverse-surface:             #2d3133;
+  --md-inverse-on-surface:          #eff1f3;
+  --md-inverse-primary:             #bcc7de;
+
+  /* ── Primary (Deep Ink) ─────────────────────────────── */
+  --md-primary:                     #091426;
   --md-on-primary:                  #ffffff;
-  --md-primary-container:           #004b87;
-  --md-on-primary-container:        #8abcff;
-  --md-primary-fixed:               #d3e4ff;
-  --md-primary-fixed-dim:           #a3c9ff;
-  --md-on-primary-fixed:            #001c38;
-  --md-on-primary-fixed-variant:    #004882;
+  --md-primary-container:           #1e293b;
+  --md-on-primary-container:        #8590a6;
+  --md-primary-fixed:               #d8e3fb;
+  --md-primary-fixed-dim:           #bcc7de;
+  --md-on-primary-fixed:            #111c2d;
+  --md-on-primary-fixed-variant:    #3c475a;
 
-  /* ── Stitch Secondary (Gold) ──────────────────────────── */
-  --md-secondary:                   #735c00;
+  /* ── Secondary (Emerald) ────────────────────────────── */
+  --md-secondary:                   #006c49;
   --md-on-secondary:                #ffffff;
-  --md-secondary-container:         #fed65b;
-  --md-on-secondary-container:      #745c00;
-  --md-secondary-fixed:             #ffe088;
-  --md-secondary-fixed-dim:         #e9c349;
-  --md-on-secondary-fixed:          #241a00;
-  --md-on-secondary-fixed-variant:  #574500;
+  --md-secondary-container:         #6cf8bb;
+  --md-on-secondary-container:      #00714d;
+  --md-secondary-fixed:             #6ffbbe;
+  --md-secondary-fixed-dim:         #4edea3;
+  --md-on-secondary-fixed:          #002113;
+  --md-on-secondary-fixed-variant:  #005236;
 
-  /* ── Stitch Tertiary (Teal / AI) ──────────────────────── */
-  --md-tertiary:                    #003a3b;
+  /* ── Tertiary (AI Cyan) ─────────────────────────────── */
+  --md-tertiary:                    #00171c;
   --md-on-tertiary:                 #ffffff;
-  --md-tertiary-container:          #005354;
-  --md-on-tertiary-container:       #01ced1;
-  --md-tertiary-fixed:              #5af8fb;
-  --md-tertiary-fixed-dim:          #2ddbde;
-  --md-on-tertiary-fixed:           #002020;
-  --md-on-tertiary-fixed-variant:   #004f51;
+  --md-tertiary-container:          #002d36;
+  --md-on-tertiary-container:       #009db7;
+  --md-tertiary-fixed:              #acedff;
+  --md-tertiary-fixed-dim:          #4cd7f6;
+  --md-on-tertiary-fixed:           #001f26;
+  --md-on-tertiary-fixed-variant:   #004e5c;
 
-  /* ── Error ────────────────────────────────────────────── */
+  /* ── Error ──────────────────────────────────────────── */
   --md-error:                       #ba1a1a;
   --md-on-error:                    #ffffff;
   --md-error-container:             #ffdad6;
   --md-on-error-container:          #93000a;
 
-  /* ── Surface (Material 3) ─────────────────────────────── */
-  --md-surface:                     #f8f9fa;
-  --md-on-surface:                  #191c1d;
-  --md-on-surface-variant:          #424750;
-  --md-surface-variant:             #e1e3e4;
-  --md-surface-bright:              #f8f9fa;
-  --md-surface-dim:                 #d9dadb;
-  --md-surface-container-lowest:    #ffffff;
-  --md-surface-container-low:       #f3f4f5;
-  --md-surface-container:           #edeeef;
-  --md-surface-container-high:      #e7e8e9;
-  --md-surface-container-highest:   #e1e3e4;
-  --md-background:                  #f8f9fa;
-  --md-on-background:               #191c1d;
-
-  /* ── Outline ──────────────────────────────────────────── */
-  --md-outline:                     #727781;
-  --md-outline-variant:             #c2c6d1;
-
-  /* ── Inverse ──────────────────────────────────────────── */
-  --md-inverse-surface:             #2e3132;
-  --md-inverse-on-surface:          #f0f1f2;
-  --md-inverse-primary:             #a3c9ff;
-
-  /* ── Spacing (8px base grid) ──────────────────────────── */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-7: 28px;
-  --sp-8: 32px;
+  /* ── Spacing — strict 8pt grid ──────────────────────── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-7:  28px;
+  --sp-8:  32px;
   --sp-10: 40px;
   --sp-12: 48px;
   --sp-16: 64px;
+  --sp-20: 80px;
 
-  /* ── Radius — refined modular scale for premium feel ──── */
-  --r-xs: 6px;
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 18px;
-  --r-xl: 22px;
-  --r-2xl: 28px;
-  --r-3xl: 36px;
+  /* Stitch named spacing aliases */
+  --sp-xs:    4px;
+  --sp-sm:   12px;
+  --sp-md:   24px;
+  --sp-lg:   48px;
+  --sp-xl:   80px;
+  --sp-base:  8px;
+  --sp-gutter: 24px;
+  --sp-margin-mobile:  16px;
+  --sp-margin-desktop: 48px;
+
+  /* ── Radius — refined ───────────────────────────────── */
+  --r-xs:   4px;
+  --r-sm:   8px;     /* primary radius — buttons, inputs */
+  --r-md:   12px;
+  --r-lg:   16px;    /* cards */
+  --r-xl:   20px;
+  --r-2xl:  24px;    /* large containers */
+  --r-3xl:  32px;
   --r-full: 9999px;
 
-  /* Stitch radii aliases (kept for backward compatibility) */
-  --st-r-default: 10px;
-  --st-r-lg:      14px;
-  --st-r-xl:      18px;
-  --st-r-2xl:     24px;
-  --st-r-full:    9999px;
+  /* ── Typography ─────────────────────────────────────── */
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Menlo, monospace;
 
-  /* ── Typography — bold modular scale ──────────────────── */
-  --fs-xxs: 11px;
-  --fs-xs: 12px;
-  --fs-sm: 13px;
-  --fs-base: 15px;
-  --fs-md: 16px;
-  --fs-lg: 19px;
-  --fs-xl: 24px;
-  --fs-2xl: 32px;
-  --fs-3xl: 42px;
-  --fs-4xl: 56px;
+  /* Sizes — Stitch hierarchy */
+  --fs-display-lg:        48px;
+  --fs-display-lg-mobile: 32px;
+  --fs-headline-md:       24px;
+  --fs-headline-sm:       20px;
+  --fs-body-lg:           18px;
+  --fs-body-md:           16px;
+  --fs-label-md:          14px;
+  --fs-label-sm:          13px;
+  --fs-xxs:               11px;
+  --fs-xs:                12px;
+  --fs-sm:                13px;
+  --fs-base:              15px;
+  --fs-md:                16px;
+  --fs-lg:                18px;
+  --fs-xl:                24px;
+  --fs-2xl:               32px;
+  --fs-3xl:               40px;
+  --fs-4xl:               48px;
 
-  /* Premium Arabic Typography Hierarchy */
-  --fs-display-lg: clamp(36px, 5.5vw, 56px);
-  --fs-display: clamp(44px, 7vw, 80px);
-  --lh-display: 1.05;
-  --fs-headline-md: clamp(26px, 3.6vw, 36px);
-  --fs-headline-sm: clamp(22px, 2.6vw, 28px);
-  --fs-body-lg: 18px;
-  --fs-body-md: 16px;
-  --fs-label-md: 14px;
-  --fs-label-sm: 12px;
+  /* Fluid display for hero text */
+  --fs-display:    clamp(40px, 6vw, 64px);
+  --lh-display:    1.2;
+  --lh-tight:      1.2;
+  --lh-snug:       1.4;
+  --lh-base:       1.6;
+  --lh-loose:      1.85;
 
-  --fw-regular: 400;
-  --fw-medium: 500;
+  --fw-regular:  400;
+  --fw-medium:   500;
   --fw-semibold: 600;
-  --fw-bold: 700;
+  --fw-bold:     700;
 
-  /* Line heights refined for Arabic display */
-  --lh-tight: 1.18;
-  --lh-snug: 1.4;
-  --lh-base: 1.65;
-  --lh-loose: 1.85;
+  /* ── Motion — subtle premium ────────────────────────── */
+  --t-micro:  100ms;
+  --t-fast:   180ms;
+  --t-base:   240ms;
+  --t-slow:   360ms;
+  --t-slower: 500ms;
 
-  /* ── Motion — premium curated set ─────────────────────── */
-  /* Durations: micro for hover/press, fast for state changes, base for transitions, slow for page changes */
-  --t-micro: 100ms;
-  --t-fast: 180ms;
-  --t-base: 280ms;
-  --t-slow: 420ms;
-  --t-slower: 560ms;
-  --t-cinema: 700ms;
+  --ease:        cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
 
-  /* Easings — refined curated set */
-  /* ease: standard productive easing */
-  --ease: cubic-bezier(0.32, 0.72, 0, 1);
-  /* ease-soft: gentle settle, good for content reveal */
-  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-  /* ease-out: snappy entrance, the workhorse */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  /* ease-in: accelerating exit */
-  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
-  /* ease-spring: bouncy interactions (use sparingly) */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+  /* ── Layout ─────────────────────────────────────────── */
+  --sidebar-w:           288px;
+  --sidebar-w-collapsed: 80px;
+  --topbar-h:            72px;
+  --content-max-w:       1440px;
+  --container-max:       1280px;
 
-  /* ── Layout ──────────────────────────────────────────── */
-  --sidebar-w: 244px;
-  --sidebar-w-collapsed: 64px;
-  --topbar-h: 56px;
-  --content-max-w: 1400px;
+  /* ── Glassmorphism ──────────────────────────────────── */
+  --glass-bg:           rgba(255, 255, 255, 0.7);
+  --glass-bg-strong:    rgba(255, 255, 255, 0.85);
+  --glass-bg-subtle:    rgba(255, 255, 255, 0.4);
+  --glass-border:       rgba(255, 255, 255, 0.4);
+  --glass-blur:         20px;
 
-  /* Stitch layout tokens */
-  --st-container-max:   1280px;
-  --st-gutter:          24px;
-  --st-margin-desktop:  64px;
-  --st-margin-mobile:   20px;
-  --st-unit:            8px;
+  /* ── Soft ambient elevation ─────────────────────────── */
+  --shadow-xs:   0 1px 2px rgba(30, 41, 59, 0.03);
+  --shadow-sm:   0 4px 12px rgba(30, 41, 59, 0.04);
+  --shadow-md:   0 10px 40px rgba(30, 41, 59, 0.04);
+  --shadow-lg:   0 15px 45px rgba(30, 41, 59, 0.08);
+  --shadow-xl:   0 24px 60px rgba(30, 41, 59, 0.10);
+  --shadow-card:        var(--shadow-md);
+  --shadow-card-hover:  var(--shadow-lg);
 
-  /* ── Fonts ───────────────────────────────────────────── */
-  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
-
-  /* ── Glassmorphism ───────────────────────────────────── */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-blur: 12px;
-
-  /* ── AI Glow Signature Effect ────────────────────────── */
-  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
-  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
-
-  /* ── Semantic Composition Tokens ─────────────────────── */
-  --transition-all: all var(--t-base) var(--ease);
-  --card-padding: var(--sp-5);
-  --section-gap: var(--sp-8);
-
-  /* ── Elevation system — semantic shadow alias ──────────
-     Use these for component intent rather than picking shadow-sm/md/lg directly.
-       elev-0  flat surface (no lift)
-       elev-1  resting card / panel
-       elev-2  hover state for cards
-       elev-3  floating elements (dropdowns, popovers)
-       elev-4  modal / sheet
-       elev-5  hero / spotlight surface
-     Resolved per theme below. */
-
-  /* ── Curated gradients — pre-composed for consistent brand voice ─── */
-  --grad-hero: radial-gradient(ellipse at 30% 0%,
-    rgba(0, 75, 135, 0.20) 0%,
-    rgba(0, 52, 97, 0.10) 40%,
-    transparent 75%);
-  --grad-accent: linear-gradient(135deg,
-    var(--brand-blue) 0%,
-    var(--brand-purple) 100%);
-  --grad-gold: linear-gradient(135deg,
-    #fee48a 0%,
-    var(--brand-gold) 50%,
-    #d4a829 100%);
-  --grad-teal: linear-gradient(135deg,
-    var(--md-tertiary-fixed-dim) 0%,
-    var(--md-tertiary-container) 100%);
-  --grad-surface-shine: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    transparent 50%);
-}
-
-/* ═════════════════════════════════════════════════════════════
-   DARK THEME (Midnight Slate - Premium & Professional)
-   ═════════════════════════════════════════════════════════════ */
-:root,
-[data-theme='dark'] {
-  /* Surfaces — refined, deep space slate blue palette */
-  --bg: #090c15;
-  --surface-1: #101524;
-  --surface-2: #181f34;
-  --surface-3: #222a45;
-
-  /* Borders — soft, low-contrast slate overlays */
-  --border: rgba(255, 255, 255, 0.05);
-  --border-strong: rgba(255, 255, 255, 0.09);
-
-  /* Text — high contrast, soft slate/white values */
-  --text: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-
-  /* Accent (Royal Sapphire / Deep blue in dark mode) */
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --accent-soft: rgba(59, 130, 246, 0.12);
-  --accent-border: rgba(59, 130, 246, 0.35);
-  --accent-fg: #ffffff;
-
-  /* Gold — Burnished champagne metallic gold */
-  --gold: #f59e0b;
-  --gold-soft: rgba(245, 158, 11, 0.12);
-  --gold-hover: #fbbf24;
-
-  /* Semantic */
-  --success: #10b981;
-  --success-soft: rgba(16, 185, 129, 0.10);
-  --warning: #f59e0b;
-  --warning-soft: rgba(245, 158, 11, 0.10);
-  --danger: #ef4444;
-  --danger-soft: rgba(239, 68, 68, 0.10);
-  --info: #3b82f6;
-  --info-soft: rgba(59, 130, 246, 0.10);
-
-  /* Shadows — soft, layered academic depth */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
-
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-card-hover: 0 12px 28px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.08);
-
-  /* Elevation system (dark) — premium depth */
+  /* Elevation system aliases */
   --elev-0: none;
-  --elev-1: var(--shadow-sm);
-  --elev-2: var(--shadow-md);
-  --elev-3: var(--shadow-lg);
-  --elev-4: var(--shadow-xl);
-  --elev-5: 0 40px 100px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --elev-1: var(--shadow-xs);
+  --elev-2: var(--shadow-sm);
+  --elev-3: var(--shadow-md);
+  --elev-4: var(--shadow-lg);
+  --elev-5: var(--shadow-xl);
 
-  /* Focus & Selection */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59, 130, 246, 0.5);
-  --selection-bg: rgba(59, 130, 246, 0.25);
+  /* ── AI / accent glows ──────────────────────────────── */
+  --ai-glow-soft:   0 0 15px rgba(76, 215, 246, 0.18);
+  --ai-glow:        0 4px 20px rgba(76, 215, 246, 0.20);
+  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.30);
 
-  /* Chart */
-  --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-text: #64748b;
+  /* ── Curated gradients ──────────────────────────────── */
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(0, 108, 73, 0.10) 0%,
+    rgba(9, 20, 38, 0.05) 40%,
+    transparent 75%);
+  --grad-primary-emerald: linear-gradient(135deg,
+    var(--brand-ink) 0%,
+    var(--brand-emerald) 100%);
+  --grad-cyan-emerald: linear-gradient(135deg,
+    var(--brand-cyan) 0%,
+    var(--brand-emerald) 100%);
+  --grad-ink: linear-gradient(180deg,
+    var(--brand-ink-2) 0%,
+    var(--brand-ink) 100%);
+  --grad-surface-shine: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    transparent 50%);
 
-  /* Glassmorphism (dark) */
-  --glass-bg: rgba(16, 21, 36, 0.6);
-  --glass-bg-subtle: rgba(16, 21, 36, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  /* ═════════════════════════════════════════════════════
+     LIGHT THEME (default)
+     Soft Studio canvas — premium minimalist
+     ═════════════════════════════════════════════════════ */
 
-  /* Aliases */
-  --primary: var(--accent);
-  --surface: var(--surface-1);
-  --surface-elevated: var(--surface-2);
-  --surface-hover: var(--surface-2);
-}
+  /* Surfaces */
+  --bg:               #f7f9fb;
+  --surface:          #ffffff;
+  --surface-1:        #ffffff;
+  --surface-2:        #f2f4f6;
+  --surface-3:        #eceef0;
+  --surface-elevated: #ffffff;
+  --surface-hover:    #f2f4f6;
 
-/* ═════════════════════════════════════════════════════════════
-   LIGHT THEME (Clean Stone & Ice - Premium Academic feel)
-   ═════════════════════════════════════════════════════════════ */
-[data-theme='light'] {
-  /* Warmer paper-tone, clean blue slate backdrop */
-  --bg: #f8fafc;
-  --surface-1: #ffffff;
-  --surface-2: #f1f5f9;
-  --surface-3: #e2e8f0;
-
-  /* Borders — light neutral */
-  --border: rgba(15, 23, 42, 0.05);
-  --border-strong: rgba(15, 23, 42, 0.09);
+  /* Borders */
+  --border:        rgba(9, 20, 38, 0.06);
+  --border-strong: rgba(9, 20, 38, 0.12);
 
   /* Text */
-  --text: #0f172a;
-  --text-muted: #475569;
-  --text-subtle: #64748b;
+  --text:        #191c1e;
+  --text-muted:  #45474c;
+  --text-subtle: #75777d;
 
-  /* Accent (Regal Navy) */
-  --accent: #1e40af;
-  --accent-hover: #1d4ed8;
-  --accent-soft: rgba(30, 64, 175, 0.08);
-  --accent-border: rgba(30, 64, 175, 0.25);
-  --accent-fg: #ffffff;
+  /* Accent — Deep Ink */
+  --accent:        #091426;
+  --accent-hover:  #1e293b;
+  --accent-soft:   rgba(9, 20, 38, 0.06);
+  --accent-border: rgba(9, 20, 38, 0.18);
+  --accent-fg:     #ffffff;
+  --primary:       var(--accent);
 
-  /* Gold — Burnished Gold */
-  --gold: #b45309;
-  --gold-soft: rgba(180, 83, 9, 0.08);
-  --gold-hover: #92400e;
+  /* Action — Emerald (CTA / success "moments of achievement") */
+  --action:        #006c49;
+  --action-hover:  #00714d;
+  --action-soft:   rgba(0, 108, 73, 0.10);
+  --action-fg:     #ffffff;
 
-  /* Semantic (light) */
-  --success: #059669;
-  --success-soft: rgba(5, 150, 105, 0.08);
-  --warning: #b45309;
-  --warning-soft: rgba(180, 83, 9, 0.08);
-  --danger: #dc2626;
-  --danger-soft: rgba(220, 38, 38, 0.08);
-  --info: #1d4ed8;
-  --info-soft: rgba(29, 78, 216, 0.08);
+  /* AI — Cyan */
+  --ai:            #4cd7f6;
+  --ai-soft:       rgba(76, 215, 246, 0.14);
+  --ai-deep:       #009db7;
 
-  /* Shadows (light) — soft, clean paper depth */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.02);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02), 0 0 0 1px rgba(15, 23, 42, 0.03);
-  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.06), 0 3px 8px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.08), 0 8px 16px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  /* Gold (achievement / premium) */
+  --gold:          #b08400;
+  --gold-soft:     rgba(176, 132, 0, 0.10);
+  --gold-hover:    #8a6700;
 
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.03);
-  --shadow-card-hover: 0 8px 24px -4px rgba(30, 64, 175, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(30, 64, 175, 0.05);
+  /* Semantic */
+  --success:      #006c49;
+  --success-soft: rgba(0, 108, 73, 0.10);
+  --warning:      #b45309;
+  --warning-soft: rgba(180, 83, 9, 0.10);
+  --danger:       #ba1a1a;
+  --danger-soft:  rgba(186, 26, 26, 0.10);
+  --info:         #009db7;
+  --info-soft:    rgba(0, 157, 183, 0.10);
 
-  /* Elevation system (light) */
-  --elev-0: none;
-  --elev-1: var(--shadow-sm);
-  --elev-2: var(--shadow-md);
-  --elev-3: var(--shadow-lg);
-  --elev-4: var(--shadow-xl);
-  --elev-5: 0 32px 80px -8px rgba(30, 64, 175, 0.12), 0 12px 24px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  /* Focus & selection */
+  --focus-ring:   0 0 0 2px var(--bg), 0 0 0 4px rgba(9, 20, 38, 0.4);
+  --selection-bg: rgba(9, 20, 38, 0.12);
 
-  /* Light-mode gradient overrides */
-  --grad-hero: radial-gradient(ellipse at 30% 0%,
-    rgba(30, 64, 175, 0.06) 0%,
-    rgba(30, 64, 175, 0.03) 40%,
-    transparent 75%);
-  --grad-surface-shine: linear-gradient(180deg,
-    rgba(15, 23, 42, 0.01) 0%,
-    transparent 50%);
+  /* Chart palette */
+  --chart-grid:    rgba(9, 20, 38, 0.05);
+  --chart-text:    #75777d;
+  --chart-1:       #091426;  /* ink */
+  --chart-2:       #006c49;  /* emerald */
+  --chart-3:       #4cd7f6;  /* cyan */
+  --chart-4:       #b08400;  /* gold */
+  --chart-5:       #1e293b;  /* slate */
 
-  /* Focus & Selection */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(30, 64, 175, 0.4);
-  --selection-bg: rgba(30, 64, 175, 0.12);
-
-  /* Chart (light) */
-  --chart-grid: rgba(15, 23, 42, 0.04);
-  --chart-text: #64748b;
-
-  /* Glassmorphism (light) */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.4);
-  --glass-border: rgba(15, 23, 42, 0.04);
+  /* Composition tokens */
+  --transition-all: all var(--t-base) var(--ease);
+  --card-padding:   var(--sp-6);
+  --section-gap:    var(--sp-12);
 }
 
-/* ═════════════════════════════════════════════════════════════
-   REDUCED MOTION
-   ═════════════════════════════════════════════════════════════ */
+/* Explicit light selector — same as :root */
+[data-theme='light'] {
+  --bg:               #f7f9fb;
+  --surface:          #ffffff;
+  --surface-1:        #ffffff;
+  --surface-2:        #f2f4f6;
+  --surface-3:        #eceef0;
+  --surface-elevated: #ffffff;
+  --surface-hover:    #f2f4f6;
+  --border:           rgba(9, 20, 38, 0.06);
+  --border-strong:    rgba(9, 20, 38, 0.12);
+  --text:             #191c1e;
+  --text-muted:       #45474c;
+  --text-subtle:      #75777d;
+  --accent:           #091426;
+  --accent-hover:     #1e293b;
+  --accent-soft:      rgba(9, 20, 38, 0.06);
+  --accent-border:    rgba(9, 20, 38, 0.18);
+  --accent-fg:        #ffffff;
+  --primary:          var(--accent);
+  --glass-bg:         rgba(255, 255, 255, 0.7);
+  --glass-bg-strong:  rgba(255, 255, 255, 0.85);
+  --glass-bg-subtle:  rgba(255, 255, 255, 0.4);
+  --glass-border:     rgba(255, 255, 255, 0.4);
+}
+
+/* ═════════════════════════════════════════════════════════
+   DARK THEME — Premium night studio
+   Glassmorphism opacity increases for legibility (per spec)
+   ═════════════════════════════════════════════════════════ */
+[data-theme='dark'] {
+  --bg:               #0a0f1c;
+  --surface:          #111827;
+  --surface-1:        #111827;
+  --surface-2:        #1a2236;
+  --surface-3:        #232c44;
+  --surface-elevated: #1a2236;
+  --surface-hover:    #1a2236;
+
+  --border:        rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+
+  --text:        #f1f5f9;
+  --text-muted:  #94a3b8;
+  --text-subtle: #64748b;
+
+  --accent:        #bcc7de;            /* inverse primary in dark */
+  --accent-hover:  #d8e3fb;
+  --accent-soft:   rgba(188, 199, 222, 0.10);
+  --accent-border: rgba(188, 199, 222, 0.30);
+  --accent-fg:     #091426;
+  --primary:       var(--accent);
+
+  --action:        #4edea3;
+  --action-hover:  #6ffbbe;
+  --action-soft:   rgba(78, 222, 163, 0.14);
+  --action-fg:     #002113;
+
+  --ai:            #4cd7f6;
+  --ai-soft:       rgba(76, 215, 246, 0.16);
+  --ai-deep:       #009db7;
+
+  --gold:          #fbbf24;
+  --gold-soft:     rgba(251, 191, 36, 0.14);
+  --gold-hover:    #fde68a;
+
+  --success:      #4edea3;
+  --success-soft: rgba(78, 222, 163, 0.14);
+  --warning:      #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --danger:       #f87171;
+  --danger-soft:  rgba(248, 113, 113, 0.14);
+  --info:         #4cd7f6;
+  --info-soft:    rgba(76, 215, 246, 0.14);
+
+  --shadow-xs:   0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm:   0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-md:   0 10px 40px rgba(0, 0, 0, 0.40);
+  --shadow-lg:   0 15px 45px rgba(0, 0, 0, 0.50);
+  --shadow-xl:   0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-card:        var(--shadow-md);
+  --shadow-card-hover:  var(--shadow-lg);
+
+  --glass-bg:         rgba(17, 24, 39, 0.70);
+  --glass-bg-strong:  rgba(17, 24, 39, 0.85);
+  --glass-bg-subtle:  rgba(17, 24, 39, 0.50);
+  --glass-border:     rgba(255, 255, 255, 0.08);
+
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(76, 215, 246, 0.10) 0%,
+    rgba(0, 108, 73, 0.06) 40%,
+    transparent 75%);
+
+  --focus-ring:   0 0 0 2px var(--bg), 0 0 0 4px rgba(76, 215, 246, 0.45);
+  --selection-bg: rgba(76, 215, 246, 0.20);
+
+  --chart-grid:    rgba(255, 255, 255, 0.06);
+  --chart-text:    #94a3b8;
+  --chart-1:       #bcc7de;
+  --chart-2:       #4edea3;
+  --chart-3:       #4cd7f6;
+  --chart-4:       #fbbf24;
+  --chart-5:       #c5c6cd;
+}
+
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

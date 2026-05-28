@@ -1,23 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-// Design system v5 — clean rebuild.
-// Load order:
-//   tokens.css       — design tokens (single source of truth)
-//   page-specifics   — load BEFORE app.css so app.css overrides them on
-//                      overlapping selectors but specific classes (e.g.
-//                      .dash-agenda-item, .landing-hero-float-card)
-//                      that aren't in app.css still resolve
-//   app.css          — comprehensive component+layout system
-//   owner.css        — owner-panel-specific rules
-//   pdf.css          — PDF viewer chunk-loaded
+/* Madarek visual system — full rebuild from Madarik AI design reference.
+ *
+ * Load order (single source of truth):
+ *   tokens.css  — design tokens (colors, spacing, type, motion)
+ *   app.css     — comprehensive component + page system
+ *   pdf.css     — PDF viewer chrome (functional, theme-aware)
+ *
+ * Legacy files (landing, landing-auth-v3, dashboard, owner,
+ * redesign-lecture, redesign-matrix) have been intentionally
+ * emptied — their selectors are now consolidated in app.css. */
 import './styles/tokens.css';
-import './styles/dashboard.css';
-import './styles/landing.css';
-import './styles/landing-auth-v3.css';
-import './styles/redesign-lecture.css';
-import './styles/redesign-matrix.css';
-import './styles/owner.css';
 import './styles/app.css';
 import './styles/pdf.css';
 
