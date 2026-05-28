@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-002",
+  "type": "refactor",
+  "description": "Complete rebuild of the landing page visual experience (landing.css, landing-auth-v3.css) and homepage component (LandingPage.tsx) to create the strongest visual entry point. Also rebuild the dashboard.css for the student dashboard experience.",
+  "status": "in_progress",
+  "steps": [
+    "Completely rewrite frontend/src/styles/landing.css. The landing page must become the premium visual entry point. Key changes: (1) Hero section: Keep the 2-column grid layout but refine it. Remove the animated gradient ::before background. Instead, use a subtle fixed gradient or clean background. The floating cards in the showcase area need cleaner positioning and less aggressive animations - reduce float amplitude, use gentler timing. (2) Header: Make it cleaner - remove the bottom border-radius, use a simple sticky header with clean glassmorphism. (3) KPI strip: Keep the glass card approach but simplify - remove the ::after gradient overlay on icons. Make the grid cleaner. (4) Bento grid (features): Keep the layout but make cards cleaner - simpler borders, less aggressive hover transforms (2px max). Remove data-tone complex styling. (5) Pilot results section: Keep the stat layout but remove the ring pseudo-element styling (it was never fully implemented). Make the stat values cleaner. (6) Trust bar: Simplify to a clean row of items without complex icon styling. (7) AI chat section: Keep the layout but make the glassmorphism more subtle. Remove ai-glow class effects. (8) Footer: Keep simple. (9) Mobile breakpoints: Ensure clean stacking, proper spacing, no overflow. The mobile hamburger menu should animate cleanly. (10) Overall principle: The landing page should feel like a premium SaaS product (Linear, Vercel, Stripe) - not a template.",
+    "Completely rewrite frontend/src/styles/landing-auth-v3.css. Key changes: (1) Final CTA section: Keep the dark gradient background but make it less noisy - remove the dot grid ::before pattern. Simplify the gradient to 2 colors max. Make buttons cleaner. (2) Auth page styles: Keep the functional improvements (48px inputs, visible labels, 3px focus rings) but refine the visual treatment. Remove excessive !important declarations where possible. Make the auth form feel like a clean, professional login - not over-designed. (3) Demo buttons: Keep the grid layout but ensure consistent sizing. (4) Mobile auth: Keep the responsive stacking.",
+    "Completely rewrite frontend/src/styles/dashboard.css for the student dashboard. Key changes: (1) Welcome card: Remove the floating orb animations (::before, ::after keyframes). Make the welcome card a clean, branded gradient card. Remove !important overrides. (2) GPA card: Keep the glassmorphism approach but tone it down. Remove the golden halo ::before and secondary ambient glow ::after. The GPA value can keep gradient text but use a simpler 2-color gradient. Remove the orb hover animation. (3) Progress card: Simplify the doughnut container styling. (4) Term progress: Keep the progress bar but remove the shimmer animation. The gradient fill is fine but remove the glow box-shadow. (5) Agenda items: Keep the color-coded left border approach but remove excessive hover animations. Simplify icon hover (remove rotate). (6) Remove all @keyframes that are template-like (dash-float, dash-pulse-soft, dash-shimmer). Keep dash-slide-up and dash-fade-in for entrance animations. (7) Overall: The dashboard should feel calm, informational, professional - like a Bloomberg terminal for education, not a gaming dashboard.",
+    "Update frontend/src/pages/LandingPage.tsx to clean up inline styles and ensure consistent use of Lucide icons. Key changes: (1) Remove inline style objects on KPI icons - move these to CSS using data attributes or specific classes. (2) Ensure all icons use consistent sizing (20px for feature icons, 16px for inline icons, 14px for button icons). (3) Remove the ai-glow className from components (the CSS effect is being removed). (4) Verify the Reveal component usage is consistent. (5) Do not change functionality or content - only clean up the visual markup."
+  ],
+  "acceptance_criteria": [
+    "Landing page hero has a refined 2-column layout without animated gradients in the background",
+    "Floating cards in hero use gentle animations (6-8s, small amplitude)",
+    "No ai-glow effects remain in the landing page CSS or component",
+    "KPI strip is clean without complex pseudo-element overlays",
+    "Auth page has clean, professional styling without excessive !important",
+    "Dashboard welcome card has no floating orb animations",
+    "Dashboard progress bars have no shimmer animation",
+    "Dashboard agenda items have clean hover without rotation transforms on icons",
+    "All existing class names referenced in LandingPage.tsx still exist in CSS",
+    "Mobile responsive behavior is preserved and clean",
+    "The landing page feels like a premium SaaS marketing page"
+  ],
+  "verification": [
+    "Verify all class names used in LandingPage.tsx exist in landing.css or app.css",
+    "Verify CSS syntax is valid in all modified files",
+    "Verify no content or functionality was removed from LandingPage.tsx",
+    "Check that all responsive breakpoints still provide clean stacking on mobile"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

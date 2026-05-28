@@ -140,8 +140,8 @@ export default function LandingPage() {
 
         {/* ═══════════ STATS STRIP ═══════════ */}
         <Reveal as="section" className="kpi-strip">
-          <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(41, 82, 200, 0.10)', color: '#1e40af' }}>
+          <div className="kpi-cell" data-tone="blue">
+            <div className="kpi-icon">
               <Icon icon={Building2} size={20} />
             </div>
             <div>
@@ -149,8 +149,8 @@ export default function LandingPage() {
               <div className="kpi-label">كلية أكاديمية</div>
             </div>
           </div>
-          <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(14, 92, 47, 0.10)', color: '#0E5C2F' }}>
+          <div className="kpi-cell" data-tone="green">
+            <div className="kpi-icon">
               <Icon icon={Users2} size={20} />
             </div>
             <div>
@@ -158,8 +158,8 @@ export default function LandingPage() {
               <div className="kpi-label">طالب مسجَّل</div>
             </div>
           </div>
-          <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
+          <div className="kpi-cell" data-tone="purple">
+            <div className="kpi-icon">
               <Icon icon={GraduationCap} size={20} />
             </div>
             <div>
@@ -167,8 +167,8 @@ export default function LandingPage() {
               <div className="kpi-label">عضو هيئة تدريس</div>
             </div>
           </div>
-          <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
+          <div className="kpi-cell" data-tone="gold">
+            <div className="kpi-icon">
               <Icon icon={Award} size={20} />
             </div>
             <div>
@@ -203,7 +203,7 @@ export default function LandingPage() {
               </div>
             </Reveal>
             {/* Card 2 — 1 col */}
-            <Reveal as="div" className="landing-bento-card ai-glow" data-tone="tertiary">
+            <Reveal as="div" className="landing-bento-card" data-tone="tertiary">
               <div className="landing-bento-icon" data-tone="tertiary">
                 <Icon icon={Brain} size={26} />
               </div>
@@ -276,7 +276,7 @@ export default function LandingPage() {
         <section id="ai" className="landing-ai-section">
           <div className="landing-ai-float-symbols" aria-hidden="true" />
           <div className="landing-ai-grid">
-            <Reveal as="div" className="landing-ai-chat ai-glow">
+            <Reveal as="div" className="landing-ai-chat">
               <div className="landing-ai-chat-head">
                 <div className="landing-ai-avatar">
                   <Icon icon={Sparkles} size={22} />
@@ -293,7 +293,7 @@ export default function LandingPage() {
                 <div className="landing-ai-bubble landing-ai-bubble-user">
                   لدي صعوبة في فهم مفهوم «الخوارزميات الجينية» — هل يمكنك تبسيطها؟
                 </div>
-                <div className="landing-ai-bubble landing-ai-bubble-bot ai-glow">
+                <div className="landing-ai-bubble landing-ai-bubble-bot">
                   بالطبع! تخيل أنك تحاول تحسين وصفة كعكة. في كل مرة تخبز فيها مجموعة،
                   تأخذ أفضل الكعكات طعماً (البقاء للأصلح) وتدمج وصفاتها (التزاوج)
                   مع تغييرات بسيطة عشوائية (الطفرة). بمرور الوقت، ستحصل على الوصفة
