@@ -163,7 +163,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
   return (
     <>
       <Sidebar />
-      <main className="main">
+      <main className="main" data-bottom-nav-hidden={bottomNavHidden ? 'true' : undefined}>
         <Topbar title={title} scrolled={scrolled} />
         <div className="content" ref={contentRef}>
           <div className="content-inner">{children ?? <Outlet />}</div>

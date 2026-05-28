@@ -5792,3 +5792,469 @@ input[type="checkbox"], input[type="radio"] {
 /* ── 38.20 Guarantee no silent overflow caused by emoji/avatar SVGs ── */
 .avatar { line-height: 1; }
 .avatar svg { max-width: 60%; max-height: 60%; }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   39. SECOND-PASS POLISH — sidebar scroll, page transitions,
+       refined motion, premium texture, mobile finish
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── 39.1 Sidebar scroll architecture ─────────────────────────────
+   Three-zone vertical layout:
+     1. .sidebar-brand   (fixed, never scrolls)
+     2. .sidebar-scroll  (single scrollable region for ALL nav-groups)
+     3. .sidebar-footer  (fixed, anchored to bottom)
+   This replaces the prior pattern where each .nav-group was independently
+   scrollable, which broke the wheel/touch flow.
+   ───────────────────────────────────────────────────────────────── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  /* Brand top + footer bottom + nav fills the gap */
+  overflow: hidden;
+  padding: 0;
+}
+.sidebar-brand {
+  flex-shrink: 0;
+  padding: var(--sp-6) var(--sp-6) var(--sp-5);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+.sidebar-scroll {
+  flex: 1 1 auto;
+  min-height: 0;            /* critical — lets flex child scroll */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  /* Smooth scroll feel */
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+.sidebar-scroll::-webkit-scrollbar { width: 5px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border-strong); }
+
+.nav-group {
+  /* No more independent scroll — group is just a logical bucket now */
+  overflow: visible;
+  padding: 0;
+  margin: 0;
+}
+.nav-section-label {
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  margin-top: var(--sp-2);
+}
+.nav-group:first-child .nav-section-label { margin-top: 0; }
+
+.sidebar-footer {
+  flex-shrink: 0;
+  margin-top: 0;
+  padding: var(--sp-4) var(--sp-3);
+  border-top: 1px solid var(--border);
+  background: var(--surface-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ── 39.2 Smooth, premium nav-item interactions ──────────────────── */
+.nav-item, .nav-item-pill {
+  position: relative;
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
+}
+.nav-item:hover, .nav-item-pill:hover {
+  /* Refined hover — light tint, no shift */
+  background: var(--surface-2);
+  color: var(--text);
+}
+[data-theme='dark'] .nav-item.on,
+[data-theme='dark'] .nav-item-pill.on {
+  background: rgba(108, 248, 187, 0.12);
+  color: var(--md-secondary-fixed-dim);
+}
+.nav-item.on::before,
+.nav-item-pill.on::before {
+  content: '';
+  position: absolute;
+  inset-block: 8px;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: var(--r-full);
+  background: var(--action);
+  box-shadow: 0 0 8px var(--action-soft);
+}
+
+/* ── 39.3 Page transitions — silky, no flash ─────────────────────── */
+/* The .content area is the scroll container — pages fade in on mount */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.content-inner > .page,
+.content-inner > .student-dashboard,
+.content-inner > div[class*="-page"] {
+  animation: pageIn 280ms var(--ease-out);
+}
+/* On reduced-motion, skip the slide */
+@media (prefers-reduced-motion: reduce) {
+  .content-inner > .page,
+  .content-inner > .student-dashboard {
+    animation: none;
+  }
+}
+
+/* Softer route-transition for the AppShell content scrollbar */
+.content {
+  scrollbar-gutter: stable;
+}
+.content::-webkit-scrollbar { width: 8px; }
+.content::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--r-full); }
+.content::-webkit-scrollbar-thumb:hover { background: var(--text-subtle); }
+
+/* ── 39.4 Bottom-nav: hide on scroll-down, show on scroll-up ─────── */
+.bottom-nav {
+  /* Always slide-friendly */
+  transition:
+    transform 320ms var(--ease-out),
+    opacity 280ms var(--ease-out);
+  will-change: transform;
+}
+.bottom-nav[data-hidden="true"] {
+  transform: translateY(120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* When bottom-nav is hidden, content can use that extra space.
+   We rely on a data-attribute so we don't depend on :has() support. */
+@media (max-width: 768px) {
+  .main {
+    transition: padding-bottom 240ms var(--ease-out);
+  }
+  .main[data-bottom-nav-hidden="true"] {
+    padding-bottom: 16px;
+  }
+}
+
+/* ── 39.5 Topbar: smoother scroll-shadow, never jumps ────────────── */
+.topbar {
+  transition:
+    background 180ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    border-color 180ms var(--ease-out);
+}
+.topbar.scrolled {
+  background: var(--glass-bg-strong);
+}
+[data-theme='dark'] .topbar.scrolled {
+  background: rgba(10, 15, 28, 0.85);
+}
+
+/* ── 39.6 Cards: refined hover — no jitter ───────────────────────── */
+.card,
+.metric,
+.dash-stat-tile,
+.glass-panel,
+.glass-card,
+.thumb-card,
+.track-card,
+.vision-card,
+.feed-item,
+.webinar-card {
+  transform: translateZ(0);  /* enable GPU compositing — silky */
+  backface-visibility: hidden;
+}
+
+/* ── 39.7 Hover-lift — gentler, no fullscreen reflow ─────────────── */
+.card-hover:hover,
+.hover-lift:hover,
+.metric:hover,
+.dash-stat-tile:hover,
+.thumb-card:hover,
+.track-card:hover,
+.vision-card:hover,
+.webinar-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ── 39.8 Buttons & pills: silky transitions ──────────────────────── */
+.btn, .pill, .icon-btn,
+.dash-quick-action-pill,
+.search-tip-pill,
+.search-category-pill,
+.bottom-nav-item {
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out);
+}
+.btn:active, .pill:active { transform: scale(0.98); }
+
+/* ── 39.9 Topbar avatar — fix avatar size visually ───────────────── */
+.topbar-user-trigger .avatar {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 12px !important;
+}
+
+/* ── 39.10 Welcome card refined ──────────────────────────────────── */
+.welcome-card {
+  background: linear-gradient(
+    135deg,
+    var(--surface-1) 0%,
+    var(--md-surface-container-low) 100%
+  );
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-7) var(--sp-8);
+  position: relative;
+  overflow: hidden;
+}
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 100% 0%, var(--accent-soft) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, var(--action-soft) 0%, transparent 50%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+[data-theme='dark'] .welcome-card {
+  background: linear-gradient(
+    135deg,
+    var(--surface-1) 0%,
+    var(--surface-2) 100%
+  );
+}
+[data-theme='dark'] .welcome-card::before {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(76, 215, 246, 0.10) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(78, 222, 163, 0.08) 0%, transparent 50%);
+}
+.welcome-card > * { position: relative; z-index: 1; }
+.welcome-card .illustration-float,
+.welcome-card svg.illustration-float { display: none; }
+
+/* ── 39.11 Premium dashboard-stat tiles ──────────────────────────── */
+.dash-stat-tile {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.dash-stat-tile::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent);
+  opacity: 0.7;
+}
+.dash-stat-tile.success::after { background: var(--action); }
+.dash-stat-tile.warning::after { background: var(--warning); }
+.dash-stat-tile.info::after    { background: var(--ai-deep); }
+
+/* ── 39.12 Refined topbar-search visuals ─────────────────────────── */
+.topbar-search {
+  transition:
+    background var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+.topbar-search:focus-within {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ── 39.13 Sidebar drawer — premium overlay polish ───────────────── */
+.sidebar-backdrop {
+  background: rgba(9, 20, 38, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+[data-theme='dark'] .sidebar-backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ── 39.14 NavLink active marker — fix RTL placement ──────────────── */
+.nav-item.on::before,
+.nav-item-pill.on::before {
+  /* Sit on the inline-start edge of the item (right in RTL, left in LTR)
+     since the active nav fills the row from inline-start. */
+  inset-inline-start: 4px;
+}
+
+/* ── 39.15 Logo placement on sidebar — never crops ───────────────── */
+.sidebar-brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--grad-primary-emerald);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.sidebar-brand-mark img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+/* ── 39.16 Welcome card on phone — very tight stack ──────────────── */
+@media (max-width: 768px) {
+  .welcome-card {
+    padding: var(--sp-5);
+    border-radius: var(--r-lg);
+  }
+  .welcome-card .dash-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .welcome-card .dash-quick-action-pill {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: var(--fs-xs);
+  }
+}
+
+/* ── 39.17 Empty/empty-looking pages — give them rhythm ───────────── */
+.page > .state,
+.student-dashboard > .state {
+  margin-block: var(--sp-6);
+}
+
+/* ── 39.18 Sidebar logo image colour fix in light mode ───────────── */
+[data-theme='light'] .sidebar-brand-mark img {
+  filter: brightness(0) invert(1);   /* white logo on emerald gradient */
+}
+
+/* ── 39.19 Refined modal/overlay focus ─────────────────────────────── */
+.modal-overlay,
+.dash-customizer-overlay,
+.checkpoint-overlay,
+.owner-confirm-overlay {
+  animation: fadeIn 240ms var(--ease-out);
+}
+.modal-card,
+.dash-customizer-modal,
+.checkpoint-card,
+.checkpoint-glass,
+.owner-confirm-dialog {
+  animation: scaleIn 240ms var(--ease-out);
+}
+
+/* ── 39.20 Image avatar pixel-perfect ─────────────────────────────── */
+.avatar img,
+img.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* ── 39.21 ESC-friendly drawer when open ─────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar.open {
+    box-shadow: var(--shadow-xl);
+  }
+  /* Smaller phone: drawer width adapts */
+  @media (max-width: 480px) {
+    .sidebar { width: min(320px, 90vw); }
+  }
+}
+
+/* ── 39.22 Eliminate sub-pixel text-rendering glitch on transition ── */
+* { backface-visibility: hidden; }
+.btn, .pill, .nav-item, .nav-item-pill, .card, .metric { -webkit-font-smoothing: antialiased; }
+
+/* ── 39.23 Bottom-nav inner space respects bottom safe-area ─────── */
+.bottom-nav {
+  padding-block: 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+.bottom-nav-item {
+  min-height: 48px;
+  touch-action: manipulation;
+}
+
+/* ── 39.24 Larger touch targets on phones ─────────────────────────── */
+@media (max-width: 768px) {
+  .icon-btn,
+  .topbar-mobile-toggle,
+  .lang-toggle-pill,
+  .oasis-widget__btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+/* ── 39.25 Visible-only-on-desktop helper for clean topbar ─────────── */
+@media (max-width: 1024px) {
+  .topbar-actions .lang-toggle-pill { display: none; }
+}
+
+/* ── 39.26 Better skeleton baseline (was too subtle) ─────────────── */
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 50%,
+    var(--surface-2) 100%);
+  background-size: 200% 100%;
+}
+
+/* ── 39.27 Polish OasisWidget trigger ──────────────────────────────── */
+.oasis-widget__trigger {
+  transition:
+    transform var(--t-base) var(--ease-spring),
+    box-shadow var(--t-base) var(--ease);
+}
+.oasis-widget__trigger:hover { transform: scale(1.06); }
+.oasis-widget__trigger:active { transform: scale(0.98); }
+
+/* ── 39.28 Topbar pretty separator on scroll ───────────────────────── */
+.topbar:not(.scrolled) {
+  border-bottom-color: transparent;
+}
+
+/* ── 39.29 Card title — never overflow on RTL Arabic words ─────────── */
+.card-title { word-break: keep-all; overflow-wrap: break-word; }
+
+/* ── 39.30 Default transition on every interactive element ────────── */
+a, button, [role="button"], [role="tab"], [role="menuitem"],
+input, select, textarea {
+  transition:
+    color var(--t-fast) var(--ease-out),
+    background var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out);
+}
+
+/* ── 39.31 Make sure no global text inherits weird transition ──────── */
+.page-title, .landing-title, h1, h2, h3 {
+  transition: none;
+}
+
+/* ── 39.32 Smooth scroll for the entire app ────────────────────────── */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .content-inner > .page,
+  .content-inner > .student-dashboard,
+  .content-inner > div[class*="-page"] {
+    animation: none;
+  }
+}

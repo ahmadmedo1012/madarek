@@ -58,29 +58,31 @@ export function Sidebar() {
           </div>
         </div>
 
-        {groups.map((g) => (
-          <div className="nav-group" key={g.label}>
-            <div className="nav-section-label">{g.label}</div>
-            {g.items.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `nav-item nav-item-pill${isActive ? ' on' : ''}`}
-                onClick={closeSidebar}
-              >
-                <span className="nav-icon">
-                  <Icon icon={item.icon} size={17} />
-                </span>
-                <span className="nav-label">{item.label}</span>
-                {item.badge && (
-                  <span className={`nav-badge${item.badge.tone ? ' ' + item.badge.tone : ''}`}>
-                    {item.badge.text}
+        <nav className="sidebar-scroll" aria-label="التنقّل">
+          {groups.map((g) => (
+            <div className="nav-group" key={g.label}>
+              <div className="nav-section-label">{g.label}</div>
+              {g.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `nav-item nav-item-pill${isActive ? ' on' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <span className="nav-icon">
+                    <Icon icon={item.icon} size={17} />
                   </span>
-                )}
-              </NavLink>
-            ))}
-          </div>
-        ))}
+                  <span className="nav-label">{item.label}</span>
+                  {item.badge && (
+                    <span className={`nav-badge${item.badge.tone ? ' ' + item.badge.tone : ''}`}>
+                      {item.badge.text}
+                    </span>
+                  )}
+                </NavLink>
+              ))}
+            </div>
+          ))}
+        </nav>
 
         <div className="sidebar-footer">
           <ThemeToggle />
