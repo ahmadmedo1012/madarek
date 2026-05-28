@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Complete rebuild of the design token system (tokens.css) and the core app stylesheet (app.css) to establish a new premium, handcrafted visual language for the university platform. This is the foundation that all other CSS files build upon.",
+  "status": "in_progress",
+  "steps": [
+    "Completely rewrite frontend/src/styles/tokens.css with a new premium design language. Requirements: (1) New color palette - move away from the current Material Design 3 palette to a bespoke university-grade palette. Dark theme: deep ink/slate tones (not pure black), with refined blue as accent. Light theme: warm paper whites with subtle warmth. Gold accent for achievements. Teal/cyan for AI features. (2) New typography scale - use a more refined modular scale with better hierarchy. Keep IBM Plex Sans Arabic as the primary font. Improve line-heights for Arabic readability. (3) New spacing system - keep 8px base grid but refine the scale. (4) New radius system - less rounded, more architectural (4px, 8px, 12px, 16px, 20px, 24px). (5) New shadow system - softer, more layered, less aggressive. (6) New motion system - keep the same easing functions but refine durations. (7) Keep all variable NAMES that are referenced elsewhere (--bg, --surface-1, --surface-2, --surface-3, --border, --border-strong, --text, --text-muted, --text-subtle, --accent, --accent-hover, --accent-soft, --accent-border, --accent-fg, --gold, --gold-soft, --gold-hover, --success, --warning, --danger, --info, --shadow-sm/md/lg/xl, --shadow-card, --shadow-card-hover, --elev-0 through --elev-5, --focus-ring, --selection-bg, --glass-bg, --glass-border, --glass-blur, --font-sans, --font-mono, all --sp-N variables, all --r-N variables, all --t-N variables, all --ease-N variables, --sidebar-w, --topbar-h, --content-max-w, --md-primary and related, --grad-hero, --grad-accent, all semantic variables). (8) The new palette should feel: warm-neutral, calm, scholarly. Dark mode: ink-blue/charcoal backgrounds with subtle purple undertones. Light mode: warm off-white/cream with gentle blue undertones. Accent: deep sapphire blue. Gold: refined amber/champagne. (9) Reduce over-engineering - remove excessive glassmorphism, AI-glow effects, and over-the-top gradient tokens that make it feel template-like.",
+    "Completely rewrite frontend/src/styles/app.css sections 1-3 (Reset & Foundation, Typography, Layout/App Shell). Key changes: (1) Remove the body::before atmospheric gradient - it is over-designed and makes the app feel template-like. Replace with a clean solid background. (2) Simplify the sidebar design - keep the navy branded sidebar but remove the inner gradient image, simplify the brand section, make nav items cleaner with less visual noise. (3) Refine the topbar - remove the gradient hairline ::after pseudo-element, simplify to a clean border. (4) Simplify .page-header - remove the gradient background, the accent rail ::before, and the decorative glow ::after. Make it a clean, elegant header with just good typography and spacing. (5) Improve content area padding for better reading rhythm.",
+    "Completely rewrite frontend/src/styles/app.css sections 4-8 (Cards, Metrics/KPI, Buttons, Inputs/Forms, Badges). Key changes: (1) Cards: Remove the decorative top accent strip ::before on every card - it is repetitive and template-like. Make cards clean with good border, subtle shadow, clean hover. Keep the translateY hover but reduce to -2px. (2) Metrics: Remove the top accent bar ::before and the corner glow ::after. Make metrics clean cards with a colored left border OR colored icon background instead. (3) Buttons: Simplify the primary button - remove the complex 3-stop gradient, inset shadows, and excessive box-shadows. Use a solid color with subtle depth. Keep the pill shape (border-radius: full). (4) Inputs: Keep the current styling largely but reduce the focus ring to 2px and make it more subtle. (5) Badges: Keep current approach, it works.",
+    "Completely rewrite frontend/src/styles/app.css sections 9-18 (Tabs, Modals, Tables, Dropdowns, Tooltips, Avatars, Empty State, Skeleton/Loading, Progress, Pagination). Key changes: (1) Modals: Remove the decorative top gradient strip ::before on modal-card. Keep the animation. (2) Tables: Remove the gradient on thead. Use a simple background color. (3) All other components: Keep the structure but ensure they use the new token values and feel cohesive. Remove any excessive gradients or glow effects.",
+    "Completely rewrite frontend/src/styles/app.css sections 19-25 (Grid Layouts, Utilities, Dashboard Welcome/Hero, Status Widget, Bottom Nav, Notifications, Landing overrides). Key changes: (1) Welcome card: Remove the decorative glow ::before and ::after. Make it a clean gradient card without the noise. (2) Bottom nav: Keep the navy branded approach but simplify - remove backdrop-filter (it causes performance issues on mobile). (3) Landing overrides in app.css: Remove duplicate landing styles that conflict with landing.css. Clean up .landing-hero-float-card positioning. (4) Ensure all responsive breakpoints are preserved."
+  ],
+  "acceptance_criteria": [
+    "tokens.css contains a complete, self-consistent design token system with all variable names preserved",
+    "Dark theme feels like premium ink/charcoal - not pure black, not too blue",
+    "Light theme feels like warm scholarly paper - not stark white, not grey",
+    "app.css provides all component styles without excessive decorative pseudo-elements",
+    "Cards, metrics, modals no longer have the repetitive gradient top strips",
+    "Body does not have an atmospheric gradient pseudo-element",
+    "Page header is clean without decorative glows",
+    "All existing CSS class names are preserved (no renaming that would break components)",
+    "Buttons feel solid and premium without complex multi-stop gradients",
+    "The overall aesthetic is restrained, quiet, and premium - not flashy or template-like"
+  ],
+  "verification": [
+    "Manually verify CSS syntax: check all files for balanced braces, valid selectors, no syntax errors",
+    "Verify all CSS custom property references in app.css have corresponding definitions in tokens.css",
+    "Verify no class names were removed that are referenced in TSX component files"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

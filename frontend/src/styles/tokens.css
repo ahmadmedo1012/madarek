@@ -1,75 +1,61 @@
 /* ═════════════════════════════════════════════════════════════
-   Madarek Design System — Unified Design Tokens
-   Single source of truth for the Google Stitch design language.
-   Themed via [data-theme="dark"|"light"].
-   ───────────────────────────────────────────────────────────── */
+   Madarek Design System - Scholarly Edition
+   A refined, restrained design language for academic tools.
+   Dark theme is default (:root), light via [data-theme='light'].
+   ═════════════════════════════════════════════════════════════ */
 
 :root {
   /* ── Brand Colors (mode-invariant) ────────────────────── */
-  --brand-blue: #003461;
-  --brand-blue-deep: #001c38;
-  --brand-purple: #004b87;
-  --brand-gold: #fed65b;
+  --brand-blue: #1e3a5f;
+  --brand-blue-deep: #0f1d30;
+  --brand-purple: #2c4a7c;
+  --brand-gold: #d4a853;
 
-  /* ── Stitch Primary Palette ───────────────────────────── */
-  --md-primary:                     #003461;
+  /* ── Material Design 3 Palette (preserved for compatibility) ── */
+  --md-primary:                     #1e3a5f;
   --md-on-primary:                  #ffffff;
-  --md-primary-container:           #004b87;
-  --md-on-primary-container:        #8abcff;
-  --md-primary-fixed:               #d3e4ff;
-  --md-primary-fixed-dim:           #a3c9ff;
-  --md-on-primary-fixed:            #001c38;
-  --md-on-primary-fixed-variant:    #004882;
+  --md-primary-container:           #2c4a7c;
+  --md-on-primary-container:        #a8c8e8;
+  --md-primary-fixed:               #d0e4f7;
+  --md-primary-fixed-dim:           #8bb4d9;
+  --md-on-primary-fixed:            #0f1d30;
+  --md-on-primary-fixed-variant:    #1e3a5f;
 
-  /* ── Stitch Secondary (Gold) ──────────────────────────── */
-  --md-secondary:                   #735c00;
+  --md-secondary:                   #7a5c1f;
   --md-on-secondary:                #ffffff;
-  --md-secondary-container:         #fed65b;
-  --md-on-secondary-container:      #745c00;
-  --md-secondary-fixed:             #ffe088;
-  --md-secondary-fixed-dim:         #e9c349;
-  --md-on-secondary-fixed:          #241a00;
-  --md-on-secondary-fixed-variant:  #574500;
+  --md-secondary-container:         #d4a853;
+  --md-on-secondary-container:      #7a5c1f;
+  --md-secondary-fixed:             #f0d88a;
+  --md-secondary-fixed-dim:         #c89e3d;
+  --md-on-secondary-fixed:          #2e2200;
+  --md-on-secondary-fixed-variant:  #5c4516;
 
-  /* ── Stitch Tertiary (Teal / AI) ──────────────────────── */
-  --md-tertiary:                    #003a3b;
+  --md-tertiary:                    #1a4040;
   --md-on-tertiary:                 #ffffff;
-  --md-tertiary-container:          #005354;
-  --md-on-tertiary-container:       #01ced1;
-  --md-tertiary-fixed:              #5af8fb;
-  --md-tertiary-fixed-dim:          #2ddbde;
-  --md-on-tertiary-fixed:           #002020;
-  --md-on-tertiary-fixed-variant:   #004f51;
+  --md-tertiary-container:          #245555;
+  --md-on-tertiary-container:       #6bc4c4;
+  --md-tertiary-fixed:              #7edede;
+  --md-tertiary-fixed-dim:          #4fb8b8;
+  --md-on-tertiary-fixed:           #0a2020;
+  --md-on-tertiary-fixed-variant:   #1a4040;
 
-  /* ── Error ────────────────────────────────────────────── */
   --md-error:                       #ba1a1a;
   --md-on-error:                    #ffffff;
   --md-error-container:             #ffdad6;
   --md-on-error-container:          #93000a;
 
-  /* ── Surface (Material 3) ─────────────────────────────── */
-  --md-surface:                     #f8f9fa;
-  --md-on-surface:                  #191c1d;
-  --md-on-surface-variant:          #424750;
-  --md-surface-variant:             #e1e3e4;
-  --md-surface-bright:              #f8f9fa;
-  --md-surface-dim:                 #d9dadb;
+  /* ── Surface System (Material 3 compatibility) ────────── */
+  --md-surface:                     #f8f9fb;
+  --md-on-surface:                  #1a1d24;
+  --md-on-surface-variant:          #4a5060;
+  --md-surface-variant:             #e8ebf0;
+  --md-outline:                     #6b7280;
+  --md-outline-variant:             #c4c8d0;
   --md-surface-container-lowest:    #ffffff;
-  --md-surface-container-low:       #f3f4f5;
-  --md-surface-container:           #edeeef;
-  --md-surface-container-high:      #e7e8e9;
-  --md-surface-container-highest:   #e1e3e4;
-  --md-background:                  #f8f9fa;
-  --md-on-background:               #191c1d;
-
-  /* ── Outline ──────────────────────────────────────────── */
-  --md-outline:                     #727781;
-  --md-outline-variant:             #c2c6d1;
-
-  /* ── Inverse ──────────────────────────────────────────── */
-  --md-inverse-surface:             #2e3132;
-  --md-inverse-on-surface:          #f0f1f2;
-  --md-inverse-primary:             #a3c9ff;
+  --md-surface-container-low:       #f4f5f8;
+  --md-surface-container:           #eef0f4;
+  --md-surface-container-high:      #e8ebf0;
+  --md-surface-container-highest:   #e2e5ea;
 
   /* ── Spacing (8px base grid) ──────────────────────────── */
   --sp-1: 4px;
@@ -84,43 +70,35 @@
   --sp-12: 48px;
   --sp-16: 64px;
 
-  /* ── Radius — refined modular scale for premium feel ──── */
-  --r-xs: 6px;
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 18px;
-  --r-xl: 22px;
-  --r-2xl: 28px;
-  --r-3xl: 36px;
+  /* ── Radius - architectural, less rounded ─────────────── */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-2xl: 20px;
+  --r-3xl: 24px;
   --r-full: 9999px;
 
-  /* Stitch radii aliases (kept for backward compatibility) */
-  --st-r-default: 10px;
-  --st-r-lg:      14px;
-  --st-r-xl:      18px;
-  --st-r-2xl:     24px;
-  --st-r-full:    9999px;
-
-  /* ── Typography — bold modular scale ──────────────────── */
+  /* ── Typography Scale ─────────────────────────────────── */
   --fs-xxs: 11px;
   --fs-xs: 12px;
   --fs-sm: 13px;
   --fs-base: 15px;
   --fs-md: 16px;
-  --fs-lg: 19px;
-  --fs-xl: 24px;
-  --fs-2xl: 32px;
-  --fs-3xl: 42px;
-  --fs-4xl: 56px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --fs-2xl: 28px;
+  --fs-3xl: 36px;
+  --fs-4xl: 48px;
 
-  /* Premium Arabic Typography Hierarchy */
-  --fs-display-lg: clamp(36px, 5.5vw, 56px);
-  --fs-display: clamp(44px, 7vw, 80px);
-  --lh-display: 1.05;
-  --fs-headline-md: clamp(26px, 3.6vw, 36px);
-  --fs-headline-sm: clamp(22px, 2.6vw, 28px);
-  --fs-body-lg: 18px;
-  --fs-body-md: 16px;
+  --fs-display-lg: clamp(32px, 5vw, 48px);
+  --fs-display: clamp(40px, 6.5vw, 72px);
+  --lh-display: 1.08;
+  --fs-headline-md: clamp(24px, 3.2vw, 32px);
+  --fs-headline-sm: clamp(20px, 2.4vw, 26px);
+  --fs-body-lg: 17px;
+  --fs-body-md: 15px;
   --fs-label-md: 14px;
   --fs-label-sm: 12px;
 
@@ -129,167 +107,137 @@
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  /* Line heights refined for Arabic display */
-  --lh-tight: 1.18;
+  --lh-tight: 1.2;
   --lh-snug: 1.4;
   --lh-base: 1.65;
   --lh-loose: 1.85;
 
-  /* ── Motion — premium curated set ─────────────────────── */
-  /* Durations: micro for hover/press, fast for state changes, base for transitions, slow for page changes */
-  --t-micro: 100ms;
-  --t-fast: 180ms;
-  --t-base: 280ms;
-  --t-slow: 420ms;
-  --t-slower: 560ms;
-  --t-cinema: 700ms;
+  /* ── Motion ───────────────────────────────────────────── */
+  --t-micro: 80ms;
+  --t-fast: 150ms;
+  --t-base: 240ms;
+  --t-slow: 380ms;
+  --t-slower: 500ms;
+  --t-cinema: 650ms;
 
-  /* Easings — refined curated set */
-  /* ease: standard productive easing */
-  --ease: cubic-bezier(0.32, 0.72, 0, 1);
-  /* ease-soft: gentle settle, good for content reveal */
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-  /* ease-out: snappy entrance, the workhorse */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  /* ease-in: accelerating exit */
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
-  /* ease-spring: bouncy interactions (use sparingly) */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
-  /* ── Layout ──────────────────────────────────────────── */
-  --sidebar-w: 244px;
+  /* ── Layout ───────────────────────────────────────────── */
+  --sidebar-w: 240px;
   --sidebar-w-collapsed: 64px;
   --topbar-h: 56px;
-  --content-max-w: 1400px;
+  --content-max-w: 1360px;
 
-  /* Stitch layout tokens */
-  --st-container-max:   1280px;
-  --st-gutter:          24px;
-  --st-margin-desktop:  64px;
-  --st-margin-mobile:   20px;
-  --st-unit:            8px;
-
-  /* ── Fonts ───────────────────────────────────────────── */
+  /* ── Fonts ────────────────────────────────────────────── */
   --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* ── Glassmorphism ───────────────────────────────────── */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-blur: 12px;
+  /* ── Glassmorphism (subtle, not heavy) ────────────────── */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 10px;
 
-  /* ── AI Glow Signature Effect ────────────────────────── */
-  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
-  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
-
-  /* ── Semantic Composition Tokens ─────────────────────── */
+  /* ── Semantic Composition ─────────────────────────────── */
   --transition-all: all var(--t-base) var(--ease);
   --card-padding: var(--sp-5);
   --section-gap: var(--sp-8);
 
-  /* ── Elevation system — semantic shadow alias ──────────
-     Use these for component intent rather than picking shadow-sm/md/lg directly.
-       elev-0  flat surface (no lift)
-       elev-1  resting card / panel
-       elev-2  hover state for cards
-       elev-3  floating elements (dropdowns, popovers)
-       elev-4  modal / sheet
-       elev-5  hero / spotlight surface
-     Resolved per theme below. */
-
-  /* ── Curated gradients — pre-composed for consistent brand voice ─── */
+  /* ── Gradients (restrained, subtle) ───────────────────── */
   --grad-hero: radial-gradient(ellipse at 30% 0%,
-    rgba(0, 75, 135, 0.20) 0%,
-    rgba(0, 52, 97, 0.10) 40%,
-    transparent 75%);
+    rgba(30, 58, 95, 0.08) 0%,
+    transparent 60%);
   --grad-accent: linear-gradient(135deg,
     var(--brand-blue) 0%,
     var(--brand-purple) 100%);
   --grad-gold: linear-gradient(135deg,
-    #fee48a 0%,
+    #e8c06a 0%,
     var(--brand-gold) 50%,
-    #d4a829 100%);
+    #b08930 100%);
   --grad-teal: linear-gradient(135deg,
     var(--md-tertiary-fixed-dim) 0%,
     var(--md-tertiary-container) 100%);
   --grad-surface-shine: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    transparent 50%);
+    rgba(255, 255, 255, 0.02) 0%,
+    transparent 40%);
 }
 
 /* ═════════════════════════════════════════════════════════════
-   DARK THEME (Midnight Slate - Premium & Professional)
+   DARK THEME (Scholarly Ink - warm charcoal with depth)
    ═════════════════════════════════════════════════════════════ */
 :root,
 [data-theme='dark'] {
-  /* Surfaces — refined, deep space slate blue palette */
-  --bg: #090c15;
-  --surface-1: #101524;
-  --surface-2: #181f34;
-  --surface-3: #222a45;
+  /* Surfaces - deep ink, warm undertone, NOT pure black */
+  --bg: #0f1117;
+  --surface-1: #161920;
+  --surface-2: #1c2028;
+  --surface-3: #242830;
 
-  /* Borders — soft, low-contrast slate overlays */
-  --border: rgba(255, 255, 255, 0.05);
-  --border-strong: rgba(255, 255, 255, 0.09);
+  /* Borders - barely visible, warm */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
 
-  /* Text — high contrast, soft slate/white values */
-  --text: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
+  /* Text - clear hierarchy */
+  --text: #eceef2;
+  --text-muted: #8b919e;
+  --text-subtle: #5c6370;
 
-  /* Accent (Royal Sapphire / Deep blue in dark mode) */
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --accent-soft: rgba(59, 130, 246, 0.12);
-  --accent-border: rgba(59, 130, 246, 0.35);
+  /* Accent - deep scholarly blue */
+  --accent: #4b8be0;
+  --accent-hover: #6ba3f0;
+  --accent-soft: rgba(75, 139, 224, 0.10);
+  --accent-border: rgba(75, 139, 224, 0.30);
   --accent-fg: #ffffff;
 
-  /* Gold — Burnished champagne metallic gold */
-  --gold: #f59e0b;
-  --gold-soft: rgba(245, 158, 11, 0.12);
-  --gold-hover: #fbbf24;
+  /* Gold - refined champagne/amber */
+  --gold: #d4a853;
+  --gold-soft: rgba(212, 168, 83, 0.10);
+  --gold-hover: #e0ba6a;
 
   /* Semantic */
-  --success: #10b981;
-  --success-soft: rgba(16, 185, 129, 0.10);
-  --warning: #f59e0b;
-  --warning-soft: rgba(245, 158, 11, 0.10);
-  --danger: #ef4444;
-  --danger-soft: rgba(239, 68, 68, 0.10);
-  --info: #3b82f6;
-  --info-soft: rgba(59, 130, 246, 0.10);
+  --success: #3fba7e;
+  --success-soft: rgba(63, 186, 126, 0.10);
+  --warning: #d4a020;
+  --warning-soft: rgba(212, 160, 32, 0.10);
+  --danger: #e5534b;
+  --danger-soft: rgba(229, 83, 75, 0.10);
+  --info: #4b8be0;
+  --info-soft: rgba(75, 139, 224, 0.10);
 
-  /* Shadows — soft, layered academic depth */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  /* Shadows - soft, natural, less dramatic */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.16);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.32), 0 2px 6px rgba(0, 0, 0, 0.18);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.36), 0 4px 12px rgba(0, 0, 0, 0.20);
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-card-hover: 0 12px 28px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.30), 0 2px 6px rgba(0, 0, 0, 0.16);
 
-  /* Elevation system (dark) — premium depth */
+  /* Elevation system */
   --elev-0: none;
   --elev-1: var(--shadow-sm);
   --elev-2: var(--shadow-md);
   --elev-3: var(--shadow-lg);
   --elev-4: var(--shadow-xl);
-  --elev-5: 0 40px 100px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --elev-5: 0 24px 64px rgba(0, 0, 0, 0.40), 0 8px 20px rgba(0, 0, 0, 0.24);
 
   /* Focus & Selection */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59, 130, 246, 0.5);
-  --selection-bg: rgba(59, 130, 246, 0.25);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(75, 139, 224, 0.45);
+  --selection-bg: rgba(75, 139, 224, 0.20);
 
   /* Chart */
   --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-text: #64748b;
+  --chart-text: #5c6370;
 
   /* Glassmorphism (dark) */
-  --glass-bg: rgba(16, 21, 36, 0.6);
-  --glass-bg-subtle: rgba(16, 21, 36, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(22, 25, 32, 0.65);
+  --glass-bg-subtle: rgba(22, 25, 32, 0.40);
+  --glass-border: rgba(255, 255, 255, 0.06);
 
   /* Aliases */
   --primary: var(--accent);
@@ -299,54 +247,54 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
-   LIGHT THEME (Clean Stone & Ice - Premium Academic feel)
+   LIGHT THEME (Warm Paper - scholarly, not stark)
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  /* Warmer paper-tone, clean blue slate backdrop */
-  --bg: #f8fafc;
+  /* Surfaces - warm off-white, paper tones */
+  --bg: #f8f9fb;
   --surface-1: #ffffff;
-  --surface-2: #f1f5f9;
-  --surface-3: #e2e8f0;
+  --surface-2: #f2f4f7;
+  --surface-3: #e8ebf0;
 
-  /* Borders — light neutral */
-  --border: rgba(15, 23, 42, 0.05);
-  --border-strong: rgba(15, 23, 42, 0.09);
+  /* Borders */
+  --border: rgba(15, 17, 23, 0.06);
+  --border-strong: rgba(15, 17, 23, 0.12);
 
   /* Text */
-  --text: #0f172a;
-  --text-muted: #475569;
-  --text-subtle: #64748b;
+  --text: #1a1d24;
+  --text-muted: #4a5060;
+  --text-subtle: #6b7280;
 
-  /* Accent (Regal Navy) */
-  --accent: #1e40af;
+  /* Accent - deeper blue for light backgrounds */
+  --accent: #2563eb;
   --accent-hover: #1d4ed8;
-  --accent-soft: rgba(30, 64, 175, 0.08);
-  --accent-border: rgba(30, 64, 175, 0.25);
+  --accent-soft: rgba(37, 99, 235, 0.07);
+  --accent-border: rgba(37, 99, 235, 0.22);
   --accent-fg: #ffffff;
 
-  /* Gold — Burnished Gold */
+  /* Gold */
   --gold: #b45309;
-  --gold-soft: rgba(180, 83, 9, 0.08);
+  --gold-soft: rgba(180, 83, 9, 0.07);
   --gold-hover: #92400e;
 
   /* Semantic (light) */
   --success: #059669;
-  --success-soft: rgba(5, 150, 105, 0.08);
+  --success-soft: rgba(5, 150, 105, 0.07);
   --warning: #b45309;
-  --warning-soft: rgba(180, 83, 9, 0.08);
+  --warning-soft: rgba(180, 83, 9, 0.07);
   --danger: #dc2626;
-  --danger-soft: rgba(220, 38, 38, 0.08);
-  --info: #1d4ed8;
-  --info-soft: rgba(29, 78, 216, 0.08);
+  --danger-soft: rgba(220, 38, 38, 0.07);
+  --info: #2563eb;
+  --info-soft: rgba(37, 99, 235, 0.07);
 
-  /* Shadows (light) — soft, clean paper depth */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.02);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02), 0 0 0 1px rgba(15, 23, 42, 0.03);
-  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.06), 0 3px 8px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.08), 0 8px 16px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  /* Shadows (light) - clean paper depth */
+  --shadow-sm: 0 1px 2px rgba(15, 17, 23, 0.04);
+  --shadow-md: 0 2px 8px rgba(15, 17, 23, 0.06), 0 1px 2px rgba(15, 17, 23, 0.03);
+  --shadow-lg: 0 8px 24px rgba(15, 17, 23, 0.08), 0 2px 6px rgba(15, 17, 23, 0.04);
+  --shadow-xl: 0 16px 48px rgba(15, 17, 23, 0.10), 0 4px 12px rgba(15, 17, 23, 0.05);
 
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.03);
-  --shadow-card-hover: 0 8px 24px -4px rgba(30, 64, 175, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(30, 64, 175, 0.05);
+  --shadow-card: 0 1px 3px rgba(15, 17, 23, 0.04), 0 0 0 1px rgba(15, 17, 23, 0.03);
+  --shadow-card-hover: 0 8px 24px rgba(15, 17, 23, 0.08), 0 2px 6px rgba(15, 17, 23, 0.04);
 
   /* Elevation system (light) */
   --elev-0: none;
@@ -354,29 +302,28 @@
   --elev-2: var(--shadow-md);
   --elev-3: var(--shadow-lg);
   --elev-4: var(--shadow-xl);
-  --elev-5: 0 32px 80px -8px rgba(30, 64, 175, 0.12), 0 12px 24px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  --elev-5: 0 24px 64px rgba(15, 17, 23, 0.12), 0 8px 20px rgba(15, 17, 23, 0.06);
 
-  /* Light-mode gradient overrides */
+  /* Gradient overrides for light */
   --grad-hero: radial-gradient(ellipse at 30% 0%,
-    rgba(30, 64, 175, 0.06) 0%,
-    rgba(30, 64, 175, 0.03) 40%,
-    transparent 75%);
+    rgba(37, 99, 235, 0.04) 0%,
+    transparent 60%);
   --grad-surface-shine: linear-gradient(180deg,
-    rgba(15, 23, 42, 0.01) 0%,
-    transparent 50%);
+    rgba(15, 17, 23, 0.01) 0%,
+    transparent 40%);
 
   /* Focus & Selection */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(30, 64, 175, 0.4);
-  --selection-bg: rgba(30, 64, 175, 0.12);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(37, 99, 235, 0.35);
+  --selection-bg: rgba(37, 99, 235, 0.12);
 
   /* Chart (light) */
-  --chart-grid: rgba(15, 23, 42, 0.04);
-  --chart-text: #64748b;
+  --chart-grid: rgba(15, 17, 23, 0.05);
+  --chart-text: #6b7280;
 
   /* Glassmorphism (light) */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.4);
-  --glass-border: rgba(15, 23, 42, 0.04);
+  --glass-bg: rgba(255, 255, 255, 0.70);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(15, 17, 23, 0.06);
 }
 
 /* ═════════════════════════════════════════════════════════════
