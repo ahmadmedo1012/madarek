@@ -2391,20 +2391,111 @@ hr {
 
 .landing-hero-showcase {
   position: relative;
-  min-width: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  min-height: 480px;
+  width: 100%;
+  perspective: 1000px;
 }
 
 .landing-hero-float-card {
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: var(--r-2xl);
-  padding: var(--sp-5);
-  box-shadow: var(--shadow-lg);
+  position: absolute !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--r-2xl) !important;
+  padding: var(--sp-5) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease) !important;
   width: 100%;
-  max-width: 420px;
+}
+
+.landing-hero-float-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Individual card positioning and float animations */
+.landing-hero-float-card:nth-child(1) {
+  top: 5%;
+  inset-inline-start: 10%;
+  max-width: 250px;
+  animation: landing-float 6s ease-in-out infinite;
+  z-index: 3;
+}
+
+.landing-hero-float-card:nth-child(2) {
+  top: 35%;
+  inset-inline-end: 5%;
+  max-width: 300px;
+  animation: landing-float-reverse 8s ease-in-out infinite;
+  z-index: 2;
+}
+
+.landing-hero-float-card:nth-child(3) {
+  bottom: 5%;
+  inset-inline-start: 15%;
+  max-width: 260px;
+  animation: landing-float 7s ease-in-out infinite 1s;
+  z-index: 1;
+}
+
+.landing-hero-float-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.landing-hero-float-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-hero-float-card-icon[data-variant="gpa"] {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.landing-hero-float-card-icon[data-variant="ai"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.landing-hero-float-card-icon[data-variant="path"] {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.landing-hero-float-card-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.landing-hero-float-card-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.landing-hero-float-card-sub {
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+
+@keyframes landing-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes landing-float-reverse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
 }
 
 /* Landing sections */
@@ -2442,12 +2533,17 @@ hr {
   text-wrap: pretty;
 }
 
+.landing-bento,
 .landing-bento-grid,
 .landing-features-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--sp-4);
   margin-top: var(--sp-7);
+}
+
+.landing-bento-wide {
+  grid-column: span 2;
 }
 
 .landing-bento-card {
@@ -2708,6 +2804,7 @@ hr {
     order: -1;
   }
 
+  .landing-bento,
   .landing-bento-grid,
   .landing-features-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2818,9 +2915,13 @@ hr {
   }
 
   /* Landing bento grid */
+  .landing-bento,
   .landing-bento-grid,
   .landing-features-grid {
     grid-template-columns: 1fr;
+  }
+  .landing-bento-wide {
+    grid-column: span 1 !important;
   }
 }
 
@@ -2831,6 +2932,24 @@ hr {
   /* Grids fully stack */
   .grid-4, .grid-3, .grid-2 {
     grid-template-columns: 1fr;
+  }
+
+  .landing-hero-showcase {
+    min-height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--sp-4) !important;
+    width: 100% !important;
+    padding: 0 var(--sp-2) !important;
+  }
+
+  .landing-hero-float-card {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    animation: none !important;
+    box-shadow: var(--shadow-md) !important;
   }
 
   /* Inputs prevent iOS zoom */

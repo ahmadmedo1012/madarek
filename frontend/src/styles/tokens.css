@@ -220,80 +220,78 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
-   DARK THEME (default)
+   DARK THEME (Midnight Slate - Premium & Professional)
    ═════════════════════════════════════════════════════════════ */
 :root,
 [data-theme='dark'] {
-  /* Surfaces — refined elevation ladder, deeper midnight base */
-  --bg: #07090f;
-  --surface-1: #0e1118;
-  --surface-2: #161922;
-  --surface-3: #1f232d;
+  /* Surfaces — refined, deep space slate blue palette */
+  --bg: #090c15;
+  --surface-1: #101524;
+  --surface-2: #181f34;
+  --surface-3: #222a45;
 
-  /* Borders — subtle, warm-tinted to soften harshness */
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.10);
+  /* Borders — soft, low-contrast slate overlays */
+  --border: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.09);
 
-  /* Text */
-  --text: #fafafa;
-  --text-muted: #b4b4bc;
-  --text-subtle: #8f8f99;
+  /* Text — high contrast, soft slate/white values */
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
 
-  /* Accent (primary in dark mode uses fixed-dim for readability) */
-  --accent: #a3c9ff;
-  --accent-hover: #d3e4ff;
-  --accent-soft: rgba(163, 201, 255, 0.16);
-  --accent-border: rgba(163, 201, 255, 0.45);
-  --accent-fg: #001c38;
+  /* Accent (Royal Sapphire / Deep blue in dark mode) */
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-soft: rgba(59, 130, 246, 0.12);
+  --accent-border: rgba(59, 130, 246, 0.35);
+  --accent-fg: #ffffff;
 
-  /* Gold */
-  --gold: #e9c349;
-  --gold-soft: rgba(233, 195, 73, 0.16);
-  --gold-hover: #f5d565;
+  /* Gold — Burnished champagne metallic gold */
+  --gold: #f59e0b;
+  --gold-soft: rgba(245, 158, 11, 0.12);
+  --gold-hover: #fbbf24;
 
   /* Semantic */
-  --success: #3DD68C;
-  --success-soft: rgba(61, 214, 140, 0.10);
-  --warning: #F5A623;
-  --warning-soft: rgba(245, 166, 35, 0.10);
-  --danger: #F55353;
-  --danger-soft: rgba(245, 83, 83, 0.10);
-  --info: #a3c9ff;
-  --info-soft: rgba(163, 201, 255, 0.10);
+  --success: #10b981;
+  --success-soft: rgba(16, 185, 129, 0.10);
+  --warning: #f59e0b;
+  --warning-soft: rgba(245, 158, 11, 0.10);
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.10);
+  --info: #3b82f6;
+  --info-soft: rgba(59, 130, 246, 0.10);
 
-  /* Shadows — directional layered for premium depth (visible, bold) */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.60), 0 12px 32px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  /* Shadows — soft, layered academic depth */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
 
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.50), 0 4px 12px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.10);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-card-hover: 0 12px 28px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-  /* Elevation system (dark) — premium-strong depth */
+  /* Elevation system (dark) — premium depth */
   --elev-0: none;
-  --elev-1: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --elev-2: 0 12px 28px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.07);
-  --elev-3: 0 24px 56px rgba(0, 0, 0, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --elev-4: 0 36px 84px rgba(0, 0, 0, 0.65), 0 12px 32px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.10);
-  --elev-5: 0 56px 128px rgba(0, 0, 0, 0.70), 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --elev-1: var(--shadow-sm);
+  --elev-2: var(--shadow-md);
+  --elev-3: var(--shadow-lg);
+  --elev-4: var(--shadow-xl);
+  --elev-5: 0 40px 100px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-  /* Focus & Selection — proper double-ring for accessibility + polish */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(163, 201, 255, 0.5);
-  --selection-bg: rgba(163, 201, 255, 0.25);
+  /* Focus & Selection */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59, 130, 246, 0.5);
+  --selection-bg: rgba(59, 130, 246, 0.25);
 
   /* Chart */
   --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-text: #6b6886;
+  --chart-text: #64748b;
 
   /* Glassmorphism (dark) */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(16, 21, 36, 0.6);
+  --glass-bg-subtle: rgba(16, 21, 36, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.05);
 
-  /* ── Aliases for legacy class systems ─────────────────────
-     These let world-class.css and other layers resolve to brand
-     tokens instead of falling back to generic indigo/slate. */
+  /* Aliases */
   --primary: var(--accent);
   --surface: var(--surface-1);
   --surface-elevated: var(--surface-2);
@@ -301,80 +299,84 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
-   LIGHT THEME
+   LIGHT THEME (Clean Stone & Ice - Premium Academic feel)
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  /* Warmer paper-tone, cleaner step ladder */
-  --bg: #fbfbfb;
+  /* Warmer paper-tone, clean blue slate backdrop */
+  --bg: #f8fafc;
   --surface-1: #ffffff;
-  --surface-2: #f5f6f8;
-  --surface-3: #ebedef;
+  --surface-2: #f1f5f9;
+  --surface-3: #e2e8f0;
 
-  --border: rgba(15, 23, 42, 0.06);
-  --border-strong: rgba(15, 23, 42, 0.12);
+  /* Borders — light neutral */
+  --border: rgba(15, 23, 42, 0.05);
+  --border-strong: rgba(15, 23, 42, 0.09);
 
-  --text: var(--md-on-surface);
-  --text-muted: var(--md-on-surface-variant);
-  --text-subtle: var(--md-outline);
+  /* Text */
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
 
-  --accent: var(--md-primary);
-  --accent-hover: var(--md-primary-container);
-  --accent-soft: color-mix(in srgb, var(--md-primary) 8%, transparent);
-  --accent-border: color-mix(in srgb, var(--md-primary) 35%, transparent);
-  --accent-fg: var(--md-on-primary);
+  /* Accent (Regal Navy) */
+  --accent: #1e40af;
+  --accent-hover: #1d4ed8;
+  --accent-soft: rgba(30, 64, 175, 0.08);
+  --accent-border: rgba(30, 64, 175, 0.25);
+  --accent-fg: #ffffff;
 
-  --gold: var(--md-secondary-container);
-  --gold-soft: color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
-  --gold-hover: #f5d565;
+  /* Gold — Burnished Gold */
+  --gold: #b45309;
+  --gold-soft: rgba(180, 83, 9, 0.08);
+  --gold-hover: #92400e;
 
   /* Semantic (light) */
-  --success: var(--md-tertiary-container);
-  --success-soft: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
-  --warning: #c2410c;
-  --warning-soft: rgba(194, 65, 12, 0.10);
-  --danger: var(--md-error);
-  --danger-soft: color-mix(in srgb, var(--md-error) 10%, transparent);
-  --info: var(--md-primary);
-  --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.08);
+  --warning: #b45309;
+  --warning-soft: rgba(180, 83, 9, 0.08);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.08);
+  --info: #1d4ed8;
+  --info-soft: rgba(29, 78, 216, 0.08);
 
-  /* Shadows (light) — softer, paper-like */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.03);
-  --shadow-md: 0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.10), 0 8px 16px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  /* Shadows (light) — soft, clean paper depth */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02), 0 0 0 1px rgba(15, 23, 42, 0.03);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.06), 0 3px 8px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.08), 0 8px 16px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05);
 
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --shadow-card-hover: 0 8px 24px -4px rgba(0, 52, 97, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(0, 52, 97, 0.07);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.03);
+  --shadow-card-hover: 0 8px 24px -4px rgba(30, 64, 175, 0.06), 0 2px 6px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(30, 64, 175, 0.05);
 
-  /* Elevation system (light) — resolved values */
+  /* Elevation system (light) */
   --elev-0: none;
-  --elev-1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --elev-2: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05);
-  --elev-3: 0 12px 32px -4px rgba(0, 52, 97, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.06);
-  --elev-4: 0 24px 56px -8px rgba(0, 52, 97, 0.16), 0 8px 16px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.06);
-  --elev-5: 0 32px 80px -8px rgba(0, 52, 97, 0.20), 0 12px 24px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.07);
+  --elev-1: var(--shadow-sm);
+  --elev-2: var(--shadow-md);
+  --elev-3: var(--shadow-lg);
+  --elev-4: var(--shadow-xl);
+  --elev-5: 0 32px 80px -8px rgba(30, 64, 175, 0.12), 0 12px 24px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
 
   /* Light-mode gradient overrides */
   --grad-hero: radial-gradient(ellipse at 30% 0%,
-    rgba(0, 75, 135, 0.10) 0%,
-    rgba(0, 52, 97, 0.05) 40%,
+    rgba(30, 64, 175, 0.06) 0%,
+    rgba(30, 64, 175, 0.03) 40%,
     transparent 75%);
   --grad-surface-shine: linear-gradient(180deg,
-    rgba(15, 23, 42, 0.02) 0%,
+    rgba(15, 23, 42, 0.01) 0%,
     transparent 50%);
 
-  /* Focus & Selection (light) — double ring for visibility */
-  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px color-mix(in srgb, var(--md-primary) 40%, transparent);
-  --selection-bg: color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
+  /* Focus & Selection */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(30, 64, 175, 0.4);
+  --selection-bg: rgba(30, 64, 175, 0.12);
 
   /* Chart (light) */
-  --chart-grid: rgba(15, 23, 42, 0.06);
-  --chart-text: #8694AC;
+  --chart-grid: rgba(15, 23, 42, 0.04);
+  --chart-text: #64748b;
 
   /* Glassmorphism (light) */
-  --glass-bg: rgba(255, 255, 255, 0.70);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.50);
-  --glass-border: rgba(255, 255, 255, 0.80);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(15, 23, 42, 0.04);
 }
 
 /* ═════════════════════════════════════════════════════════════
