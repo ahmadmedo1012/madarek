@@ -1301,3 +1301,286 @@ table.data-table tbody td,
 .metric.red .metric-icon    { background: var(--danger-soft); color: var(--danger); }
 .metric.purple .metric-icon { background: color-mix(in srgb, var(--brand-purple) 15%, transparent); color: var(--brand-purple); }
 .metric.gold .metric-icon   { background: var(--gold-soft); color: var(--gold); }
+
+/* ═══════════════════════════════════════════════════════════════
+   v3.9 — Micro-interactions, decorations, refined details
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Card: visible accent rail on left side (RTL-aware) ──────── */
+.card,
+.metric,
+.dash-card,
+.welcome-card,
+.owner-stat-card {
+  position: relative;
+}
+
+/* ── Hover pop: gentle scale on metric icons ─────────────────── */
+.metric-icon {
+  transition: transform var(--t-base) var(--ease-out) !important;
+}
+
+.metric:hover .metric-icon {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+/* ── Click feedback on all clickable cards ───────────────────── */
+.card[role="button"]:active,
+.metric:active,
+.dash-card:active,
+.quick-action:active,
+.dash-quick-action:active {
+  transform: translateY(-1px) scale(0.99) !important;
+  transition: transform 80ms var(--ease-out) !important;
+}
+
+/* ── Active link underline animation ─────────────────────────── */
+.landing-nav a {
+  position: relative;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.landing-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  inset-inline-start: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 100%);
+  border-radius: var(--r-full);
+  transition: width var(--t-base) var(--ease-out);
+}
+
+.landing-nav a:hover::after {
+  width: 100%;
+}
+
+/* ── Logo / brand mark hover ─────────────────────────────────── */
+.sidebar-brand:hover .sidebar-brand-mark,
+.landing-brand:hover svg {
+  transform: rotate(8deg);
+  transition: transform var(--t-base) var(--ease-spring);
+}
+
+.sidebar-brand-mark,
+.landing-brand svg {
+  transition: transform var(--t-base) var(--ease-spring);
+}
+
+/* ── Visible "live" indicator on data ────────────────────────── */
+.live-badge,
+.data-fresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--success) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--success);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.live-badge::before,
+.data-fresh::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--success);
+  box-shadow: 0 0 0 0 var(--success);
+  animation: pulse-success 2s ease-out infinite;
+}
+
+/* ── Number counter animation hint ───────────────────────────── */
+.metric-value,
+.owner-stat-value,
+.kpi-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Refined Charts container ────────────────────────────────── */
+.owner-chart-container,
+.chart-container {
+  padding: var(--sp-2);
+  position: relative;
+}
+
+.owner-chart-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center,
+    color-mix(in srgb, var(--accent) 6%, transparent) 0%,
+    transparent 70%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Section dividers — subtle accent gradient hairline ──────── */
+hr,
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--border) 20%,
+    var(--border) 80%,
+    transparent 100%) !important;
+  margin: var(--sp-5) 0;
+}
+
+/* ── Heading anchor reveal ───────────────────────────────────── */
+h2:hover .heading-anchor,
+h3:hover .heading-anchor {
+  opacity: 1;
+}
+
+/* ── Refined ARIA disabled state ─────────────────────────────── */
+[aria-disabled="true"],
+:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+/* ── Code blocks ─────────────────────────────────────────────── */
+code,
+pre,
+.code,
+.code-block {
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 2px 6px;
+}
+
+pre,
+.code-block {
+  padding: var(--sp-4);
+  overflow-x: auto;
+  border-radius: var(--r-md);
+}
+
+/* ── Refined Bell + notification button in topbar ─────────────── */
+.topbar-bell,
+.notif-trigger,
+.topbar-notif-button {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: var(--r-full) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--t-fast) var(--ease-out),
+              border-color var(--t-fast) var(--ease-out),
+              color var(--t-fast) var(--ease-out),
+              transform var(--t-fast) var(--ease-out) !important;
+}
+
+.topbar-bell:hover,
+.notif-trigger:hover,
+.topbar-notif-button:hover {
+  background: var(--surface-3) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  transform: scale(1.05);
+}
+
+/* ── Notification badge (count) ──────────────────────────────── */
+.topbar-notif-badge,
+.notif-count-badge {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -2px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: var(--r-full);
+  background: var(--danger) !important;
+  color: white !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 8px color-mix(in srgb, var(--danger) 50%, transparent);
+}
+
+/* ── Theme toggle ────────────────────────────────────────────── */
+.theme-toggle,
+.theme-toggle-button {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: var(--r-full) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out) !important;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-3) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  transform: scale(1.05) rotate(15deg);
+}
+
+/* ── User menu dropdown trigger ──────────────────────────────── */
+.topbar-user-menu,
+.user-menu-trigger {
+  display: flex !important;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 4px var(--sp-3) 4px 4px !important;
+  border-radius: var(--r-full) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out) !important;
+}
+
+.topbar-user-menu:hover,
+.user-menu-trigger:hover {
+  background: var(--surface-3) !important;
+  border-color: var(--accent) !important;
+}
+
+/* ── App layout content padding refined ──────────────────────── */
+.content {
+  padding: var(--sp-7) var(--sp-6) var(--sp-12) !important;
+}
+
+@media (max-width: 1024px) {
+  .content {
+    padding: var(--sp-5) var(--sp-5) var(--sp-12) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: var(--sp-4) var(--sp-4) calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* ── Brand mark refined ──────────────────────────────────────── */
+.sidebar-brand-mark,
+.landing-brand svg,
+.brand-mark {
+  filter: drop-shadow(0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent));
+}
