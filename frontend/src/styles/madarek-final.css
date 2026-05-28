@@ -289,11 +289,11 @@
 }
 
 [data-theme='dark'] .sidebar {
-  background: #1a1d2e !important;
+  background: var(--surface-1) !important;
 }
 
 [data-theme='light'] .sidebar {
-  background: var(--md-surface-container-low) !important;
+  background: var(--surface-2) !important;
 }
 
 /* ==========================================================================

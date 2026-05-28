@@ -290,6 +290,14 @@
   --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-bg-subtle: rgba(255, 255, 255, 0.02);
   --glass-border: rgba(255, 255, 255, 0.06);
+
+  /* ── Aliases for legacy class systems ─────────────────────
+     These let world-class.css and other layers resolve to brand
+     tokens instead of falling back to generic indigo/slate. */
+  --primary: var(--accent);
+  --surface: var(--surface-1);
+  --surface-elevated: var(--surface-2);
+  --surface-hover: var(--surface-2);
 }
 
 /* ═════════════════════════════════════════════════════════════
