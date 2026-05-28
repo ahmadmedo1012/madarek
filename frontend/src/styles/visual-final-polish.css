@@ -937,6 +937,10 @@ label,
     width: calc(100vw - var(--sp-8));
     max-height: 70vh;
   }
+  .oasis-widget--ltr,
+  .oasis-widget--rtl {
+    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1015,9 +1019,6 @@ label,
 @media (prefers-reduced-motion: reduce) {
   .bottom-nav {
     transition: none !important;
-  }
-  .bottom-nav[data-hidden="true"] {
-    transform: translateY(100%);
   }
 }
 

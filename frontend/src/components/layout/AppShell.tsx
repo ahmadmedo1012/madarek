@@ -152,6 +152,8 @@ export function AppShell({ children }: { children?: ReactNode }) {
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     setScrolled(false);
+    setBottomNavHidden(false);
+    lastScrollTopRef.current = 0;
   }, [location.pathname]);
 
   return (
