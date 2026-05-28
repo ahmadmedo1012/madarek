@@ -456,7 +456,7 @@
    Kept for fallback only. */
 .oasis-widget {
   position: fixed;
-  bottom: 80px;
+  bottom: var(--sp-5);
   z-index: 9999;
 }
 
@@ -492,7 +492,7 @@
    which load later in the cascade. Kept as fallback only. */
 .oasis-widget__panel {
   width: 350px;
-  height: 500px;
+  height: auto;
   background: var(--surface, #fff);
   border: 1px solid var(--border, #e2e8f0);
   border-radius: var(--radius-lg, 16px);

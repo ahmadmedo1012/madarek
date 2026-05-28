@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix Oasis widget panel distortion caused by CSS cascade conflicts and add bottom-nav hide-on-scroll behavior",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Fix world-class.css oasis panel height conflict. In the `.oasis-widget__panel` rule (around line 497), change `height: 500px` to `height: auto`. This is the ROOT CAUSE - it forces a fixed 500px height that prevents the panel from sizing naturally. The later-loaded global-icon.css cannot override it because it does not set height.",
+    "Step 2: Fix global-icon.css Section 5 oasis panel shadow. In the second `.oasis-widget__panel` rule (Section 5, around line 373 in global-icon.css), replace the heavy multi-layer box-shadow with a softer single shadow: `box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);`. Remove the glowing teal border shadow (0 0 0 1px) and the teal 16px glow that causes the garbled appearance.",
+    "Step 3: Fix mobile positioning conflict for oasis widget. In world-class.css, the `.oasis-widget` rule sets `bottom: 80px` (fixed value). Since visual-final-polish.css loads BEFORE world-class.css, world-class.css wins. Change `bottom: 80px` to `bottom: var(--sp-5)` in world-class.css to match what visual-final-polish.css Section 9 expects, OR better yet, since visual-final-polish.css Section 9 already has proper `.oasis-widget` positioning that uses tokens, comment out or remove the redundant positioning from world-class.css Section 10.",
+    "Step 4: In visual-final-polish.css Section 9, ensure the `.oasis-widget__panel` rule has `height: auto; min-height: 320px;` to override any cascade remnants and prevent collapse. Add these two properties to the existing rule.",
+    "Step 5: Add bottom-nav hide-on-scroll CSS. In visual-final-polish.css, add a new Section 11 titled 'BOTTOM NAV SCROLL HIDE' with styles for `.bottom-nav` adding `transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);` and `.bottom-nav[data-hidden=\"true\"] { transform: translateY(100%); }`. Include a `@media (prefers-reduced-motion: reduce)` rule that disables the transition.",
+    "Step 6: Modify AppShell.tsx to track scroll direction. Add a `bottomNavHidden` state (boolean, default false). In the existing scroll event listener on contentRef, track the previous scrollTop using a ref. If scrolling down (current > prev by at least 10px) AND scrollTop > 60, set bottomNavHidden=true. If scrolling up (current < prev by at least 10px), set bottomNavHidden=false. Use a useRef<number> for lastScrollTop to avoid re-renders.",
+    "Step 7: Modify BottomNav.tsx to accept an optional `hidden` prop of type boolean. In the <nav> element, add `data-hidden={hidden ? 'true' : undefined}`. Update the AppShell to pass `hidden={bottomNavHidden}` to <BottomNav />."
+  ],
+  "acceptance_criteria": [
+    "world-class.css .oasis-widget__panel no longer has height: 500px (uses height: auto instead)",
+    "global-icon.css .oasis-widget__panel Section 5 shadow is softened - no teal glow border",
+    "visual-final-polish.css .oasis-widget__panel has height: auto and min-height: 320px",
+    "Bottom nav has CSS transition and data-hidden selector in visual-final-polish.css",
+    "AppShell.tsx tracks scroll direction and passes bottomNavHidden to BottomNav",
+    "BottomNav.tsx accepts hidden prop and renders data-hidden attribute",
+    "All TypeScript code uses correct types (boolean prop, useRef<number>)",
+    "prefers-reduced-motion disables bottom-nav transition",
+    "No new npm packages added"
+  ],
+  "verification": [
+    "Read the modified files and confirm: (1) world-class.css .oasis-widget__panel uses height: auto, (2) global-icon.css Section 5 .oasis-widget__panel has softer shadow without teal glow border, (3) visual-final-polish.css Section 9 .oasis-widget__panel has height: auto and min-height, (4) visual-final-polish.css has bottom-nav scroll-hide section, (5) AppShell.tsx has scroll direction logic with useRef, (6) BottomNav.tsx has hidden prop with data-hidden attribute"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
