@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "fix",
   "description": "Fix Oasis widget panel distortion caused by CSS cascade conflicts and add bottom-nav hide-on-scroll behavior",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1: Fix world-class.css oasis panel height conflict. In the `.oasis-widget__panel` rule (around line 497), change `height: 500px` to `height: auto`. This is the ROOT CAUSE - it forces a fixed 500px height that prevents the panel from sizing naturally. The later-loaded global-icon.css cannot override it because it does not set height.",
     "Step 2: Fix global-icon.css Section 5 oasis panel shadow. In the second `.oasis-widget__panel` rule (Section 5, around line 373 in global-icon.css), replace the heavy multi-layer box-shadow with a softer single shadow: `box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);`. Remove the glowing teal border shadow (0 0 0 1px) and the teal 16px glow that causes the garbled appearance.",
@@ -27,5 +27,5 @@
     "Read the modified files and confirm: (1) world-class.css .oasis-widget__panel uses height: auto, (2) global-icon.css Section 5 .oasis-widget__panel has softer shadow without teal glow border, (3) visual-final-polish.css Section 9 .oasis-widget__panel has height: auto and min-height, (4) visual-final-polish.css has bottom-nav scroll-hide section, (5) AppShell.tsx has scroll direction logic with useRef, (6) BottomNav.tsx has hidden prop with data-hidden attribute"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All 7 steps completed successfully. CSS changes applied to world-class.css (height auto, bottom token), global-icon.css (softer shadow), visual-final-polish.css (height auto, min-height, Section 11 bottom-nav scroll-hide). TypeScript changes in AppShell.tsx (useRef for scroll tracking, bottomNavHidden state) and BottomNav.tsx (hidden prop with data-hidden attribute). Verified through code inspection - no tsc available in sandbox."
 }
