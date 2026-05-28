@@ -13,8 +13,9 @@
  */
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, X, ArrowRight, BookOpen, Presentation, FileText, Route } from 'lucide-react';
+import { Search, X, ArrowRight, BookOpen, Presentation, FileText, Route, FileSearch } from 'lucide-react';
 import { Icon } from '../Icon';
+import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
 import { useI18nStore } from '../../stores/i18n.store';
 
@@ -367,7 +368,7 @@ export function GlobalSearch() {
                       onClick={() => goTo(hit.href)}
                     >
                       <span className="search-row-icon" style={{ background: `${accent}1a`, color: accent }}>
-                        {hit.iconEmoji ?? '🔎'}
+                        <EmojiIcon emoji={hit.iconEmoji ?? ''} size={16} fallback={FileSearch} />
                       </span>
                       <span className="search-row-body">
                         <span className="search-row-title">{hit.title}</span>
@@ -401,7 +402,7 @@ export function GlobalSearch() {
                           onClick={() => goTo(hit.href)}
                         >
                           <span className="search-row-icon" style={{ background: `${accent}1a`, color: accent }}>
-                            {hit.iconEmoji ?? '🔎'}
+                            <EmojiIcon emoji={hit.iconEmoji ?? ''} size={16} fallback={FileSearch} />
                           </span>
                           <span className="search-row-body">
                             <span className="search-row-title">{hit.title}</span>

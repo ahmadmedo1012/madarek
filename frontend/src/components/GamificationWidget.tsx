@@ -1,5 +1,6 @@
-import { Trophy, Star } from 'lucide-react';
+import { Trophy, Star, Medal, Award } from 'lucide-react';
 import { Icon } from './Icon';
+import { EmojiIcon } from './EmojiIcon';
 import { useMyAchievements, useLeaderboard } from '../hooks/useResources';
 import { useI18nStore } from '../stores/i18n.store';
 
@@ -53,7 +54,7 @@ export function GamificationWidget() {
       {latestBadge && (
         <div className="gamification-widget__badge badge-animate-pulse">
           <span className="gamification-widget__badge-icon">
-            {latestBadge.achievement.icon ?? '🏆'}
+            <EmojiIcon emoji={latestBadge.achievement.icon ?? ''} size={20} fallback={Trophy} />
           </span>
           <div className="gamification-widget__badge-info">
             <span className="gamification-widget__badge-name">
@@ -77,7 +78,10 @@ export function GamificationWidget() {
             {topThree.map((entry, i) => (
               <div key={entry.id} className="gamification-widget__leaderboard-row">
                 <span className="gamification-widget__rank" data-rank={i + 1}>
-                  {i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}
+                  <Icon
+                    icon={i === 0 ? Trophy : i === 1 ? Medal : Award}
+                    size={14}
+                  />
                 </span>
                 <span className="gamification-widget__name">
                   {entry.firstName} {entry.lastName}

@@ -32,7 +32,7 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           'Router(config-if)# ip address 192.168.10.1 255.255.255.0',
           'Router(config-if)# no shutdown',
           '%LINK-3-UPDOWN: Interface GigabitEthernet0/0, changed state to up',
-          '✔ تم تفعيل الواجهة بنجاح.',
+          '[OK] تم تفعيل الواجهة بنجاح.',
         ].join('\n'),
       },
       {
@@ -45,7 +45,7 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           'Switch(config)# interface fastEthernet 0/1',
           'Switch(config-if)# switchport mode access',
           'Switch(config-if)# switchport access vlan 10',
-          '✔ تم إعداد VLAN 10 على المنفذ FastEthernet0/1.',
+          '[OK] تم إعداد VLAN 10 على المنفذ FastEthernet0/1.',
         ].join('\n'),
       },
       {
@@ -59,7 +59,7 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           'Reply from 192.168.10.1: bytes=32 time=2ms TTL=255',
           'Reply from 192.168.10.1: bytes=32 time=1ms TTL=255',
           'Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)',
-          '✔ الاتصال يعمل بنجاح.',
+          '[OK] الاتصال يعمل بنجاح.',
         ].join('\n'),
       },
       {
@@ -69,7 +69,7 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
           '$ Switch# write memory',
           'Building configuration...',
           '[OK]',
-          '✔ تم حفظ الإعدادات في NVRAM.',
+          '[OK] تم حفظ الإعدادات في NVRAM.',
         ].join('\n'),
       },
     ],
@@ -78,20 +78,20 @@ const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
     title: 'تجربة تفاعل حمض-قاعدة',
     description: 'محاكاة تفاعل HCl مع NaOH وقياس درجة الحموضة.',
     steps: [
-      { title: 'تجهيز المواد', instructions: 'حضّر 50 مل من HCl تركيز 0.1M و 50 مل من NaOH.', output: '> beaker.add(\'HCl\', 50, 0.1);\n> beaker.add(\'NaOH\', 50, 0.1);\n✔ تم تحضير المواد بأمان.' },
+      { title: 'تجهيز المواد', instructions: 'حضّر 50 مل من HCl تركيز 0.1M و 50 مل من NaOH.', output: '> beaker.add(\'HCl\', 50, 0.1);\n> beaker.add(\'NaOH\', 50, 0.1);\n[OK] تم تحضير المواد بأمان.' },
       { title: 'القياس الابتدائي', instructions: 'اقرأ pH قبل الخلط.', output: '> ph.measure(beaker_A);\nHCl pH = 1.0\n> ph.measure(beaker_B);\nNaOH pH = 13.0' },
-      { title: 'الخلط والتفاعل', instructions: 'اخلط الكميتين تدريجياً.', output: '> mix(beaker_A, beaker_B);\nReaction: HCl + NaOH → NaCl + H₂O\nTemperature rise: +5°C (exothermic)\n✔ التفاعل مكتمل.' },
-      { title: 'القياس النهائي', instructions: 'اقرأ pH بعد التفاعل.', output: '> ph.measure(mix);\npH = 7.0 (متعادل)\n✔ النتيجة المتوقعة: تفاعل تعادل تام.' },
+      { title: 'الخلط والتفاعل', instructions: 'اخلط الكميتين تدريجياً.', output: '> mix(beaker_A, beaker_B);\nReaction: HCl + NaOH → NaCl + H₂O\nTemperature rise: +5°C (exothermic)\n[OK] التفاعل مكتمل.' },
+      { title: 'القياس النهائي', instructions: 'اقرأ pH بعد التفاعل.', output: '> ph.measure(mix);\npH = 7.0 (متعادل)\n[OK] النتيجة المتوقعة: تفاعل تعادل تام.' },
     ],
   },
   eng: {
     title: 'دائرة كهربائية بسيطة',
     description: 'بناء دائرة بقاعدة ومقاوم ومصباح، حساب التيار.',
     steps: [
-      { title: 'تجميع المكونات', instructions: 'اختر بطارية 9V، مقاوم 470Ω، ومصباح LED.', output: '+ Battery: 9V\n+ Resistor: 470Ω\n+ LED: Red, Vf=2.0V\n✔ المكونات جاهزة.' },
-      { title: 'حساب التيار', instructions: 'استخدم قانون أوم: I = (Vbat - Vled) / R.', output: 'I = (9 - 2) / 470\nI = 14.89 mA\n✔ ضمن النطاق الآمن للـ LED (Imax = 20 mA).' },
-      { title: 'إغلاق الدائرة', instructions: 'وصّل المكونات على متوازي.', output: '> circuit.close();\nCurrent flowing: 14.9 mA\nLED brightness: 75%\n✔ المصباح يعمل.' },
-      { title: 'قياس الجهد', instructions: 'استخدم الفولتميتر لقياس الجهد على المقاوم.', output: '> voltmeter.read(R1);\nVR = 7.0V\nVerification: Vbat = VR + VLED = 7 + 2 = 9V ✔' },
+      { title: 'تجميع المكونات', instructions: 'اختر بطارية 9V، مقاوم 470Ω، ومصباح LED.', output: '+ Battery: 9V\n+ Resistor: 470Ω\n+ LED: Red, Vf=2.0V\n[OK] المكونات جاهزة.' },
+      { title: 'حساب التيار', instructions: 'استخدم قانون أوم: I = (Vbat - Vled) / R.', output: 'I = (9 - 2) / 470\nI = 14.89 mA\n[OK] ضمن النطاق الآمن للـ LED (Imax = 20 mA).' },
+      { title: 'إغلاق الدائرة', instructions: 'وصّل المكونات على متوازي.', output: '> circuit.close();\nCurrent flowing: 14.9 mA\nLED brightness: 75%\n[OK] المصباح يعمل.' },
+      { title: 'قياس الجهد', instructions: 'استخدم الفولتميتر لقياس الجهد على المقاوم.', output: '> voltmeter.read(R1);\nVR = 7.0V\nVerification: Vbat = VR + VLED = 7 + 2 = 9V [OK]' },
     ],
   },
 };
@@ -324,7 +324,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
               ) : (
                 terminalLines.map((line, i) => (
                   <div key={i} className={`terminal-line ${
-                    line.startsWith('✔') ? 'terminal-prompt' :
+                    line.startsWith('[OK]') ? 'terminal-prompt' :
                     line.startsWith('%') || line.startsWith('Verification') ? 'terminal-info' :
                     ''
                   }`}>
@@ -358,7 +358,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
                 key={i}
                 className={`step ${i === stepIndex ? 'on' : i < stepIndex ? 'done' : ''}`}
               >
-                <div className="step-num">{i < stepIndex ? '✓' : i + 1}</div>
+                <div className="step-num">{i < stepIndex ? '[OK]' : i + 1}</div>
                 <div className="step-body">
                   <div className="step-title">{s.title}</div>
                   <div className="step-desc">{s.instructions.slice(0, 60)}…</div>

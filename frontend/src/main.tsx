@@ -32,6 +32,12 @@ import './styles/dashboard-intel.css';
  * list-row / job card / alert, chart heights step-down on phones,
  * topbar touch targets, page-header column-stack on mobile. */
 import './styles/mobile-stabilize.css';
+/* premium-polish.css — elite-level final pass: typography contrast,
+ * button clarity, card unified rhythm, sidebar/topbar polish, focus
+ * ring consolidation, badge/pill polish, scrollbar refinement, and
+ * page-title-icon slot for the new dashboard greeting. Strictly
+ * additive; loaded last so it has the final word on visual quality. */
+import './styles/premium-polish.css';
 
 import App from './App';
 

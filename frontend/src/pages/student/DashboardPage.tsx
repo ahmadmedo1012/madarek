@@ -3,6 +3,7 @@ import {
   Presentation, FileText, FlaskConical,
   BookOpen, Sparkles, Calendar, Trophy, Clock, Flame,
   TrendingUp, Activity,
+  Moon, Sun, Sunrise, Sunset,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -19,13 +20,15 @@ import {
 
 /**
  * Greeting that adapts to the local hour. Calm, conversational.
+ * Returns a Lucide icon component instead of an emoji glyph so the
+ * dashboard hero matches the rest of the icon system.
  */
-function useGreeting(): { text: string; emoji: string } {
+function useGreeting(): { text: string; icon: LucideIcon } {
   const h = new Date().getHours();
-  if (h < 6)  return { text: 'سهرة سعيدة', emoji: '🌙' };
-  if (h < 12) return { text: 'صباح الخير', emoji: '☀️' };
-  if (h < 18) return { text: 'مساء النور', emoji: '🌤️' };
-  return { text: 'مساء الخير', emoji: '🌆' };
+  if (h < 6)  return { text: 'سهرة سعيدة', icon: Moon };
+  if (h < 12) return { text: 'صباح الخير', icon: Sunrise };
+  if (h < 18) return { text: 'مساء النور', icon: Sun };
+  return { text: 'مساء الخير', icon: Sunset };
 }
 
 /**
@@ -320,7 +323,10 @@ export default function StudentDashboardPage() {
         <DashboardWaveIllustration className="" />
         <div className="dash-header-row">
           <h1 className="page-title">
-            {greeting.emoji} {greeting.text}، {user?.firstName ?? 'أحمد'}
+            <span className="page-title-icon" aria-hidden>
+              <Icon icon={greeting.icon} size={22} />
+            </span>
+            {greeting.text}، {user?.firstName ?? 'أحمد'}
           </h1>
           <DashboardCustomizerTrigger onClick={() => setCustomizerOpen(true)} />
         </div>

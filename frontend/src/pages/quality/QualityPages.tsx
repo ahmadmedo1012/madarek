@@ -384,7 +384,11 @@ export function QualityProfessorsPage() {
                     <td><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>
                     <td className="tbl-num">{t.offerings}</td>
                     <td className="tbl-num">{t.totals.materials}</td>
-                    <td className="tbl-num" style={{ color: 'var(--gold)' }}>★ {t.satisfaction}</td>
+                    <td className="tbl-num" style={{ color: 'var(--gold)' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Icon icon={Star} size={12} /> {t.satisfaction}
+                      </span>
+                    </td>
                     <td className="tbl-num">{t.responseHours}س</td>
                     <td>
                       <div style={{ minWidth: 120, display: 'flex', alignItems: 'center', gap: 8 }}>

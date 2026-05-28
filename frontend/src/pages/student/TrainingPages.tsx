@@ -230,7 +230,13 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
             <ProgressBar
               value={track.progressPct}
               color={accent}
-              label={track.isCompleted ? '✓ مكتمل' : `${track.completedLessons} / ${track.totalLessons} دروس`}
+              label={
+                track.isCompleted
+                  ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <Icon icon={CheckCircle2} size={13} /> مكتمل
+                    </span>
+                  : `${track.completedLessons} / ${track.totalLessons} دروس`
+              }
             />
           </div>
         )}
@@ -302,7 +308,13 @@ export function TrainingTrackPage() {
           <ProgressBar
             value={Math.round((completedCount / track.lessons.length) * 100)}
             color={accent}
-            label={track.isCompleted ? '✓ هذا المسار مكتمل — شهادة جاهزة' : `${completedCount} / ${track.lessons.length} درس مكتمل`}
+            label={
+              track.isCompleted
+                ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <Icon icon={CheckCircle2} size={14} /> هذا المسار مكتمل — شهادة جاهزة
+                  </span>
+                : `${completedCount} / ${track.lessons.length} درس مكتمل`
+            }
           />
         </Card>
       )}
@@ -460,7 +472,13 @@ export function TrainingLessonPage() {
             disabled={complete.isPending || lesson.isCompleted}
             style={{ background: accent }}
           >
-            {lesson.isCompleted ? 'تم الإكمال ✓' : complete.isPending ? 'جارٍ الإرسال…' : 'أكملت — احتساب الدرس'}
+            {lesson.isCompleted
+              ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  تم الإكمال <Icon icon={CheckCircle2} size={14} />
+                </span>
+              : complete.isPending
+                ? 'جارٍ الإرسال…'
+                : 'أكملت — احتساب الدرس'}
           </button>
           {next && (
             <button

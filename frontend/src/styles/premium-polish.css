@@ -1,0 +1,433 @@
+/* ═════════════════════════════════════════════════════════════════════
+   Madarek — Premium Polish (loaded LAST)
+   ─────────────────────────────────────────────────────────────────────
+   Final elite-level visual unification: typography contrast, button
+   clarity, card rhythm, hover/focus parity, chart container polish,
+   page-title icon slot, and a final scrollbar/selection refinement.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ─── TYPOGRAPHY CONTRAST ─────────────────────────────────────────── */
+/* Body copy inside cards reads slightly stronger so it never feels
+   washed out against a white surface. Secondary text stays muted. */
+.card .feed-item-body,
+.card .feed-item-text,
+.card p:not(.text-subtle):not(.text-muted),
+.card .alert-desc,
+.card .list-row-title,
+.card .achievement-name {
+  color: var(--text);
+}
+.card .text-sm.text-muted,
+.card .feed-item-meta,
+.card .alert-time,
+.card .list-row-sub,
+.card .achievement-desc {
+  color: var(--text-muted);
+}
+
+/* Body line-height standardized for premium readability */
+body { line-height: 1.55; }
+.page,
+.student-dashboard {
+  line-height: 1.55;
+}
+
+/* Anti-alias text everywhere for crispness */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+
+/* ─── BUTTON CLARITY ──────────────────────────────────────────────── */
+/* Labels never below 13px. Semibold weight for primary/action.
+   Letter-spacing tightens slightly for premium feel. */
+.btn {
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.005em;
+  font-feature-settings: 'kern', 'liga';
+  min-height: 40px;
+  line-height: 1;
+}
+.btn.primary,
+.btn.action,
+.btn.gradient,
+.btn.danger,
+.auth-btn.primary {
+  font-weight: var(--fw-semibold);
+}
+.btn.sm  { min-height: 32px; font-size: 13px; padding: 0 14px; }
+.btn.lg  { min-height: 48px; font-size: 15px; padding: 0 22px; }
+.btn.xl  { min-height: 56px; font-size: 17px; padding: 0 28px; }
+
+/* Outline button on dark mode never reads dim */
+[data-theme='dark'] .btn.outline {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+[data-theme='dark'] .btn.outline:hover {
+  background: var(--surface-2);
+  color: var(--accent-hover);
+  border-color: var(--accent-border);
+}
+
+/* Icon-button polish — consistent hover weight */
+.icon-btn {
+  min-width: 40px;
+  min-height: 40px;
+}
+.icon-btn.sm { min-width: 32px; min-height: 32px; }
+.icon-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.icon-btn:active {
+  transform: scale(0.92);
+  transition-duration: 80ms;
+}
+
+
+/* ─── CARD UNIFIED RHYTHM ─────────────────────────────────────────── */
+/* Every card uses the same radius, the same baseline shadow, and the
+   same hover-elevation. No card ever lifts more than 1-2px. */
+.card,
+.metric,
+.dash-stat-tile,
+.compact-kpi,
+.feed-item,
+.thumb-card,
+.research-card,
+.landing-feature-card,
+.intel-radial-card,
+.stat-trend,
+.invoice-card,
+.gamification-widget,
+.glass-card,
+.glass-panel {
+  border-radius: var(--r-lg);
+}
+
+.card,
+.metric,
+.dash-stat-tile,
+.intel-radial-card,
+.stat-trend {
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition:
+    box-shadow var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.card:hover,
+.metric:hover,
+.dash-stat-tile:hover,
+.intel-radial-card:hover,
+.stat-trend:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-border);
+  transform: translateY(-1px);
+}
+
+/* Compact KPIs and feed items share parity */
+.compact-kpi,
+.feed-item {
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  transition:
+    box-shadow var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.compact-kpi:hover,
+.feed-item:hover {
+  border-color: var(--accent-border);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+/* Cards in dark mode get a touch more saturated border on hover so
+   the lift is visible. */
+[data-theme='dark'] .card:hover,
+[data-theme='dark'] .metric:hover,
+[data-theme='dark'] .dash-stat-tile:hover {
+  border-color: var(--accent-border);
+}
+
+
+/* ─── PAGE-TITLE ICON SLOT ────────────────────────────────────────── */
+/* For the dashboard greeting and any other page-title that displays
+   an inline icon prefix. Refined alignment. */
+.page-title-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+  margin-inline-end: var(--sp-3);
+  vertical-align: -8px;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .page-title-icon {
+    width: 30px;
+    height: 30px;
+    margin-inline-end: var(--sp-2);
+    vertical-align: -6px;
+  }
+}
+
+/* Refined greeting rhythm in dashboards */
+.welcome-card .page-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* ─── CHART CONTAINER POLISH ──────────────────────────────────────── */
+/* Cards that contain charts get a subtle inner border on the bottom
+   so the chart visually anchors. */
+.card canvas { display: block; }
+
+/* Donut hover offset reduced to feel less jumpy */
+.chart-donut-center { padding-bottom: 6px; }
+
+/* ─── INTERACTION POLISH ──────────────────────────────────────────── */
+/* All interactive elements share a single press feedback timing */
+.btn:active:not(:disabled),
+.icon-btn:active,
+.pill:active:not(.on),
+.list-row:active,
+.tab:active,
+.dash-quick-action-pill:active {
+  transition-duration: 80ms;
+}
+
+/* Disabled buttons read more dim but still readable */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.55;
+  filter: saturate(0.7);
+  cursor: not-allowed;
+}
+
+/* Refined link hover */
+a:not(.btn):not(.nav-item):not(.nav-item-pill):not(.bottom-nav-item):not(.list-row):hover {
+  color: var(--accent-hover);
+}
+
+
+/* ─── BADGES & PILLS POLISH ───────────────────────────────────────── */
+.badge {
+  font-feature-settings: 'kern', 'liga', 'tnum';
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  padding: 4px 10px;
+  font-weight: var(--fw-semibold);
+}
+.badge.green   { background: var(--success-soft); color: var(--success); }
+.badge.amber   { background: var(--warning-soft); color: var(--warning); }
+.badge.red     { background: var(--danger-soft);  color: var(--danger); }
+.badge.purple  { background: var(--ai-soft);      color: var(--ai-deep); }
+.badge.gold    { background: var(--gold-soft);    color: var(--gold); }
+.badge.brand   { background: var(--accent-soft);  color: var(--accent); }
+
+/* Pill polish */
+.pill {
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.002em;
+  padding: 7px 14px;
+  min-height: 32px;
+}
+.pill.on {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  box-shadow: 0 1px 2px rgba(15, 39, 80, 0.18);
+}
+
+/* ─── INPUT POLISH ────────────────────────────────────────────────── */
+.input,
+input.input,
+textarea.input,
+select.input,
+.auth-input {
+  font-feature-settings: 'kern', 'liga';
+  letter-spacing: 0;
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-md);
+}
+.input::placeholder,
+.auth-input::placeholder {
+  color: var(--text-subtle);
+  opacity: 1;
+}
+
+/* Form labels read crisp */
+.form-label,
+.auth-field label {
+  font-size: var(--fs-label-md);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.002em;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+
+/* ─── SCROLLBAR REFINEMENT ────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--r-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+  background-clip: content-box;
+}
+
+/* ─── SELECTION REFINEMENT ────────────────────────────────────────── */
+::selection {
+  background: var(--selection-bg);
+  color: var(--text);
+}
+
+/* ─── FINAL FOCUS RING (consolidated) ─────────────────────────────── */
+:where(button, a, [role="button"], [role="tab"], [role="menuitem"], [role="option"],
+       input, select, textarea, .pill, .nav-item, .nav-item-pill,
+       .bottom-nav-item, .list-row, .feed-item, .tab):focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--accent-border);
+  border-radius: var(--r-sm);
+}
+
+/* ─── TABLE POLISH ───────────────────────────────────────────────── */
+.tbl {
+  font-feature-settings: 'kern', 'liga', 'tnum';
+}
+.tbl thead th {
+  font-weight: var(--fw-semibold);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+.tbl tbody td {
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+/* ─── SECTION RHYTHM ──────────────────────────────────────────────── */
+.page,
+.student-dashboard {
+  gap: var(--sp-6);
+}
+@media (min-width: 1024px) {
+  .page,
+  .student-dashboard {
+    gap: var(--sp-8);
+  }
+}
+.page > .page-header {
+  margin-bottom: var(--sp-2);
+}
+
+
+/* ─── SIDEBAR FINAL POLISH ───────────────────────────────────────── */
+/* Active nav item: softer accent-soft background + accent text + a
+   delicate inline-start rail. Replaces stronger md-secondary-container
+   styling that read too dim against blue-centered palette. */
+.nav-item.on,
+.nav-item-pill.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
+}
+.nav-item.on::before,
+.nav-item-pill.on::before {
+  background: var(--accent);
+  width: 3px;
+  border-radius: 0 var(--r-full) var(--r-full) 0;
+  inset-inline-start: 0;
+  inset-block: 8px;
+  position: absolute;
+  content: '';
+  display: block;
+  animation: none;
+}
+html[dir='rtl'] .nav-item.on::before,
+html[dir='rtl'] .nav-item-pill.on::before {
+  border-radius: var(--r-full) 0 0 var(--r-full);
+}
+
+/* Nav-icon color tracks the row state for crisper grouping */
+.nav-item.on .nav-icon,
+.nav-item-pill.on .nav-icon {
+  color: var(--accent);
+}
+
+/* Sidebar brand mark: refined gradient on light mode */
+.sidebar-brand-mark {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 60%, var(--ai) 100%);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.24);
+}
+
+/* ─── TOPBAR FINAL POLISH ────────────────────────────────────────── */
+.topbar {
+  border-bottom: 1px solid transparent;
+  transition:
+    border-color var(--t-fast) var(--ease),
+    background var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.topbar.scrolled {
+  border-bottom-color: var(--border);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* ─── EMPTY STATE & STATE ICON CONTRAST ──────────────────────────── */
+.state-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--sp-3);
+  box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.04);
+}
+[data-theme='dark'] .state-icon {
+  box-shadow: 0 0 0 8px rgba(147, 180, 255, 0.06);
+}
+
+/* ─── FINAL: REDUCED MOTION DEFINITIVE ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover,
+  .metric:hover,
+  .dash-stat-tile:hover,
+  .intel-radial-card:hover,
+  .stat-trend:hover,
+  .compact-kpi:hover,
+  .feed-item:hover,
+  .list-row:hover,
+  .landing-bento-card:hover,
+  .landing-feature-card:hover,
+  .landing-hero-float-card:hover {
+    transform: none !important;
+  }
+}
