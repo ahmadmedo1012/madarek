@@ -90,10 +90,7 @@ export default function CourseDetailPage() {
               <span className="text-xs text-subtle">·</span>
               <span className="text-xs text-subtle">{data.course.department.name}</span>
             </div>
-            <h1 style={{
-              fontSize: 'var(--fs-2xl)', fontWeight: 600, color: 'var(--text)',
-              letterSpacing: '-0.4px', marginBottom: 6,
-            }}>
+            <h1 className="page-title course-detail-hero-title">
               {data.course.name}
             </h1>
             <div className="text-sm text-muted">

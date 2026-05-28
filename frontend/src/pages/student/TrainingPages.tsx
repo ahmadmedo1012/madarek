@@ -49,10 +49,10 @@ const LEVEL_LABEL: Record<string, string> = {
 };
 
 const TIER_COLOR: Record<Tier, string> = {
-  BRONZE: '#A7724E',
-  SILVER: '#9CA3AF',
-  GOLD: '#D4A537',
-  PLATINUM: '#7B3AED',
+  BRONZE: '#a7724e',
+  SILVER: '#9ca3af',
+  GOLD: 'var(--gold)',
+  PLATINUM: 'var(--ai-deep)',
 };
 
 const TIER_LABEL: Record<Tier, string> = {
@@ -63,10 +63,10 @@ const TIER_LABEL: Record<Tier, string> = {
 };
 
 const RARITY_COLOR: Record<BadgeRarity, string> = {
-  COMMON: '#9CA3AF',
-  RARE: '#2952C8',
-  EPIC: '#7B3AED',
-  LEGENDARY: '#D4A537',
+  COMMON: '#9ca3af',
+  RARE: 'var(--accent)',
+  EPIC: 'var(--ai-deep)',
+  LEGENDARY: 'var(--gold)',
 };
 
 const RARITY_LABEL: Record<BadgeRarity, string> = {
@@ -223,7 +223,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
         <div className="track-card-meta">
           <span><Icon icon={Clock} size={12} /> {track.estMinutes} د</span>
           <span><Icon icon={BookOpen} size={12} /> {track.totalLessons} درس</span>
-          <span><Icon icon={Sparkles} size={12} style={{ color: '#D4A537' }} /> {track.pointsAward} نقطة</span>
+          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {track.pointsAward} نقطة</span>
         </div>
         {track.enrolled && (
           <div style={{ marginTop: 'var(--sp-2)' }}>

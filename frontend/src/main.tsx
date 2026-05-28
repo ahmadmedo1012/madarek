@@ -18,6 +18,11 @@ import './styles/pdf.css';
  * premium motion, and subtle hand-drawn accents layered on top of
  * the existing system. Purely additive overrides. */
 import './styles/refined-blue.css';
+/* final-coherence.css — last layer for visual/interaction unification:
+ * typography lockdown, mobile tab scroll, button/form parity, list-row
+ * & feed-item polish, sidebar/topbar cohesion, modal & state harmony,
+ * and a final defensive mobile pass. Strictly additive. */
+import './styles/final-coherence.css';
 
 import App from './App';
 

@@ -297,7 +297,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           <Badge color="green">جلسة نشطة</Badge>
           <span className="text-xs text-subtle">{lab.name}</span>
         </div>
-        <h2 style={{ fontSize: 'var(--fs-xl)', fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>
+        <h2 className="section-heading">
           {exp.title}
         </h2>
         <p className="text-sm text-muted" style={{ marginBottom: 'var(--sp-4)' }}>{exp.description}</p>
