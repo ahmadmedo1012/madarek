@@ -703,3 +703,403 @@ label,
     transition: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 9: OASIS WIDGET CHAT PANEL
+   ═══════════════════════════════════════════════════════════════ */
+
+.oasis-widget {
+  position: fixed;
+  z-index: 9999;
+}
+.oasis-widget--ltr {
+  bottom: var(--sp-5);
+  right: var(--sp-5);
+}
+.oasis-widget--rtl {
+  bottom: var(--sp-5);
+  left: var(--sp-5);
+}
+
+.oasis-widget__trigger {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--md-primary-container));
+  color: var(--accent-fg);
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out);
+}
+.oasis-widget__trigger:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-xl);
+}
+
+.oasis-widget__panel {
+  width: 360px;
+  max-height: 520px;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.oasis-widget__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.oasis-widget__header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.oasis-widget__header-actions {
+  display: flex;
+  align-items: center;
+}
+.oasis-widget__btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: var(--sp-1);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--t-fast) var(--ease);
+}
+.oasis-widget__btn:hover {
+  color: var(--text);
+}
+
+.oasis-widget__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 200px;
+}
+
+.oasis-widget__welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+}
+.oasis-widget__welcome-icon {
+  color: var(--accent);
+}
+.oasis-widget__welcome-text {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-snug);
+  margin: 0;
+}
+.oasis-widget__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+.oasis-widget__chip {
+  font-size: var(--fs-xs);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.oasis-widget__chip:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.oasis-widget__msg {
+  display: flex;
+}
+.oasis-widget__msg--user {
+  justify-content: flex-end;
+}
+.oasis-widget__msg--bot {
+  justify-content: flex-start;
+}
+.oasis-widget__msg-bubble {
+  max-width: 85%;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  font-size: 14px;
+  line-height: var(--lh-snug);
+  word-break: break-word;
+}
+.oasis-widget__msg--user .oasis-widget__msg-bubble {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-end-end-radius: var(--r-xs);
+}
+.oasis-widget__msg--bot .oasis-widget__msg-bubble {
+  background: var(--surface-2);
+  color: var(--text);
+  border-end-start-radius: var(--r-xs);
+}
+
+.oasis-widget__typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: var(--sp-3) var(--sp-4);
+}
+.oasis-widget__typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--text-muted);
+  animation: oasis-typing 1.2s infinite;
+}
+.oasis-widget__typing span:nth-child(2) { animation-delay: 0.2s; }
+.oasis-widget__typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes oasis-typing {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+.oasis-widget__input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  background: var(--surface-1);
+}
+.oasis-widget__input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding: var(--sp-2) var(--sp-4);
+  font-size: 14px;
+  background: var(--surface-2);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--t-fast) var(--ease);
+}
+.oasis-widget__input::placeholder {
+  color: var(--text-subtle);
+}
+.oasis-widget__input:focus {
+  border-color: var(--accent);
+}
+.oasis-widget__send {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  border: none;
+  background: var(--accent);
+  color: var(--accent-fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.oasis-widget__send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Mobile: full-width panel */
+@media (max-width: 480px) {
+  .oasis-widget__panel {
+    width: calc(100vw - var(--sp-8));
+    max-height: 70vh;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION 10: NOTIFICATION BUTTON & LANG TOGGLE PILLS
+   ═══════════════════════════════════════════════════════════════ */
+
+.topbar-notif {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  padding: var(--sp-2);
+  border-radius: var(--r-md);
+  transition: background var(--t-fast) var(--ease);
+}
+.topbar-notif:hover {
+  background: var(--accent-soft);
+}
+.topbar-notif-badge {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-full);
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.lang-toggle-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  white-space: nowrap;
+}
+.lang-toggle-pill:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION: HOMEPAGE ANIMATIONS & MICRO-INTERACTIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Bento card hover lift */
+.landing-bento-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.landing-bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Feature card hover */
+.landing-feature-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.landing-feature-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* CTA button pulse glow */
+.landing-final-cta-btn.primary {
+  animation: cta-pulse 2.5s ease-in-out infinite;
+}
+@keyframes cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-primary) 40%, transparent); }
+  50% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--md-primary) 0%, transparent); }
+}
+
+/* Hero showcase floating cards gentle bob */
+.landing-hero-float-card {
+  animation: hero-float 4s ease-in-out infinite;
+}
+.landing-hero-float-card:nth-child(2) { animation-delay: 1.2s; }
+.landing-hero-float-card:nth-child(3) { animation-delay: 2.4s; }
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* KPI strip entrance */
+.kpi-strip .kpi-cell {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: kpi-enter 0.5s ease forwards;
+}
+.kpi-strip .kpi-cell:nth-child(1) { animation-delay: 0.1s; }
+.kpi-strip .kpi-cell:nth-child(2) { animation-delay: 0.2s; }
+.kpi-strip .kpi-cell:nth-child(3) { animation-delay: 0.3s; }
+.kpi-strip .kpi-cell:nth-child(4) { animation-delay: 0.4s; }
+@keyframes kpi-enter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Trust bar subtle marquee feel on hover */
+.landing-trust-item {
+  transition: transform 0.2s ease;
+}
+.landing-trust-item:hover {
+  transform: scale(1.05);
+}
+
+/* Dashboard cards stagger entrance */
+.student-dashboard .reveal {
+  animation: dash-stagger 0.5s ease forwards;
+  animation-delay: calc(var(--stagger-index, 0) * 0.1s);
+}
+@keyframes dash-stagger {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION: TEXT CLARITY & DESIGN CONSISTENCY
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Minimum body text size for readability (exclude compact/flush card variants) */
+.page > p,
+.page > .card:not(.compact):not(.flush) p,
+.card:not(.compact):not(.flush) p,
+.page-subtitle,
+.page > .text-sm {
+  font-size: max(0.875rem, 14px);
+  line-height: 1.6;
+}
+
+.page-subtitle {
+  font-size: max(0.9375rem, 15px);
+  line-height: 1.65;
+  color: var(--md-on-surface-variant);
+}
+
+/* Improved contrast for subtle text */
+.text-subtle {
+  color: var(--md-on-surface-variant);
+}
+.text-muted {
+  color: color-mix(in srgb, var(--md-on-surface) 65%, transparent);
+}
+
+/* Ensure all interactive elements have visible focus rings */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}

@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-002",
+  "type": "fix",
+  "description": "Fix empty spaces in internal pages (Schedule, Results, Matrix, Research, Profile) and add visual richness to homepage with animations and micro-interactions",
+  "status": "completed",
+  "steps": [
+    "1. Improve SchedulePage in frontend/src/pages/student/MorePages.tsx: Add summary stats cards at the top (total lectures this week, next lecture info). Add a grid-based visual timetable representation. Use MetricCard components (already imported) with Calendar, Clock icons to show 'محاضرات هذا الأسبوع: 7' and 'القادمة: نظم المعلومات'. Add a color-coded day indicator next to each day section.",
+    "2. Improve ResultsPage in frontend/src/pages/student/MorePages.tsx: The page already has MetricCards and grid-2 layout. Add a GPA trend summary card showing semester-over-semester with a simple CSS bar chart (no chart.js needed since it requires canvas setup). Add a 'study recommendation' card using AlertRow pattern.",
+    "3. Improve MatrixPage: The page already has good content with legend, gaps, and course grid. Add a summary statistics row at the top showing total concepts mastered/total, average mastery %, and streak days. Use the existing MetricCard pattern from components/primitives.",
+    "4. Improve ProfilePage: The page already has detailed content (hero card, KPIs, academic links, info, achievements). This page is actually well-filled. Minor improvement: add a 'last login' or 'account age' stat to the KPI row.",
+    "5. Add homepage (LandingPage) visual enhancements in frontend/src/styles/visual-final-polish.css: Add scroll-triggered animation delays using CSS custom property --stagger-index on landing sections. Add a subtle parallax effect on .landing-hero-showcase cards using CSS transforms. Add hover micro-animations on .landing-bento-card (scale, shadow lift). Add pulsing glow on .landing-final-cta-btn. Add smooth gradient animation on .landing-hero background.",
+    "6. Improve text clarity and design consistency across the platform in frontend/src/styles/visual-final-polish.css: Set minimum font-size for body text (14px). Ensure .page-subtitle has at least 15px size and adequate line-height (1.6). Add letter-spacing improvements for Arabic text readability. Ensure consistent card padding (--sp-5 minimum). Add color contrast improvements for .text-subtle and .text-muted classes."
+  ],
+  "acceptance_criteria": [
+    "SchedulePage has summary metric cards at top reducing perceived empty space",
+    "ResultsPage maintains its existing layout but has additional analysis cards",
+    "LandingPage has CSS hover animations on bento cards and CTA pulse",
+    "Text sizes across platform have minimum 14px for body, 15px for subtitles",
+    "All CSS uses existing custom properties from tokens.css (no hardcoded colors)",
+    "No TypeScript errors introduced - all new JSX uses existing component patterns",
+    "No new package dependencies - only existing lucide-react icons"
+  ],
+  "verification": [
+    "Read modified MorePages.tsx and verify TypeScript validity (correct imports, proper typing)",
+    "Verify CSS additions use only existing custom properties and valid CSS syntax",
+    "Verify no new external dependencies are imported"
+  ],
+  "blocked_reason": null,
+  "findings": "Clock and Presentation icons confirmed available in lucide-react (used in DashboardPage.tsx and GlobalSearch.tsx). MetricCard accepts value as ReactNode so string values are valid. ThemeColor includes brand/green/purple. Card component accepts title+icon props. All CSS uses existing custom properties from tokens.css. No new dependencies introduced."
+}

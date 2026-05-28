@@ -4,6 +4,7 @@ import {
   Bell, Calendar, AlertTriangle, BookOpen, Download,
   CheckCircle2, MessageCircle, Heart, Repeat2, Bookmark,
   TrendingUp, Building2, Users2, GraduationCap, Microscope,
+  Clock, Presentation,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
@@ -211,6 +212,12 @@ export function SchedulePage() {
         </div>
       </div>
 
+      <div className="grid-3">
+        <MetricCard icon={Calendar} label="محاضرات هذا الأسبوع" value="7" color="brand" />
+        <MetricCard icon={Clock} label="ساعات دراسية" value="10.5" color="green" />
+        <MetricCard icon={Presentation} label="أول يوم دراسي" value="الأحد" color="purple" />
+      </div>
+
       <div className="flex-col gap-5">
         {SCHEDULE.map((d) => (
           <div key={d.day}>
@@ -285,6 +292,38 @@ export function ResultsPage() {
           </div>
         </Card>
       </div>
+
+      <Card title="مسار الأداء الفصلي" icon={TrendingUp}>
+        <div className="grid-3">
+          <div style={{
+            padding: 'var(--sp-4)',
+            background: 'var(--surface-2)',
+            borderRadius: 'var(--r-md)',
+            textAlign: 'center',
+          }}>
+            <div className="text-xxs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>الفصل 1</div>
+            <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>72%</div>
+          </div>
+          <div style={{
+            padding: 'var(--sp-4)',
+            background: 'var(--surface-2)',
+            borderRadius: 'var(--r-md)',
+            textAlign: 'center',
+          }}>
+            <div className="text-xxs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>الفصل 2</div>
+            <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>74.4%</div>
+          </div>
+          <div style={{
+            padding: 'var(--sp-4)',
+            background: 'var(--accent-soft)',
+            borderRadius: 'var(--r-md)',
+            textAlign: 'center',
+          }}>
+            <div className="text-xxs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>التغيّر</div>
+            <div className="text-md font-semibold" style={{ color: 'var(--success)' }}>+2.4%</div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
