@@ -1,6 +1,6 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
@@ -56,6 +56,15 @@ export function Sidebar() {
             </div>
             <div className="sidebar-brand-sub">التعليم الذكي</div>
           </div>
+          <button
+            type="button"
+            className="sidebar-close"
+            onClick={closeSidebar}
+            aria-label="إغلاق القائمة"
+            title="إغلاق"
+          >
+            <Icon icon={X} size={18} />
+          </button>
         </div>
 
         <nav className="sidebar-scroll" aria-label="التنقّل">

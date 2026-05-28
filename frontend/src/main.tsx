@@ -27,6 +27,11 @@ import './styles/final-coherence.css';
  * lib/charts.tsx (RadialProgress, HeatmapWeeks, StatTrend, TrendChip,
  * AnimatedCounter caret, donut center slot, intel grid layouts). */
 import './styles/dashboard-intel.css';
+/* mobile-stabilize.css — final defensive pass: visible sidebar close
+ * button, mobile drawer rhythm, row-clipping fixes for run-row /
+ * list-row / job card / alert, chart heights step-down on phones,
+ * topbar touch targets, page-header column-stack on mobile. */
+import './styles/mobile-stabilize.css';
 
 import App from './App';
 

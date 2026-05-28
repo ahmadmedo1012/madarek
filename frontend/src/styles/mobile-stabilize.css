@@ -1,0 +1,337 @@
+/* ═════════════════════════════════════════════════════════════════════
+   Madarek — Mobile + Sidebar Stabilization (loaded LAST)
+   ─────────────────────────────────────────────────────────────────────
+   Purpose: a final defensive pass that fixes:
+     - Sidebar mobile UX (visible close button, brand padding, touch
+       targets, nav-icon size, drawer width parity)
+     - Mobile row clipping (.run-row, .list-row with action,
+       JobsPage card row, AlertRow with action button)
+     - Mobile chart heights (TrendArea / TrendBar / DistributionDonut
+       step down on small screens)
+     - MetricCard value step-down on phone
+     - Topbar touch target on mobile
+     - Page-header rhythm when no right slot
+   Strictly additive — no markup or token re-definitions.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ─── Sidebar close button (visible on mobile, hidden on desktop) ─── */
+.sidebar-close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  display: none;          /* hidden on desktop where sidebar is permanent */
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+.sidebar-close:hover {
+  background: var(--surface-3);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.sidebar-close:active { transform: scale(0.94); transition-duration: 80ms; }
+.sidebar-close:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-border);
+}
+
+@media (max-width: 1024px) {
+  .sidebar-close { display: inline-flex; }
+}
+
+/* ─── Sidebar brand on mobile — tighter rhythm so the drawer header
+       feels balanced, not top-heavy ──────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar-brand {
+    padding: var(--sp-4) var(--sp-4) var(--sp-3);
+    gap: var(--sp-3);
+    align-items: center;
+  }
+  .sidebar-brand-mark { width: 36px; height: 36px; border-radius: var(--r-sm); }
+  .sidebar-brand-name { font-size: var(--fs-lg); }
+  .sidebar-brand-sub { font-size: 10px; }
+  /* Footer breathes a touch more on phone */
+  .sidebar-footer { padding: var(--sp-3); }
+  /* Nav touch targets: 40px min for thumb taps */
+  .nav-item, .nav-item-pill { min-height: 44px; padding-block: 11px; }
+  .nav-icon { width: 24px; height: 24px; }
+}
+
+
+/* ─── Topbar mobile — bigger touch toggle + tighter title ──────────── */
+@media (max-width: 1024px) {
+  .topbar-mobile-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid transparent;
+    display: inline-grid;
+    place-items: center;
+    transition: var(--transition-all);
+  }
+  .topbar-mobile-toggle:hover {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+  }
+  .topbar-mobile-toggle:active { transform: scale(0.94); }
+  .topbar-mobile-toggle:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-border);
+  }
+}
+
+/* ─── Page-header rhythm when there's no right slot ───────────────── */
+.page-header:not(:has(> :nth-child(2))) {
+  margin-bottom: 0;
+}
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+  .page-header > :not(.page-title-block) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .page-subtitle { line-height: 1.55; }
+}
+
+/* ─── MetricCard value step-down on phones ────────────────────────── */
+@media (max-width: 640px) {
+  .metric-value { font-size: var(--fs-xl); letter-spacing: -0.01em; }
+  .metric-icon { width: 38px; height: 38px; }
+}
+@media (max-width: 480px) {
+  .metric { padding: var(--sp-4); }
+  .metric-value { font-size: var(--fs-lg); }
+}
+
+/* ─── Compact / dash KPI step-down ────────────────────────────────── */
+@media (max-width: 480px) {
+  .compact-kpi-value { font-size: var(--fs-lg); }
+  .compact-kpi { padding: var(--sp-2) var(--sp-3); }
+  .dash-stat-tile { padding: var(--sp-3) var(--sp-4); }
+  .dash-stat-icon { width: 32px; height: 32px; border-radius: var(--r-sm); }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   ROW PATTERNS — wrap actions on narrow screens, never clip
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Universal: any flex row that ends with a button must allow wrap so
+   the button can drop below content on small screens. We target the
+   common patterns we know exist in the codebase. */
+@media (max-width: 640px) {
+  /* JobsPage: <Card compact bordered><div className="flex items-center gap-4"> */
+  .card.compact > .flex.items-center,
+  .card.bordered > .flex.items-center {
+    flex-wrap: wrap;
+    row-gap: var(--sp-3);
+  }
+  .card.compact > .flex.items-center > .btn,
+  .card.compact > .flex.items-center > .btn.primary,
+  .card.bordered > .flex.items-center > .btn,
+  .card.bordered > .flex.items-center > .btn.primary {
+    flex: 1 1 100%;
+    justify-content: center;
+    min-height: 40px;
+  }
+  /* The flex-1 inner wrap (icon + content area) keeps full width */
+  .card.compact > .flex.items-center > .flex-1,
+  .card.bordered > .flex.items-center > .flex-1 {
+    flex: 1 1 0%;
+    min-width: 0;
+  }
+
+  /* LivePage .run-row — same wrap pattern */
+  .run-row { flex-wrap: wrap; row-gap: var(--sp-2); }
+  .run-row > a.btn,
+  .run-row > .btn {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-top: var(--sp-1);
+  }
+  /* The middle column always takes the available width */
+  .run-row > div[style] { flex: 1 1 100%; min-width: 0; }
+  .run-row .badge { flex-shrink: 0; }
+
+  /* PaymentPage .list-row with amount + receipt button */
+  .list-row {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+  .list-row > .list-row-body { flex: 1 1 0%; min-width: 0; }
+  .list-row > .btn,
+  .list-row > .badge {
+    flex-shrink: 0;
+  }
+  .list-row > .fee-amount {
+    margin-inline-start: auto;
+  }
+
+  /* AlertRow with a trailing action — allow wrap */
+  .alert {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+  .alert > .alert-body { flex: 1 1 0%; min-width: 0; }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   CHARTS ON MOBILE — step heights down, prevent canvas overflow
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Charts inside .card auto-shrink on narrower viewports.
+   We target the canvas wrapper directly via canvas elements inside cards. */
+@media (max-width: 768px) {
+  /* Generic step-down for chart containers — they have inline
+     style={{ height: 220 }} or similar. We can't override inline,
+     but we CAN scale the canvas via its parent transform... actually
+     a cleaner approach is to scale the canvas itself via aspect-ratio.
+     The simplest reliable mobile fix is to clamp container heights via
+     contextual selectors that target our chart toolkit's wrappers. */
+
+  /* TrendArea / MiniArea / TrendBar: their immediate wrapper is a div
+     with inline height. The Chart.js canvas inside is responsive.
+     We add a max-height to the parent of canvas to shrink charts. */
+  .card > div > canvas,
+  .card canvas {
+    max-height: 200px !important;
+  }
+
+  /* The radial card on dashboard becomes vertical on phone — already
+     handled in dashboard-intel.css; just ensure breathing space. */
+  .intel-radial-card { padding: var(--sp-4); gap: var(--sp-3); }
+
+  /* Donut center label scales down */
+  .chart-donut-center-label { font-size: var(--fs-xl); }
+
+  /* Heatmap on phones — fewer weeks fit, allow horizontal scroll */
+  .heatmap-weeks {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card > div > canvas,
+  .card canvas { max-height: 180px !important; }
+
+  /* Stat-trend KPI: tighter padding, smaller value */
+  .stat-trend { padding: var(--sp-3); }
+  .stat-trend-value { font-size: var(--fs-xl); }
+
+  /* Intel-card-meta: prevent overflow on the right slot */
+  .intel-card-meta { gap: var(--sp-2); }
+  .intel-card-meta .left-value { font-size: var(--fs-xl); }
+
+  /* Radial progress: smaller on tiny screens */
+  .radial-progress { transform: scale(0.92); }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   PAGE STRUCTURE — minimum height, avoid stunted pages
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Pages with very little content shouldn't collapse to just a header.
+   Set a minimum height so the topbar doesn't sit on top of empty space
+   while still respecting the natural layout. */
+.content-inner {
+  min-height: calc(100vh - var(--topbar-h, 72px) - var(--sp-12));
+  display: flex;
+  flex-direction: column;
+}
+.content-inner > .page,
+.content-inner > .student-dashboard {
+  flex: 1 1 auto;
+}
+
+/* The empty-state inside a Card with a single row above shouldn't
+   collapse to ~120px — give it breathing room. */
+.card .empty-state {
+  min-height: 200px;
+  padding: var(--sp-8) var(--sp-4);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   GRID DEFENSIVE — ensure nothing overflows on RTL phone widths
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* On very narrow phones, .grid-3 should drop to 1 col, not stay at 2.
+   final-coherence already handles 768/480 well; this tightens further
+   for tiny phones (320–360px) where 2 thumb-cards become unreadable. */
+@media (max-width: 380px) {
+  .grid-3,
+  .grid-4 { grid-template-columns: 1fr !important; }
+  .compact-kpis,
+  .dash-quick-stats { grid-template-columns: 1fr !important; }
+}
+
+/* Inputs on phones — taller for thumb comfort */
+@media (max-width: 480px) {
+  .input,
+  input.input,
+  .auth-input,
+  select.input { min-height: 46px; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   FINAL: prevent body horizontal scroll on every viewport
+   ═════════════════════════════════════════════════════════════════════ */
+html, body { overflow-x: clip; }
+.page, .student-dashboard, .content-inner, .main {
+  max-width: 100%;
+  min-width: 0;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   CHARTS ON MOBILE — step heights down, prevent canvas overflow
+   ═════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* TrendArea / MiniArea / TrendBar / DistributionDonut wrap their
+     Chart.js canvas in a fixed-height div. We clamp the canvas
+     directly so the parent height stops dominating phone viewports. */
+  .card > div > canvas,
+  .card canvas {
+    max-height: 200px !important;
+  }
+  /* Donut center label scales down */
+  .chart-donut-center-label { font-size: var(--fs-xl); }
+  /* Heatmap on phones — fewer weeks fit, allow horizontal scroll */
+  .heatmap-weeks {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  /* Intel-card-meta: prevent overflow on the right slot */
+  .intel-card-meta { gap: var(--sp-2); flex-wrap: wrap; }
+  /* Intel radial card — vertical & breathable */
+  .intel-radial-card { padding: var(--sp-4); gap: var(--sp-3); }
+}
+
+@media (max-width: 480px) {
+  .card > div > canvas,
+  .card canvas { max-height: 180px !important; }
+
+  .stat-trend { padding: var(--sp-3); }
+  .stat-trend-value { font-size: var(--fs-xl); }
+
+  .intel-card-meta .left-value { font-size: var(--fs-xl); }
+
+  /* Radial progress: smaller on tiny screens */
+  .radial-progress { transform: scale(0.92); }
+}
