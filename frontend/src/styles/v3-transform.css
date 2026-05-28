@@ -868,3 +868,233 @@ table.data-table tbody td,
   color: var(--accent) !important;
   background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v3.7 — Brand identity strip + owner-specific polish
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── App shell brand strip — visible accent line under topbar ── */
+.app-shell::before,
+.shell-frame::before {
+  content: '';
+  position: fixed;
+  top: var(--topbar-h);
+  inset-inline: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 30%, transparent) 20%,
+    color-mix(in srgb, var(--md-tertiary-fixed-dim) 25%, transparent) 50%,
+    color-mix(in srgb, var(--gold) 25%, transparent) 80%,
+    transparent 100%);
+  z-index: 19;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ── Owner stats refinements ────────────────────────────────── */
+.owner-stat-card,
+.owner-stat-tile {
+  background: var(--surface-1) !important;
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.025) 0%,
+    transparent 30%) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-2xl) !important;
+  padding: var(--sp-5) !important;
+  box-shadow: var(--elev-1) !important;
+}
+
+.owner-stat-value,
+.owner-metric-value {
+  font-size: clamp(28px, 3.5vw, 38px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.05 !important;
+  color: var(--text);
+}
+
+.owner-stat-label,
+.owner-metric-label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* ── Owner timeline (activity) ──────────────────────────────── */
+.owner-timeline-item {
+  padding: var(--sp-4) !important;
+  border-radius: var(--r-lg) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  margin-bottom: var(--sp-3);
+  transition: border-color var(--t-fast) var(--ease-out),
+              transform var(--t-fast) var(--ease-out) !important;
+}
+
+.owner-timeline-item:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border)) !important;
+  transform: translateX(-3px);
+}
+
+[dir='rtl'] .owner-timeline-item:hover {
+  transform: translateX(3px);
+}
+
+.owner-event-icon {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: var(--r-md) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.owner-event-icon.green { background: var(--success-soft); color: var(--success); }
+.owner-event-icon.blue { background: var(--accent-soft); color: var(--accent); }
+.owner-event-icon.purple { background: color-mix(in srgb, var(--brand-purple) 15%, transparent); color: var(--brand-purple); }
+.owner-event-icon.amber { background: var(--warning-soft); color: var(--warning); }
+.owner-event-icon.red { background: var(--danger-soft); color: var(--danger); }
+
+/* ── Specific brand title presence ───────────────────────────── */
+.page-header h1,
+.page-title {
+  background-image: linear-gradient(135deg,
+    var(--text) 0%,
+    color-mix(in srgb, var(--text) 80%, var(--accent) 20%) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+[data-theme='light'] .page-header h1,
+[data-theme='light'] .page-title {
+  background-image: linear-gradient(135deg,
+    var(--text) 0%,
+    color-mix(in srgb, var(--text) 70%, var(--accent) 30%) 100%);
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.tabs,
+.tab-list {
+  display: flex;
+  gap: var(--sp-1);
+  padding: 4px;
+  background: var(--surface-2);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+
+.tab,
+.tab-button {
+  padding: 8px var(--sp-4) !important;
+  border-radius: var(--r-full) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--text-muted) !important;
+  background: transparent !important;
+  border: 0 !important;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out) !important;
+}
+
+.tab:hover {
+  color: var(--text) !important;
+  background: var(--surface-3) !important;
+}
+
+.tab.active,
+.tab[aria-selected="true"] {
+  background: var(--surface-1) !important;
+  color: var(--accent) !important;
+  box-shadow: var(--elev-1) !important;
+}
+
+/* ── Pagination ──────────────────────────────────────────────── */
+.pagination,
+.owner-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-5);
+}
+
+.pagination button,
+.owner-pagination button {
+  min-width: 40px !important;
+  height: 40px !important;
+  border-radius: var(--r-md) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-out) !important;
+}
+
+.pagination button:hover:not(:disabled),
+.owner-pagination button:hover:not(:disabled) {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+
+.pagination button.active,
+.pagination button[aria-current="page"],
+.owner-pagination button.active {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+  border-color: var(--accent) !important;
+  box-shadow: var(--elev-1);
+}
+
+/* ── Avatar refinements ──────────────────────────────────────── */
+.avatar,
+.user-avatar {
+  border-radius: var(--r-full) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0 0 2px var(--surface-1), 0 2px 4px rgba(0, 0, 0, 0.20);
+}
+
+/* ── Tooltip ─────────────────────────────────────────────────── */
+[role="tooltip"],
+.tooltip {
+  background: var(--surface-3) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-md) !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  box-shadow: var(--elev-2) !important;
+  letter-spacing: -0.005em;
+}
+
+/* ── Grid spacing harmony ────────────────────────────────────── */
+.grid-2, .grid-3, .grid-4 {
+  display: grid;
+  gap: var(--sp-5) !important;
+}
+
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1100px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+}
