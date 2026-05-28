@@ -979,8 +979,8 @@ label,
 .lang-toggle-pill {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
   border-radius: var(--r-full);
   border: 1px solid var(--border);
   background: var(--surface-2);
@@ -990,6 +990,8 @@ label,
   cursor: pointer;
   transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
   white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
 }
 .lang-toggle-pill:hover {
   background: var(--accent-soft);
@@ -1073,6 +1075,12 @@ label,
 /* ═══════════════════════════════════════════════════════════════
    SECTION: TEXT CLARITY & DESIGN CONSISTENCY
    ═══════════════════════════════════════════════════════════════ */
+
+/* Ensure no text is smaller than 12px anywhere */
+body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 /* Minimum body text size for readability (exclude compact/flush card variants) */
 .page > p,

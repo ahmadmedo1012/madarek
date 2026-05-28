@@ -485,6 +485,8 @@
   box-shadow: 0 6px 28px rgba(99, 102, 241, 0.45);
 }
 
+/* NOTE: These base styles are overridden by visual-final-polish.css and global-icon.css
+   which load later in the cascade. Kept as fallback only. */
 .oasis-widget__panel {
   width: 350px;
   height: 500px;

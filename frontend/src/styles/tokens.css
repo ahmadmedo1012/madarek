@@ -200,8 +200,8 @@
 
   /* Text */
   --text: #fafafa;
-  --text-muted: #a1a1aa;
-  --text-subtle: #71717a;
+  --text-muted: #b4b4bc;
+  --text-subtle: #8f8f99;
 
   /* Accent (primary in dark mode uses fixed-dim for readability) */
   --accent: #a3c9ff;
