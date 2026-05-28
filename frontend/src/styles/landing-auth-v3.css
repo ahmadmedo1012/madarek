@@ -378,6 +378,22 @@
   overflow: hidden;
 }
 
+.auth-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 30%,
+      color-mix(in srgb, var(--md-tertiary-fixed-dim) 12%, transparent) 0%,
+      transparent 60%);
+}
+
+.auth-left-inner {
+  position: relative;
+  max-width: 440px;
+  text-align: center;
+}
+
 .auth-glass-card {
   position: relative;
   width: 100%;
@@ -429,6 +445,18 @@
   align-items: center;
   justify-content: center;
   overflow-y: auto;
+}
+
+.auth-overlay-madarek::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 1000px 700px at 0% 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 0%,
+      transparent 60%);
 }
 
 /* Responsive - 900px */

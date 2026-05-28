@@ -423,23 +423,27 @@
 
 /* Data-tone styling for KPI icons */
 [data-tone="blue"] .kpi-icon {
-  background: rgba(41, 82, 200, 0.10);
-  color: #1e40af;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 [data-tone="green"] .kpi-icon {
-  background: rgba(14, 92, 47, 0.10);
-  color: #0E5C2F;
+  background: var(--success-soft);
+  color: var(--success);
 }
 
 [data-tone="purple"] .kpi-icon {
-  background: rgba(123, 58, 237, 0.10);
-  color: #7B3AED;
+  background: color-mix(in srgb, #7B3AED 12%, transparent);
+  color: #a78bfa;
 }
 
 [data-tone="gold"] .kpi-icon {
-  background: rgba(212, 165, 55, 0.12);
-  color: #B8861E;
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+[data-theme='light'] [data-tone="purple"] .kpi-icon {
+  color: #7B3AED;
 }
 
 .kpi-value {
@@ -591,6 +595,26 @@
   align-items: center;
   justify-content: center;
   margin-bottom: var(--sp-3);
+}
+
+.landing-bento-icon[data-tone="primary"] {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+}
+
+.landing-bento-icon[data-tone="tertiary"] {
+  background: color-mix(in srgb, var(--md-tertiary-fixed-dim) 15%, transparent);
+  color: var(--md-tertiary-fixed-dim);
+}
+
+.landing-bento-icon[data-tone="secondary"] {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.landing-bento-icon[data-tone="surface"] {
+  background: var(--surface-3);
+  color: var(--text-muted);
 }
 
 .landing-bento-body {
