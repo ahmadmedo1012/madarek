@@ -1,33 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+// Design system v5 — clean rebuild.
+// tokens.css supplies design tokens; app.css contains the entire
+// component+layout+page system. pdf.css is kept separate (PDF viewer
+// chunk-loaded). All previous overlapping layers have been removed.
 import './styles/tokens.css';
-import './styles/stitch-tokens.css';
-import './styles/base.css';
-import './styles/components.css';
-import './styles/utilities.css';
-import './styles/landing.css';
-import './styles/premium.css';
-import './styles/system.css';
-import './styles/responsive.css';
-import './styles/dashboard.css';
-import './styles/interactions.css';
-import './styles/notifications.css';
-import './styles/polish.css';
-import './styles/landing-auth-v3.css';
-import './styles/stitch-canonical.css';
-import './styles/redesign-landing.css';
-import './styles/redesign-dashboard.css';
-import './styles/redesign-lecture.css';
-import './styles/redesign-matrix.css';
-import './styles/redesign-global.css';
-import './styles/pdf.css';
+import './styles/app.css';
 import './styles/owner.css';
-import './styles/visual-final-polish.css';
-import './styles/world-class.css';
-import './styles/global-icon.css';
-import './styles/madarek-final.css';
-import './styles/v3-transform.css';
+import './styles/pdf.css';
+
 import App from './App';
 
 const root = document.getElementById('root');
