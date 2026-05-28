@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "fix",
   "description": "Create madarek-final.css - a single authoritative CSS override file that loads last in the cascade and definitively resolves all visual conflicts between the 25+ existing CSS files. Also update main.tsx to import it as the final stylesheet.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Create frontend/src/styles/madarek-final.css with the following sections (use high-specificity selectors to beat stitch-canonical.css !important rules where needed):",
     "SECTION A - Oasis Widget complete styling: .oasis-widget position fixed, z-index 9999. .oasis-widget--rtl left:20px, .oasis-widget--ltr right:20px. .oasis-widget__trigger: 52px circle, gradient background (linear-gradient from var(--md-tertiary) to var(--md-tertiary-fixed-dim)), var(--md-on-tertiary) color, clear shadow. .oasis-widget__panel: 360px wide, min-height 320px, max-height 520px, SOLID background var(--surface-1) NOT transparent, border 1px solid var(--border), border-radius var(--r-xl), box-shadow var(--shadow-xl), NO backdrop-filter (override to none!important to kill glassmorphism). All sub-components: header with var(--surface-2) bg, messages area flex column, input row with border-top. Mobile (max-width:480px): panel width calc(100vw - 32px), bottom: 80px to clear bottom nav.",
@@ -34,5 +34,5 @@
     "Verify main.tsx still has valid TypeScript syntax (no broken imports)"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "CSS file created with all 10 sections (A-J). Verified: balanced braces, backdrop-filter overrides present, import added as last stylesheet in main.tsx. The TS errors reported in the user steering message (OasisWidget.tsx and DashboardCustomizer.tsx) exist on main branch but are already fixed on this branch (as const assertions and non-null assertions are in place)."
 }
