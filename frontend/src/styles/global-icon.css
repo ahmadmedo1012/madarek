@@ -24,8 +24,8 @@
 .oasis-widget__panel {
   backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
   -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  background: var(--surface-1);
+  border: 1px solid var(--border);
 }
 
 .dash-customizer-modal {
@@ -600,8 +600,8 @@
 }
 
 [data-theme='light'] .oasis-widget__panel {
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border-color: var(--glass-border, rgba(255, 255, 255, 0.12));
+  background: var(--surface-1);
+  border-color: var(--border);
 }
 
 [data-theme='light'] .landing-hero-float-card {

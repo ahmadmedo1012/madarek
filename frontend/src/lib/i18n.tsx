@@ -20,8 +20,8 @@ export function useTranslation(): {
 }
 
 /**
- * LangToggle - a pill button with Globe icon that toggles between ar and en.
- * Shows the full target language name for clarity.
+ * LangToggle - a compact pill button with Globe icon that toggles between ar and en.
+ * Shows short label (EN/ع) with tooltip explaining that interface labels will switch.
  */
 export function LangToggle() {
   const locale = useI18nStore((s) => s.locale);
@@ -31,18 +31,16 @@ export function LangToggle() {
     setLocale(locale === 'ar' ? 'en' : 'ar');
   };
 
-  const targetLabel = locale === 'ar' ? 'English' : '\u0627\u0644\u0639\u0631\u0628\u064A\u0629';
-
   return (
     <button
       type="button"
       className="lang-toggle-pill"
       onClick={handleToggle}
       aria-label={locale === 'ar' ? 'Switch to English' : '\u0627\u0644\u062A\u0628\u062F\u064A\u0644 \u0644\u0644\u0639\u0631\u0628\u064A\u0629'}
-      title={targetLabel}
+      title={locale === 'ar' ? 'Switch interface to English' : '\u062A\u0628\u062F\u064A\u0644 \u0627\u0644\u0648\u0627\u062C\u0647\u0629 \u0644\u0644\u0639\u0631\u0628\u064A\u0629'}
     >
       <Icon icon={Globe} size={14} />
-      <span>{targetLabel}</span>
+      <span>{locale === 'ar' ? 'EN' : '\u0639'}</span>
     </button>
   );
 }
