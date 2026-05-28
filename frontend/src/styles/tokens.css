@@ -188,6 +188,35 @@
   --transition-all: all var(--t-base) var(--ease);
   --card-padding: var(--sp-5);
   --section-gap: var(--sp-8);
+
+  /* ── Elevation system — semantic shadow alias ──────────
+     Use these for component intent rather than picking shadow-sm/md/lg directly.
+       elev-0  flat surface (no lift)
+       elev-1  resting card / panel
+       elev-2  hover state for cards
+       elev-3  floating elements (dropdowns, popovers)
+       elev-4  modal / sheet
+       elev-5  hero / spotlight surface
+     Resolved per theme below. */
+
+  /* ── Curated gradients — pre-composed for consistent brand voice ─── */
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(0, 75, 135, 0.20) 0%,
+    rgba(0, 52, 97, 0.10) 40%,
+    transparent 75%);
+  --grad-accent: linear-gradient(135deg,
+    var(--brand-blue) 0%,
+    var(--brand-purple) 100%);
+  --grad-gold: linear-gradient(135deg,
+    #fee48a 0%,
+    var(--brand-gold) 50%,
+    #d4a829 100%);
+  --grad-teal: linear-gradient(135deg,
+    var(--md-tertiary-fixed-dim) 0%,
+    var(--md-tertiary-container) 100%);
+  --grad-surface-shine: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 50%);
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -240,6 +269,14 @@
 
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
   --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.07);
+
+  /* Elevation system (dark) — resolved values */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --elev-2: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --elev-3: 0 12px 32px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --elev-4: 0 24px 64px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --elev-5: 0 32px 96px rgba(0, 0, 0, 0.60), 0 12px 32px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.10);
 
   /* Focus & Selection — proper double-ring for accessibility + polish */
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(163, 201, 255, 0.5);
@@ -300,6 +337,23 @@
 
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
   --shadow-card-hover: 0 8px 24px -4px rgba(0, 52, 97, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(0, 52, 97, 0.07);
+
+  /* Elevation system (light) — resolved values */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --elev-2: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  --elev-3: 0 12px 32px -4px rgba(0, 52, 97, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --elev-4: 0 24px 56px -8px rgba(0, 52, 97, 0.16), 0 8px 16px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --elev-5: 0 32px 80px -8px rgba(0, 52, 97, 0.20), 0 12px 24px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.07);
+
+  /* Light-mode gradient overrides */
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(0, 75, 135, 0.10) 0%,
+    rgba(0, 52, 97, 0.05) 40%,
+    transparent 75%);
+  --grad-surface-shine: linear-gradient(180deg,
+    rgba(15, 23, 42, 0.02) 0%,
+    transparent 50%);
 
   /* Focus & Selection (light) — double ring for visibility */
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px color-mix(in srgb, var(--md-primary) 40%, transparent);
