@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { LogOut } from 'lucide-react';
 import { Icon } from '../Icon';
@@ -16,11 +16,28 @@ export function Sidebar() {
   const closeSidebar = useUiStore((s) => s.closeSidebar);
   const logout = useLogout();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Lock body scroll when drawer is open on mobile
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [sidebarOpen]);
+
+  // Close drawer on Escape
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeSidebar();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [sidebarOpen, closeSidebar]);
+
+  // Close drawer automatically when the user navigates to a new page
+  useEffect(() => {
+    closeSidebar();
+  }, [location.pathname, closeSidebar]);
 
   if (!user) return null;
   const groups = NAV_BY_ROLE[user.role];

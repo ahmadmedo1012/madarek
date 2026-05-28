@@ -137,9 +137,15 @@ code, pre, kbd, samp {
 
 /* ═════════════════════════════════════════════════════════════════════
    3. APP SHELL — sidebar · topbar · content
+   ─────────────────────────────────────────────────────────────────────
+   IMPORTANT: Sidebar lives at the START of the inline axis. In RTL it
+   appears on the right; in LTR on the left. Both are correct because
+   `inset-inline-start: 0` resolves to the script's natural starting edge.
+   This matches the Stitch design reference (`right-0` in their RTL HTML).
    ═════════════════════════════════════════════════════════════════════ */
 .main {
-  margin-inline-start: var(--sidebar-w);
+  /* Reserve space for the fixed sidebar on the start edge */
+  padding-inline-start: var(--sidebar-w);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -162,14 +168,14 @@ code, pre, kbd, samp {
   min-width: 0;
 }
 
-/* ── Sidebar (right edge in RTL — fixed, glassy panel) ── */
+/* ── Sidebar — fixed to inline-start (right in RTL, left in LTR) ── */
 .sidebar {
   position: fixed;
   inset-block: 0;
-  inset-inline-end: 0;
+  inset-inline-start: 0;
   width: var(--sidebar-w);
   background: var(--surface-1);
-  border-inline-start: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: var(--sp-6) 0 var(--sp-4);
@@ -5173,19 +5179,26 @@ input[type="checkbox"], input[type="radio"] {
   .content-inner { padding: var(--sp-6) var(--sp-6) var(--sp-12); }
 }
 
-/* < 1024: tablet — sidebar hides as drawer */
+/* < 1024: tablet — sidebar becomes a drawer that slides off the start edge */
 @media (max-width: 1024px) {
   .sidebar {
-    transform: translateX(100%);
+    width: min(300px, 86vw);
+    transform: translateX(-100%);  /* slide off start edge in LTR */
     transition: transform var(--t-base) var(--ease);
-    width: 300px;
   }
-  [dir="ltr"] .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-inline-start: 0 !important; }
+  /* In RTL the start edge is the right side of the viewport, so we need
+     to slide to the right (positive translateX) to hide. The `[dir="rtl"]`
+     selector overrides the LTR rule above. */
+  [dir="rtl"] .sidebar { transform: translateX(100%); }
+  .sidebar.open { transform: translateX(0) !important; }
+
+  /* Main content takes the full width when sidebar is a drawer */
+  .main { padding-inline-start: 0 !important; }
   .topbar { padding: 0 var(--sp-5); }
   .topbar-mobile-toggle { display: inline-flex; }
-  .topbar-search { width: 100%; max-width: 280px; }
+  /* Hide global search on tablet/phone — it shows on desktop only */
+  .global-search,
+  .topbar-search { display: none; }
 }
 
 /* < 768: phone */
@@ -5418,25 +5431,17 @@ input[type="checkbox"], input[type="radio"] {
 
 /* ── 38.3 Sidebar drawer behavior — controllable on mobile ───────── */
 .sidebar {
-  /* Make sure the drawer is fully off-screen unless `.open` */
+  /* Smooth slide + shadow transitions */
   transition:
     transform var(--t-base) var(--ease),
     box-shadow var(--t-base) var(--ease);
 }
 .sidebar.open { box-shadow: var(--shadow-xl); }
 
+/* Drawer-mode rules live in section 34 — keep them as the single source.
+   We only re-assert z-index ordering here so the drawer always sits
+   above content and below modals. */
 @media (max-width: 1024px) {
-  /* Slide direction respects RTL — drawer comes in from the right in RTL */
-  html[dir="rtl"] .sidebar { transform: translateX(100%); }
-  html[dir="ltr"] .sidebar { transform: translateX(-100%); }
-  html[dir="rtl"] .sidebar.open,
-  html[dir="ltr"] .sidebar.open { transform: translateX(0); }
-
-  /* Main never reserves sidebar space when drawer mode */
-  .main { margin-inline-start: 0 !important; padding-inline-end: 0 !important; }
-  .topbar { padding: 0 var(--sp-4); }
-
-  /* Backdrop must always cover full viewport on mobile */
   .sidebar-backdrop { z-index: 39; }
   .sidebar { z-index: 50; }
 }
@@ -5571,12 +5576,11 @@ input[type="checkbox"], input[type="radio"] {
 
 /* ── 38.7 Desktop sidebar — guarantee content reserves space ─────── */
 @media (min-width: 1025px) {
-  /* Ensure content can't slide under the fixed sidebar */
+  /* Ensure content area never under-runs the fixed sidebar (this is
+     handled by `.main { padding-inline-start: var(--sidebar-w); }`
+     in section 3 — we just guarantee min-width:0 inheritance here). */
   .main { min-width: 0; }
-  .content-inner {
-    max-width: 100%;
-    width: 100%;
-  }
+  .content-inner { max-width: 100%; width: 100%; }
   /* Inside the bounded main, our own max-width keeps content centred */
   .page,
   .student-dashboard {

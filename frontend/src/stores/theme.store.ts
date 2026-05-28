@@ -24,12 +24,15 @@ export const useThemeStore = create<ThemeState>()(
   ),
 );
 
-/** Resolve a `'system'` preference to either `'light'` or `'dark'` based on OS. */
+/** Resolve a `'system'` preference to either `'light'` or `'dark'` based on OS.
+ *  Defaults to `'light'` when there's no explicit user/OS preference because
+ *  the platform's primary visual identity is a clean light academic canvas. */
 export function resolveTheme(mode: ThemeMode): 'light' | 'dark' {
   if (mode === 'system') {
-    return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'light'
-      : 'dark';
+    return typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
   }
   return mode;
 }
