@@ -17,26 +17,34 @@
   margin-bottom: var(--sp-2);
   background:
     linear-gradient(135deg,
-      color-mix(in srgb, var(--accent) 4%, transparent) 0%,
-      color-mix(in srgb, var(--accent) 1%, transparent) 60%,
+      color-mix(in srgb, var(--accent) 5%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 1.5%, transparent) 50%,
       transparent 100%);
-  border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
   border-radius: var(--r-2xl);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--elev-1);
+  overflow: hidden;
 }
 .page-header::before {
-  /* Subtle accent rail on the inline-start side — adds identity without
-     making the header feel boxed-in. */
+  /* Refined accent rail — subtle gradient with rounded edges */
   content: '';
   position: absolute;
   inset-inline-start: 0;
-  top: 18%;
-  bottom: 18%;
+  top: 22%;
+  bottom: 22%;
   width: 3px;
-  background: linear-gradient(180deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 50%, var(--gold)) 100%);
+  background: linear-gradient(180deg,
+    var(--accent) 0%,
+    color-mix(in srgb, var(--accent) 60%, var(--gold)) 100%);
   border-radius: 0 3px 3px 0;
-  /* In RTL, inline-start = right, so the rail naturally appears on the
-     right edge of the title block — feels anchored to the heading. */
+}
+.page-header::after {
+  /* Subtle internal shine — deepens premium feel without clutter */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-surface-shine);
+  pointer-events: none;
 }
 
 .page-title {
