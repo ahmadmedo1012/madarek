@@ -657,3 +657,214 @@ select:focus {
   border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
   transform: translateY(-2px);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v3.6 — Tables, empty states, skeletons, badges
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tables ──────────────────────────────────────────────────── */
+.table,
+table.data-table,
+.owner-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--fs-sm);
+}
+
+.table thead th,
+table.data-table thead th,
+.owner-table thead th {
+  padding: var(--sp-3) var(--sp-4) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase;
+  color: var(--text-subtle) !important;
+  background: var(--surface-2) !important;
+  border-bottom: 1px solid var(--border-strong) !important;
+  text-align: start;
+}
+
+.table thead th:first-child,
+.owner-table thead th:first-child {
+  border-start-start-radius: var(--r-md);
+}
+
+.table thead th:last-child,
+.owner-table thead th:last-child {
+  border-start-end-radius: var(--r-md);
+}
+
+.table tbody td,
+table.data-table tbody td,
+.owner-table tbody td {
+  padding: var(--sp-4) !important;
+  border-bottom: 1px solid var(--border) !important;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  transition: background var(--t-fast) var(--ease-out);
+}
+
+.table tbody tr:hover td,
+.owner-table tbody tr:hover td {
+  background: color-mix(in srgb, var(--accent) 4%, transparent) !important;
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.empty-state,
+.empty-block,
+[role="status"].empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-8) var(--sp-5);
+  text-align: center;
+  color: var(--text-muted);
+  gap: var(--sp-3);
+}
+
+.empty-state-icon,
+.empty-block svg {
+  width: 64px;
+  height: 64px;
+  color: var(--text-subtle);
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text);
+  margin-top: var(--sp-3);
+}
+
+.empty-state-text {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  max-width: 40ch;
+  line-height: 1.6;
+}
+
+/* ── Skeletons ───────────────────────────────────────────────── */
+.skeleton,
+[data-loading="true"] {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    color-mix(in srgb, var(--accent) 4%, var(--surface-2)) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--r-md);
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  [data-loading="true"] {
+    animation: none;
+  }
+}
+
+/* ── Badges — refined typography ─────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* ── Quick action tile ───────────────────────────────────────── */
+.quick-action,
+.dash-quick-action {
+  border-radius: var(--r-xl) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  padding: var(--sp-5) !important;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  transition:
+    transform var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out),
+    background var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out) !important;
+  cursor: pointer;
+}
+
+.quick-action:hover,
+.dash-quick-action:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface-2)) !important;
+  transform: translateY(-3px);
+  box-shadow: var(--elev-2) !important;
+}
+
+/* ── Section headers (between cards) ──────────────────────────── */
+.section-header,
+.dashboard-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-4);
+  padding-block: var(--sp-2);
+}
+
+.section-title {
+  font-size: clamp(18px, 2vw, 22px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+/* ── Search bar in topbar ─────────────────────────────────────── */
+.topbar-search {
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-full) !important;
+  padding: 0 var(--sp-4) !important;
+  height: 36px !important;
+  transition: border-color var(--t-fast) var(--ease-out),
+              box-shadow var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out) !important;
+}
+
+.topbar-search:hover {
+  background: var(--surface-3) !important;
+}
+
+.topbar-search:focus-within {
+  border-color: var(--accent) !important;
+  background: var(--surface-1) !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+/* ── Bottom nav (mobile) ─────────────────────────────────────── */
+.bottom-nav {
+  background: color-mix(in srgb, var(--surface-1) 88%, transparent) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  border-top: 1px solid var(--border) !important;
+  box-shadow:
+    0 -4px 16px rgba(0, 0, 0, 0.20),
+    0 -1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.bottom-nav-item.on,
+.bottom-nav-item[aria-current="page"] {
+  color: var(--accent) !important;
+  background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+}
