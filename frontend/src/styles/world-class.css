@@ -456,7 +456,7 @@
    Kept for fallback only. */
 .oasis-widget {
   position: fixed;
-  bottom: 80px;
+  bottom: var(--sp-5);
   z-index: 9999;
 }
 
@@ -473,29 +473,29 @@
   height: 52px;
   border-radius: 50%;
   border: none;
-  background: var(--primary, #6366f1);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-fg);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--accent) 35%, transparent);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .oasis-widget__trigger:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 28px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 6px 28px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 /* NOTE: These base styles are overridden by visual-final-polish.css and global-icon.css
    which load later in the cascade. Kept as fallback only. */
 .oasis-widget__panel {
   width: 350px;
-  height: 500px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: var(--radius-lg, 16px);
+  height: auto;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
@@ -507,8 +507,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--border, #e2e8f0);
-  background: var(--surface-elevated, #f8fafc);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
 }
 
 .oasis-widget__header-title {
@@ -517,7 +517,7 @@
   gap: 8px;
   font-weight: 600;
   font-size: 14px;
-  color: var(--text, #1e293b);
+  color: var(--text);
 }
 
 .oasis-widget__header-actions {
@@ -529,10 +529,10 @@
 .oasis-widget__btn {
   width: 28px;
   height: 28px;
-  border-radius: var(--radius-sm, 6px);
+  border-radius: var(--r-sm);
   border: none;
   background: transparent;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -541,8 +541,8 @@
 }
 
 .oasis-widget__btn:hover {
-  background: var(--surface-hover, #f1f5f9);
-  color: var(--text, #1e293b);
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .oasis-widget__messages {
@@ -569,8 +569,8 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--primary-alpha, rgba(99, 102, 241, 0.1));
-  color: var(--primary, #6366f1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -578,7 +578,7 @@
 
 .oasis-widget__welcome-text {
   font-size: 13px;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.5;
 }
@@ -592,10 +592,10 @@
 
 .oasis-widget__chip {
   padding: 8px 12px;
-  border-radius: var(--radius-md, 8px);
-  border: 1px solid var(--border, #e2e8f0);
-  background: var(--surface-elevated, #f8fafc);
-  color: var(--text, #1e293b);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
   font-size: 12px;
   cursor: pointer;
   text-align: start;
@@ -604,8 +604,8 @@
 }
 
 .oasis-widget__chip:hover {
-  background: var(--surface-hover, #f1f5f9);
-  border-color: var(--primary, #6366f1);
+  background: var(--surface-2);
+  border-color: var(--accent);
 }
 
 .oasis-widget__msg {
@@ -623,31 +623,31 @@
 .oasis-widget__msg-bubble {
   max-width: 80%;
   padding: 8px 12px;
-  border-radius: var(--radius-md, 8px);
+  border-radius: var(--r-md);
   font-size: 13px;
   line-height: 1.5;
   word-break: break-word;
 }
 
 .oasis-widget__msg--bot .oasis-widget__msg-bubble {
-  background: var(--surface-elevated, #f8fafc);
-  color: var(--text, #1e293b);
+  background: var(--surface-2);
+  color: var(--text);
   border-bottom-left-radius: 2px;
 }
 
 [dir='rtl'] .oasis-widget__msg--bot .oasis-widget__msg-bubble {
-  border-bottom-left-radius: var(--radius-md, 8px);
+  border-bottom-left-radius: var(--r-md);
   border-bottom-right-radius: 2px;
 }
 
 .oasis-widget__msg--user .oasis-widget__msg-bubble {
-  background: var(--primary, #6366f1);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-fg);
   border-bottom-right-radius: 2px;
 }
 
 [dir='rtl'] .oasis-widget__msg--user .oasis-widget__msg-bubble {
-  border-bottom-right-radius: var(--radius-md, 8px);
+  border-bottom-right-radius: var(--r-md);
   border-bottom-left-radius: 2px;
 }
 
@@ -662,7 +662,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--text-muted, #64748b);
+  background: var(--text-muted);
   animation: typing-dot 1.2s ease-in-out infinite;
 }
 
@@ -684,34 +684,34 @@
   align-items: center;
   gap: 8px;
   padding: 12px;
-  border-top: 1px solid var(--border, #e2e8f0);
-  background: var(--surface, #fff);
+  border-top: 1px solid var(--border);
+  background: var(--surface-1);
 }
 
 .oasis-widget__input {
   flex: 1;
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
   padding: 8px 12px;
   font-size: 13px;
   font-family: inherit;
-  background: var(--surface-elevated, #f8fafc);
-  color: var(--text, #1e293b);
+  background: var(--surface-2);
+  color: var(--text);
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .oasis-widget__input:focus {
-  border-color: var(--primary, #6366f1);
+  border-color: var(--accent);
 }
 
 .oasis-widget__send {
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-sm, 6px);
+  border-radius: var(--r-sm);
   border: none;
-  background: var(--primary, #6366f1);
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-fg);
   display: flex;
   align-items: center;
   justify-content: center;

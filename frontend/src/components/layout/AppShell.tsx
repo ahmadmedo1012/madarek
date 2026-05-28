@@ -112,7 +112,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
   const t = useI18nStore((s) => s.t);
   const title = resolveTitle(location.pathname, t);
   const contentRef = useRef<HTMLDivElement>(null);
+  const lastScrollTopRef = useRef<number>(0);
   const [scrolled, setScrolled] = useState(false);
+  const [bottomNavHidden, setBottomNavHidden] = useState(false);
 
   // Sync document dir and lang with i18n locale
   useEffect(() => {
@@ -129,6 +131,14 @@ export function AppShell({ children }: { children?: ReactNode }) {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         setScrolled(el.scrollTop > 4);
+        const currentTop = el.scrollTop;
+        const lastTop = lastScrollTopRef.current;
+        if (currentTop > lastTop + 10 && currentTop > 60) {
+          setBottomNavHidden(true);
+        } else if (currentTop < lastTop - 10) {
+          setBottomNavHidden(false);
+        }
+        lastScrollTopRef.current = currentTop;
       });
     };
     el.addEventListener('scroll', onScroll, { passive: true });
@@ -142,6 +152,8 @@ export function AppShell({ children }: { children?: ReactNode }) {
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     setScrolled(false);
+    setBottomNavHidden(false);
+    lastScrollTopRef.current = 0;
   }, [location.pathname]);
 
   return (
@@ -153,7 +165,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
           <div className="content-inner">{children ?? <Outlet />}</div>
         </div>
       </main>
-      <BottomNav />
+      <BottomNav hidden={bottomNavHidden} />
       <OasisWidget />
     </>
   );

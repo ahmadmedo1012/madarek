@@ -370,10 +370,7 @@
 }
 
 .oasis-widget__panel {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--md-tertiary-fixed-dim) 20%, transparent),
-    0 0 16px color-mix(in srgb, var(--md-tertiary-fixed-dim) 12%, transparent),
-    0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 .oasis-widget__typing {

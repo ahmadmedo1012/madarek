@@ -72,7 +72,7 @@ const QUALITY: BottomItem[] = [
   { to: '/quality/reports',    label: 'التقارير', icon: FileText      },
 ];
 
-export function BottomNav() {
+export function BottomNav({ hidden }: { hidden?: boolean }) {
   const role = useAuthStore((s) => s.user?.role);
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
 
@@ -87,7 +87,7 @@ export function BottomNav() {
     STUDENT;
 
   return (
-    <nav className="bottom-nav" aria-label="التنقّل السريع" data-role={role.toLowerCase()}>
+    <nav className="bottom-nav" aria-label="التنقّل السريع" data-role={role.toLowerCase()} data-hidden={hidden ? 'true' : undefined}>
       {items.map((item) => (
         <NavLink
           key={item.to}
