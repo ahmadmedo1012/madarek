@@ -28,7 +28,7 @@
   padding: var(--sp-5);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--elev-1);
   transition:
     border-color var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out),
@@ -38,7 +38,7 @@
 .card.flush { padding: 0; }
 .card.bordered:hover {
   border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--elev-2);
   transform: translateY(-1px);
 }
 .card.glass {

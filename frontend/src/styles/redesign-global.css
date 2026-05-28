@@ -26,13 +26,13 @@
 
 /* Level 2 — Raised */
 .card.raised {
-  box-shadow: var(--shadow-md), 0 0 0 1px color-mix(in srgb, var(--accent) 5%, transparent);
+  box-shadow: var(--elev-2);
   border-color: color-mix(in srgb, var(--accent) 8%, var(--border));
 }
 
 /* Level 3 — Floating */
 .card.floating {
-  box-shadow: var(--shadow-lg), 0 0 20px color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: var(--elev-3);
   border-color: color-mix(in srgb, var(--accent) 15%, var(--border));
 }
 
