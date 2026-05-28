@@ -6574,3 +6574,928 @@ button.card:active,
 /* ── 40.21 Performance: hide off-screen content ─────────────────── */
 .bottom-nav,
 .sidebar { will-change: transform; }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   41. FINAL POLISH PASS — refined craft, premium textures
+   ─────────────────────────────────────────────────────────────────────
+   Goals:
+   • Calmer, more academic active states (less candy-green)
+   • Subtle ambient dot-grid texture on app shell
+   • Premium card hover sheen
+   • Arabic-tuned typography rhythm
+   • Refined button hierarchy
+   • Section rhythm helpers
+   • Pixel-perfect details on forms, badges, tables
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── 41.1 Calmer, academic active nav ─────────────────────────────── */
+[data-theme='light'] .nav-item.on,
+[data-theme='light'] .nav-item-pill.on {
+  background: linear-gradient(135deg,
+    rgba(0, 108, 73, 0.10) 0%,
+    rgba(76, 215, 246, 0.06) 100%);
+  color: var(--brand-ink);
+  border: 1px solid rgba(0, 108, 73, 0.10);
+}
+[data-theme='light'] .nav-item.on .nav-icon,
+[data-theme='light'] .nav-item-pill.on .nav-icon {
+  color: var(--brand-emerald);
+}
+
+/* The activate animation now uses calmer green */
+@keyframes navItemActivate {
+  0%   { background: var(--surface-2); }
+  50%  { background: rgba(0, 108, 73, 0.14); }
+  100% { background: linear-gradient(135deg,
+    rgba(0, 108, 73, 0.10) 0%,
+    rgba(76, 215, 246, 0.06) 100%); }
+}
+
+/* ── 41.2 Subtle ambient dot-grid texture ─────────────────────────── */
+.main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(9, 20, 38, 0.025) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.main { position: relative; }
+.main > * { position: relative; z-index: 1; }
+[data-theme='dark'] .main::before {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.025) 1px,
+    transparent 1px
+  );
+  opacity: 0.35;
+}
+
+/* ── 41.3 Premium card hover sheen ────────────────────────────────── */
+.card,
+.metric,
+.dash-stat-tile,
+.glass-panel,
+.glass-card,
+.thumb-card,
+.track-card,
+.vision-card,
+.feed-item,
+.webinar-card,
+.research-card {
+  position: relative;
+  overflow: hidden;
+}
+.card::after,
+.metric::after,
+.dash-stat-tile::after,
+.glass-panel::after,
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease-out);
+  z-index: 0;
+}
+.card:hover::after,
+.metric:hover::after,
+.dash-stat-tile:hover::after,
+.glass-panel:hover::after,
+.glass-card:hover::after { opacity: 1; }
+.card > *,
+.metric > *,
+.dash-stat-tile > *,
+.glass-panel > *,
+.glass-card > * { position: relative; z-index: 1; }
+
+/* Skip the sheen on overflowing pseudo-stripes (e.g. dash-stat-tile::after) */
+.dash-stat-tile::after { content: none; }
+
+/* ── 41.4 Arabic-tuned typography rhythm ──────────────────────────── */
+html[dir='rtl'] body { line-height: 1.7; }
+html[dir='rtl'] p,
+html[dir='rtl'] li,
+html[dir='rtl'] .card-subtitle,
+html[dir='rtl'] .dash-progress-text,
+html[dir='rtl'] .feed-item-text {
+  line-height: 1.75;
+}
+html[dir='rtl'] .label-sm,
+html[dir='rtl'] .nav-section-label,
+html[dir='rtl'] .metric-label,
+html[dir='rtl'] .dash-eyebrow,
+html[dir='rtl'] .landing-section-eyebrow {
+  letter-spacing: 0.02em;
+}
+html[dir='ltr'] .label-sm,
+html[dir='ltr'] .nav-section-label,
+html[dir='ltr'] .metric-label,
+html[dir='ltr'] .dash-eyebrow,
+html[dir='ltr'] .landing-section-eyebrow {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Display headlines: tighter Arabic letterspacing */
+html[dir='rtl'] h1,
+html[dir='rtl'] h2,
+html[dir='rtl'] .page-title,
+html[dir='rtl'] .landing-title,
+html[dir='rtl'] .landing-features-title { letter-spacing: -0.005em; }
+
+/* Inline content links — subtle underline, accessible */
+.content-inner a:not(.btn):not(.nav-item):not(.nav-item-pill):not(.thumb-card):not(.track-card):not(.vision-card):not(.dash-quick-action-pill):not(.search-row):not(.feed-item-author):not(.bottom-nav-item):not(.suggested-course-row):not([class]) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent-border);
+  transition: text-decoration-color var(--t-fast) var(--ease-out);
+}
+.content-inner a:not(.btn):hover:not(.nav-item):not(.nav-item-pill):not(.thumb-card):not(.track-card):not(.vision-card):not(.dash-quick-action-pill):not(.search-row):not(.feed-item-author):not(.bottom-nav-item):not(.suggested-course-row) {
+  text-decoration-color: var(--accent);
+}
+
+/* ── 41.5 Refined button hierarchy & sizing ───────────────────────── */
+.btn {
+  font-feature-settings: 'kern', 'liga';
+  letter-spacing: 0;
+}
+html[dir='ltr'] .btn { letter-spacing: 0.01em; }
+
+/* Primary button: refined press depth */
+.btn.primary {
+  background: var(--brand-ink);
+  border-color: var(--brand-ink);
+  box-shadow:
+    0 1px 2px rgba(9, 20, 38, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.btn.primary:hover {
+  background: var(--brand-ink-2);
+  border-color: var(--brand-ink-2);
+  box-shadow:
+    0 4px 12px rgba(9, 20, 38, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Action button (Emerald CTA) */
+.btn.action {
+  background: var(--brand-emerald);
+  border-color: var(--brand-emerald);
+  box-shadow:
+    0 1px 2px rgba(0, 108, 73, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.btn.action:hover {
+  background: #00583c;
+  border-color: #00583c;
+}
+
+/* Outline / Ghost subtle hover */
+.btn.outline:hover,
+.btn.ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--text-subtle);
+}
+
+/* Gradient button — refined */
+.btn.gradient {
+  background: var(--grad-primary-emerald);
+  position: relative;
+  overflow: hidden;
+}
+.btn.gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    transparent 50%);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+.btn.gradient:hover::before { opacity: 1; }
+
+/* ── 41.6 Section rhythm — consistent vertical spacing ────────────── */
+.page,
+.student-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+@media (max-width: 768px) {
+  .page,
+  .student-dashboard { gap: var(--sp-6); }
+}
+
+/* Page header tone — quietly authoritative */
+.page-header { margin-bottom: 0; }
+.page-title {
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.page-subtitle {
+  font-size: var(--fs-lg);
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 720px;
+}
+@media (max-width: 768px) {
+  .page-subtitle { font-size: var(--fs-md); }
+}
+
+/* ── 41.7 Refined sidebar nav-item hover (subtle inline marker) ──── */
+.nav-item:not(.on)::before,
+.nav-item-pill:not(.on)::before {
+  content: '';
+  position: absolute;
+  inset-block: 8px;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: var(--r-full);
+  background: transparent;
+  transition: background var(--t-fast) var(--ease-out);
+}
+.nav-item:not(.on):hover::before,
+.nav-item-pill:not(.on):hover::before {
+  background: var(--border-strong);
+}
+
+/* ── 41.8 Pretty status badges — refined hierarchy ────────────────── */
+.badge {
+  font-feature-settings: 'kern', 'liga', 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+.badge.green {
+  background: rgba(0, 108, 73, 0.10);
+  color: var(--brand-emerald);
+}
+.badge.brand {
+  background: rgba(9, 20, 38, 0.06);
+  color: var(--brand-ink);
+}
+.badge.purple {
+  background: rgba(0, 157, 183, 0.10);
+  color: var(--ai-deep);
+}
+
+/* ── 41.9 Skeleton — premium shimmer ──────────────────────────────── */
+.skeleton, .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 40%,
+    var(--surface-2) 80%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+  border-radius: var(--r-xs);
+  position: relative;
+  overflow: hidden;
+}
+@keyframes skeletonShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+[data-theme='dark'] .skeleton,
+[data-theme='dark'] .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 40%,
+    var(--surface-2) 80%
+  );
+  background-size: 200% 100%;
+}
+
+/* ── 41.10 Refined form inputs — float-label feel ─────────────────── */
+.input,
+input.input,
+textarea.input,
+select.input,
+.auth-input,
+.chat-input,
+.oasis-widget__input {
+  font-feature-settings: 'kern', 'liga';
+}
+.input::placeholder,
+.auth-input::placeholder { color: var(--text-subtle); }
+
+/* Focus + icon-prefix combo */
+.auth-input-wrap:focus-within .auth-input-icon {
+  color: var(--accent);
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+/* Input invalid state — soft, not aggressive */
+.input[aria-invalid="true"],
+.auth-input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+/* ── 41.11 Tables — refined density & hover ────────────────────────── */
+.tbl {
+  font-feature-settings: 'tnum';
+}
+.tbl thead th {
+  text-transform: none;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.01em;
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  padding: var(--sp-3) var(--sp-4);
+}
+html[dir='ltr'] .tbl thead th { text-transform: uppercase; letter-spacing: 0.06em; }
+
+.tbl tbody tr { transition: background var(--t-fast) var(--ease-out); }
+.tbl tbody tr:hover td {
+  background: linear-gradient(
+    180deg,
+    var(--surface-2) 0%,
+    var(--surface-1) 100%
+  );
+}
+
+/* ── 41.12 Empty state — distinctive, hopeful ─────────────────────── */
+.state {
+  background: linear-gradient(
+    180deg,
+    var(--surface-1) 0%,
+    var(--surface-2) 100%
+  );
+  border: 1px solid var(--border);
+  padding: var(--sp-12) var(--sp-6);
+}
+.state-icon {
+  background: linear-gradient(135deg,
+    var(--accent-soft) 0%,
+    var(--ai-soft) 100%);
+  color: var(--accent);
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-2xl);
+  margin-bottom: var(--sp-5);
+}
+
+/* ── 41.13 Topbar — premium ambient effect ────────────────────────── */
+.topbar {
+  border-bottom: 1px solid transparent;
+  position: relative;
+}
+.topbar::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--border) 30%,
+    var(--border) 70%,
+    transparent 100%);
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease-out);
+}
+.topbar.scrolled::after { opacity: 1; }
+
+/* Refined topbar action separator (visual breathing room) */
+@media (min-width: 1025px) {
+  .topbar-actions > .btn,
+  .topbar-actions > .icon-btn,
+  .topbar-actions > .lang-toggle-pill,
+  .topbar-actions > .notif-dropdown {
+    margin-inline-start: 4px;
+  }
+}
+
+/* ── 41.14 Refined sidebar brand block ────────────────────────────── */
+.sidebar-brand-mark {
+  background: linear-gradient(135deg, var(--brand-ink) 0%, var(--brand-emerald) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.sidebar-brand-mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%);
+}
+.sidebar-brand-name {
+  font-feature-settings: 'kern';
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.005em;
+  background: linear-gradient(135deg, var(--brand-ink) 0%, var(--brand-emerald) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+[data-theme='dark'] .sidebar-brand-name {
+  background: linear-gradient(135deg, #bcc7de 0%, #4edea3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── 41.15 Welcome card — refined headline ────────────────────────── */
+.welcome-card .page-title {
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+}
+.welcome-card .page-subtitle {
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+}
+
+/* ── 41.16 Global selection — pretty, accent-tinted ───────────────── */
+::selection {
+  background: rgba(0, 108, 73, 0.20);
+  color: var(--brand-ink);
+}
+[data-theme='dark'] ::selection {
+  background: rgba(108, 248, 187, 0.30);
+  color: var(--text);
+}
+
+/* ── 41.17 Accessibility — visible focus everywhere ───────────────── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ── 41.18 Refined chip / pill — uniform feel ─────────────────────── */
+.pill {
+  letter-spacing: 0;
+  font-weight: var(--fw-medium);
+}
+.pill.on {
+  background: var(--brand-ink);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 1px 2px rgba(9, 20, 38, 0.20);
+}
+
+/* ── 41.19 Tabs — premium underline indicator ──────────────────────── */
+.tabs {
+  background: transparent;
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  gap: 0;
+  width: fit-content;
+}
+.tab {
+  border-radius: 0;
+  padding: var(--sp-3) var(--sp-4);
+  font-weight: var(--fw-medium);
+  position: relative;
+}
+.tab::after {
+  content: '';
+  position: absolute;
+  inset-inline: 12px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: var(--r-full) var(--r-full) 0 0;
+  transform: scaleX(0);
+  transition: transform var(--t-base) var(--ease-out);
+  transform-origin: center;
+}
+.tab.on {
+  background: transparent;
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
+  box-shadow: none;
+}
+.tab.on::after { transform: scaleX(1); }
+
+/* Override: keep the legacy "pill" tabs in segmented controls if present */
+.tabs[data-style="segmented"] {
+  background: var(--surface-2);
+  padding: 4px;
+  border-radius: var(--r-full);
+  border: 0;
+  gap: 2px;
+}
+.tabs[data-style="segmented"] .tab { border-radius: var(--r-full); padding: 8px var(--sp-4); }
+.tabs[data-style="segmented"] .tab.on {
+  background: var(--surface-1);
+  color: var(--text);
+  box-shadow: var(--shadow-xs);
+}
+.tabs[data-style="segmented"] .tab::after { display: none; }
+
+/* ── 41.20 Glass surfaces — subtle border refinement ──────────────── */
+.glass-panel,
+.glass-card {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+[data-theme='dark'] .glass-panel,
+[data-theme='dark'] .glass-card {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── 41.21 Avatar refinements ──────────────────────────────────────── */
+.avatar {
+  font-weight: var(--fw-bold);
+  letter-spacing: 0;
+  font-size: 14px;
+}
+.sidebar-user .avatar { font-size: 12px; }
+
+/* ── 41.22 Progress fill polish — refined gradient ────────────────── */
+.progress-fill,
+.xp-fill {
+  background: linear-gradient(
+    90deg,
+    var(--brand-emerald) 0%,
+    var(--brand-cyan) 100%);
+  position: relative;
+}
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%);
+  transform: translateX(-100%);
+  animation: progressShine 2.4s ease-in-out infinite;
+  border-radius: inherit;
+}
+@keyframes progressShine {
+  0%, 100% { transform: translateX(-100%); }
+  50%      { transform: translateX(100%); }
+}
+
+/* ── 41.23 Notification dot — fresh & alive ───────────────────────── */
+.notif-item-dot {
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface-1), 0 0 8px var(--accent-soft);
+  animation: notifBadgePulse 2.4s ease-in-out infinite;
+}
+
+/* ── 41.24 Refined toast container (placeholder for future toasts) ── */
+.toast-container {
+  position: fixed;
+  bottom: var(--sp-6);
+  inset-inline-end: var(--sp-6);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+.toast-container > * { pointer-events: auto; }
+
+/* ── 41.25 Print refinements ───────────────────────────────────────── */
+@media print {
+  .topbar, .sidebar, .bottom-nav,
+  .oasis-widget__trigger, .oasis-widget__panel,
+  .sidebar-backdrop {
+    display: none !important;
+  }
+  .main { padding: 0 !important; height: auto !important; }
+  .content { overflow: visible !important; }
+  .card, .metric, .glass-panel { break-inside: avoid; }
+}
+
+/* ── 41.26 Tooltip baseline ────────────────────────────────────────── */
+[data-tooltip] { position: relative; }
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  background: var(--brand-ink);
+  color: white;
+  padding: 4px 10px;
+  border-radius: var(--r-xs);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  animation: fadeIn var(--t-fast) var(--ease-out);
+}
+html[dir='rtl'] [data-tooltip]:hover::after { transform: translateX(50%); }
+
+/* ── 41.27 Sticky action bar (e.g. for forms) ─────────────────────── */
+.sticky-actions {
+  position: sticky;
+  bottom: 0;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-top: 1px solid var(--border);
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  margin-inline: calc(var(--card-padding) * -1);
+  margin-bottom: calc(var(--card-padding) * -1);
+  margin-top: var(--sp-4);
+}
+
+/* ── 41.28 Better card-header spacing ──────────────────────────────── */
+.card-header { gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.card-title { font-size: var(--fs-md); }
+.card-subtitle { font-size: var(--fs-sm); margin-top: 2px; }
+
+/* ── 41.29 Refined .alert visuals ─────────────────────────────────── */
+.alert {
+  position: relative;
+}
+.alert::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: var(--r-full);
+}
+.alert.brand::before  { background: var(--accent); }
+.alert.green::before  { background: var(--success); }
+.alert.amber::before  { background: var(--warning); }
+.alert.red::before    { background: var(--danger); }
+.alert.purple::before { background: var(--ai-deep); }
+
+/* Hide the now-redundant alert-dot to avoid double indicators */
+.alert .alert-dot { display: none; }
+
+/* ── 41.30 Landing — refined trust bar ────────────────────────────── */
+.landing-trust-bar-inner {
+  background: linear-gradient(
+    180deg,
+    var(--glass-bg) 0%,
+    rgba(255, 255, 255, 0.4) 100%);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+[data-theme='dark'] .landing-trust-bar-inner {
+  background: linear-gradient(
+    180deg,
+    rgba(17, 24, 39, 0.55) 0%,
+    rgba(17, 24, 39, 0.45) 100%);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── 41.31 Auth — refined login card depth ────────────────────────── */
+.auth-split {
+  box-shadow:
+    0 24px 60px rgba(9, 20, 38, 0.10),
+    0 8px 16px rgba(9, 20, 38, 0.04);
+}
+[data-theme='dark'] .auth-split {
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.50),
+    0 8px 16px rgba(0, 0, 0, 0.30);
+}
+
+/* ── 41.32 Refined back-link ──────────────────────────────────────── */
+.back-link {
+  font-weight: var(--fw-medium);
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.back-link:hover {
+  background: var(--surface-3);
+  color: var(--accent);
+}
+
+/* ── 41.33 Sidebar footer user — premium subtle ────────────────────── */
+.sidebar-user {
+  background: linear-gradient(
+    135deg,
+    var(--surface-2) 0%,
+    var(--surface-1) 100%);
+}
+
+/* ── 41.34 Custom dashboard customizer trigger ────────────────────── */
+.dash-customizer-trigger {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  transition: var(--transition-all);
+  flex-shrink: 0;
+}
+.dash-customizer-trigger:hover {
+  background: var(--surface-3);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+/* ── 41.35 Sticky subtle backdrop on scroll for premium feel ──────── */
+.content {
+  background:
+    radial-gradient(
+      ellipse 80vw 60vh at 50% 0%,
+      var(--accent-soft) 0%,
+      transparent 70%
+    );
+  background-attachment: local;
+}
+[data-theme='dark'] .content {
+  background:
+    radial-gradient(
+      ellipse 80vw 60vh at 50% 0%,
+      rgba(76, 215, 246, 0.04) 0%,
+      transparent 70%
+    );
+}
+
+/* ── 41.36 Topbar background fix (ensure pretty against dot grid) ── */
+.topbar {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+}
+
+/* ── 41.37 Refined card titles in cards.compact mode ─────────────── */
+.card.compact .card-title { font-size: var(--fs-sm); }
+.card.compact .card-subtitle { font-size: var(--fs-xs); }
+
+/* ── 41.38 Smarter responsive landing hero card layout ────────────── */
+@media (max-width: 1024px) {
+  .landing-hero-showcase {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    min-height: 320px;
+  }
+  .landing-hero-float-card:nth-child(2) {
+    grid-row: 1 / span 2;
+  }
+}
+@media (max-width: 640px) {
+  .landing-hero-showcase {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .landing-hero-float-card:nth-child(2) {
+    grid-row: auto;
+    grid-column: auto;
+  }
+}
+
+/* ── 41.39 Auth demo grid: gentler buttons ──────────────────────── */
+.auth-demo-btn {
+  background: var(--surface-1);
+  border-color: var(--border-strong);
+}
+.auth-demo-btn:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    var(--accent-soft) 0%,
+    var(--ai-soft) 100%);
+  color: var(--brand-ink);
+  border-color: transparent;
+}
+
+/* ── 41.40 Polished oasis widget bubble ──────────────────────────── */
+.oasis-widget__msg-bubble {
+  border-radius: 18px;
+  border-end-end-radius: 4px;
+}
+.oasis-widget__msg--bot .oasis-widget__msg-bubble {
+  border-end-end-radius: 18px;
+  border-end-start-radius: 4px;
+}
+html[dir='rtl'] .oasis-widget__msg-bubble {
+  border-end-end-radius: 18px;
+  border-end-start-radius: 4px;
+}
+html[dir='rtl'] .oasis-widget__msg--bot .oasis-widget__msg-bubble {
+  border-end-start-radius: 18px;
+  border-end-end-radius: 4px;
+}
+
+/* ── 41.41 Chat input row — premium feel ─────────────────────────── */
+.chat-input,
+.oasis-widget__input {
+  height: 44px;
+  font-size: var(--fs-sm);
+  border: 1px solid transparent;
+  background: var(--surface-2);
+  transition: var(--transition-all);
+}
+.chat-input:focus,
+.oasis-widget__input:focus {
+  background: var(--surface-1);
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* ── 41.42 Cards: inactive lock state should feel disabled ──────── */
+.dash-term-milestone[data-locked="true"] {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+  cursor: not-allowed;
+}
+
+/* ── 41.43 Smarter font-feature-settings for Arabic ──────────────── */
+html[dir='rtl'] body {
+  font-feature-settings: 'kern', 'liga', 'calt', 'rlig';
+}
+
+/* ── 41.44 Cleanup: ensure no leftover transforms after animation ── */
+.content-inner > .page,
+.content-inner > .student-dashboard {
+  animation-fill-mode: backwards;
+}
+
+/* ── 41.45 Refined card subtle depth on light mode ────────────────── */
+[data-theme='light'] .card,
+[data-theme='light'] .metric,
+[data-theme='light'] .dash-stat-tile {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #fbfcfe 100%);
+}
+
+/* ── 41.46 Sidebar scrollbar — visible only on hover ──────────────── */
+.sidebar-scroll::-webkit-scrollbar { width: 0px; transition: width var(--t-fast); }
+.sidebar:hover .sidebar-scroll::-webkit-scrollbar { width: 5px; }
+.sidebar-scroll {
+  scrollbar-width: none;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.sidebar:hover .sidebar-scroll {
+  scrollbar-width: thin;
+}
+
+/* ── 41.47 Icon size standardization (prevent micro-misalignments) ── */
+.metric-icon svg,
+.kpi-icon svg,
+.dash-stat-icon svg,
+.landing-feature-icon svg,
+.landing-bento-icon svg,
+.landing-trust-icon svg,
+.vision-card-icon svg,
+.track-card-icon svg { display: block; }
+
+/* ── 41.48 Beautiful loading state on entire page ─────────────────── */
+.page[aria-busy="true"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 108, 73, 0.04),
+    transparent);
+  background-size: 200% 100%;
+  animation: pageBusy 2s linear infinite;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+@keyframes pageBusy {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ── 41.49 Final: respect platform-level reduced motion ──────────── */
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill::after,
+  .topbar-notif-badge,
+  .nav-badge.danger,
+  .notif-item-dot,
+  .scan-pulse-dot,
+  .badge-animate-pulse,
+  .float-widget-pulse {
+    animation: none !important;
+  }
+}
