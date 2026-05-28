@@ -9,6 +9,6 @@
     "tests": "skipped",
     "test_quality": "skipped",
     "docker_build": "skipped",
-    "summary": "INTEGRATIONS_ONLY network - no npm install or tsc available. Verified through code inspection: (1) world-class.css .oasis-widget__panel now uses height: auto instead of 500px, (2) global-icon.css Section 5 shadow softened to single-layer, (3) visual-final-polish.css Section 9 has height: auto + min-height: 320px, (4) Section 11 added for bottom-nav scroll-hide with prefers-reduced-motion, (5) AppShell.tsx has correct scroll direction logic with useRef<number> and passes hidden prop, (6) BottomNav.tsx accepts hidden prop and renders data-hidden attribute, (7) No raw hex values in world-class.css Section 10 Oasis Widget."
+    "summary": "INTEGRATIONS_ONLY network - no npm install or tsc available. Verified through code inspection. Review findings (4 issues) addressed in commit 28b507f: (1) bottomNavHidden and lastScrollTopRef reset on route change, (2) reduced-motion transform rule removed so nav stays visible, (3) bare rgba replaced with var(--shadow-lg), (4) mobile widget raised above bottom nav with 68px offset."
   }
 }
