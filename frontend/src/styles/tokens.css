@@ -84,21 +84,21 @@
   --sp-12: 48px;
   --sp-16: 64px;
 
-  /* ── Radius ───────────────────────────────────────────── */
+  /* ── Radius — refined modular scale for premium feel ──── */
   --r-xs: 4px;
   --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 12px;
-  --r-xl: 16px;
-  --r-2xl: 16px;
-  --r-3xl: 20px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-2xl: 22px;
+  --r-3xl: 28px;
   --r-full: 9999px;
 
-  /* Stitch radii aliases */
-  --st-r-default: 4px;
-  --st-r-lg:      8px;
-  --st-r-xl:      12px;
-  --st-r-2xl:     16px;
+  /* Stitch radii aliases (kept for backward compatibility) */
+  --st-r-default: 6px;
+  --st-r-lg:      10px;
+  --st-r-xl:      14px;
+  --st-r-2xl:     18px;
   --st-r-full:    9999px;
 
   /* ── Typography ───────────────────────────────────────── */
@@ -135,18 +135,25 @@
   --lh-base: 1.65;
   --lh-loose: 1.85;
 
-  /* ── Motion ──────────────────────────────────────────── */
-  --t-fast: 150ms;
-  --t-base: 220ms;
-  --t-slow: 320ms;
+  /* ── Motion — premium curated set ─────────────────────── */
+  /* Durations: micro for hover/press, fast for state changes, base for transitions, slow for page changes */
+  --t-micro: 100ms;
+  --t-fast: 180ms;
+  --t-base: 280ms;
+  --t-slow: 420ms;
   --t-slower: 560ms;
   --t-cinema: 700ms;
-  --t-micro: 80ms;
 
+  /* Easings — refined curated set */
+  /* ease: standard productive easing */
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  /* ease-soft: gentle settle, good for content reveal */
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  /* ease-out: snappy entrance, the workhorse */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* ease-in: accelerating exit */
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  /* ease-spring: bouncy interactions (use sparingly) */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
@@ -181,6 +188,35 @@
   --transition-all: all var(--t-base) var(--ease);
   --card-padding: var(--sp-5);
   --section-gap: var(--sp-8);
+
+  /* ── Elevation system — semantic shadow alias ──────────
+     Use these for component intent rather than picking shadow-sm/md/lg directly.
+       elev-0  flat surface (no lift)
+       elev-1  resting card / panel
+       elev-2  hover state for cards
+       elev-3  floating elements (dropdowns, popovers)
+       elev-4  modal / sheet
+       elev-5  hero / spotlight surface
+     Resolved per theme below. */
+
+  /* ── Curated gradients — pre-composed for consistent brand voice ─── */
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(0, 75, 135, 0.20) 0%,
+    rgba(0, 52, 97, 0.10) 40%,
+    transparent 75%);
+  --grad-accent: linear-gradient(135deg,
+    var(--brand-blue) 0%,
+    var(--brand-purple) 100%);
+  --grad-gold: linear-gradient(135deg,
+    #fee48a 0%,
+    var(--brand-gold) 50%,
+    #d4a829 100%);
+  --grad-teal: linear-gradient(135deg,
+    var(--md-tertiary-fixed-dim) 0%,
+    var(--md-tertiary-container) 100%);
+  --grad-surface-shine: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 50%);
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -188,15 +224,15 @@
    ═════════════════════════════════════════════════════════════ */
 :root,
 [data-theme='dark'] {
-  /* Surfaces */
-  --bg: #0f1117;
-  --surface-1: #141820;
-  --surface-2: #1c2028;
-  --surface-3: #252a34;
+  /* Surfaces — refined elevation ladder, deeper midnight base */
+  --bg: #07090f;
+  --surface-1: #0e1118;
+  --surface-2: #161922;
+  --surface-3: #1f232d;
 
-  /* Borders */
-  --border: rgba(255, 255, 255, 0.10);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  /* Borders — subtle, warm-tinted to soften harshness */
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.10);
 
   /* Text */
   --text: #fafafa;
@@ -225,17 +261,25 @@
   --info: #a3c9ff;
   --info-soft: rgba(163, 201, 255, 0.10);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Shadows — directional layered for premium depth */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.02);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.40), 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
 
-  --shadow-card: 0 0 0 1px rgba(163, 201, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.07);
 
-  /* Focus & Selection */
-  --focus-ring: 0 0 0 3px rgba(163, 201, 255, 0.30);
+  /* Elevation system (dark) — resolved values */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --elev-2: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --elev-3: 0 12px 32px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --elev-4: 0 24px 64px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --elev-5: 0 32px 96px rgba(0, 0, 0, 0.60), 0 12px 32px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.10);
+
+  /* Focus & Selection — proper double-ring for accessibility + polish */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(163, 201, 255, 0.5);
   --selection-bg: rgba(163, 201, 255, 0.25);
 
   /* Chart */
@@ -246,19 +290,28 @@
   --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-bg-subtle: rgba(255, 255, 255, 0.02);
   --glass-border: rgba(255, 255, 255, 0.06);
+
+  /* ── Aliases for legacy class systems ─────────────────────
+     These let world-class.css and other layers resolve to brand
+     tokens instead of falling back to generic indigo/slate. */
+  --primary: var(--accent);
+  --surface: var(--surface-1);
+  --surface-elevated: var(--surface-2);
+  --surface-hover: var(--surface-2);
 }
 
 /* ═════════════════════════════════════════════════════════════
    LIGHT THEME
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  --bg: #fafafa;
-  --surface-1: var(--md-surface-container-lowest);
-  --surface-2: var(--md-surface-container-low);
-  --surface-3: var(--md-surface-container);
+  /* Warmer paper-tone, cleaner step ladder */
+  --bg: #fbfbfb;
+  --surface-1: #ffffff;
+  --surface-2: #f5f6f8;
+  --surface-3: #ebedef;
 
-  --border: var(--md-outline-variant);
-  --border-strong: var(--md-outline);
+  --border: rgba(15, 23, 42, 0.06);
+  --border-strong: rgba(15, 23, 42, 0.12);
 
   --text: var(--md-on-surface);
   --text-muted: var(--md-on-surface-variant);
@@ -284,17 +337,34 @@
   --info: var(--md-primary);
   --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
 
-  /* Shadows (light) */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03);
-  --shadow-md: 0 2px 4px rgba(15, 23, 42, 0.04), 0 8px 18px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.06), 0 16px 36px rgba(15, 23, 42, 0.08);
-  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.08), 0 32px 64px rgba(15, 23, 42, 0.12);
+  /* Shadows (light) — softer, paper-like */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.10), 0 8px 16px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.05);
 
-  --shadow-card: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.06), 0 12px 32px -8px rgba(0, 52, 97, 0.10);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 8px 24px -4px rgba(0, 52, 97, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(0, 52, 97, 0.07);
 
-  /* Focus & Selection (light) */
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);
+  /* Elevation system (light) — resolved values */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --elev-2: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  --elev-3: 0 12px 32px -4px rgba(0, 52, 97, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --elev-4: 0 24px 56px -8px rgba(0, 52, 97, 0.16), 0 8px 16px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --elev-5: 0 32px 80px -8px rgba(0, 52, 97, 0.20), 0 12px 24px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.07);
+
+  /* Light-mode gradient overrides */
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(0, 75, 135, 0.10) 0%,
+    rgba(0, 52, 97, 0.05) 40%,
+    transparent 75%);
+  --grad-surface-shine: linear-gradient(180deg,
+    rgba(15, 23, 42, 0.02) 0%,
+    transparent 50%);
+
+  /* Focus & Selection (light) — double ring for visibility */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px color-mix(in srgb, var(--md-primary) 40%, transparent);
   --selection-bg: color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
 
   /* Chart (light) */
