@@ -11,14 +11,13 @@
    ═════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════
-   SECTION 1 — GLASSMORPHISM
+   SECTION 1 — GLASSMORPHISM (enhancement only - solid bg preserved)
    ═══════════════════════════════════════════════════════════════ */
 
 .sidebar {
   backdrop-filter: blur(var(--glass-blur, 12px));
   -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border-inline-end: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  /* Background intentionally NOT overridden - defined in base.css/stitch-canonical.css */
 }
 
 .oasis-widget__panel {
@@ -31,18 +30,18 @@
 .dash-customizer-modal {
   backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.2));
   -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.2));
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  background: var(--surface-1);
+  border: 1px solid var(--border);
 }
 
 .landing-hero-float-card {
   backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
   -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  background: color-mix(in srgb, var(--surface-1) 85%, transparent);
+  border: 1px solid var(--border);
   box-shadow:
-    0 0 0 1px var(--glass-border, rgba(255, 255, 255, 0.12)),
-    inset 0 1px 0 var(--glass-border, rgba(255, 255, 255, 0.12));
+    0 0 0 1px var(--border),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -595,18 +594,19 @@
    ═══════════════════════════════════════════════════════════════ */
 
 [data-theme='light'] .sidebar {
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border-inline-end-color: var(--glass-border, rgba(255, 255, 255, 0.12));
+  backdrop-filter: blur(var(--glass-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+  /* Background NOT overridden - stitch-canonical.css handles it with !important */
 }
 
 [data-theme='light'] .oasis-widget__panel {
-  background: var(--surface-1);
-  border-color: var(--border);
+  background: var(--md-surface-container-lowest);
+  border-color: var(--md-outline-variant);
 }
 
 [data-theme='light'] .landing-hero-float-card {
-  background: var(--glass-bg, rgba(255, 255, 255, 0.06));
-  border-color: var(--glass-border, rgba(255, 255, 255, 0.12));
+  background: color-mix(in srgb, var(--md-surface-container-lowest) 90%, transparent);
+  border-color: var(--md-outline-variant);
 }
 
 [data-theme='light'] .shadow-deep {
@@ -672,10 +672,14 @@
 
 [data-theme='dark'] .sidebar {
   backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 1.5));
+  /* Background NOT overridden - stitch-canonical.css uses !important */
 }
 
 [data-theme='dark'] .oasis-widget__panel {
   backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur, 12px) * 2));
+  background: var(--surface-1);
 }
 
 /* ═══════════════════════════════════════════════════════════════
