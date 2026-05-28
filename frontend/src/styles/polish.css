@@ -13,37 +13,41 @@
 
 .page-header {
   position: relative;
-  padding: var(--sp-5) var(--sp-6);
-  margin-bottom: var(--sp-2);
+  padding: var(--sp-7) var(--sp-7);
+  margin-bottom: var(--sp-4);
   background:
     linear-gradient(135deg,
-      color-mix(in srgb, var(--accent) 5%, transparent) 0%,
-      color-mix(in srgb, var(--accent) 1.5%, transparent) 50%,
-      transparent 100%);
-  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+      color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 40%,
+      color-mix(in srgb, var(--md-tertiary-fixed-dim) 6%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--border));
   border-radius: var(--r-2xl);
   box-shadow: var(--elev-1);
   overflow: hidden;
 }
 .page-header::before {
-  /* Refined accent rail — subtle gradient with rounded edges */
   content: '';
   position: absolute;
   inset-inline-start: 0;
-  top: 22%;
-  bottom: 22%;
-  width: 3px;
+  top: 18%;
+  bottom: 18%;
+  width: 4px;
   background: linear-gradient(180deg,
     var(--accent) 0%,
-    color-mix(in srgb, var(--accent) 60%, var(--gold)) 100%);
-  border-radius: 0 3px 3px 0;
+    var(--gold) 100%);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 .page-header::after {
-  /* Subtle internal shine — deepens premium feel without clutter */
   content: '';
   position: absolute;
-  inset: 0;
-  background: var(--grad-surface-shine);
+  top: -50%;
+  right: -10%;
+  width: 50%;
+  height: 200%;
+  background: radial-gradient(ellipse at center,
+    color-mix(in srgb, var(--gold) 8%, transparent) 0%,
+    transparent 60%);
   pointer-events: none;
 }
 

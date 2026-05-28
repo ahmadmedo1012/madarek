@@ -78,23 +78,30 @@
   border: 0 !important;
   border-radius: var(--r-full) !important;
   min-height: 44px;
-  padding: 0 24px !important;
+  padding: 0 28px !important;
   font-weight: 600;
   position: relative;
-  /* Subtle inner sheen for depth without flashiness */
-  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%) !important;
+  /* Visible gradient + sheen for premium tactile feel */
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%, rgba(0, 0, 0, 0.12) 100%) !important;
   background-color: var(--md-primary) !important;
-  box-shadow: var(--elev-2) !important;
+  box-shadow:
+    var(--elev-2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20) !important;
 }
 .btn.primary:hover {
-  background-color: color-mix(in srgb, var(--md-primary) 92%, white 8%) !important;
+  background-color: color-mix(in srgb, var(--md-primary) 88%, white 12%) !important;
   color: var(--md-on-primary) !important;
-  transform: translateY(-1px);
-  box-shadow: var(--elev-3) !important;
+  transform: translateY(-2px);
+  box-shadow:
+    var(--elev-3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20) !important;
 }
 .btn.primary:active {
   transform: translateY(0) !important;
-  box-shadow: var(--elev-1) !important;
+  box-shadow: var(--elev-1), inset 0 1px 2px rgba(0, 0, 0, 0.20) !important;
 }
 .btn.primary:focus-visible {
   outline: none;

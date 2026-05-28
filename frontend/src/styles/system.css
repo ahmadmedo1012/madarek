@@ -36,13 +36,28 @@ body {
 }
 
 .sidebar-brand {
-  padding: var(--sp-5) var(--sp-4) !important;
+  padding: var(--sp-6) var(--sp-5) !important;
   border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+    transparent 60%);
+  position: relative;
+}
+.sidebar-brand::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  inset-inline: 16%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 35%, transparent) 50%,
+    transparent 100%);
 }
 .sidebar-brand-name {
   font-weight: 700 !important;
   letter-spacing: -0.01em;
-  font-size: 15px !important;
+  font-size: 16px !important;
 }
 .sidebar-brand-sub {
   font-size: 12px !important;
@@ -86,9 +101,13 @@ body {
 }
 .nav-item.on,
 .nav-item[aria-current="page"] {
-  background: var(--accent-soft) !important;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 100%) !important;
   color: var(--accent) !important;
   font-weight: 600 !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 15%, transparent);
 }
 .nav-item.on::before,
 .nav-item[aria-current="page"]::before {
@@ -98,10 +117,10 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 4px;
-  height: 60%;
-  background: var(--accent);
+  height: 70%;
+  background: linear-gradient(180deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 60%, var(--gold)) 100%);
   border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .nav-icon {

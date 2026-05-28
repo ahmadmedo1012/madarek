@@ -85,40 +85,40 @@
   --sp-16: 64px;
 
   /* ── Radius — refined modular scale for premium feel ──── */
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --r-xl: 18px;
-  --r-2xl: 22px;
-  --r-3xl: 28px;
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 22px;
+  --r-2xl: 28px;
+  --r-3xl: 36px;
   --r-full: 9999px;
 
   /* Stitch radii aliases (kept for backward compatibility) */
-  --st-r-default: 6px;
-  --st-r-lg:      10px;
-  --st-r-xl:      14px;
-  --st-r-2xl:     18px;
+  --st-r-default: 10px;
+  --st-r-lg:      14px;
+  --st-r-xl:      18px;
+  --st-r-2xl:     24px;
   --st-r-full:    9999px;
 
-  /* ── Typography ───────────────────────────────────────── */
+  /* ── Typography — bold modular scale ──────────────────── */
   --fs-xxs: 11px;
   --fs-xs: 12px;
   --fs-sm: 13px;
   --fs-base: 15px;
   --fs-md: 16px;
-  --fs-lg: 18px;
-  --fs-xl: 22px;
-  --fs-2xl: 28px;
-  --fs-3xl: 36px;
-  --fs-4xl: 44px;
+  --fs-lg: 19px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 42px;
+  --fs-4xl: 56px;
 
   /* Premium Arabic Typography Hierarchy */
-  --fs-display-lg: clamp(32px, 5vw, 48px);
-  --fs-display: clamp(40px, 6vw, 64px);
-  --lh-display: 1.1;
-  --fs-headline-md: clamp(24px, 3.5vw, 32px);
-  --fs-headline-sm: clamp(20px, 2.5vw, 24px);
+  --fs-display-lg: clamp(36px, 5.5vw, 56px);
+  --fs-display: clamp(44px, 7vw, 80px);
+  --lh-display: 1.05;
+  --fs-headline-md: clamp(26px, 3.6vw, 36px);
+  --fs-headline-sm: clamp(22px, 2.6vw, 28px);
   --fs-body-lg: 18px;
   --fs-body-md: 16px;
   --fs-label-md: 14px;
@@ -261,22 +261,22 @@
   --info: #a3c9ff;
   --info-soft: rgba(163, 201, 255, 0.10);
 
-  /* Shadows — directional layered for premium depth */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.02);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.40), 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  /* Shadows — directional layered for premium depth (visible, bold) */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.60), 0 12px 32px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.08);
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.20), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.50), 0 4px 12px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.10);
 
-  /* Elevation system (dark) — resolved values */
+  /* Elevation system (dark) — premium-strong depth */
   --elev-0: none;
-  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  --elev-2: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  --elev-3: 0 12px 32px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.07);
-  --elev-4: 0 24px 64px rgba(0, 0, 0, 0.55), 0 8px 24px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --elev-5: 0 32px 96px rgba(0, 0, 0, 0.60), 0 12px 32px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.10);
+  --elev-1: 0 4px 12px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --elev-2: 0 12px 28px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  --elev-3: 0 24px 56px rgba(0, 0, 0, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --elev-4: 0 36px 84px rgba(0, 0, 0, 0.65), 0 12px 32px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(255, 255, 255, 0.10);
+  --elev-5: 0 56px 128px rgba(0, 0, 0, 0.70), 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
 
   /* Focus & Selection — proper double-ring for accessibility + polish */
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px rgba(163, 201, 255, 0.5);

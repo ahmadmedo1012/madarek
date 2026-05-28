@@ -234,16 +234,16 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
 @keyframes ix-page-in-soft {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 24px, 0) scale(0.99);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 .content-inner {
-  animation: ix-page-in-soft 380ms var(--ease-out) both;
+  animation: ix-page-in-soft 520ms var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
