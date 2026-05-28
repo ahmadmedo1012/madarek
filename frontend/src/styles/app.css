@@ -148,16 +148,22 @@ code, pre, kbd, samp {
   padding-inline-start: var(--sidebar-w);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;            /* fix-size so .content can scroll within */
+  height: 100dvh;           /* dynamic viewport height on mobile */
+  min-height: 100vh;        /* fallback */
   min-width: 0;
   background: var(--bg);
+  /* IMPORTANT: do NOT use overflow:hidden here — it kills `.topbar`
+     position:sticky. Instead the .content child handles scrolling. */
 }
 
 .content {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;            /* critical — lets flex child scroll */
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;  /* iOS momentum scroll */
 }
 
 .content-inner {
@@ -362,11 +368,11 @@ code, pre, kbd, samp {
 }
 .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
 
-/* ── Topbar (sticky glass) ─────────────────────────────── */
+/* ── Topbar (glass, anchored above .content via flex order) ─── */
 .topbar {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 30;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: var(--sp-4);
@@ -2009,10 +2015,9 @@ input[type="checkbox"], input[type="radio"] {
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-top: 1px solid var(--glass-border);
   z-index: 38;
-  padding: 6px var(--sp-2) calc(env(safe-area-inset-bottom, 0px) + 6px);
-  transition: transform var(--t-base) var(--ease);
+  /* Heights/paddings are finalised in section 39.23 — keep this minimal
+     so the late rule wins without specificity battles. */
 }
-.bottom-nav[data-hidden="true"] { transform: translateY(110%); }
 
 .bottom-nav-item {
   flex: 1;
@@ -2026,24 +2031,31 @@ input[type="checkbox"], input[type="radio"] {
   font-weight: var(--fw-medium);
   border-radius: var(--r-sm);
   text-decoration: none;
-  transition: color var(--t-fast) var(--ease);
+  transition:
+    color var(--t-fast) var(--ease-out),
+    background var(--t-fast) var(--ease-out);
 }
 .bottom-nav-item.active { color: var(--accent); font-weight: var(--fw-semibold); }
 .bottom-nav-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: grid;
   place-items: center;
   border-radius: var(--r-sm);
+  transition:
+    background var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-spring);
 }
 .bottom-nav-item.active .bottom-nav-icon {
   background: var(--accent-soft);
+  transform: translateY(-1px) scale(1.05);
 }
 .bottom-nav-label { white-space: nowrap; }
 
 @media (max-width: 768px) {
   .bottom-nav { display: flex; }
-  .main { padding-bottom: 72px; }
+  /* Reserve space at the bottom of .main for the bar + safe-area + small breathing room */
+  .main { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* ═════════════════════════════════════════════════════════════════════
@@ -5478,7 +5490,7 @@ input[type="checkbox"], input[type="radio"] {
 @media (max-width: 768px) {
   .content-inner {
     padding-inline: var(--sp-margin-mobile);
-    padding-block: var(--sp-5) calc(76px + env(safe-area-inset-bottom, 0px));
+    padding-block: var(--sp-5) var(--sp-6);
     width: 100%;
     max-width: 100%;
   }
@@ -5890,20 +5902,47 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 /* ── 39.3 Page transitions — silky, no flash ─────────────────────── */
-/* The .content area is the scroll container — pages fade in on mount */
+/* The .content area is the scroll container — pages fade in on mount.
+   Two-stage choreography: subtle blur+fade from below, then settle. */
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  0%   { opacity: 0; transform: translateY(8px) scale(0.992); filter: blur(2px); }
+  60%  { filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 .content-inner > .page,
 .content-inner > .student-dashboard,
 .content-inner > div[class*="-page"] {
-  animation: pageIn 280ms var(--ease-out);
+  animation: pageIn 360ms var(--ease-out);
+  transform-origin: top center;
 }
-/* On reduced-motion, skip the slide */
+/* Stagger child blocks slightly so dashboards feel composed, not flat */
+.content-inner > .page > *,
+.content-inner > .student-dashboard > * {
+  animation: pageInChild 420ms var(--ease-out) backwards;
+}
+@keyframes pageInChild {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.content-inner > .page > *:nth-child(1)  { animation-delay: 30ms; }
+.content-inner > .page > *:nth-child(2)  { animation-delay: 70ms; }
+.content-inner > .page > *:nth-child(3)  { animation-delay: 110ms; }
+.content-inner > .page > *:nth-child(4)  { animation-delay: 150ms; }
+.content-inner > .page > *:nth-child(5)  { animation-delay: 180ms; }
+.content-inner > .page > *:nth-child(6)  { animation-delay: 200ms; }
+.content-inner > .student-dashboard > *:nth-child(1)  { animation-delay: 30ms; }
+.content-inner > .student-dashboard > *:nth-child(2)  { animation-delay: 80ms; }
+.content-inner > .student-dashboard > *:nth-child(3)  { animation-delay: 130ms; }
+.content-inner > .student-dashboard > *:nth-child(4)  { animation-delay: 180ms; }
+.content-inner > .student-dashboard > *:nth-child(5)  { animation-delay: 220ms; }
+
+/* On reduced-motion, skip everything */
 @media (prefers-reduced-motion: reduce) {
   .content-inner > .page,
-  .content-inner > .student-dashboard {
+  .content-inner > .student-dashboard,
+  .content-inner > div[class*="-page"],
+  .content-inner > .page > *,
+  .content-inner > .student-dashboard > * {
     animation: none;
   }
 }
@@ -6181,14 +6220,46 @@ img.avatar {
 * { backface-visibility: hidden; }
 .btn, .pill, .nav-item, .nav-item-pill, .card, .metric { -webkit-font-smoothing: antialiased; }
 
-/* ── 39.23 Bottom-nav inner space respects bottom safe-area ─────── */
+/* ── 39.23 BOTTOM NAV — final consolidated rules ─────────────────────
+   Fixes the iPhone bug where items appeared cut: the bar now uses
+   intrinsic content height + a `padding-bottom: env(safe-area-inset-bottom)`
+   for the home indicator. No fixed height — flexbox handles it. */
 .bottom-nav {
-  padding-block: 8px calc(8px + env(safe-area-inset-bottom, 0px));
-  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  /* Reset any prior conflicting rules in this section */
+  height: auto;
+  min-height: 0;
+  padding-block: 6px;
+  padding-bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  padding-inline: var(--sp-2);
+  /* Smooth, premium hide/show */
+  transition:
+    transform 280ms var(--ease-out),
+    opacity 220ms var(--ease-out);
+  will-change: transform;
 }
 .bottom-nav-item {
-  min-height: 48px;
+  min-height: 52px;
+  height: 52px;
+  padding-block: 4px;
+  gap: 2px;
   touch-action: manipulation;
+}
+.bottom-nav-icon {
+  width: 26px;
+  height: 26px;
+}
+.bottom-nav-label {
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.bottom-nav[data-hidden="true"] {
+  transform: translateY(calc(100% + env(safe-area-inset-bottom, 0px)));
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ── 39.24 Larger touch targets on phones ─────────────────────────── */
@@ -6258,3 +6329,248 @@ html { scroll-behavior: smooth; }
     animation: none;
   }
 }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   40. THIRD-PASS POLISH — fade route, micro-interactions,
+       refined nav active state, premium feedback
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── 40.1 Active nav item — animated marker ───────────────────────── */
+.nav-item.on::before,
+.nav-item-pill.on::before {
+  animation: navMarker 360ms var(--ease-spring);
+}
+@keyframes navMarker {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+/* Slight bg shimmer when nav item becomes active — premium touch */
+.nav-item.on,
+.nav-item-pill.on {
+  animation: navItemActivate 480ms var(--ease-out);
+}
+@keyframes navItemActivate {
+  0%   { background: var(--surface-2); }
+  50%  { background: rgba(108, 248, 187, 0.20); }
+  100% { background: var(--md-secondary-container); }
+}
+
+/* ── 40.2 Bottom-nav active item — gentle scale-in ────────────────── */
+@keyframes bottomNavPop {
+  0%   { transform: translateY(-1px) scale(1); }
+  60%  { transform: translateY(-2px) scale(1.10); }
+  100% { transform: translateY(-1px) scale(1.05); }
+}
+.bottom-nav-item.active .bottom-nav-icon {
+  animation: bottomNavPop 320ms var(--ease-spring);
+}
+
+/* ── 40.3 Soft shadow rings for focus rings (accessible + premium) ── */
+:focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+  transition: outline-color var(--t-fast) var(--ease-out);
+}
+.btn:focus-visible,
+.nav-item:focus-visible,
+.pill:focus-visible,
+.icon-btn:focus-visible,
+.bottom-nav-item:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ── 40.4 Card press feedback — extends btn pattern ──────────────── */
+a.card,
+button.card,
+.card[role="button"],
+.suggested-course-row,
+.thumb-card,
+.track-card,
+.vision-card,
+.feed-item[role="button"] {
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out);
+  cursor: pointer;
+}
+a.card:active,
+button.card:active,
+.card[role="button"]:active,
+.suggested-course-row:active,
+.thumb-card:active,
+.track-card:active,
+.vision-card:active {
+  transform: translateY(0) scale(0.995);
+  transition-duration: 80ms;
+}
+
+/* ── 40.5 Tab change — smooth slide indicator ─────────────────────── */
+.tab,
+.search-category-pill {
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+
+/* ── 40.6 Page transition refinement on route change ──────────────── */
+/* Fade all old → new (handled by mount/unmount of pageIn anim already).
+   Add a subtle scrollbar fade so content doesn't jump. */
+.content {
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+/* ── 40.7 Icon button rotation on active (settings/cog only) ───────── */
+.icon-btn[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+  transition: transform var(--t-base) var(--ease-spring);
+}
+
+/* ── 40.8 Notification badge gentle pulse ─────────────────────────── */
+@keyframes notifBadgePulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+.topbar-notif-badge,
+.nav-badge.danger {
+  animation: notifBadgePulse 2.4s ease-in-out infinite;
+}
+
+/* ── 40.9 Form input refined focus glow ───────────────────────────── */
+.input:focus,
+.input:focus-visible,
+.auth-input:focus,
+.chat-input:focus,
+.oasis-widget__input:focus {
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 1px 2px rgba(9, 20, 38, 0.04);
+}
+
+/* ── 40.10 Smooth scroll-to-top button (when content is long) ─────── */
+.scroll-top-btn {
+  position: fixed;
+  bottom: calc(var(--sp-6) + env(safe-area-inset-bottom, 0px));
+  inset-inline-start: var(--sp-6);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-full);
+  background: var(--surface-1);
+  color: var(--text);
+  box-shadow: var(--shadow-md);
+  display: grid;
+  place-items: center;
+  z-index: 35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition:
+    opacity var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-out);
+}
+.scroll-top-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* ── 40.11 Avatar gradient soft animation on appearance ───────────── */
+.avatar {
+  background: var(--grad-primary-emerald);
+  position: relative;
+  overflow: hidden;
+}
+.avatar::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease-out);
+  pointer-events: none;
+}
+.topbar-user-trigger:hover .avatar::before { opacity: 1; }
+
+/* ── 40.12 Make image-based avatars work (override gradient) ──────── */
+.avatar:has(> img),
+.avatar:has(> svg) {
+  background: var(--surface-2);
+}
+
+/* ── 40.13 Glass-card subtle border-glow on hover ─────────────────── */
+.glass-panel:hover,
+.glass-card:hover {
+  border-color: var(--accent-border);
+  transition: border-color var(--t-base) var(--ease-out);
+}
+
+/* ── 40.14 Refined dash-quick-action-pill hover ──────────────────── */
+.dash-quick-action-pill {
+  position: relative;
+  overflow: hidden;
+}
+.dash-quick-action-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-primary-emerald);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+  z-index: -1;
+  border-radius: inherit;
+}
+.dash-quick-action-pill:hover::before { opacity: 0.05; }
+.dash-quick-action-pill:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+/* ── 40.15 Loading spinner tinted to accent ─────────────────────── */
+.spinner {
+  border-top-color: var(--accent);
+  border-color: var(--accent-soft);
+}
+
+/* ── 40.16 Disable text-rendering hack on small screens (perf) ──── */
+@media (max-width: 480px) {
+  * { backface-visibility: visible; }
+}
+
+/* ── 40.17 Safari-specific: prevent rubber-band on .content ──────── */
+.content {
+  overscroll-behavior-y: contain;
+}
+
+/* ── 40.18 Better topbar gap on mobile (less crowded) ─────────────── */
+@media (max-width: 768px) {
+  .topbar { gap: var(--sp-2); }
+  .topbar-actions { gap: 4px; }
+  /* AI button text hides earlier */
+  .topbar-actions .btn.primary.sm .hide-on-mobile { display: none; }
+  .topbar-actions .btn.primary.sm {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+/* ── 40.19 Page transition: keep scrollbar gutter so layout doesn't shift ── */
+.content::-webkit-scrollbar-track { background: transparent; }
+
+/* ── 40.20 Sidebar resize: respect macOS scroll-behavior ──────────── */
+.sidebar-scroll {
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+/* ── 40.21 Performance: hide off-screen content ─────────────────── */
+.bottom-nav,
+.sidebar { will-change: transform; }
