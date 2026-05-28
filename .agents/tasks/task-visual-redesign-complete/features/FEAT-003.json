@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "refactor",
   "description": "Rebuild remaining page-specific stylesheets (owner.css, redesign-lecture.css, redesign-matrix.css) to align with the new design language, and do a final consistency pass to ensure everything is unified.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Rewrite frontend/src/styles/owner.css to use the new design tokens consistently. Key changes: (1) Timeline: Keep the structure but use new token values for borders, spacing, transitions. Remove any old token references (--radius-lg should be --r-lg). (2) Toggle switch: Update to use new tokens. (3) Event icons: Keep the color variants. (4) Any component that references old MD3 tokens (--md-outline-variant, --md-surface-container-low, etc.) should be updated to use the new semantic tokens (--border, --surface-1, etc.).",
     "Rewrite frontend/src/styles/redesign-lecture.css to align with the new design system. Key changes: (1) Replace all old token references (--radius-lg) with new ones (--r-lg). (2) Keep the video container overlay gradient. (3) Keep the floating progress bar but simplify. (4) Meta bar: use new glass tokens.",
@@ -28,5 +28,5 @@
     "Check that all CSS files have valid syntax (balanced braces)"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "owner.css was already fully aligned with new tokens (no changes needed). redesign-lecture.css and redesign-matrix.css required token replacements. All --md-primary and --md-on-primary references in app.css, dashboard.css, and landing-auth-v3.css are valid since those tokens are defined in the preserved MD3 palette section of tokens.css. pdf.css was already using new tokens. All acceptance criteria verified: balanced braces, no undefined variable references, correct import order, fonts loading correctly."
 }
