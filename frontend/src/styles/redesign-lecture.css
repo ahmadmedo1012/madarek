@@ -1,16 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════
-   REDESIGN LECTURE — Premium Lecture Player Styles
+   REDESIGN LECTURE - Premium Lecture Player Styles
    Immersive video wrapper, floating progress bar, glass checkpoint
    overlay with animations, premium meta bar, enhanced chapters.
-   Loaded AFTER redesign-dashboard.css.
+   Loaded AFTER dashboard.css.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Video Container with gradient overlay ───────────────────── */
 .lecture-video-container {
   position: relative;
-  border-radius: var(--radius-lg, 12px);
+  border-radius: var(--r-lg);
   overflow: hidden;
-  background: var(--md-surface-container-highest);
+  background: var(--surface-3);
 }
 
 .lecture-video-container::after {
@@ -33,14 +33,14 @@
   background: rgba(255, 255, 255, 0.15);
   z-index: 2;
   overflow: hidden;
-  border-radius: 0 0 var(--radius-lg, 12px) var(--radius-lg, 12px);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
 }
 
 .lecture-progress-float-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--md-tertiary-container), var(--md-secondary-container));
+  background: linear-gradient(90deg, var(--accent), var(--gold));
   border-radius: 0 2px 2px 0;
-  transition: width 0.4s ease-out;
+  transition: width var(--t-slow) var(--ease-out);
 }
 
 /* ── Meta Bar - glass morphism horizontal pill ───────────────── */
@@ -51,11 +51,11 @@
   flex-wrap: wrap;
   padding: var(--sp-3) var(--sp-4);
   margin-top: var(--sp-3);
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-full);
 }
 
 [data-theme="light"] .lecture-meta-bar {
@@ -72,12 +72,12 @@
   height: 36px;
   min-width: 36px;
   border-radius: 50%;
-  border: 1px solid var(--md-outline-variant);
+  border: 1px solid var(--border);
   background: transparent;
-  color: var(--md-on-surface-variant);
+  color: var(--text-muted);
   cursor: not-allowed;
   opacity: 0.6;
-  transition: opacity 0.2s, background 0.2s, border-color 0.2s;
+  transition: opacity var(--t-fast) var(--ease), background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
 }
 
 .lecture-bookmark-btn:hover {
@@ -100,7 +100,7 @@
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  animation: checkpoint-glass-in 0.25s ease-out;
+  animation: checkpoint-glass-in var(--t-base) var(--ease-out);
 }
 
 @keyframes checkpoint-glass-in {
@@ -110,7 +110,7 @@
 
 /* ── Checkpoint Card Entrance Animation ──────────────────────── */
 .checkpoint-animate {
-  animation: checkpoint-card-enter 0.3s ease-out;
+  animation: checkpoint-card-enter 0.3s var(--ease-out);
 }
 
 @keyframes checkpoint-card-enter {
@@ -130,20 +130,20 @@
   display: flex;
   align-items: center;
   padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--radius-lg, 12px);
-  border: 1.5px solid var(--md-outline-variant);
-  background: var(--md-surface-container-low);
+  border-radius: var(--r-lg);
+  border: 1.5px solid var(--border);
+  background: var(--surface-1);
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-  font-size: var(--fs-sm, 14px);
-  color: var(--md-on-surface);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+  font-size: var(--fs-sm);
+  color: var(--text);
   text-align: start;
   width: 100%;
 }
 
 .checkpoint-option-card:hover:not(:disabled) {
-  border-color: var(--md-primary);
-  box-shadow: 0 0 0 2px rgba(0, 52, 97, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft), 0 4px 12px rgba(0, 0, 0, 0.08);
   transform: translateY(-1px);
 }
 
@@ -152,20 +152,20 @@
 }
 
 .checkpoint-option-card.correct {
-  border-color: var(--success, #16a34a);
-  background: rgba(22, 163, 74, 0.08);
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+  border-color: var(--success);
+  background: var(--success-soft);
+  box-shadow: 0 0 0 2px rgba(63, 186, 126, 0.15);
 }
 
 .checkpoint-option-card.incorrect {
-  border-color: var(--danger, #dc2626);
-  background: rgba(220, 38, 38, 0.06);
+  border-color: var(--danger);
+  background: var(--danger-soft);
 }
 
 /* ── Checkpoint Result Animations ────────────────────────────── */
 .checkpoint-result.correct .checkpoint-result-icon {
-  animation: checkpoint-correct-pop 0.4s ease-out;
-  color: var(--success, #16a34a);
+  animation: checkpoint-correct-pop 0.4s var(--ease-out);
+  color: var(--success);
 }
 
 @keyframes checkpoint-correct-pop {
@@ -175,8 +175,8 @@
 }
 
 .checkpoint-result.incorrect .checkpoint-result-icon {
-  animation: checkpoint-incorrect-shake 0.4s ease-out;
-  color: var(--danger, #dc2626);
+  animation: checkpoint-incorrect-shake 0.4s var(--ease-out);
+  color: var(--danger);
 }
 
 @keyframes checkpoint-incorrect-shake {
@@ -189,14 +189,14 @@
 
 /* ── Active Chapter Row Enhancement ──────────────────────────── */
 .chapter-row.on {
-  border-inline-start: 3px solid var(--md-primary);
-  background: rgba(0, 52, 97, 0.06);
-  box-shadow: inset 4px 0 12px -4px rgba(0, 75, 135, 0.12);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 4px 0 12px -4px rgba(75, 139, 224, 0.12);
 }
 
-[data-theme="dark"] .chapter-row.on {
-  background: rgba(163, 201, 255, 0.06);
-  box-shadow: inset 4px 0 12px -4px rgba(163, 201, 255, 0.1);
+[data-theme="light"] .chapter-row.on {
+  background: var(--accent-soft);
+  box-shadow: inset 4px 0 12px -4px rgba(37, 99, 235, 0.10);
 }
 
 /* ── Mobile Breakpoints ──────────────────────────────────────── */
@@ -207,7 +207,7 @@
   }
 
   .lecture-meta-bar {
-    border-radius: var(--radius-lg, 12px);
+    border-radius: var(--r-lg);
     padding: var(--sp-2) var(--sp-3);
   }
 
@@ -225,7 +225,7 @@
   .lecture-meta-bar {
     flex-direction: column;
     align-items: flex-start;
-    border-radius: var(--radius-md, 8px);
+    border-radius: var(--r-md);
     gap: var(--sp-2);
   }
 

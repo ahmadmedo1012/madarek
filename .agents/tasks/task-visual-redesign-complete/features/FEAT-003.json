@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-003",
+  "type": "refactor",
+  "description": "Rebuild remaining page-specific stylesheets (owner.css, redesign-lecture.css, redesign-matrix.css) to align with the new design language, and do a final consistency pass to ensure everything is unified.",
+  "status": "in_progress",
+  "steps": [
+    "Rewrite frontend/src/styles/owner.css to use the new design tokens consistently. Key changes: (1) Timeline: Keep the structure but use new token values for borders, spacing, transitions. Remove any old token references (--radius-lg should be --r-lg). (2) Toggle switch: Update to use new tokens. (3) Event icons: Keep the color variants. (4) Any component that references old MD3 tokens (--md-outline-variant, --md-surface-container-low, etc.) should be updated to use the new semantic tokens (--border, --surface-1, etc.).",
+    "Rewrite frontend/src/styles/redesign-lecture.css to align with the new design system. Key changes: (1) Replace all old token references (--radius-lg) with new ones (--r-lg). (2) Keep the video container overlay gradient. (3) Keep the floating progress bar but simplify. (4) Meta bar: use new glass tokens.",
+    "Rewrite frontend/src/styles/redesign-matrix.css to align with the new design system. Key changes: (1) Replace --radius-lg with --r-lg. (2) Replace --md-outline-variant with --border. (3) Replace --md-surface-container-low with --surface-1. (4) Keep the mini progress ring structure (conic-gradient). (5) Course header gradient: simplify to use new tokens.",
+    "Final consistency pass on frontend/src/styles/app.css - verify all the responsive media queries at the bottom of the file still work correctly. Ensure: (1) Sidebar collapses properly on tablet/mobile. (2) Bottom nav shows at <= 768px. (3) Grid layouts collapse properly. (4) Content padding reduces on mobile. (5) No class name was accidentally removed during the rewrite.",
+    "Verify frontend/src/main.tsx import order is still correct and all CSS files are imported. The load order matters: tokens.css first (defines variables), then page-specific sheets, then app.css (overrides), then pdf.css.",
+    "Check frontend/index.html - ensure the Google Fonts link is still present and correctly loading IBM Plex Sans Arabic with weights 300,400,500,600,700 and Space Mono with weights 400,700."
+  ],
+  "acceptance_criteria": [
+    "owner.css uses only tokens defined in the new tokens.css (no old MD3 references like --md-outline-variant in page-specific CSS)",
+    "redesign-lecture.css uses --r-lg instead of --radius-lg",
+    "redesign-matrix.css uses --r-lg, --border, --surface-1 instead of old MD3 tokens",
+    "All responsive breakpoints in app.css are preserved and functional",
+    "main.tsx import order is unchanged",
+    "index.html still loads IBM Plex Sans Arabic and Space Mono fonts",
+    "The entire platform uses one cohesive visual language",
+    "No CSS file references a variable that does not exist in tokens.css"
+  ],
+  "verification": [
+    "Search all CSS files for references to undefined variables (any --md-* token that was removed from tokens.css)",
+    "Verify main.tsx imports all 9 CSS files in the correct order",
+    "Verify index.html contains the Google Fonts link",
+    "Check that all CSS files have valid syntax (balanced braces)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

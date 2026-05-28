@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   REDESIGN MATRIX — Premium Learning Path Matrix Styles
+   REDESIGN MATRIX - Premium Learning Path Matrix Styles
    Constellation-style knowledge grid, animated cell fills,
    expandable course cards with gradient headers, gap cards.
    Loaded AFTER redesign-lecture.css.
@@ -7,15 +7,15 @@
 
 /* ── Course Card Premium Treatment ───────────────────────────── */
 .matrix-course {
-  border-radius: var(--radius-lg, 12px);
-  border: 1px solid var(--md-outline-variant);
-  background: var(--md-surface-container-low);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-1);
   overflow: hidden;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
 }
 
 .matrix-course:hover {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 /* ── Course Header with Gradient Bar ─────────────────────────── */
@@ -32,7 +32,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--course-tint, rgba(0, 52, 97, 0.06)) 0%, transparent 70%);
+  background: linear-gradient(135deg, var(--course-tint, rgba(30, 58, 95, 0.06)) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -44,8 +44,8 @@
   min-width: 32px;
   border-radius: 50%;
   background: conic-gradient(
-    var(--ring-color, var(--md-primary)) calc(var(--ring-pct, 0) * 1%),
-    var(--md-surface-container-highest) 0
+    var(--ring-color, var(--accent)) calc(var(--ring-pct, 0) * 1%),
+    var(--surface-3) 0
   );
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@
   position: absolute;
   inset: 4px;
   border-radius: 50%;
-  background: var(--md-surface-container-low);
+  background: var(--surface-1);
 }
 
 .matrix-mini-ring-value {
@@ -65,7 +65,7 @@
   z-index: 1;
   font-size: 9px;
   font-weight: 700;
-  color: var(--md-on-surface);
+  color: var(--text);
   line-height: 1;
 }
 
@@ -81,11 +81,11 @@
 .matrix-cell {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-md, 8px);
-  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
   padding: var(--sp-3);
-  background: var(--md-surface-container-lowest);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--surface-1);
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
   z-index: 0;
 }
 
@@ -96,39 +96,39 @@
   inset-inline-start: 0;
   width: calc(var(--cell-level, 0) * 1%);
   opacity: 0.10;
-  background: var(--cell-fill, var(--md-primary));
-  transition: width 0.5s ease-out;
+  background: var(--cell-fill, var(--accent));
+  transition: width var(--t-slower) var(--ease-out);
   z-index: -1;
 }
 
 .matrix-cell:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 /* ── Cell Level Variants ─────────────────────────────────────── */
 .matrix-cell[data-level="strong"] {
-  border-inline-start: 3px solid var(--success, #16a34a);
+  border-inline-start: 3px solid var(--success);
   --cell-fill: #16a34a;
 }
 
 .matrix-cell[data-level="good"] {
-  border-inline-start: 3px solid var(--accent, #3D6BD6);
+  border-inline-start: 3px solid var(--accent);
   --cell-fill: #3D6BD6;
 }
 
 .matrix-cell[data-level="weak"] {
-  border-inline-start: 3px solid var(--warning, #d97706);
+  border-inline-start: 3px solid var(--warning);
   --cell-fill: #d97706;
 }
 
 .matrix-cell[data-level="poor"] {
-  border-inline-start: 3px solid var(--danger, #dc2626);
+  border-inline-start: 3px solid var(--danger);
   --cell-fill: #dc2626;
 }
 
 .matrix-cell[data-level="untouched"] {
-  border-inline-start: 3px solid var(--text-subtle, #94a3b8);
+  border-inline-start: 3px solid var(--text-subtle);
   --cell-fill: #94a3b8;
 }
 
@@ -138,10 +138,10 @@
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--radius-md, 8px);
+  border-radius: var(--r-md);
   background: linear-gradient(135deg, rgba(217, 119, 6, 0.04) 0%, rgba(217, 119, 6, 0.01) 100%);
   border: 1px solid rgba(217, 119, 6, 0.2);
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  transition: box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
 
 .matrix-gap-card:hover {
@@ -151,7 +151,7 @@
 
 .matrix-gap-card .matrix-gap-alert-icon {
   animation: gap-alert-pulse 2s ease-in-out infinite;
-  color: var(--warning, #d97706);
+  color: var(--warning);
 }
 
 @keyframes gap-alert-pulse {
@@ -165,21 +165,21 @@
 }
 
 .matrix-gap-card .matrix-gap-title {
-  font-weight: 600;
-  font-size: var(--fs-sm, 14px);
-  color: var(--md-on-surface);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  color: var(--text);
 }
 
 .matrix-gap-card .matrix-gap-sub {
-  font-size: var(--fs-xs, 12px);
-  color: var(--md-on-surface-variant);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
 }
 
 .matrix-gap-card .matrix-gap-pct {
-  font-family: var(--font-mono, monospace);
-  font-size: var(--fs-xs, 12px);
-  color: var(--warning, #d97706);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--warning);
+  font-weight: var(--fw-semibold);
 }
 
 /* ── Matrix Legend Refinement ────────────────────────────────── */
@@ -189,9 +189,9 @@
   align-items: center;
   gap: var(--sp-4);
   padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--radius-md, 8px);
-  background: var(--md-surface-container);
-  border: 1px solid var(--md-outline-variant);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   margin-bottom: var(--sp-4);
 }
 
@@ -199,8 +199,8 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  font-size: var(--fs-xs, 12px);
-  color: var(--md-on-surface-variant);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
 }
 
 .matrix-legend-dot {
