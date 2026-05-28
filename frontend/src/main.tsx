@@ -38,6 +38,11 @@ import './styles/mobile-stabilize.css';
  * page-title-icon slot for the new dashboard greeting. Strictly
  * additive; loaded last so it has the final word on visual quality. */
 import './styles/premium-polish.css';
+/* final-stabilize.css — definitive z-index scale, dropdown layering
+ * fix (topbar bumped 30 -> 50, dropdowns -> 80 to escape every card
+ * stacking context), smooth content reveal staggers, chart fade-in,
+ * skeleton crossfade, and reduced-motion safety. */
+import './styles/final-stabilize.css';
 
 import App from './App';
 

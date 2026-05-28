@@ -1,0 +1,339 @@
+/* ═════════════════════════════════════════════════════════════════════
+   Madarek — Final Stabilization (loaded LAST)
+   ─────────────────────────────────────────────────────────────────────
+   Purpose: definitive z-index scale, dropdown layering fix, smooth
+   content reveal staggers, chart fade-in polish, and skeleton
+   crossfade. Resolves the "menus appear behind content" bug + the
+   "icons / stats / numbers appear suddenly" complaint.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ─── Z-INDEX SCALE — single source of truth ─────────────────────── */
+:root {
+  --z-base:           1;
+  --z-content:        10;
+  --z-topbar:         50;
+  --z-sidebar-back:   55;
+  --z-sidebar:        60;
+  --z-dropdown:       80;
+  --z-tooltip:        90;
+  --z-modal-back:     100;
+  --z-modal:          110;
+  --z-toast:          120;
+  --z-loader:         130;
+}
+
+/* ─── TOPBAR LAYERING — bumped from 30 to 50 ─────────────────────── */
+.topbar {
+  z-index: var(--z-topbar);
+  /* CRITICAL: never clip dropdowns rendered as children. */
+  overflow: visible !important;
+  /* Establish a clean stacking context so children with z-index escape
+     to the document level rather than fighting card stacking contexts. */
+  isolation: isolate;
+}
+
+
+/* ─── DROPDOWN LAYERING — escape every card stacking context ────── */
+.topbar-user-menu,
+.search-dropdown,
+.global-search .search-dropdown,
+.notif-dropdown,
+.notification-dropdown,
+.dropdown-panel {
+  z-index: var(--z-dropdown) !important;
+}
+
+/* The wrapper of any dropdown trigger must allow its child dropdown
+   to escape vertically. */
+.topbar-user,
+.global-search,
+.notif-trigger,
+.notification-dropdown-wrap,
+.dropdown-wrap {
+  overflow: visible !important;
+  position: relative;
+}
+
+/* ─── SIDEBAR & BACKDROP — unified with the new scale ────────────── */
+.sidebar { z-index: var(--z-sidebar); }
+.sidebar-backdrop { z-index: var(--z-sidebar-back); }
+@media (max-width: 1024px) {
+  .sidebar { z-index: var(--z-sidebar) !important; }
+  .sidebar-backdrop { z-index: var(--z-sidebar-back) !important; }
+}
+
+/* ─── MODALS — final layering ────────────────────────────────────── */
+.modal-overlay { z-index: var(--z-modal-back); }
+.modal-card    { position: relative; z-index: var(--z-modal); }
+
+/* ─── TOOLTIP & TOAST ─────────────────────────────────────────────── */
+[data-tooltip]:hover::after { z-index: var(--z-tooltip); }
+.toast-container { z-index: var(--z-toast); }
+
+/* ─── BOTTOM NAV ─────────────────────────────────────────────────── */
+.bottom-nav { z-index: 38; }
+
+/* ─── OASIS WIDGET — sits at toast level ─────────────────────────── */
+.oasis-widget__trigger,
+.oasis-widget__panel {
+  z-index: var(--z-toast);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   SMOOTH CONTENT REVEAL — replace abrupt pop-in
+   ═════════════════════════════════════════════════════════════════════ */
+
+@keyframes contentReveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes contentFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.dash-stat-tile,
+.compact-kpi,
+.stat-trend,
+.metric,
+.intel-radial-card {
+  animation: contentReveal 360ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: 40ms;
+}
+
+/* Stagger inside container grids */
+.dash-quick-stats > *:nth-child(1),
+.compact-kpis > *:nth-child(1),
+.dash-intel-grid > *:nth-child(1) { animation-delay: 60ms; }
+.dash-quick-stats > *:nth-child(2),
+.compact-kpis > *:nth-child(2),
+.dash-intel-grid > *:nth-child(2) { animation-delay: 120ms; }
+.dash-quick-stats > *:nth-child(3),
+.compact-kpis > *:nth-child(3),
+.dash-intel-grid > *:nth-child(3) { animation-delay: 180ms; }
+.dash-quick-stats > *:nth-child(4),
+.compact-kpis > *:nth-child(4),
+.dash-intel-grid > *:nth-child(4) { animation-delay: 240ms; }
+.dash-quick-stats > *:nth-child(5),
+.compact-kpis > *:nth-child(5),
+.dash-intel-grid > *:nth-child(5) { animation-delay: 300ms; }
+
+.page > .card,
+.student-dashboard > .card,
+.page > .dash-intel-row,
+.student-dashboard > .dash-intel-row {
+  animation: contentReveal 360ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.page > .card:nth-of-type(1)        { animation-delay: 80ms; }
+.page > .card:nth-of-type(2)        { animation-delay: 140ms; }
+.page > .card:nth-of-type(3)        { animation-delay: 200ms; }
+.page > .card:nth-of-type(4)        { animation-delay: 260ms; }
+.page > .card:nth-of-type(n+5)      { animation-delay: 320ms; }
+
+.page > .dash-intel-row,
+.student-dashboard > .dash-intel-row { animation-delay: 220ms; }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   CHARTS — fade in calmly
+   ═════════════════════════════════════════════════════════════════════ */
+.card canvas {
+  animation: contentFade 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms backwards;
+}
+.chart-sparkline canvas,
+.stat-trend-spark canvas {
+  animation: contentFade 280ms cubic-bezier(0.16, 1, 0.3, 1) 40ms backwards;
+}
+.chart-donut-center {
+  animation: contentFade 380ms cubic-bezier(0.16, 1, 0.3, 1) 320ms backwards;
+}
+
+/* Heatmap cells reveal in a wave */
+.heatmap-cell {
+  animation: contentReveal 320ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.heatmap-cell:nth-child(7n+1)  { animation-delay: 60ms; }
+.heatmap-cell:nth-child(7n+2)  { animation-delay: 80ms; }
+.heatmap-cell:nth-child(7n+3)  { animation-delay: 100ms; }
+.heatmap-cell:nth-child(7n+4)  { animation-delay: 120ms; }
+.heatmap-cell:nth-child(7n+5)  { animation-delay: 140ms; }
+.heatmap-cell:nth-child(7n+6)  { animation-delay: 160ms; }
+.heatmap-cell:nth-child(7n+7)  { animation-delay: 180ms; }
+
+/* RadialProgress fades in while the dashoffset animates */
+.radial-progress svg {
+  animation: contentFade 320ms cubic-bezier(0.16, 1, 0.3, 1) 40ms backwards;
+}
+.radial-progress-center {
+  animation: contentFade 320ms cubic-bezier(0.16, 1, 0.3, 1) 280ms backwards;
+}
+
+/* AnimatedCounter span gets a tiny opacity boot so the number doesn't
+   "pop" before the count-up loop attaches */
+.animated-counter {
+  animation: contentFade 240ms cubic-bezier(0.16, 1, 0.3, 1) 80ms backwards;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   ICON FADE-IN — every Lucide / EmojiIcon-rendered SVG
+   ═════════════════════════════════════════════════════════════════════ */
+.dash-stat-icon svg,
+.metric-icon svg,
+.kpi-icon svg,
+.compact-kpi svg,
+.stat-trend-icon svg,
+.dash-agenda-icon svg,
+.feed-item-avatar svg,
+.alert svg,
+.badge svg,
+.landing-feature-icon svg,
+.landing-bento-icon svg,
+.landing-trust-icon svg,
+.intel-radial-card svg {
+  animation: contentFade 280ms cubic-bezier(0.16, 1, 0.3, 1) 80ms backwards;
+}
+
+.page-title-icon {
+  animation: contentReveal 380ms cubic-bezier(0.16, 1, 0.3, 1) 60ms backwards;
+}
+
+.welcome-card .page-title,
+.welcome-card .page-subtitle {
+  animation: contentReveal 380ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.welcome-card .page-title    { animation-delay: 80ms; }
+.welcome-card .page-subtitle { animation-delay: 160ms; }
+
+.welcome-card .dash-quick-actions > * {
+  animation: contentReveal 320ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.welcome-card .dash-quick-actions > *:nth-child(1) { animation-delay: 240ms; }
+.welcome-card .dash-quick-actions > *:nth-child(2) { animation-delay: 280ms; }
+.welcome-card .dash-quick-actions > *:nth-child(3) { animation-delay: 320ms; }
+.welcome-card .dash-quick-actions > *:nth-child(4) { animation-delay: 360ms; }
+.welcome-card .dash-quick-actions > *:nth-child(n+5) { animation-delay: 400ms; }
+
+/* Sidebar nav items reveal sequentially when the page first loads */
+.nav-item,
+.nav-item-pill {
+  animation: contentFade 280ms cubic-bezier(0.16, 1, 0.3, 1) 100ms backwards;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   SKELETONS — calm crossfade and refined shimmer
+   ═════════════════════════════════════════════════════════════════════ */
+.skeleton,
+.skeleton-shimmer {
+  animation: skeletonShimmer 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  border-radius: var(--r-sm);
+}
+
+[aria-busy="true"] {
+  position: relative;
+}
+
+/* Spinner: refined initial fade so it never blinks in */
+.spinner {
+  animation:
+    spin 0.85s linear infinite,
+    contentFade 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: 0ms, 80ms;
+}
+
+.state,
+.empty-state {
+  animation: contentReveal 380ms cubic-bezier(0.16, 1, 0.3, 1) 100ms backwards;
+}
+
+/* ─── PAGE TRANSITION REFINEMENT ─────────────────────────────────── */
+@keyframes pageInRefined {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.content-inner > .page,
+.content-inner > .student-dashboard {
+  animation: pageInRefined 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   DROPDOWN APPEARANCE — premium spring open
+   ═════════════════════════════════════════════════════════════════════ */
+@keyframes dropdownPop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.topbar-user-menu,
+.search-dropdown,
+.notification-dropdown,
+.notif-dropdown,
+.dropdown-panel {
+  animation: dropdownPop 220ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  transform-origin: top right;
+}
+html[dir='rtl'] .topbar-user-menu,
+html[dir='rtl'] .search-dropdown,
+html[dir='rtl'] .notification-dropdown,
+html[dir='rtl'] .notif-dropdown,
+html[dir='rtl'] .dropdown-panel {
+  transform-origin: top left;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   FOCUSABLE OVERFLOWS — never let scrollers clip dropdowns
+   ═════════════════════════════════════════════════════════════════════ */
+.main { overflow: visible; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — definitive
+   ═════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .dash-stat-tile,
+  .compact-kpi,
+  .stat-trend,
+  .metric,
+  .intel-radial-card,
+  .page > .card,
+  .student-dashboard > .card,
+  .page > .dash-intel-row,
+  .student-dashboard > .dash-intel-row,
+  .heatmap-cell,
+  .card canvas,
+  .chart-sparkline canvas,
+  .stat-trend-spark canvas,
+  .chart-donut-center,
+  .radial-progress svg,
+  .radial-progress-center,
+  .animated-counter,
+  .dash-stat-icon svg,
+  .metric-icon svg,
+  .kpi-icon svg,
+  .stat-trend-icon svg,
+  .dash-agenda-icon svg,
+  .feed-item-avatar svg,
+  .badge svg,
+  .landing-feature-icon svg,
+  .landing-bento-icon svg,
+  .landing-trust-icon svg,
+  .intel-radial-card svg,
+  .page-title-icon,
+  .welcome-card .page-title,
+  .welcome-card .page-subtitle,
+  .welcome-card .dash-quick-actions > *,
+  .state,
+  .empty-state,
+  .topbar-user-menu,
+  .search-dropdown,
+  .notification-dropdown,
+  .notif-dropdown,
+  .dropdown-panel,
+  .nav-item,
+  .nav-item-pill,
+  .content-inner > .page,
+  .content-inner > .student-dashboard {
+    animation: none !important;
+  }
+}
