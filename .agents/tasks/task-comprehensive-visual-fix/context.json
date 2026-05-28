@@ -1,0 +1,26 @@
+{
+  "project_type": "React SPA with Vite bundler, monorepo (frontend + backend workspaces)",
+  "language": "TypeScript (strict mode, noUncheckedIndexedAccess)",
+  "build_system": "npm workspaces, Vite for frontend, tsc for type checking",
+  "test_framework": "No test framework found in frontend - AST/type validation only",
+  "build_command": "NODE_OPTIONS='' npx tsc -b --noEmit (node_modules not installed in sandbox)",
+  "test_command": "N/A - no tests configured, use AST validation",
+  "verification_instructions": "Since node_modules are not available in INTEGRATIONS_ONLY sandbox, verify changes through: 1) Syntax correctness of CSS (no broken rules), 2) TypeScript source code validity by visual inspection (correct types, proper imports), 3) Ensure no conflicting CSS properties remain",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "npm install from root (not available in sandbox)",
+  "environment_constraints": "INTEGRATIONS_ONLY network - no npm install possible, no tsc compilation. Must validate through AST reading and code inspection only.",
+  "contribution_requirements": "TypeScript strict mode, no new npm packages, preserve RTL support, keep prefers-reduced-motion fallbacks",
+  "key_patterns": "CSS loaded via main.tsx imports in order: tokens -> base -> components -> ... -> visual-final-polish -> world-class -> global-icon. Later files override earlier ones. Design tokens in stitch-tokens.css and tokens.css. Component state managed via zustand stores (ui.store.ts). Layout components in src/components/layout/. Bottom nav defined in notifications.css, shown via media query in stitch-canonical.css at max-width: 900px.",
+  "relevant_files": [
+    "frontend/src/styles/visual-final-polish.css",
+    "frontend/src/styles/world-class.css",
+    "frontend/src/styles/global-icon.css",
+    "frontend/src/styles/notifications.css",
+    "frontend/src/styles/stitch-canonical.css",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/components/layout/BottomNav.tsx",
+    "frontend/src/stores/ui.store.ts",
+    "frontend/src/main.tsx"
+  ],
+  "directory_structure": "frontend/src/styles/ - all CSS files loaded from main.tsx. frontend/src/components/layout/ - AppShell, BottomNav, Sidebar, Topbar. frontend/src/stores/ - zustand stores (auth, ui, i18n, dashboard)."
+}

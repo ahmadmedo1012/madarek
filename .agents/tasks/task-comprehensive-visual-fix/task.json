@@ -1,0 +1,7 @@
+{
+  "task_id": "task-comprehensive-visual-fix",
+  "task_description": "Comprehensive visual fix: resolve Oasis widget panel distortion caused by CSS cascade conflicts (height: 500px from world-class.css never overridden), add bottom-nav hide-on-scroll for mobile, and clean up raw hex values in world-class.css",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

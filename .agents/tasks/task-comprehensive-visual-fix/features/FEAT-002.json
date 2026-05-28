@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-002",
+  "type": "fix",
+  "description": "Clean up raw hex color values in world-class.css and verify other visual consistency items",
+  "status": "completed",
+  "steps": [
+    "Step 1: In world-class.css Section 10 (Oasis AI Widget), replace all raw hex fallback values with design token variables. Specifically: replace `#6366f1` with `var(--accent)`, replace `#64748b` with `var(--text-muted)`, replace `#e2e8f0` with `var(--border)`, replace `#f8fafc` with `var(--surface-2)`, replace `#1e293b` with `var(--text)`, replace `#fff` (for oasis backgrounds) with `var(--surface-1)`. Use find-and-replace within Section 10 only. Keep the var() fallback pattern but with tokens, e.g., change `var(--primary, #6366f1)` to just `var(--accent)` since tokens are always loaded first.",
+    "Step 2: In world-class.css, also fix the `.oasis-widget__trigger` raw hex shadows. Change `rgba(99, 102, 241, 0.35)` and `rgba(99, 102, 241, 0.45)` to use `color-mix(in srgb, var(--accent) 35%, transparent)` and `color-mix(in srgb, var(--accent) 45%, transparent)` respectively.",
+    "Step 3: Verify that global-icon.css Section 1 `.sidebar` does NOT override background (should just have backdrop-filter). Confirm the comment says 'Background intentionally NOT overridden'. No change needed if already correct.",
+    "Step 4: Verify global-icon.css Section 1 `.dash-customizer-modal` uses solid `background: var(--surface-1)`. No change needed if already correct.",
+    "Step 5: Verify global-icon.css Section 1 `.landing-hero-float-card` has solid background (85% opacity surface). If less than 80% opacity, increase to at least 88% for readability. Currently set to 85% which is acceptable."
+  ],
+  "acceptance_criteria": [
+    "world-class.css Section 10 contains no raw hex colors (#6366f1, #64748b, #e2e8f0, #f8fafc, #1e293b)",
+    "All oasis widget styles in world-class.css use proper design token variables",
+    "global-icon.css sidebar rule does NOT set background (only backdrop-filter)",
+    "global-icon.css dash-customizer-modal has solid background var(--surface-1)",
+    "Landing hero float cards remain readable with adequate opacity"
+  ],
+  "verification": [
+    "Use grep to confirm no raw hex values (#6366f1, #64748b, #e2e8f0, #f8fafc, #1e293b) remain in world-class.css Section 10 (Oasis AI Widget)",
+    "Read global-icon.css Section 1 and confirm sidebar has no background property, dash-customizer-modal has var(--surface-1), landing-hero-float-card has 85%+ opacity"
+  ],
+  "blocked_reason": null,
+  "findings": "All hex values in Section 10 replaced with design tokens. Trigger shadows use color-mix(). Message bubbles use var(--accent-fg). Verified global-icon.css: sidebar has no background (only backdrop-filter with comment), dash-customizer-modal uses var(--surface-1), landing-hero-float-card at 85% opacity is acceptable. No raw hex colors (#6366f1, #64748b, #e2e8f0, #f8fafc, #1e293b) remain in Section 10. Other sections (1-9) intentionally left unchanged."
+}
