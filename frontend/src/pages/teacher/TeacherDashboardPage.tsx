@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import {
   Users,
   AlertTriangle, MessageSquare, FileText, Upload, Bell,
-  CheckCircle2, Filter, Sparkles,
+  CheckCircle2, Filter, Sparkles, TrendingUp,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { AnimatedCounter, Sparkline, TrendChip, TrendArea } from '../../lib/charts';
 
 type FeedFilter = 'all' | 'submissions' | 'questions' | 'attendance' | 'research' | 'content';
 
@@ -169,13 +170,57 @@ export function TeacherDashboardPage() {
         </Badge>
       </div>
 
-      {/* Compact KPI strip */}
-      <div className="compact-kpis">
-        <CompactKpi label="طلاب" value="143" trend="‏4% هذا الأسبوع" trendColor="positive" />
-        <CompactKpi label="متوسط الأداء" value="71%" trend="‏5%" trendColor="positive" />
-        <CompactKpi label="حضور" value="78%" trend="‏3%" trendColor="negative" />
-        <CompactKpi label="بحاجة تقييم" value="12" trend="واجبات + بحوث" trendColor="neutral" />
+      {/* Compact KPI strip with sparklines */}
+      <div className="dash-intel-grid">
+        <StatTrendKpi
+          label="طلاب"
+          value={143}
+          delta={4}
+          deltaSuffix="%"
+          data={[128, 132, 134, 136, 138, 141, 143]}
+          color="primary"
+          icon={Users}
+        />
+        <StatTrendKpi
+          label="متوسط الأداء"
+          value={71}
+          valueSuffix="%"
+          delta={5}
+          deltaSuffix="%"
+          data={[64, 65, 67, 68, 70, 71, 71]}
+          color="action"
+          icon={TrendingUp}
+        />
+        <StatTrendKpi
+          label="حضور"
+          value={78}
+          valueSuffix="%"
+          delta={-3}
+          deltaSuffix="%"
+          data={[82, 81, 80, 79, 79, 78, 78]}
+          color="warning"
+          icon={CheckCircle2}
+        />
+        <StatTrendKpi
+          label="بحاجة تقييم"
+          value={12}
+          delta={2}
+          deltaSuffix=""
+          data={[6, 8, 9, 10, 11, 11, 12]}
+          color="gold"
+          icon={FileText}
+        />
       </div>
+
+      {/* Class performance trend */}
+      <Card title="أداء فصولك · آخر 8 أسابيع" icon={TrendingUp} subtitle="متوسط نتائج الواجبات الأسبوعية">
+        <TrendArea
+          data={[64, 66, 65, 68, 67, 69, 70, 71]}
+          labels={['أ1', 'أ2', 'أ3', 'أ4', 'أ5', 'أ6', 'أ7', 'أ8']}
+          color="primary"
+          height={200}
+        />
+      </Card>
 
       {/* Filter toolbar */}
       <div className="feed-toolbar">
@@ -227,6 +272,40 @@ function CompactKpi({ label, value, trend, trendColor }: {
       <div className="compact-kpi-label">{label}</div>
       <div className="compact-kpi-value">{value}</div>
       <div className="compact-kpi-trend" data-trend={trendColor}>{trend}</div>
+    </div>
+  );
+}
+
+/** Premium KPI tile: label · animated value · trend chip · sparkline. */
+function StatTrendKpi({
+  label, value, valueSuffix = '', delta, deltaSuffix, data, color, icon,
+}: {
+  label: string;
+  value: number;
+  valueSuffix?: string;
+  delta: number;
+  deltaSuffix: string;
+  data: number[];
+  color: 'primary' | 'action' | 'ai' | 'success' | 'warning' | 'danger' | 'gold';
+  icon: LucideIcon;
+}) {
+  return (
+    <div className="stat-trend">
+      <div className="stat-trend-head">
+        <span className="stat-trend-icon">
+          <Icon icon={icon} size={13} />
+        </span>
+        <span className="stat-trend-label">{label}</span>
+      </div>
+      <div className="stat-trend-value-row">
+        <span className="stat-trend-value">
+          <AnimatedCounter to={value} suffix={valueSuffix} />
+        </span>
+        <TrendChip delta={delta} suffix={deltaSuffix} size="sm" />
+      </div>
+      <div className="stat-trend-spark">
+        <Sparkline data={data} color={color} height={28} />
+      </div>
     </div>
   );
 }

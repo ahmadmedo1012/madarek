@@ -5,9 +5,10 @@ import {
   Award, Microscope, ClipboardCheck,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
+import { Card, MetricCard, Badge } from '../../components/primitives';
 import { LoadingState, ErrorState } from '../../components/primitives/States';
 import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
+import { AnimatedCounter, TrendBar, TrendArea, Sparkline, TrendChip } from '../../lib/charts';
 
 export function AdminDashboardPage() {
   const stats = useAdminStats();
@@ -26,37 +27,71 @@ export function AdminDashboardPage() {
       </div>
 
       <div className="grid-4">
-        <MetricCard icon={Building2} label="الكليات" value="29" change="موزّعة على 9 مدن" color="brand" />
-        <MetricCard icon={GraduationCap} label="الطلاب" value={s.totalStudents.toLocaleString('ar-LY')} change="مسجَّل في النظام" color="green" />
-        <MetricCard icon={School} label="هيئة التدريس" value={s.totalTeachers.toLocaleString('ar-LY')} change="عضو" color="amber" />
-        <MetricCard icon={BookOpen} label="المقررات" value={s.totalCourses.toLocaleString('ar-LY')} change={`${s.totalEnrollments} تسجيل`} color="purple" />
+        <MetricCard
+          icon={Building2}
+          label="الكليات"
+          value={<AnimatedCounter to={29} />}
+          change="موزّعة على 9 مدن"
+          color="brand"
+        />
+        <MetricCard
+          icon={GraduationCap}
+          label="الطلاب"
+          value={<AnimatedCounter to={s.totalStudents} />}
+          change="مسجَّل في النظام"
+          color="green"
+        />
+        <MetricCard
+          icon={School}
+          label="هيئة التدريس"
+          value={<AnimatedCounter to={s.totalTeachers} />}
+          change="عضو"
+          color="amber"
+        />
+        <MetricCard
+          icon={BookOpen}
+          label="المقررات"
+          value={<AnimatedCounter to={s.totalCourses} />}
+          change={
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <AnimatedCounter to={s.totalEnrollments} /> تسجيل
+            </span>
+          }
+          color="purple"
+        />
       </div>
+
+      {/* Enrollment trend */}
+      <Card title="حركة التسجيلات · 6 فصول" icon={TrendingUp} subtitle="عدد التسجيلات الجديدة في كل فصل">
+        <TrendArea
+          data={[8420, 9150, 9870, 10520, 11380, 12400]}
+          labels={['ربيع 23', 'خريف 23', 'ربيع 24', 'خريف 24', 'ربيع 25', 'خريف 25']}
+          color="primary"
+          height={220}
+        />
+      </Card>
 
       <div className="grid-2-1">
         <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle="أعلى 8 كليات من حيث عدد الطلاب">
-          <div className="flex-col gap-3">
-            {[
-              { f: 'كلية الاقتصاد · الزاوية', c: 6800 },
-              { f: 'كلية الهندسة · الزاوية', c: 5200 },
-              { f: 'كلية الطب البشري', c: 4800 },
-              { f: 'كلية التربية · الفروع الخمسة', c: 4500 },
-              { f: 'كلية الآداب · الزاوية', c: 4100 },
-              { f: 'كلية القانون · الزاوية', c: 3700 },
-              { f: 'كلية تقنية المعلومات', c: 2900 },
-              { f: 'كلية العلوم · الزاوية', c: 2500 },
-            ].map((r) => (
-              <ProgressBar key={r.f} value={(r.c / 6800) * 100} label={`${r.f} — ${r.c.toLocaleString('ar-LY')}`} showValue={false} />
-            ))}
-          </div>
+          <TrendBar
+            data={[6800, 5200, 4800, 4500, 4100, 3700, 2900, 2500]}
+            labels={[
+              'الاقتصاد', 'الهندسة', 'الطب البشري', 'التربية',
+              'الآداب', 'القانون', 'تقنية المعلومات', 'العلوم',
+            ]}
+            color="primary"
+            height={300}
+            horizontal
+          />
         </Card>
 
         <Card title="مؤشرات سريعة" icon={TrendingUp}>
           <div className="flex-col gap-2">
-            <Stat label="معدل النجاح العام" value="76%" trend="up" />
-            <Stat label="الحضور التراكمي" value="82%" trend="up" />
-            <Stat label="رضا الطلاب" value="4.3 / 5" trend="up" />
-            <Stat label="الترتيب في ليبيا" value="#6" trend="up" />
-            <Stat label="QS العربي 2026" value="#251–300" trend="up" />
+            <Stat label="معدل النجاح العام" value={<><AnimatedCounter to={76} suffix="%" /></>} delta={2} sparkData={[71, 72, 74, 75, 75, 76]} sparkColor="primary" />
+            <Stat label="الحضور التراكمي" value={<><AnimatedCounter to={82} suffix="%" /></>} delta={3} sparkData={[78, 79, 80, 81, 81, 82]} sparkColor="action" />
+            <Stat label="رضا الطلاب" value={<><AnimatedCounter to={4.3} decimals={1} /> / 5</>} delta={4} sparkData={[4.0, 4.1, 4.1, 4.2, 4.2, 4.3]} sparkColor="success" />
+            <Stat label="الترتيب في ليبيا" value="#6" delta={1} invertDelta sparkData={[10, 9, 8, 7, 7, 6]} sparkColor="ai" />
+            <Stat label="QS العربي 2026" value="#251–300" delta={5} invertDelta sparkData={[320, 310, 300, 290, 280, 270]} sparkColor="gold" />
           </div>
         </Card>
       </div>
@@ -64,11 +99,35 @@ export function AdminDashboardPage() {
   );
 }
 
-function Stat({ label, value, trend }: { label: string; value: string; trend: 'up' | 'dn' }) {
+function Stat({ label, value, delta, sparkData, sparkColor, invertDelta }: {
+  label: string;
+  value: React.ReactNode;
+  delta?: number;
+  sparkData?: number[];
+  sparkColor?: 'primary' | 'action' | 'ai' | 'success' | 'warning' | 'danger' | 'gold';
+  invertDelta?: boolean;
+}) {
   return (
-    <div className="flex items-center justify-between" style={{ padding: 'var(--sp-2) var(--sp-3)' }}>
-      <span className="text-sm text-muted">{label}</span>
-      <span className="font-mono text-sm" style={{ color: 'var(--text)' }}>{value}</span>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 'var(--sp-3)',
+      padding: 'var(--sp-2) var(--sp-3)',
+      borderRadius: 'var(--r-sm)',
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, flex: '1 1 auto' }}>
+        <span className="text-sm text-muted">{label}</span>
+        {sparkData && sparkData.length > 1 && (
+          <div style={{ marginTop: 4, height: 18, width: 100 }}>
+            <Sparkline data={sparkData} color={sparkColor ?? 'primary'} height={18} fill={false} />
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', flexShrink: 0 }}>
+        <span className="font-mono text-sm" style={{ color: 'var(--text)', fontWeight: 600 }}>{value}</span>
+        {delta !== undefined && <TrendChip delta={delta} suffix="%" invert={invertDelta} size="sm" />}
+      </div>
     </div>
   );
 }

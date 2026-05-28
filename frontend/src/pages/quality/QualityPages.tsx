@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Doughnut, Bar, Line } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement,
   LineElement, BarElement, ArcElement, Filler, Tooltip, Legend,
@@ -15,6 +15,7 @@ import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components
 import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
+import { TrendArea, TrendBar, AnimatedCounter, useChartTokens } from '../../lib/charts';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -160,67 +161,53 @@ export function QualityDashboardPage() {
       </div>
 
       <div className="grid-4">
-        <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={(d.users.STUDENT ?? 0).toLocaleString('ar-LY')} change="مسجَّل في النظام" color="brand" />
-        <MetricCard icon={Users} label="هيئة التدريس" value={(d.users.TEACHER ?? 0).toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={BookOpen} label="مقررات نشطة" value={d.offerings.toLocaleString('ar-LY')} change={`${d.lectures} محاضرة`} color="amber" />
+        <MetricCard
+          icon={GraduationCap}
+          label="الطلاب النشطون"
+          value={<AnimatedCounter to={d.users.STUDENT ?? 0} />}
+          change="مسجَّل في النظام"
+          color="brand"
+        />
+        <MetricCard
+          icon={Users}
+          label="هيئة التدريس"
+          value={<AnimatedCounter to={d.users.TEACHER ?? 0} />}
+          color="green"
+        />
+        <MetricCard
+          icon={BookOpen}
+          label="مقررات نشطة"
+          value={<AnimatedCounter to={d.offerings} />}
+          change={<><AnimatedCounter to={d.lectures} /> محاضرة</>}
+          color="amber"
+        />
         <MetricCard
           icon={Activity}
           label="معدل الحضور"
-          value={`${e.attendance.presentRate.toFixed(0)}%`}
-          change={`${e.attendance.total} سجل`}
+          value={<><AnimatedCounter to={e.attendance.presentRate} decimals={0} suffix="%" /></>}
+          change={<><AnimatedCounter to={e.attendance.total} /> سجل</>}
           color="purple"
         />
       </div>
 
       <div className="grid-2-1">
         <Card title="النشاط الأسبوعي" subtitle="عدد الجلسات اليومية النشطة على المنصة" icon={TrendingUp}>
-          <div style={{ height: 220 }}>
-            <Line
-              data={{
-                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
-                datasets: [{
-                  label: 'مستخدم نشط',
-                  data: e.weeklyActive,
-                  borderColor: '#3D6BD6',
-                  backgroundColor: 'rgba(61,107,214,0.10)',
-                  tension: 0.4,
-                  fill: true,
-                  borderWidth: 2,
-                  pointRadius: 3,
-                  pointHoverRadius: 5,
-                  pointBackgroundColor: '#3D6BD6',
-                }],
-              }}
-              options={chartOpts}
-            />
-          </div>
+          <TrendArea
+            data={e.weeklyActive}
+            labels={['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']}
+            color="primary"
+            height={220}
+          />
         </Card>
 
         <Card title="توزيع الحضور" icon={ClipboardCheck}>
-          <div style={{ height: 220, position: 'relative' }}>
-            <Doughnut
-              data={{
-                labels: ['حضور', 'تأخر', 'غياب'],
-                datasets: [{
-                  data: [e.attendance.presentRate, e.attendance.lateRate, e.attendance.absentRate],
-                  backgroundColor: ['#3DD68C', '#F5A623', '#F55353'],
-                  borderColor: '#11131A',
-                  borderWidth: 2,
-                }],
-              }}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
-                plugins: {
-                  legend: {
-                    position: 'bottom',
-                    labels: { color: '#9EA4B8', font: { family: 'IBM Plex Sans Arabic', size: 11 }, usePointStyle: true, padding: 10 },
-                  },
-                },
-              }}
-            />
-          </div>
+          <BrandedAttendanceDonut
+            data={[
+              { label: 'حضور', value: e.attendance.presentRate, color: 'success' },
+              { label: 'تأخر', value: e.attendance.lateRate,    color: 'warning' },
+              { label: 'غياب', value: e.attendance.absentRate,  color: 'danger'  },
+            ]}
+          />
         </Card>
       </div>
 
@@ -445,21 +432,12 @@ export function QualityEngagementPage() {
 
       <div className="grid-2-1">
         <Card title="النشاط الأسبوعي" icon={TrendingUp}>
-          <div style={{ height: 240 }}>
-            <Bar
-              data={{
-                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
-                datasets: [{
-                  label: 'نشاط يومي',
-                  data: d.weeklyActive,
-                  backgroundColor: '#3D6BD6',
-                  borderRadius: 6,
-                  borderSkipped: false,
-                }],
-              }}
-              options={chartOpts}
-            />
-          </div>
+          <TrendBar
+            data={d.weeklyActive}
+            labels={['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']}
+            color="primary"
+            height={240}
+          />
         </Card>
 
         <Card title="تحليل المشاهدة" icon={Activity}>
@@ -655,37 +633,78 @@ export function QualityPlaceholder({
   );
 }
 
-/* ─── Shared chart options ────────────────────────────── */
-const chartOpts = {
+/* ─── Branded attendance donut — uses the chart toolkit's color tokens
+   so it stays in sync with the refined-blue palette. ──────────────── */
+function BrandedAttendanceDonut({
+  data,
+}: {
+  data: Array<{ label: string; value: number; color: 'success' | 'warning' | 'danger' }>;
+}) {
+  const t = useChartTokens();
+  const palette: Record<'success' | 'warning' | 'danger', string> = {
+    success: t.success,
+    warning: t.warning,
+    danger: t.danger,
+  };
+  return (
+    <div style={{ height: 220, position: 'relative' }}>
+      <Doughnut
+        data={{
+          labels: data.map((d) => d.label),
+          datasets: [{
+            data: data.map((d) => d.value),
+            backgroundColor: data.map((d) => palette[d.color]),
+            borderColor: t.surface1,
+            borderWidth: 3,
+            hoverOffset: 6,
+          }],
+        }}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              rtl: true,
+              labels: {
+                color: t.textMuted,
+                font: { family: t.font, size: 12 },
+                usePointStyle: true,
+                pointStyle: 'circle',
+                boxWidth: 10,
+                boxHeight: 10,
+                padding: 12,
+              },
+            },
+            tooltip: {
+              backgroundColor: t.surface1,
+              borderColor: t.border,
+              borderWidth: 1,
+              titleColor: t.text,
+              bodyColor: t.textMuted,
+              padding: 10,
+              cornerRadius: 8,
+              titleFont: { family: t.font, size: 12, weight: 600 },
+              bodyFont: { family: t.font, size: 12 },
+            },
+          },
+        }}
+      />
+    </div>
+  );
+}
+
+/* ─── Legacy chart options kept for backwards compatibility — no
+   longer used directly; new charts use lib/charts.tsx primitives.
+   Kept so any future Chart.js usage in this file inherits a clean
+   default if needed. */
+const _chartOpts = {
   responsive: true,
   maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: '#11131A',
-      borderColor: 'rgba(255,255,255,.12)',
-      borderWidth: 1,
-      titleColor: '#E7E9EE',
-      bodyColor: '#9EA4B8',
-      padding: 10,
-      cornerRadius: 8,
-      titleFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-      bodyFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-    },
-  },
-  scales: {
-    x: {
-      grid: { display: false },
-      border: { display: false },
-      ticks: { color: '#6A7088', font: { size: 11, family: 'IBM Plex Sans Arabic' } },
-    },
-    y: {
-      grid: { color: 'rgba(255,255,255,0.05)' },
-      border: { display: false },
-      ticks: { color: '#6A7088', font: { size: 11 } },
-    },
-  },
+  plugins: { legend: { display: false } },
 } as const;
+void _chartOpts;
 
 // Re-export XCircle to keep import-checker happy (tree-shaken if unused)
 export { XCircle };

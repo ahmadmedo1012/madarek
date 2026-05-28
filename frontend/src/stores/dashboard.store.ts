@@ -21,6 +21,7 @@ const DEFAULT_WIDGETS: DashboardWidget[] = [
   { id: 'progress', type: 'progress', visible: true, order: 2 },
   { id: 'term', type: 'term', visible: true, order: 3 },
   { id: 'agenda', type: 'agenda', visible: true, order: 4 },
+  { id: 'streak', type: 'streak', visible: true, order: 5 },
 ];
 
 export const useDashboardStore = create<DashboardState>()(

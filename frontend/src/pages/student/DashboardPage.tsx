@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import {
-  GraduationCap, Presentation, FileText, FlaskConical,
+  Presentation, FileText, FlaskConical,
   BookOpen, Sparkles, Calendar, Trophy, Clock, Flame,
+  TrendingUp, Activity,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -12,6 +13,9 @@ import { useDashboardStore } from '../../stores/dashboard.store';
 import { DashboardCustomizer, DashboardCustomizerTrigger } from '../../components/DashboardCustomizer';
 import { GamificationWidget } from '../../components/GamificationWidget';
 import { DashboardWaveIllustration } from '../../components/illustrations';
+import {
+  AnimatedCounter, RadialProgress, MiniArea, HeatmapWeeks, TrendChip, Sparkline,
+} from '../../lib/charts';
 
 /**
  * Greeting that adapts to the local hour. Calm, conversational.
@@ -63,29 +67,41 @@ export default function StudentDashboardPage() {
               <div className="dash-stat-icon">
                 <Icon icon={BookOpen} size={20} />
               </div>
-              <span className="dash-stat-value" data-numeric="true">4</span>
+              <span className="dash-stat-value" data-numeric="true">
+                <AnimatedCounter to={4} />
+              </span>
               <span className="dash-stat-label">مواد نشطة</span>
+              <Sparkline data={[3, 3, 4, 4, 4, 4, 4]} color="primary" height={22} />
             </div>
             <div className="dash-stat-tile" data-tone="gold">
               <div className="dash-stat-icon">
                 <Icon icon={FileText} size={20} />
               </div>
-              <span className="dash-stat-value" data-numeric="true">3</span>
+              <span className="dash-stat-value" data-numeric="true">
+                <AnimatedCounter to={3} />
+              </span>
               <span className="dash-stat-label">واجبات</span>
+              <Sparkline data={[1, 2, 2, 3, 4, 3, 3]} color="gold" height={22} />
             </div>
             <div className="dash-stat-tile" data-tone="success">
               <div className="dash-stat-icon">
                 <Icon icon={Clock} size={20} />
               </div>
-              <span className="dash-stat-value" data-numeric="true">12</span>
+              <span className="dash-stat-value" data-numeric="true">
+                <AnimatedCounter to={12} />
+              </span>
               <span className="dash-stat-label">ساعة هذا الأسبوع</span>
+              <Sparkline data={[2, 1, 2, 3, 1, 2, 1]} color="action" height={22} />
             </div>
             <div className="dash-stat-tile" data-tone="flame">
               <div className="dash-stat-icon">
                 <Icon icon={Flame} size={20} />
               </div>
-              <span className="dash-stat-value" data-numeric="true">7</span>
+              <span className="dash-stat-value" data-numeric="true">
+                <AnimatedCounter to={7} />
+              </span>
               <span className="dash-stat-label">أيام متتالية</span>
+              <Sparkline data={[1, 1, 1, 1, 1, 1, 1]} color="ai" height={22} />
             </div>
           </section>
         );
@@ -93,17 +109,45 @@ export default function StudentDashboardPage() {
       case 'gpa':
         return (
           <Card key="gpa" className="dash-gpa-card reveal" style={staggerStyle}>
-            <div className="dash-gpa-body">
-              <div className="dash-gpa-text">
-                <div className="dash-eyebrow">المعدل التراكمي</div>
-                <div className="dash-gpa-gauge" data-high="true">
-                  <div className="dash-gpa-gauge-ring" />
-                  <span className="dash-gpa-gauge-center" data-numeric="true">3.8</span>
+            <div className="dash-gpa-body" style={{ width: '100%' }}>
+              <div className="intel-card-meta">
+                <div className="left">
+                  <span className="left-label">المعدل التراكمي</span>
+                  <span className="left-value">
+                    <AnimatedCounter to={3.8} decimals={2} />
+                  </span>
                 </div>
-                <Badge color="green">ممتاز</Badge>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  <Badge color="green">ممتاز</Badge>
+                  <TrendChip delta={0.12} suffix="" />
+                </div>
               </div>
-              <div className="dash-gpa-orb">
-                <Icon icon={GraduationCap} size={26} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-5)', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <RadialProgress
+                  value={(3.8 / 4.0) * 100}
+                  size={132}
+                  thickness={9}
+                  color="primary"
+                  label={<AnimatedCounter to={3.8} decimals={2} />}
+                  sublabel="من 4.00"
+                />
+                <div style={{ flex: '1 1 200px', minWidth: 200 }}>
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    fontSize: 'var(--fs-xxs)', color: 'var(--text-subtle)',
+                    marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase',
+                    fontWeight: 600,
+                  }}>
+                    <span>تطوّر المعدل · 6 فصول</span>
+                    <Icon icon={TrendingUp} size={12} />
+                  </div>
+                  <MiniArea
+                    data={[3.42, 3.55, 3.61, 3.68, 3.72, 3.80]}
+                    labels={['ف1', 'ف2', 'ف3', 'ف4', 'ف5', 'ف6']}
+                    color="primary"
+                    height={72}
+                  />
+                </div>
               </div>
             </div>
           </Card>
@@ -112,16 +156,49 @@ export default function StudentDashboardPage() {
       case 'progress':
         return (
           <Card key="progress" className="dash-progress-card reveal" style={staggerStyle}>
-            <div className="dash-progress-body">
-              <div className="dash-css-progress-ring">
-                <div className="dash-css-progress-ring-fill" />
-                <span className="dash-css-progress-ring-center" data-numeric="true">75%</span>
+            <div className="intel-card-meta">
+              <div className="left">
+                <span className="left-label">التقدّم الأكاديمي</span>
+                <span className="left-value">
+                  <AnimatedCounter to={75} suffix="%" />
+                </span>
               </div>
-
-              <div className="dash-progress-text">
-                <div className="dash-eyebrow">التقدّم الأكاديمي</div>
-                <div className="dash-progress-value">60 من 80 ساعة معتمدة</div>
-                <div className="dash-progress-note">على مسار التخرّج في الموعد</div>
+              <Badge color="brand">على المسار</Badge>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-5)', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <RadialProgress
+                value={75}
+                size={132}
+                thickness={9}
+                color="action"
+                label={<AnimatedCounter to={75} suffix="%" />}
+                sublabel="ساعة معتمدة"
+              />
+              <div style={{ flex: '1 1 200px', minWidth: 200 }}>
+                <div style={{
+                  fontSize: 'var(--fs-sm)', color: 'var(--text)',
+                  fontWeight: 600, marginBottom: 4,
+                }}>
+                  <AnimatedCounter to={60} /> من 80 ساعة معتمدة
+                </div>
+                <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', marginBottom: 'var(--sp-3)' }}>
+                  متوقّع التخرّج في الموعد · فصل واحد متبقي
+                </div>
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  fontSize: 'var(--fs-xxs)', color: 'var(--text-subtle)',
+                  marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase',
+                  fontWeight: 600,
+                }}>
+                  <span>إنجاز المواد · أسبوعياً</span>
+                  <Icon icon={Activity} size={12} />
+                </div>
+                <MiniArea
+                  data={[5, 8, 11, 9, 14, 16, 18, 22, 25]}
+                  labels={['أ1', 'أ2', 'أ3', 'أ4', 'أ5', 'أ6', 'أ7', 'أ8', 'أ9']}
+                  color="action"
+                  height={56}
+                />
               </div>
             </div>
           </Card>
@@ -175,6 +252,55 @@ export default function StudentDashboardPage() {
               ))}
             </div>
           </section>
+        );
+
+      case 'streak':
+        return (
+          <Card key="streak" className="reveal" style={staggerStyle}
+            title="نشاطك التعليمي · آخر 4 أسابيع"
+            icon={Flame}
+            subtitle="كل خانة تمثل ساعات مذاكرة في يوم"
+          >
+            <div style={{ display: 'flex', gap: 'var(--sp-6)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <HeatmapWeeks
+                weeks={[
+                  [1, 2, 0, 3, 1, 0, 2],
+                  [2, 3, 1, 2, 3, 1, 0],
+                  [1, 4, 2, 3, 4, 2, 1],
+                  [3, 4, 3, 4, 5, 2, 1],
+                ]}
+                color="action"
+                cellSize={18}
+                ariaLabel="نشاط آخر 28 يوم"
+              />
+              <div style={{ display: 'grid', gap: 'var(--sp-3)', minWidth: 220, flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--sp-3)' }}>
+                  <span className="text-xs text-muted">أطول سلسلة</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    <AnimatedCounter to={12} suffix=" يوم" />
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--sp-3)' }}>
+                  <span className="text-xs text-muted">المتوسط اليومي</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    <AnimatedCounter to={2.4} decimals={1} suffix=" س" />
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--sp-3)' }}>
+                  <span className="text-xs text-muted">إجمالي هذا الشهر</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    <AnimatedCounter to={68} suffix=" س" />
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--sp-3)' }}>
+                  <span className="text-xs text-muted">أيام نشطة</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    <AnimatedCounter to={23} suffix=" / 28" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Card>
         );
 
       default:
@@ -237,6 +363,11 @@ export default function StudentDashboardPage() {
       {sorted
         .filter((w) => w.id !== 'gpa' && w.id !== 'progress')
         .map((w, i) => renderWidget(w.id, i + 2))}
+
+      {/* Streak heatmap — explicit render for users with older persisted
+          dashboard state (where 'streak' doesn't exist in the store). */}
+      {!sorted.some((w) => w.id === 'streak') && isVisible('streak') &&
+        renderWidget('streak', 99)}
 
       {/* Dashboard Customizer Modal */}
       <DashboardCustomizer open={customizerOpen} onClose={() => setCustomizerOpen(false)} />

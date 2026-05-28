@@ -23,6 +23,10 @@ import './styles/refined-blue.css';
  * & feed-item polish, sidebar/topbar cohesion, modal & state harmony,
  * and a final defensive mobile pass. Strictly additive. */
 import './styles/final-coherence.css';
+/* dashboard-intel.css — companion stylesheet for the chart toolkit in
+ * lib/charts.tsx (RadialProgress, HeatmapWeeks, StatTrend, TrendChip,
+ * AnimatedCounter caret, donut center slot, intel grid layouts). */
+import './styles/dashboard-intel.css';
 
 import App from './App';
 
