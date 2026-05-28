@@ -9,6 +9,7 @@ import { useThemeSync } from './ThemeToggle';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useI18nStore } from '../../stores/i18n.store';
 import { useMe } from '../../hooks/useAuth';
+import { useRevealOnScroll } from '../../hooks/useRevealOnScroll';
 import { LoadingState } from '../primitives/States';
 
 /** Map from path to i18n key for the topbar title. */
@@ -115,6 +116,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
   const lastScrollTopRef = useRef<number>(0);
   const [scrolled, setScrolled] = useState(false);
   const [bottomNavHidden, setBottomNavHidden] = useState(false);
+
+  // Defensive reveal layer — guarantees no .reveal-* element stays invisible
+  useRevealOnScroll(contentRef);
 
   // Sync document dir and lang with i18n locale
   useEffect(() => {

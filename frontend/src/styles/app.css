@@ -5304,3 +5304,487 @@ input[type="checkbox"], input[type="radio"] {
 
 /* Final guarantee — no horizontal overflow on any page */
 .page, .student-dashboard, .landing, .content-inner, .main { max-width: 100%; min-width: 0; }
+
+
+/* ═════════════════════════════════════════════════════════════════════
+   38. POST-AUDIT FIXES — visual stability, sidebar, mobile, reveal
+   ═════════════════════════════════════════════════════════════════════
+   This section consolidates fixes addressing real production issues
+   surfaced from screenshot audit:
+   • Reveal animations stuck at opacity:0 (landing/dashboard empty)
+   • Welcome card wasting vertical space with content at the bottom
+   • Mobile: cards clipped on right edge (RTL), sidebar overflow drift
+   • Topbar title clipping when mobile menu present
+   • Sidebar drawer: needs lockable, controllable behavior
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── 38.1 Reveal: force a visible final state and gentle entrance ── */
+.reveal-up,
+.reveal,
+.reveal-scale,
+.reveal-fade {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--t-slow) var(--ease-out),
+    transform var(--t-slow) var(--ease-out);
+  will-change: opacity, transform;
+}
+.reveal-scale { transform: scale(0.96); }
+.reveal-fade  { transform: none; }
+.reveal-up.revealed,
+.reveal.revealed,
+.reveal-fade.revealed { opacity: 1; transform: translateY(0); }
+.reveal-scale.revealed { opacity: 1; transform: scale(1); }
+.reveal-d-1.revealed { transition-delay: 60ms; }
+.reveal-d-2.revealed { transition-delay: 120ms; }
+.reveal-d-3.revealed { transition-delay: 180ms; }
+.reveal-d-4.revealed { transition-delay: 240ms; }
+.reveal-d-5.revealed { transition-delay: 300ms; }
+
+/* No-JS / pre-hydration fallback: show content after 1s even if the
+   reveal hook hasn't fired yet, so we never leave a permanently empty
+   page. This is a hard guarantee. */
+@keyframes safety-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal-up,
+.reveal,
+.reveal-scale,
+.reveal-fade {
+  animation: safety-reveal var(--t-slow) var(--ease-out) 1.2s forwards;
+}
+.reveal-up.revealed,
+.reveal.revealed,
+.reveal-scale.revealed,
+.reveal-fade.revealed { animation: none; }
+
+/* ── 38.2 Welcome card — top-anchored, info-dense, capped height ── */
+.welcome-card {
+  position: relative;
+  display: flex !important;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-7);
+  min-height: 0;            /* prevent over-stretching */
+  max-height: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+.welcome-card .dash-header-row {
+  align-items: center;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+.welcome-card .page-title {
+  font-size: clamp(var(--fs-xl), 3.4vw, var(--fs-2xl));
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.welcome-card .page-subtitle {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+}
+.welcome-card .dash-quick-actions {
+  margin-top: var(--sp-2);
+  position: relative;
+  z-index: 2;
+}
+.welcome-card .welcome-card-particles { display: none; }
+/* Wave illustration anchored as a soft backdrop, not content-blocker */
+.welcome-card .illustration-float,
+.welcome-card svg.illustration-float {
+  position: absolute !important;
+  inset-block: auto 0;
+  inset-inline: 0;
+  width: 100%;
+  height: 80px;
+  opacity: 0.10;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 38.3 Sidebar drawer behavior — controllable on mobile ───────── */
+.sidebar {
+  /* Make sure the drawer is fully off-screen unless `.open` */
+  transition:
+    transform var(--t-base) var(--ease),
+    box-shadow var(--t-base) var(--ease);
+}
+.sidebar.open { box-shadow: var(--shadow-xl); }
+
+@media (max-width: 1024px) {
+  /* Slide direction respects RTL — drawer comes in from the right in RTL */
+  html[dir="rtl"] .sidebar { transform: translateX(100%); }
+  html[dir="ltr"] .sidebar { transform: translateX(-100%); }
+  html[dir="rtl"] .sidebar.open,
+  html[dir="ltr"] .sidebar.open { transform: translateX(0); }
+
+  /* Main never reserves sidebar space when drawer mode */
+  .main { margin-inline-start: 0 !important; padding-inline-end: 0 !important; }
+  .topbar { padding: 0 var(--sp-4); }
+
+  /* Backdrop must always cover full viewport on mobile */
+  .sidebar-backdrop { z-index: 39; }
+  .sidebar { z-index: 50; }
+}
+
+/* ── 38.4 Topbar — prevent title clipping, balance items ─────────── */
+.topbar {
+  gap: var(--sp-3);
+}
+.topbar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topbar-mobile-toggle {
+  display: none;
+  flex-shrink: 0;
+}
+@media (max-width: 1024px) {
+  .topbar-mobile-toggle { display: inline-flex; }
+  .topbar-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-bold);
+  }
+  .topbar-scope { display: none; }
+  .topbar-actions { gap: 4px; }
+  /* Hide desktop search inside topbar on tablet/phone — the search icon
+     stays accessible via the topbar but global-search expanded layout is
+     reserved for >1024 */
+  .global-search { display: none; }
+}
+
+/* ── 38.5 Mobile content padding — anti-clipping (RTL & LTR) ─────── */
+@media (max-width: 768px) {
+  .content-inner {
+    padding-inline: var(--sp-margin-mobile);
+    padding-block: var(--sp-5) calc(76px + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    max-width: 100%;
+  }
+  /* Cards must always honour container width — defensive against any
+     internal element forcing wider scroll. */
+  .card,
+  .metric,
+  .glass-panel,
+  .glass-card,
+  .welcome-card,
+  .dash-stat-tile,
+  .feed-item,
+  .list-row,
+  .alert,
+  .achievement,
+  .matrix-course,
+  .feature-card,
+  .landing-feature-card,
+  .landing-bento-card,
+  .vision-card,
+  .track-card,
+  .thumb-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0;
+  }
+  /* Long Arabic words can't overflow the card */
+  .card-title,
+  .page-title,
+  .landing-bento-title,
+  .landing-feature-title,
+  .matrix-name,
+  .feed-item-author,
+  .post-author,
+  .alert-title {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  /* Welcome card on phone — vertical stack */
+  .welcome-card {
+    padding: var(--sp-5);
+  }
+  .welcome-card .dash-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+  .welcome-card .page-title {
+    font-size: var(--fs-lg);
+    line-height: var(--lh-tight);
+  }
+  /* Quick-action pills wrap cleanly, never clip */
+  .dash-quick-actions {
+    width: 100%;
+    overflow: hidden;
+  }
+  .dash-quick-action-pill {
+    padding: 8px 12px;
+    font-size: var(--fs-xs);
+  }
+  /* Stat rows + bento — single column on small phone */
+  .compact-kpis,
+  .dash-quick-stats { grid-template-columns: 1fr 1fr; }
+  /* Bottom-nav glass */
+  .bottom-nav {
+    padding-block: 6px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  /* Body shouldn't horizontally scroll — final guard */
+  html, body { overflow-x: clip !important; }
+}
+
+/* ── 38.6 Even tighter on very small phones ──────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --sp-margin-mobile: 14px;
+    --card-padding: var(--sp-4);
+  }
+  .compact-kpis,
+  .dash-quick-stats { grid-template-columns: 1fr; }
+  .dash-stat-tile { padding: var(--sp-4); }
+  .topbar { padding: 0 var(--sp-3); }
+  .welcome-card { padding: var(--sp-4); }
+  .welcome-card .page-title { font-size: var(--fs-md); }
+  .welcome-card .page-subtitle { font-size: var(--fs-sm); }
+  .dash-quick-action-pill {
+    width: 100%;
+    justify-content: center;
+  }
+  .dash-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+}
+
+/* ── 38.7 Desktop sidebar — guarantee content reserves space ─────── */
+@media (min-width: 1025px) {
+  /* Ensure content can't slide under the fixed sidebar */
+  .main { min-width: 0; }
+  .content-inner {
+    max-width: 100%;
+    width: 100%;
+  }
+  /* Inside the bounded main, our own max-width keeps content centred */
+  .page,
+  .student-dashboard {
+    max-width: var(--content-max-w);
+    margin-inline: auto;
+    width: 100%;
+  }
+  /* Course/research/etc grids must adapt to the actual main width
+     — using auto-fit prevents cards from being clipped under sidebar
+     when the user resizes a desktop window. */
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .grid-2-1 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+}
+
+/* ── 38.8 Smaller laptops (1024–1280): reduce sidebar reserve ────── */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  :root { --sidebar-w: 240px; --content-max-w: 1200px; }
+  .content-inner {
+    padding: var(--sp-6) var(--sp-5) var(--sp-12);
+  }
+  .topbar { padding: 0 var(--sp-5); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+}
+
+/* ── 38.9 Landing — ensure visibility, balance dark mode ─────────── */
+.landing { background: var(--bg); color: var(--text); }
+.landing-hero { padding-block: var(--sp-16) var(--sp-12); }
+.landing-title {
+  font-size: clamp(var(--fs-2xl), 5.5vw, 56px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+.landing-title .block {
+  background: var(--grad-primary-emerald);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+[data-theme='dark'] .landing-title .block {
+  background: linear-gradient(135deg, #4cd7f6 0%, #6cf8bb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+[data-theme='dark'] .landing { background: var(--bg); }
+[data-theme='dark'] .landing::before {
+  background: radial-gradient(ellipse at 30% 0%,
+    rgba(76, 215, 246, 0.08) 0%,
+    rgba(0, 108, 73, 0.04) 40%,
+    transparent 75%);
+}
+[data-theme='dark'] .landing-hero-float-card,
+[data-theme='dark'] .landing-bento-card,
+[data-theme='dark'] .landing-pilot-stat,
+[data-theme='dark'] .landing-trust-bar-inner,
+[data-theme='dark'] .landing-ai-chat,
+[data-theme='dark'] .kpi-strip,
+[data-theme='dark'] .landing-proof {
+  background: rgba(17, 24, 39, 0.55);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme='dark'] .landing-bento-card[data-tone="primary"]   { background: linear-gradient(135deg, rgba(188, 199, 222, 0.08), rgba(17, 24, 39, 0.55)); }
+[data-theme='dark'] .landing-bento-card[data-tone="secondary"] { background: linear-gradient(135deg, rgba(78, 222, 163, 0.10), rgba(17, 24, 39, 0.55)); }
+[data-theme='dark'] .landing-bento-card[data-tone="tertiary"]  { background: linear-gradient(135deg, rgba(76, 215, 246, 0.12), rgba(17, 24, 39, 0.55)); }
+[data-theme='dark'] .landing-bento-card[data-tone="surface"]   { background: rgba(17, 24, 39, 0.55); }
+
+/* ── 38.10 Auth — center the back button on mobile, prevent overflow ── */
+@media (max-width: 768px) {
+  .auth-overlay-madarek { padding: var(--sp-3); }
+  .auth-back-home {
+    top: 12px;
+    inset-inline-start: 12px;
+    padding: 6px 10px;
+    font-size: var(--fs-xxs);
+  }
+  .auth-split {
+    border-radius: var(--r-2xl);
+    min-height: 0;
+  }
+  .auth-form-container { gap: var(--sp-4); }
+  .auth-form-title { font-size: var(--fs-xl); }
+  .auth-input { height: 44px; font-size: var(--fs-sm); }
+  .auth-btn { height: 44px; }
+  .auth-demo { grid-template-columns: 1fr 1fr; gap: 6px; }
+}
+
+/* ── 38.11 OasisWidget — keep above bottom nav on mobile ─────────── */
+@media (max-width: 768px) {
+  .oasis-widget__trigger {
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    inset-inline-end: var(--sp-4);
+    width: 52px;
+    height: 52px;
+  }
+  .oasis-widget__panel {
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    width: calc(100vw - var(--sp-6));
+    height: calc(100dvh - 180px);
+  }
+}
+
+/* ── 38.12 Course / research card grid — defensive widths ────────── */
+.thumb-card-image { aspect-ratio: 16 / 9; min-height: 120px; }
+.research-card,
+.research-snippet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}
+.research-card .compact-kpis,
+.research-snippet .compact-kpis {
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .research-card .compact-kpis,
+  .research-snippet .compact-kpis {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── 38.13 Card title-row safety — never collide with action chips ── */
+.card-header { row-gap: var(--sp-2); }
+.card-title-block { min-width: 0; }
+.card-title { min-width: 0; }
+.card-title > span:not(.card-title-icon) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 38.14 Soften shadows in dark mode (a touch) ─────────────────── */
+[data-theme='dark'] .card,
+[data-theme='dark'] .metric,
+[data-theme='dark'] .dash-stat-tile,
+[data-theme='dark'] .glass-panel,
+[data-theme='dark'] .glass-card {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ── 38.15 Loading-state container — respect parent width ────────── */
+.state, .empty-state { width: 100%; }
+
+/* ── 38.16 Modal/dialog — full-bleed on phone ────────────────────── */
+@media (max-width: 480px) {
+  .modal-card { border-radius: var(--r-lg); }
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal-card { width: 100%; border-radius: var(--r-2xl) var(--r-2xl) 0 0; max-height: 92dvh; }
+}
+
+/* ── 38.17 Dash hero row — pretty on every breakpoint ────────────── */
+.dash-hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+}
+@media (max-width: 1024px) {
+  .dash-hero-row { grid-template-columns: 1fr; }
+}
+
+/* ── 38.18 Bottom nav — refine touch targets and active state ────── */
+.bottom-nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(22px);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  border-top: 1px solid var(--border);
+}
+[data-theme='dark'] .bottom-nav {
+  background: rgba(10, 15, 28, 0.92);
+}
+.bottom-nav-item {
+  min-height: 56px;
+  padding: 8px 4px;
+  gap: 4px;
+}
+.bottom-nav-item .bottom-nav-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+}
+.bottom-nav-item.active .bottom-nav-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.bottom-nav-label { font-size: 11px; }
+
+/* ── 38.19 Notification dropdown anchored cleanly on phone ───────── */
+@media (max-width: 768px) {
+  .notif-panel {
+    position: fixed;
+    inset: var(--topbar-h) var(--sp-3) auto var(--sp-3);
+    width: auto;
+    max-width: none;
+  }
+  .topbar-user-menu {
+    position: fixed;
+    inset: var(--topbar-h) var(--sp-3) auto auto;
+    inset-inline-end: var(--sp-3);
+    width: 240px;
+    min-width: 0;
+  }
+}
+
+/* ── 38.20 Guarantee no silent overflow caused by emoji/avatar SVGs ── */
+.avatar { line-height: 1; }
+.avatar svg { max-width: 60%; max-height: 60%; }
