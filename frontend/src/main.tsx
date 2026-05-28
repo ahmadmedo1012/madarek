@@ -27,6 +27,7 @@ import './styles/visual-final-polish.css';
 import './styles/world-class.css';
 import './styles/global-icon.css';
 import './styles/madarek-final.css';
+import './styles/v3-transform.css';
 import App from './App';
 
 const root = document.getElementById('root');

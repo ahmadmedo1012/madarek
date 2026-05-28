@@ -1,0 +1,471 @@
+/* ═══════════════════════════════════════════════════════════════
+   v3-transform.css — DRAMATIC visual transformation layer
+   ───────────────────────────────────────────────────────────────
+   Loaded LAST so it wins the cascade. Cleanly elevates the major
+   surfaces (cards, metrics, sidebar items, page-header, buttons)
+   with v3 design tokens. Every rule is brand-aligned and uses
+   the upgraded elevation/typography/radius/motion tokens.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Cards — all variants get premium treatment ──────────────── */
+.card,
+.dash-card,
+.welcome-card,
+.metric,
+.landing-bento-card,
+.owner-stat-card,
+.feature-card {
+  border-radius: var(--r-2xl) !important;
+  background-color: var(--surface-1);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.025) 0%,
+    transparent 35%);
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--elev-1) !important;
+  transition:
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out),
+    border-color var(--t-base) var(--ease-out) !important;
+}
+
+[data-theme='light'] .card,
+[data-theme='light'] .dash-card,
+[data-theme='light'] .welcome-card,
+[data-theme='light'] .metric,
+[data-theme='light'] .landing-bento-card,
+[data-theme='light'] .owner-stat-card,
+[data-theme='light'] .feature-card {
+  background-image: linear-gradient(180deg,
+    rgba(15, 23, 42, 0.008) 0%,
+    transparent 35%);
+}
+
+.card:hover,
+.dash-card:hover,
+.welcome-card:hover,
+.metric:hover,
+.landing-bento-card:hover,
+.owner-stat-card:hover,
+.feature-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--elev-3) !important;
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border)) !important;
+}
+
+/* ── Buttons — visible tactile gradient ───────────────────────── */
+.btn.primary,
+button.primary,
+.btn-primary {
+  background-color: var(--md-primary) !important;
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.12) 100%) !important;
+  color: var(--md-on-primary) !important;
+  border: 0 !important;
+  border-radius: var(--r-full) !important;
+  min-height: 44px !important;
+  padding: 0 28px !important;
+  font-weight: 600 !important;
+  box-shadow:
+    var(--elev-2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20) !important;
+  transition: all var(--t-base) var(--ease-out) !important;
+}
+
+.btn.primary:hover,
+button.primary:hover,
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--md-primary) 86%, white 14%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow:
+    var(--elev-3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20) !important;
+}
+
+.btn.primary:active,
+button.primary:active,
+.btn-primary:active {
+  transform: translateY(0) !important;
+  box-shadow: var(--elev-1), inset 0 2px 4px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Outline button — clean accent stroke */
+.btn.outline,
+button.outline,
+.btn-outline {
+  background: transparent !important;
+  border: 1.5px solid var(--accent) !important;
+  color: var(--accent) !important;
+  border-radius: var(--r-full) !important;
+  min-height: 44px !important;
+  padding: 0 24px !important;
+  font-weight: 600 !important;
+}
+
+.btn.outline:hover {
+  background: var(--accent-soft) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--elev-1) !important;
+}
+
+/* ── Page header — visible hero treatment ────────────────────── */
+.page-header {
+  position: relative !important;
+  padding: var(--sp-7) var(--sp-7) !important;
+  margin-bottom: var(--sp-5) !important;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 40%,
+      color-mix(in srgb, var(--md-tertiary-fixed-dim) 7%, transparent) 100%) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--border)) !important;
+  border-radius: var(--r-2xl) !important;
+  box-shadow: var(--elev-1) !important;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 4px;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--gold) 100%);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 50%, transparent);
+  z-index: 1;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 60%;
+  height: 200%;
+  background: radial-gradient(ellipse at center,
+    color-mix(in srgb, var(--gold) 10%, transparent) 0%,
+    transparent 60%);
+  pointer-events: none;
+}
+
+.page-title {
+  font-size: clamp(28px, 4vw, 38px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.15 !important;
+  color: var(--text);
+  position: relative;
+  z-index: 2;
+}
+
+.page-subtitle {
+  font-size: clamp(15px, 1.6vw, 17px) !important;
+  line-height: 1.55 !important;
+  color: var(--text-muted);
+  margin-top: var(--sp-2);
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Sidebar — branded gradient block ─────────────────────────── */
+.sidebar {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 8%, var(--surface-1)) 0%,
+      var(--surface-1) 35%,
+      var(--surface-1) 100%) !important;
+  box-shadow:
+    inset -1px 0 0 rgba(255, 255, 255, 0.04),
+    var(--elev-1) !important;
+}
+
+[data-theme='light'] .sidebar {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 5%, var(--surface-1)) 0%,
+      var(--surface-1) 35%,
+      var(--surface-1) 100%) !important;
+}
+
+.sidebar-brand {
+  position: relative;
+  padding: var(--sp-6) var(--sp-5) !important;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+    transparent 70%) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.sidebar-brand::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  inset-inline: 16%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 50%, transparent) 50%,
+    transparent 100%);
+}
+
+.sidebar-brand-name {
+  font-weight: 800 !important;
+  letter-spacing: -0.015em !important;
+  font-size: 17px !important;
+}
+
+.sidebar-brand-sub {
+  font-size: 12px !important;
+  color: var(--text-muted) !important;
+  margin-top: 3px !important;
+}
+
+/* Sidebar nav items — refined active state */
+.nav-item {
+  border-radius: var(--r-lg) !important;
+  padding: 11px var(--sp-4) !important;
+  margin: 2px var(--sp-2) !important;
+  font-weight: 500;
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out) !important;
+}
+
+.nav-item:hover {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  transform: translateX(-2px);
+}
+
+[dir='rtl'] .nav-item:hover {
+  transform: translateX(2px);
+}
+
+.nav-item.on,
+.nav-item[aria-current="page"] {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent) 100%) !important;
+  color: var(--accent) !important;
+  font-weight: 700 !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 2px 8px color-mix(in srgb, var(--accent) 12%, transparent) !important;
+}
+
+.nav-item.on::before,
+.nav-item[aria-current="page"]::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--gold) 100%);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* ── Topbar — visible glass effect ────────────────────────────── */
+.topbar {
+  background: color-mix(in srgb, var(--bg) 75%, transparent) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  border-bottom: 1px solid var(--border) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+}
+
+/* ── Metric cards — strong premium treatment ─────────────────── */
+.metric {
+  border-top: 3px solid var(--accent) !important;
+}
+
+.metric.green  { border-top-color: var(--success) !important; }
+.metric.amber  { border-top-color: var(--warning) !important; }
+.metric.red    { border-top-color: var(--danger) !important; }
+.metric.purple { border-top-color: var(--brand-purple) !important; }
+.metric.gold   { border-top-color: var(--gold) !important; }
+
+.metric-value {
+  font-size: clamp(28px, 3vw, 36px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.1 !important;
+}
+
+/* ── Modal cards — elevation-4 + bigger curve ────────────────── */
+.modal-card {
+  border-radius: var(--r-3xl) !important;
+  box-shadow: var(--elev-4) !important;
+}
+
+/* ── Notification panel — elevation-3 ────────────────────────── */
+.notif-panel {
+  border-radius: var(--r-2xl) !important;
+  box-shadow: var(--elev-3) !important;
+}
+
+/* ── Body — rich gradient atmosphere ─────────────────────────── */
+body {
+  background-image:
+    radial-gradient(ellipse 1400px 900px at 0% 0%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 1100px 700px at 100% 100%,
+      color-mix(in srgb, var(--md-tertiary-fixed-dim) 6%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 800px 600px at 50% 0%,
+      color-mix(in srgb, var(--gold) 3%, transparent) 0%,
+      transparent 70%) !important;
+  background-attachment: fixed !important;
+}
+
+[data-theme='light'] body {
+  background-image:
+    radial-gradient(ellipse 1400px 900px at 0% 0%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 1100px 700px at 100% 100%,
+      color-mix(in srgb, var(--md-tertiary-fixed-dim) 5%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 800px 600px at 50% 0%,
+      color-mix(in srgb, var(--gold) 2%, transparent) 0%,
+      transparent 70%) !important;
+}
+
+/* ── Inputs — clean focus ring ───────────────────────────────── */
+.input,
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+textarea,
+select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
+}
+
+.input:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent) !important;
+  outline: none !important;
+  box-shadow: var(--focus-ring) !important;
+}
+
+/* ── Page entrance choreography ──────────────────────────────── */
+@keyframes v3-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes v3-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content-inner {
+  animation: v3-page-in 600ms var(--ease-out) both !important;
+}
+
+/* Stagger children entrance */
+.content-inner > .card,
+.content-inner > .grid-2 > *,
+.content-inner > .grid-3 > *,
+.content-inner > .grid-4 > * {
+  animation: v3-card-in 500ms var(--ease-out) both;
+}
+
+.content-inner > .grid-2 > *:nth-child(1) { animation-delay: 60ms; }
+.content-inner > .grid-2 > *:nth-child(2) { animation-delay: 120ms; }
+.content-inner > .grid-3 > *:nth-child(1) { animation-delay: 60ms; }
+.content-inner > .grid-3 > *:nth-child(2) { animation-delay: 120ms; }
+.content-inner > .grid-3 > *:nth-child(3) { animation-delay: 180ms; }
+.content-inner > .grid-4 > *:nth-child(1) { animation-delay: 60ms; }
+.content-inner > .grid-4 > *:nth-child(2) { animation-delay: 120ms; }
+.content-inner > .grid-4 > *:nth-child(3) { animation-delay: 180ms; }
+.content-inner > .grid-4 > *:nth-child(4) { animation-delay: 240ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .content-inner,
+  .content-inner > * {
+    animation: none !important;
+  }
+}
+
+/* ── Mobile refinement ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page-header {
+    padding: var(--sp-5) var(--sp-5) !important;
+    border-radius: var(--r-xl) !important;
+  }
+
+  .card,
+  .metric,
+  .dash-card,
+  .welcome-card {
+    border-radius: var(--r-xl) !important;
+  }
+
+  .modal-card {
+    border-radius: var(--r-2xl) !important;
+  }
+
+  .page-title {
+    font-size: clamp(22px, 5vw, 28px) !important;
+  }
+
+  .metric-value {
+    font-size: clamp(22px, 5vw, 28px) !important;
+  }
+}
+
+/* ── Scrollbars — premium subtle ─────────────────────────────── */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 25%, transparent);
+  border-radius: var(--r-full);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}
