@@ -141,7 +141,7 @@ export default function LandingPage() {
         {/* ═══════════ STATS STRIP ═══════════ */}
         <Reveal as="section" className="kpi-strip">
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(41, 82, 200, 0.10)', color: '#1e40af' }}>
+            <div className="kpi-icon" style={{ background: 'rgba(37, 99, 235, 0.10)', color: '#1e40af' }}>
               <Icon icon={Building2} size={20} />
             </div>
             <div>
@@ -150,7 +150,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(14, 92, 47, 0.10)', color: '#0E5C2F' }}>
+            <div className="kpi-icon" style={{ background: 'rgba(2, 132, 199, 0.12)', color: '#0369a1' }}>
               <Icon icon={Users2} size={20} />
             </div>
             <div>
@@ -159,7 +159,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
+            <div className="kpi-icon" style={{ background: 'rgba(56, 189, 248, 0.16)', color: '#0369a1' }}>
               <Icon icon={GraduationCap} size={20} />
             </div>
             <div>
@@ -168,7 +168,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
+            <div className="kpi-icon" style={{ background: 'rgba(180, 83, 9, 0.12)', color: '#b45309' }}>
               <Icon icon={Award} size={20} />
             </div>
             <div>
@@ -355,7 +355,7 @@ export default function LandingPage() {
               مقررات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات،
               فرص عمل، مكتبة بحوث، اختبارات إلكترونية.
             </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(16, 185, 129, 0.10)', color: '#059669' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(2, 132, 199, 0.12)', color: '#0369a1' }}>
               <Icon icon={Brain} size={20} />
             </div>
             <h3 className="landing-feature-title">الأستاذ</h3>
@@ -363,7 +363,7 @@ export default function LandingPage() {
               ذكاء أكاديمي يكشف الطلاب المعرضين، إدارة المحاضرات والدرجات،
               بث مباشر، ومعامل افتراضية بصلاحيات تحكم.
             </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(56, 189, 248, 0.16)', color: '#0369a1' }}>
               <Icon icon={Building2} size={20} />
             </div>
             <h3 className="landing-feature-title">الإدارة</h3>
@@ -371,7 +371,7 @@ export default function LandingPage() {
               إدارة الكليات والأساتذة والمقررات، تقارير، ومزامنة يومية
               مع البيانات الرسمية لجامعة الزاوية.
             </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(180, 83, 9, 0.12)', color: '#b45309' }}>
               <Icon icon={ShieldCheck} size={20} />
             </div>
             <h3 className="landing-feature-title">ضمان الجودة</h3>

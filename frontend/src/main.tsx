@@ -14,6 +14,10 @@ import { createRoot } from 'react-dom/client';
 import './styles/tokens.css';
 import './styles/app.css';
 import './styles/pdf.css';
+/* refined-blue.css MUST load last — calm blue-centered palette,
+ * premium motion, and subtle hand-drawn accents layered on top of
+ * the existing system. Purely additive overrides. */
+import './styles/refined-blue.css';
 
 import App from './App';
 

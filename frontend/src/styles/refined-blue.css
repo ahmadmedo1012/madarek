@@ -1,0 +1,949 @@
+/* ═════════════════════════════════════════════════════════════════════
+   Madarek — Refined Blue System (loaded LAST)
+   ─────────────────────────────────────────────────────────────────────
+   Goal: shift the platform to a calm, blue-centered, alive identity
+   without breaking any existing functionality.
+
+   This file is purely additive:
+     1. Token overrides (palette → refined blue family + cool shadows).
+     2. Cool-blue refresh of hard-coded rgba surfaces.
+     3. Premium motion + micro-interactions (12 calm keyframes).
+     4. Two subtle hand-drawn accents via inline SVG data URIs:
+          - brushstroke underline under section eyebrows
+          - soft dot-constellation behind the landing hero
+     5. Polished ambient auras for hero / welcome / auth / final-CTA.
+
+   All rules respect prefers-reduced-motion and dark mode.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ═════════════════════════════════════════════════════════════════════
+   1. TOKEN OVERRIDES — calm blue-centered palette
+   ─────────────────────────────────────────────────────────────────────
+   Variable names are preserved so legacy classes keep working. Values
+   are re-pointed to a refined blue family:
+     • Primary  → royal blue   (#1e40af / #2563eb)
+     • Action   → cyan-teal    (#0284c7 / #0369a1)  — distinct from primary
+     • AI       → sky          (#38bdf8 / #0ea5e9)
+     • Success  → mossy green  (semantic only)
+     • Surfaces → cool tint    (#f5f8fc canvas, #ffffff card)
+     • Shadows  → cool-blue tint instead of grey
+   ═════════════════════════════════════════════════════════════════════ */
+:root,
+[data-theme='light'] {
+  /* Brand anchors */
+  --brand-ink:        #0b1d3a;
+  --brand-ink-2:      #1e3a5f;
+  --brand-emerald:    #1e3a8a;   /* re-purposed: royal blue */
+  --brand-emerald-2:  #d6e4ff;   /* soft sky container */
+  --brand-cyan:       #38bdf8;
+  --brand-cyan-2:     #dbeafe;
+
+  /* Surfaces — cool, soft canvas */
+  --bg:               #f5f8fc;
+  --surface:          #ffffff;
+  --surface-1:        #ffffff;
+  --surface-2:        #eef3fa;
+  --surface-3:        #e3ebf5;
+  --surface-elevated: #ffffff;
+  --surface-hover:    #eef3fa;
+
+  /* Borders — cool tint */
+  --border:           rgba(15, 39, 80, 0.07);
+  --border-strong:    rgba(15, 39, 80, 0.14);
+
+  /* Text */
+  --text:             #0f172a;
+  --text-muted:       #475569;
+  --text-subtle:      #64748b;
+
+  /* Primary — royal blue */
+  --accent:           #1e40af;
+  --accent-hover:     #2563eb;
+  --accent-soft:      rgba(37, 99, 235, 0.10);
+  --accent-border:    rgba(37, 99, 235, 0.24);
+  --accent-fg:        #ffffff;
+  --primary:          var(--accent);
+
+  /* Action — cyan teal (distinct CTA, still blue family) */
+  --action:           #0284c7;
+  --action-hover:     #0369a1;
+  --action-soft:      rgba(2, 132, 199, 0.12);
+  --action-fg:        #ffffff;
+
+  /* AI — sky */
+  --ai:               #38bdf8;
+  --ai-deep:          #0369a1;
+  --ai-soft:          rgba(56, 189, 248, 0.16);
+
+  /* Gold (achievements) — slightly warmer for elegance */
+  --gold:             #b45309;
+  --gold-soft:        rgba(180, 83, 9, 0.10);
+  --gold-hover:       #92400e;
+
+  /* Semantic — keep green as a calmer mossy hue, only for status */
+  --success:          #059669;
+  --success-soft:     rgba(5, 150, 105, 0.10);
+  --warning:          #b45309;
+  --warning-soft:     rgba(180, 83, 9, 0.10);
+  --danger:           #b91c1c;
+  --danger-soft:      rgba(185, 28, 28, 0.10);
+  --info:             #0369a1;
+  --info-soft:        rgba(3, 105, 161, 0.10);
+
+  /* Shadows — cool blue tint replaces neutral grey */
+  --shadow-xs:        0 1px 2px rgba(15, 39, 80, 0.04);
+  --shadow-sm:        0 4px 12px rgba(15, 39, 80, 0.06);
+  --shadow-md:        0 12px 36px rgba(15, 39, 80, 0.08);
+  --shadow-lg:        0 18px 50px rgba(15, 39, 80, 0.12);
+  --shadow-xl:        0 28px 70px rgba(15, 39, 80, 0.18);
+  --shadow-card:        var(--shadow-md);
+  --shadow-card-hover:  var(--shadow-lg);
+
+  /* AI / accent glows — sky tint */
+  --ai-glow-soft:     0 0 18px rgba(56, 189, 248, 0.18);
+  --ai-glow:          0 6px 26px rgba(56, 189, 248, 0.24);
+  --ai-glow-strong:   0 10px 36px rgba(2, 132, 199, 0.32);
+
+  /* Curated gradients — refined blue family */
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(37, 99, 235, 0.10) 0%,
+    rgba(11, 29, 58, 0.04) 40%,
+    transparent 75%);
+  --grad-primary-emerald: linear-gradient(135deg,
+    #1e3a8a 0%, #2563eb 55%, #38bdf8 100%);
+  --grad-cyan-emerald: linear-gradient(135deg,
+    #38bdf8 0%, #1e40af 100%);
+  --grad-ink: linear-gradient(180deg,
+    #1e3a5f 0%, #0b1d3a 100%);
+
+  /* Focus & selection */
+  --focus-ring:       0 0 0 2px var(--bg), 0 0 0 4px rgba(37, 99, 235, 0.4);
+  --selection-bg:     rgba(37, 99, 235, 0.14);
+
+  /* Chart palette — recolored to blue family */
+  --chart-grid:       rgba(15, 39, 80, 0.06);
+  --chart-text:       #64748b;
+  --chart-1:          #1e40af;   /* primary */
+  --chart-2:          #0284c7;   /* action */
+  --chart-3:          #38bdf8;   /* ai */
+  --chart-4:          #b45309;   /* gold */
+  --chart-5:          #1e3a5f;   /* slate */
+
+  /* Glass tint — slight cool */
+  --glass-bg:         rgba(255, 255, 255, 0.72);
+  --glass-bg-strong:  rgba(255, 255, 255, 0.88);
+  --glass-bg-subtle:  rgba(255, 255, 255, 0.46);
+  --glass-border:     rgba(255, 255, 255, 0.56);
+}
+
+[data-theme='dark'] {
+  --bg:               #0a1224;
+  --surface:          #111a30;
+  --surface-1:        #111a30;
+  --surface-2:        #182441;
+  --surface-3:        #1f2c52;
+  --surface-elevated: #182441;
+  --surface-hover:    #1c2848;
+
+  --border:           rgba(255, 255, 255, 0.07);
+  --border-strong:    rgba(255, 255, 255, 0.14);
+
+  --text:             #e8eefb;
+  --text-muted:       #94a8c8;
+  --text-subtle:      #6b7da0;
+
+  --accent:           #93b4ff;
+  --accent-hover:     #c1d2ff;
+  --accent-soft:      rgba(147, 180, 255, 0.14);
+  --accent-border:    rgba(147, 180, 255, 0.32);
+  --accent-fg:        #0b1d3a;
+
+  --action:           #38bdf8;
+  --action-hover:     #7dd3fc;
+  --action-soft:      rgba(56, 189, 248, 0.18);
+  --action-fg:        #0b1d3a;
+
+  --ai:               #38bdf8;
+  --ai-deep:          #7dd3fc;
+  --ai-soft:          rgba(56, 189, 248, 0.18);
+
+  --success:          #34d399;
+  --success-soft:     rgba(52, 211, 153, 0.16);
+
+  --gold:             #fbbf24;
+  --gold-soft:        rgba(251, 191, 36, 0.16);
+
+  --shadow-md:        0 12px 36px rgba(0, 0, 0, 0.40);
+  --shadow-lg:        0 18px 50px rgba(0, 0, 0, 0.50);
+  --shadow-xl:        0 28px 70px rgba(0, 0, 0, 0.60);
+
+  --glass-bg:         rgba(17, 26, 48, 0.72);
+  --glass-bg-strong:  rgba(17, 26, 48, 0.88);
+  --glass-bg-subtle:  rgba(17, 26, 48, 0.50);
+  --glass-border:     rgba(147, 180, 255, 0.10);
+
+  --grad-hero: radial-gradient(ellipse at 30% 0%,
+    rgba(56, 189, 248, 0.10) 0%,
+    rgba(37, 99, 235, 0.06) 40%,
+    transparent 75%);
+  --grad-primary-emerald: linear-gradient(135deg,
+    #1e3a8a 0%, #2563eb 60%, #38bdf8 100%);
+  --grad-ink: linear-gradient(180deg,
+    #182441 0%, #0a1224 100%);
+
+  --focus-ring:       0 0 0 2px var(--bg), 0 0 0 4px rgba(147, 180, 255, 0.45);
+  --selection-bg:     rgba(147, 180, 255, 0.22);
+
+  --chart-1:          #93b4ff;
+  --chart-2:          #38bdf8;
+  --chart-3:          #7dd3fc;
+  --chart-4:          #fbbf24;
+  --chart-5:          #c1d2ff;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   2. RECOLOR HARD-CODED RGBA — bring landing surfaces into blue family
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Landing bento — replace ink/emerald rgba with refined blue tints */
+.landing-bento-card[data-tone="primary"] {
+  background: linear-gradient(135deg,
+    rgba(30, 64, 175, 0.06),
+    rgba(255, 255, 255, 0.72));
+}
+.landing-bento-card[data-tone="secondary"] {
+  background: linear-gradient(135deg,
+    rgba(2, 132, 199, 0.07),
+    rgba(255, 255, 255, 0.72));
+}
+.landing-bento-card[data-tone="tertiary"] {
+  background: linear-gradient(135deg,
+    rgba(56, 189, 248, 0.10),
+    rgba(255, 255, 255, 0.72));
+}
+
+[data-theme='dark'] .landing-bento-card[data-tone="primary"]   {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(17, 26, 48, 0.6));
+}
+[data-theme='dark'] .landing-bento-card[data-tone="secondary"] {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.18), rgba(17, 26, 48, 0.6));
+}
+[data-theme='dark'] .landing-bento-card[data-tone="tertiary"]  {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(17, 26, 48, 0.6));
+}
+
+/* Landing hero showcase ambient blobs — refined blue */
+.landing-hero-showcase::before {
+  background:
+    radial-gradient(circle at 28% 22%, rgba(56, 189, 248, 0.20), transparent 55%),
+    radial-gradient(circle at 72% 78%, rgba(37, 99, 235, 0.16), transparent 55%);
+  filter: blur(36px);
+}
+
+/* Landing pilot highlight — blue */
+.landing-pilot-stat.highlight {
+  background: linear-gradient(135deg,
+    rgba(37, 99, 235, 0.12),
+    var(--glass-bg));
+  border-color: var(--accent-border);
+}
+
+/* Auth left ambient — refined blue with depth */
+.auth-left::before {
+  background:
+    radial-gradient(circle at 28% 28%, rgba(56, 189, 248, 0.22), transparent 55%),
+    radial-gradient(circle at 72% 72%, rgba(255, 255, 255, 0.10), transparent 55%);
+  filter: blur(28px);
+}
+
+/* Landing AI section ambient — refined blue */
+.landing-ai-float-symbols {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.10), transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.08), transparent 30%);
+}
+
+/* Welcome card pulse particles — refined sky */
+.welcome-particle-dot { background: var(--ai); }
+
+/* Final CTA shapes — refined for blue gradient bg */
+.landing-final-cta-dot {
+  background: var(--brand-cyan);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.32);
+}
+
+/* Modal overlay — calmer ink */
+.modal-overlay { background: rgba(11, 29, 58, 0.55); }
+
+/* Sidebar mobile backdrop */
+.sidebar-backdrop { background: rgba(11, 29, 58, 0.50); }
+
+/* Semantic green badge stays green even though .green naming maps to action */
+.badge.green {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.metric.green .metric-icon {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   3. KEYFRAMES — calm, premium motion vocabulary
+   ═════════════════════════════════════════════════════════════════════ */
+@keyframes auroraDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+  50%      { transform: translate3d(2%, -1%, 0) scale(1.04); opacity: 0.95; }
+}
+@keyframes orbitDrift {
+  0%   { transform: rotate(0deg) translateX(2px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+@keyframes softBreathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.06); }
+}
+@keyframes subtleSheen {
+  0%   { transform: translateX(-120%) skewX(-12deg); }
+  60%  { transform: translateX(220%)  skewX(-12deg); }
+  100% { transform: translateX(220%)  skewX(-12deg); }
+}
+@keyframes brushDraw {
+  from { stroke-dashoffset: 280; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes navDotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.3); opacity: 0.6; }
+}
+@keyframes glide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sparkOnce {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes soft-rise {
+  0%   { transform: translateY(6px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes shineSweep {
+  0%   { transform: translateX(-120%) rotate(8deg); }
+  100% { transform: translateX(220%)  rotate(8deg); }
+}
+@keyframes ringHalo {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.18); }
+  50%      { box-shadow: 0 0 0 14px rgba(37, 99, 235, 0); }
+}
+@keyframes constellationDrift {
+  0%, 100% { background-position: 0 0, 16px 16px; }
+  50%      { background-position: 8px 6px, 24px 22px; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   4. HAND-DRAWN ACCENTS (subtle, two only — never childish)
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* 4.1 Brushstroke underline beneath landing section eyebrows.
+   The eyebrow ("لماذا مدارك؟", "الأدوار", "النتائج"...) gets a soft
+   hand-drawn squiggle below it — a small academic-notebook flourish. */
+.landing-section-eyebrow {
+  position: relative;
+  padding-bottom: 14px;
+}
+.landing-section-eyebrow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76px;
+  height: 8px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 8' fill='none'><path d='M2 5 C 12 1, 22 8, 32 4 S 52 1, 62 5 S 74 3, 74 4' stroke='%232563eb' stroke-width='2' stroke-linecap='round' fill='none' opacity='0.85'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+[data-theme='dark'] .landing-section-eyebrow::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 8' fill='none'><path d='M2 5 C 12 1, 22 8, 32 4 S 52 1, 62 5 S 74 3, 74 4' stroke='%2393b4ff' stroke-width='2' stroke-linecap='round' fill='none' opacity='0.9'/></svg>");
+}
+
+/* 4.2 Soft dot constellation behind the landing hero showcase.
+   Adds depth + life behind the floating glass cards without clutter. */
+.landing-hero-showcase {
+  isolation: isolate;
+}
+.landing-hero-showcase::after {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  z-index: -1;
+  background-image:
+    radial-gradient(circle 1px at 20% 30%, rgba(37, 99, 235, 0.45) 0, transparent 1.5px),
+    radial-gradient(circle 1.5px at 70% 18%, rgba(56, 189, 248, 0.50) 0, transparent 2px),
+    radial-gradient(circle 1px at 84% 64%, rgba(37, 99, 235, 0.40) 0, transparent 1.5px),
+    radial-gradient(circle 1px at 32% 78%, rgba(56, 189, 248, 0.45) 0, transparent 1.5px),
+    radial-gradient(circle 1px at 56% 42%, rgba(37, 99, 235, 0.30) 0, transparent 1.5px);
+  background-repeat: no-repeat;
+  pointer-events: none;
+  animation: softBreathe 7s ease-in-out infinite;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   5. AMBIENT AURAS — welcome / auth / final-CTA
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* 5.1 Welcome card — calm aurora that breathes behind the greeting */
+.welcome-card { isolation: isolate; }
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  inset: -10% -10% auto -10%;
+  height: 220px;
+  background:
+    radial-gradient(60% 100% at 22% 0%, rgba(37, 99, 235, 0.16), transparent 65%),
+    radial-gradient(60% 100% at 82% 0%, rgba(56, 189, 248, 0.18), transparent 65%);
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: 0;
+  animation: auroraDrift 12s ease-in-out infinite;
+}
+[data-theme='dark'] .welcome-card::before {
+  background:
+    radial-gradient(60% 100% at 22% 0%, rgba(56, 189, 248, 0.22), transparent 65%),
+    radial-gradient(60% 100% at 82% 0%, rgba(37, 99, 235, 0.18), transparent 65%);
+}
+.welcome-card .dash-header-row,
+.welcome-card .page-subtitle,
+.welcome-card .dash-quick-actions { position: relative; z-index: 2; }
+
+/* 5.2 Auth glass card — soft halo ring + gentle breathing */
+.auth-glass-card {
+  position: relative;
+  animation: glide 700ms var(--ease-out) backwards;
+}
+.auth-glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -18px;
+  border-radius: calc(var(--r-2xl) + 18px);
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(56, 189, 248, 0.22), transparent 60%),
+    radial-gradient(ellipse at 70% 70%, rgba(255, 255, 255, 0.12), transparent 60%);
+  filter: blur(24px);
+  z-index: -1;
+  animation: auroraDrift 10s ease-in-out infinite;
+  pointer-events: none;
+}
+.auth-form-container { animation: glide 700ms var(--ease-out) 80ms backwards; }
+.auth-form-title {
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-theme='dark'] .auth-form-title {
+  background: linear-gradient(135deg, #e8eefb 0%, #93b4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 5.3 Final CTA — refined blue gradient + softly drifting shapes */
+.landing-final-cta-inner {
+  background: linear-gradient(135deg,
+    #0b1d3a 0%, #1e40af 55%, #2563eb 100%);
+}
+[data-theme='dark'] .landing-final-cta-inner {
+  background: linear-gradient(135deg,
+    #0a1224 0%, #1e3a8a 55%, #2563eb 100%);
+}
+.landing-final-cta-shape:nth-child(1) { animation: auroraDrift 14s ease-in-out infinite; }
+.landing-final-cta-shape:nth-child(2) { animation: auroraDrift 18s ease-in-out infinite reverse; }
+.landing-final-cta-shape:nth-child(3) { animation: auroraDrift 16s ease-in-out infinite; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   6. PREMIUM MICRO-INTERACTIONS
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* 6.1 Buttons — primary sheen on hover (CSS-only, GPU-friendly) */
+.btn.primary,
+.btn.action,
+.btn.gradient,
+.auth-btn.primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn.primary::after,
+.btn.action::after,
+.btn.gradient::after,
+.auth-btn.primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.22) 45%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.22) 55%,
+    transparent 100%);
+  transform: translateX(-120%) skewX(-12deg);
+  pointer-events: none;
+  z-index: 1;
+}
+.btn.primary:hover::after,
+.btn.action:hover::after,
+.btn.gradient:hover::after,
+.auth-btn.primary:hover::after {
+  animation: subtleSheen 900ms var(--ease-out);
+}
+.btn.primary:active,
+.btn.action:active { transform: translateY(1px) scale(0.985); }
+
+/* 6.2 Cards — subtle accent edge on hover (top stroke slides in) */
+.card,
+.dash-stat-tile,
+.metric,
+.compact-kpi,
+.landing-feature-card,
+.landing-bento-card {
+  position: relative;
+  isolation: isolate;
+}
+.card::before,
+.dash-stat-tile::before,
+.metric::before,
+.landing-feature-card::before,
+.landing-bento-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline: 14%;
+  height: 2px;
+  border-radius: 0 0 var(--r-full) var(--r-full);
+  background: linear-gradient(90deg,
+    transparent, var(--accent-hover), transparent);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  pointer-events: none;
+  z-index: 1;
+}
+.card:hover::before,
+.card:focus-within::before,
+.dash-stat-tile:hover::before,
+.metric:hover::before,
+.landing-feature-card:hover::before,
+.landing-bento-card:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 6.3 Bento cards — diagonal sheen on hover */
+.landing-bento-card { overflow: hidden; }
+.landing-bento-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(105deg,
+    transparent 30%,
+    rgba(56, 189, 248, 0.18) 45%,
+    rgba(56, 189, 248, 0.32) 50%,
+    rgba(56, 189, 248, 0.18) 55%,
+    transparent 70%);
+  transform: translateX(-200%) rotate(8deg);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0ms;
+}
+.landing-bento-card:hover::after {
+  animation: shineSweep 1100ms var(--ease-out);
+}
+.landing-bento-card > * { position: relative; z-index: 1; }
+.landing-bento-card .landing-bento-icon {
+  transition: transform var(--t-base) var(--ease-spring),
+              box-shadow var(--t-base) var(--ease);
+}
+.landing-bento-card:hover .landing-bento-icon {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.18);
+}
+
+/* 6.4 KPI cells — gentle scale + tinted shadow on hover */
+.kpi-cell {
+  border-radius: var(--r-md);
+  transition: transform var(--t-base) var(--ease),
+              background var(--t-base) var(--ease),
+              box-shadow var(--t-base) var(--ease);
+  cursor: default;
+}
+.kpi-cell:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.10);
+}
+[data-theme='dark'] .kpi-cell:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.kpi-icon { transition: transform var(--t-base) var(--ease-spring); }
+.kpi-cell:hover .kpi-icon { transform: scale(1.06) rotate(-2deg); }
+
+/* 6.5 Trust bar — icons gain a soft accent halo on hover */
+.landing-trust-item {
+  transition: transform var(--t-base) var(--ease);
+  cursor: default;
+}
+.landing-trust-item:hover { transform: translateY(-3px); }
+.landing-trust-icon {
+  background: linear-gradient(135deg, var(--accent-soft), var(--ai-soft));
+  color: var(--accent);
+  transition: transform var(--t-base) var(--ease-spring),
+              box-shadow var(--t-base) var(--ease);
+}
+.landing-trust-item:hover .landing-trust-icon {
+  transform: rotate(-4deg) scale(1.08);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.20);
+}
+
+/* 6.6 Sidebar nav — animated dot indicator on the active item */
+.nav-item.on,
+.nav-item-pill.on {
+  position: relative;
+}
+.nav-item.on::before,
+.nav-item-pill.on::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.30);
+  animation: navDotPulse 2.4s ease-in-out infinite;
+}
+.nav-item, .nav-item-pill {
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease),
+    padding-inline-start var(--t-fast) var(--ease);
+}
+.nav-item:not(.on):hover,
+.nav-item-pill:not(.on):hover {
+  padding-inline-start: 18px;
+}
+
+/* 6.7 Tabs — animated bar under .tab.on */
+.tabs { position: relative; }
+.tab {
+  position: relative;
+  transition:
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.tab.on {
+  animation: sparkOnce 320ms var(--ease-spring) backwards;
+}
+.tab:not(.on):hover { transform: translateY(-1px); }
+
+/* 6.8 Topbar search — refined blue glow on focus */
+.topbar-search:focus-within {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* 6.9 Topbar avatar — subtle ring + gentle scale */
+.topbar-user-trigger { transition: var(--transition-all); }
+.topbar-user-trigger:hover .avatar {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.topbar-user-trigger:active { transform: scale(0.97); }
+
+/* 6.10 Quick action pills — gradient sweep + lift */
+.dash-quick-action-pill {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--t-fast) var(--ease),
+    background var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.dash-quick-action-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    var(--accent-soft) 0%, var(--ai-soft) 100%);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+  z-index: 0;
+}
+.dash-quick-action-pill > * { position: relative; z-index: 1; }
+.dash-quick-action-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.12);
+}
+.dash-quick-action-pill:hover::before { opacity: 1; }
+
+/* 6.11 Pilot stats — gentle entrance + ring breathe on the highlight */
+.landing-pilot-stat {
+  animation: glide 700ms var(--ease-out) backwards;
+}
+.landing-pilot-stat:nth-child(1) { animation-delay:   60ms; }
+.landing-pilot-stat:nth-child(2) { animation-delay:  140ms; }
+.landing-pilot-stat:nth-child(3) { animation-delay:  220ms; }
+.landing-pilot-stat:nth-child(4) { animation-delay:  300ms; }
+.landing-pilot-stat.highlight { animation: glide 700ms var(--ease-out) 300ms backwards, ringHalo 3s ease-in-out 1.4s infinite; }
+
+/* 6.12 Hero floating cards — refined gloss border + spring on hover */
+.landing-hero-float-card {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  transition:
+    transform var(--t-base) var(--ease-spring),
+    box-shadow var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease);
+}
+.landing-hero-float-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--accent-border);
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.18);
+}
+[data-theme='dark'] .landing-hero-float-card {
+  border-color: rgba(147, 180, 255, 0.20);
+}
+
+/* 6.13 GPA + progress orbs — soft halo */
+.dash-gpa-card,
+.dash-progress-card {
+  position: relative;
+  isolation: isolate;
+}
+.dash-gpa-card::before,
+.dash-progress-card::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  background: radial-gradient(ellipse at 50% 0%,
+    rgba(37, 99, 235, 0.12), transparent 60%);
+  filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 6.14 Agenda items — accent rail slides in on hover */
+.dash-agenda-item {
+  position: relative;
+  overflow: hidden;
+}
+.dash-agenda-item::before {
+  content: '';
+  position: absolute;
+  inset-block: 8px;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform var(--t-base) var(--ease);
+}
+.dash-agenda-item:hover::before { transform: scaleY(1); }
+.dash-agenda-item:hover .dash-agenda-icon {
+  transform: scale(1.05);
+}
+.dash-agenda-icon {
+  transition: transform var(--t-base) var(--ease-spring);
+}
+
+/* 6.15 Welcome page-title emoji — delicate breathing only on the emoji */
+.welcome-card .page-title::first-letter {
+  display: inline-block;
+  animation: softBreathe 4s ease-in-out infinite;
+}
+
+/* 6.16 Sidebar brand mark — subtle halo */
+.sidebar-brand-mark {
+  position: relative;
+  transition: transform var(--t-base) var(--ease-spring);
+}
+.sidebar-brand-mark::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--r-md);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.30), transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+  opacity: 0.8;
+}
+.sidebar-brand:hover .sidebar-brand-mark { transform: rotate(-3deg) scale(1.05); }
+
+/* 6.17 Notif badge — refined blue ring + pulse */
+.topbar-notif-badge {
+  background: var(--accent-hover);
+  box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px rgba(37, 99, 235, 0.20);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   7. CONTENT BACKDROP — softer, more elegant
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Replace the rigid radial that was previously emitted from the top.
+   The new backdrop is a barely-there blue dot grid + a soft top aurora.
+   Combined they give the canvas dimension without noise. */
+.content {
+  background:
+    radial-gradient(ellipse 90vw 60vh at 50% -10%,
+      rgba(37, 99, 235, 0.06) 0%, transparent 70%),
+    radial-gradient(circle 1px at 24px 24px,
+      rgba(37, 99, 235, 0.06) 0, transparent 1.5px);
+  background-size: 100% auto, 32px 32px;
+  background-attachment: local, local;
+}
+[data-theme='dark'] .content {
+  background:
+    radial-gradient(ellipse 90vw 60vh at 50% -10%,
+      rgba(56, 189, 248, 0.05) 0%, transparent 70%),
+    radial-gradient(circle 1px at 24px 24px,
+      rgba(147, 180, 255, 0.05) 0, transparent 1.5px);
+  background-size: 100% auto, 32px 32px;
+}
+
+/* Landing canvas keeps its hero gradient but gains an extra soft layer */
+.landing::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle 1.5px at 25% 30%, rgba(37, 99, 235, 0.10) 0, transparent 2px),
+    radial-gradient(circle 1px at 75% 70%, rgba(56, 189, 248, 0.10) 0, transparent 1.5px);
+  background-size: 220px 220px, 180px 180px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   8. POLISH: section heading underline accent + subtitle warmth
+   ═════════════════════════════════════════════════════════════════════ */
+.landing-features-title {
+  background: linear-gradient(135deg,
+    var(--text) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-theme='dark'] .landing-features-title {
+  background: linear-gradient(135deg,
+    #e8eefb 0%, #93b4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-title .block {
+  background: linear-gradient(120deg,
+    var(--accent) 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-theme='dark'] .landing-title .block {
+  background: linear-gradient(120deg,
+    #93b4ff 0%, #7dd3fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   9. FOCUS POLISH — refined blue ring (accessibility + premium feel)
+   ═════════════════════════════════════════════════════════════════════ */
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.pill:focus-visible,
+.tab:focus-visible,
+.dash-quick-action-pill:focus-visible,
+.auth-btn:focus-visible,
+.auth-demo-btn:focus-visible {
+  outline: 0;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--accent-border),
+    var(--shadow-sm);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   10. REVEAL — slightly smoother timing + nicer spring
+   ═════════════════════════════════════════════════════════════════════ */
+.reveal-up,
+.reveal,
+.reveal-scale,
+.reveal-fade {
+  transition:
+    opacity 540ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 540ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   11. METRIC ICONS — refined backgrounds for the existing tone tokens
+   ═════════════════════════════════════════════════════════════════════ */
+.metric-icon { background: var(--accent-soft); color: var(--accent); }
+.dash-stat-tile[data-tone="accent"]  .dash-stat-icon { background: var(--accent-soft); color: var(--accent); }
+.dash-stat-tile[data-tone="success"] .dash-stat-icon { background: var(--success-soft); color: var(--success); }
+.dash-stat-tile[data-tone="gold"]    .dash-stat-icon { background: var(--gold-soft); color: var(--gold); }
+.dash-stat-tile[data-tone="flame"]   .dash-stat-icon { background: var(--ai-soft); color: var(--ai-deep); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   12. FORMS — refined focus glow
+   ═════════════════════════════════════════════════════════════════════ */
+.input:focus,
+.input:focus-visible,
+.auth-input:focus {
+  border-color: var(--accent-hover);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   13. PROFESSIONAL DENSITY — quietly improved spacing on hero
+   ═════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .landing-hero { padding-block: var(--sp-20) var(--sp-16); }
+  .landing-hero-content { gap: var(--sp-3); }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   14. REDUCED MOTION — quiet everything that would distract
+   ═════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-card::before,
+  .auth-glass-card::after,
+  .landing-final-cta-shape,
+  .landing-hero-showcase::after,
+  .nav-item.on::before,
+  .nav-item-pill.on::before,
+  .landing-pilot-stat,
+  .welcome-card .page-title::first-letter {
+    animation: none !important;
+  }
+  .btn.primary::after,
+  .btn.action::after,
+  .btn.gradient::after,
+  .auth-btn.primary::after,
+  .landing-bento-card::after {
+    display: none !important;
+  }
+}
