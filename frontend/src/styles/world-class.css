@@ -451,6 +451,9 @@
 /* -------------------------------------------
    10. Oasis AI Widget
    ------------------------------------------- */
+/* NOTE: These base styles are intentionally overridden by 
+   visual-final-polish.css (loaded later) for proper token usage.
+   Kept for fallback only. */
 .oasis-widget {
   position: fixed;
   bottom: 80px;
