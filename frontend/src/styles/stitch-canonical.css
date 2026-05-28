@@ -80,38 +80,75 @@
   min-height: 44px;
   padding: 0 24px !important;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 52, 97, 0.20);
+  position: relative;
+  /* Subtle inner sheen for depth without flashiness */
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%) !important;
+  background-color: var(--md-primary) !important;
+  box-shadow: var(--elev-2) !important;
 }
 .btn.primary:hover {
-  background: var(--md-primary-container) !important;
-  color: var(--md-on-primary-container) !important;
+  background-color: color-mix(in srgb, var(--md-primary) 92%, white 8%) !important;
+  color: var(--md-on-primary) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0, 52, 97, 0.30);
+  box-shadow: var(--elev-3) !important;
+}
+.btn.primary:active {
+  transform: translateY(0) !important;
+  box-shadow: var(--elev-1) !important;
+}
+.btn.primary:focus-visible {
+  outline: none;
+  box-shadow: var(--elev-2), var(--focus-ring) !important;
 }
 
 .btn.outline {
-  background: var(--md-surface) !important;
+  background: transparent !important;
   color: var(--md-primary) !important;
   border: 1.5px solid var(--md-primary) !important;
   border-radius: var(--r-full) !important;
   min-height: 44px;
+  transition:
+    background var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out) !important;
+}
+[data-theme='dark'] .btn.outline {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }
 .btn.outline:hover {
-  background: color-mix(in srgb, var(--md-primary) 6%, var(--md-surface)) !important;
-  color: var(--md-primary-container) !important;
+  background: color-mix(in srgb, var(--md-primary) 8%, transparent) !important;
   transform: translateY(-1px);
+  box-shadow: var(--elev-1) !important;
+}
+[data-theme='dark'] .btn.outline:hover {
+  background: var(--accent-soft) !important;
+}
+.btn.outline:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring) !important;
 }
 
 .btn.ghost {
   background: transparent !important;
   border-color: transparent !important;
-  color: var(--md-on-surface-variant) !important;
+  color: var(--text-muted) !important;
   border-radius: var(--r-full) !important;
   min-height: 44px;
 }
 .btn.ghost:hover {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+[data-theme='light'] .btn.ghost:hover {
   background: var(--md-surface-container) !important;
   color: var(--md-on-surface) !important;
+}
+.btn.ghost:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring) !important;
 }
 
 .btn:not(.primary):not(.outline):not(.ghost):not(.landing-final-cta-btn):not(.danger) {
