@@ -1098,3 +1098,206 @@ table.data-table tbody td,
 @media (max-width: 640px) {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v3.8 — Page layout, owner widgets, Card primitive
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page wrapper — generous breathing room ─────────────────── */
+.page {
+  display: flex !important;
+  flex-direction: column;
+  gap: var(--sp-6) !important;
+  padding-block-end: var(--sp-8);
+}
+
+/* Stagger animations on direct page children */
+.page > * {
+  animation: v3-page-child-in 480ms var(--ease-out) both;
+}
+
+@keyframes v3-page-child-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page > *:nth-child(1) { animation-delay: 0ms; }
+.page > *:nth-child(2) { animation-delay: 80ms; }
+.page > *:nth-child(3) { animation-delay: 160ms; }
+.page > *:nth-child(4) { animation-delay: 240ms; }
+.page > *:nth-child(5) { animation-delay: 320ms; }
+.page > *:nth-child(6) { animation-delay: 380ms; }
+.page > *:nth-child(7) { animation-delay: 420ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page > * {
+    animation: none !important;
+  }
+}
+
+/* ── Owner live status widget ────────────────────────────────── */
+.owner-live-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5) !important;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--success) 12%, var(--surface-1)) 0%,
+      var(--surface-1) 60%) !important;
+  border: 1px solid color-mix(in srgb, var(--success) 25%, var(--border)) !important;
+  border-radius: var(--r-full) !important;
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  box-shadow: var(--elev-1) !important;
+}
+
+.owner-live-status.has-alerts {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--warning) 12%, var(--surface-1)) 0%,
+      var(--surface-1) 60%) !important;
+  border-color: color-mix(in srgb, var(--warning) 30%, var(--border)) !important;
+}
+
+.owner-live-pulse {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: var(--r-full) !important;
+  background: var(--success) !important;
+  position: relative;
+  box-shadow: 0 0 0 0 var(--success);
+  animation: pulse-success 2s ease-out infinite;
+}
+
+.owner-live-status.has-alerts .owner-live-pulse {
+  background: var(--warning) !important;
+  animation-name: pulse-warning;
+  box-shadow: 0 0 0 0 var(--warning);
+}
+
+@keyframes pulse-success {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 60%, transparent); }
+  70%  { box-shadow: 0 0 0 12px color-mix(in srgb, var(--success) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 0%, transparent); }
+}
+
+@keyframes pulse-warning {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning) 60%, transparent); }
+  70%  { box-shadow: 0 0 0 12px color-mix(in srgb, var(--warning) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning) 0%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owner-live-pulse {
+    animation: none !important;
+  }
+}
+
+/* ── Owner health rows ───────────────────────────────────────── */
+.owner-health-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0 !important;
+  border-bottom: 1px solid var(--border);
+}
+
+.owner-health-row:last-child {
+  border-bottom: none !important;
+}
+
+.owner-health-dot {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: var(--r-full) !important;
+  flex-shrink: 0;
+}
+
+.owner-health-dot.green { background: var(--success); box-shadow: 0 0 12px color-mix(in srgb, var(--success) 50%, transparent); }
+.owner-health-dot.amber { background: var(--warning); box-shadow: 0 0 12px color-mix(in srgb, var(--warning) 50%, transparent); }
+.owner-health-dot.red   { background: var(--danger);  box-shadow: 0 0 12px color-mix(in srgb, var(--danger) 50%, transparent); }
+
+.owner-health-label {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.owner-health-value {
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+/* ── Card component (from primitives) ────────────────────────── */
+.card[data-card-component] {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-6);
+  box-shadow: var(--elev-1);
+}
+
+/* Card title block inside .card */
+.card > h2,
+.card > h3,
+.card-title {
+  font-size: clamp(16px, 1.7vw, 19px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.012em !important;
+  color: var(--text) !important;
+  margin: 0 0 var(--sp-4) 0 !important;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* ── Metric label/value typography ───────────────────────────── */
+.metric-label {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  letter-spacing: 0.005em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.metric-value {
+  font-size: clamp(28px, 3.2vw, 36px) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.05 !important;
+  color: var(--text) !important;
+}
+
+.metric-change {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  margin-top: 4px;
+  color: var(--text-muted);
+}
+
+.metric-change .up { color: var(--success); margin-inline-end: 4px; }
+.metric-change .dn { color: var(--danger);  margin-inline-end: 4px; }
+
+.metric-icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: var(--r-lg) !important;
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric.green .metric-icon  { background: var(--success-soft); color: var(--success); }
+.metric.amber .metric-icon  { background: var(--warning-soft); color: var(--warning); }
+.metric.red .metric-icon    { background: var(--danger-soft); color: var(--danger); }
+.metric.purple .metric-icon { background: color-mix(in srgb, var(--brand-purple) 15%, transparent); color: var(--brand-purple); }
+.metric.gold .metric-icon   { background: var(--gold-soft); color: var(--gold); }
