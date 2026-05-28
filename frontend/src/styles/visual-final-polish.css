@@ -1005,24 +1005,6 @@ label,
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SECTION 11: BOTTOM NAV SCROLL HIDE
-   ═══════════════════════════════════════════════════════════════ */
-
-.bottom-nav {
-  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bottom-nav[data-hidden="true"] {
-  transform: translateY(100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bottom-nav {
-    transition: none !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
    SECTION: HOMEPAGE ANIMATIONS & MICRO-INTERACTIONS
    ═══════════════════════════════════════════════════════════════ */
 
