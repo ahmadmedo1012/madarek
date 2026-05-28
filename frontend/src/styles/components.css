@@ -23,9 +23,12 @@
 /* ─── Card ──────────────────────────────────────────────── */
 .card {
   background: var(--surface-1);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.025) 0%,
+    transparent 30%);
   border: 1px solid var(--border);
-  border-radius: var(--r-xl);
-  padding: var(--sp-5);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-6);
   position: relative;
   overflow: hidden;
   box-shadow: var(--elev-1);
@@ -37,9 +40,15 @@
 .card.compact { padding: var(--sp-4); }
 .card.flush { padding: 0; }
 .card.bordered:hover {
-  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
   box-shadow: var(--elev-2);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+[data-theme='light'] .card {
+  background-image: linear-gradient(180deg,
+    rgba(15, 23, 42, 0.012) 0%,
+    transparent 30%);
 }
 .card.glass {
   background: var(--glass-bg);
@@ -97,8 +106,11 @@
 */
 .metric {
   background: var(--surface-1);
+  background-image: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    transparent 40%);
   border: 1px solid var(--border);
-  border-top: 2px solid var(--accent-soft);
+  border-top: 3px solid var(--accent-soft);
   border-radius: var(--r-2xl);
   padding: var(--sp-5);
   position: relative;
@@ -113,16 +125,16 @@
     box-shadow 240ms var(--ease-out),
     transform 240ms var(--ease-out);
 }
-.metric.green  { border-top-color: var(--success-soft); }
-.metric.amber  { border-top-color: var(--warning-soft); }
-.metric.red    { border-top-color: var(--danger-soft); }
-.metric.purple { border-top-color: color-mix(in srgb, var(--brand-purple) 12%, transparent); }
-.metric.gold   { border-top-color: var(--gold-soft); }
+.metric.green  { border-top-color: var(--success); }
+.metric.amber  { border-top-color: var(--warning); }
+.metric.red    { border-top-color: var(--danger); }
+.metric.purple { border-top-color: var(--brand-purple); }
+.metric.gold   { border-top-color: var(--gold); }
 
 .metric:hover {
-  border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
-  box-shadow: var(--elev-2);
-  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  box-shadow: var(--elev-3);
+  transform: translateY(-3px);
 }
 
 .metric-head {
