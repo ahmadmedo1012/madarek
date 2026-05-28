@@ -17,8 +17,8 @@ import './styles/landing.css';
 import './styles/landing-auth-v3.css';
 import './styles/redesign-lecture.css';
 import './styles/redesign-matrix.css';
-import './styles/app.css';
 import './styles/owner.css';
+import './styles/app.css';
 import './styles/pdf.css';
 
 import App from './App';
