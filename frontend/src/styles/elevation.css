@@ -297,3 +297,144 @@ body { line-height: 1.6; }
   .bottom-nav { transition: opacity 200ms linear; }
   .bottom-nav.is-hidden { transform: none; opacity: 0; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VERIFIED AUDIT FIXES (multi-agent audit, round 8)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* A4 — Bottom-nav showed at ≤900px but content only reserves space for
+   it at ≤640px → overlap on tablets 641–900px. Tablets use the sidebar
+   drawer (hamburger), so restrict the bottom-nav to phones (≤640px). */
+@media (min-width: 641px) {
+  .bottom-nav { display: none !important; }
+}
+
+/* A1/A2 — Auth page must be readable in dark mode (form was forced white). */
+[data-theme='dark'] .auth-form-container { background: var(--surface-1) !important; }
+[data-theme='dark'] .auth-form-container .auth-form-title { color: var(--text) !important; }
+[data-theme='dark'] .auth-form-container .auth-form-sub { color: var(--text-muted) !important; }
+
+/* A16 — Owner/admin tables clip inside overflow:hidden cards on mobile.
+   Make the card body scroll horizontally when it holds an owner-table. */
+.card:has(> .owner-table),
+.card-body:has(> .owner-table),
+.owner-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.owner-table { min-width: 100%; }
+
+/* A6 — .card uses overflow:hidden which clips child focus rings & the
+   top-highlight pseudo. `clip` clips paint without a scroll container and
+   without cropping focus outlines that paint outside via box-shadow. */
+.card { overflow: clip; }
+
+/* B1 — Component classes used in markup but never defined (pages rendered
+   with broken browser defaults). Defined here with design tokens. */
+.teacher-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.teacher-name {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.teacher-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--success);
+  background: var(--success-soft);
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+}
+.teacher-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+.kv-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+.kv-row:last-child { border-bottom: 0; }
+.publication-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+.publication-row:last-child { border-bottom: 0; }
+.run-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-1);
+}
+.run-row-status { flex-shrink: 0; display: inline-flex; }
+.category-row {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.category-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-1);
+  border: 0;
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+}
+.category-row-head:hover { background: var(--surface-2); }
+.category-row-body {
+  padding: var(--sp-2) var(--sp-4) var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+.fact-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.fact-row:last-child { border-bottom: 0; }
+.fact-key {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  min-width: 120px;
+  flex-shrink: 0;
+}
+.fact-value { flex: 1; min-width: 0; color: var(--text); font-size: var(--fs-sm); }
+.fact-source { font-size: var(--fs-xxs); color: var(--text-subtle); }

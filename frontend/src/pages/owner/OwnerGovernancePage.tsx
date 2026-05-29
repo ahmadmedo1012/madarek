@@ -13,6 +13,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
+import { cartesianOptions, radialOptions } from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
 import type { GovernanceMetrics, LoginAnalytics } from '../../hooks/useOwner';
 
@@ -76,17 +77,7 @@ export function OwnerGovernancePage() {
     ],
   };
 
-  const growthOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'IBM Plex Sans Arabic', size: 11 } } },
-      y: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { font: { family: 'IBM Plex Sans Arabic', size: 11 } } },
-    },
-  };
+  const growthOptions = cartesianOptions();
 
   const doughnutData = {
     labels: ['ناجح', 'فاشل'],
@@ -100,21 +91,7 @@ export function OwnerGovernancePage() {
     ],
   };
 
-  const doughnutOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        rtl: true,
-        labels: {
-          color: 'var(--text-muted)',
-          font: { family: 'IBM Plex Sans Arabic', size: 12 },
-          padding: 16,
-        },
-      },
-    },
-  };
+  const doughnutOptions = radialOptions({ legend: true });
 
   return (
     <div className="page">
