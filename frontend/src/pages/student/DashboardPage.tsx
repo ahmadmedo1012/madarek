@@ -4,9 +4,10 @@ import {
 } from 'chart.js';
 import {
   GraduationCap, Presentation, FileText, FlaskConical,
+  BookOpen, CalendarCheck, ClipboardList, Trophy,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge } from '../../components/primitives';
+import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 
@@ -53,6 +54,14 @@ export default function StudentDashboardPage() {
         </h1>
         <p className="page-subtitle">لوحة متابعة تقدّمك الأكاديمي.</p>
       </header>
+
+      {/* At-a-glance KPI row (data-dense dashboard) */}
+      <section className="grid-4">
+        <MetricCard icon={BookOpen} label="مقررات نشطة" value="6" change="هذا الفصل" color="brand" />
+        <MetricCard icon={CalendarCheck} label="نسبة الحضور" value="92%" change="↑ 3% عن الشهر الماضي" changeDirection="up" color="green" />
+        <MetricCard icon={ClipboardList} label="مهام معلّقة" value="3" change="أقربها غداً" color="amber" />
+        <MetricCard icon={Trophy} label="نقاط الإنجاز" value="1,240" change="المركز 4 على دفعتك" color="purple" />
+      </section>
 
       {/* Hero KPIs — GPA + Progress side-by-side, stacks on phone */}
       <section className="dash-hero-row">

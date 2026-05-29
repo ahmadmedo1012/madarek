@@ -384,6 +384,35 @@ export default function LandingPage() {
           </p>
         </section>
 
+        {/* ═══════════ TESTIMONIALS — social proof before CTA ═══════════ */}
+        <section id="voices" className="landing-features">
+          <div className="landing-section-head">
+            <span className="landing-section-eyebrow">آراء مجتمع الجامعة</span>
+            <Reveal as="h2" className="landing-features-title">يثقون بمدارك كل يوم</Reveal>
+            <p className="landing-section-lede">
+              طلاب وأساتذة من كليات جامعة الزاوية يشاركون تجربتهم مع المنصة.
+            </p>
+          </div>
+          <div className="landing-testimonials">
+            {[
+              { q: 'المنصة غيّرت طريقة متابعتي لمحاضراتي — كل شيء في مكان واحد، والمساعد الذكي يوفّر عليّ ساعات.', n: 'أحمد الزروق', r: 'طالب · هندسة البرمجيات', i: 'أز' },
+              { q: 'أصبح رصد الحضور والدرجات وتحليل أداء الطلاب أسرع وأدق. أداة حقيقية للأستاذ.', n: 'د. سالم البوسيفي', r: 'عضو هيئة تدريس · نظم المعلومات', i: 'سب' },
+              { q: 'تقارير الجودة ولوحات المتابعة أعطتنا رؤية مؤسسية لم تكن متاحة من قبل.', n: 'مكتب ضمان الجودة', r: 'القطاع الرابع · جامعة الزاوية', i: 'جو' },
+            ].map((t) => (
+              <Reveal as="figure" className="testimonial-card" key={t.n}>
+                <blockquote className="testimonial-quote">{t.q}</blockquote>
+                <figcaption className="testimonial-author">
+                  <span className="testimonial-avatar" aria-hidden>{t.i}</span>
+                  <span className="testimonial-author-meta">
+                    <span className="testimonial-name">{t.n}</span>
+                    <span className="testimonial-role">{t.r}</span>
+                  </span>
+                </figcaption>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
         {/* ═══════════ FINAL CTA — conversion section ═══════════ */}
         <Reveal as="section" className="landing-final-cta">
           <div className="landing-final-cta-inner">
