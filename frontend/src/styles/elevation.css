@@ -33,16 +33,16 @@
   letter-spacing: -0.03em;
 }
 
-/* ── CARDS — layered depth + smoother lift ───────────────────────
-   A faint top highlight + refined shadow makes cards feel crafted,
-   not flat. Hover lifts gently with an accent-tinted shadow. */
+/* ── CARDS — layered depth + non-shifting elevation ─────────────
+   A faint top highlight + refined shadow makes cards feel crafted.
+   Hover elevates via shadow + accent border ONLY (no transform) so
+   layout never shifts — per the data-dense dashboard guidelines. */
 .card {
   border-radius: var(--r-xl) !important;
   box-shadow: var(--shadow-card);
   transition:
-    transform 260ms var(--ease-out),
-    box-shadow 260ms var(--ease-out),
-    border-color 260ms var(--ease-out) !important;
+    box-shadow 220ms var(--ease-out),
+    border-color 220ms var(--ease-out) !important;
 }
 .card:not(.welcome-card):not(.dash-gpa-card):not(.dash-progress-card)::before {
   content: '';
@@ -58,14 +58,9 @@
   opacity: 0.6;
 }
 .card:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-card-hover);
-  border-color: color-mix(in srgb, var(--accent) 22%, var(--border)) !important;
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--border)) !important;
 }
-/* Cards that are purely containers (charts/tables) shouldn't jump on hover */
-.card.flush:hover,
-.dash-gpa-card:hover,
-.dash-progress-card:hover { transform: none; }
 
 /* ── SECTION TITLES — accent marker for clear hierarchy ──────────*/
 .section-title {
@@ -103,6 +98,15 @@
   letter-spacing: 0.01em;
   font-weight: 600;
 }
+/* No layout-shifting lift on data tiles (anti-pattern). Use a calm
+   non-shifting elevation cue instead — shadow + accent border. */
+.metric, .compact-kpi, .stat-card, .dash-agenda-item {
+  transition: box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out) !important;
+}
+.metric:hover, .compact-kpi:hover, .stat-card:hover, .dash-agenda-item:hover {
+  transform: none !important;
+  box-shadow: var(--shadow-md) !important;
+}
 
 /* ── BUTTONS — crisper press feedback (keeps existing colors) ────*/
 .btn { letter-spacing: -0.005em; }
@@ -135,6 +139,11 @@ a:focus-visible, button:focus-visible,
   outline-offset: 2px;
   border-radius: var(--r-sm);
 }
+
+/* ── AMBER CONTRAST — gold text on faint bg fails 4.5:1, so emphasis
+   text/badges use the readable amber token instead (bg stays gold). */
+.badge.gold { color: var(--amber-strong); border-color: var(--amber-border); }
+[data-theme='dark'] .badge.gold { color: var(--amber); }
 
 /* ── REDUCED MOTION ──────────────────────────────────────────────*/
 @media (prefers-reduced-motion: reduce) {

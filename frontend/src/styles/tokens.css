@@ -163,6 +163,7 @@
 
   /* ── Fonts ───────────────────────────────────────────── */
   --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Lexend', 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* ── Glassmorphism ───────────────────────────────────── */
@@ -212,6 +213,12 @@
   --gold: #e9c349;
   --gold-soft: rgba(233, 195, 73, 0.16);
   --gold-hover: #f5d565;
+
+  /* Amber accent (recommended blue+amber system) — brighter on dark surfaces */
+  --amber: #fbbf24;
+  --amber-strong: #f59e0b;
+  --amber-soft: rgba(245, 158, 11, 0.16);
+  --amber-border: rgba(245, 158, 11, 0.45);
 
   /* Semantic */
   --success: #3DD68C;
@@ -271,6 +278,12 @@
   --gold: var(--md-secondary-container);
   --gold-soft: color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
   --gold-hover: #f5d565;
+
+  /* Amber accent (recommended blue+amber system) — readable highlight/emphasis */
+  --amber: #b45309;
+  --amber-strong: #92400e;
+  --amber-soft: color-mix(in srgb, #f59e0b 14%, transparent);
+  --amber-border: color-mix(in srgb, #f59e0b 40%, transparent);
 
   /* Semantic (light) */
   --success: var(--md-tertiary-container);

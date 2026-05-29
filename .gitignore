@@ -52,3 +52,6 @@ backend/prisma/*.db-journal
 .eslintcache
 stitch*.zip
 "stitch (1).zip"
+
+# UI/UX Pro Max skill (installed via uipro CLI, not app code)
+.kiro/

@@ -12,12 +12,14 @@ body {
 }
 
 h1, h2, h3, .page-title, .auth-brand-hero, .landing-title, .track-hero-title, .this-week-title {
+  font-family: var(--font-display);
   font-weight: var(--fw-bold);
   letter-spacing: -0.02em;
 }
 
 .metric-value, .kpi-value, .this-week-emphasis {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-weight: var(--fw-bold);
   letter-spacing: -0.025em;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
