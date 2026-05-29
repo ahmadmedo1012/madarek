@@ -160,3 +160,68 @@
   .landing-hero-eyebrow { margin-bottom: var(--sp-4); font-size: 11px; padding: 6px 12px; }
   .kpi-strip { padding: var(--sp-4); }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING PRO — full-page consistency (consolidates conflicting
+   multi-file rules into one authoritative pass: bento, feature,
+   AI showcase, footer, CTA). Round 14 cleanup + polish.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Unified card treatment: bento + feature + testimonial share the
+   same surface, radius, border, shadow and non-shifting hover. */
+.landing-bento-card,
+.landing-feature-card,
+.testimonial-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  box-shadow: var(--shadow-card);
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  transition:
+    box-shadow 220ms var(--ease-out),
+    border-color 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+.landing-bento-card:hover,
+.landing-feature-card:hover,
+.testimonial-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  box-shadow: var(--shadow-lg);
+}
+
+/* Feature (role-pillar) icon — calm scale, no layout-shifting rotate */
+.landing-feature-card:hover .landing-feature-icon {
+  transform: scale(1.06);
+}
+
+/* AI showcase chat panel aligns to the same card system */
+.landing-ai-chat {
+  background: var(--surface-1) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--r-2xl) !important;
+  box-shadow: var(--shadow-lg) !important;
+  -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+}
+
+/* Footer — clean, centered, generous; gold link hover for unity */
+.landing-footer {
+  border-top: 1px solid var(--border);
+  margin-top: var(--sp-12);
+  padding-block: var(--sp-8);
+}
+.landing-footer-links a:hover { color: var(--lp-gold); }
+
+/* Final CTA — keep the navy hero gradient but lift the card + round it */
+.landing-final-cta { border-radius: var(--r-3xl); overflow: hidden; }
+
+/* Reduced motion — no card lift */
+@media (prefers-reduced-motion: reduce) {
+  .landing-bento-card:hover,
+  .landing-feature-card:hover,
+  .testimonial-card:hover { transform: none; }
+  .landing-feature-card:hover .landing-feature-icon { transform: none; }
+}
