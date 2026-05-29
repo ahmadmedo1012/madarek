@@ -149,10 +149,10 @@
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
   /* ── Layout ──────────────────────────────────────────── */
-  --sidebar-w: 244px;
+  --sidebar-w: 264px;
   --sidebar-w-collapsed: 64px;
-  --topbar-h: 56px;
-  --content-max-w: 1400px;
+  --topbar-h: 64px;
+  --content-max-w: 1320px;
 
   /* Stitch layout tokens */
   --st-container-max:   1280px;

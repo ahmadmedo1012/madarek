@@ -178,14 +178,14 @@ a:focus-visible, button:focus-visible,
 .content {
   padding: var(--sp-8) var(--sp-8) var(--sp-12);
 }
-.content-inner { max-width: 1320px; }
+.content-inner { max-width: var(--content-max-w); }
 .page { gap: var(--sp-6); }
 
 @media (max-width: 1024px) { .content { padding: var(--sp-6) var(--sp-6) var(--sp-12); } }
 @media (max-width: 600px)  { .content { padding: var(--sp-4) var(--sp-4) calc(88px + env(safe-area-inset-bottom, 0px)); } }
 
 /* Sidebar — wider, calmer, more generous spacing (Swiss whitespace) */
-.sidebar { width: 264px; }
+.sidebar { width: var(--sidebar-w); }
 .nav-item {
   padding: 9px var(--sp-3);
   margin: 2px var(--sp-3);
@@ -197,12 +197,11 @@ a:focus-visible, button:focus-visible,
   opacity: 0.85;
 }
 
-/* Topbar — taller, airier, crisp hairline */
+/* Topbar — airier horizontal padding (height comes from --topbar-h token) */
 .topbar {
-  height: 64px;
   padding-inline: var(--sp-6);
 }
-@media (max-width: 600px) { .topbar { height: 56px !important; padding-inline: var(--sp-4) !important; } }
+@media (max-width: 600px) { .topbar { padding-inline: var(--sp-4) !important; } }
 
 /* Card header hierarchy — clearer title, consistent spacing */
 .card-header { margin-bottom: var(--sp-4); padding-bottom: var(--sp-3); border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent); }
@@ -479,4 +478,69 @@ body { font-weight: 400; }
 /* B12 — attendance / action button rows overflowed on mobile. */
 @media (max-width: 600px) {
   .attendance-actions, .att-actions, .feed-item-actions { flex-wrap: wrap; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUND 10 — verified per-page sweep fixes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* A1 — AiAssistant quick-action chips had no CSS (unstyled jammed text). */
+.ai-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: var(--sp-2) 0 var(--sp-3);
+}
+.ai-quick-chip {
+  padding: 7px var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.ai-quick-chip:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+/* A2 — .form-grid-2 only had a mobile collapse rule; define the desktop
+   two-column layout so forms don't stack on wide screens. */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+@media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
+
+/* A3 — the mobile compact-search override must not shrink in-page search
+   inputs that reuse .topbar-search outside the topbar (e.g. Library). */
+@media (max-width: 600px) {
+  .topbar-search { max-width: none; }
+  .topbar .topbar-search { max-width: 220px; }
+}
+
+/* A4 — RTL: chat bubble "tail" corners used physical radius → wrong side.
+   Reset the physical override and use a logical corner so it flips in RTL. */
+.chat-msg.bot .chat-bubble {
+  border-bottom-right-radius: var(--r-lg);
+  border-end-end-radius: var(--r-xs);
+}
+.chat-msg.user .chat-bubble {
+  border-bottom-left-radius: var(--r-lg);
+  border-end-start-radius: var(--r-xs);
+}
+
+/* A5 — long Arabic exam titles pushed the timer off-screen on mobile. */
+.exam-bar { flex-wrap: wrap; }
+
+/* A7 — role-pillar cards: avoid an orphan 4th card on a 3-col grid. */
+.landing-features-grid {
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
 }

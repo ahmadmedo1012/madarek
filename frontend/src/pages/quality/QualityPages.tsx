@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
+import { cartesianOptions, radialOptions, chartColors } from '../../lib/chartTheme';
 import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -204,21 +205,11 @@ export function QualityDashboardPage() {
                 datasets: [{
                   data: [e.attendance.presentRate, e.attendance.lateRate, e.attendance.absentRate],
                   backgroundColor: ['#3DD68C', '#F5A623', '#F55353'],
-                  borderColor: '#11131A',
+                  borderColor: chartColors().surface,
                   borderWidth: 2,
                 }],
               }}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
-                plugins: {
-                  legend: {
-                    position: 'bottom',
-                    labels: { color: '#9EA4B8', font: { family: 'IBM Plex Sans Arabic', size: 11 }, usePointStyle: true, padding: 10 },
-                  },
-                },
-              }}
+              options={radialOptions({ legend: true, cutout: '65%' })}
             />
           </div>
         </Card>
@@ -656,36 +647,7 @@ export function QualityPlaceholder({
 }
 
 /* ─── Shared chart options ────────────────────────────── */
-const chartOpts = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: '#11131A',
-      borderColor: 'rgba(255,255,255,.12)',
-      borderWidth: 1,
-      titleColor: '#E7E9EE',
-      bodyColor: '#9EA4B8',
-      padding: 10,
-      cornerRadius: 8,
-      titleFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-      bodyFont: { family: 'IBM Plex Sans Arabic', size: 12 },
-    },
-  },
-  scales: {
-    x: {
-      grid: { display: false },
-      border: { display: false },
-      ticks: { color: '#6A7088', font: { size: 11, family: 'IBM Plex Sans Arabic' } },
-    },
-    y: {
-      grid: { color: 'rgba(255,255,255,0.05)' },
-      border: { display: false },
-      ticks: { color: '#6A7088', font: { size: 11 } },
-    },
-  },
-} as const;
+const chartOpts = cartesianOptions();
 
 // Re-export XCircle to keep import-checker happy (tree-shaken if unused)
 export { XCircle };

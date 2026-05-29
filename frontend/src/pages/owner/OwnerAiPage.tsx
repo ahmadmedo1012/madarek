@@ -13,6 +13,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
+import { cartesianOptions } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
 import type { AiMetrics } from '../../hooks/useOwner';
 
@@ -63,18 +64,7 @@ export function OwnerAiPage() {
     ],
   };
 
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      title: { display: false },
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'IBM Plex Sans Arabic', size: 11 } } },
-      y: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { font: { family: 'IBM Plex Sans Arabic', size: 11 } } },
-    },
-  };
+  const barOptions = cartesianOptions();
 
   const lineData = {
     labels: data.trend.map((t) => t.date.slice(5)),
@@ -92,17 +82,7 @@ export function OwnerAiPage() {
     ],
   };
 
-  const lineOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'IBM Plex Sans Arabic', size: 11 } } },
-      y: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { font: { family: 'IBM Plex Sans Arabic', size: 11 } } },
-    },
-  };
+  const lineOptions = cartesianOptions();
 
   return (
     <div className="page">
