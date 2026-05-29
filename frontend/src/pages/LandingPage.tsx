@@ -11,6 +11,7 @@ import { useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { BrandMark } from '../components/BrandMark';
 import { Reveal } from '../hooks/useReveal';
+import { CountUp } from '../components/CountUp';
 
 export default function LandingPage() {
   useThemeSync();
@@ -94,6 +95,10 @@ export default function LandingPage() {
         {/* ═══════════ HERO ═══════════ */}
         <section className="landing-hero">
           <Reveal as="div" className="landing-hero-content">
+            <span className="landing-hero-eyebrow">
+              <span className="landing-hero-eyebrow-dot" aria-hidden />
+              المنصة الرسمية لجامعة الزاوية
+            </span>
             <h1 className="landing-title">
               منصة الزاوية:
               <span className="block">جامعة الزاوية للتعليم الذكي</span>
@@ -133,7 +138,7 @@ export default function LandingPage() {
               <Icon icon={Building2} size={20} />
             </div>
             <div>
-              <div className="kpi-value">29</div>
+              <div className="kpi-value"><CountUp value="29" /></div>
               <div className="kpi-label">كلية أكاديمية</div>
             </div>
           </div>
@@ -142,7 +147,7 @@ export default function LandingPage() {
               <Icon icon={Users2} size={20} />
             </div>
             <div>
-              <div className="kpi-value">+50K</div>
+              <div className="kpi-value"><CountUp value="+50K" /></div>
               <div className="kpi-label">طالب مسجَّل</div>
             </div>
           </div>
@@ -151,7 +156,7 @@ export default function LandingPage() {
               <Icon icon={GraduationCap} size={20} />
             </div>
             <div>
-              <div className="kpi-value">2.5K</div>
+              <div className="kpi-value"><CountUp value="2.5K" /></div>
               <div className="kpi-label">عضو هيئة تدريس</div>
             </div>
           </div>
@@ -346,16 +351,16 @@ export default function LandingPage() {
           </div>
 
           <div className="landing-pilot">
-            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">40<span>%</span></div>
+            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value"><CountUp value="40" /><span>%</span></div>
             <div className="landing-pilot-label">تحسّن الاستيعاب</div>
             <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div></Reveal>
-            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">70<span>%</span></div>
+            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value"><CountUp value="70" /><span>%</span></div>
             <div className="landing-pilot-label">زيادة في المشاركة</div>
             <div className="landing-pilot-note">داخل الحلقات النقاشية</div></Reveal>
-            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value">30<span>%</span></div>
+            <Reveal as="div" className="landing-pilot-stat"><div className="landing-pilot-value"><CountUp value="30" /><span>%</span></div>
             <div className="landing-pilot-label">تحسّن في الالتزام</div>
             <div className="landing-pilot-note">بمتابعة الجلسات</div></Reveal>
-            <Reveal as="div" className="landing-pilot-stat highlight"><div className="landing-pilot-value">90<span>%</span></div>
+            <Reveal as="div" className="landing-pilot-stat highlight"><div className="landing-pilot-value"><CountUp value="90" /><span>%</span></div>
             <div className="landing-pilot-label">تحقيق أهداف التعلّم</div>
             <div className="landing-pilot-note">ضمن الإطار الزمني المحدّد</div></Reveal>
           </div>
