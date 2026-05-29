@@ -43,6 +43,11 @@ import './styles/premium-polish.css';
  * stacking context), smooth content reveal staggers, chart fade-in,
  * skeleton crossfade, and reduced-motion safety. */
 import './styles/final-stabilize.css';
+/* final-interaction.css — profile menu viewport-safe positioning,
+ * theme switch crossfade (background-color + border-color transition),
+ * bottom nav glass polish + active indicator, button text clarity
+ * (white text-shadow on primary), tab/page navigation smoothness. */
+import './styles/final-interaction.css';
 
 import App from './App';
 

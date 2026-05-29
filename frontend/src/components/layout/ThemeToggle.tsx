@@ -12,7 +12,20 @@ export function useThemeSync() {
 
   useEffect(() => {
     const apply = () => {
-      document.documentElement.setAttribute('data-theme', resolveTheme(mode));
+      const el = document.documentElement;
+      const next = resolveTheme(mode);
+      const prev = el.getAttribute('data-theme');
+
+      // Only animate if actually changing
+      if (prev && prev !== next) {
+        el.classList.add('theme-transitioning');
+        el.setAttribute('data-theme', next);
+        // Remove the class after the CSS crossfade completes
+        const timer = setTimeout(() => el.classList.remove('theme-transitioning'), 400);
+        return () => clearTimeout(timer);
+      } else {
+        el.setAttribute('data-theme', next);
+      }
     };
     apply();
 

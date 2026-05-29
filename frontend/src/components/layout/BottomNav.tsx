@@ -21,6 +21,7 @@ import {
   FileText,
   Activity,
   Brain,
+  Settings,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
@@ -72,6 +73,17 @@ const QUALITY: BottomItem[] = [
   { to: '/quality/reports',    label: 'التقارير', icon: FileText      },
 ];
 
+/* OWNER — 5 most-used: Home, Users, Activity, System, AI.
+   Verified routes: /owner/dashboard, /owner/users, /owner/activity,
+   /owner/system, /owner/ai. */
+const OWNER: BottomItem[] = [
+  { to: '/owner/dashboard', label: 'الرئيسية',  icon: Home     },
+  { to: '/owner/users',     label: 'المستخدمون', icon: Users    },
+  { to: '/owner/activity',  label: 'النشاط',    icon: Activity },
+  { to: '/owner/system',    label: 'النظام',     icon: Settings },
+  { to: '/owner/ai',        label: 'الذكاء',    icon: Brain    },
+];
+
 export function BottomNav({ hidden }: { hidden?: boolean }) {
   const role = useAuthStore((s) => s.user?.role);
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
@@ -84,6 +96,7 @@ export function BottomNav({ hidden }: { hidden?: boolean }) {
     role === 'TEACHER' ? TEACHER :
     role === 'ADMIN'   ? ADMIN   :
     role === 'QUALITY' ? QUALITY :
+    role === 'OWNER'   ? OWNER   :
     STUDENT;
 
   return (

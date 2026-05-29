@@ -1,0 +1,247 @@
+/* ═════════════════════════════════════════════════════════════════════
+   Madarek — Final Interaction Polish (loaded LAST)
+   ─────────────────────────────────────────────────────────────────────
+   Fixes:
+     1. Profile menu viewport escape (RTL + narrow screens)
+     2. Theme switch smoothness (opacity crossfade on color change)
+     3. Bottom nav refinement + OWNER role gap
+     4. Button text clarity (min contrast + padding)
+     5. Page navigation + tab smoothness
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ═════════════════════════════════════════════════════════════════════
+   1. PROFILE MENU — viewport-safe positioning
+   ─────────────────────────────────────────────────────────────────────
+   The menu was using `inset-inline-end: 0` which in RTL maps to
+   `left: 0`. On phones the trigger sits near the left viewport edge
+   in RTL, pushing the 240px panel off-screen to the left.
+
+   Fix: on screens < 768px, use `position: fixed` with explicit
+   safe margins; on desktop, clamp with `max()` to never exceed
+   viewport edge.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Desktop: stay inside viewport even if trigger is near the edge */
+.topbar-user-menu {
+  /* Override the absolute positioning with safe bounds */
+  max-width: calc(100vw - var(--sp-6));
+  /* In RTL, prevent spilling past the left viewport edge */
+  inset-inline-start: auto;
+}
+
+/* Phone/Tablet: fixed positioning centered safely */
+@media (max-width: 768px) {
+  .topbar-user-menu {
+    position: fixed !important;
+    top: calc(var(--topbar-h, 64px) + 6px) !important;
+    inset-inline-end: var(--sp-3) !important;
+    inset-inline-start: auto !important;
+    left: auto !important;
+    right: auto !important;
+    /* For RTL: anchor to the start edge (right side of screen in RTL) */
+    width: min(260px, calc(100vw - var(--sp-6)));
+    min-width: 0;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-xl);
+  }
+  html[dir='rtl'] .topbar-user-menu {
+    inset-inline-end: auto !important;
+    inset-inline-start: var(--sp-3) !important;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   2. THEME SWITCHING SMOOTHNESS
+   ─────────────────────────────────────────────────────────────────────
+   The `data-theme` attribute change causes an instant repaint of every
+   color token. Without a transition wrapper, this feels jarring.
+
+   Fix: add a brief opacity + color transition on the root element
+   specifically during theme changes. We use a class `.theme-transitioning`
+   that the ThemeToggle adds for 400ms.
+
+   Fallback (CSS-only): add a `transition` on `background-color` and
+   `color` on `body` so the most visible surfaces crossfade.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Smooth crossfade on the two most jarring surfaces */
+body,
+.main,
+.sidebar,
+.topbar,
+.content,
+.bottom-nav {
+  transition:
+    background-color 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cards and surfaces get a shorter crossfade so they don't feel laggy */
+.card,
+.metric,
+.dash-stat-tile,
+.stat-trend,
+.compact-kpi,
+.feed-item,
+.intel-radial-card,
+.glass-panel,
+.glass-card,
+.modal-card,
+.auth-split,
+.landing {
+  transition:
+    background-color 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform var(--t-fast) var(--ease);
+}
+
+/* During active theme transition, suppress all animations briefly so
+   the crossfade reads clean. Applied via JS class. */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  animation-duration: 0ms !important;
+  animation-delay: 0ms !important;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   3. BOTTOM NAV POLISH
+   ─────────────────────────────────────────────────────────────────────
+   The bottom nav is functionally complete but needs:
+   - Refined active indicator (pill background + subtle scale)
+   - Ensure the nav bar itself has a premium glass feel
+   - Active icon gets accent coloring that matches the sidebar
+   ═════════════════════════════════════════════════════════════════════ */
+
+.bottom-nav {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--border);
+  /* Safe area + breathing */
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+}
+
+.bottom-nav-item {
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  transition:
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease-spring);
+}
+.bottom-nav-item:active {
+  transform: scale(0.92);
+  transition-duration: 80ms;
+}
+
+.bottom-nav-item.active {
+  color: var(--accent);
+  font-weight: var(--fw-semibold);
+}
+.bottom-nav-item.active .bottom-nav-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: var(--r-sm);
+  transform: translateY(-1px) scale(1.05);
+}
+
+.bottom-nav-label {
+  font-size: 10px;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   4. BUTTON TEXT CLARITY
+   ─────────────────────────────────────────────────────────────────────
+   Audit found:
+   - .btn.primary text can be unclear on refined-blue gradient bg
+   - .btn.sm text too small on some screens
+   - ghost/outline buttons don't read bold enough
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Primary/action/gradient buttons: ensure text is always white and crisp */
+.btn.primary,
+.btn.action,
+.btn.gradient,
+.auth-btn.primary {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+[data-theme='dark'] .btn.primary,
+[data-theme='dark'] .btn.action,
+[data-theme='dark'] .btn.gradient {
+  color: var(--accent-fg);
+  text-shadow: none;
+}
+
+/* Small buttons need slightly more padding for readability */
+.btn.sm {
+  padding-inline: 14px;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.005em;
+}
+
+/* Ghost/outline: stronger text color on hover */
+.btn.ghost,
+.btn.outline {
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+}
+
+/* Links inside buttons should inherit button styling */
+a.btn { text-decoration: none; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   5. PAGE + TAB NAVIGATION SMOOTHNESS
+   ─────────────────────────────────────────────────────────────────────
+   Improve the sense of flow when navigating between pages and tabs.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Tab transition: the underline indicator animates with transform */
+.tab::after {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tab content areas that swap via conditionals should crossfade */
+.tab-content {
+  animation: contentFadeQuick 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes contentFadeQuick {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Sidebar nav transitions should feel snappy */
+.nav-item,
+.nav-item-pill {
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease),
+    padding-inline-start 140ms var(--ease);
+}
+
+/* Smooth link color transition globally */
+a {
+  transition: color var(--t-fast) var(--ease);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   6. REDUCED MOTION — respect user preference
+   ═════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  body, .main, .sidebar, .topbar, .content, .bottom-nav,
+  .card, .metric, .dash-stat-tile, .stat-trend, .compact-kpi,
+  .feed-item, .intel-radial-card, .glass-panel, .glass-card,
+  .modal-card, .auth-split, .landing {
+    transition-duration: 0ms !important;
+  }
+  .tab-content { animation: none !important; }
+  .bottom-nav-item:active { transform: none !important; }
+}
