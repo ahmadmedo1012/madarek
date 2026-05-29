@@ -562,3 +562,67 @@ body { font-weight: 400; }
 [data-theme='dark'] .topbar {
   background: var(--bg);
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUND 12 — WORLD-CLASS POLISH (benchmarked vs Linear/Stripe/Coursera)
+   Signature refinements: crisp optical type, balanced headings,
+   confident hierarchy, restrained motion, generous rhythm.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Crisp, optically-sized rendering everywhere (premium SaaS feel) */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+/* Headings: balanced wrapping + confident tracking/weight hierarchy */
+h1, h2, h3, .page-title, .card-title, .landing-features-title,
+.dash-section-title, .section-title {
+  text-wrap: balance;
+}
+.page-title { font-weight: 800; letter-spacing: -0.025em; }
+h2, .dash-section-title { letter-spacing: -0.018em; }
+.card-title { letter-spacing: -0.012em; }
+
+/* Body: prettier line breaks, comfortable measure for long-form */
+.page-subtitle, .card-subtitle, p, .lede, .desc,
+.feed-item-text, .alert-desc { text-wrap: pretty; }
+
+/* Numbers everywhere align like a real dashboard */
+.metric-value, .kpi-value, .compact-kpi-value, .stat-value,
+.tbl-num, [data-numeric="true"] {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* Links — quiet by default, accent on hover (Stripe/Linear restraint) */
+.content-inner a:not(.btn):not(.nav-item):not(.card):not(.card-link):not(.bottom-nav-item):not(.pill):not(.tab) {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease-out);
+}
+.content-inner a:not(.btn):not(.nav-item):not(.card):not(.card-link):not(.bottom-nav-item):not(.pill):not(.tab):hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Pointer affordance on every interactive surface (a11y/polish) */
+.card-link, .pill, .tab, [role="button"], .metric[role="button"],
+.bottom-nav-item, .nav-item, summary { cursor: pointer; }
+
+/* Generous, consistent section rhythm on large screens (whitespace) */
+@media (min-width: 1280px) {
+  .content { padding: var(--sp-10) var(--sp-10) var(--sp-16); }
+  .page { gap: var(--sp-8); }
+}
+
+/* Calmer, unified motion for interactive surfaces (200–260ms) */
+.btn, .pill, .tab, .card-link, .nav-item, .metric, .stat-card, .compact-kpi {
+  transition-duration: 220ms;
+  transition-timing-function: var(--ease-out);
+}
