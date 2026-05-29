@@ -167,6 +167,57 @@ a:focus-visible, button:focus-visible,
   font-variant-numeric: tabular-nums lining-nums;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   SHELL REDESIGN — Swiss-minimal canvas, spacing & navigation.
+   This is the coordinated whole-platform refresh: every page
+   inherits a calmer canvas, more generous rhythm, and a cleaner,
+   more spacious sidebar + topbar. Theme-aware.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Content rhythm — more breathing room + comfortable reading width */
+.content {
+  padding: var(--sp-8) var(--sp-8) var(--sp-12);
+}
+.content-inner { max-width: 1320px; }
+.page { gap: var(--sp-6); }
+
+@media (max-width: 1024px) { .content { padding: var(--sp-6) var(--sp-6) var(--sp-12); } }
+@media (max-width: 600px)  { .content { padding: var(--sp-4) var(--sp-4) calc(88px + env(safe-area-inset-bottom, 0px)); } }
+
+/* Sidebar — wider, calmer, more generous spacing (Swiss whitespace) */
+.sidebar { width: 264px; }
+.nav-item {
+  padding: 9px var(--sp-3);
+  margin: 2px var(--sp-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+}
+.nav-section-label {
+  padding-block: var(--sp-3) var(--sp-2);
+  opacity: 0.85;
+}
+
+/* Topbar — taller, airier, crisp hairline */
+.topbar {
+  height: 64px;
+  padding-inline: var(--sp-6);
+}
+@media (max-width: 600px) { .topbar { height: 56px !important; padding-inline: var(--sp-4) !important; } }
+
+/* Card header hierarchy — clearer title, consistent spacing */
+.card-header { margin-bottom: var(--sp-4); padding-bottom: var(--sp-3); border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent); }
+.card-title { font-size: var(--fs-lg); font-weight: 700; letter-spacing: -0.015em; }
+.card.flush .card-header, .card.compact .card-header { border-bottom: 0; padding-bottom: 0; }
+
+/* Subtle calm page entrance for the whole content column */
+@media (prefers-reduced-motion: no-preference) {
+  .content-inner > .page { animation: elv-page-in 360ms var(--ease-out) both; }
+}
+@keyframes elv-page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── REDUCED MOTION ──────────────────────────────────────────────*/
 @media (prefers-reduced-motion: reduce) {
   .card, .card:hover { transition: none; transform: none; }
