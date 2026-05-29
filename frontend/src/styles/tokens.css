@@ -199,8 +199,8 @@
 
   /* Text */
   --text: #fafafa;
-  --text-muted: #a1a1aa;
-  --text-subtle: #71717a;
+  --text-muted: #b0b0b8;
+  --text-subtle: #909098;
 
   /* Accent (primary in dark mode uses fixed-dim for readability) */
   --accent: #a3c9ff;
@@ -267,7 +267,7 @@
 
   --text: var(--md-on-surface);
   --text-muted: var(--md-on-surface-variant);
-  --text-subtle: var(--md-outline);
+  --text-subtle: #475569;
 
   --accent: var(--md-primary);
   --accent-hover: var(--md-primary-container);

@@ -26,6 +26,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useUiStore } from '../../stores/ui.store';
+import { useHideOnScroll } from '../../hooks/useHideOnScroll';
 
 type BottomItem = { to: string; label: string; icon: LucideIcon };
 
@@ -75,6 +76,7 @@ const QUALITY: BottomItem[] = [
 export function BottomNav() {
   const role = useAuthStore((s) => s.user?.role);
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
+  const hidden = useHideOnScroll();
 
   if (!role) return null;
   // Hide while the sidebar drawer is open on phone — they would otherwise stack.
@@ -87,7 +89,7 @@ export function BottomNav() {
     STUDENT;
 
   return (
-    <nav className="bottom-nav" aria-label="التنقّل السريع" data-role={role.toLowerCase()}>
+    <nav className={`bottom-nav${hidden ? ' is-hidden' : ''}`} aria-label="التنقّل السريع" data-role={role.toLowerCase()}>
       {items.map((item) => (
         <NavLink
           key={item.to}

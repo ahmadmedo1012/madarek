@@ -228,3 +228,72 @@ a:focus-visible, button:focus-visible,
   .page-header:not(.welcome-card) .page-title-block { padding-inline-start: 11px; }
   .page-header:not(.welcome-card) .page-title-block::before { width: 3px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   TEXT CLARITY & ANTI-CLIP (ui-ux-pro-max: contrast High, line-height
+   1.5–1.75, "overflow-hidden can clip content"). Big display text with
+   tight line-height clips Arabic glyph tops/bottoms — give it breathing
+   room and prevent the parent from cropping it.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Comfortable body reading rhythm */
+body { line-height: 1.6; }
+.page-subtitle, .card-subtitle, p, .desc, .lede,
+.feed-item-text, .alert-desc, .list-row-sub {
+  line-height: 1.6;
+}
+
+/* Large numeric/title values must not be vertically clipped.
+   Raise their line-height a touch and add 1px breathing padding. */
+.metric-value, .kpi-value, .dash-gpa-value, .compact-kpi-value,
+.stat-value, .stat-card-value, .owner-metric-value, .webinar-date-day {
+  line-height: 1.15 !important;
+  padding-block: 1px;
+}
+.page-title, .card-title, .section-title, h1, h2, h3 {
+  line-height: 1.3;
+  padding-bottom: 1px;
+}
+
+/* Titles/labels that truncate get ellipsis (graceful), never raw clip */
+.card-title, .nav-label, .topbar-title > :first-child,
+.list-row-title, .feed-item-author {
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE DENSITY — less crowding on phones (more vertical rhythm,
+   roomier cards, clearer gaps).
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .page { gap: var(--sp-5) !important; }
+  .card { padding: var(--sp-5) !important; }
+  .card-header { margin-bottom: var(--sp-3); }
+  .grid-2, .grid-3, .grid-4 { gap: var(--sp-4) !important; }
+  .metric { padding: var(--sp-4) !important; }
+  .page-header:not(.welcome-card) { padding-bottom: var(--sp-3); margin-bottom: var(--sp-1); }
+  /* Roomier tappable list rows */
+  .nav-item, .list-row, .feed-item { padding-block: 11px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTOM NAV — hide on scroll-down to free reading space.
+   .is-hidden is toggled by useHideOnScroll based on scroll direction.
+   ═══════════════════════════════════════════════════════════════ */
+.bottom-nav {
+  transition:
+    transform 280ms var(--ease-out),
+    opacity 280ms var(--ease-out),
+    background 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
+  will-change: transform;
+}
+.bottom-nav.is-hidden {
+  transform: translateY(115%);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav { transition: opacity 200ms linear; }
+  .bottom-nav.is-hidden { transform: none; opacity: 0; }
+}
