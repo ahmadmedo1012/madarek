@@ -204,11 +204,8 @@
 
 .progress {
   border-radius: var(--r-full);
-  overflow: hidden;
-  background: var(--surface-2);
 }
 .progress-bar,
-.progress > div,
 .progress-fill {
   background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--gold)));
   border-radius: var(--r-full);

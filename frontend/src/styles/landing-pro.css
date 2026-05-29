@@ -225,3 +225,27 @@
   .testimonial-card:hover { transform: none; }
   .landing-feature-card:hover .landing-feature-icon { transform: none; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CRITICAL FIX (round 15, from screenshots) — section titles were
+   overlapping their sub-lede in every section. Cause: title forced
+   line-height:1.1 (too tight for large Arabic) + no explicit gap.
+   Fix: flex-column head with real gap + comfortable title leading.
+   ═══════════════════════════════════════════════════════════════ */
+.landing-section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.landing-section-head .landing-features-title {
+  line-height: 1.25 !important;
+  margin: 0 !important;
+  padding-block: 2px;
+}
+.landing-section-head .landing-section-eyebrow { margin-bottom: 0; }
+.landing-section-head .landing-section-lede { margin-top: 0; }
+
+/* The AI-showcase text column uses the same title — give it room too */
+.landing-ai-text .landing-features-title { line-height: 1.25 !important; padding-block: 2px; }
