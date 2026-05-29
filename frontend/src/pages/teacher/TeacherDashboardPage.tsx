@@ -8,6 +8,14 @@ import {
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS, CategoryScale, LinearScale,
+  PointElement, LineElement, Filler, Tooltip, Legend,
+} from 'chart.js';
+import { cartesianOptions } from '../../lib/chartTheme';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 type FeedFilter = 'all' | 'submissions' | 'questions' | 'attendance' | 'research' | 'content';
 
@@ -176,6 +184,48 @@ export function TeacherDashboardPage() {
         <CompactKpi label="حضور" value="78%" trend="‏3%" trendColor="negative" />
         <CompactKpi label="بحاجة تقييم" value="12" trend="واجبات + بحوث" trendColor="neutral" />
       </div>
+
+      {/* Performance + attendance trend */}
+      <Card title="اتجاه الأداء والحضور" icon={Sparkles} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
+        <div style={{ height: 240 }}>
+          <Line
+            data={{
+              labels: ['أسبوع 1', 'أسبوع 2', 'أسبوع 3', 'أسبوع 4', 'أسبوع 5', 'أسبوع 6'],
+              datasets: [
+                {
+                  label: 'متوسط الأداء %',
+                  data: [66, 68, 67, 70, 69, 71],
+                  borderColor: '#a3c9ff',
+                  backgroundColor: 'rgba(163, 201, 255, 0.10)',
+                  fill: true,
+                  tension: 0.4,
+                  pointRadius: 3,
+                  pointBackgroundColor: '#a3c9ff',
+                  borderWidth: 2,
+                },
+                {
+                  label: 'الحضور %',
+                  data: [82, 80, 79, 81, 77, 78],
+                  borderColor: '#3DD68C',
+                  backgroundColor: 'rgba(61, 214, 140, 0.08)',
+                  fill: true,
+                  tension: 0.4,
+                  pointRadius: 3,
+                  pointBackgroundColor: '#3DD68C',
+                  borderWidth: 2,
+                },
+              ],
+            }}
+            options={{
+              ...cartesianOptions({ legend: true }),
+              scales: {
+                ...cartesianOptions().scales,
+                y: { ...cartesianOptions().scales!.y, min: 50, max: 100 },
+              },
+            }}
+          />
+        </div>
+      </Card>
 
       {/* Filter toolbar */}
       <div className="feed-toolbar">

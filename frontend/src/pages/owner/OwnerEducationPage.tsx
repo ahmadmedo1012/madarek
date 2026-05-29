@@ -5,9 +5,9 @@ import {
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import { Card, MetricCard, ProgressBar } from '../../components/primitives';
+import { cartesianOptions } from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
-
 const FACULTIES = [
   { name: 'الهندسة', courses: 32 },
   { name: 'العلوم', courses: 28 },
@@ -44,22 +44,8 @@ export function OwnerEducationPage() {
   };
 
   const barOptions = {
+    ...cartesianOptions({ horizontal: true }),
     indexAxis: 'y' as const,
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        grid: { color: 'var(--chart-grid)' },
-        ticks: { color: 'var(--chart-text)', font: { family: 'IBM Plex Sans Arabic', size: 11 } },
-      },
-      y: {
-        grid: { display: false },
-        ticks: { color: 'var(--chart-text)', font: { family: 'IBM Plex Sans Arabic', size: 11 } },
-      },
-    },
   };
 
   const lineData = {
@@ -77,22 +63,10 @@ export function OwnerEducationPage() {
   };
 
   const lineOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
+    ...cartesianOptions(),
     scales: {
-      x: {
-        grid: { color: 'var(--chart-grid)' },
-        ticks: { color: 'var(--chart-text)', font: { family: 'IBM Plex Sans Arabic', size: 11 } },
-      },
-      y: {
-        min: 60,
-        max: 100,
-        grid: { color: 'var(--chart-grid)' },
-        ticks: { color: 'var(--chart-text)', font: { family: 'IBM Plex Sans Arabic', size: 11 } },
-      },
+      ...cartesianOptions().scales,
+      y: { ...cartesianOptions().scales!.y, min: 60, max: 100 },
     },
   };
 

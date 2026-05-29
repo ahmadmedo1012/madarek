@@ -5,9 +5,28 @@ import {
   Award, Microscope, ClipboardCheck,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
+import { Card, MetricCard, Badge } from '../../components/primitives';
 import { LoadingState, ErrorState } from '../../components/primitives/States';
 import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
+import { Bar, Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS, CategoryScale, LinearScale, BarElement,
+  PointElement, LineElement, Filler, Tooltip,
+} from 'chart.js';
+import { cartesianOptions } from '../../lib/chartTheme';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
+
+const FACULTY_DISTRIBUTION = [
+  { f: 'الاقتصاد', c: 6800 },
+  { f: 'الهندسة', c: 5200 },
+  { f: 'الطب البشري', c: 4800 },
+  { f: 'التربية', c: 4500 },
+  { f: 'الآداب', c: 4100 },
+  { f: 'القانون', c: 3700 },
+  { f: 'تقنية المعلومات', c: 2900 },
+  { f: 'العلوم', c: 2500 },
+];
 
 export function AdminDashboardPage() {
   const stats = useAdminStats();
@@ -34,19 +53,22 @@ export function AdminDashboardPage() {
 
       <div className="grid-2-1">
         <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle="أعلى 8 كليات من حيث عدد الطلاب">
-          <div className="flex-col gap-3">
-            {[
-              { f: 'كلية الاقتصاد · الزاوية', c: 6800 },
-              { f: 'كلية الهندسة · الزاوية', c: 5200 },
-              { f: 'كلية الطب البشري', c: 4800 },
-              { f: 'كلية التربية · الفروع الخمسة', c: 4500 },
-              { f: 'كلية الآداب · الزاوية', c: 4100 },
-              { f: 'كلية القانون · الزاوية', c: 3700 },
-              { f: 'كلية تقنية المعلومات', c: 2900 },
-              { f: 'كلية العلوم · الزاوية', c: 2500 },
-            ].map((r) => (
-              <ProgressBar key={r.f} value={(r.c / 6800) * 100} label={`${r.f} — ${r.c.toLocaleString('ar-LY')}`} showValue={false} />
-            ))}
+          <div style={{ height: 300 }}>
+            <Bar
+              data={{
+                labels: FACULTY_DISTRIBUTION.map((r) => r.f),
+                datasets: [{
+                  label: 'عدد الطلاب',
+                  data: FACULTY_DISTRIBUTION.map((r) => r.c),
+                  backgroundColor: 'rgba(163, 201, 255, 0.55)',
+                  borderColor: '#a3c9ff',
+                  borderWidth: 1,
+                  borderRadius: 6,
+                  maxBarThickness: 22,
+                }],
+              }}
+              options={{ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }}
+            />
           </div>
         </Card>
 
@@ -60,6 +82,34 @@ export function AdminDashboardPage() {
           </div>
         </Card>
       </div>
+
+      <Card title="تطوّر معدل النجاح العام" icon={TrendingUp} subtitle="آخر 6 فصول دراسية">
+        <div style={{ height: 240 }}>
+          <Line
+            data={{
+              labels: ['2023أ', '2023ب', '2024أ', '2024ب', '2025أ', '2025ب'],
+              datasets: [{
+                label: 'معدل النجاح %',
+                data: [68, 71, 70, 73, 75, 76],
+                borderColor: '#3DD68C',
+                backgroundColor: 'rgba(61, 214, 140, 0.10)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#3DD68C',
+                borderWidth: 2,
+              }],
+            }}
+            options={{
+              ...cartesianOptions(),
+              scales: {
+                ...cartesianOptions().scales,
+                y: { ...cartesianOptions().scales!.y, min: 50, max: 100 },
+              },
+            }}
+          />
+        </div>
+      </Card>
     </div>
   );
 }

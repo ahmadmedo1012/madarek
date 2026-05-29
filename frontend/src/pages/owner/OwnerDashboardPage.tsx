@@ -3,6 +3,7 @@ import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
+import { radialOptions } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -48,21 +49,7 @@ export function OwnerDashboardPage() {
     }],
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        rtl: true,
-        labels: {
-          color: 'var(--text-muted)',
-          font: { family: 'IBM Plex Sans Arabic', size: 12 },
-          padding: 16,
-        },
-      },
-    },
-  };
+  const chartOptions = radialOptions({ legend: true });
 
   return (
     <div className="page">

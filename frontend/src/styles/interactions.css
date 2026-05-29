@@ -336,3 +336,56 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
 @media (prefers-reduced-motion: reduce) {
   .card-enter { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   CALM NUMBER ENTRANCE — metric / KPI / stat tiles fade in gently
+   with a soft stagger so figures settle into place instead of
+   popping abruptly (which distracts visitors). CSS-only, no JS.
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes ix-number-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.metric,
+.compact-kpi,
+.stat-card,
+.kpi-cell {
+  animation: ix-number-in 560ms var(--ease-out) both;
+}
+
+/* Soft stagger across a row of tiles — each sibling starts a touch later */
+.metric:nth-child(1),
+.compact-kpi:nth-child(1),
+.stat-card:nth-child(1),
+.kpi-cell:nth-child(1) { animation-delay: 40ms; }
+.metric:nth-child(2),
+.compact-kpi:nth-child(2),
+.stat-card:nth-child(2),
+.kpi-cell:nth-child(2) { animation-delay: 110ms; }
+.metric:nth-child(3),
+.compact-kpi:nth-child(3),
+.stat-card:nth-child(3),
+.kpi-cell:nth-child(3) { animation-delay: 180ms; }
+.metric:nth-child(4),
+.compact-kpi:nth-child(4),
+.stat-card:nth-child(4),
+.kpi-cell:nth-child(4) { animation-delay: 250ms; }
+.metric:nth-child(5),
+.compact-kpi:nth-child(5),
+.stat-card:nth-child(5),
+.kpi-cell:nth-child(5) { animation-delay: 320ms; }
+.metric:nth-child(n+6),
+.compact-kpi:nth-child(n+6),
+.stat-card:nth-child(n+6),
+.kpi-cell:nth-child(n+6) { animation-delay: 380ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .metric,
+  .compact-kpi,
+  .stat-card,
+  .kpi-cell {
+    animation: none !important;
+  }
+}

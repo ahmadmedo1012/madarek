@@ -6,11 +6,16 @@ import {
   TrendingUp, Building2, Users2, GraduationCap, Microscope,
 } from 'lucide-react';
 import { useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
+import { cartesianOptions, chartColors } from '../../lib/chartTheme';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
 /* ─── Gamification ─────────────────────────────────────── */
 export function GamificationPage() {
@@ -259,6 +264,33 @@ export function ResultsPage() {
         <MetricCard icon={Activity} label="المتوسط" value="74.4" change="هذا الفصل" color="brand" />
         <MetricCard icon={AlertTriangle} label="أدنى درجة" value="55" change="تقنيات الإنترنت" color="red" />
       </div>
+
+      <Card title="درجاتك حسب المقرر" icon={Activity} subtitle="نظرة بصرية على أدائك في مقررات هذا الفصل">
+        <div style={{ height: 260 }}>
+          <Bar
+            data={{
+              labels: RESULTS.map((r) => r.s),
+              datasets: [{
+                label: 'الدرجة',
+                data: RESULTS.map((r) => r.g),
+                backgroundColor: RESULTS.map((r) => {
+                  const c = chartColors();
+                  return r.g >= 85 ? c.success : r.g >= 70 ? c.accent : r.g >= 60 ? c.warning : c.danger;
+                }),
+                borderRadius: 6,
+                maxBarThickness: 48,
+              }],
+            }}
+            options={{
+              ...cartesianOptions(),
+              scales: {
+                ...cartesianOptions().scales,
+                y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
+              },
+            }}
+          />
+        </div>
+      </Card>
 
       <div className="grid-2">
         <Card title="تفصيل النتائج" icon={Activity}>
