@@ -16,7 +16,7 @@ Zawia.
 | [DATA-MODEL.md](./DATA-MODEL.md) | All Prisma models by domain, key relations, enums |
 | [FRONTEND.md](./FRONTEND.md) | Routing, state, data layer, CSS architecture, theming, components, page inventory |
 | [FEATURES.md](./FEATURES.md) | All 27 features with backing models, pages, and a roles matrix |
-| [ux-rules-applied.md](./ux-rules-applied.md) | UX rules adopted from the ui‑ux‑pro‑max toolkit |
+| [docs/ux-rules-applied.md](./docs/ux-rules-applied.md) | UX rules adopted from the ui‑ux‑pro‑max toolkit |
 
 ## At a glance
 
