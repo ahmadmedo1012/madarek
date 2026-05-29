@@ -187,15 +187,15 @@
    ═════════════════════════════════════════════════════════════ */
 :root,
 [data-theme='dark'] {
-  /* Surfaces */
-  --bg: #09090b;
-  --surface-1: #111113;
-  --surface-2: #1c1c1e;
-  --surface-3: #27272a;
+  /* Surfaces — Soft UI Evolution: warm-neutral, clearly layered depth */
+  --bg: #0f1117;
+  --surface-1: #161922;
+  --surface-2: #1e222e;
+  --surface-3: #283041;
 
   /* Borders */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
 
   /* Text */
   --text: #fafafa;
@@ -230,14 +230,14 @@
   --info: #a3c9ff;
   --info-soft: rgba(163, 201, 255, 0.10);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Shadows — softer, multi-layer dimensional elevation (Soft UI) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.26);
+  --shadow-xl: 0 18px 48px rgba(0, 0, 0, 0.46), 0 6px 14px rgba(0, 0, 0, 0.30);
 
-  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 6px rgba(0, 0, 0, 0.30);
+  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 10px 28px rgba(0, 0, 0, 0.38);
 
   /* Focus & Selection */
   --focus-ring: 0 0 0 3px rgba(163, 201, 255, 0.30);
@@ -257,13 +257,13 @@
    LIGHT THEME
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  --bg: #fafafa;
-  --surface-1: var(--md-surface-container-lowest);
-  --surface-2: var(--md-surface-container-low);
-  --surface-3: var(--md-surface-container);
+  --bg: #eef1f6;
+  --surface-1: #ffffff;
+  --surface-2: #f5f7fa;
+  --surface-3: #eaeef3;
 
-  --border: var(--md-outline-variant);
-  --border-strong: var(--md-outline);
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
 
   --text: var(--md-on-surface);
   --text-muted: var(--md-on-surface-variant);
@@ -296,13 +296,13 @@
   --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
 
   /* Shadows (light) */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 1px rgba(15, 23, 42, 0.03);
-  --shadow-md: 0 2px 4px rgba(15, 23, 42, 0.04), 0 8px 18px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.06), 0 16px 36px rgba(15, 23, 42, 0.08);
-  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.08), 0 32px 64px rgba(15, 23, 42, 0.12);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 2px 6px rgba(15, 23, 42, 0.06), 0 8px 18px rgba(15, 23, 42, 0.07);
+  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.08), 0 16px 36px rgba(15, 23, 42, 0.10);
+  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.10), 0 32px 64px rgba(15, 23, 42, 0.14);
 
-  --shadow-card: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.08), 0 12px 32px -8px rgba(15, 23, 42, 0.12);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.08), 0 14px 34px -8px rgba(15, 23, 42, 0.16);
 
   /* Focus & Selection (light) */
   --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);

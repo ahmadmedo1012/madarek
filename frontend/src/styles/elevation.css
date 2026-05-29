@@ -544,3 +544,21 @@ body { font-weight: 400; }
 .landing-features-grid {
   grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ROUND 11 — harmonize navigation surfaces with the refreshed
+   Soft-UI neutral palette (the old hardcoded purple-tinted darks
+   clashed with the new warm-neutral surfaces).
+   ═══════════════════════════════════════════════════════════════ */
+[data-theme='dark'] .sidebar {
+  background: var(--surface-1) !important;
+  border-inline-end: 1px solid var(--border) !important;
+}
+[data-theme='dark'] .bottom-nav {
+  background: color-mix(in srgb, var(--surface-1) 88%, transparent);
+  border-top: 1px solid var(--border);
+}
+[data-theme='dark'] .topbar {
+  background: var(--bg);
+}
