@@ -88,13 +88,13 @@ export function OwnerDashboardPage() {
       </div>
 
       {/* Extra Row */}
-      <div className="grid-4" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+      <div className="grid-2">
         <MetricCard icon={Bot} label="طلبات AI اليوم" value={realtimeData.aiRequestsPerMin.toString() + '/دقيقة'} color="purple" />
         <MetricCard icon={Bell} label="تنبيهات مفتوحة" value={alerts.length.toString()} color="amber" />
       </div>
 
       {/* Chart + System Health */}
-      <div className="grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 'var(--sp-4)' }}>
+      <div className="grid-2-1">
         <Card title="توزيع المستخدمين">
           <div className="owner-chart-container">
             <Doughnut data={chartData} options={chartOptions} />

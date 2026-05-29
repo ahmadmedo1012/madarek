@@ -262,9 +262,9 @@
   gap: 8px;
   padding: 6px 14px;
   border-radius: var(--r-full);
-  background: rgba(0, 58, 59, 0.08);
-  border: 1px solid rgba(0, 58, 59, 0.15);
-  color: var(--md-tertiary);
+  background: color-mix(in srgb, var(--md-tertiary-fixed-dim) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--md-tertiary-fixed-dim) 28%, transparent);
+  color: var(--md-tertiary-fixed-dim);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.03em;

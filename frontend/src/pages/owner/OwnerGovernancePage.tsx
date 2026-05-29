@@ -126,7 +126,7 @@ export function OwnerGovernancePage() {
       </div>
 
       {/* Metrics */}
-      <div className="grid-4" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+      <div className="grid-3">
         <MetricCard icon={Key} label="تغييرات الصلاحيات" value={govData.permissionChanges.toString()} color="purple" />
         <MetricCard icon={ShieldCheck} label="تغييرات الأدوار" value={govData.roleChanges.toString()} color="brand" />
         <MetricCard icon={UserPlus} label="مستخدمون جدد هذا الشهر" value={govData.newUsersThisMonth.toString()} color="green" />

@@ -55,7 +55,7 @@ export function OwnerAlertsPage() {
       </div>
 
       {/* Metrics */}
-      <div className="grid-4" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+      <div className="grid-3">
         <MetricCard icon={Bell} label="تنبيهات مفتوحة" value={alerts.length.toString()} color="brand" />
         <MetricCard icon={ShieldAlert} label="تنبيهات حرجة" value={criticalCount.toString()} color="red" />
         <MetricCard icon={AlertTriangle} label="تحذيرات" value={warningCount.toString()} color="amber" />
