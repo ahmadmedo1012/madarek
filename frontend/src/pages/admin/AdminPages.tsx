@@ -13,7 +13,7 @@ import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
   PointElement, LineElement, Filler, Tooltip,
 } from 'chart.js';
-import { cartesianOptions } from '../../lib/chartTheme';
+import { cartesianOptions, valueLabels } from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
@@ -67,6 +67,7 @@ export function AdminDashboardPage() {
                   maxBarThickness: 22,
                 }],
               }}
+              plugins={[valueLabels]}
               options={{ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }}
             />
           </div>

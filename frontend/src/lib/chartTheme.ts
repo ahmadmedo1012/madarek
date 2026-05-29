@@ -96,3 +96,34 @@ export function radialOptions(opts?: { legend?: boolean; cutout?: string }): Cha
     },
   } as ChartOptions<'doughnut'>;
 }
+
+/**
+ * valueLabels — tiny inline Chart.js plugin that draws each bar's value
+ * at its end. The chart domain guidance recommends value labels on bars
+ * for clarity. No external dependency. Register per-chart via `plugins`.
+ */
+export const valueLabels = {
+  id: 'valueLabels',
+  afterDatasetsDraw(chart: any) {
+    const { ctx } = chart;
+    const color = chartColors().text;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.font = `600 11px ${FONT}`;
+    chart.data.datasets.forEach((ds: any, di: number) => {
+      const meta = chart.getDatasetMeta(di);
+      if (meta.type !== 'bar') return;
+      meta.data.forEach((el: any, i: number) => {
+        const v = ds.data[i];
+        if (v == null) return;
+        const horizontal = el.width > el.height;
+        ctx.textAlign = horizontal ? 'left' : 'center';
+        ctx.textBaseline = horizontal ? 'middle' : 'bottom';
+        const x = horizontal ? el.x + 6 : el.x;
+        const y = horizontal ? el.y : el.y - 4;
+        ctx.fillText(String(v), x, y);
+      });
+    });
+    ctx.restore();
+  },
+};

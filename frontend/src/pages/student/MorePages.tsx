@@ -6,16 +6,16 @@ import {
   TrendingUp, Building2, Users2, GraduationCap, Microscope,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip } from 'chart.js';
+import { Bar, Radar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
-import { cartesianOptions, chartColors } from '../../lib/chartTheme';
+import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
 /* ─── Gamification ─────────────────────────────────────── */
 export function GamificationPage() {
@@ -131,16 +131,49 @@ export function SkillsPage() {
         {skills.isPending ? <LoadingState /> :
          skills.isError ? <ErrorState /> :
          !skills.data?.length ? <EmptyState icon={Target} title="لم تُسجَّل أي مهارة بعد" /> : (
-          <div className="flex-col gap-4">
-            {skills.data.map((s) => (
-              <div key={s.skill.id} className="flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>{s.skill.name}</span>
-                  <Badge>المستوى {s.level} / 5</Badge>
+          <div className="grid-1-2" style={{ alignItems: 'center' }}>
+            <div style={{ height: 300, position: 'relative' }}>
+              <Radar
+                data={{
+                  labels: skills.data.map((s) => s.skill.name),
+                  datasets: [{
+                    label: 'مستوى الإتقان',
+                    data: skills.data.map((s) => s.progressPct),
+                    backgroundColor: 'rgba(59, 130, 246, 0.18)',
+                    borderColor: chartColors().accent,
+                    borderWidth: 2,
+                    pointBackgroundColor: chartColors().accent,
+                    pointRadius: 3,
+                  }],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  animation: { duration: 750, easing: 'easeOutQuart' },
+                  plugins: { legend: { display: false } },
+                  scales: {
+                    r: {
+                      min: 0, max: 100,
+                      angleLines: { color: chartColors().grid },
+                      grid: { color: chartColors().grid },
+                      pointLabels: { color: chartColors().text, font: { family: 'IBM Plex Sans Arabic', size: 11 } },
+                      ticks: { display: false, stepSize: 25 },
+                    },
+                  },
+                }}
+              />
+            </div>
+            <div className="flex-col gap-4">
+              {skills.data.map((s) => (
+                <div key={s.skill.id} className="flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>{s.skill.name}</span>
+                    <Badge>المستوى {s.level} / 5</Badge>
+                  </div>
+                  <ProgressBar value={s.progressPct} showValue />
                 </div>
-                <ProgressBar value={s.progressPct} showValue />
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </Card>
@@ -281,6 +314,7 @@ export function ResultsPage() {
                 maxBarThickness: 48,
               }],
             }}
+            plugins={[valueLabels]}
             options={{
               ...cartesianOptions(),
               scales: {

@@ -145,6 +145,28 @@ a:focus-visible, button:focus-visible,
 .badge.gold { color: var(--amber-strong); border-color: var(--amber-border); }
 [data-theme='dark'] .badge.gold { color: var(--amber); }
 
+/* ── CHART CARDS — consistent canvas framing across the platform ─
+   (ui-ux-pro-max data-dense dashboard: uniform widget sizing). */
+.card canvas { max-width: 100%; }
+
+/* ── ACTIVE NAV — clearer "you are here" cue (UX: Active State) ──
+   The bottom-nav active item gains an accent top marker. */
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline: 28%;
+  height: 3px;
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.bottom-nav-item { position: relative; }
+
+/* ── DATA-DENSE TABLES — tabular numerals + tighter number cells ─*/
+.tbl td.tbl-num, .tbl .tbl-num {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
 /* ── REDUCED MOTION ──────────────────────────────────────────────*/
 @media (prefers-reduced-motion: reduce) {
   .card, .card:hover { transition: none; transform: none; }
