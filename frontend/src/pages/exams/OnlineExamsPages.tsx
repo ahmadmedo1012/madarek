@@ -77,7 +77,7 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
       className="track-card"
       style={{ ['--track-accent' as never]: accent, cursor: canStart ? 'pointer' : 'default' }}
     >
-      <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
+      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
         <EmojiIcon emoji={exam.courseIcon ?? '📝'} size={22} />
       </div>
       <div className="track-card-body">

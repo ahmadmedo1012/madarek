@@ -116,7 +116,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
   const isOpen = c.status === 'OPEN' && days > 0;
   return (
     <div className="track-card" style={{ ['--track-accent' as never]: accent, cursor: 'default' }}>
-      <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
+      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
         <EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={24} />
       </div>
       <div className="track-card-body">
@@ -150,7 +150,7 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
       <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
         <div style={{
           flexShrink: 0, width: 64, height: 64, borderRadius: 'var(--r-md)',
-          background: `${accent}1a`, color: accent,
+          background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent,
           display: 'grid', placeItems: 'center', fontSize: 30,
         }}>
           <EmojiIcon emoji={e.iconEmoji ?? '📅'} size={22} />

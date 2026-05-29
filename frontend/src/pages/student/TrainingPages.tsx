@@ -213,7 +213,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
   const accent = track.themeColor ?? 'var(--accent)';
   return (
     <Link to={`/training/${track.slug}`} className="track-card" style={{ ['--track-accent' as never]: accent }}>
-      <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
+      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
         <EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={20} />
       </div>
       <div className="track-card-body">

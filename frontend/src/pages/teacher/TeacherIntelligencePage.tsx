@@ -111,7 +111,7 @@ function OfferingCard({ offering }: { offering: TeacherOffering }) {
       className="track-card"
       style={{ ['--track-accent' as never]: accent }}
     >
-      <div className="track-card-icon" style={{ background: `${accent}1a`, color: accent }}>
+      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
         <EmojiIcon emoji={offering.course.iconEmoji ?? '📚'} size={22} />
       </div>
       <div className="track-card-body">
@@ -225,9 +225,9 @@ export function TeacherOfferingDetailPage() {
           {suggest.data && (
             <>
               <div style={{
-                padding: 'var(--sp-3)', background: `${accent}10`,
+                padding: 'var(--sp-3)', background: `color-mix(in srgb, ${accent} 8%, transparent)`,
                 borderRadius: 'var(--r-md)', marginBottom: 'var(--sp-3)',
-                border: `1px solid ${accent}30`,
+                border: `1px solid color-mix(in srgb, ${accent} 22%, transparent)`,
               }}>
                 <div className="text-xs text-muted">{suggest.data.rationale}</div>
                 <div style={{ display: 'flex', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)' }}>

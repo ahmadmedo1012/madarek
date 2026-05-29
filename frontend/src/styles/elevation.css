@@ -438,3 +438,45 @@ body { line-height: 1.6; }
 }
 .fact-value { flex: 1; min-width: 0; color: var(--text); font-size: var(--fs-sm); }
 .fact-source { font-size: var(--fs-xxs); color: var(--text-subtle); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SMALL FIXES BATCH (round 9) — verified audit items
+   ═══════════════════════════════════════════════════════════════ */
+
+/* A9 — body was forced font-weight:500, flattening heading hierarchy.
+   Restore normal body weight; headings keep their 700/800. */
+body { font-weight: 400; }
+
+/* A3 — search was display:none on phones with no trigger (inaccessible).
+   Show a compact, tappable search instead of hiding it entirely. */
+@media (max-width: 600px) {
+  .topbar-search {
+    display: flex !important;
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    max-width: 220px;
+    height: 38px;
+  }
+  .topbar-search .topbar-search-shortcut { display: none; }
+  .topbar-search input::placeholder { font-size: var(--fs-xs); }
+}
+
+/* A17 — RTL: table scroll-fade mask was on the wrong (left) edge.
+   Use logical direction so the fade sits at the inline-end. */
+@media (max-width: 640px) {
+  .tbl-wrap {
+    -webkit-mask-image: linear-gradient(to left, #000 0, #000 calc(100% - 24px), transparent);
+            mask-image: linear-gradient(to left, #000 0, #000 calc(100% - 24px), transparent);
+  }
+}
+
+/* A27 — ::selection cyan-on-white was low contrast in dark mode.
+   Use the theme selection token for proper contrast in both modes. */
+::selection { background: var(--selection-bg); color: var(--text); }
+
+/* B12 — attendance / action button rows overflowed on mobile. */
+@media (max-width: 600px) {
+  .attendance-actions, .att-actions, .feed-item-actions { flex-wrap: wrap; }
+}
