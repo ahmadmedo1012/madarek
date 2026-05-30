@@ -1,0 +1,14 @@
+{
+  "task_id": "task-radical-redesign",
+  "task_description": "Complete radical visual redesign of Madarek EdTech platform. Replace entire color system with Navy Royal + Muted Gold, rebuild token system from scratch, redesign dark theme with warm grays, completely redesign landing page, redesign dashboard components, reorganize CSS into 8 logical files (down from 19). The result must be so visually different that users say 'this is a completely different website'.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null,
+  "verification": {
+    "build": "skipped",
+    "tests": "skipped",
+    "test_quality": "skipped",
+    "docker_build": "skipped",
+    "summary": "TypeScript build and Vite build cannot run due to INTEGRATIONS_ONLY network (no node_modules). Static verification confirms: 8 CSS files (down from 19), zero color-mix() usage, zero Lexend/Outfit references, zero Google Fonts CDN links, zero missing CSS class definitions (583 TSX classes all have corresponding CSS rules), warm gray dark theme (#1a1d23/#22262f/#292e38/#313742), proper reduced-motion media query, proper RTL support via html[dir=rtl]."
+  }
+}
