@@ -31,18 +31,7 @@
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--lp-gold) 22%, transparent);
 }
 
-/* ── HEADER — premium sticky glass on the public page ─────────── */
-.landing-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: saturate(160%) blur(12px);
-  -webkit-backdrop-filter: saturate(160%) blur(12px);
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--transition-normal) var(--ease-out), background var(--transition-normal) var(--ease-out);
-}
-.landing-header:hover { border-bottom-color: var(--border); }
+/* ── HEADER — premium login button gold treatment ─────────────── */
 .landing-header-login .btn {
   background: var(--lp-gold);
   color: var(--color-neutral-900, #1a1205);

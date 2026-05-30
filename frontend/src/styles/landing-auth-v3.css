@@ -69,8 +69,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #fbbf24;
-  box-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+  background: var(--color-gold-400, #fbbf24);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-gold-400, #fbbf24) 70%, transparent);
 }
 
 .landing-final-cta-title {
@@ -102,30 +102,30 @@
 
 /* Override the global .btn primary/outline so they read on dark bg */
 .landing-final-cta-btn.primary {
-  background: #ffffff !important;
-  color: #001c38 !important;
-  border: 0 !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20) !important;
+  background: var(--color-neutral-50, #fff);
+  color: var(--color-primary-900);
+  border: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20);
   font-weight: 700;
   height: 52px;
-  padding: 0 28px !important;
+  padding: 0 28px;
 }
 .landing-final-cta-btn.primary:hover {
-  background: #f0f7ff !important;
+  background: var(--color-primary-50, #f0f7ff);
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
 }
 .landing-final-cta-btn.outline {
-  background: transparent !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.40) !important;
-  color: #ffffff !important;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.40);
+  color: var(--color-neutral-50, #fff);
   height: 52px;
-  padding: 0 24px !important;
+  padding: 0 24px;
 }
 .landing-final-cta-btn.outline:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.60) !important;
-  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.60);
+  color: var(--color-neutral-50, #fff);
 }
 
 .landing-final-cta-meta {
@@ -373,7 +373,7 @@
    MOBILE — split → stack, brand pane shrinks
    ═══════════════════════════════════════════════════════════════ */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .auth-split {
     grid-template-columns: 1fr !important;
   }

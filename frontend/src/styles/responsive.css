@@ -285,7 +285,7 @@ img, svg, video, canvas, iframe {
    LANDING PAGE — final mobile pass
    ═══════════════════════════════════════════════════════════════ */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .landing-hero {
     flex-direction: column !important;
     text-align: center;
