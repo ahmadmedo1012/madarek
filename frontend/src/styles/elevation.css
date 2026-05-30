@@ -34,17 +34,9 @@
   letter-spacing: -0.03em;
 }
 
-/* ── CARDS — layered depth + non-shifting elevation ─────────────
-   A faint top highlight + refined shadow makes cards feel crafted.
-   Hover elevates via shadow + accent border ONLY (no transform) so
-   layout never shifts — per the data-dense dashboard guidelines. */
-.card {
-  border-radius: var(--r-xl) !important;
-  box-shadow: var(--shadow-card);
-  transition:
-    box-shadow 220ms var(--ease-out),
-    border-color 220ms var(--ease-out) !important;
-}
+/* ── CARDS — top highlight pseudo (canonical surface lives in cinematic.css) ──
+   A faint top highlight makes cards feel crafted. Surface, transition,
+   shadow, hover all handled by cinematic.css now. */
 .card:not(.welcome-card):not(.dash-gpa-card):not(.dash-progress-card)::before {
   content: '';
   position: absolute;
@@ -57,10 +49,6 @@
           mask-composite: exclude;
   pointer-events: none;
   opacity: 0.6;
-}
-.card:hover {
-  box-shadow: var(--shadow-card-hover);
-  border-color: color-mix(in srgb, var(--accent) 24%, var(--border)) !important;
 }
 
 /* ── SECTION TITLES — accent marker for clear hierarchy ──────────*/
@@ -100,13 +88,14 @@
   font-weight: 600;
 }
 /* No layout-shifting lift on data tiles (anti-pattern). Use a calm
-   non-shifting elevation cue instead — shadow + accent border. */
-.metric, .compact-kpi, .stat-card, .dash-agenda-item {
-  transition: box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out) !important;
+   non-shifting elevation cue instead — shadow + accent border.
+   .metric primitive lives in cinematic.css; these are sibling tiles. */
+.compact-kpi, .stat-card, .dash-agenda-item {
+  transition: box-shadow 200ms var(--ease-out), border-color 200ms var(--ease-out);
 }
-.metric:hover, .compact-kpi:hover, .stat-card:hover, .dash-agenda-item:hover {
-  transform: none !important;
-  box-shadow: var(--shadow-md) !important;
+.compact-kpi:hover, .stat-card:hover, .dash-agenda-item:hover {
+  transform: none;
+  box-shadow: var(--el-2);
 }
 
 /* ── BUTTONS — crisper press feedback (keeps existing colors) ────*/
@@ -247,8 +236,8 @@ body { line-height: 1.6; }
    Raise their line-height a touch and add 1px breathing padding. */
 .metric-value, .kpi-value, .dash-gpa-value, .compact-kpi-value,
 .stat-value, .stat-card-value, .owner-metric-value, .webinar-date-day {
-  line-height: 1.15 !important;
-  padding-block: 1px;
+  line-height: 1.32;
+  padding-block: 2px;
 }
 .page-title, .card-title, .section-title, h1, h2, h3 {
   line-height: 1.3;

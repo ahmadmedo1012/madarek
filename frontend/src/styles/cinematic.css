@@ -245,11 +245,11 @@
     font-size: clamp(28px, 4vw, 44px);
     font-weight: var(--fw-bold);
     letter-spacing: var(--ls-tight);
-    line-height: var(--lh-tight);
+    line-height: 1.36;
     color: var(--text);
     text-wrap: balance;
     max-inline-size: 32ch;
-    padding-block-end: 0.05em;
+    padding-block-end: 0.12em;
   }
   .landing-final-cta-sub {
     font-size: var(--fs-md);

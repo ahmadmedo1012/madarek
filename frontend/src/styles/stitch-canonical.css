@@ -50,84 +50,10 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   STITCH BUTTONS — premium pill-shaped with elevation
+   STITCH BUTTONS — canonical .btn lives in cinematic.css.
+   Only the loading-spinner state is kept here as it's an addition
+   that doesn't compete with the primitive's surface/colour rules.
    ═══════════════════════════════════════════════════════════════ */
-
-.btn {
-  border-radius: var(--r-full) !important;
-  font-weight: 600 !important;
-  transition:
-    background var(--t-fast) var(--ease-out),
-    color var(--t-fast) var(--ease-out),
-    border-color var(--t-fast) var(--ease-out),
-    transform var(--t-fast) var(--ease-out),
-    box-shadow var(--t-base) var(--ease-out) !important;
-}
-.btn:active {
-  transform: translateY(1px) !important;
-}
-.btn.sm {
-  min-height: 32px;
-  height: 32px;
-  padding: 0 var(--sp-3);
-  font-size: var(--fs-xs);
-}
-
-.btn.primary {
-  background: var(--md-primary) !important;
-  color: var(--md-on-primary) !important;
-  border: 0 !important;
-  border-radius: var(--r-full) !important;
-  min-height: 44px;
-  padding: 0 24px !important;
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 52, 97, 0.20);
-}
-.btn.primary:hover {
-  background: var(--md-primary-container) !important;
-  color: var(--md-on-primary-container) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0, 52, 97, 0.30);
-}
-
-.btn.outline {
-  background: transparent !important;
-  color: var(--accent) !important;
-  border: 1.5px solid var(--accent-border) !important;
-  border-radius: var(--r-full) !important;
-  min-height: 44px;
-}
-.btn.outline:hover {
-  background: var(--accent-soft) !important;
-  border-color: var(--accent) !important;
-  color: var(--accent) !important;
-  transform: translateY(-1px);
-}
-
-.btn.ghost {
-  background: transparent !important;
-  border-color: transparent !important;
-  color: var(--text-muted) !important;
-  border-radius: var(--r-full) !important;
-  min-height: 44px;
-}
-.btn.ghost:hover {
-  background: var(--surface-2) !important;
-  color: var(--text) !important;
-}
-
-.btn:not(.primary):not(.outline):not(.ghost):not(.landing-final-cta-btn):not(.danger) {
-  background: var(--surface-2) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: var(--r-full) !important;
-  min-height: 44px;
-}
-.btn:not(.primary):not(.outline):not(.ghost):not(.landing-final-cta-btn):not(.danger):hover {
-  background: var(--surface-3) !important;
-  border-color: var(--border-strong) !important;
-  transform: translateY(-1px);
-}
 
 /* Button loading state */
 .btn.loading {

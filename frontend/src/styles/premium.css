@@ -61,12 +61,13 @@ html {
 
 /* Hero title — bigger, tighter, weightier */
 .landing-title {
-  font-size: clamp(36px, 6.4vw, 76px) !important;
-  font-weight: 800 !important;
-  line-height: 1.04 !important;
+  font-size: clamp(36px, 6.4vw, 76px);
+  font-weight: 800;
+  line-height: 1.22;
   letter-spacing: -0.025em;
   color: var(--text);
   text-wrap: balance;
+  padding-block-end: 0.12em;
 }
 .landing-title .block {
   font-size: 0.55em !important;
@@ -87,12 +88,13 @@ html {
 
 /* Section titles */
 .landing-features-title {
-  font-size: clamp(26px, 3.6vw, 42px) !important;
-  font-weight: 800 !important;
-  line-height: 1.1 !important;
+  font-size: clamp(26px, 3.6vw, 42px);
+  font-weight: 800;
+  line-height: 1.32;
   letter-spacing: -0.02em;
   color: var(--text);
   text-wrap: balance;
+  padding-block-end: 0.12em;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -329,7 +331,7 @@ html {
 
 @media (max-width: 640px) {
   .landing-title {
-    line-height: 1.08 !important;
+    line-height: 1.22;
   }
   .reveal-up {
     /* Calmer mobile motion to keep frames smooth */

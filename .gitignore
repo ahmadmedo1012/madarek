@@ -55,3 +55,7 @@ stitch*.zip
 
 # UI/UX Pro Max skill (installed via uipro CLI, not app code)
 .kiro/
+
+# Visual audit artifacts (Playwright snapshots — not committed)
+audit-out/
+.claude/

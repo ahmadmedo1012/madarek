@@ -41,16 +41,17 @@
 }
 
 .page-title {
-  font-size: clamp(20px, 3vw, 26px) !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.02em !important;
-  line-height: 1.2 !important;
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.32;
   color: var(--text);
   text-wrap: balance;
+  padding-block-end: 0.06em;
 }
 .page-subtitle {
-  font-size: clamp(13px, 1.4vw, 14.5px) !important;
-  line-height: 1.6 !important;
+  font-size: clamp(13px, 1.4vw, 14.5px);
+  line-height: 1.6;
   color: var(--text-muted);
   text-wrap: pretty;
   max-width: 64ch;
@@ -100,19 +101,8 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   CARDS — refined hover state
+   CARDS — canonical .card lives in cinematic.css; only typography here
    ═══════════════════════════════════════════════════════════════ */
-
-.card {
-  position: relative;
-  /* Subtle two-tier surface — back: surface-1, front: invisible inner
-     glow to feel three-dimensional without a heavy shadow. */
-  background: var(--surface-1) !important;
-  transition:
-    border-color 240ms var(--ease-out),
-    box-shadow 240ms var(--ease-out),
-    transform 240ms var(--ease-out);
-}
 
 /* Card title default refinement */
 .card-title,
@@ -125,19 +115,11 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   METRIC TILES — premium polish
+   METRIC TILES — canonical .metric lives in cinematic.css;
+   ornamental radial accent kept here as a non-conflicting addition
    ═══════════════════════════════════════════════════════════════ */
 
-.metric {
-  position: relative;
-  border-radius: var(--r-xl) !important;
-  border: 1px solid var(--border) !important;
-  background: var(--surface-1) !important;
-  overflow: hidden;
-  transition: border-color 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
-}
 .metric::after {
-  /* Subtle radial accent in the corner */
   content: '';
   position: absolute;
   inset-inline-end: -30px;
@@ -149,10 +131,6 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 320ms var(--ease-out);
-}
-.metric:hover {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border)) !important;
-  box-shadow: var(--shadow-card-hover) !important;
 }
 .metric:hover::after { opacity: 1; }
 

@@ -141,14 +141,15 @@ img, svg, video, canvas, iframe {
    ═══════════════════════════════════════════════════════════════ */
 
 .page-title {
-  font-size: clamp(20px, 4.5vw, 28px) !important;
-  line-height: 1.25 !important;
+  font-size: clamp(20px, 4.5vw, 28px);
+  line-height: 1.32;
   letter-spacing: -0.015em;
   text-wrap: balance;
+  padding-block-end: 0.06em;
 }
 .page-subtitle {
-  font-size: clamp(13px, 2.6vw, 15px) !important;
-  line-height: 1.55 !important;
+  font-size: clamp(13px, 2.6vw, 15px);
+  line-height: 1.6;
   text-wrap: pretty;
 }
 
