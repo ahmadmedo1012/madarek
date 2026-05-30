@@ -1,0 +1,9 @@
+/* ===================================================================
+   Theme Dark - Additional dark mode overrides
+   Most theming is handled by token swap in tokens.css.
+   This file is for component-level dark adjustments only.
+   =================================================================== */
+
+[data-theme='dark'] .landing-header {
+  background: rgba(26, 29, 35, 0.78);
+}

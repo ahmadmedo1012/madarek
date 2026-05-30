@@ -1,0 +1,13 @@
+/* ===================================================================
+   Theme Light - Additional light mode overrides
+   Most theming is handled by token swap in tokens.css.
+   This file is for component-level light adjustments only.
+   =================================================================== */
+
+[data-theme='light'] .landing-header {
+  background: rgba(248, 250, 251, 0.78);
+}
+
+[data-theme='light'] .auth-right {
+  background: #fafaf9;
+}

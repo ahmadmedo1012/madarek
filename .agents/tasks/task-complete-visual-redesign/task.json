@@ -1,0 +1,7 @@
+{
+  "task_id": "task-complete-visual-redesign",
+  "task_description": "Complete visual redesign of the Madarek platform. Ground-up rebuild of the design system: new color system (Navy Royal Blue + Muted Gold), new token system, new dark theme with warm grays, redesigned landing page, refined dashboard/internal pages, performance-optimized CSS architecture, and full RTL/responsive/accessibility compliance.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

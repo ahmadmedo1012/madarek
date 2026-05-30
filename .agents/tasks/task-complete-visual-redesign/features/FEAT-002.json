@@ -1,0 +1,45 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Complete Landing Page visual redesign and Dashboard/Internal Pages refinement. Implements the new restrained design language on the LandingPage component and ensures all dashboard components, sidebar, topbar, cards, tables, and buttons match the new design spec. Also handles the responsive.css update and performance-related CSS optimizations (lazy loading is in TSX, handled here too).",
+  "status": "pending",
+  "steps": [
+    "Step 1: Review the current LandingPage.tsx to understand which CSS classes it uses, then update landing.css to implement the new design: Hero section at 70-80vh with clean Navy Blue background, large Arabic title using IBM Plex Sans Arabic, brief description paragraph, gold (#C4A35A) CTA button, clean background with an optional subtle SVG-based Islamic geometric pattern at 3-5% opacity (use a CSS-only repeating pattern via background-image with SVG data URI). Remove all glassmorphism effects, color-mix(), and excessive animations.",
+    "Step 2: In landing.css, ensure the stats bar section (.kpi-strip) shows 4 key numbers in a clean card with minimal decoration - no glassmorphism, just a solid surface-1 background, subtle border, clean typography. The features section uses 3-4 simple cards with icon + title + description, no gradient icon backgrounds, no glow effects.",
+    "Step 3: In landing.css, style the 'about' section, testimonials, and final CTA section with the new restrained design: Navy gradient background for CTA, gold button, large spacing between sections. Remove floating shapes, dot grids, and particle effects. Keep the reveal-on-scroll animation system (used by Reveal component) but simplify it.",
+    "Step 4: Update components.css cards section to match the new spec: border-radius 12px (not 16px/20px), padding 20px (not 24px+), lighter shadows (only shadow-sm on rest, shadow-md on hover), subtle 1px borders, hover effect = only border-color changes to accent (no transform, no translateY). Remove all ::before pseudo-element highlights on cards.",
+    "Step 5: Update components.css buttons to match spec: primary buttons at 38px height, secondary at 34px, border-radius 8px (not pill-shaped/full), font-weight 600. Remove the forced border-radius: var(--r-full) from stitch-canonical. Keep all button variant classes (.primary, .ghost, .outline, .danger, .sm).",
+    "Step 6: Update components.css tables (.tbl) to be thinner: reduce padding in th/td, lower row height, quiet hover (just a subtle background change, no color-mix). Clean, minimal header styling.",
+    "Step 7: Update base.css sidebar to 240px width (was 264px) and topbar to 56px height (was 64px). Ensure all sidebar nav items, brand section, and footer use the new simplified tokens.",
+    "Step 8: Update responsive.css to ensure full responsiveness at all 4 breakpoints: 375px (small phone), 768px (tablet), 1024px (laptop), 1440px (desktop). Remove all color-mix() calls. Ensure touch targets remain 44px minimum on coarse pointers. Maintain safe-area-inset support for iOS.",
+    "Step 9: Add loading='lazy' to images in LandingPage.tsx (except the hero image which should be loading='eager'). The hero img already has loading='eager', verify other images in the component.",
+    "Step 10: Add prefers-reduced-motion handling in the new CSS files - ensure all animation and transition properties have reduced-motion fallbacks. The existing @media (prefers-reduced-motion: reduce) blocks should be preserved and consolidated into each relevant file.",
+    "Step 11: Verify that theme switching works without flash by checking the inline script in index.html reads 'madarek-theme' from localStorage and sets data-theme before paint. No changes needed if it already works - just confirm the script references the correct attribute name.",
+    "Step 12: Ensure all semantic HTML is maintained in LandingPage.tsx - proper heading hierarchy (h1 > h2 > h3), landmark roles (main, nav, header, footer, section with aria-labels), and correct use of figure/figcaption for the hero image.",
+    "Step 13: Verify keyboard navigation works by checking :focus-visible styles are defined in the new CSS for all interactive elements (buttons, links, nav-items, tabs, inputs). The focus ring should use the accent color at reduced opacity."
+  ],
+  "acceptance_criteria": [
+    "Landing hero section is 70-80vh height with Navy Blue primary treatment",
+    "CTA buttons on landing use gold (#C4A35A) color",
+    "No glassmorphism (backdrop-filter: blur) remains on landing page elements",
+    "Cards use 12px border-radius, 20px padding, hover changes only border-color",
+    "Primary buttons are 38px height with 8px border-radius",
+    "Sidebar is 240px wide, topbar is 56px high",
+    "Tables have reduced padding and quiet hover effects",
+    "All images except hero have loading='lazy' attribute",
+    "prefers-reduced-motion disables all animations and transitions",
+    "Full RTL layout maintained (no physical direction properties without logical equivalents)",
+    ":focus-visible ring defined for all interactive elements",
+    "No color-mix() in responsive.css"
+  ],
+  "verification": [
+    "Grep landing.css for 'backdrop-filter' to confirm glassmorphism removed from landing",
+    "Grep all CSS for 'color-mix(' to re-confirm zero instances",
+    "Verify sidebar width is 240px in tokens/base by grep for 'sidebar-w'",
+    "Verify topbar height is 56px by grep for 'topbar-h'",
+    "Grep for 'prefers-reduced-motion' to confirm it exists in the new files",
+    "Grep LandingPage.tsx for 'loading' to verify lazy attributes are present"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

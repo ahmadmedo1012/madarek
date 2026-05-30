@@ -1,515 +1,137 @@
-/* ═══════════════════════════════════════════════════════════════
-   Responsive safety + premium mobile polish
-   Loaded after system.css. Plugs the most common mobile failures:
-   horizontal overflow, tables clipping, grids not stacking,
-   text spilling, fixed widths breaking.
-   ═══════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   Responsive - Mobile safety + breakpoints
+   =================================================================== */
 
-/* ── Universal overflow protection ────────────────────────────── */
-html, body {
-  overflow-x: clip;          /* modern, doesn't disable position: sticky */
-  max-width: 100vw;
-}
-body {
-  -webkit-overflow-scrolling: touch;
-  text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
+/* -- Universal overflow protection -- */
+html, body { overflow-x: clip; max-width: 100vw; }
+body { -webkit-overflow-scrolling: touch; text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 
-/* Grid/flex children should never push their parent wider than the viewport.
-   This is the single biggest fix for "text overflows the screen". */
-.grid > *,
-[class*="grid-"] > *,
-.flex > *,
-.row > *,
-.card > *,
-main > *,
-.main > *,
-.content-inner > *,
-.page > *,
-.page > * > *,
-.page-header > * {
-  min-width: 0;
-}
+.grid > *, [class*="grid-"] > *, .card > *, main > *, .main > *, .content-inner > *, .page > *, .page-header > * { min-width: 0; }
 
-/* Strings that shouldn't break layout on phone */
-.page-title,
-.page-subtitle,
-.section-title,
-h1, h2, h3,
-p, .lede, .desc,
-.card p,
-.card span,
-.card div {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
+.page-title, .page-subtitle, .section-title, h1, h2, h3, p { overflow-wrap: anywhere; word-break: break-word; }
+code, kbd, .tbl td { overflow-wrap: anywhere; }
 
-/* URLs / emails / long usernames inside cards */
-.email, .url, code, kbd, .tbl td {
-  overflow-wrap: anywhere;
-}
-
-/* Images and media never overflow */
-img, svg, video, canvas, iframe {
-  max-width: 100%;
-  height: auto;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   GRID STEPDOWNS — every grid-N reaches 1-col on small phones
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Grid stepdowns -- */
 @media (max-width: 720px) {
   .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
-
 @media (max-width: 480px) {
-  .grid-4,
-  .grid-3,
-  .grid-2 {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: var(--sp-3) !important;
-  }
-  .page-title {
-    font-size: 20px !important;
-  }
-  .metric {
-    min-height: 80px;
-  }
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: minmax(0, 1fr) !important; gap: var(--sp-3) !important; }
+  .page-title { font-size: 20px !important; }
+  .metric { min-height: 80px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TABLES — auto-scroll wrapper, sticky first column on mobile
-   ═══════════════════════════════════════════════════════════════ */
-
-/* If a .tbl is not already inside a .tbl-wrap, wrap behavior via
-   the parent .card / .panel auto-scrolls horizontally. */
-.card:has(> .tbl),
-.panel:has(> .tbl),
-.card-body:has(> .tbl) {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.tbl {
-  min-width: 100%;
-}
-
+/* -- Tables -- */
+.card:has(> .tbl), .panel:has(> .tbl) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tbl { min-width: 100%; }
 @media (max-width: 640px) {
-  .tbl th, .tbl td {
-    padding: var(--sp-2) var(--sp-3) !important;
-    font-size: var(--fs-sm);
-  }
-  .tbl-wrap {
-    border-radius: var(--r-md);
-    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 24px), transparent);
-            mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 24px), transparent);
-  }
+  .tbl th, .tbl td { padding: var(--sp-2) var(--sp-3) !important; font-size: var(--fs-sm); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PAGE LAYOUT — content padding adapts cleanly
-   ═══════════════════════════════════════════════════════════════ */
+/* -- Page layout -- */
+.content-inner { max-width: var(--content-max-w); margin-inline: auto; width: 100%; }
+@media (max-width: 1024px) { .content { padding-inline: var(--sp-5); } }
+@media (max-width: 768px) { .content { padding-inline: var(--sp-4); } }
+@media (max-width: 480px) { .content { padding-block: var(--sp-3) var(--sp-10); padding-inline: var(--sp-3); } .page { gap: var(--sp-3) !important; } .page-header { gap: var(--sp-2) !important; } }
 
-.content-inner {
-  max-width: var(--content-max-w);
-  margin-inline: auto;
-  width: 100%;
-}
+/* -- Typography fluid -- */
+.page-title { font-size: clamp(20px, 4.5vw, 28px) !important; line-height: 1.25 !important; text-wrap: balance; }
+.page-subtitle { font-size: clamp(13px, 2.6vw, 15px) !important; line-height: 1.55 !important; }
+.kpi-value, .metric-value, .stat-value, [data-numeric="true"] { white-space: nowrap; }
 
-@media (max-width: 1024px) {
-  .content { padding-inline: var(--sp-5); }
-}
-@media (max-width: 768px) {
-  .content { padding-inline: var(--sp-4); }
-}
-@media (max-width: 480px) {
-  .content {
-    padding-block: var(--sp-3) var(--sp-10);
-    padding-inline: var(--sp-3);
-  }
-  .page { gap: var(--sp-3) !important; }
-  .page-header { gap: var(--sp-2) !important; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   TYPOGRAPHY — fluid mobile scaling
-   ═══════════════════════════════════════════════════════════════ */
-
-.page-title {
-  font-size: clamp(20px, 4.5vw, 28px) !important;
-  line-height: 1.25 !important;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
-}
-.page-subtitle {
-  font-size: clamp(13px, 2.6vw, 15px) !important;
-  line-height: 1.55 !important;
-  text-wrap: pretty;
-}
-
-/* Long Arabic numerals + percentages should never wrap mid-token */
-.kpi-value, .metric-value, .stat-value, [data-numeric="true"] {
-  white-space: nowrap;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SIDEBAR — mobile drawer refinement
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Sidebar mobile -- */
 @media (max-width: 900px) {
-  .sidebar {
-    width: min(320px, 86vw) !important;
-    max-width: 86vw;
-    border-radius: var(--r-2xl) 0 0 var(--r-2xl);
-    box-shadow: -24px 0 60px rgba(0, 0, 0, 0.30) !important;
-  }
-  .sidebar.open .nav-item {
-    /* Subtle stagger entrance for the nav links inside the drawer */
-    animation: drawer-item-in 360ms var(--ease-out) both;
-  }
-  .sidebar.open .nav-item:nth-child(1) { animation-delay: 40ms; }
-  .sidebar.open .nav-item:nth-child(2) { animation-delay: 80ms; }
-  .sidebar.open .nav-item:nth-child(3) { animation-delay: 120ms; }
-  .sidebar.open .nav-item:nth-child(4) { animation-delay: 160ms; }
-  .sidebar.open .nav-item:nth-child(5) { animation-delay: 200ms; }
+  .sidebar { width: min(320px, 86vw) !important; max-width: 86vw; border-radius: var(--radius-xl) 0 0 var(--radius-xl); box-shadow: var(--shadow-lg) !important; }
 }
 
-@keyframes drawer-item-in {
-  from { opacity: 0; transform: translateX(8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sidebar.open .nav-item { animation: none !important; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   TOPBAR — refined mobile behaviour
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Topbar mobile -- */
 @media (max-width: 600px) {
-  .topbar {
-    padding-inline: var(--sp-3) !important;
-    gap: var(--sp-2) !important;
-    height: 52px !important;
-  }
-  .topbar-search {
-    /* Hide full search on phone — use the global search modal trigger instead */
-    display: none !important;
-  }
-  .topbar-mobile-search {
-    display: inline-flex !important;
-  }
+  .topbar { padding-inline: var(--sp-3) !important; gap: var(--sp-2) !important; height: 52px !important; }
+  .topbar-search { display: none !important; }
+  .topbar-mobile-search { display: inline-flex !important; }
   .topbar-actions { gap: var(--sp-1) !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CARDS — phone breathing room
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Cards mobile -- */
 @media (max-width: 480px) {
-  .card {
-    padding: var(--sp-4) !important;
-    border-radius: var(--r-lg) !important;
-  }
+  .card { padding: var(--sp-4) !important; border-radius: var(--r-lg) !important; }
   .metric { padding: var(--sp-3) !important; }
-  .auth-glass-card { padding: var(--sp-5) !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FORMS — mobile-safe inputs
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Forms mobile -- */
 @media (max-width: 600px) {
-  /* Prevent iOS zoom on focus — inputs need ≥16px font-size */
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-  select,
-  textarea {
-    font-size: 16px !important;
-  }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea { font-size: 16px !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TOUCH TARGETS — universal 44px floor on coarse pointers
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Touch targets -- */
 @media (pointer: coarse) {
-  button, a.btn, .btn,
-  [role="button"],
-  .nav-item,
-  .tab,
-  .pill {
-    min-height: 44px;
-  }
+  button, a.btn, .btn, [role="button"], .nav-item, .tab, .pill { min-height: 44px; }
   .icon-btn { min-width: 44px; min-height: 44px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   LONG-FORM CONTENT — readable line lengths everywhere
-   ═══════════════════════════════════════════════════════════════ */
+/* -- Long-form content -- */
+.prose, .article-body, .lecture-body, .research-body { max-width: 72ch; line-height: 1.75; }
 
-.prose,
-.article-body,
-.lecture-body,
-.research-body {
-  max-width: 72ch;
-  line-height: 1.75;
-}
-.prose p, .article-body p { margin-block: 0.85em; }
-
-/* ═══════════════════════════════════════════════════════════════
-   SAFE-AREA PADDING — iOS notch / Android nav bar
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Safe area -- */
 @supports (padding: env(safe-area-inset-bottom)) {
   .sidebar { padding-bottom: env(safe-area-inset-bottom); }
   .content { padding-bottom: max(var(--sp-12), env(safe-area-inset-bottom)); }
   .topbar { padding-top: env(safe-area-inset-top); }
 }
+@media (max-width: 640px) { .content { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important; } }
 
-/* Safe area + bottom-nav accounting */
-.content {
-  padding-bottom: calc(var(--sp-12) + env(safe-area-inset-bottom, 0px));
-}
-@media (max-width: 640px) {
-  .content {
-    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   LANDING PAGE — final mobile pass
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Landing mobile -- */
 @media (max-width: 1024px) {
-  .landing-hero {
-    flex-direction: column !important;
-    text-align: center;
-  }
-  .landing-hero-img {
-    max-width: 100%;
-  }
+  .landing-hero { flex-direction: column !important; text-align: center; }
+  .landing-hero-img { max-width: 100%; }
 }
-
 @media (max-width: 480px) {
-  .landing-shell {
-    padding-inline: var(--sp-4) !important;
-  }
+  .landing-shell { padding-inline: var(--sp-4) !important; }
   .landing-hero { padding-block: var(--sp-6) !important; }
-  .landing-features {
-    padding-block: var(--sp-8) !important;
-  }
-  .landing-features-title {
-    font-size: clamp(22px, 6vw, 28px) !important;
-  }
-  /* On phone, the kpi-cell flex-row would be cramped; let it stack */
-  .kpi-cell {
-    flex-direction: row;
-    padding: var(--sp-3) var(--sp-4) !important;
-  }
-  /* Ministry strip wraps cleanly */
-  .ministry-strip-inner {
-    font-size: 11.5px;
-    flex-wrap: wrap;
-    line-height: 1.4;
-  }
+  .landing-features { padding-block: var(--sp-8) !important; }
+  .landing-features-title { font-size: clamp(22px, 6vw, 28px) !important; }
+  .kpi-cell { flex-direction: row; padding: var(--sp-3) var(--sp-4) !important; }
+  .ministry-strip-inner { font-size: 11.5px; flex-wrap: wrap; line-height: 1.4; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TRAINING PAGES — mobile responsiveness
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Training pages -- */
 @media (max-width: 640px) {
-  .track-grid {
-    grid-template-columns: 1fr !important;
-    gap: var(--sp-3) !important;
-  }
-  .track-card {
-    padding: var(--sp-4);
-    border-radius: var(--r-xl);
-  }
-  .track-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: var(--sp-4);
-    border-radius: var(--r-xl);
-    gap: var(--sp-3);
-  }
-  .track-hero-icon {
-    width: 56px;
-    height: 56px;
-  }
-  .track-hero-title {
-    font-size: 20px !important;
-  }
-  .track-hero-meta {
-    gap: 4px;
-  }
-  .badge-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: var(--sp-3) !important;
-  }
-  .badge-tile {
-    padding: var(--sp-4);
-    border-radius: var(--r-lg);
-  }
-  .leaderboard-row {
-    padding: var(--sp-2) var(--sp-3);
-    gap: var(--sp-2);
-  }
-  .leaderboard-tier {
-    display: none;
-  }
+  .track-grid { grid-template-columns: 1fr !important; gap: var(--sp-3) !important; }
+  .track-card { padding: var(--sp-4); border-radius: var(--r-xl); }
+  .track-hero { flex-direction: column; align-items: flex-start; padding: var(--sp-4); border-radius: var(--r-xl); gap: var(--sp-3); }
+  .badge-grid { grid-template-columns: repeat(2, 1fr) !important; gap: var(--sp-3) !important; }
+  .grid-auto-260 { grid-template-columns: 1fr !important; }
 }
 
+/* -- Filter bar scroll -- */
+@media (max-width: 640px) {
+  .filter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; padding-bottom: var(--sp-2); }
+  .filter-bar > * { scroll-snap-align: start; flex-shrink: 0; }
+}
+
+/* -- Auth mobile -- */
 @media (max-width: 480px) {
-  .badge-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  .track-card-icon {
-    width: 40px;
-    height: 40px;
-  }
-  .track-card-summary {
-    -webkit-line-clamp: 1;
-  }
-  .lesson-row {
-    padding: var(--sp-2) var(--sp-3);
-    gap: var(--sp-2);
-  }
-  .lesson-row-num {
-    width: 30px;
-    height: 30px;
-    font-size: 12px;
-  }
+  .auth-glass-shell, .auth-shell { padding: var(--sp-4) !important; align-items: flex-start; padding-top: var(--sp-8) !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   DASHBOARD CARDS — mobile stacking refinements
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 640px) {
-  .grid-4,
-  .grid-3 {
-    gap: var(--sp-3) !important;
-  }
-  .metric {
-    padding: var(--sp-4) !important;
-  }
-  .grid-auto-260 {
-    grid-template-columns: 1fr !important;
-  }
+/* -- Forms stack -- */
+@media (max-width: 600px) {
+  .form-row, .form-grid-2, .form-grid-3 { grid-template-columns: 1fr !important; gap: var(--sp-3) !important; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FILTER BAR — horizontal scroll with snap on mobile
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 640px) {
-  .filter-bar {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-    padding-bottom: var(--sp-2);
-  }
-  .filter-bar > * {
-    scroll-snap-align: start;
-    flex-shrink: 0;
-  }
+/* -- Modal mobile -- */
+@media (max-width: 600px) {
+  [role="dialog"], .dialog, .modal { width: calc(100vw - 24px) !important; max-width: 480px !important; max-height: 86vh !important; overflow-y: auto; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   BOTTOM NAV — glassmorphism + safe area
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Bottom nav safe area -- */
 @supports (padding: env(safe-area-inset-bottom)) {
-  .bottom-nav {
-    padding-bottom: max(var(--sp-2), env(safe-area-inset-bottom));
-    background: var(--glass-bg);
-    -webkit-backdrop-filter: saturate(140%) blur(16px);
-    backdrop-filter: saturate(140%) blur(16px);
-    border-top: 1px solid var(--glass-border);
-  }
+  .bottom-nav { padding-bottom: max(var(--sp-2), env(safe-area-inset-bottom)); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SIDEBAR OVERLAY — glassmorphism backdrop
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 900px) {
-  .sidebar-backdrop {
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   AUTH PAGE — mobile breathing
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 480px) {
-  .auth-glass-shell, .auth-shell {
-    padding: var(--sp-4) !important;
-    align-items: flex-start;
-    padding-top: var(--sp-8) !important;
-  }
-  .auth-glass-title { font-size: clamp(20px, 5.5vw, 24px) !important; }
-  .auth-glass-subtitle { font-size: 13px !important; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FORM ROWS — stack on phone instead of squashing
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 600px) {
-  .form-row,
-  .form-grid-2,
-  .form-grid-3 {
-    grid-template-columns: 1fr !important;
-    gap: var(--sp-3) !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MODAL / DIALOG — mobile-safe sizing
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 600px) {
-  [role="dialog"],
-  .dialog,
-  .modal {
-    width: calc(100vw - 24px) !important;
-    max-width: 480px !important;
-    max-height: 86vh !important;
-    overflow-y: auto;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FLOATING ACTION BUTTONS / FIXED ELEMENTS
-   ═══════════════════════════════════════════════════════════════ */
-
-@media (max-width: 600px) {
-  .fab, [data-fab] {
-    bottom: max(var(--sp-4), env(safe-area-inset-bottom));
-    inset-inline-end: var(--sp-4);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PRINT — a calmer pass (already in system.css; this just ensures
-   anything new added below doesn't print noise)
-   ═══════════════════════════════════════════════════════════════ */
-
+/* -- Print -- */
 @media print {
-  .grid-2, .grid-3, .grid-4 {
-    grid-template-columns: 1fr 1fr !important;
-  }
-  .ministry-strip,
-  .landing-burger,
-  .landing-mobile-menu { display: none !important; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr 1fr !important; }
+  .ministry-strip, .landing-burger, .landing-mobile-menu { display: none !important; }
 }

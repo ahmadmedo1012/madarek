@@ -1,189 +1,175 @@
-/* ═════════════════════════════════════════════════════════════
-   CSS Cascade Layer order — declared once, globally.
-   Later layers win for NORMAL rules. (Files are migrated into these
-   layers incrementally; until a file opts in it stays in the implicit
-   outer layer, which still wins over any named layer — so this
-   declaration is safe and additive with zero regression.)
-   ───────────────────────────────────────────────────────────── */
-@layer tokens, base, components, pages, overrides;
-
-/* ═════════════════════════════════════════════════════════════
-   Madarek Design System — Unified Design Tokens
+/* ===================================================================
+   Madarek Design System - Unified Design Tokens
    Single source of truth for the design language.
    Themed via [data-theme="dark"|"light"].
-   ───────────────────────────────────────────────────────────── */
+   =================================================================== */
+@layer tokens, base, components, pages, overrides;
 
 :root {
-  /* ── Color Palette: Primary (Blue) ────────────────────── */
-  --color-primary-50: #EBF1FD;
-  --color-primary-100: #D1DFFA;
-  --color-primary-200: #A8C3F5;
-  --color-primary-300: #7BA5EF;
-  --color-primary-400: #5B8DEF;
-  --color-primary-500: #4A7DE0;
-  --color-primary-600: #3B6CC7;
-  --color-primary-700: #2D55A3;
-  --color-primary-800: #1F3E7F;
-  --color-primary-900: #142A5B;
+  /* -- Color Palette: Primary (Navy Royal Blue) -- */
+  --color-primary-50: #eef3fa;
+  --color-primary-100: #d4e0f3;
+  --color-primary-200: #a9c1e7;
+  --color-primary-300: #7ea2db;
+  --color-primary-400: #4a7cc8;
+  --color-primary-500: #2a5a9e;
+  --color-primary-600: #1E3A5F;
+  --color-primary-700: #1a3354;
+  --color-primary-800: #142844;
+  --color-primary-900: #0e1d33;
 
-  /* ── Color Palette: Teal (Accent) ─────────────────────── */
-  --color-teal-50: #E6FAF8;
-  --color-teal-100: #B3F0EB;
-  --color-teal-200: #80E6DD;
-  --color-teal-300: #4ECDC4;
-  --color-teal-400: #3DBDB4;
+  /* -- Color Palette: Secondary (Muted Gold) -- */
+  --color-gold-50: #faf6ed;
+  --color-gold-100: #f2e8d0;
+  --color-gold-200: #e6d1a1;
+  --color-gold-300: #d4b06a;
+  --color-gold-400: #C4A35A;
+  --color-gold-500: #a88a3e;
+  --color-gold-600: #8a6f2e;
+
+  /* -- Color Palette: Accent (Teal) -- */
+  --color-teal-50: #e6faf8;
+  --color-teal-100: #b3f0eb;
+  --color-teal-200: #80e6dd;
+  --color-teal-300: #4ecdc4;
+  --color-teal-400: #3dbdb4;
   --color-teal-500: #2DA69E;
-  --color-teal-600: #1E8F88;
+  --color-teal-600: #1e8f88;
 
-  /* ── Color Palette: Gold ──────────────────────────────── */
-  --color-gold-50: #FDF5E8;
-  --color-gold-100: #F5E0B8;
-  --color-gold-200: #EDCB88;
-  --color-gold-300: #D4A94A;
-  --color-gold-400: #C8962E;
-  --color-gold-500: #A87A24;
-  --color-gold-600: #885F1A;
+  /* -- Color Palette: Neutral (10 shades) -- */
+  --color-neutral-50: #f8fafb;
+  --color-neutral-100: #f1f4f7;
+  --color-neutral-200: #e4e9ef;
+  --color-neutral-300: #cbd3dc;
+  --color-neutral-400: #9ba6b4;
+  --color-neutral-500: #6b7a8d;
+  --color-neutral-600: #4a5567;
+  --color-neutral-700: #333d4b;
+  --color-neutral-800: #1e2530;
+  --color-neutral-900: #0f1117;
 
-  /* ── Color Palette: Neutral ───────────────────────────── */
-  --color-neutral-50: #F8FAFB;
-  --color-neutral-100: #F1F4F7;
-  --color-neutral-200: #E4E9EF;
-  --color-neutral-300: #CBD3DC;
-  --color-neutral-400: #9BA6B4;
-  --color-neutral-500: #6B7A8D;
-  --color-neutral-600: #4A5567;
-  --color-neutral-700: #333D4B;
-  --color-neutral-800: #1E2530;
-  --color-neutral-900: #0F1117;
-
-  /* ── Brand Aliases (backward compat) ──────────────────── */
+  /* -- Brand Aliases (backward compat) -- */
   --brand-blue: var(--color-primary-600);
   --brand-blue-deep: var(--color-primary-900);
-  --brand-purple: var(--color-primary-700);
-  --brand-gold: var(--color-gold-300);
+  --brand-purple: #5b4a9e;
+  --brand-gold: var(--color-gold-400);
 
-  /* ── Material Design 3 Tokens (backward compat) ───────── */
-  --md-primary:                     var(--color-primary-600);
-  --md-on-primary:                  #ffffff;
-  --md-primary-container:           var(--color-primary-400);
-  --md-on-primary-container:        #ffffff;
-  --md-primary-fixed:               var(--color-primary-100);
-  --md-primary-fixed-dim:           var(--color-primary-200);
-  --md-on-primary-fixed:            var(--color-primary-900);
-  --md-on-primary-fixed-variant:    var(--color-primary-700);
+  /* -- Material Design 3 Tokens (backward compat) -- */
+  --md-primary: var(--color-primary-600);
+  --md-on-primary: #ffffff;
+  --md-primary-container: var(--color-primary-400);
+  --md-on-primary-container: #ffffff;
+  --md-primary-fixed: var(--color-primary-100);
+  --md-primary-fixed-dim: var(--color-primary-200);
+  --md-on-primary-fixed: var(--color-primary-900);
+  --md-on-primary-fixed-variant: var(--color-primary-700);
 
-  /* ── MD3 Secondary (Gold) ─────────────────────────────── */
-  --md-secondary:                   var(--color-gold-400);
-  --md-on-secondary:                #ffffff;
-  --md-secondary-container:         var(--color-gold-300);
-  --md-on-secondary-container:      var(--color-gold-600);
-  --md-secondary-fixed:             var(--color-gold-100);
-  --md-secondary-fixed-dim:         var(--color-gold-200);
-  --md-on-secondary-fixed:          var(--color-gold-600);
-  --md-on-secondary-fixed-variant:  var(--color-gold-500);
+  --md-secondary: var(--color-gold-400);
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: var(--color-gold-300);
+  --md-on-secondary-container: var(--color-gold-600);
+  --md-secondary-fixed: var(--color-gold-100);
+  --md-secondary-fixed-dim: var(--color-gold-200);
+  --md-on-secondary-fixed: var(--color-gold-600);
+  --md-on-secondary-fixed-variant: var(--color-gold-500);
 
-  /* ── MD3 Tertiary (Teal / AI) ─────────────────────────── */
-  --md-tertiary:                    var(--color-teal-300);
-  --md-on-tertiary:                 #ffffff;
-  --md-tertiary-container:          var(--color-teal-400);
-  --md-on-tertiary-container:       #ffffff;
-  --md-tertiary-fixed:              var(--color-teal-100);
-  --md-tertiary-fixed-dim:          var(--color-teal-200);
-  --md-on-tertiary-fixed:           var(--color-teal-600);
-  --md-on-tertiary-fixed-variant:   var(--color-teal-500);
+  --md-tertiary: var(--color-teal-300);
+  --md-on-tertiary: #ffffff;
+  --md-tertiary-container: var(--color-teal-400);
+  --md-on-tertiary-container: #ffffff;
+  --md-tertiary-fixed: var(--color-teal-100);
+  --md-tertiary-fixed-dim: var(--color-teal-200);
+  --md-on-tertiary-fixed: var(--color-teal-600);
+  --md-on-tertiary-fixed-variant: var(--color-teal-500);
 
-  /* ── Error ────────────────────────────────────────────── */
-  --md-error:                       #ba1a1a;
-  --md-on-error:                    #ffffff;
-  --md-error-container:             #ffdad6;
-  --md-on-error-container:          #93000a;
+  --md-error: #ba1a1a;
+  --md-on-error: #ffffff;
+  --md-error-container: #ffdad6;
+  --md-on-error-container: #93000a;
 
-  /* ── Surface (Material 3) ─────────────────────────────── */
-  --md-surface:                     var(--color-neutral-50);
-  --md-on-surface:                  var(--color-neutral-800);
-  --md-on-surface-variant:          var(--color-neutral-600);
-  --md-surface-variant:             var(--color-neutral-200);
-  --md-surface-bright:              var(--color-neutral-50);
-  --md-surface-dim:                 var(--color-neutral-300);
-  --md-surface-container-lowest:    #ffffff;
-  --md-surface-container-low:       var(--color-neutral-100);
-  --md-surface-container:           var(--color-neutral-200);
-  --md-surface-container-high:      var(--color-neutral-300);
-  --md-surface-container-highest:   var(--color-neutral-300);
-  --md-background:                  var(--color-neutral-50);
-  --md-on-background:               var(--color-neutral-800);
+  --md-surface: var(--color-neutral-50);
+  --md-on-surface: var(--color-neutral-800);
+  --md-on-surface-variant: var(--color-neutral-600);
+  --md-surface-variant: var(--color-neutral-200);
+  --md-surface-bright: var(--color-neutral-50);
+  --md-surface-dim: var(--color-neutral-300);
+  --md-surface-container-lowest: #ffffff;
+  --md-surface-container-low: var(--color-neutral-100);
+  --md-surface-container: var(--color-neutral-200);
+  --md-surface-container-high: var(--color-neutral-300);
+  --md-surface-container-highest: var(--color-neutral-300);
+  --md-background: var(--color-neutral-50);
+  --md-on-background: var(--color-neutral-800);
 
-  /* ── Outline ──────────────────────────────────────────── */
-  --md-outline:                     var(--color-neutral-400);
-  --md-outline-variant:             var(--color-neutral-300);
+  --md-outline: var(--color-neutral-400);
+  --md-outline-variant: var(--color-neutral-300);
 
-  /* ── Inverse ──────────────────────────────────────────── */
-  --md-inverse-surface:             var(--color-neutral-800);
-  --md-inverse-on-surface:          var(--color-neutral-100);
-  --md-inverse-primary:             var(--color-primary-300);
+  --md-inverse-surface: var(--color-neutral-800);
+  --md-inverse-on-surface: var(--color-neutral-100);
+  --md-inverse-primary: var(--color-primary-300);
 
-  /* ── Spacing (4px base) ───────────────────────────────── */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-7: 28px;
-  --space-8: 32px;
+  /* -- Spacing (simplified 8-step scale) -- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* Backward-compatible spacing aliases */
+  --space-1: var(--sp-1);
+  --space-2: var(--sp-2);
+  --space-3: var(--sp-3);
+  --space-4: var(--sp-4);
+  --space-5: var(--sp-5);
+  --space-6: var(--sp-6);
+  --space-7: var(--sp-7);
+  --space-8: var(--sp-8);
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
 
-  /* Backward-compatible spacing aliases */
-  --sp-1: var(--space-1);
-  --sp-2: var(--space-2);
-  --sp-3: var(--space-3);
-  --sp-4: var(--space-4);
-  --sp-5: var(--space-5);
-  --sp-6: var(--space-6);
-  --sp-7: var(--space-7);
-  --sp-8: var(--space-8);
-  --sp-10: var(--space-10);
-  --sp-12: var(--space-12);
-  --sp-16: var(--space-16);
-
-  /* ── Radius ───────────────────────────────────────────── */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 20px;
+  /* -- Radius (simplified) -- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
   /* Backward-compatible radius aliases */
-  --r-xs: var(--radius-sm);
-  --r-sm: 6px;
+  --r-xs: 4px;
+  --r-sm: var(--radius-sm);
   --r-md: var(--radius-md);
   --r-lg: var(--radius-lg);
   --r-xl: var(--radius-xl);
   --r-2xl: var(--radius-xl);
-  --r-3xl: var(--radius-2xl);
+  --r-3xl: var(--radius-xl);
   --r-full: var(--radius-full);
 
   /* Stitch radii aliases */
   --st-r-default: var(--radius-sm);
-  --st-r-lg:      var(--radius-md);
-  --st-r-xl:      var(--radius-lg);
-  --st-r-2xl:     var(--radius-xl);
-  --st-r-full:    var(--radius-full);
+  --st-r-lg: var(--radius-md);
+  --st-r-xl: var(--radius-lg);
+  --st-r-2xl: var(--radius-xl);
+  --st-r-full: var(--radius-full);
+  --radius-2xl: var(--radius-xl);
 
-  /* ── Typography ───────────────────────────────────────── */
+  /* -- Typography -- */
   --fs-xxs: 11px;
   --fs-xs: 12px;
-  --fs-sm: 13px;
-  --fs-base: 14px;
+  --fs-sm: 14px;
   --fs-md: 15px;
+  --fs-base: 16px;
   --fs-lg: 18px;
-  --fs-xl: 22px;
-  --fs-2xl: 28px;
-  --fs-3xl: 36px;
-  --fs-4xl: 44px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 40px;
+  --fs-4xl: 48px;
 
   /* Premium Arabic Typography Hierarchy */
   --fs-display-lg: clamp(32px, 5vw, 48px);
@@ -199,13 +185,12 @@
   --fw-semibold: 600;
   --fw-bold: 700;
 
-  /* Line heights refined for Arabic display */
   --lh-tight: 1.3;
   --lh-snug: 1.4;
   --lh-base: 1.65;
   --lh-loose: 1.85;
 
-  /* ── Motion ──────────────────────────────────────────── */
+  /* -- Motion -- */
   --t-fast: 150ms;
   --t-base: 220ms;
   --t-slow: 320ms;
@@ -220,85 +205,83 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
-  /* Transition aliases */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
   --transition-slow: 350ms ease;
 
-  /* ── Layout ──────────────────────────────────────────── */
-  --sidebar-w: 264px;
+  /* -- Layout -- */
+  --sidebar-w: 240px;
   --sidebar-w-collapsed: 64px;
-  --topbar-h: 64px;
+  --topbar-h: 56px;
   --content-max-w: 1320px;
 
-  /* Stitch layout tokens */
-  --st-container-max:   1280px;
-  --st-gutter:          24px;
-  --st-margin-desktop:  64px;
-  --st-margin-mobile:   20px;
-  --st-unit:            8px;
+  --st-container-max: 1280px;
+  --st-gutter: 24px;
+  --st-margin-desktop: 64px;
+  --st-margin-mobile: 20px;
+  --st-unit: 8px;
 
-  /* ── Fonts ───────────────────────────────────────────── */
-  --font-sans: 'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system, sans-serif;
+  /* -- Fonts (only 2 families) -- */
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
   --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* ── Glassmorphism ───────────────────────────────────── */
+  /* -- Glassmorphism -- */
   --glass-bg: rgba(255, 255, 255, 0.06);
   --glass-bg-subtle: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-blur: 12px;
 
-  /* ── AI Glow Signature Effect ────────────────────────── */
-  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
+  /* -- AI Glow -- */
+  --ai-glow: 0 4px 20px rgba(0, 206, 209, 0.15);
   --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
 
-  /* ── Semantic Composition Tokens ─────────────────────── */
+  /* -- Semantic Composition Tokens -- */
   --transition-all: all var(--t-base) var(--ease);
-  --card-padding: var(--sp-5);
+  --card-padding: 20px;
   --section-gap: var(--sp-8);
 
-  /* ── Unified elevation scale (single source for depth) ── */
+  /* -- Elevation (3 levels only) -- */
   --el-1: var(--shadow-sm);
   --el-2: var(--shadow-md);
   --el-3: var(--shadow-lg);
-  --el-4: var(--shadow-xl);
+  --el-4: var(--shadow-lg);
   --el-5: 0 24px 64px -16px rgba(15, 23, 42, 0.22);
 }
 
-/* ═════════════════════════════════════════════════════════════
-   DARK THEME (default)
-   ═════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   DARK THEME
+   =================================================================== */
 :root,
 [data-theme='dark'] {
-  /* Surfaces */
-  --bg: #0f1117;
-  --surface-1: #161922;
-  --surface-2: #1e222e;
-  --surface-3: #283041;
+  /* Surfaces - warm gray */
+  --bg: #1a1d23;
+  --surface-1: #22262f;
+  --surface-2: #292e38;
+  --surface-3: #313742;
 
   /* Borders */
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.14);
 
   /* Text */
-  --text: #fafafa;
-  --text-muted: #b0b0b8;
-  --text-subtle: #909098;
+  --text: #e8eaed;
+  --text-muted: #9aa0a8;
+  --text-subtle: #6b7280;
 
   /* Accent (primary) */
   --accent: var(--color-primary-400);
   --accent-hover: var(--color-primary-300);
-  --accent-soft: rgba(91, 141, 239, 0.14);
-  --accent-border: rgba(91, 141, 239, 0.40);
+  --accent-soft: rgba(74, 124, 200, 0.14);
+  --accent-border: rgba(74, 124, 200, 0.40);
   --accent-fg: #ffffff;
 
   /* Gold */
-  --gold: var(--color-gold-300);
-  --gold-soft: rgba(200, 150, 46, 0.14);
-  --gold-hover: #f5d565;
+  --gold: var(--color-gold-400);
+  --gold-soft: rgba(196, 163, 90, 0.14);
+  --gold-hover: #d4b06a;
 
-  /* Amber accent */
+  /* Amber */
   --amber: #fbbf24;
   --amber-strong: #f59e0b;
   --amber-soft: rgba(245, 158, 11, 0.16);
@@ -314,18 +297,18 @@
   --info: #a3c9ff;
   --info-soft: rgba(163, 201, 255, 0.10);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.26);
-  --shadow-xl: 0 18px 48px rgba(0, 0, 0, 0.46), 0 6px 14px rgba(0, 0, 0, 0.30);
+  /* Shadows (3 levels) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.22), 0 1px 3px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.30), 0 2px 6px rgba(0, 0, 0, 0.20);
+  --shadow-xl: var(--shadow-lg);
 
-  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 6px rgba(0, 0, 0, 0.30);
-  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 10px 28px rgba(0, 0, 0, 0.38);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.20);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.28);
 
   /* Focus & Selection */
-  --focus-ring: 0 0 0 3px rgba(91, 141, 239, 0.30);
-  --selection-bg: rgba(91, 141, 239, 0.25);
+  --focus-ring: 0 0 0 3px rgba(74, 124, 200, 0.30);
+  --selection-bg: rgba(74, 124, 200, 0.25);
 
   /* Chart */
   --chart-grid: rgba(255, 255, 255, 0.05);
@@ -337,62 +320,67 @@
   --glass-border: rgba(255, 255, 255, 0.06);
 }
 
-/* ═════════════════════════════════════════════════════════════
+/* ===================================================================
    LIGHT THEME
-   ═════════════════════════════════════════════════════════════ */
+   =================================================================== */
 [data-theme='light'] {
-  --bg: var(--color-neutral-50);
+  /* Surfaces */
+  --bg: #f8fafb;
   --surface-1: #ffffff;
-  --surface-2: var(--color-neutral-100);
-  --surface-3: var(--color-neutral-200);
+  --surface-2: #f1f4f7;
+  --surface-3: #e4e9ef;
 
-  --border: var(--color-neutral-200);
-  --border-strong: var(--color-neutral-300);
+  /* Borders */
+  --border: #e4e9ef;
+  --border-strong: #cbd3dc;
 
-  --text: var(--color-neutral-800);
-  --text-muted: var(--color-neutral-600);
-  --text-subtle: var(--color-neutral-500);
+  /* Text */
+  --text: #1e2530;
+  --text-muted: #4a5567;
+  --text-subtle: #6b7a8d;
 
+  /* Accent */
   --accent: var(--color-primary-600);
   --accent-hover: var(--color-primary-700);
-  --accent-soft: rgba(59, 108, 199, 0.08);
-  --accent-border: rgba(59, 108, 199, 0.30);
+  --accent-soft: rgba(30, 58, 95, 0.08);
+  --accent-border: rgba(30, 58, 95, 0.30);
   --accent-fg: #ffffff;
 
-  --gold: var(--color-gold-400);
-  --gold-soft: rgba(200, 150, 46, 0.14);
-  --gold-hover: var(--color-gold-300);
+  /* Gold */
+  --gold: var(--color-gold-500);
+  --gold-soft: rgba(196, 163, 90, 0.12);
+  --gold-hover: var(--color-gold-400);
 
-  /* Amber accent */
+  /* Amber */
   --amber: #b45309;
   --amber-strong: #92400e;
   --amber-soft: rgba(245, 158, 11, 0.14);
   --amber-border: rgba(245, 158, 11, 0.40);
 
-  /* Semantic (light) */
+  /* Semantic */
   --success: #16a34a;
   --success-soft: rgba(22, 163, 74, 0.10);
   --warning: #c2410c;
   --warning-soft: rgba(194, 65, 12, 0.10);
-  --danger: var(--md-error);
+  --danger: #ba1a1a;
   --danger-soft: rgba(186, 26, 26, 0.10);
   --info: var(--color-primary-600);
-  --info-soft: rgba(59, 108, 199, 0.10);
+  --info-soft: rgba(30, 58, 95, 0.10);
 
   /* Shadows (light) */
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 2px 6px rgba(15, 23, 42, 0.06), 0 8px 18px rgba(15, 23, 42, 0.07);
-  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.08), 0 16px 36px rgba(15, 23, 42, 0.10);
-  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.10), 0 32px 64px rgba(15, 23, 42, 0.14);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07), 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 32px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+  --shadow-xl: var(--shadow-lg);
 
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.06);
-  --shadow-card-hover: 0 0 0 1px rgba(59, 108, 199, 0.08), 0 14px 34px -8px rgba(15, 23, 42, 0.16);
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 8px 24px rgba(15, 23, 42, 0.12);
 
-  /* Focus & Selection (light) */
-  --focus-ring: 0 0 0 3px rgba(59, 108, 199, 0.25);
-  --selection-bg: rgba(78, 205, 196, 0.20);
+  /* Focus & Selection */
+  --focus-ring: 0 0 0 3px rgba(30, 58, 95, 0.20);
+  --selection-bg: rgba(45, 166, 158, 0.20);
 
-  /* Chart (light) */
+  /* Chart */
   --chart-grid: rgba(15, 23, 42, 0.06);
   --chart-text: #8694AC;
 
@@ -402,9 +390,9 @@
   --glass-border: rgba(255, 255, 255, 0.80);
 }
 
-/* ═════════════════════════════════════════════════════════════
+/* ===================================================================
    REDUCED MOTION
-   ═════════════════════════════════════════════════════════════ */
+   =================================================================== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -412,9 +400,9 @@
   }
 }
 
-/* ═════════════════════════════════════════════════════════════
-   Typography Rules (consolidated from stitch-tokens.css)
-   ═════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   Typography Rules
+   =================================================================== */
 body {
   font-family: var(--font-sans);
   letter-spacing: -0.01em;

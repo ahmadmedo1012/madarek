@@ -1,0 +1,46 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Complete rebuild of the design token system and CSS architecture. This is the foundation that all other features depend on. Replaces the current fragmented 19-file CSS structure with a clean 7-file architecture. Rebuilds the color system from scratch with Navy Royal Blue primary, Muted Gold secondary, simplified spacing/radius/typography tokens, removes color-mix(), removes duplicate font families, and establishes proper dark/light themes with warm gray surfaces.",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Create new frontend/src/styles/tokens.css from scratch with the complete new design token system. This file replaces the current tokens.css entirely. Include: (a) @layer declaration order. (b) Primary color Navy Royal Blue (#1E3A5F) with limited shades (50,100,200,300,400,500,600,700,800,900). (c) Secondary color Muted Gold (#C4A35A) with limited shades. (d) One accent color for notifications/actions (teal #2DA69E). (e) 4 semantic colors: success (#16a34a/#3DD68C), warning (#c2410c/#F5A623), error (#ba1a1a/#F55353), info (blue-based). (f) 10 neutral shades from white (#ffffff) to black (#0f1117). (g) Simple spacing: --sp-1 (4px), --sp-2 (8px), --sp-3 (12px), --sp-4 (16px), --sp-5 (24px), --sp-6 (32px), --sp-7 (48px), --sp-8 (64px). (h) Simple radius: --radius-sm (6px), --radius-md (10px), --radius-lg (16px), --radius-xl (24px), --radius-full (9999px). (i) Font sizes: base 16px, sm 14px, lg 18px, xl 24px, 2xl 32px, 3xl 40px, plus xxs 11px, xs 12px, md 15px for backward compat. (j) Only 2 fonts: --font-sans: 'IBM Plex Sans Arabic', system-ui, sans-serif; --font-mono: 'Space Mono', ui-monospace, monospace. (k) 3 shadows only: sm, md, lg. (l) Motion tokens (t-fast, t-base, t-slow, easing curves). (m) Layout tokens (sidebar-w: 240px, topbar-h: 56px, content-max-w: 1320px). (n) IMPORTANT: Maintain all backward-compatible aliases (--r-sm, --r-md, etc. mapping to new values) so existing class-based CSS doesn't break.",
+    "Step 2: In the same tokens.css file, define [data-theme='dark'] with warm gray surfaces per the spec: --bg: #1a1d23, --surface-1: #22262f, --surface-2: #292e38, --surface-3: #313742. Text: --text: #e8eaed, --text-muted: #9aa0a8, --text-subtle: #6b7280. Borders: rgba(255,255,255,0.06). Shadows max opacity 0.25. All semantic colors adjusted for dark mode readability. No color-mix() anywhere - use pre-computed hex/rgba values.",
+    "Step 3: In the same tokens.css file, define [data-theme='light'] with: --bg: #f8fafb, --surface-1: #ffffff, --surface-2: #f1f4f7, --surface-3: #e4e9ef. Text: --text: #1e2530, --text-muted: #4a5567, --text-subtle: #6b7a8d. Borders: #e4e9ef. Light shadows. All using direct color values (no color-mix).",
+    "Step 4: Create new frontend/src/styles/reset.css with a minimal CSS reset (box-sizing, margin/padding reset, img/svg max-width, button font-family inherit, -webkit-font-smoothing, etc.). Move the reset rules currently in base.css into this file.",
+    "Step 5: Rewrite frontend/src/styles/base.css to contain ONLY the layout shell: body styles, #root flex, .sidebar (width 240px), .topbar (height 56px), .main, .content, .content-inner, scrollbar styles. Remove all the old verbose declarations. No color-mix(). Reference only the new token names. Sidebar border uses var(--border). The sidebar brand, nav items, footer - all using the new simplified tokens.",
+    "Step 6: Rewrite frontend/src/styles/components.css to be the single file for ALL reusable UI components: cards (border-radius 12px, padding 20px, lighter shadows, subtle borders, hover = border-color change only), buttons (38px primary height, 34px secondary, border-radius 8px, font-weight 600), tables (thinner design, lower row height, quiet hover), badges, pills, tabs, inputs, progress bars, alerts, avatars, metrics, chat, posts, etc. Remove all color-mix() calls - replace with pre-computed rgba values. Keep all existing class names for backward compatibility.",
+    "Step 7: Create new frontend/src/styles/layout.css for grid helpers (.grid-2, .grid-3, .grid-4, etc.) and page structural classes (.page, .page-header, .page-title, .page-subtitle, etc.). Move these from components.css.",
+    "Step 8: Rewrite frontend/src/styles/landing.css as the COMPLETE landing page stylesheet. Consolidate content from: landing.css, landing-pro.css, landing-auth-v3.css, premium.css (landing-specific parts), stitch-canonical.css (landing-specific parts). The new landing follows the spec: Hero section (70-80vh, large Arabic title, gold CTA, optional subtle Islamic geometric pattern at 3-5% opacity), stats bar (4 numbers), features section (3-4 items), about section, final CTA. Large white spaces, elegant Arabic font for headings, limited colors. No color-mix(). Remove glassmorphism effects.",
+    "Step 9: Create frontend/src/styles/pages.css for dashboard-specific and internal page styles. Consolidate from: dashboard.css, owner.css, pdf.css, notifications.css. Remove all color-mix(). Simplify the welcome card, GPA card, progress cards to use the new restrained design language.",
+    "Step 10: Create frontend/src/styles/theme-dark.css with any dark-mode-only overrides that cannot be handled by the token swap in tokens.css (e.g., specific component-level adjustments). Keep this minimal - most theming should be through tokens.",
+    "Step 11: Create frontend/src/styles/theme-light.css with any light-mode-only overrides. Keep minimal.",
+    "Step 12: Update frontend/src/main.tsx to import the new CSS file structure in correct order: tokens.css, reset.css, base.css, layout.css, components.css, pages.css, landing.css, theme-dark.css, theme-light.css. Remove imports of deleted files (stitch-tokens.css, stitch-canonical.css, system.css, elevation.css, interactions.css, polish.css, premium.css, landing-pro.css, landing-auth-v3.css, utilities.css).",
+    "Step 13: Update frontend/index.html Google Fonts link to load ONLY: IBM Plex Sans Arabic (weights 300,400,500,600,700) and Space Mono (weights 400,700). Remove Lexend and Outfit.",
+    "Step 14: Ensure frontend/src/styles/responsive.css is updated to work with the new token names and file structure. This file handles all responsive breakpoints (375px, 768px, 1024px, 1440px). Remove all color-mix() calls. Keep all the responsive logic but reference new tokens.",
+    "Step 15: Delete the now-unused CSS files by emptying them (leave a comment saying consolidated): stitch-tokens.css (already empty), stitch-canonical.css, system.css, elevation.css, interactions.css, polish.css, premium.css, landing-pro.css, landing-auth-v3.css, utilities.css, notifications.css, owner.css, pdf.css, dashboard.css. We empty rather than delete to avoid any potential import errors during transition."
+  ],
+  "acceptance_criteria": [
+    "tokens.css defines exactly ONE primary color family (Navy Royal Blue), ONE secondary (Muted Gold), ONE accent, 4 semantics, and 10 neutrals",
+    "No color-mix() function calls exist anywhere in any CSS file",
+    "Only 2 font families referenced: IBM Plex Sans Arabic and Space Mono",
+    "Dark theme uses warm gray backgrounds (#1a1d23, #22262f, #292e38, #313742) - never pure black",
+    "Spacing uses only --sp-1 through --sp-8 with values 4/8/12/16/24/32/48/64px",
+    "Radius uses only --radius-sm(6px), --radius-md(10px), --radius-lg(16px), --radius-xl(24px), --radius-full",
+    "Shadows limited to 3 levels: sm, md, lg",
+    "All backward-compatible aliases (--r-sm, --r-md, --r-lg, etc.) still resolve to valid values",
+    "main.tsx imports CSS in the correct cascade order",
+    "index.html loads only IBM Plex Sans Arabic + Space Mono from Google Fonts",
+    "CSS files total under 4000 lines (down from 12,394)",
+    "All existing CSS class names that are used in TSX files still have definitions"
+  ],
+  "verification": [
+    "Grep all CSS files for 'color-mix(' to confirm zero instances",
+    "Grep all CSS files for 'Lexend' and 'Outfit' to confirm removed",
+    "Verify tokens.css contains [data-theme='dark'] and [data-theme='light'] blocks",
+    "Verify main.tsx has valid import paths that correspond to existing CSS files",
+    "Count total CSS lines with wc -l to confirm significant reduction"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
