@@ -5,9 +5,13 @@
    =================================================================== */
 
 [data-theme='light'] .landing-header {
-  background: rgba(248, 250, 251, 0.78);
+  background: var(--surface-1);
 }
 
 [data-theme='light'] .auth-right {
   background: #fafaf9;
+}
+
+[data-theme='light'] .landing-hero::before {
+  opacity: 0.05;
 }

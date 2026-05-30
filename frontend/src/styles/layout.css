@@ -71,10 +71,16 @@
   transform: translateY(20px);
   transition: opacity var(--t-slow) var(--ease-out), transform var(--t-slow) var(--ease-out);
 }
+.reveal-up.in-view,
 .reveal-up.visible {
   opacity: 1;
   transform: translateY(0);
 }
+.reveal-d-1 { transition-delay: 100ms; }
+.reveal-d-2 { transition-delay: 200ms; }
+.reveal-d-3 { transition-delay: 300ms; }
+.reveal-d-4 { transition-delay: 400ms; }
+.reveal-d-5 { transition-delay: 500ms; }
 
 /* -- Hydration splash -- */
 .hydration-splash {

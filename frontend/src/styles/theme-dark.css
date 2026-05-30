@@ -5,5 +5,9 @@
    =================================================================== */
 
 [data-theme='dark'] .landing-header {
-  background: rgba(26, 29, 35, 0.78);
+  background: var(--surface-1);
+}
+
+[data-theme='dark'] .landing-hero::before {
+  opacity: 0.03;
 }

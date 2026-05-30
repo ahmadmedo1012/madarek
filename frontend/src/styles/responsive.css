@@ -135,3 +135,9 @@ code, kbd, .tbl td { overflow-wrap: anywhere; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr 1fr !important; }
   .ministry-strip, .landing-burger, .landing-mobile-menu { display: none !important; }
 }
+
+/* -- Reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .page { animation: none !important; }
+}

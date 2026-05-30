@@ -258,7 +258,7 @@
 }
 .tbl { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
 .tbl th {
-  padding: var(--sp-3) var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   text-align: right;
   font-size: var(--fs-xxs);
   font-weight: var(--fw-semibold);
@@ -269,7 +269,7 @@
   white-space: nowrap;
 }
 .tbl td {
-  padding: var(--sp-3) var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
   border-bottom: 1px solid var(--border);
   color: var(--text-muted);
   text-align: right;
@@ -576,6 +576,7 @@
 [data-tone="success"] { background: var(--success-soft); color: var(--success); }
 [data-tone="tertiary"] { background: rgba(78, 205, 196, 0.10); color: var(--color-teal-300); }
 [data-tone="secondary"] { background: var(--gold-soft); color: var(--gold); }
+[data-tone="surface"] { background: var(--surface-2); color: var(--text-muted); }
 
 /* -- Resume strip -- */
 .resume-strip { display: flex; align-items: center; gap: var(--sp-5); padding: var(--sp-5); background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--r-lg); position: relative; overflow: hidden; }

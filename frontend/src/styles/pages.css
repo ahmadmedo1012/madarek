@@ -192,3 +192,39 @@
   .welcome-card, .dash-gpa-card, .dash-progress-card, .dash-term-card, .dash-agenda-item { transition: none !important; }
   .notif-panel { animation: none; }
 }
+
+/* -- Form grid -- */
+.form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+.form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+
+/* -- Teacher profile -- */
+.teacher-header { display: flex; align-items: center; gap: var(--sp-4); }
+.teacher-name { font-size: var(--fs-xl); font-weight: var(--fw-bold); color: var(--text); display: flex; align-items: center; gap: var(--sp-2); }
+.teacher-verified { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-xs); color: var(--success); font-weight: var(--fw-medium); background: var(--success-soft); padding: 2px 8px; border-radius: var(--r-full); }
+.teacher-meta { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-2); font-size: var(--fs-sm); color: var(--text-muted); flex-wrap: wrap; }
+
+/* -- Key-value row -- */
+.kv-row { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--text-muted); padding: var(--sp-2) 0; }
+
+/* -- Publication row -- */
+.publication-row { display: flex; align-items: flex-start; gap: var(--sp-3); padding: var(--sp-3) 0; border-bottom: 1px solid var(--border); }
+.publication-row:last-child { border-bottom: none; }
+
+/* -- Run row -- */
+.run-row { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--r-md); transition: border-color var(--t-fast) var(--ease); }
+.run-row:hover { border-color: var(--accent-border); }
+.run-row + .run-row { margin-top: var(--sp-2); }
+.run-row-status { display: inline-flex; align-items: center; flex-shrink: 0; }
+
+/* -- Category row (sync page) -- */
+.category-row { border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
+.category-row + .category-row { margin-top: var(--sp-2); }
+.category-row-head { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: var(--sp-3) var(--sp-4); background: var(--surface-2); border: 0; font-family: inherit; font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--text); cursor: pointer; transition: background var(--t-fast) var(--ease); }
+.category-row-head:hover { background: var(--surface-3); }
+.category-row-body { padding: var(--sp-3) var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-2); }
+
+/* -- Fact row (sync detail) -- */
+.fact-row { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) 0; border-bottom: 1px solid var(--border); font-size: var(--fs-sm); }
+.fact-row:last-child { border-bottom: none; }
+.fact-key { color: var(--text-muted); font-weight: var(--fw-medium); min-width: 120px; flex-shrink: 0; }
+.fact-value { color: var(--text); font-family: var(--font-mono); font-size: var(--fs-xs); }
