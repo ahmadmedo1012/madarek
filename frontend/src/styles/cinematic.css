@@ -59,20 +59,7 @@
     border-color: var(--glass-border);
   }
 
-  /* Cinematic theme — gold-tinted top highlight on every card */
-  [data-theme='cinematic'] .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 191, 0, 0.05) 0%,
-      transparent 35%
-    );
-    pointer-events: none;
-    z-index: -1;
-  }
+  /* Cinematic theme — calm cards (no per-card overlay; the bg + el-1 is enough) */
   [data-theme='cinematic'] .card:hover {
     border-color: rgba(255, 191, 0, 0.22);
     box-shadow: var(--shadow-card-hover);
@@ -119,13 +106,9 @@
     border: 1px solid var(--_metric-color-border);
   }
 
-  /* Cinematic — metrics get a subtle gold-tinted bottom edge */
+  /* Cinematic — metric tiles stay on a flat surface (no body gradient) */
   [data-theme='cinematic'] .metric {
-    background: linear-gradient(
-      180deg,
-      var(--surface-1) 0%,
-      color-mix(in srgb, var(--surface-1) 92%, var(--gold) 8%) 100%
-    );
+    background: var(--surface-1);
   }
 
   /* ─────────────────────────────────────────────────────────
@@ -338,24 +321,17 @@
   }
 
   /* ─────────────────────────────────────────────────────────
-     CINEMATIC SHELL — sidebar/topbar/content adapt to theme
+     CINEMATIC SHELL — restrained, premium streaming-platform feel.
+     Gold reserved for focus / CTAs / active nav only — never on
+     ambient body or every card (would feel busy and cheap).
      ───────────────────────────────────────────────────────── */
   [data-theme='cinematic'] body {
-    background: radial-gradient(
-      1200px 800px at 100% 0%,
-      rgba(255, 191, 0, 0.025) 0%,
-      transparent 60%
-    ), var(--bg);
+    background: var(--bg);
   }
 
   [data-theme='cinematic'] .sidebar {
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--surface-1) 96%, var(--gold) 4%) 0%,
-      var(--surface-1) 50%
-    );
+    background: var(--surface-1);
     border-inline-end: 1px solid var(--border);
-    box-shadow: 1px 0 0 0 rgba(255, 191, 0, 0.04);
   }
 
   [data-theme='cinematic'] .sidebar-brand {

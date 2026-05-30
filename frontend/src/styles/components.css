@@ -155,8 +155,8 @@
   /* Sub-icon size when used inside the orb */
 }
 .metric-icon svg {
-  width: 22px !important;
-  height: 22px !important;
+  width: 22px;
+  height: 22px;
 }
 .metric.green  .metric-icon { background: var(--success-soft); color: var(--success); border-color: color-mix(in srgb, var(--success) 22%, transparent); }
 .metric.amber  .metric-icon { background: var(--warning-soft); color: var(--warning); border-color: color-mix(in srgb, var(--warning) 22%, transparent); }
@@ -3532,7 +3532,7 @@
   background-image:
     radial-gradient(700px 500px at 25% 20%, rgba(129, 140, 248, 0.30), transparent 70%),
     radial-gradient(500px 400px at 75% 80%, rgba(251, 191, 36, 0.16), transparent 70%),
-    linear-gradient(160deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%) !important;
+    linear-gradient(160deg, #1e1b4b 0%, #312e81 45%, #4338ca 100%);
 }
 .auth-left::before { display: none; }
 

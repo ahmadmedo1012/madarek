@@ -74,7 +74,7 @@
 .tbl thead th:last-child  { border-start-end-radius: var(--r-md); }
 .tbl tbody tr { transition: background 160ms var(--ease-out); }
 .tbl tbody tr:hover td {
-  background: var(--accent-soft) !important;
+  background: var(--accent-soft);
   color: var(--text);
 }
 
@@ -191,7 +191,7 @@ a:focus-visible, button:focus-visible,
 .topbar {
   padding-inline: var(--sp-6);
 }
-@media (max-width: 600px) { .topbar { padding-inline: var(--sp-4) !important; } }
+@media (max-width: 600px) { .topbar { padding-inline: var(--sp-4); } }
 
 /* Card header hierarchy — clearer title, consistent spacing */
 .card-header { margin-bottom: var(--sp-4); padding-bottom: var(--sp-3); border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent); }
@@ -255,11 +255,11 @@ body { line-height: 1.6; }
    roomier cards, clearer gaps).
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 600px) {
-  .page { gap: var(--sp-5) !important; }
-  .card { padding: var(--sp-5) !important; }
+  .page { gap: var(--sp-5); }
+  .card { padding: var(--sp-5); }
   .card-header { margin-bottom: var(--sp-3); }
-  .grid-2, .grid-3, .grid-4 { gap: var(--sp-4) !important; }
-  .metric { padding: var(--sp-4) !important; }
+  .grid-2, .grid-3, .grid-4 { gap: var(--sp-4); }
+  .metric { padding: var(--sp-4); }
   .page-header:not(.welcome-card) { padding-bottom: var(--sp-3); margin-bottom: var(--sp-1); }
   /* Roomier tappable list rows */
   .nav-item, .list-row, .feed-item { padding-block: 11px; }
@@ -296,13 +296,13 @@ body { line-height: 1.6; }
    it at ≤640px → overlap on tablets 641–900px. Tablets use the sidebar
    drawer (hamburger), so restrict the bottom-nav to phones (≤640px). */
 @media (min-width: 641px) {
-  .bottom-nav { display: none !important; }
+  .bottom-nav { display: none; }
 }
 
 /* A1/A2 — Auth page must be readable in dark mode (form was forced white). */
-[data-theme='dark'] .auth-form-container { background: var(--surface-1) !important; }
-[data-theme='dark'] .auth-form-container .auth-form-title { color: var(--text) !important; }
-[data-theme='dark'] .auth-form-container .auth-form-sub { color: var(--text-muted) !important; }
+[data-theme='dark'] .auth-form-container { background: var(--surface-1); }
+[data-theme='dark'] .auth-form-container .auth-form-title { color: var(--text); }
+[data-theme='dark'] .auth-form-container .auth-form-sub { color: var(--text-muted); }
 
 /* A16 — Owner/admin tables clip inside overflow:hidden cards on mobile.
    Make the card body scroll horizontally when it holds an owner-table. */
@@ -441,7 +441,7 @@ body { font-weight: 400; }
    Show a compact, tappable search instead of hiding it entirely. */
 @media (max-width: 600px) {
   .topbar-search {
-    display: flex !important;
+    display: flex;
     width: auto;
     flex: 1;
     min-width: 0;
@@ -542,8 +542,8 @@ body { font-weight: 400; }
    clashed with the new warm-neutral surfaces).
    ═══════════════════════════════════════════════════════════════ */
 [data-theme='dark'] .sidebar {
-  background: var(--surface-1) !important;
-  border-inline-end: 1px solid var(--border) !important;
+  background: var(--surface-1);
+  border-inline-end: 1px solid var(--border);
 }
 [data-theme='dark'] .bottom-nav {
   background: color-mix(in srgb, var(--surface-1) 88%, transparent);

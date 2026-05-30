@@ -13,7 +13,7 @@
      • Strict Arabic typography: --lh-base 1.6 body, --lh-tight 1.4
        headings; vertical padding instead of fixed heights.
      • --t-clean (200ms) micro-interactions on every interactive.
-     • No !important — relies on cascade layer order.
+     • No — relies on cascade layer order.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ─── Shell ──────────────────────────────────────────────────── */
@@ -70,6 +70,7 @@
 
 /* ═══════════════════════════════════════════════════════════════
    BRAND PANE — institutional identity (right in RTL)
+   Calm, restrained gradient — no dot-grid, no busy ambient glow.
    ═══════════════════════════════════════════════════════════════ */
 .auth-brand-pane {
   position: relative;
@@ -79,37 +80,22 @@
   padding: clamp(var(--sp-6), 5vw, var(--sp-12)) clamp(var(--sp-6), 6vw, var(--sp-16));
   isolation: isolate;
   overflow: hidden;
-  /* Three-color institutional gradient — navy → mid-blue → deep navy */
+  /* Single calm institutional gradient — deep navy on diagonal */
   background:
-    linear-gradient(165deg, #001c38 0%, #003461 55%, #001a36 100%);
+    radial-gradient(900px 600px at 85% 10%, rgba(91, 141, 239, 0.10), transparent 60%),
+    linear-gradient(168deg, #001c38 0%, #002847 50%, #001426 100%);
   color: #f8fafc;
 }
 
 [data-theme='cinematic'] .auth-brand-pane {
   background:
-    linear-gradient(165deg, #0a0c12 0%, #14182a 50%, #0a0c12 100%);
+    radial-gradient(900px 600px at 85% 10%, rgba(255, 191, 0, 0.06), transparent 60%),
+    linear-gradient(168deg, #0a0c12 0%, #14182a 50%, #0a0c12 100%);
 }
 
-/* Subtle gold-tinted ambient glow + dot grid */
-.auth-brand-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background:
-    radial-gradient(700px 500px at 80% 15%, rgba(254, 214, 91, 0.10), transparent 60%),
-    radial-gradient(600px 400px at 15% 85%, rgba(91, 141, 239, 0.18), transparent 65%);
-}
-.auth-brand-grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 75%);
-  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 75%);
-}
+/* Decorative layers removed — the gradient does the work */
+.auth-brand-glow,
+.auth-brand-grid { display: none; }
 
 /* Ministry affiliation strip */
 .auth-brand-strip {
@@ -161,10 +147,9 @@
   font-size: clamp(28px, 3vw, 36px);
   font-weight: var(--fw-bold);
   letter-spacing: -0.02em;
-  line-height: var(--lh-tight);
+  line-height: 1.5;
   color: #ffffff;
   margin: 0;
-  padding-block-end: 0.06em;
 }
 .auth-brand-univ {
   font-size: var(--fs-md);
@@ -326,10 +311,9 @@
   font-size: clamp(24px, 2.4vw, 30px);
   font-weight: var(--fw-bold);
   letter-spacing: -0.018em;
-  line-height: var(--lh-tight);
+  line-height: 1.5;
   color: var(--text);
   margin: 0;
-  padding-block-end: 0.06em;
 }
 .auth-form-sub {
   font-size: var(--fs-md);

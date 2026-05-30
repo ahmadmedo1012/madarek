@@ -67,7 +67,7 @@
 .hide-on-mobile { display: initial; }
 .show-on-mobile { display: none; }
 @media (max-width: 600px) {
-  .hide-on-mobile { display: none !important; }
+  .hide-on-mobile { display: none; }
   .show-on-mobile { display: initial; }
 }
 }

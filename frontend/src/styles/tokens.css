@@ -453,8 +453,8 @@
      ═════════════════════════════════════════════════════════════ */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms;
+      transition-duration: 0.01ms;
     }
   }
 
@@ -478,8 +478,10 @@
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
     letter-spacing: var(--ls-tight);
-    line-height: var(--lh-tight);
-    padding-block-end: 0.05em;
+    line-height: 1.5;
+    /* Reserve space for IBM Plex Sans Arabic descenders (ج، ح، خ، ع)
+       so scrollHeight equals offsetHeight at every size. */
+    padding-block-end: 0.15em;
   }
 
   .metric-value, .kpi-value, .this-week-emphasis,

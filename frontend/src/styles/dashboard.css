@@ -31,7 +31,7 @@
 .welcome-card {
   position: relative;
   overflow: hidden;
-  padding: var(--sp-8) var(--sp-6) !important;
+  padding: var(--sp-8) var(--sp-6);
   isolation: isolate;
 }
 
@@ -72,16 +72,16 @@
 
 /* Welcome card typography refinement */
 .welcome-card .page-title {
-  font-size: var(--fs-2xl) !important;
-  font-weight: 800 !important;
-  color: var(--md-on-primary) !important;
-  letter-spacing: -0.02em !important;
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  color: var(--md-on-primary);
+  letter-spacing: -0.02em;
   margin-bottom: var(--sp-2);
 }
 .welcome-card .page-subtitle {
-  font-size: var(--fs-md) !important;
-  color: rgba(255, 255, 255, 0.78) !important;
-  line-height: 1.6 !important;
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
   max-width: 50ch;
 }
 
@@ -105,13 +105,13 @@
 
 /* ── GPA card — Glassmorphism treatment ──────────────────────── */
 .dash-gpa-card {
-  padding: var(--sp-6) !important;
+  padding: var(--sp-6);
   position: relative;
   overflow: hidden;
-  background: var(--glass-bg) !important;
+  background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border) !important;
+  border: 1px solid var(--glass-border);
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
@@ -211,7 +211,7 @@
 
 /* ── Progress card — Premium doughnut ────────────────────────── */
 .dash-progress-card {
-  padding: var(--sp-6) !important;
+  padding: var(--sp-6);
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
@@ -288,7 +288,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .dash-term-card {
-  padding: var(--sp-5) var(--sp-6) !important;
+  padding: var(--sp-5) var(--sp-6);
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out);
@@ -391,13 +391,13 @@
 
 /* Agenda items - color-coded accent border on inline-start */
 .dash-agenda-item {
-  padding: var(--sp-4) var(--sp-5) !important;
+  padding: var(--sp-4) var(--sp-5);
   display: flex;
   align-items: center;
   gap: var(--sp-4);
   cursor: default;
   position: relative;
-  border-inline-start: 3px solid transparent !important;
+  border-inline-start: 3px solid transparent;
   transition:
     transform var(--t-base) var(--ease-out),
     box-shadow var(--t-base) var(--ease-out),
@@ -407,17 +407,17 @@
 
 /* Color-coded left accent border based on tone */
 .dash-agenda-item[data-tone="accent"] {
-  border-inline-start-color: var(--accent) !important;
+  border-inline-start-color: var(--accent);
 }
 .dash-agenda-item[data-tone="gold"] {
-  border-inline-start-color: var(--gold) !important;
+  border-inline-start-color: var(--gold);
 }
 
 /* Hover elevation */
 .dash-agenda-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  background: color-mix(in srgb, var(--surface-2) 60%, transparent) !important;
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent);
 }
 
 /* Press feedback */
@@ -480,7 +480,7 @@
 }
 
 @media (max-width: 480px) {
-  .dash-agenda-item { padding: var(--sp-3) var(--sp-4) !important; gap: var(--sp-3); }
+  .dash-agenda-item { padding: var(--sp-3) var(--sp-4); gap: var(--sp-3); }
   .dash-agenda-icon { width: 40px; height: 40px; }
   .dash-agenda-title { font-size: var(--fs-base); }
 }
@@ -530,7 +530,7 @@
   .dash-gpa-card::before,
   .dash-gpa-value,
   .dash-term-bar > span::after {
-    animation: none !important;
+    animation: none;
   }
 
   .dash-gpa-card,
@@ -539,14 +539,14 @@
   .dash-agenda-item,
   .dash-gpa-orb,
   .dash-agenda-icon {
-    transition: none !important;
+    transition: none;
   }
 
   .dash-gpa-card:hover,
   .dash-progress-card:hover,
   .dash-term-card:hover,
   .dash-agenda-item:hover {
-    transform: none !important;
+    transform: none;
   }
 }
 }

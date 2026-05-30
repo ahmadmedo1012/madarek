@@ -37,27 +37,27 @@ body {
 }
 
 .sidebar-brand {
-  padding: var(--sp-5) var(--sp-4) !important;
+  padding: var(--sp-5) var(--sp-4);
   border-bottom: 1px solid var(--border);
 }
 .sidebar-brand-name {
-  font-weight: 700 !important;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  font-size: 15px !important;
+  font-size: 15px;
 }
 .sidebar-brand-sub {
-  font-size: 12px !important;
+  font-size: 12px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .nav-section-label {
   text-transform: uppercase;
-  letter-spacing: 0.08em !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  color: var(--text-subtle) !important;
-  padding: var(--sp-3) var(--sp-4) var(--sp-2) !important;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-subtle);
+  padding: var(--sp-3) var(--sp-4) var(--sp-2);
 }
 
 .nav-item {
@@ -65,12 +65,12 @@ body {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 10px var(--sp-4) !important;
+  padding: 10px var(--sp-4);
   margin: 2px var(--sp-2);
-  border-radius: 10px !important;
-  font-size: 14px !important;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--text-muted) !important;
+  color: var(--text-muted);
   transition:
     background var(--t-base) var(--ease-out),
     color var(--t-base) var(--ease-out),
@@ -80,16 +80,16 @@ body {
 }
 .nav-item:hover {
   background: var(--accent-soft);
-  color: var(--text) !important;
+  color: var(--text);
 }
 .nav-item:active {
   transform: scale(0.99);
 }
 .nav-item.on,
 .nav-item[aria-current="page"] {
-  background: var(--accent-soft) !important;
-  color: var(--accent) !important;
-  font-weight: 600 !important;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
 }
 .nav-item.on::before,
 .nav-item[aria-current="page"]::before {
@@ -131,7 +131,7 @@ body {
 
 /* Sidebar footer */
 .sidebar-footer {
-  padding: var(--sp-3) var(--sp-2) !important;
+  padding: var(--sp-3) var(--sp-2);
   border-top: 1px solid var(--border);
 }
 .sidebar-user {
@@ -217,14 +217,14 @@ button:has(.card):active,
    ═══════════════════════════════════════════════════════════════ */
 
 .btn {
-  font-weight: 600 !important;
+  font-weight: 600;
   letter-spacing: 0;
   transition:
     background var(--t-fast) var(--ease-out),
     color var(--t-fast) var(--ease-out),
     border-color var(--t-fast) var(--ease-out),
     transform var(--t-fast) var(--ease-out),
-    box-shadow var(--t-base) var(--ease-out) !important;
+    box-shadow var(--t-base) var(--ease-out);
 }
 .btn:active { transform: translateY(1px); }
 
@@ -246,16 +246,16 @@ textarea,
   transition:
     border-color var(--t-fast) var(--ease-out),
     box-shadow var(--t-fast) var(--ease-out),
-    background var(--t-fast) var(--ease-out) !important;
+    background var(--t-fast) var(--ease-out);
 }
 input:not([type="checkbox"]):not([type="radio"]):focus,
 select:focus,
 textarea:focus,
 .input:focus,
 .input:focus-within {
-  outline: none !important;
-  border-color: var(--accent) !important;
-  box-shadow: var(--focus-ring) !important;
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring);
 }
 
 /* Skeleton shimmer handled by components.css */
@@ -391,7 +391,7 @@ h3, .h3 {
   }
 
   /* Card padding gets a touch tighter on phone */
-  .card { border-radius: var(--r-xl) !important; }
+  .card { border-radius: var(--r-xl); }
 
   /* Slim down dialogs to viewport */
   [role="dialog"], .dialog, .modal {
@@ -407,9 +407,9 @@ h3, .h3 {
 
 @media print {
   .sidebar, .topbar, .landing-header, .landing-mobile-menu, .landing-burger,
-  .ministry-strip, .landing-footer { display: none !important; }
-  .content-inner { animation: none !important; }
+  .ministry-strip, .landing-footer { display: none; }
+  .content-inner { animation: none; }
   body { background: white; color: black; }
-  .card { border: 1px solid #ccc !important; box-shadow: none !important; }
+  .card { border: 1px solid #ccc; box-shadow: none; }
 }
 }

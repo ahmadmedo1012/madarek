@@ -49,8 +49,8 @@ a[href]:not(.no-press):active,
 a:has(> .card):active,
 button:has(> .card):active,
 .role-tab:active {
-  transition-duration: 60ms !important;
-  transition-timing-function: var(--ease-out) !important;
+  transition-duration: 60ms;
+  transition-timing-function: var(--ease-out);
   transform: scale(0.98);
   filter: brightness(0.97);
 }
@@ -144,12 +144,12 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   .landing-pilot-stat:active,
   .dash-agenda-item:active,
   .kpi-cell:active {
-    transform: none !important;
-    filter: none !important;
+    transform: none;
+    filter: none;
   }
   .card.interactive:hover,
   .card.bordered:hover {
-    transform: none !important;
+    transform: none;
   }
 }
 
@@ -387,7 +387,7 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   .compact-kpi,
   .stat-card,
   .kpi-cell {
-    animation: none !important;
+    animation: none;
   }
 }
 }
