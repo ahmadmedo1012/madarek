@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+const route = process.argv[2] || '/';
+const out = process.argv[3];
+const yPos = Number(process.argv[4] || 0);
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'ar-LY' });
+const page = await ctx.newPage();
+await page.goto('http://localhost:5173' + route, { waitUntil: 'networkidle' });
+await page.evaluate(() => document.fonts?.ready ?? Promise.resolve());
+await page.evaluate((y) => window.scrollTo(0, y), yPos);
+await page.waitForTimeout(1500);
+await page.screenshot({ path: out, fullPage: false });
+console.log('saved ' + out + ' at y=' + yPos);
+await browser.close();

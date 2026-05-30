@@ -196,7 +196,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <>
+    <div className="has-shell">
       <Sidebar />
       <main className="main">
         <Topbar title={title} scrolled={scrolled} />
@@ -207,7 +207,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
         </div>
       </main>
       <BottomNav />
-    </>
+    </div>
   );
 }
 

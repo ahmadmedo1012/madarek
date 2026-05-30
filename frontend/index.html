@@ -4,26 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#0A0B0F" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#F7F8FA" media="(prefers-color-scheme: light)" />
-    <meta name="description" content="منصة الزاوية للتعليم الذكي — المنصة الرسمية لجامعة الزاوية · وزارة التعليم العالي والبحث العلمي · ليبيا" />
-    <title>منصة الزاوية للتعليم الذكي · جامعة الزاوية</title>
+    <meta name="theme-color" content="#0A1220" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)" />
+    <meta name="description" content="مدارك — منصة التعليم الذكي لجامعة الزاوية · وزارة التعليم العالي والبحث العلمي · ليبيا" />
+    <title>مدارك · منصة التعليم الذكي · جامعة الزاوية</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Lexend:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <!-- No-flash theme bootstrap: read stored choice / system pref before paint. -->
     <script>
       (function () {
         try {
           var stored = localStorage.getItem('madarek-theme');
           var pref = stored ? JSON.parse(stored).state.mode : 'system';
           var resolved;
-          if (pref === 'system') {
+          if (pref === 'system' || !pref) {
             resolved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          } else if (pref === 'cinematic' || pref === 'dark' || pref === 'light') {
+          } else if (pref === 'dark' || pref === 'light') {
             resolved = pref;
           } else {
             resolved = 'light';

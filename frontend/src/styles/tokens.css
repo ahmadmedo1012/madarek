@@ -1,443 +1,411 @@
-/* ═════════════════════════════════════════════════════════════
-   Madarek Design System v3 — Linear/Notion Minimalism
-   ───────────────────────────────────────────────────────────────
-   Single source of truth. Calm cool-grey neutrals, generous space,
-   institutional navy accent on focus/CTAs only. No gradients on
-   cards, no glow, no transform-on-hover. Reads as serious academic
-   SaaS — like Linear, Notion, Stripe Dashboard.
-   ───────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Notion-flavored Design System
+   ─────────────────────────────────────────────────────────────────────
+   Warm cream ground · big bold type · multi-color pastel sections
+   Soft shadows · rounded surfaces · sticker icons · friendly motion
+   Plex Sans Arabic 800 display · Plex Serif italic accent · Plex Mono nums
+   ════════════════════════════════════════════════════════════════════ */
 
-@layer tokens, base, components, pages, overrides;
+@layer tokens, base, layout, components, pages, overrides;
 
 @layer tokens {
 
   :root {
-    /* ── Spacing (4px base) ─────────────────────────────────── */
-    --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
-    --space-5: 20px;  --space-6: 24px;  --space-7: 28px;  --space-8: 32px;
-    --space-10: 40px; --space-12: 48px; --space-16: 64px;
-    --sp-1: var(--space-1);   --sp-2: var(--space-2);   --sp-3: var(--space-3);
-    --sp-4: var(--space-4);   --sp-5: var(--space-5);   --sp-6: var(--space-6);
-    --sp-7: var(--space-7);   --sp-8: var(--space-8);   --sp-10: var(--space-10);
-    --sp-12: var(--space-12); --sp-16: var(--space-16);
+    /* ─── Spacing — 4px base ────────────────────────────────────────── */
+    --sp-1:  4px;   --sp-2:  8px;   --sp-3: 12px;   --sp-4: 16px;
+    --sp-5: 20px;   --sp-6: 24px;   --sp-7: 32px;   --sp-8: 40px;
+    --sp-9: 48px;   --sp-10:56px;   --sp-11:72px;   --sp-12:96px;
+    --sp-13:128px;  --sp-14:160px;  --sp-15:192px;  --sp-16:240px;
 
-    /* ── Radii — small, calm (Linear/Notion use 6-12px) ────── */
-    --radius-sm: 4px;  --radius-md: 6px;  --radius-lg: 8px;
-    --radius-xl: 12px; --radius-2xl: 16px; --radius-full: 9999px;
-    --r-xs: var(--radius-sm); --r-sm: var(--radius-md);
-    --r-md: var(--radius-lg); --r-lg: var(--radius-xl);
-    --r-xl: var(--radius-xl); --r-2xl: var(--radius-2xl);
-    --r-3xl: var(--radius-2xl); --r-full: var(--radius-full);
-    --st-r-default: var(--radius-sm); --st-r-lg: var(--radius-lg);
-    --st-r-xl: var(--radius-xl);      --st-r-2xl: var(--radius-2xl);
-    --st-r-full: var(--radius-full);
+    /* aliases retained for legacy code */
+    --sp-2x: var(--sp-2); --sp-3x: var(--sp-3); --sp-4x: var(--sp-4);
+    --sp-5x: var(--sp-5); --sp-6x: var(--sp-6); --sp-8x: var(--sp-7);
+    --sp-12x:var(--sp-9); --sp-16x:var(--sp-13);
 
-    /* ── Type scale ──────────────────────────────────────────── */
-    --fs-xxs: 11px; --fs-xs: 12px; --fs-sm: 13px; --fs-base: 14px;
-    --fs-md: 15px;  --fs-lg: 17px; --fs-xl: 21px; --fs-2xl: 26px;
-    --fs-3xl: 32px; --fs-4xl: 40px;
+    /* ─── Radius — Notion-soft ──────────────────────────────────────── */
+    --r-xs: 6px;
+    --r-sm: 8px;
+    --r-md: 10px;
+    --r-lg: 12px;
+    --r-xl: 16px;
+    --r-2xl: 20px;
+    --r-3xl: 28px;
+    --r-full: 9999px;
 
-    --fs-display-lg:  clamp(28px, 4.2vw, 44px);
-    --fs-headline-md: clamp(22px, 3vw, 28px);
-    --fs-headline-sm: clamp(18px, 2.2vw, 22px);
-    --fs-body-lg: 16px; --fs-body-md: 15px;
-    --fs-label-md: 13px; --fs-label-sm: 12px;
+    --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
+    --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
+    --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
+    --st-r-default: var(--r-sm); --st-r-lg: var(--r-md);
+    --st-r-xl: var(--r-lg);      --st-r-2xl: var(--r-xl);
+    --st-r-full: var(--r-full);
 
-    --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700;
+    /* ─── Type — bold + warm ────────────────────────────────────────── */
+    --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
+                    'Segoe UI', Roboto, sans-serif;
+    --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    --font-serif:   'IBM Plex Serif', Georgia, serif;
+    --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-    /* Line-heights — Arabic-comfortable. 1.5 headings, 1.65 body. */
-    --lh-tight: 1.4;
-    --lh-snug:  1.5;
+    /* fluid display — Notion goes BIG on hero */
+    --fs-mega:       clamp(48px, 8.4vw, 104px);
+    --fs-display-xl: clamp(40px, 6.0vw, 72px);
+    --fs-display-lg: clamp(34px, 4.8vw, 56px);
+    --fs-display-md: clamp(28px, 3.6vw, 40px);
+
+    --fs-h1: 30px;
+    --fs-h2: 22px;
+    --fs-h3: 18px;
+
+    --fs-body-lg: 17px;
+    --fs-body:    15px;
+    --fs-body-md: 15px;
+    --fs-sm:      13px;
+    --fs-xs:      12px;
+    --fs-xxs:     11px;
+
+    /* legacy aliases */
+    --fs-base: var(--fs-body); --fs-md: var(--fs-body);
+    --fs-lg: var(--fs-h3); --fs-xl: var(--fs-h2);
+    --fs-2xl: var(--fs-h1); --fs-3xl: var(--fs-display-md);
+    --fs-4xl: var(--fs-display-lg);
+    --fs-headline-md: var(--fs-h2); --fs-headline-sm: var(--fs-h3);
+    --fs-label-md: var(--fs-sm); --fs-label-sm: var(--fs-xs);
+
+    --fs-metric-xl: 44px;
+    --fs-metric-lg: 30px;
+    --fs-metric-md: 22px;
+
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-black: 800;
+
+    /* line-heights — Arabic-comfortable, headline-tight */
+    --lh-tight: 1.05;
+    --lh-snug:  1.20;
     --lh-base:  1.65;
     --lh-loose: 1.85;
 
-    /* Letter-spacing — calm, not aggressive. */
-    --ls-tight:  -0.011em;
+    /* letter spacing — Notion is slightly tighter on big type */
+    --ls-tight:  -0.022em;
+    --ls-snug:   -0.012em;
     --ls-normal: 0;
-    --ls-wide:    0.04em;
+    --ls-wide:   0.06em;
 
-    /* ── Motion — 200ms snappy default ───────────────────────── */
-    --t-fast:   120ms;
-    --t-base:   200ms;
-    --t-slow:   320ms;
-    --t-slower: 480ms;
-    --t-cinema: 600ms;
-    --t-micro:  80ms;
+    /* ─── Motion ────────────────────────────────────────────────────── */
+    --t-micro: 80ms;
+    --t-fast:  160ms;
+    --t-base:  240ms;
+    --t-slow:  380ms;
+    --t-slower:520ms;
+    --t-cinema:720ms;
 
     --ease:        cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+    --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);
 
-    --t-clean:      all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    --t-cinema-all: all 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    --t-clean:      all var(--t-base) var(--ease);
+    --t-cinema-all: all var(--t-slow) var(--ease-out);
     --transition-fast:   var(--t-fast) var(--ease);
     --transition-normal: var(--t-base) var(--ease);
     --transition-slow:   var(--t-slow) var(--ease);
-    --transition-all:    all var(--t-base) var(--ease);
+    --transition-all:    var(--t-clean);
 
-    /* ── Layout ──────────────────────────────────────────────── */
-    --sidebar-w:           260px;
+    /* ─── Layout ────────────────────────────────────────────────────── */
+    --sidebar-w: 256px;
     --sidebar-w-collapsed: 64px;
-    --topbar-h:            56px;
-    --content-max-w:       1240px;
-    --st-container-max:    1240px;
-    --st-gutter:           24px;
-    --st-margin-desktop:   48px;
-    --st-margin-mobile:    20px;
-    --st-unit:             8px;
+    --topbar-h: 64px;
+    --content-max-w: 1280px;
+    --marketing-max-w: 1200px;
+    --st-container-max: 1280px;
+    --st-gutter: var(--sp-6);
+    --st-margin-desktop: var(--sp-9);
+    --st-margin-mobile: var(--sp-5);
+    --st-unit: 4px;
 
-    /* ── Fonts ───────────────────────────────────────────────── */
-    --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system, sans-serif;
-    --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-    --font-mono:    ui-monospace, 'SFMono-Regular', 'Space Mono', monospace;
+    /* ─── Composition ───────────────────────────────────────────────── */
+    --card-padding: var(--sp-6);
+    --section-gap:  var(--sp-12);
+    --page-gutter:  var(--sp-9);
+    --page-gutter-mobile: var(--sp-5);
 
-    /* ── Card / section composition ──────────────────────────── */
-    --card-padding: var(--sp-5);
-    --section-gap:  var(--sp-8);
-
-    /* ── Brand palette (kept for reference, not used directly) ─ */
-    --color-primary-50:  #EFF6FF;
-    --color-primary-100: #DBEAFE;
-    --color-primary-200: #BFDBFE;
-    --color-primary-300: #93C5FD;
-    --color-primary-400: #60A5FA;
-    --color-primary-500: #3B82F6;
-    --color-primary-600: #2563EB;
-    --color-primary-700: #1D4ED8;
-    --color-primary-800: #1E40AF;
-    --color-primary-900: #1E3A8A;
-
-    --color-neutral-50:  #FAFAFA;
-    --color-neutral-100: #F4F4F5;
-    --color-neutral-200: #E4E4E7;
-    --color-neutral-300: #D4D4D8;
-    --color-neutral-400: #A1A1AA;
-    --color-neutral-500: #71717A;
-    --color-neutral-600: #52525B;
-    --color-neutral-700: #3F3F46;
-    --color-neutral-800: #27272A;
-    --color-neutral-900: #18181B;
-
-    --color-gold-300: #D4A94A;
-    --color-gold-400: #C8962E;
-    --color-teal-300: #4ECDC4;
-
-    --brand-blue:      var(--color-primary-800);
-    --brand-blue-deep: var(--color-primary-900);
-    --brand-purple:    var(--color-primary-700);
-    --brand-gold:      var(--color-gold-300);
-
-    /* Material 3 aliases — back-compat for charts/legacy */
-    --md-primary: var(--color-primary-800);
-    --md-on-primary: #ffffff;
-    --md-primary-container: var(--color-primary-200);
-    --md-on-primary-container: var(--color-primary-900);
-    --md-primary-fixed: var(--color-primary-100);
-    --md-primary-fixed-dim: var(--color-primary-200);
-    --md-on-primary-fixed: var(--color-primary-900);
-    --md-on-primary-fixed-variant: var(--color-primary-700);
-    --md-secondary: var(--color-gold-400);
-    --md-on-secondary: #ffffff;
-    --md-secondary-container: var(--color-gold-300);
-    --md-on-secondary-container: #6b4f0d;
-    --md-tertiary: var(--color-teal-300);
-    --md-on-tertiary: #ffffff;
-    --md-tertiary-container: var(--color-teal-300);
-    --md-on-tertiary-container: #ffffff;
-    --md-tertiary-fixed-dim: #80E6DD;
-    --md-error: #B91C1C;
-    --md-on-error: #ffffff;
-    --md-error-container: #FECACA;
-    --md-on-error-container: #7F1D1D;
-    --md-surface: var(--color-neutral-50);
-    --md-on-surface: var(--color-neutral-900);
-    --md-on-surface-variant: var(--color-neutral-600);
-    --md-surface-variant: var(--color-neutral-200);
-    --md-surface-bright: #ffffff;
-    --md-surface-dim: var(--color-neutral-100);
-    --md-surface-container-lowest: #ffffff;
-    --md-surface-container-low: var(--color-neutral-50);
-    --md-surface-container: var(--color-neutral-100);
-    --md-surface-container-high: var(--color-neutral-200);
-    --md-surface-container-highest: var(--color-neutral-300);
-    --md-background: var(--color-neutral-50);
-    --md-on-background: var(--color-neutral-900);
-    --md-outline: var(--color-neutral-400);
-    --md-outline-variant: var(--color-neutral-200);
-    --md-inverse-surface: var(--color-neutral-900);
-    --md-inverse-on-surface: var(--color-neutral-50);
-    --md-inverse-primary: var(--color-primary-300);
-
-    /* Glass — kept for back-compat, not used in v3 */
-    --glass-bg:        rgba(255, 255, 255, 0.70);
-    --glass-bg-subtle: rgba(255, 255, 255, 0.50);
-    --glass-border:    rgba(228, 228, 231, 0.80);
-    --glass-blur:      8px;
-
-    --ai-glow:        none;
-    --ai-glow-strong: none;
+    --z-1: 10;     --z-2: 100;    --z-3: 1000;
+    --z-popover: 1100;  --z-modal: 1200;  --z-toast: 1300;
   }
 
-  /* ═════════════════════════════════════════════════════════════
-     LIGHT THEME (default) — calm cool-grey neutrals
-     ═════════════════════════════════════════════════════════════ */
+  /* ════════════════════════════════════════════════════════════════════
+     LIGHT THEME — Notion's signature warm cream
+     ════════════════════════════════════════════════════════════════════ */
   :root,
-  [data-theme='light'] {
-    --bg:        #FAFAFA;
-    --surface-1: #FFFFFF;
-    --surface-2: #F4F5F7;
-    --surface-3: #EAECEE;
+  [data-theme="light"] {
 
-    --border:        #E4E4E7;
-    --border-strong: #D4D4D8;
+    /* Notion's actual neutrals */
+    --neutral-0:   #FFFFFF;
+    --neutral-50:  #FBFAF9;          /* page ground */
+    --neutral-100: #F7F6F3;          /* card hover, subtle band */
+    --neutral-150: #F1EFEC;
+    --neutral-200: #E9E7E2;          /* hairline */
+    --neutral-300: #D9D6D0;          /* divider */
+    --neutral-400: #B5B1A8;
+    --neutral-500: #898680;
+    --neutral-700: #4F4D48;
+    --neutral-800: #322F2A;
+    --neutral-900: #191918;          /* primary ink */
 
-    --text:        #18181B;
-    --text-muted:  #52525B;
-    --text-subtle: #71717A;
+    /* The 9 Notion-style section colors. Each has a soft pastel ground
+       (full-bleed band fill), a saturated "ink" for accents, and a
+       deep shade for text-on-pastel.                                  */
+    --c-peach-bg:     #FFE9DC;   --c-peach-ink:    #E07856;   --c-peach-deep:   #6B2D1A;
+    --c-mint-bg:      #DCF1E2;   --c-mint-ink:     #4FA66D;   --c-mint-deep:    #1F4F30;
+    --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep:#3F2D7A;
+    --c-sky-bg:       #DDEBF7;   --c-sky-ink:      #5C8FCE;   --c-sky-deep:     #1F3D63;
+    --c-yellow-bg:    #FCF1CD;   --c-yellow-ink:   #D6A330;   --c-yellow-deep:  #6B4C0B;
+    --c-rose-bg:      #FCE0E2;   --c-rose-ink:     #DD6E78;   --c-rose-deep:    #6B2128;
+    --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
+    --c-grey-bg:      #EFECE7;   --c-grey-ink:     #6B665E;   --c-grey-deep:    #2D2A24;
+    --c-copper-bg:    #F4E4D2;   --c-copper-ink:   #B57438;   --c-copper-deep:  #5C3416;
 
-    --accent:        #1E40AF;
-    --accent-hover:  #1E3A8A;
-    --accent-soft:   rgba(30, 64, 175, 0.08);
-    --accent-border: rgba(30, 64, 175, 0.20);
+    /* ═════ ROLE TOKENS — components consume these ═════ */
+    --bg:               var(--neutral-50);
+    --bg-soft:          var(--neutral-100);
+    --surface:          var(--neutral-0);
+    --surface-1:        var(--neutral-0);
+    --surface-2:        var(--neutral-100);
+    --surface-3:        var(--neutral-150);
+    --surface-elevated: var(--neutral-0);
+
+    --text:        var(--neutral-900);
+    --text-strong: var(--neutral-900);
+    --text-secondary: var(--neutral-700);
+    --text-muted:  var(--neutral-500);
+    --text-faint:  var(--neutral-400);
+    --text-on-accent: #FFFFFF;
+    --text-on-dark:   var(--neutral-50);
+
+    --border:        var(--neutral-200);
+    --border-strong: var(--neutral-300);
+    --border-faint:  rgba(25,25,24,0.06);
+    --rule:          var(--neutral-200);
+
+    /* primary brand accent — Notion-orange-with-Madark-copper energy */
+    --accent:        var(--c-copper-ink);
+    --accent-hover:  #9A5F25;
+    --accent-soft:   var(--c-copper-bg);
+    --accent-strong: var(--c-copper-deep);
     --accent-fg:     #FFFFFF;
+    --focus-ring:    rgba(181, 116, 56, 0.32);
 
-    --gold:       #B45309;
-    --gold-soft:  rgba(180, 83, 9, 0.10);
-    --gold-hover: #92400E;
+    --success:      var(--c-mint-ink);
+    --success-soft: var(--c-mint-bg);
+    --warning:      var(--c-yellow-ink);
+    --warning-soft: var(--c-yellow-bg);
+    --danger:       var(--c-rose-ink);
+    --danger-soft:  var(--c-rose-bg);
+    --info:         var(--c-sky-ink);
+    --info-soft:    var(--c-sky-bg);
 
-    --amber:        #B45309;
-    --amber-strong: #92400E;
-    --amber-soft:   rgba(180, 83, 9, 0.10);
-    --amber-border: rgba(180, 83, 9, 0.32);
+    --brand:         var(--accent);
+    --brand-purple:  var(--c-lavender-ink);
+    --gold:          var(--c-yellow-ink);
+    --primary:       var(--neutral-900);
+    --primary-fg:    #FFFFFF;
 
-    --success:      #15803D;
-    --success-soft: rgba(21, 128, 61, 0.08);
-    --warning:      #B45309;
-    --warning-soft: rgba(180, 83, 9, 0.08);
-    --danger:       #B91C1C;
-    --danger-soft:  rgba(185, 28, 28, 0.08);
-    --info:         #1E40AF;
-    --info-soft:    rgba(30, 64, 175, 0.08);
+    /* shadows — Notion-soft */
+    --shadow-card:    0 1px 2px rgba(15,15,15,0.04);
+    --shadow-card-h:  0 1px 2px rgba(15,15,15,0.04), 0 6px 18px rgba(15,15,15,0.06);
+    --shadow-pop:     0 1px 2px rgba(15,15,15,0.04), 0 8px 24px rgba(15,15,15,0.08);
+    --shadow-modal:   0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.14);
+    --shadow-mockup:  0 1px 2px rgba(15,15,15,0.04), 0 12px 32px rgba(15,15,15,0.08), 0 32px 80px rgba(15,15,15,0.06);
 
-    /* Subtle, single-stop shadows. No double-layered drama. */
-    --shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.04);
-    --shadow-md: 0 1px 3px rgba(24, 24, 27, 0.05),
-                 0 4px 12px rgba(24, 24, 27, 0.04);
-    --shadow-lg: 0 4px 8px rgba(24, 24, 27, 0.06),
-                 0 16px 32px rgba(24, 24, 27, 0.06);
-    --shadow-xl: 0 8px 16px rgba(24, 24, 27, 0.08),
-                 0 24px 48px rgba(24, 24, 27, 0.10);
+    --glass-bg:    rgba(251,250,249,0.78);
+    --glass-blur:  16px;
+    --glass-border: rgba(25,25,24,0.06);
 
-    --shadow-card:       0 1px 2px rgba(24, 24, 27, 0.04);
-    --shadow-card-hover: 0 1px 2px rgba(24, 24, 27, 0.04),
-                         0 8px 24px rgba(24, 24, 27, 0.06);
+    /* sidebar / topbar */
+    --sidebar-bg:        var(--neutral-50);
+    --sidebar-rule:      var(--neutral-200);
+    --sidebar-item:      var(--neutral-700);
+    --sidebar-item-hover-bg:    var(--neutral-100);
+    --sidebar-item-active-bg:   var(--neutral-150);
+    --sidebar-item-active-text: var(--neutral-900);
+    --sidebar-active-bar:       var(--accent);
 
-    --focus-ring:   0 0 0 3px rgba(30, 64, 175, 0.20);
-    --selection-bg: rgba(30, 64, 175, 0.15);
+    --topbar-bg:    rgba(251,250,249,0.86);
+    --topbar-border:var(--neutral-200);
 
-    --chart-grid: rgba(24, 24, 27, 0.06);
-    --chart-text: #71717A;
+    --scrollbar-thumb: rgba(25,25,24,0.16);
+    --scrollbar-thumb-hover: rgba(25,25,24,0.28);
 
-    --el-1: var(--shadow-sm);
-    --el-2: var(--shadow-md);
-    --el-3: var(--shadow-lg);
-    --el-4: var(--shadow-xl);
-    --el-5: 0 24px 64px -12px rgba(24, 24, 27, 0.18);
+    /* legacy aliases */
+    --paper-0:   var(--neutral-0);
+    --paper-50:  var(--neutral-50);
+    --paper-100: var(--neutral-100);
+    --paper-200: var(--neutral-200);
+    --paper-300: var(--neutral-300);
+    --ink-900: var(--neutral-900);
+    --ink-700: var(--neutral-700);
+    --ink-500: var(--neutral-500);
+    --ink-400: var(--neutral-400);
+    --ink-300: var(--neutral-300);
+    --ink-200: var(--neutral-200);
+    --gold-700: var(--c-copper-ink);
+    --gold-500: var(--c-copper-ink);
+    --gold-100: var(--c-copper-bg);
+    --gold-900: var(--c-copper-deep);
+    --gold-300: #D9B873;
+    --green-700: var(--success); --green-100: var(--success-soft);
+    --amber-700: var(--warning); --amber-100: var(--warning-soft);
+    --red-700:   var(--danger);  --red-100:   var(--danger-soft);
+    --blue-700:  var(--info);    --blue-100:  var(--info-soft);
+    --text-subtle: var(--text-muted);
+    --accent-border: var(--accent);
+    --shadow-sm: var(--shadow-card);
+    --shadow-md: var(--shadow-pop);
+    --shadow-lg: var(--shadow-pop);
+    --shadow-xl: var(--shadow-modal);
+    --shadow-2xl: var(--shadow-modal);
 
-    --el-glow:        none;
-    --el-glow-strong: none;
+    --chart-text: var(--neutral-500);
+    --chart-grid: rgba(25,25,24,0.08);
+    --chart-1: var(--c-copper-ink);
+    --chart-2: var(--c-mint-ink);
+    --chart-3: var(--c-sky-ink);
+    --chart-4: var(--c-rose-ink);
+    --chart-5: var(--c-lavender-ink);
   }
 
-  /* ═════════════════════════════════════════════════════════════
-     DARK THEME — same minimalism, true neutral dark
-     ════════════════════════════════════════════════════════════ */
-  [data-theme='dark'] {
-    --bg:        #09090B;
-    --surface-1: #0F0F11;
-    --surface-2: #18181B;
-    --surface-3: #27272A;
+  /* ════════════════════════════════════════════════════════════════════
+     DARK THEME — Notion-dark feel: deep ink, warm sand text
+     ════════════════════════════════════════════════════════════════════ */
+  [data-theme="dark"] {
+    --neutral-0:   #1F1F1E;
+    --neutral-50:  #191918;
+    --neutral-100: #232322;
+    --neutral-150: #2A2A28;
+    --neutral-200: #353532;
+    --neutral-300: #46453F;
+    --neutral-400: #6E6B61;
+    --neutral-500: #9A968A;
+    --neutral-700: #C8C2B2;
+    --neutral-800: #DDD7C5;
+    --neutral-900: #F2EAD8;
 
-    --border:        #27272A;
-    --border-strong: #3F3F46;
+    /* same hue families, darker grounds + slightly brighter inks */
+    --c-peach-bg:     #3D2A23;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
+    --c-mint-bg:      #1F3429;   --c-mint-ink:     #82CB99;   --c-mint-deep:    #C9EAD3;
+    --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
+    --c-sky-bg:       #1F2F45;   --c-sky-ink:      #92B4DC;   --c-sky-deep:     #C9DCEE;
+    --c-yellow-bg:    #3A3017;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
+    --c-rose-bg:      #3D2126;   --c-rose-ink:     #F09BA3;   --c-rose-deep:    #FACDD2;
+    --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
+    --c-grey-bg:      #2A2823;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
+    --c-copper-bg:    #3D2D1B;   --c-copper-ink:   #E0A067;   --c-copper-deep:  #F8DDBC;
 
-    --text:        #FAFAFA;
-    --text-muted:  #A1A1AA;
-    --text-subtle: #71717A;
+    --bg:               var(--neutral-50);
+    --bg-soft:          var(--neutral-100);
+    --surface:          var(--neutral-0);
+    --surface-1:        var(--neutral-0);
+    --surface-2:        var(--neutral-100);
+    --surface-3:        var(--neutral-150);
+    --surface-elevated: var(--neutral-100);
 
-    --accent:        #60A5FA;
-    --accent-hover:  #93C5FD;
-    --accent-soft:   rgba(96, 165, 250, 0.14);
-    --accent-border: rgba(96, 165, 250, 0.32);
-    --accent-fg:     #0F172A;
+    --text:        var(--neutral-900);
+    --text-strong: var(--neutral-900);
+    --text-secondary: var(--neutral-700);
+    --text-muted:  var(--neutral-500);
+    --text-faint:  var(--neutral-400);
+    --text-on-accent: #191918;
+    --text-on-dark:   var(--neutral-900);
 
-    --gold:       #D4A94A;
-    --gold-soft:  rgba(212, 169, 74, 0.14);
-    --gold-hover: #E5C76A;
+    --border:        var(--neutral-200);
+    --border-strong: var(--neutral-300);
+    --border-faint:  rgba(242,234,216,0.08);
+    --rule:          var(--neutral-200);
 
-    --amber:        #FBBF24;
-    --amber-strong: #F59E0B;
-    --amber-soft:   rgba(251, 191, 36, 0.14);
-    --amber-border: rgba(251, 191, 36, 0.32);
+    --accent:        var(--c-copper-ink);
+    --accent-hover:  #F2B782;
+    --accent-soft:   var(--c-copper-bg);
+    --accent-strong: var(--c-copper-deep);
+    --accent-fg:     #191918;
+    --focus-ring:    rgba(224, 160, 103, 0.36);
 
-    --success:      #34D399;
-    --success-soft: rgba(52, 211, 153, 0.10);
-    --warning:      #FBBF24;
-    --warning-soft: rgba(251, 191, 36, 0.10);
-    --danger:       #F87171;
-    --danger-soft:  rgba(248, 113, 113, 0.10);
-    --info:         #93C5FD;
-    --info-soft:    rgba(147, 197, 253, 0.10);
+    --success:      var(--c-mint-ink);
+    --success-soft: var(--c-mint-bg);
+    --warning:      var(--c-yellow-ink);
+    --warning-soft: var(--c-yellow-bg);
+    --danger:       var(--c-rose-ink);
+    --danger-soft:  var(--c-rose-bg);
+    --info:         var(--c-sky-ink);
+    --info-soft:    var(--c-sky-bg);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.4),
-                 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.4),
-                 0 16px 32px rgba(0, 0, 0, 0.4);
-    --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.5),
-                 0 24px 48px rgba(0, 0, 0, 0.5);
+    --brand:         var(--accent);
+    --brand-purple:  var(--c-lavender-ink);
+    --gold:          var(--accent);
+    --primary:       var(--accent);
+    --primary-fg:    #191918;
 
-    --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-card-hover: 0 1px 2px rgba(0, 0, 0, 0.4),
-                         0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-card:    0 1px 2px rgba(0,0,0,0.32);
+    --shadow-card-h:  0 1px 2px rgba(0,0,0,0.32), 0 6px 18px rgba(0,0,0,0.40);
+    --shadow-pop:     0 1px 2px rgba(0,0,0,0.40), 0 8px 24px rgba(0,0,0,0.50);
+    --shadow-modal:   0 12px 32px rgba(0,0,0,0.55), 0 32px 80px rgba(0,0,0,0.60);
+    --shadow-mockup:  0 1px 2px rgba(0,0,0,0.32), 0 12px 32px rgba(0,0,0,0.40), 0 32px 80px rgba(0,0,0,0.42);
 
-    --focus-ring:   0 0 0 3px rgba(96, 165, 250, 0.30);
-    --selection-bg: rgba(96, 165, 250, 0.25);
+    --glass-bg:    rgba(25,25,24,0.78);
+    --glass-blur:  16px;
+    --glass-border: rgba(242,234,216,0.06);
 
-    --chart-grid: rgba(255, 255, 255, 0.05);
-    --chart-text: #71717A;
+    --sidebar-bg:        var(--neutral-50);
+    --sidebar-rule:      var(--neutral-200);
+    --sidebar-item:      var(--neutral-700);
+    --sidebar-item-hover-bg:    var(--neutral-100);
+    --sidebar-item-active-bg:   var(--neutral-150);
+    --sidebar-item-active-text: var(--neutral-900);
+    --sidebar-active-bar:       var(--accent);
 
-    --glass-bg:        rgba(15, 15, 17, 0.70);
-    --glass-bg-subtle: rgba(15, 15, 17, 0.50);
-    --glass-border:    rgba(255, 255, 255, 0.06);
+    --topbar-bg:    rgba(25,25,24,0.86);
+    --topbar-border:var(--neutral-200);
 
-    --el-1: var(--shadow-sm);
-    --el-2: var(--shadow-md);
-    --el-3: var(--shadow-lg);
-    --el-4: var(--shadow-xl);
-    --el-5: 0 32px 80px -16px rgba(0, 0, 0, 0.7);
+    --scrollbar-thumb: rgba(242,234,216,0.16);
+    --scrollbar-thumb-hover: rgba(242,234,216,0.28);
 
-    --el-glow:        none;
-    --el-glow-strong: none;
+    --paper-0: var(--neutral-0); --paper-50: var(--neutral-50);
+    --paper-100: var(--neutral-100); --paper-200: var(--neutral-200);
+    --paper-300: var(--neutral-300);
+    --ink-900: var(--neutral-900); --ink-700: var(--neutral-700);
+    --ink-500: var(--neutral-500); --ink-400: var(--neutral-400);
+    --ink-300: var(--neutral-300); --ink-200: var(--neutral-200);
+    --gold-700: var(--accent); --gold-500: var(--accent);
+    --gold-100: var(--accent-soft); --gold-900: var(--accent-strong);
+    --gold-300: #886820;
+    --green-700: var(--success); --green-100: var(--success-soft);
+    --amber-700: var(--warning); --amber-100: var(--warning-soft);
+    --red-700: var(--danger); --red-100: var(--danger-soft);
+    --blue-700: var(--info); --blue-100: var(--info-soft);
+    --text-subtle: var(--text-muted);
+    --accent-border: var(--accent);
+    --shadow-sm: var(--shadow-card);
+    --shadow-md: var(--shadow-pop);
+    --shadow-lg: var(--shadow-pop);
+    --shadow-xl: var(--shadow-modal);
+    --shadow-2xl: var(--shadow-modal);
+
+    --chart-text: var(--neutral-500);
+    --chart-grid: rgba(242,234,216,0.10);
+    --chart-1: var(--c-copper-ink);
+    --chart-2: var(--c-mint-ink);
+    --chart-3: var(--c-sky-ink);
+    --chart-4: var(--c-rose-ink);
+    --chart-5: var(--c-lavender-ink);
   }
 
-  /* ═════════════════════════════════════════════════════════════
-     CINEMATIC THEME — kept as alias of dark; calm version
-     ═════════════════════════════════════════════════════════════ */
-  [data-theme='cinematic'] {
-    --bg:        #09090B;
-    --surface-1: #0F0F11;
-    --surface-2: #18181B;
-    --surface-3: #27272A;
-
-    --border:        #27272A;
-    --border-strong: #3F3F46;
-
-    --text:        #FAFAFA;
-    --text-muted:  #A1A1AA;
-    --text-subtle: #71717A;
-
-    --accent:        #FED65B;
-    --accent-hover:  #FFE085;
-    --accent-soft:   rgba(254, 214, 91, 0.10);
-    --accent-border: rgba(254, 214, 91, 0.30);
-    --accent-fg:     #1A1205;
-
-    --gold:       #FED65B;
-    --gold-soft:  rgba(254, 214, 91, 0.12);
-    --gold-hover: #FFE085;
-
-    --amber:        #FBBF24;
-    --amber-strong: #F59E0B;
-    --amber-soft:   rgba(251, 191, 36, 0.14);
-    --amber-border: rgba(251, 191, 36, 0.32);
-
-    --success:      #34D399;
-    --success-soft: rgba(52, 211, 153, 0.10);
-    --warning:      #FBBF24;
-    --warning-soft: rgba(251, 191, 36, 0.10);
-    --danger:       #F87171;
-    --danger-soft:  rgba(248, 113, 113, 0.10);
-    --info:         #93C5FD;
-    --info-soft:    rgba(147, 197, 253, 0.10);
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.4), 0 16px 32px rgba(0, 0, 0, 0.4);
-    --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.5), 0 24px 48px rgba(0, 0, 0, 0.5);
-
-    --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-card-hover: 0 0 0 1px rgba(254, 214, 91, 0.18),
-                         0 8px 24px rgba(0, 0, 0, 0.5);
-
-    --focus-ring:   0 0 0 3px rgba(254, 214, 91, 0.30);
-    --selection-bg: rgba(254, 214, 91, 0.20);
-
-    --chart-grid: rgba(255, 255, 255, 0.05);
-    --chart-text: #71717A;
-
-    --glass-bg:        rgba(15, 15, 17, 0.70);
-    --glass-bg-subtle: rgba(15, 15, 17, 0.50);
-    --glass-border:    rgba(255, 255, 255, 0.06);
-
-    --el-1: var(--shadow-sm);
-    --el-2: var(--shadow-md);
-    --el-3: var(--shadow-lg);
-    --el-4: var(--shadow-xl);
-    --el-5: 0 32px 80px -16px rgba(0, 0, 0, 0.7);
-
-    --el-glow:        none;
-    --el-glow-strong: 0 0 0 1px rgba(254, 214, 91, 0.20);
-  }
-
-  /* ═════════════════════════════════════════════════════════════
-     Reduced motion
-     ═════════════════════════════════════════════════════════════ */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
+    :root {
+      --t-fast: 0ms; --t-base: 0ms; --t-slow: 0ms;
+      --t-slower: 0ms; --t-cinema: 0ms;
     }
-  }
-
-  /* ═════════════════════════════════════════════════════════════
-     Body typography baseline
-     ═════════════════════════════════════════════════════════════ */
-  body {
-    font-family: var(--font-sans);
-    font-size: var(--fs-base);
-    line-height: var(--lh-base);
-    letter-spacing: var(--ls-normal);
-    color: var(--text);
-    background: var(--bg);
-    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'cv11' 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  .page-title, .auth-brand-hero, .landing-title,
-  .track-hero-title, .this-week-title {
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    letter-spacing: var(--ls-tight);
-    line-height: var(--lh-snug);
-    color: var(--text);
-    /* reserve descender extent for IBM Plex Sans Arabic */
-    padding-block-end: 0.12em;
-    margin: 0;
-  }
-
-  .metric-value, .kpi-value, .this-week-emphasis,
-  .dash-gpa-value, .compact-kpi-value, .stat-value {
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    letter-spacing: -0.014em;
-    line-height: 1.32;
-    font-feature-settings: 'tnum' 1, 'lnum' 1;
-    padding-block-end: 0.05em;
   }
 }

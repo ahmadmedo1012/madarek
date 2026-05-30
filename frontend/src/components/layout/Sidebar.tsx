@@ -31,12 +31,10 @@ export function Sidebar() {
       <aside className={`sidebar${sidebarOpen ? ' open' : ''}`} aria-label="القائمة الرئيسية">
         <div className="sidebar-brand">
           <div className="sidebar-brand-mark">
-            <BrandMark size={32} />
+            <BrandMark size={24} />
           </div>
           <div className="sidebar-brand-text">
-            <div className="sidebar-brand-name">
-              منصة الزاوية
-            </div>
+            <div className="sidebar-brand-name">مدارك</div>
             <div className="sidebar-brand-sub">جامعة الزاوية</div>
           </div>
         </div>

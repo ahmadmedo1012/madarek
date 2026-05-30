@@ -87,8 +87,8 @@ export default function StudentDashboardPage() {
                   datasets: [{
                     data: [75, 25],
                     backgroundColor: [
-                      'rgba(41, 82, 200, 0.95)',
-                      'rgba(127, 145, 178, 0.18)',
+                      getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8E6516',
+                      getComputedStyle(document.documentElement).getPropertyValue('--surface-3').trim() || '#F2EDE3',
                     ],
                     borderWidth: 0,
                     spacing: 2,

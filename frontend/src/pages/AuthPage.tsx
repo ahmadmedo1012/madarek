@@ -8,7 +8,6 @@ import {
   Building2, AlertCircle, ShieldCheck, ArrowLeft,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { BrandMark } from '../components/BrandMark';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
@@ -34,7 +33,6 @@ const ROLE_HOME: Record<AppRole, string> = {
   QUALITY: '/quality/dashboard',
   OWNER:   '/owner/dashboard',
 };
-const homeFor = (r: AppRole): string => ROLE_HOME[r];
 
 const DEMO_EMAIL: Record<AppRole, string> = {
   STUDENT: 'student@zu.edu.ly',
@@ -58,55 +56,54 @@ export default function AuthPage() {
   const onLogin = loginForm.handleSubmit(async (values) => {
     try {
       const result = await login.mutateAsync(values);
-      navigate(homeFor(result.user.role), { replace: true });
+      navigate(ROLE_HOME[result.user.role], { replace: true });
     } catch { /* error displayed below */ }
   });
 
   const onDemoLogin = async (role: AppRole) => {
     try {
       const result = await login.mutateAsync({ email: DEMO_EMAIL[role], password: '1234' });
-      navigate(homeFor(result.user.role), { replace: true });
+      navigate(ROLE_HOME[result.user.role], { replace: true });
     } catch { /* */ }
   };
 
   return (
     <div className="auth-shell">
-      <Link to="/" className="auth-back-home" aria-label="العودة للصفحة الرئيسية">
-        <Icon icon={Home} size={14} />
-        <span>الصفحة الرئيسية</span>
-      </Link>
 
-      <div className="auth-ministry">
-        <div className="auth-ministry-inner">
-          <span aria-hidden><LibyaFlag size={14} /></span>
-          <span className="auth-ministry-text">
-            <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
-          </span>
-        </div>
+      <div className="auth-top">
+        <Link to="/" className="auth-back-home">
+          <Icon icon={Home} size={14} />
+          الصفحة الرئيسية
+        </Link>
+        <span style={{ fontSize: 13, color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <LibyaFlag size={14} /> جامعة الزاوية
+        </span>
       </div>
 
       <div className="auth-center">
         <div className="auth-card">
-          <div className="auth-brand-block">
-            <div className="auth-brand-mark"><BrandMark size={48} /></div>
-            <div className="auth-brand-block-name">منصة الزاوية</div>
-            <div className="auth-brand-block-sub">جامعة الزاوية للتعليم الذكي</div>
+
+          <div className="auth-brand-mini">
+            <span className="auth-brand-mini-mark">م</span>
+            <span className="auth-brand-mini-text">مدارك</span>
           </div>
 
           <div className="auth-form-header">
-            <h1 className="auth-form-title">تسجيل الدخول</h1>
-            <p className="auth-form-sub">سجّل الدخول للوصول إلى مقرّراتك ومواردك الأكاديمية.</p>
+            <h2 className="auth-form-title">مرحباً بعودتك 👋</h2>
+            <p className="auth-form-sub">
+              سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.
+            </p>
           </div>
 
           <form onSubmit={onLogin} noValidate className="auth-form">
             <div className="auth-field">
-              <label htmlFor="auth-email">البريد الإلكتروني أو رقم القيد</label>
+              <label htmlFor="auth-email" className="form-label">البريد الإلكتروني أو رقم القيد</label>
               <div className="auth-input-wrap">
-                <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={15} /></span>
+                <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
                 <input
                   id="auth-email"
                   type="text"
-                  className="auth-input has-icon-start"
+                  className="auth-input"
                   placeholder="example@zu.edu.ly"
                   autoComplete="username"
                   aria-invalid={!!loginForm.formState.errors.email}
@@ -121,13 +118,13 @@ export default function AuthPage() {
             </div>
 
             <div className="auth-field">
-              <label htmlFor="auth-password">كلمة المرور</label>
+              <label htmlFor="auth-password" className="form-label">كلمة المرور</label>
               <div className="auth-input-wrap">
-                <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={15} /></span>
+                <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
                 <input
                   id="auth-password"
                   type="password"
-                  className="auth-input has-icon-start"
+                  className="auth-input"
                   placeholder="••••••••"
                   autoComplete="current-password"
                   aria-invalid={!!loginForm.formState.errors.password}
@@ -142,6 +139,7 @@ export default function AuthPage() {
             </div>
 
             <div className="auth-forgot-row">
+              <span />
               <button type="button" className="auth-forgot" onClick={() => setForgotNotice(true)}>
                 نسيت كلمة المرور؟
               </button>
@@ -149,14 +147,14 @@ export default function AuthPage() {
 
             {forgotNotice && (
               <div className="auth-forgot-notice" role="status">
-                يرجى التواصل مع الإدارة لإعادة تعيين كلمة المرور.
+                يرجى التواصل مع المرشد الأكاديميّ في كليّتك لإعادة تعيين كلمة المرور.
               </div>
             )}
 
             {login.isError && (
               <div className="auth-error" role="alert">
                 <Icon icon={AlertCircle} size={14} />
-                <span>تعذّر تسجيل الدخول. تحقّق من البيانات وحاول مجدداً.</span>
+                <span>تعذَّر تسجيل الدخول. تحقَّق من البيانات وحاول مجدداً.</span>
               </div>
             )}
 
@@ -174,7 +172,7 @@ export default function AuthPage() {
               )}
             </button>
 
-            <div className="auth-divider"><span>أو جرّب بحساب تجريبي</span></div>
+            <div className="auth-divider">أو جرِّب بحساب تجريبيّ</div>
 
             <div className="auth-demo">
               <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('STUDENT')} disabled={login.isPending}>
@@ -200,6 +198,10 @@ export default function AuthPage() {
             </p>
           </form>
         </div>
+      </div>
+
+      <div className="auth-bottom">
+        دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
       </div>
     </div>
   );

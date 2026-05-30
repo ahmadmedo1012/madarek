@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Sun, Moon, Monitor, Sparkles } from 'lucide-react';
+import { Sun, Moon, Monitor } from 'lucide-react';
 import { Icon } from '../Icon';
 import { useThemeStore, resolveTheme, type ThemeMode } from '../../stores/theme.store';
 
@@ -25,16 +25,15 @@ export function useThemeSync() {
   }, [mode]);
 }
 
-/** A 4-state segmented toggle: Light · Dark · Cinematic · System. */
+/** A 3-state segmented toggle: Light · Dark · System. */
 export function ThemeToggle() {
   const mode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
 
   const opts: Array<{ value: ThemeMode; icon: typeof Sun; label: string }> = [
-    { value: 'light',     icon: Sun,      label: 'فاتح' },
-    { value: 'dark',      icon: Moon,     label: 'داكن' },
-    { value: 'cinematic', icon: Sparkles, label: 'سينمائي' },
-    { value: 'system',    icon: Monitor,  label: 'تلقائي' },
+    { value: 'light',  icon: Sun,     label: 'فاتح' },
+    { value: 'dark',   icon: Moon,    label: 'داكن' },
+    { value: 'system', icon: Monitor, label: 'تلقائي' },
   ];
 
   return (
@@ -43,7 +42,7 @@ export function ThemeToggle() {
         <button
           key={o.value}
           type="button"
-          className={`theme-toggle-btn${mode === o.value ? ' on' : ''}`}
+          className={`theme-toggle-option${mode === o.value ? ' is-active' : ''}`}
           onClick={() => setMode(o.value)}
           title={o.label}
           aria-label={o.label}
