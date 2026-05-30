@@ -9,46 +9,88 @@
 
 /* ═════════════════════════════════════════════════════════════
    Madarek Design System — Unified Design Tokens
-   Single source of truth for the Google Stitch design language.
+   Single source of truth for the design language.
    Themed via [data-theme="dark"|"light"].
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* ── Brand Colors (mode-invariant) ────────────────────── */
-  --brand-blue: #003461;
-  --brand-blue-deep: #001c38;
-  --brand-purple: #004b87;
-  --brand-gold: #fed65b;
+  /* ── Color Palette: Primary (Blue) ────────────────────── */
+  --color-primary-50: #EBF1FD;
+  --color-primary-100: #D1DFFA;
+  --color-primary-200: #A8C3F5;
+  --color-primary-300: #7BA5EF;
+  --color-primary-400: #5B8DEF;
+  --color-primary-500: #4A7DE0;
+  --color-primary-600: #3B6CC7;
+  --color-primary-700: #2D55A3;
+  --color-primary-800: #1F3E7F;
+  --color-primary-900: #142A5B;
 
-  /* ── Stitch Primary Palette ───────────────────────────── */
-  --md-primary:                     #003461;
+  /* ── Color Palette: Teal (Accent) ─────────────────────── */
+  --color-teal-50: #E6FAF8;
+  --color-teal-100: #B3F0EB;
+  --color-teal-200: #80E6DD;
+  --color-teal-300: #4ECDC4;
+  --color-teal-400: #3DBDB4;
+  --color-teal-500: #2DA69E;
+  --color-teal-600: #1E8F88;
+
+  /* ── Color Palette: Gold ──────────────────────────────── */
+  --color-gold-50: #FDF5E8;
+  --color-gold-100: #F5E0B8;
+  --color-gold-200: #EDCB88;
+  --color-gold-300: #D4A94A;
+  --color-gold-400: #C8962E;
+  --color-gold-500: #A87A24;
+  --color-gold-600: #885F1A;
+
+  /* ── Color Palette: Neutral ───────────────────────────── */
+  --color-neutral-50: #F8FAFB;
+  --color-neutral-100: #F1F4F7;
+  --color-neutral-200: #E4E9EF;
+  --color-neutral-300: #CBD3DC;
+  --color-neutral-400: #9BA6B4;
+  --color-neutral-500: #6B7A8D;
+  --color-neutral-600: #4A5567;
+  --color-neutral-700: #333D4B;
+  --color-neutral-800: #1E2530;
+  --color-neutral-900: #0F1117;
+
+  /* ── Brand Aliases (backward compat) ──────────────────── */
+  --brand-blue: var(--color-primary-600);
+  --brand-blue-deep: var(--color-primary-900);
+  --brand-purple: var(--color-primary-700);
+  --brand-gold: var(--color-gold-300);
+
+  /* ── Material Design 3 Tokens (backward compat) ───────── */
+  --md-primary:                     var(--color-primary-600);
   --md-on-primary:                  #ffffff;
-  --md-primary-container:           #004b87;
-  --md-on-primary-container:        #8abcff;
-  --md-primary-fixed:               #d3e4ff;
-  --md-primary-fixed-dim:           #a3c9ff;
-  --md-on-primary-fixed:            #001c38;
-  --md-on-primary-fixed-variant:    #004882;
+  --md-primary-container:           var(--color-primary-400);
+  --md-on-primary-container:        #ffffff;
+  --md-primary-fixed:               var(--color-primary-100);
+  --md-primary-fixed-dim:           var(--color-primary-200);
+  --md-on-primary-fixed:            var(--color-primary-900);
+  --md-on-primary-fixed-variant:    var(--color-primary-700);
 
-  /* ── Stitch Secondary (Gold) ──────────────────────────── */
-  --md-secondary:                   #735c00;
+  /* ── MD3 Secondary (Gold) ─────────────────────────────── */
+  --md-secondary:                   var(--color-gold-400);
   --md-on-secondary:                #ffffff;
-  --md-secondary-container:         #fed65b;
-  --md-on-secondary-container:      #745c00;
-  --md-secondary-fixed:             #ffe088;
-  --md-secondary-fixed-dim:         #e9c349;
-  --md-on-secondary-fixed:          #241a00;
-  --md-on-secondary-fixed-variant:  #574500;
+  --md-secondary-container:         var(--color-gold-300);
+  --md-on-secondary-container:      var(--color-gold-600);
+  --md-secondary-fixed:             var(--color-gold-100);
+  --md-secondary-fixed-dim:         var(--color-gold-200);
+  --md-on-secondary-fixed:          var(--color-gold-600);
+  --md-on-secondary-fixed-variant:  var(--color-gold-500);
 
-  /* ── Stitch Tertiary (Teal / AI) ──────────────────────── */
-  --md-tertiary:                    #003a3b;
+  /* ── MD3 Tertiary (Teal / AI) ─────────────────────────── */
+  --md-tertiary:                    var(--color-teal-300);
   --md-on-tertiary:                 #ffffff;
-  --md-tertiary-container:          #005354;
-  --md-on-tertiary-container:       #01ced1;
-  --md-tertiary-fixed:              #5af8fb;
-  --md-tertiary-fixed-dim:          #2ddbde;
-  --md-on-tertiary-fixed:           #002020;
-  --md-on-tertiary-fixed-variant:   #004f51;
+  --md-tertiary-container:          var(--color-teal-400);
+  --md-on-tertiary-container:       #ffffff;
+  --md-tertiary-fixed:              var(--color-teal-100);
+  --md-tertiary-fixed-dim:          var(--color-teal-200);
+  --md-on-tertiary-fixed:           var(--color-teal-600);
+  --md-on-tertiary-fixed-variant:   var(--color-teal-500);
 
   /* ── Error ────────────────────────────────────────────── */
   --md-error:                       #ba1a1a;
@@ -57,58 +99,79 @@
   --md-on-error-container:          #93000a;
 
   /* ── Surface (Material 3) ─────────────────────────────── */
-  --md-surface:                     #f8f9fa;
-  --md-on-surface:                  #191c1d;
-  --md-on-surface-variant:          #424750;
-  --md-surface-variant:             #e1e3e4;
-  --md-surface-bright:              #f8f9fa;
-  --md-surface-dim:                 #d9dadb;
+  --md-surface:                     var(--color-neutral-50);
+  --md-on-surface:                  var(--color-neutral-800);
+  --md-on-surface-variant:          var(--color-neutral-600);
+  --md-surface-variant:             var(--color-neutral-200);
+  --md-surface-bright:              var(--color-neutral-50);
+  --md-surface-dim:                 var(--color-neutral-300);
   --md-surface-container-lowest:    #ffffff;
-  --md-surface-container-low:       #f3f4f5;
-  --md-surface-container:           #edeeef;
-  --md-surface-container-high:      #e7e8e9;
-  --md-surface-container-highest:   #e1e3e4;
-  --md-background:                  #f8f9fa;
-  --md-on-background:               #191c1d;
+  --md-surface-container-low:       var(--color-neutral-100);
+  --md-surface-container:           var(--color-neutral-200);
+  --md-surface-container-high:      var(--color-neutral-300);
+  --md-surface-container-highest:   var(--color-neutral-300);
+  --md-background:                  var(--color-neutral-50);
+  --md-on-background:               var(--color-neutral-800);
 
   /* ── Outline ──────────────────────────────────────────── */
-  --md-outline:                     #727781;
-  --md-outline-variant:             #c2c6d1;
+  --md-outline:                     var(--color-neutral-400);
+  --md-outline-variant:             var(--color-neutral-300);
 
   /* ── Inverse ──────────────────────────────────────────── */
-  --md-inverse-surface:             #2e3132;
-  --md-inverse-on-surface:          #f0f1f2;
-  --md-inverse-primary:             #a3c9ff;
+  --md-inverse-surface:             var(--color-neutral-800);
+  --md-inverse-on-surface:          var(--color-neutral-100);
+  --md-inverse-primary:             var(--color-primary-300);
 
-  /* ── Spacing (8px base grid) ──────────────────────────── */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-7: 28px;
-  --sp-8: 32px;
-  --sp-10: 40px;
-  --sp-12: 48px;
-  --sp-16: 64px;
+  /* ── Spacing (4px base) ───────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Backward-compatible spacing aliases */
+  --sp-1: var(--space-1);
+  --sp-2: var(--space-2);
+  --sp-3: var(--space-3);
+  --sp-4: var(--space-4);
+  --sp-5: var(--space-5);
+  --sp-6: var(--space-6);
+  --sp-7: var(--space-7);
+  --sp-8: var(--space-8);
+  --sp-10: var(--space-10);
+  --sp-12: var(--space-12);
+  --sp-16: var(--space-16);
 
   /* ── Radius ───────────────────────────────────────────── */
-  --r-xs: 4px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Backward-compatible radius aliases */
+  --r-xs: var(--radius-sm);
   --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 12px;
-  --r-xl: 16px;
-  --r-2xl: 16px;
-  --r-3xl: 20px;
-  --r-full: 9999px;
+  --r-md: var(--radius-md);
+  --r-lg: var(--radius-lg);
+  --r-xl: var(--radius-xl);
+  --r-2xl: var(--radius-xl);
+  --r-3xl: var(--radius-2xl);
+  --r-full: var(--radius-full);
 
   /* Stitch radii aliases */
-  --st-r-default: 4px;
-  --st-r-lg:      8px;
-  --st-r-xl:      12px;
-  --st-r-2xl:     16px;
-  --st-r-full:    9999px;
+  --st-r-default: var(--radius-sm);
+  --st-r-lg:      var(--radius-md);
+  --st-r-xl:      var(--radius-lg);
+  --st-r-2xl:     var(--radius-xl);
+  --st-r-full:    var(--radius-full);
 
   /* ── Typography ───────────────────────────────────────── */
   --fs-xxs: 11px;
@@ -137,7 +200,7 @@
   --fw-bold: 700;
 
   /* Line heights refined for Arabic display */
-  --lh-tight: 1.18;
+  --lh-tight: 1.3;
   --lh-snug: 1.4;
   --lh-base: 1.65;
   --lh-loose: 1.85;
@@ -157,6 +220,11 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
+  /* Transition aliases */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
   /* ── Layout ──────────────────────────────────────────── */
   --sidebar-w: 264px;
   --sidebar-w-collapsed: 64px;
@@ -171,8 +239,8 @@
   --st-unit:            8px;
 
   /* ── Fonts ───────────────────────────────────────────── */
-  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Lexend', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system, sans-serif;
+  --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* ── Glassmorphism ───────────────────────────────────── */
@@ -203,7 +271,7 @@
    ═════════════════════════════════════════════════════════════ */
 :root,
 [data-theme='dark'] {
-  /* Surfaces — Soft UI Evolution: warm-neutral, clearly layered depth */
+  /* Surfaces */
   --bg: #0f1117;
   --surface-1: #161922;
   --surface-2: #1e222e;
@@ -218,19 +286,19 @@
   --text-muted: #b0b0b8;
   --text-subtle: #909098;
 
-  /* Accent (primary in dark mode uses fixed-dim for readability) */
-  --accent: #a3c9ff;
-  --accent-hover: #d3e4ff;
-  --accent-soft: rgba(163, 201, 255, 0.16);
-  --accent-border: rgba(163, 201, 255, 0.45);
-  --accent-fg: #001c38;
+  /* Accent (primary) */
+  --accent: var(--color-primary-400);
+  --accent-hover: var(--color-primary-300);
+  --accent-soft: rgba(91, 141, 239, 0.14);
+  --accent-border: rgba(91, 141, 239, 0.40);
+  --accent-fg: #ffffff;
 
   /* Gold */
-  --gold: #e9c349;
-  --gold-soft: rgba(233, 195, 73, 0.16);
+  --gold: var(--color-gold-300);
+  --gold-soft: rgba(200, 150, 46, 0.14);
   --gold-hover: #f5d565;
 
-  /* Amber accent (recommended blue+amber system) — brighter on dark surfaces */
+  /* Amber accent */
   --amber: #fbbf24;
   --amber-strong: #f59e0b;
   --amber-soft: rgba(245, 158, 11, 0.16);
@@ -246,7 +314,7 @@
   --info: #a3c9ff;
   --info-soft: rgba(163, 201, 255, 0.10);
 
-  /* Shadows — softer, multi-layer dimensional elevation (Soft UI) */
+  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.24);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.26);
@@ -256,8 +324,8 @@
   --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 10px 28px rgba(0, 0, 0, 0.38);
 
   /* Focus & Selection */
-  --focus-ring: 0 0 0 3px rgba(163, 201, 255, 0.30);
-  --selection-bg: rgba(163, 201, 255, 0.25);
+  --focus-ring: 0 0 0 3px rgba(91, 141, 239, 0.30);
+  --selection-bg: rgba(91, 141, 239, 0.25);
 
   /* Chart */
   --chart-grid: rgba(255, 255, 255, 0.05);
@@ -273,43 +341,43 @@
    LIGHT THEME
    ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  --bg: #eef1f6;
+  --bg: var(--color-neutral-50);
   --surface-1: #ffffff;
-  --surface-2: #f5f7fa;
-  --surface-3: #eaeef3;
+  --surface-2: var(--color-neutral-100);
+  --surface-3: var(--color-neutral-200);
 
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --border: var(--color-neutral-200);
+  --border-strong: var(--color-neutral-300);
 
-  --text: var(--md-on-surface);
-  --text-muted: var(--md-on-surface-variant);
-  --text-subtle: #475569;
+  --text: var(--color-neutral-800);
+  --text-muted: var(--color-neutral-600);
+  --text-subtle: var(--color-neutral-500);
 
-  --accent: var(--md-primary);
-  --accent-hover: var(--md-primary-container);
-  --accent-soft: color-mix(in srgb, var(--md-primary) 8%, transparent);
-  --accent-border: color-mix(in srgb, var(--md-primary) 35%, transparent);
-  --accent-fg: var(--md-on-primary);
+  --accent: var(--color-primary-600);
+  --accent-hover: var(--color-primary-700);
+  --accent-soft: rgba(59, 108, 199, 0.08);
+  --accent-border: rgba(59, 108, 199, 0.30);
+  --accent-fg: #ffffff;
 
-  --gold: var(--md-secondary-container);
-  --gold-soft: color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
-  --gold-hover: #f5d565;
+  --gold: var(--color-gold-400);
+  --gold-soft: rgba(200, 150, 46, 0.14);
+  --gold-hover: var(--color-gold-300);
 
-  /* Amber accent (recommended blue+amber system) — readable highlight/emphasis */
+  /* Amber accent */
   --amber: #b45309;
   --amber-strong: #92400e;
-  --amber-soft: color-mix(in srgb, #f59e0b 14%, transparent);
-  --amber-border: color-mix(in srgb, #f59e0b 40%, transparent);
+  --amber-soft: rgba(245, 158, 11, 0.14);
+  --amber-border: rgba(245, 158, 11, 0.40);
 
   /* Semantic (light) */
-  --success: var(--md-tertiary-container);
-  --success-soft: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
+  --success: #16a34a;
+  --success-soft: rgba(22, 163, 74, 0.10);
   --warning: #c2410c;
   --warning-soft: rgba(194, 65, 12, 0.10);
   --danger: var(--md-error);
-  --danger-soft: color-mix(in srgb, var(--md-error) 10%, transparent);
-  --info: var(--md-primary);
-  --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
+  --danger-soft: rgba(186, 26, 26, 0.10);
+  --info: var(--color-primary-600);
+  --info-soft: rgba(59, 108, 199, 0.10);
 
   /* Shadows (light) */
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
@@ -318,11 +386,11 @@
   --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.10), 0 32px 64px rgba(15, 23, 42, 0.14);
 
   --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.06);
-  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.08), 0 14px 34px -8px rgba(15, 23, 42, 0.16);
+  --shadow-card-hover: 0 0 0 1px rgba(59, 108, 199, 0.08), 0 14px 34px -8px rgba(15, 23, 42, 0.16);
 
   /* Focus & Selection (light) */
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);
-  --selection-bg: color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
+  --focus-ring: 0 0 0 3px rgba(59, 108, 199, 0.25);
+  --selection-bg: rgba(78, 205, 196, 0.20);
 
   /* Chart (light) */
   --chart-grid: rgba(15, 23, 42, 0.06);
@@ -335,41 +403,6 @@
 }
 
 /* ═════════════════════════════════════════════════════════════
-   CINEMATIC THEME (opt-in only — never the default)
-   Deep-dark premium surfaces + amber glow. Activated when the user
-   explicitly selects it; the official light theme stays default.
-   ═════════════════════════════════════════════════════════════ */
-[data-theme='cinematic'] {
-  --bg: #0f1117;
-  --surface-1: #161922;
-  --surface-2: #1e222e;
-  --surface-3: #283041;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-
-  --text: #f4f6fb;
-  --text-muted: #c4cad8;
-  --text-subtle: #9aa3b6;
-
-  --accent: #ffbf00;
-  --accent-hover: #ffd24d;
-  --accent-soft: rgba(255, 191, 0, 0.14);
-  --accent-border: rgba(255, 191, 0, 0.42);
-  --accent-fg: #1a1205;
-
-  --glow-sm: 0 0 0 1px rgba(255, 191, 0, 0.08), 0 0 18px -6px rgba(255, 191, 0, 0.10);
-  --glow-md: 0 0 0 1px rgba(255, 191, 0, 0.15), 0 0 28px -8px rgba(255, 191, 0, 0.18);
-
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 8px 30px -12px rgba(0, 0, 0, 0.7);
-  --shadow-card-hover: var(--glow-md), 0 18px 50px -16px rgba(0, 0, 0, 0.8);
-  --el-3: var(--glow-md), 0 18px 50px -16px rgba(0, 0, 0, 0.7);
-
-  --glass-bg: rgba(22, 25, 34, 0.62);
-  --glass-border: rgba(255, 255, 255, 0.10);
-  color-scheme: dark;
-}
-
-/* ═════════════════════════════════════════════════════════════
    REDUCED MOTION
    ═════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
@@ -377,4 +410,25 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ═════════════════════════════════════════════════════════════
+   Typography Rules (consolidated from stitch-tokens.css)
+   ═════════════════════════════════════════════════════════════ */
+body {
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, .page-title, .auth-brand-hero, .landing-title, .track-hero-title, .this-week-title {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+}
+
+.metric-value, .kpi-value, .this-week-emphasis {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.025em;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
 }

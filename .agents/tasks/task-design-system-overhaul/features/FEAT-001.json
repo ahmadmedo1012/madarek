@@ -1,0 +1,34 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Overhaul the design token system in tokens.css to implement the new color palette (primary blues #5B8DEF to #3B6CC7, accent teal #4ECDC4, gold #C8962E), add proper semantic color tokens for both themes, update spacing to 4px/8px base, refine radius/shadow/transition systems, and fix font stack for Arabic-first (system fonts since Google Fonts CDN is not accessible in dev). Ensure both light and dark themes have WCAG 2.1 AA compliant contrast ratios. Consolidate stitch-tokens.css into the main tokens.css.",
+  "status": "completed",
+  "steps": [
+    "Step 1: Rewrite the :root section of frontend/src/styles/tokens.css to replace the current brand colors (--brand-blue: #003461 etc.) with the new primary palette: --color-primary-50 through --color-primary-900 using the #5B8DEF to #3B6CC7 range. Add accent teal (#4ECDC4) and gold (#C8962E) as secondary/tertiary palettes with their own scale.",
+    "Step 2: Replace the Material Design 3 --md-* tokens with simpler semantic aliases: --color-primary, --color-primary-hover, --color-primary-light, --color-secondary, --color-tertiary, --color-success, --color-warning, --color-danger, --color-info. Keep existing --accent, --gold etc aliases pointing to new values for backward compat.",
+    "Step 3: Update the dark theme section [data-theme='dark'] to use the new palette. --bg should remain deep (#0f1117), surfaces layered, but --accent should now map to the lighter primary blue (#5B8DEF). Verify text-on-primary contrast >= 4.5:1.",
+    "Step 4: Update the light theme section [data-theme='light'] to use new palette. --bg: #f8fafb, --surface-1: #ffffff, --accent: #3B6CC7. Ensure all semantic color combinations meet WCAG AA (4.5:1 for normal text, 3:1 for large text).",
+    "Step 5: Consolidate spacing tokens to a clean 4px base: --space-1: 4px, --space-2: 8px, --space-3: 12px, --space-4: 16px, --space-5: 20px, --space-6: 24px, --space-8: 32px, --space-10: 40px, --space-12: 48px, --space-16: 64px. Keep old --sp-N aliases pointing to these for backward compat.",
+    "Step 6: Refine radius tokens: --radius-sm: 4px, --radius-md: 8px, --radius-lg: 12px, --radius-xl: 16px, --radius-2xl: 20px, --radius-full: 9999px. Keep old --r-* aliases for backward compat.",
+    "Step 7: Refine shadow system: --shadow-xs: subtle 1px, --shadow-sm: card resting, --shadow-md: hover state, --shadow-lg: dropdown/modal, --shadow-xl: dialog/overlay. Different values for light (soft blue-tinted) and dark (deeper black) themes.",
+    "Step 8: Add transition tokens: --transition-fast: 150ms ease, --transition-normal: 250ms ease, --transition-slow: 350ms ease. Keep old --t-* aliases.",
+    "Step 9: Update --font-sans to use 'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system, sans-serif (Arabic-first stack with system fallbacks). Remove Lexend/Outfit from --font-display, use 'IBM Plex Sans Arabic' with heavier weight instead. Keep --font-mono as is.",
+    "Step 10: Merge the content of frontend/src/styles/stitch-tokens.css into the bottom of tokens.css (the body font-family rule and heading/metric typography rules). Then empty stitch-tokens.css to just a comment saying tokens are consolidated.",
+    "Step 11: Remove the [data-theme='cinematic'] section as it is unused and creates confusion."
+  ],
+  "acceptance_criteria": [
+    "tokens.css contains a complete, non-duplicated set of design tokens with new color palette",
+    "Both dark and light themes defined with proper contrast ratios",
+    "Old token aliases (--sp-N, --r-*, --t-*, --accent, --gold) still exist pointing to new values so no existing CSS breaks",
+    "stitch-tokens.css is effectively empty (just a redirect comment)",
+    "No cinematic theme section remains",
+    "Font stack is Arabic-first with system fallbacks"
+  ],
+  "verification": [
+    "Run: python3 -c to validate CSS brace balance in tokens.css",
+    "Run: grep to confirm no orphaned --md-primary references that would break (old aliases should still resolve)",
+    "Verify backward-compatible aliases exist for --sp-1 through --sp-16, --r-xs through --r-full, --t-fast through --t-cinema"
+  ],
+  "blocked_reason": null,
+  "findings": "All verification checks pass. Brace balance OK (8/8). All 72 backward-compat tokens verified present. No per-block duplicate properties. Cinematic theme removed. Font stack updated to Arabic-first. Line heights meet Arabic requirements (lh-tight >= 1.3, lh-snug >= 1.4). stitch-tokens.css now empty (just a comment). The --glass-bg, --glass-border etc appear in both :root and theme blocks which is correct theming behavior."
+}

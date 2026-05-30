@@ -1,0 +1,31 @@
+{
+  "project_type": "React 18 + TypeScript SPA with Vite build, full EdTech LMS for Zawia University (Arabic RTL)",
+  "language": "TypeScript / CSS",
+  "build_system": "Vite 5.4 + TypeScript 5.7. Build command: tsc -b && vite build. No Docker.",
+  "test_framework": "No test framework configured in package.json. Verification via TypeScript type-checking.",
+  "build_command": "Cannot run - INTEGRATIONS_ONLY network prevents npm install. Use AST/syntax validation instead.",
+  "test_command": "Cannot run - no node_modules available.",
+  "verification_instructions": "1. Validate CSS brace balance across all CSS files. 2. Verify TSX syntax is valid. 3. Check no duplicate custom property definitions. 4. Confirm RTL logical properties used (no directional left/right). 5. Verify prefers-reduced-motion queries on animations.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "npm install (blocked by INTEGRATIONS_ONLY network)",
+  "environment_constraints": "INTEGRATIONS_ONLY network - cannot install npm packages, cannot download Google Fonts from CDN, cannot run build/test. Font loading via Google Fonts CDN in index.html already exists (IBM Plex Sans Arabic, Lexend, Outfit, Space Mono) - will work only in production. Use system font fallbacks.",
+  "contribution_requirements": "Preserve all existing functionality. Full RTL support. WCAG 2.1 AA contrast. Responsive breakpoints: mobile <640px, tablet 640-1024px, desktop >1024px. No new external libraries.",
+  "key_patterns": "CSS custom properties in tokens.css (dark/light themes via [data-theme]). Theme state in Zustand store (theme.store.ts). CSS layers: @layer tokens, base, components, pages, overrides. Multiple CSS files loaded in main.tsx in specific order. React components use className-based styling (no CSS modules). lucide-react for icons. IntersectionObserver-based Reveal component for scroll animations. CountUp component for animated numbers.",
+  "relevant_files": [
+    "frontend/src/styles/tokens.css",
+    "frontend/src/styles/stitch-tokens.css",
+    "frontend/src/styles/base.css",
+    "frontend/src/styles/landing.css",
+    "frontend/src/styles/landing-pro.css",
+    "frontend/src/styles/landing-auth-v3.css",
+    "frontend/src/styles/responsive.css",
+    "frontend/src/styles/elevation.css",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/components/layout/ThemeToggle.tsx",
+    "frontend/src/stores/theme.store.ts",
+    "frontend/src/components/CountUp.tsx",
+    "frontend/src/hooks/useReveal.ts",
+    "frontend/index.html"
+  ],
+  "directory_structure": "frontend/src/styles/ - all CSS files (tokens, base, components, landing, responsive, etc). frontend/src/pages/ - page components including LandingPage.tsx. frontend/src/components/ - reusable components (Icon, BrandMark, CountUp, layout/). frontend/src/stores/ - Zustand stores (auth, theme). frontend/src/hooks/ - custom hooks (useReveal)."
+}

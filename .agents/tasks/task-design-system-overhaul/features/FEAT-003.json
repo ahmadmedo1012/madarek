@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-003",
+  "type": "refactor",
+  "description": "Clean up CSS architecture: remove duplicate/conflicting rules across landing CSS files, consolidate responsive breakpoints to use consistent values (mobile <640px, tablet 640-1024px, desktop >1024px), ensure smooth theme transitions on all landing elements, and update the landing-auth-v3.css CTA section to use tokens. Remove the large standalone HTML file reference patterns.",
+  "status": "completed",
+  "steps": [
+    "Step 1 - Audit and remove duplicate rule definitions: landing.css defines .landing-title .block styling, and landing-pro.css redefines it with !important. Keep only the final version in landing.css. Similarly .landing-hero::before is defined in both files - consolidate to one definition.",
+    "Step 2 - Update landing-auth-v3.css: The .landing-final-cta section uses hardcoded colors (#001c38, #003461, #004b87, rgba values). Replace with CSS custom properties from the token system. The text colors inside CTA (forced #ffffff) should use --color-on-primary or similar semantic tokens.",
+    "Step 3 - Standardize responsive breakpoints across all landing CSS. Currently landing.css uses @media (max-width: 900px), (max-width: 720px), (max-width: 480px). Align to the user's requested system: mobile <640px, tablet 640-1024px, desktop >1024px. Update the breakpoints in landing.css responsive sections.",
+    "Step 4 - Add smooth theme transition to .landing container and all child elements that change color on theme switch. Ensure the body transition (already in base.css) covers all landing-specific elements. Add transition: background-color var(--transition-normal), color var(--transition-normal) to key containers like .ministry-strip, .landing-final-cta, .landing-bento-card, .landing-feature-card.",
+    "Step 5 - Remove the .landing-hero-img duplicate styling (defined in both landing.css and landing-pro.css). Keep one clean definition with border-radius, overflow hidden, and shadow.",
+    "Step 6 - Clean up the .landing-header sticky/glass styling conflict between landing.css and landing-pro.css. Consolidate into one definition in landing.css.",
+    "Step 7 - Verify the .landing-mobile-menu animation and burger toggle work correctly with the new token system. Ensure mobile menu has proper contrast in both themes.",
+    "Step 8 - In responsive.css around line 512, it hides .ministry-strip on desktop widths - verify this is intentional and correct. If the strip should always show, remove that rule."
+  ],
+  "acceptance_criteria": [
+    "No duplicate class definitions across landing.css and landing-pro.css for the same selector",
+    "landing-auth-v3.css CTA section uses CSS custom properties instead of hardcoded colors",
+    "Responsive breakpoints consistently use 640px and 1024px thresholds",
+    "Theme transitions are smooth on all landing page elements",
+    "No !important declarations in landing-pro.css"
+  ],
+  "verification": [
+    "Run: grep for '!important' in landing-pro.css - should find zero",
+    "Run: grep for hardcoded color values in landing-auth-v3.css CTA section",
+    "Validate CSS brace balance across landing.css, landing-pro.css, landing-auth-v3.css",
+    "Check responsive breakpoints are consistent: grep for '@media' in landing*.css files"
+  ],
+  "blocked_reason": null,
+  "findings": "All verification passed. CSS brace balance OK (landing.css 195/195, landing-pro.css 35/35, landing-auth-v3.css 54/54, responsive.css 118/118). Zero !important in landing-pro.css. No duplicate selectors between landing.css and landing-pro.css. All @media breakpoints standardized to 1024px/640px/480px (no 900px or 720px remaining in landing files). Theme transitions added for 8 key landing elements. CTA colors now use var(--color-*) with fallback hex values. The responsive.css still has 900px for sidebar/sidebar-backdrop which are app-level components (not landing-specific). The auth section in landing-auth-v3.css still uses !important on form inputs (intentional override for third-party style conflicts). The @media print rule in responsive.css still hides ministry-strip for print only which is correct behavior."
+}
