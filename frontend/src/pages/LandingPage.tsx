@@ -7,7 +7,7 @@ import {
   ArrowLeft, Menu, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { useThemeSync } from '../components/layout/ThemeToggle';
+import { useThemeSync, ThemeToggle } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { BrandMark } from '../components/BrandMark';
 import { LibyaFlag } from '../components/LibyaFlag';
@@ -48,6 +48,7 @@ export default function LandingPage() {
 
       <header className="landing-header">
         <div className="landing-header-login">
+          <ThemeToggle />
           <Link to="/auth" className="btn">
             تسجيل الدخول
             <Icon icon={User} size={16} />
@@ -101,7 +102,7 @@ export default function LandingPage() {
               المنصة الرسمية لجامعة الزاوية
             </span>
             <h1 className="landing-title">
-              منصة الزاوية:
+              منصة الزاوية
               <span className="block">جامعة الزاوية للتعليم الذكي</span>
             </h1>
             <p className="landing-subtitle">
@@ -135,7 +136,7 @@ export default function LandingPage() {
         {/* ═══════════ STATS STRIP ═══════════ */}
         <Reveal as="section" className="kpi-strip">
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(41, 82, 200, 0.10)', color: '#1e40af' }}>
+            <div className="kpi-icon" data-tone="primary">
               <Icon icon={Building2} size={20} />
             </div>
             <div>
@@ -144,7 +145,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(14, 92, 47, 0.10)', color: '#0E5C2F' }}>
+            <div className="kpi-icon" data-tone="success">
               <Icon icon={Users2} size={20} />
             </div>
             <div>
@@ -153,7 +154,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
+            <div className="kpi-icon" data-tone="tertiary">
               <Icon icon={GraduationCap} size={20} />
             </div>
             <div>
@@ -162,7 +163,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="kpi-cell">
-            <div className="kpi-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
+            <div className="kpi-icon" data-tone="secondary">
               <Icon icon={Award} size={20} />
             </div>
             <div>
@@ -305,7 +306,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="landing-features-grid">
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" data-tone="primary">
               <Icon icon={GraduationCap} size={20} />
             </div>
             <h3 className="landing-feature-title">الطالب</h3>
@@ -313,7 +314,7 @@ export default function LandingPage() {
               مقررات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات،
               فرص عمل، مكتبة بحوث، اختبارات إلكترونية.
             </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(16, 185, 129, 0.10)', color: '#059669' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" data-tone="success">
               <Icon icon={Brain} size={20} />
             </div>
             <h3 className="landing-feature-title">الأستاذ</h3>
@@ -321,7 +322,7 @@ export default function LandingPage() {
               ذكاء أكاديمي يكشف الطلاب المعرضين، إدارة المحاضرات والدرجات،
               بث مباشر، ومعامل افتراضية بصلاحيات تحكم.
             </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(123, 58, 237, 0.10)', color: '#7B3AED' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" data-tone="tertiary">
               <Icon icon={Building2} size={20} />
             </div>
             <h3 className="landing-feature-title">الإدارة</h3>
@@ -329,7 +330,7 @@ export default function LandingPage() {
               إدارة الكليات والأساتذة والمقررات، تقارير، ومزامنة يومية
               مع البيانات الرسمية لجامعة الزاوية.
             </p></Reveal>
-            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" style={{ background: 'rgba(212, 165, 55, 0.12)', color: '#B8861E' }}>
+            <Reveal as="div" className="landing-feature-card"><div className="landing-feature-icon" data-tone="secondary">
               <Icon icon={ShieldCheck} size={20} />
             </div>
             <h3 className="landing-feature-title">ضمان الجودة</h3>
