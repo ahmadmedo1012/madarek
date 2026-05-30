@@ -145,14 +145,14 @@
     --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700;
 
     /* Mathematically-tuned line-heights for IBM Plex Sans Arabic.
-       Arabic descenders (ج، ح، خ، ع) need extra room — these values
-       guarantee zero-clip across all sizes. */
-    --lh-tight: 1.32;
-    --lh-snug:  1.48;
-    --lh-base:  1.72;
-    --lh-loose: 1.92;
+       1.6 body / 1.4 headings — Arabic descenders (ج، ح، خ، ع) need
+       breathing room; tighter values clip glyphs at large sizes. */
+    --lh-tight: 1.4;
+    --lh-snug:  1.5;
+    --lh-base:  1.6;
+    --lh-loose: 1.85;
 
-    --ls-tight:  -0.025em;
+    --ls-tight:  -0.022em;
     --ls-normal: -0.005em;
     --ls-wide:    0.04em;
 
@@ -172,6 +172,11 @@
     --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
 
     --t-cinema-all: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* --t-clean: instantaneous, premium micro-interaction (Linear/Vercel feel).
+       Use on inputs, buttons, focus states, hover affordances — never on
+       large surfaces (would feel jittery). Reserve --t-cinema-all for
+       cards/sections/page transitions. */
+    --t-clean:      all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     --transition-fast:   150ms ease;
     --transition-normal: 250ms ease;
@@ -281,29 +286,31 @@
   }
 
   /* ═════════════════════════════════════════════════════════════
-     DARK THEME — modern night-mode
+     DARK THEME — clean high-depth premium palette (WCAG AA)
+     Base #0d0f14, container #141822, elevated #1c2030, borders #1e2433.
+     No muddy purples, no warm tints — neutral cool greys for clarity.
      ═════════════════════════════════════════════════════════════ */
   [data-theme='dark'] {
-    --bg:        #0f1117;
-    --surface-1: #161922;
-    --surface-2: #1e222e;
-    --surface-3: #283041;
+    --bg:        #0d0f14;
+    --surface-1: #141822;
+    --surface-2: #1c2030;
+    --surface-3: #262b3d;
 
-    --border:        rgba(255, 255, 255, 0.09);
-    --border-strong: rgba(255, 255, 255, 0.16);
+    --border:        #1e2433;
+    --border-strong: #2a3144;
 
-    --text:        #fafafa;
-    --text-muted:  #b0b0b8;
-    --text-subtle: #909098;
+    --text:        #f8fafc;
+    --text-muted:  #a8b0bf;
+    --text-subtle: #6b7488;
 
     --accent:        var(--color-primary-400);
     --accent-hover:  var(--color-primary-300);
     --accent-soft:   rgba(91, 141, 239, 0.14);
-    --accent-border: rgba(91, 141, 239, 0.40);
+    --accent-border: rgba(91, 141, 239, 0.45);
     --accent-fg:     #ffffff;
 
     --gold:       var(--color-gold-300);
-    --gold-soft:  rgba(200, 150, 46, 0.14);
+    --gold-soft:  rgba(212, 169, 74, 0.16);
     --gold-hover: #f5d565;
 
     --amber:        #fbbf24;
@@ -311,64 +318,71 @@
     --amber-soft:   rgba(245, 158, 11, 0.16);
     --amber-border: rgba(245, 158, 11, 0.45);
 
-    --success:      #3DD68C;
-    --success-soft: rgba(61, 214, 140, 0.10);
-    --warning:      #F5A623;
-    --warning-soft: rgba(245, 166, 35, 0.10);
-    --danger:       #F55353;
-    --danger-soft:  rgba(245, 83, 83, 0.10);
-    --info:         #a3c9ff;
-    --info-soft:    rgba(163, 201, 255, 0.10);
+    --success:      #34d399;
+    --success-soft: rgba(52, 211, 153, 0.12);
+    --warning:      #fbbf24;
+    --warning-soft: rgba(251, 191, 36, 0.12);
+    --danger:       #f87171;
+    --danger-soft:  rgba(248, 113, 113, 0.12);
+    --info:         #93c5fd;
+    --info-soft:    rgba(147, 197, 253, 0.12);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.24);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.26);
-    --shadow-xl: 0 18px 48px rgba(0, 0, 0, 0.46), 0 6px 14px rgba(0, 0, 0, 0.30);
+    /* Shadows — clean, no glow leakage on dark */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
+    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45),
+                 0 1px 2px rgba(0, 0, 0, 0.30);
+    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.50),
+                 0 2px 6px rgba(0, 0, 0, 0.30);
+    --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.60),
+                 0 6px 14px rgba(0, 0, 0, 0.35);
 
-    --shadow-card:       0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 6px rgba(0, 0, 0, 0.30);
-    --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 10px 28px rgba(0, 0, 0, 0.38);
+    --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.35),
+                         inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --shadow-card-hover: 0 0 0 1px rgba(91, 141, 239, 0.22),
+                         0 12px 28px rgba(0, 0, 0, 0.45);
 
-    --focus-ring:   0 0 0 3px rgba(91, 141, 239, 0.30);
-    --selection-bg: rgba(91, 141, 239, 0.25);
+    --focus-ring:   0 0 0 3px rgba(91, 141, 239, 0.40);
+    --selection-bg: rgba(91, 141, 239, 0.30);
 
-    --chart-grid: rgba(255, 255, 255, 0.05);
-    --chart-text: #6b6886;
+    --chart-grid: rgba(255, 255, 255, 0.04);
+    --chart-text: #6b7488;
 
-    --glass-bg:        rgba(255, 255, 255, 0.04);
-    --glass-bg-subtle: rgba(255, 255, 255, 0.02);
+    --glass-bg:        rgba(20, 24, 34, 0.65);
+    --glass-bg-subtle: rgba(20, 24, 34, 0.40);
     --glass-border:    rgba(255, 255, 255, 0.06);
 
     --el-1: var(--shadow-sm);
     --el-2: var(--shadow-md);
     --el-3: var(--shadow-lg);
     --el-4: var(--shadow-xl);
-    --el-5: 0 28px 70px -16px rgba(0, 0, 0, 0.55);
+    --el-5: 0 32px 80px -16px rgba(0, 0, 0, 0.70);
 
     --el-glow:        none;
     --el-glow-strong: none;
   }
 
   /* ═════════════════════════════════════════════════════════════
-     CINEMATIC THEME — premium deep night, golden ambient glow.
-     Opt-in via [data-theme='cinematic']. Streaming-platform feel.
+     CINEMATIC THEME — premium gold-glow on a cleaner dark base.
+     Inherits the cleaner #0d0f14 palette; adds gold halo elevation
+     and warmer accents. Streaming-platform feel without muddy tints.
      ═════════════════════════════════════════════════════════════ */
   [data-theme='cinematic'] {
-    --bg:        #0a0c12;
-    --surface-1: #14161f;
-    --surface-2: #1c1f2a;
-    --surface-3: #262a38;
+    --bg:        #0d0f14;
+    --surface-1: #141822;
+    --surface-2: #1c2030;
+    --surface-3: #262b3d;
 
-    --border:        rgba(255, 191, 0, 0.06);
-    --border-strong: rgba(255, 191, 0, 0.14);
+    --border:        #1e2433;
+    --border-strong: #2f3650;
 
-    --text:        #f5f5f7;
-    --text-muted:  #a8a8b0;
-    --text-subtle: #7e7e87;
+    --text:        #f8fafc;
+    --text-muted:  #b8c0cf;
+    --text-subtle: #7e8699;
 
     --accent:        #fed65b;
     --accent-hover:  #ffe085;
     --accent-soft:   rgba(255, 191, 0, 0.10);
-    --accent-border: rgba(255, 191, 0, 0.32);
+    --accent-border: rgba(255, 191, 0, 0.40);
     --accent-fg:     #1a1205;
 
     --gold:       #fed65b;
@@ -389,53 +403,49 @@
     --info:         #93C5FD;
     --info-soft:    rgba(147, 197, 253, 0.12);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.50),
-                 0 0 0 1px rgba(255, 191, 0, 0.04);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45),
-                 0 1px 3px rgba(0, 0, 0, 0.30),
-                 0 0 24px -8px rgba(255, 191, 0, 0.08);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.50),
+    /* Cinematic shadows — clean blacks with restrained gold halo */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.50);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.50),
+                 0 1px 3px rgba(0, 0, 0, 0.30);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55),
                  0 4px 8px rgba(0, 0, 0, 0.30),
-                 0 0 40px -12px rgba(255, 191, 0, 0.10);
-    --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.60),
+                 0 0 32px -12px rgba(255, 191, 0, 0.10);
+    --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.65),
                  0 8px 16px rgba(0, 0, 0, 0.35),
-                 0 0 80px -20px rgba(255, 191, 0, 0.12);
+                 0 0 64px -16px rgba(255, 191, 0, 0.12);
 
-    --shadow-card:       0 0 0 1px rgba(255, 191, 0, 0.04),
-                         0 2px 8px rgba(0, 0, 0, 0.40);
-    --shadow-card-hover: 0 0 0 1px rgba(255, 191, 0, 0.18),
-                         0 16px 36px rgba(0, 0, 0, 0.50),
-                         0 0 48px -12px rgba(255, 191, 0, 0.15);
+    --shadow-card:       0 1px 2px rgba(0, 0, 0, 0.40),
+                         inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --shadow-card-hover: 0 0 0 1px rgba(255, 191, 0, 0.22),
+                         0 16px 36px rgba(0, 0, 0, 0.55),
+                         0 0 40px -12px rgba(255, 191, 0, 0.14);
 
     --focus-ring:   0 0 0 3px rgba(255, 191, 0, 0.35);
     --selection-bg: rgba(255, 191, 0, 0.25);
 
-    --chart-grid: rgba(255, 191, 0, 0.04);
+    --chart-grid: rgba(255, 255, 255, 0.04);
     --chart-text: #8a7e5a;
 
-    --glass-bg:        rgba(20, 22, 31, 0.65);
-    --glass-bg-subtle: rgba(20, 22, 31, 0.40);
+    --glass-bg:        rgba(20, 24, 34, 0.70);
+    --glass-bg-subtle: rgba(20, 24, 34, 0.45);
     --glass-border:    rgba(255, 191, 0, 0.10);
 
-    --el-1: 0 1px 2px rgba(0, 0, 0, 0.35),
-            0 0 8px -2px rgba(255, 191, 0, 0.06);
-    --el-2: 0 4px 12px rgba(0, 0, 0, 0.40),
-            0 0 16px -4px rgba(255, 191, 0, 0.08);
-    --el-3: 0 12px 28px rgba(0, 0, 0, 0.45),
-            0 0 32px -8px rgba(255, 191, 0, 0.10);
-    --el-4: 0 24px 56px rgba(0, 0, 0, 0.55),
-            0 0 56px -16px rgba(255, 191, 0, 0.12);
-    --el-5: 0 36px 80px rgba(0, 0, 0, 0.65),
-            0 0 96px -24px rgba(255, 191, 0, 0.15);
+    --el-1: 0 1px 2px rgba(0, 0, 0, 0.40);
+    --el-2: 0 4px 12px rgba(0, 0, 0, 0.45),
+            0 0 16px -4px rgba(255, 191, 0, 0.06);
+    --el-3: 0 12px 28px rgba(0, 0, 0, 0.50),
+            0 0 32px -8px rgba(255, 191, 0, 0.08);
+    --el-4: 0 24px 56px rgba(0, 0, 0, 0.60),
+            0 0 56px -16px rgba(255, 191, 0, 0.10);
+    --el-5: 0 36px 80px rgba(0, 0, 0, 0.70),
+            0 0 96px -24px rgba(255, 191, 0, 0.12);
 
     --el-glow:        0 0 24px rgba(255, 191, 0, 0.18);
     --el-glow-strong: 0 0 48px rgba(255, 191, 0, 0.28),
                       0 0 16px rgba(255, 191, 0, 0.20);
 
-    --ai-glow:        0 4px 24px rgba(45, 219, 222, 0.18),
-                      0 0 12px rgba(255, 191, 0, 0.06);
-    --ai-glow-strong: 0 8px 40px rgba(45, 219, 222, 0.30),
-                      0 0 24px rgba(255, 191, 0, 0.10);
+    --ai-glow:        0 4px 24px rgba(45, 219, 222, 0.18);
+    --ai-glow-strong: 0 8px 40px rgba(45, 219, 222, 0.30);
   }
 
   /* ═════════════════════════════════════════════════════════════
