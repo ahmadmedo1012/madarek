@@ -44,6 +44,7 @@
 .text-base { font-size: var(--fs-base); }
 .text-lg { font-size: var(--fs-lg); }
 .text-xl { font-size: var(--fs-xl); }
+.text-md { font-size: var(--fs-md); }
 .text-2xl { font-size: var(--fs-2xl); }
 
 /* -- Text Colors -- */

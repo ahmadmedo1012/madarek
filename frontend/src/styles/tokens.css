@@ -160,6 +160,8 @@
   --radius-2xl: var(--radius-xl);
 
   /* -- Typography -- */
+  /* Note: base (16px) is body copy size, md (15px) is UI element label size.
+     Scale: xxs(11) < xs(12) < sm(14) < md(15) < base(16) < lg(18) < xl(24) < 2xl(32) < 3xl(40) */
   --fs-xxs: 11px;
   --fs-xs: 12px;
   --fs-sm: 14px;

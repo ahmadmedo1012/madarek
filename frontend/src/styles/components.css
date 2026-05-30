@@ -279,6 +279,7 @@
 .tbl tbody tr { transition: background var(--t-fast) var(--ease); }
 .tbl tbody tr:nth-child(even) td { background: var(--surface-2); }
 .tbl tbody tr:hover td { background: var(--surface-2); color: var(--text); }
+.tbl tbody tr:nth-child(even):hover td { background: var(--surface-3); }
 .tbl-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: var(--fw-semibold); color: var(--text); }
 .tbl-strong { color: var(--text); font-weight: var(--fw-medium); }
 
@@ -361,7 +362,22 @@
 .state-title { font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--text); }
 .state-desc { font-size: var(--fs-xs); color: var(--text-subtle); max-width: 320px; line-height: var(--lh-snug); }
 
+/* -- Empty state (generic placeholder) -- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-7) var(--sp-5);
+  text-align: center;
+  color: var(--text-muted);
+}
+.empty-state-icon { font-size: 40px; opacity: 0.4; margin-bottom: var(--sp-2); }
+.empty-state-text { font-size: var(--fs-sm); max-width: 300px; line-height: var(--lh-base); }
+
 .spinner { width: 18px; height: 18px; border: 2px solid var(--surface-2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+.spin { animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .skeleton {
