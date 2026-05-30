@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "refactor",
   "description": "Complete rebuild of the design token system and CSS architecture. This is the foundation that all other features depend on. Replaces the current fragmented 19-file CSS structure with a clean 7-file architecture. Rebuilds the color system from scratch with Navy Royal Blue primary, Muted Gold secondary, simplified spacing/radius/typography tokens, removes color-mix(), removes duplicate font families, and establishes proper dark/light themes with warm gray surfaces.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1: Create new frontend/src/styles/tokens.css from scratch with the complete new design token system. This file replaces the current tokens.css entirely. Include: (a) @layer declaration order. (b) Primary color Navy Royal Blue (#1E3A5F) with limited shades (50,100,200,300,400,500,600,700,800,900). (c) Secondary color Muted Gold (#C4A35A) with limited shades. (d) One accent color for notifications/actions (teal #2DA69E). (e) 4 semantic colors: success (#16a34a/#3DD68C), warning (#c2410c/#F5A623), error (#ba1a1a/#F55353), info (blue-based). (f) 10 neutral shades from white (#ffffff) to black (#0f1117). (g) Simple spacing: --sp-1 (4px), --sp-2 (8px), --sp-3 (12px), --sp-4 (16px), --sp-5 (24px), --sp-6 (32px), --sp-7 (48px), --sp-8 (64px). (h) Simple radius: --radius-sm (6px), --radius-md (10px), --radius-lg (16px), --radius-xl (24px), --radius-full (9999px). (i) Font sizes: base 16px, sm 14px, lg 18px, xl 24px, 2xl 32px, 3xl 40px, plus xxs 11px, xs 12px, md 15px for backward compat. (j) Only 2 fonts: --font-sans: 'IBM Plex Sans Arabic', system-ui, sans-serif; --font-mono: 'Space Mono', ui-monospace, monospace. (k) 3 shadows only: sm, md, lg. (l) Motion tokens (t-fast, t-base, t-slow, easing curves). (m) Layout tokens (sidebar-w: 240px, topbar-h: 56px, content-max-w: 1320px). (n) IMPORTANT: Maintain all backward-compatible aliases (--r-sm, --r-md, etc. mapping to new values) so existing class-based CSS doesn't break.",
     "Step 2: In the same tokens.css file, define [data-theme='dark'] with warm gray surfaces per the spec: --bg: #1a1d23, --surface-1: #22262f, --surface-2: #292e38, --surface-3: #313742. Text: --text: #e8eaed, --text-muted: #9aa0a8, --text-subtle: #6b7280. Borders: rgba(255,255,255,0.06). Shadows max opacity 0.25. All semantic colors adjusted for dark mode readability. No color-mix() anywhere - use pre-computed hex/rgba values.",
@@ -42,5 +42,5 @@
     "Count total CSS lines with wc -l to confirm significant reduction"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Successfully rebuilt from 19 CSS files (12,394 lines) to 7 active files (~2,400 lines). All color-mix() removed, only IBM Plex Sans Arabic + Space Mono fonts. All existing class names preserved. INTEGRATIONS_ONLY mode means no build/test verification possible - validated via grep checks for color-mix, font names, class existence, and token values."
 }
