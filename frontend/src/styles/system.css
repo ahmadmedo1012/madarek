@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    System polish — global cross-page premium refinement.
    Loaded last so it can refine .card / .btn / .sidebar / etc.
@@ -410,4 +411,5 @@ h3, .h3 {
   .content-inner { animation: none !important; }
   body { background: white; color: black; }
   .card { border: 1px solid #ccc !important; box-shadow: none !important; }
+}
 }

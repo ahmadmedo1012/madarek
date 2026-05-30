@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = 'light' | 'dark' | 'cinematic' | 'system';
+export type ResolvedTheme = 'light' | 'dark' | 'cinematic';
 
 interface ThemeState {
   mode: ThemeMode;
@@ -15,7 +16,7 @@ export const useThemeStore = create<ThemeState>()(
       mode: 'system',
       setMode: (mode) => set({ mode }),
       cycle: () => {
-        const order: ThemeMode[] = ['light', 'dark', 'system'];
+        const order: ThemeMode[] = ['light', 'dark', 'cinematic', 'system'];
         const idx = order.indexOf(get().mode);
         set({ mode: order[(idx + 1) % order.length] ?? 'system' });
       },
@@ -24,12 +25,9 @@ export const useThemeStore = create<ThemeState>()(
   ),
 );
 
-/** Resolve a `'system'` preference to either `'light'` or `'dark'` based on OS. */
-export function resolveTheme(mode: ThemeMode): 'light' | 'dark' {
-  if (mode === 'system') {
-    return typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'light'
-      : 'dark';
-  }
-  return mode;
+/** Resolve a `'system'` preference to an explicit theme based on OS preference. */
+export function resolveTheme(mode: ThemeMode): ResolvedTheme {
+  if (mode !== 'system') return mode;
+  if (typeof window === 'undefined') return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }

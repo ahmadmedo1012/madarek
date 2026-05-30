@@ -1,3 +1,4 @@
+@layer pages {
 /* ═════════════════════════════════════════════════════════════
    Owner Control Panel — Premium Styles
    ═════════════════════════════════════════════════════════════ */
@@ -655,4 +656,5 @@
   text-align: center;
   color: var(--text-muted);
   font-size: var(--fs-sm);
+}
 }

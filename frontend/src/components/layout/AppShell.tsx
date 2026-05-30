@@ -1,6 +1,6 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
@@ -9,6 +9,9 @@ import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { HydrationSplash } from '../HydrationSplash';
 
+/* ───────────────────────────────────────────────────────────
+   PAGE TITLES — single source of truth for topbar resolution
+   ─────────────────────────────────────────────────────────── */
 const PAGE_TITLES: Record<string, string> = {
   '/student/dashboard': 'لوحة التحكم',
   '/student/schedule': 'الجدول الدراسي',
@@ -52,6 +55,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/admin/digital': 'التحول الرقمي',
   '/admin/reports': 'التقارير',
   '/admin/settings': 'الإعدادات',
+  '/admin/sync': 'مزامنة الجامعة',
   '/quality/dashboard': 'لوحة الجودة',
   '/quality/courses': 'جودة المقررات',
   '/quality/professors': 'تقييم الأساتذة',
@@ -59,19 +63,6 @@ const PAGE_TITLES: Record<string, string> = {
   '/quality/reports': 'تقارير الجودة',
   '/quality/curriculum': 'مراجعة المناهج',
   '/quality/alerts': 'تنبيهات الجودة',
-  '/vision': 'الابتكارات القادمة',
-  '/training': 'التطوير الذاتي',
-  '/achievements': 'الإنجازات والشهادات',
-  '/community': 'المجتمع الجامعي',
-  '/teacher/community': 'المجتمع الجامعي',
-  '/admin/community': 'المجتمع الجامعي',
-  '/admin/sync': 'مزامنة الجامعة',
-  '/quality/community': 'المجتمع الجامعي',
-  '/teacher/intelligence': 'الذكاء الأكاديمي',
-  '/teacher/profile': 'الملف الأكاديمي',
-  '/teacher/live': 'إدارة البث المباشر',
-  '/teacher/labs': 'المعامل الافتراضية',
-  '/student/online-exams': 'الاختبارات الإلكترونية',
   '/quality/exam-moderation': 'مراجعة الاختبارات',
   '/owner/dashboard': 'لوحة التحكم الرئيسية',
   '/owner/users': 'إدارة المستخدمين',
@@ -83,31 +74,105 @@ const PAGE_TITLES: Record<string, string> = {
   '/owner/ai': 'مركز الذكاء الاصطناعي',
   '/owner/alerts': 'التنبيهات التشغيلية',
   '/owner/governance': 'الحوكمة المتقدمة',
+  '/vision': 'الابتكارات القادمة',
+  '/training': 'التطوير الذاتي',
+  '/achievements': 'الإنجازات والشهادات',
+  '/community': 'المجتمع الجامعي',
+  '/teacher/community': 'المجتمع الجامعي',
+  '/admin/community': 'المجتمع الجامعي',
+  '/quality/community': 'المجتمع الجامعي',
+  '/teacher/intelligence': 'الذكاء الأكاديمي',
+  '/teacher/profile': 'الملف الأكاديمي',
+  '/teacher/live': 'إدارة البث المباشر',
+  '/teacher/labs': 'المعامل الافتراضية',
+  '/student/online-exams': 'الاختبارات الإلكترونية',
 };
 
-/** Resolve a topbar title for any path, including dynamic routes. */
+const DYNAMIC_TITLES: Array<[RegExp, string]> = [
+  [/^\/student\/courses\/[^/]+$/,            'تفاصيل المقرر'],
+  [/^\/student\/lectures\/[^/]+$/,           'مشغّل المحاضرة'],
+  [/^\/vision\/[^/]+$/,                      'ابتكار قادم'],
+  [/^\/document\/[^/]+$/,                    'عارض المستندات'],
+  [/^\/training\/[^/]+\/lesson\/[^/]+$/,     'درس تدريبي'],
+  [/^\/training\/[^/]+$/,                    'مسار تدريبي'],
+  [/^\/teacher\/intelligence\/[^/]+$/,       'تفاصيل المقرر'],
+  [/^\/student\/online-exams\/[^/]+$/,       'اختبار جارٍ'],
+  [/^\/admin\/permissions\/[^/]+$/,          'إدارة الصلاحيات'],
+];
+
 function resolveTitle(pathname: string): string {
-  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname]!;
-  if (/^\/student\/courses\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
-  if (/^\/student\/lectures\/[^/]+$/.test(pathname)) return 'مشغّل المحاضرة';
-  if (/^\/vision\/[^/]+$/.test(pathname)) return 'ابتكار قادم';
-  if (/^\/document\/[^/]+$/.test(pathname)) return 'عارض المستندات';
-  if (/^\/training\/[^/]+\/lesson\/[^/]+$/.test(pathname)) return 'درس تدريبي';
-  if (/^\/training\/[^/]+$/.test(pathname)) return 'مسار تدريبي';
-  if (/^\/teacher\/intelligence\/[^/]+$/.test(pathname)) return 'تفاصيل المقرر';
-  if (/^\/student\/online-exams\/[^/]+$/.test(pathname)) return 'اختبار جارٍ';
-  if (/^\/admin\/permissions\/[^/]+$/.test(pathname)) return 'إدارة الصلاحيات';
+  const exact = PAGE_TITLES[pathname];
+  if (exact) return exact;
+  for (const [pattern, title] of DYNAMIC_TITLES) {
+    if (pattern.test(pathname)) return title;
+  }
   return 'منصة الزاوية';
+}
+
+/* ───────────────────────────────────────────────────────────
+   LAYOUT METRICS LOCK — pin sidebar/topbar dimensions to CSS
+   custom properties on <html> so layout-dependent code reads
+   canonical values without forcing a layout calculation.
+   ─────────────────────────────────────────────────────────── */
+function useLayoutMetrics() {
+  useLayoutEffect(() => {
+    const el = document.documentElement;
+    const apply = () => {
+      const sidebar = document.querySelector<HTMLElement>('.sidebar');
+      const topbar = document.querySelector<HTMLElement>('.topbar');
+      const w = sidebar?.offsetWidth ?? 264;
+      const h = topbar?.offsetHeight ?? 64;
+      el.style.setProperty('--measured-sidebar-w', `${w}px`);
+      el.style.setProperty('--measured-topbar-h', `${h}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    const sb = document.querySelector('.sidebar');
+    const tb = document.querySelector('.topbar');
+    if (sb) ro.observe(sb);
+    if (tb) ro.observe(tb);
+    window.addEventListener('resize', apply);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', apply);
+    };
+  }, []);
+}
+
+/* ───────────────────────────────────────────────────────────
+   THEME TRANSITION GUARD — opt into View Transitions API for
+   buttery cross-fades when the theme attribute changes.
+   ─────────────────────────────────────────────────────────── */
+function useThemeTransitionGuard() {
+  useEffect(() => {
+    const html = document.documentElement;
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type !== 'attributes' || m.attributeName !== 'data-theme') continue;
+        const doc = document as unknown as { startViewTransition?: (cb: () => void) => { finished?: Promise<void> } };
+        if (typeof doc.startViewTransition !== 'function') return;
+        html.setAttribute('data-theme-swapping', '');
+        const vt = doc.startViewTransition(() => { /* DOM already reflects swap */ });
+        vt?.finished?.finally?.(() => {
+          html.removeAttribute('data-theme-swapping');
+        });
+      }
+    });
+    observer.observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
 }
 
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
+  useLayoutMetrics();
+  useThemeTransitionGuard();
+
   const location = useLocation();
   const title = resolveTitle(location.pathname);
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
-  // Toggle topbar scrolled state when content scrolls past 4px
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
@@ -125,7 +190,6 @@ export function AppShell({ children }: { children?: ReactNode }) {
     };
   }, []);
 
-  // Reset scroll position on route change so each page starts at top
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     setScrolled(false);
@@ -137,7 +201,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
       <main className="main">
         <Topbar title={title} scrolled={scrolled} />
         <div className="content" ref={contentRef}>
-          <div className="content-inner">{children ?? <Outlet />}</div>
+          <div className="content-inner" key={location.pathname}>
+            {children ?? <Outlet />}
+          </div>
         </div>
       </main>
       <BottomNav />
@@ -156,9 +222,9 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
     const home: Record<AppRole, string> = {
       STUDENT: '/student/dashboard',
       TEACHER: '/teacher/dashboard',
-      ADMIN: '/admin/dashboard',
+      ADMIN:   '/admin/dashboard',
       QUALITY: '/quality/dashboard',
-      OWNER: '/owner/dashboard',
+      OWNER:   '/owner/dashboard',
     };
     return <Navigate to={home[user.role]} replace />;
   }

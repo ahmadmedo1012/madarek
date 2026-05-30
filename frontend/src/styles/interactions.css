@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    Interactions — refined press feedback + click motion
    Loaded last so it overrides earlier transitions.
@@ -388,4 +389,5 @@ a[href]:not(.no-press):not(.btn):not(.card-link):not(.landing-brand):active {
   .kpi-cell {
     animation: none !important;
   }
+}
 }

@@ -1,3 +1,4 @@
+@layer pages {
 /* ─── PDF Viewer ──────────────────────────────────────────
    Self-contained viewer chrome. Theme-aware via CSS vars.
    ────────────────────────────────────────────────────── */
@@ -346,4 +347,5 @@
 }
 @media (max-width: 800px) {
   .document-viewer-layout { flex-direction: column; }
+}
 }

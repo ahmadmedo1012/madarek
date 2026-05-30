@@ -1,3 +1,4 @@
+@layer overrides {
 /* ═══════════════════════════════════════════════════════════════
    ELEVATION — final system-wide premium polish layer.
    Loaded LAST. Applies to globally-shared building blocks so the
@@ -647,4 +648,5 @@ h2, .dash-section-title { letter-spacing: -0.018em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hydration-splash svg { animation: none; opacity: 0.9; }
+}
 }

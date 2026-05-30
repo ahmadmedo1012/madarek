@@ -1,3 +1,4 @@
+@layer base {
 /* ═════════════════════════════════════════════════════════════
    Base layout — shell, sidebar, topbar, page area, scrollbars.
    ───────────────────────────────────────────────────────────── */
@@ -579,4 +580,5 @@ button { font-family: inherit; cursor: pointer; }
   .page-subtitle { font-size: var(--fs-sm); }
   .page-header { gap: var(--sp-2); padding-bottom: 0; }
   .page { gap: var(--sp-4); }
+}
 }

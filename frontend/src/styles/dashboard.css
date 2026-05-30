@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    Student Dashboard — Premium Stitch Design
    Handcrafted layout with glassmorphism, micro-interactions,
@@ -547,4 +548,5 @@
   .dash-agenda-item:hover {
     transform: none !important;
   }
+}
 }

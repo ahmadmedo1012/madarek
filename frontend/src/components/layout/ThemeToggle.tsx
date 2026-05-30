@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { Sun, Moon, Monitor, Sparkles } from 'lucide-react';
 import { Icon } from '../Icon';
 import { useThemeStore, resolveTheme, type ThemeMode } from '../../stores/theme.store';
 
@@ -17,7 +17,7 @@ export function useThemeSync() {
     apply();
 
     if (mode === 'system') {
-      const mq = window.matchMedia('(prefers-color-scheme: light)');
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
       mq.addEventListener('change', apply);
       return () => mq.removeEventListener('change', apply);
     }
@@ -25,15 +25,16 @@ export function useThemeSync() {
   }, [mode]);
 }
 
-/** A 3-state segmented toggle: Light · Dark · System. */
+/** A 4-state segmented toggle: Light · Dark · Cinematic · System. */
 export function ThemeToggle() {
   const mode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
 
   const opts: Array<{ value: ThemeMode; icon: typeof Sun; label: string }> = [
-    { value: 'light', icon: Sun, label: 'فاتح' },
-    { value: 'dark', icon: Moon, label: 'داكن' },
-    { value: 'system', icon: Monitor, label: 'تلقائي' },
+    { value: 'light',     icon: Sun,      label: 'فاتح' },
+    { value: 'dark',      icon: Moon,     label: 'داكن' },
+    { value: 'cinematic', icon: Sparkles, label: 'سينمائي' },
+    { value: 'system',    icon: Monitor,  label: 'تلقائي' },
   ];
 
   return (

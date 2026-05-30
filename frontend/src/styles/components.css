@@ -1,3 +1,4 @@
+@layer components {
 /* ═════════════════════════════════════════════════════════════
    Components — restrained, theme-aware, consistent.
    ───────────────────────────────────────────────────────────── */
@@ -3669,4 +3670,5 @@
 @media (max-width: 480px) {
   .auth-overlay-madarek .auth-left { display: none; }
   .auth-overlay-madarek .auth-split { padding-top: 56px; }
+}
 }

@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    Premium polish layer — homepage refinement
    Inspired by the calm, cinematic flow of premium product sites.
@@ -642,4 +643,5 @@ html {
     animation: none;
     opacity: 0.5;
   }
+}
 }

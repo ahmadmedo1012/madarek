@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    Visual polish v2 — substantial improvements to:
      - Page header treatment (every dashboard page)
@@ -514,4 +515,5 @@ h2, .section-title,
 .progress-bar {
   background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--gold))) !important;
   box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+}
 }

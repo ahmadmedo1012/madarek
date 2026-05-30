@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    Plan implementation
    - NotificationDropdown panel
@@ -354,4 +355,5 @@
   .bottom-nav-item.active .bottom-nav-icon {
     box-shadow: none;
   }
+}
 }

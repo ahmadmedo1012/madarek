@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    LANDING + AUTH v3 — guided by ui-ux-pro-max
    Patterns applied:
@@ -401,4 +402,5 @@
   .auth-glass-logo {
     max-width: 200px !important;
   }
+}
 }

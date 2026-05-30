@@ -1,3 +1,4 @@
+@layer pages {
 /* ═══════════════════════════════════════════════════════════════
    Responsive safety + premium mobile polish
    Loaded after system.css. Plugs the most common mobile failures:
@@ -512,4 +513,5 @@ img, svg, video, canvas, iframe {
   .ministry-strip,
   .landing-burger,
   .landing-mobile-menu { display: none !important; }
+}
 }

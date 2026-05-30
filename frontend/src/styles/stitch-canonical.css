@@ -1,3 +1,4 @@
+@layer overrides {
 /* ═══════════════════════════════════════════════════════════════
    STITCH CANONICAL — Component-level Stitch design rules
    ───────────────────────────────────────────────────────────────
@@ -992,4 +993,5 @@ label {
   justify-content: center;
   flex-shrink: 0;
   margin-top: 2px;
+}
 }

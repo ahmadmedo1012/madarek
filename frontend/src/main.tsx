@@ -20,6 +20,7 @@ import './styles/pdf.css';
 import './styles/owner.css';
 import './styles/elevation.css';
 import './styles/landing-pro.css';
+import './styles/cinematic.css';
 import App from './App';
 
 const root = document.getElementById('root');

@@ -20,13 +20,14 @@
         try {
           var stored = localStorage.getItem('madarek-theme');
           var pref = stored ? JSON.parse(stored).state.mode : 'system';
-          /* Light by default — academic platform is a professional tool.
-             Only show dark when the user explicitly requested it OR the OS
-             reports prefers-color-scheme: dark. */
-          var resolved =
-            pref === 'system'
-              ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-              : pref;
+          var resolved;
+          if (pref === 'system') {
+            resolved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else if (pref === 'cinematic' || pref === 'dark' || pref === 'light') {
+            resolved = pref;
+          } else {
+            resolved = 'light';
+          }
           document.documentElement.setAttribute('data-theme', resolved);
         } catch (_) {
           document.documentElement.setAttribute('data-theme', 'light');
