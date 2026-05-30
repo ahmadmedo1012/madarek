@@ -626,3 +626,25 @@ h2, .dash-section-title { letter-spacing: -0.018em; }
   transition-duration: 220ms;
   transition-timing-function: var(--ease-out);
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   HYDRATION SPLASH — calm branded placeholder during auth rehydrate
+   (prevents layout flash; matches resolved theme background)
+   ═══════════════════════════════════════════════════════════════ */
+.hydration-splash {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  z-index: 9999;
+}
+.hydration-splash svg { animation: splash-pulse 1.4s var(--ease-out) infinite; }
+@keyframes splash-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.98); }
+  50%      { opacity: 1;    transform: scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hydration-splash svg { animation: none; opacity: 0.9; }
+}

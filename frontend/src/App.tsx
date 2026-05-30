@@ -45,19 +45,23 @@ import { AdminDashboardPage, AdminPlaceholder, AdminFacultiesPage, AdminReportsP
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
 import { OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage, OwnerRealtimePage, OwnerAiPage, OwnerAlertsPage, OwnerGovernancePage } from './pages/owner/OwnerPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
-import { useAuthStore } from './stores/auth.store';
+import { useAuthStore, type AppRole } from './stores/auth.store';
+import { HydrationSplash } from './components/HydrationSplash';
 
 /** Resolves the home path for an authenticated user, or `/` for guests. */
 function HomeRedirect() {
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
-  if (!isHydrated) return null;
+  if (!isHydrated) return <HydrationSplash />;
   if (!user) return <LandingPage />;
-  if (user.role === 'STUDENT') return <Navigate to="/student/dashboard" replace />;
-  if (user.role === 'TEACHER') return <Navigate to="/teacher/dashboard" replace />;
-  if (user.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
-  if (user.role === 'OWNER') return <Navigate to="/owner/dashboard" replace />;
-  return <Navigate to="/quality/dashboard" replace />;
+  const HOME: Record<AppRole, string> = {
+    STUDENT: '/student/dashboard',
+    TEACHER: '/teacher/dashboard',
+    ADMIN: '/admin/dashboard',
+    QUALITY: '/quality/dashboard',
+    OWNER: '/owner/dashboard',
+  };
+  return <Navigate to={HOME[user.role]} replace />;
 }
 
 export default function App() {

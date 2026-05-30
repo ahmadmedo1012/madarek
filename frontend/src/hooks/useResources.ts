@@ -70,6 +70,7 @@ export function useUnreadNotifications() {
       return res.data.meta?.unread ?? 0;
     },
     refetchInterval: 60_000, // refresh every minute
+    refetchIntervalInBackground: false, // don't poll a hidden tab
   });
 }
 
@@ -1307,6 +1308,7 @@ export function useLiveSessions() {
     queryKey: ['live', 'sessions'],
     queryFn: () => unwrap<LiveSessionRow[]>(api.get('/live/sessions')),
     refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
   });
 }
 

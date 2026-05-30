@@ -7,7 +7,7 @@ import { BottomNav } from './BottomNav';
 import { useThemeSync } from './ThemeToggle';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
-import { LoadingState } from '../primitives/States';
+import { HydrationSplash } from '../HydrationSplash';
 
 const PAGE_TITLES: Record<string, string> = {
   '/student/dashboard': 'لوحة التحكم',
@@ -150,7 +150,7 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   const user = useAuthStore((s) => s.user);
   const location = useLocation();
 
-  if (!isHydrated) return <LoadingState />;
+  if (!isHydrated) return <HydrationSplash />;
   if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
   if (allow && !allow.includes(user.role)) {
     const home: Record<AppRole, string> = {

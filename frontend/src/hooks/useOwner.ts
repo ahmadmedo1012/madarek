@@ -172,8 +172,9 @@ export function useOwnerRealtime() {
   return useQuery({
     queryKey: ['owner', 'realtime'],
     queryFn: () => unwrap<RealtimeMetrics>(api.get('/owner/realtime')),
-    refetchInterval: 10_000,
-    staleTime: 5_000,
+    refetchInterval: 15_000,
+    refetchIntervalInBackground: false,
+    staleTime: 12_000,
   });
 }
 
