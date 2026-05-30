@@ -24,7 +24,7 @@
   background:
     radial-gradient(700px 500px at 25% 30%, rgba(78, 205, 196, 0.20), transparent 70%),
     radial-gradient(500px 400px at 75% 70%, rgba(200, 150, 46, 0.12), transparent 70%),
-    linear-gradient(160deg, var(--color-primary-900) 0%, var(--color-primary-600) 50%, var(--color-primary-400) 100%);
+    linear-gradient(160deg, var(--color-primary-900, #142A5B) 0%, var(--color-primary-600, #3B6CC7) 50%, var(--color-primary-400, #5B8DEF) 100%);
   border-radius: clamp(20px, 2.4vw, 32px);
   position: relative;
   overflow: hidden;
@@ -103,7 +103,7 @@
 /* Override the global .btn primary/outline so they read on dark bg */
 .landing-final-cta-btn.primary {
   background: var(--color-neutral-50, #fff);
-  color: var(--color-primary-900);
+  color: var(--color-primary-900, #142A5B);
   border: 0;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20);
   font-weight: 700;

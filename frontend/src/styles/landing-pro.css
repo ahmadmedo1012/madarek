@@ -3,6 +3,8 @@
    Minimal additions that complement landing.css without conflicts.
    ═══════════════════════════════════════════════════════════════ */
 
+@layer overrides {
+
 .landing {
   --lp-gold: var(--gold, #CA8A04);
   --lp-gold-soft: color-mix(in srgb, var(--lp-gold) 14%, transparent);
@@ -179,3 +181,5 @@
   .testimonial-card:hover { transform: none; }
   .landing-feature-card:hover .landing-feature-icon { transform: none; }
 }
+
+} /* end @layer overrides */

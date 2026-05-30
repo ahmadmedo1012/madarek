@@ -3,6 +3,8 @@
    Samsung / Apple / Stripe quality level.
    ───────────────────────────────────────────────────────────── */
 
+@layer pages {
+
 .landing {
   position: fixed;
   inset: 0;
@@ -742,38 +744,20 @@
   pointer-events: none;
 }
 
-/* Data-tone icon colors — KPI strip */
-.kpi-icon[data-tone="primary"] {
+/* Shared data-tone color system */
+[data-tone="primary"] {
   background: var(--accent-soft);
   color: var(--accent);
 }
-.kpi-icon[data-tone="success"] {
+[data-tone="success"] {
   background: var(--success-soft);
   color: var(--success);
 }
-.kpi-icon[data-tone="tertiary"] {
+[data-tone="tertiary"] {
   background: rgba(78, 205, 196, 0.10);
   color: var(--color-teal-300);
 }
-.kpi-icon[data-tone="secondary"] {
-  background: var(--gold-soft);
-  color: var(--gold);
-}
-
-/* Data-tone icon colors — Role pillar feature icons */
-.landing-feature-icon[data-tone="primary"] {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.landing-feature-icon[data-tone="success"] {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.landing-feature-icon[data-tone="tertiary"] {
-  background: rgba(78, 205, 196, 0.10);
-  color: var(--color-teal-300);
-}
-.landing-feature-icon[data-tone="secondary"] {
+[data-tone="secondary"] {
   background: var(--gold-soft);
   color: var(--gold);
 }
@@ -875,8 +859,8 @@
     grid-template-columns: 1fr;
     border-radius: 14px;
   }
-  .kpi-cell {
-    border-inline-end: 0 !important;
+  .kpi-strip .kpi-cell {
+    border-inline-end: 0;
     border-bottom: 1px solid var(--glass-border);
     min-height: 76px;
     padding: var(--sp-4);
@@ -1014,3 +998,5 @@
 @media (max-width: 1024px) {
   .landing-testimonials { grid-template-columns: 1fr; max-width: 560px; }
 }
+
+} /* end @layer pages */
