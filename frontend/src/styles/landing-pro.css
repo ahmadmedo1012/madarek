@@ -23,6 +23,10 @@
   font-family: var(--font-display);
   letter-spacing: -0.03em;
 }
+/* Hero title was line-height:1.04 !important (premium.css) — too tight for the
+   large Arabic display face, causing the two lines to overlap/clip. */
+.landing-title { line-height: 1.18 !important; }
+.landing-title .block { line-height: 1.2 !important; padding-block: 2px; }
 
 /* ── HERO EYEBROW — premium pill above the title ──────────────── */
 .landing-hero-eyebrow {

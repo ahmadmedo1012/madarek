@@ -10,6 +10,7 @@ import { Icon } from '../components/Icon';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { BrandMark } from '../components/BrandMark';
+import { LibyaFlag } from '../components/LibyaFlag';
 import { Reveal } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
 
@@ -38,7 +39,7 @@ export default function LandingPage() {
       {/* Ministry affiliation strip — official identifier across the top */}
       <div className="ministry-strip">
         <div className="ministry-strip-inner">
-          <span className="ministry-strip-emblem" aria-hidden>🇱🇾</span>
+          <span className="ministry-strip-emblem" aria-hidden><LibyaFlag size={18} /></span>
           <span className="ministry-strip-text">
             دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
           </span>
@@ -442,7 +443,7 @@ export default function LandingPage() {
               </a>
             </div>
             <div className="landing-final-cta-meta">
-              <span>🇱🇾 وزارة التعليم العالي والبحث العلمي</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><LibyaFlag size={16} /> وزارة التعليم العالي والبحث العلمي</span>
               <span className="landing-final-cta-divider" aria-hidden>·</span>
               <span>جامعة الزاوية</span>
             </div>
