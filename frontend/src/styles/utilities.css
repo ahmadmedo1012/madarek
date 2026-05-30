@@ -1,1 +1,116 @@
-/* Consolidated into layout.css + components.css */
+/* ===================================================================
+   Utilities - Single-purpose CSS classes used across components
+   =================================================================== */
+
+/* -- Flexbox Layout -- */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-direction: row; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; }
+.shrink-0 { flex-shrink: 0; }
+
+/* -- Alignment -- */
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+
+/* -- Gap -- */
+.gap-1 { gap: var(--sp-1); }
+.gap-2 { gap: var(--sp-2); }
+.gap-3 { gap: var(--sp-3); }
+.gap-4 { gap: var(--sp-4); }
+.gap-5 { gap: var(--sp-5); }
+.gap-6 { gap: var(--sp-6); }
+
+/* -- Display -- */
+.hidden { display: none; }
+.block { display: block; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+
+/* -- Width / Height -- */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-w-0 { min-width: 0; }
+
+/* -- Text Sizes -- */
+.text-xxs { font-size: var(--fs-xxs); }
+.text-xs { font-size: var(--fs-xs); }
+.text-sm { font-size: var(--fs-sm); }
+.text-base { font-size: var(--fs-base); }
+.text-lg { font-size: var(--fs-lg); }
+.text-xl { font-size: var(--fs-xl); }
+.text-2xl { font-size: var(--fs-2xl); }
+
+/* -- Text Colors -- */
+.text-muted { color: var(--text-muted); }
+.text-subtle { color: var(--text-subtle); }
+.text-accent { color: var(--accent); }
+
+/* -- Text Alignment -- */
+.text-center { text-align: center; }
+
+/* -- Font Weight -- */
+.font-bold { font-weight: var(--fw-bold); }
+.font-semibold { font-weight: var(--fw-semibold); }
+.font-medium { font-weight: var(--fw-medium); }
+
+/* -- Font Family -- */
+.font-mono { font-family: var(--font-mono); }
+
+/* -- Spacing: Margin Top -- */
+.mt-1 { margin-top: var(--sp-1); }
+.mt-2 { margin-top: var(--sp-2); }
+.mt-3 { margin-top: var(--sp-3); }
+.mt-4 { margin-top: var(--sp-4); }
+.mt-5 { margin-top: var(--sp-5); }
+.mt-6 { margin-top: var(--sp-6); }
+
+/* -- Spacing: Margin Bottom -- */
+.mb-1 { margin-bottom: var(--sp-1); }
+.mb-2 { margin-bottom: var(--sp-2); }
+.mb-3 { margin-bottom: var(--sp-3); }
+.mb-4 { margin-bottom: var(--sp-4); }
+.mb-5 { margin-bottom: var(--sp-5); }
+.mb-6 { margin-bottom: var(--sp-6); }
+
+/* -- Spacing: Padding -- */
+.p-1 { padding: var(--sp-1); }
+.p-2 { padding: var(--sp-2); }
+.p-3 { padding: var(--sp-3); }
+.p-4 { padding: var(--sp-4); }
+.p-5 { padding: var(--sp-5); }
+.p-6 { padding: var(--sp-6); }
+
+/* -- Overflow & Text -- */
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.whitespace-nowrap { white-space: nowrap; }
+.overflow-hidden { overflow: hidden; }
+
+/* -- Border / Radius -- */
+.rounded-full { border-radius: var(--radius-full); }
+.border { border: 1px solid var(--border); }
+.border-b { border-bottom: 1px solid var(--border); }
+
+/* -- Accessibility -- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* -- Responsive visibility -- */
+.hide-on-mobile { display: initial; }
+@media (max-width: 640px) {
+  .hide-on-mobile { display: none; }
+}

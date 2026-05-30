@@ -6,8 +6,8 @@
 .card {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-card);
@@ -277,6 +277,7 @@
 }
 .tbl tr:last-child td { border: none; }
 .tbl tbody tr { transition: background var(--t-fast) var(--ease); }
+.tbl tbody tr:nth-child(even) td { background: var(--surface-2); }
 .tbl tbody tr:hover td { background: var(--surface-2); color: var(--text); }
 .tbl-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: var(--fw-semibold); color: var(--text); }
 .tbl-strong { color: var(--text); font-weight: var(--fw-medium); }
