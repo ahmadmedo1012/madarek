@@ -1,0 +1,32 @@
+/* Dark theme overrides */
+@layer themes {
+
+[data-theme='dark'] .card {
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme='dark'] .welcome-card {
+  background: var(--color-primary);
+}
+
+[data-theme='dark'] .landing-hero {
+  background: #0f1a2e;
+}
+
+[data-theme='dark'] .kpi-strip {
+  background: rgba(255,255,255,0.04);
+}
+
+[data-theme='dark'] .landing-final-cta {
+  background: #0f1a2e;
+}
+
+[data-theme='dark'] .auth-left {
+  background: #0f1a2e;
+}
+
+[data-theme='dark'] img {
+  filter: brightness(0.92);
+}
+
+} /* end @layer themes */

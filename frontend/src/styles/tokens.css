@@ -1,380 +1,168 @@
-/* ═════════════════════════════════════════════════════════════
-   CSS Cascade Layer order — declared once, globally.
-   Later layers win for NORMAL rules. (Files are migrated into these
-   layers incrementally; until a file opts in it stays in the implicit
-   outer layer, which still wins over any named layer — so this
-   declaration is safe and additive with zero regression.)
-   ───────────────────────────────────────────────────────────── */
-@layer tokens, base, components, pages, overrides;
-
-/* ═════════════════════════════════════════════════════════════
-   Madarek Design System — Unified Design Tokens
-   Single source of truth for the Google Stitch design language.
-   Themed via [data-theme="dark"|"light"].
-   ───────────────────────────────────────────────────────────── */
+/* Design Tokens — single source of truth */
+@layer tokens, reset, layout, components, pages, landing, themes;
 
 :root {
-  /* ── Brand Colors (mode-invariant) ────────────────────── */
-  --brand-blue: #003461;
-  --brand-blue-deep: #001c38;
-  --brand-purple: #004b87;
-  --brand-gold: #fed65b;
+  /* Brand */
+  --color-primary: #1E3A5F;
+  --color-secondary: #C4A35A;
+  --color-accent: #3B82F6;
 
-  /* ── Stitch Primary Palette ───────────────────────────── */
-  --md-primary:                     #003461;
-  --md-on-primary:                  #ffffff;
-  --md-primary-container:           #004b87;
-  --md-on-primary-container:        #8abcff;
-  --md-primary-fixed:               #d3e4ff;
-  --md-primary-fixed-dim:           #a3c9ff;
-  --md-on-primary-fixed:            #001c38;
-  --md-on-primary-fixed-variant:    #004882;
+  /* Semantic */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
 
-  /* ── Stitch Secondary (Gold) ──────────────────────────── */
-  --md-secondary:                   #735c00;
-  --md-on-secondary:                #ffffff;
-  --md-secondary-container:         #fed65b;
-  --md-on-secondary-container:      #745c00;
-  --md-secondary-fixed:             #ffe088;
-  --md-secondary-fixed-dim:         #e9c349;
-  --md-on-secondary-fixed:          #241a00;
-  --md-on-secondary-fixed-variant:  #574500;
+  /* Neutrals */
+  --neutral-50: #FAFAFA;
+  --neutral-100: #F5F5F5;
+  --neutral-200: #E5E5E5;
+  --neutral-300: #D4D4D4;
+  --neutral-400: #A3A3A3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #111827;
 
-  /* ── Stitch Tertiary (Teal / AI) ──────────────────────── */
-  --md-tertiary:                    #003a3b;
-  --md-on-tertiary:                 #ffffff;
-  --md-tertiary-container:          #005354;
-  --md-on-tertiary-container:       #01ced1;
-  --md-tertiary-fixed:              #5af8fb;
-  --md-tertiary-fixed-dim:          #2ddbde;
-  --md-on-tertiary-fixed:           #002020;
-  --md-on-tertiary-fixed-variant:   #004f51;
-
-  /* ── Error ────────────────────────────────────────────── */
-  --md-error:                       #ba1a1a;
-  --md-on-error:                    #ffffff;
-  --md-error-container:             #ffdad6;
-  --md-on-error-container:          #93000a;
-
-  /* ── Surface (Material 3) ─────────────────────────────── */
-  --md-surface:                     #f8f9fa;
-  --md-on-surface:                  #191c1d;
-  --md-on-surface-variant:          #424750;
-  --md-surface-variant:             #e1e3e4;
-  --md-surface-bright:              #f8f9fa;
-  --md-surface-dim:                 #d9dadb;
-  --md-surface-container-lowest:    #ffffff;
-  --md-surface-container-low:       #f3f4f5;
-  --md-surface-container:           #edeeef;
-  --md-surface-container-high:      #e7e8e9;
-  --md-surface-container-highest:   #e1e3e4;
-  --md-background:                  #f8f9fa;
-  --md-on-background:               #191c1d;
-
-  /* ── Outline ──────────────────────────────────────────── */
-  --md-outline:                     #727781;
-  --md-outline-variant:             #c2c6d1;
-
-  /* ── Inverse ──────────────────────────────────────────── */
-  --md-inverse-surface:             #2e3132;
-  --md-inverse-on-surface:          #f0f1f2;
-  --md-inverse-primary:             #a3c9ff;
-
-  /* ── Spacing (8px base grid) ──────────────────────────── */
+  /* Spacing */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
   --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-7: 28px;
-  --sp-8: 32px;
-  --sp-10: 40px;
-  --sp-12: 48px;
-  --sp-16: 64px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
 
-  /* ── Radius ───────────────────────────────────────────── */
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 12px;
-  --r-xl: 16px;
-  --r-2xl: 16px;
-  --r-3xl: 20px;
-  --r-full: 9999px;
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 
-  /* Stitch radii aliases */
-  --st-r-default: 4px;
-  --st-r-lg:      8px;
-  --st-r-xl:      12px;
-  --st-r-2xl:     16px;
-  --st-r-full:    9999px;
-
-  /* ── Typography ───────────────────────────────────────── */
+  /* Font Sizes */
   --fs-xxs: 11px;
   --fs-xs: 12px;
-  --fs-sm: 13px;
-  --fs-base: 14px;
-  --fs-md: 15px;
+  --fs-sm: 14px;
+  --fs-base: 16px;
+  --fs-md: 16px;
   --fs-lg: 18px;
-  --fs-xl: 22px;
-  --fs-2xl: 28px;
-  --fs-3xl: 36px;
-  --fs-4xl: 44px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 40px;
 
-  /* Premium Arabic Typography Hierarchy */
-  --fs-display-lg: clamp(32px, 5vw, 48px);
-  --fs-headline-md: clamp(24px, 3.5vw, 32px);
-  --fs-headline-sm: clamp(20px, 2.5vw, 24px);
-  --fs-body-lg: 18px;
-  --fs-body-md: 16px;
-  --fs-label-md: 14px;
-  --fs-label-sm: 12px;
+  /* Fonts */
+  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
 
-  --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
-  --fw-bold: 700;
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
 
-  /* Line heights refined for Arabic display */
-  --lh-tight: 1.18;
-  --lh-snug: 1.4;
-  --lh-base: 1.65;
-  --lh-loose: 1.85;
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* ── Motion ──────────────────────────────────────────── */
-  --t-fast: 150ms;
-  --t-base: 220ms;
-  --t-slow: 320ms;
-  --t-slower: 560ms;
-  --t-cinema: 700ms;
-  --t-micro: 80ms;
-
-  --ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
-
-  /* ── Layout ──────────────────────────────────────────── */
-  --sidebar-w: 264px;
+  /* Layout */
+  --sidebar-w: 240px;
   --sidebar-w-collapsed: 64px;
-  --topbar-h: 64px;
-  --content-max-w: 1320px;
+  --topbar-h: 56px;
+  --content-max-w: 1280px;
 
-  /* Stitch layout tokens */
-  --st-container-max:   1280px;
-  --st-gutter:          24px;
-  --st-margin-desktop:  64px;
-  --st-margin-mobile:   20px;
-  --st-unit:            8px;
-
-  /* ── Fonts ───────────────────────────────────────────── */
-  --font-sans: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Lexend', 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
-
-  /* ── Glassmorphism ───────────────────────────────────── */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-blur: 12px;
-
-  /* ── AI Glow Signature Effect ────────────────────────── */
-  --ai-glow:        0 4px 20px rgba(0, 206, 209, 0.15);
-  --ai-glow-strong: 0 8px 32px rgba(0, 206, 209, 0.25);
-
-  /* ── Semantic Composition Tokens ─────────────────────── */
-  --transition-all: all var(--t-base) var(--ease);
-  --card-padding: var(--sp-5);
-  --section-gap: var(--sp-8);
-
-  /* ── Unified elevation scale (single source for depth) ── */
-  --el-1: var(--shadow-sm);
-  --el-2: var(--shadow-md);
-  --el-3: var(--shadow-lg);
-  --el-4: var(--shadow-xl);
-  --el-5: 0 24px 64px -16px rgba(15, 23, 42, 0.22);
+  /* Default theme (light) to prevent flash */
+  --bg: #F8FAFC;
+  --surface-1: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --surface-3: #E2E8F0;
+  --text: #1E293B;
+  --text-muted: #64748B;
+  --text-subtle: #94A3B8;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --accent: #1E3A5F;
+  --accent-hover: #2d4f7a;
+  --accent-soft: rgba(30,58,95,0.08);
+  --accent-fg: #FFFFFF;
+  --gold: #C4A35A;
+  --gold-soft: rgba(196,163,90,0.12);
+  --gold-hover: #d4b36a;
+  --success: #10B981;
+  --success-soft: rgba(16,185,129,0.1);
+  --warning: #F59E0B;
+  --warning-soft: rgba(245,158,11,0.1);
+  --danger: #EF4444;
+  --danger-soft: rgba(239,68,68,0.1);
+  --info: #3B82F6;
+  --info-soft: rgba(59,130,246,0.1);
+  --focus-ring: 0 0 0 3px rgba(30,58,95,0.2);
+  --selection-bg: rgba(30,58,95,0.15);
 }
 
-/* ═════════════════════════════════════════════════════════════
-   DARK THEME (default)
-   ═════════════════════════════════════════════════════════════ */
-:root,
-[data-theme='dark'] {
-  /* Surfaces — Soft UI Evolution: warm-neutral, clearly layered depth */
-  --bg: #0f1117;
-  --surface-1: #161922;
-  --surface-2: #1e222e;
-  --surface-3: #283041;
-
-  /* Borders */
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
-
-  /* Text */
-  --text: #fafafa;
-  --text-muted: #b0b0b8;
-  --text-subtle: #909098;
-
-  /* Accent (primary in dark mode uses fixed-dim for readability) */
-  --accent: #a3c9ff;
-  --accent-hover: #d3e4ff;
-  --accent-soft: rgba(163, 201, 255, 0.16);
-  --accent-border: rgba(163, 201, 255, 0.45);
-  --accent-fg: #001c38;
-
-  /* Gold */
-  --gold: #e9c349;
-  --gold-soft: rgba(233, 195, 73, 0.16);
-  --gold-hover: #f5d565;
-
-  /* Amber accent (recommended blue+amber system) — brighter on dark surfaces */
-  --amber: #fbbf24;
-  --amber-strong: #f59e0b;
-  --amber-soft: rgba(245, 158, 11, 0.16);
-  --amber-border: rgba(245, 158, 11, 0.45);
-
-  /* Semantic */
-  --success: #3DD68C;
-  --success-soft: rgba(61, 214, 140, 0.10);
-  --warning: #F5A623;
-  --warning-soft: rgba(245, 166, 35, 0.10);
-  --danger: #F55353;
-  --danger-soft: rgba(245, 83, 83, 0.10);
-  --info: #a3c9ff;
-  --info-soft: rgba(163, 201, 255, 0.10);
-
-  /* Shadows — softer, multi-layer dimensional elevation (Soft UI) */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32), 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.38), 0 2px 6px rgba(0, 0, 0, 0.26);
-  --shadow-xl: 0 18px 48px rgba(0, 0, 0, 0.46), 0 6px 14px rgba(0, 0, 0, 0.30);
-
-  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 6px rgba(0, 0, 0, 0.30);
-  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 10px 28px rgba(0, 0, 0, 0.38);
-
-  /* Focus & Selection */
-  --focus-ring: 0 0 0 3px rgba(163, 201, 255, 0.30);
-  --selection-bg: rgba(163, 201, 255, 0.25);
-
-  /* Chart */
-  --chart-grid: rgba(255, 255, 255, 0.05);
-  --chart-text: #6b6886;
-
-  /* Glassmorphism (dark) */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.06);
-}
-
-/* ═════════════════════════════════════════════════════════════
-   LIGHT THEME
-   ═════════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-  --bg: #eef1f6;
-  --surface-1: #ffffff;
-  --surface-2: #f5f7fa;
-  --surface-3: #eaeef3;
-
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-
-  --text: var(--md-on-surface);
-  --text-muted: var(--md-on-surface-variant);
-  --text-subtle: #475569;
-
-  --accent: var(--md-primary);
-  --accent-hover: var(--md-primary-container);
-  --accent-soft: color-mix(in srgb, var(--md-primary) 8%, transparent);
-  --accent-border: color-mix(in srgb, var(--md-primary) 35%, transparent);
-  --accent-fg: var(--md-on-primary);
-
-  --gold: var(--md-secondary-container);
-  --gold-soft: color-mix(in srgb, var(--md-secondary-container) 25%, transparent);
-  --gold-hover: #f5d565;
-
-  /* Amber accent (recommended blue+amber system) — readable highlight/emphasis */
-  --amber: #b45309;
-  --amber-strong: #92400e;
-  --amber-soft: color-mix(in srgb, #f59e0b 14%, transparent);
-  --amber-border: color-mix(in srgb, #f59e0b 40%, transparent);
-
-  /* Semantic (light) */
-  --success: var(--md-tertiary-container);
-  --success-soft: color-mix(in srgb, var(--md-tertiary-container) 12%, transparent);
-  --warning: #c2410c;
-  --warning-soft: rgba(194, 65, 12, 0.10);
-  --danger: var(--md-error);
-  --danger-soft: color-mix(in srgb, var(--md-error) 10%, transparent);
-  --info: var(--md-primary);
-  --info-soft: color-mix(in srgb, var(--md-primary) 10%, transparent);
-
-  /* Shadows (light) */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 2px 6px rgba(15, 23, 42, 0.06), 0 8px 18px rgba(15, 23, 42, 0.07);
-  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.08), 0 16px 36px rgba(15, 23, 42, 0.10);
-  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.10), 0 32px 64px rgba(15, 23, 42, 0.14);
-
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.06);
-  --shadow-card-hover: 0 0 0 1px rgba(0, 52, 97, 0.08), 0 14px 34px -8px rgba(15, 23, 42, 0.16);
-
-  /* Focus & Selection (light) */
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--md-primary) 25%, transparent);
-  --selection-bg: color-mix(in srgb, var(--md-tertiary-fixed-dim) 30%, transparent);
-
-  /* Chart (light) */
-  --chart-grid: rgba(15, 23, 42, 0.06);
-  --chart-text: #8694AC;
-
-  /* Glassmorphism (light) */
-  --glass-bg: rgba(255, 255, 255, 0.70);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.50);
-  --glass-border: rgba(255, 255, 255, 0.80);
+  --bg: #F8FAFC;
+  --surface-1: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --surface-3: #E2E8F0;
+  --text: #1E293B;
+  --text-muted: #64748B;
+  --text-subtle: #94A3B8;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --accent: #1E3A5F;
+  --accent-hover: #2d4f7a;
+  --accent-soft: rgba(30,58,95,0.08);
+  --accent-fg: #FFFFFF;
+  --gold: #C4A35A;
+  --gold-soft: rgba(196,163,90,0.12);
+  --gold-hover: #d4b36a;
+  --success: #10B981;
+  --success-soft: rgba(16,185,129,0.1);
+  --warning: #F59E0B;
+  --warning-soft: rgba(245,158,11,0.1);
+  --danger: #EF4444;
+  --danger-soft: rgba(239,68,68,0.1);
+  --info: #3B82F6;
+  --info-soft: rgba(59,130,246,0.1);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+  --focus-ring: 0 0 0 3px rgba(30,58,95,0.2);
+  --selection-bg: rgba(30,58,95,0.15);
 }
 
-/* ═════════════════════════════════════════════════════════════
-   CINEMATIC THEME (opt-in only — never the default)
-   Deep-dark premium surfaces + amber glow. Activated when the user
-   explicitly selects it; the official light theme stays default.
-   ═════════════════════════════════════════════════════════════ */
-[data-theme='cinematic'] {
-  --bg: #0f1117;
-  --surface-1: #161922;
-  --surface-2: #1e222e;
-  --surface-3: #283041;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-
-  --text: #f4f6fb;
-  --text-muted: #c4cad8;
-  --text-subtle: #9aa3b6;
-
-  --accent: #ffbf00;
-  --accent-hover: #ffd24d;
-  --accent-soft: rgba(255, 191, 0, 0.14);
-  --accent-border: rgba(255, 191, 0, 0.42);
-  --accent-fg: #1a1205;
-
-  --glow-sm: 0 0 0 1px rgba(255, 191, 0, 0.08), 0 0 18px -6px rgba(255, 191, 0, 0.10);
-  --glow-md: 0 0 0 1px rgba(255, 191, 0, 0.15), 0 0 28px -8px rgba(255, 191, 0, 0.18);
-
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 8px 30px -12px rgba(0, 0, 0, 0.7);
-  --shadow-card-hover: var(--glow-md), 0 18px 50px -16px rgba(0, 0, 0, 0.8);
-  --el-3: var(--glow-md), 0 18px 50px -16px rgba(0, 0, 0, 0.7);
-
-  --glass-bg: rgba(22, 25, 34, 0.62);
-  --glass-border: rgba(255, 255, 255, 0.10);
-  color-scheme: dark;
-}
-
-/* ═════════════════════════════════════════════════════════════
-   REDUCED MOTION
-   ═════════════════════════════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+[data-theme='dark'] {
+  --bg: #1a1d23;
+  --surface-1: #22262f;
+  --surface-2: #292e38;
+  --surface-3: #313742;
+  --text: #F1F5F9;
+  --text-muted: #9aa0a8;
+  --text-subtle: #6b7280;
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.12);
+  --accent: #7EB3E0;
+  --accent-hover: #a3c9f0;
+  --accent-soft: rgba(126,179,224,0.12);
+  --accent-fg: #1a1d23;
+  --gold: #D4B36A;
+  --gold-soft: rgba(212,179,106,0.14);
+  --gold-hover: #e4c37a;
+  --success: #34D399;
+  --success-soft: rgba(52,211,153,0.12);
+  --warning: #FBBF24;
+  --warning-soft: rgba(251,191,36,0.12);
+  --danger: #F87171;
+  --danger-soft: rgba(248,113,113,0.12);
+  --info: #60A5FA;
+  --info-soft: rgba(96,165,250,0.12);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.22);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.25);
+  --focus-ring: 0 0 0 3px rgba(126,179,224,0.3);
+  --selection-bg: rgba(126,179,224,0.2);
 }
