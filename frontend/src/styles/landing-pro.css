@@ -213,16 +213,30 @@
           backdrop-filter: none !important;
 }
 
-/* Footer — clean, centered, generous; gold link hover for unity */
+/* ── CONSOLIDATED FOOTER (single source; supersedes landing.css + premium.css) */
 .landing-footer {
-  border-top: 1px solid var(--border);
-  margin-top: var(--sp-12);
-  padding-block: var(--sp-8);
+  border-top: 1px solid var(--border) !important;
+  margin-top: clamp(48px, 6vw, 80px) !important;
+  padding-block: var(--sp-10) var(--sp-8) !important;
+  color: var(--text-muted);
 }
 .landing-footer-links a:hover { color: var(--lp-gold); }
 
-/* Final CTA — keep the navy hero gradient but lift the card + round it */
-.landing-final-cta { border-radius: var(--r-3xl); overflow: hidden; }
+/* ── CONSOLIDATED FINAL CTA (single source; supersedes landing-auth-v3 +
+   premium + stitch-canonical). Navy hero gradient, rounded, lifted. */
+.landing-final-cta {
+  margin-block: clamp(48px, 6vw, 80px) clamp(24px, 3vw, 48px);
+  padding: clamp(48px, 6vw, 80px) clamp(24px, 4vw, 48px);
+  border-radius: var(--r-3xl);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: var(--el-4);
+  background:
+    radial-gradient(700px 500px at 25% 30%, rgba(45, 219, 222, 0.28), transparent 70%),
+    radial-gradient(500px 400px at 75% 70%, rgba(254, 214, 91, 0.16), transparent 70%),
+    linear-gradient(160deg, #001c38 0%, #003461 50%, #004b87 100%) !important;
+}
 
 /* Reduced motion — no card lift */
 @media (prefers-reduced-motion: reduce) {

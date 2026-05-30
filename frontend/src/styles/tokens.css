@@ -1,4 +1,13 @@
 /* ═════════════════════════════════════════════════════════════
+   CSS Cascade Layer order — declared once, globally.
+   Later layers win for NORMAL rules. (Files are migrated into these
+   layers incrementally; until a file opts in it stays in the implicit
+   outer layer, which still wins over any named layer — so this
+   declaration is safe and additive with zero regression.)
+   ───────────────────────────────────────────────────────────── */
+@layer tokens, base, components, pages, overrides;
+
+/* ═════════════════════════════════════════════════════════════
    Madarek Design System — Unified Design Tokens
    Single source of truth for the Google Stitch design language.
    Themed via [data-theme="dark"|"light"].
@@ -180,6 +189,13 @@
   --transition-all: all var(--t-base) var(--ease);
   --card-padding: var(--sp-5);
   --section-gap: var(--sp-8);
+
+  /* ── Unified elevation scale (single source for depth) ── */
+  --el-1: var(--shadow-sm);
+  --el-2: var(--shadow-md);
+  --el-3: var(--shadow-lg);
+  --el-4: var(--shadow-xl);
+  --el-5: 0 24px 64px -16px rgba(15, 23, 42, 0.22);
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -316,6 +332,41 @@
   --glass-bg: rgba(255, 255, 255, 0.70);
   --glass-bg-subtle: rgba(255, 255, 255, 0.50);
   --glass-border: rgba(255, 255, 255, 0.80);
+}
+
+/* ═════════════════════════════════════════════════════════════
+   CINEMATIC THEME (opt-in only — never the default)
+   Deep-dark premium surfaces + amber glow. Activated when the user
+   explicitly selects it; the official light theme stays default.
+   ═════════════════════════════════════════════════════════════ */
+[data-theme='cinematic'] {
+  --bg: #0f1117;
+  --surface-1: #161922;
+  --surface-2: #1e222e;
+  --surface-3: #283041;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #f4f6fb;
+  --text-muted: #c4cad8;
+  --text-subtle: #9aa3b6;
+
+  --accent: #ffbf00;
+  --accent-hover: #ffd24d;
+  --accent-soft: rgba(255, 191, 0, 0.14);
+  --accent-border: rgba(255, 191, 0, 0.42);
+  --accent-fg: #1a1205;
+
+  --glow-sm: 0 0 0 1px rgba(255, 191, 0, 0.08), 0 0 18px -6px rgba(255, 191, 0, 0.10);
+  --glow-md: 0 0 0 1px rgba(255, 191, 0, 0.15), 0 0 28px -8px rgba(255, 191, 0, 0.18);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.6), 0 8px 30px -12px rgba(0, 0, 0, 0.7);
+  --shadow-card-hover: var(--glow-md), 0 18px 50px -16px rgba(0, 0, 0, 0.8);
+  --el-3: var(--glow-md), 0 18px 50px -16px rgba(0, 0, 0, 0.7);
+
+  --glass-bg: rgba(22, 25, 34, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  color-scheme: dark;
 }
 
 /* ═════════════════════════════════════════════════════════════
