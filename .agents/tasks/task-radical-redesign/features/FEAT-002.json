@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Redesign LandingPage.tsx component to match the radical new visual direction: clean hero with large whitespace, simple features section, minimal stats bar, professional about section, and gold CTA. Remove visual clutter (AI chat showcase, bento grid, excessive animations) while preserving ALL functional navigation links and route logic.",
+  "status": "completed",
+  "steps": [
+    "Rewrite frontend/src/pages/LandingPage.tsx with a completely new structure following Phase 4 spec: 1) Header: clean nav bar with brand on the right (RTL), nav links center, login button left. Simple, no glassmorphism. 2) Hero Section: 70-80vh height, navy (#1E3A5F) background, large Arabic heading using --fs-3xl (40px), professional subtitle, gold (#C4A35A) CTA button 'ابدأ رحلتك الآن' + outline secondary button, optional subtle Islamic geometric SVG pattern at 3-5% opacity as background decoration. 3) Stats bar: 4 numbers (29 كلية, +50K طالب, 2.5K أستاذ, #6 على مستوى ليبيا) in a clean horizontal strip. 4) Features section: 3-4 features with simple icon + title + short description (no huge bento cards). Use existing Lucide icons (Compass, Brain, BarChart3, Network). 5) About section: brief professional text, clean design. 6) Final CTA section with login button. 7) Footer with links.",
+    "Preserve ALL existing navigation logic: the useAuthStore redirect for logged-in users, the Link to='/auth' buttons, the anchor links (#features, #pillars, #proof, #about), the mobile menu toggle state, the year variable for copyright.",
+    "Keep the ministry-strip at the top (official Libyan government identifier).",
+    "Remove the AI chat showcase section (landing-ai-section) - it adds visual clutter. The AI feature can be mentioned as one bullet in the features grid.",
+    "Remove the 'Role Pillars' section elaborate card grid - simplify to a brief mention in the about section or combine with features.",
+    "Remove the testimonials section - keep it simple.",
+    "Remove the pilot results section with animated percentage counters - the stats bar covers key numbers.",
+    "Keep Reveal component usage for scroll animations (the hook and CSS class already exist), but use simpler fade-in only (no complex blur/translate).",
+    "Ensure the CountUp component is still imported and used for the stats bar numbers.",
+    "Mobile responsive: hamburger menu with dropdown nav, stacked hero content, single-column features on mobile.",
+    "Landing page should NOT import or use BrandMark/LibyaFlag components in a way that breaks if their rendering changes - keep the imports but the design should work with or without them."
+  ],
+  "acceptance_criteria": [
+    "LandingPage.tsx compiles without TypeScript errors",
+    "All navigation links preserved: /auth login, #features, #about anchor links",
+    "Hero section has navy background with gold CTA button",
+    "Stats bar shows 4 key numbers",
+    "Features section shows 3-4 clean feature cards",
+    "No AI chat showcase section",
+    "No testimonials section",
+    "No pilot results animated section",
+    "Mobile menu toggle still works (useState for menuOpen)",
+    "Logged-in user redirect logic preserved",
+    "Ministry strip preserved at top"
+  ],
+  "verification": [
+    "Run 'npx tsc -b --noEmit' in frontend/ to confirm no TypeScript errors",
+    "Grep LandingPage.tsx for 'useAuthStore' to confirm auth redirect preserved",
+    "Grep LandingPage.tsx for '/auth' to confirm login links preserved",
+    "Grep LandingPage.tsx for 'menuOpen' to confirm mobile menu state preserved"
+  ],
+  "blocked_reason": null,
+  "findings": "TypeScript build cannot run because node_modules is missing (INTEGRATIONS_ONLY). Manual verification confirms: all auth redirect logic preserved (useAuthStore, useNavigate), menuOpen state preserved, all /auth links preserved, #features and #about anchors preserved, ministry strip preserved, CountUp used in stats strip, Reveal used for scroll animations. Removed sections: AI chat showcase, role pillars, testimonials, pilot results, hero campus image. Unused icon imports removed (User, GraduationCap, Building2, Users2, Award, Sparkles, ShieldCheck). File reduced from 309 lines to 250 lines."
+}
