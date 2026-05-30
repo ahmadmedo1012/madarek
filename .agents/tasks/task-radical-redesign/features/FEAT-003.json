@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-003",
+  "type": "fix",
+  "description": "Final integration pass: ensure all CSS class names from every TSX component are defined, fix any missing styles, verify the build compiles cleanly, and confirm no references to deleted tokens/variables remain.",
+  "status": "in_progress",
+  "steps": [
+    "Run 'npx tsc -b --noEmit' in frontend/ and fix any TypeScript errors introduced by the changes.",
+    "Run 'npx vite build' in frontend/ and fix any CSS/build errors.",
+    "Grep all TSX files for className references and cross-check against the new CSS files. Add any missing class definitions. Key areas to check: owner pages (owner.css classes), PDF viewer (pdf.css classes), auth page classes (.auth-*), notification panel (.notif-*), bottom nav (.bottom-nav-*), global search, all dashboard page-specific classes.",
+    "Check that all CSS custom properties (variables) used in CSS files are defined in tokens.css. Search for var(--) usage and verify each variable exists. Common ones to verify: --bg, --surface-1/2/3, --text, --text-muted, --text-subtle, --border, --border-strong, --accent, --accent-soft, --accent-hover, --gold, --gold-soft, --success, --warning, --danger, --info, --shadow-sm/md/lg, --sp-1 through --sp-8, --radius-sm/md/lg/xl/full, --fs-sm/base/lg/xl/2xl/3xl, --font-sans, --font-mono, --duration-fast/base/slow, --sidebar-w, --topbar-h.",
+    "Verify that theme toggle still works: the ThemeToggle component uses data-theme attribute which is set via useThemeStore. The CSS must have [data-theme='dark'] and [data-theme='light'] selectors that override --bg, --surface-*, --text-*, --border, --shadow-* etc.",
+    "Ensure the inline theme script in index.html still works with the new CSS structure (reads localStorage 'madarek-theme' and sets data-theme attribute before paint).",
+    "Verify responsive breakpoints are present in the CSS: 375px (mobile), 768px (tablet), 1024px (desktop), 1440px (large). Key responsive rules: sidebar hides on mobile, grids collapse, font sizes adjust, topbar adapts.",
+    "Add @media (prefers-reduced-motion: reduce) rule in reset.css that sets all animation-duration and transition-duration to 0.01ms.",
+    "Ensure all buttons have accessible sizing (min 38px touch target), all interactive elements have :focus-visible styles, all text has sufficient contrast ratios against backgrounds."
+  ],
+  "acceptance_criteria": [
+    "npx tsc -b --noEmit passes with zero errors",
+    "npx vite build completes successfully",
+    "No undefined CSS custom properties (all var(--x) have corresponding definitions)",
+    "Responsive breakpoints for 375px, 768px, 1024px, 1440px exist in CSS",
+    "prefers-reduced-motion media query present",
+    "Theme toggle works (both dark and light selectors have complete variable overrides)",
+    "No references to deleted files (stitch-tokens.css, landing-pro.css, etc) remain in any file"
+  ],
+  "verification": [
+    "Run 'npx tsc -b --noEmit' - must pass",
+    "Run 'npx vite build' - must pass",
+    "Grep all TSX/CSS files for 'stitch-tokens\\|landing-pro\\|stitch-canonical\\|elevation\\|polish\\|interactions\\|premium' - should return zero results (old file references gone)",
+    "Grep CSS files for 'color-mix' - should return zero results",
+    "Grep CSS files for 'Lexend\\|Outfit' - should return zero results"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

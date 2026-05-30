@@ -549,4 +549,30 @@
   }
 }
 
+@media (max-width: 375px) {
+  .topbar {
+    padding: 0 12px;
+  }
+
+  .main,
+  .content {
+    padding: 12px;
+  }
+
+  .page-header {
+    margin-bottom: 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .content-inner {
+    max-width: var(--content-max-w);
+    margin-inline: auto;
+  }
+}
+
 } /* end @layer layout */
