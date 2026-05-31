@@ -241,4 +241,146 @@
     .card:not(.flush)::before { display: none; }
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     Welcome card — student dashboard greeting hero
+     ═══════════════════════════════════════════════════════════════ */
+  .welcome-card {
+    position: relative;
+    overflow: hidden;
+    padding: var(--sp-5) var(--sp-6) var(--sp-5);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(
+        at 90% 0%,
+        color-mix(in srgb, var(--accent) 9%, transparent) 0%,
+        transparent 50%
+      ),
+      linear-gradient(
+        135deg,
+        var(--surface) 0%,
+        color-mix(in srgb, var(--accent) 3%, var(--surface-2)) 100%
+      );
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+  }
+  .welcome-card::after {
+    /* Subtle decorative dot grid in the inline-end corner */
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 200px;
+    height: 100%;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
+      transparent 1.5px
+    );
+    background-size: 14px 14px;
+    background-position: 0 0;
+    opacity: 0.35;
+    mask-image: linear-gradient(to inline-start, black 30%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to inline-start, black 30%, transparent 100%);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .welcome-card {
+    background:
+      radial-gradient(
+        at 90% 0%,
+        color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+        transparent 55%
+      ),
+      var(--surface);
+  }
+  .welcome-card .page-title {
+    /* Make the greeting feel like the hero of the page. */
+    font-size: clamp(var(--fs-2xl), 4.5vw, var(--fs-3xl, 32px));
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+  }
+  .welcome-card .page-subtitle {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Topbar polish — title weight + subtle scroll shadow refinement
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-title {
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.005em;
+  }
+  .topbar-scope {
+    /* Smaller, calmer chip than the title */
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+    border-radius: var(--r-full);
+    padding: 3px 10px;
+    margin-inline-start: var(--sp-2);
+    white-space: nowrap;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Dropdown menus — refined edge + shadow
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-user-menu,
+  .notification-dropdown {
+    border: 1px solid color-mix(in srgb, var(--text) 8%, var(--rule));
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 12px 32px -8px rgb(0 0 0 / 0.1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Form labels — subtle weight bump for hierarchy
+     ═══════════════════════════════════════════════════════════════ */
+  .form-label,
+  label.form-label,
+  .auth-field label {
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Pill — tactile press feedback
+     ═══════════════════════════════════════════════════════════════ */
+  .pill {
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform 80ms var(--ease);
+  }
+  .pill:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Bottom-nav — scale-up icon on activate
+     ═══════════════════════════════════════════════════════════════ */
+  .bottom-nav-item.active .bottom-nav-icon {
+    animation: polish-bottomnav-pop 320ms var(--ease-out);
+  }
+  @keyframes polish-bottomnav-pop {
+    0%   { transform: scale(0.92); }
+    60%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-nav-item.active .bottom-nav-icon { animation: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Lists — calmer separators
+     ═══════════════════════════════════════════════════════════════ */
+  .list-row {
+    transition: background var(--t-fast) var(--ease);
+  }
+  a.list-row:hover,
+  button.list-row:hover {
+    background: color-mix(in srgb, var(--accent) 4%, var(--surface-2));
+  }
+
 }
