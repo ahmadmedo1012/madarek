@@ -94,6 +94,40 @@ export function useStudentDashboard() {
   });
 }
 
+// ── Student results / grades ──────────────────────────────────
+export interface StudentResults {
+  headline: {
+    avgGradePct: number | null;
+    highest: { courseName: string; gradePct: number } | null;
+    lowest: { courseName: string; gradePct: number } | null;
+    courseCount: number;
+  };
+  courses: Array<{
+    offeringId: string;
+    term: string;
+    courseCode: string;
+    courseName: string;
+    themeColor: string | null;
+    gradePct: number | null;
+    breakdown: Array<{ kind: string; score: number; maxScore: number; weight: number; feedback: string | null }>;
+  }>;
+  recentAssignments: Array<{
+    id: string;
+    title: string;
+    type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+    offeringId: string;
+    gradePct: number;
+    gradedAt: string | null;
+  }>;
+}
+export function useStudentResults() {
+  return useQuery({
+    queryKey: ['me', 'results'],
+    queryFn: () => unwrap<StudentResults>(api.get('/me/results')),
+    staleTime: 60_000,
+  });
+}
+
 // ── Courses (admin) ────────────────────────────────────────────
 export interface Course {
   id: string;

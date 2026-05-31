@@ -11,7 +11,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Radi
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
@@ -274,81 +274,143 @@ export function SchedulePage() {
 }
 
 /* ─── Results ──────────────────────────────────────────── */
-const RESULTS = [
-  { s: 'هندسة البرمجيات', g: 88 },
-  { s: 'تقنيات الحاسوب', g: 76 },
-  { s: 'نظم المعلومات', g: 92 },
-  { s: 'شبكات الحاسوب', g: 61 },
-  { s: 'تقنيات الإنترنت', g: 55 },
-];
-
 export function ResultsPage() {
+  const q = useStudentResults();
+
+  if (q.isPending) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">النتائج والتقييمات</h1>
+            <p className="page-subtitle">جارٍ جمع درجاتك…</p>
+          </div>
+        </div>
+        <LoadingState />
+      </div>
+    );
+  }
+  if (q.isError || !q.data) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">النتائج والتقييمات</h1>
+          </div>
+        </div>
+        <ErrorState />
+      </div>
+    );
+  }
+
+  const d = q.data;
+  const hasGrades = d.courses.some((c) => c.gradePct !== null);
+
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">النتائج والتقييمات</h1>
-          <p className="page-subtitle">تفاصيل درجاتك وتحليل أدائك بالذكاء الاصطناعي.</p>
+          <p className="page-subtitle">تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة.</p>
         </div>
       </div>
 
       <div className="grid-3">
-        <MetricCard icon={Award} label="أعلى درجة" value="92" change="نظم المعلومات" color="green" />
-        <MetricCard icon={Activity} label="المتوسط" value="74.4" change="هذا الفصل" color="brand" />
-        <MetricCard icon={AlertTriangle} label="أدنى درجة" value="55" change="تقنيات الإنترنت" color="red" />
+        <MetricCard
+          icon={Award}
+          label="أعلى درجة"
+          value={d.headline.highest ? `${d.headline.highest.gradePct}` : '—'}
+          change={d.headline.highest?.courseName ?? 'لا توجد درجات بعد'}
+          color="green"
+        />
+        <MetricCard
+          icon={Activity}
+          label="المتوسّط"
+          value={d.headline.avgGradePct !== null ? `${d.headline.avgGradePct}` : '—'}
+          change={d.headline.courseCount > 0 ? `عبر ${d.headline.courseCount} مقرّر` : 'لا تقييمات بعد'}
+          color={d.headline.avgGradePct !== null && d.headline.avgGradePct >= 70 ? 'brand' : 'amber'}
+        />
+        <MetricCard
+          icon={AlertTriangle}
+          label="أدنى درجة"
+          value={d.headline.lowest ? `${d.headline.lowest.gradePct}` : '—'}
+          change={d.headline.lowest?.courseName ?? '—'}
+          color={d.headline.lowest && d.headline.lowest.gradePct < 60 ? 'red' : 'amber'}
+        />
       </div>
 
-      <Card title="درجاتك حسب المقرر" icon={Activity} subtitle="نظرة بصرية على أدائك في مقررات هذا الفصل">
-        <div style={{ height: 260 }}>
-          <Bar
-            data={{
-              labels: RESULTS.map((r) => r.s),
-              datasets: [{
-                label: 'الدرجة',
-                data: RESULTS.map((r) => r.g),
-                backgroundColor: RESULTS.map((r) => {
-                  const c = chartColors();
-                  return r.g >= 85 ? c.success : r.g >= 70 ? c.accent : r.g >= 60 ? c.warning : c.danger;
-                }),
-                borderRadius: 6,
-                maxBarThickness: 48,
-              }],
-            }}
-            plugins={[valueLabels]}
-            options={{
-              ...cartesianOptions(),
-              scales: {
-                ...cartesianOptions().scales,
-                y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
-              },
-            }}
-          />
-        </div>
+      <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة لكل مقرّر' : 'ستظهر درجاتك هنا فور تسجيلها'}>
+        {!hasGrades ? (
+          <EmptyState title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
+        ) : (
+          <div style={{ height: Math.max(180, d.courses.length * 32) }}>
+            <Bar
+              data={{
+                labels: d.courses.map((r) => r.courseName),
+                datasets: [{
+                  label: 'الدرجة',
+                  data: d.courses.map((r) => r.gradePct ?? 0),
+                  backgroundColor: d.courses.map((r) => {
+                    const c = chartColors();
+                    const g = r.gradePct ?? 0;
+                    return g >= 85 ? c.success : g >= 70 ? c.accent : g >= 60 ? c.warning : c.danger;
+                  }),
+                  borderRadius: 6,
+                  maxBarThickness: 48,
+                }],
+              }}
+              plugins={[valueLabels]}
+              options={{
+                ...cartesianOptions(),
+                scales: {
+                  ...cartesianOptions().scales,
+                  y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
+                },
+              }}
+            />
+          </div>
+        )}
       </Card>
 
       <div className="grid-2">
         <Card title="تفصيل النتائج" icon={Activity}>
-          <div className="flex-col gap-4">
-            {RESULTS.map((r) => (
-              <ProgressBar
-                key={r.s}
-                value={r.g}
-                label={r.s}
-                color={r.g >= 85 ? 'var(--success)' : r.g >= 70 ? 'var(--accent)' : r.g >= 60 ? 'var(--warning)' : 'var(--danger)'}
-              />
-            ))}
-          </div>
+          {!hasGrades ? (
+            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>لم تُسجَّل درجات بعد.</p>
+          ) : (
+            <div className="flex-col gap-4">
+              {d.courses.map((r) => (
+                <ProgressBar
+                  key={r.offeringId}
+                  value={r.gradePct ?? 0}
+                  label={`${r.courseName} (${r.courseCode})`}
+                  color={
+                    (r.gradePct ?? 0) >= 85 ? 'var(--success)' :
+                    (r.gradePct ?? 0) >= 70 ? 'var(--accent)' :
+                    (r.gradePct ?? 0) >= 60 ? 'var(--warning)' :
+                    'var(--danger)'
+                  }
+                />
+              ))}
+            </div>
+          )}
         </Card>
 
-        <Card title="تحليل ذكي للأداء">
-          <div className="flex-col gap-2">
-            <AlertRow color="green" icon={CheckCircle2} title="نقاط القوة"
-              description="تتميّز في هندسة البرمجيات ونظم المعلومات." />
-            <AlertRow color="amber" icon={AlertTriangle} title="بحاجة لتحسين"
-              description="الشبكات وتقنيات الإنترنت تتطلب وقتاً إضافياً." />
-            <AlertRow color="brand" icon={Target} title="توصية"
-              description="خصّص ساعتين يومياً للمواد الضعيفة وراجع الفيديوهات." />
-          </div>
+        <Card title="آخر الواجبات المقيَّمة">
+          {d.recentAssignments.length === 0 ? (
+            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>لا توجد تقييمات حديثة.</p>
+          ) : (
+            <div className="flex-col gap-2">
+              {d.recentAssignments.slice(0, 6).map((a) => (
+                <AlertRow
+                  key={a.id}
+                  color={a.gradePct >= 85 ? 'green' : a.gradePct >= 70 ? 'brand' : a.gradePct >= 60 ? 'amber' : 'red'}
+                  icon={a.gradePct >= 70 ? CheckCircle2 : AlertTriangle}
+                  title={`${a.title} — ${a.gradePct}%`}
+                  description={a.gradedAt ? new Date(a.gradedAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' }) : ''}
+                />
+              ))}
+            </div>
+          )}
         </Card>
       </div>
     </div>

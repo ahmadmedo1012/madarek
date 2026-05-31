@@ -42,6 +42,117 @@ function currentTerm(): { code: string; startsAt: Date; endsAt: Date } {
     : { code: `${y - 1}-FALL`, startsAt: new Date(y - 1, 8, 10), endsAt: new Date(y, 0, 15) };
 }
 
+/**
+ * GET /me/results — every grade the student has, rolled up per course
+ * with a weighted percentage. Replaces the hardcoded 5-row RESULTS array
+ * that lived in the frontend.
+ */
+router.get('/me/results', async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+
+    const grades = await prisma.grade.findMany({
+      where: { studentId: userId },
+      include: {
+        offering: {
+          select: {
+            id: true, term: true,
+            course: { select: { id: true, code: true, name: true, themeColor: true } },
+          },
+        },
+      },
+      orderBy: { recordedAt: 'desc' },
+    });
+
+    interface CourseRow {
+      offeringId: string;
+      term: string;
+      courseCode: string;
+      courseName: string;
+      themeColor: string | null;
+      weightedSum: number;
+      weightTotal: number;
+      breakdown: Array<{ kind: string; score: number; maxScore: number; weight: number; feedback: string | null }>;
+    }
+    const byOffering = new Map<string, CourseRow>();
+    for (const g of grades) {
+      const pct = g.maxScore > 0 ? Number(g.score.toString()) / g.maxScore * 100 : 0;
+      let row = byOffering.get(g.offeringId);
+      if (!row) {
+        row = {
+          offeringId: g.offeringId,
+          term: g.offering.term,
+          courseCode: g.offering.course.code,
+          courseName: g.offering.course.name,
+          themeColor: g.offering.course.themeColor,
+          weightedSum: 0,
+          weightTotal: 0,
+          breakdown: [],
+        };
+        byOffering.set(g.offeringId, row);
+      }
+      row.weightedSum += pct * g.weight;
+      row.weightTotal += g.weight;
+      row.breakdown.push({
+        kind: g.kind,
+        score: Number(g.score.toString()),
+        maxScore: g.maxScore,
+        weight: g.weight,
+        feedback: g.feedback,
+      });
+    }
+
+    const courses = Array.from(byOffering.values()).map((r) => ({
+      offeringId: r.offeringId,
+      term: r.term,
+      courseCode: r.courseCode,
+      courseName: r.courseName,
+      themeColor: r.themeColor,
+      gradePct: r.weightTotal > 0 ? Math.round(r.weightedSum / r.weightTotal) : null,
+      breakdown: r.breakdown,
+    })).sort((a, b) => (b.gradePct ?? -1) - (a.gradePct ?? -1));
+
+    // Recent graded submissions — separate from Grade table, useful as a
+    // secondary "what was just returned to me" feed.
+    const subs = await prisma.submission.findMany({
+      where: { studentId: userId, status: 'GRADED', grade: { not: null } },
+      include: {
+        assignment: { select: { offeringId: true, maxScore: true, title: true, type: true } },
+      },
+      orderBy: { gradedAt: 'desc' },
+      take: 20,
+    });
+    const recentAssignments = subs.map((s) => ({
+      id: s.id,
+      title: s.assignment.title,
+      type: s.assignment.type,
+      offeringId: s.assignment.offeringId,
+      gradePct: s.assignment.maxScore > 0
+        ? Math.round((Number(s.grade!.toString()) / s.assignment.maxScore) * 100)
+        : 0,
+      gradedAt: s.gradedAt,
+    }));
+
+    const valid = courses.filter((c): c is typeof c & { gradePct: number } => c.gradePct !== null);
+    const avg = valid.length > 0 ? Math.round(valid.reduce((a, c) => a + c.gradePct, 0) / valid.length) : null;
+    const top = valid.length > 0 ? valid.reduce((a, c) => (c.gradePct > a.gradePct ? c : a)) : null;
+    const low = valid.length > 0 ? valid.reduce((a, c) => (c.gradePct < a.gradePct ? c : a)) : null;
+
+    res.json({
+      data: {
+        headline: {
+          avgGradePct: avg,
+          highest: top ? { courseName: top.courseName, gradePct: top.gradePct } : null,
+          lowest: low ? { courseName: low.courseName, gradePct: low.gradePct } : null,
+          courseCount: courses.length,
+        },
+        courses,
+        recentAssignments,
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 router.get('/me/dashboard', async (req, res, next) => {
   try {
     const userId = req.user!.id;
