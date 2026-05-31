@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement,
@@ -7,7 +8,7 @@ import {
 import {
   ShieldCheck, Users, BookOpen, GraduationCap, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
-  Building2, School, Star, Clock, Download,
+  Building2, School, Star, Clock, Download, ArrowRight,
   CheckCircle2, XCircle,
   type LucideIcon,
 } from 'lucide-react';
@@ -528,97 +529,159 @@ export function QualityCurriculumPage() {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   Reports
+   Reports — honest landing for institutional dashboards
    ════════════════════════════════════════════════════════════════ */
-const REPORTS = [
-  { title: 'تقرير الجودة الأسبوعي', period: 'الأسبوع 18 — 2025', generatedAt: 'منذ 3 أيام', status: 'ready' as const, size: '2.4 MB' },
-  { title: 'تقرير حضور الفصل', period: 'فصل ربيع 2025', generatedAt: 'منذ أسبوعين', status: 'ready' as const, size: '1.8 MB' },
-  { title: 'تقييم رضا الطلاب', period: 'منتصف فصل 2025', generatedAt: 'منذ شهر', status: 'ready' as const, size: '3.1 MB' },
-  { title: 'تقرير المخالفات الأكاديمية', period: 'فصل خريف 2024', generatedAt: 'منذ شهرين', status: 'ready' as const, size: '0.9 MB' },
-  { title: 'تقرير اكتمال المناهج الرقمية', period: 'فصل خريف 2024', generatedAt: 'منذ 3 أشهر', status: 'archived' as const, size: '5.2 MB' },
-];
-
 export function QualityReportsPage() {
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تقارير الجودة</h1>
-          <p className="page-subtitle">تقارير دورية يمكن تصديرها وأرشفتها.</p>
+          <p className="page-subtitle">لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.</p>
         </div>
-        <button type="button" className="btn primary">
-          <Icon icon={FileText} size={14} />
-          إنشاء تقرير جديد
-        </button>
       </div>
 
-      <Card title="التقارير الأخيرة" icon={FileText}>
-        <div className="flex-col gap-2">
-          {REPORTS.map((r) => (
-            <div key={r.title} className="list-row">
-              <div className="metric-icon" style={{ color: 'var(--accent)' }}>
-                <Icon icon={FileText} size={16} />
-              </div>
-              <div className="list-row-body">
-                <div className="list-row-title">{r.title}</div>
-                <div className="list-row-sub">{r.period} · {r.generatedAt} · {r.size}</div>
-              </div>
-              <Badge color={r.status === 'ready' ? 'green' : undefined}>
-                {r.status === 'ready' ? 'جاهز' : 'مؤرشف'}
-              </Badge>
-              <button type="button" className="btn outline sm" disabled={r.status !== 'ready'}>
-                <Icon icon={Download} size={13} />
-                تنزيل
-              </button>
-            </div>
-          ))}
-        </div>
+      <div className="grid-2">
+        <Card title="جودة المقرّرات" icon={BookOpen} subtitle="تحليل لكلّ عرض دراسيّ — تسجيلات، محتوى، تقييم">
+          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            تستعرض اللوحة كل العروض الدراسيّة مع تفصيل عدد المسجَّلين، ساعات المحاضرات، المواد، والاختبارات.
+          </p>
+          <Link to="/quality/courses" className="btn primary sm">
+            <Icon icon={ArrowRight} size={13} />
+            فتح اللوحة
+          </Link>
+        </Card>
+
+        <Card title="تقييم الأساتذة" icon={School} subtitle="ملفّات أعضاء هيئة التدريس وتاريخ توثيقهم">
+          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            قائمة كاملة بأعضاء هيئة التدريس مرتَّبة بحسب القسم والكلّيّة، مع حالة التوثيق وتفاصيل التخصّص.
+          </p>
+          <Link to="/quality/professors" className="btn primary sm">
+            <Icon icon={ArrowRight} size={13} />
+            فتح اللوحة
+          </Link>
+        </Card>
+
+        <Card title="الانخراط والحضور" icon={Activity} subtitle="نسب الحضور ومؤشّرات التفاعل أسبوعيّاً">
+          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            نسب الحضور والغياب، مشاهدات المحاضرات، الطلّاب النشطين أسبوعيّاً، حالة البحوث.
+          </p>
+          <Link to="/quality/engagement" className="btn primary sm">
+            <Icon icon={ArrowRight} size={13} />
+            فتح اللوحة
+          </Link>
+        </Card>
+
+        <Card title="مراجعة المناهج" icon={ListChecks} subtitle="نسبة اكتمال المحتوى الرقميّ في كل قسم">
+          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            مؤشّر اكتمال رفع المحاضرات والمواد الدراسيّة عبر الكلّيّات والأقسام.
+          </p>
+          <Link to="/quality/curriculum" className="btn primary sm">
+            <Icon icon={ArrowRight} size={13} />
+            فتح اللوحة
+          </Link>
+        </Card>
+      </div>
+
+      <Card title="تصدير تقارير ثابتة (PDF/Excel)" icon={FileText}>
+        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>
+          إصدار التقارير القابلة للتحميل قيد التطوير. حاليّاً يمكنك الاعتماد على اللوحات الحيّة أعلاه — كلّ
+          الأرقام تُحدَّث فوريّاً مع البيانات في قاعدة المنصّة.
+        </p>
       </Card>
     </div>
   );
 }
 
 /* ════════════════════════════════════════════════════════════════
-   Quality alerts
+   Quality alerts — derived from real database signals
    ════════════════════════════════════════════════════════════════ */
+
+interface QualityAlert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  category: 'attendance' | 'plagiarism' | 'content';
+  title: string;
+  description: string;
+  occurredAt: string;
+}
+interface QualityAlertsResponse {
+  alerts: QualityAlert[];
+  counts: { critical: number; warning: number; info: number; total: number };
+}
+
+const SEVERITY_TONE: Record<QualityAlert['severity'], 'red' | 'amber' | 'brand'> = {
+  critical: 'red',
+  warning: 'amber',
+  info: 'brand',
+};
+const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
+  attendance: ClipboardCheck,
+  plagiarism: FileText,
+  content: BookOpen,
+};
+
+function formatRelativeAr(iso: string): string {
+  const d = new Date(iso);
+  const m = Math.round((Date.now() - d.getTime()) / 60000);
+  if (m < 1) return 'الآن';
+  if (m < 60) return `منذ ${m} دقيقة`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `منذ ${h} ساعة`;
+  return `منذ ${Math.round(h / 24)} يوم`;
+}
+
+const useQualityAlerts = () => useQuery({
+  queryKey: ['quality', 'alerts'],
+  queryFn: () => unwrap<QualityAlertsResponse>(api.get('/quality/alerts')),
+  staleTime: 60_000,
+});
+
 export function QualityAlertsPage() {
+  const q = useQualityAlerts();
+
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تنبيهات الجودة</h1>
-          <p className="page-subtitle">أحداث تستوجب تدخلاً من فريق ضمان الجودة.</p>
+          <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
         </div>
-        <Badge color="red">3 تنبيهات حرجة</Badge>
+        {q.data && q.data.counts.critical > 0 && (
+          <Badge color="red">{q.data.counts.critical} تنبيهات حرجة</Badge>
+        )}
       </div>
 
-      <Card title="تنبيهات نشطة" icon={AlertTriangle}>
-        <div className="flex-col gap-2">
-          <AlertRow color="red" icon={AlertTriangle}
-            title="غياب جماعي تجاوز 25%"
-            description="3 مقررات في كلية الهندسة — يستوجب مراجعة فورية"
-            time="اليوم 09:14"
-            actions={<button type="button" className="btn outline sm">تحقّق</button>} />
-          <AlertRow color="amber" icon={ClipboardCheck}
-            title="6 أساتذة لم يسجّلوا الحضور"
-            description="هذا الأسبوع — أغلبهم في كلية العلوم"
-            time="أمس 16:30"
-            actions={<button type="button" className="btn outline sm">تحقّق</button>} />
-          <AlertRow color="brand" icon={FileText}
-            title="3 بحوث برسوم انتحال مرتفعة"
-            description="نتائج فحص متطابقة بين 3 طلاب من نفس الفصل"
-            time="منذ يومين"
-            actions={<button type="button" className="btn outline sm">تحقّق</button>} />
-          <AlertRow color="amber" icon={School}
-            title="انخفاض رضا الطلاب — مقرر شبكات الحاسوب"
-            description="انخفض من 4.2 إلى 3.4 خلال شهر"
-            time="منذ 4 أيام" />
-          <AlertRow color="green" icon={CheckCircle2}
-            title="تم حل المشكلة: ضعف رفع المواد"
-            description="3 أساتذة استكملوا رفع المواد المتأخرة"
-            time="منذ أسبوع" />
-        </div>
-      </Card>
+      {q.isPending ? (
+        <LoadingState />
+      ) : q.isError ? (
+        <ErrorState />
+      ) : !q.data || q.data.alerts.length === 0 ? (
+        <Card>
+          <div className="state">
+            <div className="state-icon" style={{ background: 'var(--success-soft)', color: 'var(--success)' }}>
+              <Icon icon={CheckCircle2} size={20} />
+            </div>
+            <div className="state-title">لا توجد تنبيهات حالياً</div>
+            <div className="state-desc">كلّ المؤشّرات ضمن النطاق الطبيعيّ.</div>
+          </div>
+        </Card>
+      ) : (
+        <Card title="تنبيهات نشطة" icon={AlertTriangle}>
+          <div className="flex-col gap-2">
+            {q.data.alerts.map((a) => (
+              <AlertRow
+                key={a.id}
+                color={SEVERITY_TONE[a.severity]}
+                icon={CATEGORY_ICON[a.category]}
+                title={a.title}
+                description={a.description}
+                time={formatRelativeAr(a.occurredAt)}
+              />
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

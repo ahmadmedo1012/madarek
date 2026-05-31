@@ -771,6 +771,134 @@ router.delete('/research/annotations/:id', async (req, res, next) => {
 // ════════════════════════════════════════════════════════════════
 // Quality oversight (read-only views of institutional health)
 // ════════════════════════════════════════════════════════════════
+
+/**
+ * Quality alerts — derived from real signals in the database. No persisted
+ * "alert" rows; this endpoint computes a fresh list each call from:
+ *   · low attendance over the last 30 days (offering / class level)
+ *   · high-plagiarism papers awaiting review
+ *   · stale offerings (≥21 days since last upload)
+ */
+router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
+  try {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const twentyOneDaysAgo = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000);
+
+    type Alert = {
+      id: string;
+      severity: 'critical' | 'warning' | 'info';
+      category: 'attendance' | 'plagiarism' | 'content';
+      title: string;
+      description: string;
+      occurredAt: Date;
+    };
+    const alerts: Alert[] = [];
+
+    // Low-attendance offerings (last 30d)
+    const recentSessions = await prisma.attendanceSession.findMany({
+      where: { date: { gte: thirtyDaysAgo } },
+      select: {
+        offeringId: true,
+        offering: { select: { course: { select: { name: true, code: true } } } },
+        records: { select: { status: true } },
+      },
+    });
+    const byOffering = new Map<string, { courseName: string; courseCode: string; total: number; absent: number }>();
+    for (const s of recentSessions) {
+      const cur = byOffering.get(s.offeringId) ?? {
+        courseName: s.offering.course.name,
+        courseCode: s.offering.course.code,
+        total: 0, absent: 0,
+      };
+      for (const r of s.records) {
+        cur.total += 1;
+        if (r.status === 'ABSENT') cur.absent += 1;
+      }
+      byOffering.set(s.offeringId, cur);
+    }
+    for (const [oid, row] of byOffering) {
+      if (row.total < 5) continue;
+      const rate = row.absent / row.total;
+      if (rate >= 0.25) {
+        alerts.push({
+          id: `att-${oid}`,
+          severity: rate >= 0.4 ? 'critical' : 'warning',
+          category: 'attendance',
+          title: `غياب جماعيّ بنسبة ${Math.round(rate * 100)}٪`,
+          description: `${row.courseName} (${row.courseCode}) — ${row.absent} غياب من ${row.total} جلسة آخر 30 يوماً`,
+          occurredAt: now,
+        });
+      }
+    }
+
+    // High-plagiarism research papers
+    const flaggedPapers = await prisma.researchPaper.findMany({
+      where: {
+        status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] },
+        plagiarismPct: { gte: 25 },
+      },
+      orderBy: { uploadedAt: 'desc' },
+      take: 10,
+      select: {
+        id: true, title: true, plagiarismPct: true, uploadedAt: true,
+        student: { select: { firstName: true, lastName: true } },
+      },
+    });
+    for (const p of flaggedPapers) {
+      const pct = Number(p.plagiarismPct?.toString() ?? '0');
+      alerts.push({
+        id: `plag-${p.id}`,
+        severity: pct >= 40 ? 'critical' : 'warning',
+        category: 'plagiarism',
+        title: `بحث برسبة انتحال ${pct.toFixed(1)}٪`,
+        description: `«${p.title}» — ${p.student.firstName} ${p.student.lastName}`,
+        occurredAt: p.uploadedAt,
+      });
+    }
+
+    // Stale offerings — no material uploaded in 21+ days but has at least one
+    const stale = await prisma.courseOffering.findMany({
+      where: { materials: { none: { createdAt: { gte: twentyOneDaysAgo } } } },
+      select: {
+        id: true,
+        course: { select: { name: true, code: true } },
+        teacher: { select: { firstName: true, lastName: true } },
+        _count: { select: { materials: true } },
+      },
+      take: 10,
+    });
+    for (const o of stale) {
+      if (o._count.materials === 0) continue;
+      alerts.push({
+        id: `stale-${o.id}`,
+        severity: 'info',
+        category: 'content',
+        title: `لم تُرفع مواد جديدة منذ 21 يوماً`,
+        description: `${o.course.name} (${o.course.code}) — ${o.teacher?.firstName ?? ''} ${o.teacher?.lastName ?? ''}`.trim(),
+        occurredAt: now,
+      });
+    }
+
+    alerts.sort((a, b) => {
+      const sev = (s: Alert['severity']) => (s === 'critical' ? 0 : s === 'warning' ? 1 : 2);
+      return sev(a.severity) - sev(b.severity) || b.occurredAt.getTime() - a.occurredAt.getTime();
+    });
+
+    res.json({
+      data: {
+        alerts: alerts.slice(0, 20),
+        counts: {
+          critical: alerts.filter((a) => a.severity === 'critical').length,
+          warning: alerts.filter((a) => a.severity === 'warning').length,
+          info: alerts.filter((a) => a.severity === 'info').length,
+          total: alerts.length,
+        },
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 router.get('/quality/overview', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
     const [users, courses, offerings, attendance, papers, lectures] = await Promise.all([
