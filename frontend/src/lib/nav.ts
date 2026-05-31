@@ -9,7 +9,7 @@ import {
   Palette, Settings, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import type { AppRole } from '../stores/auth.store';
+import type { AppRole, AcademicPosition } from '../stores/auth.store';
 
 export interface NavItem {
   to: string;
@@ -47,6 +47,8 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/training', icon: GraduationCap, label: 'التطوير الذاتي' },
       { to: '/achievements', icon: Trophy, label: 'الإنجازات والشهادات' },
       { to: '/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
+      { to: '/colleges/leaderboard', icon: Trophy, label: 'منافسة الكلّيّات' },
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
     ],
   },
@@ -89,6 +91,7 @@ export const TEACHER_NAV: NavGroup[] = [
     items: [
       { to: '/teacher/profile', icon: UserCircle, label: 'الملف الأكاديمي' },
       { to: '/teacher/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
     ],
   },
 ];
@@ -100,14 +103,19 @@ export const ADMIN_NAV: NavGroup[] = [
       { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة الإدارة' },
       { to: '/admin/teachers', icon: School, label: 'إدارة الأساتذة' },
       { to: '/admin/faculties', icon: Building2, label: 'الكليات والأقسام' },
+      { to: '/colleges', icon: Building2, label: 'صفحات الكلّيّات' },
       { to: '/admin/courses', icon: BookOpen, label: 'إدارة المقررات' },
     ],
   },
   {
     label: 'النظام',
     items: [
+      { to: '/admin/students', icon: GraduationCap, label: 'إدارة الطلاب' },
+      { to: '/admin/analysis', icon: TrendingUp, label: 'تحليل الأداء' },
+      { to: '/admin/digital', icon: Activity, label: 'التحوّل الرقميّ' },
       { to: '/admin/reports', icon: FileText, label: 'التقارير' },
       { to: '/admin/sync', icon: RefreshCw, label: 'مزامنة الجامعة' },
+      { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
       { to: '/admin/community', icon: Megaphone, label: 'المجتمع الجامعي' },
     ],
   },
@@ -177,3 +185,33 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   QUALITY: 'جودة',
   OWNER: 'مالك المنصة',
 };
+
+const POSITION_LABELS: Record<AcademicPosition, string> = {
+  DEAN: 'عميد',
+  ASSOCIATE_DEAN: 'وكيل العميد',
+  DEPARTMENT_HEAD: 'رئيس قسم',
+};
+
+/**
+ * Composite role label for the sidebar / topbar / profile chip.
+ * Examples:
+ *  - regular teacher → "أستاذ"
+ *  - dept head       → "أستاذ · رئيس قسم"
+ *  - dean            → "أستاذ · عميد كلية الهندسة"  (when faculty name supplied)
+ *  - admin university-wide → "إداري"
+ *  - admin scoped to faculty → "إداري كلية"  (faculty name shown separately as a chip)
+ */
+export function displayRoleLabel(
+  role: AppRole,
+  position?: AcademicPosition | null,
+  positionFacultyName?: string | null,
+): string {
+  if (role === 'TEACHER' && position) {
+    const base = POSITION_LABELS[position];
+    if (position === 'DEAN' && positionFacultyName) {
+      return `${ROLE_LABELS.TEACHER} · ${base} ${positionFacultyName}`;
+    }
+    return `${ROLE_LABELS.TEACHER} · ${base}`;
+  }
+  return ROLE_LABELS[role];
+}

@@ -3,6 +3,12 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type AppRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 
+/**
+ * Academic leadership appointment, layered on top of the TEACHER role.
+ * A regular teacher has `position: null`; a dean is a teacher with `DEAN`.
+ */
+export type AcademicPosition = 'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD';
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -11,6 +17,8 @@ export interface AuthUser {
   role: AppRole;
   avatarColor?: string | null;
   avatarInitials?: string | null;
+  /** NULL for university-wide ADMIN/QUALITY; set = scoped to that faculty. */
+  scopeFacultyId?: string | null;
 }
 
 interface AuthState {

@@ -1,6 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../lib/api';
-import { useAuthStore, type AuthUser } from '../stores/auth.store';
+import { useAuthStore, type AuthUser, type AcademicPosition } from '../stores/auth.store';
+
+interface MeProfileResponse extends AuthUser {
+  scopeFaculty?: { id: string; name: string } | null;
+  studentProfile?: {
+    universityId: string;
+    year: number;
+    facultyId: string;
+    departmentId: string;
+    faculty?: { id: string; name: string } | null;
+    department?: { id: string; name: string } | null;
+  } | null;
+  teacherProfile?: {
+    departmentId: string;
+    specialty: string;
+    position: AcademicPosition | null;
+    positionFacultyId: string | null;
+    positionDepartmentId: string | null;
+    positionFaculty?: { id: string; name: string } | null;
+    positionDepartment?: { id: string; name: string } | null;
+    appointedAt: string | null;
+    termEndsAt: string | null;
+  } | null;
+}
 
 interface LoginPayload { email: string; password: string }
 interface RegisterPayload {
@@ -8,7 +31,8 @@ interface RegisterPayload {
   password: string;
   firstName: string;
   lastName: string;
-  role: 'STUDENT' | 'TEACHER' | 'ADMIN';
+  /** Self-serve registration is restricted to academic roles. */
+  role: 'STUDENT' | 'TEACHER';
   facultyId?: string;
   departmentId?: string;
   universityId?: string;
@@ -39,7 +63,7 @@ export function useMe() {
   const token = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: ['auth', 'me'],
-    queryFn: () => unwrap<AuthUser & { studentProfile?: unknown; teacherProfile?: unknown }>(api.get('/auth/me')),
+    queryFn: () => unwrap<MeProfileResponse>(api.get('/auth/me')),
     enabled: Boolean(token),
     staleTime: 60_000,
   });

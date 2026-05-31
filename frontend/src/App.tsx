@@ -4,6 +4,7 @@ import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
+import RegisterPage from './pages/RegisterPage';
 import StudentDashboardPage from './pages/student/DashboardPage';
 import StudentCoursesPage from './pages/student/CoursesPage';
 import LibraryPage from './pages/student/LibraryPage';
@@ -42,9 +43,11 @@ import {
 } from './pages/teacher/TeacherPages';
 import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage';
 import { AdminDashboardPage, AdminPlaceholder, AdminFacultiesPage, AdminReportsPage, AdminCoursesPage } from './pages/admin/AdminPages';
+import { AdminStudentsPage, AdminAnalysisPage, AdminDigitalPage, AdminSettingsPage } from './pages/admin/AdminExtraPages';
 import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, QualityEngagementPage, QualityCurriculumPage, QualityReportsPage, QualityAlertsPage } from './pages/quality/QualityPages';
 import { OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage, OwnerRealtimePage, OwnerAiPage, OwnerAlertsPage, OwnerGovernancePage } from './pages/owner/OwnerPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
+import { CollegesIndexPage, CollegeDetailPage, CollegesLeaderboardPage } from './pages/colleges/CollegePages';
 import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 
@@ -70,6 +73,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
           <Route path="/" element={<HomeRedirect />} />
 
           {/* Student */}
@@ -148,17 +152,17 @@ export default function App() {
           <Route element={<ProtectedRoute allow={['ADMIN']} />}>
             <Route element={<AppShell />}>
               <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-              <Route path="/admin/students" element={<AdminPlaceholder title="إدارة الطلاب" />} />
+              <Route path="/admin/students" element={<AdminStudentsPage />} />
               <Route path="/admin/teachers" element={<AdminTeachersPage />} />
               <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
               <Route path="/admin/sync" element={<AdminSyncPage />} />
               <Route path="/admin/community" element={<CommunityPage />} />
               <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
               <Route path="/admin/courses" element={<AdminCoursesPage />} />
-              <Route path="/admin/analysis" element={<AdminPlaceholder title="تحليل الأداء" />} />
-              <Route path="/admin/digital" element={<AdminPlaceholder title="التحول الرقمي" />} />
+              <Route path="/admin/analysis" element={<AdminAnalysisPage />} />
+              <Route path="/admin/digital" element={<AdminDigitalPage />} />
               <Route path="/admin/reports" element={<AdminReportsPage />} />
-              <Route path="/admin/settings" element={<AdminPlaceholder title="إعدادات المنصة" />} />
+              <Route path="/admin/settings" element={<AdminSettingsPage />} />
               <Route path="/admin/alerts" element={<AlertsPage />} />
             </Route>
           </Route>
@@ -200,6 +204,10 @@ export default function App() {
               <Route path="/vision" element={<VisionGalleryPage />} />
               <Route path="/vision/:slug" element={<VisionDetailPage />} />
               <Route path="/document/:filename" element={<DocumentViewerPage />} />
+              {/* Colleges — index + per-college overview, available to all authenticated roles */}
+              <Route path="/colleges" element={<CollegesIndexPage />} />
+              <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
+              <Route path="/colleges/:id" element={<CollegeDetailPage />} />
             </Route>
           </Route>
 

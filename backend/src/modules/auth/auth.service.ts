@@ -21,6 +21,7 @@ const sanitize = (u: User) => ({
   lastName: u.lastName,
   avatarColor: u.avatarColor,
   avatarInitials: u.avatarInitials,
+  scopeFacultyId: u.scopeFacultyId ?? null,
   createdAt: u.createdAt,
 });
 
@@ -40,6 +41,12 @@ export interface RegisterInput {
 }
 
 export const registerUser = async (input: RegisterInput) => {
+  // Defensive guard: even if the DTO drifted, never let public registration mint
+  // ADMIN / QUALITY / OWNER accounts. Those are invitation-only.
+  if (input.role !== Role.STUDENT && input.role !== Role.TEACHER) {
+    throw AppError.forbidden('This role is invitation-only. Contact an administrator.');
+  }
+
   const existing = await prisma.user.findUnique({ where: { email: input.email } });
   if (existing) throw AppError.conflict('Email already registered');
 
@@ -76,6 +83,9 @@ export const registerUser = async (input: RegisterInput) => {
       if (!input.departmentId || !input.specialty) {
         throw AppError.badRequest('Teacher profile requires departmentId and specialty');
       }
+      // Note: `position` (Dean / Dept Head / Associate Dean) is intentionally
+      // NOT settable via self-serve registration. Appointments are made by an
+      // administrator, never claimed at signup.
       await tx.teacherProfile.create({
         data: {
           userId: created.id,
@@ -164,11 +174,24 @@ export const logoutUser = async (userId: string) => {
 export const getCurrentUser = async (userId: string) => {
   const u = await prisma.user.findUnique({
     where: { id: userId },
-    include: { studentProfile: true, teacherProfile: true },
+    include: {
+      studentProfile: { include: { faculty: true, department: true } },
+      teacherProfile: {
+        include: {
+          department: true,
+          positionFaculty: true,
+          positionDepartment: true,
+        },
+      },
+      scopeFaculty: true,
+    },
   });
   if (!u) throw AppError.notFound('User not found');
   return {
     ...sanitize(u),
+    scopeFaculty: u.scopeFaculty
+      ? { id: u.scopeFaculty.id, name: u.scopeFaculty.name }
+      : null,
     studentProfile: u.studentProfile,
     teacherProfile: u.teacherProfile,
   };

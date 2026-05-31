@@ -10,6 +10,7 @@ import './styles/auth.css';
 import './styles/notifications.css';
 import './styles/pdf.css';
 import './styles/owner.css';
+import './styles/colleges.css';
 import App from './App';
 
 const root = document.getElementById('root');

@@ -41,6 +41,12 @@ enum AcademicRank {
   PROFESSOR
 }
 
+enum AcademicPosition {
+  DEAN
+  ASSOCIATE_DEAN
+  DEPARTMENT_HEAD
+}
+
 enum AttendanceStatus {
   PRESENT
   LATE
@@ -137,28 +143,28 @@ enum DegreeLevel {
 
 enum Capability {
   // Research
-  RESEARCH_GRADE_OWN      // grade papers in offerings I teach
-  RESEARCH_GRADE_ANY      // grade any paper (admin override)
-  RESEARCH_PUBLISH        // publish to library
+  RESEARCH_GRADE_OWN // grade papers in offerings I teach
+  RESEARCH_GRADE_ANY // grade any paper (admin override)
+  RESEARCH_PUBLISH // publish to library
   // Exams
-  EXAMS_AUTHOR            // create exam templates + questions
-  EXAMS_MODERATE          // approve / reject exam templates
-  EXAMS_TAKE              // take exams (default for students)
+  EXAMS_AUTHOR // create exam templates + questions
+  EXAMS_MODERATE // approve / reject exam templates
+  EXAMS_TAKE // take exams (default for students)
   // Curriculum
-  CURRICULUM_EDIT_OWN     // edit lectures/chapters in my offerings
-  CURRICULUM_EDIT_ANY     // edit any course curriculum
+  CURRICULUM_EDIT_OWN // edit lectures/chapters in my offerings
+  CURRICULUM_EDIT_ANY // edit any course curriculum
   // Governance
-  USERS_MANAGE            // create/disable user accounts
-  ROLES_ASSIGN            // assign role + capabilities
-  TEACHERS_VERIFY         // verify teacher profiles for onboarding
+  USERS_MANAGE // create/disable user accounts
+  ROLES_ASSIGN // assign role + capabilities
+  TEACHERS_VERIFY // verify teacher profiles for onboarding
   // Quality
-  QUALITY_VIEW            // read quality dashboards
-  QUALITY_REPORT          // file quality reports
+  QUALITY_VIEW // read quality dashboards
+  QUALITY_REPORT // file quality reports
   // Communications
-  ANNOUNCE_PLATFORM       // platform-wide announcements
-  ANNOUNCE_FACULTY        // faculty/department/course announcements
-  COMPETITIONS_RUN        // create competitions
-  EVENTS_RUN              // create campus events
+  ANNOUNCE_PLATFORM // platform-wide announcements
+  ANNOUNCE_FACULTY // faculty/department/course announcements
+  COMPETITIONS_RUN // create competitions
+  EVENTS_RUN // create campus events
 }
 
 enum QuestionType {
@@ -233,63 +239,68 @@ model User {
   tokenVersion     Int       @default(0) // incremented to revoke all refresh tokens
   failedLoginCount Int       @default(0)
   lockedUntil      DateTime?
+  // Governance scope — for ADMIN/QUALITY users.
+  // NULL = university-wide; set = scoped to that faculty only.
+  scopeFacultyId   String?
+  scopeFaculty     Faculty?  @relation("FacultyScopedAdmins", fields: [scopeFacultyId], references: [id])
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
   studentProfile StudentProfile?
   teacherProfile TeacherProfile?
 
-  enrollments       Enrollment[]       @relation("StudentEnrollments")
-  taughtOfferings   CourseOffering[]   @relation("TeacherOfferings")
-  submissions       Submission[]
-  grades            Grade[]            @relation("StudentGrades")
-  attendanceRecords AttendanceRecord[]
-  uploadedMaterials Material[]         @relation("MaterialUploader")
-  notifications     Notification[]
-  sentMessages      Message[]          @relation("MessageSender")
-  receivedMessages  Message[]          @relation("MessageReceiver")
-  posts             Post[]
-  postComments      PostComment[]
-  postReactions     PostReaction[]
-  studyRoomMembers  StudyRoomMember[]
-  studyRoomsOwned   StudyRoom[]        @relation("StudyRoomOwner")
-  loans             Loan[]
-  moocEnrollments   MoocEnrollment[]
-  jobApplications   JobApplication[]
-  achievements      UserAchievement[]
-  skills            UserSkill[]
-  certificates      Certificate[]
-  labSessions       LabSession[]
-  aiConversations   AiConversation[]
-  auditLogs         AuditLog[]
-  watchEvents       WatchEvent[]       @relation("StudentWatchEvents")
-  masteries         StudentMastery[]   @relation("StudentMasteries")
-  researchPapers    ResearchPaper[]    @relation("StudentPapers")
-  reviewedPapers    ResearchPaper[]    @relation("ProfessorReviewedPapers")
-  paperAnnotations  PaperAnnotation[]
+  enrollments         Enrollment[]         @relation("StudentEnrollments")
+  taughtOfferings     CourseOffering[]     @relation("TeacherOfferings")
+  submissions         Submission[]
+  grades              Grade[]              @relation("StudentGrades")
+  attendanceRecords   AttendanceRecord[]
+  uploadedMaterials   Material[]           @relation("MaterialUploader")
+  notifications       Notification[]
+  sentMessages        Message[]            @relation("MessageSender")
+  receivedMessages    Message[]            @relation("MessageReceiver")
+  posts               Post[]
+  postComments        PostComment[]
+  postReactions       PostReaction[]
+  studyRoomMembers    StudyRoomMember[]
+  studyRoomsOwned     StudyRoom[]          @relation("StudyRoomOwner")
+  loans               Loan[]
+  moocEnrollments     MoocEnrollment[]
+  jobApplications     JobApplication[]
+  achievements        UserAchievement[]
+  skills              UserSkill[]
+  certificates        Certificate[]
+  labSessions         LabSession[]
+  aiConversations     AiConversation[]
+  auditLogs           AuditLog[]
+  watchEvents         WatchEvent[]         @relation("StudentWatchEvents")
+  masteries           StudentMastery[]     @relation("StudentMasteries")
+  researchPapers      ResearchPaper[]      @relation("StudentPapers")
+  reviewedPapers      ResearchPaper[]      @relation("ProfessorReviewedPapers")
+  paperAnnotations    PaperAnnotation[]
   trainingEnrollments TrainingEnrollment[]
-  badges            UserBadge[]
-  pointsLedger      PointsLedger[]
+  badges              UserBadge[]
+  pointsLedger        PointsLedger[]
   // Governance
-  permissionGrants  UserPermission[]   @relation("UserPermissionUser")
-  permissionGrantedBy UserPermission[] @relation("UserPermissionGranter")
-  verifiedTeachers  TeacherProfile[]   @relation("TeacherProfileVerifier")
+  permissionGrants    UserPermission[]     @relation("UserPermissionUser")
+  permissionGrantedBy UserPermission[]     @relation("UserPermissionGranter")
+  verifiedTeachers    TeacherProfile[]     @relation("TeacherProfileVerifier")
   // Exams
-  authoredQuestions Question[]         @relation("QuestionAuthor")
-  moderatedQuestions Question[]        @relation("QuestionModerator")
-  authoredExams     ExamTemplate[]     @relation("ExamAuthor")
-  moderatedExams    ExamTemplate[]     @relation("ExamModerator")
-  examAttempts      ExamAttempt[]
-  liveSessions      LiveSession[]      @relation("LiveSessionTeacher")
+  authoredQuestions   Question[]           @relation("QuestionAuthor")
+  moderatedQuestions  Question[]           @relation("QuestionModerator")
+  authoredExams       ExamTemplate[]       @relation("ExamAuthor")
+  moderatedExams      ExamTemplate[]       @relation("ExamModerator")
+  examAttempts        ExamAttempt[]
+  liveSessions        LiveSession[]        @relation("LiveSessionTeacher")
   // Social
-  announcements     Announcement[]
-  competitionsRun   Competition[]      @relation("CompetitionOrganizer")
-  competitionEntries CompetitionEntry[]
-  eventsRun         CampusEvent[]      @relation("EventOrganizer")
-  eventRsvps        EventRSVP[]
+  announcements       Announcement[]
+  competitionsRun     Competition[]        @relation("CompetitionOrganizer")
+  competitionEntries  CompetitionEntry[]
+  eventsRun           CampusEvent[]        @relation("EventOrganizer")
+  eventRsvps          EventRSVP[]
 
   @@index([role])
   @@index([email])
+  @@index([scopeFacultyId])
 }
 
 model StudentProfile {
@@ -312,60 +323,76 @@ model StudentProfile {
 }
 
 model TeacherProfile {
-  userId           String       @id
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialty        String
-  rank             AcademicRank @default(LECTURER)
-  departmentId     String
-  department       Department   @relation(fields: [departmentId], references: [id])
-  bio              String?
+  userId               String            @id
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialty            String
+  rank                 AcademicRank      @default(LECTURER)
+  departmentId         String
+  department           Department        @relation("TeacherHomeDepartment", fields: [departmentId], references: [id])
+  bio                  String?
   // Onboarding / suitability detection
-  degreeLevel      DegreeLevel  @default(MASTERS)
-  yearsExperience  Int          @default(0)
-  certifications   Json?        // [{ title, issuer, year }]
-  publications     Json?        // [{ title, venue, year, url? }]
-  awards           Json?        // [{ title, year, issuer? }]
-  profileImageUrl  String?
-  officeLocation   String?      // e.g. "مبنى الكلية - مكتب 305"
-  officeHours      String?      // e.g. "الأحد والثلاثاء 10-12"
-  websiteUrl       String?
-  subjectKeywords  String[]     @default([]) // ["AI", "Machine Learning", "Statistics"]
-  verifiedAt       DateTime?
-  verifiedById     String?
-  verifiedBy       User?        @relation("TeacherProfileVerifier", fields: [verifiedById], references: [id])
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  degreeLevel          DegreeLevel       @default(MASTERS)
+  yearsExperience      Int               @default(0)
+  certifications       Json? // [{ title, issuer, year }]
+  publications         Json? // [{ title, venue, year, url? }]
+  awards               Json? // [{ title, year, issuer? }]
+  profileImageUrl      String?
+  officeLocation       String? // e.g. "مبنى الكلية - مكتب 305"
+  officeHours          String? // e.g. "الأحد والثلاثاء 10-12"
+  websiteUrl           String?
+  subjectKeywords      String[]          @default([]) // ["AI", "Machine Learning", "Statistics"]
+  verifiedAt           DateTime?
+  verifiedById         String?
+  verifiedBy           User?             @relation("TeacherProfileVerifier", fields: [verifiedById], references: [id])
+  // Academic leadership appointment, layered on top of teaching.
+  // Nullable: a TeacherProfile without a position is just a regular professor.
+  position             AcademicPosition?
+  positionFacultyId    String?
+  positionFaculty      Faculty?          @relation("FacultyLeadership", fields: [positionFacultyId], references: [id])
+  positionDepartmentId String?
+  positionDepartment   Department?       @relation("DepartmentLeadership", fields: [positionDepartmentId], references: [id])
+  appointedAt          DateTime?
+  termEndsAt           DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
 
   @@index([departmentId])
   @@index([verifiedById])
+  @@index([positionFacultyId])
+  @@index([positionDepartmentId])
 }
 
 // ────────────────────────────────────────────────────────────────
 //  Academic structure
 // ────────────────────────────────────────────────────────────────
 model Faculty {
-  id          String           @id @default(cuid())
-  name        String           @unique
-  nameEn      String?
-  iconEmoji   String?
-  createdAt   DateTime         @default(now())
-  departments Department[]
-  students    StudentProfile[]
+  id                 String             @id @default(cuid())
+  name               String             @unique
+  nameEn             String?
+  iconEmoji          String?
+  createdAt          DateTime           @default(now())
+  departments        Department[]
+  students           StudentProfile[]
   questionCategories QuestionCategory[]
   examTemplates      ExamTemplate[]
+  // Reverse relations for governance scoping (ADR — sub-project A)
+  scopedAdmins       User[]             @relation("FacultyScopedAdmins")
+  leadership         TeacherProfile[]   @relation("FacultyLeadership")
 }
 
 model Department {
-  id        String           @id @default(cuid())
-  name      String
-  nameEn    String?
-  facultyId String
-  faculty   Faculty          @relation(fields: [facultyId], references: [id])
-  courses   Course[]
-  students  StudentProfile[]
-  teachers  TeacherProfile[]
-  createdAt DateTime         @default(now())
+  id                 String             @id @default(cuid())
+  name               String
+  nameEn             String?
+  facultyId          String
+  faculty            Faculty            @relation(fields: [facultyId], references: [id])
+  courses            Course[]
+  students           StudentProfile[]
+  teachers           TeacherProfile[]   @relation("TeacherHomeDepartment")
+  createdAt          DateTime           @default(now())
   questionCategories QuestionCategory[]
+  // Reverse relation for department-head appointments
+  leadership         TeacherProfile[]   @relation("DepartmentLeadership")
 
   @@unique([facultyId, name])
   @@index([facultyId])
@@ -1062,15 +1089,14 @@ model PaperAnnotation {
   paper     ResearchPaper @relation(fields: [paperId], references: [id], onDelete: Cascade)
   authorId  String
   author    User          @relation(fields: [authorId], references: [id])
-  page      Int           // 1-indexed PDF page
+  page      Int // 1-indexed PDF page
   comment   String        @db.Text
-  color     String?       // hex like "#F5A623" — UI tint; null → default
+  color     String? // hex like "#F5A623" — UI tint; null → default
   createdAt DateTime      @default(now())
 
   @@index([paperId])
   @@index([authorId])
 }
-
 
 // ────────────────────────────────────────────────────────────────
 //  Training tracks & rewards (Self-Development module)
@@ -1098,21 +1124,21 @@ enum TrainingTrackCategory {
 }
 
 model TrainingTrack {
-  id           String                @id @default(cuid())
-  slug         String                @unique
-  title        String
-  titleEn      String?
-  summary      String                @db.Text
-  category     TrainingTrackCategory
-  level        String                @default("BEGINNER") // BEGINNER | INTERMEDIATE | ADVANCED
-  iconEmoji    String?
-  themeColor   String?
-  estMinutes   Int                   @default(60)
-  pointsAward  Int                   @default(200)
-  order        Int                   @default(0)
-  isPublished  Boolean               @default(true)
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id          String                @id @default(cuid())
+  slug        String                @unique
+  title       String
+  titleEn     String?
+  summary     String                @db.Text
+  category    TrainingTrackCategory
+  level       String                @default("BEGINNER") // BEGINNER | INTERMEDIATE | ADVANCED
+  iconEmoji   String?
+  themeColor  String?
+  estMinutes  Int                   @default(60)
+  pointsAward Int                   @default(200)
+  order       Int                   @default(0)
+  isPublished Boolean               @default(true)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 
   lessons      TrainingLesson[]
   enrollments  TrainingEnrollment[]
@@ -1124,36 +1150,36 @@ model TrainingTrack {
 }
 
 model TrainingLesson {
-  id              String           @id @default(cuid())
+  id              String        @id @default(cuid())
   trackId         String
-  track           TrainingTrack    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  track           TrainingTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
   order           Int
   title           String
   summary         String?
-  contentMarkdown String           @db.Text
-  estMinutes      Int              @default(8)
-  pointsAward     Int              @default(5)
+  contentMarkdown String        @db.Text
+  estMinutes      Int           @default(8)
+  pointsAward     Int           @default(5)
   quizQuestion    String?
   quizAnswer      String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  progresses      LessonProgress[]
+  progresses LessonProgress[]
 
   @@unique([trackId, order])
   @@index([trackId])
 }
 
 model TrainingEnrollment {
-  id          String           @id @default(cuid())
+  id          String        @id @default(cuid())
   userId      String
-  user        User             @relation(fields: [userId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
   trackId     String
-  track       TrainingTrack    @relation(fields: [trackId], references: [id], onDelete: Cascade)
-  startedAt   DateTime         @default(now())
+  track       TrainingTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  startedAt   DateTime      @default(now())
   completedAt DateTime?
 
-  progresses  LessonProgress[]
+  progresses LessonProgress[]
 
   @@unique([userId, trackId])
   @@index([userId])
@@ -1161,13 +1187,13 @@ model TrainingEnrollment {
 }
 
 model LessonProgress {
-  id            String              @id @default(cuid())
+  id            String             @id @default(cuid())
   enrollmentId  String
-  enrollment    TrainingEnrollment  @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  enrollment    TrainingEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   lessonId      String
-  lesson        TrainingLesson      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  completedAt   DateTime            @default(now())
-  pointsAwarded Int                 @default(0)
+  lesson        TrainingLesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt   DateTime           @default(now())
+  pointsAwarded Int                @default(0)
 
   @@unique([enrollmentId, lessonId])
   @@index([enrollmentId])
@@ -1185,7 +1211,7 @@ model Badge {
   track       TrainingTrack? @relation(fields: [trackId], references: [id])
   createdAt   DateTime       @default(now())
 
-  users       UserBadge[]
+  users UserBadge[]
 
   @@index([trackId])
 }
@@ -1215,7 +1241,6 @@ model PointsLedger {
   @@index([userId, createdAt])
 }
 
-
 // ════════════════════════════════════════════════════════════════
 //  Governance: capabilities + role/user permissions
 // ════════════════════════════════════════════════════════════════
@@ -1236,17 +1261,17 @@ model RolePermission {
 }
 
 model UserPermission {
-  id           String     @id @default(cuid())
-  userId       String
-  user         User       @relation("UserPermissionUser", fields: [userId], references: [id], onDelete: Cascade)
-  capability   Capability
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation("UserPermissionUser", fields: [userId], references: [id], onDelete: Cascade)
+  capability  Capability
   // grant=true means this cap is explicitly given even if role doesn't have it.
   // grant=false means this cap is explicitly revoked even if role has it.
-  grant        Boolean    @default(true)
-  grantedAt    DateTime   @default(now())
-  grantedById  String?
-  grantedBy    User?      @relation("UserPermissionGranter", fields: [grantedById], references: [id])
-  reason       String?
+  grant       Boolean    @default(true)
+  grantedAt   DateTime   @default(now())
+  grantedById String?
+  grantedBy   User?      @relation("UserPermissionGranter", fields: [grantedById], references: [id])
+  reason      String?
 
   @@unique([userId, capability])
   @@index([userId])
@@ -1257,48 +1282,48 @@ model UserPermission {
 // ════════════════════════════════════════════════════════════════
 
 model QuestionCategory {
-  id            String      @id @default(cuid())
-  slug          String      @unique
-  title         String
-  description   String?
-  facultyId     String?
-  faculty       Faculty?    @relation(fields: [facultyId], references: [id])
-  departmentId  String?
-  department    Department? @relation(fields: [departmentId], references: [id])
-  isShared      Boolean     @default(false) // visible across faculties
-  iconEmoji     String?
-  createdAt     DateTime    @default(now())
+  id           String      @id @default(cuid())
+  slug         String      @unique
+  title        String
+  description  String?
+  facultyId    String?
+  faculty      Faculty?    @relation(fields: [facultyId], references: [id])
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  isShared     Boolean     @default(false) // visible across faculties
+  iconEmoji    String?
+  createdAt    DateTime    @default(now())
 
-  questions     Question[]
+  questions Question[]
 
   @@index([facultyId])
   @@index([departmentId])
 }
 
 model Question {
-  id              String          @id @default(cuid())
-  categoryId      String
-  category        QuestionCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  type            QuestionType
-  prompt          String          @db.Text
+  id             String           @id @default(cuid())
+  categoryId     String
+  category       QuestionCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  type           QuestionType
+  prompt         String           @db.Text
   // For MCQ/TF: array of choice strings. For SHORT/ESSAY: null.
-  choices         Json?
+  choices        Json?
   // For MCQ: index into choices. For TF: 0=true, 1=false. For SHORT: model answer string. For ESSAY: rubric.
-  correctAnswer   Json?
-  difficulty      DifficultyLevel @default(MEDIUM)
-  points          Int             @default(1)
-  tags            String[]        @default([])
-  authorId        String
-  author          User            @relation("QuestionAuthor", fields: [authorId], references: [id])
-  isApproved      Boolean         @default(false)
-  moderatedById   String?
-  moderatedBy     User?           @relation("QuestionModerator", fields: [moderatedById], references: [id])
-  moderationNote  String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  correctAnswer  Json?
+  difficulty     DifficultyLevel  @default(MEDIUM)
+  points         Int              @default(1)
+  tags           String[]         @default([])
+  authorId       String
+  author         User             @relation("QuestionAuthor", fields: [authorId], references: [id])
+  isApproved     Boolean          @default(false)
+  moderatedById  String?
+  moderatedBy    User?            @relation("QuestionModerator", fields: [moderatedById], references: [id])
+  moderationNote String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
-  templateLinks   ExamTemplateQuestion[]
-  examAnswers    ExamAnswer[]
+  templateLinks ExamTemplateQuestion[]
+  examAnswers   ExamAnswer[]
 
   @@index([categoryId])
   @@index([authorId])
@@ -1307,30 +1332,30 @@ model Question {
 }
 
 model ExamTemplate {
-  id              String         @id @default(cuid())
-  offeringId      String?
-  offering        CourseOffering? @relation(fields: [offeringId], references: [id])
-  facultyId       String?        // faculty-wide unified exam
-  faculty         Faculty?       @relation(fields: [facultyId], references: [id])
-  title           String
-  kind            ExamKind       @default(QUIZ)
-  description     String?        @db.Text
-  durationMin     Int            @default(45)
-  passingScore    Int            @default(50)
-  randomized      Boolean        @default(true)
-  status          ExamStatus     @default(DRAFT)
-  authorId        String
-  author          User           @relation("ExamAuthor", fields: [authorId], references: [id])
-  moderatedById   String?
-  moderatedBy     User?          @relation("ExamModerator", fields: [moderatedById], references: [id])
-  moderationNote  String?
-  openAt          DateTime?
-  closeAt         DateTime?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String          @id @default(cuid())
+  offeringId     String?
+  offering       CourseOffering? @relation(fields: [offeringId], references: [id])
+  facultyId      String? // faculty-wide unified exam
+  faculty        Faculty?        @relation(fields: [facultyId], references: [id])
+  title          String
+  kind           ExamKind        @default(QUIZ)
+  description    String?         @db.Text
+  durationMin    Int             @default(45)
+  passingScore   Int             @default(50)
+  randomized     Boolean         @default(true)
+  status         ExamStatus      @default(DRAFT)
+  authorId       String
+  author         User            @relation("ExamAuthor", fields: [authorId], references: [id])
+  moderatedById  String?
+  moderatedBy    User?           @relation("ExamModerator", fields: [moderatedById], references: [id])
+  moderationNote String?
+  openAt         DateTime?
+  closeAt        DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
-  questions       ExamTemplateQuestion[]
-  attempts        ExamAttempt[]
+  questions ExamTemplateQuestion[]
+  attempts  ExamAttempt[]
 
   @@index([offeringId])
   @@index([facultyId])
@@ -1339,13 +1364,13 @@ model ExamTemplate {
 }
 
 model ExamTemplateQuestion {
-  id           String       @id @default(cuid())
-  templateId   String
-  template     ExamTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  questionId   String
-  question     Question     @relation(fields: [questionId], references: [id])
-  order        Int
-  pointsOverride Int?       // override the question's default points
+  id             String       @id @default(cuid())
+  templateId     String
+  template       ExamTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       Question     @relation(fields: [questionId], references: [id])
+  order          Int
+  pointsOverride Int? // override the question's default points
 
   @@unique([templateId, questionId])
   @@unique([templateId, order])
@@ -1353,19 +1378,19 @@ model ExamTemplateQuestion {
 }
 
 model ExamAttempt {
-  id           String        @id @default(cuid())
-  templateId   String
-  template     ExamTemplate  @relation(fields: [templateId], references: [id])
-  studentId    String
-  student      User          @relation(fields: [studentId], references: [id])
-  startedAt    DateTime      @default(now())
-  submittedAt  DateTime?
-  expiresAt    DateTime
-  status       AttemptStatus @default(IN_PROGRESS)
-  score        Decimal?      @db.Decimal(6, 2)
-  maxScore     Decimal       @db.Decimal(6, 2)
+  id          String        @id @default(cuid())
+  templateId  String
+  template    ExamTemplate  @relation(fields: [templateId], references: [id])
+  studentId   String
+  student     User          @relation(fields: [studentId], references: [id])
+  startedAt   DateTime      @default(now())
+  submittedAt DateTime?
+  expiresAt   DateTime
+  status      AttemptStatus @default(IN_PROGRESS)
+  score       Decimal?      @db.Decimal(6, 2)
+  maxScore    Decimal       @db.Decimal(6, 2)
 
-  answers      ExamAnswer[]
+  answers ExamAnswer[]
 
   @@index([templateId])
   @@index([studentId])
@@ -1381,7 +1406,7 @@ model ExamAnswer {
   // Student input — interpreted per question type
   answerText    String?     @db.Text
   choiceIndex   Int?
-  isCorrect     Boolean?    // null = pending manual review
+  isCorrect     Boolean? // null = pending manual review
   awardedPoints Decimal?    @db.Decimal(6, 2)
   feedback      String?
   answeredAt    DateTime    @default(now())
@@ -1399,7 +1424,7 @@ model Announcement {
   authorId    String
   author      User              @relation(fields: [authorId], references: [id])
   scope       AnnouncementScope
-  scopeId     String?           // facultyId / departmentId / offeringId
+  scopeId     String? // facultyId / departmentId / offeringId
   title       String
   body        String            @db.Text
   pinned      Boolean           @default(false)
@@ -1412,21 +1437,21 @@ model Announcement {
 }
 
 model Competition {
-  id           String              @id @default(cuid())
-  title        String
-  description  String              @db.Text
-  category     String              // "بحث" | "برمجة" | "ابتكار" | "محاضرة" | "تصميم" ...
-  prize        String?
-  deadline     DateTime
-  organizerId  String
-  organizer    User                @relation("CompetitionOrganizer", fields: [organizerId], references: [id])
-  status       CompetitionStatus   @default(OPEN)
-  iconEmoji    String?
-  themeColor   String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id          String            @id @default(cuid())
+  title       String
+  description String            @db.Text
+  category    String // "بحث" | "برمجة" | "ابتكار" | "محاضرة" | "تصميم" ...
+  prize       String?
+  deadline    DateTime
+  organizerId String
+  organizer   User              @relation("CompetitionOrganizer", fields: [organizerId], references: [id])
+  status      CompetitionStatus @default(OPEN)
+  iconEmoji   String?
+  themeColor  String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
-  entries      CompetitionEntry[]
+  entries CompetitionEntry[]
 
   @@index([status])
   @@index([deadline])
@@ -1442,43 +1467,42 @@ model CompetitionEntry {
   body          String      @db.Text
   fileUrl       String?
   submittedAt   DateTime    @default(now())
-  score         Int?        // judging score, null until judged
+  score         Int? // judging score, null until judged
 
   @@unique([competitionId, userId])
   @@index([competitionId])
 }
 
 model CampusEvent {
-  id           String       @id @default(cuid())
-  title        String
-  description  String       @db.Text
-  location     String
-  startsAt     DateTime
-  endsAt       DateTime
-  capacity     Int          @default(100)
-  organizerId  String
-  organizer    User         @relation("EventOrganizer", fields: [organizerId], references: [id])
-  iconEmoji    String?
-  themeColor   String?
-  createdAt    DateTime     @default(now())
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  location    String
+  startsAt    DateTime
+  endsAt      DateTime
+  capacity    Int      @default(100)
+  organizerId String
+  organizer   User     @relation("EventOrganizer", fields: [organizerId], references: [id])
+  iconEmoji   String?
+  themeColor  String?
+  createdAt   DateTime @default(now())
 
-  rsvps        EventRSVP[]
+  rsvps EventRSVP[]
 
   @@index([startsAt])
 }
 
 model EventRSVP {
-  eventId   String
-  event     CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  status    RsvpStatus  @default(GOING)
-  rsvpedAt  DateTime    @default(now())
+  eventId  String
+  event    CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User        @relation(fields: [userId], references: [id])
+  status   RsvpStatus  @default(GOING)
+  rsvpedAt DateTime    @default(now())
 
   @@id([eventId, userId])
   @@index([userId])
 }
-
 
 // ════════════════════════════════════════════════════════════════
 //  University data synchronization (PRD: daily sync from zu.edu.ly)
@@ -1498,16 +1522,16 @@ enum SyncRunStatus {
 model UniversityFact {
   /// Stable key — e.g. "name", "foundingYear", "phone.primary",
   /// "address", "vision", "mission", "grade.scale.excellent".
-  key       String   @id
+  key      String   @id
   /// Localized display value (Arabic by default; English-tagged keys for English).
-  value     String   @db.Text
+  value    String   @db.Text
   /// Group: general | identity | contact | strategic | grading | colleges | calendar | other
-  category  String   @default("general")
+  category String   @default("general")
   /// Where the value came from: "zu.edu.ly:about" | "zu.edu.ly:faculty" | "manual"
-  source    String   @default("zu.edu.ly")
-  syncedAt  DateTime @default(now())
+  source   String   @default("zu.edu.ly")
+  syncedAt DateTime @default(now())
   /// Marked stale if a sync run could not refresh it.
-  isStale   Boolean  @default(false)
+  isStale  Boolean  @default(false)
 
   @@index([category])
 }
@@ -1529,7 +1553,6 @@ model SyncRun {
   @@index([status])
 }
 
-
 // ════════════════════════════════════════════════════════════════
 //  Live streaming sessions (PRD: teacher controls, students watch)
 // ════════════════════════════════════════════════════════════════
@@ -1546,24 +1569,24 @@ enum LiveSessionStatus {
 }
 
 model LiveSession {
-  id            String             @id @default(cuid())
-  offeringId    String
-  offering      CourseOffering     @relation(fields: [offeringId], references: [id])
-  teacherId     String
-  teacher       User               @relation("LiveSessionTeacher", fields: [teacherId], references: [id])
-  title         String
-  description   String?            @db.Text
-  topic         String?            // optional sub-topic (e.g. "OOP — Polymorphism")
-  scheduledAt   DateTime
-  startedAt     DateTime?
-  endedAt       DateTime?
-  status        LiveSessionStatus  @default(SCHEDULED)
+  id           String            @id @default(cuid())
+  offeringId   String
+  offering     CourseOffering    @relation(fields: [offeringId], references: [id])
+  teacherId    String
+  teacher      User              @relation("LiveSessionTeacher", fields: [teacherId], references: [id])
+  title        String
+  description  String?           @db.Text
+  topic        String? // optional sub-topic (e.g. "OOP — Polymorphism")
+  scheduledAt  DateTime
+  startedAt    DateTime?
+  endedAt      DateTime?
+  status       LiveSessionStatus @default(SCHEDULED)
   // Provider URL — could be Zoom, BigBlueButton, Jitsi link, etc.
-  joinUrl       String?
+  joinUrl      String?
   // Recording reference (post-session)
-  recordingUrl  String?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  recordingUrl String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   @@index([offeringId])
   @@index([teacherId])
@@ -1619,15 +1642,15 @@ model AiTelemetry {
 }
 
 model OperationalAlert {
-  id          String   @id @default(cuid())
-  severity    String
-  category    String
-  title       String
-  message     String   @db.Text
-  metadata    Json?
-  resolvedAt  DateTime?
-  resolvedBy  String?
-  createdAt   DateTime @default(now())
+  id         String    @id @default(cuid())
+  severity   String
+  category   String
+  title      String
+  message    String    @db.Text
+  metadata   Json?
+  resolvedAt DateTime?
+  resolvedBy String?
+  createdAt  DateTime  @default(now())
 
   @@index([severity])
   @@index([category])

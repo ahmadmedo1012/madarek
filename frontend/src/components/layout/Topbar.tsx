@@ -8,7 +8,7 @@ import { NotificationDropdown } from './NotificationDropdown';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
-import { useLogout } from '../../hooks/useAuth';
+import { useLogout, useMe } from '../../hooks/useAuth';
 import { useMyProfile } from '../../hooks/useResources';
 
 interface TopbarProps {
@@ -30,7 +30,14 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   // PRD: student should see their college as a quick scope indicator.
   // Only fetched for students — useMyProfile is no-op for other roles.
   const profileQ = useMyProfile();
+  const meQ = useMe();
   const studentFacultyName = role === 'STUDENT' ? profileQ.data?.student?.faculty?.name ?? null : null;
+  // Governance scope chip — ADMIN/QUALITY users may be university-wide (NULL)
+  // or scoped to a single faculty (set). Surfacing this prevents
+  // "which college am I admin of?" ambiguity at a glance.
+  const scopeFacultyName = (role === 'ADMIN' || role === 'QUALITY')
+    ? meQ.data?.scopeFaculty?.name ?? null
+    : null;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -75,6 +82,11 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
         {studentFacultyName && (
           <span className="topbar-scope" title={`الكلية: ${studentFacultyName}`}>
             {studentFacultyName}
+          </span>
+        )}
+        {scopeFacultyName && (
+          <span className="topbar-scope" title={`نطاق الإدارة: ${scopeFacultyName}`}>
+            {role === 'QUALITY' ? 'جودة كلية' : 'إداري كلية'} · {scopeFacultyName}
           </span>
         )}
       </div>

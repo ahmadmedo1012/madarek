@@ -33,6 +33,8 @@ import syncRoutes from './http/routes/sync.routes.js';
 import teacherProfileRoutes from './http/routes/teacher-profile.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
 import ownerRoutes from './http/routes/owner.routes.js';
+import collegesRoutes from './http/routes/colleges.routes.js';
+import adminExtrasRoutes from './http/routes/admin-extras.routes.js';
 import { AppError } from './lib/errors.js';
 
 // Resolve frontend build path from this file's location.
@@ -93,6 +95,8 @@ export function createApp() {
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
   app.use('/api/v1', ownerRoutes);
+  app.use('/api/v1', collegesRoutes);
+  app.use('/api/v1', adminExtrasRoutes);
 
   // 404 for unknown API paths
   app.use('/api/v1', (_req, _res, next) => next(AppError.notFound('Route not found')));

@@ -6,12 +6,13 @@ import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuthStore } from '../../stores/auth.store';
-import { useLogout } from '../../hooks/useAuth';
+import { useLogout, useMe } from '../../hooks/useAuth';
 import { useUiStore } from '../../stores/ui.store';
-import { NAV_BY_ROLE, ROLE_LABELS } from '../../lib/nav';
+import { NAV_BY_ROLE, displayRoleLabel } from '../../lib/nav';
 
 export function Sidebar() {
   const user = useAuthStore((s) => s.user);
+  const me = useMe();
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   const closeSidebar = useUiStore((s) => s.closeSidebar);
   const logout = useLogout();
@@ -25,6 +26,11 @@ export function Sidebar() {
   if (!user) return null;
   const groups = NAV_BY_ROLE[user.role];
   const initials = user.avatarInitials ?? `${user.firstName[0] ?? ''}${user.lastName[0] ?? ''}`;
+
+  // Composite role label that surfaces leadership appointments inline.
+  const position = me.data?.teacherProfile?.position ?? null;
+  const positionFacultyName = me.data?.teacherProfile?.positionFaculty?.name ?? null;
+  const roleLabel = displayRoleLabel(user.role, position, positionFacultyName);
 
   return (
     <>
@@ -75,7 +81,7 @@ export function Sidebar() {
               <div className="sidebar-user-name" title={`${user.firstName} ${user.lastName}`}>
                 {user.firstName} {user.lastName}
               </div>
-              <div className="sidebar-user-role">{ROLE_LABELS[user.role]}</div>
+              <div className="sidebar-user-role">{roleLabel}</div>
             </div>
             <button
               type="button"

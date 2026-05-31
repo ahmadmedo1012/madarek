@@ -194,7 +194,7 @@ export default function AuthPage() {
             </div>
 
             <p className="auth-register-prompt">
-              ليس لديك حساب؟ تواصل مع المرشد الأكاديمي في كليّتك.
+              ليس لديك حساب؟ <Link to="/auth/register" className="auth-register-link">أنشئ حسابك الآن</Link>
             </p>
           </form>
         </div>

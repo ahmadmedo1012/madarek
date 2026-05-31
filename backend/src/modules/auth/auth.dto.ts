@@ -1,13 +1,20 @@
 import { z } from 'zod';
 import { Role } from '@prisma/client';
 
+/**
+ * Public registration is restricted to academic self-serve roles.
+ * Administrative roles (ADMIN / QUALITY / OWNER) are invitation-only — provisioned
+ * by an existing administrator via the governance panel, not by the open form.
+ */
+const SELF_SERVE_ROLES = [Role.STUDENT, Role.TEACHER] as const;
+
 export const registerSchema = z
   .object({
     email: z.string().email().max(120),
     password: z.string().min(8).max(72),
     firstName: z.string().min(1).max(60),
     lastName: z.string().min(1).max(60),
-    role: z.nativeEnum(Role),
+    role: z.enum(SELF_SERVE_ROLES),
     // Optional profile fields (validated in service):
     facultyId: z.string().cuid().optional(),
     departmentId: z.string().cuid().optional(),
