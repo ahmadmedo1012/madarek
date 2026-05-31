@@ -168,10 +168,56 @@ function useThemeTransitionGuard() {
   }, []);
 }
 
+/* ───────────────────────────────────────────────────────────
+   CARD POINTER GLOW — single delegated pointermove listener
+   that updates CSS vars (--cx / --cy) on the .card the cursor
+   is over. The polish-v8 ::before highlight reads those vars
+   to centre its radial there. One listener, no per-card React
+   handlers, no work when the cursor isn't on a card.
+   ─────────────────────────────────────────────────────────── */
+function useCardPointerGlow() {
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    if (reduced || isTouch) return;
+
+    let raf = 0;
+    let lastCard: HTMLElement | null = null;
+    const onMove = (e: PointerEvent) => {
+      const target = e.target as Element | null;
+      if (!target) return;
+      const card = target.closest<HTMLElement>('.card:not(.flush)');
+      if (!card) {
+        if (lastCard) {
+          lastCard.style.removeProperty('--cx');
+          lastCard.style.removeProperty('--cy');
+          lastCard = null;
+        }
+        return;
+      }
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = card.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        card.style.setProperty('--cx', `${x}%`);
+        card.style.setProperty('--cy', `${y}%`);
+        lastCard = card;
+      });
+    };
+    document.addEventListener('pointermove', onMove);
+    return () => {
+      document.removeEventListener('pointermove', onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+}
+
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
   useLayoutMetrics();
   useThemeTransitionGuard();
+  useCardPointerGlow();
 
   const location = useLocation();
   const title = resolveTitle(location.pathname);
