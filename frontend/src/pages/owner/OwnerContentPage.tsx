@@ -1,188 +1,107 @@
-import { useState } from 'react';
-import { Palette, Type, Bell, ToggleRight, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  Palette, Type, Bell, ToggleRight, ArrowLeft, Info,
+} from 'lucide-react';
 import { Card } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
-import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
 
+/**
+ * Honest content / branding landing.
+ *
+ * The previous OwnerContentPage rendered four fake editors (hero title,
+ * brand colors, announcement composer, feature toggles) all wired to
+ * local React state. The "save" buttons flashed "تم الحفظ" but nothing
+ * persisted anywhere. The page misled the owner into thinking they had
+ * configured the platform.
+ *
+ * Real persistence already exists for two of these: announcements live
+ * at POST /announcements (used in /community) and feature flags live
+ * at /owner/feature-flags (used in /owner/system). The hero/brand
+ * editor has no backend yet.
+ */
 export function OwnerContentPage() {
-  // Hero content
-  const [heroTitle, setHeroTitle] = useState('منصة الزاوية للتعليم الذكي');
-  const [heroSubtitle, setHeroSubtitle] = useState('بوابتك الأكاديمية الشاملة لتجربة تعليمية متكاملة تجمع بين الذكاء الاصطناعي والمحتوى الأكاديمي المتميز');
-  const [ctaText, setCtaText] = useState('ابدأ رحلتك التعليمية');
-  const [heroSaved, setHeroSaved] = useState(false);
-
-  // Colors
-  const [primaryColor, setPrimaryColor] = useState('#003461');
-  const [secondaryColor, setSecondaryColor] = useState('#fed65b');
-  const [accentColor, setAccentColor] = useState('#a3c9ff');
-
-  // Announcement
-  const [annTitle, setAnnTitle] = useState('');
-  const [annBody, setAnnBody] = useState('');
-  const [annScope, setAnnScope] = useState('platform');
-  const [annPriority, setAnnPriority] = useState('normal');
-  const [annSent, setAnnSent] = useState(false);
-
-  // Feature toggles
-  const [toggles, setToggles] = useState({
-    ai: true,
-    labs: true,
-    community: true,
-    live: true,
-    exams: true,
-    jobs: true,
-  });
-
-  const handleToggle = (key: keyof typeof toggles) => {
-    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleHeroSave = () => {
-    setHeroSaved(true);
-    setTimeout(() => setHeroSaved(false), 2000);
-  };
-
-  const handleAnnSubmit = () => {
-    setAnnSent(true);
-    setAnnTitle('');
-    setAnnBody('');
-    setTimeout(() => setAnnSent(false), 2000);
-  };
-
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">المحتوى والعلامة التجارية</h1>
-          <p className="page-subtitle">تخصيص المظهر والمحتوى العام للمنصة</p>
+          <h1 className="page-title">المحتوى والعلامة التجاريّة</h1>
+          <p className="page-subtitle">إدارة محتوى المنصّة، الإعلانات، والميزات.</p>
         </div>
       </div>
 
-      {/* Hero Content */}
-      <Card title="محتوى الواجهة الرئيسية" icon={Type}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)', padding: 'var(--sp-3) 0' }}>
-          <div>
-            <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>عنوان الصفحة الرئيسية</label>
-            <input
-              type="text"
-              value={heroTitle}
-              onChange={(e) => setHeroTitle(e.target.value)}
-              style={{ width: '100%', padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)' }}
-            />
-          </div>
-          <div>
-            <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>العنوان الفرعي</label>
-            <textarea
-              value={heroSubtitle}
-              onChange={(e) => setHeroSubtitle(e.target.value)}
-              rows={3}
-              style={{ width: '100%', padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)', resize: 'vertical' }}
-            />
-          </div>
-          <div>
-            <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>نص زر الدعوة (CTA)</label>
-            <input
-              type="text"
-              value={ctaText}
-              onChange={(e) => setCtaText(e.target.value)}
-              style={{ width: '100%', maxWidth: 300, padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)' }}
-            />
-          </div>
-          <div>
-            <button type="button" className="btn primary" onClick={handleHeroSave}>
-              {heroSaved ? <><Icon icon={CheckCircle2} size={14} /> تم الحفظ</> : 'حفظ التغييرات'}
-            </button>
-          </div>
-        </div>
-      </Card>
+      <div className="grid-2">
+        <Card title="الإعلانات الرسميّة" icon={Bell}>
+          <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-3) 0', lineHeight: 1.6 }}>
+            إنشاء وبثّ الإعلانات على مستوى المنصّة أو الكلّيّة أو القسم — مع نطاق محدّد، وأيقونة،
+            وخيار التثبيت في أعلى القائمة.
+          </p>
+          <Link to="/community" className="btn primary sm">
+            <Icon icon={ArrowLeft} size={13} />
+            فتح المجتمع الجامعيّ
+          </Link>
+        </Card>
 
-      {/* Color Settings */}
-      <Card title="إعدادات الألوان" icon={Palette}>
-        <div style={{ padding: 'var(--sp-3) 0' }}>
-          <div className="owner-color-swatch">
-            <label>اللون الأساسي</label>
-            <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{primaryColor}</span>
-          </div>
-          <div className="owner-color-swatch">
-            <label>اللون الثانوي</label>
-            <input type="color" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)} />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{secondaryColor}</span>
-          </div>
-          <div className="owner-color-swatch">
-            <label>لون التمييز</label>
-            <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{accentColor}</span>
-          </div>
-        </div>
-      </Card>
+        <Card title="ميزات المنصّة" icon={ToggleRight}>
+          <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-3) 0', lineHeight: 1.6 }}>
+            تشغيل وإطفاء الميزات (المعامل الافتراضيّة، البثّ المباشر، الاختبارات...) عبر نظام أعلام
+            الميزات. التغييرات تُطبَّق فوراً على جميع المستخدمين.
+          </p>
+          <Link to="/owner/system" className="btn primary sm">
+            <Icon icon={ArrowLeft} size={13} />
+            فتح إعدادات النظام
+          </Link>
+        </Card>
+      </div>
 
-      {/* Announcement */}
-      <Card title="إعلان عام جديد" icon={Bell}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', padding: 'var(--sp-3) 0' }}>
-          <div>
-            <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>عنوان الإعلان</label>
-            <input
-              type="text"
-              value={annTitle}
-              onChange={(e) => setAnnTitle(e.target.value)}
-              placeholder="عنوان الإعلان..."
-              style={{ width: '100%', padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)' }}
-            />
-          </div>
-          <div>
-            <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>نص الإعلان</label>
-            <textarea
-              value={annBody}
-              onChange={(e) => setAnnBody(e.target.value)}
-              rows={3}
-              placeholder="اكتب محتوى الإعلان هنا..."
-              style={{ width: '100%', padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)', resize: 'vertical' }}
-            />
-          </div>
-          <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
-            <div>
-              <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>النطاق</label>
-              <select
-                value={annScope}
-                onChange={(e) => setAnnScope(e.target.value)}
-                style={{ padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)' }}
-              >
-                <option value="platform">المنصة بالكامل</option>
-                <option value="faculty">كلية محددة</option>
-              </select>
-            </div>
-            <div>
-              <label style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>الأولوية</label>
-              <select
-                value={annPriority}
-                onChange={(e) => setAnnPriority(e.target.value)}
-                style={{ padding: '8px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-sm)', color: 'var(--text)' }}
-              >
-                <option value="normal">عادية</option>
-                <option value="high">مرتفعة</option>
-                <option value="urgent">عاجلة</option>
-              </select>
+      <Card title="الهويّة البصريّة" icon={Palette}>
+        <div style={{
+          padding: 'var(--sp-3)',
+          background: 'var(--accent-soft)',
+          color: 'var(--accent)',
+          borderRadius: 'var(--r-md)',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 'var(--sp-2)',
+          fontSize: 'var(--fs-xs)',
+          lineHeight: 1.6,
+        }}>
+          <Icon icon={Info} size={14} style={{ flexShrink: 0, marginBlockStart: 2 }} />
+          <span>
+            تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة قيد
+            التطوير. حالياً تُعتمَد ألوان وزارة التعليم العالي وجامعة الزاوية الرسميّة.
+          </span>
+        </div>
+
+        <div className="grid-3" style={{ marginBlockStart: 'var(--sp-3)', gap: 'var(--sp-2)' }}>
+          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
+            <div className="text-xxs text-subtle">اللون الأساسيّ</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockStart: 4 }}>
+              <span style={{ width: 20, height: 20, borderRadius: 4, background: '#003461', display: 'inline-block' }} />
+              <span className="font-mono text-xs">#003461</span>
             </div>
           </div>
-          <div>
-            <button type="button" className="btn primary" onClick={handleAnnSubmit} disabled={!annTitle || !annBody}>
-              {annSent ? <><Icon icon={CheckCircle2} size={14} /> تم الإرسال</> : 'نشر الإعلان'}
-            </button>
+          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
+            <div className="text-xxs text-subtle">اللون الثانويّ</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockStart: 4 }}>
+              <span style={{ width: 20, height: 20, borderRadius: 4, background: '#fed65b', display: 'inline-block' }} />
+              <span className="font-mono text-xs">#fed65b</span>
+            </div>
+          </div>
+          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
+            <div className="text-xxs text-subtle">لون التمييز</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockStart: 4 }}>
+              <span style={{ width: 20, height: 20, borderRadius: 4, background: '#a3c9ff', display: 'inline-block' }} />
+              <span className="font-mono text-xs">#a3c9ff</span>
+            </div>
           </div>
         </div>
       </Card>
 
-      {/* Feature Toggles */}
-      <Card title="تبديل الوحدات" icon={ToggleRight}>
-        <div style={{ padding: 'var(--sp-2) 0' }}>
-          <ToggleSwitch label="المساعد الذكي (AI)" description="تفعيل خدمات الذكاء الاصطناعي للطلاب والأساتذة" checked={toggles.ai} onChange={() => handleToggle('ai')} />
-          <ToggleSwitch label="المعامل الافتراضية" description="محاكاة المختبرات العلمية والهندسية" checked={toggles.labs} onChange={() => handleToggle('labs')} />
-          <ToggleSwitch label="المجتمع الجامعي" description="منتدى التواصل والنقاش بين المستخدمين" checked={toggles.community} onChange={() => handleToggle('community')} />
-          <ToggleSwitch label="البث المباشر" description="خدمة البث المباشر للمحاضرات والفعاليات" checked={toggles.live} onChange={() => handleToggle('live')} />
-          <ToggleSwitch label="الاختبارات الإلكترونية" description="نظام الامتحانات الإلكترونية عبر الإنترنت" checked={toggles.exams} onChange={() => handleToggle('exams')} />
-          <ToggleSwitch label="فرص العمل" description="عرض فرص التوظيف والتدريب للطلاب" checked={toggles.jobs} onChange={() => handleToggle('jobs')} />
-        </div>
+      <Card title="محتوى الواجهة الرئيسيّة" icon={Type}>
+        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>
+          محرّر العنوان والوصف الفرعيّ ونصّ زرّ "ابدأ الآن" قيد التطوير. النصوص الحاليّة محدّدة
+          في كود الصفحة الرئيسيّة.
+        </p>
       </Card>
     </div>
   );
