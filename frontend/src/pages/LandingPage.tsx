@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Brain, GraduationCap, Network, Building2, Users2, Award, Compass,
   BarChart3, ShieldCheck, ArrowLeft, Menu, X, BookOpen, Sparkles,
@@ -58,6 +58,65 @@ export default function LandingPage() {
     };
     cards.forEach((c) => c.addEventListener('mousemove', onMove));
     return () => cards.forEach((c) => c.removeEventListener('mousemove', onMove));
+  }, []);
+
+  // Hero spotlight — radial glow follows the cursor across the entire hero
+  // section. Notion-style ambient depth: clean, not flashy. Disabled on
+  // touch devices and for reduced-motion users.
+  const heroRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    if (reduced || isTouch) return;
+
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        el.style.setProperty('--hero-mx', `${x}%`);
+        el.style.setProperty('--hero-my', `${y}%`);
+      });
+    };
+    el.addEventListener('mousemove', onMove);
+    return () => {
+      el.removeEventListener('mousemove', onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Mockup parallax — exposes a scroll progress var on the mockup itself,
+  // ranging roughly -1 (mockup well below viewport) … +1 (above). CSS
+  // multiplies it for a gentle rise + scale-out as the user scrolls.
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    const mockup = document.querySelector<HTMLElement>('.landing-mockup');
+    if (!mockup) return;
+
+    let raf = 0;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = mockup.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // 0 when the mockup top sits at viewport top; goes negative as it scrolls up.
+        const offset = Math.max(-1, Math.min(1, (r.top - vh / 2) / vh));
+        mockup.style.setProperty('--parallax', String(offset));
+      });
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -162,15 +221,19 @@ export default function LandingPage() {
       </header>
 
       {/* HERO — huge centered title + mockup */}
-      <section className="marketing-container landing-hero">
+      <section ref={heroRef} className="marketing-container landing-hero">
         <Reveal as="span" className="landing-hero-eyebrow">
           <strong>جديد</strong>
           المساعد الأكاديمي «Oasis» متاح الآن
           <Icon icon={ArrowLeft} size={12} />
         </Reveal>
         <Reveal as="h1" className="landing-title" delay={1}>
-          منصّة <em>التعليم</em> الذكيّ <br />
-          لجامعة <span className="landing-title-highlight">الزّاوية</span>
+          <span className="word">منصّة</span>{' '}
+          <span className="word"><em>التعليم</em></span>{' '}
+          <span className="word">الذكيّ</span>
+          <br />
+          <span className="word">لجامعة</span>{' '}
+          <span className="word landing-title-highlight">الزّاوية</span>
         </Reveal>
         <Reveal as="p" className="landing-subtitle" delay={2}>
           مساحة عمل أكاديمية واحدة تُمكّن الطالب والأستاذ والإدارة وضمان الجودة
