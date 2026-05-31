@@ -153,6 +153,47 @@ router.get('/me/results', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/**
+ * GET /me/materials — every material across the student's active enrolments,
+ * sorted by upload date. Backs the "Downloads" page.
+ */
+router.get('/me/materials', async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+    const enrolments = await prisma.enrollment.findMany({
+      where: { studentId: userId, status: 'active' },
+      select: { offeringId: true },
+    });
+    const offeringIds = enrolments.map((e) => e.offeringId);
+    if (offeringIds.length === 0) {
+      res.json({ data: [] });
+      return;
+    }
+
+    const materials = await prisma.material.findMany({
+      where: { offeringId: { in: offeringIds } },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+      select: {
+        id: true, name: true, type: true, url: true,
+        sizeBytes: true, createdAt: true,
+        offering: { select: { course: { select: { code: true, name: true } } } },
+      },
+    });
+    res.json({
+      data: materials.map((m) => ({
+        id: m.id,
+        name: m.name,
+        type: m.type,
+        url: m.url,
+        sizeBytes: Number(m.sizeBytes),
+        createdAt: m.createdAt,
+        course: m.offering.course,
+      })),
+    });
+  } catch (e) { next(e); }
+});
+
 router.get('/me/dashboard', async (req, res, next) => {
   try {
     const userId = req.user!.id;

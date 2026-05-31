@@ -11,7 +11,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Radi
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
@@ -704,55 +704,70 @@ export function SocialPage() {
 }
 
 /* ─── Downloads ────────────────────────────────────────── */
-const FILES = [
-  { name: 'محاضرة UML — الوحدة 1', course: 'هندسة البرمجيات', kind: 'PDF', size: '3.2 MB', date: '15 مايو' },
-  { name: 'شرائح Design Patterns', course: 'هندسة البرمجيات', kind: 'PPTX', size: '12.4 MB', date: '12 مايو' },
-  { name: 'شرح SQL Joins', course: 'نظم المعلومات', kind: 'MP4', size: '180 MB', date: '13 مايو' },
-  { name: 'OSI Model — الطبقات السبع', course: 'شبكات الحاسوب', kind: 'PPTX', size: '8.7 MB', date: '15 مايو' },
-  { name: 'محاضرة TCP/IP', course: 'شبكات الحاسوب', kind: 'PDF', size: '6.2 MB', date: '12 مايو' },
-];
+function formatSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`;
+}
+function formatShortDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
+}
 
 export function DownloadsPage() {
+  const q = useStudentMaterials();
+
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مركز التحميلات</h1>
-          <p className="page-subtitle">جميع المواد الدراسية متاحة للتحميل والحفظ للأوفلاين.</p>
+          <p className="page-subtitle">جميع المواد الدراسية في مقرّراتك متاحة للتحميل.</p>
         </div>
       </div>
 
-      <Card title="ملفات حديثة" icon={Download}>
-        <div className="tbl-wrap">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th>الملف</th>
-                <th>المادة</th>
-                <th>النوع</th>
-                <th>الحجم</th>
-                <th>التاريخ</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {FILES.map((f) => (
-                <tr key={f.name}>
-                  <td className="tbl-strong">{f.name}</td>
-                  <td>{f.course}</td>
-                  <td><Badge>{f.kind}</Badge></td>
-                  <td className="tbl-num">{f.size}</td>
-                  <td className="text-subtle">{f.date}</td>
-                  <td>
-                    <button type="button" className="btn ghost sm">
-                      <Icon icon={Download} size={13} /> تحميل
-                    </button>
-                  </td>
+      <Card title="ملفّات حديثة" icon={Download}>
+        {q.isPending ? (
+          <LoadingState />
+        ) : q.isError ? (
+          <ErrorState />
+        ) : !q.data || q.data.length === 0 ? (
+          <EmptyState
+            title="لا توجد ملفّات بعد"
+            description="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
+          />
+        ) : (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead>
+                <tr>
+                  <th>الملفّ</th>
+                  <th>المادة</th>
+                  <th>النوع</th>
+                  <th>الحجم</th>
+                  <th>التاريخ</th>
+                  <th />
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {q.data.map((f) => (
+                  <tr key={f.id}>
+                    <td className="tbl-strong">{f.name}</td>
+                    <td>{f.course.name}</td>
+                    <td><Badge>{f.type}</Badge></td>
+                    <td className="tbl-num">{f.sizeBytes > 0 ? formatSize(f.sizeBytes) : '—'}</td>
+                    <td className="text-subtle">{formatShortDate(f.createdAt)}</td>
+                    <td>
+                      <a href={f.url} target="_blank" rel="noreferrer" className="btn ghost sm">
+                        <Icon icon={Download} size={13} /> تحميل
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );

@@ -128,6 +128,24 @@ export function useStudentResults() {
   });
 }
 
+// ── Student materials (downloads) ─────────────────────────────
+export interface StudentMaterial {
+  id: string;
+  name: string;
+  type: 'PDF' | 'PPT' | 'VIDEO' | 'DOC' | 'ZIP' | 'IMAGE' | 'OTHER';
+  url: string;
+  sizeBytes: number;
+  createdAt: string;
+  course: { code: string; name: string };
+}
+export function useStudentMaterials() {
+  return useQuery({
+    queryKey: ['me', 'materials'],
+    queryFn: () => unwrap<StudentMaterial[]>(api.get('/me/materials')),
+    staleTime: 60_000,
+  });
+}
+
 // ── Courses (admin) ────────────────────────────────────────────
 export interface Course {
   id: string;
