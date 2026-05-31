@@ -908,6 +908,26 @@
 }
 .comp-entry-file:hover { text-decoration: underline; }
 
+.comp-entry-rank {
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-weight: var(--fw-bold);
+}
+
+.comp-score-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-block-start: var(--sp-3);
+  padding-block-start: var(--sp-2);
+  border-block-start: 1px dashed var(--border);
+}
+
 /* Modal */
 .comp-modal-backdrop {
   position: fixed;

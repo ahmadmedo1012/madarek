@@ -219,6 +219,69 @@ router.post('/competitions/:id/close', requireCapability('COMPETITIONS_RUN'), as
   } catch (e) { next(e); }
 });
 
+/**
+ * Set / update an entry score. Only the organizer can score entries.
+ * Score range: 0-100. Pass null to clear a score.
+ */
+const scoreEntrySchema = z.object({
+  score: z.number().int().min(0).max(100).nullable(),
+}).strict();
+
+router.post(
+  '/competitions/:id/entries/:entryId/score',
+  requireCapability('COMPETITIONS_RUN'),
+  validate(scoreEntrySchema),
+  async (req, res, next) => {
+    try {
+      const comp = await prisma.competition.findUnique({ where: { id: req.params.id! } });
+      if (!comp) throw AppError.notFound('Competition not found');
+      if (comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+
+      const entry = await prisma.competitionEntry.findUnique({ where: { id: req.params.entryId! } });
+      if (!entry || entry.competitionId !== comp.id) throw AppError.notFound('Entry not found');
+
+      const updated = await prisma.competitionEntry.update({
+        where: { id: entry.id },
+        data: { score: req.body.score },
+        select: { id: true, score: true },
+      });
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
+
+/**
+ * Mark the competition as JUDGED — final state. Requires the competition
+ * to be CLOSED first and at least one entry to be scored.
+ */
+router.post(
+  '/competitions/:id/judge',
+  requireCapability('COMPETITIONS_RUN'),
+  async (req, res, next) => {
+    try {
+      const comp = await prisma.competition.findUnique({
+        where: { id: req.params.id! },
+        include: { entries: { select: { score: true } } },
+      });
+      if (!comp) throw AppError.notFound('Competition not found');
+      if (comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+      if (comp.status !== 'CLOSED') {
+        throw new AppError('BAD_REQUEST', 'يجب إغلاق المسابقة أوّلاً قبل التحكيم', 400);
+      }
+      const scoredCount = comp.entries.filter((e) => e.score !== null).length;
+      if (scoredCount === 0 && comp.entries.length > 0) {
+        throw new AppError('BAD_REQUEST', 'لم تُقَيَّم أي مشاركة بعد', 400);
+      }
+
+      const updated = await prisma.competition.update({
+        where: { id: comp.id },
+        data: { status: 'JUDGED' as CompetitionStatus },
+      });
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
+
 // ════════════════════════════════════════════════════════════════
 //  Events
 // ════════════════════════════════════════════════════════════════

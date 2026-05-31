@@ -1332,6 +1332,30 @@ export function useCloseCompetition(competitionId: string) {
   });
 }
 
+export function useScoreCompetitionEntry(competitionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ entryId, score }: { entryId: string; score: number | null }) =>
+      unwrap<{ id: string; score: number | null }>(
+        api.post(`/competitions/${competitionId}/entries/${entryId}/score`, { score }),
+      ),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['competitions', competitionId] });
+    },
+  });
+}
+
+export function useJudgeCompetition(competitionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unwrap<CompetitionRow>(api.post(`/competitions/${competitionId}/judge`, {})),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['competitions', competitionId] });
+      qc.invalidateQueries({ queryKey: ['competitions'] });
+    },
+  });
+}
+
 export interface CampusEventRow {
   id: string;
   title: string;

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
-  Trophy, Calendar, Award, Plus, Filter, ArrowLeft, Lock, Send, FileText, X,
+  Trophy, Calendar, Award, Plus, Filter, ArrowLeft, Lock, Send, FileText, X, Check, Gavel,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
@@ -12,6 +12,7 @@ import { Icon } from '../../components/Icon';
 import {
   useCompetitions, useCompetition, useCreateCompetition, useEnterCompetition,
   useCloseCompetition, useMyPermissions,
+  useScoreCompetitionEntry, useJudgeCompetition,
   type CompetitionRow, type CompetitionDetail,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
@@ -160,6 +161,7 @@ export function CompetitionDetailPage() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const closer = useCloseCompetition(id ?? '');
+  const judge = useJudgeCompetition(id ?? '');
   const [entering, setEntering] = useState(false);
 
   if (q.isPending) return <div className="page"><LoadingState /></div>;
@@ -169,6 +171,11 @@ export function CompetitionDetailPage() {
   const isOrganizer = !!user && c.organizerId === user.id;
   const myEntry = c.entries.find((e) => e.user.firstName === user?.firstName && e.user.lastName === user?.lastName);
   const canEnter = c.status === 'OPEN' && new Date(c.deadline) > new Date();
+  const allScored = c.entries.length > 0 && c.entries.every((e) => e.score !== null);
+  const someScored = c.entries.some((e) => e.score !== null);
+  const sortedEntries = c.status === 'JUDGED'
+    ? [...c.entries].sort((a, b) => (b.score ?? -1) - (a.score ?? -1))
+    : c.entries;
 
   return (
     <div className="page comp-detail">
@@ -211,18 +218,35 @@ export function CompetitionDetailPage() {
                 إغلاق المسابقة
               </button>
             )}
+            {isOrganizer && c.status === 'CLOSED' && (
+              <button
+                type="button"
+                className="btn primary"
+                onClick={() => judge.mutate()}
+                disabled={judge.isPending || !someScored}
+                title={!someScored ? 'قَيِّم مشاركة واحدة على الأقلّ أوّلاً' : undefined}
+              >
+                <Icon icon={Gavel} size={14} />
+                {judge.isPending ? 'جارٍ النشر…' : allScored ? 'إعلان النتائج' : 'إعلان النتائج (مشاركات بلا تقييم)'}
+              </button>
+            )}
           </div>
         </div>
       </header>
 
       {/* Entries list */}
-      <Card title="المشاركات" subtitle={`${c.entries.length} مشاركة${isOrganizer ? '' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
+      <Card title="المشاركات" subtitle={`${c.entries.length} مشاركة${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
         {c.entries.length === 0 ? (
           <EmptyState title="لم يشارك أحد بعد" description={canEnter ? 'كن أوّل من يشارك!' : undefined} />
         ) : (
           <ul className="comp-entry-list">
-            {c.entries.map((e) => (
+            {sortedEntries.map((e, i) => (
               <li key={e.id} className="comp-entry-row">
+                {c.status === 'JUDGED' && e.score !== null && (
+                  <span className="comp-entry-rank" aria-label={`الترتيب ${i + 1}`}>
+                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                  </span>
+                )}
                 <UserAvatar
                   initials={e.user.avatarInitials ?? `${e.user.firstName[0]}${e.user.lastName[0]}`}
                   color={e.user.avatarColor ?? undefined}
@@ -232,7 +256,7 @@ export function CompetitionDetailPage() {
                   <div className="comp-entry-title">{e.title}</div>
                   <div className="comp-entry-meta">
                     {e.user.firstName} {e.user.lastName} · {formatRelative(e.submittedAt)}
-                    {e.score !== null && ` · النتيجة: ${e.score}`}
+                    {e.score !== null && c.status !== 'OPEN' && ` · النتيجة: ${e.score}/100`}
                   </div>
                   {isOrganizer && e.body && (
                     <div className="comp-entry-text">{e.body}</div>
@@ -241,6 +265,13 @@ export function CompetitionDetailPage() {
                     <a href={e.fileUrl} target="_blank" rel="noreferrer" className="comp-entry-file">
                       <Icon icon={FileText} size={12} /> ملف مُرفَق
                     </a>
+                  )}
+                  {isOrganizer && c.status === 'CLOSED' && id && (
+                    <ScoreInput
+                      competitionId={id}
+                      entryId={e.id}
+                      currentScore={e.score}
+                    />
                   )}
                 </div>
               </li>
@@ -256,6 +287,53 @@ export function CompetitionDetailPage() {
           onClose={() => setEntering(false)}
         />
       )}
+    </div>
+  );
+}
+
+/* ───────────────────────── Score input (organizer-only) ───────── */
+
+function ScoreInput({
+  competitionId, entryId, currentScore,
+}: {
+  competitionId: string;
+  entryId: string;
+  currentScore: number | null;
+}) {
+  const [value, setValue] = useState<string>(currentScore !== null ? String(currentScore) : '');
+  const score = useScoreCompetitionEntry(competitionId);
+
+  const save = () => {
+    if (value === '') {
+      score.mutate({ entryId, score: null });
+      return;
+    }
+    const n = Number(value);
+    if (!Number.isFinite(n) || n < 0 || n > 100) return;
+    score.mutate({ entryId, score: Math.round(n) });
+  };
+
+  return (
+    <div className="comp-score-input">
+      <label className="text-xxs text-subtle">التقييم (من 100)</label>
+      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+        <input
+          type="number"
+          min={0}
+          max={100}
+          step={1}
+          className="auth-input"
+          style={{ maxWidth: 100 }}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => { if (e.key === 'Enter') (e.currentTarget as HTMLInputElement).blur(); }}
+          disabled={score.isPending}
+        />
+        {score.isSuccess && currentScore !== null && (
+          <Icon icon={Check} size={14} style={{ color: 'var(--success)' }} />
+        )}
+      </div>
     </div>
   );
 }
