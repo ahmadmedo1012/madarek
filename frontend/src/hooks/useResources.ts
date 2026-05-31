@@ -1,6 +1,68 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../lib/api';
 
+// ── Student dashboard aggregate ───────────────────────────────
+export interface StudentDashboard {
+  profile: {
+    year: number;
+    gpa: number;
+    totalXp: number;
+    level: number;
+    facultyName: string | null;
+    departmentName: string | null;
+  };
+  kpi: {
+    courseCount: number;
+    attendancePct: number | null;
+    pendingAssignmentsCount: number;
+    totalXp: number;
+    rank: number;
+    cohortSize: number;
+  };
+  term: {
+    code: string;
+    startsAt: string;
+    endsAt: string;
+    progressPct: number;
+  };
+  progress: {
+    avgEnrollmentProgressPct: number;
+  };
+  agenda: {
+    classes: Array<{
+      id: string;
+      courseName: string;
+      courseCode: string;
+      startTime: string;
+      endTime: string;
+      room: string | null;
+      when: 'today' | 'tomorrow';
+    }>;
+    assignments: Array<{
+      id: string;
+      title: string;
+      type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+      dueAt: string;
+      courseName: string;
+      courseCode: string;
+    }>;
+    live: Array<{
+      id: string;
+      title: string;
+      scheduledAt: string;
+      status: 'SCHEDULED' | 'LIVE' | 'ENDED' | 'CANCELLED';
+      offering: { course: { name: string; code: string } };
+    }>;
+  };
+}
+export function useStudentDashboard() {
+  return useQuery({
+    queryKey: ['me', 'dashboard'],
+    queryFn: () => unwrap<StudentDashboard>(api.get('/me/dashboard')),
+    staleTime: 60_000,
+  });
+}
+
 // ── Courses (admin) ────────────────────────────────────────────
 export interface Course {
   id: string;
