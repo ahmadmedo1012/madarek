@@ -1,182 +1,143 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  MapPin, Building2, FlaskConical, Library as LibraryIcon, Coffee, Trophy,
-  Cog, type LucideIcon,
+  MapPin, Building2, Phone, Mail, ExternalLink, ArrowLeft, Info,
 } from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
+import { LoadingState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { useFaculties } from '../../hooks/useResources';
 
-interface Building {
-  id: string;
-  name: string;
-  type: 'academic' | 'lab' | 'library' | 'cafeteria' | 'sports';
-  description: string;
-  x: number; // % of canvas width
-  y: number; // % of canvas height
-  rooms: number;
-  hours: string;
-}
-
-const TYPE_ICON: Record<Building['type'], LucideIcon> = {
-  academic: Building2,
-  lab: FlaskConical,
-  library: LibraryIcon,
-  cafeteria: Coffee,
-  sports: Trophy,
-};
-
-const TYPE_LABEL: Record<Building['type'], string> = {
-  academic: 'كلية',
-  lab: 'معمل',
-  library: 'مكتبة',
-  cafeteria: 'كافتيريا',
-  sports: 'منشأة رياضية',
-};
-
-const BUILDINGS: Building[] = [
-  { id: 'b1', name: 'كلية تقنية المعلومات', type: 'academic', description: 'مبنى A · 3 طوابق · يضم أقسام علوم الحاسوب ونظم المعلومات.', x: 22, y: 35, rooms: 18, hours: '07:00 — 21:00' },
-  { id: 'b2', name: 'كلية الهندسة', type: 'academic', description: 'مبنى B · 4 طوابق · أقسام الميكانيكية والكهربائية والمدنية.', x: 50, y: 28, rooms: 24, hours: '07:00 — 21:00' },
-  { id: 'b3', name: 'كلية الطب البشري', type: 'academic', description: 'مبنى C · 5 طوابق · مع المعامل التشريحية.', x: 75, y: 35, rooms: 30, hours: '06:30 — 22:00' },
-  { id: 'l1', name: 'معامل الحاسوب الافتراضية', type: 'lab', description: 'معمل 1 و 2 · شبكات و قواعد بيانات · سعة 60 جهاز.', x: 30, y: 60, rooms: 4, hours: '08:00 — 20:00' },
-  { id: 'l2', name: 'معامل العلوم التطبيقية', type: 'lab', description: 'كيمياء وفيزياء وأحياء · للأقسام العلمية.', x: 65, y: 65, rooms: 8, hours: '08:00 — 18:00' },
-  { id: 'lib', name: 'المكتبة المركزية', type: 'library', description: 'مكتبة الجامعة الإلكترونية والمطبوعة · قاعات قراءة.', x: 50, y: 50, rooms: 6, hours: '08:00 — 23:00' },
-  { id: 'caf', name: 'الكافتيريا الرئيسية', type: 'cafeteria', description: 'وجبات سريعة ومنطقة للجلوس والدراسة.', x: 45, y: 75, rooms: 1, hours: '07:00 — 21:00' },
-  { id: 'spt', name: 'الصالة الرياضية', type: 'sports', description: 'ملاعب كرة قدم وطائرة وصالة جيم.', x: 80, y: 70, rooms: 3, hours: '14:00 — 22:00' },
-];
-
+/**
+ * Honest campus directory.
+ *
+ * The previous CampusMapPage rendered 8 invented buildings with fake
+ * x/y coordinates, made-up room counts, and invented working hours
+ * — none of which the platform actually tracks. Replaced with a real
+ * faculty directory grouped by city, plus a transparent note that the
+ * interactive campus map is conceptual / coming from facilities.
+ */
 export default function CampusMapPage() {
-  const [selected, setSelected] = useState<Building | null>(null);
-  const [filter, setFilter] = useState<'all' | Building['type']>('all');
+  const facs = useFaculties();
+  const faculties = facs.data ?? [];
+  const [city, setCity] = useState<string>('all');
 
-  const visible = filter === 'all' ? BUILDINGS : BUILDINGS.filter((b) => b.type === filter);
+  const cities = Array.from(new Set(faculties.map((f) => f.city)));
+  const order = ['الزاوية', 'العجيلات', 'زوارة', 'أبو عيسى', 'ناصر', 'مناطق أخرى'];
+  const sortedCities = cities.sort((a, b) => {
+    const ai = order.indexOf(a);
+    const bi = order.indexOf(b);
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+
+  const visible = city === 'all' ? faculties : faculties.filter((f) => f.city === city);
 
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">خريطة الحرم الجامعي</h1>
-          <p className="page-subtitle">استكشف مباني جامعة الزاوية وموقع كل كلية ومعمل ومرفق.</p>
+          <h1 className="page-title">دليل الحرم الجامعيّ</h1>
+          <p className="page-subtitle">
+            كلّيّات جامعة الزاوية بحسب المدينة، مع روابط لصفحاتها التفصيليّة.
+          </p>
         </div>
       </div>
 
-      <Card compact>
-        <div className="filter-bar">
-          {[
-            { id: 'all', label: 'الكل', icon: MapPin },
-            { id: 'academic', label: 'كليات', icon: Building2 },
-            { id: 'lab', label: 'معامل', icon: FlaskConical },
-            { id: 'library', label: 'مكتبات', icon: LibraryIcon },
-            { id: 'cafeteria', label: 'كافتيريات', icon: Coffee },
-            { id: 'sports', label: 'رياضية', icon: Trophy },
-          ].map((opt) => (
+      <Card>
+        <div className="filter-bar" style={{ flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className={`pill${city === 'all' ? ' on' : ''}`}
+            onClick={() => setCity('all')}
+          >
+            <Icon icon={MapPin} size={13} />
+            الكلّ
+          </button>
+          {sortedCities.map((c) => (
             <button
-              key={opt.id}
+              key={c}
               type="button"
-              className={`pill${filter === opt.id ? ' on' : ''}`}
-              onClick={() => setFilter(opt.id as typeof filter)}
+              className={`pill${city === c ? ' on' : ''}`}
+              onClick={() => setCity(c)}
             >
-              <Icon icon={opt.icon} size={13} />
-              {opt.label}
+              <Icon icon={Building2} size={13} />
+              {c}
             </button>
           ))}
         </div>
       </Card>
 
-      <div className="grid-2-1">
-        <Card flush style={{ overflow: 'hidden' }}>
-          <div className="map-canvas">
-            <div className="map-grid" />
-            {/* Decorative roads */}
-            <svg
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-            >
-              <path d="M5,40 L95,40 M5,72 L95,72 M40,5 L40,95 M70,5 L70,95"
-                stroke="rgba(255,255,255,0.06)" strokeWidth="0.6" strokeLinecap="round" fill="none" />
-            </svg>
-            {visible.map((b) => {
-              const Cmp = TYPE_ICON[b.type];
-              const isOn = selected?.id === b.id;
-              return (
-                <button
-                  type="button"
-                  key={b.id}
-                  className={`map-pin ${b.type}${isOn ? ' on' : ''}`}
-                  style={{ left: `${b.x}%`, top: `${b.y}%`, border: 0, background: 'transparent', padding: 0, fontFamily: 'inherit' }}
-                  onClick={() => setSelected(b)}
-                >
-                  <span className="map-pin-dot">
-                    <Icon icon={Cmp} size={14} strokeWidth={2.2} />
-                  </span>
-                  {isOn && <span className="map-pin-label">{b.name}</span>}
-                </button>
-              );
-            })}
+      {facs.isPending ? (
+        <LoadingState />
+      ) : visible.length === 0 ? (
+        <EmptyState title="لا توجد كلّيّات لعرضها" />
+      ) : (
+        <Card title={city === 'all' ? 'جميع الكلّيّات' : `كلّيّات ${city}`} icon={Building2}>
+          <div className="grid-3">
+            {visible.map((f) => (
+              <Link
+                key={f.id}
+                to={`/colleges/${f.id}`}
+                className="list-row"
+                style={{ textAlign: 'start', textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
+              >
+                <span style={{ fontSize: 22 }} aria-hidden>{f.iconEmoji ?? '🏛️'}</span>
+                <div className="list-row-body">
+                  <div className="list-row-title">{f.name}</div>
+                  <div className="list-row-sub">
+                    <Badge color="purple">{f.city}</Badge>
+                    {' '}
+                    {f.departments.length} قسم
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </Card>
+      )}
 
-        <Card title={selected?.name ?? 'اختر مبنى من الخريطة'} icon={selected ? TYPE_ICON[selected.type] : Cog}>
-          {selected ? (
-            <div className="flex-col gap-3">
-              <Badge color="brand">{TYPE_LABEL[selected.type]}</Badge>
-              <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-base)' }}>
-                {selected.description}
-              </p>
-              <div style={{
-                background: 'var(--surface-2)',
-                padding: 'var(--sp-3)',
-                borderRadius: 'var(--r-md)',
-                fontSize: 'var(--fs-xs)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-              }}>
-                <div className="flex items-center justify-between">
-                  <span className="text-subtle">عدد الغرف</span>
-                  <span className="font-mono font-semibold">{selected.rooms}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-subtle">ساعات العمل</span>
-                  <span className="font-mono">{selected.hours}</span>
-                </div>
-              </div>
-              <button type="button" className="btn outline" style={{ width: '100%' }}>
-                <Icon icon={MapPin} size={13} />
-                اتجاهات تفصيلية
-              </button>
-            </div>
-          ) : (
-            <p className="text-sm text-muted">
-              تحرك بمؤشر الفأرة على الخريطة، واضغط على أي نقطة لمعرفة معلومات المبنى.
-            </p>
-          )}
-        </Card>
-      </div>
-
-      <Card title="جميع المباني" icon={Building2}>
-        <div className="grid-3">
-          {BUILDINGS.map((b) => {
-            const Cmp = TYPE_ICON[b.type];
-            return (
-              <button
-                key={b.id}
-                type="button"
-                onClick={() => setSelected(b)}
-                className="list-row"
-                style={{ textAlign: 'right', cursor: 'pointer', border: 0, background: 'transparent' }}
-              >
-                <div className="metric-icon" style={{ color: 'var(--accent)' }}>
-                  <Icon icon={Cmp} size={16} />
-                </div>
-                <div className="list-row-body">
-                  <div className="list-row-title">{b.name}</div>
-                  <div className="list-row-sub">{TYPE_LABEL[b.type]} · {b.rooms} غرفة</div>
-                </div>
-              </button>
-            );
-          })}
+      <Card title="معلومات التواصل" icon={Phone}>
+        <div className="grid-2" style={{ gap: 'var(--sp-3)' }}>
+          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
+            <div className="text-xxs text-subtle" style={{ marginBlockEnd: 4 }}>الهاتف</div>
+            <div className="text-sm font-mono">+218 23 762659</div>
+            <div className="text-sm font-mono" style={{ marginBlockStart: 4 }}>+218 23 762882</div>
+          </div>
+          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
+            <div className="text-xxs text-subtle" style={{ marginBlockEnd: 4 }}>البريد الإلكتروني</div>
+            <div className="text-sm font-mono"><Icon icon={Mail} size={12} /> info@zu.edu.ly</div>
+            <div className="text-sm font-mono" style={{ marginBlockStart: 4 }}><Icon icon={Mail} size={12} /> ico@zu.edu.ly</div>
+          </div>
         </div>
+
+        <div style={{
+          marginBlockStart: 'var(--sp-3)',
+          padding: 'var(--sp-3)',
+          background: 'var(--accent-soft)',
+          color: 'var(--accent)',
+          borderRadius: 'var(--r-md)',
+          fontSize: 'var(--fs-xs)',
+          display: 'flex',
+          gap: 'var(--sp-2)',
+          alignItems: 'flex-start',
+          lineHeight: 1.6,
+        }}>
+          <Icon icon={Info} size={14} style={{ flexShrink: 0, marginBlockStart: 2 }} />
+          <span>
+            خريطة الحرم التفاعليّة قيد التطوير. حاليّاً يمكنك الاطّلاع على المواقع الفعليّة عبر الموقع
+            الرسميّ:{' '}
+            <a href="https://www.zu.edu.ly" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>
+              zu.edu.ly <Icon icon={ExternalLink} size={11} />
+            </a>
+          </span>
+        </div>
+      </Card>
+
+      <Card>
+        <Link to="/student/university" className="btn primary sm">
+          <Icon icon={ArrowLeft} size={13} />
+          صفحة جامعة الزاوية الكاملة
+        </Link>
       </Card>
     </div>
   );
