@@ -13,33 +13,11 @@ import {
   Filler,
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
+import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { cartesianOptions } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
-import type { AiMetrics } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
-
-const FALLBACK_DATA: AiMetrics = {
-  totalRequests: 12480,
-  totalTokens: 4_230_000,
-  successRate: 97.3,
-  avgLatencyMs: 820,
-  byFeature: [
-    { feature: 'chat', count: 5200, tokens: 1_800_000 },
-    { feature: 'quiz_gen', count: 3100, tokens: 1_200_000 },
-    { feature: 'research_assist', count: 2400, tokens: 800_000 },
-    { feature: 'translation', count: 1780, tokens: 430_000 },
-  ],
-  trend: [
-    { date: '2024-12-21', count: 1600 },
-    { date: '2024-12-22', count: 1850 },
-    { date: '2024-12-23', count: 1720 },
-    { date: '2024-12-24', count: 1900 },
-    { date: '2024-12-25', count: 2100 },
-    { date: '2024-12-26', count: 1950 },
-    { date: '2024-12-27', count: 2200 },
-  ],
-};
 
 const FEATURE_LABELS: Record<string, string> = {
   chat: 'المحادثة',
@@ -50,93 +28,116 @@ const FEATURE_LABELS: Record<string, string> = {
 
 export function OwnerAiPage() {
   const aiMetrics = useOwnerAiMetrics();
-  const data = aiMetrics.data ?? FALLBACK_DATA;
-
-  const barData = {
-    labels: data.byFeature.map((f) => FEATURE_LABELS[f.feature] ?? f.feature),
-    datasets: [
-      {
-        label: 'عدد الطلبات',
-        data: data.byFeature.map((f) => f.count),
-        backgroundColor: '#a3c9ff',
-        borderRadius: 6,
-      },
-    ],
-  };
-
-  const barOptions = cartesianOptions();
-
-  const lineData = {
-    labels: data.trend.map((t) => t.date.slice(5)),
-    datasets: [
-      {
-        label: 'الطلبات اليومية',
-        data: data.trend.map((t) => t.count),
-        borderColor: '#3DD68C',
-        backgroundColor: 'rgba(61, 214, 140, 0.1)',
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4,
-        pointBackgroundColor: '#3DD68C',
-      },
-    ],
-  };
-
-  const lineOptions = cartesianOptions();
+  const data = aiMetrics.data;
 
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">مركز الذكاء الاصطناعي</h1>
-          <p className="page-subtitle">مراقبة استخدام وأداء خدمات الذكاء الاصطناعي</p>
+          <h1 className="page-title">مركز الذكاء الاصطناعيّ</h1>
+          <p className="page-subtitle">مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ</p>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid-4">
-        <MetricCard icon={Bot} label="إجمالي الطلبات" value={data.totalRequests.toLocaleString('ar-LY')} color="brand" />
-        <MetricCard icon={Zap} label="إجمالي التوكنات" value={(data.totalTokens / 1_000_000).toFixed(1) + 'M'} color="purple" />
-        <MetricCard icon={CheckCircle2} label="معدل النجاح" value={data.successRate + '%'} color="green" />
-        <MetricCard icon={Clock} label="متوسط الاستجابة" value={data.avgLatencyMs + 'ms'} color="gold" />
-      </div>
-
-      {/* Charts */}
-      <div className="owner-ai-chart-grid">
-        <Card title="الطلبات حسب الميزة">
-          <div className="owner-chart-container">
-            <Bar data={barData} options={barOptions} />
+      {aiMetrics.isPending ? (
+        <LoadingState />
+      ) : aiMetrics.isError || !data ? (
+        <ErrorState />
+      ) : data.totalRequests === 0 ? (
+        <EmptyState
+          icon={Bot}
+          title="لا توجد طلبات AI بعد"
+          description="ستظهر مؤشّرات الاستخدام هنا فور تشغيل أيّ خدمة ذكاء اصطناعيّ."
+        />
+      ) : (
+        <>
+          {/* Metric Cards — real values */}
+          <div className="grid-4">
+            <MetricCard icon={Bot} label="إجمالي الطلبات" value={data.totalRequests.toLocaleString('ar-LY')} color="brand" />
+            <MetricCard
+              icon={Zap}
+              label="إجمالي التوكنات"
+              value={data.totalTokens >= 1_000_000
+                ? (data.totalTokens / 1_000_000).toFixed(1) + 'M'
+                : data.totalTokens.toLocaleString('ar-LY')}
+              color="purple"
+            />
+            <MetricCard icon={CheckCircle2} label="معدّل النجاح" value={data.successRate + '%'} color="green" />
+            <MetricCard icon={Clock} label="متوسّط الاستجابة" value={data.avgLatencyMs + 'ms'} color="gold" />
           </div>
-        </Card>
 
-        <Card title="اتجاه الاستخدام (7 أيام)">
-          <div className="owner-chart-container">
-            <Line data={lineData} options={lineOptions} />
+          <div className="owner-ai-chart-grid">
+            <Card title="الطلبات حسب الميزة">
+              {data.byFeature.length === 0 ? (
+                <EmptyState title="لا توجد بيانات بعد" />
+              ) : (
+                <div className="owner-chart-container">
+                  <Bar
+                    data={{
+                      labels: data.byFeature.map((f) => FEATURE_LABELS[f.feature] ?? f.feature),
+                      datasets: [{
+                        label: 'عدد الطلبات',
+                        data: data.byFeature.map((f) => f.count),
+                        backgroundColor: '#a3c9ff',
+                        borderRadius: 6,
+                      }],
+                    }}
+                    options={cartesianOptions()}
+                  />
+                </div>
+              )}
+            </Card>
+
+            <Card title="اتّجاه الاستخدام (7 أيّام)">
+              {data.trend.length === 0 ? (
+                <EmptyState title="لا توجد بيانات بعد" />
+              ) : (
+                <div className="owner-chart-container">
+                  <Line
+                    data={{
+                      labels: data.trend.map((t) => t.date.slice(5)),
+                      datasets: [{
+                        label: 'الطلبات اليوميّة',
+                        data: data.trend.map((t) => t.count),
+                        borderColor: '#3DD68C',
+                        backgroundColor: 'rgba(61, 214, 140, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3DD68C',
+                      }],
+                    }}
+                    options={cartesianOptions()}
+                  />
+                </div>
+              )}
+            </Card>
           </div>
-        </Card>
-      </div>
 
-      {/* Feature Breakdown Table */}
-      <Card title="تفاصيل الاستخدام حسب الميزة">
-        <table className="owner-table">
-          <thead>
-            <tr>
-              <th>الميزة</th>
-              <th>الطلبات</th>
-              <th>التوكنات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.byFeature.map((f) => (
-              <tr key={f.feature}>
-                <td>{FEATURE_LABELS[f.feature] ?? f.feature}</td>
-                <td style={{ fontFamily: 'var(--font-mono)' }}>{f.count.toLocaleString('ar-LY')}</td>
-                <td style={{ fontFamily: 'var(--font-mono)' }}>{f.tokens.toLocaleString('ar-LY')}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+          {data.byFeature.length > 0 && (
+            <Card title="تفاصيل الاستخدام حسب الميزة">
+              <table className="owner-table">
+                <thead>
+                  <tr>
+                    <th>الميزة</th>
+                    <th>الطلبات</th>
+                    <th>التوكنات</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.byFeature.map((f) => (
+                    <tr key={f.feature}>
+                      <td>{FEATURE_LABELS[f.feature] ?? f.feature}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)' }}>{f.count.toLocaleString('ar-LY')}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)' }}>{f.tokens.toLocaleString('ar-LY')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
+          )}
+        </>
+      )}
     </div>
   );
 }
