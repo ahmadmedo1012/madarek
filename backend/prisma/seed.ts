@@ -31,13 +31,16 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // ─── Faculties & Departments ─────────────────────────────────
-  // Mirrors the official faculty list of University of Zawia per
-  // `zu_university_report.md` (29 colleges total — 11 inside-campus + 18 branch).
-  // We seed a representative subset that covers each region (Zawia + branches).
-  // NOTE: Order of the first 4 entries (IT, Engineering, Sciences, Medicine)
-  // is load-bearing — index references below assume it.
+  // Source-of-truth: the official Zawia University site (zu.edu.ly), as
+  // captured in `zu.edu.ly.md` at the repo root. The institution lists 25
+  // distinct faculty/city pairs — same name can repeat across cities
+  // (Economics in الزاوية AND العجيلات are two separate institutions),
+  // which is why uniqueness is on (name, city), not name alone.
+  //
+  // Order of the first 4 entries (IT, Engineering, Sciences, Medicine) is
+  // load-bearing — index references later in this file assume it.
 
-  // One-time rename: legacy "كلية الطب" row (pre-source-alignment) → source-correct name.
+  // One-time rename: legacy "كلية الطب" row → source-correct name.
   await prisma.faculty.updateMany({
     where: { name: 'كلية الطب' },
     data: { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
@@ -45,22 +48,40 @@ async function main() {
 
   const faculties = await Promise.all(
     [
-      { name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻' },
-      { name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: '⚙️' },
-      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬' },
-      { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️' },
-      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼' },
-      { name: 'كلية القانون', nameEn: 'Law', iconEmoji: '⚖️' },
-      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚' },
-      { name: 'كلية الصيدلة', nameEn: 'Pharmacy', iconEmoji: '💊' },
-      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓' },
-      { name: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering', iconEmoji: '⛽' },
-      { name: 'كلية التربية البدنية وعلوم الرياضة', nameEn: 'Physical Education', iconEmoji: '⚽' },
-      { name: 'كلية الطب البيطري والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences', iconEmoji: '🌾' },
-      // Source-true additions — both inside-campus per zu_university_report.md
-      { name: 'كلية طب الأسنان والجراحة الفموية', nameEn: 'Dentistry & Oral Surgery', iconEmoji: '🦷' },
-      { name: 'كلية التقنية الطبية', nameEn: 'Medical Technology', iconEmoji: '🩺' },
-    ].map((f) => prisma.faculty.upsert({ where: { name: f.name }, create: f, update: { nameEn: f.nameEn, iconEmoji: f.iconEmoji } })),
+      // ── الزاوية (main campus, 13 faculties) ──────────────────
+      { name: 'كلية تقنية المعلومات', nameEn: 'Information Technology', iconEmoji: '💻', city: 'الزاوية' },
+      { name: 'كلية الهندسة', nameEn: 'Engineering', iconEmoji: '⚙️', city: 'الزاوية' },
+      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬', city: 'الزاوية' },
+      { name: 'كلية الطب البشري', nameEn: 'Human Medicine', iconEmoji: '⚕️', city: 'الزاوية' },
+      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚', city: 'الزاوية' },
+      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼', city: 'الزاوية' },
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'الزاوية' },
+      { name: 'كلية القانون', nameEn: 'Law', iconEmoji: '⚖️', city: 'الزاوية' },
+      { name: 'كلية الصيدلة', nameEn: 'Pharmacy', iconEmoji: '💊', city: 'الزاوية' },
+      { name: 'كلية طب وجراحة الفم والأسنان', nameEn: 'Dentistry & Oral Surgery', iconEmoji: '🦷', city: 'الزاوية' },
+      { name: 'كلية التقنية الطبية', nameEn: 'Medical Technology', iconEmoji: '🩺', city: 'الزاوية' },
+      { name: 'كلية الرياضة والتربية البدنية', nameEn: 'Physical Education & Sports', iconEmoji: '⚽', city: 'الزاوية' },
+      { name: 'كلية التمريض', nameEn: 'Nursing', iconEmoji: '👩‍⚕️', city: 'الزاوية' },
+      // ── العجيلات (8 faculties) ────────────────────────────────
+      { name: 'كلية الاقتصاد', nameEn: 'Economics', iconEmoji: '💼', city: 'العجيلات' },
+      { name: 'كلية البيطرة والعلوم الزراعية', nameEn: 'Veterinary & Agricultural Sciences', iconEmoji: '🌾', city: 'العجيلات' },
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'العجيلات' },
+      { name: 'كلية الشريعة والقانون', nameEn: 'Sharia & Law', iconEmoji: '⚖️', city: 'العجيلات' },
+      { name: 'كلية العلوم', nameEn: 'Sciences', iconEmoji: '🔬', city: 'العجيلات' },
+      { name: 'كلية الصحة العامة', nameEn: 'Public Health', iconEmoji: '🏥', city: 'العجيلات' },
+      { name: 'كلية هندسة الموارد الطبيعية', nameEn: 'Natural Resources Engineering', iconEmoji: '⛰️', city: 'العجيلات' },
+      { name: 'كلية هندسة النفط والغاز', nameEn: 'Oil & Gas Engineering', iconEmoji: '⛽', city: 'العجيلات' },
+      // ── زوارة ────────────────────────────────────────────────
+      { name: 'كلية الآداب', nameEn: 'Arts', iconEmoji: '📚', city: 'زوارة' },
+      // ── مناطق أخرى ───────────────────────────────────────────
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'أبو عيسى' },
+      { name: 'كلية التربية', nameEn: 'Education', iconEmoji: '🎓', city: 'ناصر' },
+      { name: 'كلية الموارد الطبيعية', nameEn: 'Natural Resources', iconEmoji: '⛰️', city: 'مناطق أخرى' },
+    ].map((f) => prisma.faculty.upsert({
+      where: { name_city: { name: f.name, city: f.city } },
+      create: f,
+      update: { nameEn: f.nameEn, iconEmoji: f.iconEmoji },
+    })),
   );
 
   const itFaculty = faculties[0]!;
@@ -75,8 +96,7 @@ async function main() {
     update: {},
   });
 
-  // Add a few representative departments for the new faculties so admin/quality
-  // dashboards have realistic structure to walk.
+  // Engineering — common departments.
   const engFaculty = faculties[1]!;
   await prisma.department.upsert({
     where: { facultyId_name: { facultyId: engFaculty.id, name: 'الهندسة المدنية' } },
@@ -88,6 +108,27 @@ async function main() {
     create: { name: 'الهندسة الكهربائية', nameEn: 'Electrical Engineering', facultyId: engFaculty.id },
     update: {},
   });
+
+  // Sciences — full department list per the official Zawia source
+  // (botany, zoology, chemistry, mathematics, geology, physics,
+  //  statistics, computer science). Established 1988.
+  const sciFaculty = faculties[2]!;
+  for (const dept of [
+    { name: 'قسم النبات', nameEn: 'Botany' },
+    { name: 'قسم الحيوان', nameEn: 'Zoology' },
+    { name: 'قسم الكيمياء', nameEn: 'Chemistry' },
+    { name: 'قسم الرياضيات', nameEn: 'Mathematics' },
+    { name: 'قسم الجيولوجيا', nameEn: 'Geology' },
+    { name: 'قسم الفيزياء', nameEn: 'Physics' },
+    { name: 'قسم الإحصاء', nameEn: 'Statistics' },
+    { name: 'قسم علم الحاسوب', nameEn: 'Computer Science' },
+  ]) {
+    await prisma.department.upsert({
+      where: { facultyId_name: { facultyId: sciFaculty.id, name: dept.name } },
+      create: { name: dept.name, nameEn: dept.nameEn, facultyId: sciFaculty.id },
+      update: {},
+    });
+  }
 
   const medFaculty = faculties[3]!;
   await prisma.department.upsert({

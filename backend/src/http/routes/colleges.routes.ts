@@ -44,6 +44,7 @@ router.get('/colleges', async (_req, res, next) => {
         name: f.name,
         nameEn: f.nameEn,
         iconEmoji: f.iconEmoji,
+        city: f.city,
         departmentCount: f.departments.length,
         studentCount,
         teacherCount,
@@ -120,6 +121,7 @@ router.get('/colleges/leaderboard', async (_req, res, next) => {
           id: f.id,
           name: f.name,
           iconEmoji: f.iconEmoji,
+          city: f.city,
           studentCount,
           teacherCount,
           totalXp: xpAgg._sum?.totalXp ?? 0,
@@ -320,6 +322,7 @@ router.get('/colleges/:id', async (req, res, next) => {
         name: faculty.name,
         nameEn: faculty.nameEn,
         iconEmoji: faculty.iconEmoji,
+        city: faculty.city,
         stats: {
           studentCount,
           teacherCount,

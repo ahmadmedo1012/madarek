@@ -7,11 +7,36 @@
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Index: grid of college cards ──────────────────────────── */
+.college-city-section {
+  margin-block-start: var(--sp-6);
+}
+.college-city-section:first-of-type {
+  margin-block-start: var(--sp-5);
+}
+.college-city-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-3);
+  padding-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+}
+.college-city-name {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  margin: 0;
+}
+.college-city-count {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
 .college-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--sp-4);
-  margin-block-start: var(--sp-5);
 }
 
 .college-card {

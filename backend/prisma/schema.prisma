@@ -367,9 +367,13 @@ model TeacherProfile {
 // ────────────────────────────────────────────────────────────────
 model Faculty {
   id                 String             @id @default(cuid())
-  name               String             @unique
+  // The same faculty name can exist in multiple cities (e.g. "كلية الاقتصاد"
+  // in Zawia AND Ajilat are distinct institutions). Uniqueness is on (name, city).
+  name               String
   nameEn             String?
   iconEmoji          String?
+  // City the faculty is located in. Defaults to الزاوية for legacy rows.
+  city               String             @default("الزاوية")
   createdAt          DateTime           @default(now())
   departments        Department[]
   students           StudentProfile[]
@@ -378,6 +382,9 @@ model Faculty {
   // Reverse relations for governance scoping (ADR — sub-project A)
   scopedAdmins       User[]             @relation("FacultyScopedAdmins")
   leadership         TeacherProfile[]   @relation("FacultyLeadership")
+
+  @@unique([name, city])
+  @@index([city])
 }
 
 model Department {

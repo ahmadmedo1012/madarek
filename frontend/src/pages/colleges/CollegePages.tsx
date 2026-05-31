@@ -17,6 +17,7 @@ interface CollegeListItem {
   name: string;
   nameEn?: string | null;
   iconEmoji?: string | null;
+  city: string;
   departmentCount: number;
   studentCount: number;
   teacherCount: number;
@@ -36,6 +37,7 @@ interface CollegeDetail {
   name: string;
   nameEn?: string | null;
   iconEmoji?: string | null;
+  city: string;
   stats: {
     studentCount: number;
     teacherCount: number;
@@ -144,26 +146,51 @@ export function CollegesIndexPage() {
 
       {q.data && q.data.length > 0 && (
         <>
-          <div className="college-grid">
-            {q.data.map((c) => (
-              <Link key={c.id} to={`/colleges/${c.id}`} className="college-card">
-                <div className="college-card-header">
-                  <span className="college-card-emoji" aria-hidden>{c.iconEmoji ?? '🏛️'}</span>
-                  <div className="college-card-titles">
-                    <div className="college-card-name">{c.name}</div>
-                    {c.nameEn && <div className="college-card-sub">{c.nameEn}</div>}
-                  </div>
-                  <span className="college-card-arrow"><Icon icon={ArrowLeft} size={18} /></span>
+          {(() => {
+            // Group colleges by city to mirror the real Zawia campus structure
+            // (الزاوية / العجيلات / زوارة / مناطق أخرى).
+            const byCity = new Map<string, CollegeListItem[]>();
+            for (const c of q.data) {
+              const list = byCity.get(c.city) ?? [];
+              list.push(c);
+              byCity.set(c.city, list);
+            }
+            // Stable city order — main campus first.
+            const order = ['الزاوية', 'العجيلات', 'زوارة', 'أبو عيسى', 'ناصر', 'مناطق أخرى'];
+            const cities = Array.from(byCity.keys()).sort((a, b) => {
+              const ai = order.indexOf(a); const bi = order.indexOf(b);
+              return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+            });
+
+            return cities.map((city) => (
+              <section key={city} className="college-city-section">
+                <header className="college-city-header">
+                  <h2 className="college-city-name">{city}</h2>
+                  <span className="college-city-count">{byCity.get(city)!.length} كلّيّة</span>
+                </header>
+                <div className="college-grid">
+                  {byCity.get(city)!.map((c) => (
+                    <Link key={c.id} to={`/colleges/${c.id}`} className="college-card">
+                      <div className="college-card-header">
+                        <span className="college-card-emoji" aria-hidden>{c.iconEmoji ?? '🏛️'}</span>
+                        <div className="college-card-titles">
+                          <div className="college-card-name">{c.name}</div>
+                          {c.nameEn && <div className="college-card-sub">{c.nameEn}</div>}
+                        </div>
+                        <span className="college-card-arrow"><Icon icon={ArrowLeft} size={18} /></span>
+                      </div>
+                      <div className="college-card-stats">
+                        <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
+                        <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
+                        <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
+                        <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-                <div className="college-card-stats">
-                  <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
-                  <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
-                  <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
-                  <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
-                </div>
-              </Link>
-            ))}
-          </div>
+              </section>
+            ));
+          })()}
 
           <div className="leaderboard-cta">
             <Link to="/colleges/leaderboard" className="btn primary">
@@ -211,7 +238,7 @@ export function CollegeDetailPage() {
       <header className="college-hero page-header">
         <div className="college-hero-emoji" aria-hidden>{c.iconEmoji ?? '🏛️'}</div>
         <div className="college-hero-titles">
-          <div className="college-hero-eyebrow">جامعة الزاوية · كلّيّة</div>
+          <div className="college-hero-eyebrow">جامعة الزاوية · {c.city}</div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
           {c.nameEn && <div className="college-hero-sub">{c.nameEn}</div>}
         </div>
@@ -415,6 +442,7 @@ interface LeaderboardCollege {
   id: string;
   name: string;
   iconEmoji?: string | null;
+  city: string;
   studentCount: number;
   teacherCount: number;
   totalXp: number;
@@ -503,7 +531,7 @@ export function CollegesLeaderboardPage() {
                           <div>
                             <div className="leaderboard-college-name">{c.name}</div>
                             <div className="leaderboard-college-meta">
-                              {c.studentCount.toLocaleString('ar-LY')} طالب · {c.teacherCount} أستاذ
+                              {c.city} · {c.studentCount.toLocaleString('ar-LY')} طالب · {c.teacherCount} أستاذ
                             </div>
                           </div>
                         </Link>
