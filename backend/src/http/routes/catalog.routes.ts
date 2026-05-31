@@ -417,6 +417,7 @@ router.get('/admin/faculties', requireRole(Role.ADMIN), async (_req, res, next) 
         name: f.name,
         nameEn: f.nameEn,
         iconEmoji: f.iconEmoji,
+        city: f.city,
         departmentCount: f.departments.length,
         studentCount,
         teacherCount,

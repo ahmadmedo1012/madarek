@@ -17,105 +17,175 @@ import { cartesianOptions, valueLabels } from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
-const FACULTY_DISTRIBUTION = [
-  { f: 'الاقتصاد', c: 6800 },
-  { f: 'الهندسة', c: 5200 },
-  { f: 'الطب البشري', c: 4800 },
-  { f: 'التربية', c: 4500 },
-  { f: 'الآداب', c: 4100 },
-  { f: 'القانون', c: 3700 },
-  { f: 'تقنية المعلومات', c: 2900 },
-  { f: 'العلوم', c: 2500 },
-];
-
 export function AdminDashboardPage() {
   const stats = useAdminStats();
+  const facs = useAdminFaculties();
+  const reports = useAdminReports();
 
-  if (stats.isPending) return <LoadingState />;
-  if (stats.isError) return <ErrorState />;
+  if (stats.isPending || facs.isPending || reports.isPending) return <LoadingState />;
+  if (stats.isError || facs.isError || reports.isError) return <ErrorState />;
   const s = stats.data!;
+  const f = facs.data!;
+  const r = reports.data!;
+
+  // Real top-8 by student count.
+  const topByStudents = [...f]
+    .sort((a, b) => b.studentCount - a.studentCount)
+    .slice(0, 8)
+    .filter((x) => x.studentCount > 0 || f.length <= 8);
+
+  // Distinct cities — replaces the "9 cities" placeholder.
+  const cityCount = new Set(f.map((x) => x.city)).size;
+  const facultyCount = f.length;
+
+  // Highest-density faculty for "مؤشرات سريعة".
+  const topFaculty = topByStudents[0];
+  const topByCourses = [...f].sort((a, b) => b.courseCount - a.courseCount)[0];
+  const studentTeacherRatio = s.totalTeachers > 0
+    ? Math.round((s.totalStudents / s.totalTeachers) * 10) / 10
+    : null;
 
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">لوحة الإدارة</h1>
-          <p className="page-subtitle">إحصائيات شاملة عن طلاب وأساتذة جامعة الزاوية.</p>
+          <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
         </div>
       </div>
 
       <div className="grid-4">
-        <MetricCard icon={Building2} label="الكليات" value="29" change="موزّعة على 9 مدن" color="brand" />
-        <MetricCard icon={GraduationCap} label="الطلاب" value={s.totalStudents.toLocaleString('ar-LY')} change="مسجَّل في النظام" color="green" />
-        <MetricCard icon={School} label="هيئة التدريس" value={s.totalTeachers.toLocaleString('ar-LY')} change="عضو" color="amber" />
-        <MetricCard icon={BookOpen} label="المقررات" value={s.totalCourses.toLocaleString('ar-LY')} change={`${s.totalEnrollments} تسجيل`} color="purple" />
+        <MetricCard
+          icon={Building2}
+          label="الكليات"
+          value={facultyCount.toLocaleString('ar-LY')}
+          change={`موزّعة على ${cityCount} ${cityCount === 1 ? 'مدينة' : 'مدن'}`}
+          color="brand"
+        />
+        <MetricCard
+          icon={GraduationCap}
+          label="الطلاب"
+          value={s.totalStudents.toLocaleString('ar-LY')}
+          change="مسجَّل في النظام"
+          color="green"
+        />
+        <MetricCard
+          icon={School}
+          label="هيئة التدريس"
+          value={s.totalTeachers.toLocaleString('ar-LY')}
+          change="عضو"
+          color="amber"
+        />
+        <MetricCard
+          icon={BookOpen}
+          label="المقررات"
+          value={s.totalCourses.toLocaleString('ar-LY')}
+          change={`${s.totalEnrollments.toLocaleString('ar-LY')} تسجيل`}
+          color="purple"
+        />
       </div>
 
       <div className="grid-2-1">
-        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle="أعلى 8 كليات من حيث عدد الطلاب">
-          <div style={{ height: 300 }}>
-            <Bar
-              data={{
-                labels: FACULTY_DISTRIBUTION.map((r) => r.f),
-                datasets: [{
-                  label: 'عدد الطلاب',
-                  data: FACULTY_DISTRIBUTION.map((r) => r.c),
-                  backgroundColor: 'rgba(163, 201, 255, 0.55)',
-                  borderColor: '#a3c9ff',
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  maxBarThickness: 22,
-                }],
-              }}
-              plugins={[valueLabels]}
-              options={{ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }}
-            />
-          </div>
+        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle={`أعلى ${topByStudents.length} كلّيّة من حيث عدد الطلاب`}>
+          {topByStudents.length === 0 ? (
+            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
+              لا توجد بيانات طلاب بعد.
+            </p>
+          ) : (
+            <div style={{ height: Math.max(180, topByStudents.length * 36) }}>
+              <Bar
+                data={{
+                  labels: topByStudents.map((row) => row.name),
+                  datasets: [{
+                    label: 'عدد الطلاب',
+                    data: topByStudents.map((row) => row.studentCount),
+                    backgroundColor: 'rgba(163, 201, 255, 0.55)',
+                    borderColor: '#a3c9ff',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    maxBarThickness: 22,
+                  }],
+                }}
+                plugins={[valueLabels]}
+                options={{ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }}
+              />
+            </div>
+          )}
         </Card>
 
         <Card title="مؤشرات سريعة" icon={TrendingUp}>
           <div className="flex-col gap-2">
-            <Stat label="معدل النجاح العام" value="76%" trend="up" />
-            <Stat label="الحضور التراكمي" value="82%" trend="up" />
-            <Stat label="رضا الطلاب" value="4.3 / 5" trend="up" />
-            <Stat label="الترتيب في ليبيا" value="#6" trend="up" />
-            <Stat label="QS العربي 2026" value="#251–300" trend="up" />
+            <Stat
+              label="أكبر كلّيّة"
+              value={topFaculty ? `${topFaculty.name} (${topFaculty.studentCount.toLocaleString('ar-LY')})` : '—'}
+            />
+            <Stat
+              label="أعلى عدد مقرّرات"
+              value={topByCourses ? `${topByCourses.name} (${topByCourses.courseCount})` : '—'}
+            />
+            <Stat
+              label="نسبة طالب/أستاذ"
+              value={studentTeacherRatio !== null ? `${studentTeacherRatio}` : '—'}
+            />
+            <Stat
+              label="أبحاث منشورة"
+              value={r.headline.publishedPapers.toLocaleString('ar-LY')}
+            />
+            <Stat
+              label="إجمالي الأبحاث"
+              value={r.headline.totalPapers.toLocaleString('ar-LY')}
+            />
           </div>
         </Card>
       </div>
 
-      <Card title="تطوّر معدل النجاح العام" icon={TrendingUp} subtitle="آخر 6 فصول دراسية">
-        <div style={{ height: 240 }}>
-          <Line
-            data={{
-              labels: ['2023أ', '2023ب', '2024أ', '2024ب', '2025أ', '2025ب'],
-              datasets: [{
-                label: 'معدل النجاح %',
-                data: [68, 71, 70, 73, 75, 76],
-                borderColor: '#3DD68C',
-                backgroundColor: 'rgba(61, 214, 140, 0.10)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 4,
-                pointBackgroundColor: '#3DD68C',
-                borderWidth: 2,
-              }],
-            }}
-            options={{
-              ...cartesianOptions(),
-              scales: {
-                ...cartesianOptions().scales,
-                y: { ...cartesianOptions().scales!.y, min: 50, max: 100 },
-              },
-            }}
-          />
-        </div>
+      <Card title="نشاط الإنتاج العلميّ — آخر ٦ أشهر" icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
+        {r.paperTrend.length === 0 || r.paperTrend.every((m) => m.submitted + m.graded + m.published === 0) ? (
+          <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
+            لا توجد بيانات أبحاث للأشهر الستة الماضية.
+          </p>
+        ) : (
+          <div style={{ height: 240 }}>
+            <Line
+              data={{
+                labels: r.paperTrend.map((m) => m.month),
+                datasets: [
+                  {
+                    label: 'مقدَّم',
+                    data: r.paperTrend.map((m) => m.submitted),
+                    borderColor: '#a3c9ff',
+                    backgroundColor: 'rgba(163, 201, 255, 0.10)',
+                    fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
+                    pointBackgroundColor: '#a3c9ff',
+                  },
+                  {
+                    label: 'مقيَّم',
+                    data: r.paperTrend.map((m) => m.graded),
+                    borderColor: '#FFC857',
+                    backgroundColor: 'rgba(255, 200, 87, 0.08)',
+                    fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
+                    pointBackgroundColor: '#FFC857',
+                  },
+                  {
+                    label: 'منشور',
+                    data: r.paperTrend.map((m) => m.published),
+                    borderColor: '#3DD68C',
+                    backgroundColor: 'rgba(61, 214, 140, 0.10)',
+                    fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
+                    pointBackgroundColor: '#3DD68C',
+                  },
+                ],
+              }}
+              options={{ ...cartesianOptions({ legend: true }) }}
+            />
+          </div>
+        )}
       </Card>
     </div>
   );
 }
 
-function Stat({ label, value, trend }: { label: string; value: string; trend: 'up' | 'dn' }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between" style={{ padding: 'var(--sp-2) var(--sp-3)' }}>
       <span className="text-sm text-muted">{label}</span>

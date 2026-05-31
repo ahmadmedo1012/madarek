@@ -367,6 +367,7 @@ export interface AdminFaculty {
   name: string;
   nameEn: string | null;
   iconEmoji: string | null;
+  city: string;
   departmentCount: number;
   studentCount: number;
   teacherCount: number;
