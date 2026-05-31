@@ -21,6 +21,88 @@ router.use(requireRole(Role.TEACHER, Role.ADMIN));
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
 
+/**
+ * GET /teacher/me/materials — every material the teacher has ever uploaded,
+ * across all of their offerings, sorted newest first.
+ */
+router.get('/teacher/me/materials', async (req, res, next) => {
+  try {
+    const teacherId = req.user!.id;
+    const offeringIds = (await prisma.courseOffering.findMany({
+      where: { teacherId }, select: { id: true },
+    })).map((o) => o.id);
+    if (offeringIds.length === 0) {
+      res.json({ data: [] });
+      return;
+    }
+    const materials = await prisma.material.findMany({
+      where: { offeringId: { in: offeringIds } },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+      select: {
+        id: true, name: true, type: true, url: true, sizeBytes: true,
+        downloads: true, views: true, createdAt: true,
+        offering: { select: { course: { select: { code: true, name: true } } } },
+      },
+    });
+    res.json({
+      data: materials.map((m) => ({
+        id: m.id, name: m.name, type: m.type, url: m.url,
+        sizeBytes: Number(m.sizeBytes),
+        downloads: m.downloads, views: m.views,
+        createdAt: m.createdAt,
+        course: m.offering.course,
+      })),
+    });
+  } catch (e) { next(e); }
+});
+
+/**
+ * GET /teacher/me/assignments — every assignment across all of the
+ * teacher's offerings, with submission count vs enrolment count.
+ */
+router.get('/teacher/me/assignments', async (req, res, next) => {
+  try {
+    const teacherId = req.user!.id;
+    const offerings = await prisma.courseOffering.findMany({
+      where: { teacherId },
+      select: { id: true, _count: { select: { enrollments: true } } },
+    });
+    const offeringIds = offerings.map((o) => o.id);
+    if (offeringIds.length === 0) {
+      res.json({ data: [] });
+      return;
+    }
+    const enrolByOffering = new Map(offerings.map((o) => [o.id, o._count.enrollments]));
+
+    const assignments = await prisma.assignment.findMany({
+      where: { offeringId: { in: offeringIds } },
+      orderBy: [{ dueAt: 'asc' }],
+      take: 100,
+      select: {
+        id: true, title: true, type: true, dueAt: true, weight: true, maxScore: true,
+        offeringId: true,
+        offering: { select: { course: { select: { code: true, name: true } } } },
+        _count: { select: { submissions: true } },
+      },
+    });
+
+    res.json({
+      data: assignments.map((a) => ({
+        id: a.id,
+        title: a.title,
+        type: a.type,
+        dueAt: a.dueAt,
+        weight: a.weight,
+        maxScore: a.maxScore,
+        course: a.offering.course,
+        submissions: a._count.submissions,
+        enrolled: enrolByOffering.get(a.offeringId) ?? 0,
+      })),
+    });
+  } catch (e) { next(e); }
+});
+
 router.get('/teacher/dashboard', async (req, res, next) => {
   try {
     const teacherId = req.user!.id;

@@ -1113,6 +1113,65 @@ export function useRecordAttendance() {
   });
 }
 
+// ── Teacher: own materials + assignments across all offerings ──
+export interface TeacherMaterial {
+  id: string;
+  name: string;
+  type: 'PDF' | 'PPT' | 'VIDEO' | 'DOC' | 'ZIP' | 'IMAGE' | 'OTHER';
+  url: string;
+  sizeBytes: number;
+  downloads: number;
+  views: number;
+  createdAt: string;
+  course: { code: string; name: string };
+}
+export function useTeacherMaterials() {
+  return useQuery({
+    queryKey: ['teacher', 'me', 'materials'],
+    queryFn: () => unwrap<TeacherMaterial[]>(api.get('/teacher/me/materials')),
+    staleTime: 60_000,
+  });
+}
+
+export interface TeacherAssignmentRow {
+  id: string;
+  title: string;
+  type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+  dueAt: string;
+  weight: number;
+  maxScore: number;
+  course: { code: string; name: string };
+  submissions: number;
+  enrolled: number;
+}
+export function useTeacherAssignments() {
+  return useQuery({
+    queryKey: ['teacher', 'me', 'assignments'],
+    queryFn: () => unwrap<TeacherAssignmentRow[]>(api.get('/teacher/me/assignments')),
+    staleTime: 60_000,
+  });
+}
+
+// ── Direct messages ──────────────────────────────────────────
+export interface MessageRow {
+  id: string;
+  body: string;
+  createdAt: string;
+  fromUser: { id: string; firstName: string; lastName: string; avatarColor: string | null };
+  toUser: { id: string; firstName: string; lastName: string; avatarColor: string | null };
+}
+export function useMyMessages(page: number = 1, limit: number = 30) {
+  return useQuery({
+    queryKey: ['me', 'messages', page, limit],
+    queryFn: async () => {
+      const res = await api.get<{ data: MessageRow[]; meta: { total: number; page: number; limit: number; totalPages: number } }>(
+        '/messages', { params: { page, limit } });
+      return res.data;
+    },
+    staleTime: 30_000,
+  });
+}
+
 export interface TeacherRiskRow extends Omit<TeacherStudentRow, 'attendancePct' | 'absences' | 'lateCount' | 'avgGrade' | 'watchPct' | 'universityId'> {
   offeringId: string;
   courseName: string;
