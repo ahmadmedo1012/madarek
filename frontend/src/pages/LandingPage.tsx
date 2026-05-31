@@ -336,28 +336,28 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pilot stats */}
+      {/* University facts — straight from zu.edu.ly */}
       <section className="marketing-container">
         <div className="landing-pilot-grid">
           <Reveal as="div" className="landing-pilot-stat">
-            <div className="landing-pilot-value"><CountUp value="29" /></div>
-            <div className="landing-pilot-label">كلية أكاديمية</div>
-            <div className="landing-pilot-note">على مستوى تسع مدن</div>
+            <div className="landing-pilot-value"><CountUp value="25" /></div>
+            <div className="landing-pilot-label">كلّيّة أكاديميّة</div>
+            <div className="landing-pilot-note">حسب الموقع الرسميّ للجامعة</div>
           </Reveal>
           <Reveal as="div" className="landing-pilot-stat" delay={1}>
-            <div className="landing-pilot-value"><CountUp value="50K" /></div>
-            <div className="landing-pilot-label">طالب مسجَّل</div>
-            <div className="landing-pilot-note">في جميع الكليّات</div>
+            <div className="landing-pilot-value"><CountUp value="4" /></div>
+            <div className="landing-pilot-label">مدن وفروع</div>
+            <div className="landing-pilot-note">الزاوية، العجيلات، زوارة وأخرى</div>
           </Reveal>
           <Reveal as="div" className="landing-pilot-stat" delay={2}>
-            <div className="landing-pilot-value"><CountUp value="2.5K" /></div>
-            <div className="landing-pilot-label">عضو هيئة تدريس</div>
-            <div className="landing-pilot-note">معتمد رسمياً</div>
+            <div className="landing-pilot-value">1988</div>
+            <div className="landing-pilot-label">عام التأسيس</div>
+            <div className="landing-pilot-note">بقرار رقم 135</div>
           </Reveal>
           <Reveal as="div" className="landing-pilot-stat" delay={3}>
-            <div className="landing-pilot-value">#6</div>
-            <div className="landing-pilot-label">على ليبيا</div>
-            <div className="landing-pilot-note">في الترتيب الوطني</div>
+            <div className="landing-pilot-value"><CountUp value="3" /></div>
+            <div className="landing-pilot-label">عضويّات دوليّة</div>
+            <div className="landing-pilot-note">عربيّة، أفريقيّة، إسلاميّة</div>
           </Reveal>
         </div>
       </section>
