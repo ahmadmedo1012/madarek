@@ -59,3 +59,14 @@ stitch*.zip
 # Visual audit artifacts (Playwright snapshots — not committed)
 audit-out/
 .claude/
+
+# Local agent / vector DB tooling artifacts (Ruflo / RVF)
+ruvector.db
+**/ruvector.db
+agentdb.rvf
+agentdb.rvf.lock
+**/agentdb.rvf
+**/agentdb.rvf.lock
+
+# Stray nested copy of the repo (created by some tooling)
+/madarek/
