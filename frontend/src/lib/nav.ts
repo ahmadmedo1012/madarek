@@ -49,6 +49,7 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
       { to: '/colleges/leaderboard', icon: Trophy, label: 'منافسة الكلّيّات' },
+      { to: '/competitions', icon: Trophy, label: 'المسابقات الأكاديميّة' },
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
     ],
   },
@@ -92,6 +93,7 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/teacher/profile', icon: UserCircle, label: 'الملف الأكاديمي' },
       { to: '/teacher/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
+      { to: '/competitions', icon: Trophy, label: 'المسابقات' },
     ],
   },
 ];

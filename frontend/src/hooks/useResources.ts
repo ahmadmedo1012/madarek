@@ -1251,6 +1251,69 @@ export function useCompetitions() {
   });
 }
 
+export interface CompetitionDetail extends CompetitionRow {
+  organizerId: string;
+  entries: Array<{
+    id: string;
+    title: string;
+    body?: string;
+    fileUrl?: string | null;
+    submittedAt: string;
+    score: number | null;
+    user: { firstName: string; lastName: string; avatarColor: string | null; avatarInitials: string | null };
+  }>;
+}
+export function useCompetition(id: string | undefined) {
+  return useQuery({
+    queryKey: ['competitions', id],
+    queryFn: () => unwrap<CompetitionDetail>(api.get(`/competitions/${id}`)),
+    enabled: !!id,
+  });
+}
+
+export interface CreateCompetitionInput {
+  title: string;
+  description: string;
+  category: string;
+  prize?: string;
+  deadline: string;
+  iconEmoji?: string;
+  themeColor?: string;
+}
+export function useCreateCompetition() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateCompetitionInput) =>
+      unwrap<CompetitionRow>(api.post('/competitions', input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['competitions'] }),
+  });
+}
+
+export interface EnterCompetitionInput {
+  title: string;
+  body: string;
+  fileUrl?: string;
+}
+export function useEnterCompetition(competitionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: EnterCompetitionInput) =>
+      unwrap<{ id: string }>(api.post(`/competitions/${competitionId}/enter`, input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['competitions', competitionId] }),
+  });
+}
+
+export function useCloseCompetition(competitionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unwrap<CompetitionRow>(api.post(`/competitions/${competitionId}/close`, {})),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['competitions', competitionId] });
+      qc.invalidateQueries({ queryKey: ['competitions'] });
+    },
+  });
+}
+
 export interface CampusEventRow {
   id: string;
   title: string;

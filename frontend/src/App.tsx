@@ -48,6 +48,7 @@ import { QualityDashboardPage, QualityCoursesPage, QualityProfessorsPage, Qualit
 import { OwnerDashboardPage, OwnerUsersPage, OwnerActivityPage, OwnerContentPage, OwnerSystemPage, OwnerEducationPage, OwnerRealtimePage, OwnerAiPage, OwnerAlertsPage, OwnerGovernancePage } from './pages/owner/OwnerPages';
 import { VisionGalleryPage, VisionDetailPage } from './pages/vision/VisionPages';
 import { CollegesIndexPage, CollegeDetailPage, CollegesLeaderboardPage } from './pages/colleges/CollegePages';
+import { CompetitionsIndexPage, CompetitionDetailPage } from './pages/competitions/CompetitionsPages';
 import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 
@@ -208,6 +209,9 @@ export default function App() {
               <Route path="/colleges" element={<CollegesIndexPage />} />
               <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
               <Route path="/colleges/:id" element={<CollegeDetailPage />} />
+              {/* Competitions — index + detail, available to all authenticated roles */}
+              <Route path="/competitions" element={<CompetitionsIndexPage />} />
+              <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
             </Route>
           </Route>
 

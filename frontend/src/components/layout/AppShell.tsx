@@ -80,6 +80,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/community': 'المجتمع الجامعي',
   '/colleges': 'كلّيّات الجامعة',
   '/colleges/leaderboard': 'منافسة الكلّيّات',
+  '/competitions': 'المسابقات الأكاديميّة',
   '/teacher/community': 'المجتمع الجامعي',
   '/admin/community': 'المجتمع الجامعي',
   '/quality/community': 'المجتمع الجامعي',
@@ -101,6 +102,7 @@ const DYNAMIC_TITLES: Array<[RegExp, string]> = [
   [/^\/student\/online-exams\/[^/]+$/,       'اختبار جارٍ'],
   [/^\/admin\/permissions\/[^/]+$/,          'إدارة الصلاحيات'],
   [/^\/colleges\/[^/]+$/,                    'كلّيّة'],
+  [/^\/competitions\/[^/]+$/,                'مسابقة'],
 ];
 
 function resolveTitle(pathname: string): string {
