@@ -13,55 +13,22 @@ import {
   Legend,
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
+import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { cartesianOptions, radialOptions } from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
-import type { GovernanceMetrics, LoginAnalytics } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
-
-const FALLBACK_GOVERNANCE: GovernanceMetrics = {
-  permissionChanges: 34,
-  roleChanges: 12,
-  newUsersThisMonth: 156,
-  weeklyGrowth: [
-    { week: 'أسبوع 1', count: 18 },
-    { week: 'أسبوع 2', count: 22 },
-    { week: 'أسبوع 3', count: 15 },
-    { week: 'أسبوع 4', count: 28 },
-    { week: 'أسبوع 5', count: 20 },
-    { week: 'أسبوع 6', count: 25 },
-    { week: 'أسبوع 7', count: 30 },
-    { week: 'أسبوع 8', count: 32 },
-  ],
-};
-
-const FALLBACK_LOGIN: LoginAnalytics = {
-  total: 8420,
-  successCount: 7980,
-  failureCount: 440,
-  daily: [
-    { date: '2024-12-21', success: 1100, failure: 55 },
-    { date: '2024-12-22', success: 1050, failure: 62 },
-    { date: '2024-12-23', success: 1200, failure: 70 },
-    { date: '2024-12-24', success: 1150, failure: 58 },
-    { date: '2024-12-25', success: 1180, failure: 65 },
-    { date: '2024-12-26', success: 1100, failure: 68 },
-    { date: '2024-12-27', success: 1200, failure: 62 },
-  ],
-  topReasons: [
-    { reason: 'كلمة مرور خاطئة', count: 320 },
-    { reason: 'حساب معطل', count: 85 },
-    { reason: 'انتهاء الجلسة', count: 35 },
-  ],
-};
 
 export function OwnerGovernancePage() {
   const governance = useOwnerGovernance();
   const loginAnalytics = useOwnerLoginAnalytics();
-  const govData = governance.data ?? FALLBACK_GOVERNANCE;
-  const loginData = loginAnalytics.data ?? FALLBACK_LOGIN;
+  const govData = governance.data;
+  const loginData = loginAnalytics.data;
 
-  const growthChartData = {
+  const isPending = governance.isPending || loginAnalytics.isPending;
+  const isError = governance.isError || loginAnalytics.isError;
+
+  const growthChartData = govData ? {
     labels: govData.weeklyGrowth.map((w) => w.week),
     datasets: [
       {
@@ -75,11 +42,11 @@ export function OwnerGovernancePage() {
         pointBackgroundColor: '#a3c9ff',
       },
     ],
-  };
+  } : null;
 
   const growthOptions = cartesianOptions();
 
-  const doughnutData = {
+  const doughnutData = loginData ? {
     labels: ['ناجح', 'فاشل'],
     datasets: [
       {
@@ -89,7 +56,7 @@ export function OwnerGovernancePage() {
         hoverOffset: 6,
       },
     ],
-  };
+  } : null;
 
   const doughnutOptions = radialOptions({ legend: true });
 
@@ -97,76 +64,97 @@ export function OwnerGovernancePage() {
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">الحوكمة المتقدمة</h1>
-          <p className="page-subtitle">تتبع الصلاحيات والنمو وتحليل تسجيلات الدخول</p>
+          <h1 className="page-title">الحوكمة المتقدّمة</h1>
+          <p className="page-subtitle">تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول</p>
         </div>
       </div>
 
-      {/* Metrics */}
-      <div className="grid-3">
-        <MetricCard icon={Key} label="تغييرات الصلاحيات" value={govData.permissionChanges.toString()} color="purple" />
-        <MetricCard icon={ShieldCheck} label="تغييرات الأدوار" value={govData.roleChanges.toString()} color="brand" />
-        <MetricCard icon={UserPlus} label="مستخدمون جدد هذا الشهر" value={govData.newUsersThisMonth.toString()} color="green" />
-      </div>
-
-      {/* Charts */}
-      <div className="owner-ai-chart-grid">
-        <Card title="نمو المستخدمين (8 أسابيع)">
-          <div className="owner-chart-container">
-            <Line data={growthChartData} options={growthOptions} />
+      {isPending ? (
+        <LoadingState />
+      ) : isError ? (
+        <ErrorState />
+      ) : !govData || !loginData ? (
+        <EmptyState title="لا توجد بيانات حوكمة بعد" />
+      ) : (
+        <>
+          {/* Metrics — real values */}
+          <div className="grid-3">
+            <MetricCard icon={Key} label="تغييرات الصلاحيات" value={govData.permissionChanges.toLocaleString('ar-LY')} color="purple" />
+            <MetricCard icon={ShieldCheck} label="تغييرات الأدوار" value={govData.roleChanges.toLocaleString('ar-LY')} color="brand" />
+            <MetricCard icon={UserPlus} label="مستخدمون جدد هذا الشهر" value={govData.newUsersThisMonth.toLocaleString('ar-LY')} color="green" />
           </div>
-        </Card>
 
-        <Card title="تسجيلات الدخول: نجاح / فشل">
-          <div className="owner-chart-container">
-            <Doughnut data={doughnutData} options={doughnutOptions} />
+          <div className="owner-ai-chart-grid">
+            <Card title="نموّ المستخدمين (8 أسابيع)">
+              {govData.weeklyGrowth.length === 0 ? (
+                <EmptyState title="لا توجد بيانات نموّ بعد" />
+              ) : (
+                <div className="owner-chart-container">
+                  <Line data={growthChartData!} options={growthOptions} />
+                </div>
+              )}
+            </Card>
+
+            <Card title="تسجيلات الدخول: نجاح / فشل">
+              {loginData.total === 0 ? (
+                <EmptyState title="لا توجد محاولات دخول بعد" />
+              ) : (
+                <div className="owner-chart-container">
+                  <Doughnut data={doughnutData!} options={doughnutOptions} />
+                </div>
+              )}
+            </Card>
           </div>
-        </Card>
-      </div>
 
-      {/* Login Analytics */}
-      <div className="owner-governance-section">
-        <Card title="تفاصيل تسجيلات الدخول اليومية">
-          <table className="owner-table">
-            <thead>
-              <tr>
-                <th>التاريخ</th>
-                <th>ناجح</th>
-                <th>فاشل</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loginData.daily.map((d) => (
-                <tr key={d.date}>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{d.date}</td>
-                  <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--success)' }}>{d.success}</td>
-                  <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--warning)' }}>{d.failure}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
-      </div>
+          <div className="owner-governance-section">
+            <Card title="تفاصيل تسجيلات الدخول اليوميّة">
+              {loginData.daily.length === 0 ? (
+                <EmptyState title="لا توجد بيانات يوميّة" />
+              ) : (
+                <table className="owner-table">
+                  <thead>
+                    <tr>
+                      <th>التاريخ</th>
+                      <th>ناجح</th>
+                      <th>فاشل</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loginData.daily.map((d) => (
+                      <tr key={d.date}>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{d.date}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--success)' }}>{d.success}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--warning)' }}>{d.failure}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </Card>
+          </div>
 
-      {/* Top Failure Reasons */}
-      <Card title="أسباب فشل تسجيل الدخول">
-        <table className="owner-table">
-          <thead>
-            <tr>
-              <th>السبب</th>
-              <th>العدد</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loginData.topReasons.map((r) => (
-              <tr key={r.reason}>
-                <td>{r.reason}</td>
-                <td style={{ fontFamily: 'var(--font-mono)' }}>{r.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+          {loginData.topReasons.length > 0 && (
+            <Card title="أسباب فشل تسجيل الدخول">
+              <table className="owner-table">
+                <thead>
+                  <tr>
+                    <th>السبب</th>
+                    <th>العدد</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loginData.topReasons.map((r) => (
+                    <tr key={r.reason}>
+                      <td>{r.reason}</td>
+                      <td style={{ fontFamily: 'var(--font-mono)' }}>{r.count.toLocaleString('ar-LY')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
+          )}
+        </>
+      )}
     </div>
   );
 }
