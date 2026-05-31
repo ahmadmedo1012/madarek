@@ -11,7 +11,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Radi
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
@@ -183,6 +183,33 @@ export function SkillsPage() {
 
 /* ─── Alerts ───────────────────────────────────────────── */
 export function AlertsPage() {
+  const q = useNotifications();
+
+  const items = q.data ?? [];
+  const unreadCount = items.filter((n) => !n.readAt).length;
+
+  const toneFor = (type: 'URGENT' | 'ACADEMIC' | 'SYSTEM' | 'SOCIAL'): 'red' | 'brand' | 'amber' | 'green' => {
+    if (type === 'URGENT') return 'red';
+    if (type === 'ACADEMIC') return 'brand';
+    if (type === 'SYSTEM') return 'amber';
+    return 'green';
+  };
+  const iconFor = (type: 'URGENT' | 'ACADEMIC' | 'SYSTEM' | 'SOCIAL') => {
+    if (type === 'URGENT') return AlertTriangle;
+    if (type === 'ACADEMIC') return BookOpen;
+    if (type === 'SYSTEM') return Bell;
+    return CheckCircle2;
+  };
+  const formatRelative = (iso: string): string => {
+    const d = new Date(iso);
+    const m = Math.round((Date.now() - d.getTime()) / 60000);
+    if (m < 1) return 'الآن';
+    if (m < 60) return `منذ ${m} دقيقة`;
+    const h = Math.round(m / 60);
+    if (h < 24) return `منذ ${h} ساعة`;
+    return `منذ ${Math.round(h / 24)} يوم`;
+  };
+
   return (
     <div className="page">
       <div className="page-header">
@@ -192,83 +219,133 @@ export function AlertsPage() {
         </div>
       </div>
 
-      <Card title="إشعارات غير مقروءة" icon={Bell} actions={<Badge color="brand">4</Badge>}>
-        <div className="flex-col gap-2">
-          <AlertRow color="red" icon={AlertTriangle} title="غياب تجاوز الحد"
-            description="تقنيات الإنترنت — غياب 3 محاضرات، الحد الأقصى 4"
-            time="منذ يومين" />
-          <AlertRow color="brand" icon={BookOpen} title="درجة جديدة في هندسة البرمجيات"
-            description="حصلت على 88 من 100 في الاختبار الأسبوعي"
-            time="منذ ساعة" />
-          <AlertRow color="amber" icon={Calendar} title="تذكير: محاضرة الأحد"
-            description="شبكات الحاسوب · 8:00 ص · قاعة 301"
-            time="منذ ساعتين" />
-          <AlertRow color="green" icon={CheckCircle2} title="إنجاز جديد"
-            description="أكملت 5 مهام متتالية — حصلت على شارة المثابر"
-            time="أمس" />
-        </div>
+      <Card title="إشعاراتي" icon={Bell} actions={
+        unreadCount > 0 ? <Badge color="brand">{unreadCount} غير مقروء</Badge> : <Badge color="green">الكلّ مقروء</Badge>
+      }>
+        {q.isPending ? (
+          <LoadingState />
+        ) : q.isError ? (
+          <ErrorState />
+        ) : items.length === 0 ? (
+          <EmptyState title="لا توجد إشعارات بعد" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
+        ) : (
+          <div className="flex-col gap-2">
+            {items.slice(0, 30).map((n) => (
+              <AlertRow
+                key={n.id}
+                color={toneFor(n.type)}
+                icon={iconFor(n.type)}
+                title={n.title}
+                description={n.body ?? undefined}
+                time={formatRelative(n.createdAt)}
+              />
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );
 }
 
 /* ─── Schedule ─────────────────────────────────────────── */
-const SCHEDULE: Array<{ day: string; items: Array<{ time: string; name: string; room: string; teacher: string }> }> = [
-  {
-    day: 'الأحد',
-    items: [
-      { time: '08:00 — 09:30', name: 'نظم المعلومات', room: 'قاعة 301', teacher: 'د. محمد الطاهر' },
-      { time: '10:00 — 11:30', name: 'قواعد البيانات', room: 'معمل 2', teacher: 'د. فاطمة العجيلي' },
-    ],
-  },
-  {
-    day: 'الاثنين',
-    items: [
-      { time: '09:00 — 10:30', name: 'هندسة البرمجيات', room: 'قاعة 205', teacher: 'د. عياض الهنقاري' },
-      { time: '11:00 — 12:30', name: 'الذكاء الاصطناعي', room: 'قاعة 410', teacher: 'د. سالم الشريف' },
-    ],
-  },
-  {
-    day: 'الثلاثاء',
-    items: [
-      { time: '08:30 — 10:00', name: 'شبكات الحاسوب', room: 'معمل 1', teacher: 'د. سالم الشريف' },
-      { time: '10:30 — 12:00', name: 'أمن المعلومات', room: 'قاعة 303', teacher: 'د. خالد المبروك' },
-    ],
-  },
-  { day: 'الأربعاء', items: [{ time: '09:00 — 10:30', name: 'تقنيات الإنترنت', room: 'معمل الويب', teacher: 'د. رجاء أبو شعالة' }] },
-  { day: 'الخميس', items: [{ time: '11:00 — 12:30', name: 'مشروع التخرج', room: 'قاعة المشاريع', teacher: 'د. عياض الهنقاري' }] },
-];
+const DAY_NAMES = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
 export function SchedulePage() {
+  const q = useMyEnrollments();
+
+  if (q.isPending) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">الجدول الدراسي</h1>
+            <p className="page-subtitle">جارٍ جمع جدولك…</p>
+          </div>
+        </div>
+        <LoadingState />
+      </div>
+    );
+  }
+  if (q.isError) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">الجدول الدراسي</h1>
+          </div>
+        </div>
+        <ErrorState />
+      </div>
+    );
+  }
+
+  // Flatten all schedule slots across all enrolments, then group by day-of-week.
+  type Slot = { time: string; startTime: string; name: string; room: string; teacher: string };
+  const byDay: Record<number, Slot[]> = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  for (const e of q.data ?? []) {
+    for (const slot of e.offering.schedule) {
+      byDay[slot.dayOfWeek]?.push({
+        time: `${slot.startTime} — ${slot.endTime}`,
+        startTime: slot.startTime,
+        name: e.offering.course.name,
+        room: slot.room ?? e.offering.room ?? '—',
+        teacher: `${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`,
+      });
+    }
+  }
+  // Sort each day chronologically.
+  for (const dayList of Object.values(byDay)) {
+    dayList.sort((a, b) => a.startTime.localeCompare(b.startTime));
+  }
+
+  const daysWithItems = Object.entries(byDay)
+    .map(([dow, items]) => ({ dow: Number(dow), items }))
+    .filter((d) => d.items.length > 0);
+
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الجدول الدراسي</h1>
-          <p className="page-subtitle">جدولك الأسبوعي مع أماكن المحاضرات.</p>
+          <p className="page-subtitle">جدولك الأسبوعيّ مع أماكن المحاضرات.</p>
         </div>
       </div>
 
-      <div className="flex-col gap-5">
-        {SCHEDULE.map((d) => (
-          <div key={d.day}>
-            <SectionTitle>{d.day}</SectionTitle>
-            <Card flush>
-              <div className="flex-col">
-                {d.items.map((it, i) => (
-                  <div key={i} className="list-row" style={{ borderRadius: i === 0 ? 'var(--r-lg) var(--r-lg) 0 0' : i === d.items.length - 1 ? '0 0 var(--r-lg) var(--r-lg)' : 0 }}>
-                    <span className="list-row-meta">{it.time}</span>
-                    <div className="list-row-body">
-                      <div className="list-row-title">{it.name}</div>
-                      <div className="list-row-sub">{it.room} · {it.teacher}</div>
+      {daysWithItems.length === 0 ? (
+        <EmptyState
+          title="لا يوجد جدول مسجَّل"
+          description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول لمقرّراتك."
+        />
+      ) : (
+        <div className="flex-col gap-5">
+          {daysWithItems.map((d) => (
+            <div key={d.dow}>
+              <SectionTitle>{DAY_NAMES[d.dow]}</SectionTitle>
+              <Card flush>
+                <div className="flex-col">
+                  {d.items.map((it, i) => (
+                    <div
+                      key={i}
+                      className="list-row"
+                      style={{
+                        borderRadius:
+                          i === 0 ? 'var(--r-lg) var(--r-lg) 0 0' :
+                          i === d.items.length - 1 ? '0 0 var(--r-lg) var(--r-lg)' : 0,
+                      }}
+                    >
+                      <span className="list-row-meta">{it.time}</span>
+                      <div className="list-row-body">
+                        <div className="list-row-title">{it.name}</div>
+                        <div className="list-row-sub">{it.room} · {it.teacher}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
-        ))}
-      </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
