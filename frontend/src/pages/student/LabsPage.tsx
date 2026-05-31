@@ -7,7 +7,7 @@ import {
 import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useLabs, type VirtualLab } from '../../hooks/useResources';
+import { useLabs, useMyLabSessions, type VirtualLab } from '../../hooks/useResources';
 
 interface LabExperiment {
   title: string;
@@ -115,6 +115,7 @@ const inferCategory = (lab: VirtualLab): string => {
 
 export default function LabsPage() {
   const labs = useLabs();
+  const labStats = useMyLabSessions();
   const [activeLab, setActiveLab] = useState<VirtualLab | null>(null);
 
   return (
@@ -133,8 +134,19 @@ export default function LabsPage() {
 
           <div className="grid-3">
             <MetricCard icon={FlaskConical} label="معامل متاحة" value={labs.data?.length ?? '—'} color="brand" />
-            <MetricCard icon={Play} label="جلسات نشطة" value="3" change="هذا الفصل" color="green" />
-            <MetricCard icon={Award} label="تجارب مكتملة" value="12" color="gold" />
+            <MetricCard
+              icon={Play}
+              label="جلسات نشطة"
+              value={labStats.data?.active.toLocaleString('ar-LY') ?? '—'}
+              change={labStats.data ? `من أصل ${labStats.data.total} جلسة` : undefined}
+              color="green"
+            />
+            <MetricCard
+              icon={Award}
+              label="تجارب مكتملة"
+              value={labStats.data?.completed.toLocaleString('ar-LY') ?? '—'}
+              color="gold"
+            />
           </div>
 
           {labs.isPending ? <Card><LoadingState /></Card> :

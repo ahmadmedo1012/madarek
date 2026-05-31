@@ -194,6 +194,39 @@ router.get('/me/materials', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/**
+ * GET /me/lab-sessions — student's lab session history with simple aggregates.
+ */
+router.get('/me/lab-sessions', async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+    const sessions = await prisma.labSession.findMany({
+      where: { userId },
+      orderBy: { startedAt: 'desc' },
+      take: 50,
+      include: { lab: { select: { id: true, name: true } } },
+    });
+    const active = sessions.filter((s) => s.completedAt === null).length;
+    const completed = sessions.filter((s) => s.completedAt !== null).length;
+    res.json({
+      data: {
+        active,
+        completed,
+        total: sessions.length,
+        recent: sessions.slice(0, 10).map((s) => ({
+          id: s.id,
+          experimentName: s.experimentName,
+          progressPct: s.progressPct,
+          score: s.score ? Number(s.score.toString()) : null,
+          startedAt: s.startedAt,
+          completedAt: s.completedAt,
+          lab: s.lab,
+        })),
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 router.get('/me/dashboard', async (req, res, next) => {
   try {
     const userId = req.user!.id;

@@ -260,6 +260,28 @@ export function useMyLoans() {
   });
 }
 
+export interface MyLabStats {
+  active: number;
+  completed: number;
+  total: number;
+  recent: Array<{
+    id: string;
+    experimentName: string;
+    progressPct: number;
+    score: number | null;
+    startedAt: string;
+    completedAt: string | null;
+    lab: { id: string; name: string };
+  }>;
+}
+export function useMyLabSessions() {
+  return useQuery({
+    queryKey: ['me', 'lab-sessions'],
+    queryFn: () => unwrap<MyLabStats>(api.get('/me/lab-sessions')),
+    staleTime: 60_000,
+  });
+}
+
 // ── MOOCs ──────────────────────────────────────────────────────
 export interface MoocCourse {
   id: string;
