@@ -3,12 +3,13 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
   Microscope, TrendingUp, FileText, ShieldCheck, Bot as BotIcon,
   ScanSearch, CheckCircle2, X, Sparkles, BookMarked, BarChart3, MessageSquare,
+  Award,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import {
-  useResearchQueue, useGradePaper, usePublishPaper,
+  useResearchQueue, useGradePaper, usePublishPaper, useMyTeacherProfile,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
 
@@ -280,31 +281,63 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
   );
 }
 
-/* ─── Teacher's own publications (existing content kept as a tab) ─── */
+/* ─── Teacher's own publications (real teacher profile data) ─── */
 function MyPublications() {
+  const profile = useMyTeacherProfile();
+  const publications = profile.data?.publications ?? [];
+  const certifications = profile.data?.certifications ?? [];
+  const awards = profile.data?.awards ?? [];
+
+  if (profile.isPending) return <LoadingState />;
+  if (profile.isError) return <ErrorState />;
+
   return (
     <>
       <div className="grid-3">
-        <MetricCard icon={Microscope} label="منشورات محكَّمة" value="14" color="brand" />
-        <MetricCard icon={TrendingUp} label="الاستشهادات" value="186" color="green" />
-        <MetricCard icon={BarChart3} label="مشاريع جارية" value="3" color="amber" />
+        <MetricCard
+          icon={Microscope}
+          label="منشورات في ملفّك"
+          value={publications.length.toLocaleString('ar-LY')}
+          change={publications.length === 0 ? 'لم تُسجَّل بعد' : undefined}
+          color="brand"
+        />
+        <MetricCard
+          icon={Award}
+          label="شهادات وجوائز"
+          value={(certifications.length + awards.length).toLocaleString('ar-LY')}
+          color="green"
+        />
+        <MetricCard
+          icon={BarChart3}
+          label="سنوات الخبرة"
+          value={(profile.data?.yearsExperience ?? 0).toLocaleString('ar-LY')}
+          color="amber"
+        />
       </div>
-      <Card title="منشورات حديثة" icon={Microscope}>
-        <div className="flex-col gap-2">
-          {[
-            { t: 'تطبيقات الذكاء الاصطناعي في التعليم العالي', j: 'Journal of AI in Education', y: 2025 },
-            { t: 'تحسين أداء قواعد البيانات الموزعة', j: 'IEEE Access', y: 2024 },
-            { t: 'دراسة مقارنة لخوارزميات التعلم العميق', j: 'مجلة الجامعة', y: 2024 },
-          ].map((p, i) => (
-            <div key={i} className="list-row">
-              <span className="list-row-meta">{p.y}</span>
-              <div className="list-row-body">
-                <div className="list-row-title">{p.t}</div>
-                <div className="list-row-sub">{p.j}</div>
+      <Card title="منشوراتي" icon={Microscope}>
+        {publications.length === 0 ? (
+          <EmptyState
+            title="لم تُسجَّل منشورات بعد"
+            description="حدِّث ملفك الأكاديميّ لإضافة بحوثك المنشورة."
+          />
+        ) : (
+          <div className="flex-col gap-2">
+            {publications.map((p, i) => (
+              <div key={`${p.title}-${i}`} className="list-row">
+                <span className="list-row-meta">{p.year}</span>
+                <div className="list-row-body">
+                  <div className="list-row-title">{p.title}</div>
+                  {p.venue && <div className="list-row-sub">{p.venue}</div>}
+                </div>
+                {p.url && (
+                  <a href={p.url} target="_blank" rel="noreferrer" className="btn ghost sm">
+                    فتح
+                  </a>
+                )}
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Card>
     </>
   );
