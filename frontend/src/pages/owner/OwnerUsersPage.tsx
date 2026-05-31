@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Users, GraduationCap, BookOpen, ShieldCheck, Search } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar, Pill } from '../../components/primitives';
+import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { useOwnerStats, useOwnerUsers, useChangeUserRole, useToggleUserStatus } from '../../hooks/useOwner';
 
 type RoleFilter = 'ALL' | 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
 
-interface DemoUser {
+interface UserRow {
   id: string;
   firstName: string;
   lastName: string;
@@ -35,33 +36,19 @@ const ROLE_COLORS: Record<string, 'brand' | 'green' | 'purple' | 'gold' | 'amber
   OWNER: 'amber',
 };
 
-const DEMO_USERS: DemoUser[] = [
-  { id: '1', firstName: 'أحمد', lastName: 'بن محمد', email: 'ahmed@zu.edu.ly', role: 'STUDENT', isActive: true, avatarInitials: 'أم', avatarColor: '#3b82f6', createdAt: '2024-09-15' },
-  { id: '2', firstName: 'فاطمة', lastName: 'العلي', email: 'fatima@zu.edu.ly', role: 'TEACHER', isActive: true, avatarInitials: 'فع', avatarColor: '#10b981', createdAt: '2024-08-20' },
-  { id: '3', firstName: 'خالد', lastName: 'الزاوي', email: 'khaled@zu.edu.ly', role: 'TEACHER', isActive: true, avatarInitials: 'خز', avatarColor: '#f59e0b', createdAt: '2024-07-10' },
-  { id: '4', firstName: 'سارة', lastName: 'أحمد', email: 'sara@zu.edu.ly', role: 'STUDENT', isActive: true, avatarInitials: 'سأ', avatarColor: '#8b5cf6', createdAt: '2024-10-01' },
-  { id: '5', firstName: 'محمد', lastName: 'السنوسي', email: 'mohammed@zu.edu.ly', role: 'ADMIN', isActive: true, avatarInitials: 'مس', avatarColor: '#ef4444', createdAt: '2024-06-15' },
-  { id: '6', firstName: 'نورة', lastName: 'الحسن', email: 'noura@zu.edu.ly', role: 'TEACHER', isActive: false, avatarInitials: 'نح', avatarColor: '#06b6d4', createdAt: '2024-05-20' },
-  { id: '7', firstName: 'علي', lastName: 'عبدالله', email: 'ali@zu.edu.ly', role: 'STUDENT', isActive: true, avatarInitials: 'عع', avatarColor: '#84cc16', createdAt: '2024-11-05' },
-  { id: '8', firstName: 'مريم', lastName: 'الطرابلسي', email: 'maryam@zu.edu.ly', role: 'QUALITY', isActive: true, avatarInitials: 'مط', avatarColor: '#f97316', createdAt: '2024-04-12' },
-  { id: '9', firstName: 'عمر', lastName: 'البرعصي', email: 'omar@zu.edu.ly', role: 'STUDENT', isActive: true, avatarInitials: 'عب', avatarColor: '#14b8a6', createdAt: '2024-12-01' },
-  { id: '10', firstName: 'ليلى', lastName: 'المصراتي', email: 'layla@zu.edu.ly', role: 'STUDENT', isActive: false, avatarInitials: 'لم', avatarColor: '#ec4899', createdAt: '2024-03-18' },
-];
-
 export function OwnerUsersPage() {
   const stats = useOwnerStats();
   const changeRole = useChangeUserRole();
   const toggleStatus = useToggleUserStatus();
 
-  const statData = stats.data ?? { totalUsers: 4850, students: 4200, teachers: 420, admins: 15, quality: 8, owners: 1, totalCourses: 186, totalOfferings: 312, totalEnrollments: 12400, recentAuditLogs: 245 };
+  const statData = stats.data;
 
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL');
   const [page, setPage] = useState(1);
 
-  // Fetch real users with fallback to demo data
-  const ownerUsers = useOwnerUsers({ page, limit: 5, q: search || undefined });
-  const liveUsers: DemoUser[] = (ownerUsers.data?.data ?? []).map((u) => ({
+  const ownerUsers = useOwnerUsers({ page, limit: 20, q: search || undefined });
+  const liveUsers: UserRow[] = (ownerUsers.data?.data ?? []).map((u) => ({
     id: u.id,
     firstName: u.firstName,
     lastName: u.lastName,
@@ -72,7 +59,6 @@ export function OwnerUsersPage() {
     avatarColor: u.avatarColor ?? '#3b82f6',
     createdAt: u.createdAt,
   }));
-  const usersSource = liveUsers.length > 0 ? liveUsers : DEMO_USERS;
 
   // Confirm dialog state
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -80,16 +66,12 @@ export function OwnerUsersPage() {
     title: string; message: string; danger: boolean; onConfirm: () => void | Promise<void>;
   }>({ title: '', message: '', danger: false, onConfirm: () => {} });
 
-  const filteredUsers = usersSource.filter((u) => {
+  const filteredUsers = liveUsers.filter((u) => {
     if (roleFilter !== 'ALL' && u.role !== roleFilter) return false;
-    if (search && !`${u.firstName} ${u.lastName} ${u.email}`.includes(search)) return false;
     return true;
   });
 
-  const totalPages = Math.ceil(filteredUsers.length / 5);
-  const paged = filteredUsers.slice((page - 1) * 5, page * 5);
-
-  const handleRoleChange = (user: DemoUser) => {
+  const handleRoleChange = (user: UserRow) => {
     const newRole = user.role === 'STUDENT' ? 'TEACHER' : 'STUDENT';
     setConfirmConfig({
       title: 'تغيير الدور',
@@ -103,11 +85,11 @@ export function OwnerUsersPage() {
     setConfirmOpen(true);
   };
 
-  const handleToggleStatus = (user: DemoUser) => {
+  const handleToggleStatus = (user: UserRow) => {
     setConfirmConfig({
       title: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
       message: user.isActive
-        ? `هل تريد تعطيل حساب "${user.firstName} ${user.lastName}"؟ لن يتمكن من الدخول.`
+        ? `هل تريد تعطيل حساب "${user.firstName} ${user.lastName}"؟ لن يتمكّن من الدخول.`
         : `هل تريد إعادة تفعيل حساب "${user.firstName} ${user.lastName}"؟`,
       danger: user.isActive,
       onConfirm: async () => {
@@ -126,6 +108,9 @@ export function OwnerUsersPage() {
     { value: 'QUALITY', label: 'جودة' },
   ];
 
+  const meta = ownerUsers.data?.meta;
+  const totalPages = meta?.totalPages ?? 1;
+
   return (
     <div className="page">
       <div className="page-header">
@@ -135,12 +120,32 @@ export function OwnerUsersPage() {
         </div>
       </div>
 
-      {/* Metrics */}
+      {/* Metrics — gated on real stats; nothing rendered if the API fails */}
       <div className="grid-4">
-        <MetricCard icon={Users} label="إجمالي المستخدمين" value={statData.totalUsers.toLocaleString('ar-LY')} color="brand" />
-        <MetricCard icon={GraduationCap} label="الطلاب" value={statData.students.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={BookOpen} label="الأساتذة" value={statData.teachers.toString()} color="purple" />
-        <MetricCard icon={ShieldCheck} label="إداريون وجودة" value={(statData.admins + statData.quality).toString()} color="gold" />
+        <MetricCard
+          icon={Users}
+          label="إجمالي المستخدمين"
+          value={statData ? statData.totalUsers.toLocaleString('ar-LY') : '—'}
+          color="brand"
+        />
+        <MetricCard
+          icon={GraduationCap}
+          label="الطلاب"
+          value={statData ? statData.students.toLocaleString('ar-LY') : '—'}
+          color="green"
+        />
+        <MetricCard
+          icon={BookOpen}
+          label="الأساتذة"
+          value={statData ? statData.teachers.toLocaleString('ar-LY') : '—'}
+          color="purple"
+        />
+        <MetricCard
+          icon={ShieldCheck}
+          label="إداريون وجودة"
+          value={statData ? (statData.admins + statData.quality).toLocaleString('ar-LY') : '—'}
+          color="gold"
+        />
       </div>
 
       {/* Search and Filter */}
@@ -165,65 +170,78 @@ export function OwnerUsersPage() {
 
       {/* Users Table */}
       <Card>
-        <table className="owner-table">
-          <thead>
-            <tr>
-              <th>المستخدم</th>
-              <th>البريد</th>
-              <th>الدور</th>
-              <th>الحالة</th>
-              <th>تاريخ الانضمام</th>
-              <th>إجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paged.map((user) => (
-              <tr key={user.id}>
-                <td>
-                  <div className="owner-user-cell">
-                    <UserAvatar initials={user.avatarInitials} color={user.avatarColor} size={32} />
-                    <span className="name">{user.firstName} {user.lastName}</span>
-                  </div>
-                </td>
-                <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{user.email}</td>
-                <td><Badge color={ROLE_COLORS[user.role]}>{ROLE_LABELS[user.role]}</Badge></td>
-                <td><Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge></td>
-                <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {(() => {
-                      const sevenDaysAgo = new Date();
-                      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                      const isRecent = new Date(user.createdAt) > sevenDaysAgo;
-                      return isRecent ? <span className="owner-health-dot green" style={{ display: 'inline-block' }} /> : null;
-                    })()}
-                    {user.createdAt}
-                  </span>
-                </td>
-                <td>
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <button type="button" className="btn ghost" style={{ fontSize: 'var(--fs-xs)', padding: '4px 8px' }} onClick={() => handleRoleChange(user)}>
-                      تغيير الدور
-                    </button>
-                    <button type="button" className="btn ghost" style={{ fontSize: 'var(--fs-xs)', padding: '4px 8px' }} onClick={() => handleToggleStatus(user)}>
-                      {user.isActive ? 'تعطيل' : 'تفعيل'}
-                    </button>
-                  </div>
-                </td>
+        {ownerUsers.isPending ? (
+          <LoadingState />
+        ) : ownerUsers.isError ? (
+          <ErrorState />
+        ) : filteredUsers.length === 0 ? (
+          <EmptyState
+            title={search ? 'لا توجد نتائج' : 'لا يوجد مستخدمون'}
+            description={search ? 'جرّب بحثاً آخر أو فلتراً مختلفاً.' : undefined}
+          />
+        ) : (
+          <table className="owner-table">
+            <thead>
+              <tr>
+                <th>المستخدم</th>
+                <th>البريد</th>
+                <th>الدور</th>
+                <th>الحالة</th>
+                <th>تاريخ الانضمام</th>
+                <th>إجراءات</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.map((user) => (
+                <tr key={user.id}>
+                  <td>
+                    <div className="owner-user-cell">
+                      <UserAvatar initials={user.avatarInitials} color={user.avatarColor} size={32} />
+                      <span className="name">{user.firstName} {user.lastName}</span>
+                    </div>
+                  </td>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{user.email}</td>
+                  <td><Badge color={ROLE_COLORS[user.role]}>{ROLE_LABELS[user.role]}</Badge></td>
+                  <td><Badge color={user.isActive ? 'green' : 'red'}>{user.isActive ? 'نشط' : 'معطّل'}</Badge></td>
+                  <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {(() => {
+                        const sevenDaysAgo = new Date();
+                        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                        const isRecent = new Date(user.createdAt) > sevenDaysAgo;
+                        return isRecent ? <span className="owner-health-dot green" style={{ display: 'inline-block' }} /> : null;
+                      })()}
+                      {new Date(user.createdAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
+                    </span>
+                  </td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button type="button" className="btn ghost" style={{ fontSize: 'var(--fs-xs)', padding: '4px 8px' }} onClick={() => handleRoleChange(user)}>
+                        تغيير الدور
+                      </button>
+                      <button type="button" className="btn ghost" style={{ fontSize: 'var(--fs-xs)', padding: '4px 8px' }} onClick={() => handleToggleStatus(user)}>
+                        {user.isActive ? 'تعطيل' : 'تفعيل'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
-        {/* Pagination */}
-        <div className="owner-pagination">
-          <button type="button" disabled={page <= 1} onClick={() => setPage(page - 1)}>‹</button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button key={i} type="button" className={page === i + 1 ? 'active' : ''} onClick={() => setPage(i + 1)}>
-              {i + 1}
-            </button>
-          ))}
-          <button type="button" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>›</button>
-        </div>
+        {/* Server-side pagination — driven by API meta */}
+        {meta && totalPages > 1 && (
+          <div className="owner-pagination">
+            <button type="button" disabled={page <= 1} onClick={() => setPage(page - 1)}>‹</button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button key={i} type="button" className={page === i + 1 ? 'active' : ''} onClick={() => setPage(i + 1)}>
+                {i + 1}
+              </button>
+            ))}
+            <button type="button" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>›</button>
+          </div>
+        )}
       </Card>
 
       {/* Confirm Dialog */}
