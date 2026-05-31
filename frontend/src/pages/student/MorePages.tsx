@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Trophy, Star, Award, Activity, Crown,
   Target, FlaskConical, Headset,
@@ -5,13 +7,12 @@ import {
   CheckCircle2, MessageCircle, Heart, Repeat2, Bookmark,
   TrendingUp, Building2, Users2, GraduationCap, Microscope,
 } from 'lucide-react';
-import { useState } from 'react';
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
@@ -774,40 +775,6 @@ export function DownloadsPage() {
 }
 
 /* ─── University Info ──────────────────────────────────── */
-const REAL_FACULTIES_INSIDE = [
-  'كلية الآداب',
-  'كلية الاقتصاد',
-  'كلية العلوم',
-  'كلية الهندسة',
-  'كلية الطب البشري',
-  'كلية طب الأسنان والجراحة الفموية',
-  'كلية الصيدلة',
-  'كلية التقنية الطبية',
-  'كلية تقنية المعلومات',
-  'كلية التربية البدنية وعلوم الرياضة',
-  'كلية هندسة النفط والغاز',
-];
-
-const REAL_FACULTIES_OUTSIDE: Array<{ name: string; city: string }> = [
-  { name: 'كلية الآداب', city: 'زوارة' },
-  { name: 'كلية الاقتصاد', city: 'العجيلات' },
-  { name: 'كلية العلوم', city: 'العجيلات' },
-  { name: 'كلية التربية', city: 'الزاوية' },
-  { name: 'كلية التربية', city: 'العجيلات' },
-  { name: 'كلية التربية', city: 'أبي عيسى' },
-  { name: 'كلية التربية', city: 'ناصر' },
-  { name: 'كلية التربية', city: 'زوارة' },
-  { name: 'كلية الشريعة والقانون', city: 'العجيلات' },
-  { name: 'كلية القانون', city: 'الزاوية' },
-  { name: 'كلية الطب البيطري والعلوم الزراعية', city: 'العجيلات' },
-  { name: 'كلية العلوم الطبية', city: 'صرمان' },
-  { name: 'كلية هندسة الموارد الطبيعية', city: 'بئر الغنم' },
-  { name: 'كلية الهندسة', city: 'صبراتة' },
-  { name: 'كلية الهندسة', city: 'الرقدالين' },
-  { name: 'كلية الصحة العامة', city: 'العجيلات' },
-  { name: 'كلية العلوم السياسية والإعلام', city: 'الزاوية' },
-  { name: 'كلية اللغات والترجمة', city: 'الزاوية' },
-];
 
 const MEMBERSHIPS = [
   { ar: 'اتحاد الجامعات العربية', en: 'AARU' },
@@ -815,135 +782,167 @@ const MEMBERSHIPS = [
   { ar: 'اتحاد الجامعات الإسلامية', en: 'FUIW' },
 ];
 
-const RANKINGS = [
-  { label: 'تصنيف QS العربي 2026', value: '#251–300' },
-  { label: 'تصنيف QS العربي 2025', value: '#201–250' },
-  { label: 'تصنيف QS العربي 2024', value: '#151–170' },
-  { label: 'UniRank عالمياً 2026', value: '#5,080' },
-  { label: 'الترتيب على مستوى ليبيا', value: '#6' },
-];
-
 export function UniversityInfoPage() {
+  const facs = useFaculties();
+  const faculties = facs.data ?? [];
+  const insideCampus = faculties.filter((f) => f.city === 'الزاوية');
+  const outsideCampus = faculties.filter((f) => f.city !== 'الزاوية');
+  const cityCount = new Set(faculties.map((f) => f.city)).size;
+
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">جامعة الزاوية</h1>
           <p className="page-subtitle">
-            مؤسسة تعليمية حكومية رائدة، تأسست عام 1988 وتمتد عبر تسع مدن في الإقليم الغربي.
+            مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ.
           </p>
         </div>
       </div>
 
       <div className="grid-4">
-        <MetricCard icon={Building2} label="عدد الكليات" value="29" change="حضرية وفرعية" color="brand" />
-        <MetricCard icon={GraduationCap} label="الطلاب" value="50K+" change="مسجَّلون" color="green" />
-        <MetricCard icon={Users2} label="هيئة التدريس" value="2,500" change="عضو" color="purple" />
-        <MetricCard icon={Award} label="ترتيب ليبيا" value="#6" change="UniRank 2026" color="gold" />
+        <MetricCard
+          icon={Building2}
+          label="عدد الكليّات"
+          value={faculties.length > 0 ? faculties.length.toLocaleString('ar-LY') : '—'}
+          change={cityCount > 0 ? `موزَّعة على ${cityCount} ${cityCount === 1 ? 'مدينة' : 'مدن'}` : undefined}
+          color="brand"
+        />
+        <MetricCard
+          icon={GraduationCap}
+          label="داخل الحرم الجامعيّ"
+          value={insideCampus.length.toLocaleString('ar-LY')}
+          change="الزاوية"
+          color="green"
+        />
+        <MetricCard
+          icon={Users2}
+          label="فروع خارجيّة"
+          value={outsideCampus.length.toLocaleString('ar-LY')}
+          change={`في ${Math.max(0, cityCount - 1)} مدن`}
+          color="purple"
+        />
+        <MetricCard
+          icon={Award}
+          label="سنة التأسيس"
+          value="1988"
+          change="بقرار رقم 135"
+          color="gold"
+        />
       </div>
 
       {/* Vision + Mission */}
       <div className="grid-2">
         <Card title="الرؤية" icon={Target}>
           <p style={{ fontSize: 'var(--fs-md)', color: 'var(--text)', lineHeight: 'var(--lh-loose)', margin: 0 }}>
-            تحقيق التميّز والريادة في مجال التعليم والبحث العلمي وخدمة المجتمع.
+            تحقيق التميّز والريادة في مجال التعليم والبحث العلميّ وخدمة المجتمع.
           </p>
         </Card>
         <Card title="الرسالة" icon={Star}>
           <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-muted)', lineHeight: 'var(--lh-loose)', margin: 0 }}>
-            تقديم خدمات تعليمية وبحثية متميّزة في خدمة المجتمع من خلال كوادر مؤهّلة، وبرامج علمية،
-            وبيئة محفّزة، وشراكات فعّالة مع المؤسسات المحلية والدولية، وتلبية احتياجات سوق العمل
+            تقديم خدمات تعليميّة وبحثيّة متميّزة في خدمة المجتمع من خلال كوادر مؤهّلة، وبرامج علميّة،
+            وبيئة محفّزة، وشراكات فعّالة مع المؤسّسات المحليّة والدوليّة، وتلبية احتياجات سوق العمل
             ومعايير الجودة والاعتماد.
           </p>
         </Card>
       </div>
 
-      {/* Quick facts grid */}
       <Card title="بطاقة تعريف" icon={Building2}>
         <div className="grid-2">
-          <FactRow label="الاسم الرسمي" value="جامعة الزاوية" />
+          <FactRow label="الاسم الرسميّ" value="جامعة الزاوية" />
           <FactRow label="الاسم السابق" value="جامعة السابع من أبريل" />
-          <FactRow label="النوع" value="جامعة حكومية عامة" />
-          <FactRow label="تاريخ التأسيس" value="1988 م (الكلية الفرعية 1983)" />
-          <FactRow label="الموقع" value="6 كم جنوب مدينة الزاوية" />
-          <FactRow label="المساحة" value="≈ 100 هكتار" />
-          <FactRow label="الإحداثيات" value="32°45′00″N · 12°43′00″E" mono />
-          <FactRow label="الألوان الرسمية" value="أخضر · أحمر · أبيض · أسود" />
+          <FactRow label="النوع" value="جامعة حكوميّة عامّة" />
+          <FactRow label="تاريخ التأسيس" value="1988 م (بقرار رقم 135)" />
+          <FactRow label="الموقع" value="الزاوية، ليبيا" />
+          <FactRow label="الموقع الإلكترونيّ" value="zu.edu.ly" mono />
         </div>
       </Card>
 
-      {/* Faculties — inside campus */}
-      <Card title="الكليات داخل الحرم الجامعي" icon={Building2} subtitle={`${REAL_FACULTIES_INSIDE.length} كلية في مدينة الزاوية`}>
-        <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
-          {REAL_FACULTIES_INSIDE.map((f) => (
-            <div key={f} className="faculty-chip-row">
-              <Icon icon={GraduationCap} size={14} className="text-subtle" />
-              <span className="text-sm">{f}</span>
+      <Card
+        title="الكليّات داخل الحرم الجامعيّ"
+        icon={Building2}
+        subtitle={facs.isPending ? 'جارٍ التحميل…' : `${insideCampus.length} كلّيّة في مدينة الزاوية`}
+      >
+        {facs.isPending ? (
+          <LoadingState />
+        ) : insideCampus.length === 0 ? (
+          <p className="text-sm text-muted">لا توجد بيانات.</p>
+        ) : (
+          <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
+            {insideCampus.map((f) => (
+              <Link
+                key={f.id}
+                to={`/colleges/${f.id}`}
+                className="faculty-chip-row"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <span style={{ fontSize: 16 }} aria-hidden>{f.iconEmoji ?? '🏛️'}</span>
+                <span className="text-sm" style={{ flex: 1 }}>{f.name}</span>
+              </Link>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Card
+        title="الكليّات الفرعيّة"
+        icon={Building2}
+        subtitle={facs.isPending ? '' : `${outsideCampus.length} كلّيّة موزَّعة على ${new Set(outsideCampus.map((c) => c.city)).size} مدن`}
+      >
+        {facs.isPending ? (
+          <LoadingState />
+        ) : outsideCampus.length === 0 ? (
+          <p className="text-sm text-muted">لا توجد فروع خارج الحرم.</p>
+        ) : (
+          <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
+            {outsideCampus.map((f) => (
+              <Link
+                key={f.id}
+                to={`/colleges/${f.id}`}
+                className="faculty-chip-row"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <span style={{ fontSize: 16 }} aria-hidden>{f.iconEmoji ?? '🏛️'}</span>
+                <span className="text-sm" style={{ flex: 1, minWidth: 0 }}>{f.name}</span>
+                <Badge color="purple">{f.city}</Badge>
+              </Link>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Card title="العضويّات الدوليّة" icon={Crown}>
+        <div className="flex-col gap-2">
+          {MEMBERSHIPS.map((m) => (
+            <div key={m.en} className="flex items-center justify-between" style={{
+              padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
+            }}>
+              <span className="text-sm">{m.ar}</span>
+              <Badge color="gold">{m.en}</Badge>
             </div>
           ))}
         </div>
-      </Card>
-
-      {/* Faculties — outside campus */}
-      <Card title="الكليات الفرعية" icon={Building2} subtitle={`${REAL_FACULTIES_OUTSIDE.length} كلية موزّعة على ${new Set(REAL_FACULTIES_OUTSIDE.map((c) => c.city)).size} مدن`}>
-        <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
-          {REAL_FACULTIES_OUTSIDE.map((f, i) => (
-            <div key={`${f.name}-${f.city}-${i}`} className="faculty-chip-row">
-              <Icon icon={Building2} size={14} className="text-subtle" />
-              <span className="text-sm" style={{ flex: 1, minWidth: 0 }}>{f.name}</span>
-              <Badge color="purple">{f.city}</Badge>
-            </div>
-          ))}
+        <div className="text-xxs text-subtle" style={{
+          marginTop: 'var(--sp-3)', padding: 'var(--sp-2) var(--sp-3)',
+          background: 'var(--accent-soft)', color: 'var(--accent)', borderRadius: 'var(--r-sm)',
+          display: 'inline-block',
+        }}>
+          معتمدة من وزارة التعليم العالي والبحث العلميّ — ليبيا
         </div>
       </Card>
-
-      {/* Rankings + Memberships */}
-      <div className="grid-2">
-        <Card title="التصنيفات الدولية" icon={TrendingUp}>
-          <div className="flex-col gap-2">
-            {RANKINGS.map((r) => (
-              <div key={r.label} className="flex items-center justify-between" style={{
-                padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
-              }}>
-                <span className="text-sm">{r.label}</span>
-                <span className="font-mono text-sm" style={{ color: 'var(--accent)', fontWeight: 600 }}>{r.value}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card title="العضويات الدولية" icon={Crown}>
-          <div className="flex-col gap-2">
-            {MEMBERSHIPS.map((m) => (
-              <div key={m.en} className="flex items-center justify-between" style={{
-                padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
-              }}>
-                <span className="text-sm">{m.ar}</span>
-                <Badge color="gold">{m.en}</Badge>
-              </div>
-            ))}
-          </div>
-          <div className="text-xxs text-subtle" style={{
-            marginTop: 'var(--sp-3)', padding: 'var(--sp-2) var(--sp-3)',
-            background: 'var(--accent-soft)', color: 'var(--accent)', borderRadius: 'var(--r-sm)',
-            display: 'inline-block',
-          }}>
-            معتمدة من وزارة التعليم العالي والبحث العلمي — ليبيا
-          </div>
-        </Card>
-      </div>
 
       {/* Strategic plan */}
-      <Card title="الخطة الاستراتيجية 2024–2028" icon={Target} subtitle="خارطة طريق للارتقاء بمكانة الجامعة وتعزيز دورها في خدمة المجتمع">
+      <Card title="الخطّة الاستراتيجيّة 2024–2028" icon={Target} subtitle="خارطة طريق للارتقاء بمكانة الجامعة وتعزيز دورها في خدمة المجتمع">
         <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
           {[
-            'تقديم برامج تعليمية وفق معايير الجودة المحلية والدولية',
-            'الارتقاء بمستوى البحث العلمي',
+            'تقديم برامج تعليميّة وفق معايير الجودة المحليّة والدوليّة',
+            'الارتقاء بمستوى البحث العلميّ',
             'تعزيز دور الجامعة في خدمة المجتمع',
             'توفير بيئة مناسبة وتحسين مستوى الخدمات',
-            'تأهيل وتطوير الموارد البشرية',
-            'مواءمة المخرجات مع متطلبات سوق العمل',
-            'دعم التعاون مع المؤسسات المحلية والدولية',
-            'تجويد الخدمات التعليمية والمجتمعية',
+            'تأهيل وتطوير الموارد البشريّة',
+            'مواءمة المخرجات مع متطلّبات سوق العمل',
+            'دعم التعاون مع المؤسّسات المحليّة والدوليّة',
+            'تجويد الخدمات التعليميّة والمجتمعيّة',
           ].map((g) => (
             <div key={g} style={{
               padding: 'var(--sp-3)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)',
@@ -956,11 +955,10 @@ export function UniversityInfoPage() {
         </div>
       </Card>
 
-      {/* Degree levels + sample programs — straight from zu.edu.ly catalog */}
-      <Card title="الشهادات والبرامج الأكاديمية" icon={Microscope} subtitle="درجات أكاديمية معتمدة وبرامج معلنة على الموقع الرسمي">
+      <Card title="الشهادات والبرامج الأكاديميّة" icon={Microscope} subtitle="درجات أكاديميّة معتمدة على الموقع الرسميّ">
         <div className="grid-3" style={{ gap: 'var(--sp-3)', marginBottom: 'var(--sp-4)' }}>
           {[
-            { ar: 'الإجازة الجامعية', en: 'Bachelor / Licence' },
+            { ar: 'الإجازة الجامعيّة', en: 'Bachelor / Licence' },
             { ar: 'الدراسات العليا', en: "Master's" },
             { ar: 'الدراسات الدقيقة', en: 'PhD / Doctorate' },
           ].map((d) => (
@@ -973,32 +971,16 @@ export function UniversityInfoPage() {
             </div>
           ))}
         </div>
-        <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>
-          أمثلة على البرامج المتاحة:
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {[
-            'بكالوريوس محاسبة',
-            'القانون العام',
-            'التربية البدنية وعلوم الرياضة',
-            'هندسة الطاقات المتجددة',
-            'الصيدلة',
-            'هندسة النفط والغاز والطاقة المتجددة',
-          ].map((t) => (
-            <Badge key={t}>{t}</Badge>
-          ))}
-        </div>
       </Card>
 
-      {/* Contact */}
       <Card title="معلومات التواصل" icon={Headset}>
         <div className="grid-2">
-          <FactRow label="العنوان" value="شارع جمال عبد الناصر، الزاوية، ليبيا" />
-          <FactRow label="الهاتف" value="‎+218 91 9235939" mono />
-          <FactRow label="هاتف بديل" value="‎+218 92 6539727" mono />
-          <FactRow label="البريد العام" value="info@zu.edu.ly" mono />
-          <FactRow label="التعاون الدولي" value="ico@zu.edu.ly" mono />
-          <FactRow label="الموقع الرسمي" value="zu.edu.ly" mono />
+          <FactRow label="العنوان" value="جامعة الزاوية، الزاوية، ليبيا" />
+          <FactRow label="الهاتف" value="‎+218 23 762659" mono />
+          <FactRow label="هاتف بديل" value="‎+218 23 762882" mono />
+          <FactRow label="البريد العامّ" value="info@zu.edu.ly" mono />
+          <FactRow label="التعاون الدوليّ" value="ico@zu.edu.ly" mono />
+          <FactRow label="الموقع الرسميّ" value="zu.edu.ly" mono />
         </div>
       </Card>
     </div>

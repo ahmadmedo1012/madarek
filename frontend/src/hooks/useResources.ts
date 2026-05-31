@@ -390,6 +390,7 @@ export interface Faculty {
   id: string;
   name: string;
   iconEmoji?: string | null;
+  city: string;
   departments: { id: string; name: string }[];
 }
 export function useFaculties() {
