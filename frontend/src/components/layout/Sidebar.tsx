@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
@@ -15,6 +15,8 @@ export function Sidebar() {
   const me = useMe();
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   const closeSidebar = useUiStore((s) => s.closeSidebar);
+  const sidebarCollapsed = useUiStore((s) => s.sidebarCollapsed);
+  const toggleSidebarCollapsed = useUiStore((s) => s.toggleSidebarCollapsed);
   const logout = useLogout();
   const navigate = useNavigate();
 
@@ -22,6 +24,14 @@ export function Sidebar() {
     document.body.style.overflow = sidebarOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [sidebarOpen]);
+
+  // Reflect collapse state on the shell so the grid track resizes.
+  // We toggle on documentElement so any descendent (topbar, etc.) can read it.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (sidebarCollapsed) root.setAttribute('data-sidebar-collapsed', '');
+    else root.removeAttribute('data-sidebar-collapsed');
+  }, [sidebarCollapsed]);
 
   if (!user) return null;
   const groups = NAV_BY_ROLE[user.role];
@@ -32,9 +42,15 @@ export function Sidebar() {
   const positionFacultyName = me.data?.teacherProfile?.positionFaculty?.name ?? null;
   const roleLabel = displayRoleLabel(user.role, position, positionFacultyName);
 
+  const cls = [
+    'sidebar',
+    sidebarOpen ? 'open' : '',
+    sidebarCollapsed ? 'collapsed' : '',
+  ].filter(Boolean).join(' ');
+
   return (
     <>
-      <aside className={`sidebar${sidebarOpen ? ' open' : ''}`} aria-label="القائمة الرئيسية">
+      <aside className={cls} aria-label="القائمة الرئيسية" data-collapsed={sidebarCollapsed ? 'true' : 'false'}>
         <div className="sidebar-brand">
           <div className="sidebar-brand-mark">
             <BrandMark size={24} />
@@ -43,6 +59,15 @@ export function Sidebar() {
             <div className="sidebar-brand-name">مدارك</div>
             <div className="sidebar-brand-sub">جامعة الزاوية</div>
           </div>
+          <button
+            type="button"
+            className="sidebar-collapse-btn hide-on-mobile"
+            onClick={toggleSidebarCollapsed}
+            aria-label={sidebarCollapsed ? 'توسعة القائمة' : 'طيّ القائمة'}
+            title={sidebarCollapsed ? 'توسعة القائمة' : 'طيّ القائمة'}
+          >
+            <Icon icon={sidebarCollapsed ? ChevronsLeft : ChevronsRight} size={14} />
+          </button>
         </div>
 
         {groups.map((g) => (
@@ -54,6 +79,7 @@ export function Sidebar() {
                 to={item.to}
                 className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
                 onClick={closeSidebar}
+                title={sidebarCollapsed ? item.label : undefined}
               >
                 <span className="nav-icon">
                   <Icon icon={item.icon} size={17} />
@@ -71,7 +97,7 @@ export function Sidebar() {
 
         <div className="sidebar-footer">
           <ThemeToggle />
-          <div className="sidebar-user">
+          <div className="sidebar-user" title={sidebarCollapsed ? `${user.firstName} ${user.lastName}` : undefined}>
             <UserAvatar
               initials={initials}
               color={user.avatarColor ?? undefined}

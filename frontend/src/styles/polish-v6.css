@@ -241,4 +241,112 @@
     .btn:active:not(:disabled) { transform: none; }
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     Collapsible sidebar — desktop icon-rail mode
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Toggle button next to the brand */
+  .sidebar-collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--r-sm);
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--t-clean);
+  }
+  .sidebar-collapse-btn:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--border-strong, var(--rule));
+  }
+  .sidebar-collapse-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-color: var(--accent);
+  }
+
+  /* Hide labels and section headers when collapsed; nav-items become
+     icon-only on a tighter padding. The brand text + user info collapse
+     down to icons too. */
+  @media (min-width: 921px) {
+    .sidebar.collapsed {
+      padding-inline: 8px;
+    }
+    .sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+      padding-inline: 4px;
+      gap: 0;
+    }
+    .sidebar.collapsed .sidebar-brand-text,
+    .sidebar.collapsed .sidebar-collapse-btn,
+    .sidebar.collapsed .nav-section-label,
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .nav-badge,
+    .sidebar.collapsed .sidebar-user-info {
+      display: none;
+    }
+    .sidebar.collapsed .nav-item {
+      grid-template-columns: 22px;
+      padding: 8px;
+      justify-content: center;
+    }
+    .sidebar.collapsed .nav-icon {
+      margin-inline: auto;
+    }
+    .sidebar.collapsed .nav-item.on::before,
+    .sidebar.collapsed .nav-item.active::before {
+      inset-inline-start: 0;
+      border-radius: 0 2px 2px 0;
+    }
+    .sidebar.collapsed .sidebar-user {
+      padding: 6px;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-logout {
+      display: none;
+    }
+
+    /* Tooltip on hover when collapsed — uses the title attribute via
+       a positioned ::after. Lightweight; no JS portal. */
+    .sidebar.collapsed .nav-item {
+      position: relative;
+    }
+    .sidebar.collapsed .nav-item:hover::after {
+      content: attr(title);
+      position: absolute;
+      inset-inline-start: calc(100% + 8px);
+      inset-block-start: 50%;
+      transform: translateY(-50%);
+      padding: 4px 10px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: var(--fs-xxs);
+      font-weight: var(--fw-medium);
+      border-radius: var(--r-sm);
+      white-space: nowrap;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      animation: polish-tooltip-in 120ms var(--ease-out) 240ms forwards;
+    }
+    [dir="rtl"] .sidebar.collapsed .nav-item:hover::after {
+      inset-inline-start: auto;
+      inset-inline-end: calc(100% + 8px);
+    }
+    @keyframes polish-tooltip-in {
+      from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+      to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+    }
+  }
+
+  /* Mobile — collapsed state has no meaning; the sidebar is a full
+     overlay that's either open or hidden. The toggle button is also
+     hidden via .hide-on-mobile in the markup. */
+
 }
