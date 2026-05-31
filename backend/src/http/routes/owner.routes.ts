@@ -233,6 +233,162 @@ router.patch(
   },
 );
 
+// ── GET /owner/education — aggregate for the Education page ────
+router.get('/owner/education', async (_req, res, next) => {
+  try {
+    const now = new Date();
+    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+
+    const [totalCourses, totalOfferings, teachers, totalEnrollments] = await Promise.all([
+      prisma.course.count(),
+      prisma.courseOffering.count(),
+      prisma.user.count({ where: { role: Role.TEACHER } }),
+      prisma.enrollment.count(),
+    ]);
+    const avgEnrolment = totalOfferings > 0 ? +(totalEnrollments / totalOfferings).toFixed(1) : 0;
+
+    const faculties = await prisma.faculty.findMany({
+      orderBy: { name: 'asc' },
+      include: { departments: { select: { _count: { select: { courses: true } } } } },
+    });
+    const byFaculty = faculties
+      .map((f) => ({
+        name: f.name,
+        courseCount: f.departments.reduce((s, d) => s + d._count.courses, 0),
+      }))
+      .sort((a, b) => b.courseCount - a.courseCount)
+      .slice(0, 8);
+
+    const courses = await prisma.course.findMany({
+      include: {
+        department: { select: { faculty: { select: { name: true } } } },
+        offerings: { select: { _count: { select: { enrollments: true } } } },
+      },
+    });
+    const topCourses = courses
+      .map((c) => ({
+        code: c.code,
+        name: c.name,
+        facultyName: c.department.faculty.name,
+        enrolled: c.offerings.reduce((s, o) => s + o._count.enrollments, 0),
+      }))
+      .sort((a, b) => b.enrolled - a.enrolled)
+      .slice(0, 8);
+
+    const teacherOfferings = await prisma.courseOffering.groupBy({
+      by: ['teacherId'],
+      _count: { teacherId: true },
+    });
+    const buckets = { one: 0, two: 0, three: 0, fourPlus: 0 };
+    for (const t of teacherOfferings) {
+      const n = t._count.teacherId;
+      if (n === 1) buckets.one++;
+      else if (n === 2) buckets.two++;
+      else if (n === 3) buckets.three++;
+      else if (n >= 4) buckets.fourPlus++;
+    }
+    const teachingTeacherCount = teacherOfferings.length;
+    const idle = Math.max(0, teachers - teachingTeacherCount);
+    const workloadBuckets = { idle, one: buckets.one, two: buckets.two, three: buckets.three, fourPlus: buckets.fourPlus };
+
+    const allRecent = await prisma.attendanceRecord.findMany({
+      where: { session: { date: { gte: sixMonthsAgo } } },
+      select: { status: true, session: { select: { date: true } } },
+    });
+    const monthLabel = (d: Date) => d.toLocaleDateString('ar-LY', { month: 'long' });
+    const attendanceTrend: Array<{ month: string; attendancePct: number | null; samples: number }> = [];
+    for (let i = 5; i >= 0; i--) {
+      const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+      const inMonth = allRecent.filter((r) => r.session.date >= start && r.session.date < end);
+      const present = inMonth.filter((r) => r.status === 'PRESENT' || r.status === 'LATE').length;
+      attendanceTrend.push({
+        month: monthLabel(start),
+        attendancePct: inMonth.length > 0 ? Math.round((present / inMonth.length) * 100) : null,
+        samples: inMonth.length,
+      });
+    }
+
+    res.json({
+      data: {
+        totals: { totalCourses, totalOfferings, teachers, avgEnrolment },
+        byFaculty,
+        topCourses,
+        workloadBuckets,
+        attendanceTrend,
+      },
+    });
+  } catch (e) { next(e); }
+});
+
+// ── GET /owner/system — operational telemetry for the System page ─
+router.get('/owner/system', async (_req, res, next) => {
+  try {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const [
+      recentSyncRuns,
+      lastSyncEntry,
+      openAlerts,
+      criticalAlertCount,
+      auditCountLast7Days,
+    ] = await Promise.all([
+      // Last 10 sync runs derived from AuditLog (action prefixed with "sync.")
+      prisma.auditLog.findMany({
+        where: { action: { startsWith: 'sync.' } },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        select: {
+          id: true, action: true, createdAt: true, metadata: true,
+          user: { select: { firstName: true, lastName: true } },
+        },
+      }),
+      prisma.auditLog.findFirst({
+        where: { action: { startsWith: 'sync.' } },
+        orderBy: { createdAt: 'desc' },
+        select: { createdAt: true, action: true },
+      }),
+      prisma.operationalAlert.findMany({
+        where: { resolvedAt: null },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        select: {
+          id: true, severity: true, category: true, title: true, message: true,
+          createdAt: true, metadata: true,
+        },
+      }),
+      prisma.operationalAlert.count({
+        where: { resolvedAt: null, severity: { in: ['critical', 'error'] } },
+      }),
+      prisma.auditLog.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
+    ]);
+
+    res.json({
+      data: {
+        sync: {
+          lastRunAt: lastSyncEntry?.createdAt ?? null,
+          recent: recentSyncRuns.map((r) => ({
+            id: r.id,
+            action: r.action,
+            at: r.createdAt,
+            actor: r.user ? `${r.user.firstName} ${r.user.lastName}` : 'النظام',
+            metadata: r.metadata as unknown,
+          })),
+        },
+        alerts: {
+          open: openAlerts,
+          openCount: openAlerts.length,
+          criticalCount: criticalAlertCount,
+        },
+        activity: {
+          recentEventsLast7Days: auditCountLast7Days,
+        },
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 // ── GET /owner/realtime — live metrics snapshot ──────────────────
 router.get('/owner/realtime', async (_req, res, next) => {
   try {

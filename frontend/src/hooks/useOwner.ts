@@ -213,6 +213,51 @@ export function useOwnerLoginAnalytics() {
   });
 }
 
+export interface OwnerEducation {
+  totals: { totalCourses: number; totalOfferings: number; teachers: number; avgEnrolment: number };
+  byFaculty: Array<{ name: string; courseCount: number }>;
+  topCourses: Array<{ code: string; name: string; facultyName: string; enrolled: number }>;
+  workloadBuckets: { idle: number; one: number; two: number; three: number; fourPlus: number };
+  attendanceTrend: Array<{ month: string; attendancePct: number | null; samples: number }>;
+}
+export function useOwnerEducation() {
+  return useQuery({
+    queryKey: ['owner', 'education'],
+    queryFn: () => unwrap<OwnerEducation>(api.get('/owner/education')),
+    staleTime: 60_000,
+  });
+}
+
+export interface OwnerSystem {
+  sync: {
+    lastRunAt: string | null;
+    recent: Array<{ id: string; action: string; at: string; actor: string; metadata: unknown }>;
+  };
+  alerts: {
+    open: Array<{
+      id: string;
+      severity: string;
+      category: string;
+      title: string;
+      message: string;
+      createdAt: string;
+      metadata: unknown;
+    }>;
+    openCount: number;
+    criticalCount: number;
+  };
+  activity: {
+    recentEventsLast7Days: number;
+  };
+}
+export function useOwnerSystem() {
+  return useQuery({
+    queryKey: ['owner', 'system'],
+    queryFn: () => unwrap<OwnerSystem>(api.get('/owner/system')),
+    staleTime: 30_000,
+  });
+}
+
 export function useOwnerSettings() {
   return useQuery({
     queryKey: ['owner', 'settings'],

@@ -5,68 +5,85 @@ import {
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import { Card, MetricCard, ProgressBar } from '../../components/primitives';
+import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { cartesianOptions } from '../../lib/chartTheme';
+import { useOwnerEducation } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
-const FACULTIES = [
-  { name: 'الهندسة', courses: 32 },
-  { name: 'العلوم', courses: 28 },
-  { name: 'الطب', courses: 24 },
-  { name: 'الآداب', courses: 22 },
-  { name: 'الاقتصاد', courses: 20 },
-  { name: 'القانون', courses: 18 },
-  { name: 'تقنية المعلومات', courses: 26 },
-  { name: 'التربية', courses: 16 },
-];
-
-const TOP_COURSES = [
-  { code: 'CS101', name: 'مقدمة في علوم الحاسوب', faculty: 'تقنية المعلومات', enrolled: 312 },
-  { code: 'ENG201', name: 'الدوائر الكهربائية', faculty: 'الهندسة', enrolled: 285 },
-  { code: 'MATH101', name: 'التفاضل والتكامل 1', faculty: 'العلوم', enrolled: 268 },
-  { code: 'BIO101', name: 'علم الأحياء العام', faculty: 'العلوم', enrolled: 245 },
-  { code: 'LAW101', name: 'مبادئ القانون', faculty: 'القانون', enrolled: 232 },
-  { code: 'ECO201', name: 'الاقتصاد الكلي', faculty: 'الاقتصاد', enrolled: 218 },
-  { code: 'MED101', name: 'التشريح العام', faculty: 'الطب', enrolled: 195 },
-  { code: 'EDU301', name: 'مناهج البحث التربوي', faculty: 'التربية', enrolled: 178 },
-];
 
 export function OwnerEducationPage() {
+  const q = useOwnerEducation();
+
+  if (q.isPending) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">النظرة التعليميّة</h1>
+            <p className="page-subtitle">جارٍ جمع البيانات…</p>
+          </div>
+        </div>
+        <LoadingState />
+      </div>
+    );
+  }
+  if (q.isError || !q.data) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">النظرة التعليميّة</h1>
+          </div>
+        </div>
+        <ErrorState />
+      </div>
+    );
+  }
+
+  const d = q.data;
+  const { totals, byFaculty, topCourses, workloadBuckets, attendanceTrend } = d;
+
+  const totalTeachers =
+    workloadBuckets.idle +
+    workloadBuckets.one +
+    workloadBuckets.two +
+    workloadBuckets.three +
+    workloadBuckets.fourPlus;
+  const pct = (n: number) => (totalTeachers > 0 ? Math.round((n / totalTeachers) * 100) : 0);
+
   const barData = {
-    labels: FACULTIES.map((f) => f.name),
+    labels: byFaculty.map((f) => f.name),
     datasets: [{
       label: 'عدد المقررات',
-      data: FACULTIES.map((f) => f.courses),
+      data: byFaculty.map((f) => f.courseCount),
       backgroundColor: 'rgba(163, 201, 255, 0.6)',
       borderColor: '#a3c9ff',
       borderWidth: 1,
       borderRadius: 4,
     }],
   };
+  const barOptions = { ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const };
 
-  const barOptions = {
-    ...cartesianOptions({ horizontal: true }),
-    indexAxis: 'y' as const,
-  };
-
+  const trendHasData = attendanceTrend.some((t) => t.attendancePct !== null);
   const lineData = {
-    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+    labels: attendanceTrend.map((t) => t.month),
     datasets: [{
       label: 'نسبة الحضور %',
-      data: [72, 75, 78, 74, 80, 83],
+      data: attendanceTrend.map((t) => t.attendancePct ?? null),
       borderColor: '#3DD68C',
       backgroundColor: 'rgba(61, 214, 140, 0.1)',
       fill: true,
       tension: 0.4,
       pointRadius: 4,
       pointBackgroundColor: '#3DD68C',
+      spanGaps: true,
     }],
   };
-
   const lineOptions = {
     ...cartesianOptions(),
     scales: {
       ...cartesianOptions().scales,
-      y: { ...cartesianOptions().scales!.y, min: 60, max: 100 },
+      y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
     },
   };
 
@@ -74,65 +91,93 @@ export function OwnerEducationPage() {
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">النظرة التعليمية</h1>
-          <p className="page-subtitle">إحصائيات المقررات والأساتذة والطلاب</p>
+          <h1 className="page-title">النظرة التعليميّة</h1>
+          <p className="page-subtitle">إحصائيات حيّة عن المقررات وأعضاء هيئة التدريس والطلاب</p>
         </div>
       </div>
 
-      {/* Metrics */}
       <div className="grid-4">
-        <MetricCard icon={BookOpen} label="إجمالي المقررات" value="186" color="brand" />
-        <MetricCard icon={Users} label="عدد الأساتذة" value="420" color="green" />
-        <MetricCard icon={Calendar} label="العروض النشطة" value="312" color="purple" />
-        <MetricCard icon={TrendingUp} label="متوسط التسجيل" value="39.7" color="gold" />
+        <MetricCard icon={BookOpen} label="إجمالي المقرّرات" value={totals.totalCourses.toLocaleString('ar-LY')} color="brand" />
+        <MetricCard icon={Users} label="عدد الأساتذة" value={totals.teachers.toLocaleString('ar-LY')} color="green" />
+        <MetricCard icon={Calendar} label="العروض النشطة" value={totals.totalOfferings.toLocaleString('ar-LY')} color="purple" />
+        <MetricCard icon={TrendingUp} label="متوسط التسجيل / عرض" value={totals.avgEnrolment.toLocaleString('ar-LY')} color="gold" />
       </div>
 
-      {/* Courses per Faculty - Bar Chart */}
-      <Card title="المقررات حسب الكلية">
-        <div className="owner-chart-container" style={{ height: 320 }}>
-          <Bar data={barData} options={barOptions} />
-        </div>
+      <Card title="المقرّرات حسب الكلّيّة" subtitle={`أعلى ${byFaculty.length} كلّيّة`}>
+        {byFaculty.length === 0 ? (
+          <EmptyState title="لا مقرّرات بعد" description="ستظهر هنا حين تُسجَّل مقرّرات على نظام الكلّيّات." />
+        ) : (
+          <div className="owner-chart-container" style={{ height: Math.max(220, byFaculty.length * 36) }}>
+            <Bar data={barData} options={barOptions} />
+          </div>
+        )}
       </Card>
 
-      {/* Top Courses Table */}
-      <Card title="أكثر المقررات تسجيلاً">
-        <table className="owner-table">
-          <thead>
-            <tr>
-              <th>الرمز</th>
-              <th>اسم المقرر</th>
-              <th>الكلية</th>
-              <th>المسجلون</th>
-            </tr>
-          </thead>
-          <tbody>
-            {TOP_COURSES.map((c) => (
-              <tr key={c.code}>
-                <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{c.code}</td>
-                <td>{c.name}</td>
-                <td style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-xs)' }}>{c.faculty}</td>
-                <td style={{ fontWeight: 600 }}>{c.enrolled}</td>
+      <Card title="أكثر المقرّرات تسجيلاً">
+        {topCourses.length === 0 ? (
+          <EmptyState title="لا تسجيلات بعد" />
+        ) : (
+          <table className="owner-table">
+            <thead>
+              <tr>
+                <th>الرمز</th>
+                <th>اسم المقرّر</th>
+                <th>الكلّيّة</th>
+                <th>المسجَّلون</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {topCourses.map((c) => (
+                <tr key={c.code}>
+                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>{c.code}</td>
+                  <td>{c.name}</td>
+                  <td style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-xs)' }}>{c.facultyName}</td>
+                  <td style={{ fontWeight: 600 }}>{c.enrolled.toLocaleString('ar-LY')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </Card>
 
-      {/* Professor Workload */}
-      <Card title="توزيع حِمل الأساتذة">
+      <Card title="توزيع حِمل أعضاء هيئة التدريس" subtitle={`عدد الأساتذة الذين يُدرِّسون N من العروض هذا الفصل`}>
         <div style={{ padding: 'var(--sp-3) 0', display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
-          <ProgressBar value={35} label="مقرر واحد (147 أستاذ)" color="#a3c9ff" />
-          <ProgressBar value={40} label="مقرران (168 أستاذ)" color="#3DD68C" />
-          <ProgressBar value={18} label="3 مقررات (76 أستاذ)" color="#e9c349" />
-          <ProgressBar value={7} label="4+ مقررات (29 أستاذ)" color="#F5A623" />
+          <ProgressBar
+            value={pct(workloadBuckets.idle)}
+            label={`بدون عرض هذا الفصل (${workloadBuckets.idle.toLocaleString('ar-LY')} أستاذ)`}
+            color="#9CA3AF"
+          />
+          <ProgressBar
+            value={pct(workloadBuckets.one)}
+            label={`عرض واحد (${workloadBuckets.one.toLocaleString('ar-LY')} أستاذ)`}
+            color="#a3c9ff"
+          />
+          <ProgressBar
+            value={pct(workloadBuckets.two)}
+            label={`عرضان (${workloadBuckets.two.toLocaleString('ar-LY')} أستاذ)`}
+            color="#3DD68C"
+          />
+          <ProgressBar
+            value={pct(workloadBuckets.three)}
+            label={`٣ عروض (${workloadBuckets.three.toLocaleString('ar-LY')} أستاذ)`}
+            color="#e9c349"
+          />
+          <ProgressBar
+            value={pct(workloadBuckets.fourPlus)}
+            label={`٤ فأكثر (${workloadBuckets.fourPlus.toLocaleString('ar-LY')} أستاذ)`}
+            color="#F5A623"
+          />
         </div>
       </Card>
 
-      {/* Attendance Trend - Line Chart */}
-      <Card title="اتجاه الحضور (آخر 6 أشهر)">
-        <div className="owner-chart-container">
-          <Line data={lineData} options={lineOptions} />
-        </div>
+      <Card title="اتّجاه الحضور" subtitle="آخر ٦ أشهر — يُحسب من سجلات الحضور الفعليّة">
+        {!trendHasData ? (
+          <EmptyState title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور تسجيل أوّل جلسة حضور على المنصّة." />
+        ) : (
+          <div className="owner-chart-container">
+            <Line data={lineData} options={lineOptions} />
+          </div>
+        )}
       </Card>
     </div>
   );
