@@ -17,7 +17,10 @@ export const useUiStore = create<UiState>()(
   persist(
     (set) => ({
       sidebarOpen: false,
-      sidebarCollapsed: false,
+      // Default collapsed on first visit — user explicitly requested
+      // the sidebar fold rather than be permanently visible. Once a user
+      // toggles it, their preference is persisted and respected.
+      sidebarCollapsed: true,
       openSidebar: () => set({ sidebarOpen: true }),
       closeSidebar: () => set({ sidebarOpen: false }),
       toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
