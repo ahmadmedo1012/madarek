@@ -36,6 +36,7 @@ import ownerRoutes from './http/routes/owner.routes.js';
 import collegesRoutes from './http/routes/colleges.routes.js';
 import adminExtrasRoutes from './http/routes/admin-extras.routes.js';
 import studentDashboardRoutes from './http/routes/student-dashboard.routes.js';
+import teacherDashboardRoutes from './http/routes/teacher-dashboard.routes.js';
 import { AppError } from './lib/errors.js';
 
 // Resolve frontend build path from this file's location.
@@ -99,6 +100,7 @@ export function createApp() {
   app.use('/api/v1', collegesRoutes);
   app.use('/api/v1', adminExtrasRoutes);
   app.use('/api/v1', studentDashboardRoutes);
+  app.use('/api/v1', teacherDashboardRoutes);
 
   // 404 for unknown API paths
   app.use('/api/v1', (_req, _res, next) => next(AppError.notFound('Route not found')));

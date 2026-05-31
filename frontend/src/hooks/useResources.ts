@@ -1,6 +1,37 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../lib/api';
 
+// ── Teacher dashboard aggregate ───────────────────────────────
+export interface TeacherDashboard {
+  kpi: {
+    studentCount: number;
+    avgGradePct: number | null;
+    attendancePct: number | null;
+    needsReview: number;
+  };
+  trend: Array<{
+    week: string;
+    avgGradePct: number | null;
+    attendancePct: number | null;
+  }>;
+  feed: Array<{
+    kind: 'submissions' | 'research' | 'attendance';
+    id: string;
+    author: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null } | null;
+    meta: string;
+    when: string;
+    title: string;
+    actionTo: string;
+  }>;
+}
+export function useTeacherDashboard() {
+  return useQuery({
+    queryKey: ['teacher', 'dashboard'],
+    queryFn: () => unwrap<TeacherDashboard>(api.get('/teacher/dashboard')),
+    staleTime: 60_000,
+  });
+}
+
 // ── Student dashboard aggregate ───────────────────────────────
 export interface StudentDashboard {
   profile: {

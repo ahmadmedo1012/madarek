@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users,
-  AlertTriangle, MessageSquare, FileText, Upload, Bell,
-  CheckCircle2, Filter, Sparkles,
+  AlertTriangle, FileText, Bell,
+  CheckCircle2, Filter, Sparkles, Microscope,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
+import { LoadingState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Line } from 'react-chartjs-2';
 import {
@@ -14,154 +15,78 @@ import {
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import { cartesianOptions } from '../../lib/chartTheme';
+import { useTeacherDashboard, type TeacherDashboard } from '../../hooks/useResources';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-type FeedFilter = 'all' | 'submissions' | 'questions' | 'attendance' | 'research' | 'content';
-
-interface FeedItem {
-  id: string;
-  kind: FeedFilter;
-  iconKind: 'avatar' | 'icon';
-  authorName: string;
-  authorInitials?: string;
-  iconCmp?: LucideIcon;
-  iconTone?: 'amber' | 'red' | 'green' | 'purple' | 'gold';
-  meta: string; // course / time
-  time: string;
-  body: React.ReactNode;
-  actions: Array<{ label: string; primary?: boolean; to?: string; icon?: LucideIcon }>;
-}
-
-const FEED: FeedItem[] = [
-  {
-    id: '1',
-    kind: 'submissions',
-    iconKind: 'avatar',
-    authorName: 'علي الفقيه',
-    authorInitials: 'عف',
-    meta: 'هندسة البرمجيات · SE301',
-    time: 'منذ 5 دقائق',
-    body: <span>سلّم <strong>مشروع UML للتصميم</strong> — ينتظر تقييمك.</span>,
-    actions: [{ label: 'مراجعة الواجب', primary: true, to: '/teacher/grades', icon: FileText }],
-  },
-  {
-    id: '2',
-    kind: 'questions',
-    iconKind: 'avatar',
-    authorName: 'مريم الفاخري',
-    authorInitials: 'مف',
-    meta: 'نظم المعلومات',
-    time: 'منذ 12 دقيقة',
-    body: <span>«أستاذ، هل يمكن إعادة شرح موضوع <strong>Normalization</strong>؟ أنا محتارة في 3NF.»</span>,
-    actions: [
-      { label: 'الرد', primary: true, to: '/teacher/messages', icon: MessageSquare },
-      { label: 'تجاهل' },
-    ],
-  },
-  {
-    id: '3',
-    kind: 'attendance',
-    iconKind: 'icon',
-    authorName: 'تنبيه حضور',
-    iconCmp: AlertTriangle,
-    iconTone: 'red',
-    meta: 'قواعد البيانات · CS302',
-    time: 'منذ ساعة',
-    body: <span>5 طلاب غابوا 3 محاضرات متتالية — يحتاجون متابعة قبل تجاوز الحد.</span>,
-    actions: [
-      { label: 'عرض الطلاب', primary: true, to: '/teacher/attendance', icon: Users },
-      { label: 'إرسال تذكير' },
-    ],
-  },
-  {
-    id: '4',
-    kind: 'research',
-    iconKind: 'avatar',
-    authorName: 'يوسف البركي',
-    authorInitials: 'يب',
-    meta: 'بحث جامعي · هندسة البرمجيات',
-    time: 'منذ 3 ساعات',
-    body: (
-      <span>
-        رفع بحث «تطبيق نمط <strong>Observer</strong> في تطبيقات Real-Time» — اجتاز الفحص الأوتوماتيكي
-        (انتحال 6.4%، AI 11.2%) وينتظر تقييمك.
-      </span>
-    ),
-    actions: [{ label: 'تقييم البحث', primary: true, to: '/teacher/research', icon: Sparkles }],
-  },
-  {
-    id: '5',
-    kind: 'submissions',
-    iconKind: 'avatar',
-    authorName: 'سارة المحجوب',
-    authorInitials: 'سم',
-    meta: 'هندسة البرمجيات · SE301',
-    time: 'منذ 4 ساعات',
-    body: <span>سلّمت <strong>تقرير دراسة حالة Design Patterns</strong>.</span>,
-    actions: [{ label: 'مراجعة', primary: true, to: '/teacher/grades', icon: FileText }],
-  },
-  {
-    id: '6',
-    kind: 'content',
-    iconKind: 'icon',
-    authorName: 'تذكير محتوى',
-    iconCmp: Upload,
-    iconTone: 'amber',
-    meta: 'شبكات الحاسوب',
-    time: 'منذ 6 ساعات',
-    body: <span>محاضرة الأسبوع القادم لم تُرفع بعد. الطلاب سيحتاجونها قبل الأحد.</span>,
-    actions: [{ label: 'رفع المحتوى', primary: true, to: '/teacher/materials', icon: Upload }],
-  },
-  {
-    id: '7',
-    kind: 'questions',
-    iconKind: 'avatar',
-    authorName: 'خالد المزوغي',
-    authorInitials: 'خم',
-    meta: 'نظم المعلومات',
-    time: 'منذ يوم',
-    body: <span>«هل سيتم تغطية موضوع <strong>Indexing</strong> في الاختبار النهائي؟»</span>,
-    actions: [{ label: 'الرد', primary: true, to: '/teacher/messages', icon: MessageSquare }],
-  },
-  {
-    id: '8',
-    kind: 'research',
-    iconKind: 'icon',
-    authorName: 'فحص أوتوماتيكي',
-    iconCmp: AlertTriangle,
-    iconTone: 'red',
-    meta: 'بحث جامعي · CS302',
-    time: 'منذ يوم',
-    body: <span>3 بحوث رفضها فحص الانتحال — تجاوزت 25%. يحتاجون توجيهاً منك.</span>,
-    actions: [{ label: 'مراجعة الحالات', primary: true, to: '/teacher/research', icon: AlertTriangle }],
-  },
-  {
-    id: '9',
-    kind: 'content',
-    iconKind: 'icon',
-    authorName: 'إنجاز',
-    iconCmp: CheckCircle2,
-    iconTone: 'green',
-    meta: 'هندسة البرمجيات',
-    time: 'منذ يومين',
-    body: <span>اكتملت رقمنة 78% من محتوى المقرر — هدف الفصل 80% تقريباً.</span>,
-    actions: [{ label: 'عرض التقرير', to: '/teacher/performance' }],
-  },
-];
+type FeedFilter = 'all' | 'submissions' | 'research' | 'attendance';
 
 const FILTER_OPTIONS: Array<{ value: FeedFilter; label: string }> = [
   { value: 'all', label: 'الكل' },
   { value: 'submissions', label: 'تسليمات' },
-  { value: 'questions', label: 'أسئلة الطلاب' },
-  { value: 'attendance', label: 'حضور' },
   { value: 'research', label: 'بحوث' },
-  { value: 'content', label: 'محتوى' },
+  { value: 'attendance', label: 'حضور' },
 ];
+
+const KIND_ICON: Record<'submissions' | 'research' | 'attendance', LucideIcon> = {
+  submissions: FileText,
+  research: Microscope,
+  attendance: AlertTriangle,
+};
+const KIND_TONE: Record<'submissions' | 'research' | 'attendance', 'amber' | 'red' | 'green' | 'purple' | 'gold'> = {
+  submissions: 'amber',
+  research: 'purple',
+  attendance: 'red',
+};
+
+function formatRelative(iso: string): string {
+  const d = new Date(iso);
+  const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
+  if (diffMin < 1) return 'الآن';
+  if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
+  const diffHr = Math.round(diffMin / 60);
+  if (diffHr < 24) return `منذ ${diffHr} ساعة`;
+  const diffD = Math.round(diffHr / 24);
+  if (diffD < 7) return `منذ ${diffD} يوم`;
+  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+}
 
 export function TeacherDashboardPage() {
   const [filter, setFilter] = useState<FeedFilter>('all');
-  const visible = filter === 'all' ? FEED : FEED.filter((f) => f.kind === filter);
+  const dash = useTeacherDashboard();
+
+  const visible = useMemo(() => {
+    if (!dash.data) return [];
+    return filter === 'all' ? dash.data.feed : dash.data.feed.filter((f) => f.kind === filter);
+  }, [dash.data, filter]);
+
+  if (dash.isPending) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">لوحة الأستاذ</h1>
+            <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
+          </div>
+        </div>
+        <LoadingState />
+      </div>
+    );
+  }
+  if (dash.isError || !dash.data) {
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">لوحة الأستاذ</h1>
+          </div>
+        </div>
+        <ErrorState />
+      </div>
+    );
+  }
+
+  const d = dash.data;
 
   return (
     <div className="page">
@@ -177,50 +102,44 @@ export function TeacherDashboardPage() {
         </Badge>
       </div>
 
-      {/* Compact KPI strip */}
+      {/* Compact KPI strip — real values */}
       <div className="compact-kpis">
-        <CompactKpi label="طلاب" value="143" trend="‏4% هذا الأسبوع" trendColor="positive" />
-        <CompactKpi label="متوسط الأداء" value="71%" trend="‏5%" trendColor="positive" />
-        <CompactKpi label="حضور" value="78%" trend="‏3%" trendColor="negative" />
-        <CompactKpi label="بحاجة تقييم" value="12" trend="واجبات + بحوث" trendColor="neutral" />
+        <CompactKpi
+          label="طلاب"
+          value={d.kpi.studentCount.toLocaleString('ar-LY')}
+          trend="عبر مقرّراتك"
+          trendColor="neutral"
+        />
+        <CompactKpi
+          label="متوسط الأداء"
+          value={d.kpi.avgGradePct !== null ? `${d.kpi.avgGradePct}%` : '—'}
+          trend={d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة'}
+          trendColor={d.kpi.avgGradePct === null ? 'neutral' : d.kpi.avgGradePct >= 70 ? 'positive' : 'negative'}
+        />
+        <CompactKpi
+          label="حضور"
+          value={d.kpi.attendancePct !== null ? `${d.kpi.attendancePct}%` : '—'}
+          trend={d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجَّلة'}
+          trendColor={d.kpi.attendancePct === null ? 'neutral' : d.kpi.attendancePct >= 75 ? 'positive' : 'negative'}
+        />
+        <CompactKpi
+          label="بحاجة تقييم"
+          value={d.kpi.needsReview.toLocaleString('ar-LY')}
+          trend="واجبات + بحوث"
+          trendColor={d.kpi.needsReview === 0 ? 'positive' : d.kpi.needsReview > 10 ? 'negative' : 'neutral'}
+        />
       </div>
 
-      {/* Performance + attendance trend */}
+      {/* Performance + attendance trend — real 6-week data */}
       <Card title="اتجاه الأداء والحضور" icon={Sparkles} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
         <div style={{ height: 240 }}>
           <Line
-            data={{
-              labels: ['أسبوع 1', 'أسبوع 2', 'أسبوع 3', 'أسبوع 4', 'أسبوع 5', 'أسبوع 6'],
-              datasets: [
-                {
-                  label: 'متوسط الأداء %',
-                  data: [66, 68, 67, 70, 69, 71],
-                  borderColor: '#a3c9ff',
-                  backgroundColor: 'rgba(163, 201, 255, 0.10)',
-                  fill: true,
-                  tension: 0.4,
-                  pointRadius: 3,
-                  pointBackgroundColor: '#a3c9ff',
-                  borderWidth: 2,
-                },
-                {
-                  label: 'الحضور %',
-                  data: [82, 80, 79, 81, 77, 78],
-                  borderColor: '#3DD68C',
-                  backgroundColor: 'rgba(61, 214, 140, 0.08)',
-                  fill: true,
-                  tension: 0.4,
-                  pointRadius: 3,
-                  pointBackgroundColor: '#3DD68C',
-                  borderWidth: 2,
-                },
-              ],
-            }}
+            data={trendChartData(d.trend)}
             options={{
               ...cartesianOptions({ legend: true }),
               scales: {
                 ...cartesianOptions().scales,
-                y: { ...cartesianOptions().scales!.y, min: 50, max: 100 },
+                y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
               },
             }}
           />
@@ -269,6 +188,38 @@ export function TeacherDashboardPage() {
   );
 }
 
+function trendChartData(trend: TeacherDashboard['trend']) {
+  return {
+    labels: trend.map((t) => t.week),
+    datasets: [
+      {
+        label: 'متوسط الأداء %',
+        data: trend.map((t) => t.avgGradePct ?? null),
+        borderColor: '#a3c9ff',
+        backgroundColor: 'rgba(163, 201, 255, 0.10)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#a3c9ff',
+        borderWidth: 2,
+        spanGaps: true,
+      },
+      {
+        label: 'الحضور %',
+        data: trend.map((t) => t.attendancePct ?? null),
+        borderColor: '#3DD68C',
+        backgroundColor: 'rgba(61, 214, 140, 0.08)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#3DD68C',
+        borderWidth: 2,
+        spanGaps: true,
+      },
+    ],
+  };
+}
+
 function CompactKpi({ label, value, trend, trendColor }: {
   label: string; value: string; trend: string; trendColor: 'positive' | 'negative' | 'neutral';
 }) {
@@ -281,41 +232,38 @@ function CompactKpi({ label, value, trend, trendColor }: {
   );
 }
 
-function FeedRow({ item }: { item: FeedItem }) {
+function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
+  const Icon_ = KIND_ICON[item.kind];
+  const tone = KIND_TONE[item.kind];
   return (
     <div className="feed-item">
-      {item.iconKind === 'avatar' && item.authorInitials ? (
-        <UserAvatar initials={item.authorInitials} size={40} />
+      {item.author ? (
+        <UserAvatar
+          initials={item.author.avatarInitials ?? `${item.author.firstName[0]}${item.author.lastName[0]}`}
+          color={item.author.avatarColor ?? undefined}
+          size={40}
+        />
       ) : (
-        <div className={`feed-item-avatar ${item.iconTone ?? ''}`}>
-          {item.iconCmp ? <Icon icon={item.iconCmp} size={18} /> : null}
+        <div className={`feed-item-avatar ${tone}`}>
+          <Icon icon={Icon_} size={18} />
         </div>
       )}
       <div className="feed-item-body">
         <div className="feed-item-head">
-          <span className="feed-item-author">{item.authorName}</span>
+          <span className="feed-item-author">
+            {item.author ? `${item.author.firstName} ${item.author.lastName}` : 'النظام'}
+          </span>
           <span className="feed-item-meta">·</span>
           <span className="feed-item-meta">{item.meta}</span>
-          <span className="feed-item-meta feed-item-time">{item.time}</span>
+          <span className="feed-item-meta feed-item-time">{formatRelative(item.when)}</span>
         </div>
-        <div className="feed-item-text">{item.body}</div>
-        {item.actions.length > 0 && (
-          <div className="feed-item-actions">
-            {item.actions.map((a, i) => (
-              a.to ? (
-                <Link key={i} to={a.to} className={`btn ${a.primary ? 'primary' : ''} sm`}>
-                  {a.icon && <Icon icon={a.icon} size={13} />}
-                  {a.label}
-                </Link>
-              ) : (
-                <button key={i} type="button" className={`btn ${a.primary ? 'primary' : ''} sm`}>
-                  {a.icon && <Icon icon={a.icon} size={13} />}
-                  {a.label}
-                </button>
-              )
-            ))}
-          </div>
-        )}
+        <div className="feed-item-text">{item.title}</div>
+        <div className="feed-item-actions">
+          <Link to={item.actionTo} className="btn primary sm">
+            <Icon icon={Icon_} size={13} />
+            مراجعة
+          </Link>
+        </div>
       </div>
     </div>
   );
