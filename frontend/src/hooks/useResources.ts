@@ -1231,6 +1231,24 @@ export function useAnnouncements() {
   });
 }
 
+export interface CreateAnnouncementInput {
+  scope: 'PLATFORM' | 'FACULTY' | 'DEPARTMENT' | 'OFFERING';
+  scopeId?: string;
+  title: string;
+  body: string;
+  pinned?: boolean;
+  iconEmoji?: string;
+  expiresAt?: string;
+}
+export function useCreateAnnouncement() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateAnnouncementInput) =>
+      unwrap<AnnouncementRow>(api.post('/announcements', input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['announcements'] }),
+  });
+}
+
 export interface CompetitionRow {
   id: string;
   title: string;
@@ -1331,6 +1349,25 @@ export function useCampusEvents() {
   return useQuery({
     queryKey: ['campus-events'],
     queryFn: () => unwrap<CampusEventRow[]>(api.get('/events')),
+  });
+}
+
+export interface CreateCampusEventInput {
+  title: string;
+  description: string;
+  location: string;
+  startsAt: string;
+  endsAt: string;
+  capacity: number;
+  iconEmoji?: string;
+  themeColor?: string;
+}
+export function useCreateCampusEvent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateCampusEventInput) =>
+      unwrap<CampusEventRow>(api.post('/events', input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['campus-events'] }),
   });
 }
 
