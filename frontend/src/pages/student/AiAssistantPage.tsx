@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, BadgeCheck, AlertCircle, Brain, type LucideIcon } from 'lucide-react';
-import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
+import { Bot, Send, Sparkles, AlertCircle, Brain, type LucideIcon } from 'lucide-react';
+import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useAiChat, useGaps } from '../../hooks/useResources';
@@ -14,15 +14,6 @@ const SUGGESTIONS = [
   'نصائح لإدارة الوقت أثناء الامتحانات',
   'كيف أبني محفظة مشاريع قوية؟',
 ];
-
-const EXPERTS: Array<{ name: string; dept: string; initials: string; }> = [
-  { name: 'د. خالد المبروك', dept: 'نظم المعلومات', initials: 'خم' },
-  { name: 'د. سالم الشريف', dept: 'الذكاء الاصطناعي', initials: 'سش' },
-  { name: 'د. فاطمة العجيلي', dept: 'قواعد البيانات', initials: 'فع' },
-  { name: 'د. عياض الهنقاري', dept: 'هندسة البرمجيات', initials: 'عه' },
-];
-
-type Side = 'suggestions' | 'experts';
 
 /** Render text with newlines preserved (chat replies use \n now). */
 function Multiline({ children, icon }: { children: string; icon?: LucideIcon }) {
@@ -47,11 +38,10 @@ export default function AiAssistantPage() {
     {
       role: 'bot',
       text:
-        'مرحباً! أنا مساعدك الدراسي الذكي. لديّ صورة كاملة عن مستواك في كل مفهوم — يمكنني شرح ما تحتاجه، اقتراح خطة مذاكرة، أو تحليل فجواتك المعرفية. كيف أساعدك؟',
+        'مرحباً! أنا مساعدك الدراسيّ الذكيّ. لديّ صورة كاملة عن مستواك في كلّ مفهوم — يمكنني شرح ما تحتاجه، اقتراح خطّة مذاكرة، أو تحليل فجواتك المعرفيّة. كيف أساعدك؟',
     },
   ]);
   const [input, setInput] = useState('');
-  const [side, setSide] = useState<Side>('suggestions');
   const scroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,12 +58,12 @@ export default function AiAssistantPage() {
       setConversationId(res.conversationId);
       setMessages((m) => [...m, { role: 'bot', text: res.reply }]);
     } catch {
-      setMessages((m) => [...m, { role: 'bot', text: 'تعذّر الاتصال بالمساعد الآن. حاول لاحقاً.' }]);
+      setMessages((m) => [...m, { role: 'bot', text: 'تعذَّر الاتصال بالمساعد الآن. حاول لاحقاً.' }]);
     }
   };
 
   const askAboutGap = (conceptName: string) => {
-    void send(`اشرح لي مفهوم "${conceptName}" — لاحظت أن لديّ فجوة فيه.`);
+    void send(`اشرح لي مفهوم "${conceptName}" — لاحظت أنّ لديّ فجوة فيه.`);
   };
 
   const initials = user?.avatarInitials ?? 'أنا';
@@ -82,18 +72,18 @@ export default function AiAssistantPage() {
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">المساعد الذكي</h1>
-          <p className="page-subtitle">يفهم مستواك المعرفي ويوصي بأفضل خطوة تالية في رحلتك الدراسية.</p>
+          <h1 className="page-title">المساعد الذكيّ</h1>
+          <p className="page-subtitle">يفهم مستواك المعرفيّ ويوصي بأفضل خطوة تالية في رحلتك الدراسيّة.</p>
         </div>
         <Badge color="gold" icon={Sparkles}>AI</Badge>
       </div>
 
-      {/* Gap-aware starter cards */}
+      {/* Gap-aware starter cards — real data from /me/gaps */}
       {gaps.data && gaps.data.length > 0 && (
         <Card
           title="بناءً على أدائك"
           icon={Brain}
-          subtitle="مفاهيم اكتشفنا أنها بحاجة لتوضيح — اضغط لبدء محادثة مع المساعد"
+          subtitle="مفاهيم اكتشفنا أنّها بحاجة لتوضيح — اضغط لبدء محادثة مع المساعد"
         >
           <div className="grid-3">
             {gaps.data.slice(0, 3).map((g) => (
@@ -172,8 +162,8 @@ export default function AiAssistantPage() {
             <button type="button" className="ai-quick-chip" onClick={() => void send('أنشئ لي اختباراً قصيراً (5 أسئلة)')}>
               اختبار قصير
             </button>
-            <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسية إضافية')}>
-              موارد إضافية
+            <button type="button" className="ai-quick-chip" onClick={() => void send('اقترح موارد دراسيّة إضافيّة')}>
+              موارد إضافيّة
             </button>
           </div>
 
@@ -198,45 +188,21 @@ export default function AiAssistantPage() {
           </div>
         </Card>
 
-        <Card title={side === 'suggestions' ? 'أسئلة مقترحة' : 'خبراء متاحون'} actions={
-          <Tabs<Side>
-            value={side}
-            onChange={setSide}
-            items={[
-              { value: 'suggestions', label: 'مقترحة' },
-              { value: 'experts', label: 'الخبراء' },
-            ]}
-          />
-        }>
-          {side === 'suggestions' ? (
-            <div className="flex-col gap-2">
-              {SUGGESTIONS.map((q) => (
-                <button
-                  key={q}
-                  type="button"
-                  onClick={() => void send(q)}
-                  className="list-row"
-                  style={{ textAlign: 'right', cursor: 'pointer', border: 0, background: 'transparent' }}
-                >
-                  <Icon icon={Sparkles} size={14} />
-                  <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="flex-col gap-2">
-              {EXPERTS.map((e) => (
-                <div className="list-row" key={e.name}>
-                  <UserAvatar initials={e.initials} size={32} />
-                  <div className="list-row-body">
-                    <div className="list-row-title">{e.name}</div>
-                    <div className="list-row-sub">{e.dept}</div>
-                  </div>
-                  <Badge color="green" icon={BadgeCheck}>متاح</Badge>
-                </div>
-              ))}
-            </div>
-          )}
+        <Card title="أسئلة مقترحة" icon={Sparkles}>
+          <div className="flex-col gap-2">
+            {SUGGESTIONS.map((q) => (
+              <button
+                key={q}
+                type="button"
+                onClick={() => void send(q)}
+                className="list-row"
+                style={{ textAlign: 'right', cursor: 'pointer', border: 0, background: 'transparent' }}
+              >
+                <Icon icon={Sparkles} size={14} />
+                <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>
+              </button>
+            ))}
+          </div>
         </Card>
       </div>
     </div>

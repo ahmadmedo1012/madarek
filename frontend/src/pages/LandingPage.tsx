@@ -678,27 +678,35 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* WHO IT'S FOR — role-based, not fabricated quotes */}
       <section className="marketing-container landing-features">
         <div className="landing-section-head">
-          <span className="landing-section-eyebrow">آراء مجتمع الجامعة</span>
+          <span className="landing-section-eyebrow">لمن صُمِّمت</span>
           <h2 className="landing-section-title">
-            يثقون <em>بمدارك</em> كل يوم
+            أداة كلّ <em>دور</em> أكاديميّ في الجامعة
           </h2>
         </div>
         <div className="landing-testimonials">
           {[
-            { q: 'المنصّة غيّرت طريقة متابعتي لمحاضراتي — كل شيء في مكان واحد، والمساعد الذكي يوفّر عليّ ساعات.', n: 'أحمد الزروق', r: 'طالب · هندسة البرمجيات', i: 'أز' },
-            { q: 'أصبح رصد الحضور والدرجات وتحليل أداء الطلاب أسرع وأدقّ. أداة حقيقية للأستاذ.', n: 'د. سالم البوسيفي', r: 'عضو هيئة تدريس · نظم المعلومات', i: 'سب' },
-            { q: 'تقارير الجودة ولوحات المتابعة أعطتنا رؤية مؤسسية لم تكن متاحة من قبل.', n: 'مكتب ضمان الجودة', r: 'القطاع الرابع · جامعة الزاوية', i: 'جو' },
+            {
+              q: 'محاضرات منظَّمة، حضور وغياب آليّ، تحليل لفجواتك المعرفيّة، ومسارات تعلّم تتكيّف مع مستواك.',
+              role: 'الطالب', sub: 'مساحة دراسة شخصيّة موحَّدة',
+            },
+            {
+              q: 'تسجيل الحضور بنقرات، تتبّع الدرجات لكلّ مقرّر، ذكاء أكاديميّ يكشف الطلّاب الذين يحتاجون متابعة.',
+              role: 'عضو هيئة التدريس', sub: 'لوحة تدريس مدمجة',
+            },
+            {
+              q: 'لوحات حيّة على مستوى الجامعة، إدارة الصلاحيّات والأدوار، مزامنة بيانات الكلّيّات في مكان واحد.',
+              role: 'الإدارة وضمان الجودة', sub: 'حوكمة وإشراف دقيق',
+            },
           ].map((t, i) => (
-            <Reveal as="figure" className="testimonial-card" key={t.n} delay={(i + 1) as 1 | 2 | 3}>
+            <Reveal as="figure" className="testimonial-card" key={t.role} delay={(i + 1) as 1 | 2 | 3}>
               <blockquote className="testimonial-quote">{t.q}</blockquote>
               <figcaption className="testimonial-author">
-                <span className="testimonial-avatar">{t.i}</span>
                 <span className="testimonial-author-meta">
-                  <span className="testimonial-name">{t.n}</span>
-                  <span className="testimonial-role">{t.r}</span>
+                  <span className="testimonial-name">{t.role}</span>
+                  <span className="testimonial-role">{t.sub}</span>
                 </span>
               </figcaption>
             </Reveal>
