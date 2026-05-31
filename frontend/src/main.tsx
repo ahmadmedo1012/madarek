@@ -13,6 +13,7 @@ import './styles/owner.css';
 import './styles/colleges.css';
 import './styles/polish-v6.css';
 import './styles/polish-v7.css';
+import './styles/polish-v8.css';
 import App from './App';
 
 const root = document.getElementById('root');
