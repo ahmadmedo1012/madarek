@@ -147,15 +147,15 @@
     margin-inline: auto;
     padding: var(--page-gutter);
     padding-block-end: calc(var(--page-gutter) + var(--sp-9));
-    animation: madarek-page-enter 460ms var(--ease-out) both;
+    animation: madarek-page-enter 220ms var(--ease-out) both;
   }
 
   @keyframes madarek-page-enter {
-    from { opacity: 0; transform: translateY(6px); filter: blur(2px); }
-    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes madarek-fade-up {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
