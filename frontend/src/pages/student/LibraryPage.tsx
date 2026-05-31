@@ -8,7 +8,7 @@ import {
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useBooks, usePublishedResearch, useResearchSearch, type ResearchSearchHit } from '../../hooks/useResources';
+import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -40,7 +40,16 @@ export default function LibraryPage() {
   const books = useBooks({ category: cat === 'all' ? undefined : cat, q });
   const research = usePublishedResearch();
   const search = useResearchSearch(debouncedQ);
+  const loans = useMyLoans();
   const isResearchTab = tab === 'research';
+
+  // Loan-derived KPIs
+  const activeLoans = loans.data?.filter((l) => l.status === 'ACTIVE') ?? [];
+  const dueSoon = activeLoans.filter((l) => {
+    const days = (new Date(l.dueAt).getTime() - Date.now()) / 86400000;
+    return days >= 0 && days <= 3;
+  }).length;
+  const totalBooks = books.data?.length ?? null;
 
   // When the research tab is active and the user has typed >=2 chars, show
   // server-side search results (with snippets). Otherwise show the full archive.
@@ -87,11 +96,28 @@ export default function LibraryPage() {
 
       {!isResearchTab ? (
         <>
-          <div className="grid-4">
-            <MetricCard icon={LibraryIcon} label="إجمالي الكتب" value="1,247" color="brand" />
-            <MetricCard icon={BookOpen} label="مستعارة منك" value="3" color="green" />
-            <MetricCard icon={Clock} label="تنتهي قريباً" value="1" color="amber" />
-            <MetricCard icon={Bookmark} label="محفوظة" value="12" color="purple" />
+          <div className="grid-3">
+            <MetricCard
+              icon={LibraryIcon}
+              label="كتب الفئة الحاليّة"
+              value={totalBooks !== null ? totalBooks.toLocaleString('ar-LY') : '—'}
+              change={cat === 'all' ? 'الكلّ' : categoryLabel(cat)}
+              color="brand"
+            />
+            <MetricCard
+              icon={BookOpen}
+              label="استعارات نشطة"
+              value={activeLoans.length.toLocaleString('ar-LY')}
+              change={loans.data ? `من أصل ${loans.data.length.toLocaleString('ar-LY')} استعارة` : '—'}
+              color={activeLoans.length === 0 ? 'brand' : 'green'}
+            />
+            <MetricCard
+              icon={Clock}
+              label="تنتهي قريباً"
+              value={dueSoon.toLocaleString('ar-LY')}
+              change={dueSoon > 0 ? 'خلال 3 أيام' : 'لا توجد إنذارات'}
+              color={dueSoon > 0 ? 'amber' : 'green'}
+            />
           </div>
 
           <Card compact>

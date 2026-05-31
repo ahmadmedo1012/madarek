@@ -243,6 +243,23 @@ export function useBooks(opts: { category?: string; q?: string } = {}) {
   });
 }
 
+export interface MyLoan {
+  id: string;
+  bookId: string;
+  status: 'ACTIVE' | 'RETURNED' | 'OVERDUE';
+  borrowedAt: string;
+  dueAt: string;
+  returnedAt: string | null;
+  book: { id: string; title: string; author: string; category?: string | null };
+}
+export function useMyLoans() {
+  return useQuery({
+    queryKey: ['me', 'loans'],
+    queryFn: () => unwrap<MyLoan[]>(api.get('/me/loans')),
+    staleTime: 60_000,
+  });
+}
+
 // ── MOOCs ──────────────────────────────────────────────────────
 export interface MoocCourse {
   id: string;
