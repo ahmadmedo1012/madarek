@@ -1,3 +1,5 @@
+import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload,
@@ -5,7 +7,14 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
+import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import {
+  useTeacherOfferings,
+  useTeacherStudents,
+  useOfferingAnalytics,
+  useRecordAttendance,
+} from '../../hooks/useResources';
 import ResearchReviewPage from './ResearchReviewPage';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
@@ -15,94 +24,237 @@ import ResearchReviewPage from './ResearchReviewPage';
  */
 
 /* ─── Generic placeholder structure ─── */
-function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function PageHeader({ title, subtitle, actions }: { title: string; subtitle: string; actions?: React.ReactNode }) {
   return (
     <div className="page-header">
       <div className="page-title-block">
         <h1 className="page-title">{title}</h1>
         <p className="page-subtitle">{subtitle}</p>
       </div>
+      {actions}
     </div>
   );
 }
+
+const DAY_NAMES_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
 export function TeacherSchedulePage() {
-  return (
-    <div className="page">
-      <PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعي مع القاعات والأوقات." />
-      <Card title="الأسبوع الحالي" icon={Calendar}>
-        <div className="flex-col gap-3">
-          {['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء'].map((day) => (
-            <div key={day}>
-              <SectionTitle>{day}</SectionTitle>
-              <div className="list-row">
-                <span className="list-row-meta">09:00 — 10:30</span>
-                <div className="list-row-body">
-                  <div className="list-row-title">هندسة البرمجيات</div>
-                  <div className="list-row-sub">قاعة 205 · 42 طالب</div>
-                </div>
-                <Badge>SE301</Badge>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
-  );
-}
+  const offsQ = useTeacherOfferings();
+  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جارٍ التحميل…" /><LoadingState /></div>;
+  if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="" /><ErrorState /></div>;
 
-export function AttendancePage() {
-  const STUDENTS = [
-    { name: 'أحمد الزروق', id: 'UZ-2024-00001', status: 'present' as const },
-    { name: 'مريم الفاخري', id: 'UZ-2024-00012', status: 'present' as const },
-    { name: 'يوسف البركي', id: 'UZ-2024-00023', status: 'late' as const },
-    { name: 'سارة المحجوب', id: 'UZ-2024-00034', status: 'present' as const },
-    { name: 'خالد المزوغي', id: 'UZ-2024-00045', status: 'absent' as const },
-  ];
+  // Group all schedule slots by dayOfWeek across the teacher's offerings.
+  const offerings = offsQ.data ?? [];
+  type Slot = { startTime: string; endTime: string; courseName: string; courseCode: string; room: string | null; enrolled: number };
+  const byDay: Record<number, Slot[]> = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+  for (const o of offerings) {
+    for (const slot of o.schedule) {
+      byDay[slot.dayOfWeek]?.push({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        courseName: o.course.name,
+        courseCode: o.course.code,
+        room: slot.room ?? o.room ?? null,
+        enrolled: o._count.enrollments,
+      });
+    }
+  }
+  for (const list of Object.values(byDay)) list.sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const days = Object.entries(byDay).map(([dow, items]) => ({ dow: Number(dow), items })).filter((d) => d.items.length > 0);
+
   return (
     <div className="page">
-      <PageHeader title="الحضور والغياب" subtitle="سجّل الحضور لكل محاضرة وحلّل النِسب عبر الفصل." />
-      <div className="grid-2-1">
-        <Card title="تسجيل الحضور · هندسة البرمجيات · اليوم" icon={ClipboardCheck} actions={<button type="button" className="btn primary sm">حفظ</button>}>
-          <div className="flex-col gap-2">
-            {STUDENTS.map((s) => (
-              <div key={s.id} className="list-row">
-                <UserAvatar initials={s.name.split(' ').map((p) => p[0]).join('')} size={32} />
-                <div className="list-row-body">
-                  <div className="list-row-title">{s.name}</div>
-                  <div className="list-row-sub font-mono">{s.id}</div>
-                </div>
-                <div className="flex gap-1">
-                  {[
-                    { v: 'present', label: 'حاضر', color: 'green' as const },
-                    { v: 'late', label: 'متأخر', color: 'amber' as const },
-                    { v: 'absent', label: 'غائب', color: 'red' as const },
-                  ].map((opt) => (
-                    <button
-                      key={opt.v}
-                      type="button"
-                      className="btn sm"
-                      style={s.status === opt.v ? {
-                        background: `var(--${opt.color === 'green' ? 'success' : opt.color === 'amber' ? 'warning' : 'danger'}-soft)`,
-                        color: `var(--${opt.color === 'green' ? 'success' : opt.color === 'amber' ? 'warning' : 'danger'})`,
-                        borderColor: 'transparent',
-                      } : undefined}
-                    >
-                      {opt.label}
-                    </button>
+      <PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." />
+      {days.length === 0 ? (
+        <EmptyState
+          title="لا يوجد جدول مسجَّل"
+          description="ستظهر محاضراتك هنا فور تسجيل الجداول لمقرّراتك من قِبَل الإدارة."
+        />
+      ) : (
+        <Card title="الأسبوع" icon={Calendar}>
+          <div className="flex-col gap-3">
+            {days.map((d) => (
+              <div key={d.dow}>
+                <SectionTitle>{DAY_NAMES_AR[d.dow]}</SectionTitle>
+                <div className="flex-col">
+                  {d.items.map((it, i) => (
+                    <div key={i} className="list-row">
+                      <span className="list-row-meta">{it.startTime} — {it.endTime}</span>
+                      <div className="list-row-body">
+                        <div className="list-row-title">{it.courseName}</div>
+                        <div className="list-row-sub">
+                          {it.room ? `${it.room} · ` : ''}
+                          {it.enrolled} طالب
+                        </div>
+                      </div>
+                      <Badge>{it.courseCode}</Badge>
+                    </div>
                   ))}
                 </div>
               </div>
             ))}
           </div>
         </Card>
+      )}
+    </div>
+  );
+}
 
-        <Card title="إحصائيات الفصل">
-          <div className="flex-col gap-4">
-            <ProgressBar value={84} label="الحضور" color="var(--success)" />
-            <ProgressBar value={11} label="التأخر" color="var(--warning)" />
-            <ProgressBar value={5} label="الغياب" color="var(--danger)" />
+type AttStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED';
+const ATT_OPTIONS: Array<{ v: AttStatus; label: string; success: boolean; warning: boolean; danger: boolean }> = [
+  { v: 'PRESENT', label: 'حاضر', success: true,  warning: false, danger: false },
+  { v: 'LATE',    label: 'متأخّر', success: false, warning: true,  danger: false },
+  { v: 'ABSENT',  label: 'غائب',  success: false, warning: false, danger: true },
+];
+
+export function AttendancePage() {
+  const offsQ = useTeacherOfferings();
+  const offerings = offsQ.data ?? [];
+  const [offeringId, setOfferingId] = useState<string>('');
+  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
+  const record = useRecordAttendance();
+
+  const today = new Date().toISOString().slice(0, 10);
+  const [date, setDate] = useState<string>(today);
+  const [topic, setTopic] = useState<string>('');
+  const [statusByStudent, setStatusByStudent] = useState<Record<string, AttStatus>>({});
+
+  const students = stuQ.data ?? [];
+  const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
+
+  const counts = useMemo(() => {
+    let p = 0, l = 0, a = 0;
+    for (const s of students) {
+      const st = statusByStudent[s.studentId] ?? 'PRESENT';
+      if (st === 'PRESENT') p++;
+      else if (st === 'LATE') l++;
+      else if (st === 'ABSENT') a++;
+    }
+    return { p, l, a, total: students.length };
+  }, [students, statusByStudent]);
+
+  const onSave = () => {
+    if (!effectiveOfferingId || students.length === 0) return;
+    record.mutate({
+      offeringId: effectiveOfferingId,
+      date: new Date(date).toISOString(),
+      topic: topic || undefined,
+      records: students.map((s) => ({
+        studentId: s.studentId,
+        status: statusByStudent[s.studentId] ?? 'PRESENT',
+      })),
+    }, {
+      onSuccess: () => { /* toast UX would be nice but keeps the change minimal */ },
+    });
+  };
+
+  return (
+    <div className="page">
+      <PageHeader
+        title="الحضور والغياب"
+        subtitle="سجِّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
+        actions={
+          <button
+            type="button"
+            className="btn primary"
+            onClick={onSave}
+            disabled={!effectiveOfferingId || students.length === 0 || record.isPending}
+          >
+            {record.isPending ? 'جارٍ الحفظ…' : 'حفظ السجلّ'}
+          </button>
+        }
+      />
+
+      <Card title="الجلسة" icon={Calendar}>
+        <div className="grid-3" style={{ gap: 'var(--sp-3)' }}>
+          <div className="comp-form-field">
+            <label>المقرّر</label>
+            <select className="auth-input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
+              {offerings.length === 0 && <option value="">— لا توجد عروض —</option>}
+              {offerings.map((o) => (
+                <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+              ))}
+            </select>
           </div>
+          <div className="comp-form-field">
+            <label>تاريخ الجلسة</label>
+            <input type="date" className="auth-input" value={date} onChange={(e) => setDate(e.target.value)} />
+          </div>
+          <div className="comp-form-field">
+            <label>الموضوع (اختياريّ)</label>
+            <input type="text" className="auth-input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="مثال: مقدّمة في UML" />
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid-2-1">
+        <Card title={offering ? `طلّاب ${offering.course.name}` : 'الطلّاب'} icon={ClipboardCheck}>
+          {!effectiveOfferingId ? (
+            <EmptyState title="لا توجد مقرّرات" description="ستظهر المقرّرات هنا حين تُسنَد إليك." />
+          ) : stuQ.isPending ? (
+            <LoadingState />
+          ) : stuQ.isError ? (
+            <ErrorState />
+          ) : students.length === 0 ? (
+            <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
+          ) : (
+            <div className="flex-col gap-2">
+              {students.map((s) => {
+                const status = statusByStudent[s.studentId] ?? 'PRESENT';
+                return (
+                  <div key={s.studentId} className="list-row">
+                    <UserAvatar
+                      initials={s.avatarInitials ?? s.name.split(' ').map((p) => p[0]).join('').slice(0, 2)}
+                      color={s.avatarColor ?? undefined}
+                      size={32}
+                    />
+                    <div className="list-row-body">
+                      <div className="list-row-title">{s.name}</div>
+                      <div className="list-row-sub font-mono">{s.universityId}</div>
+                    </div>
+                    <div className="flex gap-1">
+                      {ATT_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.v}
+                          type="button"
+                          className="btn sm"
+                          onClick={() => setStatusByStudent({ ...statusByStudent, [s.studentId]: opt.v })}
+                          style={status === opt.v ? {
+                            background:
+                              opt.success ? 'var(--success-soft)' :
+                              opt.warning ? 'var(--warning-soft)' : 'var(--danger-soft)',
+                            color:
+                              opt.success ? 'var(--success)' :
+                              opt.warning ? 'var(--warning)' : 'var(--danger)',
+                            borderColor: 'transparent',
+                          } : undefined}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+
+        <Card title="إحصائيّات الجلسة">
+          <div className="flex-col gap-4">
+            <ProgressBar value={counts.total > 0 ? Math.round((counts.p / counts.total) * 100) : 0} label={`الحضور (${counts.p})`} color="var(--success)" />
+            <ProgressBar value={counts.total > 0 ? Math.round((counts.l / counts.total) * 100) : 0} label={`التأخّر (${counts.l})`} color="var(--warning)" />
+            <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
+          </div>
+          {record.isError && (
+            <div className="auth-error" style={{ marginBlockStart: 'var(--sp-3)' }}>تعذَّر حفظ السجلّ. حاول مجدداً.</div>
+          )}
+          {record.isSuccess && (
+            <div style={{ marginBlockStart: 'var(--sp-3)', padding: 'var(--sp-2)', background: 'var(--success-soft)', color: 'var(--success)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-xs)' }}>
+              تمّ حفظ سجلّ الحضور.
+            </div>
+          )}
         </Card>
       </div>
     </div>
@@ -110,57 +262,89 @@ export function AttendancePage() {
 }
 
 export function GradesPage() {
+  const offsQ = useTeacherOfferings();
+  const offerings = offsQ.data ?? [];
+  const [offeringId, setOfferingId] = useState<string>('');
+  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
+  const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
+
   return (
     <div className="page">
-      <PageHeader title="درجات الطلاب" subtitle="جدول الدرجات والتقديرات للفصل الحالي." />
-      <Card title="هندسة البرمجيات · SE301" icon={ClipboardList} actions={
-        <div className="flex gap-2">
-          <button type="button" className="btn outline sm"><Icon icon={Upload} size={13} /> استيراد</button>
-          <button type="button" className="btn outline sm"><Icon icon={FileText} size={13} /> تصدير</button>
-        </div>
-      }>
-        <div className="tbl-wrap">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th>الطالب</th>
-                <th>الاختبار 1</th>
-                <th>الاختبار 2</th>
-                <th>المشروع</th>
-                <th>النهائي</th>
-                <th>المجموع</th>
-                <th>التقدير</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { n: 'أحمد الزروق', q1: 18, q2: 22, p: 28, f: 32 },
-                { n: 'مريم الفاخري', q1: 19, q2: 24, p: 30, f: 35 },
-                { n: 'يوسف البركي', q1: 14, q2: 16, p: 22, f: 26 },
-                { n: 'سارة المحجوب', q1: 17, q2: 19, p: 26, f: 30 },
-                { n: 'علي الفقيه', q1: 11, q2: 13, p: 18, f: 22 },
-              ].map((r) => {
-                const total = r.q1 + r.q2 + r.p + r.f;
-                const grade = total >= 90 ? { l: 'ممتاز', c: 'green' as const } :
-                              total >= 80 ? { l: 'جيد جداً', c: 'brand' as const } :
-                              total >= 70 ? { l: 'جيد', c: 'amber' as const } :
-                              total >= 60 ? { l: 'مقبول', c: 'amber' as const } :
-                              { l: 'ضعيف', c: 'red' as const };
-                return (
-                  <tr key={r.n}>
-                    <td className="tbl-strong">{r.n}</td>
-                    <td className="tbl-num">{r.q1}</td>
-                    <td className="tbl-num">{r.q2}</td>
-                    <td className="tbl-num">{r.p}</td>
-                    <td className="tbl-num">{r.f}</td>
-                    <td className="tbl-num">{total}</td>
-                    <td><Badge color={grade.c}>{grade.l}</Badge></td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+      <PageHeader
+        title="درجات الطلّاب"
+        subtitle="نظرة على متوسّط درجات طلّاب المقرّر الحاليّ."
+      />
+
+      <Card title="المقرّر">
+        <select
+          className="auth-input"
+          style={{ maxWidth: 360 }}
+          value={effectiveOfferingId}
+          onChange={(e) => setOfferingId(e.target.value)}
+        >
+          {offerings.length === 0 && <option value="">— لا توجد عروض —</option>}
+          {offerings.map((o) => (
+            <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+          ))}
+        </select>
+      </Card>
+
+      <Card
+        title={offering ? `${offering.course.name} · ${offering.course.code}` : 'الدرجات'}
+        icon={ClipboardList}
+      >
+        {!effectiveOfferingId ? (
+          <EmptyState title="اختر مقرّراً" />
+        ) : stuQ.isPending ? (
+          <LoadingState />
+        ) : stuQ.isError ? (
+          <ErrorState />
+        ) : (stuQ.data ?? []).length === 0 ? (
+          <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات في هذا المقرّر بعد." />
+        ) : (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead>
+                <tr>
+                  <th>الطالب</th>
+                  <th>الرقم الجامعيّ</th>
+                  <th>متوسّط الدرجات</th>
+                  <th>الحضور</th>
+                  <th>التقدير</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(stuQ.data ?? []).map((s) => {
+                  const total = s.avgGrade;
+                  const grade = total >= 85 ? { l: 'ممتاز', c: 'green' as const } :
+                                total >= 75 ? { l: 'جيّد جدّاً', c: 'brand' as const } :
+                                total >= 65 ? { l: 'جيّد', c: 'amber' as const } :
+                                total >= 50 ? { l: 'مقبول', c: 'amber' as const } :
+                                { l: 'ضعيف', c: 'red' as const };
+                  return (
+                    <tr key={s.studentId}>
+                      <td className="tbl-strong">{s.name}</td>
+                      <td className="font-mono text-xs">{s.universityId}</td>
+                      <td className="tbl-num">{s.avgGrade}</td>
+                      <td className="tbl-num">{s.attendancePct}%</td>
+                      <td><Badge color={grade.c}>{grade.l}</Badge></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+
+      <Card>
+        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.7 }}>
+          إدخال الدرجات الفصليّة (الاختبار 1، الاختبار 2، المشروع، النهائيّ) قيد التطوير.
+          حالياً تُعرض الدرجات المرصودة من واجبات المقرّر.{' '}
+          <Link to="/teacher/intelligence" className="auth-register-link">شاهد الذكاء الأكاديميّ</Link>
+          {' '}للحصول على تحليل أعمق.
+        </p>
       </Card>
     </div>
   );

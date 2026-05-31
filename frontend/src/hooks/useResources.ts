@@ -1083,6 +1083,36 @@ export function useOfferingAnalytics(offeringId: string | undefined) {
   });
 }
 
+export interface RecordAttendanceInput {
+  offeringId: string;
+  date: string; // ISO
+  topic?: string;
+  records: Array<{
+    studentId: string;
+    status: 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED';
+    notes?: string;
+  }>;
+}
+export function useRecordAttendance() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offeringId, ...payload }: RecordAttendanceInput) =>
+      unwrap<{ sessionId: string; count: number }>(
+        api.post(`/teacher/offerings/${offeringId}/attendance`, {
+          date: payload.date,
+          topic: payload.topic,
+          records: payload.records,
+        }),
+      ),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ['teacher', 'offering', vars.offeringId, 'students'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offering', vars.offeringId, 'analytics'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'risks'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+    },
+  });
+}
+
 export interface TeacherRiskRow extends Omit<TeacherStudentRow, 'attendancePct' | 'absences' | 'lateCount' | 'avgGrade' | 'watchPct' | 'universityId'> {
   offeringId: string;
   courseName: string;
