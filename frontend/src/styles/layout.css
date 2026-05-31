@@ -99,6 +99,22 @@
     color: var(--sidebar-item-active-text);
     font-weight: var(--fw-semibold);
   }
+  .nav-item.on::before, .nav-item.active::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: -3px;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    block-size: 16px;
+    inline-size: 3px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    animation: madarek-nav-pop 280ms var(--ease-out);
+  }
+  @keyframes madarek-nav-pop {
+    from { transform: translateY(-50%) scaleY(0.4); opacity: 0; }
+    to   { transform: translateY(-50%) scaleY(1);    opacity: 1; }
+  }
   .nav-item.on .nav-icon, .nav-item.active .nav-icon { color: var(--accent); }
 
   .nav-badge {

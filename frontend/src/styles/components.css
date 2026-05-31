@@ -61,7 +61,7 @@
   .card.bordered:hover {
     border-color: var(--border-strong);
     box-shadow: var(--shadow-card-h);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   .card-header {
@@ -517,10 +517,7 @@
     transition: color var(--t-fast) var(--ease);
     white-space: nowrap;
   }
-  .tab:hover { color: var(--text); }
-  .tab.on, .tab[aria-selected="true"] { color: var(--text); }
-  .tab.on::after,
-  .tab[aria-selected="true"]::after {
+  .tab::after {
     content: '';
     position: absolute;
     inset-block-end: -1px;
@@ -529,6 +526,17 @@
     block-size: 2px;
     background: var(--neutral-900);
     border-radius: 2px 2px 0 0;
+    transform: scaleX(0);
+    transform-origin: 50% 50%;
+    transition: transform var(--t-base) var(--ease-out);
+  }
+  .tab:hover { color: var(--text); }
+  .tab:hover::after { transform: scaleX(0.45); opacity: 0.4; }
+  .tab.on, .tab[aria-selected="true"] { color: var(--text); }
+  .tab.on::after,
+  .tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+    opacity: 1;
   }
   [data-theme="dark"] .tab.on::after,
   [data-theme="dark"] .tab[aria-selected="true"]::after { background: var(--accent); }

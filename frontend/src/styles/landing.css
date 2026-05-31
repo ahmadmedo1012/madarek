@@ -317,9 +317,9 @@
   .landing-title {
     font-family: var(--font-display);
     font-size: var(--fs-mega);
-    line-height: 0.98;
+    line-height: 0.96;
     font-weight: var(--fw-black);
-    letter-spacing: -0.030em;
+    letter-spacing: var(--ls-mega);
     color: var(--text);
     max-inline-size: 14ch;
     margin-inline: auto;
@@ -658,8 +658,8 @@
     font-size: var(--fs-display-lg);
     font-weight: var(--fw-black);
     color: var(--text);
-    letter-spacing: var(--ls-tight);
-    line-height: 1.05;
+    letter-spacing: var(--ls-display);
+    line-height: 1.04;
     max-inline-size: 22ch;
   }
   .landing-section-title em {

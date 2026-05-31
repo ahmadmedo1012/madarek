@@ -92,6 +92,9 @@
     --ls-snug:   -0.012em;
     --ls-normal: 0;
     --ls-wide:   0.06em;
+    /* big-display tracking — Notion's hero is -3.3% on 64px, -1% on 22px */
+    --ls-mega:    -0.032em;
+    --ls-display: -0.026em;
 
     /* ─── Motion ────────────────────────────────────────────────────── */
     --t-micro: 80ms;
