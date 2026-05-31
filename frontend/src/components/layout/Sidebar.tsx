@@ -33,6 +33,21 @@ export function Sidebar() {
     else root.removeAttribute('data-sidebar-collapsed');
   }, [sidebarCollapsed]);
 
+  // Keyboard shortcut — Cmd/Ctrl+B toggles the sidebar (Notion-style).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'b' || e.key === 'B')) {
+        // Don't capture inside text inputs / contenteditable.
+        const t = e.target as HTMLElement | null;
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+        e.preventDefault();
+        toggleSidebarCollapsed();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [toggleSidebarCollapsed]);
+
   if (!user) return null;
   const groups = NAV_BY_ROLE[user.role];
   const initials = user.avatarInitials ?? `${user.firstName[0] ?? ''}${user.lastName[0] ?? ''}`;
@@ -64,7 +79,7 @@ export function Sidebar() {
             className="sidebar-collapse-btn hide-on-mobile"
             onClick={toggleSidebarCollapsed}
             aria-label={sidebarCollapsed ? 'توسعة القائمة' : 'طيّ القائمة'}
-            title={sidebarCollapsed ? 'توسعة القائمة' : 'طيّ القائمة'}
+            title={sidebarCollapsed ? 'توسعة القائمة (Ctrl+B)' : 'طيّ القائمة (Ctrl+B)'}
           >
             <Icon icon={sidebarCollapsed ? ChevronsLeft : ChevronsRight} size={14} />
           </button>
