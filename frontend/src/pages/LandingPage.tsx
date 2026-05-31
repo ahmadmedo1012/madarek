@@ -33,16 +33,40 @@ export default function LandingPage() {
   const year = new Date().getFullYear();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollPct, setScrollPct] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 6);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 6);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollPct(max > 0 ? Math.min(1, y / max) : 0);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Magnetic glow follow on feature cards
+  useEffect(() => {
+    const cards = document.querySelectorAll<HTMLElement>('.landing-feature-card, .landing-bento-card');
+    const onMove = (e: MouseEvent) => {
+      const t = e.currentTarget as HTMLElement;
+      const r = t.getBoundingClientRect();
+      t.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      t.style.setProperty('--my', `${e.clientY - r.top}px`);
+    };
+    cards.forEach((c) => c.addEventListener('mousemove', onMove));
+    return () => cards.forEach((c) => c.removeEventListener('mousemove', onMove));
+  }, []);
+
   return (
     <div className="landing">
+
+      {/* Top scroll-progress bar */}
+      <div className="landing-progress" aria-hidden>
+        <div className="landing-progress-bar" style={{ ['--p' as string]: scrollPct }} />
+      </div>
 
       {/* Ministry strip */}
       <div className="ministry-strip">
@@ -289,7 +313,7 @@ export default function LandingPage() {
         </div>
 
         <div className="landing-features-grid">
-          <Reveal as="article" className="landing-feature-card">
+          <Reveal as="article" className="landing-feature-card sticker-wiggle">
             <span className="sticker lg peach"><Icon icon={Compass} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
             <p className="landing-feature-desc">
@@ -297,7 +321,7 @@ export default function LandingPage() {
               تلقائياً بالدقائق التي تشرحها.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={1}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={1}>
             <span className="sticker lg lavender"><Icon icon={Brain} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">المساعد الأكاديمي</h3>
             <p className="landing-feature-desc">
@@ -305,7 +329,7 @@ export default function LandingPage() {
               واختبارات تفاعلية حسب أدائك الفعلي.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={2}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={2}>
             <span className="sticker lg sky"><Icon icon={BarChart3} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">تحليلات أكاديمية</h3>
             <p className="landing-feature-desc">
@@ -313,7 +337,7 @@ export default function LandingPage() {
               المؤسسية، بصياغة تخدم القرار.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={3}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={3}>
             <span className="sticker lg mint"><Icon icon={BookOpen} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">مكتبة وبحوث</h3>
             <p className="landing-feature-desc">
@@ -321,7 +345,7 @@ export default function LandingPage() {
               مع مراجعة معلَّمة من الأستاذ.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={4}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={4}>
             <span className="sticker lg yellow"><Icon icon={Network} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">منظومة موحَّدة</h3>
             <p className="landing-feature-desc">
@@ -329,7 +353,7 @@ export default function LandingPage() {
               كلها في تجربة واحدة آمنة ومتجاوبة.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={5}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={5}>
             <span className="sticker lg rose"><Icon icon={ShieldCheck} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">جودة مؤسسية</h3>
             <p className="landing-feature-desc">
@@ -395,7 +419,10 @@ export default function LandingPage() {
               <span className="sticker sm lavender"><Icon icon={Brain} size={20} /></span>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: 14, fontFamily: 'var(--font-display)', color: 'var(--text)' }}>Oasis</div>
-                <div style={{ fontSize: 11, color: 'var(--c-mint-ink)', fontWeight: 600 }}>● متَّصل الآن</div>
+                <div style={{ fontSize: 11, color: 'var(--c-mint-ink)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  <span className="landing-hero-eyebrow-dot" style={{ background: 'var(--c-mint-ink)' }} />
+                  متَّصل الآن
+                </div>
               </div>
             </div>
             <div style={{
@@ -413,6 +440,15 @@ export default function LandingPage() {
               فكرة Quick Sort بسيطة: نختار عنصراً «pivot»، ونفصل العناصر الأصغر
               إلى يمينه والأكبر إلى يساره، ثم نكرّر العملية على كل جانب. هل تريد
               مثالاً بصرياً؟
+            </div>
+            <div style={{
+              marginBlockStart: 12, padding: '10px 14px',
+              background: 'var(--surface-2)', borderRadius: 14,
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              color: 'var(--text-muted)',
+            }}>
+              <span className="typing-dots"><span /><span /><span /></span>
+              <span style={{ fontSize: 12 }}>Oasis يكتب…</span>
             </div>
           </Reveal>
           <Reveal as="div" delay={2}>
@@ -508,7 +544,7 @@ export default function LandingPage() {
           </p>
         </div>
         <div className="landing-features-grid">
-          <Reveal as="article" className="landing-feature-card">
+          <Reveal as="article" className="landing-feature-card sticker-wiggle">
             <span className="sticker lg copper"><Icon icon={GraduationCap} size={32} /></span>
             <h3 className="landing-feature-title">الطالب</h3>
             <p className="landing-feature-desc">
@@ -516,7 +552,7 @@ export default function LandingPage() {
               فرص عمل، ومكتبة بحوث.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={1}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={1}>
             <span className="sticker lg lavender"><Icon icon={Brain} size={32} /></span>
             <h3 className="landing-feature-title">الأستاذ</h3>
             <p className="landing-feature-desc">
@@ -524,7 +560,7 @@ export default function LandingPage() {
               ومعامل افتراضية بصلاحيات تحكُّم.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={2}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={2}>
             <span className="sticker lg sky"><Icon icon={Building2} size={32} /></span>
             <h3 className="landing-feature-title">الإدارة</h3>
             <p className="landing-feature-desc">
@@ -532,7 +568,7 @@ export default function LandingPage() {
               البيانات الرسمية لجامعة الزاوية.
             </p>
           </Reveal>
-          <Reveal as="article" className="landing-feature-card" delay={3}>
+          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={3}>
             <span className="sticker lg mint"><Icon icon={ShieldCheck} size={32} /></span>
             <h3 className="landing-feature-title">ضمان الجودة</h3>
             <p className="landing-feature-desc">
