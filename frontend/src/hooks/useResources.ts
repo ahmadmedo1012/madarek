@@ -1393,8 +1393,14 @@ export interface TeacherSuggestionResponse {
     certifications: Array<{ title: string; issuer: string; year: number }>;
     subjectKeywords: string[];
     department: string;
+    departmentId: string;
     faculty: string;
+    facultyId: string;
     verified: boolean;
+    position: 'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD' | null;
+    positionFacultyId: string | null;
+    positionDepartmentId: string | null;
+    appointedAt: string | null;
   };
   eligibilityNote: string;
   suggestedCourses: Array<{
@@ -1409,6 +1415,37 @@ export function useTeacherSuggestions(teacherId: string | undefined) {
     queryKey: ['admin', 'teachers', teacherId, 'suggestions'],
     enabled: !!teacherId,
     queryFn: () => unwrap<TeacherSuggestionResponse>(api.get(`/admin/teachers/${teacherId}/suggestions`)),
+  });
+}
+
+export type AcademicPositionInput =
+  | { position: 'DEAN'; positionFacultyId: string }
+  | { position: 'ASSOCIATE_DEAN'; positionFacultyId: string }
+  | { position: 'DEPARTMENT_HEAD'; positionDepartmentId: string }
+  | { position: null };
+
+export function useAssignTeacherPosition(teacherId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: AcademicPositionInput) =>
+      unwrap(api.post(`/admin/teachers/${teacherId}/position`, input)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'teachers', teacherId, 'suggestions'] });
+      qc.invalidateQueries({ queryKey: ['auth', 'me'] });
+      qc.invalidateQueries({ queryKey: ['colleges'] });
+    },
+  });
+}
+
+export function useAssignUserScope(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (scopeFacultyId: string | null) =>
+      unwrap(api.post(`/admin/users/${userId}/scope`, { scopeFacultyId })),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'users'] });
+      qc.invalidateQueries({ queryKey: ['auth', 'me'] });
+    },
   });
 }
 

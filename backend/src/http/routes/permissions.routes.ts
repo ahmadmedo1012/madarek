@@ -48,7 +48,11 @@ router.get('/admin/users/:id/permissions', requireCapability('ROLES_ASSIGN'), as
   try {
     const target = await prisma.user.findUnique({
       where: { id: req.params.id },
-      select: { id: true, email: true, role: true, firstName: true, lastName: true },
+      select: {
+        id: true, email: true, role: true, firstName: true, lastName: true,
+        scopeFacultyId: true,
+        scopeFaculty: { select: { id: true, name: true } },
+      },
     });
     if (!target) throw AppError.notFound('User not found');
     const caps = await getEffectiveCapabilities(target.id, target.role);

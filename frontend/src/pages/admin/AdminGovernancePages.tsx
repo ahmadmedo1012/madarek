@@ -4,11 +4,11 @@
  *   /admin/teachers           list of teachers + verify + view suggestions
  *   /admin/permissions/:id    per-user capability editor (effective + overrides)
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   ShieldCheck, GraduationCap, Award, ChevronLeft, CheckCircle2,
-  AlertCircle, Sparkles, Briefcase, Building2, Users,
+  AlertCircle, Sparkles, Briefcase, Building2, Users, Crown,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
 import { CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
@@ -16,7 +16,11 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTeacherSuggestions,
+  useFaculties,
+  useAssignTeacherPosition,
+  useAssignUserScope,
   type AppCapability,
+  type AcademicPositionInput,
 } from '../../hooks/useResources';
 import { api, unwrap } from '../../lib/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -66,7 +70,15 @@ function useAdminUsers() {
 }
 
 interface UserPermissionsResponse {
-  user: { id: string; email: string; role: string; firstName: string; lastName: string };
+  user: {
+    id: string;
+    email: string;
+    role: string;
+    firstName: string;
+    lastName: string;
+    scopeFacultyId: string | null;
+    scopeFaculty: { id: string; name: string } | null;
+  };
   roleDefaults: AppCapability[];
   effective: AppCapability[];
   overrides: Array<{ id: string; capability: AppCapability; grant: boolean; reason: string | null; grantedAt: string }>;
@@ -190,9 +202,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           <FactRow label="سنوات الخبرة" value={`${data.teacher.yearsExperience} سنة`} />
           <FactRow label="القسم" value={data.teacher.department} />
           <FactRow label="الكلية" value={data.teacher.faculty} />
-        </div>
-
-        {data.teacher.subjectKeywords.length > 0 && (
+        </div>        {data.teacher.subjectKeywords.length > 0 && (
           <div style={{ marginTop: 'var(--sp-3)' }}>
             <div className="text-xxs text-subtle" style={{ marginBottom: 4 }}>المجالات</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
@@ -206,6 +216,8 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           <span className="text-xs" style={{ color: 'var(--accent)' }}>{data.eligibilityNote}</span>
         </div>
       </Card>
+
+      <PositionAssignmentCard teacher={data.teacher} />
 
       {data.teacher.certifications.length > 0 && (
         <Card title="الشهادات والاعتمادات" icon={Award}>
@@ -265,6 +277,245 @@ function FactRow({ label, value, mono }: { label: string; value: string; mono?: 
   );
 }
 
+/* ═══════════════ Academic position assignment ═══════════════ */
+
+const POSITION_LABEL: Record<'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD', string> = {
+  DEAN: 'عميد كلّيّة',
+  ASSOCIATE_DEAN: 'وكيل العميد',
+  DEPARTMENT_HEAD: 'رئيس قسم',
+};
+
+function PositionAssignmentCard({
+  teacher,
+}: {
+  teacher: {
+    id: string;
+    facultyId: string;
+    departmentId: string;
+    position: 'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD' | null;
+    positionFacultyId: string | null;
+    positionDepartmentId: string | null;
+    appointedAt: string | null;
+  };
+}) {
+  const facs = useFaculties();
+  const assign = useAssignTeacherPosition(teacher.id);
+  const [position, setPosition] = useState<'NONE' | 'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD'>(teacher.position ?? 'NONE');
+  const [facultyId, setFacultyId] = useState<string>(teacher.positionFacultyId ?? teacher.facultyId);
+  const [departmentId, setDepartmentId] = useState<string>(teacher.positionDepartmentId ?? teacher.departmentId);
+
+  // Reset selectors whenever the underlying teacher changes (admin clicked another teacher).
+  useEffect(() => {
+    setPosition(teacher.position ?? 'NONE');
+    setFacultyId(teacher.positionFacultyId ?? teacher.facultyId);
+    setDepartmentId(teacher.positionDepartmentId ?? teacher.departmentId);
+  }, [teacher.id, teacher.position, teacher.positionFacultyId, teacher.positionDepartmentId, teacher.facultyId, teacher.departmentId]);
+
+  const facultyOptions = facs.data ?? [];
+  const departmentsForFaculty = facultyOptions.find((f) => f.id === facultyId)?.departments ?? [];
+
+  const dirty =
+    position !== (teacher.position ?? 'NONE') ||
+    (position === 'DEAN' && facultyId !== teacher.positionFacultyId) ||
+    (position === 'ASSOCIATE_DEAN' && facultyId !== teacher.positionFacultyId) ||
+    (position === 'DEPARTMENT_HEAD' && departmentId !== teacher.positionDepartmentId);
+
+  const onSave = () => {
+    let payload: AcademicPositionInput;
+    if (position === 'NONE') payload = { position: null };
+    else if (position === 'DEPARTMENT_HEAD') payload = { position, positionDepartmentId: departmentId };
+    else payload = { position, positionFacultyId: facultyId };
+    assign.mutate(payload);
+  };
+
+  return (
+    <Card title="المنصب القياديّ" icon={Crown} subtitle="يُمنح المنصب بالتعيين الإداريّ — يضاف فوق دور الأستاذ ولا يستبدله">
+      {teacher.position && teacher.appointedAt && (
+        <div className="text-xxs text-subtle" style={{ marginBlockEnd: 'var(--sp-2)' }}>
+          تمّ التعيين في {new Date(teacher.appointedAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
+        </div>
+      )}
+
+      <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
+        <div className="comp-form-field">
+          <label>المنصب</label>
+          <select
+            className="auth-input"
+            value={position}
+            onChange={(e) => setPosition(e.target.value as typeof position)}
+          >
+            <option value="NONE">— بلا منصب —</option>
+            <option value="DEAN">عميد كلّيّة</option>
+            <option value="ASSOCIATE_DEAN">وكيل العميد</option>
+            <option value="DEPARTMENT_HEAD">رئيس قسم</option>
+          </select>
+        </div>
+
+        {(position === 'DEAN' || position === 'ASSOCIATE_DEAN') && (
+          <div className="comp-form-field">
+            <label>الكلّيّة</label>
+            <select
+              className="auth-input"
+              value={facultyId}
+              onChange={(e) => setFacultyId(e.target.value)}
+            >
+              {facultyOptions.map((f) => (
+                <option key={f.id} value={f.id}>{f.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {position === 'DEPARTMENT_HEAD' && (
+          <>
+            <div className="comp-form-field">
+              <label>الكلّيّة</label>
+              <select
+                className="auth-input"
+                value={facultyId}
+                onChange={(e) => {
+                  setFacultyId(e.target.value);
+                  const first = facultyOptions.find((f) => f.id === e.target.value)?.departments[0];
+                  if (first) setDepartmentId(first.id);
+                }}
+              >
+                {facultyOptions.map((f) => (
+                  <option key={f.id} value={f.id}>{f.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="comp-form-field">
+              <label>القسم</label>
+              <select
+                className="auth-input"
+                value={departmentId}
+                onChange={(e) => setDepartmentId(e.target.value)}
+              >
+                {departmentsForFaculty.map((d) => (
+                  <option key={d.id} value={d.id}>{d.name}</option>
+                ))}
+              </select>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBlockStart: 'var(--sp-3)' }}>
+        <button
+          type="button"
+          className="btn primary"
+          onClick={onSave}
+          disabled={assign.isPending || !dirty}
+        >
+          {assign.isPending ? 'جارٍ الحفظ…'
+            : position === 'NONE' ? 'إلغاء التعيين'
+            : `تعيين ${POSITION_LABEL[position]}`}
+        </button>
+        {position !== 'NONE' && teacher.position && (
+          <button
+            type="button"
+            className="btn ghost"
+            onClick={() => { setPosition('NONE'); }}
+          >
+            إنهاء المنصب الحاليّ
+          </button>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+/* ═══════════════ Governance scope (ADMIN / QUALITY) ═══════════════ */
+
+function ScopeAssignmentCard({
+  userId, role, scopeFacultyId, scopeFacultyName,
+}: {
+  userId: string;
+  role: 'ADMIN' | 'QUALITY';
+  scopeFacultyId: string | null;
+  scopeFacultyName: string | null;
+}) {
+  const facs = useFaculties();
+  const assign = useAssignUserScope(userId);
+  const [scope, setScope] = useState<'UNIVERSITY' | 'FACULTY'>(scopeFacultyId ? 'FACULTY' : 'UNIVERSITY');
+  const [facultyId, setFacultyId] = useState<string>(scopeFacultyId ?? '');
+
+  useEffect(() => {
+    setScope(scopeFacultyId ? 'FACULTY' : 'UNIVERSITY');
+    setFacultyId(scopeFacultyId ?? '');
+  }, [userId, scopeFacultyId]);
+
+  const dirty =
+    (scope === 'UNIVERSITY' && scopeFacultyId !== null) ||
+    (scope === 'FACULTY' && facultyId !== scopeFacultyId && facultyId !== '');
+
+  const onSave = () => {
+    assign.mutate(scope === 'UNIVERSITY' ? null : facultyId);
+  };
+
+  const roleLabel = role === 'ADMIN' ? 'الإداريّ' : 'مكتب الجودة';
+
+  return (
+    <div style={{
+      marginBlock: 'var(--sp-3)',
+      padding: 'var(--sp-3)',
+      borderRadius: 'var(--r-md)',
+      background: 'var(--surface-2)',
+      border: '1px solid var(--border)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockEnd: 'var(--sp-2)' }}>
+        <Icon icon={Building2} size={14} style={{ color: 'var(--accent)' }} />
+        <strong className="text-sm">نطاق صلاحيّة {roleLabel}</strong>
+      </div>
+      <p className="text-xxs text-subtle" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+        النطاق الافتراضيّ على مستوى الجامعة. يمكن قَصره على كلّيّة واحدة فقط للحدّ من نطاق الإشراف.
+      </p>
+      <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
+        <div className="comp-form-field">
+          <label>النطاق</label>
+          <select
+            className="auth-input"
+            value={scope}
+            onChange={(e) => setScope(e.target.value as 'UNIVERSITY' | 'FACULTY')}
+          >
+            <option value="UNIVERSITY">على مستوى الجامعة</option>
+            <option value="FACULTY">كلّيّة محدَّدة</option>
+          </select>
+        </div>
+        {scope === 'FACULTY' && (
+          <div className="comp-form-field">
+            <label>الكلّيّة</label>
+            <select
+              className="auth-input"
+              value={facultyId}
+              onChange={(e) => setFacultyId(e.target.value)}
+            >
+              <option value="">اختر…</option>
+              {facs.data?.map((f) => (
+                <option key={f.id} value={f.id}>{f.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+      {scopeFacultyName && (
+        <div className="text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-2)' }}>
+          النطاق الحاليّ: <strong>{scopeFacultyName}</strong>
+        </div>
+      )}
+      <div style={{ marginBlockStart: 'var(--sp-3)' }}>
+        <button
+          type="button"
+          className="btn primary sm"
+          onClick={onSave}
+          disabled={assign.isPending || !dirty}
+        >
+          {assign.isPending ? 'جارٍ الحفظ' : 'حفظ النطاق'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 /* ═══════════════ Per-user permissions editor ═══════════════ */
 export function AdminPermissionsPage() {
@@ -289,6 +540,15 @@ export function AdminPermissionsPage() {
           <MetricCard icon={CheckCircle2} label="صلاحيات فعلية" value={data.effective.length.toString()} color="green" />
           <MetricCard icon={AlertCircle} label="استثناءات يدوية" value={data.overrides.length.toString()} color="amber" />
         </div>
+
+        {(data.user.role === 'ADMIN' || data.user.role === 'QUALITY') && (
+          <ScopeAssignmentCard
+            userId={data.user.id}
+            role={data.user.role as 'ADMIN' | 'QUALITY'}
+            scopeFacultyId={data.user.scopeFacultyId}
+            scopeFacultyName={data.user.scopeFaculty?.name ?? null}
+          />
+        )}
 
         <div className="text-xxs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>
           الصلاحيات الافتراضية مرتبطة بالدور. يمكنك منح صلاحية إضافية أو سحب صلاحية افتراضية لهذا المستخدم تحديداً.

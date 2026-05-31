@@ -503,8 +503,14 @@ router.get(
             certifications: profile.certifications ?? [],
             subjectKeywords: profile.subjectKeywords,
             department: profile.department.name,
+            departmentId: profile.departmentId,
             faculty: profile.department.faculty.name,
+            facultyId: profile.department.facultyId,
             verified: !!profile.verifiedAt,
+            position: profile.position,
+            positionFacultyId: profile.positionFacultyId,
+            positionDepartmentId: profile.positionDepartmentId,
+            appointedAt: profile.appointedAt,
           },
           eligibilityNote: degreeEligibility[profile.degreeLevel],
           suggestedCourses: ranked.map((r) => ({
@@ -536,6 +542,112 @@ router.post(
           verifiedById: req.body.verified ? req.user!.id : null,
         },
         select: { userId: true, verifiedAt: true },
+      });
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
+
+/**
+ * Assign or clear an academic leadership position on a teacher.
+ *
+ * Body:
+ *   { position: null }                                  → clear
+ *   { position: 'DEAN', positionFacultyId: '...' }      → appoint dean of a faculty
+ *   { position: 'ASSOCIATE_DEAN', positionFacultyId }   → appoint associate dean
+ *   { position: 'DEPARTMENT_HEAD', positionDepartmentId } → appoint dept head
+ *
+ * Sets `appointedAt = now` on a fresh appointment; preserves it on a re-save
+ * unless the position changed.
+ */
+const assignPositionSchema = z.discriminatedUnion('position', [
+  z.object({ position: z.literal('DEAN'), positionFacultyId: z.string().cuid() }),
+  z.object({ position: z.literal('ASSOCIATE_DEAN'), positionFacultyId: z.string().cuid() }),
+  z.object({ position: z.literal('DEPARTMENT_HEAD'), positionDepartmentId: z.string().cuid() }),
+  z.object({ position: z.null() }),
+]);
+
+router.post(
+  '/admin/teachers/:id/position',
+  requireCapability('ROLES_ASSIGN'),
+  validate(assignPositionSchema),
+  async (req, res, next) => {
+    try {
+      const body = req.body as z.infer<typeof assignPositionSchema>;
+      const targetId = req.params.id!;
+
+      const existing = await prisma.teacherProfile.findUnique({
+        where: { userId: targetId },
+        select: { position: true, appointedAt: true },
+      });
+      if (!existing) throw AppError.notFound('Teacher profile not found');
+
+      const isFresh = body.position !== existing.position;
+      const data: Record<string, unknown> =
+        body.position === null
+          ? { position: null, positionFacultyId: null, positionDepartmentId: null, appointedAt: null }
+          : body.position === 'DEPARTMENT_HEAD'
+            ? {
+                position: body.position,
+                positionDepartmentId: body.positionDepartmentId,
+                positionFacultyId: null,
+                appointedAt: isFresh ? new Date() : existing.appointedAt,
+              }
+            : {
+                position: body.position,
+                positionFacultyId: body.positionFacultyId,
+                positionDepartmentId: null,
+                appointedAt: isFresh ? new Date() : existing.appointedAt,
+              };
+
+      const updated = await prisma.teacherProfile.update({
+        where: { userId: targetId },
+        data,
+        select: {
+          userId: true,
+          position: true,
+          positionFacultyId: true,
+          positionDepartmentId: true,
+          appointedAt: true,
+        },
+      });
+      res.json({ data: updated });
+    } catch (e) { next(e); }
+  },
+);
+
+/**
+ * Set the governance scope of an ADMIN or QUALITY user.
+ *
+ * Body: { scopeFacultyId: string | null }
+ *   null → university-wide (default)
+ *   set  → scoped to a single faculty
+ *
+ * Restricted to users with ROLES_ASSIGN. Refuses if the target isn't
+ * ADMIN/QUALITY (other roles use scope differently or not at all).
+ */
+const assignScopeSchema = z.object({
+  scopeFacultyId: z.string().cuid().nullable(),
+}).strict();
+
+router.post(
+  '/admin/users/:id/scope',
+  requireCapability('ROLES_ASSIGN'),
+  validate(assignScopeSchema),
+  async (req, res, next) => {
+    try {
+      const target = await prisma.user.findUnique({
+        where: { id: req.params.id! },
+        select: { id: true, role: true },
+      });
+      if (!target) throw AppError.notFound('User not found');
+      if (target.role !== 'ADMIN' && target.role !== 'QUALITY') {
+        throw new AppError('BAD_REQUEST', 'Scope only applies to ADMIN/QUALITY users', 400);
+      }
+      const updated = await prisma.user.update({
+        where: { id: target.id },
+        data: { scopeFacultyId: req.body.scopeFacultyId },
+        select: { id: true, scopeFacultyId: true },
       });
       res.json({ data: updated });
     } catch (e) { next(e); }
