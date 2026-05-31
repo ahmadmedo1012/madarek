@@ -373,14 +373,136 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════
-     Lists — calmer separators
+     Checkboxes + radios — branded, accessible, RTL-aware
      ═══════════════════════════════════════════════════════════════ */
-  .list-row {
-    transition: background var(--t-fast) var(--ease);
+  input[type="checkbox"],
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--rule-strong, var(--rule));
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--t-clean);
+    position: relative;
   }
-  a.list-row:hover,
-  button.list-row:hover {
-    background: color-mix(in srgb, var(--accent) 4%, var(--surface-2));
+  input[type="checkbox"] { border-radius: 4px; }
+  input[type="radio"]    { border-radius: 50%; }
+
+  input[type="checkbox"]:hover,
+  input[type="radio"]:hover {
+    border-color: var(--accent);
+  }
+
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Checkmark — drawn with a clip-path triangle (no SVG, no font) */
+  input[type="checkbox"]:checked::after {
+    content: "";
+    width: 10px;
+    height: 6px;
+    border: solid var(--accent-fg, white);
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg) translate(1px, -1px);
+    margin-block-start: -2px;
+  }
+
+  /* Radio dot */
+  input[type="radio"]:checked::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-fg, white);
+  }
+
+  input[type="checkbox"]:focus-visible,
+  input[type="radio"]:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Global scrollbar — thin, branded, calm
+     The page-wide scrollbar uses browser defaults right now. Tinting
+     it to match the design system makes the platform feel cohesive
+     without screaming for attention.
+     ═══════════════════════════════════════════════════════════════ */
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text) 14%, transparent);
+    border-radius: 999px;
+    border: 2px solid var(--bg);
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--text) 28%, transparent);
+    background-clip: padding-box;
+  }
+  /* Firefox */
+  html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 14%, transparent) transparent; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Hydration splash — calmer fade-out when auth loads
+     ═══════════════════════════════════════════════════════════════ */
+  .hydration-splash {
+    animation: polish-hydration-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes polish-hydration-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hydration-splash { animation: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Chart canvas — drop a soft outer glow so charts feel embedded
+     rather than pasted in
+     ═══════════════════════════════════════════════════════════════ */
+  .owner-chart-container,
+  .dash-doughnut {
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Search input pattern — unify .topbar-search style across pages
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-search input,
+  .admin-students-search input,
+  .global-search input {
+    background: transparent;
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    height: auto;
+    padding: 0;
+  }
+  .topbar-search input:focus,
+  .admin-students-search input:focus,
+  .global-search input:focus {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
   }
 
 }
