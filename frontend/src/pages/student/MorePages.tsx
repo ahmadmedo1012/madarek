@@ -11,7 +11,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Radi
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
@@ -498,42 +498,51 @@ export function ResultsPage() {
 // LabsPage moved to its own file (LabsPage.tsx).
 
 /* ─── AR/VR ────────────────────────────────────────────── */
-const AR = [
-  { title: 'تشريح الجسم البشري', subject: 'بيولوجيا', kind: 'AR' },
-  { title: 'دوائر كهربائية حية', subject: 'هندسة كهربائية', kind: 'AR' },
-  { title: 'جولة في الفضاء الافتراضي', subject: 'فلك وفيزياء', kind: 'VR' },
-  { title: 'تصميم المباني ثلاثي الأبعاد', subject: 'هندسة مدنية', kind: 'AR' },
-  { title: 'تفاعلات كيميائية آمنة', subject: 'كيمياء', kind: 'VR' },
-  { title: 'تجميع الروبوتات', subject: 'هندسة ميكانيكية', kind: 'AR' },
-];
-
 export function ArVrPage() {
+  const q = useArExperiences();
+
   return (
     <div className="page">
       <div className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تجارب AR / VR</h1>
-          <p className="page-subtitle">محتوى تفاعلي ثلاثي الأبعاد للمواد العملية.</p>
+          <p className="page-subtitle">محتوى تفاعليّ ثلاثيّ الأبعاد للمواد العمليّة.</p>
         </div>
       </div>
 
-      <div className="grid-3">
-        {AR.map((e) => (
-          <Card key={e.title} compact bordered>
-            <div className="flex items-start justify-between" style={{ marginBottom: 'var(--sp-3)' }}>
-              <div className="metric-icon" style={{ color: 'var(--brand-purple)' }}>
-                <Icon icon={Headset} size={20} />
+      {q.isPending ? (
+        <LoadingState />
+      ) : q.isError ? (
+        <ErrorState />
+      ) : !q.data || q.data.length === 0 ? (
+        <EmptyState
+          title="لا توجد تجارب AR/VR بعد"
+          description="ستظهر هنا حين يقوم الإداريّون بإضافتها."
+        />
+      ) : (
+        <div className="grid-3">
+          {q.data.map((e) => (
+            <Card key={e.id} compact bordered>
+              <div className="flex items-start justify-between" style={{ marginBottom: 'var(--sp-3)' }}>
+                <div className="metric-icon" style={{ color: 'var(--brand-purple)' }}>
+                  <Icon icon={Headset} size={20} />
+                </div>
+                <Badge color={e.type === 'VR' ? 'purple' : 'brand'}>{e.type}</Badge>
               </div>
-              <Badge color={e.kind === 'VR' ? 'purple' : 'brand'}>{e.kind}</Badge>
-            </div>
-            <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{e.title}</div>
-            <div className="text-xs text-subtle" style={{ marginTop: 4 }}>{e.subject}</div>
-            <button type="button" className="btn outline" style={{ width: '100%', marginTop: 'var(--sp-3)' }}>
-              ابدأ التجربة
-            </button>
-          </Card>
-        ))}
-      </div>
+              <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{e.title}</div>
+              <div className="text-xs text-subtle" style={{ marginTop: 4 }}>{e.subject}</div>
+              {e.description && (
+                <p className="text-xs text-muted" style={{ marginTop: 'var(--sp-2)', lineHeight: 1.5 }}>
+                  {e.description}
+                </p>
+              )}
+              <button type="button" className="btn outline" style={{ width: '100%', marginTop: 'var(--sp-3)' }}>
+                ابدأ التجربة
+              </button>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
