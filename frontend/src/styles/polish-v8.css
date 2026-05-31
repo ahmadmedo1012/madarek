@@ -163,6 +163,13 @@
     border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
     margin-block-end: var(--sp-3);
   }
+  /* Welcome card and any header that's its own surface shouldn't get
+     the hairline rule — the surface already separates it from below. */
+  .page-header.welcome-card,
+  .page-header[data-flush="true"] {
+    border-block-end: 0;
+    padding-block-end: var(--sp-5);
+  }
   .page-title {
     letter-spacing: -0.012em;
   }
