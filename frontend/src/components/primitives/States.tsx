@@ -2,9 +2,20 @@ import type { LucideIcon } from 'lucide-react';
 import { Inbox, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
 
-export function LoadingState({ label = 'جارٍ التحميل…' }: { label?: string }) {
+type LoadingVariant = 'inline' | 'page' | 'card' | 'minimal';
+
+export function LoadingState({
+  label = 'جارٍ التحميل…',
+  variant = 'inline',
+}: {
+  label?: string;
+  variant?: LoadingVariant;
+}) {
+  if (variant === 'minimal') {
+    return <span className="spinner spinner-sm" role="status" aria-label={label} />;
+  }
   return (
-    <div className="state" role="status" aria-live="polite">
+    <div className={`state state-loading state-${variant}`} role="status" aria-live="polite">
       <div className="spinner" aria-hidden />
       <div className="state-desc" style={{ marginTop: 'var(--sp-2)' }}>{label}</div>
     </div>
@@ -13,7 +24,7 @@ export function LoadingState({ label = 'جارٍ التحميل…' }: { label?:
 
 export function EmptyState({
   icon = Inbox,
-  title = 'لا توجد نتائج',
+  title = 'لا توجد بيانات لعرضها بعد',
   description,
   action,
 }: {
@@ -23,13 +34,31 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="state">
+    <div className="state state-empty">
       <div className="state-icon"><Icon icon={icon} size={20} /></div>
       <div className="state-title">{title}</div>
       {description && <div className="state-desc">{description}</div>}
       {action && <div style={{ marginTop: 'var(--sp-3)' }}>{action}</div>}
     </div>
   );
+}
+
+/**
+ * Best-effort extraction of a human-readable detail from an unknown error.
+ * Handles axios-style errors (response.data.error.message), plain Error
+ * objects, and arbitrary thrown values.
+ */
+function extractErrorDetail(error: unknown): string | null {
+  if (!error) return null;
+  const e = error as {
+    response?: { data?: { error?: { message?: string } } };
+    message?: string;
+  };
+  const apiMsg = e.response?.data?.error?.message;
+  if (typeof apiMsg === 'string' && apiMsg.length > 0 && apiMsg.length < 240) return apiMsg;
+  const msg = e.message;
+  if (typeof msg === 'string' && msg.length > 0 && msg.length < 240) return msg;
+  return null;
 }
 
 export function ErrorState({
@@ -41,16 +70,11 @@ export function ErrorState({
   error?: unknown;
   onRetry?: () => void;
 }) {
-  // Surface the actual reason where useful for the user / for debugging.
-  const detail = (() => {
-    if (!error) return 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
-    const msg = (error as { message?: string } | undefined)?.message;
-    if (typeof msg === 'string' && msg.length > 0 && msg.length < 240) return msg;
-    return 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
-  })();
+  const apiDetail = extractErrorDetail(error);
+  const detail = apiDetail ?? 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
 
   return (
-    <div className="state" role="alert">
+    <div className="state state-error" role="alert">
       <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
         <Icon icon={AlertTriangle} size={20} />
       </div>
