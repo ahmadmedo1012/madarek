@@ -43,27 +43,24 @@
     align-items: center;
     gap: var(--sp-3);
   }
-  .topbar > * { flex-shrink: 0; }
+  /* Actions cluster + search are non-shrinking; title can ellipsize on
+     extremely narrow viewports rather than push everything else off-screen. */
+  .topbar > .topbar-mobile-toggle,
+  .topbar > .topbar-actions { flex: 0 0 auto; }
+  .topbar > .global-search { flex: 0 1 320px; min-inline-size: 0; }
   .topbar-title {
-    /* Title block grows naturally up to the available space without ever
-       getting cropped, and never collapses below its content. */
-    flex: 0 1 auto;
+    flex: 1 1 0;
     min-inline-size: 0;
-    overflow: visible;
+    overflow: hidden;
+    /* Title text + scope chip should sit on a single line. The chip
+       won't wrap (white-space: nowrap on .topbar-scope) so any extra
+       content gets ellipsized. */
     white-space: nowrap;
+    text-overflow: ellipsis;
   }
-  /* Spacer pseudo-element sits between title and search to push the
-     search/actions cluster to the inline-end edge. */
-  .topbar::after {
-    content: '';
-    flex: 1 1 auto;
-    min-inline-size: var(--sp-3);
-  }
-  .topbar > .global-search {
-    flex: 0 1 320px;
-    min-inline-size: 0;
-  }
-  .topbar-actions { flex: 0 0 auto; }
+  .topbar-title > * { min-inline-size: 0; }
+  /* The title block now grows to fill leftover space, so the search
+     stays anchored to the inline-end without a separate spacer. */
 
   /* The "اسأل AI" button is a primary tinted CTA inside the topbar — soften
      its weight so it doesn't fight the page title for attention. */
