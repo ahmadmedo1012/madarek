@@ -1,0 +1,250 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v16 · layout shell
+   ─────────────────────────────────────────────────────────────────────
+   Phase 2: lift the layout chrome — sidebar drawer, topbar, bottom nav,
+   user menu, search dropdown. Each shell surface gets calmer motion,
+   better focus, and a more confident hover feel.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR — desktop active rail + dot indicator                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* The existing .nav-item.on::before is the accent rail; we sweeten
+     it with a small dot that pops in when the item activates. */
+  .nav-item {
+    position: relative;
+  }
+  .nav-item.on::after,
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 6px;
+    inset-block-start: 50%;
+    transform: translateY(-50%) scale(0);
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    animation: madark-rail-dot-in 320ms var(--ease-spring-bounce) both 80ms;
+  }
+  @keyframes madark-rail-dot-in {
+    from { transform: translateY(-50%) scale(0); opacity: 0; }
+    to   { transform: translateY(-50%) scale(1); opacity: 1; }
+  }
+  /* RTL flips */
+  [dir="ltr"] .nav-item.on::after,
+  [dir="ltr"] .nav-item.active::after { inset-inline-start: 6px; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR — group section label tone shift                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .nav-section-label {
+    position: relative;
+    transition: color 200ms var(--ease, ease);
+  }
+  .nav-section-label::before {
+    content: '';
+    position: absolute;
+    inset-block-end: -2px;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    block-size: 1px;
+    background: linear-gradient(90deg, var(--rule), transparent);
+    opacity: 0.5;
+  }
+  [dir="rtl"] .nav-section-label::before {
+    background: linear-gradient(-90deg, var(--rule), transparent);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR DRAWER — mobile slide-in with spring                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 920px) {
+    .sidebar {
+      transition: transform 380ms var(--ease-spring-soft);
+    }
+    .sidebar.open .nav-item {
+      animation: madark-drawer-item-in 340ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(1) { animation-delay: 60ms; }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(2) { animation-delay: 90ms; }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(3) { animation-delay: 120ms; }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(4) { animation-delay: 150ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(1) { animation-delay: 180ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(2) { animation-delay: 210ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(3) { animation-delay: 240ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(4) { animation-delay: 270ms; }
+    .sidebar.open .nav-group:nth-of-type(3) .nav-item { animation-delay: 300ms; }
+    @keyframes madark-drawer-item-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR BACKDROP — blur ramp with fade                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sidebar-backdrop {
+    transition:
+      opacity 280ms var(--ease, ease),
+      backdrop-filter 280ms var(--ease, ease);
+  }
+  .sidebar-backdrop.show {
+    backdrop-filter: blur(6px) saturate(85%);
+    -webkit-backdrop-filter: blur(6px) saturate(85%);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOPBAR — scroll-aware shadow                                  ║
+     ║  When the document scrolls, the body gets data-scrolled=true   ║
+     ║  via the scroll handler in AppShell (already exists). Use it   ║
+     ║  to deepen the topbar shadow.                                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar {
+    transition:
+      box-shadow 240ms var(--ease, ease),
+      border-color 240ms var(--ease, ease);
+  }
+  /* Scroll-state class is set by CSS-only sticky shadow trick: when
+     the topbar is sticky and there's content above it, this kicks in. */
+  .topbar:not(:first-child),
+  body[data-scrolled="true"] .topbar {
+    box-shadow: var(--elevation-2);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOPBAR USER TRIGGER — spring chevron on press                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar-user-trigger {
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      border-color var(--t-fast, 160ms) var(--ease, ease),
+      box-shadow 240ms var(--ease, ease),
+      transform 200ms var(--ease, ease);
+  }
+  .topbar-user-trigger:hover {
+    box-shadow: var(--elevation-1);
+  }
+  .topbar-user-trigger[aria-expanded="true"] {
+    background: var(--surface-2);
+    box-shadow: var(--elevation-2);
+  }
+  /* Chevron in user trigger flips when menu opens */
+  .topbar-user-trigger[aria-expanded="true"] .icon-chevron,
+  .topbar-user-trigger[aria-expanded="true"] svg:last-child {
+    transform: rotate(180deg);
+    transition: transform 240ms var(--ease-spring-soft);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  USER MENU ITEMS — stagger entrance                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar-user-menu .topbar-user-menu-item {
+    animation: madark-menu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(1) { animation-delay: 40ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(2) { animation-delay: 70ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(3) { animation-delay: 100ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(4) { animation-delay: 130ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(5) { animation-delay: 160ms; }
+  @keyframes madark-menu-item-in {
+    from { opacity: 0; transform: translateX(4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  [dir="rtl"] .topbar-user-menu .topbar-user-menu-item {
+    animation-name: madark-menu-item-in-rtl;
+  }
+  @keyframes madark-menu-item-in-rtl {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Hover slide */
+  .topbar-user-menu-item {
+    transition: background var(--t-fast, 160ms) var(--ease, ease),
+                color var(--t-fast, 160ms) var(--ease, ease),
+                padding-inline-start var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .topbar-user-menu-item:hover {
+    padding-inline-start: calc(var(--sp-4) + 4px);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  GLOBAL SEARCH — focus-state expansion                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar .global-search {
+    transition:
+      box-shadow 280ms var(--ease, ease),
+      border-color 240ms var(--ease, ease),
+      transform 240ms var(--ease, ease);
+  }
+  .topbar .global-search:focus-within {
+    box-shadow: var(--ring-focus), var(--elevation-1);
+    border-color: var(--accent);
+    transform: scale(1.005);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE HEADER — eyebrow underline animation                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page-header .page-title-block {
+    position: relative;
+    animation: madark-page-title-in 460ms var(--ease-spring-soft) both 80ms;
+  }
+  @keyframes madark-page-title-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BOTTOM NAV — accent ring on active                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 920px) {
+    .bottom-nav-item.active {
+      color: var(--accent);
+    }
+    .bottom-nav-item.active .bottom-nav-icon::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: var(--r-md);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      z-index: -1;
+    }
+    .bottom-nav-item .bottom-nav-icon {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .nav-item.on::after,
+    .nav-item.active::after,
+    .sidebar.open .nav-item,
+    .topbar-user-menu .topbar-user-menu-item,
+    .page-header .page-title-block {
+      animation: none !important;
+    }
+  }
+}

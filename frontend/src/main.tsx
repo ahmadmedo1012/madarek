@@ -21,6 +21,7 @@ import './styles/polish-v12.css';
 import './styles/polish-v13.css';
 import './styles/polish-v14.css';
 import './styles/polish-v15.css';
+import './styles/polish-v16.css';
 import App from './App';
 
 const root = document.getElementById('root');
