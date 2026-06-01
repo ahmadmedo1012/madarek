@@ -32,35 +32,38 @@
     box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.5);
   }
 
-  /* Tighten the topbar grid. Previously: `auto 1fr minmax(0, 320px) auto`
-     which spread elements across the row with a huge wasted gap on
-     pages with short titles (like /student/results). New layout:
-     [mobile-toggle] [title block] [search 320px max] [actions]
-     with the title block sized to content and a flexible spacer
-     between title and search */
+  /* SWITCH from grid to flex. Grid + auto-placement was producing huge
+     gaps between the title (which slid to far inline-start because
+     col 1 was empty when the mobile toggle is hidden) and the search +
+     actions block. Flex with a single 1fr spacer gives a stable layout:
+       [title-block] [flexible spacer] [search] [actions]
+     that reads correctly in both LTR and RTL. */
   .topbar {
-    grid-template-columns: auto auto 1fr minmax(0, 320px) auto;
-    column-gap: var(--sp-3);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
   }
+  .topbar > * { flex-shrink: 0; }
   .topbar-title {
-    grid-column: 2;
-    /* Title block stays compact, doesn't fight for space */
-    flex-shrink: 0;
+    /* Title block grows naturally up to the available space without ever
+       getting cropped, and never collapses below its content. */
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    overflow: visible;
+    white-space: nowrap;
   }
-  /* The 1fr spacer column has no DOM element — it's the grid track
-     between title (col 2) and search (col 4). This keeps the search
-     anchored to a comfortable inline-start position and pulls actions
-     to the inline-end, with a clean breathing area between blocks. */
-  .topbar > .global-search { grid-column: 4; }
-  .topbar-actions { grid-column: 5; }
-
-  @media (max-width: 920px) {
-    .topbar {
-      grid-template-columns: auto 1fr auto;
-    }
-    .topbar-title { grid-column: 2; }
-    .topbar-actions { grid-column: 3; }
+  /* Spacer pseudo-element sits between title and search to push the
+     search/actions cluster to the inline-end edge. */
+  .topbar::after {
+    content: '';
+    flex: 1 1 auto;
+    min-inline-size: var(--sp-3);
   }
+  .topbar > .global-search {
+    flex: 0 1 320px;
+    min-inline-size: 0;
+  }
+  .topbar-actions { flex: 0 0 auto; }
 
   /* The "اسأل AI" button is a primary tinted CTA inside the topbar — soften
      its weight so it doesn't fight the page title for attention. */
