@@ -290,8 +290,16 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
 //  Student exam-taking
 // ════════════════════════════════════════════════════════════════
 
-router.get('/exams/me', requireRole(Role.STUDENT), async (req, res, next) => {
+router.get('/exams/me', async (req, res, next) => {
   try {
+    // Read-only endpoint listing published exams for the caller. Non-students
+    // (TEACHER / ADMIN / OWNER previewing the page) get an empty array
+    // rather than a 403 — this is a personal-data shape, not a security
+    // boundary. The mutation endpoints (start/submit) stay STUDENT-only.
+    if (req.user!.role !== Role.STUDENT) {
+      res.json({ data: [] });
+      return;
+    }
     const userId = req.user!.id;
     // Find published exams for offerings I'm enrolled in OR faculty-wide
     const enrollments = await prisma.enrollment.findMany({
