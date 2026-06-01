@@ -291,6 +291,33 @@
     color: var(--accent-strong);
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     WELCOME CARD — keep the title above the dot pattern + title sizing
+     ═══════════════════════════════════════════════════════════════ */
+  /* The dot-grid background was overlapping the title at smaller widths
+     and on long greetings (the title text was running underneath it).
+     Push title/subtitle above with z-index, scope title clamp tighter,
+     and shrink the dot pattern on phones. */
+  .welcome-card .page-title-block,
+  .welcome-card .page-title,
+  .welcome-card .page-subtitle {
+    position: relative;
+    z-index: 1;
+  }
+  .welcome-card .page-title {
+    font-size: clamp(20px, 3.4vw, 28px);
+    letter-spacing: -0.018em;
+    line-height: 1.22;
+    /* Greetings are short — no need to wrap. But if they do, wrap cleanly */
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 640px) {
+    .welcome-card { padding: var(--sp-4) var(--sp-4) var(--sp-4); }
+    .welcome-card::after { width: 120px; opacity: 0.22; }
+    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); }
+  }
+
   /* Avatars — never let one render as a flat coloured square */
   .avatar {
     border-radius: var(--r-full);
