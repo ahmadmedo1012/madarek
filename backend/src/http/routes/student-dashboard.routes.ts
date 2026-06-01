@@ -15,7 +15,11 @@ import { AppError } from '../../lib/errors.js';
  */
 const router = Router();
 router.use(authMiddleware);
-router.use(requireRole(Role.STUDENT));
+// Allow STUDENT (the primary audience), plus ADMIN/OWNER who may need to
+// preview the student dashboard for QA, support, or platform-wide checks.
+// Restricting to STUDENT-only previously caused a 403 the moment any other
+// role hit the page, even when the frontend had already routed them in.
+router.use(requireRole(Role.STUDENT, Role.ADMIN, Role.OWNER));
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
@@ -261,7 +265,26 @@ router.get('/me/dashboard', async (req, res, next) => {
       }),
     ]);
 
-    if (!profile) throw AppError.notFound('Student profile not found');
+    // OWNER / ADMIN can hit this endpoint without a student profile of their
+    // own (they're previewing the dashboard layout). Return a graceful
+    // empty-shell response instead of a 404 — the frontend renders an
+    // empty-state inside the dashboard rather than the global error page.
+    if (!profile) {
+      const role = req.user!.role;
+      if (role === Role.ADMIN || role === Role.OWNER) {
+        res.json({
+          data: {
+            preview: true,
+            profile: null,
+            kpi: { courseCount: 0, attendancePct: null, pendingAssignmentsCount: 0, totalXp: 0, level: 0, rank: 0, cohortSize: 0 },
+            term: { code: term.code, startsAt: term.startsAt, endsAt: term.endsAt, progressPct: 0 },
+            agenda: [],
+          },
+        });
+        return;
+      }
+      throw AppError.notFound('Student profile not found');
+    }
 
     const offeringIds = enrollments.map((e) => e.offering.id);
     const courseCount = enrollments.length;
