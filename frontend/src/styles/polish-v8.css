@@ -159,9 +159,11 @@
 
   /* ── Page-header rhythm refinement ──────────────────────────── */
   .page-header {
-    padding-block-end: var(--sp-2);
-    border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
-    margin-block-end: var(--sp-3);
+    /* base.css set padding-block-end to var(--sp-5); we keep that breathing
+       room and just add a hairline rule for cleaner section separation. */
+    padding-block-end: var(--sp-4);
+    border-block-end: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
+    margin-block-end: var(--sp-2);
   }
   /* Welcome card and any header that's its own surface shouldn't get
      the hairline rule — the surface already separates it from below. */
@@ -169,6 +171,7 @@
   .page-header[data-flush="true"] {
     border-block-end: 0;
     padding-block-end: var(--sp-5);
+    margin-block-end: 0;
   }
   .page-title {
     letter-spacing: -0.012em;
