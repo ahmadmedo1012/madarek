@@ -1,0 +1,271 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v15 · primitives refinement
+   ─────────────────────────────────────────────────────────────────────
+   Phase 1: lift every reusable primitive — Card, Button, MetricCard,
+   Pill, Badge, Tabs, Input, Select, Skeleton, Tooltip — without
+   touching their React APIs.
+
+   Each primitive gains:
+   · A clearer hover state
+   · A press feedback
+   · A focus halo
+   · A subtle entrance/transition where appropriate
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CARD — gradient hover border + lifted shadow                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .card {
+    transition:
+      border-color 240ms var(--ease, ease),
+      box-shadow 280ms var(--ease-spring-soft),
+      transform 280ms var(--ease-spring-soft);
+    position: relative;
+  }
+  /* Gradient border-glow on hover for non-flush cards */
+  .card:not(.flush)::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 35%, transparent) 0%,
+      transparent 35%,
+      transparent 65%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 320ms var(--ease, ease);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .card:not(.flush):hover::after { opacity: 0.65; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BUTTON — refined hover sheen + ripple-on-press                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .btn {
+    position: relative;
+    overflow: hidden;
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      border-color var(--t-fast, 160ms) var(--ease, ease),
+      color var(--t-fast, 160ms) var(--ease, ease),
+      transform 120ms var(--ease, ease),
+      box-shadow 240ms var(--ease, ease);
+  }
+  .btn.primary:hover,
+  .btn-primary:hover,
+  .btn.accent:hover {
+    box-shadow:
+      0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
+      0 2px 4px rgba(0,0,0,0.06);
+  }
+  /* Ghost button gains accent border on hover */
+  .btn.ghost:hover,
+  .btn-ghost:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+  }
+  /* Press ripple effect — radial pulse at click origin */
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .btn:active:not(:disabled)::after {
+    animation: madark-ripple 460ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-ripple {
+    0%   { inline-size: 0; block-size: 0; opacity: 0.5; }
+    100% { inline-size: 240%; block-size: 240%; opacity: 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  METRIC CARD — accent leading edge                             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .metric {
+    position: relative;
+    overflow: hidden;
+  }
+  .metric::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    background: var(--_metric-color, var(--accent));
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 320ms var(--ease-spring-soft);
+  }
+  .metric:hover::before { transform: scaleY(1); }
+  /* Numeric values get tabular alignment globally */
+  .metric-value {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PILL & TAB — soft active glow + transition smoothing          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .pill {
+    transition:
+      background 160ms var(--ease, ease),
+      color 160ms var(--ease, ease),
+      border-color 160ms var(--ease, ease),
+      transform 160ms var(--ease, ease),
+      box-shadow 240ms var(--ease, ease);
+  }
+  .pill.on {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+  .pill:hover { transform: translateY(-1px); }
+  .pill:active { transform: scale(0.96); }
+
+  /* Tab underline becomes spring-easy */
+  .tab::after {
+    transition:
+      transform 320ms var(--ease-spring-soft),
+      opacity 200ms var(--ease, ease);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BADGE — pop-in on first paint                                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .badge {
+    animation: madark-badge-in 260ms var(--ease-spring-bounce) both;
+    transition: transform 160ms var(--ease, ease);
+  }
+  @keyframes madark-badge-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: none; }
+  }
+  .badge:hover { transform: scale(1.05); }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  INPUT / SELECT / TEXTAREA — accent halo on focus              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .input,
+  input[type="text"], input[type="search"], input[type="email"],
+  input[type="password"], input[type="number"], input[type="url"],
+  input[type="tel"], input[type="date"], input[type="time"],
+  textarea, select {
+    transition:
+      border-color 200ms var(--ease, ease),
+      box-shadow 240ms var(--ease, ease),
+      background 200ms var(--ease, ease);
+  }
+  .input:focus,
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SKELETON — directional shimmer (RTL-aware) + softer stops     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--surface-3) 0%,
+      color-mix(in srgb, var(--surface-2) 80%, white 8%) 50%,
+      var(--surface-3) 100%
+    );
+    background-size: 200% 100%;
+    animation: madark-shimmer-rtl 1600ms ease-in-out infinite;
+  }
+  [dir="ltr"] .skeleton {
+    animation-name: madark-shimmer-ltr;
+  }
+  @keyframes madark-shimmer-rtl {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 0% 0; }
+  }
+  @keyframes madark-shimmer-ltr {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PROGRESS BAR — gradient fill with shimmer                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .progressbar > span,
+  .progress-bar > span,
+  [class*="progress"] > span {
+    transition: width 480ms var(--ease-spring-soft);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  AVATAR — subtle hover lift                                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .avatar,
+  .user-avatar {
+    transition: transform 200ms var(--ease, ease), box-shadow 240ms var(--ease, ease);
+  }
+  @media (hover: hover) {
+    a:hover .avatar,
+    a:hover .user-avatar,
+    button:hover .avatar,
+    button:hover .user-avatar {
+      transform: scale(1.05);
+      box-shadow: var(--elevation-2);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STICKER ICONS — gentle sway when grouped                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sticker-wiggle .sticker {
+    animation: madark-sway 6s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .sticker-wiggle:nth-child(2n) .sticker { animation-delay: -1.5s; }
+  .sticker-wiggle:nth-child(3n) .sticker { animation-delay: -3s; }
+  .sticker-wiggle:nth-child(4n) .sticker { animation-delay: -4.5s; }
+  @keyframes madark-sway {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(-2.5deg); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .badge,
+    .skeleton,
+    .sticker-wiggle .sticker {
+      animation: none !important;
+    }
+    .btn:active:not(:disabled)::after {
+      animation: none !important;
+    }
+  }
+}
