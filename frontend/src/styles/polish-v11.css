@@ -237,4 +237,31 @@
     .skeleton { animation: none; opacity: 0.5; }
     .spinner { animation: madarek-spin 1500ms linear infinite; }
   }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR FIXES                                                 ║
+     ║  1. Mobile close button never renders on desktop. The X next   ║
+     ║     to the brand was a leftover that called closeSidebar() —   ║
+     ║     a no-op on desktop because that store field only drives    ║
+     ║     the mobile drawer overlay.                                 ║
+     ║  2. The collapse chevron stays visible even when collapsed.    ║
+     ║     Without this, once folded the only way to expand is the    ║
+     ║     Ctrl+B shortcut — invisible to most users.                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (min-width: 921px) {
+    .sidebar-mobile-close { display: none !important; }
+
+    /* Override polish-v6's `display: none` on the collapse button when
+       collapsed. Recenter so the chevron sits below the brand mark
+       inside the narrow icon rail. */
+    .sidebar.collapsed .sidebar-collapse-btn {
+      display: inline-flex !important;
+      margin-block-start: var(--sp-2);
+    }
+    .sidebar.collapsed .sidebar-brand {
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+  }
 }
