@@ -183,14 +183,14 @@ export function QualityDashboardPage() {
                 datasets: [{
                   label: 'مستخدم نشط',
                   data: e.weeklyActive,
-                  borderColor: '#3D6BD6',
-                  backgroundColor: 'rgba(61,107,214,0.10)',
+                  borderColor: chartColors().accent,
+                  backgroundColor: `color-mix(in srgb, ${chartColors().accent} 12%, transparent)`,
                   tension: 0.4,
                   fill: true,
                   borderWidth: 2,
                   pointRadius: 3,
                   pointHoverRadius: 5,
-                  pointBackgroundColor: '#3D6BD6',
+                  pointBackgroundColor: chartColors().accent,
                 }],
               }}
               options={chartOpts}
@@ -444,7 +444,7 @@ export function QualityEngagementPage() {
                 datasets: [{
                   label: 'نشاط يومي',
                   data: d.weeklyActive,
-                  backgroundColor: '#3D6BD6',
+                  backgroundColor: chartColors().accent,
                   borderRadius: 6,
                   borderSkipped: false,
                 }],
