@@ -376,7 +376,11 @@ export function ResultsPage() {
             <h1 className="page-title">النتائج والتقييمات</h1>
           </div>
         </div>
-        <ErrorState />
+        <ErrorState
+          message="تعذَّر تحميل هذا القسم"
+          error={q.error}
+          onRetry={() => q.refetch()}
+        />
       </div>
     );
   }
