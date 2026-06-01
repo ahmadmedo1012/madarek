@@ -10,16 +10,56 @@
      ═══════════════════════════════════════════════════════════════ */
   .topbar {
     block-size: 60px;
-    background: color-mix(in srgb, var(--surface) 86%, transparent);
+    /* Increase opacity so the page-title underneath never bleeds through.
+       The user reported page titles appearing cut by the topbar — that
+       was caused by the previous 86% mix being too transparent against
+       the cream surface in light mode. */
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
     -webkit-backdrop-filter: saturate(160%) blur(14px);
             backdrop-filter: saturate(160%) blur(14px);
     border-block-end: 1px solid var(--rule);
+    z-index: 30;
+  }
+  [data-theme="dark"] .topbar {
+    /* In dark mode the surface is already opaque enough; bump to 94% so
+       there's still a hint of the blur effect without bleed. */
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
   }
   .topbar.scrolled {
     box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.08);
   }
   [data-theme="dark"] .topbar.scrolled {
     box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Tighten the topbar grid. Previously: `auto 1fr minmax(0, 320px) auto`
+     which spread elements across the row with a huge wasted gap on
+     pages with short titles (like /student/results). New layout:
+     [mobile-toggle] [title block] [search 320px max] [actions]
+     with the title block sized to content and a flexible spacer
+     between title and search */
+  .topbar {
+    grid-template-columns: auto auto 1fr minmax(0, 320px) auto;
+    column-gap: var(--sp-3);
+  }
+  .topbar-title {
+    grid-column: 2;
+    /* Title block stays compact, doesn't fight for space */
+    flex-shrink: 0;
+  }
+  /* The 1fr spacer column has no DOM element — it's the grid track
+     between title (col 2) and search (col 4). This keeps the search
+     anchored to a comfortable inline-start position and pulls actions
+     to the inline-end, with a clean breathing area between blocks. */
+  .topbar > .global-search { grid-column: 4; }
+  .topbar-actions { grid-column: 5; }
+
+  @media (max-width: 920px) {
+    .topbar {
+      grid-template-columns: auto 1fr auto;
+    }
+    .topbar-title { grid-column: 2; }
+    .topbar-actions { grid-column: 3; }
   }
 
   /* The "اسأل AI" button is a primary tinted CTA inside the topbar — soften
