@@ -85,7 +85,11 @@ export default function StudentDashboardPage() {
         <header className="page-header welcome-card">
           <h1 className="page-title">{greeting}، {user?.firstName ?? '…'}</h1>
         </header>
-        <ErrorState />
+        <ErrorState
+          message="تعذَّر تحميل لوحة التحكّم"
+          error={dash.error}
+          onRetry={() => dash.refetch()}
+        />
       </div>
     );
   }

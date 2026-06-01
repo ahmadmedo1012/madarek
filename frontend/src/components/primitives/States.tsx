@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Inbox, AlertTriangle } from 'lucide-react';
+import { Inbox, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
 
 export function LoadingState({ label = 'جارٍ التحميل…' }: { label?: string }) {
@@ -32,14 +32,38 @@ export function EmptyState({
   );
 }
 
-export function ErrorState({ message = 'حدث خطأ غير متوقع' }: { message?: string }) {
+export function ErrorState({
+  message = 'تعذَّر تحميل هذا القسم',
+  error,
+  onRetry,
+}: {
+  message?: string;
+  error?: unknown;
+  onRetry?: () => void;
+}) {
+  // Surface the actual reason where useful for the user / for debugging.
+  const detail = (() => {
+    if (!error) return 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
+    const msg = (error as { message?: string } | undefined)?.message;
+    if (typeof msg === 'string' && msg.length > 0 && msg.length < 240) return msg;
+    return 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
+  })();
+
   return (
     <div className="state" role="alert">
       <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
         <Icon icon={AlertTriangle} size={20} />
       </div>
       <div className="state-title">{message}</div>
-      <div className="state-desc">حاول مرة أخرى أو تحقق من اتصالك بالشبكة.</div>
+      <div className="state-desc">{detail}</div>
+      {onRetry && (
+        <div style={{ marginTop: 'var(--sp-3)' }}>
+          <button type="button" className="btn primary sm" onClick={onRetry}>
+            <Icon icon={RefreshCw} size={13} />
+            إعادة المحاولة
+          </button>
+        </div>
+      )}
     </div>
   );
 }
