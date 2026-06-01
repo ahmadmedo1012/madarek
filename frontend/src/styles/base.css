@@ -107,9 +107,15 @@
 
   /* Collapsed desktop state — narrow icon rail. The state is a global
      attribute on <html> set by the Sidebar component so .has-shell + the
-     sidebar itself stay in sync without prop-drilling. */
-  html[data-sidebar-collapsed] .has-shell {
-    grid-template-columns: var(--sidebar-w-collapsed) 1fr;
+     sidebar itself stay in sync without prop-drilling.
+     IMPORTANT: scoped to desktop. On mobile (≤920px) the sidebar is a
+     fixed-position drawer outside grid flow — the grid track must stay
+     1fr regardless of the collapsed state, otherwise content is shifted
+     by the rail width on phones. */
+  @media (min-width: 921px) {
+    html[data-sidebar-collapsed] .has-shell {
+      grid-template-columns: var(--sidebar-w-collapsed) 1fr;
+    }
   }
 
   .has-shell > .sidebar {

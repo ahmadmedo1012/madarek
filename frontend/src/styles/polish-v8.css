@@ -515,4 +515,45 @@
     box-shadow: none;
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     Sidebar — mobile drawer close button + sticky brand
+     ═══════════════════════════════════════════════════════════════ */
+  .sidebar-mobile-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: var(--surface-2);
+    color: var(--text);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--t-clean);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sidebar-mobile-close:hover { background: var(--surface-3); }
+  .sidebar-mobile-close:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  @media (max-width: 920px) {
+    /* X button visible only in the mobile drawer */
+    .sidebar-mobile-close { display: inline-flex; }
+    /* No collapse rail on mobile — only open vs closed */
+    .sidebar-collapse-btn { display: none !important; }
+    /* Brand row becomes a sticky drawer header */
+    .sidebar-brand {
+      position: sticky;
+      inset-block-start: 0;
+      background: var(--sidebar-bg);
+      z-index: 1;
+      padding-block: var(--sp-3);
+      border-block-end: 1px solid var(--sidebar-rule);
+      margin-block-end: var(--sp-2);
+    }
+  }
+
 }

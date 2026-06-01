@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { LogOut, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { LogOut, ChevronsLeft, ChevronsRight, X } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
@@ -20,24 +20,34 @@ export function Sidebar() {
   const logout = useLogout();
   const navigate = useNavigate();
 
+  // Lock body scroll only while the mobile drawer is open.
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [sidebarOpen]);
 
+  // Close mobile drawer on Escape so users always have an easy out.
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeSidebar();
+    };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [sidebarOpen, closeSidebar]);
+
   // Reflect collapse state on the shell so the grid track resizes.
-  // We toggle on documentElement so any descendent (topbar, etc.) can read it.
+  // Toggled on documentElement so any descendent (topbar, etc.) can read it.
   useEffect(() => {
     const root = document.documentElement;
     if (sidebarCollapsed) root.setAttribute('data-sidebar-collapsed', '');
     else root.removeAttribute('data-sidebar-collapsed');
   }, [sidebarCollapsed]);
 
-  // Keyboard shortcut — Cmd/Ctrl+B toggles the sidebar (Notion-style).
+  // Cmd/Ctrl+B toggles the desktop collapse (Notion-style).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'b' || e.key === 'B')) {
-        // Don't capture inside text inputs / contenteditable.
         const t = e.target as HTMLElement | null;
         if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
         e.preventDefault();
@@ -74,6 +84,7 @@ export function Sidebar() {
             <div className="sidebar-brand-name">مدارك</div>
             <div className="sidebar-brand-sub">جامعة الزاوية</div>
           </div>
+          {/* Desktop: collapse / expand */}
           <button
             type="button"
             className="sidebar-collapse-btn hide-on-mobile"
@@ -82,6 +93,16 @@ export function Sidebar() {
             title={sidebarCollapsed ? 'توسعة القائمة (Ctrl+B)' : 'طيّ القائمة (Ctrl+B)'}
           >
             <Icon icon={sidebarCollapsed ? ChevronsLeft : ChevronsRight} size={14} />
+          </button>
+          {/* Mobile: explicit close button (always visible inside drawer) */}
+          <button
+            type="button"
+            className="sidebar-mobile-close"
+            onClick={closeSidebar}
+            aria-label="إغلاق القائمة"
+            title="إغلاق"
+          >
+            <Icon icon={X} size={18} />
           </button>
         </div>
 
