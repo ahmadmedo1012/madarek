@@ -238,7 +238,7 @@ router.get('/exams/templates/:id', async (req, res, next) => {
           ...eq,
           question: {
             ...eq.question,
-            correctAnswer: req.user!.role === 'TEACHER' || req.user!.role === 'QUALITY' || req.user!.role === 'ADMIN'
+            correctAnswer: req.user!.role === 'TEACHER' || req.user!.role === 'QUALITY' || req.user!.role === 'ADMIN' || req.user!.role === 'OWNER'
               ? eq.question.correctAnswer
               : null,
           },

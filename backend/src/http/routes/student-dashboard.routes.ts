@@ -268,13 +268,14 @@ router.get('/me/dashboard', async (req, res, next) => {
       }),
     ]);
 
-    // OWNER / ADMIN can hit this endpoint without a student profile of their
-    // own (they're previewing the dashboard layout). Return a graceful
-    // empty-shell response instead of a 404 — the frontend renders an
-    // empty-state inside the dashboard rather than the global error page.
+    // Non-students (TEACHER / ADMIN / OWNER / QUALITY) can hit this endpoint
+    // without a student profile of their own (previewing the dashboard layout
+    // or hit by a stale tab / cache prefetch). Return a graceful empty-shell
+    // response instead of a 404 — the frontend renders an empty-state inside
+    // the dashboard rather than the global error page.
     if (!profile) {
       const role = req.user!.role;
-      if (role === Role.ADMIN || role === Role.OWNER) {
+      if (role !== Role.STUDENT) {
         res.json({
           data: {
             preview: true,

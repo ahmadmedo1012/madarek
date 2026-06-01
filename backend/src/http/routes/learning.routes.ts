@@ -713,6 +713,7 @@ router.get('/research/:id/annotations', async (req, res, next) => {
     const uid = req.user!.id;
     const allowed =
       role === Role.ADMIN ||
+      role === Role.OWNER ||
       role === Role.QUALITY ||
       paper.studentId === uid ||
       paper.reviewerId === uid;
@@ -760,7 +761,7 @@ router.delete('/research/annotations/:id', async (req, res, next) => {
   try {
     const note = await prisma.paperAnnotation.findUnique({ where: { id: req.params.id! } });
     if (!note) throw AppError.notFound();
-    if (note.authorId !== req.user!.id && req.user!.role !== Role.ADMIN) {
+    if (note.authorId !== req.user!.id && req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) {
       throw AppError.forbidden('You can only delete your own annotations');
     }
     await prisma.paperAnnotation.delete({ where: { id: note.id } });

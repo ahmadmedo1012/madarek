@@ -98,7 +98,7 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
     const id = req.params.id!;
     if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER && req.user!.id !== id) throw AppError.forbidden();
     const data: typeof req.body = { ...req.body };
-    if (req.user!.role !== Role.ADMIN) delete data.isActive; // only admins toggle active
+    if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) delete data.isActive; // only admins/owner toggle active
     const user = await prisma.user.update({
       where: { id },
       data,
