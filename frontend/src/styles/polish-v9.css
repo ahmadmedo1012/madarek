@@ -1,0 +1,321 @@
+/* ═════════════════════════════════════════════════════════════════════
+   POLISH v9 — topbar, bell button, notifications panel, broader coverage
+   Loaded last; uses --vars instead of !important.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ═══════════════════════════════════════════════════════════════
+     TOPBAR — height + better chrome
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar {
+    block-size: 60px;
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+            backdrop-filter: saturate(160%) blur(14px);
+    border-block-end: 1px solid var(--rule);
+  }
+  .topbar.scrolled {
+    box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.08);
+  }
+  [data-theme="dark"] .topbar.scrolled {
+    box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.5);
+  }
+
+  /* The "اسأل AI" button is a primary tinted CTA inside the topbar — soften
+     its weight so it doesn't fight the page title for attention. */
+  .topbar-actions .btn.primary.sm {
+    height: 32px;
+    padding-inline: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     BELL BUTTON — was unstyled (.topbar-notif had no rules)
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-notif {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-full);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  .topbar-notif:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--rule);
+  }
+  .topbar-notif:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  .topbar-notif[aria-expanded="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+  .topbar-notif-badge {
+    position: absolute;
+    inset-block-start: 2px;
+    inset-inline-end: 2px;
+    min-inline-size: 16px;
+    block-size: 16px;
+    padding: 0 4px;
+    border-radius: var(--r-full);
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    border: 2px solid var(--surface);
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--danger) 50%, transparent);
+    /* Calm pulse to draw attention without nagging */
+    animation: notif-bell-pulse 2.4s var(--ease-out) infinite;
+  }
+  @keyframes notif-bell-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .topbar-notif-badge { animation: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     NOTIFICATIONS PANEL — better organisation + visual rhythm
+     ═══════════════════════════════════════════════════════════════ */
+  .notif-panel {
+    border-radius: var(--r-xl);
+    border-color: var(--rule);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 12px 40px -12px rgba(15, 22, 41, 0.18),
+      0 32px 80px -24px rgba(15, 22, 41, 0.16);
+  }
+
+  .notif-panel-head {
+    padding: 14px 16px;
+    background: linear-gradient(180deg,
+      var(--surface) 0%,
+      color-mix(in srgb, var(--surface) 96%, var(--accent-soft)) 100%);
+    border-block-end: 1px solid var(--rule);
+  }
+  .notif-panel-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+
+  /* Items get tighter padding + a subtle hairline between rows so the panel
+     reads as a stack rather than a wall of buttons */
+  .notif-item {
+    padding: 12px 16px;
+    border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+    transition: background var(--t-fast) var(--ease), padding-inline-start var(--t-fast) var(--ease);
+  }
+  .notif-item:last-child { border-block-end: 0; }
+  .notif-item:hover { padding-inline-start: 18px; }
+
+  .notif-item-icon {
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-block-start: 2px;
+  }
+  .notif-item-title {
+    font-size: 13px;
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.35;
+  }
+  .notif-item-desc {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-block-start: 2px;
+    /* Clamp to 2 lines so a noisy notification doesn't blow up the panel */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .notif-item-time {
+    color: var(--text-subtle);
+    font-size: 11px;
+    margin-block-start: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Unread state — soft accent stripe on the inline-start edge */
+  .notif-item.unread {
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    position: relative;
+  }
+  .notif-item.unread::before {
+    content: '';
+    position: absolute;
+    inset-block: 12px;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .notif-item-dot {
+    position: absolute;
+    inset-block-start: 16px;
+    inset-inline-end: 16px;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  /* Empty state — centred, calmer */
+  .notif-empty {
+    padding: 40px 20px;
+    text-align: center;
+  }
+  .notif-empty-icon {
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: var(--r-full);
+    background: var(--surface-2);
+    color: var(--text-subtle);
+    margin: 0 auto 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notif-empty-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .notif-panel-foot {
+    padding: 10px 16px;
+    border-block-start: 1px solid var(--rule);
+    background: var(--surface-2);
+  }
+  .notif-panel-viewall {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: var(--fw-semibold);
+    color: var(--accent-strong);
+    text-decoration: none;
+    transition: gap var(--t-fast) var(--ease);
+  }
+  .notif-panel-viewall:hover { gap: 8px; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SIDEBAR MOBILE CLOSE — visible only on phones
+     ═══════════════════════════════════════════════════════════════ */
+  .show-on-mobile { display: none; }
+  @media (max-width: 920px) {
+    .show-on-mobile { display: inline-flex; }
+    .hide-on-mobile { display: none !important; }
+    .sidebar-mobile-close {
+      inline-size: 36px;
+      block-size: 36px;
+      border-radius: var(--r-md);
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
+      transition: var(--t-clean);
+    }
+    .sidebar-mobile-close:hover {
+      color: var(--text);
+      background: var(--surface);
+      border-color: var(--border-strong);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     PAGES THAT DIDN'T GET POLISH — give them the same treatment
+     Some pages render their own card-like containers without the .card
+     class. Catch the common ones so polish v8's effects extend.
+     ═══════════════════════════════════════════════════════════════ */
+  .invoice-card,
+  .post,
+  .speaker-chip,
+  .testimonial-card,
+  .webinar-card,
+  .announcement-card {
+    border-radius: var(--r-lg);
+    transition: transform var(--t-fast) var(--ease),
+                box-shadow var(--t-fast) var(--ease);
+  }
+  .post:hover,
+  .testimonial-card:hover,
+  .announcement-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Tab counts get a calm pill style instead of inline numbers */
+  .tab-count {
+    margin-inline-start: 6px;
+    font-size: 10px;
+    font-weight: var(--fw-bold);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    padding: 1px 6px;
+    border-radius: var(--r-full);
+    font-variant-numeric: tabular-nums;
+  }
+  .tab.on .tab-count,
+  .tab[aria-selected="true"] .tab-count {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+
+  /* Avatars — never let one render as a flat coloured square */
+  .avatar {
+    border-radius: var(--r-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: var(--fw-semibold);
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    background: var(--accent);
+    line-height: 1;
+  }
+
+  /* Page transitions — softer + faster (was 220ms). Notion-class is closer
+     to 160ms with a slightly heavier easing. */
+  .content-inner {
+    animation: page-enter 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes page-enter {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content-inner { animation: none; }
+  }
+
+}
