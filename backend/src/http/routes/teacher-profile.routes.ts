@@ -15,7 +15,7 @@ router.use(authMiddleware);
 // ════════════════════════════════════════════════════════════════
 
 /** GET /me/teacher-profile — full self profile for the logged-in teacher */
-router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const profile = await prisma.teacherProfile.findUnique({
@@ -107,7 +107,7 @@ const updateProfileSchema = z.object({
 }).strict();
 
 /** PATCH /me/teacher-profile — self-service update (bio + contact + lists) */
-router.patch('/me/teacher-profile', requireRole(Role.TEACHER), validate(updateProfileSchema), async (req, res, next) => {
+router.patch('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), validate(updateProfileSchema), async (req, res, next) => {
   try {
     const body = req.body as z.infer<typeof updateProfileSchema>;
     const updated = await prisma.teacherProfile.update({
@@ -173,7 +173,7 @@ const createSessionSchema = z.object({
   joinUrl: z.string().max(500).optional(),
 }).strict();
 
-router.post('/live/sessions', requireRole(Role.TEACHER), validate(createSessionSchema), async (req, res, next) => {
+router.post('/live/sessions', requireRole(Role.TEACHER, Role.OWNER), validate(createSessionSchema), async (req, res, next) => {
   try {
     const body = req.body as z.infer<typeof createSessionSchema>;
     // Verify the offering is one this teacher actually teaches
@@ -201,7 +201,7 @@ const lifecycleSchema = z.object({
   action: z.enum(['START', 'END', 'CANCEL']),
 }).strict();
 
-router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER), validate(lifecycleSchema), async (req, res, next) => {
+router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER, Role.OWNER), validate(lifecycleSchema), async (req, res, next) => {
   try {
     const session = await prisma.liveSession.findUnique({ where: { id: req.params.id } });
     if (!session) throw AppError.notFound();

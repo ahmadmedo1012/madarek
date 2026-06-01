@@ -15,11 +15,14 @@ import { AppError } from '../../lib/errors.js';
  */
 const router = Router();
 router.use(authMiddleware);
-// Allow STUDENT (the primary audience), plus ADMIN/OWNER who may need to
-// preview the student dashboard for QA, support, or platform-wide checks.
-// Restricting to STUDENT-only previously caused a 403 the moment any other
-// role hit the page, even when the frontend had already routed them in.
-router.use(requireRole(Role.STUDENT, Role.ADMIN, Role.OWNER));
+// IMPORTANT: do NOT gate the whole router by role.
+// The endpoints in this file are personal-data endpoints (/me/dashboard,
+// /me/results, /me/materials, /me/lab-sessions). Each one handles a missing
+// student profile gracefully (returns an empty/preview shape), so any
+// authenticated user can hit them without a 403. The previous
+// `requireRole(STUDENT, ADMIN, OWNER)` was producing 403s for TEACHER and
+// QUALITY users whenever something — a notification dropdown probe, a
+// query-cache prefetch, a stale tab — tried to read these endpoints.
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;

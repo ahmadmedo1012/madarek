@@ -546,7 +546,7 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
 });
 
 // Teacher / admin queue: papers passing checks, awaiting grade.
-router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN), async (_req, res, next) => {
+router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (_req, res, next) => {
   try {
     const data = await prisma.researchPaper.findMany({
       where: { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] } },
@@ -565,7 +565,7 @@ router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN), async (_req
 });
 
 // Publish a graded paper to the library.
-router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const id = req.params.id!;
     const paper = await prisma.researchPaper.findUnique({ where: { id } });
@@ -729,7 +729,7 @@ router.get('/research/:id/annotations', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-router.post('/research/:id/annotations', requireRole(Role.TEACHER, Role.ADMIN), validate(annotationCreateSchema), async (req, res, next) => {
+router.post('/research/:id/annotations', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), validate(annotationCreateSchema), async (req, res, next) => {
   try {
     const paper = await prisma.researchPaper.findUnique({
       where: { id: req.params.id! },

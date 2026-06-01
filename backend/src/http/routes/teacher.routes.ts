@@ -17,7 +17,7 @@ router.use(authMiddleware);
 // ════════════════════════════════════════════════════════════════
 
 /** GET /teacher/me/offerings — offerings I teach with summary KPIs */
-router.get('/teacher/me/offerings', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+router.get('/teacher/me/offerings', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const offerings = await prisma.courseOffering.findMany({
@@ -76,7 +76,7 @@ function suggestionFor(row: { attendancePct: number; avgGrade: number; watchPct:
  * Per-student snapshot with attendance, grade avg, watch%, risk score, suggestion.
  * Risk = 40%·attendance + 40%·grade + 20%·watch
  */
-router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const offeringId = req.params.id!;
     await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
@@ -167,7 +167,7 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
 /**
  * GET /teacher/offerings/:id/analytics — course-level aggregates
  */
-router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const offeringId = req.params.id!;
     await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
@@ -213,7 +213,7 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
  * GET /teacher/risks — at-risk students across ALL my offerings (top 10).
  * Uses the same risk scoring logic.
  */
-router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN), async (req, res, next) => {
+router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const offerings = await prisma.courseOffering.findMany({
@@ -306,7 +306,7 @@ const recordAttSchema = z.object({
 
 router.post(
   '/teacher/offerings/:id/attendance',
-  requireRole(Role.TEACHER, Role.ADMIN),
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   validate(recordAttSchema),
   async (req, res, next) => {
     try {

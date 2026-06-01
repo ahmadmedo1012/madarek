@@ -79,7 +79,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', requireRole(Role.ADMIN), validate(createCourseSchema), async (req, res, next) => {
+router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(createCourseSchema), async (req, res, next) => {
   try {
     const created = await prisma.course.create({ data: req.body });
     res.status(201).json({ data: created });
@@ -90,7 +90,7 @@ router.post('/', requireRole(Role.ADMIN), validate(createCourseSchema), async (r
 
 router.patch(
   '/:id',
-  requireRole(Role.ADMIN),
+  requireRole(Role.ADMIN, Role.OWNER),
   validate(createCourseSchema.partial()),
   async (req, res, next) => {
     try {
@@ -102,7 +102,7 @@ router.patch(
   },
 );
 
-router.delete('/:id', requireRole(Role.ADMIN), async (req, res, next) => {
+router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     await prisma.course.delete({ where: { id: req.params.id! } });
     res.status(204).end();

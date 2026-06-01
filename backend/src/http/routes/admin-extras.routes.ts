@@ -14,7 +14,7 @@ import { requireRole } from '../middleware/requireRole.js';
  */
 const router = Router();
 router.use(authMiddleware);
-router.use(requireRole(Role.ADMIN));
+router.use(requireRole(Role.ADMIN, Role.OWNER));
 
 /**
  * GET /admin/students

@@ -378,7 +378,7 @@ router.get('/faculties', async (_req, res, next) => {
 // ════════════════════════════════════════════════════
 // ADMIN STATS
 // ════════════════════════════════════════════════════
-router.get('/admin/stats', requireRole(Role.ADMIN), async (_req, res, next) => {
+router.get('/admin/stats', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
   try {
     const [totalStudents, totalTeachers, totalCourses, totalEnrollments] = await Promise.all([
       prisma.user.count({ where: { role: Role.STUDENT } }),
@@ -393,7 +393,7 @@ router.get('/admin/stats', requireRole(Role.ADMIN), async (_req, res, next) => {
 });
 
 // ── Admin: faculties with student / teacher / dept / course counts ──
-router.get('/admin/faculties', requireRole(Role.ADMIN), async (_req, res, next) => {
+router.get('/admin/faculties', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
   try {
     const faculties = await prisma.faculty.findMany({
       orderBy: { name: 'asc' },
@@ -437,7 +437,7 @@ router.get('/admin/faculties', requireRole(Role.ADMIN), async (_req, res, next) 
 });
 
 // ── Admin: institutional reports
-router.get('/admin/reports', requireRole(Role.ADMIN), async (_req, res, next) => {
+router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
   try {
     const now = new Date();
     const monthStart = (n: number) => {
@@ -517,7 +517,7 @@ const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
   },
 });
 
-router.get('/admin/courses', requireRole(Role.ADMIN), async (_req, res, next) => {
+router.get('/admin/courses', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
   try {
     const courses = await prisma.course.findMany({
       orderBy: [{ code: 'asc' }],

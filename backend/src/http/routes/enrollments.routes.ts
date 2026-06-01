@@ -40,7 +40,7 @@ const enrollSchema = z
   .strict();
 
 // Admin enrolls a student into an offering.
-router.post('/', requireRole(Role.ADMIN), validate(enrollSchema), async (req, res, next) => {
+router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), async (req, res, next) => {
   try {
     const created = await prisma.enrollment.create({ data: req.body });
     res.status(201).json({ data: created });
@@ -49,7 +49,7 @@ router.post('/', requireRole(Role.ADMIN), validate(enrollSchema), async (req, re
   }
 });
 
-router.delete('/:id', requireRole(Role.ADMIN), async (req, res, next) => {
+router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     await prisma.enrollment.delete({ where: { id: req.params.id! } });
     res.status(204).end();

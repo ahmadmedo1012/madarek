@@ -70,7 +70,7 @@ const materialCreateSchema = z
 
 router.post(
   '/:id/materials',
-  requireRole(Role.TEACHER, Role.ADMIN),
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   validate(materialCreateSchema),
   async (req, res, next) => {
     try {
@@ -117,7 +117,7 @@ const assignmentCreateSchema = z
 
 router.post(
   '/:id/assignments',
-  requireRole(Role.TEACHER, Role.ADMIN),
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   validate(assignmentCreateSchema),
   async (req, res, next) => {
     try {
@@ -172,7 +172,7 @@ const gradesUpsertSchema = z
 
 router.post(
   '/:id/grades',
-  requireRole(Role.TEACHER, Role.ADMIN),
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   validate(gradesUpsertSchema),
   async (req, res, next) => {
     try {
@@ -213,7 +213,7 @@ const attendanceUpsertSchema = z
 
 router.post(
   '/:id/attendance',
-  requireRole(Role.TEACHER, Role.ADMIN),
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   validate(attendanceUpsertSchema),
   async (req, res, next) => {
     try {

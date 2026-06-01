@@ -14,7 +14,7 @@ router.use(authMiddleware);
 // ── List users (admin only) ──────────────────────────────────────
 router.get(
   '/',
-  requireRole(Role.ADMIN),
+  requireRole(Role.ADMIN, Role.OWNER),
   validate(paginationSchema.extend({ role: z.nativeEnum(Role).optional() }), 'query'),
   async (req, res, next) => {
     try {
