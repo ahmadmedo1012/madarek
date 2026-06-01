@@ -252,6 +252,14 @@
   @media (min-width: 921px) {
     .sidebar-mobile-close { display: none !important; }
 
+    /* The shell's grid track shrinks to var(--sidebar-w-collapsed) = 64px
+       when collapsed, but .sidebar itself still claimed inline-size:
+       var(--sidebar-w) = 256px. The sidebar element therefore overflowed
+       its column by ~192px and sat on top of page content (visible as
+       clipped page titles in screenshots). Match the element width to
+       the grid track so layout stays in sync. */
+    .sidebar.collapsed { inline-size: var(--sidebar-w-collapsed); }
+
     /* Override polish-v6's `display: none` on the collapse button when
        collapsed. Recenter so the chevron sits below the brand mark
        inside the narrow icon rail. */
