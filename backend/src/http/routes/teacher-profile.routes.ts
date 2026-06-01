@@ -179,7 +179,7 @@ router.post('/live/sessions', requireRole(Role.TEACHER, Role.OWNER), validate(cr
     // Verify the offering is one this teacher actually teaches
     const offering = await prisma.courseOffering.findUnique({ where: { id: body.offeringId } });
     if (!offering) throw AppError.notFound('Offering not found');
-    if (offering.teacherId !== req.user!.id) throw AppError.forbidden('Not your offering');
+    if (req.user!.role !== Role.OWNER && offering.teacherId !== req.user!.id) throw AppError.forbidden('Not your offering');
 
     const session = await prisma.liveSession.create({
       data: {
@@ -205,7 +205,7 @@ router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER, Role.OWNER
   try {
     const session = await prisma.liveSession.findUnique({ where: { id: req.params.id } });
     if (!session) throw AppError.notFound();
-    if (session.teacherId !== req.user!.id) throw AppError.forbidden('Not your session');
+    if (req.user!.role !== Role.OWNER && session.teacherId !== req.user!.id) throw AppError.forbidden('Not your session');
 
     let nextStatus: LiveSessionStatus = 'SCHEDULED';
     let extraFields: Record<string, unknown> = {};

@@ -10,9 +10,10 @@ import { AppError } from '../../lib/errors.js';
 const router = Router();
 router.use(authMiddleware);
 
-// Helper: ensure user can read this offering (admin, teacher of it, or enrolled student)
+// Helper: ensure user can read this offering (admin/owner master, teacher of
+// it, or enrolled student).
 async function assertOfferingAccess(offeringId: string, userId: string, role: Role) {
-  if (role === Role.ADMIN) return;
+  if (role === Role.ADMIN || role === Role.OWNER) return;
   const offering = await prisma.courseOffering.findUnique({
     where: { id: offeringId },
     include: { enrollments: { where: { studentId: userId }, take: 1 } },

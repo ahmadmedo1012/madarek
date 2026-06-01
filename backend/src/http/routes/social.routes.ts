@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { AnnouncementScope, CompetitionStatus, RsvpStatus } from '@prisma/client';
+import { AnnouncementScope, CompetitionStatus, RsvpStatus, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -210,7 +210,7 @@ router.post('/competitions/:id/close', requireCapability('COMPETITIONS_RUN'), as
   try {
     const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
     if (!comp) throw AppError.notFound('Competition not found');
-    if (comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+    if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
     const updated = await prisma.competition.update({
       where: { id: comp.id },
       data: { status: 'CLOSED' as CompetitionStatus },
@@ -235,7 +235,7 @@ router.post(
     try {
       const comp = await prisma.competition.findUnique({ where: { id: req.params.id! } });
       if (!comp) throw AppError.notFound('Competition not found');
-      if (comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+      if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
 
       const entry = await prisma.competitionEntry.findUnique({ where: { id: req.params.entryId! } });
       if (!entry || entry.competitionId !== comp.id) throw AppError.notFound('Entry not found');
@@ -264,7 +264,7 @@ router.post(
         include: { entries: { select: { score: true } } },
       });
       if (!comp) throw AppError.notFound('Competition not found');
-      if (comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+      if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
       if (comp.status !== 'CLOSED') {
         throw new AppError('BAD_REQUEST', 'يجب إغلاق المسابقة أوّلاً قبل التحكيم', 400);
       }

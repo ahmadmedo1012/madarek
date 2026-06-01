@@ -11,9 +11,16 @@ const router = Router();
 router.use(authMiddleware);
 
 // Current student's enrollments with full course detail.
+// Non-student callers (teacher/admin/owner previewing) get an empty list
+// rather than a 403 — these /me endpoints are personal-data shaped, not
+// security boundaries, so a generic "no data" response is the right
+// shape for the React Query cache.
 router.get('/me', async (req, res, next) => {
   try {
-    if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
+    if (req.user!.role !== Role.STUDENT) {
+      res.json({ data: [] });
+      return;
+    }
     const data = await prisma.enrollment.findMany({
       where: { studentId: req.user!.id },
       include: {

@@ -274,7 +274,7 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
   try {
     const t = await prisma.examTemplate.findUnique({ where: { id: req.params.id } });
     if (!t) throw AppError.notFound('Template not found');
-    if (t.authorId !== req.user!.id) throw AppError.forbidden('Not your template');
+    if (req.user!.role !== Role.OWNER && t.authorId !== req.user!.id) throw AppError.forbidden('Not your template');
     if (t.status !== 'APPROVED') {
       throw new AppError('BAD_REQUEST', 'Template must be APPROVED by quality before publishing', 400);
     }

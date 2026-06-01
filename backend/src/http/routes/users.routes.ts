@@ -67,7 +67,7 @@ router.get(
 router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id!;
-    if (req.user!.role !== Role.ADMIN && req.user!.id !== id) {
+    if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER && req.user!.id !== id) {
       throw AppError.forbidden();
     }
     const user = await prisma.user.findUnique({
@@ -96,7 +96,7 @@ const patchSchema = z
 router.patch('/:id', validate(patchSchema), async (req, res, next) => {
   try {
     const id = req.params.id!;
-    if (req.user!.role !== Role.ADMIN && req.user!.id !== id) throw AppError.forbidden();
+    if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER && req.user!.id !== id) throw AppError.forbidden();
     const data: typeof req.body = { ...req.body };
     if (req.user!.role !== Role.ADMIN) delete data.isActive; // only admins toggle active
     const user = await prisma.user.update({

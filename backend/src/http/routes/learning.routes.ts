@@ -488,7 +488,7 @@ router.post('/research/:id/scan', async (req, res, next) => {
     if (req.user!.role === Role.STUDENT && paper.studentId !== req.user!.id) {
       throw AppError.forbidden();
     }
-    if (req.user!.role !== Role.STUDENT && req.user!.role !== Role.TEACHER && req.user!.role !== Role.ADMIN) {
+    if (req.user!.role !== Role.STUDENT && req.user!.role !== Role.TEACHER && req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) {
       throw AppError.forbidden();
     }
     // Refuse to re-scan papers already graded or published.

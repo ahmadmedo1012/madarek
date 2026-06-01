@@ -105,8 +105,14 @@ export async function assertCapability(
 
 /**
  * Resource ownership helpers — these return without throwing if access OK.
+ *
+ * OWNER (platform master) bypasses ownership checks entirely. Any
+ * resource-level "you don't own this" guards would otherwise produce
+ * sporadic 403s for the platform owner browsing the same pages a teacher
+ * or admin can browse without issue.
  */
 export async function assertOwnsResearchPaper(paperId: string, userId: string, role: Role): Promise<void> {
+  if (role === Role.OWNER) return;
   const caps = await getEffectiveCapabilities(userId, role);
   if (caps.has('RESEARCH_GRADE_ANY')) return;
   if (!caps.has('RESEARCH_GRADE_OWN')) throw AppError.forbidden('Cannot grade research papers');
@@ -127,6 +133,7 @@ export async function assertOwnsResearchPaper(paperId: string, userId: string, r
 }
 
 export async function assertOwnsOffering(offeringId: string, userId: string, role: Role): Promise<void> {
+  if (role === Role.OWNER) return;
   const caps = await getEffectiveCapabilities(userId, role);
   if (caps.has('CURRICULUM_EDIT_ANY')) return;
   if (!caps.has('CURRICULUM_EDIT_OWN')) throw AppError.forbidden('Cannot edit curriculum');
