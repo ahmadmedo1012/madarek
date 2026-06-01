@@ -40,6 +40,7 @@ import {
   Mail,
   Map,
   MapPin,
+  Mic2,
   Music,
   Palette,
   Phone,
@@ -52,6 +53,7 @@ import {
   Trophy as Award,
   Wifi,
   Zap,
+  Building2,
   type LucideIcon,
 } from 'lucide-react';
 import { Icon } from './Icon';
@@ -125,6 +127,10 @@ const MAP: Record<string, LucideIcon> = {
   '🎯': Target,
   '👍': ThumbsUp,
   '📶': Wifi,
+  '🏛️': Building2,
+  '🏛': Building2,
+  '🎤': Mic2,
+  '🏫': Building2,
 };
 
 export function EmojiIcon({

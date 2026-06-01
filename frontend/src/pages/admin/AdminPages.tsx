@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { LoadingState, ErrorState, PageSkeleton } from '../../components/primitives/States';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
 import { Bar, Line } from 'react-chartjs-2';
 import {
@@ -294,9 +295,9 @@ export function AdminFacultiesPage() {
                   width: 44, height: 44, borderRadius: 'var(--r-md)',
                   background: 'var(--accent-soft)', color: 'var(--accent)',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 22, flexShrink: 0,
+                  flexShrink: 0,
                 }}>
-                  {f.iconEmoji ?? <Building2 size={20} />}
+                  <EmojiIcon emoji={f.iconEmoji ?? undefined} fallback={Building2} size={22} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="flex items-center gap-2 flex-wrap">

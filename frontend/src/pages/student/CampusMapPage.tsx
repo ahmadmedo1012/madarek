@@ -6,6 +6,7 @@ import {
 import { Card, Badge } from '../../components/primitives';
 import { LoadingState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import { useFaculties } from '../../hooks/useResources';
 
 /**
@@ -84,7 +85,7 @@ export default function CampusMapPage() {
                 className="list-row"
                 style={{ textAlign: 'start', textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
               >
-                <span style={{ fontSize: 22 }} aria-hidden>{f.iconEmoji ?? '🏛️'}</span>
+                <span style={{ color: 'var(--accent)' }} aria-hidden><EmojiIcon emoji={f.iconEmoji ?? '🏛️'} size={22} /></span>
                 <div className="list-row-body">
                   <div className="list-row-title">{f.name}</div>
                   <div className="list-row-sub">

@@ -9,6 +9,7 @@ import {
 import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useCompetitions, useCompetition, useCreateCompetition, useEnterCompetition,
   useCloseCompetition, useMyPermissions,
@@ -128,7 +129,7 @@ export function CompetitionsIndexPage() {
         <div className="comp-index-grid">
           {visible.map((c) => (
             <Link key={c.id} to={`/competitions/${c.id}`} className="comp-index-card">
-              <div className="comp-index-emoji" aria-hidden>{c.iconEmoji ?? '🏆'}</div>
+              <div className="comp-index-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={26} /></div>
               <div className="comp-index-body">
                 <div className="comp-index-head">
                   <span className="comp-index-category">{c.category}</span>
@@ -186,7 +187,7 @@ export function CompetitionDetailPage() {
 
       {/* Hero */}
       <header className="comp-hero">
-        <div className="comp-hero-emoji" aria-hidden>{c.iconEmoji ?? '🏆'}</div>
+        <div className="comp-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={36} /></div>
         <div className="comp-hero-body">
           <div className="comp-hero-meta">
             <span className="comp-hero-category">{c.category}</span>

@@ -17,6 +17,7 @@ import './styles/polish-v8.css';
 import './styles/polish-v9.css';
 import './styles/polish-v10.css';
 import './styles/polish-v11.css';
+import './styles/polish-v12.css';
 import App from './App';
 
 const root = document.getElementById('root');

@@ -6,6 +6,7 @@ import {
   FlaskConical, Microscope, ClipboardCheck, Medal, BarChart3,
 } from 'lucide-react';
 import { Icon } from '../../components/Icon';
+import { EmojiIcon } from '../../components/EmojiIcon';
 import { UserAvatar } from '../../components/primitives';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
@@ -172,7 +173,7 @@ export function CollegesIndexPage() {
                   {byCity.get(city)!.map((c) => (
                     <Link key={c.id} to={`/colleges/${c.id}`} className="college-card">
                       <div className="college-card-header">
-                        <span className="college-card-emoji" aria-hidden>{c.iconEmoji ?? '🏛️'}</span>
+                        <span className="college-card-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={26} /></span>
                         <div className="college-card-titles">
                           <div className="college-card-name">{c.name}</div>
                           {c.nameEn && <div className="college-card-sub">{c.nameEn}</div>}
@@ -236,7 +237,7 @@ export function CollegeDetailPage() {
     <div className="page college-detail">
       {/* Hero / masthead */}
       <header className="college-hero page-header">
-        <div className="college-hero-emoji" aria-hidden>{c.iconEmoji ?? '🏛️'}</div>
+        <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         <div className="college-hero-titles">
           <div className="college-hero-eyebrow">جامعة الزاوية · {c.city}</div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
@@ -340,7 +341,7 @@ export function CollegeDetailPage() {
             <ul className="announce-list">
               {c.announcements.slice(0, 5).map((a) => (
                 <li key={a.id} className="announce-row">
-                  <span className="announce-emoji" aria-hidden>{a.iconEmoji ?? '📌'}</span>
+                  <span className="announce-emoji" aria-hidden><EmojiIcon emoji={a.iconEmoji ?? '📌'} size={18} /></span>
                   <div className="announce-body">
                     <div className="announce-title">
                       {a.pinned && <span className="pill on">مثبَّت</span>}
@@ -366,7 +367,7 @@ export function CollegeDetailPage() {
             <ul className="event-list">
               {c.upcomingEvents.map((e) => (
                 <li key={e.id} className="event-row">
-                  <span className="event-emoji" aria-hidden>{e.iconEmoji ?? '🎤'}</span>
+                  <span className="event-emoji" aria-hidden><EmojiIcon emoji={e.iconEmoji ?? '🎤'} size={18} /></span>
                   <div className="event-body">
                     <div className="event-title">{e.title}</div>
                     <div className="event-meta">
