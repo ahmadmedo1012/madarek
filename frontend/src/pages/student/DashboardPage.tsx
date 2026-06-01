@@ -95,6 +95,32 @@ export default function StudentDashboardPage() {
   }
 
   const d = dash.data;
+
+  // ADMIN/OWNER preview path — no studentProfile of their own. Render an
+  // honest "preview" surface instead of crashing on d.profile.gpa.
+  if (d.preview || !d.profile) {
+    return (
+      <div className="page student-dashboard">
+        <header className="page-header welcome-card">
+          <h1 className="page-title">{greeting}، {user?.firstName ?? ''}</h1>
+          <p className="page-subtitle">
+            معاينة لوحة الطالب — يحتاج هذا العرض إلى ملف طالب فعليّ.
+          </p>
+        </header>
+        <Card>
+          <div className="empty-state">
+            <p className="text-sm text-muted">
+              لوحة التحكّم هذه مخصّصة للطلّاب. أنت مسجَّل دخول كحساب{' '}
+              {user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'}، لذلك تظهر
+              لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم
+              حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.
+            </p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   const tone = gpaTone(d.profile.gpa);
   const courseProgressPct = d.progress.avgEnrollmentProgressPct;
 

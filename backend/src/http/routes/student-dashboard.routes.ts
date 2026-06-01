@@ -278,7 +278,8 @@ router.get('/me/dashboard', async (req, res, next) => {
             profile: null,
             kpi: { courseCount: 0, attendancePct: null, pendingAssignmentsCount: 0, totalXp: 0, level: 0, rank: 0, cohortSize: 0 },
             term: { code: term.code, startsAt: term.startsAt, endsAt: term.endsAt, progressPct: 0 },
-            agenda: [],
+            progress: { avgEnrollmentProgressPct: 0 },
+            agenda: { classes: [], assignments: [], live: [] },
           },
         });
         return;

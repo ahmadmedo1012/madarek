@@ -34,6 +34,8 @@ export function useTeacherDashboard() {
 
 // ── Student dashboard aggregate ───────────────────────────────
 export interface StudentDashboard {
+  /** True when an ADMIN/OWNER previews this page without a student profile. */
+  preview?: boolean;
   profile: {
     year: number;
     gpa: number;
@@ -41,7 +43,7 @@ export interface StudentDashboard {
     level: number;
     facultyName: string | null;
     departmentName: string | null;
-  };
+  } | null;
   kpi: {
     courseCount: number;
     attendancePct: number | null;
