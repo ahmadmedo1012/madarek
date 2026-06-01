@@ -101,7 +101,7 @@ export default function StudentResearchPage() {
 
       <Card title="بحوثك" icon={BookMarked} subtitle="جميع البحوث التي رفعتها على المنصة">
         {my.isPending ? <LoadingState /> :
-         my.isError ? <ErrorState /> :
+         my.isError ? <ErrorState error={my.error} onRetry={() => my.refetch()} /> :
          !papers.length ? (
           <EmptyState
             icon={BookMarked}

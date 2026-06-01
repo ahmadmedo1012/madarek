@@ -289,7 +289,7 @@ function MyPublications() {
   const awards = profile.data?.awards ?? [];
 
   if (profile.isPending) return <LoadingState />;
-  if (profile.isError) return <ErrorState />;
+  if (profile.isError) return <ErrorState error={profile.error} onRetry={() => profile.refetch()} />;
 
   return (
     <>

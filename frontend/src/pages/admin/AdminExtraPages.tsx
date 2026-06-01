@@ -92,7 +92,7 @@ export function AdminStudentsPage() {
         </div>
 
         {studentsQ.isPending && <LoadingState />}
-        {studentsQ.isError && <ErrorState />}
+        {studentsQ.isError && <ErrorState error={studentsQ.error} onRetry={() => studentsQ.refetch()} />}
         {studentsQ.data && (
           <>
             <div className="admin-students-table-wrap">
@@ -215,7 +215,7 @@ export function AdminDigitalPage() {
       </header>
 
       {q.isPending && <LoadingState />}
-      {q.isError && <ErrorState />}
+      {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && (
         <>
           <div className="grid-4">
@@ -303,7 +303,7 @@ export function AdminAnalysisPage() {
       </header>
 
       {q.isPending && <LoadingState />}
-      {q.isError && <ErrorState />}
+      {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && (
         <>
           <div className="grid-4">

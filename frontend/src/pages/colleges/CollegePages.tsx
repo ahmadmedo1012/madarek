@@ -139,7 +139,7 @@ export function CollegesIndexPage() {
       </header>
 
       {q.isLoading && <LoadingState />}
-      {q.isError && <ErrorState />}
+      {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
         <EmptyState title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يقوم الإداريّون بإضافتها." />
       )}
@@ -497,7 +497,7 @@ export function CollegesLeaderboardPage() {
       </header>
 
       {q.isLoading && <LoadingState />}
-      {q.isError && <ErrorState />}
+      {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.colleges.length === 0 && (
         <EmptyState title="لا توجد بيانات" description="ستظهر المنافسة حين تتوفّر بيانات للكلّيّات." />
       )}

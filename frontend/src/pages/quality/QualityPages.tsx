@@ -264,7 +264,7 @@ export function QualityCoursesPage() {
       {c.isPending ? (
         <Card title="المقررات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={7} /></Card>
       ) :
-       c.isError ? <ErrorState /> :
+       c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
        !c.data?.length ? <Card><EmptyState title="لا مقررات" /></Card> : (
         <Card title="المقررات النشطة" icon={BookOpen}>
           <div className="tbl-wrap">
@@ -324,7 +324,7 @@ export function QualityProfessorsPage() {
       </div>
     );
   }
-  if (p.isError || !p.data) return <ErrorState />;
+  if (p.isError || !p.data) return <ErrorState error={p.error} onRetry={() => p.refetch()} />;
 
   const avgSat = p.data.length ? p.data.reduce((s, t) => s + t.satisfaction, 0) / p.data.length : 0;
   const avgResp = p.data.length ? p.data.reduce((s, t) => s + t.responseHours, 0) / p.data.length : 0;
@@ -414,7 +414,7 @@ export function QualityProfessorsPage() {
 export function QualityEngagementPage() {
   const e = useEngagement();
   if (e.isPending) return <LoadingState />;
-  if (e.isError || !e.data) return <ErrorState />;
+  if (e.isError || !e.data) return <ErrorState error={e.error} onRetry={() => e.refetch()} />;
   const d = e.data;
 
   const enrollmentRate = d.totalStudents > 0 ? Math.min(100, (d.enrollments / d.totalStudents) * 100) : 0;
@@ -473,7 +473,7 @@ export function QualityEngagementPage() {
 export function QualityCurriculumPage() {
   const c = useCurriculum();
   if (c.isPending) return <LoadingState />;
-  if (c.isError || !c.data) return <ErrorState />;
+  if (c.isError || !c.data) return <ErrorState error={c.error} onRetry={() => c.refetch()} />;
 
   return (
     <div className="page">

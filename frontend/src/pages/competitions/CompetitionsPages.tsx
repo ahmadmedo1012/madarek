@@ -118,7 +118,7 @@ export function CompetitionsIndexPage() {
       </div>
 
       {q.isPending ? <LoadingState /> :
-       q.isError ? <ErrorState /> :
+       q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> :
        visible.length === 0 ? (
         <EmptyState
           title={filter === 'all' ? 'لا توجد مسابقات بعد' : 'لا توجد نتائج لهذه الفئة'}

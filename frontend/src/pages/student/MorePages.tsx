@@ -60,7 +60,7 @@ export function GamificationPage() {
 
           <SectionTitle>الإنجازات المحققة</SectionTitle>
           {ach.isPending ? <LoadingState /> :
-           ach.isError ? <ErrorState /> :
+           ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> :
            !ach.data?.length ? <EmptyState icon={Award} title="لا إنجازات بعد" /> : (
             <div className="flex-col gap-2">
               {ach.data.map((a) => (
@@ -79,7 +79,7 @@ export function GamificationPage() {
 
         <Card title="لوحة المتصدرين" icon={Crown}>
           {lb.isPending ? <LoadingState /> :
-           lb.isError ? <ErrorState /> :
+           lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? <EmptyState /> : (
             <div className="flex-col gap-1">
               {lb.data.map((l, i) => (
@@ -130,7 +130,7 @@ export function SkillsPage() {
 
       <Card title="خريطة المهارات التقنية" icon={Target}>
         {skills.isPending ? <LoadingState /> :
-         skills.isError ? <ErrorState /> :
+         skills.isError ? <ErrorState error={skills.error} onRetry={() => skills.refetch()} /> :
          !skills.data?.length ? <EmptyState icon={Target} title="لم تُسجَّل أي مهارة بعد" /> : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
             <div style={{ height: 300, position: 'relative' }}>
