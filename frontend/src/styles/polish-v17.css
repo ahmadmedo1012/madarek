@@ -1,0 +1,383 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v17 · pages
+   ─────────────────────────────────────────────────────────────────────
+   Phase 3 of the design polish plan: page-specific motion + visual
+   richness across landing sections, dashboards, list rows, table rows,
+   detail headers, owner realtime tiles.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LANDING — section stripes (peach / lavender / mint / sky)     ║
+     ║  Each major section gets a tinted backdrop that subtly fades   ║
+     ║  to bg at the seams. Creates visual rhythm down the page.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  #features {
+    position: relative;
+    isolation: isolate;
+  }
+  #features::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--c-peach-bg) 35%, transparent) 30%,
+      color-mix(in srgb, var(--c-peach-bg) 35%, transparent) 70%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  [data-theme="dark"] #features::before {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 30%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 70%,
+      transparent 100%
+    );
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STUDENT DASHBOARD — welcome card photo overlay                ║
+     ║  Subtle campus photo bleeds into the background of the welcome ║
+     ║  card at low opacity, theme-aware so it never crushes text.    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .student-dashboard .page-header.welcome-card {
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--accent-soft) 95%, transparent) 0%,
+        color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
+        transparent 100%
+      ),
+      url('/main_photo.png') 50% 30% / cover no-repeat;
+  }
+  [data-theme="dark"] .student-dashboard .page-header.welcome-card {
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--bg) 92%, var(--accent) 8%) 0%,
+        color-mix(in srgb, var(--bg) 75%, transparent) 60%,
+        var(--bg) 100%
+      ),
+      url('/main_photo.png') 50% 30% / cover no-repeat;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STUDENT DASHBOARD — agenda items glide in                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .dash-agenda-list .dash-agenda-item {
+    animation: madark-agenda-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .dash-agenda-list .dash-agenda-item:nth-child(1) { animation-delay: 80ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(2) { animation-delay: 140ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(3) { animation-delay: 200ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(4) { animation-delay: 260ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(5) { animation-delay: 320ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(n+6) { animation-delay: 380ms; }
+  @keyframes madark-agenda-in {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  [dir="rtl"] @keyframes madark-agenda-in {
+    from { opacity: 0; transform: translateX(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STUDENT DASHBOARD — doughnut center number transitions        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .dash-doughnut-center {
+    transition:
+      transform 480ms var(--ease-spring-bounce),
+      color 320ms var(--ease, ease);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TEACHER FEED — items glide in from the start side             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .feed .feed-item {
+    animation: madark-feed-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .feed .feed-item:nth-child(1) { animation-delay: 60ms; }
+  .feed .feed-item:nth-child(2) { animation-delay: 120ms; }
+  .feed .feed-item:nth-child(3) { animation-delay: 180ms; }
+  .feed .feed-item:nth-child(4) { animation-delay: 240ms; }
+  .feed .feed-item:nth-child(5) { animation-delay: 300ms; }
+  .feed .feed-item:nth-child(6) { animation-delay: 360ms; }
+  .feed .feed-item:nth-child(n+7) { animation-delay: 420ms; }
+  @keyframes madark-feed-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMPACT KPI — accent stripe + value pop                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .compact-kpi {
+    position: relative;
+    overflow: hidden;
+    transition:
+      border-color 240ms var(--ease, ease),
+      box-shadow 280ms var(--ease-spring-soft),
+      transform 280ms var(--ease-spring-soft);
+  }
+  .compact-kpi::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 28px;
+    block-size: 3px;
+    background: var(--accent);
+    border-radius: 0 0 var(--r-sm) 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 360ms var(--ease-spring-soft);
+  }
+  [dir="rtl"] .compact-kpi::before {
+    transform-origin: right;
+    border-radius: 0 0 0 var(--r-sm);
+  }
+  .compact-kpi:hover::before { transform: scaleX(1); }
+  .compact-kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--elevation-2);
+  }
+  .compact-kpi-value {
+    font-variant-numeric: tabular-nums;
+    transition: color 240ms var(--ease, ease);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  OWNER REALTIME — heartbeat pulse on green dots                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-health-dot.green,
+  .owner-live-pulse {
+    position: relative;
+    animation: madark-heartbeat 2.4s ease-in-out infinite;
+  }
+  .owner-health-dot.green::after,
+  .owner-live-pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    opacity: 0.6;
+    animation: madark-pulse-ring 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes madark-heartbeat {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+  @keyframes madark-pulse-ring {
+    0%   { transform: scale(1); opacity: 0.6; }
+    80%  { transform: scale(2.2); opacity: 0; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  OWNER ALERT TILE — glow when count > 0                        ║
+     ║  Targets the live-status banner that already exists in the     ║
+     ║  owner dashboard markup.                                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-live-status.has-alerts {
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent),
+      var(--elevation-1);
+    animation: madark-alert-glow 3s ease-in-out infinite;
+  }
+  @keyframes madark-alert-glow {
+    0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent), var(--elevation-1); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #c97a18) 28%, transparent), var(--elevation-2); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ADMIN / OWNER / QUALITY — CHART LINE TRACE                    ║
+     ║  Chart.js animations are JS-driven; we add a CSS hint that     ║
+     ║  fades the canvas in so it doesn't pop cold.                   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-chart-container canvas,
+  .dash-doughnut canvas,
+  [class*="chart-container"] canvas {
+    animation: madark-canvas-in 600ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-canvas-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TABLE ROWS — leading dot indicator on hover                   ║
+     ║  Adds a small accent dot at the start of the row when hovered. ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .owner-table tbody tr,
+    .admin-students-table tbody tr,
+    .leaderboard-table tbody tr,
+    .tbl tbody tr {
+      position: relative;
+    }
+    .owner-table tbody tr td:first-child,
+    .admin-students-table tbody tr td:first-child,
+    .leaderboard-table tbody tr td:first-child,
+    .tbl tbody tr td:first-child {
+      position: relative;
+    }
+    .owner-table tbody tr:hover td:first-child::before,
+    .admin-students-table tbody tr:hover td:first-child::before,
+    .leaderboard-table tbody tr:hover td:first-child::before,
+    .tbl tbody tr:hover td:first-child::before {
+      content: '';
+      position: absolute;
+      inset-block: 12px;
+      inset-inline-start: 0;
+      inline-size: 3px;
+      background: var(--accent);
+      border-radius: 0 var(--r-xs) var(--r-xs) 0;
+      animation: madark-row-bar-in 220ms var(--ease-spring-bounce) both;
+    }
+    [dir="rtl"] .owner-table tbody tr:hover td:first-child::before,
+    [dir="rtl"] .admin-students-table tbody tr:hover td:first-child::before,
+    [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before,
+    [dir="rtl"] .tbl tbody tr:hover td:first-child::before {
+      border-radius: var(--r-xs) 0 0 var(--r-xs);
+    }
+    @keyframes madark-row-bar-in {
+      from { transform: scaleY(0); }
+      to   { transform: scaleY(1); }
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LIST ROWS — leading dot color flush on hover                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .list-row {
+    position: relative;
+    overflow: hidden;
+  }
+  @media (hover: hover) {
+    .list-row::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      inline-size: 3px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: center;
+      transition: transform 240ms var(--ease-spring-soft);
+    }
+    .list-row:hover::before { transform: scaleY(0.7); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  DETAIL HEADERS — colored leading bar that draws in            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .college-hero,
+  .comp-hero {
+    position: relative;
+    isolation: isolate;
+  }
+  .college-hero::before,
+  .comp-hero::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 4px;
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, transparent));
+    border-radius: var(--r-full);
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: madark-hero-bar-draw 600ms var(--ease-spring-soft) 240ms both;
+  }
+  @keyframes madark-hero-bar-draw {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMPETITION INDEX CARDS — hover glow + emoji bob              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .comp-index-card .comp-index-emoji {
+      transition: transform 280ms var(--ease-spring-soft);
+    }
+    .comp-index-card:hover .comp-index-emoji {
+      transform: scale(1.12) rotate(-6deg);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COLLEGE CARDS — emoji breathe inside hover                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .college-card .college-card-emoji {
+      transition: transform 280ms var(--ease-spring-soft);
+    }
+    .college-card:hover .college-card-emoji {
+      transform: scale(1.1) rotate(4deg);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LANDING PILOT STATS — count-up effect via existing CountUp    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-pilot-stat {
+    transition:
+      transform 320ms var(--ease-spring-soft),
+      box-shadow 320ms var(--ease, ease);
+  }
+  @media (hover: hover) {
+    .landing-pilot-stat:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--elevation-3);
+    }
+  }
+  .landing-pilot-value {
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--text)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .dash-agenda-list .dash-agenda-item,
+    .feed .feed-item,
+    .owner-health-dot.green,
+    .owner-live-pulse,
+    .owner-health-dot.green::after,
+    .owner-live-pulse::after,
+    .owner-live-status.has-alerts,
+    .owner-chart-container canvas,
+    .dash-doughnut canvas,
+    .college-hero::before,
+    .comp-hero::before {
+      animation: none !important;
+    }
+  }
+}
