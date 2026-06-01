@@ -81,7 +81,11 @@ export function TeacherDashboardPage() {
             <h1 className="page-title">لوحة الأستاذ</h1>
           </div>
         </div>
-        <ErrorState />
+        <ErrorState
+          message="تعذَّر تحميل لوحة الأستاذ"
+          error={dash.error}
+          onRetry={() => dash.refetch()}
+        />
       </div>
     );
   }

@@ -44,7 +44,7 @@ const DAY_NAMES_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'ال�
 export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
   if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جارٍ التحميل…" /><LoadingState /></div>;
-  if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="" /><ErrorState /></div>;
+  if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="" /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
 
   // Group all schedule slots by dayOfWeek across the teacher's offerings.
   const offerings = offsQ.data ?? [];
@@ -198,7 +198,7 @@ export function AttendancePage() {
           ) : stuQ.isPending ? (
             <LoadingState />
           ) : stuQ.isError ? (
-            <ErrorState />
+            <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
           ) : students.length === 0 ? (
             <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
           ) : (
@@ -302,7 +302,7 @@ export function GradesPage() {
         ) : stuQ.isPending ? (
           <LoadingState />
         ) : stuQ.isError ? (
-          <ErrorState />
+          <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : (stuQ.data ?? []).length === 0 ? (
           <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات في هذا المقرّر بعد." />
         ) : (
@@ -399,7 +399,7 @@ export function MaterialsPage() {
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
-          <ErrorState />
+          <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState title="لم ترفع موادّ بعد" description="ستظهر هنا فور رفع أيّ ملفّ على أحد مقرّراتك." />
         ) : (
@@ -481,7 +481,7 @@ export function StudentsListPage() {
         ) : stuQ.isPending ? (
           <LoadingState />
         ) : stuQ.isError ? (
-          <ErrorState />
+          <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
           <EmptyState title="لا يوجد طلّاب مسجَّلون" />
         ) : (
@@ -572,7 +572,7 @@ export function PerformancePage() {
       ) : stuQ.isPending || analytics.isPending ? (
         <LoadingState />
       ) : stuQ.isError ? (
-        <ErrorState />
+        <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
       ) : (
         <>
           <div className="grid-3">
@@ -642,7 +642,7 @@ export function AssignmentsPage() {
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
-          <ErrorState />
+          <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState title="لا توجد واجبات بعد" description="ستظهر هنا فور إنشاء أيّ واجب على أحد مقرّراتك." />
         ) : (
@@ -690,7 +690,7 @@ export function MessagesPage() {
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
-          <ErrorState />
+          <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.data.length === 0 ? (
           <EmptyState title="لا توجد رسائل بعد" description="ستظهر هنا الرسائل المُرسَلة إليك أو منك." />
         ) : (

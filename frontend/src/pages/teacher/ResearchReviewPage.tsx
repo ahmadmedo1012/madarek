@@ -64,7 +64,7 @@ export default function ResearchReviewPage() {
 
           <Card title="قائمة المراجعة" icon={ScanSearch} subtitle="بحوث الطلاب التي اجتازت الفحص الأوتوماتيكي وبانتظار تقييمك">
             {queue.isPending ? <LoadingState /> :
-             queue.isError ? <ErrorState /> :
+             queue.isError ? <ErrorState message="تعذَّر تحميل القائمة" error={queue.error} onRetry={() => queue.refetch()} /> :
              !passed.length ? (
               <EmptyState icon={CheckCircle2} title="لا بحوث في الانتظار" description="ستظهر هنا بحوث الطلاب فور اجتيازها فحص الانتحال والذكاء الاصطناعي." />
             ) : (
