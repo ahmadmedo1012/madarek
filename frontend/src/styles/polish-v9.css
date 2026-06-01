@@ -294,28 +294,66 @@
   /* ═══════════════════════════════════════════════════════════════
      WELCOME CARD — keep the title above the dot pattern + title sizing
      ═══════════════════════════════════════════════════════════════ */
-  /* The dot-grid background was overlapping the title at smaller widths
-     and on long greetings (the title text was running underneath it).
-     Push title/subtitle above with z-index, scope title clamp tighter,
-     and shrink the dot pattern on phones. */
-  .welcome-card .page-title-block,
+  /* Root issue:
+     .welcome-card inherits .page-header which is `display: flex;
+     justify-content: space-between`. Combined with the welcome card's
+     own `overflow: hidden` and the absolutely-positioned dot pattern
+     overlay, the title-block was getting squashed and cropped.
+
+     Fix:
+     - Stack layout (column) instead of space-between row
+     - title-block grows to fill the row
+     - explicit padding-inline-end so text never collides with the
+       decorative dot pattern in the corner
+     - overflow-wrap break-word to avoid horizontal overflow on long
+       names while keeping single-line breaks normal */
+  .welcome-card {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-inline-end: clamp(var(--sp-6), 14vw, 200px);
+    gap: var(--sp-2);
+  }
+  .welcome-card .page-title-block {
+    inline-size: 100%;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    position: relative;
+    z-index: 1;
+  }
   .welcome-card .page-title,
   .welcome-card .page-subtitle {
     position: relative;
     z-index: 1;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
   .welcome-card .page-title {
     font-size: clamp(20px, 3.4vw, 28px);
     letter-spacing: -0.018em;
     line-height: 1.22;
-    /* Greetings are short — no need to wrap. But if they do, wrap cleanly */
-    word-break: normal;
-    overflow-wrap: anywhere;
   }
   @media (max-width: 640px) {
-    .welcome-card { padding: var(--sp-4) var(--sp-4) var(--sp-4); }
-    .welcome-card::after { width: 120px; opacity: 0.22; }
+    .welcome-card {
+      padding: var(--sp-4);
+      padding-inline-end: clamp(var(--sp-4), 30vw, 120px);
+    }
+    .welcome-card::after { width: 110px; opacity: 0.22; }
     .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); }
+  }
+
+  /* Generic page-header — also force column layout when there's no
+     right-slot content, so the title-block always gets the full width */
+  .page-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .page-title-block {
+    flex: 1 1 320px;
+    min-inline-size: 0;
+  }
+  .page-title {
+    overflow-wrap: break-word;
   }
 
   /* Avatars — never let one render as a flat coloured square */

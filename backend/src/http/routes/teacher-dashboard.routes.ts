@@ -16,7 +16,7 @@ import { AppError } from '../../lib/errors.js';
  */
 const router = Router();
 router.use(authMiddleware);
-router.use(requireRole(Role.TEACHER, Role.ADMIN));
+router.use(requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER));
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
