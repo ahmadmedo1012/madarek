@@ -13,7 +13,7 @@ router.use(authMiddleware);
 router.use(requireRole(Role.OWNER));
 
 // ── GET /owner/stats — platform-wide statistics ──────────────────
-router.get('/owner/stats', async (_req, res, next) => {
+router.get('/stats', async (_req, res, next) => {
   try {
     const [
       totalUsers,
@@ -62,7 +62,7 @@ router.get('/owner/stats', async (_req, res, next) => {
 
 // ── GET /owner/users — paginated user list ───────────────────────
 router.get(
-  '/owner/users',
+  '/users',
   validate(paginationSchema.extend({ role: z.nativeEnum(Role).optional() }), 'query'),
   async (req, res, next) => {
     try {
@@ -113,7 +113,7 @@ router.get(
 
 // ── GET /owner/activity — paginated audit log ────────────────────
 router.get(
-  '/owner/activity',
+  '/activity',
   validate(paginationSchema, 'query'),
   async (req, res, next) => {
     try {
@@ -142,7 +142,7 @@ const changeRoleSchema = z.object({
 });
 
 router.post(
-  '/owner/users/:id/role',
+  '/users/:id/role',
   validate(changeRoleSchema),
   async (req, res, next) => {
     try {
@@ -194,7 +194,7 @@ const toggleStatusSchema = z.object({
 });
 
 router.patch(
-  '/owner/users/:id/status',
+  '/users/:id/status',
   validate(toggleStatusSchema),
   async (req, res, next) => {
     try {
@@ -234,7 +234,7 @@ router.patch(
 );
 
 // ── GET /owner/education — aggregate for the Education page ────
-router.get('/owner/education', async (_req, res, next) => {
+router.get('/education', async (_req, res, next) => {
   try {
     const now = new Date();
     const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
@@ -322,7 +322,7 @@ router.get('/owner/education', async (_req, res, next) => {
 });
 
 // ── GET /owner/system — operational telemetry for the System page ─
-router.get('/owner/system', async (_req, res, next) => {
+router.get('/system', async (_req, res, next) => {
   try {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -390,7 +390,7 @@ router.get('/owner/system', async (_req, res, next) => {
 });
 
 // ── GET /owner/realtime — live metrics snapshot ──────────────────
-router.get('/owner/realtime', async (_req, res, next) => {
+router.get('/realtime', async (_req, res, next) => {
   try {
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000);
 
@@ -415,7 +415,7 @@ router.get('/owner/realtime', async (_req, res, next) => {
 });
 
 // ── GET /owner/ai-metrics — AI telemetry aggregates ──────────────
-router.get('/owner/ai-metrics', async (_req, res, next) => {
+router.get('/ai-metrics', async (_req, res, next) => {
   try {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
@@ -473,7 +473,7 @@ router.get('/owner/ai-metrics', async (_req, res, next) => {
 });
 
 // ── GET /owner/alerts — unresolved operational alerts ────────────
-router.get('/owner/alerts', async (_req, res, next) => {
+router.get('/alerts', async (_req, res, next) => {
   try {
     const data = await prisma.operationalAlert.findMany({
       where: { resolvedAt: null },
@@ -488,7 +488,7 @@ router.get('/owner/alerts', async (_req, res, next) => {
 });
 
 // ── POST /owner/alerts/:id/resolve — resolve an alert ────────────
-router.post('/owner/alerts/:id/resolve', async (req, res, next) => {
+router.post('/alerts/:id/resolve', async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -517,7 +517,7 @@ router.post('/owner/alerts/:id/resolve', async (req, res, next) => {
 });
 
 // ── GET /owner/login-analytics — login event aggregates ──────────
-router.get('/owner/login-analytics', async (_req, res, next) => {
+router.get('/login-analytics', async (_req, res, next) => {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
@@ -576,7 +576,7 @@ router.get('/owner/login-analytics', async (_req, res, next) => {
 });
 
 // ── GET /owner/settings — all platform settings ──────────────────
-router.get('/owner/settings', async (_req, res, next) => {
+router.get('/settings', async (_req, res, next) => {
   try {
     const data = await prisma.platformSetting.findMany({
       orderBy: [{ category: 'asc' }, { key: 'asc' }],
@@ -595,7 +595,7 @@ const upsertSettingSchema = z.object({
 });
 
 router.put(
-  '/owner/settings/:key',
+  '/settings/:key',
   validate(upsertSettingSchema),
   async (req, res, next) => {
     try {
@@ -626,7 +626,7 @@ router.put(
 );
 
 // ── GET /owner/feature-flags — all feature flags ─────────────────
-router.get('/owner/feature-flags', async (_req, res, next) => {
+router.get('/feature-flags', async (_req, res, next) => {
   try {
     const data = await prisma.featureFlag.findMany({
       orderBy: [{ category: 'asc' }, { name: 'asc' }],
@@ -644,7 +644,7 @@ const toggleFlagSchema = z.object({
 });
 
 router.put(
-  '/owner/feature-flags/:slug',
+  '/feature-flags/:slug',
   validate(toggleFlagSchema),
   async (req, res, next) => {
     try {
@@ -677,7 +677,7 @@ router.put(
 );
 
 // ── GET /owner/governance — governance overview metrics ───────────
-router.get('/owner/governance', async (_req, res, next) => {
+router.get('/governance', async (_req, res, next) => {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const eightWeeksAgo = new Date(Date.now() - 8 * 7 * 24 * 60 * 60 * 1000);

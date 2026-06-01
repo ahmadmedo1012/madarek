@@ -96,11 +96,11 @@ export function createApp() {
   app.use('/api/v1', teacherProfileRoutes); // /me/teacher-profile, /live/sessions/*
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
-  app.use('/api/v1', ownerRoutes);
+  app.use('/api/v1/owner', ownerRoutes);
   app.use('/api/v1', collegesRoutes);
-  app.use('/api/v1', adminExtrasRoutes);
+  app.use('/api/v1/admin', adminExtrasRoutes);
   app.use('/api/v1', studentDashboardRoutes);
-  app.use('/api/v1', teacherDashboardRoutes);
+  app.use('/api/v1/teacher', teacherDashboardRoutes);
 
   // 404 for unknown API paths
   app.use('/api/v1', (_req, _res, next) => next(AppError.notFound('Route not found')));

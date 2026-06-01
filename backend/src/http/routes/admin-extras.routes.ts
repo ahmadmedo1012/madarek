@@ -20,7 +20,7 @@ router.use(requireRole(Role.ADMIN, Role.OWNER));
  * GET /admin/students
  * Paginated student list with faculty / department / year / XP level.
  */
-router.get('/admin/students', async (req, res, next) => {
+router.get('/students', async (req, res, next) => {
   try {
     const page = Math.max(1, Number((req.query.page as string) || '1'));
     const limit = Math.min(50, Math.max(1, Number((req.query.limit as string) || '20')));
@@ -73,7 +73,7 @@ router.get('/admin/students', async (req, res, next) => {
  * GET /admin/digital
  * Counts that show how much of the university lives in the platform vs. on paper.
  */
-router.get('/admin/digital', async (_req, res, next) => {
+router.get('/digital', async (_req, res, next) => {
   try {
     const [
       totalUsers,

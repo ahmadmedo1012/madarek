@@ -25,7 +25,7 @@ const WEEK_MS = 7 * DAY_MS;
  * GET /teacher/me/materials — every material the teacher has ever uploaded,
  * across all of their offerings, sorted newest first.
  */
-router.get('/teacher/me/materials', async (req, res, next) => {
+router.get('/me/materials', async (req, res, next) => {
   try {
     const teacherId = req.user!.id;
     const offeringIds = (await prisma.courseOffering.findMany({
@@ -61,7 +61,7 @@ router.get('/teacher/me/materials', async (req, res, next) => {
  * GET /teacher/me/assignments — every assignment across all of the
  * teacher's offerings, with submission count vs enrolment count.
  */
-router.get('/teacher/me/assignments', async (req, res, next) => {
+router.get('/me/assignments', async (req, res, next) => {
   try {
     const teacherId = req.user!.id;
     const offerings = await prisma.courseOffering.findMany({
@@ -103,7 +103,7 @@ router.get('/teacher/me/assignments', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-router.get('/teacher/dashboard', async (req, res, next) => {
+router.get('/dashboard', async (req, res, next) => {
   try {
     const teacherId = req.user!.id;
 
@@ -292,7 +292,7 @@ router.get('/teacher/dashboard', async (req, res, next) => {
         meta: `${s.assignment.offering.course.name} · ${s.assignment.offering.course.code}`,
         when: s.submittedAt,
         title: `سلّم${s.assignment.type === 'EXAM' ? '/ت' : ''} ${s.assignment.title}`,
-        actionTo: '/teacher/grades',
+        actionTo: '/grades',
       })),
       ...recentPapers.map((p) => ({
         kind: 'research' as const,
@@ -303,7 +303,7 @@ router.get('/teacher/dashboard', async (req, res, next) => {
         title: `«${p.title}» — ${p.status === ResearchPaperStatus.CHECKS_PASSED
           ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}٪، AI ${p.aiContentPct ?? '—'}٪)`
           : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
-        actionTo: '/teacher/research',
+        actionTo: '/research',
       })),
       ...lowAttendanceStudents.map((g) => {
         const u = absentStudents.find((s) => s.id === g.studentId);
@@ -314,7 +314,7 @@ router.get('/teacher/dashboard', async (req, res, next) => {
           meta: 'تنبيه حضور',
           when: now,
           title: `${g._count.studentId} غيابات في آخر 30 يوماً — ${u ? `${u.firstName} ${u.lastName}` : 'طالب'} يحتاج متابعة`,
-          actionTo: '/teacher/attendance',
+          actionTo: '/attendance',
         };
       }),
     ].sort((a, b) => b.when.getTime() - a.when.getTime()).slice(0, 12);
