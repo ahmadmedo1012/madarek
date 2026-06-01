@@ -6,7 +6,7 @@ import {
 } from 'chart.js';
 import { Card, MetricCard, ProgressBar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
-import { cartesianOptions } from '../../lib/chartTheme';
+import { cartesianOptions , chartColors} from '../../lib/chartTheme';
 import { useOwnerEducation } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -51,13 +51,15 @@ export function OwnerEducationPage() {
     workloadBuckets.fourPlus;
   const pct = (n: number) => (totalTeachers > 0 ? Math.round((n / totalTeachers) * 100) : 0);
 
+  const c = chartColors();
+
   const barData = {
     labels: byFaculty.map((f) => f.name),
     datasets: [{
       label: 'عدد المقررات',
       data: byFaculty.map((f) => f.courseCount),
       backgroundColor: 'rgba(163, 201, 255, 0.6)',
-      borderColor: '#a3c9ff',
+      borderColor: c.accent,
       borderWidth: 1,
       borderRadius: 4,
     }],
@@ -70,12 +72,12 @@ export function OwnerEducationPage() {
     datasets: [{
       label: 'نسبة الحضور %',
       data: attendanceTrend.map((t) => t.attendancePct ?? null),
-      borderColor: '#3DD68C',
-      backgroundColor: 'rgba(61, 214, 140, 0.1)',
+      borderColor: c.success,
+      backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
       fill: true,
       tension: 0.4,
       pointRadius: 4,
-      pointBackgroundColor: '#3DD68C',
+      pointBackgroundColor: c.success,
       spanGaps: true,
     }],
   };
@@ -150,22 +152,22 @@ export function OwnerEducationPage() {
           <ProgressBar
             value={pct(workloadBuckets.one)}
             label={`عرض واحد (${workloadBuckets.one.toLocaleString('ar-LY')} أستاذ)`}
-            color="#a3c9ff"
+            color={c.accent}
           />
           <ProgressBar
             value={pct(workloadBuckets.two)}
             label={`عرضان (${workloadBuckets.two.toLocaleString('ar-LY')} أستاذ)`}
-            color="#3DD68C"
+            color={c.success}
           />
           <ProgressBar
             value={pct(workloadBuckets.three)}
             label={`٣ عروض (${workloadBuckets.three.toLocaleString('ar-LY')} أستاذ)`}
-            color="#e9c349"
+            color={c.gold}
           />
           <ProgressBar
             value={pct(workloadBuckets.fourPlus)}
             label={`٤ فأكثر (${workloadBuckets.fourPlus.toLocaleString('ar-LY')} أستاذ)`}
-            color="#F5A623"
+            color={c.warning}
           />
         </div>
       </Card>

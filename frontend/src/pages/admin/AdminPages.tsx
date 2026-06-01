@@ -13,7 +13,7 @@ import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
   PointElement, LineElement, Filler, Tooltip,
 } from 'chart.js';
-import { cartesianOptions, valueLabels } from '../../lib/chartTheme';
+import { cartesianOptions, valueLabels , chartColors} from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
@@ -21,6 +21,7 @@ export function AdminDashboardPage() {
   const stats = useAdminStats();
   const facs = useAdminFaculties();
   const reports = useAdminReports();
+  const c = chartColors();
 
   if (stats.isPending || facs.isPending || reports.isPending) return <LoadingState />;
   if (stats.isError || facs.isError || reports.isError) return <ErrorState />;
@@ -100,7 +101,7 @@ export function AdminDashboardPage() {
                     label: 'عدد الطلاب',
                     data: topByStudents.map((row) => row.studentCount),
                     backgroundColor: 'rgba(163, 201, 255, 0.55)',
-                    borderColor: '#a3c9ff',
+                    borderColor: c.accent,
                     borderWidth: 1,
                     borderRadius: 6,
                     maxBarThickness: 22,
@@ -153,26 +154,26 @@ export function AdminDashboardPage() {
                   {
                     label: 'مقدَّم',
                     data: r.paperTrend.map((m) => m.submitted),
-                    borderColor: '#a3c9ff',
-                    backgroundColor: 'rgba(163, 201, 255, 0.10)',
+                    borderColor: c.accent,
+                    backgroundColor: `color-mix(in srgb, ${c.accent} 12%, transparent)`,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
-                    pointBackgroundColor: '#a3c9ff',
+                    pointBackgroundColor: c.accent,
                   },
                   {
                     label: 'مقيَّم',
                     data: r.paperTrend.map((m) => m.graded),
-                    borderColor: '#FFC857',
+                    borderColor: c.gold,
                     backgroundColor: 'rgba(255, 200, 87, 0.08)',
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
-                    pointBackgroundColor: '#FFC857',
+                    pointBackgroundColor: c.gold,
                   },
                   {
                     label: 'منشور',
                     data: r.paperTrend.map((m) => m.published),
-                    borderColor: '#3DD68C',
-                    backgroundColor: 'rgba(61, 214, 140, 0.10)',
+                    borderColor: c.success,
+                    backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
-                    pointBackgroundColor: '#3DD68C',
+                    pointBackgroundColor: c.success,
                   },
                 ],
               }}

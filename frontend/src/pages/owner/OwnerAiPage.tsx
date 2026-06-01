@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
-import { cartesianOptions } from '../../lib/chartTheme';
+import { cartesianOptions , chartColors} from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
@@ -29,6 +29,7 @@ const FEATURE_LABELS: Record<string, string> = {
 export function OwnerAiPage() {
   const aiMetrics = useOwnerAiMetrics();
   const data = aiMetrics.data;
+  const c = chartColors();
 
   return (
     <div className="page">
@@ -78,7 +79,7 @@ export function OwnerAiPage() {
                       datasets: [{
                         label: 'عدد الطلبات',
                         data: data.byFeature.map((f) => f.count),
-                        backgroundColor: '#a3c9ff',
+                        backgroundColor: c.accent,
                         borderRadius: 6,
                       }],
                     }}
@@ -99,12 +100,12 @@ export function OwnerAiPage() {
                       datasets: [{
                         label: 'الطلبات اليوميّة',
                         data: data.trend.map((t) => t.count),
-                        borderColor: '#3DD68C',
-                        backgroundColor: 'rgba(61, 214, 140, 0.1)',
+                        borderColor: c.success,
+                        backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
                         fill: true,
                         tension: 0.4,
                         pointRadius: 4,
-                        pointBackgroundColor: '#3DD68C',
+                        pointBackgroundColor: c.success,
                       }],
                     }}
                     options={cartesianOptions()}

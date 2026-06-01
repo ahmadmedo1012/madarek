@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
-import { cartesianOptions, radialOptions } from '../../lib/chartTheme';
+import { cartesianOptions, radialOptions , chartColors} from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
@@ -24,6 +24,7 @@ export function OwnerGovernancePage() {
   const loginAnalytics = useOwnerLoginAnalytics();
   const govData = governance.data;
   const loginData = loginAnalytics.data;
+  const c = chartColors();
 
   const isPending = governance.isPending || loginAnalytics.isPending;
   const isError = governance.isError || loginAnalytics.isError;
@@ -34,12 +35,12 @@ export function OwnerGovernancePage() {
       {
         label: 'مستخدمون جدد',
         data: govData.weeklyGrowth.map((w) => w.count),
-        borderColor: '#a3c9ff',
-        backgroundColor: 'rgba(163, 201, 255, 0.1)',
+        borderColor: c.accent,
+        backgroundColor: `color-mix(in srgb, ${c.accent} 12%, transparent)`,
         fill: true,
         tension: 0.4,
         pointRadius: 4,
-        pointBackgroundColor: '#a3c9ff',
+        pointBackgroundColor: c.accent,
       },
     ],
   } : null;
@@ -51,7 +52,7 @@ export function OwnerGovernancePage() {
     datasets: [
       {
         data: [loginData.successCount, loginData.failureCount],
-        backgroundColor: ['#3DD68C', '#F5A623'],
+        backgroundColor: [c.success, c.warning],
         borderWidth: 0,
         hoverOffset: 6,
       },
