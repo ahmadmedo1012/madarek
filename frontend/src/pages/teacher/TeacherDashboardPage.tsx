@@ -14,7 +14,7 @@ import {
   Chart as ChartJS, CategoryScale, LinearScale,
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
-import { cartesianOptions } from '../../lib/chartTheme';
+import { cartesianOptions, chartColors } from '../../lib/chartTheme';
 import { useTeacherDashboard, type TeacherDashboard } from '../../hooks/useResources';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -193,30 +193,31 @@ export function TeacherDashboardPage() {
 }
 
 function trendChartData(trend: TeacherDashboard['trend']) {
+  const c = chartColors();
   return {
     labels: trend.map((t) => t.week),
     datasets: [
       {
         label: 'متوسط الأداء %',
         data: trend.map((t) => t.avgGradePct ?? null),
-        borderColor: '#a3c9ff',
-        backgroundColor: 'rgba(163, 201, 255, 0.10)',
+        borderColor: c.accent,
+        backgroundColor: `color-mix(in srgb, ${c.accent} 12%, transparent)`,
         fill: true,
         tension: 0.4,
         pointRadius: 3,
-        pointBackgroundColor: '#a3c9ff',
+        pointBackgroundColor: c.accent,
         borderWidth: 2,
         spanGaps: true,
       },
       {
         label: 'الحضور %',
         data: trend.map((t) => t.attendancePct ?? null),
-        borderColor: '#3DD68C',
-        backgroundColor: 'rgba(61, 214, 140, 0.08)',
+        borderColor: c.success,
+        backgroundColor: `color-mix(in srgb, ${c.success} 10%, transparent)`,
         fill: true,
         tension: 0.4,
         pointRadius: 3,
-        pointBackgroundColor: '#3DD68C',
+        pointBackgroundColor: c.success,
         borderWidth: 2,
         spanGaps: true,
       },
