@@ -70,7 +70,10 @@ export default function CampusMapPage() {
       {facs.isPending ? (
         <LoadingState />
       ) : visible.length === 0 ? (
-        <EmptyState title="لا توجد كلّيّات لعرضها" />
+        <EmptyState
+          title="لا توجد كلّيّات في هذه المدينة"
+          description="جرِّب اختيار مدينة أخرى من الفلتر بالأعلى."
+        />
       ) : (
         <Card title={city === 'all' ? 'جميع الكلّيّات' : `كلّيّات ${city}`} icon={Building2}>
           <div className="grid-3">

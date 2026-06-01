@@ -70,7 +70,10 @@ export function OwnerAiPage() {
           <div className="owner-ai-chart-grid">
             <Card title="الطلبات حسب الميزة">
               {data.byFeature.length === 0 ? (
-                <EmptyState title="لا توجد بيانات بعد" />
+                <EmptyState
+                  title="لا توجد طلبات لعرضها"
+                  description="ستظهر بيانات الاستخدام هنا فور تسجيل أوّل طلب AI."
+                />
               ) : (
                 <div className="owner-chart-container">
                   <Bar

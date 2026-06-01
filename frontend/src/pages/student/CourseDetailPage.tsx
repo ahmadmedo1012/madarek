@@ -114,7 +114,11 @@ export default function CourseDetailPage() {
       {/* Lectures list */}
       <Card title="المحاضرات" icon={Play} subtitle={`تقدّمك: ${lecProgress}% من المنهج`}>
         {!data.lectures.length ? (
-          <EmptyState icon={Play} title="لم تُضَف أي محاضرة بعد" />
+          <EmptyState
+            icon={Play}
+            title="لم تُرفع محاضرات بعد"
+            description="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
+          />
         ) : (
           <div className="flex-col gap-2">
             {data.lectures.map((lec) => {
@@ -195,7 +199,11 @@ export default function CourseDetailPage() {
 
         <Card title="الجدول الأسبوعي" icon={Calendar}>
           {!data.schedule.length ? (
-            <EmptyState icon={Calendar} title="لم يُحدَّد جدول بعد" />
+            <EmptyState
+              icon={Calendar}
+              title="لم يُنشَر جدول هذا المقرّر بعد"
+              description="سيظهر هنا فور تثبيت مواعيد المحاضرات الأسبوعيّة."
+            />
           ) : (
             <div className="flex-col gap-2">
               {data.schedule.map((s) => (

@@ -158,7 +158,12 @@ export function OwnerActivityPage() {
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : filtered.length === 0 ? (
-          <EmptyState title="لا توجد أحداث" description={filter === 'all' ? undefined : 'جرِّب تبويبًا آخر.'} />
+          <EmptyState
+            title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
+            description={filter === 'all'
+              ? 'سيظهر هنا سجلّ كامل لكلّ نشاط على المنصّة فور حدوثه.'
+              : 'جرِّب تبويباً آخر لرؤية أنواع مختلفة من الأحداث.'}
+          />
         ) : (
           <div className="owner-timeline">
             {filtered.map((event) => (

@@ -158,6 +158,38 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOBILE — universal table fallback                             ║
+     ║  Any table that didn't opt into `tbl-stack` gets horizontal    ║
+     ║  scroll on phones, so it stays usable instead of overflowing   ║
+     ║  the page or squeezing into unreadable cells.                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 640px) {
+    .owner-table:not(.tbl-stack),
+    .admin-students-table:not(.tbl-stack),
+    .leaderboard-table:not(.tbl-stack),
+    .tbl:not(.tbl-stack),
+    .trend-table:not(.tbl-stack) {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-inline-size: 100%;
+      white-space: nowrap;
+    }
+    /* Bring the inner thead/tbody back to table layout inside the scroller */
+    .owner-table:not(.tbl-stack) thead,
+    .admin-students-table:not(.tbl-stack) thead,
+    .leaderboard-table:not(.tbl-stack) thead,
+    .tbl:not(.tbl-stack) thead,
+    .trend-table:not(.tbl-stack) thead { display: table-header-group; }
+    .owner-table:not(.tbl-stack) tbody,
+    .admin-students-table:not(.tbl-stack) tbody,
+    .leaderboard-table:not(.tbl-stack) tbody,
+    .tbl:not(.tbl-stack) tbody,
+    .trend-table:not(.tbl-stack) tbody { display: table-row-group; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SCROLLBARS — calmer, theme-aware                              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   * { scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }

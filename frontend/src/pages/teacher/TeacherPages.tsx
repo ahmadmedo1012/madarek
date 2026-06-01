@@ -604,7 +604,10 @@ export function PerformancePage() {
             icon={BarChart3}
           >
             {students.length === 0 ? (
-              <EmptyState title="لا توجد بيانات بعد" />
+              <EmptyState
+                title="لا يوجد طلّاب في الخطر بعد"
+                description="ستُرصَد المخاطر تلقائيّاً بناءً على الحضور والدرجات والتفاعل."
+              />
             ) : (
               <div className="flex-col gap-3">
                 <ProgressBar value={distribution.excellent} label={`ممتاز (85+) · ${distribution.excellent}%`} color="var(--success)" />

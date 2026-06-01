@@ -340,7 +340,10 @@ export function AdminAnalysisPage() {
 
           <Card title="المقرّرات الأعلى تفاعلاً" subtitle="حسب عدد التسجيلات" icon={BookOpen}>
             {q.data.topCourses.length === 0 ? (
-              <EmptyState title="لا توجد بيانات" />
+              <EmptyState
+                title="لا توجد مقرّرات بتسجيلات بعد"
+                description="ستظهر هنا أعلى المقرّرات تفاعلاً فور تسجيل أيّ طالب."
+              />
             ) : (
               <ol className="top-courses-list">
                 {q.data.topCourses.map((c, i) => (

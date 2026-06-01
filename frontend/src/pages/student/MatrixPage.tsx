@@ -133,7 +133,11 @@ export default function MatrixPage() {
                 </div>
 
                 {!c.concepts.length ? (
-                  <EmptyState icon={Compass} title="لم تُحدَّد مفاهيم لهذه المادة بعد" />
+                  <EmptyState
+                    icon={Compass}
+                    title="لم تُحدَّد مفاهيم هذه المادة بعد"
+                    description="ستظهر خريطة المفاهيم فور إضافتها من الأستاذ."
+                  />
                 ) : (
                   <div className="matrix-grid">
                     {c.concepts.map((k) => {
