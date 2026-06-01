@@ -6,7 +6,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
-import { LoadingState, ErrorState } from '../../components/primitives/States';
+import { LoadingState, ErrorState, PageSkeleton } from '../../components/primitives/States';
 import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
 import { Bar, Line } from 'react-chartjs-2';
 import {
@@ -23,7 +23,7 @@ export function AdminDashboardPage() {
   const reports = useAdminReports();
   const c = chartColors();
 
-  if (stats.isPending || facs.isPending || reports.isPending) return <LoadingState />;
+  if (stats.isPending || facs.isPending || reports.isPending) return <PageSkeleton />;
   if (stats.isError || facs.isError || reports.isError) {
     return (
       <ErrorState

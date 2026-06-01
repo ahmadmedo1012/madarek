@@ -8,7 +8,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
-import { LoadingState, ErrorState } from '../../components/primitives/States';
+import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useStudentDashboard } from '../../hooks/useResources';
@@ -70,12 +70,14 @@ export default function StudentDashboardPage() {
 
   if (dash.isPending) {
     return (
-      <div className="page student-dashboard">
+      <div className="page student-dashboard" aria-busy="true" aria-live="polite">
         <header className="page-header welcome-card">
           <h1 className="page-title">{greeting}، {user?.firstName ?? '…'}</h1>
           <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
         </header>
-        <LoadingState />
+        <KpiSkeleton />
+        <CardSkeleton lines={4} />
+        <CardSkeleton lines={3} withTitle={false} />
       </div>
     );
   }

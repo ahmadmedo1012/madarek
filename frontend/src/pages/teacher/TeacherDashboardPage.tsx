@@ -7,7 +7,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
-import { LoadingState, ErrorState } from '../../components/primitives/States';
+import { ErrorState, ChartSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Line } from 'react-chartjs-2';
 import {
@@ -62,14 +62,30 @@ export function TeacherDashboardPage() {
 
   if (dash.isPending) {
     return (
-      <div className="page">
+      <div className="page" aria-busy="true" aria-live="polite">
         <div className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة الأستاذ</h1>
             <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
           </div>
         </div>
-        <LoadingState />
+        <div className="compact-kpis">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="compact-kpi">
+              <Skeleton width={70} height={11} />
+              <div style={{ marginBlock: 'var(--sp-2)' }}>
+                <Skeleton width={90} height={26} />
+              </div>
+              <Skeleton width={120} height={11} />
+            </div>
+          ))}
+        </div>
+        <Card title="اتجاه الأداء والحضور">
+          <ChartSkeleton height={240} />
+        </Card>
+        <Card>
+          <ListSkeleton rows={5} />
+        </Card>
       </div>
     );
   }
