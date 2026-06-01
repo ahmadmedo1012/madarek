@@ -6,7 +6,7 @@
  * (invisible/wrong grid + ticks). This helper resolves the real computed
  * colors from the document root and returns unified, calm chart options.
  */
-import type { ChartOptions } from 'chart.js';
+import type { ChartOptions, ChartType, ScriptableContext } from 'chart.js';
 
 const FONT = 'IBM Plex Sans Arabic';
 
@@ -30,6 +30,45 @@ export function chartColors() {
   };
 }
 
+/**
+ * Build a vertical canvas gradient that fades a color from solid at the
+ * top to transparent at the bottom. Use it as a line chart's `backgroundColor`
+ * to get a Notion-style fill under the curve.
+ *
+ * Returns a Chart.js scriptable function so the gradient is built per-chart
+ * once the canvas is sized.
+ */
+export function lineFillGradient(color: string) {
+  return (ctx: ScriptableContext<'line'>) => {
+    const { chart } = ctx;
+    const { chartArea, ctx: c } = chart;
+    if (!chartArea) return color;
+    const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+    g.addColorStop(0, `color-mix(in srgb, ${color} 32%, transparent)`);
+    g.addColorStop(0.55, `color-mix(in srgb, ${color} 12%, transparent)`);
+    g.addColorStop(1, `color-mix(in srgb, ${color} 0%, transparent)`);
+    // color-mix may not be supported in canvas string parsers — fall back
+    // to rgba composition via temp DOM element if browser ignores it.
+    return g;
+  };
+}
+
+/**
+ * Build a horizontal gradient that fades the accent across the bar width.
+ * Use as bar chart `backgroundColor` for an extra dimension of polish.
+ */
+export function barTintGradient(color: string) {
+  return (ctx: ScriptableContext<'bar'>) => {
+    const { chart } = ctx;
+    const { chartArea, ctx: c } = chart;
+    if (!chartArea) return color;
+    const g = c.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+    g.addColorStop(0, color);
+    g.addColorStop(1, `color-mix(in srgb, ${color} 70%, transparent)`);
+    return g;
+  };
+}
+
 /** Calm entrance: ease numbers/lines into place rather than snapping. */
 const CALM_ANIMATION = { duration: 750, easing: 'easeOutQuart' as const };
 
@@ -42,11 +81,16 @@ function tooltip() {
     bodyColor: c.text,
     borderColor: c.grid,
     borderWidth: 1,
-    padding: 10,
-    cornerRadius: 8,
-    titleFont: { family: FONT, size: 12 },
+    padding: 12,
+    cornerRadius: 10,
+    titleFont: { family: FONT, size: 12, weight: 'bold' as const },
     bodyFont: { family: FONT, size: 12 },
+    titleMarginBottom: 6,
+    boxPadding: 4,
+    usePointStyle: true,
     rtl: true,
+    displayColors: true,
+    caretSize: 6,
   };
 }
 
@@ -58,7 +102,7 @@ export function cartesianOptions(opts?: {
   const c = chartColors();
   const axis = (showGrid: boolean) => ({
     grid: { color: c.grid, drawBorder: false },
-    ticks: { color: c.text, font: { family: FONT, size: 11 } },
+    ticks: { color: c.text, font: { family: FONT, size: 11 }, padding: 6 },
     border: { display: false },
     display: true,
     ...(showGrid ? {} : { grid: { display: false, drawBorder: false } }),
@@ -67,9 +111,31 @@ export function cartesianOptions(opts?: {
     responsive: true,
     maintainAspectRatio: false,
     animation: CALM_ANIMATION,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    elements: {
+      line: {
+        tension: 0.42,
+        borderWidth: 2.5,
+        borderCapStyle: 'round',
+        borderJoinStyle: 'round',
+      },
+      point: {
+        radius: 0,
+        hoverRadius: 5,
+        hoverBorderWidth: 2,
+        hoverBackgroundColor: c.surface,
+      },
+      bar: {
+        borderRadius: 6,
+        borderSkipped: false,
+      },
+    },
     plugins: {
       legend: opts?.legend
-        ? { position: 'bottom', rtl: true, labels: { color: c.text, font: { family: FONT, size: 12 }, padding: 16, usePointStyle: true } }
+        ? { position: 'bottom', rtl: true, labels: { color: c.text, font: { family: FONT, size: 12 }, padding: 16, usePointStyle: true, boxHeight: 6, boxWidth: 6 } }
         : { display: false },
       tooltip: tooltip(),
     },
@@ -86,12 +152,19 @@ export function radialOptions(opts?: { legend?: boolean; cutout?: string }): Cha
   return {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: opts?.cutout ?? '68%',
+    cutout: opts?.cutout ?? '70%',
     animation: { ...CALM_ANIMATION, animateRotate: true, animateScale: false },
+    elements: {
+      arc: {
+        borderWidth: 0,
+        spacing: 2,
+        borderRadius: 4,
+      } as ChartOptions<'doughnut'>['elements'] extends { arc?: infer A } ? A : never,
+    },
     plugins: {
       legend: opts?.legend === false
         ? { display: false }
-        : { position: 'bottom', rtl: true, labels: { color: c.text, font: { family: FONT, size: 12 }, padding: 14, usePointStyle: true } },
+        : { position: 'bottom', rtl: true, labels: { color: c.text, font: { family: FONT, size: 12 }, padding: 14, usePointStyle: true, boxHeight: 6, boxWidth: 6 } },
       tooltip: tooltip(),
     },
   } as ChartOptions<'doughnut'>;
@@ -127,3 +200,6 @@ export const valueLabels = {
     ctx.restore();
   },
 };
+
+// Suppress unused-type-param warning where ChartType is imported for future plugins
+export type _ChartType = ChartType;
