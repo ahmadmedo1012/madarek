@@ -34,7 +34,7 @@ function fmtDate(iso: string) {
 
 export default function CourseDetailPage() {
   const { offeringId } = useParams<{ offeringId: string }>();
-  const { data, isPending, isError } = useOfferingFull(offeringId);
+  const { data, isPending, isError, error, refetch } = useOfferingFull(offeringId);
 
   if (isPending) {
     return (
@@ -53,7 +53,7 @@ export default function CourseDetailPage() {
       </div>
     );
   }
-  if (isError || !data) return <ErrorState />;
+  if (isError || !data) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const Cmp = courseIcon(data.course.code ?? data.course.name);
   const tint = data.course.themeColor ?? '#3D6BD6';

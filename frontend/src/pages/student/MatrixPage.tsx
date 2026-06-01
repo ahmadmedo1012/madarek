@@ -66,7 +66,7 @@ export default function MatrixPage() {
         {gaps.isPending ? (
           <LoadingState />
         ) : gaps.isError ? (
-          <ErrorState />
+          <ErrorState error={gaps.error} onRetry={() => gaps.refetch()} />
         ) : !gaps.data?.length ? (
           <EmptyState icon={Sparkles} title="لا فجوات حالياً — أحسنت!" description="استمر بحضور المحاضرات والإجابة على نقاط التفاعل." />
         ) : (
@@ -99,7 +99,7 @@ export default function MatrixPage() {
       {matrix.isPending ? (
         <Card><LoadingState /></Card>
       ) : matrix.isError ? (
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={matrix.error} onRetry={() => matrix.refetch()} /></Card>
       ) : !matrix.data?.length ? (
         <Card><EmptyState
           icon={Compass}

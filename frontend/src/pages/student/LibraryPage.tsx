@@ -144,7 +144,7 @@ export default function LibraryPage() {
           {books.isPending ? (
             <Card><LoadingState /></Card>
           ) : books.isError ? (
-            <Card><ErrorState /></Card>
+            <Card><ErrorState error={books.error} onRetry={() => books.refetch()} /></Card>
           ) : !books.data?.length ? (
             <Card><EmptyState icon={LibraryIcon} title="لا توجد كتب تطابق البحث" description="جرّب كلمات بحث مختلفة أو إزالة التصنيفات." /></Card>
           ) : (
@@ -219,7 +219,10 @@ export default function LibraryPage() {
           {(researchInUse ? search.isPending : research.isPending) ? (
             <Card><LoadingState /></Card>
           ) : (researchInUse ? search.isError : research.isError) ? (
-            <Card><ErrorState /></Card>
+            <Card><ErrorState
+              error={researchInUse ? search.error : research.error}
+              onRetry={() => (researchInUse ? search.refetch() : research.refetch())}
+            /></Card>
           ) : !visibleResearch.length ? (
             <Card>
               <EmptyState

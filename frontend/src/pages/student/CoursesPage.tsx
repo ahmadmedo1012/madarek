@@ -21,7 +21,7 @@ const courseIcon = (codeOrName: string): LucideIcon => {
 };
 
 export default function StudentCoursesPage() {
-  const { data, isPending, isError } = useMyEnrollments();
+  const { data, isPending, isError, error, refetch } = useMyEnrollments();
 
   return (
     <div className="page">
@@ -64,7 +64,7 @@ export default function StudentCoursesPage() {
       {isPending ? (
         <Card><LoadingState /></Card>
       ) : isError ? (
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       ) : !data?.length ? (
         <Card><EmptyState icon={BookOpen} title="لم تُسجَّل في أي مادة بعد" description="تواصل مع إدارة الكلية لإكمال التسجيل." /></Card>
       ) : (

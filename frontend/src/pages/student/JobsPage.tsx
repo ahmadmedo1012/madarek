@@ -27,7 +27,7 @@ const jobIcon = (cat: string, title: string): LucideIcon => {
 };
 
 export default function JobsPage() {
-  const { data, isPending, isError } = useJobs();
+  const { data, isPending, isError, error, refetch } = useJobs();
   return (
     <div className="page">
       <div className="page-header">
@@ -40,7 +40,7 @@ export default function JobsPage() {
       {isPending ? (
         <Card><LoadingState /></Card>
       ) : isError ? (
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       ) : !data?.length ? (
         <Card><EmptyState
           icon={Briefcase}

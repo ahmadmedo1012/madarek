@@ -24,7 +24,14 @@ export function AdminDashboardPage() {
   const c = chartColors();
 
   if (stats.isPending || facs.isPending || reports.isPending) return <LoadingState />;
-  if (stats.isError || facs.isError || reports.isError) return <ErrorState />;
+  if (stats.isError || facs.isError || reports.isError) {
+    return (
+      <ErrorState
+        error={stats.error ?? facs.error ?? reports.error}
+        onRetry={() => { stats.refetch(); facs.refetch(); reports.refetch(); }}
+      />
+    );
+  }
   const s = stats.data!;
   const f = facs.data!;
   const r = reports.data!;
@@ -235,7 +242,7 @@ export function AdminPlaceholder({
 
 /* ─── Admin: Faculties ────────────────────────────────────── */
 export function AdminFacultiesPage() {
-  const { data, isPending, isError } = useAdminFaculties();
+  const { data, isPending, isError, error, refetch } = useAdminFaculties();
 
   if (isPending) {
     return (
@@ -249,7 +256,7 @@ export function AdminFacultiesPage() {
     return (
       <div className="page">
         <PageHeader title="الكليات والأقسام" subtitle="جميع كليات الجامعة وأقسامها مع إحصائيات حية." />
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
   }
@@ -341,7 +348,7 @@ export function AdminFacultiesPage() {
 
 /* ─── Admin: Reports ──────────────────────────────────────── */
 export function AdminReportsPage() {
-  const { data, isPending, isError } = useAdminReports();
+  const { data, isPending, isError, error, refetch } = useAdminReports();
 
   if (isPending) {
     return (
@@ -355,7 +362,7 @@ export function AdminReportsPage() {
     return (
       <div className="page">
         <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
   }
@@ -440,7 +447,7 @@ function LegendDot({ color, label }: { color: string; label: string }) {
 
 /* ─── Admin: Courses ─────────────────────────────────────── */
 export function AdminCoursesPage() {
-  const { data, isPending, isError } = useAdminCourses();
+  const { data, isPending, isError, error, refetch } = useAdminCourses();
   const [filter, setFilter] = useState<'all' | string>('all');
 
   if (isPending) {
@@ -455,7 +462,7 @@ export function AdminCoursesPage() {
     return (
       <div className="page">
         <PageHeader title="إدارة المقررات" subtitle="جميع المقررات الجامعية مع إحصائيات حية." />
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
   }

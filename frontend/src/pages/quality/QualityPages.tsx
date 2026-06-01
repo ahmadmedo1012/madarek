@@ -144,7 +144,14 @@ export function QualityDashboardPage() {
       </div>
     );
   }
-  if (ov.isError || !ov.data || eg.isError || !eg.data) return <ErrorState />;
+  if (ov.isError || !ov.data || eg.isError || !eg.data) {
+    return (
+      <ErrorState
+        error={ov.error ?? eg.error}
+        onRetry={() => { ov.refetch(); eg.refetch(); }}
+      />
+    );
+  }
   const d = ov.data;
   const e = eg.data;
 
@@ -655,7 +662,7 @@ export function QualityAlertsPage() {
       {q.isPending ? (
         <LoadingState />
       ) : q.isError ? (
-        <ErrorState />
+        <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.alerts.length === 0 ? (
         <Card>
           <div className="state">

@@ -43,7 +43,7 @@ export function OwnerAiPage() {
       {aiMetrics.isPending ? (
         <LoadingState />
       ) : aiMetrics.isError || !data ? (
-        <ErrorState />
+        <ErrorState error={aiMetrics.error} onRetry={() => aiMetrics.refetch()} />
       ) : data.totalRequests === 0 ? (
         <EmptyState
           icon={Bot}

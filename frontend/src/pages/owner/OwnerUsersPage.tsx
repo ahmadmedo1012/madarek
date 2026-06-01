@@ -173,7 +173,7 @@ export function OwnerUsersPage() {
         {ownerUsers.isPending ? (
           <LoadingState />
         ) : ownerUsers.isError ? (
-          <ErrorState />
+          <ErrorState error={ownerUsers.error} onRetry={() => ownerUsers.refetch()} />
         ) : filteredUsers.length === 0 ? (
           <EmptyState
             title={search ? 'لا توجد نتائج' : 'لا يوجد مستخدمون'}

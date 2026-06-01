@@ -156,7 +156,7 @@ export function OwnerActivityPage() {
         {activity.isPending ? (
           <LoadingState />
         ) : activity.isError ? (
-          <ErrorState />
+          <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : filtered.length === 0 ? (
           <EmptyState title="لا توجد أحداث" description={filter === 'all' ? undefined : 'جرِّب تبويبًا آخر.'} />
         ) : (

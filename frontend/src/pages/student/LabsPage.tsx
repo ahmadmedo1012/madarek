@@ -150,7 +150,7 @@ export default function LabsPage() {
           </div>
 
           {labs.isPending ? <Card><LoadingState /></Card> :
-           labs.isError ? <Card><ErrorState /></Card> :
+           labs.isError ? <Card><ErrorState error={labs.error} onRetry={() => labs.refetch()} /></Card> :
            !labs.data?.length ? <Card><EmptyState icon={FlaskConical} title="لا معامل متاحة" /></Card> : (
             <div className="grid-3">
               {labs.data.map((l) => {

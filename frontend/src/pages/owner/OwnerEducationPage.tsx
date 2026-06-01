@@ -35,7 +35,7 @@ export function OwnerEducationPage() {
             <h1 className="page-title">النظرة التعليميّة</h1>
           </div>
         </div>
-        <ErrorState />
+        <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
     );
   }

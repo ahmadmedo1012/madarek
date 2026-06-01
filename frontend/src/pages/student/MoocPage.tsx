@@ -18,7 +18,7 @@ const moocIcon = (cat: string): LucideIcon => {
 };
 
 export default function MoocPage() {
-  const { data, isPending, isError } = useMoocs();
+  const { data, isPending, isError, error, refetch } = useMoocs();
   return (
     <div className="page">
       <div className="page-header">
@@ -31,7 +31,7 @@ export default function MoocPage() {
       {isPending ? (
         <Card><LoadingState /></Card>
       ) : isError ? (
-        <Card><ErrorState /></Card>
+        <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       ) : !data?.length ? (
         <Card><EmptyState
           icon={GraduationCap}

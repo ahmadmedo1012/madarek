@@ -73,7 +73,10 @@ export function OwnerGovernancePage() {
       {isPending ? (
         <LoadingState />
       ) : isError ? (
-        <ErrorState />
+        <ErrorState
+          error={governance.error ?? loginAnalytics.error}
+          onRetry={() => { governance.refetch(); loginAnalytics.refetch(); }}
+        />
       ) : !govData || !loginData ? (
         <EmptyState title="لا توجد بيانات حوكمة بعد" />
       ) : (

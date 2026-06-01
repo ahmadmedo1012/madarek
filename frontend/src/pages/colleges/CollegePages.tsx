@@ -227,7 +227,7 @@ export function CollegeDetailPage() {
 
   if (q.isLoading) return <div className="page"><LoadingState /></div>;
   if (q.isError || !q.data) {
-    return <div className="page"><ErrorState /></div>;
+    return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
   }
 
   const c = q.data;

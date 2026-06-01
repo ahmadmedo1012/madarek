@@ -17,7 +17,7 @@ function fmtTime(sec: number) {
 
 export default function LecturePlayerPage() {
   const { lectureId } = useParams<{ lectureId: string }>();
-  const { data, isPending, isError } = useLecture(lectureId);
+  const { data, isPending, isError, error, refetch } = useLecture(lectureId);
   const reportWatch = useReportWatch();
   const answerCheckpoint = useAnswerCheckpoint();
   const qc = useQueryClient();
@@ -61,7 +61,7 @@ export default function LecturePlayerPage() {
   }, [currentSec, data, activeCheckpoint, answeredCheckpointIds]);
 
   if (isPending) return <LoadingState />;
-  if (isError || !data) return <ErrorState />;
+  if (isError || !data) return <ErrorState error={error} onRetry={() => refetch()} />;
 
   const seekTo = (sec: number) => {
     const v = videoRef.current;

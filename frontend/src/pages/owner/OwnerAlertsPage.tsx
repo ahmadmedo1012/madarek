@@ -73,7 +73,7 @@ export function OwnerAlertsPage() {
         {alertsQuery.isPending ? (
           <LoadingState />
         ) : alertsQuery.isError ? (
-          <ErrorState />
+          <ErrorState error={alertsQuery.error} onRetry={() => alertsQuery.refetch()} />
         ) : alerts.length === 0 ? (
           <EmptyState
             icon={CheckCircle2}

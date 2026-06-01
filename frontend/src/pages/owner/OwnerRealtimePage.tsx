@@ -29,7 +29,7 @@ export function OwnerRealtimePage() {
       {realtime.isPending ? (
         <LoadingState />
       ) : realtime.isError || !data ? (
-        <ErrorState />
+        <ErrorState error={realtime.error} onRetry={() => realtime.refetch()} />
       ) : (
         <>
           <div className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}`}>

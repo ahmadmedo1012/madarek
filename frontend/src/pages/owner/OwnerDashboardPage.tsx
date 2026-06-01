@@ -71,7 +71,10 @@ export function OwnerDashboardPage() {
             <h1 className="page-title">لوحة التحكم الرئيسية</h1>
           </div>
         </div>
-        <ErrorState />
+        <ErrorState
+          error={stats.error ?? realtime.error}
+          onRetry={() => { stats.refetch(); realtime.refetch(); }}
+        />
       </div>
     );
   }

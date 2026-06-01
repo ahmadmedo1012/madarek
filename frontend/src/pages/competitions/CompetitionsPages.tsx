@@ -165,7 +165,7 @@ export function CompetitionDetailPage() {
   const [entering, setEntering] = useState(false);
 
   if (q.isPending) return <div className="page"><LoadingState /></div>;
-  if (q.isError || !q.data) return <div className="page"><ErrorState /></div>;
+  if (q.isError || !q.data) return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
 
   const c = q.data;
   const isOrganizer = !!user && c.organizerId === user.id;

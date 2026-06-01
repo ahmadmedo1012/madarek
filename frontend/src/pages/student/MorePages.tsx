@@ -226,7 +226,7 @@ export function AlertsPage() {
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
-          <ErrorState />
+          <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : items.length === 0 ? (
           <EmptyState title="لا توجد إشعارات بعد" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
@@ -275,7 +275,7 @@ export function SchedulePage() {
             <h1 className="page-title">الجدول الدراسي</h1>
           </div>
         </div>
-        <ErrorState />
+        <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
     );
   }
@@ -518,7 +518,7 @@ export function ArVrPage() {
       {q.isPending ? (
         <LoadingState />
       ) : q.isError ? (
-        <ErrorState />
+        <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
         <EmptyState
           title="لا توجد تجارب AR/VR بعد"
@@ -645,7 +645,7 @@ export function SocialPage() {
           {posts.isPending ? (
             <Card><LoadingState /></Card>
           ) : posts.isError ? (
-            <Card><ErrorState /></Card>
+            <Card><ErrorState error={posts.error} onRetry={() => posts.refetch()} /></Card>
           ) : !posts.data?.length ? (
             <Card>
               <EmptyState
@@ -735,7 +735,7 @@ export function DownloadsPage() {
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
-          <ErrorState />
+          <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState
             title="لا توجد ملفّات بعد"

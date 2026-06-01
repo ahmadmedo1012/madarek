@@ -95,7 +95,7 @@ export default function WebinarsPage() {
       {events.isPending ? (
         <LoadingState />
       ) : events.isError ? (
-        <ErrorState />
+        <ErrorState error={events.error} onRetry={() => events.refetch()} />
       ) : null}
     </div>
   );
