@@ -8,8 +8,8 @@
  * pooler hasn't opened a backend yet. We've hit this twice locally.
  *
  * This script:
- *   1. Wakes the DB with a cheap SELECT 1 (up to 6 attempts × 5s)
- *   2. Runs `prisma migrate deploy` (up to 3 attempts × 7s)
+ *   1. Wakes the DB with a cheap SELECT 1 (up to 18 attempts × 8s = ~2½ min)
+ *   2. Runs `prisma migrate deploy` (up to 4 attempts × 10s)
  *   3. Exits non-zero only if every attempt fails
  *
  * Both phases retry on transient errors. Idempotent — once migrations
@@ -21,7 +21,7 @@ import { PrismaClient } from '@prisma/client';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...args) => console.log('[migrate-deploy]', ...args);
 
-async function wakeDb({ attempts = 6, delayMs = 5000 } = {}) {
+async function wakeDb({ attempts = 18, delayMs = 8000 } = {}) {
   const prisma = new PrismaClient();
   let lastErr;
   for (let i = 1; i <= attempts; i++) {
@@ -40,7 +40,7 @@ async function wakeDb({ attempts = 6, delayMs = 5000 } = {}) {
   throw lastErr;
 }
 
-async function runMigrate({ attempts = 3, delayMs = 7000 } = {}) {
+async function runMigrate({ attempts = 4, delayMs = 10000 } = {}) {
   let lastErr;
   for (let i = 1; i <= attempts; i++) {
     try {
