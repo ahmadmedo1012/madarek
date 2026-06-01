@@ -362,6 +362,36 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Campus showcase — main_photo.png with parallax + interactive overlay */}
+      <section className="marketing-container landing-campus" aria-label="جامعة الزاوية">
+        <Reveal as="figure" className="landing-campus-frame">
+          <img
+            src="/main_photo.png"
+            alt="جامعة الزاوية — المدخل الرئيسي"
+            className="landing-campus-photo"
+            loading="lazy"
+            decoding="async"
+          />
+          <span className="landing-campus-vignette" aria-hidden />
+          <span className="landing-campus-grain" aria-hidden />
+          <figcaption className="landing-campus-caption">
+            <span className="landing-campus-eyebrow">جامعة الزاوية</span>
+            <span className="landing-campus-line">
+              <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل
+            </span>
+          </figcaption>
+          {/* floating sticker chips */}
+          <span className="landing-campus-chip landing-campus-chip-1">
+            <span className="sticker sm peach"><Icon icon={GraduationCap} size={16} /></span>
+            <span>أكثر من 25 كلّيّة</span>
+          </span>
+          <span className="landing-campus-chip landing-campus-chip-2">
+            <span className="sticker sm lavender"><Icon icon={Sparkles} size={16} /></span>
+            <span>الحرم الرقميّ</span>
+          </span>
+        </Reveal>
+      </section>
+
       {/* FEATURES — sticker grid */}
       <section id="features" className="marketing-container landing-features">
         <div className="landing-section-head">

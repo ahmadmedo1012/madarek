@@ -4,82 +4,17 @@
    Motion + atmosphere for the landing page. CSS-only — no extra JS,
    no extra hooks. Falls back gracefully under prefers-reduced-motion.
 
-   Adds:
-   · Hero ambient orbs — three large blurred gradient circles drifting
-     slowly behind the headline. Multiply blend so they tint without
-     fighting the content.
-   · CTA breathe — primary "ابدأ الآن" gets a soft glow that pulses
-     once every 4s, drawing the eye without being noisy.
-   · Brand chip shimmer — the eyebrow pill gets a one-time sweep.
-   · Mockup hover lift — cursor-tracked tilt on the desktop preview
-     image (uses --mx/--my that LandingPage already sets).
-   · Section anchors — eyebrow-style labels above each section get a
-     gentle fade-in slide.
+   NOTE: The hero orb pseudo-elements that previously lived here were
+   shadowing the cursor-tracking spotlight from polish-v7 (which uses
+   the same `.landing-hero::before` selector with --hero-mx/--hero-my).
+   That broke the magnetic cursor effect on the banner. Removed in
+   favor of the original behavior — see polish-v7.css for the spotlight
+   and landing.css for the drifting color blobs. The remaining v12
+   effects (CTA breathe, eyebrow shimmer, mockup tilt, feature card
+   spotlight) all use distinct selectors and stay untouched.
    ════════════════════════════════════════════════════════════════════ */
 
 @layer overrides {
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  HERO ORBS                                                     ║
-     ║  Three slow-drifting radial gradients behind the hero. Sit on  ║
-     ║  ::before/::after layers + a single child .landing-hero-orb-3  ║
-     ║  — but to keep the React tree untouched we put all three on    ║
-     ║  pseudo-elements of the hero <section>.                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-hero {
-    position: relative;
-    isolation: isolate;
-    overflow: clip;
-  }
-  .landing-hero::before,
-  .landing-hero::after {
-    content: '';
-    position: absolute;
-    inset-block-start: -10%;
-    z-index: -1;
-    pointer-events: none;
-    border-radius: 50%;
-    filter: blur(70px);
-    opacity: 0.55;
-    will-change: transform;
-  }
-  .landing-hero::before {
-    inset-inline-start: -10%;
-    inline-size: 540px;
-    block-size: 540px;
-    background: radial-gradient(
-      circle at 30% 30%,
-      color-mix(in srgb, var(--accent) 50%, transparent) 0%,
-      transparent 70%
-    );
-    animation: madark-orb-a 22s ease-in-out infinite alternate;
-  }
-  .landing-hero::after {
-    inset-inline-end: -8%;
-    inset-block-start: 8%;
-    inline-size: 460px;
-    block-size: 460px;
-    background: radial-gradient(
-      circle at 60% 40%,
-      color-mix(in srgb, #6E8FE6 38%, transparent) 0%,
-      transparent 70%
-    );
-    animation: madark-orb-b 28s ease-in-out infinite alternate;
-  }
-  [data-theme="dark"] .landing-hero::before { opacity: 0.32; }
-  [data-theme="dark"] .landing-hero::after { opacity: 0.28; }
-
-  @keyframes madark-orb-a {
-    0%   { transform: translate3d(0, 0, 0) scale(1); }
-    50%  { transform: translate3d(40px, -30px, 0) scale(1.08); }
-    100% { transform: translate3d(-20px, 25px, 0) scale(0.96); }
-  }
-  @keyframes madark-orb-b {
-    0%   { transform: translate3d(0, 0, 0) scale(1); }
-    50%  { transform: translate3d(-50px, 35px, 0) scale(1.05); }
-    100% { transform: translate3d(25px, -15px, 0) scale(0.94); }
-  }
-
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  CTA BREATHE                                                   ║
@@ -207,7 +142,6 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STICKER ICONS — gentle bobbing                                ║
-     ║  The mega-menu and feature stickers get a 6s breathe.          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-megamenu-item .sticker { transition: transform 280ms var(--ease, ease); }
   .landing-megamenu-item:hover .sticker {
@@ -219,8 +153,6 @@
      ║  REDUCED MOTION — kill the moving parts                        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
-    .landing-hero::before,
-    .landing-hero::after,
     .landing-hero .btn.primary::before,
     .landing-cta-stack .btn.primary::before,
     .landing-hero-eyebrow::after {
