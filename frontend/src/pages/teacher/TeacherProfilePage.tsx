@@ -319,7 +319,7 @@ export default function TeacherProfilePage() {
           <div className="flex-col gap-2">
             {profile.awards.map((a, i) => (
               <div key={i} className="cert-row">
-                <Icon icon={Award} size={14} style={{ color: '#D4A537' }} />
+                <Icon icon={Award} size={14} style={{ color: 'var(--gold)' }} />
                 <div style={{ flex: 1 }}>
                   <div className="text-sm" style={{ fontWeight: 600 }}>{a.title}</div>
                   <div className="text-xxs text-subtle">

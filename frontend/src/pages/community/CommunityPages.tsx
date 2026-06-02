@@ -170,7 +170,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           ) : (
             <Badge color="amber">{c.status === 'CLOSED' ? 'مغلقة' : 'تم التحكيم'}</Badge>
           )}
-          {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: '#D4A537' }} /> {c.prize}</span>}
+          {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {c.prize}</span>}
           <span><Icon icon={Users} size={12} /> {c._count.entries} مشترك</span>
         </div>
       </div>

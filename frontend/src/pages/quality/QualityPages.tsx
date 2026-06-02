@@ -212,7 +212,7 @@ export function QualityDashboardPage() {
                 labels: ['حضور', 'تأخر', 'غياب'],
                 datasets: [{
                   data: [e.attendance.presentRate, e.attendance.lateRate, e.attendance.absentRate],
-                  backgroundColor: ['#3DD68C', '#F5A623', '#F55353'],
+                  backgroundColor: [chartColors().success, chartColors().warning, chartColors().danger],
                   borderColor: chartColors().surface,
                   borderWidth: 2,
                 }],

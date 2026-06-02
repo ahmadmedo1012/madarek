@@ -25,10 +25,10 @@ import {
 } from '../../hooks/useResources';
 
 const RISK_COLOR: Record<RiskLevel, string> = {
-  OK: '#10B981',
-  WATCH: '#D4A537',
-  AT_RISK: '#F97316',
-  CRITICAL: '#EF4444',
+  OK: 'var(--success)',
+  WATCH: 'var(--gold)',
+  AT_RISK: 'var(--warning)',
+  CRITICAL: 'var(--danger)',
 };
 const RISK_LABEL: Record<RiskLevel, string> = {
   OK: 'مستقر',
@@ -78,7 +78,7 @@ export default function TeacherIntelligencePage() {
                     {r.signals.map((s) => <Badge key={s} color="amber">{s}</Badge>)}
                   </div>
                   <div className="risk-row-suggestion">
-                    <Icon icon={Lightbulb} size={11} style={{ color: '#D4A537' }} /> {r.suggestion}
+                    <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold)' }} /> {r.suggestion}
                   </div>
                 </div>
                 <div className="risk-row-score" style={{ color: RISK_COLOR[r.riskLevel] }}>
@@ -215,7 +215,7 @@ export function TeacherOfferingDetailPage() {
         >
           {!suggest.data && (
             <div className="empty-state">
-              <Icon icon={Lightbulb} size={28} style={{ color: '#D4A537' }} />
+              <Icon icon={Lightbulb} size={28} style={{ color: 'var(--gold)' }} />
               <p className="text-sm text-muted">
                 اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرر، القسم،
                 والمحاضرات الموجودة بالفعل.
@@ -287,7 +287,7 @@ function StudentRow({ student }: { student: TeacherStudentRow }) {
           </div>
         )}
         <div className="risk-row-suggestion">
-          <Icon icon={Lightbulb} size={11} style={{ color: '#D4A537' }} /> {student.suggestion}
+          <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold)' }} /> {student.suggestion}
         </div>
       </div>
       <div className="risk-row-score" style={{ color: RISK_COLOR[student.riskLevel] }}>

@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { radialOptions } from '../../lib/chartTheme';
+import { radialOptions, chartColors } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity } from '../../hooks/useOwner';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -89,7 +89,7 @@ export function OwnerDashboardPage() {
     labels: ['طلاب', 'أساتذة', 'إداريون', 'جودة'],
     datasets: [{
       data: [data.students, data.teachers, data.admins, data.quality],
-      backgroundColor: ['#a3c9ff', '#3DD68C', '#e9c349', '#F5A623'],
+      backgroundColor: [chartColors().accent, chartColors().success, chartColors().gold, chartColors().warning],
       borderWidth: 0,
       hoverOffset: 6,
     }],

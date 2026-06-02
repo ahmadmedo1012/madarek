@@ -24,7 +24,10 @@ const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
 };
 const KIND_COLOR: Record<string, string> = {
-  QUIZ: '#2952C8', MIDTERM: '#7B3AED', FINAL: '#EF4444', PRACTICE: '#0E5C2F',
+  QUIZ: 'var(--chart-3)',
+  MIDTERM: 'var(--chart-5)',
+  FINAL: 'var(--danger)',
+  PRACTICE: 'var(--chart-2)',
 };
 
 /* ═══════════════ Student exam list ═══════════════ */

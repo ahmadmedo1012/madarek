@@ -223,7 +223,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
         <div className="track-card-meta">
           <span><Icon icon={Clock} size={12} /> {track.estMinutes} د</span>
           <span><Icon icon={BookOpen} size={12} /> {track.totalLessons} درس</span>
-          <span><Icon icon={Sparkles} size={12} style={{ color: '#D4A537' }} /> {track.pointsAward} نقطة</span>
+          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {track.pointsAward} نقطة</span>
         </div>
         {track.enrolled && (
           <div style={{ marginTop: 'var(--sp-2)' }}>
