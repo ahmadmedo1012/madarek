@@ -6,6 +6,7 @@ import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
+import NotFoundPage from './pages/NotFoundPage';
 
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
@@ -275,6 +276,7 @@ export default function App() {
               </Route>
             </Route>
 
+            <Route path="/404" element={<NotFoundPage />} />
             <Route path="*" element={<HomeRedirect />} />
           </Routes>
         </Suspense>
