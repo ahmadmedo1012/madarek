@@ -34,14 +34,14 @@ This is a **web application** layout (existing).
 
 **Purpose**: Land the directory structure, dev tooling, and CI gates the motion system relies on. Pure infrastructure — no behavior change.
 
-- [ ] T001 Create the motion primitives directory at `frontend/src/components/motion/` with an `index.ts` barrel export (initially empty)
-- [ ] T002 Create `frontend/src/styles/motion.css` (empty file with the layered banner: `@layer tokens, base, components, overrides;`) and import it from `frontend/src/main.tsx` immediately after `tokens.css`
-- [ ] T003 [P] Create `frontend/src/data/` directory and an empty `colleges.config.ts` placeholder exporting `export const colleges: CollegeIdentityProfile[] = [];`
-- [ ] T004 [P] Create `frontend/tests/motion/` directory; add `vitest.config.ts` at the frontend root if missing (jsdom env, RTL setup)
-- [ ] T005 [P] Add devDependencies to `frontend/package.json`: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@axe-core/react`, `jsdom`. Pin exact versions (no ranges)
-- [ ] T006 [P] Add `scripts/validate-college-identity.ts` skeleton at repo root — script entry, argument parsing, exits 0 with "no profiles yet" until T046
-- [ ] T007 [P] Wire a CI step (in the existing CI config or `package.json` script `validate:colleges`) that runs `validate-college-identity.ts` and fails the build on error
-- [ ] T008 [P] Add a bundle-size gate: install `rollup-plugin-visualizer` as a frontend devDep and a `package.json` script `build:report` that runs `vite build` and produces a gzipped-size report; document the ≤8 KB add budget for the student dashboard route in `specs/001-premium-motion-system/quickstart.md` (already done — verify)
+- [X] T001 Create the motion primitives directory at `frontend/src/components/motion/` with an `index.ts` barrel export (initially empty)
+- [X] T002 Create `frontend/src/styles/motion.css` (empty file with the layered banner: `@layer tokens, base, components, overrides;`) and import it from `frontend/src/main.tsx` immediately after `tokens.css`
+- [X] T003 [P] Create `frontend/src/data/` directory and an empty `colleges.config.ts` placeholder exporting `export const colleges: CollegeIdentityProfile[] = [];`
+- [X] T004 [P] Create `frontend/tests/motion/` directory; add `vitest.config.ts` at the frontend root if missing (jsdom env, RTL setup)
+- [X] T005 [P] Add devDependencies to `frontend/package.json`: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@axe-core/react`, `jsdom`. Pin exact versions (no ranges)
+- [X] T006 [P] Add `scripts/validate-college-identity.ts` skeleton at repo root — script entry, argument parsing, exits 0 with "no profiles yet" until T046
+- [X] T007 [P] Wire a CI step (in the existing CI config or `package.json` script `validate:colleges`) that runs `validate-college-identity.ts` and fails the build on error
+- [X] T008 [P] Add a bundle-size gate: install `rollup-plugin-visualizer` as a frontend devDep and a `package.json` script `build:report` that runs `vite build` and produces a gzipped-size report; document the ≤8 KB add budget for the student dashboard route in `specs/001-premium-motion-system/quickstart.md` (already done — verify)
 
 **Checkpoint**: Empty directories, empty files, dev tooling in place. Build passes. No production behavior changed.
 
