@@ -102,7 +102,7 @@
     display: grid;
     grid-template-columns: var(--sidebar-w) 1fr;
     min-height: 100dvh;
-    transition: grid-template-columns 280ms var(--ease-out);
+    transition: grid-template-columns var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
 
   /* Collapsed desktop state — narrow icon rail. The state is a global
@@ -128,7 +128,7 @@
     z-index: var(--z-2);
     display: flex;
     flex-direction: column;
-    transition: inline-size 280ms var(--ease-out);
+    transition: inline-size var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
 
   .has-shell > .main {
@@ -162,7 +162,7 @@
     margin-inline: auto;
     padding: var(--page-gutter);
     padding-block-end: calc(var(--page-gutter) + var(--sp-9));
-    animation: madarek-page-enter 220ms var(--ease-out) both;
+    animation: madarek-page-enter var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
 
   @keyframes madarek-page-enter {

@@ -77,17 +77,17 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 1
 
-- [ ] T020 [US1] Audit `frontend/src/components/primitives/index.tsx` (Card, Button, etc.) and migrate hover/focus/pressed/disabled to consume `--state-*` tokens. Remove any inline raw durations/easings
-- [ ] T021 [P] [US1] Audit `frontend/src/styles/components.css` for raw motion/interaction values; replace each with the matching `--motion-*` / `--state-*` token. Track residual mismatches in PR description
-- [ ] T022 [P] [US1] Audit `frontend/src/styles/layout.css` for raw motion values; replace with tokens
-- [ ] T023 [P] [US1] Audit `frontend/src/styles/landing.css` for raw motion values; replace with tokens
-- [ ] T024 [P] [US1] Audit `frontend/src/styles/auth.css` for raw motion values; replace with tokens
-- [ ] T025 [P] [US1] Audit `frontend/src/styles/owner.css` for raw motion values; replace with tokens
-- [ ] T026 [P] [US1] Audit `frontend/src/styles/notifications.css` for raw motion values; replace with tokens
-- [ ] T027 [US1] Audit `frontend/src/styles/polish.css` and consolidate sections superseded by `motion.css` tokens (hover lift, focus, reveal cascade); leave a comment block where a section is intentionally deferred
-- [ ] T028 [US1] Confirm focus-ring rule from T013 covers every focusable primitive (`<button>`, `<a>`, `<input>`, `<select>`, `<textarea>`, `[tabindex]`); add per-primitive overrides only where the universal style does not fit (e.g., inputs needing inset ring)
-- [ ] T029 [US1] Verify no layout shift on hover for `Card`, `Button`, list rows, KPI tiles in `frontend/src/components/primitives/` and `frontend/src/components/dashboard/` by manual smoke; add `outline-offset` / `box-shadow` only patterns where translation would shift siblings
-- [ ] T030 [US1] Visual sweep: open `/`, `/auth`, `/student/dashboard`, `/teacher`, `/admin/teachers`, `/colleges/<slug>`. Confirm hover/focus/pressed/disabled are visually identical. Document any remaining inconsistencies as follow-up task entries
+- [X] T020 [US1] Audit `frontend/src/components/primitives/index.tsx` (Card, Button, etc.) and migrate hover/focus/pressed/disabled to consume `--state-*` tokens. Remove any inline raw durations/easings
+- [X] T021 [P] [US1] Audit `frontend/src/styles/components.css` for raw motion/interaction values; replace each with the matching `--motion-*` / `--state-*` token. Track residual mismatches in PR description
+- [X] T022 [P] [US1] Audit `frontend/src/styles/layout.css` for raw motion values; replace with tokens
+- [X] T023 [P] [US1] Audit `frontend/src/styles/landing.css` for raw motion values; replace with tokens
+- [X] T024 [P] [US1] Audit `frontend/src/styles/auth.css` for raw motion values; replace with tokens
+- [X] T025 [P] [US1] Audit `frontend/src/styles/owner.css` for raw motion values; replace with tokens
+- [X] T026 [P] [US1] Audit `frontend/src/styles/notifications.css` for raw motion values; replace with tokens
+- [X] T027 [US1] Audit `frontend/src/styles/polish.css` and consolidate sections superseded by `motion.css` tokens (hover lift, focus, reveal cascade); leave a comment block where a section is intentionally deferred
+- [X] T028 [US1] Confirm focus-ring rule from T013 covers every focusable primitive (`<button>`, `<a>`, `<input>`, `<select>`, `<textarea>`, `[tabindex]`); add per-primitive overrides only where the universal style does not fit (e.g., inputs needing inset ring)
+- [X] T029 [US1] Verify no layout shift on hover for `Card`, `Button`, list rows, KPI tiles in `frontend/src/components/primitives/` and `frontend/src/components/dashboard/` by manual smoke; add `outline-offset` / `box-shadow` only patterns where translation would shift siblings
+- [X] T030 [US1] Visual sweep: open `/`, `/auth`, `/student/dashboard`, `/teacher`, `/admin/teachers`, `/colleges/<slug>`. Confirm hover/focus/pressed/disabled are visually identical. Document any remaining inconsistencies as follow-up task entries
 
 **Checkpoint**: User Story 1 fully functional. The platform now has one consistent interaction vocabulary. MVP passes.
 

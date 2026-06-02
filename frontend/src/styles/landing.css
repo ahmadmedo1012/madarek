@@ -32,7 +32,7 @@
       var(--c-mint-ink) 100%);
     transform-origin: 0 50%;
     transform: scaleX(var(--p, 0));
-    transition: transform 80ms linear;
+    transition: transform var(--motion-duration-micro) linear;
     border-end-end-radius: 2px;
     border-end-start-radius: 2px;
   }
@@ -470,13 +470,14 @@
     from { transform: scaleY(0.05); opacity: 0; }
     to   { transform: scaleY(1); }
   }
-  .landing-mockup-bar:nth-child(1) { block-size: 30%; opacity: 0.4; animation-delay: 200ms; }
-  .landing-mockup-bar:nth-child(2) { block-size: 50%; opacity: 0.55; animation-delay: 280ms; }
-  .landing-mockup-bar:nth-child(3) { block-size: 38%; opacity: 0.5; animation-delay: 360ms; }
-  .landing-mockup-bar:nth-child(4) { block-size: 70%; opacity: 0.7; animation-delay: 440ms; }
-  .landing-mockup-bar:nth-child(5) { block-size: 60%; opacity: 0.65; animation-delay: 520ms; }
-  .landing-mockup-bar:nth-child(6) { block-size: 85%; opacity: 0.85; animation-delay: 600ms; }
-  .landing-mockup-bar:nth-child(7) { block-size: 92%; opacity: 1; animation-delay: 680ms; }
+  /* Staggered bar reveal — cascade uses --motion-stagger-step. */
+  .landing-mockup-bar:nth-child(1) { block-size: 30%; opacity: 0.4;  animation-delay: calc(var(--motion-stagger-step) * 3); }
+  .landing-mockup-bar:nth-child(2) { block-size: 50%; opacity: 0.55; animation-delay: calc(var(--motion-stagger-step) * 4); }
+  .landing-mockup-bar:nth-child(3) { block-size: 38%; opacity: 0.5;  animation-delay: calc(var(--motion-stagger-step) * 5); }
+  .landing-mockup-bar:nth-child(4) { block-size: 70%; opacity: 0.7;  animation-delay: calc(var(--motion-stagger-step) * 6); }
+  .landing-mockup-bar:nth-child(5) { block-size: 60%; opacity: 0.65; animation-delay: calc(var(--motion-stagger-step) * 7); }
+  .landing-mockup-bar:nth-child(6) { block-size: 85%; opacity: 0.85; animation-delay: calc(var(--motion-stagger-step) * 8); }
+  .landing-mockup-bar:nth-child(7) { block-size: 92%; opacity: 1;    animation-delay: calc(var(--motion-stagger-step) * 9); }
 
   /* floating sticker badges around mockup */
   .landing-mockup-badge {
@@ -980,11 +981,16 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  REVEAL                                                        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .reveal-up { opacity: 0; transform: translateY(16px); transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); }
+  /* Legacy reveal system — superseded by <Reveal> primitive (Phase 7).
+     Kept token-driven during the transition. */
+  .reveal-up { opacity: 0; transform: translateY(var(--motion-distance-medium));
+    transition:
+      opacity var(--motion-duration-stat) var(--motion-ease-decelerate),
+      transform var(--motion-duration-stat) var(--motion-ease-decelerate); }
   .reveal-up.in-view { opacity: 1; transform: none; }
-  .reveal-d-1 { transition-delay: 80ms; }
-  .reveal-d-2 { transition-delay: 160ms; }
-  .reveal-d-3 { transition-delay: 240ms; }
-  .reveal-d-4 { transition-delay: 320ms; }
-  .reveal-d-5 { transition-delay: 400ms; }
+  .reveal-d-1 { transition-delay: calc(var(--motion-stagger-step) * 1); }
+  .reveal-d-2 { transition-delay: calc(var(--motion-stagger-step) * 2); }
+  .reveal-d-3 { transition-delay: calc(var(--motion-stagger-step) * 3); }
+  .reveal-d-4 { transition-delay: calc(var(--motion-stagger-step) * 4); }
+  .reveal-d-5 { transition-delay: calc(var(--motion-stagger-step) * 5); }
 }

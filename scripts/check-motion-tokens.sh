@@ -2,10 +2,11 @@
 # check-motion-tokens.sh — fail when raw motion durations / easings appear
 # in frontend source outside the canonical token files (T018).
 #
-# Allowlisted files:
+# Allowlisted files (foundations + safety-belt overrides):
 #   frontend/src/styles/tokens.css
 #   frontend/src/styles/motion.css
 #   frontend/src/styles/polish.css   (kept during gradual migration; will tighten in Phase N)
+#   frontend/src/styles/base.css     (contains the global reduced-motion safety belt with `0.01ms !important`)
 #   frontend/tests/**                 (test fixtures may use raw values)
 
 set -euo pipefail
@@ -29,7 +30,7 @@ raw_ms=$(grep -RIn -E '(transition|animation)[^;]*[0-9]+ms' \
   frontend/src \
   --include='*.css' --include='*.ts' --include='*.tsx' \
   --exclude-dir=node_modules \
-  | grep -v -E 'frontend/src/styles/(tokens|motion|polish)\.css' || true)
+  | grep -v -E 'frontend/src/styles/(tokens|motion|polish|base)\.css' || true)
 
 if [[ -n "$raw_ms" ]]; then
   echo "✗ Raw <num>ms found in motion contexts (use --motion-duration-* tokens):"
@@ -43,7 +44,7 @@ raw_bezier=$(grep -RIn -E 'cubic-bezier\(' \
   frontend/src \
   --include='*.css' --include='*.ts' --include='*.tsx' \
   --exclude-dir=node_modules \
-  | grep -v -E 'frontend/src/styles/(tokens|motion|polish)\.css' || true)
+  | grep -v -E 'frontend/src/styles/(tokens|motion|polish|base)\.css' || true)
 
 if [[ -n "$raw_bezier" ]]; then
   echo "✗ Raw cubic-bezier() found (use --motion-ease-* tokens):"
