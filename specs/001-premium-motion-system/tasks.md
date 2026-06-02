@@ -104,7 +104,7 @@ This is a **web application** layout (existing).
 - [ ] T031 [US2] Implement `frontend/src/components/motion/PageTransition.tsx` per `contracts/motion-primitives.tsx.md`: `useLocation` hook, `document.startViewTransition` when available, CSS-class fallback (`is-route-transitioning`), reduced-motion path, in-flight cancellation on rapid navigation
 - [ ] T032 [US2] Add `is-route-transitioning` keyframes to `frontend/src/styles/motion.css` (cross-fade + 8 px upward translate via `--motion-distance-small`, `--motion-duration-page`, `--motion-ease-decelerate`)
 - [ ] T033 [US2] Wrap the route outlet inside `frontend/src/components/layout/AppShell.tsx` with `<PageTransition>`. Confirm shell elements (header, sidebar, footer) stay mounted across navigation
-- [ ] T034 [US2] Implement scroll-position restoration on `popstate` (browser back) within `AppShell.tsx` or a sibling `useScrollRestoration` hook in `frontend/src/components/layout/`. Persist scroll position per-history-entry
+- [ ] T034 [US2] Implement scroll-position restoration on `popstate` (browser back) within `AppShell.tsx` or a sibling `useScrollRestoration` hook in `frontend/src/components/layout/`. Persist scroll position per-history-entry. Transient UI state (open menus, expanded rows, filters) is intentionally out of scope per the narrowed FR-008.
 - [ ] T035 [US2] Migrate the side-nav active indicator in `frontend/src/components/layout/AppShell.tsx` (or wherever the nav lives) to a single shared-layout indicator. The indicator's position transitions via `--motion-duration-medium` `--motion-ease-emphasized` between active items rather than per-item show/hide
 - [ ] T036 [P] [US2] Migrate the top-tabs active indicator (search for `.tabs` / `role="tablist"` patterns under `frontend/src/components/`) to the same shared-indicator pattern
 - [ ] T037 [P] [US2] Migrate breadcrumbs (if present) to use the page-transition cross-fade so segments animate consistently
@@ -171,7 +171,7 @@ This is a **web application** layout (existing).
 - [ ] T059 [P] [US5] Apply `<AnimatedNumber>` to KPI metrics across dashboards: `frontend/src/pages/student/DashboardPage.tsx`, `frontend/src/pages/teacher/TeacherIntelligencePage.tsx`, `frontend/src/pages/admin/AdminGovernancePages.tsx`, `frontend/src/pages/owner/` (replace existing static numeric displays)
 - [ ] T060 [P] [US5] Apply `<RevealGroup>` + `<Reveal>` around section blocks on `frontend/src/pages/LandingPage.tsx` (deferred to Phase 9 for the full homepage rebuild — but smoke-test the component here)
 - [ ] T061 [US5] Update the existing CSS reveal cascade in `frontend/src/styles/polish.css` (`.grid-N > *` cascade) to consume `--motion-stagger-step` and `--motion-distance-small` tokens. Replace the hardcoded `60ms`, `100ms`, `140ms`, … delays with `calc(var(--motion-stagger-step) * <i>)`
-- [ ] T062 [US5] Add a single Playwright (or Cypress) E2E reduced-motion gate at `frontend/tests/motion/reduced-motion.e2e.ts`: emulate `prefers-reduced-motion: reduce`, load homepage, assert hero reveal does NOT animate (final state on first paint), assert counters render the target value immediately
+- [ ] T062 [US5] Add a single Playwright (or Cypress) E2E reduced-motion gate at `frontend/tests/motion/reduced-motion.e2e.ts` against a dedicated fixture page (e.g., `/__motion-fixtures` or a Storybook story) that mounts `<Reveal>`, `<AnimatedNumber>`, and `<PageTransition>`: emulate `prefers-reduced-motion: reduce`, assert reveal renders in final state on first paint, assert counters render the target value immediately, assert page transition collapses to ≤80 ms fade. Fixture lives in `frontend/src/test-fixtures/MotionFixtures.tsx`. Dedicated fixture decouples the gate from homepage layout churn.
 
 **Checkpoint**: User Stories 1–5 functional. Storytelling motion is in place. The reduced-motion E2E now permanently guards every future motion change.
 
@@ -271,7 +271,7 @@ This is a **web application** layout (existing).
 - **US2 (P1)**: Independent.
 - **US3 (P1)**: Independent.
 - **US4 (P2)**: Independent.
-- **US5 (P2)**: Independent. T062 (E2E gate) depends on T071 (homepage hero structured) — verify on landing or move the assertion to a smaller test fixture.
+- **US5 (P2)**: Independent. T062 (E2E gate) targets a dedicated motion fixture page, not the homepage — decoupled from US7 layout churn.
 - **US6 (P2)**: Independent.
 - **US7 (P2)**: Soft-depends on US4 (Skeleton primitive), US5 (Reveal + AnimatedNumber). Start US7 implementation only after the primitives land.
 - **US8 (P3)**: Depends on US1, US2, US3.

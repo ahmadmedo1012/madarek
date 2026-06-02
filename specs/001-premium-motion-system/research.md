@@ -254,10 +254,11 @@ movements mirror correctly in Arabic (RTL)?
   containing one entry per real University of Zawia college. Long-term
   follow-up: move to backend `College` table columns (out of scope for
   this PR; captured as a backend task).
-- **Contrast validation**: a build-time script (`scripts/validate-college-
-  contrast.ts`) computes WCAG contrast for every accent against the
-  platform background; failures surface a build warning and route the
-  identity to `accentAccessible` (or to a documented fallback color).
+- **Contrast validation**: a build-time script
+  (`scripts/validate-college-identity.ts`) computes WCAG contrast for
+  every accent against the platform background, verifies asset existence,
+  lucide icon validity, and slug match; failures fail the build and route
+  the identity to `accentAccessible` (or to a documented fallback color).
 
 **Rationale**:
 1. Static config gives us a one-PR path to identity coverage; backend
