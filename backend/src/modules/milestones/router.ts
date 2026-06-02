@@ -5,14 +5,14 @@
  *
  * Contract: specs/012-design-graphics-uplift/contracts/onboarding-milestone.md.
  *
- * Server-to-server use only. Service hooks (submission service,
- * enrollment service, exam-window cron) call this with an internal
- * service token; client requests with a user JWT are rejected (the
- * client never fires its own milestones — the trigger conditions are
- * server-side academic data).
+ * Server-to-server use only. Service hooks call `fireMilestone()`
+ * directly (in-process, see ./service.ts) — this HTTP endpoint
+ * exists for out-of-process callers (workers, ops scripts) that
+ * need to fire a milestone without the user's JWT.
  *
- * The atomic UPDATE uses array_append guarded by NOT (... = ANY ...)
- * so concurrent fires of the same id collapse to a single entry.
+ * Authorisation: an internal service token in the
+ * `x-internal-service-token` header. When INTERNAL_SERVICE_TOKEN
+ * env is unset, every call is rejected (fail-closed).
  *
  * Milestone IDs (V1 fixed catalogue per Q4 of the clarifications):
  *   - first-assignment-complete
@@ -21,10 +21,10 @@
  */
 import { Router } from 'express';
 import { z } from 'zod';
-import { prisma } from '../../db.js';
 import { env } from '../../env.js';
 import { validate } from '../../http/validate.js';
 import { AppError } from '../../lib/errors.js';
+import { fireMilestone } from './service.js';
 
 export const milestonesRouter = Router();
 
@@ -61,55 +61,13 @@ milestonesRouter.post('/:id/fire', validate(fireBodySchema), async (req, res, ne
   try {
     if (!isAuthorisedService(req)) throw AppError.forbidden('Service token required');
     const id = req.params.id ?? '';
-    if (!MILESTONE_ID_PATTERN.test(id)) {
-      throw AppError.badRequest('Unknown milestone id');
-    }
+    // Defer to the in-process helper so the HTTP path and the
+    // direct-import path share semantics (atomicity, audit,
+    // idempotence). The helper validates id format and throws on
+    // malformed input — surfaced as a 400 by the error handler.
     const { userId } = req.body as z.infer<typeof fireBodySchema>;
-
-    // Atomic conditional append. Returns the post-write row.
-    // Postgres `array_append` + `= ANY` is the documented contract.
-    const rows = (await prisma.$queryRawUnsafe(
-      `UPDATE "User"
-       SET "firedMilestones" = array_append("firedMilestones", $1)
-       WHERE "id" = $2
-         AND NOT ($1 = ANY ("firedMilestones"))
-       RETURNING "firedMilestones"`,
-      id,
-      userId,
-    )) as Array<{ firedMilestones: string[] }>;
-
-    if (rows.length === 0) {
-      // Either the user doesn't exist OR the id was already present.
-      // Probe to disambiguate.
-      const existing = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { firedMilestones: true },
-      });
-      if (!existing) throw AppError.notFound('User not found');
-      res.json({
-        data: {
-          fired: false,
-          firedMilestones: existing.firedMilestones,
-        },
-      });
-      return;
-    }
-
-    await prisma.auditLog.create({
-      data: {
-        action: 'milestone.fire',
-        resourceType: 'User',
-        resourceId: userId,
-        metadata: { milestoneId: id },
-      },
-    });
-
-    res.json({
-      data: {
-        fired: true,
-        firedMilestones: rows[0]!.firedMilestones,
-      },
-    });
+    const result = await fireMilestone(userId, id);
+    res.json({ data: result });
   } catch (e) {
     next(e);
   }
