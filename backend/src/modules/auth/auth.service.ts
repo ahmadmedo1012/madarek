@@ -22,6 +22,11 @@ const sanitize = (u: User) => ({
   avatarColor: u.avatarColor,
   avatarInitials: u.avatarInitials,
   scopeFacultyId: u.scopeFacultyId ?? null,
+  // 012-design-graphics-uplift — presentation preferences (no PII).
+  themePreference: u.themePreference,
+  themePreferenceUpdatedAt: u.themePreferenceUpdatedAt,
+  onboardingCompletedAt: u.onboardingCompletedAt,
+  firedMilestones: u.firedMilestones,
   createdAt: u.createdAt,
 });
 

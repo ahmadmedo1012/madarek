@@ -49,7 +49,7 @@ description: "Task list — 012-design-graphics-uplift"
 ### DB schema
 
 - [X] T010 Extend `backend/prisma/schema.prisma` per `data-model.md`: add `ThemePreference` enum and four columns on `User` (`themePreference`, `themePreferenceUpdatedAt`, `onboardingCompletedAt`, `firedMilestones`).
-- [ ] T011 Generate migration `backend/prisma/migrations/20260602xx_design_uplift_state/migration.sql`; run `prisma:migrate` locally; verify all defaults populate as documented (existing rows: `themePreference=SYSTEM`, `onboardingCompletedAt=null`, `firedMilestones=[]`).
+- [X] T011 Generate migration `backend/prisma/migrations/20260602xx_design_uplift_state/migration.sql`; run `prisma:migrate` locally; verify all defaults populate as documented (existing rows: `themePreference=SYSTEM`, `onboardingCompletedAt=null`, `firedMilestones=[]`).
 
 ### Token foundations
 
@@ -67,10 +67,10 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Backend `me` payload + theme endpoints
 
-- [ ] T020 Extend `backend/src/modules/users/service.ts` (or the equivalent `me` mapper) to include `themePreference`, `themePreferenceUpdatedAt`, `onboardingCompletedAt`, `firedMilestones` in the `GET /api/v1/me` response.
-- [ ] T021 Implement `GET /api/v1/me/theme` in `backend/src/modules/theme/router.ts` per `contracts/theme-state.md`.
-- [ ] T022 Implement `PUT /api/v1/me/theme` with `zod` validation `z.enum(['LIGHT','DARK','SYSTEM'])`, atomic update of both columns, audit log entry.
-- [ ] T023 Wire the new theme router into the main backend router (`backend/src/index.ts` or `backend/src/modules/index.ts` as the project organises).
+- [X] T020 Extend `backend/src/modules/users/service.ts` (or the equivalent `me` mapper) to include `themePreference`, `themePreferenceUpdatedAt`, `onboardingCompletedAt`, `firedMilestones` in the `GET /api/v1/me` response.
+- [X] T021 Implement `GET /api/v1/me/theme` in `backend/src/modules/theme/router.ts` per `contracts/theme-state.md`.
+- [X] T022 Implement `PUT /api/v1/me/theme` with `zod` validation `z.enum(['LIGHT','DARK','SYSTEM'])`, atomic update of both columns, audit log entry.
+- [X] T023 Wire the new theme router into the main backend router (`backend/src/index.ts` or `backend/src/modules/index.ts` as the project organises).
 
 ### Foundation tests
 
