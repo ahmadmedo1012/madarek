@@ -193,12 +193,13 @@
   }
   .metric-value {
     font-family: var(--font-display);
-    font-size: var(--fs-metric-lg);
-    font-weight: var(--fw-black);
+    font-size: var(--type-metric-size-lg);
+    font-weight: var(--type-metric-weight);
     color: var(--text);
-    line-height: 1;
-    letter-spacing: var(--ls-tight);
+    line-height: var(--type-metric-line-height);
+    letter-spacing: var(--type-metric-letter-spacing);
     font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
   }
   .metric-change {
     font-size: var(--fs-xs);
@@ -254,11 +255,13 @@
   }
   .kpi-value {
     font-family: var(--font-display);
-    font-size: var(--fs-metric-md);
-    font-weight: var(--fw-black);
+    font-size: var(--type-metric-size);
+    font-weight: var(--type-metric-weight);
     color: var(--text);
-    line-height: 1; letter-spacing: var(--ls-tight);
+    line-height: var(--type-metric-line-height);
+    letter-spacing: var(--type-metric-letter-spacing);
     font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
   }
   .compact-kpis {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
@@ -753,11 +756,13 @@
   .dash-gpa-text { display: flex; flex-direction: column; gap: 2px; }
   .dash-gpa-value {
     font-family: var(--font-display);
-    font-size: var(--fs-metric-xl);
-    font-weight: var(--fw-black);
-    color: var(--text); line-height: 1;
-    letter-spacing: var(--ls-tight);
+    font-size: var(--type-metric-size-xl);
+    font-weight: var(--type-metric-weight);
+    color: var(--text);
+    line-height: var(--type-metric-line-height);
+    letter-spacing: var(--type-metric-letter-spacing);
     font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
   }
 
   .dash-progress-body { display: flex; flex-direction: column; gap: var(--sp-3); }
@@ -854,7 +859,7 @@
     display: inline-flex; align-items: center; justify-content: center;
     margin-block-end: var(--sp-3);
   }
-  .state-title { font-family: var(--font-display); font-size: var(--fs-h3); color: var(--text); font-weight: var(--fw-bold); }
+  .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
   .state-desc  { font-size: var(--fs-sm); color: var(--text-muted); max-inline-size: 42ch; }
   .empty-state { composes: state; }
 
@@ -968,7 +973,7 @@
   }
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
-  .modal-title  { font-family: var(--font-display); font-size: var(--fs-h2); font-weight: var(--fw-black); color: var(--text); letter-spacing: var(--ls-snug); }
+  .modal-title  { font-family: var(--font-display); font-size: var(--type-headline-size-md); font-weight: var(--type-headline-weight); color: var(--text); letter-spacing: var(--type-headline-letter-spacing); }
   .modal-body   { padding: var(--sp-6); overflow-y: auto; }
   .modal-footer { padding: var(--sp-4) var(--sp-6); border-block-start: 1px solid var(--rule); display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
 

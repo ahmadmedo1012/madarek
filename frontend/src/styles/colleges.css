@@ -167,9 +167,10 @@
   margin-block-end: 4px;
 }
 .college-hero-name {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  line-height: 1.2;
+  font-size: var(--type-headline-size-lg);
+  font-weight: var(--type-headline-weight);
+  line-height: var(--type-headline-line-height);
+  letter-spacing: var(--type-headline-letter-spacing);
   color: var(--text);
   margin: 0;
 }

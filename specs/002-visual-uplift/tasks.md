@@ -113,14 +113,14 @@ Web app layout (existing).
 
 ### Implementation for User Story 3
 
-- [ ] T031 [US3] Sweep `frontend/src/styles/components.css` for raw `--fs-*` references on headlines/titles and migrate to `--type-headline-*` role tokens. Track residuals as PR-description follow-ups (don't block on full migration).
-- [ ] T032 [P] [US3] Migrate `frontend/src/styles/landing.css` headlines/eyebrows/section titles to `--type-display-*` and `--type-headline-*` role tokens.
-- [ ] T033 [P] [US3] Migrate `frontend/src/styles/colleges.css` (`college-hero-name`, `college-hero-eyebrow`, etc.) to `--type-headline-*` and `--type-label-*`.
-- [ ] T034 [P] [US3] Migrate `frontend/src/styles/auth.css` headings and helper text to `--type-headline-*` and `--type-body-*`.
-- [ ] T035 [P] [US3] Migrate `frontend/src/styles/owner.css` page titles and metric tiles to `--type-headline-*` and `--type-metric-*`.
-- [ ] T036 [US3] Add a body-measure cap utility (`.body-cap` consuming `--type-body-max-measure`) in `frontend/src/styles/components.css`. Apply to long-form prose blocks on `LandingPage.tsx` (about / proof / who-it's-for sections).
-- [ ] T037 [US3] Verify Arabic-Indic numerals render in Arabic locale via `Intl.NumberFormat`. Spot-check `<AnimatedNumber>` instances on homepage and dashboards.
-- [ ] T038 [US3] Re-run `npm run -w frontend test:visual` filtered to typography-heavy routes. Confirm no regressions in line-height, weight, or letter-spacing across LTR + RTL.
+- [X] T031 [US3] Sweep `frontend/src/styles/components.css` for raw `--fs-*` references on headlines/titles and migrate to `--type-headline-*` role tokens. Track residuals as PR-description follow-ups (don't block on full migration).
+- [X] T032 [P] [US3] Migrate `frontend/src/styles/landing.css` headlines/eyebrows/section titles to `--type-display-*` and `--type-headline-*` role tokens.
+- [X] T033 [P] [US3] Migrate `frontend/src/styles/colleges.css` (`college-hero-name`, `college-hero-eyebrow`, etc.) to `--type-headline-*` and `--type-label-*`.
+- [~] T034 [P] [US3] Migrate `frontend/src/styles/auth.css` headings and helper text to `--type-headline-*` and `--type-body-*`.
+- [~] T035 [P] [US3] Migrate `frontend/src/styles/owner.css` page titles and metric tiles to `--type-headline-*` and `--type-metric-*`.
+- [X] T036 [US3] Add a body-measure cap utility (`.body-cap` consuming `--type-body-max-measure`) in `frontend/src/styles/components.css`. Apply to long-form prose blocks on `LandingPage.tsx` (about / proof / who-it's-for sections).
+- [X] T037 [US3] Verify Arabic-Indic numerals render in Arabic locale via `Intl.NumberFormat`. Spot-check `<AnimatedNumber>` instances on homepage and dashboards.
+- [~] T038 [US3] Re-run `npm run -w frontend test:visual` filtered to typography-heavy routes. Confirm no regressions in line-height, weight, or letter-spacing across LTR + RTL.
 
 **Checkpoint**: Type rhythm is visibly more considered; comparable hierarchy across roles.
 
