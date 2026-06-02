@@ -133,10 +133,10 @@ Web app layout (existing).
 
 ### Implementation for User Story 4
 
-- [ ] T025 [US4] Migrate `.college-city-name` in `frontend/src/styles/colleges.css` to consume `--type-headline-*` role tokens from `002-*` (not raw `--fs-*`). Pinned weight + line-height + letter-spacing.
-- [ ] T026 [P] [US4] Migrate `.college-city-count` to consume `--type-label-*` role tokens.
-- [ ] T027 [P] [US4] Apply `--section-pad-y-narrow` to `.college-city-section` for consistent vertical rhythm between groups.
-- [ ] T028 [US4] Verify campus order rendering: load `/colleges`, confirm order is الزاوية → العجيلات → زوارة → أبو عيسى → ناصر → مناطق أخرى. The order comes from `filterColleges` (Phase 2), so this is verification only.
+- [X] T025 [US4] Migrate `.college-city-name` in `frontend/src/styles/colleges.css` to consume `--type-headline-*` role tokens from `002-*` (not raw `--fs-*`). Pinned weight + line-height + letter-spacing.
+- [X] T026 [P] [US4] Migrate `.college-city-count` to consume `--type-label-*` role tokens.
+- [X] T027 [P] [US4] Apply `--section-pad-y-narrow` to `.college-city-section` for consistent vertical rhythm between groups.
+- [X] T028 [US4] Verify campus order rendering: load `/colleges`, confirm order is الزاوية → العجيلات → زوارة → أبو عيسى → ناصر → مناطق أخرى. The order comes from `filterColleges` (Phase 2), so this is verification only.
 
 **Checkpoint**: Campus sections read as distinct sections.
 
@@ -150,10 +150,10 @@ Web app layout (existing).
 
 ### Implementation for User Story 5
 
-- [ ] T029 [US5] Migrate `.college-card-name` in `frontend/src/styles/colleges.css` to consume `--type-headline-size-sm` + headline weight/line-height/letter-spacing tokens. The name MUST be the most prominent element on the card.
-- [ ] T030 [P] [US5] Migrate `.college-card-stats` count values to consume `--type-metric-size` tokens with the existing `.tabular-nums` utility.
-- [ ] T031 [US5] Update the count-rendering logic in `CollegeStatChip` (in `frontend/src/pages/colleges/CollegePages.tsx`): when the count is `null` or `undefined`, render "—"; when the count is exactly `0`, render "٠" (or "0" per locale). Document in a comment that this implements FR-010 (Principle III: never invent data).
-- [ ] T032 [P] [US5] Add a "→ زيارة الصفحة" hover affordance using a hidden span that becomes visible on `:hover` of the card; uses `--motion-duration-short` and is suppressed on touch + reduced-motion.
+- [X] T029 [US5] Migrate `.college-card-name` in `frontend/src/styles/colleges.css` to consume `--type-headline-size-sm` + headline weight/line-height/letter-spacing tokens. The name MUST be the most prominent element on the card.
+- [X] T030 [P] [US5] Migrate `.college-card-stats` count values to consume `--type-metric-size` tokens with the existing `.tabular-nums` utility.
+- [X] T031 [US5] Update the count-rendering logic in `CollegeStatChip` (in `frontend/src/pages/colleges/CollegePages.tsx`): when the count is `null` or `undefined`, render "—"; when the count is exactly `0`, render "٠" (or "0" per locale). Document in a comment that this implements FR-010 (Principle III: never invent data).
+- [X] T032 [P] [US5] Add a "→ زيارة الصفحة" hover affordance using a hidden span that becomes visible on `:hover` of the card; uses `--motion-duration-short` and is suppressed on touch + reduced-motion.
 
 **Checkpoint**: Card surface is calibrated.
 
@@ -167,10 +167,10 @@ Web app layout (existing).
 
 ### Implementation for User Story 7
 
-- [ ] T033 [US7] Replace the existing `<LoadingState />` placeholder in `frontend/src/pages/colleges/CollegePages.tsx` with a gallery-shaped skeleton: render the toolbar in its disabled state + 6 campus blocks each with a `<Skeleton variant="text" />` header and a 6-cell grid of `<Skeleton variant="kpi" />` placeholders. Use the existing `<Skeleton>` primitive from `001-*`.
-- [ ] T034 [P] [US7] Differentiate the two empty states: when `q.data?.length === 0`, render the existing "no colleges yet" `<EmptyState>` (already in place); when `total === 0` after filtering, render a NEW filtered-empty state using `<EmptyState>` with `title="لم نعثر على نتائج"`, description that mentions the active filters, and an action button that calls `clear()`.
-- [ ] T035 [US7] Verify the existing `<ErrorState onRetry={...} />` covers FR-020 — this is already in `CollegesIndexPage`; spot-check by simulating an API failure (DevTools network → "Offline").
-- [ ] T036 [US7] Manual verification: throttle network to 3G, load `/colleges` — skeleton appears within 100ms and matches the gallery's grid. CLS measured ≤ 0.05.
+- [X] T033 [US7] Replace the existing `<LoadingState />` placeholder in `frontend/src/pages/colleges/CollegePages.tsx` with a gallery-shaped skeleton: render the toolbar in its disabled state + 6 campus blocks each with a `<Skeleton variant="text" />` header and a 6-cell grid of `<Skeleton variant="kpi" />` placeholders. Use the existing `<Skeleton>` primitive from `001-*`.
+- [X] T034 [P] [US7] Differentiate the two empty states: when `q.data?.length === 0`, render the existing "no colleges yet" `<EmptyState>` (already in place); when `total === 0` after filtering, render a NEW filtered-empty state using `<EmptyState>` with `title="لم نعثر على نتائج"`, description that mentions the active filters, and an action button that calls `clear()`.
+- [X] T035 [US7] Verify the existing `<ErrorState onRetry={...} />` covers FR-020 — this is already in `CollegesIndexPage`; spot-check by simulating an API failure (DevTools network → "Offline").
+- [~] T036 [US7] Manual verification: throttle network to 3G, load `/colleges` — skeleton appears within 100ms and matches the gallery's grid. CLS measured ≤ 0.05.
 
 **Checkpoint**: All states match the gallery's visual quality.
 
@@ -180,14 +180,14 @@ Web app layout (existing).
 
 **Purpose**: Verification, gates, follow-ups.
 
-- [ ] T037 [P] Token discipline: `npm run check:motion-tokens` and `npm run check:icons` both pass.
-- [ ] T038 [P] Bundle audit: `npm run -w frontend build` and confirm gallery route gzipped delta ≤ 6 KB vs. pre-004 baseline. If exceeded, identify offender (likely the new chip strip CSS or the hooks bundle) and tighten.
-- [ ] T039 [P] Reduced-motion verification: emulate `prefers-reduced-motion: reduce` in DevTools, reload `/colleges` — confirm campus reveals render in final state on first paint, hover lift remains, no decorative motion plays.
-- [ ] T040 [P] RTL parity sweep: switch to Arabic, walk the gallery on desktop and 360 px — confirm chip strip scrolls correctly, accent stripe is on the leading edge (right side in RTL), search icon mirrors, the trailing arrow on the homepage badge mirrors.
-- [ ] T041 [P] Keyboard sweep: Tab from URL bar through homepage badge → gallery search → chips → first card → last card. Confirm visible focus ring at every step.
-- [ ] T042 [P] Manual screen-reader smoke (NVDA / VoiceOver): announce filter count via aria-live polite when typing in search; ensure no announcement on every keystroke (debounced).
-- [ ] T043 Update `DESIGN_POLISH_PLAN.md` to point readers to `specs/004-colleges-gallery/quickstart.md` for the gallery contribution flow.
-- [ ] T044 Document any remaining drift as backlog tickets — do NOT block the rollout on items the audit shows are minor.
+- [X] T037 [P] Token discipline: `npm run check:motion-tokens` and `npm run check:icons` both pass.
+- [X] T038 [P] Bundle audit: `npm run -w frontend build` and confirm gallery route gzipped delta ≤ 6 KB vs. pre-004 baseline. If exceeded, identify offender (likely the new chip strip CSS or the hooks bundle) and tighten.
+- [~] T039 [P] Reduced-motion verification: emulate `prefers-reduced-motion: reduce` in DevTools, reload `/colleges` — confirm campus reveals render in final state on first paint, hover lift remains, no decorative motion plays.
+- [~] T040 [P] RTL parity sweep: switch to Arabic, walk the gallery on desktop and 360 px — confirm chip strip scrolls correctly, accent stripe is on the leading edge (right side in RTL), search icon mirrors, the trailing arrow on the homepage badge mirrors.
+- [~] T041 [P] Keyboard sweep: Tab from URL bar through homepage badge → gallery search → chips → first card → last card. Confirm visible focus ring at every step.
+- [~] T042 [P] Manual screen-reader smoke (NVDA / VoiceOver): announce filter count via aria-live polite when typing in search; ensure no announcement on every keystroke (debounced).
+- [~] T043 Update `DESIGN_POLISH_PLAN.md` to point readers to `specs/004-colleges-gallery/quickstart.md` for the gallery contribution flow.
+- [X] T044 Document any remaining drift as backlog tickets — do NOT block the rollout on items the audit shows are minor.
 
 ---
 
