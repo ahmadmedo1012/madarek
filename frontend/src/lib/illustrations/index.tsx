@@ -17,6 +17,10 @@ import { SceneEmptyNotifs } from './scenes/empty-notifs';
 import { SceneEmptySearch } from './scenes/empty-search';
 import { SceneError404 } from './scenes/error-404';
 import { SceneMilestoneSection } from './scenes/milestone-section';
+import { SceneOnboardingFrame1 } from './scenes/onboarding/frame-1';
+import { SceneOnboardingFrame2 } from './scenes/onboarding/frame-2';
+import { SceneOnboardingFrame3 } from './scenes/onboarding/frame-3';
+import { SceneOnboardingRoleIntro } from './scenes/onboarding/role-intro';
 
 export type IllustrationName =
   | 'homepage-hero'
@@ -59,10 +63,10 @@ export const SCENE_REGISTRY: Record<IllustrationName, SceneComponent | null> = {
   'empty-notifs': SceneEmptyNotifs as SceneComponent,
   'empty-search': SceneEmptySearch as SceneComponent,
   'milestone-section': SceneMilestoneSection as SceneComponent,
-  'onboarding-frame-1': null,
-  'onboarding-frame-2': null,
-  'onboarding-frame-3': null,
-  'onboarding-role-intro': null,
+  'onboarding-frame-1': SceneOnboardingFrame1 as SceneComponent,
+  'onboarding-frame-2': SceneOnboardingFrame2 as SceneComponent,
+  'onboarding-frame-3': SceneOnboardingFrame3 as SceneComponent,
+  'onboarding-role-intro': SceneOnboardingRoleIntro as SceneComponent,
 };
 
 export function loadScene(name: IllustrationName): SceneComponent | null {

@@ -199,8 +199,8 @@ description: "Task list — 012-design-graphics-uplift"
 - [X] T084 [P] [US4] Create `empty-notifs.tsx` — symmetric scene; Light + Dark.
 - [X] T085 [P] [US4] Create `empty-search.tsx` — mirror arrow direction in RTL; Light + Dark.
 - [X] T086 [P] [US4] Create `milestone-section.tsx` — Light + Dark; small celebratory motif.
-- [ ] T087 [P] [US4] Create `onboarding/frame-1.tsx`, `frame-2.tsx`, `frame-3.tsx` — three generic onboarding frames; Light + Dark; RTL composition.
-- [ ] T088 [P] [US4] Create `onboarding/role-intro.tsx` — single component with seven role-keyed compositions (student / faculty / department-head / dean / admin / quality / owner); Light + Dark; RTL composition.
+- [X] T087 [P] [US4] Create `onboarding/frame-1.tsx`, `frame-2.tsx`, `frame-3.tsx` — three generic onboarding frames; Light + Dark; RTL composition.
+- [X] T088 [P] [US4] Create `onboarding/role-intro.tsx` — single component with seven role-keyed compositions (student / faculty / department-head / dean / admin / quality / owner); Light + Dark; RTL composition.
 
 ### Empty / error state migration
 
