@@ -206,7 +206,10 @@
                 box-shadow var(--t-base) var(--ease),
                 transform var(--t-base) var(--ease);
     min-block-size: 132px;
-    box-shadow: var(--shadow-card);
+    /* 012-design-graphics-uplift T056 — elevation language picks up
+       the dark-mode top-edge highlight automatically (the --elev-1
+       cascade). Keeps --shadow-card as the legacy fallback. */
+    box-shadow: var(--elev-1, var(--shadow-card));
   }
   .metric.green  { --_metric-color: var(--c-mint-ink);     --_metric-bg: var(--c-mint-bg); }
   .metric.amber  { --_metric-color: var(--c-yellow-ink);   --_metric-bg: var(--c-yellow-bg); }
@@ -215,7 +218,7 @@
   .metric.gold   { --_metric-color: var(--c-copper-ink);   --_metric-bg: var(--c-copper-bg); }
   .metric:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h);
+    box-shadow: var(--elev-2, var(--shadow-card-h));
     transform: translateY(-2px);
   }
 
