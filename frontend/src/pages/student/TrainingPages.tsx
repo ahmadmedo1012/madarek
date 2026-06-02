@@ -230,7 +230,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
             <ProgressBar
               value={track.progressPct}
               color={accent}
-              label={track.isCompleted ? '✓ مكتمل' : `${track.completedLessons} / ${track.totalLessons} دروس`}
+              label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${track.totalLessons} دروس`}
             />
           </div>
         )}
@@ -271,7 +271,7 @@ export function TrainingTrackPage() {
       {/* Hero band — track-themed */}
       <div className="track-hero" style={{ background: `linear-gradient(135deg, ${accent}26 0%, transparent 70%)`, borderRight: `3px solid ${accent}` }}>
         <div className="track-hero-icon" style={{ background: accent, color: '#fff' }}>
-          <EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={30} />
+          <EmojiIcon emoji={track.iconEmoji ?? '🎓'} size={30} />{/* allow-emoji: data-default for admin-chosen icon */}
         </div>
         <div style={{ flex: 1 }}>
           <div className="track-hero-cat">{CATEGORY_LABEL[track.category]}</div>
@@ -302,7 +302,7 @@ export function TrainingTrackPage() {
           <ProgressBar
             value={Math.round((completedCount / track.lessons.length) * 100)}
             color={accent}
-            label={track.isCompleted ? '✓ هذا المسار مكتمل — شهادة جاهزة' : `${completedCount} / ${track.lessons.length} درس مكتمل`}
+            label={track.isCompleted ? 'هذا المسار مكتمل — شهادة جاهزة' : `${completedCount} / ${track.lessons.length} درس مكتمل`}
           />
         </Card>
       )}
@@ -460,7 +460,7 @@ export function TrainingLessonPage() {
             disabled={complete.isPending || lesson.isCompleted}
             style={{ background: accent }}
           >
-            {lesson.isCompleted ? 'تم الإكمال ✓' : complete.isPending ? 'جارٍ الإرسال…' : 'أكملت — احتساب الدرس'}
+            {lesson.isCompleted ? 'تم الإكمال' : complete.isPending ? 'جارٍ الإرسال…' : 'أكملت — احتساب الدرس'}
           </button>
           {next && (
             <button
@@ -547,7 +547,7 @@ export function AchievementsPage() {
                   background: `${c.themeColor ?? 'var(--accent)'}1a`, color: c.themeColor ?? 'var(--accent)',
                   display: 'grid', placeItems: 'center', fontSize: 26, flexShrink: 0,
                 }}>
-                  <EmojiIcon emoji={c.iconEmoji ?? '🏅'} size={22} />
+                  <EmojiIcon emoji={c.iconEmoji ?? '🏅'} size={22} />{/* allow-emoji: data-default for admin-chosen icon */}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div className="text-xxs text-subtle">شهادة إتمام مسار</div>

@@ -173,11 +173,11 @@ Web app layout (existing).
 
 ### Implementation for User Story 6
 
-- [ ] T052 [US6] Run `npm run check:icons` against the current main branch. Catalog every violation — emoji in JSX, raw `<svg>`, non-Lucide imports — by file + line.
-- [ ] T053 [P] [US6] Replace emoji in chrome/components for at least the top 10 most-trafficked files (homepage, student dashboard, sidebar, topbar, auth, college pages). Use `Icon` + `lucide-react` per the migration pattern.
-- [ ] T054 [P] [US6] Audit icon sizes across migrated files; normalize to the canonical scale (14/16/18/20/24 px) per `contracts/icon-policy.md`.
-- [ ] T055 [US6] Re-run `npm run check:icons`. Address remaining violations or add justified entries to the allowlist in `scripts/check-icons.sh`. Document each allowlist entry in PR.
-- [ ] T056 [US6] Wire `npm run check:icons` into a CI step (or document the run as part of the existing CI hook chain).
+- [X] T052 [US6] Run `npm run check:icons` against the current main branch. Catalog every violation — emoji in JSX, raw `<svg>`, non-Lucide imports — by file + line.
+- [X] T053 [P] [US6] Replace emoji in chrome/components for at least the top 10 most-trafficked files (homepage, student dashboard, sidebar, topbar, auth, college pages). Use `Icon` + `lucide-react` per the migration pattern.
+- [~] T054 [P] [US6] Audit icon sizes across migrated files; normalize to the canonical scale (14/16/18/20/24 px) per `contracts/icon-policy.md`.
+- [X] T055 [US6] Re-run `npm run check:icons`. Address remaining violations or add justified entries to the allowlist in `scripts/check-icons.sh`. Document each allowlist entry in PR.
+- [X] T056 [US6] Wire `npm run check:icons` into a CI step (or document the run as part of the existing CI hook chain).
 
 **Checkpoint**: Zero un-allowlisted emoji or non-Lucide SVG in chrome/components.
 

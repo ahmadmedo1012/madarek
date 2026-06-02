@@ -453,7 +453,7 @@ export function CollegeDetailPage() {
  * Sub-project C: inter-college comparison. Single page with a sortable
  * table that ranks every college on shared metrics (XP, GPA, papers,
  * exam attempts, lab activity, completed enrollments). Each metric
- * shows the rank as a medal (🥇🥈🥉) on the leader.
+ * shows the rank as a medal glyph on the leader. // allow-emoji: doc comment describing leaderboard glyphs
  */
 
 interface LeaderboardCollege {
@@ -494,9 +494,9 @@ const METRICS = [
 ];
 
 function rankMedal(rank: number): string {
-  if (rank === 1) return '🥇';
-  if (rank === 2) return '🥈';
-  if (rank === 3) return '🥉';
+  if (rank === 1) return '🥇'; // allow-emoji: medal rank glyph
+  if (rank === 2) return '🥈'; // allow-emoji: medal rank glyph
+  if (rank === 3) return '🥉'; // allow-emoji: medal rank glyph
   return '';
 }
 
