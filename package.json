@@ -19,7 +19,8 @@
     "db:deploy": "npm run prisma:deploy -w backend",
     "db:seed": "npm run prisma:seed -w backend",
     "validate:colleges": "tsx scripts/validate-college-identity.ts",
-    "check:motion-tokens": "bash scripts/check-motion-tokens.sh"
+    "check:motion-tokens": "bash scripts/check-motion-tokens.sh",
+    "check:icons": "bash scripts/check-icons.sh"
   },
   "devDependencies": {
     "tsx": "^4.22.4"

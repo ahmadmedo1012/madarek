@@ -1009,6 +1009,6 @@
   .landing[data-intro-seen="true"] .reveal-d-3,
   .landing[data-intro-seen="true"] .reveal-d-4,
   .landing[data-intro-seen="true"] .reveal-d-5 {
-    transition-delay: 0ms;
+    transition-delay: 0s;
   }
 }

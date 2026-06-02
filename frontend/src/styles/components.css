@@ -906,6 +906,17 @@
   .mt-5 { margin-block-start: var(--sp-5); }
   .shrink-0 { flex-shrink: 0; }
   .font-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  /* Tabular numerals — apply to KPIs, table number columns, counters,
+     percentages, dates with shifting digits. Lining figures keep
+     numerals on the same baseline as caps. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+  /* Body measure cap — prevents edge-to-edge body lines on wide screens. */
+  .body-cap, .prose-cap {
+    max-inline-size: var(--type-body-max-measure);
+  }
   .font-medium { font-weight: var(--fw-medium); }
   .font-semibold { font-weight: var(--fw-semibold); }
   .font-bold { font-weight: var(--fw-bold); }
