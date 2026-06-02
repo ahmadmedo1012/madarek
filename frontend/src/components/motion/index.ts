@@ -1,3 +1,3 @@
 // Motion primitives barrel export.
 // Populated incrementally — see specs/001-premium-motion-system/contracts/motion-primitives.tsx.md
-export {};
+export { useReducedMotion } from './useReducedMotion';

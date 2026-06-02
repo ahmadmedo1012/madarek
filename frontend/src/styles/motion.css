@@ -9,3 +9,220 @@
    ════════════════════════════════════════════════════════════════════ */
 
 @layer tokens, base, components, overrides;
+
+@layer tokens {
+
+  /* ───────────────────────────────────────────────────────────────────
+     Reduced-motion override — single block, single source of truth.
+     Decorative durations collapse to 0; cross-fades collapse to ≤80ms
+     so transitional affordance remains perceivable. Skeleton becomes
+     a static block (no shimmer loop) under reduced motion.
+     ─────────────────────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-duration-micro:    0ms;
+      --motion-duration-short:    0ms;
+      --motion-duration-medium:   0ms;
+      --motion-duration-long:     0ms;
+      --motion-duration-page:     80ms;   /* keep cross-fade affordance */
+      --motion-duration-reveal:   80ms;
+      --motion-duration-stat:     0ms;    /* counters snap to value */
+      --motion-duration-skeleton: 0ms;    /* static block, no shimmer */
+    }
+  }
+}
+
+@layer base {
+
+  /* ───────────────────────────────────────────────────────────────────
+     Universal :focus-visible ring.
+     Per-component overrides are still allowed (e.g., inputs that need
+     an inset ring) but every focusable element gains this by default.
+     Uses outline rather than box-shadow so it composes with elements
+     that already use box-shadow for their own elevation.
+     ─────────────────────────────────────────────────────────────────── */
+  :where(
+    a, button, input, select, textarea, summary,
+    [tabindex]:not([tabindex="-1"]),
+    [role="button"], [role="link"], [role="tab"], [role="menuitem"]
+  ):focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+    /* prevent surrounding layout from shifting */
+    border-radius: inherit;
+  }
+
+  /* Forms that already render a custom focus ring may opt out. */
+  :where([data-focus-ring="custom"]):focus-visible {
+    outline: none;
+  }
+}
+
+@layer components {
+
+  /* ───────────────────────────────────────────────────────────────────
+     Reveal keyframes — used by <Reveal> primitive.
+     The element starts at opacity 0 and translated by `--reveal-distance`,
+     ends at opacity 1 and translateY(0). Direction multiplier flips for
+     RTL where applicable (sliding motions); vertical reveals are
+     direction-agnostic.
+     ─────────────────────────────────────────────────────────────────── */
+  @keyframes reveal-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance, var(--motion-distance-medium)));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes reveal-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Reveal element default state — hidden until activated. */
+  [data-reveal]:not([data-revealed="true"]) {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance, var(--motion-distance-medium)));
+  }
+
+  [data-reveal][data-revealed="true"] {
+    animation: reveal-rise var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--motion-stagger-step) * var(--reveal-index, 0));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal][data-revealed="true"] {
+      animation: reveal-fade 80ms var(--motion-ease-standard) both;
+      animation-delay: 0ms;
+      transform: none;
+    }
+  }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Skeleton shimmer — used by <Skeleton> primitive.
+     Subtle linear-gradient sweep, low contrast. Loops at the skeleton
+     duration token. Static under reduced motion.
+     ─────────────────────────────────────────────────────────────────── */
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
+  }
+
+  .skeleton {
+    --skeleton-base: var(--neutral-100, rgb(0 0 0 / 0.04));
+    --skeleton-highlight: var(--neutral-200, rgb(0 0 0 / 0.08));
+    background-color: var(--skeleton-base);
+    background-image: linear-gradient(
+      90deg,
+      var(--skeleton-base) 0%,
+      var(--skeleton-highlight) 50%,
+      var(--skeleton-base) 100%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    animation: skeleton-shimmer var(--motion-duration-skeleton) linear infinite;
+    border-radius: var(--r-md, 8px);
+    /* default min height — variants override */
+    min-height: 1em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+      background-image: none;
+    }
+  }
+
+  /* Variant shapes — match the rough silhouette of final content. */
+  .skeleton[data-variant="text"]     { height: 0.875em; border-radius: 4px; }
+  .skeleton[data-variant="kpi"]      { height: 96px;  border-radius: var(--r-lg, 12px); }
+  .skeleton[data-variant="card"]     { height: 160px; border-radius: var(--r-lg, 12px); }
+  .skeleton[data-variant="chart"]    { height: 240px; border-radius: var(--r-lg, 12px); }
+  .skeleton[data-variant="list-row"] { height: 56px;  border-radius: var(--r-md, 8px); }
+  .skeleton[data-variant="avatar"]   { width: 40px; height: 40px; border-radius: var(--r-full, 9999px); }
+
+  .skeleton-group {
+    display: grid;
+    gap: var(--sp-4, 16px);
+  }
+
+  /* "Still loading…" reassurance cue — appears after 4 s via JS. */
+  .skeleton-still-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--neutral-500, #898680);
+    font-size: var(--fs-sm, 13px);
+    padding: var(--sp-3, 12px) 0;
+    opacity: 0;
+    transition: opacity var(--motion-duration-medium) var(--motion-ease-standard);
+  }
+  .skeleton-still-loading[data-visible="true"] { opacity: 1; }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Route-transition keyframes — used by <PageTransition>.
+     CSS-class fallback for browsers without the View Transitions API.
+     The route outlet gets `is-route-transitioning` for one transition
+     duration, during which content cross-fades + lifts.
+     ─────────────────────────────────────────────────────────────────── */
+  @keyframes route-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--motion-distance-small));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .is-route-transitioning {
+    animation: route-fade-in var(--motion-duration-page) var(--motion-ease-decelerate) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-route-transitioning {
+      animation: reveal-fade 80ms var(--motion-ease-standard) both;
+    }
+  }
+
+  /* View Transitions API hooks — Chromium/WebKit support. */
+  ::view-transition-old(route),
+  ::view-transition-new(route) {
+    animation-duration: var(--motion-duration-page);
+    animation-timing-function: var(--motion-ease-decelerate);
+  }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Loading spinner — used by Button[loading] and inline spinners.
+     ─────────────────────────────────────────────────────────────────── */
+  @keyframes motion-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .motion-spinner {
+    display: inline-block;
+    width: var(--state-loading-spinner-size);
+    height: var(--state-loading-spinner-size);
+    border: var(--state-loading-spinner-stroke) solid currentColor;
+    border-right-color: transparent;
+    border-radius: var(--r-full, 9999px);
+    animation: motion-spin 0.7s linear infinite;
+    vertical-align: -0.125em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .motion-spinner {
+      /* keep the rotation but slow it dramatically so screen-reader users
+         and reduced-motion users still get a "busy" cue without distraction */
+      animation-duration: 2s;
+    }
+  }
+}
