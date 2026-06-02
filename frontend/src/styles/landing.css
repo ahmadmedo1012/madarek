@@ -316,10 +316,10 @@
 
   .landing-title {
     font-family: var(--font-display);
-    font-size: var(--fs-mega);
+    font-size: var(--type-display-size-mega);
     line-height: 0.96;
-    font-weight: var(--fw-black);
-    letter-spacing: var(--ls-mega);
+    font-weight: var(--type-display-weight);
+    letter-spacing: var(--type-display-letter-spacing);
     color: var(--text);
     max-inline-size: 14ch;
     margin-inline: auto;
@@ -353,7 +353,7 @@
 
   .landing-subtitle {
     font-size: clamp(17px, 1.5vw, 20px);
-    line-height: var(--lh-base);
+    line-height: var(--type-body-line-height);
     color: var(--text-secondary);
     max-inline-size: 56ch;
     margin: var(--sp-6) auto 0;
@@ -567,10 +567,10 @@
   }
   .band .band-title {
     font-family: var(--font-display);
-    font-size: var(--fs-display-lg);
-    font-weight: var(--fw-black);
-    line-height: 1.05;
-    letter-spacing: var(--ls-tight);
+    font-size: var(--type-display-size-lg);
+    font-weight: var(--type-display-weight);
+    line-height: var(--type-display-line-height);
+    letter-spacing: var(--type-display-letter-spacing);
     margin-block-start: var(--sp-4);
     max-inline-size: 22ch;
     color: inherit;
@@ -581,8 +581,8 @@
     font-weight: var(--fw-regular);
   }
   .band .band-lede {
-    font-size: var(--fs-body-lg);
-    line-height: var(--lh-base);
+    font-size: var(--type-body-size-lg);
+    line-height: var(--type-body-line-height);
     margin-block-start: var(--sp-5);
     max-inline-size: 56ch;
     opacity: 0.85;
@@ -639,7 +639,7 @@
      ║  BIG FEATURE GRID (3 across, sticker-led)                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-features {
-    padding-block: clamp(var(--sp-11), 8vw, var(--sp-13));
+    padding-block: var(--section-pad-y-wide);
   }
   .landing-section-head {
     text-align: center;
@@ -656,11 +656,11 @@
   }
   .landing-section-title {
     font-family: var(--font-display);
-    font-size: var(--fs-display-lg);
-    font-weight: var(--fw-black);
+    font-size: var(--type-display-size-lg);
+    font-weight: var(--type-display-weight);
     color: var(--text);
-    letter-spacing: var(--ls-display);
-    line-height: 1.04;
+    letter-spacing: var(--type-display-letter-spacing);
+    line-height: var(--type-display-line-height);
     max-inline-size: 22ch;
   }
   .landing-section-title em {
@@ -670,10 +670,10 @@
     color: var(--accent);
   }
   .landing-section-lede {
-    font-size: var(--fs-body-lg);
+    font-size: var(--type-body-size-lg);
     color: var(--text-secondary);
     max-inline-size: 56ch;
-    line-height: var(--lh-base);
+    line-height: var(--type-body-line-height);
   }
 
   .landing-features-grid {
@@ -726,7 +726,7 @@
      ║  BENTO MOSAIC                                                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-bento {
-    padding-block: clamp(var(--sp-9), 6vw, var(--sp-11));
+    padding-block: var(--section-pad-y-narrow);
   }
   .landing-bento-grid {
     display: grid;
@@ -805,7 +805,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: var(--sp-9);
     text-align: center;
-    padding-block: clamp(var(--sp-9), 6vw, var(--sp-11));
+    padding-block: var(--section-pad-y-narrow);
   }
   @media (max-width: 920px) {
     .landing-pilot-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-7); }
@@ -872,7 +872,7 @@
      ║  FINAL CTA — dark band                                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-final-cta {
-    padding-block: clamp(var(--sp-11), 8vw, var(--sp-13));
+    padding-block: var(--section-pad-y-wide);
     text-align: center;
   }
   .landing-final-cta-eyebrow {
