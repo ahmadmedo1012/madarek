@@ -67,7 +67,7 @@ export function createApp() {
   // BUILD_ID is bumped on every deploy that needs a force-rebuild.
   // Curl /api/v1/health to check whether Render is serving the
   // latest commit. If the buildId matches, the fix is live.
-  const BUILD_ID = '2026-06-02T15:30Z+006-public-colleges';
+  const BUILD_ID = '2026-06-02T16:00Z+008-colleges-mount-order';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     try {
@@ -92,6 +92,12 @@ export function createApp() {
   app.use('/api/v1/courses', coursesRoutes);
   app.use('/api/v1/enrollments', enrollmentsRoutes);
   app.use('/api/v1/offerings', offeringsRoutes);
+  // ── PUBLIC routers — must be registered BEFORE any router that
+  //    uses `router.use(authMiddleware)` and mounts at the broad
+  //    `/api/v1` prefix. Otherwise their global middleware fires
+  //    for /api/v1/colleges and 401s the request before reaching
+  //    the (now-public) GET /colleges handler. ────────────────
+  app.use('/api/v1', collegesRoutes);
   app.use('/api/v1', meRoutes);
   app.use('/api/v1', catalogRoutes);
   app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
@@ -106,7 +112,6 @@ export function createApp() {
   app.use('/api/v1/ai', aiRoutes);
   app.use('/api/v1/files', filesRoutes);
   app.use('/api/v1/owner', ownerRoutes);
-  app.use('/api/v1', collegesRoutes);
   app.use('/api/v1/admin', adminExtrasRoutes);
   app.use('/api/v1', studentDashboardRoutes);
   app.use('/api/v1/teacher', teacherDashboardRoutes);
