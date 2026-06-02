@@ -94,8 +94,8 @@ spinner during navigation.
    **Then** the transition completes to a skeleton state immediately and the
    final content fills in without re-running the transition.
 4. **Given** a user taps the browser back button or in-app back, **When**
-   they return to the previous route, **Then** scroll position and any
-   transient state (open accordions, filters) are restored.
+   they return to the previous route, **Then** scroll position is
+   restored.
 
 ---
 
@@ -320,7 +320,7 @@ a form) in each. Confirm the interaction language is identical and only the
 
 - A page exceeds its data fetch beyond a reasonable wait. Skeleton MUST
   remain calm (no looping shimmer that becomes anxiety-inducing) and a soft
-  "still loading" cue MUST appear after a defined threshold.
+  "still loading" cue MUST appear after 4 seconds.
 - A user with reduced-motion enabled mid-session: motion preferences MUST
   be re-evaluated on each navigation, not cached at app boot.
 - A college page is configured with a missing or invalid hero image: the
@@ -374,8 +374,10 @@ a form) in each. Confirm the interaction language is identical and only the
   flicker.
 - **FR-007**: System MUST animate active-navigation indicators (sidebar
   rail, top tabs, breadcrumbs) between positions rather than snapping.
-- **FR-008**: System MUST restore scroll position and stable transient UI
-  state (open menus, expanded rows) on browser back navigation.
+- **FR-008**: System MUST restore scroll position on browser back
+  navigation. Restoration of transient UI state (open menus, expanded
+  rows, active filters) is out of scope for this feature and tracked as
+  a follow-up.
 
 **Dashboard, Hover, Focus, Loading**
 
@@ -576,9 +578,10 @@ a form) in each. Confirm the interaction language is identical and only the
 - **SC-007 (Adoption Velocity)**: Adding a new college or role surface
   takes ≤ 1 day of design + implementation effort and produces a result
   that passes the consistency audit on first review.
-- **SC-008 (Loading Experience)**: ≥ 95% of perceptible loading events
-  (>200 ms) display a skeleton or per-action loading indicator rather
-  than a blank pane or unbounded global spinner.
+- **SC-008 (Loading Coverage)**: All known data-bound regions across the
+  platform implement either a skeleton or a per-action loading indicator;
+  global page spinners are restricted to full-page hard loads and forbidden
+  for in-app actions by lint. Verified by code audit at release.
 - **SC-009 (RTL Parity)**: Every motion behavior verified in LTR is also
   verified in RTL; zero RTL-specific regressions are open at release.
 - **SC-010 (Returning-Visitor Calm)**: Returning visitors within the same
