@@ -1011,4 +1011,99 @@
   .landing[data-intro-seen="true"] .reveal-d-5 {
     transition-delay: 0s;
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SECTION-ACCENT — 012-design-graphics-uplift T110 / T111.      ║
+     ║  Five accent kinds. Each has a pre-fire (initial) state and a  ║
+     ║  fired-state cascade triggered by .is-fired (added by the      ║
+     ║  useSectionAccent hook on viewport entry).                     ║
+     ║                                                                ║
+     ║  Reduced-motion: the hook fires immediately, so .is-fired is   ║
+     ║  applied without the cascade ever running. The selectors here  ║
+     ║  cover both paths.                                             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .section-accent {
+    position: relative;
+  }
+
+  /* ─── underline-draw ────────────────────────────────────────────── */
+  .section-accent-underline-draw::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: 0;
+    block-size: 2px;
+    inline-size: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--motion-duration-long) var(--motion-ease-emphasized);
+  }
+  .section-accent-underline-draw.is-fired::after {
+    transform: scaleX(1);
+  }
+  [dir="rtl"] .section-accent-underline-draw::after {
+    transform-origin: right center;
+  }
+
+  /* ─── number-tick — gentle scale-in (number animation itself is in
+        AnimatedNumber from 001-*; this is the surface treatment). */
+  .section-accent-number-tick {
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity var(--motion-duration-medium) var(--motion-ease-decelerate),
+                transform var(--motion-duration-medium) var(--motion-ease-decelerate);
+  }
+  .section-accent-number-tick.is-fired {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── scene-paint — fade + 6 px lift, matches Reveal cadence. */
+  .section-accent-scene-paint {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity var(--motion-duration-reveal) var(--motion-ease-decelerate),
+                transform var(--motion-duration-reveal) var(--motion-ease-decelerate);
+  }
+  .section-accent-scene-paint.is-fired {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── quote-fade — calm fade only, no translation. */
+  .section-accent-quote-fade {
+    opacity: 0;
+    transition: opacity var(--motion-duration-long) var(--motion-ease-standard);
+  }
+  .section-accent-quote-fade.is-fired {
+    opacity: 1;
+  }
+
+  /* ─── parallax-shift — bounded translation (≤ 8 px), one-shot. */
+  .section-accent-parallax-shift {
+    transform: translateY(8px);
+    opacity: 0;
+    transition: opacity var(--motion-duration-long) var(--motion-ease-emphasized),
+                transform var(--motion-duration-long) var(--motion-ease-emphasized);
+  }
+  .section-accent-parallax-shift.is-fired {
+    transform: none;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-accent,
+    .section-accent::after {
+      transition: none !important;
+    }
+    .section-accent-underline-draw::after,
+    .section-accent-number-tick,
+    .section-accent-scene-paint,
+    .section-accent-quote-fade,
+    .section-accent-parallax-shift {
+      transform: none;
+      opacity: 1;
+    }
+  }
 }
