@@ -11,3 +11,6 @@ export type { ModalProps } from './Modal';
 
 export { Sheet } from './Sheet';
 export type { SheetProps, SheetSide } from './Sheet';
+
+export { Toast } from './Toast';
+export type { ToastProps, ToastVariant } from './Toast';

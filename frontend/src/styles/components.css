@@ -1075,14 +1075,65 @@
     from { opacity: 0; transform: translateX(-8%); }
     to   { opacity: 1; transform: none; }
   }
-  @keyframes madarek-sheet-slide-bottom {
-    from { opacity: 0; transform: translateY(8%); }
-    to   { opacity: 1; transform: none; }
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOAST — 012-design-graphics-uplift T064.                      ║
+     ║  Passive notification surface. --elev-3 + --r-lg + --z-toast,  ║
+     ║  no glass. Positioned bottom-end on desktop, bottom-center on  ║
+     ║  mobile via the existing .toast block in polish.css. Variants  ║
+     ║  tint the leading edge with the semantic palette.              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .toast {
+    position: fixed;
+    inset-block-end: var(--sp-6);
+    inset-inline-end: var(--sp-6);
+    z-index: var(--z-toast, 500);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    min-inline-size: 280px;
+    max-inline-size: 420px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--elev-3, var(--shadow-card-h));
+    border-inline-start-width: 4px;
+    pointer-events: auto;
   }
-  /* RTL: 'end' should slide from the right (visual end of inline axis).
-     The default translateX values above are visual; the @keyframes use
-     plain transforms. RTL-aware mirroring lives in the layout — the
-     overlay's flex justify-content already handles the placement. */
+  .toast-info     { border-inline-start-color: var(--info, var(--accent)); }
+  .toast-success  { border-inline-start-color: var(--success); }
+  .toast-warning  { border-inline-start-color: var(--warning); }
+  .toast-error    { border-inline-start-color: var(--danger); }
+  .toast-body {
+    flex: 1;
+    min-inline-size: 0;
+    color: var(--text);
+    font-size: var(--fs-body);
+    line-height: 1.45;
+  }
+  .toast-close {
+    background: transparent;
+    border: 0;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 var(--sp-1);
+    font-size: 18px;
+    line-height: 1;
+    transition: color var(--t-fast) var(--ease);
+  }
+  .toast-close:hover { color: var(--text); }
+  .toast-close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (max-width: 540px) {
+    .toast {
+      inset-inline-end: var(--sp-4);
+      inset-inline-start: var(--sp-4);
+      min-inline-size: 0;
+      max-inline-size: none;
+    }
+  }
 
   .filter-bar {
     display: flex; align-items: center; flex-wrap: wrap;
