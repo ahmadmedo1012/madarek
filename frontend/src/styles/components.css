@@ -899,6 +899,20 @@
     display: inline-flex; align-items: center; justify-content: center;
     margin-block-end: var(--sp-3);
   }
+  /* 012-design-graphics-uplift T089 — bespoke illustration block
+     replaces the icon on opt-in surfaces. Sized to give the scene
+     room to breathe without dominating the empty/error layout. */
+  .state-illustration {
+    inline-size: 160px; block-size: 160px;
+    margin-block-end: var(--sp-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .state-illustration .illustration > svg {
+    max-inline-size: 160px;
+    max-block-size: 160px;
+  }
   .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
   .state-desc  { font-size: var(--fs-sm); color: var(--text-muted); max-inline-size: 42ch; }
   .empty-state { composes: state; }

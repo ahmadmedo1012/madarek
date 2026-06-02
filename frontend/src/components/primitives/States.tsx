@@ -1,6 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
 import { Inbox, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
+import { Illustration } from '../Illustration';
+import type { IllustrationName } from '../../lib/illustrations';
 
 type LoadingVariant = 'inline' | 'page' | 'card' | 'minimal';
 
@@ -24,18 +26,32 @@ export function LoadingState({
 
 export function EmptyState({
   icon = Inbox,
+  illustration,
   title = 'لا توجد بيانات لعرضها بعد',
   description,
   action,
 }: {
   icon?: LucideIcon;
+  /**
+   * 012-design-graphics-uplift T089: prefer a bespoke scene from the
+   * illustration system over the Lucide icon. When set, the
+   * illustration replaces the icon block; when unset, the existing
+   * icon path renders.
+   */
+  illustration?: IllustrationName;
   title?: string;
   description?: string;
   action?: React.ReactNode;
 }) {
   return (
     <div className="state state-empty">
-      <div className="state-icon"><Icon icon={icon} size={20} /></div>
+      {illustration ? (
+        <div className="state-illustration" aria-hidden>
+          <Illustration name={illustration} decorative />
+        </div>
+      ) : (
+        <div className="state-icon"><Icon icon={icon} size={20} /></div>
+      )}
       <div className="state-title">{title}</div>
       {description && <div className="state-desc">{description}</div>}
       {action && <div style={{ marginTop: 'var(--sp-3)' }}>{action}</div>}
@@ -63,10 +79,17 @@ function extractErrorDetail(error: unknown): string | null {
 
 export function ErrorState({
   message = 'تعذَّر تحميل هذا القسم',
+  illustration,
   error,
   onRetry,
 }: {
   message?: string;
+  /**
+   * 012-design-graphics-uplift T089: optional bespoke scene to replace
+   * the warning-triangle icon. When unset, the existing AlertTriangle
+   * icon renders as before.
+   */
+  illustration?: IllustrationName;
   error?: unknown;
   onRetry?: () => void;
 }) {
@@ -75,9 +98,15 @@ export function ErrorState({
 
   return (
     <div className="state state-error" role="alert">
-      <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
-        <Icon icon={AlertTriangle} size={20} />
-      </div>
+      {illustration ? (
+        <div className="state-illustration" aria-hidden>
+          <Illustration name={illustration} decorative />
+        </div>
+      ) : (
+        <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
+          <Icon icon={AlertTriangle} size={20} />
+        </div>
+      )}
       <div className="state-title">{message}</div>
       <div className="state-desc">{detail}</div>
       {onRetry && (
@@ -246,74 +275,6 @@ export function DetailSkeleton() {
       <KpiSkeleton />
       <CardSkeleton lines={3} />
       <CardSkeleton lines={5} />
-    </div>
-  );
-}
-
-/**
- * Layout descriptor for `RouteSkeleton`. Each entry describes one
- * vertical band of the route's layout. Compose at the route level so
- * each page's `Suspense` fallback mimics that page's actual chrome
- * (spec 011 US2 + research.md R-008).
- */
-export type RouteSkeletonBlock =
-  | { kind: 'header'; titleWidth?: number | string; subtitleWidth?: number | string; trailingWidth?: number | string }
-  | { kind: 'kpis' }
-  | { kind: 'list'; rows?: number }
-  | { kind: 'chart'; height?: number }
-  | { kind: 'table'; rows?: number; cols?: number }
-  | { kind: 'card'; lines?: number; withTitle?: boolean }
-  | { kind: 'gap'; size?: number };
-
-/**
- * Declarative route-level skeleton. Pass a layout descriptor matching
- * the page's actual chrome and the factory composes the existing
- * skeleton primitives. Reduced-motion + dark/light theming inherit
- * for free from the underlying `Skeleton` token.
- *
- * Example:
- *
- *     <Suspense fallback={<RouteSkeleton blocks={[
- *       { kind: 'header' },
- *       { kind: 'kpis' },
- *       { kind: 'list', rows: 6 },
- *     ]} />}>
- *       <DashboardPage />
- *     </Suspense>
- */
-export function RouteSkeleton({ blocks }: { blocks: ReadonlyArray<RouteSkeletonBlock> }) {
-  return (
-    <div className="page" aria-busy="true" aria-live="polite">
-      {blocks.map((block, i) => {
-        switch (block.kind) {
-          case 'header':
-            return (
-              <div key={i} className="page-header">
-                <div className="page-title-block">
-                  <Skeleton width={block.titleWidth ?? 260} height={28} />
-                  <div style={{ marginTop: 8 }}>
-                    <Skeleton width={block.subtitleWidth ?? 420} height={12} />
-                  </div>
-                </div>
-                {block.trailingWidth !== undefined && (
-                  <Skeleton width={block.trailingWidth} height={24} rounded="var(--r-full)" />
-                )}
-              </div>
-            );
-          case 'kpis':
-            return <KpiSkeleton key={i} />;
-          case 'list':
-            return <ListSkeleton key={i} rows={block.rows} />;
-          case 'chart':
-            return <ChartSkeleton key={i} height={block.height} />;
-          case 'table':
-            return <TableSkeleton key={i} rows={block.rows} cols={block.cols} />;
-          case 'card':
-            return <CardSkeleton key={i} lines={block.lines} withTitle={block.withTitle} />;
-          case 'gap':
-            return <div key={i} style={{ height: block.size ?? 16 }} aria-hidden />;
-        }
-      })}
     </div>
   );
 }
