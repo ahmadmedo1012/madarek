@@ -123,11 +123,11 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 3
 
-- [ ] T040 [US3] Add a `loading` prop to the canonical `Button` primitive in `frontend/src/components/primitives/index.tsx`. When `loading=true`: replace label with spinner, disable click, set `aria-busy="true"`, no layout shift
-- [ ] T041 [US3] Add an in-input loading indicator pattern (right-aligned spinner) in `frontend/src/components/primitives/Input.tsx` (or wherever inputs live), gated by a `loading` prop. Set `cursor: progress` via `--state-input-loading-cursor`
-- [ ] T042 [P] [US3] Sweep dashboard pages — `frontend/src/pages/student/DashboardPage.tsx`, `frontend/src/pages/teacher/TeacherIntelligencePage.tsx`, `frontend/src/pages/admin/AdminGovernancePages.tsx`, `frontend/src/pages/owner/` — and replace any global page spinners triggered by user actions (form submit, save) with per-action loading
-- [ ] T043 [P] [US3] Audit KPI tile / dashboard card components for hover, pressed, focus consistency; ensure they consume `--state-card-*` tokens. Files: `frontend/src/components/dashboard/` (and any inline tile components in dashboard pages)
-- [ ] T044 [US3] Verify form validation state (error border + ring) consumes `--state-input-error-*` tokens in `frontend/src/components/primitives/` form components and the auth/registration pages (`frontend/src/pages/AuthPage.tsx`, `frontend/src/pages/RegisterPage.tsx`)
+- [X] T040 [US3] Add a `loading` prop to the canonical `Button` primitive in `frontend/src/components/primitives/index.tsx`. When `loading=true`: replace label with spinner, disable click, set `aria-busy="true"`, no layout shift
+- [X] T041 [US3] Add an in-input loading indicator pattern (right-aligned spinner) in `frontend/src/components/primitives/Input.tsx` (or wherever inputs live), gated by a `loading` prop. Set `cursor: progress` via `--state-input-loading-cursor`
+- [X] T042 [P] [US3] Sweep dashboard pages — `frontend/src/pages/student/DashboardPage.tsx`, `frontend/src/pages/teacher/TeacherIntelligencePage.tsx`, `frontend/src/pages/admin/AdminGovernancePages.tsx`, `frontend/src/pages/owner/` — and replace any global page spinners triggered by user actions (form submit, save) with per-action loading
+- [X] T043 [P] [US3] Audit KPI tile / dashboard card components for hover, pressed, focus consistency; ensure they consume `--state-card-*` tokens. Files: `frontend/src/components/dashboard/` (and any inline tile components in dashboard pages)
+- [X] T044 [US3] Verify form validation state (error border + ring) consumes `--state-input-error-*` tokens in `frontend/src/components/primitives/` form components and the auth/registration pages (`frontend/src/pages/AuthPage.tsx`, `frontend/src/pages/RegisterPage.tsx`)
 
 **Checkpoint**: User Stories 1 + 2 + 3 fully functional. P1 MVP complete. Platform feels world-class on the routes everyone touches every day.
 
