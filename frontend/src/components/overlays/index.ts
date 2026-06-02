@@ -8,3 +8,6 @@
  */
 export { Modal } from './Modal';
 export type { ModalProps } from './Modal';
+
+export { Sheet } from './Sheet';
+export type { SheetProps, SheetSide } from './Sheet';

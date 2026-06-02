@@ -1020,6 +1020,70 @@
   .modal-body   { padding: var(--sp-6); overflow-y: auto; }
   .modal-footer { padding: var(--sp-4) var(--sp-6); border-block-start: 1px solid var(--rule); display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SHEET — 012-design-graphics-uplift T061.                      ║
+     ║  Slides in from a viewport edge. --elev-4 + --z-sheet +        ║
+     ║  --r-2xl on the leading edge.                                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sheet-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,15,15,0.40);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    z-index: var(--z-sheet, 300);
+    animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  [data-theme="dark"] .sheet-overlay { background: rgba(0,0,0,0.62); }
+  .sheet-overlay-bottom { align-items: flex-end; }
+  .sheet-overlay-end    { justify-content: flex-end; }
+  .sheet-overlay-start  { justify-content: flex-start; }
+
+  .sheet-panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    box-shadow: var(--elev-4, var(--shadow-modal));
+    overflow: clip;
+    display: flex; flex-direction: column;
+  }
+  .sheet-panel-end {
+    block-size: 100%;
+    inline-size: min(420px, 100%);
+    border-start-start-radius: var(--r-2xl);
+    border-end-start-radius: var(--r-2xl);
+    animation: madarek-sheet-slide-end var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .sheet-panel-start {
+    block-size: 100%;
+    inline-size: min(420px, 100%);
+    border-start-end-radius: var(--r-2xl);
+    border-end-end-radius: var(--r-2xl);
+    animation: madarek-sheet-slide-start var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .sheet-panel-bottom {
+    inline-size: 100%;
+    max-block-size: min(85dvh, 720px);
+    border-start-start-radius: var(--r-2xl);
+    border-start-end-radius: var(--r-2xl);
+    animation: madarek-sheet-slide-bottom var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  @keyframes madarek-sheet-slide-end {
+    from { opacity: 0; transform: translateX(8%); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes madarek-sheet-slide-start {
+    from { opacity: 0; transform: translateX(-8%); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes madarek-sheet-slide-bottom {
+    from { opacity: 0; transform: translateY(8%); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* RTL: 'end' should slide from the right (visual end of inline axis).
+     The default translateX values above are visual; the @keyframes use
+     plain transforms. RTL-aware mirroring lives in the layout — the
+     overlay's flex justify-content already handles the placement. */
+
   .filter-bar {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: var(--sp-2);

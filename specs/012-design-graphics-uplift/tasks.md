@@ -126,16 +126,16 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Custom chart treatment (`contracts/chart-treatment.md`)
 
-- [ ] T050 [US3] Extend `frontend/src/lib/chartTheme.ts` with `chartPalette()` resolving Light/Dark categorical palette from `--chart-{idx}` / `--chart-{idx}-dark` tokens.
-- [ ] T051 [US3] Implement `madarekTooltipPlugin` inside `frontend/src/lib/chartTheme.ts` (designed surface tokens, type roles, opacity fade).
-- [ ] T052 [US3] Implement `madarekFadingAxisPlugin` inside `frontend/src/lib/chartTheme.ts`.
+- [X] T050 [US3] Extend `frontend/src/lib/chartTheme.ts` with `chartPalette()` resolving Light/Dark categorical palette from `--chart-{idx}` / `--chart-{idx}-dark` tokens.
+- [X] T051 [US3] Implement `madarekTooltipPlugin` inside `frontend/src/lib/chartTheme.ts` (designed surface tokens, type roles, opacity fade).
+- [X] T052 [US3] Implement `madarekFadingAxisPlugin` inside `frontend/src/lib/chartTheme.ts`.
 - [X] T053 [US3] Implement `madarekGradientFillPlugin` inside `frontend/src/lib/chartTheme.ts` with a `MutationObserver` on `<html>[data-theme]` triggering `chart.update('none')` for tracked instances.
-- [ ] T054 [US3] Update `createChartConfig()` defaults: `borderCapStyle: 'round'`, `borderJoinStyle: 'round'`, `borderWidth: 2`, `pointRadius: 0`, `tension: 0.32`. Apply same defaults to bar charts (`borderRadius: 4`).
+- [X] T054 [US3] Update `createChartConfig()` defaults: `borderCapStyle: 'round'`, `borderJoinStyle: 'round'`, `borderWidth: 2`, `pointRadius: 0`, `tension: 0.32`. Apply same defaults to bar charts (`borderRadius: 4`).
 
 ### Surface depth
 
 - [X] T055 [US3] [P] Add a `.surface-card` utility in `frontend/src/styles/components.css` consuming `var(--surface-card)`, `var(--elev-1)`, optional top-edge inset highlight, and a soft inner border via `box-shadow: inset 0 0 0 1px var(--surface-border)`.
-- [ ] T056 [US3] [P] Apply `.surface-card` to every dashboard tile component in `frontend/src/components/dashboard/` and `frontend/src/components/owner/` — replacing any per-component shadow.
+- [X] T056 [US3] [P] Apply `.surface-card` to every dashboard tile component in `frontend/src/components/dashboard/` and `frontend/src/components/owner/` — replacing any per-component shadow.
 
 ### Tests
 
@@ -155,8 +155,8 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Overlay primitives (`contracts/elevation-language.md`)
 
-- [ ] T060 [US7] Create `frontend/src/components/overlays/Modal.tsx` consuming `var(--elev-4)`, `var(--r-xl)`, `var(--z-modal)`, glass background, AA-validated text contrast. Includes focus trap + Escape close + click-outside dismiss.
-- [ ] T061 [US7] [P] Create `frontend/src/components/overlays/Sheet.tsx` (top corners radius `--r-2xl`, slide-from-edge enter).
+- [X] T060 [US7] Create `frontend/src/components/overlays/Modal.tsx` consuming `var(--elev-4)`, `var(--r-xl)`, `var(--z-modal)`, glass background, AA-validated text contrast. Includes focus trap + Escape close + click-outside dismiss.
+- [X] T061 [US7] [P] Create `frontend/src/components/overlays/Sheet.tsx` (top corners radius `--r-2xl`, slide-from-edge enter).
 - [ ] T062 [US7] [P] Create `frontend/src/components/overlays/Popover.tsx` (`--elev-3`, `--r-lg`, subtle glass).
 - [ ] T063 [US7] [P] Create `frontend/src/components/overlays/Dropdown.tsx` (`--elev-2`, `--r-md`, no glass).
 - [ ] T064 [US7] [P] Create `frontend/src/components/overlays/Toast.tsx` (`--elev-3`, error variant requires manual dismiss; non-error auto-dismiss 5 s).
@@ -172,7 +172,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Tests
 
-- [ ] T071 [P] [US7] Add `frontend/tests/unit/overlays.test.tsx` covering: focus trap on Modal/Sheet/CommandPalette/Lightbox; Esc closes topmost; Toast does not steal focus; error Toast does not auto-dismiss; multi-overlay z-order rule.
+- [X] T071 [P] [US7] Add `frontend/tests/unit/overlays.test.tsx` covering: focus trap on Modal/Sheet/CommandPalette/Lightbox; Esc closes topmost; Toast does not steal focus; error Toast does not auto-dismiss; multi-overlay z-order rule.
 - [ ] T072 [P] [US7] Add a `@supports not (backdrop-filter: blur(0))` mock to `overlays.test.tsx` asserting glass falls back to opaque fill.
 
 **Checkpoint US7**: every overlay surface in the platform now uses the same elevation language.
