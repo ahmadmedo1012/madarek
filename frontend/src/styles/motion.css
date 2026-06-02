@@ -1,0 +1,11 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Motion + Interaction Foundation
+   ─────────────────────────────────────────────────────────────────────
+   Owns: reduced-motion overrides, universal :focus-visible ring,
+         reveal keyframes, skeleton shimmer, route-transition keyframes.
+   Loaded after tokens.css, before component stylesheets.
+   See: specs/001-premium-motion-system/contracts/motion-tokens.md
+        specs/001-premium-motion-system/contracts/interaction-tokens.md
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer tokens, base, components, overrides;

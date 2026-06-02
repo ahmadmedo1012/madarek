@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build:report": "vite build --mode production"
   },
   "dependencies": {
     "@hookform/resolvers": "3.10.0",
@@ -25,10 +28,16 @@
     "zustand": "5.0.2"
   },
   "devDependencies": {
+    "@axe-core/react": "4.10.2",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.1.0",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "@vitejs/plugin-react": "4.3.4",
+    "jsdom": "26.0.0",
+    "rollup-plugin-visualizer": "5.13.1",
     "typescript": "5.7.2",
-    "vite": "5.4.11"
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
   }
 }
