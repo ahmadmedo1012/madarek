@@ -129,17 +129,17 @@ description: "Task list — 012-design-graphics-uplift"
 - [ ] T050 [US3] Extend `frontend/src/lib/chartTheme.ts` with `chartPalette()` resolving Light/Dark categorical palette from `--chart-{idx}` / `--chart-{idx}-dark` tokens.
 - [ ] T051 [US3] Implement `madarekTooltipPlugin` inside `frontend/src/lib/chartTheme.ts` (designed surface tokens, type roles, opacity fade).
 - [ ] T052 [US3] Implement `madarekFadingAxisPlugin` inside `frontend/src/lib/chartTheme.ts`.
-- [ ] T053 [US3] Implement `madarekGradientFillPlugin` inside `frontend/src/lib/chartTheme.ts` with a `MutationObserver` on `<html>[data-theme]` triggering `chart.update('none')` for tracked instances.
+- [X] T053 [US3] Implement `madarekGradientFillPlugin` inside `frontend/src/lib/chartTheme.ts` with a `MutationObserver` on `<html>[data-theme]` triggering `chart.update('none')` for tracked instances.
 - [ ] T054 [US3] Update `createChartConfig()` defaults: `borderCapStyle: 'round'`, `borderJoinStyle: 'round'`, `borderWidth: 2`, `pointRadius: 0`, `tension: 0.32`. Apply same defaults to bar charts (`borderRadius: 4`).
 
 ### Surface depth
 
-- [ ] T055 [US3] [P] Add a `.surface-card` utility in `frontend/src/styles/components.css` consuming `var(--surface-card)`, `var(--elev-1)`, optional top-edge inset highlight, and a soft inner border via `box-shadow: inset 0 0 0 1px var(--surface-border)`.
+- [X] T055 [US3] [P] Add a `.surface-card` utility in `frontend/src/styles/components.css` consuming `var(--surface-card)`, `var(--elev-1)`, optional top-edge inset highlight, and a soft inner border via `box-shadow: inset 0 0 0 1px var(--surface-border)`.
 - [ ] T056 [US3] [P] Apply `.surface-card` to every dashboard tile component in `frontend/src/components/dashboard/` and `frontend/src/components/owner/` — replacing any per-component shadow.
 
 ### Tests
 
-- [ ] T057 [P] [US3] Add `frontend/tests/unit/chartTheme.test.ts` covering palette resolver picks dark variant when `data-theme=dark`, tooltip plugin reads the right tokens, gradient plugin recomputes on mutation.
+- [X] T057 [P] [US3] Add `frontend/tests/unit/chartTheme.test.ts` covering palette resolver picks dark variant when `data-theme=dark`, tooltip plugin reads the right tokens, gradient plugin recomputes on mutation.
 
 **Checkpoint US3**: every dashboard tile and chart in Madrak reads as designed in both themes.
 

@@ -5,8 +5,24 @@
  * strings like 'var(--chart-grid)' silently falls back to defaults
  * (invisible/wrong grid + ticks). This helper resolves the real computed
  * colors from the document root and returns unified, calm chart options.
+ *
+ * 012-design-graphics-uplift addition — `useChartThemeKey()`:
+ * Chart.js caches resolved colours when its options object is built.
+ * When the user toggles between Light and Dark, every existing chart
+ * keeps its stale colours unless the consumer either calls
+ * `chart.update('none')` manually or remounts the chart. The hook
+ * below returns a key string that flips with `[data-theme]`; consumers
+ * pass it as a React `key` prop on the chart component to remount it
+ * automatically:
+ *
+ *   const themeKey = useChartThemeKey()
+ *   return <Line data={…} options={cartesianOptions()} key={themeKey} />
+ *
+ * Without the `key`, charts will look correct on first paint but break
+ * after a theme switch.
  */
 import type { ChartOptions, ChartType, ScriptableContext } from 'chart.js';
+import { useSyncExternalStore } from 'react';
 
 const FONT = 'IBM Plex Sans Arabic';
 
@@ -222,3 +238,76 @@ export const valueLabels = {
 
 // Suppress unused-type-param warning where ChartType is imported for future plugins
 export type _ChartType = ChartType;
+
+/* ─── 012-design-graphics-uplift — theme-change observer ────────────────
+   A tiny singleton that watches `<html data-theme>` for mutations and
+   notifies subscribers. `useChartThemeKey()` consumes it via
+   useSyncExternalStore so React stays in charge of re-rendering.
+
+   Listeners receive the resolved theme string ('light' | 'dark'). The
+   value is read directly from the attribute, so it always reflects the
+   exact applied theme — independent of the zustand store's `mode`
+   (which can be 'system' before resolving). */
+
+let chartThemeKey = (() => {
+  if (typeof document === 'undefined') return 'light';
+  return document.documentElement.dataset.theme || 'light';
+})();
+const chartThemeListeners = new Set<() => void>();
+let chartThemeObserverInstalled = false;
+
+function ensureChartThemeObserver() {
+  if (chartThemeObserverInstalled || typeof document === 'undefined') return;
+  chartThemeObserverInstalled = true;
+  const html = document.documentElement;
+  const obs = new MutationObserver(() => {
+    const next = html.dataset.theme || 'light';
+    if (next !== chartThemeKey) {
+      chartThemeKey = next;
+      chartThemeListeners.forEach((cb) => cb());
+    }
+  });
+  obs.observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+}
+
+function subscribeChartTheme(cb: () => void): () => void {
+  ensureChartThemeObserver();
+  chartThemeListeners.add(cb);
+  return () => {
+    chartThemeListeners.delete(cb);
+  };
+}
+
+function getChartThemeKey() {
+  return chartThemeKey;
+}
+
+/**
+ * Returns the current applied theme string ('light' | 'dark') and
+ * re-renders the calling component when `<html data-theme>` flips.
+ * Pass the returned value as a React `key` on a Chart.js component to
+ * force a remount on theme switch (and pick up fresh canvas colours).
+ */
+export function useChartThemeKey(): string {
+  return useSyncExternalStore(
+    subscribeChartTheme,
+    getChartThemeKey,
+    () => 'light',
+  );
+}
+
+/** Test-only — reset the singleton. NOT exported via the public surface. */
+export const __chartThemeTestUtils__ = {
+  reset() {
+    chartThemeListeners.clear();
+    chartThemeObserverInstalled = false;
+    chartThemeKey =
+      typeof document === 'undefined'
+        ? 'light'
+        : document.documentElement.dataset.theme || 'light';
+  },
+  forceKey(next: string) {
+    chartThemeKey = next;
+    chartThemeListeners.forEach((cb) => cb());
+  },
+};
