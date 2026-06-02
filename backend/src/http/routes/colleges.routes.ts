@@ -14,13 +14,19 @@ import { AppError } from '../../lib/errors.js';
  *
  * Designed as bundled aggregate reads — one round-trip per page — to keep
  * the UI snappy and avoid a waterfall of small fetches.
+ *
+ * Auth policy:
+ *   - GET /colleges is PUBLIC — light list (name, city, counts). No PII.
+ *     Lets the marketing homepage popover + public gallery render without
+ *     login. Authenticated routes register the auth middleware locally.
+ *   - GET /colleges/leaderboard, GET /colleges/:id remain authenticated.
  */
 const router = Router();
-router.use(authMiddleware);
 
 /**
- * GET /colleges
- * Light list for the index page: name, emoji, department / student / teacher counts.
+ * GET /colleges  (PUBLIC)
+ * Light list for the public index / homepage popover: name, emoji, city,
+ * department / student / teacher / course counts. No PII; safe to expose.
  */
 router.get('/colleges', async (_req, res, next) => {
   try {
@@ -64,7 +70,7 @@ router.get('/colleges', async (_req, res, next) => {
  * exam attempts, and lab sessions. Returns one row per faculty + rank-per-metric
  * so the frontend can render medals without recomputing.
  */
-router.get('/colleges/leaderboard', async (_req, res, next) => {
+router.get('/colleges/leaderboard', authMiddleware, async (_req, res, next) => {
   try {
     const faculties = await prisma.faculty.findMany({
       orderBy: { name: 'asc' },
@@ -180,7 +186,7 @@ router.get('/colleges/leaderboard', async (_req, res, next) => {
  * GET /colleges/:id
  * Per-college overview bundle. Single response with everything the page renders.
  */
-router.get('/colleges/:id', async (req, res, next) => {
+router.get('/colleges/:id', authMiddleware, async (req, res, next) => {
   try {
     const id = req.params.id!;
     const faculty = await prisma.faculty.findUnique({
