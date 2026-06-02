@@ -162,8 +162,8 @@ description: "Task list — 012-design-graphics-uplift"
 - [X] T064 [US7] [P] Create `frontend/src/components/overlays/Toast.tsx` (`--elev-3`, error variant requires manual dismiss; non-error auto-dismiss 5 s).
 - [ ] T065 [US7] [P] Create `frontend/src/components/overlays/NotificationPanel.tsx` (`--elev-3`, glass).
 - [ ] T066 [US7] [P] Create `frontend/src/components/overlays/CommandPalette.tsx` (`--elev-5`, heavier blur). If platform does not currently use a command palette, ship the component but do not mount.
-- [ ] T067 [US7] [P] Create `frontend/src/components/overlays/Lightbox.tsx` (`--elev-5`, full-screen backdrop scrim).
-- [ ] T068 [US7] [P] Create `frontend/src/components/overlays/Tooltip.tsx` (`--elev-2`, `--z-tooltip`).
+- [X] T067 [US7] [P] Create `frontend/src/components/overlays/Lightbox.tsx` (`--elev-5`, full-screen backdrop scrim).
+- [X] T068 [US7] [P] Create `frontend/src/components/overlays/Tooltip.tsx` (`--elev-2`, `--z-tooltip`).
 - [ ] T069 [US7] Update `frontend/src/components/overlays/index.ts` (T001) to export every overlay above.
 
 ### Existing-overlay migration

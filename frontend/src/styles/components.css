@@ -1207,6 +1207,68 @@
     margin: var(--sp-1) 0;
   }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOOLTIP — 012-design-graphics-uplift T068.                    ║
+     ║  --elev-2 + --r-sm + --z-tooltip. No glass. Tight padding.     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .tooltip {
+    position: fixed;
+    z-index: var(--z-tooltip, 250);
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+    box-shadow: var(--elev-2, var(--shadow-card-h));
+    padding: var(--sp-2) var(--sp-3);
+    font-size: var(--fs-sm);
+    line-height: 1.4;
+    max-inline-size: 280px;
+    pointer-events: none;
+    animation: madarek-tooltip-in 120ms var(--motion-ease-decelerate, ease-out) both;
+  }
+  @keyframes madarek-tooltip-in {
+    from { opacity: 0; transform: translateY(2px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LIGHTBOX — 012-design-graphics-uplift T067.                   ║
+     ║  --elev-5 + --z-lightbox. Heavy backdrop scrim, no glass.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .lightbox-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: var(--z-lightbox, 600);
+    animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+    padding: var(--sp-4);
+  }
+  .lightbox-content {
+    position: relative;
+    max-inline-size: 100%;
+    max-block-size: calc(100dvh - var(--sp-9));
+    box-shadow: var(--elev-5, 0 32px 64px rgba(0,0,0,0.5));
+    animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .lightbox-close {
+    position: absolute;
+    inset-block-start: -36px;
+    inset-inline-end: 0;
+    background: transparent;
+    border: 0;
+    color: rgba(255,255,255,0.86);
+    cursor: pointer;
+    padding: var(--sp-1);
+    font-size: 22px;
+    line-height: 1;
+    transition: color var(--t-fast) var(--ease);
+  }
+  .lightbox-close:hover { color: #fff; }
+  .lightbox-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
   .filter-bar {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: var(--sp-2);

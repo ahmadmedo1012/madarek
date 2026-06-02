@@ -20,3 +20,9 @@ export type { PopoverProps } from './Popover';
 
 export { Dropdown, DropdownItem, DropdownSeparator } from './Dropdown';
 export type { DropdownProps, DropdownItemProps } from './Dropdown';
+
+export { Tooltip } from './Tooltip';
+export type { TooltipProps } from './Tooltip';
+
+export { Lightbox } from './Lightbox';
+export type { LightboxProps } from './Lightbox';
