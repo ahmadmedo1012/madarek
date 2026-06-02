@@ -993,7 +993,8 @@
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center;
-    z-index: var(--z-modal);
+    /* 012-design-graphics-uplift T060 — z-order language. */
+    z-index: var(--z-modal, 400);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     padding: var(--sp-4);
   }
@@ -1003,8 +1004,10 @@
   .modal-card {
     background: var(--surface);
     border: 1px solid var(--rule);
-    border-radius: var(--r-2xl);
-    box-shadow: var(--shadow-modal);
+    border-radius: var(--r-xl);
+    /* 012-design-graphics-uplift T060 — modal uses --elev-4 from the
+       elevation language; falls back to legacy --shadow-modal. */
+    box-shadow: var(--elev-4, var(--shadow-modal));
     inline-size: min(560px, 100%);
     max-block-size: calc(100dvh - var(--sp-9));
     overflow: clip;
