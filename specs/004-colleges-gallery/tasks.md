@@ -33,9 +33,9 @@ Web app layout (existing).
 
 **Purpose**: Add the small scaffolding the gallery upgrade needs. No production behavior change.
 
-- [ ] T001 [P] Create `frontend/tests/gallery/` directory with a `.gitkeep` placeholder so subsequent unit tests have a home.
-- [ ] T002 [P] Create the empty file `frontend/src/hooks/useUrlQueryState.ts` with the documented public type signature from `contracts/gallery-state.md` (no implementation yet — keeps imports working in parallel tasks).
-- [ ] T003 [P] Create the empty file `frontend/src/pages/colleges/filter-colleges.ts` with the documented `filterColleges` signature, `FilterState`, `CityName`, `FilterResult` type exports from `contracts/gallery-state.md` (signature only, no body).
+- [X] T001 [P] Create `frontend/tests/gallery/` directory with a `.gitkeep` placeholder so subsequent unit tests have a home.
+- [X] T002 [P] Create the empty file `frontend/src/hooks/useUrlQueryState.ts` with the documented public type signature from `contracts/gallery-state.md` (no implementation yet — keeps imports working in parallel tasks).
+- [X] T003 [P] Create the empty file `frontend/src/pages/colleges/filter-colleges.ts` with the documented `filterColleges` signature, `FilterState`, `CityName`, `FilterResult` type exports from `contracts/gallery-state.md` (signature only, no body).
 
 **Checkpoint**: Empty scaffolding in place. Build passes.
 
@@ -47,12 +47,12 @@ Web app layout (existing).
 
 **⚠️ CRITICAL**: No user-story work begins until Phase 2 is complete.
 
-- [ ] T004 Implement `filterColleges` in `frontend/src/pages/colleges/filter-colleges.ts` per `contracts/gallery-state.md` and `data-model.md`: campus filter → query filter (Arabic NFD strip + tatweel removal + English lowercase + substring) → group by canonical campus order → drop empty groups → return `{ byCampus, total }`.
-- [ ] T005 [P] Add `frontend/tests/gallery/filter-colleges.test.ts`: empty input returns empty result; full list with no filter returns full list grouped; campus filter narrows to one campus; query "هندس" (no diacritics) matches "كلية الهندسة"; query "ENG" case-insensitively matches "Engineering"; combined filters AND; unknown campus normalizes to "مناطق أخرى".
-- [ ] T006 Implement `useUrlQueryState` in `frontend/src/hooks/useUrlQueryState.ts` per `contracts/gallery-state.md`: reads from `useSearchParams()`, exposes `{ state, setQuery, setCampus, clear }`. `setQuery` writes the URL via a 100 ms debounced effect (uses an internal `useDebouncedValue<string>` helper). Empty values strip the param. Round-trip safe.
-- [ ] T007 [P] Add `frontend/tests/gallery/useUrlQueryState.test.tsx`: initial state from URL with q + campus; setQuery debounces and eventually updates URL; setCampus updates URL immediately; clear strips both params; round-trip stability.
-- [ ] T008 [P] Add CSS scaffolding to `frontend/src/styles/colleges.css` (after the existing `.college-grid` rules): `.gallery-toolbar` (sticky on mobile, flex layout), `.gallery-search-input` (consumes `.input` + adds left-aligned search icon), `.gallery-chip-strip` (horizontal flex with scroll-snap), `.gallery-chip` + `.gallery-chip.on` (consumes `--state-card-*` tokens), `.college-card-accent` rule using `data-college-accent` attribute.
-- [ ] T009 [P] Add `.gallery-skeleton` rules in `frontend/src/styles/colleges.css` mirroring the gallery layout: 6 campus blocks × 6 card placeholders with the canonical card aspect.
+- [X] T004 Implement `filterColleges` in `frontend/src/pages/colleges/filter-colleges.ts` per `contracts/gallery-state.md` and `data-model.md`: campus filter → query filter (Arabic NFD strip + tatweel removal + English lowercase + substring) → group by canonical campus order → drop empty groups → return `{ byCampus, total }`.
+- [X] T005 [P] Add `frontend/tests/gallery/filter-colleges.test.ts`: empty input returns empty result; full list with no filter returns full list grouped; campus filter narrows to one campus; query "هندس" (no diacritics) matches "كلية الهندسة"; query "ENG" case-insensitively matches "Engineering"; combined filters AND; unknown campus normalizes to "مناطق أخرى".
+- [X] T006 Implement `useUrlQueryState` in `frontend/src/hooks/useUrlQueryState.ts` per `contracts/gallery-state.md`: reads from `useSearchParams()`, exposes `{ state, setQuery, setCampus, clear }`. `setQuery` writes the URL via a 100 ms debounced effect (uses an internal `useDebouncedValue<string>` helper). Empty values strip the param. Round-trip safe.
+- [X] T007 [P] Add `frontend/tests/gallery/useUrlQueryState.test.tsx`: initial state from URL with q + campus; setQuery debounces and eventually updates URL; setCampus updates URL immediately; clear strips both params; round-trip stability.
+- [X] T008 [P] Add CSS scaffolding to `frontend/src/styles/colleges.css` (after the existing `.college-grid` rules): `.gallery-toolbar` (sticky on mobile, flex layout), `.gallery-search-input` (consumes `.input` + adds left-aligned search icon), `.gallery-chip-strip` (horizontal flex with scroll-snap), `.gallery-chip` + `.gallery-chip.on` (consumes `--state-card-*` tokens), `.college-card-accent` rule using `data-college-accent` attribute.
+- [X] T009 [P] Add `.gallery-skeleton` rules in `frontend/src/styles/colleges.css` mirroring the gallery layout: 6 campus blocks × 6 card placeholders with the canonical card aspect.
 
 **Checkpoint**: Pure function + hook implemented + tested; CSS scaffolding in place.
 
