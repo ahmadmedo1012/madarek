@@ -404,10 +404,17 @@ export default function LandingPage() {
             </span>
           </figcaption>
           {/* floating sticker chips */}
-          <span className="landing-campus-chip landing-campus-chip-1">
+          {/* real UoZ count: 26 (2026-06). Marketing string intentionally
+              rounds down for resilience. Update when count drifts. */}
+          <Link
+            to="/colleges"
+            className="landing-campus-chip landing-campus-chip-1 landing-campus-chip--linked"
+            aria-label="استكشف كليّات جامعة الزاوية"
+          >
             <span className="sticker sm peach"><Icon icon={GraduationCap} size={16} /></span>
             <span>أكثر من 25 كلّيّة</span>
-          </span>
+            <Icon icon={ArrowLeft} size={12} className="landing-campus-chip-arrow" aria-hidden />
+          </Link>
           <span className="landing-campus-chip landing-campus-chip-2">
             <span className="sticker sm lavender"><Icon icon={Sparkles} size={16} /></span>
             <span>الحرم الرقميّ</span>

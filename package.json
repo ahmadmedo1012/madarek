@@ -23,6 +23,10 @@
     "check:icons": "bash scripts/check-icons.sh"
   },
   "devDependencies": {
+    "prisma": "^7.8.0",
     "tsx": "^4.22.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.8.0"
   }
 }

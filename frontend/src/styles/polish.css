@@ -3009,6 +3009,35 @@
     inset-inline-end: 16%;
     animation-delay: -3.5s;
   }
+
+  /* Link variant of the campus chip — same float, but reads as
+     interactive: cursor pointer, color shift on hover, inherited
+     focus ring. The trailing arrow icon nudges toward the chip's
+     trailing edge to suggest navigation. */
+  .landing-campus-chip--linked {
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+      transform var(--motion-duration-short) var(--motion-ease-standard),
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .landing-campus-chip--linked:hover {
+    background: var(--surface-2);
+    border-color: var(--rule-strong, var(--rule));
+  }
+  .landing-campus-chip--linked:hover .landing-campus-chip-arrow {
+    transform: translateX(-2px);
+  }
+  .landing-campus-chip-arrow {
+    color: var(--text-muted);
+    transition: transform var(--motion-duration-short) var(--motion-ease-decelerate);
+  }
+  /* RTL: arrow points "back" to the leading edge in Arabic, so flip it. */
+  [dir="rtl"] .landing-campus-chip-arrow { transform: scaleX(-1); }
+  [dir="rtl"] .landing-campus-chip--linked:hover .landing-campus-chip-arrow {
+    transform: scaleX(-1) translateX(-2px);
+  }
   @media (max-width: 720px) {
     .landing-campus-chip-1 { inset-block-start: 8%; inset-inline-end: 4%; font-size: var(--fs-xs); padding: 6px 10px 6px 6px; }
     .landing-campus-chip-2 { inset-block-start: 24%; inset-inline-end: 10%; font-size: var(--fs-xs); padding: 6px 10px 6px 6px; }
