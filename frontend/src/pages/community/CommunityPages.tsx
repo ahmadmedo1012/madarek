@@ -235,7 +235,7 @@ const announcementSchema = z.object({
 });
 type AnnouncementInputs = z.infer<typeof announcementSchema>;
 
-const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '🗓️'];
+const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '🗓️']; // allow-emoji: admin icon-picker palette
 
 function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolean; onClose: () => void }) {
   const create = useCreateAnnouncement();
@@ -366,7 +366,7 @@ const eventSchema = z.object({
 });
 type EventInputs = z.infer<typeof eventSchema>;
 
-const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫', '🤝'];
+const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫', '🤝']; // allow-emoji: admin icon-picker palette
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCampusEvent();

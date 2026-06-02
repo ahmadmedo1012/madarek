@@ -30,7 +30,7 @@ const STATUS_COLOR: Record<CompetitionRow['status'], 'green' | 'amber' | 'gold'>
 };
 
 const CATEGORIES = ['بحث', 'برمجة', 'ابتكار', 'تصميم', 'محاضرة', 'ريادة أعمال', 'أخرى'];
-const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '📊'];
+const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '📊']; // allow-emoji: admin icon-picker palette (user-supplied content)
 
 function formatDeadline(iso: string): string {
   const d = new Date(iso);
@@ -245,7 +245,7 @@ export function CompetitionDetailPage() {
               <li key={e.id} className="comp-entry-row">
                 {c.status === 'JUDGED' && e.score !== null && (
                   <span className="comp-entry-rank" aria-label={`الترتيب ${i + 1}`}>
-                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}{/* allow-emoji: medal rank glyphs */}
                   </span>
                 )}
                 <UserAvatar

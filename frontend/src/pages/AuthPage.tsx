@@ -89,7 +89,7 @@ export default function AuthPage() {
           </div>
 
           <div className="auth-form-header">
-            <h2 className="auth-form-title">مرحباً بعودتك 👋</h2>
+            <h2 className="auth-form-title">مرحباً بعودتك</h2>
             <p className="auth-form-sub">
               سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.
             </p>

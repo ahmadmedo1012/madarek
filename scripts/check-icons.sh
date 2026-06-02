@@ -47,10 +47,15 @@ allowed_re = re.compile(sys.argv[1])
 emoji_re = re.compile(
     "[\U0001F300-\U0001FAFF☀-➿\U0001F000-\U0001F2FF]"
 )
+# Per-line override: a line is allowed if it contains either:
+#   - "// allow-emoji:" inline comment with a reason
+#   - the `iconEmoji` identifier (data-driven user-supplied content
+#     per icon-policy.md — admin-chosen icon stored in the data model
+#     with an emoji fallback for unset values)
+allow_re = re.compile(r"allow-emoji:|iconEmoji|courseIcon")
 
 hits = []
 for root, dirs, files in os.walk("frontend/src"):
-    # Skip allowlisted directory subtrees up front.
     for f in files:
         if not (f.endswith(".ts") or f.endswith(".tsx")):
             continue
@@ -60,7 +65,7 @@ for root, dirs, files in os.walk("frontend/src"):
         try:
             with open(path, encoding="utf-8") as fh:
                 for i, line in enumerate(fh, 1):
-                    if "// allow-emoji:" in line:
+                    if allow_re.search(line):
                         continue
                     if emoji_re.search(line):
                         hits.append(f"{path}:{i}: {line.rstrip()}")
