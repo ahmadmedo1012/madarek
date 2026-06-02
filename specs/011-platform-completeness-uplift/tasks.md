@@ -28,11 +28,11 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Purpose**: Install dependencies and project plumbing introduced by spec 011.
 
-1. [ ] T001 [P] Add frontend i18n dependencies — run `npm install --workspace frontend i18next@^23 react-i18next@^14 i18next-http-backend@^2` and commit `frontend/package.json` + lockfile.
-2. [ ] T002 [P] Add frontend a11y CI deps — run `npm install --workspace frontend --save-dev @playwright/test@^1 @axe-core/playwright@^4` and commit `frontend/package.json` + lockfile.
-3. [ ] T003 [P] Create `frontend/playwright.config.ts` with one project per `{light, dark} × {ar, en}` (4 projects), `baseURL: 'http://localhost:5173'`, and a single shared `specDir: './tests/e2e'`.
-4. [ ] T004 [P] Create `scripts/check-i18n-coverage.sh` per `contracts/locale.md` (greps for literal Arabic/English strings in JSX, compares `ar.json` vs `en.json` keys, fails on divergence).
-5. [ ] T005 Wire `npm run check:i18n` in repo-root `package.json` scripts pointing at `scripts/check-i18n-coverage.sh`.
+- [ ] T001 [P] Add frontend i18n dependencies — run `npm install --workspace frontend i18next@^23 react-i18next@^14 i18next-http-backend@^2` and commit `frontend/package.json` + lockfile.
+- [ ] T002 [P] Add frontend a11y CI deps — run `npm install --workspace frontend --save-dev @playwright/test@^1 @axe-core/playwright@^4` and commit `frontend/package.json` + lockfile.
+- [ ] T003 [P] Create `frontend/playwright.config.ts` with one project per `{light, dark} × {ar, en}` (4 projects), `baseURL: 'http://localhost:5173'`, and a single shared `specDir: './tests/e2e'`.
+- [ ] T004 [P] Create `scripts/check-i18n-coverage.sh` per `contracts/locale.md` (greps for literal Arabic/English strings in JSX, compares `ar.json` vs `en.json` keys, fails on divergence).
+- [ ] T005 Wire `npm run check:i18n` in repo-root `package.json` scripts pointing at `scripts/check-i18n-coverage.sh`.
 
 **Checkpoint**: Dependencies installed; CI hooks ready; nothing user-visible has changed yet.
 
@@ -46,31 +46,31 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 ### Schema migrations
 
-6. [ ] T006 Add `Locale` enum + `User.locale` (default `AR`) and `User.rememberMeUntil` (nullable) to `backend/prisma/schema.prisma`.
-7. [ ] T007 Generate migration `011_user_locale_remember` — `npx prisma migrate dev --name 011_user_locale_remember --workspace backend`. Backfill existing rows to `AR` via `UPDATE "User" SET locale='AR' WHERE locale IS NULL` (the migration generator will do this for non-null defaults; verify in the produced SQL).
-8. [ ] T008 Add `NotificationCategory` enum, `EmailDigestCadence` enum, and `NotificationPreference` model to `backend/prisma/schema.prisma` per `data-model.md`.
-9. [ ] T009 Generate migration `011_notification_preference` — `npx prisma migrate dev --name 011_notification_preference --workspace backend`. No data backfill (preferences are lazy).
-10. [ ] T010 Add `Course.searchableNormalized`, `Faculty.searchableNormalized`, `Lecture.searchableNormalized` (nullable string) to `backend/prisma/schema.prisma`.
-11. [ ] T011 Author hand-rolled migration file `backend/prisma/migrations/<ts>_011_search_normalized/migration.sql` adding `CREATE EXTENSION IF NOT EXISTS pg_trgm`, the three columns, and three GIN trigram indexes per `data-model.md`. Run `npx prisma migrate dev` to apply.
+- [ ] T006 Add `Locale` enum + `User.locale` (default `AR`) and `User.rememberMeUntil` (nullable) to `backend/prisma/schema.prisma`.
+- [ ] T007 Generate migration `011_user_locale_remember` — `npx prisma migrate dev --name 011_user_locale_remember --workspace backend`. Backfill existing rows to `AR` via `UPDATE "User" SET locale='AR' WHERE locale IS NULL` (the migration generator will do this for non-null defaults; verify in the produced SQL).
+- [ ] T008 Add `NotificationCategory` enum, `EmailDigestCadence` enum, and `NotificationPreference` model to `backend/prisma/schema.prisma` per `data-model.md`.
+- [ ] T009 Generate migration `011_notification_preference` — `npx prisma migrate dev --name 011_notification_preference --workspace backend`. No data backfill (preferences are lazy).
+- [ ] T010 Add `Course.searchableNormalized`, `Faculty.searchableNormalized`, `Lecture.searchableNormalized` (nullable string) to `backend/prisma/schema.prisma`.
+- [ ] T011 Author hand-rolled migration file `backend/prisma/migrations/<ts>_011_search_normalized/migration.sql` adding `CREATE EXTENSION IF NOT EXISTS pg_trgm`, the three columns, and three GIN trigram indexes per `data-model.md`. Run `npx prisma migrate dev` to apply.
 
 ### Arabic normalizer (shared by search + frontend highlighting)
 
-12. [ ] T012 Create `backend/src/modules/search/normalize.ts` exporting `normalizeArabicSearch(input: string): string` exactly as specified in `contracts/search.md`.
-13. [ ] T013 [P] Create `backend/src/modules/search/__tests__/normalize.test.ts` covering the acceptance matrix from `contracts/search.md` (idempotency property test + every fixture row).
-14. [ ] T014 [P] Create `frontend/src/lib/search.ts` re-exporting `normalizeArabicSearch` from a shared location (copy the function with a comment cross-referencing `backend/src/modules/search/normalize.ts`; no runtime cross-workspace import).
-15. [ ] T015 Add `backend/scripts/backfill-search-normalized.ts` — pages each entity in batches of 1000, computes the normalized form, persists. Idempotent. Run once locally to verify.
-16. [ ] T016 Wire a Prisma client extension in `backend/src/db.ts` so `Course`/`Faculty`/`Lecture` `create` and `update` automatically populate `searchableNormalized` from the entity's primary search field.
+- [ ] T012 Create `backend/src/modules/search/normalize.ts` exporting `normalizeArabicSearch(input: string): string` exactly as specified in `contracts/search.md`.
+- [ ] T013 [P] Create `backend/src/modules/search/__tests__/normalize.test.ts` covering the acceptance matrix from `contracts/search.md` (idempotency property test + every fixture row).
+- [ ] T014 [P] Create `frontend/src/lib/search.ts` re-exporting `normalizeArabicSearch` from a shared location (copy the function with a comment cross-referencing `backend/src/modules/search/normalize.ts`; no runtime cross-workspace import).
+- [ ] T015 Add `backend/scripts/backfill-search-normalized.ts` — pages each entity in batches of 1000, computes the normalized form, persists. Idempotent. Run once locally to verify.
+- [ ] T016 Wire a Prisma client extension in `backend/src/db.ts` so `Course`/`Faculty`/`Lecture` `create` and `update` automatically populate `searchableNormalized` from the entity's primary search field.
 
 ### Session policy auth groundwork
 
-17. [ ] T017 Add `pwd_at: number` claim to access-token issuance in `backend/src/modules/auth/tokens.ts` (or equivalent). Set on `login`, `step-up`, and `password/change` paths; carry over on `refresh`.
-18. [ ] T018 Add a `requiresStepUp` route flag mechanism in `backend/src/http/middleware/stepUp.ts` that reads `pwd_at` from the decoded access token and returns `403 STEP_UP_REQUIRED` per `contracts/session-policy.md`.
-19. [ ] T019 Tag the existing sensitive routes from `contracts/session-policy.md` (exam-attempt start, exam-answer submit, grade write/patch, password change, account-settings PATCH) with `requiresStepUp: true`.
+- [ ] T017 Add `pwd_at: number` claim to access-token issuance in `backend/src/modules/auth/tokens.ts` (or equivalent). Set on `login`, `step-up`, and `password/change` paths; carry over on `refresh`.
+- [ ] T018 Add a `requiresStepUp` route flag mechanism in `backend/src/http/middleware/stepUp.ts` that reads `pwd_at` from the decoded access token and returns `403 STEP_UP_REQUIRED` per `contracts/session-policy.md`.
+- [ ] T019 Tag the existing sensitive routes from `contracts/session-policy.md` (exam-attempt start, exam-answer submit, grade write/patch, password change, account-settings PATCH) with `requiresStepUp: true`.
 
 ### Branded splash + skeleton primitives
 
-20. [ ] T020 [P] Create `frontend/public/splash.html` — a self-contained branded splash with logo, palette tokens inlined (no external CSS), used as fallback for first-paint slot.
-21. [ ] T021 [P] Extend `frontend/src/components/primitives/States.tsx` with one exported `RouteSkeleton` factory that takes a layout descriptor and applies the existing `--motion-shimmer` token; consumers will compose this per route.
+- [ ] T020 [P] Create `frontend/public/splash.html` — a self-contained branded splash with logo, palette tokens inlined (no external CSS), used as fallback for first-paint slot.
+- [ ] T021 [P] Extend `frontend/src/components/primitives/States.tsx` with one exported `RouteSkeleton` factory that takes a layout descriptor and applies the existing `--motion-shimmer` token; consumers will compose this per route.
 
 **Checkpoint**: Schema migrated; normalizer + tests pass; step-up gate active on sensitive routes (any user not in a fresh `pwd_at` window will see a 403 — frontend modal lands in US1). User stories can now proceed.
 
@@ -82,19 +82,19 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: Sign in as a seeded student; navigate to the dashboard, an enrolled course, a lecture, and an assignment, submitting a file; trigger a sensitive route after 31 minutes (or via dev-only "expire pwd_at" toggle) and confirm the StepUpModal appears, the password is accepted, and the original action completes.
 
-22. [ ] T022 [P] [US1] Add `<SkipNavLink>` component at `frontend/src/components/layout/SkipNavLink.tsx` — visually-hidden until focused; routes focus to `<main id="main">`.
-23. [ ] T023 [US1] Mount `<SkipNavLink>` as the first child of `<AppShell>` in `frontend/src/components/layout/AppShell.tsx`.
-24. [ ] T024 [P] [US1] Add `pwdAt` and `lastInteractiveAuthAt` fields to `frontend/src/stores/auth.store.ts`; populate from access-token decode.
-25. [ ] T025 [P] [US1] Create `frontend/src/components/auth/StepUpModal.tsx` — focus-trapping dialog, password input, posts to `/auth/step-up`, resolves a returned promise. Keyed strings via `t()` (will land before US7 with the keys present in `ar.json`; English added in US7).
-26. [ ] T026 [US1] Add `POST /api/v1/auth/step-up` handler in `backend/src/modules/auth/routes.ts` per `contracts/session-policy.md` — Argon2 verify, fresh `pwd_at`, rotate refresh, write `LoginEvent { kind: STEP_UP }` and `AuditLog`.
-27. [ ] T027 [US1] Add `STEP_UP` value to `LoginEvent.kind` enum in `backend/prisma/schema.prisma` (additive enum migration).
-28. [ ] T028 [US1] Extend the axios response interceptor in `frontend/src/lib/api.ts` to catch `403 STEP_UP_REQUIRED`, open `<StepUpModal>`, and retry the original request once on success — preserving the existing 401-refresh path unchanged.
-29. [ ] T029 [P] [US1] Add `rememberMe` checkbox to `frontend/src/pages/AuthPage.tsx`; wire to login post body.
-30. [ ] T030 [US1] Update `POST /api/v1/auth/login` handler to accept `rememberMe`, set `mdrk_refresh` `Max-Age` to 2592000 vs 604800 accordingly, write `User.rememberMeUntil` per `contracts/session-policy.md`.
-31. [ ] T031 [US1] Update `POST /api/v1/auth/refresh` handler to compute new refresh `Max-Age` as `min(7d, rememberMeUntil - now)`; carry `pwd_at` over.
-32. [ ] T032 [US1] Update `POST /api/v1/auth/logout` to clear `User.rememberMeUntil` and bump `tokenVersion` (preserving the existing tokenVersion behavior).
-33. [ ] T033 [US1] Verification pass — walk every authenticated route in `frontend/src/App.tsx`. For each, capture in `specs/011-platform-completeness-uplift/audit/route-status.md` whether (a) it renders real data via `useResources.ts`, (b) `ProtectedRoute` allow-list matches role intent, (c) any placeholder leaks. Open follow-up tasks for the placeholder admin pages already documented in `FRONTEND.md`.
-34. [ ] T034 [P] [US1] Add `backend/src/modules/auth/__tests__/step-up.test.ts` — happy path + wrong password + lockout-after-5 + rate-limit + `pwd_at` carry-over on refresh.
+- [ ] T022 [P] [US1] Add `<SkipNavLink>` component at `frontend/src/components/layout/SkipNavLink.tsx` — visually-hidden until focused; routes focus to `<main id="main">`.
+- [ ] T023 [US1] Mount `<SkipNavLink>` as the first child of `<AppShell>` in `frontend/src/components/layout/AppShell.tsx`.
+- [ ] T024 [P] [US1] Add `pwdAt` and `lastInteractiveAuthAt` fields to `frontend/src/stores/auth.store.ts`; populate from access-token decode.
+- [ ] T025 [P] [US1] Create `frontend/src/components/auth/StepUpModal.tsx` — focus-trapping dialog, password input, posts to `/auth/step-up`, resolves a returned promise. Keyed strings via `t()` (will land before US7 with the keys present in `ar.json`; English added in US7).
+- [ ] T026 [US1] Add `POST /api/v1/auth/step-up` handler in `backend/src/modules/auth/routes.ts` per `contracts/session-policy.md` — Argon2 verify, fresh `pwd_at`, rotate refresh, write `LoginEvent { kind: STEP_UP }` and `AuditLog`.
+- [ ] T027 [US1] Add `STEP_UP` value to `LoginEvent.kind` enum in `backend/prisma/schema.prisma` (additive enum migration).
+- [ ] T028 [US1] Extend the axios response interceptor in `frontend/src/lib/api.ts` to catch `403 STEP_UP_REQUIRED`, open `<StepUpModal>`, and retry the original request once on success — preserving the existing 401-refresh path unchanged.
+- [ ] T029 [P] [US1] Add `rememberMe` checkbox to `frontend/src/pages/AuthPage.tsx`; wire to login post body.
+- [ ] T030 [US1] Update `POST /api/v1/auth/login` handler to accept `rememberMe`, set `mdrk_refresh` `Max-Age` to 2592000 vs 604800 accordingly, write `User.rememberMeUntil` per `contracts/session-policy.md`.
+- [ ] T031 [US1] Update `POST /api/v1/auth/refresh` handler to compute new refresh `Max-Age` as `min(7d, rememberMeUntil - now)`; carry `pwd_at` over.
+- [ ] T032 [US1] Update `POST /api/v1/auth/logout` to clear `User.rememberMeUntil` and bump `tokenVersion` (preserving the existing tokenVersion behavior).
+- [ ] T033 [US1] Verification pass — walk every authenticated route in `frontend/src/App.tsx`. For each, capture in `specs/011-platform-completeness-uplift/audit/route-status.md` whether (a) it renders real data via `useResources.ts`, (b) `ProtectedRoute` allow-list matches role intent, (c) any placeholder leaks. Open follow-up tasks for the placeholder admin pages already documented in `FRONTEND.md`.
+- [ ] T034 [P] [US1] Add `backend/src/modules/auth/__tests__/step-up.test.ts` — happy path + wrong password + lockout-after-5 + rate-limit + `pwd_at` carry-over on refresh.
 
 **Checkpoint**: Login + remember-me + step-up form a complete loop end-to-end. Skip-link works. Inner-app status documented.
 
@@ -106,12 +106,12 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: From a cold cache (incognito) after >1 hour idle, hit production. First branded paint ≤ 3 s, TTI ≤ 5 s, no third-party splash visible. Repeat warm: TTI ≤ 1.5 s.
 
-35. [ ] T035 [US2] Upgrade Render service to **Standard** tier — coordinated with project owner; deployment-config change, no source-code commit. Document the change in `docs/operations/render-tier.md`.
-36. [ ] T036 [P] [US2] Configure Cloudflare in front of `madarek.onrender.com` with page rules: cache `/` for guests `s-maxage=300, swr=86400`; explicitly bypass cache for `/api/v1/*` and any path containing `mdrk_refresh` cookie. Document in `docs/operations/cloudflare.md`.
-37. [ ] T037 [P] [US2] Add early-paint reference in `frontend/index.html` to `frontend/public/splash.html` content (inline script that injects splash markup before React hydrates) — composes with T020.
-38. [ ] T038 [US2] Add per-route branded skeleton variants for the nine routes inventoried in `research.md` R-008. Each lives next to its page (e.g., `frontend/src/pages/student/DashboardPage.skeleton.tsx`). All consume `RouteSkeleton` from T021. Reduced-motion fallback verified.
-39. [ ] T039 [US2] Wire each route's skeleton as the `Suspense` fallback in `frontend/src/App.tsx` lazy-load boundaries (replace the single `<PageSkeleton />` fallback with the route-specific one).
-40. [ ] T040 [P] [US2] Add `frontend/tests/e2e/cold-start.spec.ts` — Playwright timing assertion: branded paint ≤ 3 s on cold, TTI ≤ 5 s.
+- [ ] T035 [US2] Upgrade Render service to **Standard** tier — coordinated with project owner; deployment-config change, no source-code commit. Document the change in `docs/operations/render-tier.md`.
+- [ ] T036 [P] [US2] Configure Cloudflare in front of `madarek.onrender.com` with page rules: cache `/` for guests `s-maxage=300, swr=86400`; explicitly bypass cache for `/api/v1/*` and any path containing `mdrk_refresh` cookie. Document in `docs/operations/cloudflare.md`.
+- [ ] T037 [P] [US2] Add early-paint reference in `frontend/index.html` to `frontend/public/splash.html` content (inline script that injects splash markup before React hydrates) — composes with T020.
+- [ ] T038 [US2] Add per-route branded skeleton variants for the nine routes inventoried in `research.md` R-008. Each lives next to its page (e.g., `frontend/src/pages/student/DashboardPage.skeleton.tsx`). All consume `RouteSkeleton` from T021. Reduced-motion fallback verified.
+- [ ] T039 [US2] Wire each route's skeleton as the `Suspense` fallback in `frontend/src/App.tsx` lazy-load boundaries (replace the single `<PageSkeleton />` fallback with the route-specific one).
+- [ ] T040 [P] [US2] Add `frontend/tests/e2e/cold-start.spec.ts` — Playwright timing assertion: branded paint ≤ 3 s on cold, TTI ≤ 5 s.
 
 **Checkpoint**: Render no longer cold-starts. Cloudflare absorbs the public landing. Skeletons mimic layout per page. SC-002, SC-003, SC-013 verifiable.
 
@@ -123,15 +123,15 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: On viewport ≥ 1024px, navigate four levels deep — at each, the header is sticky, breadcrumbs reflect the path, and a search query for a known lecture title (with or without diacritics, with or without `ال`) returns the lecture as the top hit.
 
-41. [ ] T041 [P] [US3] Make `Topbar` sticky in `frontend/src/components/layout/Topbar.tsx` — `position: sticky; top: 0; z-index: var(--z-topbar);`; verify against existing scroll behaviors.
-42. [ ] T042 [P] [US3] Create `frontend/src/components/layout/Breadcrumbs.tsx` — derives crumbs from React Router location + a route-label registry at `frontend/src/lib/nav.ts` keyed on i18n keys.
-43. [ ] T043 [US3] Mount `<Breadcrumbs>` immediately below `<Topbar>` for every authenticated route in `<AppShell>`.
-44. [ ] T044 [P] [US3] Implement `GET /api/v1/search` handler in `backend/src/modules/search/routes.ts` per `contracts/search.md` — substring + ≥4-char trigram fuzzy with `ال`-prefix tolerance, dedupe by `(type,id)`.
-45. [ ] T045 [US3] Wire the search route into `backend/src/app.ts` after the existing auth middleware and before catch-all routes.
-46. [ ] T046 [P] [US3] Add `backend/src/modules/search/__tests__/routes.test.ts` covering the matrix in `contracts/search.md` against seed fixtures.
-47. [ ] T047 [US3] Update `frontend/src/components/layout/GlobalSearch.tsx` — call `GET /api/v1/search` with debounce ≥ 250 ms, render results as routable list, empty-state via `t('search.no_results.*')`.
-48. [ ] T048 [P] [US3] Visually distinguish "ابدأ مجاناً الآن" (primary CTA) from "تسجيل الدخول" (secondary CTA) on `frontend/src/pages/LandingPage.tsx` — primary uses brand-gold filled, secondary uses outlined. Tokens only.
-49. [ ] T049 [P] [US3] Add `frontend/tests/e2e/search-arabic.spec.ts` covering the FR-019 + Edge Case #6 matrix (with/without diacritics, with/without `ال`, hamza/alif variants, transposition fuzzy at length ≥ 4).
+- [ ] T041 [P] [US3] Make `Topbar` sticky in `frontend/src/components/layout/Topbar.tsx` — `position: sticky; top: 0; z-index: var(--z-topbar);`; verify against existing scroll behaviors.
+- [ ] T042 [P] [US3] Create `frontend/src/components/layout/Breadcrumbs.tsx` — derives crumbs from React Router location + a route-label registry at `frontend/src/lib/nav.ts` keyed on i18n keys.
+- [ ] T043 [US3] Mount `<Breadcrumbs>` immediately below `<Topbar>` for every authenticated route in `<AppShell>`.
+- [ ] T044 [P] [US3] Implement `GET /api/v1/search` handler in `backend/src/modules/search/routes.ts` per `contracts/search.md` — substring + ≥4-char trigram fuzzy with `ال`-prefix tolerance, dedupe by `(type,id)`.
+- [ ] T045 [US3] Wire the search route into `backend/src/app.ts` after the existing auth middleware and before catch-all routes.
+- [ ] T046 [P] [US3] Add `backend/src/modules/search/__tests__/routes.test.ts` covering the matrix in `contracts/search.md` against seed fixtures.
+- [ ] T047 [US3] Update `frontend/src/components/layout/GlobalSearch.tsx` — call `GET /api/v1/search` with debounce ≥ 250 ms, render results as routable list, empty-state via `t('search.no_results.*')`.
+- [ ] T048 [P] [US3] Visually distinguish "ابدأ مجاناً الآن" (primary CTA) from "تسجيل الدخول" (secondary CTA) on `frontend/src/pages/LandingPage.tsx` — primary uses brand-gold filled, secondary uses outlined. Tokens only.
+- [ ] T049 [P] [US3] Add `frontend/tests/e2e/search-arabic.spec.ts` covering the FR-019 + Edge Case #6 matrix (with/without diacritics, with/without `ال`, hamza/alif variants, transposition fuzzy at length ≥ 4).
 
 **Checkpoint**: Sticky shell, breadcrumbs, Arabic-normalized global search shipped.
 
@@ -143,19 +143,19 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: Sign in as a student in one browser; trigger a lecture upload from a teacher account in another; the bell badge updates within 30 s in the student's window without reload. Mark-all-read zeros the badge. Toggling `inApp=false` for a category prevents new persistence.
 
-50. [ ] T050 [US4] Create in-process pub/sub at `backend/src/modules/notifications/bus.ts` (typed `EventEmitter` wrapper, single instance).
-51. [ ] T051 [US4] Hook every existing notification create / mark-read / delete site to publish on the bus (search for `prisma.notification.create` and similar).
-52. [ ] T052 [US4] Implement `GET /api/v1/notifications/stream` SSE handler in `backend/src/modules/notifications/routes.ts` per `contracts/notifications.md` — heartbeat every 30 s, `Last-Event-ID` backfill via `GET /notifications?since=`.
-53. [ ] T053 [P] [US4] Implement `GET/PUT /api/v1/notifications/preferences` and `PATCH /api/v1/notifications/preferences/:category` per `contracts/notifications.md`. Defaults filled in for missing categories.
-54. [ ] T054 [P] [US4] Implement `POST /api/v1/notifications/mark-all-read` per `contracts/notifications.md`.
-55. [ ] T055 [US4] Update `frontend/src/hooks/useResources.ts` — replace 60-s notification poll with `EventSource` subscription that opens after auth hydration; reconnect with exponential backoff (250 ms → 30 s); on reconnect, fetch `/notifications?since=<lastSeenId>`.
-56. [ ] T056 [P] [US4] Update `frontend/src/components/layout/NotificationDropdown.tsx` — add "mark all read" action and per-row mark-read; render notifications using i18n keys + params from the wire shape.
-57. [ ] T057 [P] [US4] Create `frontend/src/pages/student/NotificationsPage.tsx` — full notifications list with pagination cursor and the same mark-read actions. Wire to existing `/notifications` route in App.tsx.
-58. [ ] T058 [P] [US4] Create `frontend/src/pages/settings/NotificationPreferences.tsx` — table of categories × {in-app toggle, email cadence select}; email controls are visible-but-`disabled` with a "قريباً" / "Coming soon" badge per Clarification 2.
-59. [ ] T059 [US4] Wire `/settings/notifications` route in `frontend/src/App.tsx`.
-60. [ ] T060 [US4] Modify the notification-create path in the backend to consult `NotificationPreference.inApp` and skip persistence for `false` (preserves database hygiene; spec FR-024).
-61. [ ] T061 [P] [US4] Cap visible bell badge at "99+" in `NotificationDropdown` and paginate the page (`limit=50`) per FR-026.
-62. [ ] T062 [P] [US4] Add `frontend/tests/e2e/notifications-sse.spec.ts` — opens stream, asserts arrival within 1 s of a server-side write, reconnect-with-backfill scenario.
+- [ ] T050 [US4] Create in-process pub/sub at `backend/src/modules/notifications/bus.ts` (typed `EventEmitter` wrapper, single instance).
+- [ ] T051 [US4] Hook every existing notification create / mark-read / delete site to publish on the bus (search for `prisma.notification.create` and similar).
+- [ ] T052 [US4] Implement `GET /api/v1/notifications/stream` SSE handler in `backend/src/modules/notifications/routes.ts` per `contracts/notifications.md` — heartbeat every 30 s, `Last-Event-ID` backfill via `GET /notifications?since=`.
+- [ ] T053 [P] [US4] Implement `GET/PUT /api/v1/notifications/preferences` and `PATCH /api/v1/notifications/preferences/:category` per `contracts/notifications.md`. Defaults filled in for missing categories.
+- [ ] T054 [P] [US4] Implement `POST /api/v1/notifications/mark-all-read` per `contracts/notifications.md`.
+- [ ] T055 [US4] Update `frontend/src/hooks/useResources.ts` — replace 60-s notification poll with `EventSource` subscription that opens after auth hydration; reconnect with exponential backoff (250 ms → 30 s); on reconnect, fetch `/notifications?since=<lastSeenId>`.
+- [ ] T056 [P] [US4] Update `frontend/src/components/layout/NotificationDropdown.tsx` — add "mark all read" action and per-row mark-read; render notifications from the wire's existing `body` plain-text field for v1 (the platform is Arabic-only at this phase). The `bodyKey + bodyParams` consumption path is added later in T084 as part of the i18n switchover and does not block US4.
+- [ ] T057 [P] [US4] Create `frontend/src/pages/student/NotificationsPage.tsx` — full notifications list with pagination cursor and the same mark-read actions. Wire to existing `/notifications` route in App.tsx.
+- [ ] T058 [P] [US4] Create `frontend/src/pages/settings/NotificationPreferences.tsx` — table of categories × {in-app toggle, email cadence select}; email controls are visible-but-`disabled` with a "قريباً" / "Coming soon" badge per Clarification 2.
+- [ ] T059 [US4] Wire `/settings/notifications` route in `frontend/src/App.tsx`.
+- [ ] T060 [US4] Modify the notification-create path in the backend to (a) consult `NotificationPreference.inApp` and skip persistence for `false` (database hygiene; spec FR-024); (b) **also** populate `titleKey`, `titleParams`, `bodyKey`, `bodyParams` on the SSE / list wire shape per `contracts/notifications.md` § Response 200, computed at emission time from category + existing payload — no schema change required (the existing `body` plain-text column continues to be the persisted source-of-truth; keyed fields are projection-only). Forward-compat by design: US4 ships without consumers reading the keys; US7's T084 switches the consumer.
+- [ ] T061 [P] [US4] Cap visible bell badge at "99+" in `NotificationDropdown` and paginate the page (`limit=50`) per FR-026.
+- [ ] T062 [P] [US4] Add `frontend/tests/e2e/notifications-sse.spec.ts` — opens stream, asserts arrival within 1 s of a server-side write, reconnect-with-backfill scenario.
 
 **Checkpoint**: Real-time notifications shipped; preferences UI present (with email channel deferred); SC-007 verifiable.
 
@@ -167,13 +167,13 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: Run `npm run test:a11y` (alias for the Playwright/axe suite) — must produce zero critical or serious violations across all 36 cases. Manual keyboard-only walk of the four primary flows passes the smoke from `quickstart.md`.
 
-63. [ ] T063 [P] [US5] Wire `@axe-core/react` into `frontend/src/main.tsx` behind `import.meta.env.DEV` per R-002.
-64. [ ] T064 [P] [US5] Create `frontend/tests/e2e/a11y.spec.ts` — for each of `[/, /auth, /dashboard, /courses, /courses/:seedId, /courses/:seedId/lectures/:seedLecId, /courses/:seedId/assignments/:seedAsgnId, /notifications, /profile, /settings]` × `{light, dark}` × `{ar, en}`, run `AxeBuilder` and assert zero violations of impact `serious` or `critical`.
-65. [ ] T065 [P] [US5] Audit and tokenize focus indicators in `frontend/src/styles/interactions.css` so every focusable element renders a 3:1-contrast outline against its background in both themes. Use existing tokens; do not introduce new colors.
-66. [ ] T066 [US5] Add `<dialog>` focus-trap helper in `frontend/src/lib/a11y.ts` and apply to existing modal-like surfaces (`StepUpModal`, login modal if any, mobile drawer).
-67. [ ] T067 [P] [US5] Audit images and icon-only buttons across `frontend/src/components` — every informational image gets an `alt`; every icon button gets an `aria-label` keyed via `t()`; decorative imagery is `aria-hidden="true"`.
-68. [ ] T068 [US5] Add `npm run test:a11y` script in `frontend/package.json` (alias for `playwright test tests/e2e/a11y.spec.ts`); add a CI step that runs it.
-69. [ ] T069 [P] [US5] Manual smoke pass for the four primary flows (login → dashboard → course → assignment submit → grade view) — keyboard-only, then NVDA/VoiceOver — recorded in `specs/011-platform-completeness-uplift/audit/a11y-manual.md`.
+- [ ] T063 [P] [US5] Wire `@axe-core/react` into `frontend/src/main.tsx` behind `import.meta.env.DEV` per R-002.
+- [ ] T064 [P] [US5] Create `frontend/tests/e2e/a11y.spec.ts` — for each of `[/, /auth, /dashboard, /courses, /courses/:seedId, /courses/:seedId/lectures/:seedLecId, /courses/:seedId/assignments/:seedAsgnId, /notifications, /profile, /settings]` × `{light, dark}` × `{ar, en}`, run `AxeBuilder` and assert zero violations of impact `serious` or `critical`.
+- [ ] T065 [P] [US5] Audit and tokenize focus indicators in `frontend/src/styles/interactions.css` so every focusable element renders a 3:1-contrast outline against its background in both themes. Use existing tokens; do not introduce new colors.
+- [ ] T066 [US5] Add `<dialog>` focus-trap helper in `frontend/src/lib/a11y.ts` and apply to existing modal-like surfaces (`StepUpModal`, login modal if any, mobile drawer).
+- [ ] T067 [P] [US5] Audit images and icon-only buttons across `frontend/src/components` — every informational image gets an `alt`; every icon button gets an `aria-label` keyed via `t()`; decorative imagery is `aria-hidden="true"`.
+- [ ] T068 [US5] Add `npm run test:a11y` script in `frontend/package.json` (alias for `playwright test tests/e2e/a11y.spec.ts`); add a CI step that runs it.
+- [ ] T069 [P] [US5] Manual smoke pass for the four primary flows (login → dashboard → course → assignment submit → grade view) — keyboard-only, then NVDA/VoiceOver — recorded in `specs/011-platform-completeness-uplift/audit/a11y-manual.md`.
 
 **Checkpoint**: a11y CI gate green; manual smoke recorded; SC-004, SC-005 verifiable.
 
@@ -185,9 +185,9 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: The Phase 7 axe suite already covers contrast across `{light, dark}`. Story 6 adds an explicit "no flash of incorrect theme" assertion plus a token-level fix list.
 
-70. [ ] T070 [P] [US6] Add `frontend/tests/e2e/theme-switch.spec.ts` — switches theme via the existing `<ThemeToggle>`, asserts `[data-theme]` flips on `<html>` without a transition flicker, asserts `prefers-color-scheme` is honored on first load when no explicit choice exists.
-71. [ ] T071 [US6] For every contrast failure surfaced by the Phase 7 axe suite under dark theme, adjust the affected token in `frontend/src/styles/tokens.css` (do not patch per-component). Re-run axe until clean.
-72. [ ] T072 [P] [US6] Verify decorative motion in dark theme has no light-theme asset bleeds (visual review noted in `specs/011-platform-completeness-uplift/audit/theme-visual.md`).
+- [ ] T070 [P] [US6] Add `frontend/tests/e2e/theme-switch.spec.ts` — switches theme via the existing `<ThemeToggle>`, asserts `[data-theme]` flips on `<html>` without a transition flicker, asserts `prefers-color-scheme` is honored on first load when no explicit choice exists.
+- [ ] T071 [US6] For every contrast failure surfaced by the Phase 7 axe suite under dark theme, adjust the affected token in `frontend/src/styles/tokens.css` (do not patch per-component). Re-run axe until clean.
+- [ ] T072 [P] [US6] Verify decorative motion in dark theme has no light-theme asset bleeds (visual review noted in `specs/011-platform-completeness-uplift/audit/theme-visual.md`).
 
 **Checkpoint**: Both themes contrast-clean; no flash; SC-010 verifiable.
 
@@ -199,21 +199,21 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: Toggle to English; every visible label, button, nav, error message, and date/number format is English; reload — language persists; switch back to Arabic — full RTL restoration.
 
-73. [ ] T073 [US7] Create `frontend/src/i18n/runtime.ts` — initializes i18next with http-backend pointed at `/i18n/<locale>.json`, exposes `useT()`, `setLocale()`, and `<LocaleProvider>`. Number/date helpers use `Intl` keyed off active locale.
-74. [ ] T074 [P] [US7] Create canonical `frontend/src/i18n/catalog/ar.json` with namespaces `common, nav, auth, dashboard, course, lecture, assignment, notifications, search, profile, settings, errors` populated from existing JSX literals (initial pass).
-75. [ ] T075 [P] [US7] Create `frontend/src/i18n/catalog/en.json` mirroring every key in `ar.json` with English translations.
-76. [ ] T076 [US7] Create `frontend/src/components/layout/LocaleSwitcher.tsx` — segmented control in `Topbar` calling `setLocale()` and `PATCH /api/v1/me/locale`.
-77. [ ] T077 [US7] Implement `PATCH /api/v1/me/locale` in `backend/src/modules/me/routes.ts` per `contracts/locale.md`; write `AuditLog { action: LOCALE_CHANGED }`.
-78. [ ] T078 [US7] Update `GET /api/v1/me` to return `locale`.
-79. [ ] T079 [US7] Add inline bootstrap script to `frontend/index.html` resolving locale (URL param → cookie → `navigator.languages` → default `AR`) BEFORE React mounts; sets `<html lang dir>` to avoid flash-of-incorrect-language.
-80. [ ] T080 [US7] Migrate every literal Arabic / English string in `frontend/src/components/layout/**` (`Topbar`, `Sidebar`, `BottomNav`, `GlobalSearch`, `NotificationDropdown`) through `t()`. Add keys to both catalog files.
-81. [ ] T081 [P] [US7] Migrate `frontend/src/pages/AuthPage.tsx` literals through `t()` including the new `auth.remember_me` and `auth.step_up.title` keys (pre-seeded in T025 / T029).
-82. [ ] T082 [P] [US7] Migrate `frontend/src/pages/LandingPage.tsx` literals through `t()`.
-83. [ ] T083 [P] [US7] Migrate the nine in-scope authenticated pages (dashboard, courses, course detail, lecture player, assignment, notifications, notification-prefs, profile, settings) through `t()`.
-84. [ ] T084 [US7] Server-emitted notifications now ship `titleKey` + `titleParams` (and `bodyKey` + `bodyParams`) per `contracts/notifications.md`; update the notification create-paths in `backend/src/modules/notifications/` to populate them; existing rows fall back to plain `body` on read.
-85. [ ] T085 [P] [US7] Update `frontend/src/lib/numbers.ts` to render Arabic-Indic numerals when locale is `AR` and Western numerals when `EN` via `Intl.NumberFormat`. Update existing call sites that render numbers as plain JS strings.
-86. [ ] T086 [P] [US7] Add `frontend/tests/e2e/i18n-switch.spec.ts` — toggle to English, assert every visible string is English; assert `<html dir>` and `<html lang>` flipped; reload, assert persistence.
-87. [ ] T087 [US7] Run `scripts/check-i18n-coverage.sh` and address any remaining violations; gate CI on it.
+- [ ] T073 [US7] Create `frontend/src/i18n/runtime.ts` — initializes i18next with http-backend pointed at `/i18n/<locale>.json`, exposes `useT()`, `setLocale()`, and `<LocaleProvider>`. Number/date helpers use `Intl` keyed off active locale.
+- [ ] T074 [P] [US7] Create canonical `frontend/src/i18n/catalog/ar.json` with namespaces `common, nav, auth, dashboard, course, lecture, assignment, notifications, search, profile, settings, errors` populated from existing JSX literals (initial pass).
+- [ ] T075 [P] [US7] Create `frontend/src/i18n/catalog/en.json` mirroring every key in `ar.json` with English translations.
+- [ ] T076 [US7] Create `frontend/src/components/layout/LocaleSwitcher.tsx` — segmented control in `Topbar` calling `setLocale()` and `PATCH /api/v1/me/locale`.
+- [ ] T077 [US7] Implement `PATCH /api/v1/me/locale` in `backend/src/modules/me/routes.ts` per `contracts/locale.md`; write `AuditLog { action: LOCALE_CHANGED }`.
+- [ ] T078 [US7] Update `GET /api/v1/me` to return `locale`.
+- [ ] T079 [US7] Add inline bootstrap script to `frontend/index.html` resolving locale (URL param → cookie → `navigator.languages` → default `AR`) BEFORE React mounts; sets `<html lang dir>` to avoid flash-of-incorrect-language.
+- [ ] T080 [US7] Migrate every literal Arabic / English string in `frontend/src/components/layout/**` (`Topbar`, `Sidebar`, `BottomNav`, `GlobalSearch`, `NotificationDropdown`) through `t()`. Add keys to both catalog files.
+- [ ] T081 [P] [US7] Migrate `frontend/src/pages/AuthPage.tsx` literals through `t()` including the new `auth.remember_me` and `auth.step_up.title` keys (pre-seeded in T025 / T029).
+- [ ] T082 [P] [US7] Migrate `frontend/src/pages/LandingPage.tsx` literals through `t()`.
+- [ ] T083 [P] [US7] Migrate the nine in-scope authenticated pages (dashboard, courses, course detail, lecture player, assignment, notifications, notification-prefs, profile, settings) through `t()`.
+- [ ] T084 [US7] Switch `frontend/src/components/layout/NotificationDropdown.tsx` and `frontend/src/pages/student/NotificationsPage.tsx` to prefer `bodyKey + bodyParams` (and `titleKey + titleParams` where applicable) via `t()` when present on the wire shape, falling back to the existing `body` / `title` plain-text fields for legacy rows. Add the corresponding `notifications.<category>.title` and `notifications.<category>.body` entries to `ar.json` (T074) and `en.json` (T075). Server-side emission of the keys is already in place from T060.
+- [ ] T085 [P] [US7] Update `frontend/src/lib/numbers.ts` to render Arabic-Indic numerals when locale is `AR` and Western numerals when `EN` via `Intl.NumberFormat`. Update existing call sites that render numbers as plain JS strings.
+- [ ] T086 [P] [US7] Add `frontend/tests/e2e/i18n-switch.spec.ts` — toggle to English, assert every visible string is English; assert `<html dir>` and `<html lang>` flipped; reload, assert persistence.
+- [ ] T087 [US7] Run `scripts/check-i18n-coverage.sh` and address any remaining violations; gate CI on it.
 
 **Checkpoint**: English UI shipped; SC-006 verifiable.
 
@@ -225,16 +225,16 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Independent Test**: With `prefers-reduced-motion: no-preference`, scroll the landing page — sections fade-and-translate in (≤200 ms / ≤20 px / ≤100 ms stagger), counters animate from zero, hover elevates cards, page transitions are coherent. Type into the Oasis demo — autoplay completes, then user input gets a response. Set `prefers-reduced-motion: reduce` — all animation collapses to ≤80 ms transitions or instant.
 
-88. [ ] T088 [P] [US8] Apply `useReveal` to each `<section>` in `frontend/src/pages/LandingPage.tsx` with the existing `--t-fast` token and ≤100 ms stagger; respect reduced-motion via existing primitive contract.
-89. [ ] T089 [P] [US8] Replace plain stat numerals on the landing page with `<CountUp>` (existing primitive) — first-reveal trigger, ≤1.5 s duration.
-90. [ ] T090 [P] [US8] Add hover elevation tokens to feature cards on the landing page via `frontend/src/styles/landing-pro.css` — uses existing `--shadow-elev-2` token, ≤150 ms transition.
-91. [ ] T091 [US8] Add page-transition fade in `<AppShell>` for authenticated route changes — ≤250 ms; suppressed under reduced-motion. Mount via React Router `<Outlet>` wrapper.
-92. [ ] T092 [P] [US8] Create `frontend/src/components/landing/OasisDemo/OasisDemo.tsx` (lazy chunk) — autoplay three pre-programmed exchanges from `OasisDemo/script.ts`, then enable input.
-93. [ ] T093 [P] [US8] Create `frontend/src/components/landing/OasisDemo/script.ts` — three hand-curated Q&A samples in Arabic (with English mirror). Reviewed for accuracy against actual Madarek capabilities.
-94. [ ] T094 [US8] Implement `POST /api/v1/public/oasis-demo` in `backend/src/modules/public/oasis-demo.ts` — unauthenticated, IP-rate-limited 3/min, payload ≤200 chars, constrained system prompt, no `AiConversation` write.
-95. [ ] T095 [US8] Replace static Oasis mockup section on `LandingPage.tsx` with a `<Suspense>` boundary loading `<OasisDemo>`.
-96. [ ] T096 [P] [US8] Verify `--motion-shimmer` token in `frontend/src/styles/system.css` collapses to a static tinted block under `@media (prefers-reduced-motion: reduce)` — adjust if not.
-97. [ ] T097 [P] [US8] Add `frontend/tests/e2e/motion-reduced.spec.ts` — emulate `prefers-reduced-motion: reduce`, navigate the landing + dashboard, assert no transition exceeds 80 ms via Playwright performance API.
+- [ ] T088 [P] [US8] Apply `useReveal` to each `<section>` in `frontend/src/pages/LandingPage.tsx` with the existing `--t-fast` token and ≤100 ms stagger; respect reduced-motion via existing primitive contract.
+- [ ] T089 [P] [US8] Replace plain stat numerals on the landing page with `<CountUp>` (existing primitive) — first-reveal trigger, ≤1.5 s duration.
+- [ ] T090 [P] [US8] Add hover elevation tokens to feature cards on the landing page via `frontend/src/styles/landing-pro.css` — uses existing `--shadow-elev-2` token, ≤150 ms transition.
+- [ ] T091 [US8] Add page-transition fade in `<AppShell>` for authenticated route changes — ≤250 ms; suppressed under reduced-motion. Mount via React Router `<Outlet>` wrapper.
+- [ ] T092 [P] [US8] Create `frontend/src/components/landing/OasisDemo/OasisDemo.tsx` (lazy chunk) — autoplay three pre-programmed exchanges from `OasisDemo/script.ts`, then enable input.
+- [ ] T093 [P] [US8] Create `frontend/src/components/landing/OasisDemo/script.ts` — three hand-curated Q&A samples in Arabic (with English mirror). Reviewed for accuracy against actual Madarek capabilities.
+- [ ] T094 [US8] Implement `POST /api/v1/public/oasis-demo` in `backend/src/modules/public/oasis-demo.ts` — unauthenticated, IP-rate-limited 3/min, payload ≤200 chars, constrained system prompt, no `AiConversation` write.
+- [ ] T095 [US8] Replace static Oasis mockup section on `LandingPage.tsx` with a `<Suspense>` boundary loading `<OasisDemo>`.
+- [ ] T096 [P] [US8] Verify `--motion-shimmer` token in `frontend/src/styles/system.css` collapses to a static tinted block under `@media (prefers-reduced-motion: reduce)` — adjust if not.
+- [ ] T097 [P] [US8] Add `frontend/tests/e2e/motion-reduced.spec.ts` — emulate `prefers-reduced-motion: reduce`, navigate the landing + dashboard, assert no transition exceeds 80 ms via Playwright performance API.
 
 **Checkpoint**: Visual polish shipped; Oasis demo interactive; reduced-motion respected; SC-011, SC-012 verifiable.
 
@@ -242,14 +242,14 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 ## Phase N: Polish & Cross-Cutting Concerns
 
-98. [ ] T098 [P] Run quickstart manual smoke for every story; record results in `specs/011-platform-completeness-uplift/audit/quickstart-validation.md`.
-99. [ ] T099 [P] Run k6 load test simulating 2,000 sustained / 5,000 burst per SC-014; capture results at `specs/011-platform-completeness-uplift/audit/load-test.md`.
-100. [ ] T100 [P] Update `docs/operations/deployment.md` with the Render Standard tier + Cloudflare CDN setup learned in US2.
-101. [ ] T101 [P] Update `BACKEND.md` and `FRONTEND.md` with the new endpoints (`/notifications/stream`, `/notifications/preferences`, `/me/locale`, `/auth/step-up`, `/search`, `/public/oasis-demo`) and the new components (`StepUpModal`, `Breadcrumbs`, `LocaleSwitcher`, `OasisDemo`, `SkipNavLink`).
-102. [ ] T102 [P] Update `DATA-MODEL.md` with the schema deltas from `data-model.md`.
-103. [ ] T103 Final Constitution Check pass — for every PR in this feature, verify the principles touched are listed; remediate any gaps.
-104. [ ] T104 [P] Performance verification — measure student-dashboard initial bundle gzipped on `npm run build:report`; assert ≤250 KB per constitution principle VI; remediate (lazy-load further) if exceeded.
-105. [ ] T105 [P] Bundle size verification — assert per-locale catalog stays a separate chunk and the inactive locale is not on the critical path.
+- [ ] T098 [P] Run quickstart manual smoke for every story; record results in `specs/011-platform-completeness-uplift/audit/quickstart-validation.md`.
+- [ ] T099 [P] Run k6 load test simulating 2,000 sustained / 5,000 burst per SC-014; capture results at `specs/011-platform-completeness-uplift/audit/load-test.md`.
+- [ ] T100 [P] Update `docs/operations/deployment.md` with the Render Standard tier + Cloudflare CDN setup learned in US2.
+- [ ] T101 [P] Update `BACKEND.md` and `FRONTEND.md` with the new endpoints (`/notifications/stream`, `/notifications/preferences`, `/me/locale`, `/auth/step-up`, `/search`, `/public/oasis-demo`) and the new components (`StepUpModal`, `Breadcrumbs`, `LocaleSwitcher`, `OasisDemo`, `SkipNavLink`).
+- [ ] T102 [P] Update `DATA-MODEL.md` with the schema deltas from `data-model.md`.
+- [ ] T103 Final Constitution Check pass — for every PR in this feature, verify the principles touched are listed; remediate any gaps.
+- [ ] T104 [P] Performance verification — measure student-dashboard initial bundle gzipped on `npm run build:report`; assert ≤250 KB per constitution principle VI; remediate (lazy-load further) if exceeded.
+- [ ] T105 [P] Bundle size verification — assert per-locale catalog stays a separate chunk and the inactive locale is not on the critical path.
 
 ---
 
@@ -274,7 +274,7 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 1. US1 → independent of US2..US8 once Phase 2 is done. Delivers MVP.
 2. US2 → independent of all stories. Can ship in parallel with US1.
 3. US3 → independent.
-4. US4 → independent (notification preferences i18n keys are added in T084 which lives in US7's phase, not blocking US4).
+4. US4 → independent. Notification i18n keying is split: server-side emission of `titleKey/bodyKey + params` lives in T060 (US4); frontend consumption flips to those keys in T084 (US7). Until US7 lands, the dropdown and notifications page render the existing plain-text `body` — matches the platform's current Arabic-only state and preserves US4's independent-testability promise.
 5. US5 → covers surfaces from US1..US4; best ordered after them.
 6. US6 → composes with US5's suite.
 7. US7 → depends on the shell being stable post-US3.
