@@ -7,6 +7,7 @@ import {
   Layers, Trophy, Check, ChevronDown,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { CollegesPopover } from '../components/CollegesPopover';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
@@ -18,6 +19,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
+  const [collegesOpen, setCollegesOpen] = useState(false);
 
   if (isHydrated && user) {
     const home =
@@ -268,6 +270,17 @@ export default function LandingPage() {
             <Icon icon={ArrowLeft} size={16} />
           </Link>
           <a href="#features" className="btn outline xl">شاهد كيف تعمل</a>
+          <button
+            type="button"
+            className="btn ghost xl landing-colleges-trigger"
+            onClick={() => setCollegesOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={collegesOpen}
+          >
+            <Icon icon={GraduationCap} size={16} />
+            <span>تصفّح الكلّيّات</span>
+            <span className="landing-colleges-trigger-badge">26</span>
+          </button>
         </Reveal>
         <Reveal as="div" className="landing-cta-meta" delay={4}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -403,18 +416,13 @@ export default function LandingPage() {
               <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل
             </span>
           </figcaption>
-          {/* floating sticker chips */}
-          {/* real UoZ count: 26 (2026-06). Marketing string intentionally
-              rounds down for resilience. Update when count drifts. */}
-          <Link
-            to="/colleges"
-            className="landing-campus-chip landing-campus-chip-1 landing-campus-chip--linked"
-            aria-label="استكشف كليّات جامعة الزاوية"
-          >
+          {/* floating sticker chips — decorative, not interactive.
+              The "explore colleges" entry is the dedicated CTA button
+              below, which opens an in-page popover (no route change). */}
+          <span className="landing-campus-chip landing-campus-chip-1">
             <span className="sticker sm peach"><Icon icon={GraduationCap} size={16} /></span>
             <span>أكثر من 25 كلّيّة</span>
-            <Icon icon={ArrowLeft} size={12} className="landing-campus-chip-arrow" aria-hidden />
-          </Link>
+          </span>
           <span className="landing-campus-chip landing-campus-chip-2">
             <span className="sticker sm lavender"><Icon icon={Sparkles} size={16} /></span>
             <span>الحرم الرقميّ</span>
@@ -853,6 +861,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      <CollegesPopover open={collegesOpen} onClose={() => setCollegesOpen(false)} />
     </div>
   );
 }

@@ -129,6 +129,309 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   Hero CTA trigger for the colleges popover. Inherits .btn ghost
+   styling; the count chip sits at the trailing edge.
+   ═══════════════════════════════════════════════════════════════ */
+.landing-colleges-trigger {
+  position: relative;
+}
+.landing-colleges-trigger-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 28px;
+  block-size: 22px;
+  padding-inline: 8px;
+  margin-inline-start: var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--accent-fg, white);
+  font-size: var(--type-label-size-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Colleges Popover — opened from the homepage hero CTA.
+   Native <dialog> + ::backdrop. Native focus-trap, ESC-close,
+   backdrop styling for free.
+   ═══════════════════════════════════════════════════════════════ */
+
+.colleges-popover {
+  /* reset native dialog box */
+  border: none;
+  padding: 0;
+  background: transparent;
+  /* sizing */
+  inline-size: min(640px, calc(100vw - var(--sp-7)));
+  max-inline-size: 640px;
+  block-size: auto;
+  max-block-size: min(720px, calc(100vh - var(--sp-9)));
+  /* center */
+  margin: auto;
+}
+.colleges-popover::backdrop {
+  background: rgb(0 0 0 / 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.colleges-popover[open] {
+  animation: colleges-popover-in var(--motion-duration-medium) var(--motion-ease-decelerate);
+}
+@keyframes colleges-popover-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+@media (prefers-reduced-motion: reduce) {
+  .colleges-popover[open] { animation: none; }
+}
+
+.colleges-popover-inner {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-2xl);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.18);
+  overflow: hidden;
+}
+
+.colleges-popover-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-6) var(--sp-3);
+  border-block-end: 1px solid var(--rule);
+}
+.colleges-popover-titles { flex: 1 1 auto; min-inline-size: 0; }
+.colleges-popover-title {
+  margin: 0;
+  font-size: var(--type-headline-size-md);
+  font-weight: var(--type-headline-weight);
+  line-height: var(--type-headline-line-height);
+  letter-spacing: var(--type-headline-letter-spacing);
+  color: var(--text);
+}
+.colleges-popover-sub {
+  margin: 4px 0 0;
+  font-size: var(--type-label-size);
+  color: var(--text-muted);
+}
+.colleges-popover-sub strong {
+  color: var(--text);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.colleges-popover-close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--motion-duration-short) var(--motion-ease-standard),
+    color var(--motion-duration-short) var(--motion-ease-standard),
+    border-color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.colleges-popover-close:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--rule-strong, var(--rule));
+}
+
+.colleges-popover-search {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-6);
+  border-block-end: 1px solid var(--rule);
+  background: var(--surface-2);
+}
+.colleges-popover-search > svg { flex-shrink: 0; color: var(--text-muted); }
+.colleges-popover-search input {
+  flex: 1 1 auto;
+  inline-size: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: var(--type-body-size);
+  font-family: inherit;
+  min-block-size: 28px;
+}
+.colleges-popover-search input::placeholder { color: var(--text-faint); }
+
+.colleges-popover-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--sp-3) var(--sp-4);
+  /* subtle scroll-edge */
+  background:
+    linear-gradient(var(--surface), var(--surface)) top / 100% 8px no-repeat,
+    linear-gradient(var(--surface), var(--surface)) bottom / 100% 8px no-repeat,
+    linear-gradient(rgb(0 0 0 / 0.03), transparent) top / 100% 16px no-repeat,
+    linear-gradient(transparent, rgb(0 0 0 / 0.03)) bottom / 100% 16px no-repeat;
+  background-attachment: local, local, scroll, scroll;
+}
+
+.colleges-popover-state {
+  padding: var(--sp-7) var(--sp-4);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--type-body-size);
+}
+.colleges-popover-state-err { color: var(--danger); }
+
+.colleges-popover-group { padding-block: var(--sp-2); }
+.colleges-popover-group-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-2);
+  position: sticky;
+  inset-block-start: 0;
+  background: linear-gradient(to bottom,
+    var(--surface) 0%,
+    var(--surface) 70%,
+    color-mix(in srgb, var(--surface) 0%, transparent) 100%);
+  z-index: 1;
+}
+.colleges-popover-group-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 22px;
+  block-size: 22px;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.colleges-popover-group-title {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: var(--type-label-size);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+.colleges-popover-group-count {
+  font-size: var(--type-label-size-sm);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+}
+
+.colleges-popover-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+.colleges-popover-row {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: var(--text);
+  transition:
+    background var(--motion-duration-short) var(--motion-ease-standard);
+  /* leave room for the optional sub-title in the cell */
+  min-block-size: 40px;
+}
+.colleges-popover-row:hover {
+  background: var(--surface-2);
+}
+.colleges-popover-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.colleges-popover-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 22px;
+  block-size: 22px;
+  color: var(--text-muted);
+}
+.colleges-popover-row-name {
+  font-size: var(--type-body-size);
+  font-weight: var(--fw-medium);
+  line-height: 1.3;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.colleges-popover-row-sub {
+  grid-column: 2;
+  font-size: var(--type-label-size-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.colleges-popover-foot {
+  padding: var(--sp-3) var(--sp-6);
+  border-block-start: 1px solid var(--rule);
+  background: var(--surface-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.colleges-popover-foot-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--accent-fg, white);
+  font-size: var(--type-label-size);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  transition:
+    transform var(--motion-duration-short) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-short) var(--motion-ease-standard);
+}
+.colleges-popover-foot-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+}
+[dir="rtl"] .colleges-popover-foot-link svg { transform: scaleX(-1); }
+
+@media (max-width: 640px) {
+  .colleges-popover {
+    inline-size: 100vw;
+    max-inline-size: 100vw;
+    max-block-size: 100vh;
+    block-size: 100vh;
+    margin: 0;
+  }
+  .colleges-popover-inner {
+    border-radius: 0;
+    border: none;
+  }
+  .colleges-popover-list { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    Gallery toolbar + filter chips + accent stripe + skeleton.
    See specs/004-colleges-gallery/contracts/gallery-state.md
    ═══════════════════════════════════════════════════════════════ */
