@@ -11,6 +11,10 @@ const schema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be ≥32 chars'),
   JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET must be ≥32 chars'),
+  // Optional: service-to-service token for internal endpoints
+  // (012-design-graphics-uplift). When unset, every gated endpoint
+  // refuses every request — fail-closed by default.
+  INTERNAL_SERVICE_TOKEN: z.string().min(16).optional(),
 });
 
 const parsed = schema.safeParse(process.env);

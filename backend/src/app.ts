@@ -39,6 +39,7 @@ import studentDashboardRoutes from './http/routes/student-dashboard.routes.js';
 import teacherDashboardRoutes from './http/routes/teacher-dashboard.routes.js';
 import { themeRouter } from './modules/theme/router.js';
 import { onboardingRouter } from './modules/onboarding/router.js';
+import { milestonesRouter } from './modules/milestones/router.js';
 import { AppError } from './lib/errors.js';
 
 // Resolve frontend build path from this file's location.
@@ -119,6 +120,7 @@ export function createApp() {
   app.use('/api/v1/teacher', teacherDashboardRoutes);
   app.use('/api/v1/me/theme', themeRouter);
   app.use('/api/v1/me/onboarding', onboardingRouter);
+  app.use('/api/v1/me/milestones', milestonesRouter);
 
   // 404 for unknown API paths
   app.use('/api/v1', (_req, _res, next) => next(AppError.notFound('Route not found')));

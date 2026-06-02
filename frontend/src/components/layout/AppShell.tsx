@@ -13,6 +13,7 @@ import { useRoleAccent } from '../../hooks/useRoleAccent';
 import { useThemeProfileSync } from '../../hooks/useThemeProfileSync';
 import { useOnboardingState } from '../../hooks/useOnboardingState';
 import { OnboardingFlow } from '../onboarding/OnboardingFlow';
+import { MilestoneScene } from '../onboarding/MilestoneScene';
 import { HydrationSplash } from '../HydrationSplash';
 
 /* ───────────────────────────────────────────────────────────
@@ -284,6 +285,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
       </main>
       <BottomNav />
       <OnboardingFlow />
+      <MilestoneScene />
     </div>
   );
 }
