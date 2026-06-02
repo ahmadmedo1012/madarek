@@ -96,21 +96,21 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Token-cleanup sweep
 
-- [ ] T034 [US1] [P] Sweep `frontend/src/styles/auth.css` replacing every literal hex / rgba with a `var(--…)` from the new theme tokens.
-- [ ] T035 [US1] [P] Sweep `frontend/src/styles/base.css` for theme-token compliance.
-- [ ] T036 [US1] [P] Sweep `frontend/src/styles/components.css` for theme-token compliance.
-- [ ] T037 [US1] [P] Sweep `frontend/src/styles/layout.css` for theme-token compliance.
-- [ ] T038 [US1] [P] Sweep `frontend/src/styles/notifications.css` for theme-token compliance.
-- [ ] T039 [US1] [P] Sweep `frontend/src/styles/owner.css` for theme-token compliance.
-- [ ] T040 [US1] [P] Sweep `frontend/src/styles/pdf.css` for theme-token compliance.
-- [ ] T041 [US1] [P] Sweep `frontend/src/styles/colleges.css` for theme-token compliance and apply `var(--college-accent)` at the chrome layer.
-- [ ] T042 [US1] [P] Sweep `frontend/src/styles/landing.css` for theme-token compliance.
-- [ ] T043 [US1] Audit `frontend/src/styles/polish.css` and prune sections whose role is now covered by tokens; keep only what is genuinely additive.
+- [X] T034 [US1] [P] Sweep `frontend/src/styles/auth.css` replacing every literal hex / rgba with a `var(--…)` from the new theme tokens.
+- [X] T035 [US1] [P] Sweep `frontend/src/styles/base.css` for theme-token compliance.
+- [X] T036 [US1] [P] Sweep `frontend/src/styles/components.css` for theme-token compliance.
+- [X] T037 [US1] [P] Sweep `frontend/src/styles/layout.css` for theme-token compliance.
+- [X] T038 [US1] [P] Sweep `frontend/src/styles/notifications.css` for theme-token compliance.
+- [X] T039 [US1] [P] Sweep `frontend/src/styles/owner.css` for theme-token compliance.
+- [X] T040 [US1] [P] Sweep `frontend/src/styles/pdf.css` for theme-token compliance.
+- [X] T041 [US1] [P] Sweep `frontend/src/styles/colleges.css` for theme-token compliance and apply `var(--college-accent)` at the chrome layer.
+- [X] T042 [US1] [P] Sweep `frontend/src/styles/landing.css` for theme-token compliance.
+- [X] T043 [US1] Audit `frontend/src/styles/polish.css` and prune sections whose role is now covered by tokens; keep only what is genuinely additive.
 
 ### Tests
 
 - [X] T044 [P] [US1] Add `frontend/tests/unit/college-accent.test.ts` verifying `gateCollegeAccent` returns the original hex when contrast passes and the role-accent fallback when it fails.
-- [ ] T045 [P] [US1] Extend `frontend/tests/unit/theme.test.ts` (created in T024) with a "no untokenised colour leak" snapshot: render a representative page in Light + Dark and assert every text/background pair clears AA.
+- [X] T045 [P] [US1] Extend `frontend/tests/unit/theme.test.ts` (created in T024) with a "no untokenised colour leak" snapshot: render a representative page in Light + Dark and assert every text/background pair clears AA.
 
 **Checkpoint US1**: any merger can demo the platform in Light, Dark, and high-contrast OS preference, with role and college accents.
 
