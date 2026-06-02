@@ -53,8 +53,8 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Token foundations
 
-- [ ] T012 Extend `frontend/src/styles/tokens.css` with the Light theme block under `:root[data-theme="light"]` per `contracts/theme-tokens.md` §1–§7 (surface, text, accent, elevation, glass, illustration, chart palette tokens).
-- [ ] T013 Extend `frontend/src/styles/tokens.css` with the Dark theme block under `:root[data-theme="dark"]`. All token keys from T012 must be present.
+- [X] T012 Extend `frontend/src/styles/tokens.css` with the Light theme block under `:root[data-theme="light"]` per `contracts/theme-tokens.md` §1–§7 (surface, text, accent, elevation, glass, illustration, chart palette tokens).
+- [X] T013 Extend `frontend/src/styles/tokens.css` with the Dark theme block under `:root[data-theme="dark"]`. All token keys from T012 must be present.
 - [X] T014 [P] Extend `frontend/src/styles/tokens.css` with the `prefers-contrast: more` adaptation block nested inside each theme block (§8 of theme-tokens contract).
 - [X] T015 [P] Extend `frontend/src/styles/tokens.css` with the role-accent table under `body[data-role="…"]` for the seven roles, both theme variants (§2).
 - [X] T016 [P] Extend `frontend/src/styles/tokens.css` with `--college-accent` slot and `--college-accent-soft` derivation; document the `gateCollegeAccent()` consumer in a comment header.
@@ -75,7 +75,7 @@ description: "Task list — 012-design-graphics-uplift"
 ### Foundation tests
 
 - [X] T024 [P] Add `frontend/tests/unit/theme.test.ts` covering: pre-paint script behavior, `setChoice` synchrony, OS-watcher recompute when `choice='system'`, sync-on-sign-in cases (R-002 algorithm).
-- [ ] T025 [P] Add `backend/tests/modules/theme.test.ts` covering: `PUT /me/theme` rejects invalid enum, `GET /me/theme` returns 401 unauthenticated, audit log produced on success, atomic dual-column write.
+- [X] T025 [P] Add `backend/tests/modules/theme.test.ts` covering: `PUT /me/theme` rejects invalid enum, `GET /me/theme` returns 401 unauthenticated, audit log produced on success, atomic dual-column write.
 
 **Checkpoint**: Light/Dark themes installed, `useTheme()` works, `<html data-theme>` reflects user choice / OS, DB columns ready, `me` payload exposes them.
 
@@ -89,8 +89,8 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Components & application
 
-- [ ] T030 [US1] Create `frontend/src/components/ThemeSwitcher.tsx` — a 3-way control (Light / Dark / System) calling `useTheme().setChoice`.
-- [ ] T031 [US1] Mount `<ThemeSwitcher />` in `frontend/src/components/layout/Topbar.tsx`.
+- [X] T030 [US1] Create `frontend/src/components/ThemeSwitcher.tsx` — a 3-way control (Light / Dark / System) calling `useTheme().setChoice`.
+- [X] T031 [US1] Mount `<ThemeSwitcher />` in `frontend/src/components/layout/Topbar.tsx`.
 - [X] T032 [US1] [P] Add `useEffect` in `frontend/src/components/layout/AppShell.tsx` (or equivalent root) to set `document.body.dataset.role` from `me.role` per quickstart §"Role accent".
 - [X] T033 [US1] [P] Update `frontend/src/pages/colleges/CollegePage.tsx` (or equivalent) to set `style={{ '--college-accent': gateCollegeAccent(college.identityColor) }}` on its root element.
 

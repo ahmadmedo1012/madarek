@@ -21,7 +21,12 @@ import { AppError } from '../../lib/errors.js';
 export const themeRouter = Router();
 themeRouter.use(authMiddleware);
 
-const putBodySchema = z
+/**
+ * Public for unit testing — the body schema for `PUT /me/theme`.
+ * `tests/modules/theme-schema.test.ts` asserts its acceptance and
+ * rejection envelope without needing a live DB.
+ */
+export const themePutBodySchema = z
   .object({
     themePreference: z.nativeEnum(ThemePreference),
   })
@@ -40,9 +45,9 @@ themeRouter.get('/', async (req, res, next) => {
   }
 });
 
-themeRouter.put('/', validate(putBodySchema), async (req, res, next) => {
+themeRouter.put('/', validate(themePutBodySchema), async (req, res, next) => {
   try {
-    const next_value = (req.body as z.infer<typeof putBodySchema>).themePreference;
+    const next_value = (req.body as z.infer<typeof themePutBodySchema>).themePreference;
     const now = new Date();
     const updated = await prisma.$transaction(async (tx) => {
       const u = await tx.user.update({
