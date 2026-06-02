@@ -4,6 +4,9 @@ import { Icon } from '../Icon';
 
 export type ThemeColor = 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand';
 
+export { Button, Input } from './Form';
+export type { ButtonVariant, ButtonSize } from './Form';
+
 /* ─── Card ──────────────────────────────────────────────── */
 export function Card({
   title,
