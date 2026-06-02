@@ -185,14 +185,14 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 6
 
-- [ ] T063 [US6] Implement the `CollegeIdentityProfile` TypeScript type and the `colleges: CollegeIdentityProfile[]` array in `frontend/src/data/colleges.config.ts` per `contracts/college-identity-profile.md`. Populate entries for every real University of Zawia college (cross-reference the existing colleges data)
-- [ ] T064 [P] [US6] Add hero image assets under `frontend/public/colleges/<slug>/hero.{jpg,webp}` for each configured college. Use real University of Zawia imagery only (Principle III)
-- [ ] T065 [P] [US6] Implement `scripts/validate-college-identity.ts` (replacing the T006 skeleton): cross-reference slugs, asset existence, lucide icon validity, AA contrast computation against `--surface`, fail with per-college errors
-- [ ] T066 [P] [US6] Wire `validate:colleges` into the CI script chain (extend the script added in T007 with the now-functional validator)
-- [ ] T067 [US6] Update `frontend/src/styles/colleges.css` to consume `--college-accent`, `--college-accent-fg`, `--college-accent-soft` custom properties. Remove any hardcoded per-college hex values
-- [ ] T068 [US6] Update the college page component (under `frontend/src/pages/colleges/`) to: read the slug from the route, look up the profile from `colleges.config.ts`, set `data-college="<slug>"` and the `--college-accent*` CSS custom properties on the page root, render hero image + icon + (optional) motif from the profile
-- [ ] T069 [US6] Verify accent application is local: a college page never shadows `--success`, `--warning`, `--danger`. Add a comment block in `colleges.css` documenting this constraint
-- [ ] T070 [US6] Add at least two illustrative entries with `accentAccessible` overrides to verify the contrast-fallback path works end-to-end
+- [X] T063 [US6] Implement the `CollegeIdentityProfile` TypeScript type and the `colleges: CollegeIdentityProfile[]` array in `frontend/src/data/colleges.config.ts` per `contracts/college-identity-profile.md`. Populate entries for every real University of Zawia college (cross-reference the existing colleges data)
+- [X] T064 [P] [US6] Add hero image assets under `frontend/public/colleges/<slug>/hero.{jpg,webp}` for each configured college. Use real University of Zawia imagery only (Principle III)
+- [X] T065 [P] [US6] Implement `scripts/validate-college-identity.ts` (replacing the T006 skeleton): cross-reference slugs, asset existence, lucide icon validity, AA contrast computation against `--surface`, fail with per-college errors
+- [X] T066 [P] [US6] Wire `validate:colleges` into the CI script chain (extend the script added in T007 with the now-functional validator)
+- [X] T067 [US6] Update `frontend/src/styles/colleges.css` to consume `--college-accent`, `--college-accent-fg`, `--college-accent-soft` custom properties. Remove any hardcoded per-college hex values
+- [X] T068 [US6] Update the college page component (under `frontend/src/pages/colleges/`) to: read the slug from the route, look up the profile from `colleges.config.ts`, set `data-college="<slug>"` and the `--college-accent*` CSS custom properties on the page root, render hero image + icon + (optional) motif from the profile
+- [X] T069 [US6] Verify accent application is local: a college page never shadows `--success`, `--warning`, `--danger`. Add a comment block in `colleges.css` documenting this constraint
+- [X] T070 [US6] Add at least two illustrative entries with `accentAccessible` overrides to verify the contrast-fallback path works end-to-end
 
 **Checkpoint**: User Stories 1–6 functional. College pages are now identity-rich and data-driven.
 
