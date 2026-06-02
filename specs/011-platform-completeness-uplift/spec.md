@@ -16,6 +16,16 @@ The audit's single most severe finding is that the inner application is not func
 
 Discussion forums, certificate generation, native mobile apps, virtual labs (Cisco/Arduino/AR/VR), and live-video integrations are recognized as valuable in the audit but are **out of scope for this feature** and tracked as separate future work (see Out of Scope).
 
+## Clarifications
+
+### Session 2026-06-02
+
+1. Q: Authentication method for v1 → A: University email + password, managed by Madarek. Greenfield — there is no pre-existing login mechanism in the platform today, so this feature ships the first authentication system rather than integrating with one.
+2. Q: Notification email digest in v1? → A: In-app channel only ships in v1. Email-digest preference controls remain visible in the preferences UI as disabled "coming soon" controls; actual email delivery is deferred to a future feature.
+3. Q: Concurrent-user scalability target for v1 → A: 2,000 concurrent users sustained, 5,000 concurrent users at burst peak (exam windows). Sized to ~5–10% of the audited ~48K-registered base, with headroom for growth.
+4. Q: Session lifetime → A: 12-hour absolute lifetime by default; opt-in "remember me" extends to 30 days; sensitive routes (active exam pages, grade entry, password change, account-settings changes) enforce a 30-minute idle timeout requiring re-authentication.
+5. Q: Global search matching semantics → A: Substring matching with Arabic-aware normalization (diacritic / تشكيل folding, alif and hamza folding, tolerance for the ال definite-article prefix) and typo-tolerant fuzzy matching for queries of 4 characters or more, case-insensitive across both languages. Search scope covers entity titles and names (course title, faculty name, lecture title) — not full content body, which is deferred.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Student can actually use the platform end-to-end (Priority: P1)
@@ -173,7 +183,7 @@ The landing page and platform shell carry the visible signature of the existing 
 3. Large file submission — uploads above the configured per-file size limit are rejected with a clear error before transfer begins, not after.
 4. Notification flood — a sudden burst of notifications (e.g., bulk grade posting for an entire class) must not freeze the UI; the bell badge caps at "99+" visually and the list paginates.
 5. Search with no results — the global search must show a useful empty state in the user's selected language with at least one suggested action.
-6. Search with exact-match Arabic + diacritics — a search query with or without Arabic diacritics, and with or without RTL/LTR mixing, returns the same matches.
+6. Search with exact-match Arabic + diacritics — a search query with or without Arabic diacritics, with the ال definite-article prefix included or omitted, with hamza/alif spelling variants, and with or without RTL/LTR mixing, returns the same matches.
 7. Theme + language combinations — every combination of {light, dark} × {ar, en} must render correctly without text clipping, mirror bugs, or contrast failures.
 8. Reduced-motion + dark mode — the simplified motion fallback must still be visually coherent in dark theme.
 9. Right-to-left transitions — page transitions, drawer slide-ins, and toast notifications must originate from the correct edge in RTL mode.
@@ -185,7 +195,7 @@ The landing page and platform shell carry the visible signature of the existing 
 
 ### Functional Requirements — Working core (US1)
 
-- **FR-001**: System MUST authenticate users with university-issued credentials and produce a session that survives page reloads and revisits within the configured session lifetime.
+- **FR-001**: System MUST authenticate users via university email address + password (managed by Madarek), produce a session with a 12-hour absolute lifetime by default, optionally extendable to 30 days when the user opts in to a "remember me" persistent session at login. Sensitive routes (active exam pages, grade entry, password change, account-settings changes) MUST additionally enforce a 30-minute idle timeout after which the user is re-prompted for credentials before the action proceeds. The system MUST support password reset via email-link verification. SSO/SAML integration with the university identity provider is explicitly deferred to a future feature.
 - **FR-002**: System MUST route signed-in users to a personal dashboard at `/dashboard` that surfaces enrolled courses, upcoming deadlines, and recent grades — not the marketing landing page.
 - **FR-003**: System MUST list a student's enrolled courses on a dedicated authenticated route distinct from the public `/colleges` discovery surface.
 - **FR-004**: System MUST render each course at a dedicated route showing lecture list, assignment list, and current grade summary.
@@ -209,7 +219,7 @@ The landing page and platform shell carry the visible signature of the existing 
 - **FR-016**: System MUST collapse to a hamburger drawer at viewport widths <768px, with the same destinations reachable.
 - **FR-017**: System MUST render breadcrumbs on every inner page reflecting the navigation path, with each prior level clickable.
 - **FR-018**: System MUST keep the header visible (sticky) during long-scroll pages.
-- **FR-019**: System MUST expose a global search input in the header that returns matches across courses, faculties, and lecture titles, with debounced query handling and an empty-state message when no results match.
+- **FR-019**: System MUST expose a global search input in the header that returns matches across course titles, faculty names, and lecture titles, with debounced query handling (≥250ms idle window before issuing the query) and an empty-state message when no results match. Matching MUST be case-insensitive across both supported languages and apply Arabic-aware normalization: diacritics (تشكيل) folded, alif and hamza variants folded to a canonical form, and the ال definite-article prefix tolerated whether or not the user types it. Queries of 4 characters or more MUST also accept single-character typo / transposition tolerance (Levenshtein distance 1). Full-text search across lecture content body is explicitly deferred.
 - **FR-020**: System MUST distinguish primary calls-to-action ("Start free", "Login") visually so new and returning users do not confuse them.
 
 ### Functional Requirements — Notifications (US4)
@@ -217,7 +227,7 @@ The landing page and platform shell carry the visible signature of the existing 
 - **FR-021**: System MUST surface a notification bell in the header with an unread-count badge for signed-in users.
 - **FR-022**: System MUST aggregate events relevant to the user's role (lecture upload, deadline approaching, grade posted, announcement) into a unified notifications surface.
 - **FR-023**: Users MUST be able to open a dedicated notifications page that lists notifications in reverse-chronological order with mark-read, mark-all-read, and delete actions.
-- **FR-024**: Users MUST be able to set per-category channel preferences (in-app on/off, email digest daily / weekly / off), and the system MUST respect those preferences.
+- **FR-024**: Users MUST be able to set per-category in-app notification preferences (on/off), and the system MUST respect those preferences. The preferences UI MUST also surface email-digest controls (daily / weekly / off) visibly but disabled with a "coming soon" indicator; actual email delivery is deferred to a future feature.
 - **FR-025**: System MUST deliver in-app notifications to a signed-in user's session within 30 seconds of the originating event without requiring a manual page refresh.
 - **FR-026**: System MUST cap visible unread badges at "99+" and paginate the notification list to avoid UI freeze during bursts.
 
@@ -284,11 +294,12 @@ The landing page and platform shell carry the visible signature of the existing 
 - **SC-011**: 100% of motion respects `prefers-reduced-motion: reduce` (no transition exceeds 80ms when reduced motion is requested).
 - **SC-012**: Visitors who interact with the Oasis demo on the landing page convert to "Start free" sign-up clicks at a rate at least 25% higher than visitors who do not, in A/B comparison.
 - **SC-013**: Mean cold-start time observed by visitors drops from 30–60 seconds (audit baseline) to under 5 seconds.
+- **SC-014**: System sustains 2,000 concurrent active users without latency or error-rate regression beyond SC-002 and SC-013 thresholds, and absorbs a 5,000 concurrent-user burst peak (e.g., simultaneous exam start across multiple faculties) without dropping requests or producing user-visible errors above 1%.
 
 ## Assumptions
 
 1. The student MVP flow (US1) targets students first; professor and administrator tools beyond grade entry are deferred to a follow-on feature.
-2. Authentication uses university-issued credentials; the specific identity provider integration (SAML/SSO/email) is selected at planning time and does not change the surface contract in this spec.
+2. Authentication is greenfield — Madarek does not currently have a working login flow, so v1 ships email + password managed entirely by Madarek (per Clarification 1). University SSO/SAML is out of scope for this feature.
 3. File submission size and type limits are configurable per assignment by professors; sensible defaults (e.g., 50 MB per file, common document and code formats) are applied when not configured.
 4. Notification delivery latency is "soft real-time" (target ≤30s) using whatever transport the platform already runs; no hard real-time SLA is required for v1.
 5. The motion identity, type roles, chart palette, and decorative motion are sourced from `001-premium-motion-system`, `002-visual-uplift`, and `003-motion-graphics-layer` and are not redesigned in this feature.
@@ -313,6 +324,7 @@ The following items appear in the audit but are explicitly **out of scope** for 
 9. Content partnerships and external course catalog ingestion.
 10. Blog / news section.
 11. Languages beyond Arabic and English in v1 of i18n.
+12. Email-digest delivery for notifications (preference UI controls ship in v1 but are disabled; the actual email channel is deferred per Clarification 2).
 
 ## Dependencies
 
