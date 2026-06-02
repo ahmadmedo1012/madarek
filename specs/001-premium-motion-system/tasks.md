@@ -141,16 +141,16 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 4
 
-- [ ] T045 [US4] Implement `frontend/src/components/motion/Skeleton.tsx` exporting `Skeleton` and `SkeletonGroup` per `contracts/motion-primitives.tsx.md`. Variants: `text`, `kpi`, `card`, `chart`, `list-row`, `avatar`. Reduced-motion: static muted block. Includes the 4-second "still loading…" inline cue
-- [ ] T046 [US4] Add skeleton variant CSS (one block per variant) to `frontend/src/styles/motion.css` driven by `--motion-duration-skeleton`
-- [ ] T047 [P] [US4] Replace the loading state in `frontend/src/pages/student/DashboardPage.tsx` with a `<SkeletonGroup>` matching the dashboard's grid (KPI tiles, chart, list)
-- [ ] T048 [P] [US4] Replace the loading state in `frontend/src/pages/teacher/TeacherIntelligencePage.tsx` with a matching `<SkeletonGroup>`
-- [ ] T049 [P] [US4] Replace the loading state in `frontend/src/pages/student/CoursesPage.tsx`, `LibraryPage.tsx`, `MoocPage.tsx`, `JobsPage.tsx` with appropriate `<SkeletonGroup>` shapes
-- [ ] T050 [P] [US4] Replace loading states in `frontend/src/pages/admin/AdminGovernancePages.tsx` and `frontend/src/pages/owner/` dashboard pages with matching skeletons
-- [ ] T051 [P] [US4] Replace loading states in `frontend/src/pages/exams/OnlineExamsPages.tsx` and `frontend/src/pages/community/CommunityPages.tsx` with matching skeletons
-- [ ] T052 [US4] Audit `frontend/src/components/primitives/States.tsx` (`EmptyState`, `ErrorState`, existing `LoadingState`); ensure each is visually distinct from the skeleton and includes the suggested-action / retry slot per FR-016, FR-017
-- [ ] T053 [US4] Add a primitive-level unit test at `frontend/tests/motion/Skeleton.test.tsx` (variant rendering, reduced-motion path, "still loading" cue appears after 4 s)
-- [ ] T054 [US4] Visual + CLS verification: open the routes patched in T047–T051 with throttled network in DevTools; confirm CLS ≤ 0.05 measured via Lighthouse or DevTools Performance panel
+- [X] T045 [US4] Implement `frontend/src/components/motion/Skeleton.tsx` exporting `Skeleton` and `SkeletonGroup` per `contracts/motion-primitives.tsx.md`. Variants: `text`, `kpi`, `card`, `chart`, `list-row`, `avatar`. Reduced-motion: static muted block. Includes the 4-second "still loading…" inline cue
+- [X] T046 [US4] Add skeleton variant CSS (one block per variant) to `frontend/src/styles/motion.css` driven by `--motion-duration-skeleton`
+- [X] T047 [P] [US4] Replace the loading state in `frontend/src/pages/student/DashboardPage.tsx` with a `<SkeletonGroup>` matching the dashboard's grid (KPI tiles, chart, list)
+- [X] T048 [P] [US4] Replace the loading state in `frontend/src/pages/teacher/TeacherIntelligencePage.tsx` with a matching `<SkeletonGroup>`
+- [X] T049 [P] [US4] Replace the loading state in `frontend/src/pages/student/CoursesPage.tsx`, `LibraryPage.tsx`, `MoocPage.tsx`, `JobsPage.tsx` with appropriate `<SkeletonGroup>` shapes
+- [X] T050 [P] [US4] Replace loading states in `frontend/src/pages/admin/AdminGovernancePages.tsx` and `frontend/src/pages/owner/` dashboard pages with matching skeletons
+- [X] T051 [P] [US4] Replace loading states in `frontend/src/pages/exams/OnlineExamsPages.tsx` and `frontend/src/pages/community/CommunityPages.tsx` with matching skeletons
+- [X] T052 [US4] Audit `frontend/src/components/primitives/States.tsx` (`EmptyState`, `ErrorState`, existing `LoadingState`); ensure each is visually distinct from the skeleton and includes the suggested-action / retry slot per FR-016, FR-017
+- [X] T053 [US4] Add a primitive-level unit test at `frontend/tests/motion/Skeleton.test.tsx` (variant rendering, reduced-motion path, "still loading" cue appears after 4 s)
+- [X] T054 [US4] Visual + CLS verification: open the routes patched in T047–T051 with throttled network in DevTools; confirm CLS ≤ 0.05 measured via Lighthouse or DevTools Performance panel
 
 **Checkpoint**: User Stories 1–4 functional. Loading is no longer the perceived-quality failure mode.
 
