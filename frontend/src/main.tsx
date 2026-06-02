@@ -15,6 +15,17 @@ import './styles/colleges.css';
 import './styles/polish.css';
 import App from './App';
 
+// axe-core: surface a11y violations in the dev console only. No prod cost.
+if (import.meta.env.DEV) {
+  void import('@axe-core/react').then(({ default: axe }) => {
+    void import('react').then((React) => {
+      void import('react-dom').then((ReactDOM) => {
+        axe(React.default ?? React, ReactDOM.default ?? ReactDOM, 1000);
+      });
+    });
+  });
+}
+
 const root = document.getElementById('root');
 if (!root) throw new Error('#root element missing');
 

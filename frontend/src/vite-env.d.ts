@@ -1,7 +1,12 @@
-// Vite-injected env vars (we only use these two)
+// Vite-injected env vars
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL?: string;
   readonly VITE_APP_NAME?: string;
+  // Vite built-ins
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly MODE: string;
+  readonly BASE_URL: string;
 }
 
 interface ImportMeta {

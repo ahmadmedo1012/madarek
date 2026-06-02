@@ -118,6 +118,69 @@
     --transition-slow:   var(--t-slow) var(--ease);
     --transition-all:    var(--t-clean);
 
+    /* ─── Motion (semantic layer — see contracts/motion-tokens.md) ───
+       Canonical names new code MUST consume. Mapped to the raw --t-*
+       and --ease-* tokens above so they remain a single source. */
+    --motion-duration-micro:    var(--t-micro);   /*  80ms */
+    --motion-duration-short:    var(--t-fast);    /* 160ms */
+    --motion-duration-medium:   var(--t-base);    /* 240ms */
+    --motion-duration-long:     var(--t-slow);    /* 380ms */
+    --motion-duration-page:     320ms;
+    --motion-duration-reveal:   360ms;
+    --motion-duration-stat:     700ms;
+    --motion-duration-skeleton: 1200ms;
+
+    --motion-ease-standard:    var(--ease);
+    --motion-ease-decelerate:  var(--ease-out);
+    --motion-ease-accelerate:  var(--ease-in);
+    --motion-ease-emphasized:  var(--ease-soft);
+
+    --motion-distance-small:   6px;
+    --motion-distance-medium:  16px;
+    --motion-distance-large:   48px;
+
+    --motion-stagger-step:     60ms;
+    --motion-stagger-cap:      6;
+
+    /* Direction multiplier — flipped under [dir="rtl"] so logical
+       motion expressions ("toward content") work in both directions. */
+    --motion-direction:        1;
+
+    /* ─── Interaction state tokens (see contracts/interaction-tokens.md) ─── */
+    --state-focus-ring-color:  var(--accent, #2563eb);
+    --state-focus-ring-width:  2px;
+    --state-focus-ring-offset: 2px;
+    --state-focus-ring:        0 0 0 var(--state-focus-ring-width) var(--state-focus-ring-color);
+
+    --state-button-hover-bg-shift:   4%;
+    --state-button-hover-translate:  -1px;
+    --state-button-pressed-scale:    0.98;
+    --state-button-pressed-duration: var(--motion-duration-micro);
+    --state-button-disabled-opacity: 0.5;
+
+    --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
+    --state-card-hover-translate: -1px;
+    --state-card-hover-border:    var(--rule-strong, var(--rule, var(--neutral-200)));
+    --state-card-pressed-scale:   0.99;
+    --state-card-selected-ring:   inset 0 0 0 2px var(--accent);
+    --state-card-disabled-opacity: 0.5;
+
+    --state-input-focus-ring:     var(--state-focus-ring);
+    --state-input-focus-border:   var(--accent);
+    --state-input-error-border:   var(--danger, #dc2626);
+    --state-input-disabled-opacity: 0.6;
+    --state-input-loading-cursor: progress;
+
+    --state-tab-active-indicator:   2px solid var(--accent);
+    --state-tab-indicator-duration: var(--motion-duration-medium);
+    --state-tab-indicator-ease:     var(--motion-ease-emphasized);
+
+    --state-link-hover-underline:  1.5px solid currentColor;
+
+    --state-loading-spinner-size:  1em;
+    --state-loading-spinner-stroke: 2px;
+    --state-loading-spinner-color: currentColor;
+
     /* ─── Layout ────────────────────────────────────────────────────── */
     --sidebar-w: 256px;
     --sidebar-w-collapsed: 64px;
@@ -138,6 +201,13 @@
 
     --z-1: 10;     --z-2: 100;    --z-3: 1000;
     --z-popover: 1100;  --z-modal: 1200;  --z-toast: 1300;
+  }
+
+  /* RTL flips the direction multiplier so logical motion expressions
+     ("toward content", "from trailing edge") work without per-component
+     RTL forks. See specs/001-premium-motion-system/contracts/motion-tokens.md */
+  [dir="rtl"] {
+    --motion-direction: -1;
   }
 
   /* ════════════════════════════════════════════════════════════════════

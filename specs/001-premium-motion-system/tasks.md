@@ -53,17 +53,17 @@ This is a **web application** layout (existing).
 
 **⚠️ CRITICAL**: No user story work can begin until Phase 2 is complete.
 
-- [ ] T009 Extend `frontend/src/styles/tokens.css` to add the canonical `--motion-*` tokens per `contracts/motion-tokens.md` (durations, easings, distances, stagger, direction). Keep existing `--t-*` and `--ease-*` tokens intact; add semantic aliases mapped to them
-- [ ] T010 Add the `--motion-direction: 1` default and `[dir="rtl"] { --motion-direction: -1; }` rule in `frontend/src/styles/tokens.css`
-- [ ] T011 Add the `@media (prefers-reduced-motion: reduce)` block to `frontend/src/styles/motion.css` overriding decorative motion tokens to `0ms` / `≤80ms` per `contracts/motion-tokens.md`
-- [ ] T012 [P] Extend `frontend/src/styles/tokens.css` to add the canonical `--state-*` interaction tokens per `contracts/interaction-tokens.md` (focus ring, button, card, input, tab, link, loading)
-- [ ] T013 [P] Add a universal `:focus-visible` rule in `frontend/src/styles/motion.css` consuming `--state-focus-ring` so every focusable element gains the canonical focus ring by default (overridable per-component)
-- [ ] T014 [P] Add reveal keyframes (`@keyframes reveal-rise`, `@keyframes reveal-fade`) in `frontend/src/styles/motion.css` driven by `--motion-distance-*`, `--motion-duration-reveal`, `--motion-ease-decelerate`, and the `--motion-direction` multiplier
-- [ ] T015 [P] Add the skeleton shimmer keyframe (`@keyframes skeleton-shimmer`) in `frontend/src/styles/motion.css`, looping at `--motion-duration-skeleton`; static fallback under reduced-motion
-- [ ] T016 Implement `frontend/src/components/motion/useReducedMotion.ts` per `contracts/motion-primitives.tsx.md`: matchMedia subscription, SSR-safe default, change-listener for OS-level toggles
-- [ ] T017 [P] Add a primitive-level unit test for `useReducedMotion` at `frontend/tests/motion/useReducedMotion.test.tsx` (matchMedia stub, change event propagation)
-- [ ] T018 Add a stylelint rule (or a custom check in CI) that fails when raw `<number>ms`, `<number>s`, `cubic-bezier(...)`, or `ease-in-out` literals appear in `frontend/src/**/*.{css,tsx,ts}` outside `tokens.css`/`motion.css`. If stylelint setup is heavy, ship a grep-based pre-commit check in `scripts/check-motion-tokens.sh`
-- [ ] T019 Add an `@axe-core/react` dev-only initializer in `frontend/src/main.tsx` (gated behind `import.meta.env.DEV`) so a11y violations surface in the dev console
+- [X] T009 Extend `frontend/src/styles/tokens.css` to add the canonical `--motion-*` tokens per `contracts/motion-tokens.md` (durations, easings, distances, stagger, direction). Keep existing `--t-*` and `--ease-*` tokens intact; add semantic aliases mapped to them
+- [X] T010 Add the `--motion-direction: 1` default and `[dir="rtl"] { --motion-direction: -1; }` rule in `frontend/src/styles/tokens.css`
+- [X] T011 Add the `@media (prefers-reduced-motion: reduce)` block to `frontend/src/styles/motion.css` overriding decorative motion tokens to `0ms` / `≤80ms` per `contracts/motion-tokens.md`
+- [X] T012 [P] Extend `frontend/src/styles/tokens.css` to add the canonical `--state-*` interaction tokens per `contracts/interaction-tokens.md` (focus ring, button, card, input, tab, link, loading)
+- [X] T013 [P] Add a universal `:focus-visible` rule in `frontend/src/styles/motion.css` consuming `--state-focus-ring` so every focusable element gains the canonical focus ring by default (overridable per-component)
+- [X] T014 [P] Add reveal keyframes (`@keyframes reveal-rise`, `@keyframes reveal-fade`) in `frontend/src/styles/motion.css` driven by `--motion-distance-*`, `--motion-duration-reveal`, `--motion-ease-decelerate`, and the `--motion-direction` multiplier
+- [X] T015 [P] Add the skeleton shimmer keyframe (`@keyframes skeleton-shimmer`) in `frontend/src/styles/motion.css`, looping at `--motion-duration-skeleton`; static fallback under reduced-motion
+- [X] T016 Implement `frontend/src/components/motion/useReducedMotion.ts` per `contracts/motion-primitives.tsx.md`: matchMedia subscription, SSR-safe default, change-listener for OS-level toggles
+- [X] T017 [P] Add a primitive-level unit test for `useReducedMotion` at `frontend/tests/motion/useReducedMotion.test.tsx` (matchMedia stub, change event propagation)
+- [X] T018 Add a stylelint rule (or a custom check in CI) that fails when raw `<number>ms`, `<number>s`, `cubic-bezier(...)`, or `ease-in-out` literals appear in `frontend/src/**/*.{css,tsx,ts}` outside `tokens.css`/`motion.css`. If stylelint setup is heavy, ship a grep-based pre-commit check in `scripts/check-motion-tokens.sh`
+- [X] T019 Add an `@axe-core/react` dev-only initializer in `frontend/src/main.tsx` (gated behind `import.meta.env.DEV`) so a11y violations surface in the dev console
 
 **Checkpoint**: Canonical tokens live, reduced-motion is wired, focus ring is universal, lint catches raw values, axe runs in dev. User stories may now begin.
 
