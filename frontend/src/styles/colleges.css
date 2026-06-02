@@ -121,6 +121,164 @@
   grid-template-columns: repeat(2, 1fr);
   gap: var(--sp-2);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Gallery toolbar + filter chips + accent stripe + skeleton.
+   See specs/004-colleges-gallery/contracts/gallery-state.md
+   ═══════════════════════════════════════════════════════════════ */
+
+.gallery-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+  margin-block: var(--sp-5) var(--sp-7);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+}
+
+.gallery-search-input {
+  flex: 1 1 240px;
+  min-inline-size: 240px;
+}
+
+.gallery-chip-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.gallery-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px var(--sp-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  cursor: pointer;
+  transition:
+    background var(--motion-duration-short) var(--motion-ease-standard),
+    border-color var(--motion-duration-short) var(--motion-ease-standard),
+    color var(--motion-duration-short) var(--motion-ease-standard);
+  /* generous touch target */
+  min-block-size: 36px;
+}
+.gallery-chip:hover {
+  border-color: var(--rule-strong, var(--rule));
+  color: var(--text);
+}
+.gallery-chip.gallery-chip-on,
+.gallery-chip[aria-selected="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  font-weight: var(--fw-semibold);
+}
+.gallery-chip-count {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--type-label-size-sm);
+}
+
+.gallery-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px var(--sp-3);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--type-label-size);
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  transition: color var(--motion-duration-short) var(--motion-ease-standard);
+}
+.gallery-clear:hover { color: var(--text); }
+
+/* Identity-profile accent stripe on the leading edge of the card. */
+.college-card[data-college-accent] {
+  border-inline-start: 3px solid var(--college-accent, var(--rule));
+}
+
+/* "→ زيارة الصفحة" hover affordance — fades in on hover, suppressed
+   on touch + reduced-motion. */
+.college-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-block-start: var(--sp-2);
+  font-size: var(--type-label-size);
+  color: var(--accent-strong);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-short) var(--motion-ease-decelerate);
+}
+.college-card:hover .college-card-cta,
+.college-card:focus-visible .college-card-cta {
+  opacity: 1;
+  transform: translateX(0);
+}
+@media (hover: none) {
+  .college-card-cta { display: none; }
+}
+
+/* Gallery-shaped skeleton: campus header + grid placeholder. */
+.gallery-skeleton-section {
+  margin-block: var(--sp-7);
+}
+.gallery-skeleton-section .gallery-skeleton-title {
+  inline-size: 160px;
+  block-size: 22px;
+  border-radius: var(--r-sm);
+  margin-block-end: var(--sp-4);
+}
+.gallery-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-4);
+}
+
+/* Mobile: stack cards single-column, sticky toolbar with backdrop blur. */
+@media (max-width: 767px) {
+  .gallery-toolbar {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: var(--z-1);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    margin-inline: calc(-1 * var(--page-gutter-mobile));
+    border-radius: 0;
+    border-inline: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+  }
+
+  .gallery-chip-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-block-end: 4px; /* leave room for the snap */
+  }
+  .gallery-chip-strip::-webkit-scrollbar { display: none; }
+  .gallery-chip { scroll-snap-align: start; flex-shrink: 0; }
+
+  .college-grid { grid-template-columns: 1fr; }
+}
 .college-stat-chip {
   display: inline-flex;
   align-items: center;
