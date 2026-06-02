@@ -34,6 +34,8 @@ export interface OnboardingState {
   open(opts?: { replay?: boolean }): void;
   /** Advance one frame (does NOT call the backend). */
   next(): void;
+  /** Step back one frame (does NOT call the backend). */
+  prev(): void;
   /** Skip → close + (if not replay) call the complete endpoint. */
   skip(): void;
   /** Finish → close + (if not replay) call the complete endpoint. */
@@ -71,6 +73,10 @@ export function useOnboardingState(): OnboardingState {
     setCurrentFrame((f) => (f < 3 ? ((f + 1) as OnboardingFrame) : f));
   }, []);
 
+  const prev = useCallback(() => {
+    setCurrentFrame((f) => (f > 0 ? ((f - 1) as OnboardingFrame) : f));
+  }, []);
+
   const closeAndPersist = useCallback(() => {
     setIsOpen(false);
     setCurrentFrame(0);
@@ -89,6 +95,7 @@ export function useOnboardingState(): OnboardingState {
     currentFrame,
     open,
     next,
+    prev,
     skip: closeAndPersist,
     finish: closeAndPersist,
   };

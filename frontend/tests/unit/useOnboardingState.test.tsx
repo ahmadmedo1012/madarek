@@ -108,6 +108,33 @@ describe('useOnboardingState', () => {
     expect(result.current.currentFrame).toBe(3);
   });
 
+  it('prev() steps back, clamped at 0', () => {
+    mockMe.mockReturnValue({
+      data: { id: 'u1', onboardingCompletedAt: null },
+    });
+    const { result } = renderHook(() => useOnboardingState(), { wrapper });
+    act(() => {
+      result.current.open();
+      result.current.next();
+      result.current.next();
+    });
+    expect(result.current.currentFrame).toBe(2);
+    act(() => {
+      result.current.prev();
+    });
+    expect(result.current.currentFrame).toBe(1);
+    act(() => {
+      result.current.prev();
+      result.current.prev();
+    });
+    expect(result.current.currentFrame).toBe(0);
+    act(() => {
+      result.current.prev();
+    });
+    // Clamped at 0.
+    expect(result.current.currentFrame).toBe(0);
+  });
+
   it('skip() in non-replay mode calls the backend', async () => {
     mockMe.mockReturnValue({
       data: { id: 'u1', onboardingCompletedAt: null },

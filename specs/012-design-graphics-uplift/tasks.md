@@ -278,7 +278,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Onboarding flow
 
-- [ ] T120 [US6] Implement `frontend/src/hooks/useOnboardingState.ts` per `contracts/onboarding-milestone.md` §4: `shouldAutoStart`, `currentFrame`, `isReplay`, `next/skip/finish/open`.
+- [X] T120 [US6] Implement `frontend/src/hooks/useOnboardingState.ts` per `contracts/onboarding-milestone.md` §4: `shouldAutoStart`, `currentFrame`, `isReplay`, `next/skip/finish/open`.
 - [ ] T121 [US6] Implement `frontend/src/components/onboarding/OnboardingFlow.tsx`: 4-frame carousel using `<Illustration>` from US4, skip control on every frame, role-aware copy via i18n.
 - [ ] T122 [US6] Add i18n bundles for onboarding copy (`onboarding.frame1.*`, `frame2.*`, `frame3.*`, `roleIntro.{role}.*`) in the existing `frontend/src/locales/` structure.
 - [ ] T123 [US6] Auto-mount `<OnboardingFlow />` in `frontend/src/pages/dashboard/index.tsx` (or app shell) when `me.onboardingCompletedAt === null`.
@@ -286,8 +286,8 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Backend onboarding endpoint
 
-- [ ] T125 [US6] Implement `POST /api/v1/me/onboarding/complete` in `backend/src/modules/onboarding/router.ts`: idempotent set of `onboardingCompletedAt = now()`; returns `{ onboardingCompletedAt }`. Audit log entry.
-- [ ] T126 [US6] Wire the onboarding router into the main backend router.
+- [X] T125 [US6] Implement `POST /api/v1/me/onboarding/complete` in `backend/src/modules/onboarding/router.ts`: idempotent set of `onboardingCompletedAt = now()`; returns `{ onboardingCompletedAt }`. Audit log entry.
+- [X] T126 [US6] Wire the onboarding router into the main backend router.
 
 ### Milestone catalogue
 

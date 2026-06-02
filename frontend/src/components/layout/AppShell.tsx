@@ -11,6 +11,8 @@ import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { useRoleAccent } from '../../hooks/useRoleAccent';
 import { useThemeProfileSync } from '../../hooks/useThemeProfileSync';
+import { useOnboardingState } from '../../hooks/useOnboardingState';
+import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 import { HydrationSplash } from '../HydrationSplash';
 
 /* ───────────────────────────────────────────────────────────
@@ -225,6 +227,16 @@ export function AppShell({ children }: { children?: ReactNode }) {
   useThemeTransitionGuard();
   useCardPointerGlow();
 
+  const onboarding = useOnboardingState();
+  // Auto-mount the onboarding flow on first authenticated render
+  // where the server has never recorded completion. The hook itself
+  // is the source of truth; AppShell only triggers `open()`.
+  useEffect(() => {
+    if (onboarding.shouldAutoStart && !onboarding.isOpen) {
+      onboarding.open();
+    }
+  }, [onboarding.shouldAutoStart, onboarding.isOpen, onboarding]);
+
   const location = useLocation();
   const title = resolveTitle(location.pathname);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -271,6 +283,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
         </div>
       </main>
       <BottomNav />
+      <OnboardingFlow />
     </div>
   );
 }
