@@ -61,8 +61,8 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Theme hook + pre-paint
 
-- [ ] T017 Create `frontend/src/lib/theme.ts`: zustand store + `useTheme()` hook implementing `ThemeAPI` per `contracts/theme-state.md` (in-memory + localStorage layers + OS watchers for color-scheme + contrast).
-- [ ] T018 Add the pre-paint script in `frontend/index.html` exactly as documented in §10 of `theme-tokens.md`; verify no flash on first load.
+- [X] T017 Create `frontend/src/lib/theme.ts`: zustand store + `useTheme()` hook implementing `ThemeAPI` per `contracts/theme-state.md` (in-memory + localStorage layers + OS watchers for color-scheme + contrast).
+- [X] T018 Add the pre-paint script in `frontend/index.html` exactly as documented in §10 of `theme-tokens.md`; verify no flash on first load.
 - [X] T019 Add `gateCollegeAccent(hex: string, surface?: 'light' | 'dark'): string` in `frontend/src/lib/theme.ts` performing the runtime contrast gate (R-004) and returning the original hex or a safe fallback.
 
 ### Backend `me` payload + theme endpoints
@@ -92,7 +92,7 @@ description: "Task list — 012-design-graphics-uplift"
 - [ ] T030 [US1] Create `frontend/src/components/ThemeSwitcher.tsx` — a 3-way control (Light / Dark / System) calling `useTheme().setChoice`.
 - [ ] T031 [US1] Mount `<ThemeSwitcher />` in `frontend/src/components/layout/Topbar.tsx`.
 - [X] T032 [US1] [P] Add `useEffect` in `frontend/src/components/layout/AppShell.tsx` (or equivalent root) to set `document.body.dataset.role` from `me.role` per quickstart §"Role accent".
-- [ ] T033 [US1] [P] Update `frontend/src/pages/colleges/CollegePage.tsx` (or equivalent) to set `style={{ '--college-accent': gateCollegeAccent(college.identityColor) }}` on its root element.
+- [X] T033 [US1] [P] Update `frontend/src/pages/colleges/CollegePage.tsx` (or equivalent) to set `style={{ '--college-accent': gateCollegeAccent(college.identityColor) }}` on its root element.
 
 ### Token-cleanup sweep
 

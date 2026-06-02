@@ -10,6 +10,7 @@ import { PageTransition } from '../motion';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { useRoleAccent } from '../../hooks/useRoleAccent';
+import { useThemeProfileSync } from '../../hooks/useThemeProfileSync';
 import { HydrationSplash } from '../HydrationSplash';
 
 /* ───────────────────────────────────────────────────────────
@@ -218,6 +219,7 @@ function useCardPointerGlow() {
 
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
+  useThemeProfileSync();
   useRoleAccent();
   useLayoutMetrics();
   useThemeTransitionGuard();

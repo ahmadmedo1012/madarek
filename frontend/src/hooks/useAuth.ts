@@ -4,6 +4,11 @@ import { useAuthStore, type AuthUser, type AcademicPosition } from '../stores/au
 
 interface MeProfileResponse extends AuthUser {
   scopeFaculty?: { id: string; name: string } | null;
+  // 012-design-graphics-uplift — presentation preferences (no PII).
+  themePreference?: 'LIGHT' | 'DARK' | 'SYSTEM';
+  themePreferenceUpdatedAt?: string;
+  onboardingCompletedAt?: string | null;
+  firedMilestones?: string[];
   studentProfile?: {
     universityId: string;
     year: number;

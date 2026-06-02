@@ -15,6 +15,8 @@ import { EmptyState, ErrorState, LoadingState } from '../../components/primitive
 import { Reveal, Skeleton } from '../../components/motion';
 import { api, unwrap } from '../../lib/api';
 import { getCollegeIdentity } from '../../data/colleges.config';
+import { gateCollegeAccent } from '../../lib/theme';
+import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
 import { useUrlQueryState } from '../../hooks/useUrlQueryState';
 import type { AcademicPosition } from '../../stores/auth.store';
@@ -377,13 +379,19 @@ export function CollegeDetailPage() {
   // Resolve the college identity profile (accent, hero, icon).
   // When no profile exists for this slug, the page falls back to the
   // default Madrak chrome — no synthetic identity is invented.
+  // 012-design-graphics-uplift FR-005: gate the identity colour at
+  // runtime; if it fails AA-large vs the active chrome surface, drop
+  // the inline override so the page falls back to var(--role-accent).
+  const themeMode = useThemeStore((s) => s.mode);
   const identity = getCollegeIdentity(id);
-  const collegeStyle = identity
+  const activeSurface = resolveTheme(themeMode);
+  const gatedAccent = identity ? gateCollegeAccent(identity.accent, activeSurface) : null;
+  const collegeStyle = gatedAccent
     ? ({
-        '--college-accent': identity.accent,
-        '--college-accent-fg': identity.namedTokens?.['college-accent-fg'] ?? identity.accent,
+        '--college-accent': gatedAccent,
+        '--college-accent-fg': identity?.namedTokens?.['college-accent-fg'] ?? gatedAccent,
         '--college-accent-soft':
-          identity.namedTokens?.['college-accent-soft'] ?? `color-mix(in srgb, ${identity.accent} 12%, transparent)`,
+          identity?.namedTokens?.['college-accent-soft'] ?? `color-mix(in srgb, ${gatedAccent} 12%, transparent)`,
       } as React.CSSProperties)
     : undefined;
 
