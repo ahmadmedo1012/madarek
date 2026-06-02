@@ -5,6 +5,8 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
 import { useThemeSync } from './ThemeToggle';
+import { useScrollRestoration } from './useScrollRestoration';
+import { PageTransition } from '../motion';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { HydrationSplash } from '../HydrationSplash';
@@ -241,10 +243,15 @@ export function AppShell({ children }: { children?: ReactNode }) {
     };
   }, []);
 
+  // Reset the topbar's scrolled-shadow state on route change. Scroll
+  // position itself is handled by useScrollRestoration below — back/
+  // forward navigation restores the previous position; PUSH/REPLACE
+  // scrolls to top.
   useEffect(() => {
-    contentRef.current?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     setScrolled(false);
   }, [location.pathname]);
+
+  useScrollRestoration(contentRef);
 
   return (
     <div className="has-shell">
@@ -252,9 +259,11 @@ export function AppShell({ children }: { children?: ReactNode }) {
       <main className="main">
         <Topbar title={title} scrolled={scrolled} />
         <div className="content" ref={contentRef}>
-          <div className="content-inner" key={location.pathname}>
-            {children ?? <Outlet />}
-          </div>
+          <PageTransition>
+            <div className="content-inner" key={location.pathname}>
+              {children ?? <Outlet />}
+            </div>
+          </PageTransition>
         </div>
       </main>
       <BottomNav />
