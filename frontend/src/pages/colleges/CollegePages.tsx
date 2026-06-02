@@ -11,6 +11,7 @@ import { UserAvatar } from '../../components/primitives';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
 import { api, unwrap } from '../../lib/api';
+import { getCollegeIdentity } from '../../data/colleges.config';
 import type { AcademicPosition } from '../../stores/auth.store';
 
 interface CollegeListItem {
@@ -232,9 +233,25 @@ export function CollegeDetailPage() {
   }
 
   const c = q.data;
+  // Resolve the college identity profile (accent, hero, icon).
+  // When no profile exists for this slug, the page falls back to the
+  // default Madrak chrome — no synthetic identity is invented.
+  const identity = getCollegeIdentity(id);
+  const collegeStyle = identity
+    ? ({
+        '--college-accent': identity.accent,
+        '--college-accent-fg': identity.namedTokens?.['college-accent-fg'] ?? identity.accent,
+        '--college-accent-soft':
+          identity.namedTokens?.['college-accent-soft'] ?? `color-mix(in srgb, ${identity.accent} 12%, transparent)`,
+      } as React.CSSProperties)
+    : undefined;
 
   return (
-    <div className="page college-detail">
+    <div
+      className="page college-detail"
+      data-college={identity?.slug || undefined}
+      style={collegeStyle}
+    >
       {/* Hero / masthead */}
       <header className="college-hero page-header">
         <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>

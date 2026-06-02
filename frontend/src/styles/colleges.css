@@ -4,6 +4,16 @@
    Colleges (Faculties) — index and detail pages
    Sub-project B. Calm grids, soft cards, no dramatic motion —
    inherits the platform's restraint.
+
+   Per-college identity is applied via `data-college="<slug>"` on the
+   page root and the `--college-accent*` custom properties set inline
+   from the identity profile.
+   See: specs/001-premium-motion-system/contracts/college-identity-profile.md
+
+   IMPORTANT: identity accents NEVER shadow system tokens. The page
+   only sets `--college-accent`, `--college-accent-fg`,
+   `--college-accent-soft`. Never `--success`, `--warning`, `--danger`,
+   `--accent`. This keeps semantic colors stable across every college.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Index: grid of college cards ──────────────────────────── */
