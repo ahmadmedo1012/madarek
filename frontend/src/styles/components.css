@@ -1126,13 +1126,34 @@
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
-  @media (max-width: 540px) {
-    .toast {
-      inset-inline-end: var(--sp-4);
-      inset-inline-start: var(--sp-4);
-      min-inline-size: 0;
-      max-inline-size: none;
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  POPOVER — 012-design-graphics-uplift T062.                    ║
+     ║  Anchored overlay; --elev-3 + --r-lg + --z-popover, subtle     ║
+     ║  glass. NO focus trap, NO scroll lock.                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .popover {
+    position: fixed;
+    z-index: var(--z-popover, 200);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--elev-3, var(--shadow-card-h));
+    min-inline-size: 200px;
+    max-inline-size: min(420px, calc(100vw - var(--sp-6) * 2));
+    padding: var(--sp-2);
+    overflow: clip;
+    animation: madarek-popover-in var(--motion-duration-short, 160ms) var(--motion-ease-decelerate) both;
+  }
+  @supports (backdrop-filter: blur(0)) {
+    .popover {
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
+  }
+  @keyframes madarek-popover-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
   }
 
   .filter-bar {

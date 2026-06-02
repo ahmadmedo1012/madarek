@@ -157,7 +157,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 - [X] T060 [US7] Create `frontend/src/components/overlays/Modal.tsx` consuming `var(--elev-4)`, `var(--r-xl)`, `var(--z-modal)`, glass background, AA-validated text contrast. Includes focus trap + Escape close + click-outside dismiss.
 - [X] T061 [US7] [P] Create `frontend/src/components/overlays/Sheet.tsx` (top corners radius `--r-2xl`, slide-from-edge enter).
-- [ ] T062 [US7] [P] Create `frontend/src/components/overlays/Popover.tsx` (`--elev-3`, `--r-lg`, subtle glass).
+- [X] T062 [US7] [P] Create `frontend/src/components/overlays/Popover.tsx` (`--elev-3`, `--r-lg`, subtle glass).
 - [ ] T063 [US7] [P] Create `frontend/src/components/overlays/Dropdown.tsx` (`--elev-2`, `--r-md`, no glass).
 - [X] T064 [US7] [P] Create `frontend/src/components/overlays/Toast.tsx` (`--elev-3`, error variant requires manual dismiss; non-error auto-dismiss 5 s).
 - [ ] T065 [US7] [P] Create `frontend/src/components/overlays/NotificationPanel.tsx` (`--elev-3`, glass).
