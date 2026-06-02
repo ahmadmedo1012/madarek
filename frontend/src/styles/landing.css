@@ -993,4 +993,22 @@
   .reveal-d-3 { transition-delay: calc(var(--motion-stagger-step) * 3); }
   .reveal-d-4 { transition-delay: calc(var(--motion-stagger-step) * 4); }
   .reveal-d-5 { transition-delay: calc(var(--motion-stagger-step) * 5); }
+
+  /* Returning-visitor calm (FR-029, SC-010). When the landing has
+     `data-intro-seen="true"` on a subsequent in-session visit, all
+     reveals collapse to a quick fade so the page reads as "calm
+     return" rather than "theatrical replay". */
+  .landing[data-intro-seen="true"] .reveal-up,
+  .landing[data-intro-seen="true"] .reveal-up.in-view {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .landing[data-intro-seen="true"] .reveal-d-1,
+  .landing[data-intro-seen="true"] .reveal-d-2,
+  .landing[data-intro-seen="true"] .reveal-d-3,
+  .landing[data-intro-seen="true"] .reveal-d-4,
+  .landing[data-intro-seen="true"] .reveal-d-5 {
+    transition-delay: 0ms;
+  }
 }
