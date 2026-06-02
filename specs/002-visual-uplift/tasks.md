@@ -93,13 +93,13 @@ Web app layout (existing).
 
 ### Implementation for User Story 2
 
-- [ ] T024 [US2] Inventory KPI-tile patterns across `frontend/src/pages/student/DashboardPage.tsx`, `frontend/src/pages/teacher/TeacherIntelligencePage.tsx`, `frontend/src/pages/admin/AdminPages.tsx`, `frontend/src/pages/quality/QualityPages.tsx`, `frontend/src/pages/owner/OwnerDashboardPage.tsx`. Catalog inconsistencies (typography, hover, padding) in a comment block at the top of `frontend/src/components/primitives/index.tsx`.
-- [ ] T025 [US2] Apply `--type-metric-*` role tokens to the KPI value and `--type-label-*` to the KPI label in the canonical `MetricCard` (in `frontend/src/components/primitives/index.tsx`). The headline number MUST be the most prominent element of the tile.
-- [ ] T026 [P] [US2] Add `.tabular-nums` to every KPI value rendered through `MetricCard` and to in-line numeric stats on dashboards. Audit student / teacher / admin / quality / owner dashboard pages.
-- [ ] T027 [P] [US2] Replace numeric KPIs across the role dashboards with `<AnimatedNumber>` where they aren't already (`frontend/src/pages/student/DashboardPage.tsx`, `teacher/TeacherIntelligencePage.tsx`, `admin/AdminPages.tsx`, `quality/QualityPages.tsx`, `owner/OwnerDashboardPage.tsx`).
-- [ ] T028 [US2] Verify every loading state on those pages renders `<Skeleton>` (motion primitive) or the existing `States.tsx` skeletons — no global spinners triggered by user actions.
-- [ ] T029 [US2] Audit `EmptyState` and `ErrorState` (in `frontend/src/components/primitives/States.tsx`); apply `--type-headline-size-sm` to titles and `--type-body-*` to descriptions. Confirm both are visually distinct from skeletons.
-- [ ] T030 [US2] Re-run `npm run -w frontend test:visual` filtered to dashboards (e.g., `--grep "dashboard|intelligence|governance|owner"`). Compare against baseline. Record per-role before/after pair in PR.
+- [X] T024 [US2] Inventory KPI-tile patterns across `frontend/src/pages/student/DashboardPage.tsx`, `frontend/src/pages/teacher/TeacherIntelligencePage.tsx`, `frontend/src/pages/admin/AdminPages.tsx`, `frontend/src/pages/quality/QualityPages.tsx`, `frontend/src/pages/owner/OwnerDashboardPage.tsx`. Catalog inconsistencies (typography, hover, padding) in a comment block at the top of `frontend/src/components/primitives/index.tsx`.
+- [X] T025 [US2] Apply `--type-metric-*` role tokens to the KPI value and `--type-label-*` to the KPI label in the canonical `MetricCard` (in `frontend/src/components/primitives/index.tsx`). The headline number MUST be the most prominent element of the tile.
+- [X] T026 [P] [US2] Add `.tabular-nums` to every KPI value rendered through `MetricCard` and to in-line numeric stats on dashboards. Audit student / teacher / admin / quality / owner dashboard pages.
+- [~] T027 [P] [US2] Replace numeric KPIs across the role dashboards with `<AnimatedNumber>` where they aren't already (`frontend/src/pages/student/DashboardPage.tsx`, `teacher/TeacherIntelligencePage.tsx`, `admin/AdminPages.tsx`, `quality/QualityPages.tsx`, `owner/OwnerDashboardPage.tsx`).
+- [X] T028 [US2] Verify every loading state on those pages renders `<Skeleton>` (motion primitive) or the existing `States.tsx` skeletons — no global spinners triggered by user actions.
+- [X] T029 [US2] Audit `EmptyState` and `ErrorState` (in `frontend/src/components/primitives/States.tsx`); apply `--type-headline-size-sm` to titles and `--type-body-*` to descriptions. Confirm both are visually distinct from skeletons.
+- [~] T030 [US2] Re-run `npm run -w frontend test:visual` filtered to dashboards (e.g., `--grep "dashboard|intelligence|governance|owner"`). Compare against baseline. Record per-role before/after pair in PR.
 
 **Checkpoint**: Every role dashboard shares the same KPI grammar; bundle add < 2 KB gzip on the student dashboard route.
 
@@ -134,13 +134,13 @@ Web app layout (existing).
 
 ### Implementation for User Story 4
 
-- [ ] T039 [US4] Inventory all chart instances by grepping `frontend/src/pages/` for `Line`, `Bar`, `Doughnut`, `Pie`, `Chart`. Catalog each instance + which option set it uses.
-- [ ] T040 [P] [US4] For every chart instance found in T039, ensure it consumes `cartesianOptions()` or `radialOptions()` from `frontend/src/lib/chartTheme.ts` — never inline option objects. Migrate the holdouts.
-- [ ] T041 [P] [US4] For every chart instance, source series colors from `chartPalette()` (cycle modulo 8) — never hardcoded hex per chart. Migrate holdouts.
-- [ ] T042 [P] [US4] Wrap every chart in a `.card` with the canonical `var(--card-padding)`; never bleed to card edge.
-- [ ] T043 [US4] Replace any chart-card global spinner with `<Skeleton variant="chart" />` (motion primitive). Files: chart-bearing pages from T039 inventory.
-- [ ] T044 [US4] Run a small unit test or eyeball check that `chartPalette()` returns 8 colors and `(i % 8)` cycles correctly. Add minimal Vitest test at `frontend/tests/lib/chartTheme.test.ts` for the cycle rule.
-- [ ] T045 [US4] Re-run visual audit filtered to chart-bearing routes. Verify no regression in chart appearance and that tooltips, axes, and series colors match across roles.
+- [X] T039 [US4] Inventory all chart instances by grepping `frontend/src/pages/` for `Line`, `Bar`, `Doughnut`, `Pie`, `Chart`. Catalog each instance + which option set it uses.
+- [X] T040 [P] [US4] For every chart instance found in T039, ensure it consumes `cartesianOptions()` or `radialOptions()` from `frontend/src/lib/chartTheme.ts` — never inline option objects. Migrate the holdouts.
+- [X] T041 [P] [US4] For every chart instance, source series colors from `chartPalette()` (cycle modulo 8) — never hardcoded hex per chart. Migrate holdouts.
+- [X] T042 [P] [US4] Wrap every chart in a `.card` with the canonical `var(--card-padding)`; never bleed to card edge.
+- [X] T043 [US4] Replace any chart-card global spinner with `<Skeleton variant="chart" />` (motion primitive). Files: chart-bearing pages from T039 inventory.
+- [~] T044 [US4] Run a small unit test or eyeball check that `chartPalette()` returns 8 colors and `(i % 8)` cycles correctly. Add minimal Vitest test at `frontend/tests/lib/chartTheme.test.ts` for the cycle rule.
+- [~] T045 [US4] Re-run visual audit filtered to chart-bearing routes. Verify no regression in chart appearance and that tooltips, axes, and series colors match across roles.
 
 **Checkpoint**: Charts feel like part of Madrak rather than third-party defaults.
 
@@ -154,12 +154,12 @@ Web app layout (existing).
 
 ### Implementation for User Story 5
 
-- [ ] T046 [US5] Implement `<ResponsiveTable>` primitive in `frontend/src/components/primitives/ResponsiveTable.tsx` per the data-model schema. Renders as `<table>` ≥768 px, as `role="list"` of cards <768 px. Composes with the `Skeleton` primitive's `list-row` variant.
-- [ ] T047 [US5] Add a unit test at `frontend/tests/motion/ResponsiveTable.test.tsx` covering: table mode renders proper thead/tbody, mobile mode renders list with primary/secondary fields per row, ARIA reading order is title → key:value pairs.
-- [ ] T048 [P] [US5] Identify candidate tables on student/teacher/admin dashboards. Migrate at least three representative tables to `<ResponsiveTable>`. Files vary by table location — record per table in the PR.
-- [ ] T049 [P] [US5] Audit touch-target hit areas at 360 px on `frontend/src/components/layout/BottomNav.tsx`, `frontend/src/components/layout/Sidebar.tsx`, primary buttons, list rows. Ensure ≥44×44 CSS px effective hit area; bump padding where needed (no layout shift on desktop).
-- [ ] T050 [US5] Replace the existing mobile sidebar/drawer pattern with native `<dialog>` per R-006. Files: `frontend/src/components/layout/AppShell.tsx` and/or `Sidebar.tsx`. Style backdrop via `::backdrop`. Verify focus trap, focus return, and Escape work.
-- [ ] T051 [US5] Run the audit at the 360 px breakpoint only across all primary routes. Confirm zero horizontal-overflow / clipping defects in the report. Fix any findings before this story closes.
+- [~] T046 [US5] Implement `<ResponsiveTable>` primitive in `frontend/src/components/primitives/ResponsiveTable.tsx` per the data-model schema. Renders as `<table>` ≥768 px, as `role="list"` of cards <768 px. Composes with the `Skeleton` primitive's `list-row` variant.
+- [~] T047 [US5] Add a unit test at `frontend/tests/motion/ResponsiveTable.test.tsx` covering: table mode renders proper thead/tbody, mobile mode renders list with primary/secondary fields per row, ARIA reading order is title → key:value pairs.
+- [~] T048 [P] [US5] Identify candidate tables on student/teacher/admin dashboards. Migrate at least three representative tables to `<ResponsiveTable>`. Files vary by table location — record per table in the PR.
+- [~] T049 [P] [US5] Audit touch-target hit areas at 360 px on `frontend/src/components/layout/BottomNav.tsx`, `frontend/src/components/layout/Sidebar.tsx`, primary buttons, list rows. Ensure ≥44×44 CSS px effective hit area; bump padding where needed (no layout shift on desktop).
+- [~] T050 [US5] Replace the existing mobile sidebar/drawer pattern with native `<dialog>` per R-006. Files: `frontend/src/components/layout/AppShell.tsx` and/or `Sidebar.tsx`. Style backdrop via `::backdrop`. Verify focus trap, focus return, and Escape work.
+- [~] T051 [US5] Run the audit at the 360 px breakpoint only across all primary routes. Confirm zero horizontal-overflow / clipping defects in the report. Fix any findings before this story closes.
 
 **Checkpoint**: Mobile feels intentional. P1 (MVP) complete.
 
@@ -191,12 +191,12 @@ Web app layout (existing).
 
 ### Implementation for User Story 7
 
-- [ ] T057 [US7] Add a shared-layout sliding active indicator inside the side-nav group in `frontend/src/components/layout/Sidebar.tsx` (per R-005). Computed via `offsetTop`/`offsetHeight` of the active `<NavLink>`; transitions `top` and `height` with `--motion-duration-medium` + `--motion-ease-emphasized`.
-- [ ] T058 [P] [US7] Add a `data-scrolled="true"` attribute to `.content` in `frontend/src/components/layout/AppShell.tsx` when scroll > 4 px (already tracked); add CSS rule in `frontend/src/styles/layout.css` that elevates `.topbar` only when `.content[data-scrolled="true"]` is present.
-- [ ] T059 [P] [US7] Audit dropdown components (notifications, profile, language, search) under `frontend/src/components/layout/`. Ensure each animates from its trigger origin with `--motion-duration-medium` + `--motion-ease-decelerate`. Add `transform-origin: top inset-inline-start` (or appropriate) for clean scaling.
-- [ ] T060 [P] [US7] Migrate any custom modal implementations to the native `<dialog>` pattern (per R-006). Files vary; grep for `role="dialog"` and `aria-modal="true"`. The mobile drawer migration in T050 already establishes the pattern.
-- [ ] T061 [US7] Audit toast stacking in the notifications system. Ensure consistent gap (`var(--sp-3)`), independent exit, no visual collision when 3+ toasts fire rapidly.
-- [ ] T062 [US7] Re-run audit on chrome-affecting routes; verify dropdowns, modals, and toasts behave consistently.
+- [X] T057 [US7] Add a shared-layout sliding active indicator inside the side-nav group in `frontend/src/components/layout/Sidebar.tsx` (per R-005). Computed via `offsetTop`/`offsetHeight` of the active `<NavLink>`; transitions `top` and `height` with `--motion-duration-medium` + `--motion-ease-emphasized`.
+- [X] T058 [P] [US7] Add a `data-scrolled="true"` attribute to `.content` in `frontend/src/components/layout/AppShell.tsx` when scroll > 4 px (already tracked); add CSS rule in `frontend/src/styles/layout.css` that elevates `.topbar` only when `.content[data-scrolled="true"]` is present.
+- [~] T059 [P] [US7] Audit dropdown components (notifications, profile, language, search) under `frontend/src/components/layout/`. Ensure each animates from its trigger origin with `--motion-duration-medium` + `--motion-ease-decelerate`. Add `transform-origin: top inset-inline-start` (or appropriate) for clean scaling.
+- [~] T060 [P] [US7] Migrate any custom modal implementations to the native `<dialog>` pattern (per R-006). Files vary; grep for `role="dialog"` and `aria-modal="true"`. The mobile drawer migration in T050 already establishes the pattern.
+- [~] T061 [US7] Audit toast stacking in the notifications system. Ensure consistent gap (`var(--sp-3)`), independent exit, no visual collision when 3+ toasts fire rapidly.
+- [~] T062 [US7] Re-run audit on chrome-affecting routes; verify dropdowns, modals, and toasts behave consistently.
 
 **Checkpoint**: Chrome elements share one motion family.
 
@@ -210,9 +210,9 @@ Web app layout (existing).
 
 ### Implementation for User Story 8
 
-- [ ] T063 [US8] Run `scripts/visual-diff.html` against the post-uplift captures. Pick three random route pairs. For each pair, list any inconsistency found (card padding, radius, hover, focus, motion duration).
-- [ ] T064 [P] [US8] Migrate any inconsistencies found in T063 onto canonical primitives or tokens. Don't introduce role-specific styling.
-- [ ] T065 [US8] With the audit re-run clean, confirm SC-010 (two random unrelated routes share identical card padding, radius, hover, focus, motion).
+- [~] T063 [US8] Run `scripts/visual-diff.html` against the post-uplift captures. Pick three random route pairs. For each pair, list any inconsistency found (card padding, radius, hover, focus, motion duration).
+- [~] T064 [P] [US8] Migrate any inconsistencies found in T063 onto canonical primitives or tokens. Don't introduce role-specific styling.
+- [~] T065 [US8] With the audit re-run clean, confirm SC-010 (two random unrelated routes share identical card padding, radius, hover, focus, motion).
 
 **Checkpoint**: All user stories functional. The platform reads as one product.
 
@@ -222,16 +222,16 @@ Web app layout (existing).
 
 **Purpose**: Verification, documentation, and follow-ups.
 
-- [ ] T066 [P] Visible-improvement review (NFR-001 / SC-001): assemble side-by-side captures via `scripts/visual-diff.html`; circulate to ≥5 reviewers; require ≥80% to mark "noticeably more polished." Record results in `specs/002-visual-uplift/visible-improvement-results.md`.
-- [ ] T067 [P] Bundle audit: run `npm run -w frontend build` and confirm gzipped delta on the student-dashboard route ≤12 KB vs. post-001 baseline. If exceeded, identify offender and tree-shake or defer.
-- [ ] T068 [P] Lighthouse on `/`, `/student/dashboard`, `/colleges/<slug>` at the reference mid-tier mobile profile: Performance ≥90, Accessibility = 100, CLS ≤0.05.
-- [ ] T069 [P] Manual screen-reader smoke (NVDA or VoiceOver) on homepage, student dashboard, college page. Document focus order, announcement quality, blockers.
-- [ ] T070 [P] Manual keyboard-only smoke through the same three routes. Confirm no tab traps, focus ring everywhere, all CTAs reachable.
-- [ ] T071 [P] RTL parity sweep: switch to Arabic, walk the same three routes; verify motion mirrors, layout intact, indicator/drawer directions correct.
-- [ ] T072 [P] Reduced-motion gate: `npm run -w frontend test:visual:reduced-motion` passes against the production-built bundle.
-- [ ] T073 [P] Token-discipline gate: `npm run check:motion-tokens` and `npm run check:icons` both pass.
-- [ ] T074 [P] Document any remaining drift as backlog tickets — do NOT block the rollout on items the audit shows are minor or out-of-scope.
-- [ ] T075 Update `DESIGN_POLISH_PLAN.md` to point readers to `specs/002-visual-uplift/quickstart.md` as the canonical adoption guide; mark earlier polish notes as superseded.
+- [~] T066 [P] Visible-improvement review (NFR-001 / SC-001): assemble side-by-side captures via `scripts/visual-diff.html`; circulate to ≥5 reviewers; require ≥80% to mark "noticeably more polished." Record results in `specs/002-visual-uplift/visible-improvement-results.md`.
+- [X] T067 [P] Bundle audit: run `npm run -w frontend build` and confirm gzipped delta on the student-dashboard route ≤12 KB vs. post-001 baseline. If exceeded, identify offender and tree-shake or defer.
+- [~] T068 [P] Lighthouse on `/`, `/student/dashboard`, `/colleges/<slug>` at the reference mid-tier mobile profile: Performance ≥90, Accessibility = 100, CLS ≤0.05.
+- [~] T069 [P] Manual screen-reader smoke (NVDA or VoiceOver) on homepage, student dashboard, college page. Document focus order, announcement quality, blockers.
+- [~] T070 [P] Manual keyboard-only smoke through the same three routes. Confirm no tab traps, focus ring everywhere, all CTAs reachable.
+- [~] T071 [P] RTL parity sweep: switch to Arabic, walk the same three routes; verify motion mirrors, layout intact, indicator/drawer directions correct.
+- [~] T072 [P] Reduced-motion gate: `npm run -w frontend test:visual:reduced-motion` passes against the production-built bundle.
+- [X] T073 [P] Token-discipline gate: `npm run check:motion-tokens` and `npm run check:icons` both pass.
+- [X] T074 [P] Document any remaining drift as backlog tickets — do NOT block the rollout on items the audit shows are minor or out-of-scope.
+- [~] T075 Update `DESIGN_POLISH_PLAN.md` to point readers to `specs/002-visual-uplift/quickstart.md` as the canonical adoption guide; mark earlier polish notes as superseded.
 
 ---
 
