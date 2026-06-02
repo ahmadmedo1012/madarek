@@ -101,15 +101,15 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 2
 
-- [ ] T031 [US2] Implement `frontend/src/components/motion/PageTransition.tsx` per `contracts/motion-primitives.tsx.md`: `useLocation` hook, `document.startViewTransition` when available, CSS-class fallback (`is-route-transitioning`), reduced-motion path, in-flight cancellation on rapid navigation
-- [ ] T032 [US2] Add `is-route-transitioning` keyframes to `frontend/src/styles/motion.css` (cross-fade + 8 px upward translate via `--motion-distance-small`, `--motion-duration-page`, `--motion-ease-decelerate`)
-- [ ] T033 [US2] Wrap the route outlet inside `frontend/src/components/layout/AppShell.tsx` with `<PageTransition>`. Confirm shell elements (header, sidebar, footer) stay mounted across navigation
-- [ ] T034 [US2] Implement scroll-position restoration on `popstate` (browser back) within `AppShell.tsx` or a sibling `useScrollRestoration` hook in `frontend/src/components/layout/`. Persist scroll position per-history-entry. Transient UI state (open menus, expanded rows, filters) is intentionally out of scope per the narrowed FR-008.
-- [ ] T035 [US2] Migrate the side-nav active indicator in `frontend/src/components/layout/AppShell.tsx` (or wherever the nav lives) to a single shared-layout indicator. The indicator's position transitions via `--motion-duration-medium` `--motion-ease-emphasized` between active items rather than per-item show/hide
-- [ ] T036 [P] [US2] Migrate the top-tabs active indicator (search for `.tabs` / `role="tablist"` patterns under `frontend/src/components/`) to the same shared-indicator pattern
-- [ ] T037 [P] [US2] Migrate breadcrumbs (if present) to use the page-transition cross-fade so segments animate consistently
-- [ ] T038 [US2] Add a primitive-level unit test at `frontend/tests/motion/PageTransition.test.tsx` (mocks `document.startViewTransition`; asserts fallback CSS class is applied; reduced-motion path collapses to 80 ms fade)
-- [ ] T039 [US2] Manual verification: walk Home → My Courses → Course Detail → Assignment on desktop and 360 px mobile. Confirm smooth transitions, no layout shift, indicator animates rather than snaps. Repeat in RTL
+- [X] T031 [US2] Implement `frontend/src/components/motion/PageTransition.tsx` per `contracts/motion-primitives.tsx.md`: `useLocation` hook, `document.startViewTransition` when available, CSS-class fallback (`is-route-transitioning`), reduced-motion path, in-flight cancellation on rapid navigation
+- [X] T032 [US2] Add `is-route-transitioning` keyframes to `frontend/src/styles/motion.css` (cross-fade + 8 px upward translate via `--motion-distance-small`, `--motion-duration-page`, `--motion-ease-decelerate`)
+- [X] T033 [US2] Wrap the route outlet inside `frontend/src/components/layout/AppShell.tsx` with `<PageTransition>`. Confirm shell elements (header, sidebar, footer) stay mounted across navigation
+- [X] T034 [US2] Implement scroll-position restoration on `popstate` (browser back) within `AppShell.tsx` or a sibling `useScrollRestoration` hook in `frontend/src/components/layout/`. Persist scroll position per-history-entry. Transient UI state (open menus, expanded rows, filters) is intentionally out of scope per the narrowed FR-008.
+- [X] T035 [US2] Migrate the side-nav active indicator in `frontend/src/components/layout/AppShell.tsx` (or wherever the nav lives) to a single shared-layout indicator. The indicator's position transitions via `--motion-duration-medium` `--motion-ease-emphasized` between active items rather than per-item show/hide
+- [X] T036 [P] [US2] Migrate the top-tabs active indicator (search for `.tabs` / `role="tablist"` patterns under `frontend/src/components/`) to the same shared-indicator pattern
+- [X] T037 [P] [US2] Migrate breadcrumbs (if present) to use the page-transition cross-fade so segments animate consistently
+- [X] T038 [US2] Add a primitive-level unit test at `frontend/tests/motion/PageTransition.test.tsx` (mocks `document.startViewTransition`; asserts fallback CSS class is applied; reduced-motion path collapses to 80 ms fade)
+- [X] T039 [US2] Manual verification: walk Home → My Courses → Course Detail → Assignment on desktop and 360 px mobile. Confirm smooth transitions, no layout shift, indicator animates rather than snaps. Repeat in RTL
 
 **Checkpoint**: User Stories 1 + 2 fully functional. Routes transition like a premium product.
 
