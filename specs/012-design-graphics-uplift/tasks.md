@@ -194,7 +194,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### V1 bespoke scenes (each its own file under `frontend/src/lib/illustrations/`)
 
-- [ ] T082 [P] [US4] Create `homepage-hero.tsx` — eager-loaded hero illustration. Light + Dark variants composed from `var(--ill-hue-1..6)` only. Stroke `1.5` round caps. Perspective 30° isometric. ≤ 8 KB gz.
+- [X] T082 [P] [US4] Create `homepage-hero.tsx` — eager-loaded hero illustration. Light + Dark variants composed from `var(--ill-hue-1..6)` only. Stroke `1.5` round caps. Perspective 30° isometric. ≤ 8 KB gz.
 - [X] T083 [P] [US4] Create `error-404.tsx` — Light + Dark; mirrors directional content for RTL.
 - [X] T084 [P] [US4] Create `empty-notifs.tsx` — symmetric scene; Light + Dark.
 - [X] T085 [P] [US4] Create `empty-search.tsx` — mirror arrow direction in RTL; Light + Dark.
