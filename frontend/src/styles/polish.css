@@ -1,0 +1,5164 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Polish Bundle (consolidated v6 → v21)
+   ─────────────────────────────────────────────────────────────────────
+   Loaded LAST. Sequence preserved exactly as the historical v6..v21
+   ordering. Each section retains its original @layer banner. The
+   chronological ordering matters: later blocks intentionally tune or
+   override earlier ones. Each block ships with the regression note
+   that motivated it.
+   ════════════════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v6.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Visual Polish v6
+   ─────────────────────────────────────────────────────────────────────
+   Loaded LAST. Refines the existing system; does not redefine it.
+   No `!important`. All transitions respect prefers-reduced-motion.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── Stagger reveal for KPI / dashboard grids ─────────────────────
+     Page-enter on .content-inner takes 220ms. Children of grid rows
+     ride a 40ms cascade behind it so the page reads as "appearing
+     in" rather than "blinking in". Caps at 6 children to bound delay. */
+  .grid-2 > *,
+  .grid-3 > *,
+  .grid-4 > *,
+  .grid-2-1 > *,
+  .grid-1-2 > *,
+  .grid-auto-200 > *,
+  .grid-auto-260 > * {
+    animation: polish-rise 360ms var(--ease-out) both;
+  }
+  .grid-2 > *:nth-child(1),
+  .grid-3 > *:nth-child(1),
+  .grid-4 > *:nth-child(1) { animation-delay: 60ms; }
+  .grid-2 > *:nth-child(2),
+  .grid-3 > *:nth-child(2),
+  .grid-4 > *:nth-child(2) { animation-delay: 100ms; }
+  .grid-3 > *:nth-child(3),
+  .grid-4 > *:nth-child(3) { animation-delay: 140ms; }
+  .grid-4 > *:nth-child(4) { animation-delay: 180ms; }
+  .grid-4 > *:nth-child(5) { animation-delay: 220ms; }
+  .grid-4 > *:nth-child(6) { animation-delay: 260ms; }
+
+  @keyframes polish-rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Card hover consistency ────────────────────────────────────────
+     The base .card already lifts on hover for `.interactive` and
+     `.bordered`. Make every clickable card feel that way without the
+     opt-in class. Anchors and buttons that wrap a card naturally count. */
+  a > .card,
+  button.card,
+  .card-link .card {
+    cursor: pointer;
+    transition:
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  a:hover > .card:not(.flush),
+  button.card:hover,
+  .card-link:hover .card:not(.flush) {
+    transform: translateY(-1px);
+    border-color: var(--rule-strong, var(--rule));
+    box-shadow: var(--shadow-sm, 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.05));
+  }
+  a:focus-visible > .card,
+  button.card:focus-visible,
+  .card-link:focus-visible .card {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-color: var(--accent);
+  }
+
+  /* ── Skeleton refinement — softer, slower, less stripey ─────────── */
+  .skeleton {
+    background:
+      linear-gradient(90deg,
+        var(--surface-2) 0%,
+        var(--surface-3) 50%,
+        var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: polish-shimmer 1800ms ease-in-out infinite;
+  }
+  @keyframes polish-shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+  /* ── Topbar scrolled shadow refinement ─────────────────────────────
+     The .topbar.scrolled state was a flat border underline. A whisper
+     of shadow reads as actual depth. Honors theme via color-mix. */
+  .topbar.scrolled {
+    box-shadow:
+      0 1px 0 var(--border, var(--rule)),
+      0 6px 16px -8px color-mix(in srgb, var(--text) 12%, transparent);
+  }
+  [data-theme="dark"] .topbar.scrolled {
+    box-shadow:
+      0 1px 0 var(--border, var(--rule)),
+      0 6px 18px -10px rgb(0 0 0 / 0.55);
+  }
+
+  /* ── Sidebar nav items — refined hover & active state ─────────── */
+  .nav-item {
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
+  }
+  .nav-item:hover { background: var(--surface-2); }
+  .nav-item.on {
+    background: var(--accent-soft, var(--surface-2));
+    color: var(--accent);
+  }
+  .nav-item:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--accent);
+    border-radius: var(--r-md);
+  }
+
+  /* ── Buttons — focus ring + active feedback ────────────────────── */
+  .btn {
+    transition:
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform 80ms var(--ease);
+  }
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  /* ── Dropdown / menu enter ────────────────────────────────────── */
+  .topbar-user-menu,
+  .notification-dropdown,
+  .global-search-results {
+    animation: polish-menu-enter 160ms var(--ease-out) both;
+    transform-origin: top right;
+  }
+  @keyframes polish-menu-enter {
+    from { opacity: 0; transform: scale(0.97) translateY(-2px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* ── Modal / overlay enter ────────────────────────────────────── */
+  .modal,
+  .dialog {
+    animation: polish-modal-enter 200ms var(--ease-out) both;
+  }
+  .modal-backdrop,
+  .dialog-backdrop,
+  .sidebar-backdrop.show {
+    animation: polish-backdrop-enter 180ms var(--ease-out) both;
+  }
+  @keyframes polish-modal-enter {
+    from { opacity: 0; transform: translateY(8px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes polish-backdrop-enter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── Tabs — animated indicator transition ─────────────────────── */
+  .tab {
+    transition:
+      color var(--t-fast) var(--ease),
+      background var(--t-fast) var(--ease);
+  }
+
+  /* ── Inputs — softer focus state ───────────────────────────────── */
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+  }
+
+  /* ── Number entrance — subtle "count-up reveal" feel ─────────── */
+  [data-numeric="true"] {
+    animation: polish-rise 420ms var(--ease-out) both;
+    animation-delay: 120ms;
+  }
+
+  /* ── Mobile refinements ───────────────────────────────────────── */
+  @media (max-width: 640px) {
+    /* Page header gets a tighter rhythm on phones — the desktop
+       8-spacing scale leaves too much air at narrow widths. */
+    .page { gap: var(--sp-6); }
+    .page-header { gap: var(--sp-1); }
+    .page-title { font-size: var(--fs-xl); line-height: 1.25; }
+    .page-subtitle { font-size: var(--fs-sm); }
+
+    /* Tap targets — iOS HIG / Material guideline is 44px. */
+    .nav-item,
+    .btn.sm,
+    .topbar-user-trigger {
+      min-block-size: 44px;
+    }
+
+    /* Bottom nav safe-area padding (already handled in base.css for
+       .content-inner; this guards against double scrollbars). */
+    .topbar { backdrop-filter: saturate(140%) blur(12px); }
+
+    /* Cards lose some inner padding on phones so 1-column grids
+       don't feel like cards-inside-a-card. */
+    .card { padding: var(--sp-4); }
+    .card.compact { padding: var(--sp-3); }
+
+    /* Tables overflow horizontally instead of squishing. */
+    table { font-size: var(--fs-xs); }
+  }
+
+  /* ── Wide screens — looser breathing room ─────────────────────── */
+  @media (min-width: 1440px) {
+    .content-inner { padding-block: var(--sp-8); }
+  }
+
+  /* ── Honour reduced-motion globally for the polish layer ───── */
+  @media (prefers-reduced-motion: reduce) {
+    .grid-2 > *,
+    .grid-3 > *,
+    .grid-4 > *,
+    .grid-2-1 > *,
+    .grid-1-2 > *,
+    .grid-auto-200 > *,
+    .grid-auto-260 > *,
+    [data-numeric="true"],
+    .topbar-user-menu,
+    .notification-dropdown,
+    .global-search-results,
+    .modal,
+    .dialog,
+    .modal-backdrop,
+    .dialog-backdrop,
+    .sidebar-backdrop.show {
+      animation: none;
+    }
+    a:hover > .card:not(.flush),
+    button.card:hover,
+    .card-link:hover .card:not(.flush) {
+      transform: none;
+    }
+    .skeleton { animation: none; opacity: 0.6; }
+    .btn:active:not(:disabled) { transform: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Collapsible sidebar — desktop icon-rail mode
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Toggle button next to the brand */
+  .sidebar-collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--r-sm);
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--t-clean);
+  }
+  .sidebar-collapse-btn:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--border-strong, var(--rule));
+  }
+  .sidebar-collapse-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-color: var(--accent);
+  }
+
+  /* Hide labels and section headers when collapsed; nav-items become
+     icon-only on a tighter padding. The brand text + user info collapse
+     down to icons too. */
+  @media (min-width: 921px) {
+    .sidebar.collapsed {
+      padding-inline: 8px;
+    }
+    .sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+      padding-inline: 4px;
+      gap: 0;
+    }
+    .sidebar.collapsed .sidebar-brand-text,
+    .sidebar.collapsed .sidebar-collapse-btn,
+    .sidebar.collapsed .nav-section-label,
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .nav-badge,
+    .sidebar.collapsed .sidebar-user-info {
+      display: none;
+    }
+    .sidebar.collapsed .nav-item {
+      grid-template-columns: 22px;
+      padding: 8px;
+      justify-content: center;
+    }
+    .sidebar.collapsed .nav-icon {
+      margin-inline: auto;
+    }
+    .sidebar.collapsed .nav-item.on::before,
+    .sidebar.collapsed .nav-item.active::before {
+      inset-inline-start: 0;
+      border-radius: 0 2px 2px 0;
+    }
+    .sidebar.collapsed .sidebar-user {
+      padding: 6px;
+      justify-content: center;
+    }
+    .sidebar.collapsed .sidebar-logout {
+      display: none;
+    }
+
+    /* Tooltip on hover when collapsed — uses the title attribute via
+       a positioned ::after. Lightweight; no JS portal. */
+    .sidebar.collapsed .nav-item {
+      position: relative;
+    }
+    .sidebar.collapsed .nav-item:hover::after {
+      content: attr(title);
+      position: absolute;
+      inset-inline-start: calc(100% + 8px);
+      inset-block-start: 50%;
+      transform: translateY(-50%);
+      padding: 4px 10px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: var(--fs-xxs);
+      font-weight: var(--fw-medium);
+      border-radius: var(--r-sm);
+      white-space: nowrap;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0;
+      animation: polish-tooltip-in 120ms var(--ease-out) 240ms forwards;
+    }
+    [dir="rtl"] .sidebar.collapsed .nav-item:hover::after {
+      inset-inline-start: auto;
+      inset-inline-end: calc(100% + 8px);
+    }
+    @keyframes polish-tooltip-in {
+      from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+      to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+    }
+  }
+
+  /* Mobile — collapsed state has no meaning; the sidebar is a full
+     overlay that's either open or hidden. The toggle button is also
+     hidden via .hide-on-mobile in the markup. */
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v7.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Visual Polish v7 (Notion-flavoured liveliness)
+   ─────────────────────────────────────────────────────────────────────
+   Loaded LAST. Adds scroll-driven and pointer-driven motion to the
+   landing page, plus widens hover/active feedback to whole pages of
+   primitives that were animated as a whole but never internally.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── Hero spotlight — radial glow follows the cursor ─────────── */
+  .landing-hero {
+    --hero-mx: 50%;
+    --hero-my: 30%;
+    isolation: isolate;
+  }
+  .landing-hero::before {
+    /* The existing ::before keeps its drift halo. We layer a second
+       radial via a separate ::after-cousin: the .landing-hero-spotlight
+       isn't easy to inject from CSS alone, so we ride on ::before by
+       raising it above the background. */
+    background:
+      radial-gradient(
+        circle at var(--hero-mx) var(--hero-my),
+        color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+        transparent 30%
+      ),
+      radial-gradient(circle at 50% 0, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
+    transition: background-position 200ms var(--ease-out);
+  }
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .landing-hero::before {
+      background: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
+    }
+  }
+
+  /* ── Word-by-word title reveal (Notion / Linear / Stripe trick) ──
+     The Reveal wrapper adds .in-view to the parent when the title
+     enters the viewport. Children .word elements then cascade in
+     individually for a 'typed' feel. */
+  .landing-title .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.45em) scale(0.985);
+    filter: blur(4px);
+    transition:
+      opacity 540ms var(--ease-out),
+      transform 540ms var(--ease-out),
+      filter 540ms var(--ease-out);
+    /* Default delays — overridden per-position below. */
+    transition-delay: 0ms;
+  }
+  .landing-title.in-view .word {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  .landing-title.in-view .word:nth-of-type(1) { transition-delay: 60ms; }
+  .landing-title.in-view .word:nth-of-type(2) { transition-delay: 160ms; }
+  .landing-title.in-view .word:nth-of-type(3) { transition-delay: 240ms; }
+  .landing-title.in-view .word:nth-of-type(4) { transition-delay: 360ms; }
+  .landing-title.in-view .word:nth-of-type(5) { transition-delay: 460ms; }
+
+  /* ── Mockup parallax ────────────────────────────────────────────
+     `--parallax` is set by JS in [-1, 1] as the user scrolls past the
+     mockup. We turn it into a gentle rise + slight scale for depth. */
+  .landing-mockup {
+    --parallax: 0;
+    transform: translateY(calc(var(--parallax) * -16px)) scale(calc(1 - var(--parallax) * 0.012));
+    transition: transform 80ms linear;
+    will-change: transform;
+  }
+  .landing-mockup-frame {
+    /* Inner frame gets a counter-shift so chrome bars pop slightly
+       differently than badges (creates a faint depth difference). */
+    transform: translateY(calc(var(--parallax) * 4px));
+    transition: transform 80ms linear;
+  }
+  .landing-mockup-badge-1,
+  .landing-mockup-badge-2 {
+    /* Floating badges drift twice as much as the frame — true parallax. */
+    transform: translateY(calc(var(--parallax) * -22px)) translateX(var(--badge-tx, 0));
+    transition: transform 100ms linear;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .landing-mockup,
+    .landing-mockup-frame,
+    .landing-mockup-badge-1,
+    .landing-mockup-badge-2 {
+      transform: none;
+    }
+  }
+
+  /* ── Mockup bars: idle wave so the chart never sits still ─────── */
+  .landing-mockup-bar {
+    animation: polish-bar-breathe 3.6s ease-in-out infinite;
+  }
+  .landing-mockup-bar:nth-child(1) { animation-delay: 0ms; }
+  .landing-mockup-bar:nth-child(2) { animation-delay: 220ms; }
+  .landing-mockup-bar:nth-child(3) { animation-delay: 440ms; }
+  .landing-mockup-bar:nth-child(4) { animation-delay: 660ms; }
+  .landing-mockup-bar:nth-child(5) { animation-delay: 880ms; }
+  .landing-mockup-bar:nth-child(6) { animation-delay: 1100ms; }
+  .landing-mockup-bar:nth-child(7) { animation-delay: 1320ms; }
+  @keyframes polish-bar-breathe {
+    0%, 100% { transform: scaleY(1); opacity: 0.85; }
+    50%      { transform: scaleY(1.15); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .landing-mockup-bar { animation: none; }
+  }
+
+  /* ── Hero badges: float idle ───────────────────────────────────── */
+  .landing-mockup-badge-1 { animation: polish-float-1 6s ease-in-out infinite; }
+  .landing-mockup-badge-2 { animation: polish-float-2 7.5s ease-in-out infinite; }
+  @keyframes polish-float-1 {
+    0%, 100% { --badge-tx: 0px; }
+    50%      { --badge-tx: 6px; }
+  }
+  @keyframes polish-float-2 {
+    0%, 100% { --badge-tx: 0px; }
+    50%      { --badge-tx: -6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .landing-mockup-badge-1,
+    .landing-mockup-badge-2 { animation: none; }
+  }
+
+  /* ── Reveal-up — slightly snappier feel ──────────────────────── */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 540ms var(--ease-out),
+      transform 540ms var(--ease-out);
+  }
+  .reveal-up.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-d-1.in-view { transition-delay: 80ms; }
+  .reveal-d-2.in-view { transition-delay: 160ms; }
+  .reveal-d-3.in-view { transition-delay: 240ms; }
+  .reveal-d-4.in-view { transition-delay: 320ms; }
+  .reveal-d-5.in-view { transition-delay: 400ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-up { opacity: 1; transform: none; }
+  }
+
+  /* ── Eyebrow pulse — make "جديد" badge actually feel live ─── */
+  .landing-hero-eyebrow strong {
+    position: relative;
+    overflow: hidden;
+  }
+  .landing-hero-eyebrow strong::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent-fg, white) 35%, transparent) 50%,
+      transparent 100%);
+    transform: translateX(-100%);
+    animation: polish-shimmer-sweep 3.2s ease-in-out infinite;
+  }
+  @keyframes polish-shimmer-sweep {
+    0%, 60%   { transform: translateX(-100%); }
+    80%, 100% { transform: translateX(100%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .landing-hero-eyebrow strong::after { animation: none; opacity: 0; }
+  }
+
+  /* ── Pilot stats: count-up entrance via grid stagger already in v6,
+        but the numbers benefit from a one-shot scale-in on first view.  */
+  .landing-pilot-stat .landing-pilot-num {
+    display: inline-block;
+    transition: transform 240ms var(--ease-out);
+  }
+  .landing-pilot-stat:hover .landing-pilot-num {
+    transform: scale(1.04);
+  }
+
+  /* ── Feature cards: subtle inner highlight on hover (Notion bento) ── */
+  .landing-feature-card,
+  .landing-bento-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .landing-feature-card::after,
+  .landing-bento-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 50%),
+        color-mix(in srgb, var(--accent) 8%, transparent),
+        transparent 60%
+      );
+    opacity: 0;
+    transition: opacity var(--t-fast) var(--ease);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .landing-feature-card:hover::after,
+  .landing-bento-card:hover::after {
+    opacity: 1;
+  }
+  .landing-feature-card > *,
+  .landing-bento-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Pages without a .page-header convention still benefit from
+        the page-enter, but their card grids weren't always
+        .grid-{2,3,4}. Make custom-named grids ride the same cascade.  */
+  .ach-grid > *,
+  .skills-grid > *,
+  .alerts-list > *,
+  .live-grid > *,
+  .post-list > * {
+    animation: polish-rise 360ms var(--ease-out) both;
+  }
+  .ach-grid > *:nth-child(2),
+  .skills-grid > *:nth-child(2) { animation-delay: 60ms; }
+  .ach-grid > *:nth-child(3),
+  .skills-grid > *:nth-child(3) { animation-delay: 120ms; }
+  .ach-grid > *:nth-child(4),
+  .skills-grid > *:nth-child(4) { animation-delay: 180ms; }
+  .ach-grid > *:nth-child(n+5),
+  .skills-grid > *:nth-child(n+5) { animation-delay: 240ms; }
+  @keyframes polish-rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ach-grid > *,
+    .skills-grid > *,
+    .alerts-list > *,
+    .live-grid > *,
+    .post-list > * { animation: none; }
+  }
+
+  /* ── Smooth-scroll for in-page anchor links on landing ─── */
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  /* ── Selection highlight — academic gold tint instead of system blue ── */
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    color: var(--text);
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v8.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Visual Polish v8 (cohesion + premium feel)
+   ─────────────────────────────────────────────────────────────────────
+   Loaded LAST. Adds:
+   - Cursor-follow highlight on every Card across the app
+   - Premium tabular numbers everywhere a metric lives
+   - Refined sidebar collapse button (anchored, not floating in brand)
+   - Smooth scrollbar styling for the sidebar
+   - Better section-title hierarchy with an accent stripe
+   - Subtle topbar gradient that ties into the collapsed-sidebar edge
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── Cursor-follow highlight on EVERY card ───────────────────
+     The landing-page bento cards already do this. Bringing it to
+     every .card across the app — with a much softer radius — gives
+     dashboards a quiet, alive quality without being noisy. */
+  .card:not(.flush) {
+    position: relative;
+    isolation: isolate;
+  }
+  .card:not(.flush)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        320px circle at var(--cx, 50%) var(--cy, 50%),
+        color-mix(in srgb, var(--accent) 5%, transparent),
+        transparent 70%
+      );
+    opacity: 0;
+    transition: opacity 240ms var(--ease-out);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .card:not(.flush):hover::before { opacity: 1; }
+  .card > * { position: relative; z-index: 1; }
+
+  /* JS-free cursor tracking — relies on cursor entering each card.
+     We can't update --cx/--cy from pure CSS, but the radial centred
+     at hover-spot would need JS. For accessibility + simplicity
+     we keep the highlight centred and just fade it in. The heavier
+     pointer-tracking glow stays opt-in via .landing-feature-card. */
+
+  /* ── Tabular numerals on metrics + KPIs ────────────────────────
+     CSS-only typographic upgrade — numbers align across rows,
+     animations don't shift the baseline. */
+  .metric-value,
+  .compact-kpi-value,
+  .dash-gpa-value,
+  .dash-doughnut-center,
+  .dash-term-pct,
+  [data-numeric="true"],
+  .tbl-num,
+  .font-mono,
+  .leaderboard-value {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Better metric card depth ─────────────────────────────────
+     The KPI strip is the most-seen part of every dashboard. Add a
+     micro-shadow + crisper hover lift so it reads as the primary
+     "currently happening" surface. */
+  .metric {
+    transition:
+      transform var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--t-fast) var(--ease);
+  }
+  .metric:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.03),
+      0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .metric { transition: none; }
+    .metric:hover { transform: none; }
+  }
+
+  /* ── Sidebar collapse button — refined ───────────────────────
+     Move from "extra child of brand" to its own pill button anchored
+     at the top-left of the sidebar with consistent positioning across
+     expanded/collapsed states. */
+  .sidebar-collapse-btn {
+    width: 28px;
+    height: 28px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 0 rgb(0 0 0 / 0.02);
+  }
+  .sidebar-collapse-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .sidebar.collapsed .sidebar-collapse-btn {
+    /* When collapsed, the button is the only visible chrome in the
+       brand row — make it the clear interaction target. */
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
+
+  /* Subtle scrollbar inside the sidebar — the global page already has
+     one; the sidebar's internal scroll deserves the same restraint. */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    border-radius: 999px;
+  }
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+  }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent; }
+
+  /* ── Topbar — soft gradient continuity with collapsed sidebar ──
+     When the sidebar is reduced to an icon rail, the topbar's left
+     edge gets a faint gradient tint so the collapsed rail visually
+     "belongs" to the topbar's chrome rather than floating alone. */
+  html[data-sidebar-collapsed] .topbar {
+    background: linear-gradient(
+      to inline-end,
+      color-mix(in srgb, var(--surface-2) 80%, transparent),
+      var(--surface) 80px
+    );
+  }
+  [data-theme="dark"][data-sidebar-collapsed] .topbar {
+    background: linear-gradient(
+      to inline-end,
+      color-mix(in srgb, var(--surface-2) 60%, transparent),
+      var(--surface) 90px
+    );
+  }
+
+  /* ── Section title — accent stripe option ────────────────────
+     A small, optional visual upgrade for "section-title" headings:
+     a 3-px gold/accent stripe on the inline-start edge so the
+     hierarchy reads at a glance. Opt-in via [data-accent]. */
+  .section-title {
+    position: relative;
+    padding-inline-start: var(--sp-3);
+  }
+  .section-title::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 4px;
+    inset-block-end: 4px;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    opacity: 0.7;
+  }
+
+  /* ── Page-header rhythm refinement ──────────────────────────── */
+  .page-header {
+    /* base.css set padding-block-end to var(--sp-5); we keep that breathing
+       room and just add a hairline rule for cleaner section separation. */
+    padding-block-end: var(--sp-4);
+    border-block-end: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
+    margin-block-end: var(--sp-2);
+  }
+  /* Welcome card and any header that's its own surface shouldn't get
+     the hairline rule — the surface already separates it from below. */
+  .page-header.welcome-card,
+  .page-header[data-flush="true"] {
+    border-block-end: 0;
+    padding-block-end: var(--sp-5);
+    margin-block-end: 0;
+  }
+  .page-title {
+    letter-spacing: -0.012em;
+  }
+  .page-subtitle {
+    line-height: 1.55;
+  }
+
+  /* ── Card title icon — subtle accent tint ──────────────────── */
+  .card-title-icon {
+    color: color-mix(in srgb, var(--accent) 70%, var(--text-muted)) !important;
+    /* `!important` only because components.css sets card-title-icon to
+       var(--accent) — we want a softer, more cohesive reading. */
+  }
+
+  /* ── Loading spinner — cleaner */
+  .spinner {
+    border-width: 2px;
+    border-color: color-mix(in srgb, var(--text) 8%, transparent);
+    border-block-start-color: var(--accent);
+  }
+
+  /* ── Focus ring across interactive surfaces — academic gold ───
+     The `--focus-ring` token already exists; we make sure every
+     truly-clickable element actually uses it. */
+  .nav-item:focus-visible,
+  .pill:focus-visible,
+  .tab:focus-visible,
+  .btn:focus-visible,
+  .topbar-user-trigger:focus-visible,
+  .sidebar-collapse-btn:focus-visible,
+  a > .card:focus-visible,
+  button.card:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  /* ── Button-press feedback — subtle, single tone ─────────────── */
+  .btn.primary {
+    box-shadow:
+      0 1px 0 rgb(0 0 0 / 0.05),
+      inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+  .btn.primary:hover:not(:disabled) {
+    box-shadow:
+      0 2px 6px -1px color-mix(in srgb, var(--accent) 35%, transparent),
+      inset 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+  .btn.primary:active:not(:disabled) {
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.1);
+  }
+
+  /* ── Empty states — softer + breathing ──────────────────────── */
+  .state {
+    padding-block: var(--sp-7);
+  }
+  .state-icon {
+    transition: transform 360ms var(--ease-out);
+  }
+  .state:hover .state-icon {
+    transform: scale(1.05);
+  }
+
+  /* ── Mobile — reduce vertical noise on small screens ────────── */
+  @media (max-width: 640px) {
+    .page-header {
+      padding-block-end: var(--sp-1);
+      margin-block-end: var(--sp-2);
+    }
+    .metric { padding: var(--sp-3) var(--sp-4); }
+  }
+
+  /* ── Print (rare but cheap) ─────────────────────────────────── */
+  @media print {
+    .sidebar, .topbar, .bottom-nav, .sidebar-backdrop { display: none; }
+    .has-shell { grid-template-columns: 1fr; }
+    .card:not(.flush)::before { display: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Welcome card — student dashboard greeting hero
+     ═══════════════════════════════════════════════════════════════ */
+  .welcome-card {
+    position: relative;
+    overflow: hidden;
+    padding: var(--sp-5) var(--sp-6) var(--sp-5);
+    border-radius: var(--r-xl);
+    background:
+      radial-gradient(
+        at 90% 0%,
+        color-mix(in srgb, var(--accent) 9%, transparent) 0%,
+        transparent 50%
+      ),
+      linear-gradient(
+        135deg,
+        var(--surface) 0%,
+        color-mix(in srgb, var(--accent) 3%, var(--surface-2)) 100%
+      );
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+  }
+  .welcome-card::after {
+    /* Subtle decorative dot grid in the inline-end corner */
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 200px;
+    height: 100%;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
+      transparent 1.5px
+    );
+    background-size: 14px 14px;
+    background-position: 0 0;
+    opacity: 0.35;
+    mask-image: linear-gradient(to inline-start, black 30%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to inline-start, black 30%, transparent 100%);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .welcome-card {
+    background:
+      radial-gradient(
+        at 90% 0%,
+        color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+        transparent 55%
+      ),
+      var(--surface);
+  }
+  .welcome-card .page-title {
+    /* Make the greeting feel like the hero of the page. */
+    font-size: clamp(var(--fs-2xl), 4.5vw, var(--fs-3xl, 32px));
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+  }
+  .welcome-card .page-subtitle {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Topbar polish — title weight + subtle scroll shadow refinement
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-title {
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.005em;
+  }
+  .topbar-scope {
+    /* Smaller, calmer chip than the title */
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+    border-radius: var(--r-full);
+    padding: 3px 10px;
+    margin-inline-start: var(--sp-2);
+    white-space: nowrap;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Dropdown menus — refined edge + shadow
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-user-menu,
+  .notification-dropdown {
+    border: 1px solid color-mix(in srgb, var(--text) 8%, var(--rule));
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 12px 32px -8px rgb(0 0 0 / 0.1);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Form labels — subtle weight bump for hierarchy
+     ═══════════════════════════════════════════════════════════════ */
+  .form-label,
+  label.form-label,
+  .auth-field label {
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Pill — tactile press feedback
+     ═══════════════════════════════════════════════════════════════ */
+  .pill {
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform 80ms var(--ease);
+  }
+  .pill:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Bottom-nav — scale-up icon on activate
+     ═══════════════════════════════════════════════════════════════ */
+  .bottom-nav-item.active .bottom-nav-icon {
+    animation: polish-bottomnav-pop 320ms var(--ease-out);
+  }
+  @keyframes polish-bottomnav-pop {
+    0%   { transform: scale(0.92); }
+    60%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-nav-item.active .bottom-nav-icon { animation: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Checkboxes + radios — branded, accessible, RTL-aware
+     ═══════════════════════════════════════════════════════════════ */
+  input[type="checkbox"],
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--rule-strong, var(--rule));
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--t-clean);
+    position: relative;
+  }
+  input[type="checkbox"] { border-radius: 4px; }
+  input[type="radio"]    { border-radius: 50%; }
+
+  input[type="checkbox"]:hover,
+  input[type="radio"]:hover {
+    border-color: var(--accent);
+  }
+
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Checkmark — drawn with a clip-path triangle (no SVG, no font) */
+  input[type="checkbox"]:checked::after {
+    content: "";
+    width: 10px;
+    height: 6px;
+    border: solid var(--accent-fg, white);
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg) translate(1px, -1px);
+    margin-block-start: -2px;
+  }
+
+  /* Radio dot */
+  input[type="radio"]:checked::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-fg, white);
+  }
+
+  input[type="checkbox"]:focus-visible,
+  input[type="radio"]:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  input[type="checkbox"]:disabled,
+  input[type="radio"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Global scrollbar — thin, branded, calm
+     The page-wide scrollbar uses browser defaults right now. Tinting
+     it to match the design system makes the platform feel cohesive
+     without screaming for attention.
+     ═══════════════════════════════════════════════════════════════ */
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text) 14%, transparent);
+    border-radius: 999px;
+    border: 2px solid var(--bg);
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--text) 28%, transparent);
+    background-clip: padding-box;
+  }
+  /* Firefox */
+  html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 14%, transparent) transparent; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Hydration splash — calmer fade-out when auth loads
+     ═══════════════════════════════════════════════════════════════ */
+  .hydration-splash {
+    animation: polish-hydration-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes polish-hydration-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hydration-splash { animation: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Chart canvas — drop a soft outer glow so charts feel embedded
+     rather than pasted in
+     ═══════════════════════════════════════════════════════════════ */
+  .owner-chart-container,
+  .dash-doughnut {
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Search input pattern — unify .topbar-search style across pages
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-search input,
+  .admin-students-search input,
+  .global-search input {
+    background: transparent;
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    height: auto;
+    padding: 0;
+  }
+  .topbar-search input:focus,
+  .admin-students-search input:focus,
+  .global-search input:focus {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Sidebar — mobile drawer close button + sticky brand
+     ═══════════════════════════════════════════════════════════════ */
+  .sidebar-mobile-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: var(--surface-2);
+    color: var(--text);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--t-clean);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sidebar-mobile-close:hover { background: var(--surface-3); }
+  .sidebar-mobile-close:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  @media (max-width: 920px) {
+    /* X button visible only in the mobile drawer */
+    .sidebar-mobile-close { display: inline-flex; }
+    /* No collapse rail on mobile — only open vs closed */
+    .sidebar-collapse-btn { display: none !important; }
+    /* Brand row becomes a sticky drawer header */
+    .sidebar-brand {
+      position: sticky;
+      inset-block-start: 0;
+      background: var(--sidebar-bg);
+      z-index: 1;
+      padding-block: var(--sp-3);
+      border-block-end: 1px solid var(--sidebar-rule);
+      margin-block-end: var(--sp-2);
+    }
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v9.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   POLISH v9 — topbar, bell button, notifications panel, broader coverage
+   Loaded last; uses --vars instead of !important.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ═══════════════════════════════════════════════════════════════
+     TOPBAR — height + better chrome
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar {
+    block-size: 60px;
+    /* Increase opacity so the page-title underneath never bleeds through.
+       The user reported page titles appearing cut by the topbar — that
+       was caused by the previous 86% mix being too transparent against
+       the cream surface in light mode. */
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+            backdrop-filter: saturate(160%) blur(14px);
+    border-block-end: 1px solid var(--rule);
+    z-index: 30;
+  }
+  [data-theme="dark"] .topbar {
+    /* In dark mode the surface is already opaque enough; bump to 94% so
+       there's still a hint of the blur effect without bleed. */
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+  }
+  .topbar.scrolled {
+    box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.08);
+  }
+  [data-theme="dark"] .topbar.scrolled {
+    box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.5);
+  }
+
+  /* SWITCH from grid to flex. Grid + auto-placement was producing huge
+     gaps between the title (which slid to far inline-start because
+     col 1 was empty when the mobile toggle is hidden) and the search +
+     actions block. Flex with a single 1fr spacer gives a stable layout:
+       [title-block] [flexible spacer] [search] [actions]
+     that reads correctly in both LTR and RTL. */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  /* Actions cluster + search are non-shrinking; title can ellipsize on
+     extremely narrow viewports rather than push everything else off-screen. */
+  .topbar > .topbar-mobile-toggle,
+  .topbar > .topbar-actions { flex: 0 0 auto; }
+  .topbar > .global-search { flex: 0 1 320px; min-inline-size: 0; }
+  .topbar-title {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    /* Title text + scope chip should sit on a single line. The chip
+       won't wrap (white-space: nowrap on .topbar-scope) so any extra
+       content gets ellipsized. */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .topbar-title > * { min-inline-size: 0; }
+  /* The title block now grows to fill leftover space, so the search
+     stays anchored to the inline-end without a separate spacer. */
+
+  /* The "اسأل AI" button is a primary tinted CTA inside the topbar — soften
+     its weight so it doesn't fight the page title for attention. */
+  .topbar-actions .btn.primary.sm {
+    height: 32px;
+    padding-inline: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     BELL BUTTON — was unstyled (.topbar-notif had no rules)
+     ═══════════════════════════════════════════════════════════════ */
+  .topbar-notif {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-full);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  .topbar-notif:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--rule);
+  }
+  .topbar-notif:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+  .topbar-notif[aria-expanded="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+  .topbar-notif-badge {
+    position: absolute;
+    inset-block-start: 2px;
+    inset-inline-end: 2px;
+    min-inline-size: 16px;
+    block-size: 16px;
+    padding: 0 4px;
+    border-radius: var(--r-full);
+    background: var(--danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    border: 2px solid var(--surface);
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--danger) 50%, transparent);
+    /* Calm pulse to draw attention without nagging */
+    animation: notif-bell-pulse 2.4s var(--ease-out) infinite;
+  }
+  @keyframes notif-bell-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .topbar-notif-badge { animation: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     NOTIFICATIONS PANEL — better organisation + visual rhythm
+     ═══════════════════════════════════════════════════════════════ */
+  .notif-panel {
+    border-radius: var(--r-xl);
+    border-color: var(--rule);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 12px 40px -12px rgba(15, 22, 41, 0.18),
+      0 32px 80px -24px rgba(15, 22, 41, 0.16);
+  }
+
+  .notif-panel-head {
+    padding: 14px 16px;
+    background: linear-gradient(180deg,
+      var(--surface) 0%,
+      color-mix(in srgb, var(--surface) 96%, var(--accent-soft)) 100%);
+    border-block-end: 1px solid var(--rule);
+  }
+  .notif-panel-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 14px;
+    letter-spacing: -0.005em;
+    color: var(--text);
+  }
+
+  /* Items get tighter padding + a subtle hairline between rows so the panel
+     reads as a stack rather than a wall of buttons */
+  .notif-item {
+    padding: 12px 16px;
+    border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+    transition: background var(--t-fast) var(--ease), padding-inline-start var(--t-fast) var(--ease);
+  }
+  .notif-item:last-child { border-block-end: 0; }
+  .notif-item:hover { padding-inline-start: 18px; }
+
+  .notif-item-icon {
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-block-start: 2px;
+  }
+  .notif-item-title {
+    font-size: 13px;
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.35;
+  }
+  .notif-item-desc {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-block-start: 2px;
+    /* Clamp to 2 lines so a noisy notification doesn't blow up the panel */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .notif-item-time {
+    color: var(--text-subtle);
+    font-size: 11px;
+    margin-block-start: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Unread state — soft accent stripe on the inline-start edge */
+  .notif-item.unread {
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    position: relative;
+  }
+  .notif-item.unread::before {
+    content: '';
+    position: absolute;
+    inset-block: 12px;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .notif-item-dot {
+    position: absolute;
+    inset-block-start: 16px;
+    inset-inline-end: 16px;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  /* Empty state — centred, calmer */
+  .notif-empty {
+    padding: 40px 20px;
+    text-align: center;
+  }
+  .notif-empty-icon {
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: var(--r-full);
+    background: var(--surface-2);
+    color: var(--text-subtle);
+    margin: 0 auto 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notif-empty-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .notif-panel-foot {
+    padding: 10px 16px;
+    border-block-start: 1px solid var(--rule);
+    background: var(--surface-2);
+  }
+  .notif-panel-viewall {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: var(--fw-semibold);
+    color: var(--accent-strong);
+    text-decoration: none;
+    transition: gap var(--t-fast) var(--ease);
+  }
+  .notif-panel-viewall:hover { gap: 8px; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SIDEBAR MOBILE CLOSE — visible only on phones
+     ═══════════════════════════════════════════════════════════════ */
+  .show-on-mobile { display: none; }
+  @media (max-width: 920px) {
+    .show-on-mobile { display: inline-flex; }
+    .hide-on-mobile { display: none !important; }
+    .sidebar-mobile-close {
+      inline-size: 36px;
+      block-size: 36px;
+      border-radius: var(--r-md);
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--rule);
+      transition: var(--t-clean);
+    }
+    .sidebar-mobile-close:hover {
+      color: var(--text);
+      background: var(--surface);
+      border-color: var(--border-strong);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     PAGES THAT DIDN'T GET POLISH — give them the same treatment
+     Some pages render their own card-like containers without the .card
+     class. Catch the common ones so polish v8's effects extend.
+     ═══════════════════════════════════════════════════════════════ */
+  .invoice-card,
+  .post,
+  .speaker-chip,
+  .testimonial-card,
+  .webinar-card,
+  .announcement-card {
+    border-radius: var(--r-lg);
+    transition: transform var(--t-fast) var(--ease),
+                box-shadow var(--t-fast) var(--ease);
+  }
+  .post:hover,
+  .testimonial-card:hover,
+  .announcement-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 16px -4px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Tab counts get a calm pill style instead of inline numbers */
+  .tab-count {
+    margin-inline-start: 6px;
+    font-size: 10px;
+    font-weight: var(--fw-bold);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    padding: 1px 6px;
+    border-radius: var(--r-full);
+    font-variant-numeric: tabular-nums;
+  }
+  .tab.on .tab-count,
+  .tab[aria-selected="true"] .tab-count {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     WELCOME CARD — keep the title above the dot pattern + title sizing
+     ═══════════════════════════════════════════════════════════════ */
+  /* Root issue:
+     .welcome-card inherits .page-header which is `display: flex;
+     justify-content: space-between`. Combined with the welcome card's
+     own `overflow: hidden` and the absolutely-positioned dot pattern
+     overlay, the title-block was getting squashed and cropped.
+
+     Fix:
+     - Stack layout (column) instead of space-between row
+     - title-block grows to fill the row
+     - explicit padding-inline-end so text never collides with the
+       decorative dot pattern in the corner
+     - overflow-wrap break-word to avoid horizontal overflow on long
+       names while keeping single-line breaks normal */
+  .welcome-card {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-inline-end: clamp(var(--sp-6), 14vw, 200px);
+    gap: var(--sp-2);
+  }
+  .welcome-card .page-title-block {
+    inline-size: 100%;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .welcome-card .page-title,
+  .welcome-card .page-subtitle {
+    position: relative;
+    z-index: 1;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  .welcome-card .page-title {
+    font-size: clamp(20px, 3.4vw, 28px);
+    letter-spacing: -0.018em;
+    line-height: 1.22;
+  }
+  @media (max-width: 640px) {
+    .welcome-card {
+      padding: var(--sp-4);
+      padding-inline-end: clamp(var(--sp-4), 30vw, 120px);
+    }
+    .welcome-card::after { width: 110px; opacity: 0.22; }
+    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); }
+  }
+
+  /* Generic page-header — also force column layout when there's no
+     right-slot content, so the title-block always gets the full width */
+  .page-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .page-title-block {
+    flex: 1 1 320px;
+    min-inline-size: 0;
+  }
+  .page-title {
+    overflow-wrap: break-word;
+  }
+
+  /* Avatars — never let one render as a flat coloured square */
+  .avatar {
+    border-radius: var(--r-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: var(--fw-semibold);
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    background: var(--accent);
+    line-height: 1;
+  }
+
+  /* Page transitions — softer + faster (was 220ms). Notion-class is closer
+     to 160ms with a slightly heavier easing. */
+  .content-inner {
+    animation: page-enter 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes page-enter {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content-inner { animation: none; }
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v10.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   POLISH v10 — coverage for under-styled pages
+   AI Assistant chat, Matrix grid, gap rows, thumb cards, filter bars,
+   tracks, post composer.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ═══════════════════════════════════════════════════════════════
+     AI ASSISTANT — chat bubbles + quick actions
+     ═══════════════════════════════════════════════════════════════ */
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    min-block-size: 320px;
+    max-block-size: 480px;
+    overflow-y: auto;
+    padding: var(--sp-4) var(--sp-2) var(--sp-3);
+    scroll-behavior: smooth;
+  }
+
+  .chat-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+  .chat-msg.bot { justify-content: flex-start; }
+  .chat-msg.user { flex-direction: row-reverse; }
+
+  .chat-avatar {
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .chat-bubble {
+    max-inline-size: min(640px, 78%);
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border-faint);
+    /* subtle entrance */
+    animation: chat-in 240ms var(--ease-out) both;
+  }
+  @keyframes chat-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chat-bubble { animation: none; }
+  }
+
+  .chat-msg.bot .chat-bubble {
+    border-start-start-radius: 4px;
+  }
+  .chat-msg.user .chat-bubble {
+    background: linear-gradient(135deg,
+      var(--accent) 0%,
+      color-mix(in srgb, var(--accent) 88%, var(--accent-strong)) 100%);
+    color: var(--accent-fg);
+    border-color: transparent;
+    border-end-end-radius: 4px;
+  }
+
+  .chat-bubble p { margin: 0; }
+  .chat-bubble p + p { margin-block-start: 6px; }
+
+  .ai-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: var(--sp-3) var(--sp-2) var(--sp-2);
+    border-block-start: 1px solid var(--rule);
+    margin-block-start: var(--sp-1);
+  }
+  .ai-quick-chip {
+    padding: 6px 12px;
+    border-radius: var(--r-full);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: var(--t-clean);
+  }
+  .ai-quick-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+  }
+
+  .chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-2) var(--sp-1);
+  }
+  .chat-input {
+    flex: 1;
+    min-inline-size: 0;
+    block-size: 40px;
+    padding-inline: var(--sp-3);
+    border-radius: var(--r-full);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    transition: var(--t-clean);
+  }
+  .chat-input:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .chat-send {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: 50%;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--accent-fg);
+    cursor: pointer;
+    transition: var(--t-clean);
+    flex-shrink: 0;
+  }
+  .chat-send:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+  .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     MATRIX (knowledge map) — courses + cells + legend
+     ═══════════════════════════════════════════════════════════════ */
+  .matrix-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    margin-block-end: var(--sp-4);
+  }
+  .matrix-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-weight: var(--fw-medium);
+  }
+  .matrix-legend-dot {
+    inline-size: 10px;
+    block-size: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--sp-4);
+  }
+
+  .matrix-course {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    padding: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    transition: var(--t-clean);
+  }
+  .matrix-course:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--accent) 12%, rgba(0,0,0,0.05));
+  }
+  .matrix-course-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .matrix-course-icon {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .matrix-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .matrix-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-block-start: 2px;
+    font-size: 11px;
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .matrix-meta-pct {
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* Per-concept tile */
+  .matrix-cells {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+  }
+  .matrix-cell {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    text-align: start;
+    cursor: default;
+    line-height: 1.3;
+    transition: var(--t-clean);
+  }
+  .matrix-cell.lvl-strong   { background: color-mix(in srgb, var(--success) 14%, var(--surface)); border-color: color-mix(in srgb, var(--success) 26%, transparent); color: var(--c-mint-deep); }
+  .matrix-cell.lvl-good     { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent-strong); }
+  .matrix-cell.lvl-weak     { background: color-mix(in srgb, var(--warning) 14%, var(--surface)); border-color: color-mix(in srgb, var(--warning) 28%, transparent); color: var(--c-yellow-deep); }
+  .matrix-cell.lvl-poor     { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 24%, transparent); color: var(--c-rose-deep); }
+  .matrix-cell.lvl-untouched { color: var(--text-subtle); border-style: dashed; }
+  .matrix-cell:hover { transform: translateY(-1px); box-shadow: 0 2px 6px -2px rgba(0,0,0,0.08); }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Gap rows (matrix recommendations on /student/exams)
+     ═══════════════════════════════════════════════════════════════ */
+  .gap-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    transition: var(--t-clean);
+  }
+  .gap-row + .gap-row { margin-block-start: var(--sp-2); }
+  .gap-row:hover { border-color: var(--border-strong); background: var(--surface-2); }
+  .gap-row-icon {
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-sm);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Thumb cards (Library, AR/VR, Labs grid)
+     ═══════════════════════════════════════════════════════════════ */
+  /* The base style exists in components.css; we add interactivity */
+  .thumb-card {
+    transition: transform var(--t-fast) var(--ease),
+                border-color var(--t-fast) var(--ease),
+                box-shadow var(--t-fast) var(--ease);
+  }
+  .thumb-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--accent) 14%, rgba(0,0,0,0.08));
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Filter bar (campus map, matrix legend, etc.)
+     ═══════════════════════════════════════════════════════════════ */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     POSTS (social feed)
+     ═══════════════════════════════════════════════════════════════ */
+  .post {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    padding: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .post-author {
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+  .post-time {
+    font-size: 11px;
+    color: var(--text-subtle);
+  }
+  .post-body {
+    color: var(--text);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    white-space: pre-wrap;
+  }
+  .post-actions {
+    display: flex;
+    gap: var(--sp-3);
+    margin-block-start: 6px;
+    padding-block-start: var(--sp-2);
+    border-block-start: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+  }
+  .post-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: 0;
+    padding: 4px 8px;
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--t-clean);
+  }
+  .post-action:hover { background: var(--surface-2); color: var(--text); }
+  .post-action.on {
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Faculty / city chips inside University Info
+     ═══════════════════════════════════════════════════════════════ */
+  .faculty-chip-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: 8px var(--sp-3);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
+    transition: var(--t-fast) var(--ease);
+  }
+  .faculty-chip-row:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Misc — small surfaces that were inheriting browser defaults
+     ═══════════════════════════════════════════════════════════════ */
+  .empty-state {
+    text-align: center;
+    padding: var(--sp-6) var(--sp-4);
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+
+  /* Make any iframe / video inside cards rounded so they don't break the
+     premium frame */
+  .card iframe,
+  .card video {
+    border-radius: var(--r-md);
+    max-inline-size: 100%;
+  }
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v11.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v11
+   ─────────────────────────────────────────────────────────────────────
+   Focused improvements that build on v6–v10:
+   · Loading/empty/error state variants (inline/page/card)
+   · Spinner sizes
+   · Page-header rhythm + welcome-card breathing
+   · Card hover lift refinement
+   · Focus rings for keyboard navigation (a11y)
+   · Mobile: bottom-nav safe-area + page bottom padding so content
+     never hides behind the dock; tighter tap targets
+   · Mobile: responsive table → card transformation helper
+   · Scrollbar cosmetics (Firefox + WebKit)
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STATE VARIANTS                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .state.state-inline { padding: var(--sp-7) var(--sp-5); }
+  .state.state-page   { padding: var(--sp-11) var(--sp-6); }
+  .state.state-card   { padding: var(--sp-7) var(--sp-5); }
+  .state.state-error .state-icon {
+    background: var(--danger-soft, rgba(220, 38, 38, 0.10));
+    color: var(--danger, #dc2626);
+  }
+  .state.state-empty .state-icon {
+    background: var(--surface-2);
+    color: var(--text-muted);
+  }
+
+  /* Spinner size variants */
+  .spinner.spinner-sm { inline-size: 14px; block-size: 14px; border-width: 2px; }
+  .spinner.spinner-lg { inline-size: 32px; block-size: 32px; border-width: 3px; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE-HEADER RHYTHM                                            ║
+     ║  Tighter vertical rhythm between header and first content row, ║
+     ║  more generous horizontal breathing on welcome cards.          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page > .page-header { margin-block-end: var(--sp-5); }
+
+  .page-header.welcome-card {
+    background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 65%);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2xl);
+    padding: var(--sp-7) var(--sp-6);
+    margin-block-end: var(--sp-6);
+  }
+  @media (max-width: 640px) {
+    .page-header.welcome-card { padding: var(--sp-5) var(--sp-4); }
+  }
+
+  /* Subtle, non-noisy section spacing inside a page */
+  .page > * + * { margin-block-start: var(--sp-5); }
+  @media (max-width: 640px) {
+    .page > * + * { margin-block-start: var(--sp-4); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CARD HOVER — gentler lift, faster snap-back                   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .card.interactive,
+    a > .card,
+    button > .card,
+    .card-link .card {
+      will-change: transform;
+    }
+    .card.interactive:hover,
+    a > .card:hover,
+    button > .card:hover,
+    .card-link:hover .card {
+      transform: translateY(-2px);
+    }
+  }
+  /* never lift-hover on touch — it lingers awkwardly after tap */
+  @media (hover: none) {
+    .card.interactive:hover,
+    a > .card:hover,
+    button > .card:hover,
+    .card-link:hover .card {
+      transform: none;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FOCUS RINGS — keyboard-only, accent color                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  :focus-visible {
+    outline: 2px solid var(--accent, #8E6516);
+    outline-offset: 2px;
+    border-radius: var(--r-xs);
+  }
+  /* buttons already have their own focus styling — don't double up */
+  .btn:focus-visible,
+  .btn:focus-visible:not(:focus-visible) {
+    outline-offset: 3px;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOBILE — bottom-nav safe area + dock clearance                ║
+     ║  920px matches the bottom-nav breakpoint in layout.css         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 920px) {
+    .page {
+      padding-block-end: calc(64px + env(safe-area-inset-bottom) + var(--sp-4));
+    }
+  }
+
+  /* Tighter tap targets on phone — buttons reach the 44px guideline */
+  @media (max-width: 640px) {
+    .btn { min-block-size: 40px; }
+    .btn.sm { min-block-size: 32px; }
+    .bottom-nav-item { min-block-size: 52px; padding-block: 8px; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOBILE — table → cards transformation helper                  ║
+     ║  Tag a table with class `tbl-stack` to make every row become a ║
+     ║  vertical card on phones. Each <td> picks its label from       ║
+     ║  data-label attribute set in the JSX.                          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 640px) {
+    .tbl-stack { display: block; }
+    .tbl-stack thead { display: none; }
+    .tbl-stack tbody, .tbl-stack tr { display: block; }
+    .tbl-stack tr {
+      border: 1px solid var(--rule);
+      border-radius: var(--r-md);
+      padding: var(--sp-3);
+      margin-block-end: var(--sp-3);
+      background: var(--surface);
+    }
+    .tbl-stack td {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--sp-3);
+      padding: var(--sp-2) 0;
+      border-block-end: 1px dashed var(--rule);
+    }
+    .tbl-stack td:last-child { border-block-end: 0; }
+    .tbl-stack td::before {
+      content: attr(data-label);
+      flex-shrink: 0;
+      color: var(--text-muted);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-medium);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOBILE — universal table fallback                             ║
+     ║  Any table that didn't opt into `tbl-stack` gets horizontal    ║
+     ║  scroll on phones, so it stays usable instead of overflowing   ║
+     ║  the page or squeezing into unreadable cells.                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 640px) {
+    .owner-table:not(.tbl-stack),
+    .admin-students-table:not(.tbl-stack),
+    .leaderboard-table:not(.tbl-stack),
+    .tbl:not(.tbl-stack),
+    .trend-table:not(.tbl-stack) {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-inline-size: 100%;
+      white-space: nowrap;
+    }
+    /* Bring the inner thead/tbody back to table layout inside the scroller */
+    .owner-table:not(.tbl-stack) thead,
+    .admin-students-table:not(.tbl-stack) thead,
+    .leaderboard-table:not(.tbl-stack) thead,
+    .tbl:not(.tbl-stack) thead,
+    .trend-table:not(.tbl-stack) thead { display: table-header-group; }
+    .owner-table:not(.tbl-stack) tbody,
+    .admin-students-table:not(.tbl-stack) tbody,
+    .leaderboard-table:not(.tbl-stack) tbody,
+    .tbl:not(.tbl-stack) tbody,
+    .trend-table:not(.tbl-stack) tbody { display: table-row-group; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SCROLLBARS — calmer, theme-aware                              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  * { scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
+  *::-webkit-scrollbar { inline-size: 10px; block-size: 10px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: var(--rule);
+    border-radius: var(--r-full);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: var(--border-strong); background-clip: padding-box; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TYPOGRAPHY MICRO-FIXES                                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Numerals always tabular-aligned in metrics — already in some places, applied globally for KPI cards */
+  .metric-value, .dash-gpa-value, .dash-doughnut-center, .dash-term-pct {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Subtle text smoothing for Plex Arabic on retina */
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SELECTION                                                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  ::selection {
+    background: var(--accent-soft, rgba(142, 101, 22, 0.18));
+    color: var(--text);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+    .skeleton { animation: none; opacity: 0.5; }
+    .spinner { animation: madarek-spin 1500ms linear infinite; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR FIXES                                                 ║
+     ║  1. Mobile close button never renders on desktop. The X next   ║
+     ║     to the brand was a leftover that called closeSidebar() —   ║
+     ║     a no-op on desktop because that store field only drives    ║
+     ║     the mobile drawer overlay.                                 ║
+     ║  2. The collapse chevron stays visible even when collapsed.    ║
+     ║     Without this, once folded the only way to expand is the    ║
+     ║     Ctrl+B shortcut — invisible to most users.                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (min-width: 921px) {
+    .sidebar-mobile-close { display: none !important; }
+
+    /* The shell's grid track shrinks to var(--sidebar-w-collapsed) = 64px
+       when collapsed, but .sidebar itself still claimed inline-size:
+       var(--sidebar-w) = 256px. The sidebar element therefore overflowed
+       its column by ~192px and sat on top of page content (visible as
+       clipped page titles in screenshots). Match the element width to
+       the grid track so layout stays in sync. */
+    .sidebar.collapsed { inline-size: var(--sidebar-w-collapsed); }
+
+    /* Override polish-v6's `display: none` on the collapse button when
+       collapsed. Recenter so the chevron sits below the brand mark
+       inside the narrow icon rail. */
+    .sidebar.collapsed .sidebar-collapse-btn {
+      display: inline-flex !important;
+      margin-block-start: var(--sp-2);
+    }
+    .sidebar.collapsed .sidebar-brand {
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v12.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v12 · vitality
+   ─────────────────────────────────────────────────────────────────────
+   Motion + atmosphere for the landing page. CSS-only — no extra JS,
+   no extra hooks. Falls back gracefully under prefers-reduced-motion.
+
+   NOTE: The hero orb pseudo-elements that previously lived here were
+   shadowing the cursor-tracking spotlight from polish-v7 (which uses
+   the same `.landing-hero::before` selector with --hero-mx/--hero-my).
+   That broke the magnetic cursor effect on the banner. Removed in
+   favor of the original behavior — see polish-v7.css for the spotlight
+   and landing.css for the drifting color blobs. The remaining v12
+   effects (CTA breathe, eyebrow shimmer, mockup tilt, feature card
+   spotlight) all use distinct selectors and stay untouched.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CTA BREATHE                                                   ║
+     ║  Primary CTA in the hero gets a slow ambient glow halo.        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-hero .btn.primary,
+  .landing-cta-stack .btn.primary {
+    position: relative;
+    isolation: isolate;
+  }
+  .landing-hero .btn.primary::before,
+  .landing-cta-stack .btn.primary::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at 50% 50%,
+      color-mix(in srgb, var(--accent) 65%, transparent) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    filter: blur(14px);
+    animation: madark-breathe 4s ease-in-out infinite;
+  }
+  @keyframes madark-breathe {
+    0%, 100% { opacity: 0; transform: scale(0.9); }
+    50%      { opacity: 0.55; transform: scale(1.04); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  EYEBROW CHIP — one-time shimmer to draw the eye to "جديد"    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-hero-eyebrow {
+    position: relative;
+    overflow: hidden;
+  }
+  .landing-hero-eyebrow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      transparent 38%,
+      color-mix(in srgb, var(--accent) 45%, transparent) 50%,
+      transparent 62%,
+      transparent 100%
+    );
+    transform: translateX(-110%);
+    animation: madark-sweep 4.5s ease-in-out 1.2s infinite;
+    pointer-events: none;
+  }
+  @keyframes madark-sweep {
+    0%   { transform: translateX(-110%); }
+    65%  { transform: translateX(110%); }
+    100% { transform: translateX(110%); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOCKUP HOVER LIFT                                             ║
+     ║  LandingPage already writes --mx/--my on cards. Add a soft     ║
+     ║  3D tilt that follows the cursor.                              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) and (min-width: 920px) {
+    .landing-mockup {
+      transform-style: preserve-3d;
+      transition: transform 480ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    }
+    .landing-mockup:hover {
+      transform: perspective(1200px) rotateX(2deg) rotateY(-2deg) scale(1.012);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FEATURE CARDS — magnetic glow on cursor                       ║
+     ║  LandingPage exposes --mx, --my via mousemove. Render a soft   ║
+     ║  spotlight that follows the cursor inside each card.           ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .landing-feature-card,
+    .landing-bento-card {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      --mx: 50%;
+      --my: 50%;
+    }
+    .landing-feature-card::before,
+    .landing-bento-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      z-index: -1;
+      background: radial-gradient(
+        320px circle at var(--mx) var(--my),
+        color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+        transparent 60%
+      );
+      opacity: 0;
+      transition: opacity 280ms var(--ease, ease);
+      pointer-events: none;
+    }
+    .landing-feature-card:hover::before,
+    .landing-bento-card:hover::before { opacity: 1; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PROGRESS BAR — gradient instead of flat accent                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-progress-bar {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent) 60%, transparent) 0%,
+      var(--accent) 50%,
+      color-mix(in srgb, var(--accent) 60%, transparent) 100%
+    );
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STICKER ICONS — gentle bobbing                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-megamenu-item .sticker { transition: transform 280ms var(--ease, ease); }
+  .landing-megamenu-item:hover .sticker {
+    transform: rotate(-6deg) scale(1.06);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION — kill the moving parts                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .landing-hero .btn.primary::before,
+    .landing-cta-stack .btn.primary::before,
+    .landing-hero-eyebrow::after {
+      animation: none;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v13.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v13 · site-wide vitality
+   ─────────────────────────────────────────────────────────────────────
+   Calm, Notion-style motion across every page. The goal is "alive but
+   not noisy" — every interactive surface has a little micro-interaction,
+   nothing demands attention. CSS-only, no React tree changes.
+
+   Adds:
+   · Page enter: fade + lift on every .page
+   · Grid stagger: cards in .grid-2/.grid-3/.grid-4 fade-up in sequence
+   · Metric polish: soft scale + accent ring on hover, value bounces in
+   · Card press: subtle scale-down on :active for clickable cards
+   · Button press feedback (already lifts on hover; now compresses on click)
+   · Nav indicator slides in on hover/active instead of just appearing
+   · Smooth scroll behavior + scrollbar gutter stable
+   · List rows lighten on hover
+   · Sidebar nav-icon micro-tilt on active
+   · Topbar entrance — slides down on first paint
+   · Welcome card has a soft gradient breathe
+   · Tabs/pills pulse the active selection
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  GLOBAL SCROLL — calmer feel                                   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  html {
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE ENTER — every route fades + lifts in                     ║
+     ║  Triggered by class binding done in CSS only — animation       ║
+     ║  starts on mount because the element is fresh in the DOM.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page {
+    animation: madark-page-in 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-page-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STAGGER — grid children fade-up in sequence                   ║
+     ║  CSS-only; uses :nth-child to delay each in turn. Caps at 8    ║
+     ║  so a long grid still finishes quickly.                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .grid-2 > *,
+  .grid-3 > *,
+  .grid-4 > *,
+  .grid-auto-200 > *,
+  .grid-auto-260 > * {
+    animation: madark-stagger-up 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .grid-2 > *:nth-child(1),
+  .grid-3 > *:nth-child(1),
+  .grid-4 > *:nth-child(1),
+  .grid-auto-200 > *:nth-child(1),
+  .grid-auto-260 > *:nth-child(1) { animation-delay: 0ms; }
+  .grid-2 > *:nth-child(2),
+  .grid-3 > *:nth-child(2),
+  .grid-4 > *:nth-child(2),
+  .grid-auto-200 > *:nth-child(2),
+  .grid-auto-260 > *:nth-child(2) { animation-delay: 50ms; }
+  .grid-2 > *:nth-child(3),
+  .grid-3 > *:nth-child(3),
+  .grid-4 > *:nth-child(3),
+  .grid-auto-200 > *:nth-child(3),
+  .grid-auto-260 > *:nth-child(3) { animation-delay: 100ms; }
+  .grid-2 > *:nth-child(4),
+  .grid-3 > *:nth-child(4),
+  .grid-4 > *:nth-child(4),
+  .grid-auto-200 > *:nth-child(4),
+  .grid-auto-260 > *:nth-child(4) { animation-delay: 150ms; }
+  .grid-2 > *:nth-child(5),
+  .grid-3 > *:nth-child(5),
+  .grid-4 > *:nth-child(5),
+  .grid-auto-200 > *:nth-child(5),
+  .grid-auto-260 > *:nth-child(5) { animation-delay: 200ms; }
+  .grid-2 > *:nth-child(6),
+  .grid-3 > *:nth-child(6),
+  .grid-4 > *:nth-child(6),
+  .grid-auto-200 > *:nth-child(6),
+  .grid-auto-260 > *:nth-child(6) { animation-delay: 250ms; }
+  .grid-2 > *:nth-child(n+7),
+  .grid-3 > *:nth-child(n+7),
+  .grid-4 > *:nth-child(n+7),
+  .grid-auto-200 > *:nth-child(n+7),
+  .grid-auto-260 > *:nth-child(n+7) { animation-delay: 300ms; }
+  @keyframes madark-stagger-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  METRIC CARD — soft hover ring + value pop-in                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .metric {
+    transition:
+      border-color var(--t-base, 240ms) var(--ease, ease),
+      box-shadow var(--t-base, 240ms) var(--ease, ease),
+      transform var(--t-base, 240ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  @media (hover: hover) {
+    .metric:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+      box-shadow:
+        0 8px 24px -8px color-mix(in srgb, var(--accent) 20%, transparent),
+        var(--shadow-card-h, 0 4px 12px rgba(0,0,0,0.08));
+    }
+  }
+  .metric-value {
+    animation: madark-pop-in 480ms var(--ease-spring, cubic-bezier(0.34, 1.36, 0.64, 1)) both;
+  }
+  @keyframes madark-pop-in {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BUTTON PRESS — light compression on click                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .btn {
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      border-color var(--t-fast, 160ms) var(--ease, ease),
+      color var(--t-fast, 160ms) var(--ease, ease),
+      transform 120ms var(--ease, ease),
+      box-shadow var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+    transition-duration: 80ms;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CLICKABLE CARDS — subtle press                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  a > .card:active,
+  button > .card:active,
+  .card.interactive:active,
+  .card-link:active .card {
+    transform: scale(0.99);
+    transition-duration: 80ms;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  NAV ITEM — accent indicator slides in on hover                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .nav-item {
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      color var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .nav-item::before {
+    transition:
+      transform var(--t-base, 240ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      opacity var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .nav-item:not(.on):not(.active)::before {
+    opacity: 0;
+    transform: scaleY(0.4);
+  }
+  .nav-item:hover::before {
+    opacity: 0.5;
+    transform: scaleY(0.7);
+  }
+  .nav-item.on::before,
+  .nav-item.active::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  .nav-icon {
+    transition: transform var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .nav-item:hover .nav-icon {
+    transform: scale(1.08);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOPBAR — slides down on first paint                           ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar {
+    animation: madark-topbar-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-topbar-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  WELCOME CARD — soft gradient breathing                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page-header.welcome-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .page-header.welcome-card::after {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    z-index: -1;
+    background: radial-gradient(
+      circle at 80% 20%,
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      transparent 60%
+    );
+    animation: madark-welcome-breathe 9s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes madark-welcome-breathe {
+    from { transform: translate3d(0, 0, 0) scale(1);     opacity: 0.7; }
+    to   { transform: translate3d(-30px, 18px, 0) scale(1.06); opacity: 1; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PILLS / TABS — active selection has a soft glow               ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .pill, .tab {
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      color var(--t-fast, 160ms) var(--ease, ease),
+      border-color var(--t-fast, 160ms) var(--ease, ease),
+      transform var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .pill.on, .tab.on, .tab.active {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .pill:active, .tab:active {
+    transform: scale(0.96);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LIST ROWS — gentle background shift on hover                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .list-row,
+  .feed-item,
+  .owner-timeline-item {
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      transform var(--t-fast, 160ms) var(--ease, ease);
+  }
+  @media (hover: hover) {
+    .list-row:hover,
+    .feed-item:hover {
+      background: var(--surface-2);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TABLE ROWS — quiet zebra-on-hover                             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-table tbody tr,
+  .admin-students-table tbody tr,
+  .leaderboard-table tbody tr,
+  .tbl tbody tr {
+    transition: background var(--t-fast, 160ms) var(--ease, ease);
+  }
+  @media (hover: hover) {
+    .owner-table tbody tr:hover,
+    .admin-students-table tbody tr:hover,
+    .leaderboard-table tbody tr:hover,
+    .tbl tbody tr:hover {
+      background: var(--surface-2);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ICON GLYPHS — slight rotate-on-hover for interactive icons    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .btn .icon,
+  .btn svg {
+    transition: transform 240ms var(--ease, ease);
+  }
+  .btn:hover .icon,
+  .btn:hover svg {
+    transform: translateX(-1px);
+  }
+  /* in RTL the visual "forward" direction flips */
+  [dir="rtl"] .btn:hover .icon,
+  [dir="rtl"] .btn:hover svg {
+    transform: translateX(1px);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  DOUGHNUT / CHARTS — fade up so they don't pop in cold         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .dash-doughnut,
+  .owner-chart-container {
+    animation: madark-chart-in 520ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-chart-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION — globally honored                             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .page,
+    .grid-2 > *, .grid-3 > *, .grid-4 > *,
+    .grid-auto-200 > *, .grid-auto-260 > *,
+    .metric-value,
+    .topbar,
+    .page-header.welcome-card::after,
+    .dash-doughnut,
+    .owner-chart-container {
+      animation: none !important;
+    }
+    .btn:active:not(:disabled),
+    a > .card:active,
+    button > .card:active,
+    .card.interactive:active {
+      transform: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v14.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v14 · foundation
+   ─────────────────────────────────────────────────────────────────────
+   First phase of the comprehensive design polish plan. Adds:
+   · Token system (elevation, spring eases, focus rings, glass blur)
+   · Campus showcase section styling (parallax photo + chips)
+   · Sidebar collapse easing + active rail dot
+   · Dropdown / popover spring-pop entrance
+   · Bottom nav active dot indicator
+   · Better focus rings everywhere
+   · Selection color matching brand
+   · Cursor pointer audit (every clickable surface)
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOKEN SYSTEM EXTENSIONS                                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  :root {
+    /* Elevation scale — soft, warm shadows that match our palette */
+    --elevation-1: 0 1px 2px rgba(20, 14, 6, 0.04), 0 1px 3px rgba(20, 14, 6, 0.06);
+    --elevation-2: 0 2px 4px rgba(20, 14, 6, 0.05), 0 4px 8px rgba(20, 14, 6, 0.08);
+    --elevation-3: 0 4px 8px rgba(20, 14, 6, 0.06), 0 8px 16px rgba(20, 14, 6, 0.10);
+    --elevation-4: 0 8px 16px rgba(20, 14, 6, 0.08), 0 16px 32px rgba(20, 14, 6, 0.12);
+    --elevation-5: 0 16px 32px rgba(20, 14, 6, 0.10), 0 32px 64px rgba(20, 14, 6, 0.16);
+
+    /* Spring easings */
+    --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
+    --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
+
+    /* Focus halo ring — tuned per theme */
+    --ring-focus: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  [data-theme="dark"] {
+    --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.20), 0 1px 3px rgba(0, 0, 0, 0.28);
+    --elevation-2: 0 2px 4px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.32);
+    --elevation-3: 0 4px 8px rgba(0, 0, 0, 0.28), 0 8px 16px rgba(0, 0, 0, 0.40);
+    --elevation-4: 0 8px 16px rgba(0, 0, 0, 0.32), 0 16px 32px rgba(0, 0, 0, 0.48);
+    --elevation-5: 0 16px 32px rgba(0, 0, 0, 0.36), 0 32px 64px rgba(0, 0, 0, 0.56);
+    --ring-focus: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  /* Selection color matches the brand */
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+    color: var(--text);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CAMPUS SHOWCASE                                               ║
+     ║  Photo with vignette, grain, parallax tilt + floating chips.   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-campus { padding-block: clamp(var(--sp-8), 6vw, var(--sp-11)); }
+
+  .landing-campus-frame {
+    position: relative;
+    margin: 0;
+    border-radius: var(--r-3xl);
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: var(--elevation-4);
+    aspect-ratio: 16 / 7;
+    transform-style: preserve-3d;
+    transition: transform 600ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    will-change: transform;
+  }
+  @media (max-width: 720px) {
+    .landing-campus-frame { aspect-ratio: 4 / 3; border-radius: var(--r-2xl); }
+  }
+
+  @media (hover: hover) and (min-width: 920px) {
+    .landing-campus-frame:hover {
+      transform: perspective(1400px) rotateX(2deg) rotateY(-2deg) scale(1.012);
+    }
+  }
+
+  .landing-campus-photo {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    transform: scale(1.05);
+    transition: transform 1200ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  .landing-campus-frame:hover .landing-campus-photo { transform: scale(1.08); }
+
+  /* Top-down vignette darkens for legible caption */
+  .landing-campus-vignette {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(8, 6, 2, 0.45) 80%,
+      rgba(8, 6, 2, 0.78) 100%
+    );
+    pointer-events: none;
+  }
+  /* Subtle film grain overlay */
+  .landing-campus-grain {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+    background-size: 3px 3px;
+    mix-blend-mode: overlay;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Caption sits at bottom, slides in from the start side */
+  .landing-campus-caption {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    padding: clamp(var(--sp-5), 4vw, var(--sp-8));
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    max-inline-size: 640px;
+    z-index: 1;
+  }
+  .landing-campus-eyebrow {
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.85;
+    font-weight: var(--fw-semibold);
+  }
+  .landing-campus-line {
+    font-family: var(--font-display);
+    font-size: clamp(var(--fs-h2), 2.4vw, var(--fs-display-md));
+    font-weight: var(--fw-bold);
+    line-height: 1.25;
+    letter-spacing: var(--ls-snug);
+  }
+  .landing-campus-line em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: color-mix(in srgb, var(--accent) 80%, white);
+    font-weight: var(--fw-medium);
+  }
+
+  /* Floating sticker chips — slide up + drift */
+  .landing-campus-chip {
+    position: absolute;
+    background: var(--surface);
+    color: var(--text);
+    padding: 8px 14px 8px 8px;
+    border-radius: var(--r-full);
+    border: 1px solid var(--rule);
+    box-shadow: var(--elevation-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    z-index: 2;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: madark-chip-float 7s ease-in-out infinite;
+  }
+  .landing-campus-chip-1 {
+    inset-block-start: 18%;
+    inset-inline-end: 6%;
+  }
+  .landing-campus-chip-2 {
+    inset-block-start: 38%;
+    inset-inline-end: 16%;
+    animation-delay: -3.5s;
+  }
+  @media (max-width: 720px) {
+    .landing-campus-chip-1 { inset-block-start: 8%; inset-inline-end: 4%; font-size: var(--fs-xs); padding: 6px 10px 6px 6px; }
+    .landing-campus-chip-2 { inset-block-start: 24%; inset-inline-end: 10%; font-size: var(--fs-xs); padding: 6px 10px 6px 6px; }
+  }
+  @keyframes madark-chip-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR — smoother collapse easing, active rail dot          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sidebar {
+    transition:
+      inline-size 360ms var(--ease-spring-soft),
+      transform 360ms var(--ease-spring-soft);
+  }
+  .has-shell {
+    transition: grid-template-columns 360ms var(--ease-spring-soft);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  DROPDOWNS / POPOVERS — spring-pop entrance                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar-user-menu,
+  .landing-megamenu,
+  .notification-dropdown {
+    animation: madark-popover-in 260ms var(--ease-spring-bounce) both;
+    transform-origin: top center;
+  }
+  @keyframes madark-popover-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  /* Reverse origin for menus that hang from the start side */
+  [dir="rtl"] .topbar-user-menu { transform-origin: top right; }
+  [dir="ltr"] .topbar-user-menu { transform-origin: top left; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BOTTOM NAV — active dot indicator                             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 920px) {
+    .bottom-nav-item {
+      position: relative;
+    }
+    .bottom-nav-item.active::after {
+      content: '';
+      position: absolute;
+      inset-block-end: 4px;
+      inset-inline-start: 50%;
+      transform: translateX(-50%);
+      inline-size: 4px;
+      block-size: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: madark-dot-in 320ms var(--ease-spring-bounce) both;
+    }
+    @keyframes madark-dot-in {
+      from { transform: translateX(-50%) scale(0); }
+      to   { transform: translateX(-50%) scale(1); }
+    }
+    .bottom-nav-item:active { transform: scale(0.93); }
+    .bottom-nav-icon { transition: transform 200ms var(--ease, ease); }
+    .bottom-nav-item.active .bottom-nav-icon {
+      transform: translateY(-2px);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FOCUS RINGS — accent halo on every interactive surface        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [role="menuitem"]:focus-visible {
+    outline: none;
+    box-shadow: var(--ring-focus);
+    border-radius: inherit;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CURSOR POINTER AUDIT — interactive elements always pointer    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  button:not(:disabled),
+  [role="button"],
+  .pill,
+  .tab,
+  .badge.clickable,
+  summary {
+    cursor: pointer;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  GLASS SURFACES — backdrop blur tuning                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar,
+  .bottom-nav {
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION — kill all the moving parts                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .landing-campus-chip,
+    .landing-campus-photo,
+    .landing-campus-frame {
+      animation: none !important;
+      transition: none !important;
+    }
+    .topbar-user-menu,
+    .landing-megamenu,
+    .notification-dropdown {
+      animation: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v15.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v15 · primitives refinement
+   ─────────────────────────────────────────────────────────────────────
+   Phase 1: lift every reusable primitive — Card, Button, MetricCard,
+   Pill, Badge, Tabs, Input, Select, Skeleton, Tooltip — without
+   touching their React APIs.
+
+   Each primitive gains:
+   · A clearer hover state
+   · A press feedback
+   · A focus halo
+   · A subtle entrance/transition where appropriate
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  CARD — gradient hover border + lifted shadow                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .card {
+    transition:
+      border-color 240ms var(--ease, ease),
+      box-shadow 280ms var(--ease-spring-soft),
+      transform 280ms var(--ease-spring-soft);
+    position: relative;
+  }
+  /* Gradient border-glow on hover for non-flush cards */
+  .card:not(.flush)::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 35%, transparent) 0%,
+      transparent 35%,
+      transparent 65%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 320ms var(--ease, ease);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .card:not(.flush):hover::after { opacity: 0.65; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BUTTON — refined hover sheen + ripple-on-press                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .btn {
+    position: relative;
+    overflow: hidden;
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      border-color var(--t-fast, 160ms) var(--ease, ease),
+      color var(--t-fast, 160ms) var(--ease, ease),
+      transform 120ms var(--ease, ease),
+      box-shadow 240ms var(--ease, ease);
+  }
+  .btn.primary:hover,
+  .btn-primary:hover,
+  .btn.accent:hover {
+    box-shadow:
+      0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
+      0 2px 4px rgba(0,0,0,0.06);
+  }
+  /* Ghost button gains accent border on hover */
+  .btn.ghost:hover,
+  .btn-ghost:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+  }
+  /* Press ripple effect — radial pulse at click origin */
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .btn:active:not(:disabled)::after {
+    animation: madark-ripple 460ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-ripple {
+    0%   { inline-size: 0; block-size: 0; opacity: 0.5; }
+    100% { inline-size: 240%; block-size: 240%; opacity: 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  METRIC CARD — accent leading edge                             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .metric {
+    position: relative;
+    overflow: hidden;
+  }
+  .metric::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    background: var(--_metric-color, var(--accent));
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 320ms var(--ease-spring-soft);
+  }
+  .metric:hover::before { transform: scaleY(1); }
+  /* Numeric values get tabular alignment globally */
+  .metric-value {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PILL & TAB — soft active glow + transition smoothing          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .pill {
+    transition:
+      background 160ms var(--ease, ease),
+      color 160ms var(--ease, ease),
+      border-color 160ms var(--ease, ease),
+      transform 160ms var(--ease, ease),
+      box-shadow 240ms var(--ease, ease);
+  }
+  .pill.on {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+  .pill:hover { transform: translateY(-1px); }
+  .pill:active { transform: scale(0.96); }
+
+  /* Tab underline becomes spring-easy */
+  .tab::after {
+    transition:
+      transform 320ms var(--ease-spring-soft),
+      opacity 200ms var(--ease, ease);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BADGE — pop-in on first paint                                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .badge {
+    animation: madark-badge-in 260ms var(--ease-spring-bounce) both;
+    transition: transform 160ms var(--ease, ease);
+  }
+  @keyframes madark-badge-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: none; }
+  }
+  .badge:hover { transform: scale(1.05); }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  INPUT / SELECT / TEXTAREA — accent halo on focus              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .input,
+  input[type="text"], input[type="search"], input[type="email"],
+  input[type="password"], input[type="number"], input[type="url"],
+  input[type="tel"], input[type="date"], input[type="time"],
+  textarea, select {
+    transition:
+      border-color 200ms var(--ease, ease),
+      box-shadow 240ms var(--ease, ease),
+      background 200ms var(--ease, ease);
+  }
+  .input:focus,
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SKELETON — directional shimmer (RTL-aware) + softer stops     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--surface-3) 0%,
+      color-mix(in srgb, var(--surface-2) 80%, white 8%) 50%,
+      var(--surface-3) 100%
+    );
+    background-size: 200% 100%;
+    animation: madark-shimmer-rtl 1600ms ease-in-out infinite;
+  }
+  [dir="ltr"] .skeleton {
+    animation-name: madark-shimmer-ltr;
+  }
+  @keyframes madark-shimmer-rtl {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 0% 0; }
+  }
+  @keyframes madark-shimmer-ltr {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PROGRESS BAR — gradient fill with shimmer                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .progressbar > span,
+  .progress-bar > span,
+  [class*="progress"] > span {
+    transition: width 480ms var(--ease-spring-soft);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  AVATAR — subtle hover lift                                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .avatar,
+  .user-avatar {
+    transition: transform 200ms var(--ease, ease), box-shadow 240ms var(--ease, ease);
+  }
+  @media (hover: hover) {
+    a:hover .avatar,
+    a:hover .user-avatar,
+    button:hover .avatar,
+    button:hover .user-avatar {
+      transform: scale(1.05);
+      box-shadow: var(--elevation-2);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STICKER ICONS — gentle sway when grouped                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sticker-wiggle .sticker {
+    animation: madark-sway 6s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+  .sticker-wiggle:nth-child(2n) .sticker { animation-delay: -1.5s; }
+  .sticker-wiggle:nth-child(3n) .sticker { animation-delay: -3s; }
+  .sticker-wiggle:nth-child(4n) .sticker { animation-delay: -4.5s; }
+  @keyframes madark-sway {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(-2.5deg); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .badge,
+    .skeleton,
+    .sticker-wiggle .sticker {
+      animation: none !important;
+    }
+    .btn:active:not(:disabled)::after {
+      animation: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v16.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v16 · layout shell
+   ─────────────────────────────────────────────────────────────────────
+   Phase 2: lift the layout chrome — sidebar drawer, topbar, bottom nav,
+   user menu, search dropdown. Each shell surface gets calmer motion,
+   better focus, and a more confident hover feel.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR — desktop active rail + dot indicator                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* The existing .nav-item.on::before is the accent rail; we sweeten
+     it with a small dot that pops in when the item activates. */
+  .nav-item {
+    position: relative;
+  }
+  .nav-item.on::after,
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 6px;
+    inset-block-start: 50%;
+    transform: translateY(-50%) scale(0);
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    animation: madark-rail-dot-in 320ms var(--ease-spring-bounce) both 80ms;
+  }
+  @keyframes madark-rail-dot-in {
+    from { transform: translateY(-50%) scale(0); opacity: 0; }
+    to   { transform: translateY(-50%) scale(1); opacity: 1; }
+  }
+  /* RTL flips */
+  [dir="ltr"] .nav-item.on::after,
+  [dir="ltr"] .nav-item.active::after { inset-inline-start: 6px; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR — group section label tone shift                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .nav-section-label {
+    position: relative;
+    transition: color 200ms var(--ease, ease);
+  }
+  .nav-section-label::before {
+    content: '';
+    position: absolute;
+    inset-block-end: -2px;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    block-size: 1px;
+    background: linear-gradient(90deg, var(--rule), transparent);
+    opacity: 0.5;
+  }
+  [dir="rtl"] .nav-section-label::before {
+    background: linear-gradient(-90deg, var(--rule), transparent);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR DRAWER — mobile slide-in with spring                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 920px) {
+    .sidebar {
+      transition: transform 380ms var(--ease-spring-soft);
+    }
+    .sidebar.open .nav-item {
+      animation: madark-drawer-item-in 340ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(1) { animation-delay: 60ms; }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(2) { animation-delay: 90ms; }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(3) { animation-delay: 120ms; }
+    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(4) { animation-delay: 150ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(1) { animation-delay: 180ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(2) { animation-delay: 210ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(3) { animation-delay: 240ms; }
+    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(4) { animation-delay: 270ms; }
+    .sidebar.open .nav-group:nth-of-type(3) .nav-item { animation-delay: 300ms; }
+    @keyframes madark-drawer-item-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR BACKDROP — blur ramp with fade                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sidebar-backdrop {
+    transition:
+      opacity 280ms var(--ease, ease),
+      backdrop-filter 280ms var(--ease, ease);
+  }
+  .sidebar-backdrop.show {
+    backdrop-filter: blur(6px) saturate(85%);
+    -webkit-backdrop-filter: blur(6px) saturate(85%);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOPBAR — scroll-aware shadow                                  ║
+     ║  When the document scrolls, the body gets data-scrolled=true   ║
+     ║  via the scroll handler in AppShell (already exists). Use it   ║
+     ║  to deepen the topbar shadow.                                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar {
+    transition:
+      box-shadow 240ms var(--ease, ease),
+      border-color 240ms var(--ease, ease);
+  }
+  /* Scroll-state class is set by CSS-only sticky shadow trick: when
+     the topbar is sticky and there's content above it, this kicks in. */
+  .topbar:not(:first-child),
+  body[data-scrolled="true"] .topbar {
+    box-shadow: var(--elevation-2);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOPBAR USER TRIGGER — spring chevron on press                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar-user-trigger {
+    transition:
+      background var(--t-fast, 160ms) var(--ease, ease),
+      border-color var(--t-fast, 160ms) var(--ease, ease),
+      box-shadow 240ms var(--ease, ease),
+      transform 200ms var(--ease, ease);
+  }
+  .topbar-user-trigger:hover {
+    box-shadow: var(--elevation-1);
+  }
+  .topbar-user-trigger[aria-expanded="true"] {
+    background: var(--surface-2);
+    box-shadow: var(--elevation-2);
+  }
+  /* Chevron in user trigger flips when menu opens */
+  .topbar-user-trigger[aria-expanded="true"] .icon-chevron,
+  .topbar-user-trigger[aria-expanded="true"] svg:last-child {
+    transform: rotate(180deg);
+    transition: transform 240ms var(--ease-spring-soft);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  USER MENU ITEMS — stagger entrance                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar-user-menu .topbar-user-menu-item {
+    animation: madark-menu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(1) { animation-delay: 40ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(2) { animation-delay: 70ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(3) { animation-delay: 100ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(4) { animation-delay: 130ms; }
+  .topbar-user-menu .topbar-user-menu-item:nth-child(5) { animation-delay: 160ms; }
+  @keyframes madark-menu-item-in {
+    from { opacity: 0; transform: translateX(4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  [dir="rtl"] .topbar-user-menu .topbar-user-menu-item {
+    animation-name: madark-menu-item-in-rtl;
+  }
+  @keyframes madark-menu-item-in-rtl {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Hover slide */
+  .topbar-user-menu-item {
+    transition: background var(--t-fast, 160ms) var(--ease, ease),
+                color var(--t-fast, 160ms) var(--ease, ease),
+                padding-inline-start var(--t-fast, 160ms) var(--ease, ease);
+  }
+  .topbar-user-menu-item:hover {
+    padding-inline-start: calc(var(--sp-4) + 4px);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  GLOBAL SEARCH — focus-state expansion                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .topbar .global-search {
+    transition:
+      box-shadow 280ms var(--ease, ease),
+      border-color 240ms var(--ease, ease),
+      transform 240ms var(--ease, ease);
+  }
+  .topbar .global-search:focus-within {
+    box-shadow: var(--ring-focus), var(--elevation-1);
+    border-color: var(--accent);
+    transform: scale(1.005);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE HEADER — eyebrow underline animation                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page-header .page-title-block {
+    position: relative;
+    animation: madark-page-title-in 460ms var(--ease-spring-soft) both 80ms;
+  }
+  @keyframes madark-page-title-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  BOTTOM NAV — accent ring on active                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 920px) {
+    .bottom-nav-item.active {
+      color: var(--accent);
+    }
+    .bottom-nav-item.active .bottom-nav-icon::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: var(--r-md);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      z-index: -1;
+    }
+    .bottom-nav-item .bottom-nav-icon {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .nav-item.on::after,
+    .nav-item.active::after,
+    .sidebar.open .nav-item,
+    .topbar-user-menu .topbar-user-menu-item,
+    .page-header .page-title-block {
+      animation: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v17.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v17 · pages
+   ─────────────────────────────────────────────────────────────────────
+   Phase 3 of the design polish plan: page-specific motion + visual
+   richness across landing sections, dashboards, list rows, table rows,
+   detail headers, owner realtime tiles.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LANDING — section stripes (peach / lavender / mint / sky)     ║
+     ║  Each major section gets a tinted backdrop that subtly fades   ║
+     ║  to bg at the seams. Creates visual rhythm down the page.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  #features {
+    position: relative;
+    isolation: isolate;
+  }
+  #features::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--c-peach-bg) 35%, transparent) 30%,
+      color-mix(in srgb, var(--c-peach-bg) 35%, transparent) 70%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  [data-theme="dark"] #features::before {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 30%,
+      color-mix(in srgb, var(--accent) 4%, transparent) 70%,
+      transparent 100%
+    );
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STUDENT DASHBOARD — welcome card photo overlay                ║
+     ║  Subtle campus photo bleeds into the background of the welcome ║
+     ║  card at low opacity, theme-aware so it never crushes text.    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .student-dashboard .page-header.welcome-card {
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--accent-soft) 95%, transparent) 0%,
+        color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
+        transparent 100%
+      ),
+      url('/main_photo.png') 50% 30% / cover no-repeat;
+  }
+  [data-theme="dark"] .student-dashboard .page-header.welcome-card {
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--bg) 92%, var(--accent) 8%) 0%,
+        color-mix(in srgb, var(--bg) 75%, transparent) 60%,
+        var(--bg) 100%
+      ),
+      url('/main_photo.png') 50% 30% / cover no-repeat;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STUDENT DASHBOARD — agenda items glide in                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .dash-agenda-list .dash-agenda-item {
+    animation: madark-agenda-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .dash-agenda-list .dash-agenda-item:nth-child(1) { animation-delay: 80ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(2) { animation-delay: 140ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(3) { animation-delay: 200ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(4) { animation-delay: 260ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(5) { animation-delay: 320ms; }
+  .dash-agenda-list .dash-agenda-item:nth-child(n+6) { animation-delay: 380ms; }
+  @keyframes madark-agenda-in {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  [dir="rtl"] @keyframes madark-agenda-in {
+    from { opacity: 0; transform: translateX(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STUDENT DASHBOARD — doughnut center number transitions        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .dash-doughnut-center {
+    transition:
+      transform 480ms var(--ease-spring-bounce),
+      color 320ms var(--ease, ease);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TEACHER FEED — items glide in from the start side             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .feed .feed-item {
+    animation: madark-feed-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .feed .feed-item:nth-child(1) { animation-delay: 60ms; }
+  .feed .feed-item:nth-child(2) { animation-delay: 120ms; }
+  .feed .feed-item:nth-child(3) { animation-delay: 180ms; }
+  .feed .feed-item:nth-child(4) { animation-delay: 240ms; }
+  .feed .feed-item:nth-child(5) { animation-delay: 300ms; }
+  .feed .feed-item:nth-child(6) { animation-delay: 360ms; }
+  .feed .feed-item:nth-child(n+7) { animation-delay: 420ms; }
+  @keyframes madark-feed-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMPACT KPI — accent stripe + value pop                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .compact-kpi {
+    position: relative;
+    overflow: hidden;
+    transition:
+      border-color 240ms var(--ease, ease),
+      box-shadow 280ms var(--ease-spring-soft),
+      transform 280ms var(--ease-spring-soft);
+  }
+  .compact-kpi::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 28px;
+    block-size: 3px;
+    background: var(--accent);
+    border-radius: 0 0 var(--r-sm) 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 360ms var(--ease-spring-soft);
+  }
+  [dir="rtl"] .compact-kpi::before {
+    transform-origin: right;
+    border-radius: 0 0 0 var(--r-sm);
+  }
+  .compact-kpi:hover::before { transform: scaleX(1); }
+  .compact-kpi:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--elevation-2);
+  }
+  .compact-kpi-value {
+    font-variant-numeric: tabular-nums;
+    transition: color 240ms var(--ease, ease);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  OWNER REALTIME — heartbeat pulse on green dots                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-health-dot.green,
+  .owner-live-pulse {
+    position: relative;
+    animation: madark-heartbeat 2.4s ease-in-out infinite;
+  }
+  .owner-health-dot.green::after,
+  .owner-live-pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    opacity: 0.6;
+    animation: madark-pulse-ring 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes madark-heartbeat {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+  @keyframes madark-pulse-ring {
+    0%   { transform: scale(1); opacity: 0.6; }
+    80%  { transform: scale(2.2); opacity: 0; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  OWNER ALERT TILE — glow when count > 0                        ║
+     ║  Targets the live-status banner that already exists in the     ║
+     ║  owner dashboard markup.                                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-live-status.has-alerts {
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent),
+      var(--elevation-1);
+    animation: madark-alert-glow 3s ease-in-out infinite;
+  }
+  @keyframes madark-alert-glow {
+    0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent), var(--elevation-1); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #c97a18) 28%, transparent), var(--elevation-2); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ADMIN / OWNER / QUALITY — CHART LINE TRACE                    ║
+     ║  Chart.js animations are JS-driven; we add a CSS hint that     ║
+     ║  fades the canvas in so it doesn't pop cold.                   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .owner-chart-container canvas,
+  .dash-doughnut canvas,
+  [class*="chart-container"] canvas {
+    animation: madark-canvas-in 600ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-canvas-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TABLE ROWS — leading dot indicator on hover                   ║
+     ║  Adds a small accent dot at the start of the row when hovered. ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .owner-table tbody tr,
+    .admin-students-table tbody tr,
+    .leaderboard-table tbody tr,
+    .tbl tbody tr {
+      position: relative;
+    }
+    .owner-table tbody tr td:first-child,
+    .admin-students-table tbody tr td:first-child,
+    .leaderboard-table tbody tr td:first-child,
+    .tbl tbody tr td:first-child {
+      position: relative;
+    }
+    .owner-table tbody tr:hover td:first-child::before,
+    .admin-students-table tbody tr:hover td:first-child::before,
+    .leaderboard-table tbody tr:hover td:first-child::before,
+    .tbl tbody tr:hover td:first-child::before {
+      content: '';
+      position: absolute;
+      inset-block: 12px;
+      inset-inline-start: 0;
+      inline-size: 3px;
+      background: var(--accent);
+      border-radius: 0 var(--r-xs) var(--r-xs) 0;
+      animation: madark-row-bar-in 220ms var(--ease-spring-bounce) both;
+    }
+    [dir="rtl"] .owner-table tbody tr:hover td:first-child::before,
+    [dir="rtl"] .admin-students-table tbody tr:hover td:first-child::before,
+    [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before,
+    [dir="rtl"] .tbl tbody tr:hover td:first-child::before {
+      border-radius: var(--r-xs) 0 0 var(--r-xs);
+    }
+    @keyframes madark-row-bar-in {
+      from { transform: scaleY(0); }
+      to   { transform: scaleY(1); }
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LIST ROWS — leading dot color flush on hover                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .list-row {
+    position: relative;
+    overflow: hidden;
+  }
+  @media (hover: hover) {
+    .list-row::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      inline-size: 3px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: center;
+      transition: transform 240ms var(--ease-spring-soft);
+    }
+    .list-row:hover::before { transform: scaleY(0.7); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  DETAIL HEADERS — colored leading bar that draws in            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .college-hero,
+  .comp-hero {
+    position: relative;
+    isolation: isolate;
+  }
+  .college-hero::before,
+  .comp-hero::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 4px;
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, transparent));
+    border-radius: var(--r-full);
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: madark-hero-bar-draw 600ms var(--ease-spring-soft) 240ms both;
+  }
+  @keyframes madark-hero-bar-draw {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMPETITION INDEX CARDS — hover glow + emoji bob              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .comp-index-card .comp-index-emoji {
+      transition: transform 280ms var(--ease-spring-soft);
+    }
+    .comp-index-card:hover .comp-index-emoji {
+      transform: scale(1.12) rotate(-6deg);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COLLEGE CARDS — emoji breathe inside hover                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (hover: hover) {
+    .college-card .college-card-emoji {
+      transition: transform 280ms var(--ease-spring-soft);
+    }
+    .college-card:hover .college-card-emoji {
+      transform: scale(1.1) rotate(4deg);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LANDING PILOT STATS — count-up effect via existing CountUp    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-pilot-stat {
+    transition:
+      transform 320ms var(--ease-spring-soft),
+      box-shadow 320ms var(--ease, ease);
+  }
+  @media (hover: hover) {
+    .landing-pilot-stat:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--elevation-3);
+    }
+  }
+  .landing-pilot-value {
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--text)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .dash-agenda-list .dash-agenda-item,
+    .feed .feed-item,
+    .owner-health-dot.green,
+    .owner-live-pulse,
+    .owner-health-dot.green::after,
+    .owner-live-pulse::after,
+    .owner-live-status.has-alerts,
+    .owner-chart-container canvas,
+    .dash-doughnut canvas,
+    .college-hero::before,
+    .comp-hero::before {
+      animation: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v18.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v18 · overlays
+   ─────────────────────────────────────────────────────────────────────
+   Phase 5: lift every overlay surface — notification dropdown, global
+   search results, competition modals, sidebar drawer (mobile), and
+   the bottom-sheet pattern for filters.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  NOTIFICATION DROPDOWN — items stagger + unread pulse          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .notification-dropdown {
+    box-shadow: var(--elevation-4);
+    border: 1px solid var(--rule);
+  }
+  .notification-dropdown li,
+  .notification-dropdown .notif-item,
+  .notification-dropdown [role="listitem"] {
+    animation: madark-notif-in 320ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .notification-dropdown li:nth-child(1),
+  .notification-dropdown .notif-item:nth-child(1) { animation-delay: 50ms; }
+  .notification-dropdown li:nth-child(2),
+  .notification-dropdown .notif-item:nth-child(2) { animation-delay: 80ms; }
+  .notification-dropdown li:nth-child(3),
+  .notification-dropdown .notif-item:nth-child(3) { animation-delay: 110ms; }
+  .notification-dropdown li:nth-child(4),
+  .notification-dropdown .notif-item:nth-child(4) { animation-delay: 140ms; }
+  .notification-dropdown li:nth-child(5),
+  .notification-dropdown .notif-item:nth-child(5) { animation-delay: 170ms; }
+  .notification-dropdown li:nth-child(n+6),
+  .notification-dropdown .notif-item:nth-child(n+6) { animation-delay: 200ms; }
+  @keyframes madark-notif-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Unread dot pulses gently */
+  .notification-dropdown [data-unread="true"]::before,
+  .notif-item.unread::before,
+  .notif-unread-dot {
+    animation: madark-unread-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes madark-unread-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  GLOBAL SEARCH RESULTS — slide in + keyboard highlight glide   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .global-search-results {
+    box-shadow: var(--elevation-4);
+    animation: madark-popover-in 240ms var(--ease-spring-bounce) both;
+    transform-origin: top center;
+  }
+  .global-search-results [role="option"],
+  .global-search-results .search-result,
+  .global-search-results li {
+    transition:
+      background 160ms var(--ease, ease),
+      color 160ms var(--ease, ease),
+      padding-inline-start 200ms var(--ease, ease);
+  }
+  .global-search-results [role="option"]:hover,
+  .global-search-results [role="option"][aria-selected="true"],
+  .global-search-results .search-result:hover,
+  .global-search-results .search-result.active {
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+    padding-inline-start: calc(var(--sp-4) + 4px);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMPETITION / GENERIC MODALS — backdrop blur ramp + spring    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .comp-modal-backdrop {
+    transition:
+      opacity 280ms var(--ease, ease),
+      backdrop-filter 280ms var(--ease, ease);
+    backdrop-filter: blur(8px) saturate(85%);
+    -webkit-backdrop-filter: blur(8px) saturate(85%);
+  }
+  .comp-modal {
+    box-shadow: var(--elevation-5);
+    animation: madark-modal-in 360ms var(--ease-spring-bounce) both;
+  }
+  @keyframes madark-modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .comp-modal-close {
+    transition:
+      background 160ms var(--ease, ease),
+      color 160ms var(--ease, ease),
+      transform 200ms var(--ease, ease);
+  }
+  .comp-modal-close:hover {
+    transform: rotate(90deg);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TOAST / NOTIFICATION TOAST PATTERN                            ║
+     ║  Forward-compatible: matches future `.toast` class so nothing  ║
+     ║  needs wiring up beyond markup that uses these classes.        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .toast,
+  [role="status"][data-toast] {
+    box-shadow: var(--elevation-3);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    animation: madark-toast-in 320ms var(--ease-spring-bounce) both;
+  }
+  @keyframes madark-toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MEGA-MENU (landing) — items stagger                           ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-megamenu .landing-megamenu-item {
+    animation: madark-megamenu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
+  .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
+  .landing-megamenu .landing-megamenu-item:nth-child(3) { animation-delay: 100ms; }
+  .landing-megamenu .landing-megamenu-item:nth-child(4) { animation-delay: 130ms; }
+  @keyframes madark-megamenu-item-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SHEET / BOTTOM-SHEET (forward-compatible)                     ║
+     ║  Any container with class `.sheet` or `.bottom-sheet` slides   ║
+     ║  up from the bottom on mobile.                                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sheet,
+  .bottom-sheet {
+    animation: madark-sheet-in 380ms var(--ease-spring-soft) both;
+  }
+  @keyframes madark-sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMPETITION CARD HEAD ICON BUTTONS — rotation on press        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .comp-icon-btn {
+    transition:
+      background 160ms var(--ease, ease),
+      border-color 160ms var(--ease, ease),
+      transform 200ms var(--ease-spring-soft);
+  }
+  .comp-icon-btn:hover {
+    transform: scale(1.1);
+  }
+  .comp-icon-btn.on {
+    transform: scale(1.06);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .notification-dropdown li,
+    .notification-dropdown .notif-item,
+    .global-search-results,
+    .comp-modal,
+    .toast,
+    .landing-megamenu .landing-megamenu-item,
+    .sheet,
+    .bottom-sheet {
+      animation: none !important;
+    }
+    .notification-dropdown [data-unread="true"]::before,
+    .notif-item.unread::before,
+    .notif-unread-dot,
+    .comp-modal-close:hover {
+      animation: none !important;
+      transform: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v19.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v19 · states, auth, thumbnails, micro-fixes
+   ─────────────────────────────────────────────────────────────────────
+   Phase 6 of the design polish plan. Empty/error/loading state polish,
+   auth pages, thumb-card hover refinement, and a final pass over
+   remaining surfaces (skills/labs/jobs/mooc cards, vision detail pages,
+   document viewer, training tracks).
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  THUMB CARDS — image zoom on hover, lift, accent border tip   ║
+     ║  Used by Library, MOOC, Courses, Labs, Webinars.              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .thumb-card {
+    overflow: hidden;
+    transition:
+      border-color 240ms var(--ease, ease),
+      box-shadow 320ms var(--ease-spring-soft),
+      transform 320ms var(--ease-spring-soft);
+  }
+  .thumb-card-image {
+    overflow: hidden;
+    position: relative;
+  }
+  .thumb-card-image > * {
+    transition: transform 480ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  @media (hover: hover) {
+    .thumb-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--elevation-3);
+      border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+    }
+    .thumb-card:hover .thumb-card-image > * {
+      transform: scale(1.08);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  EMPTY STATE — idle wiggle on the icon every 6s                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .state.state-empty .state-icon {
+    animation: madark-empty-wiggle 6s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes madark-empty-wiggle {
+    0%, 92%, 100% { transform: rotate(0deg); }
+    94%   { transform: rotate(-6deg); }
+    96%   { transform: rotate(6deg); }
+    98%   { transform: rotate(-3deg); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ERROR STATE — icon throbs gently, retry button bounces in     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .state.state-error .state-icon {
+    animation: madark-error-throb 1.6s ease-in-out infinite;
+  }
+  @keyframes madark-error-throb {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.05); }
+  }
+  .state.state-error .btn {
+    animation: madark-retry-pop 360ms var(--ease-spring-bounce) both 200ms;
+  }
+  @keyframes madark-retry-pop {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  AUTH PAGES — calmer ambient gradient + form lift              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .auth-page,
+  .auth-card {
+    position: relative;
+  }
+  .auth-card {
+    animation: madark-auth-card-in 480ms var(--ease-spring-soft) both;
+  }
+  @keyframes madark-auth-card-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Auth submit button gets the same primary breathe as landing */
+  .auth-card .btn.primary {
+    position: relative;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LANDING FOOTER — soft accent stripe at the start              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-footer {
+    position: relative;
+  }
+  .landing-footer::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 30%,
+      color-mix(in srgb, var(--accent) 50%, transparent) 70%,
+      transparent 100%
+    );
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PROFILE PAGES — avatar ring on hover                          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .profile-avatar,
+  .profile-page .avatar,
+  .teacher-profile-avatar {
+    transition:
+      transform 280ms var(--ease-spring-soft),
+      box-shadow 280ms var(--ease, ease);
+  }
+  @media (hover: hover) {
+    .profile-avatar:hover,
+    .profile-page .avatar:hover,
+    .teacher-profile-avatar:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  VISION DETAIL — hero image zoom on hover                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .vision-card,
+  .vision-detail-hero {
+    overflow: hidden;
+    transition: transform 320ms var(--ease-spring-soft);
+  }
+  .vision-card img,
+  .vision-detail-hero img {
+    transition: transform 720ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  @media (hover: hover) {
+    .vision-card:hover img,
+    .vision-detail-hero:hover img {
+      transform: scale(1.05);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TRAINING TRACK CARDS — accent leading edge on hover           ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .training-card,
+  .training-track-card {
+    position: relative;
+    overflow: hidden;
+    transition:
+      border-color 240ms var(--ease, ease),
+      box-shadow 280ms var(--ease-spring-soft),
+      transform 280ms var(--ease-spring-soft);
+  }
+  .training-card::before,
+  .training-track-card::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 4px;
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 360ms var(--ease-spring-soft);
+  }
+  @media (hover: hover) {
+    .training-card:hover,
+    .training-track-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--elevation-3);
+    }
+    .training-card:hover::before,
+    .training-track-card:hover::before {
+      transform: scaleY(1);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PDF VIEWER — controls bar fades in                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .pdf-viewer-controls,
+  .pdf-toolbar {
+    animation: madark-pdf-controls-in 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both 100ms;
+  }
+  @keyframes madark-pdf-controls-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ANNOUNCEMENT / EVENT ROWS — leading sticker bobbles on hover ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .announce-emoji,
+  .event-emoji,
+  .announcement-icon {
+    transition: transform 280ms var(--ease-spring-bounce);
+  }
+  @media (hover: hover) {
+    .announce-row:hover .announce-emoji,
+    .event-row:hover .event-emoji,
+    li:hover > .announcement-icon {
+      transform: scale(1.15) rotate(-6deg);
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  HELP TEXT / SUBTLE LINKS — underline draws in                 ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand) {
+    position: relative;
+    transition: color 160ms var(--ease, ease);
+  }
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand)::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -2px;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    block-size: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 280ms var(--ease-spring-soft);
+    pointer-events: none;
+  }
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand)::after {
+    transform-origin: left;
+  }
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):hover::after {
+    transform-origin: right;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  HEADINGS — section titles get a subtle text-shadow on dark    ║
+     ║  helps them feel weightier without changing colors             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  [data-theme="dark"] .page-title,
+  [data-theme="dark"] .landing-section-title,
+  [data-theme="dark"] .college-hero-name {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .state.state-empty .state-icon,
+    .state.state-error .state-icon,
+    .state.state-error .btn,
+    .auth-card,
+    .pdf-viewer-controls,
+    .pdf-toolbar {
+      animation: none !important;
+    }
+    .thumb-card-image > *,
+    .vision-card img,
+    .vision-detail-hero img {
+      transition: none !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v20.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v20 · accessibility + final pass
+   ─────────────────────────────────────────────────────────────────────
+   Phase 7: a11y polish that doesn't fight the visual layer.
+   · prefers-contrast support
+   · forced-colors (Windows high contrast) overrides
+   · sr-only utility (screen-reader-only)
+   · skip-to-content link styling (forward-compatible)
+   · stronger focus rings under prefers-contrast
+   · scroll-margin so anchor jumps don't hide under sticky topbar
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SR-ONLY — visually hide content, keep it for screen readers   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SKIP-TO-CONTENT LINK                                          ║
+     ║  Forward-compatible: any <a class="skip-link" href="#main">    ║
+     ║  becomes a visible button when focused.                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .skip-link {
+    position: fixed;
+    inset-block-start: 8px;
+    inset-inline-start: 50%;
+    transform: translateX(-50%) translateY(-150%);
+    background: var(--accent);
+    color: var(--accent-fg, white);
+    padding: 10px 18px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+    box-shadow: var(--elevation-3);
+    z-index: var(--z-toast, 1300);
+    transition: transform 240ms var(--ease-spring-soft);
+  }
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateX(-50%) translateY(0);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ANCHOR SCROLL MARGIN                                          ║
+     ║  When jumping to #features etc., leave room for the sticky     ║
+     ║  topbar so the heading isn't hidden underneath it.             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  :target {
+    scroll-margin-block-start: calc(64px + var(--sp-4));
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PREFERS-CONTRAST — bolder borders + stronger focus            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-contrast: more) {
+    .card,
+    .metric,
+    .input,
+    input, textarea, select,
+    .btn:not(.primary):not(.accent) {
+      border-width: 2px;
+    }
+    :focus-visible {
+      outline: 3px solid var(--accent) !important;
+      outline-offset: 3px;
+      box-shadow: none !important;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FORCED-COLORS (Windows High Contrast)                         ║
+     ║  Let the OS color tokens take over so users get their chosen   ║
+     ║  scheme. Border + outline replaces our custom shadows.         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (forced-colors: active) {
+    .card,
+    .metric {
+      border: 1px solid CanvasText;
+    }
+    .btn,
+    .pill,
+    .nav-item.on,
+    .nav-item.active {
+      forced-color-adjust: auto;
+    }
+    :focus-visible {
+      outline: 3px solid Highlight !important;
+      outline-offset: 2px;
+    }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED TRANSPARENCY                                          ║
+     ║  Some users disable backdrop-filter. Replace glass with solid. ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-transparency: reduce) {
+    .topbar,
+    .bottom-nav,
+    .sidebar-backdrop.show,
+    .comp-modal-backdrop {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    .topbar { background: var(--surface); }
+    .bottom-nav { background: var(--surface); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TAP HIGHLIGHT — disable the default mobile tap halo           ║
+     ║  Our own focus rings already handle the feedback.              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  a, button, [role="button"], .nav-item, .bottom-nav-item, .pill, .tab {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  IMAGE LAZY-LOAD FADE                                          ║
+     ║  Native lazy-loaded images fade in once decoded.               ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  img[loading="lazy"] {
+    animation: madark-img-in 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+  }
+  @keyframes madark-img-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PRINT — strip motion, keep layout legible                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media print {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      box-shadow: none !important;
+    }
+    .topbar,
+    .sidebar,
+    .bottom-nav,
+    .landing-progress {
+      display: none !important;
+    }
+    .has-shell {
+      grid-template-columns: 1fr !important;
+    }
+    .page {
+      padding: 16px !important;
+    }
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v21.css
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v21 · regression fixes + search polish
+   ─────────────────────────────────────────────────────────────────────
+   Fixes three concrete regressions visible in user screenshots:
+
+   1. Mega-menu stuck open
+      polish-v14 added `animation: madark-popover-in ... both` to
+      .landing-megamenu. The `both` fill-mode pins the keyframes' final
+      state (opacity: 1; transform: none) after the run, overriding the
+      original CSS-hover toggle that hides it via opacity: 0. Result:
+      the menu opens on first hover and never closes again.
+      Fix: undo the v14 animation specifically for .landing-megamenu so
+      the original hover-driven show/hide works as intended.
+
+   2. Pilot stat numbers invisible
+      polish-v17 set .landing-pilot-value to color: transparent +
+      background-clip: text so the value would render in a brand
+      gradient. That works for plain-text values like "1988", but
+      <CountUp /> wraps the number in a child <span>. The child
+      inherits color: transparent but has no background-image of its
+      own — so the number is invisible. Fix: drop the gradient hack
+      entirely; use a solid accent color.
+
+   3. Landing footer too faint in dark mode
+      Existing landing-footer-* rules use --text-muted which crushes
+      against the dark surface. Lift them to --text-secondary in dark
+      mode so links remain readable.
+
+   Plus polish: richer global search dropdown, skeleton fallback for
+   LoadingState that's wrapped in cards.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FIX 1 — MEGAMENU never gets pinned open                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-megamenu {
+    /* explicit none beats the v14 `madark-popover-in both` rule */
+    animation: none !important;
+  }
+  /* Item-level stagger on hover instead of permanent fill — only run
+     while the megamenu is actually being shown. */
+  .landing-megamenu .landing-megamenu-item {
+    animation: none !important;
+  }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
+    animation: madark-megamenu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both !important;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FIX 2 — pilot stat numbers visible again                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-pilot-value {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    color: var(--accent) !important;
+    font-variant-numeric: tabular-nums;
+    /* Children of CountUp inherit color cleanly now */
+  }
+  .landing-pilot-value > * { color: inherit; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  FIX 3 — landing footer legibility in dark theme               ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  [data-theme="dark"] .landing-footer { color: var(--text-secondary, #a8b0bc); }
+  [data-theme="dark"] .landing-footer-link {
+    color: color-mix(in srgb, var(--text) 78%, transparent);
+  }
+  [data-theme="dark"] .landing-footer-link:hover { color: var(--text); }
+  [data-theme="dark"] .landing-footer-heading {
+    color: var(--text);
+    opacity: 0.92;
+  }
+  [data-theme="dark"] .landing-footer-bottom { color: var(--text-secondary, #a8b0bc); }
+  [data-theme="dark"] .landing-footer-bottom a { color: var(--accent); }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH DROPDOWN — richer presentation                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-dropdown {
+    box-shadow: var(--elevation-4);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    /* Override any generic popover animation; this one's bespoke */
+    animation: madark-search-pop 240ms var(--ease-spring-soft) both;
+    transform-origin: top center;
+  }
+  @keyframes madark-search-pop {
+    from { opacity: 0; transform: translateY(-4px) scale(0.99); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .search-section {
+    padding-block: var(--sp-2);
+  }
+  .search-section + .search-section {
+    border-block-start: 1px solid var(--rule);
+  }
+  .search-section-label {
+    padding: var(--sp-2) var(--sp-4);
+    font-size: var(--fs-xxs);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+    background: linear-gradient(90deg, var(--surface-2), transparent);
+  }
+  [dir="rtl"] .search-section-label {
+    background: linear-gradient(-90deg, var(--surface-2), transparent);
+  }
+
+  .search-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    padding: var(--sp-3) var(--sp-4);
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-align: start;
+    cursor: pointer;
+    transition:
+      background 160ms var(--ease, ease),
+      padding-inline-start 220ms var(--ease-spring-soft);
+    position: relative;
+  }
+  .search-row::before {
+    content: '';
+    position: absolute;
+    inset-block: 8px;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    background: var(--accent);
+    border-radius: 0 var(--r-xs) var(--r-xs) 0;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 200ms var(--ease-spring-soft);
+  }
+  [dir="rtl"] .search-row::before {
+    border-radius: var(--r-xs) 0 0 var(--r-xs);
+  }
+  .search-row:hover,
+  .search-row.active,
+  .search-row[aria-selected="true"] {
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+    padding-inline-start: calc(var(--sp-4) + 4px);
+  }
+  .search-row:hover::before,
+  .search-row.active::before,
+  .search-row[aria-selected="true"]::before {
+    transform: scaleY(1);
+  }
+
+  .search-row-icon {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+  .search-row-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .search-row-title {
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    font-size: var(--fs-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search-row-sub {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search-row-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: transform 200ms var(--ease, ease), opacity 160ms var(--ease, ease);
+  }
+  .search-row:hover .search-row-arrow,
+  .search-row.active .search-row-arrow {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+  [dir="rtl"] .search-row:hover .search-row-arrow,
+  [dir="rtl"] .search-row.active .search-row-arrow {
+    transform: translateX(2px) rotate(180deg);
+  }
+  /* If arrow has no rtl flip applied, we still want its base transform
+     to point in the start direction in rtl */
+  [dir="rtl"] .search-row-arrow {
+    transform: rotate(180deg);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH LOADING — friendlier shimmer rows                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-loading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-4);
+  }
+  .search-shimmer {
+    block-size: 36px;
+    border-radius: var(--r-md);
+    background: linear-gradient(
+      90deg,
+      var(--surface-3) 0%,
+      color-mix(in srgb, var(--surface-2) 80%, white 8%) 50%,
+      var(--surface-3) 100%
+    );
+    background-size: 200% 100%;
+    animation: madark-search-shimmer 1400ms ease-in-out infinite;
+    display: block;
+  }
+  .search-shimmer:nth-child(1) { inline-size: 100%; }
+  .search-shimmer:nth-child(2) { inline-size: 80%; animation-delay: 120ms; }
+  .search-shimmer:nth-child(3) { inline-size: 60%; animation-delay: 240ms; }
+  @keyframes madark-search-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -100% 0; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH EMPTY — bigger, more confident                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-empty {
+    padding: var(--sp-6) var(--sp-4);
+    text-align: center;
+  }
+  .search-empty-title {
+    font-weight: var(--fw-bold);
+    color: var(--text);
+    font-size: var(--fs-body);
+    margin-block-end: var(--sp-3);
+  }
+  .search-empty-tips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .search-tip-pill {
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    border-radius: var(--r-full);
+    font-size: var(--fs-xs);
+    cursor: pointer;
+    transition:
+      background 160ms var(--ease, ease),
+      color 160ms var(--ease, ease),
+      border-color 160ms var(--ease, ease),
+      transform 200ms var(--ease-spring-soft);
+  }
+  .search-tip-pill:hover {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    border-color: var(--accent);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+  .search-empty-hint {
+    margin-block-start: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH FOOTER — keyboard hints                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-footer {
+    padding: var(--sp-3) var(--sp-4);
+    border-block-start: 1px solid var(--rule);
+    background: var(--surface-2);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-3);
+    justify-content: center;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LOADINGSTATE — calmer fallback when wrapped in cards          ║
+     ║  When LoadingState renders inside a Card (`.card > .state`)   ║
+     ║  show a soft skeleton-bar pattern alongside the spinner so    ║
+     ║  users see content shape forming, not just a spinner.         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .card > .state.state-loading,
+  .card > .state.state-inline {
+    padding: var(--sp-6) var(--sp-4);
+  }
+  .card > .state.state-loading::before,
+  .card > .state.state-inline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg,
+        transparent 0%,
+        transparent 35%,
+        var(--surface-2) 35%,
+        var(--surface-2) 38%,
+        transparent 38%,
+        transparent 50%,
+        var(--surface-2) 50%,
+        var(--surface-2) 53%,
+        transparent 53%,
+        transparent 65%,
+        var(--surface-2) 65%,
+        var(--surface-2) 68%,
+        transparent 68%
+      );
+    border-radius: inherit;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: -1;
+    animation: madark-loadingstate-pulse 1.6s ease-in-out infinite;
+  }
+  .card > .state.state-loading,
+  .card > .state.state-inline {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  @keyframes madark-loadingstate-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.45; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE-LEVEL LOADINGSTATE — show a structured fallback         ║
+     ║  When LoadingState appears as the top child of a .page (i.e.  ║
+     ║  the page hasn't booted yet), don't just spin — also show a   ║
+     ║  faint skeleton block so the layout doesn't feel broken.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page > .state.state-loading,
+  .page > .state.state-inline {
+    padding: var(--sp-9) var(--sp-6);
+    border-radius: var(--r-xl);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface-2) 80%, transparent) 0%,
+      color-mix(in srgb, var(--surface) 90%, transparent) 100%
+    );
+    border: 1px solid var(--rule);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  GLOBAL FADE-IN FOR LATE-LOADED CONTENT                        ║
+     ║  When a query resolves and content swaps in, fade it instead   ║
+     ║  of popping. We do this by transitioning opacity on any        ║
+     ║  element with [data-loaded="false"] that flips to true.        ║
+     ║  Forward-compatible — components don't have to use the attr.   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  [data-loaded] {
+    transition: opacity 320ms var(--ease, ease);
+  }
+  [data-loaded="false"] { opacity: 0; }
+  [data-loaded="true"]  { opacity: 1; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  REDUCED MOTION                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (prefers-reduced-motion: reduce) {
+    .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
+    .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item,
+    .search-dropdown,
+    .search-shimmer,
+    .card > .state.state-loading::before,
+    .card > .state.state-inline::before {
+      animation: none !important;
+    }
+  }
+}
+
