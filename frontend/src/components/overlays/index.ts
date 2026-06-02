@@ -17,3 +17,6 @@ export type { ToastProps, ToastVariant } from './Toast';
 
 export { Popover } from './Popover';
 export type { PopoverProps } from './Popover';
+
+export { Dropdown, DropdownItem, DropdownSeparator } from './Dropdown';
+export type { DropdownProps, DropdownItemProps } from './Dropdown';

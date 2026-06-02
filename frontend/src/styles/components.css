@@ -1156,6 +1156,57 @@
     to   { opacity: 1; transform: none; }
   }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  DROPDOWN — 012-design-graphics-uplift T063.                   ║
+     ║  Menu-semantic overlay; --elev-2 + --r-md + --z-dropdown,      ║
+     ║  NO glass (lighter elevation than Popover, more direct UI).    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .dropdown {
+    position: fixed;
+    z-index: var(--z-dropdown, 100);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    box-shadow: var(--elev-2, var(--shadow-card-h));
+    min-inline-size: 180px;
+    max-inline-size: min(320px, calc(100vw - var(--sp-6) * 2));
+    padding: var(--sp-1);
+    overflow: clip;
+    animation: madarek-popover-in var(--motion-duration-short, 160ms) var(--motion-ease-decelerate) both;
+  }
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    inline-size: 100%;
+    padding: var(--sp-2) var(--sp-3);
+    background: transparent;
+    border: 0;
+    border-radius: var(--r-sm);
+    color: var(--text);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease);
+  }
+  .dropdown-item:hover,
+  .dropdown-item[data-active="true"] {
+    background: var(--surface-2);
+  }
+  .dropdown-item:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .dropdown-item[aria-disabled="true"] {
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+  .dropdown-separator {
+    block-size: 1px;
+    background: var(--rule);
+    margin: var(--sp-1) 0;
+  }
+
   .filter-bar {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: var(--sp-2);
