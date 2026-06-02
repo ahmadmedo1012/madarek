@@ -100,7 +100,7 @@ export function AdminSyncPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
           <p className="page-subtitle">
@@ -117,7 +117,7 @@ export function AdminSyncPage() {
           <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
           {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
         </button>
-      </div>
+      </header>
 
       {/* KPI strip */}
       <div className="grid-4">

@@ -96,7 +96,7 @@ export default function TeacherProfilePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الملف الأكاديمي</h1>
           <p className="page-subtitle">
@@ -117,7 +117,7 @@ export default function TeacherProfilePage() {
             </button>
           </div>
         )}
-      </div>
+      </header>
 
       {/* Header: avatar + name + rank + verification */}
       <Card>

@@ -109,12 +109,12 @@ export function OwnerActivityPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">سجل النشاط والمراقبة</h1>
           <p className="page-subtitle">جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق</p>
         </div>
-      </div>
+      </header>
 
       {/* Real KPIs (per-page; full counts would need a dedicated endpoint) */}
       <div className="grid-4">

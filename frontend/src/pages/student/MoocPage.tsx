@@ -21,12 +21,12 @@ export default function MoocPage() {
   const { data, isPending, isError, error, refetch } = useMoocs();
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">كورسات خارجية</h1>
           <p className="page-subtitle">شراكات مع منصات عالمية وبرامج معتمدة من جامعة الزاوية.</p>
         </div>
-      </div>
+      </header>
 
       {isPending ? (
         <Card><LoadingState /></Card>

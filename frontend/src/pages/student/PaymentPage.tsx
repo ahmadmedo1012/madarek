@@ -25,12 +25,12 @@ export default function PaymentPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الشؤون الماليّة</h1>
           <p className="page-subtitle">حالة رسومك الجامعيّة وكيفيّة سدادها.</p>
         </div>
-      </div>
+      </header>
 
       <Card title="بياناتك" icon={Wallet}>
         <div className="grid-3" style={{ gap: 'var(--sp-3)' }}>

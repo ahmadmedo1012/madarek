@@ -70,13 +70,13 @@ export default function AiAssistantPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المساعد الذكيّ</h1>
           <p className="page-subtitle">يفهم مستواك المعرفيّ ويوصي بأفضل خطوة تالية في رحلتك الدراسيّة.</p>
         </div>
         <Badge color="gold" icon={Sparkles}>AI</Badge>
-      </div>
+      </header>
 
       {/* Gap-aware starter cards — real data from /me/gaps */}
       {gaps.data && gaps.data.length > 0 && (

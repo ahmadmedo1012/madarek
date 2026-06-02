@@ -63,12 +63,12 @@ export function OwnerGovernancePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الحوكمة المتقدّمة</h1>
           <p className="page-subtitle">تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول</p>
         </div>
-      </div>
+      </header>
 
       {isPending ? (
         <LoadingState />

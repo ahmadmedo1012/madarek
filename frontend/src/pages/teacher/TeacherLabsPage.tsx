@@ -44,7 +44,7 @@ export default function TeacherLabsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المعامل الافتراضية</h1>
           <p className="page-subtitle">
@@ -52,7 +52,7 @@ export default function TeacherLabsPage() {
             للمحاضرات. الطلاب يدخلون المعمل كمشاركين، بينما تبقى أنت المسؤول عن سياق التعلّم.
           </p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard

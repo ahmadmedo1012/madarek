@@ -44,14 +44,14 @@ export default function TeacherIntelligencePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الذكاء الأكاديمي</h1>
           <p className="page-subtitle">
             متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية.
           </p>
         </div>
-      </div>
+      </header>
 
       {/* Global at-risk panel */}
       <Card

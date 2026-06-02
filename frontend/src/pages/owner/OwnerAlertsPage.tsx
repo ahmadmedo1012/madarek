@@ -41,12 +41,12 @@ export function OwnerAlertsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">التنبيهات التشغيليّة</h1>
           <p className="page-subtitle">إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard

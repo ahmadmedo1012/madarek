@@ -38,14 +38,14 @@ export default function OnlineExamsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الاختبارات الإلكترونية</h1>
           <p className="page-subtitle">
             اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم.
           </p>
         </div>
-      </div>
+      </header>
 
       <Card title="اختبارات متاحة لك الآن" icon={ClipboardCheck} subtitle={`${available.length} اختبار`}>
         {available.length === 0 && (
@@ -300,14 +300,14 @@ export function ExamModerationPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مراجعة الاختبارات</h1>
           <p className="page-subtitle">
             مراجعة قوالب الاختبارات الموحَّدة قبل اعتمادها وإتاحتها للطلاب — صلاحية حصرية لمكتب الجودة.
           </p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard icon={ShieldCheck} label="بانتظار المراجعة" value={(queue?.length ?? 0).toString()} color="amber" />

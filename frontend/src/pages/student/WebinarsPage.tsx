@@ -21,14 +21,14 @@ export default function WebinarsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الندوات وورش العمل</h1>
           <p className="page-subtitle">
             الفعاليّات الجامعيّة الرسميّة تُنشر على لوحة المجتمع — ستجد هنا الإحصائيّة الحيّة وروابط سريعة.
           </p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard

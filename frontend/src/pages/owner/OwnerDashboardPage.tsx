@@ -53,12 +53,12 @@ export function OwnerDashboardPage() {
   if (stats.isPending && realtime.isPending) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة التحكم الرئيسية</h1>
             <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
           </div>
-        </div>
+        </header>
         <LoadingState />
       </div>
     );
@@ -66,11 +66,11 @@ export function OwnerDashboardPage() {
   if (stats.isError || realtime.isError) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة التحكم الرئيسية</h1>
           </div>
-        </div>
+        </header>
         <ErrorState
           error={stats.error ?? realtime.error}
           onRetry={() => { stats.refetch(); realtime.refetch(); }}
@@ -100,12 +100,12 @@ export function OwnerDashboardPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">لوحة التحكم الرئيسية</h1>
           <p className="page-subtitle">نظرة شاملة وإحصائيات حيّة عن المنصة</p>
         </div>
-      </div>
+      </header>
 
       {/* Live Status — uses real alerts count */}
       <div className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}`}>

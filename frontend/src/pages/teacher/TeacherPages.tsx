@@ -29,13 +29,13 @@ import ResearchReviewPage from './ResearchReviewPage';
 /* ─── Generic placeholder structure ─── */
 function PageHeader({ title, subtitle, actions }: { title: string; subtitle: string; actions?: React.ReactNode }) {
   return (
-    <div className="page-header">
+    <header className="page-header">
       <div className="page-title-block">
         <h1 className="page-title">{title}</h1>
         <p className="page-subtitle">{subtitle}</p>
       </div>
       {actions}
-    </div>
+    </header>
   );
 }
 

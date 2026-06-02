@@ -56,12 +56,12 @@ export function AdminDashboardPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">لوحة الإدارة</h1>
           <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard
@@ -205,12 +205,12 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="page-header">
+    <header className="page-header">
       <div className="page-title-block">
         <h1 className="page-title">{title}</h1>
         <p className="page-subtitle">{subtitle}</p>
       </div>
-    </div>
+    </header>
   );
 }
 

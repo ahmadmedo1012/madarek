@@ -113,12 +113,12 @@ export function OwnerUsersPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">إدارة المستخدمين</h1>
           <p className="page-subtitle">عرض، بحث، وإدارة جميع حسابات المنصة</p>
         </div>
-      </div>
+      </header>
 
       {/* Metrics — gated on real stats; nothing rendered if the API fails */}
       <div className="grid-4">

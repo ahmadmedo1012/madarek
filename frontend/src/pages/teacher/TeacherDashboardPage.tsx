@@ -63,12 +63,12 @@ export function TeacherDashboardPage() {
   if (dash.isPending) {
     return (
       <div className="page" aria-busy="true" aria-live="polite">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة الأستاذ</h1>
             <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
           </div>
-        </div>
+        </header>
         <div className="compact-kpis">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="compact-kpi">
@@ -92,11 +92,11 @@ export function TeacherDashboardPage() {
   if (dash.isError || !dash.data) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">لوحة الأستاذ</h1>
           </div>
-        </div>
+        </header>
         <ErrorState
           message="تعذَّر تحميل لوحة الأستاذ"
           error={dash.error}
@@ -110,7 +110,7 @@ export function TeacherDashboardPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">لوحة الأستاذ</h1>
           <p className="page-subtitle">
@@ -120,7 +120,7 @@ export function TeacherDashboardPage() {
         <Badge color="brand">
           {visible.length} عنصر يحتاج متابعة
         </Badge>
-      </div>
+      </header>
 
       {/* Compact KPI strip — real values */}
       <div className="compact-kpis">

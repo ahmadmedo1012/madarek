@@ -98,7 +98,7 @@ export default function TrainingCatalogPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">التطوير الذاتي</h1>
           <p className="page-subtitle">
@@ -106,7 +106,7 @@ export default function TrainingCatalogPage() {
             أكمل مساراً لتحصل على شهادة معتمدة من المنصة.
           </p>
         </div>
-      </div>
+      </header>
 
       {/* My summary — sticky-feel band */}
       {me && (
@@ -488,14 +488,14 @@ export function AchievementsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الإنجازات</h1>
           <p className="page-subtitle">
             رحلتك في التطوير الذاتي — نقاطك، أوسمتك، شهاداتك، وترتيبك بين الزملاء.
           </p>
         </div>
-      </div>
+      </header>
 
       {me && (
         <div className="grid-3">

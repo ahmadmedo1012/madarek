@@ -25,12 +25,12 @@ export default function StudentCoursesPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المواد الدراسية</h1>
           <p className="page-subtitle">جميع المواد التي سجّلت فيها هذا الفصل، مع تقدّمك في كل واحدة.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard

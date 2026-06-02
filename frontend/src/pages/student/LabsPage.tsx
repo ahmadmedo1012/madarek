@@ -122,7 +122,7 @@ export default function LabsPage() {
     <div className="page">
       {!activeLab ? (
         <>
-          <div className="page-header">
+          <header className="page-header">
             <div className="page-title-block">
               <h1 className="page-title">المعامل الافتراضية</h1>
               <p className="page-subtitle">
@@ -130,7 +130,7 @@ export default function LabsPage() {
                 تفوّق الطلاب الذين استخدموا هذا النوع من المعامل.
               </p>
             </div>
-          </div>
+          </header>
 
           <div className="grid-3">
             <MetricCard icon={FlaskConical} label="معامل متاحة" value={labs.data?.length ?? '—'} color="brand" />

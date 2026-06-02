@@ -35,14 +35,14 @@ export default function CampusMapPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">دليل الحرم الجامعيّ</h1>
           <p className="page-subtitle">
             كلّيّات جامعة الزاوية بحسب المدينة، مع روابط لصفحاتها التفصيليّة.
           </p>
         </div>
-      </div>
+      </header>
 
       <Card>
         <div className="filter-bar" style={{ flexWrap: 'wrap' }}>

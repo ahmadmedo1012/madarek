@@ -17,12 +17,12 @@ export function OwnerEducationPage() {
   if (q.isPending) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">النظرة التعليميّة</h1>
             <p className="page-subtitle">جارٍ جمع البيانات…</p>
           </div>
-        </div>
+        </header>
         <LoadingState />
       </div>
     );
@@ -30,11 +30,11 @@ export function OwnerEducationPage() {
   if (q.isError || !q.data) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">النظرة التعليميّة</h1>
           </div>
-        </div>
+        </header>
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
     );
@@ -91,12 +91,12 @@ export function OwnerEducationPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">النظرة التعليميّة</h1>
           <p className="page-subtitle">إحصائيات حيّة عن المقررات وأعضاء هيئة التدريس والطلاب</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard icon={BookOpen} label="إجمالي المقرّرات" value={totals.totalCourses.toLocaleString('ar-LY')} color="brand" />

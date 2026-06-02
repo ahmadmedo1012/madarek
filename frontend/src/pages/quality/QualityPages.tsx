@@ -126,12 +126,12 @@ export function QualityDashboardPage() {
   if (ov.isPending || eg.isPending) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">مركز ضمان الجودة</h1>
             <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
           </div>
-        </div>
+        </header>
         <KpiSkeleton />
         <div className="grid-2-1">
           <Card><ChartSkeleton /></Card>
@@ -157,7 +157,7 @@ export function QualityDashboardPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مركز ضمان الجودة</h1>
           <p className="page-subtitle">
@@ -166,7 +166,7 @@ export function QualityDashboardPage() {
           </p>
         </div>
         <Badge color="gold" icon={ShieldCheck}>وصول قراءة فقط</Badge>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={(d.users.STUDENT ?? 0).toLocaleString('ar-LY')} change="مسجَّل في النظام" color="brand" />
@@ -262,12 +262,12 @@ export function QualityCoursesPage() {
   const c = useQualityCourses();
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">جودة المقررات</h1>
           <p className="page-subtitle">تتبّع جودة كل مقرر: المحاضرات، المواد، الواجبات، التسجيلات.</p>
         </div>
-      </div>
+      </header>
       {c.isPending ? (
         <Card title="المقررات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={7} /></Card>
       ) :
@@ -320,12 +320,12 @@ export function QualityProfessorsPage() {
   if (p.isPending) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">تقييم الأساتذة</h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
-        </div>
+        </header>
         <KpiSkeleton />
         <Card title="هيئة التدريس" icon={School}><TableSkeleton rows={5} cols={8} /></Card>
       </div>
@@ -339,12 +339,12 @@ export function QualityProfessorsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تقييم الأساتذة</h1>
           <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard icon={Star} label="متوسط رضا الطلاب" value={avgSat.toFixed(1)} change="من 5.0" color="gold" />
@@ -428,12 +428,12 @@ export function QualityEngagementPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الانخراط والحضور</h1>
           <p className="page-subtitle">نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard icon={ClipboardCheck} label="معدل الحضور" value={`${d.attendance.presentRate.toFixed(0)}%`} change={`${d.attendance.total} سجل`} color="green" />
@@ -484,12 +484,12 @@ export function QualityCurriculumPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مراجعة المناهج</h1>
           <p className="page-subtitle">شجرة الكليات والأقسام والمقررات، مع مؤشرات اكتمال المحتوى.</p>
         </div>
-      </div>
+      </header>
 
       <div className="flex-col gap-4">
         {c.data.map((f) => (
@@ -541,12 +541,12 @@ export function QualityCurriculumPage() {
 export function QualityReportsPage() {
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تقارير الجودة</h1>
           <p className="page-subtitle">لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-2">
         <Card title="جودة المقرّرات" icon={BookOpen} subtitle="تحليل لكلّ عرض دراسيّ — تسجيلات، محتوى، تقييم">
@@ -649,7 +649,7 @@ export function QualityAlertsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تنبيهات الجودة</h1>
           <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
@@ -657,7 +657,7 @@ export function QualityAlertsPage() {
         {q.data && q.data.counts.critical > 0 && (
           <Badge color="red">{q.data.counts.critical} تنبيهات حرجة</Badge>
         )}
-      </div>
+      </header>
 
       {q.isPending ? (
         <LoadingState />
@@ -703,12 +703,12 @@ export function QualityPlaceholder({
 }: { title: string; subtitle?: string; icon?: LucideIcon }) {
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">{title}</h1>
           <p className="page-subtitle">{subtitle}</p>
         </div>
-      </div>
+      </header>
       <Card>
         <EmptyState icon={icon} title="قريباً" description="هذه الشاشة قيد التطوير ضمن المرحلة التالية." />
       </Card>

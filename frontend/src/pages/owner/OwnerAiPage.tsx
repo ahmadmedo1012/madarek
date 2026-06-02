@@ -33,12 +33,12 @@ export function OwnerAiPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مركز الذكاء الاصطناعيّ</h1>
           <p className="page-subtitle">مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ</p>
         </div>
-      </div>
+      </header>
 
       {aiMetrics.isPending ? (
         <LoadingState />

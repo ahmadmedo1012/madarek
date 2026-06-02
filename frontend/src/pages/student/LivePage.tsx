@@ -30,7 +30,7 @@ export default function LivePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المحاضرات المباشرة</h1>
           <p className="page-subtitle">
@@ -42,7 +42,7 @@ export default function LivePage() {
         ) : (
           <Badge>لا توجد جلسات نشطة</Badge>
         )}
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />

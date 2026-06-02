@@ -70,7 +70,7 @@ export function OwnerSystemPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">
             النظام والتشغيل
@@ -82,7 +82,7 @@ export function OwnerSystemPage() {
           </h1>
           <p className="page-subtitle">إدارة البنية التحتية وحالة الخدمات</p>
         </div>
-      </div>
+      </header>
 
       {/* Real metrics */}
       <div className="grid-4">

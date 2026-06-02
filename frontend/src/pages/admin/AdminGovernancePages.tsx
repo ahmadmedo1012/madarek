@@ -120,14 +120,14 @@ export function AdminTeachersPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">إدارة الأساتذة</h1>
           <p className="page-subtitle">
             توثيق الملفات الأكاديمية واقتراح المقررات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته.
           </p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard icon={Users} label="عدد الأساتذة" value={teachers.length.toString()} color="brand" />

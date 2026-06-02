@@ -30,12 +30,12 @@ export default function JobsPage() {
   const { data, isPending, isError, error, refetch } = useJobs();
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">فرص العمل</h1>
           <p className="page-subtitle">وظائف وتدريب مدفوع مفتوحة لطلاب وخرّيجي جامعة الزاوية.</p>
         </div>
-      </div>
+      </header>
 
       {isPending ? (
         <Card><LoadingState /></Card>

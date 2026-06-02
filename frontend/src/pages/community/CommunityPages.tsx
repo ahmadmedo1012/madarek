@@ -52,7 +52,7 @@ export default function CommunityPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المجتمع الجامعي</h1>
           <p className="page-subtitle">
@@ -77,7 +77,7 @@ export default function CommunityPage() {
             فعاليّة جديدة
           </button>
         )}
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard icon={Megaphone} label="إعلانات نشطة" value={(ann.data?.length ?? 0).toString()} color="brand" />

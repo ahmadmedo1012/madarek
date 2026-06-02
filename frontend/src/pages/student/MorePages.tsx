@@ -25,13 +25,13 @@ export function GamificationPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الإنجازات والنقاط</h1>
           <p className="page-subtitle">تقدّمك ومستواك مقارنة بزملائك في المنصة.</p>
         </div>
         <Badge color="gold" icon={Star}>2,340 XP</Badge>
-      </div>
+      </header>
 
       <div className="grid-2">
         <Card title="مستوى التقدم" icon={Trophy}>
@@ -121,12 +121,12 @@ export function SkillsPage() {
   const skills = useMySkills();
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المهارات والشهادات</h1>
           <p className="page-subtitle">رصد مهاراتك التقنية وتطوّرها مع الوقت.</p>
         </div>
-      </div>
+      </header>
 
       <Card title="خريطة المهارات التقنية" icon={Target}>
         {skills.isPending ? <LoadingState /> :
@@ -213,12 +213,12 @@ export function AlertsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الإشعارات</h1>
           <p className="page-subtitle">آخر التحديثات والتذكيرات الأكاديمية.</p>
         </div>
-      </div>
+      </header>
 
       <Card title="إشعاراتي" icon={Bell} actions={
         unreadCount > 0 ? <Badge color="brand">{unreadCount} غير مقروء</Badge> : <Badge color="green">الكلّ مقروء</Badge>
@@ -257,12 +257,12 @@ export function SchedulePage() {
   if (q.isPending) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">الجدول الدراسي</h1>
             <p className="page-subtitle">جارٍ جمع جدولك…</p>
           </div>
-        </div>
+        </header>
         <LoadingState />
       </div>
     );
@@ -270,11 +270,11 @@ export function SchedulePage() {
   if (q.isError) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">الجدول الدراسي</h1>
           </div>
-        </div>
+        </header>
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       </div>
     );
@@ -305,12 +305,12 @@ export function SchedulePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الجدول الدراسي</h1>
           <p className="page-subtitle">جدولك الأسبوعيّ مع أماكن المحاضرات.</p>
         </div>
-      </div>
+      </header>
 
       {daysWithItems.length === 0 ? (
         <EmptyState
@@ -358,12 +358,12 @@ export function ResultsPage() {
   if (q.isPending) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">النتائج والتقييمات</h1>
             <p className="page-subtitle">جارٍ جمع درجاتك…</p>
           </div>
-        </div>
+        </header>
         <LoadingState />
       </div>
     );
@@ -371,11 +371,11 @@ export function ResultsPage() {
   if (q.isError || !q.data) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <div className="page-title-block">
             <h1 className="page-title">النتائج والتقييمات</h1>
           </div>
-        </div>
+        </header>
         <ErrorState
           message="تعذَّر تحميل هذا القسم"
           error={q.error}
@@ -390,12 +390,12 @@ export function ResultsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">النتائج والتقييمات</h1>
           <p className="page-subtitle">تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard
@@ -508,12 +508,12 @@ export function ArVrPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تجارب AR / VR</h1>
           <p className="page-subtitle">محتوى تفاعليّ ثلاثيّ الأبعاد للمواد العمليّة.</p>
         </div>
-      </div>
+      </header>
 
       {q.isPending ? (
         <LoadingState />
@@ -589,12 +589,12 @@ export function SocialPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الشبكة الاجتماعية</h1>
           <p className="page-subtitle">تواصل مع زملائك وأساتذتك حول المواد والمشاريع.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-2-1">
         <div className="flex-col gap-3">
@@ -724,12 +724,12 @@ export function DownloadsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مركز التحميلات</h1>
           <p className="page-subtitle">جميع المواد الدراسية في مقرّراتك متاحة للتحميل.</p>
         </div>
-      </div>
+      </header>
 
       <Card title="ملفّات حديثة" icon={Download}>
         {q.isPending ? (
@@ -795,14 +795,14 @@ export function UniversityInfoPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">جامعة الزاوية</h1>
           <p className="page-subtitle">
             مؤسّسة تعليميّة حكوميّة، تأسّست عام 1988 وتمتدّ عبر عدّة مدن في الإقليم الغربيّ.
           </p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard

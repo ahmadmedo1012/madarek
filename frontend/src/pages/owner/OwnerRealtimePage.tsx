@@ -19,12 +19,12 @@ export function OwnerRealtimePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المراقبة الحيّة</h1>
           <p className="page-subtitle">مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ</p>
         </div>
-      </div>
+      </header>
 
       {realtime.isPending ? (
         <LoadingState />

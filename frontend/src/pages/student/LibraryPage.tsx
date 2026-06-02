@@ -60,14 +60,14 @@ export default function LibraryPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المكتبة الإلكترونية</h1>
           <p className="page-subtitle">
             آلاف الكتب الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.
           </p>
         </div>
-      </div>
+      </header>
 
       {/* Tab switch */}
       <div className="tabs" role="tablist" aria-label="Library section">

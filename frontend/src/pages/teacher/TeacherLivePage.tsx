@@ -77,7 +77,7 @@ export default function TeacherLivePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">إدارة البث المباشر</h1>
           <p className="page-subtitle">
@@ -87,7 +87,7 @@ export default function TeacherLivePage() {
         <button type="button" className="btn primary" onClick={() => setShowForm((v) => !v)}>
           <Icon icon={Plus} size={14} /> {showForm ? 'إغلاق النموذج' : 'جلسة جديدة'}
         </button>
-      </div>
+      </header>
 
       <div className="grid-3">
         <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />

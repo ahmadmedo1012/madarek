@@ -39,7 +39,7 @@ export default function ResearchReviewPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">البحث العلمي</h1>
           <p className="page-subtitle">قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية.</p>
@@ -52,7 +52,7 @@ export default function ResearchReviewPage() {
             { value: 'mine', label: 'منشوراتي' },
           ]}
         />
-      </div>
+      </header>
 
       {tab === 'review' ? (
         <>

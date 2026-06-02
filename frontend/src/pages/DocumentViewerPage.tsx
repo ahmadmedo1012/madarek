@@ -21,9 +21,9 @@ export default function DocumentViewerPage() {
   if (!params.filename) {
     return (
       <div className="page">
-        <div className="page-header">
+        <header className="page-header">
           <h1 className="page-title">المستند غير محدّد</h1>
-        </div>
+        </header>
       </div>
     );
   }
@@ -32,7 +32,7 @@ export default function DocumentViewerPage() {
 
   return (
     <div className="page" style={{ height: 'calc(100vh - var(--topbar-h))', paddingBottom: 0 }}>
-      <div className="page-header" style={{ marginBottom: 'var(--sp-3)' }}>
+      <header className="page-header" style={{ marginBottom: 'var(--sp-3)' }}>
         <div className="page-title-block">
           <Link to={back} className="text-xs text-subtle" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
             <Icon icon={ChevronRight} size={12} />
@@ -40,7 +40,7 @@ export default function DocumentViewerPage() {
           </Link>
           <h1 className="page-title" style={{ marginTop: 4 }}>{title ?? 'مستند'}</h1>
         </div>
-      </div>
+      </header>
 
       <div className="document-viewer-layout">
         <div className="document-viewer-main">

@@ -78,7 +78,7 @@ export default function StudentResearchPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">بحوثي العلمية</h1>
           <p className="page-subtitle">
@@ -90,7 +90,7 @@ export default function StudentResearchPage() {
           <Icon icon={Upload} size={14} />
           رفع بحث جديد
         </button>
-      </div>
+      </header>
 
       <div className="grid-4">
         <MetricCard icon={BookMarked} label="إجمالي البحوث" value={counts.total} color="brand" />

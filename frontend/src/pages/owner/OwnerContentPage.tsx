@@ -22,12 +22,12 @@ import { Icon } from '../../components/Icon';
 export function OwnerContentPage() {
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المحتوى والعلامة التجاريّة</h1>
           <p className="page-subtitle">إدارة محتوى المنصّة، الإعلانات، والميزات.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-2">
         <Card title="الإعلانات الرسميّة" icon={Bell}>

@@ -16,12 +16,12 @@ import { Icon } from '../../components/Icon';
 export default function ExamsPage() {
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تحليل الامتحانات</h1>
           <p className="page-subtitle">روابط مباشرة إلى الاختبارات والنتائج الفعليّة الخاصّة بك.</p>
         </div>
-      </div>
+      </header>
 
       <div className="grid-3">
         <Card title="الاختبارات الإلكترونيّة" icon={ClipboardCheck}>

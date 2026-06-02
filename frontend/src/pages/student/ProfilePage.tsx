@@ -85,12 +85,12 @@ export default function ProfilePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">ملفي الشخصي</h1>
           <p className="page-subtitle">معلوماتك الأكاديمية، حساباتك العلمية، وإنجازاتك في المنصة.</p>
         </div>
-      </div>
+      </header>
 
       {/* Hero */}
       <Card>
