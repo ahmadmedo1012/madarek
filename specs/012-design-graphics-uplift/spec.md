@@ -23,6 +23,16 @@ The aim is one outcome: **a returning user, opening Madrak after a week away, se
 
 This feature does NOT redesign the tokens or primitives shipped in `001-*` / `002-*` / `003-*`. It composes new themes, illustrations, and scene-level motion on top.
 
+## Clarifications
+
+### Session 2026-06-02
+
+- Q: Should V1 ship a fully-designed third High-Contrast theme, or only respond to `prefers-contrast: more` with adjustments on Light/Dark? → A: Respond to `prefers-contrast: more` with adjustments on Light/Dark only — no third theme in V1.
+- Q: Where is the user's theme preference persisted, and how does it sync across devices? → A: Local storage for everyone, plus a `themePreference` field on the authenticated user's profile with two-way sync on sign-in.
+- Q: Is onboarding a single shared flow or per-role, and does it run for users who existed before this feature? → A: Single shared 3-frame flow + 1 role-intro frame (4 total), runs once for every user (existing + new) on first sign-in after release; persisted via `onboardingCompletedAt` on the user profile.
+- Q: Is the V1 milestone catalogue fixed, or does it expand beyond the three named in FR-021? → A: Fixed and exclusive to the three named: `first-assignment-complete`, `first-course-complete`, `exam-window-opens`. Per-user state persisted as `firedMilestones` on the profile.
+- Q: How many bespoke illustration surfaces must V1 actually ship — all 12 in the catalogue, or a smaller high-impact subset? → A: The illustration system is documented in V1 and 6 high-impact surfaces ship with finished scenes (homepage-hero-scene, 404, no-notifications, no-search-results, onboarding-sequence, milestone-section-complete); the remaining catalogue ships in a follow-up cycle inside the same family.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Light, dark, and contextual themes that feel native (Priority: P1)
@@ -87,7 +97,7 @@ A user encounters a 404 page, then a logout-success screen, then an onboarding s
 
 **Why this priority**: A consistent illustration family is the cheapest, most-visible signal of design maturity. It is also the thing freshest visitors notice first when comparing Madrak against tier-1 software.
 
-**Independent Test**: Walk through every illustrated surface in the app (target list ≥ 12 surfaces: 404, 500, auth-locked, session-expired, no-notifications, no-courses, onboarding-welcome, onboarding-roles, milestone-section-complete, milestone-course-complete, search-empty, success-after-submit). Open each in light and dark, LTR and RTL. Confirm one visual family across all.
+**Independent Test**: Walk through the V1 illustrated surfaces (`homepage-hero-scene`, `404`, `no-notifications`, `no-search-results`, the `onboarding-sequence` 4 frames, `milestone-section-complete`). Open each in light and dark, LTR and RTL. Confirm one visual family across all. After follow-up cycles, repeat the same check across the full 12+ catalogue.
 
 **Acceptance Scenarios**:
 
@@ -174,7 +184,7 @@ A platform owner runs a one-pass sweep across every route in the platform — pu
 - A user is on a low-end device or a 2G connection. Bespoke illustrations are inlined or progressively loaded; the page degrades to a content-first state without scenes if their cost would exceed the page budget.
 - A user has a print-to-PDF workflow. Print stylesheets ensure surfaces, illustrations, and charts render legibly on paper (light theme, no glass, no decorative motion).
 - A college's identity colour fails contrast against the chrome. The platform falls back to a contrast-safe accent tint instead of the raw college colour.
-- A user has high-contrast OS preference. The platform offers (or auto-applies) a high-contrast variant where shadows are stronger, glass is removed, illustrations use solid fills.
+- A user has `prefers-contrast: more` set at the OS level. The active theme (Light or Dark) auto-adapts: shadows are stronger, glass/backdrop-filter is removed, and illustrations use solid fills — without switching to a separate third theme.
 - A locale change happens (Arabic ↔ English) mid-page. Scenes that contain directional content re-mirror; illustrations carrying text swap to the locale variant; chart axes flip if needed.
 - An illustration asset fails to load. The surface degrades to a clean, designed empty fallback (icon + copy) within the same family, never to a broken image icon.
 - A user has both reduced-motion and dark mode and a college-themed page. All three constraints compose without one of them breaking another.
@@ -185,18 +195,18 @@ A platform owner runs a one-pass sweep across every route in the platform — pu
 ### Functional Requirements — Theming
 
 - **FR-001**: System MUST ship a fully-designed dark-mode theme that covers every surface, illustration, chart, and overlay in the platform.
-- **FR-002**: System MUST respect the user's OS-level theme preference on first visit and persist a user-chosen theme override across sessions.
+- **FR-002**: System MUST respect the user's OS-level theme preference on first visit and persist a user-chosen theme override across sessions. Persistence MUST work as follows: (a) for guest visitors, the choice is stored in the device's local storage; (b) for authenticated users, the choice is also stored on the user profile (a `themePreference` field), with a two-way sync between device and profile on sign-in so the preference follows the user across devices.
 - **FR-003**: System MUST switch between light and dark themes within a perceptual instant, without flicker, untokenised colour leaks, or layout shift.
 - **FR-004**: System MUST tint chrome and accent surfaces with a role-aware accent (one accent per role: student, faculty, department head, dean, admin, quality assurance, owner) without changing content colour or breaking contrast.
 - **FR-005**: System MUST tint a college landing page's chrome with the college's identity colour from `001-*` profiles, falling back to a safe accent if the college colour fails contrast.
-- **FR-006**: System MUST offer a high-contrast variant (or honour OS-level high-contrast preference) where shadows are strengthened, glass is removed, and illustrations use solid fills.
+- **FR-006**: System MUST honour the OS-level `prefers-contrast: more` preference by adjusting the active Light/Dark theme — strengthening shadows and borders, removing glass/backdrop-filter, and rendering illustrations with solid fills. V1 does NOT ship a separate third high-contrast theme; the existing Light and Dark themes adapt under this preference.
 
 ### Functional Requirements — Illustration System
 
 - **FR-007**: System MUST ship a documented bespoke illustration family (palette, stroke weight, perspective, character archetype, motif library) used across every illustrated surface.
 - **FR-008**: System MUST render every illustration with a documented dark-mode variant — no light SVG inverted onto dark.
 - **FR-009**: System MUST render every illustration with a documented RTL variant or be composed to read correctly without mirroring.
-- **FR-010**: System MUST cover at minimum the following surfaces with bespoke scene illustrations: 404, 500, auth-locked, session-expired, no-notifications, no-courses, no-search-results, onboarding-welcome, onboarding-role-intro, milestone-section-complete, milestone-course-complete, success-after-submit, error-recoverable.
+- **FR-010**: System MUST document a full bespoke-scene catalogue of 12+ surfaces and ship at minimum these 6 high-impact surfaces with finished scenes inside V1: `homepage-hero-scene`, `404`, `no-notifications`, `no-search-results`, `onboarding-sequence` (4 frames: 3 generic + 1 role-intro), `milestone-section-complete`. The remaining catalogue surfaces (500, auth-locked, session-expired, no-courses, milestone-course-complete, success-after-submit, error-recoverable, plus any additional documented surfaces) MUST ship in a follow-up cycle within the same documented illustration family — they are NOT V1 blockers.
 - **FR-011**: System MUST gracefully degrade when an illustration asset fails to load — falling back to a within-family icon + copy state, never a broken-image icon.
 - **FR-012**: System MUST attach accessible alt text to informational illustrations and hide decorative illustrations from the accessibility tree.
 
@@ -211,15 +221,15 @@ A platform owner runs a one-pass sweep across every route in the platform — pu
 
 - **FR-017**: System MUST run a one-shot section-narrative accent for each homepage and key landing-page section that fires once when the section enters view and never replays.
 - **FR-018**: System MUST keep all decorative narrative motion silent when the viewport is idle.
-- **FR-019**: System MUST provide a brief, scene-illustrated, three-to-five-frame onboarding sequence for first-time users with a visible skip control on every frame.
-- **FR-020**: System MUST persist the onboarding-completed state per user and never auto-trigger onboarding twice.
-- **FR-021**: System MUST fire a one-shot milestone scene for documented milestones (first-assignment-complete, first-course-complete, exam-window-opens) without ever replaying for the same milestone.
+- **FR-019**: System MUST provide a brief, scene-illustrated onboarding sequence built from the bespoke illustration family with a visible skip control on every frame. The sequence is a SINGLE shared flow of 3 generic frames plus 1 role-intro frame (4 frames total) — not seven separate per-role sequences. The role-intro frame swaps illustration and copy based on the viewer's role (student, faculty, department head, dean, admin, quality assurance, owner).
+- **FR-020**: System MUST persist the onboarding-completed state per user (`onboardingCompletedAt` on the user profile) and never auto-trigger onboarding twice for the same user. The sequence MUST trigger once for every user — including users who existed BEFORE this feature shipped — on their first sign-in after release. After completion or skip, it remains reachable from the help/settings menu.
+- **FR-021**: System MUST fire a one-shot milestone scene for each documented milestone without ever replaying for the same milestone. The V1 milestone catalogue is exclusively these three: `first-assignment-complete`, `first-course-complete`, `exam-window-opens`. Additional milestones are OUT of scope for V1 and require a follow-up feature. Per-user fire state is persisted as a `firedMilestones` array on the user profile keyed by the milestone id above.
 
 ### Non-Functional Requirements
 
 - **NFR-001**: All illustrations and scenes MUST honour the existing performance budget — page weight added by this feature MUST NOT exceed the documented budget per route.
 - **NFR-002**: Theme switch MUST complete within the platform's micro-motion duration, with zero CLS during the switch.
-- **NFR-003**: Every theme variant (light, dark, high-contrast) MUST meet WCAG AA on body text and AAA on numeric KPI values.
+- **NFR-003**: Light and Dark themes (including their `prefers-contrast: more` adaptations) MUST meet WCAG AA on body text and AAA on numeric KPI values.
 - **NFR-004**: Every illustrated surface MUST render to its final state on `prefers-reduced-motion: reduce` without motion.
 - **NFR-005**: Every illustrated and themed surface MUST render correctly in RTL.
 - **NFR-006**: All overlay glass treatments MUST degrade gracefully on browsers/devices that do not support backdrop-filter — to a solid-fill surface with the same contrast guarantees.
@@ -236,10 +246,10 @@ A platform owner runs a one-pass sweep across every route in the platform — pu
 
 ### Key Entities
 
-- **Theme**: Light, Dark, High-Contrast. Each is a complete, designed system covering surface, accent, chart palette, illustration variant, and elevation behaviour.
+- **Theme**: Light and Dark — each a complete, designed system covering surface, accent, chart palette, illustration variant, and elevation behaviour. Both adapt under `prefers-contrast: more` (stronger shadows/borders, no glass, solid-fill illustrations); no separate third theme ships in V1.
 - **Role Accent**: A documented accent expression for each role (student, faculty, department head, dean, admin, quality assurance, owner) that tints chrome without changing content colour.
 - **College Accent**: A college's identity colour (from `001-*`) projected into the chrome of that college's pages, with contrast-safe fallback.
-- **Illustration Family**: A documented palette, stroke weight, perspective, and motif library shared by every illustrated surface; ships in light + dark + high-contrast variants and LTR/RTL where directional.
+- **Illustration Family**: A documented palette, stroke weight, perspective, and motif library shared by every illustrated surface; ships in Light and Dark variants (each adapting to `prefers-contrast: more` with solid fills), and LTR/RTL where directional.
 - **Scene**: A composite illustration used in onboarding, milestones, hero, or empty states; every scene is built from the Illustration Family.
 - **Elevation Language**: A documented shadow stack, radius scale, glass treatment, and z-order hierarchy applied to every overlay surface.
 - **Custom Chart Treatment**: A documented chart visual style (rounded caps, gradient fills, designed tooltips, fading-edge axis) that replaces all chart-library defaults.
@@ -252,23 +262,23 @@ A platform owner runs a one-pass sweep across every route in the platform — pu
 - **SC-001**: A returning user comparing Madrak before and after this feature identifies dark mode, role/college accents, and bespoke illustrations as new visible improvements within one minute of using the platform.
 - **SC-002**: 100% of routes in the platform render in both light and dark themes with zero untokenised colour leaks and zero broken-contrast surfaces (independent inventory pass).
 - **SC-003**: Theme switch completes within the platform's micro-motion duration with zero CLS measured across 5 sample pages.
-- **SC-004**: At minimum 12 documented surfaces ship with bespoke scene illustrations; every other illustrated surface in the platform belongs to the same family on visual review.
+- **SC-004**: A documented bespoke illustration family ships in V1 covering 12+ surfaces in the catalogue; at minimum these 6 high-impact surfaces ship with finished scenes inside V1: `homepage-hero-scene`, `404`, `no-notifications`, `no-search-results`, `onboarding-sequence` (4 frames), `milestone-section-complete`. The remaining catalogue scenes ship in a follow-up cycle inside the same family.
 - **SC-005**: First-time visitors to the homepage report (in 5-second user-test interviews) that Madrak feels comparable to or better than at least three of: Notion, Linear, Stripe, Framer, Apple Education, Coursera.
 - **SC-006**: 100% of onboarding completions, milestone fires, and brand-mark intros are observed to fire once per scope across a multi-session test (no replays).
 - **SC-007**: Page-weight increase from this feature stays within the per-route budget defined by the prior performance work; no route's First Contentful Paint regresses by more than 5%.
-- **SC-008**: WCAG AA on body text and AAA on numeric KPIs holds across light, dark, and high-contrast themes on 100% of audited surfaces.
+- **SC-008**: WCAG AA on body text and AAA on numeric KPIs holds across Light, Dark, and their `prefers-contrast: more` adaptations on 100% of audited surfaces.
 - **SC-009**: Zero off-token colour, ad-hoc shadow, or off-family illustration is found in a post-feature inventory of every route.
 - **SC-010**: Reduced-motion users see all illustrations, scenes, and theme switches in their final-state form with no motion, while losing zero content or functionality.
 
 ## Assumptions
 
 - The existing `001-*` motion tokens, `002-*` typography roles + chart palette, and `003-*` decorative motion patterns remain the canonical foundation and are NOT redesigned by this feature.
-- Themes ship as a curated set: Light + Dark + optional High-Contrast. A user-customisable colour-picker theme engine is OUT of scope for v1.
+- Themes ship as a curated set: Light + Dark, both adapting under `prefers-contrast: more`. A separate third high-contrast theme and a user-customisable colour-picker theme engine are both OUT of scope for v1.
 - Bespoke illustrations are produced as inline SVG (or equivalent vector format) so they theme via tokens and respect the performance budget; raster (PNG/JPG) is allowed only for photography on marketing surfaces, not for product illustrations.
 - Role accent expressions reuse one accent slot per role; they do not introduce new accent palettes per page.
 - Seasonal / contextual moments (Ramadan, graduation week, exam season) are OUT of scope for v1; the architecture leaves room for them but no seasonal overrides ship in this feature.
 - Sound and haptic feedback are OUT of scope for v1.
 - Animated 3D, WebGL scenes, video backgrounds, and Lottie packs are OUT of scope; the visual language is SVG-based with the existing motion primitives.
-- The illustration family is producible within the project's existing design capacity; a documented illustration system + a starter set of 12 surfaces is the v1 target, with more surfaces added incrementally.
+- The illustration family is producible within the project's existing design capacity; V1 ships the documented illustration system + 6 high-impact bespoke scenes, with the remaining catalogue surfaces (12+ total) added in a follow-up cycle inside the same family.
 - The platform's existing performance, accessibility, RTL, and reduced-motion guarantees from `001-*` / `002-*` / `003-*` are preserved without exception by this feature.
 - The University of Zawia institutional context (logo, identity colour, statistics) remains the homepage's grounding reference.
