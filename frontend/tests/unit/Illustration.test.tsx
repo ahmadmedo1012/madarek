@@ -7,6 +7,7 @@ import { Illustration } from '../../src/components/Illustration';
 import {
   V1_ILLUSTRATION_NAMES,
   loadScene,
+  type IllustrationName,
 } from '../../src/lib/illustrations';
 
 describe('Illustration registry', () => {
@@ -24,6 +25,7 @@ describe('Illustration registry', () => {
   });
 
   it('loadScene resolves wired scenes to a component', () => {
+    expect(loadScene('homepage-hero')).not.toBeNull();
     expect(loadScene('empty-notifs')).not.toBeNull();
     expect(loadScene('empty-search')).not.toBeNull();
     expect(loadScene('error-404')).not.toBeNull();
@@ -34,8 +36,10 @@ describe('Illustration registry', () => {
     expect(loadScene('onboarding-role-intro')).not.toBeNull();
   });
 
-  it('loadScene returns null for not-yet-wired scenes', () => {
-    expect(loadScene('homepage-hero')).toBeNull();
+  it('every V1 illustration name resolves to a non-null component', () => {
+    for (const name of V1_ILLUSTRATION_NAMES) {
+      expect(loadScene(name)).not.toBeNull();
+    }
   });
 });
 
@@ -56,8 +60,12 @@ describe('<Illustration>', () => {
   });
 
   it('falls back to within-family placeholder for not-yet-wired scenes', () => {
-    render(<Illustration name="homepage-hero" altKey="hero.alt" />);
-    const wrappers = document.querySelectorAll('[data-illustration="homepage-hero"]');
+    // Use a name deliberately cast outside the V1 union to simulate a
+    // future or unwired scene. The wrapper must render the in-family
+    // SceneFallback rather than a broken-image icon.
+    const phantom = 'phantom-not-yet-wired' as unknown as IllustrationName;
+    render(<Illustration name={phantom} altKey="hero.alt" />);
+    const wrappers = document.querySelectorAll('[data-illustration="phantom-not-yet-wired"]');
     expect(wrappers).toHaveLength(1);
     expect(wrappers[0]).toHaveAttribute('data-illustration-fallback', 'true');
     // Still has role=img + aria-label when not decorative.

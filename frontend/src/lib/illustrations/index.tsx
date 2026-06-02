@@ -16,6 +16,7 @@ import type { ComponentType, ReactElement } from 'react';
 import { SceneEmptyNotifs } from './scenes/empty-notifs';
 import { SceneEmptySearch } from './scenes/empty-search';
 import { SceneError404 } from './scenes/error-404';
+import { SceneHomepageHero } from './scenes/homepage-hero';
 import { SceneMilestoneSection } from './scenes/milestone-section';
 import { SceneOnboardingFrame1 } from './scenes/onboarding/frame-1';
 import { SceneOnboardingFrame2 } from './scenes/onboarding/frame-2';
@@ -58,7 +59,7 @@ type SceneComponent = ComponentType<SceneProps>;
  * for those.
  */
 export const SCENE_REGISTRY: Record<IllustrationName, SceneComponent | null> = {
-  'homepage-hero': null,
+  'homepage-hero': SceneHomepageHero as SceneComponent,
   'error-404': SceneError404 as SceneComponent,
   'empty-notifs': SceneEmptyNotifs as SceneComponent,
   'empty-search': SceneEmptySearch as SceneComponent,
