@@ -26,3 +26,9 @@ export type { TooltipProps } from './Tooltip';
 
 export { Lightbox } from './Lightbox';
 export type { LightboxProps } from './Lightbox';
+
+export { CommandPalette } from './CommandPalette';
+export type { CommandPaletteProps } from './CommandPalette';
+
+export { NotificationPanel } from './NotificationPanel';
+export type { NotificationPanelProps } from './NotificationPanel';

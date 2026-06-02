@@ -1269,6 +1269,62 @@
     outline-offset: 2px;
   }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMMAND PALETTE — 012-design-graphics-uplift T066.            ║
+     ║  --elev-5 + --z-modal. Heavy blur on the backdrop, --r-2xl    ║
+     ║  on the card, search-first content layout.                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .cmd-palette-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,15,15,0.50);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-block-start: 12vh;
+    z-index: var(--z-modal, 400);
+    animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+    padding-inline: var(--sp-4);
+  }
+  [data-theme="dark"] .cmd-palette-overlay { background: rgba(0,0,0,0.66); }
+  .cmd-palette-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2xl);
+    box-shadow: var(--elev-5, var(--shadow-modal));
+    inline-size: min(640px, 100%);
+    max-block-size: calc(76dvh);
+    overflow: clip;
+    display: flex; flex-direction: column;
+    animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  NOTIFICATION PANEL — 012-design-graphics-uplift T065.         ║
+     ║  --elev-3 + --r-xl + --z-popover, glass.                       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .notification-panel {
+    position: fixed;
+    z-index: var(--z-popover, 200);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-start-start-radius: var(--r-xl);
+    border-end-start-radius: var(--r-xl);
+    border-end-end-radius: var(--r-xl);
+    box-shadow: var(--elev-3, var(--shadow-card-h));
+    inline-size: min(380px, calc(100vw - var(--sp-6) * 2));
+    max-block-size: min(540px, 80dvh);
+    overflow: clip;
+    display: flex; flex-direction: column;
+    animation: madarek-popover-in var(--motion-duration-short, 160ms) var(--motion-ease-decelerate) both;
+  }
+  @supports (backdrop-filter: blur(0)) {
+    .notification-panel {
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+  }
+
   .filter-bar {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: var(--sp-2);
