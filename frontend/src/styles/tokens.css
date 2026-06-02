@@ -228,9 +228,11 @@
     --type-metric-letter-spacing:     -0.022em;
     --type-metric-feature-settings:   'tnum' 1, 'lnum' 1;
 
-    /* Section rhythm — every primary section uses one of two values. */
-    --section-pad-y-narrow: var(--sp-11);   /* 72px  — interior sections */
-    --section-pad-y-wide:   var(--sp-13);   /* 128px — hero / CTA / proof */
+    /* Section rhythm — every primary section uses one of two values.
+       Responsive clamps so spacing scales with viewport, matching the
+       existing landing-page rhythm without visual regression. */
+    --section-pad-y-narrow: clamp(var(--sp-9), 6vw, var(--sp-11));   /* 48..72px */
+    --section-pad-y-wide:   clamp(var(--sp-11), 8vw, var(--sp-13));  /* 72..128px */
 
     /* ─── Layout ────────────────────────────────────────────────────── */
     --sidebar-w: 256px;
