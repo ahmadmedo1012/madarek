@@ -181,6 +181,57 @@
     --state-loading-spinner-stroke: 2px;
     --state-loading-spinner-color: currentColor;
 
+    /* ─── Type roles (see contracts/type-system.md) ───
+       Role-locked semantic typography. New code MUST consume roles,
+       not raw --fs-*. The raw scale remains as the implementation
+       foundation. Each role pins size + weight + line-height +
+       letter-spacing so consumers don't drift. */
+
+    /* Display — hero headlines only. One per page max. */
+    --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
+    --type-display-size-lg:        var(--fs-display-lg);   /* 34..56px */
+    --type-display-size-xl:        var(--fs-display-xl);   /* 40..72px */
+    --type-display-size-mega:      var(--fs-mega);         /* 48..104px */
+    --type-display-weight:         var(--fw-black);        /* 800 */
+    --type-display-line-height:    var(--lh-tight);        /* 1.05 */
+    --type-display-letter-spacing: var(--ls-mega);         /* -0.032em */
+
+    /* Headline — page titles, section titles, modal headers. */
+    --type-headline-size-lg:        var(--fs-h1);          /* 30px */
+    --type-headline-size-md:        var(--fs-h2);          /* 22px */
+    --type-headline-size-sm:        var(--fs-h3);          /* 18px */
+    --type-headline-weight:         var(--fw-bold);        /* 700 */
+    --type-headline-line-height:    var(--lh-snug);        /* 1.20 */
+    --type-headline-letter-spacing: var(--ls-snug);        /* -0.012em */
+
+    /* Body — paragraphs, descriptions, prose. */
+    --type-body-size:           var(--fs-body);            /* 15px */
+    --type-body-size-lg:        var(--fs-body-lg);         /* 17px */
+    --type-body-weight:         var(--fw-regular);         /* 400 */
+    --type-body-line-height:    var(--lh-base);            /* 1.65 */
+    --type-body-letter-spacing: var(--ls-normal);          /* 0 */
+    --type-body-max-measure:    72ch;
+
+    /* Label — form labels, KPI labels, captions, helper text. */
+    --type-label-size:           var(--fs-sm);             /* 13px */
+    --type-label-size-sm:        var(--fs-xs);             /* 12px */
+    --type-label-weight:         var(--fw-medium);         /* 500 */
+    --type-label-line-height:    1.50;
+    --type-label-letter-spacing: 0.02em;
+
+    /* Metric — KPI numbers, big stats, counters. Always tabular. */
+    --type-metric-size:               var(--fs-metric-md); /* 22px */
+    --type-metric-size-lg:            var(--fs-metric-lg); /* 30px */
+    --type-metric-size-xl:            var(--fs-metric-xl); /* 44px */
+    --type-metric-weight:             var(--fw-bold);      /* 700 */
+    --type-metric-line-height:        1.10;
+    --type-metric-letter-spacing:     -0.022em;
+    --type-metric-feature-settings:   'tnum' 1, 'lnum' 1;
+
+    /* Section rhythm — every primary section uses one of two values. */
+    --section-pad-y-narrow: var(--sp-11);   /* 72px  — interior sections */
+    --section-pad-y-wide:   var(--sp-13);   /* 128px — hero / CTA / proof */
+
     /* ─── Layout ────────────────────────────────────────────────────── */
     --sidebar-w: 256px;
     --sidebar-w-collapsed: 64px;
@@ -349,6 +400,9 @@
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
+    --chart-6: #E8B547;   /* gold accent */
+    --chart-7: #3F8B8B;   /* teal */
+    --chart-8: #A65D8A;   /* mauve */
   }
 
   /* ════════════════════════════════════════════════════════════════════
@@ -473,6 +527,9 @@
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
+    --chart-6: #F2C766;   /* gold accent (lifted for dark) */
+    --chart-7: #5FAFAF;   /* teal (lifted for dark) */
+    --chart-8: #C57DA9;   /* mauve (lifted for dark) */
   }
 
   @media (prefers-reduced-motion: reduce) {

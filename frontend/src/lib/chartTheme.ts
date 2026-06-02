@@ -30,9 +30,12 @@ export function chartColors() {
   };
 }
 
-/** Five-color categorical palette for pie/doughnut/bar series. Resolves
- *  --chart-1…--chart-5 from tokens so light and dark themes both look
- *  cohesive without component-level overrides. */
+/** Eight-color categorical palette for pie/doughnut/bar series.
+ *
+ *  Resolves --chart-1..--chart-8 from tokens so light and dark themes both
+ *  look cohesive without component-level overrides. Cycle rule: series
+ *  index `i` (0-based) → `palette[i % 8]`. Documented in
+ *  `specs/002-visual-uplift/contracts/chart-theme.md`. */
 export function chartPalette(): string[] {
   return [
     cssVar('--chart-1', '#B57438'),
@@ -40,6 +43,9 @@ export function chartPalette(): string[] {
     cssVar('--chart-3', '#5C8FCE'),
     cssVar('--chart-4', '#DD6E78'),
     cssVar('--chart-5', '#8A6FE0'),
+    cssVar('--chart-6', '#E8B547'),
+    cssVar('--chart-7', '#3F8B8B'),
+    cssVar('--chart-8', '#A65D8A'),
   ];
 }
 
