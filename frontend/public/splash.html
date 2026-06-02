@@ -1,0 +1,98 @@
+<!doctype html>
+<!--
+  Branded splash — served as the early-paint slot for any cold paint
+  (pre-React or pre-network). Self-contained: no external CSS or fonts,
+  inline palette tokens. Reduced-motion respected.
+
+  See specs/011-platform-completeness-uplift/research.md R-001.
+-->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مدارك — جارٍ التحميل</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --surface: #ffffff;
+    --ink: #0a1220;
+    --gold: #b89554;
+    --t-fast: 220ms;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a1220;
+      --surface: #161922;
+      --ink: #f5f2eb;
+    }
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .splash {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 24px;
+  }
+  .mark {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(184,149,84,0.12);
+    display: grid;
+    place-items: center;
+    margin-bottom: 16px;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .subtitle {
+    font-size: 13px;
+    opacity: 0.6;
+    margin: 0;
+  }
+  .pulse {
+    margin-top: 18px;
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--gold);
+    opacity: 0.4;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.25; transform: scaleX(0.6); }
+    50%      { opacity: 0.85; transform: scaleX(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pulse { animation: none; opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+  <div class="splash" role="status" aria-live="polite">
+    <div>
+      <div class="mark" aria-hidden="true">م</div>
+      <p class="title">مدارك</p>
+      <p class="subtitle">منصة التعليم الذكي · جامعة الزاوية</p>
+      <div class="pulse" aria-hidden="true"></div>
+    </div>
+  </div>
+</body>
+</html>

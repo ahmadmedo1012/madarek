@@ -249,3 +249,71 @@ export function DetailSkeleton() {
     </div>
   );
 }
+
+/**
+ * Layout descriptor for `RouteSkeleton`. Each entry describes one
+ * vertical band of the route's layout. Compose at the route level so
+ * each page's `Suspense` fallback mimics that page's actual chrome
+ * (spec 011 US2 + research.md R-008).
+ */
+export type RouteSkeletonBlock =
+  | { kind: 'header'; titleWidth?: number | string; subtitleWidth?: number | string; trailingWidth?: number | string }
+  | { kind: 'kpis' }
+  | { kind: 'list'; rows?: number }
+  | { kind: 'chart'; height?: number }
+  | { kind: 'table'; rows?: number; cols?: number }
+  | { kind: 'card'; lines?: number; withTitle?: boolean }
+  | { kind: 'gap'; size?: number };
+
+/**
+ * Declarative route-level skeleton. Pass a layout descriptor matching
+ * the page's actual chrome and the factory composes the existing
+ * skeleton primitives. Reduced-motion + dark/light theming inherit
+ * for free from the underlying `Skeleton` token.
+ *
+ * Example:
+ *
+ *     <Suspense fallback={<RouteSkeleton blocks={[
+ *       { kind: 'header' },
+ *       { kind: 'kpis' },
+ *       { kind: 'list', rows: 6 },
+ *     ]} />}>
+ *       <DashboardPage />
+ *     </Suspense>
+ */
+export function RouteSkeleton({ blocks }: { blocks: ReadonlyArray<RouteSkeletonBlock> }) {
+  return (
+    <div className="page" aria-busy="true" aria-live="polite">
+      {blocks.map((block, i) => {
+        switch (block.kind) {
+          case 'header':
+            return (
+              <div key={i} className="page-header">
+                <div className="page-title-block">
+                  <Skeleton width={block.titleWidth ?? 260} height={28} />
+                  <div style={{ marginTop: 8 }}>
+                    <Skeleton width={block.subtitleWidth ?? 420} height={12} />
+                  </div>
+                </div>
+                {block.trailingWidth !== undefined && (
+                  <Skeleton width={block.trailingWidth} height={24} rounded="var(--r-full)" />
+                )}
+              </div>
+            );
+          case 'kpis':
+            return <KpiSkeleton key={i} />;
+          case 'list':
+            return <ListSkeleton key={i} rows={block.rows} />;
+          case 'chart':
+            return <ChartSkeleton key={i} height={block.height} />;
+          case 'table':
+            return <TableSkeleton key={i} rows={block.rows} cols={block.cols} />;
+          case 'card':
+            return <CardSkeleton key={i} lines={block.lines} withTitle={block.withTitle} />;
+          case 'gap':
+            return <div key={i} style={{ height: block.size ?? 16 }} aria-hidden />;
+        }
+      })}
+    </div>
+  );
+}

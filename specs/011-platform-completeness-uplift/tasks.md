@@ -28,11 +28,11 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 **Purpose**: Install dependencies and project plumbing introduced by spec 011.
 
-- [ ] T001 [P] Add frontend i18n dependencies — run `npm install --workspace frontend i18next@^23 react-i18next@^14 i18next-http-backend@^2` and commit `frontend/package.json` + lockfile.
-- [ ] T002 [P] Add frontend a11y CI deps — run `npm install --workspace frontend --save-dev @playwright/test@^1 @axe-core/playwright@^4` and commit `frontend/package.json` + lockfile.
-- [ ] T003 [P] Create `frontend/playwright.config.ts` with one project per `{light, dark} × {ar, en}` (4 projects), `baseURL: 'http://localhost:5173'`, and a single shared `specDir: './tests/e2e'`.
-- [ ] T004 [P] Create `scripts/check-i18n-coverage.sh` per `contracts/locale.md` (greps for literal Arabic/English strings in JSX, compares `ar.json` vs `en.json` keys, fails on divergence).
-- [ ] T005 Wire `npm run check:i18n` in repo-root `package.json` scripts pointing at `scripts/check-i18n-coverage.sh`.
+- [X] T001 [P] Add frontend i18n dependencies — run `npm install --workspace frontend i18next@^23 react-i18next@^14 i18next-http-backend@^2` and commit `frontend/package.json` + lockfile.
+- [X] T002 [P] Add frontend a11y CI deps — run `npm install --workspace frontend --save-dev @playwright/test@^1 @axe-core/playwright@^4` and commit `frontend/package.json` + lockfile.
+- [X] T003 [P] Create `frontend/playwright.config.ts` with one project per `{light, dark} × {ar, en}` (4 projects), `baseURL: 'http://localhost:5173'`, and a single shared `specDir: './tests/e2e'`.
+- [X] T004 [P] Create `scripts/check-i18n-coverage.sh` per `contracts/locale.md` (greps for literal Arabic/English strings in JSX, compares `ar.json` vs `en.json` keys, fails on divergence).
+- [X] T005 Wire `npm run check:i18n` in repo-root `package.json` scripts pointing at `scripts/check-i18n-coverage.sh`.
 
 **Checkpoint**: Dependencies installed; CI hooks ready; nothing user-visible has changed yet.
 
@@ -55,9 +55,9 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 ### Arabic normalizer (shared by search + frontend highlighting)
 
-- [ ] T012 Create `backend/src/modules/search/normalize.ts` exporting `normalizeArabicSearch(input: string): string` exactly as specified in `contracts/search.md`.
-- [ ] T013 [P] Create `backend/src/modules/search/__tests__/normalize.test.ts` covering the acceptance matrix from `contracts/search.md` (idempotency property test + every fixture row).
-- [ ] T014 [P] Create `frontend/src/lib/search.ts` re-exporting `normalizeArabicSearch` from a shared location (copy the function with a comment cross-referencing `backend/src/modules/search/normalize.ts`; no runtime cross-workspace import).
+- [X] T012 Create `backend/src/modules/search/normalize.ts` exporting `normalizeArabicSearch(input: string): string` exactly as specified in `contracts/search.md`.
+- [X] T013 [P] Create `backend/src/modules/search/__tests__/normalize.test.ts` covering the acceptance matrix from `contracts/search.md` (idempotency property test + every fixture row).
+- [X] T014 [P] Create `frontend/src/lib/search.ts` re-exporting `normalizeArabicSearch` from a shared location (copy the function with a comment cross-referencing `backend/src/modules/search/normalize.ts`; no runtime cross-workspace import).
 - [ ] T015 Add `backend/scripts/backfill-search-normalized.ts` — pages each entity in batches of 1000, computes the normalized form, persists. Idempotent. Run once locally to verify.
 - [ ] T016 Wire a Prisma client extension in `backend/src/db.ts` so `Course`/`Faculty`/`Lecture` `create` and `update` automatically populate `searchableNormalized` from the entity's primary search field.
 
@@ -69,8 +69,8 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 ### Branded splash + skeleton primitives
 
-- [ ] T020 [P] Create `frontend/public/splash.html` — a self-contained branded splash with logo, palette tokens inlined (no external CSS), used as fallback for first-paint slot.
-- [ ] T021 [P] Extend `frontend/src/components/primitives/States.tsx` with one exported `RouteSkeleton` factory that takes a layout descriptor and applies the existing `--motion-shimmer` token; consumers will compose this per route.
+- [X] T020 [P] Create `frontend/public/splash.html` — a self-contained branded splash with logo, palette tokens inlined (no external CSS), used as fallback for first-paint slot.
+- [X] T021 [P] Extend `frontend/src/components/primitives/States.tsx` with one exported `RouteSkeleton` factory that takes a layout descriptor and applies the existing `--motion-shimmer` token; consumers will compose this per route.
 
 **Checkpoint**: Schema migrated; normalizer + tests pass; step-up gate active on sensitive routes (any user not in a fresh `pwd_at` window will see a 403 — frontend modal lands in US1). User stories can now proceed.
 
