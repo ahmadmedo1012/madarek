@@ -1325,6 +1325,26 @@
     }
   }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ILLUSTRATION — 012-design-graphics-uplift T080.               ║
+     ║  Container for bespoke SVG scenes. Sizing is controlled by    ║
+     ║  the consumer (state surfaces, hero) via inline-size /         ║
+     ║  block-size. The SVG inside scales to fill the box.            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+  .illustration > svg {
+    inline-size: 100%;
+    block-size: 100%;
+    max-inline-size: 200px;
+    max-block-size: 200px;
+  }
+
   .filter-bar {
     display: flex; align-items: center; flex-wrap: wrap;
     gap: var(--sp-2);
