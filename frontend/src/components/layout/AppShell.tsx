@@ -9,6 +9,7 @@ import { useScrollRestoration } from './useScrollRestoration';
 import { PageTransition } from '../motion';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
+import { useRoleAccent } from '../../hooks/useRoleAccent';
 import { HydrationSplash } from '../HydrationSplash';
 
 /* ───────────────────────────────────────────────────────────
@@ -217,6 +218,7 @@ function useCardPointerGlow() {
 
 export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
+  useRoleAccent();
   useLayoutMetrics();
   useThemeTransitionGuard();
   useCardPointerGlow();

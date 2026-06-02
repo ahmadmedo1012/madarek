@@ -50,17 +50,9 @@ function contrastRatio(a: RGB, b: RGB): number {
 }
 
 /**
- * The theme's representative chrome-text colour, used as the
- * worst-case foreground a college-accent might tint behind.
- */
-const CHROME_FG: Record<ThemeSurface, RGB> = {
-  light: { r: 25, g: 25, b: 24 },
-  dark:  { r: 242, g: 234, b: 216 },
-};
-
-/**
  * The chrome-surface colour the college-accent tints, used as the
- * worst-case background contrast partner.
+ * background contrast partner. The accent must be visible against
+ * this surface in the active theme.
  */
 const CHROME_BG: Record<ThemeSurface, RGB> = {
   light: { r: 251, g: 250, b: 249 },
@@ -68,13 +60,16 @@ const CHROME_BG: Record<ThemeSurface, RGB> = {
 };
 
 /**
- * Run the WCAG AA contrast gate on a college's identity colour.
- * Returns the original hex when both contrasts (against chrome
- * background AND chrome foreground) clear AA, otherwise returns
- * `null` so the caller can fall back to `var(--role-accent)` via
+ * Run the WCAG contrast gate on a college's identity colour against
+ * the chrome surface in the active theme. Returns the original hex
+ * (with leading `#`) when contrast clears the threshold, otherwise
+ * `null` so the caller can fall back to `var(--role-accent)` via the
  * normal CSS cascade.
  *
- * AA threshold: 3.0 for chrome surfaces (treated as non-text large).
+ * Default threshold: 3.0 — the WCAG AA "non-text large" minimum,
+ * appropriate for a tint / outline / hover ring that doesn't carry
+ * body text. Callers placing body text directly on top of the accent
+ * (e.g. a filled primary CTA) should pass `threshold = 4.5`.
  */
 export function gateCollegeAccent(
   hex: string,
@@ -83,10 +78,9 @@ export function gateCollegeAccent(
 ): string | null {
   const rgb = parseHex(hex);
   if (!rgb) return null;
-  const fgPair = contrastRatio(rgb, CHROME_FG[surface]);
-  const bgPair = contrastRatio(rgb, CHROME_BG[surface]);
-  if (fgPair >= threshold && bgPair >= threshold) return hex.startsWith('#') ? hex : `#${hex}`;
-  return null;
+  const ratio = contrastRatio(rgb, CHROME_BG[surface]);
+  if (ratio < threshold) return null;
+  return hex.startsWith('#') ? hex : `#${hex}`;
 }
 
 /** Public test helpers — exported for unit tests only. */

@@ -74,7 +74,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Foundation tests
 
-- [ ] T024 [P] Add `frontend/tests/unit/theme.test.ts` covering: pre-paint script behavior, `setChoice` synchrony, OS-watcher recompute when `choice='system'`, sync-on-sign-in cases (R-002 algorithm).
+- [X] T024 [P] Add `frontend/tests/unit/theme.test.ts` covering: pre-paint script behavior, `setChoice` synchrony, OS-watcher recompute when `choice='system'`, sync-on-sign-in cases (R-002 algorithm).
 - [ ] T025 [P] Add `backend/tests/modules/theme.test.ts` covering: `PUT /me/theme` rejects invalid enum, `GET /me/theme` returns 401 unauthenticated, audit log produced on success, atomic dual-column write.
 
 **Checkpoint**: Light/Dark themes installed, `useTheme()` works, `<html data-theme>` reflects user choice / OS, DB columns ready, `me` payload exposes them.
@@ -91,7 +91,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 - [ ] T030 [US1] Create `frontend/src/components/ThemeSwitcher.tsx` — a 3-way control (Light / Dark / System) calling `useTheme().setChoice`.
 - [ ] T031 [US1] Mount `<ThemeSwitcher />` in `frontend/src/components/layout/Topbar.tsx`.
-- [ ] T032 [US1] [P] Add `useEffect` in `frontend/src/components/layout/AppShell.tsx` (or equivalent root) to set `document.body.dataset.role` from `me.role` per quickstart §"Role accent".
+- [X] T032 [US1] [P] Add `useEffect` in `frontend/src/components/layout/AppShell.tsx` (or equivalent root) to set `document.body.dataset.role` from `me.role` per quickstart §"Role accent".
 - [ ] T033 [US1] [P] Update `frontend/src/pages/colleges/CollegePage.tsx` (or equivalent) to set `style={{ '--college-accent': gateCollegeAccent(college.identityColor) }}` on its root element.
 
 ### Token-cleanup sweep
@@ -109,7 +109,7 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### Tests
 
-- [ ] T044 [P] [US1] Add `frontend/tests/unit/college-accent.test.ts` verifying `gateCollegeAccent` returns the original hex when contrast passes and the role-accent fallback when it fails.
+- [X] T044 [P] [US1] Add `frontend/tests/unit/college-accent.test.ts` verifying `gateCollegeAccent` returns the original hex when contrast passes and the role-accent fallback when it fails.
 - [ ] T045 [P] [US1] Extend `frontend/tests/unit/theme.test.ts` (created in T024) with a "no untokenised colour leak" snapshot: render a representative page in Light + Dark and assert every text/background pair clears AA.
 
 **Checkpoint US1**: any merger can demo the platform in Light, Dark, and high-contrast OS preference, with role and college accents.
