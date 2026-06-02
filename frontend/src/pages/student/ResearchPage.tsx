@@ -169,7 +169,7 @@ function PaperRow({
             </div>
           )}
           {paper.abstract && (
-            <p className="text-xs text-muted" style={{ marginTop: 8, lineHeight: 'var(--lh-base)' }}>
+            <p className="text-xs text-muted" style={{ marginTop: 'var(--sp-2)', lineHeight: 'var(--lh-base)' }}>
               {paper.abstract.length > 200 ? `${paper.abstract.slice(0, 200)}…` : paper.abstract}
             </p>
           )}
@@ -395,7 +395,7 @@ function UploadModal({
               onClick={() => setFileName('research_paper_demo.pdf')}
             >
               <Icon icon={FileText} size={24} className="text-muted" />
-              <div className="text-sm" style={{ marginTop: 8, color: 'var(--text)' }}>
+              <div className="text-sm" style={{ marginTop: 'var(--sp-2)', color: 'var(--text)' }}>
                 {fileName || 'اضغط لاختيار ملف PDF (محاكاة للعرض)'}
               </div>
               <div className="text-xxs text-subtle" style={{ marginTop: 4 }}>

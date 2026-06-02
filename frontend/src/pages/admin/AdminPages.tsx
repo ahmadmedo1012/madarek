@@ -306,7 +306,7 @@ export function AdminFacultiesPage() {
                     </span>
                     {f.nameEn && <span className="text-xs text-subtle font-mono">· {f.nameEn}</span>}
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-subtle" style={{ marginTop: 4, flexWrap: 'wrap' }}>
+                  <div className="flex items-center gap-4 text-xs text-subtle" style={{ marginTop: 'var(--sp-1)', flexWrap: 'wrap' }}>
                     <span className="font-mono">{f.departmentCount} قسم</span>
                     <span className="font-mono">{f.courseCount} مقرر</span>
                     <span className="font-mono">{f.studentCount.toLocaleString('ar-LY')} طالب</span>

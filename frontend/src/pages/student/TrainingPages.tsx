@@ -553,7 +553,7 @@ export function AchievementsPage() {
                   <div className="text-xxs text-subtle">شهادة إتمام مسار</div>
                   <h3 style={{ fontSize: 'var(--fs-md)', margin: '4px 0 6px 0' }}>{c.title}</h3>
                   <div className="text-xs text-muted">{c.issuer}</div>
-                  <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)', flexWrap: 'wrap' }}>
                     <Badge color="green"><Icon icon={CheckCircle2} size={11} /> مكتملة</Badge>
                     {c.issuedAt && (
                       <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>

@@ -189,7 +189,7 @@ export function VisionDetailPage() {
                 </div>
                 <div>
                   <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{s.title}</div>
-                  <div className="text-xs text-muted" style={{ marginTop: 4, lineHeight: 'var(--lh-base)' }}>
+                  <div className="text-xs text-muted" style={{ marginTop: 'var(--sp-1)', lineHeight: 'var(--lh-base)' }}>
                     {s.desc}
                   </div>
                 </div>

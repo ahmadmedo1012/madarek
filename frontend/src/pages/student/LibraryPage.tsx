@@ -257,7 +257,7 @@ export default function LibraryPage() {
                       <h3 className="text-md font-semibold" style={{ color: 'var(--text)', fontSize: 'var(--fs-md)', lineHeight: 1.3 }}>
                         {p.title}
                       </h3>
-                      <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 4, flexWrap: 'wrap' }}>
+                      <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 'var(--sp-1)', flexWrap: 'wrap' }}>
                         <span>{p.student.firstName} {p.student.lastName}</span>
                         {p.offering?.course && (
                           <>
