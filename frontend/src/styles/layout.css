@@ -109,7 +109,7 @@
     inline-size: 3px;
     background: var(--accent);
     border-radius: 0 2px 2px 0;
-    animation: madarek-nav-pop 280ms var(--ease-out);
+    animation: madarek-nav-pop var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
   @keyframes madarek-nav-pop {
     from { transform: translateY(-50%) scaleY(0.4); opacity: 0; }
@@ -277,7 +277,7 @@
     box-shadow: var(--shadow-pop);
     overflow: clip;
     z-index: var(--z-popover);
-    animation: madarek-pop 180ms var(--ease-out) both;
+    animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
   .topbar-user-menu-header { padding: var(--sp-3) var(--sp-4); border-block-end: 1px solid var(--rule); background: var(--surface-2); }
   .topbar-user-menu-item {

@@ -68,7 +68,7 @@
     border-radius: var(--r-2xl);
     padding: clamp(var(--sp-7), 4vw, var(--sp-9));
     box-shadow: var(--shadow-pop);
-    animation: madarek-fade-up 480ms var(--ease-out) both;
+    animation: madarek-fade-up var(--motion-duration-long) var(--motion-ease-decelerate) both;
   }
 
   .auth-brand-mini {
@@ -215,7 +215,7 @@
     border: 2px solid rgba(255,255,255,0.3);
     border-block-start-color: #fff;
     border-radius: 50%;
-    animation: madarek-spin 720ms linear infinite;
+    animation: madarek-spin var(--motion-duration-stat) linear infinite;
   }
   [data-theme="dark"] .auth-submit-spinner {
     border-color: rgba(25,25,24,0.3);

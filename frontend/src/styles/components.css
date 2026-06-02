@@ -349,7 +349,7 @@
       color-mix(in oklab, var(--neutral-50) 30%, transparent) 48%,
       transparent 60%);
     transform: translateX(-110%);
-    transition: transform 700ms var(--ease-out);
+    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
   .btn.primary:hover::before,
@@ -863,7 +863,7 @@
     border: 2px solid var(--rule);
     border-block-start-color: var(--neutral-900);
     border-radius: 50%;
-    animation: madarek-spin 720ms linear infinite;
+    animation: madarek-spin var(--motion-duration-stat) linear infinite;
   }
   [data-theme="dark"] .spinner { border-block-start-color: var(--accent); }
   @keyframes madarek-spin { to { transform: rotate(360deg); } }
@@ -873,7 +873,7 @@
     background: linear-gradient(90deg, var(--surface-3), var(--surface-2), var(--surface-3));
     background-size: 200% 100%;
     border-radius: var(--r-sm);
-    animation: madarek-shimmer 1400ms ease-in-out infinite;
+    animation: madarek-shimmer var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
   }
   @keyframes madarek-shimmer { 0%{background-position:0% 0;} 100%{background-position:-200% 0;} }
 
@@ -938,7 +938,7 @@
     -webkit-backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center;
     z-index: var(--z-modal);
-    animation: madarek-fade 200ms var(--ease-out) both;
+    animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     padding: var(--sp-4);
   }
   [data-theme="dark"] .modal-overlay { background: rgba(0,0,0,0.62); }
@@ -953,7 +953,7 @@
     max-block-size: calc(100dvh - var(--sp-9));
     overflow: clip;
     display: flex; flex-direction: column;
-    animation: madarek-pop 220ms var(--ease-out) both;
+    animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
