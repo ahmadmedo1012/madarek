@@ -26,6 +26,30 @@ Discussion forums, certificate generation, native mobile apps, virtual labs (Cis
 4. Q: Session lifetime → A: 12-hour absolute lifetime by default; opt-in "remember me" extends to 30 days; sensitive routes (active exam pages, grade entry, password change, account-settings changes) enforce a 30-minute idle timeout requiring re-authentication.
 5. Q: Global search matching semantics → A: Substring matching with Arabic-aware normalization (diacritic / تشكيل folding, alif and hamza folding, tolerance for the ال definite-article prefix) and typo-tolerant fuzzy matching for queries of 4 characters or more, case-insensitive across both languages. Search scope covers entity titles and names (course title, faculty name, lecture title) — not full content body, which is deferred.
 
+## Implementation Reality (added 2026-06-02 after planning kickoff)
+
+The audit (`madarek_audit_report00.md`) was conducted by an external crawler that observed the platform unauthenticated. Its central finding — that `/dashboard`, `/courses`, and `/faculties` "all return the landing page" — describes the protected-route guard correctly redirecting guests to the public landing, not the absence of an inner application. Inspection of the codebase after Clarification 1 showed:
+
+1. The inner application exists. `frontend/src/pages/**` contains 80+ routed pages across student, teacher, admin, quality, and owner roles, lazy-loaded and wrapped by `<AppShell />` and `ProtectedRoute`.
+2. Authentication exists. `backend/src/modules/**` ships JWT (15-min access + 7-day refresh with rotation, Argon2id passwords, account lockout after 5 failures, http-only `mdrk_refresh` cookie scoped to `/api/v1/auth`).
+3. The data model exists. Prisma schema (60+ models) covers identity, faculties/departments/courses/offerings/enrollments, lectures/chapters/checkpoints/watch events, materials/assignments/submissions/grades/attendance, exams, research, notifications, social/community, library, gamification, AI conversations, owner ops.
+4. Notifications exist. `Notification` model + `NotificationDropdown` component + 60-second polling hook in `useResources.ts`.
+5. A global search component exists in `Topbar`.
+6. A theme store with `'light' | 'dark' | 'system'` and a no-flash bootstrap script already exists.
+
+The Clarification 1 answer ("greenfield") referred to the user's perception that there is no _final / canonical_ login flow yet — not that there is no auth code. Spec 011 is therefore re-scoped from "build the platform" to "close the verifiable gaps the audit surfaced and harden the existing surface to the level the audit expected to find." The user-story priorities and functional requirements below remain valid; the implementation strategy is gap-fill rather than green-field. Concretely:
+
+1. **US1 reframed** — verify each page actually wires through to real data (some admin pages are documented as placeholders) and is keyboard- and screen-reader-reachable; no rebuild.
+2. **US2 unchanged** — Render cold-start and branded loading skeletons are real gaps and remain P1.
+3. **US3 partly satisfied** — `Topbar` + `GlobalSearch` exist; the gaps are sticky-header behavior, breadcrumbs, search Arabic normalization (Q5), and desktop nav structure.
+4. **US4 partly satisfied** — `Notification` model + dropdown + 60s polling exist; the gaps are the mark-all-read flow, preferences UI, and the "≤30s without manual refresh" SC-007 target (currently 60-second poll).
+5. **US5 mostly unverified** — accessibility tooling (`@axe-core/react` is already in `frontend/package.json`); the gap is running it, fixing findings, adding skip-link and verifying focus indicators across both themes.
+6. **US6 partly satisfied** — theme store + `[data-theme]` exist; the gap is contrast verification across both themes for every in-scope page.
+7. **US7 not yet implemented** — the i18n layer to support an English UI does not exist; this is greenfield work.
+8. **US8 partly satisfied** — `useReveal` (IntersectionObserver) and `CountUp` exist; the gaps are landing-page motion choreography, page-transition smoothness, branded skeleton states everywhere a back-end cold call lives, and the interactive Oasis demo.
+
+FR-001 is reconciled with the existing implementation in §Functional Requirements below: 15-minute access token + 7-day refresh stays as the operational contract; the user-perceived "12-hour" lifetime in Clarification 4 is delivered by the silent-refresh interceptor; the "30-day remember-me" extends the refresh-cookie lifetime; the "30-minute idle on sensitive routes" is added as a step-up re-authentication gate, not a wholesale session shortening.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Student can actually use the platform end-to-end (Priority: P1)
@@ -195,7 +219,7 @@ The landing page and platform shell carry the visible signature of the existing 
 
 ### Functional Requirements — Working core (US1)
 
-- **FR-001**: System MUST authenticate users via university email address + password (managed by Madarek), produce a session with a 12-hour absolute lifetime by default, optionally extendable to 30 days when the user opts in to a "remember me" persistent session at login. Sensitive routes (active exam pages, grade entry, password change, account-settings changes) MUST additionally enforce a 30-minute idle timeout after which the user is re-prompted for credentials before the action proceeds. The system MUST support password reset via email-link verification. SSO/SAML integration with the university identity provider is explicitly deferred to a future feature.
+- **FR-001**: System MUST authenticate users via university email address + password (Argon2id-hashed; existing implementation), issue a JWT access token with a 15-minute lifetime, and a refresh token (http-only cookie `mdrk_refresh`) with a 7-day lifetime that rotates on every refresh. The browser MUST silently refresh on `401 TOKEN_EXPIRED` and retry the original request once, so the user-perceived continuous session is at least 7 days of activity. An opt-in "remember me" choice at login MUST extend the refresh-token lifetime to 30 days. Sensitive routes (active exam pages, grade entry, password change, account-settings changes) MUST additionally require step-up re-authentication if more than 30 minutes have elapsed since the last interactive password entry. The system MUST support password reset via email-link verification. SSO/SAML integration with the university identity provider is explicitly deferred to a future feature.
 - **FR-002**: System MUST route signed-in users to a personal dashboard at `/dashboard` that surfaces enrolled courses, upcoming deadlines, and recent grades — not the marketing landing page.
 - **FR-003**: System MUST list a student's enrolled courses on a dedicated authenticated route distinct from the public `/colleges` discovery surface.
 - **FR-004**: System MUST render each course at a dedicated route showing lecture list, assignment list, and current grade summary.
