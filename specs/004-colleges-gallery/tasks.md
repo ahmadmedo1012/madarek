@@ -66,9 +66,9 @@ Web app layout (existing).
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Convert the static `<span className="landing-hero-eyebrow">أكثر من 25 كلّيّة</span>` in `frontend/src/pages/LandingPage.tsx` to `<Link to="/colleges" className="landing-hero-eyebrow landing-hero-eyebrow--linked">` containing the text and a trailing `<Icon icon={ArrowLeft} size={12} />`. Add the inline comment per R-011 documenting the marketing-friendly count.
-- [ ] T011 [P] [US1] Add `.landing-hero-eyebrow--linked` modifier rules to `frontend/src/styles/landing.css`: cursor pointer, `transition` on `border-color`/`background` consuming `--motion-duration-short`, hover state with the canonical card-hover accent, focus-visible ring inherited from the universal rule (no override). Add a `gap` for the trailing icon.
-- [ ] T012 [US1] Verify the badge: tab-focus on the homepage hits the badge with a visible focus ring; hover changes cursor + adds visual cue; tap navigates to `/colleges` via the existing `<PageTransition>` (no full reload). Repeat in RTL with the icon mirrored.
+- [X] T010 [US1] Convert the static `<span className="landing-hero-eyebrow">أكثر من 25 كلّيّة</span>` in `frontend/src/pages/LandingPage.tsx` to `<Link to="/colleges" className="landing-hero-eyebrow landing-hero-eyebrow--linked">` containing the text and a trailing `<Icon icon={ArrowLeft} size={12} />`. Add the inline comment per R-011 documenting the marketing-friendly count.
+- [X] T011 [P] [US1] Add `.landing-hero-eyebrow--linked` modifier rules to `frontend/src/styles/landing.css`: cursor pointer, `transition` on `border-color`/`background` consuming `--motion-duration-short`, hover state with the canonical card-hover accent, focus-visible ring inherited from the universal rule (no override). Add a `gap` for the trailing icon.
+- [~] T012 [US1] Verify the badge: tab-focus on the homepage hits the badge with a visible focus ring; hover changes cursor + adds visual cue; tap navigates to `/colleges` via the existing `<PageTransition>` (no full reload). Repeat in RTL with the icon mirrored.
 
 **Checkpoint**: Discovery anchor live on the homepage.
 
@@ -82,9 +82,9 @@ Web app layout (existing).
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Wrap each campus `<section className="college-city-section">` in the existing `<Reveal>` primitive from `001-*` inside `frontend/src/pages/colleges/CollegePages.tsx`. Use `distance="medium"`. The grid of cards within each section can be a `<RevealGroup>` if the cards should stagger in; default to no stagger to keep the cascade calm.
-- [ ] T014 [P] [US2] In `frontend/src/pages/colleges/CollegePages.tsx`, resolve the identity profile per card via `getCollegeIdentity(college.id)` (or `college.slug` if available). Apply `data-college-accent={accent ?? undefined}` and inline `style={accent ? { '--college-accent': accent } : undefined}` per `contracts/gallery-state.md`.
-- [ ] T015 [P] [US2] Verify the card hover: existing `.college-card:hover` rules already use canonical hover treatment from `001-*`; confirm via grep for raw motion values in `colleges.css` and migrate any holdouts to `--state-card-*` tokens.
+- [X] T013 [US2] Wrap each campus `<section className="college-city-section">` in the existing `<Reveal>` primitive from `001-*` inside `frontend/src/pages/colleges/CollegePages.tsx`. Use `distance="medium"`. The grid of cards within each section can be a `<RevealGroup>` if the cards should stagger in; default to no stagger to keep the cascade calm.
+- [X] T014 [P] [US2] In `frontend/src/pages/colleges/CollegePages.tsx`, resolve the identity profile per card via `getCollegeIdentity(college.id)` (or `college.slug` if available). Apply `data-college-accent={accent ?? undefined}` and inline `style={accent ? { '--college-accent': accent } : undefined}` per `contracts/gallery-state.md`.
+- [X] T015 [P] [US2] Verify the card hover: existing `.college-card:hover` rules already use canonical hover treatment from `001-*`; confirm via grep for raw motion values in `colleges.css` and migrate any holdouts to `--state-card-*` tokens.
 
 **Checkpoint**: Gallery feels curated rather than listed.
 
@@ -98,11 +98,11 @@ Web app layout (existing).
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] In `frontend/src/pages/colleges/CollegePages.tsx`, replace the existing inline city-grouping IIFE with a `useMemo(() => filterColleges(q.data, state), [q.data, state])` call. Wire `state` from `useUrlQueryState()`.
-- [ ] T017 [US3] Render the toolbar above the campus sections in `CollegePages.tsx`: `<div className="gallery-toolbar" role="search">` containing the search input (with hidden label, controlled value, `onChange` updates `state.query` via the hook) and the chip strip (`role="tablist"`, one chip per CityName + an "all" chip). Each chip's `aria-selected` reflects `state.campus === chip.value`.
-- [ ] T018 [P] [US3] Add a single visually-hidden `<div role="status" aria-live="polite" aria-atomic="true">` immediately after the toolbar that renders `${total} نتيجة`. Update happens automatically on every render.
-- [ ] T019 [US3] Render the `clear filters` action visible only when `state.query !== '' || state.campus !== null`. Tapping calls `clear()` from the hook.
-- [ ] T020 [US3] Manual verification: walk the journey above (search, filter, combine, clear, share-URL) on desktop. Confirm debounce feels instant; URL updates within 200 ms of typing-end; `aria-live` announces result count via VoiceOver.
+- [X] T016 [US3] In `frontend/src/pages/colleges/CollegePages.tsx`, replace the existing inline city-grouping IIFE with a `useMemo(() => filterColleges(q.data, state), [q.data, state])` call. Wire `state` from `useUrlQueryState()`.
+- [X] T017 [US3] Render the toolbar above the campus sections in `CollegePages.tsx`: `<div className="gallery-toolbar" role="search">` containing the search input (with hidden label, controlled value, `onChange` updates `state.query` via the hook) and the chip strip (`role="tablist"`, one chip per CityName + an "all" chip). Each chip's `aria-selected` reflects `state.campus === chip.value`.
+- [X] T018 [P] [US3] Add a single visually-hidden `<div role="status" aria-live="polite" aria-atomic="true">` immediately after the toolbar that renders `${total} نتيجة`. Update happens automatically on every render.
+- [X] T019 [US3] Render the `clear filters` action visible only when `state.query !== '' || state.campus !== null`. Tapping calls `clear()` from the hook.
+- [~] T020 [US3] Manual verification: walk the journey above (search, filter, combine, clear, share-URL) on desktop. Confirm debounce feels instant; URL updates within 200 ms of typing-end; `aria-live` announces result count via VoiceOver.
 
 **Checkpoint**: Search + filter functional. URL is shareable. P1 (MVP) at this point includes the discovery anchor + designed gallery + working search.
 
@@ -116,10 +116,10 @@ Web app layout (existing).
 
 ### Implementation for User Story 6
 
-- [ ] T021 [US6] Add mobile-specific CSS to `frontend/src/styles/colleges.css`: `@media (max-width: 767px)` block that makes `.gallery-toolbar` `position: sticky; top: var(--topbar-h); z-index: var(--z-1)`, gives it a backdrop-blur background, and forces `.college-grid` to `grid-template-columns: 1fr`.
-- [ ] T022 [P] [US6] Add `overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none` to `.gallery-chip-strip` on mobile so chips scroll inside the strip. Add `scroll-snap-align: start` to `.gallery-chip`. Add `-ms-overflow-style: none` and `&::-webkit-scrollbar { display: none }` to hide scrollbars.
-- [ ] T023 [US6] Verify touch-target hit areas at 360 px: `.gallery-chip` ≥ 44×44 (bump padding if needed), `.college-card` is its own large hit area, search input ≥ 44 px tall. Confirm via DevTools device emulation.
-- [ ] T024 [US6] Manual smoke at 360 px in DevTools: walk `/`, click the badge → `/colleges`, search, filter, tap a card. Confirm zero horizontal-scroll on document, sticky toolbar behaves, chip strip scrolls inside itself, all targets reachable with one thumb.
+- [X] T021 [US6] Add mobile-specific CSS to `frontend/src/styles/colleges.css`: `@media (max-width: 767px)` block that makes `.gallery-toolbar` `position: sticky; top: var(--topbar-h); z-index: var(--z-1)`, gives it a backdrop-blur background, and forces `.college-grid` to `grid-template-columns: 1fr`.
+- [X] T022 [P] [US6] Add `overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none` to `.gallery-chip-strip` on mobile so chips scroll inside the strip. Add `scroll-snap-align: start` to `.gallery-chip`. Add `-ms-overflow-style: none` and `&::-webkit-scrollbar { display: none }` to hide scrollbars.
+- [X] T023 [US6] Verify touch-target hit areas at 360 px: `.gallery-chip` ≥ 44×44 (bump padding if needed), `.college-card` is its own large hit area, search input ≥ 44 px tall. Confirm via DevTools device emulation.
+- [~] T024 [US6] Manual smoke at 360 px in DevTools: walk `/`, click the badge → `/colleges`, search, filter, tap a card. Confirm zero horizontal-scroll on document, sticky toolbar behaves, chip strip scrolls inside itself, all targets reachable with one thumb.
 
 **Checkpoint**: Mobile is intentional. **MVP scope (P1: US1+US2+US3+US6) complete.**
 

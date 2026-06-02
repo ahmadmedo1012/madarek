@@ -1,17 +1,22 @@
 import { Link, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Building2, Users, BookOpen, GraduationCap, Trophy, Megaphone,
   Calendar, Radio, Award, ArrowLeft, MapPin, Clock,
   FlaskConical, Microscope, ClipboardCheck, Medal, BarChart3,
+  Search, X,
 } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { UserAvatar } from '../../components/primitives';
 import { Card, MetricCard } from '../../components/primitives';
-import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
+import { EmptyState, ErrorState, LoadingState } from '../../components/primitives/States';
+import { Reveal, Skeleton } from '../../components/motion';
 import { api, unwrap } from '../../lib/api';
 import { getCollegeIdentity } from '../../data/colleges.config';
+import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
+import { useUrlQueryState } from '../../hooks/useUrlQueryState';
 import type { AcademicPosition } from '../../stores/auth.store';
 
 interface CollegeListItem {
@@ -133,6 +138,29 @@ export function CollegesIndexPage() {
     staleTime: 5 * 60_000,
   });
 
+  const { state, setQuery, setCampus, clear } = useUrlQueryState();
+  const data = q.data ?? [];
+
+  // Pre-compute total per campus for the chip-strip counts.
+  const totalByCampus = useMemo(() => {
+    const counts = new Map<CityName, number>();
+    for (const c of data) {
+      const cityRaw = c.city;
+      const city = (CAMPUS_ORDER as ReadonlyArray<string>).includes(cityRaw)
+        ? (cityRaw as CityName)
+        : ('مناطق أخرى' as CityName);
+      counts.set(city, (counts.get(city) ?? 0) + 1);
+    }
+    return counts;
+  }, [data]);
+
+  const result = useMemo(
+    () => filterColleges(data, state),
+    [data, state],
+  );
+
+  const hasActiveFilters = state.query.trim() !== '' || state.campus !== null;
+
   return (
     <div className="page colleges-index">
       <header className="page-header">
@@ -140,7 +168,20 @@ export function CollegesIndexPage() {
         <p className="page-subtitle">استكشف الكلّيّات والأقسام، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطتها.</p>
       </header>
 
-      {q.isLoading && <LoadingState />}
+      {q.isLoading && (
+        <div className="gallery-skeleton" aria-hidden>
+          {[0, 1, 2].map((s) => (
+            <section key={s} className="gallery-skeleton-section">
+              <Skeleton className="gallery-skeleton-title" />
+              <div className="gallery-skeleton-grid">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <Skeleton key={i} variant="card" />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.length === 0 && (
         <EmptyState title="لا توجد كلّيّات بعد" description="ستظهر الكلّيّات هنا حين يقوم الإداريّون بإضافتها." />
@@ -148,51 +189,138 @@ export function CollegesIndexPage() {
 
       {q.data && q.data.length > 0 && (
         <>
-          {(() => {
-            // Group colleges by city to mirror the real Zawia campus structure
-            // (الزاوية / العجيلات / زوارة / مناطق أخرى).
-            const byCity = new Map<string, CollegeListItem[]>();
-            for (const c of q.data) {
-              const list = byCity.get(c.city) ?? [];
-              list.push(c);
-              byCity.set(c.city, list);
-            }
-            // Stable city order — main campus first.
-            const order = ['الزاوية', 'العجيلات', 'زوارة', 'أبو عيسى', 'ناصر', 'مناطق أخرى'];
-            const cities = Array.from(byCity.keys()).sort((a, b) => {
-              const ai = order.indexOf(a); const bi = order.indexOf(b);
-              return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-            });
+          {/* Toolbar: search + campus chip strip + clear-filters. */}
+          <div className="gallery-toolbar" role="search">
+            <label className="visually-hidden" htmlFor="gallery-search">ابحث عن كلية</label>
+            <div style={{ flex: '1 1 240px', position: 'relative' }}>
+              <Icon
+                icon={Search}
+                size={16}
+                style={{
+                  position: 'absolute',
+                  insetBlockStart: '50%',
+                  insetInlineStart: 'var(--sp-3)',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-muted)',
+                  pointerEvents: 'none',
+                }}
+              />
+              <input
+                id="gallery-search"
+                type="search"
+                className="input gallery-search-input"
+                placeholder="ابحث عن كلية…"
+                value={state.query}
+                onChange={(e) => setQuery(e.target.value)}
+                style={{ paddingInlineStart: 'var(--sp-9)' }}
+              />
+            </div>
 
-            return cities.map((city) => (
-              <section key={city} className="college-city-section">
+            <div className="gallery-chip-strip" role="tablist" aria-label="فلترة حسب الحرم">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={state.campus === null}
+                className={`gallery-chip${state.campus === null ? ' gallery-chip-on' : ''}`}
+                onClick={() => setCampus(null)}
+              >
+                <span>الكل</span>
+                <span className="gallery-chip-count">{data.length}</span>
+              </button>
+              {CAMPUS_ORDER.map((city) => {
+                const count = totalByCampus.get(city) ?? 0;
+                if (count === 0) return null;
+                const active = state.campus === city;
+                return (
+                  <button
+                    key={city}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    className={`gallery-chip${active ? ' gallery-chip-on' : ''}`}
+                    onClick={() => setCampus(active ? null : city)}
+                  >
+                    <span>{city}</span>
+                    <span className="gallery-chip-count">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {hasActiveFilters && (
+              <button type="button" className="gallery-clear" onClick={clear}>
+                <Icon icon={X} size={14} />
+                <span>إعادة تعيين</span>
+              </button>
+            )}
+          </div>
+
+          {/* Polite live region for filter result count (FR-031). */}
+          <div role="status" aria-live="polite" aria-atomic="true" className="visually-hidden">
+            {`${result.total} نتيجة`}
+          </div>
+
+          {result.total === 0 ? (
+            <EmptyState
+              title="لم نعثر على نتائج"
+              description="جرّب كلمة بحث مختلفة أو غيّر الحرم الجامعي."
+              action={
+                <button type="button" className="btn primary" onClick={clear}>
+                  <Icon icon={X} size={14} />
+                  مسح الفلترة
+                </button>
+              }
+            />
+          ) : (
+            Array.from(result.byCampus.entries()).map(([city, list]) => (
+              <Reveal as="section" key={city} className="college-city-section" distance="medium">
                 <header className="college-city-header">
                   <h2 className="college-city-name">{city}</h2>
-                  <span className="college-city-count">{byCity.get(city)!.length} كلّيّة</span>
+                  <span className="college-city-count">{list.length} كلّيّة</span>
                 </header>
                 <div className="college-grid">
-                  {byCity.get(city)!.map((c) => (
-                    <Link key={c.id} to={`/colleges/${c.id}`} className="college-card">
-                      <div className="college-card-header">
-                        <span className="college-card-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={26} /></span>
-                        <div className="college-card-titles">
-                          <div className="college-card-name">{c.name}</div>
-                          {c.nameEn && <div className="college-card-sub">{c.nameEn}</div>}
+                  {list.map((c) => {
+                    const profile = getCollegeIdentity(c.id);
+                    const accent = profile?.accent ?? null;
+                    const accentStyle = accent
+                      ? ({ ['--college-accent']: accent } as React.CSSProperties)
+                      : undefined;
+                    return (
+                      <Link
+                        key={c.id}
+                        to={`/colleges/${c.id}`}
+                        className="college-card"
+                        data-college-accent={accent ?? undefined}
+                        style={accentStyle}
+                      >
+                        <div className="college-card-header">
+                          <span className="college-card-emoji" aria-hidden>
+                            {/* allow-emoji: data-default for admin-chosen icon */}
+                            <EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={26} />
+                          </span>
+                          <div className="college-card-titles">
+                            <div className="college-card-name">{c.name}</div>
+                            {c.nameEn && <div className="college-card-sub">{c.nameEn}</div>}
+                          </div>
+                          <span className="college-card-arrow"><Icon icon={ArrowLeft} size={18} /></span>
                         </div>
-                        <span className="college-card-arrow"><Icon icon={ArrowLeft} size={18} /></span>
-                      </div>
-                      <div className="college-card-stats">
-                        <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
-                        <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
-                        <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
-                        <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
-                      </div>
-                    </Link>
-                  ))}
+                        <div className="college-card-stats">
+                          <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
+                          <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
+                          <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
+                          <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
+                        </div>
+                        <span className="college-card-cta">
+                          <span>زيارة الصفحة</span>
+                          <Icon icon={ArrowLeft} size={12} />
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </div>
-              </section>
-            ));
-          })()}
+              </Reveal>
+            ))
+          )}
 
           <div className="leaderboard-cta">
             <Link to="/colleges/leaderboard" className="btn primary">
