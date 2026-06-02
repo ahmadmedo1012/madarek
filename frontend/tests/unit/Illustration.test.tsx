@@ -26,12 +26,14 @@ describe('Illustration registry', () => {
   it('loadScene resolves wired scenes to a component', () => {
     expect(loadScene('empty-notifs')).not.toBeNull();
     expect(loadScene('empty-search')).not.toBeNull();
+    expect(loadScene('error-404')).not.toBeNull();
+    expect(loadScene('milestone-section')).not.toBeNull();
   });
 
   it('loadScene returns null for not-yet-wired scenes', () => {
     expect(loadScene('homepage-hero')).toBeNull();
-    expect(loadScene('error-404')).toBeNull();
-    expect(loadScene('milestone-section')).toBeNull();
+    expect(loadScene('onboarding-frame-1')).toBeNull();
+    expect(loadScene('onboarding-role-intro')).toBeNull();
   });
 });
 

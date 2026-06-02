@@ -195,10 +195,10 @@ description: "Task list — 012-design-graphics-uplift"
 ### V1 bespoke scenes (each its own file under `frontend/src/lib/illustrations/`)
 
 - [ ] T082 [P] [US4] Create `homepage-hero.tsx` — eager-loaded hero illustration. Light + Dark variants composed from `var(--ill-hue-1..6)` only. Stroke `1.5` round caps. Perspective 30° isometric. ≤ 8 KB gz.
-- [ ] T083 [P] [US4] Create `error-404.tsx` — Light + Dark; mirrors directional content for RTL.
+- [X] T083 [P] [US4] Create `error-404.tsx` — Light + Dark; mirrors directional content for RTL.
 - [X] T084 [P] [US4] Create `empty-notifs.tsx` — symmetric scene; Light + Dark.
 - [X] T085 [P] [US4] Create `empty-search.tsx` — mirror arrow direction in RTL; Light + Dark.
-- [ ] T086 [P] [US4] Create `milestone-section.tsx` — Light + Dark; small celebratory motif.
+- [X] T086 [P] [US4] Create `milestone-section.tsx` — Light + Dark; small celebratory motif.
 - [ ] T087 [P] [US4] Create `onboarding/frame-1.tsx`, `frame-2.tsx`, `frame-3.tsx` — three generic onboarding frames; Light + Dark; RTL composition.
 - [ ] T088 [P] [US4] Create `onboarding/role-intro.tsx` — single component with seven role-keyed compositions (student / faculty / department-head / dean / admin / quality / owner); Light + Dark; RTL composition.
 
