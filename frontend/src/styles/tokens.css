@@ -541,3 +541,129 @@
     }
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   012-design-graphics-uplift — additive token layer
+   ─────────────────────────────────────────────────────────────────────
+   Adds:
+     1. Role-accent table (per data-role attribute on body)
+     2. College-accent slot + soft derivation
+     3. 5-level elevation language (--elev-1..5)
+     4. Illustration palette (--ill-hue-1..6 + stroke/paper/shadow)
+     5. prefers-contrast: more adaptations for both themes
+
+   IMPORTANT: this section MUST NOT redefine surface/text/accent tokens
+   already shipped in 001-* / 002-*. It only LAYERS new variables on top.
+   See specs/012-design-graphics-uplift/contracts/theme-tokens.md.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+
+  /* ─── 1. Role-accent (Light) ──────────────────────────────────────── */
+  :root[data-theme="light"] body[data-role="student"]         { --role-accent: #3B5BDB; }
+  :root[data-theme="light"] body[data-role="faculty"]         { --role-accent: #1F8A7C; }
+  :root[data-theme="light"] body[data-role="department-head"] { --role-accent: #BF6A2A; }
+  :root[data-theme="light"] body[data-role="dean"]            { --role-accent: #7B3FB1; }
+  :root[data-theme="light"] body[data-role="admin"]           { --role-accent: #264653; }
+  :root[data-theme="light"] body[data-role="quality"]         { --role-accent: #A33A4F; }
+  :root[data-theme="light"] body[data-role="owner"]           { --role-accent: #6B7280; }
+
+  /* ─── Role-accent (Dark) ──────────────────────────────────────────── */
+  :root[data-theme="dark"]  body[data-role="student"]         { --role-accent: #7C9BFF; }
+  :root[data-theme="dark"]  body[data-role="faculty"]         { --role-accent: #3CC2B0; }
+  :root[data-theme="dark"]  body[data-role="department-head"] { --role-accent: #E89456; }
+  :root[data-theme="dark"]  body[data-role="dean"]            { --role-accent: #B58EE6; }
+  :root[data-theme="dark"]  body[data-role="admin"]           { --role-accent: #5C8A9C; }
+  :root[data-theme="dark"]  body[data-role="quality"]         { --role-accent: #E47186; }
+  :root[data-theme="dark"]  body[data-role="owner"]           { --role-accent: #A0A6B0; }
+
+  /* Default when no data-role is set: fall through to existing --accent. */
+  :root { --role-accent: var(--accent); }
+
+  /* ─── 2. College-accent slot ──────────────────────────────────────── */
+  /* Pages SET --college-accent inline (after the runtime contrast gate
+     in lib/theme.ts → gateCollegeAccent()). The soft derivation below
+     gives a tinted surface usable for header glow / breadcrumb fill. */
+  :root {
+    --college-accent: var(--role-accent);
+    --college-accent-soft: color-mix(in srgb, var(--college-accent) 18%, transparent);
+  }
+
+  /* ─── 3. Elevation language — Light ───────────────────────────────── */
+  :root[data-theme="light"] {
+    --elev-1: 0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.06);
+    --elev-2: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --elev-3: 0 8px 16px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.05);
+    --elev-4: 0 16px 32px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
+    --elev-5: 0 32px 64px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.08);
+
+    /* z-order tokens — shared across themes */
+    --z-base: 0;
+    --z-dropdown: 100;
+    --z-popover: 200;
+    --z-tooltip: 250;
+    --z-sheet: 300;
+    --z-modal: 400;
+    --z-toast: 500;
+    --z-lightbox: 600;
+  }
+
+  /* ─── Elevation language — Dark (fill-led, shadow muted) ──────────── */
+  :root[data-theme="dark"] {
+    --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04);
+    --elev-2: 0 4px 8px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+    --elev-3: 0 8px 16px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06);
+    --elev-4: 0 16px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07);
+    --elev-5: 0 32px 64px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  /* ─── 4. Illustration palette — Light ─────────────────────────────── */
+  :root[data-theme="light"] {
+    --ill-hue-1: var(--c-copper-ink);
+    --ill-hue-2: var(--c-mint-ink);
+    --ill-hue-3: var(--c-sky-ink);
+    --ill-hue-4: var(--c-rose-ink);
+    --ill-hue-5: var(--c-lavender-ink);
+    --ill-hue-6: #C28A2D;
+    --ill-stroke: var(--neutral-900);
+    --ill-paper: var(--neutral-50);
+    --ill-shadow: rgba(25,25,24,0.10);
+  }
+
+  /* ─── Illustration palette — Dark ─────────────────────────────────── */
+  :root[data-theme="dark"] {
+    --ill-hue-1: var(--c-copper-ink);
+    --ill-hue-2: var(--c-mint-ink);
+    --ill-hue-3: var(--c-sky-ink);
+    --ill-hue-4: var(--c-rose-ink);
+    --ill-hue-5: var(--c-lavender-ink);
+    --ill-hue-6: #F2C766;
+    --ill-stroke: var(--neutral-700);
+    --ill-paper: var(--neutral-100);
+    --ill-shadow: rgba(0,0,0,0.30);
+  }
+
+  /* ─── 5. prefers-contrast: more — Light ───────────────────────────── */
+  @media (prefers-contrast: more) {
+    :root[data-theme="light"] {
+      --elev-1: 0 0 0 1px rgba(0,0,0,0.32);
+      --elev-2: 0 0 0 1.5px rgba(0,0,0,0.40);
+      --elev-3: 0 0 0 2px rgba(0,0,0,0.48);
+      --elev-4: 0 0 0 2.5px rgba(0,0,0,0.56);
+      --elev-5: 0 0 0 3px rgba(0,0,0,0.64);
+      --glass-bg: var(--surface);
+      --glass-border: rgba(0,0,0,0.32);
+      --ill-shadow: transparent;
+    }
+    :root[data-theme="dark"] {
+      --elev-1: 0 0 0 1px rgba(255,255,255,0.36);
+      --elev-2: 0 0 0 1.5px rgba(255,255,255,0.44);
+      --elev-3: 0 0 0 2px rgba(255,255,255,0.52);
+      --elev-4: 0 0 0 2.5px rgba(255,255,255,0.60);
+      --elev-5: 0 0 0 3px rgba(255,255,255,0.68);
+      --glass-bg: var(--surface);
+      --glass-border: rgba(255,255,255,0.36);
+      --ill-shadow: transparent;
+    }
+  }
+}

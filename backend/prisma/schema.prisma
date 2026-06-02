@@ -223,6 +223,15 @@ enum RsvpStatus {
 }
 
 // ────────────────────────────────────────────────────────────────
+//  012-design-graphics-uplift — theme preference enum
+// ────────────────────────────────────────────────────────────────
+enum ThemePreference {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+// ────────────────────────────────────────────────────────────────
 //  Identity & access
 // ────────────────────────────────────────────────────────────────
 model User {
@@ -243,6 +252,12 @@ model User {
   // NULL = university-wide; set = scoped to that faculty only.
   scopeFacultyId   String?
   scopeFaculty     Faculty?  @relation("FacultyScopedAdmins", fields: [scopeFacultyId], references: [id])
+  // 012-design-graphics-uplift — presentation preferences (no PII).
+  // See specs/012-design-graphics-uplift/data-model.md.
+  themePreference          ThemePreference @default(SYSTEM)
+  themePreferenceUpdatedAt DateTime        @default(now())
+  onboardingCompletedAt    DateTime?
+  firedMilestones          String[]        @default([])
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 

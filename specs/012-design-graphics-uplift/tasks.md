@@ -29,12 +29,12 @@ description: "Task list — 012-design-graphics-uplift"
 
 **Purpose**: One-time scaffolding for the new directories this feature introduces.
 
-- [ ] T001 [P] Create `frontend/src/components/overlays/` directory with an `index.ts` barrel re-exporting future Modal/Sheet/Popover/Dropdown/Toast/NotificationPanel/CommandPalette/Lightbox components.
-- [ ] T002 [P] Create `frontend/src/lib/illustrations/` directory with an empty `index.ts` registry skeleton (`IllustrationName` union, `loadScene(name)` lazy resolver, `<Illustration>` placeholder export).
-- [ ] T003 [P] Create `frontend/src/components/onboarding/` directory with stub files `OnboardingFlow.tsx` and `MilestoneScene.tsx` exporting empty components.
-- [ ] T004 [P] Create `frontend/tests/audit/` directory with a `routes.ts` table containing the 19 routes, 3 viewports, 2 themes, 2 dirs from `contracts/audit-script.md`.
-- [ ] T005 [P] Create `frontend/tests/perf/` directory; add a `baseline.json` placeholder committed empty `{}`.
-- [ ] T006 [P] Add backend module skeletons under `backend/src/modules/`: `theme/`, `onboarding/`, `milestones/` — each with `router.ts` and `service.ts` exporting unwired stubs.
+- [X] T001 [P] Create `frontend/src/components/overlays/` directory with an `index.ts` barrel re-exporting future Modal/Sheet/Popover/Dropdown/Toast/NotificationPanel/CommandPalette/Lightbox components.
+- [X] T002 [P] Create `frontend/src/lib/illustrations/` directory with an empty `index.ts` registry skeleton (`IllustrationName` union, `loadScene(name)` lazy resolver, `<Illustration>` placeholder export).
+- [X] T003 [P] Create `frontend/src/components/onboarding/` directory with stub files `OnboardingFlow.tsx` and `MilestoneScene.tsx` exporting empty components.
+- [X] T004 [P] Create `frontend/tests/audit/` directory with a `routes.ts` table containing the 19 routes, 3 viewports, 2 themes, 2 dirs from `contracts/audit-script.md`.
+- [X] T005 [P] Create `frontend/tests/perf/` directory; add a `baseline.json` placeholder committed empty `{}`.
+- [X] T006 [P] Add backend module skeletons under `backend/src/modules/`: `theme/`, `onboarding/`, `milestones/` — each with `router.ts` and `service.ts` exporting unwired stubs.
 
 **Checkpoint**: directories and stubs exist so subsequent parallel work doesn't fight over directory creation.
 
@@ -48,22 +48,22 @@ description: "Task list — 012-design-graphics-uplift"
 
 ### DB schema
 
-- [ ] T010 Extend `backend/prisma/schema.prisma` per `data-model.md`: add `ThemePreference` enum and four columns on `User` (`themePreference`, `themePreferenceUpdatedAt`, `onboardingCompletedAt`, `firedMilestones`).
+- [X] T010 Extend `backend/prisma/schema.prisma` per `data-model.md`: add `ThemePreference` enum and four columns on `User` (`themePreference`, `themePreferenceUpdatedAt`, `onboardingCompletedAt`, `firedMilestones`).
 - [ ] T011 Generate migration `backend/prisma/migrations/20260602xx_design_uplift_state/migration.sql`; run `prisma:migrate` locally; verify all defaults populate as documented (existing rows: `themePreference=SYSTEM`, `onboardingCompletedAt=null`, `firedMilestones=[]`).
 
 ### Token foundations
 
 - [ ] T012 Extend `frontend/src/styles/tokens.css` with the Light theme block under `:root[data-theme="light"]` per `contracts/theme-tokens.md` §1–§7 (surface, text, accent, elevation, glass, illustration, chart palette tokens).
 - [ ] T013 Extend `frontend/src/styles/tokens.css` with the Dark theme block under `:root[data-theme="dark"]`. All token keys from T012 must be present.
-- [ ] T014 [P] Extend `frontend/src/styles/tokens.css` with the `prefers-contrast: more` adaptation block nested inside each theme block (§8 of theme-tokens contract).
-- [ ] T015 [P] Extend `frontend/src/styles/tokens.css` with the role-accent table under `body[data-role="…"]` for the seven roles, both theme variants (§2).
-- [ ] T016 [P] Extend `frontend/src/styles/tokens.css` with `--college-accent` slot and `--college-accent-soft` derivation; document the `gateCollegeAccent()` consumer in a comment header.
+- [X] T014 [P] Extend `frontend/src/styles/tokens.css` with the `prefers-contrast: more` adaptation block nested inside each theme block (§8 of theme-tokens contract).
+- [X] T015 [P] Extend `frontend/src/styles/tokens.css` with the role-accent table under `body[data-role="…"]` for the seven roles, both theme variants (§2).
+- [X] T016 [P] Extend `frontend/src/styles/tokens.css` with `--college-accent` slot and `--college-accent-soft` derivation; document the `gateCollegeAccent()` consumer in a comment header.
 
 ### Theme hook + pre-paint
 
 - [ ] T017 Create `frontend/src/lib/theme.ts`: zustand store + `useTheme()` hook implementing `ThemeAPI` per `contracts/theme-state.md` (in-memory + localStorage layers + OS watchers for color-scheme + contrast).
 - [ ] T018 Add the pre-paint script in `frontend/index.html` exactly as documented in §10 of `theme-tokens.md`; verify no flash on first load.
-- [ ] T019 Add `gateCollegeAccent(hex: string, surface?: 'light' | 'dark'): string` in `frontend/src/lib/theme.ts` performing the runtime contrast gate (R-004) and returning the original hex or a safe fallback.
+- [X] T019 Add `gateCollegeAccent(hex: string, surface?: 'light' | 'dark'): string` in `frontend/src/lib/theme.ts` performing the runtime contrast gate (R-004) and returning the original hex or a safe fallback.
 
 ### Backend `me` payload + theme endpoints
 
