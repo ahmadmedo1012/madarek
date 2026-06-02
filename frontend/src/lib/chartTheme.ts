@@ -30,6 +30,19 @@ export function chartColors() {
   };
 }
 
+/** Five-color categorical palette for pie/doughnut/bar series. Resolves
+ *  --chart-1…--chart-5 from tokens so light and dark themes both look
+ *  cohesive without component-level overrides. */
+export function chartPalette(): string[] {
+  return [
+    cssVar('--chart-1', '#B57438'),
+    cssVar('--chart-2', '#4FA66D'),
+    cssVar('--chart-3', '#5C8FCE'),
+    cssVar('--chart-4', '#DD6E78'),
+    cssVar('--chart-5', '#8A6FE0'),
+  ];
+}
+
 /**
  * Build a vertical canvas gradient that fades a color from solid at the
  * top to transparent at the bottom. Use it as a line chart's `backgroundColor`
