@@ -207,6 +207,18 @@
     grid-template-columns: auto 1fr minmax(0, 320px) auto;
     align-items: center;
     gap: var(--sp-4);
+    transition:
+      box-shadow var(--motion-duration-medium) var(--motion-ease-standard),
+      border-color var(--motion-duration-medium) var(--motion-ease-standard);
+  }
+  /* Premium subtle elevation only after scroll — keeps the topbar
+     flush at the top of the page and "lifts" once content slides
+     beneath it. */
+  .topbar.scrolled {
+    box-shadow: 0 1px 0 var(--rule), 0 4px 14px rgb(0 0 0 / 0.04);
+  }
+  [data-theme="dark"] .topbar.scrolled {
+    box-shadow: 0 1px 0 var(--rule), 0 4px 14px rgb(0 0 0 / 0.25);
   }
   @media (max-width: 920px) { .topbar { padding-inline: var(--page-gutter-mobile); } }
 
