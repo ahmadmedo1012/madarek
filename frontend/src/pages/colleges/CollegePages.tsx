@@ -334,11 +334,24 @@ export function CollegesIndexPage() {
   );
 }
 
-function CollegeStatChip({ icon, value, label }: { icon: typeof Building2; value: number; label: string }) {
+function CollegeStatChip({
+  icon,
+  value,
+  label,
+}: {
+  icon: typeof Building2;
+  value: number | null | undefined;
+  label: string;
+}) {
+  // FR-010: render "—" for unknown values, the formatted number for any
+  // genuine number including 0. Principle III — we never invent counts.
+  const display = value === null || value === undefined
+    ? '—'
+    : value.toLocaleString('ar-LY');
   return (
     <span className="college-stat-chip">
       <Icon icon={icon} size={13} />
-      <strong>{value.toLocaleString('ar-LY')}</strong>
+      <strong>{display}</strong>
       <span>{label}</span>
     </span>
   );
