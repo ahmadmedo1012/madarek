@@ -64,11 +64,20 @@ export function createApp() {
   app.use(cookieParser());
 
   // ── Health (no rate limit, no auth) ──────────────────────
+  // BUILD_ID is bumped on every deploy that needs a force-rebuild.
+  // Curl /api/v1/health to check whether Render is serving the
+  // latest commit. If the buildId matches, the fix is live.
+  const BUILD_ID = '2026-06-02T15:30Z+006-public-colleges';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     try {
       await prisma.$queryRaw`SELECT 1`;
-      res.json({ ok: true, dbLatencyMs: Date.now() - start, env: env.NODE_ENV });
+      res.json({
+        ok: true,
+        dbLatencyMs: Date.now() - start,
+        env: env.NODE_ENV,
+        buildId: BUILD_ID,
+      });
     } catch (err) {
       logger.error({ err }, 'Healthcheck DB failure');
       res.status(503).json({ ok: false, error: 'db_unavailable' });
