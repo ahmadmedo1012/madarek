@@ -35,6 +35,29 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
 
+  // Returning-visitor calm (FR-029, SC-010). On the first homepage visit
+  // of a session we set a sessionStorage flag; subsequent visits within
+  // the same session apply data-intro-seen="true" to the landing root,
+  // which CSS uses to short-circuit the full hero/intro motion.
+  const [introSeen, setIntroSeen] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return window.sessionStorage.getItem('madarek.intro.seen') === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (introSeen) return;
+    try {
+      window.sessionStorage.setItem('madarek.intro.seen', '1');
+    } catch {
+      // sessionStorage may be blocked in private mode — that's fine.
+    }
+    setIntroSeen(true);
+  }, [introSeen]);
+
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
@@ -120,7 +143,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="landing">
+    <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
 
       {/* Top scroll-progress bar */}
       <div className="landing-progress" aria-hidden>

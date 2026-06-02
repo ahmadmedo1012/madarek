@@ -206,14 +206,14 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 7
 
-- [ ] T071 [US7] Restructure `frontend/src/pages/LandingPage.tsx` into named narrative sections: `<Hero>`, `<RolesNarrative>`, `<ProofPoints>`, `<CallToAction>`. Keep existing copy where it fits; flag missing copy with `[NEEDS COPY]` comments rather than placeholder text
-- [ ] T072 [US7] Wrap each narrative section in `<Reveal>` (and the page in `<RevealGroup>`); apply `distance="large"` to the hero, `distance="medium"` to subsequent sections
-- [ ] T073 [US7] Source proof-point statistics from the canonical University of Zawia data layer (Principle III). If a statistic is unavailable, render the "data pending" surface — never a synthetic placeholder
-- [ ] T074 [P] [US7] Apply `<AnimatedNumber>` to every proof-point statistic on the homepage
-- [ ] T075 [P] [US7] Add a session-storage flag `madarek.intro.seen` that, once set on first homepage visit, suppresses the hero's full intro motion on subsequent in-session visits — falls back to a calm fade. Stored, read, written in `frontend/src/pages/LandingPage.tsx`
-- [ ] T076 [US7] Verify hero responsiveness at 360 px, 768 px, 1280 px, 4 K. Headline + supporting line + CTA all visible in the first viewport at each size
-- [ ] T077 [US7] Run Lighthouse on the homepage on a representative mid-tier mobile profile (Slow 4G); confirm CLS ≤ 0.05, LCP within target, no a11y violations introduced
-- [ ] T078 [US7] Verify the homepage renders correctly in RTL: hero heading direction, section ordering, indicator/slide direction, Arabic-Indic numerals on counters
+- [X] T071 [US7] Restructure `frontend/src/pages/LandingPage.tsx` into named narrative sections: `<Hero>`, `<RolesNarrative>`, `<ProofPoints>`, `<CallToAction>`. Keep existing copy where it fits; flag missing copy with `[NEEDS COPY]` comments rather than placeholder text
+- [X] T072 [US7] Wrap each narrative section in `<Reveal>` (and the page in `<RevealGroup>`); apply `distance="large"` to the hero, `distance="medium"` to subsequent sections
+- [X] T073 [US7] Source proof-point statistics from the canonical University of Zawia data layer (Principle III). If a statistic is unavailable, render the "data pending" surface — never a synthetic placeholder
+- [X] T074 [P] [US7] Apply `<AnimatedNumber>` to every proof-point statistic on the homepage
+- [X] T075 [P] [US7] Add a session-storage flag `madarek.intro.seen` that, once set on first homepage visit, suppresses the hero's full intro motion on subsequent in-session visits — falls back to a calm fade. Stored, read, written in `frontend/src/pages/LandingPage.tsx`
+- [X] T076 [US7] Verify hero responsiveness at 360 px, 768 px, 1280 px, 4 K. Headline + supporting line + CTA all visible in the first viewport at each size
+- [X] T077 [US7] Run Lighthouse on the homepage on a representative mid-tier mobile profile (Slow 4G); confirm CLS ≤ 0.05, LCP within target, no a11y violations introduced
+- [X] T078 [US7] Verify the homepage renders correctly in RTL: hero heading direction, section ordering, indicator/slide direction, Arabic-Indic numerals on counters
 
 **Checkpoint**: User Stories 1–7 functional. The homepage now passes the "world-class first impression" test.
 
@@ -227,10 +227,10 @@ This is a **web application** layout (existing).
 
 ### Implementation for User Story 8
 
-- [ ] T079 [US8] Audit the seven role surfaces (student, faculty, department head, dean, administrator, quality assurance, platform owner) for any role-specific re-implementation of dashboard/list/modal/form patterns. Catalog findings in a comment block at the top of `frontend/src/components/primitives/index.tsx`
-- [ ] T080 [P] [US8] Migrate any role-specific dashboard tile or list-row variants found in T079 onto the canonical primitives in `frontend/src/components/primitives/` and `frontend/src/components/dashboard/`
-- [ ] T081 [P] [US8] Verify modal dismissal (Esc key, backdrop click, close button) is identical across all role surfaces. If a role-specific modal exists, replace with the canonical Modal primitive
-- [ ] T082 [US8] With a multi-role account (or by manually toggling role state in the auth store during dev), exercise: open a list of items, edit a record, submit a form, dismiss a modal. Confirm every gesture and state transition is identical. Document remaining drift as follow-up tasks (do not block the phase)
+- [X] T079 [US8] Audit the seven role surfaces (student, faculty, department head, dean, administrator, quality assurance, platform owner) for any role-specific re-implementation of dashboard/list/modal/form patterns. Catalog findings in a comment block at the top of `frontend/src/components/primitives/index.tsx`
+- [X] T080 [P] [US8] Migrate any role-specific dashboard tile or list-row variants found in T079 onto the canonical primitives in `frontend/src/components/primitives/` and `frontend/src/components/dashboard/`
+- [X] T081 [P] [US8] Verify modal dismissal (Esc key, backdrop click, close button) is identical across all role surfaces. If a role-specific modal exists, replace with the canonical Modal primitive
+- [X] T082 [US8] With a multi-role account (or by manually toggling role state in the auth store during dev), exercise: open a list of items, edit a record, submit a form, dismiss a modal. Confirm every gesture and state transition is identical. Document remaining drift as follow-up tasks (do not block the phase)
 
 **Checkpoint**: All user stories now functional. The motion + interaction system is consistent across every role surface.
 
@@ -240,16 +240,16 @@ This is a **web application** layout (existing).
 
 **Purpose**: Cross-cutting hardening that affects multiple user stories.
 
-- [ ] T083 [P] Run `pnpm validate:colleges` in CI for every PR; confirm gate fires when an entry is malformed
-- [ ] T084 [P] Bundle audit: run `npm run build:report`. Confirm student dashboard route gzipped delta ≤ 8 KB vs. baseline. If exceeded, identify the offending import and either tree-shake or defer
-- [ ] T085 [P] Lighthouse CI: configure thresholds (Performance ≥ 90 mobile, Accessibility = 100, CLS ≤ 0.05) for `/`, `/student/dashboard`, `/colleges/<slug>`. Block PRs that regress
-- [ ] T086 [P] Run a manual screen-reader smoke (NVDA on Windows OR VoiceOver on macOS) on the homepage, student dashboard, and a college page. Document focus order, announcement quality, and any issues
-- [ ] T087 [P] Run a manual keyboard-only smoke through the same three routes. Confirm no tab traps, focus ring visible everywhere, all interactive elements reachable
-- [ ] T088 [P] RTL parity sweep: switch language to Arabic, walk the same three routes, confirm motion mirrors correctly, layout doesn't break, indicator/drawer directions are correct
-- [ ] T089 [P] Mid-tier mobile profile in Chrome DevTools (Galaxy S20 or Snapdragon 6-class), Slow 4G; record a Performance trace through homepage → student dashboard → course detail. Confirm jank ≤ 1 dropped frame/sec during transitions
-- [ ] T090 [P] Backend follow-up (out-of-scope ticket): create a backlog item to migrate `colleges.config.ts` fields onto the `College` Prisma table — `accent`, `accentAccessible`, `heroImagePath`, `iconName`, `motifPath`. Frontend contract stays stable; only data source switches
-- [ ] T091 [P] Documentation: update `DESIGN_POLISH_PLAN.md` to point to `specs/001-premium-motion-system/quickstart.md` as the now-canonical source
-- [ ] T092 Cleanup: review `frontend/src/styles/polish.css` for sections fully superseded by `motion.css`/`tokens.css`; delete the deprecated sections in a follow-up commit (not in the same PR as this rollout — preserves git blame)
+- [X] T083 [P] Run `pnpm validate:colleges` in CI for every PR; confirm gate fires when an entry is malformed
+- [X] T084 [P] Bundle audit: run `npm run build:report`. Confirm student dashboard route gzipped delta ≤ 8 KB vs. baseline. If exceeded, identify the offending import and either tree-shake or defer
+- [X] T085 [P] Lighthouse CI: configure thresholds (Performance ≥ 90 mobile, Accessibility = 100, CLS ≤ 0.05) for `/`, `/student/dashboard`, `/colleges/<slug>`. Block PRs that regress
+- [X] T086 [P] Run a manual screen-reader smoke (NVDA on Windows OR VoiceOver on macOS) on the homepage, student dashboard, and a college page. Document focus order, announcement quality, and any issues
+- [X] T087 [P] Run a manual keyboard-only smoke through the same three routes. Confirm no tab traps, focus ring visible everywhere, all interactive elements reachable
+- [X] T088 [P] RTL parity sweep: switch language to Arabic, walk the same three routes, confirm motion mirrors correctly, layout doesn't break, indicator/drawer directions are correct
+- [X] T089 [P] Mid-tier mobile profile in Chrome DevTools (Galaxy S20 or Snapdragon 6-class), Slow 4G; record a Performance trace through homepage → student dashboard → course detail. Confirm jank ≤ 1 dropped frame/sec during transitions
+- [X] T090 [P] Backend follow-up (out-of-scope ticket): create a backlog item to migrate `colleges.config.ts` fields onto the `College` Prisma table — `accent`, `accentAccessible`, `heroImagePath`, `iconName`, `motifPath`. Frontend contract stays stable; only data source switches
+- [X] T091 [P] Documentation: update `DESIGN_POLISH_PLAN.md` to point to `specs/001-premium-motion-system/quickstart.md` as the now-canonical source
+- [X] T092 Cleanup: review `frontend/src/styles/polish.css` for sections fully superseded by `motion.css`/`tokens.css`; delete the deprecated sections in a follow-up commit (not in the same PR as this rollout — preserves git blame)
 
 ---
 
