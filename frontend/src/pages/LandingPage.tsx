@@ -424,17 +424,6 @@ export default function LandingPage() {
               <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل
             </span>
           </figcaption>
-          {/* floating sticker chips — decorative, not interactive.
-              The "explore colleges" entry is the dedicated CTA button
-              below, which opens an in-page popover (no route change). */}
-          <span className="landing-campus-chip landing-campus-chip-1">
-            <span className="sticker sm peach"><Icon icon={GraduationCap} size={16} /></span>
-            <span>أكثر من 25 كلّيّة</span>
-          </span>
-          <span className="landing-campus-chip landing-campus-chip-2">
-            <span className="sticker sm lavender"><Icon icon={Sparkles} size={16} /></span>
-            <span>الحرم الرقميّ</span>
-          </span>
         </Reveal>
       </section>
 
