@@ -723,6 +723,9 @@ export default function LandingPage() {
         <div className="marketing-container">
           <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
             <span className="landing-section-eyebrow">دراسة ميدانية</span>
+            <Reveal as="div" className="landing-section-anchor" delay={1}>
+              <Illustration name="milestone-section" decorative />
+            </Reveal>
             <h2 className="band-title">نتائج <em>تجربة فعلية</em></h2>
             <p className="band-lede" style={{ marginInline: 'auto' }}>
               اعتمدنا استراتيجية الصفّ المعكوس على مادة اللغة الإنجليزية مع طلَّاب

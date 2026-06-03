@@ -283,6 +283,25 @@
     100% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
   }
 
+  /* 012-design-graphics-uplift T103 — section scene anchor.
+     Sits inside .landing-section-head between eyebrow and title;
+     bounded width so it never crowds the headline at any breakpoint. */
+  .landing-section-anchor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-block: var(--sp-3);
+    pointer-events: none;
+  }
+  .landing-section-anchor .illustration {
+    inline-size: clamp(96px, 14vw, 160px);
+    block-size: auto;
+  }
+  .landing-section-anchor .illustration > svg {
+    max-inline-size: 100%;
+    max-block-size: clamp(80px, 12vw, 140px);
+  }
+
   /* 012-design-graphics-uplift T100 — hero scene illustration sits
      above the eyebrow, below the chrome. Sized so it never crowds
      the headline at any breakpoint and never grows past 320 px. */
