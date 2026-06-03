@@ -623,12 +623,12 @@ export default function LandingPage() {
 
       {/* BENTO mosaic */}
       <section className="marketing-container landing-bento">
-        <div className="landing-section-head">
+        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
           <span className="landing-section-eyebrow">منظومة كاملة</span>
           <h2 className="landing-section-title">
             من <em>المحاضرة</em> إلى <em>الشهادة</em>
           </h2>
-        </div>
+        </SectionAccent>
 
         <div className="landing-bento-grid">
           <Reveal as="div" className="landing-bento-card span-3 band-mint">
@@ -673,7 +673,7 @@ export default function LandingPage() {
 
       {/* ROLE PILLARS */}
       <section id="roles" className="marketing-container landing-features">
-        <div className="landing-section-head">
+        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
           <span className="landing-section-eyebrow">الأدوار</span>
           <h2 className="landing-section-title">
             أربعة <em>أدوار</em>، تجربة موحَّدة
@@ -681,7 +681,7 @@ export default function LandingPage() {
           <p className="landing-section-lede">
             كلّ دور أكاديميّ يرى ما يخصّه فقط — صلاحيّات مدروسة وفصلٌ واضح بين الواجبات.
           </p>
-        </div>
+        </SectionAccent>
         <div className="landing-features-grid">
           <Reveal as="article" className="landing-feature-card sticker-wiggle">
             <span className="sticker lg copper"><Icon icon={GraduationCap} size={32} /></span>
@@ -721,14 +721,14 @@ export default function LandingPage() {
       {/* PROOF — pilot results in colored band */}
       <section id="proof" className="band band-sand">
         <div className="marketing-container">
-          <div className="landing-section-head">
+          <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
             <span className="landing-section-eyebrow">دراسة ميدانية</span>
             <h2 className="band-title">نتائج <em>تجربة فعلية</em></h2>
             <p className="band-lede" style={{ marginInline: 'auto' }}>
               اعتمدنا استراتيجية الصفّ المعكوس على مادة اللغة الإنجليزية مع طلَّاب
               من جنوب ليبيا — هذه أرقام التجربة.
             </p>
-          </div>
+          </SectionAccent>
           <div className="landing-pilot-grid" style={{ paddingBlock: 0, marginBlockStart: 24 }}>
             <Reveal as="div" className="landing-pilot-stat">
               <div className="landing-pilot-value" style={{ color: 'var(--c-sand-deep)' }}><CountUp value="40" />٪</div>
@@ -756,12 +756,12 @@ export default function LandingPage() {
 
       {/* WHO IT'S FOR — role-based, not fabricated quotes */}
       <section className="marketing-container landing-features">
-        <div className="landing-section-head">
+        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
           <span className="landing-section-eyebrow">لمن صُمِّمت</span>
           <h2 className="landing-section-title">
             أداة كلّ <em>دور</em> أكاديميّ في الجامعة
           </h2>
-        </div>
+        </SectionAccent>
         <div className="landing-testimonials">
           {[
             {
