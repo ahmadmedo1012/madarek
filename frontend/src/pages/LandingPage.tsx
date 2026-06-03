@@ -15,6 +15,7 @@ import { Reveal } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
 import { Parallax } from '../components/motion/Parallax';
 import { Illustration } from '../components/Illustration';
+import { SectionAccent } from '../components/motion/SectionAccent';
 
 export default function LandingPage() {
   useThemeSync();
@@ -439,7 +440,7 @@ export default function LandingPage() {
 
       {/* FEATURES — sticker grid */}
       <section id="features" className="marketing-container landing-features">
-        <div className="landing-section-head">
+        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
           <span className="landing-section-eyebrow">المنظومة</span>
           <h2 className="landing-section-title">
             كل ما يحتاجه <em>الجامعيّ</em> في مكان واحد
@@ -448,7 +449,7 @@ export default function LandingPage() {
             أدوات أكاديمية متكاملة تربط الفصل الدراسي بالمحتوى الرقمي والتحليلات
             الذكية — بدون تشتيت ودون تعقيد.
           </p>
-        </div>
+        </SectionAccent>
 
         <div className="landing-features-grid">
           <Reveal as="article" className="landing-feature-card sticker-wiggle">
