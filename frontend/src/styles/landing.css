@@ -282,6 +282,26 @@
     50%  { transform: translate3d(2%, -1%, 0) scale(1.05); }
     100% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
   }
+
+  /* 012-design-graphics-uplift T100 — hero scene illustration sits
+     above the eyebrow, below the chrome. Sized so it never crowds
+     the headline at any breakpoint and never grows past 320 px. */
+  .landing-hero-scene {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-block-end: var(--sp-4);
+    pointer-events: none;
+  }
+  .landing-hero-scene .illustration {
+    inline-size: clamp(180px, 28vw, 320px);
+    block-size: auto;
+  }
+  .landing-hero-scene .illustration > svg {
+    max-inline-size: 100%;
+    max-block-size: clamp(140px, 22vw, 240px);
+    inline-size: 100%;
+  }
   .landing-hero-eyebrow {
     display: inline-flex; align-items: center; gap: var(--sp-2);
     font-size: var(--fs-xs);

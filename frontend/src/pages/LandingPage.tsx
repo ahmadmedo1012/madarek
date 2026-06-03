@@ -14,6 +14,7 @@ import { LibyaFlag } from '../components/LibyaFlag';
 import { Reveal } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
 import { Parallax } from '../components/motion/Parallax';
+import { Illustration } from '../components/Illustration';
 
 export default function LandingPage() {
   useThemeSync();
@@ -248,6 +249,9 @@ export default function LandingPage() {
 
       {/* HERO — huge centered title + mockup */}
       <section ref={heroRef} className="marketing-container landing-hero">
+        <Reveal as="div" className="landing-hero-scene">
+          <Illustration name="homepage-hero" decorative />
+        </Reveal>
         <Reveal as="span" className="landing-hero-eyebrow">
           <strong>جديد</strong>
           المساعد الأكاديمي «Oasis» متاح الآن
