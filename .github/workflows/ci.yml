@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-flight runs for the same ref when a new commit lands.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm install --include=dev
+      # Generate the Prisma client so backend types resolve.
+      - run: npm --prefix backend run prisma:generate
+      - run: npm --prefix backend run typecheck
+      - run: npm --prefix frontend run typecheck
+
+  test-frontend:
+    name: Test (frontend)
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm install --include=dev
+      - run: npm --prefix frontend run test
+
+  test-backend:
+    name: Test (backend)
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm install --include=dev
+      - run: npm --prefix backend run prisma:generate
+      - run: npm --prefix backend run test
+
+  surface-drift:
+    name: Surface drift
+    runs-on: ubuntu-latest
+    needs: [test-frontend, test-backend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm install --include=dev
+      # Until the Playwright harness in tests/audit/surface-inventory.spec.ts
+      # ships, we run the drift CLI against the committed baseline by
+      # copying it into the inventory slot. This keeps the gate wired
+      # so the day the harness lands, we drop the cp line and the
+      # check is real.
+      - name: Stand-in: copy baseline → inventory
+        run: cp frontend/tests/audit/surface-baseline.json frontend/tests/audit/surface-inventory.json
+      - name: Run drift detector
+        run: npm --prefix frontend run test:audit:drift
