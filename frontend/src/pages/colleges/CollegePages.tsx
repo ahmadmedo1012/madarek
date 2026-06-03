@@ -13,6 +13,7 @@ import { UserAvatar } from '../../components/primitives';
 import { Card, MetricCard } from '../../components/primitives';
 import { EmptyState, ErrorState, LoadingState } from '../../components/primitives/States';
 import { Reveal, Skeleton } from '../../components/motion';
+import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
 import { getCollegeIdentity } from '../../data/colleges.config';
 import { gateCollegeAccent } from '../../lib/theme';
@@ -165,10 +166,10 @@ export function CollegesIndexPage() {
 
   return (
     <div className="page colleges-index">
-      <header className="page-header">
+      <SectionAccent kind="scene-paint" as="header" className="page-header">
         <h1 className="page-title">كلّيّات جامعة الزاوية</h1>
         <p className="page-subtitle">استكشف الكلّيّات والأقسام، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطتها.</p>
-      </header>
+      </SectionAccent>
 
       {q.isLoading && (
         <div className="gallery-skeleton" aria-hidden>
@@ -402,14 +403,14 @@ export function CollegeDetailPage() {
       style={collegeStyle}
     >
       {/* Hero / masthead */}
-      <header className="college-hero page-header">
+      <SectionAccent kind="scene-paint" as="header" className="college-hero page-header">
         <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         <div className="college-hero-titles">
           <div className="college-hero-eyebrow">جامعة الزاوية · {c.city}</div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
           {c.nameEn && <div className="college-hero-sub">{c.nameEn}</div>}
         </div>
-      </header>
+      </SectionAccent>
 
       {/* Stats row */}
       <section className="grid-4">
