@@ -82,6 +82,21 @@ npm run dev:web                     # frontend on :5173 (proxies /api → :4000)
 
 **Database** (`backend/prisma/`): 31 models (users, courses, enrollments, materials, grades, attendance, library, MOOCs, jobs, posts, achievements, virtual labs, AR experiences, AI conversations, research papers + annotations, audit log). Migrations are committed and applied via `prisma migrate deploy` during the Render build.
 
+## Design system
+
+Madarek is built on a layered design system — every visible surface inherits from a single token cascade with full Light + Dark themes, role/college accent expression, a bespoke illustration family, and a shared overlay elevation language.
+
+Contributors adding or modifying any visible surface should start with the design quickstart:
+
+- [`specs/012-design-graphics-uplift/quickstart.md`](specs/012-design-graphics-uplift/quickstart.md) — adoption guide (tokens, themes, illustration registry, overlay primitives, onboarding/milestones)
+
+Foundation specs (do NOT redesign — extend at the composition layer only):
+
+- `specs/001-premium-motion-system/` — motion + interaction tokens, primitives
+- `specs/002-visual-uplift/` — type roles, chart palette, icon discipline
+- `specs/003-motion-graphics-layer/` — decorative motion patterns
+- `specs/012-design-graphics-uplift/` — themes, illustrations, overlays, onboarding
+
 ## License
 
 Internal — University of Zawia.

@@ -338,8 +338,8 @@ description: "Task list — 012-design-graphics-uplift"
 - [ ] T150 [P] Add `frontend/tests/perf/budget-verify.spec.ts` per R-012: assert per-route `transferSize ≤ documented budget + 18 KB`, FCP regression ≤ 5 % vs `tests/perf/baseline.json`, theme switch produces 0 CLS.
 - [ ] T151 [P] Capture the perf baseline by running the script once on `main` immediately before merging the first 012 commit; commit `frontend/tests/perf/baseline.json`.
 - [ ] T152 [P] Run `npx axe-core` (already wired) on the V1 illustrated surfaces in Light + Dark; fix any AA violations.
-- [ ] T153 [P] Update `frontend/README.md` (or the project's contributor doc) with a pointer to `specs/012-design-graphics-uplift/quickstart.md`.
-- [ ] T154 [P] Verify the print stylesheet in `frontend/src/styles/` honours Light theme + no glass + no decorative motion when printing — fix if needed.
+- [X] T153 [P] Update `frontend/README.md` (or the project's contributor doc) with a pointer to `specs/012-design-graphics-uplift/quickstart.md`.
+- [X] T154 [P] Verify the print stylesheet in `frontend/src/styles/` honours Light theme + no glass + no decorative motion when printing — fix if needed.
 - [ ] T155 [P] Manual sweep: open every primary route in `tests/audit/routes.ts` in production preview; record any visual drift not caught by the static audit; add to backlog.
 - [ ] T156 Run a manual reduced-motion + screen-reader smoke test on the dashboard, the homepage, and the onboarding flow; record results in PR description.
 - [ ] T157 Final pass: confirm `MEMORY.md` and `CLAUDE.md` references are up to date; verify `feature.json` points at `specs/012-design-graphics-uplift`.
