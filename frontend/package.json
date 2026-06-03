@@ -10,6 +10,9 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:audit": "playwright test tests/audit",
+    "test:audit:drift": "tsx tests/audit/run-drift.ts",
+    "audit:baseline": "tsx tests/audit/promote-baseline.ts",
     "build:report": "vite build --mode production"
   },
   "dependencies": {
@@ -41,6 +44,7 @@
     "@vitejs/plugin-react": "4.3.4",
     "jsdom": "26.0.0",
     "rollup-plugin-visualizer": "5.13.1",
+    "tsx": "4.19.2",
     "typescript": "5.7.2",
     "vite": "5.4.11",
     "vitest": "2.1.8"

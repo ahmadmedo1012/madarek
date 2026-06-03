@@ -70,3 +70,7 @@ agentdb.rvf.lock
 
 # Stray nested copy of the repo (created by some tooling)
 /madarek/
+
+# 012-design-graphics-uplift — generated audit inventory
+frontend/tests/audit/surface-inventory.json
+frontend/tests/audit/screenshots/
