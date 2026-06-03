@@ -2988,6 +2988,16 @@
   }
   .landing-campus-frame:hover .landing-campus-photo { transform: scale(1.08); }
 
+  /* 012-design-graphics-uplift fix — when the photo is wrapped in a
+     Parallax helper, the helper's transform creates a new containing
+     block for absolutely-positioned descendants. Force the wrapper to
+     fill the campus frame so the photo's `position: absolute; inset: 0`
+     stays relative to the visible frame. */
+  .landing-campus-frame > .parallax {
+    position: absolute;
+    inset: 0;
+  }
+
   /* Top-down vignette darkens for legible caption */
   .landing-campus-vignette {
     position: absolute;
@@ -3066,12 +3076,15 @@
     animation: madark-chip-float 7s ease-in-out infinite;
   }
   .landing-campus-chip-1 {
-    inset-block-start: 18%;
+    inset-block-start: 12%;
     inset-inline-end: 6%;
   }
   .landing-campus-chip-2 {
-    inset-block-start: 38%;
-    inset-inline-end: 16%;
+    /* Stagger to the opposite vertical zone so the two chips form a
+       balanced diagonal across the frame instead of stacking near
+       the same edge. */
+    inset-block-end: 18%;
+    inset-inline-end: 6%;
     animation-delay: -3.5s;
   }
 
