@@ -879,10 +879,75 @@
   }
 
   /* ── Print (rare but cheap) ─────────────────────────────────── */
+  /* 012-design-graphics-uplift T154 — print honours the contract:
+     force the Light theme palette regardless of the live runtime
+     theme, drop every glass + backdrop-filter, freeze every
+     decorative motion, hide chrome that doesn't belong on paper. */
   @media print {
+    /* Hide chrome */
     .sidebar, .topbar, .bottom-nav, .sidebar-backdrop { display: none; }
     .has-shell { grid-template-columns: 1fr; }
     .card:not(.flush)::before { display: none; }
+
+    /* Force Light theme by overriding [data-theme] attribute
+       semantics. Print contexts cannot honour user theme prefs
+       reliably across browsers, so we lock to Light. */
+    :root,
+    :root[data-theme="dark"],
+    :root[data-theme="light"] {
+      color-scheme: light;
+    }
+
+    /* Drop every glass / backdrop-filter — print engines render
+       them poorly and ink usage is wasteful. */
+    .modal-overlay,
+    .sheet-overlay,
+    .lightbox-overlay,
+    .cmd-palette-overlay,
+    .popover,
+    .notification-panel,
+    .card.glass,
+    .navbar.glass,
+    .topbar.scrolled {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: var(--surface) !important;
+    }
+
+    /* Freeze decorative motion. */
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
+    .section-accent,
+    .section-accent::after,
+    .reveal-up,
+    .parallax {
+      transform: none !important;
+      opacity: 1 !important;
+    }
+    .parallax {
+      --parallax-y: 0px !important;
+    }
+
+    /* Illustrations: keep the stroke crisp on paper. */
+    .illustration > svg {
+      max-block-size: 160px;
+    }
+
+    /* Avoid splitting cards / metrics across page breaks. */
+    .card,
+    .metric,
+    .surface-card,
+    .modal-card,
+    .sheet-panel {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════
