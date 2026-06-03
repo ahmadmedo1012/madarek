@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { LogOut, ChevronsLeft, ChevronsRight, X } from 'lucide-react';
+import { LogOut, ChevronsLeft, ChevronsRight, X, Compass } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuthStore } from '../../stores/auth.store';
 import { useLogout, useMe } from '../../hooks/useAuth';
+import { useOnboardingState } from '../../hooks/useOnboardingState';
 import { useUiStore } from '../../stores/ui.store';
 import { NAV_BY_ROLE, displayRoleLabel } from '../../lib/nav';
 
@@ -19,6 +20,7 @@ export function Sidebar() {
   const toggleSidebarCollapsed = useUiStore((s) => s.toggleSidebarCollapsed);
   const logout = useLogout();
   const navigate = useNavigate();
+  const onboarding = useOnboardingState();
 
   // Lock body scroll only while the mobile drawer is open.
   useEffect(() => {
@@ -133,6 +135,16 @@ export function Sidebar() {
 
         <div className="sidebar-footer">
           <ThemeToggle />
+          <button
+            type="button"
+            className="sidebar-tour-trigger"
+            onClick={() => onboarding.open({ replay: true })}
+            title="إعادة عرض الجولة"
+            aria-label="إعادة عرض الجولة"
+          >
+            <Icon icon={Compass} size={14} />
+            {!sidebarCollapsed && <span>عرض الجولة</span>}
+          </button>
           <div className="sidebar-user" title={sidebarCollapsed ? `${user.firstName} ${user.lastName}` : undefined}>
             <UserAvatar
               initials={initials}

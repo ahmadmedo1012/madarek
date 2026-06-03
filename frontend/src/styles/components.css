@@ -1372,6 +1372,36 @@
   .onboarding-flow-actions > .btn { min-inline-size: 96px; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR TOUR REPLAY TRIGGER — 012-design-graphics-uplift T124.║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sidebar-tour-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    inline-size: 100%;
+    padding: var(--sp-2) var(--sp-3);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--r-md);
+    color: var(--text-muted);
+    cursor: pointer;
+    font: inherit;
+    text-align: start;
+    transition: background var(--t-fast) var(--ease),
+                color var(--t-fast) var(--ease),
+                border-color var(--t-fast) var(--ease);
+  }
+  .sidebar-tour-trigger:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--rule);
+  }
+  .sidebar-tour-trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
      ║  COMMAND PALETTE — 012-design-graphics-uplift T066.            ║
      ║  --elev-5 + --z-modal. Heavy blur on the backdrop, --r-2xl    ║
      ║  on the card, search-first content layout.                     ║
