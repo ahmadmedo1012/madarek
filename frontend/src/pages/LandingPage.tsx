@@ -13,6 +13,7 @@ import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { Reveal } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
+import { Parallax } from '../components/motion/Parallax';
 
 export default function LandingPage() {
   useThemeSync();
@@ -401,13 +402,15 @@ export default function LandingPage() {
       {/* Campus showcase — main_photo.png with parallax + interactive overlay */}
       <section className="marketing-container landing-campus" aria-label="جامعة الزاوية">
         <Reveal as="figure" className="landing-campus-frame">
-          <img
-            src="/main_photo.png"
-            alt="جامعة الزاوية — المدخل الرئيسي"
-            className="landing-campus-photo"
-            loading="lazy"
-            decoding="async"
-          />
+          <Parallax amount={6} direction="up">
+            <img
+              src="/main_photo.png"
+              alt="جامعة الزاوية — المدخل الرئيسي"
+              className="landing-campus-photo"
+              loading="lazy"
+              decoding="async"
+            />
+          </Parallax>
           <span className="landing-campus-vignette" aria-hidden />
           <span className="landing-campus-grain" aria-hidden />
           <figcaption className="landing-campus-caption">
