@@ -908,7 +908,7 @@
   .testimonial-role { font-size: var(--fs-xs); color: var(--text-muted); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FINAL CTA — dark band                                         ║
+     ║  FINAL CTA — theme-aware (was hardcoded "dark band")           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-final-cta {
     padding-block: var(--section-pad-y-wide);
@@ -917,7 +917,10 @@
   .landing-final-cta-eyebrow {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: var(--fs-xs); letter-spacing: 0.18em; text-transform: uppercase;
-    color: rgba(251,250,249,0.72);
+    /* 012-design-graphics-uplift fix — was rgba(251,250,249,0.72)
+       (hardcoded near-white) which read invisibly on the inherited
+       cream page background in dark mode. */
+    color: var(--text-muted);
     font-weight: var(--fw-bold);
     margin-block-end: var(--sp-5);
   }
@@ -929,7 +932,9 @@
     line-height: 1.05;
     letter-spacing: -0.025em;
     max-inline-size: 24ch;
-    color: var(--neutral-50);
+    /* var(--neutral-50) was cream-on-cream in light mode (invisible)
+       and dark-ink-on-dark in dark mode (also invisible). */
+    color: var(--text);
     margin-inline: auto;
   }
   .landing-final-cta-title em {
@@ -940,7 +945,7 @@
   }
   .landing-final-cta-lede {
     font-size: var(--fs-body-lg);
-    color: rgba(251,250,249,0.78);
+    color: var(--text-muted);
     max-inline-size: 56ch; line-height: var(--lh-base);
     margin: var(--sp-5) auto 0;
   }
@@ -952,8 +957,10 @@
   .landing-final-cta-btn {
     block-size: 52px;
     padding-inline: var(--sp-7);
-    background: var(--neutral-50);
-    color: var(--neutral-900);
+    /* The primary button is the platform's accent — works in both
+       themes via the existing accent + accent-fg pair. */
+    background: var(--accent);
+    color: var(--accent-fg);
     border: 0;
     border-radius: var(--r-md);
     font-size: var(--fs-body);
@@ -963,17 +970,24 @@
     transition: background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
     text-decoration: none;
   }
-  .landing-final-cta-btn:hover { background: #FFFFFF; transform: translateY(-2px); color: var(--neutral-900); }
+  .landing-final-cta-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    color: var(--accent-fg);
+  }
   .landing-final-cta-btn.ghost {
     background: transparent;
-    color: var(--neutral-50);
-    border: 1px solid rgba(251,250,249,0.20);
+    color: var(--text);
+    border: 1px solid var(--rule);
   }
-  .landing-final-cta-btn.ghost:hover { background: rgba(251,250,249,0.08); }
+  .landing-final-cta-btn.ghost:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
   .landing-final-cta-meta {
     margin-block-start: var(--sp-6);
     font-size: var(--fs-xs);
-    color: rgba(251,250,249,0.54);
+    color: var(--text-muted);
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
