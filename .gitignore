@@ -74,3 +74,6 @@ agentdb.rvf.lock
 # 012-design-graphics-uplift — generated audit inventory
 frontend/tests/audit/surface-inventory.json
 frontend/tests/audit/screenshots/
+
+# Secrets (contains credentials, never committed)
+secrets.txt
