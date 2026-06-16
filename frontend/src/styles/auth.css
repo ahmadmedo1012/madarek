@@ -69,6 +69,17 @@
     padding: clamp(var(--sp-7), 4vw, var(--sp-9));
     box-shadow: var(--shadow-pop);
     animation: madarek-fade-up var(--motion-duration-long) var(--motion-ease-decelerate) both;
+    position: relative;
+  }
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 30%;
+    block-size: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 0 0 3px 3px;
+    pointer-events: none;
   }
 
   .auth-brand-mini {

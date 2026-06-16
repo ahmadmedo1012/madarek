@@ -713,6 +713,23 @@
     letter-spacing: var(--type-display-letter-spacing);
     line-height: var(--type-display-line-height);
     max-inline-size: 22ch;
+    position: relative;
+    display: inline-block;
+  }
+  .landing-section-title::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -8px;
+    inset-inline-start: 0;
+    inline-size: 56px;
+    block-size: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    border-radius: 2px;
+  }
+  [dir="rtl"] .landing-section-title::after {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    background: linear-gradient(-90deg, var(--accent), transparent);
   }
   .landing-section-title em {
     font-style: italic;

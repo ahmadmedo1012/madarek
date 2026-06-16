@@ -421,7 +421,26 @@
     --_btn-bd: var(--accent);
     --_btn-bg-hover: var(--accent-hover);
     --_btn-bd-hover: var(--accent-hover);
+    position: relative;
+    overflow: hidden;
   }
+  .btn.accent::before,
+  .btn-accent::before,
+  .btn.gold::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg,
+      transparent 30%,
+      color-mix(in oklab, var(--accent-fg) 25%, transparent) 48%,
+      transparent 60%);
+    transform: translateX(-110%);
+    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
+    pointer-events: none;
+  }
+  .btn.accent:hover::before,
+  .btn-accent:hover::before,
+  .btn.gold:hover::before { transform: translateX(110%); }
 
   .btn.ghost,
   .btn-ghost {
@@ -753,6 +772,22 @@
     line-height: 1.2;
     margin-block-end: var(--sp-4);
     display: flex; align-items: center; gap: var(--sp-3);
+    position: relative;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    inset-block-end: -6px;
+    inset-inline-start: 0;
+    inline-size: 48px;
+    block-size: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    border-radius: 2px;
+  }
+  [dir="rtl"] .section-title::after {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    background: linear-gradient(-90deg, var(--accent), transparent);
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1026,14 +1061,24 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    /* 012-design-graphics-uplift T060 — modal uses --elev-4 from the
-       elevation language; falls back to legacy --shadow-modal. */
     box-shadow: var(--elev-4, var(--shadow-modal));
     inline-size: min(560px, 100%);
     max-block-size: calc(100dvh - var(--sp-9));
     overflow: clip;
     display: flex; flex-direction: column;
     animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+    position: relative;
+  }
+  .modal-card::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 30%;
+    block-size: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 0 0 3px 3px;
+    z-index: 1;
+    pointer-events: none;
   }
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
