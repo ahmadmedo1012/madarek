@@ -63,6 +63,13 @@
     box-shadow: var(--shadow-card-h);
     transform: translateY(-1px);
   }
+  .card.interactive:active,
+  a > .card:active,
+  button > .card:active,
+  .card-link:active .card {
+    transform: scale(0.995);
+    transition-duration: var(--t-micro);
+  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SURFACE-CARD — 012-design-graphics-uplift T055.               ║

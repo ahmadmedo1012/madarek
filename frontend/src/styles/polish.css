@@ -255,6 +255,159 @@
     .btn:active:not(:disabled) { transform: none; }
   }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  UI/UX PRO MAX — interactive polish layer                      ║
+     ║  cursor-pointer consistency · press states · touch targets     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  /* ── Ensure all interactive elements get pointer cursor ──────── */
+  .kpi-cell,
+  .compact-kpi,
+  .metric,
+  .surface-card,
+  .table-row-clickable,
+  tr[data-clickable],
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  summary,
+  label[tabindex] { cursor: pointer; }
+
+  /* ── Card & surface-card: press feedback ────────────────────── */
+  .card.interactive:active,
+  a > .card:active,
+  button > .card:active,
+  .card-link:active .card,
+  .surface-card.interactive:active,
+  a > .surface-card:active,
+  button > .surface-card:active,
+  .surface-card-link:active .surface-card {
+    transform: scale(0.995) translateY(0);
+    transition-duration: var(--t-micro);
+  }
+
+  /* ── Metric & KPI: press feedback ───────────────────────────── */
+  .metric:active,
+  .kpi-cell:active {
+    transform: scale(0.995);
+  }
+
+  /* ── Nav items: active press ────────────────────────────────── */
+  .nav-item:active {
+    transform: scale(0.985);
+    transition-duration: var(--t-micro);
+  }
+
+  /* ── Sidebar collapse btn: icon-only 44px touch target ───────── */
+  @media (max-width: 640px) {
+    .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
+    .topbar-icon-btn { min-inline-size: 44px; min-block-size: 44px; }
+    .sidebar-toggle-btn { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* ── Tab items: pointer + hover underline ───────────────────── */
+  .tab { cursor: pointer; }
+  .tab:hover { color: var(--text); }
+  .tab[aria-selected="true"] { color: var(--accent); font-weight: var(--fw-semibold); }
+
+  /* ── Pill active state: subtle press ────────────────────────── */
+  .pill:active:not(.on) {
+    transform: scale(0.985);
+    transition-duration: 80ms;
+  }
+
+  /* ── Table row hover: interactive rows ──────────────────────── */
+  tr[data-clickable]:hover,
+  .table-row-clickable:hover {
+    background: var(--surface-2);
+  }
+
+  /* ── Focus-visible: guaranteed ring on interactive cards ────── */
+  a > .card:focus-visible,
+  button > .card:focus-visible,
+  .card-link:focus-visible .card,
+  .surface-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ── Disabled interactive cards ─────────────────────────────── */
+  .card.disabled,
+  .surface-card.disabled,
+  .metric.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* ── Empty state CTA: centered, friendly ────────────────────── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-4);
+    padding: var(--sp-10) var(--sp-6);
+    text-align: center;
+    min-block-size: 240px;
+  }
+  .empty-state-icon {
+    inline-size: 64px; block-size: 64px;
+    border-radius: var(--r-xl);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .empty-state-title {
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+  }
+  .empty-state-desc {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    max-inline-size: 36ch;
+    line-height: var(--lh-base);
+  }
+
+  /* ── Loading shimmer for async content containers ────────────────
+       Applied via className rather than an element selector so it
+       only activates when a React component explicitly tags its
+       loading container. */
+  .loading-pane {
+    min-block-size: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .loading-pane .spinner {
+    inline-size: 24px; block-size: 24px;
+    border: 2px solid var(--rule);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: madarek-spin 600ms linear infinite;
+  }
+  @keyframes madarek-spin {
+    to { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loading-pane .spinner { animation-duration: 1500ms; }
+    .card.interactive:active,
+    a > .card:active,
+    button > .card:active,
+    .card-link:active .card,
+    .surface-card.interactive:active,
+    a > .surface-card:active,
+    button > .surface-card:active,
+    .surface-card-link:active .surface-card,
+    .metric:active,
+    .kpi-cell:active,
+    .nav-item:active,
+    .pill:active:not(.on) { transform: none; }
+  }
+
   /* ═══════════════════════════════════════════════════════════════
      Collapsible sidebar — desktop icon-rail mode
      ═══════════════════════════════════════════════════════════════ */

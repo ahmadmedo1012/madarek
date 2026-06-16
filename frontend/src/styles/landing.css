@@ -172,6 +172,9 @@
   }
   .landing-nav-link:hover { color: var(--text); background: var(--surface-2); }
   .landing-nav-link:hover::after { transform: scaleX(1); }
+  .landing-nav-link:focus-visible,
+  .landing-burger:focus-visible,
+  .landing-header-cta a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-sm); }
 
   /* mega-menu */
   .landing-megamenu {
@@ -210,6 +213,8 @@
     color: var(--text);
   }
   .landing-megamenu-item:hover { background: var(--surface-2); }
+  .landing-megamenu-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r-md); }
+  .landing-megamenu-item:active { background: var(--surface-3); }
   .landing-megamenu-item-body { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; }
   .landing-megamenu-item-title {
     font-weight: var(--fw-bold); font-size: var(--fs-sm); color: var(--text);
@@ -352,6 +357,11 @@
     border-radius: var(--r-full);
     margin-inline-end: 2px;
   }
+  .landing-hero-eyebrow:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-h);
+    transform: translateY(-1px);
+  }
 
   .landing-title {
     font-family: var(--font-display);
@@ -388,6 +398,8 @@
       letter-spacing: -0.022em;
       max-inline-size: 100%;
     }
+    .landing-cta-row .btn.xl { min-block-size: 52px; } /* generous touch target */
+    .landing-mobile-menu .btn { min-block-size: 48px; }
   }
 
   .landing-subtitle {

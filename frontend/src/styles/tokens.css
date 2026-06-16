@@ -118,6 +118,13 @@
     --transition-slow:   var(--t-slow) var(--ease);
     --transition-all:    var(--t-clean);
 
+    /* ─── UI/UX PRO MAX — interactive feedback tokens ─────────── */
+    --press-scale: 0.995;
+    --press-translate: 1px;
+    --hover-lift: -1px;
+    --hover-lift-lg: -2px;
+    --interactive-transition: all var(--motion-duration-short) var(--motion-ease-emphasized);
+
     /* ─── Motion (semantic layer — see contracts/motion-tokens.md) ───
        Canonical names new code MUST consume. Mapped to the raw --t-*
        and --ease-* tokens above so they remain a single source. */
