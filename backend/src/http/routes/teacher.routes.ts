@@ -535,13 +535,29 @@ router.post(
   validate(verifyTeacherSchema),
   async (req, res, next) => {
     try {
-      const updated = await prisma.teacherProfile.update({
-        where: { userId: req.params.id },
-        data: {
-          verifiedAt: req.body.verified ? new Date() : null,
-          verifiedById: req.body.verified ? req.user!.id : null,
-        },
-        select: { userId: true, verifiedAt: true },
+      const targetId = req.params.id!;
+      // Wrap update + audit in a transaction so governance never
+      // loses the audit trail if the auditLog.create fails (or vice
+      // versa — if audit fails, the verify is rolled back).
+      const updated = await prisma.$transaction(async (tx) => {
+        const r = await tx.teacherProfile.update({
+          where: { userId: targetId },
+          data: {
+            verifiedAt: req.body.verified ? new Date() : null,
+            verifiedById: req.body.verified ? req.user!.id : null,
+          },
+          select: { userId: true, verifiedAt: true, verifiedById: true },
+        });
+        await tx.auditLog.create({
+          data: {
+            action: 'TEACHER_VERIFY',
+            resourceType: 'TeacherProfile',
+            resourceId: targetId,
+            userId: req.user!.id,
+            metadata: { verified: req.body.verified, notes: req.body.notes ?? null },
+          },
+        });
+        return r;
       });
       res.json({ data: updated });
     } catch (e) { next(e); }
@@ -600,16 +616,36 @@ router.post(
                 appointedAt: isFresh ? new Date() : existing.appointedAt,
               };
 
-      const updated = await prisma.teacherProfile.update({
-        where: { userId: targetId },
-        data,
-        select: {
-          userId: true,
-          position: true,
-          positionFacultyId: true,
-          positionDepartmentId: true,
-          appointedAt: true,
-        },
+      const updated = await prisma.$transaction(async (tx) => {
+        const r = await tx.teacherProfile.update({
+          where: { userId: targetId },
+          data,
+          select: {
+            userId: true,
+            position: true,
+            positionFacultyId: true,
+            positionDepartmentId: true,
+            appointedAt: true,
+          },
+        });
+        // Audit trail — leadership appointments are governance-sensitive
+        // (DEAN / ASSOCIATE_DEAN / DEPARTMENT_HEAD confer faculty-wide
+        // authority). Previously these mutations were invisible to governance.
+        await tx.auditLog.create({
+          data: {
+            action: 'TEACHER_POSITION',
+            resourceType: 'TeacherProfile',
+            resourceId: targetId,
+            userId: req.user!.id,
+            metadata: {
+              oldPosition: existing.position,
+              newPosition: body.position,
+              positionFacultyId: body.position === 'DEAN' || body.position === 'ASSOCIATE_DEAN' ? body.positionFacultyId : null,
+              positionDepartmentId: body.position === 'DEPARTMENT_HEAD' ? body.positionDepartmentId : null,
+            },
+          },
+        });
+        return r;
       });
       res.json({ data: updated });
     } catch (e) { next(e); }
@@ -638,16 +674,35 @@ router.post(
     try {
       const target = await prisma.user.findUnique({
         where: { id: req.params.id! },
-        select: { id: true, role: true },
+        select: { id: true, role: true, scopeFacultyId: true },
       });
       if (!target) throw AppError.notFound('User not found');
       if (target.role !== 'ADMIN' && target.role !== 'QUALITY') {
         throw new AppError('BAD_REQUEST', 'Scope only applies to ADMIN/QUALITY users', 400);
       }
-      const updated = await prisma.user.update({
-        where: { id: target.id },
-        data: { scopeFacultyId: req.body.scopeFacultyId },
-        select: { id: true, scopeFacultyId: true },
+      // Wrap update + audit in a transaction — scope changes are
+      // governance-sensitive (university-wide ↔ faculty-scoped) and
+      // must be auditable.
+      const updated = await prisma.$transaction(async (tx) => {
+        const r = await tx.user.update({
+          where: { id: target.id },
+          data: { scopeFacultyId: req.body.scopeFacultyId },
+          select: { id: true, scopeFacultyId: true },
+        });
+        await tx.auditLog.create({
+          data: {
+            action: 'USER_SCOPE_CHANGE',
+            resourceType: 'User',
+            resourceId: target.id,
+            userId: req.user!.id,
+            metadata: {
+              oldScopeFacultyId: target.scopeFacultyId,
+              newScopeFacultyId: req.body.scopeFacultyId,
+              targetRole: target.role,
+            },
+          },
+        });
+        return r;
       });
       res.json({ data: updated });
     } catch (e) { next(e); }

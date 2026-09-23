@@ -253,7 +253,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </div>
           <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>تجربة منجزة!</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            أكملت "{exp.title}" بنجاح. سيتم تسجيل النتيجة في ملفك الدراسي.
+            أكملت "{exp.title}" بنجاح.
           </div>
           <div style={{
             marginTop: 'var(--sp-5)', padding: 'var(--sp-4) var(--sp-6)',
@@ -262,7 +262,10 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
             fontFamily: 'var(--font-mono)', fontWeight: 700,
           }}>
             <Icon icon={Award} size={18} />
-            النتيجة: 92 / 100
+            تجربة منجزة
+          </div>
+          <div className="text-xs text-subtle" style={{ marginTop: 'var(--sp-3)' }}>
+            أكملت هذه التجربة بنجاح.
           </div>
           <div className="flex gap-2" style={{ marginTop: 'var(--sp-5)' }}>
             <button type="button" className="btn" onClick={onExit}>

@@ -38,7 +38,10 @@ router.post('/register', authRateLimiter, validate(registerSchema), async (req, 
 
 router.post('/login', authRateLimiter, validate(loginSchema), async (req, res, next) => {
   try {
-    const { user, accessToken, refreshToken } = await loginUser(req.body.email, req.body.password);
+    const { user, accessToken, refreshToken } = await loginUser(req.body.email, req.body.password, {
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+    });
     setRefreshCookie(res, refreshToken);
     res.json({ data: { user, accessToken } });
   } catch (e) {

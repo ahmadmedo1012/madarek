@@ -139,10 +139,29 @@ export function ExamTakerPage() {
       const expiry = new Date(attempt.expiresAt).getTime();
       const s = Math.max(0, Math.round((expiry - Date.now()) / 1000));
       setSecondsLeft(s);
-      if (s <= 0) clearInterval(id);
+      if (s <= 0) {
+        clearInterval(id);
+        // Auto-submit when the timer hits 0. Without this, students
+        // were stranded on a dead "00:00" page with in-progress
+        // answers silently lost on navigation. The submit endpoint is
+        // idempotent (already-attempted returns the existing result),
+        // so a double-submit from a manual click is safe.
+        void finish.mutateAsync(attempt.attemptId).then((r) => {
+          setResult({
+            score: Number(r.score) || 0,
+            maxScore: Number(r.maxScore) || 0,
+            passed: !!r.passed,
+            needsManual: Number(r.needsManual) || 0,
+          });
+        }).catch(() => {
+          // If auto-submit fails (network), show the result screen
+          // anyway so the student isn't stranded on a dead timer.
+          setResult({ score: 0, maxScore: 0, passed: false, needsManual: 0 });
+        });
+      }
     }, 1000);
     return () => clearInterval(id);
-  }, [attempt]);
+  }, [attempt, finish]);
 
   const onChoiceChange = async (qid: string, idx: number) => {
     if (!attempt) return;

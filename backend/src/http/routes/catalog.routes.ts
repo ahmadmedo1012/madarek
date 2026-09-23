@@ -150,16 +150,35 @@ router.get(
 
 router.post('/mooc/:id/enroll', async (req, res, next) => {
   try {
-    const enrolled = await prisma.moocEnrollment.upsert({
-      where: { moocId_userId: { moocId: req.params.id!, userId: req.user!.id } },
-      create: { moocId: req.params.id!, userId: req.user!.id },
-      update: {},
+    const moocId = req.params.id!;
+    const userId = req.user!.id;
+    // Wrap in a transaction AND only increment the counter on a fresh
+    // enrollment. Previously the counter was incremented on every call
+    // (even re-enrolls), inflating the displayed "enrolled" count
+    // each time a student re-visited the page.
+    const enrolled = await prisma.$transaction(async (tx) => {
+      // Check if the user is already enrolled.
+      const existing = await tx.moocEnrollment.findUnique({
+        where: { moocId_userId: { moocId, userId } },
+        select: { id: true },
+      });
+      if (existing) {
+        // Idempotent re-enroll — return the existing row, don't bump counter.
+        return { ...existing, moocId, userId, _fresh: false };
+      }
+      const r = await tx.moocEnrollment.create({
+        data: { moocId, userId },
+      });
+      await tx.moocCourse.update({
+        where: { id: moocId },
+        data: { enrolled: { increment: 1 } },
+      });
+      return { ...r, _fresh: true };
     });
-    await prisma.moocCourse.update({
-      where: { id: req.params.id! },
-      data: { enrolled: { increment: 1 } },
-    });
-    res.status(201).json({ data: enrolled });
+    // Strip the internal _fresh flag before responding.
+    const { _fresh, ...data } = enrolled;
+    void _fresh;
+    res.status(201).json({ data });
   } catch (e) {
     next(e);
   }

@@ -93,40 +93,12 @@ export default function StudentCoursesPage() {
         </div>
       )}
 
-      <Card title="الواجبات القادمة" icon={ClipboardList}>
-        <div className="tbl-wrap">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th>المادة</th>
-                <th>الواجب</th>
-                <th>الموعد النهائي</th>
-                <th>الحالة</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="tbl-strong">هندسة البرمجيات</td>
-                <td>مشروع UML للتصميم</td>
-                <td className="tbl-num">20 مايو</td>
-                <td><Badge color="amber">قيد العمل</Badge></td>
-              </tr>
-              <tr>
-                <td className="tbl-strong">شبكات الحاسوب</td>
-                <td>تقرير بروتوكول TCP</td>
-                <td className="tbl-num">22 مايو</td>
-                <td><Badge color="red">عاجل</Badge></td>
-              </tr>
-              <tr>
-                <td className="tbl-strong">نظم المعلومات</td>
-                <td>قاعدة بيانات ERD</td>
-                <td className="tbl-num">28 مايو</td>
-                <td><Badge color="green">متبقي وقت</Badge></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </Card>
+      {/* Removed hardcoded "الواجبات القادمة" table — it showed three
+          fabricated rows (هندسة البرمجيات / شبكات الحاسوب / نظم المعلومات)
+          that looked like real data. Real assignments are surfaced on
+          each course's detail page (/student/courses/:id) and on the
+          dashboard's "المهام والفصول القادمة" card. Adding a separate
+          aggregated endpoint here would duplicate that. */}
     </div>
   );
 }

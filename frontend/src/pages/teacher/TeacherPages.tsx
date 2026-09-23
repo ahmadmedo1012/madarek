@@ -18,6 +18,7 @@ import {
   useTeacherAssignments,
   useMyMessages,
 } from '../../hooks/useResources';
+import { useAuthStore } from '../../stores/auth.store';
 import ResearchReviewPage from './ResearchReviewPage';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
@@ -679,12 +680,12 @@ export function AssignmentsPage() {
 
 export function MessagesPage() {
   const q = useMyMessages(1, 50);
-  const meId = (q.data?.data ?? []).reduce<string | null>((acc, m) => {
-    // Heuristic: most messages will involve the current user; pick any toUser.id
-    // that recurs across rows as the current user. A fallback to fromUser otherwise.
-    if (acc) return acc;
-    return m.toUser?.id ?? null;
-  }, null);
+  // Read the current user's ID directly from the auth store. Previously
+  // this code tried to *infer* `meId` by picking the first message's
+  // `toUser.id` — which breaks for sent messages (where the current
+  // user is the *sender*, not the recipient). Result: incoming/outgoing
+  // bubbles were swapped, and the avatar shown was wrong.
+  const meId = useAuthStore((s) => s.user?.id) ?? null;
 
   return (
     <div className="page">

@@ -51,8 +51,6 @@ export default function JobsPage() {
         <div className="flex-col gap-3">
           {data.map((j) => {
             const Cmp = jobIcon(j.category, j.title);
-            // Pseudo-match score driven by job order — replace with real data when API supports.
-            const match = 95 - (data.indexOf(j) * 7);
             return (
               <Card compact key={j.id} bordered>
                 <div className="flex items-center gap-4">
@@ -68,9 +66,10 @@ export default function JobsPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-md font-semibold" style={{ color: 'var(--text)' }}>{j.title}</span>
-                      <Badge color={match >= 90 ? 'green' : match >= 75 ? 'brand' : undefined} icon={Sparkles}>
-                        تطابق {match}%
-                      </Badge>
+                      {/* Removed fake "تطابق X%" match-score badge — it was
+                          derived from list position (95 - index * 7), not
+                          a real matching algorithm. Showing fabricated
+                          personalization misleads students. */}
                     </div>
                     <div className="text-xs text-muted" style={{ marginTop: 4 }}>{j.company}</div>
                     <div className="flex items-center gap-3 text-xs text-subtle" style={{ marginTop: 8 }}>
@@ -80,7 +79,14 @@ export default function JobsPage() {
                       {j.salary && (<><span>·</span><span className="font-mono">{j.salary}</span></>)}
                     </div>
                   </div>
-                  <button type="button" className="btn primary">تقدّم الآن</button>
+                  {/* Disabled until backend Job model exposes an
+                      `applyUrl` field (currently absent in schema).
+                      Using `disabled` with a tooltip rather than a
+                      dead button — at least this signals honestly
+                      that the action isn't wired yet. */}
+                  <button type="button" className="btn primary" disabled title="رابط التقديم غير متاح حالياً">
+                    تقدّم الآن
+                  </button>
                 </div>
               </Card>
             );

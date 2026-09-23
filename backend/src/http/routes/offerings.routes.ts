@@ -207,20 +207,26 @@ router.post(
       const offeringId = req.params.id!;
       await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
       const { date, topic, records } = req.body as z.infer<typeof attendanceUpsertSchema>;
-      const session = await prisma.attendanceSession.upsert({
-        where: { offeringId_date: { offeringId, date } },
-        create: { offeringId, date, topic },
-        update: { topic },
+      // Wrap session upsert + record upserts in a SINGLE transaction so
+      // the session can't exist with no records if the records fail
+      // (silent data loss). Previously the session upsert ran outside
+      // the $transaction(ops) call.
+      const result = await prisma.$transaction(async (tx) => {
+        const session = await tx.attendanceSession.upsert({
+          where: { offeringId_date: { offeringId, date } },
+          create: { offeringId, date, topic },
+          update: { topic },
+        });
+        await Promise.all(records.map((r) =>
+          tx.attendanceRecord.upsert({
+            where: { sessionId_studentId: { sessionId: session.id, studentId: r.studentId } },
+            create: { sessionId: session.id, studentId: r.studentId, status: r.status, notes: r.notes },
+            update: { status: r.status, notes: r.notes },
+          }),
+        ));
+        return session;
       });
-      const ops = records.map((r) =>
-        prisma.attendanceRecord.upsert({
-          where: { sessionId_studentId: { sessionId: session.id, studentId: r.studentId } },
-          create: { sessionId: session.id, studentId: r.studentId, status: r.status, notes: r.notes },
-          update: { status: r.status, notes: r.notes },
-        }),
-      );
-      await prisma.$transaction(ops);
-      res.status(201).json({ data: { sessionId: session.id, count: records.length } });
+      res.status(201).json({ data: { sessionId: result.id, count: records.length } });
     } catch (e) {
       next(e);
     }

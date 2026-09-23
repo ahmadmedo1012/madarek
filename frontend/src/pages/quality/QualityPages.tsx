@@ -122,6 +122,10 @@ const RANK_LABEL: Record<string, string> = {
 export function QualityDashboardPage() {
   const ov = useOverview();
   const eg = useEngagement();
+  // Pull real alerts from /quality/alerts so the "Critical Alerts"
+  // card doesn't show fabricated titles. Previously three fake alerts
+  // were hardcoded here.
+  const alerts = useQualityAlerts();
 
   if (ov.isPending || eg.isPending) {
     return (
@@ -228,26 +232,37 @@ export function QualityDashboardPage() {
           <div className="flex-col gap-4">
             <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" color="var(--success)" />
             <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" color="var(--accent)" />
-            <ProgressBar value={68} label="رقمنة المقررات" color="var(--brand-purple)" />
-            <ProgressBar value={82} label="استجابة الأساتذة" color="var(--gold)" />
-            <ProgressBar value={91} label="جاهزية المنصة" color="var(--success)" />
+            {/* Removed three hardcoded bars (68/82/91) — they were fabricated.
+                Real "digitization" / "teacher response" / "platform readiness"
+                metrics don't exist in the API yet. */}
+            <ProgressBar
+              value={e.totalStudents > 0 ? Math.round((e.weeklyActive[e.weeklyActive.length - 1] ?? 0) / e.totalStudents * 100) : 0}
+              label="النشاط الأسبوعي"
+              color="var(--brand-purple)"
+            />
           </div>
         </Card>
 
         <Card title="تنبيهات حرجة" icon={AlertTriangle}>
           <div className="flex-col gap-2">
-            <AlertRow color="red" icon={AlertTriangle}
-              title="غياب جماعي في 3 مقررات"
-              description="نسبة الغياب تجاوزت 25% — يستوجب مراجعة عاجلة"
-              time="اليوم" />
-            <AlertRow color="amber" icon={ClipboardCheck}
-              title="6 أساتذة لم يسجّلوا الحضور"
-              description="هذا الأسبوع — كلية العلوم تحديداً"
-              time="منذ يومين" />
-            <AlertRow color="brand" icon={FileText}
-              title="3 بحوث برسوم انتحال مرتفعة"
-              description="بحاجة لمراجعة مع الأستاذ المشرف"
-              time="هذا الأسبوع" />
+            {alerts.isPending ? (
+              <LoadingState label="جارٍ تحميل التنبيهات…" />
+            ) : alerts.isError ? (
+              <ErrorState error={alerts.error} onRetry={() => alerts.refetch()} />
+            ) : !alerts.data?.alerts?.length ? (
+              <EmptyState icon={ShieldCheck} title="لا تنبيهات حرجة" description="لا توجد تنبيهات نشطة حالياً." />
+            ) : (
+              alerts.data.alerts.slice(0, 3).map((a) => (
+                <AlertRow
+                  key={a.id}
+                  color={SEVERITY_TONE[a.severity]}
+                  icon={CATEGORY_ICON[a.category]}
+                  title={a.title}
+                  description={a.description}
+                  time={new Date(a.occurredAt).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' })}
+                />
+              ))
+            )}
           </div>
         </Card>
       </div>

@@ -106,7 +106,27 @@ export const registerUser = async (input: RegisterInput) => {
   return issueTokens(user);
 };
 
-export const loginUser = async (email: string, password: string) => {
+export interface LoginContext {
+  /** Client IP — used for the LoginEvent audit row. */
+  ip?: string;
+  /** User-Agent header — used for the LoginEvent audit row. */
+  userAgent?: string;
+}
+
+/**
+ * Login a user by email OR university registration number.
+ *
+ * Side-effects:
+ *   - Writes a LoginEvent row (success or failure) so the owner
+ *     dashboard's login-analytics card isn't permanently zero.
+ *     The LoginEvent is written best-effort: if the DB write fails,
+ *     the login itself still succeeds (we don't want logging to
+ *     block auth).
+ *   - On failed password: bumps failedLoginCount, locks the account
+ *     after MAX_FAILED_LOGINS attempts for LOCK_DURATION_MS.
+ *   - On success: resets the failure counters.
+ */
+export const loginUser = async (email: string, password: string, ctx: LoginContext = {}) => {
   // Identifier may be an email OR a university registration number.
   // We discriminate by '@' presence — emails always contain it, reg-numbers don't.
   const identifier = email.trim();
@@ -121,9 +141,33 @@ export const loginUser = async (email: string, password: string) => {
     });
     user = profile?.user ?? null;
   }
-  if (!user) throw AppError.invalidCredentials();
+  if (!user) {
+    // Best-effort LoginEvent for the "user not found" path.
+    // Email is the identifier the user typed (not necessarily a real
+    // account's email), so we store it as `email` and leave userId null.
+    void prisma.loginEvent.create({
+      data: {
+        email: identifier,
+        success: false,
+        ip: ctx.ip ?? null,
+        userAgent: ctx.userAgent ?? null,
+        reason: 'user_not_found',
+      },
+    }).catch(() => { /* logging is best-effort */ });
+    throw AppError.invalidCredentials();
+  }
 
   if (user.lockedUntil && user.lockedUntil > new Date()) {
+    void prisma.loginEvent.create({
+      data: {
+        userId: user.id,
+        email: user.email,
+        success: false,
+        ip: ctx.ip ?? null,
+        userAgent: ctx.userAgent ?? null,
+        reason: 'locked',
+      },
+    }).catch(() => { /* best-effort */ });
     throw AppError.tooMany('Account temporarily locked. Try again later.');
   }
 
@@ -138,16 +182,50 @@ export const loginUser = async (email: string, password: string) => {
           failed >= MAX_FAILED_LOGINS ? new Date(Date.now() + LOCK_DURATION_MS) : null,
       },
     });
+    void prisma.loginEvent.create({
+      data: {
+        userId: user.id,
+        email: user.email,
+        success: false,
+        ip: ctx.ip ?? null,
+        userAgent: ctx.userAgent ?? null,
+        reason: 'invalid_password',
+      },
+    }).catch(() => { /* best-effort */ });
     throw AppError.invalidCredentials();
   }
 
-  if (!user.isActive) throw AppError.forbidden('Account disabled');
+  if (!user.isActive) {
+    void prisma.loginEvent.create({
+      data: {
+        userId: user.id,
+        email: user.email,
+        success: false,
+        ip: ctx.ip ?? null,
+        userAgent: ctx.userAgent ?? null,
+        reason: 'disabled',
+      },
+    }).catch(() => { /* best-effort */ });
+    throw AppError.forbidden('Account disabled');
+  }
 
   // Reset failure counters
   await prisma.user.update({
     where: { id: user.id },
     data: { failedLoginCount: 0, lockedUntil: null },
   });
+
+  // Success LoginEvent — fires AFTER the counters reset so the
+  // analytics dashboard shows the user as fully logged in.
+  void prisma.loginEvent.create({
+    data: {
+      userId: user.id,
+      email: user.email,
+      success: true,
+      ip: ctx.ip ?? null,
+      userAgent: ctx.userAgent ?? null,
+    },
+  }).catch(() => { /* best-effort */ });
 
   return issueTokens(user);
 };
