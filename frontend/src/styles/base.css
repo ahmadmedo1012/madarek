@@ -240,6 +240,36 @@
     clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 
+  /* Skip-to-content link — WCAG 2.4.1.
+     Hidden off-screen until keyboard focus lands on it, then slides
+     into view as a high-contrast chip. Keyboard-only affordance;
+     mouse users never see it. */
+  .skip-link {
+    position: fixed;
+    inset-block-start: 8px;
+    inset-inline-start: -9999px;
+    z-index: 9999;
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--accent);
+    color: var(--accent-contrast, #fff);
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transition: inset-inline-start var(--t-fast) var(--ease-out);
+  }
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    inset-inline-start: 8px;
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* When the skip target receives focus (via Tab on the link), scroll
+     it into view smoothly and make it visible as a focus indicator. */
+  .main:focus { outline: none; }
+  .main:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: var(--t-slow);

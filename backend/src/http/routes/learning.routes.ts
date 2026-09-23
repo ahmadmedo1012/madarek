@@ -661,6 +661,10 @@ router.get('/research/search', async (req, res, next) => {
       res.json({ data: [], meta: { query: '', total: 0 } });
       return;
     }
+    // Cap query length to prevent regex/memory DoS. A 200-char search
+    // is generous (longer than any academic title) and keeps RegExp
+    // compilation fast.
+    if (q.length > 200) throw AppError.badRequest('Search query too long (max 200 chars)');
     if (q.length < 2) {
       res.json({ data: [], meta: { query: q, total: 0, error: 'too_short' } });
       return;

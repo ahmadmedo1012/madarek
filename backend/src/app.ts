@@ -94,11 +94,14 @@ export function createApp() {
       });
     } catch (err) {
       logger.error({ err, latencyMs: Date.now() - start }, 'Healthcheck DB failure');
-      // 503 with a brief message — Render will retry before restarting.
+      // Use the global error shape so clients can parse uniformly.
+      // Render will retry before restarting the service.
       res.status(503).json({
-        ok: false,
-        error: 'db_unavailable',
-        latencyMs: Date.now() - start,
+        error: {
+          code: 'DB_UNAVAILABLE',
+          message: 'Database unavailable',
+          details: { latencyMs: Date.now() - start },
+        },
       });
     }
   });

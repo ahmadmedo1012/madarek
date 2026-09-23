@@ -87,15 +87,29 @@ router.post(
     try {
       const userId = req.params.id!;
       const { capability, grant, reason } = req.body as z.infer<typeof setOverrideSchema>;
-      if (grant === null) {
-        await prisma.userPermission.deleteMany({ where: { userId, capability } });
-      } else {
-        await prisma.userPermission.upsert({
-          where: { userId_capability: { userId, capability } },
-          update: { grant, reason: reason ?? null, grantedById: req.user!.id, grantedAt: new Date() },
-          create: { userId, capability, grant, reason: reason ?? null, grantedById: req.user!.id },
+      // Wrap the write + audit log in a transaction so we never end up
+      // with a capability grant but no audit trail (or vice versa).
+      await prisma.$transaction(async (tx) => {
+        if (grant === null) {
+          await tx.userPermission.deleteMany({ where: { userId, capability } });
+        } else {
+          await tx.userPermission.upsert({
+            where: { userId_capability: { userId, capability } },
+            update: { grant, reason: reason ?? null, grantedById: req.user!.id, grantedAt: new Date() },
+            create: { userId, capability, grant, reason: reason ?? null, grantedById: req.user!.id },
+          });
+        }
+        // Audit log — without this, capability grants were invisible to governance.
+        await tx.auditLog.create({
+          data: {
+            action: 'PERMISSION_OVERRIDE',
+            resourceType: 'User',
+            resourceId: userId,
+            userId: req.user!.id,
+            metadata: { capability, grant, reason: reason ?? null },
+          },
         });
-      }
+      });
       res.json({ data: { ok: true } });
     } catch (e) { next(e); }
   },

@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Inbox, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Inbox, AlertTriangle, RefreshCw, ShieldAlert, ArrowRight } from 'lucide-react';
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import type { IllustrationName } from '../../lib/illustrations';
@@ -96,6 +96,27 @@ export function ErrorState({
   const apiDetail = extractErrorDetail(error);
   const detail = apiDetail ?? 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
 
+  // Branch on HTTP 403 — distinguish "you don't have permission" from
+  // generic server errors. Without this, every 403 looks like a 500 to
+  // the user (same "تعذّر تحميل هذا القسم" message, same retry button
+  // that won't help because the issue is authorization, not transient).
+  const status = (error as { response?: { status?: number } } | undefined)?.response?.status;
+  if (status === 403) {
+    return <PermissionDeniedState detail={apiDetail} />;
+  }
+  // 404 → show a "not found" message instead of generic error.
+  if (status === 404) {
+    return (
+      <div className="state state-error" role="alert">
+        <div className="state-icon" style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
+          <Icon icon={Inbox} size={20} />
+        </div>
+        <div className="state-title">العنصر غير موجود</div>
+        <div className="state-desc">{apiDetail ?? 'ربما تم حذفه أو أن الرابط غير صحيح.'}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="state state-error" role="alert">
       {illustration ? (
@@ -114,6 +135,43 @@ export function ErrorState({
           <button type="button" className="btn primary sm" onClick={onRetry}>
             <Icon icon={RefreshCw} size={13} />
             إعادة المحاولة
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Permission-denied state — shown when the API returns 403.
+ *
+ * Distinct from generic ErrorState because the fix isn't "retry" —
+ * it's "go back" or "request access". Without this, every 403 looks
+ * like a server crash to the user.
+ */
+export function PermissionDeniedState({
+  title = 'لا تملك صلاحية الوصول',
+  detail,
+  onBack,
+}: {
+  title?: string;
+  detail?: string | null;
+  onBack?: () => void;
+}) {
+  return (
+    <div className="state state-error" role="alert">
+      <div className="state-icon" style={{ background: 'var(--warning-soft)', color: 'var(--warning)' }}>
+        <Icon icon={ShieldAlert} size={20} />
+      </div>
+      <div className="state-title">{title}</div>
+      <div className="state-desc">
+        {detail ?? 'هذا القسم متاح لأدوار أو صلاحيات محددة فقط.'}
+      </div>
+      {onBack && (
+        <div style={{ marginTop: 'var(--sp-3)' }}>
+          <button type="button" className="btn primary sm" onClick={onBack}>
+            <Icon icon={ArrowRight} size={13} />
+            العودة للوحة التحكم
           </button>
         </div>
       )}

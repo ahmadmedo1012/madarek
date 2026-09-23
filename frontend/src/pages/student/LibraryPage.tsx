@@ -37,7 +37,7 @@ export default function LibraryPage() {
     return () => clearTimeout(t);
   }, [q]);
 
-  const books = useBooks({ category: cat === 'all' ? undefined : cat, q });
+  const books = useBooks({ category: cat === 'all' ? undefined : cat, q: debouncedQ });
   const research = usePublishedResearch();
   const search = useResearchSearch(debouncedQ);
   const loans = useMyLoans();

@@ -10,7 +10,7 @@ import {
   ArrowDownToLine, AlertCircle,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
-import { PageSkeleton } from '../../components/primitives/States';
+import { PageSkeleton, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { formatDate } from '../../utils/numbers';
@@ -88,11 +88,14 @@ function fmtRelative(iso: string | null): string {
 }
 
 export function AdminSyncPage() {
-  const { data, isLoading } = useSyncStatus();
+  const { data, isPending, isError, error, refetch } = useSyncStatus();
   const trigger = useTriggerSync();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
-  if (isLoading) return <PageSkeleton />;
+  if (isPending) return <PageSkeleton />;
+  // Distinguish error (retry) from "no sync ever run" (empty state).
+  // Previously both fell through to "لا توجد بيانات" with no retry path.
+  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
   if (!data) return <div className="page"><Card>لا توجد بيانات</Card></div>;
 
   const lastRun = data.latestRun;

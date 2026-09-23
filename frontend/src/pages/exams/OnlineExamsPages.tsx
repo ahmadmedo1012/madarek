@@ -202,12 +202,12 @@ export function ExamTakerPage() {
             <Icon
               icon={result.passed ? CheckCircle2 : AlertTriangle}
               size={36}
-              style={{ color: result.passed ? 'var(--success)' : 'var(--warn)' }}
+              style={{ color: result.passed ? 'var(--success)' : 'var(--warning)' }}
             />
             <h2 style={{ margin: 'var(--sp-3) 0 var(--sp-2)' }}>
               {result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
             </h2>
-            <div style={{ fontSize: 32, fontWeight: 700, color: result.passed ? 'var(--success)' : 'var(--warn)' }}>
+            <div style={{ fontSize: 32, fontWeight: 700, color: result.passed ? 'var(--success)' : 'var(--warning)' }}>
               {result.score} / {result.maxScore}
             </div>
             <div className="text-sm text-muted">

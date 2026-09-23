@@ -14,6 +14,7 @@ import {
   CheckCircle2, Users, Sparkles, Plus, X, Send,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
+import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -99,17 +100,26 @@ export default function CommunityPage() {
 
       {tab === 'announcements' && (
         <div className="flex-col gap-3">
-          {ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
+          {ann.isPending ? <LoadingState label="جارٍ تحميل الإعلانات…" /> :
+           ann.isError ? <ErrorState error={ann.error} onRetry={() => ann.refetch()} /> :
+           !ann.data?.length ? <EmptyState icon={Megaphone} title="لا إعلانات بعد" description="ستظهر هنا إعلانات الكلية والمنصة." /> :
+           ann.data.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
         </div>
       )}
       {tab === 'competitions' && (
         <div className="track-grid">
-          {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
+          {comps.isPending ? <LoadingState label="جارٍ تحميل المسابقات…" /> :
+           comps.isError ? <ErrorState error={comps.error} onRetry={() => comps.refetch()} /> :
+           !comps.data?.length ? <EmptyState icon={Trophy} title="لا مسابقات حالياً" description="تابع الصفحة للاطلاع على المسابقات القادمة." /> :
+           comps.data.map((c) => <CompetitionCard key={c.id} competition={c} />)}
         </div>
       )}
       {tab === 'events' && (
         <div className="grid-2">
-          {events.data?.map((e) => <EventCard key={e.id} event={e} />)}
+          {events.isPending ? <LoadingState label="جارٍ تحميل الفعاليات…" /> :
+           events.isError ? <ErrorState error={events.error} onRetry={() => events.refetch()} /> :
+           !events.data?.length ? <EmptyState icon={CalendarDays} title="لا فعاليات قادمة" description="سيتم عرض الفعاليات الجامعية هنا." /> :
+           events.data.map((e) => <EventCard key={e.id} event={e} />)}
         </div>
       )}
 

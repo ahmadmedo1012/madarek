@@ -272,8 +272,12 @@ export function AppShell({ children }: { children?: ReactNode }) {
 
   return (
     <div className="has-shell">
+      {/* Skip-to-content link — WCAG 2.4.1. Visually hidden until focused. */}
+      <a href="#main-content" className="skip-link">
+        تخطّي إلى المحتوى الرئيسي
+      </a>
       <Sidebar />
-      <main className="main">
+      <main className="main" id="main-content" tabIndex={-1}>
         <Topbar title={title} scrolled={scrolled} />
         <div className="content" ref={contentRef}>
           <PageTransition>

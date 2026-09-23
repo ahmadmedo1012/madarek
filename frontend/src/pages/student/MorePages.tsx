@@ -12,16 +12,38 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Radi
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
 /* ─── Gamification ─────────────────────────────────────── */
+// Derive a friendly Arabic role title from numeric level.
+// Level 1-3 → "طالب مبتدئ", 4-7 → "محلل بيانات", 8+ → "خبير أكاديمي".
+function levelTitle(level: number): string {
+  if (level >= 8) return 'خبير أكاديمي';
+  if (level >= 4) return 'محلل بيانات';
+  return 'طالب مبتدئ';
+}
+
+// XP threshold for the next level — mirrors a simple cubic curve.
+// 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 5500, …
+function nextLevelXp(level: number): number {
+  return 100 * level * (level + 1) / 2;
+}
+
 export function GamificationPage() {
   const ach = useMyAchievements();
   const lb = useLeaderboard();
+  // Pull real XP + level from the student dashboard endpoint instead of
+  // showing literal "2,340 XP" / level "7" / "محلل البيانات" to every user.
+  const dash = useStudentDashboard();
+
+  const totalXp = dash.data?.kpi.totalXp ?? dash.data?.profile?.totalXp ?? 0;
+  const level = dash.data?.profile?.level ?? 1;
+  const nextXp = nextLevelXp(level);
+  const progressPct = nextXp > 0 ? Math.min(100, Math.round((totalXp / nextXp) * 100)) : 0;
 
   return (
     <div className="page">
@@ -30,7 +52,7 @@ export function GamificationPage() {
           <h1 className="page-title">الإنجازات والنقاط</h1>
           <p className="page-subtitle">تقدّمك ومستواك مقارنة بزملائك في المنصة.</p>
         </div>
-        <Badge color="gold" icon={Star}>2,340 XP</Badge>
+        <Badge color="gold" icon={Star}>{totalXp.toLocaleString('ar-EG')} XP</Badge>
       </header>
 
       <div className="grid-2">
@@ -47,14 +69,14 @@ export function GamificationPage() {
                 border: '2px solid var(--accent)',
               }}
             >
-              7
+              {level}
             </div>
             <div className="flex-1">
-              <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>محلل البيانات</div>
+              <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{levelTitle(level)}</div>
               <div className="text-xs text-subtle" style={{ marginBottom: 8 }}>
-                <span className="font-mono">2,340</span> / <span className="font-mono">3,000 XP</span>
+                <span className="font-mono">{totalXp.toLocaleString('ar-EG')}</span> / <span className="font-mono">{nextXp.toLocaleString('ar-EG')} XP</span>
               </div>
-              <div className="xp-track"><div className="xp-fill" style={{ width: '78%' }} /></div>
+              <div className="xp-track"><div className="xp-fill" style={{ width: `${progressPct}%` }} /></div>
             </div>
           </div>
 

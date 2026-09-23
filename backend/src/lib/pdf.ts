@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 // pdf-parse@1.1.1 has a debug-branch in index.js that crashes when imported
 // without a fixture file present. Importing the lib subpath sidesteps it.
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import { logger } from '../logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,8 +58,7 @@ export async function extractPaperText(fileUrl: string | null | undefined): Prom
     const stat = statSync(filePath);
     if (!stat.isFile()) return null;
     if (stat.size > MAX_PDF_BYTES) {
-      // eslint-disable-next-line no-console
-      console.warn('[pdf] refusing to extract — file too large:', filename, stat.size);
+      logger.warn({ filename, size: stat.size }, 'pdf extraction refused — file too large');
       return null;
     }
   } catch {
@@ -71,8 +71,7 @@ export async function extractPaperText(fileUrl: string | null | undefined): Prom
     return parsed.text.trim() || null;
   } catch (err) {
     // Don't fail the upload/scan flow because of an extraction hiccup.
-    // eslint-disable-next-line no-console
-    console.warn('[pdf] text extraction failed for', filename, err);
+    logger.warn({ err, filename }, 'pdf text extraction failed');
     return null;
   }
 }

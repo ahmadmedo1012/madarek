@@ -8,6 +8,7 @@ import {
 import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { Modal } from '../../components/overlays/Modal';
 import {
   useResearchQueue, useGradePaper, usePublishPaper, useMyTeacherProfile,
   type ResearchPaper, type PaperStatus,
@@ -170,43 +171,42 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 640 }}>
-        <div className="modal-header">
-          <div className="modal-title">مراجعة بحث</div>
-          <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق">
-            <Icon icon={X} size={16} />
-          </button>
-        </div>
-        <div className="modal-body">
-          <div className="text-xs text-subtle">{paper.student.firstName} {paper.student.lastName}</div>
-          <div className="text-md font-semibold" style={{ color: 'var(--text)', marginBottom: 'var(--sp-4)' }}>{paper.title}</div>
+    <Modal open onClose={onClose} ariaLabel="مراجعة بحث">
+      <div className="modal-header">
+        <div className="modal-title">مراجعة بحث</div>
+        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق">
+          <Icon icon={X} size={16} />
+        </button>
+      </div>
+      <div className="modal-body">
+        <div className="text-xs text-subtle">{paper.student.firstName} {paper.student.lastName}</div>
+        <div className="text-md font-semibold" style={{ color: 'var(--text)', marginBottom: 'var(--sp-4)' }}>{paper.title}</div>
 
-          {paper.abstract && (
-            <>
-              <div className="section-title">الملخّص</div>
-              <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-loose)', marginBottom: 'var(--sp-4)' }}>
-                {paper.abstract}
-              </p>
-            </>
-          )}
+        {paper.abstract && (
+          <>
+            <div className="section-title">الملخّص</div>
+            <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-loose)', marginBottom: 'var(--sp-4)' }}>
+              {paper.abstract}
+            </p>
+          </>
+        )}
 
-          <div className="section-title">نتائج الفحص الأوتوماتيكي</div>
-          <div className="scan-bar" style={{ marginBottom: 'var(--sp-5)' }}>
-            <div className="scan-cell">
-              <span className="scan-cell-label flex items-center gap-1">
-                <Icon icon={ShieldCheck} size={11} /> نسبة الانتحال
-              </span>
-              <span className={`scan-cell-value ${(paper.plagiarismPct ?? 0) < 15 ? 'ok' : 'bad'}`}>
-                {paper.plagiarismPct?.toFixed(1) ?? '—'}%
-              </span>
-            </div>
-            <div className="scan-cell">
-              <span className="scan-cell-label flex items-center gap-1">
-                <Icon icon={BotIcon} size={11} /> محتوى AI
-              </span>
-              <span className={`scan-cell-value ${(paper.aiContentPct ?? 0) < 25 ? 'ok' : 'bad'}`}>
-                {paper.aiContentPct?.toFixed(1) ?? '—'}%
+        <div className="section-title">نتائج الفحص الأوتوماتيكي</div>
+        <div className="scan-bar" style={{ marginBottom: 'var(--sp-5)' }}>
+          <div className="scan-cell">
+            <span className="scan-cell-label flex items-center gap-1">
+              <Icon icon={ShieldCheck} size={11} /> نسبة الانتحال
+            </span>
+            <span className={`scan-cell-value ${(paper.plagiarismPct ?? 0) < 15 ? 'ok' : 'bad'}`}>
+              {paper.plagiarismPct?.toFixed(1) ?? '—'}%
+            </span>
+          </div>
+          <div className="scan-cell">
+            <span className="scan-cell-label flex items-center gap-1">
+              <Icon icon={BotIcon} size={11} /> محتوى AI
+            </span>
+            <span className={`scan-cell-value ${(paper.aiContentPct ?? 0) < 25 ? 'ok' : 'bad'}`}>
+              {paper.aiContentPct?.toFixed(1) ?? '—'}%
               </span>
             </div>
           </div>
@@ -276,8 +276,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
             </>
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 

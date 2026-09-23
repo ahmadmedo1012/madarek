@@ -283,8 +283,8 @@
     --neutral-150: #F1EFEC;
     --neutral-200: #E9E7E2;          /* hairline */
     --neutral-300: #D9D6D0;          /* divider */
-    --neutral-400: #B5B1A8;
-    --neutral-500: #898680;
+    --neutral-400: #8E8A82;          /* was #B5B1A8 — contrast 2.05:1 failed WCAG AA. New: 3.30:1 (AA-large only) */
+    --neutral-500: #6F6C66;          /* was #898680 — contrast 3.48:1 failed WCAG AA. New: 5.02:1 (passes AA) */
     --neutral-700: #4F4D48;
     --neutral-800: #322F2A;
     --neutral-900: #191918;          /* primary ink */

@@ -425,10 +425,19 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
       },
     });
 
-    // Optional shuffle on randomized templates
-    let serializedQs = template.questions.slice();
-    if (template.randomized) {
-      serializedQs = serializedQs.sort(() => Math.random() - 0.5);
+    // Optional shuffle on randomized templates.
+    // Use Fisher-Yates (not Array.sort with Math.random) — the latter
+    // is biased because TimSort's comparator contract is violated by
+    // a non-deterministic return value; elements near the end of the
+    // array see less variation than they should.
+    const serializedQs = template.questions.slice();
+    if (template.randomized && serializedQs.length > 1) {
+      for (let i = serializedQs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = serializedQs[i]!;
+        serializedQs[i] = serializedQs[j]!;
+        serializedQs[j] = tmp;
+      }
     }
 
     res.status(201).json({
