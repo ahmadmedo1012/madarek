@@ -15,7 +15,10 @@ router.use(authMiddleware);
 // ════════════════════════════════════════════════════════════════
 
 /** GET /me/teacher-profile — full self profile for the logged-in teacher */
-router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
+// Roles aligned with PATCH: TEACHER/OWNER. ADMIN was allowed to READ but
+// has no teacher profile (404 every time) and the write side 403s them —
+// an incoherent split.
+router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const profile = await prisma.teacherProfile.findUnique({
@@ -156,8 +159,23 @@ router.get('/live/sessions', async (req, res, next) => {
         offering: { select: { id: true, course: { select: { name: true, code: true, iconEmoji: true, themeColor: true } } } },
         teacher: { select: { firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
       },
-      orderBy: [{ status: 'asc' }, { scheduledAt: 'desc' }],
+      orderBy: { scheduledAt: 'desc' },
       take: 50,
+    });
+
+    // Meaningful ordering — `status: 'asc'` sorted the ENUM ALPHABETICALLY
+    // (CANCELLED < ENDED < LIVE < SCHEDULED), burying live and upcoming
+    // sessions under the historical pile. Instead: what's LIVE now first,
+    // then what's SCHEDULED next (soonest first), then ENDED/CANCELLED
+    // (most recent first).
+    const statusRank: Record<LiveSessionStatus, number> = { LIVE: 0, SCHEDULED: 1, ENDED: 2, CANCELLED: 3 };
+    sessions.sort((a, b) => {
+      const rankDiff = statusRank[a.status] - statusRank[b.status];
+      if (rankDiff !== 0) return rankDiff;
+      const aTime = a.scheduledAt.getTime();
+      const bTime = b.scheduledAt.getTime();
+      // Future sessions: soonest first. Terminal states: latest first.
+      return statusRank[a.status] <= 1 ? aTime - bTime : bTime - aTime;
     });
 
     res.json({ data: sessions });

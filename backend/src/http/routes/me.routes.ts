@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { NotificationType } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -89,6 +90,7 @@ const sendMessageSchema = z
 router.post('/messages', validate(sendMessageSchema), async (req, res, next) => {
   try {
     if (req.body.toUserId === req.user!.id) throw AppError.badRequest('Cannot message yourself');
+<<<<<<< HEAD
     // Verify recipient exists BEFORE the create — otherwise Prisma throws
     // P2003 (FK violation) which the errorHandler maps to 500 INTERNAL.
     // Without this, messaging a non-existent user returns 500 with no
@@ -101,6 +103,45 @@ router.post('/messages', validate(sendMessageSchema), async (req, res, next) => 
     if (!recipient.isActive) throw AppError.badRequest('Recipient account is disabled');
     const created = await prisma.message.create({
       data: { fromUserId: req.user!.id, toUserId: req.body.toUserId, body: req.body.body },
+=======
+
+    // Pre-validate recipient + sender in one round-trip. Without the
+    // recipient check a DM to a deleted/unknown id exploded as a P2003
+    // foreign-key 500; and we need the sender's name for the
+    // recipient-side notification anyway.
+    const [recipient, sender] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: req.body.toUserId },
+        select: { id: true, firstName: true, isActive: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: req.user!.id },
+        select: { firstName: true },
+      }),
+    ]);
+    if (!recipient) throw AppError.notFound('Recipient not found');
+    if (!recipient.isActive) throw AppError.badRequest('Recipient account is inactive');
+
+    // Message + recipient notification atomically — a DM the recipient
+    // never hears about is a broken loop, and a notification without
+    // its message is a ghost.
+    const created = await prisma.$transaction(async (tx) => {
+      const message = await tx.message.create({
+        data: { fromUserId: req.user!.id, toUserId: req.body.toUserId, body: req.body.body },
+      });
+      // Mirror the seed notification copy style (Arabic, icon, short body).
+      await tx.notification.create({
+        data: {
+          userId: recipient.id,
+          type: NotificationType.SOCIAL,
+          icon: '💬',
+          title: `رسالة جديدة من ${sender?.firstName ?? 'مستخدم'}`,
+          body: req.body.body.slice(0, 80),
+          link: '/messages',
+        },
+      });
+      return message;
+>>>>>>> 75e9ee6 (feat(backend): submissions API, write-path correctness, auth hardening, telemetry)
     });
     res.status(201).json({ data: created });
   } catch (e) {

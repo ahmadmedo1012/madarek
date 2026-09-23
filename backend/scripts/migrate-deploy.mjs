@@ -368,7 +368,7 @@ async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, step
       log('');
       log('  4. Test connectivity from Render shell:');
       log('     Once the service is deployed, open Render shell and run:');
-      log('       nc -zv ep-spring-paper-aqmiglla-pooler.c-8.us-east-1.aws.neon.tech 5432');
+      log('       nc -zv pooler-endpoint.example.neon.tech 5432');
       log('');
       log('  5. Check Neon status page:');
       log('     https://neon.statuspage.io/');

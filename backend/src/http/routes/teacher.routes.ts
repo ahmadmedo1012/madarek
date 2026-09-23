@@ -103,62 +103,69 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
 
     const totalSessions = offering.attendance.length;
     const lectureIds = offering.lectures.map((l) => l.id);
+    const studentIds = offering.enrollments.map((enr) => enr.student.id);
 
-    const students: StudentRow[] = await Promise.all(
-      offering.enrollments.map(async (enr) => {
-        const stu = enr.student;
-        // Attendance breakdown
-        const myAttendance = offering.attendance.flatMap((s) => s.records.filter((r) => r.studentId === stu.id));
-        const presentCount = myAttendance.filter((r) => r.status === AttendanceStatus.PRESENT).length;
-        const lateCount = myAttendance.filter((r) => r.status === AttendanceStatus.LATE).length;
-        const absences = myAttendance.filter((r) => r.status === AttendanceStatus.ABSENT).length;
-        const attendancePct = totalSessions === 0 ? 100 : Math.round(((presentCount + lateCount * 0.5) / totalSessions) * 100);
+    // ONE findMany for the whole roster (lectureId IN + studentId IN) —
+    // the old code issued a watchEvent query PER STUDENT (N+1).
+    const watchEvents = lectureIds.length > 0 && studentIds.length > 0
+      ? await prisma.watchEvent.findMany({
+          where: { lectureId: { in: lectureIds }, studentId: { in: studentIds } },
+          select: { studentId: true, watchedSec: true, totalSec: true },
+        })
+      : [];
+    const eventsByStudent = new Map<string, { watched: number; duration: number }>();
+    for (const ev of watchEvents) {
+      const cur = eventsByStudent.get(ev.studentId) ?? { watched: 0, duration: 0 };
+      cur.watched += ev.watchedSec;
+      cur.duration += ev.totalSec;
+      eventsByStudent.set(ev.studentId, cur);
+    }
 
-        // Average grade
-        const myGrades = offering.grades.filter((g) => g.studentId === stu.id);
-        const avgGrade = myGrades.length === 0
-          ? 0
-          : Math.round(myGrades.reduce((sum, g) => sum + Number(g.score) / g.maxScore * 100, 0) / myGrades.length);
+    const students: StudentRow[] = offering.enrollments.map((enr) => {
+      const stu = enr.student;
+      // Attendance breakdown
+      const myAttendance = offering.attendance.flatMap((s) => s.records.filter((r) => r.studentId === stu.id));
+      const presentCount = myAttendance.filter((r) => r.status === AttendanceStatus.PRESENT).length;
+      const lateCount = myAttendance.filter((r) => r.status === AttendanceStatus.LATE).length;
+      const absences = myAttendance.filter((r) => r.status === AttendanceStatus.ABSENT).length;
+      const attendancePct = totalSessions === 0 ? 100 : Math.round(((presentCount + lateCount * 0.5) / totalSessions) * 100);
 
-        // Watch% over course lectures
-        let watchPct = 0;
-        if (lectureIds.length > 0) {
-          const events = await prisma.watchEvent.findMany({
-            where: { studentId: stu.id, lectureId: { in: lectureIds } },
-            select: { watchedSec: true, totalSec: true, completed: true },
-          });
-          const totalWatched = events.reduce((s, e) => s + e.watchedSec, 0);
-          const totalDuration = events.reduce((s, e) => s + e.totalSec, 0);
-          watchPct = totalDuration > 0 ? Math.round((totalWatched / totalDuration) * 100) : 0;
-        }
+      // Average grade
+      const myGrades = offering.grades.filter((g) => g.studentId === stu.id);
+      const avgGrade = myGrades.length === 0
+        ? 0
+        : Math.round(myGrades.reduce((sum, g) => sum + Number(g.score) / g.maxScore * 100, 0) / myGrades.length);
 
-        const riskScore = Math.round(0.4 * attendancePct + 0.4 * avgGrade + 0.2 * watchPct);
-        const riskLevel = classifyRisk(riskScore);
+      // Watch% over course lectures (from the grouped events)
+      const agg = eventsByStudent.get(stu.id);
+      const watchPct = agg && agg.duration > 0 ? Math.round((agg.watched / agg.duration) * 100) : 0;
 
-        const signals: string[] = [];
-        if (attendancePct < 60) signals.push('حضور منخفض');
-        if (avgGrade < 50 && myGrades.length > 0) signals.push('درجات منخفضة');
-        if (watchPct < 40) signals.push('متابعة ضعيفة');
-        if (absences >= 3) signals.push('غياب متكرر');
+      const riskScore = Math.round(0.4 * attendancePct + 0.4 * avgGrade + 0.2 * watchPct);
+      const riskLevel = classifyRisk(riskScore);
 
-        return {
-          studentId: stu.id,
-          name: `${stu.firstName} ${stu.lastName}`,
-          universityId: stu.studentProfile?.universityId ?? '—',
-          avatarInitials: stu.avatarInitials,
-          avatarColor: stu.avatarColor,
-          attendancePct,
-          absences,
-          lateCount,
-          avgGrade,
-          watchPct,
-          riskScore,
-          riskLevel,
-          signals,
-          suggestion: suggestionFor({ attendancePct, avgGrade, watchPct, absences }),
-        };
-      }),
-    );
+      const signals: string[] = [];
+      if (attendancePct < 60) signals.push('حضور منخفض');
+      if (avgGrade < 50 && myGrades.length > 0) signals.push('درجات منخفضة');
+      if (watchPct < 40) signals.push('متابعة ضعيفة');
+      if (absences >= 3) signals.push('غياب متكرر');
+
+      return {
+        studentId: stu.id,
+        name: `${stu.firstName} ${stu.lastName}`,
+        universityId: stu.studentProfile?.universityId ?? '—',
+        avatarInitials: stu.avatarInitials,
+        avatarColor: stu.avatarColor,
+        attendancePct,
+        absences,
+        lateCount,
+        avgGrade,
+        watchPct,
+        riskScore,
+        riskLevel,
+        signals,
+        suggestion: suggestionFor({ attendancePct, avgGrade, watchPct, absences }),
+      };
+    });
 
     res.json({ data: students });
   } catch (e) { next(e); }
@@ -229,9 +236,33 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
         },
         attendance: { include: { records: true } },
         grades: true,
+        lectures: { select: { id: true } },
       },
+      orderBy: { createdAt: 'desc' },
       take: 20,
     });
+
+    // Real watch% signal: one batched query across all my offerings' lectures.
+    const allLectureIds = offerings.flatMap((o) => o.lectures.map((l) => l.id));
+    const watchEvents = allLectureIds.length > 0
+      ? await prisma.watchEvent.findMany({
+          where: { lectureId: { in: allLectureIds } },
+          select: { lectureId: true, studentId: true, watchedSec: true, totalSec: true },
+        })
+      : [];
+    const lectureOffering = new Map<string, string>();
+    for (const o of offerings) for (const l of o.lectures) lectureOffering.set(l.id, o.id);
+    // (offeringId, studentId) → { watched, duration }
+    const watchAgg = new Map<string, { watched: number; duration: number }>();
+    for (const ev of watchEvents) {
+      const oid = lectureOffering.get(ev.lectureId);
+      if (!oid) continue;
+      const key = `${oid}|${ev.studentId}`;
+      const cur = watchAgg.get(key) ?? { watched: 0, duration: 0 };
+      cur.watched += ev.watchedSec;
+      cur.duration += ev.totalSec;
+      watchAgg.set(key, cur);
+    }
 
     interface RiskRow {
       studentId: string;
@@ -262,7 +293,10 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
           ? 100  // assume OK if no grades yet
           : Math.round(myGrades.reduce((s, g) => s + Number(g.score) / g.maxScore * 100, 0) / myGrades.length);
 
-        const watchPct = 70; // placeholder when watch query is too expensive
+        const watchAggEntry = watchAgg.get(`${off.id}|${enr.student.id}`);
+        const watchPct = watchAggEntry && watchAggEntry.duration > 0
+          ? Math.round((watchAggEntry.watched / watchAggEntry.duration) * 100)
+          : 0; // real signal — no more hardcoded 70 placeholder
         const riskScore = Math.round(0.4 * attendancePct + 0.4 * avgGrade + 0.2 * watchPct);
         const level = classifyRisk(riskScore);
         if (level === 'OK') continue; // skip green students
@@ -313,20 +347,38 @@ router.post(
       const offeringId = req.params.id!;
       await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
       const { date, topic, records } = req.body as z.infer<typeof recordAttSchema>;
-      const session = await prisma.attendanceSession.upsert({
-        where: { offeringId_date: { offeringId, date } },
-        update: { topic: topic ?? null },
-        create: { offeringId, date, topic: topic ?? null },
+
+      // Every studentId in the roll-call must be an enrolled student of
+      // this offering — otherwise arbitrary users could be marked present.
+      const studentIds = Array.from(new Set(records.map((r) => r.studentId)));
+      const enrollments = await prisma.enrollment.findMany({
+        where: { offeringId, studentId: { in: studentIds } },
+        select: { studentId: true },
       });
-      // Replace records for this session
-      await prisma.attendanceRecord.deleteMany({ where: { sessionId: session.id } });
-      await prisma.attendanceRecord.createMany({
-        data: records.map((r) => ({
-          sessionId: session.id,
-          studentId: r.studentId,
-          status: r.status,
-          notes: r.notes ?? null,
-        })),
+      const enrolledSet = new Set(enrollments.map((e) => e.studentId));
+      if (studentIds.some((id) => !enrolledSet.has(id))) {
+        throw AppError.badRequest('Records contain students not enrolled in this offering');
+      }
+
+      // Session upsert + record replacement must be atomic — a crash between
+      // deleteMany and createMany used to wipe a session's records.
+      const session = await prisma.$transaction(async (tx) => {
+        const s = await tx.attendanceSession.upsert({
+          where: { offeringId_date: { offeringId, date } },
+          update: { topic: topic ?? null },
+          create: { offeringId, date, topic: topic ?? null },
+        });
+        // Replace records for this session
+        await tx.attendanceRecord.deleteMany({ where: { sessionId: s.id } });
+        await tx.attendanceRecord.createMany({
+          data: records.map((r) => ({
+            sessionId: s.id,
+            studentId: r.studentId,
+            status: r.status,
+            notes: r.notes ?? null,
+          })),
+        });
+        return s;
       });
       res.json({ data: { sessionId: session.id, count: records.length } });
     } catch (e) { next(e); }
@@ -598,6 +650,17 @@ router.post(
       });
       if (!existing) throw AppError.notFound('Teacher profile not found');
 
+      // A leadership seat is exclusive: refuse to appoint a second active
+      // DEAN/ASSOCIATE_DEAN for the same faculty, or a second DEPARTMENT_HEAD
+      // for the same department (409 instead of silently shadowing).
+      // The check + write run in one transaction to shrink the race window.
+      const conflictWhere =
+        body.position === 'DEAN' || body.position === 'ASSOCIATE_DEAN'
+          ? { position: body.position, positionFacultyId: body.positionFacultyId, userId: { not: targetId } }
+          : body.position === 'DEPARTMENT_HEAD'
+            ? { position: body.position, positionDepartmentId: body.positionDepartmentId, userId: { not: targetId } }
+            : null;
+
       const isFresh = body.position !== existing.position;
       const data: Record<string, unknown> =
         body.position === null
@@ -617,6 +680,15 @@ router.post(
               };
 
       const updated = await prisma.$transaction(async (tx) => {
+        if (conflictWhere) {
+          const conflict = await tx.teacherProfile.findFirst({
+            where: conflictWhere,
+            select: { userId: true },
+          });
+          if (conflict) {
+            throw AppError.conflict('This position is already held by another teacher');
+          }
+        }
         const r = await tx.teacherProfile.update({
           where: { userId: targetId },
           data,

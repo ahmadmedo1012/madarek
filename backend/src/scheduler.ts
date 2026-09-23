@@ -1,4 +1,4 @@
-import { runSync } from './lib/zu-sync/index.js';
+import { runSync, type SyncResult } from './lib/zu-sync/index.js';
 import { logger } from './logger.js';
 
 /**
@@ -27,41 +27,69 @@ let dailyTimer: NodeJS.Timeout | null = null;
 let bootTimer: NodeJS.Timeout | null = null;
 let syncInProgress = false;
 
-async function runSyncGuarded(label: string) {
+/**
+ * Result of a guarded sync attempt.
+ *
+ * - `{ ran: true, result }` — this call executed the sync; `result`
+ *   carries the outcome (runSync reports sync-level failures as
+ *   `status: FAILED`, not as exceptions).
+ * - `{ ran: false, reason: 'overlap' }` — another sync is still in
+ *   flight, so this call was skipped.
+ */
+export type GuardedSyncOutcome =
+  | { ran: true; result: SyncResult }
+  | { ran: false; reason: 'overlap' };
+
+/**
+ * Single guarded entry point into runSync, shared by the scheduler
+ * ticks AND the manual `POST /admin/sync/trigger` route. Exported so
+ * the manual admin trigger cannot bypass the overlap guard and race
+ * a scheduled run on the UniversityFact rows.
+ *
+ * The check-then-set of `syncInProgress` happens synchronously (no
+ * await in between), so under concurrent callers exactly one wins
+ * in the single-threaded event loop.
+ */
+export async function runSyncGuarded(label: string): Promise<GuardedSyncOutcome> {
   if (syncInProgress) {
     logger.warn({ label }, '[scheduler] previous sync still running — skipping this tick');
-    return;
+    return { ran: false, reason: 'overlap' };
   }
   syncInProgress = true;
   try {
-    const r = await runSync();
+    const result = await runSync();
     logger.info(
       {
         label,
-        status: r.status,
-        factsAdded: r.factsAdded,
-        factsUpdated: r.factsUpdated,
-        durationMs: r.durationMs,
+        status: result.status,
+        factsAdded: result.factsAdded,
+        factsUpdated: result.factsUpdated,
+        durationMs: result.durationMs,
       },
       '[scheduler] sync complete',
     );
+    return { ran: true, result };
   } catch (err) {
-    // runSync swallows internally, but defense-in-depth
+    // runSync captures sync-level failures itself; this is defense-in-depth
+    // for bookkeeping failures (e.g. the SyncRun row cannot be created).
     logger.error({ err, label }, '[scheduler] sync threw');
+    throw err;
   } finally {
     syncInProgress = false;
   }
 }
 
 export function startScheduler() {
-  // Initial run after boot, once the server is responsive
+  // Initial run after boot, once the server is responsive.
+  // runSyncGuarded logs its own errors; the .catch keeps a failing boot
+  // callback from surfacing as an unhandled promise rejection.
   bootTimer = setTimeout(() => {
-    void runSyncGuarded('initial');
+    runSyncGuarded('initial').catch(() => {});
   }, BOOT_DELAY_MS);
 
-  // Recurring daily run
+  // Recurring daily run (same no-unhandled-rejection contract).
   dailyTimer = setInterval(() => {
-    void runSyncGuarded('daily');
+    runSyncGuarded('daily').catch(() => {});
   }, ONE_DAY_MS);
 
   if (typeof dailyTimer.unref === 'function') dailyTimer.unref();

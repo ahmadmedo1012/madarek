@@ -49,7 +49,22 @@ const enrollSchema = z
 // Admin enrolls a student into an offering.
 router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), async (req, res, next) => {
   try {
-    const created = await prisma.enrollment.create({ data: req.body });
+    const { studentId, offeringId } = req.body as z.infer<typeof enrollSchema>;
+    // Enforce CourseOffering.capacity: concurrent enrolls are serialized per
+    // offering via SELECT … FOR UPDATE, then the count is checked inside the
+    // transaction so the seat can't be oversold.
+    const created = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM "CourseOffering" WHERE id = ${offeringId} FOR UPDATE`;
+      const offering = await tx.courseOffering.findUnique({
+        where: { id: offeringId },
+        select: { capacity: true, _count: { select: { enrollments: true } } },
+      });
+      if (!offering) throw AppError.notFound('Offering not found');
+      if (offering._count.enrollments >= offering.capacity) {
+        throw AppError.conflict('Offering is at capacity');
+      }
+      return tx.enrollment.create({ data: { studentId, offeringId } });
+    });
     res.status(201).json({ data: created });
   } catch (e) {
     next(e);

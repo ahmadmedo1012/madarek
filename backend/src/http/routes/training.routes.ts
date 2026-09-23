@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validate } from '../validate.js';
@@ -41,20 +42,20 @@ async function totalPointsFor(userId: string): Promise<number> {
   return agg._sum.points ?? 0;
 }
 
-async function awardPoints(userId: string, points: number, reason: string, refType?: string, refId?: string) {
-  await prisma.pointsLedger.create({
+async function awardPoints(tx: Prisma.TransactionClient, userId: string, points: number, reason: string, refType?: string, refId?: string) {
+  await tx.pointsLedger.create({
     data: { userId, points, reason, refType: refType ?? null, refId: refId ?? null },
   });
 }
 
-async function awardBadgeBySlug(userId: string, slug: string) {
-  const badge = await prisma.badge.findUnique({ where: { slug } });
+async function awardBadgeBySlug(tx: Prisma.TransactionClient, userId: string, slug: string) {
+  const badge = await tx.badge.findUnique({ where: { slug } });
   if (!badge) return null;
-  const existing = await prisma.userBadge.findUnique({
+  const existing = await tx.userBadge.findUnique({
     where: { userId_badgeId: { userId, badgeId: badge.id } },
   });
   if (existing) return null;
-  await prisma.userBadge.create({ data: { userId, badgeId: badge.id } });
+  await tx.userBadge.create({ data: { userId, badgeId: badge.id } });
   return badge;
 }
 
@@ -195,57 +196,63 @@ router.post(
         }
       }
 
-      // Find or create the enrollment
-      const enrollment = await prisma.trainingEnrollment.upsert({
-        where: { userId_trackId: { userId, trackId: lesson.trackId } },
-        update: {},
-        create: { userId, trackId: lesson.trackId },
-      });
-
-      // Idempotent complete
-      const existing = await prisma.lessonProgress.findUnique({
-        where: { enrollmentId_lessonId: { enrollmentId: enrollment.id, lessonId: lesson.id } },
-      });
-      const newlyCompleted = !existing;
-
+      // Everything from the enrollment upsert through badges/certificate
+      // runs in ONE interactive transaction — a crash mid-flow used to
+      // leave half-awarded state (points without progress, etc.).
+      // Idempotency is preserved: an existing lessonProgress row is a no-op.
       const newBadges: Array<{ slug: string; title: string; iconEmoji: string }> = [];
+      let newlyCompleted = false;
 
-      if (newlyCompleted) {
-        await prisma.lessonProgress.create({
+      await prisma.$transaction(async (tx) => {
+        // Find or create the enrollment
+        const enrollment = await tx.trainingEnrollment.upsert({
+          where: { userId_trackId: { userId, trackId: lesson.trackId } },
+          update: {},
+          create: { userId, trackId: lesson.trackId },
+        });
+
+        // Idempotent complete
+        const existing = await tx.lessonProgress.findUnique({
+          where: { enrollmentId_lessonId: { enrollmentId: enrollment.id, lessonId: lesson.id } },
+        });
+        if (existing) return;
+        newlyCompleted = true;
+
+        await tx.lessonProgress.create({
           data: { enrollmentId: enrollment.id, lessonId: lesson.id, pointsAwarded: lesson.pointsAward },
         });
-        await awardPoints(userId, lesson.pointsAward, 'lesson_completed', 'TrainingLesson', lesson.id);
+        await awardPoints(tx, userId, lesson.pointsAward, 'lesson_completed', 'TrainingLesson', lesson.id);
 
         // First-step badge — first ever lesson completion
-        const totalCompleted = await prisma.lessonProgress.count({
+        const totalCompleted = await tx.lessonProgress.count({
           where: { enrollment: { userId } },
         });
         if (totalCompleted === 1) {
-          const b = await awardBadgeBySlug(userId, 'badge-first-step');
+          const b = await awardBadgeBySlug(tx, userId, 'badge-first-step');
           if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
         }
 
         // Track-completion check
-        const totalLessons = await prisma.trainingLesson.count({ where: { trackId: lesson.trackId } });
-        const completedLessons = await prisma.lessonProgress.count({
+        const totalLessons = await tx.trainingLesson.count({ where: { trackId: lesson.trackId } });
+        const completedLessons = await tx.lessonProgress.count({
           where: { enrollmentId: enrollment.id },
         });
         if (completedLessons === totalLessons && !enrollment.completedAt) {
-          await prisma.trainingEnrollment.update({
+          await tx.trainingEnrollment.update({
             where: { id: enrollment.id },
             data: { completedAt: new Date() },
           });
-          await awardPoints(userId, lesson.track.pointsAward, 'track_completed', 'TrainingTrack', lesson.trackId);
+          await awardPoints(tx, userId, lesson.track.pointsAward, 'track_completed', 'TrainingTrack', lesson.trackId);
 
           // Award the track's badge (if any)
-          const trackBadge = await prisma.badge.findFirst({ where: { trackId: lesson.trackId } });
+          const trackBadge = await tx.badge.findFirst({ where: { trackId: lesson.trackId } });
           if (trackBadge) {
-            const b = await awardBadgeBySlug(userId, trackBadge.slug);
+            const b = await awardBadgeBySlug(tx, userId, trackBadge.slug);
             if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
           }
 
           // Issue completion certificate
-          await prisma.certificate.create({
+          await tx.certificate.create({
             data: {
               userId,
               title: lesson.track.title,
@@ -258,25 +265,25 @@ router.post(
           });
 
           // Total-tracks-completed badges
-          const completedTracks = await prisma.trainingEnrollment.count({
+          const completedTracks = await tx.trainingEnrollment.count({
             where: { userId, completedAt: { not: null } },
           });
           if (completedTracks >= 5) {
-            const b = await awardBadgeBySlug(userId, 'badge-zu-pioneer');
+            const b = await awardBadgeBySlug(tx, userId, 'badge-zu-pioneer');
             if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
           }
           // 3 in different categories → polymath
-          const distinctCats = await prisma.trainingEnrollment.findMany({
+          const distinctCats = await tx.trainingEnrollment.findMany({
             where: { userId, completedAt: { not: null } },
             include: { track: { select: { category: true } } },
           });
           const cats = new Set(distinctCats.map((e) => e.track.category));
           if (cats.size >= 3) {
-            const b = await awardBadgeBySlug(userId, 'badge-polymath');
+            const b = await awardBadgeBySlug(tx, userId, 'badge-polymath');
             if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
           }
         }
-      }
+      });
 
       const totalPoints = await totalPointsFor(userId);
       const lvl = levelFor(totalPoints);

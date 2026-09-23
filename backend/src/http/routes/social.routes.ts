@@ -101,6 +101,81 @@ router.post(
       if (body.scope !== 'PLATFORM' && !body.scopeId) {
         throw new AppError('BAD_REQUEST', 'scopeId required for non-platform scope', 400);
       }
+
+      // scopeId forgery guard: the target must EXIST and be inside the
+      // author's permitted scopes. Previously any cuid passed through,
+      // so a teacher could announce into any faculty/department/offering.
+      if (body.scope !== 'PLATFORM' && body.scopeId) {
+        const role = req.user!.role;
+        const uid = req.user!.id;
+
+        // Permitted target ids per role. ADMIN/QUALITY (ANNOUNCE_FACULTY
+        // holders) may target any EXISTING faculty/department/offering;
+        // TEACHER/STUDENT are limited to their own scopes.
+        let permittedFaculty: 'any' | string[];
+        let permittedDepartments: 'any' | string[];
+        let permittedOfferings: 'any' | string[];
+        if (role === Role.ADMIN || role === Role.QUALITY || role === Role.OWNER) {
+          permittedFaculty = 'any';
+          permittedDepartments = 'any';
+          permittedOfferings = 'any';
+        } else if (role === Role.TEACHER) {
+          const tp = await prisma.teacherProfile.findUnique({
+            where: { userId: uid },
+            select: { departmentId: true, department: { select: { facultyId: true } } },
+          });
+          permittedFaculty = tp?.department.facultyId ? [tp.department.facultyId] : [];
+          permittedDepartments = tp ? [tp.departmentId] : [];
+          const own = await prisma.courseOffering.findMany({
+            where: { teacherId: uid },
+            select: { id: true },
+          });
+          permittedOfferings = own.map((o) => o.id);
+        } else {
+          // STUDENT (or unusual grant) — own faculty/department/enrolled offerings.
+          const sp = await prisma.studentProfile.findUnique({
+            where: { userId: uid },
+            select: { facultyId: true, departmentId: true },
+          });
+          permittedFaculty = sp?.facultyId ? [sp.facultyId] : [];
+          permittedDepartments = sp?.departmentId ? [sp.departmentId] : [];
+          const enr = await prisma.enrollment.findMany({
+            where: { studentId: uid },
+            select: { offeringId: true },
+          });
+          permittedOfferings = enr.map((e) => e.offeringId);
+        }
+
+        if (body.scope === 'FACULTY') {
+          const faculty = await prisma.faculty.findUnique({
+            where: { id: body.scopeId },
+            select: { id: true },
+          });
+          if (!faculty) throw AppError.notFound('Faculty not found');
+          if (permittedFaculty !== 'any' && !permittedFaculty.includes(body.scopeId)) {
+            throw AppError.forbidden('You cannot announce to this faculty');
+          }
+        } else if (body.scope === 'DEPARTMENT') {
+          const dept = await prisma.department.findUnique({
+            where: { id: body.scopeId },
+            select: { id: true },
+          });
+          if (!dept) throw AppError.notFound('Department not found');
+          if (permittedDepartments !== 'any' && !permittedDepartments.includes(body.scopeId)) {
+            throw AppError.forbidden('You cannot announce to this department');
+          }
+        } else if (body.scope === 'OFFERING') {
+          const offering = await prisma.courseOffering.findUnique({
+            where: { id: body.scopeId },
+            select: { id: true, teacherId: true },
+          });
+          if (!offering) throw AppError.notFound('Offering not found');
+          if (permittedOfferings !== 'any' && !permittedOfferings.includes(body.scopeId)) {
+            throw AppError.forbidden('You cannot announce to this offering');
+          }
+        }
+      }
+
       const created = await prisma.announcement.create({
         data: {
           authorId: req.user!.id,
@@ -301,16 +376,21 @@ router.get('/events', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
-const createEventSchema = z.object({
-  title: z.string().min(3).max(200),
-  description: z.string().min(10).max(4000),
-  location: z.string().max(200),
-  startsAt: z.coerce.date(),
-  endsAt: z.coerce.date(),
-  capacity: z.number().int().min(1).max(10_000).default(100),
-  iconEmoji: z.string().max(8).optional(),
-  themeColor: z.string().max(20).optional(),
-}).strict();
+const createEventSchema = z
+  .object({
+    title: z.string().min(3).max(200),
+    description: z.string().min(10).max(4000),
+    location: z.string().max(200),
+    startsAt: z.coerce.date(),
+    endsAt: z.coerce.date(),
+    capacity: z.number().int().min(1).max(10_000).default(100),
+    iconEmoji: z.string().max(8).optional(),
+    themeColor: z.string().max(20).optional(),
+  })
+  .strict()
+  .refine((v) => v.endsAt > v.startsAt, {
+    message: 'endsAt must be after startsAt',
+  });
 
 router.post('/events', requireCapability('EVENTS_RUN'), validate(createEventSchema), async (req, res, next) => {
   try {
@@ -329,10 +409,24 @@ router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => 
   try {
     const event = await prisma.campusEvent.findUnique({ where: { id: req.params.id } });
     if (!event) throw AppError.notFound('Event not found');
-    const rsvp = await prisma.eventRSVP.upsert({
-      where: { eventId_userId: { eventId: event.id, userId: req.user!.id } },
-      update: { status: req.body.status },
-      create: { eventId: event.id, userId: req.user!.id, status: req.body.status },
+    // Capacity check + upsert in one transaction: only GOING RSVPs count
+    // against capacity, and a user already GOING may switch status freely.
+    const rsvp = await prisma.$transaction(async (tx) => {
+      const [goingCount, mine] = await Promise.all([
+        tx.eventRSVP.count({ where: { eventId: event.id, status: 'GOING' } }),
+        tx.eventRSVP.findUnique({
+          where: { eventId_userId: { eventId: event.id, userId: req.user!.id } },
+          select: { status: true },
+        }),
+      ]);
+      if (req.body.status === 'GOING' && mine?.status !== 'GOING' && goingCount >= event.capacity) {
+        throw AppError.conflict('Event is at capacity');
+      }
+      return tx.eventRSVP.upsert({
+        where: { eventId_userId: { eventId: event.id, userId: req.user!.id } },
+        update: { status: req.body.status },
+        create: { eventId: event.id, userId: req.user!.id, status: req.body.status },
+      });
     });
     res.json({ data: rsvp });
   } catch (e) { next(e); }

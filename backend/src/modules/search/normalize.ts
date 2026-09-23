@@ -41,3 +41,19 @@ export function normalizeArabicSearch(input: string): string {
 export function stripAlPrefix(normalized: string): string {
   return normalized.startsWith('ال') ? normalized.slice(2) : normalized;
 }
+
+/**
+ * Read-time matcher used by the search routes: does a (raw) haystack match
+ * a normalized query, once both sides have been folded by
+ * `normalizeArabicSearch`? Applies the `ال` prefix tolerance from the
+ * search contract at match time.
+ *
+ * This exists so route handlers can apply the canonical foldings WITHOUT
+ * schema-level `searchable_normalized` columns: candidates are fetched
+ * with raw `contains`, then re-verified in JS through this helper.
+ */
+export function matchesNormalizedQuery(haystack: string, normalizedQuery: string): boolean {
+  if (!normalizedQuery) return false;
+  const h = normalizeArabicSearch(haystack);
+  return h.includes(normalizedQuery) || h.includes(stripAlPrefix(normalizedQuery));
+}

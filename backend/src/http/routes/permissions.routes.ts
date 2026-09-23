@@ -87,8 +87,19 @@ router.post(
     try {
       const userId = req.params.id!;
       const { capability, grant, reason } = req.body as z.infer<typeof setOverrideSchema>;
-      // Wrap the write + audit log in a transaction so we never end up
-      // with a capability grant but no audit trail (or vice versa).
+      // Pre-validate the target: without this, a grant against a
+      // non-existent user surfaced as a P2003 foreign-key 500 instead
+      // of a clean 404.
+      const target = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, role: true },
+      });
+      if (!target) throw AppError.notFound('User not found');
+
+      // Apply the override + write the governance audit trail atomically
+      // (one transaction — never a grant without an audit row, or vice
+      // versa). Capability grants/revokes are security-relevant: they
+      // belong in the audit log exactly like role changes (OWNER path).
       await prisma.$transaction(async (tx) => {
         if (grant === null) {
           await tx.userPermission.deleteMany({ where: { userId, capability } });
@@ -99,14 +110,15 @@ router.post(
             create: { userId, capability, grant, reason: reason ?? null, grantedById: req.user!.id },
           });
         }
-        // Audit log — without this, capability grants were invisible to governance.
+        // Audit log — capability grants were previously invisible to
+        // governance. Resource + role metadata for the full trail.
         await tx.auditLog.create({
           data: {
-            action: 'PERMISSION_OVERRIDE',
-            resourceType: 'User',
+            action: 'CAPABILITY_OVERRIDE',
+            resourceType: 'UserPermission',
             resourceId: userId,
             userId: req.user!.id,
-            metadata: { capability, grant, reason: reason ?? null },
+            metadata: { capability, grant, reason: reason ?? null, targetRole: target.role },
           },
         });
       });

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { normalizeArabicSearch, matchesNormalizedQuery } from '../../modules/search/normalize.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -15,11 +16,23 @@ router.use(authMiddleware);
  * Permission model: respects the user's role.
  *  - STUDENT/TEACHER: only their own offerings/lectures
  *  - ADMIN/QUALITY: everything
+ *
+ * Arabic-aware matching (per specs/011 …/contracts/search.md, read-time half):
+ * the incoming q is normalized with the canonical `normalizeArabicSearch`
+ * foldings (diacritics/tatweel stripped, alif/hamza variants folded, ة→ه,
+ * ى→ي, case-folded), the DB candidates are fetched with raw `contains`
+ * (q AND qNormalized), and each candidate is re-verified in JS via
+ * `matchesNormalizedQuery` including the `ال` prefix tolerance. The
+ * schema-level half of the contract (searchable_normalized columns +
+ * pg_trgm fuzzy matching) needs a migration and is owned by another
+ * workstream; this route does everything possible without schema changes.
  */
 router.get('/search/global', async (req, res, next) => {
   try {
-    const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
-    if (q.length < 2) {
+    // Trim + hard cap at 120 chars (q flows into ILIKE patterns).
+    const q = (typeof req.query.q === 'string' ? req.query.q : '').trim().slice(0, 120);
+    const qN = normalizeArabicSearch(q);
+    if (q.length < 2 || qN.length < 2) {
       res.json({ data: { courses: [], lectures: [], papers: [], tracks: [] } });
       return;
     }
@@ -37,26 +50,34 @@ router.get('/search/global', async (req, res, next) => {
           ? { enrollments: { some: { studentId: userId } } }
           : {};
 
+    // Query both the raw and the normalized form so hamza/alif-variant
+    // queries still hit the DB's raw-text contains index.
+    const variants = qN && qN !== q ? [q, qN] : [q];
+
+    // Over-fetch (15) then re-verify + trim to 5 in JS — see header comment.
+    const CANDIDATE_TAKE = 15;
+    const RESULT_TAKE = 5;
+
     // Course offerings (matched on course name + code)
-    const courses = await prisma.courseOffering.findMany({
+    const courseCandidates = await prisma.courseOffering.findMany({
       where: {
         ...offeringFilter,
         OR: [
-          { course: { name: ic(q) } },
+          ...variants.map((v) => ({ course: { name: ic(v) } })),
           { course: { code: ic(q) } },
         ],
       },
       include: {
         course: { select: { name: true, code: true, iconEmoji: true, themeColor: true } },
       },
-      take: 5,
+      take: CANDIDATE_TAKE,
     });
 
     // Lectures (within scope)
-    const lectures = await prisma.lecture.findMany({
+    const lectureCandidates = await prisma.lecture.findMany({
       where: {
         OR: [
-          { title: ic(q) },
+          ...variants.map((v) => ({ title: ic(v) })),
           { description: ic(q) },
         ],
         offering: offeringFilter,
@@ -70,36 +91,44 @@ router.get('/search/global', async (req, res, next) => {
         },
       },
       orderBy: { ordinal: 'asc' },
-      take: 5,
+      take: CANDIDATE_TAKE,
     });
 
     // Published research papers (anyone authenticated can search the library)
-    const papers = await prisma.researchPaper.findMany({
+    const paperCandidates = await prisma.researchPaper.findMany({
       where: {
         status: 'PUBLISHED',
         OR: [
-          { title: ic(q) },
+          ...variants.map((v) => ({ title: ic(v) })),
           { abstract: ic(q) },
         ],
       },
       include: {
         student: { select: { firstName: true, lastName: true } },
       },
-      take: 5,
+      take: CANDIDATE_TAKE,
     });
 
     // Training tracks
-    const tracks = await prisma.trainingTrack.findMany({
+    const trackCandidates = await prisma.trainingTrack.findMany({
       where: {
         isPublished: true,
         OR: [
-          { title: ic(q) },
+          ...variants.map((v) => ({ title: ic(v) })),
           { titleEn: ic(q) },
           { summary: ic(q) },
         ],
       },
-      take: 5,
+      take: CANDIDATE_TAKE,
     });
+
+    // JS re-verification with the canonical foldings (raw OR normalized hit).
+    const hits = (haystacks: string[]) => haystacks.some((h) => h.toLowerCase().includes(q.toLowerCase()) || matchesNormalizedQuery(h, qN));
+
+    const courses = courseCandidates.filter((o) => hits([o.course.name, o.course.code])).slice(0, RESULT_TAKE);
+    const lectures = lectureCandidates.filter((l) => hits([l.title, l.description ?? ''])).slice(0, RESULT_TAKE);
+    const papers = paperCandidates.filter((p) => hits([p.title, p.abstract ?? ''])).slice(0, RESULT_TAKE);
+    const tracks = trackCandidates.filter((t) => hits([t.title, t.titleEn ?? '', t.summary])).slice(0, RESULT_TAKE);
 
     res.json({
       data: {

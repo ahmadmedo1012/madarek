@@ -3,9 +3,59 @@ import { prisma } from '../../db.js';
 import { hashPassword, verifyPassword } from '../../lib/password.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
+import { logger } from '../../logger.js';
 
 const MAX_FAILED_LOGINS = 5;
 const LOCK_DURATION_MS = 15 * 60 * 1000;
+
+/**
+ * Login-attempt context captured by the route layer for telemetry.
+ * Optional so programmatic/service-level callers stay ergonomic.
+ */
+export interface LoginContext {
+  ip?: string;
+  userAgent?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Login telemetry — the writer side of /owner/login-analytics.
+// The OWNER dashboard always showed zeros because NOTHING ever inserted
+// LoginEvent rows. These writes are BEST-EFFORT: a telemetry failure
+// must never break authentication itself.
+// ─────────────────────────────────────────────────────────────────────
+const writeLoginEvent = async (event: {
+  email: string;
+  success: boolean;
+  reason?: string;
+  userId?: string;
+  ip?: string;
+  userAgent?: string;
+}): Promise<void> => {
+  try {
+    await prisma.loginEvent.create({
+      data: {
+        email: event.email,
+        success: event.success,
+        reason: event.reason ?? null,
+        userId: event.userId ?? null,
+        ip: event.ip ?? null,
+        userAgent: event.userAgent ?? null,
+      },
+    });
+  } catch (err) {
+    logger.warn({ err }, 'loginEvent telemetry write failed (non-blocking)');
+  }
+};
+
+/**
+ * Timing-equalization hash. When the user doesn't exist we still run a
+ * real argon2 verification against this fixed hash so the "unknown
+ * identifier" path costs the same ~100ms as the "wrong password" path.
+ * Without it, response-time deltas let attackers enumerate which emails
+ * are registered. Computed once at module load with the same argon2
+ * parameters as real password hashes.
+ */
+const DUMMY_HASH_PROMISE = hashPassword('madarek-timing-equalizer-no-account');
 
 const arabicInitials = (firstName: string, lastName: string) => {
   const f = firstName.trim()[0] ?? '';
@@ -52,7 +102,11 @@ export const registerUser = async (input: RegisterInput) => {
     throw AppError.forbidden('This role is invitation-only. Contact an administrator.');
   }
 
-  const existing = await prisma.user.findUnique({ where: { email: input.email } });
+  const existing = await prisma.user.findUnique({
+    // create() below lowercases the email — the duplicate pre-check must
+    // compare against the SAME casing or "A@x.com" slips past "a@x.com".
+    where: { email: input.email.toLowerCase() },
+  });
   if (existing) throw AppError.conflict('Email already registered');
 
   const passwordHash = await hashPassword(input.password);
@@ -106,13 +160,6 @@ export const registerUser = async (input: RegisterInput) => {
   return issueTokens(user);
 };
 
-export interface LoginContext {
-  /** Client IP — used for the LoginEvent audit row. */
-  ip?: string;
-  /** User-Agent header — used for the LoginEvent audit row. */
-  userAgent?: string;
-}
-
 /**
  * Login a user by email OR university registration number.
  *
@@ -124,9 +171,16 @@ export interface LoginContext {
  *     block auth).
  *   - On failed password: bumps failedLoginCount, locks the account
  *     after MAX_FAILED_LOGINS attempts for LOCK_DURATION_MS.
+ *   - On unknown identifier: burns equal argon2 work (timing
+ *     equalization) so identifier enumeration via response time is
+ *     not possible.
  *   - On success: resets the failure counters.
  */
-export const loginUser = async (email: string, password: string, ctx: LoginContext = {}) => {
+export const loginUser = async (
+  email: string,
+  password: string,
+  ctx: LoginContext = {},
+) => {
   // Identifier may be an email OR a university registration number.
   // We discriminate by '@' presence — emails always contain it, reg-numbers don't.
   const identifier = email.trim();
@@ -142,32 +196,25 @@ export const loginUser = async (email: string, password: string, ctx: LoginConte
     user = profile?.user ?? null;
   }
   if (!user) {
-    // Best-effort LoginEvent for the "user not found" path.
-    // Email is the identifier the user typed (not necessarily a real
-    // account's email), so we store it as `email` and leave userId null.
-    void prisma.loginEvent.create({
-      data: {
-        email: identifier,
-        success: false,
-        ip: ctx.ip ?? null,
-        userAgent: ctx.userAgent ?? null,
-        reason: 'user_not_found',
-      },
-    }).catch(() => { /* logging is best-effort */ });
+    // Burn the same argon2 work a real password check would cost so a
+    // timing side-channel can't reveal which identifiers exist.
+    try {
+      await verifyPassword(await DUMMY_HASH_PROMISE, password);
+    } catch {
+      // Even a broken dummy hash must not change the rejection path.
+    }
+    await writeLoginEvent({ email: identifier, success: false, reason: 'USER_NOT_FOUND', ...ctx });
     throw AppError.invalidCredentials();
   }
 
   if (user.lockedUntil && user.lockedUntil > new Date()) {
-    void prisma.loginEvent.create({
-      data: {
-        userId: user.id,
-        email: user.email,
-        success: false,
-        ip: ctx.ip ?? null,
-        userAgent: ctx.userAgent ?? null,
-        reason: 'locked',
-      },
-    }).catch(() => { /* best-effort */ });
+    await writeLoginEvent({
+      email: identifier,
+      success: false,
+      reason: 'ACCOUNT_LOCKED',
+      userId: user.id,
+      ...ctx,
+    });
     throw AppError.tooMany('Account temporarily locked. Try again later.');
   }
 
@@ -182,30 +229,24 @@ export const loginUser = async (email: string, password: string, ctx: LoginConte
           failed >= MAX_FAILED_LOGINS ? new Date(Date.now() + LOCK_DURATION_MS) : null,
       },
     });
-    void prisma.loginEvent.create({
-      data: {
-        userId: user.id,
-        email: user.email,
-        success: false,
-        ip: ctx.ip ?? null,
-        userAgent: ctx.userAgent ?? null,
-        reason: 'invalid_password',
-      },
-    }).catch(() => { /* best-effort */ });
+    await writeLoginEvent({
+      email: identifier,
+      success: false,
+      reason: 'INVALID_PASSWORD',
+      userId: user.id,
+      ...ctx,
+    });
     throw AppError.invalidCredentials();
   }
 
   if (!user.isActive) {
-    void prisma.loginEvent.create({
-      data: {
-        userId: user.id,
-        email: user.email,
-        success: false,
-        ip: ctx.ip ?? null,
-        userAgent: ctx.userAgent ?? null,
-        reason: 'disabled',
-      },
-    }).catch(() => { /* best-effort */ });
+    await writeLoginEvent({
+      email: identifier,
+      success: false,
+      reason: 'ACCOUNT_DISABLED',
+      userId: user.id,
+      ...ctx,
+    });
     throw AppError.forbidden('Account disabled');
   }
 
@@ -214,18 +255,9 @@ export const loginUser = async (email: string, password: string, ctx: LoginConte
     where: { id: user.id },
     data: { failedLoginCount: 0, lockedUntil: null },
   });
-
   // Success LoginEvent — fires AFTER the counters reset so the
-  // analytics dashboard shows the user as fully logged in.
-  void prisma.loginEvent.create({
-    data: {
-      userId: user.id,
-      email: user.email,
-      success: true,
-      ip: ctx.ip ?? null,
-      userAgent: ctx.userAgent ?? null,
-    },
-  }).catch(() => { /* best-effort */ });
+  // analytics dashboard shows the user as fully logged in. Best-effort.
+  await writeLoginEvent({ email: identifier, success: true, userId: user.id, ...ctx });
 
   return issueTokens(user);
 };

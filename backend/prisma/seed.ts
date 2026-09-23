@@ -4,7 +4,8 @@
  *
  * Run:  npm run db:seed
  *
- * Demo accounts (password = "1234" for all):
+ * Demo accounts (password = "Madarek2026!" for all — chosen to satisfy
+ * the 8-char minimum in the register policy, see auth.dto.ts):
  *   student@zu.edu.ly  → STUDENT (أحمد الزروق)
  *   teacher@zu.edu.ly  → TEACHER (د. سالم البوسيفي)
  *   admin@zu.edu.ly    → ADMIN   (إدارة الجامعة)
@@ -20,6 +21,7 @@ import {
   JobType,
   MaterialType,
   PrismaClient,
+  ResearchPaperStatus,
   Role,
   NotificationType,
 } from '@prisma/client';
@@ -138,11 +140,16 @@ async function main() {
   });
 
   // ─── Demo users ──────────────────────────────────────────────
-  const password = await hashPassword('1234');
+  // Demo password for all seeded accounts. It must satisfy the register
+  // policy (auth.dto.ts enforces an 8-char minimum) so the documented demo
+  // credentials are accepted by the real auth flows. Keep README.md's
+  // "After seeding…" block in sync when changing this value.
+  const password = await hashPassword('Madarek2026!');
 
   const student = await prisma.user.upsert({
     where: { email: 'student@zu.edu.ly' },
-    update: {},
+    // Re-seeding resets the demo password so it always matches the docs.
+    update: { passwordHash: password },
     create: {
       email: 'student@zu.edu.ly',
       passwordHash: password,
@@ -168,7 +175,7 @@ async function main() {
 
   const teacher = await prisma.user.upsert({
     where: { email: 'teacher@zu.edu.ly' },
-    update: {},
+    update: { passwordHash: password },
     create: {
       email: 'teacher@zu.edu.ly',
       passwordHash: password,
@@ -190,7 +197,7 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: 'admin@zu.edu.ly' },
-    update: {},
+    update: { passwordHash: password },
     create: {
       email: 'admin@zu.edu.ly',
       passwordHash: password,
@@ -205,7 +212,7 @@ async function main() {
 
   const quality = await prisma.user.upsert({
     where: { email: 'quality@zu.edu.ly' },
-    update: {},
+    update: { passwordHash: password },
     create: {
       email: 'quality@zu.edu.ly',
       passwordHash: password,
@@ -265,32 +272,45 @@ async function main() {
       create: { studentId: student.id, offeringId: offering.id, progressPct: 60 },
     });
 
-    // Schedule slot example
-    await prisma.scheduleSlot.create({
-      data: {
-        offeringId: offering.id,
-        dayOfWeek: 0,
-        startTime: '08:00',
-        endTime: '09:30',
-        room: 'قاعة 301',
-      },
+    // Schedule slot example. ScheduleSlot has no unique constraint, so a
+    // natural-key guard (offeringId, dayOfWeek, startTime) prevents a
+    // re-run from stacking duplicate slots.
+    const existingSlot = await prisma.scheduleSlot.findFirst({
+      where: { offeringId: offering.id, dayOfWeek: 0, startTime: '08:00' },
     });
+    if (!existingSlot) {
+      await prisma.scheduleSlot.create({
+        data: {
+          offeringId: offering.id,
+          dayOfWeek: 0,
+          startTime: '08:00',
+          endTime: '09:30',
+          room: 'قاعة 301',
+        },
+      });
+    }
   }
 
   // ─── A few assignments + grades ─────────────────────────────
   const seFirst = await prisma.courseOffering.findFirstOrThrow({
     where: { courseId: courses[0]!.id, term },
   });
-  await prisma.assignment.create({
-    data: {
-      offeringId: seFirst.id,
-      title: 'مشروع UML للتصميم',
-      type: AssignmentType.PROJECT,
-      dueAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      weight: 30,
-      maxScore: 100,
-    },
+  // Natural-key guard — Assignment has no unique constraint.
+  const existingAssignment = await prisma.assignment.findFirst({
+    where: { offeringId: seFirst.id, title: 'مشروع UML للتصميم' },
   });
+  if (!existingAssignment) {
+    await prisma.assignment.create({
+      data: {
+        offeringId: seFirst.id,
+        title: 'مشروع UML للتصميم',
+        type: AssignmentType.PROJECT,
+        dueAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        weight: 30,
+        maxScore: 100,
+      },
+    });
+  }
   await prisma.grade.upsert({
     where: { offeringId_studentId_kind: { offeringId: seFirst.id, studentId: student.id, kind: GradeKind.QUIZ_1 } },
     update: { score: 88 },
@@ -312,27 +332,34 @@ async function main() {
   });
 
   // ─── Materials demo ─────────────────────────────────────────
-  await prisma.material.createMany({
-    data: [
-      {
-        offeringId: seFirst.id,
-        uploaderId: teacher.id,
-        name: 'محاضرة_UML_الوحدة1.pdf',
-        type: MaterialType.PDF,
-        sizeBytes: BigInt(3_355_443),
-        url: 'https://example.invalid/UML1.pdf',
-        description: 'مخططات UML والكلاسات',
-      },
-      {
-        offeringId: seFirst.id,
-        uploaderId: teacher.id,
-        name: 'شرائح_DesignPatterns.pptx',
-        type: MaterialType.PPT,
-        sizeBytes: BigInt(13_002_752),
-        url: 'https://example.invalid/dp.pptx',
-      },
-    ],
-  });
+  // Material has no unique constraint — guard on (offeringId, name) so a
+  // re-run never duplicates demo files (existing view/download counters
+  // are preserved).
+  const materialDefs = [
+    {
+      name: 'محاضرة_UML_الوحدة1.pdf',
+      type: MaterialType.PDF,
+      sizeBytes: BigInt(3_355_443),
+      url: 'https://example.invalid/UML1.pdf',
+      description: 'مخططات UML والكلاسات',
+    },
+    {
+      name: 'شرائح_DesignPatterns.pptx',
+      type: MaterialType.PPT,
+      sizeBytes: BigInt(13_002_752),
+      url: 'https://example.invalid/dp.pptx',
+    },
+  ];
+  for (const m of materialDefs) {
+    const existing = await prisma.material.findFirst({
+      where: { offeringId: seFirst.id, name: m.name },
+    });
+    if (!existing) {
+      await prisma.material.create({
+        data: { ...m, offeringId: seFirst.id, uploaderId: teacher.id },
+      });
+    }
+  }
 
   // ─── Library books ──────────────────────────────────────────
   const books = [
@@ -345,8 +372,16 @@ async function main() {
     { title: 'Introduction to Algorithms', author: 'Cormen', category: 'prog', iconEmoji: '⚙️', themeColor: '#4F8EF7', rating: 4.8 },
     { title: 'Artificial Intelligence', author: 'Russell & Norvig', category: 'ai', iconEmoji: '🧠', themeColor: '#9B6FE8', rating: 4.7 },
   ];
+  // Book has no unique constraint — the natural key (title, author)
+  // guards the re-run. (Loan history references books, so a wipe-and-
+  // recreate would be unsafe here.)
   for (const b of books) {
-    await prisma.book.create({ data: { ...b, totalCopies: 3, availableCopies: 2 } });
+    const existing = await prisma.book.findFirst({
+      where: { title: b.title, author: b.author },
+    });
+    if (!existing) {
+      await prisma.book.create({ data: { ...b, totalCopies: 3, availableCopies: 2 } });
+    }
   }
 
   // ─── MOOCs ──────────────────────────────────────────────────
@@ -356,7 +391,11 @@ async function main() {
     { title: 'تسويق رقمي شامل', organization: 'شراكة Coursera', iconEmoji: '📱', category: 'business', durationHours: 30, level: 'مبتدئ', rating: 4.7, enrolled: 2100 },
     { title: 'تصميم UI/UX من الصفر', organization: 'شراكة Udemy', iconEmoji: '🎨', category: 'design', durationHours: 35, level: 'مبتدئ', rating: 4.9, enrolled: 3400 },
   ];
-  for (const m of moocs) await prisma.moocCourse.create({ data: m });
+  // MoocCourse has no unique constraint — guard on title.
+  for (const m of moocs) {
+    const existing = await prisma.moocCourse.findFirst({ where: { title: m.title } });
+    if (!existing) await prisma.moocCourse.create({ data: m });
+  }
 
   // ─── Jobs ───────────────────────────────────────────────────
   const jobs = [
@@ -365,7 +404,12 @@ async function main() {
     { title: 'تدريب صيفي — برمجة Python', company: 'ليبيا تك هاب', location: 'مصراتة · عن بُعد', type: JobType.INTERNSHIP, salary: 'مدفوع', category: 'intern', iconEmoji: '🐍' },
     { title: 'مصمم UI/UX', company: 'وكالة إبداع رقمي', location: 'عن بُعد', type: JobType.FREELANCE, salary: 'بالمشروع', category: 'remote', iconEmoji: '🎨' },
   ];
-  for (const j of jobs) await prisma.job.create({ data: j });
+  // Job has no unique constraint — guard on the (title, company) pair,
+  // the natural identity of a posting.
+  for (const j of jobs) {
+    const existing = await prisma.job.findFirst({ where: { title: j.title, company: j.company } });
+    if (!existing) await prisma.job.create({ data: j });
+  }
 
   // ─── Achievements ───────────────────────────────────────────
   const achievements = [
@@ -406,49 +450,75 @@ async function main() {
   }
 
   // ─── Notifications ──────────────────────────────────────────
-  // Realistic mix of notification types with proper time spread.
+  // Notification has no unique constraint on (userId, title), so each row
+  // carries a deterministic seed id — upserting on `id` keeps re-runs from
+  // duplicating while refreshing the relative demo timestamps.
   const D = (days: number, hours = 0) => new Date(Date.now() - (days * 24 + hours) * 60 * 60 * 1000);
-  await prisma.notification.createMany({
-    data: [
-      // Most recent — unread
-      { userId: student.id, type: NotificationType.URGENT, icon: '⚠️', title: 'موعد تسليم بحث هندسة البرمجيات', body: 'يجب رفع البحث قبل نهاية يوم الخميس', createdAt: D(0, 1) },
-      { userId: student.id, type: NotificationType.ACADEMIC, icon: '🎓', title: 'تم نشر بحثك في مكتبة الجامعة', body: '«تطبيق أنماط التصميم في مشاريع الويب الحديثة» متاح الآن للزملاء', createdAt: D(0, 4) },
-      { userId: student.id, type: NotificationType.ACADEMIC, icon: '📊', title: 'فجوة معرفية جديدة', body: 'تم رصد ضعف في مفهوم «التعقيد الزمني» — اطّلع على الفيديو المقترح', createdAt: D(0, 7) },
-      { userId: student.id, type: NotificationType.SOCIAL, icon: '💬', title: 'رد جديد من د. سالم البوسيفي', body: 'علّق على سؤالك في حلقة النقاش', createdAt: D(1) },
-      // Older — some read
-      { userId: student.id, type: NotificationType.ACADEMIC, icon: '📅', title: 'محاضرة شبكات الحاسوب', body: 'الأحد 8:00 صباحاً — قاعة A-301', createdAt: D(1, 5), readAt: D(1, 4) },
-      { userId: student.id, type: NotificationType.SYSTEM, icon: '✨', title: 'ميزة جديدة: تحليل الامتحانات', body: 'يمكنك الآن مراجعة كل امتحان أديتَه ومعرفة فجواتك المعرفية', createdAt: D(2), readAt: D(2) },
-      { userId: student.id, type: NotificationType.ACADEMIC, icon: '🎤', title: 'ندوة دولية: مستقبل AI في التعليم', body: 'انضم إلى الندوة يوم 12 يونيو مع متحدثين من Stanford', createdAt: D(3), readAt: D(3) },
-      { userId: student.id, type: NotificationType.URGENT, icon: '⏰', title: 'تذكير — اختبار قواعد البيانات', body: 'بعد 5 أيام · القاعة الرئيسية', createdAt: D(4), readAt: D(4) },
-      { userId: student.id, type: NotificationType.ACADEMIC, icon: '🏆', title: 'حصلت على شارة جديدة', body: '«مساهم نشط» — أكملتَ 5 محاضرات هذا الأسبوع', createdAt: D(5), readAt: D(5) },
-      { userId: student.id, type: NotificationType.SYSTEM, icon: '📚', title: 'تم تحديث المكتبة الإلكترونية', body: 'أضيف 4 بحوث جديدة في تخصصك', createdAt: D(7), readAt: D(7) },
-    ],
-  });
+  const notifications = [
+    // Most recent — unread
+    { id: 'seed-notif-01', userId: student.id, type: NotificationType.URGENT, icon: '⚠️', title: 'موعد تسليم بحث هندسة البرمجيات', body: 'يجب رفع البحث قبل نهاية يوم الخميس', createdAt: D(0, 1) },
+    { id: 'seed-notif-02', userId: student.id, type: NotificationType.ACADEMIC, icon: '🎓', title: 'تم نشر بحثك في مكتبة الجامعة', body: '«تطبيق أنماط التصميم في مشاريع الويب الحديثة» متاح الآن للزملاء', createdAt: D(0, 4) },
+    { id: 'seed-notif-03', userId: student.id, type: NotificationType.ACADEMIC, icon: '📊', title: 'فجوة معرفية جديدة', body: 'تم رصد ضعف في مفهوم «التعقيد الزمني» — اطّلع على الفيديو المقترح', createdAt: D(0, 7) },
+    { id: 'seed-notif-04', userId: student.id, type: NotificationType.SOCIAL, icon: '💬', title: 'رد جديد من د. سالم البوسيفي', body: 'علّق على سؤالك في حلقة النقاش', createdAt: D(1) },
+    // Older — some read
+    { id: 'seed-notif-05', userId: student.id, type: NotificationType.ACADEMIC, icon: '📅', title: 'محاضرة شبكات الحاسوب', body: 'الأحد 8:00 صباحاً — قاعة A-301', createdAt: D(1, 5), readAt: D(1, 4) },
+    { id: 'seed-notif-06', userId: student.id, type: NotificationType.SYSTEM, icon: '✨', title: 'ميزة جديدة: تحليل الامتحانات', body: 'يمكنك الآن مراجعة كل امتحان أديتَه ومعرفة فجواتك المعرفية', createdAt: D(2), readAt: D(2) },
+    { id: 'seed-notif-07', userId: student.id, type: NotificationType.ACADEMIC, icon: '🎤', title: 'ندوة دولية: مستقبل AI في التعليم', body: 'انضم إلى الندوة يوم 12 يونيو مع متحدثين من Stanford', createdAt: D(3), readAt: D(3) },
+    { id: 'seed-notif-08', userId: student.id, type: NotificationType.URGENT, icon: '⏰', title: 'تذكير — اختبار قواعد البيانات', body: 'بعد 5 أيام · القاعة الرئيسية', createdAt: D(4), readAt: D(4) },
+    { id: 'seed-notif-09', userId: student.id, type: NotificationType.ACADEMIC, icon: '🏆', title: 'حصلت على شارة جديدة', body: '«مساهم نشط» — أكملتَ 5 محاضرات هذا الأسبوع', createdAt: D(5), readAt: D(5) },
+    { id: 'seed-notif-10', userId: student.id, type: NotificationType.SYSTEM, icon: '📚', title: 'تم تحديث المكتبة الإلكترونية', body: 'أضيف 4 بحوث جديدة في تخصصك', createdAt: D(7), readAt: D(7) },
+  ];
+  for (const n of notifications) {
+    await prisma.notification.upsert({
+      where: { id: n.id },
+      update: {
+        type: n.type,
+        icon: n.icon,
+        title: n.title,
+        body: n.body,
+        createdAt: n.createdAt,
+        readAt: n.readAt ?? null,
+      },
+      create: n,
+    });
+  }
 
   // ─── Posts (community) ──────────────────────────────────────
-  await prisma.post.createMany({
-    data: [
-      { authorId: student.id, body: 'هل أحد لديه ملخص لمحاضرة الذكاء الاصطناعي اليوم؟', hashtags: ['ذكاء_اصطناعي'] },
-      { authorId: teacher.id, body: 'تم نشر شرائح المحاضرة الجديدة في المواد', hashtags: ['هندسة_البرمجيات'] },
-    ],
-  });
+  // Post has no unique constraint — guard on (authorId, body). Deleting
+  // would be unsafe (comments/reactions reference posts).
+  const postDefs = [
+    { authorId: student.id, body: 'هل أحد لديه ملخص لمحاضرة الذكاء الاصطناعي اليوم؟', hashtags: ['ذكاء_اصطناعي'] },
+    { authorId: teacher.id, body: 'تم نشر شرائح المحاضرة الجديدة في المواد', hashtags: ['هندسة_البرمجيات'] },
+  ];
+  for (const p of postDefs) {
+    const existing = await prisma.post.findFirst({
+      where: { authorId: p.authorId, body: p.body },
+    });
+    if (!existing) await prisma.post.create({ data: p });
+  }
 
   // ─── Virtual labs + AR ─────────────────────────────────────
-  await prisma.virtualLab.createMany({
-    data: [
-      { name: 'معمل الشبكات الافتراضي', platform: 'Cisco Packet Tracer', category: 'net', iconEmoji: '💻', totalExperiments: 18, themeColor: '#4F8EF7' },
-      { name: 'معمل الكيمياء الرقمي', platform: 'ChemSim', category: 'chem', iconEmoji: '⚗️', totalExperiments: 24, themeColor: '#3DD68C' },
-      { name: 'معمل الدوائر الكهربائية', platform: 'Tinkercad', category: 'eng', iconEmoji: '⚡', totalExperiments: 15, themeColor: '#F5A623' },
-    ],
-  });
+  // VirtualLab / ArExperience have no unique constraints — natural-key
+  // guards (name / title) keep re-runs duplicate-free.
+  const labDefs = [
+    { name: 'معمل الشبكات الافتراضي', platform: 'Cisco Packet Tracer', category: 'net', iconEmoji: '💻', totalExperiments: 18, themeColor: '#4F8EF7' },
+    { name: 'معمل الكيمياء الرقمي', platform: 'ChemSim', category: 'chem', iconEmoji: '⚗️', totalExperiments: 24, themeColor: '#3DD68C' },
+    { name: 'معمل الدوائر الكهربائية', platform: 'Tinkercad', category: 'eng', iconEmoji: '⚡', totalExperiments: 15, themeColor: '#F5A623' },
+  ];
+  for (const lab of labDefs) {
+    const existing = await prisma.virtualLab.findFirst({ where: { name: lab.name } });
+    if (!existing) await prisma.virtualLab.create({ data: lab });
+  }
 
-  await prisma.arExperience.createMany({
-    data: [
-      { title: 'تشريح الجسم البشري', subject: 'بيولوجيا', type: ArExperienceType.AR, iconEmoji: '🧬', themeColor: '#9B6FE8' },
-      { title: 'دوائر كهربائية حية', subject: 'هندسة كهربائية', type: ArExperienceType.AR, iconEmoji: '⚡', themeColor: '#F5A623' },
-      { title: 'جولة في الفضاء الافتراضي', subject: 'فلك وفيزياء', type: ArExperienceType.VR, iconEmoji: '🌍', themeColor: '#2EC4B6' },
-    ],
-  });
+  const arDefs = [
+    { title: 'تشريح الجسم البشري', subject: 'بيولوجيا', type: ArExperienceType.AR, iconEmoji: '🧬', themeColor: '#9B6FE8' },
+    { title: 'دوائر كهربائية حية', subject: 'هندسة كهربائية', type: ArExperienceType.AR, iconEmoji: '⚡', themeColor: '#F5A623' },
+    { title: 'جولة في الفضاء الافتراضي', subject: 'فلك وفيزياء', type: ArExperienceType.VR, iconEmoji: '🌍', themeColor: '#2EC4B6' },
+  ];
+  for (const ar of arDefs) {
+    const existing = await prisma.arExperience.findFirst({ where: { title: ar.title } });
+    if (!existing) await prisma.arExperience.create({ data: ar });
+  }
 
   // ════════════════════════════════════════════════════════════
   //  Flipped Classroom: lectures + chapters + checkpoints
@@ -472,12 +542,20 @@ async function main() {
     { name: 'الصيانة والتطوير', ordinal: 8 },
   ];
 
-  const concepts = [];
+  // KnowledgeConcept has no unique constraint — guard on (courseId, name)
+  // so re-runs reuse the same rows (chapters/checkpoints/mastery reference
+  // them by id).
+  const concepts: { id: string }[] = [];
   for (const c of conceptDefs) {
-    const created = await prisma.knowledgeConcept.create({
-      data: { courseId: seCourse.id, name: c.name, ordinal: c.ordinal },
+    let concept = await prisma.knowledgeConcept.findFirst({
+      where: { courseId: seCourse.id, name: c.name },
     });
-    concepts.push(created);
+    if (!concept) {
+      concept = await prisma.knowledgeConcept.create({
+        data: { courseId: seCourse.id, name: c.name, ordinal: c.ordinal },
+      });
+    }
+    concepts.push(concept);
   }
 
   // 3 lectures with chapters and embedded checkpoints
@@ -560,18 +638,40 @@ async function main() {
     },
   ];
 
+  // Lectures have no unique constraint. Re-runs match on (offeringId,
+  // title), refresh the row, and rebuild its chapters/checkpoints — the
+  // lecture row itself is never deleted because WatchEvents (and mastery
+  // stats derived from them) reference it.
   for (const def of lectureDefs) {
-    const lec = await prisma.lecture.create({
-      data: {
-        offeringId: seOffering.id,
-        title: def.title,
-        description: def.description,
-        ordinal: def.ordinal,
-        durationSec: def.durationSec,
-        videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
-        posterUrl: '/brand/madarek-mark.svg',
-      },
+    let lec = await prisma.lecture.findFirst({
+      where: { offeringId: seOffering.id, title: def.title },
     });
+    if (!lec) {
+      lec = await prisma.lecture.create({
+        data: {
+          offeringId: seOffering.id,
+          title: def.title,
+          description: def.description,
+          ordinal: def.ordinal,
+          durationSec: def.durationSec,
+          videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+          posterUrl: '/brand/madarek-mark.svg',
+        },
+      });
+    } else {
+      await prisma.lecture.update({
+        where: { id: lec.id },
+        data: {
+          description: def.description,
+          ordinal: def.ordinal,
+          durationSec: def.durationSec,
+          videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+          posterUrl: '/brand/madarek-mark.svg',
+        },
+      });
+      await prisma.lectureChapter.deleteMany({ where: { lectureId: lec.id } });
+      await prisma.lectureCheckpoint.deleteMany({ where: { lectureId: lec.id } });
+    }
     let chOrd = 0;
     for (const ch of def.chapters) {
       await prisma.lectureChapter.create({
@@ -620,102 +720,102 @@ async function main() {
   }
 
   // ─── Sample research papers across statuses ────────────────
-  await prisma.researchPaper.create({
-    data: {
+  // ResearchPaper has no unique constraint — guard on (studentId, title).
+  // (Annotations reference papers, so wipe-and-recreate would be unsafe.)
+  const daysAgo = (days: number, plusMs = 0) => new Date(Date.now() - days * 24 * 60 * 60 * 1000 + plusMs);
+  const paperDefs = [
+    {
       studentId: student.id,
       reviewerId: teacher.id,
       offeringId: seOffering.id,
       title: 'تطبيق أنماط التصميم في مشاريع الويب الحديثة',
       abstract:
         'يستعرض هذا البحث استخدام أنماط التصميم Singleton، Factory، و Observer في تطبيقات الويب التفاعلية المبنية بـ React.js، مع دراسة حالة على تطبيقات الجامعات الذكية.',
-      status: 'GRADED',
+      status: ResearchPaperStatus.GRADED,
       plagiarismPct: 8.2,
       aiContentPct: 12.5,
       grade: 17,
       feedback: 'بحث جيد التنظيم. يُنصح بتعميق دراسة الحالة بمزيد من البيانات الكمية.',
-      uploadedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-      scannedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000 + 60_000),
-      gradedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      uploadedAt: daysAgo(14),
+      scannedAt: daysAgo(14, 60_000),
+      gradedAt: daysAgo(7),
     },
-  });
-  // A second paper that already passed checks but waits for review.
-  await prisma.researchPaper.create({
-    data: {
+    // A second paper that already passed checks but waits for review.
+    {
       studentId: student.id,
       offeringId: seOffering.id,
       title: 'تحليل أداء قواعد البيانات NoSQL في تطبيقات Real-Time',
       abstract:
         'مقارنة عملية بين MongoDB، Redis، و Cassandra في حالات استخدام محادثة لحظية وقياس زمن الاستجابة تحت أحمال متفاوتة.',
-      status: 'CHECKS_PASSED',
+      status: ResearchPaperStatus.CHECKS_PASSED,
       plagiarismPct: 6.4,
       aiContentPct: 11.2,
-      uploadedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      scannedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 60_000),
+      uploadedAt: daysAgo(2),
+      scannedAt: daysAgo(2, 60_000),
     },
-  });
-
-  // Three published papers to populate the public library archive.
-  // Spec: published papers go into the university's electronic library.
-  await prisma.researchPaper.create({
-    data: {
+    // Three published papers to populate the public library archive.
+    // Spec: published papers go into the university's electronic library.
+    {
       studentId: student.id,
       reviewerId: teacher.id,
       offeringId: seOffering.id,
       title: 'استخدام التعلم العميق في تشخيص الأمراض الجلدية: مراجعة منهجية',
       abstract:
         'مراجعة منهجية تستعرض 27 دراسة حديثة (2020-2025) في توظيف الشبكات العصبية الالتفافية لتصنيف صور الأمراض الجلدية، مع تحليل دقّة النماذج وحدود التطبيق السريري.',
-      status: 'PUBLISHED',
+      status: ResearchPaperStatus.PUBLISHED,
       fileUrl: '/api/v1/files/papers/sample.pdf',
       plagiarismPct: 4.1,
       aiContentPct: 7.8,
       grade: 18,
       feedback: 'بحث متميّز يُنصح بنشره في مجلة محكّمة.',
-      uploadedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
-      scannedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000 + 60_000),
-      gradedAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000),
-      publishedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+      uploadedAt: daysAgo(60),
+      scannedAt: daysAgo(60, 60_000),
+      gradedAt: daysAgo(50),
+      publishedAt: daysAgo(45),
     },
-  });
-  await prisma.researchPaper.create({
-    data: {
+    {
       studentId: student.id,
       reviewerId: teacher.id,
       offeringId: seOffering.id,
       title: 'تأثير استراتيجية الصف المعكوس على تحصيل طلاب الهندسة في جامعة الزاوية',
       abstract:
         'دراسة شبه تجريبية على 84 طالباً من أقسام الهندسة، تقارن متوسط التحصيل بين فصلين أحدهما اعتمد الصف المعكوس مدعوماً بمنصة مدارك. النتائج تُظهر فرقاً ذا دلالة إحصائية لصالح المجموعة التجريبية.',
-      status: 'PUBLISHED',
+      status: ResearchPaperStatus.PUBLISHED,
       fileUrl: '/api/v1/files/papers/sample.pdf',
       plagiarismPct: 5.6,
       aiContentPct: 4.3,
       grade: 19,
       feedback: 'دراسة دقيقة منهجياً وتمثّل إضافة حقيقية للحقل.',
-      uploadedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-      scannedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000 + 60_000),
-      gradedAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000),
-      publishedAt: new Date(Date.now() - 75 * 24 * 60 * 60 * 1000),
+      uploadedAt: daysAgo(90),
+      scannedAt: daysAgo(90, 60_000),
+      gradedAt: daysAgo(80),
+      publishedAt: daysAgo(75),
     },
-  });
-  await prisma.researchPaper.create({
-    data: {
+    {
       studentId: student.id,
       reviewerId: teacher.id,
       offeringId: seOffering.id,
       title: 'تحليل أمن تطبيقات الجوّال المصرفية الليبية',
       abstract:
         'فحص أمني لأبرز ثلاثة تطبيقات مصرفية محلية، تحت أربعة محاور: تشفير الاتصال، إدارة الجلسة، تخزين البيانات الحساسة، ومقاومة الهندسة العكسية. تقدّم الدراسة توصيات عملية لرفع المستوى الأمني.',
-      status: 'PUBLISHED',
+      status: ResearchPaperStatus.PUBLISHED,
       fileUrl: '/api/v1/files/papers/sample.pdf',
       plagiarismPct: 3.8,
       aiContentPct: 9.2,
       grade: 16,
       feedback: 'تطبيق ميداني قيّم. يُحسّن بإضافة مقابلات مع مسؤولي الأمن.',
-      uploadedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
-      scannedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000 + 60_000),
-      gradedAt: new Date(Date.now() - 110 * 24 * 60 * 60 * 1000),
-      publishedAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000),
+      uploadedAt: daysAgo(120),
+      scannedAt: daysAgo(120, 60_000),
+      gradedAt: daysAgo(110),
+      publishedAt: daysAgo(100),
     },
-  });
+  ];
+  for (const p of paperDefs) {
+    const existing = await prisma.researchPaper.findFirst({
+      where: { studentId: p.studentId, title: p.title },
+    });
+    if (!existing) await prisma.researchPaper.create({ data: p });
+  }
 
   // ─── Watch event so the dashboard "Continue Learning" makes sense ──
   const firstLecture = await prisma.lecture.findFirstOrThrow({
@@ -1043,6 +1143,10 @@ async function main() {
     TEACHER: ['RESEARCH_GRADE_OWN', 'RESEARCH_PUBLISH', 'EXAMS_AUTHOR', 'CURRICULUM_EDIT_OWN', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN'],
     ADMIN: ['USERS_MANAGE', 'ROLES_ASSIGN', 'TEACHERS_VERIFY', 'ANNOUNCE_PLATFORM', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN', 'CURRICULUM_EDIT_ANY', 'RESEARCH_PUBLISH'],
     QUALITY: ['QUALITY_VIEW', 'QUALITY_REPORT', 'EXAMS_MODERATE', 'ANNOUNCE_FACULTY'],
+    // Mirrors ROLE_CAPS.OWNER in src/lib/permissions.ts — Record<Role, …>
+    // requires every enum member, and the RolePermission table should
+    // reflect the owner's full capability set too.
+    OWNER: ['RESEARCH_GRADE_OWN', 'RESEARCH_GRADE_ANY', 'RESEARCH_PUBLISH', 'EXAMS_AUTHOR', 'EXAMS_MODERATE', 'EXAMS_TAKE', 'CURRICULUM_EDIT_OWN', 'CURRICULUM_EDIT_ANY', 'USERS_MANAGE', 'ROLES_ASSIGN', 'TEACHERS_VERIFY', 'QUALITY_VIEW', 'QUALITY_REPORT', 'ANNOUNCE_PLATFORM', 'ANNOUNCE_FACULTY', 'COMPETITIONS_RUN', 'EVENTS_RUN'],
   };
   for (const [role, caps] of Object.entries(ROLE_CAPS)) {
     for (const cap of caps) {

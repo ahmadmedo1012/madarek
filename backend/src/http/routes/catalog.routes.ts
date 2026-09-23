@@ -60,11 +60,14 @@ router.post(
       const result = await prisma.$transaction(async (tx) => {
         const book = await tx.book.findUnique({ where: { id: req.body.bookId } });
         if (!book) throw AppError.notFound('Book not found');
-        if (book.availableCopies <= 0) throw AppError.conflict('No copies available');
-        await tx.book.update({
-          where: { id: book.id },
+        // Guarded decrement: only a request that actually flips
+        // availableCopies > 0 → ≥ 0 can claim a copy, so two concurrent
+        // borrows can't both take the last copy (classic check-then-update race).
+        const claim = await tx.book.updateMany({
+          where: { id: book.id, availableCopies: { gt: 0 } },
           data: { availableCopies: { decrement: 1 } },
         });
+        if (claim.count === 0) throw AppError.conflict('No copies available');
         return tx.loan.create({
           data: {
             bookId: book.id,
@@ -82,18 +85,31 @@ router.post(
 
 router.post('/library/loans/:id/return', async (req, res, next) => {
   try {
-    const loan = await prisma.loan.findUnique({ where: { id: req.params.id! } });
+    const loan = await prisma.loan.findUnique({
+      where: { id: req.params.id! },
+      select: { id: true, userId: true, bookId: true },
+    });
     if (!loan || loan.userId !== req.user!.id) throw AppError.notFound();
-    if (loan.status !== LoanStatus.ACTIVE) throw AppError.conflict('Loan already closed');
     const updated = await prisma.$transaction(async (tx) => {
-      await tx.book.update({
-        where: { id: loan.bookId },
-        data: { availableCopies: { increment: 1 } },
-      });
-      return tx.loan.update({
-        where: { id: loan.id },
+      // Claim the return INSIDE the transaction: the updateMany guard means
+      // only one concurrent return can flip ACTIVE → RETURNED; the loser
+      // gets a 409 instead of double-incrementing the book's copies.
+      const claim = await tx.loan.updateMany({
+        where: { id: loan.id, userId: loan.userId, status: LoanStatus.ACTIVE },
         data: { returnedAt: new Date(), status: LoanStatus.RETURNED },
       });
+      if (claim.count === 0) throw AppError.conflict('Loan already closed');
+      // Restore the copy, but never above totalCopies (data-integrity clamp).
+      const book = await tx.book.findUnique({
+        where: { id: loan.bookId },
+        select: { totalCopies: true },
+      });
+      if (!book) throw AppError.notFound('Book not found');
+      await tx.book.updateMany({
+        where: { id: loan.bookId, availableCopies: { lt: book.totalCopies } },
+        data: { availableCopies: { increment: 1 } },
+      });
+      return tx.loan.findUnique({ where: { id: loan.id } });
     });
     res.json({ data: updated });
   } catch (e) {
@@ -152,6 +168,7 @@ router.post('/mooc/:id/enroll', async (req, res, next) => {
   try {
     const moocId = req.params.id!;
     const userId = req.user!.id;
+<<<<<<< HEAD
     // Wrap in a transaction AND only increment the counter on a fresh
     // enrollment. Previously the counter was incremented on every call
     // (even re-enrolls), inflating the displayed "enrolled" count
@@ -179,6 +196,34 @@ router.post('/mooc/:id/enroll', async (req, res, next) => {
     const { _fresh, ...data } = enrolled;
     void _fresh;
     res.status(201).json({ data });
+=======
+    // Only a NEW enrollment row bumps the counter — a repeat enroll used to
+    // inflate `enrolled` on every call (upsert + unconditional increment).
+    const enroll = async () =>
+      prisma.$transaction(async (tx) => {
+        const existing = await tx.moocEnrollment.findUnique({
+          where: { moocId_userId: { moocId, userId } },
+        });
+        if (existing) return existing;
+        const created = await tx.moocEnrollment.create({ data: { moocId, userId } });
+        await tx.moocCourse.update({ where: { id: moocId }, data: { enrolled: { increment: 1 } } });
+        return created;
+      });
+    try {
+      const enrolled = await enroll();
+      res.status(201).json({ data: enrolled });
+    } catch (e) {
+      // P2002 = a concurrent request created the row first — treat as enrolled.
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        const enrolled = await prisma.moocEnrollment.findUniqueOrThrow({
+          where: { moocId_userId: { moocId, userId } },
+        });
+        res.status(201).json({ data: enrolled });
+        return;
+      }
+      throw e;
+    }
+>>>>>>> 75e9ee6 (feat(backend): submissions API, write-path correctness, auth hardening, telemetry)
   } catch (e) {
     next(e);
   }
@@ -494,6 +539,7 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
         _count: { select: { enrollments: true, lectures: true } },
       },
       take: 50,
+      orderBy: { createdAt: 'desc' },
     });
     const courseStats = offerings.map((o) => ({
       code: o.course.code,
@@ -536,42 +582,52 @@ const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
   },
 });
 
-router.get('/admin/courses', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
-  try {
-    const courses = await prisma.course.findMany({
-      orderBy: [{ code: 'asc' }],
-      include: adminCourseInclude,
-    });
+router.get(
+  '/admin/courses',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(paginationSchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const { page, limit } = req.query as unknown as { page: number; limit: number };
+      const [courses, total] = await Promise.all([
+        prisma.course.findMany({
+          skip: (page - 1) * limit,
+          take: limit,
+          orderBy: [{ code: 'asc' }],
+          include: adminCourseInclude,
+        }),
+        prisma.course.count(),
+      ]);
 
-    const data = courses.map((c) => {
-      const totalEnrollments = c.offerings.reduce((s, o) => s + o._count.enrollments, 0);
-      const totalLectures = c.offerings.reduce((s, o) => s + o._count.lectures, 0);
-      const totalMaterials = c.offerings.reduce((s, o) => s + o._count.materials, 0);
-      return {
-        id: c.id,
-        code: c.code,
-        name: c.name,
-        credits: c.credits,
-        themeColor: c.themeColor,
-        faculty: c.department?.faculty?.name ?? null,
-        facultyEmoji: c.department?.faculty?.iconEmoji ?? null,
-        department: c.department?.name ?? null,
-        offeringCount: c._count.offerings,
-        conceptCount: c._count.concepts,
-        totalEnrollments,
-        totalLectures,
-        totalMaterials,
-        recentOfferings: c.offerings.map((o) => ({
-          id: o.id,
-          term: o.term,
-          enrollments: o._count.enrollments,
-          lectures: o._count.lectures,
-          teacher: o.teacher ? `${o.teacher.firstName} ${o.teacher.lastName}` : null,
-        })),
-      };
-    });
+      const data = courses.map((c) => {
+        const totalEnrollments = c.offerings.reduce((s, o) => s + o._count.enrollments, 0);
+        const totalLectures = c.offerings.reduce((s, o) => s + o._count.lectures, 0);
+        const totalMaterials = c.offerings.reduce((s, o) => s + o._count.materials, 0);
+        return {
+          id: c.id,
+          code: c.code,
+          name: c.name,
+          credits: c.credits,
+          themeColor: c.themeColor,
+          faculty: c.department?.faculty?.name ?? null,
+          facultyEmoji: c.department?.faculty?.iconEmoji ?? null,
+          department: c.department?.name ?? null,
+          offeringCount: c._count.offerings,
+          conceptCount: c._count.concepts,
+          totalEnrollments,
+          totalLectures,
+          totalMaterials,
+          recentOfferings: c.offerings.map((o) => ({
+            id: o.id,
+            term: o.term,
+            enrollments: o._count.enrollments,
+            lectures: o._count.lectures,
+            teacher: o.teacher ? `${o.teacher.firstName} ${o.teacher.lastName}` : null,
+          })),
+        };
+      });
 
-    res.json({ data });
+    res.json({ data, meta: buildMeta(page, limit, total) });
   } catch (e) { next(e); }
 });
 

@@ -11,7 +11,8 @@ import { AppError } from './errors.js';
  *  - TEACHER acts only on their own offerings (own = grade/curriculum scope).
  *
  * Effective capability set =
- *    role-defaults
+ *    role-defaults (DEFAULT_ROLE_CAPABILITIES)
+ *  + RolePermission rows for the role (DB layer, 30s-cached)
  *  + UserPermission grants
  *  − UserPermission revokes
  */
@@ -72,21 +73,103 @@ export const DEFAULT_ROLE_CAPABILITIES: Record<Role, Capability[]> = {
   ],
 };
 
+// ─────────────────────────────────────────────────────────────────
+// RolePermission DB layer
+//
+// The `RolePermission` table is the operator-editable extension of
+// DEFAULT_ROLE_CAPABILITIES. Until now it was seeded but never read —
+// grants added there had zero effect. Effective caps are now:
+//
+//     effective = (DEFAULT_ROLE_CAPABILITIES[role] ∪ RolePermission rows for role)
+//               + UserPermission grants
+//               − UserPermission revokes
+//
+// A short in-process cache (global, 30s TTL) avoids one RolePermission
+// query per `requireCapability` check. Nothing in the app writes
+// RolePermission at runtime (it is changed by operators/seed), so a
+// 30s staleness window is acceptable. `clearRolePermissionCache()` is
+// exported for tests and for future write paths.
+// ─────────────────────────────────────────────────────────────────
+const ROLE_PERMISSION_CACHE_TTL_MS = 30_000;
+
+interface RolePermissionRow {
+  role: Role;
+  capability: Capability;
+}
+
+interface RolePermissionCache {
+  rows: RolePermissionRow[];
+  fetchedAt: number;
+}
+
+let rolePermissionCache: RolePermissionCache | null = null;
+let rolePermissionFetch: Promise<RolePermissionRow[]> | null = null;
+
+async function fetchRolePermissions(): Promise<RolePermissionRow[]> {
+  try {
+    return await prisma.rolePermission.findMany({
+      select: { role: true, capability: true },
+    });
+  } catch {
+    // Table empty / unreachable (e.g. transient DB blip) → pure fallback.
+    return [];
+  }
+}
+
+async function getRolePermissions(): Promise<RolePermissionRow[]> {
+  const now = Date.now();
+  if (rolePermissionCache && now - rolePermissionCache.fetchedAt < ROLE_PERMISSION_CACHE_TTL_MS) {
+    return rolePermissionCache.rows;
+  }
+  // Coalesce concurrent misses into one query (no stampede).
+  if (!rolePermissionFetch) {
+    rolePermissionFetch = fetchRolePermissions().finally(() => {
+      rolePermissionFetch = null;
+    });
+  }
+  const rows = await rolePermissionFetch;
+  rolePermissionCache = { rows, fetchedAt: Date.now() };
+  return rows;
+}
+
+/** Test/utility hook — drop the in-process RolePermission cache. */
+export function clearRolePermissionCache(): void {
+  rolePermissionCache = null;
+}
+
 /**
- * Compute the effective capability set for a user.
- * Cached per-request would be ideal, but for now we do one DB call per check.
+ * Pure merge of the three capability layers. Exported so the merge
+ * semantics are unit-testable without a DB.
  */
-export async function getEffectiveCapabilities(userId: string, role: Role): Promise<Set<Capability>> {
-  const overrides = await prisma.userPermission.findMany({
-    where: { userId },
-    select: { capability: true, grant: true },
-  });
+export function mergeCapabilities(
+  role: Role,
+  dbRoleRows: RolePermissionRow[],
+  userOverrides: ReadonlyArray<{ capability: Capability; grant: boolean }>,
+): Set<Capability> {
   const caps = new Set<Capability>(DEFAULT_ROLE_CAPABILITIES[role]);
-  for (const o of overrides) {
+  for (const row of dbRoleRows) {
+    if (row.role === role) caps.add(row.capability);
+  }
+  for (const o of userOverrides) {
     if (o.grant) caps.add(o.capability);
     else caps.delete(o.capability);
   }
   return caps;
+}
+
+/**
+ * Compute the effective capability set for a user.
+ * One query per call for user overrides + a 30s-cached role table read.
+ */
+export async function getEffectiveCapabilities(userId: string, role: Role): Promise<Set<Capability>> {
+  const [dbRoleRows, overrides] = await Promise.all([
+    getRolePermissions(),
+    prisma.userPermission.findMany({
+      where: { userId },
+      select: { capability: true, grant: true },
+    }),
+  ]);
+  return mergeCapabilities(role, dbRoleRows, overrides);
 }
 
 /**

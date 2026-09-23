@@ -26,14 +26,20 @@ export const signRefreshToken = (userId: string, tokenVersion: number) =>
     refreshOpts,
   );
 
+// Verify options — algorithm MUST be pinned. Without an explicit allow-list
+// jwt.verify accepts tokens signed with *any* algorithm the key type permits
+// (incl. `none` on some runtimes), which opens algorithm-confusion downgrade.
+// We only ever sign HS256, so we only ever accept HS256.
+const VERIFY_ALGORITHMS: jwt.VerifyOptions = { algorithms: ['HS256'] };
+
 export const verifyAccessToken = (token: string): AccessTokenPayload => {
-  const payload = jwt.verify(token, env.JWT_ACCESS_SECRET) as AccessTokenPayload;
+  const payload = jwt.verify(token, env.JWT_ACCESS_SECRET, VERIFY_ALGORITHMS) as AccessTokenPayload;
   if (payload.type !== 'access') throw new Error('Wrong token type');
   return payload;
 };
 
 export const verifyRefreshToken = (token: string): RefreshTokenPayload => {
-  const payload = jwt.verify(token, env.JWT_REFRESH_SECRET) as RefreshTokenPayload;
+  const payload = jwt.verify(token, env.JWT_REFRESH_SECRET, VERIFY_ALGORITHMS) as RefreshTokenPayload;
   if (payload.type !== 'refresh') throw new Error('Wrong token type');
   return payload;
 };

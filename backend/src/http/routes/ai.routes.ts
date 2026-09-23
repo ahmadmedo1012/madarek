@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { AiMessageRole, Role } from '@prisma/client';
+import { AiMessageRole, Prisma, Role } from '@prisma/client';
 import rateLimit from 'express-rate-limit';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+import { logger } from '../../logger.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -123,26 +124,87 @@ async function composeReply(userId: string, message: string, role: Role): Promis
   return GENERIC_RESPONSES[Math.floor(Math.random() * GENERIC_RESPONSES.length)]!;
 }
 
+/**
+ * AI telemetry writer — the writer side of /owner/ai-metrics.
+ * BEST-EFFORT: a telemetry failure must never fail the chat request.
+ *
+ * Honest metrics note: the chat reply is composed locally by
+ * `composeReply` (mastery-aware templates) — no external LLM is called,
+ * so there are no real token counts. We record the real latency and
+ * model tag; token fields stay at their 0 defaults rather than
+ * fabricating estimates. Accepts either the root client or a
+ * transaction client.
+ */
+const AI_CHAT_MODEL = 'gap-aware-composer';
+const writeAiTelemetry = async (
+  client: Prisma.TransactionClient,
+  data: { userId: string; latencyMs: number; success: boolean; errorMessage?: string },
+): Promise<void> => {
+  try {
+    await client.aiTelemetry.create({
+      data: {
+        userId: data.userId,
+        feature: 'chat',
+        model: AI_CHAT_MODEL,
+        latencyMs: data.latencyMs,
+        success: data.success,
+        errorMessage: data.errorMessage ?? null,
+      },
+    });
+  } catch (err) {
+    logger.warn({ err }, 'aiTelemetry write failed (non-blocking)');
+  }
+};
+
 router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => {
+  const startedAt = Date.now();
   try {
     const userId = req.user!.id;
     const { conversationId, message } = req.body as z.infer<typeof chatSchema>;
-    const conv =
-      conversationId && (await prisma.aiConversation.findFirst({ where: { id: conversationId, userId } }))
-        ? await prisma.aiConversation.findUnique({ where: { id: conversationId } })
-        : await prisma.aiConversation.create({ data: { userId, title: message.slice(0, 60) } });
 
-    await prisma.aiMessage.create({
-      data: { conversationId: conv!.id, role: AiMessageRole.USER, content: message },
-    });
+    // Single conversation lookup (previously a conditional DOUBLE lookup —
+    // findFirst then findUnique on the same row). A provided id that
+    // doesn't resolve to one of the caller's conversations is a 404,
+    // not a silent new-conversation creation that strands the id.
+    const conv = conversationId
+      ? await prisma.aiConversation.findFirst({ where: { id: conversationId, userId } })
+      : null;
+    if (conversationId && !conv) throw AppError.notFound('Conversation not found');
 
     const reply = await composeReply(userId, message, req.user!.role);
-    const assistantMsg = await prisma.aiMessage.create({
-      data: { conversationId: conv!.id, role: AiMessageRole.ASSISTANT, content: reply },
-    });
 
-    res.json({ data: { conversationId: conv!.id, reply: assistantMsg.content } });
+    // All chat writes (conversation create + both messages + telemetry)
+    // in ONE transaction — previously three separate non-transactional
+    // writes that could strand an orphan user message when a later write failed.
+    const { conversationId: finalId, assistantContent } = await prisma.$transaction(
+      async (tx) => {
+        const conversation =
+          conv ?? (await tx.aiConversation.create({ data: { userId, title: message.slice(0, 60) } }));
+        await tx.aiMessage.create({
+          data: { conversationId: conversation.id, role: AiMessageRole.USER, content: message },
+        });
+        const assistantMsg = await tx.aiMessage.create({
+          data: { conversationId: conversation.id, role: AiMessageRole.ASSISTANT, content: reply },
+        });
+        await writeAiTelemetry(tx, {
+          userId,
+          latencyMs: Date.now() - startedAt,
+          success: true,
+        });
+        return { conversationId: conversation.id, assistantContent: assistantMsg.content };
+      },
+    );
+
+    res.json({ data: { conversationId: finalId, reply: assistantContent } });
   } catch (e) {
+    // Failure telemetry (best-effort) so /owner/ai-metrics successRate is
+    // grounded in real outcomes, not just happy paths.
+    await writeAiTelemetry(prisma, {
+      userId: req.user?.id ?? 'unknown',
+      latencyMs: Date.now() - startedAt,
+      success: false,
+      errorMessage: e instanceof Error ? e.message.slice(0, 200) : 'unknown error',
+    });
     next(e);
   }
 });

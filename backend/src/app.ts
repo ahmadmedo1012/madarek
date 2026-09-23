@@ -37,6 +37,10 @@ import collegesRoutes from './http/routes/colleges.routes.js';
 import adminExtrasRoutes from './http/routes/admin-extras.routes.js';
 import studentDashboardRoutes from './http/routes/student-dashboard.routes.js';
 import teacherDashboardRoutes from './http/routes/teacher-dashboard.routes.js';
+// Mounted by the submissions workstream (WS-B1). The router handles
+// POST /offerings/:offeringId/assignments/:assignmentId/submit and
+// POST /submissions/:id/grade under the /api/v1 prefix.
+import submissionsRoutes from './http/routes/submissions.routes.js';
 import { themeRouter } from './modules/theme/router.js';
 import { onboardingRouter } from './modules/onboarding/router.js';
 import { milestonesRouter } from './modules/milestones/router.js';
@@ -56,8 +60,12 @@ export function createApp() {
   app.use(
     cors({
       origin: (origin, cb) => {
+        // Reject with cb(null, false) — passing an Error to cb makes the
+        // cors middleware THROW, which the error handler turns into a 500
+        // (leaky + noisy). cb(null, false) answers without CORS headers,
+        // which the browser reports as a normal blocked cross-origin call.
         if (!origin || env.corsOrigins.includes(origin)) cb(null, true);
-        else cb(new Error(`Origin ${origin} not allowed`));
+        else cb(null, false);
       },
       credentials: true,
     }),
@@ -73,18 +81,19 @@ export function createApp() {
   const BUILD_ID = '2026-09-24T00:00Z-hardening-pass';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
+    // Race the DB ping against a 5s timeout so a sleepy Neon
+    // (cold-start wake-up can take 2-4s) doesn't cause Render to
+    // mark the service unhealthy and forcibly restart it. If the
+    // DB doesn't respond within 5s we surface 503 — but Render's
+    // healthcheck default is 60s with 5 retries, so a 5s blip is
+    // absorbed without restart.
+    let timer: NodeJS.Timeout | undefined;
     try {
-      // Race the DB ping against a 5s timeout so a sleepy Neon
-      // (cold-start wake-up can take 2-4s) doesn't cause Render to
-      // mark the service unhealthy and forcibly restart it. If the
-      // DB doesn't respond within 5s we surface 503 — but Render's
-      // healthcheck default is 60s with 5 retries, so a 5s blip is
-      // absorbed without restart.
       await Promise.race([
         prisma.$queryRaw`SELECT 1`,
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('healthcheck timeout')), 5_000),
-        ),
+        new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error('healthcheck timeout')), 5_000);
+        }),
       ]);
       res.json({
         ok: true,
@@ -103,6 +112,11 @@ export function createApp() {
           details: { latencyMs: Date.now() - start },
         },
       });
+    } finally {
+      // Clear the race timer whichever side won — otherwise every fast
+      // healthcheck leaks a pending 5s timer (keeps the event loop hot
+      // and skews any timer-based metrics).
+      if (timer) clearTimeout(timer);
     }
   });
 
@@ -137,6 +151,7 @@ export function createApp() {
   app.use('/api/v1/admin', adminExtrasRoutes);
   app.use('/api/v1', studentDashboardRoutes);
   app.use('/api/v1/teacher', teacherDashboardRoutes);
+  app.use('/api/v1', submissionsRoutes); // /offerings/:id/assignments/:id/submit, /submissions/:id/grade (WS-B1)
   app.use('/api/v1/me/theme', themeRouter);
   app.use('/api/v1/me/onboarding', onboardingRouter);
   app.use('/api/v1/me/milestones', milestonesRouter);

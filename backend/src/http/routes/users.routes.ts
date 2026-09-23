@@ -99,6 +99,13 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
     if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER && req.user!.id !== id) throw AppError.forbidden();
     const data: typeof req.body = { ...req.body };
     if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) delete data.isActive; // only admins/owner toggle active
+    // Self-deactivation guard — an ADMIN/OWNER who deactivates their own
+    // account instantly loses the ability to undo it (the API requires an
+    // active privileged account to re-activate). The OWNER user-management
+    // route has the same guard; this is the ADMIN-facing path.
+    if (data.isActive === false && id === req.user!.id) {
+      throw AppError.forbidden('Cannot deactivate your own account');
+    }
     const user = await prisma.user.update({
       where: { id },
       data,

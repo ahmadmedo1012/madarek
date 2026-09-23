@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -137,17 +137,75 @@ router.get(
 );
 
 // ── POST /owner/users/:id/role — change user role ────────────────
-const changeRoleSchema = z.object({
-  role: z.nativeEnum(Role),
-});
+/**
+ * Optional provisioning payload for TEACHER promotions:
+ * a TeacherProfile needs a home department; we default to the student's
+ * current department when promoting STUDENT→TEACHER, but allow an explicit
+ * override for every other promotion path.
+ */
+export const changeRoleSchema = z
+  .object({
+    role: z.nativeEnum(Role),
+    departmentId: z.string().cuid().optional(),
+    specialty: z.string().min(2).max(120).optional(),
+  })
+  .strict();
+
+export const toggleStatusSchema = z
+  .object({
+    isActive: z.boolean(),
+  })
+  .strict();
+
+export const upsertSettingSchema = z
+  .object({
+    value: z.string(),
+    category: z.string().optional(),
+  })
+  .strict();
+
+export const toggleFlagSchema = z
+  .object({
+    enabled: z.boolean(),
+  })
+  .strict();
+
+/** Platform-setting key: lowercase identifier-ish tokens only. */
+export const settingKeySchema = z
+  .string()
+  .max(100)
+  .regex(/^[a-z0-9_.:-]+$/i, 'Setting key must be alphanumeric/dot/dash/colon/underscore');
+
+/**
+ * Guard: never demote or deactivate the last ACTIVE OWNER.
+ * Without at least one active OWNER the platform loses its master
+ * governance role (OWNER is invitation-only and cannot be re-minted
+ * via any API) — a self-inflicted lockout. 409, not 403: the request
+ * is understood and valid, but applying it would leave the system in
+ * an unusable state.
+ */
+const assertNotLastActiveOwner = async (targetId: string): Promise<void> => {
+  const otherActiveOwners = await prisma.user.count({
+    where: { role: Role.OWNER, isActive: true, id: { not: targetId } },
+  });
+  if (otherActiveOwners === 0) {
+    throw AppError.conflict(
+      'Cannot demote or deactivate the last active OWNER — the platform must retain at least one active OWNER',
+    );
+  }
+};
 
 router.post(
   '/users/:id/role',
   validate(changeRoleSchema),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const { role } = req.body as { role: Role };
+      const id = req.params.id!;
+      const { role, departmentId, specialty } = req.body as {
+        role: Role;
+        departmentId?: string;
+        specialty?: string;
+      };
 
       // Self-demotion guard
       if (id === req.user!.id) {
@@ -159,26 +217,72 @@ router.post(
         throw AppError.forbidden('Cannot promote to OWNER via API');
       }
 
-      const user = await prisma.user.findUnique({ where: { id } });
+      const user = await prisma.user.findUnique({
+        where: { id },
+        include: { studentProfile: { select: { departmentId: true } }, teacherProfile: { select: { userId: true } } },
+      });
       if (!user) throw AppError.notFound('User not found');
 
       const oldRole = user.role;
 
-      const updated = await prisma.user.update({
-        where: { id },
-        data: { role },
-        select: { id: true, role: true },
-      });
+      // Demoting/modifying the last active OWNER would lock the platform
+      // out of its master governance role.
+      if (oldRole === Role.OWNER) await assertNotLastActiveOwner(id);
 
-      // Audit logging
-      await prisma.auditLog.create({
-        data: {
-          action: 'ROLE_CHANGE',
-          resourceType: 'User',
-          resourceId: id,
-          userId: req.user!.id,
-          metadata: { oldRole, newRole: role },
-        },
+      // ── Profile provisioning for TEACHER promotions ────────────
+      // A STUDENT→TEACHER promotion previously left the user with NO
+      // TeacherProfile, so every teacher surface 404'd. Provision the
+      // required profile fields in the SAME transaction as the role
+      // change. Demotions keep profile data intact (read routes 403
+      // non-teachers) — no dangling state is created either way.
+      let teacherProvision: ((tx: Prisma.TransactionClient) => Promise<unknown>) | null = null;
+      if (
+        role === Role.TEACHER &&
+        oldRole !== Role.TEACHER &&
+        !user.teacherProfile // already provisioned (e.g. previously demoted)
+      ) {
+        const homeDepartmentId = departmentId ?? user.studentProfile?.departmentId ?? null;
+        if (!homeDepartmentId) {
+          throw AppError.badRequest(
+            'Promotion to TEACHER requires a home department — pass departmentId (or promote from a student profile that has one)',
+          );
+        }
+        teacherProvision = (tx) =>
+          tx.teacherProfile.create({
+            data: {
+              userId: id,
+              // Placeholder specialty — an OWNER/admin fills the real one via
+              // the teacher verification flow. Never invented data beyond this.
+              specialty: specialty ?? 'غير محدد',
+              departmentId: homeDepartmentId,
+            },
+          });
+      }
+
+      // Role + provisioning + audit atomically; tokenVersion bump kills
+      // the target's outstanding refresh tokens so stale JWTs with the old
+      // role can't be refreshed back into use.
+      const updated = await prisma.$transaction(async (tx) => {
+        const u = await tx.user.update({
+          where: { id },
+          data: { role, tokenVersion: { increment: 1 } },
+          select: { id: true, role: true },
+        });
+        if (teacherProvision) await teacherProvision(tx);
+        await tx.auditLog.create({
+          data: {
+            action: 'ROLE_CHANGE',
+            resourceType: 'User',
+            resourceId: id,
+            userId: req.user!.id,
+            metadata: {
+              oldRole,
+              newRole: role,
+              ...(teacherProvision ? { teacherProfileProvisioned: true } : {}),
+            },
+          },
+        });
+        return u;
       });
 
       res.json({ data: updated });
@@ -189,16 +293,13 @@ router.post(
 );
 
 // ── PATCH /owner/users/:id/status — toggle isActive ──────────────
-const toggleStatusSchema = z.object({
-  isActive: z.boolean(),
-});
 
 router.patch(
   '/users/:id/status',
   validate(toggleStatusSchema),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const id = req.params.id!;
       const { isActive } = req.body as { isActive: boolean };
 
       // Self-deactivation guard
@@ -206,12 +307,20 @@ router.patch(
         throw AppError.forbidden('Cannot deactivate your own account');
       }
 
-      const user = await prisma.user.findUnique({ where: { id } });
+      const user = await prisma.user.findUnique({
+        where: { id },
+        select: { id: true, role: true, isActive: true },
+      });
       if (!user) throw AppError.notFound('User not found');
 
+      // Deactivating the last active OWNER = governance lockout.
+      if (user.role === Role.OWNER && !isActive) await assertNotLastActiveOwner(id);
+
+      // tokenVersion bump revokes the target's refresh tokens: a
+      // deactivated account must not keep a live 7-day session.
       const updated = await prisma.user.update({
         where: { id },
-        data: { isActive },
+        data: { isActive, tokenVersion: { increment: 1 } },
         select: { id: true, isActive: true },
       });
 
@@ -589,10 +698,6 @@ router.get('/settings', async (_req, res, next) => {
 });
 
 // ── PUT /owner/settings/:key — upsert a platform setting ─────────
-const upsertSettingSchema = z.object({
-  value: z.string(),
-  category: z.string().optional(),
-});
 
 router.put(
   '/settings/:key',
@@ -600,6 +705,12 @@ router.put(
   async (req, res, next) => {
     try {
       const key = req.params.key!;
+      // Upserting an unvalidated key would let callers CREATE arbitrary
+      // junk rows (the upsert's create branch has no other gate).
+      const parsedKey = settingKeySchema.safeParse(key);
+      if (!parsedKey.success) {
+        throw AppError.badRequest('Invalid setting key', parsedKey.error.flatten());
+      }
       const { value, category } = req.body as { value: string; category?: string };
 
       const data = await prisma.platformSetting.upsert({
@@ -639,9 +750,6 @@ router.get('/feature-flags', async (_req, res, next) => {
 });
 
 // ── PUT /owner/feature-flags/:slug — toggle a feature flag ───────
-const toggleFlagSchema = z.object({
-  enabled: z.boolean(),
-});
 
 router.put(
   '/feature-flags/:slug',

@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Test-only override: vitest resolves extensionless imports, but
+    // NodeNext (the base config, used for the emitted build) forbids them.
+    // Bundler resolution accepts BOTH the tests' extensionless imports of
+    // src and src's own `.js`-suffixed ESM imports, so the whole program
+    // typechecks under one config. No emit — build still uses tsconfig.json.
+    "noEmit": true,
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node"]
+  },
+  "include": ["src/**/*", "tests/**/*", "vitest.config.ts"]
+}

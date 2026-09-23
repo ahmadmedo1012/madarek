@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { DifficultyLevel, ExamKind, ExamStatus, QuestionType, AttemptStatus, Role } from '@prisma/client';
+import type { ExamAttempt } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -102,7 +103,8 @@ router.post('/question-bank', requireCapability('EXAMS_AUTHOR'), validate(create
         points: body.points,
         tags: body.tags,
         authorId: req.user!.id,
-        // Auto-approve own questions if author also has EXAMS_MODERATE
+        // New questions always enter the moderation queue — an
+        // EXAMS_MODERATE holder approves them via /question-bank/:id/moderate.
         isApproved: false,
       },
     });
@@ -188,7 +190,24 @@ router.get('/exams/templates', async (req, res, next) => {
     const role = req.user!.role;
     const where: Record<string, unknown> = {};
     if (role === 'TEACHER') where.authorId = req.user!.id;
-    else if (role === 'STUDENT') where.status = 'PUBLISHED';
+    else if (role === 'STUDENT') {
+      // Same scoping as /exams/me: published templates for offerings I'm
+      // enrolled in OR my own faculty. Without this, students could list
+      // every published template platform-wide (cross-faculty leak).
+      const enrollments = await prisma.enrollment.findMany({
+        where: { studentId: req.user!.id },
+        select: { offeringId: true },
+      });
+      const myFaculty = await prisma.studentProfile.findUnique({
+        where: { userId: req.user!.id },
+        select: { facultyId: true },
+      });
+      where.status = 'PUBLISHED';
+      where.OR = [
+        { offeringId: { in: enrollments.map((e) => e.offeringId) } },
+        ...(myFaculty?.facultyId ? [{ facultyId: myFaculty.facultyId }] : []),
+      ];
+    }
     // QUALITY/ADMIN: see all by default
 
     const templates = await prisma.examTemplate.findMany({
@@ -228,6 +247,23 @@ router.get('/exams/templates/:id', async (req, res, next) => {
     // Authorization: students can only see PUBLISHED templates
     if (req.user!.role === 'STUDENT' && template.status !== 'PUBLISHED') {
       throw AppError.forbidden();
+    }
+
+    // Scoping for students — mirror /exams/me: the template must belong to
+    // an offering the student is enrolled in, or to the student's faculty.
+    // Without this, any student could fetch any published template by ID.
+    if (req.user!.role === 'STUDENT') {
+      if (template.offeringId) {
+        await assertOfferingAccess(template.offeringId, req.user!.id, Role.STUDENT);
+      } else if (template.facultyId) {
+        const profile = await prisma.studentProfile.findUnique({
+          where: { userId: req.user!.id },
+          select: { facultyId: true },
+        });
+        if (!profile || profile.facultyId !== template.facultyId) {
+          throw AppError.forbidden('This exam is for a different faculty');
+        }
+      }
     }
 
     // Answer-key visibility:
@@ -397,22 +433,45 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
       }
     }
 
-    const existing = await prisma.examAttempt.findFirst({
-      where: { templateId: template.id, studentId: userId, status: { in: ['IN_PROGRESS', 'SUBMITTED', 'GRADED'] } },
-      orderBy: { startedAt: 'desc' },
+    // Two concurrent starts used to race past the findFirst and create
+    // two attempts. The transaction below serializes concurrent starts
+    // per template via SELECT … FOR UPDATE on the template row, so the
+    // find-then-create sequence is atomic per (template, student).
+    const expiresAt = new Date(Date.now() + template.durationMin * 60_000);
+    const maxScore = template.questions.reduce((s, eq) => s + (eq.pointsOverride ?? eq.question.points), 0);
+
+    const started = await prisma.$transaction(async (tx): Promise<{ existing: ExamAttempt | null; created: ExamAttempt | null }> => {
+      await tx.$queryRaw`SELECT id FROM "ExamTemplate" WHERE id = ${template.id} FOR UPDATE`;
+      const existing = await tx.examAttempt.findFirst({
+        where: { templateId: template.id, studentId: userId, status: { in: ['IN_PROGRESS', 'SUBMITTED', 'GRADED'] } },
+        orderBy: { startedAt: 'desc' },
+      });
+      if (existing) return { existing, created: null };
+      const created = await tx.examAttempt.create({
+        data: {
+          templateId: template.id,
+          studentId: userId,
+          expiresAt,
+          maxScore,
+        },
+      });
+      return { existing: null, created };
     });
-    if (existing) {
+
+    if (started.existing) {
       // Already attempted — return the existing one
       res.json({
         data: {
-          attemptId: existing.id,
-          status: existing.status,
+          attemptId: started.existing.id,
+          status: started.existing.status,
           alreadyAttempted: true,
         },
       });
       return;
     }
+    const attempt = started.created!;
 
+<<<<<<< HEAD
     const expiresAt = new Date(Date.now() + template.durationMin * 60_000);
     const maxScore = template.questions.reduce((s, eq) => s + (eq.pointsOverride ?? eq.question.points), 0);
 
@@ -432,6 +491,12 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     // array see less variation than they should.
     const serializedQs = template.questions.slice();
     if (template.randomized && serializedQs.length > 1) {
+=======
+    // Optional shuffle on randomized templates — Fisher-Yates (sort()
+    // with a random comparator is biased and not a uniform shuffle).
+    let serializedQs = template.questions.slice();
+    if (template.randomized) {
+>>>>>>> 75e9ee6 (feat(backend): submissions API, write-path correctness, auth hardening, telemetry)
       for (let i = serializedQs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const tmp = serializedQs[i]!;
@@ -470,11 +535,36 @@ router.post(
   validate(submitAnswerSchema),
   async (req, res, next) => {
     try {
-      const attempt = await prisma.examAttempt.findUnique({ where: { id: req.params.id } });
+      const attempt = await prisma.examAttempt.findUnique({
+        where: { id: req.params.id },
+        include: {
+          template: {
+            include: {
+              questions: {
+                include: { question: { select: { id: true, choices: true } } },
+                orderBy: { order: 'asc' },
+              },
+            },
+          },
+        },
+      });
       if (!attempt) throw AppError.notFound('Attempt not found');
       if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
       if (attempt.status !== 'IN_PROGRESS') throw AppError.forbidden('Attempt closed');
       if (attempt.expiresAt < new Date()) throw AppError.forbidden('Attempt expired');
+
+      // The question must belong to THIS attempt's template, and a choice
+      // index must point inside that question's choices array.
+      const link = attempt.template.questions.find((q) => q.questionId === req.body.questionId);
+      if (!link) {
+        throw new AppError('BAD_REQUEST', 'Question does not belong to this exam', 400);
+      }
+      if (req.body.choiceIndex !== undefined) {
+        const choiceCount = Array.isArray(link.question.choices) ? link.question.choices.length : 0;
+        if (req.body.choiceIndex >= choiceCount) {
+          throw new AppError('BAD_REQUEST', `choiceIndex out of range (question has ${choiceCount} choices)`, 400);
+        }
+      }
 
       await prisma.examAnswer.upsert({
         where: { attemptId_questionId: { attemptId: attempt.id, questionId: req.body.questionId } },
@@ -507,11 +597,27 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
     if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
     if (attempt.status !== 'IN_PROGRESS') throw AppError.conflict('Already submitted');
 
+    // Expiry: submissions are accepted up to 60s past expiresAt (network
+    // latency grace). Beyond that the attempt is hard-closed as EXPIRED
+    // and never graded.
+    const now = new Date();
+    const graceDeadline = new Date(attempt.expiresAt.getTime() + 60_000);
+    if (now > graceDeadline) {
+      await prisma.examAttempt.update({
+        where: { id: attempt.id },
+        data: { status: AttemptStatus.EXPIRED },
+      });
+      throw AppError.forbidden('Attempt expired');
+    }
+
     // Auto-grade MCQ + TF + SHORT (exact match)
     let totalAwarded = 0;
     let needsManual = 0;
     const answerByQId = new Map(attempt.answers.map((a) => [a.questionId, a]));
 
+    // Compute grading results FIRST (pure computation), then persist
+    // everything in ONE transaction.
+    const gradedAnswers: Array<{ id: string; isCorrect: boolean | null; awardedPoints: number }> = [];
     for (const eq of attempt.template.questions) {
       const q = eq.question;
       const ans = answerByQId.get(q.id);
@@ -548,27 +654,37 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
       }
 
       totalAwarded += awarded;
-      await prisma.examAnswer.update({
-        where: { id: ans.id },
-        data: { isCorrect, awardedPoints: awarded },
-      });
+      gradedAnswers.push({ id: ans.id, isCorrect, awardedPoints: awarded });
     }
 
     const finalStatus: AttemptStatus = needsManual > 0 ? 'SUBMITTED' : 'GRADED';
-    const updated = await prisma.examAttempt.update({
-      where: { id: attempt.id },
-      data: {
-        status: finalStatus,
-        score: totalAwarded,
-        submittedAt: new Date(),
-      },
+    const updated = await prisma.$transaction(async (tx) => {
+      // Double-grading guard: the status flip only applies while the
+      // attempt is still IN_PROGRESS — a concurrent submit loses the race
+      // and gets a 409 instead of double-writing grades.
+      const claim = await tx.examAttempt.updateMany({
+        where: { id: attempt.id, status: 'IN_PROGRESS' },
+        data: {
+          status: finalStatus,
+          score: totalAwarded,
+          submittedAt: new Date(),
+        },
+      });
+      if (claim.count === 0) throw AppError.conflict('Already submitted');
+      for (const ga of gradedAnswers) {
+        await tx.examAnswer.update({
+          where: { id: ga.id },
+          data: { isCorrect: ga.isCorrect, awardedPoints: ga.awardedPoints },
+        });
+      }
+      return tx.examAttempt.findUnique({ where: { id: attempt.id } });
     });
 
     res.json({
       data: {
         score: totalAwarded,
         maxScore: Number(attempt.maxScore),
-        status: finalStatus,
+        status: (updated?.status ?? finalStatus) as AttemptStatus,
         needsManual,
         passed: totalAwarded / Number(attempt.maxScore) * 100 >= attempt.template.passingScore,
       },

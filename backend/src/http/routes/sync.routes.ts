@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireCapability } from '../middleware/requireCapability.js';
-import { runSync } from '../../lib/zu-sync/index.js';
+import { runSyncGuarded } from '../../scheduler.js';
+import { AppError } from '../../lib/errors.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -66,8 +67,15 @@ router.get('/admin/sync', requireCapability('USERS_MANAGE', 'QUALITY_VIEW'), asy
  */
 router.post('/admin/sync/trigger', requireCapability('USERS_MANAGE'), async (_req, res, next) => {
   try {
-    const result = await runSync();
-    res.json({ data: result });
+    // Route the manual trigger through the SAME overlap guard as the
+    // scheduler ticks — otherwise an admin clicking "sync now" during a
+    // scheduled run would start a second concurrent sync racing on the
+    // UniversityFact rows. 409 tells the admin a run is already in flight.
+    const outcome = await runSyncGuarded('admin-trigger');
+    if (!outcome.ran) {
+      throw AppError.conflict('A sync is already in progress — try again once it completes.');
+    }
+    res.json({ data: outcome.result });
   } catch (e) {
     next(e);
   }

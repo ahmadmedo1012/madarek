@@ -170,10 +170,12 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
     await assertOfferingAccess(lectureStub.offeringId, studentId, req.user!.role);
 
     // Read the previous state so we know if this call transitions
-    // the watch event from "not completed" → "completed".
+    // the watch event from "not completed" → "completed", and so we
+    // can clamp watchedSec to its high-water mark (a client bug or
+    // clock skew must never be able to REWIND progress).
     const prior = await prisma.watchEvent.findUnique({
       where: { lectureId_studentId: { lectureId, studentId } },
-      select: { completed: true },
+      select: { completed: true, watchedSec: true },
     });
 
     const ev = await prisma.watchEvent.upsert({
@@ -186,7 +188,7 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
         completed: completed ?? false,
       },
       update: {
-        watchedSec: { set: Math.max(watchedSec, 0) },
+        watchedSec: Math.max(prior?.watchedSec ?? 0, watchedSec),
         totalSec,
         completed: completed ?? undefined,
         lastSeenAt: new Date(),
@@ -198,32 +200,29 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
     // on that day's attendance session for the offering. Spec calls this
     // out: "هل شاهد الطالب الدرس بالكامل" feeds the attendance signal.
     if (req.user!.role === Role.STUDENT && completed === true && !prior?.completed) {
-      const lecture = await prisma.lecture.findUnique({
-        where: { id: lectureId },
-        select: { offeringId: true },
+      // lectureStub already carries offeringId — no second lookup needed.
+      // Bucket attendance by calendar day.
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const session = await prisma.attendanceSession.upsert({
+        where: { offeringId_date: { offeringId: lectureStub.offeringId, date: today } },
+        create: { offeringId: lectureStub.offeringId, date: today, topic: 'حضور افتراضي تلقائي' },
+        update: {},
       });
-      if (lecture) {
-        // Bucket attendance by calendar day.
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const session = await prisma.attendanceSession.upsert({
-          where: { offeringId_date: { offeringId: lecture.offeringId, date: today } },
-          create: { offeringId: lecture.offeringId, date: today, topic: 'حضور افتراضي تلقائي' },
-          update: {},
-        });
-        await prisma.attendanceRecord.upsert({
-          where: { sessionId_studentId: { sessionId: session.id, studentId } },
-          create: { sessionId: session.id, studentId, status: 'PRESENT', notes: 'تم تسجيله تلقائياً بعد إكمال مشاهدة المحاضرة المسجّلة' },
-          update: {}, // don't overwrite if a teacher has already marked something
-        });
-      }
+      await prisma.attendanceRecord.upsert({
+        where: { sessionId_studentId: { sessionId: session.id, studentId } },
+        create: { sessionId: session.id, studentId, status: 'PRESENT', notes: 'تم تسجيله تلقائياً بعد إكمال مشاهدة المحاضرة المسجّلة' },
+        update: {}, // don't overwrite if a teacher has already marked something
+      });
     }
 
     res.json({ data: ev });
   } catch (e) { next(e); }
 });
 
-const answerSchema = z.object({ answerIndex: z.number().int().min(0).max(10) }).strict();
+// answerIndex's upper bound is the checkpoint's actual options length,
+// checked in the handler after the checkpoint is loaded (zod can't know it).
+const answerSchema = z.object({ answerIndex: z.number().int().min(0) }).strict();
 
 router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), async (req, res, next) => {
   try {
@@ -236,21 +235,45 @@ router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), as
     // this, any student could inflate their StudentMastery for
     // concepts in courses they aren't enrolled in.
     await assertOfferingAccess(cp.lecture.offeringId, req.user!.id, req.user!.role);
-    const correct = cp.correctIndex === (req.body as z.infer<typeof answerSchema>).answerIndex;
+    // Validate the answer against THIS checkpoint's options length —
+    // a hardcoded .max(10) accepted indices that point past the options.
+    const optionCount = Array.isArray(cp.options) ? cp.options.length : 0;
+    const answerIndex = (req.body as z.infer<typeof answerSchema>).answerIndex;
+    if (answerIndex >= optionCount) {
+      throw AppError.badRequest(`answerIndex out of range (checkpoint has ${optionCount} options)`);
+    }
+    const correct = cp.correctIndex === answerIndex;
 
     // Update student mastery if checkpoint is concept-tagged.
     if (cp.conceptId && req.user!.role === Role.STUDENT) {
-      const existing = await prisma.studentMastery.findUnique({
-        where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
-      });
-      const attempts = (existing?.attempts ?? 0) + 1;
-      const correctCount = (existing?.correct ?? 0) + (correct ? 1 : 0);
-      const level = Math.max(0, Math.min(1, correctCount / attempts));
+      // Atomic increment (upsert with {increment}) instead of the old
+      // read-modify-write, which lost concurrent answers on the same
+      // concept. level is then recomputed from the post-increment row.
       await prisma.studentMastery.upsert({
         where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
-        create: { studentId: req.user!.id, conceptId: cp.conceptId, level, attempts, correct: correctCount },
-        update: { level, attempts, correct: correctCount, lastUpdatedAt: new Date() },
+        create: {
+          studentId: req.user!.id,
+          conceptId: cp.conceptId,
+          level: correct ? 1 : 0,
+          attempts: 1,
+          correct: correct ? 1 : 0,
+        },
+        update: {
+          attempts: { increment: 1 },
+          correct: { increment: correct ? 1 : 0 },
+          lastUpdatedAt: new Date(),
+        },
       });
+      const fresh = await prisma.studentMastery.findUnique({
+        where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
+        select: { attempts: true, correct: true },
+      });
+      if (fresh && fresh.attempts > 0) {
+        await prisma.studentMastery.update({
+          where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
+          data: { level: Math.max(0, Math.min(1, fresh.correct / fresh.attempts)) },
+        });
+      }
     }
     res.json({ data: { correct, correctIndex: cp.correctIndex, explanation: cp.explanation } });
   } catch (e) { next(e); }
@@ -475,12 +498,19 @@ router.get('/me/research', async (req, res, next) => {
     const where = req.user!.role === Role.STUDENT ? { studentId: req.user!.id } : {};
     const data = await prisma.researchPaper.findMany({
       where,
-      orderBy: { uploadedAt: 'desc' },
-      include: {
+      // Explicit select: NEVER ship extractedText (full PDF text — huge).
+      select: {
+        id: true, studentId: true, reviewerId: true, offeringId: true,
+        title: true, abstract: true, fileUrl: true, status: true,
+        plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
+        uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
         student: { select: { id: true, firstName: true, lastName: true, avatarInitials: true } },
         reviewer: { select: { id: true, firstName: true, lastName: true } },
         offering: { include: { course: { select: { name: true, code: true } } } },
       },
+      orderBy: { uploadedAt: 'desc' },
+      // Non-students see the institutional archive — bound it.
+      ...(req.user!.role === Role.STUDENT ? {} : { take: 50 }),
     });
     res.json({ data: decToNum(data) });
   } catch (e) { next(e); }
@@ -503,8 +533,21 @@ const createPaperSchema = z.object({
 router.post('/me/research', validate(createPaperSchema), async (req, res, next) => {
   try {
     if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
+    const body = req.body as z.infer<typeof createPaperSchema>;
+    // If the paper is tied to an offering, the student must be actively
+    // enrolled in it — otherwise any offering id could be attached to
+    // fake course affiliation.
+    if (body.offeringId) {
+      const enrolled = await prisma.enrollment.findFirst({
+        where: { studentId: req.user!.id, offeringId: body.offeringId, status: 'active' },
+        select: { id: true },
+      });
+      if (!enrolled) {
+        throw new AppError('BAD_REQUEST', 'offeringId must be an offering you are enrolled in', 400);
+      }
+    }
     const created = await prisma.researchPaper.create({
-      data: { ...req.body, studentId: req.user!.id, status: 'UPLOADED' },
+      data: { ...body, studentId: req.user!.id, status: 'UPLOADED' },
     });
     res.status(201).json({ data: created });
   } catch (e) { next(e); }
@@ -582,8 +625,12 @@ router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   try {
     const data = await prisma.researchPaper.findMany({
       where: { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] } },
-      orderBy: { uploadedAt: 'desc' },
-      include: {
+      // Explicit select: NEVER ship extractedText (full PDF text — huge).
+      select: {
+        id: true, studentId: true, reviewerId: true, offeringId: true,
+        title: true, abstract: true, fileUrl: true, status: true,
+        plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
+        uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
         student: {
           select: {
             id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true, email: true,
@@ -591,6 +638,8 @@ router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
         },
         offering: { include: { course: { select: { name: true, code: true } } } },
       },
+      orderBy: { uploadedAt: 'desc' },
+      take: 50,
     });
     res.json({ data: decToNum(data) });
   } catch (e) { next(e); }
@@ -619,14 +668,19 @@ router.get('/research/published', async (_req, res, next) => {
   try {
     const data = await withRetry(() => prisma.researchPaper.findMany({
       where: { status: 'PUBLISHED' },
-      orderBy: { publishedAt: 'desc' },
-      take: 60,
-      include: {
+      // Explicit select: NEVER ship extractedText (full PDF text — huge).
+      select: {
+        id: true, studentId: true, reviewerId: true, offeringId: true,
+        title: true, abstract: true, fileUrl: true, status: true,
+        plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
+        uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
         student: {
           select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
         },
         offering: { include: { course: { select: { name: true, code: true } } } },
       },
+      orderBy: { publishedAt: 'desc' },
+      take: 60,
     }));
     res.json({ data: decToNum(data) });
   } catch (e) { next(e); }
@@ -656,7 +710,8 @@ function buildSnippet(text: string, q: string): string | null {
 
 router.get('/research/search', async (req, res, next) => {
   try {
-    const q = String(req.query.q ?? '').trim();
+    // Cap the query at 120 chars — unbounded q flows straight into ILIKE.
+    const q = String(req.query.q ?? '').trim().slice(0, 120);
     if (!q) {
       res.json({ data: [], meta: { query: '', total: 0 } });
       return;
@@ -684,7 +739,14 @@ router.get('/research/search', async (req, res, next) => {
       },
       orderBy: { publishedAt: 'desc' },
       take: 50,
-      include: {
+      // extractedText is selected for snippet generation ONLY — it is
+      // stripped from the response payload below (it can be megabytes).
+      select: {
+        id: true, studentId: true, reviewerId: true, offeringId: true,
+        title: true, abstract: true, fileUrl: true, status: true,
+        plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
+        uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
+        extractedText: true,
         student: {
           select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
         },
@@ -708,7 +770,9 @@ router.get('/research/search', async (req, res, next) => {
       }
 
       const rank = matchedIn === 'title' ? 3 : matchedIn === 'abstract' ? 2 : 1;
-      return { paper: p, matchedIn, snippet, rank };
+      // Destructure extractedText out — never serialize full PDF text.
+      const { extractedText: _omit, ...paperFields } = p;
+      return { paper: paperFields, matchedIn, snippet, rank };
     });
 
     // Sort by rank (title first), then publishedAt desc.
@@ -996,7 +1060,8 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
     }));
 
     // Compute per-teacher aggregate metrics. Where real signals are sparse,
-    // we fall back to deterministic seed-based mock values so the UI is meaningful.
+    // we fall back to deterministic seed-based values so the UI is meaningful —
+    // flagged with `estimated: true` so consumers can label them as such.
     const data = teachers.map((t, idx) => {
       const off = t.taughtOfferings;
       const totals = off.reduce(
@@ -1031,7 +1096,9 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
         offerings: off.length,
         totals,
         satisfaction: Number(satisfaction.toFixed(1)),
+        satisfactionEstimated: true, // not measured — deterministic placeholder
         responseHours,
+        responseHoursEstimated: true, // not measured — deterministic placeholder
         compliance,
       };
     });
@@ -1041,14 +1108,18 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
 
 router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
-    const [attendance, watchEvents, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveEvents] = await withRetry(() => Promise.all([
+    // SQL aggregation: sums/counts computed in the database instead of
+    // loading the whole WatchEvent table into memory.
+    const [attendance, watchTotals, completedLectures, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveEvents] = await withRetry(() => Promise.all([
       prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
-      prisma.watchEvent.findMany({ select: { watchedSec: true, totalSec: true, completed: true } }),
+      prisma.watchEvent.aggregate({ _sum: { watchedSec: true, totalSec: true }, _count: { _all: true } }),
+      prisma.watchEvent.count({ where: { completed: true } }),
       prisma.lecture.count(),
       prisma.enrollment.count(),
       prisma.user.count({ where: { role: Role.STUDENT } }),
       prisma.researchPaper.groupBy({ by: ['status'], _count: { _all: true } }),
       // Distinct (student, day) pairs in the last 7 days for the weekly-active curve.
+      // Bounded to a 7-day window — never the full table.
       prisma.watchEvent.findMany({
         where: { lastSeenAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
         select: { studentId: true, lastSeenAt: true },
@@ -1060,16 +1131,17 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
     const lateRate = ((attendance.find((a) => a.status === 'LATE')?._count._all ?? 0) / totalAttendance) * 100;
     const absentRate = ((attendance.find((a) => a.status === 'ABSENT')?._count._all ?? 0) / totalAttendance) * 100;
 
-    const totalWatched = watchEvents.reduce((s, w) => s + w.watchedSec, 0);
-    const totalDuration = watchEvents.reduce((s, w) => s + w.totalSec, 0) || 1;
-    const completionRate = (totalWatched / totalDuration) * 100;
-    const completedLectures = watchEvents.filter((w) => w.completed).length;
+    const totalWatched = watchTotals._sum.watchedSec ?? 0;
+    const totalDuration = watchTotals._sum.totalSec ?? 0;
+    const completionRate = totalDuration > 0 ? (totalWatched / totalDuration) * 100 : 0;
 
     // Weekly active: count unique students per day for the last 7 days.
-    // Falls back to a deterministic pseudo-curve when there's not enough data.
+    // Falls back to a deterministic pseudo-curve when there's not enough data —
+    // flagged via weeklyActiveEstimated so consumers can label the curve.
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const weeklyActive: number[] = [];
+    let usedFallback = false;
     for (let i = 6; i >= 0; i--) {
       const dayStart = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
       const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
@@ -1080,10 +1152,12 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
       // Scale up against total student population so the curve is meaningful
       // even with limited demo data.
       const sample = studentSet.size;
-      const projected = sample > 0
-        ? Math.round(sample * Math.max(1, Math.floor(totalStudents / Math.max(1, weeklyActiveEvents.length))))
-        : Math.round(totalStudents * (0.45 + 0.4 * Math.sin((6 - i) * 0.9)));
-      weeklyActive.push(Math.max(0, Math.min(totalStudents, projected)));
+      if (sample > 0) {
+        weeklyActive.push(Math.min(totalStudents, Math.round(sample * Math.max(1, Math.floor(totalStudents / Math.max(1, weeklyActiveEvents.length))))));
+      } else {
+        usedFallback = true;
+        weeklyActive.push(Math.max(0, Math.min(totalStudents, Math.round(totalStudents * (0.45 + 0.4 * Math.sin((6 - i) * 0.9))))));
+      }
     }
 
     res.json({
@@ -1091,7 +1165,7 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
         attendance: { presentRate, lateRate, absentRate, total: totalAttendance },
         videos: {
           totalLectures: lectures,
-          totalEvents: watchEvents.length,
+          totalEvents: watchTotals._count._all,
           completionRate,
           completedLectures,
         },
@@ -1099,6 +1173,7 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
         totalStudents,
         papersByStatus: Object.fromEntries(papersByStatus.map((p) => [p.status, p._count._all])),
         weeklyActive,
+        weeklyActiveEstimated: usedFallback, // true when any day used the fallback curve
       },
     });
   } catch (e) { next(e); }
@@ -1106,13 +1181,19 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
 
 router.get('/quality/curriculum', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
+    // Deep include is bounded: take-limits on courses (25/dept) and
+    // offerings (10/course) so the payload can't explode on large faculties.
     const faculties = await withRetry(() => prisma.faculty.findMany({
       include: {
         departments: {
           include: {
             courses: {
+              take: 25,
+              orderBy: { code: 'asc' },
               include: {
                 offerings: {
+                  take: 10,
+                  orderBy: { createdAt: 'desc' },
                   include: {
                     _count: {
                       select: { lectures: true, materials: true, assignments: true, enrollments: true },

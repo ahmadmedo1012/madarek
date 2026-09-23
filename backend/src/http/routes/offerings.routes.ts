@@ -6,6 +6,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { assertOfferingAccess } from '../../lib/permissions.js';
+import { AppError } from '../../lib/errors.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -165,7 +166,21 @@ router.post(
     try {
       const offeringId = req.params.id!;
       await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
-      const ops = (req.body.grades as z.infer<typeof gradesUpsertSchema>['grades']).map((g) =>
+      const grades = req.body.grades as z.infer<typeof gradesUpsertSchema>['grades'];
+
+      // Every studentId must be an enrolled student of this offering —
+      // otherwise grades could be recorded for arbitrary users.
+      const studentIds = Array.from(new Set(grades.map((g) => g.studentId)));
+      const enrolled = await prisma.enrollment.findMany({
+        where: { offeringId, studentId: { in: studentIds } },
+        select: { studentId: true },
+      });
+      const enrolledSet = new Set(enrolled.map((e) => e.studentId));
+      if (studentIds.some((id) => !enrolledSet.has(id))) {
+        throw AppError.badRequest('Grades contain students not enrolled in this offering');
+      }
+
+      const ops = grades.map((g) =>
         prisma.grade.upsert({
           where: { offeringId_studentId_kind: { offeringId, studentId: g.studentId, kind: g.kind } },
           create: { offeringId, ...g },
@@ -207,6 +222,18 @@ router.post(
       const offeringId = req.params.id!;
       await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
       const { date, topic, records } = req.body as z.infer<typeof attendanceUpsertSchema>;
+      // Every studentId must be an enrolled student of this offering —
+      // otherwise attendance could be recorded for arbitrary users.
+      const studentIds = Array.from(new Set(records.map((r) => r.studentId)));
+      const enrolled = await prisma.enrollment.findMany({
+        where: { offeringId, studentId: { in: studentIds } },
+        select: { studentId: true },
+      });
+      const enrolledSet = new Set(enrolled.map((e) => e.studentId));
+      if (studentIds.some((id) => !enrolledSet.has(id))) {
+        throw AppError.badRequest('Records contain students not enrolled in this offering');
+      }
+
       // Wrap session upsert + record upserts in a SINGLE transaction so
       // the session can't exist with no records if the records fail
       // (silent data loss). Previously the session upsert ran outside

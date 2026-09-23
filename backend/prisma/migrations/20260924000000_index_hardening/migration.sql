@@ -1,8 +1,10 @@
 -- Index hardening pass — adds missing FK indexes and useful composites.
--- All CREATE INDEX CONCURRENTLY statements are wrapped in DO blocks so
--- `prisma migrate deploy` (which wraps the whole migration in a single
--- transaction) doesn't error out on the "CONCURRENTLY cannot run inside
--- a transaction" restriction.
+-- All statements are plain CREATE INDEX / DROP INDEX with IF NOT EXISTS /
+-- IF EXISTS so the whole migration is idempotent and safe to re-run.
+-- CONCURRENTLY is deliberately NOT used: `prisma migrate deploy` wraps the
+-- migration in a single transaction and CONCURRENTLY cannot run inside one;
+-- plain index builds take a brief lock, which is acceptable here (tables are
+-- small and deploys happen in a build step, not under live traffic).
 --
 -- Why these indexes matter:
 -- 1. ON DELETE RESTRICT FKs trigger a sequential scan on the child
