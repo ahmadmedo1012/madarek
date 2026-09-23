@@ -146,7 +146,7 @@ export function AdminTeachersPage() {
                 onClick={() => setSelectedId(t.id)}
               >
                 <UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={40} />
-                <div style={{ flex: 1, textAlign: 'right' }}>
+                <div style={{ flex: 1, textAlign: 'start' }}>
                   <div className="teacher-row-name">{t.firstName} {t.lastName}</div>
                   <div className="teacher-row-email font-mono text-xxs">{t.email}</div>
                 </div>

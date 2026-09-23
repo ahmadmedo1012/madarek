@@ -4,14 +4,16 @@ import {
   Download, Search, X, Loader2,
 } from 'lucide-react';
 import { Icon } from '../Icon';
-// pdfjs-dist v4 ships ESM. We import the API surface from the main entry,
-// then point the worker URL at the bundler-resolved worker module URL via
-// the standard Vite ?url import. This produces a same-origin worker that
-// works in dev + prod without a separate copy step.
-import * as pdfjsLib from 'pdfjs-dist';
+// pdfjs-dist v4 ships ESM. Use named imports so Vite/Rollup can tree-shake
+// the rest of the public surface out of the bundle. Previously a namespace
+// import (`import * as pdfjsLib`) pulled in everything pdfjs-dist exports
+// (sizable), even though only GlobalWorkerOptions + getDocument + TextLayer
+// are used here.
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+GlobalWorkerOptions.workerSrc = workerUrl;
 
 interface PdfViewerProps {
   /** PDF source: relative path (e.g. /api/v1/files/papers/x.pdf) or absolute URL. */
@@ -29,7 +31,7 @@ interface PdfViewerProps {
 }
 
 interface DocState {
-  pdf: pdfjsLib.PDFDocumentProxy;
+  pdf: PDFDocumentProxy;
   numPages: number;
 }
 
@@ -48,7 +50,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
+  const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null);
 
   // ── Load document ────────────────────────────────────────────────
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     setError(null);
     setDoc(null);
 
-    const task = pdfjsLib.getDocument({
+    const task = getDocument({
       url: src,
       withCredentials: true, // include auth cookies for same-origin /files/*
       cMapUrl: 'https://unpkg.com/pdfjs-dist@4.10.38/cmaps/',
@@ -150,9 +152,15 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       textLayerRef.current.style.height = `${viewport.height}px`;
       try {
         const textContent = await pageObj.getTextContent();
-        const TextLayer = (pdfjsLib as unknown as { TextLayer?: typeof pdfjsLib.TextLayer }).TextLayer;
-        if (TextLayer) {
-          const textLayer = new TextLayer({
+        // pdfjs-dist v4 exposes TextLayer as a named export at runtime,
+        // but its type surface marks it optional in some build modes.
+        // We import the type explicitly and access the constructor at
+        // runtime via a dynamic property lookup so the bundler can
+        // tree-shake the rest of the library when this component is
+        // code-split out of the main bundle.
+        const TextLayerCtor = (await import('pdfjs-dist')).TextLayer;
+        if (TextLayerCtor) {
+          const textLayer = new TextLayerCtor({
             textContentSource: textContent,
             container: textLayerRef.current,
             viewport,

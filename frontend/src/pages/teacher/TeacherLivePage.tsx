@@ -280,7 +280,13 @@ function SessionRow({
           </button>
         )}
         {onCancel && (
-          <button type="button" className="btn ghost sm" onClick={onCancel} title="إلغاء">
+          <button
+            type="button"
+            className="btn ghost sm"
+            onClick={onCancel}
+            title="إلغاء"
+            aria-label="إلغاء"
+          >
             <Icon icon={X} size={12} />
           </button>
         )}

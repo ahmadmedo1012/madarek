@@ -92,7 +92,7 @@ export default function AiAssistantPage() {
                 type="button"
                 onClick={() => askAboutGap(g.conceptName)}
                 style={{
-                  textAlign: 'right',
+                  textAlign: 'start',
                   background: 'var(--surface-2)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--r-md)',
@@ -110,7 +110,7 @@ export default function AiAssistantPage() {
                 <div className="flex items-center gap-2">
                   <Icon icon={AlertCircle} size={14} style={{ color: 'var(--warning)' }} />
                   <span className="text-xxs text-subtle">{g.courseName}</span>
-                  <span className="font-mono text-xxs" style={{ color: 'var(--warning)', marginLeft: 'auto' }}>
+                  <span className="font-mono text-xxs" style={{ color: 'var(--warning)', marginInlineStart: 'auto' }}>
                     {Math.round(g.level * 100)}%
                   </span>
                 </div>
@@ -196,7 +196,7 @@ export default function AiAssistantPage() {
                 type="button"
                 onClick={() => void send(q)}
                 className="list-row"
-                style={{ textAlign: 'right', cursor: 'pointer', border: 0, background: 'transparent' }}
+                style={{ textAlign: 'start', cursor: 'pointer', border: 0, background: 'transparent' }}
               >
                 <Icon icon={Sparkles} size={14} />
                 <span className="list-row-body text-sm" style={{ color: 'var(--text-muted)' }}>{q}</span>

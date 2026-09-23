@@ -7,6 +7,7 @@ import {
 import { Card, Badge } from '../../components/primitives';
 import { LoadingState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { Modal } from '../../components/overlays/Modal';
 import { useLecture, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
 
 function fmtTime(sec: number) {
@@ -185,64 +186,71 @@ export default function LecturePlayerPage() {
         </Card>
       </div>
 
-      {/* Checkpoint overlay */}
-      {activeCheckpoint && (
-        <div className="checkpoint-overlay" role="dialog" aria-modal="true">
-          <div className="checkpoint-card">
-            <div className="checkpoint-eyebrow">
-              <Icon icon={Sparkles} size={12} />
-              نقطة تفاعل
-            </div>
-            <div className="checkpoint-question">{activeCheckpoint.question}</div>
-            <div className="checkpoint-options">
-              {(activeCheckpoint.options as string[]).map((opt, i) => {
-                const isPicked = pickedIndex === i;
-                const isCorrect = revealResult && revealResult.correctIndex === i;
-                const cls = revealResult
-                  ? isCorrect
-                    ? 'correct'
-                    : isPicked
-                      ? 'incorrect'
-                      : ''
-                  : '';
-                return (
-                  <button
-                    key={i}
-                    type="button"
-                    className={`checkpoint-option ${cls}`}
-                    disabled={pickedIndex !== null}
-                    onClick={() => void submitAnswer(i)}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-
-            {revealResult && (
-              <div className={`checkpoint-result ${revealResult.correct ? 'correct' : 'incorrect'}`}>
-                <div className="flex items-center gap-2">
-                  <Icon icon={revealResult.correct ? CheckCircle2 : XCircle} size={14} />
-                  <strong>{revealResult.correct ? 'إجابة صحيحة!' : 'ليست الإجابة الصحيحة.'}</strong>
-                </div>
-                {revealResult.explanation && (
-                  <div style={{ marginTop: 6, color: 'var(--text-muted)' }}>
-                    {revealResult.explanation}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="checkpoint-actions">
-              {revealResult && (
-                <button type="button" className="btn primary" onClick={closeCheckpoint}>
-                  متابعة المحاضرة
+      {/* Checkpoint overlay — uses the shared Modal primitive so it
+          gets focus trap, Esc to dismiss, body scroll lock, portal
+          mount, and proper role="dialog" + aria-modal + aria-label.
+          Previously this was an inline div without any of those,
+          stranding keyboard / screen-reader users. */}
+      <Modal
+        open={!!activeCheckpoint}
+        onClose={closeCheckpoint}
+        ariaLabel="نقطة تفاعل"
+        closeOnOverlayClick={false}
+      >
+        <div className="checkpoint-card">
+          <div className="checkpoint-eyebrow">
+            <Icon icon={Sparkles} size={12} />
+            نقطة تفاعل
+          </div>
+          <div className="checkpoint-question">{activeCheckpoint?.question}</div>
+          <div className="checkpoint-options">
+            {activeCheckpoint && (activeCheckpoint.options as string[]).map((opt, i) => {
+              const isPicked = pickedIndex === i;
+              const isCorrect = revealResult && revealResult.correctIndex === i;
+              const cls = revealResult
+                ? isCorrect
+                  ? 'correct'
+                  : isPicked
+                    ? 'incorrect'
+                    : ''
+                : '';
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  className={`checkpoint-option ${cls}`}
+                  disabled={pickedIndex !== null}
+                  onClick={() => void submitAnswer(i)}
+                >
+                  {opt}
                 </button>
+              );
+            })}
+          </div>
+
+          {revealResult && (
+            <div className={`checkpoint-result ${revealResult.correct ? 'correct' : 'incorrect'}`}>
+              <div className="flex items-center gap-2">
+                <Icon icon={revealResult.correct ? CheckCircle2 : XCircle} size={14} />
+                <strong>{revealResult.correct ? 'إجابة صحيحة!' : 'ليست الإجابة الصحيحة.'}</strong>
+              </div>
+              {revealResult.explanation && (
+                <div style={{ marginTop: 6, color: 'var(--text-muted)' }}>
+                  {revealResult.explanation}
+                </div>
               )}
             </div>
+          )}
+
+          <div className="checkpoint-actions">
+            {revealResult && (
+              <button type="button" className="btn primary" onClick={closeCheckpoint}>
+                متابعة المحاضرة
+              </button>
+            )}
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

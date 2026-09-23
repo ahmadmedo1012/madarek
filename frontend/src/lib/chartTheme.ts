@@ -21,7 +21,7 @@
  * Without the `key`, charts will look correct on first paint but break
  * after a theme switch.
  */
-import type { ChartOptions, ChartType, ScriptableContext } from 'chart.js';
+import type { Chart, ChartOptions, ChartType, ChartDataset, ScriptableContext } from 'chart.js';
 import { useSyncExternalStore } from 'react';
 
 const FONT = 'IBM Plex Sans Arabic';
@@ -212,23 +212,26 @@ export function radialOptions(opts?: { legend?: boolean; cutout?: string }): Cha
  */
 export const valueLabels = {
   id: 'valueLabels',
-  afterDatasetsDraw(chart: any) {
+  afterDatasetsDraw(chart: Chart) {
     const { ctx } = chart;
     const color = chartColors().text;
     ctx.save();
     ctx.fillStyle = color;
     ctx.font = `600 11px ${FONT}`;
-    chart.data.datasets.forEach((ds: any, di: number) => {
+    chart.data.datasets.forEach((ds: ChartDataset, di: number) => {
       const meta = chart.getDatasetMeta(di);
       if (meta.type !== 'bar') return;
-      meta.data.forEach((el: any, i: number) => {
-        const v = ds.data[i];
+      meta.data.forEach((el, i) => {
+        // Chart.js bar elements expose { x, y, width, height } at runtime.
+        // The library type is generic; narrow to the shape we use.
+        const barEl = el as unknown as { x: number; y: number; width: number; height: number };
+        const v = (ds.data as (number | null)[])[i];
         if (v == null) return;
-        const horizontal = el.width > el.height;
+        const horizontal = barEl.width > barEl.height;
         ctx.textAlign = horizontal ? 'left' : 'center';
         ctx.textBaseline = horizontal ? 'middle' : 'bottom';
-        const x = horizontal ? el.x + 6 : el.x;
-        const y = horizontal ? el.y : el.y - 4;
+        const x = horizontal ? barEl.x + 6 : barEl.x;
+        const y = horizontal ? barEl.y : barEl.y - 4;
         ctx.fillText(String(v), x, y);
       });
     });
