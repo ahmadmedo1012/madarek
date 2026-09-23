@@ -512,6 +512,7 @@ model Material {
 
   @@index([offeringId])
   @@index([type])
+  @@index([uploaderId])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -584,7 +585,6 @@ model AttendanceSession {
   createdAt  DateTime           @default(now())
 
   @@unique([offeringId, date])
-  @@index([offeringId])
 }
 
 model AttendanceRecord {
@@ -662,6 +662,7 @@ model PostComment {
   createdAt DateTime @default(now())
 
   @@index([postId])
+  @@index([authorId])
 }
 
 model PostReaction {
@@ -673,6 +674,7 @@ model PostReaction {
   kind   String // "like" | "save"
 
   @@unique([postId, userId, kind])
+  @@index([userId])
 }
 
 model StudyRoom {
@@ -683,6 +685,8 @@ model StudyRoom {
   owner     User              @relation("StudyRoomOwner", fields: [ownerId], references: [id])
   createdAt DateTime          @default(now())
   members   StudyRoomMember[]
+
+  @@index([ownerId])
 }
 
 model StudyRoomMember {
@@ -693,6 +697,7 @@ model StudyRoomMember {
   joinedAt DateTime  @default(now())
 
   @@id([roomId, userId])
+  @@index([userId])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -750,6 +755,7 @@ model UserAchievement {
   unlockedAt    DateTime    @default(now())
 
   @@id([userId, achievementId])
+  @@index([achievementId])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -773,6 +779,7 @@ model UserSkill {
   updatedAt   DateTime @updatedAt
 
   @@id([userId, skillId])
+  @@index([skillId])
 }
 
 model Certificate {
@@ -827,6 +834,7 @@ model MoocEnrollment {
   enrolledAt  DateTime   @default(now())
 
   @@unique([moocId, userId])
+  @@index([userId])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -930,7 +938,7 @@ model AiMessage {
   tokens         Int            @default(0)
   createdAt      DateTime       @default(now())
 
-  @@index([conversationId])
+  @@index([conversationId, createdAt])
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -951,6 +959,7 @@ model AuditLog {
   @@index([userId])
   @@index([action])
   @@index([createdAt])
+  @@index([resourceType, resourceId])
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -976,8 +985,7 @@ model Lecture {
   checkpoints LectureCheckpoint[]
   watchEvents WatchEvent[]
 
-  @@index([offeringId])
-  @@index([ordinal])
+  @@index([offeringId, ordinal])
 }
 
 model LectureChapter {
@@ -992,6 +1000,7 @@ model LectureChapter {
   concept   KnowledgeConcept? @relation(fields: [conceptId], references: [id])
 
   @@index([lectureId])
+  @@index([conceptId])
 }
 
 model LectureCheckpoint {
@@ -1007,6 +1016,7 @@ model LectureCheckpoint {
   explanation  String?
 
   @@index([lectureId])
+  @@index([conceptId])
 }
 
 model WatchEvent {
@@ -1044,6 +1054,7 @@ model KnowledgeConcept {
   masteries   StudentMastery[]
 
   @@index([courseId])
+  @@index([parentId])
 }
 
 model StudentMastery {
@@ -1058,7 +1069,7 @@ model StudentMastery {
   lastUpdatedAt DateTime         @default(now())
 
   @@unique([studentId, conceptId])
-  @@index([studentId])
+  @@index([conceptId])
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1101,6 +1112,7 @@ model ResearchPaper {
   @@index([studentId])
   @@index([reviewerId])
   @@index([status])
+  @@index([offeringId])
 }
 
 // Inline feedback on a research paper. Teachers/reviewers leave page-anchored
@@ -1204,7 +1216,6 @@ model TrainingEnrollment {
   progresses LessonProgress[]
 
   @@unique([userId, trackId])
-  @@index([userId])
   @@index([trackId])
 }
 
@@ -1218,7 +1229,7 @@ model LessonProgress {
   pointsAwarded Int                @default(0)
 
   @@unique([enrollmentId, lessonId])
-  @@index([enrollmentId])
+  @@index([lessonId])
 }
 
 model Badge {
@@ -1246,7 +1257,6 @@ model UserBadge {
   earnedAt DateTime @default(now())
 
   @@id([userId, badgeId])
-  @@index([userId])
 }
 
 model PointsLedger {
@@ -1259,7 +1269,6 @@ model PointsLedger {
   refId     String?
   createdAt DateTime @default(now())
 
-  @@index([userId])
   @@index([userId, createdAt])
 }
 
@@ -1279,7 +1288,6 @@ model RolePermission {
   capability Capability
 
   @@id([role, capability])
-  @@index([role])
 }
 
 model UserPermission {
@@ -1296,7 +1304,6 @@ model UserPermission {
   reason      String?
 
   @@unique([userId, capability])
-  @@index([userId])
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1351,6 +1358,7 @@ model Question {
   @@index([authorId])
   @@index([difficulty])
   @@index([isApproved])
+  @@index([moderatedById])
 }
 
 model ExamTemplate {
@@ -1383,6 +1391,7 @@ model ExamTemplate {
   @@index([facultyId])
   @@index([authorId])
   @@index([status])
+  @@index([moderatedById])
 }
 
 model ExamTemplateQuestion {
@@ -1396,7 +1405,7 @@ model ExamTemplateQuestion {
 
   @@unique([templateId, questionId])
   @@unique([templateId, order])
-  @@index([templateId])
+  @@index([questionId])
 }
 
 model ExamAttempt {
@@ -1417,6 +1426,7 @@ model ExamAttempt {
   @@index([templateId])
   @@index([studentId])
   @@index([status])
+  @@index([status, expiresAt])
 }
 
 model ExamAnswer {
@@ -1434,7 +1444,7 @@ model ExamAnswer {
   answeredAt    DateTime    @default(now())
 
   @@unique([attemptId, questionId])
-  @@index([attemptId])
+  @@index([questionId])
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1456,6 +1466,7 @@ model Announcement {
 
   @@index([scope, scopeId])
   @@index([publishedAt])
+  @@index([authorId])
 }
 
 model Competition {
@@ -1477,6 +1488,7 @@ model Competition {
 
   @@index([status])
   @@index([deadline])
+  @@index([organizerId])
 }
 
 model CompetitionEntry {
@@ -1492,7 +1504,7 @@ model CompetitionEntry {
   score         Int? // judging score, null until judged
 
   @@unique([competitionId, userId])
-  @@index([competitionId])
+  @@index([userId])
 }
 
 model CampusEvent {
@@ -1512,6 +1524,7 @@ model CampusEvent {
   rsvps EventRSVP[]
 
   @@index([startsAt])
+  @@index([organizerId])
 }
 
 model EventRSVP {
