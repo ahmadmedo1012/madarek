@@ -2,21 +2,28 @@
 /**
  * Resilient `prisma migrate deploy` for Render → Neon.
  *
- * Neon exposes pooled (`-pooler`) and direct PostgreSQL endpoints.
- * Prisma Client should use the pooled endpoint at runtime, while
- * Prisma Migrate should use the direct endpoint. Render only needs
- * DATABASE_URL: when it points at a Neon pooler, this script derives
- * the corresponding direct URL for the migration phase.
+ * Two-URL strategy:
+ *   - DATABASE_URL (runtime):  Neon **pooler** URL (PgBouncer) for live API traffic.
+ *   - Migration URL:           Either DIRECT_DATABASE_URL (preferred when set)
+ *                              OR the runtime pooler URL with `pgbouncer=true`
+ *                              + `connection_limit=1` (works on Neon pooler).
+ *
+ * Why fallback to pooler?
+ *   Neon's direct (non-pooled) endpoint may be unreachable in some configurations
+ *   (suspended project, network policies, IP allow-list, certain plans).
+ *   Prisma Migrate *can* run through PgBouncer on Neon as long as we set
+ *   `connection_limit=1` so the migration gets a dedicated session that
+ *   doesn't get reused mid-transaction. Without this fallback, deploys
+ *   fail with "Can't reach database server" against the direct endpoint.
  *
  * Pipeline:
- *   1. Resolve a direct Neon URL from DIRECT_DATABASE_URL (optional)
- *      or derive it from DATABASE_URL by stripping the `-pooler`
- *      hostname suffix + the `pgbouncer` / `connection_limit`
- *      query params (PgBouncer-specific, unsafe for direct connections).
- *   2. Wake the database with a cheap SELECT 1, retrying only on
- *      transient errors. Permanent failures (DNS, auth, refused)
- *      fail fast — no point retrying those.
- *   3. Run `prisma migrate deploy` against the direct URL.
+ *   1. Build a list of candidate migration URLs:
+ *        a. DIRECT_DATABASE_URL (if set)
+ *        b. Derived direct URL (strip `-pooler` + pgbouncer params)
+ *        c. The original DATABASE_URL as-is (pooler, with pgbouncer=true + connection_limit=1)
+ *   2. For each candidate, try `SELECT 1` to wake the DB.
+ *      First one that succeeds wins.
+ *   3. Run `prisma migrate deploy` against the winning URL.
  *      A spawn timeout guards against Neon TCP hangs.
  *
  * The running application still receives the original DATABASE_URL —
@@ -36,62 +43,62 @@ const __dirname = path.dirname(__filename);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...args) => console.log('[migrate-deploy]', ...args);
 
-// ─── URL resolution ────────────────────────────────────────────
-//   Neon pooled endpoints:   ep-<name>-pooler.region.aws.neon.tech
-//   Neon direct endpoints:   ep-<name>.region.aws.neon.tech
-//
-//   The `-pooler` token sits between the endpoint slug and the
-//   region, always followed by `.` (Neon's hostname grammar never
-//   allows it to be at the end of the FQDN).
+// ─── URL candidates ──────────────────────────────────────────────
+//   Build an ordered list of URLs to try for the migration step.
+//   Each candidate carries a label so logs make it clear which one
+//   worked (or which all failed).
 
-function resolveDatabaseUrls() {
+function buildCandidates() {
   const runtimeUrl = process.env.DATABASE_URL?.trim();
-  const configuredDirectUrl = process.env.DIRECT_DATABASE_URL?.trim();
-
   if (!runtimeUrl) {
     throw new Error('DATABASE_URL is required for database deployment.');
   }
 
-  if (configuredDirectUrl) {
-    return {
-      runtimeUrl,
-      directUrl: configuredDirectUrl,
-      source: 'DIRECT_DATABASE_URL',
-    };
-  }
-
-  let url;
+  let runtimeParsed;
   try {
-    url = new URL(runtimeUrl);
+    runtimeParsed = new URL(runtimeUrl);
   } catch {
     throw new Error('DATABASE_URL is not a valid PostgreSQL connection URL.');
   }
-
-  if (!/^postgres(?:ql)?:$/.test(url.protocol)) {
+  if (!/^postgres(?:ql)?:$/.test(runtimeParsed.protocol)) {
     throw new Error(
-      `Unsupported DATABASE_URL protocol "${url.protocol}". Expected postgresql:// or postgres://.`,
+      `Unsupported DATABASE_URL protocol "${runtimeParsed.protocol}". Expected postgresql:// or postgres://.`,
     );
   }
 
-  // Only strip `-pooler` when it's clearly the Neon pooler suffix
-  // (preceded by anything, followed by `.` or end of hostname).
-  // A non-Neon hostname without `-pooler` is a no-op.
-  url.hostname = url.hostname.replace(/-pooler(?=\.|$)/, '');
+  const candidates = [];
 
-  // PgBouncer-specific params must not be carried into a direct
-  // Prisma Migrate connection — Prisma needs its own pool.
-  // `connection_limit` is interpreted by PgBouncer only and is
-  // meaningless (and at worst confusing) for a direct connection.
-  url.searchParams.delete('pgbouncer');
-  url.searchParams.delete('connection_limit');
-  // `pool_timeout` is also PgBouncer-only.
-  url.searchParams.delete('pool_timeout');
+  // 1. DIRECT_DATABASE_URL — if the operator explicitly sets it, trust them.
+  const configuredDirect = process.env.DIRECT_DATABASE_URL?.trim();
+  if (configuredDirect) {
+    candidates.push({ url: configuredDirect, label: 'DIRECT_DATABASE_URL' });
+  }
 
-  return {
-    runtimeUrl,
-    directUrl: url.toString(),
-    source: 'derived from DATABASE_URL',
-  };
+  // 2. Derived direct URL — strip `-pooler` from hostname, drop pgbouncer params.
+  //    Only meaningful if the runtime URL actually has `-pooler`.
+  if (/-pooler\./.test(runtimeParsed.hostname)) {
+    const derived = new URL(runtimeUrl);
+    derived.hostname = derived.hostname.replace(/-pooler(?=\.|$)/, '');
+    derived.searchParams.delete('pgbouncer');
+    derived.searchParams.delete('connection_limit');
+    derived.searchParams.delete('pool_timeout');
+    candidates.push({ url: derived.toString(), label: 'derived direct (stripped -pooler)' });
+  }
+
+  // 3. Fall back: use the runtime pooler URL as-is, but force pgbouncer=true
+  //    + connection_limit=1 so Prisma Migrate gets a dedicated session.
+  //    This works on Neon because PgBouncer in transaction-pooling mode
+  //    still allows DDL when connection_limit=1.
+  const poolerFallback = new URL(runtimeUrl);
+  poolerFallback.searchParams.set('pgbouncer', 'true');
+  poolerFallback.searchParams.set('connection_limit', '1');
+  // Also set `connect_timeout` so we fail fast if Neon is asleep.
+  if (!poolerFallback.searchParams.has('connect_timeout')) {
+    poolerFallback.searchParams.set('connect_timeout', '30');
+  }
+  candidates.push({ url: poolerFallback.toString(), label: 'pooler fallback (pgbouncer=true, connection_limit=1)' });
+
+  return { runtimeUrl, candidates };
 }
 
 function redactUrl(rawUrl) {
@@ -185,31 +192,31 @@ function classifyError(err) {
   return { kind: 'transient', message: msg };
 }
 
-// ─── Wake DB ────────────────────────────────────────────────────
-async function wakeDb(directUrl, { attempts = 18, delayMs = 8000 } = {}) {
+// ─── Probe a single candidate ──────────────────────────────────
+//   Tries a `SELECT 1` against the candidate URL. Returns true on success.
+//   Retries up to `wakeAttempts` times on transient errors.
+//   Permanent errors fail immediately.
+
+async function probeCandidate({ url, label }, { wakeAttempts = 5, delayMs = 4000 } = {}) {
   const prisma = new PrismaClient({
-    datasources: { db: { url: directUrl } },
+    datasources: { db: { url } },
     log: ['error'],
   });
 
-  let lastErr;
   try {
-    for (let i = 1; i <= attempts; i++) {
+    for (let i = 1; i <= wakeAttempts; i++) {
       try {
         await prisma.$queryRawUnsafe('SELECT 1');
-        log(`✅ DB awake (attempt ${i}/${attempts})`);
-        return;
+        log(`✅ ${label}: DB awake (attempt ${i}/${wakeAttempts})`);
+        return true;
       } catch (err) {
-        lastErr = err;
         const cls = classifyError(err);
-        log(`⏳ wake attempt ${i}/${attempts} failed [${cls.kind}]: ${cls.message}`);
-
+        log(`⏳ ${label}: wake attempt ${i}/${wakeAttempts} failed [${cls.kind}]: ${cls.message}`);
         if (cls.kind === 'permanent') {
-          // No point retrying — fail immediately.
-          log('⛔ Permanent DB error — aborting wake loop.');
-          throw err;
+          log(`⛔ ${label}: permanent error — skipping this candidate.`);
+          return false;
         }
-        if (i < attempts) {
+        if (i < wakeAttempts) {
           await sleep(delayMs);
         }
       }
@@ -217,17 +224,13 @@ async function wakeDb(directUrl, { attempts = 18, delayMs = 8000 } = {}) {
   } finally {
     await prisma.$disconnect().catch(() => {});
   }
-
-  throw lastErr;
+  return false;
 }
 
 // ─── Run migrate ────────────────────────────────────────────────
 //   Resolve the local Prisma CLI binary directly to avoid `npx`
 //   overhead and network probes on every retry.
 function resolvePrismaBinary() {
-  // Look upward from this script for the workspace's prisma CLI.
-  // backend/scripts/migrate-deploy.mjs → backend/node_modules/.bin/prisma
-  //                                 →  ../../node_modules/.bin/prisma (workspace root)
   const candidates = [
     path.resolve(__dirname, '..', 'node_modules', '.bin', 'prisma'),
     path.resolve(__dirname, '..', '..', 'node_modules', '.bin', 'prisma'),
@@ -238,7 +241,7 @@ function resolvePrismaBinary() {
   return null;
 }
 
-async function runMigrate(directUrl, { attempts = 4, delayMs = 10000, stepTimeoutMs = 120_000 } = {}) {
+async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, stepTimeoutMs = 180_000 } = {}) {
   const prismaBin = resolvePrismaBinary();
   const cmd = prismaBin
     ? [prismaBin, 'migrate', 'deploy']
@@ -250,20 +253,18 @@ async function runMigrate(directUrl, { attempts = 4, delayMs = 10000, stepTimeou
 
   let lastErr;
   for (let i = 1; i <= attempts; i++) {
-    log(`🚀 migrate deploy (attempt ${i}/${attempts})`);
+    log(`🚀 migrate deploy via ${label} (attempt ${i}/${attempts})`);
     try {
-      // execFileSync with timeout — if Prisma hangs (Neon TCP stall),
-      // we abort and can retry instead of hanging the whole build.
       execFileSync(cmd[0], cmd.slice(1), {
         stdio: 'inherit',
         timeout: stepTimeoutMs,
         env: {
           ...process.env,
           // Override DATABASE_URL ONLY for this child process.
-          DATABASE_URL: directUrl,
-          // Prisma 5.x reads `DIRECT_DATABASE_URL` if set; clear it
-          // so it doesn't override our resolved direct URL.
-          DIRECT_DATABASE_URL: directUrl,
+          DATABASE_URL: targetUrl,
+          // Prisma 5.x reads DIRECT_DATABASE_URL if set; point it at
+          // the same URL so schema-level `directUrl` resolves correctly.
+          DIRECT_DATABASE_URL: targetUrl,
         },
       });
       log('✅ migrations applied');
@@ -289,12 +290,36 @@ async function runMigrate(directUrl, { attempts = 4, delayMs = 10000, stepTimeou
 // ─── Main ───────────────────────────────────────────────────────
 (async () => {
   try {
-    const { runtimeUrl, directUrl, source } = resolveDatabaseUrls();
+    const { runtimeUrl, candidates } = buildCandidates();
     log(`runtime DB: ${redactUrl(runtimeUrl)}`);
-    log(`migration DB: ${redactUrl(directUrl)} (${source})`);
+    log(`trying ${candidates.length} candidate(s) for migration DB:`);
+    for (const c of candidates) {
+      log(`   • ${c.label}: ${redactUrl(c.url)}`);
+    }
 
-    await wakeDb(directUrl);
-    await runMigrate(directUrl);
+    // Probe each candidate in order. First that responds to SELECT 1 wins.
+    let winner = null;
+    for (const c of candidates) {
+      log(`\n▶ probing ${c.label}...`);
+      const ok = await probeCandidate(c);
+      if (ok) {
+        winner = c;
+        break;
+      }
+    }
+
+    if (!winner) {
+      log('\n💥 None of the candidate URLs reached the database.');
+      log('  This usually means:');
+      log('   - Neon project is suspended (revive it in the Neon dashboard)');
+      log('   - IP allow-list excludes Render\'s egress IP');
+      log('   - DATABASE_URL points at the wrong host');
+      log('   - Network connectivity issue between Render and Neon');
+      process.exit(1);
+    }
+
+    log(`\n✅ selected migration DB: ${winner.label}`);
+    await runMigrate(winner.url, winner.label);
 
     process.exit(0);
   } catch (err) {
