@@ -20,8 +20,10 @@ describe('PageTransition', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    // Reset View Transitions API stub between tests.
-    delete (document as Document & { startViewTransition?: unknown }).startViewTransition;
+    // Reset View Transitions API stub between tests. (Cast to a plain
+    // object type — lib.dom declares Document.startViewTransition as a
+    // required method, which would make `delete` a TS2790 error.)
+    delete (document as { startViewTransition?: unknown }).startViewTransition;
   });
 
   it('renders children inside the transition wrapper', () => {

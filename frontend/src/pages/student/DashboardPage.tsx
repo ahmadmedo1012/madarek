@@ -12,6 +12,7 @@ import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitiv
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useStudentDashboard } from '../../hooks/useResources';
+import { useChartThemeKey, chartColors } from '../../lib/chartTheme';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -67,6 +68,9 @@ export default function StudentDashboardPage() {
   const user = useAuthStore((s) => s.user);
   const greeting = useGreeting();
   const dash = useStudentDashboard();
+  // Remounts every Chart.js canvas when the light/dark theme flips, so
+  // canvas colours are re-resolved instead of staying stale.
+  const themeKey = useChartThemeKey();
 
   if (dash.isPending) {
     return (
@@ -125,6 +129,7 @@ export default function StudentDashboardPage() {
 
   const tone = gpaTone(d.profile.gpa);
   const courseProgressPct = d.progress.avgEnrollmentProgressPct;
+  const cc = chartColors();
 
   // Compose the agenda from three real sources, sorted by recency.
   type AgendaItem =
@@ -216,14 +221,12 @@ export default function StudentDashboardPage() {
           <div className="dash-progress-body">
             <div className="dash-doughnut">
               <Doughnut
+                key={themeKey}
                 data={{
                   labels: ['منجز', 'متبقي'],
                   datasets: [{
                     data: [courseProgressPct, Math.max(0, 100 - courseProgressPct)],
-                    backgroundColor: [
-                      getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8E6516',
-                      getComputedStyle(document.documentElement).getPropertyValue('--surface-3').trim() || '#F2EDE3',
-                    ],
+                    backgroundColor: [cc.accent, cc.surfaceMuted],
                     borderWidth: 0,
                     spacing: 2,
                   }],
@@ -261,7 +264,14 @@ export default function StudentDashboardPage() {
           <span className="dash-eyebrow">تقدّم الفصل الدراسي الحالي</span>
           <span className="dash-term-pct" data-numeric="true">{d.term.progressPct}%</span>
         </header>
-        <div className="dash-term-bar" role="progressbar" aria-valuenow={d.term.progressPct} aria-valuemin={0} aria-valuemax={100}>
+        <div
+          className="dash-term-bar"
+          role="progressbar"
+          aria-label="تقدّم الفصل الدراسي الحالي"
+          aria-valuenow={d.term.progressPct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <span style={{ width: `${d.term.progressPct}%` }} />
         </div>
         <footer className="dash-term-foot">

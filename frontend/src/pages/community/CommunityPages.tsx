@@ -4,7 +4,7 @@
  *   /community            tabbed: Announcements · Competitions · Events
  *   The existing /student/social (posts) stays as it is.
  */
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -86,14 +87,34 @@ export default function CommunityPage() {
         <MetricCard icon={CalendarDays} label="فعاليات قادمة" value={upcomingEvents.toString()} color="green" />
       </div>
 
-      <div className="tabs">
-        <button type="button" className={`tab${tab === 'announcements' ? ' on' : ''}`} onClick={() => setTab('announcements')}>
+      {/* Tabs — manual role/aria annotation (icons are content, so the raw
+          markup is kept; the shared Tabs primitive only accepts text labels). */}
+      <div className="tabs" role="tablist" aria-label="أقسام المجتمع الجامعي">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'announcements'}
+          className={`tab${tab === 'announcements' ? ' on' : ''}`}
+          onClick={() => setTab('announcements')}
+        >
           <Icon icon={Megaphone} size={13} /> الإعلانات
         </button>
-        <button type="button" className={`tab${tab === 'competitions' ? ' on' : ''}`} onClick={() => setTab('competitions')}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'competitions'}
+          className={`tab${tab === 'competitions' ? ' on' : ''}`}
+          onClick={() => setTab('competitions')}
+        >
           <Icon icon={Trophy} size={13} /> المسابقات
         </button>
-        <button type="button" className={`tab${tab === 'events' ? ' on' : ''}`} onClick={() => setTab('events')}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'events'}
+          className={`tab${tab === 'events' ? ' on' : ''}`}
+          onClick={() => setTab('events')}
+        >
           <Icon icon={CalendarDays} size={13} /> الفعاليات
         </button>
       </div>
@@ -101,25 +122,28 @@ export default function CommunityPage() {
       {tab === 'announcements' && (
         <div className="flex-col gap-3">
           {ann.isPending ? <LoadingState label="جارٍ تحميل الإعلانات…" /> :
-           ann.isError ? <ErrorState error={ann.error} onRetry={() => ann.refetch()} /> :
-           !ann.data?.length ? <EmptyState icon={Megaphone} title="لا إعلانات بعد" description="ستظهر هنا إعلانات الكلية والمنصة." /> :
-           ann.data.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
+           ann.isError ? <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} /> :
+           (ann.data?.length ?? 0) === 0 ? (
+            <EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." />
+          ) : ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
         </div>
       )}
       {tab === 'competitions' && (
         <div className="track-grid">
           {comps.isPending ? <LoadingState label="جارٍ تحميل المسابقات…" /> :
-           comps.isError ? <ErrorState error={comps.error} onRetry={() => comps.refetch()} /> :
-           !comps.data?.length ? <EmptyState icon={Trophy} title="لا مسابقات حالياً" description="تابع الصفحة للاطلاع على المسابقات القادمة." /> :
-           comps.data.map((c) => <CompetitionCard key={c.id} competition={c} />)}
+           comps.isError ? <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} /> :
+           (comps.data?.length ?? 0) === 0 ? (
+            <EmptyState title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />
+          ) : comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
         </div>
       )}
       {tab === 'events' && (
         <div className="grid-2">
           {events.isPending ? <LoadingState label="جارٍ تحميل الفعاليات…" /> :
-           events.isError ? <ErrorState error={events.error} onRetry={() => events.refetch()} /> :
-           !events.data?.length ? <EmptyState icon={CalendarDays} title="لا فعاليات قادمة" description="سيتم عرض الفعاليات الجامعية هنا." /> :
-           events.data.map((e) => <EventCard key={e.id} event={e} />)}
+           events.isError ? <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} /> :
+           (events.data?.length ?? 0) === 0 ? (
+            <EmptyState title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />
+          ) : events.data?.map((e) => <EventCard key={e.id} event={e} />)}
         </div>
       )}
 
@@ -250,6 +274,12 @@ const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '�
 function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolean; onClose: () => void }) {
   const create = useCreateAnnouncement();
   const facs = useFaculties();
+  const scopeId = useId();
+  const scopeSelectId = useId();
+  const titleId = useId();
+  const bodyId = useId();
+  const iconLabelId = useId();
+  const pinnedId = useId();
 
   const form = useForm<AnnouncementInputs>({
     resolver: zodResolver(announcementSchema),
@@ -278,86 +308,85 @@ function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolea
   });
 
   return (
-    <div className="comp-modal-backdrop" onClick={onClose}>
-      <div className="comp-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="comp-modal-head">
-          <h2>إعلان جديد</h2>
-          <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
-            <Icon icon={X} size={16} />
-          </button>
-        </header>
-        <form onSubmit={onSubmit} className="comp-modal-form">
-          <div className="comp-form-row">
-            <div className="comp-form-field">
-              <label>النطاق</label>
-              <select {...form.register('scope')} className="auth-input">
-                {canPlatform && <option value="PLATFORM">على مستوى المنصّة</option>}
-                <option value="FACULTY">كلّيّة</option>
-                <option value="DEPARTMENT">قسم</option>
-              </select>
-            </div>
-            {scope !== 'PLATFORM' && (
-              <div className="comp-form-field">
-                <label>{scope === 'FACULTY' ? 'الكلّيّة' : 'القسم'}</label>
-                <select {...form.register('scopeId')} className="auth-input">
-                  <option value="">اختر…</option>
-                  {scope === 'FACULTY' && facs.data?.map((f) => (
-                    <option key={f.id} value={f.id}>{f.name}</option>
-                  ))}
-                  {scope === 'DEPARTMENT' && facs.data?.flatMap((f) => f.departments.map((d) => (
-                    <option key={d.id} value={d.id}>{f.name} — {d.name}</option>
-                  )))}
-                </select>
-                {form.formState.errors.scopeId && <span className="auth-field-error">{form.formState.errors.scopeId.message}</span>}
-              </div>
-            )}
-          </div>
-
+    <Modal open onClose={onClose} ariaLabel="إعلان جديد">
+      <header className="comp-modal-head">
+        <h2>إعلان جديد</h2>
+        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+          <Icon icon={X} size={16} />
+        </button>
+      </header>
+      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
+        <div className="comp-form-row">
           <div className="comp-form-field">
-            <label>العنوان</label>
-            <input type="text" {...form.register('title')} className="auth-input" />
-            {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+            <label htmlFor={scopeSelectId}>النطاق</label>
+            <select id={scopeSelectId} {...form.register('scope')} className="auth-input">
+              {canPlatform && <option value="PLATFORM">على مستوى المنصّة</option>}
+              <option value="FACULTY">كلّيّة</option>
+              <option value="DEPARTMENT">قسم</option>
+            </select>
           </div>
-          <div className="comp-form-field">
-            <label>نصّ الإعلان</label>
-            <textarea rows={5} {...form.register('body')} className="auth-input" />
-            {form.formState.errors.body && <span className="auth-field-error">{form.formState.errors.body.message}</span>}
-          </div>
-
-          <div className="comp-form-row">
+          {scope !== 'PLATFORM' && (
             <div className="comp-form-field">
-              <label>أيقونة</label>
-              <div className="comp-icon-picker">
-                {ANN_ICONS.map((ic) => (
-                  <button
-                    key={ic} type="button"
-                    className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
-                    onClick={() => form.setValue('iconEmoji', ic)}
-                  >{ic}</button>
+              <label htmlFor={scopeId}>{scope === 'FACULTY' ? 'الكلّيّة' : 'القسم'}</label>
+              <select id={scopeId} {...form.register('scopeId')} className="auth-input">
+                <option value="">اختر…</option>
+                {scope === 'FACULTY' && facs.data?.map((f) => (
+                  <option key={f.id} value={f.id}>{f.name}</option>
                 ))}
-              </div>
+                {scope === 'DEPARTMENT' && facs.data?.flatMap((f) => f.departments.map((d) => (
+                  <option key={d.id} value={d.id}>{f.name} — {d.name}</option>
+                )))}
+              </select>
+              {form.formState.errors.scopeId && <span className="auth-field-error">{form.formState.errors.scopeId.message}</span>}
             </div>
-            <div className="comp-form-field">
-              <label>تثبيت</label>
-              <label className="flex items-center gap-2" style={{ marginBlockStart: 8 }}>
-                <input type="checkbox" {...form.register('pinned')} />
-                <span className="text-sm text-muted">إبقاء الإعلان في أعلى التغذية</span>
-              </label>
+          )}
+        </div>
+
+        <div className="comp-form-field">
+          <label htmlFor={titleId}>العنوان</label>
+          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
+          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+        </div>
+        <div className="comp-form-field">
+          <label htmlFor={bodyId}>نصّ الإعلان</label>
+          <textarea id={bodyId} rows={5} {...form.register('body')} className="auth-input" />
+          {form.formState.errors.body && <span className="auth-field-error">{form.formState.errors.body.message}</span>}
+        </div>
+
+        <div className="comp-form-row">
+          <div className="comp-form-field">
+            <label id={iconLabelId}>أيقونة</label>
+            <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
+              {ANN_ICONS.map((ic) => (
+                <button
+                  key={ic} type="button"
+                  aria-pressed={form.watch('iconEmoji') === ic}
+                  className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
+                  onClick={() => form.setValue('iconEmoji', ic)}
+                >{ic}</button>
+              ))}
             </div>
           </div>
-
-          {create.isError && <div className="auth-error">تعذَّر النشر. تحقَّق من البيانات.</div>}
-
-          <div className="comp-modal-actions">
-            <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
-            <button type="submit" className="btn primary" disabled={create.isPending}>
-              <Icon icon={Send} size={14} />
-              {create.isPending ? 'جارٍ النشر…' : 'نشر الإعلان'}
-            </button>
+          <div className="comp-form-field">
+            <label htmlFor={pinnedId}>تثبيت</label>
+            <label htmlFor={pinnedId} className="flex items-center gap-2" style={{ marginBlockStart: 8 }}>
+              <input id={pinnedId} type="checkbox" {...form.register('pinned')} />
+              <span className="text-sm text-muted">إبقاء الإعلان في أعلى التغذية</span>
+            </label>
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+
+        {create.isError && <div className="auth-error">تعذَّر النشر. تحقَّق من البيانات.</div>}
+
+        <div className="comp-modal-actions">
+          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="submit" className="btn primary" disabled={create.isPending}>
+            <Icon icon={Send} size={14} />
+            {create.isPending ? 'جارٍ النشر…' : 'نشر الإعلان'}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 
@@ -380,6 +409,14 @@ const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCampusEvent();
+  const titleId = useId();
+  const descId = useId();
+  const locId = useId();
+  const startId = useId();
+  const endId = useId();
+  const capId = useId();
+  const iconLabelId = useId();
+
   const form = useForm<EventInputs>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -405,70 +442,69 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    <div className="comp-modal-backdrop" onClick={onClose}>
-      <div className="comp-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="comp-modal-head">
-          <h2>فعاليّة جديدة</h2>
-          <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
-            <Icon icon={X} size={16} />
+    <Modal open onClose={onClose} ariaLabel="فعاليّة جديدة">
+      <header className="comp-modal-head">
+        <h2>فعاليّة جديدة</h2>
+        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+          <Icon icon={X} size={16} />
+        </button>
+      </header>
+      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
+        <div className="comp-form-field">
+          <label htmlFor={titleId}>العنوان</label>
+          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
+          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+        </div>
+        <div className="comp-form-field">
+          <label htmlFor={descId}>الوصف</label>
+          <textarea id={descId} rows={3} {...form.register('description')} className="auth-input" />
+          {form.formState.errors.description && <span className="auth-field-error">{form.formState.errors.description.message}</span>}
+        </div>
+        <div className="comp-form-field">
+          <label htmlFor={locId}>المكان</label>
+          <input id={locId} type="text" placeholder="مدرَج الكلّيّة، قاعة 301…" {...form.register('location')} className="auth-input" />
+          {form.formState.errors.location && <span className="auth-field-error">{form.formState.errors.location.message}</span>}
+        </div>
+        <div className="comp-form-row">
+          <div className="comp-form-field">
+            <label htmlFor={startId}>البداية</label>
+            <input id={startId} type="datetime-local" {...form.register('startsAt')} className="auth-input" />
+            {form.formState.errors.startsAt && <span className="auth-field-error">{form.formState.errors.startsAt.message}</span>}
+          </div>
+          <div className="comp-form-field">
+            <label htmlFor={endId}>النهاية</label>
+            <input id={endId} type="datetime-local" {...form.register('endsAt')} className="auth-input" />
+            {form.formState.errors.endsAt && <span className="auth-field-error">{form.formState.errors.endsAt.message}</span>}
+          </div>
+        </div>
+        <div className="comp-form-row">
+          <div className="comp-form-field">
+            <label htmlFor={capId}>السعة القصوى</label>
+            <input id={capId} type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
+          </div>
+          <div className="comp-form-field">
+            <label id={iconLabelId}>أيقونة</label>
+            <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
+              {EVENT_ICONS.map((ic) => (
+                <button
+                  key={ic} type="button"
+                  aria-pressed={form.watch('iconEmoji') === ic}
+                  className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
+                  onClick={() => form.setValue('iconEmoji', ic)}
+                >{ic}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+        {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة. تحقَّق من البيانات.</div>}
+        <div className="comp-modal-actions">
+          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="submit" className="btn primary" disabled={create.isPending}>
+            <Icon icon={Send} size={14} />
+            {create.isPending ? 'جارٍ الحفظ…' : 'إنشاء الفعاليّة'}
           </button>
-        </header>
-        <form onSubmit={onSubmit} className="comp-modal-form">
-          <div className="comp-form-field">
-            <label>العنوان</label>
-            <input type="text" {...form.register('title')} className="auth-input" />
-            {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
-          </div>
-          <div className="comp-form-field">
-            <label>الوصف</label>
-            <textarea rows={3} {...form.register('description')} className="auth-input" />
-            {form.formState.errors.description && <span className="auth-field-error">{form.formState.errors.description.message}</span>}
-          </div>
-          <div className="comp-form-field">
-            <label>المكان</label>
-            <input type="text" placeholder="مدرَج الكلّيّة، قاعة 301…" {...form.register('location')} className="auth-input" />
-            {form.formState.errors.location && <span className="auth-field-error">{form.formState.errors.location.message}</span>}
-          </div>
-          <div className="comp-form-row">
-            <div className="comp-form-field">
-              <label>البداية</label>
-              <input type="datetime-local" {...form.register('startsAt')} className="auth-input" />
-              {form.formState.errors.startsAt && <span className="auth-field-error">{form.formState.errors.startsAt.message}</span>}
-            </div>
-            <div className="comp-form-field">
-              <label>النهاية</label>
-              <input type="datetime-local" {...form.register('endsAt')} className="auth-input" />
-              {form.formState.errors.endsAt && <span className="auth-field-error">{form.formState.errors.endsAt.message}</span>}
-            </div>
-          </div>
-          <div className="comp-form-row">
-            <div className="comp-form-field">
-              <label>السعة القصوى</label>
-              <input type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
-            </div>
-            <div className="comp-form-field">
-              <label>أيقونة</label>
-              <div className="comp-icon-picker">
-                {EVENT_ICONS.map((ic) => (
-                  <button
-                    key={ic} type="button"
-                    className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
-                    onClick={() => form.setValue('iconEmoji', ic)}
-                  >{ic}</button>
-                ))}
-              </div>
-            </div>
-          </div>
-          {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة. تحقَّق من البيانات.</div>}
-          <div className="comp-modal-actions">
-            <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
-            <button type="submit" className="btn primary" disabled={create.isPending}>
-              <Icon icon={Send} size={14} />
-              {create.isPending ? 'جارٍ الحفظ…' : 'إنشاء الفعاليّة'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </Modal>
   );
 }

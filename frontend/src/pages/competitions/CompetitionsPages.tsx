@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -170,7 +171,17 @@ export function CompetitionDetailPage() {
 
   const c = q.data;
   const isOrganizer = !!user && c.organizerId === user.id;
-  const myEntry = c.entries.find((e) => e.user.firstName === user?.firstName && e.user.lastName === user?.lastName);
+  // myEntry — prefer an exact id match when the payload carries one (the
+  // organizer path returns the raw entry, which includes userId), and fall
+  // back to a full first+last-name comparison otherwise. NOTE: the public
+  // (non-organizer) competition detail payload does NOT include user ids or
+  // emails — see backend social.routes.ts — so the name fallback is the best
+  // available signal until the backend adds `userId` to entry selects.
+  const myEntry = c.entries.find((e) => {
+    const entryUserId = (e as { userId?: string }).userId;
+    if (entryUserId) return entryUserId === user?.id;
+    return e.user.firstName === user?.firstName && e.user.lastName === user?.lastName;
+  });
   const canEnter = c.status === 'OPEN' && new Date(c.deadline) > new Date();
   const allScored = c.entries.length > 0 && c.entries.every((e) => e.score !== null);
   const someScored = c.entries.some((e) => e.score !== null);
@@ -303,6 +314,7 @@ function ScoreInput({
 }) {
   const [value, setValue] = useState<string>(currentScore !== null ? String(currentScore) : '');
   const score = useScoreCompetitionEntry(competitionId);
+  const scoreLabelId = useId();
 
   const save = () => {
     if (value === '') {
@@ -316,7 +328,7 @@ function ScoreInput({
 
   return (
     <div className="comp-score-input">
-      <label className="text-xxs text-subtle">التقييم (من 100)</label>
+      <label id={scoreLabelId} className="text-xxs text-subtle">التقييم (من 100)</label>
       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
         <input
           type="number"
@@ -325,6 +337,7 @@ function ScoreInput({
           step={1}
           className="auth-input"
           style={{ maxWidth: 100 }}
+          aria-labelledby={scoreLabelId}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onBlur={save}
@@ -353,6 +366,13 @@ type CreateInputs = z.infer<typeof createSchema>;
 
 function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCompetition();
+  const titleId = useId();
+  const descId = useId();
+  const catId = useId();
+  const deadlineId = useId();
+  const prizeId = useId();
+  const iconLabelId = useId();
+
   const form = useForm<CreateInputs>({
     resolver: zodResolver(createSchema),
     defaultValues: { title: '', description: '', category: CATEGORIES[0], prize: '', deadline: '', iconEmoji: '🏆' },
@@ -369,69 +389,68 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    <div className="comp-modal-backdrop" onClick={onClose}>
-      <div className="comp-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="comp-modal-head">
-          <h2>مسابقة جديدة</h2>
-          <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
-            <Icon icon={X} size={16} />
+    <Modal open onClose={onClose} ariaLabel="مسابقة جديدة">
+      <header className="comp-modal-head">
+        <h2>مسابقة جديدة</h2>
+        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+          <Icon icon={X} size={16} />
+        </button>
+      </header>
+      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
+        <div className="comp-form-field">
+          <label htmlFor={titleId}>العنوان</label>
+          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
+          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+        </div>
+        <div className="comp-form-field">
+          <label htmlFor={descId}>الوصف</label>
+          <textarea id={descId} rows={4} {...form.register('description')} className="auth-input" />
+          {form.formState.errors.description && <span className="auth-field-error">{form.formState.errors.description.message}</span>}
+        </div>
+        <div className="comp-form-row">
+          <div className="comp-form-field">
+            <label htmlFor={catId}>الفئة</label>
+            <select id={catId} {...form.register('category')} className="auth-input">
+              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div className="comp-form-field">
+            <label htmlFor={deadlineId}>الموعد النهائي</label>
+            <input id={deadlineId} type="datetime-local" {...form.register('deadline')} className="auth-input" />
+            {form.formState.errors.deadline && <span className="auth-field-error">{form.formState.errors.deadline.message}</span>}
+          </div>
+        </div>
+        <div className="comp-form-row">
+          <div className="comp-form-field">
+            <label htmlFor={prizeId}>الجائزة (اختياري)</label>
+            <input id={prizeId} type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="auth-input" />
+          </div>
+          <div className="comp-form-field">
+            <label id={iconLabelId}>أيقونة</label>
+            <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
+              {ICON_CHOICES.map((ic) => (
+                <button
+                  key={ic}
+                  type="button"
+                  aria-pressed={form.watch('iconEmoji') === ic}
+                  className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
+                  onClick={() => form.setValue('iconEmoji', ic)}
+                >{ic}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+        {create.isError && (
+          <div className="auth-error">تعذَّر إنشاء المسابقة. تحقَّق من البيانات.</div>
+        )}
+        <div className="comp-modal-actions">
+          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="submit" className="btn primary" disabled={create.isPending}>
+            {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء'}
           </button>
-        </header>
-        <form onSubmit={onSubmit} className="comp-modal-form">
-          <div className="comp-form-field">
-            <label>العنوان</label>
-            <input type="text" {...form.register('title')} className="auth-input" />
-            {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
-          </div>
-          <div className="comp-form-field">
-            <label>الوصف</label>
-            <textarea rows={4} {...form.register('description')} className="auth-input" />
-            {form.formState.errors.description && <span className="auth-field-error">{form.formState.errors.description.message}</span>}
-          </div>
-          <div className="comp-form-row">
-            <div className="comp-form-field">
-              <label>الفئة</label>
-              <select {...form.register('category')} className="auth-input">
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div className="comp-form-field">
-              <label>الموعد النهائي</label>
-              <input type="datetime-local" {...form.register('deadline')} className="auth-input" />
-              {form.formState.errors.deadline && <span className="auth-field-error">{form.formState.errors.deadline.message}</span>}
-            </div>
-          </div>
-          <div className="comp-form-row">
-            <div className="comp-form-field">
-              <label>الجائزة (اختياري)</label>
-              <input type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="auth-input" />
-            </div>
-            <div className="comp-form-field">
-              <label>أيقونة</label>
-              <div className="comp-icon-picker">
-                {ICON_CHOICES.map((ic) => (
-                  <button
-                    key={ic}
-                    type="button"
-                    className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
-                    onClick={() => form.setValue('iconEmoji', ic)}
-                  >{ic}</button>
-                ))}
-              </div>
-            </div>
-          </div>
-          {create.isError && (
-            <div className="auth-error">تعذَّر إنشاء المسابقة. تحقَّق من البيانات.</div>
-          )}
-          <div className="comp-modal-actions">
-            <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
-            <button type="submit" className="btn primary" disabled={create.isPending}>
-              {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </Modal>
   );
 }
 
@@ -452,6 +471,10 @@ function EnterCompetitionModal({
   onClose: () => void;
 }) {
   const enter = useEnterCompetition(competitionId);
+  const titleId = useId();
+  const bodyId = useId();
+  const fileUrlId = useId();
+
   const form = useForm<EnterInputs>({
     resolver: zodResolver(enterSchema),
     defaultValues: { title: existing?.title ?? '', body: existing?.body ?? '', fileUrl: '' },
@@ -469,40 +492,38 @@ function EnterCompetitionModal({
   });
 
   return (
-    <div className="comp-modal-backdrop" onClick={onClose}>
-      <div className="comp-modal" onClick={(e) => e.stopPropagation()}>
-        <header className="comp-modal-head">
-          <h2>{existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}</h2>
-          <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
-            <Icon icon={X} size={16} />
+    <Modal open onClose={onClose} ariaLabel={existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}>
+      <header className="comp-modal-head">
+        <h2>{existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}</h2>
+        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+          <Icon icon={X} size={16} />
+        </button>
+      </header>
+      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
+        <div className="comp-form-field">
+          <label htmlFor={titleId}>عنوان المشاركة</label>
+          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
+          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+        </div>
+        <div className="comp-form-field">
+          <label htmlFor={bodyId}>الوصف / المحتوى</label>
+          <textarea id={bodyId} rows={6} {...form.register('body')} className="auth-input" />
+          {form.formState.errors.body && <span className="auth-field-error">{form.formState.errors.body.message}</span>}
+        </div>
+        <div className="comp-form-field">
+          <label htmlFor={fileUrlId}>رابط الملف (اختياري)</label>
+          <input id={fileUrlId} type="url" {...form.register('fileUrl')} placeholder="https://…" className="auth-input" />
+          {form.formState.errors.fileUrl && <span className="auth-field-error">{form.formState.errors.fileUrl.message}</span>}
+        </div>
+        {enter.isError && <div className="auth-error">تعذَّر تقديم المشاركة. تحقَّق من البيانات.</div>}
+        <div className="comp-modal-actions">
+          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="submit" className="btn primary" disabled={enter.isPending}>
+            <Icon icon={Send} size={14} />
+            {enter.isPending ? 'جارٍ الإرسال…' : existing ? 'حفظ التعديلات' : 'إرسال'}
           </button>
-        </header>
-        <form onSubmit={onSubmit} className="comp-modal-form">
-          <div className="comp-form-field">
-            <label>عنوان المشاركة</label>
-            <input type="text" {...form.register('title')} className="auth-input" />
-            {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
-          </div>
-          <div className="comp-form-field">
-            <label>الوصف / المحتوى</label>
-            <textarea rows={6} {...form.register('body')} className="auth-input" />
-            {form.formState.errors.body && <span className="auth-field-error">{form.formState.errors.body.message}</span>}
-          </div>
-          <div className="comp-form-field">
-            <label>رابط الملف (اختياري)</label>
-            <input type="url" {...form.register('fileUrl')} placeholder="https://…" className="auth-input" />
-            {form.formState.errors.fileUrl && <span className="auth-field-error">{form.formState.errors.fileUrl.message}</span>}
-          </div>
-          {enter.isError && <div className="auth-error">تعذَّر تقديم المشاركة. تحقَّق من البيانات.</div>}
-          <div className="comp-modal-actions">
-            <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
-            <button type="submit" className="btn primary" disabled={enter.isPending}>
-              <Icon icon={Send} size={14} />
-              {enter.isPending ? 'جارٍ الإرسال…' : existing ? 'حفظ التعديلات' : 'إرسال'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </Modal>
   );
 }

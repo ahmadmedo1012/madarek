@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload,
-  TrendingUp, MessageSquare, Send, FileText,
+  TrendingUp, MessageSquare, Send, FileText, X, CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { Modal } from '../../components/overlays/Modal';
 import {
   useTeacherOfferings,
   useTeacherStudents,
@@ -16,6 +17,10 @@ import {
   useRecordAttendance,
   useTeacherMaterials,
   useTeacherAssignments,
+  useTeacherDashboard,
+  useGradeSubmission,
+  apiErrorMessage,
+  type TeacherDashboard,
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
@@ -626,6 +631,7 @@ export function PerformancePage() {
 
 export function AssignmentsPage() {
   const q = useTeacherAssignments();
+  const dashboard = useTeacherDashboard();
   const ASSIGNMENT_LABEL: Record<string, string> = {
     HOMEWORK: 'واجب', QUIZ: 'اختبار قصير', PROJECT: 'مشروع', EXAM: 'امتحان',
   };
@@ -639,9 +645,27 @@ export function AssignmentsPage() {
     return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
   };
 
+  const [gradeTarget, setGradeTarget] = useState<GradeTarget | null>(null);
+
   return (
     <div className="page">
-      <PageHeader title="الواجبات والاختبارات" subtitle="كلّ الواجبات الموزَّعة على مقرّراتك مع نسبة التسليم الفعليّة." />
+      <PageHeader title="الواجبات والاختبارات" subtitle="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك." />
+
+      <NeedsReviewCard
+        feed={dashboard.data?.feed ?? []}
+        isPending={dashboard.isPending}
+        isError={dashboard.isError}
+        error={dashboard.error}
+        onRetry={() => dashboard.refetch()}
+        maxScoreFor={(title, courseCode) => {
+          const match = (q.data ?? []).find(
+            (a) => a.title === title && (!courseCode || a.course.code === courseCode),
+          );
+          return match?.maxScore;
+        }}
+        onGrade={(target) => setGradeTarget(target)}
+      />
+
       <Card title="جميع الواجبات" icon={ClipboardList}>
         {q.isPending ? (
           <LoadingState />
@@ -674,7 +698,249 @@ export function AssignmentsPage() {
           </div>
         )}
       </Card>
+
+      {gradeTarget && (
+        <GradeSubmissionModal target={gradeTarget} onClose={() => setGradeTarget(null)} />
+      )}
     </div>
+  );
+}
+
+interface GradeTarget {
+  submissionId: string;
+  studentName: string;
+  assignmentTitle: string;
+  courseCode?: string;
+  maxScore?: number;
+  submittedAt: string;
+}
+
+/* ─── Pending submissions awaiting grading ───────────────── */
+function NeedsReviewCard({
+  feed,
+  isPending,
+  isError,
+  error,
+  onRetry,
+  maxScoreFor,
+  onGrade,
+}: {
+  feed: TeacherDashboard['feed'];
+  isPending: boolean;
+  isError: boolean;
+  error: unknown;
+  onRetry: () => void;
+  maxScoreFor: (title: string, courseCode?: string) => number | undefined;
+  onGrade: (target: GradeTarget) => void;
+}) {
+  // The dashboard feed prefixes submission ids with "s-" (papers use
+  // "p-", attendance "att-"). Only submissions are gradeable here.
+  const pending = useMemo(() => {
+    return feed
+      .filter((f) => f.kind === 'submissions' && f.id.startsWith('s-'))
+      .map((f) => {
+        const assignmentTitle = f.title
+          .replace(/^سلّم\/ت /, '')
+          .replace(/^سلّم /, '');
+        const courseCode = f.meta.split(' · ').pop()?.trim();
+        return {
+          submissionId: f.id.slice(2),
+          studentName: f.author ? `${f.author.firstName} ${f.author.lastName}` : 'طالب',
+          assignmentTitle,
+          courseCode,
+          maxScore: maxScoreFor(assignmentTitle, courseCode),
+          submittedAt: f.when,
+        } satisfies GradeTarget;
+      });
+  }, [feed, maxScoreFor]);
+
+  return (
+    <Card
+      title="تسليمات بانتظار التقييم"
+      icon={ClipboardCheck}
+      subtitle={`${pending.length} تسليم بانتظار درجتك`}
+    >
+      {isPending ? (
+        <LoadingState />
+      ) : isError ? (
+        <ErrorState error={error} onRetry={onRetry} />
+      ) : pending.length === 0 ? (
+        <EmptyState
+          title="لا توجد تسليمات بانتظار التقييم"
+          description="ستظهر هنا تسليمات طلّابك فور وصولها."
+        />
+      ) : (
+        <div className="flex-col gap-2">
+          {pending.map((p) => (
+            <div key={p.submissionId} className="list-row">
+              <UserAvatar
+                initials={p.studentName.split(' ').map((w) => w[0] ?? '').slice(0, 2).join('')}
+                size={32}
+              />
+              <div className="list-row-body">
+                <div className="list-row-title">{p.assignmentTitle}</div>
+                <div className="list-row-sub">
+                  {p.studentName}{p.courseCode ? ` · ${p.courseCode}` : ''} · وصل {formatRelativeAr(p.submittedAt)}
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn primary sm"
+                onClick={() => onGrade(p)}
+              >
+                <Icon icon={Send} size={12} /> تقييم
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+/* ─── Teacher grading modal (grade + feedback) ──────────── */
+function GradeSubmissionModal({
+  target,
+  onClose,
+}: {
+  target: GradeTarget;
+  onClose: () => void;
+}) {
+  const grade = useGradeSubmission(target.submissionId);
+  const [score, setScore] = useState('');
+  const [feedback, setFeedback] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+
+  const onSubmit = async () => {
+    const value = Number(score);
+    if (score.trim() === '' || Number.isNaN(value)) {
+      setValidationError('أدخل درجة صحيحة.');
+      return;
+    }
+    if (value < 0) {
+      setValidationError('لا يمكن أن تكون الدرجة سالبة.');
+      return;
+    }
+    if (target.maxScore !== undefined && value > target.maxScore) {
+      setValidationError(`الدرجة يجب ألّا تتجاوز ${target.maxScore}.`);
+      return;
+    }
+    setValidationError(null);
+    try {
+      await grade.mutateAsync({
+        grade: value,
+        feedback: feedback.trim() || undefined,
+      });
+      setDone(true);
+    } catch {
+      // surfaced inline from grade.isError below
+    }
+  };
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      ariaLabel={`تقييم تسليم ${target.assignmentTitle}`}
+      closeOnOverlayClick={!grade.isPending}
+    >
+      <div className="modal-header">
+        <div className="modal-title">تقييم التسليم</div>
+        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={grade.isPending}>
+          <Icon icon={X} size={16} />
+        </button>
+      </div>
+      <div className="modal-body">
+        <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{target.assignmentTitle}</div>
+        <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }}>
+          {target.studentName}
+          {target.courseCode ? ` · ${target.courseCode}` : ''} · وصل {formatRelativeAr(target.submittedAt)}
+        </div>
+
+        {done ? (
+          <div
+            role="status"
+            style={{
+              padding: 'var(--sp-4)',
+              borderRadius: 'var(--r-md)',
+              background: 'var(--success-soft)',
+              color: 'var(--success)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              fontWeight: 600,
+              fontSize: 'var(--fs-sm)',
+            }}
+          >
+            <Icon icon={CheckCircle2} size={15} />
+            تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.
+          </div>
+        ) : (
+          <>
+            <div className="auth-field">
+              <label htmlFor="grade-score">
+                الدرجة{target.maxScore !== undefined ? ` (من 0 إلى ${target.maxScore})` : ''}
+              </label>
+              <input
+                id="grade-score"
+                type="number"
+                className="input"
+                placeholder={target.maxScore !== undefined ? `0 – ${target.maxScore}` : '0'}
+                min={0}
+                max={target.maxScore}
+                step="any"
+                value={score}
+                onChange={(e) => setScore(e.target.value)}
+                disabled={grade.isPending}
+                style={{ maxWidth: 200 }}
+              />
+            </div>
+
+            <div className="auth-field">
+              <label htmlFor="grade-feedback">ملاحظات للطالب (اختياري)</label>
+              <textarea
+                id="grade-feedback"
+                className="input"
+                rows={4}
+                placeholder="اكتب ملاحظاتك على الإجابة…"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                disabled={grade.isPending}
+                maxLength={2000}
+                style={{ resize: 'vertical', fontFamily: 'inherit' }}
+              />
+            </div>
+
+            {validationError && (
+              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+                {validationError}
+              </p>
+            )}
+            {grade.isError && (
+              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+                {apiErrorMessage(grade.error, 'تعذَّر حفظ الدرجة — حاول مرة أخرى.')}
+              </p>
+            )}
+          </>
+        )}
+      </div>
+      <div className="modal-footer">
+        <button type="button" className="btn ghost" onClick={onClose} disabled={grade.isPending}>
+          {done ? 'إغلاق' : 'إلغاء'}
+        </button>
+        {!done && (
+          <button
+            type="button"
+            className="btn primary"
+            onClick={() => void onSubmit()}
+            disabled={grade.isPending}
+          >
+            {grade.isPending ? 'جارٍ الحفظ…' : 'حفظ الدرجة'}
+          </button>
+        )}
+      </div>
+    </Modal>
   );
 }
 

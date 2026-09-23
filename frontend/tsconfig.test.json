@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  // Typechecks the vitest suites (tests/unit, tests/gallery, tests/motion,
+  // tests/setup.ts) that the base tsconfig (include: ["src"]) never sees.
+  // tests/audit is excluded: its CLI scripts (run-drift.ts,
+  // promote-baseline.ts) run via tsx and use node: imports for which the
+  // frontend has no @types/node; the pure detector (drift.ts) is still
+  // covered transitively via tests/unit/drift.test.ts.
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "dist", "tests/audit"]
+}

@@ -20,7 +20,7 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
-  useLifecycleLiveSession, type LiveSessionRow,
+  useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,
 } from '../../hooks/useResources';
 import { formatDate } from '../../utils/numbers';
 
@@ -60,19 +60,28 @@ export default function TeacherLivePage() {
     [sessions.data],
   );
 
+  const [createError, setCreateError] = useState<string | null>(null);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.offeringId || !form.title.trim() || !form.scheduledAt) return;
-    await create.mutateAsync({
-      offeringId: form.offeringId,
-      title: form.title.trim(),
-      topic: form.topic.trim() || undefined,
-      description: form.description.trim() || undefined,
-      scheduledAt: new Date(form.scheduledAt).toISOString(),
-      joinUrl: form.joinUrl.trim() || undefined,
-    });
-    setShowForm(false);
-    setForm({ offeringId: '', title: '', topic: '', scheduledAt: '', description: '', joinUrl: '' });
+    setCreateError(null);
+    try {
+      await create.mutateAsync({
+        offeringId: form.offeringId,
+        title: form.title.trim(),
+        topic: form.topic.trim() || undefined,
+        description: form.description.trim() || undefined,
+        scheduledAt: new Date(form.scheduledAt).toISOString(),
+        joinUrl: form.joinUrl.trim() || undefined,
+      });
+      setShowForm(false);
+      setForm({ offeringId: '', title: '', topic: '', scheduledAt: '', description: '', joinUrl: '' });
+    } catch (err) {
+      // Keep the form open with the entered values; the Arabic error
+      // renders inside the card so the teacher can retry.
+      setCreateError(apiErrorMessage(err, 'تعذَّر جدولة الجلسة — حاول مرة أخرى.'));
+    }
   };
 
   return (
@@ -173,11 +182,20 @@ export default function TeacherLivePage() {
               />
             </label>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              <button type="button" className="btn ghost" onClick={() => setShowForm(false)}>إلغاء</button>
+              <button type="button" className="btn ghost" onClick={() => setShowForm(false)} disabled={create.isPending}>إلغاء</button>
               <button type="submit" className="btn primary" disabled={create.isPending}>
                 {create.isPending ? 'جارٍ الإنشاء…' : 'جدولة الجلسة'}
               </button>
             </div>
+            {createError && (
+              <div className="alert red" role="alert">
+                <span className="alert-dot" />
+                <div className="alert-body">
+                  <div className="alert-title">تعذَّر جدولة الجلسة</div>
+                  <div className="alert-desc">{createError}</div>
+                </div>
+              </div>
+            )}
           </form>
         </Card>
       )}

@@ -39,6 +39,8 @@ export function chartColors() {
     grid: cssVar('--chart-grid', 'rgba(127,127,127,0.12)'),
     accent: cssVar('--accent', '#a3c9ff'),
     surface: cssVar('--surface-1', '#111113'),
+    /** Slightly raised surface — used for "remaining/inactive" chart segments. */
+    surfaceMuted: cssVar('--surface-3', '#EDEDF0'),
     success: cssVar('--success', '#3DD68C'),
     warning: cssVar('--warning', '#F5A623'),
     danger: cssVar('--danger', '#F55353'),

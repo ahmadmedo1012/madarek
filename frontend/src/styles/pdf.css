@@ -58,7 +58,7 @@
   text-decoration: none;
 }
 .pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
-.pdf-btn.on { background: var(--accent-soft); color: var(--accent); }
+.pdf-btn.on { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
 .pdf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .pdf-btn.sm { width: 28px; height: 28px; }
 
@@ -181,7 +181,7 @@
   padding: var(--sp-8);
   text-align: center;
 }
-.pdf-status-error { color: var(--danger); }
+.pdf-status-error { color: var(--danger-ink, var(--danger)); }
 .spin { animation: pdf-spin 1s linear infinite; }
 @keyframes pdf-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
@@ -292,7 +292,7 @@
   gap: 3px;
   padding: 3px 8px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   border: 0;
   border-radius: 999px;
   font-size: 10px;
@@ -301,7 +301,7 @@
   font-family: inherit;
   transition: background var(--t-fast) var(--ease);
 }
-.annotation-jump:hover { background: var(--accent); color: white; }
+.annotation-jump:hover { background: var(--accent); color: var(--accent-fg); }
 .annotation-comment {
   font-size: var(--fs-sm);
   color: var(--text);
@@ -325,7 +325,7 @@
   justify-content: center;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.annotation-delete:hover { background: var(--danger-soft); color: var(--danger); }
+.annotation-delete:hover { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
 
 @media (max-width: 800px) {
   .annotations-panel { width: 100%; max-height: 320px; }

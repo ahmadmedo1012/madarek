@@ -151,7 +151,8 @@
 .owner-confirm-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  /* 012 z-language: a confirm dialog is a modal. */
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,7 +250,7 @@
 .owner-kv-row code {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   min-width: 160px;
   flex-shrink: 0;
 }
@@ -290,7 +291,7 @@
 }
 
 .owner-error-entry-head .message {
-  color: var(--danger);
+  color: var(--danger-ink, var(--danger));
   flex: 1;
   font-weight: var(--fw-medium);
 }
@@ -379,7 +380,7 @@
 
 .owner-pagination button.active {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   border-color: var(--accent-border);
 }
 
@@ -508,11 +509,11 @@
 
 .owner-live-status .status-text {
   font-weight: var(--fw-medium);
-  color: var(--success);
+  color: var(--success-ink, var(--success));
 }
 
 .owner-live-status.has-alerts .status-text {
-  color: var(--warning);
+  color: var(--warning-ink, var(--warning));
 }
 
 /* ── Command Center: Alert Cards ───────────────────────────── */
@@ -586,7 +587,7 @@
   font-size: 2rem;
   font-weight: var(--fw-bold);
   font-family: var(--font-mono);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   line-height: 1;
   margin-bottom: var(--sp-1);
 }
@@ -619,9 +620,10 @@
   padding: 0 6px;
   border-radius: var(--r-full);
   background: var(--danger);
-  /* Always white on red — intentional inverse text in both themes
-     (--accent-fg flips to dark in dark theme, which would break here). */
-  color: #fff;
+  /* T3-F4 — was #fff in both themes: 3.19:1 on light --danger #DD6E78
+     and ~1.9:1 on dark --danger #F09BA3. A fixed near-black ink passes
+     BOTH: #191918 on #DD6E78 = 5.51:1, on #F09BA3 = 8.31:1. */
+  color: #191918;
   font-size: 11px;
   font-weight: var(--fw-bold);
   line-height: 1;

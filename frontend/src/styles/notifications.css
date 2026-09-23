@@ -1,9 +1,9 @@
 @layer pages {
 /* ═══════════════════════════════════════════════════════════════
-   Plan implementation
-   - NotificationDropdown panel
-   - Indigo accent (#4F46E5) — refined for academic platform
-   - Cairo font family (already loaded; activate as primary)
+   NotificationDropdown panel + mobile bottom navigation.
+   Design language: copper academic accent (tokens.css --accent, see
+   specs/012-design-graphics-uplift) + IBM Plex Sans Arabic type ramp.
+   (T3-F4: header comment was stale — said “Indigo #4F46E5 · Cairo”.)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Notification panel ─────────────────────────────────────── */
@@ -29,15 +29,14 @@
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--r-2xl);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 16px 48px -12px rgba(15, 22, 41, 0.18),
-    0 32px 80px -24px rgba(15, 22, 41, 0.14);
-  z-index: 60;
+  /* 012 elevation-language: NotificationPanel → --elev-3 (replaces the
+     ad-hoc three-layer shadow). */
+  box-shadow: var(--elev-3, var(--shadow-pop));
+  z-index: var(--z-popover);
   overflow: hidden;
   animation: notif-pop-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  -webkit-backdrop-filter: blur(8px);
-          backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+          backdrop-filter: blur(var(--glass-blur));
 }
 
 @keyframes notif-pop-in {
@@ -78,7 +77,7 @@
   padding: 6px 8px;
   border: 0;
   background: transparent;
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -211,7 +210,7 @@
   padding: 12px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   text-decoration: none;
   transition: background var(--t-fast) var(--ease-out);
 }
@@ -245,10 +244,10 @@
   position: fixed;
   inset-inline: 0;
   bottom: 0;
-  z-index: 40;
+  z-index: var(--z-dropdown);
   background: color-mix(in srgb, var(--surface-1) 92%, transparent);
-  -webkit-backdrop-filter: saturate(160%) blur(18px);
-          backdrop-filter: saturate(160%) blur(18px);
+  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
+          backdrop-filter: saturate(160%) blur(var(--glass-blur));
   border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
   padding: 8px 10px max(10px, env(safe-area-inset-bottom)) 10px;
   align-items: stretch;
@@ -281,9 +280,9 @@
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
   transition:
-    color 200ms var(--ease-out),
-    background 200ms var(--ease-out),
-    transform 120ms var(--ease-out);
+    color var(--motion-duration-short) var(--ease-out),
+    background var(--motion-duration-short) var(--ease-out),
+    transform var(--motion-duration-micro) var(--ease-out);
 }
 .bottom-nav-item:active {
   transform: scale(0.96);
@@ -293,7 +292,9 @@
 /* Active item — branded chip with floating icon */
 .bottom-nav-item[aria-current="page"],
 .bottom-nav-item.active {
-  color: var(--accent);
+  /* 012 FR-004 — role-accent tints the active icon chrome (pre-vetted
+     ≥3:1 non-text); the label below takes the AA-safe accent ink. */
+  color: var(--role-accent, var(--accent));
 }
 
 .bottom-nav-icon {
@@ -305,9 +306,9 @@
   border-radius: var(--r-full);
   will-change: background;
   transition:
-    background 240ms var(--ease-out),
-    transform 240ms var(--ease-out),
-    box-shadow 240ms var(--ease-out);
+    background var(--motion-duration-medium) var(--ease-out),
+    transform var(--motion-duration-medium) var(--ease-out),
+    box-shadow var(--motion-duration-medium) var(--ease-out);
 }
 
 .bottom-nav-item.active .bottom-nav-icon {
@@ -331,7 +332,7 @@
 }
 
 .bottom-nav-item.active .bottom-nav-label {
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   font-weight: 700;
 }
 

@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useId, useRef } from 'react';
+import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 
@@ -118,11 +119,14 @@ export function ProgressBar({
   color,
   label,
   showValue = true,
+  ariaLabel,
 }: {
   value: number;
   color?: string;
   label?: ReactNode;
   showValue?: boolean;
+  /** Accessible name for the progressbar; omitted when not provided. */
+  ariaLabel?: string;
 }) {
   const v = Math.max(0, Math.min(100, value));
   return (
@@ -137,7 +141,14 @@ export function ProgressBar({
           )}
         </div>
       )}
-      <div className="progress-track" role="progressbar" aria-valuenow={v} aria-valuemin={0} aria-valuemax={100}>
+      <div
+        className="progress-track"
+        role="progressbar"
+        aria-label={ariaLabel}
+        aria-valuenow={v}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         <div className="progress-fill" style={{ width: `${v}%`, ...(color ? { background: color } : {}) }} />
       </div>
     </div>
@@ -164,11 +175,9 @@ export function AlertRow({
 }) {
   return (
     <div className={`alert ${color}`}>
-      {icon ? (
-        <span className="alert-dot" style={{ display: 'none' }} />
-      ) : (
-        <span className="alert-dot" aria-hidden />
-      )}
+      {/* The coloured dot is the fallback marker; when an icon is present it
+          replaces the dot entirely (no hidden placeholder spans). */}
+      {!icon && <span className="alert-dot" aria-hidden />}
       {icon && (
         <span style={{ color: `var(--${color === 'brand' ? 'accent' : color === 'red' ? 'danger' : color === 'amber' ? 'warning' : color === 'green' ? 'success' : 'brand-purple'})`, marginTop: 2 }}>
           <Icon icon={icon} size={16} />
@@ -236,6 +245,9 @@ export function SectionTitle({ children }: { children: ReactNode }) {
 }
 
 /* ─── Tabs (segmented control) ──────────────────────────── */
+// ARIA tabs pattern with roving tabindex, arrow/Home/End navigation (RTL
+// aware — in RTL, ArrowLeft advances and ArrowRight goes back) and stable
+// id/aria-controls wiring via useId. The public API is unchanged.
 export function Tabs<T extends string>({
   value,
   onChange,
@@ -245,20 +257,65 @@ export function Tabs<T extends string>({
   onChange: (v: T) => void;
   items: Array<{ value: T; label: string }>;
 }) {
+  const uid = useId();
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const focusTab = (index: number) => {
+    tabRefs.current[index]?.focus();
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const count = items.length;
+    if (count === 0) return;
+    // Resolve the writing direction at event time (cheap, and always
+    // reflects the actually-applied direction).
+    const dirAttr =
+      e.currentTarget.closest('[dir]')?.getAttribute('dir') ??
+      document.documentElement.getAttribute('dir') ??
+      'ltr';
+    const isRtl = dirAttr.toLowerCase() === 'rtl';
+
+    let next: number;
+    if (e.key === 'ArrowRight') {
+      next = isRtl ? (index - 1 + count) % count : (index + 1) % count;
+    } else if (e.key === 'ArrowLeft') {
+      next = isRtl ? (index + 1) % count : (index - 1 + count) % count;
+    } else if (e.key === 'Home') {
+      next = 0;
+    } else if (e.key === 'End') {
+      next = count - 1;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    const item = items[next];
+    if (!item) return;
+    onChange(item.value);
+    focusTab(next);
+  };
+
   return (
     <div className="tabs" role="tablist">
-      {items.map((it) => (
-        <button
-          key={it.value}
-          type="button"
-          role="tab"
-          aria-selected={value === it.value}
-          className={`tab${value === it.value ? ' on' : ''}`}
-          onClick={() => onChange(it.value)}
-        >
-          {it.label}
-        </button>
-      ))}
+      {items.map((it, i) => {
+        const selected = value === it.value;
+        return (
+          <button
+            key={it.value}
+            ref={(el) => { tabRefs.current[i] = el; }}
+            type="button"
+            role="tab"
+            id={`${uid}-tab-${it.value}`}
+            aria-controls={`${uid}-panel-${it.value}`}
+            aria-selected={selected}
+            tabIndex={selected ? 0 : -1}
+            className={`tab${selected ? ' on' : ''}`}
+            onClick={() => onChange(it.value)}
+            onKeyDown={(e) => handleKeyDown(e, i)}
+          >
+            {it.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

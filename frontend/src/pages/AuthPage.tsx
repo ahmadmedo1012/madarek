@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Mail, Lock, Home, GraduationCap, School,
-  Building2, AlertCircle, ShieldCheck, ArrowLeft,
+  Building2, AlertCircle, ShieldCheck, ArrowLeft, Crown,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
@@ -33,6 +33,12 @@ const ROLE_HOME: Record<AppRole, string> = {
   QUALITY: '/quality/dashboard',
   OWNER:   '/owner/dashboard',
 };
+
+/** Demo credentials are a dev-only convenience. Gating on
+ *  import.meta.env.DEV keeps known emails/passwords out of production
+ *  bundles (Vite replaces the flag statically, so the whole branch,
+ *  its handlers and this map are dead-code-eliminated in prod builds). */
+const SHOW_DEMO_LOGIN = import.meta.env.DEV;
 
 const DEMO_EMAIL: Record<AppRole, string> = {
   STUDENT: 'student@zu.edu.ly',
@@ -172,26 +178,34 @@ export default function AuthPage() {
               )}
             </button>
 
-            <div className="auth-divider">أو جرِّب بحساب تجريبيّ</div>
+            {SHOW_DEMO_LOGIN && (
+              <>
+                <div className="auth-divider">أو جرِّب بحساب تجريبيّ</div>
 
-            <div className="auth-demo">
-              <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('STUDENT')} disabled={login.isPending}>
-                <Icon icon={GraduationCap} size={14} />
-                <span>طالب</span>
-              </button>
-              <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('TEACHER')} disabled={login.isPending}>
-                <Icon icon={School} size={14} />
-                <span>أستاذ</span>
-              </button>
-              <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('ADMIN')} disabled={login.isPending}>
-                <Icon icon={Building2} size={14} />
-                <span>الإدارة</span>
-              </button>
-              <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('QUALITY')} disabled={login.isPending}>
-                <Icon icon={ShieldCheck} size={14} />
-                <span>الجودة</span>
-              </button>
-            </div>
+                <div className="auth-demo">
+                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('STUDENT')} disabled={login.isPending}>
+                    <Icon icon={GraduationCap} size={14} />
+                    <span>طالب</span>
+                  </button>
+                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('TEACHER')} disabled={login.isPending}>
+                    <Icon icon={School} size={14} />
+                    <span>أستاذ</span>
+                  </button>
+                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('ADMIN')} disabled={login.isPending}>
+                    <Icon icon={Building2} size={14} />
+                    <span>الإدارة</span>
+                  </button>
+                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('QUALITY')} disabled={login.isPending}>
+                    <Icon icon={ShieldCheck} size={14} />
+                    <span>الجودة</span>
+                  </button>
+                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('OWNER')} disabled={login.isPending}>
+                    <Icon icon={Crown} size={14} />
+                    <span>المالك</span>
+                  </button>
+                </div>
+              </>
+            )}
 
             <p className="auth-register-prompt">
               ليس لديك حساب؟ <Link to="/auth/register" className="auth-register-link">أنشئ حسابك الآن</Link>

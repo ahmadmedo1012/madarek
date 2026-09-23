@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { radialOptions, chartPalette } from '../../lib/chartTheme';
+import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity } from '../../hooks/useOwner';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -47,6 +47,8 @@ export function OwnerDashboardPage() {
   const realtime = useOwnerRealtime();
   const alertsQuery = useOwnerAlerts();
   const activity = useOwnerActivity({ page: 1, limit: 8 });
+  // Remounts the chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   // Don't lie with placeholder numbers. If everything is still loading,
   // show a single skeleton; if anything errored, surface that honestly.
@@ -141,7 +143,7 @@ export function OwnerDashboardPage() {
       <div className="grid-2-1">
         <Card title="توزيع المستخدمين">
           <div className="owner-chart-container">
-            <Doughnut data={chartData} options={chartOptions} />
+            <Doughnut key={themeKey} data={chartData} options={chartOptions} />
           </div>
         </Card>
 

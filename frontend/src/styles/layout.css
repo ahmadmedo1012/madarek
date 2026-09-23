@@ -107,7 +107,9 @@
     transform: translateY(-50%);
     block-size: 16px;
     inline-size: 3px;
-    background: var(--accent);
+    /* 012 FR-004 — role-aware chrome tint (sidebar active state).
+       Role accents are pre-vetted ≥3:1 for non-text chrome. */
+    background: var(--role-accent, var(--accent));
     border-radius: 0 2px 2px 0;
     animation: madarek-nav-pop var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
@@ -115,7 +117,7 @@
     from { transform: translateY(-50%) scaleY(0.4); opacity: 0; }
     to   { transform: translateY(-50%) scaleY(1);    opacity: 1; }
   }
-  .nav-item.on .nav-icon, .nav-item.active .nav-icon { color: var(--accent); }
+  .nav-item.on .nav-icon, .nav-item.active .nav-icon { color: var(--role-accent, var(--accent)); }
 
   .nav-badge {
     font-size: 10px;
@@ -167,10 +169,11 @@
   .sidebar-backdrop {
     position: fixed; inset: 0;
     background: rgba(15,15,15,0.45);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(var(--scrim-blur));
     opacity: 0; pointer-events: none;
     transition: opacity var(--t-base) var(--ease);
-    z-index: calc(var(--z-2) - 1);
+    /* Sits just under the mobile drawer (a --z-sheet surface). */
+    z-index: calc(var(--z-sheet) - 1);
   }
   [data-theme="dark"] .sidebar-backdrop { background: rgba(0,0,0,0.65); }
 
@@ -187,7 +190,8 @@
       border-inline-start: 1px solid var(--sidebar-rule);
       transition: transform var(--t-base) var(--ease-out);
       box-shadow: var(--shadow-modal);
-      z-index: var(--z-modal);
+      /* 012 elevation-language: the mobile drawer is a side sheet. */
+      z-index: var(--z-sheet);
       padding-block: max(var(--sp-3), env(safe-area-inset-top))
                      max(var(--sp-3), env(safe-area-inset-bottom));
       will-change: transform;
@@ -213,12 +217,10 @@
   }
   /* Premium subtle elevation only after scroll — keeps the topbar
      flush at the top of the page and "lifts" once content slides
-     beneath it. */
+     beneath it. --elev-2 is theme-aware (dark adds the inset top-edge
+     highlight), so no dark override is needed. */
   .topbar.scrolled {
-    box-shadow: 0 1px 0 var(--rule), 0 4px 14px rgb(0 0 0 / 0.04);
-  }
-  [data-theme="dark"] .topbar.scrolled {
-    box-shadow: 0 1px 0 var(--rule), 0 4px 14px rgb(0 0 0 / 0.25);
+    box-shadow: var(--elev-2);
   }
   @media (max-width: 920px) { .topbar { padding-inline: var(--page-gutter-mobile); } }
 
@@ -328,7 +330,9 @@
   .global-search input:focus {
     background: var(--surface);
     border-color: var(--border-strong);
-    box-shadow: 0 0 0 3px rgba(25,25,24,0.06);
+    /* T3-F4 — was hardcoded rgba(25,25,24,0.06): invisible in dark.
+       The state token carries the theme-aware ring colour. */
+    box-shadow: var(--state-focus-ring);
   }
   .global-search-kbd {
     position: absolute;
@@ -393,10 +397,10 @@
     inset-block-end: 0;
     inset-inline: 0;
     background: var(--topbar-bg);
-    backdrop-filter: blur(16px) saturate(150%);
-    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
     border-block-start: 1px solid var(--rule);
-    z-index: var(--z-2);
+    z-index: var(--z-dropdown);
     padding: 6px max(var(--sp-2), env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, 1fr);
     transition: transform var(--t-base) var(--ease);
@@ -415,7 +419,7 @@
     text-decoration: none;
   }
   .bottom-nav-item:hover { color: var(--text); }
-  .bottom-nav-item.active { color: var(--accent); }
+  .bottom-nav-item.active { color: var(--accent-ink, var(--accent)); }
   .bottom-nav-icon { display: inline-flex; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Users, GraduationCap, BookOpen, ShieldCheck, Search } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar, Pill } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
+import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerStats, useOwnerUsers, useChangeUserRole, useToggleUserStatus } from '../../hooks/useOwner';
 
 type RoleFilter = 'ALL' | 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
@@ -44,10 +45,23 @@ export function OwnerUsersPage() {
   const statData = stats.data;
 
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('ALL');
   const [page, setPage] = useState(1);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  const ownerUsers = useOwnerUsers({ page, limit: 20, q: search || undefined });
+  // Debounce the search input (250–300ms of idle typing) so the users
+  // query fires once typing pauses instead of on every keystroke —
+  // mirrors the LibraryPage pattern.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const ownerUsers = useOwnerUsers({ page, limit: 20, q: debouncedSearch || undefined });
   const liveUsers: UserRow[] = (ownerUsers.data?.data ?? []).map((u) => ({
     id: u.id,
     firstName: u.firstName,
@@ -78,8 +92,15 @@ export function OwnerUsersPage() {
       message: `هل تريد تغيير دور "${user.firstName} ${user.lastName}" من ${ROLE_LABELS[user.role]} إلى ${ROLE_LABELS[newRole]}؟`,
       danger: false,
       onConfirm: async () => {
-        await changeRole.mutateAsync({ userId: user.id, role: newRole });
-        setConfirmOpen(false);
+        try {
+          await changeRole.mutateAsync({ userId: user.id, role: newRole });
+          setConfirmOpen(false);
+        } catch (e) {
+          setActionError(
+            `تعذَّر تغيير دور "${user.firstName} ${user.lastName}" — ${apiErrorMessage(e, 'حاول مرة أخرى.')}`,
+          );
+          setConfirmOpen(false);
+        }
       },
     });
     setConfirmOpen(true);
@@ -93,8 +114,15 @@ export function OwnerUsersPage() {
         : `هل تريد إعادة تفعيل حساب "${user.firstName} ${user.lastName}"؟`,
       danger: user.isActive,
       onConfirm: async () => {
-        await toggleStatus.mutateAsync({ userId: user.id, isActive: !user.isActive });
-        setConfirmOpen(false);
+        try {
+          await toggleStatus.mutateAsync({ userId: user.id, isActive: !user.isActive });
+          setConfirmOpen(false);
+        } catch (e) {
+          setActionError(
+            `تعذَّر تحديث حالة حساب "${user.firstName} ${user.lastName}" — ${apiErrorMessage(e, 'حاول مرة أخرى.')}`,
+          );
+          setConfirmOpen(false);
+        }
       },
     });
     setConfirmOpen(true);
@@ -150,13 +178,22 @@ export function OwnerUsersPage() {
 
       {/* Search and Filter */}
       <Card>
+        {actionError && (
+          <div className="alert red" role="alert" style={{ marginBottom: 'var(--sp-3)' }}>
+            <span className="alert-dot" />
+            <div className="alert-body">
+              <div className="alert-title">تعذَّر تنفيذ الإجراء</div>
+              <div className="alert-desc">{actionError}</div>
+            </div>
+          </div>
+        )}
         <div className="owner-search-bar">
           <Icon icon={Search} size={16} style={{ color: 'var(--text-subtle)' }} />
           <input
             type="text"
             placeholder="بحث بالاسم أو البريد الإلكتروني..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="owner-filter-pills">

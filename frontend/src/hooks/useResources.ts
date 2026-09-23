@@ -297,6 +297,9 @@ export interface MoocCourse {
   enrolled: number;
   hasCertificate: boolean;
   jobReady: boolean;
+  /** External course page (Coursera / edX …). Nullable — cards without a
+   *  URL render without a registration link instead of a dead button. */
+  externalUrl?: string | null;
 }
 export function useMoocs() {
   return useQuery({
@@ -321,6 +324,15 @@ export function useJobs() {
   return useQuery({
     queryKey: ['jobs'],
     queryFn: () => unwrap<Job[]>(api.get('/jobs?limit=50')),
+  });
+}
+
+/** Apply to a job posting — real POST /jobs/:id/apply (upserts the
+ *  application server-side). Backs the «تقدّم الآن» button. */
+export function useApplyJob() {
+  return useMutation({
+    mutationFn: (jobId: string) =>
+      unwrap<{ id: string; jobId: string; userId: string }>(api.post(`/jobs/${jobId}/apply`)),
   });
 }
 
@@ -680,6 +692,121 @@ export function useOfferingFull(offeringId: string | undefined) {
     queryFn: () => unwrap<OfferingFull>(api.get(`/offerings/${offeringId}/full`)),
     enabled: Boolean(offeringId),
   });
+}
+
+// ── Offering assignments (student binding for submissions) ────
+// The student dashboard's agenda lists upcoming assignments by id but does
+// not include the owning offeringId that the submit endpoint needs. The
+// enrollments list the courses page already loads gives us the offering
+// ids; this query (one per enrolled offering) resolves assignmentId →
+// offeringId exactly, without guessing by course code.
+export interface OfferingAssignment {
+  id: string;
+  offeringId: string;
+  title: string;
+  type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+  description?: string | null;
+  dueAt: string;
+  weight: number;
+  maxScore: number;
+}
+export function offeringAssignmentsOptions(offeringId: string) {
+  return {
+    queryKey: ['offerings', offeringId, 'assignments'],
+    queryFn: () => unwrap<OfferingAssignment[]>(api.get(`/offerings/${offeringId}/assignments`)),
+  };
+}
+export function useOfferingAssignments(offeringId: string | undefined) {
+  return useQuery({
+    ...offeringAssignmentsOptions(offeringId ?? ''),
+    enabled: Boolean(offeringId),
+  });
+}
+
+// ── Assignment submissions (student submit + teacher grade) ────
+export type SubmissionStatusFE = 'SUBMITTED' | 'LATE' | 'GRADED' | 'RETURNED' | 'DRAFT';
+
+export interface Submission {
+  id: string;
+  assignmentId: string;
+  studentId: string;
+  textAnswer?: string | null;
+  fileUrl?: string | null;
+  status: SubmissionStatusFE;
+  grade?: number | null;
+  feedback?: string | null;
+  submittedAt?: string | null;
+  gradedAt?: string | null;
+}
+
+export interface SubmitAssignmentInput {
+  textAnswer?: string;
+  fileUrl?: string;
+}
+
+/**
+ * Client-side validation for the student submission form — shared with the
+ * unit tests. Mirrors the server contract:
+ *   - at least one of textAnswer / fileUrl must be non-empty
+ *   - fileUrl (when present) must be an external https:// URL or an
+ *     internal papers path (^/api/v1/files/papers/)
+ * Returns an Arabic error message, or null when the draft is valid.
+ */
+export function validateSubmissionDraft(draft: SubmitAssignmentInput): string | null {
+  const text = draft.textAnswer?.trim() ?? '';
+  const file = draft.fileUrl?.trim() ?? '';
+  if (!text && !file) {
+    return 'أدخل إجابة نصية أو رابط ملف على الأقل قبل التسليم.';
+  }
+  if (file && !(/^https:\/\//.test(file) || file.startsWith('/api/v1/files/papers/'))) {
+    return 'رابط الملف يجب أن يبدأ بـ https:// أو أن يكون مسار ملف داخل المنصة (/api/v1/files/papers/).';
+  }
+  return null;
+}
+
+export function useSubmitAssignment(offeringId: string, assignmentId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    // Envelope matches WS-B1's mounted route: 201 → { data: <submission> }
+    // (the submission row sits directly in `data`).
+    mutationFn: (input: SubmitAssignmentInput) =>
+      unwrap<Submission>(
+        api.post(`/offerings/${offeringId}/assignments/${assignmentId}/submit`, input),
+      ),
+    onSuccess: () => {
+      // Refresh the student agenda (submitted items drop out of the
+      // upcoming list) and the teacher dashboard (needs-review count).
+      qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+    },
+  });
+}
+
+export function useGradeSubmission(submissionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    // Envelope: { data: <graded submission> } with status GRADED.
+    mutationFn: (input: { grade: number; feedback?: string }) =>
+      unwrap<Submission>(
+        api.post(`/submissions/${submissionId}/grade`, { grade: input.grade, feedback: input.feedback }),
+      ),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+      qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
+    },
+  });
+}
+
+/**
+ * Best-effort Arabic error message for inline mutation failures.
+ * Prefers the API's own error message; falls back to a caller-provided
+ * default so every failure surfaces something human-readable.
+ */
+export function apiErrorMessage(error: unknown, fallback: string): string {
+  const e = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
+  const apiMsg = e?.response?.data?.error?.message;
+  if (typeof apiMsg === 'string' && apiMsg.length > 0 && apiMsg.length < 240) return apiMsg;
+  return fallback;
 }
 
 

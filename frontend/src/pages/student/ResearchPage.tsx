@@ -10,7 +10,8 @@ import { LoadingState, ErrorState, EmptyState } from '../../components/primitive
 import { Icon } from '../../components/Icon';
 import {
   useMyResearch, useUploadPaper, useScanPaper,
-  useMyEnrollments, type ResearchPaper, type PaperStatus,
+  useMyEnrollments, apiErrorMessage,
+  type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
@@ -56,6 +57,8 @@ export default function StudentResearchPage() {
   const scan = useScanPaper();
   const [uploadOpen, setUploadOpen] = useState(false);
   const [scanningId, setScanningId] = useState<string | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const papers = my.data ?? [];
   const counts = {
@@ -67,10 +70,11 @@ export default function StudentResearchPage() {
 
   const startScan = async (id: string) => {
     setScanningId(id);
-    // Show "scanning" state for 1.4s before the result lands so the demo feels real.
-    await new Promise((r) => setTimeout(r, 1400));
+    setScanError(null);
     try {
       await scan.mutateAsync(id);
+    } catch (e) {
+      setScanError(apiErrorMessage(e, 'تعذَّر بدء الفحص — تحقّق من اتصالك وحاول مرة أخرى.'));
     } finally {
       setScanningId(null);
     }
@@ -100,6 +104,15 @@ export default function StudentResearchPage() {
       </div>
 
       <Card title="بحوثك" icon={BookMarked} subtitle="جميع البحوث التي رفعتها على المنصة">
+        {scanError && (
+          <div className="alert red" role="alert" style={{ marginBottom: 'var(--sp-3)' }}>
+            <span className="alert-dot" />
+            <div className="alert-body">
+              <div className="alert-title">تعذَّر إجراء الفحص</div>
+              <div className="alert-desc">{scanError}</div>
+            </div>
+          </div>
+        )}
         {my.isPending ? <LoadingState /> :
          my.isError ? <ErrorState error={my.error} onRetry={() => my.refetch()} /> :
          !papers.length ? (
@@ -134,10 +147,18 @@ export default function StudentResearchPage() {
         <UploadModal
           enrollments={enrollments.data ?? []}
           isPending={upload.isPending}
-          onClose={() => setUploadOpen(false)}
+          error={uploadError}
+          onClose={() => { setUploadOpen(false); setUploadError(null); }}
           onSubmit={async (input) => {
-            await upload.mutateAsync(input);
-            setUploadOpen(false);
+            setUploadError(null);
+            try {
+              await upload.mutateAsync(input);
+              setUploadOpen(false);
+            } catch (e) {
+              // Keep the modal open with the entered values; the message
+              // renders inside the modal so the student can retry.
+              setUploadError(apiErrorMessage(e, 'تعذَّر رفع البحث — تحقّق من اتصالك وحاول مرة أخرى.'));
+            }
           }}
         />
       )}
@@ -323,10 +344,11 @@ function ProcessExplainer() {
 
 /* ─── Upload modal ──────────────────────────────────────── */
 function UploadModal({
-  enrollments, isPending, onClose, onSubmit,
+  enrollments, isPending, error, onClose, onSubmit,
 }: {
   enrollments: Array<{ offering: { id: string; course: { name: string; code: string } } }>;
   isPending: boolean;
+  error: string | null;
   onClose: () => void;
   onSubmit: (input: { title: string; abstract?: string; offeringId?: string; fileUrl?: string }) => Promise<void>;
 }) {
@@ -403,6 +425,12 @@ function UploadModal({
               </div>
             </div>
           </div>
+
+          {error && (
+            <p role="alert" className="text-xs" style={{ color: 'var(--danger)' }}>
+              {error}
+            </p>
+          )}
         </div>
         <div className="modal-footer">
           <button type="button" className="btn ghost" onClick={onClose} disabled={isPending}>

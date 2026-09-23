@@ -12,38 +12,40 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Radi
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Tier } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
-import { cartesianOptions, chartColors, valueLabels } from '../../lib/chartTheme';
+import { cartesianOptions, chartColors, useChartThemeKey, valueLabels } from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
-/* ─── Gamification ─────────────────────────────────────── */
-// Derive a friendly Arabic role title from numeric level.
-// Level 1-3 → "طالب مبتدئ", 4-7 → "محلل بيانات", 8+ → "خبير أكاديمي".
-function levelTitle(level: number): string {
-  if (level >= 8) return 'خبير أكاديمي';
-  if (level >= 4) return 'محلل بيانات';
-  return 'طالب مبتدئ';
-}
-
-// XP threshold for the next level — mirrors a simple cubic curve.
-// 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 5500, …
-function nextLevelXp(level: number): number {
-  return 100 * level * (level + 1) / 2;
-}
+/* ─── Gamification ─────────────────────────────────────────── */
+// Tier display maps for the training-points economy (mirrors the labels
+// used on the self-development pages so the wording stays consistent).
+const TIER_LABEL: Record<Tier, string> = {
+  BRONZE: 'برونزي',
+  SILVER: 'فضي',
+  GOLD: 'ذهبي',
+  PLATINUM: 'بلاتيني',
+};
+const TIER_COLOR: Record<Tier, string> = {
+  BRONZE: '#A7724E',
+  SILVER: '#9CA3AF',
+  GOLD: '#D4A537',
+  PLATINUM: '#7B3AED',
+};
 
 export function GamificationPage() {
   const ach = useMyAchievements();
   const lb = useLeaderboard();
-  // Pull real XP + level from the student dashboard endpoint instead of
-  // showing literal "2,340 XP" / level "7" / "محلل البيانات" to every user.
+  // Real XP economy — same scale the leaderboard ranks by.
   const dash = useStudentDashboard();
+  // Real self-development progression (level / tier / distance to next level).
+  const training = useTrainingMe();
 
-  const totalXp = dash.data?.kpi.totalXp ?? dash.data?.profile?.totalXp ?? 0;
-  const level = dash.data?.profile?.level ?? 1;
-  const nextXp = nextLevelXp(level);
-  const progressPct = nextXp > 0 ? Math.min(100, Math.round((totalXp / nextXp) * 100)) : 0;
+  const xp = dash.data ? dash.data.kpi.totalXp : null;
+  const rank = dash.data?.kpi.rank ?? null;
+  const cohortSize = dash.data?.kpi.cohortSize ?? 0;
+  const me = training.data;
 
   return (
     <div className="page">
@@ -52,33 +54,65 @@ export function GamificationPage() {
           <h1 className="page-title">الإنجازات والنقاط</h1>
           <p className="page-subtitle">تقدّمك ومستواك مقارنة بزملائك في المنصة.</p>
         </div>
-        <Badge color="gold" icon={Star}>{totalXp.toLocaleString('ar-EG')} XP</Badge>
+        {xp !== null && <Badge color="gold" icon={Star}>{xp.toLocaleString('ar-LY')} XP</Badge>}
       </header>
 
       <div className="grid-2">
         <Card title="مستوى التقدم" icon={Trophy}>
-          <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }}>
-            <div
-              style={{
-                width: 72, height: 72, borderRadius: '50%',
-                background: 'var(--accent-soft)',
-                color: 'var(--accent)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'var(--font-mono)', fontSize: 24, fontWeight: 700,
-                flexShrink: 0,
-                border: '2px solid var(--accent)',
-              }}
-            >
-              {level}
-            </div>
-            <div className="flex-1">
-              <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{levelTitle(level)}</div>
-              <div className="text-xs text-subtle" style={{ marginBottom: 8 }}>
-                <span className="font-mono">{totalXp.toLocaleString('ar-EG')}</span> / <span className="font-mono">{nextXp.toLocaleString('ar-EG')} XP</span>
+          {dash.isPending || training.isPending ? (
+            <LoadingState />
+          ) : (
+            <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }}>
+              <div
+                aria-label={me ? `المستوى ${me.level.level} في مسار التطوير الذاتي` : undefined}
+                style={{
+                  width: 72, height: 72, borderRadius: '50%',
+                  background: me ? `${TIER_COLOR[me.level.tier]}1F` : 'var(--surface-2)',
+                  color: me ? TIER_COLOR[me.level.tier] : 'var(--text-subtle)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'var(--font-mono)', fontSize: 24, fontWeight: 700,
+                  flexShrink: 0,
+                  border: `2px solid ${me ? TIER_COLOR[me.level.tier] : 'var(--border)'}`,
+                }}
+              >
+                {me ? me.level.level : '—'}
               </div>
-              <div className="xp-track"><div className="xp-fill" style={{ width: `${progressPct}%` }} /></div>
+              <div className="flex-1">
+                <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
+                  {me
+                    ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level} في التطوير الذاتي`
+                    : 'لم يبدأ مسار التطوير الذاتي بعد'}
+                </div>
+                <div className="text-xs text-subtle" style={{ marginBottom: 8 }}>
+                  {xp !== null ? (
+                    <>
+                      نقاط الإنجاز: <span className="font-mono">{xp.toLocaleString('ar-LY')}</span> XP
+                      {rank !== null && cohortSize > 1 && ` · المركز ${rank.toLocaleString('ar-LY')} من ${cohortSize.toLocaleString('ar-LY')} على دفعتك`}
+                    </>
+                  ) : (
+                    'تعذّر تحميل نقاط الإنجاز'
+                  )}
+                </div>
+                {me && (
+                  <>
+                    <div
+                      className="xp-track"
+                      role="progressbar"
+                      aria-label="التقدّم نحو المستوى التالي في مسار التطوير الذاتي"
+                      aria-valuenow={me.level.pctIntoLevel}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    >
+                      <div className="xp-fill" style={{ width: `${me.level.pctIntoLevel}%`, background: TIER_COLOR[me.level.tier] }} />
+                    </div>
+                    <div className="text-xxs text-subtle" style={{ marginTop: 4 }}>
+                      متبقّي <span className="font-mono">{me.level.toNext.toLocaleString('ar-LY')}</span> نقطة للمستوى التالي
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           <SectionTitle>الإنجازات المحققة</SectionTitle>
           {ach.isPending ? <LoadingState /> :
@@ -141,6 +175,8 @@ export function GamificationPage() {
 /* ─── Skills ───────────────────────────────────────────── */
 export function SkillsPage() {
   const skills = useMySkills();
+  const themeKey = useChartThemeKey();
+  const cc = chartColors();
   return (
     <div className="page">
       <header className="page-header">
@@ -157,15 +193,16 @@ export function SkillsPage() {
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
             <div style={{ height: 300, position: 'relative' }}>
               <Radar
+                key={themeKey}
                 data={{
                   labels: skills.data.map((s) => s.skill.name),
                   datasets: [{
                     label: 'مستوى الإتقان',
                     data: skills.data.map((s) => s.progressPct),
-                    backgroundColor: 'rgba(59, 130, 246, 0.18)',
-                    borderColor: chartColors().accent,
+                    backgroundColor: `color-mix(in srgb, ${cc.accent} 18%, transparent)`,
+                    borderColor: cc.accent,
                     borderWidth: 2,
-                    pointBackgroundColor: chartColors().accent,
+                    pointBackgroundColor: cc.accent,
                     pointRadius: 3,
                   }],
                 }}
@@ -177,9 +214,9 @@ export function SkillsPage() {
                   scales: {
                     r: {
                       min: 0, max: 100,
-                      angleLines: { color: chartColors().grid },
-                      grid: { color: chartColors().grid },
-                      pointLabels: { color: chartColors().text, font: { family: 'IBM Plex Sans Arabic', size: 11 } },
+                      angleLines: { color: cc.grid },
+                      grid: { color: cc.grid },
+                      pointLabels: { color: cc.text, font: { family: 'IBM Plex Sans Arabic', size: 11 } },
                       ticks: { display: false, stepSize: 25 },
                     },
                   },
@@ -193,7 +230,7 @@ export function SkillsPage() {
                     <span className="text-sm font-medium" style={{ color: 'var(--text)' }}>{s.skill.name}</span>
                     <Badge>المستوى {s.level} / 5</Badge>
                   </div>
-                  <ProgressBar value={s.progressPct} showValue />
+                  <ProgressBar value={s.progressPct} showValue ariaLabel={`تقدّم مهارة ${s.skill.name}`} />
                 </div>
               ))}
             </div>
@@ -376,6 +413,8 @@ export function SchedulePage() {
 /* ─── Results ──────────────────────────────────────────── */
 export function ResultsPage() {
   const q = useStudentResults();
+  // Remount the chart (and re-resolve its colours) when the theme flips.
+  const themeKey = useChartThemeKey();
 
   if (q.isPending) {
     return (
@@ -409,6 +448,10 @@ export function ResultsPage() {
 
   const d = q.data;
   const hasGrades = d.courses.some((c) => c.gradePct !== null);
+  const cc = chartColors();
+  // Build the shared chart options ONCE per render (each cartesianOptions()
+  // call resolves CSS custom properties — it is not free).
+  const baseOpts = cartesianOptions();
 
   return (
     <div className="page">
@@ -449,15 +492,15 @@ export function ResultsPage() {
         ) : (
           <div style={{ height: Math.max(180, d.courses.length * 32) }}>
             <Bar
+              key={themeKey}
               data={{
                 labels: d.courses.map((r) => r.courseName),
                 datasets: [{
                   label: 'الدرجة',
                   data: d.courses.map((r) => r.gradePct ?? 0),
                   backgroundColor: d.courses.map((r) => {
-                    const c = chartColors();
                     const g = r.gradePct ?? 0;
-                    return g >= 85 ? c.success : g >= 70 ? c.accent : g >= 60 ? c.warning : c.danger;
+                    return g >= 85 ? cc.success : g >= 70 ? cc.accent : g >= 60 ? cc.warning : cc.danger;
                   }),
                   borderRadius: 6,
                   maxBarThickness: 48,
@@ -465,10 +508,10 @@ export function ResultsPage() {
               }}
               plugins={[valueLabels]}
               options={{
-                ...cartesianOptions(),
+                ...baseOpts,
                 scales: {
-                  ...cartesianOptions().scales,
-                  y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
+                  ...baseOpts.scales,
+                  y: { ...baseOpts.scales!.y, min: 0, max: 100 },
                 },
               }}
             />
@@ -487,6 +530,7 @@ export function ResultsPage() {
                   key={r.offeringId}
                   value={r.gradePct ?? 0}
                   label={`${r.courseName} (${r.courseCode})`}
+                  ariaLabel={`درجة مقرّر ${r.courseName}`}
                   color={
                     (r.gradePct ?? 0) >= 85 ? 'var(--success)' :
                     (r.gradePct ?? 0) >= 70 ? 'var(--accent)' :
@@ -563,9 +607,9 @@ export function ArVrPage() {
                   {e.description}
                 </p>
               )}
-              <button type="button" className="btn outline" style={{ width: '100%', marginTop: 'var(--sp-3)' }}>
-                ابدأ التجربة
-              </button>
+              {/* No real launch action exists for AR/VR experiences yet — the
+                  old "ابدأ التجربة" button was a dead control, so it is removed
+                  rather than kept as a fake affordance. */}
             </Card>
           ))}
         </div>
@@ -702,10 +746,8 @@ export function SocialPage() {
                       <Icon icon={Heart} size={13} />
                       {p._count.reactions + (reacted ? 1 : 0)}
                     </button>
-                    <button type="button" className="post-action">
-                      <Icon icon={MessageCircle} size={13} />
-                      {p._count.comments}
-                    </button>
+                    {/* The old comment button was a dead control (there is no
+                        post-comment API) — removed instead of faked. */}
                   </div>
                 </div>
               );

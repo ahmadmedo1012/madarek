@@ -1,17 +1,21 @@
 /**
  * NotificationDropdown
  * ──────────────────────────────────────────────────────────────
- * Bell button that opens a panel in place. The user can preview
- * recent notifications, mark all as read, jump to one, or follow
- * a 'view all' link to the full /alerts page.
+ * Bell button that opens the notifications inbox. The user can
+ * preview recent notifications, mark all as read, jump to one, or
+ * follow a 'view all' link to the full /alerts page.
  *
- * Replaces the previous behaviour where the bell button navigated
- * straight to /alerts.
+ * The panel surface itself is the 012-spec NotificationPanel
+ * primitive (anchored, rtl-aware, glass, --elev-3, Esc +
+ * click-outside dismiss, repositioning on scroll/resize) — this
+ * component only owns the data flow (unread refetch, mark-read,
+ * navigation) and the inner list markup.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check } from 'lucide-react';
 import { Icon } from '../Icon';
+import { NotificationPanel } from '../overlays';
 import { useNotifications, useUnreadNotifications, useMarkNotifRead, type Notification } from '../../hooks/useResources';
 import type { LucideIcon } from 'lucide-react';
 
@@ -40,7 +44,7 @@ function timeAgo(iso: string): string {
 
 export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const bellRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
   const unreadQ = useUnreadNotifications();
   const unread = unreadQ.data ?? 0;
@@ -50,23 +54,8 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const items = (listQ.data ?? []).slice(0, 6);
   const markRead = useMarkNotifRead();
 
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return;
-    const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', onClick);
-    return () => document.removeEventListener('mousedown', onClick);
-  }, [open]);
-
-  // Close on Escape
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [open]);
+  // Outside-click, Esc and anchored repositioning are provided by the
+  // NotificationPanel primitive.
 
   const onItemClick = (n: Notification) => {
     if (!n.readAt) markRead.mutate(n.id);
@@ -79,8 +68,9 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   };
 
   return (
-    <div className="notif-dropdown" ref={ref}>
+    <div className="notif-dropdown">
       <button
+        ref={bellRef}
         type="button"
         className="topbar-notif"
         aria-label={unread > 0 ? `${unread} إشعار غير مقروء` : 'الإشعارات'}
@@ -96,76 +86,79 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
         )}
       </button>
 
-      {open && (
-        <div className="notif-panel" role="dialog" aria-label="الإشعارات">
-          <header className="notif-panel-head">
-            <h3 className="notif-panel-title">الإشعارات</h3>
-            <div className="notif-panel-actions">
-              {unread > 0 && (
-                <button type="button" className="notif-panel-action" onClick={onMarkAll}>
-                  <Icon icon={Check} size={12} />
-                  <span>تعليم الكل كمقروء</span>
-                </button>
-              )}
-              <button
-                type="button"
-                className="notif-panel-close"
-                onClick={() => setOpen(false)}
-                aria-label="إغلاق"
-              >
-                <Icon icon={X} size={14} />
+      <NotificationPanel
+        open={open}
+        onClose={() => setOpen(false)}
+        anchorRef={bellRef}
+        ariaLabel="الإشعارات"
+      >
+        <header className="notif-panel-head">
+          <h3 className="notif-panel-title">الإشعارات</h3>
+          <div className="notif-panel-actions">
+            {unread > 0 && (
+              <button type="button" className="notif-panel-action" onClick={onMarkAll}>
+                <Icon icon={Check} size={12} />
+                <span>تعليم الكل كمقروء</span>
               </button>
-            </div>
-          </header>
-
-          <div className="notif-panel-list">
-            {listQ.isPending ? (
-              <div className="notif-empty">
-                <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
-                <p className="notif-empty-text">جاري التحميل…</p>
-              </div>
-            ) : items.length === 0 ? (
-              <div className="notif-empty">
-                <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
-                <p className="notif-empty-text">لا توجد إشعارات</p>
-              </div>
-            ) : (
-              items.map((n) => {
-                const IconCmp = TYPE_ICON[n.type];
-                return (
-                  <button
-                    key={n.id}
-                    type="button"
-                    className={`notif-item ${TYPE_TONE[n.type]}${n.readAt ? '' : ' unread'}`}
-                    onClick={() => onItemClick(n)}
-                  >
-                    <span className="notif-item-icon">
-                      <Icon icon={IconCmp} size={14} />
-                    </span>
-                    <span className="notif-item-body">
-                      <span className="notif-item-title">{n.title}</span>
-                      {n.body && <span className="notif-item-desc">{n.body}</span>}
-                      <span className="notif-item-time">{timeAgo(n.createdAt)}</span>
-                    </span>
-                    {!n.readAt && <span className="notif-item-dot" aria-hidden />}
-                  </button>
-                );
-              })
             )}
-          </div>
-
-          <footer className="notif-panel-foot">
-            <Link
-              to={alertsPath}
+            <button
+              type="button"
+              className="notif-panel-close"
               onClick={() => setOpen(false)}
-              className="notif-panel-viewall"
+              aria-label="إغلاق"
             >
-              <span>عرض جميع الإشعارات</span>
-              <Icon icon={ChevronLeft} size={12} />
-            </Link>
-          </footer>
+              <Icon icon={X} size={14} />
+            </button>
+          </div>
+        </header>
+
+        <div className="notif-panel-list">
+          {listQ.isPending ? (
+            <div className="notif-empty">
+              <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
+              <p className="notif-empty-text">جاري التحميل…</p>
+            </div>
+          ) : items.length === 0 ? (
+            <div className="notif-empty">
+              <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
+              <p className="notif-empty-text">لا توجد إشعارات</p>
+            </div>
+          ) : (
+            items.map((n) => {
+              const IconCmp = TYPE_ICON[n.type];
+              return (
+                <button
+                  key={n.id}
+                  type="button"
+                  className={`notif-item ${TYPE_TONE[n.type]}${n.readAt ? '' : ' unread'}`}
+                  onClick={() => onItemClick(n)}
+                >
+                  <span className="notif-item-icon">
+                    <Icon icon={IconCmp} size={14} />
+                  </span>
+                  <span className="notif-item-body">
+                    <span className="notif-item-title">{n.title}</span>
+                    {n.body && <span className="notif-item-desc">{n.body}</span>}
+                    <span className="notif-item-time">{timeAgo(n.createdAt)}</span>
+                  </span>
+                  {!n.readAt && <span className="notif-item-dot" aria-hidden />}
+                </button>
+              );
+            })
+          )}
         </div>
-      )}
+
+        <footer className="notif-panel-foot">
+          <Link
+            to={alertsPath}
+            onClick={() => setOpen(false)}
+            className="notif-panel-viewall"
+          >
+            <span>عرض جميع الإشعارات</span>
+            <Icon icon={ChevronLeft} size={12} />
+          </Link>
+        </footer>
+      </NotificationPanel>
     </div>
   );
 }

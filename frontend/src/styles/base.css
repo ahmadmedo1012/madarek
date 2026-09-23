@@ -53,7 +53,10 @@
     text-decoration: none;
     transition: color var(--t-fast) var(--ease);
   }
-  a:hover { color: var(--accent); }
+  /* T3-F4 — link hover uses the text-safe accent ink: light --accent
+     #B57438 is 3.65:1 on --bg (fails AA for body-size link text), while
+     --accent-ink clears 10.29:1 light / 7.87:1 dark. */
+  a:hover { color: var(--accent-ink, var(--accent)); }
 
   button {
     font: inherit;
@@ -74,11 +77,10 @@
   ::selection { background: var(--accent-soft); color: var(--accent-strong); }
 
   :focus { outline: none; }
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-    border-radius: var(--r-xs);
-  }
+  /* Universal :focus-visible ring is owned by motion.css (single source:
+     outline + offset + border-radius: inherit). The former duplicate
+     here forced border-radius: var(--r-xs) and fought the motion layer
+     — removed in T3-F4. */
 
   /* ─── scrollbar ─────────────────────────────────────────────────── */
   * { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
@@ -125,7 +127,9 @@
     block-size: 100dvh;
     background: var(--sidebar-bg);
     border-inline-end: 1px solid var(--sidebar-rule);
-    z-index: var(--z-2);
+    /* 012 z-language: sticky app chrome sits at the dropdown rung
+     (above page content, below every portaled overlay). */
+    z-index: var(--z-dropdown);
     display: flex;
     flex-direction: column;
     transition: inline-size var(--motion-duration-medium) var(--motion-ease-decelerate);
@@ -141,11 +145,11 @@
   .topbar {
     position: sticky;
     inset-block-start: 0;
-    z-index: var(--z-1);
+    z-index: var(--z-dropdown);
     block-size: var(--topbar-h);
     background: var(--topbar-bg);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     border-block-end: 1px solid transparent;
     transition: border-color var(--t-base) var(--ease);
   }

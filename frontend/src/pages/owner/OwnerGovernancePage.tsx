@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
-import { cartesianOptions, radialOptions , chartColors} from '../../lib/chartTheme';
+import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
@@ -25,6 +25,8 @@ export function OwnerGovernancePage() {
   const govData = governance.data;
   const loginData = loginAnalytics.data;
   const c = chartColors();
+  // Remounts each chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   const isPending = governance.isPending || loginAnalytics.isPending;
   const isError = governance.isError || loginAnalytics.isError;
@@ -94,7 +96,7 @@ export function OwnerGovernancePage() {
                 <EmptyState title="لا توجد بيانات نموّ بعد" />
               ) : (
                 <div className="owner-chart-container">
-                  <Line data={growthChartData!} options={growthOptions} />
+                  <Line key={themeKey} data={growthChartData!} options={growthOptions} />
                 </div>
               )}
             </Card>
@@ -104,7 +106,7 @@ export function OwnerGovernancePage() {
                 <EmptyState title="لا توجد محاولات دخول بعد" />
               ) : (
                 <div className="owner-chart-container">
-                  <Doughnut data={doughnutData!} options={doughnutOptions} />
+                  <Doughnut key={themeKey} data={doughnutData!} options={doughnutOptions} />
                 </div>
               )}
             </Card>

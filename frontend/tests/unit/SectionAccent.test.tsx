@@ -5,6 +5,7 @@
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
+import type { Ref } from 'react';
 import { useSectionAccent } from '../../src/components/motion/useSectionAccent';
 import { SectionAccent } from '../../src/components/motion/SectionAccent';
 
@@ -156,7 +157,7 @@ describe('SectionAccent', () => {
     function Probe() {
       const { ref, fired } = useSectionAccent<HTMLDivElement>('underline-draw');
       return (
-        <div ref={ref} data-testid="probe" data-fired={fired ? 'true' : 'false'}>
+        <div ref={ref as Ref<HTMLDivElement>} data-testid="probe" data-fired={fired ? 'true' : 'false'}>
           x
         </div>
       );
@@ -173,7 +174,7 @@ describe('SectionAccent', () => {
   it('disabled=true skips observation', () => {
     function Probe() {
       const { ref } = useSectionAccent<HTMLDivElement>('underline-draw', { disabled: true });
-      return <div ref={ref} data-testid="probe">x</div>;
+      return <div ref={ref as Ref<HTMLDivElement>} data-testid="probe">x</div>;
     }
     render(<Probe />);
     expect(lastObserver).toBeNull();

@@ -14,7 +14,7 @@ import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
   PointElement, LineElement, Filler, Tooltip,
 } from 'chart.js';
-import { cartesianOptions, valueLabels , chartColors} from '../../lib/chartTheme';
+import { cartesianOptions, valueLabels, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
@@ -23,6 +23,8 @@ export function AdminDashboardPage() {
   const facs = useAdminFaculties();
   const reports = useAdminReports();
   const c = chartColors();
+  // Remounts each chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   if (stats.isPending || facs.isPending || reports.isPending) return <PageSkeleton />;
   if (stats.isError || facs.isError || reports.isError) {
@@ -103,12 +105,13 @@ export function AdminDashboardPage() {
           ) : (
             <div style={{ height: Math.max(180, topByStudents.length * 36) }}>
               <Bar
+                key={themeKey}
                 data={{
                   labels: topByStudents.map((row) => row.name),
                   datasets: [{
                     label: 'عدد الطلاب',
                     data: topByStudents.map((row) => row.studentCount),
-                    backgroundColor: 'rgba(163, 201, 255, 0.55)',
+                    backgroundColor: `color-mix(in srgb, ${c.accent} 55%, transparent)`,
                     borderColor: c.accent,
                     borderWidth: 1,
                     borderRadius: 6,
@@ -156,6 +159,7 @@ export function AdminDashboardPage() {
         ) : (
           <div style={{ height: 240 }}>
             <Line
+              key={themeKey}
               data={{
                 labels: r.paperTrend.map((m) => m.month),
                 datasets: [
@@ -171,7 +175,7 @@ export function AdminDashboardPage() {
                     label: 'مقيَّم',
                     data: r.paperTrend.map((m) => m.graded),
                     borderColor: c.gold,
-                    backgroundColor: 'rgba(255, 200, 87, 0.08)',
+                    backgroundColor: `color-mix(in srgb, ${c.gold} 8%, transparent)`,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
                     pointBackgroundColor: c.gold,
                   },

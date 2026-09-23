@@ -471,32 +471,12 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     }
     const attempt = started.created!;
 
-<<<<<<< HEAD
-    const expiresAt = new Date(Date.now() + template.durationMin * 60_000);
-    const maxScore = template.questions.reduce((s, eq) => s + (eq.pointsOverride ?? eq.question.points), 0);
 
-    const attempt = await prisma.examAttempt.create({
-      data: {
-        templateId: template.id,
-        studentId: userId,
-        expiresAt,
-        maxScore,
-      },
-    });
-
-    // Optional shuffle on randomized templates.
-    // Use Fisher-Yates (not Array.sort with Math.random) — the latter
-    // is biased because TimSort's comparator contract is violated by
-    // a non-deterministic return value; elements near the end of the
-    // array see less variation than they should.
-    const serializedQs = template.questions.slice();
-    if (template.randomized && serializedQs.length > 1) {
-=======
     // Optional shuffle on randomized templates — Fisher-Yates (sort()
     // with a random comparator is biased and not a uniform shuffle).
     let serializedQs = template.questions.slice();
     if (template.randomized) {
->>>>>>> 75e9ee6 (feat(backend): submissions API, write-path correctness, auth hardening, telemetry)
+
       for (let i = serializedQs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const tmp = serializedQs[i]!;

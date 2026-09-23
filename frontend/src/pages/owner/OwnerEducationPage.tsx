@@ -6,13 +6,15 @@ import {
 } from 'chart.js';
 import { Card, MetricCard, ProgressBar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
-import { cartesianOptions , chartColors} from '../../lib/chartTheme';
+import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerEducation } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export function OwnerEducationPage() {
   const q = useOwnerEducation();
+  // Remounts each chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   if (q.isPending) {
     return (
@@ -52,13 +54,16 @@ export function OwnerEducationPage() {
   const pct = (n: number) => (totalTeachers > 0 ? Math.round((n / totalTeachers) * 100) : 0);
 
   const c = chartColors();
+  // Build the shared chart options ONCE per render (each cartesianOptions()
+  // call resolves CSS custom properties — it is not free).
+  const baseOpts = cartesianOptions();
 
   const barData = {
     labels: byFaculty.map((f) => f.name),
     datasets: [{
       label: 'عدد المقررات',
       data: byFaculty.map((f) => f.courseCount),
-      backgroundColor: 'rgba(163, 201, 255, 0.6)',
+      backgroundColor: `color-mix(in srgb, ${c.accent} 60%, transparent)`,
       borderColor: c.accent,
       borderWidth: 1,
       borderRadius: 4,
@@ -82,10 +87,10 @@ export function OwnerEducationPage() {
     }],
   };
   const lineOptions = {
-    ...cartesianOptions(),
+    ...baseOpts,
     scales: {
-      ...cartesianOptions().scales,
-      y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
+      ...baseOpts.scales,
+      y: { ...baseOpts.scales!.y, min: 0, max: 100 },
     },
   };
 
@@ -110,7 +115,7 @@ export function OwnerEducationPage() {
           <EmptyState title="لا مقرّرات بعد" description="ستظهر هنا حين تُسجَّل مقرّرات على نظام الكلّيّات." />
         ) : (
           <div className="owner-chart-container" style={{ height: Math.max(220, byFaculty.length * 36) }}>
-            <Bar data={barData} options={barOptions} />
+            <Bar key={themeKey} data={barData} options={barOptions} />
           </div>
         )}
       </Card>
@@ -147,26 +152,31 @@ export function OwnerEducationPage() {
           <ProgressBar
             value={pct(workloadBuckets.idle)}
             label={`بدون عرض هذا الفصل (${workloadBuckets.idle.toLocaleString('ar-LY')} أستاذ)`}
+            ariaLabel="نسبة الأساتذة بدون عرض هذا الفصل"
             color="#9CA3AF"
           />
           <ProgressBar
             value={pct(workloadBuckets.one)}
             label={`عرض واحد (${workloadBuckets.one.toLocaleString('ar-LY')} أستاذ)`}
+            ariaLabel="نسبة الأساتذة بعرض واحد هذا الفصل"
             color={c.accent}
           />
           <ProgressBar
             value={pct(workloadBuckets.two)}
             label={`عرضان (${workloadBuckets.two.toLocaleString('ar-LY')} أستاذ)`}
+            ariaLabel="نسبة الأساتذة بعرضين هذا الفصل"
             color={c.success}
           />
           <ProgressBar
             value={pct(workloadBuckets.three)}
             label={`٣ عروض (${workloadBuckets.three.toLocaleString('ar-LY')} أستاذ)`}
+            ariaLabel="نسبة الأساتذة بثلاثة عروض هذا الفصل"
             color={c.gold}
           />
           <ProgressBar
             value={pct(workloadBuckets.fourPlus)}
             label={`٤ فأكثر (${workloadBuckets.fourPlus.toLocaleString('ar-LY')} أستاذ)`}
+            ariaLabel="نسبة الأساتذة بأربعة عروض فأكثر هذا الفصل"
             color={c.warning}
           />
         </div>
@@ -177,7 +187,7 @@ export function OwnerEducationPage() {
           <EmptyState title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور تسجيل أوّل جلسة حضور على المنصّة." />
         ) : (
           <div className="owner-chart-container">
-            <Line data={lineData} options={lineOptions} />
+            <Line key={themeKey} data={lineData} options={lineOptions} />
           </div>
         )}
       </Card>

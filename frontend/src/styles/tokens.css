@@ -258,9 +258,6 @@
     --section-gap:  var(--sp-12);
     --page-gutter:  var(--sp-9);
     --page-gutter-mobile: var(--sp-5);
-
-    --z-1: 10;     --z-2: 100;    --z-3: 1000;
-    --z-popover: 1100;  --z-modal: 1200;  --z-toast: 1300;
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
@@ -314,8 +311,18 @@
     --text:        var(--neutral-900);
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
-    --text-muted:  var(--neutral-500);
-    --text-faint:  var(--neutral-400);
+    /* T3-F4 WCAG fix — --text-muted was var(--neutral-500) #898680.
+       Math (WCAG 2.1 relative luminance): #898680 L=0.2392 on --bg
+       #FBFAF9 L=0.9572 → (0.9572+0.05)/(0.2392+0.05) = 3.48:1 ✗ AA.
+       #6E6C65 L=0.1498 → 1.0072/0.1998 = 5.04:1 ✓ AA (4.86:1 on
+       --surface-2 #F7F6F3, 5.26:1 on --surface #FFFFFF). --neutral-500
+       itself is untouched (ramp stays intact for non-text uses). */
+    --text-muted:  #6E6C65;
+    /* T3-F4 — was var(--neutral-400) #B5B1A8 = 2.05:1 on --bg (failed
+       both text AA and 3:1 non-text). #74706A L=0.1634 → 4.72:1 on --bg,
+       4.92:1 on --surface, 4.55:1 on --surface-2 — now AA-safe even for
+       placeholder/hint text; still reads one step fainter than muted. */
+    --text-faint:  #74706A;
     --text-on-accent: #FFFFFF;
     --text-on-dark:   var(--neutral-50);
 
@@ -323,14 +330,34 @@
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(25,25,24,0.06);
     --rule:          var(--neutral-200);
+    /* 012 theme-tokens contract §1 — formalised surface edge tokens
+       (components.css .surface-card consumes --surface-border). */
+    --surface-border:  rgba(0,0,0,0.08);
+    --surface-divider: rgba(0,0,0,0.05);
 
     /* primary brand accent — Notion-orange-with-Madark-copper energy */
     --accent:        var(--c-copper-ink);
     --accent-hover:  #9A5F25;
     --accent-soft:   var(--c-copper-bg);
     --accent-strong: var(--c-copper-deep);
-    --accent-fg:     #FFFFFF;
+    /* T3-F4 WCAG fix — was #FFFFFF: 3.80:1 on --accent #B57438 (L=0.2260)
+       ✗ AA for 13–15px button labels. #1A0F06 L=0.0057 →
+       (0.2260+0.05)/(0.0057+0.05) = 4.95:1 ✓ AA. This mirrors Dark's
+       incumbent pattern (dark ink on copper: #191918 on #E0A067 = 7.87:1),
+       so accent buttons read as one family across themes. */
+    --accent-fg:     #1A0F06;
     --focus-ring:    rgba(181, 116, 56, 0.32);
+
+    /* T3-F4 — text-safe accent ink for links/eyebrows on light surfaces.
+       #5C3416 = 10.29:1 on --bg, 10.72:1 on --surface, 8.62:1 on
+       --accent-soft. --accent stays the fill/border/underline colour. */
+    --accent-ink:    var(--accent-strong);
+
+    /* 001 interaction-tokens self-rule: the focus ring MUST clear 4.5:1
+       against the background. Light --accent #B57438 is 3.65:1 on --bg,
+       so the light ring uses the deep copper (10.29:1). Dark --accent
+       #E0A067 clears 7.87:1 and keeps the shared :root default. */
+    --state-focus-ring-color: var(--accent-strong);
 
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
@@ -341,9 +368,25 @@
     --info:         var(--c-sky-ink);
     --info-soft:    var(--c-sky-bg);
 
+    /* T3-F4 — status INK tokens for TEXT usages. The base tokens stay the
+       fill/stroke colours; as light-theme text they fail AA
+       (--success 3.00:1, --danger 3.19:1, --warning 2.20:1 on white/bg),
+       so text consumes the deep "text-on-pastel" shades of the same hue
+       families: --c-mint-deep #1F4F30 = 9.08:1, --c-yellow-deep
+       #6B4C0B = 7.56:1, --c-rose-deep #6B2128 = 10.75:1,
+       --c-sky-deep #1F3D63 = 10.57:1 (all on --bg #FBFAF9). */
+    --success-ink: var(--c-mint-deep);
+    --warning-ink: var(--c-yellow-deep);
+    --danger-ink:  var(--c-rose-deep);
+    --info-ink:    var(--c-sky-deep);
+
     --brand:         var(--accent);
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--c-yellow-ink);
+    /* T3-F4 — gold text ink (fills/strokes keep --gold):
+       #6B4C0B = 7.56:1 on --bg. TSX gold-as-text consumers should switch
+       to var(--gold-ink) (follow-up logged for the TSX wave). */
+    --gold-ink:      var(--c-yellow-deep);
     --primary:       var(--neutral-900);
     --primary-fg:    #FFFFFF;
 
@@ -357,6 +400,11 @@
     --glass-bg:    rgba(251,250,249,0.78);
     --glass-blur:  16px;
     --glass-border: rgba(25,25,24,0.06);
+    /* T3-F4 — scrim blur for dimming overlays (modal/sheet/dialog
+       backdrops). Consolidates the six ad-hoc blur values
+       (2/4/6/8/10/14px) onto two tokens: --glass-blur for glass
+       surfaces, --scrim-blur for dimming scrims. */
+    --scrim-blur:  4px;
 
     /* sidebar / topbar */
     --sidebar-bg:        var(--neutral-50);
@@ -402,7 +450,7 @@
     --shadow-xl: var(--shadow-modal);
     --shadow-2xl: var(--shadow-modal);
 
-    --chart-text: var(--neutral-500);
+    --chart-text: #6E6C65;  /* T3-F4: was var(--neutral-500) #898680 = 3.48:1 → 5.04:1 ✓ (same fix as --text-muted) */
     --chart-grid: rgba(25,25,24,0.08);
     --chart-1: var(--c-copper-ink);
     --chart-2: var(--c-mint-ink);
@@ -461,6 +509,9 @@
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(242,234,216,0.08);
     --rule:          var(--neutral-200);
+    /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
+    --surface-border:  rgba(255,255,255,0.10);
+    --surface-divider: rgba(255,255,255,0.06);
 
     --accent:        var(--c-copper-ink);
     --accent-hover:  #F2B782;
@@ -468,6 +519,16 @@
     --accent-strong: var(--c-copper-deep);
     --accent-fg:     #191918;
     --focus-ring:    rgba(224, 160, 103, 0.36);
+
+    /* Dark theme passes as-is: the -ink family clears AA on dark
+       surfaces (--success 9.18:1, --warning 11.07:1, --danger 8.31:1,
+       --info 8.20:1, --accent 7.87:1 on --bg #191918), so -ink maps to
+       the same values the base tokens already resolve to. */
+    --accent-ink:   var(--accent);
+    --success-ink:  var(--c-mint-ink);
+    --warning-ink:  var(--c-yellow-ink);
+    --danger-ink:   var(--c-rose-ink);
+    --info-ink:     var(--c-sky-ink);
 
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
@@ -481,6 +542,7 @@
     --brand:         var(--accent);
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--accent);
+    --gold-ink:      var(--c-yellow-ink);   /* T3-F4 — dark gold text ink (11.07:1 on --bg) */
     --primary:       var(--accent);
     --primary-fg:    #191918;
 
@@ -493,6 +555,7 @@
     --glass-bg:    rgba(25,25,24,0.78);
     --glass-blur:  16px;
     --glass-border: rgba(242,234,216,0.06);
+    --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
 
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
@@ -596,15 +659,17 @@
     --college-accent-soft: color-mix(in srgb, var(--college-accent) 18%, transparent);
   }
 
-  /* ─── 3. Elevation language — Light ───────────────────────────────── */
-  :root[data-theme="light"] {
-    --elev-1: 0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.06);
-    --elev-2: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
-    --elev-3: 0 8px 16px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.05);
-    --elev-4: 0 16px 32px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
-    --elev-5: 0 32px 64px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.08);
-
-    /* z-order tokens — shared across themes */
+  /* ─── 3a. Z-order tokens (theme-independent) ───────────────────────
+     T3-F4 fix: this block previously lived INSIDE the
+     :root[data-theme="light"] selector, so in Dark the names fell back
+     to the legacy --z-popover:1100 / --z-modal:1200 / --z-toast:1300
+     scale — inverting the 012 elevation-language hierarchy (popover
+     above sheet/lightbox). Declared on plain :root so one scale
+     (dropdown 100 < popover 200 < tooltip 250 < sheet 300 < modal 400
+     < toast 500 < lightbox 600) applies in BOTH themes. The legacy
+     --z-1/-2/-3 + 1100/1200/1300 definitions were deleted; remaining
+     references were normalised (see T3-F4 log). */
+  :root {
     --z-base: 0;
     --z-dropdown: 100;
     --z-popover: 200;
@@ -613,6 +678,15 @@
     --z-modal: 400;
     --z-toast: 500;
     --z-lightbox: 600;
+  }
+
+  /* ─── 3. Elevation language — Light ───────────────────────────────── */
+  :root[data-theme="light"] {
+    --elev-1: 0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.06);
+    --elev-2: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --elev-3: 0 8px 16px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.05);
+    --elev-4: 0 16px 32px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
+    --elev-5: 0 32px 64px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.08);
   }
 
   /* ─── Elevation language — Dark (fill-led, shadow muted) ──────────── */
@@ -661,6 +735,12 @@
       --glass-bg: var(--surface);
       --glass-border: rgba(0,0,0,0.32);
       --ill-shadow: transparent;
+      /* 012 theme-tokens contract §8 — border strengthening. */
+      --surface-border:  rgba(0,0,0,0.32);
+      --surface-divider: rgba(0,0,0,0.20);
+      --border:        rgba(0,0,0,0.42);
+      --border-strong: rgba(0,0,0,0.60);
+      --rule:          rgba(0,0,0,0.42);
     }
     :root[data-theme="dark"] {
       --elev-1: 0 0 0 1px rgba(255,255,255,0.36);
@@ -671,6 +751,19 @@
       --glass-bg: var(--surface);
       --glass-border: rgba(255,255,255,0.36);
       --ill-shadow: transparent;
+      --surface-border:  rgba(255,255,255,0.36);
+      --surface-divider: rgba(255,255,255,0.24);
+      --border:        rgba(255,255,255,0.48);
+      --border-strong: rgba(255,255,255,0.64);
+      --rule:          rgba(255,255,255,0.48);
+    }
+
+    /* 012 illustration-system family rule: under prefers-contrast: more
+       the 1.5 unit strokes thicken to 2.0 (CSS overrides the SVG
+       presentation attributes). Solid fills stay; --ill-shadow is
+       already transparent above. */
+    .illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse) {
+      stroke-width: 2;
     }
   }
 }

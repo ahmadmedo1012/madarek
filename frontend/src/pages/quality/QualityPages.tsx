@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
-import { cartesianOptions, radialOptions, chartColors } from '../../lib/chartTheme';
+import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -126,6 +126,8 @@ export function QualityDashboardPage() {
   // card doesn't show fabricated titles. Previously three fake alerts
   // were hardcoded here.
   const alerts = useQualityAlerts();
+  // Remounts each chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   if (ov.isPending || eg.isPending) {
     return (
@@ -158,6 +160,11 @@ export function QualityDashboardPage() {
   }
   const d = ov.data;
   const e = eg.data;
+  // Resolve chart colours/options during render so a theme flip (which
+  // remounts the canvases via `key`) picks up fresh values — the old
+  // module-level `const chartOpts = cartesianOptions()` froze at import time.
+  const cc = chartColors();
+  const opts = cartesianOptions();
 
   return (
     <div className="page">
@@ -189,22 +196,23 @@ export function QualityDashboardPage() {
         <Card title="النشاط الأسبوعي" subtitle="عدد الجلسات اليومية النشطة على المنصة" icon={TrendingUp}>
           <div style={{ height: 220 }}>
             <Line
+              key={themeKey}
               data={{
                 labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
                 datasets: [{
                   label: 'مستخدم نشط',
                   data: e.weeklyActive,
-                  borderColor: chartColors().accent,
-                  backgroundColor: `color-mix(in srgb, ${chartColors().accent} 12%, transparent)`,
+                  borderColor: cc.accent,
+                  backgroundColor: `color-mix(in srgb, ${cc.accent} 12%, transparent)`,
                   tension: 0.4,
                   fill: true,
                   borderWidth: 2,
                   pointRadius: 3,
                   pointHoverRadius: 5,
-                  pointBackgroundColor: chartColors().accent,
+                  pointBackgroundColor: cc.accent,
                 }],
               }}
-              options={chartOpts}
+              options={opts}
             />
           </div>
         </Card>
@@ -212,12 +220,13 @@ export function QualityDashboardPage() {
         <Card title="توزيع الحضور" icon={ClipboardCheck}>
           <div style={{ height: 220, position: 'relative' }}>
             <Doughnut
+              key={themeKey}
               data={{
                 labels: ['حضور', 'تأخر', 'غياب'],
                 datasets: [{
                   data: [e.attendance.presentRate, e.attendance.lateRate, e.attendance.absentRate],
-                  backgroundColor: [chartColors().success, chartColors().warning, chartColors().danger],
-                  borderColor: chartColors().surface,
+                  backgroundColor: [cc.success, cc.warning, cc.danger],
+                  borderColor: cc.surface,
                   borderWidth: 2,
                 }],
               }}
@@ -230,14 +239,15 @@ export function QualityDashboardPage() {
       <div className="grid-2-1">
         <Card title="مؤشرات الجودة الأساسية" icon={ShieldCheck}>
           <div className="flex-col gap-4">
-            <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" color="var(--success)" />
-            <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" color="var(--accent)" />
+            <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" ariaLabel="معدل الحضور التراكمي" color="var(--success)" />
+            <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
             {/* Removed three hardcoded bars (68/82/91) — they were fabricated.
                 Real "digitization" / "teacher response" / "platform readiness"
                 metrics don't exist in the API yet. */}
             <ProgressBar
               value={e.totalStudents > 0 ? Math.round((e.weeklyActive[e.weeklyActive.length - 1] ?? 0) / e.totalStudents * 100) : 0}
               label="النشاط الأسبوعي"
+              ariaLabel="النشاط الأسبوعي"
               color="var(--brand-purple)"
             />
           </div>
@@ -415,7 +425,7 @@ export function QualityProfessorsPage() {
                     <td className="tbl-num">{t.responseHours}س</td>
                     <td>
                       <div style={{ minWidth: 120, display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <ProgressBar value={t.compliance} showValue={false} />
+                        <ProgressBar value={t.compliance} showValue={false} ariaLabel={`التزام د. ${t.firstName} ${t.lastName}`} />
                         <Badge color={compColor as never}>{t.compliance}%</Badge>
                       </div>
                     </td>
@@ -435,9 +445,13 @@ export function QualityProfessorsPage() {
    ════════════════════════════════════════════════════════════════ */
 export function QualityEngagementPage() {
   const e = useEngagement();
+  // Remounts the chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
   if (e.isPending) return <LoadingState />;
   if (e.isError || !e.data) return <ErrorState error={e.error} onRetry={() => e.refetch()} />;
   const d = e.data;
+  const cc = chartColors();
+  const opts = cartesianOptions();
 
   const enrollmentRate = d.totalStudents > 0 ? Math.min(100, (d.enrollments / d.totalStudents) * 100) : 0;
 
@@ -461,27 +475,28 @@ export function QualityEngagementPage() {
         <Card title="النشاط الأسبوعي" icon={TrendingUp}>
           <div style={{ height: 240 }}>
             <Bar
+              key={themeKey}
               data={{
                 labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
                 datasets: [{
                   label: 'نشاط يومي',
                   data: d.weeklyActive,
-                  backgroundColor: chartColors().accent,
+                  backgroundColor: cc.accent,
                   borderRadius: 6,
                   borderSkipped: false,
                 }],
               }}
-              options={chartOpts}
+              options={opts}
             />
           </div>
         </Card>
 
         <Card title="تحليل المشاهدة" icon={Activity}>
           <div className="flex-col gap-4">
-            <ProgressBar value={d.videos.completionRate} label="معدل الإكمال" color="var(--accent)" />
-            <ProgressBar value={(d.videos.completedLectures / Math.max(d.videos.totalLectures, 1)) * 100} label="نسبة المحاضرات المكتملة" color="var(--success)" />
-            <ProgressBar value={62} label="إجابة نقاط التفاعل" color="var(--gold)" />
-            <ProgressBar value={d.attendance.absentRate} label="نسبة الغياب" color="var(--danger)" />
+            <ProgressBar value={d.videos.completionRate} label="معدل الإكمال" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
+            <ProgressBar value={(d.videos.completedLectures / Math.max(d.videos.totalLectures, 1)) * 100} label="نسبة المحاضرات المكتملة" ariaLabel="نسبة المحاضرات المكتملة" color="var(--success)" />
+            <ProgressBar value={62} label="إجابة نقاط التفاعل" ariaLabel="إجابة نقاط التفاعل" color="var(--gold)" />
+            <ProgressBar value={d.attendance.absentRate} label="نسبة الغياب" ariaLabel="نسبة الغياب" color="var(--danger)" />
           </div>
         </Card>
       </div>
@@ -731,8 +746,10 @@ export function QualityPlaceholder({
   );
 }
 
-/* ─── Shared chart options ────────────────────────────── */
-const chartOpts = cartesianOptions();
+/* ─── Shared chart helpers ────────────────────────────── */
+// NOTE: chart options must be built during render (see components above) —
+// a module-level `cartesianOptions()` would freeze the resolved CSS colours
+// at import time and never follow a light/dark theme switch.
 
 // Re-export XCircle to keep import-checker happy (tree-shaken if unused)
 export { XCircle };

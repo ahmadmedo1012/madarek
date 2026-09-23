@@ -73,6 +73,18 @@ const QUALITY: BottomItem[] = [
   { to: '/quality/reports',    label: 'التقارير', icon: FileText      },
 ];
 
+/* OWNER — 5 most-used: Dashboard, Users, Realtime, Alerts, Governance.
+   Verified routes: /owner/dashboard, /owner/users, /owner/realtime,
+   /owner/alerts, /owner/governance. NOTE: no /owner/profile route exists
+   (unlike the other roles), so the 5th slot is the live monitor. */
+const OWNER: BottomItem[] = [
+  { to: '/owner/dashboard', label: 'الرئيسية',  icon: Home        },
+  { to: '/owner/users',     label: 'المستخدمون', icon: Users      },
+  { to: '/owner/realtime',  label: 'المراقبة',  icon: Activity    },
+  { to: '/owner/alerts',    label: 'التنبيهات', icon: Bell        },
+  { to: '/owner/governance', label: 'الحوكمة',  icon: ShieldCheck },
+];
+
 export function BottomNav() {
   const role = useAuthStore((s) => s.user?.role);
   const sidebarOpen = useUiStore((s) => s.sidebarOpen);
@@ -86,6 +98,7 @@ export function BottomNav() {
     role === 'TEACHER' ? TEACHER :
     role === 'ADMIN'   ? ADMIN   :
     role === 'QUALITY' ? QUALITY :
+    role === 'OWNER'   ? OWNER   :
     STUDENT;
 
   return (

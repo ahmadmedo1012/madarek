@@ -64,9 +64,19 @@ export default function MoocPage() {
                     {m.hasCertificate && <Badge color="gold" icon={Award}>شهادة</Badge>}
                   </div>
 
-                  <button type="button" className="btn primary" style={{ width: '100%', marginTop: 'var(--sp-3)' }}>
-                    سجّل الآن
-                  </button>
+                  {/* Real external course page when the record has one —
+                      otherwise no dead CTA. */}
+                  {m.externalUrl ? (
+                    <a
+                      className="btn primary"
+                      href={m.externalUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      style={{ width: '100%', marginTop: 'var(--sp-3)', display: 'inline-flex', justifyContent: 'center' }}
+                    >
+                      سجّل الآن
+                    </a>
+                  ) : null}
                 </div>
               </div>
             );

@@ -9,7 +9,7 @@
  */
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { useChartThemeKey, __chartThemeTestUtils__ } from '../../src/lib/chartTheme';
+import { useChartThemeKey, chartColors, chartPalette, __chartThemeTestUtils__ } from '../../src/lib/chartTheme';
 
 describe('useChartThemeKey', () => {
   beforeEach(() => {
@@ -78,5 +78,42 @@ describe('useChartThemeKey', () => {
     await new Promise((r) => setTimeout(r, 50));
     expect(result.current).toBe(initial);
     expect(renderCount).toBe(baselineRenders);
+  });
+});
+
+describe('chartColors / chartPalette', () => {
+  const root = document.documentElement;
+
+  afterEach(() => {
+    // Inline custom properties are global on :root — clean them up so other
+    // tests see the pristine fallbacks.
+    root.style.removeProperty('--surface-3');
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--chart-1');
+  });
+
+  it('resolves token values from :root at call time (no caching)', () => {
+    root.style.setProperty('--surface-3', '#123456');
+    root.style.setProperty('--accent', '#ABCDEF');
+    expect(chartColors().surfaceMuted).toBe('#123456');
+    expect(chartColors().accent).toBe('#ABCDEF');
+
+    // Re-resolves on the next call — this is what lets a remounted chart
+    // pick up new colours after a theme switch.
+    root.style.setProperty('--accent', '#00FF00');
+    expect(chartColors().accent).toBe('#00FF00');
+  });
+
+  it('falls back to documented defaults when the token is missing', () => {
+    const c = chartColors();
+    expect(c.surfaceMuted).toBe('#EDEDF0');
+    expect(c.accent).toBe('#a3c9ff');
+  });
+
+  it('exposes an 8-color categorical palette driven by --chart-N tokens', () => {
+    root.style.setProperty('--chart-1', '#0E5701');
+    const palette = chartPalette();
+    expect(palette).toHaveLength(8);
+    expect(palette[0]).toBe('#0E5701');
   });
 });

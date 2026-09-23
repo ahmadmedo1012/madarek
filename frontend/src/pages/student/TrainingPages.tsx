@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../components/primitives';
-import { PageSkeleton, DetailSkeleton } from '../../components/primitives/States';
+import { PageSkeleton, DetailSkeleton, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { formatNum, formatDate } from '../../utils/numbers';
@@ -243,10 +243,18 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
 export function TrainingTrackPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { data: track, isLoading } = useTrainingTrack(slug);
+  const trackQ = useTrainingTrack(slug);
   const enroll = useEnrollTrack();
 
-  if (isLoading) return <PageSkeleton />;
+  if (trackQ.isPending) return <PageSkeleton />;
+  if (trackQ.isError) {
+    return (
+      <div className="page">
+        <ErrorState message="تعذَّر تحميل المسار" error={trackQ.error} onRetry={() => trackQ.refetch()} />
+      </div>
+    );
+  }
+  const track = trackQ.data;
   if (!track) return <div className="page"><Card>المسار غير موجود.</Card></div>;
 
   const completedCount = track.lessons.filter((l) => l.isCompleted).length;
@@ -344,12 +352,21 @@ function LessonRow({ trackSlug, lesson, accent }: { trackSlug: string; lesson: T
 export function TrainingLessonPage() {
   const { slug, lessonId } = useParams<{ slug: string; lessonId: string }>();
   const navigate = useNavigate();
-  const { data: track } = useTrainingTrack(slug);
+  const trackQ = useTrainingTrack(slug);
   const complete = useCompleteLesson();
   const [quizAnswer, setQuizAnswer] = useState('');
   const [feedback, setFeedback] = useState<{ ok: boolean; msg: string; reward?: { points: number; level: number; tier: Tier; badges: Array<{ title: string; iconEmoji: string }> } } | null>(null);
 
-  if (!track) return <DetailSkeleton />;
+  if (trackQ.isPending) return <DetailSkeleton />;
+  if (trackQ.isError) {
+    return (
+      <div className="page">
+        <ErrorState message="تعذَّر تحميل الدرس" error={trackQ.error} onRetry={() => trackQ.refetch()} />
+      </div>
+    );
+  }
+  const track = trackQ.data;
+  if (!track) return <div className="page"><Card>المسار غير موجود.</Card></div>;
 
   const lesson = track.lessons.find((l) => l.id === lessonId);
   if (!lesson) return <div className="page"><Card>الدرس غير موجود.</Card></div>;
@@ -505,14 +522,34 @@ export function AchievementsPage() {
         </div>
       )}
 
-      <div className="tabs">
-        <button type="button" className={`tab${tab === 'badges' ? ' on' : ''}`} onClick={() => setTab('badges')}>
+      {/* Tabs — manual role/aria annotation (the tabs carry icons, which the
+          shared Tabs primitive's string-only labels don't support yet). */}
+      <div className="tabs" role="tablist" aria-label="أقسام الإنجازات">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'badges'}
+          className={`tab${tab === 'badges' ? ' on' : ''}`}
+          onClick={() => setTab('badges')}
+        >
           <Icon icon={Award} size={13} /> الأوسمة
         </button>
-        <button type="button" className={`tab${tab === 'certs' ? ' on' : ''}`} onClick={() => setTab('certs')}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'certs'}
+          className={`tab${tab === 'certs' ? ' on' : ''}`}
+          onClick={() => setTab('certs')}
+        >
           <Icon icon={Medal} size={13} /> الشهادات
         </button>
-        <button type="button" className={`tab${tab === 'leaderboard' ? ' on' : ''}`} onClick={() => setTab('leaderboard')}>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === 'leaderboard'}
+          className={`tab${tab === 'leaderboard' ? ' on' : ''}`}
+          onClick={() => setTab('leaderboard')}
+        >
           <Icon icon={Crown} size={13} /> الترتيب
         </button>
       </div>

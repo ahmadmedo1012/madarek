@@ -210,7 +210,7 @@
 
     /* Bottom nav safe-area padding (already handled in base.css for
        .content-inner; this guards against double scrollbars). */
-    .topbar { backdrop-filter: saturate(140%) blur(12px); }
+    .topbar { backdrop-filter: saturate(140%) blur(var(--glass-blur)); }
 
     /* Cards lose some inner padding on phones so 1-column grids
        don't feel like cards-inside-a-card. */
@@ -1431,21 +1431,22 @@
        was caused by the previous 86% mix being too transparent against
        the cream surface in light mode. */
     background: color-mix(in srgb, var(--surface) 96%, transparent);
-    -webkit-backdrop-filter: saturate(160%) blur(14px);
-            backdrop-filter: saturate(160%) blur(14px);
+    /* T3-F4 — glass + z tokens (was blur(14px) + z-index: 30 raw). */
+    -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
+            backdrop-filter: saturate(160%) blur(var(--glass-blur));
     border-block-end: 1px solid var(--rule);
-    z-index: 30;
+    z-index: var(--z-dropdown);
   }
   [data-theme="dark"] .topbar {
     /* In dark mode the surface is already opaque enough; bump to 94% so
        there's still a hint of the blur effect without bleed. */
     background: color-mix(in srgb, var(--surface) 94%, transparent);
   }
+  /* T3-F4 — elevation token (was raw two-layer shadows with a separate
+     dark override); --elev-2 is already theme-aware and the hairline is
+     carried by the top border itself. */
   .topbar.scrolled {
-    box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.08);
-  }
-  [data-theme="dark"] .topbar.scrolled {
-    box-shadow: 0 1px 0 0 var(--rule), 0 8px 24px -16px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--elev-2);
   }
 
   /* SWITCH from grid to flex. Grid + auto-placement was producing huge
@@ -1913,7 +1914,7 @@
   .chat-msg.user .chat-bubble {
     background: linear-gradient(135deg,
       var(--accent) 0%,
-      color-mix(in srgb, var(--accent) 88%, var(--accent-strong)) 100%);
+      color-mix(in srgb, var(--accent) 96%, var(--accent-strong)) 100%);
     color: var(--accent-fg);
     border-color: transparent;
     border-end-end-radius: 4px;
@@ -3224,8 +3225,8 @@
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     z-index: 2;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     animation: madark-chip-float 7s ease-in-out infinite;
   }
   .landing-campus-chip-1 {
@@ -3382,8 +3383,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar,
   .bottom-nav {
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
   }
 
 
@@ -3789,8 +3790,8 @@
       backdrop-filter 280ms var(--ease, ease);
   }
   .sidebar-backdrop.show {
-    backdrop-filter: blur(6px) saturate(85%);
-    -webkit-backdrop-filter: blur(6px) saturate(85%);
+    backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
+    -webkit-backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
   }
 
 
@@ -4410,8 +4411,8 @@
     transition:
       opacity 280ms var(--ease, ease),
       backdrop-filter 280ms var(--ease, ease);
-    backdrop-filter: blur(8px) saturate(85%);
-    -webkit-backdrop-filter: blur(8px) saturate(85%);
+    backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
+    -webkit-backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
   }
   .comp-modal {
     box-shadow: var(--elevation-5);
@@ -4882,10 +4883,14 @@
     border-radius: var(--r-md);
     text-decoration: none;
     font-weight: var(--fw-semibold);
-    box-shadow: var(--elevation-3);
-    z-index: var(--z-toast, 1300);
-    transition: transform 240ms var(--ease-spring-soft);
+    /* T3-F4 — was var(--elevation-3)/var(--ease-spring-soft) (the polish
+       private token island); canonical 012 tokens: --elev-3 + --ease-spring. */
+    box-shadow: var(--elev-3);
+    z-index: var(--z-toast);
+    transition: transform var(--motion-duration-medium) var(--ease-spring);
   }
+  /* The universal :focus-visible ring (motion.css) supplies the outline;
+     the transform swap makes the pill appear in the safe top margin. */
   .skip-link:focus,
   .skip-link:focus-visible {
     transform: translateX(-50%) translateY(0);
@@ -4914,7 +4919,7 @@
       border-width: 2px;
     }
     :focus-visible {
-      outline: 3px solid var(--accent) !important;
+      outline: 3px solid var(--accent-ink, var(--accent)) !important;
       outline-offset: 3px;
       box-shadow: none !important;
     }
@@ -5070,7 +5075,9 @@
     background: none !important;
     -webkit-background-clip: initial !important;
     background-clip: initial !important;
-    color: var(--accent) !important;
+    /* T3-F4 — numeric KPI ink: --accent is 3.65:1 (large-text only);
+       --accent-ink clears AAA (10.29:1 light / 7.87:1 dark). */
+    color: var(--accent-ink, var(--accent)) !important;
     font-variant-numeric: tabular-nums;
     /* Children of CountUp inherit color cleanly now */
   }

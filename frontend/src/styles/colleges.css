@@ -173,8 +173,8 @@
 }
 .colleges-popover::backdrop {
   background: rgb(0 0 0 / 0.42);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(var(--scrim-blur));
+  -webkit-backdrop-filter: blur(var(--scrim-blur));
 }
 .colleges-popover[open] {
   animation: colleges-popover-in var(--motion-duration-medium) var(--motion-ease-decelerate);
@@ -289,7 +289,7 @@
   color: var(--text-muted);
   font-size: var(--type-body-size);
 }
-.colleges-popover-state-err { color: var(--danger); }
+.colleges-popover-state-err { color: var(--danger-ink, var(--danger)); }
 
 .colleges-popover-group { padding-block: var(--sp-2); }
 .colleges-popover-group-head {
@@ -516,6 +516,14 @@
   border-inline-start: 3px solid var(--college-accent, var(--rule));
 }
 
+/* T3-F4 — detail-page cards mirror the index-card leading stripe so
+   the gated college accent (inherited from the .college-detail root)
+   actually reaches the page content chrome. */
+.college-detail .card,
+.college-detail .metric {
+  border-inline-start: 3px solid var(--college-accent, var(--rule));
+}
+
 /* "→ زيارة الصفحة" hover affordance — fades in on hover, suppressed
    on touch + reduced-motion. */
 .college-card-cta {
@@ -561,7 +569,7 @@
   .gallery-toolbar {
     position: sticky;
     top: var(--topbar-h);
-    z-index: var(--z-1);
+    z-index: var(--z-dropdown);
     flex-direction: column;
     align-items: stretch;
     gap: var(--sp-2);
@@ -569,8 +577,8 @@
     margin-inline: calc(-1 * var(--page-gutter-mobile));
     border-radius: 0;
     border-inline: 0;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     background: color-mix(in srgb, var(--surface) 88%, transparent);
   }
 
@@ -606,6 +614,12 @@
 }
 
 /* ── Detail: hero ──────────────────────────────────────────── */
+/* 012 FR-005 / T3-F4 — the hero finally CONSUMES the gated college
+   accent (set inline on .college-detail by CollegeDetailPage):
+   a leading top stripe on the masthead + an accent-tinted eyebrow.
+   The eyebrow mixes 55% accent into the text ink so it stays AA even
+   for a worst-case 3:1-gated accent (55/45 blend guarantees ≥4.7:1
+   light and ≥8:6:1 dark); body text tokens are untouched. */
 .college-hero {
   display: flex;
   align-items: center;
@@ -614,6 +628,7 @@
   border-radius: var(--r-lg);
   background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
   border: 1px solid var(--border);
+  border-block-start: 3px solid var(--college-accent, var(--rule));
 }
 .college-hero-emoji {
   font-size: 48px;
@@ -624,13 +639,13 @@
   justify-content: center;
   border-radius: var(--r-md);
   background: var(--surface-1);
-  border: 1px solid var(--border);
+  border: 1px solid var(--college-accent-soft, var(--border));
   flex: 0 0 auto;
 }
 .college-hero-titles { min-width: 0; }
 .college-hero-eyebrow {
   font-size: var(--fs-xxs);
-  color: var(--text-subtle);
+  color: color-mix(in srgb, var(--college-accent, var(--accent)) 55%, var(--text));
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-block-end: 4px;
@@ -752,8 +767,11 @@
   font-weight: var(--fw-bold);
 }
 .student-rank-row:nth-child(1) .student-rank-num {
-  background: var(--gold-soft, var(--surface-2));
-  color: var(--gold, var(--text));
+  /* T3-F4 — gold-as-text fix: --gold #D6A330 on --surface-2 was 2.2:1.
+     Switched to the family's own text-on-pastel pair (badge.amber
+     pattern): 9.0:1+. */
+  background: var(--c-yellow-bg);
+  color: var(--gold-ink, var(--c-yellow-deep));
 }
 .student-rank-body { flex: 1 1 auto; min-width: 0; }
 .student-rank-name {
@@ -770,7 +788,7 @@
   align-items: center;
   gap: 4px;
   font-size: var(--fs-xs);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   flex: 0 0 auto;
 }
 
@@ -865,7 +883,7 @@
 .comp-prize {
   margin-block-start: 6px;
   font-size: var(--fs-xxs);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   font-weight: var(--fw-medium);
 }
 
@@ -1092,7 +1110,7 @@
   align-items: center;
   padding: var(--sp-2);
   border-radius: var(--r-sm);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   text-decoration: none;
   font-size: var(--fs-sm);
   transition: background var(--t-fast);
@@ -1148,7 +1166,7 @@
   color: inherit;
   transition: color var(--t-fast);
 }
-.leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent); }
+.leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
 .leaderboard-emoji {
   font-size: 24px;
   width: 36px;
@@ -1383,7 +1401,7 @@
   gap: 4px;
   margin-block-start: var(--sp-2);
   font-size: var(--fs-xs);
-  color: var(--accent);
+  color: var(--accent-ink, var(--accent));
   text-decoration: none;
 }
 .comp-entry-file:hover { text-decoration: underline; }
@@ -1413,8 +1431,8 @@
   position: fixed;
   inset: 0;
   background: color-mix(in srgb, var(--text) 35%, transparent);
-  backdrop-filter: blur(4px);
-  z-index: var(--z-modal, 50);
+  backdrop-filter: blur(var(--scrim-blur));
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;

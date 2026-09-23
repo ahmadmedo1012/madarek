@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
   Brain, GraduationCap, Network, Building2, Users2, Award, Compass,
@@ -19,11 +19,13 @@ import { SectionAccent } from '../components/motion/SectionAccent';
 
 export default function LandingPage() {
   useThemeSync();
-  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
   const [collegesOpen, setCollegesOpen] = useState(false);
 
+  // Authenticated visitors never see the landing page — redirect via the
+  // declarative <Navigate> (navigate() during render is a React anti-pattern:
+  // it fires side effects mid-render and warns in StrictMode).
   if (isHydrated && user) {
     const home =
       user.role === 'TEACHER' ? '/teacher/dashboard' :
@@ -31,8 +33,7 @@ export default function LandingPage() {
       user.role === 'QUALITY' ? '/quality/dashboard' :
       user.role === 'OWNER'   ? '/owner/dashboard'   :
       '/student/dashboard';
-    navigate(home, { replace: true });
-    return null;
+    return <Navigate to={home} replace />;
   }
 
   const year = new Date().getFullYear();
@@ -115,6 +116,22 @@ export default function LandingPage() {
       el.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(raf);
     };
+  }, []);
+
+  // Hero ambient motion pause — once the hero scrolls fully out of view we
+  // tag it with .is-past so the CSS track can pause its ambient animations
+  // (spotlight drift, float loops). Small IntersectionObserver, zero cost
+  // while the hero is on screen.
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        el.classList.toggle('is-past', !entry.isIntersecting);
+      }
+    }, { threshold: 0 });
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   // Mockup parallax — exposes a scroll progress var on the mockup itself,
@@ -834,23 +851,15 @@ export default function LandingPage() {
             <div className="landing-footer-col">
               <div className="landing-footer-heading">الموارد</div>
               <a href="#ai" className="landing-footer-link">المساعد الذكي</a>
-              <a href="#" className="landing-footer-link">المكتبة</a>
-              <a href="#" className="landing-footer-link">المعامل</a>
-              <a href="#" className="landing-footer-link">الإنجازات</a>
+              <Link to="/student/library" className="landing-footer-link">المكتبة</Link>
+              <Link to="/student/labs" className="landing-footer-link">المعامل</Link>
+              <Link to="/achievements" className="landing-footer-link">الإنجازات</Link>
             </div>
             <div className="landing-footer-col">
               <div className="landing-footer-heading">المؤسسة</div>
-              <a href="#" className="landing-footer-link">جامعة الزاوية</a>
-              <a href="#" className="landing-footer-link">الكليّات</a>
-              <a href="#" className="landing-footer-link">ضمان الجودة</a>
-              <a href="#" className="landing-footer-link">عن المنصّة</a>
-            </div>
-            <div className="landing-footer-col">
-              <div className="landing-footer-heading">الدعم</div>
-              <a href="#" className="landing-footer-link">مركز المساعدة</a>
-              <a href="#" className="landing-footer-link">تواصل معنا</a>
-              <a href="#" className="landing-footer-link">الخصوصية</a>
-              <a href="#" className="landing-footer-link">الشروط</a>
+              <Link to="/student/university" className="landing-footer-link">جامعة الزاوية</Link>
+              <Link to="/colleges" className="landing-footer-link">الكليّات</Link>
+              <Link to="/vision" className="landing-footer-link">عن المنصّة</Link>
             </div>
           </div>
           <div className="landing-footer-bottom">

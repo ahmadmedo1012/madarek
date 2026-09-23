@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
-import { cartesianOptions , chartColors} from '../../lib/chartTheme';
+import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
@@ -30,6 +30,8 @@ export function OwnerAiPage() {
   const aiMetrics = useOwnerAiMetrics();
   const data = aiMetrics.data;
   const c = chartColors();
+  // Remounts each chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   return (
     <div className="page">
@@ -77,6 +79,7 @@ export function OwnerAiPage() {
               ) : (
                 <div className="owner-chart-container">
                   <Bar
+                    key={themeKey}
                     data={{
                       labels: data.byFeature.map((f) => FEATURE_LABELS[f.feature] ?? f.feature),
                       datasets: [{
@@ -98,6 +101,7 @@ export function OwnerAiPage() {
               ) : (
                 <div className="owner-chart-container">
                   <Line
+                    key={themeKey}
                     data={{
                       labels: data.trend.map((t) => t.date.slice(5)),
                       datasets: [{

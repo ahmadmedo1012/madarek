@@ -14,7 +14,7 @@ import {
   Chart as ChartJS, CategoryScale, LinearScale,
   PointElement, LineElement, Filler, Tooltip, Legend,
 } from 'chart.js';
-import { cartesianOptions, chartColors } from '../../lib/chartTheme';
+import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useTeacherDashboard, type TeacherDashboard } from '../../hooks/useResources';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -54,6 +54,8 @@ function formatRelative(iso: string): string {
 export function TeacherDashboardPage() {
   const [filter, setFilter] = useState<FeedFilter>('all');
   const dash = useTeacherDashboard();
+  // Remounts the chart canvas when the light/dark theme flips.
+  const themeKey = useChartThemeKey();
 
   const visible = useMemo(() => {
     if (!dash.data) return [];
@@ -107,6 +109,9 @@ export function TeacherDashboardPage() {
   }
 
   const d = dash.data;
+  // Build the shared chart options ONCE per render (each cartesianOptions()
+  // call resolves CSS custom properties — it is not free).
+  const baseOpts = cartesianOptions({ legend: true });
 
   return (
     <div className="page">
@@ -154,12 +159,13 @@ export function TeacherDashboardPage() {
       <Card title="اتجاه الأداء والحضور" icon={Sparkles} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
         <div style={{ height: 240 }}>
           <Line
+            key={themeKey}
             data={trendChartData(d.trend)}
             options={{
-              ...cartesianOptions({ legend: true }),
+              ...baseOpts,
               scales: {
-                ...cartesianOptions().scales,
-                y: { ...cartesianOptions().scales!.y, min: 0, max: 100 },
+                ...baseOpts.scales,
+                y: { ...baseOpts.scales!.y, min: 0, max: 100 },
               },
             }}
           />

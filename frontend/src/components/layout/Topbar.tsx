@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { GlobalSearch } from './GlobalSearch';
 import { NotificationDropdown } from './NotificationDropdown';
+import { Dropdown, DropdownItem, DropdownSeparator } from '../overlays';
 import { useUiStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
@@ -39,32 +40,32 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
     ? meQ.data?.scopeFaculty?.name ?? null
     : null;
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const userMenuTriggerRef = useRef<HTMLButtonElement>(null);
 
-  const aiPath = role === 'TEACHER' ? '/teacher/ai' : '/student/ai';
+  // Role-aware quick actions — OWNER previously fell through to the STUDENT
+  // paths, which are blocked by ProtectedRoute for that role.
+  const aiPath =
+    role === 'TEACHER' ? '/teacher/ai' :
+    role === 'OWNER'   ? '/owner/ai'   :
+    '/student/ai';
   const alertsPath =
     role === 'TEACHER' ? '/teacher/alerts' :
-    role === 'ADMIN' ? '/admin/alerts' :
+    role === 'ADMIN'   ? '/admin/alerts'   :
     role === 'QUALITY' ? '/quality/alerts' :
+    role === 'OWNER'   ? '/owner/alerts'   :
     '/student/alerts';
   const onAiPage = location.pathname.endsWith('/ai');
   const showAiButton = role !== 'ADMIN' && role !== 'QUALITY' && !onAiPage;
 
-  // Close menu on outside click
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onClick = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', onClick);
-    return () => document.removeEventListener('mousedown', onClick);
-  }, [menuOpen]);
+  // Close menu on outside click is handled by the Dropdown primitive
+  // (click-outside + Esc + focus return + arrow-key navigation).
 
   const initials =
     user?.avatarInitials ?? `${user?.firstName?.[0] ?? ''}${user?.lastName?.[0] ?? ''}`;
-  const profilePath = role === 'STUDENT' ? '/student/profile' : null;
+  const profilePath =
+    role === 'STUDENT' ? '/student/profile' :
+    role === 'TEACHER' ? '/teacher/profile' :
+    null;
 
   return (
     <header className={`topbar${scrolled ? ' scrolled' : ''}`}>
@@ -103,9 +104,10 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
         <NotificationDropdown alertsPath={alertsPath} />
 
         {user && (
-          <div className="topbar-user" ref={menuRef}>
+          <div className="topbar-user">
             <button
               type="button"
+              ref={userMenuTriggerRef}
               className="topbar-user-trigger"
               onClick={() => setMenuOpen((v) => !v)}
               aria-haspopup="menu"
@@ -126,45 +128,39 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
               </span>
             </button>
 
-            {menuOpen && (
-              <div className="topbar-user-menu" role="menu">
-                <div className="topbar-user-menu-header">
-                  <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
-                    {user.firstName} {user.lastName}
-                  </div>
-                  <div className="text-xxs font-mono text-subtle" style={{ marginTop: 2 }}>
-                    {user.email}
-                  </div>
+            <Dropdown
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              anchorRef={userMenuTriggerRef}
+              placement="end"
+              ariaLabel="قائمة حساب المستخدم"
+            >
+              <div className="topbar-user-menu-header">
+                <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                  {user.firstName} {user.lastName}
                 </div>
-                {profilePath && (
-                  <button
-                    type="button"
-                    className="topbar-user-menu-item"
-                    onClick={() => { setMenuOpen(false); navigate(profilePath); }}
-                  >
-                    <Icon icon={UserIcon} size={14} />
-                    ملفي الشخصي
-                  </button>
-                )}
-                <button
-                  type="button"
-                  className="topbar-user-menu-item"
-                  onClick={() => setThemeMode(resolved === 'dark' ? 'light' : 'dark')}
-                >
-                  <Icon icon={resolved === 'dark' ? Sun : Moon} size={14} />
-                  {resolved === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}
-                </button>
-                <div className="topbar-user-menu-divider" />
-                <button
-                  type="button"
-                  className="topbar-user-menu-item danger"
-                  onClick={() => { setMenuOpen(false); logoutM.mutate(); navigate('/'); }}
-                >
+                <div className="text-xxs font-mono text-subtle" style={{ marginTop: 2 }}>
+                  {user.email}
+                </div>
+              </div>
+              {profilePath && (
+                <DropdownItem onSelect={() => { setMenuOpen(false); navigate(profilePath); }}>
+                  <Icon icon={UserIcon} size={14} />
+                  ملفي الشخصي
+                </DropdownItem>
+              )}
+              <DropdownItem onSelect={() => setThemeMode(resolved === 'dark' ? 'light' : 'dark')}>
+                <Icon icon={resolved === 'dark' ? Sun : Moon} size={14} />
+                {resolved === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}
+              </DropdownItem>
+              <DropdownSeparator />
+              <DropdownItem onSelect={() => { setMenuOpen(false); logoutM.mutate(); navigate('/'); }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--c-rose-deep)' }}>
                   <Icon icon={LogOut} size={14} />
                   تسجيل الخروج
-                </button>
-              </div>
-            )}
+                </span>
+              </DropdownItem>
+            </Dropdown>
           </div>
         )}
       </div>

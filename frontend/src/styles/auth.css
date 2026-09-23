@@ -189,7 +189,7 @@
     font-weight: var(--fw-semibold);
     background: transparent; border: 0; cursor: pointer;
   }
-  .auth-forgot:hover { color: var(--accent); }
+  .auth-forgot:hover { color: var(--accent-ink, var(--accent)); }
   .auth-forgot-notice {
     font-size: var(--fs-xs);
     color: var(--text-secondary);
@@ -274,7 +274,7 @@
     color: var(--text-muted);
     margin-block-start: var(--sp-3);
   }
-  .auth-register-prompt a { color: var(--accent); font-weight: var(--fw-bold); text-decoration: none; }
+  .auth-register-prompt a { color: var(--accent-ink, var(--accent)); font-weight: var(--fw-bold); text-decoration: none; }
   .auth-register-prompt a:hover { color: var(--accent-hover); }
 
   .auth-bottom {
@@ -336,7 +336,9 @@
     height: 44px;
     border-radius: var(--r-md);
     background: var(--surface-2);
-    color: var(--accent);
+    /* T3-F4 — --accent on --surface-2 is 2.98:1 (non-text 3:1 floor);
+       the ink variant clears 8.6:1. */
+    color: var(--accent-ink, var(--accent));
     flex: 0 0 auto;
   }
   .role-card-body {

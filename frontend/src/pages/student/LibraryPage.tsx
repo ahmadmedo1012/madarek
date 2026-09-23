@@ -23,6 +23,48 @@ const categoryIcon = (cat: string): LucideIcon =>
   CATEGORIES.find((c) => c.id === cat)?.icon ?? LibraryIcon;
 const categoryLabel = (cat: string) => CATEGORIES.find((c) => c.id === cat)?.label ?? cat;
 
+/** Escape every HTML-significant character. */
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * Allowlist sanitizer for server-generated search snippets.
+ *
+ * The research-search endpoint returns a snippet with `<mark>` tags around
+ * the matched term. Everything else — script tags, attributes, event
+ * handlers, malformed tags — is neutralized: the ONLY tag that survives
+ * is a bare `<mark>` / `</mark>`; every other `<` is escaped so it renders
+ * as literal text. Safe to pass to dangerouslySetInnerHTML.
+ */
+export function sanitizeSnippetHtml(html: string): string {
+  let out = '';
+  let i = 0;
+  while (i < html.length) {
+    const lt = html.indexOf('<', i);
+    if (lt === -1) {
+      out += escapeHtml(html.slice(i));
+      break;
+    }
+    out += escapeHtml(html.slice(i, lt));
+    const rest = html.slice(lt);
+    const markTag = /^<\/?mark>/i.exec(rest);
+    if (markTag) {
+      out += markTag[0].toLowerCase();
+      i = lt + markTag[0].length;
+    } else {
+      out += '&lt;';
+      i = lt + 1;
+    }
+  }
+  return out;
+}
+
 type Tab = 'books' | 'research';
 
 export default function LibraryPage() {
@@ -37,6 +79,8 @@ export default function LibraryPage() {
     return () => clearTimeout(t);
   }, [q]);
 
+  // Both tabs share the debounced query — the books query must fire on the
+  // debounced value too, not per keystroke (mirrors the research tab).
   const books = useBooks({ category: cat === 'all' ? undefined : cat, q: debouncedQ });
   const research = usePublishedResearch();
   const search = useResearchSearch(debouncedQ);
@@ -287,12 +331,14 @@ export default function LibraryPage() {
                     )}
                   </div>
 
-                  {/* Show snippet when searching, abstract otherwise */}
+                  {/* Show snippet when searching, abstract otherwise.
+                      The server snippet is sanitized to a <mark>-only
+                      allowlist before injection. */}
                   {hit && hit.snippet ? (
                     <p
                       className="text-sm text-muted research-snippet"
                       style={{ lineHeight: 'var(--lh-base)', marginBottom: 'var(--sp-2)' }}
-                      dangerouslySetInnerHTML={{ __html: hit.snippet }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeSnippetHtml(hit.snippet) }}
                     />
                   ) : p.abstract ? (
                     <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-base)', marginBottom: 'var(--sp-2)' }}>

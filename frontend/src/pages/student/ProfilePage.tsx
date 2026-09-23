@@ -20,19 +20,19 @@ const LINKS: AcademicLink[] = [
   {
     key: 'research-gate',
     title: 'ResearchGate',
-    description: 'منصة عالمية لمشاركة البحوث ومتابعتها — مطلوبة لاكتمال ملفك الأكاديمي.',
+    description: 'منصة عالمية لمشاركة البحوث ومتابعتها — يمكنك حفظ رابط ملفك هنا للرجوع إليه.',
     hint: 'https://www.researchgate.net/profile/...',
   },
   {
     key: 'google-scholar',
     title: 'Google Scholar',
-    description: 'فهرس البحوث العلمي الأشهر — يربط منشوراتك مع الاستشهادات الدولية.',
+    description: 'فهرس البحوث العلمي الأشهر، يعرض منشوراتك مع الاستشهادات الدولية.',
     hint: 'https://scholar.google.com/citations?user=...',
   },
   {
     key: 'orcid',
     title: 'ORCID',
-    description: 'معرّف الباحث الدولي — اختياري لكن يُنصح به للنشر الأكاديمي.',
+    description: 'معرّف الباحث الدولي — يُنصح به عند النشر الأكاديمي.',
     hint: '0000-0000-0000-0000',
   },
 ];
@@ -44,7 +44,9 @@ export default function ProfilePage() {
   const research = useMyResearch();
   const profile = useMyProfile();
 
-  // Persist link state in localStorage so the demo "binding" survives refresh.
+  // Persist link state in localStorage — a LOCAL browser preference.
+  // Nothing here is sent to any API (no server-side field exists for it),
+  // so the copy below must never claim institutional visibility or policy.
   const [links, setLinks] = useState<Record<string, string>>(() => {
     try { return JSON.parse(localStorage.getItem('mdrk-academic-links') ?? '{}'); }
     catch { return {}; }
@@ -54,10 +56,13 @@ export default function ProfilePage() {
 
   const linkedCount = Object.keys(links).filter((k) => links[k]).length;
 
-  // Profile completeness score: avatar/info(40) + email verified(20) + linked accounts(30) + at least 1 paper(10)
+  // Profile completeness — real signals only: basic account data (name +
+  // email, always present server-side), actual email verification, and
+  // uploaded papers. Local link shortcuts do not claim server-side state.
+  const emailVerified = Boolean(profile.data?.emailVerifiedAt);
   const completeness =
     40 +
-    20 +
+    (emailVerified ? 20 : 0) +
     Math.min(30, linkedCount * 10) +
     (research.data?.length ? 10 : 0);
 
@@ -103,7 +108,13 @@ export default function ProfilePage() {
             <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 4 }}>
               <Icon icon={Mail} size={12} />
               <span className="font-mono">{user.email}</span>
-              <Badge color="green" icon={CheckCircle2}>موثَّق</Badge>
+              {profile.data ? (
+                emailVerified ? (
+                  <Badge color="green" icon={CheckCircle2}>موثَّق</Badge>
+                ) : (
+                  <Badge color="amber" icon={AlertCircle}>البريد غير موثَّق</Badge>
+                )
+              ) : null}
             </div>
           </div>
           <div className="flex-col gap-1" style={{ minWidth: 220 }}>
@@ -127,27 +138,17 @@ export default function ProfilePage() {
         <MetricCard icon={BookOpen} label="مواد مسجَّلة" value={enrollments.data?.length ?? '—'} color="brand" />
         <MetricCard icon={Trophy} label="إنجازات محققة" value={achievements.data?.length ?? '—'} color="gold" />
         <MetricCard icon={Award} label="بحوث منشورة" value={research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0} color="purple" />
-        <MetricCard icon={Hash} label="حسابات مرتبطة" value={`${linkedCount} / 3`} color={linkedCount >= 2 ? 'green' : 'amber'} />
+        <MetricCard icon={Hash} label="روابط محفوظة في متصفحك" value={`${linkedCount} / 3`} color={linkedCount >= 2 ? 'green' : 'amber'} />
       </div>
 
-      {/* Academic linking — required by the spec */}
+      {/* Academic links — a local, browser-only shortcut list. There is no
+          server-side binding (no field in PATCH /users/:id), so this is
+          honestly presented as a personal note, not an institutional link. */}
       <Card
         title="الحسابات الأكاديمية"
         icon={ExternalLink}
-        subtitle="ربط حساباتك على المنصات العالمية يُفعّل النشر الأكاديمي ويُكمل ملفك الجامعي."
+        subtitle="روابطك الأكاديمية للرجوع السريع — تُحفظ في متصفّحك فقط ولا تُرسَل إلى الجامعة."
       >
-        {linkedCount < 2 && (
-          <div className="alert amber" style={{ marginBottom: 'var(--sp-3)' }}>
-            <span className="alert-dot" />
-            <div className="alert-body">
-              <div className="alert-title">يُنصح بربط حسابيك على ResearchGate و Google Scholar</div>
-              <div className="alert-desc">
-                وفقاً لسياسة الجامعة، الطالب الذي لم يكمل ربط حساباته الأكاديمية يحدث له تعليق
-                للقيد قبل بداية الفصل القادم. أكمل الربط الآن لتجنّب أي تأخير.
-              </div>
-            </div>
-          </div>
-        )}
         <div className="flex-col gap-3">
           {LINKS.map((l) => {
             const value = links[l.key];
@@ -236,12 +237,12 @@ export default function ProfilePage() {
           <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
           <ProfileField
             label="الكلية"
-            value={profile.data?.student?.faculty?.name ?? 'كلية تقنية المعلومات'}
+            value={profile.data?.student?.faculty?.name ?? '—'}
             icon={GraduationCap}
           />
           <ProfileField
             label="القسم"
-            value={profile.data?.student?.department?.name ?? 'علوم الحاسوب'}
+            value={profile.data?.student?.department?.name ?? '—'}
             icon={BookOpen}
           />
           <ProfileField

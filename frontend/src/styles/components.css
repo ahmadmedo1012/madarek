@@ -152,7 +152,7 @@
   .sticker {
     inline-size: 56px;
     block-size: 56px;
-    border-radius: 16px;
+    border-radius: var(--r-xl);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -161,9 +161,10 @@
     flex-shrink: 0;
     transition: transform var(--t-base) var(--ease-spring);
   }
-  .sticker.sm { inline-size: 40px; block-size: 40px; border-radius: 12px; }
-  .sticker.lg { inline-size: 72px; block-size: 72px; border-radius: 20px; }
-  .sticker.xl { inline-size: 96px; block-size: 96px; border-radius: 24px; }
+  /* T3-F4 — radii tokenised to the --r-* scale (was 12/20/24 raw px). */
+  .sticker.sm { inline-size: 40px; block-size: 40px; border-radius: var(--r-lg); }
+  .sticker.lg { inline-size: 72px; block-size: 72px; border-radius: var(--r-2xl); }
+  .sticker.xl { inline-size: 96px; block-size: 96px; border-radius: var(--r-3xl); }
   .sticker.peach    { background: var(--c-peach-bg);    color: var(--c-peach-deep); }
   .sticker.mint     { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
   .sticker.lavender { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
@@ -256,8 +257,8 @@
     gap: 4px;
     font-variant-numeric: tabular-nums;
   }
-  .metric-change .up { color: var(--success); font-weight: var(--fw-semibold); }
-  .metric-change .dn { color: var(--danger); font-weight: var(--fw-semibold); }
+  .metric-change .up { color: var(--success-ink, var(--success)); font-weight: var(--fw-semibold); }
+  .metric-change .dn { color: var(--danger-ink, var(--danger)); font-weight: var(--fw-semibold); }
   .metric-icon {
     inline-size: 44px;
     block-size: 44px;
@@ -268,6 +269,9 @@
     justify-content: center;
     background: var(--_metric-bg);
     color: var(--_metric-color);
+    /* 012 FR-004 — KPI tile rim: subtle role-accent tint on the icon
+       well (chrome only, never body text). */
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--role-accent, var(--accent)) 30%, transparent);
   }
 
   /* compact KPI strip */
@@ -291,7 +295,11 @@
     inline-size: 36px; block-size: 36px;
     border-radius: 10px;
     background: var(--accent-soft);
-    color: var(--accent);
+    /* T3-F4 — icon glyph as text-safe ink: --accent on --accent-soft is
+       2.59:1 (below the 3:1 non-text minimum); --accent-ink clears 8.62:1.
+       Plus the 012 FR-004 role-accent rim shared with .metric-icon. */
+    color: var(--accent-ink, var(--accent));
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--role-accent, var(--accent)) 30%, transparent);
     display: inline-flex; align-items: center; justify-content: center;
     margin-block-end: var(--sp-1);
   }
@@ -348,7 +356,8 @@
     --_btn-bd: var(--border);
     --_btn-bg-hover: var(--surface-3);
     --_btn-bd-hover: var(--border-strong);
-    --_btn-shadow: 0 1px 2px rgba(15,15,15,0.04);
+    /* 012 elevation language — button resting/hover shadows. */
+    --_btn-shadow: var(--elev-1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -374,7 +383,7 @@
     box-shadow: var(--_btn-shadow);
   }
   .btn:hover { background: var(--_btn-bg-hover); border-color: var(--_btn-bd-hover); color: var(--_btn-fg); }
-  .btn.primary:hover, .btn-primary:hover, .btn.accent:hover, .btn-accent:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.10); }
+  .btn.primary:hover, .btn-primary:hover, .btn.accent:hover, .btn-accent:hover { transform: translateY(-1px); box-shadow: var(--elev-2); }
   .btn:active { transform: translateY(1px); }
   .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
 
@@ -385,7 +394,7 @@
     --_btn-bd: var(--neutral-900);
     --_btn-bg-hover: var(--neutral-700);
     --_btn-bd-hover: var(--neutral-700);
-    --_btn-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    --_btn-shadow: var(--elev-1);
     position: relative;
     overflow: hidden;
   }
@@ -441,6 +450,18 @@
   .btn.accent:hover::before,
   .btn-accent:hover::before,
   .btn.gold:hover::before { transform: translateX(110%); }
+
+  /* T3-F4 WCAG — in LIGHT theme the accent pair is copper + deep
+     espresso ink (--accent-fg #1A0F06 = 4.95:1 on --accent). The legacy
+     hover fill #9A5F25 drops that pair to 3.47:1, so the light hover
+     BRIGHTENS the copper instead — matching Dark's brighten-on-hover
+     semantics (#E0A067 → #F2B782). Brightened mix clears 6.1:1. */
+  :root:not([data-theme="dark"]) .btn.accent,
+  :root:not([data-theme="dark"]) .btn-accent,
+  :root:not([data-theme="dark"]) .btn.gold {
+    --_btn-bg-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
+    --_btn-bd-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
+  }
 
   .btn.ghost,
   .btn-ghost {
@@ -1046,8 +1067,8 @@
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(15,15,15,0.40);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(var(--scrim-blur));
+    -webkit-backdrop-filter: blur(var(--scrim-blur));
     display: flex; align-items: center; justify-content: center;
     /* 012-design-graphics-uplift T060 — z-order language. */
     z-index: var(--z-modal, 400);
@@ -1094,8 +1115,8 @@
   .sheet-overlay {
     position: fixed; inset: 0;
     background: rgba(15,15,15,0.40);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(var(--scrim-blur));
+    -webkit-backdrop-filter: blur(var(--scrim-blur));
     display: flex;
     z-index: var(--z-sheet, 300);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
@@ -1189,8 +1210,7 @@
   }
   .toast-close:hover { color: var(--text); }
   .toast-close:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: var(--state-focus-ring);
   }
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  POPOVER — 012-design-graphics-uplift T062.                    ║
@@ -1208,13 +1228,13 @@
     max-inline-size: min(420px, calc(100vw - var(--sp-6) * 2));
     padding: var(--sp-2);
     overflow: clip;
-    animation: madarek-popover-in var(--motion-duration-short, 160ms) var(--motion-ease-decelerate) both;
+    animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
   }
   @supports (backdrop-filter: blur(0)) {
     .popover {
       background: color-mix(in srgb, var(--surface) 92%, transparent);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
     }
   }
   @keyframes madarek-popover-in {
@@ -1238,7 +1258,7 @@
     max-inline-size: min(320px, calc(100vw - var(--sp-6) * 2));
     padding: var(--sp-1);
     overflow: clip;
-    animation: madarek-popover-in var(--motion-duration-short, 160ms) var(--motion-ease-decelerate) both;
+    animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
   }
   .dropdown-item {
     display: flex;
@@ -1260,7 +1280,7 @@
     background: var(--surface-2);
   }
   .dropdown-item:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: var(--state-focus-ring);
     outline-offset: -2px;
   }
   .dropdown-item[aria-disabled="true"] {
@@ -1290,7 +1310,7 @@
     line-height: 1.4;
     max-inline-size: 280px;
     pointer-events: none;
-    animation: madarek-tooltip-in 120ms var(--motion-ease-decelerate, ease-out) both;
+    animation: madarek-tooltip-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
   }
   @keyframes madarek-tooltip-in {
     from { opacity: 0; transform: translateY(2px); }
@@ -1362,8 +1382,7 @@
   }
   .onboarding-flow-skip:hover { color: var(--text); }
   .onboarding-flow-skip:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: var(--state-focus-ring);
   }
   .onboarding-flow-illustration {
     display: flex;
@@ -1449,8 +1468,7 @@
     border-color: var(--rule);
   }
   .sidebar-tour-trigger:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: var(--state-focus-ring);
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1461,8 +1479,8 @@
   .cmd-palette-overlay {
     position: fixed; inset: 0;
     background: rgba(15,15,15,0.50);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     display: flex; align-items: flex-start; justify-content: center;
     padding-block-start: 12vh;
     z-index: var(--z-modal, 400);
@@ -1499,13 +1517,13 @@
     max-block-size: min(540px, 80dvh);
     overflow: clip;
     display: flex; flex-direction: column;
-    animation: madarek-popover-in var(--motion-duration-short, 160ms) var(--motion-ease-decelerate) both;
+    animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
   }
   @supports (backdrop-filter: blur(0)) {
     .notification-panel {
       background: color-mix(in srgb, var(--surface) 92%, transparent);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
     }
   }
 

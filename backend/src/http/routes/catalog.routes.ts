@@ -168,35 +168,7 @@ router.post('/mooc/:id/enroll', async (req, res, next) => {
   try {
     const moocId = req.params.id!;
     const userId = req.user!.id;
-<<<<<<< HEAD
-    // Wrap in a transaction AND only increment the counter on a fresh
-    // enrollment. Previously the counter was incremented on every call
-    // (even re-enrolls), inflating the displayed "enrolled" count
-    // each time a student re-visited the page.
-    const enrolled = await prisma.$transaction(async (tx) => {
-      // Check if the user is already enrolled.
-      const existing = await tx.moocEnrollment.findUnique({
-        where: { moocId_userId: { moocId, userId } },
-        select: { id: true },
-      });
-      if (existing) {
-        // Idempotent re-enroll — return the existing row, don't bump counter.
-        return { ...existing, moocId, userId, _fresh: false };
-      }
-      const r = await tx.moocEnrollment.create({
-        data: { moocId, userId },
-      });
-      await tx.moocCourse.update({
-        where: { id: moocId },
-        data: { enrolled: { increment: 1 } },
-      });
-      return { ...r, _fresh: true };
-    });
-    // Strip the internal _fresh flag before responding.
-    const { _fresh, ...data } = enrolled;
-    void _fresh;
-    res.status(201).json({ data });
-=======
+
     // Only a NEW enrollment row bumps the counter — a repeat enroll used to
     // inflate `enrolled` on every call (upsert + unconditional increment).
     const enroll = async () =>
@@ -223,7 +195,7 @@ router.post('/mooc/:id/enroll', async (req, res, next) => {
       }
       throw e;
     }
->>>>>>> 75e9ee6 (feat(backend): submissions API, write-path correctness, auth hardening, telemetry)
+
   } catch (e) {
     next(e);
   }

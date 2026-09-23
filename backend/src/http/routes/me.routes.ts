@@ -90,20 +90,7 @@ const sendMessageSchema = z
 router.post('/messages', validate(sendMessageSchema), async (req, res, next) => {
   try {
     if (req.body.toUserId === req.user!.id) throw AppError.badRequest('Cannot message yourself');
-<<<<<<< HEAD
-    // Verify recipient exists BEFORE the create — otherwise Prisma throws
-    // P2003 (FK violation) which the errorHandler maps to 500 INTERNAL.
-    // Without this, messaging a non-existent user returns 500 with no
-    // useful message instead of 404 with "Recipient not found".
-    const recipient = await prisma.user.findUnique({
-      where: { id: req.body.toUserId },
-      select: { id: true, isActive: true },
-    });
-    if (!recipient) throw AppError.notFound('Recipient not found');
-    if (!recipient.isActive) throw AppError.badRequest('Recipient account is disabled');
-    const created = await prisma.message.create({
-      data: { fromUserId: req.user!.id, toUserId: req.body.toUserId, body: req.body.body },
-=======
+
 
     // Pre-validate recipient + sender in one round-trip. Without the
     // recipient check a DM to a deleted/unknown id exploded as a P2003
@@ -141,7 +128,7 @@ router.post('/messages', validate(sendMessageSchema), async (req, res, next) => 
         },
       });
       return message;
->>>>>>> 75e9ee6 (feat(backend): submissions API, write-path correctness, auth hardening, telemetry)
+
     });
     res.status(201).json({ data: created });
   } catch (e) {

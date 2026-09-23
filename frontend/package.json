@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.test.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:audit": "playwright test tests/audit",
@@ -44,9 +48,9 @@
     "@vitejs/plugin-react": "4.3.4",
     "jsdom": "26.0.0",
     "rollup-plugin-visualizer": "5.13.1",
-    "tsx": "4.19.2",
+    "tsx": "^4.22.4",
     "typescript": "5.7.2",
     "vite": "5.4.11",
-    "vitest": "2.1.8"
+    "vitest": "^2.1.9"
   }
 }
