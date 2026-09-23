@@ -274,15 +274,25 @@ function resolvePrismaBinary() {
   return null;
 }
 
+// Resolve the backend package root (where prisma/schema.prisma lives).
+// __dirname is backend/scripts/, so backend/ is one level up.
+const BACKEND_ROOT = path.resolve(__dirname, '..');
+
 async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, stepTimeoutMs = 180_000 } = {}) {
   const prismaBin = resolvePrismaBinary();
+  // Always pass --schema explicitly so cwd doesn't matter. This makes
+  // the script work whether it's invoked from backend/, repo root,
+  // or any other directory (Render build runs it from backend/ but
+  // local dev may run it from elsewhere).
+  const schemaPath = path.join(BACKEND_ROOT, 'prisma', 'schema.prisma');
   const cmd = prismaBin
-    ? [prismaBin, 'migrate', 'deploy']
-    : ['prisma', 'migrate', 'deploy'];
+    ? [prismaBin, 'migrate', 'deploy', '--schema', schemaPath]
+    : ['prisma', 'migrate', 'deploy', '--schema', schemaPath];
 
   if (!prismaBin) {
     log('⚠️  Local prisma binary not found; falling back to `npx prisma`.');
   }
+  log(`   schema: ${schemaPath}`);
 
   let lastErr;
   for (let i = 1; i <= attempts; i++) {
@@ -291,6 +301,7 @@ async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, step
       execFileSync(cmd[0], cmd.slice(1), {
         stdio: 'inherit',
         timeout: stepTimeoutMs,
+        cwd: BACKEND_ROOT,
         env: {
           ...process.env,
           DATABASE_URL: targetUrl,
