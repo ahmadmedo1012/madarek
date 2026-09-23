@@ -1,5 +1,6 @@
 import path from 'node:path';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 // pdf-parse@1.1.1 has a debug-branch in index.js that crashes when imported
 // without a fixture file present. Importing the lib subpath sidesteps it.
@@ -11,6 +12,12 @@ const __dirname = path.dirname(__filename);
 // `backend/dist/lib/...` (prod) and `backend/src/lib/...` (dev).
 const PAPERS_ROOT = path.resolve(__dirname, '../../storage/papers');
 
+// Cap text extraction at 10 MB so a maliciously large PDF can't
+// exhaust memory / block the event loop indefinitely. 10 MB of PDF
+// typically yields hundreds of pages — more than enough for student
+// research papers.
+const MAX_PDF_BYTES = 10 * 1024 * 1024;
+
 /**
  * Extract plain text from a paper PDF stored on disk.
  *
@@ -21,6 +28,10 @@ const PAPERS_ROOT = path.resolve(__dirname, '../../storage/papers');
  * Returns the trimmed text, or `null` if the file is missing / unreadable
  * / fileUrl is external. Logs but doesn't throw — callers treat extraction
  * as best-effort enrichment.
+ *
+ * Uses async fs APIs (readFile) so the event loop isn't blocked while
+ * reading large PDFs. The pdf-parse lib itself is sync after the buffer
+ * is loaded, but at least the disk read won't block.
  */
 export async function extractPaperText(fileUrl: string | null | undefined): Promise<string | null> {
   if (!fileUrl) return null;
@@ -41,8 +52,21 @@ export async function extractPaperText(fileUrl: string | null | undefined): Prom
   if (!filePath.startsWith(PAPERS_ROOT + path.sep)) return null;
   if (!existsSync(filePath)) return null;
 
+  // Size guard — refuse to parse pathological files.
   try {
-    const buf = readFileSync(filePath);
+    const stat = statSync(filePath);
+    if (!stat.isFile()) return null;
+    if (stat.size > MAX_PDF_BYTES) {
+      // eslint-disable-next-line no-console
+      console.warn('[pdf] refusing to extract — file too large:', filename, stat.size);
+      return null;
+    }
+  } catch {
+    return null;
+  }
+
+  try {
+    const buf = await readFile(filePath);
     const parsed = await pdfParse(buf);
     return parsed.text.trim() || null;
   } catch (err) {

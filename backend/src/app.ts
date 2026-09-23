@@ -70,11 +70,22 @@ export function createApp() {
   // BUILD_ID is bumped on every deploy that needs a force-rebuild.
   // Curl /api/v1/health to check whether Render is serving the
   // latest commit. If the buildId matches, the fix is live.
-  const BUILD_ID = '2026-06-02T16:00Z+008-colleges-mount-order';
+  const BUILD_ID = '2026-09-24T00:00Z-hardening-pass';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     try {
-      await prisma.$queryRaw`SELECT 1`;
+      // Race the DB ping against a 5s timeout so a sleepy Neon
+      // (cold-start wake-up can take 2-4s) doesn't cause Render to
+      // mark the service unhealthy and forcibly restart it. If the
+      // DB doesn't respond within 5s we surface 503 — but Render's
+      // healthcheck default is 60s with 5 retries, so a 5s blip is
+      // absorbed without restart.
+      await Promise.race([
+        prisma.$queryRaw`SELECT 1`,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('healthcheck timeout')), 5_000),
+        ),
+      ]);
       res.json({
         ok: true,
         dbLatencyMs: Date.now() - start,
@@ -82,8 +93,13 @@ export function createApp() {
         buildId: BUILD_ID,
       });
     } catch (err) {
-      logger.error({ err }, 'Healthcheck DB failure');
-      res.status(503).json({ ok: false, error: 'db_unavailable' });
+      logger.error({ err, latencyMs: Date.now() - start }, 'Healthcheck DB failure');
+      // 503 with a brief message — Render will retry before restarting.
+      res.status(503).json({
+        ok: false,
+        error: 'db_unavailable',
+        latencyMs: Date.now() - start,
+      });
     }
   });
 

@@ -1,6 +1,12 @@
 /**
  * Environment — only 3 things are required: DATABASE_URL and the two JWT secrets.
  * Everything else has a sane default derived from NODE_ENV.
+ *
+ * Test mode: unit tests that only exercise pure schema/pattern exports
+ * transitively pull `env.ts` via the module graph. We don't want those
+ * tests to call `process.exit(1)` for missing secrets they don't use,
+ * so in NODE_ENV=test we fall back to deterministic placeholder secrets.
+ * (Integration tests that actually hit the DB must still set real env vars.)
  */
 import 'dotenv/config';
 import { z } from 'zod';
@@ -17,7 +23,24 @@ const schema = z.object({
   INTERNAL_SERVICE_TOKEN: z.string().min(16).optional(),
 });
 
-const parsed = schema.safeParse(process.env);
+const isTest = process.env.NODE_ENV === 'test';
+
+// In test mode, supply deterministic placeholder secrets so importing
+// `env.ts` from a unit test doesn't crash the runner.
+const envInput: Record<string, string | undefined> = { ...process.env };
+if (isTest) {
+  if (!envInput.DATABASE_URL || !z.string().url().safeParse(envInput.DATABASE_URL).success) {
+    envInput.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
+  }
+  if (!envInput.JWT_ACCESS_SECRET || envInput.JWT_ACCESS_SECRET.length < 32) {
+    envInput.JWT_ACCESS_SECRET = 'test-access-secret-32-chars-min-padding';
+  }
+  if (!envInput.JWT_REFRESH_SECRET || envInput.JWT_REFRESH_SECRET.length < 32) {
+    envInput.JWT_REFRESH_SECRET = 'test-refresh-secret-32-chars-min-padding';
+  }
+}
+
+const parsed = schema.safeParse(envInput);
 if (!parsed.success) {
   // eslint-disable-next-line no-console
   console.error('❌ Invalid environment:', parsed.error.flatten().fieldErrors);

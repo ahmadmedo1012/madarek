@@ -8,17 +8,43 @@
 
 | Variable | Source | Purpose |
 |----------|--------|---------|
-| `DATABASE_URL` | Neon Dashboard → Connection Details → Pooled connection | Prisma PostgreSQL connection |
-| `JWT_ACCESS_SECRET` | Generate: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` | Sign access tokens |
-| `JWT_REFRESH_SECRET` | Generate: same command | Sign refresh tokens |
+| `DATABASE_URL` | Neon Dashboard → Connection Details → Pooled connection | Prisma runtime PostgreSQL connection (uses Neon pooler) |
+| `JWT_ACCESS_SECRET` | Generate: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` | Sign access tokens (≥32 chars, 15-min TTL) |
+| `JWT_REFRESH_SECRET` | Generate: same command (use DIFFERENT value) | Sign refresh tokens (≥32 chars, 7-day TTL) |
 
 ## Optional Environment Variables
 
 | Variable | Purpose |
 |----------|---------|
-| `NODE_ENV` | `production` enables static serving + secure cookies |
+| `NODE_ENV` | `production` enables static serving + secure cookies + `info` log level |
 | `PORT` | Listen port (default: 4000) |
-| `INTERNAL_SERVICE_TOKEN` | Service-to-service auth (012 feature) |
+| `INTERNAL_SERVICE_TOKEN` | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; fail-closed when unset) |
+| `DIRECT_DATABASE_URL` | Neon **direct** (non-pooled) connection. When set, `prisma migrate deploy` uses it directly. When unset, the migrate script derives it from `DATABASE_URL` by stripping the `-pooler` hostname suffix + `pgbouncer`/`connection_limit` query params. |
+
+## Neon Connection Strategy (Render deployment)
+
+Madarek uses two distinct connection URLs:
+
+1. **Runtime** (`DATABASE_URL`) — Neon **pooler** URL (e.g. `ep-<name>-pooler.<region>.aws.neon.tech`).
+   Used by the Prisma Client for live API traffic. PgBouncer pooling reuses
+   connections, which matters on Render's free tier.
+
+2. **Migration** (`DIRECT_DATABASE_URL`, optional) — Neon **direct** URL (e.g. `ep-<name>.<region>.aws.neon.tech`).
+   Used by `prisma migrate deploy` during the Render build step.
+   Prisma Migrate doesn't work well through PgBouncer (it needs a direct
+   connection for DDL operations).
+
+The migration script (`backend/scripts/migrate-deploy.mjs`) handles the
+fallback automatically:
+
+- If `DIRECT_DATABASE_URL` is set → use it as-is.
+- Otherwise → derive a direct URL from `DATABASE_URL` by:
+  * Stripping the `-pooler` suffix from the hostname.
+  * Removing `pgbouncer`, `connection_limit`, and `pool_timeout` query params.
+  * Preserving `sslmode`, `channel_binding`, and everything else.
+
+The script never mutates `process.env` in the parent process — the
+override is applied only to the `prisma migrate deploy` child process.
 
 ## Demo Accounts
 
@@ -49,7 +75,10 @@ Format: Pooler connection string with `?sslmode=require&channel_binding=require`
 
 1. Push to GitHub
 2. Render reads `render.yaml` → creates web service
-3. `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` auto-generate
-4. Set `DATABASE_URL` manually in Render's Environment tab
-5. Build: `npm install --include=dev && npm run build`
-6. Seed: `DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:seed`
+3. `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` auto-generate via `generateValue: true`
+4. Set `DATABASE_URL` manually in Render's Environment tab (pooled Neon URL)
+5. (Optional) Set `DIRECT_DATABASE_URL` if your Neon pooler URL doesn't follow the standard `-pooler` suffix convention
+6. Build sequence: `npm install --include=dev && npm run build`
+   - `npm run build` runs: `frontend build` → `backend build` → `db:deploy` (migrate-deploy.mjs)
+7. Start: `npm run start` (`node backend/dist/index.js`)
+8. Seed (one-time, from local): `DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:seed`
