@@ -3,28 +3,19 @@
  * Resilient `prisma migrate deploy` for Render → Neon.
  *
  * Two-URL strategy:
- *   - DATABASE_URL (runtime):  Neon **pooler** URL (PgBouncer) for live API traffic.
- *   - Migration URL:           Either DIRECT_DATABASE_URL (preferred when set)
+ *   - DATABASE_URL (runtime):  Neon pooler URL (PgBouncer) for live API traffic.
+ *   - Migration URL:            Either DIRECT_DATABASE_URL (preferred when set)
  *                              OR the runtime pooler URL with `pgbouncer=true`
- *                              + `connection_limit=1` (works on Neon pooler).
- *
- * Why fallback to pooler?
- *   Neon's direct (non-pooled) endpoint may be unreachable in some configurations
- *   (suspended project, network policies, IP allow-list, certain plans).
- *   Prisma Migrate *can* run through PgBouncer on Neon as long as we set
- *   `connection_limit=1` so the migration gets a dedicated session that
- *   doesn't get reused mid-transaction. Without this fallback, deploys
- *   fail with "Can't reach database server" against the direct endpoint.
+ *                              + `connection_limit=1`.
  *
  * Pipeline:
- *   1. Build a list of candidate migration URLs:
- *        a. DIRECT_DATABASE_URL (if set)
- *        b. Derived direct URL (strip `-pooler` + pgbouncer params)
- *        c. The original DATABASE_URL as-is (pooler, with pgbouncer=true + connection_limit=1)
- *   2. For each candidate, try `SELECT 1` to wake the DB.
- *      First one that succeeds wins.
+ *   1. Build candidate URL list (DIRECT_DATABASE_URL, derived direct, pooler fallback).
+ *   2. For each candidate:
+ *        a. DNS lookup (log resolved IPs).
+ *        b. Raw TCP connect test (log success / failure + error).
+ *        c. Try `SELECT 1` up to 8 times (5s apart) with `connect_timeout=30`.
+ *      First candidate that responds wins.
  *   3. Run `prisma migrate deploy` against the winning URL.
- *      A spawn timeout guards against Neon TCP hangs.
  *
  * The running application still receives the original DATABASE_URL —
  * we never mutate `process.env` in the parent process.
@@ -36,6 +27,8 @@ import { PrismaClient } from '@prisma/client';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
+import { promises as dns } from 'node:dns';
+import net from 'node:net';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,9 +37,6 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...args) => console.log('[migrate-deploy]', ...args);
 
 // ─── URL candidates ──────────────────────────────────────────────
-//   Build an ordered list of URLs to try for the migration step.
-//   Each candidate carries a label so logs make it clear which one
-//   worked (or which all failed).
 
 function buildCandidates() {
   const runtimeUrl = process.env.DATABASE_URL?.trim();
@@ -75,27 +65,23 @@ function buildCandidates() {
   }
 
   // 2. Derived direct URL — strip `-pooler` from hostname, drop pgbouncer params.
-  //    Only meaningful if the runtime URL actually has `-pooler`.
   if (/-pooler\./.test(runtimeParsed.hostname)) {
     const derived = new URL(runtimeUrl);
     derived.hostname = derived.hostname.replace(/-pooler(?=\.|$)/, '');
     derived.searchParams.delete('pgbouncer');
     derived.searchParams.delete('connection_limit');
     derived.searchParams.delete('pool_timeout');
+    // Long connect_timeout — Neon cold-start can take 20-30s.
+    derived.searchParams.set('connect_timeout', '30');
     candidates.push({ url: derived.toString(), label: 'derived direct (stripped -pooler)' });
   }
 
   // 3. Fall back: use the runtime pooler URL as-is, but force pgbouncer=true
   //    + connection_limit=1 so Prisma Migrate gets a dedicated session.
-  //    This works on Neon because PgBouncer in transaction-pooling mode
-  //    still allows DDL when connection_limit=1.
   const poolerFallback = new URL(runtimeUrl);
   poolerFallback.searchParams.set('pgbouncer', 'true');
   poolerFallback.searchParams.set('connection_limit', '1');
-  // Also set `connect_timeout` so we fail fast if Neon is asleep.
-  if (!poolerFallback.searchParams.has('connect_timeout')) {
-    poolerFallback.searchParams.set('connect_timeout', '30');
-  }
+  poolerFallback.searchParams.set('connect_timeout', '30');
   candidates.push({ url: poolerFallback.toString(), label: 'pooler fallback (pgbouncer=true, connection_limit=1)' });
 
   return { runtimeUrl, candidates };
@@ -112,20 +98,50 @@ function redactUrl(rawUrl) {
   }
 }
 
-// ─── Error classification ──────────────────────────────────────
-//   Only retry on transient / likely-recoverable failures.
-//   Permanent failures (auth, DNS, refused, SSL config) fail-fast
-//   so Render doesn't burn minutes retrying something that will
-//   never succeed.
+function parseHostPort(rawUrl) {
+  try {
+    const u = new URL(rawUrl);
+    return { host: u.hostname, port: Number(u.port) || 5432 };
+  } catch {
+    return { host: '', port: 5432 };
+  }
+}
 
-// Prisma P-codes (subset relevant to connect / wake):
-//   P1001 = "Can't reach database server" — network/DNS/refused/hang
-//   P1002 = Timed out — transient
-//   P1003 = Database doesn't exist — permanent
-//   P1004 = Database access denied — permanent (auth)
-//   P1010 = Access denied — permanent (auth)
-//   P1017 = Server closed the connection — transient
-//   P1018 = Internal Client timeout — transient
+// ─── DNS + TCP diagnostics ──────────────────────────────────────
+//   Before we even try Prisma, do a raw DNS lookup and TCP connect
+//   test. This tells us:
+//     - DNS resolves? (catches misconfigured DATABASE_URL hostname)
+//     - TCP connects? (catches firewall / suspended Neon / network issues)
+//   Prisma's error message is generic ("Can't reach database server")
+//   — these diagnostics tell us WHY.
+
+async function diagDns(hostname) {
+  try {
+    const records = await dns.resolve4(hostname);
+    return { ok: true, ips: records };
+  } catch (err) {
+    return { ok: false, error: err.code || err.message };
+  }
+}
+
+async function diagTcp(host, port, { timeoutMs = 10_000 } = {}) {
+  return new Promise((resolve) => {
+    const sock = net.createConnection({ host, port }, () => {
+      sock.end();
+      resolve({ ok: true, ms: 0 });
+    });
+    sock.setTimeout(timeoutMs);
+    sock.on('timeout', () => {
+      sock.destroy(new Error('TCP timeout'));
+    });
+    sock.on('error', (err) => {
+      resolve({ ok: false, error: err.code || err.message });
+    });
+  });
+}
+
+// ─── Error classification ──────────────────────────────────────
+
 const PERMANENT_PRISMA_CODES = new Set(['P1003', 'P1004', 'P1010']);
 const TRANSIENT_PRISMA_CODES = new Set(['P1001', 'P1002', 'P1008', 'P1017', 'P1018']);
 
@@ -134,7 +150,7 @@ const PERMANENT_ERROR_PATTERNS = [
   /no password supplied/i,
   /database .* does not exist/i,
   /role .* does not exist/i,
-  /SSL connection.*required/i,         // misconfigured TLS
+  /SSL connection.*required/i,
   /certificate verify failed/i,
   /hostname\/IP does not match certificate/i,
 ];
@@ -143,14 +159,13 @@ const TRANSIENT_ERROR_PATTERNS = [
   /ECONNRESET/i,
   /ETIMEDOUT/i,
   /EPIPE/i,
-  /EAI_AGAIN/i,           // temporary DNS failure
+  /EAI_AGAIN/i,
   /server closed the connection unexpectedly/i,
   /terminating connection/i,
   /connection.*timed out/i,
 ];
 
 function classifyError(err) {
-  // First: explicit Prisma P-codes (these are authoritative).
   if (err?.code && typeof err.code === 'string') {
     if (PERMANENT_PRISMA_CODES.has(err.code)) {
       return { kind: 'permanent', message: `[${err.code}] ${err.message ?? ''}` };
@@ -160,7 +175,6 @@ function classifyError(err) {
     }
   }
 
-  // Then: underlying socket / OS errors via message pattern.
   const msg = String(err?.message ?? err?.toString?.() ?? err);
   if (PERMANENT_ERROR_PATTERNS.some((p) => p.test(msg))) {
     return { kind: 'permanent', message: msg };
@@ -169,13 +183,7 @@ function classifyError(err) {
     return { kind: 'transient', message: msg };
   }
 
-  // P1001 with a localhost / loopback hostname is permanent: the user
-  // almost certainly has a misconfigured DATABASE_URL. Retrying wastes
-  // minutes. On Neon / managed Postgres, P1001 is treated as transient
-  // (cold-start wake-up).
   if (/can't reach database server/i.test(msg)) {
-    // Message looks like: "Can't reach database server at `localhost:5432`"
-    // Strip non-alphanumerics (backticks, brackets) before matching.
     const hostMatch = msg.match(/at\s+[`'"]?(.+?):(\d+)[`'"]?/);
     if (hostMatch) {
       const host = hostMatch[1].replace(/[`'"\[\]]/g, '');
@@ -186,18 +194,44 @@ function classifyError(err) {
     return { kind: 'transient', message: msg };
   }
 
-  // Unknown error — be conservative: treat as transient so we retry
-  // before giving up. Neon cold-start quirks sometimes surface as
-  // exotic errors that resolve on retry.
   return { kind: 'transient', message: msg };
 }
 
 // ─── Probe a single candidate ──────────────────────────────────
-//   Tries a `SELECT 1` against the candidate URL. Returns true on success.
-//   Retries up to `wakeAttempts` times on transient errors.
-//   Permanent errors fail immediately.
 
-async function probeCandidate({ url, label }, { wakeAttempts = 5, delayMs = 4000 } = {}) {
+async function probeCandidate({ url, label }, { wakeAttempts = 8, delayMs = 5000 } = {}) {
+  const { host, port } = parseHostPort(url);
+
+  // ── DNS diagnostic ─────────────────────────────────────────────
+  log(`\n▶ ${label}`);
+  log(`  URL: ${redactUrl(url)}`);
+  log(`  DNS lookup for ${host}...`);
+  const dnsResult = await diagDns(host);
+  if (dnsResult.ok) {
+    log(`  ✅ DNS resolved: ${dnsResult.ips.join(', ')}`);
+  } else {
+    log(`  ❌ DNS failed: ${dnsResult.error}`);
+    log(`  ⛔ Skipping this candidate — DNS resolution failed.`);
+    return false;
+  }
+
+  // ── TCP diagnostic ─────────────────────────────────────────────
+  log(`  TCP connect to ${host}:${port}...`);
+  const tcpResult = await diagTcp(host, port, { timeoutMs: 15_000 });
+  if (tcpResult.ok) {
+    log(`  ✅ TCP connect succeeded`);
+  } else {
+    log(`  ❌ TCP connect failed: ${tcpResult.error}`);
+    log(`  ⛔ Skipping this candidate — TCP connection refused/unreachable.`);
+    log(`     Possible causes:`);
+    log(`       - Neon project is suspended (revive in Neon dashboard)`);
+    log(`       - Neon IP allow-list excludes Render's egress IP`);
+    log(`       - Network/firewall block between Render and Neon`);
+    log(`       - Neon project was deleted or renamed`);
+    return false;
+  }
+
+  // ── Prisma SELECT 1 wake loop ──────────────────────────────────
   const prisma = new PrismaClient({
     datasources: { db: { url } },
     log: ['error'],
@@ -207,13 +241,13 @@ async function probeCandidate({ url, label }, { wakeAttempts = 5, delayMs = 4000
     for (let i = 1; i <= wakeAttempts; i++) {
       try {
         await prisma.$queryRawUnsafe('SELECT 1');
-        log(`✅ ${label}: DB awake (attempt ${i}/${wakeAttempts})`);
+        log(`  ✅ DB awake (SELECT 1 succeeded, attempt ${i}/${wakeAttempts})`);
         return true;
       } catch (err) {
         const cls = classifyError(err);
-        log(`⏳ ${label}: wake attempt ${i}/${wakeAttempts} failed [${cls.kind}]: ${cls.message}`);
+        log(`  ⏳ wake attempt ${i}/${wakeAttempts} failed [${cls.kind}]: ${cls.message}`);
         if (cls.kind === 'permanent') {
-          log(`⛔ ${label}: permanent error — skipping this candidate.`);
+          log(`  ⛔ permanent error — skipping this candidate.`);
           return false;
         }
         if (i < wakeAttempts) {
@@ -228,8 +262,7 @@ async function probeCandidate({ url, label }, { wakeAttempts = 5, delayMs = 4000
 }
 
 // ─── Run migrate ────────────────────────────────────────────────
-//   Resolve the local Prisma CLI binary directly to avoid `npx`
-//   overhead and network probes on every retry.
+
 function resolvePrismaBinary() {
   const candidates = [
     path.resolve(__dirname, '..', 'node_modules', '.bin', 'prisma'),
@@ -260,10 +293,7 @@ async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, step
         timeout: stepTimeoutMs,
         env: {
           ...process.env,
-          // Override DATABASE_URL ONLY for this child process.
           DATABASE_URL: targetUrl,
-          // Prisma 5.x reads DIRECT_DATABASE_URL if set; point it at
-          // the same URL so schema-level `directUrl` resolves correctly.
           DIRECT_DATABASE_URL: targetUrl,
         },
       });
@@ -291,16 +321,13 @@ async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, step
 (async () => {
   try {
     const { runtimeUrl, candidates } = buildCandidates();
+    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     log(`runtime DB: ${redactUrl(runtimeUrl)}`);
-    log(`trying ${candidates.length} candidate(s) for migration DB:`);
-    for (const c of candidates) {
-      log(`   • ${c.label}: ${redactUrl(c.url)}`);
-    }
+    log(`trying ${candidates.length} candidate(s) for migration DB`);
+    log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-    // Probe each candidate in order. First that responds to SELECT 1 wins.
     let winner = null;
     for (const c of candidates) {
-      log(`\n▶ probing ${c.label}...`);
       const ok = await probeCandidate(c);
       if (ok) {
         winner = c;
@@ -310,11 +337,31 @@ async function runMigrate(targetUrl, label, { attempts = 3, delayMs = 5000, step
 
     if (!winner) {
       log('\n💥 None of the candidate URLs reached the database.');
-      log('  This usually means:');
-      log('   - Neon project is suspended (revive it in the Neon dashboard)');
-      log('   - IP allow-list excludes Render\'s egress IP');
-      log('   - DATABASE_URL points at the wrong host');
-      log('   - Network connectivity issue between Render and Neon');
+      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      log('DIAGNOSTICS SUMMARY:');
+      log('  All candidates failed DNS or TCP connect or SELECT 1.');
+      log('');
+      log('ACTION REQUIRED:');
+      log('  1. Check Neon dashboard — is the project active?');
+      log('     https://console.neon.tech → select project → check status');
+      log('     If suspended, click "Resume" or run any query to wake it.');
+      log('');
+      log('  2. Check Neon IP allow-list (Pro plans):');
+      log('     Neon dashboard → Settings → IP Allow-list');
+      log('     Render egress IPs vary — consider allowing 0.0.0.0/0');
+      log('     or remove the allow-list during build.');
+      log('');
+      log('  3. Verify DATABASE_URL is current:');
+      log('     Neon dashboard → Connection Details → copy pooled URL');
+      log('     Update Render Environment tab with the new value.');
+      log('');
+      log('  4. Test connectivity from Render shell:');
+      log('     Once the service is deployed, open Render shell and run:');
+      log('       nc -zv ep-spring-paper-aqmiglla-pooler.c-8.us-east-1.aws.neon.tech 5432');
+      log('');
+      log('  5. Check Neon status page:');
+      log('     https://neon.statuspage.io/');
+      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       process.exit(1);
     }
 
