@@ -195,6 +195,9 @@
   color: var(--text);
   border: 1px solid var(--rule);
   border-radius: var(--r-2xl);
+  /* Off-token by design: full-height mega-popover needs a cinematic single
+     layer drop (0 24px 60px / .18); composite intensity sits between
+     --elev-4 and --elev-5 (alpha .18 exceeds the ±.05 equivalence band). */
   box-shadow: 0 24px 60px rgb(0 0 0 / 0.18);
   overflow: hidden;
 }
@@ -303,7 +306,7 @@
     var(--surface) 0%,
     var(--surface) 70%,
     color-mix(in srgb, var(--surface) 0%, transparent) 100%);
-  z-index: 1;
+  z-index: 1; /* local paint-order: sticky group header above the scrolling list — not a --z-* layer */
 }
 .colleges-popover-group-icon {
   display: inline-flex;
@@ -412,7 +415,9 @@
 }
 .colleges-popover-foot-link:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+  /* 012 elevation-language: hover lift → --elev-3 (was 0 4px 14px .12;
+     within the ≤2px blur / ±.05 alpha equivalence band). */
+  box-shadow: var(--elev-3);
 }
 [dir="rtl"] .colleges-popover-foot-link svg { transform: scaleX(-1); }
 
@@ -1426,38 +1431,10 @@
   border-block-start: 1px dashed var(--border);
 }
 
-/* Modal */
-.comp-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: color-mix(in srgb, var(--text) 35%, transparent);
-  backdrop-filter: blur(var(--scrim-blur));
-  z-index: var(--z-modal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--sp-4);
-  animation: comp-backdrop-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-}
-@keyframes comp-backdrop-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-.comp-modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgb(0 0 0 / 0.25);
-  animation: comp-modal-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-}
-@keyframes comp-modal-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
+/* Modal containers (.comp-modal-backdrop / .comp-modal + their keyframes)
+   removed in the WS-D2 orphan sweep: CompetitionsPages/CommunityPages now
+   mount the <Modal> primitive (modal-overlay/modal-card) and only the
+   comp-modal-head/close/form/actions children remain in the markup. */
 .comp-modal-head {
   display: flex;
   align-items: center;
@@ -1537,9 +1514,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .comp-index-card,
-  .comp-modal-backdrop,
-  .comp-modal { animation: none; transition: none; }
+  .comp-index-card { animation: none; transition: none; }
   .comp-index-card:hover { transform: none; }
 }
 

@@ -92,7 +92,7 @@ export function VisionDetailPage() {
   return (
     <div className="page">
       <Link to="/vision" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
-        <Icon icon={ChevronLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+        <Icon icon={ChevronLeft} size={13} />
         كل الابتكارات
       </Link>
 

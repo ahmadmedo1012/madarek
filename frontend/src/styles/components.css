@@ -179,7 +179,8 @@
 
   /* sticker idle wiggle — only when in a card with .sticker-wiggle */
   .sticker-wiggle .sticker {
-    animation: madarek-sticker-idle 5s ease-in-out infinite;
+    /* loop cadence (5s idle wiggle) — off-token by design */
+    animation: madarek-sticker-idle 5s var(--motion-ease-standard) infinite;
     animation-delay: var(--wiggle-delay, 0s);
   }
   .sticker-wiggle:nth-child(2) .sticker { --wiggle-delay: 0.6s; }
@@ -262,7 +263,7 @@
   .metric-icon {
     inline-size: 44px;
     block-size: 44px;
-    border-radius: 12px;
+    border-radius: var(--r-lg);
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
@@ -293,7 +294,7 @@
   .kpi-cell:hover { border-color: var(--border-strong); box-shadow: var(--shadow-card-h); transform: translateY(-2px); }
   .kpi-icon {
     inline-size: 36px; block-size: 36px;
-    border-radius: 10px;
+    border-radius: var(--r-md);
     background: var(--accent-soft);
     /* T3-F4 — icon glyph as text-safe ink: --accent on --accent-soft is
        2.59:1 (below the 3:1 non-text minimum); --accent-ink clears 8.62:1.
@@ -518,6 +519,8 @@
     block-size: 8px;
     border-radius: 50%;
     background: var(--danger);
+    /* contrast cutout ring separating the badge from the avatar —
+       not elevation */
     box-shadow: 0 0 0 2px var(--surface);
   }
 
@@ -615,6 +618,7 @@
     inline-size: 100%;
     block-size: 2px;
     background: var(--neutral-900);
+    /* asymmetric tab-corner shape — not a scale radius */
     border-radius: 2px 2px 0 0;
     transform: scaleX(0);
     transform-origin: 50% 50%;
@@ -723,6 +727,9 @@
   .input:focus,
   input:focus, textarea:focus, select:focus {
     border-color: var(--neutral-900);
+    /* Off-token by design: light-theme neutral focus whisper (8%); the
+       copper --focus-ring is reserved for the dark block below where it
+       reads. No neutral-ring token exists yet. */
     box-shadow: 0 0 0 3px rgba(25,25,24,0.08);
     outline: none;
   }
@@ -803,6 +810,7 @@
     inline-size: 48px;
     block-size: 3px;
     background: linear-gradient(90deg, var(--accent), transparent);
+    /* 3px gradient bar — micro-radius below the --r-xs floor */
     border-radius: 2px;
   }
   [dir="rtl"] .section-title::after {
@@ -850,6 +858,8 @@
   .dash-gpa-body { display: flex; align-items: center; gap: var(--sp-5); }
   .dash-gpa-orb {
     inline-size: 88px; block-size: 88px;
+    /* no 24px step on the radius scale — 2xl (20) and 3xl (28) are
+       equidistant, so the raw value stays to preserve the orb silhouette */
     border-radius: 24px;
     background: var(--c-copper-bg);
     color: var(--c-copper-deep);
@@ -916,7 +926,7 @@
   .dash-agenda-item:hover { background: var(--surface-2); }
   .dash-agenda-icon {
     inline-size: 36px; block-size: 36px;
-    border-radius: 10px;
+    border-radius: var(--r-md);
     background: var(--c-copper-bg); color: var(--c-copper-deep);
     display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -957,7 +967,7 @@
   }
   .state-icon {
     inline-size: 56px; block-size: 56px;
-    border-radius: 16px;
+    border-radius: var(--r-xl);
     background: var(--c-grey-bg); color: var(--c-grey-deep);
     display: inline-flex; align-items: center; justify-content: center;
     margin-block-end: var(--sp-3);
@@ -1098,7 +1108,7 @@
     block-size: 3px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
     border-radius: 0 0 3px 3px;
-    z-index: 1;
+    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
     pointer-events: none;
   }
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }

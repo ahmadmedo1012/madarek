@@ -5,4 +5,3 @@ export { PageTransition } from './PageTransition';
 export { Skeleton, SkeletonGroup } from './Skeleton';
 export type { SkeletonVariant } from './Skeleton';
 export { Reveal, RevealGroup } from './Reveal';
-export { AnimatedNumber } from './AnimatedNumber';

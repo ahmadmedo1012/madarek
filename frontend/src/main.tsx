@@ -1,6 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+// Self-hosted @font-face rules must come first so the families are
+// registered before tokens.css/base.css reference them.
+import './styles/fonts.css';
 import './styles/tokens.css';
 import './styles/motion.css';
 import './styles/base.css';

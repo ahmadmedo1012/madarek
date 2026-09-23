@@ -182,7 +182,7 @@
   text-align: center;
 }
 .pdf-status-error { color: var(--danger-ink, var(--danger)); }
-.spin { animation: pdf-spin 1s linear infinite; }
+.spin { animation: pdf-spin 1s linear infinite; } /* loop cadence — off-token by design */
 @keyframes pdf-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
 /* Mobile */
@@ -262,7 +262,7 @@
 .annotation-color {
   width: 18px;
   height: 18px;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   border: 2px solid transparent;
   cursor: pointer;
   padding: 0;
@@ -294,7 +294,7 @@
   background: var(--accent-soft);
   color: var(--accent-ink, var(--accent));
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   font-size: 10px;
   font-weight: var(--fw-semibold);
   cursor: pointer;

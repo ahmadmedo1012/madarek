@@ -421,17 +421,25 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Campus showcase — main_photo.png with parallax + interactive overlay */}
+      {/* Campus showcase — optimized hero (WebP/JPEG) with parallax + interactive overlay */}
       <section className="marketing-container landing-campus" aria-label="جامعة الزاوية">
         <Reveal as="figure" className="landing-campus-frame">
           <Parallax amount={6} direction="up">
-            <img
-              src="/main_photo.png"
-              alt="جامعة الزاوية — المدخل الرئيسي"
-              className="landing-campus-photo"
-              loading="lazy"
-              decoding="async"
-            />
+            {/* Optimized hero art: WebP first (99KB vs 2MB PNG), JPEG fallback
+                for ancient browsers. width/height pin the 1377×768 aspect
+                ratio so the browser reserves layout space (no CLS). */}
+            <picture>
+              <source type="image/webp" srcSet="/main_photo.webp" />
+              <img
+                src="/main_photo.jpg"
+                alt="جامعة الزاوية — المدخل الرئيسي"
+                className="landing-campus-photo"
+                width={1377}
+                height={768}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </Parallax>
           <span className="landing-campus-vignette" aria-hidden />
           <span className="landing-campus-grain" aria-hidden />

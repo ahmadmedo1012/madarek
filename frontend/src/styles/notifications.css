@@ -12,47 +12,11 @@
   position: relative;
 }
 
-.notif-panel {
-  position: absolute;
-  top: calc(100% + 8px);
-  /* In RTL the topbar-actions (bell) sits on the LEFT side of the screen.
-     `inset-inline-start: 0` resolves to `right: 0` in RTL, which would anchor
-     the panel's right edge to the bell — making the panel extend leftward,
-     OFF the viewport.
-     `inset-inline-end: 0` resolves to `left: 0` in RTL, anchoring the panel's
-     LEFT edge to the bell's left edge — panel extends rightward, into the
-     viewport. */
-  inset-inline-start: auto;
-  inset-inline-end: 0;
-  max-width: calc(100vw - 24px);
-  width: min(360px, calc(100vw - 24px));
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: var(--r-2xl);
-  /* 012 elevation-language: NotificationPanel → --elev-3 (replaces the
-     ad-hoc three-layer shadow). */
-  box-shadow: var(--elev-3, var(--shadow-pop));
-  z-index: var(--z-popover);
-  overflow: hidden;
-  animation: notif-pop-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-          backdrop-filter: blur(var(--glass-blur));
-}
-
-@keyframes notif-pop-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, -6px, 0) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .notif-panel { animation: none; }
-}
+/* Container rule (.notif-panel + notif-pop-in keyframes + its mobile/RM
+   overrides) removed in the WS-D2 orphan sweep: NotificationDropdown now
+   mounts the <NotificationPanel> primitive (className="notification-panel",
+   styled in components.css). The notif-panel-* children below remain in
+   the markup and keep their styles. */
 
 .notif-panel-head {
   display: flex;
@@ -223,14 +187,6 @@
 
 /* Mobile sizing — keep within viewport */
 @media (max-width: 480px) {
-  .notif-panel {
-    /* Pin to viewport edges with a small inset rather than open
-       offset from the bell button, so it never spills off-screen */
-    position: fixed;
-    inset: var(--topbar-h) 8px auto 8px;
-    width: auto;
-    margin-top: 4px;
-  }
   .notif-panel-list { max-height: 60vh; }
 }
 
@@ -256,6 +212,8 @@
   /* A subtle gradient line accent across the very top of the bar — looks
      like a hairline of light. Removes the hard slab feel of a flat top
      border. */
+  /* Off-token by design: upward-anchored dock — directional hairline +
+     upward lift; the --elev-* scale only describes downward shadows. */
   box-shadow:
     0 -1px 0 rgba(0, 0, 0, 0.02),
     0 -10px 24px -10px rgba(15, 22, 41, 0.08);
@@ -315,6 +273,7 @@
   background: linear-gradient(180deg,
     color-mix(in srgb, var(--accent) 18%, var(--surface-1)) 0%,
     color-mix(in srgb, var(--accent) 10%, var(--surface-1)) 100%);
+  /* Off-token by design: branded role-accent glow (012 FR-004), not elevation. */
   box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 36%, transparent);
 }
 

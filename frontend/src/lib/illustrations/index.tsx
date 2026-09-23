@@ -13,6 +13,7 @@
  * existing token cascade — no per-scene logic.
  */
 import type { ComponentType, ReactElement } from 'react';
+import type { AppRole } from '../../stores/auth.store';
 import { SceneEmptyNotifs } from './scenes/empty-notifs';
 import { SceneEmptySearch } from './scenes/empty-search';
 import { SceneError404 } from './scenes/error-404';
@@ -49,9 +50,17 @@ export const V1_ILLUSTRATION_NAMES: ReadonlyArray<IllustrationName> = [
 export interface SceneProps {
   /** Layout direction passed by the <Illustration> wrapper. */
   dir?: 'ltr' | 'rtl';
+  /**
+   * Authenticated role, forwarded by the <Illustration> wrapper.
+   * Consumed by role-keyed scenes (`onboarding-role-intro` selects its
+   * per-role motif from it); every other scene ignores it.
+   */
+  role?: AppRole;
 }
 
 type SceneComponent = ComponentType<SceneProps>;
+
+export type { SceneComponent };
 
 /**
  * Registry of scene components. Names not yet implemented map to `null`

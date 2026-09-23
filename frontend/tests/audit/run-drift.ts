@@ -39,8 +39,9 @@ function buildFcpBaseline(baseline: SurfaceInventory | null): Record<string, num
   if (!baseline) return {};
   const map: Record<string, number> = {};
   for (const cap of baseline.captures) {
-    // Use the LIGHT/LTR/1280 entry as the canonical FCP per route.
-    if (cap.theme === 'light' && cap.dir === 'ltr' && cap.viewport === 1280) {
+    // Use the LIGHT/RTL/1280 entry as the canonical FCP per route —
+    // the app is RTL-only, so DIRS sweeps a single 'rtl' direction.
+    if (cap.theme === 'light' && cap.dir === 'rtl' && cap.viewport === 1280) {
       map[cap.route] = cap.fcpMs;
     }
   }

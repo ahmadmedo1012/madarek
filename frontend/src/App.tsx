@@ -31,7 +31,6 @@ const ProfilePage = lazy(() => import('./pages/student/ProfilePage'));
 const WebinarsPage = lazy(() => import('./pages/student/WebinarsPage'));
 const ExamsPage = lazy(() => import('./pages/student/ExamsPage'));
 const DocumentViewerPage = lazy(() => import('./pages/DocumentViewerPage'));
-const MorePages = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.GamificationPage }))); // placeholder, replaced below
 const LabsPage = lazy(() => import('./pages/student/LabsPage'));
 const LivePage = lazy(() => import('./pages/student/LivePage'));
 const PaymentPage = lazy(() => import('./pages/student/PaymentPage'));
@@ -119,8 +118,6 @@ const CollegesLeaderboardPage = lazy(() => import('./pages/colleges/CollegePages
 
 const CompetitionsIndexPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionsIndexPage })));
 const CompetitionDetailPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionDetailPage })));
-
-void MorePages; // satisfies tsc — first lazy is replaced by named ones above
 
 /** Resolves the home path for an authenticated user, or `/` for guests. */
 function HomeRedirect() {

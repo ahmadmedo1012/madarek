@@ -21,14 +21,14 @@
     background: radial-gradient(ellipse at 50% 50%,
       var(--c-copper-bg) 0%,
       transparent 60%);
-    z-index: 0;
+    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
     pointer-events: none;
     opacity: 0.6;
   }
   [data-theme="dark"] .auth-shell::before { opacity: 0.4; }
 
   .auth-top {
-    position: relative; z-index: 1;
+    position: relative; z-index: 1; /* local paint-order above the ::before glow — not a --z-* layer */
     padding: var(--sp-5) var(--page-gutter);
     display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
     max-inline-size: var(--marketing-max-w);
@@ -55,7 +55,7 @@
     flex: 1;
     display: flex; align-items: center; justify-content: center;
     padding: var(--sp-5) var(--page-gutter) var(--sp-9);
-    position: relative; z-index: 1;
+    position: relative; z-index: 1; /* local paint-order above the ::before glow — not a --z-* layer */
   }
   @media (max-width: 920px) { .auth-center { padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-9); } }
 
@@ -89,7 +89,7 @@
   }
   .auth-brand-mini-mark {
     inline-size: 32px; block-size: 32px;
-    border-radius: 8px;
+    border-radius: var(--r-sm);
     display: inline-flex; align-items: center; justify-content: center;
     background: var(--neutral-900); color: var(--neutral-50);
     font-family: var(--font-display);
@@ -150,6 +150,9 @@
   .auth-input:hover { border-color: var(--border-strong); }
   .auth-input:focus {
     border-color: var(--neutral-900);
+    /* Off-token by design: light-theme neutral focus whisper (8%); the
+       copper --focus-ring is reserved for the dark block below where it
+       reads. No neutral-ring token exists yet. */
     box-shadow: 0 0 0 3px rgba(25,25,24,0.08);
     outline: none;
   }
@@ -278,7 +281,7 @@
   .auth-register-prompt a:hover { color: var(--accent-hover); }
 
   .auth-bottom {
-    position: relative; z-index: 1;
+    position: relative; z-index: 1; /* local paint-order above the ::before glow — not a --z-* layer */
     padding: var(--sp-5) var(--page-gutter);
     text-align: center;
     font-size: var(--fs-xs);

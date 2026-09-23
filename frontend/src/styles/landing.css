@@ -36,6 +36,7 @@
     transform-origin: 0 50%;
     transform: scaleX(var(--p, 0));
     transition: transform var(--motion-duration-micro) linear;
+    /* asymmetric progress-bar tail corners — shape, not a scale radius */
     border-end-end-radius: 2px;
     border-end-start-radius: 2px;
   }
@@ -48,7 +49,8 @@
     border-radius: 50%;
     background: currentColor;
     opacity: 0.4;
-    animation: madarek-typing 1.2s ease-in-out infinite;
+    /* loop cadence (1.2s typing blink) — off-token by design */
+    animation: madarek-typing 1.2s var(--motion-ease-standard) infinite;
   }
   .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
   .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
@@ -120,7 +122,7 @@
   }
   .landing-brand-mark {
     inline-size: 28px; block-size: 28px;
-    border-radius: 8px;
+    border-radius: var(--r-sm);
     display: inline-flex; align-items: center; justify-content: center;
     background: var(--neutral-900); color: var(--neutral-50);
     font-family: var(--font-display);
@@ -167,6 +169,7 @@
     inset-inline: 14px;
     inset-block-end: 4px;
     block-size: 2px;
+    /* 2px underline hairline — micro-radius below the --r-xs floor */
     border-radius: 2px;
     background: var(--accent);
     transform: scaleX(0);
@@ -268,9 +271,10 @@
       radial-gradient(40% 50% at 18% 28%, color-mix(in oklab, var(--c-peach-bg) 60%, transparent) 0%, transparent 70%),
       radial-gradient(35% 45% at 82% 20%, color-mix(in oklab, var(--c-lavender-bg) 55%, transparent) 0%, transparent 70%),
       radial-gradient(50% 40% at 50% 90%, color-mix(in oklab, var(--c-mint-bg) 50%, transparent) 0%, transparent 70%);
-    z-index: -2;
+    z-index: -2; /* decorative layer behind content — local paint-order, not a --z-* layer */
     filter: blur(8px);
-    animation: madarek-hero-drift 22s ease-in-out infinite alternate;
+    /* loop cadence (22s ambient drift) — off-token by design */
+    animation: madarek-hero-drift 22s var(--motion-ease-standard) infinite alternate;
   }
   .landing-hero::after {
     content: '';
@@ -280,7 +284,7 @@
     background-size: 28px 28px;
     mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 75%);
     -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 75%);
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     opacity: 0.5;
     pointer-events: none;
   }
@@ -349,6 +353,8 @@
   .landing-hero-eyebrow-dot {
     inline-size: 6px; block-size: 6px; border-radius: 50%;
     background: var(--c-mint-ink);
+    /* Off-token by design: halo ring keyframes — expanding dot pulse, not
+       elevation. Loop cadence (2.4s) also stays raw. */
     box-shadow: 0 0 0 0 color-mix(in oklab, var(--c-mint-ink) 60%, transparent);
     animation: madarek-pulse-dot 2.4s var(--ease-out) infinite;
   }
@@ -395,7 +401,7 @@
     display: inline-block;
     background: var(--c-yellow-bg);
     padding: 0 0.18em;
-    border-radius: 6px;
+    border-radius: var(--r-xs);
     color: var(--text);
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
@@ -445,7 +451,7 @@
     background: radial-gradient(ellipse at 50% 50%,
       color-mix(in oklab, var(--accent-soft) 60%, transparent) 0%,
       transparent 60%);
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     filter: blur(40px);
   }
   .landing-mockup-frame {
@@ -487,7 +493,7 @@
     display: flex; flex-direction: column; gap: 6px;
   }
   .landing-mockup-side-row {
-    block-size: 28px; border-radius: 6px; background: var(--surface-2);
+    block-size: 28px; border-radius: var(--r-xs); background: var(--surface-2);
   }
   .landing-mockup-side-row.on { background: var(--accent-soft); }
   .landing-mockup-main { padding: var(--sp-5); display: flex; flex-direction: column; gap: var(--sp-4); }
@@ -520,6 +526,7 @@
   .landing-mockup-bar {
     flex: 1;
     background: linear-gradient(180deg, var(--accent) 0%, color-mix(in oklab, var(--accent) 75%, var(--c-copper-deep)) 100%);
+    /* asymmetric bar-top corners — shape, not a scale radius */
     border-radius: 4px 4px 0 0;
     opacity: 0.7;
     transform-origin: bottom;
@@ -547,8 +554,9 @@
     padding: var(--sp-3) var(--sp-4);
     display: flex; align-items: center; gap: var(--sp-3);
     box-shadow: var(--shadow-pop);
-    z-index: 2;
-    animation: madarek-float 6s ease-in-out infinite;
+    z-index: 2; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
+    /* loop cadence (6s ambient float) — off-token by design */
+    animation: madarek-float 6s var(--motion-ease-standard) infinite;
   }
   .landing-mockup-badge-1 { inset-inline-end: -2%; inset-block-start: 18%; }
   .landing-mockup-badge-2 { inset-inline-start: -3%; inset-block-end: 12%; animation-delay: -2s; }
@@ -672,7 +680,7 @@
   .band-visual-row + .band-visual-row { margin-block-start: var(--sp-2); }
   .band-visual-row:hover { background: var(--surface-2); }
   .band-visual-checkbox {
-    inline-size: 18px; block-size: 18px; border-radius: 5px;
+    inline-size: 18px; block-size: 18px; border-radius: var(--r-xs);
     border: 1.5px solid var(--border-strong);
     flex-shrink: 0;
     display: inline-flex; align-items: center; justify-content: center;
@@ -732,6 +740,7 @@
     inline-size: 56px;
     block-size: 3px;
     background: linear-gradient(90deg, var(--accent), transparent);
+    /* 3px gradient bar — micro-radius below the --r-xs floor */
     border-radius: 2px;
   }
   [dir="rtl"] .landing-section-title::after {
@@ -779,7 +788,7 @@
     opacity: 0;
     transition: opacity var(--t-base) var(--ease);
     pointer-events: none;
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
   }
   .landing-feature-card:hover { transform: translateY(-4px); }
   .landing-feature-card:hover::after { opacity: 1; }
@@ -828,7 +837,7 @@
     border-radius: 50%;
     background: color-mix(in oklab, currentColor 8%, transparent);
     opacity: 0.5;
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     transition: transform var(--t-slow) var(--ease-out);
   }
   .landing-bento-card::after {
@@ -842,10 +851,15 @@
     opacity: 0;
     transition: opacity var(--t-base) var(--ease);
     pointer-events: none;
-    z-index: 0;
+    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
   }
-  .landing-bento-card > * { position: relative; z-index: 1; }
-  .landing-bento-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -22px color-mix(in oklab, currentColor 50%, transparent); }
+  .landing-bento-card > * { position: relative; z-index: 1; /* local paint-order above the ::before/::after glows */ }
+  .landing-bento-card:hover {
+    transform: translateY(-3px);
+    /* Off-token by design: bento accent glow in oklab currentColor —
+       tinted light leak, not elevation. */
+    box-shadow: 0 18px 40px -22px color-mix(in oklab, currentColor 50%, transparent);
+  }
   .landing-bento-card:hover::before { transform: scale(1.15) rotate(-12deg); }
   .landing-bento-card:hover::after { opacity: 1; }
   .landing-bento-card.span-2 { grid-column: span 2; }

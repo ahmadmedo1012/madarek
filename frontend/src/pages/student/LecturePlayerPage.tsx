@@ -102,7 +102,7 @@ export default function LecturePlayerPage() {
   return (
     <div className="page">
       <Link to={`/student/courses/${data.offering.id}`} className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
-        <Icon icon={ChevronLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+        <Icon icon={ChevronLeft} size={13} />
         {data.offering.course.name}
       </Link>
 
@@ -116,7 +116,17 @@ export default function LecturePlayerPage() {
               src={data.videoUrl}
               controls
               playsInline
-              onTimeUpdate={(e) => setCurrentSec(e.currentTarget.currentTime)}
+              onTimeUpdate={(e) => {
+                // `timeupdate` fires ~4×/sec; the elapsed-time label,
+                // chapter highlight and checkpoint triggers all work at
+                // 1-second granularity, so commit state only when the
+                // whole second flips. Returning the previous value makes
+                // React skip the render entirely → ~1 render/sec instead
+                // of ~4. Watch-report accuracy is unaffected (the 10s
+                // reporter and onEnded read video.currentTime directly).
+                const t = e.currentTarget.currentTime;
+                setCurrentSec((prev) => (Math.floor(prev) === Math.floor(t) ? prev : Math.floor(t)));
+              }}
               onEnded={() => {
                 if (data) {
                   reportWatch.mutate({

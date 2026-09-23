@@ -1,9 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
+
+// Opt-in bundle analysis: `BUNDLE_REPORT=1 npm run build` writes
+// dist/bundle-report.html. Zero cost when the flag is absent.
+const enableBundleReport = !!process.env.BUNDLE_REPORT;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    ...(enableBundleReport
+      ? [visualizer({ filename: 'dist/bundle-report.html', template: 'sunburst', gzipSize: true })]
+      : []),
+  ],
   server: {
     port: 5173,
     proxy: {

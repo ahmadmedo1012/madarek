@@ -1,4 +1,5 @@
-import { Users, Activity, BookOpen, GraduationCap, Bot, Bell, ShieldCheck, FileWarning, Clock, RefreshCw, Download, ShieldAlert, Trash2 } from 'lucide-react';
+import { Users, Activity, BookOpen, GraduationCap, Bot, Bell, ShieldCheck, FileWarning, Clock, Radio, AlertTriangle, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
@@ -231,25 +232,26 @@ export function OwnerDashboardPage() {
         )}
       </Card>
 
-      {/* Quick Actions */}
+      {/* Quick Actions — WS-F6: wired to real /owner/* routes (the old
+          four buttons had no onClick and no destination). */}
       <Card title="إجراءات سريعة" icon={ShieldCheck}>
         <div className="owner-action-bar">
-          <button type="button" className="btn primary">
-            <Icon icon={RefreshCw} size={14} />
-            تشغيل المزامنة
-          </button>
-          <button type="button" className="btn ghost">
-            <Icon icon={Download} size={14} />
-            تصدير التقرير
-          </button>
-          <button type="button" className="btn ghost">
-            <Icon icon={ShieldAlert} size={14} />
-            وضع الصيانة
-          </button>
-          <button type="button" className="btn ghost">
-            <Icon icon={Trash2} size={14} />
-            مسح الذاكرة المؤقتة
-          </button>
+          <Link to="/owner/realtime" className="btn primary">
+            <Icon icon={Radio} size={14} />
+            المراقبة الحيّة
+          </Link>
+          <Link to="/owner/users" className="btn ghost">
+            <Icon icon={Users} size={14} />
+            إدارة المستخدمين
+          </Link>
+          <Link to="/owner/alerts" className="btn ghost">
+            <Icon icon={AlertTriangle} size={14} />
+            التنبيهات التشغيليّة
+          </Link>
+          <Link to="/owner/system" className="btn ghost">
+            <Icon icon={Settings} size={14} />
+            المزامنة وإعدادات النظام
+          </Link>
         </div>
       </Card>
     </div>

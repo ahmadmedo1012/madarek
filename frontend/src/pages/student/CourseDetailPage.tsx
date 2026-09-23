@@ -72,7 +72,7 @@ export default function CourseDetailPage() {
         padding: 'var(--sp-6)',
       }}>
         <Link to="/student/courses" className="btn ghost sm" style={{ marginBottom: 'var(--sp-4)' }}>
-          <Icon icon={ChevronLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+          <Icon icon={ChevronLeft} size={13} />
           المواد الدراسية
         </Link>
         <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
@@ -143,7 +143,7 @@ export default function CourseDetailPage() {
                   </div>
                   <div className="list-row-body">
                     <div className="list-row-title">
-                      <span className="font-mono text-xs text-subtle" style={{ marginLeft: 6 }}>
+                      <span className="font-mono text-xs text-subtle" style={{ marginInlineStart: 6 }}>
                         المحاضرة {String(lec.ordinal).padStart(2, '0')}
                       </span>
                       {lec.title}

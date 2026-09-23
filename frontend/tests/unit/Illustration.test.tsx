@@ -45,10 +45,10 @@ describe('Illustration registry', () => {
 
 describe('<Illustration>', () => {
   it('renders a wired scene with role=img and aria-label when not decorative', () => {
-    render(<Illustration name="empty-notifs" altKey="empty-notifs.alt" />);
+    render(<Illustration name="empty-notifs" alt="لا توجد إشعارات جديدة" />);
     const fig = screen.getByRole('img');
-    // i18next default behaviour returns the key unchanged when not wired.
-    expect(fig).toHaveAttribute('aria-label', 'empty-notifs.alt');
+    // Alt text is a direct Arabic string (the app ships no i18n runtime).
+    expect(fig).toHaveAttribute('aria-label', 'لا توجد إشعارات جديدة');
   });
 
   it('decorative=true renders aria-hidden and no role=img', () => {
@@ -64,12 +64,12 @@ describe('<Illustration>', () => {
     // future or unwired scene. The wrapper must render the in-family
     // SceneFallback rather than a broken-image icon.
     const phantom = 'phantom-not-yet-wired' as unknown as IllustrationName;
-    render(<Illustration name={phantom} altKey="hero.alt" />);
+    render(<Illustration name={phantom} alt="رسم توضيحي غير متوفر" />);
     const wrappers = document.querySelectorAll('[data-illustration="phantom-not-yet-wired"]');
     expect(wrappers).toHaveLength(1);
     expect(wrappers[0]).toHaveAttribute('data-illustration-fallback', 'true');
     // Still has role=img + aria-label when not decorative.
-    expect(screen.getByRole('img')).toHaveAttribute('aria-label', 'hero.alt');
+    expect(screen.getByRole('img')).toHaveAttribute('aria-label', 'رسم توضيحي غير متوفر');
   });
 
   it('passes dir prop through to the scene', () => {
@@ -92,5 +92,32 @@ describe('<Illustration>', () => {
     render(<Illustration name="empty-notifs" decorative className="kpi-tile-illustration" />);
     const node = document.querySelector('.kpi-tile-illustration');
     expect(node).not.toBeNull();
+  });
+});
+
+describe('<Illustration> role forwarding (onboarding-role-intro)', () => {
+  // Per-role motifs — see scenes/onboarding/role-intro.tsx:
+  //   STUDENT desk rect (x=48 y=138) · TEACHER stand line (x1=100 y1=138)
+  //   ADMIN keyring circle (cx=100 cy=80) · QUALITY clipboard rect (x=62 y=68)
+  //   OWNER roof path (M50 80 L 100 56 L 150 80 Z)
+  const wrap = (): HTMLElement =>
+    document.querySelector('[data-illustration="onboarding-role-intro"]')!;
+
+  it('defaults to the STUDENT book-on-desk motif when no role is passed', () => {
+    render(<Illustration name="onboarding-role-intro" decorative />);
+    expect(wrap().querySelector('rect[x="48"][y="138"]')).not.toBeNull();
+    expect(wrap().querySelector('line[x1="100"][y1="138"]')).toBeNull();
+  });
+
+  it.each([
+    ['TEACHER', 'line[x1="100"][y1="138"]'],
+    ['ADMIN', 'circle[cx="100"][cy="80"]'],
+    ['QUALITY', 'rect[x="62"][y="68"]'],
+    ['OWNER', 'path[d="M50 80 L 100 56 L 150 80 Z"]'],
+  ] as const)('renders the %s motif via its marker %s', (role, marker) => {
+    render(<Illustration name="onboarding-role-intro" role={role} decorative />);
+    expect(wrap().querySelector(marker)).not.toBeNull();
+    // …and NOT the default STUDENT desk.
+    expect(wrap().querySelector('rect[x="48"][y="138"]')).toBeNull();
   });
 });

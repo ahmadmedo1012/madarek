@@ -32,7 +32,7 @@
   .grid-1-2 > *,
   .grid-auto-200 > *,
   .grid-auto-260 > * {
-    animation: polish-rise 360ms var(--ease-out) both;
+    animation: polish-rise var(--motion-duration-reveal) var(--ease-out) both;
   }
   .grid-2 > *:nth-child(1),
   .grid-3 > *:nth-child(1),
@@ -87,7 +87,7 @@
         var(--surface-3) 50%,
         var(--surface-2) 100%);
     background-size: 200% 100%;
-    animation: polish-shimmer 1800ms ease-in-out infinite;
+    animation: polish-shimmer 1800ms var(--motion-ease-standard) infinite;
   }
   @keyframes polish-shimmer {
     0%   { background-position: 100% 0; }
@@ -98,11 +98,14 @@
      The .topbar.scrolled state was a flat border underline. A whisper
      of shadow reads as actual depth. Honors theme via color-mix. */
   .topbar.scrolled {
+    /* Off-token by design: hairline edge + downward whisper tied to the
+       topbar border token; not an elevation step. */
     box-shadow:
       0 1px 0 var(--border, var(--rule)),
       0 6px 16px -8px color-mix(in srgb, var(--text) 12%, transparent);
   }
   [data-theme="dark"] .topbar.scrolled {
+    /* Off-token by design: dark-theme twin of the light whisper above. */
     box-shadow:
       0 1px 0 var(--border, var(--rule)),
       0 6px 18px -10px rgb(0 0 0 / 0.55);
@@ -121,6 +124,7 @@
   }
   .nav-item:focus-visible {
     outline: none;
+    /* inset accent selection ring — interaction state, not elevation */
     box-shadow: inset 0 0 0 2px var(--accent);
     border-radius: var(--r-md);
   }
@@ -131,7 +135,7 @@
       background var(--t-fast) var(--ease),
       border-color var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease),
-      transform 80ms var(--ease);
+      transform var(--motion-duration-micro) var(--ease);
   }
   .btn:focus-visible {
     outline: none;
@@ -141,27 +145,21 @@
     transform: translateY(1px);
   }
 
-  /* ── Dropdown / menu enter ────────────────────────────────────── */
-  .topbar-user-menu,
-  .notification-dropdown,
-  .global-search-results {
-    animation: polish-menu-enter 160ms var(--ease-out) both;
-    transform-origin: top right;
-  }
-  @keyframes polish-menu-enter {
-    from { opacity: 0; transform: scale(0.97) translateY(-2px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
+  /* ── Dropdown / menu enter ──────────────────────────────────────
+     (WS-D2 orphan sweep: the .topbar-user-menu / .notification-dropdown /
+     .global-search-results selector group AND the polish-menu-enter
+     keyframes were dead — Topbar renders the Dropdown / NotificationPanel
+     primitives.) */
 
   /* ── Modal / overlay enter ────────────────────────────────────── */
   .modal,
   .dialog {
-    animation: polish-modal-enter 200ms var(--ease-out) both;
+    animation: polish-modal-enter var(--motion-duration-short) var(--ease-out) both;
   }
   .modal-backdrop,
   .dialog-backdrop,
   .sidebar-backdrop.show {
-    animation: polish-backdrop-enter 180ms var(--ease-out) both;
+    animation: polish-backdrop-enter var(--motion-duration-short) var(--ease-out) both;
   }
   @keyframes polish-modal-enter {
     from { opacity: 0; transform: translateY(8px) scale(0.985); }
@@ -188,7 +186,7 @@
 
   /* ── Number entrance — subtle "count-up reveal" feel ─────────── */
   [data-numeric="true"] {
-    animation: polish-rise 420ms var(--ease-out) both;
+    animation: polish-rise var(--motion-duration-long) var(--ease-out) both;
     animation-delay: 120ms;
   }
 
@@ -236,9 +234,6 @@
     .grid-auto-200 > *,
     .grid-auto-260 > *,
     [data-numeric="true"],
-    .topbar-user-menu,
-    .notification-dropdown,
-    .global-search-results,
     .modal,
     .dialog,
     .modal-backdrop,
@@ -314,7 +309,7 @@
   /* ── Pill active state: subtle press ────────────────────────── */
   .pill:active:not(.on) {
     transform: scale(0.985);
-    transition-duration: 80ms;
+    transition-duration: var(--motion-duration-micro);
   }
 
   /* ── Table row hover: interactive rows ──────────────────────── */
@@ -497,10 +492,11 @@
       font-weight: var(--fw-medium);
       border-radius: var(--r-sm);
       white-space: nowrap;
-      z-index: 10;
+      /* 012 z-language: hover tooltip above sidebar content. */
+      z-index: var(--z-tooltip);
       pointer-events: none;
       opacity: 0;
-      animation: polish-tooltip-in 120ms var(--ease-out) 240ms forwards;
+      animation: polish-tooltip-in var(--motion-duration-micro) var(--ease-out) 240ms forwards;
     }
     [dir="rtl"] .sidebar.collapsed .nav-item:hover::after {
       inset-inline-start: auto;
@@ -550,7 +546,7 @@
         transparent 30%
       ),
       radial-gradient(circle at 50% 0, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
-    transition: background-position 200ms var(--ease-out);
+    transition: background-position var(--motion-duration-short) var(--ease-out);
   }
   @media (hover: none), (prefers-reduced-motion: reduce) {
     .landing-hero::before {
@@ -568,9 +564,9 @@
     transform: translateY(0.45em) scale(0.985);
     filter: blur(4px);
     transition:
-      opacity 540ms var(--ease-out),
-      transform 540ms var(--ease-out),
-      filter 540ms var(--ease-out);
+      opacity var(--t-slower) var(--ease-out),
+      transform var(--t-slower) var(--ease-out),
+      filter var(--t-slower) var(--ease-out);
     /* Default delays — overridden per-position below. */
     transition-delay: 0ms;
   }
@@ -591,20 +587,20 @@
   .landing-mockup {
     --parallax: 0;
     transform: translateY(calc(var(--parallax) * -16px)) scale(calc(1 - var(--parallax) * 0.012));
-    transition: transform 80ms linear;
+    transition: transform var(--motion-duration-micro) linear;
     will-change: transform;
   }
   .landing-mockup-frame {
     /* Inner frame gets a counter-shift so chrome bars pop slightly
        differently than badges (creates a faint depth difference). */
     transform: translateY(calc(var(--parallax) * 4px));
-    transition: transform 80ms linear;
+    transition: transform var(--motion-duration-micro) linear;
   }
   .landing-mockup-badge-1,
   .landing-mockup-badge-2 {
     /* Floating badges drift twice as much as the frame — true parallax. */
     transform: translateY(calc(var(--parallax) * -22px)) translateX(var(--badge-tx, 0));
-    transition: transform 100ms linear;
+    transition: transform var(--motion-duration-micro) linear;
   }
   @media (prefers-reduced-motion: reduce) {
     .landing-mockup,
@@ -617,7 +613,7 @@
 
   /* ── Mockup bars: idle wave so the chart never sits still ─────── */
   .landing-mockup-bar {
-    animation: polish-bar-breathe 3.6s ease-in-out infinite;
+    animation: polish-bar-breathe 3.6s var(--motion-ease-standard) infinite;
   }
   .landing-mockup-bar:nth-child(1) { animation-delay: 0ms; }
   .landing-mockup-bar:nth-child(2) { animation-delay: 220ms; }
@@ -635,8 +631,8 @@
   }
 
   /* ── Hero badges: float idle ───────────────────────────────────── */
-  .landing-mockup-badge-1 { animation: polish-float-1 6s ease-in-out infinite; }
-  .landing-mockup-badge-2 { animation: polish-float-2 7.5s ease-in-out infinite; }
+  .landing-mockup-badge-1 { animation: polish-float-1 6s var(--motion-ease-standard) infinite; }
+  .landing-mockup-badge-2 { animation: polish-float-2 7.5s var(--motion-ease-standard) infinite; }
   @keyframes polish-float-1 {
     0%, 100% { --badge-tx: 0px; }
     50%      { --badge-tx: 6px; }
@@ -655,8 +651,8 @@
     opacity: 0;
     transform: translateY(14px);
     transition:
-      opacity 540ms var(--ease-out),
-      transform 540ms var(--ease-out);
+      opacity var(--t-slower) var(--ease-out),
+      transform var(--t-slower) var(--ease-out);
   }
   .reveal-up.in-view {
     opacity: 1;
@@ -685,7 +681,7 @@
       color-mix(in srgb, var(--accent-fg, white) 35%, transparent) 50%,
       transparent 100%);
     transform: translateX(-100%);
-    animation: polish-shimmer-sweep 3.2s ease-in-out infinite;
+    animation: polish-shimmer-sweep 3.2s var(--motion-ease-standard) infinite;
   }
   @keyframes polish-shimmer-sweep {
     0%, 60%   { transform: translateX(-100%); }
@@ -699,7 +695,7 @@
         but the numbers benefit from a one-shot scale-in on first view.  */
   .landing-pilot-stat .landing-pilot-num {
     display: inline-block;
-    transition: transform 240ms var(--ease-out);
+    transition: transform var(--motion-duration-medium) var(--ease-out);
   }
   .landing-pilot-stat:hover .landing-pilot-num {
     transform: scale(1.04);
@@ -725,7 +721,7 @@
     opacity: 0;
     transition: opacity var(--t-fast) var(--ease);
     pointer-events: none;
-    z-index: 0;
+    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
   }
   .landing-feature-card:hover::after,
   .landing-bento-card:hover::after {
@@ -734,7 +730,7 @@
   .landing-feature-card > *,
   .landing-bento-card > * {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
   }
 
   /* ── Pages without a .page-header convention still benefit from
@@ -745,7 +741,7 @@
   .alerts-list > *,
   .live-grid > *,
   .post-list > * {
-    animation: polish-rise 360ms var(--ease-out) both;
+    animation: polish-rise var(--motion-duration-reveal) var(--ease-out) both;
   }
   .ach-grid > *:nth-child(2),
   .skills-grid > *:nth-child(2) { animation-delay: 60ms; }
@@ -819,9 +815,9 @@
         transparent 70%
       );
     opacity: 0;
-    transition: opacity 240ms var(--ease-out);
+    transition: opacity var(--motion-duration-medium) var(--ease-out);
     pointer-events: none;
-    z-index: 0;
+    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
   }
   .card:not(.flush):hover::before { opacity: 1; }
   .card > * { position: relative; z-index: 1; }
@@ -860,6 +856,8 @@
   .metric:hover {
     transform: translateY(-1px);
     border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
+    /* Off-token by design: accent-tinted hover glow, weaker + softer than
+       --elev-2 (single ambient layer at 16px blur). */
     box-shadow:
       0 1px 2px rgb(0 0 0 / 0.03),
       0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
@@ -878,6 +876,7 @@
     height: 28px;
     background: var(--surface);
     border: 1px solid var(--rule);
+    /* hairline depth cue — not an elevation step */
     box-shadow: 0 1px 0 rgb(0 0 0 / 0.02);
   }
   .sidebar-collapse-btn:hover {
@@ -897,7 +896,7 @@
   .sidebar::-webkit-scrollbar { width: 4px; }
   .sidebar::-webkit-scrollbar-thumb {
     background: color-mix(in srgb, var(--text) 8%, transparent);
-    border-radius: 999px;
+    border-radius: var(--r-full);
   }
   .sidebar::-webkit-scrollbar-thumb:hover {
     background: color-mix(in srgb, var(--text) 18%, transparent);
@@ -998,16 +997,20 @@
 
   /* ── Button-press feedback — subtle, single tone ─────────────── */
   .btn.primary {
+    /* Off-token by design: chrome bevel (hairline + inner top light),
+       not elevation. */
     box-shadow:
       0 1px 0 rgb(0 0 0 / 0.05),
       inset 0 1px 0 rgb(255 255 255 / 0.06);
   }
   .btn.primary:hover:not(:disabled) {
+    /* Off-token by design: accent glow + bevel, not elevation. */
     box-shadow:
       0 2px 6px -1px color-mix(in srgb, var(--accent) 35%, transparent),
       inset 0 1px 0 rgb(255 255 255 / 0.08);
   }
   .btn.primary:active:not(:disabled) {
+    /* inset pressed well — interaction state, not elevation */
     box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.1);
   }
 
@@ -1016,7 +1019,7 @@
     padding-block: var(--sp-7);
   }
   .state-icon {
-    transition: transform 360ms var(--ease-out);
+    transition: transform var(--motion-duration-reveal) var(--ease-out);
   }
   .state:hover .state-icon {
     transform: scale(1.05);
@@ -1187,13 +1190,8 @@
   /* ═══════════════════════════════════════════════════════════════
      Dropdown menus — refined edge + shadow
      ═══════════════════════════════════════════════════════════════ */
-  .topbar-user-menu,
-  .notification-dropdown {
-    border: 1px solid color-mix(in srgb, var(--text) 8%, var(--rule));
-    box-shadow:
-      0 1px 2px rgb(0 0 0 / 0.04),
-      0 12px 32px -8px rgb(0 0 0 / 0.1);
-  }
+  /* (WS-D2 orphan sweep: the .topbar-user-menu / .notification-dropdown
+     edge+shadow group was dead — primitives own those surfaces now.) */
 
   /* ═══════════════════════════════════════════════════════════════
      Form labels — subtle weight bump for hierarchy
@@ -1213,7 +1211,7 @@
     transition:
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease),
-      transform 80ms var(--ease);
+      transform var(--motion-duration-micro) var(--ease);
   }
   .pill:active:not(:disabled) {
     transform: translateY(1px);
@@ -1223,7 +1221,7 @@
      Bottom-nav — scale-up icon on activate
      ═══════════════════════════════════════════════════════════════ */
   .bottom-nav-item.active .bottom-nav-icon {
-    animation: polish-bottomnav-pop 320ms var(--ease-out);
+    animation: polish-bottomnav-pop var(--motion-duration-page) var(--ease-out);
   }
   @keyframes polish-bottomnav-pop {
     0%   { transform: scale(0.92); }
@@ -1255,7 +1253,7 @@
     transition: var(--t-clean);
     position: relative;
   }
-  input[type="checkbox"] { border-radius: 4px; }
+  input[type="checkbox"] { border-radius: var(--r-xs); }
   input[type="radio"]    { border-radius: 50%; }
 
   input[type="checkbox"]:hover,
@@ -1311,7 +1309,7 @@
   *::-webkit-scrollbar-track { background: transparent; }
   *::-webkit-scrollbar-thumb {
     background: color-mix(in srgb, var(--text) 14%, transparent);
-    border-radius: 999px;
+    border-radius: var(--r-full);
     border: 2px solid var(--bg);
     background-clip: padding-box;
   }
@@ -1326,7 +1324,7 @@
      Hydration splash — calmer fade-out when auth loads
      ═══════════════════════════════════════════════════════════════ */
   .hydration-splash {
-    animation: polish-hydration-pulse 1.4s ease-in-out infinite;
+    animation: polish-hydration-pulse 1.4s var(--motion-ease-standard) infinite;
   }
   @keyframes polish-hydration-pulse {
     0%, 100% { opacity: 1; }
@@ -1401,7 +1399,7 @@
       position: sticky;
       inset-block-start: 0;
       background: var(--sidebar-bg);
-      z-index: 1;
+      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
       padding-block: var(--sp-3);
       border-block-end: 1px solid var(--sidebar-rule);
       margin-block-end: var(--sp-2);
@@ -1538,7 +1536,8 @@
     text-align: center;
     border: 2px solid var(--surface);
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--danger) 50%, transparent);
+    /* Off-token by design: danger-tinted attention glow, not elevation. */
+  box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--danger) 50%, transparent);
     /* Calm pulse to draw attention without nagging */
     animation: notif-bell-pulse 2.4s var(--ease-out) infinite;
   }
@@ -1553,15 +1552,8 @@
   /* ═══════════════════════════════════════════════════════════════
      NOTIFICATIONS PANEL — better organisation + visual rhythm
      ═══════════════════════════════════════════════════════════════ */
-  .notif-panel {
-    border-radius: var(--r-xl);
-    border-color: var(--rule);
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.04),
-      0 12px 40px -12px rgba(15, 22, 41, 0.18),
-      0 32px 80px -24px rgba(15, 22, 41, 0.16);
-  }
-
+  /* (WS-D2 orphan sweep: the .notif-panel container override was dead —
+     the NotificationPanel primitive owns the container surface.) */
   .notif-panel-head {
     padding: 14px 16px;
     background: linear-gradient(180deg,
@@ -1631,6 +1623,7 @@
     inset-block: 12px;
     inset-inline-start: 0;
     inline-size: 3px;
+    /* 3px accent stripe — micro-radius below the --r-xs floor */
     border-radius: 2px;
     background: var(--accent);
   }
@@ -1642,6 +1635,7 @@
     block-size: 8px;
     border-radius: 50%;
     background: var(--accent);
+    /* accent halo ring around the unread dot — not elevation */
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
   }
 
@@ -1728,6 +1722,8 @@
   .testimonial-card:hover,
   .announcement-card:hover {
     transform: translateY(-1px);
+    /* Off-token by design: soft diffuse hover shadow — composite sits
+       between --elev-2 and --elev-3 (16px blur exceeds the ±2px band). */
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 16px -4px rgba(0, 0, 0, 0.06);
   }
 
@@ -1776,12 +1772,12 @@
     flex: 1 1 auto;
     min-inline-size: 0;
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
   }
   .welcome-card .page-title,
   .welcome-card .page-subtitle {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
     overflow-wrap: break-word;
     word-break: normal;
   }
@@ -1830,7 +1826,7 @@
   /* Page transitions — softer + faster (was 220ms). Notion-class is closer
      to 160ms with a slightly heavier easing. */
   .content-inner {
-    animation: page-enter 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: page-enter var(--motion-duration-short) var(--ease-out) both;
   }
   @keyframes page-enter {
     from { opacity: 0; transform: translateY(4px); }
@@ -1891,14 +1887,14 @@
   .chat-bubble {
     max-inline-size: min(640px, 78%);
     padding: 10px 14px;
-    border-radius: 16px;
+    border-radius: var(--r-xl);
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
     color: var(--text);
     background: var(--surface-2);
     border: 1px solid var(--border-faint);
     /* subtle entrance */
-    animation: chat-in 240ms var(--ease-out) both;
+    animation: chat-in var(--motion-duration-medium) var(--ease-out) both;
   }
   @keyframes chat-in {
     from { opacity: 0; transform: translateY(4px); }
@@ -1909,6 +1905,7 @@
   }
 
   .chat-msg.bot .chat-bubble {
+    /* bubble tail corner — asymmetric shape detail, off-scale */
     border-start-start-radius: 4px;
   }
   .chat-msg.user .chat-bubble {
@@ -1917,6 +1914,7 @@
       color-mix(in srgb, var(--accent) 96%, var(--accent-strong)) 100%);
     color: var(--accent-fg);
     border-color: transparent;
+    /* bubble tail corner — asymmetric shape detail, off-scale */
     border-end-end-radius: 4px;
   }
 
@@ -1971,6 +1969,7 @@
     outline: none;
     background: var(--surface);
     border-color: var(--accent);
+    /* soft accent focus halo — interaction ring, not elevation */
     box-shadow: 0 0 0 3px var(--accent-soft);
   }
   .chat-send {
@@ -1989,6 +1988,7 @@
   }
   .chat-send:hover:not(:disabled) {
     transform: scale(1.05);
+    /* accent-tinted send glow — not elevation */
     box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 50%, transparent);
   }
   .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -2040,6 +2040,7 @@
   .matrix-course:hover {
     border-color: var(--border-strong);
     transform: translateY(-1px);
+    /* Off-token by design: accent-tinted hover glow, not elevation. */
     box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--accent) 12%, rgba(0,0,0,0.05));
   }
   .matrix-course-head {
@@ -2086,7 +2087,7 @@
   }
   .matrix-cell {
     padding: 8px 10px;
-    border-radius: 6px;
+    border-radius: var(--r-xs);
     font-size: 12px;
     color: var(--text);
     background: var(--surface-2);
@@ -2101,7 +2102,12 @@
   .matrix-cell.lvl-weak     { background: color-mix(in srgb, var(--warning) 14%, var(--surface)); border-color: color-mix(in srgb, var(--warning) 28%, transparent); color: var(--c-yellow-deep); }
   .matrix-cell.lvl-poor     { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 24%, transparent); color: var(--c-rose-deep); }
   .matrix-cell.lvl-untouched { color: var(--text-subtle); border-style: dashed; }
-  .matrix-cell:hover { transform: translateY(-1px); box-shadow: 0 2px 6px -2px rgba(0,0,0,0.08); }
+  .matrix-cell:hover {
+    transform: translateY(-1px);
+    /* 012 elevation-language: tile hover → --elev-2 (was 0 2px 6px -2px .08;
+     within the ≤2px blur / ±.05 alpha equivalence band). */
+    box-shadow: var(--elev-2);
+  }
 
   /* ═══════════════════════════════════════════════════════════════
      Gap rows (matrix recommendations on /student/exams)
@@ -2141,6 +2147,7 @@
   }
   .thumb-card:hover {
     transform: translateY(-2px);
+    /* Off-token by design: accent-tinted hover glow, not elevation. */
     box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--accent) 14%, rgba(0,0,0,0.08));
   }
 
@@ -2569,7 +2576,7 @@
     content: '';
     position: absolute;
     inset: -6px;
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     border-radius: inherit;
     background: radial-gradient(
       circle at 50% 50%,
@@ -2578,7 +2585,7 @@
     );
     opacity: 0;
     filter: blur(14px);
-    animation: madark-breathe 4s ease-in-out infinite;
+    animation: madark-breathe 4s var(--motion-ease-standard) infinite;
   }
   @keyframes madark-breathe {
     0%, 100% { opacity: 0; transform: scale(0.9); }
@@ -2606,7 +2613,7 @@
       transparent 100%
     );
     transform: translateX(-110%);
-    animation: madark-sweep 4.5s ease-in-out 1.2s infinite;
+    animation: madark-sweep 4.5s var(--motion-ease-standard) 1.2s infinite;
     pointer-events: none;
   }
   @keyframes madark-sweep {
@@ -2624,7 +2631,7 @@
   @media (hover: hover) and (min-width: 920px) {
     .landing-mockup {
       transform-style: preserve-3d;
-      transition: transform 480ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+      transition: transform var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     }
     .landing-mockup:hover {
       transform: perspective(1200px) rotateX(2deg) rotateY(-2deg) scale(1.012);
@@ -2651,14 +2658,14 @@
       content: '';
       position: absolute;
       inset: -1px;
-      z-index: -1;
+      z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
       background: radial-gradient(
         320px circle at var(--mx) var(--my),
         color-mix(in srgb, var(--accent) 22%, transparent) 0%,
         transparent 60%
       );
       opacity: 0;
-      transition: opacity 280ms var(--ease, ease);
+      transition: opacity var(--motion-duration-medium) var(--ease, ease);
       pointer-events: none;
     }
     .landing-feature-card:hover::before,
@@ -2682,7 +2689,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STICKER ICONS — gentle bobbing                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-megamenu-item .sticker { transition: transform 280ms var(--ease, ease); }
+  .landing-megamenu-item .sticker { transition: transform var(--motion-duration-medium) var(--ease, ease); }
   .landing-megamenu-item:hover .sticker {
     transform: rotate(-6deg) scale(1.06);
   }
@@ -2743,7 +2750,7 @@
      ║  starts on mount because the element is fresh in the DOM.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .page {
-    animation: madark-page-in 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-page-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   @keyframes madark-page-in {
     from {
@@ -2767,7 +2774,7 @@
   .grid-4 > *,
   .grid-auto-200 > *,
   .grid-auto-260 > * {
-    animation: madark-stagger-up 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-stagger-up var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   .grid-2 > *:nth-child(1),
   .grid-3 > *:nth-child(1),
@@ -2823,13 +2830,14 @@
     .metric:hover {
       transform: translateY(-2px);
       border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
+      /* Off-token by design: accent glow layered on the card shadow token. */
       box-shadow:
         0 8px 24px -8px color-mix(in srgb, var(--accent) 20%, transparent),
         var(--shadow-card-h, 0 4px 12px rgba(0,0,0,0.08));
     }
   }
   .metric-value {
-    animation: madark-pop-in 480ms var(--ease-spring, cubic-bezier(0.34, 1.36, 0.64, 1)) both;
+    animation: madark-pop-in var(--t-slower) var(--ease-spring, cubic-bezier(0.34, 1.36, 0.64, 1)) both;
   }
   @keyframes madark-pop-in {
     from { opacity: 0; transform: scale(0.92); }
@@ -2845,12 +2853,12 @@
       background var(--t-fast, 160ms) var(--ease, ease),
       border-color var(--t-fast, 160ms) var(--ease, ease),
       color var(--t-fast, 160ms) var(--ease, ease),
-      transform 120ms var(--ease, ease),
+      transform var(--motion-duration-micro) var(--ease, ease),
       box-shadow var(--t-fast, 160ms) var(--ease, ease);
   }
   .btn:active:not(:disabled) {
     transform: scale(0.97);
-    transition-duration: 80ms;
+    transition-duration: var(--motion-duration-micro);
   }
 
 
@@ -2862,7 +2870,7 @@
   .card.interactive:active,
   .card-link:active .card {
     transform: scale(0.99);
-    transition-duration: 80ms;
+    transition-duration: var(--motion-duration-micro);
   }
 
 
@@ -2904,7 +2912,7 @@
      ║  TOPBAR — slides down on first paint                           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar {
-    animation: madark-topbar-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-topbar-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   @keyframes madark-topbar-in {
     from { opacity: 0; transform: translateY(-6px); }
@@ -2924,13 +2932,13 @@
     content: '';
     position: absolute;
     inset: -40%;
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     background: radial-gradient(
       circle at 80% 20%,
       color-mix(in srgb, var(--accent) 18%, transparent) 0%,
       transparent 60%
     );
-    animation: madark-welcome-breathe 9s ease-in-out infinite alternate;
+    animation: madark-welcome-breathe 9s var(--motion-ease-standard) infinite alternate;
     pointer-events: none;
   }
   @keyframes madark-welcome-breathe {
@@ -2950,6 +2958,7 @@
       transform var(--t-fast, 160ms) var(--ease, ease);
   }
   .pill.on, .tab.on, .tab.active {
+    /* soft accent selection halo — interaction state, not elevation */
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
   }
   .pill:active, .tab:active {
@@ -2999,7 +3008,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .btn .icon,
   .btn svg {
-    transition: transform 240ms var(--ease, ease);
+    transition: transform var(--motion-duration-medium) var(--ease, ease);
   }
   .btn:hover .icon,
   .btn:hover svg {
@@ -3017,7 +3026,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-doughnut,
   .owner-chart-container {
-    animation: madark-chart-in 520ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-chart-in var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   @keyframes madark-chart-in {
     from { opacity: 0; transform: scale(0.96); }
@@ -3118,7 +3127,7 @@
     box-shadow: var(--elevation-4);
     aspect-ratio: 16 / 7;
     transform-style: preserve-3d;
-    transition: transform 600ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: transform var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     will-change: transform;
   }
   @media (max-width: 720px) {
@@ -3187,7 +3196,7 @@
     flex-direction: column;
     gap: var(--sp-2);
     max-inline-size: 640px;
-    z-index: 1;
+    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
   }
   .landing-campus-eyebrow {
     font-size: var(--fs-xs);
@@ -3224,10 +3233,10 @@
     gap: 8px;
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
-    z-index: 2;
+    z-index: 2; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
-    animation: madark-chip-float 7s ease-in-out infinite;
+    animation: madark-chip-float 7s var(--motion-ease-standard) infinite;
   }
   .landing-campus-chip-1 {
     inset-block-start: 12%;
@@ -3285,21 +3294,22 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar {
     transition:
-      inline-size 360ms var(--ease-spring-soft),
-      transform 360ms var(--ease-spring-soft);
+      inline-size var(--motion-duration-reveal) var(--ease-spring-soft),
+      transform var(--motion-duration-reveal) var(--ease-spring-soft);
   }
   .has-shell {
-    transition: grid-template-columns 360ms var(--ease-spring-soft);
+    transition: grid-template-columns var(--motion-duration-reveal) var(--ease-spring-soft);
   }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  DROPDOWNS / POPOVERS — spring-pop entrance                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .topbar-user-menu,
-  .landing-megamenu,
-  .notification-dropdown {
-    animation: madark-popover-in 260ms var(--ease-spring-bounce) both;
+  /* (WS-D2 orphan sweep: .topbar-user-menu / .notification-dropdown
+     pruned from the group; .landing-megamenu remains — and v21 later
+     pins it back off with animation: none !important.) */
+  .landing-megamenu {
+    animation: madark-popover-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     transform-origin: top center;
   }
   @keyframes madark-popover-in {
@@ -3312,9 +3322,8 @@
       transform: none;
     }
   }
-  /* Reverse origin for menus that hang from the start side */
-  [dir="rtl"] .topbar-user-menu { transform-origin: top right; }
-  [dir="ltr"] .topbar-user-menu { transform-origin: top left; }
+  /* Reverse origin for menus that hang from the start side
+     (WS-D2 orphan sweep: both [dir] .topbar-user-menu rules were dead.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3334,14 +3343,14 @@
       block-size: 4px;
       border-radius: 50%;
       background: var(--accent);
-      animation: madark-dot-in 320ms var(--ease-spring-bounce) both;
+      animation: madark-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both;
     }
     @keyframes madark-dot-in {
       from { transform: translateX(-50%) scale(0); }
       to   { transform: translateX(-50%) scale(1); }
     }
     .bottom-nav-item:active { transform: scale(0.93); }
-    .bottom-nav-icon { transition: transform 200ms var(--ease, ease); }
+    .bottom-nav-icon { transition: transform var(--motion-duration-short) var(--ease, ease); }
     .bottom-nav-item.active .bottom-nav-icon {
       transform: translateY(-2px);
     }
@@ -3398,9 +3407,7 @@
       animation: none !important;
       transition: none !important;
     }
-    .topbar-user-menu,
-    .landing-megamenu,
-    .notification-dropdown {
+    .landing-megamenu {
       animation: none !important;
     }
   }
@@ -3431,9 +3438,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .card {
     transition:
-      border-color 240ms var(--ease, ease),
-      box-shadow 280ms var(--ease-spring-soft),
-      transform 280ms var(--ease-spring-soft);
+      border-color var(--motion-duration-medium) var(--ease, ease),
+      box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
+      transform var(--motion-duration-medium) var(--ease-spring-soft);
     position: relative;
   }
   /* Gradient border-glow on hover for non-flush cards */
@@ -3456,7 +3463,7 @@
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0;
-    transition: opacity 320ms var(--ease, ease);
+    transition: opacity var(--motion-duration-page) var(--ease, ease);
     pointer-events: none;
   }
   @media (hover: hover) {
@@ -3474,12 +3481,14 @@
       background var(--t-fast, 160ms) var(--ease, ease),
       border-color var(--t-fast, 160ms) var(--ease, ease),
       color var(--t-fast, 160ms) var(--ease, ease),
-      transform 120ms var(--ease, ease),
-      box-shadow 240ms var(--ease, ease);
+      transform var(--motion-duration-micro) var(--ease, ease),
+      box-shadow var(--motion-duration-medium) var(--ease, ease);
   }
   .btn.primary:hover,
   .btn-primary:hover,
   .btn.accent:hover {
+    /* Off-token by design: strong accent glow + contact layer, not
+       elevation. */
     box-shadow:
       0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
       0 2px 4px rgba(0,0,0,0.06);
@@ -3504,7 +3513,7 @@
     opacity: 0;
   }
   .btn:active:not(:disabled)::after {
-    animation: madark-ripple 460ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-ripple var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   @keyframes madark-ripple {
     0%   { inline-size: 0; block-size: 0; opacity: 0.5; }
@@ -3528,7 +3537,7 @@
     background: var(--_metric-color, var(--accent));
     transform: scaleY(0);
     transform-origin: bottom;
-    transition: transform 320ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-page) var(--ease-spring-soft);
   }
   .metric:hover::before { transform: scaleY(1); }
   /* Numeric values get tabular alignment globally */
@@ -3543,13 +3552,14 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .pill {
     transition:
-      background 160ms var(--ease, ease),
-      color 160ms var(--ease, ease),
-      border-color 160ms var(--ease, ease),
-      transform 160ms var(--ease, ease),
-      box-shadow 240ms var(--ease, ease);
+      background var(--motion-duration-short) var(--ease, ease),
+      color var(--motion-duration-short) var(--ease, ease),
+      border-color var(--motion-duration-short) var(--ease, ease),
+      transform var(--motion-duration-short) var(--ease, ease),
+      box-shadow var(--motion-duration-medium) var(--ease, ease);
   }
   .pill.on {
+    /* soft accent selection halo — interaction state, not elevation */
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
   }
   .pill:hover { transform: translateY(-1px); }
@@ -3558,8 +3568,8 @@
   /* Tab underline becomes spring-easy */
   .tab::after {
     transition:
-      transform 320ms var(--ease-spring-soft),
-      opacity 200ms var(--ease, ease);
+      transform var(--motion-duration-page) var(--ease-spring-soft),
+      opacity var(--motion-duration-short) var(--ease, ease);
   }
 
 
@@ -3567,8 +3577,8 @@
      ║  BADGE — pop-in on first paint                                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .badge {
-    animation: madark-badge-in 260ms var(--ease-spring-bounce) both;
-    transition: transform 160ms var(--ease, ease);
+    animation: madark-badge-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
+    transition: transform var(--motion-duration-short) var(--ease, ease);
   }
   @keyframes madark-badge-in {
     from { opacity: 0; transform: scale(0.85); }
@@ -3586,13 +3596,14 @@
   input[type="tel"], input[type="date"], input[type="time"],
   textarea, select {
     transition:
-      border-color 200ms var(--ease, ease),
-      box-shadow 240ms var(--ease, ease),
-      background 200ms var(--ease, ease);
+      border-color var(--motion-duration-short) var(--ease, ease),
+      box-shadow var(--motion-duration-medium) var(--ease, ease),
+      background var(--motion-duration-short) var(--ease, ease);
   }
   .input:focus,
   input:focus, textarea:focus, select:focus {
     border-color: var(--accent);
+    /* soft accent focus halo — interaction ring, not elevation */
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
   }
 
@@ -3608,7 +3619,7 @@
       var(--surface-3) 100%
     );
     background-size: 200% 100%;
-    animation: madark-shimmer-rtl 1600ms ease-in-out infinite;
+    animation: madark-shimmer-rtl 1600ms var(--motion-ease-standard) infinite;
   }
   [dir="ltr"] .skeleton {
     animation-name: madark-shimmer-ltr;
@@ -3629,7 +3640,7 @@
   .progressbar > span,
   .progress-bar > span,
   [class*="progress"] > span {
-    transition: width 480ms var(--ease-spring-soft);
+    transition: width var(--t-slower) var(--ease-spring-soft);
   }
 
 
@@ -3638,7 +3649,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .avatar,
   .user-avatar {
-    transition: transform 200ms var(--ease, ease), box-shadow 240ms var(--ease, ease);
+    transition: transform var(--motion-duration-short) var(--ease, ease), box-shadow var(--motion-duration-medium) var(--ease, ease);
   }
   @media (hover: hover) {
     a:hover .avatar,
@@ -3655,7 +3666,7 @@
      ║  STICKER ICONS — gentle sway when grouped                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sticker-wiggle .sticker {
-    animation: madark-sway 6s ease-in-out infinite;
+    animation: madark-sway 6s var(--motion-ease-standard) infinite;
     transform-origin: bottom center;
   }
   .sticker-wiggle:nth-child(2n) .sticker { animation-delay: -1.5s; }
@@ -3715,8 +3726,9 @@
     block-size: 5px;
     border-radius: 50%;
     background: var(--accent);
+    /* accent halo ring around the active-rail dot — not elevation */
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
-    animation: madark-rail-dot-in 320ms var(--ease-spring-bounce) both 80ms;
+    animation: madark-rail-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both 80ms;
   }
   @keyframes madark-rail-dot-in {
     from { transform: translateY(-50%) scale(0); opacity: 0; }
@@ -3732,7 +3744,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .nav-section-label {
     position: relative;
-    transition: color 200ms var(--ease, ease);
+    transition: color var(--motion-duration-short) var(--ease, ease);
   }
   .nav-section-label::before {
     content: '';
@@ -3754,10 +3766,10 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 920px) {
     .sidebar {
-      transition: transform 380ms var(--ease-spring-soft);
+      transition: transform var(--motion-duration-long) var(--ease-spring-soft);
     }
     .sidebar.open .nav-item {
-      animation: madark-drawer-item-in 340ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+      animation: madark-drawer-item-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
     }
     .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(1) { animation-delay: 60ms; }
     .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(2) { animation-delay: 90ms; }
@@ -3786,8 +3798,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar-backdrop {
     transition:
-      opacity 280ms var(--ease, ease),
-      backdrop-filter 280ms var(--ease, ease);
+      opacity var(--motion-duration-medium) var(--ease, ease),
+      backdrop-filter var(--motion-duration-medium) var(--ease, ease);
   }
   .sidebar-backdrop.show {
     backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
@@ -3803,8 +3815,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar {
     transition:
-      box-shadow 240ms var(--ease, ease),
-      border-color 240ms var(--ease, ease);
+      box-shadow var(--motion-duration-medium) var(--ease, ease),
+      border-color var(--motion-duration-medium) var(--ease, ease);
   }
   /* Scroll-state class is set by CSS-only sticky shadow trick: when
      the topbar is sticky and there's content above it, this kicks in. */
@@ -3821,8 +3833,8 @@
     transition:
       background var(--t-fast, 160ms) var(--ease, ease),
       border-color var(--t-fast, 160ms) var(--ease, ease),
-      box-shadow 240ms var(--ease, ease),
-      transform 200ms var(--ease, ease);
+      box-shadow var(--motion-duration-medium) var(--ease, ease),
+      transform var(--motion-duration-short) var(--ease, ease);
   }
   .topbar-user-trigger:hover {
     box-shadow: var(--elevation-1);
@@ -3835,41 +3847,16 @@
   .topbar-user-trigger[aria-expanded="true"] .icon-chevron,
   .topbar-user-trigger[aria-expanded="true"] svg:last-child {
     transform: rotate(180deg);
-    transition: transform 240ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
   }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  USER MENU ITEMS — stagger entrance                            ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .topbar-user-menu .topbar-user-menu-item {
-    animation: madark-menu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
-  }
-  .topbar-user-menu .topbar-user-menu-item:nth-child(1) { animation-delay: 40ms; }
-  .topbar-user-menu .topbar-user-menu-item:nth-child(2) { animation-delay: 70ms; }
-  .topbar-user-menu .topbar-user-menu-item:nth-child(3) { animation-delay: 100ms; }
-  .topbar-user-menu .topbar-user-menu-item:nth-child(4) { animation-delay: 130ms; }
-  .topbar-user-menu .topbar-user-menu-item:nth-child(5) { animation-delay: 160ms; }
-  @keyframes madark-menu-item-in {
-    from { opacity: 0; transform: translateX(4px); }
-    to   { opacity: 1; transform: none; }
-  }
-  [dir="rtl"] .topbar-user-menu .topbar-user-menu-item {
-    animation-name: madark-menu-item-in-rtl;
-  }
-  @keyframes madark-menu-item-in-rtl {
-    from { opacity: 0; transform: translateX(-4px); }
-    to   { opacity: 1; transform: none; }
-  }
-  /* Hover slide */
-  .topbar-user-menu-item {
-    transition: background var(--t-fast, 160ms) var(--ease, ease),
-                color var(--t-fast, 160ms) var(--ease, ease),
-                padding-inline-start var(--t-fast, 160ms) var(--ease, ease);
-  }
-  .topbar-user-menu-item:hover {
-    padding-inline-start: calc(var(--sp-4) + 4px);
-  }
+  /* (WS-D2 orphan sweep: the .topbar-user-menu(-item) stagger + hover
+     rules and madark-menu-item-in(-rtl) keyframes were dead — Topbar's
+     Dropdown primitive renders its own menu items.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3877,9 +3864,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar .global-search {
     transition:
-      box-shadow 280ms var(--ease, ease),
-      border-color 240ms var(--ease, ease),
-      transform 240ms var(--ease, ease);
+      box-shadow var(--motion-duration-medium) var(--ease, ease),
+      border-color var(--motion-duration-medium) var(--ease, ease),
+      transform var(--motion-duration-medium) var(--ease, ease);
   }
   .topbar .global-search:focus-within {
     box-shadow: var(--ring-focus), var(--elevation-1);
@@ -3893,7 +3880,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .page-header .page-title-block {
     position: relative;
-    animation: madark-page-title-in 460ms var(--ease-spring-soft) both 80ms;
+    animation: madark-page-title-in var(--t-slower) var(--ease-spring-soft) both 80ms;
   }
   @keyframes madark-page-title-in {
     from { opacity: 0; transform: translateY(6px); }
@@ -3914,11 +3901,11 @@
       inset: -8px;
       border-radius: var(--r-md);
       background: color-mix(in srgb, var(--accent) 10%, transparent);
-      z-index: -1;
+      z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     }
     .bottom-nav-item .bottom-nav-icon {
       position: relative;
-      z-index: 1;
+      z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
     }
   }
 
@@ -3930,7 +3917,6 @@
     .nav-item.on::after,
     .nav-item.active::after,
     .sidebar.open .nav-item,
-    .topbar-user-menu .topbar-user-menu-item,
     .page-header .page-title-block {
       animation: none !important;
     }
@@ -3964,7 +3950,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     background: linear-gradient(
       180deg,
       transparent 0%,
@@ -3997,7 +3983,7 @@
         color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
         transparent 100%
       ),
-      url('/main_photo.png') 50% 30% / cover no-repeat;
+      url('/main_photo.webp') 50% 30% / cover no-repeat;
   }
   [data-theme="dark"] .student-dashboard .page-header.welcome-card {
     background:
@@ -4006,7 +3992,7 @@
         color-mix(in srgb, var(--bg) 75%, transparent) 60%,
         var(--bg) 100%
       ),
-      url('/main_photo.png') 50% 30% / cover no-repeat;
+      url('/main_photo.webp') 50% 30% / cover no-repeat;
   }
 
 
@@ -4014,7 +4000,7 @@
      ║  STUDENT DASHBOARD — agenda items glide in                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-agenda-list .dash-agenda-item {
-    animation: madark-agenda-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-agenda-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   .dash-agenda-list .dash-agenda-item:nth-child(1) { animation-delay: 80ms; }
   .dash-agenda-list .dash-agenda-item:nth-child(2) { animation-delay: 140ms; }
@@ -4026,9 +4012,14 @@
     from { opacity: 0; transform: translateX(-8px); }
     to   { opacity: 1; transform: none; }
   }
-  [dir="rtl"] @keyframes madark-agenda-in {
+  /* RTL variant as a separate name (a selector cannot prefix @keyframes —
+     that syntax is invalid CSS and gets dropped by the minifier) */
+  @keyframes madark-agenda-in-rtl {
     from { opacity: 0; transform: translateX(8px); }
     to   { opacity: 1; transform: none; }
+  }
+  [dir="rtl"] .dash-agenda-list .dash-agenda-item {
+    animation-name: madark-agenda-in-rtl;
   }
 
 
@@ -4037,8 +4028,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-doughnut-center {
     transition:
-      transform 480ms var(--ease-spring-bounce),
-      color 320ms var(--ease, ease);
+      transform var(--t-slower) var(--ease-spring-bounce),
+      color var(--motion-duration-page) var(--ease, ease);
   }
 
 
@@ -4046,7 +4037,7 @@
      ║  TEACHER FEED — items glide in from the start side             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .feed .feed-item {
-    animation: madark-feed-in 420ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-feed-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   .feed .feed-item:nth-child(1) { animation-delay: 60ms; }
   .feed .feed-item:nth-child(2) { animation-delay: 120ms; }
@@ -4068,9 +4059,9 @@
     position: relative;
     overflow: hidden;
     transition:
-      border-color 240ms var(--ease, ease),
-      box-shadow 280ms var(--ease-spring-soft),
-      transform 280ms var(--ease-spring-soft);
+      border-color var(--motion-duration-medium) var(--ease, ease),
+      box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
+      transform var(--motion-duration-medium) var(--ease-spring-soft);
   }
   .compact-kpi::before {
     content: '';
@@ -4083,7 +4074,7 @@
     border-radius: 0 0 var(--r-sm) 0;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 360ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-reveal) var(--ease-spring-soft);
   }
   [dir="rtl"] .compact-kpi::before {
     transform-origin: right;
@@ -4096,7 +4087,7 @@
   }
   .compact-kpi-value {
     font-variant-numeric: tabular-nums;
-    transition: color 240ms var(--ease, ease);
+    transition: color var(--motion-duration-medium) var(--ease, ease);
   }
 
 
@@ -4106,7 +4097,7 @@
   .owner-health-dot.green,
   .owner-live-pulse {
     position: relative;
-    animation: madark-heartbeat 2.4s ease-in-out infinite;
+    animation: madark-heartbeat 2.4s var(--motion-ease-standard) infinite;
   }
   .owner-health-dot.green::after,
   .owner-live-pulse::after {
@@ -4116,7 +4107,7 @@
     border-radius: inherit;
     background: inherit;
     opacity: 0.6;
-    animation: madark-pulse-ring 2.4s ease-out infinite;
+    animation: madark-pulse-ring 2.4s var(--motion-ease-decelerate) infinite;
     pointer-events: none;
   }
   @keyframes madark-heartbeat {
@@ -4136,11 +4127,14 @@
      ║  owner dashboard markup.                                       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .owner-live-status.has-alerts {
+    /* Off-token by design: warning glow ring composited over the (local)
+       --elevation-1 island — status attention, not pure elevation. */
     box-shadow:
       0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent),
       var(--elevation-1);
-    animation: madark-alert-glow 3s ease-in-out infinite;
+    animation: madark-alert-glow 3s var(--motion-ease-standard) infinite;
   }
+  /* Keyframe states of the warning glow above — off-token by design. */
   @keyframes madark-alert-glow {
     0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent), var(--elevation-1); }
     50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #c97a18) 28%, transparent), var(--elevation-2); }
@@ -4155,7 +4149,7 @@
   .owner-chart-container canvas,
   .dash-doughnut canvas,
   [class*="chart-container"] canvas {
-    animation: madark-canvas-in 600ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-canvas-in var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   @keyframes madark-canvas-in {
     from { opacity: 0; }
@@ -4191,7 +4185,7 @@
       inline-size: 3px;
       background: var(--accent);
       border-radius: 0 var(--r-xs) var(--r-xs) 0;
-      animation: madark-row-bar-in 220ms var(--ease-spring-bounce) both;
+      animation: madark-row-bar-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     }
     [dir="rtl"] .owner-table tbody tr:hover td:first-child::before,
     [dir="rtl"] .admin-students-table tbody tr:hover td:first-child::before,
@@ -4223,7 +4217,7 @@
       background: var(--accent);
       transform: scaleY(0);
       transform-origin: center;
-      transition: transform 240ms var(--ease-spring-soft);
+      transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     }
     .list-row:hover::before { transform: scaleY(0.7); }
   }
@@ -4248,7 +4242,7 @@
     border-radius: var(--r-full);
     transform: scaleY(0);
     transform-origin: top;
-    animation: madark-hero-bar-draw 600ms var(--ease-spring-soft) 240ms both;
+    animation: madark-hero-bar-draw var(--t-slower) var(--ease-spring-soft) 240ms both;
   }
   @keyframes madark-hero-bar-draw {
     from { transform: scaleY(0); }
@@ -4261,7 +4255,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (hover: hover) {
     .comp-index-card .comp-index-emoji {
-      transition: transform 280ms var(--ease-spring-soft);
+      transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     }
     .comp-index-card:hover .comp-index-emoji {
       transform: scale(1.12) rotate(-6deg);
@@ -4274,7 +4268,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (hover: hover) {
     .college-card .college-card-emoji {
-      transition: transform 280ms var(--ease-spring-soft);
+      transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     }
     .college-card:hover .college-card-emoji {
       transform: scale(1.1) rotate(4deg);
@@ -4287,8 +4281,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-pilot-stat {
     transition:
-      transform 320ms var(--ease-spring-soft),
-      box-shadow 320ms var(--ease, ease);
+      transform var(--motion-duration-page) var(--ease-spring-soft),
+      box-shadow var(--motion-duration-page) var(--ease, ease);
   }
   @media (hover: hover) {
     .landing-pilot-stat:hover {
@@ -4342,37 +4336,16 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  NOTIFICATION DROPDOWN — items stagger + unread pulse          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .notification-dropdown {
-    box-shadow: var(--elevation-4);
-    border: 1px solid var(--rule);
-  }
-  .notification-dropdown li,
-  .notification-dropdown .notif-item,
-  .notification-dropdown [role="listitem"] {
-    animation: madark-notif-in 320ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
-  }
-  .notification-dropdown li:nth-child(1),
-  .notification-dropdown .notif-item:nth-child(1) { animation-delay: 50ms; }
-  .notification-dropdown li:nth-child(2),
-  .notification-dropdown .notif-item:nth-child(2) { animation-delay: 80ms; }
-  .notification-dropdown li:nth-child(3),
-  .notification-dropdown .notif-item:nth-child(3) { animation-delay: 110ms; }
-  .notification-dropdown li:nth-child(4),
-  .notification-dropdown .notif-item:nth-child(4) { animation-delay: 140ms; }
-  .notification-dropdown li:nth-child(5),
-  .notification-dropdown .notif-item:nth-child(5) { animation-delay: 170ms; }
-  .notification-dropdown li:nth-child(n+6),
-  .notification-dropdown .notif-item:nth-child(n+6) { animation-delay: 200ms; }
-  @keyframes madark-notif-in {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: none; }
-  }
+  /* (WS-D2 orphan sweep: the .notification-dropdown container + li/
+     .notif-item stagger rules and the madark-notif-in keyframes were dead
+     (the NotificationPanel primitive renders its own items). The unread
+     pulse below stays — .notif-item.unread / .notif-unread-dot are live.) */
   /* Unread dot pulses gently */
-  .notification-dropdown [data-unread="true"]::before,
   .notif-item.unread::before,
   .notif-unread-dot {
-    animation: madark-unread-pulse 2.4s ease-in-out infinite;
+    animation: madark-unread-pulse 2.4s var(--motion-ease-standard) infinite; /* loop cadence — off-token by design */
   }
+  /* Keyframe states of the unread halo pulse — off-token by design. */
   @keyframes madark-unread-pulse {
     0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); }
     50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); }
@@ -4382,57 +4355,21 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  GLOBAL SEARCH RESULTS — slide in + keyboard highlight glide   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .global-search-results {
-    box-shadow: var(--elevation-4);
-    animation: madark-popover-in 240ms var(--ease-spring-bounce) both;
-    transform-origin: top center;
-  }
-  .global-search-results [role="option"],
-  .global-search-results .search-result,
-  .global-search-results li {
-    transition:
-      background 160ms var(--ease, ease),
-      color 160ms var(--ease, ease),
-      padding-inline-start 200ms var(--ease, ease);
-  }
-  .global-search-results [role="option"]:hover,
-  .global-search-results [role="option"][aria-selected="true"],
-  .global-search-results .search-result:hover,
-  .global-search-results .search-result.active {
-    background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
-    padding-inline-start: calc(var(--sp-4) + 4px);
-  }
+  /* (WS-D2 orphan sweep: .global-search-results rules were dead — the
+     Topbar renders .search-dropdown rows instead; v21 styles those.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  COMPETITION / GENERIC MODALS — backdrop blur ramp + spring    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .comp-modal-backdrop {
-    transition:
-      opacity 280ms var(--ease, ease),
-      backdrop-filter 280ms var(--ease, ease);
-    backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
-    -webkit-backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
-  }
-  .comp-modal {
-    box-shadow: var(--elevation-5);
-    animation: madark-modal-in 360ms var(--ease-spring-bounce) both;
-  }
-  @keyframes madark-modal-in {
-    from {
-      opacity: 0;
-      transform: translateY(12px) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
+  /* (WS-D2 orphan sweep: .comp-modal-backdrop / .comp-modal and the
+     madark-modal-in keyframes were dead — the <Modal> primitive owns the
+     overlay. Only .comp-modal-close below is still referenced.) */
   .comp-modal-close {
     transition:
-      background 160ms var(--ease, ease),
-      color 160ms var(--ease, ease),
-      transform 200ms var(--ease, ease);
+      background var(--motion-duration-short) var(--ease, ease),
+      color var(--motion-duration-short) var(--ease, ease),
+      transform var(--motion-duration-short) var(--ease, ease);
   }
   .comp-modal-close:hover {
     transform: rotate(90deg);
@@ -4450,7 +4387,7 @@
     border-radius: var(--r-md);
     background: var(--surface);
     border: 1px solid var(--rule);
-    animation: madark-toast-in 320ms var(--ease-spring-bounce) both;
+    animation: madark-toast-in var(--motion-duration-page) var(--ease-spring-bounce) both;
   }
   @keyframes madark-toast-in {
     from {
@@ -4468,7 +4405,7 @@
      ║  MEGA-MENU (landing) — items stagger                           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-megamenu .landing-megamenu-item {
-    animation: madark-megamenu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
   .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
@@ -4487,7 +4424,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sheet,
   .bottom-sheet {
-    animation: madark-sheet-in 380ms var(--ease-spring-soft) both;
+    animation: madark-sheet-in var(--motion-duration-long) var(--ease-spring-soft) both;
   }
   @keyframes madark-sheet-in {
     from {
@@ -4506,9 +4443,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .comp-icon-btn {
     transition:
-      background 160ms var(--ease, ease),
-      border-color 160ms var(--ease, ease),
-      transform 200ms var(--ease-spring-soft);
+      background var(--motion-duration-short) var(--ease, ease),
+      border-color var(--motion-duration-short) var(--ease, ease),
+      transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   .comp-icon-btn:hover {
     transform: scale(1.1);
@@ -4522,17 +4459,12 @@
      ║  REDUCED MOTION                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
-    .notification-dropdown li,
-    .notification-dropdown .notif-item,
-    .global-search-results,
-    .comp-modal,
     .toast,
     .landing-megamenu .landing-megamenu-item,
     .sheet,
     .bottom-sheet {
       animation: none !important;
     }
-    .notification-dropdown [data-unread="true"]::before,
     .notif-item.unread::before,
     .notif-unread-dot,
     .comp-modal-close:hover {
@@ -4564,16 +4496,16 @@
   .thumb-card {
     overflow: hidden;
     transition:
-      border-color 240ms var(--ease, ease),
-      box-shadow 320ms var(--ease-spring-soft),
-      transform 320ms var(--ease-spring-soft);
+      border-color var(--motion-duration-medium) var(--ease, ease),
+      box-shadow var(--motion-duration-page) var(--ease-spring-soft),
+      transform var(--motion-duration-page) var(--ease-spring-soft);
   }
   .thumb-card-image {
     overflow: hidden;
     position: relative;
   }
   .thumb-card-image > * {
-    transition: transform 480ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: transform var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
   }
   @media (hover: hover) {
     .thumb-card:hover {
@@ -4591,7 +4523,7 @@
      ║  EMPTY STATE — idle wiggle on the icon every 6s                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-empty .state-icon {
-    animation: madark-empty-wiggle 6s ease-in-out infinite;
+    animation: madark-empty-wiggle 6s var(--motion-ease-standard) infinite;
     transform-origin: center;
   }
   @keyframes madark-empty-wiggle {
@@ -4606,14 +4538,14 @@
      ║  ERROR STATE — icon throbs gently, retry button bounces in     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-error .state-icon {
-    animation: madark-error-throb 1.6s ease-in-out infinite;
+    animation: madark-error-throb 1.6s var(--motion-ease-standard) infinite;
   }
   @keyframes madark-error-throb {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.05); }
   }
   .state.state-error .btn {
-    animation: madark-retry-pop 360ms var(--ease-spring-bounce) both 200ms;
+    animation: madark-retry-pop var(--motion-duration-reveal) var(--ease-spring-bounce) both 200ms;
   }
   @keyframes madark-retry-pop {
     from { opacity: 0; transform: scale(0.85); }
@@ -4629,7 +4561,7 @@
     position: relative;
   }
   .auth-card {
-    animation: madark-auth-card-in 480ms var(--ease-spring-soft) both;
+    animation: madark-auth-card-in var(--t-slower) var(--ease-spring-soft) both;
   }
   @keyframes madark-auth-card-in {
     from { opacity: 0; transform: translateY(12px) scale(0.98); }
@@ -4670,14 +4602,15 @@
   .profile-page .avatar,
   .teacher-profile-avatar {
     transition:
-      transform 280ms var(--ease-spring-soft),
-      box-shadow 280ms var(--ease, ease);
+      transform var(--motion-duration-medium) var(--ease-spring-soft),
+      box-shadow var(--motion-duration-medium) var(--ease, ease);
   }
   @media (hover: hover) {
     .profile-avatar:hover,
     .profile-page .avatar:hover,
     .teacher-profile-avatar:hover {
       transform: scale(1.04);
+      /* soft accent avatar halo — interaction state, not elevation */
       box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 14%, transparent);
     }
   }
@@ -4689,11 +4622,11 @@
   .vision-card,
   .vision-detail-hero {
     overflow: hidden;
-    transition: transform 320ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-page) var(--ease-spring-soft);
   }
   .vision-card img,
   .vision-detail-hero img {
-    transition: transform 720ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: transform var(--t-cinema) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
   }
   @media (hover: hover) {
     .vision-card:hover img,
@@ -4711,9 +4644,9 @@
     position: relative;
     overflow: hidden;
     transition:
-      border-color 240ms var(--ease, ease),
-      box-shadow 280ms var(--ease-spring-soft),
-      transform 280ms var(--ease-spring-soft);
+      border-color var(--motion-duration-medium) var(--ease, ease),
+      box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
+      transform var(--motion-duration-medium) var(--ease-spring-soft);
   }
   .training-card::before,
   .training-track-card::before {
@@ -4725,7 +4658,7 @@
     background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
     transform: scaleY(0);
     transform-origin: top;
-    transition: transform 360ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-reveal) var(--ease-spring-soft);
   }
   @media (hover: hover) {
     .training-card:hover,
@@ -4745,7 +4678,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .pdf-viewer-controls,
   .pdf-toolbar {
-    animation: madark-pdf-controls-in 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both 100ms;
+    animation: madark-pdf-controls-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both 100ms;
   }
   @keyframes madark-pdf-controls-in {
     from { opacity: 0; transform: translateY(-6px); }
@@ -4759,7 +4692,7 @@
   .announce-emoji,
   .event-emoji,
   .announcement-icon {
-    transition: transform 280ms var(--ease-spring-bounce);
+    transition: transform var(--motion-duration-medium) var(--ease-spring-bounce);
   }
   @media (hover: hover) {
     .announce-row:hover .announce-emoji,
@@ -4775,7 +4708,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand) {
     position: relative;
-    transition: color 160ms var(--ease, ease);
+    transition: color var(--motion-duration-short) var(--ease, ease);
   }
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand)::after {
     content: '';
@@ -4787,7 +4720,7 @@
     background: currentColor;
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 280ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     pointer-events: none;
   }
   [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand)::after {
@@ -4956,8 +4889,7 @@
   @media (prefers-reduced-transparency: reduce) {
     .topbar,
     .bottom-nav,
-    .sidebar-backdrop.show,
-    .comp-modal-backdrop {
+    .sidebar-backdrop.show {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
@@ -4980,7 +4912,7 @@
      ║  Native lazy-loaded images fade in once decoded.               ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   img[loading="lazy"] {
-    animation: madark-img-in 380ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-img-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
   }
   @keyframes madark-img-in {
     from { opacity: 0; }
@@ -5064,7 +4996,7 @@
   }
   .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
   .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
-    animation: madark-megamenu-item-in 280ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both !important;
+    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both !important;
   }
 
 
@@ -5109,7 +5041,7 @@
     border-radius: var(--r-lg);
     overflow: hidden;
     /* Override any generic popover animation; this one's bespoke */
-    animation: madark-search-pop 240ms var(--ease-spring-soft) both;
+    animation: madark-search-pop var(--motion-duration-medium) var(--ease-spring-soft) both;
     transform-origin: top center;
   }
   @keyframes madark-search-pop {
@@ -5148,8 +5080,8 @@
     text-align: start;
     cursor: pointer;
     transition:
-      background 160ms var(--ease, ease),
-      padding-inline-start 220ms var(--ease-spring-soft);
+      background var(--motion-duration-short) var(--ease, ease),
+      padding-inline-start var(--motion-duration-medium) var(--ease-spring-soft);
     position: relative;
   }
   .search-row::before {
@@ -5162,7 +5094,7 @@
     border-radius: 0 var(--r-xs) var(--r-xs) 0;
     transform: scaleY(0);
     transform-origin: center;
-    transition: transform 200ms var(--ease-spring-soft);
+    transition: transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   [dir="rtl"] .search-row::before {
     border-radius: var(--r-xs) 0 0 var(--r-xs);
@@ -5215,7 +5147,7 @@
     color: var(--text-muted);
     flex-shrink: 0;
     opacity: 0.5;
-    transition: transform 200ms var(--ease, ease), opacity 160ms var(--ease, ease);
+    transition: transform var(--motion-duration-short) var(--ease, ease), opacity var(--motion-duration-short) var(--ease, ease);
   }
   .search-row:hover .search-row-arrow,
   .search-row.active .search-row-arrow {
@@ -5252,7 +5184,7 @@
       var(--surface-3) 100%
     );
     background-size: 200% 100%;
-    animation: madark-search-shimmer 1400ms ease-in-out infinite;
+    animation: madark-search-shimmer 1400ms var(--motion-ease-standard) infinite;
     display: block;
   }
   .search-shimmer:nth-child(1) { inline-size: 100%; }
@@ -5296,10 +5228,10 @@
     font-size: var(--fs-xs);
     cursor: pointer;
     transition:
-      background 160ms var(--ease, ease),
-      color 160ms var(--ease, ease),
-      border-color 160ms var(--ease, ease),
-      transform 200ms var(--ease-spring-soft);
+      background var(--motion-duration-short) var(--ease, ease),
+      color var(--motion-duration-short) var(--ease, ease),
+      border-color var(--motion-duration-short) var(--ease, ease),
+      transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   .search-tip-pill:hover {
     background: color-mix(in srgb, var(--accent) 12%, var(--surface));
@@ -5366,8 +5298,8 @@
     border-radius: inherit;
     opacity: 0.35;
     pointer-events: none;
-    z-index: -1;
-    animation: madark-loadingstate-pulse 1.6s ease-in-out infinite;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
+    animation: madark-loadingstate-pulse 1.6s var(--motion-ease-standard) infinite;
   }
   .card > .state.state-loading,
   .card > .state.state-inline {
@@ -5408,7 +5340,7 @@
      ║  Forward-compatible — components don't have to use the attr.   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   [data-loaded] {
-    transition: opacity 320ms var(--ease, ease);
+    transition: opacity var(--motion-duration-page) var(--ease, ease);
   }
   [data-loaded="false"] { opacity: 0; }
   [data-loaded="true"]  { opacity: 1; }

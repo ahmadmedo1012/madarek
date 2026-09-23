@@ -58,6 +58,22 @@ export default defineConfig({
         extraHTTPHeaders: { 'Accept-Language': 'en-US,en' },
       },
     },
+    {
+      // WS-F6 — surface-inventory producer (audit-script.md). Own testDir
+      // so Playwright never picks up the vitest suites under
+      // tests/unit|gallery|motion, and the a11y matrix above stays
+      // untouched. The spec itself skips unless AUDIT_BASELINE=1 — it
+      // needs the app + a seeded DB (see its file header for the local
+      // run recipe). Reach it via: npm run test:audit
+      name: 'audit',
+      testDir: './tests/audit',
+      testMatch: /surface-inventory\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
   ],
   webServer: process.env.MADAREK_E2E_BASE_URL
     ? undefined

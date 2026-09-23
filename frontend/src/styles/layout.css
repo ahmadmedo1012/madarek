@@ -29,7 +29,7 @@
   .sidebar-brand-mark {
     inline-size: 28px;
     block-size: 28px;
-    border-radius: 8px;
+    border-radius: var(--r-sm);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -280,31 +280,11 @@
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     line-height: 1; padding-inline-end: var(--sp-1);
   }
-  .topbar-user-menu {
-    position: absolute;
-    inset-block-start: calc(100% + 6px);
-    inset-inline-end: 0;
-    inline-size: 240px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-pop);
-    overflow: clip;
-    z-index: var(--z-popover);
-    animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
+  /* (.topbar-user-menu container + -item/-divider rules removed in the
+     WS-D2 orphan sweep: Topbar now mounts the <Dropdown> primitive with
+     DropdownItem/DropdownSeparator. Only the -header block below is still
+     referenced by the markup.) */
   .topbar-user-menu-header { padding: var(--sp-3) var(--sp-4); border-block-end: 1px solid var(--rule); background: var(--surface-2); }
-  .topbar-user-menu-item {
-    inline-size: 100%; padding: var(--sp-2) var(--sp-4);
-    display: flex; align-items: center; gap: var(--sp-3);
-    font-size: var(--fs-sm); color: var(--text-secondary);
-    transition: background var(--t-fast) var(--ease);
-    font-weight: var(--fw-medium);
-  }
-  .topbar-user-menu-item:hover { background: var(--surface-2); color: var(--text); }
-  .topbar-user-menu-item.danger { color: var(--c-rose-deep); }
-  .topbar-user-menu-item.danger:hover { background: var(--c-rose-bg); }
-  .topbar-user-menu-divider { block-size: 1px; background: var(--rule); margin-block: 0; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  GLOBAL SEARCH                                                 ║
@@ -370,7 +350,7 @@
   .search-row:hover, .search-row[aria-selected="true"] { background: var(--surface-2); }
   .search-row-icon {
     inline-size: 28px; block-size: 28px;
-    border-radius: 8px;
+    border-radius: var(--r-sm);
     background: var(--c-grey-bg);
     color: var(--c-grey-deep);
     display: inline-flex; align-items: center; justify-content: center;

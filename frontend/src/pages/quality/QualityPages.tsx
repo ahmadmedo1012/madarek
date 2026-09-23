@@ -77,6 +77,8 @@ interface Engagement {
   totalStudents: number;
   papersByStatus: Record<string, number>;
   weeklyActive: number[];
+  /** true when the backend filled the curve with its deterministic fallback. */
+  weeklyActiveEstimated: boolean;
 }
 const useEngagement = () => useQuery({
   queryKey: ['quality', 'engagement'],
@@ -117,15 +119,57 @@ const RANK_LABEL: Record<string, string> = {
 };
 
 /* ════════════════════════════════════════════════════════════════
+   Quality alerts — derived from real database signals
+   (shared by the dashboard's summary card + the full alerts page)
+   ════════════════════════════════════════════════════════════════ */
+
+interface QualityAlert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  category: 'attendance' | 'plagiarism' | 'content';
+  title: string;
+  description: string;
+  occurredAt: string;
+}
+interface QualityAlertsResponse {
+  alerts: QualityAlert[];
+  counts: { critical: number; warning: number; info: number; total: number };
+}
+
+const SEVERITY_TONE: Record<QualityAlert['severity'], 'red' | 'amber' | 'brand'> = {
+  critical: 'red',
+  warning: 'amber',
+  info: 'brand',
+};
+const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
+  attendance: ClipboardCheck,
+  plagiarism: FileText,
+  content: BookOpen,
+};
+
+function formatRelativeAr(iso: string): string {
+  const d = new Date(iso);
+  const m = Math.round((Date.now() - d.getTime()) / 60000);
+  if (m < 1) return 'الآن';
+  if (m < 60) return `منذ ${m} دقيقة`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `منذ ${h} ساعة`;
+  return `منذ ${Math.round(h / 24)} يوم`;
+}
+
+const useQualityAlerts = () => useQuery({
+  queryKey: ['quality', 'alerts'],
+  queryFn: () => unwrap<QualityAlertsResponse>(api.get('/quality/alerts')),
+  staleTime: 60_000,
+});
+
+/* ════════════════════════════════════════════════════════════════
    Quality Dashboard
    ════════════════════════════════════════════════════════════════ */
 export function QualityDashboardPage() {
   const ov = useOverview();
   const eg = useEngagement();
-  // Pull real alerts from /quality/alerts so the "Critical Alerts"
-  // card doesn't show fabricated titles. Previously three fake alerts
-  // were hardcoded here.
-  const alerts = useQualityAlerts();
+  const al = useQualityAlerts();
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
 
@@ -166,6 +210,18 @@ export function QualityDashboardPage() {
   const cc = chartColors();
   const opts = cartesianOptions();
 
+  // KPI bars — every value derives from a real payload field:
+  //   · معدل الحضور / إكمال المحاضرات  ← /quality/engagement
+  //   · معدل التسجيل                   ← enrollments ÷ totalStudents
+  //   · البحوث المكتملة                ← /quality/overview papers (GRADED+PUBLISHED ÷ total)
+  // (The old hardcoded 68/82/91 bars presented numbers no API provides.)
+  const enrollmentRate = e.totalStudents > 0
+    ? Math.min(100, (e.enrollments / e.totalStudents) * 100)
+    : 0;
+  const paperTotal = Object.values(d.papers).reduce((s, n) => s + (n ?? 0), 0);
+  const paperDone = (d.papers.GRADED ?? 0) + (d.papers.PUBLISHED ?? 0);
+  const paperProgress = paperTotal > 0 ? (paperDone / paperTotal) * 100 : 0;
+
   return (
     <div className="page">
       <header className="page-header">
@@ -193,7 +249,15 @@ export function QualityDashboardPage() {
       </div>
 
       <div className="grid-2-1">
-        <Card title="النشاط الأسبوعي" subtitle="عدد الجلسات اليومية النشطة على المنصة" icon={TrendingUp}>
+        <Card
+          title="النشاط الأسبوعي"
+          subtitle={
+            e.weeklyActiveEstimated
+              ? 'عدد الجلسات اليومية النشطة على المنصة — منحنى تقديري لحدّة البيانات'
+              : 'عدد الجلسات اليومية النشطة على المنصة'
+          }
+          icon={TrendingUp}
+        >
           <div style={{ height: 220 }}>
             <Line
               key={themeKey}
@@ -241,39 +305,47 @@ export function QualityDashboardPage() {
           <div className="flex-col gap-4">
             <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" ariaLabel="معدل الحضور التراكمي" color="var(--success)" />
             <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
-            {/* Removed three hardcoded bars (68/82/91) — they were fabricated.
-                Real "digitization" / "teacher response" / "platform readiness"
-                metrics don't exist in the API yet. */}
-            <ProgressBar
-              value={e.totalStudents > 0 ? Math.round((e.weeklyActive[e.weeklyActive.length - 1] ?? 0) / e.totalStudents * 100) : 0}
-              label="النشاط الأسبوعي"
-              ariaLabel="النشاط الأسبوعي"
-              color="var(--brand-purple)"
-            />
+            <ProgressBar value={enrollmentRate} label="معدل تسجيل الطلاب في المقررات" ariaLabel="معدل تسجيل الطلاب في المقررات" color="var(--brand-purple)" />
+            <ProgressBar value={paperProgress} label="نسبة البحوث المكتملة التقييم" ariaLabel="نسبة البحوث المكتملة التقييم" color="var(--gold)" />
           </div>
         </Card>
 
-        <Card title="تنبيهات حرجة" icon={AlertTriangle}>
-          <div className="flex-col gap-2">
-            {alerts.isPending ? (
-              <LoadingState label="جارٍ تحميل التنبيهات…" />
-            ) : alerts.isError ? (
-              <ErrorState error={alerts.error} onRetry={() => alerts.refetch()} />
-            ) : !alerts.data?.alerts?.length ? (
-              <EmptyState icon={ShieldCheck} title="لا تنبيهات حرجة" description="لا توجد تنبيهات نشطة حالياً." />
-            ) : (
-              alerts.data.alerts.slice(0, 3).map((a) => (
-                <AlertRow
-                  key={a.id}
-                  color={SEVERITY_TONE[a.severity]}
-                  icon={CATEGORY_ICON[a.category]}
-                  title={a.title}
-                  description={a.description}
-                  time={new Date(a.occurredAt).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' })}
-                />
-              ))
-            )}
-          </div>
+        <Card title="تنبيهات الجودة" icon={AlertTriangle}>
+          {al.isPending ? (
+            <ListSkeleton rows={3} />
+          ) : al.isError ? (
+            <EmptyState
+              icon={AlertTriangle}
+              title="تعذّر تحميل التنبيهات"
+              description="حدّث الصفحة أو راجع صفحة تنبيهات الجودة."
+            />
+          ) : !al.data || al.data.alerts.length === 0 ? (
+            <EmptyState
+              icon={CheckCircle2}
+              title="لا توجد تنبيهات"
+              description="كل المؤشرات ضمن النطاق الطبيعي حالياً."
+            />
+          ) : (
+            <>
+              <div className="flex-col gap-2">
+                {/* Server sorts critical-first; show the top 3 and link out. */}
+                {al.data.alerts.slice(0, 3).map((a) => (
+                  <AlertRow
+                    key={a.id}
+                    color={SEVERITY_TONE[a.severity]}
+                    icon={CATEGORY_ICON[a.category]}
+                    title={a.title}
+                    description={a.description}
+                    time={formatRelativeAr(a.occurredAt)}
+                  />
+                ))}
+              </div>
+              <Link to="/quality/alerts" className="btn ghost sm" style={{ marginTop: 'var(--sp-3)' }}>
+                <Icon icon={ArrowRight} size={13} />
+                عرض كل التنبيهات
+              </Link>
+            </>
+          )}
         </Card>
       </div>
     </div>
@@ -421,7 +493,7 @@ export function QualityProfessorsPage() {
                     <td><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>
                     <td className="tbl-num">{t.offerings}</td>
                     <td className="tbl-num">{t.totals.materials}</td>
-                    <td className="tbl-num" style={{ color: 'var(--gold)' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
+                    <td className="tbl-num" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
                     <td className="tbl-num">{t.responseHours}س</td>
                     <td>
                       <div style={{ minWidth: 120, display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -495,7 +567,6 @@ export function QualityEngagementPage() {
           <div className="flex-col gap-4">
             <ProgressBar value={d.videos.completionRate} label="معدل الإكمال" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
             <ProgressBar value={(d.videos.completedLectures / Math.max(d.videos.totalLectures, 1)) * 100} label="نسبة المحاضرات المكتملة" ariaLabel="نسبة المحاضرات المكتملة" color="var(--success)" />
-            <ProgressBar value={62} label="إجابة نقاط التفاعل" ariaLabel="إجابة نقاط التفاعل" color="var(--gold)" />
             <ProgressBar value={d.attendance.absentRate} label="نسبة الغياب" ariaLabel="نسبة الغياب" color="var(--danger)" />
           </div>
         </Card>
@@ -631,48 +702,9 @@ export function QualityReportsPage() {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   Quality alerts — derived from real database signals
+   Quality Alerts page (full list — hooks/helpers live near the top,
+   shared with the dashboard's summary card)
    ════════════════════════════════════════════════════════════════ */
-
-interface QualityAlert {
-  id: string;
-  severity: 'critical' | 'warning' | 'info';
-  category: 'attendance' | 'plagiarism' | 'content';
-  title: string;
-  description: string;
-  occurredAt: string;
-}
-interface QualityAlertsResponse {
-  alerts: QualityAlert[];
-  counts: { critical: number; warning: number; info: number; total: number };
-}
-
-const SEVERITY_TONE: Record<QualityAlert['severity'], 'red' | 'amber' | 'brand'> = {
-  critical: 'red',
-  warning: 'amber',
-  info: 'brand',
-};
-const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
-  attendance: ClipboardCheck,
-  plagiarism: FileText,
-  content: BookOpen,
-};
-
-function formatRelativeAr(iso: string): string {
-  const d = new Date(iso);
-  const m = Math.round((Date.now() - d.getTime()) / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  return `منذ ${Math.round(h / 24)} يوم`;
-}
-
-const useQualityAlerts = () => useQuery({
-  queryKey: ['quality', 'alerts'],
-  queryFn: () => unwrap<QualityAlertsResponse>(api.get('/quality/alerts')),
-  staleTime: 60_000,
-});
 
 export function QualityAlertsPage() {
   const q = useQualityAlerts();
