@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validate } from '../validate.js';
+import { AppError } from '../../lib/errors.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -164,7 +165,7 @@ router.get('/conversations/:id/messages', async (req, res, next) => {
     const conv = await prisma.aiConversation.findFirst({
       where: { id: req.params.id!, userId: req.user!.id },
     });
-    if (!conv) return res.status(404).json({ error: { code: 'NOT_FOUND' } });
+    if (!conv) throw AppError.notFound('Conversation not found');
     const data = await prisma.aiMessage.findMany({
       where: { conversationId: conv.id },
       orderBy: { createdAt: 'asc' },

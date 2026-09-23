@@ -144,3 +144,33 @@ export async function assertOwnsOffering(offeringId: string, userId: string, rol
   if (!offering) throw AppError.notFound('Offering not found');
   if (offering.teacherId !== userId) throw AppError.forbidden('Not your offering');
 }
+
+/**
+ * Resource-level read access guard for a CourseOffering.
+ *
+ * Allowed if ANY of:
+ *   - role is ADMIN or OWNER (oversight)
+ *   - role is TEACHER and the offering is taught by this user
+ *   - role is STUDENT and the user is actively enrolled in the offering
+ *
+ * Throws AppError.notFound if the offering doesn't exist (don't leak existence)
+ * and AppError.forbidden if the caller has no business reading it.
+ *
+ * Use this for any endpoint that returns offering content
+ * (lectures, materials, assignments, watch-event writes, checkpoint
+ * answers, etc.). Without it, any authenticated user can read any
+ * course's full content — an IDOR.
+ */
+export async function assertOfferingAccess(offeringId: string, userId: string, role: Role): Promise<void> {
+  if (role === Role.ADMIN || role === Role.OWNER) return;
+  const offering = await prisma.courseOffering.findUnique({
+    where: { id: offeringId },
+    include: { enrollments: { where: { studentId: userId }, take: 1 } },
+  });
+  if (!offering) throw AppError.notFound('Offering not found');
+  if (role === Role.TEACHER && offering.teacherId === userId) return;
+  if (role === Role.STUDENT && offering.enrollments.length > 0) return;
+  if (role === Role.QUALITY) return; // oversight role — read-only
+  throw AppError.forbidden('You do not have access to this offering');
+}
+

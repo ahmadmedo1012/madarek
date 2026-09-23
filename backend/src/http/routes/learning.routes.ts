@@ -7,7 +7,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { extractPaperText } from '../../lib/pdf.js';
-import { assertOwnsResearchPaper } from '../../lib/permissions.js';
+import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 
 const router = Router();
@@ -53,6 +53,7 @@ function decToNum<T>(o: T): T {
 router.get('/offerings/:id/full', async (req, res, next) => {
   try {
     const id = req.params.id!;
+    await assertOfferingAccess(id, req.user!.id, req.user!.role);
     const offering = await prisma.courseOffering.findUnique({
       where: { id },
       include: {
@@ -86,6 +87,7 @@ router.get('/offerings/:id/full', async (req, res, next) => {
 router.get('/offerings/:id/lectures', async (req, res, next) => {
   try {
     const offeringId = req.params.id!;
+    await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
     const data = await prisma.lecture.findMany({
       where: { offeringId },
       orderBy: { ordinal: 'asc' },
@@ -102,6 +104,16 @@ router.get('/offerings/:id/lectures', async (req, res, next) => {
 
 router.get('/lectures/:id', async (req, res, next) => {
   try {
+    // Fetch the offeringId first so we can enforce offering-level access
+    // before returning lecture content (chapters, checkpoints, etc.).
+    // Without this check any authenticated user could read any lecture.
+    const stub = await prisma.lecture.findUnique({
+      where: { id: req.params.id! },
+      select: { offeringId: true },
+    });
+    if (!stub) throw AppError.notFound();
+    await assertOfferingAccess(stub.offeringId, req.user!.id, req.user!.role);
+
     const lec = await prisma.lecture.findUnique({
       where: { id: req.params.id! },
       include: {
@@ -143,6 +155,19 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
     const { watchedSec, totalSec, completed } = req.body as z.infer<typeof watchSchema>;
     const lectureId = req.params.id!;
     const studentId = req.user!.id;
+
+    // Enrollment check: students may only record watch progress for
+    // lectures in offerings they are enrolled in. Teachers/admins/
+    // quality can preview but should still be the offering's teacher
+    // (or have oversight) — we run assertOfferingAccess so the auth
+    // path is uniform. Without this guard any authenticated user
+    // could fake attendance signals for any lecture.
+    const lectureStub = await prisma.lecture.findUnique({
+      where: { id: lectureId },
+      select: { offeringId: true },
+    });
+    if (!lectureStub) throw AppError.notFound();
+    await assertOfferingAccess(lectureStub.offeringId, studentId, req.user!.role);
 
     // Read the previous state so we know if this call transitions
     // the watch event from "not completed" → "completed".
@@ -202,8 +227,15 @@ const answerSchema = z.object({ answerIndex: z.number().int().min(0).max(10) }).
 
 router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), async (req, res, next) => {
   try {
-    const cp = await prisma.lectureCheckpoint.findUnique({ where: { id: req.params.cid! } });
+    const cp = await prisma.lectureCheckpoint.findUnique({
+      where: { id: req.params.cid! },
+      include: { lecture: { select: { offeringId: true } } },
+    });
     if (!cp) throw AppError.notFound();
+    // Enrollment check: same guard as the watch endpoint. Without
+    // this, any student could inflate their StudentMastery for
+    // concepts in courses they aren't enrolled in.
+    await assertOfferingAccess(cp.lecture.offeringId, req.user!.id, req.user!.role);
     const correct = cp.correctIndex === (req.body as z.infer<typeof answerSchema>).answerIndex;
 
     // Update student mastery if checkpoint is concept-tagged.
@@ -568,6 +600,9 @@ router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
 router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const id = req.params.id!;
+    // Per-row ownership check: a teacher may publish only papers tied to
+    // offerings they teach. ADMIN/OWNER bypass via assertOwnsResearchPaper.
+    await assertOwnsResearchPaper(id, req.user!.id, req.user!.role);
     const paper = await prisma.researchPaper.findUnique({ where: { id } });
     if (!paper) throw AppError.notFound();
     if (paper.status !== 'GRADED') throw AppError.conflict('Paper must be graded before publishing');

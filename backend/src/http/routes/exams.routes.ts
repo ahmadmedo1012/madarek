@@ -7,7 +7,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
-import { assertOwnsOffering } from '../../lib/permissions.js';
+import { assertOwnsOffering, assertOfferingAccess, getEffectiveCapabilities } from '../../lib/permissions.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -230,17 +230,27 @@ router.get('/exams/templates/:id', async (req, res, next) => {
       throw AppError.forbidden();
     }
 
+    // Answer-key visibility:
+    //  - STUDENT: never (would defeat the exam)
+    //  - TEACHER: only if they're the author of this template
+    //  - QUALITY: only if they hold EXAMS_MODERATE
+    //  - ADMIN / OWNER: oversight roles — always visible
+    // Previously any TEACHER could read any other teacher's answer key —
+    // an information-disclosure bug.
+    const canSeeAnswers =
+      req.user!.role === Role.ADMIN ||
+      req.user!.role === Role.OWNER ||
+      (req.user!.role === Role.TEACHER && template.authorId === req.user!.id) ||
+      (req.user!.role === Role.QUALITY && (await getEffectiveCapabilities(req.user!.id, req.user!.role)).has('EXAMS_MODERATE'));
+
     res.json({
       data: {
         ...template,
-        // Hide answers for non-authors / non-moderators
         questions: template.questions.map((eq) => ({
           ...eq,
           question: {
             ...eq.question,
-            correctAnswer: req.user!.role === 'TEACHER' || req.user!.role === 'QUALITY' || req.user!.role === 'ADMIN' || req.user!.role === 'OWNER'
-              ? eq.question.correctAnswer
-              : null,
+            correctAnswer: canSeeAnswers ? eq.question.correctAnswer : null,
           },
         })),
       },
@@ -370,6 +380,22 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     if (template.status !== 'PUBLISHED') throw AppError.forbidden('Exam not published');
     if (template.openAt && template.openAt > new Date()) throw AppError.forbidden('Exam not open yet');
     if (template.closeAt && template.closeAt < new Date()) throw AppError.forbidden('Exam closed');
+
+    // Enrollment / scoping check — students may only start exams that
+    // belong to an offering they're enrolled in, or a faculty they
+    // belong to. Without this, any student could start any published
+    // exam by ID (even ones for a faculty they're not in).
+    if (template.offeringId) {
+      await assertOfferingAccess(template.offeringId, userId, Role.STUDENT);
+    } else if (template.facultyId) {
+      const profile = await prisma.studentProfile.findUnique({
+        where: { userId },
+        select: { facultyId: true },
+      });
+      if (!profile || profile.facultyId !== template.facultyId) {
+        throw AppError.forbidden('This exam is for a different faculty');
+      }
+    }
 
     const existing = await prisma.examAttempt.findFirst({
       where: { templateId: template.id, studentId: userId, status: { in: ['IN_PROGRESS', 'SUBMITTED', 'GRADED'] } },

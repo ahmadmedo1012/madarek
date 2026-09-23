@@ -5,24 +5,10 @@ import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
-import { AppError } from '../../lib/errors.js';
+import { assertOfferingAccess } from '../../lib/permissions.js';
 
 const router = Router();
 router.use(authMiddleware);
-
-// Helper: ensure user can read this offering (admin/owner master, teacher of
-// it, or enrolled student).
-async function assertOfferingAccess(offeringId: string, userId: string, role: Role) {
-  if (role === Role.ADMIN || role === Role.OWNER) return;
-  const offering = await prisma.courseOffering.findUnique({
-    where: { id: offeringId },
-    include: { enrollments: { where: { studentId: userId }, take: 1 } },
-  });
-  if (!offering) throw AppError.notFound('Offering not found');
-  if (role === Role.TEACHER && offering.teacherId === userId) return;
-  if (role === Role.STUDENT && offering.enrollments.length > 0) return;
-  throw AppError.forbidden();
-}
 
 router.get('/:id', async (req, res, next) => {
   try {

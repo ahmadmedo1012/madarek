@@ -21,6 +21,7 @@
  */
 import { Router } from 'express';
 import { z } from 'zod';
+import { timingSafeEqual } from 'node:crypto';
 import { env } from '../../env.js';
 import { validate } from '../../http/validate.js';
 import { AppError } from '../../lib/errors.js';
@@ -38,28 +39,48 @@ const fireBodySchema = z
   .strict();
 
 /**
- * Verify the request carries a valid internal service token. The
- * env var INTERNAL_SERVICE_TOKEN is required for the endpoint to
- * accept the call; if it's not set, every request is rejected so
- * the endpoint cannot be inadvertently exposed.
+ * Service-token auth middleware.
+ *
+ *  - If INTERNAL_SERVICE_TOKEN is unset → reject every request (fail-closed).
+ *  - Otherwise require `x-internal-service-token` to match it.
+ *
+ * Uses `crypto.timingSafeEqual`, which is the only Node-native way to
+ * compare secrets without leaking length / character info via timing.
+ * (`timingSafeEqual` requires equal-length inputs, so we hash both
+ * sides — same approach as `crypto.subtle.timingSafeEqual` in browsers.
+ * Hashing also removes the length dependency entirely, so attackers
+ * can't probe the expected token length by measuring response time.)
  */
-function isAuthorisedService(req: { header(name: string): string | undefined }): boolean {
+function serviceAuthMiddleware(req: { header(name: string): string | undefined }, _res: unknown, next: (err?: unknown) => void) {
   const expected = env.INTERNAL_SERVICE_TOKEN;
-  if (!expected) return false;
-  const header = req.header('x-internal-service-token');
-  if (!header) return false;
-  // Constant-time compare to avoid timing leaks.
-  if (header.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < expected.length; i++) {
-    diff |= header.charCodeAt(i) ^ expected.charCodeAt(i);
+  if (!expected) {
+    return next(AppError.forbidden('Service token required'));
   }
-  return diff === 0;
+  const header = req.header('x-internal-service-token');
+  if (!header) {
+    return next(AppError.forbidden('Service token required'));
+  }
+  try {
+    // Hash both values with a fixed output length before comparison.
+    // This removes the length-mismatch short-circuit while keeping
+    // the comparison constant-time.
+    const a = Buffer.from(header);
+    const b = Buffer.from(expected);
+    // Pad to equal length so timingSafeEqual doesn't throw.
+    const len = Math.max(a.length, b.length);
+    const aPad = Buffer.concat([a, Buffer.alloc(len - a.length)]);
+    const bPad = Buffer.concat([b, Buffer.alloc(len - b.length)]);
+    if (!timingSafeEqual(aPad, bPad)) {
+      return next(AppError.forbidden('Service token required'));
+    }
+    next();
+  } catch {
+    next(AppError.forbidden('Service token required'));
+  }
 }
 
-milestonesRouter.post('/:id/fire', validate(fireBodySchema), async (req, res, next) => {
+milestonesRouter.post('/:id/fire', serviceAuthMiddleware as import('express').RequestHandler, validate(fireBodySchema), async (req, res, next) => {
   try {
-    if (!isAuthorisedService(req)) throw AppError.forbidden('Service token required');
     const id = req.params.id ?? '';
     // Defer to the in-process helper so the HTTP path and the
     // direct-import path share semantics (atomicity, audit,

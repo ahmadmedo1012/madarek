@@ -108,11 +108,48 @@ router.post(
   validate(setRoleSchema),
   async (req, res, next) => {
     try {
-      const u = await prisma.user.update({
-        where: { id: req.params.id },
-        data: { role: req.body.role, tokenVersion: { increment: 1 } },
+      const id = req.params.id!;
+      const newRole = req.body.role as Role;
+
+      // Self-modification guard — same protection the OWNER endpoint enforces.
+      if (id === req.user!.id) {
+        throw AppError.forbidden('Cannot change your own role');
+      }
+
+      // OWNER is invitation-only — never mint an OWNER account through the
+      // admin role-assignment API. The OWNER-only path
+      // (`POST /api/v1/owner/users/:id/role`) enforces the same guard.
+      if (newRole === Role.OWNER) {
+        throw AppError.forbidden('Cannot promote to OWNER via API');
+      }
+
+      const target = await prisma.user.findUnique({
+        where: { id },
         select: { id: true, role: true },
       });
+      if (!target) throw AppError.notFound('User not found');
+
+      const oldRole = target.role;
+
+      const u = await prisma.user.update({
+        where: { id },
+        data: { role: newRole, tokenVersion: { increment: 1 } },
+        select: { id: true, role: true },
+      });
+
+      // Audit-log the role change so the governance trail matches the
+      // OWNER endpoint. Without this, ADMIN role changes were invisible
+      // in the audit log.
+      await prisma.auditLog.create({
+        data: {
+          action: 'ROLE_CHANGE',
+          resourceType: 'User',
+          resourceId: id,
+          userId: req.user!.id,
+          metadata: { oldRole, newRole, source: 'admin' },
+        },
+      });
+
       res.json({ data: u });
     } catch (e) { next(e); }
   },
