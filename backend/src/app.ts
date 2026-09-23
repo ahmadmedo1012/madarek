@@ -41,6 +41,10 @@ import teacherDashboardRoutes from './http/routes/teacher-dashboard.routes.js';
 // POST /offerings/:offeringId/assignments/:assignmentId/submit and
 // POST /submissions/:id/grade under the /api/v1 prefix.
 import submissionsRoutes from './http/routes/submissions.routes.js';
+// Mounted by the curriculum workstream (WS-B4). TEACHER-oriented
+// authoring endpoints for lectures / chapters / checkpoints under the
+// /api/v1 prefix.
+import curriculumRoutes from './http/routes/curriculum.routes.js';
 import { themeRouter } from './modules/theme/router.js';
 import { onboardingRouter } from './modules/onboarding/router.js';
 import { milestonesRouter } from './modules/milestones/router.js';
@@ -152,6 +156,7 @@ export function createApp() {
   app.use('/api/v1', studentDashboardRoutes);
   app.use('/api/v1/teacher', teacherDashboardRoutes);
   app.use('/api/v1', submissionsRoutes); // /offerings/:id/assignments/:id/submit, /submissions/:id/grade (WS-B1)
+  app.use('/api/v1', curriculumRoutes); // /offerings/:id/lectures, /lectures/:id[/chapters|/checkpoints], /chapters/:id, /checkpoints/:id (WS-B4)
   app.use('/api/v1/me/theme', themeRouter);
   app.use('/api/v1/me/onboarding', onboardingRouter);
   app.use('/api/v1/me/milestones', milestonesRouter);

@@ -323,6 +323,10 @@ router.get('/me/dashboard', async (req, res, next) => {
       take: 6,
       select: {
         id: true, title: true, type: true, dueAt: true,
+        // offeringId lets the frontend submit directly
+        // (POST /offerings/:offeringId/assignments/:id/submit) without
+        // the per-offering assignment useQueries round-trips.
+        offeringId: true,
         offering: { select: { course: { select: { name: true, code: true } } } },
       },
     });
@@ -338,7 +342,7 @@ router.get('/me/dashboard', async (req, res, next) => {
       orderBy: { scheduledAt: 'asc' },
       take: 4,
       select: {
-        id: true, title: true, scheduledAt: true, status: true,
+        id: true, title: true, scheduledAt: true, status: true, offeringId: true,
         offering: { select: { course: { select: { name: true, code: true } } } },
       },
     });
@@ -346,12 +350,13 @@ router.get('/me/dashboard', async (req, res, next) => {
     // ── Today / tomorrow class slots from schedule ────────────
     const todayDow = now.getDay();
     const tomorrowDow = (todayDow + 1) % 7;
-    const todayClasses: Array<{ id: string; courseName: string; courseCode: string; startTime: string; endTime: string; room: string | null; when: 'today' | 'tomorrow' }> = [];
+    const todayClasses: Array<{ id: string; offeringId: string; courseName: string; courseCode: string; startTime: string; endTime: string; room: string | null; when: 'today' | 'tomorrow' }> = [];
     for (const e of enrollments) {
       for (const slot of e.offering.schedule) {
         if (slot.dayOfWeek === todayDow || slot.dayOfWeek === tomorrowDow) {
           todayClasses.push({
             id: slot.id,
+            offeringId: e.offering.id,
             courseName: e.offering.course.name,
             courseCode: e.offering.course.code,
             startTime: slot.startTime,
@@ -411,6 +416,7 @@ router.get('/me/dashboard', async (req, res, next) => {
           classes: todayClasses,
           assignments: upcomingAssignments.map((a) => ({
             id: a.id,
+            offeringId: a.offeringId,
             title: a.title,
             type: a.type,
             dueAt: a.dueAt,
