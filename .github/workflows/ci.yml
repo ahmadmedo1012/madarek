@@ -70,7 +70,7 @@ jobs:
       # copying it into the inventory slot. This keeps the gate wired
       # so the day the harness lands, we drop the cp line and the
       # check is real.
-      - name: Stand-in: copy baseline → inventory
+      - name: 'Stand-in: copy baseline → inventory'
         run: cp frontend/tests/audit/surface-baseline.json frontend/tests/audit/surface-inventory.json
       - name: Run drift detector
         run: npm --prefix frontend run test:audit:drift
