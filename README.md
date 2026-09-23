@@ -10,7 +10,7 @@ Single-service deployment: one Express server runs the API and serves the React 
 
 ## Demo accounts
 
-After seeding, all use password `1234`:
+After seeding, all use password `Madarek2026!`:
 
 - `student@zu.edu.ly` → STUDENT (أحمد الزروق)
 - `teacher@zu.edu.ly` → TEACHER (د. سالم البوسيفي)
@@ -80,7 +80,11 @@ npm run dev:web                     # frontend on :5173 (proxies /api → :4000)
 
 **Frontend** (`frontend/src/`): Vite + React 18 + TypeScript, React Router 6, TanStack Query 5, Zustand, react-hook-form + Zod, axios with 401-refresh interceptor, Chart.js, `pdfjs-dist` (lazy-loaded chunk for the document viewer).
 
-**Database** (`backend/prisma/`): 31 models (users, courses, enrollments, materials, grades, attendance, library, MOOCs, jobs, posts, achievements, virtual labs, AR experiences, AI conversations, research papers + annotations, audit log). Migrations are committed and applied via `prisma migrate deploy` during the Render build.
+**Database** (`backend/prisma/`): 75 models (users, courses, enrollments, materials, grades, attendance, library, MOOCs, jobs, posts, achievements, virtual labs, AR experiences, AI conversations, research papers + annotations, submissions, audit log) and 30 enums. Migrations are committed and applied via `prisma migrate deploy` during the Render build.
+
+> **Note:** typechecks (`npm --prefix backend|frontend run typecheck`) and the full unit-test suites (`npm run test`) run **without any database** — backend tests set `NODE_ENV=test` (placeholder secrets, no DB calls); frontend tests run in jsdom. You only need a live `DATABASE_URL` for migrations, seeding and running the server.
+
+**API reference:** the complete, code-accurate endpoint table lives in [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md).
 
 ## Design system
 

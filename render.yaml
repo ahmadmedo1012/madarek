@@ -3,8 +3,17 @@ services:
     name: madarek
     runtime: node
     plan: free
-    region: oregon
+    # virginia (us-east-1) — co-located with the Neon PostgreSQL primary,
+    # so API queries avoid a cross-country round trip on every request.
+    region: virginia
     rootDir: .
+    # NOTE on storage: Render's filesystem is ephemeral. Anything written to
+    # backend/storage/papers/ at RUNTIME (e.g. uploaded research PDFs) is lost
+    # on every redeploy/restart. Currently no upload endpoint is implemented
+    # (papers are read from the repo checkout via
+    # /api/v1/files/papers/:filename), so nothing is affected today. If/when
+    # uploads land, move to a persistent disk (add a `disk:` block) or object
+    # storage (S3/R2) first.
     # `--include=dev` is required because Render sets NODE_ENV=production
     # before `npm install` runs, which would otherwise skip devDependencies
     # (typescript, vite, @types/*, prisma CLI, …) that we need for the build.

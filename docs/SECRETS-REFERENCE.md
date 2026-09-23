@@ -66,10 +66,12 @@ All use password `1234` (after seeding):
 ## Database Connection (Neon)
 
 ```
-DATABASE_URL=postgresql://neondb_owner:<password>@ep-spring-paper-aqmiglla-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://<neon-db-user>:<password>@<your-neon-endpoint>-pooler.<region>.aws.neon.tech/<your-db-name>?sslmode=require&channel_binding=require
 ```
 
-Format: Pooler connection string with `?sslmode=require&channel_binding=require`
+Format: Pooler connection string with `?sslmode=require&channel_binding=require`.
+Real endpoints, usernames, and database names are intentionally NOT recorded
+here — take them from your Neon dashboard (Connection Details).
 
 ## Deploy to Render
 

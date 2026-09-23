@@ -66,38 +66,32 @@ Full page inventory in §6.
 
 ## 5. CSS architecture (load order in `src/main.tsx`)
 
-19 custom CSS files, ~350 KB, no Tailwind. Order matters — later files win.
+12 custom CSS files, ~500 KB, no Tailwind. Order matters — later files win.
 
 | # | File | Purpose |
 |---|------|---------|
 | 1 | `tokens.css` | Design tokens: colors (M3 palette), 8px spacing, radii, type scale, motion, layout vars, shadows; dark/light via `[data-theme]` |
-| 2 | `stitch-tokens.css` | Supplementary "Stitch" tokens; display font on headings/metrics |
+| 2 | `motion.css` | Motion + interaction foundation: reduced-motion overrides, universal `:focus-visible` ring, reveal keyframes, skeleton shimmer, route-transition keyframes |
 | 3 | `base.css` | Reset, shell layout (sidebar/main/content), scrollbars, RTL |
 | 4 | `components.css` | Largest layer: cards, buttons, badges, metrics, tables, forms, modals, tabs, nav, sidebar, topbar |
-| 5 | `utilities.css` | Flex/grid/gap/text helpers |
-| 6 | `landing.css` | Landing page sections |
-| 7 | `premium.css` | Glass/gradient premium treatments |
-| 8 | `system.css` | Loading/skeleton/print |
-| 9 | `responsive.css` | Breakpoints 375/640/768/1024 + overflow safety, touch targets, safe‑area |
-| 10 | `dashboard.css` | Dashboard grids, KPI tiles, chart containers |
-| 11 | `interactions.css` | Hover/focus, reveal, calm number entrances |
-| 12 | `notifications.css` | Notification dropdown + bottom‑nav canonical |
-| 13 | `polish.css` | Micro‑interaction polish layer |
-| 14 | `landing-auth-v3.css` | Auth page |
-| 15 | `stitch-canonical.css` | Canonical Stitch components (buttons, inputs, sidebar/topbar theming) |
-| 16 | `pdf.css` | PDF viewer |
-| 17 | `owner.css` | Owner panel |
-| 18 | `elevation.css` | Final system‑wide override layer: page masthead, card depth, section markers, tables, focus rings, missing‑class definitions, Soft‑UI shell |
-| 19 | `landing-pro.css` | Premium landing layer: Outfit display, gold accent, hero/section refinements |
+| 5 | `layout.css` | Layout & navigation chrome (Notion-flavored sidebar workspace, topbar, bottom nav) |
+| 6 | `landing.css` | Landing page: sticky mega-nav, hero, full-bleed sections, bento |
+| 7 | `auth.css` | Auth page (single centered column, large fields) |
+| 8 | `notifications.css` | Notification dropdown + panel |
+| 9 | `pdf.css` | PDF viewer chrome (self-contained, theme-aware via CSS vars) |
+| 10 | `owner.css` | Owner control panel |
+| 11 | `colleges.css` | Colleges index/detail pages; per-college identity via `data-college="<slug>"` |
+| 12 | `polish.css` | Polish bundle — micro-interaction layer, loaded LAST; later blocks intentionally tune earlier ones |
 
 ## 6. Design system & theming (`tokens.css`)
 
 - **Colors:** Material‑3‑inspired + brand navy `#003461`, gold; semantic
   success/warning/danger/info with `-soft` variants. Amber accent for emphasis.
 - **Spacing:** 8 px grid (`--sp-1`…`--sp-16`). **Radii:** `--r-xs`…`--r-full`.
-- **Type:** `--fs-xxs`…`--fs-4xl` + fluid display sizes; fonts
-  `--font-sans` (IBM Plex Sans Arabic), `--font-display` (Lexend; Outfit on landing),
-  `--font-mono` (Space Mono).
+- **Type:** `--fs-xxs`…`--fs-4xl` + fluid display sizes; the font stack is the
+  IBM Plex family throughout — `--font-sans` / `--font-display`
+  (IBM Plex Sans Arabic), `--font-serif` (IBM Plex Serif),
+  `--font-mono` (IBM Plex Mono).
 - **Motion:** `--t-fast`…`--t-cinema` + easing curves.
 - **Layout:** `--sidebar-w 264px`, `--topbar-h 64px`, `--content-max-w 1320px`.
 - **Theming:** `[data-theme="dark"|"light"]` on `<html>`. Default resolves via

@@ -5,72 +5,139 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+# Least privilege — this pipeline never needs write scopes.
+permissions:
+  contents: read
 
 # Cancel in-flight runs for the same ref when a new commit lands.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Node 22 is the LTS line in support (Node 20 reached EOL in April 2026);
+# engines fields pin the workspace range to >=20 <25.
+env:
+  NODE_VERSION: '22'
+
 jobs:
   typecheck:
-    name: Typecheck
+    name: Typecheck (src + tests)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: npm install --include=dev
+      - run: npm ci
       # Generate the Prisma client so backend types resolve.
       - run: npm --prefix backend run prisma:generate
       - run: npm --prefix backend run typecheck
       - run: npm --prefix frontend run typecheck
+      # The base tsconfigs only include src/**, so test files are never
+      # typechecked by the scripts above. tsconfig.test.json extends the
+      # base config and adds the tests/ trees (no emit).
+      - run: npm --prefix backend run typecheck:tests
+      - run: npm --prefix frontend run typecheck:tests
 
-  test-frontend:
-    name: Test (frontend)
+  build:
+    name: Build (DB-free)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: typecheck
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: npm install --include=dev
+      - run: npm ci
+      # We call the workspace builds directly instead of the root
+      # `npm run build` because the root script chains `db:deploy`
+      # (prisma migrate deploy), which requires a live DATABASE_URL.
+      # Neither workspace build needs a DB:
+      #   backend  = tsc emit (needs prisma generate for client types)
+      #   frontend = tsc -b && vite build
+      - run: npm --prefix backend run prisma:generate
+      - run: npm --prefix backend run build
+      - run: npm --prefix frontend run build
+
+  test-frontend:
+    name: Test (frontend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      # Unit tests are DB-free (jsdom + vitest).
       - run: npm --prefix frontend run test
 
   test-backend:
     name: Test (backend)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: typecheck
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: npm install --include=dev
+      - run: npm ci
       - run: npm --prefix backend run prisma:generate
+      # Unit tests are DB-free: NODE_ENV=test (set in vitest.config.ts)
+      # makes env.ts fall back to placeholder secrets.
       - run: npm --prefix backend run test
+
+  design-gates:
+    name: Design gates (icons + motion tokens)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      # Pure bash/grep/python3 gates — no node_modules required.
+      - run: bash scripts/check-icons.sh
+      - run: bash scripts/check-motion-tokens.sh
 
   surface-drift:
     name: Surface drift
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [test-frontend, test-backend]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      - run: npm install --include=dev
-      # Until the Playwright harness in tests/audit/surface-inventory.spec.ts
-      # ships, we run the drift CLI against the committed baseline by
-      # copying it into the inventory slot. This keeps the gate wired
-      # so the day the harness lands, we drop the cp line and the
-      # check is real.
-      - name: 'Stand-in: copy baseline → inventory'
-        run: cp frontend/tests/audit/surface-baseline.json frontend/tests/audit/surface-inventory.json
+      # Honest gate: the committed baseline
+      # (frontend/tests/audit/surface-baseline.json) currently contains ZERO
+      # captures — the Playwright inventory harness that populates it has not
+      # shipped (specs/012 T142). We will NOT fake a pass by copying the
+      # baseline onto the inventory slot. Instead:
+      #   - baseline has captures → run the real drift detector (hard gate)
+      #   - baseline is empty     → skip with an explicit message
+      - name: Count baseline captures
+        id: baseline
+        run: |
+          count=$(node -e "const b=require('./frontend/tests/audit/surface-baseline.json');console.log(Array.isArray(b.captures)?b.captures.length:0)")
+          echo "captures=$count" >> "$GITHUB_OUTPUT"
+      - name: Install dependencies
+        if: steps.baseline.outputs.captures != '0'
+        run: npm ci
       - name: Run drift detector
+        if: steps.baseline.outputs.captures != '0'
         run: npm --prefix frontend run test:audit:drift
+      - name: Baseline not yet captured — skipping
+        if: steps.baseline.outputs.captures == '0'
+        run: |
+          echo "::notice::surface-baseline.json has no captures yet — drift gate skipped."
+          echo "Capture a real baseline via 'npm --prefix frontend run audit:baseline' (specs/012 task T142), then this job becomes a hard gate."

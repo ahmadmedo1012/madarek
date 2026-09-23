@@ -18,9 +18,13 @@ All endpoints are mounted under the base path **`/api/v1`** and return a
 | `scheduler.ts` | In‑process daily university‑sync ticker |
 | `http/validate.ts` | Generic Zod validation middleware factory |
 | `http/middleware/*` | `auth`, `requireRole`, `requireCapability`, `rateLimit`, `errorHandler` |
-| `http/routes/*` | 19 route modules (below) |
+| `http/routes/*` | 23 route modules (24 with the new `submissions.routes.ts`) |
 | `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `zu-sync/` |
 | `modules/auth/*` | `auth.service.ts`, `auth.dto.ts` |
+| `modules/search/*` | Arabic-aware search normalization (`normalize.ts`) backing `/search/global` |
+| `modules/theme/*` | `router.ts` + `service.ts` — `GET/PUT /me/theme` |
+| `modules/onboarding/*` | `router.ts` + `service.ts` — `/me/onboarding` status |
+| `modules/milestones/*` | `router.ts` + `service.ts` — `/me/milestones` (+ internal fire endpoint) |
 
 ---
 
@@ -118,6 +122,8 @@ All endpoints are mounted under the base path **`/api/v1`** and return a
 | GET/POST | `/offerings/:id/assignments` | access / TEACHER+ADMIN | List / create assignments |
 | GET/POST | `/offerings/:id/grades` | access / TEACHER+ADMIN | List / upsert grades |
 | GET/POST | `/offerings/:id/attendance` | access / TEACHER+ADMIN | Sessions / record |
+| POST | `/offerings/:offeringId/assignments/:assignmentId/submit` | STUDENT | Submit assignment (`{textAnswer?, fileUrl?}`) |
+| POST | `/submissions/:id/grade` | TEACHER+ADMIN+OWNER | Grade submission (`{grade, feedback?}`) |
 
 ### Me — notifications & messages (`/api/v1`)
 | Method | Path | Auth | Description |
@@ -233,6 +239,8 @@ All endpoints are mounted under the base path **`/api/v1`** and return a
 | `JWT_REFRESH_SECRET` | ✅ | — | ≥32 chars |
 | `NODE_ENV` | ❌ | `development` | `production` enables static serving + secure cookies |
 | `PORT` | ❌ | `4000` | listen port |
+| `INTERNAL_SERVICE_TOKEN` | ❌ | — | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; fail-closed when unset) |
+| `DIRECT_DATABASE_URL` | ❌ | derived | Neon **direct** (non-pooled) URL for `prisma migrate deploy`; when unset, the deploy script derives it from `DATABASE_URL` (strips `-pooler` + pooling params) |
 
 ---
 

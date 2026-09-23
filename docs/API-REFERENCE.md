@@ -61,6 +61,13 @@
 | GET | `/offerings/:id/attendance` | access-checked | Attendance sessions |
 | POST | `/offerings/:id/attendance` | TEACHER/ADMIN | Record attendance |
 
+## Submissions (assignments)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/offerings/:offeringId/assignments/:assignmentId/submit` | STUDENT | Submit assignment (body `{ textAnswer?, fileUrl? }`; upsert on (assignmentId, studentId); status `SUBMITTED`\|`LATE` by dueAt) |
+| POST | `/submissions/:id/grade` | TEACHER/ADMIN/OWNER | Grade a submission (body `{ grade, feedback? }`; sets status `GRADED` and notifies the student) |
+
 ## Me / Notifications / Messages
 
 | Method | Path | Auth | Description |

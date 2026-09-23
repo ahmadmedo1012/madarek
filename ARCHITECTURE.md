@@ -60,7 +60,7 @@ madarek/
 │   │   ├── hooks/           # data + utility hooks
 │   │   ├── stores/          # Zustand stores (auth, theme, ui)
 │   │   ├── lib/             # api, queryClient, nav, chartTheme, numbers, vision
-│   │   └── styles/          # 19 CSS files (token + component + page layers)
+│   │   └── styles/          # 12 CSS files (token + component + page layers)
 │   └── index.html
 ├── docs/                    # this documentation set
 ├── design-system/           # ui-ux-pro-max generated design spec (MASTER.md)

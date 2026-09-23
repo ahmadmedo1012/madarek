@@ -13,6 +13,7 @@ Zawia.
 |----------|--------|
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | System overview, stack, repo layout, request lifecycle, auth summary, deployment |
 | [BACKEND.md](./BACKEND.md) | Full API reference, middleware chain, auth, permissions, env vars, scripts |
+| [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) | Complete endpoint-by-endpoint API table (the source of truth for routes) |
 | [DATA-MODEL.md](./DATA-MODEL.md) | All Prisma models by domain, key relations, enums |
 | [FRONTEND.md](./FRONTEND.md) | Routing, state, data layer, CSS architecture, theming, components, page inventory |
 | [FEATURES.md](./FEATURES.md) | All 27 features with backing models, pages, and a roles matrix |
