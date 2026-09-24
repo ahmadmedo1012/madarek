@@ -82,3 +82,6 @@ secrets.txt
 # surface-baseline.json is tracked; screenshots + fresh sweeps are local)
 frontend/tests/audit/surface-inventory.json
 frontend/tests/audit/screenshots/
+
+# audit working dir
+.audit-shots/
