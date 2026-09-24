@@ -4,10 +4,12 @@ import {
   Users,
   AlertTriangle, FileText, Bell,
   CheckCircle2, Filter, Sparkles, Microscope,
+  ArrowUpRight, ArrowDownRight,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { ErrorState, ChartSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
+import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { Line } from 'react-chartjs-2';
 import {
@@ -38,16 +40,31 @@ const KIND_TONE: Record<'submissions' | 'research' | 'attendance', 'amber' | 're
   research: 'purple',
   attendance: 'red',
 };
+/* The action names what clicking actually does (mission H) — a generic
+ * "مراجعة" on every row hides the destination. */
+const KIND_ACTION: Record<'submissions' | 'research' | 'attendance', string> = {
+  submissions: 'تقييم التسليم',
+  research: 'مراجعة البحث',
+  attendance: 'عرض السجل',
+};
+
+/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
+function countAr(n: number, forms: [string, string, string, string]): string {
+  if (n === 1) return forms[0];
+  if (n === 2) return forms[1];
+  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
+  return `${n} ${forms[3]}`;
+}
 
 function formatRelative(iso: string): string {
   const d = new Date(iso);
   const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
   if (diffMin < 1) return 'الآن';
-  if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
+  if (diffMin < 60) return `منذ ${countAr(diffMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}`;
   const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `منذ ${diffHr} ساعة`;
+  if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
   const diffD = Math.round(diffHr / 24);
-  if (diffD < 7) return `منذ ${diffD} يوم`;
+  if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
@@ -61,6 +78,16 @@ export function TeacherDashboardPage() {
     if (!dash.data) return [];
     return filter === 'all' ? dash.data.feed : dash.data.feed.filter((f) => f.kind === filter);
   }, [dash.data, filter]);
+
+  const filterCounts = useMemo(() => {
+    const feed = dash.data?.feed ?? [];
+    return {
+      all: feed.length,
+      submissions: feed.filter((f) => f.kind === 'submissions').length,
+      research: feed.filter((f) => f.kind === 'research').length,
+      attendance: feed.filter((f) => f.kind === 'attendance').length,
+    } as Record<FeedFilter, number>;
+  }, [dash.data]);
 
   if (dash.isPending) {
     return (
@@ -123,11 +150,14 @@ export function TeacherDashboardPage() {
           </p>
         </div>
         <Badge color="brand">
-          {visible.length} عنصر يحتاج متابعة
+          {visible.length === 0
+            ? 'لا عناصر تحتاج متابعة'
+            : countAr(visible.length, ['عنصر يحتاج متابعة', 'عنصران يحتاجان متابعة', 'عناصر تحتاج متابعة', 'عنصراً يحتاج متابعة'])}
         </Badge>
       </header>
 
-      {/* Compact KPI strip — real values */}
+      {/* Compact KPI strip — real values. The delta chip re-pulses whenever
+          its value changes (keyed remount) — the page's authored moment. */}
       <div className="compact-kpis">
         <CompactKpi
           label="طلاب"
@@ -140,24 +170,45 @@ export function TeacherDashboardPage() {
           value={d.kpi.avgGradePct !== null ? `${d.kpi.avgGradePct}%` : '—'}
           trend={d.kpi.avgGradePct === null ? 'لا تقييمات بعد' : 'كل التقييمات المعتمدة'}
           trendColor={d.kpi.avgGradePct === null ? 'neutral' : d.kpi.avgGradePct >= 70 ? 'positive' : 'negative'}
+          delta={d.kpi.avgGradePct === null ? undefined : d.kpi.avgGradePct >= 70 ? 'up' : 'dn'}
         />
         <CompactKpi
           label="حضور"
           value={d.kpi.attendancePct !== null ? `${d.kpi.attendancePct}%` : '—'}
           trend={d.kpi.attendancePct === null ? 'لا جلسات حضور بعد' : 'كل الجلسات المسجَّلة'}
           trendColor={d.kpi.attendancePct === null ? 'neutral' : d.kpi.attendancePct >= 75 ? 'positive' : 'negative'}
+          delta={d.kpi.attendancePct === null ? undefined : d.kpi.attendancePct >= 75 ? 'up' : 'dn'}
         />
         <CompactKpi
           label="بحاجة تقييم"
           value={d.kpi.needsReview.toLocaleString('ar-LY')}
           trend="واجبات + بحوث"
           trendColor={d.kpi.needsReview === 0 ? 'positive' : d.kpi.needsReview > 10 ? 'negative' : 'neutral'}
+          delta={d.kpi.needsReview === 0 ? 'up' : d.kpi.needsReview > 10 ? 'dn' : undefined}
         />
       </div>
 
-      {/* Performance + attendance trend — real 6-week data */}
+      {/* Performance + attendance trend — real 6-week data, wrapped for
+          screen readers (aria-label + sr-only data table, audit 0-f). */}
       <Card title="اتجاه الأداء والحضور" icon={Sparkles} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
-        <div style={{ height: 240 }}>
+        <ChartFrame
+          ariaLabel="مخطط خطي لمتوسط الأداء ونسبة الحضور خلال الأسابيع الستة الماضية"
+          summary={
+            d.trend.length === 0
+              ? 'لا توجد بيانات اتجاه بعد.'
+              : 'مقارنة أسبوعية بين متوسط درجات الطلاب ونسبة الحضور.'
+          }
+          height={240}
+          table={{
+            caption: 'اتجاه الأداء والحضور — آخر ستة أسابيع',
+            columns: ['الأسبوع', 'متوسط الأداء', 'الحضور'],
+            rows: d.trend.map((t) => [
+              t.week,
+              t.avgGradePct === null ? '—' : `${t.avgGradePct}%`,
+              t.attendancePct === null ? '—' : `${t.attendancePct}%`,
+            ]),
+          }}
+        >
           <Line
             key={themeKey}
             data={trendChartData(d.trend)}
@@ -169,12 +220,12 @@ export function TeacherDashboardPage() {
               },
             }}
           />
-        </div>
+        </ChartFrame>
       </Card>
 
       {/* Filter toolbar */}
       <div className="feed-toolbar">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" role="group" aria-label="تصفية التيار">
           <Icon icon={Filter} size={14} className="text-subtle" />
           <span className="text-xs text-subtle">تصفية:</span>
           {FILTER_OPTIONS.map((o) => (
@@ -182,9 +233,11 @@ export function TeacherDashboardPage() {
               key={o.value}
               type="button"
               className={`pill${filter === o.value ? ' on' : ''}`}
+              aria-pressed={filter === o.value}
               onClick={() => setFilter(o.value)}
             >
               {o.label}
+              <span className="filter-pill-count">{filterCounts[o.value]}</span>
             </button>
           ))}
         </div>
@@ -194,7 +247,7 @@ export function TeacherDashboardPage() {
         </Link>
       </div>
 
-      {/* The feed */}
+      {/* The feed — rows stagger in from inline-start (wave 5-a CSS) */}
       <div className="feed">
         {visible.length === 0 ? (
           <Card>
@@ -204,6 +257,12 @@ export function TeacherDashboardPage() {
               </div>
               <div className="state-title">لا متطلبات الآن — أحسنت!</div>
               <div className="state-desc">سيظهر هنا أي عنصر جديد فور وصوله.</div>
+              <div style={{ marginBlockStart: 'var(--sp-3)' }}>
+                <Link to="/teacher/intelligence" className="btn outline sm">
+                  <Icon icon={Users} size={13} />
+                  استعرض أداء مقرّراتك
+                </Link>
+              </div>
             </div>
           </Card>
         ) : (
@@ -247,14 +306,27 @@ function trendChartData(trend: TeacherDashboard['trend']) {
   };
 }
 
-function CompactKpi({ label, value, trend, trendColor }: {
+function CompactKpi({ label, value, trend, trendColor, delta }: {
   label: string; value: string; trend: string; trendColor: 'positive' | 'negative' | 'neutral';
+  delta?: 'up' | 'dn';
 }) {
   return (
     <div className="compact-kpi">
       <div className="compact-kpi-label">{label}</div>
       <div className="compact-kpi-value">{value}</div>
-      <div className="compact-kpi-trend" data-trend={trendColor}>{trend}</div>
+      <div className="compact-kpi-trend" data-trend={trendColor}>
+        {trend}
+        {delta && (
+          <span
+            key={value}
+            className="compact-kpi-delta"
+            data-dir={delta}
+            aria-hidden
+          >
+            <Icon icon={delta === 'up' ? ArrowUpRight : ArrowDownRight} size={12} />
+          </span>
+        )}
+      </div>
     </div>
   );
 }
@@ -281,14 +353,15 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
             {item.author ? `${item.author.firstName} ${item.author.lastName}` : 'النظام'}
           </span>
           <span className="feed-item-meta">·</span>
-          <span className="feed-item-meta">{item.meta}</span>
+          {/* meta carries a Latin course code — bdi keeps RTL punctuation order */}
+          <bdi className="feed-item-meta">{item.meta}</bdi>
           <span className="feed-item-meta feed-item-time">{formatRelative(item.when)}</span>
         </div>
         <div className="feed-item-text">{item.title}</div>
         <div className="feed-item-actions">
           <Link to={item.actionTo} className="btn primary sm">
             <Icon icon={Icon_} size={13} />
-            مراجعة
+            {KIND_ACTION[item.kind]}
           </Link>
         </div>
       </div>

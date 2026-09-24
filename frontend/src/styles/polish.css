@@ -2647,7 +2647,12 @@
   .grid-4 > *,
   .grid-auto-200 > *,
   .grid-auto-260 > * {
-    animation: madark-stagger-up var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    /* wave-5 orchestrator fix (flagged by 4-b): fill was `both`, which pins
+       `transform: none` on children after the entrance finishes and kills
+       every hover-lift in gridded cards. `backwards` keeps the stagger
+       (from-state held during each child's delay) and releases the element
+       to its own styles once done. */
+    animation: madark-stagger-up var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) backwards;
   }
   .grid-2 > *:nth-child(1),
   .grid-3 > *:nth-child(1),

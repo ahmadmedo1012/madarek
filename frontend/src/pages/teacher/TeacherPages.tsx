@@ -47,10 +47,30 @@ function PageHeader({ title, subtitle, actions }: { title: string; subtitle: str
 
 const DAY_NAMES_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
+/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
+function countAr(n: number, forms: [string, string, string, string]): string {
+  if (n === 1) return forms[0];
+  if (n === 2) return forms[1];
+  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
+  return `${n} ${forms[3]}`;
+}
+
+/* Latin format codes stay Latin (proper nouns) — same map as the student
+ * course page (wave 4-b); the rest get real Arabic labels (audit 0-e D). */
+const MATERIAL_TYPE_LABEL: Record<string, string> = {
+  PDF: 'PDF',
+  PPT: 'PPT',
+  DOC: 'DOC',
+  ZIP: 'ZIP',
+  VIDEO: 'فيديو',
+  IMAGE: 'صورة',
+  OTHER: 'ملف',
+};
+
 export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
-  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جارٍ التحميل…" /><LoadingState /></div>;
-  if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="" /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
+  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><LoadingState /></div>;
+  if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
 
   // Group all schedule slots by dayOfWeek across the teacher's offerings.
   const offerings = offsQ.data ?? [];
@@ -88,15 +108,17 @@ export function TeacherSchedulePage() {
                 <div className="flex-col">
                   {d.items.map((it, i) => (
                     <div key={i} className="list-row">
-                      <span className="list-row-meta">{it.startTime} — {it.endTime}</span>
+                      {/* Latin time range inside an RTL line — bdi keeps
+                          the dash order stable (audit 0-e P2-47) */}
+                      <bdi className="list-row-meta">{it.startTime} — {it.endTime}</bdi>
                       <div className="list-row-body">
                         <div className="list-row-title">{it.courseName}</div>
                         <div className="list-row-sub">
                           {it.room ? `${it.room} · ` : ''}
-                          {it.enrolled} طالب
+                          {countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
                         </div>
                       </div>
-                      <Badge>{it.courseCode}</Badge>
+                      <Badge><bdi>{it.courseCode}</bdi></Badge>
                     </div>
                   ))}
                 </div>
@@ -110,10 +132,13 @@ export function TeacherSchedulePage() {
 }
 
 type AttStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED';
-const ATT_OPTIONS: Array<{ v: AttStatus; label: string; success: boolean; warning: boolean; danger: boolean }> = [
-  { v: 'PRESENT', label: 'حاضر', success: true,  warning: false, danger: false },
-  { v: 'LATE',    label: 'متأخّر', success: false, warning: true,  danger: false },
-  { v: 'ABSENT',  label: 'غائب',  success: false, warning: false, danger: true },
+/* Selected state rides on [data-tone] + .on (CSS owns the colors) — the
+ * old inline style block had no aria-pressed and no class-based state
+ * (audit 0-e P1-32). */
+const ATT_OPTIONS: Array<{ v: AttStatus; label: string; tone: 'success' | 'warning' | 'danger' }> = [
+  { v: 'PRESENT', label: 'حاضر',   tone: 'success' },
+  { v: 'LATE',    label: 'متأخّر', tone: 'warning' },
+  { v: 'ABSENT',  label: 'غائب',   tone: 'danger' },
 ];
 
 export function AttendancePage() {
@@ -153,8 +178,6 @@ export function AttendancePage() {
         studentId: s.studentId,
         status: statusByStudent[s.studentId] ?? 'PRESENT',
       })),
-    }, {
-      onSuccess: () => { /* toast UX would be nice but keeps the change minimal */ },
     });
   };
 
@@ -176,24 +199,24 @@ export function AttendancePage() {
       />
 
       <Card title="الجلسة" icon={Calendar}>
-        <div className="grid-3" style={{ gap: 'var(--sp-3)' }}>
-          <div className="comp-form-field">
-            <label>المقرّر</label>
-            <select className="auth-input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
-              {offerings.length === 0 && <option value="">— لا توجد عروض —</option>}
+        <div className="form-row-3">
+          <label>
+            <span className="form-label">المقرّر</span>
+            <select className="input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
+              {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
               {offerings.map((o) => (
                 <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
               ))}
             </select>
-          </div>
-          <div className="comp-form-field">
-            <label>تاريخ الجلسة</label>
-            <input type="date" className="auth-input" value={date} onChange={(e) => setDate(e.target.value)} />
-          </div>
-          <div className="comp-form-field">
-            <label>الموضوع (اختياريّ)</label>
-            <input type="text" className="auth-input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="مثال: مقدّمة في UML" />
-          </div>
+          </label>
+          <label>
+            <span className="form-label">تاريخ الجلسة</span>
+            <input type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} />
+          </label>
+          <label>
+            <span className="form-label">الموضوع (اختياريّ)</span>
+            <input type="text" className="input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="مثال: مقدّمة في UML" />
+          </label>
         </div>
       </Card>
 
@@ -220,24 +243,17 @@ export function AttendancePage() {
                     />
                     <div className="list-row-body">
                       <div className="list-row-title">{s.name}</div>
-                      <div className="list-row-sub font-mono">{s.universityId}</div>
+                      <div className="list-row-sub font-mono"><bdi>{s.universityId}</bdi></div>
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1" role="group" aria-label={`حضور ${s.name}`}>
                       {ATT_OPTIONS.map((opt) => (
                         <button
                           key={opt.v}
                           type="button"
-                          className="btn sm"
+                          className={`att-toggle${status === opt.v ? ' on' : ''}`}
+                          data-tone={opt.tone}
+                          aria-pressed={status === opt.v}
                           onClick={() => setStatusByStudent({ ...statusByStudent, [s.studentId]: opt.v })}
-                          style={status === opt.v ? {
-                            background:
-                              opt.success ? 'var(--success-soft)' :
-                              opt.warning ? 'var(--warning-soft)' : 'var(--danger-soft)',
-                            color:
-                              opt.success ? 'var(--success)' :
-                              opt.warning ? 'var(--warning)' : 'var(--danger)',
-                            borderColor: 'transparent',
-                          } : undefined}
                         >
                           {opt.label}
                         </button>
@@ -257,11 +273,17 @@ export function AttendancePage() {
             <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
           </div>
           {record.isError && (
-            <div className="auth-error" style={{ marginBlockStart: 'var(--sp-3)' }}>تعذَّر حفظ السجلّ. حاول مجدداً.</div>
+            <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+              <Icon icon={AlertTriangle} size={14} />
+              <span className="flex-1">
+                {apiErrorMessage(record.error, 'تعذَّر حفظ سجلّ الحضور.')} أعد المحاولة بالضغط على «حفظ السجلّ».
+              </span>
+            </div>
           )}
           {record.isSuccess && (
-            <div style={{ marginBlockStart: 'var(--sp-3)', padding: 'var(--sp-2)', background: 'var(--success-soft)', color: 'var(--success)', borderRadius: 'var(--r-sm)', fontSize: 'var(--fs-xs)' }}>
-              تمّ حفظ سجلّ الحضور.
+            <div className="form-feedback ok" role="status" style={{ marginBlockStart: 'var(--sp-3)' }}>
+              <Icon icon={CheckCircle2} size={14} />
+              <span>تمّ حفظ سجلّ الحضور لهذا التاريخ.</span>
             </div>
           )}
         </Card>
@@ -286,17 +308,19 @@ export function GradesPage() {
       />
 
       <Card title="المقرّر">
-        <select
-          className="auth-input"
-          style={{ maxWidth: 360 }}
-          value={effectiveOfferingId}
-          onChange={(e) => setOfferingId(e.target.value)}
-        >
-          {offerings.length === 0 && <option value="">— لا توجد عروض —</option>}
-          {offerings.map((o) => (
-            <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
-          ))}
-        </select>
+        <label>
+          <span className="form-label">اختر المقرّر لعرض درجاته</span>
+          <select
+            className="input course-select"
+            value={effectiveOfferingId}
+            onChange={(e) => setOfferingId(e.target.value)}
+          >
+            {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
+            {offerings.map((o) => (
+              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+            ))}
+          </select>
+        </label>
       </Card>
 
       <Card
@@ -304,7 +328,7 @@ export function GradesPage() {
         icon={ClipboardList}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك أعلاه لعرض درجات طلابه." />
         ) : stuQ.isPending ? (
           <LoadingState />
         ) : stuQ.isError ? (
@@ -312,8 +336,8 @@ export function GradesPage() {
         ) : (stuQ.data ?? []).length === 0 ? (
           <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات في هذا المقرّر بعد." />
         ) : (
-          <div className="tbl-wrap">
-            <table className="tbl">
+          <div className="table-wrap">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th>الطالب</th>
@@ -333,11 +357,11 @@ export function GradesPage() {
                                 { l: 'ضعيف', c: 'red' as const };
                   return (
                     <tr key={s.studentId}>
-                      <td className="tbl-strong">{s.name}</td>
-                      <td className="font-mono text-xs">{s.universityId}</td>
-                      <td className="tbl-num">{s.avgGrade}</td>
-                      <td className="tbl-num">{s.attendancePct}%</td>
-                      <td><Badge color={grade.c}>{grade.l}</Badge></td>
+                      <td className="tbl-strong" data-label="الطالب">{s.name}</td>
+                      <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
+                      <td className="tbl-num" data-label="متوسّط الدرجات">{s.avgGrade}</td>
+                      <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
+                      <td data-label="التقدير"><Badge color={grade.c}>{grade.l}</Badge></td>
                     </tr>
                   );
                 })}
@@ -348,10 +372,10 @@ export function GradesPage() {
       </Card>
 
       <Card>
-        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.7 }}>
+        <p className="text-sm text-muted notice-paragraph">
           إدخال الدرجات الفصليّة (الاختبار 1، الاختبار 2، المشروع، النهائيّ) قيد التطوير.
           حالياً تُعرض الدرجات المرصودة من واجبات المقرّر.{' '}
-          <Link to="/teacher/intelligence" className="auth-register-link">شاهد الذكاء الأكاديميّ</Link>
+          <Link to="/teacher/intelligence" className="text-link">شاهد الذكاء الأكاديميّ</Link>
           {' '}للحصول على تحليل أعمق.
         </p>
       </Card>
@@ -382,20 +406,12 @@ export function MaterialsPage() {
       <PageHeader title="المواد الدراسيّة" subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ." />
 
       <Card title="رفع مواد جديدة" icon={Upload}>
-        <div
-          style={{
-            border: '2px dashed var(--border-strong)',
-            borderRadius: 'var(--r-lg)',
-            padding: 'var(--sp-10)',
-            textAlign: 'center',
-            background: 'var(--surface-2)',
-          }}
-        >
+        <div className="dropzone-ghost">
           <Icon icon={Upload} size={28} className="text-muted" />
-          <div className="text-sm font-medium" style={{ color: 'var(--text)', marginTop: 'var(--sp-2)' }}>
+          <div className="dropzone-ghost-title">
             واجهة الرفع المباشر قيد التطوير
           </div>
-          <div className="text-xs text-subtle" style={{ marginTop: 4 }}>
+          <div className="text-xs text-subtle" style={{ marginBlockStart: 4 }}>
             حالياً تُرفع المواد عبر إدارة المقرّر · PDF · PPT · MP4 · DOC · ZIP
           </div>
         </div>
@@ -409,8 +425,8 @@ export function MaterialsPage() {
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState title="لم ترفع موادّ بعد" description="ستظهر هنا فور رفع أيّ ملفّ على أحد مقرّراتك." />
         ) : (
-          <div className="tbl-wrap">
-            <table className="tbl">
+          <div className="table-wrap">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th>الملفّ</th>
@@ -425,17 +441,17 @@ export function MaterialsPage() {
               <tbody>
                 {q.data.map((m) => (
                   <tr key={m.id}>
-                    <td className="tbl-strong">
-                      <a href={m.url} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    <td className="tbl-strong" data-label="الملفّ">
+                      <a href={m.url} target="_blank" rel="noreferrer" className="text-link">
                         {m.name}
                       </a>
                     </td>
-                    <td>{m.course.name}</td>
-                    <td><Badge>{m.type}</Badge></td>
-                    <td className="tbl-num">{m.sizeBytes > 0 ? formatSize(m.sizeBytes) : '—'}</td>
-                    <td className="tbl-num">{m.views.toLocaleString('ar-LY')}</td>
-                    <td className="tbl-num">{m.downloads.toLocaleString('ar-LY')}</td>
-                    <td className="text-subtle">{formatRelativeAr(m.createdAt)}</td>
+                    <td data-label="المقرّر">{m.course.name}</td>
+                    <td data-label="النوع"><Badge>{MATERIAL_TYPE_LABEL[m.type] ?? <bdi>{m.type}</bdi>}</Badge></td>
+                    <td className="tbl-num" data-label="الحجم">{m.sizeBytes > 0 ? <bdi>{formatSize(m.sizeBytes)}</bdi> : '—'}</td>
+                    <td className="tbl-num" data-label="المشاهدات">{m.views.toLocaleString('ar-LY')}</td>
+                    <td className="tbl-num" data-label="التحميلات">{m.downloads.toLocaleString('ar-LY')}</td>
+                    <td className="text-subtle" data-label="التاريخ">{formatRelativeAr(m.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -465,17 +481,19 @@ export function StudentsListPage() {
       <PageHeader title="قائمة الطلّاب" subtitle="جميع الطلّاب المسجَّلين في موادّك." />
 
       <Card title="المقرّر">
-        <select
-          className="auth-input"
-          style={{ maxWidth: 360 }}
-          value={effectiveOfferingId}
-          onChange={(e) => setOfferingId(e.target.value)}
-        >
-          {offerings.length === 0 && <option value="">— لا توجد عروض —</option>}
-          {offerings.map((o) => (
-            <option key={o.id} value={o.id}>{o.course.name} ({o.course.code}) · {o._count.enrollments} طالب</option>
-          ))}
-        </select>
+        <label>
+          <span className="form-label">اختر المقرّر لعرض طلابه</span>
+          <select
+            className="input course-select"
+            value={effectiveOfferingId}
+            onChange={(e) => setOfferingId(e.target.value)}
+          >
+            {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
+            {offerings.map((o) => (
+              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code}) · {o._count.enrollments} طالب</option>
+            ))}
+          </select>
+        </label>
       </Card>
 
       <Card
@@ -483,16 +501,16 @@ export function StudentsListPage() {
         icon={Users}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك أعلاه لعرض قائمة طلابه." />
         ) : stuQ.isPending ? (
           <LoadingState />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا يوجد طلّاب مسجَّلون" />
+          <EmptyState title="لا يوجد طلّاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
         ) : (
-          <div className="tbl-wrap">
-            <table className="tbl">
+          <div className="table-wrap">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th>الاسم</th>
@@ -508,11 +526,11 @@ export function StudentsListPage() {
                   const label = s.avgGrade >= 80 ? 'متفوّق' : s.avgGrade >= 60 ? 'متوسّط' : 'بحاجة دعم';
                   return (
                     <tr key={s.studentId}>
-                      <td className="tbl-strong">{s.name}</td>
-                      <td className="font-mono text-xs">{s.universityId}</td>
-                      <td className="tbl-num">{s.attendancePct}%</td>
-                      <td className="tbl-num">{s.avgGrade}</td>
-                      <td><Badge color={tone}>{label}</Badge></td>
+                      <td className="tbl-strong" data-label="الاسم">{s.name}</td>
+                      <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
+                      <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
+                      <td className="tbl-num" data-label="المتوسّط">{s.avgGrade}</td>
+                      <td data-label="الحالة"><Badge color={tone}>{label}</Badge></td>
                     </tr>
                   );
                 })}
@@ -560,25 +578,29 @@ export function PerformancePage() {
       <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
 
       <Card title="المقرّر">
-        <select
-          className="auth-input"
-          style={{ maxWidth: 360 }}
-          value={effectiveOfferingId}
-          onChange={(e) => setOfferingId(e.target.value)}
-        >
-          {offerings.length === 0 && <option value="">— لا توجد عروض —</option>}
-          {offerings.map((o) => (
-            <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
-          ))}
-        </select>
+        <label>
+          <span className="form-label">اختر المقرّر لعرض تحليل أدائه</span>
+          <select
+            className="input course-select"
+            value={effectiveOfferingId}
+            onChange={(e) => setOfferingId(e.target.value)}
+          >
+            {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
+            {offerings.map((o) => (
+              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+            ))}
+          </select>
+        </label>
       </Card>
 
       {!effectiveOfferingId ? (
-        <EmptyState title="اختر مقرّراً" />
+        <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك أعلاه لعرض تحليل أداء فصلك." />
       ) : stuQ.isPending || analytics.isPending ? (
         <LoadingState />
       ) : stuQ.isError ? (
         <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
+      ) : analytics.isError ? (
+        <ErrorState message="تعذَّر تحميل مؤشّرات المقرر" error={analytics.error} onRetry={() => analytics.refetch()} />
       ) : (
         <>
           <div className="grid-3">
@@ -611,8 +633,8 @@ export function PerformancePage() {
           >
             {students.length === 0 ? (
               <EmptyState
-                title="لا يوجد طلّاب في الخطر بعد"
-                description="ستُرصَد المخاطر تلقائيّاً بناءً على الحضور والدرجات والتفاعل."
+                title="لا توجد بيانات توزيع بعد"
+                description="سيظهر توزيع الدرجات هنا فور تسجيل طلاب في المقرّر."
               />
             ) : (
               <div className="flex-col gap-3">
@@ -638,10 +660,10 @@ export function AssignmentsPage() {
   const formatDue = (iso: string) => {
     const d = new Date(iso);
     const days = Math.round((d.getTime() - Date.now()) / 86400000);
-    if (days < 0) return `انتهى منذ ${-days} يوم`;
+    if (days < 0) return `انتهى ${countAr(-days, ['منذ يوم', 'منذ يومين', 'منذ أيام', 'منذ يوماً'])}`;
     if (days === 0) return 'اليوم';
     if (days === 1) return 'غداً';
-    if (days < 7) return `بعد ${days} أيّام`;
+    if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
     return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
   };
 
@@ -682,14 +704,15 @@ export function AssignmentsPage() {
                 <div key={a.id} className="list-row">
                   <div className="list-row-body">
                     <div className="list-row-title">
-                      {ASSIGNMENT_LABEL[a.type] ?? a.type}: {a.title}
+                      {ASSIGNMENT_LABEL[a.type] ?? <bdi>{a.type}</bdi>}: {a.title}
                     </div>
                     <div className="list-row-sub">
                       {a.course.name} · يستحقّ {formatDue(a.dueAt)}
                     </div>
                   </div>
+                  {/* LTR fraction order stays stable inside the RTL line */}
                   <div className="text-xs font-mono text-muted">
-                    {a.submissions} / {a.enrolled} تسليم
+                    <bdi>{a.submissions} / {a.enrolled}</bdi> تسليم
                   </div>
                   <Badge color={tone}>{Math.round(ratio * 100)}%</Badge>
                 </div>
@@ -780,7 +803,7 @@ function NeedsReviewCard({
               <div className="list-row-body">
                 <div className="list-row-title">{p.assignmentTitle}</div>
                 <div className="list-row-sub">
-                  {p.studentName}{p.courseCode ? ` · ${p.courseCode}` : ''} · وصل {formatRelativeAr(p.submittedAt)}
+                  {p.studentName}{p.courseCode ? <> · <bdi>{p.courseCode}</bdi></> : null} · وصل {formatRelativeAr(p.submittedAt)}
                 </div>
               </div>
               <button
@@ -855,50 +878,37 @@ function GradeSubmissionModal({
         <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{target.assignmentTitle}</div>
         <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }}>
           {target.studentName}
-          {target.courseCode ? ` · ${target.courseCode}` : ''} · وصل {formatRelativeAr(target.submittedAt)}
+          {target.courseCode ? <> · <bdi>{target.courseCode}</bdi></> : null} · وصل {formatRelativeAr(target.submittedAt)}
         </div>
 
         {done ? (
-          <div
-            role="status"
-            style={{
-              padding: 'var(--sp-4)',
-              borderRadius: 'var(--r-md)',
-              background: 'var(--success-soft)',
-              color: 'var(--success)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              fontWeight: 600,
-              fontSize: 'var(--fs-sm)',
-            }}
-          >
+          <div className="form-feedback ok" role="status">
             <Icon icon={CheckCircle2} size={15} />
-            تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.
+            <span className="flex-1">تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.</span>
           </div>
         ) : (
           <>
-            <div className="auth-field">
-              <label htmlFor="grade-score">
+            <div className="flex-col gap-2">
+              <label className="form-label" htmlFor="grade-score">
                 الدرجة{target.maxScore !== undefined ? ` (من 0 إلى ${target.maxScore})` : ''}
               </label>
               <input
                 id="grade-score"
                 type="number"
-                className="input"
+                className="input input-narrow"
                 placeholder={target.maxScore !== undefined ? `0 – ${target.maxScore}` : '0'}
                 min={0}
                 max={target.maxScore}
                 step="any"
+                inputMode="decimal"
                 value={score}
                 onChange={(e) => setScore(e.target.value)}
                 disabled={grade.isPending}
-                style={{ maxWidth: 200 }}
               />
             </div>
 
-            <div className="auth-field">
-              <label htmlFor="grade-feedback">ملاحظات للطالب (اختياري)</label>
+            <div className="flex-col gap-2">
+              <label className="form-label" htmlFor="grade-feedback">ملاحظات للطالب (اختياري)</label>
               <textarea
                 id="grade-feedback"
                 className="input"
@@ -913,12 +923,12 @@ function GradeSubmissionModal({
             </div>
 
             {validationError && (
-              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+              <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
                 {validationError}
               </p>
             )}
             {grade.isError && (
-              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+              <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
                 {apiErrorMessage(grade.error, 'تعذَّر حفظ الدرجة — حاول مرة أخرى.')}
               </p>
             )}
@@ -977,7 +987,7 @@ export function MessagesPage() {
                   />
                   <div className="list-row-body">
                     <div className="list-row-title">{other.firstName} {other.lastName}</div>
-                    <div className="list-row-sub" style={{ color: 'var(--text-muted)' }}>
+                    <div className="list-row-sub">
                       {incoming ? '' : 'أنت: '}{m.body}
                     </div>
                   </div>

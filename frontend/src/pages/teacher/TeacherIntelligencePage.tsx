@@ -8,14 +8,14 @@
  *                            (roster · risk per student · curriculum AI)
  */
 import { useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
-  GraduationCap, AlertTriangle, BookOpen, Sparkles, ChevronLeft,
+  AlertTriangle, BookOpen, Sparkles, ChevronRight,
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
-  CheckCircle2, AlertCircle, ListVideo, type LucideIcon,
+  CheckCircle2, AlertCircle, ListVideo, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../components/primitives';
-import { DetailSkeleton } from '../../components/primitives/States';
+import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
+import { DetailSkeleton, ErrorState, EmptyState, KpiSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { CurriculumAuthoringPanel } from '../../components/curriculum';
@@ -26,11 +26,20 @@ import {
   type TeacherOffering, type RiskLevel, type TeacherStudentRow,
 } from '../../hooks/useResources';
 
-const RISK_COLOR: Record<RiskLevel, string> = {
+/* Non-text edge for the 1px leading hairline (ruling #4)… */
+const RISK_EDGE: Record<RiskLevel, string> = {
   OK: 'var(--success)',
   WATCH: 'var(--gold)',
   AT_RISK: 'var(--warning)',
   CRITICAL: 'var(--danger)',
+};
+/* …and the text-safe ink for the score column (guardrail #3 — status
+ * text always uses -ink tokens, the raw accents can fail AA as text). */
+const RISK_INK: Record<RiskLevel, string> = {
+  OK: 'var(--success-ink)',
+  WATCH: 'var(--gold-ink)',
+  AT_RISK: 'var(--warning-ink)',
+  CRITICAL: 'var(--danger-ink)',
 };
 const RISK_LABEL: Record<RiskLevel, string> = {
   OK: 'مستقر',
@@ -59,31 +68,46 @@ export default function TeacherIntelligencePage() {
       <Card
         title="طلاب يحتاجون متابعة"
         icon={AlertTriangle}
-        subtitle={risks.data?.length ? `${risks.data.length} طالب موزّعون على مقرّراتك` : undefined}
+        subtitle={
+          risks.isPending ? 'جارٍ التحميل…'
+          : risks.data && risks.data.length > 0 ? `${risks.data.length} طالب موزّعون على مقرّراتك`
+          : undefined
+        }
         actions={<Badge color="amber"><Icon icon={Brain} size={11} /> AI</Badge>}
       >
-        {risks.data && risks.data.length === 0 && (
+        {risks.isPending ? (
+          <ListSkeleton rows={3} />
+        ) : risks.isError ? (
+          <ErrorState
+            message="تعذَّر تحميل قائمة المتابعة"
+            error={risks.error}
+            onRetry={() => risks.refetch()}
+          />
+        ) : risks.data.length === 0 ? (
           <div className="empty-state">
-            <Icon icon={CheckCircle2} size={28} style={{ color: 'var(--success)' }} />
-            <p className="text-sm text-muted">جميع طلابك في وضع جيد. لا حاجة لتدخل عاجل.</p>
+            <Icon icon={CheckCircle2} size={28} style={{ color: 'var(--success-ink)' }} />
+            <p className="text-sm text-muted">جميع طلابك في وضع جيد. لا حاجة لتدخّل عاجل.</p>
           </div>
-        )}
-        {risks.data && risks.data.length > 0 && (
+        ) : (
           <div className="flex-col gap-2">
             {risks.data.map((r) => (
-              <div key={r.studentId + r.offeringId} className="risk-row" style={{ borderRight: `3px solid ${RISK_COLOR[r.riskLevel]}` }}>
+              <div
+                key={r.studentId + r.offeringId}
+                className="risk-row"
+                style={{ borderInlineStart: `1px solid ${RISK_EDGE[r.riskLevel]}` }}
+              >
                 <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={36} />
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="flex-1">
                   <div className="risk-row-name">{r.name}</div>
                   <div className="risk-row-meta">
                     <span>{r.courseIcon} {r.courseName}</span>
                     {r.signals.map((s) => <Badge key={s} color="amber">{s}</Badge>)}
                   </div>
                   <div className="risk-row-suggestion">
-                    <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold)' }} /> {r.suggestion}
+                    <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold-ink)' }} /> {r.suggestion}
                   </div>
                 </div>
-                <div className="risk-row-score" style={{ color: RISK_COLOR[r.riskLevel] }}>
+                <div className="risk-row-score" style={{ color: RISK_INK[r.riskLevel] }}>
                   <div className="risk-row-pct">{r.riskScore}%</div>
                   <div className="risk-row-label">{RISK_LABEL[r.riskLevel]}</div>
                 </div>
@@ -94,13 +118,55 @@ export default function TeacherIntelligencePage() {
       </Card>
 
       {/* My offerings */}
-      <Card title="مقرّراتي" icon={BookOpen} subtitle={`${offerings.data?.length ?? 0} مقرر هذا الفصل`}>
-        <div className="track-grid">
-          {offerings.data?.map((o) => (
-            <OfferingCard key={o.id} offering={o} />
-          ))}
-        </div>
+      <Card
+        title="مقرّراتي"
+        icon={BookOpen}
+        subtitle={
+          offerings.isPending ? 'جارٍ التحميل…'
+          : offerings.data && offerings.data.length > 0 ? `${offerings.data.length} مقرر هذا الفصل`
+          : undefined
+        }
+      >
+        {offerings.isPending ? (
+          <TrackGridSkeleton />
+        ) : offerings.isError ? (
+          <ErrorState
+            message="تعذَّر تحميل مقرّراتك"
+            error={offerings.error}
+            onRetry={() => offerings.refetch()}
+          />
+        ) : offerings.data.length === 0 ? (
+          <EmptyState
+            icon={BookOpen}
+            title="لم تُسند إليك مقرّرات بعد"
+            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
+          />
+        ) : (
+          <div className="track-grid">
+            {offerings.data.map((o) => (
+              <OfferingCard key={o.id} offering={o} />
+            ))}
+          </div>
+        )}
       </Card>
+    </div>
+  );
+}
+
+/** Shape-matched skeleton for the track-grid catalog (thumb-card anatomy). */
+function TrackGridSkeleton() {
+  return (
+    <div className="track-grid" aria-busy="true" aria-live="polite">
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} className="track-card" aria-hidden>
+          <Skeleton width={48} height={48} rounded="var(--r-lg)" />
+          <div className="track-card-body">
+            <Skeleton width="45%" height={10} />
+            <Skeleton width="85%" height={16} />
+            <Skeleton width="60%" height={10} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -113,11 +179,13 @@ function OfferingCard({ offering }: { offering: TeacherOffering }) {
       className="track-card"
       style={{ ['--track-accent' as never]: accent }}
     >
-      <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
+      {/* the icon well tint is painted by the .track-card-icon rule from
+          --track-accent (training.css owns the family) */}
+      <div className="track-card-icon">
         <EmojiIcon emoji={offering.course.iconEmoji ?? '📚'} size={22} />
       </div>
       <div className="track-card-body">
-        <div className="track-card-cat">{offering.course.code} · {offering.term}</div>
+        <div className="track-card-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
         <div className="track-card-title">{offering.course.name}</div>
         <div className="track-card-meta">
           <span><Icon icon={Users} size={12} /> {offering._count.enrollments} طالب</span>
@@ -141,6 +209,20 @@ export function TeacherOfferingDetailPage() {
   const analytics = useOfferingAnalytics(offeringId);
   const suggest = useCurriculumSuggest();
   const [tab, setTab] = useState<'students' | 'curriculum' | 'authoring'>('students');
+  const [riskFilter, setRiskFilter] = useState<RiskLevel | 'all'>('all');
+
+  // Hook-order stability: every hook runs before the pending/error early
+  // returns below (the LabsPage crash pattern — never conditionally skip).
+  const riskCounts = useMemo(() => {
+    const rows = students.data ?? [];
+    return {
+      all: rows.length,
+      OK: rows.filter((s) => s.riskLevel === 'OK').length,
+      WATCH: rows.filter((s) => s.riskLevel === 'WATCH').length,
+      AT_RISK: rows.filter((s) => s.riskLevel === 'AT_RISK').length,
+      CRITICAL: rows.filter((s) => s.riskLevel === 'CRITICAL').length,
+    } as Record<RiskLevel | 'all', number>;
+  }, [students.data]);
 
   // Curriculum authoring is a TEACHER/ADMIN/OWNER capability (the routes
   // under /teacher already exclude students; the API still 403s non-owners
@@ -148,24 +230,71 @@ export function TeacherOfferingDetailPage() {
   const role = useAuthStore((s) => s.user?.role);
   const canAuthor = role === 'TEACHER' || role === 'ADMIN' || role === 'OWNER';
 
-  if (!offering) return <DetailSkeleton />;
+  // Honest tri-state (audit 0-e P0-5): pending → skeleton, error → retry,
+  // resolved-but-unknown id → a real 404 state — never an infinite skeleton.
+  if (offerings.isPending) return <DetailSkeleton />;
+  if (offerings.isError) {
+    return (
+      <div className="page">
+        <Link to="/teacher/intelligence" className="back-link">
+          <Icon icon={ChevronRight} size={14} />
+          كل مقرّراتي
+        </Link>
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">الذكاء الأكاديمي</h1>
+          </div>
+        </header>
+        <ErrorState
+          message="تعذَّر تحميل بيانات المقرر"
+          error={offerings.error}
+          onRetry={() => offerings.refetch()}
+        />
+      </div>
+    );
+  }
+  if (!offering) {
+    return (
+      <div className="page">
+        <Link to="/teacher/intelligence" className="back-link">
+          <Icon icon={ChevronRight} size={14} />
+          كل مقرّراتي
+        </Link>
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">الذكاء الأكاديمي</h1>
+          </div>
+        </header>
+        <EmptyState
+          icon={BookOpen}
+          title="المقرر غير موجود"
+          description="ربما حُذف هذا العرض أو أن الرابط غير صحيح."
+        />
+      </div>
+    );
+  }
   const accent = offering.course.themeColor ?? 'var(--accent)';
+  // Theme-adaptive accent ink for text/icons (wave 3-b pattern — raw accent
+  // hexes can fail contrast on the card ground in either theme).
+  const accentInk = `color-mix(in srgb, ${accent} 70%, var(--text))`;
 
   const onSuggest = () => suggest.mutate(offeringId!);
 
   return (
     <div className="page">
       <Link to="/teacher/intelligence" className="back-link">
-        <Icon icon={ChevronLeft} size={14} />
+        <Icon icon={ChevronRight} size={14} />
         كل مقرّراتي
       </Link>
 
-      <div className="track-hero" style={{ background: `linear-gradient(135deg, ${accent}26 0%, transparent 70%)`, borderRight: `3px solid ${accent}` }}>
-        <div className="track-hero-icon" style={{ background: accent, color: '#fff' }}>
+      {/* Tinted band painted by .track-hero from --track-accent (training.css
+          owns the family) — no inline gradient/stripe (audit 0-e P1-15/16). */}
+      <div className="track-hero" style={{ ['--track-accent' as never]: accent }}>
+        <div className="track-hero-icon">
           <EmojiIcon emoji={offering.course.iconEmoji ?? '📚'} size={28} />
         </div>
-        <div style={{ flex: 1 }}>
-          <div className="track-hero-cat">{offering.course.code} · {offering.term}</div>
+        <div className="track-hero-main">
+          <div className="track-hero-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
           <h1 className="track-hero-title">{offering.course.name}</h1>
           <div className="track-hero-meta">
             <Badge><Icon icon={Users} size={11} /> {offering._count.enrollments} طالب</Badge>
@@ -175,6 +304,15 @@ export function TeacherOfferingDetailPage() {
         </div>
       </div>
 
+      {analytics.isPending && <KpiSkeleton />}
+      {analytics.isError && (
+        <div className="inline-retry" role="alert">
+          <span className="text-sm text-muted">تعذَّر تحميل مؤشرات المقرر.</span>
+          <button type="button" className="btn ghost sm" onClick={() => analytics.refetch()}>
+            <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+          </button>
+        </div>
+      )}
       {analytics.data && (
         <div className="grid-4">
           <MetricCard icon={Users} label="مسجَّلون" value={analytics.data.enrolled.toString()} color="brand" />
@@ -200,12 +338,56 @@ export function TeacherOfferingDetailPage() {
 
       {tab === 'students' && (
         <Card title="قائمة الطلاب — تحليل لحظي" icon={Users}>
-          {students.data && students.data.length === 0 && (
-            <div className="empty-state"><Icon icon={Users} size={28} className="text-subtle" /><p className="text-sm text-muted">لا يوجد طلاب مسجَّلون.</p></div>
+          {students.isPending ? (
+            <ListSkeleton rows={4} />
+          ) : students.isError ? (
+            <ErrorState
+              message="تعذَّر تحميل قائمة الطلاب"
+              error={students.error}
+              onRetry={() => students.refetch()}
+            />
+          ) : students.data.length === 0 ? (
+            <EmptyState
+              icon={Users}
+              title="لا يوجد طلاب مسجَّلون"
+              description="ستظهر قائمة الطلاب هنا فور تسجيلهم في المقرر."
+            />
+          ) : (
+            <>
+              {/* Risk-level filter — the page's authored moment: on a filter
+                  change non-matching rows fade between shades (is-dim) while
+                  matching rows keep their color, mirroring the matrix. */}
+              <div className="flex items-center gap-2 flex-wrap" role="group" aria-label="تصفية بمستوى المخاطر">
+                {([
+                  { v: 'all' as const, label: 'الكل' },
+                  { v: 'OK' as const, label: RISK_LABEL.OK },
+                  { v: 'WATCH' as const, label: RISK_LABEL.WATCH },
+                  { v: 'AT_RISK' as const, label: RISK_LABEL.AT_RISK },
+                  { v: 'CRITICAL' as const, label: RISK_LABEL.CRITICAL },
+                ]).map((o) => (
+                  <button
+                    key={o.v}
+                    type="button"
+                    className={`filter-pill${riskFilter === o.v ? ' on' : ''}`}
+                    aria-pressed={riskFilter === o.v}
+                    onClick={() => setRiskFilter(o.v)}
+                  >
+                    {o.label}
+                    <span className="filter-pill-count">{riskCounts[o.v]}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="flex-col gap-2">
+                {students.data.map((s) => (
+                  <StudentRow
+                    key={s.studentId}
+                    student={s}
+                    dimmed={riskFilter !== 'all' && s.riskLevel !== riskFilter}
+                  />
+                ))}
+              </div>
+            </>
           )}
-          <div className="flex-col gap-2">
-            {students.data?.map((s) => <StudentRow key={s.studentId} student={s} />)}
-          </div>
         </Card>
       )}
 
@@ -219,16 +401,23 @@ export function TeacherOfferingDetailPage() {
               className="btn primary sm"
               onClick={onSuggest}
               disabled={suggest.isPending}
-              style={{ background: accent }}
             >
               {suggest.isPending ? 'جارٍ التحليل…' : suggest.data ? 'إعادة التوليد' : 'توليد هيكل المنهج'}
               <Icon icon={Sparkles} size={13} />
             </button>
           }
         >
-          {!suggest.data && (
+          {suggest.isError && (
+            <div className="inline-retry" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+              <span className="text-sm text-muted">تعذَّر توليد هيكل المنهج.</span>
+              <button type="button" className="btn ghost sm" onClick={onSuggest}>
+                <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+              </button>
+            </div>
+          )}
+          {!suggest.data && !suggest.isPending && (
             <div className="empty-state">
-              <Icon icon={Lightbulb} size={28} style={{ color: 'var(--gold)' }} />
+              <Icon icon={Lightbulb} size={28} style={{ color: 'var(--gold-ink)' }} />
               <p className="text-sm text-muted">
                 اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرر، القسم،
                 والمحاضرات الموجودة بالفعل.
@@ -237,13 +426,9 @@ export function TeacherOfferingDetailPage() {
           )}
           {suggest.data && (
             <>
-              <div style={{
-                padding: 'var(--sp-3)', background: `color-mix(in srgb, ${accent} 8%, transparent)`,
-                borderRadius: 'var(--r-md)', marginBottom: 'var(--sp-3)',
-                border: `1px solid color-mix(in srgb, ${accent} 22%, transparent)`,
-              }}>
+              <div className="ai-rationale" style={{ ['--track-accent' as never]: accent }}>
                 <div className="text-xs text-muted">{suggest.data.rationale}</div>
-                <div style={{ display: 'flex', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)' }}>
+                <div className="flex gap-2 flex-wrap" style={{ marginBlockStart: 'var(--sp-2)' }}>
                   <Badge>{suggest.data.outline.length} فصول</Badge>
                   <Badge color="brand">{suggest.data.suggestedTotalLectures} محاضرة مقترحة</Badge>
                   {suggest.data.currentLectureCount > 0 && (
@@ -254,23 +439,23 @@ export function TeacherOfferingDetailPage() {
               <div className="flex-col gap-3">
                 {suggest.data.outline.map((ch, i) => (
                   <div key={i} className="curriculum-chapter">
-                    <div className="curriculum-chapter-head" style={{ color: accent }}>
+                    <div className="curriculum-chapter-head" style={{ color: accentInk }}>
                       <span>{ch.title}</span>
                       <Badge>{ch.estLectures} محاضرة</Badge>
                     </div>
                     <ul className="curriculum-topics">
                       {ch.topics.map((t) => (
-                        <li key={t}><Icon icon={ArrowUpRight} size={11} style={{ color: accent }} /> {t}</li>
+                        <li key={t}><Icon icon={ArrowUpRight} size={11} style={{ color: accentInk }} /> {t}</li>
                       ))}
                     </ul>
                   </div>
                 ))}
               </div>
-              <div style={{ marginTop: 'var(--sp-4)', padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
-                <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>الخطوات التالية</div>
-                <ol style={{ margin: 0, paddingInlineStart: 'var(--sp-4)' }}>
+              <div className="ai-next-steps">
+                <div className="text-xs text-subtle" style={{ marginBlockEnd: 'var(--sp-2)' }}>الخطوات التالية</div>
+                <ol className="ai-steps-list">
                   {suggest.data.nextSteps.map((s) => (
-                    <li key={s} className="text-sm" style={{ marginBottom: 4 }}>{s}</li>
+                    <li key={s} className="text-sm">{s}</li>
                   ))}
                 </ol>
               </div>
@@ -285,28 +470,31 @@ export function TeacherOfferingDetailPage() {
   );
 }
 
-function StudentRow({ student }: { student: TeacherStudentRow }) {
+function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: boolean }) {
   return (
-    <div className="risk-row" style={{ borderRight: `3px solid ${RISK_COLOR[student.riskLevel]}` }}>
+    <div
+      className={`risk-row${dimmed ? ' is-dim' : ''}`}
+      style={{ borderInlineStart: `1px solid ${RISK_EDGE[student.riskLevel]}` }}
+    >
       <UserAvatar initials={student.avatarInitials ?? student.name.slice(0, 2)} color={student.avatarColor ?? undefined} size={40} />
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="flex-1">
         <div className="risk-row-name">{student.name}</div>
         <div className="risk-row-meta">
-          <span className="font-mono text-xxs">{student.universityId}</span>
+          <bdi className="font-mono text-xxs">{student.universityId}</bdi>
           <span><Icon icon={ClipboardCheck} size={11} /> حضور {student.attendancePct}%</span>
           <span><Icon icon={BarChart3} size={11} /> درجة {student.avgGrade}%</span>
           <span><Icon icon={BookOpen} size={11} /> متابعة {student.watchPct}%</span>
         </div>
         {student.signals.length > 0 && (
-          <div className="risk-row-meta" style={{ marginTop: 4 }}>
+          <div className="risk-row-meta" style={{ marginBlockStart: 4 }}>
             {student.signals.map((s) => <Badge key={s} color="amber"><Icon icon={AlertCircle} size={11} /> {s}</Badge>)}
           </div>
         )}
         <div className="risk-row-suggestion">
-          <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold)' }} /> {student.suggestion}
+          <Icon icon={Lightbulb} size={11} style={{ color: 'var(--gold-ink)' }} /> {student.suggestion}
         </div>
       </div>
-      <div className="risk-row-score" style={{ color: RISK_COLOR[student.riskLevel] }}>
+      <div className="risk-row-score" style={{ color: RISK_INK[student.riskLevel] }}>
         <div className="risk-row-pct">{student.riskScore}%</div>
         <div className="risk-row-label">{RISK_LABEL[student.riskLevel]}</div>
       </div>

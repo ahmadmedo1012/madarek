@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   Users, GraduationCap, BookOpen, Activity, ShieldCheck, Server,
@@ -6,7 +7,7 @@ import {
   Download, RefreshCw, Mail, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { Card, MetricCard } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { useFaculties } from '../../hooks/useResources';
@@ -45,15 +46,26 @@ interface PaginatedStudents {
 export function AdminStudentsPage() {
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
+  const [debouncedQ, setDebouncedQ] = useState('');
   const [facultyId, setFacultyId] = useState('');
   const facQ = useFaculties();
 
+  // Debounce the search input (OwnerUsersPage pattern) so the server query
+  // fires once typing pauses instead of on every keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedQ(q.trim());
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [q]);
+
   const studentsQ = useQuery({
-    queryKey: ['admin', 'students', page, q, facultyId],
+    queryKey: ['admin', 'students', page, debouncedQ, facultyId],
     queryFn: async () => {
       const res = await api.get<{ data: AdminStudentRow[]; meta: PaginatedStudents['meta'] }>(
         '/admin/students',
-        { params: { page, limit: 20, q: q || undefined, facultyId: facultyId || undefined } },
+        { params: { page, limit: 20, q: debouncedQ || undefined, facultyId: facultyId || undefined } },
       );
       return { data: res.data.data, meta: res.data.meta };
     },
@@ -77,26 +89,35 @@ export function AdminStudentsPage() {
               type="search"
               placeholder="ابحث بالاسم أو البريد أو رقم القيد…"
               value={q}
-              onChange={(e) => { setQ(e.target.value); setPage(1); }}
+              onChange={(e) => setQ(e.target.value)}
               className="admin-students-input"
+              aria-label="البحث في الطلاب"
             />
           </div>
           <select
             className="admin-students-input"
             value={facultyId}
             onChange={(e) => { setFacultyId(e.target.value); setPage(1); }}
+            disabled={facQ.isPending}
+            aria-label="تصفية حسب الكلية"
           >
-            <option value="">كلّ الكلّيّات</option>
+            <option value="">{facQ.isPending ? 'جارٍ تحميل الكليات…' : 'كلّ الكلّيّات'}</option>
             {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
+          {facQ.isError && (
+            <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
+              <Icon icon={RefreshCw} size={13} />
+              إعادة تحميل الكليات
+            </button>
+          )}
         </div>
 
-        {studentsQ.isPending && <LoadingState />}
-        {studentsQ.isError && <ErrorState error={studentsQ.error} onRetry={() => studentsQ.refetch()} />}
+        {studentsQ.isPending && <TableSkeleton rows={6} cols={7} />}
+        {studentsQ.isError && <ErrorState error={studentsQ.error} message="تعذّر تحميل قائمة الطلاب" onRetry={() => studentsQ.refetch()} />}
         {studentsQ.data && (
           <>
             <div className="admin-students-table-wrap">
-              <table className="admin-students-table">
+              <table className="admin-students-table tbl-stack">
                 <thead>
                   <tr>
                     <th>الطالب</th>
@@ -110,30 +131,32 @@ export function AdminStudentsPage() {
                 </thead>
                 <tbody>
                   {studentsQ.data.data.length === 0 && (
-                    <tr><td colSpan={7}><EmptyState title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر." /></td></tr>
+                    <tr><td colSpan={7}><EmptyState title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." /></td></tr>
                   )}
                   {studentsQ.data.data.map((s) => (
                     <tr key={s.id}>
-                      <td>
+                      <td data-label="الطالب">
                         <div className="admin-students-name">
                           <span className="avatar" style={{ width: 28, height: 28, fontSize: 11, ...(s.avatarColor ? { background: s.avatarColor } : {}) }}>
                             {s.avatarInitials ?? `${s.firstName[0]}${s.lastName[0]}`}
                           </span>
                           <div>
                             <div>{s.firstName} {s.lastName}</div>
-                            <div className="admin-students-email">{s.email}</div>
+                            <div className="admin-students-email"><bdi>{s.email}</bdi></div>
                           </div>
                         </div>
                       </td>
-                      <td className="font-mono">{s.studentProfile?.universityId ?? '—'}</td>
-                      <td>
+                      <td data-label="رقم القيد" className="font-mono">
+                        {s.studentProfile?.universityId ? <bdi>{s.studentProfile.universityId}</bdi> : '—'}
+                      </td>
+                      <td data-label="الكلّيّة / القسم">
                         <div>{s.studentProfile?.faculty.name ?? '—'}</div>
                         <div className="text-subtle text-xxs">{s.studentProfile?.department.name ?? ''}</div>
                       </td>
-                      <td>{s.studentProfile?.year ?? '—'}</td>
-                      <td className="font-mono">{s.studentProfile?.gpa ?? '—'}</td>
-                      <td className="font-mono">{s.studentProfile?.level ?? '—'}</td>
-                      <td>
+                      <td data-label="السنة" className="font-mono">{s.studentProfile?.year ?? '—'}</td>
+                      <td data-label="المعدّل" className="font-mono">{s.studentProfile?.gpa ?? '—'}</td>
+                      <td data-label="المستوى" className="font-mono">{s.studentProfile?.level ?? '—'}</td>
+                      <td data-label="الحالة">
                         <span className={`pill ${s.isActive ? 'on' : ''}`}>
                           {s.isActive ? 'نشط' : 'موقوف'}
                         </span>
@@ -214,8 +237,13 @@ export function AdminDigitalPage() {
         </div>
       </header>
 
-      {q.isPending && <LoadingState />}
-      {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
+      {q.isPending && (
+        <>
+          <KpiSkeleton />
+          <CardSkeleton lines={5} />
+        </>
+      )}
+      {q.isError && <ErrorState error={q.error} message="تعذّر تحميل مؤشّرات التحوّل الرقميّ" onRetry={() => q.refetch()} />}
       {q.data && (
         <>
           <div className="grid-4">
@@ -228,33 +256,33 @@ export function AdminDigitalPage() {
               change={`${q.data.activeUsers}/${q.data.totalUsers}`}
               color="amber"
             />
-            <MetricCard icon={GraduationCap} label="مقرّرات رقميّة" value={q.data.materialsUploaded.toLocaleString('ar-LY')} color="purple" />
+            <MetricCard icon={BookOpen} label="موادّ تعليمية مرفوعة" value={q.data.materialsUploaded.toLocaleString('ar-LY')} color="purple" />
           </div>
 
           <div className="grid-2">
             <Card title="الاختبار الإلكترونيّ" icon={ShieldCheck}>
               <ul className="digital-stat-list">
-                <DigitalStat label="اختبارات منشورة" value={q.data.onlineExams} />
-                <DigitalStat label="محاولات أداء" value={q.data.examAttempts} />
+                <DigitalStat label="اختبارات منشورة" value={q.data.onlineExams} index={0} />
+                <DigitalStat label="محاولات أداء" value={q.data.examAttempts} index={1} />
               </ul>
             </Card>
 
             <Card title="التعلّم النشط" icon={FlaskConical}>
               <ul className="digital-stat-list">
-                <DigitalStat label="جلسات معامل افتراضيّة" value={q.data.labSessions} />
-                <DigitalStat label="جلسات بثّ مباشر" value={q.data.liveSessions} />
+                <DigitalStat label="جلسات معامل افتراضيّة" value={q.data.labSessions} index={0} />
+                <DigitalStat label="جلسات بثّ مباشر" value={q.data.liveSessions} index={1} />
               </ul>
             </Card>
 
             <Card title="التعلّم الذاتيّ" icon={BookOpen}>
               <ul className="digital-stat-list">
-                <DigitalStat label="تسجيلات MOOC" value={q.data.moocEnrollments} />
+                <DigitalStat label={<>تسجيلات <bdi>MOOC</bdi></>} value={q.data.moocEnrollments} index={0} />
               </ul>
             </Card>
 
             <Card title="البحث العلميّ" icon={Microscope}>
               <ul className="digital-stat-list">
-                <DigitalStat label="أوراق علميّة في النظام" value={q.data.researchPapers} />
+                <DigitalStat label="أوراق علميّة في النظام" value={q.data.researchPapers} index={0} />
               </ul>
             </Card>
           </div>
@@ -264,9 +292,9 @@ export function AdminDigitalPage() {
   );
 }
 
-function DigitalStat({ label, value }: { label: string; value: number }) {
+function DigitalStat({ label, value, index }: { label: ReactNode; value: number; index: number }) {
   return (
-    <li className="digital-stat-row">
+    <li className="digital-stat-row" style={{ '--stagger-i': index } as CSSProperties}>
       <span className="text-sm text-muted">{label}</span>
       <strong className="font-mono">{value.toLocaleString('ar-LY')}</strong>
     </li>
@@ -302,8 +330,13 @@ export function AdminAnalysisPage() {
         </div>
       </header>
 
-      {q.isPending && <LoadingState />}
-      {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
+      {q.isPending && (
+        <>
+          <KpiSkeleton />
+          <CardSkeleton lines={6} />
+        </>
+      )}
+      {q.isError && <ErrorState error={q.error} message="تعذّر تحميل بيانات تحليل الأداء" onRetry={() => q.refetch()} />}
       {q.data && (
         <>
           <div className="grid-4">
@@ -314,44 +347,57 @@ export function AdminAnalysisPage() {
           </div>
 
           <Card title="تطوّر الإنتاج العلميّ — آخر ٦ أشهر" icon={Activity}>
-            <div className="trend-table-wrap">
-              <table className="trend-table">
-                <thead>
-                  <tr>
-                    <th>الشهر</th>
-                    <th>مُقدَّم</th>
-                    <th>تمّ تقييمه</th>
-                    <th>منشور</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {q.data.paperTrend.map((row, i) => (
-                    <tr key={i}>
-                      <td>{row.month}</td>
-                      <td className="font-mono">{row.submitted}</td>
-                      <td className="font-mono">{row.graded}</td>
-                      <td className="font-mono">{row.published}</td>
+            {q.data.paperTrend.length === 0 ? (
+              <EmptyState
+                icon={Activity}
+                title="لا توجد بيانات نشر بعد"
+                description="ستظهر حركة الأوراق هنا بعد رفع أول بحث إلى المنصة."
+              />
+            ) : (
+              <div className="trend-table-wrap">
+                <table className="trend-table">
+                  <thead>
+                    <tr>
+                      <th>الشهر</th>
+                      <th>مُقدَّم</th>
+                      <th>تمّ تقييمه</th>
+                      <th>منشور</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {q.data.paperTrend.map((row, i) => (
+                      <tr key={i}>
+                        <td>{row.month}</td>
+                        <td className="font-mono">{row.submitted}</td>
+                        <td className="font-mono">{row.graded}</td>
+                        <td className="font-mono">{row.published}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </Card>
 
           <Card title="المقرّرات الأعلى تفاعلاً" subtitle="حسب عدد التسجيلات" icon={BookOpen}>
             {q.data.topCourses.length === 0 ? (
               <EmptyState
+                icon={BookOpen}
                 title="لا توجد مقرّرات بتسجيلات بعد"
                 description="ستظهر هنا أعلى المقرّرات تفاعلاً فور تسجيل أيّ طالب."
               />
             ) : (
               <ol className="top-courses-list">
                 {q.data.topCourses.map((c, i) => (
-                  <li key={c.code} className="top-courses-row">
+                  <li
+                    key={c.code}
+                    className="top-courses-row"
+                    style={{ '--stagger-i': Math.min(i, 6) } as CSSProperties}
+                  >
                     <span className="top-courses-rank">{i + 1}</span>
                     <div className="top-courses-body">
                       <div className="top-courses-name">{c.name}</div>
-                      <div className="top-courses-meta">{c.code} · {c.lectures} محاضرة</div>
+                      <div className="top-courses-meta"><bdi>{c.code}</bdi> · {c.lectures} محاضرة</div>
                     </div>
                     <strong className="font-mono">{c.enrollments.toLocaleString('ar-LY')} تسجيل</strong>
                   </li>
@@ -407,14 +453,14 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">قاعدة البيانات</div>
-              <div className="settings-value">Postgres (Neon Serverless)</div>
+              <div className="settings-value"><bdi>Postgres (Neon Serverless)</bdi></div>
             </div>
             <span className="pill on">متصلة</span>
           </div>
           <div className="settings-row">
             <div>
               <div className="settings-label">المصادقة</div>
-              <div className="settings-value">JWT · ١٥د/٧ي</div>
+              <div className="settings-value"><bdi>JWT · ١٥د/٧ي</bdi></div>
             </div>
             <span className="pill on">آمنة</span>
           </div>
@@ -452,10 +498,10 @@ export function AdminSettingsPage() {
 
         <Card title="الموارد المرتبطة" icon={ShieldCheck}>
           <ul className="settings-links">
-            <li><a href="/admin/sync">مزامنة الكلّيّات والأقسام</a></li>
-            <li><a href="/admin/teachers">صلاحيات أعضاء هيئة التدريس</a></li>
-            <li><a href="/admin/reports">تقارير الإدارة</a></li>
-            <li><a href="/colleges">صفحات الكلّيّات</a></li>
+            <li><Link to="/admin/sync">مزامنة الكلّيّات والأقسام</Link></li>
+            <li><Link to="/admin/teachers">صلاحيات أعضاء هيئة التدريس</Link></li>
+            <li><Link to="/admin/reports">تقارير الإدارة</Link></li>
+            <li><Link to="/colleges">صفحات الكلّيّات</Link></li>
           </ul>
         </Card>
       </div>

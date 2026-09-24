@@ -2483,4 +2483,851 @@
     background: var(--success-soft);
     color: var(--success-ink);
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  wave 5-c: exams / quality / competitions                     ║
+     ║  TSX-side wiring for the surfaces styled in wave 3-c: the     ║
+     ║  app-area form-error pair the auth→.input migration lacked,   ║
+     ║  the .btn.success variant (audit 0-e P1-28), exam-taker        ║
+     ║  chrome details, moderation queue confirm pulses, the          ║
+     ║  competitions leaderboard rank-change pulse, and the quality   ║
+     ║  curriculum heatmap legend. Token-first, logical properties    ║
+     ║  only, motion tokens only, no letter-spacing on Arabic.       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  /* ── App-area form errors — the system counterparts of auth.css's
+     .auth-error / .auth-field-error. Without these, every page that
+     migrated off .auth-input (audit 0-e P1-31) had no class to render
+     validation/mutation errors with. Shared by exams moderation +
+     competitions forms; consumes the status ink tokens both themes. ── */
+  .form-error {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-base);
+  }
+  .form-error .btn { flex-shrink: 0; }
+  .form-error-msg { flex: 1 1 auto; }
+  .form-field-error {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--danger-ink);
+    line-height: 1.4;
+  }
+
+  /* ── .btn.success — completes the variant set (.btn.danger already
+     exists, audit 0-e P1-28 wanted both). Ground = --success-ink so
+     BOTH themes stay AA with the same declaration: light resolves it
+     to --c-mint-deep #1F4F30 (9.46:1 with #fff), dark brightens it to
+     --c-mint-ink #82CB99 so the foreground flips to ink #191918
+     (9.10:1) — same brighten-on-hover semantics as .btn.accent
+     (T3-F4 WCAG math). The two raw literals mirror .btn.danger's. ── */
+  .btn.success {
+    --_btn-bg: var(--success-ink);
+    --_btn-fg: #fff;
+    --_btn-bd: var(--success-ink);
+    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
+    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
+  }
+  [data-theme='dark'] .btn.success {
+    --_btn-fg: #191918;
+    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, #fff);
+    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, #fff);
+  }
+
+  /* ── Exam taker details (OnlineExamsPages; the chrome bases live in
+     wave 3-c above) ────────────────────────────────────────────── */
+
+  /* Compact h1 inside the sticky .exam-bar (was an inline style). */
+  .exam-bar-title {
+    margin: 0;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+
+  /* End-aligned submit area under the question list (was inline). */
+  .exam-submit-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-4);
+  }
+
+  /* Shape-matched loading tile for the exam card grid — icon well +
+     title/meta lines, mirroring the .track-card anatomy (the real
+     grid is track-grid/track-card from training.css). */
+  .exam-card-skel {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+  }
+  .exam-card-skel .exam-card-skel-icon {
+    flex-shrink: 0;
+    inline-size: 48px;
+    block-size: 48px;
+  }
+  .exam-card-skel .exam-card-skel-body {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  /* Autosave-failure notice inside the sticky .exam-bar — a quiet
+     warning chip so a failed answer save can never be silent (answers
+     autosave per question; the student believes they are stored). */
+  .exam-save-warn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--warning-soft);
+    color: var(--warning-ink);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+  }
+
+  /* ── Moderation queue (quality exam review; rows are the wave 3-c
+     .moderation-row family) ────────────────────────────────────── */
+
+  /* Expanded review panel under a queue row (was inline styles). */
+  .moderation-panel {
+    flex-basis: 100%;
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .moderation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  /* Main column of a queue row (title + meta badges). */
+  .moderation-row-main {
+    flex: 1 1 240px;
+    min-inline-size: 0;
+  }
+
+  /* Competitions score-input row (number input + saved check) — the
+     container family is colleges.css .comp-score-input; this row is
+     wave 5-c TSX (was an inline flex). Input capped narrow: it holds
+     0–100. */
+  .comp-score-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .comp-score-row .input { max-inline-size: 110px; }
+
+  /* The queue's authored moment: a one-shot confirmation ring pulse
+     on the approve/reject button while the mutation is in flight
+     (currentColor = the variant's foreground, so success/danger read
+     in their own ink). One animation per click, never idle. */
+  .moderation-pulse {
+    animation: madarek-moderation-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+  @keyframes madarek-moderation-pulse {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); }
+    to { box-shadow: 0 0 0 10px transparent; }
+  }
+
+  /* ── Competitions leaderboard rank-change pulse — additive rule on
+     the SHARED .leaderboard-row family (training.css §achievements
+     owns the row anatomy + entrance stagger). When judging reorders
+     the board (or a fresh score lands), the moved row flashes its
+     accent wash once: ring ping + highlight sweep, fill-mode none so
+     the row settles back to its normal background. ──────────────── */
+  .leaderboard-row.rank-pulse {
+    animation: madarek-rank-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+  @keyframes madarek-rank-pulse {
+    from {
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    to {
+      background: transparent;
+      box-shadow: 0 0 0 10px transparent;
+    }
+  }
+
+  /* ── Quality pages ───────────────────────────────────────────── */
+
+  /* Professors table compliance cell — progress bar + badge cluster
+     (was an inline min-width flex). */
+  .q-compliance {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-inline-size: 130px;
+  }
+
+  /* Department summary line above each curriculum heatmap (course
+     count + mean completion — tabular numerals for scan-ability). */
+  .q-dept-stat {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-3);
+    margin-block: var(--sp-1) var(--sp-3);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Curriculum heatmap legend — key dots mirror the .matrix-cell
+     level washes (the heatmap grid itself reuses .matrix-cells /
+     .matrix-cell + .lvl-* from polish.css — one heatmap language
+     across the student matrix and the quality oversight view). */
+  .heat-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-4);
+    margin-block-start: var(--sp-2);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .heat-legend-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .heat-legend-dot {
+    inline-size: 10px;
+    block-size: 10px;
+    flex-shrink: 0;
+    border-radius: var(--r-xs);
+  }
+  .heat-legend-dot.lvl-strong {
+    background: color-mix(in srgb, var(--success) 14%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--success) 26%, transparent);
+  }
+  .heat-legend-dot.lvl-weak {
+    background: color-mix(in srgb, var(--warning) 14%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--warning) 28%, transparent);
+  }
+  .heat-legend-dot.lvl-poor {
+    background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--danger) 24%, transparent);
+  }
+
+  /* ── Mobile touch floor (craft floor: ≥44px) for the competitions
+     modal controls + moderation actions. !important is a documented
+     layer-precedence exception: polish (overrides layer) pins
+     .btn.sm at 32px and colleges.css (pages layer) pins
+     .comp-icon-btn at 36×36 — a same-layer rule can never win, and
+     min-block-size composes with (never fights) the pinned sizes. ── */
+  @media (max-width: 640px) {
+    .comp-icon-btn,
+    .comp-modal-close { min-inline-size: 44px; min-block-size: 44px; }
+    .comp-score-input .btn.sm,
+    .moderation-actions .btn.sm,
+    .moderation-panel .btn.sm { min-block-size: 44px !important; }
+  }
+
+  /* ── Reduced-motion off-switches (guardrail #6 — the global token
+     belts already zero the durations; these kill the keyframes
+     outright so the pulses never paint a frame). ────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .moderation-pulse,
+    .leaderboard-row.rank-pulse { animation: none; }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  wave 5-b: admin pages (dashboard / faculties / reports /     ║
+     ║  courses / sync / governance)                                 ║
+     ║  TSX-side adoption of the wave 3-c families + the classes     ║
+     ║  that replace the pages' inline styles (audit 0-e P2-49).     ║
+     ║  Token-first so both themes resolve; logical properties       ║
+     ║  only; motion tokens only; no letter-spacing on Arabic.       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  /* ── Table header typography (ruling #2 — flagged by wave 4-b):
+     every .table/.tbl header in the app is Arabic, where uppercase is
+     a no-op and 0.06em letter-spacing breaks cursive joining. Same
+     specificity as the base rule above, later source order wins. ── */
+  .table thead th, .tbl thead th {
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  /* ── Centered numeric cells for the admin .table tables. A scoped
+     class rather than .tbl-num (whose consumers in teacher/quality
+     tables keep their start alignment). ──────────────────────────── */
+  .table th.admin-table-num,
+  .table td.admin-table-num { text-align: center; }
+
+  /* ── Dashboard quick indicators (the "مؤشرات سريعة" card). ────── */
+  .admin-stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .admin-stat-value { color: var(--text); }
+
+  /* ── Faculty cards (AdminFaculties — was ~40 lines of inline styles
+     per card, audit 0-e P2-49). The DESIGN_POLISH_PLAN phase-3 hover
+     lift: same language as .metric / .thumb-card (hairline border +
+     soft card shadow baseline, stronger shadow + 2px lift on hover). ── */
+  .admin-faculty-card {
+    padding: var(--sp-4);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface-1);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease);
+  }
+  .admin-faculty-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-h);
+  }
+  .admin-faculty-head {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+  .admin-faculty-head.has-depts { margin-block-end: var(--sp-3); }
+  .admin-faculty-icon {
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    color: var(--accent-ink, var(--accent));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .admin-faculty-body { flex: 1 1 auto; min-inline-size: 0; }
+  .admin-faculty-titles {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+  }
+  .admin-faculty-name {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .admin-faculty-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-4);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+  }
+  .admin-faculty-depts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--sp-2);
+  }
+  .admin-faculty-dept {
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .admin-faculty-dept-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .admin-faculty-dept-meta {
+    font-size: var(--fs-xxs);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Reports trend legend (was an inline-styled LegendDot). ────── */
+  .trend-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-4);
+    margin-block-start: var(--sp-4);
+    font-size: var(--fs-xxs);
+    color: var(--text-subtle);
+  }
+  .trend-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .trend-legend-dot {
+    inline-size: 10px;
+    block-size: 10px;
+    flex-shrink: 0;
+    border-radius: var(--r-full);
+    display: inline-block;
+  }
+
+  /* ── Course theme-color chip (AdminCourses name column; the color is
+     per-row data and stays inline, the shape is the class). ───────── */
+  .admin-course-tint {
+    inline-size: 6px;
+    block-size: 24px;
+    border-radius: var(--r-xs);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* ── Governance profile tiles (AdminGovernance FactRow, was inline
+     styles) + the eligibility note + scope card shell + shared form
+     action row. ──────────────────────────────────────────────────── */
+  .gov-fact {
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-inline-size: 0;
+  }
+  .gov-fact-label { font-size: var(--fs-xxs); color: var(--text-subtle); }
+  .gov-fact-value {
+    font-size: var(--fs-sm);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .gov-keywords { margin-block-start: var(--sp-3); }
+  .gov-keywords-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .gov-eligibility {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-3);
+    background: var(--accent-soft);
+    border-radius: var(--r-md);
+    color: var(--accent-ink, var(--accent));
+    font-size: var(--fs-xs);
+  }
+  .gov-scope-card {
+    margin-block: var(--sp-3);
+    padding: var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .gov-scope-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-2);
+  }
+  .gov-scope-note {
+    margin: 0;
+    margin-block-end: var(--sp-3);
+    font-size: var(--fs-xxs);
+    color: var(--text-subtle);
+  }
+  .gov-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-3);
+  }
+  /* Score column of a suggested-course row (end-aligned badge+reason). */
+  .suggested-course-score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  /* ── Permissions confirm pulse — the governance authored moment:
+     when a grant / revoke / reset lands, the changed row flashes its
+     tone wash once (success for grants, warning for revokes/resets)
+     with an outward ring ping, then settles back. Same language as
+     wave 5-c's moderation / rank pulses. ─────────────────────────── */
+  .perm-row.confirm-pulse {
+    animation: madarek-perm-confirm var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+  .perm-row.confirm-pulse.pulse-ok {
+    --pulse-wash: var(--success-soft);
+    --pulse-ring: color-mix(in srgb, var(--success) 40%, transparent);
+  }
+  .perm-row.confirm-pulse.pulse-neutral {
+    --pulse-wash: var(--warning-soft);
+    --pulse-ring: color-mix(in srgb, var(--warning) 40%, transparent);
+  }
+  @keyframes madarek-perm-confirm {
+    from {
+      background: var(--pulse-wash);
+      box-shadow: 0 0 0 0 var(--pulse-ring);
+    }
+    to {
+      background: var(--surface);
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+
+  /* ── Sync run-history stagger — the sync page's authored moment:
+     the runs stream in top-to-bottom on first mount (one-shot; the
+     30s poll refetches without remounting, so it never re-plays).
+     Delay rides --run-i capped at --motion-stagger-cap. ───────────── */
+  .admin-sync-runs tbody tr {
+    animation: madarek-sync-run-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
+    animation-delay: calc(var(--motion-stagger-step) * min(var(--run-i, 0), var(--motion-stagger-cap)));
+  }
+  @keyframes madarek-sync-run-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ── Mobile touch floor (craft floor: ≥44px) for the governance
+     card actions. !important is a documented layer-precedence
+     exception (same as wave 5-c): polish's overrides-layer mobile
+     block pins .btn at 40px / .btn.sm at 32px — a components-layer
+     rule can never win without it. (.teacher-row already carries a
+     48px min from wave 3-c.) ────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .perm-row-actions .btn.sm,
+    .gov-form-actions .btn { min-block-size: 44px !important; }
+  }
+
+  /* ── Reduced-motion off-switches (guardrail #6). ───────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .perm-row.confirm-pulse,
+    .admin-sync-runs tbody tr { animation: none; }
+  }
+}
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  wave 5-a: TEACHER PAGES (audit 0-e + wave-5 mission)         ║
+   ║  Page-level polish for the seven teacher surfaces: authored   ║
+   ║  motion moments (feed inline-start stagger, KPI delta pulse,  ║
+   ║  risk fade filter, annotation highlight, labs/profile         ║
+   ║  entrances), the form/feedback classes the TSX consumes, and  ║
+   ║  craft-floor fixes (touch floors, one-off layout classes      ║
+   ║  replacing inline style blocks). APPEND-ONLY: families owned  ║
+   ║  by earlier waves (feed-item layout 3-c, risk-row 3-c,        ║
+   ║  run-row 3-c, track-* training.css, scan-* 3-c, live-*        ║
+   ║  student.css, paper-row student.css, filter-pill training.css)║
+   ║  are adopted — never re-authored here.                        ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+@layer components {
+
+  /* ── Teacher feed — the authored entrance: rows stagger in from
+     inline-start (direction-aware via --motion-direction). polish.css
+     v8 owns the stagger machinery (duration + easing + the nth-child
+     delay ladder) but its keyframe rises from below; the wave-5 mission
+     pins the direction to inline-start, so ONLY the animation-name is
+     flipped. The !important flips author-layer precedence over the
+     overrides layer — the same documented technique as the wave 3-c
+     anchor-underline opt-outs above. */
+  .feed .feed-item { animation-name: madarek-feed-slide !important; }
+  @keyframes madarek-feed-slide {
+    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -12px)); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Filter pills inside the feed toolbar hit the 44px touch floor on
+     phones (shared class — Competitions' toolbar benefits equally). */
+  @media (max-width: 640px) {
+    .feed-toolbar .pill { min-block-size: 44px; }
+  }
+
+  /* ── KPI delta chip — pulses once on every value change (keyed
+     remount in the TSX). One-shot scale settle, never idle. */
+  .compact-kpi-delta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: 4px;
+    border-radius: var(--r-full);
+    animation: madarek-kpi-delta var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  }
+  .compact-kpi-delta[data-dir='up'] { color: var(--success-ink); }
+  .compact-kpi-delta[data-dir='dn'] { color: var(--danger-ink); }
+  @keyframes madarek-kpi-delta {
+    0%   { opacity: 0; transform: scale(0.4); }
+    55%  { opacity: 1; transform: scale(1.25); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── Risk filter — on a filter change non-matching rows recede while
+     matching rows keep their shade (the fade-between-shades moment,
+     matrix-cell grammar from wave 4-a). 3-c owns the .risk-row chrome;
+     this adds the state + the transition it rides. */
+  .risk-row {
+    transition:
+      opacity var(--motion-duration-medium) var(--motion-ease-standard),
+      filter var(--motion-duration-medium) var(--motion-ease-standard);
+  }
+  .risk-row.is-dim { opacity: 0.38; filter: saturate(0.25); }
+
+  /* ── Compact inline retry — secondary data surfaces (analytics strip,
+     curriculum suggest, modal annotations) get a quiet one-line error +
+     retry instead of a full ErrorState. */
+  .inline-retry {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  /* ── AI curriculum panels — per-course accent rides --track-accent and
+     is only consumed through color-mix (never raw under text). */
+  .ai-rationale {
+    padding: var(--sp-3);
+    background: color-mix(in srgb, var(--track-accent, var(--accent)) 8%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--track-accent, var(--accent)) 22%, transparent);
+    border-radius: var(--r-md);
+    margin-block-end: var(--sp-3);
+  }
+  .ai-next-steps {
+    margin-block-start: var(--sp-4);
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .ai-steps-list {
+    margin: 0;
+    padding-inline-start: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+
+  /* ── Form feedback banner — save success/failure shared by the profile
+     save, attendance save, live form errors, lifecycle errors and the
+     grading done state (replaces 4 different inline style blocks). */
+  .form-feedback {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    font-size: var(--fs-sm);
+  }
+  .form-feedback.ok {
+    background: var(--success-soft);
+    border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
+    color: var(--success-ink);
+  }
+  .form-feedback.fail {
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    color: var(--danger-ink);
+  }
+  .form-feedback .flex-1 { min-inline-size: 180px; }
+
+  /* ── Attendance toggles — class-based selected state (was an inline
+     style block with no aria-pressed, audit 0-e P1-32). Text uses the
+     -ink tokens (guardrail #3); the wash is the matching -soft token. */
+  .att-toggle {
+    min-block-size: 32px;
+    padding-inline: var(--sp-3);
+    border-radius: var(--r-full);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
+  }
+  .att-toggle:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .att-toggle:active { transform: scale(0.97); }
+  .att-toggle:focus-visible { outline: var(--state-focus-ring); outline-offset: var(--state-focus-ring-offset, 1px); }
+  .att-toggle[aria-pressed='true'][data-tone='success'] {
+    background: var(--success-soft);
+    border-color: transparent;
+    color: var(--success-ink);
+  }
+  .att-toggle[aria-pressed='true'][data-tone='warning'] {
+    background: var(--warning-soft);
+    border-color: transparent;
+    color: var(--warning-ink);
+  }
+  .att-toggle[aria-pressed='true'][data-tone='danger'] {
+    background: var(--danger-soft);
+    border-color: transparent;
+    color: var(--danger-ink);
+  }
+  @media (max-width: 640px) {
+    .att-toggle { min-block-size: 44px; min-inline-size: 44px; }
+  }
+
+  /* ── Teacher form scaffolding — one-off layout classes replacing the
+     inline style blocks the audit counted (~230 across staff pages). */
+  .form-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--sp-3);
+  }
+  @media (max-width: 900px) {
+    .form-row-3 { grid-template-columns: 1fr; }
+  }
+  .course-select { max-inline-size: 360px; }
+  .input-narrow { max-inline-size: 200px; }
+  .notice-paragraph {
+    padding: var(--sp-3) 0;
+    line-height: 1.7;
+  }
+  .dropzone-ghost {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--r-lg);
+    padding: var(--sp-10);
+    text-align: center;
+    background: var(--surface-2);
+  }
+  .dropzone-ghost-title {
+    color: var(--text);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    margin-block-start: var(--sp-2);
+  }
+
+  /* ── Profile rows — title line inside .cert-row/.publication-row
+     (3-c owns the row chrome), plus the bio paragraph. */
+  .cert-row-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .profile-bio {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text);
+    line-height: 1.85;
+  }
+
+  /* ── Labs + profile — the subtle entrance staggers (the only authored
+     motion on these two pages). fill backwards so finished animations
+     never pin transforms (the 4-b lesson). */
+  .page-labs .track-grid > *,
+  .page-profile > * {
+    animation: madarek-section-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
+    animation-delay: calc(
+      var(--motion-stagger-step) * min(var(--lab-i, 0), var(--motion-stagger-cap))
+    );
+  }
+  .page-profile > *:nth-child(1) { --lab-i: 0; }
+  .page-profile > *:nth-child(2) { --lab-i: 1; }
+  .page-profile > *:nth-child(3) { --lab-i: 2; }
+  .page-profile > *:nth-child(4) { --lab-i: 3; }
+  .page-profile > *:nth-child(5) { --lab-i: 4; }
+  .page-profile > *:nth-child(6) { --lab-i: 5; }
+  .page-profile > *:nth-child(n+7) { --lab-i: 6; }
+  @keyframes madarek-section-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Lab cards are informational (no navigation) — the shared .track-card
+     cursor promises a link that never happens. */
+  .track-card.is-static { cursor: default; }
+  .track-card.is-static:hover { transform: none; }
+  .track-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-3);
+  }
+
+  /* ── Live sessions — action cluster on run rows (3-c owns the row);
+     44px floor on phones for the start/end/cancel controls. !important
+     flips precedence over polish's overrides-layer `.btn.sm` 32px rule
+     (same technique the wave 3-c/4-a mobile floors use). */
+  .run-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  @media (max-width: 640px) {
+    .run-row-actions .btn {
+      min-block-size: 44px !important;
+      min-inline-size: 44px !important;
+    }
+  }
+
+  /* ── Research review — the scan-metric meta line on paper rows
+     (student.css owns the .paper-row card family). */
+  .review-row-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-3);
+    font-size: var(--fs-xs);
+  }
+  .review-row-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+
+  /* ── Annotation rows — margin notes inside the review modal. THE
+     authored moment of the research page: the newest annotation lands
+     with a one-shot gold highlight that fades to the quiet row (a fresh
+     note written in the reader pulses the moment the modal shows it). */
+  .annotation-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .annotation-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 28px;
+    block-size: 28px;
+    flex-shrink: 0;
+    margin-block-start: 2px;
+    border-radius: var(--r-sm);
+    background: var(--gold-soft);
+    color: var(--gold-ink);
+  }
+  .annotation-row.is-newest {
+    animation: madarek-annotation-hl var(--motion-duration-skeleton) var(--motion-ease-decelerate) backwards;
+  }
+  @keyframes madarek-annotation-hl {
+    0%   { background: var(--gold-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent); }
+    70%  { background: var(--gold-soft); }
+    100% { background: var(--surface-2); box-shadow: none; }
+  }
+
+  /* ── Reduced-motion off-switches for every keyframe in this wave
+     (guardrail #6 — belt-and-braces over the global token belts). */
+  @media (prefers-reduced-motion: reduce) {
+    .feed .feed-item,
+    .compact-kpi-delta,
+    .risk-row,
+    .page-labs .track-grid > *,
+    .page-profile > *,
+    .annotation-row.is-newest {
+      animation: none;
+      transition: none;
+    }
+  }
 }

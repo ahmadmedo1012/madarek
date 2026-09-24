@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
@@ -8,13 +9,15 @@ import {
 import {
   ShieldCheck, Users, BookOpen, GraduationCap, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
-  Building2, School, Star, Clock, Download, ArrowRight,
-  CheckCircle2, XCircle,
+  Building2, School, Star, Clock, ArrowLeft,
+  CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
+import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
-import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
+import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 
@@ -163,6 +166,77 @@ const useQualityAlerts = () => useQuery({
   staleTime: 60_000,
 });
 
+/* ─── Shared chart/table helpers ────────────────────────────── */
+// NOTE: chart options must be built during render (see components below) —
+// a module-level `cartesianOptions()` would freeze the resolved CSS colours
+// at import time and never follow a light/dark theme switch.
+
+const WEEKDAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+/**
+ * Read a --motion-duration-* token as milliseconds. Returns 0 when the
+ * token is missing/unparsable so callers can fall back explicitly.
+ * (Replicated from the wave 4-a DashboardPage helper — promote both
+ * copies into a shared hooks module in a lib-owning wave.)
+ */
+function motionTokenMs(token: string): number {
+  if (typeof document === 'undefined') return 0;
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  if (!raw.endsWith('ms')) return 0;
+  const ms = parseFloat(raw);
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+/**
+ * CountIn — the in-app data edition of the count-up reveal (first paint
+ * only: mounts on the settled value and counts toward it; later value
+ * changes render instantly; instant under prefers-reduced-motion).
+ * Replicated from wave 4-a's DashboardPage per the wave 5-c mission —
+ * extracting a shared hook would mean touching DashboardPage, which is
+ * outside this wave's file scope. Same contract, same easing.
+ */
+function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
+  const reducedMotion = useReducedMotion();
+  const [display, setDisplay] = useState(value);
+  const settled = useRef(false);
+
+  useEffect(() => {
+    if (settled.current || reducedMotion || !Number.isFinite(value)) {
+      setDisplay(value);
+      if (!reducedMotion) settled.current = true;
+      return;
+    }
+    // Mirrors --motion-duration-stat (700ms); 0 only when the token is
+    // unreadable, in which case the division below settles on frame one.
+    const duration = motionTokenMs('--motion-duration-stat') || 700;
+    let raf = 0;
+    let start = 0;
+    const tick = (t: number) => {
+      if (!start) start = t;
+      const p = Math.min((t - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 4); // exponential ease-out
+      setDisplay(value * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else settled.current = true;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, reducedMotion]);
+
+  // Fractional values (e.g. 4.2/5) keep one decimal, integers none —
+  // the settled render matches the raw API value exactly.
+  const decimals = Number.isInteger(value) ? 0 : 1;
+  return (
+    <>
+      {display.toLocaleString('ar-LY', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })}
+      {suffix}
+    </>
+  );
+}
+
 /* ════════════════════════════════════════════════════════════════
    Quality Dashboard
    ════════════════════════════════════════════════════════════════ */
@@ -236,14 +310,14 @@ export function QualityDashboardPage() {
       </header>
 
       <div className="grid-4">
-        <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={(d.users.STUDENT ?? 0).toLocaleString('ar-LY')} change="مسجَّل في النظام" color="brand" />
-        <MetricCard icon={Users} label="هيئة التدريس" value={(d.users.TEACHER ?? 0).toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={BookOpen} label="مقررات نشطة" value={d.offerings.toLocaleString('ar-LY')} change={`${d.lectures} محاضرة`} color="amber" />
+        <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={<CountIn value={d.users.STUDENT ?? 0} />} change="مسجَّل في النظام" color="brand" />
+        <MetricCard icon={Users} label="هيئة التدريس" value={<CountIn value={d.users.TEACHER ?? 0} />} color="green" />
+        <MetricCard icon={BookOpen} label="مقررات نشطة" value={<CountIn value={d.offerings} />} change={<><bdi>{d.lectures}</bdi> محاضرة</>} color="amber" />
         <MetricCard
           icon={Activity}
           label="معدل الحضور"
-          value={`${e.attendance.presentRate.toFixed(0)}%`}
-          change={`${e.attendance.total} سجل`}
+          value={<CountIn value={Math.round(e.attendance.presentRate)} suffix="%" />}
+          change={<><bdi>{e.attendance.total}</bdi> سجل</>}
           color="purple"
         />
       </div>
@@ -258,31 +332,56 @@ export function QualityDashboardPage() {
           }
           icon={TrendingUp}
         >
-          <div style={{ height: 220 }}>
-            <Line
-              key={themeKey}
-              data={{
-                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
-                datasets: [{
-                  label: 'مستخدم نشط',
-                  data: e.weeklyActive,
-                  borderColor: cc.accent,
-                  backgroundColor: `color-mix(in srgb, ${cc.accent} 12%, transparent)`,
-                  tension: 0.4,
-                  fill: true,
-                  borderWidth: 2,
-                  pointRadius: 3,
-                  pointHoverRadius: 5,
-                  pointBackgroundColor: cc.accent,
-                }],
-              }}
-              options={opts}
-            />
-          </div>
+          <ChartFrame
+            ariaLabel={`مخطط خطّي للنشاط الأسبوعي — جلسات نشطة يومياً${e.weeklyActiveEstimated ? ' (منحنى تقديري)' : ''}`}
+            summary={
+              e.weeklyActive.length > 0
+                ? `ذروة النشاط ${Math.max(...e.weeklyActive)} جلسة يوم ${WEEKDAYS[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
+                : 'لا بيانات نشاط لهذا الأسبوع.'
+            }
+            table={{
+              caption: 'النشاط الأسبوعي — جلسات نشطة يومياً',
+              columns: ['اليوم', 'جلسات'],
+              rows: WEEKDAYS.map((day, i) => [day, e.weeklyActive[i] ?? 0]),
+            }}
+            height={220}
+          >
+          <Line
+            key={themeKey}
+            data={{
+              labels: WEEKDAYS,
+              datasets: [{
+                label: 'مستخدم نشط',
+                data: e.weeklyActive,
+                borderColor: cc.accent,
+                backgroundColor: `color-mix(in srgb, ${cc.accent} 12%, transparent)`,
+                tension: 0.4,
+                fill: true,
+                borderWidth: 2,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                pointBackgroundColor: cc.accent,
+              }],
+            }}
+            options={opts}
+          />
+        </ChartFrame>
         </Card>
 
         <Card title="توزيع الحضور" icon={ClipboardCheck}>
-          <div style={{ height: 220, position: 'relative' }}>
+          <ChartFrame
+            ariaLabel={`توزيع الحضور: حضور ${Math.round(e.attendance.presentRate)}% وتأخر ${Math.round(e.attendance.lateRate)}% وغياب ${Math.round(e.attendance.absentRate)}%`}
+            table={{
+              caption: 'توزيع الحضور',
+              columns: ['الحالة', 'النسبة'],
+              rows: [
+                ['حضور', Math.round(e.attendance.presentRate)],
+                ['تأخر', Math.round(e.attendance.lateRate)],
+                ['غياب', Math.round(e.attendance.absentRate)],
+              ],
+            }}
+            height={220}
+          >
             <Doughnut
               key={themeKey}
               data={{
@@ -296,7 +395,7 @@ export function QualityDashboardPage() {
               }}
               options={radialOptions({ legend: true, cutout: '65%' })}
             />
-          </div>
+          </ChartFrame>
         </Card>
       </div>
 
@@ -341,7 +440,7 @@ export function QualityDashboardPage() {
                 ))}
               </div>
               <Link to="/quality/alerts" className="btn ghost sm" style={{ marginTop: 'var(--sp-3)' }}>
-                <Icon icon={ArrowRight} size={13} />
+                <Icon icon={ArrowLeft} size={13} />
                 عرض كل التنبيهات
               </Link>
             </>
@@ -371,8 +470,8 @@ export function QualityCoursesPage() {
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
        !c.data?.length ? <Card><EmptyState title="لا مقررات" /></Card> : (
         <Card title="المقررات النشطة" icon={BookOpen}>
-          <div className="tbl-wrap">
-            <table className="tbl">
+          <div className="table-wrap">
+            <table className="table">
               <thead>
                 <tr>
                   <th>المقرر</th>
@@ -392,7 +491,7 @@ export function QualityCoursesPage() {
                     <tr key={o.id}>
                       <td className="tbl-strong">{o.course.name}</td>
                       <td>د. {o.teacher.firstName} {o.teacher.lastName}</td>
-                      <td className="font-mono text-xs">{o.term}</td>
+                      <td className="font-mono text-xs"><bdi>{o.term}</bdi></td>
                       <td className="tbl-num">{o._count.enrollments}</td>
                       <td className="tbl-num">{o._count.lectures}</td>
                       <td className="tbl-num">{o._count.materials}</td>
@@ -444,14 +543,14 @@ export function QualityProfessorsPage() {
       </header>
 
       <div className="grid-3">
-        <MetricCard icon={Star} label="متوسط رضا الطلاب" value={avgSat.toFixed(1)} change="من 5.0" color="gold" />
-        <MetricCard icon={Clock} label="متوسط الاستجابة" value={`${avgResp.toFixed(0)} س`} change="على رسائل الطلاب" color="brand" />
-        <MetricCard icon={AlertTriangle} label="بحاجة لمتابعة" value={lowComp.toString()} change="أداء منخفض" color="red" />
+        <MetricCard icon={Star} label="متوسط رضا الطلاب" value={<CountIn value={Math.round(avgSat * 10) / 10} />} change="من 5.0" color="gold" />
+        <MetricCard icon={Clock} label="متوسط الاستجابة" value={<CountIn value={Math.round(avgResp)} suffix=" س" />} change="على رسائل الطلاب" color="brand" />
+        <MetricCard icon={AlertTriangle} label="بحاجة لمتابعة" value={<CountIn value={lowComp} />} change="أداء منخفض" color="red" />
       </div>
 
       <Card title="هيئة التدريس" icon={School}>
-        <div className="tbl-wrap">
-          <table className="tbl">
+        <div className="table-wrap">
+          <table className="table">
             <thead>
               <tr>
                 <th>الأستاذ</th>
@@ -496,7 +595,7 @@ export function QualityProfessorsPage() {
                     <td className="tbl-num" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
                     <td className="tbl-num">{t.responseHours}س</td>
                     <td>
-                      <div style={{ minWidth: 120, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div className="q-compliance">
                         <ProgressBar value={t.compliance} showValue={false} ariaLabel={`التزام د. ${t.firstName} ${t.lastName}`} />
                         <Badge color={compColor as never}>{t.compliance}%</Badge>
                       </div>
@@ -519,37 +618,79 @@ export function QualityEngagementPage() {
   const e = useEngagement();
   // Remounts the chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
-  if (e.isPending) return <LoadingState />;
-  if (e.isError || !e.data) return <ErrorState error={e.error} onRetry={() => e.refetch()} />;
+  // Page chrome stays up in every state — loading and error keep the
+  // header (audit 0-e P2-39: siblings must not drop it mid-load).
+  const pageHeader = (
+    <header className="page-header">
+      <div className="page-title-block">
+        <h1 className="page-title">الانخراط والحضور</h1>
+        <p className="page-subtitle">نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.</p>
+      </div>
+    </header>
+  );
+  if (e.isPending) {
+    return (
+      <div className="page">
+        {pageHeader}
+        <KpiSkeleton />
+        <div className="grid-2-1">
+          <Card><ChartSkeleton height={240} /></Card>
+          <Card><ListSkeleton rows={3} /></Card>
+        </div>
+      </div>
+    );
+  }
+  if (e.isError || !e.data) {
+    return (
+      <div className="page">
+        {pageHeader}
+        <ErrorState error={e.error} onRetry={() => void e.refetch()} />
+      </div>
+    );
+  }
   const d = e.data;
   const cc = chartColors();
   const opts = cartesianOptions();
 
   const enrollmentRate = d.totalStudents > 0 ? Math.min(100, (d.enrollments / d.totalStudents) * 100) : 0;
+  // Empty weeklyActive (backend edge) must read as an honest dash,
+  // never as NaN (audit 0-e P2-39).
+  const weeklyAvg = d.weeklyActive.length > 0
+    ? Math.round(d.weeklyActive.reduce((a, b) => a + b, 0) / d.weeklyActive.length)
+    : null;
+  const peak = d.weeklyActive.length > 0 ? Math.max(...d.weeklyActive) : null;
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">الانخراط والحضور</h1>
-          <p className="page-subtitle">نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.</p>
-        </div>
-      </header>
+      {pageHeader}
 
       <div className="grid-4">
-        <MetricCard icon={ClipboardCheck} label="معدل الحضور" value={`${d.attendance.presentRate.toFixed(0)}%`} change={`${d.attendance.total} سجل`} color="green" />
-        <MetricCard icon={Activity} label="إكمال المحاضرات" value={`${d.videos.completionRate.toFixed(0)}%`} change={`${d.videos.completedLectures} محاضرة مكتملة`} color="brand" />
-        <MetricCard icon={GraduationCap} label="معدل التسجيل" value={`${enrollmentRate.toFixed(0)}%`} change={`${d.enrollments.toLocaleString('ar-LY')} تسجيل`} color="amber" />
-        <MetricCard icon={TrendingUp} label="متوسط النشاط الأسبوعي" value={Math.round(d.weeklyActive.reduce((a, b) => a + b, 0) / d.weeklyActive.length).toString()} change="مستخدم/يوم" color="purple" />
+        <MetricCard icon={ClipboardCheck} label="معدل الحضور" value={<CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />} change={<><bdi>{d.attendance.total}</bdi> سجل</>} color="green" />
+        <MetricCard icon={Activity} label="إكمال المحاضرات" value={<CountIn value={Math.round(d.videos.completionRate)} suffix="%" />} change={<><bdi>{d.videos.completedLectures}</bdi> محاضرة مكتملة</>} color="brand" />
+        <MetricCard icon={GraduationCap} label="معدل التسجيل" value={<CountIn value={Math.round(enrollmentRate)} suffix="%" />} change={<><bdi>{d.enrollments.toLocaleString('ar-LY')}</bdi> تسجيل</>} color="amber" />
+        <MetricCard icon={TrendingUp} label="متوسط النشاط الأسبوعي" value={weeklyAvg === null ? '—' : <CountIn value={weeklyAvg} />} change="مستخدم/يوم" color="purple" />
       </div>
 
       <div className="grid-2-1">
         <Card title="النشاط الأسبوعي" icon={TrendingUp}>
-          <div style={{ height: 240 }}>
+          <ChartFrame
+            ariaLabel="مخطط أعمدة للنشاط الأسبوعي — عدد الجلسات النشطة يومياً"
+            summary={
+              peak !== null
+                ? `ذروة النشاط ${peak} جلسة نشطة.`
+                : 'لا بيانات نشاط لهذا الأسبوع.'
+            }
+            table={{
+              caption: 'النشاط الأسبوعي — جلسات نشطة يومياً',
+              columns: ['اليوم', 'جلسات'],
+              rows: WEEKDAYS.map((day, i) => [day, d.weeklyActive[i] ?? 0]),
+            }}
+            height={240}
+          >
             <Bar
               key={themeKey}
               data={{
-                labels: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+                labels: WEEKDAYS,
                 datasets: [{
                   label: 'نشاط يومي',
                   data: d.weeklyActive,
@@ -560,7 +701,7 @@ export function QualityEngagementPage() {
               }}
               options={opts}
             />
-          </div>
+          </ChartFrame>
         </Card>
 
         <Card title="تحليل المشاهدة" icon={Activity}>
@@ -576,58 +717,177 @@ export function QualityEngagementPage() {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   Curriculum Review
+   Curriculum Review — completion heatmap
    ════════════════════════════════════════════════════════════════ */
+
+type CurriculumCourse = FacultyTree['departments'][number]['courses'][number];
+type CurriculumLevel = 'strong' | 'weak' | 'poor';
+
+/** Content-completion score per course (lectures/materials/concepts). */
+function courseCompletion(co: CurriculumCourse): number {
+  const lectures = co.offerings.reduce((s, o) => s + o._count.lectures, 0);
+  const materials = co.offerings.reduce((s, o) => s + o._count.materials, 0);
+  return Math.min(100, lectures * 18 + materials * 5 + co._count.concepts * 4);
+}
+function completionLevel(pct: number): CurriculumLevel {
+  if (pct >= 70) return 'strong';
+  if (pct >= 40) return 'weak';
+  return 'poor';
+}
+const LEVEL_LABEL: Record<CurriculumLevel | 'all', string> = {
+  all: 'الكل',
+  strong: 'مكتمل',
+  weak: 'جزئي',
+  poor: 'متأخر',
+};
+const LEVEL_LEGEND: Record<CurriculumLevel, string> = {
+  strong: 'مكتمل — 70% فأكثر',
+  weak: 'جزئي — 40 إلى 69%',
+  poor: 'متأخر — أقلّ من 40%',
+};
+
 export function QualityCurriculumPage() {
   const c = useCurriculum();
-  if (c.isPending) return <LoadingState />;
-  if (c.isError || !c.data) return <ErrorState error={c.error} onRetry={() => c.refetch()} />;
+  // Level filter — declared BEFORE the early returns so the hook order
+  // is stable across the pending → data transition.
+  const [level, setLevel] = useState<CurriculumLevel | 'all'>('all');
+  // Page chrome stays up in every state (audit 0-e P2-39).
+  const pageHeader = (
+    <header className="page-header">
+      <div className="page-title-block">
+        <h1 className="page-title">مراجعة المناهج</h1>
+        <p className="page-subtitle">شجرة الكليات والأقسام والمقررات، مع مؤشرات اكتمال المحتوى.</p>
+      </div>
+    </header>
+  );
+  if (c.isPending) {
+    return (
+      <div className="page">
+        {pageHeader}
+        <CardSkeleton lines={2} />
+        <Card>
+          <div className="matrix-cells" aria-hidden>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} width="100%" height={56} />
+            ))}
+          </div>
+        </Card>
+      </div>
+    );
+  }
+  if (c.isError || !c.data) {
+    return (
+      <div className="page">
+        {pageHeader}
+        <ErrorState error={c.error} onRetry={() => void c.refetch()} />
+      </div>
+    );
+  }
+
+  // Real per-level counts across the whole tree (drives the pills).
+  const levelCounts: Record<CurriculumLevel, number> = { strong: 0, weak: 0, poor: 0 };
+  for (const f of c.data) {
+    for (const d of f.departments) {
+      for (const co of d.courses) levelCounts[completionLevel(courseCompletion(co))] += 1;
+    }
+  }
+  const total = levelCounts.strong + levelCounts.weak + levelCounts.poor;
 
   return (
     <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">مراجعة المناهج</h1>
-          <p className="page-subtitle">شجرة الكليات والأقسام والمقررات، مع مؤشرات اكتمال المحتوى.</p>
+      {pageHeader}
+
+      {/* Filter + legend — the pills reuse the shared .filter-pill
+          segmented-control family; cells dim (not disappear) so the
+          heatmap stays whole while filtering (matrix-page language). */}
+      <Card>
+        <div className="filter-pill-row" role="group" aria-label="تصفية المقررات بحسب نسبة اكتمال المحتوى">
+          <button
+            type="button"
+            className="filter-pill"
+            aria-pressed={level === 'all'}
+            onClick={() => setLevel('all')}
+          >
+            {LEVEL_LABEL.all}
+            <span className="filter-pill-count">{total}</span>
+          </button>
+          {(['strong', 'weak', 'poor'] as const).map((key) => (
+            <button
+              key={key}
+              type="button"
+              className="filter-pill"
+              aria-pressed={level === key}
+              onClick={() => setLevel(key)}
+              disabled={levelCounts[key] === 0}
+            >
+              {LEVEL_LABEL[key]}
+              <span className="filter-pill-count">{levelCounts[key]}</span>
+            </button>
+          ))}
         </div>
-      </header>
+        <div className="heat-legend">
+          {(['strong', 'weak', 'poor'] as const).map((key) => (
+            <span key={key} className="heat-legend-key">
+              <span className={`heat-legend-dot ${key === 'strong' ? 'lvl-strong' : key === 'weak' ? 'lvl-weak' : 'lvl-poor'}`} />
+              {LEVEL_LEGEND[key]}
+            </span>
+          ))}
+        </div>
+      </Card>
 
       <div className="flex-col gap-4">
         {c.data.map((f) => (
           <Card key={f.id} title={f.name} icon={Building2}
             subtitle={`${f.departments.length} قسم · ${f.departments.reduce((s, d) => s + d.courses.length, 0)} مقرر`}>
             <div className="flex-col gap-4">
-              {f.departments.map((d) => (
-                <div key={d.id}>
-                  <div className="section-title">{d.name}</div>
-                  {!d.courses.length ? (
-                    <div className="text-xs text-subtle" style={{ padding: '6px 0' }}>لا مقررات</div>
-                  ) : (
-                    <div className="grid-2">
-                      {d.courses.map((co) => {
-                        const lectures = co.offerings.reduce((s, o) => s + o._count.lectures, 0);
-                        const materials = co.offerings.reduce((s, o) => s + o._count.materials, 0);
-                        const completion = Math.min(100, lectures * 18 + materials * 5 + co._count.concepts * 4);
-                        const completionColor = completion >= 70 ? 'green' : completion >= 40 ? 'amber' : 'red';
-                        return (
-                          <div key={co.id} className="list-row">
-                            <div className="metric-icon" style={{ color: co.themeColor ?? 'var(--accent)' }}>
-                              <Icon icon={BookOpen} size={16} />
-                            </div>
-                            <div className="list-row-body">
-                              <div className="list-row-title">{co.name}</div>
-                              <div className="list-row-sub">
-                                <span className="font-mono">{co.code}</span> · {lectures} محاضرة · {materials} مادة · {co._count.concepts} مفهوم
+              {f.departments.map((d) => {
+                const completions = d.courses.map((co) => courseCompletion(co));
+                const deptAvg = completions.length > 0
+                  ? Math.round(completions.reduce((s, v) => s + v, 0) / completions.length)
+                  : null;
+                return (
+                  <div key={d.id}>
+                    <div className="section-title">{d.name}</div>
+                    {!d.courses.length ? (
+                      <div className="text-xs text-subtle" style={{ padding: '6px 0' }}>لا مقررات</div>
+                    ) : (
+                      <>
+                        <div className="q-dept-stat">
+                          <span><bdi>{d.courses.length}</bdi> مقرر</span>
+                          <span>متوسط الاكتمال <bdi>{deptAvg}%</bdi></span>
+                        </div>
+                        {/* The heatmap — .matrix-cells/.matrix-cell + .lvl-*
+                            tiles (the platform's one heatmap language,
+                            shared with the student skills matrix). Cells
+                            transition between shades on data change
+                            (matrix-cell rides --t-clean) and recede via
+                            .is-dim when filtered out. */}
+                        <div className="matrix-cells">
+                          {d.courses.map((co) => {
+                            const completion = courseCompletion(co);
+                            const lvl = completionLevel(completion);
+                            const lectures = co.offerings.reduce((s, o) => s + o._count.lectures, 0);
+                            const materials = co.offerings.reduce((s, o) => s + o._count.materials, 0);
+                            return (
+                              <div
+                                key={co.id}
+                                className={`matrix-cell ${lvl === 'strong' ? 'lvl-strong' : lvl === 'weak' ? 'lvl-weak' : 'lvl-poor'}${level !== 'all' && lvl !== level ? ' is-dim' : ''}`}
+                                title={`${co.name} (${co.code}) — اكتمال ${completion}% · ${lectures} محاضرة · ${materials} مادة · ${co._count.concepts} مفهوم`}
+                              >
+                                <div><bdi className="font-mono text-xxs">{co.code}</bdi></div>
+                                <div>{co.name}</div>
+                                <div className="matrix-meta">
+                                  <span className="matrix-meta-pct">{completion}%</span>
+                                </div>
                               </div>
-                            </div>
-                            <Badge color={completionColor as never}>{completion}%</Badge>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))}
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </Card>
         ))}
@@ -655,7 +915,7 @@ export function QualityReportsPage() {
             تستعرض اللوحة كل العروض الدراسيّة مع تفصيل عدد المسجَّلين، ساعات المحاضرات، المواد، والاختبارات.
           </p>
           <Link to="/quality/courses" className="btn primary sm">
-            <Icon icon={ArrowRight} size={13} />
+            <Icon icon={ArrowLeft} size={13} />
             فتح اللوحة
           </Link>
         </Card>
@@ -665,7 +925,7 @@ export function QualityReportsPage() {
             قائمة كاملة بأعضاء هيئة التدريس مرتَّبة بحسب القسم والكلّيّة، مع حالة التوثيق وتفاصيل التخصّص.
           </p>
           <Link to="/quality/professors" className="btn primary sm">
-            <Icon icon={ArrowRight} size={13} />
+            <Icon icon={ArrowLeft} size={13} />
             فتح اللوحة
           </Link>
         </Card>
@@ -675,7 +935,7 @@ export function QualityReportsPage() {
             نسب الحضور والغياب، مشاهدات المحاضرات، الطلّاب النشطين أسبوعيّاً، حالة البحوث.
           </p>
           <Link to="/quality/engagement" className="btn primary sm">
-            <Icon icon={ArrowRight} size={13} />
+            <Icon icon={ArrowLeft} size={13} />
             فتح اللوحة
           </Link>
         </Card>
@@ -685,7 +945,7 @@ export function QualityReportsPage() {
             مؤشّر اكتمال رفع المحاضرات والمواد الدراسيّة عبر الكلّيّات والأقسام.
           </p>
           <Link to="/quality/curriculum" className="btn primary sm">
-            <Icon icon={ArrowRight} size={13} />
+            <Icon icon={ArrowLeft} size={13} />
             فتح اللوحة
           </Link>
         </Card>
@@ -717,7 +977,7 @@ export function QualityAlertsPage() {
           <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
         </div>
         {q.data && q.data.counts.critical > 0 && (
-          <Badge color="red">{q.data.counts.critical} تنبيهات حرجة</Badge>
+          <Badge color="red"><CountIn value={q.data.counts.critical} /> تنبيهات حرجة</Badge>
         )}
       </header>
 
@@ -728,7 +988,7 @@ export function QualityAlertsPage() {
       ) : !q.data || q.data.alerts.length === 0 ? (
         <Card>
           <div className="state">
-            <div className="state-icon" style={{ background: 'var(--success-soft)', color: 'var(--success)' }}>
+            <div className="state-icon state-icon-success">
               <Icon icon={CheckCircle2} size={20} />
             </div>
             <div className="state-title">لا توجد تنبيهات حالياً</div>
@@ -777,11 +1037,3 @@ export function QualityPlaceholder({
     </div>
   );
 }
-
-/* ─── Shared chart helpers ────────────────────────────── */
-// NOTE: chart options must be built during render (see components above) —
-// a module-level `cartesianOptions()` would freeze the resolved CSS colours
-// at import time and never follow a light/dark theme switch.
-
-// Re-export XCircle to keep import-checker happy (tree-shaken if unused)
-export { XCircle };

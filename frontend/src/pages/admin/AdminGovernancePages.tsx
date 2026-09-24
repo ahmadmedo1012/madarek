@@ -7,11 +7,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  ShieldCheck, GraduationCap, Award, ChevronLeft, CheckCircle2,
-  AlertCircle, Sparkles, Briefcase, Building2, Users, Crown,
+  ShieldCheck, GraduationCap, Award, ChevronLeft, ChevronRight, CheckCircle2,
+  AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
-import { CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
+import { Card, Badge, MetricCard, UserAvatar, AlertRow } from '../../components/primitives';
+import {
+  CardSkeleton, DetailSkeleton, ErrorState, EmptyState, KpiSkeleton, Skeleton,
+} from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -19,6 +21,7 @@ import {
   useFaculties,
   useAssignTeacherPosition,
   useAssignUserScope,
+  apiErrorMessage,
   type AppCapability,
   type AcademicPositionInput,
 } from '../../hooks/useResources';
@@ -33,6 +36,14 @@ const RANK_LABEL: Record<string, string> = {
   ASSISTANT_PROFESSOR: 'أستاذ مساعد',
   ASSOCIATE_PROFESSOR: 'أستاذ مشارك',
   PROFESSOR: 'أستاذ',
+};
+/** Arabic labels for user roles — raw enums (TEACHER/QUALITY…) never reach the UI. */
+const ROLE_LABEL: Record<string, string> = {
+  STUDENT: 'طالب',
+  TEACHER: 'أستاذ',
+  ADMIN: 'إداري',
+  QUALITY: 'مكتب الجودة',
+  OWNER: 'مالك',
 };
 const CAP_LABEL: Record<AppCapability, string> = {
   RESEARCH_GRADE_OWN: 'تقييم بحوث طلابي',
@@ -91,11 +102,19 @@ function useUserPermissions(userId: string | undefined) {
   });
 }
 
+interface CapabilityPayload {
+  userId: string;
+  capability: AppCapability;
+  grant: boolean | null;
+  reason?: string;
+}
 function useSetCapability() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ userId, capability, grant, reason }: { userId: string; capability: AppCapability; grant: boolean | null; reason?: string }) =>
-      unwrap(api.post(`/admin/users/${userId}/permissions`, { capability, grant, reason })),
+    // The URL carries the user; the body stays { capability, grant, reason }
+    // (the wire format the endpoint expects).
+    mutationFn: ({ userId, ...body }: CapabilityPayload) =>
+      unwrap(api.post(`/admin/users/${userId}/permissions`, body)),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'users'] }),
   });
 }
@@ -114,9 +133,10 @@ function useVerifyTeacher() {
 
 /* ═══════════════ Teachers list with onboarding suggestions ═══════════════ */
 export function AdminTeachersPage() {
-  const { data: users } = useAdminUsers();
-  const teachers = users?.filter((u) => u.role === 'TEACHER') ?? [];
+  const { data: users, isPending, isError, error, refetch } = useAdminUsers();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const teachers = users?.filter((u) => u.role === 'TEACHER') ?? [];
 
   return (
     <div className="page">
@@ -129,56 +149,121 @@ export function AdminTeachersPage() {
         </div>
       </header>
 
-      <div className="grid-3">
-        <MetricCard icon={Users} label="عدد الأساتذة" value={teachers.length.toString()} color="brand" />
-        <MetricCard icon={CheckCircle2} label="نشطون" value={teachers.filter((t) => t.isActive).length.toString()} color="green" />
-        <MetricCard icon={ShieldCheck} label="نظام التوثيق" value="فعّال" color="purple" change="مطابق لمتطلبات الجودة" />
-      </div>
+      {isPending ? (
+        <>
+          <KpiSkeleton />
+          <div className="grid-2-1">
+            <Card><TeacherListSkeleton rows={5} /></Card>
+            <CardSkeleton lines={6} />
+          </div>
+        </>
+      ) : isError ? (
+        /* API-down must never read as "no teachers registered" — the KPIs
+           hide with it (no fake zeros, ruling #14). */
+        <Card>
+          <ErrorState
+            error={error}
+            message="تعذّر تحميل قائمة الأساتذة"
+            onRetry={() => refetch()}
+          />
+        </Card>
+      ) : (
+        <>
+          <div className="grid-3">
+            <MetricCard icon={Users} label="عدد الأساتذة" value={teachers.length.toString()} color="brand" />
+            <MetricCard icon={CheckCircle2} label="نشطون" value={teachers.filter((t) => t.isActive).length.toString()} color="green" />
+            <MetricCard icon={ShieldCheck} label="نظام التوثيق" value="فعّال" color="purple" change="مطابق لمتطلبات الجودة" />
+          </div>
 
-      <div className="grid-2-1">
-        <Card title="قائمة الأساتذة" icon={Users}>
-          <div className="flex-col gap-2">
-            {teachers.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                className={`teacher-row${selectedId === t.id ? ' selected' : ''}`}
-                onClick={() => setSelectedId(t.id)}
-              >
-                <UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={40} />
-                <div style={{ flex: 1, textAlign: 'start' }}>
-                  <div className="teacher-row-name">{t.firstName} {t.lastName}</div>
-                  <div className="teacher-row-email font-mono text-xxs">{t.email}</div>
-                </div>
-                <Icon icon={ChevronLeft} size={14} className="text-subtle" />
-              </button>
-            ))}
-            {teachers.length === 0 && (
-              <div className="empty-state"><Icon icon={Users} size={28} className="text-subtle" /><p className="text-sm text-muted">لم يتم تسجيل أساتذة بعد.</p></div>
+          <div className="grid-2-1">
+            <Card title="قائمة الأساتذة" icon={Users}>
+              <div className="flex-col gap-2">
+                {teachers.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    className={`teacher-row${selectedId === t.id ? ' selected' : ''}`}
+                    onClick={() => setSelectedId(t.id)}
+                  >
+                    <UserAvatar initials={t.avatarInitials ?? 'أس'} color={t.avatarColor ?? undefined} size={40} />
+                    <div style={{ flex: 1, textAlign: 'start' }}>
+                      <div className="teacher-row-name">{t.firstName} {t.lastName}</div>
+                      <div className="teacher-row-email font-mono text-xxs"><bdi>{t.email}</bdi></div>
+                    </div>
+                    <Icon icon={ChevronLeft} size={14} className="text-subtle" />
+                  </button>
+                ))}
+                {teachers.length === 0 && (
+                  <EmptyState
+                    icon={Users}
+                    title="لم يتم تسجيل أساتذة بعد"
+                    description="ستظهر القائمة فور تسجيل أول أستاذ في النظام."
+                  />
+                )}
+              </div>
+            </Card>
+
+            {selectedId ? <TeacherProfileCard teacherId={selectedId} /> : (
+              <Card>
+                <EmptyState
+                  icon={GraduationCap}
+                  title="اختر أستاذاً من القائمة"
+                  description="اعرض الملف الأكاديمي والمقررات المقترحة لتوثيقه أو إسناد منصب له."
+                />
+              </Card>
             )}
           </div>
-        </Card>
+        </>
+      )}
+    </div>
+  );
+}
 
-        {selectedId ? <TeacherProfileCard teacherId={selectedId} /> : (
-          <Card>
-            <div className="empty-state">
-              <Icon icon={GraduationCap} size={28} className="text-subtle" />
-              <p className="text-sm text-muted">اختر أستاذاً من القائمة لعرض ملفه الأكاديمي والمقررات المقترحة.</p>
-            </div>
-          </Card>
-        )}
-      </div>
+/** Shape-matched skeleton for the teachers list (avatar + name + email rows). */
+function TeacherListSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="teacher-row" style={{ cursor: 'default' }}>
+          <Skeleton width={40} height={40} rounded="50%" />
+          <div className="flex-col" style={{ flex: 1, gap: 6 }}>
+            <Skeleton width="55%" height={12} />
+            <Skeleton width="40%" height={10} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
 
 function TeacherProfileCard({ teacherId }: { teacherId: string }) {
-  const { data, isLoading } = useTeacherSuggestions(teacherId);
+  const { data, isLoading, isError, error, refetch } = useTeacherSuggestions(teacherId);
   const verify = useVerifyTeacher();
 
   if (isLoading) return <CardSkeleton lines={5} />;
-  if (!data) return <Card>لا يوجد ملف أستاذ.</Card>;
+  if (isError) {
+    return (
+      <Card>
+        <ErrorState
+          error={error}
+          message="تعذّر تحميل الملف الأكاديمي"
+          onRetry={() => refetch()}
+        />
+      </Card>
+    );
+  }
+  if (!data) {
+    return (
+      <Card>
+        <EmptyState
+          icon={GraduationCap}
+          title="لا يوجد ملف أستاذ"
+          description="هذا الحساب لم يُستكمل ملفه الأكاديمي بعد."
+        />
+      </Card>
+    );
+  }
 
   return (
     <div className="flex-col gap-3">
@@ -189,10 +274,30 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
               type="button"
               className="btn primary sm"
               onClick={() => verify.mutate({ id: teacherId, verified: true })}
+              disabled={verify.isPending}
             >
-              توثيق الأستاذ
+              {verify.isPending ? 'جارٍ التوثيق…' : 'توثيق الأستاذ'}
             </button>
       }>
+        {verify.isError && (
+          <AlertRow
+            color="red"
+            icon={AlertCircle}
+            title="تعذّر توثيق الأستاذ"
+            description={apiErrorMessage(verify.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+            actions={
+              <button
+                type="button"
+                className="btn ghost sm"
+                onClick={() => verify.mutate({ id: teacherId, verified: true })}
+                disabled={verify.isPending}
+              >
+                إعادة المحاولة
+              </button>
+            }
+          />
+        )}
+
         <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
           <FactRow label="الاسم" value={data.teacher.name} />
           <FactRow label="البريد" value={data.teacher.email} mono />
@@ -202,18 +307,19 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           <FactRow label="سنوات الخبرة" value={`${data.teacher.yearsExperience} سنة`} />
           <FactRow label="القسم" value={data.teacher.department} />
           <FactRow label="الكلية" value={data.teacher.faculty} />
-        </div>        {data.teacher.subjectKeywords.length > 0 && (
-          <div style={{ marginTop: 'var(--sp-3)' }}>
+        </div>
+        {data.teacher.subjectKeywords.length > 0 && (
+          <div className="gov-keywords">
             <div className="text-xxs text-subtle" style={{ marginBottom: 4 }}>المجالات</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-              {data.teacher.subjectKeywords.map((k) => <Badge key={k}>{k}</Badge>)}
+            <div className="gov-keywords-list">
+              {data.teacher.subjectKeywords.map((k) => <Badge key={k}><bdi>{k}</bdi></Badge>)}
             </div>
           </div>
         )}
 
-        <div style={{ marginTop: 'var(--sp-3)', padding: 'var(--sp-3)', background: 'var(--accent-soft)', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
-          <Icon icon={Sparkles} size={14} style={{ color: 'var(--accent)' }} />
-          <span className="text-xs" style={{ color: 'var(--accent)' }}>{data.eligibilityNote}</span>
+        <div className="gov-eligibility">
+          <Icon icon={Sparkles} size={14} />
+          <span>{data.eligibilityNote}</span>
         </div>
       </Card>
 
@@ -235,25 +341,29 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         </Card>
       )}
 
-      <Card title="المقررات المقترحة لتدريسها" icon={Briefcase} subtitle={`${data.suggestedCourses.length} مقرر مرتب حسب القرب من تخصصه`}>
+      <Card title="المقررات المقترحة لتدريسها" icon={Briefcase} subtitle={data.suggestedCourses.length > 0 ? `${data.suggestedCourses.length} مقرر مرتب حسب القرب من تخصصه` : undefined}>
         <div className="flex-col gap-2">
           {data.suggestedCourses.map((c) => (
             <div key={c.id} className="suggested-course-row">
-              <EmojiIcon emoji={c.iconEmoji ?? '📘'} size={22} />
+              <EmojiIcon emoji={c.iconEmoji} fallback={BookOpen} size={22} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="text-sm" style={{ fontWeight: 600 }}>{c.name}</div>
                 <div className="text-xxs text-subtle">
-                  {c.code} · {c.departmentName} · {c.facultyName}
+                  <bdi>{c.code}</bdi> · {c.departmentName} · {c.facultyName}
                 </div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+              <div className="suggested-course-score">
                 <Badge color="brand">{c.matchScore} درجة تطابق</Badge>
                 <span className="text-xxs text-subtle">{c.reason}</span>
               </div>
             </div>
           ))}
           {data.suggestedCourses.length === 0 && (
-            <div className="empty-state"><Icon icon={AlertCircle} size={28} className="text-subtle" /><p className="text-sm text-muted">لا توجد مقررات مطابقة بعد. أضف كلمات مفتاحية إلى ملف الأستاذ.</p></div>
+            <EmptyState
+              icon={Briefcase}
+              title="لا توجد مقررات مطابقة بعد"
+              description="أضف كلمات مفتاحية إلى ملف الأستاذ لتوليد اقتراحات أدق."
+            />
           )}
         </div>
       </Card>
@@ -267,12 +377,11 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
 
 function FactRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div style={{
-      padding: 'var(--sp-3)', background: 'var(--surface-2)',
-      borderRadius: 'var(--r-md)', display: 'flex', flexDirection: 'column', gap: 4,
-    }}>
-      <span className="text-xxs text-subtle">{label}</span>
-      <span className={mono ? 'font-mono text-sm' : 'text-sm'}>{value}</span>
+    <div className="gov-fact">
+      <span className="gov-fact-label">{label}</span>
+      <span className={mono ? 'gov-fact-value font-mono' : 'gov-fact-value'}>
+        <bdi>{value}</bdi>
+      </span>
     </div>
   );
 }
@@ -338,9 +447,10 @@ function PositionAssignmentCard({
 
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
         <div className="comp-form-field">
-          <label>المنصب</label>
+          <label htmlFor={`pos-${teacher.id}`}>المنصب</label>
           <select
-            className="auth-input"
+            id={`pos-${teacher.id}`}
+            className="input"
             value={position}
             onChange={(e) => setPosition(e.target.value as typeof position)}
           >
@@ -353,9 +463,10 @@ function PositionAssignmentCard({
 
         {(position === 'DEAN' || position === 'ASSOCIATE_DEAN') && (
           <div className="comp-form-field">
-            <label>الكلّيّة</label>
+            <label htmlFor={`pos-fac-${teacher.id}`}>الكلّيّة</label>
             <select
-              className="auth-input"
+              id={`pos-fac-${teacher.id}`}
+              className="input"
               value={facultyId}
               onChange={(e) => setFacultyId(e.target.value)}
             >
@@ -369,9 +480,10 @@ function PositionAssignmentCard({
         {position === 'DEPARTMENT_HEAD' && (
           <>
             <div className="comp-form-field">
-              <label>الكلّيّة</label>
+              <label htmlFor={`pos-dfac-${teacher.id}`}>الكلّيّة</label>
               <select
-                className="auth-input"
+                id={`pos-dfac-${teacher.id}`}
+                className="input"
                 value={facultyId}
                 onChange={(e) => {
                   setFacultyId(e.target.value);
@@ -385,9 +497,10 @@ function PositionAssignmentCard({
               </select>
             </div>
             <div className="comp-form-field">
-              <label>القسم</label>
+              <label htmlFor={`pos-dep-${teacher.id}`}>القسم</label>
               <select
-                className="auth-input"
+                id={`pos-dep-${teacher.id}`}
+                className="input"
                 value={departmentId}
                 onChange={(e) => setDepartmentId(e.target.value)}
               >
@@ -400,7 +513,7 @@ function PositionAssignmentCard({
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBlockStart: 'var(--sp-3)' }}>
+      <div className="gov-form-actions">
         <button
           type="button"
           className="btn primary"
@@ -421,6 +534,25 @@ function PositionAssignmentCard({
           </button>
         )}
       </div>
+
+      {assign.isError && (
+        <AlertRow
+          color="red"
+          icon={AlertCircle}
+          title="تعذّر حفظ التعيين"
+          description={apiErrorMessage(assign.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+          actions={
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={onSave}
+              disabled={assign.isPending || !dirty}
+            >
+              إعادة المحاولة
+            </button>
+          }
+        />
+      )}
     </Card>
   );
 }
@@ -456,25 +588,20 @@ function ScopeAssignmentCard({
   const roleLabel = role === 'ADMIN' ? 'الإداريّ' : 'مكتب الجودة';
 
   return (
-    <div style={{
-      marginBlock: 'var(--sp-3)',
-      padding: 'var(--sp-3)',
-      borderRadius: 'var(--r-md)',
-      background: 'var(--surface-2)',
-      border: '1px solid var(--border)',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockEnd: 'var(--sp-2)' }}>
+    <div className="gov-scope-card">
+      <div className="gov-scope-head">
         <Icon icon={Building2} size={14} style={{ color: 'var(--accent)' }} />
         <strong className="text-sm">نطاق صلاحيّة {roleLabel}</strong>
       </div>
-      <p className="text-xxs text-subtle" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+      <p className="gov-scope-note">
         النطاق الافتراضيّ على مستوى الجامعة. يمكن قَصره على كلّيّة واحدة فقط للحدّ من نطاق الإشراف.
       </p>
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
         <div className="comp-form-field">
-          <label>النطاق</label>
+          <label htmlFor={`scope-${userId}`}>النطاق</label>
           <select
-            className="auth-input"
+            id={`scope-${userId}`}
+            className="input"
             value={scope}
             onChange={(e) => setScope(e.target.value as 'UNIVERSITY' | 'FACULTY')}
           >
@@ -484,9 +611,10 @@ function ScopeAssignmentCard({
         </div>
         {scope === 'FACULTY' && (
           <div className="comp-form-field">
-            <label>الكلّيّة</label>
+            <label htmlFor={`scope-fac-${userId}`}>الكلّيّة</label>
             <select
-              className="auth-input"
+              id={`scope-fac-${userId}`}
+              className="input"
               value={facultyId}
               onChange={(e) => setFacultyId(e.target.value)}
             >
@@ -503,40 +631,117 @@ function ScopeAssignmentCard({
           النطاق الحاليّ: <strong>{scopeFacultyName}</strong>
         </div>
       )}
-      <div style={{ marginBlockStart: 'var(--sp-3)' }}>
+      <div className="gov-form-actions">
         <button
           type="button"
           className="btn primary sm"
           onClick={onSave}
           disabled={assign.isPending || !dirty}
         >
-          {assign.isPending ? 'جارٍ الحفظ' : 'حفظ النطاق'}
+          {assign.isPending ? 'جارٍ الحفظ…' : 'حفظ النطاق'}
         </button>
       </div>
+      {assign.isError && (
+        <AlertRow
+          color="red"
+          icon={AlertCircle}
+          title="تعذّر حفظ النطاق"
+          description={apiErrorMessage(assign.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+          actions={
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={onSave}
+              disabled={assign.isPending || !dirty}
+            >
+              إعادة المحاولة
+            </button>
+          }
+        />
+      )}
     </div>
   );
 }
 
 /* ═══════════════ Per-user permissions editor ═══════════════ */
+
+/** JS cadence constant — clears the one-shot confirm pulse shortly after
+ *  the CSS animation (var(--t-slower) + ring settle) has finished. Not a
+ *  CSS duration, so the motion-token gate does not apply; keep it in the
+ *  token scale's register when retuning madarek-perm-confirm. */
+const PULSE_CLEAR_MS = 1200;
+
 export function AdminPermissionsPage() {
   const { id } = useParams<{ id: string }>();
-  const { data } = useUserPermissions(id);
+  const { data, isPending, isError, error, refetch } = useUserPermissions(id);
   const setCap = useSetCapability();
+  /** One-shot confirmation pulse on the row whose capability just changed. */
+  const [pulse, setPulse] = useState<{ cap: AppCapability; ok: boolean } | null>(null);
+  /** Last attempted change — powers the inline retry after a failure. */
+  const [lastAttempt, setLastAttempt] = useState<CapabilityPayload | null>(null);
 
-  if (!data) return <DetailSkeleton />;
+  useEffect(() => {
+    if (!pulse) return;
+    const t = setTimeout(() => setPulse(null), PULSE_CLEAR_MS);
+    return () => clearTimeout(t);
+  }, [pulse]);
+
+  if (isPending) return <DetailSkeleton />;
+  // API-down must not infinite-skeleton (audit 0-e P0-5) — an honest,
+  // recoverable error with a way back.
+  if (isError || !data) {
+    return (
+      <div className="page">
+        <Link to="/admin/teachers" className="back-link">
+          <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
+        </Link>
+        <Card>
+          <ErrorState
+            error={error}
+            message="تعذّر تحميل صلاحيات المستخدم"
+            onRetry={() => refetch()}
+          />
+        </Card>
+      </div>
+    );
+  }
 
   const allCaps = Object.keys(CAP_LABEL) as AppCapability[];
   const overridesByCap = new Map(data.overrides.map((o) => [o.capability, o]));
+  const roleLabel = ROLE_LABEL[data.user.role] ?? data.user.role;
+
+  const applyCap = (capability: AppCapability, grant: boolean | null) => {
+    if (!id) return;
+    const payload: CapabilityPayload = { userId: id, capability, grant };
+    setLastAttempt(payload);
+    setCap.mutate(payload, {
+      // The authored moment: the changed row confirms itself with a
+      // one-shot tone pulse while the badge flips.
+      onSuccess: () => setPulse({ cap: capability, ok: grant !== false }),
+    });
+  };
+
+  const retryLast = () => {
+    if (!lastAttempt) return;
+    setCap.mutate(lastAttempt, {
+      onSuccess: () => setPulse({ cap: lastAttempt.capability, ok: lastAttempt.grant !== false }),
+    });
+  };
 
   return (
     <div className="page">
       <Link to="/admin/teachers" className="back-link">
-        <Icon icon={ChevronLeft} size={14} /> العودة
+        <Icon icon={ChevronRight} size={14} /> العودة إلى الأساتذة
       </Link>
 
-      <Card title="إدارة الصلاحيات" icon={ShieldCheck} subtitle={`${data.user.firstName} ${data.user.lastName} · ${data.user.email}`}>
+      <Card title="إدارة الصلاحيات" icon={ShieldCheck} subtitle={<>{data.user.firstName} {data.user.lastName} · <bdi>{data.user.email}</bdi></>}>
         <div className="grid-3" style={{ marginBottom: 'var(--sp-3)' }}>
-          <MetricCard icon={GraduationCap} label="الدور الحالي" value={data.user.role} color="brand" />
+          <MetricCard
+            icon={GraduationCap}
+            label="الدور الحالي"
+            value={ROLE_LABEL[data.user.role] ?? <bdi>{data.user.role}</bdi>}
+            color="brand"
+          />
           <MetricCard icon={CheckCircle2} label="صلاحيات فعلية" value={data.effective.length.toString()} color="green" />
           <MetricCard icon={AlertCircle} label="استثناءات يدوية" value={data.overrides.length.toString()} color="amber" />
         </div>
@@ -551,8 +756,27 @@ export function AdminPermissionsPage() {
         )}
 
         <div className="text-xxs text-subtle" style={{ marginBottom: 'var(--sp-2)' }}>
-          الصلاحيات الافتراضية مرتبطة بالدور. يمكنك منح صلاحية إضافية أو سحب صلاحية افتراضية لهذا المستخدم تحديداً.
+          الصلاحيات الافتراضية مرتبطة بالدور ({roleLabel}). يمكنك منح صلاحية إضافية أو سحب صلاحية افتراضية لهذا المستخدم تحديداً.
         </div>
+
+        {setCap.isError && (
+          <AlertRow
+            color="red"
+            icon={AlertCircle}
+            title="تعذّر تحديث الصلاحية"
+            description={apiErrorMessage(setCap.error, 'لم يستجب الخادم للطلب. أعد المحاولة بعد لحظات.')}
+            actions={
+              <button
+                type="button"
+                className="btn ghost sm"
+                onClick={retryLast}
+                disabled={setCap.isPending || !lastAttempt}
+              >
+                إعادة المحاولة
+              </button>
+            }
+          />
+        )}
 
         <div className="permissions-grid">
           {allCaps.map((cap) => {
@@ -561,18 +785,25 @@ export function AdminPermissionsPage() {
             const effective = data.effective.includes(cap);
             const state: 'role' | 'granted' | 'revoked' | 'none' =
               ovr ? (ovr.grant ? 'granted' : 'revoked') : (fromRole ? 'role' : 'none');
+            const pulsing = pulse?.cap === cap;
 
             return (
-              <div key={cap} className={`perm-row state-${state}`}>
+              <div
+                key={cap}
+                className={[
+                  'perm-row',
+                  `state-${state}`,
+                  pulsing ? (pulse.ok ? 'confirm-pulse pulse-ok' : 'confirm-pulse pulse-neutral') : '',
+                ].filter(Boolean).join(' ')}
+              >
                 <div className="perm-row-info">
                   <div className="perm-row-title">{CAP_LABEL[cap]}</div>
-                  <code className="perm-row-key">{cap}</code>
+                  <code className="perm-row-key"><bdi>{cap}</bdi></code>
                   <div className="perm-row-state">
                     {state === 'role' && <Badge color="brand">من الدور</Badge>}
                     {state === 'granted' && <Badge color="green">ممنوحة يدوياً</Badge>}
                     {state === 'revoked' && <Badge color="amber">مسحوبة يدوياً</Badge>}
                     {state === 'none' && <Badge>غير مفعّلة</Badge>}
-                    {effective && state !== 'role' && state !== 'granted' && <span className="text-xxs text-subtle">·</span>}
                   </div>
                 </div>
                 <div className="perm-row-actions">
@@ -580,7 +811,8 @@ export function AdminPermissionsPage() {
                     <button
                       type="button"
                       className="btn primary sm"
-                      onClick={() => setCap.mutate({ userId: id!, capability: cap, grant: true })}
+                      disabled={setCap.isPending}
+                      onClick={() => applyCap(cap, true)}
                     >
                       منح
                     </button>
@@ -589,7 +821,8 @@ export function AdminPermissionsPage() {
                     <button
                       type="button"
                       className="btn ghost sm"
-                      onClick={() => setCap.mutate({ userId: id!, capability: cap, grant: false })}
+                      disabled={setCap.isPending}
+                      onClick={() => applyCap(cap, false)}
                     >
                       سحب
                     </button>
@@ -598,7 +831,8 @@ export function AdminPermissionsPage() {
                     <button
                       type="button"
                       className="btn ghost sm"
-                      onClick={() => setCap.mutate({ userId: id!, capability: cap, grant: null })}
+                      disabled={setCap.isPending}
+                      onClick={() => applyCap(cap, null)}
                     >
                       إعادة للافتراضي
                     </button>

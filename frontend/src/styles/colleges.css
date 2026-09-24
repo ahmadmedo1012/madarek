@@ -1518,4 +1518,82 @@
   .comp-index-card:hover { transform: none; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   wave 5-b: admin-extras (append-only)
+
+   OWNERSHIP DOCUMENTATION (audit 0-e, CSS ownership map): colleges.css
+   has secretly owned the admin extra pages — .admin-students-*,
+   .admin-pagination*, .digital-stat-*, .trend-table, .settings-*,
+   .top-courses-* — since "Sub-project D" (the section above). That
+   section stays untouched per this wave's append-only constraint; this
+   section documents the ownership and layers the wave 5-b refinements
+   on top (audit 0-e P2-37/38 + craft-floor fixes). If a future wave
+   splits the admin-extras sheet into admin.css, move BOTH sections
+   together.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Ruling #2 — the settings labels are Arabic; uppercase is a no-op and
+   0.05em letter-spacing breaks cursive joining. Same specificity as
+   the base rule, later source order wins. */
+.settings-label {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Settings resource links: real 44px hit area (craft floor) + the
+   page-level padding rhythm. Links are <Link> now (no full reloads),
+   still rendered as <a> so the base rules above keep applying. */
+.settings-links a {
+  min-block-size: 44px;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+}
+
+/* The extras' authored moment — a subtle one-shot stagger for the
+   digital stat rows and the analysis top-courses list (capped at
+   --motion-stagger-cap by the TSX via --stagger-i). */
+.digital-stat-row,
+.top-courses-row {
+  animation: madarek-admin-extras-in var(--motion-duration-short) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(var(--motion-stagger-step) * var(--stagger-i, 0));
+}
+@keyframes madarek-admin-extras-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The wrapper-as-pill search field: polish.css's pages-layer bare-input
+   reset (height:auto / padding:0, higher specificity than the base
+   .admin-students-input rule) leaves the pill content-sized (~20px)
+   next to the 36px faculty select. Size the PILL — the wrapper owns
+   the surface — and let the bare input fill it (0,2,0 out-specifies
+   the polish reset's 0,1,1 across the same layer). */
+.admin-students-search { min-block-size: 36px; }
+.admin-students-search .admin-students-input {
+  align-self: stretch;
+  padding-inline: 0;
+}
+
+/* Mobile touch floor (craft floor: ≥44px) for the students toolbar
+   (the pill + the 36px select) and the pagination buttons. The pill
+   rule wins on specificity; the pagination !important is the same
+   documented layer-precedence exception wave 5-c used — polish's
+   overrides-layer mobile block pins .btn.sm at min-block-size 32px
+   and a pages-layer rule can never win without it. */
+@media (max-width: 640px) {
+  .admin-students-input,
+  .admin-students-search { min-block-size: 44px; }
+  .admin-pagination-actions .btn {
+    min-inline-size: 44px;
+    min-block-size: 44px !important;
+  }
+}
+
+/* Reduced-motion off-switch (guardrail #6). */
+@media (prefers-reduced-motion: reduce) {
+  .digital-stat-row,
+  .top-courses-row { animation: none; }
+}
+
 }

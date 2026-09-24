@@ -3,16 +3,17 @@
  *
  *   /admin/sync   show last run, stats, facts by category, manual trigger
  */
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   RefreshCw, CheckCircle2, AlertTriangle, Clock, Database,
-  ArrowDownToLine, AlertCircle,
+  ArrowDownToLine, AlertCircle, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
-import { PageSkeleton, ErrorState } from '../../components/primitives/States';
+import { Card, MetricCard, Badge, AlertRow } from '../../components/primitives';
+import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
+import { apiErrorMessage } from '../../hooks/useResources';
 import { formatDate } from '../../utils/numbers';
 
 interface SyncRun {
@@ -44,11 +45,26 @@ interface SyncResponse {
   categories: Array<{ category: string; count: number; items: FactItem[] }>;
 }
 
+/** Arabic labels for sync run statuses (raw enums never reach the UI). */
+const STATUS_LABEL: Record<SyncRun['status'], string> = {
+  RUNNING: 'قيد التنفيذ',
+  SUCCESS: 'ناجحة',
+  PARTIAL: 'جزئية',
+  FAILED: 'فاشلة',
+};
+
 const STATUS_COLOR: Record<SyncRun['status'], 'green' | 'amber' | 'red' | 'brand'> = {
   SUCCESS: 'green',
   PARTIAL: 'amber',
   FAILED: 'red',
   RUNNING: 'brand',
+};
+
+const STATUS_ICON: Record<SyncRun['status'], LucideIcon> = {
+  SUCCESS: CheckCircle2,
+  FAILED: AlertCircle,
+  RUNNING: RefreshCw,
+  PARTIAL: AlertTriangle,
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -94,12 +110,42 @@ export function AdminSyncPage() {
 
   if (isPending) return <PageSkeleton />;
   // Distinguish error (retry) from "no sync ever run" (empty state).
-  // Previously both fell through to "لا توجد بيانات" with no retry path.
   if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
-  if (!data) return <div className="page"><Card>لا توجد بيانات</Card></div>;
 
-  const lastRun = data.latestRun;
-  const lastSuccess = data.runHistory.find((r) => r.status === 'SUCCESS') ?? null;
+  const lastRun = data?.latestRun ?? null;
+  const lastSuccess = data?.runHistory.find((r) => r.status === 'SUCCESS') ?? null;
+
+  // Resolved payload with nothing in it → honest empty state, not a blank page.
+  if (!data) {
+    return (
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
+            <p className="page-subtitle">استيراد البيانات العامة من الموقع الرسمي للجامعة.</p>
+          </div>
+        </header>
+        <Card>
+          <EmptyState
+            icon={Database}
+            title="لم تُنفَّذ أي مزامنة بعد"
+            description="شغّل المزامنة الأولى لاستيراد بيانات الجامعة العامة من موقعها الرسمي."
+            action={
+              <button
+                type="button"
+                className="btn primary"
+                onClick={() => trigger.mutate()}
+                disabled={trigger.isPending}
+              >
+                <Icon icon={RefreshCw} size={14} className={trigger.isPending ? 'spin' : undefined} />
+                {trigger.isPending ? 'جارٍ المزامنة…' : 'مزامنة الآن'}
+              </button>
+            }
+          />
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -107,7 +153,7 @@ export function AdminSyncPage() {
         <div className="page-title-block">
           <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
           <p className="page-subtitle">
-            استيراد البيانات العامة من <span className="font-mono">zu.edu.ly</span> يومياً للحفاظ على
+            استيراد البيانات العامة من <span className="font-mono"><bdi>zu.edu.ly</bdi></span> يومياً للحفاظ على
             معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.
           </p>
         </div>
@@ -122,6 +168,27 @@ export function AdminSyncPage() {
         </button>
       </header>
 
+      {/* Manual-trigger failure — surfaced inline with a retry, never silent */}
+      {trigger.isError && (
+        <AlertRow
+          color="red"
+          icon={AlertCircle}
+          title="تعذّر تشغيل المزامنة"
+          description={apiErrorMessage(trigger.error, 'لم يستجب الخادم للطلب. تحقّق من الاتصال ثم أعد المحاولة.')}
+          actions={
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={() => trigger.mutate()}
+              disabled={trigger.isPending}
+            >
+              <Icon icon={RefreshCw} size={13} />
+              إعادة المحاولة
+            </button>
+          }
+        />
+      )}
+
       {/* KPI strip */}
       <div className="grid-4">
         <MetricCard
@@ -133,38 +200,35 @@ export function AdminSyncPage() {
         />
         <MetricCard
           icon={Clock}
-          label="آخر مزامنة"
+          label="آخر مزامنة ناجحة"
           value={fmtRelative(lastSuccess?.completedAt ?? null)}
-          change={lastSuccess?.source ?? '—'}
+          change={lastSuccess ? <bdi>{lastSuccess.source}</bdi> : 'لم تكتمل بعد'}
           color="brand"
         />
         <MetricCard
-          icon={CheckCircle2}
+          icon={STATUS_ICON[lastRun ? lastRun.status : 'SUCCESS']}
           label="حالة آخر تشغيل"
-          value={lastRun?.status ?? '—'}
-          change={lastRun?.durationMs ? `${(lastRun.durationMs / 1000).toFixed(1)} ث` : ''}
+          value={lastRun ? (STATUS_LABEL[lastRun.status] ?? lastRun.status) : '—'}
+          change={lastRun?.durationMs ? <>{(lastRun.durationMs / 1000).toFixed(1)} ث</> : ''}
           color={lastRun ? STATUS_COLOR[lastRun.status] : 'brand'}
         />
         <MetricCard
           icon={ArrowDownToLine}
           label="إضافات هذا التشغيل"
-          value={lastRun ? `${lastRun.factsAdded + lastRun.factsUpdated}` : '0'}
-          change={lastRun ? `${lastRun.factsAdded} جديد · ${lastRun.factsUpdated} محدّث` : ''}
+          value={lastRun ? `${lastRun.factsAdded + lastRun.factsUpdated}` : '—'}
+          change={lastRun ? `${lastRun.factsAdded} جديد · ${lastRun.factsUpdated} محدّث` : 'لم يُشغَّل بعد'}
           color="purple"
         />
       </div>
 
-      {/* Latest run */}
+      {/* Latest run failure details */}
       {lastRun && lastRun.status !== 'SUCCESS' && lastRun.errorMsg && (
-        <Card>
-          <div className="flex items-center gap-3">
-            <Icon icon={AlertCircle} size={20} style={{ color: 'var(--danger)' }} />
-            <div style={{ flex: 1 }}>
-              <div className="text-sm" style={{ fontWeight: 600 }}>التشغيل الأخير فشل</div>
-              <div className="text-xs text-muted font-mono">{lastRun.errorMsg}</div>
-            </div>
-          </div>
-        </Card>
+        <AlertRow
+          color="red"
+          icon={AlertCircle}
+          title={lastRun.status === 'FAILED' ? 'التشغيل الأخير فشل' : 'التشغيل الأخير اكتمل جزئياً'}
+          description={<span className="font-mono text-xs"><bdi>{lastRun.errorMsg}</bdi></span>}
+        />
       )}
 
       {lastRun?.notes && (
@@ -175,65 +239,99 @@ export function AdminSyncPage() {
         </Card>
       )}
 
-      {/* Run history */}
+      {/* Run history — .table system, stacks to cards on phones (tbl-stack) */}
       <Card title="سجلّ المزامنات" icon={Clock} subtitle="آخر 10 عمليات">
-        <div className="flex-col gap-2">
-          {data.runHistory.map((r) => (
-            <div key={r.id} className="run-row">
-              <div className="run-row-status">
-                {r.status === 'SUCCESS' && <Icon icon={CheckCircle2} size={16} style={{ color: 'var(--success)' }} />}
-                {r.status === 'FAILED' && <Icon icon={AlertCircle} size={16} style={{ color: 'var(--danger)' }} />}
-                {r.status === 'RUNNING' && <Icon icon={RefreshCw} size={16} className="spin" style={{ color: 'var(--accent)' }} />}
-                {r.status === 'PARTIAL' && <Icon icon={AlertTriangle} size={16} style={{ color: 'var(--warning)' }} />}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div className="text-sm">
-                  <span style={{ fontWeight: 600 }}>
-                    {formatDate(r.startedAt, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                  <span className="text-xxs text-subtle font-mono" style={{ marginInlineStart: 8 }}>
-                    {r.source}
-                  </span>
-                </div>
-                <div className="text-xs text-muted">
-                  {r.factsAdded} حقل جديد · {r.factsUpdated} محدّث
-                  {r.durationMs ? ` · ${(r.durationMs / 1000).toFixed(1)} ث` : ''}
-                </div>
-              </div>
-              <Badge color={STATUS_COLOR[r.status]}>{r.status}</Badge>
-            </div>
-          ))}
-        </div>
+        {data.runHistory.length === 0 ? (
+          <EmptyState
+            icon={Clock}
+            title="لا يوجد سجلّ مزامنات بعد"
+            description="ستظهر العمليات هنا فور تشغيل المزامنة الأولى."
+          />
+        ) : (
+          <div className="table-wrap">
+            <table className="table tbl-stack admin-sync-runs">
+              <thead>
+                <tr>
+                  <th>الحالة</th>
+                  <th>وقت البدء</th>
+                  <th>المصدر</th>
+                  <th className="admin-table-num">حقول جديدة</th>
+                  <th className="admin-table-num">حقول محدّثة</th>
+                  <th className="admin-table-num">المدة</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.runHistory.map((r, i) => {
+                  const StatusIcon = STATUS_ICON[r.status];
+                  return (
+                    <tr key={r.id} style={{ '--run-i': i } as CSSProperties}>
+                      <td data-label="الحالة">
+                        <Badge color={STATUS_COLOR[r.status]}>
+                          <Icon icon={StatusIcon} size={11} className={r.status === 'RUNNING' ? 'spin' : undefined} />
+                          {STATUS_LABEL[r.status] ?? r.status}
+                        </Badge>
+                      </td>
+                      <td data-label="وقت البدء">
+                        <bdi>{formatDate(r.startedAt, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</bdi>
+                      </td>
+                      <td data-label="المصدر" className="font-mono text-subtle">
+                        <bdi>{r.source}</bdi>
+                      </td>
+                      <td className="admin-table-num font-mono" data-label="حقول جديدة">{r.factsAdded}</td>
+                      <td className="admin-table-num font-mono" data-label="حقول محدّثة">{r.factsUpdated}</td>
+                      <td className="admin-table-num font-mono" data-label="المدة">
+                        {r.durationMs ? `${(r.durationMs / 1000).toFixed(1)} ث` : '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
 
       {/* Synced data preview by category */}
       <Card title="البيانات المُزامنة" icon={Database} subtitle="مجمّعة حسب الفئة — انقر للتوسيع">
-        <div className="flex-col gap-2">
-          {data.categories.map((cat) => (
-            <div key={cat.category} className="category-row">
-              <button
-                type="button"
-                className="category-row-head"
-                onClick={() => setOpenCategory(openCategory === cat.category ? null : cat.category)}
-              >
-                <span style={{ fontWeight: 600 }}>{CATEGORY_LABEL[cat.category] ?? cat.category}</span>
-                <Badge>{cat.count} حقل</Badge>
-              </button>
-              {openCategory === cat.category && (
-                <div className="category-row-body">
-                  {cat.items.map((f) => (
-                    <div key={f.key} className="fact-row">
-                      <code className="fact-key">{f.key}</code>
-                      <span className="fact-value">{f.value}</span>
-                      <span className="fact-source">{f.source}</span>
-                      {f.isStale && <Badge color="amber">قديم</Badge>}
+        {data.categories.length === 0 ? (
+          <EmptyState
+            icon={Database}
+            title="لا توجد بيانات مُزامنة بعد"
+            description="شغّل المزامنة لاستيراد حقول الجامعة وتصنيفها هنا."
+          />
+        ) : (
+          <div className="flex-col gap-2">
+            {data.categories.map((cat) => {
+              const isOpen = openCategory === cat.category;
+              return (
+                <div key={cat.category} className="category-row">
+                  <button
+                    type="button"
+                    className="category-row-head"
+                    aria-expanded={isOpen}
+                    aria-controls={`sync-cat-${cat.category}`}
+                    onClick={() => setOpenCategory(isOpen ? null : cat.category)}
+                  >
+                    <span style={{ fontWeight: 600 }}>{CATEGORY_LABEL[cat.category] ?? cat.category}</span>
+                    <Badge>{cat.count} حقل</Badge>
+                  </button>
+                  {isOpen && (
+                    <div className="category-row-body" id={`sync-cat-${cat.category}`}>
+                      {cat.items.map((f) => (
+                        <div key={f.key} className="fact-row">
+                          <code className="fact-key"><bdi>{f.key}</bdi></code>
+                          <span className="fact-value">{f.value}</span>
+                          <span className="fact-source"><bdi>{f.source}</bdi></span>
+                          {f.isStale && <Badge color="amber">قديم</Badge>}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </Card>
     </div>
   );

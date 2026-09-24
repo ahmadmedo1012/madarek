@@ -21,11 +21,11 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
-import { DetailSkeleton } from '../../components/primitives/States';
+import { DetailSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
-  useMyTeacherProfile, useUpdateTeacherProfile,
+  useMyTeacherProfile, useUpdateTeacherProfile, apiErrorMessage,
   type TeacherFullProfile,
 } from '../../hooks/useResources';
 import { formatDate } from '../../utils/numbers';
@@ -43,7 +43,7 @@ const DEGREE_LABEL: Record<string, string> = {
 };
 
 export default function TeacherProfilePage() {
-  const { data: profile, isLoading } = useMyTeacherProfile();
+  const { data: profile, isPending, isError, error, refetch } = useMyTeacherProfile();
   const update = useUpdateTeacherProfile();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<{
@@ -52,16 +52,45 @@ export default function TeacherProfilePage() {
     officeHours: string;
     websiteUrl: string;
   } | null>(null);
+  // Inline mutation feedback (audit 0-e P0-12): the previous saveEdit
+  // awaited mutateAsync with no catch — API-down left the edit silently
+  // stuck + an unhandled rejection.
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<number | null>(null);
 
-  if (isLoading) return <DetailSkeleton />;
-  if (!profile) {
+  if (isPending) return <DetailSkeleton />;
+  if (isError) {
     return (
       <div className="page">
-        <Card>
-          <div className="empty-state">
-            <Icon icon={AlertCircle} size={28} className="text-subtle" />
-            <p className="text-sm text-muted">لا يوجد ملف أستاذ مرتبط بهذا الحساب.</p>
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">الملف الأكاديمي</h1>
           </div>
+        </header>
+        <ErrorState
+          message="تعذَّر تحميل ملفك الأكاديمي"
+          error={error}
+          onRetry={() => refetch()}
+        />
+      </div>
+    );
+  }
+  if (!profile) {
+    // Resolved, but the account has no teacher profile attached — an
+    // honest distinct state (previously conflated with API errors).
+    return (
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">الملف الأكاديمي</h1>
+          </div>
+        </header>
+        <Card>
+          <EmptyState
+            icon={AlertCircle}
+            title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
+            description="تواصل مع إدارة شؤون أعضاء هيئة التدريس لربط ملفك الأكاديمي بهذا الحساب."
+          />
         </Card>
       </div>
     );
@@ -74,28 +103,39 @@ export default function TeacherProfilePage() {
       officeHours: profile.officeHours ?? '',
       websiteUrl: profile.websiteUrl ?? '',
     });
+    setSaveError(null);
+    setSavedAt(null);
     setEditing(true);
   };
 
   const cancelEdit = () => {
     setDraft(null);
+    setSaveError(null);
     setEditing(false);
   };
 
   const saveEdit = async () => {
     if (!draft) return;
-    await update.mutateAsync({
-      bio: draft.bio || null,
-      officeLocation: draft.officeLocation || null,
-      officeHours: draft.officeHours || null,
-      websiteUrl: draft.websiteUrl || null,
-    });
-    setEditing(false);
-    setDraft(null);
+    setSaveError(null);
+    try {
+      await update.mutateAsync({
+        bio: draft.bio || null,
+        officeLocation: draft.officeLocation || null,
+        officeHours: draft.officeHours || null,
+        websiteUrl: draft.websiteUrl || null,
+      });
+      setEditing(false);
+      setDraft(null);
+      setSavedAt(Date.now());
+    } catch (err) {
+      // Keep the edit open with the entered values; the Arabic error
+      // renders inline so the teacher can retry without losing work.
+      setSaveError(apiErrorMessage(err, 'تعذَّر حفظ تعديلات الملف — تحقّق من اتصالك ثم أعد المحاولة.'));
+    }
   };
 
   return (
-    <div className="page">
+    <div className="page page-profile">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الملف الأكاديمي</h1>
@@ -108,16 +148,34 @@ export default function TeacherProfilePage() {
             <Icon icon={Edit3} size={14} /> تعديل البيانات الشخصية
           </button>
         ) : (
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div className="flex gap-2">
             <button type="button" className="btn ghost" onClick={cancelEdit} disabled={update.isPending}>
               <Icon icon={X} size={14} /> إلغاء
             </button>
-            <button type="button" className="btn primary" onClick={saveEdit} disabled={update.isPending}>
+            <button type="button" className="btn primary" onClick={() => void saveEdit()} disabled={update.isPending}>
               <Icon icon={Save} size={14} /> {update.isPending ? 'جارٍ الحفظ…' : 'حفظ'}
             </button>
           </div>
         )}
       </header>
+
+      {/* Save feedback — success confirms, failure names the action + retry */}
+      {(saveError || savedAt !== null) && (
+        <div
+          className={`form-feedback${saveError ? ' fail' : ' ok'}`}
+          role={saveError ? 'alert' : 'status'}
+        >
+          <Icon icon={saveError ? AlertCircle : ShieldCheck} size={14} />
+          <span className="flex-1">
+            {saveError ?? 'تمّ حفظ تعديلات ملفك الأكاديمي.'}
+          </span>
+          {saveError && (
+            <button type="button" className="btn ghost sm" onClick={() => void saveEdit()} disabled={update.isPending}>
+              <Icon icon={Save} size={12} /> إعادة المحاولة
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Header: avatar + name + rank + verification */}
       <Card>
@@ -127,7 +185,7 @@ export default function TeacherProfilePage() {
             color={profile.avatarColor ?? undefined}
             size={72}
           />
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="flex-1">
             <h2 className="teacher-name">
               د. {profile.name}
               {profile.verifiedAt && (
@@ -145,7 +203,9 @@ export default function TeacherProfilePage() {
               <span>{profile.faculty}</span>
             </div>
             <div className="teacher-contact font-mono text-xxs">
-              <span>{profile.email}</span>
+              {/* email is a Latin run inside an RTL line — isolate it so
+                  punctuation never reorders */}
+              <bdi>{profile.email}</bdi>
             </div>
           </div>
         </div>
@@ -187,11 +247,9 @@ export default function TeacherProfilePage() {
             onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
           />
         ) : profile.bio ? (
-          <p style={{ margin: 0, fontSize: 'var(--fs-sm)', color: 'var(--text)', lineHeight: 1.85 }}>
-            {profile.bio}
-          </p>
+          <p className="profile-bio">{profile.bio}</p>
         ) : (
-          <div className="text-sm text-muted">لم تُضف نبذة بعد. اضغط "تعديل" لإضافة وصف عن خلفيتك الأكاديمية.</div>
+          <div className="text-sm text-muted">لم تُضف نبذة بعد. اضغط «تعديل» لإضافة وصف عن خلفيتك الأكاديمية.</div>
         )}
       </Card>
 
@@ -238,12 +296,13 @@ export default function TeacherProfilePage() {
           {editing && draft ? (
             <input
               className="input"
+              dir="ltr"
               placeholder="https://example.com/profile"
               value={draft.websiteUrl}
               onChange={(e) => setDraft({ ...draft, websiteUrl: e.target.value })}
             />
           ) : profile.websiteUrl ? (
-            <a href={profile.websiteUrl} target="_blank" rel="noreferrer" className="font-mono text-xs">
+            <a href={profile.websiteUrl} target="_blank" rel="noreferrer" className="font-mono text-xs" dir="ltr">
               {profile.websiteUrl}
             </a>
           ) : (
@@ -258,7 +317,7 @@ export default function TeacherProfilePage() {
           {profile.subjectKeywords.length === 0 ? (
             <div className="text-sm text-muted">لم تُسجَّل مجالات بحثية بعد.</div>
           ) : (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            <div className="flex flex-wrap gap-2">
               {profile.subjectKeywords.map((kw) => <Badge key={kw}>{kw}</Badge>)}
             </div>
           )}
@@ -270,10 +329,10 @@ export default function TeacherProfilePage() {
             <div className="flex-col gap-2">
               {profile.certifications.map((c, i) => (
                 <div key={i} className="cert-row">
-                  <Icon icon={GraduationCap} size={14} style={{ color: 'var(--accent)' }} />
-                  <div style={{ flex: 1 }}>
-                    <div className="text-sm" style={{ fontWeight: 600 }}>{c.title}</div>
-                    <div className="text-xxs text-subtle">{c.issuer} · {c.year}</div>
+                  <Icon icon={GraduationCap} size={14} style={{ color: 'var(--accent-ink)' }} />
+                  <div className="flex-1">
+                    <div className="cert-row-title">{c.title}</div>
+                    <div className="text-xxs text-subtle">{c.issuer} · <bdi>{c.year}</bdi></div>
                   </div>
                 </div>
               ))}
@@ -285,17 +344,18 @@ export default function TeacherProfilePage() {
       {/* Publications & awards */}
       <Card title="المنشورات العلمية" icon={FileText} subtitle={`${profile.publications.length} منشور`}>
         {profile.publications.length === 0 ? (
-          <div className="empty-state">
-            <Icon icon={FileText} size={24} className="text-subtle" />
-            <p className="text-sm text-muted">لم تُضف منشورات بعد.</p>
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="لم تُضف منشورات بعد"
+            description="تُدار منشوراتك من ملفك الأكاديمي لدى إدارة الجامعة."
+          />
         ) : (
           <div className="flex-col gap-2">
             {profile.publications.map((p, i) => (
               <div key={i} className="publication-row">
-                <span className="font-mono text-xxs text-subtle">{p.year}</span>
-                <div style={{ flex: 1 }}>
-                  <div className="text-sm" style={{ fontWeight: 600 }}>{p.title}</div>
+                <bdi className="font-mono text-xxs text-subtle">{p.year}</bdi>
+                <div className="flex-1">
+                  <div className="cert-row-title">{p.title}</div>
                   {p.venue && <div className="text-xxs text-subtle">{p.venue}</div>}
                 </div>
                 {p.url && (
@@ -311,19 +371,20 @@ export default function TeacherProfilePage() {
 
       <Card title="التكريمات والجوائز" icon={Award} subtitle={`${profile.awards.length} جائزة`}>
         {profile.awards.length === 0 ? (
-          <div className="empty-state">
-            <Icon icon={Award} size={24} className="text-subtle" />
-            <p className="text-sm text-muted">لم تُضف جوائز بعد.</p>
-          </div>
+          <EmptyState
+            icon={Award}
+            title="لم تُضف جوائز بعد"
+            description="تُدار تكريماتك وجوائزك من ملفك الأكاديمي لدى إدارة الجامعة."
+          />
         ) : (
           <div className="flex-col gap-2">
             {profile.awards.map((a, i) => (
               <div key={i} className="cert-row">
-                <Icon icon={Award} size={14} style={{ color: 'var(--gold)' }} />
-                <div style={{ flex: 1 }}>
-                  <div className="text-sm" style={{ fontWeight: 600 }}>{a.title}</div>
+                <Icon icon={Award} size={14} style={{ color: 'var(--gold-ink)' }} />
+                <div className="flex-1">
+                  <div className="cert-row-title">{a.title}</div>
                   <div className="text-xxs text-subtle">
-                    {a.issuer ? `${a.issuer} · ` : ''}{a.year}
+                    {a.issuer ? `${a.issuer} · ` : ''}<bdi>{a.year}</bdi>
                   </div>
                 </div>
               </div>
@@ -335,10 +396,11 @@ export default function TeacherProfilePage() {
       {/* Courses currently teaching */}
       <Card title="المقررات الحالية" icon={BookOpen} subtitle={`${profile.courses.length} مقرر هذا الفصل`}>
         {profile.courses.length === 0 ? (
-          <div className="empty-state">
-            <Icon icon={BookOpen} size={24} className="text-subtle" />
-            <p className="text-sm text-muted">لم يُسند إليك أي مقرر بعد.</p>
-          </div>
+          <EmptyState
+            icon={BookOpen}
+            title="لم يُسند إليك أي مقرر بعد"
+            description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
+          />
         ) : (
           <div className="track-grid">
             {profile.courses.map((c) => (
@@ -348,18 +410,14 @@ export default function TeacherProfilePage() {
                 className="track-card"
                 style={{ ['--track-accent' as never]: c.themeColor ?? 'var(--accent)' }}
               >
-                <div
-                  className="track-card-icon"
-                  style={{
-                    background: `${c.themeColor ?? 'var(--accent)'}1a`,
-                    color: c.themeColor ?? 'var(--accent)',
-                  }}
-                >
+                {/* tint painted from --track-accent (training.css) — the old
+                    inline `${themeColor}1a` alpha was invalid CSS */}
+                <div className="track-card-icon">
                   <EmojiIcon emoji={c.iconEmoji ?? '📚'} size={22} />
                 </div>
                 <div className="track-card-body">
-                  <div className="track-card-cat">{c.code} · {c.term}</div>
-                  <div className="track-card-title">{c.name}</div>
+                  <div className="track-card-cat"><bdi>{c.code}</bdi> · {c.term}</div>
+                  <div className="track-card-title" title={c.name}>{c.name}</div>
                   <div className="track-card-meta">
                     <span><Icon icon={Users2} size={12} /> {c.enrolled} طالب</span>
                     <span>{c.credits} وحدة</span>

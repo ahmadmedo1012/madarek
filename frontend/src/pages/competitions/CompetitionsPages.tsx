@@ -1,14 +1,16 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
-  Trophy, Calendar, Award, Plus, Filter, ArrowLeft, Lock, Send, FileText, X, Check, Gavel,
+  Trophy, Calendar, Award, Plus, Filter, ChevronRight, Lock, Send, FileText, X, Check, Gavel,
+  AlertTriangle,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
+import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -32,6 +34,12 @@ const STATUS_COLOR: Record<CompetitionRow['status'], 'green' | 'amber' | 'gold'>
 
 const CATEGORIES = ['بحث', 'برمجة', 'ابتكار', 'تصميم', 'محاضرة', 'ريادة أعمال', 'أخرى'];
 const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '📊']; // allow-emoji: admin icon-picker palette (user-supplied content)
+
+/** JS cadence (not CSS motion): how long the rank-change pulse class
+ *  stays on a leaderboard row before it is cleared so a later change
+ *  can re-trigger it. Comfortably longer than the token-driven
+ *  --motion-duration-stat animation it hosts. */
+const RANK_PULSE_CLEAR_MS = 1200;
 
 function formatDeadline(iso: string): string {
   const d = new Date(iso);
@@ -78,6 +86,9 @@ export function CompetitionsIndexPage() {
       return days >= 0 && days <= 7;
     }).length,
   };
+  // Honest KPI values: '…' while the list loads, '—' when it failed
+  // (the ErrorState below carries the retry) — never a fake zero.
+  const kpiValue = (n: number) => (q.isPending ? '…' : q.isError ? '—' : n.toLocaleString('ar-LY'));
 
   return (
     <div className="page">
@@ -96,14 +107,14 @@ export function CompetitionsIndexPage() {
 
       {/* KPI strip */}
       <div className="grid-3">
-        <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={stats.open.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={Calendar} label="تنتهي قريباً" value={stats.closingSoon.toLocaleString('ar-LY')} color="amber" />
-        <MetricCard icon={Award} label="إجمالي المشاركات" value={stats.totalEntries.toLocaleString('ar-LY')} color="purple" />
+        <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={kpiValue(stats.open)} color="green" />
+        <MetricCard icon={Calendar} label="تنتهي قريباً" value={kpiValue(stats.closingSoon)} color="amber" />
+        <MetricCard icon={Award} label="إجمالي المشاركات" value={kpiValue(stats.totalEntries)} color="purple" />
       </div>
 
       {/* Filter chips */}
       <div className="feed-toolbar">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" role="group" aria-label="تصفية المسابقات بحسب الحالة">
           <Icon icon={Filter} size={14} className="text-subtle" />
           <span className="text-xs text-subtle">تصفية:</span>
           {([
@@ -113,6 +124,7 @@ export function CompetitionsIndexPage() {
               key={v}
               type="button"
               className={`pill${filter === v ? ' on' : ''}`}
+              aria-pressed={filter === v}
               onClick={() => setFilter(v)}
             >{l}</button>
           ))}
@@ -122,10 +134,30 @@ export function CompetitionsIndexPage() {
       {q.isPending ? <LoadingState /> :
        q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> :
        visible.length === 0 ? (
-        <EmptyState
-          title={filter === 'all' ? 'لا توجد مسابقات بعد' : 'لا توجد نتائج لهذه الفئة'}
-          description={canRun ? 'يمكنك إنشاء أول مسابقة بالنقر على "مسابقة جديدة".' : undefined}
-        />
+        filter === 'all' ? (
+          <EmptyState
+            title="لا توجد مسابقات بعد"
+            description={canRun
+              ? 'ابدأ أوّل تحدٍّ للمعرفة على المنصّة وادعُ الطلاب للمشاركة.'
+              : 'ستظهر المسابقات المتاحة هنا فور إطلاقها من منظّميها.'}
+            action={canRun ? (
+              <button type="button" className="btn primary sm" onClick={() => setCreating(true)}>
+                <Icon icon={Plus} size={14} />
+                أنشئ أوّل مسابقة
+              </button>
+            ) : undefined}
+          />
+        ) : (
+          <EmptyState
+            title="لا توجد مسابقات في هذه الفئة"
+            description="جرّب فئة أخرى أو اعرض كل المسابقات."
+            action={(
+              <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
+                عرض كل المسابقات
+              </button>
+            )}
+          />
+        )
       ) : (
         <div className="comp-index-grid">
           {visible.map((c) => (
@@ -165,6 +197,37 @@ export function CompetitionDetailPage() {
   const closer = useCloseCompetition(id ?? '');
   const judge = useJudgeCompetition(id ?? '');
   const [entering, setEntering] = useState(false);
+  // Destructive/significant actions confirm before firing.
+  const [confirming, setConfirming] = useState<'close' | 'judge' | null>(null);
+  // Rank/score movement tracking for the leaderboard rank-change pulse
+  // (the authored moment): a row whose rank OR score changed since the
+  // previous payload flashes once. Declared before the early returns so
+  // the hook order stays stable across the pending → data transition.
+  const prevBoardRef = useRef<Map<string, { score: number | null; rank: number }>>(new Map());
+  const [pulseIds, setPulseIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const data = q.data;
+    if (!data || data.status !== 'JUDGED') {
+      prevBoardRef.current = new Map();
+      return;
+    }
+    const sorted = [...data.entries].sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+    const board = new Map<string, { score: number | null; rank: number }>();
+    sorted.forEach((e, i) => board.set(e.id, { score: e.score, rank: i }));
+    const prev = prevBoardRef.current;
+    const changed = new Set<string>();
+    board.forEach((v, eid) => {
+      const p = prev.get(eid);
+      if (p && (p.score !== v.score || p.rank !== v.rank)) changed.add(eid);
+    });
+    prevBoardRef.current = board;
+    if (changed.size > 0) {
+      setPulseIds(changed);
+      const t = window.setTimeout(() => setPulseIds(new Set()), RANK_PULSE_CLEAR_MS);
+      return () => window.clearTimeout(t);
+    }
+  }, [q.data]);
 
   if (q.isPending) return <div className="page"><LoadingState /></div>;
   if (q.isError || !q.data) return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
@@ -185,6 +248,7 @@ export function CompetitionDetailPage() {
   const canEnter = c.status === 'OPEN' && new Date(c.deadline) > new Date();
   const allScored = c.entries.length > 0 && c.entries.every((e) => e.score !== null);
   const someScored = c.entries.some((e) => e.score !== null);
+  const unscoredCount = c.entries.filter((e) => e.score === null).length;
   const sortedEntries = c.status === 'JUDGED'
     ? [...c.entries].sort((a, b) => (b.score ?? -1) - (a.score ?? -1))
     : c.entries;
@@ -192,7 +256,7 @@ export function CompetitionDetailPage() {
   return (
     <div className="page comp-detail">
       <button type="button" className="btn ghost sm" style={{ alignSelf: 'flex-start' }} onClick={() => navigate('/competitions')}>
-        <Icon icon={ArrowLeft} size={14} />
+        <Icon icon={ChevronRight} size={14} />
         كل المسابقات
       </button>
 
@@ -208,7 +272,7 @@ export function CompetitionDetailPage() {
           <p className="comp-hero-desc">{c.description}</p>
           <div className="comp-hero-stats">
             <div><Icon icon={Calendar} size={13} /> {formatDeadline(c.deadline)}</div>
-            <div><Icon icon={Award} size={13} /> {c._count.entries} مشترك</div>
+            <div><Icon icon={Award} size={13} /> <bdi>{c._count.entries}</bdi> مشترك</div>
             {c.prize && <div><Icon icon={Trophy} size={13} /> {c.prize}</div>}
             <div className="text-subtle">نظَّمها {c.organizer.firstName} {c.organizer.lastName}</div>
           </div>
@@ -223,18 +287,18 @@ export function CompetitionDetailPage() {
               <button
                 type="button"
                 className="btn ghost"
-                onClick={() => closer.mutate()}
+                onClick={() => setConfirming('close')}
                 disabled={closer.isPending}
               >
                 <Icon icon={Lock} size={14} />
-                إغلاق المسابقة
+                {closer.isPending ? 'جارٍ الإغلاق…' : 'إغلاق المسابقة'}
               </button>
             )}
             {isOrganizer && c.status === 'CLOSED' && (
               <button
                 type="button"
                 className="btn primary"
-                onClick={() => judge.mutate()}
+                onClick={() => setConfirming('judge')}
                 disabled={judge.isPending || !someScored}
                 title={!someScored ? 'قَيِّم مشاركة واحدة على الأقلّ أوّلاً' : undefined}
               >
@@ -243,22 +307,78 @@ export function CompetitionDetailPage() {
               </button>
             )}
           </div>
+          {/* Close/judge failures surface inline with a working retry —
+              they were completely silent before (audit 0-e P1-30). */}
+          {(closer.isError || judge.isError) && (
+            <div className="form-error" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+              <Icon icon={AlertTriangle} size={14} />
+              <span className="form-error-msg">
+                {closer.isError ? 'تعذَّر إغلاق المسابقة.' : 'تعذَّر إعلان النتائج.'} تحقّق من اتصالك وحاول مرة أخرى.
+              </span>
+              <button
+                type="button"
+                className="btn ghost sm"
+                onClick={() => (closer.isError ? closer.mutate() : judge.mutate())}
+              >
+                إعادة المحاولة
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Entries list */}
+      {/* Entries list — JUDGED competitions render the shared
+          leaderboard grammar (training.css .leaderboard-* family:
+          rank chips with medal treatment, entrance stagger via --lb-i,
+          tabular points), OPEN/CLOSED keep the comp-entry rows with
+          the organizer scoring affordances. */}
       <Card title="المشاركات" subtitle={`${c.entries.length} مشاركة${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
         {c.entries.length === 0 ? (
-          <EmptyState title="لم يشارك أحد بعد" description={canEnter ? 'كن أوّل من يشارك!' : undefined} />
+          <EmptyState
+            title="لم يشارك أحد بعد"
+            description={canEnter ? 'كن أوّل من يشارك!' : 'انتهت مهلة التقديم على هذه المسابقة.'}
+            action={canEnter ? (
+              <button type="button" className="btn primary sm" onClick={() => setEntering(true)}>
+                <Icon icon={Send} size={13} />
+                قدّم مشاركتك
+              </button>
+            ) : undefined}
+          />
+        ) : c.status === 'JUDGED' ? (
+          <ol className="leaderboard-list" aria-label="لوحة الترتيب النهائية">
+            {sortedEntries.map((e, i) => (
+              <li
+                key={e.id}
+                className={`leaderboard-row${pulseIds.has(e.id) ? ' rank-pulse' : ''}`}
+                style={{ ['--lb-i' as never]: Math.min(i, 6) }}
+              >
+                <span
+                  className={`leaderboard-rank${i < 3 ? ` rank-${i + 1}` : ''}`}
+                  aria-label={`الترتيب ${i + 1}`}
+                >
+                  {i + 1}
+                </span>
+                <UserAvatar
+                  initials={e.user.avatarInitials ?? `${e.user.firstName[0]}${e.user.lastName[0]}`}
+                  color={e.user.avatarColor ?? undefined}
+                  size={32}
+                />
+                <div className="list-row-body">
+                  <span className="list-row-title">{e.title}</span>
+                  <span className="list-row-sub">
+                    {e.user.firstName} {e.user.lastName} · {formatRelative(e.submittedAt)}
+                  </span>
+                </div>
+                {e.score !== null && (
+                  <span className="leaderboard-points"><bdi>{e.score}</bdi>/100</span>
+                )}
+              </li>
+            ))}
+          </ol>
         ) : (
           <ul className="comp-entry-list">
-            {sortedEntries.map((e, i) => (
+            {sortedEntries.map((e) => (
               <li key={e.id} className="comp-entry-row">
-                {c.status === 'JUDGED' && e.score !== null && (
-                  <span className="comp-entry-rank" aria-label={`الترتيب ${i + 1}`}>
-                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}{/* allow-emoji: medal rank glyphs */}
-                  </span>
-                )}
                 <UserAvatar
                   initials={e.user.avatarInitials ?? `${e.user.firstName[0]}${e.user.lastName[0]}`}
                   color={e.user.avatarColor ?? undefined}
@@ -268,7 +388,7 @@ export function CompetitionDetailPage() {
                   <div className="comp-entry-title">{e.title}</div>
                   <div className="comp-entry-meta">
                     {e.user.firstName} {e.user.lastName} · {formatRelative(e.submittedAt)}
-                    {e.score !== null && c.status !== 'OPEN' && ` · النتيجة: ${e.score}/100`}
+                    {e.score !== null && c.status !== 'OPEN' && <> · النتيجة: <bdi>{e.score}/100</bdi></>}
                   </div>
                   {isOrganizer && e.body && (
                     <div className="comp-entry-text">{e.body}</div>
@@ -299,6 +419,45 @@ export function CompetitionDetailPage() {
           onClose={() => setEntering(false)}
         />
       )}
+
+      {/* Closing stops all new submissions — irreversible, so it
+          confirms first (audit 0-e P1-30: it fired bare before). */}
+      <ConfirmDialog
+        open={confirming === 'close'}
+        title="إغلاق المسابقة"
+        message="سيتم إيقاف استقبال المشاركات الجديدة فوراً، ولن يستطيع الطلاب التقديم أو تعديل مشاركاتهم بعد الإغلاق."
+        confirmLabel="إغلاق نهائي"
+        danger
+        onConfirm={async () => {
+          try {
+            await closer.mutateAsync();
+          } catch {
+            /* surfaced via the closer.isError banner above */
+          }
+          setConfirming(null);
+        }}
+        onCancel={() => setConfirming(null)}
+      />
+      {/* Publishing results is public and permanent — confirm too. */}
+      <ConfirmDialog
+        open={confirming === 'judge'}
+        title="إعلان النتائج"
+        message={
+          allScored
+            ? 'ستُنشر النتائج والترتيب النهائي وتصبح مرئية لجميع المشاركين.'
+            : `${unscoredCount} مشاركة بلا تقييم — ستترتّب في نهاية اللوحة عند الإعلان.`
+        }
+        confirmLabel="إعلان النتائج"
+        onConfirm={async () => {
+          try {
+            await judge.mutateAsync();
+          } catch {
+            /* surfaced via the judge.isError banner above */
+          }
+          setConfirming(null);
+        }}
+        onCancel={() => setConfirming(null)}
+      />
     </div>
   );
 }
@@ -314,7 +473,7 @@ function ScoreInput({
 }) {
   const [value, setValue] = useState<string>(currentScore !== null ? String(currentScore) : '');
   const score = useScoreCompetitionEntry(competitionId);
-  const scoreLabelId = useId();
+  const inputId = useId();
 
   const save = () => {
     if (value === '') {
@@ -328,16 +487,17 @@ function ScoreInput({
 
   return (
     <div className="comp-score-input">
-      <label id={scoreLabelId} className="text-xxs text-subtle">التقييم (من 100)</label>
-      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+      <label htmlFor={inputId} className="text-xxs text-subtle">التقييم (من 100)</label>
+      <div className="comp-score-row">
         <input
+          id={inputId}
           type="number"
           min={0}
           max={100}
           step={1}
-          className="auth-input"
-          style={{ maxWidth: 100 }}
-          aria-labelledby={scoreLabelId}
+          className="input"
+          dir="ltr"
+          aria-describedby={score.isError ? `${inputId}-err` : undefined}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onBlur={save}
@@ -345,9 +505,21 @@ function ScoreInput({
           disabled={score.isPending}
         />
         {score.isSuccess && currentScore !== null && (
-          <Icon icon={Check} size={14} style={{ color: 'var(--success)' }} />
+          <span role="status" style={{ color: 'var(--success)', display: 'inline-flex', alignItems: 'center' }}>
+            <Icon icon={Check} size={14} />
+            <span className="visually-hidden">تمّ حفظ التقييم</span>
+          </span>
         )}
       </div>
+      {/* Save failures were completely silent before (audit 0-e
+          P1-30) — surface inline with a working retry. */}
+      {score.isError && (
+        <div className="form-error" id={`${inputId}-err`} role="alert" style={{ marginBlockStart: 6 }}>
+          <Icon icon={AlertTriangle} size={13} />
+          <span className="form-error-msg">تعذَّر حفظ التقييم.</span>
+          <button type="button" className="btn ghost sm" onClick={save}>إعادة المحاولة</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -399,31 +571,31 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
         <div className="comp-form-field">
           <label htmlFor={titleId}>العنوان</label>
-          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
-          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+          <input id={titleId} type="text" {...form.register('title')} className="input" />
+          {form.formState.errors.title && <span className="form-field-error">{form.formState.errors.title.message}</span>}
         </div>
         <div className="comp-form-field">
           <label htmlFor={descId}>الوصف</label>
-          <textarea id={descId} rows={4} {...form.register('description')} className="auth-input" />
-          {form.formState.errors.description && <span className="auth-field-error">{form.formState.errors.description.message}</span>}
+          <textarea id={descId} rows={4} {...form.register('description')} className="input" />
+          {form.formState.errors.description && <span className="form-field-error">{form.formState.errors.description.message}</span>}
         </div>
         <div className="comp-form-row">
           <div className="comp-form-field">
             <label htmlFor={catId}>الفئة</label>
-            <select id={catId} {...form.register('category')} className="auth-input">
+            <select id={catId} {...form.register('category')} className="input">
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div className="comp-form-field">
             <label htmlFor={deadlineId}>الموعد النهائي</label>
-            <input id={deadlineId} type="datetime-local" {...form.register('deadline')} className="auth-input" />
-            {form.formState.errors.deadline && <span className="auth-field-error">{form.formState.errors.deadline.message}</span>}
+            <input id={deadlineId} type="datetime-local" dir="ltr" {...form.register('deadline')} className="input" />
+            {form.formState.errors.deadline && <span className="form-field-error">{form.formState.errors.deadline.message}</span>}
           </div>
         </div>
         <div className="comp-form-row">
           <div className="comp-form-field">
             <label htmlFor={prizeId}>الجائزة (اختياري)</label>
-            <input id={prizeId} type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="auth-input" />
+            <input id={prizeId} type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="input" />
           </div>
           <div className="comp-form-field">
             <label id={iconLabelId}>أيقونة</label>
@@ -441,7 +613,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         {create.isError && (
-          <div className="auth-error">تعذَّر إنشاء المسابقة. تحقَّق من البيانات.</div>
+          <div className="form-error" role="alert">تعذَّر إنشاء المسابقة. تحقَّق من البيانات وحاول مرة أخرى.</div>
         )}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
@@ -502,20 +674,20 @@ function EnterCompetitionModal({
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
         <div className="comp-form-field">
           <label htmlFor={titleId}>عنوان المشاركة</label>
-          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
-          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
+          <input id={titleId} type="text" {...form.register('title')} className="input" />
+          {form.formState.errors.title && <span className="form-field-error">{form.formState.errors.title.message}</span>}
         </div>
         <div className="comp-form-field">
           <label htmlFor={bodyId}>الوصف / المحتوى</label>
-          <textarea id={bodyId} rows={6} {...form.register('body')} className="auth-input" />
-          {form.formState.errors.body && <span className="auth-field-error">{form.formState.errors.body.message}</span>}
+          <textarea id={bodyId} rows={6} {...form.register('body')} className="input" />
+          {form.formState.errors.body && <span className="form-field-error">{form.formState.errors.body.message}</span>}
         </div>
         <div className="comp-form-field">
           <label htmlFor={fileUrlId}>رابط الملف (اختياري)</label>
-          <input id={fileUrlId} type="url" {...form.register('fileUrl')} placeholder="https://…" className="auth-input" />
-          {form.formState.errors.fileUrl && <span className="auth-field-error">{form.formState.errors.fileUrl.message}</span>}
+          <input id={fileUrlId} type="url" dir="ltr" {...form.register('fileUrl')} placeholder="https://…" className="input" />
+          {form.formState.errors.fileUrl && <span className="form-field-error">{form.formState.errors.fileUrl.message}</span>}
         </div>
-        {enter.isError && <div className="auth-error">تعذَّر تقديم المشاركة. تحقَّق من البيانات.</div>}
+        {enter.isError && <div className="form-error" role="alert">تعذَّر تقديم المشاركة. تحقَّق من البيانات وحاول مرة أخرى.</div>}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={enter.isPending}>

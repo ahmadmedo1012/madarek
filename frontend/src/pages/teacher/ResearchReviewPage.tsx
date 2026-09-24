@@ -1,22 +1,32 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  Microscope, TrendingUp, FileText, ShieldCheck, Bot as BotIcon,
+  Microscope, FileText, ShieldCheck, Bot as BotIcon,
   ScanSearch, CheckCircle2, X, Sparkles, BookMarked, BarChart3, MessageSquare,
-  Award,
+  Award, StickyNote, RefreshCw,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import {
   useResearchQueue, useGradePaper, usePublishPaper, useMyTeacherProfile,
+  useAnnotations, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
 
 function fmtDate(iso?: string | null) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
+}
+
+function fmtRelative(iso: string): string {
+  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return 'الآن';
+  if (m < 60) return `منذ ${m} دقيقة`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `منذ ${h} ساعة`;
+  return fmtDate(iso);
 }
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
@@ -30,6 +40,22 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
 
 type Tab = 'review' | 'mine';
 
+/** Shape-matched skeleton for the 3-KPI strip (metric-card anatomy). */
+function Kpi3Skeleton() {
+  return (
+    <div className="grid-3" aria-busy="true" aria-live="polite">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="metric" aria-hidden>
+          <div style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            <Skeleton width={90} height={11} />
+          </div>
+          <Skeleton width={60} height={26} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function ResearchReviewPage() {
   const queue = useResearchQueue();
   const [tab, setTab] = useState<Tab>('review');
@@ -37,6 +63,10 @@ export default function ResearchReviewPage() {
 
   const passed = (queue.data ?? []).filter((p) => p.status === 'CHECKS_PASSED');
   const failed = (queue.data ?? []).filter((p) => p.status === 'CHECKS_FAILED');
+  // Real count replacing the old dead "—" KPI (audit 0-e P2-40).
+  const readyToPublish = (queue.data ?? []).filter((p) => p.status === 'GRADED').length;
+  // KPIs never show a masked "0" on API-down (ruling #14).
+  const kpiValue = (n: number) => (queue.isError ? '—' : n);
 
   return (
     <div className="page">
@@ -49,7 +79,7 @@ export default function ResearchReviewPage() {
           value={tab}
           onChange={setTab}
           items={[
-            { value: 'review', label: `للمراجعة (${passed.length})` },
+            { value: 'review', label: `للمراجعة${queue.data ? ` (${passed.length})` : ''}` },
             { value: 'mine', label: 'منشوراتي' },
           ]}
         />
@@ -57,17 +87,44 @@ export default function ResearchReviewPage() {
 
       {tab === 'review' ? (
         <>
-          <div className="grid-3">
-            <MetricCard icon={CheckCircle2} label="بانتظار تقييمك" value={passed.length} color="amber" />
-            <MetricCard icon={X} label="فشل الفحص" value={failed.length} color="red" />
-            <MetricCard icon={BookMarked} label="نشرت في المكتبة" value="—" color="purple" />
-          </div>
+          {queue.isPending ? (
+            <Kpi3Skeleton />
+          ) : (
+            <div className="grid-3">
+              <MetricCard icon={CheckCircle2} label="بانتظار تقييمك" value={kpiValue(passed.length)} color="amber" />
+              <MetricCard icon={X} label="فشل الفحص" value={kpiValue(failed.length)} color="red" />
+              <MetricCard icon={BookMarked} label="جاهزة للنشر" value={kpiValue(readyToPublish)} color="purple" />
+            </div>
+          )}
 
           <Card title="قائمة المراجعة" icon={ScanSearch} subtitle="بحوث الطلاب التي اجتازت الفحص الأوتوماتيكي وبانتظار تقييمك">
-            {queue.isPending ? <LoadingState /> :
-             queue.isError ? <ErrorState message="تعذَّر تحميل القائمة" error={queue.error} onRetry={() => queue.refetch()} /> :
-             !passed.length ? (
-              <EmptyState icon={CheckCircle2} title="لا بحوث في الانتظار" description="ستظهر هنا بحوث الطلاب فور اجتيازها فحص الانتحال والذكاء الاصطناعي." />
+            {queue.isPending ? (
+              <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
+                {[0, 1].map((i) => (
+                  <div key={i} className="paper-row" aria-hidden>
+                    <div className="flex items-center gap-3">
+                      <Skeleton width={36} height={36} rounded="50%" />
+                      <div className="flex-col gap-2 flex-1">
+                        <Skeleton width="55%" height={14} />
+                        <Skeleton width="35%" height={10} />
+                      </div>
+                    </div>
+                    <Skeleton width="40%" height={10} />
+                  </div>
+                ))}
+              </div>
+            ) : queue.isError ? (
+              <ErrorState
+                message="تعذَّر تحميل قائمة المراجعة"
+                error={queue.error}
+                onRetry={() => queue.refetch()}
+              />
+            ) : !passed.length ? (
+              <EmptyState
+                icon={CheckCircle2}
+                title="لا بحوث في الانتظار"
+                description="ستظهر هنا بحوث الطلاب فور اجتيازها فحص الانتحال والذكاء الاصطناعي."
+              />
             ) : (
               <div className="flex-col gap-3">
                 {passed.map((p) => (
@@ -103,33 +160,31 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
   const plagOK = (paper.plagiarismPct ?? 0) < 15;
   const aiOK = (paper.aiContentPct ?? 0) < 25;
   return (
-    <div style={{
-      padding: 'var(--sp-4)',
-      border: '1px solid var(--border)',
-      borderRadius: 'var(--r-md)',
-      background: 'var(--surface-1)',
-    }}>
-      <div className="flex items-start gap-3" style={{ marginBottom: 'var(--sp-3)' }}>
-        <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>{paper.title}</div>
-          <div className="text-xs text-subtle" style={{ marginTop: 2 }}>
-            {paper.student.firstName} {paper.student.lastName}
-            {paper.offering && (<> · {paper.offering.course.name} (<span className="font-mono">{paper.offering.course.code}</span>)</>)}
+    // .paper-row family is owned by student.css §research (shared grammar)
+    <div className="paper-row">
+      <div className="paper-row-head">
+        <div className="flex items-center gap-3">
+          <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
+          <div className="paper-row-main">
+            <div className="paper-row-title">{paper.title}</div>
+            <div className="paper-row-course">
+              {paper.student.firstName} {paper.student.lastName}
+              {paper.offering && (<> · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</>)}
+            </div>
           </div>
         </div>
         <Badge color={paper.status === 'CHECKS_PASSED' ? 'amber' : 'red'}>
           {STATUS_LABEL[paper.status]}
         </Badge>
       </div>
-      <div className="flex items-center gap-3 text-xs" style={{ marginBottom: 'var(--sp-3)' }}>
-        <span className={plagOK ? 'text-green' : 'text-red'} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+      <div className="review-row-meta">
+        <span className={plagOK ? 'text-green' : 'text-red'}>
           <Icon icon={ShieldCheck} size={12} />
-          انتحال: <span className="font-mono">{paper.plagiarismPct?.toFixed(1) ?? '—'}%</span>
+          انتحال: <bdi className="font-mono">{paper.plagiarismPct?.toFixed(1) ?? '—'}%</bdi>
         </span>
-        <span className={aiOK ? 'text-green' : 'text-red'} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <span className={aiOK ? 'text-green' : 'text-red'}>
           <Icon icon={BotIcon} size={12} />
-          AI: <span className="font-mono">{paper.aiContentPct?.toFixed(1) ?? '—'}%</span>
+          <bdi>AI</bdi>: <bdi className="font-mono">{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
         </span>
         <span className="text-subtle">·</span>
         <span className="text-subtle">رُفع {fmtDate(paper.uploadedAt)}</span>
@@ -154,128 +209,205 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
 }
 
 function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => void }) {
+  const uid = useId();
   const grade = useGradePaper();
   const publish = usePublishPaper();
+  const annotations = useAnnotations(paper.id);
   const [score, setScore] = useState<number>(paper.grade ?? 15);
   const [feedback, setFeedback] = useState<string>(paper.feedback ?? '');
+  // Inline, action-named feedback (audit 0-e P0-11): both mutations used to
+  // await mutateAsync with no catch — an API failure was an unhandled
+  // rejection while the modal kept looking usable.
+  const [gradeError, setGradeError] = useState<string | null>(null);
+  const [publishError, setPublishError] = useState<string | null>(null);
 
   const isGraded = paper.status === 'GRADED' || paper.status === 'PUBLISHED';
+  const busy = grade.isPending || publish.isPending;
 
   const submit = async () => {
-    await grade.mutateAsync({ id: paper.id, grade: score, feedback: feedback || undefined });
-    onClose();
+    setGradeError(null);
+    try {
+      await grade.mutateAsync({ id: paper.id, grade: score, feedback: feedback || undefined });
+      onClose();
+    } catch (err) {
+      setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — تحقّق من اتصالك ثم أعد المحاولة.'));
+    }
   };
   const publishNow = async () => {
-    await publish.mutateAsync(paper.id);
-    onClose();
+    setPublishError(null);
+    try {
+      await publish.mutateAsync(paper.id);
+      onClose();
+    } catch (err) {
+      setPublishError(apiErrorMessage(err, 'تعذَّر نشر البحث في المكتبة — تحقّق من اتصالك ثم أعد المحاولة.'));
+    }
   };
 
+  const annotationRows = annotations.data
+    ? [...annotations.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    : [];
+
   return (
-    <Modal open onClose={onClose} ariaLabel="مراجعة بحث">
+    <Modal open onClose={onClose} ariaLabel="مراجعة بحث" closeOnOverlayClick={!busy}>
       <div className="modal-header">
         <div className="modal-title">مراجعة بحث</div>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق">
+        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={busy}>
           <Icon icon={X} size={16} />
         </button>
       </div>
       <div className="modal-body">
         <div className="text-xs text-subtle">{paper.student.firstName} {paper.student.lastName}</div>
-        <div className="text-md font-semibold" style={{ color: 'var(--text)', marginBottom: 'var(--sp-4)' }}>{paper.title}</div>
+        <div className="text-md font-semibold" style={{ color: 'var(--text)', marginBlockEnd: 'var(--sp-4)' }}>{paper.title}</div>
 
         {paper.abstract && (
           <>
             <div className="section-title">الملخّص</div>
-            <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-loose)', marginBottom: 'var(--sp-4)' }}>
+            <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-loose)', marginBlockEnd: 'var(--sp-4)' }}>
               {paper.abstract}
             </p>
           </>
         )}
 
         <div className="section-title">نتائج الفحص الأوتوماتيكي</div>
-        <div className="scan-bar" style={{ marginBottom: 'var(--sp-5)' }}>
+        {/* The grading form lives OUTSIDE the scan grid now — a misplaced
+            closing div used to nest the whole form inside .scan-bar
+            (audit 0-e P2-40). */}
+        <div className="scan-bar" style={{ marginBlockEnd: 'var(--sp-4)' }}>
           <div className="scan-cell">
             <span className="scan-cell-label flex items-center gap-1">
               <Icon icon={ShieldCheck} size={11} /> نسبة الانتحال
             </span>
             <span className={`scan-cell-value ${(paper.plagiarismPct ?? 0) < 15 ? 'ok' : 'bad'}`}>
-              {paper.plagiarismPct?.toFixed(1) ?? '—'}%
+              <bdi>{paper.plagiarismPct?.toFixed(1) ?? '—'}%</bdi>
             </span>
           </div>
           <div className="scan-cell">
             <span className="scan-cell-label flex items-center gap-1">
-              <Icon icon={BotIcon} size={11} /> محتوى AI
+              <Icon icon={BotIcon} size={11} /> محتوى <bdi>AI</bdi>
             </span>
             <span className={`scan-cell-value ${(paper.aiContentPct ?? 0) < 25 ? 'ok' : 'bad'}`}>
-              {paper.aiContentPct?.toFixed(1) ?? '—'}%
-              </span>
-            </div>
+              <bdi>{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
+            </span>
           </div>
+        </div>
 
-          <div className="section-title">التقييم</div>
-          <div className="auth-row" style={{ marginBottom: 'var(--sp-4)' }}>
-            <div>
-              <label className="text-xs text-muted" style={{ display: 'block', marginBottom: 6 }}>الدرجة (من 20)</label>
-              <input
-                type="number"
-                min={0}
-                max={20}
-                step={0.5}
-                className="input"
-                value={score}
-                onChange={(e) => setScore(Math.max(0, Math.min(20, Number(e.target.value))))}
-                disabled={isGraded}
-              />
-            </div>
-            <div>
-              <label className="text-xs text-muted" style={{ display: 'block', marginBottom: 6 }}>التقدير</label>
-              <input
-                type="text"
-                className="input"
-                value={
-                  score >= 17 ? 'ممتاز' :
-                  score >= 14 ? 'جيد جداً' :
-                  score >= 12 ? 'جيد' :
-                  score >= 10 ? 'مقبول' : 'ضعيف'
-                }
-                disabled
-              />
-            </div>
-          </div>
-
-          <div className="auth-field">
-            <label>ملاحظات للطالب</label>
-            <textarea
-              rows={4}
+        <div className="section-title">التقييم</div>
+        <div className="form-grid-2" style={{ marginBlockEnd: 'var(--sp-4)' }}>
+          <div>
+            <label className="form-label" htmlFor={`${uid}-score`}>الدرجة (من 20)</label>
+            <input
+              id={`${uid}-score`}
+              type="number"
+              min={0}
+              max={20}
+              step={0.5}
+              inputMode="decimal"
               className="input"
-              placeholder="اكتب ملاحظاتك على البحث…"
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              disabled={isGraded}
-              style={{ resize: 'vertical', fontFamily: 'inherit' }}
+              value={score}
+              onChange={(e) => setScore(Math.max(0, Math.min(20, Number(e.target.value))))}
+              disabled={isGraded || grade.isPending}
+            />
+          </div>
+          <div>
+            <label className="form-label" htmlFor={`${uid}-rating`}>التقدير</label>
+            <input
+              id={`${uid}-rating`}
+              type="text"
+              className="input"
+              value={
+                score >= 17 ? 'ممتاز' :
+                score >= 14 ? 'جيد جداً' :
+                score >= 12 ? 'جيد' :
+                score >= 10 ? 'مقبول' : 'ضعيف'
+              }
+              disabled
+              readOnly
             />
           </div>
         </div>
-        <div className="modal-footer">
-          {!isGraded ? (
-            <>
-              <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
-              <button type="button" className="btn primary" onClick={() => void submit()} disabled={grade.isPending}>
-                <Icon icon={CheckCircle2} size={14} />
-                {grade.isPending ? 'جارٍ الحفظ…' : 'تأكيد التقييم'}
-              </button>
-            </>
-          ) : (
-            <>
-              <button type="button" className="btn ghost" onClick={onClose}>إغلاق</button>
-              {paper.status === 'GRADED' && (
-                <button type="button" className="btn primary" onClick={() => void publishNow()} disabled={publish.isPending}>
-                  <Icon icon={Sparkles} size={14} />
-                  {publish.isPending ? 'جارٍ النشر…' : 'نشر في المكتبة'}
-                </button>
-              )}
-            </>
-          )}
+
+        <div className="flex-col gap-2">
+          <label className="form-label" htmlFor={`${uid}-feedback`}>ملاحظات للطالب</label>
+          <textarea
+            id={`${uid}-feedback`}
+            rows={4}
+            className="input"
+            placeholder="اكتب ملاحظاتك على البحث…"
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            disabled={isGraded || grade.isPending}
+            style={{ resize: 'vertical', fontFamily: 'inherit' }}
+          />
         </div>
+
+        {/* Margin notes the teacher left on the document — the newest one
+            pulses once (the page's authored moment): returning from the
+            reader with a fresh note, the highlight lands on it. */}
+        {annotations.data && annotationRows.length > 0 && (
+          <>
+            <div className="section-title">
+              <Icon icon={StickyNote} size={13} /> ملاحظات على البحث ({annotationRows.length})
+            </div>
+            <div className="flex-col gap-2" style={{ marginBlockEnd: 'var(--sp-2)' }}>
+              {annotationRows.map((a, i) => (
+                <div key={a.id} className={`annotation-row${i === 0 ? ' is-newest' : ''}`}>
+                  <span className="annotation-row-icon" aria-hidden>
+                    <Icon icon={StickyNote} size={13} />
+                  </span>
+                  <div className="flex-1">
+                    <div className="text-sm">{a.comment}</div>
+                    <div className="text-xxs text-subtle">
+                      {a.author.firstName} {a.author.lastName} · صفحة <bdi>{a.page}</bdi> · {fmtRelative(a.createdAt)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        {annotations.isPending && (
+          <div className="flex-col gap-2" aria-busy="true" aria-live="polite" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <Skeleton width="70%" height={12} />
+            <Skeleton width="40%" height={10} />
+          </div>
+        )}
+        {annotations.isError && (
+          <div className="inline-retry" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <span className="text-xs text-muted">تعذَّر تحميل الملاحظات على البحث.</span>
+            <button type="button" className="btn ghost sm" onClick={() => annotations.refetch()}>
+              <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
+            </button>
+          </div>
+        )}
+
+        {(gradeError || publishError) && (
+          <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-4)' }}>
+            <Icon icon={X} size={14} />
+            <span className="flex-1">{gradeError ?? publishError}</span>
+          </div>
+        )}
+      </div>
+      <div className="modal-footer">
+        {!isGraded ? (
+          <>
+            <button type="button" className="btn ghost" onClick={onClose} disabled={busy}>إلغاء</button>
+            <button type="button" className="btn primary" onClick={() => void submit()} disabled={busy}>
+              <Icon icon={CheckCircle2} size={14} />
+              {grade.isPending ? 'جارٍ الحفظ…' : 'تأكيد التقييم'}
+            </button>
+          </>
+        ) : (
+          <>
+            <button type="button" className="btn ghost" onClick={onClose} disabled={busy}>إغلاق</button>
+            {paper.status === 'GRADED' && (
+              <button type="button" className="btn primary" onClick={() => void publishNow()} disabled={busy}>
+                <Icon icon={Sparkles} size={14} />
+                {publish.isPending ? 'جارٍ النشر…' : 'نشر في المكتبة'}
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </Modal>
   );
 }
@@ -287,8 +419,34 @@ function MyPublications() {
   const certifications = profile.data?.certifications ?? [];
   const awards = profile.data?.awards ?? [];
 
-  if (profile.isPending) return <LoadingState />;
-  if (profile.isError) return <ErrorState error={profile.error} onRetry={() => profile.refetch()} />;
+  if (profile.isPending) {
+    return (
+      <>
+        <Kpi3Skeleton />
+        <Card>
+          <div className="flex-col gap-2" aria-busy="true" aria-live="polite">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex items-center gap-3" aria-hidden>
+                <Skeleton width={40} height={12} />
+                <Skeleton width={`${60 - i * 10}%`} height={14} />
+              </div>
+            ))}
+          </div>
+        </Card>
+      </>
+    );
+  }
+  if (profile.isError) {
+    return (
+      <Card>
+        <ErrorState
+          message="تعذَّر تحميل منشوراتك"
+          error={profile.error}
+          onRetry={() => profile.refetch()}
+        />
+      </Card>
+    );
+  }
 
   return (
     <>
@@ -316,14 +474,21 @@ function MyPublications() {
       <Card title="منشوراتي" icon={Microscope}>
         {publications.length === 0 ? (
           <EmptyState
+            icon={Microscope}
             title="لم تُسجَّل منشورات بعد"
             description="حدِّث ملفك الأكاديميّ لإضافة بحوثك المنشورة."
+            action={
+              <RouterLink to="/teacher/profile" className="btn outline sm">
+                <Icon icon={FileText} size={13} />
+                تحديث الملف الأكاديمي
+              </RouterLink>
+            }
           />
         ) : (
           <div className="flex-col gap-2">
             {publications.map((p, i) => (
               <div key={`${p.title}-${i}`} className="list-row">
-                <span className="list-row-meta">{p.year}</span>
+                <bdi className="list-row-meta font-mono">{p.year}</bdi>
                 <div className="list-row-body">
                   <div className="list-row-title">{p.title}</div>
                   {p.venue && <div className="list-row-sub">{p.venue}</div>}

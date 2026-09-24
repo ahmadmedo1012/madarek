@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import {
   Building2, GraduationCap, School, BookOpen,
-  BarChart3, Settings, FileText, Users, TrendingUp,
+  BarChart3, FileText, Users, TrendingUp,
   Award, Microscope, ClipboardCheck,
-  type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
-import { LoadingState, ErrorState, PageSkeleton } from '../../components/primitives/States';
+import { Card, MetricCard } from '../../components/primitives';
+import {
+  EmptyState, ErrorState, PageSkeleton,
+  KpiSkeleton, CardSkeleton, TableSkeleton,
+} from '../../components/primitives/States';
+import { ChartFrame } from '../../components/charts';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
 import { Bar, Line } from 'react-chartjs-2';
@@ -97,13 +100,24 @@ export function AdminDashboardPage() {
       </div>
 
       <div className="grid-2-1">
-        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle={`أعلى ${topByStudents.length} كلّيّة من حيث عدد الطلاب`}>
+        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle={topByStudents.length > 0 ? `أعلى ${topByStudents.length} كلّيّة من حيث عدد الطلاب` : undefined}>
           {topByStudents.length === 0 ? (
-            <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
-              لا توجد بيانات طلاب بعد.
-            </p>
+            <EmptyState
+              icon={BarChart3}
+              title="لا توجد بيانات طلاب بعد"
+              description="ستظهر التوزيعة هنا فور تسجيل الطلاب في الكليات."
+            />
           ) : (
-            <div style={{ height: Math.max(180, topByStudents.length * 36) }}>
+            <ChartFrame
+              ariaLabel={`توزيع الطلاب حسب الكلية — ${topByStudents.length} كليات الأعلى عددًا`}
+              summary={topFaculty ? `أعلى كلية عددًا للطلاب: ${topFaculty.name} بـ${topFaculty.studentCount.toLocaleString('ar-LY')} طالبًا.` : undefined}
+              height={Math.max(180, topByStudents.length * 36)}
+              table={{
+                caption: 'توزيع الطلاب حسب الكلية',
+                columns: ['الكلية', 'عدد الطلاب'],
+                rows: topByStudents.map((row) => [row.name, row.studentCount]),
+              }}
+            >
               <Bar
                 key={themeKey}
                 data={{
@@ -121,7 +135,7 @@ export function AdminDashboardPage() {
                 plugins={[valueLabels]}
                 options={{ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }}
               />
-            </div>
+            </ChartFrame>
           )}
         </Card>
 
@@ -153,11 +167,22 @@ export function AdminDashboardPage() {
 
       <Card title="نشاط الإنتاج العلميّ — آخر ٦ أشهر" icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
         {r.paperTrend.length === 0 || r.paperTrend.every((m) => m.submitted + m.graded + m.published === 0) ? (
-          <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
-            لا توجد بيانات أبحاث للأشهر الستة الماضية.
-          </p>
+          <EmptyState
+            icon={TrendingUp}
+            title="لا توجد بيانات أبحاث بعد"
+            description="ستظهر حركة النشر هنا بعد رفع أول بحث إلى المنصة."
+          />
         ) : (
-          <div style={{ height: 240 }}>
+          <ChartFrame
+            ariaLabel="نشاط الإنتاج العلمي في الأشهر الستة الأخيرة — أبحاث مقدَّمة ومقيَّمة ومنشورة شهريًا"
+            summary="مقارنة حركة البحوث المرفوعة والمقيَّمة والمنشورة على مدى الأشهر الستة الأخيرة."
+            height={240}
+            table={{
+              caption: 'نشاط الإنتاج العلمي شهريًا',
+              columns: ['الشهر', 'مقدَّم', 'مقيَّم', 'منشور'],
+              rows: r.paperTrend.map((m) => [m.month, m.submitted, m.graded, m.published]),
+            }}
+          >
             <Line
               key={themeKey}
               data={{
@@ -167,7 +192,6 @@ export function AdminDashboardPage() {
                     label: 'مقدَّم',
                     data: r.paperTrend.map((m) => m.submitted),
                     borderColor: c.accent,
-                    backgroundColor: `color-mix(in srgb, ${c.accent} 12%, transparent)`,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
                     pointBackgroundColor: c.accent,
                   },
@@ -175,7 +199,6 @@ export function AdminDashboardPage() {
                     label: 'مقيَّم',
                     data: r.paperTrend.map((m) => m.graded),
                     borderColor: c.gold,
-                    backgroundColor: `color-mix(in srgb, ${c.gold} 8%, transparent)`,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
                     pointBackgroundColor: c.gold,
                   },
@@ -183,15 +206,14 @@ export function AdminDashboardPage() {
                     label: 'منشور',
                     data: r.paperTrend.map((m) => m.published),
                     borderColor: c.success,
-                    backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
                     fill: true, tension: 0.4, pointRadius: 4, borderWidth: 2,
                     pointBackgroundColor: c.success,
                   },
                 ],
               }}
-              options={{ ...cartesianOptions({ legend: true }) }}
+              options={cartesianOptions({ legend: true, gradientFill: true })}
             />
-          </div>
+          </ChartFrame>
         )}
       </Card>
     </div>
@@ -200,9 +222,9 @@ export function AdminDashboardPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between" style={{ padding: 'var(--sp-2) var(--sp-3)' }}>
+    <div className="admin-stat-row">
       <span className="text-sm text-muted">{label}</span>
-      <span className="font-mono text-sm" style={{ color: 'var(--text)' }}>{value}</span>
+      <span className="font-mono text-sm admin-stat-value">{value}</span>
     </div>
   );
 }
@@ -218,33 +240,6 @@ function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
   );
 }
 
-export function AdminPlaceholder({
-  title,
-  subtitle = 'هذه الشاشة تعرض بيانات حية من قاعدة البيانات.',
-  icon = Settings,
-}: {
-  title: string;
-  subtitle?: string;
-  icon?: LucideIcon;
-}) {
-  return (
-    <div className="page">
-      <PageHeader title={title} subtitle={subtitle} />
-      <div className="grid-3">
-        <MetricCard icon={Users} label="إجمالي السجلات" value="—" color="brand" />
-        <MetricCard icon={TrendingUp} label="نشاط هذا الأسبوع" value="—" color="green" />
-        <MetricCard icon={FileText} label="عمليات معلقة" value="—" color="amber" />
-      </div>
-      <Card title="بيانات تفصيلية" icon={icon}>
-        <p className="text-sm text-muted" style={{ lineHeight: 'var(--lh-loose)', padding: 'var(--sp-4) 0' }}>
-          ستظهر هنا قائمة تفصيلية مع إمكانية البحث والتصفية والتعديل المباشر،
-          مرتبطة بالـ API. المخطط الحالي للقاعدة جاهز ويدعم جميع العمليات المطلوبة.
-        </p>
-      </Card>
-    </div>
-  );
-}
-
 /* ─── Admin: Faculties ────────────────────────────────────── */
 export function AdminFacultiesPage() {
   const { data, isPending, isError, error, refetch } = useAdminFaculties();
@@ -253,7 +248,8 @@ export function AdminFacultiesPage() {
     return (
       <div className="page">
         <PageHeader title="الكليات والأقسام" subtitle="جميع كليات الجامعة وأقسامها مع إحصائيات حية." />
-        <Card><LoadingState /></Card>
+        <KpiSkeleton />
+        <CardSkeleton lines={7} />
       </div>
     );
   }
@@ -285,32 +281,21 @@ export function AdminFacultiesPage() {
       <Card title={`الكليات (${data.length})`} icon={Building2} subtitle={`${totalDepts} قسم · ${totalCourses} مقرر`}>
         <div className="flex-col gap-3">
           {data.map((f) => (
-            <div
-              key={f.id}
-              style={{
-                padding: 'var(--sp-4)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--r-md)',
-                background: 'var(--surface-1)',
-              }}
-            >
-              <div className="flex items-start gap-3" style={{ marginBottom: f.departments.length ? 'var(--sp-3)' : 0 }}>
-                <div style={{
-                  width: 44, height: 44, borderRadius: 'var(--r-md)',
-                  background: 'var(--accent-soft)', color: 'var(--accent)',
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
+            <div key={f.id} className="admin-faculty-card">
+              <div className={`admin-faculty-head${f.departments.length > 0 ? ' has-depts' : ''}`}>
+                <div className="admin-faculty-icon">
                   <EmojiIcon emoji={f.iconEmoji ?? undefined} fallback={Building2} size={22} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-md font-semibold" style={{ color: 'var(--text)', fontSize: 'var(--fs-md)' }}>
-                      {f.name}
-                    </span>
-                    {f.nameEn && <span className="text-xs text-subtle font-mono">· {f.nameEn}</span>}
+                <div className="admin-faculty-body">
+                  <div className="admin-faculty-titles">
+                    <span className="admin-faculty-name">{f.name}</span>
+                    {f.nameEn && (
+                      <span className="admin-faculty-name-en font-mono text-xs text-subtle">
+                        · <bdi>{f.nameEn}</bdi>
+                      </span>
+                    )}
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-subtle" style={{ marginTop: 'var(--sp-1)', flexWrap: 'wrap' }}>
+                  <div className="admin-faculty-meta">
                     <span className="font-mono">{f.departmentCount} قسم</span>
                     <span className="font-mono">{f.courseCount} مقرر</span>
                     <span className="font-mono">{f.studentCount.toLocaleString('ar-LY')} طالب</span>
@@ -320,23 +305,11 @@ export function AdminFacultiesPage() {
               </div>
 
               {f.departments.length > 0 && (
-                <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
+                <div className="admin-faculty-depts">
                   {f.departments.map((d) => (
-                    <div
-                      key={d.id}
-                      style={{
-                        padding: 'var(--sp-3)',
-                        background: 'var(--surface-2)',
-                        borderRadius: 'var(--r-sm)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 4,
-                      }}
-                    >
-                      <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
-                        {d.name}
-                      </span>
-                      <span className="text-xxs text-subtle font-mono">
+                    <div key={d.id} className="admin-faculty-dept">
+                      <span className="admin-faculty-dept-name">{d.name}</span>
+                      <span className="admin-faculty-dept-meta font-mono">
                         {d.students} طالب · {d.teachers} مدرّس · {d.courses} مقرر
                       </span>
                     </div>
@@ -345,6 +318,13 @@ export function AdminFacultiesPage() {
               )}
             </div>
           ))}
+          {data.length === 0 && (
+            <EmptyState
+              icon={Building2}
+              title="لم تُسجَّل كليات بعد"
+              description="ستظهر الكليات وأقسامها هنا فور إضافتها إلى قاعدة البيانات."
+            />
+          )}
         </div>
       </Card>
     </div>
@@ -359,7 +339,8 @@ export function AdminReportsPage() {
     return (
       <div className="page">
         <PageHeader title="التقارير المؤسسية" subtitle="مؤشرات أداء الجامعة على مستوى المخرجات الأكاديمية." />
-        <Card><LoadingState /></Card>
+        <KpiSkeleton />
+        <CardSkeleton lines={6} />
       </div>
     );
   }
@@ -387,25 +368,45 @@ export function AdminReportsPage() {
 
       {/* Paper publishing trend */}
       <Card title="حركة البحوث العلمية — آخر 6 أشهر" icon={TrendingUp} subtitle="مرفوعة · مقيَّمة · منشورة">
-        <div className="flex-col gap-2">
-          {data.paperTrend.map((b) => (
-            <div key={b.month} className="trend-row">
-              <span className="trend-label">{b.month}</span>
-              <div className="trend-bars">
-                <div className="trend-bar trend-submitted" title={`مرفوعة: ${b.submitted}`} style={{ width: `${(b.submitted / maxBucket) * 100}%` }}>
-                  {b.submitted > 0 && <span className="trend-bar-val">{b.submitted}</span>}
-                </div>
-                <div className="trend-bar trend-graded" title={`مقيَّمة: ${b.graded}`} style={{ width: `${(b.graded / maxBucket) * 100}%` }}>
-                  {b.graded > 0 && <span className="trend-bar-val">{b.graded}</span>}
-                </div>
-                <div className="trend-bar trend-published" title={`منشورة: ${b.published}`} style={{ width: `${(b.published / maxBucket) * 100}%` }}>
-                  {b.published > 0 && <span className="trend-bar-val">{b.published}</span>}
+        {data.paperTrend.length === 0 ? (
+          <EmptyState
+            icon={TrendingUp}
+            title="لا توجد بيانات نشر بعد"
+            description="ستظهر حركة البحوث هنا بعد رفع أول بحث."
+          />
+        ) : (
+          <div className="flex-col gap-2">
+            {data.paperTrend.map((b) => (
+              <div key={b.month} className="trend-row">
+                <span className="trend-label">{b.month}</span>
+                <div className="trend-bars">
+                  <div
+                    className="trend-bar trend-submitted"
+                    title={`مرفوعة: ${b.submitted}`}
+                    style={{ width: `${(b.submitted / maxBucket) * 100}%` }}
+                  >
+                    {b.submitted > 0 && <span className="trend-bar-val">{b.submitted}</span>}
+                  </div>
+                  <div
+                    className="trend-bar trend-graded"
+                    title={`مقيَّمة: ${b.graded}`}
+                    style={{ width: `${(b.graded / maxBucket) * 100}%` }}
+                  >
+                    {b.graded > 0 && <span className="trend-bar-val">{b.graded}</span>}
+                  </div>
+                  <div
+                    className="trend-bar trend-published"
+                    title={`منشورة: ${b.published}`}
+                    style={{ width: `${(b.published / maxBucket) * 100}%` }}
+                  >
+                    {b.published > 0 && <span className="trend-bar-val">{b.published}</span>}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-4 text-xxs text-subtle" style={{ marginTop: 'var(--sp-4)', flexWrap: 'wrap' }}>
+            ))}
+          </div>
+        )}
+        <div className="trend-legend">
           <LegendDot color="var(--accent)" label="مرفوعة" />
           <LegendDot color="var(--gold)" label="مقيَّمة" />
           <LegendDot color="var(--success)" label="منشورة" />
@@ -413,29 +414,37 @@ export function AdminReportsPage() {
       </Card>
 
       {/* Top courses */}
-      <Card title="أكثر المقررات تسجيلاً" icon={ClipboardCheck} subtitle={`أعلى ${data.topCourses.length} مقرر بناءً على عدد الطلاب`}>
-        <div className="tbl-wrap">
-          <table className="tbl">
-            <thead>
-              <tr>
-                <th style={{ width: 100 }}>الكود</th>
-                <th>اسم المقرر</th>
-                <th style={{ width: 120, textAlign: 'center' }}>طلاب مسجَّلون</th>
-                <th style={{ width: 120, textAlign: 'center' }}>المحاضرات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.topCourses.map((c) => (
-                <tr key={c.code}>
-                  <td className="font-mono text-subtle">{c.code}</td>
-                  <td>{c.name}</td>
-                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.enrollments}</td>
-                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.lectures}</td>
+      <Card title="أكثر المقررات تسجيلاً" icon={ClipboardCheck} subtitle={data.topCourses.length > 0 ? `أعلى ${data.topCourses.length} مقرر بناءً على عدد الطلاب` : undefined}>
+        {data.topCourses.length === 0 ? (
+          <EmptyState
+            icon={ClipboardCheck}
+            title="لا توجد تسجيلات بعد"
+            description="ستظهر المقررات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرراتهم."
+          />
+        ) : (
+          <div className="table-wrap">
+            <table className="table tbl-stack">
+              <thead>
+                <tr>
+                  <th style={{ width: 110 }}>الكود</th>
+                  <th>اسم المقرر</th>
+                  <th className="admin-table-num" style={{ width: 130 }}>طلاب مسجَّلون</th>
+                  <th className="admin-table-num" style={{ width: 110 }}>المحاضرات</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {data.topCourses.map((c) => (
+                  <tr key={c.code}>
+                    <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
+                    <td data-label="اسم المقرر">{c.name}</td>
+                    <td className="admin-table-num font-mono" data-label="طلاب مسجَّلون">{c.enrollments}</td>
+                    <td className="admin-table-num font-mono" data-label="المحاضرات">{c.lectures}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -443,8 +452,8 @@ export function AdminReportsPage() {
 
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-      <span style={{ width: 10, height: 10, borderRadius: 999, background: color, display: 'inline-block' }} />
+    <span className="trend-legend-item">
+      <span className="trend-legend-dot" style={{ background: color }} />
       {label}
     </span>
   );
@@ -459,7 +468,8 @@ export function AdminCoursesPage() {
     return (
       <div className="page">
         <PageHeader title="إدارة المقررات" subtitle="جميع المقررات الجامعية مع إحصائيات حية." />
-        <Card><LoadingState /></Card>
+        <KpiSkeleton />
+        <TableSkeleton rows={6} cols={7} />
       </div>
     );
   }
@@ -493,14 +503,25 @@ export function AdminCoursesPage() {
 
       {/* Faculty filter pills */}
       <Card compact>
-        <div className="filter-bar">
-          <button type="button" className={`pill${filter === 'all' ? ' on' : ''}`} onClick={() => setFilter('all')}>
+        <div className="filter-bar" role="group" aria-label="تصفية المقررات حسب الكلية">
+          <button
+            type="button"
+            className={`pill${filter === 'all' ? ' on' : ''}`}
+            aria-pressed={filter === 'all'}
+            onClick={() => setFilter('all')}
+          >
             الكل ({data.length})
           </button>
           {faculties.map((f) => {
             const count = data.filter((c) => c.faculty === f).length;
             return (
-              <button key={f} type="button" className={`pill${filter === f ? ' on' : ''}`} onClick={() => setFilter(f)}>
+              <button
+                key={f}
+                type="button"
+                className={`pill${filter === f ? ' on' : ''}`}
+                aria-pressed={filter === f}
+                onClick={() => setFilter(f)}
+              >
                 {f} ({count})
               </button>
             );
@@ -510,35 +531,50 @@ export function AdminCoursesPage() {
 
       {/* Courses table */}
       <Card title={`المقررات (${visible.length})`} icon={BookOpen}>
-        <div className="tbl-wrap">
-          <table className="tbl">
+        <div className="table-wrap">
+          <table className="table tbl-stack">
             <thead>
               <tr>
-                <th style={{ width: 90 }}>الكود</th>
+                <th style={{ width: 100 }}>الكود</th>
                 <th>اسم المقرر</th>
                 <th>الكلية / القسم</th>
-                <th style={{ width: 80, textAlign: 'center' }}>س.م</th>
-                <th style={{ width: 110, textAlign: 'center' }}>تسجيلات</th>
-                <th style={{ width: 100, textAlign: 'center' }}>محاضرات</th>
-                <th style={{ width: 100, textAlign: 'center' }}>الفصول</th>
+                <th className="admin-table-num" style={{ width: 70 }}>س.م</th>
+                <th className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>
+                <th className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
+                <th className="admin-table-num" style={{ width: 100 }}>الفصول</th>
               </tr>
             </thead>
             <tbody>
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={7}>
+                    <EmptyState
+                      title="لا توجد مقررات في هذه الكلية"
+                      description="اختر كلية أخرى أو أعد ضبط التصفية لعرض جميع المقررات."
+                      action={
+                        <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
+                          عرض جميع المقررات
+                        </button>
+                      }
+                    />
+                  </td>
+                </tr>
+              )}
               {visible.map((c) => (
                 <tr key={c.id}>
-                  <td className="font-mono text-subtle">{c.code}</td>
-                  <td>
+                  <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
+                  <td data-label="اسم المقرر">
                     <div className="flex items-center gap-2">
                       {c.themeColor && (
-                        <span style={{ width: 6, height: 24, borderRadius: 3, background: c.themeColor, display: 'inline-block' }} />
+                        <span className="admin-course-tint" style={{ background: c.themeColor }} aria-hidden />
                       )}
                       <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                     </div>
                   </td>
-                  <td>
+                  <td data-label="الكلية / القسم">
                     {c.faculty ? (
                       <div className="flex items-center gap-1">
-                        {c.facultyEmoji && <span>{c.facultyEmoji}</span>}
+                        <EmojiIcon emoji={c.facultyEmoji} fallback={BookOpen} size={16} className="text-subtle" />
                         <span className="text-xs text-muted">{c.faculty}</span>
                         {c.department && <span className="text-xxs text-subtle">· {c.department}</span>}
                       </div>
@@ -546,10 +582,10 @@ export function AdminCoursesPage() {
                       <span className="text-xxs text-subtle">—</span>
                     )}
                   </td>
-                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.credits}</td>
-                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.totalEnrollments}</td>
-                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.totalLectures}</td>
-                  <td className="font-mono" style={{ textAlign: 'center' }}>{c.offeringCount}</td>
+                  <td className="admin-table-num font-mono" data-label="ساعات معتمدة">{c.credits}</td>
+                  <td className="admin-table-num font-mono" data-label="تسجيلات">{c.totalEnrollments}</td>
+                  <td className="admin-table-num font-mono" data-label="محاضرات">{c.totalLectures}</td>
+                  <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
                 </tr>
               ))}
             </tbody>
