@@ -142,6 +142,8 @@ export default function App() {
         <Suspense fallback={<PageSkeleton />}>
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
+            {/* /auth is the canonical login route; /login is a legacy alias. */}
+            <Route path="/login" element={<Navigate to="/auth" replace />} />
             <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/" element={<HomeRedirect />} />
 
