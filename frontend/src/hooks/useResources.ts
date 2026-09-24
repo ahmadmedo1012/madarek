@@ -73,6 +73,7 @@ export interface StudentDashboard {
     }>;
     assignments: Array<{
       id: string;
+      offeringId: string;
       title: string;
       type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
       dueAt: string;
@@ -664,6 +665,181 @@ export function useAnswerCheckpoint() {
 }
 
 
+// ── Curriculum authoring (lectures · chapters · checkpoints) ──
+// Mirrors backend/src/http/routes/curriculum.routes.ts (TEACHER/ADMIN/OWNER,
+// zod strict). Reads stay on useOfferingLectures / useLecture above — these
+// are the write paths. Every mutation invalidates the read keys so the
+// "إدارة المنهج" panel refetches immediately.
+//
+// PATCH semantics: axios drops undefined keys from the JSON body, so the
+// caller sends ONLY the changed fields — an omitted field keeps its DB
+// value (the server schema is .partial()). There is no isPublished flag
+// on the Lecture model, so partial field updates are the whole contract.
+
+export interface LectureWriteInput {
+  title: string;
+  description?: string;
+  videoUrl: string;
+  durationSec?: number;
+  ordinal?: number;
+}
+export interface LecturePatchInput {
+  lectureId: string;
+  title?: string;
+  /** Empty string clears the description server-side; undefined = keep. */
+  description?: string;
+  videoUrl?: string;
+  durationSec?: number;
+  ordinal?: number;
+}
+export function useCreateLecture(offeringId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    // 201 → { data: <lecture> }
+    mutationFn: (input: LectureWriteInput) =>
+      unwrap<Lecture>(api.post(`/offerings/${offeringId}/lectures`, input)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['offerings', offeringId] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+    },
+  });
+}
+export function useUpdateLecture() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ lectureId, ...patch }: LecturePatchInput) =>
+      unwrap<Lecture>(api.patch(`/lectures/${lectureId}`, patch)),
+    onSuccess: (_data, vars) => {
+      // The hook doesn't know the parent offering — prefix-invalidate both
+      // the lecture detail key and every offering list/detail key.
+      qc.invalidateQueries({ queryKey: ['lectures', vars.lectureId] });
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+    },
+  });
+}
+export function useDeleteLecture() {
+  const qc = useQueryClient();
+  return useMutation({
+    // 409 with an Arabic message when WatchEvents exist (student watch
+    // history RESTRICTs the FK) — surfaced inline via apiErrorMessage.
+    mutationFn: (lectureId: string) =>
+      unwrap<{ ok: true }>(api.delete(`/lectures/${lectureId}`)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+      qc.invalidateQueries({ queryKey: ['me', 'resume'] });
+    },
+  });
+}
+
+export interface ChapterWriteInput {
+  title: string;
+  startSec: number;
+  endSec: number;
+}
+export interface ChapterPatchInput {
+  chapterId: string;
+  title?: string;
+  startSec?: number;
+  endSec?: number;
+}
+export function useCreateChapter(lectureId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    // 201 → { data: <chapter> } (ordinal auto-assigned = max+1)
+    mutationFn: (input: ChapterWriteInput) =>
+      unwrap<LectureChapter>(api.post(`/lectures/${lectureId}/chapters`, input)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures', lectureId] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+export function useUpdateChapter() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ chapterId, ...patch }: ChapterPatchInput) =>
+      unwrap<LectureChapter>(api.patch(`/chapters/${chapterId}`, patch)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+export function useDeleteChapter() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (chapterId: string) =>
+      unwrap<{ ok: true }>(api.delete(`/chapters/${chapterId}`)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+
+export interface CheckpointWriteInput {
+  /** NOTE: the API field is `question` (not `prompt`) — model invariant. */
+  question: string;
+  triggerSec: number;
+  options: string[];
+  correctIndex: number;
+  conceptId?: string;
+  explanation?: string;
+}
+export interface CheckpointPatchInput {
+  checkpointId: string;
+  question?: string;
+  triggerSec?: number;
+  options?: string[];
+  /**
+   * Send together with any options change — the server re-validates the
+   * (options, correctIndex) pair and 400s when the index falls outside
+   * the effective option list.
+   */
+  correctIndex?: number;
+  conceptId?: string;
+  explanation?: string;
+}
+export function useCreateCheckpoint(lectureId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CheckpointWriteInput) =>
+      unwrap<LectureCheckpoint>(api.post(`/lectures/${lectureId}/checkpoints`, input)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures', lectureId] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+export function useUpdateCheckpoint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ checkpointId, ...patch }: CheckpointPatchInput) =>
+      unwrap<LectureCheckpoint>(api.patch(`/checkpoints/${checkpointId}`, patch)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+export function useDeleteCheckpoint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (checkpointId: string) =>
+      unwrap<{ ok: true }>(api.delete(`/checkpoints/${checkpointId}`)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+
 // ── Course offering detail (full) ──────────────────────────────
 export interface OfferingFull {
   id: string;
@@ -694,12 +870,11 @@ export function useOfferingFull(offeringId: string | undefined) {
   });
 }
 
-// ── Offering assignments (student binding for submissions) ────
-// The student dashboard's agenda lists upcoming assignments by id but does
-// not include the owning offeringId that the submit endpoint needs. The
-// enrollments list the courses page already loads gives us the offering
-// ids; this query (one per enrolled offering) resolves assignmentId →
-// offeringId exactly, without guessing by course code.
+// ── Offering assignments ────
+// The agenda payload now carries offeringId directly (backend
+// student-dashboard.routes.ts), so the submit flow no longer needs the
+// per-offering resolution queries. This hook remains for pages that
+// list a single offering's assignments (e.g. course detail page).
 export interface OfferingAssignment {
   id: string;
   offeringId: string;
@@ -709,18 +884,6 @@ export interface OfferingAssignment {
   dueAt: string;
   weight: number;
   maxScore: number;
-}
-export function offeringAssignmentsOptions(offeringId: string) {
-  return {
-    queryKey: ['offerings', offeringId, 'assignments'],
-    queryFn: () => unwrap<OfferingAssignment[]>(api.get(`/offerings/${offeringId}/assignments`)),
-  };
-}
-export function useOfferingAssignments(offeringId: string | undefined) {
-  return useQuery({
-    ...offeringAssignmentsOptions(offeringId ?? ''),
-    enabled: Boolean(offeringId),
-  });
 }
 
 // ── Assignment submissions (student submit + teacher grade) ────

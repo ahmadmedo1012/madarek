@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQueries } from '@tanstack/react-query';
 import {
   BookOpen, CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
   Cog, Cpu, Database, Network, Globe, Shield,
@@ -14,7 +13,6 @@ import {
   useMyEnrollments,
   useStudentDashboard,
   useSubmitAssignment,
-  offeringAssignmentsOptions,
   validateSubmissionDraft,
   apiErrorMessage,
   type StudentDashboard,
@@ -65,24 +63,6 @@ function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | '
 export default function StudentCoursesPage() {
   const { data, isPending, isError, error, refetch } = useMyEnrollments();
   const dashboard = useStudentDashboard();
-
-  // The agenda lists upcoming assignments by id but omits the owning
-  // offeringId the submit endpoint needs. Resolve it exactly by fetching
-  // each enrolled offering's assignments (same ['offerings', id,
-  // 'assignments'] key the offering page uses) — no code-name guessing.
-  const offeringIds = useMemo(() => (data ?? []).map((e) => e.offering.id), [data]);
-  const assignmentsQueries = useQueries({
-    queries: offeringIds.map((id) => offeringAssignmentsOptions(id)),
-  });
-  const assignmentsResolved =
-    assignmentsQueries.length > 0 && assignmentsQueries.every((q) => !q.isPending);
-  const assignmentIndex = useMemo(() => {
-    const map = new Map<string, { offeringId: string }>();
-    for (const q of assignmentsQueries) {
-      for (const a of q.data ?? []) map.set(a.id, { offeringId: a.offeringId });
-    }
-    return map;
-  }, [assignmentsQueries]);
 
   const [submitTarget, setSubmitTarget] = useState<{ assignment: AgendaAssignment; offeringId: string } | null>(null);
 
@@ -184,7 +164,6 @@ export default function StudentCoursesPage() {
               </thead>
               <tbody>
                 {upcoming.map((a) => {
-                  const offering = assignmentIndex.get(a.id);
                   const due = dueStatus(a.dueAt);
                   return (
                     <tr key={a.id}>
@@ -196,20 +175,16 @@ export default function StudentCoursesPage() {
                       <td className="tbl-num">{formatDue(a.dueAt)}</td>
                       <td><Badge color={due.color}>{due.label}</Badge></td>
                       <td>
-                        {offering ? (
+                        {a.offeringId ? (
                           <button
                             type="button"
                             className="btn outline sm"
-                            onClick={() => setSubmitTarget({ assignment: a, offeringId: offering.offeringId })}
+                            onClick={() => setSubmitTarget({ assignment: a, offeringId: a.offeringId })}
                           >
                             <Icon icon={Send} size={12} /> تسليم
                           </button>
-                        ) : assignmentsResolved ? (
-                          <span className="text-xs text-subtle">—</span>
                         ) : (
-                          <button type="button" className="btn outline sm" disabled title="جارٍ تحضير بيانات التسليم…">
-                            تسليم
-                          </button>
+                          <span className="text-xs text-subtle">—</span>
                         )}
                       </td>
                     </tr>

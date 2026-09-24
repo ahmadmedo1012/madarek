@@ -62,9 +62,10 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     const task = getDocument({
       url: src,
       withCredentials: true, // include auth cookies for same-origin /files/*
-      cMapUrl: 'https://unpkg.com/pdfjs-dist@4.10.38/cmaps/',
+      // Self-hosted assets (public/pdfjs/*) — no runtime dependency on unpkg.com
+      cMapUrl: '/pdfjs/cmaps/',
       cMapPacked: true,
-      standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@4.10.38/standard_fonts/',
+      standardFontDataUrl: '/pdfjs/standard_fonts/',
     });
 
     task.promise.then(

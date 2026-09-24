@@ -68,6 +68,20 @@
 | POST | `/offerings/:offeringId/assignments/:assignmentId/submit` | STUDENT | Submit assignment (body `{ textAnswer?, fileUrl? }`; upsert on (assignmentId, studentId); status `SUBMITTED`\|`LATE` by dueAt) |
 | POST | `/submissions/:id/grade` | TEACHER/ADMIN/OWNER | Grade a submission (body `{ grade, feedback? }`; sets status `GRADED` and notifies the student) |
 
+## Curriculum authoring (lectures / chapters / checkpoints)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/offerings/:offeringId/lectures` | TEACHER/ADMIN/OWNER (owner) | Create lecture (body `{ title, description?, videoUrl, durationSec?, ordinal? }`; ordinal auto-increments) |
+| PATCH | `/lectures/:id` | TEACHER/ADMIN/OWNER (owner) | Update lecture fields |
+| DELETE | `/lectures/:id` | TEACHER/ADMIN/OWNER (owner) | Delete lecture (409 when watch history exists; chapters/checkpoints cascade) |
+| POST | `/lectures/:lectureId/chapters` | TEACHER/ADMIN/OWNER (owner) | Create chapter (body `{ title, startSec, endSec }`; window validated against lecture duration) |
+| PATCH | `/chapters/:id` | TEACHER/ADMIN/OWNER (owner) | Update chapter (window re-validated) |
+| DELETE | `/chapters/:id` | TEACHER/ADMIN/OWNER (owner) | Delete chapter |
+| POST | `/lectures/:lectureId/checkpoints` | TEACHER/ADMIN/OWNER (owner) | Create checkpoint (body `{ question, triggerSec, options[2..6], correctIndex, conceptId? }`; concept must belong to the offering's course) |
+| PATCH | `/checkpoints/:id` | TEACHER/ADMIN/OWNER (owner) | Update checkpoint (correctIndex re-validated against options) |
+| DELETE | `/checkpoints/:id` | TEACHER/ADMIN/OWNER (owner) | Delete checkpoint |
+
 ## Me / Notifications / Messages
 
 | Method | Path | Auth | Description |

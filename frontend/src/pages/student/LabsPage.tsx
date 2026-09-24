@@ -269,7 +269,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </div>
           <div className="flex gap-2" style={{ marginTop: 'var(--sp-5)' }}>
             <button type="button" className="btn" onClick={onExit}>
-              <Icon icon={ChevronLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+              <Icon icon={ChevronLeft} size={13} />
               العودة للمعامل
             </button>
             <button type="button" className="btn primary" onClick={() => { setDone(false); setStepIndex(0); setTerminalLines([]); }}>
@@ -284,7 +284,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   return (
     <>
       <button type="button" className="btn ghost sm" onClick={onExit} style={{ alignSelf: 'flex-start' }}>
-        <Icon icon={ChevronLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+        <Icon icon={ChevronLeft} size={13} />
         العودة للمعامل
       </button>
 

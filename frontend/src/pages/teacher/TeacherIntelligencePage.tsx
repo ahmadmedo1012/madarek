@@ -12,12 +12,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   GraduationCap, AlertTriangle, BookOpen, Sparkles, ChevronLeft,
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
-  CheckCircle2, AlertCircle, type LucideIcon,
+  CheckCircle2, AlertCircle, ListVideo, type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, ProgressBar, UserAvatar } from '../../components/primitives';
 import { DetailSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
+import { CurriculumAuthoringPanel } from '../../components/curriculum';
+import { useAuthStore } from '../../stores/auth.store';
 import {
   useTeacherOfferings, useTeacherStudents, useOfferingAnalytics,
   useTeacherRisks, useCurriculumSuggest,
@@ -138,7 +140,13 @@ export function TeacherOfferingDetailPage() {
   const students = useTeacherStudents(offeringId);
   const analytics = useOfferingAnalytics(offeringId);
   const suggest = useCurriculumSuggest();
-  const [tab, setTab] = useState<'students' | 'curriculum'>('students');
+  const [tab, setTab] = useState<'students' | 'curriculum' | 'authoring'>('students');
+
+  // Curriculum authoring is a TEACHER/ADMIN/OWNER capability (the routes
+  // under /teacher already exclude students; the API still 403s non-owners
+  // — this gate only hides the affordance, e.g. for QUALITY viewers).
+  const role = useAuthStore((s) => s.user?.role);
+  const canAuthor = role === 'TEACHER' || role === 'ADMIN' || role === 'OWNER';
 
   if (!offering) return <DetailSkeleton />;
   const accent = offering.course.themeColor ?? 'var(--accent)';
@@ -183,6 +191,11 @@ export function TeacherOfferingDetailPage() {
         <button type="button" className={`tab${tab === 'curriculum' ? ' on' : ''}`} onClick={() => setTab('curriculum')}>
           <Icon icon={Brain} size={13} /> مساعد المنهج
         </button>
+        {canAuthor && (
+          <button type="button" className={`tab${tab === 'authoring' ? ' on' : ''}`} onClick={() => setTab('authoring')}>
+            <Icon icon={ListVideo} size={13} /> إدارة المنهج
+          </button>
+        )}
       </div>
 
       {tab === 'students' && (
@@ -264,6 +277,9 @@ export function TeacherOfferingDetailPage() {
             </>
           )}
         </Card>
+      )}
+      {tab === 'authoring' && canAuthor && offeringId && (
+        <CurriculumAuthoringPanel offeringId={offeringId} accent={accent} />
       )}
     </div>
   );
