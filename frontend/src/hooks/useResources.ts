@@ -962,15 +962,10 @@ export function useGradeSubmission(submissionId: string) {
 
 /**
  * Best-effort Arabic error message for inline mutation failures.
- * Prefers the API's own error message; falls back to a caller-provided
- * default so every failure surfaces something human-readable.
+ * Canonical implementation lives in lib/format.ts since wave 9-a;
+ * re-exported here so the ~15 existing import sites keep working.
  */
-export function apiErrorMessage(error: unknown, fallback: string): string {
-  const e = error as { response?: { data?: { error?: { message?: string } } }; message?: string };
-  const apiMsg = e?.response?.data?.error?.message;
-  if (typeof apiMsg === 'string' && apiMsg.length > 0 && apiMsg.length < 240) return apiMsg;
-  return fallback;
-}
+export { apiErrorMessage } from '../lib/format';
 
 
 // ── Research papers ────────────────────────────────────────────

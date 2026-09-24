@@ -3,6 +3,7 @@ import { Inbox, AlertTriangle, RefreshCw, ShieldAlert, ArrowRight } from 'lucide
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import type { IllustrationName } from '../../lib/illustrations';
+import { apiErrorDetail } from '../../lib/format';
 
 type LoadingVariant = 'inline' | 'page' | 'card' | 'minimal';
 
@@ -62,17 +63,15 @@ export function EmptyState({
 /**
  * Best-effort extraction of a human-readable detail from an unknown error.
  * Handles axios-style errors (response.data.error.message), plain Error
- * objects, and arbitrary thrown values.
+ * objects, and arbitrary thrown values. The API-message branch is the
+ * shared lib helper (wave 9-a); this adds the plain-`message` fallback
+ * ErrorState has always had.
  */
 function extractErrorDetail(error: unknown): string | null {
   if (!error) return null;
-  const e = error as {
-    response?: { data?: { error?: { message?: string } } };
-    message?: string;
-  };
-  const apiMsg = e.response?.data?.error?.message;
-  if (typeof apiMsg === 'string' && apiMsg.length > 0 && apiMsg.length < 240) return apiMsg;
-  const msg = e.message;
+  const apiMsg = apiErrorDetail(error);
+  if (apiMsg) return apiMsg;
+  const msg = (error as { message?: string }).message;
   if (typeof msg === 'string' && msg.length > 0 && msg.length < 240) return msg;
   return null;
 }

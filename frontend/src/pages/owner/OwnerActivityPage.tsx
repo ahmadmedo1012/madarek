@@ -8,6 +8,7 @@ import { Card, MetricCard, Tabs } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useOwnerActivity } from '../../hooks/useOwner';
+import { formatRelativeAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
 
 type EventType = 'all' | 'login' | 'content' | 'roles' | 'system';
@@ -91,25 +92,8 @@ const RESOURCE_LABELS: Record<string, string> = {
   FeatureFlag: 'ميزة',
 };
 
-/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
-function countAr(n: number, forms: [string, string, string, string]): string {
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
-  return `${n} ${forms[3]}`;
-}
-
-function formatRelative(iso: string): string {
-  const d = new Date(iso);
-  const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
-  if (diffMin < 1) return 'الآن';
-  if (diffMin < 60) return `منذ ${countAr(diffMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}`;
-  const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
-  const diffD = Math.round(diffHr / 24);
-  if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
-}
+/* formatRelativeAr (counted-plural relative time) lives in lib/format.ts
+ * (wave 9-a) — identical strings to the former local copy. */
 
 /** Shape-matched skeleton for the activity timeline — the 32px icon
  *  well, the title/meta lines and the trailing time stamp (craft
@@ -280,7 +264,7 @@ export function OwnerActivityPage() {
                   )}
                 </div>
                 <span className="owner-timeline-time" title={new Date(event.createdAt).toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' })}>
-                  {formatRelative(event.createdAt)}
+                  {formatRelativeAr(event.createdAt)}
                 </span>
               </div>
             ))}

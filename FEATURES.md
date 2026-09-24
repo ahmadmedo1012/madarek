@@ -77,7 +77,7 @@ Posts with hashtags, reactions (like/save), comments; persisted.
 **Pages:** `/student/social`
 
 ## 11. University info
-Official UoZ data (29 colleges / 9 cities, vision/mission, rankings, contacts).
+Official UoZ data (25 colleges / Zawiya + Ajlulat + Zwara + other campuses, vision/mission, rankings, contacts).
 **Models:** UniversityFact, SyncRun
 **Pages:** `/student/university`
 

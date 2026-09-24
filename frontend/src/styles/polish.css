@@ -56,8 +56,7 @@
      `.bordered`. Make every clickable card feel that way without the
      opt-in class. Anchors and buttons that wrap a card naturally count. */
   a > .card,
-  button.card,
-  .card-link .card {
+  button.card {
     cursor: pointer;
     transition:
       border-color var(--t-fast) var(--ease),
@@ -65,8 +64,7 @@
       transform var(--t-fast) var(--ease);
   }
   a:hover > .card:not(.flush),
-  button.card:hover,
-  .card-link:hover .card:not(.flush) {
+  button.card:hover {
     transform: translateY(-1px);
     border-color: var(--rule-strong, var(--rule));
     box-shadow: var(--shadow-sm, 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.05));
@@ -147,18 +145,13 @@
      primitives.) */
 
   /* ── Modal / overlay enter ────────────────────────────────────── */
-  .modal,
-  .dialog {
-    animation: polish-modal-enter var(--motion-duration-short) var(--ease-out) both;
-  }
-  .modal-backdrop,
-  .dialog-backdrop,
+  /* (Wave 9-b dead-selector sweep: `.modal`, `.dialog`, `.modal-backdrop`
+     and `.dialog-backdrop` deleted — the Modal primitive renders
+     `.modal-overlay` + `.modal-card` (components.css owns their
+     entrance), so these never matched. Only the sidebar drawer
+     backdrop still rides the backdrop-enter keyframes.) */
   .sidebar-backdrop.show {
     animation: polish-backdrop-enter var(--motion-duration-short) var(--ease-out) both;
-  }
-  @keyframes polish-modal-enter {
-    from { opacity: 0; transform: translateY(8px) scale(0.985); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
   @keyframes polish-backdrop-enter {
     from { opacity: 0; }
@@ -190,9 +183,12 @@
     .page-title { font-size: var(--fs-xl); line-height: 1.25; }
     .page-subtitle { font-size: var(--fs-sm); }
 
-    /* Tap targets — iOS HIG / Material guideline is 44px. */
+    /* Tap targets — iOS HIG / Material guideline is 44px. (Wave 9-b
+       tap-target consolidation, 6-a follow-up #5: .btn.sm dropped from
+       this pages-layer list — the overrides-layer v11 mobile block is
+       the ONE owner of the button floors; the two disagreed (44 vs 32)
+       leaving this entry permanently dead.) */
     .nav-item,
-    .btn.sm,
     .topbar-user-trigger {
       min-block-size: 44px;
     }
@@ -225,16 +221,11 @@
     .grid-auto-200 > *,
     .grid-auto-260 > *,
     [data-numeric="true"],
-    .modal,
-    .dialog,
-    .modal-backdrop,
-    .dialog-backdrop,
     .sidebar-backdrop.show {
       animation: none;
     }
     a:hover > .card:not(.flush),
-    button.card:hover,
-    .card-link:hover .card:not(.flush) {
+    button.card:hover {
       transform: none;
     }
     .skeleton { animation: none; opacity: 0.6; }
@@ -247,12 +238,12 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
 
   /* ── Ensure all interactive elements get pointer cursor ──────── */
-  .kpi-cell,
+  /* (Wave 9-b dead-selector sweep: .kpi-cell, .surface-card,
+     .table-row-clickable and tr[data-clickable] removed from this
+     group — zero TSX consumers; dashboards render .metric/.compact-kpi
+     and row-level affordances are buttons inside cells now.) */
   .compact-kpi,
   .metric,
-  .surface-card,
-  .table-row-clickable,
-  tr[data-clickable],
   [role="button"],
   [role="tab"],
   [role="menuitem"],
@@ -263,19 +254,13 @@
   /* ── Card & surface-card: press feedback ────────────────────── */
   .card.interactive:active,
   a > .card:active,
-  button > .card:active,
-  .card-link:active .card,
-  .surface-card.interactive:active,
-  a > .surface-card:active,
-  button > .surface-card:active,
-  .surface-card-link:active .surface-card {
+  button > .card:active {
     transform: scale(0.995) translateY(0);
     transition-duration: var(--t-micro);
   }
 
   /* ── Metric & KPI: press feedback ───────────────────────────── */
-  .metric:active,
-  .kpi-cell:active {
+  .metric:active {
     transform: scale(0.995);
   }
 
@@ -286,10 +271,11 @@
   }
 
   /* ── Sidebar collapse btn: icon-only 44px touch target ───────── */
+  /* (Wave 9-b dead-selector sweep: .topbar-icon-btn + .sidebar-toggle-btn
+     deleted — zero TSX consumers; the toggles render .icon-btn /
+     .topbar-mobile-toggle.) */
   @media (max-width: 640px) {
     .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
-    .topbar-icon-btn { min-inline-size: 44px; min-block-size: 44px; }
-    .sidebar-toggle-btn { min-inline-size: 44px; min-block-size: 44px; }
   }
 
   /* ── Tab items: pointer + hover underline ───────────────────── */
@@ -304,10 +290,8 @@
   }
 
   /* ── Table row hover: interactive rows ──────────────────────── */
-  tr[data-clickable]:hover,
-  .table-row-clickable:hover {
-    background: var(--surface-2);
-  }
+  /* (Wave 9-b dead-selector sweep: the tr[data-clickable] hover rule
+     deleted — zero TSX consumers.) */
 
   /* (Wave 1-a focus consolidation: duplicate ring deleted. Anchor/button
      wrappers carry the single AA-safe ring from v22; `a > .card:focus-visible`
@@ -316,7 +300,6 @@
 
   /* ── Disabled interactive cards ─────────────────────────────── */
   .card.disabled,
-  .surface-card.disabled,
   .metric.disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -333,47 +316,17 @@
     text-align: center;
     min-block-size: 240px;
   }
-  .empty-state-icon {
-    inline-size: 64px; block-size: 64px;
-    border-radius: var(--r-xl);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-  .empty-state-title {
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
-    color: var(--text);
-  }
-  .empty-state-desc {
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-    max-inline-size: 36ch;
-    line-height: var(--lh-base);
-  }
+  /* (Wave 9-b dead-selector sweep: the .empty-state-icon / -title /
+     -desc child rules deleted — zero TSX consumers; pages render the
+     bare .empty-state container (kept above) with Icon/text utilities,
+     and the real empty-state anatomy is the States primitive.) */
 
-  /* ── Loading shimmer for async content containers ────────────────
-       Applied via className rather than an element selector so it
-       only activates when a React component explicitly tags its
-       loading container. */
-  .loading-pane {
-    min-block-size: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .loading-pane .spinner {
-    inline-size: 24px; block-size: 24px;
-    border: 2px solid var(--rule);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: madarek-spin 600ms linear infinite;
-  }
-  @keyframes madarek-spin {
-    to { transform: rotate(360deg); }
-  }
+  /* ── Loading shimmer for async content containers ──────────────── */
+  /* (Wave 9-b dead-selector sweep: .loading-pane + its .spinner and
+     the madarek-spin keyframes deleted — zero TSX consumers; loading
+     surfaces render the States/Skeleton primitives. auth.css and
+     components.css each define their own identical madarek-spin
+     keyframes, so their spinners are unaffected.) */
   @media (prefers-reduced-motion: reduce) {
     /* (Wave 1-a: the 1500ms "slow spinner" accommodation deleted — it
        never won against base.css's `animation-duration: 0.01ms !important`
@@ -381,13 +334,7 @@
     .card.interactive:active,
     a > .card:active,
     button > .card:active,
-    .card-link:active .card,
-    .surface-card.interactive:active,
-    a > .surface-card:active,
-    button > .surface-card:active,
-    .surface-card-link:active .surface-card,
     .metric:active,
-    .kpi-cell:active,
     .nav-item:active,
     .pill:active:not(.on) { transform: none; }
   }
@@ -677,15 +624,10 @@
     .landing-hero-eyebrow strong::after { animation: none; opacity: 0; }
   }
 
-  /* ── Pilot stats: count-up entrance via grid stagger already in v6,
-        but the numbers benefit from a one-shot scale-in on first view.  */
-  .landing-pilot-stat .landing-pilot-num {
-    display: inline-block;
-    transition: transform var(--motion-duration-medium) var(--ease-out);
-  }
-  .landing-pilot-stat:hover .landing-pilot-num {
-    transform: scale(1.04);
-  }
+  /* ── Pilot stats: count-up entrance via grid stagger already in v6 ── */
+  /* (Wave 9-b dead-selector sweep: the .landing-pilot-num rules deleted
+     — zero TSX consumers; LandingPage renders .landing-pilot-value
+     inside .landing-pilot-stat.) */
 
   /* ── Feature cards: subtle inner highlight on hover (Notion bento) ── */
   .landing-feature-card,
@@ -722,32 +664,12 @@
   /* ── Pages without a .page-header convention still benefit from
         the page-enter, but their card grids weren't always
         .grid-{2,3,4}. Make custom-named grids ride the same cascade.  */
-  .ach-grid > *,
-  .skills-grid > *,
-  .alerts-list > *,
-  .live-grid > *,
-  .post-list > * {
-    animation: polish-rise var(--motion-duration-reveal) var(--ease-out) both;
-  }
-  .ach-grid > *:nth-child(2),
-  .skills-grid > *:nth-child(2) { animation-delay: 60ms; }
-  .ach-grid > *:nth-child(3),
-  .skills-grid > *:nth-child(3) { animation-delay: 120ms; }
-  .ach-grid > *:nth-child(4),
-  .skills-grid > *:nth-child(4) { animation-delay: 180ms; }
-  .ach-grid > *:nth-child(n+5),
-  .skills-grid > *:nth-child(n+5) { animation-delay: 240ms; }
-  @keyframes polish-rise {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .ach-grid > *,
-    .skills-grid > *,
-    .alerts-list > *,
-    .live-grid > *,
-    .post-list > * { animation: none; }
-  }
+  /* (Wave 9-b dead-selector sweep: this custom-grid stagger block
+     (ach-grid / skills-grid / alerts-list / live-grid / post-list +
+     its duplicate polish-rise keyframes) deleted — zero TSX consumers;
+     the page waves ship their own grids (.track-grid, .courses-grid…)
+     and the v6 .grid-* stagger above covers the layout primitives.
+     v6's original polish-rise keyframes remain.) */
 
   /* ── Smooth-scroll for in-page anchor links on landing ─── */
   html { scroll-behavior: smooth; }
@@ -929,9 +851,10 @@
     margin-block-end: var(--sp-2);
   }
   /* Welcome card and any header that's its own surface shouldn't get
-     the hairline rule — the surface already separates it from below. */
-  .page-header.welcome-card,
-  .page-header[data-flush="true"] {
+     the hairline rule — the surface already separates it from below.
+     (Wave 9-b dead-selector sweep: the [data-flush="true"] entry
+     removed — zero TSX consumers.) */
+  .page-header.welcome-card {
     border-block-end: 0;
     padding-block-end: var(--sp-5);
     margin-block-end: 0;
@@ -1568,9 +1491,10 @@
   /* ═══════════════════════════════════════════════════════════════
      SIDEBAR MOBILE CLOSE — visible only on phones
      ═══════════════════════════════════════════════════════════════ */
-  .show-on-mobile { display: none; }
+  /* (Wave 9-b dead-selector sweep: .show-on-mobile deleted (base rule
+     + the ≤920px reveal) — zero TSX consumers; only .hide-on-mobile is
+     rendered by the shell components.) */
   @media (max-width: 920px) {
-    .show-on-mobile { display: inline-flex; }
     .hide-on-mobile { display: none !important; }
     .sidebar-mobile-close {
       inline-size: 36px;
@@ -1595,11 +1519,10 @@
      Some pages render their own card-like containers without the .card
      class. Catch the common ones so polish v8's effects extend.
      ═══════════════════════════════════════════════════════════════ */
-  .invoice-card,
+  /* (Wave 9-b dead-selector sweep: .invoice-card, .speaker-chip and
+     .webinar-card removed from the group — zero TSX consumers.) */
   .post,
-  .speaker-chip,
   .testimonial-card,
-  .webinar-card,
   .announcement-card {
     border-radius: var(--r-lg);
     transition: transform var(--t-fast) var(--ease),
@@ -1998,29 +1921,10 @@
   /* ═══════════════════════════════════════════════════════════════
      Gap rows (matrix recommendations on /student/exams)
      ═══════════════════════════════════════════════════════════════ */
-  .gap-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-3);
-    border-radius: var(--r-md);
-    border: 1px solid var(--rule);
-    background: var(--surface);
-    transition: var(--t-clean);
-  }
-  .gap-row + .gap-row { margin-block-start: var(--sp-2); }
-  .gap-row:hover { border-color: var(--border-strong); background: var(--surface-2); }
-  .gap-row-icon {
-    inline-size: 32px;
-    block-size: 32px;
-    border-radius: var(--r-sm);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
+  /* (Wave 9-b dead-selector sweep: the .gap-row family deleted —
+     zero TSX consumers; the matrix gap recommendations render the
+     designed .matrix-gap-in / .ai-gap-card families in student.css
+     (wave 4-a).) */
 
   /* ═══════════════════════════════════════════════════════════════
      Thumb cards (Library, AR/VR, Labs grid)
@@ -2182,9 +2086,9 @@
     color: var(--text-muted);
   }
 
-  /* Spinner size variants */
+  /* Spinner size variants (wave 9-b: .spinner-lg deleted — zero TSX
+     consumers; only spinner-sm is rendered by the States primitive.) */
   .spinner.spinner-sm { inline-size: 14px; block-size: 14px; border-width: 2px; }
-  .spinner.spinner-lg { inline-size: 32px; block-size: 32px; border-width: 3px; }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2218,14 +2122,12 @@
   @media (hover: hover) {
     .card.interactive,
     a > .card,
-    button > .card,
-    .card-link .card {
+    button > .card {
       will-change: transform;
     }
     .card.interactive:hover,
     a > .card:hover,
-    button > .card:hover,
-    .card-link:hover .card {
+    button > .card:hover {
       transform: translateY(-2px);
     }
   }
@@ -2233,8 +2135,7 @@
   @media (hover: none) {
     .card.interactive:hover,
     a > .card:hover,
-    button > .card:hover,
-    .card-link:hover .card {
+    button > .card:hover {
       transform: none;
     }
   }
@@ -2261,10 +2162,15 @@
     }
   }
 
-  /* Tighter tap targets on phone — buttons reach the 44px guideline */
+  /* Tighter tap targets on phone — buttons reach the 44px guideline.
+     (Wave 9-b tap-target consolidation, 6-a follow-up #5: this
+     overrides-layer block is now the ONE owner of the mobile .btn.sm
+     floor — 44px per the iOS HIG / Material guideline, matching the
+     per-surface 44px !important floors waves 5-6 already pin. The old
+     32px silently beat v6's pages-layer 44px copy, which is deleted.) */
   @media (max-width: 640px) {
     .btn { min-block-size: 40px; }
-    .btn.sm { min-block-size: 32px; }
+    .btn.sm { min-block-size: 44px; }
     .bottom-nav-item { min-block-size: 52px; padding-block: 8px; }
   }
 
@@ -2311,11 +2217,15 @@
      ║  scroll on phones, so it stays usable instead of overflowing   ║
      ║  the page or squeezing into unreadable cells.                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (Wave 9-b dead-selector sweep: the .tbl entries removed from this
+     fallback — zero TSX consumers render the legacy .tbl table name
+     (ruling #5 migrated every table to .table, each shipping
+     .tbl-stack). NOTE for a future wave: .table itself is not in this
+     fallback list — see worklog 5-a follow-up #3.) */
   @media (max-width: 640px) {
     .owner-table:not(.tbl-stack),
     .admin-students-table:not(.tbl-stack),
     .leaderboard-table:not(.tbl-stack),
-    .tbl:not(.tbl-stack),
     .trend-table:not(.tbl-stack) {
       display: block;
       overflow-x: auto;
@@ -2327,12 +2237,10 @@
     .owner-table:not(.tbl-stack) thead,
     .admin-students-table:not(.tbl-stack) thead,
     .leaderboard-table:not(.tbl-stack) thead,
-    .tbl:not(.tbl-stack) thead,
     .trend-table:not(.tbl-stack) thead { display: table-header-group; }
     .owner-table:not(.tbl-stack) tbody,
     .admin-students-table:not(.tbl-stack) tbody,
     .leaderboard-table:not(.tbl-stack) tbody,
-    .tbl:not(.tbl-stack) tbody,
     .trend-table:not(.tbl-stack) tbody { display: table-row-group; }
   }
 
@@ -2438,13 +2346,14 @@
      ║  CTA BREATHE                                                   ║
      ║  Primary CTA in the hero gets a slow ambient glow halo.        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-hero .btn.primary,
-  .landing-cta-stack .btn.primary {
+  /* (Wave 9-b dead-selector sweep: the .landing-cta-stack entries
+     removed — zero TSX consumers; the hero CTA row is .landing-cta-row
+     inside .landing-hero.) */
+  .landing-hero .btn.primary {
     position: relative;
     isolation: isolate;
   }
-  .landing-hero .btn.primary::before,
-  .landing-cta-stack .btn.primary::before {
+  .landing-hero .btn.primary::before {
     content: '';
     position: absolute;
     inset: -6px;
@@ -2572,7 +2481,6 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
     .landing-hero .btn.primary::before,
-    .landing-cta-stack .btn.primary::before,
     .landing-hero-eyebrow::after {
       animation: none;
     }
@@ -2744,8 +2652,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   a > .card:active,
   button > .card:active,
-  .card.interactive:active,
-  .card-link:active .card {
+  .card.interactive:active {
     transform: scale(0.99);
     transition-duration: var(--motion-duration-micro);
   }
@@ -2866,15 +2773,13 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .owner-table tbody tr,
   .admin-students-table tbody tr,
-  .leaderboard-table tbody tr,
-  .tbl tbody tr {
+  .leaderboard-table tbody tr {
     transition: background var(--t-fast, 160ms) var(--ease, ease);
   }
   @media (hover: hover) {
     .owner-table tbody tr:hover,
     .admin-students-table tbody tr:hover,
-    .leaderboard-table tbody tr:hover,
-    .tbl tbody tr:hover {
+    .leaderboard-table tbody tr:hover {
       background: var(--surface-2);
     }
   }
@@ -3077,8 +2982,12 @@
   }
   .landing-campus-eyebrow {
     font-size: var(--fs-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
+    /* eyebrow anatomy (ruling #2, per 8-a's cascade note): size +
+       weight + opacity only — no letter-spacing / text-transform on
+       the Arabic copy «جامعة الزاوية» (uppercase + 0.14em tracking
+       break the cursive joins). */
+    letter-spacing: normal;
+    text-transform: none;
     opacity: 0.85;
     font-weight: var(--fw-semibold);
   }
@@ -3191,7 +3100,6 @@
   [role="button"],
   .pill,
   .tab,
-  .badge.clickable,
   summary {
     cursor: pointer;
   }
@@ -3293,9 +3201,10 @@
       transform var(--motion-duration-micro) var(--ease, ease),
       box-shadow var(--motion-duration-medium) var(--ease, ease);
   }
-  .btn.primary:hover,
-  .btn-primary:hover,
-  .btn.accent:hover {
+  /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
+     removed — zero TSX consumers; only the .btn.primary variant is
+     rendered.) */
+  .btn.primary:hover {
     /* Off-token by design: strong accent glow + contact layer, not
        elevation. */
     box-shadow:
@@ -3303,8 +3212,7 @@
       0 2px 4px rgba(0,0,0,0.06);
   }
   /* Ghost button gains accent border on hover */
-  .btn.ghost:hover,
-  .btn-ghost:hover {
+  .btn.ghost:hover {
     border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
   }
   /* Press ripple effect — radial pulse at click origin */
@@ -3446,8 +3354,9 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROGRESS BAR — gradient fill with shimmer                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .progressbar > span,
-  .progress-bar > span,
+  /* (Wave 9-b dead-selector sweep: the .progressbar / .progress-bar
+     names removed — zero TSX consumers; the attribute-substring
+     selector subsumes them and matches the live progress bars.) */
   [class*="progress"] > span {
     transition: width var(--t-slower) var(--ease-spring-soft);
   }
@@ -3456,15 +3365,12 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  AVATAR — subtle hover lift                                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .avatar,
-  .user-avatar {
+  .avatar {
     transition: transform var(--motion-duration-short) var(--ease, ease), box-shadow var(--motion-duration-medium) var(--ease, ease);
   }
   @media (hover: hover) {
     a:hover .avatar,
-    a:hover .user-avatar,
-    button:hover .avatar,
-    button:hover .user-avatar {
+    button:hover .avatar {
       transform: scale(1.05);
       box-shadow: var(--elevation-2);
     }
@@ -3629,10 +3535,11 @@
   }
   /* Scroll-state class is set by CSS-only sticky shadow trick: when
      the topbar is sticky and there's content above it, this kicks in. */
-  .topbar:not(:first-child),
-  body[data-scrolled="true"] .topbar {
-    box-shadow: var(--elevation-2);
-  }
+  /* (Wave 9-b dead-selector sweep: the shadow rule deleted —
+     `body[data-scrolled="true"]` has zero TSX consumers (AppShell
+     drives the topbar's own `.scrolled` class, whose shadow is v9's
+     `.topbar.scrolled`), and `.topbar:not(:first-child)` never matches
+     the shipped shell (the Topbar is <main>'s first child).) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3653,11 +3560,10 @@
     box-shadow: var(--elevation-2);
   }
   /* Chevron in user trigger flips when menu opens */
-  .topbar-user-trigger[aria-expanded="true"] .icon-chevron,
-  .topbar-user-trigger[aria-expanded="true"] svg:last-child {
-    transform: rotate(180deg);
-    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
-  }
+  /* (Wave 9-b dead-selector sweep: the chevron-flip rule deleted —
+     .icon-chevron has zero TSX consumers and the user trigger renders
+     an avatar + name span (no last-child svg), so neither selector
+     ever matched.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3973,20 +3879,17 @@
   @media (hover: hover) {
     .owner-table tbody tr,
     .admin-students-table tbody tr,
-    .leaderboard-table tbody tr,
-    .tbl tbody tr {
+    .leaderboard-table tbody tr {
       position: relative;
     }
     .owner-table tbody tr td:first-child,
     .admin-students-table tbody tr td:first-child,
-    .leaderboard-table tbody tr td:first-child,
-    .tbl tbody tr td:first-child {
+    .leaderboard-table tbody tr td:first-child {
       position: relative;
     }
     .owner-table tbody tr:hover td:first-child::before,
     .admin-students-table tbody tr:hover td:first-child::before,
-    .leaderboard-table tbody tr:hover td:first-child::before,
-    .tbl tbody tr:hover td:first-child::before {
+    .leaderboard-table tbody tr:hover td:first-child::before {
       content: '';
       position: absolute;
       inset-block: 12px;
@@ -3998,8 +3901,7 @@
     }
     [dir="rtl"] .owner-table tbody tr:hover td:first-child::before,
     [dir="rtl"] .admin-students-table tbody tr:hover td:first-child::before,
-    [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before,
-    [dir="rtl"] .tbl tbody tr:hover td:first-child::before {
+    [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before {
       border-radius: var(--r-xs) 0 0 var(--r-xs);
     }
     @keyframes madark-row-bar-in {
@@ -4222,23 +4124,12 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SHEET / BOTTOM-SHEET (forward-compatible)                     ║
-     ║  Any container with class `.sheet` or `.bottom-sheet` slides   ║
-     ║  up from the bottom on mobile.                                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .sheet,
-  .bottom-sheet {
-    animation: madark-sheet-in var(--motion-duration-long) var(--ease-spring-soft) both;
-  }
-  @keyframes madark-sheet-in {
-    from {
-      opacity: 0;
-      transform: translateY(100%);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
+  /* (Wave 9-b dead-selector sweep: the `.sheet` / `.bottom-sheet`
+     entrance + madark-sheet-in keyframes deleted — zero TSX
+     consumers; the Sheet primitive renders `.sheet-overlay` /
+     `.sheet-panel`, whose entrances (madarek-sheet-slide-*) live in
+     components.css.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4263,9 +4154,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
     .toast,
-    .landing-megamenu .landing-megamenu-item,
-    .sheet,
-    .bottom-sheet {
+    .landing-megamenu .landing-megamenu-item {
       animation: none !important;
     }
     .comp-modal-close:hover {
@@ -4357,7 +4246,8 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  AUTH PAGES — calmer ambient gradient + form lift              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .auth-page,
+  /* (Wave 9-b dead-selector sweep: .auth-page removed — zero TSX
+     consumers; AuthPage renders .auth-card.) */
   .auth-card {
     position: relative;
   }
@@ -4399,22 +4289,10 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROFILE PAGES — avatar ring on hover                          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .profile-avatar,
-  .profile-page .avatar,
-  .teacher-profile-avatar {
-    transition:
-      transform var(--motion-duration-medium) var(--ease-spring-soft),
-      box-shadow var(--motion-duration-medium) var(--ease, ease);
-  }
-  @media (hover: hover) {
-    .profile-avatar:hover,
-    .profile-page .avatar:hover,
-    .teacher-profile-avatar:hover {
-      transform: scale(1.04);
-      /* soft accent avatar halo — interaction state, not elevation */
-      box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 14%, transparent);
-    }
-  }
+  /* (Wave 9-b dead-selector sweep: this avatar-ring block deleted —
+     .profile-avatar / .profile-page / .teacher-profile-avatar all
+     have zero TSX consumers; the generic .avatar hover treatment in
+     v15 covers the surfaces that render avatars.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4450,7 +4328,8 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PDF VIEWER — controls bar fades in                            ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .pdf-viewer-controls,
+  /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
+     zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
   .pdf-toolbar {
     animation: madark-pdf-controls-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both 100ms;
   }
@@ -4480,11 +4359,19 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  HELP TEXT / SUBTLE LINKS — underline draws in                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand) {
+  /* (Wave 9-b root fix, implementing 7-b's recommendation: the
+     `:not(.skip-link)` exclusion was added to every selector in this
+     family. At (0,7,1) this rule silently out-ranked v20's
+     `.skip-link { position: fixed }` (0,1,0) and knocked the pill out
+     of fixed positioning — the root cause of the "760px RTL
+     scrollWidth at 390px" bug (full diagnosis in the 7-b section).
+     .landing-progress needs no exclusion: it renders a <div>, not an
+     <a>.) */
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link) {
     position: relative;
     transition: color var(--motion-duration-short) var(--ease, ease);
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand)::after {
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link)::after {
     content: '';
     position: absolute;
     inset-block-end: -2px;
@@ -4497,14 +4384,14 @@
     transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     pointer-events: none;
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand)::after {
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link)::after {
     transform-origin: left;
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):hover::after {
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
     transform: scaleX(1);
     transform-origin: left;
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):hover::after {
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
     transform-origin: right;
   }
 
@@ -4528,7 +4415,6 @@
     .state.state-error .state-icon,
     .state.state-error .btn,
     .auth-card,
-    .pdf-viewer-controls,
     .pdf-toolbar {
       animation: none !important;
     }
@@ -5092,16 +4978,12 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  GLOBAL FADE-IN FOR LATE-LOADED CONTENT                        ║
-     ║  When a query resolves and content swaps in, fade it instead   ║
-     ║  of popping. We do this by transitioning opacity on any        ║
-     ║  element with [data-loaded="false"] that flips to true.        ║
-     ║  Forward-compatible — components don't have to use the attr.   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  [data-loaded] {
-    transition: opacity var(--motion-duration-page) var(--ease, ease);
-  }
-  [data-loaded="false"] { opacity: 0; }
-  [data-loaded="true"]  { opacity: 1; }
+  /* (Wave 9-b dead-selector sweep: the [data-loaded] fade rules
+     deleted — the attribute has zero TSX consumers (late-content
+     fades ride the Reveal primitive's data-reveal / data-revealed
+     attributes instead); the print reveal entry was trimmed to
+     match. Re-add verbatim if a consumer ever adopts the attribute.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -5169,10 +5051,10 @@
        element's own corners (a square outline would round the host);
        the ring follows the element's real geometry instead. */
   }
-  /* Components that draw their own focus treatment may opt out. */
-  :where([data-focus-ring="custom"]):focus-visible {
-    outline: none;
-  }
+  /* (Wave 9-b dead-selector sweep: the `[data-focus-ring="custom"]`
+     focus-ring opt-out deleted — the attribute has zero TSX
+     consumers; every surface takes the single ring. Re-add verbatim
+     if a component ever needs a bespoke focus treatment.) */
   /* Per-component re-assertions that used to lose to the deleted
      `outline: none` rules — the ring, plus the accent border cue the
      old recipes carried. */
@@ -5182,7 +5064,6 @@
   }
   a:focus-visible > .card,
   button.card:focus-visible,
-  .card-link:focus-visible .card,
   .sidebar-collapse-btn:focus-visible {
     border-color: var(--accent);
   }
@@ -5377,15 +5258,15 @@
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
-    /* Glass surfaces get an opaque light ground instead of the scrim. */
+    /* Glass surfaces get an opaque light ground instead of the scrim.
+       (Wave 9-b dead-selector sweep: .card.glass + .navbar.glass
+       removed — zero TSX consumers.) */
     .modal-overlay,
     .sheet-overlay,
     .lightbox-overlay,
     .cmd-palette-overlay,
     .popover,
-    .notification-panel,
-    .card.glass,
-    .navbar.glass {
+    .notification-panel {
       background: var(--surface) !important;
     }
     /* Decorative pseudo-layers (cursor-follow highlight, gradient border
@@ -5396,7 +5277,6 @@
     /* D5. Nothing may print invisible: reveal-wrapped or late-fading
        content is forced to its final state. */
     [data-reveal],
-    [data-loaded],
     .section-accent,
     .section-accent::after,
     .reveal-up,
@@ -5418,10 +5298,11 @@
     }
 
     /* D7. Pagination: keep cards/rows/images whole, repeat table
-       headers on every page, don't orphan headings. */
+       headers on every page, don't orphan headings. (Wave 9-b
+       dead-selector sweep: .surface-card removed — zero TSX
+       consumers.) */
     .card,
     .metric,
-    .surface-card,
     .modal-card,
     .sheet-panel,
     tr,
@@ -5540,8 +5421,7 @@
     .list-row::before { inline-size: 2px; }
     .owner-table tbody tr:hover td:first-child::before,
     .admin-students-table tbody tr:hover td:first-child::before,
-    .leaderboard-table tbody tr:hover td:first-child::before,
-    .tbl tbody tr:hover td:first-child::before { inline-size: 2px; }
+    .leaderboard-table tbody tr:hover td:first-child::before { inline-size: 2px; }
   }
   /* Deliberately KEPT at 3px as standalone accent BAR elements (not card
      edge stripes): .section-title::before (heading hierarchy marker) and
@@ -5558,34 +5438,26 @@
 @layer overrides {
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  1. SKIP-LINK — restore v20's fixed positioning                ║
+     ║  1. SKIP-LINK — band-aid RETIRED (wave 9-b root fix)          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  /* THE "760px RTL scrollWidth at 390px" production bug (flagged by 3
-     agents, attributed to the off-canvas sidebar — that was a
-     misdiagnosis). Measured in-browser: the fixed, translated mobile
-     sidebar contributes NOTHING to scrollable overflow (fixed boxes
-     are excluded); the real culprit was the skip-link. v19's universal
-     link-underline rule
-     `a:not(.btn):not(.nav-item):not(…) { position: relative }` carries
-     specificity (0,7,1) and silently out-ranked v20's `.skip-link
-     { position: fixed }` (0,1,0) in this same overrides layer. The
-     pill then became a stretched in-flow grid item at relative offset
-     `inset-inline-start: 50%` + translateX(-50%) — in RTL that lands
-     it entirely at negative x (~-380px), and negative-x content IS
-     scrollable in RTL documents → every page h-scrolled by ~370px.
-     (In LTR the same offsets net out to ~0, which is why the bug was
-     RTL-only.) One !important is the only tool an append-only section
-     has against a same-layer (0,7,1) selector; verified fixed in
-     Chromium at 320/390/768px, RTL + LTR, drawer open and closed. */
-  .skip-link {
-    position: fixed !important;
-  }
-  /* v19's ::after animated underline also paints a stray 1px line
-     inside the focused pill — the skip-link is a button-shaped
-     control, not a text link. Same specificity story, same tool. */
-  .skip-link::after {
-    content: none !important;
-  }
+  /* The "760px RTL scrollWidth at 390px" production bug (flagged by 3
+     agents, misattributed to the off-canvas sidebar) was root-caused
+     here: v19's universal link-underline rule — specificity (0,7,1) —
+     silently out-ranked v20's `.skip-link { position: fixed }` (0,1,0)
+     in this same overrides layer. The pill became a stretched in-flow
+     grid item at `inset-inline-start: 50%` + translateX(-50%); in RTL
+     that lands it entirely at negative x (~-380px), and negative-x
+     content IS scrollable in RTL documents → every page h-scrolled by
+     ~370px (LTR nets out to ~0 — why the bug was RTL-only). This
+     section's `position: fixed !important` + `::after { content: none
+     !important }` were the only tools an append-only section had
+     against a same-layer (0,7,1) selector. Wave 9-b fixed the ROOT
+     instead: v19's selector family now carries `:not(.skip-link)`, so
+     v20's fixed positioning applies naturally, the underline pseudo
+     never matches the pill, and both !important band-aids are deleted.
+     Keep this history: the lesson is that a high-specificity universal
+     selector can silently defeat a low-specificity component rule in
+     the same layer. */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  2. COLLAPSED RAIL — retire the CSS-only tooltip (0-c P2-4)    ║
@@ -5657,3 +5529,38 @@
     }
   }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v23.css — final consolidation (wave 9-b)
+   ═══════════════════════════════════════════════════════════════════ */
+/* No new declarations — v23 is the wave 9-b change log. Every fix was
+   made surgically in place, next to the rule it corrects:
+   · A  v19's universal link-underline family now excludes .skip-link
+     (the ROOT fix for the 760px RTL scroll bug); wave 7-b's two
+     !important band-aids retired in place. .landing-progress needs no
+     exclusion — it renders a <div>, not an <a>.
+   · B  .landing-campus-eyebrow (v14) follows ruling #2: no Latin
+     letter-spacing / text-transform on the Arabic eyebrow copy
+     «جامعة الزاوية». (8-a's "vision-eyebrow out of file scope" note is
+     stale — that class has zero consumers AND zero definitions
+     anywhere in frontend/, nothing to fix.)
+   · C  ONE mobile .btn.sm tap-target floor: the v11 overrides-layer
+     block now pins 44px; v6's dead pages-layer copy is removed
+     (6-a follow-up #5).
+   · D  Dead-selector sweep: every selector whose class/attribute has
+     zero TSX consumers was deleted in place with a tombstone + worklog
+     evidence. Dynamically-composed classes (state-${variant},
+     toast-${variant}, reveal-d-${delay}) were verified ALIVE and kept.
+     5-a's "dead" scan-bar bridge rule was NOT deleted: it lives in
+     components.css (outside this file's scope) and is still LIVE — the
+     student ResearchPage's .scan-pulse spans the scan grid through it.
+   · E  Raw-value audit of the v22 + wave sections: only tokens; the
+     sole raw values are the reduced-motion belt's canonical
+     0.01ms/0s !important resets. Zero >1px border-inline stripes
+     remain anywhere in this file (ruling #4); the documented
+     standalone bars (.section-title::before, .compact-kpi::before)
+     and the 2px hover rails stand as swept in v22.
+   Layer hygiene: sections v6–v8 remain @layer pages; v9 onward
+   (including wave 7-b above) remain @layer overrides — the incumbent
+   structure is unchanged, so this comment-only banner adds no layer. */

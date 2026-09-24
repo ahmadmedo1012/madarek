@@ -3,14 +3,9 @@ import { Card, MetricCard } from '../../components/primitives';
 import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useOwnerRealtime, useOwnerAlerts } from '../../hooks/useOwner';
+import { countAr } from '../../lib/format';
 
-/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
-function countAr(n: number, forms: [string, string, string, string]): string {
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
-  return `${n} ${forms[3]}`;
-}
+/* countAr lives in lib/format.ts (wave 9-a). */
 
 const ACTIVE_ALERT_FORMS: [string, string, string, string] = [
   'تنبيه نشط واحد', 'تنبيهان نشطان', 'تنبيهات نشطة', 'تنبيهاً نشطاً',

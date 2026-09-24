@@ -1,14 +1,14 @@
 import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  BookOpen, CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
-  Cog, Cpu, Database, Network, Globe, Shield,
-  type LucideIcon,
+  CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
+  BookOpen,
 } from 'lucide-react';
 import { Card, MetricCard, ProgressBar, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
+import { courseIcon, courseTint } from '../../lib/courseMeta';
 import {
   useMyEnrollments,
   useStudentDashboard,
@@ -20,22 +20,8 @@ import {
   type Submission,
 } from '../../hooks/useResources';
 
-const courseIcon = (codeOrName: string): LucideIcon => {
-  const s = codeOrName.toLowerCase();
-  if (s.includes('se') || s.includes('برمج')) return Cog;
-  if (s.includes('ct') || s.includes('تقنيات الحاسوب')) return Cpu;
-  if (s.includes('is') || s.includes('نظم')) return Database;
-  if (s.includes('net') || s.includes('شبك')) return Network;
-  if (s.includes('web') || s.includes('إنترنت')) return Globe;
-  if (s.includes('sec') || s.includes('أمن')) return Shield;
-  return BookOpen;
-};
-
-// NOTE: the same default tint lives in CourseDetailPage / MatrixPage /
-// LibraryPage / LabsPage (API themeColor fallback). A shared
-// lib/courseMeta constant needs a wave that owns lib/ — flagged in the
-// worklog for the orchestrator.
-const DEFAULT_COURSE_TINT = '#3D6BD6';
+/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
+ * lib/courseMeta.ts (wave 9-a). */
 
 type AgendaAssignment = StudentDashboard['agenda']['assignments'][number];
 
@@ -203,7 +189,7 @@ export default function StudentCoursesPage() {
             {filtered.length ? filtered.map((e, i) => {
               const c = e.offering.course;
               const Cmp = courseIcon(c.code ?? c.name);
-              const tint = c.themeColor ?? DEFAULT_COURSE_TINT;
+              const tint = courseTint(c.themeColor);
               const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
               return (
                 <Link

@@ -1330,4 +1330,92 @@
       transition: none;
     }
   }
+
+  /* ── 9-a — AI-band chat mockup (8-a follow-up, 0-b P1-15 family) ──
+     The ~12 inline style objects on the Oasis band visual are de-lined
+     into classes with the SAME rendered result (values kept verbatim:
+     the mockup's 14px bubble text, 14px paddings, 10px/5px gaps and
+     14px radii sit between the spacing and radius token steps —
+     snapping them would change the band). No new keyframes: the typing
+     dots and the status dot ride the existing .typing-dots and
+     .landing-hero-eyebrow-dot animations, both covered by the 8-a
+     off-switch above. The point list's 40px inline-start padding and
+     1em block-end margin freeze the UA defaults the <ul> was silently
+     rendering with. */
+  .landing-ai-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-4);
+  }
+  .landing-ai-head-body { flex: 1; }
+  .landing-ai-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: var(--fw-bold);
+    color: var(--text);
+  }
+  .landing-ai-status {
+    font-size: var(--fs-xxs);
+    color: var(--c-mint-ink);
+    font-weight: var(--fw-semibold);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .landing-ai-bubble-user {
+    padding: 14px;
+    background: var(--c-lavender-bg);
+    border-radius: 14px;
+    font-size: 14px;
+    color: var(--c-lavender-deep);
+    line-height: 1.6;
+    margin-block-end: var(--sp-3);
+    font-weight: var(--fw-medium);
+  }
+  .landing-ai-bubble-ai {
+    padding: 14px;
+    background: var(--surface-2);
+    border-radius: 14px;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: var(--fw-medium);
+  }
+  .landing-ai-typing {
+    margin-block-start: var(--sp-3);
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+  }
+  .landing-ai-typing-label { font-size: var(--fs-xs); }
+  .landing-ai-points {
+    margin-block: var(--sp-6) 1em;
+    padding-inline-start: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .landing-ai-point {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-medium);
+  }
+  .landing-ai-point-dot {
+    inline-size: 22px;
+    block-size: 22px;
+    border-radius: 50%;
+    background: var(--c-lavender-deep);
+    color: var(--c-lavender-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
 }

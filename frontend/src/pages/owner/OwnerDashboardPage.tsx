@@ -12,32 +12,18 @@ import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity } from '../../hooks/useOwner';
+import { countAr, formatRelativeAr } from '../../lib/format';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
-function countAr(n: number, forms: [string, string, string, string]): string {
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
-  return `${n} ${forms[3]}`;
-}
+/* countAr + formatRelativeAr live in lib/format.ts (wave 9-a). */
 
 const OPEN_ALERT_FORMS: [string, string, string, string] = [
   'تنبيه مفتوح واحد', 'تنبيهان مفتوحان', 'تنبيهات مفتوحة', 'تنبيهاً مفتوحاً',
 ];
 
-function formatRelative(iso: string): string {
-  const d = new Date(iso);
-  const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
-  if (diffMin < 1) return 'الآن';
-  if (diffMin < 60) return `منذ ${countAr(diffMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}`;
-  const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
-  const diffD = Math.round(diffHr / 24);
-  if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
-}
+/* formatRelativeAr (counted-plural relative time) is imported from
+ * lib/format.ts — identical strings to the former local copy. */
 
 const ACTION_LABEL: Record<string, string> = {
   'user.login': 'تسجيل دخول',
@@ -146,7 +132,7 @@ export function OwnerDashboardPage() {
     : activity.isError
       ? 'تعذّر الجلب'
       : lastEventAt
-        ? formatRelative(lastEventAt)
+        ? formatRelativeAr(lastEventAt)
         : '—';
 
   const segments = [
@@ -328,7 +314,7 @@ export function OwnerDashboardPage() {
                     {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
                   </td>
                   <td className="muted">{resourceLabel(ev.resourceType)}</td>
-                  <td className="muted">{formatRelative(ev.createdAt)}</td>
+                  <td className="muted">{formatRelativeAr(ev.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

@@ -4,6 +4,18 @@
 > If that file exists, its rules **override** this Master file.
 > If not, strictly follow the rules below.
 
+> **⚠️ SUPERSEDED VISUAL WORLD (wave-9 docs correction):** the palette/typography
+> tables below describe the ORIGINAL 2026-05 draft (blue/Inter/Google Fonts).
+> The platform has since shipped a **Notion-flavored warm world** — the
+> authoritative tokens live in `frontend/src/styles/tokens.css`:
+> cream ground `#FBFAF9` / ink `#191918` / copper accent `#B57438`,
+> 9 pastel section families (`--c-peach…copper` with `-bg/-ink/-deep`),
+> IBM Plex Sans Arabic (self-hosted, 400-700) display + body,
+> IBM Plex Serif italic accents, IBM Plex Mono numerals, soft shadows
+> (`--shadow-card/pop/modal`, `--elev-1..5`), radii 6-28px.
+> The structural guidance below (spacing scale, component anatomy, states)
+> remains valid; treat every color/font literal below as historical.
+
 ---
 
 **Project:** Madarek Zawia University LMS
@@ -24,19 +36,16 @@
 | Background | `#F8FAFC` | `--color-background` |
 | Text | `#1E3A8A` | `--color-text` |
 
-**Color Notes:** Blue data + amber highlights
+**Color Notes:** Blue data + amber highlights *(historical — see superseded notice above)*
 
 ### Typography
 
-- **Heading Font:** Inter
-- **Body Font:** Inter
-- **Mood:** minimal, clean, swiss, functional, neutral, professional
-- **Google Fonts:** [Inter + Inter](https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700)
+- **Heading Font:** Inter *(historical — shipped: IBM Plex Sans Arabic, self-hosted)*
+- **Body Font:** Inter *(historical — shipped: IBM Plex Sans Arabic)*
+- **Mood:** warm, friendly, precise, Notion-flavored, Arabic-first RTL
+- **Fonts:** self-hosted woff2 subsets under `frontend/public/fonts/` (no external CDN)
 
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-```
+**CSS Import:** *(historical — fonts ship self-hosted; see `frontend/src/styles/fonts.css`)*
 
 ### Spacing Variables
 

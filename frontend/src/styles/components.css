@@ -126,7 +126,7 @@
   .card-title-block { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; }
   .card-title {
     font-family: var(--font-display);
-    font-size: var(--fs-h3);
+    font-size: var(--type-headline-size-sm);
     font-weight: var(--fw-bold);
     color: var(--text);
     letter-spacing: var(--ls-snug);
@@ -138,7 +138,7 @@
   }
   .card-title-icon { inline-size: 16px; block-size: 16px; color: var(--accent); flex-shrink: 0; }
   .card-subtitle {
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     color: var(--text-muted);
     line-height: var(--lh-base);
     font-weight: var(--fw-regular);
@@ -233,12 +233,13 @@
 
   .metric-head { display: flex; flex-direction: column; gap: var(--sp-2); flex: 1; min-inline-size: 0; }
   .metric-label {
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
     line-height: 1.3;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    /* wave 9-a (ruling #2, 4-a flag): Latin tracking + uppercase
+       removed — Arabic cursive joins must stay untracked; uppercase
+       is a no-op for Arabic and only ever hurt Latin runs. */
   }
   .metric-value {
     font-family: var(--font-display);
@@ -251,7 +252,7 @@
     font-feature-settings: var(--type-metric-feature-settings);
   }
   .metric-change {
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
     color: var(--text-muted);
     display: inline-flex;
     align-items: center;
@@ -305,7 +306,7 @@
     margin-block-end: var(--sp-1);
   }
   .kpi-label {
-    font-size: var(--fs-xs); color: var(--text-muted);
+    font-size: var(--type-label-size-sm); color: var(--text-muted);
     text-transform: uppercase; letter-spacing: 0.06em;
     font-weight: var(--fw-semibold);
   }
@@ -326,8 +327,8 @@
     border: 1px solid var(--rule); border-radius: var(--r-lg);
   }
   .compact-kpi { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-2); }
-  .compact-kpi-label { font-size: var(--fs-xs); color: var(--text-muted); }
-  .compact-kpi-value { font-size: var(--fs-h3); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
+  .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
+  .compact-kpi-value { font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
   .compact-kpi-trend { font-size: var(--fs-xxs); color: var(--text-muted); }
 
   @media (max-width: 1100px) { .kpi-strip { grid-template-columns: repeat(2, minmax(0,1fr)); } }
@@ -345,7 +346,7 @@
       border-radius: var(--r-md);
       gap: 4px;
     }
-    .compact-kpi-value { font-size: var(--fs-metric-md); line-height: 1.1; }
+    .compact-kpi-value { font-size: var(--type-metric-size); line-height: 1.1; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -365,7 +366,7 @@
     gap: var(--sp-2);
     block-size: 40px;
     padding-inline: var(--sp-5);
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     font-weight: var(--fw-semibold);
     color: var(--_btn-fg);
     background: var(--_btn-bg);
@@ -489,9 +490,9 @@
     --_btn-bd-hover: color-mix(in oklab, var(--danger) 80%, black);
   }
 
-  .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--fs-xs); border-radius: var(--r-sm); }
-  .btn.lg  { block-size: 48px; padding-inline: var(--sp-6); font-size: var(--fs-body); border-radius: var(--r-md); }
-  .btn.xl  { block-size: 56px; padding-inline: var(--sp-7); font-size: var(--fs-body-lg); border-radius: var(--r-md); font-weight: var(--fw-semibold); }
+  .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
+  .btn.lg  { block-size: 48px; padding-inline: var(--sp-6); font-size: var(--type-body-size); border-radius: var(--r-md); }
+  .btn.xl  { block-size: 56px; padding-inline: var(--sp-7); font-size: var(--type-body-size-lg); border-radius: var(--r-md); font-weight: var(--fw-semibold); }
   .btn.full { inline-size: 100%; }
   .btn.pill { border-radius: var(--r-full); }
 
@@ -562,7 +563,7 @@
     gap: 6px;
     padding: 7px 14px;
     border-radius: var(--r-full);
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
     color: var(--text-secondary);
     background: var(--surface);
@@ -603,7 +604,7 @@
     border: 0;
     color: var(--text-muted);
     padding: var(--sp-3) var(--sp-5);
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     font-weight: var(--fw-semibold);
     cursor: pointer;
     position: relative;
@@ -641,7 +642,7 @@
   .progress { display: flex; flex-direction: column; gap: 6px; }
   .progress-head {
     display: flex; align-items: center; justify-content: space-between;
-    font-size: var(--fs-xs); color: var(--text-muted);
+    font-size: var(--type-label-size-sm); color: var(--text-muted);
   }
   .progress-track {
     block-size: 8px;
@@ -683,8 +684,8 @@
   .alert.green  .alert-dot { background: var(--success); }
   .alert.purple .alert-dot { background: var(--c-lavender-ink); }
   .alert-body { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; flex: 1; }
-  .alert-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-sm); }
-  .alert-desc  { font-size: var(--fs-sm); color: var(--text-secondary); line-height: var(--lh-base); }
+  .alert-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--type-label-size); }
+  .alert-desc  { font-size: var(--type-label-size); color: var(--text-secondary); line-height: var(--lh-base); }
   .alert-time  { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -712,7 +713,7 @@
     inline-size: 100%;
     block-size: 44px;
     padding-inline: var(--sp-4);
-    font-size: var(--fs-body);
+    font-size: var(--type-body-size);
     color: var(--text);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -755,7 +756,7 @@
     block-size: 38px;
     /* Start zone: icon at inset sp-2 (8px) + 14px glyph + breathing. */
     padding-inline: var(--sp-7) var(--sp-4);
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     background: var(--surface-1);
     border: 1px solid var(--border);
     border-radius: var(--r-full);
@@ -784,11 +785,19 @@
   @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
   .form-label {
     display: block;
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
     color: var(--text-secondary);
     font-weight: var(--fw-semibold);
+    /* 6px is a deliberate half-step between --sp-1/--sp-2: the tuned
+       label→control rhythm every non-auth form in the app carries
+       (auth.css neutralizes it locally where the field gap owns the
+       rhythm). Kept verbatim — snapping to the 4px scale would shift
+       every form app-wide. */
     margin-block-end: 6px;
-    letter-spacing: 0.02em;
+    /* wave 9-a (ruling #2, 8-b flag): Latin tracking removed — labels
+       are Arabic and the joins must stay untracked. (The wave 9-a
+       section at the end of this file re-asserts this with !important
+       because polish.css's pages-layer block still sets -0.005em.) */
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -814,7 +823,7 @@
   table.table, .table, table.tbl, .tbl {
     inline-size: 100%;
     border-collapse: collapse;
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
   }
   .table thead th, .tbl thead th {
     text-align: start;
@@ -823,7 +832,8 @@
     font-weight: var(--fw-semibold);
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    /* wave 9-a (ruling #2, 4-b flag): Latin tracking removed — table
+       headers are Arabic. (text-transform stays: no-op for Arabic.) */
     background: var(--surface-2);
     border-block-end: 1px solid var(--rule);
     white-space: nowrap;
@@ -884,7 +894,7 @@
     gap: var(--sp-3);
     padding: var(--sp-3) var(--sp-4);
     border-block-start: 1px solid var(--rule);
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
     color: var(--text-muted);
   }
   .table-pagination-actions { display: flex; align-items: center; gap: var(--sp-2); }
@@ -899,7 +909,7 @@
     border-radius: var(--r-sm);
     background: transparent;
     color: var(--text-muted);
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     font-variant-numeric: tabular-nums;
     cursor: pointer;
     transition:
@@ -930,7 +940,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .section-title {
     font-family: var(--font-display);
-    font-size: var(--fs-h2);
+    font-size: var(--type-headline-size-md);
     font-weight: var(--fw-black);
     color: var(--text);
     letter-spacing: var(--ls-snug);
@@ -1089,9 +1099,9 @@
   .list-row:last-child { border-block-end: 0; }
   .list-row:hover { background: var(--surface-2); }
   .list-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; }
-  .list-row-title { font-weight: var(--fw-semibold); font-size: var(--fs-sm); color: var(--text); }
-  .list-row-sub   { font-size: var(--fs-xs); color: var(--text-muted); }
-  .list-row-meta  { font-size: var(--fs-xs); color: var(--text-muted); flex-shrink: 0; }
+  .list-row-title { font-weight: var(--fw-semibold); font-size: var(--type-label-size); color: var(--text); }
+  .list-row-sub   { font-size: var(--type-label-size-sm); color: var(--text-muted); }
+  .list-row-meta  { font-size: var(--type-label-size-sm); color: var(--text-muted); flex-shrink: 0; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STATES                                                        ║
@@ -1124,7 +1134,7 @@
     max-block-size: 160px;
   }
   .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
-  .state-desc  { font-size: var(--fs-sm); color: var(--text-muted); max-inline-size: 42ch; }
+  .state-desc  { font-size: var(--type-label-size); color: var(--text-muted); max-inline-size: 42ch; }
   /* (wave 2-b — `.empty-state { composes: state; }` deleted:
      `composes` is a CSS-Modules feature and never worked in plain
      CSS — a silent no-op since day one (0-a P2-9). polish v6/v11 own
@@ -1397,7 +1407,7 @@
     flex: 1;
     min-inline-size: 0;
     color: var(--text);
-    font-size: var(--fs-body);
+    font-size: var(--type-body-size);
     line-height: 1.45;
   }
   .toast-close {
@@ -1508,7 +1518,7 @@
     border-radius: var(--r-sm);
     box-shadow: var(--elev-2, var(--shadow-card-h));
     padding: var(--sp-2) var(--sp-3);
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     line-height: 1.4;
     max-inline-size: 280px;
     pointer-events: none;
@@ -1605,7 +1615,7 @@
   .onboarding-flow-headline {
     margin: 0;
     font-family: var(--font-display);
-    font-size: var(--fs-h2);
+    font-size: var(--type-headline-size-md);
     font-weight: var(--fw-bold);
     color: var(--text);
     line-height: 1.25;
@@ -1613,7 +1623,7 @@
   .onboarding-flow-body {
     margin: 0;
     color: var(--text-muted);
-    font-size: var(--fs-body);
+    font-size: var(--type-body-size);
     line-height: 1.5;
   }
   .onboarding-flow-dots {
@@ -3725,5 +3735,33 @@
     inline-size: 96px;
     block-size: 96px;
     margin-block-start: var(--sp-1);
+  }
+}
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  wave 9-a: shared-primitive refinements                       ║
+   ║  (append-only; later source order within @layer components    ║
+   ║  wins — the same convention as the wave 5-a/8-c sections)     ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+@layer components {
+
+  /* Arabic form labels must never carry tracking (ruling #2 — it
+     breaks cursive joins; 8-b flagged the shared class). The in-place
+     edit above fixes this layer, but polish.css's pages-layer block
+     (~:1107, "Form labels — subtle weight bump") re-asserts
+     letter-spacing: -0.005em and a components-layer rule can never
+     win the layer order. The !important flips precedence — the same
+     documented technique as the wave 3-c anchor-underline opt-outs
+     and the wave 5-a feed-slide flip. */
+  .form-label { letter-spacing: normal !important; }
+
+  /* ErrorState / PermissionDeniedState / EmptyState action buttons
+     (.btn.sm inside .state) reach the 44px touch floor on phones
+     (craft floor; flagged by 3-b / 4-a / 4-b / 5-a / 6-b). polish's
+     overrides-layer mobile block pins .btn.sm at min-block-size 32px,
+     so — like components.css:2737 and owner.css:1281 before it — this
+     needs the !important. Desktop keeps the compact 32px row. */
+  @media (max-width: 640px) {
+    .state .btn.sm { min-block-size: 44px !important; }
   }
 }

@@ -20,6 +20,7 @@ import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListS
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
+import { formatRelativeArShort } from '../../lib/format';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 
@@ -150,15 +151,8 @@ const CATEGORY_ICON: Record<QualityAlert['category'], LucideIcon> = {
   content: BookOpen,
 };
 
-function formatRelativeAr(iso: string): string {
-  const d = new Date(iso);
-  const m = Math.round((Date.now() - d.getTime()) / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  return `منذ ${Math.round(h / 24)} يوم`;
-}
+/* formatRelativeArShort (compact relative time) lives in lib/format.ts
+ * (wave 9-a) — identical strings to the former local copy. */
 
 const useQualityAlerts = () => useQuery({
   queryKey: ['quality', 'alerts'],
@@ -435,7 +429,7 @@ export function QualityDashboardPage() {
                     icon={CATEGORY_ICON[a.category]}
                     title={a.title}
                     description={a.description}
-                    time={formatRelativeAr(a.occurredAt)}
+                    time={formatRelativeArShort(a.occurredAt)}
                   />
                 ))}
               </div>
@@ -1005,7 +999,7 @@ export function QualityAlertsPage() {
                 icon={CATEGORY_ICON[a.category]}
                 title={a.title}
                 description={a.description}
-                time={formatRelativeAr(a.occurredAt)}
+                time={formatRelativeArShort(a.occurredAt)}
               />
             ))}
           </div>

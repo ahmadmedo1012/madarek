@@ -1,33 +1,19 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  BookOpen, Play, FileText, ClipboardList, Calendar, Users,
+  Play, FileText, ClipboardList, Calendar, Users,
   Clock, CheckCircle2, ChevronRight,
-  Cog, Cpu, Database, Network, Globe, Shield,
-  type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, ProgressBar, MetricCard } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull } from '../../hooks/useResources';
+import { countAr } from '../../lib/format';
+import { courseIcon, courseTint } from '../../lib/courseMeta';
 
-const courseIcon = (codeOrName: string): LucideIcon => {
-  const s = codeOrName.toLowerCase();
-  if (s.includes('se') || s.includes('برمج')) return Cog;
-  if (s.includes('ct') || s.includes('تقنيات الحاسوب')) return Cpu;
-  if (s.includes('is') || s.includes('نظم')) return Database;
-  if (s.includes('net') || s.includes('شبك')) return Network;
-  if (s.includes('web') || s.includes('إنترنت')) return Globe;
-  if (s.includes('sec') || s.includes('أمن')) return Shield;
-  return BookOpen;
-};
-
-// NOTE: the same default tint lives in CoursesPage / MatrixPage /
-// LibraryPage / LabsPage (API themeColor fallback). A shared
-// lib/courseMeta constant needs a wave that owns lib/ — flagged in the
-// worklog for the orchestrator.
-const DEFAULT_COURSE_TINT = '#3D6BD6';
+/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
+ * lib/courseMeta.ts; countAr lives in lib/format.ts (wave 9-a). */
 
 const DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
@@ -49,14 +35,6 @@ const MATERIAL_LABELS: Record<string, string> = {
   IMAGE: 'صورة',
   OTHER: 'ملف',
 };
-
-/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
-function countAr(n: number, forms: [string, string, string, string]): string {
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
-  return `${n} ${forms[3]}`;
-}
 
 function fmtDuration(sec: number) {
   const m = Math.round(sec / 60);
@@ -152,7 +130,7 @@ export default function CourseDetailPage() {
   // (the gateCollegeAccent machinery governs college-identity surfaces
   // only) — contrast is guaranteed by construction: the tint is consumed
   // exclusively as color-mix washes over var(--surface) with --text ink.
-  const tint = data.course.themeColor ?? DEFAULT_COURSE_TINT;
+  const tint = courseTint(data.course.themeColor);
 
   return (
     <div className="page course-page" style={{ '--course-tint': tint } as CSSProperties}>

@@ -18,6 +18,7 @@ import {
 } from 'chart.js';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useTeacherDashboard, type TeacherDashboard } from '../../hooks/useResources';
+import { countAr, formatRelativeAr } from '../../lib/format';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -48,25 +49,7 @@ const KIND_ACTION: Record<'submissions' | 'research' | 'attendance', string> = {
   attendance: 'عرض السجل',
 };
 
-/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
-function countAr(n: number, forms: [string, string, string, string]): string {
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
-  return `${n} ${forms[3]}`;
-}
-
-function formatRelative(iso: string): string {
-  const d = new Date(iso);
-  const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
-  if (diffMin < 1) return 'الآن';
-  if (diffMin < 60) return `منذ ${countAr(diffMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}`;
-  const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
-  const diffD = Math.round(diffHr / 24);
-  if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
-}
+/* countAr + formatRelativeAr live in lib/format.ts (wave 9-a). */
 
 export function TeacherDashboardPage() {
   const [filter, setFilter] = useState<FeedFilter>('all');
@@ -355,7 +338,7 @@ function FeedRow({ item }: { item: TeacherDashboard['feed'][number] }) {
           <span className="feed-item-meta">·</span>
           {/* meta carries a Latin course code — bdi keeps RTL punctuation order */}
           <bdi className="feed-item-meta">{item.meta}</bdi>
-          <span className="feed-item-meta feed-item-time">{formatRelative(item.when)}</span>
+          <span className="feed-item-meta feed-item-time">{formatRelativeAr(item.when)}</span>
         </div>
         <div className="feed-item-text">{item.title}</div>
         <div className="feed-item-actions">

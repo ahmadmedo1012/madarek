@@ -8,6 +8,7 @@ import {
   useOwnerFeatureFlags, useToggleFeatureFlag, useOwnerSettings, useUpdateSetting, useOwnerSystem,
 } from '../../hooks/useOwner';
 import type { FeatureFlag } from '../../hooks/useOwner';
+import { formatRelativeArShort } from '../../lib/format';
 
 const SEVERITY_COLOR: Record<string, 'green' | 'amber' | 'red'> = {
   info: 'green',
@@ -16,17 +17,10 @@ const SEVERITY_COLOR: Record<string, 'green' | 'amber' | 'red'> = {
   critical: 'red',
 };
 
+/* Relative time for nullable timestamps — the shared compact formatter
+ * from lib/format.ts (wave 9-a) with this page's '—' null convention. */
 function formatRelative(iso: string | null): string {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const m = Math.round(diff / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  const dd = Math.round(h / 24);
-  return `منذ ${dd} يوم`;
+  return iso ? formatRelativeArShort(iso) : '—';
 }
 
 function formatDateTime(iso: string): string {

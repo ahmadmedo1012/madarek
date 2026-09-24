@@ -10,6 +10,7 @@ import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion/useReducedMotion';
 import { useLabs, useMyLabSessions, type VirtualLab } from '../../hooks/useResources';
+import { courseTint } from '../../lib/courseMeta';
 
 interface LabExperiment {
   title: string;
@@ -191,7 +192,8 @@ export default function LabsPage() {
               {labs.data.map((l) => {
                 const cat = inferCategory(l);
                 const Cmp = labIcon(cat);
-                const tint = l.themeColor ?? '#3D6BD6';
+                // Shared default tint: lib/courseMeta.ts (wave 9-a).
+                const tint = courseTint(l.themeColor);
                 const hasExperiment = !!EXPERIMENT_LIBRARY[cat];
                 return (
                   <div key={l.id} className="thumb-card">

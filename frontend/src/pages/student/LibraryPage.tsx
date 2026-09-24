@@ -10,6 +10,7 @@ import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/prim
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
+import { courseTint } from '../../lib/courseMeta';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -260,7 +261,8 @@ export default function LibraryPage() {
             <div className="grid-auto-200">
               {books.data.map((b) => {
                 const Cmp = categoryIcon(b.category);
-                const tint = b.themeColor ?? '#3D6BD6';
+                // Shared default tint: lib/courseMeta.ts (wave 9-a).
+                const tint = courseTint(b.themeColor);
                 return (
                   <div className="thumb-card" key={b.id}>
                     <div

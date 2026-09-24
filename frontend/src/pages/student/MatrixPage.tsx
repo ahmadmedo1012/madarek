@@ -1,24 +1,16 @@
 import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Compass, Play, AlertCircle, Sparkles, ArrowLeft, BookOpen,
-  Cog, Cpu, Database, Network, Globe, Shield, type LucideIcon,
+  Compass, Play, AlertCircle, Sparkles, ArrowLeft,
 } from 'lucide-react';
 import { Card, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useMatrix, useGaps } from '../../hooks/useResources';
+import { courseIcon, courseTint } from '../../lib/courseMeta';
 
-const courseIcon = (codeOrName: string): LucideIcon => {
-  const s = codeOrName.toLowerCase();
-  if (s.includes('se') || s.includes('برمج')) return Cog;
-  if (s.includes('ct') || s.includes('تقنيات الحاسوب')) return Cpu;
-  if (s.includes('is') || s.includes('نظم')) return Database;
-  if (s.includes('net') || s.includes('شبك')) return Network;
-  if (s.includes('web') || s.includes('إنترنت')) return Globe;
-  if (s.includes('sec') || s.includes('أمن')) return Shield;
-  return BookOpen;
-};
+/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
+ * lib/courseMeta.ts (wave 9-a). */
 
 type MasteryClass = 'lvl-untouched' | 'lvl-strong' | 'lvl-good' | 'lvl-weak' | 'lvl-poor';
 
@@ -236,9 +228,7 @@ export default function MatrixPage() {
 
           {matrix.data.map((c) => {
             const Cmp = courseIcon(c.courseCode);
-            // NOTE: shared default course tint — the single-constant
-            // extraction (lib/courseMeta.ts) belongs to the courses wave.
-            const tint = c.themeColor ?? '#3D6BD6';
+            const tint = courseTint(c.themeColor);
             const totalConceptsInCourse = c.concepts.length;
             const masteredConcepts = c.concepts.filter((x) => x.level >= 0.8).length;
             const avgPct = totalConceptsInCourse

@@ -24,6 +24,7 @@ import {
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
+import { countAr, formatRelativeArShort } from '../../lib/format';
 import ResearchReviewPage from './ResearchReviewPage';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
@@ -47,13 +48,7 @@ function PageHeader({ title, subtitle, actions }: { title: string; subtitle: str
 
 const DAY_NAMES_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
-/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
-function countAr(n: number, forms: [string, string, string, string]): string {
-  if (n === 1) return forms[0];
-  if (n === 2) return forms[1];
-  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
-  return `${n} ${forms[3]}`;
-}
+/* countAr + formatRelativeArShort live in lib/format.ts (wave 9-a). */
 
 /* Latin format codes stay Latin (proper nouns) — same map as the student
  * course page (wave 4-b); the rest get real Arabic labels (audit 0-e D). */
@@ -389,14 +384,6 @@ function formatSize(bytes: number): string {
   if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`;
 }
-function formatRelativeAr(iso: string): string {
-  const d = new Date(iso);
-  const m = Math.round((Date.now() - d.getTime()) / 60000);
-  if (m < 60) return m < 1 ? 'الآن' : `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  return `منذ ${Math.round(h / 24)} يوم`;
-}
 
 export function MaterialsPage() {
   const q = useTeacherMaterials();
@@ -451,7 +438,7 @@ export function MaterialsPage() {
                     <td className="tbl-num" data-label="الحجم">{m.sizeBytes > 0 ? <bdi>{formatSize(m.sizeBytes)}</bdi> : '—'}</td>
                     <td className="tbl-num" data-label="المشاهدات">{m.views.toLocaleString('ar-LY')}</td>
                     <td className="tbl-num" data-label="التحميلات">{m.downloads.toLocaleString('ar-LY')}</td>
-                    <td className="text-subtle" data-label="التاريخ">{formatRelativeAr(m.createdAt)}</td>
+                    <td className="text-subtle" data-label="التاريخ">{formatRelativeArShort(m.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -803,7 +790,7 @@ function NeedsReviewCard({
               <div className="list-row-body">
                 <div className="list-row-title">{p.assignmentTitle}</div>
                 <div className="list-row-sub">
-                  {p.studentName}{p.courseCode ? <> · <bdi>{p.courseCode}</bdi></> : null} · وصل {formatRelativeAr(p.submittedAt)}
+                  {p.studentName}{p.courseCode ? <> · <bdi>{p.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(p.submittedAt)}
                 </div>
               </div>
               <button
@@ -878,7 +865,7 @@ function GradeSubmissionModal({
         <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{target.assignmentTitle}</div>
         <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }}>
           {target.studentName}
-          {target.courseCode ? <> · <bdi>{target.courseCode}</bdi></> : null} · وصل {formatRelativeAr(target.submittedAt)}
+          {target.courseCode ? <> · <bdi>{target.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(target.submittedAt)}
         </div>
 
         {done ? (
@@ -991,7 +978,7 @@ export function MessagesPage() {
                       {incoming ? '' : 'أنت: '}{m.body}
                     </div>
                   </div>
-                  <div className="text-xxs text-subtle">{formatRelativeAr(m.createdAt)}</div>
+                  <div className="text-xxs text-subtle">{formatRelativeArShort(m.createdAt)}</div>
                 </div>
               );
             })}

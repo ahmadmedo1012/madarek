@@ -604,40 +604,29 @@ export default function LandingPage() {
       <section id="ai" className="band band-lavender">
         <div className="marketing-container band-split">
           <Reveal as="div" className="band-visual">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBlockEnd: 16 }}>
+            {/* Chat mockup — de-inlined to .landing-ai-* classes in
+                landing.css (wave 9-a, 8-a follow-up); same visual result. */}
+            <div className="landing-ai-head">
               <span className="sticker sm lavender"><Icon icon={Brain} size={20} /></span>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, fontFamily: 'var(--font-display)', color: 'var(--text)' }}>Oasis</div>
-                <div style={{ fontSize: 11, color: 'var(--c-mint-ink)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                  <span className="landing-hero-eyebrow-dot" style={{ background: 'var(--c-mint-ink)' }} />
+              <div className="landing-ai-head-body">
+                <div className="landing-ai-name">Oasis</div>
+                <div className="landing-ai-status">
+                  <span className="landing-hero-eyebrow-dot" />
                   متَّصل الآن
                 </div>
               </div>
             </div>
-            <div style={{
-              padding: 14, background: 'var(--c-lavender-bg)', borderRadius: 14,
-              fontSize: 14, color: 'var(--c-lavender-deep)', lineHeight: 1.6, marginBlockEnd: 12,
-              fontWeight: 500,
-            }}>
+            <div className="landing-ai-bubble-user">
               ساعدني في فهم خوارزميات <bdi>«Quick Sort»</bdi> — لم أستوعبها في المحاضرة.
             </div>
-            <div style={{
-              padding: 14, background: 'var(--surface-2)', borderRadius: 14,
-              fontSize: 14, color: 'var(--text)', lineHeight: 1.7,
-              fontWeight: 500,
-            }}>
+            <div className="landing-ai-bubble-ai">
               فكرة <bdi>Quick Sort</bdi> بسيطة: نختار عنصراً <bdi>«pivot»</bdi>، ونفصل العناصر الأصغر
               إلى يمينه والأكبر إلى يساره، ثم نكرّر العملية على كل جانب. هل تريد
               مثالاً بصرياً؟
             </div>
-            <div style={{
-              marginBlockStart: 12, padding: '10px 14px',
-              background: 'var(--surface-2)', borderRadius: 14,
-              display: 'inline-flex', alignItems: 'center', gap: 10,
-              color: 'var(--text-muted)',
-            }}>
+            <div className="landing-ai-typing">
               <span className="typing-dots"><span /><span /><span /></span>
-              <span style={{ fontSize: 12 }}><bdi>Oasis</bdi> يكتب…</span>
+              <span className="landing-ai-typing-label"><bdi>Oasis</bdi> يكتب…</span>
             </div>
           </Reveal>
           <Reveal as="div" delay={2}>
@@ -650,19 +639,14 @@ export default function LandingPage() {
               مساعد أكاديمي يعرف مقرَّراتك ومحاضراتك ودرجاتك. يقدِّم شروحات مخصَّصة،
               يلخِّص الفصول الطويلة، ويختبر معلوماتك بطرق تفاعلية.
             </p>
-            <ul style={{ marginBlockStart: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <ul className="landing-ai-points">
               {[
                 'شرح المفاهيم المعقدة بطرق مبسَّطة',
                 'إنشاء اختبارات قصيرة لمراجعة المعلومات',
                 'توجيه أكاديميّ يعتمد على أدائك الفعلي',
               ].map((b) => (
-                <li key={b} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 500 }}>
-                  <span style={{
-                    inlineSize: 22, blockSize: 22, borderRadius: '50%',
-                    background: 'var(--c-lavender-deep)', color: 'var(--c-lavender-bg)',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0,
-                  }}><Icon icon={Check} size={12} strokeWidth={3} /></span>
+                <li key={b} className="landing-ai-point">
+                  <span className="landing-ai-point-dot"><Icon icon={Check} size={12} strokeWidth={3} /></span>
                   {b}
                 </li>
               ))}

@@ -20,6 +20,7 @@ import {
   type CompetitionRow, type CompetitionDetail,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
+import { formatRelativeArShort } from '../../lib/format';
 
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',
@@ -53,16 +54,8 @@ function formatDeadline(iso: string): string {
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
-function formatRelative(iso: string): string {
-  const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const m = Math.round(diff / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  return `منذ ${Math.round(h / 24)} يوم`;
-}
+/* formatRelativeArShort (compact relative time) lives in lib/format.ts
+ * (wave 9-a) — identical strings to the former local copy. */
 
 /* ───────────────────────── Index page ───────────────────────── */
 
@@ -366,7 +359,7 @@ export function CompetitionDetailPage() {
                 <div className="list-row-body">
                   <span className="list-row-title">{e.title}</span>
                   <span className="list-row-sub">
-                    {e.user.firstName} {e.user.lastName} · {formatRelative(e.submittedAt)}
+                    {e.user.firstName} {e.user.lastName} · {formatRelativeArShort(e.submittedAt)}
                   </span>
                 </div>
                 {e.score !== null && (
@@ -387,7 +380,7 @@ export function CompetitionDetailPage() {
                 <div className="comp-entry-body">
                   <div className="comp-entry-title">{e.title}</div>
                   <div className="comp-entry-meta">
-                    {e.user.firstName} {e.user.lastName} · {formatRelative(e.submittedAt)}
+                    {e.user.firstName} {e.user.lastName} · {formatRelativeArShort(e.submittedAt)}
                     {e.score !== null && c.status !== 'OPEN' && <> · النتيجة: <bdi>{e.score}/100</bdi></>}
                   </div>
                   {isOrganizer && e.body && (

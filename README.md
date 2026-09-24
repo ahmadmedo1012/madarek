@@ -31,7 +31,7 @@ This is a complete LMS for a public university:
 - **PDF viewer** — page nav, zoom, search, highlight, fullscreen, RTL chrome, mobile-responsive
 - **Live notifications** — bell badge with real unread count, refetches every 60s
 - **Social feed** — student/teacher posts persist with hashtags + reactions
-- **University info** — official UoZ data: 29 colleges across 9 cities, vision/mission, rankings, contacts
+- **University info** — official UoZ data: 25 colleges across the Zawiya, Ajlulat and Zwara campuses (plus Abu Issa, Nasser and other areas), vision/mission, rankings, contacts
 
 ## Deploy on Render (3 steps)
 

@@ -35,6 +35,9 @@ const flush = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
 const assignment: SubmitModalAssignment = {
   id: 'a1',
+  // offeringId is part of the agenda assignment shape (pre-existing fixture
+  // gap that failed `typecheck:tests` — added without behavior change).
+  offeringId: 'off-1',
   title: 'مشروع UML للتصميم',
   type: 'PROJECT',
   dueAt: new Date(Date.now() + 86_400_000).toISOString(),
