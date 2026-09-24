@@ -383,3 +383,85 @@
     .role-card:hover { transform: none; }
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   Wave 1-c additions — form control states (append-only)
+   select padding fix · select skeleton · password visibility toggle ·
+   aria-invalid control state · retry link · forgot-row alignment
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* Selects carry no leading icon — the 40px icon gutter baked into
+     .auth-input dents their text (audit 0-b P1-11). */
+  select.auth-input { padding-inline-start: var(--sp-4); }
+
+  /* Shape-matched placeholder while the faculties lookup loads
+     (audit 0-b P0-4). Consumed by the Skeleton primitive. */
+  .auth-select-skeleton {
+    display: block;
+    inline-size: 100%;
+    block-size: 48px;
+    border-radius: var(--r-md);
+  }
+
+  /* Password visibility toggle (audit 0-b P1-5) — sits inside
+     .auth-input-wrap; 44px hit area per the craft floor. */
+  .auth-input-toggle {
+    position: absolute;
+    inset-inline-end: var(--sp-2);
+    inline-size: 44px;
+    block-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--t-clean);
+  }
+  .auth-input-toggle:hover { color: var(--text); background: var(--surface-2); }
+  .auth-input-toggle:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .auth-input-toggle:active { transform: scale(0.94); }
+  .auth-input-wrap.has-toggle .auth-input { padding-inline-end: var(--sp-9); }
+
+  /* Invalid control state — errors are no longer text-only
+     (audit 0-b P1-6). --danger is the fill/stroke token (3.19:1 ≥ the
+     3:1 non-text floor in light; remapped under dark theme). */
+  .auth-input[aria-invalid="true"] { border-color: var(--danger); }
+
+  /* Inline retry action inside an .auth-error box (faculties lookup). */
+  .auth-retry-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    font-weight: var(--fw-bold);
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+  .auth-retry-link:hover { opacity: 0.8; }
+  .auth-retry-link:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+  /* The forgot-password link now floats alone in its row (the empty
+     <span /> spacer was removed — audit 0-b P3-31). */
+  .auth-forgot-row .auth-forgot { margin-inline-start: auto; }
+
+  /* LTR inputs (email / university ID, audit 0-b P1-7) live inside an
+     RTL wrap whose leading icon sits on the physical right — the icon
+     gutter must flip to the input's inline END so text clears it. */
+  .auth-input[dir="ltr"] {
+    padding-inline-start: var(--sp-4);
+    padding-inline-end: 40px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auth-input-toggle { transition: none; }
+    .auth-input-toggle:active { transform: none; }
+  }
+}

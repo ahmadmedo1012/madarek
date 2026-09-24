@@ -71,13 +71,10 @@
     border-color: var(--rule-strong, var(--rule));
     box-shadow: var(--shadow-sm, 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.05));
   }
-  a:focus-visible > .card,
-  button.card:focus-visible,
-  .card-link:focus-visible .card {
-    outline: none;
-    box-shadow: var(--focus-ring);
-    border-color: var(--accent);
-  }
+  /* (Wave 1-a focus consolidation: `outline: none` + the 32%-alpha
+     --focus-ring halo (≈1.5:1 on cream — WCAG fail) deleted. The accent
+     border cue is re-homed in v22; the AA-safe ring comes from the single
+     system re-asserted there. See audits/0-a-foundation.md P0-1/P0-2.) */
 
   /* ── Skeleton refinement — softer, slower, less stripey ─────────── */
   .skeleton {
@@ -122,12 +119,9 @@
     background: var(--accent-soft, var(--surface-2));
     color: var(--accent);
   }
-  .nav-item:focus-visible {
-    outline: none;
-    /* inset accent selection ring — interaction state, not elevation */
-    box-shadow: inset 0 0 0 2px var(--accent);
-    border-radius: var(--r-md);
-  }
+  /* (Wave 1-a focus consolidation: the inset-only nav-item ring deleted —
+     it suppressed the universal outline. Nav items (anchors) now get the
+     single AA-safe ring from v22.) */
 
   /* ── Buttons — focus ring + active feedback ────────────────────── */
   .btn {
@@ -137,10 +131,8 @@
       color var(--t-fast) var(--ease),
       transform var(--motion-duration-micro) var(--ease);
   }
-  .btn:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
+  /* (Wave 1-a focus consolidation: .btn outline suppression + weak halo
+     deleted — buttons take the single AA-safe ring from v22.) */
   .btn:active:not(:disabled) {
     transform: translateY(1px);
   }
@@ -177,12 +169,8 @@
       background var(--t-fast) var(--ease);
   }
 
-  /* ── Inputs — softer focus state ───────────────────────────────── */
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible {
-    outline: none;
-  }
+  /* (Wave 1-a focus consolidation: the input outline suppression deleted —
+     it starved every form control of the AA-safe ring. v22 owns the ring.) */
 
   /* ── Number entrance — subtle "count-up reveal" feel ─────────── */
   [data-numeric="true"] {
@@ -318,14 +306,10 @@
     background: var(--surface-2);
   }
 
-  /* ── Focus-visible: guaranteed ring on interactive cards ────── */
-  a > .card:focus-visible,
-  button > .card:focus-visible,
-  .card-link:focus-visible .card,
-  .surface-card:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+  /* (Wave 1-a focus consolidation: duplicate ring deleted. Anchor/button
+     wrappers carry the single AA-safe ring from v22; `a > .card:focus-visible`
+     and `button > .card:focus-visible` never matched anything — the wrapper,
+     not the card, is the focused element.) */
 
   /* ── Disabled interactive cards ─────────────────────────────── */
   .card.disabled,
@@ -388,7 +372,9 @@
     to { transform: rotate(360deg); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .loading-pane .spinner { animation-duration: 1500ms; }
+    /* (Wave 1-a: the 1500ms "slow spinner" accommodation deleted — it
+       never won against base.css's `animation-duration: 0.01ms !important`
+       belt. The press-transform resets below stay.) */
     .card.interactive:active,
     a > .card:active,
     button > .card:active,
@@ -427,11 +413,8 @@
     color: var(--text);
     border-color: var(--border-strong, var(--rule));
   }
-  .sidebar-collapse-btn:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-    border-color: var(--accent);
-  }
+  /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
+     border-color cue re-homed in v22, ring supplied by the v22 system.) */
 
   /* Hide labels and section headers when collapsed; nav-items become
      icon-only on a tighter padding. The brand text + user info collapse
@@ -769,11 +752,10 @@
     html { scroll-behavior: auto; }
   }
 
-  /* ── Selection highlight — academic gold tint instead of system blue ── */
-  ::selection {
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
-    color: var(--text);
-  }
+  /* ── Selection highlight — one definition only; see v22 ────── */
+  /* (Wave 1-a selection consolidation: v7's copy deleted — v14's recipe
+     was the visual winner and now lives as the single definition in v22.
+     See 0-a P1-1.) */
 
 }
 
@@ -908,20 +890,12 @@
      When the sidebar is reduced to an icon rail, the topbar's left
      edge gets a faint gradient tint so the collapsed rail visually
      "belongs" to the topbar's chrome rather than floating alone. */
-  html[data-sidebar-collapsed] .topbar {
-    background: linear-gradient(
-      to inline-end,
-      color-mix(in srgb, var(--surface-2) 80%, transparent),
-      var(--surface) 80px
-    );
-  }
-  [data-theme="dark"][data-sidebar-collapsed] .topbar {
-    background: linear-gradient(
-      to inline-end,
-      color-mix(in srgb, var(--surface-2) 60%, transparent),
-      var(--surface) 90px
-    );
-  }
+  /* (Wave 1-a invalid-CSS fix: `linear-gradient(to inline-end, …)` is not
+     valid syntax — `to inline-end|inline-start` are not gradient keywords,
+     so both the light and dark tints were silently dropped by every
+     browser. Additionally this pages-layer block could never win over
+     polish v9's overrides-layer solid topbar background. The valid,
+     RTL-correct tint now lives in v22 — see audits/0-a-foundation.md P0-4.) */
 
   /* ── Section title — accent stripe option ────────────────────
      A small, optional visual upgrade for "section-title" headings:
@@ -980,20 +954,10 @@
     border-block-start-color: var(--accent);
   }
 
-  /* ── Focus ring across interactive surfaces — academic gold ───
-     The `--focus-ring` token already exists; we make sure every
-     truly-clickable element actually uses it. */
-  .nav-item:focus-visible,
-  .pill:focus-visible,
-  .tab:focus-visible,
-  .btn:focus-visible,
-  .topbar-user-trigger:focus-visible,
-  .sidebar-collapse-btn:focus-visible,
-  a > .card:focus-visible,
-  button.card:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
+  /* (Wave 1-a focus consolidation: the academic-gold --focus-ring group
+     deleted (32%-alpha halo ≈1.5:1 on cream — WCAG fail). Every selector
+     here is an anchor/button and is covered by the single AA-safe ring
+     re-asserted in v22.) */
 
   /* ── Button-press feedback — subtle, single tone ─────────────── */
   .btn.primary {
@@ -1039,72 +1003,10 @@
      force the Light theme palette regardless of the live runtime
      theme, drop every glass + backdrop-filter, freeze every
      decorative motion, hide chrome that doesn't belong on paper. */
-  @media print {
-    /* Hide chrome */
-    .sidebar, .topbar, .bottom-nav, .sidebar-backdrop { display: none; }
-    .has-shell { grid-template-columns: 1fr; }
-    .card:not(.flush)::before { display: none; }
-
-    /* Force Light theme by overriding [data-theme] attribute
-       semantics. Print contexts cannot honour user theme prefs
-       reliably across browsers, so we lock to Light. */
-    :root,
-    :root[data-theme="dark"],
-    :root[data-theme="light"] {
-      color-scheme: light;
-    }
-
-    /* Drop every glass / backdrop-filter — print engines render
-       them poorly and ink usage is wasteful. */
-    .modal-overlay,
-    .sheet-overlay,
-    .lightbox-overlay,
-    .cmd-palette-overlay,
-    .popover,
-    .notification-panel,
-    .card.glass,
-    .navbar.glass,
-    .topbar.scrolled {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      background: var(--surface) !important;
-    }
-
-    /* Freeze decorative motion. */
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0s !important;
-      animation-delay: 0s !important;
-      transition-duration: 0s !important;
-      transition-delay: 0s !important;
-    }
-    .section-accent,
-    .section-accent::after,
-    .reveal-up,
-    .parallax {
-      transform: none !important;
-      opacity: 1 !important;
-    }
-    .parallax {
-      --parallax-y: 0px !important;
-    }
-
-    /* Illustrations: keep the stroke crisp on paper. */
-    .illustration > svg {
-      max-block-size: 160px;
-    }
-
-    /* Avoid splitting cards / metrics across page breaks. */
-    .card,
-    .metric,
-    .surface-card,
-    .modal-card,
-    .sheet-panel {
-      break-inside: avoid;
-      page-break-inside: avoid;
-    }
-  }
+  /* (Wave 1-a print consolidation: this print block merged with the v20
+     one into a single student-document-aware block in v22 — light-lock for
+     dark-theme users, link href expansion, table-header repetition, break
+     rules. See audits/0-a-foundation.md P0-7 + P1-10.) */
 
   /* ═══════════════════════════════════════════════════════════════
      Welcome card — student dashboard greeting hero
@@ -1143,8 +1045,11 @@
     background-size: 14px 14px;
     background-position: 0 0;
     opacity: 0.35;
-    mask-image: linear-gradient(to inline-start, black 30%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to inline-start, black 30%, transparent 100%);
+    /* (Wave 1-a invalid-CSS fix: `linear-gradient(to inline-start, …)` is
+       not valid syntax — the mask was silently dropped by every browser.
+       The corner dot-grid + its RTL-correct fade now live on
+       .welcome-card::before in v22; v13 later re-styled this ::after as
+       the breathing radial, which is why the dots never showed here.) */
     pointer-events: none;
   }
   [data-theme="dark"] .welcome-card {
@@ -1287,11 +1192,8 @@
     background: var(--accent-fg, white);
   }
 
-  input[type="checkbox"]:focus-visible,
-  input[type="radio"]:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
+  /* (Wave 1-a focus consolidation: checkbox/radio outline suppression +
+     weak halo deleted — inputs take the single AA-safe ring from v22.) */
 
   input[type="checkbox"]:disabled,
   input[type="radio"]:disabled {
@@ -1305,20 +1207,10 @@
      it to match the design system makes the platform feel cohesive
      without screaming for attention.
      ═══════════════════════════════════════════════════════════════ */
-  *::-webkit-scrollbar { width: 10px; height: 10px; }
-  *::-webkit-scrollbar-track { background: transparent; }
-  *::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--text) 14%, transparent);
-    border-radius: var(--r-full);
-    border: 2px solid var(--bg);
-    background-clip: padding-box;
-  }
-  *::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--text) 28%, transparent);
-    background-clip: padding-box;
-  }
-  /* Firefox */
-  html { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 14%, transparent) transparent; }
+  /* (Wave 1-a scrollbar consolidation: this block lost to the v11
+     overrides-layer one, and neither consumed the --scrollbar-thumb
+     tokens. One token-consuming definition now lives in v22, with the
+     sidebar's thinner rail re-landed on top. See 0-a P1-2.) */
 
   /* ═══════════════════════════════════════════════════════════════
      Hydration splash — calmer fade-out when auth loads
@@ -1384,10 +1276,8 @@
     -webkit-tap-highlight-color: transparent;
   }
   .sidebar-mobile-close:hover { background: var(--surface-3); }
-  .sidebar-mobile-close:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
+  /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
+     the close button takes the single AA-safe ring from v22.) */
 
   @media (max-width: 920px) {
     /* X button visible only in the mobile drawer */
@@ -1511,10 +1401,8 @@
     color: var(--text);
     border-color: var(--rule);
   }
-  .topbar-notif:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
+  /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
+     the bell button takes the single AA-safe ring from v22.) */
   .topbar-notif[aria-expanded="true"] {
     background: var(--accent-soft);
     color: var(--accent-strong);
@@ -1617,16 +1505,10 @@
     background: color-mix(in srgb, var(--accent) 4%, transparent);
     position: relative;
   }
-  .notif-item.unread::before {
-    content: '';
-    position: absolute;
-    inset-block: 12px;
-    inset-inline-start: 0;
-    inline-size: 3px;
-    /* 3px accent stripe — micro-radius below the --r-xs floor */
-    border-radius: 2px;
-    background: var(--accent);
-  }
+  /* (Wave 1-a craft-floor sweep, orchestrator ruling #4: the 3px accent
+     edge stripe on unread rows deleted — the leading .notif-item-dot
+     (with its accent halo) already codes "unread", so the stripe was
+     decoration-only duplication. See 0-a P0-5.) */
   .notif-item-dot {
     position: absolute;
     inset-block-start: 16px;
@@ -2357,16 +2239,12 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FOCUS RINGS — keyboard-only, accent color                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  :focus-visible {
-    outline: 2px solid var(--accent, #8E6516);
-    outline-offset: 2px;
-    border-radius: var(--r-xs);
-  }
-  /* buttons already have their own focus styling — don't double up */
-  .btn:focus-visible,
-  .btn:focus-visible:not(:focus-visible) {
-    outline-offset: 3px;
-  }
+  /* (Wave 1-a focus consolidation: this global :focus-visible block
+     deleted — it beat the WCAG-safe motion.css ring from the overrides
+     layer, mutated square surfaces' corners via `border-radius:
+     var(--r-xs)`, shipped a legacy #8E6516 fallback, and contained the
+     never-matching `.btn:focus-visible:not(:focus-visible)`. The single
+     AA-safe system lives in v22. See 0-a P0-1/P0-2.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2458,16 +2336,9 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SCROLLBARS — calmer, theme-aware                              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  * { scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
-  *::-webkit-scrollbar { inline-size: 10px; block-size: 10px; }
-  *::-webkit-scrollbar-track { background: transparent; }
-  *::-webkit-scrollbar-thumb {
-    background: var(--rule);
-    border-radius: var(--r-full);
-    border: 2px solid transparent;
-    background-clip: padding-box;
-  }
-  *::-webkit-scrollbar-thumb:hover { background: var(--border-strong); background-clip: padding-box; }
+  /* (Wave 1-a scrollbar consolidation: deleted — `var(--rule)` thumb
+     starved the --scrollbar-thumb tokens; the single token-consuming
+     definition lives in v22. See 0-a P1-2.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2485,24 +2356,21 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SELECTION                                                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  ::selection {
-    background: var(--accent-soft, rgba(142, 101, 22, 0.18));
-    color: var(--text);
-  }
+  /* (Wave 1-a selection consolidation: one of three deleted polish
+     duplicates — the single definition (v14's recipe, unchanged visual)
+     lives in v22. base.css's copy is wave 2's to remove. See 0-a P1-1.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  REDUCED MOTION                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-    }
-    .skeleton { animation: none; opacity: 0.5; }
-    .spinner { animation: madarek-spin 1500ms linear infinite; }
-  }
+  /* (Wave 1-a reduced-motion consolidation: this belt deleted — its
+     0.001ms drifted from base.css's 0.01ms, and the 1500ms "slow
+     spinner" accommodation could never win against base.css's
+     `animation-duration: 0.01ms !important`. The canonical belt — which
+     also resets animation-delay/transition-delay so staggered grids no
+     longer appear sequentially under reduced motion — lives in v22.
+     See 0-a P1-3 + P1-11.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3106,10 +2974,10 @@
   }
 
   /* Selection color matches the brand */
-  ::selection {
-    background: color-mix(in srgb, var(--accent) 28%, transparent);
-    color: var(--text);
-  }
+  /* (Wave 1-a selection consolidation: v14's recipe — the visual winner —
+     was the last of four competing definitions. It now lives, unchanged,
+     as the single definition in v22; v7/v11/base.css copies are deleted
+     or wave 2's to remove. See 0-a P1-1.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3219,74 +3087,12 @@
     font-weight: var(--fw-medium);
   }
 
-  /* Floating sticker chips — slide up + drift */
-  .landing-campus-chip {
-    position: absolute;
-    background: var(--surface);
-    color: var(--text);
-    padding: 8px 14px 8px 8px;
-    border-radius: var(--r-full);
-    border: 1px solid var(--rule);
-    box-shadow: var(--elevation-3);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    z-index: 2; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    animation: madark-chip-float 7s var(--motion-ease-standard) infinite;
-  }
-  .landing-campus-chip-1 {
-    inset-block-start: 12%;
-    inset-inline-end: 6%;
-  }
-  .landing-campus-chip-2 {
-    /* Stagger to the opposite vertical zone so the two chips form a
-       balanced diagonal across the frame instead of stacking near
-       the same edge. */
-    inset-block-end: 18%;
-    inset-inline-end: 6%;
-    animation-delay: -3.5s;
-  }
-
-  /* Link variant of the campus chip — same float, but reads as
-     interactive: cursor pointer, color shift on hover, inherited
-     focus ring. The trailing arrow icon nudges toward the chip's
-     trailing edge to suggest navigation. */
-  .landing-campus-chip--linked {
-    cursor: pointer;
-    text-decoration: none;
-    transition:
-      transform var(--motion-duration-short) var(--motion-ease-standard),
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  .landing-campus-chip--linked:hover {
-    background: var(--surface-2);
-    border-color: var(--rule-strong, var(--rule));
-  }
-  .landing-campus-chip--linked:hover .landing-campus-chip-arrow {
-    transform: translateX(-2px);
-  }
-  .landing-campus-chip-arrow {
-    color: var(--text-muted);
-    transition: transform var(--motion-duration-short) var(--motion-ease-decelerate);
-  }
-  /* RTL: arrow points "back" to the leading edge in Arabic, so flip it. */
-  [dir="rtl"] .landing-campus-chip-arrow { transform: scaleX(-1); }
-  [dir="rtl"] .landing-campus-chip--linked:hover .landing-campus-chip-arrow {
-    transform: scaleX(-1) translateX(-2px);
-  }
-  @media (max-width: 720px) {
-    .landing-campus-chip-1 { inset-block-start: 8%; inset-inline-end: 4%; font-size: var(--fs-xs); padding: 6px 10px 6px 6px; }
-    .landing-campus-chip-2 { inset-block-start: 24%; inset-inline-end: 10%; font-size: var(--fs-xs); padding: 6px 10px 6px 6px; }
-  }
-  @keyframes madark-chip-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
-  }
+  /* (Wave 1-a dead-code sweep: the floating campus-chip family deleted
+     (~70 lines: .landing-campus-chip, -1/-2 position variants, the
+     --linked interactive variant, -arrow, the 720px sizing pass and the
+     madark-chip-float keyframes). Grep evidence: zero TSX consumers —
+     LandingPage renders the campus frame/photo/vignette/grain/caption/
+     eyebrow/line, but no chip markup. See 0-b P2 + 0-a mission item G.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3360,18 +3166,13 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FOCUS RINGS — accent halo on every interactive surface        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  a:focus-visible,
-  button:focus-visible,
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible,
-  [role="button"]:focus-visible,
-  [role="tab"]:focus-visible,
-  [role="menuitem"]:focus-visible {
-    outline: none;
-    box-shadow: var(--ring-focus);
-    border-radius: inherit;
-  }
+  /* (Wave 1-a focus consolidation: THE P0 deletion. This overrides-layer
+     block killed the WCAG-safe motion.css ring (outline: none) and
+     replaced it with --ring-focus — a 30%-alpha copper halo ≈1.5:1 on
+     cream in light theme, a hard WCAG 2.4.7/1.4.11 fail on every
+     a/button/input/link in the app. The single AA-safe ring, built on
+     --state-focus-ring-color (= --accent-strong, 10.29:1 light /
+     7.87:1 dark), lives in v22. See 0-a P0-1.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3401,7 +3202,6 @@
      ║  REDUCED MOTION — kill all the moving parts                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
-    .landing-campus-chip,
     .landing-campus-photo,
     .landing-campus-frame {
       animation: none !important;
@@ -4338,18 +4138,12 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (WS-D2 orphan sweep: the .notification-dropdown container + li/
      .notif-item stagger rules and the madark-notif-in keyframes were dead
-     (the NotificationPanel primitive renders its own items). The unread
-     pulse below stays — .notif-item.unread / .notif-unread-dot are live.) */
-  /* Unread dot pulses gently */
-  .notif-item.unread::before,
-  .notif-unread-dot {
-    animation: madark-unread-pulse 2.4s var(--motion-ease-standard) infinite; /* loop cadence — off-token by design */
-  }
-  /* Keyframe states of the unread halo pulse — off-token by design. */
-  @keyframes madark-unread-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); }
-    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 0%, transparent); }
-  }
+     (the NotificationPanel primitive renders its own items).) */
+  /* (Wave 1-a dead-code sweep: the unread pulse deleted. Both selectors
+     were dead — `.notif-item.unread::before` lost its 3px stripe to the
+     craft-floor sweep above, and `.notif-unread-dot` has zero TSX
+     consumers (the rendered class is .notif-item-dot, which keeps its
+     static accent halo). See 0-a mission items G + I.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4465,8 +4259,6 @@
     .bottom-sheet {
       animation: none !important;
     }
-    .notif-item.unread::before,
-    .notif-unread-dot,
     .comp-modal-close:hover {
       animation: none !important;
       transform: none !important;
@@ -4639,38 +4431,11 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TRAINING TRACK CARDS — accent leading edge on hover           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .training-card,
-  .training-track-card {
-    position: relative;
-    overflow: hidden;
-    transition:
-      border-color var(--motion-duration-medium) var(--ease, ease),
-      box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
-      transform var(--motion-duration-medium) var(--ease-spring-soft);
-  }
-  .training-card::before,
-  .training-track-card::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 4px;
-    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
-    transform: scaleY(0);
-    transform-origin: top;
-    transition: transform var(--motion-duration-reveal) var(--ease-spring-soft);
-  }
-  @media (hover: hover) {
-    .training-card:hover,
-    .training-track-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--elevation-3);
-    }
-    .training-card:hover::before,
-    .training-track-card:hover::before {
-      transform: scaleY(1);
-    }
-  }
+  /* (Wave 1-a dead-code sweep: the training-card family deleted. Grep
+     evidence: zero TSX consumers for BOTH .training-card and
+     .training-track-card — TrainingPages (and six other pages) render
+     `.track-card`, an interrupted v10 rename. See 0-d P0/P1 +
+     polish.css:4642 in the audit numbering.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4923,25 +4688,9 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PRINT — strip motion, keep layout legible                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  @media print {
-    *, *::before, *::after {
-      animation: none !important;
-      transition: none !important;
-      box-shadow: none !important;
-    }
-    .topbar,
-    .sidebar,
-    .bottom-nav,
-    .landing-progress {
-      display: none !important;
-    }
-    .has-shell {
-      grid-template-columns: 1fr !important;
-    }
-    .page {
-      padding: 16px !important;
-    }
-  }
+  /* (Wave 1-a print consolidation: this blanket print block merged with
+     the richer v8 one into a single student-document-aware block in v22.
+     See audits/0-a-foundation.md P1-10.) */
 }
 
 
@@ -5361,3 +5110,431 @@
   }
 }
 
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ▶ Section: polish-v22.css — foundation consolidation (wave 1-a)
+   ═══════════════════════════════════════════════════════════════════ */
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — polish v22 · foundation consolidation (wave 1-a)
+   ─────────────────────────────────────────────────────────────────────
+   Implements audits/0-a-foundation.md inside polish.css only:
+   · A  ONE focus-ring system — visible, AA-safe, token-driven
+      (0-a P0-1/P0-2; orchestrator ruling #13: polish.css overrides
+      layer owns the final word).
+   · B  The two invalid `to inline-end|inline-start` gradients,
+      rewritten valid + RTL-correct (0-a P0-4).
+   · C  Reduced-motion belt that also resets delays, so staggered
+      grids stop appearing sequentially (0-a P1-3/P1-11).
+   · D  ONE print block: dark-theme light-lock, link href expansion,
+      break rules, chrome/overlay hiding (0-a P0-7 + P1-10).
+   · E  ONE selection, ONE scrollbar (finally consuming
+      --scrollbar-thumb), skip-link already owned by v20 (0-a P1-1/P1-2/P1-9).
+   · F  Canonical, self-sufficient .bottom-nav container (0-c;
+      orchestrator ruling #8).
+   · I  Craft-floor stripe sweep: toast → 1px colored hairline with
+      restored status coding; animated rails 3-4px → 2px (ruling #4).
+   Losers/dead code in v6–v21 were deleted in place with tombstone
+   comments pointing here.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  A. FOCUS RING — the one system                                ║
+     ║  Mirrors motion.css's universal ring but lives in the last     ║
+     ║  layer, so polish.css owns the final word (ruling #13).        ║
+     ║  --state-focus-ring-color resolves to --accent-strong:         ║
+     ║  #5C3416 = 10.29:1 on cream (light) / #F8DDBC = 7.87:1 on ink  ║
+     ║  (dark) — WCAG 2.4.7 + 1.4.11 safe. The old 30%-alpha copper   ║
+     ║  halo measured ≈1.5:1 on cream.                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  :where(
+    a, button, input, select, textarea, summary,
+    [tabindex]:not([tabindex="-1"]),
+    [role="button"], [role="link"], [role="tab"], [role="menuitem"]
+  ):focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+    border-radius: inherit;
+  }
+  /* Components that draw their own focus treatment may opt out. */
+  :where([data-focus-ring="custom"]):focus-visible {
+    outline: none;
+  }
+  /* Per-component re-assertions that used to lose to the deleted
+     `outline: none` rules — the ring, plus the accent border cue the
+     old recipes carried. */
+  .chat-input:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+  }
+  a:focus-visible > .card,
+  button.card:focus-visible,
+  .card-link:focus-visible .card,
+  .sidebar-collapse-btn:focus-visible {
+    border-color: var(--accent);
+  }
+  /* NOTE: v20's `prefers-contrast: more` block (3px outline, !important)
+     and `forced-colors: active` block still win over this section —
+     that escape hatch is intentional and untouched. */
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  B1. Collapsed-rail topbar tint — valid, RTL-correct           ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* RTL logic: the collapsed icon rail sits at the inline-start edge of
+     the viewport (right in RTL, left in LTR). The tint therefore anchors
+     the gradient's STARTING edge to the rail and fades toward the other
+     side: `to right` for LTR, `to left` for RTL. `to inline-end` was
+     never a valid gradient keyword, so this tint silently never rendered
+     until now. Both rules live here (overrides layer) so they beat v9's
+     solid topbar background. */
+  html[data-sidebar-collapsed] .topbar {
+    background: linear-gradient(to right,
+      color-mix(in srgb, var(--surface-2) 80%, transparent),
+      var(--surface) 80px);
+  }
+  html[dir="rtl"][data-sidebar-collapsed] .topbar {
+    background: linear-gradient(to left,
+      color-mix(in srgb, var(--surface-2) 80%, transparent),
+      var(--surface) 80px);
+  }
+  html[data-theme="dark"][data-sidebar-collapsed] .topbar {
+    background: linear-gradient(to right,
+      color-mix(in srgb, var(--surface-2) 60%, transparent),
+      var(--surface) 90px);
+  }
+  html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
+    background: linear-gradient(to left,
+      color-mix(in srgb, var(--surface-2) 60%, transparent),
+      var(--surface) 90px);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  B2. Welcome-card corner dot grid — re-homed + valid mask      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* v8 drew the dot grid on ::after, but v13 later re-styled the same
+     pseudo as the breathing radial — the dots' background was replaced
+     and the (invalid) mask dropped. The grid moves to ::before (free on
+     .welcome-card, which is a .page-header, not a .card) with a valid
+     RTL-correct fade: the dots sit at the inline-end corner, opaque at
+     the corner edge and fading toward the content — `to left` for LTR
+     (inline-end = right), `to right` for RTL (inline-end = left). */
+  .welcome-card::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 200px;
+    height: 100%;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
+      transparent 1.5px
+    );
+    background-size: 14px 14px;
+    background-position: 0 0;
+    opacity: 0.35;
+    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 100%);
+    mask-image: linear-gradient(to left, black 30%, transparent 100%);
+    pointer-events: none;
+  }
+  [dir="rtl"] .welcome-card::before {
+    -webkit-mask-image: linear-gradient(to right, black 30%, transparent 100%);
+    mask-image: linear-gradient(to right, black 30%, transparent 100%);
+  }
+  @media (max-width: 640px) {
+    .welcome-card::before { width: 110px; opacity: 0.22; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  C. REDUCED MOTION — the canonical belt                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* base.css already zeroes durations, but nothing reset DELAYS: the
+     v6/v13/v17 staggers use `animation … both` + delays up to ~420ms,
+     so under prefers-reduced-motion each grid item still held
+     opacity: 0 until its delay elapsed — content appeared sequentially
+     instead of all at once. This belt (overrides layer, so it beats the
+     deleted v11 one and base.css's) keeps the 0.01ms !important pattern
+     and zeroes both delay channels. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+      scroll-behavior: auto !important;
+    }
+    .skeleton { animation: none; opacity: 0.5; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  D. PRINT — one student-document-aware block                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media print {
+    /* D1. Light-lock. "color-scheme: light" alone is not enough: the
+       tokens-layer [data-theme="dark"] block keeps feeding warm-sand
+       text (#F2EAD8) to dark-theme users printing on white paper —
+       near-invisible grades/schedules. This overrides-layer remap
+       (layer order beats the tokens layer) re-points the dark theme's
+       custom properties at the Light values: neutrals + the nine pastel
+       families verbatim from tokens.css, plus the literals the dark
+       block hardcodes. Raw hex is unavoidable here — it IS the light
+       palette, quoted by value because var() would resolve dark. */
+    :root[data-theme="dark"] {
+      /* light neutral ramp */
+      --neutral-0:   #FFFFFF;
+      --neutral-50:  #FBFAF9;
+      --neutral-100: #F7F6F3;
+      --neutral-150: #F1EFEC;
+      --neutral-200: #E9E7E2;
+      --neutral-300: #D9D6D0;
+      --neutral-400: #8E8A82;
+      --neutral-500: #6F6C66;
+      --neutral-700: #4F4D48;
+      --neutral-800: #322F2A;
+      --neutral-900: #191918;
+      /* light pastel families */
+      --c-peach-bg:     #FFE9DC;  --c-peach-ink:    #E07856;  --c-peach-deep:    #6B2D1A;
+      --c-mint-bg:      #DCF1E2;  --c-mint-ink:     #4FA66D;  --c-mint-deep:     #1F4F30;
+      --c-lavender-bg:  #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
+      --c-sky-bg:       #DDEBF7;  --c-sky-ink:      #5C8FCE;  --c-sky-deep:      #1F3D63;
+      --c-yellow-bg:    #FCF1CD;  --c-yellow-ink:   #D6A330;  --c-yellow-deep:   #6B4C0B;
+      --c-rose-bg:      #FCE0E2;  --c-rose-ink:     #DD6E78;  --c-rose-deep:     #6B2128;
+      --c-sand-bg:      #F1ECDF;  --c-sand-ink:     #B59868;  --c-sand-deep:     #5A4623;
+      --c-grey-bg:      #EFECE7;  --c-grey-ink:     #6B665E;  --c-grey-deep:     #2D2A24;
+      --c-copper-bg:    #F4E4D2;  --c-copper-ink:   #B57438;  --c-copper-deep:   #5C3416;
+      /* literals the dark block hardcodes (not chained to neutrals) */
+      --text-muted:     #6E6C65;
+      --text-faint:     #74706A;
+      --text-on-accent: #FFFFFF;
+      --accent-hover:   #9A5F25;
+      --accent-fg:      #1A0F06;
+      --border-faint:   rgba(25,25,24,0.06);
+      --surface-border: rgba(0,0,0,0.08);
+      --surface-divider: rgba(0,0,0,0.05);
+      --chart-text:     #6E6C65;
+      --gold:           var(--c-yellow-ink);
+      /* text-safe inks: dark maps them to the -ink shades; light uses
+         the deeper -deep shades so status text stays ≥4.5:1 on paper */
+      --accent-ink:  var(--c-copper-deep);
+      --success-ink: var(--c-mint-deep);
+      --warning-ink: var(--c-yellow-deep);
+      --danger-ink:  var(--c-rose-deep);
+      --info-ink:    var(--c-sky-deep);
+      --gold-ink:    var(--c-yellow-deep);
+    }
+    :root,
+    :root[data-theme="dark"],
+    :root[data-theme="light"] {
+      color-scheme: light;
+    }
+
+    /* D2. Ground + ink: paper is the ground; no theme wash, no ink
+       spent on page backgrounds. */
+    html, body { background: transparent !important; }
+
+    /* D3. Hide app chrome and every overlay portaled over the doc. */
+    .sidebar,
+    .topbar,
+    .bottom-nav,
+    .sidebar-backdrop,
+    .landing-progress,
+    .modal-overlay,
+    .sheet-overlay,
+    .lightbox-overlay,
+    .cmd-palette-overlay,
+    .popover,
+    .notification-panel,
+    .toast {
+      display: none !important;
+    }
+    .has-shell { grid-template-columns: 1fr !important; }
+    .page { padding: 16px !important; }
+
+    /* D4. Freeze every effect: motion, shadows, glass, text-shadow. */
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    /* Glass surfaces get an opaque light ground instead of the scrim. */
+    .modal-overlay,
+    .sheet-overlay,
+    .lightbox-overlay,
+    .cmd-palette-overlay,
+    .popover,
+    .notification-panel,
+    .card.glass,
+    .navbar.glass {
+      background: var(--surface) !important;
+    }
+    /* Decorative pseudo-layers (cursor-follow highlight, gradient border
+       glow) would print as empty ink — drop them. */
+    .card:not(.flush)::before,
+    .card:not(.flush)::after { display: none !important; }
+
+    /* D5. Nothing may print invisible: reveal-wrapped or late-fading
+       content is forced to its final state. */
+    [data-reveal],
+    [data-loaded],
+    .section-accent,
+    .section-accent::after,
+    .reveal-up,
+    .parallax {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .parallax { --parallax-y: 0px !important; }
+
+    /* D6. Links: underline (v19's animated ::after underline is frozen
+       at scaleX(0) — invisible), and expand external targets after the
+       link text so printed docs stay actionable. */
+    a { text-decoration: underline; text-underline-offset: 3px; }
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: var(--fs-xxs);
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    /* D7. Pagination: keep cards/rows/images whole, repeat table
+       headers on every page, don't orphan headings. */
+    .card,
+    .metric,
+    .surface-card,
+    .modal-card,
+    .sheet-panel,
+    tr,
+    img {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    thead { display: table-header-group; }
+    h1, h2, h3, h4, h5, h6, .page-title { break-after: avoid; }
+
+    /* D8. Illustrations: capped and crisp on paper. */
+    .illustration > svg { max-block-size: 160px; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  E. BROWSER SURFACES — one definition each                     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Selection — v14's recipe (the visual winner), now the only polish
+     definition. base.css's copy is dead weight; wave 2 removes it. */
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+    color: var(--text);
+  }
+
+  /* Scrollbar — thin, calm, and finally consuming the --scrollbar-thumb
+     tokens (they were dead: the deleted v11 winner hard-coded
+     var(--rule)). */
+  * { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
+  *::-webkit-scrollbar { inline-size: 10px; block-size: 10px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--r-full);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+    background-clip: padding-box;
+  }
+  /* Sidebar's own rail re-lands on top of the global block (0-a P2-14):
+     4px wide and whisper-quiet inside the nav column. */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    border-radius: var(--r-full);
+  }
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+  }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  F. BOTTOM-NAV — the canonical container (ruling #8)           ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Breakpoint rationale: the sidebar disappears at ≤920px (base.css
+     .has-shell), so the dock must span the full 0→920px band — the old
+     640px pages-layer rule (notifications.css) left 641–920px tablet
+     users with no navigation at all. Grid (not flex) keeps the five
+     role items evenly distributed at every width. Complete without
+     layout.css's block, so wave 2 can delete it safely. */
+  .bottom-nav {
+    display: none;
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    background: var(--topbar-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    border-block-start: 1px solid var(--rule);
+    z-index: var(--z-dropdown);
+    padding: 6px max(var(--sp-2), env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
+    grid-template-columns: repeat(5, 1fr);
+    transition: transform var(--t-base) var(--ease);
+  }
+  .bottom-nav.is-hidden { transform: translateY(110%); }
+  @media (max-width: 920px) {
+    .bottom-nav { display: grid; }
+  }
+  /* Reduced-transparency accommodation re-asserted (v20's non-important
+     version would lose to the rule above now that polish owns the
+     container): opaque ground whenever the user disables glass. The
+     collapsed-topbar guard matches B1's specificities so the tint can't
+     go translucent there either. */
+  @media (prefers-reduced-transparency: reduce) {
+    .bottom-nav { background: var(--surface); }
+    html[data-sidebar-collapsed] .topbar,
+    html[dir="rtl"][data-sidebar-collapsed] .topbar { background: var(--surface); }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  I. CRAFT-FLOOR STRIPE SWEEP (orchestrator ruling #4)          ║
+     ║  1px is the Notion hairline language on card/list edges.       ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Toast: the components.css 4px leading stripe is neutralized by v18's
+     1px border, but v18's `border` shorthand also wiped the status
+     coloring — re-assert it so the (soon-to-be-wired, ruling #3) toast
+     codes its variant on a 1px colored hairline. */
+  .toast-info    { border-inline-start-color: var(--info); }
+  .toast-success { border-inline-start-color: var(--success); }
+  .toast-warning { border-inline-start-color: var(--warning); }
+  .toast-error   { border-inline-start-color: var(--danger); }
+
+  /* Animated leading-edge rails on cards/list rows: 3–4px → 2px
+     (0-a P0-5 allows hover rails up to 2px). The motion is preserved —
+     only the stroke weight changes. */
+  .metric::before { inline-size: 2px; }
+  .search-row::before { inline-size: 2px; }
+  .college-hero::before,
+  .comp-hero::before { inline-size: 2px; }
+  @media (hover: hover) {
+    .list-row::before { inline-size: 2px; }
+    .owner-table tbody tr:hover td:first-child::before,
+    .admin-students-table tbody tr:hover td:first-child::before,
+    .leaderboard-table tbody tr:hover td:first-child::before,
+    .tbl tbody tr:hover td:first-child::before { inline-size: 2px; }
+  }
+  /* Deliberately KEPT at 3px as standalone accent BAR elements (not card
+     edge stripes): .section-title::before (heading hierarchy marker) and
+     .compact-kpi::before (28px corner tick). The 3px notif unread stripe
+     and the 4px training-card stripe are gone entirely — see tombstones
+     in v9/v19. */
+}

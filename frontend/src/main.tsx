@@ -15,6 +15,8 @@ import './styles/notifications.css';
 import './styles/pdf.css';
 import './styles/owner.css';
 import './styles/colleges.css';
+import './styles/student.css';
+import './styles/training.css';
 import './styles/polish.css';
 import App from './App';
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { Children, cloneElement, isValidElement, useId, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -6,10 +6,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Mail, Lock, Home, GraduationCap, School,
   AlertCircle, ArrowLeft, ArrowRight, User, Hash, Building2, BookOpen, Lock as LockIcon,
+  Eye, EyeOff,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
+import { Skeleton } from '../components/motion';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import type { AppRole } from '../stores/auth.store';
 
@@ -36,7 +38,7 @@ const studentSchema = z.object({
   universityId: z.string().min(3, 'مطلوب').max(40),
   facultyId: z.string().min(1, 'اختر الكلية'),
   departmentId: z.string().min(1, 'اختر القسم'),
-  year: z.coerce.number().int().min(1).max(8),
+  year: z.coerce.number().int().min(1).max(7),
 });
 
 const teacherSchema = z.object({
@@ -58,6 +60,11 @@ export default function RegisterPage() {
   const register = useRegister();
   const facultiesQ = useFaculties();
   const [role, setRole] = useState<AcademicRole | null>(null);
+  const facultiesState: FacultiesState = {
+    status: facultiesQ.isLoading ? 'loading' : facultiesQ.isError ? 'error' : 'ready',
+    items: facultiesQ.data ?? [],
+    retry: () => void facultiesQ.refetch(),
+  };
 
   if (!role) {
     return (
@@ -70,7 +77,7 @@ export default function RegisterPage() {
           <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>إنشاء حساب جديد</span>
         </div>
 
-        <div className="auth-center">
+        <main className="auth-center">
           <div className="auth-card" style={{ maxWidth: 520 }}>
             <div className="auth-brand-mini">
               <span className="auth-brand-mini-mark">م</span>
@@ -78,7 +85,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="auth-form-header">
-              <h2 className="auth-form-title">من أنت؟</h2>
+              <h1 className="auth-form-title">من أنت؟</h1>
               <p className="auth-form-sub">
                 اختر نوع الحساب لإنشاء وصولك إلى منصّة جامعة الزاوية.
               </p>
@@ -112,7 +119,7 @@ export default function RegisterPage() {
               </span>
             </div>
           </div>
-        </div>
+        </main>
 
         <div className="auth-bottom">
           دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
@@ -134,7 +141,7 @@ export default function RegisterPage() {
         </Link>
       </div>
 
-      <div className="auth-center">
+      <main className="auth-center">
         <div className="auth-card" style={{ maxWidth: 560 }}>
           <div className="auth-brand-mini">
             <span className="auth-brand-mini-mark">م</span>
@@ -142,9 +149,9 @@ export default function RegisterPage() {
           </div>
 
           <div className="auth-form-header">
-            <h2 className="auth-form-title">
+            <h1 className="auth-form-title">
               {role === 'STUDENT' ? 'تسجيل طالب جديد' : 'تسجيل عضو هيئة تدريس'}
-            </h2>
+            </h1>
             <p className="auth-form-sub">
               املأ بياناتك لإنشاء الحساب. كل الحقول المطلوبة مُعلَّمة.
             </p>
@@ -154,7 +161,7 @@ export default function RegisterPage() {
             <StudentForm
               isPending={register.isPending}
               isError={register.isError}
-              faculties={facultiesQ.data ?? []}
+              faculties={facultiesState}
               onSubmit={async (values) => {
                 try {
                   const res = await register.mutateAsync({ role: 'STUDENT', ...values });
@@ -166,7 +173,7 @@ export default function RegisterPage() {
             <TeacherForm
               isPending={register.isPending}
               isError={register.isError}
-              faculties={facultiesQ.data ?? []}
+              faculties={facultiesState}
               onSubmit={async (values) => {
                 try {
                   const res = await register.mutateAsync({ role: 'TEACHER', ...values });
@@ -176,7 +183,7 @@ export default function RegisterPage() {
             />
           )}
         </div>
-      </div>
+      </main>
 
       <div className="auth-bottom">
         دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
@@ -187,8 +194,17 @@ export default function RegisterPage() {
 
 interface FormFaculty { id: string; name: string; departments: { id: string; name: string }[] }
 
+/** Load state of the faculties lookup. The register form is unusable
+ *  without it, so loading and error are first-class states (skeleton /
+ *  retry), never a silently empty select (audit 0-b P0-4). */
+interface FacultiesState {
+  status: 'loading' | 'error' | 'ready';
+  items: FormFaculty[];
+  retry: () => void;
+}
+
 interface StudentFormProps {
-  faculties: FormFaculty[];
+  faculties: FacultiesState;
   isPending: boolean;
   isError: boolean;
   onSubmit: (values: StudentInputs) => Promise<void>;
@@ -199,9 +215,10 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
     resolver: zodResolver(studentSchema),
     defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', facultyId: '', departmentId: '', year: 1 },
   });
+  const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   const departments = useMemo(
-    () => faculties.find((f) => f.id === facultyId)?.departments ?? [],
+    () => faculties.items.find((f) => f.id === facultyId)?.departments ?? [],
     [faculties, facultyId],
   );
 
@@ -210,35 +227,58 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
       <div className="auth-row-2">
         <Field label="الاسم الأول" error={form.formState.errors.firstName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input has-icon-start" autoComplete="given-name" {...form.register('firstName')} />
+          <input className="auth-input" autoComplete="given-name" {...form.register('firstName')} />
         </Field>
         <Field label="اللقب" error={form.formState.errors.lastName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input has-icon-start" autoComplete="family-name" {...form.register('lastName')} />
+          <input className="auth-input" autoComplete="family-name" {...form.register('lastName')} />
         </Field>
       </div>
 
       <Field label="البريد الإلكتروني" error={form.formState.errors.email?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="auth-input has-icon-start" type="email" autoComplete="email" {...form.register('email')} />
+        <input className="auth-input" type="email" dir="ltr" autoComplete="email" {...form.register('email')} />
       </Field>
 
       <Field label="كلمة المرور (٨ أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-        <input className="auth-input has-icon-start" type="password" autoComplete="new-password" {...form.register('password')} />
+        <input className="auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
+        <button
+          type="button"
+          className="auth-input-toggle"
+          onClick={() => setShowPassword((v) => !v)}
+          aria-pressed={showPassword}
+          aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+        >
+          <Icon icon={showPassword ? EyeOff : Eye} size={16} />
+        </button>
       </Field>
 
       <Field label="رقم القيد الجامعي" error={form.formState.errors.universityId?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Hash} size={16} /></span>
-        <input className="auth-input has-icon-start" placeholder="مثلاً 2024-CS-1234" {...form.register('universityId')} />
+        {/* dir="ltr": university IDs are Latin/digit runs (2024-CS-1234)
+            that bidi-scramble inside an RTL input. */}
+        <input className="auth-input" placeholder="مثلاً 2024-CS-1234" dir="ltr" {...form.register('universityId')} />
       </Field>
 
       <div className="auth-row-2">
         <Field label="الكلية" error={form.formState.errors.facultyId?.message}>
+          {faculties.status === 'loading' && <Skeleton className="auth-select-skeleton" />}
+          {faculties.status === 'error' && (
+            <div className="auth-error" role="alert">
+              <Icon icon={AlertCircle} size={14} />
+              <span>تعذّر تحميل الكلّيّات.</span>
+              <button type="button" className="auth-retry-link" onClick={faculties.retry}>
+                إعادة المحاولة
+              </button>
+            </div>
+          )}
+          {faculties.status === 'ready' && (
           <select className="auth-input" {...form.register('facultyId')}>
             <option value="">اختر…</option>
-            {faculties.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+            {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
+          )}
         </Field>
         <Field label="القسم" error={form.formState.errors.departmentId?.message}>
           <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
@@ -250,7 +290,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
 
       <Field label="السنة الدراسية" error={form.formState.errors.year?.message}>
         <select className="auth-input" {...form.register('year')}>
-          {[1, 2, 3, 4, 5, 6].map((y) => <option key={y} value={y}>السنة {y}</option>)}
+          {[1, 2, 3, 4, 5, 6, 7].map((y) => <option key={y} value={y}>السنة {y}</option>)}
         </select>
       </Field>
 
@@ -262,6 +302,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
       )}
 
       <button type="submit" className="auth-submit" disabled={isPending}>
+        {isPending && <span className="auth-submit-spinner" aria-hidden />}
         {isPending ? 'جارٍ الإنشاء…' : 'إنشاء الحساب'}
       </button>
     </form>
@@ -269,7 +310,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
 }
 
 interface TeacherFormProps {
-  faculties: FormFaculty[];
+  faculties: FacultiesState;
   isPending: boolean;
   isError: boolean;
   onSubmit: (values: TeacherInputs) => Promise<void>;
@@ -280,9 +321,10 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
     resolver: zodResolver(teacherSchema),
     defaultValues: { firstName: '', lastName: '', email: '', password: '', facultyId: '', departmentId: '', specialty: '' },
   });
+  const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   const departments = useMemo(
-    () => faculties.find((f) => f.id === facultyId)?.departments ?? [],
+    () => faculties.items.find((f) => f.id === facultyId)?.departments ?? [],
     [faculties, facultyId],
   );
 
@@ -291,30 +333,51 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
       <div className="auth-row-2">
         <Field label="الاسم الأول" error={form.formState.errors.firstName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input has-icon-start" autoComplete="given-name" {...form.register('firstName')} />
+          <input className="auth-input" autoComplete="given-name" {...form.register('firstName')} />
         </Field>
         <Field label="اللقب" error={form.formState.errors.lastName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input has-icon-start" autoComplete="family-name" {...form.register('lastName')} />
+          <input className="auth-input" autoComplete="family-name" {...form.register('lastName')} />
         </Field>
       </div>
 
       <Field label="البريد الجامعي" error={form.formState.errors.email?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="auth-input has-icon-start" type="email" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
+        <input className="auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
       </Field>
 
       <Field label="كلمة المرور (٨ أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-        <input className="auth-input has-icon-start" type="password" autoComplete="new-password" {...form.register('password')} />
+        <input className="auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
+        <button
+          type="button"
+          className="auth-input-toggle"
+          onClick={() => setShowPassword((v) => !v)}
+          aria-pressed={showPassword}
+          aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+        >
+          <Icon icon={showPassword ? EyeOff : Eye} size={16} />
+        </button>
       </Field>
 
       <div className="auth-row-2">
         <Field label="الكلية" error={form.formState.errors.facultyId?.message}>
+          {faculties.status === 'loading' && <Skeleton className="auth-select-skeleton" />}
+          {faculties.status === 'error' && (
+            <div className="auth-error" role="alert">
+              <Icon icon={AlertCircle} size={14} />
+              <span>تعذّر تحميل الكلّيّات.</span>
+              <button type="button" className="auth-retry-link" onClick={faculties.retry}>
+                إعادة المحاولة
+              </button>
+            </div>
+          )}
+          {faculties.status === 'ready' && (
           <select className="auth-input" {...form.register('facultyId')}>
             <option value="">اختر…</option>
-            {faculties.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+            {faculties.items.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
+          )}
         </Field>
         <Field label="القسم" error={form.formState.errors.departmentId?.message}>
           <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
@@ -326,7 +389,7 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
 
       <Field label="التخصص العلمي" error={form.formState.errors.specialty?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={BookOpen} size={16} /></span>
-        <input className="auth-input has-icon-start" placeholder="مثلاً: الذكاء الاصطناعي" {...form.register('specialty')} />
+        <input className="auth-input" placeholder="مثلاً: الذكاء الاصطناعي" {...form.register('specialty')} />
       </Field>
 
       <div className="role-invitation-note" role="note">
@@ -344,6 +407,7 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
       )}
 
       <button type="submit" className="auth-submit" disabled={isPending}>
+        {isPending && <span className="auth-submit-spinner" aria-hidden />}
         {isPending ? 'جارٍ الإنشاء…' : 'إنشاء الحساب'}
       </button>
     </form>
@@ -356,12 +420,28 @@ interface FieldProps {
   children: React.ReactNode;
 }
 
+/** Labeled form field. The label is programmatically associated with the
+ *  single input/select child (useId), and validation errors are wired via
+ *  aria-describedby + aria-invalid so they are announced on focus, not only
+ *  through the role="alert" live region (audit 0-b P0-3 / P1-6). */
 function Field({ label, error, children }: FieldProps) {
+  const id = useId();
+  const errorId = `${id}-error`;
+  const wired = Children.map(children, (child) => {
+    if (!isValidElement(child) || (child.type !== 'input' && child.type !== 'select')) {
+      return child;
+    }
+    return cloneElement(child as React.ReactElement<Record<string, unknown>>, {
+      id,
+      'aria-invalid': error ? true : undefined,
+      'aria-describedby': error ? errorId : undefined,
+    });
+  });
   return (
     <div className="auth-field">
-      <label className="form-label">{label}</label>
-      <div className="auth-input-wrap">{children}</div>
-      {error && <span className="auth-field-error" role="alert">{error}</span>}
+      <label htmlFor={id} className="form-label">{label}</label>
+      <div className="auth-input-wrap">{wired}</div>
+      {error && <span id={errorId} className="auth-field-error" role="alert">{error}</span>}
     </div>
   );
 }

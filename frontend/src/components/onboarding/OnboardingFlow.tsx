@@ -11,8 +11,11 @@
  *   - Back / Next controls + a visible Skip on every frame
  *   - the dot strip shows progress without taking focus
  *
- * The hook (`useOnboardingState`) decides when to mount this; here we
- * only care about rendering the visible flow.
+ * State flow: `open/frame/replay` live in the shared `onboarding.store`
+ * (driven by AppShell's auto-start and the Sidebar replay trigger);
+ * the `useOnboardingState` hook exposes that store plus the
+ * me-derived `shouldAutoStart` flag and the completion POST. This
+ * component only renders the visible flow.
  */
 import type { ReactNode } from 'react';
 import { Modal } from '../overlays/Modal';

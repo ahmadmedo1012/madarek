@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Server, Clock, AlertTriangle, Activity, RefreshCw, Settings, CheckCircle2 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
-import { LoadingState, EmptyState } from '../../components/primitives/States';
+import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
 import {
@@ -68,6 +68,14 @@ export function OwnerSystemPage() {
 
   const sysData = sys.data;
 
+  // Health KPIs derive from the real query state (audit 0-e P0-9): a
+  // green "متصل" is only shown when /owner/system actually answered.
+  // On error the service card turns into an honest error chip; other
+  // values show "—" for unknown (never a fake number, never green).
+  const serviceValue = sys.isError ? 'تعذّر الاتصال' : sysData ? 'متصل' : '…';
+  const serviceColor: 'red' | 'green' | 'brand' = sys.isError ? 'red' : sysData ? 'green' : 'brand';
+  const unknownValue = sys.isError ? '—' : '…';
+
   return (
     <div className="page">
       <header className="page-header">
@@ -84,38 +92,42 @@ export function OwnerSystemPage() {
         </div>
       </header>
 
-      {/* Real metrics */}
+      {/* Real metrics — service health derives from the live query state */}
       <div className="grid-4">
-        <MetricCard icon={Server} label="حالة الخدمة" value="متصل" color="green" />
+        <MetricCard icon={Server} label="حالة الخدمة" value={serviceValue} color={serviceColor} />
         <MetricCard
           icon={Clock}
           label="آخر مزامنة"
-          value={sysData ? formatRelative(sysData.sync.lastRunAt) : '…'}
+          value={sysData ? formatRelative(sysData.sync.lastRunAt) : unknownValue}
           color="brand"
         />
         <MetricCard
           icon={AlertTriangle}
           label="تنبيهات حرجة مفتوحة"
-          value={sysData ? sysData.alerts.criticalCount.toLocaleString('ar-LY') : '…'}
-          color={sysData && sysData.alerts.criticalCount > 0 ? 'red' : 'green'}
+          value={sysData ? sysData.alerts.criticalCount.toLocaleString('ar-LY') : unknownValue}
+          color={sysData ? (sysData.alerts.criticalCount > 0 ? 'red' : 'green') : 'brand'}
         />
         <MetricCard
           icon={Activity}
           label="أحداث آخر ٧ أيام"
-          value={sysData ? sysData.activity.recentEventsLast7Days.toLocaleString('ar-LY') : '…'}
+          value={sysData ? sysData.activity.recentEventsLast7Days.toLocaleString('ar-LY') : unknownValue}
           color="purple"
         />
       </div>
 
-      {/* Sync history — real audit log */}
-      <Card title="سجلّ المزامنة" icon={RefreshCw} actions={
-        <button type="button" className="btn primary" style={{ fontSize: 'var(--fs-xs)', padding: '6px 12px' }}>
-          <Icon icon={RefreshCw} size={13} />
-          مزامنة الآن
-        </button>
-      }>
+      {/* Sync history — real audit log. No "مزامنة الآن" button: the
+          owner API surface exposes no sync-trigger mutation, so the
+          old control was dead (audit 0-e P0-10) and has been removed
+          rather than left unwired. */}
+      <Card title="سجلّ المزامنة" icon={RefreshCw}>
         {sys.isPending ? (
           <LoadingState />
+        ) : sys.isError ? (
+          <ErrorState
+            message="تعذّر جلب سجلّ المزامنة"
+            error={sys.error}
+            onRetry={() => sys.refetch()}
+          />
         ) : !sysData || sysData.sync.recent.length === 0 ? (
           <EmptyState
             title="لا توجد عمليّات مزامنة بعد"
@@ -171,11 +183,19 @@ export function OwnerSystemPage() {
         </div>
       </Card>
 
-      {/* Operational alerts — real data, replacing the fake error log */}
+      {/* Operational alerts — real data, replacing the fake error log.
+          An API failure surfaces as an honest error state, never as
+          the "لا توجد تنبيهات" empty state. */}
       <Card title="التنبيهات التشغيلية المفتوحة" icon={AlertTriangle}>
         <div style={{ padding: 'var(--sp-2) 0' }}>
           {sys.isPending ? (
             <LoadingState />
+          ) : sys.isError ? (
+            <ErrorState
+              message="تعذّر جلب التنبيهات التشغيلية"
+              error={sys.error}
+              onRetry={() => sys.refetch()}
+            />
           ) : !sysData || sysData.alerts.open.length === 0 ? (
             <EmptyState
               icon={CheckCircle2}

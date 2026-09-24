@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Mail, Lock, Home, GraduationCap, School,
-  Building2, AlertCircle, ShieldCheck, ArrowLeft, Crown,
+  Building2, AlertCircle, ShieldCheck, ArrowLeft, Crown, Eye, EyeOff,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
@@ -48,28 +48,45 @@ const DEMO_EMAIL: Record<AppRole, string> = {
   OWNER:   'owner@zu.edu.ly',
 };
 
+/** Deep link a visitor was trying to reach when ProtectedRoute bounced
+ *  them here (ProtectedRoute passes `state={{ from: location }}`). Only
+ *  in-app pathnames are honored — anything else falls back to the role
+ *  home, so the param can never be used to navigate off-app. */
+function readFromPath(state: unknown): string | null {
+  const from = (state as { from?: { pathname?: unknown } } | null)?.from?.pathname;
+  return typeof from === 'string' && from.startsWith('/') && !from.startsWith('//') ? from : null;
+}
+
 export default function AuthPage() {
   useThemeSync();
   const navigate = useNavigate();
+  const location = useLocation();
   const login = useLogin();
   const [forgotNotice, setForgotNotice] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginForm = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   });
 
+  // After login, resume the deep link the visitor came for (e.g. a college
+  // page from the landing popover) — fall back to the role home.
+  const navigateAfterLogin = (role: AppRole) => {
+    navigate(readFromPath(location.state) ?? ROLE_HOME[role], { replace: true });
+  };
+
   const onLogin = loginForm.handleSubmit(async (values) => {
     try {
       const result = await login.mutateAsync(values);
-      navigate(ROLE_HOME[result.user.role], { replace: true });
+      navigateAfterLogin(result.user.role);
     } catch { /* error displayed below */ }
   });
 
   const onDemoLogin = async (role: AppRole) => {
     try {
       const result = await login.mutateAsync({ email: DEMO_EMAIL[role], password: '1234' });
-      navigate(ROLE_HOME[result.user.role], { replace: true });
+      navigateAfterLogin(result.user.role);
     } catch { /* */ }
   };
 
@@ -86,7 +103,7 @@ export default function AuthPage() {
         </span>
       </div>
 
-      <div className="auth-center">
+      <main className="auth-center">
         <div className="auth-card">
 
           <div className="auth-brand-mini">
@@ -95,7 +112,7 @@ export default function AuthPage() {
           </div>
 
           <div className="auth-form-header">
-            <h2 className="auth-form-title">مرحباً بعودتك</h2>
+            <h1 className="auth-form-title">مرحباً بعودتك</h1>
             <p className="auth-form-sub">
               سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.
             </p>
@@ -106,18 +123,22 @@ export default function AuthPage() {
               <label htmlFor="auth-email" className="form-label">البريد الإلكتروني أو رقم القيد</label>
               <div className="auth-input-wrap">
                 <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
+                {/* dir="ltr": accepts university IDs like 2024-CS-1234 —
+                    Latin/digit runs must not be bidi-scrambled by the RTL page. */}
                 <input
                   id="auth-email"
                   type="text"
+                  dir="ltr"
                   className="auth-input"
                   placeholder="example@zu.edu.ly"
                   autoComplete="username"
                   aria-invalid={!!loginForm.formState.errors.email}
+                  aria-describedby={loginForm.formState.errors.email ? 'auth-email-error' : undefined}
                   {...loginForm.register('email')}
                 />
               </div>
               {loginForm.formState.errors.email && (
-                <span className="auth-field-error" role="alert">
+                <span id="auth-email-error" className="auth-field-error" role="alert">
                   {loginForm.formState.errors.email.message}
                 </span>
               )}
@@ -125,27 +146,36 @@ export default function AuthPage() {
 
             <div className="auth-field">
               <label htmlFor="auth-password" className="form-label">كلمة المرور</label>
-              <div className="auth-input-wrap">
+              <div className="auth-input-wrap has-toggle">
                 <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
                 <input
                   id="auth-password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   className="auth-input"
                   placeholder="••••••••"
                   autoComplete="current-password"
                   aria-invalid={!!loginForm.formState.errors.password}
+                  aria-describedby={loginForm.formState.errors.password ? 'auth-password-error' : undefined}
                   {...loginForm.register('password')}
                 />
+                <button
+                  type="button"
+                  className="auth-input-toggle"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-pressed={showPassword}
+                  aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                >
+                  <Icon icon={showPassword ? EyeOff : Eye} size={16} />
+                </button>
               </div>
               {loginForm.formState.errors.password && (
-                <span className="auth-field-error" role="alert">
+                <span id="auth-password-error" className="auth-field-error" role="alert">
                   {loginForm.formState.errors.password.message}
                 </span>
               )}
             </div>
 
             <div className="auth-forgot-row">
-              <span />
               <button type="button" className="auth-forgot" onClick={() => setForgotNotice(true)}>
                 نسيت كلمة المرور؟
               </button>
@@ -212,7 +242,7 @@ export default function AuthPage() {
             </p>
           </form>
         </div>
-      </div>
+      </main>
 
       <div className="auth-bottom">
         دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية

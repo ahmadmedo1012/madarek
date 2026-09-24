@@ -228,15 +228,24 @@ export function AppShell({ children }: { children?: ReactNode }) {
   useThemeTransitionGuard();
   useCardPointerGlow();
 
-  const onboarding = useOnboardingState();
-  // Auto-mount the onboarding flow on first authenticated render
-  // where the server has never recorded completion. The hook itself
-  // is the source of truth; AppShell only triggers `open()`.
+  const {
+    shouldAutoStart: onboardingShouldAutoStart,
+    isOpen: onboardingOpen,
+    open: openOnboarding,
+  } = useOnboardingState();
+  // Auto-mount the onboarding flow once per shell mount when the
+  // server has never recorded completion. The flow's open/frame state
+  // lives in the shared onboarding store, so this `open()` drives the
+  // same <OnboardingFlow /> rendered below. The once-guard matters now
+  // that the wiring actually works: without it, skipping the tour
+  // would re-open it during the window before the me-refetch lands.
+  const onboardingAutoStarted = useRef(false);
   useEffect(() => {
-    if (onboarding.shouldAutoStart && !onboarding.isOpen) {
-      onboarding.open();
-    }
-  }, [onboarding.shouldAutoStart, onboarding.isOpen, onboarding]);
+    if (onboardingAutoStarted.current) return;
+    if (!onboardingShouldAutoStart || onboardingOpen) return;
+    onboardingAutoStarted.current = true;
+    openOnboarding();
+  }, [onboardingShouldAutoStart, onboardingOpen, openOnboarding]);
 
   const location = useLocation();
   const title = resolveTitle(location.pathname);

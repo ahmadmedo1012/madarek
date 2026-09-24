@@ -1,0 +1,16 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADARK — Student experience pages (Notion-product flavor)
+   Lecture player · training & gamification · research · library · live
+   Owned by the student-page waves. Append-only: add sections, never
+   rewrite other waves' sections. Import order: before polish.css.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── LecturePlayerPage ──────────────────────────────────────────── */
+
+  /* ── TrainingPages (tracks / lessons / badges / leaderboard) ────── */
+
+  /* ── Shared student utilities (added by student waves) ──────────── */
+
+}

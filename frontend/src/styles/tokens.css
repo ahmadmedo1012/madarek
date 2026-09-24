@@ -766,4 +766,34 @@
       stroke-width: 2;
     }
   }
+
+  /* ─── 6. Wave 1-a additions (append-only — worklog Task 1-a) ──────
+     Added by the CSS-foundation wave; existing values above are
+     untouched (role-accent hexes stay pinned by
+     tests/unit/token-snapshot.test.ts). */
+
+  :root {
+    /* --gold-soft — soft gold ground for chip/tint surfaces placed
+       behind gold text. Consumed in TSX (LabsPage.tsx:260,
+       VisionPages.tsx:216) but previously undefined — those inline
+       backgrounds silently resolved to nothing.
+
+       WCAG math (relative luminance, WCAG 2.1):
+       · Light: --c-yellow-bg #FCF1CD, L = 0.8801. Gold text
+         --gold-ink #6B4C0B, L = 0.0832 →
+         (0.8801+0.05)/(0.0832+0.05) = 6.98:1 ✓ AA (≥4.5:1).
+       · Dark: --c-yellow-bg #3A3017, L = 0.0308. Dark gold text
+         --gold-ink #ECC97D, L = 0.6109 →
+         (0.6109+0.05)/(0.0308+0.05) = 8.18:1 ✓ AA.
+       One definition suffices for both themes because --c-yellow-bg is
+       itself re-mapped by the [data-theme] blocks above. */
+    --gold-soft: var(--c-yellow-bg);
+
+    /* --text-2xl — backing token for the `.text-2xl` size utility
+       (consumed in LabsPage.tsx:254; the utility class itself lands with
+       the components.css utilities wave). Follows the legacy alias
+       family: --fs-2xl = --fs-h1 = 30px, the display-size step a
+       completion headline sits on. */
+    --text-2xl: var(--fs-2xl);
+  }
 }

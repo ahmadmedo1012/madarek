@@ -11,7 +11,7 @@ import { ErrorState } from '../components/primitives/States';
 
 export default function NotFoundPage() {
   return (
-    <div className="page" style={{ paddingBlockStart: 'var(--sp-9)' }}>
+    <main className="page" style={{ paddingBlockStart: 'var(--sp-9)' }}>
       <ErrorState
         illustration="error-404"
         message="هذه الصفحة غير موجودة"
@@ -21,6 +21,6 @@ export default function NotFoundPage() {
           العودة للصفحة الرئيسية
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

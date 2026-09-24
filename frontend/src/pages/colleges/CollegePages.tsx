@@ -11,7 +11,7 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { UserAvatar } from '../../components/primitives';
 import { Card, MetricCard } from '../../components/primitives';
-import { EmptyState, ErrorState, LoadingState } from '../../components/primitives/States';
+import { EmptyState, ErrorState, LoadingState, DetailSkeleton } from '../../components/primitives/States';
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
@@ -364,6 +364,13 @@ function CollegeStatChip({
 
 export function CollegeDetailPage() {
   const { id } = useParams<{ id: string }>();
+  // Rules of hooks: this subscription used to sit BELOW the loading /
+  // error early-returns — the first render mounted 2 hooks and
+  // returned early, then the resolved query rendered a 3rd hook →
+  // React threw "Rendered more hooks than during the previous render"
+  // and the detail page crashed on every first visit (audit 0-f
+  // P0-1). Every hook must run unconditionally above the gates.
+  const themeMode = useThemeStore((s) => s.mode);
   const q = useQuery({
     queryKey: ['colleges', id],
     queryFn: () => unwrap<CollegeDetail>(api.get(`/colleges/${id}`)),
@@ -371,7 +378,9 @@ export function CollegeDetailPage() {
     staleTime: 60_000,
   });
 
-  if (q.isLoading) return <div className="page"><LoadingState /></div>;
+  if (q.isLoading) {
+    return <div className="page"><DetailSkeleton /></div>;
+  }
   if (q.isError || !q.data) {
     return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
   }
@@ -383,7 +392,6 @@ export function CollegeDetailPage() {
   // 012-design-graphics-uplift FR-005: gate the identity colour at
   // runtime; if it fails AA-large vs the active chrome surface, drop
   // the inline override so the page falls back to var(--role-accent).
-  const themeMode = useThemeStore((s) => s.mode);
   const identity = getCollegeIdentity(id);
   const activeSurface = resolveTheme(themeMode);
   const gatedAccent = identity ? gateCollegeAccent(identity.accent, activeSurface) : null;

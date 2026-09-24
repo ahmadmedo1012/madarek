@@ -13,9 +13,21 @@ import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { Reveal } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
+import { colleges } from '../data/colleges.config';
 import { Parallax } from '../components/motion/Parallax';
 import { Illustration } from '../components/Illustration';
 import { SectionAccent } from '../components/motion/SectionAccent';
+
+/**
+ * University truth: UoZ operates 29 colleges (zu_university_report.md
+ * faculty table; specs/011 scale note; ruling #6 plans to fill the college
+ * identity registry with exactly 29 entries). The registry in
+ * data/colleges.config.ts is the canonical machine source and currently
+ * sits dormant (0/29), so its length takes over automatically the moment
+ * it is filled. Both display sites consume this single constant — never
+ * a hardcoded digit (audit 0-b P1-10).
+ */
+const COLLEGES_COUNT = colleges.length > 0 ? colleges.length : 29;
 
 export default function LandingPage() {
   useThemeSync();
@@ -223,14 +235,13 @@ export default function LandingPage() {
                   <span className="sticker sm sky"><Icon icon={Brain} size={20} /></span>
                   <span className="landing-megamenu-item-body">
                     <span className="landing-megamenu-item-title">المساعد الأكاديمي</span>
-                    <span className="landing-megamenu-item-desc">«Oasis» — رفيق دراسي ذكي</span>
+                    <span className="landing-megamenu-item-desc"><bdi>«Oasis»</bdi> — رفيق دراسي ذكي</span>
                   </span>
                 </a>
               </div>
             </div>
             <a href="#roles" className="landing-nav-link">الأدوار</a>
             <a href="#proof" className="landing-nav-link">النتائج</a>
-            <a href="#faq" className="landing-nav-link">الأسئلة</a>
           </nav>
 
           <div className="landing-header-cta">
@@ -265,6 +276,7 @@ export default function LandingPage() {
         )}
       </header>
 
+      <main>
       {/* HERO — huge centered title + mockup */}
       <section ref={heroRef} className="marketing-container landing-hero">
         <Reveal as="div" className="landing-hero-scene">
@@ -302,7 +314,7 @@ export default function LandingPage() {
           >
             <Icon icon={GraduationCap} size={16} />
             <span>تصفّح الكلّيّات</span>
-            <span className="landing-colleges-trigger-badge">26</span>
+            <span className="landing-colleges-trigger-badge">{COLLEGES_COUNT}</span>
           </button>
         </Reveal>
         <Reveal as="div" className="landing-cta-meta" delay={4}>
@@ -336,7 +348,7 @@ export default function LandingPage() {
                 <div className="landing-mockup-side-row" style={{ width: '70%' }} />
                 <div className="landing-mockup-side-row" />
               </aside>
-              <main className="landing-mockup-main">
+              <div className="landing-mockup-main">
                 <div className="landing-mockup-title">مساء النور، أحمد</div>
                 <div className="landing-mockup-kpis">
                   <div className="landing-mockup-kpi">
@@ -361,7 +373,7 @@ export default function LandingPage() {
                   <span className="landing-mockup-bar" />
                   <span className="landing-mockup-bar" />
                 </div>
-              </main>
+              </div>
             </div>
           </div>
 
@@ -399,7 +411,7 @@ export default function LandingPage() {
       <section className="marketing-container">
         <div className="landing-pilot-grid">
           <Reveal as="div" className="landing-pilot-stat">
-            <div className="landing-pilot-value"><CountUp value="25" /></div>
+            <div className="landing-pilot-value"><CountUp value={String(COLLEGES_COUNT)} /></div>
             <div className="landing-pilot-label">كلّيّة أكاديميّة</div>
             <div className="landing-pilot-note">حسب الموقع الرسميّ للجامعة</div>
           </Reveal>
@@ -422,7 +434,7 @@ export default function LandingPage() {
       </section>
 
       {/* Campus showcase — optimized hero (WebP/JPEG) with parallax + interactive overlay */}
-      <section className="marketing-container landing-campus" aria-label="جامعة الزاوية">
+      <section id="campus" className="marketing-container landing-campus" aria-label="جامعة الزاوية">
         <Reveal as="figure" className="landing-campus-frame">
           <Parallax amount={6} direction="up">
             {/* Optimized hero art: WebP first (99KB vs 2MB PNG), JPEG fallback
@@ -466,7 +478,7 @@ export default function LandingPage() {
         </SectionAccent>
 
         <div className="landing-features-grid">
-          <Reveal as="article" className="landing-feature-card sticker-wiggle">
+          <Reveal as="article" id="matrix" className="landing-feature-card sticker-wiggle">
             <span className="sticker lg peach"><Icon icon={Compass} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
             <p className="landing-feature-desc">
@@ -542,17 +554,17 @@ export default function LandingPage() {
             </div>
             <div className="band-visual-row">
               <span className="band-visual-checkbox on"><Icon icon={Check} size={12} strokeWidth={3} /></span>
-              <span className="band-visual-text done">تعقيد الزمن وO الكبيرة</span>
+              <span className="band-visual-text done">تعقيد الزمن و<bdi>O</bdi> الكبيرة</span>
               <span className="band-visual-tag mint">مكتمل</span>
             </div>
             <div className="band-visual-row">
               <span className="band-visual-checkbox" />
-              <span className="band-visual-text">Quick Sort — التقسيم الديناميكي</span>
+              <span className="band-visual-text"><bdi>Quick Sort</bdi> — التقسيم الديناميكي</span>
               <span className="band-visual-tag peach">قيد المتابعة</span>
             </div>
             <div className="band-visual-row">
               <span className="band-visual-checkbox" />
-              <span className="band-visual-text">Merge Sort والتفكير العودي</span>
+              <span className="band-visual-text"><bdi>Merge Sort</bdi> والتفكير العودي</span>
               <span className="band-visual-tag">قادم</span>
             </div>
             <div className="band-visual-row">
@@ -583,14 +595,14 @@ export default function LandingPage() {
               fontSize: 14, color: 'var(--c-lavender-deep)', lineHeight: 1.6, marginBlockEnd: 12,
               fontWeight: 500,
             }}>
-              ساعدني في فهم خوارزميات «Quick Sort» — لم أستوعبها في المحاضرة.
+              ساعدني في فهم خوارزميات <bdi>«Quick Sort»</bdi> — لم أستوعبها في المحاضرة.
             </div>
             <div style={{
               padding: 14, background: 'var(--surface-2)', borderRadius: 14,
               fontSize: 14, color: 'var(--text)', lineHeight: 1.7,
               fontWeight: 500,
             }}>
-              فكرة Quick Sort بسيطة: نختار عنصراً «pivot»، ونفصل العناصر الأصغر
+              فكرة <bdi>Quick Sort</bdi> بسيطة: نختار عنصراً <bdi>«pivot»</bdi>، ونفصل العناصر الأصغر
               إلى يمينه والأكبر إلى يساره، ثم نكرّر العملية على كل جانب. هل تريد
               مثالاً بصرياً؟
             </div>
@@ -601,14 +613,14 @@ export default function LandingPage() {
               color: 'var(--text-muted)',
             }}>
               <span className="typing-dots"><span /><span /><span /></span>
-              <span style={{ fontSize: 12 }}>Oasis يكتب…</span>
+              <span style={{ fontSize: 12 }}><bdi>Oasis</bdi> يكتب…</span>
             </div>
           </Reveal>
           <Reveal as="div" delay={2}>
             <span className="sticker xl lavender"><Icon icon={Sparkles} size={48} strokeWidth={1.6} /></span>
             <span className="band-eyebrow" style={{ display: 'block', marginBlockStart: 24 }}>المساعد الأكاديمي</span>
             <h2 className="band-title">
-              <em>«Oasis»</em> — يفهم سياق دراستك
+              <em><bdi>«Oasis»</bdi></em> — يفهم سياق دراستك
             </h2>
             <p className="band-lede">
               مساعد أكاديمي يعرف مقرَّراتك ومحاضراتك ودرجاتك. يقدِّم شروحات مخصَّصة،
@@ -645,7 +657,7 @@ export default function LandingPage() {
         </SectionAccent>
 
         <div className="landing-bento-grid">
-          <Reveal as="div" className="landing-bento-card span-3 band-mint">
+          <Reveal as="div" id="research" className="landing-bento-card span-3 band-mint">
             <span className="sticker mint"><Icon icon={Microscope} size={28} /></span>
             <h3 className="landing-bento-title">البحوث والمكتبة</h3>
             <p className="landing-bento-desc">
@@ -668,14 +680,14 @@ export default function LandingPage() {
               MCQ · صح/خطأ · إجابة قصيرة · مقالة. تصحيح تلقائي للموضوعي.
             </p>
           </Reveal>
-          <Reveal as="div" className="landing-bento-card span-2 band-rose" delay={3}>
+          <Reveal as="div" id="labs" className="landing-bento-card span-2 band-rose" delay={3}>
             <span className="sticker rose"><Icon icon={FlaskConical} size={28} /></span>
             <h3 className="landing-bento-title">المعامل الافتراضية</h3>
             <p className="landing-bento-desc">
-              Cisco Packet Tracer، Arduino Sim، وتجارب AR/VR للتطبيق العملي.
+              <bdi>Cisco Packet Tracer</bdi>، <bdi>Arduino Sim</bdi>، وتجارب <bdi>AR/VR</bdi> للتطبيق العملي.
             </p>
           </Reveal>
-          <Reveal as="div" className="landing-bento-card span-2 band-copper" delay={4}>
+          <Reveal as="div" id="achievements" className="landing-bento-card span-2 band-copper" delay={4}>
             <span className="sticker copper"><Icon icon={Trophy} size={28} /></span>
             <h3 className="landing-bento-title">الإنجازات والشارات</h3>
             <p className="landing-bento-desc">
@@ -833,6 +845,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+      </main>
+
       {/* FOOTER */}
       <footer className="landing-footer">
         <div className="marketing-container">
@@ -859,15 +873,15 @@ export default function LandingPage() {
             <div className="landing-footer-col">
               <div className="landing-footer-heading">الموارد</div>
               <a href="#ai" className="landing-footer-link">المساعد الذكي</a>
-              <Link to="/student/library" className="landing-footer-link">المكتبة</Link>
-              <Link to="/student/labs" className="landing-footer-link">المعامل</Link>
-              <Link to="/achievements" className="landing-footer-link">الإنجازات</Link>
+              <a href="#research" className="landing-footer-link">المكتبة</a>
+              <a href="#labs" className="landing-footer-link">المعامل</a>
+              <a href="#achievements" className="landing-footer-link">الإنجازات</a>
             </div>
             <div className="landing-footer-col">
               <div className="landing-footer-heading">المؤسسة</div>
-              <Link to="/student/university" className="landing-footer-link">جامعة الزاوية</Link>
+              <a href="#campus" className="landing-footer-link">جامعة الزاوية</a>
               <Link to="/colleges" className="landing-footer-link">الكليّات</Link>
-              <Link to="/vision" className="landing-footer-link">عن المنصّة</Link>
+              <a href="#features" className="landing-footer-link">عن المنصّة</a>
             </div>
           </div>
           <div className="landing-footer-bottom">

@@ -7,7 +7,7 @@ import { UserAvatar } from '../primitives';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuthStore } from '../../stores/auth.store';
 import { useLogout, useMe } from '../../hooks/useAuth';
-import { useOnboardingState } from '../../hooks/useOnboardingState';
+import { useOnboardingStore } from '../../stores/onboarding.store';
 import { useUiStore } from '../../stores/ui.store';
 import { NAV_BY_ROLE, displayRoleLabel } from '../../lib/nav';
 
@@ -20,7 +20,9 @@ export function Sidebar() {
   const toggleSidebarCollapsed = useUiStore((s) => s.toggleSidebarCollapsed);
   const logout = useLogout();
   const navigate = useNavigate();
-  const onboarding = useOnboardingState();
+  // Replay trigger writes the shared onboarding store directly — the
+  // same store <OnboardingFlow /> renders from (audit 0-f P0-2 fix).
+  const startOnboarding = useOnboardingStore((s) => s.start);
 
   // Lock body scroll only while the mobile drawer is open.
   useEffect(() => {
@@ -138,7 +140,7 @@ export function Sidebar() {
           <button
             type="button"
             className="sidebar-tour-trigger"
-            onClick={() => onboarding.open({ replay: true })}
+            onClick={() => startOnboarding({ replay: true })}
             title="إعادة عرض الجولة"
             aria-label="إعادة عرض الجولة"
           >

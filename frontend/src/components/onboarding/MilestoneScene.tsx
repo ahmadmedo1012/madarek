@@ -9,14 +9,17 @@
  *
  * Per the contract:
  *   - fires once per scope (the hook's session-Set guarantees this)
- *   - replaces canonical reveal with --dur-emphasized-in + 1s hold
- *     + --dur-standard-out
+ *   - a milestone that arrives while the user is inside the
+ *     onboarding flow QUEUES until the flow closes (§5) — two stacked
+ *     focus-trapped modals would fight for focus. The gate is the
+ *     store-derived `selectCanShowMilestone`.
  *   - reduced-motion users see the final state without the cascade
  */
 import { useEffect } from 'react';
 import { Modal } from '../overlays/Modal';
 import { Illustration } from '../Illustration';
 import { useMilestone } from '../../hooks/useMilestone';
+import { useOnboardingStore, selectCanShowMilestone } from '../../stores/onboarding.store';
 
 const HEADLINE_BY_ID: Record<string, string> = {
   'first-assignment-complete': 'مبروك أوّل واجب!',
@@ -50,15 +53,21 @@ export interface MilestoneSceneProps {
 
 export function MilestoneScene({ holdMs = HOLD_MS }: MilestoneSceneProps = {}) {
   const { pendingScene, dismissPending } = useMilestone();
+  // Queue behind the onboarding flow (contract §5): while the tour
+  // owns the modal layer the milestone stays pending but unrendered;
+  // it presents the moment onboarding completes or is dismissed.
+  const canShowMilestone = useOnboardingStore(selectCanShowMilestone);
 
-  // Auto-dismiss after the hold elapses.
+  // Auto-dismiss after the hold elapses — the timer only arms once
+  // the scene is actually visible, so a queued milestone never burns
+  // its hold while hidden behind the onboarding modal.
   useEffect(() => {
-    if (!pendingScene) return;
+    if (!pendingScene || !canShowMilestone) return;
     const t = window.setTimeout(dismissPending, holdMs);
     return () => window.clearTimeout(t);
-  }, [pendingScene, dismissPending, holdMs]);
+  }, [pendingScene, dismissPending, holdMs, canShowMilestone]);
 
-  if (!pendingScene) return null;
+  if (!pendingScene || !canShowMilestone) return null;
   const { headline, body } = describe(pendingScene);
 
   return (

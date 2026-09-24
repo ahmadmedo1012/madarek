@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Card, MetricCard } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, PageSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity } from '../../hooks/useOwner';
@@ -51,20 +51,15 @@ export function OwnerDashboardPage() {
   // Remounts the chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
 
-  // Don't lie with placeholder numbers. If everything is still loading,
-  // show a single skeleton; if anything errored, surface that honestly.
-  if (stats.isPending && realtime.isPending) {
-    return (
-      <div className="page">
-        <header className="page-header">
-          <div className="page-title-block">
-            <h1 className="page-title">لوحة التحكم الرئيسية</h1>
-            <p className="page-subtitle">جارٍ تحضير لوحتك…</p>
-          </div>
-        </header>
-        <LoadingState />
-      </div>
-    );
+  // Don't lie with placeholder numbers. Every value on this page comes
+  // from a real query. TanStack Query v5 gating: the page is only ready
+  // when BOTH core queries have data — the previous
+  // `stats.isPending && realtime.isPending` gate let a resolved
+  // realtime query fall through to `stats.data!` while stats was still
+  // pending → TypeError → blank page (audit 0-e P0-2).
+  const loading = stats.isPending || realtime.isPending;
+  if (loading) {
+    return <PageSkeleton />;
   }
   if (stats.isError || realtime.isError) {
     return (
@@ -82,8 +77,14 @@ export function OwnerDashboardPage() {
     );
   }
 
-  const data = stats.data!;
-  const realtimeData = realtime.data ?? { activeSessions: 0, aiRequestsPerMin: 0, liveBroadcasts: 0, activeExams: 0 };
+  const data = stats.data;
+  const realtimeData = realtime.data;
+  // The gates above guarantee both are defined; this guard keeps the
+  // page honest (skeleton, never a crash) if a future refactor breaks
+  // that invariant — query data is never non-null-asserted here.
+  if (!data || !realtimeData) {
+    return <PageSkeleton />;
+  }
   const alerts = alertsQuery.data ?? [];
   const hasAlerts = alerts.length > 0;
   const events = activity.data?.data ?? [];
