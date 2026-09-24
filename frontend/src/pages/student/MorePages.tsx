@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Trophy, Star, Award, Activity, Crown,
+  Trophy, Star, Medal, Award, Activity, Crown,
   Target, FlaskConical, Headset,
   Bell, Calendar, AlertTriangle, BookOpen, Download,
   CheckCircle2, MessageCircle, Heart, Repeat2, Bookmark,
@@ -10,9 +10,10 @@ import {
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Tier } from '../../hooks/useResources';
+import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartColors, useChartThemeKey, valueLabels } from '../../lib/chartTheme';
 
@@ -21,12 +22,18 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearSc
 /* ─── Gamification ─────────────────────────────────────────── */
 // Tier display maps for the training-points economy (mirrors the labels
 // used on the self-development pages so the wording stays consistent).
+// Visual system shared with the training module: styles/training.css
+// §gamification (tier orbs, XP bar, achievement rows, leaderboard ranks).
 const TIER_LABEL: Record<Tier, string> = {
   BRONZE: 'برونزي',
   SILVER: 'فضي',
   GOLD: 'ذهبي',
   PLATINUM: 'بلاتيني',
 };
+// Data-driven tier hexes (API gamification palette) — consumed only via
+// the --tier-color custom property / color-mix tints, never under text.
+// NOTE: duplicated in TrainingPages.tsx — extraction to lib/gamification.ts
+// is queued for the wave that owns lib/ shared files (audit 0-d P2).
 const TIER_COLOR: Record<Tier, string> = {
   BRONZE: '#A7724E',
   SILVER: '#9CA3AF',
@@ -54,45 +61,65 @@ export function GamificationPage() {
           <h1 className="page-title">الإنجازات والنقاط</h1>
           <p className="page-subtitle">تقدّمك ومستواك مقارنة بزملائك في المنصة.</p>
         </div>
-        {xp !== null && <Badge color="gold" icon={Star}>{xp.toLocaleString('ar-LY')} XP</Badge>}
+        {xp !== null && <Badge color="gold" icon={Star}><bdi>{formatNum(xp)} XP</bdi></Badge>}
       </header>
 
       <div className="grid-2">
         <Card title="مستوى التقدم" icon={Trophy}>
           {dash.isPending || training.isPending ? (
-            <LoadingState />
+            /* shape-matched skeleton: orb + lines + track */
+            <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }} aria-busy="true">
+              <Skeleton width={72} height={72} rounded="50%" />
+              <div className="flex-1 flex-col gap-2">
+                <Skeleton width="55%" height={16} />
+                <Skeleton width="75%" height={12} />
+                <Skeleton width="100%" height={10} rounded="var(--r-full)" />
+              </div>
+            </div>
           ) : (
-            <div className="flex items-center gap-4" style={{ marginBottom: 'var(--sp-5)' }}>
+            <div
+              className="flex items-center gap-4"
+              style={{ marginBottom: 'var(--sp-5)', ['--tier-color' as never]: me ? TIER_COLOR[me.level.tier] : undefined }}
+            >
               <div
+                className="tier-orb lg"
+                data-empty={!me}
                 aria-label={me ? `المستوى ${me.level.level} في مسار التطوير الذاتي` : undefined}
-                style={{
-                  width: 72, height: 72, borderRadius: '50%',
-                  background: me ? `${TIER_COLOR[me.level.tier]}1F` : 'var(--surface-2)',
-                  color: me ? TIER_COLOR[me.level.tier] : 'var(--text-subtle)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'var(--font-mono)', fontSize: 24, fontWeight: 700,
-                  flexShrink: 0,
-                  border: `2px solid ${me ? TIER_COLOR[me.level.tier] : 'var(--border)'}`,
-                }}
               >
                 {me ? me.level.level : '—'}
               </div>
               <div className="flex-1">
                 <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
-                  {me
-                    ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level} في التطوير الذاتي`
-                    : 'لم يبدأ مسار التطوير الذاتي بعد'}
+                  {training.isError
+                    ? 'تعذّر تحميل مستوى التطوير الذاتي'
+                    : me
+                      ? `${TIER_LABEL[me.level.tier]} · المستوى ${me.level.level} في التطوير الذاتي`
+                      : 'لم يبدأ مسار التطوير الذاتي بعد'}
                 </div>
                 <div className="text-xs text-subtle" style={{ marginBottom: 8 }}>
                   {xp !== null ? (
                     <>
-                      نقاط الإنجاز: <span className="font-mono">{xp.toLocaleString('ar-LY')}</span> XP
-                      {rank !== null && cohortSize > 1 && ` · المركز ${rank.toLocaleString('ar-LY')} من ${cohortSize.toLocaleString('ar-LY')} على دفعتك`}
+                      نقاط الإنجاز: <span className="font-mono"><bdi>{formatNum(xp)} XP</bdi></span>
+                      {rank !== null && cohortSize > 1 && ` · المركز ${formatNum(rank)} من ${formatNum(cohortSize)} على دفعتك`}
                     </>
+                  ) : dash.isError ? (
+                    <span className="flex items-center gap-2">
+                      تعذّر تحميل نقاط الإنجاز.
+                      <button type="button" className="btn ghost sm" onClick={() => dash.refetch()}>
+                        إعادة المحاولة
+                      </button>
+                    </span>
                   ) : (
                     'تعذّر تحميل نقاط الإنجاز'
                   )}
                 </div>
+                {training.isError && (
+                  <div style={{ marginBlockEnd: 8 }}>
+                    <button type="button" className="btn ghost sm" onClick={() => training.refetch()}>
+                      إعادة محاولة تحميل المستوى
+                    </button>
+                  </div>
+                )}
                 {me && (
                   <>
                     <div
@@ -103,10 +130,10 @@ export function GamificationPage() {
                       aria-valuemin={0}
                       aria-valuemax={100}
                     >
-                      <div className="xp-fill" style={{ width: `${me.level.pctIntoLevel}%`, background: TIER_COLOR[me.level.tier] }} />
+                      <div className="xp-fill" style={{ width: `${me.level.pctIntoLevel}%`, background: 'var(--tier-color)' }} />
                     </div>
                     <div className="text-xxs text-subtle" style={{ marginTop: 4 }}>
-                      متبقّي <span className="font-mono">{me.level.toNext.toLocaleString('ar-LY')}</span> نقطة للمستوى التالي
+                      متبقّي <span className="font-mono"><bdi>{formatNum(me.level.toNext)}</bdi></span> نقطة للمستوى التالي
                     </div>
                   </>
                 )}
@@ -115,18 +142,31 @@ export function GamificationPage() {
           )}
 
           <SectionTitle>الإنجازات المحققة</SectionTitle>
-          {ach.isPending ? <LoadingState /> :
-           ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> :
+          {ach.isPending ? (
+            /* shape-matched skeleton: achievement rows */
+            <div className="flex-col gap-2" aria-busy="true">
+              {[0, 1, 2].map((i) => (
+                <div className="achievement" key={i} aria-hidden>
+                  <Skeleton width={40} height={40} rounded="var(--r-md)" />
+                  <div className="flex-1 flex-col gap-2">
+                    <Skeleton width="45%" height={13} />
+                    <Skeleton width="75%" height={11} />
+                  </div>
+                  <Skeleton width={48} height={20} rounded="var(--r-full)" />
+                </div>
+              ))}
+            </div>
+          ) : ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> :
            !ach.data?.length ? <EmptyState icon={Award} title="لا إنجازات بعد" /> : (
             <div className="flex-col gap-2">
               {ach.data.map((a) => (
                 <div className="achievement" key={a.achievement.id}>
-                  <span className="achievement-icon"><Icon icon={Trophy} size={16} /></span>
+                  <span className="achievement-icon" aria-hidden><Icon icon={Trophy} size={16} /></span>
                   <div className="flex-1">
                     <div className="achievement-name">{a.achievement.name}</div>
                     <div className="achievement-desc">{a.achievement.description}</div>
                   </div>
-                  <Badge color="gold">+{a.achievement.xp}</Badge>
+                  <Badge color="gold"><bdi>+{formatNum(a.achievement.xp)}</bdi></Badge>
                 </div>
               ))}
             </div>
@@ -134,37 +174,45 @@ export function GamificationPage() {
         </Card>
 
         <Card title="لوحة المتصدرين" icon={Crown}>
-          {lb.isPending ? <LoadingState /> :
-           lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
-           !lb.data?.length ? <EmptyState /> : (
-            <div className="flex-col gap-1">
+          {lb.isPending ? (
+            /* shape-matched skeleton: ranked rows */
+            <div className="flex-col gap-1" aria-busy="true">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div className="leaderboard-row" key={i} aria-hidden>
+                  <Skeleton width={30} height={30} rounded="var(--r-full)" />
+                  <Skeleton width={32} height={32} rounded="50%" />
+                  <Skeleton width="40%" height={13} />
+                  <Skeleton width={64} height={13} />
+                </div>
+              ))}
+            </div>
+          ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
+           !lb.data?.length ? <EmptyState icon={Crown} title="لا توجد بيانات بعد" description="سيظهر الترتيب مع أول نقاط مسجّلة على المنصة." /> : (
+            /* same ranked-list grammar as the training achievements page
+               (styles/training.css §achievements) — one system */
+            <ol className="leaderboard-list" aria-label="ترتيب الطلاب بالنقاط">
               {lb.data.map((l, i) => (
-                <div className="list-row" key={l.id}>
-                  <span
-                    className="font-mono"
-                    style={{
-                      width: 24, textAlign: 'center', fontSize: 13,
-                      color: i === 0 ? 'var(--gold)' : i === 1 ? 'var(--text-muted)' : i === 2 ? 'var(--brand-purple)' : 'var(--text-subtle)',
-                      fontWeight: 700,
-                    }}
-                  >
-                    #{i + 1}
+                <li className="leaderboard-row" key={l.id} style={{ ['--lb-i' as never]: Math.min(i, 6) }}>
+                  <span className={`leaderboard-rank rank-${i + 1}`} aria-label={`المركز ${i + 1}`}>
+                    {i < 3
+                      ? <Icon icon={i === 0 ? Crown : i === 1 ? Star : Medal} size={16} />
+                      : <bdi>#{i + 1}</bdi>}
                   </span>
                   <UserAvatar
                     initials={l.avatarInitials ?? `${l.firstName[0] ?? ''}${l.lastName[0] ?? ''}`}
                     color={l.avatarColor ?? undefined}
                     size={32}
                   />
-                  <div className="list-row-body">
-                    <div className="list-row-title">{l.firstName} {l.lastName}</div>
-                    <div className="list-row-sub">المستوى {l.level}</div>
-                  </div>
-                  <span className="font-mono text-xs" style={{ color: 'var(--gold)' }}>
-                    {l.totalXp.toLocaleString('ar-LY')} XP
+                  <span className="leaderboard-name" title={`${l.firstName} ${l.lastName}`}>
+                    {l.firstName} {l.lastName}
                   </span>
-                </div>
+                  <span className="leaderboard-tier"><bdi>L{l.level}</bdi></span>
+                  <span className="leaderboard-points">
+                    <bdi>{formatNum(l.totalXp)} XP</bdi>
+                  </span>
+                </li>
               ))}
-            </div>
+            </ol>
           )}
         </Card>
       </div>

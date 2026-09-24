@@ -1,8 +1,855 @@
 /* ═════════════════════════════════════════════════════════════════════
    MADARK — Training & gamification surfaces
-   (reserved — the training wave authors here)
-   ════════════════════════════════════════════════════════════════════ */
+   ─────────────────────────────────────────────────────────────────────
+   Owner: the training wave (Task 3-b). One visual system for:
+     · TrainingCatalogPage / TrainingTrackPage / TrainingLessonPage /
+       AchievementsPage  (pages/student/TrainingPages.tsx)
+     · GamificationPage achievements/XP surfaces
+       (pages/student/MorePages.tsx — §gamification only)
+
+   Design notes (craft floor):
+     · Elevation: hairline borders at rest; soft shadows only on hover
+       (the incumbent .card convention — ruling #1).
+     · RTL: logical properties only; XP/progress fills are plain blocks
+       that anchor inline-start (right in RTL) — correct growth direction.
+     · Medal treatment for leaderboard top-3 uses the existing pastel
+       families, no new colors: gold → --c-yellow-*, silver → --c-grey-*,
+       bronze → --c-peach-*.
+     · API-supplied track/theme hexes are never painted behind text:
+       they arrive as the --track-accent custom property and are always
+       consumed through color-mix tints over var(--surface), with
+       var(--text) labels — AA-safe in both themes by construction.
+     · All motion consumes tokens; keyframes carry their own
+       prefers-reduced-motion off-switches (guardrail #6).
+     · `.back-link` was an unowned class family (audit 0-d P0-2) — it is
+       defined here once and also serves the teacher/admin/exams pages
+       that render the same markup.
+   ═════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §catalog — track grid, track cards, filter pills              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  .track-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--sp-5);
+  }
+  @media (max-width: 640px) {
+    .track-grid { grid-template-columns: 1fr; gap: var(--sp-3); }
+  }
+
+  /* Track card — quiet surface + hairline at rest, lift on hover.
+     The API theme hex rides on --track-accent (set inline by TSX) and
+     is only used through color-mix tints — never as a text ground. */
+  .track-card {
+    --track-accent: var(--accent);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-4);
+    padding: var(--sp-5);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    color: inherit;
+    text-decoration: none;
+    min-inline-size: 0;
+    transition:
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  .track-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-h);
+    transform: translateY(-1px);
+  }
+  .track-card:active { transform: scale(0.995); }
+
+  .track-card-icon {
+    inline-size: 48px;
+    block-size: 48px;
+    border-radius: var(--r-lg);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--track-accent) 12%, var(--surface));
+    color: var(--track-accent);
+    /* tinted rim (not elevation) so the well reads on any accent */
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--track-accent) 22%, transparent);
+  }
+
+  .track-card-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .track-card-cat {
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+    line-height: var(--type-label-line-height);
+    /* no letter-spacing — Arabic cursive joining (ruling #2) */
+  }
+  .track-card-title {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .track-card-summary {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-base);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .track-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-3);
+    margin-block-start: var(--sp-2);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .track-card-meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .track-card-body .progress {
+    margin-block-start: var(--sp-2);
+  }
+
+  /* Filter pills — segmented-control feel on a wrapping row. The
+     pressed pill is the ink chip (dark theme: accent chip), mirroring
+     the .pill.on language in components.css. */
+  .filter-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+  }
+  .filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-block-size: 36px;
+    padding-inline: var(--sp-4);
+    border-radius: var(--r-full);
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform var(--t-micro) var(--ease);
+  }
+  .filter-pill:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+    background: var(--surface-2);
+  }
+  .filter-pill:active { transform: scale(0.97); }
+  .filter-pill[aria-pressed="true"] {
+    background: var(--neutral-900);
+    border-color: var(--neutral-900);
+    color: var(--neutral-50);
+  }
+  [data-theme="dark"] .filter-pill[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+  .filter-pill:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  @media (max-width: 640px) {
+    .filter-pill { min-block-size: 44px; } /* touch target (craft floor) */
+  }
+
+  /* My-summary level band (catalog). */
+  .level-band {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+  }
+  .level-band-main {
+    flex: 1;
+    min-inline-size: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §track-detail — back link, hero, lesson rows, lesson prose    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-block-size: 40px;
+    padding: var(--sp-2) var(--sp-3);
+    /* negative inline-start so the label optically aligns with the
+       page edge while the padding keeps the hit area */
+    margin-inline-start: calc(var(--sp-3) * -1);
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    text-decoration: none;
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
+  }
+  .back-link:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+  @media (max-width: 640px) {
+    .back-link { min-block-height: 44px; } /* touch target (craft floor) */
+  }
+
+  /* Track hero — tinted band. Hierarchy via tint + hairline, not a
+     colored side-stripe (the 3px borderRight is gone — ruling #4). */
+  .track-hero {
+    --track-accent: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    flex-wrap: wrap;
+    padding: var(--sp-6);
+    background: color-mix(in srgb, var(--track-accent) 7%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--track-accent) 22%, var(--rule));
+    border-radius: var(--r-xl);
+  }
+  .track-hero-icon {
+    inline-size: 64px;
+    block-size: 64px;
+    border-radius: var(--r-2xl);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--track-accent) 14%, var(--surface));
+    color: var(--track-accent);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--track-accent) 30%, transparent);
+  }
+  .track-hero-main {
+    flex: 1;
+    min-inline-size: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .track-hero-cat {
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+    line-height: var(--type-label-line-height);
+  }
+  .track-hero-title {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-lg);
+    font-weight: var(--type-headline-weight);
+    line-height: 1.25;
+    color: var(--text);
+    margin: 0;
+  }
+  .track-hero-summary {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-base);
+    max-inline-size: 64ch;
+  }
+  .track-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Themed primary CTA — tinted ground + neutral ink, never a raw API
+     hex under white text (0-d P2 contrast fix). Used on the track hero
+     and the lesson completion actions. */
+  .track-hero .btn.primary,
+  .lesson-actions .btn.primary {
+    background: color-mix(in srgb, var(--track-accent) 16%, var(--surface));
+    border-color: color-mix(in srgb, var(--track-accent) 45%, var(--border-strong));
+    color: var(--text);
+  }
+  .track-hero .btn.primary:hover,
+  .lesson-actions .btn.primary:hover {
+    background: color-mix(in srgb, var(--track-accent) 22%, var(--surface));
+    color: var(--text);
+  }
+  .track-hero .btn.primary:disabled,
+  .lesson-actions .btn.primary:disabled { color: var(--text); }
+  @media (max-width: 640px) {
+    .track-hero { padding: var(--sp-5); }
+    .track-hero-icon { inline-size: 56px; block-size: 56px; }
+    .track-hero > .btn { inline-size: 100%; }
+  }
+
+  /* Lesson rows — locked / next (available) / done states. */
+  .lesson-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    min-block-size: 56px;
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    border: 1px solid transparent;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  .lesson-row:hover { background: var(--surface-2); }
+  .lesson-row:active { background: var(--surface-3); }
+  /* first uncompleted lesson — the "continue here" affordance */
+  .lesson-row.next {
+    background: color-mix(in srgb, var(--track-accent, var(--accent)) 6%, var(--surface));
+    border-color: color-mix(in srgb, var(--track-accent, var(--accent)) 28%, transparent);
+  }
+  .lesson-row.next:hover {
+    background: color-mix(in srgb, var(--track-accent, var(--accent)) 10%, var(--surface));
+  }
+  .lesson-row.done .lesson-row-title { color: var(--text-secondary); }
+  .lesson-row.locked {
+    cursor: not-allowed;
+  }
+  .lesson-row.locked:hover { background: transparent; }
+  .lesson-row.locked .lesson-row-title,
+  .lesson-row.locked .lesson-row-sub,
+  .lesson-row.locked .lesson-row-meta { color: var(--text-muted); }
+
+  .lesson-row-num {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-full);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-3);
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+  .lesson-row.done .lesson-row-num {
+    background: var(--success-soft);
+    color: var(--success-ink);
+  }
+  .lesson-row.next .lesson-row-num {
+    background: color-mix(in srgb, var(--track-accent, var(--accent)) 14%, var(--surface));
+    color: color-mix(in srgb, var(--track-accent, var(--accent)) 60%, var(--text));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--track-accent, var(--accent)) 30%, transparent);
+  }
+  .lesson-row.locked .lesson-row-num {
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--text-faint);
+  }
+
+  .lesson-row-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .lesson-row-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .lesson-row-sub {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  .lesson-row-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Lesson prose — measured reading column. */
+  .lesson-content {
+    max-inline-size: 68ch;
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+    color: var(--text);
+    margin-block: var(--sp-4) var(--sp-5);
+  }
+  .lesson-content p + p { margin-block-start: var(--sp-4); }
+
+  .lesson-kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    margin-block-end: var(--sp-2);
+  }
+  .lesson-title {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-md);
+    font-weight: var(--type-headline-weight);
+    line-height: 1.3;
+    color: var(--text);
+    margin: 0 0 var(--sp-2);
+  }
+
+  /* Checkpoint quiz — tinted panel (the 3px borderRight stripe is gone,
+     ruling #4; hierarchy via tint + hairline + icon chip). */
+  .lesson-quiz {
+    --track-accent: var(--accent);
+    background: color-mix(in srgb, var(--track-accent) 6%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--track-accent) 22%, var(--rule));
+    border-radius: var(--r-lg);
+    padding: var(--sp-5);
+    margin-block-start: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .lesson-quiz-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+    color: color-mix(in srgb, var(--track-accent) 55%, var(--text));
+    line-height: var(--type-label-line-height);
+    /* functional label (سؤال التحقق) — not a marketing eyebrow; no
+       letter-spacing (Arabic cursive, ruling #2) */
+  }
+  .lesson-quiz-q {
+    font-size: var(--type-body-size-lg);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-base);
+    color: var(--text);
+  }
+  .lesson-quiz input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  /* Lesson page action row (completion CTA + next-lesson ghost). */
+  .lesson-actions {
+    --track-accent: var(--accent);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-4);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §lesson-reward — completion feedback + badge-earned pulse     ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  .reward-feedback {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-5);
+    padding: var(--sp-4);
+    border-radius: var(--r-lg);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    animation: madarek-reward-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .reward-feedback.ok {
+    background: var(--success-soft);
+    border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+    color: var(--success-ink);
+  }
+  .reward-feedback.fail {
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+    color: var(--danger-ink);
+  }
+  /* pills sit on the card surface inside the tinted banner so both
+     badge + point chips stay legible */
+  .reward-feedback .reward-pill {
+    background: var(--surface);
+    color: var(--success-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* THE authored moment — a one-shot scale + ring pulse on newly
+     earned badges only (the class renders exclusively on the reward
+     feedback of a fresh completion; no idle glow anywhere). */
+  .badge-pop {
+    animation: madarek-badge-earned var(--motion-duration-stat) var(--motion-ease-emphasized) both;
+    animation-delay: calc(var(--motion-stagger-step) * var(--badge-i, 0));
+  }
+
+  @keyframes madarek-badge-earned {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    55% {
+      transform: scale(1.1);
+      opacity: 1;
+      /* expanding gold ring — a feedback ping, not a resting halo */
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold) 24%, transparent);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  @keyframes madarek-reward-in {
+    from {
+      opacity: 0;
+      transform: translateY(calc(var(--motion-distance-small) * var(--motion-direction)));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §achievements — badge tiles + leaderboard                    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  .badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--sp-4);
+  }
+  @media (max-width: 640px) {
+    .badge-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-3); }
+  }
+
+  .badge-tile {
+    --rarity: var(--gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-2);
+    padding: var(--sp-5) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    transition:
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+  }
+  /* earned — full color + subtle lift */
+  .badge-tile.earned:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--rarity) 40%, var(--rule));
+    box-shadow: var(--shadow-card-h);
+  }
+  /* locked — desaturated tile, ghost icon well */
+  .badge-tile.locked .badge-tile-title { color: var(--text-muted); }
+  .badge-tile.locked .badge-tile-desc { color: var(--text-faint); }
+
+  .badge-tile-icon {
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: var(--r-lg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .badge-tile.earned .badge-tile-icon {
+    background: color-mix(in srgb, var(--rarity) 14%, var(--surface));
+    /* mix the rarity hue toward the theme ink so both light pastels
+       and dark grounds keep ≥3:1 for the glyph */
+    color: color-mix(in srgb, var(--rarity) 60%, var(--text));
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--rarity) 30%, transparent);
+  }
+  .badge-tile.locked .badge-tile-icon {
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--text-faint);
+  }
+
+  .badge-tile-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .badge-tile-desc {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  .badge-tile-rarity {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: var(--r-full);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+  }
+  .badge-tile.earned .badge-tile-rarity {
+    background: color-mix(in srgb, var(--rarity) 12%, var(--surface));
+    color: color-mix(in srgb, var(--rarity) 60%, var(--text));
+  }
+  .badge-tile.locked .badge-tile-rarity {
+    background: var(--surface-3);
+    color: var(--text-muted);
+  }
+
+  /* Leaderboard — ranked list. Rank chips for the top 3 use the
+     existing pastel families (no new colors): gold = --c-yellow-*,
+     silver = --c-grey-*, bronze = --c-peach-*. */
+  .leaderboard-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    transition: background var(--t-fast) var(--ease);
+    /* authored entrance — rows stagger in via --lb-i (capped in TSX
+       at --motion-stagger-cap) */
+    animation: madarek-lb-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--motion-stagger-step) * var(--lb-i, 0));
+  }
+  .leaderboard-row:hover { background: var(--surface-2); }
+
+  @keyframes madarek-lb-row-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--motion-distance-small));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .leaderboard-rank {
+    inline-size: 30px;
+    block-size: 30px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-full);
+    background: var(--surface-3);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+  /* medal treatment — top 3 */
+  .leaderboard-rank.rank-1,
+  .leaderboard-rank.rank-2,
+  .leaderboard-rank.rank-3 {
+    inline-size: 32px;
+    block-size: 32px;
+    font-weight: var(--fw-bold);
+  }
+  .leaderboard-rank.rank-1 {
+    background: var(--c-yellow-bg);
+    color: var(--c-yellow-deep);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+  .leaderboard-rank.rank-2 {
+    background: var(--c-grey-bg);
+    color: var(--c-grey-deep);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-grey-ink) 45%, transparent);
+  }
+  .leaderboard-rank.rank-3 {
+    background: var(--c-peach-bg);
+    color: var(--c-peach-deep);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c-peach-ink) 45%, transparent);
+  }
+
+  .leaderboard-name {
+    flex: 1;
+    min-inline-size: 0;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .leaderboard-tier {
+    flex-shrink: 0;
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .leaderboard-points {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--gold-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 640px) {
+    /* protect name + points on narrow screens */
+    .leaderboard-tier { display: none; }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  §gamification — XP economy + achievement rows                 ║
+     ║  (GamificationPage in MorePages.tsx shares this system;        ║
+     ║   ProfilePage renders the same achievement markup)             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  /* XP bar — the fill is a plain block whose width grows from the
+     inline-start edge (right in RTL): direction-correct by construction
+     (same mechanism as .progress-fill). */
+  .xp-track {
+    display: block;
+    block-size: 10px;
+    background: var(--surface-3);
+    border-radius: var(--r-full);
+    overflow: clip;
+  }
+  .xp-fill {
+    display: block;
+    block-size: 100%;
+    width: 0%;
+    border-radius: var(--r-full);
+    background: var(--gold);
+    transition: width var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+
+  /* Tier orb — level medallion. The tier hex rides on --tier-color
+     (set inline by TSX) and is only consumed through color-mix. */
+  .tier-orb {
+    --tier-color: var(--accent);
+    --tier-orb-size: 48px;
+    inline-size: var(--tier-orb-size);
+    block-size: var(--tier-orb-size);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: calc(var(--tier-orb-size) * 0.38);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    background: color-mix(in srgb, var(--tier-color) 12%, var(--surface));
+    color: color-mix(in srgb, var(--tier-color) 60%, var(--text));
+    border: 2px solid color-mix(in srgb, var(--tier-color) 45%, var(--border));
+  }
+  .tier-orb.lg { --tier-orb-size: 72px; }
+  .tier-orb:where([data-empty]) {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border-color: var(--border);
+  }
+
+  /* Achievement rows (GamificationPage "الإنجازات المحققة",
+     ProfilePage achievements) — same list-row grammar as the training
+     module: hairline row, gold icon well, tabular XP chip. */
+  .achievement {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    transition: border-color var(--t-fast) var(--ease);
+  }
+  .achievement:hover { border-color: var(--border-strong); }
+  .achievement-icon {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold-soft);
+    color: var(--gold-ink);
+  }
+  .achievement-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .achievement-desc {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+
+  /* Certificate icon well (AchievementsPage certificates tab). */
+  .cert-icon {
+    inline-size: 56px;
+    block-size: 56px;
+    border-radius: var(--r-md);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--cert-accent, var(--accent)) 12%, var(--surface));
+    color: color-mix(in srgb, var(--cert-accent, var(--accent)) 60%, var(--text));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cert-accent, var(--accent)) 22%, transparent);
+  }
+
+  /* ── Reduced-motion off-switches (guardrail #6 — the global token
+     belts already collapse the durations/delays; these kill the
+     keyframe animations outright so nothing loops or slides) ────── */
+  @media (prefers-reduced-motion: reduce) {
+    .badge-pop,
+    .reward-feedback,
+    .leaderboard-row {
+      animation: none;
+    }
+    .xp-fill { transition: none; }
+  }
 }

@@ -83,6 +83,14 @@
 }
 
 /* ── Toggle Switch ─────────────────────────────────────────── */
+/* wave 3-c (audit 0-e P1-23): the track is a 44×44 hit area while the
+   painted switch stays 40×22 — the visual is drawn by ::before inset
+   inside the hit box, so touch targets meet the ≥44px craft floor
+   without changing the perceived size. Hover states added (craft
+   floor); the focus ring is re-asserted below with the single AA-safe
+   ring tokens (ruling #13 — polish v22's universal [tabindex] selector
+   already covers this element; the explicit rule guards against
+   selector drift). */
 .owner-toggle-row {
   display: flex;
   align-items: center;
@@ -96,18 +104,39 @@
 }
 
 .owner-toggle-track {
-  width: 40px;
-  height: 22px;
-  border-radius: var(--r-full);
-  background: var(--surface-3);
   position: relative;
+  /* 44×44 hit area; painted track = 40×22 via the ::before inset */
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--r-full);
+  background: transparent;
+  border: 0;
+  padding: 0;
   cursor: pointer;
-  transition: background var(--t-base) var(--ease);
   flex-shrink: 0;
 }
 
-.owner-toggle-track.on {
+.owner-toggle-track::before {
+  content: '';
+  position: absolute;
+  /* painted track: 44−2×11 = 22 tall, 44−2×2 = 40 wide */
+  inset-block: 11px;
+  inset-inline: 2px;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  transition: background var(--t-base) var(--ease);
+}
+
+.owner-toggle-track.on::before {
   background: var(--accent);
+}
+
+.owner-toggle-track:not(.disabled):hover::before {
+  background: var(--neutral-300);
+}
+
+.owner-toggle-track.on:not(.disabled):hover::before {
+  background: var(--accent-hover);
 }
 
 .owner-toggle-track.disabled {
@@ -115,9 +144,14 @@
   cursor: not-allowed;
 }
 
+.owner-toggle-track:focus-visible {
+  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+  outline-offset: var(--state-focus-ring-offset);
+}
+
 .owner-toggle-thumb {
-  width: 16px;
-  height: 16px;
+  inline-size: 16px;
+  block-size: 16px;
   border-radius: 50%;
   /* WS-D2 — was #fff in both themes. Routed through the always-light
      ink token so the thumb stays visible in Dark too: Light resolves to
@@ -128,8 +162,10 @@
      Dark off-track, so the light-ink family is the correct slot. */
   background: var(--text-on-dark);
   position: absolute;
-  top: 3px;
-  inset-inline-start: 3px;
+  /* inside the painted track: hit-box inset (11px/2px) + the original
+     3px track inset */
+  inset-block-start: 14px;
+  inset-inline-start: 5px;
   transition: inset-inline-start var(--t-base) var(--ease);
   /* small-control thumb shadow — needs more local pop than --elev-1
      (alpha 0.2 vs 0.04/0.06); off-token by design */
@@ -137,7 +173,7 @@
 }
 
 .owner-toggle-track.on .owner-toggle-thumb {
-  inset-inline-start: 21px;
+  inset-inline-start: 23px;
 }
 
 .owner-toggle-label {
@@ -145,6 +181,13 @@
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  /* the label text toggles too (ToggleSwitch.tsx wave 3-c) — native
+     label-for behavior for a switch row */
+  cursor: pointer;
+}
+
+.owner-toggle-row:has(.owner-toggle-track.disabled) .owner-toggle-label {
+  cursor: not-allowed;
 }
 
 .owner-toggle-label-text {
@@ -158,53 +201,40 @@
   color: var(--text-muted);
 }
 
-/* ── Confirm Dialog ────────────────────────────────────────── */
-.owner-confirm-overlay {
-  position: fixed;
-  inset: 0;
-  /* 012 z-language: a confirm dialog is a modal. */
-  z-index: var(--z-modal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(var(--glass-blur));
-  opacity: 0;
-  animation: owner-fade-in var(--t-base) var(--ease) forwards;
-}
-
-@keyframes owner-fade-in {
-  to { opacity: 1; }
-}
-
-.owner-confirm-dialog {
-  background: var(--surface-1);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--r-xl);
-  padding: var(--sp-6);
-  min-width: 340px;
-  max-width: 440px;
-  box-shadow: var(--shadow-xl);
-}
-
-.owner-confirm-dialog h3 {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
+/* ── Confirm Dialog (inside the shared <Modal> primitive) ──── */
+/* wave 3-c dead-code sweep (audit 0-e P2-45): .owner-confirm-overlay,
+   .owner-confirm-dialog (+ its h3/p rules) and the owner-fade-in
+   keyframe deleted — zero consumers (ConfirmDialog mounts the <Modal>
+   primitive; rg over src = 0 hits). The .owner-confirm-title/-message
+   classes were referenced but undefined (0-e P0-13) — authored here
+   with .modal-header/.modal-body/.modal-footer rhythm so the dialog
+   reads as a modal instead of floating unpadded text. */
+.owner-confirm-title {
+  padding: var(--sp-5) var(--sp-6) 0;
+  font-family: var(--font-display);
+  font-size: var(--type-headline-size-md);
+  font-weight: var(--type-headline-weight);
   color: var(--text);
-  margin-bottom: var(--sp-3);
+  margin: 0;
 }
 
-.owner-confirm-dialog p {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+.owner-confirm-message {
+  padding: var(--sp-3) var(--sp-6) var(--sp-2);
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
   line-height: var(--lh-base);
-  margin-bottom: var(--sp-6);
+  margin: 0;
 }
 
 .owner-confirm-actions {
   display: flex;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
   justify-content: flex-end;
+  /* modal-card is a flex column — pin the footer down and give it the
+     .modal-footer chrome */
+  margin-block-start: auto;
+  padding: var(--sp-4) var(--sp-6);
+  border-block-start: 1px solid var(--rule);
 }
 
 /* ── Action Bar ────────────────────────────────────────────── */
@@ -222,28 +252,10 @@
 }
 
 /* ── Color Swatch ──────────────────────────────────────────── */
-.owner-color-swatch {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: 8px 0;
-}
-
-.owner-color-swatch label {
-  font-size: var(--fs-sm);
-  color: var(--text);
-  min-width: 100px;
-}
-
-.owner-color-swatch input[type='color'] {
-  width: 40px;
-  height: 32px;
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  background: transparent;
-  cursor: pointer;
-  padding: 2px;
-}
+/* (wave 3-c dead-code sweep, audit 0-e P2-45: the .owner-color-swatch
+   family — 3 rules — deleted. Zero consumers: OwnerContentPage was made
+   honest in a prior pass and renders brand swatches as documented data;
+   rg over src = 0 hits.) */
 
 /* ── Key-Value Row ─────────────────────────────────────────── */
 .owner-kv-row {
@@ -365,34 +377,51 @@
 }
 
 /* ── Pagination ────────────────────────────────────────────── */
+/* wave 3-c (audit 0-e P1-25 + craft floor): 32px glyph buttons →
+   44px touch targets with the .table-pagination hover/active language
+   (components.css). The ‹ › glyphs still don't flip for RTL and the
+   page-button list is still unbounded — both are OwnerUsersPage TSX
+   fixes owned by wave 6. */
 .owner-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: var(--sp-2);
   padding: var(--sp-4) 0;
 }
 
 .owner-pagination button {
-  min-width: 32px;
-  height: 32px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding-inline: var(--sp-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--r-sm);
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-muted);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: background var(--t-fast) var(--ease);
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
 }
 
 .owner-pagination button:hover:not(:disabled) {
   background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border-strong);
 }
 
 .owner-pagination button.active {
   background: var(--accent-soft);
   color: var(--accent-ink, var(--accent));
   border-color: var(--accent-border);
+  font-weight: var(--fw-semibold);
 }
 
 .owner-pagination button:disabled {
@@ -421,9 +450,11 @@
 }
 
 .owner-search-bar input:focus {
-  outline: none;
-  border-color: var(--accent-border);
-  box-shadow: var(--focus-ring);
+  /* wave 3-c: the old --focus-ring halo (30% α, the pre-consolidation
+     system) always lost to polish v15's accent border + halo in the
+     overrides layer — dead weight. State the same accent border via
+     the state token (the system input focus language, components.css). */
+  border-color: var(--state-input-focus-border);
 }
 
 /* ── Chart container ───────────────────────────────────────── */
@@ -530,18 +561,21 @@
 }
 
 /* ── Command Center: Alert Cards ───────────────────────────── */
+/* wave 3-c (ruling #4): the 4px leading stripe is now the 1px Notion
+   hairline — severity keeps its color on the leading edge plus the
+   soft wash below. Hover was a border+shadow ghost card; elevation is
+   now declared once (quiet border shift). */
 .owner-alert-card {
   padding: var(--sp-4);
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  border-inline-start: 4px solid var(--border);
   margin-bottom: var(--sp-3);
-  transition: box-shadow var(--t-fast) var(--ease);
+  transition: border-color var(--t-fast) var(--ease);
 }
 
 .owner-alert-card:hover {
-  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
 }
 
 .owner-alert-card.critical {
@@ -668,10 +702,7 @@
 }
 
 /* ── Feature Flag Connected ───────────────────────────────── */
-.owner-flag-loading {
-  padding: var(--sp-4);
-  text-align: center;
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-}
+/* (wave 3-c dead-code sweep, audit 0-e P2-45: .owner-flag-loading
+   deleted — zero consumers; OwnerSystemPage renders real loading and
+   error states. rg over src = 0 hits.) */
 }

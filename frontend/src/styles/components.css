@@ -1818,4 +1818,669 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  wave 3-c: STAFF SURFACES (audit 0-e P0-1)                    ║
+     ║  Every family below was referenced by teacher/admin/owner/    ║
+     ║  quality/exam pages with ZERO CSS in any stylesheet (verified ║
+     ║  by extracting every className and grepping all 16 sheets).   ║
+     ║  Token-first so both themes resolve; logical properties only; ║
+     ║  motion tokens only; no letter-spacing on Arabic (ruling #2). ║
+     ║  The TSX inline styles these pages still carry (3px physical  ║
+     ║  stripes, invalid `${var}1a` alphas) are waves 5-6 follow-ups ║
+     ║  — noted in the worklog.                                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+
+  /* ── Back link — detail pages ("← كل المقرّرات"), 7 usages ──────────
+     OWNERSHIP NOTE (wave 3-c): the layout/family rules live in
+     training.css §track-detail (pages layer — authored by the parallel
+     wave 3-b, which explicitly serves the teacher/admin/exams pages
+     rendering the same markup). Only the additive rule below lives
+     here: the polish v19 animated-underline opt-out — this is a
+     card-like chip anchor, not a text link (the v19 :not() exclusion
+     list predates the class; !important flips author-layer precedence
+     so the components layer beats the overrides layer). Focus shows
+     the universal v22 ring like every anchor. */
+  .back-link::after { content: none !important; }
+
+  /* ── Track grid + track cards — the shared course/lab/exam/training
+     tile (TeacherIntelligence, TeacherLabs, TeacherProfile, OnlineExams,
+     Training, Community; ~40 usages).
+     OWNERSHIP NOTE (wave 3-c): the family — .track-grid, .track-card,
+     -icon/-body/-cat/-title/-summary/-meta — is owned by training.css
+     §track-catalog (pages layer, parallel wave 3-b; it applies globally
+     and serves every consumer above). Only the additive rules below
+     live here: the v19 underline opt-out for the linked variant and
+     the v22 focus border cue (training.css declares neither). */
+  a.track-card::after { content: none !important; }
+  .track-card:focus-visible { border-color: var(--accent); }
+
+  /* ── Track hero — per-course detail header (TeacherIntelligence) ──
+     OWNERSHIP NOTE (wave 3-c): owned by training.css §track-detail
+     (tinted band + accent hairline + 64px icon well — richer than the
+     neutral card authored here first; the pages layer wins and the
+     duplicate base was dropped to keep one owner per family). The TSX
+     inline color:'#fff' on the icon accent ground remains a dark-theme
+     risk owned by waves 5-6 (audit 0-e P1-16). */
+
+  /* ── Teacher feed — toolbar + rows (TeacherDashboard flagship,
+     Competitions index; layout only — the entrance stagger and hover
+     shift are owned by polish v8/v17 and keep winning). ───────────── */
+  .feed-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+  .feed { display: flex; flex-direction: column; gap: var(--sp-3); }
+  .feed-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-4);
+    padding: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+  }
+  .feed-item-avatar {
+    /* matches the UserAvatar size rendered in the same row */
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: var(--r-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--c-grey-bg);
+    color: var(--c-grey-deep);
+  }
+  /* sticker language: pastel ground + -deep ink (WCAG-pinned pairs) */
+  .feed-item-avatar.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
+  .feed-item-avatar.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
+  .feed-item-avatar.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
+  .feed-item-avatar.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
+  .feed-item-avatar.gold   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
+  .feed-item-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .feed-item-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+  }
+  .feed-item-author {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .feed-item-meta { font-size: var(--fs-xs); color: var(--text-muted); }
+  .feed-item-time { margin-inline-start: auto; }
+  .feed-item-text {
+    font-size: var(--fs-body);
+    color: var(--text);
+    line-height: var(--lh-base);
+  }
+  .feed-item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-1);
+  }
+
+  /* ── Risk rows — at-risk students (TeacherIntelligence, 15 usages).
+     The 3px leading stripe is still painted by TSX inline styles
+     (physical borderRight) until waves 5-6 normalize it to a logical
+     1px rule (ruling #4); this chrome reads correctly either way. ── */
+  .risk-row {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+  }
+  .risk-row-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .risk-row-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+    margin-block-start: 2px;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .risk-row-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .risk-row-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-block-start: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--gold-soft);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .risk-row-score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin-inline-start: auto; /* wraps under on narrow screens, stays end-aligned */
+    text-align: end;
+    flex-shrink: 0;
+  }
+  .risk-row-pct {
+    font-family: var(--font-display);
+    font-size: var(--type-metric-size);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    letter-spacing: var(--type-metric-letter-spacing);
+    font-variant-numeric: tabular-nums;
+  }
+  .risk-row-label { font-size: var(--fs-xxs); color: var(--text-muted); }
+
+  /* ── Run rows — live sessions (TeacherLive) + sync history (AdminSync) ── */
+  .run-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .run-row-status {
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--surface-2);
+  }
+  /* Icon+text meta lines inside a run row: the global svg{display:block}
+     stacks Lucide glyphs above their text — flex the utility-styled
+     lines so the clock glyph sits inline with the date. */
+  .run-row :is(.text-xs, .text-xxs) {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* ── Teacher rows — selectable list buttons (AdminGovernance) ───── */
+  .teacher-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 48px;
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease),
+                border-color var(--t-fast) var(--ease);
+  }
+  .teacher-row:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .teacher-row:active { background: var(--surface-3); }
+  .teacher-row:focus-visible { border-color: var(--accent); }
+  .teacher-row.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .teacher-row-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .teacher-row-email { font-size: var(--fs-xxs); color: var(--text-muted); }
+
+  /* ── Permissions grid — capability editor (AdminGovernance) ────── */
+  .permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--sp-3);
+  }
+  .perm-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  /* Quiet state tint — the semantics live in the Badge text; the 1px
+     border edge is reinforcement only (ruling #4 hairline). */
+  .perm-row.state-granted { border-color: color-mix(in srgb, var(--success) 30%, var(--border)); }
+  .perm-row.state-revoked { border-color: color-mix(in srgb, var(--warning) 30%, var(--border)); }
+  .perm-row-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-inline-size: 0;
+  }
+  .perm-row-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text);
+  }
+  .perm-row-key {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: var(--text-faint);
+  }
+  .perm-row-state {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-block-start: var(--sp-1);
+  }
+  .perm-row-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+
+  /* ── Scan bar — plagiarism/AI verdict cells. Shared by the teacher
+     review modal (0-e) and the student research page (0-d); the
+     .ok/.warn/.bad value states were undefined everywhere. ─────────── */
+  .scan-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-lg);
+  }
+  /* Bridge for audit 0-e P2-40: the grading form is (mis)nested inside
+     .scan-bar by a misplaced closing div — full-span everything that is
+     not a scan cell so today's markup lays out correctly. Remove this
+     rule together with the TSX re-parent in waves 5-6. */
+  .scan-bar > :not(.scan-cell) { grid-column: 1 / -1; }
+  .scan-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .scan-cell-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .scan-cell-value {
+    font-family: var(--font-mono);
+    font-size: var(--type-metric-size);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    font-variant-numeric: tabular-nums;
+  }
+  /* text-safe status inks (guardrail #3): deep shades clear AA on the
+     neutral cell ground in both themes */
+  .scan-cell-value.ok   { color: var(--success-ink); }
+  .scan-cell-value.warn { color: var(--warning-ink); }
+  .scan-cell-value.bad  { color: var(--danger-ink); }
+  .scan-cell-meta { font-size: var(--fs-xxs); color: var(--text-faint); }
+
+  /* ── Category + fact rows — sync data preview (AdminSync) ───────── */
+  .category-row {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+    overflow: clip;
+  }
+  .category-row-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 44px; /* touch target (craft floor) */
+    padding: var(--sp-2) var(--sp-4);
+    background: transparent;
+    border: 0;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease);
+  }
+  .category-row-head:hover { background: var(--surface-2); }
+  .category-row-head:active { background: var(--surface-3); }
+  .category-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding: var(--sp-2) var(--sp-4) var(--sp-4);
+    border-block-start: 1px solid var(--rule);
+  }
+  .fact-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--sp-1) var(--sp-3);
+    padding: var(--sp-1) 0;
+  }
+  .fact-key {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: var(--accent-ink, var(--accent));
+    flex-shrink: 0;
+  }
+  .fact-value { font-size: var(--fs-sm); color: var(--text); flex: 1; min-inline-size: 0; }
+  .fact-source {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: var(--text-faint);
+  }
+
+  /* ── Trend rows — paper pipeline bars (AdminReports). Counts smaller
+     than the bar stay clipped; the TSX title attribute carries them
+     (no truncation without a tooltip — craft floor). ───────────────── */
+  .trend-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-1) 0;
+  }
+  .trend-label {
+    flex-shrink: 0;
+    min-inline-size: 56px;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .trend-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .trend-bar {
+    block-size: 14px;
+    min-inline-size: 2px;
+    border-radius: var(--r-xs);
+    display: flex;
+    align-items: center;
+    overflow: clip;
+    white-space: nowrap;
+    transition: inline-size var(--t-slow) var(--ease-out);
+  }
+  .trend-submitted { background: var(--accent); }
+  .trend-graded    { background: var(--gold); }
+  .trend-published { background: var(--success); }
+  .trend-bar-val {
+    padding-inline: var(--sp-2);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    /* dark-on-mid-bright ink clears AA on all three bar fills in both
+       themes (light: #1A0F06 on copper/gold/mint ≈ 5-9:1; dark:
+       #191918 on the brightened fills ≈ 7-10:1) */
+    color: var(--accent-fg);
+  }
+
+  /* ── AI curriculum outline — suggested chapters (TeacherIntelligence) ── */
+  .curriculum-chapter {
+    padding: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .curriculum-chapter-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    margin-block-end: var(--sp-2);
+  }
+  .curriculum-topics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .curriculum-topics li {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── Profile list rows — certifications / publications / suggested
+     courses (TeacherProfile, AdminGovernance) + quiet kv lines. The
+     .comp-entry-row language: soft rows on surface-2 inside a Card. ── */
+  .cert-row,
+  .publication-row,
+  .suggested-course-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .cert-row > :first-child,
+  .publication-row > :first-child,
+  .suggested-course-row > :first-child { flex-shrink: 0; }
+  .suggested-course-row { flex-wrap: wrap; }
+  .kv-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+
+  /* ── Teacher profile header (TeacherProfile) ────────────────────── */
+  .teacher-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-5);
+  }
+  .teacher-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-md);
+    font-weight: var(--type-headline-weight);
+    color: var(--text);
+  }
+  .teacher-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px var(--sp-2);
+    border-radius: var(--r-full);
+    background: var(--success-soft);
+    color: var(--success-ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xxs);
+    font-weight: var(--fw-semibold);
+  }
+  .teacher-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+  .teacher-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-1);
+    color: var(--text-muted);
+  }
+
+  /* ── Moderation queue rows (quality exam review) ────────────────── */
+  .moderation-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .moderation-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .moderation-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-1) var(--sp-2);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+  }
+
+  /* ── EXAM TAKER (OnlineExamsPages — audit 0-e P0: the entire chrome
+     was unstyled and the selected answer was INVISIBLE). The bar sticks
+     under the app topbar so the countdown stays visible while the
+     student scrolls questions; question cards are .card (existing). ── */
+  .exam-bar {
+    position: sticky;
+    inset-block-start: 0;
+    /* local paint order above the question cards — overlays are portaled
+       to body far above this (not a --z-* layer). The sticky app topbar
+       (z-dropdown rung, a positioned sibling of the scrollport) still
+       paints above. */
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-4);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card);
+  }
+  .exam-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-full);
+    color: var(--text);
+    font-weight: var(--fw-semibold);
+    transition: background var(--t-base) var(--ease),
+                border-color var(--t-base) var(--ease),
+                color var(--t-base) var(--ease);
+  }
+  /* < 2 minutes left — danger chip. WCAG: --danger-ink on --danger-soft
+     ≈ 9.4:1 light / 7.2:1 dark. Color coding only, no pulse — a
+     flashing timer mid-exam is anxiety, not affordance. */
+  .exam-timer.urgent {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    color: var(--danger-ink);
+  }
+  .exam-prompt {
+    font-size: var(--type-body-size-lg); /* the question text — 17px */
+    font-weight: var(--fw-medium);
+    color: var(--text);
+    line-height: var(--lh-base);
+    /* authored line breaks survive, long space runs collapse */
+    white-space: pre-line;
+  }
+  .exam-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    min-block-size: 44px; /* touch target — the label wraps the radio (craft floor) */
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease),
+                border-color var(--t-fast) var(--ease),
+                box-shadow var(--t-fast) var(--ease);
+  }
+  .exam-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .exam-choice:active { background: var(--surface-3); }
+  /* The selected answer — was completely invisible (audit 0-e P0).
+     Accent border + soft accent wash + a 1px inset ring edge (a state
+     indicator in the kpi-icon/metric-icon rim family, not elevation). */
+  .exam-choice.selected {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .exam-choice input[type='radio'] {
+    accent-color: var(--accent);
+    inline-size: 16px;
+    block-size: 16px;
+    margin-block-start: 3px; /* optical baseline with the first text line */
+    flex-shrink: 0;
+    cursor: inherit;
+  }
+  /* Row-level focus cue: the v22 universal ring lands on the radio
+     input; this ties the surrounding row to it (same accent border cue
+     the card wrappers get). */
+  .exam-choice:has(input:focus-visible) { border-color: var(--accent); }
+  /* The post-submit reveal replaces the whole question list with the
+     result screen, so nothing disables the radios today — this state
+     future-proofs reveal-style reviews (craft floor: every interactive
+     element ships a disabled state). */
+  .exam-choice:has(input:disabled) {
+    cursor: default;
+    opacity: 0.7;
+  }
+  .exam-choice:has(input:disabled):hover {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
+  /* ── State icon variant — success (teacher feed empty state). The
+     polish v10 family styles .state-error/-empty; this completes it. ── */
+  .state-icon-success {
+    background: var(--success-soft);
+    color: var(--success-ink);
+  }
 }

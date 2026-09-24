@@ -9,6 +9,427 @@
 
   /* ── LecturePlayerPage ──────────────────────────────────────────── */
 
+  /* ═══ Lecture player — the flipped-classroom surface ═══
+     Two-column shell (video column + chapter sidebar; the sidebar
+     collapses below the player ≤1024px), a fixed 16:9 video frame,
+     watch progress with checkpoint notches, chapter rows in the
+     .list-row language, and the checkpoint quiz inside the shared
+     Modal (.modal-card supplies surface + elevation + focus trap;
+     these classes style the quiz body only). */
+
+  .lecture-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    gap: var(--sp-6);
+    align-items: start;
+  }
+  @media (max-width: 1024px) {
+    /* Sidebar collapses below the player on narrow screens. */
+    .lecture-shell { grid-template-columns: 1fr; }
+  }
+
+  /* Video column — one flex rhythm for meta / progress / description,
+     no per-child margins. */
+  .lecture-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    min-inline-size: 0;
+  }
+
+  /* Fixed 16:9 frame: no layout shift before video metadata lands;
+     the element letterboxes inside it (object-fit: contain). */
+  .lecture-video-wrap {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    inline-size: 100%;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+    overflow: clip;
+  }
+  .lecture-video {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+    /* True letterbox black — a genuinely physical video matte, not a
+       theme color: the neutral ramp flips with the theme and must
+       never tint the bars. Documented raw value per brief §3.4. */
+    background: #000;
+  }
+
+  /* ── Meta block under the player ── */
+  .lecture-meta { display: flex; flex-direction: column; gap: 2px; }
+  .lecture-meta-badges {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-1);
+  }
+  .lecture-meta-title {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-md);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    letter-spacing: var(--type-headline-letter-spacing);
+    color: var(--text);
+  }
+  .lecture-meta-sub {
+    font-size: var(--type-label-size);
+    font-weight: var(--type-body-weight);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+  .lecture-desc {
+    font-size: var(--type-label-size);
+    line-height: var(--lh-loose);
+    color: var(--text-secondary);
+  }
+
+  /* ── Watch progress ──
+     Plain-block fill anchors at inline-start → the fill direction is
+     RTL-correct by construction (same anatomy as .progress-track). */
+  .lecture-progress { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .lecture-progress-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+  .lecture-progress-value {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
+  }
+  .lecture-progress-track {
+    position: relative;
+    block-size: 8px;
+    background: var(--surface-3);
+    border-radius: var(--r-full);
+    overflow: clip;
+  }
+  .lecture-progress-fill {
+    display: block;
+    block-size: 100%;
+    background: var(--neutral-900);
+    border-radius: inherit;
+    /* stat duration = the satisfying "section complete" fill */
+    transition: inline-size var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+  [data-theme="dark"] .lecture-progress-fill { background: var(--accent); }
+  /* Checkpoint notches on the track (decorative — the note below and
+     the quiz itself carry the information accessibly). inset-inline-
+     start keeps them direction-correct in RTL. */
+  .lecture-progress-mark {
+    position: absolute;
+    inset-block-start: 0;
+    block-size: 8px;
+    inline-size: 8px;
+    border-radius: var(--r-full);
+    background: var(--accent);
+    /* 1px inset cutout separates the notch from the fill under it */
+    box-shadow: inset 0 0 0 1px var(--surface);
+  }
+  .lecture-progress-mark.done { background: var(--success); }
+  .lecture-progress-note {
+    font-size: var(--type-label-size-sm);
+    line-height: 1.5;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .lecture-progress-note.done { color: var(--success-ink); }
+
+  /* ── Chapter sidebar rows (the .list-row language, button edition) ── */
+  .chapter-list { display: flex; flex-direction: column; }
+  .chapter-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 44px; /* touch target */
+    padding: var(--sp-3) var(--sp-2);
+    background: transparent;
+    border: 0;
+    text-align: start;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background var(--motion-duration-short) var(--motion-ease-standard);
+    /* list entrance stagger — capped at --motion-stagger-cap in CSS */
+    animation: lecture-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(
+      var(--motion-stagger-step) * min(var(--ch-i, 0), var(--motion-stagger-cap))
+    );
+  }
+  .chapter-row + .chapter-row { border-block-start: 1px solid var(--surface-divider); }
+  .chapter-row:hover { background: var(--surface-2); }
+  .chapter-row:active { background: var(--surface-3); }
+  .chapter-time {
+    flex-shrink: 0;
+    padding: 2px var(--sp-1);
+    border-radius: var(--r-xs);
+    background: var(--surface-2);
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .chapter-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .chapter-title {
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    line-height: 1.35;
+    color: var(--text);
+  }
+  .chapter-concept {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--type-label-size-sm);
+    line-height: 1.4;
+    color: var(--text-faint);
+  }
+  /* quiet leading dot marks the concept link — hairline/dot language,
+     no colored stripes (orchestrator ruling #4) */
+  .chapter-concept::before {
+    content: '';
+    inline-size: 4px;
+    block-size: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .chapter-state {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 20px;
+    flex-shrink: 0;
+    color: var(--text-faint);
+  }
+  /* active chapter — accent-soft ground + accent-strong ink
+     (8.62:1 on --accent-soft, documented in tokens.css) */
+  .chapter-row.on { background: var(--accent-soft); }
+  .chapter-row.on .chapter-time {
+    background: transparent;
+    color: var(--accent-strong);
+    font-weight: var(--fw-semibold);
+  }
+  .chapter-row.on .chapter-title { color: var(--accent-strong); }
+  .chapter-row.on .chapter-state { color: var(--accent-strong); }
+  .chapter-row.watched .chapter-state { color: var(--success-ink); }
+
+  /* ── Checkpoint quiz (body only — the Modal owns chrome + trap) ── */
+  .checkpoint-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    padding: var(--sp-6);
+  }
+  .checkpoint-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    align-self: flex-start;
+    padding: 4px var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    line-height: 1.5;
+    /* no letter-spacing — Arabic cursive joins (ruling #2) */
+  }
+  .checkpoint-question {
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    /* 1.4 — Arabic-comfortable wrap over 2–3 lines; the headline
+       role's 1.20 is too tight for running question text */
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .checkpoint-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .checkpoint-option {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 48px; /* ≥44px touch target */
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text);
+    font-size: var(--type-body-size);
+    line-height: 1.5;
+    text-align: start;
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard),
+      opacity var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .checkpoint-option:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  .checkpoint-option:active:not(:disabled) { transform: translateY(1px); }
+  .checkpoint-option:disabled { cursor: default; opacity: 0.55; }
+  /* picked + answer in flight — the shared selected-ring state token
+     (inset ring, not border+borders stacking) */
+  .checkpoint-option.picked { box-shadow: var(--state-card-selected-ring); }
+  .checkpoint-option-text { flex: 1; min-inline-size: 0; }
+  /* radio-style letter marker */
+  .checkpoint-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 24px;
+    block-size: 24px;
+    flex-shrink: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-full);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    line-height: 1;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard),
+      color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .checkpoint-option.picked .checkpoint-mark {
+    background: var(--neutral-900);
+    border-color: var(--neutral-900);
+    color: var(--neutral-50);
+  }
+  [data-theme="dark"] .checkpoint-option.picked .checkpoint-mark {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+  /* revealed states — full opacity beats the :disabled dim so the
+     outcome stays readable (intentionally ordered after :disabled) */
+  .checkpoint-option.correct {
+    background: var(--success-soft);
+    border-color: color-mix(in srgb, var(--success) 45%, transparent);
+    opacity: 1;
+    /* THE authored moment: confirmation ripple on the correct answer —
+       state-ring language (0 0 0 spread like the focus ring), not
+       elevation */
+    animation: lecture-correct-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) both;
+  }
+  .checkpoint-option.correct .checkpoint-mark {
+    background: var(--surface);
+    border-color: var(--success);
+    color: var(--success-ink);
+  }
+  .checkpoint-option.incorrect {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+    opacity: 1;
+  }
+  .checkpoint-option.incorrect .checkpoint-mark {
+    background: var(--surface);
+    border-color: var(--danger);
+    color: var(--danger-ink);
+  }
+  .checkpoint-option-icon { flex-shrink: 0; }
+  .checkpoint-option.correct .checkpoint-option-icon,
+  .checkpoint-option.incorrect .checkpoint-option-icon {
+    animation: lecture-pop var(--motion-duration-medium) var(--ease-spring) both;
+  }
+  .checkpoint-option.correct .checkpoint-option-icon { color: var(--success-ink); }
+  .checkpoint-option.incorrect .checkpoint-option-icon { color: var(--danger-ink); }
+
+  /* feedback banners */
+  .checkpoint-result,
+  .checkpoint-error {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding: var(--sp-4);
+    border-radius: var(--r-md);
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+    animation: lecture-result-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .checkpoint-result {
+    background: var(--success-soft);
+    border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
+  }
+  .checkpoint-result.incorrect {
+    background: var(--danger-soft);
+    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  }
+  .checkpoint-result strong { color: var(--success-ink); font-weight: var(--fw-semibold); }
+  .checkpoint-result.incorrect strong { color: var(--danger-ink); }
+  .checkpoint-result-note { color: var(--text-secondary); }
+  .checkpoint-error {
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    color: var(--danger-ink);
+    font-weight: var(--fw-medium);
+  }
+  .checkpoint-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--sp-2);
+  }
+  .checkpoint-actions:empty { display: none; }
+
+  /* ── Keyframes (reduced-motion off-switch below — guardrail #6) ── */
+  @keyframes lecture-row-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes lecture-correct-pulse {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 50%, transparent); }
+    to { box-shadow: 0 0 0 10px transparent; }
+  }
+  @keyframes lecture-pop {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes lecture-result-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* same-or-higher specificity as the rules above, so the kill wins */
+    .chapter-row,
+    .checkpoint-option.correct,
+    .checkpoint-option.correct .checkpoint-option-icon,
+    .checkpoint-option.incorrect .checkpoint-option-icon,
+    .checkpoint-result,
+    .checkpoint-error { animation: none; }
+  }
+
+  /* ── Phone tuning ── */
+  @media (max-width: 640px) {
+    .lecture-video-wrap { border-radius: var(--r-lg); }
+    .lecture-meta-title { font-size: var(--type-headline-size-sm); }
+    .checkpoint-card { padding: var(--sp-5); }
+  }
+
   /* ── TrainingPages (tracks / lessons / badges / leaderboard) ────── */
 
   /* ── Shared student utilities (added by student waves) ──────────── */
