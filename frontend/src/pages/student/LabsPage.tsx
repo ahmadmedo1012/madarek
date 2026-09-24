@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import {
   FlaskConical, Network, Cpu, Atom, Zap, Bot as BotIcon, Microscope,
-  CheckCircle2, ChevronLeft, X, Play, Award,
+  CheckCircle2, ChevronRight, ChevronLeft, Play, Award, Check,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { useReducedMotion } from '../../components/motion/useReducedMotion';
 import { useLabs, useMyLabSessions, type VirtualLab } from '../../hooks/useResources';
 
 interface LabExperiment {
@@ -113,6 +115,25 @@ const inferCategory = (lab: VirtualLab): string => {
   return lab.category;
 };
 
+/** Shape-matched KPI strip skeleton (3 metric cards). */
+function LabsKpiSkeleton() {
+  return (
+    <div className="grid-3" aria-busy="true" aria-live="polite">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="metric">
+          <div style={{ marginBottom: 'var(--sp-3)' }}><Skeleton width={90} height={11} /></div>
+          <Skeleton width={56} height={26} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* Typing cadence for the simulator terminal — a JS timer, not a CSS
+   motion value (there is no JS-readable duration token); under
+   prefers-reduced-motion the step prints instantly instead. */
+const TYPE_INTERVAL_MS = 220;
+
 export default function LabsPage() {
   const labs = useLabs();
   const labStats = useMyLabSessions();
@@ -126,30 +147,44 @@ export default function LabsPage() {
             <div className="page-title-block">
               <h1 className="page-title">المعامل الافتراضية</h1>
               <p className="page-subtitle">
-                تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية. أثبتت تجربة جامعة سرت
-                تفوّق الطلاب الذين استخدموا هذا النوع من المعامل.
+                تجارب علمية تفاعلية بدون الحاجة لمعدات حقيقية — شغّل التجربة
+                خطوة بخطوة وراقب النتائج في طرفية المحاكاة.
               </p>
             </div>
           </header>
 
-          <div className="grid-3">
-            <MetricCard icon={FlaskConical} label="معامل متاحة" value={labs.data?.length ?? '—'} color="brand" />
-            <MetricCard
-              icon={Play}
-              label="جلسات نشطة"
-              value={labStats.data?.active.toLocaleString('ar-LY') ?? '—'}
-              change={labStats.data ? `من أصل ${labStats.data.total} جلسة` : undefined}
-              color="green"
-            />
-            <MetricCard
-              icon={Award}
-              label="تجارب مكتملة"
-              value={labStats.data?.completed.toLocaleString('ar-LY') ?? '—'}
-              color="gold"
-            />
-          </div>
+          {labs.isPending ? <LabsKpiSkeleton /> : (
+            <div className="grid-3">
+              <MetricCard icon={FlaskConical} label="معامل متاحة" value={labs.data?.length ?? '—'} color="brand" />
+              <MetricCard
+                icon={Play}
+                label="جلسات نشطة"
+                value={labStats.data?.active.toLocaleString('ar-LY') ?? '—'}
+                change={labStats.data ? `من أصل ${labStats.data.total} جلسة` : undefined}
+                color="green"
+              />
+              <MetricCard
+                icon={Award}
+                label="تجارب مكتملة"
+                value={labStats.data?.completed.toLocaleString('ar-LY') ?? '—'}
+                color="gold"
+              />
+            </div>
+          )}
 
-          {labs.isPending ? <Card><LoadingState /></Card> :
+          {labs.isPending ? (
+            <div className="grid-3" aria-busy="true" aria-live="polite">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="lib-skel-tile">
+                  <Skeleton width="100%" height={96} />
+                  <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+                    <Skeleton width="70%" height={15} />
+                    <Skeleton width="45%" height={11} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) :
            labs.isError ? <Card><ErrorState error={labs.error} onRetry={() => labs.refetch()} /></Card> :
            !labs.data?.length ? <Card><EmptyState icon={FlaskConical} title="لا معامل متاحة" /></Card> : (
             <div className="grid-3">
@@ -160,13 +195,18 @@ export default function LabsPage() {
                 const hasExperiment = !!EXPERIMENT_LIBRARY[cat];
                 return (
                   <div key={l.id} className="thumb-card">
-                    <div className="thumb-card-image" style={{ background: `${tint}10`, height: 96 }}>
-                      <span style={{ color: tint }}><Icon icon={Cmp} size={32} strokeWidth={1.6} /></span>
+                    <div
+                      className="thumb-card-image"
+                      style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 96 }}
+                    >
+                      <span style={{ color: `color-mix(in srgb, ${tint} 70%, var(--text))` }}>
+                        <Icon icon={Cmp} size={32} strokeWidth={1.6} />
+                      </span>
                     </div>
                     <div className="thumb-card-body">
                       <div className="thumb-card-title">{l.name}</div>
                       <div className="thumb-card-sub">
-                        {l.platform ?? '—'} · {l.totalExperiments} تجربة
+                        <bdi>{l.platform ?? '—'}</bdi> · <bdi>{l.totalExperiments}</bdi> تجربة
                       </div>
                       <button
                         type="button"
@@ -200,21 +240,20 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
+  const reducedMotion = useReducedMotion();
 
-  if (!exp) {
-    return (
-      <Card>
-        <EmptyState icon={FlaskConical} title="هذه التجربة قيد البناء" description="سيتم إضافتها قريباً." />
-      </Card>
-    );
-  }
-
-  const currentStep = exp.steps[stepIndex];
-
-  // Animate terminal output line by line.
+  // Animate terminal output line by line. Declared BEFORE the !exp early
+  // return below — hooks must never be conditional (audit 0-d P2).
   useEffect(() => {
-    if (!running || !currentStep) return;
-    const lines = currentStep.output.split('\n');
+    const step = exp?.steps[stepIndex];
+    if (!running || !step) return;
+    const lines = step.output.split('\n');
+    if (reducedMotion) {
+      // Reduced motion: print the step instantly, no typewriter.
+      setTerminalLines(lines);
+      setRunning(false);
+      return;
+    }
     let i = 0;
     setTerminalLines([]);
     const id = setInterval(() => {
@@ -225,9 +264,19 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
       }
       setTerminalLines((prev) => [...prev, lines[i] ?? '']);
       i += 1;
-    }, 220);
+    }, TYPE_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [running, stepIndex, currentStep]);
+  }, [running, stepIndex, exp, reducedMotion]);
+
+  if (!exp) {
+    return (
+      <Card>
+        <EmptyState icon={FlaskConical} title="هذه التجربة قيد البناء" description="سيتم إضافتها قريباً." />
+      </Card>
+    );
+  }
+
+  const currentStep = exp.steps[stepIndex];
 
   const runStep = () => {
     setTerminalLines([]);
@@ -248,28 +297,20 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
     return (
       <Card>
         <div className="state">
-          <div className="state-icon" style={{ background: 'var(--success-soft)', color: 'var(--success)', width: 64, height: 64 }}>
-            <Icon icon={CheckCircle2} size={32} />
+          <div className="state-icon state-icon-success">
+            <Icon icon={CheckCircle2} size={28} />
           </div>
-          <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>تجربة منجزة!</div>
+          <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>أحسنت!</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            أكملت "{exp.title}" بنجاح.
+            أكملت "<bdi>{exp.title}</bdi>" بنجاح.
           </div>
-          <div style={{
-            marginTop: 'var(--sp-5)', padding: 'var(--sp-4) var(--sp-6)',
-            background: 'var(--gold-soft)', borderRadius: 'var(--r-md)',
-            color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: 8,
-            fontFamily: 'var(--font-mono)', fontWeight: 700,
-          }}>
+          <div className="lab-done-chip" style={{ marginTop: 'var(--sp-5)' }}>
             <Icon icon={Award} size={18} />
             تجربة منجزة
           </div>
-          <div className="text-xs text-subtle" style={{ marginTop: 'var(--sp-3)' }}>
-            أكملت هذه التجربة بنجاح.
-          </div>
           <div className="flex gap-2" style={{ marginTop: 'var(--sp-5)' }}>
             <button type="button" className="btn" onClick={onExit}>
-              <Icon icon={ChevronLeft} size={13} />
+              <Icon icon={ChevronRight} size={13} />
               العودة للمعامل
             </button>
             <button type="button" className="btn primary" onClick={() => { setDone(false); setStepIndex(0); setTerminalLines([]); }}>
@@ -284,25 +325,24 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   return (
     <>
       <button type="button" className="btn ghost sm" onClick={onExit} style={{ alignSelf: 'flex-start' }}>
-        <Icon icon={ChevronLeft} size={13} />
+        <Icon icon={ChevronRight} size={13} />
         العودة للمعامل
       </button>
 
-      <div style={{
-        background: `${lab.themeColor ?? '#3D6BD6'}10`,
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--r-xl)',
-        padding: 'var(--sp-5)',
-      }}>
-        <div className="flex items-center gap-3" style={{ marginBottom: 'var(--sp-2)' }}>
+      <div
+        className="lab-hero"
+        style={{ '--lab-accent': lab.themeColor ?? 'var(--accent)' } as CSSProperties}
+      >
+        <div className="lab-hero-head">
           <Badge color="green">جلسة نشطة</Badge>
           <span className="text-xs text-subtle">{lab.name}</span>
         </div>
-        <h2 style={{ fontSize: 'var(--fs-xl)', fontWeight: 600, color: 'var(--text)', marginBottom: 6 }}>
-          {exp.title}
-        </h2>
+        <h2 className="lab-hero-title">{exp.title}</h2>
         <p className="text-sm text-muted" style={{ marginBottom: 'var(--sp-4)' }}>{exp.description}</p>
-        <ProgressBar value={(stepIndex / exp.steps.length) * 100} label={`الخطوة ${stepIndex + 1} من ${exp.steps.length}`} />
+        <ProgressBar
+          value={(stepIndex / exp.steps.length) * 100}
+          label={<bdi>الخطوة {stepIndex + 1} من {exp.steps.length}</bdi>}
+        />
       </div>
 
       <div className="grid-2-1">
@@ -312,16 +352,16 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </p>
           <div className="terminal">
             <div className="terminal-head">
-              <div className="terminal-dots">
+              <div className="terminal-dots" aria-hidden>
                 <span className="terminal-dot r" />
                 <span className="terminal-dot y" />
                 <span className="terminal-dot g" />
               </div>
-              <div className="terminal-title">{lab.platform ?? 'simulator'}</div>
+              <div className="terminal-title"><bdi>{lab.platform ?? 'simulator'}</bdi></div>
             </div>
-            <div className="terminal-body">
+            <div className="terminal-body" role="log" aria-live="polite" aria-label="مخرجات المحاكاة">
               {terminalLines.length === 0 && !running ? (
-                <div className="terminal-info">— اضغط "تشغيل الخطوة" لتنفيذ الأوامر —</div>
+                <div className="terminal-hint">— اضغط "تشغيل الخطوة" لتنفيذ الأوامر —</div>
               ) : (
                 terminalLines.map((line, i) => (
                   <div key={i} className={`terminal-line ${
@@ -330,7 +370,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
                     ''
                   }`}>
                     {line}
-                    {running && i === terminalLines.length - 1 && <span className="terminal-cursor" />}
+                    {running && i === terminalLines.length - 1 && <span className="terminal-cursor" aria-hidden />}
                   </div>
                 ))
               )}
@@ -353,20 +393,23 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
         </Card>
 
         <Card title="الخطوات">
-          <div className="steps">
+          <ol className="steps">
             {exp.steps.map((s, i) => (
-              <div
+              <li
                 key={i}
                 className={`step ${i === stepIndex ? 'on' : i < stepIndex ? 'done' : ''}`}
+                aria-current={i === stepIndex ? 'step' : undefined}
               >
-                <div className="step-num">{i < stepIndex ? '✓' : i + 1}</div>{/* allow-emoji: completed-step glyph */}
+                <div className="step-num">
+                  {i < stepIndex ? <Icon icon={Check} size={14} aria-hidden /> : i + 1}
+                </div>
                 <div className="step-body">
                   <div className="step-title">{s.title}</div>
-                  <div className="step-desc">{s.instructions.slice(0, 60)}…</div>
+                  <div className="step-desc">{s.instructions}</div>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </Card>
       </div>
     </>

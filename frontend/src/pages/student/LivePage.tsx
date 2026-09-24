@@ -9,23 +9,56 @@
  * in, and can join the teacher-provided URL.
  */
 import { useMemo } from 'react';
-import { Radio, Calendar, CheckCircle2, AlertCircle, ExternalLink, Clock } from 'lucide-react';
+import type { CSSProperties } from 'react';
+import { Radio, Calendar, CheckCircle2, ExternalLink, Clock, Video } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
-import { CardSkeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
 import { formatDate } from '../../utils/numbers';
 
-export default function LivePage() {
-  const { data: sessions, isLoading } = useLiveSessions();
+/* Shape-matched loading skeleton: KPI strip + session rows. */
+function LiveSkeleton() {
+  return (
+    <>
+      <div className="grid-3" aria-busy="true" aria-live="polite">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="metric">
+            <div style={{ marginBottom: 'var(--sp-3)' }}><Skeleton width={90} height={11} /></div>
+            <Skeleton width={56} height={26} />
+          </div>
+        ))}
+      </div>
+      <div className="flex-col gap-2" aria-hidden>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="run-row">
+            <Skeleton width={40} height={40} rounded="50%" />
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+              <Skeleton width="40%" height={13} />
+              <Skeleton width="65%" height={11} />
+            </div>
+            <Skeleton width={88} height={22} rounded="var(--r-full)" />
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
 
-  const live = useMemo(() => sessions?.filter((s) => s.status === 'LIVE') ?? [], [sessions]);
-  const upcoming = useMemo(() => sessions?.filter((s) => s.status === 'SCHEDULED') ?? [], [sessions]);
+export default function LivePage() {
+  const { data: sessions, isPending, isError, error, refetch } = useLiveSessions();
+
+  // `sessions` is undefined while pending AND on error — derive from a
+  // settled list only, so an API failure can never render as "no sessions".
+  const list = !isPending && !isError ? (sessions ?? []) : [];
+
+  const live = useMemo(() => list.filter((s) => s.status === 'LIVE'), [list]);
+  const upcoming = useMemo(() => list.filter((s) => s.status === 'SCHEDULED'), [list]);
   const recent = useMemo(
-    () => sessions?.filter((s) => s.status === 'ENDED').slice(0, 8) ?? [],
-    [sessions],
+    () => list.filter((s) => s.status === 'ENDED').slice(0, 8),
+    [list],
   );
 
   return (
@@ -37,64 +70,81 @@ export default function LivePage() {
             ينظِّم الأساتذة محاضرات حية لمقرراتك. ستجد هنا الجلسات النشطة والقادمة فقط لمقرراتك المسجَّلة.
           </p>
         </div>
-        {live.length > 0 ? (
-          <Badge color="red"><Icon icon={Radio} size={11} /> على الهواء الآن</Badge>
-        ) : (
-          <Badge>لا توجد جلسات نشطة</Badge>
+        {!isPending && (
+          live.length > 0 ? (
+            <span className="live-chip">
+              <span className="live-dot" aria-hidden />
+              على الهواء الآن
+            </span>
+          ) : (
+            !isError && <Badge>لا توجد جلسات نشطة</Badge>
+          )
         )}
       </header>
 
-      <div className="grid-3">
-        <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />
-        <MetricCard icon={Calendar} label="جلسات قادمة" value={upcoming.length.toString()} color="amber" />
-        <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
-      </div>
-
-      {isLoading && <CardSkeleton lines={4} />}
-
-      {/* Live now */}
-      {live.length > 0 && (
-        <Card title="مباشرة الآن" icon={Radio} subtitle="انضمّ إلى أيّ جلسة بنقرة واحدة">
-          <div className="flex-col gap-2">
-            {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
-          </div>
-        </Card>
-      )}
-
-      {/* Upcoming */}
-      <Card title="جلسات قادمة" icon={Calendar}>
-        {upcoming.length === 0 ? (
-          <div className="empty-state">
-            <Icon icon={Calendar} size={24} className="text-subtle" />
-            <p className="text-sm text-muted">
-              لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك.
-            </p>
-          </div>
-        ) : (
-          <div className="flex-col gap-2">
-            {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
-          </div>
-        )}
-      </Card>
-
-      {/* Recent */}
-      {recent.length > 0 && (
-        <Card title="جلسات منتهية" icon={CheckCircle2} subtitle="آخر 8 جلسات — قد تتوفر لها تسجيلات">
-          <div className="flex-col gap-2">
-            {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
-          </div>
-        </Card>
-      )}
-
-      {!isLoading && sessions && sessions.length === 0 && (
+      {isPending ? (
+        <LiveSkeleton />
+      ) : isError ? (
+        /* API-down is the default demo state — surface it honestly with
+           retry instead of masking it as an empty schedule. */
         <Card>
-          <div className="empty-state">
-            <Icon icon={AlertCircle} size={28} className="text-subtle" />
-            <p className="text-sm text-muted" style={{ textAlign: 'center', maxWidth: 380 }}>
-              لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً.
-            </p>
-          </div>
+          <ErrorState
+            message="تعذَّر تحميل البثوث"
+            error={error}
+            onRetry={() => refetch()}
+          />
         </Card>
+      ) : (
+        <>
+          <div className="grid-3">
+            <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />
+            <MetricCard icon={Calendar} label="جلسات قادمة" value={upcoming.length.toString()} color="amber" />
+            <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
+          </div>
+
+          {/* Live now */}
+          {live.length > 0 && (
+            <Card title="مباشرة الآن" icon={Radio} subtitle="انضمّ إلى أيّ جلسة بنقرة واحدة">
+              <div className="flex-col gap-2">
+                {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
+              </div>
+            </Card>
+          )}
+
+          {/* Upcoming */}
+          <Card title="جلسات قادمة" icon={Calendar}>
+            {upcoming.length === 0 ? (
+              <EmptyState
+                icon={Calendar}
+                title="لا توجد جلسات مجدولة"
+                description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
+              />
+            ) : (
+              <div className="flex-col gap-2">
+                {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+              </div>
+            )}
+          </Card>
+
+          {/* Recent */}
+          {recent.length > 0 && (
+            <Card title="جلسات منتهية" icon={CheckCircle2} subtitle="آخر 8 جلسات — قد تتوفر لها تسجيلات">
+              <div className="flex-col gap-2">
+                {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+              </div>
+            </Card>
+          )}
+
+          {list.length === 0 && (
+            <Card>
+              <EmptyState
+                icon={Video}
+                title="لا توجد بثوث بعد"
+                description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+              />
+            </Card>
+          )}
+        </>
       )}
     </div>
   );
@@ -107,30 +157,37 @@ function StudentSessionRow({
   session: LiveSessionRow;
   canJoin?: boolean;
 }) {
-  const accent = s.offering.course.themeColor ?? 'var(--accent)';
   const ended = s.status === 'ENDED' || s.status === 'CANCELLED';
   return (
-    <div className="run-row" style={{ borderInlineStart: `3px solid ${accent}` }}>
-      <EmojiIcon emoji={s.offering.course.iconEmoji ?? '📡'} size={22} />
+    <div
+      className={`run-row${s.status === 'LIVE' ? ' is-live' : ''}`}
+      style={{ '--row-accent': s.offering.course.themeColor ?? 'var(--accent)' } as CSSProperties}
+    >
+      <span className="live-row-icon">
+        <EmojiIcon emoji={s.offering.course.iconEmoji ?? '📡'} size={20} />
+      </span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div className="text-sm" style={{ fontWeight: 600, marginBottom: 2 }}>
-          {s.title}
-        </div>
+        <div className="live-row-title">{s.title}</div>
         <div className="text-xs text-muted">
-          {s.offering.course.code} · {s.offering.course.name}
+          <bdi>{s.offering.course.code}</bdi> · {s.offering.course.name}
           {s.topic ? ` · ${s.topic}` : ''}
         </div>
         <div className="text-xxs text-subtle">
           <Icon icon={Clock} size={10} />{' '}
-          {formatDate(s.scheduledAt, {
-            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
-          })}
+          <bdi>
+            {formatDate(s.scheduledAt, {
+              day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+            })}
+          </bdi>
           {' · '}
           الأستاذ: د. {s.teacher.firstName} {s.teacher.lastName}
         </div>
       </div>
       {s.status === 'LIVE' && (
-        <Badge color="red"><Icon icon={Radio} size={11} /> مباشر</Badge>
+        <span className="live-chip">
+          <span className="live-dot" aria-hidden />
+          مباشر
+        </span>
       )}
       {s.status === 'SCHEDULED' && <Badge color="amber">مجدولة</Badge>}
       {ended && <Badge color="green">منتهية</Badge>}

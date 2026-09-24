@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   User, Mail, GraduationCap, BookOpen, Award, ExternalLink,
   CheckCircle2, AlertCircle, Trophy, Hash, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, ProgressBar, Badge, UserAvatar } from '../../components/primitives';
+import { Card, MetricCard, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
+import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
 
+type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
+
 interface AcademicLink {
-  key: 'research-gate' | 'google-scholar' | 'orcid';
+  key: LinkKind;
   title: string;
   description: string;
   hint: string;
-  initial?: string;
 }
 
 const LINKS: AcademicLink[] = [
@@ -37,12 +39,31 @@ const LINKS: AcademicLink[] = [
   },
 ];
 
+/* Field-level validation — the two profile links are full URLs, ORCID is
+   a bare iD (four digit groups; the last character may be the check
+   digit X). Guards the old accept-anything input (audit 0-d P2). */
+const URL_RE = /^https?:\/\/[^\s.]+\.[^\s]+$/i;
+const ORCID_RE = /^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/;
+function validateLink(kind: LinkKind, raw: string): string | null {
+  const v = raw.trim();
+  if (!v) return 'أدخل قيمة للمتابعة.';
+  if (kind === 'orcid') {
+    return ORCID_RE.test(v) ? null : 'صيغة معرّف ORCID: 0000-0000-0000-0000';
+  }
+  if (!URL_RE.test(v)) return 'أدخل رابطاً كاملاً يبدأ بـ https://';
+  return null;
+}
+
+type ProfileTab = 'academic' | 'links' | 'achievements';
+
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const enrollments = useMyEnrollments();
   const achievements = useMyAchievements();
   const research = useMyResearch();
   const profile = useMyProfile();
+
+  const [tab, setTab] = useState<ProfileTab>('academic');
 
   // Persist link state in localStorage — a LOCAL browser preference.
   // Nothing here is sent to any API (no server-side field exists for it),
@@ -51,8 +72,14 @@ export default function ProfilePage() {
     try { return JSON.parse(localStorage.getItem('mdrk-academic-links') ?? '{}'); }
     catch { return {}; }
   });
-  const [editing, setEditing] = useState<string | null>(null);
+  const [editing, setEditing] = useState<LinkKind | null>(null);
   const [draft, setDraft] = useState('');
+  const [revealError, setRevealError] = useState(false);
+  // transient "saved" feedback per row — cleared by timer (see below)
+  const [savedKey, setSavedKey] = useState<LinkKind | null>(null);
+  const savedTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(savedTimer.current), []);
+  const editInputId = useId();
 
   const linkedCount = Object.keys(links).filter((k) => links[k]).length;
 
@@ -66,21 +93,41 @@ export default function ProfilePage() {
     Math.min(30, linkedCount * 10) +
     (research.data?.length ? 10 : 0);
 
-  const startEdit = (key: string) => {
-    setEditing(key);
-    setDraft(links[key] ?? '');
+  const draftError = editing ? validateLink(editing, draft) : null;
+  // dirty-state: Save stays disabled until the draft differs from the
+  // stored value AND passes validation
+  const pristine = editing !== null && draft.trim() === (links[editing] ?? '').trim();
+
+  const startEdit = (kind: LinkKind) => {
+    window.clearTimeout(savedTimer.current);
+    setEditing(kind);
+    setDraft(links[kind] ?? '');
+    setRevealError(false);
+  };
+  const cancelEdit = () => {
+    setEditing(null);
+    setDraft('');
+    setRevealError(false);
   };
   const saveLink = () => {
     if (!editing) return;
+    if (draftError) { setRevealError(true); return; }
     const next = { ...links, [editing]: draft.trim() };
     setLinks(next);
     localStorage.setItem('mdrk-academic-links', JSON.stringify(next));
+    const done = editing;
     setEditing(null);
     setDraft('');
+    setRevealError(false);
+    // Save feedback — the page's authored moment: a transient, polite
+    // confirmation on the row that was just saved.
+    setSavedKey(done);
+    window.clearTimeout(savedTimer.current);
+    savedTimer.current = window.setTimeout(() => setSavedKey(null), 2500);
   };
-  const removeLink = (key: string) => {
+  const removeLink = (kind: LinkKind) => {
     const next = { ...links };
-    delete next[key];
+    delete next[kind];
     setLinks(next);
     localStorage.setItem('mdrk-academic-links', JSON.stringify(next));
   };
@@ -107,7 +154,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 4 }}>
               <Icon icon={Mail} size={12} />
-              <span className="font-mono">{user.email}</span>
+              <bdi dir="ltr" className="font-mono">{user.email}</bdi>
               {profile.data ? (
                 emailVerified ? (
                   <Badge color="green" icon={CheckCircle2}>موثَّق</Badge>
@@ -133,161 +180,232 @@ export default function ProfilePage() {
         </div>
       </Card>
 
-      {/* KPIs */}
+      {/* KPIs — honest query states: pending → ellipsis, error → dash */}
       <div className="grid-4">
-        <MetricCard icon={BookOpen} label="مواد مسجَّلة" value={enrollments.data?.length ?? '—'} color="brand" />
-        <MetricCard icon={Trophy} label="إنجازات محققة" value={achievements.data?.length ?? '—'} color="gold" />
-        <MetricCard icon={Award} label="بحوث منشورة" value={research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0} color="purple" />
+        <MetricCard
+          icon={BookOpen}
+          label="مواد مسجَّلة"
+          value={enrollments.isPending ? '…' : enrollments.isError ? '—' : (enrollments.data?.length ?? 0).toLocaleString('ar-LY')}
+          color="brand"
+        />
+        <MetricCard
+          icon={Trophy}
+          label="إنجازات محققة"
+          value={achievements.isPending ? '…' : achievements.isError ? '—' : (achievements.data?.length ?? 0).toLocaleString('ar-LY')}
+          color="gold"
+        />
+        <MetricCard
+          icon={Award}
+          label="بحوث منشورة"
+          value={
+            research.isPending ? '…'
+              : research.isError ? '—'
+                : (research.data?.filter((r) => r.status === 'PUBLISHED').length ?? 0).toLocaleString('ar-LY')
+          }
+          color="purple"
+        />
         <MetricCard icon={Hash} label="روابط محفوظة في متصفحك" value={`${linkedCount} / 3`} color={linkedCount >= 2 ? 'green' : 'amber'} />
       </div>
 
-      {/* Academic links — a local, browser-only shortcut list. There is no
-          server-side binding (no field in PATCH /users/:id), so this is
-          honestly presented as a personal note, not an institutional link. */}
-      <Card
-        title="الحسابات الأكاديمية"
-        icon={ExternalLink}
-        subtitle="روابطك الأكاديمية للرجوع السريع — تُحفظ في متصفّحك فقط ولا تُرسَل إلى الجامعة."
-      >
-        <div className="flex-col gap-3">
-          {LINKS.map((l) => {
-            const value = links[l.key];
-            const isEditing = editing === l.key;
-            return (
-              <div
-                key={l.key}
-                style={{
-                  padding: 'var(--sp-4)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--r-md)',
-                  background: 'var(--surface-1)',
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  <div
-                    style={{
-                      width: 40, height: 40, borderRadius: 'var(--r-md)',
-                      background: value ? 'var(--success-soft)' : 'var(--surface-2)',
-                      color: value ? 'var(--success)' : 'var(--text-muted)',
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Icon icon={value ? CheckCircle2 : ExternalLink} size={18} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="flex items-center gap-2" style={{ marginBottom: 2 }}>
-                      <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{l.title}</span>
-                      {value ? (
-                        <Badge color="green">مربوط</Badge>
-                      ) : (
-                        <Badge color="amber">بانتظار الربط</Badge>
+      <Tabs
+        value={tab}
+        onChange={setTab}
+        items={[
+          { value: 'academic', label: 'المعلومات الأكاديمية' },
+          { value: 'links', label: 'الحسابات البحثية' },
+          { value: 'achievements', label: 'الإنجازات' },
+        ]}
+      />
+
+      {tab === 'academic' && (
+        <Card title="المعلومات الأكاديمية" icon={GraduationCap}>
+          <div className="grid-2">
+            <ProfileField label="الاسم الكامل" value={`${user.firstName} ${user.lastName}`} icon={User} />
+            <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
+            <ProfileField
+              label="الكلية"
+              value={profile.data?.student?.faculty?.name ?? '—'}
+              icon={GraduationCap}
+            />
+            <ProfileField
+              label="القسم"
+              value={profile.data?.student?.department?.name ?? '—'}
+              icon={BookOpen}
+            />
+            <ProfileField
+              label="الرقم الجامعي"
+              value={profile.data?.student?.universityId ?? '—'}
+              icon={Hash}
+              mono
+            />
+            <ProfileField
+              label="السنة الدراسية"
+              value={
+                profile.data?.student?.year
+                  ? ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'][profile.data.student.year - 1] ?? `السنة ${profile.data.student.year}`
+                  : '—'
+              }
+              icon={Award}
+            />
+          </div>
+          {profile.isError && (
+            <div className="fact-error" role="status">
+              <Icon icon={AlertCircle} size={13} />
+              <span>تعذّر تحميل بياناتك الدراسية من الخادم — الحقول أعلاه تُعرض “—” حتّى يعود الاتصال.</span>
+              <button type="button" className="btn ghost sm" onClick={() => profile.refetch()}>
+                إعادة المحاولة
+              </button>
+            </div>
+          )}
+          <div className="text-xxs text-subtle" style={{ marginTop: 'var(--sp-4)', padding: 'var(--sp-2) var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
+            هذه البيانات مصدرها سجلات الجامعة. لتحديثها تواصل مع شؤون الطلاب على{' '}
+            <bdi dir="ltr" className="font-mono" style={{ color: 'var(--accent)' }}>info@zu.edu.ly</bdi>.
+          </div>
+        </Card>
+      )}
+
+      {tab === 'links' && (
+        /* Academic links — a local, browser-only shortcut list. There is no
+           server-side binding (no field in PATCH /users/:id), so this is
+           honestly presented as a personal note, not an institutional link. */
+        <Card
+          title="الحسابات الأكاديمية"
+          icon={ExternalLink}
+          subtitle="روابطك الأكاديمية للرجوع السريع — تُحفظ في متصفّحك فقط ولا تُرسَل إلى الجامعة."
+        >
+          <div className="flex-col gap-3">
+            {LINKS.map((l) => {
+              const value = links[l.key];
+              const isEditing = editing === l.key;
+              return (
+                <div key={l.key} className={`profile-link-row${value ? ' linked' : ''}`}>
+                  <div className="profile-link-head">
+                    <span className="profile-link-icon" aria-hidden>
+                      <Icon icon={value ? CheckCircle2 : ExternalLink} size={18} />
+                    </span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="profile-link-title-row">
+                        <span className="profile-link-title">{l.title}</span>
+                        {value ? (
+                          <Badge color="green">مربوط</Badge>
+                        ) : (
+                          <Badge color="amber">بانتظار الربط</Badge>
+                        )}
+                        {savedKey === l.key && (
+                          <span className="profile-link-saved" role="status">
+                            <Icon icon={CheckCircle2} size={13} />
+                            تم الحفظ في متصفّحك
+                          </span>
+                        )}
+                      </div>
+                      <div className="profile-link-desc">{l.description}</div>
+                      {value && !isEditing && (
+                        <div className="profile-link-value font-mono" title={value}>
+                          <bdi dir="ltr">{value}</bdi>
+                        </div>
                       )}
                     </div>
-                    <div className="text-xs text-muted" style={{ lineHeight: 'var(--lh-base)' }}>
-                      {l.description}
-                    </div>
-                    {value && !isEditing && (
-                      <div className="text-xs font-mono" style={{ marginTop: 6, color: 'var(--accent)', wordBreak: 'break-all' }}>
-                        {value}
+                    {!isEditing && (
+                      <div className="profile-link-actions">
+                        <button type="button" className="btn outline sm" onClick={() => startEdit(l.key)}>
+                          {value ? 'تعديل' : 'ربط'}
+                        </button>
+                        {value && (
+                          <button type="button" className="btn ghost sm" onClick={() => removeLink(l.key)}>
+                            إلغاء الربط
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
-                  {!isEditing && (
-                    <div className="flex gap-2 shrink-0">
-                      <button type="button" className="btn outline sm" onClick={() => startEdit(l.key)}>
-                        {value ? 'تعديل' : 'ربط'}
-                      </button>
-                      {value && (
-                        <button type="button" className="btn ghost sm" onClick={() => removeLink(l.key)}>
+                  {isEditing && (
+                    <form
+                      className="profile-link-edit"
+                      onSubmit={(e) => { e.preventDefault(); saveLink(); }}
+                    >
+                      <div className="flex-col gap-1" style={{ flex: 1, minWidth: 0 }}>
+                        <label htmlFor={editInputId} className="text-xxs text-subtle">
+                          {l.key === 'orcid' ? 'معرّف ORCID' : `رابط ${l.title}`}
+                        </label>
+                        <input
+                          id={editInputId}
+                          type="text"
+                          dir="ltr"
+                          className="input"
+                          placeholder={l.hint}
+                          value={draft}
+                          onChange={(e) => setDraft(e.target.value)}
+                          onBlur={() => setRevealError(true)}
+                          aria-invalid={Boolean(draftError && revealError)}
+                          aria-describedby={draftError && revealError ? `${editInputId}-err` : undefined}
+                          autoFocus
+                        />
+                        {revealError && draftError && (
+                          <span id={`${editInputId}-err`} className="profile-link-error" role="alert">
+                            {draftError}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        <button type="submit" className="btn primary sm" disabled={Boolean(draftError) || pristine}>
+                          حفظ
+                        </button>
+                        <button type="button" className="btn ghost sm" onClick={cancelEdit}>
                           إلغاء
                         </button>
-                      )}
-                    </div>
+                      </div>
+                    </form>
                   )}
                 </div>
-                {isEditing && (
-                  <div style={{ marginTop: 'var(--sp-3)', display: 'flex', gap: 'var(--sp-2)' }}>
-                    <input
-                      type="text"
-                      className="input"
-                      placeholder={l.hint}
-                      value={draft}
-                      onChange={(e) => setDraft(e.target.value)}
-                      autoFocus
-                    />
-                    <button type="button" className="btn primary sm" onClick={saveLink} disabled={!draft.trim()}>
-                      حفظ
-                    </button>
-                    <button type="button" className="btn ghost sm" onClick={() => { setEditing(null); setDraft(''); }}>
-                      إلغاء
-                    </button>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+      {tab === 'achievements' && (
+        <Card title="الإنجازات الأخيرة" icon={Trophy}>
+          {achievements.isPending ? (
+            <div className="flex-col gap-2" aria-busy="true">
+              {[0, 1, 2].map((i) => (
+                <div className="achievement" key={i} aria-hidden>
+                  <Skeleton width={40} height={40} rounded="var(--r-md)" />
+                  <div className="flex-1 flex-col gap-2">
+                    <Skeleton width="45%" height={13} />
+                    <Skeleton width="70%" height={11} />
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* Personal info (read-only — institutional source of truth) */}
-      <Card title="المعلومات الأكاديمية" icon={GraduationCap}>
-        <div className="grid-2">
-          <ProfileField label="الاسم الكامل" value={`${user.firstName} ${user.lastName}`} icon={User} />
-          <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
-          <ProfileField
-            label="الكلية"
-            value={profile.data?.student?.faculty?.name ?? '—'}
-            icon={GraduationCap}
-          />
-          <ProfileField
-            label="القسم"
-            value={profile.data?.student?.department?.name ?? '—'}
-            icon={BookOpen}
-          />
-          <ProfileField
-            label="الرقم الجامعي"
-            value={profile.data?.student?.universityId ?? '—'}
-            icon={Hash}
-            mono
-          />
-          <ProfileField
-            label="السنة الدراسية"
-            value={
-              profile.data?.student?.year
-                ? ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة'][profile.data.student.year - 1] ?? `السنة ${profile.data.student.year}`
-                : '—'
-            }
-            icon={Award}
-          />
-        </div>
-        <div className="text-xxs text-subtle" style={{ marginTop: 'var(--sp-4)', padding: 'var(--sp-2) var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
-          هذه البيانات مصدرها سجلات الجامعة. لتحديثها تواصل مع شؤون الطلاب على{' '}
-          <span className="font-mono" style={{ color: 'var(--accent)' }}>info@zu.edu.ly</span>.
-        </div>
-      </Card>
-
-      {/* Recent achievements */}
-      <Card title="الإنجازات الأخيرة" icon={Trophy}>
-        {!achievements.data?.length ? (
-          <div className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0' }}>
-            لا إنجازات بعد — أكمل بعض المحاضرات لكسب أوّل شارة.
-          </div>
-        ) : (
-          <div className="flex-col gap-2">
-            {achievements.data.slice(0, 4).map((a) => (
-              <div className="achievement" key={a.achievement.id}>
-                <span className="achievement-icon"><Icon icon={Trophy} size={16} /></span>
-                <div className="flex-1">
-                  <div className="achievement-name">{a.achievement.name}</div>
-                  <div className="achievement-desc">{a.achievement.description}</div>
+                  <Skeleton width={48} height={20} rounded="var(--r-full)" />
                 </div>
-                <Badge color="gold">+{a.achievement.xp}</Badge>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
+              ))}
+            </div>
+          ) : achievements.isError ? (
+            <ErrorState
+              message="تعذَّر تحميل الإنجازات"
+              error={achievements.error}
+              onRetry={() => achievements.refetch()}
+            />
+          ) : !achievements.data?.length ? (
+            <EmptyState
+              icon={Trophy}
+              title="لا إنجازات بعد"
+              description="أكمل بعض المحاضرات والمهام لكسب أوّل شارة."
+            />
+          ) : (
+            <div className="flex-col gap-2">
+              {achievements.data.slice(0, 4).map((a) => (
+                <div className="achievement" key={a.achievement.id}>
+                  <span className="achievement-icon" aria-hidden><Icon icon={Trophy} size={16} /></span>
+                  <div className="flex-1">
+                    <div className="achievement-name">{a.achievement.name}</div>
+                    <div className="achievement-desc">{a.achievement.description}</div>
+                  </div>
+                  <Badge color="gold"><bdi>+{a.achievement.xp}</bdi></Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      )}
     </div>
   );
 }
@@ -296,24 +414,14 @@ function ProfileField({
   label, value, icon, mono,
 }: { label: string; value: string; icon: LucideIcon; mono?: boolean }) {
   return (
-    <div style={{
-      padding: 'var(--sp-3)',
-      background: 'var(--surface-2)',
-      borderRadius: 'var(--r-md)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 'var(--sp-3)',
-    }}>
-      <Icon icon={icon} size={16} className="text-subtle" />
+    <div className="fact-row fact-row--field">
+      <Icon icon={icon} size={16} className="text-subtle" aria-hidden />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="text-xxs text-subtle">{label}</div>
-        <div className={mono ? 'font-mono text-sm' : 'text-sm'} style={{ color: 'var(--text)', marginTop: 2 }}>
-          {value}
+        <div className="text-sm" style={{ color: 'var(--text)', marginTop: 2 }}>
+          {mono ? <bdi dir="ltr" className="font-mono">{value}</bdi> : value}
         </div>
       </div>
-      <span style={{ color: 'var(--text-subtle)', display: 'inline-flex' }}>
-        <Icon icon={AlertCircle} size={12} />
-      </span>
     </div>
   );
 }

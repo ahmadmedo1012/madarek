@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
+import type { CSSProperties, KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Search, Library as LibraryIcon, BookOpen, Bookmark, Clock,
+  Search, Library as LibraryIcon, BookOpen, Clock,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
-import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
+import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
 
@@ -67,6 +68,46 @@ export function sanitizeSnippetHtml(html: string): string {
 
 type Tab = 'books' | 'research';
 
+const LIB_TABS: Array<{ key: Tab; label: string; icon: LucideIcon }> = [
+  { key: 'books', label: 'الكتب', icon: BookOpen },
+  { key: 'research', label: 'بحوث الطلاب', icon: FileText },
+];
+
+/* Shape-matched loading skeletons (brief §4: never a bare spinner where
+   a skeleton fits the settled shape). */
+function BookGridSkeleton({ tiles = 8 }: { tiles?: number }) {
+  return (
+    <div className="grid-auto-200" aria-busy="true" aria-live="polite">
+      {Array.from({ length: tiles }).map((_, i) => (
+        <div key={i} className="lib-skel-tile">
+          <Skeleton width="100%" height={100} />
+          <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <Skeleton width="75%" height={15} />
+            <Skeleton width="50%" height={11} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
+  return (
+    <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="lib-skel-row">
+          <Skeleton width={40} height={40} rounded="50%" />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <Skeleton width="45%" height={15} />
+            <Skeleton width="65%" height={11} />
+            <Skeleton width="90%" height={11} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function LibraryPage() {
   const [tab, setTab] = useState<Tab>('books');
   const [cat, setCat] = useState('all');
@@ -94,6 +135,7 @@ export default function LibraryPage() {
     return days >= 0 && days <= 3;
   }).length;
   const totalBooks = books.data?.length ?? null;
+  const booksFiltered = debouncedQ.length > 0 || cat !== 'all';
 
   // When the research tab is active and the user has typed >=2 chars, show
   // server-side search results (with snippets). Otherwise show the full archive.
@@ -101,6 +143,24 @@ export default function LibraryPage() {
   const visibleResearch = researchInUse
     ? search.data!.data
     : research.data ?? [];
+
+  // Manual tabs ARIA pattern (icons are not supported by the string-only
+  // Tabs primitive): roving tabindex + RTL arrow keys + aria-controls,
+  // same grammar as the achievements tabs (§selfdev).
+  const onTabsKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const idx = LIB_TABS.findIndex((t) => t.key === tab);
+    let next: number | null = null;
+    if (e.key === 'ArrowLeft') next = (idx + 1) % LIB_TABS.length;
+    else if (e.key === 'ArrowRight') next = (idx - 1 + LIB_TABS.length) % LIB_TABS.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = LIB_TABS.length - 1;
+    if (next === null) return;
+    const entry = LIB_TABS[next];
+    if (!entry) return;
+    e.preventDefault();
+    setTab(entry.key);
+    document.getElementById(`lib-tab-${entry.key}`)?.focus();
+  };
 
   return (
     <div className="page">
@@ -114,51 +174,49 @@ export default function LibraryPage() {
       </header>
 
       {/* Tab switch */}
-      <div className="tabs" role="tablist" aria-label="Library section">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'books'}
-          className={tab === 'books' ? 'tab on' : 'tab'}
-          onClick={() => setTab('books')}
-        >
-          <Icon icon={BookOpen} size={14} />
-          الكتب
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'research'}
-          className={tab === 'research' ? 'tab on' : 'tab'}
-          onClick={() => setTab('research')}
-        >
-          <Icon icon={FileText} size={14} />
-          بحوث الطلاب
-          <span className="tab-count">{research.data?.length ?? '—'}</span>
-        </button>
+      <div className="tabs lib-tabs" role="tablist" aria-label="أقسام المكتبة" onKeyDown={onTabsKeyDown}>
+        {LIB_TABS.map((t) => (
+          <button
+            key={t.key}
+            id={`lib-tab-${t.key}`}
+            type="button"
+            role="tab"
+            aria-selected={tab === t.key}
+            aria-controls={`lib-panel-${t.key}`}
+            tabIndex={tab === t.key ? 0 : -1}
+            className={tab === t.key ? 'tab on' : 'tab'}
+            onClick={() => setTab(t.key)}
+          >
+            <Icon icon={t.icon} size={14} />
+            {t.label}
+            {t.key === 'research' && (
+              <span className="tab-count">{research.data?.length ?? '—'}</span>
+            )}
+          </button>
+        ))}
       </div>
 
       {!isResearchTab ? (
-        <>
+        <div role="tabpanel" id="lib-panel-books" aria-labelledby="lib-tab-books">
           <div className="grid-3">
             <MetricCard
               icon={LibraryIcon}
               label="كتب الفئة الحاليّة"
-              value={totalBooks !== null ? totalBooks.toLocaleString('ar-LY') : '—'}
+              value={books.isPending ? <Skeleton width={48} height={24} /> : (totalBooks !== null ? totalBooks.toLocaleString('ar-LY') : '—')}
               change={cat === 'all' ? 'الكلّ' : categoryLabel(cat)}
               color="brand"
             />
             <MetricCard
               icon={BookOpen}
               label="استعارات نشطة"
-              value={activeLoans.length.toLocaleString('ar-LY')}
+              value={loans.isPending ? <Skeleton width={48} height={24} /> : activeLoans.length.toLocaleString('ar-LY')}
               change={loans.data ? `من أصل ${loans.data.length.toLocaleString('ar-LY')} استعارة` : '—'}
               color={activeLoans.length === 0 ? 'brand' : 'green'}
             />
             <MetricCard
               icon={Clock}
               label="تنتهي قريباً"
-              value={dueSoon.toLocaleString('ar-LY')}
+              value={loans.isPending ? <Skeleton width={48} height={24} /> : dueSoon.toLocaleString('ar-LY')}
               change={dueSoon > 0 ? 'خلال 3 أيام' : 'لا توجد إنذارات'}
               color={dueSoon > 0 ? 'amber' : 'green'}
             />
@@ -175,7 +233,7 @@ export default function LibraryPage() {
                   onChange={(e) => setQ(e.target.value)}
                 />
               </div>
-              <div className="filter-bar">
+              <div className="filter-bar lib-filters">
                 {CATEGORIES.map((c) => (
                   <Pill key={c.id} on={cat === c.id} icon={c.icon} onClick={() => setCat(c.id)}>
                     {c.label}
@@ -186,11 +244,18 @@ export default function LibraryPage() {
           </Card>
 
           {books.isPending ? (
-            <Card><LoadingState /></Card>
+            <BookGridSkeleton />
           ) : books.isError ? (
             <Card><ErrorState error={books.error} onRetry={() => books.refetch()} /></Card>
           ) : !books.data?.length ? (
-            <Card><EmptyState icon={LibraryIcon} title="لا توجد كتب تطابق البحث" description="جرّب كلمات بحث مختلفة أو إزالة التصنيفات." /></Card>
+            <Card>
+              <EmptyState
+                icon={LibraryIcon}
+                illustration={booksFiltered ? 'empty-search' : undefined}
+                title={booksFiltered ? 'لا توجد كتب تطابق البحث' : 'لا توجد كتب بعد'}
+                description={booksFiltered ? 'جرّب كلمات بحث مختلفة أو إزالة التصنيفات.' : 'ستظهر هنا كتب المكتبة فور توفرها.'}
+              />
+            </Card>
           ) : (
             <div className="grid-auto-200">
               {books.data.map((b) => {
@@ -198,8 +263,11 @@ export default function LibraryPage() {
                 const tint = b.themeColor ?? '#3D6BD6';
                 return (
                   <div className="thumb-card" key={b.id}>
-                    <div className="thumb-card-image" style={{ background: `${tint}10`, height: 100 }}>
-                      <span style={{ color: tint }}>
+                    <div
+                      className="thumb-card-image"
+                      style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 100 }}
+                    >
+                      <span style={{ color: `color-mix(in srgb, ${tint} 70%, var(--text))` }}>
                         <Icon icon={Cmp} size={32} strokeWidth={1.6} />
                       </span>
                     </div>
@@ -209,7 +277,7 @@ export default function LibraryPage() {
                       <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
                         <span className="text-xs text-subtle flex items-center gap-1 font-mono">
                           <Icon icon={Star} size={11} strokeWidth={2.2} />
-                          {b.rating ?? '—'}
+                          <bdi>{b.rating ?? '—'}</bdi>
                         </span>
                         <Badge color={b.availableCopies > 0 ? 'green' : undefined}>
                           {b.availableCopies > 0 ? 'متاح' : 'مستعار'}
@@ -222,23 +290,42 @@ export default function LibraryPage() {
               })}
             </div>
           )}
-        </>
+        </div>
       ) : (
-        <>
+        <div role="tabpanel" id="lib-panel-research" aria-labelledby="lib-tab-research">
           <div className="grid-4">
-            <MetricCard icon={FileText} label="إجمالي البحوث" value={research.data?.length ?? '—'} color="brand" />
-            <MetricCard icon={GraduationCap} label="مؤلفون طلابيون" value={new Set(research.data?.map((p) => p.student.id)).size || '—'} color="purple" />
+            <MetricCard
+              icon={FileText}
+              label="إجمالي البحوث"
+              value={research.isPending ? <Skeleton width={48} height={24} /> : (research.data?.length ?? '—')}
+              color="brand"
+            />
+            <MetricCard
+              icon={GraduationCap}
+              label="مؤلفون طلابيون"
+              value={research.isPending ? <Skeleton width={48} height={24} /> : (new Set(research.data?.map((p) => p.student.id)).size || '—')}
+              color="purple"
+            />
             <MetricCard
               icon={Award}
               label="متوسط التقييم"
               value={
+                research.isPending ? <Skeleton width={48} height={24} /> :
                 research.data && research.data.length
-                  ? `${Math.round((research.data.reduce((s, p) => s + (p.grade ?? 0), 0) / research.data.length) * 10) / 10}/20`
+                  ? <bdi>{`${Math.round((research.data.reduce((s, p) => s + (p.grade ?? 0), 0) / research.data.length) * 10) / 10}/20`}</bdi>
                   : '—'
               }
               color="gold"
             />
-            <MetricCard icon={BookOpen} label="منشورة هذا الفصل" value={research.data?.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length ?? '—'} color="green" />
+            <MetricCard
+              icon={BookOpen}
+              label="منشورة هذا الفصل"
+              value={
+                research.isPending ? <Skeleton width={48} height={24} /> :
+                (research.data?.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length ?? '—')
+              }
+              color="green"
+            />
           </div>
 
           <Card compact>
@@ -252,16 +339,16 @@ export default function LibraryPage() {
                   onChange={(e) => setQ(e.target.value)}
                 />
               </div>
-              <div className="text-xs text-subtle" style={{ marginInlineStart: 'auto' }}>
+              <div className="lib-count" style={{ marginInlineStart: 'auto' }}>
                 {researchInUse
-                  ? `${visibleResearch.length} نتيجة لـ "${debouncedQ}"`
-                  : `${visibleResearch.length} بحث منشور`}
+                  ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ "{debouncedQ}"</>
+                  : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
               </div>
             </div>
           </Card>
 
           {(researchInUse ? search.isPending : research.isPending) ? (
-            <Card><LoadingState /></Card>
+            <ResearchListSkeleton />
           ) : (researchInUse ? search.isError : research.isError) ? (
             <Card><ErrorState
               error={researchInUse ? search.error : research.error}
@@ -271,42 +358,37 @@ export default function LibraryPage() {
             <Card>
               <EmptyState
                 icon={FileText}
+                illustration={q ? 'empty-search' : undefined}
                 title={q ? 'لا توجد نتائج للبحث' : 'لا توجد بحوث منشورة بعد'}
                 description={q ? `لم نجد بحثاً يطابق "${q}" — جرّب كلمات أخرى.` : 'سيظهر هنا أرشيف بحوث الطلاب فور إجازتها من الأساتذة.'}
               />
             </Card>
           ) : (
             <div className="flex-col gap-3">
-              {visibleResearch.map((p) => {
+              {visibleResearch.map((p, i) => {
                 const hit = researchInUse ? (p as ResearchSearchHit) : null;
                 return (
                 <article
                   key={p.id}
-                  style={{
-                    padding: 'var(--sp-4)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--r-md)',
-                    background: 'var(--surface-1)',
-                    transition: 'var(--t-base)',
-                  }}
                   className="research-card"
+                  style={{ '--rs-i': i } as CSSProperties}
                 >
-                  <div className="flex items-start gap-3" style={{ marginBottom: 'var(--sp-3)' }}>
+                  <div className="research-card-head">
                     <UserAvatar
                       initials={p.student.avatarInitials ?? `${p.student.firstName[0]}${p.student.lastName[0]}`}
                       color={p.student.avatarColor ?? undefined}
                       size={40}
                     />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <h3 className="text-md font-semibold" style={{ color: 'var(--text)', fontSize: 'var(--fs-md)', lineHeight: 1.3 }}>
+                      <h3 className="research-card-title">
                         {p.title}
                       </h3>
-                      <div className="flex items-center gap-2 text-xs text-subtle" style={{ marginTop: 'var(--sp-1)', flexWrap: 'wrap' }}>
+                      <div className="research-card-meta">
                         <span>{p.student.firstName} {p.student.lastName}</span>
                         {p.offering?.course && (
                           <>
                             <span>•</span>
-                            <span className="font-mono">{p.offering.course.code}</span>
+                            <span className="font-mono"><bdi>{p.offering.course.code}</bdi></span>
                             <span>·</span>
                             <span>{p.offering.course.name}</span>
                           </>
@@ -314,7 +396,7 @@ export default function LibraryPage() {
                         {p.publishedAt && (
                           <>
                             <span>•</span>
-                            <span className="font-mono">{new Date(p.publishedAt).toLocaleDateString('ar-LY', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                            <span className="font-mono"><bdi>{new Date(p.publishedAt).toLocaleDateString('ar-LY', { year: 'numeric', month: 'short', day: 'numeric' })}</bdi></span>
                           </>
                         )}
                       </div>
@@ -326,7 +408,7 @@ export default function LibraryPage() {
                     )}
                     {!hit && p.grade != null && (
                       <Badge color={p.grade >= 17 ? 'green' : p.grade >= 14 ? 'gold' : 'amber'} icon={Award}>
-                        {p.grade}/20
+                        <bdi>{p.grade}/20</bdi>
                       </Badge>
                     )}
                   </div>
@@ -337,7 +419,7 @@ export default function LibraryPage() {
                   {hit && hit.snippet ? (
                     <p
                       className="text-sm text-muted research-snippet"
-                      style={{ lineHeight: 'var(--lh-base)', marginBottom: 'var(--sp-2)' }}
+                      style={{ lineHeight: 'var(--lh-base)' }}
                       dangerouslySetInnerHTML={{ __html: sanitizeSnippetHtml(hit.snippet) }}
                     />
                   ) : p.abstract ? (
@@ -345,12 +427,12 @@ export default function LibraryPage() {
                       {p.abstract}
                     </p>
                   ) : null}
-                  <div className="flex items-center gap-2 text-xxs text-subtle" style={{ flexWrap: 'wrap', marginBottom: 'var(--sp-3)' }}>
+                  <div className="research-card-stats">
                     {p.plagiarismPct != null && (
-                      <span className="font-mono">انتحال: {p.plagiarismPct}%</span>
+                      <span className="font-mono">انتحال: <bdi>{p.plagiarismPct}%</bdi></span>
                     )}
                     {p.aiContentPct != null && (
-                      <span className="font-mono">ذكاء اصطناعي: {p.aiContentPct}%</span>
+                      <span className="font-mono">ذكاء اصطناعي: <bdi>{p.aiContentPct}%</bdi></span>
                     )}
                     <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
@@ -371,7 +453,7 @@ export default function LibraryPage() {
               })}
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

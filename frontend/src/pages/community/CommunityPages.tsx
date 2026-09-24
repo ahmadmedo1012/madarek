@@ -4,14 +4,15 @@
  *   /community            tabbed: Announcements · Competitions · Events
  *   The existing /student/social (posts) stays as it is.
  */
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import {
   Megaphone, Trophy, CalendarDays, Pin, MapPin, Clock,
-  CheckCircle2, Users, Sparkles, Plus, X, Send,
+  CheckCircle2, Users, Sparkles, Plus, X, Send, AlertTriangle,
+  type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
@@ -35,8 +36,26 @@ const ROLE_LABEL: Record<string, string> = {
   STUDENT: 'طالب', TEACHER: 'أستاذ', ADMIN: 'الإدارة', QUALITY: 'مكتب الجودة',
 };
 
+/* Local Arabic counted-noun helper (same contract as the one in
+   MorePages.tsx — a shared util extraction is queued for a wave that
+   owns utils/): 1 → singular, 2 → dual, 3–10 → plural, 11+ → singular. */
+function arUnit(n: number, one: string, two: string, few: string): string {
+  if (n === 1) return one;
+  if (n === 2) return two;
+  if (n <= 10) return `${n} ${few}`;
+  return `${n} ${one}`;
+}
+
+type CommunityTab = 'announcements' | 'competitions' | 'events';
+
+const COMMUNITY_TABS: Array<{ key: CommunityTab; label: string; icon: LucideIcon }> = [
+  { key: 'announcements', label: 'الإعلانات', icon: Megaphone },
+  { key: 'competitions', label: 'المسابقات', icon: Trophy },
+  { key: 'events', label: 'الفعاليات', icon: CalendarDays },
+];
+
 export default function CommunityPage() {
-  const [tab, setTab] = useState<'announcements' | 'competitions' | 'events'>('announcements');
+  const [tab, setTab] = useState<CommunityTab>('announcements');
   const [creatingAnnouncement, setCreatingAnnouncement] = useState(false);
   const [creatingEvent, setCreatingEvent] = useState(false);
   const ann = useAnnouncements();
@@ -51,6 +70,30 @@ export default function CommunityPage() {
 
   const openComps = comps.data?.filter((c) => c.status === 'OPEN').length ?? 0;
   const upcomingEvents = events.data?.length ?? 0;
+
+  /* KPI values — honest query states (pending → ellipsis, error → dash,
+     never a fabricated 0) + Arabic-Indic numerals like the rest of the
+     KPI surfaces (audit 0-f P2-29). */
+  const annCount = ann.isPending ? '…' : ann.isError ? '—' : (ann.data?.length ?? 0).toLocaleString('ar-LY');
+  const compsCount = comps.isPending ? '…' : comps.isError ? '—' : openComps.toLocaleString('ar-LY');
+  const eventsCount = events.isPending ? '…' : events.isError ? '—' : upcomingEvents.toLocaleString('ar-LY');
+
+  /* RTL tablist: ArrowLeft advances (toward inline-end), ArrowRight goes
+     back — mirrors the shared Tabs primitive's keyboard contract. */
+  const onTabsKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    const idx = COMMUNITY_TABS.findIndex((t) => t.key === tab);
+    let next: number | null = null;
+    if (e.key === 'ArrowLeft') next = (idx + 1) % COMMUNITY_TABS.length;
+    else if (e.key === 'ArrowRight') next = (idx - 1 + COMMUNITY_TABS.length) % COMMUNITY_TABS.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = COMMUNITY_TABS.length - 1;
+    if (next === null) return;
+    const entry = COMMUNITY_TABS[next];
+    if (!entry) return;
+    e.preventDefault();
+    setTab(entry.key);
+    document.getElementById(`community-tab-${entry.key}`)?.focus();
+  };
 
   return (
     <div className="page">
@@ -82,45 +125,35 @@ export default function CommunityPage() {
       </header>
 
       <div className="grid-3">
-        <MetricCard icon={Megaphone} label="إعلانات نشطة" value={(ann.data?.length ?? 0).toString()} color="brand" />
-        <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={openComps.toString()} color="gold" />
-        <MetricCard icon={CalendarDays} label="فعاليات قادمة" value={upcomingEvents.toString()} color="green" />
+        <MetricCard icon={Megaphone} label="إعلانات نشطة" value={annCount} color="brand" />
+        <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={compsCount} color="gold" />
+        <MetricCard icon={CalendarDays} label="فعاليات قادمة" value={eventsCount} color="green" />
       </div>
 
       {/* Tabs — manual role/aria annotation (icons are content, so the raw
-          markup is kept; the shared Tabs primitive only accepts text labels). */}
-      <div className="tabs" role="tablist" aria-label="أقسام المجتمع الجامعي">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'announcements'}
-          className={`tab${tab === 'announcements' ? ' on' : ''}`}
-          onClick={() => setTab('announcements')}
-        >
-          <Icon icon={Megaphone} size={13} /> الإعلانات
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'competitions'}
-          className={`tab${tab === 'competitions' ? ' on' : ''}`}
-          onClick={() => setTab('competitions')}
-        >
-          <Icon icon={Trophy} size={13} /> المسابقات
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab === 'events'}
-          className={`tab${tab === 'events' ? ' on' : ''}`}
-          onClick={() => setTab('events')}
-        >
-          <Icon icon={CalendarDays} size={13} /> الفعاليات
-        </button>
+          markup is kept; the shared Tabs primitive only accepts text labels).
+          Full ARIA tabs pattern: roving tabindex + RTL arrow keys +
+          id/aria-controls ↔ tabpanel wiring (audit 0-f P2-18). */}
+      <div className="tabs" role="tablist" aria-label="أقسام المجتمع الجامعي" onKeyDown={onTabsKeyDown}>
+        {COMMUNITY_TABS.map((t) => (
+          <button
+            key={t.key}
+            id={`community-tab-${t.key}`}
+            type="button"
+            role="tab"
+            aria-selected={tab === t.key}
+            aria-controls={`community-panel-${t.key}`}
+            tabIndex={tab === t.key ? 0 : -1}
+            className={`tab${tab === t.key ? ' on' : ''}`}
+            onClick={() => setTab(t.key)}
+          >
+            <Icon icon={t.icon} size={13} /> {t.label}
+          </button>
+        ))}
       </div>
 
       {tab === 'announcements' && (
-        <div className="flex-col gap-3">
+        <div className="flex-col gap-3" role="tabpanel" id="community-panel-announcements" aria-labelledby="community-tab-announcements">
           {ann.isPending ? <LoadingState label="جارٍ تحميل الإعلانات…" /> :
            ann.isError ? <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} /> :
            (ann.data?.length ?? 0) === 0 ? (
@@ -129,7 +162,7 @@ export default function CommunityPage() {
         </div>
       )}
       {tab === 'competitions' && (
-        <div className="track-grid">
+        <div className="track-grid" role="tabpanel" id="community-panel-competitions" aria-labelledby="community-tab-competitions">
           {comps.isPending ? <LoadingState label="جارٍ تحميل المسابقات…" /> :
            comps.isError ? <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} /> :
            (comps.data?.length ?? 0) === 0 ? (
@@ -138,7 +171,7 @@ export default function CommunityPage() {
         </div>
       )}
       {tab === 'events' && (
-        <div className="grid-2">
+        <div className="grid-2" role="tabpanel" id="community-panel-events" aria-labelledby="community-tab-events">
           {events.isPending ? <LoadingState label="جارٍ تحميل الفعاليات…" /> :
            events.isError ? <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} /> :
            (events.data?.length ?? 0) === 0 ? (
@@ -189,6 +222,11 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
   const accent = c.themeColor ?? 'var(--accent)';
   const days = Math.max(0, Math.round((new Date(c.deadline).getTime() - Date.now()) / 86400000));
   const isOpen = c.status === 'OPEN' && days > 0;
+  const daysLabel =
+    days === 1 ? 'يوم واحد متبقٍ'
+      : days === 2 ? 'يومان متبقيان'
+        : days <= 10 ? `${days} أيام متبقية`
+          : `${days} يوماً متبقياً`;
   return (
     <div className="track-card" style={{ ['--track-accent' as never]: accent, cursor: 'default' }}>
       <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
@@ -196,16 +234,19 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
       </div>
       <div className="track-card-body">
         <div className="track-card-cat">{c.category}</div>
-        <div className="track-card-title">{c.title}</div>
-        <p className="track-card-summary">{c.description}</p>
+        <div className="track-card-title" title={c.title}>{c.title}</div>
+        {/* summary is line-clamped by training.css — the full text rides
+            along in the title attribute (craft floor: no truncation
+            without a tooltip) */}
+        <p className="track-card-summary" title={c.description}>{c.description}</p>
         <div className="track-card-meta">
           {isOpen ? (
-            <Badge color="green"><Icon icon={Clock} size={11} /> {days} يوم متبقٍ</Badge>
+            <Badge color="green"><Icon icon={Clock} size={11} /> {daysLabel}</Badge>
           ) : (
             <Badge color="amber">{c.status === 'CLOSED' ? 'مغلقة' : 'تم التحكيم'}</Badge>
           )}
           {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {c.prize}</span>}
-          <span><Icon icon={Users} size={12} /> {c._count.entries} مشترك</span>
+          <span><Icon icon={Users} size={12} /> {c._count.entries === 1 ? 'مشترك واحد' : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}</span>
         </div>
       </div>
     </div>
@@ -220,13 +261,38 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
   const fmtDateVal = (d: Date) => formatDate(d, { weekday: 'long', day: 'numeric', month: 'short' });
   const fmtTimeVal = (d: Date) => formatTime(d, { hour: '2-digit', minute: '2-digit' });
 
+  /* Session-local RSVP reflection — the event row carries no "my RSVP"
+     field from the API, so the pressed state is tracked locally after a
+     successful mutate (audit 0-f P2-17: pending / pressed / failure
+     feedback instead of double-submitting blind). */
+  const [mine, setMine] = useState<'GOING' | 'MAYBE' | null>(null);
+  const [failed, setFailed] = useState(false);
+  const failTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(failTimer.current), []);
+
+  const rsvpPending = rsvp.isPending && rsvp.variables?.eventId === e.id;
+  const rsvpTo = (status: 'GOING' | 'MAYBE') => {
+    if (rsvpPending) return;
+    rsvp.mutate(
+      { eventId: e.id, status },
+      {
+        onSuccess: () => setMine(status),
+        onError: () => {
+          setFailed(true);
+          window.clearTimeout(failTimer.current);
+          failTimer.current = window.setTimeout(() => setFailed(false), 5000);
+        },
+      },
+    );
+  };
+
   return (
     <Card>
       <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
         <div style={{
           flexShrink: 0, width: 64, height: 64, borderRadius: 'var(--r-md)',
           background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent,
-          display: 'grid', placeItems: 'center', fontSize: 30,
+          display: 'grid', placeItems: 'center',
         }}>
           <EmojiIcon emoji={e.iconEmoji ?? '📅'} size={22} />
         </div>
@@ -237,15 +303,32 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
             <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>
             <span><Icon icon={Clock} size={11} /> {fmtTimeVal(start)} – {fmtTimeVal(end)}</span>
             <span><Icon icon={MapPin} size={11} /> {e.location}</span>
-            <span><Icon icon={Users} size={11} /> {e._count.rsvps} / {e.capacity}</span>
+            <span><Icon icon={Users} size={11} /> <bdi>{e._count.rsvps} / {e.capacity}</bdi></span>
           </div>
-          <div style={{ display: 'flex', gap: 6, marginTop: 'var(--sp-3)' }}>
-            <button type="button" className="btn primary sm" onClick={() => rsvp.mutate({ eventId: e.id, status: 'GOING' })}>
+          <div className="event-actions">
+            <button
+              type="button"
+              className={`btn ${mine === 'GOING' ? 'primary' : 'outline'} sm`}
+              aria-pressed={mine === 'GOING'}
+              disabled={rsvpPending}
+              onClick={() => rsvpTo('GOING')}
+            >
               <Icon icon={CheckCircle2} size={12} /> سأحضر
             </button>
-            <button type="button" className="btn ghost sm" onClick={() => rsvp.mutate({ eventId: e.id, status: 'MAYBE' })}>
+            <button
+              type="button"
+              className={`btn ${mine === 'MAYBE' ? 'primary' : 'outline'} sm`}
+              aria-pressed={mine === 'MAYBE'}
+              disabled={rsvpPending}
+              onClick={() => rsvpTo('MAYBE')}
+            >
               ربما
             </button>
+            {failed && (
+              <span className="event-rsvp-fail" role="alert">
+                <Icon icon={AlertTriangle} size={12} aria-hidden /> تعذّر تسجيل ردّك
+              </span>
+            )}
           </div>
         </div>
       </div>

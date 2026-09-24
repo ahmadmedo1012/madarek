@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS, ArcElement, Tooltip, Legend,
@@ -9,10 +10,12 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { ChartFrame } from '../../components/charts';
+import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useStudentDashboard } from '../../hooks/useResources';
-import { useChartThemeKey, chartColors } from '../../lib/chartTheme';
+import { useChartThemeKey, chartColors, radialOptions } from '../../lib/chartTheme';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -53,7 +56,9 @@ function formatDue(iso: string): string {
   const time = d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
   if (days <= 0) return `اليوم · ${time}`;
   if (days === 1) return `غداً · ${time}`;
-  if (days < 7) return `بعد ${days} أيّام · ${time}`;
+  // Arabic plural rules inside the ≤6-day window: dual, then plural.
+  if (days === 2) return `بعد يومين · ${time}`;
+  if (days < 7) return `بعد ${days} أيام · ${time}`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
@@ -63,6 +68,77 @@ function gpaTone(gpa: number): { label: string; color: 'green' | 'amber' | 'red'
   if (gpa >= 2.0) return { label: 'جيد', color: 'amber' };
   return { label: 'بحاجة لتحسين', color: 'red' };
 }
+
+/**
+ * Read a --motion-duration-* token as milliseconds. Returns 0 when the
+ * token is missing/unparsable so callers can fall back explicitly.
+ */
+function motionTokenMs(token: string): number {
+  if (typeof document === 'undefined') return 0;
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  if (!raw.endsWith('ms')) return 0;
+  const ms = parseFloat(raw);
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+/**
+ * CountIn — the in-app data edition of the count-up reveal (the shared
+ * components/CountUp is marketing-only by contract). Animates the numeric
+ * reveal once on mount with an exponential ease-out at
+ * --motion-duration-stat, then settles on the real value; any later
+ * value change renders instantly. Reduced motion → the settled value.
+ */
+function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
+  const reducedMotion = useReducedMotion();
+  const [display, setDisplay] = useState(value);
+  const settled = useRef(false);
+
+  useEffect(() => {
+    if (settled.current || reducedMotion || !Number.isFinite(value)) {
+      setDisplay(value);
+      if (!reducedMotion) settled.current = true;
+      return;
+    }
+    // Mirrors --motion-duration-stat (700ms); 0 only when the token is
+    // unreadable, in which case the division below settles on frame one.
+    const duration = motionTokenMs('--motion-duration-stat') || 700;
+    let raf = 0;
+    let start = 0;
+    const tick = (t: number) => {
+      if (!start) start = t;
+      const p = Math.min((t - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 4); // exponential ease-out
+      setDisplay(value * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else settled.current = true;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, reducedMotion]);
+
+  // Fractional values (e.g. 87.5%) keep one decimal, integers none —
+  // the settled render matches the raw API value exactly.
+  const decimals = Number.isInteger(value) ? 0 : 1;
+  return (
+    <>
+      {display.toLocaleString('ar-LY', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })}
+      {suffix}
+    </>
+  );
+}
+
+type AgendaTone = 'accent' | 'gold' | 'red';
+type AgendaItem = {
+  kind: 'class' | 'assign' | 'live';
+  id: string;
+  title: ReactNode;
+  meta: ReactNode;
+  icon: LucideIcon;
+  tone: AgendaTone;
+};
 
 export default function StudentDashboardPage() {
   const user = useAuthStore((s) => s.user);
@@ -129,30 +205,29 @@ export default function StudentDashboardPage() {
 
   const tone = gpaTone(d.profile.gpa);
   const courseProgressPct = d.progress.avgEnrollmentProgressPct;
+  const remainingPct = Math.max(0, 100 - courseProgressPct);
   const cc = chartColors();
 
   // Compose the agenda from three real sources, sorted by recency.
-  type AgendaItem =
-    | { kind: 'class'; id: string; title: string; meta: string; icon: LucideIcon; tone: 'accent' | 'gold' | 'red' }
-    | { kind: 'assign'; id: string; title: string; meta: string; icon: LucideIcon; tone: 'gold' }
-    | { kind: 'live'; id: string; title: string; meta: string; icon: LucideIcon; tone: 'red' };
+  // Latin runs (course codes, time ranges) are bdi-wrapped so the bidi
+  // algorithm never scrambles them inside the Arabic sentence.
   const agenda: AgendaItem[] = [
     ...d.agenda.classes.slice(0, 4).map<AgendaItem>((c) => ({
       kind: 'class', id: `c-${c.id}`,
       title: `${c.courseName}${c.room ? ` — ${c.room}` : ''}`,
-      meta: `${DAY_LABEL[c.when]} · ${c.startTime}–${c.endTime}`,
+      meta: <>{DAY_LABEL[c.when]} · <bdi>{c.startTime}–{c.endTime}</bdi></>,
       icon: Presentation, tone: c.when === 'today' ? 'accent' : 'gold',
     })),
     ...d.agenda.assignments.slice(0, 3).map<AgendaItem>((a) => ({
       kind: 'assign', id: `a-${a.id}`,
-      title: `${ASSIGNMENT_LABEL[a.type]}: ${a.title} (${a.courseCode})`,
-      meta: `تسليم ${formatDue(a.dueAt)}`,
+      title: <>{ASSIGNMENT_LABEL[a.type]}: {a.title} (<bdi>{a.courseCode}</bdi>)</>,
+      meta: <>تسليم {formatDue(a.dueAt)}</>,
       icon: ASSIGNMENT_ICON[a.type], tone: 'gold',
     })),
     ...d.agenda.live.slice(0, 2).map<AgendaItem>((l) => ({
       kind: 'live', id: `l-${l.id}`,
-      title: `بثّ مباشر: ${l.title}`,
-      meta: `${l.offering.course.code} · ${formatDue(l.scheduledAt)}`,
+      title: <>بثّ مباشر: {l.title}</>,
+      meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
       icon: Radio, tone: 'red',
     })),
   ];
@@ -170,34 +245,35 @@ export default function StudentDashboardPage() {
         </p>
       </header>
 
-      {/* At-a-glance KPI row — all real values from the API */}
+      {/* At-a-glance KPI row — real values; the count-up reveal rides the
+          grid's entrance stagger (polish grid children) as the page moment */}
       <section className="grid-4">
         <MetricCard
           icon={BookOpen}
           label="مقررات نشطة"
-          value={d.kpi.courseCount.toLocaleString('ar-LY')}
+          value={<CountIn value={d.kpi.courseCount} />}
           change={d.kpi.courseCount > 0 ? 'هذا الفصل' : 'لا توجد تسجيلات'}
           color="brand"
         />
         <MetricCard
           icon={CalendarCheck}
           label="نسبة الحضور"
-          value={d.kpi.attendancePct !== null ? `${d.kpi.attendancePct}%` : '—'}
+          value={d.kpi.attendancePct !== null ? <CountIn value={d.kpi.attendancePct} suffix="%" /> : '—'}
           change={d.kpi.attendancePct !== null ? 'إجمالي الفصل' : 'لا توجد سجلات بعد'}
           color={d.kpi.attendancePct === null ? 'brand' : d.kpi.attendancePct >= 80 ? 'green' : d.kpi.attendancePct >= 60 ? 'amber' : 'red'}
         />
         <MetricCard
           icon={ClipboardList}
           label="مهام معلّقة"
-          value={d.kpi.pendingAssignmentsCount.toLocaleString('ar-LY')}
+          value={<CountIn value={d.kpi.pendingAssignmentsCount} />}
           change={d.agenda.assignments[0] ? `أقربها ${formatDue(d.agenda.assignments[0].dueAt)}` : 'لا مهام قريبة'}
           color={d.kpi.pendingAssignmentsCount === 0 ? 'green' : d.kpi.pendingAssignmentsCount > 3 ? 'red' : 'amber'}
         />
         <MetricCard
           icon={Trophy}
           label="نقاط الإنجاز"
-          value={d.kpi.totalXp.toLocaleString('ar-LY')}
-          change={d.kpi.cohortSize > 1 ? `المركز ${d.kpi.rank} من ${d.kpi.cohortSize} على دفعتك` : 'مستوى ' + d.profile.level}
+          value={<CountIn value={d.kpi.totalXp} />}
+          change={d.kpi.cohortSize > 1 ? <>المركز <bdi>{d.kpi.rank}</bdi> من <bdi>{d.kpi.cohortSize}</bdi> على دفعتك</> : 'مستوى ' + d.profile.level}
           color="purple"
         />
       </section>
@@ -220,26 +296,41 @@ export default function StudentDashboardPage() {
         <Card className="dash-progress-card">
           <div className="dash-progress-body">
             <div className="dash-doughnut">
-              <Doughnut
-                key={themeKey}
-                data={{
-                  labels: ['منجز', 'متبقي'],
-                  datasets: [{
-                    data: [courseProgressPct, Math.max(0, 100 - courseProgressPct)],
-                    backgroundColor: [cc.accent, cc.surfaceMuted],
-                    borderWidth: 0,
-                    spacing: 2,
-                  }],
+              <ChartFrame
+                className="dash-doughnut-frame"
+                ariaLabel={`متوسط التقدّم في المقرّرات: ${courseProgressPct}% منجز و${remainingPct}% متبقٍّ`}
+                summary={
+                  d.kpi.courseCount > 0
+                    ? `أنجزت ${courseProgressPct}% من متوسط موادك المسجَّلة هذا الفصل.`
+                    : 'لم تسجّل في أي مقرّر بعد.'
+                }
+                table={{
+                  caption: 'متوسط التقدّم في المقرّرات النشطة',
+                  columns: ['الحالة', 'النسبة'],
+                  rows: [['منجز', `${courseProgressPct}%`], ['متبقٍّ', `${remainingPct}%`]],
                 }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: true,
-                  cutout: '78%',
-                  plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                  animation: { duration: 800, easing: 'easeOutQuart' },
-                }}
-              />
-              <div className="dash-doughnut-center" data-numeric="true">{courseProgressPct}%</div>
+              >
+                <Doughnut
+                  key={themeKey}
+                  data={{
+                    labels: ['منجز', 'متبقي'],
+                    datasets: [{
+                      data: [courseProgressPct, remainingPct],
+                      backgroundColor: [cc.accent, cc.surfaceMuted],
+                      borderWidth: 0,
+                      spacing: 2,
+                    }],
+                  }}
+                  options={radialOptions({ cutout: '78%', legend: false })}
+                />
+              </ChartFrame>
+              {/* key → the number re-rises whenever a refetch moves the
+                  average (the authored data-change transition). No
+                  data-numeric here — polish's generic [data-numeric]
+                  entrance would override the authored one. */}
+              <div className="dash-doughnut-center" key={courseProgressPct}>
+                {courseProgressPct}%
+              </div>
             </div>
             <div className="dash-progress-text">
               <div className="dash-eyebrow">تقدّم المقرّرات</div>
@@ -280,7 +371,8 @@ export default function StudentDashboardPage() {
         </footer>
       </Card>
 
-      {/* Up-coming agenda — composed from real classes/assignments/live */}
+      {/* Up-coming agenda — composed from real classes/assignments/live.
+          Items slide in from inline-start (polish agenda stagger). */}
       <section className="dash-agenda">
         <header className="dash-agenda-head">
           <h2 className="dash-section-title">المهام والفصول القادمة</h2>
@@ -288,14 +380,17 @@ export default function StudentDashboardPage() {
         {agenda.length === 0 ? (
           <Card>
             <p className="text-muted text-sm" style={{ padding: 'var(--sp-3) 0' }}>
-              لا توجد مهام أو حصص قادمة في الأسبوع المقبل.
+              لا حصص أو مهام قادمة في أجندتك حالياً.
             </p>
           </Card>
         ) : (
           <div className="dash-agenda-list">
             {agenda.map((item) => (
-              <Card key={item.id} className="dash-agenda-item" data-tone={item.tone}>
-                <div className="dash-agenda-icon">
+              <Card key={item.id} className="dash-agenda-item">
+                {/* data-tone rides the icon well — Card doesn't spread
+                    unknown props, so the old root-level data-tone never
+                    reached the DOM (silently dead since inception). */}
+                <div className="dash-agenda-icon" data-tone={item.tone}>
                   <Icon icon={item.icon} size={22} />
                 </div>
                 <div className="dash-agenda-text">

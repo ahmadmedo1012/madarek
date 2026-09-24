@@ -432,6 +432,1643 @@
 
   /* ── TrainingPages (tracks / lessons / badges / leaderboard) ────── */
 
-  /* ── Shared student utilities (added by student waves) ──────────── */
+  /* ── §analytics — DashboardPage · MatrixPage · AiAssistant (wave 4-a) ── */
+
+  /* ═══ Dashboard — KPI count-up + doughnut moment + craft fixes ═══
+     The page moment: KPI values count in (TSX CountIn) riding the grid
+     entrance stagger, agenda items slide in from inline-start, and the
+     doughnut center number re-rises on every data change (keyed
+     remount). This section owns the pieces the shared layers can't
+     carry. */
+
+  /* Term progress fill — the span carried only an inline width with no
+     background/height anywhere: the bar rendered as an empty track. */
+  .dash-term-bar > span {
+    display: block;
+    block-size: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+    /* the calm "term is moving" fill; width is set inline by the page */
+    transition: width var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+
+  /* ChartFrame adoption: the frame fills the fixed doughnut well; the
+     center number overlays it (positioning stays on .dash-doughnut). */
+  .dash-doughnut-frame { position: absolute; inset: 0; }
+
+  /* Center number rises + settles whenever the average changes
+     (key={pct} remount in the TSX). */
+  .dash-doughnut-center {
+    animation: dash-center-in var(--motion-duration-stat) var(--motion-ease-decelerate) both;
+  }
+  @keyframes dash-center-in {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Arabic labels never take letter-spacing/uppercase — both break the
+     cursive join (ruling #2; the shared rules predate it). */
+  .dash-eyebrow { letter-spacing: normal; text-transform: none; }
+  .student-dashboard .metric-label { letter-spacing: normal; text-transform: none; }
+
+  /* Agenda tone wells — the TSX always carried data-tone but Card never
+     spread it to the DOM (silently dead); the tone now rides the icon
+     well. Text/icons on pastel use the -deep WCAG-pinned inks. */
+  .dash-agenda-icon[data-tone='gold'] {
+    background: var(--c-yellow-bg);
+    color: var(--c-yellow-deep);
+  }
+  .dash-agenda-icon[data-tone='red'] {
+    background: var(--c-rose-bg);
+    color: var(--c-rose-deep);
+  }
+  /* Agenda rows are informational cards, not links — the inherited
+     pointer cursor promises navigation that never happens. */
+  .dash-agenda-item { cursor: default; }
+
+  /* ═══ Matrix — the heatmap filter signature ═══ */
+
+  /* Count chip inside the shared .filter-pill (training.css owns the
+     pill family; the chip is additive so no layer fight). */
+  .filter-pill-count {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-subtle);
+  }
+  .filter-pill[aria-pressed='true'] .filter-pill-count { color: inherit; }
+
+  /* THE signature: on a filter change, non-matching cells recede (shade
+     desaturates + fades) while the matching level keeps its color — the
+     map stays whole and the filter reads instantly. The shade movement
+     rides .matrix-cell's existing transition (polish owns it). */
+  .matrix-cell.is-dim {
+    opacity: 0.38;
+    filter: saturate(0.25);
+  }
+
+  /* Recommendation rows stagger in from inline-start (direction-aware
+     via --motion-direction, capped at --motion-stagger-cap). */
+  .matrix-gap-list .list-row {
+    animation: matrix-gap-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(
+      var(--motion-stagger-step) * min(var(--gap-i, 0), var(--motion-stagger-cap))
+    );
+  }
+  @keyframes matrix-gap-in {
+    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -8px)); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ═══ AiAssistant — typing indicator + gap cards + error rows ═══ */
+
+  /* Gap starter cards — replaced ~15 lines of inline styles + a JS
+     mouseenter border swap (no focus parity) with the card recipe. */
+  .ai-gap-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    min-block-size: 44px; /* touch target */
+    padding: var(--sp-4);
+    text-align: start;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard),
+      transform var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+  .ai-gap-card:hover:not(:disabled) {
+    background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  .ai-gap-card:active:not(:disabled) { transform: translateY(1px); }
+  .ai-gap-card:disabled { cursor: default; }
+  .ai-gap-head { display: flex; align-items: center; gap: var(--sp-2); }
+  .ai-gap-warn { color: var(--warning); flex-shrink: 0; }
+  .ai-gap-pct {
+    margin-inline-start: auto;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--warning);
+    font-variant-numeric: tabular-nums;
+  }
+  .ai-gap-name {
+    font-size: var(--type-body-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .ai-gap-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+
+  /* Typing indicator — the authored moment while a reply is in flight
+     (bot-bubble silhouette, calm wave, sr text for the live region). */
+  .chat-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 14px;
+    border-radius: var(--r-xl);
+    /* bot-bubble tail corner — the polish chat language */
+    border-start-start-radius: 4px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-faint);
+  }
+  .chat-typing-dot {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: var(--text-subtle);
+    animation: ai-typing-bob var(--motion-duration-stat) var(--motion-ease-standard) infinite;
+  }
+  .chat-typing-dot:nth-child(2) { animation-delay: calc(var(--motion-stagger-step) * 2); }
+  .chat-typing-dot:nth-child(3) { animation-delay: calc(var(--motion-stagger-step) * 4); }
+  @keyframes ai-typing-bob {
+    0%, 60%, 100% { transform: none; opacity: 0.45; }
+    30% { transform: translateY(-3px); opacity: 1; }
+  }
+
+  /* Failed exchange — stays in the log, recoverable via retry. */
+  .chat-error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    max-inline-size: min(640px, 78%);
+    padding: 10px 14px;
+    border-radius: var(--r-xl);
+    border-start-start-radius: 4px;
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    color: var(--danger-ink);
+    font-size: var(--type-body-size);
+    line-height: var(--lh-base);
+    animation: ai-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .chat-retry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    min-block-size: 36px;
+    padding-inline: var(--sp-3);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    border-radius: var(--r-full);
+    background: transparent;
+    color: var(--danger-ink);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .chat-retry:hover {
+    background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+    border-color: var(--danger);
+  }
+  .chat-retry:active { transform: translateY(1px); }
+  @keyframes ai-row-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Phone: 44px touch floor for the compact chat controls (min-* sizes
+     coexist with the shared 40px boxes — min wins, desktop unchanged). */
+  @media (max-width: 640px) {
+    .ai-quick-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-block-size: 44px;
+    }
+    .chat-input { min-block-size: 44px; }
+    .chat-send { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* Guardrail #6 — keyframe off-switches (the base.css token belt
+     handles the duration-based rules; these kill the keyframes). */
+  @media (prefers-reduced-motion: reduce) {
+    .dash-doughnut-center,
+    .matrix-gap-list .list-row,
+    .chat-typing-dot,
+    .chat-error { animation: none; }
+  }
+
+  /* ── §lists — Courses · CourseDetail · Exams · Mooc · Webinars · Jobs (wave 4-b) ── */
+
+  /* ═══ CoursesPage — filter → grid re-stagger (the authored moment) ═══
+     The polish overrides layer staggers EVERY .grid-3 child on every
+     mount (madark-stagger-up, fill both) — which fires an entrance on
+     the first data render (the antipattern this page avoids) AND pins
+     transform:none forever, silently killing the shared .thumb-card
+     hover lift. The courses grid opts out of the global rule and owns
+     its entrance: first render = static, filter change = re-stagger
+     (TSX sets data-stagger on filter clicks only). !important is
+     required to beat the overrides layer — the same layer-precedence
+     flip wave 3-c used for the .track-card anchor-underline opt-out. */
+  .courses-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    align-items: center;
+  }
+  /* live counts ride inside the pills — tabular so columns of digits align */
+  .courses-filter-count {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    color: inherit;
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+  }
+  .courses-grid > .thumb-card { animation: none !important; }
+  .courses-grid[data-stagger] > .thumb-card {
+    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
+    animation-delay: calc(
+      var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
+    ) !important;
+  }
+  .courses-grid-empty { grid-column: 1 / -1; }
+  /* API course tint rides on --course-tint (set inline by TSX) and is
+     only consumed through color-mix washes over var(--surface) — the
+     invalid `${tint}10` hex-alpha inline pattern is gone. */
+  .courses-grid .thumb-card-image {
+    background: color-mix(in srgb, var(--course-tint, var(--accent)) 12%, var(--surface));
+    color: var(--course-tint, var(--accent));
+  }
+  @keyframes courses-card-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.985); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ═══ CourseDetailPage — tinted hero + curriculum progress ═══
+     Same anatomy as the training track-hero: hierarchy via tint wash +
+     hairline, never a colored side-stripe (ruling #4). --course-tint
+     is set inline on the .course-page root and simply inherits here —
+     no class-level default (it would beat the inherited value). */
+  .course-hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    padding: var(--sp-6);
+    background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
+    border-radius: var(--r-xl);
+  }
+  .course-hero-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    flex-wrap: wrap;
+  }
+  .course-hero-icon {
+    inline-size: 64px;
+    block-size: 64px;
+    border-radius: var(--r-lg);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--course-tint) 14%, var(--surface));
+    color: var(--course-tint);
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--course-tint) 30%, transparent);
+  }
+  .course-hero-main {
+    flex: 1;
+    min-inline-size: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .course-hero-badges {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .course-hero-title {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-md);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    letter-spacing: var(--type-headline-letter-spacing);
+    color: var(--text);
+    margin: 0;
+  }
+  .course-hero-sub {
+    font-size: var(--type-body-size);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+  /* progress panel — hosts the count-up readout (authored moment #2:
+     the % value animates in JS over --motion-duration-stat; CSS pins
+     the metric role + tabular numerals so digits never shift width) */
+  .course-hero-progress {
+    margin-inline-start: auto;
+    flex: 0 1 240px;
+    min-inline-size: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-4);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .course-hero-progress-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-2);
+  }
+  .course-hero-progress-label {
+    font-size: var(--type-label-size);
+    color: var(--text-muted);
+  }
+  .course-hero-progress-value {
+    font-family: var(--font-mono);
+    font-size: var(--type-metric-size);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
+  }
+  .course-hero-progress-note {
+    font-size: var(--type-label-size-sm);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  /* lecture icon wells (was ~10 lines of inline style per row) —
+     inherits --course-tint from the .course-page root */
+  .course-lec-well {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-sm);
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--course-tint, var(--accent)) 15%, var(--surface));
+    color: var(--course-tint, var(--accent));
+  }
+  .course-lec-well.done {
+    background: var(--success-soft);
+    color: var(--success);
+  }
+  /* durations / counts in the curriculum rows stay digit-stable */
+  .course-lectures .list-row-sub { font-variant-numeric: tabular-nums; }
+
+  /* ═══ ExamsPage — grade-emphasis reveal (the authored moment) ═══
+     The real cumulative average lands as the visual anchor: metric
+     scale + one-shot rise and a state-ring pulse (0 0 0 spread — the
+     focus-ring language, never elevation). */
+  .exam-grade {
+    display: inline-flex;
+    align-items: baseline;
+    padding: var(--sp-3) var(--sp-5);
+    border-radius: var(--r-lg);
+    background: var(--accent-soft);
+    animation:
+      exam-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards,
+      exam-grade-ring var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  }
+  .exam-grade-value {
+    font-family: var(--font-mono);
+    font-size: var(--type-metric-size-lg);
+    font-weight: var(--type-metric-weight);
+    line-height: var(--type-metric-line-height);
+    /* 8.62:1 on --accent-soft (WCAG math in tokens.css) */
+    color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--type-metric-feature-settings);
+  }
+  @keyframes exam-grade-in {
+    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes exam-grade-ring {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+    to { box-shadow: 0 0 0 12px transparent; }
+  }
+
+  /* ═══ MoocPage ═══ */
+  /* Same opt-out as the courses grid: escape the global mount stagger's
+     fill:both transform pin (restores the thumb-card hover lift), then
+     re-own the incumbent mount entrance with the same keyframe so the
+     visual behavior is unchanged. The page's AUTHORED moment remains
+     the CTA confirmation pulse below. */
+  .mooc-grid > .thumb-card {
+    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
+    animation-delay: calc(
+      var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
+    ) !important;
+  }
+  .mooc-card-image {
+    block-size: 96px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .mooc-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-2);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .mooc-card-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  /* enrollment CTA confirmation pulse (the authored moment): a one-shot
+     state-ring acknowledgment when the student opens the external
+     registration page — pure feedback, no state is faked */
+  .mooc-cta {
+    inline-size: 100%;
+    justify-content: center;
+    margin-block-start: var(--sp-3);
+  }
+  .mooc-cta.confirmed {
+    animation: mooc-cta-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  }
+  @keyframes mooc-cta-pulse {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent); }
+    to { box-shadow: 0 0 0 10px transparent; }
+  }
+
+  /* ═══ WebinarsPage — live-vs-upcoming distinction ═══ */
+  .webinar-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    min-block-size: 44px; /* touch target */
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    transition: background var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .webinar-row:hover { background: var(--surface-2); }
+  .webinar-row.live {
+    /* quiet broadcast-red wash — the same family as the LIVE badge */
+    background: color-mix(in srgb, var(--danger) 6%, var(--surface));
+  }
+  .webinar-live-dot {
+    inline-size: 10px;
+    block-size: 10px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--danger);
+    /* THE page's single pulse — LIVE rows only, never scattered */
+    animation: webinar-live-pulse var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
+  }
+  .webinar-row-icon {
+    inline-size: 20px;
+    flex-shrink: 0;
+    display: inline-flex;
+    justify-content: center;
+    color: var(--text-faint);
+  }
+  .webinar-row-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .webinar-row-title {
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .webinar-row-sub {
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  @keyframes webinar-live-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 45%, transparent); }
+    70%, 100% { box-shadow: 0 0 0 8px transparent; }
+  }
+  /* destination tiles (was inline-styled) */
+  .webinar-dest-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-3);
+    padding-block: var(--sp-3);
+  }
+  @media (max-width: 680px) {
+    .webinar-dest-grid { grid-template-columns: 1fr; }
+  }
+  .webinar-dest {
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .webinar-dest-title {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin: 0 0 var(--sp-2) 0;
+    font-size: var(--type-body-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .webinar-dest-desc {
+    margin: 0 0 var(--sp-3) 0;
+    font-size: var(--type-label-size);
+    line-height: var(--lh-loose);
+    color: var(--text-muted);
+  }
+
+  /* ═══ JobsPage — table rows + hover-revealed actions ═══ */
+  .jobs-count {
+    margin: 0;
+    font-size: var(--type-label-size);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .job-title-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    min-inline-size: 0;
+  }
+  .job-icon-well {
+    inline-size: 36px;
+    block-size: 36px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-sm);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+  .job-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-inline-size: 0;
+  }
+  .job-title,
+  .job-company {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-inline-size: 320px;
+  }
+  .job-title {
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .job-company {
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+  .job-apply-error {
+    margin: 0;
+    padding: var(--sp-2) var(--sp-4);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-medium);
+    color: var(--danger-ink);
+  }
+
+  /* ── §lists touch floor + reduced-motion off-switches ── */
+  @media (max-width: 640px) {
+    /* !required: .btn/.pill base heights live in the components layer,
+       which beats the pages layer at any specificity — the same
+       layer-precedence flip as the entrance opt-outs above. */
+    .courses-filter .pill,
+    .courses-assignments td .btn,
+    .webinar-kpis .metric-change .btn,
+    .exam-results-card .btn,
+    .jobs-table .table-row-actions .btn { min-block-size: 44px !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* same-or-higher specificity + !important — the entrances above are
+       !important, so the kill must be too (guardrail #6 belt-and-braces
+       over base.css's global 0.01ms safety belt, which already wins the
+       layer race for !important rules) */
+    .courses-grid > .thumb-card,
+    .courses-grid[data-stagger] > .thumb-card,
+    .mooc-grid > .thumb-card,
+    .exam-grade,
+    .mooc-cta.confirmed,
+    .webinar-live-dot { animation: none !important; }
+    .webinar-row { transition: none; }
+  }
+
+  /* ── §research — ResearchPage · LibraryPage · LivePage · LabsPage (wave 4-c) ── */
+
+  /* ═══ Research — paper rows, scan states, upload modal, process ═══
+     The scan-* grid itself (.scan-bar/.scan-cell + .ok/.warn/.bad value
+     inks) is owned by components.css "wave 3-c: STAFF SURFACES"; this
+     section owns everything the student page renders AROUND it: the
+     paper row cards, the in-flight scan states (.scan-pulse + the
+     indeterminate .scan-cell-run sweep), the upload dropzone (inside
+     the shared Modal) and the process explainer tiles. */
+
+  .paper-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-1);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+  }
+  .paper-row-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-3);
+  }
+  .paper-row-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .paper-row-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
+  .paper-row-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.35;
+  }
+  .paper-row-course { font-size: var(--fs-xs); color: var(--text-subtle); }
+  .paper-row-abstract {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    margin-block-start: var(--sp-2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* full-width pre-scan CTA — .btn.outline supplies the control look */
+  .paper-row-cta { inline-size: 100%; }
+
+  /* status banners (success-graded / failed-checks) — soft ground +
+     status ink + 45% color-mix hairline, same recipe as the checkpoint
+     result banners in §LecturePlayerPage */
+  .paper-row-grade,
+  .paper-row-failed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    font-size: var(--fs-sm);
+  }
+  .paper-row-grade {
+    background: var(--success-soft);
+    border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
+    color: var(--success-ink);
+  }
+  .paper-row-grade-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-weight: var(--fw-semibold);
+    color: var(--success-ink);
+  }
+  .paper-row-grade-note {
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    line-height: var(--lh-base);
+  }
+  .paper-row-failed {
+    background: var(--danger-soft);
+    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+    color: var(--danger-ink);
+    font-weight: var(--fw-medium);
+  }
+  /* published note — lavender is the "library" voice; -deep keeps the
+     text AA on the card ground in both themes */
+  .paper-row-published {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-xs);
+    color: var(--c-lavender-deep);
+  }
+
+  /* ── In-flight scan ──
+     Honest indeterminate progress: the scan endpoint is a single POST
+     with no increments, so the cells show a sweeping bar + step copy,
+     never a fake percentage. */
+  .scan-pulse {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-xs);
+    color: var(--accent-strong);
+  }
+  .scan-pulse-dot {
+    inline-size: 8px;
+    block-size: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: scan-dot-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite;
+  }
+  @keyframes scan-dot-ping {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+    to   { box-shadow: 0 0 0 9px transparent; }
+  }
+  /* indeterminate sweep inside a scanning cell — THE authored moment
+     of the research page. Direction flips with --motion-direction so
+     the sweep always travels inline-start → inline-end. */
+  .scan-cell-run {
+    position: relative;
+    block-size: 8px;
+    border-radius: var(--r-full);
+    background: var(--surface-3);
+    overflow: clip;
+  }
+  .scan-cell-run::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inline-size: 40%;
+    border-radius: inherit;
+    background: var(--accent);
+    animation: scan-sweep var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
+  }
+  @keyframes scan-sweep {
+    /* percentages are of the 40%-wide sweep itself: -110% parks it
+       fully before the inline-start edge, +260% carries it fully past
+       the inline-end edge */
+    from { transform: translateX(calc(var(--motion-direction) * -110%)); }
+    70%  { transform: translateX(calc(var(--motion-direction) * 260%)); }
+    to   { transform: translateX(calc(var(--motion-direction) * 260%)); }
+  }
+
+  /* ── Upload modal body (the shared Modal owns chrome + focus trap) ── */
+  .upload-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-1);
+    inline-size: 100%;
+    min-block-size: 116px;
+    padding: var(--sp-5);
+    background: var(--surface-2);
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--r-lg);
+    font: inherit;
+    color: inherit;
+    text-align: center;
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .upload-dropzone:hover { border-color: var(--accent); background: var(--surface-3); }
+  .upload-dropzone:active { transform: translateY(1px); }
+  .upload-dropzone.has-file {
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--success) 45%, var(--border));
+    background: var(--success-soft);
+  }
+  .upload-error {
+    font-size: var(--fs-xs);
+    color: var(--danger-ink);
+  }
+
+  /* ── Process explainer tiles ── */
+  .process-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .process-step-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .process-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 28px;
+    block-size: 28px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+  }
+  .process-step-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); }
+  .process-step-desc { font-size: var(--fs-xs); color: var(--text-muted); line-height: var(--lh-base); }
+
+  /* ═══ Library — research cards, search-stagger, skeletons ═══ */
+
+  .lib-count {
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  /* research cards — one-shot entrance stagger, THE authored moment of
+     the library page (results cascade in as the search resolves) */
+  .research-card {
+    padding: var(--sp-4);
+    background: var(--surface-1);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    transition: border-color var(--motion-duration-short) var(--motion-ease-standard);
+    animation: research-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: calc(
+      var(--motion-stagger-step) * min(var(--rs-i, 0), var(--motion-stagger-cap))
+    );
+  }
+  .research-card:hover { border-color: var(--border-strong); }
+  .research-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-3);
+  }
+  .research-card-title {
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.35;
+  }
+  .research-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-1);
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+  }
+  .research-card-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-end: var(--sp-3);
+    font-size: var(--fs-xxs);
+    color: var(--text-subtle);
+  }
+  .research-snippet { margin-block-end: var(--sp-2); }
+  @keyframes research-card-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* shape-matched loading skeletons (books shelf + research rows) */
+  .lib-skel-tile {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    overflow: clip;
+  }
+  .lib-skel-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-1);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+  }
+
+  /* ═══ Live — LIVE indicator + tinted course well on run rows ═══
+     .run-row itself is owned by components.css (wave 3-c). */
+
+  /* THE authored moment of the live page — and its only idle motion:
+     the LIVE chip dot breathes a danger ping; everything else sits
+     still. */
+  .live-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px var(--sp-2);
+    border-radius: var(--r-full);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    line-height: 1.5;
+  }
+  .live-dot {
+    inline-size: 7px;
+    block-size: 7px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--danger);
+    animation: live-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite;
+  }
+  @keyframes live-ping {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 50%, transparent); }
+    to   { box-shadow: 0 0 0 8px transparent; }
+  }
+  /* tinted course well — replaces the old 3px inline-start stripe
+     (ruling #4): hierarchy rides on the leading icon tint, not a bar */
+  .live-row-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 40px;
+    block-size: 40px;
+    flex-shrink: 0;
+    border-radius: var(--r-full);
+    background: color-mix(in srgb, var(--row-accent, var(--accent)) 14%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--row-accent, var(--accent)) 25%, var(--border));
+  }
+  .live-row-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    margin-block-end: 2px;
+  }
+  /* live rows keep the 1px hairline language but tint it toward the
+     danger accent — status coding without a stripe */
+  .run-row.is-live { border-color: color-mix(in srgb, var(--danger) 30%, var(--rule)); }
+
+  /* ═══ Labs — simulator terminal + stepper + hero band ═══ */
+
+  /* tinted hero band (API themeColor rides on --lab-accent and is only
+     ever consumed through color-mix — never raw under text) */
+  .lab-hero {
+    padding: var(--sp-5);
+    background: color-mix(in srgb, var(--lab-accent, var(--accent)) 8%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--lab-accent, var(--accent)) 20%, var(--border));
+    border-radius: var(--r-xl);
+  }
+  .lab-hero-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    margin-block-end: var(--sp-2);
+  }
+  .lab-hero-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: 1.3;
+    margin-block-end: var(--sp-1);
+  }
+  .lab-done-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-6);
+    background: var(--gold-soft);
+    color: var(--gold-ink);
+    border-radius: var(--r-md);
+    font-family: var(--font-mono);
+    font-weight: var(--fw-bold);
+  }
+
+  /* ── Terminal — an always-dark physical console ──
+     The neutral ramp is theme-flipped (dark theme's "ink" is sand), so
+     no theme token can express "dark ground in BOTH themes". The ground
+     below pins the canonical ink hex #191918 from the ramp (not a new
+     color); text uses --text-on-dark which is light in both themes
+     (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). Same documented-raw-hex
+     exception as the §LecturePlayerPage video matte. */
+  .terminal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #191918;
+    border: 1px solid color-mix(in srgb, var(--text-on-dark) 14%, transparent);
+    border-radius: var(--r-lg);
+    overflow: clip;
+  }
+  /* static CRT scanline texture — 3% light lines, no animation, so no
+     reduced-motion switch is required (it is texture, not motion) */
+  .terminal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 3px,
+      color-mix(in srgb, var(--text-on-dark) 3%, transparent) 3px 4px
+    );
+    pointer-events: none;
+  }
+  .terminal-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-4);
+    background: color-mix(in srgb, var(--text-on-dark) 6%, #191918);
+    border-block-end: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent);
+  }
+  .terminal-dots { display: flex; gap: 6px; }
+  .terminal-dot { inline-size: 10px; block-size: 10px; border-radius: 50%; }
+  .terminal-dot.r { background: var(--danger); }
+  .terminal-dot.y { background: var(--warning); }
+  .terminal-dot.g { background: var(--success); }
+  .terminal-title {
+    margin-inline-start: auto;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: color-mix(in srgb, var(--text-on-dark) 55%, #191918);
+  }
+  .terminal-body {
+    block-size: 280px;
+    overflow-y: auto;
+    padding: var(--sp-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: 1.75;
+    color: var(--text-on-dark);
+  }
+  /* per-line auto direction: the same console mixes LTR command lines
+     with Arabic result lines — unicode-bidi: plaintext resolves each
+     line by its first strong character, so neither copy is forced */
+  .terminal-line {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    unicode-bidi: plaintext;
+    animation: terminal-line-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
+  }
+  /* success lines (✔-prefixed) — mint ink clears AA on the dark
+     ground in both themes (light #4FA66D ≈ 5.6:1, dark #82CB99 ≈ 9:1) */
+  .terminal-line.terminal-prompt { color: var(--c-mint-ink); }
+  /* system notices (%LINK…, Verification…) — sky ink, same math */
+  .terminal-line.terminal-info { color: var(--c-sky-ink); }
+  /* idle hint line — the quiet system voice, centered */
+  .terminal-hint {
+    text-align: center;
+    color: color-mix(in srgb, var(--text-on-dark) 55%, #191918);
+  }
+  .terminal-cursor {
+    display: inline-block;
+    inline-size: 8px;
+    block-size: 1.05em;
+    margin-inline-start: 2px;
+    background: var(--text-on-dark);
+    vertical-align: text-bottom;
+    animation: terminal-blink var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
+  }
+  @keyframes terminal-blink {
+    0%, 45%  { opacity: 1; }
+    50%, 95% { opacity: 0; }
+    100%     { opacity: 1; }
+  }
+  @keyframes terminal-line-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── Stepper — done / current / upcoming with an RTL-correct spine ── */
+  .steps {
+    list-style: none; /* ol semantics without UA markers/padding */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .step {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+  /* vertical spine segment on the well axis — inset-inline-start keeps
+     it on the inline-start edge in RTL; hidden on the last step */
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 15px; /* well center (32/2) − 1px */
+    inset-block-start: 38px;
+    inset-block-end: -16px;
+    inline-size: 2px;
+    border-radius: 1px;
+    background: var(--surface-3);
+  }
+  .step.done:not(:last-child)::before {
+    background: color-mix(in srgb, var(--success) 35%, var(--surface-3));
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 32px;
+    block-size: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+  .step.done .step-num {
+    background: var(--success-soft);
+    border-color: var(--success);
+    color: var(--success-ink);
+  }
+  /* current step — accent-soft wash + accent hairline (the shared
+     selected-control language, not a stripe) */
+  .step.on .step-num {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent-strong);
+  }
+  .step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-inline-size: 0;
+    padding-block-start: 5px; /* optically centers on the 32px well */
+  }
+  .step-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); line-height: 1.4; }
+  .step.on .step-title { color: var(--accent-strong); }
+  .step-desc {
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── Keyframe off-switches (guardrail #6 — infinite animations MUST
+     die under reduced motion, not strobe at 0.01ms) ── */
+  @media (prefers-reduced-motion: reduce) {
+    .scan-pulse-dot,
+    .scan-cell-run::after,
+    .research-card,
+    .live-dot,
+    .terminal-cursor,
+    .terminal-line { animation: none; }
+  }
+
+  /* ── Phone tuning (44px touch floor for small controls) ── */
+  @media (max-width: 640px) {
+    .lib-tabs .tab { min-block-size: 44px; }
+    .lib-filters .pill { min-block-size: 44px; }
+    .run-row .btn.sm,
+    .paper-row .btn.sm,
+    .research-card .btn.sm { block-size: 44px; }
+    .terminal-body { block-size: 220px; }
+    .lab-hero { padding: var(--sp-4); }
+  }
+
+  /* ── §misc — CampusMap · Payment · Profile · More · Community (wave 4-d) ── */
+
+  /* ═══ CampusMap — the city-footprint band (the page's authored
+     moment: the bars grow in on entrance, staggered via --city-i).
+     Every value is derived from the live /faculties payload — this is
+     the honest replacement for the removed fake floor-plan map. ═══ */
+  .campus-city-list { display: flex; flex-direction: column; }
+  .campus-city-row {
+    display: grid;
+    /* city name | proportional track | count */
+    grid-template-columns: minmax(84px, max-content) minmax(64px, 1fr) max-content;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    min-block-size: 44px; /* touch target */
+    padding: var(--sp-2) var(--sp-3);
+    background: transparent;
+    border: 0;
+    border-radius: var(--r-md);
+    font: inherit;
+    color: inherit;
+    text-align: start;
+    cursor: pointer;
+    transition: background var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .campus-city-row:hover { background: var(--surface-2); }
+  .campus-city-row:active { background: var(--surface-3); }
+  /* selected city — accent-soft ground + accent-strong ink (the
+     WCAG-pinned pair documented in tokens.css) */
+  .campus-city-row.on { background: var(--accent-soft); }
+  .campus-city-name {
+    font-size: var(--type-label-size);
+    line-height: var(--type-label-line-height);
+    color: var(--text);
+  }
+  .campus-city-row.on .campus-city-name {
+    color: var(--accent-strong);
+    font-weight: var(--fw-semibold);
+  }
+  .campus-city-track {
+    block-size: 8px;
+    border-radius: var(--r-full);
+    background: var(--surface-3);
+    overflow: clip;
+  }
+  /* plain-block fill anchors at inline-start → RTL-correct growth
+     (same anatomy as .progress-track / .xp-track) */
+  .campus-city-fill {
+    display: block;
+    block-size: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+    animation: campus-fill-in var(--motion-duration-stat) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--city-i, 0) * var(--motion-stagger-step));
+  }
+  .campus-city-row.on .campus-city-fill { background: var(--accent-strong); }
+  .campus-city-count {
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  /* skeleton rows share the band's grid so the loading shape matches */
+  .campus-skel-row {
+    display: grid;
+    grid-template-columns: minmax(84px, max-content) 1fr max-content;
+    align-items: center;
+    gap: var(--sp-3);
+    min-block-size: 44px;
+  }
+  /* link-reset layer for .list-row faculty links */
+  .campus-faculty-link {
+    text-align: start;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .campus-map-note {
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-3);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border-radius: var(--r-md);
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+    display: flex;
+    gap: var(--sp-2);
+    align-items: flex-start;
+  }
+
+  /* ═══ Fact rows — one shared grammar for the label/value tiles on
+     Payment / UniversityInfo / CampusMap contact (the audit's three
+     private FactRow copies, unified at the CSS layer). ═══ */
+  .fact-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+    min-inline-size: 0;
+  }
+  /* inline variant — leading icon + label/value column (ProfilePage) */
+  .fact-row--field {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  /* quiet supplementary-data failure note (audit 0-d P2: never a
+     silent dash — but not a full alarm either; the page still works) */
+  .fact-error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+  }
+  .fact-error .btn { flex-shrink: 0; }
+
+  /* ═══ Payment — the fees-status panel + today's-steps checklist.
+     Clarity over decoration: flat surface, no invented figures. ═══ */
+  .payment-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .payment-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .payment-checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    font-size: var(--type-label-size);
+    color: var(--text-secondary);
+    line-height: var(--lh-base);
+  }
+  .payment-checklist svg {
+    color: var(--success-ink);
+    flex-shrink: 0;
+    margin-block-start: 2px;
+  }
+
+  /* ═══ Profile — academic-link rows (extracted from ~40 lines of
+     inline styles) + the save-feedback flash. ═══ */
+  .profile-link-row {
+    padding: var(--sp-4);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface-1);
+  }
+  .profile-link-head {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+  .profile-link-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 40px;
+    block-size: 40px;
+    flex-shrink: 0;
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .profile-link-row.linked .profile-link-icon {
+    background: var(--success-soft);
+    color: var(--success-ink);
+  }
+  .profile-link-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-end: 2px;
+  }
+  .profile-link-title {
+    font-size: var(--type-body-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+  .profile-link-desc {
+    font-size: var(--type-label-size);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  .profile-link-value {
+    margin-block-start: 6px;
+    color: var(--accent-strong);
+    overflow-wrap: anywhere;
+  }
+  .profile-link-actions {
+    display: flex;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
+  .profile-link-edit {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-3);
+  }
+  .profile-link-error {
+    color: var(--danger-ink);
+    font-size: var(--type-label-size-sm);
+    line-height: var(--lh-base);
+  }
+  /* save feedback — the page's authored moment: a transient, polite
+     confirmation that rises in and self-clears (TSX timer) */
+  .profile-link-saved {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--success-ink);
+    font-size: var(--type-label-size-sm);
+    animation: profile-save-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+
+  /* ═══ Social feed (MorePages SocialPage) — composer + like
+     feedback + derived trending list. ═══ */
+  .social-composer {
+    /* deltas over the shared global textarea recipe (components.css) */
+    flex: 1;
+    min-block-size: 64px;
+    block-size: auto;
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+    font-family: inherit;
+    color: var(--text);
+  }
+  .social-compose-error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+  }
+  .social-compose-error .btn { flex-shrink: 0; }
+  .post-like-fail {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2);
+    align-self: flex-start;
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-sm);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--type-label-size-sm);
+  }
+  .post-count {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+  }
+  /* reaction burst — plays ONLY when the .pop class rides in on the
+     reacted counter (on-interaction, never idle) */
+  .post-count.pop {
+    animation: social-count-pop var(--motion-duration-stat) var(--ease-spring) both;
+  }
+  .post-action:disabled { cursor: default; }
+  .post-action:active:not(:disabled) { transform: translateY(1px); }
+  /* trending rows — derived from the loaded feed (never hardcoded) */
+  .trend-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .trend-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-block-size: 40px;
+  }
+  .trend-row + .trend-row { border-block-start: 1px solid var(--surface-divider); }
+  .trend-rank {
+    flex-shrink: 0;
+    min-inline-size: 18px;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .trend-tag {
+    flex: 1;
+    min-inline-size: 0;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size);
+    color: var(--accent-strong);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .trend-count {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    background: var(--surface-2);
+    padding: 2px var(--sp-2);
+    border-radius: var(--r-full);
+  }
+  /* alerts-page skeleton rows (dot + two lines) */
+  .alert-skel {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+  }
+
+  /* ═══ UniversityInfo — degree cards (leading icon chip replaces the
+     old 3px borderRight stripe — orchestrator ruling #4) + faculty
+     chip emoji wells. ═══ */
+  .degree-card {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
+  .degree-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 32px;
+    block-size: 32px;
+    flex-shrink: 0;
+    border-radius: var(--r-sm);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+  .faculty-chip-emoji {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+
+  /* ═══ Community — RSVP action row + failure note. ═══ */
+  .event-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-block-start: var(--sp-3);
+  }
+  .event-rsvp-fail {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--danger-ink);
+    font-size: var(--type-label-size-sm);
+  }
+
+  /* ── Keyframes (wave 4-d; reduced-motion off-switch below) ── */
+  @keyframes campus-fill-in {
+    /* width-only growth — RTL-neutral by construction */
+    from { inline-size: 0; }
+  }
+  @keyframes social-count-pop {
+    0% { transform: scale(1); }
+    55% { transform: scale(1.4); }
+    100% { transform: none; }
+  }
+  @keyframes profile-save-in {
+    from { opacity: 0; transform: translateY(2px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* same-or-higher specificity than the rules above — the kill wins */
+    .campus-city-fill,
+    .post-count.pop,
+    .profile-link-saved { animation: none; }
+  }
+
+  /* ── Phone tuning (wave 4-d): 44px touch floor on the small
+     controls this section owns (the shared .btn.sm is 32px — a
+     global fix belongs to the primitives wave, these bumps are
+     scoped to my components only). ── */
+  @media (max-width: 640px) {
+    .post-action {
+      min-block-size: 44px;
+      min-inline-size: 44px;
+      justify-content: center;
+    }
+    .social-compose-error .btn,
+    .post-like-fail .btn,
+    .fact-error .btn,
+    .profile-link-edit .btn,
+    .event-actions .btn { min-block-size: 44px; }
+  }
 
 }

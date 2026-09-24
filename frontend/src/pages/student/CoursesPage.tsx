@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BookOpen, CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
@@ -6,7 +6,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, ProgressBar, Badge } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
 import {
@@ -15,6 +15,7 @@ import {
   useSubmitAssignment,
   validateSubmissionDraft,
   apiErrorMessage,
+  type MyEnrollment,
   type StudentDashboard,
   type Submission,
 } from '../../hooks/useResources';
@@ -30,6 +31,12 @@ const courseIcon = (codeOrName: string): LucideIcon => {
   return BookOpen;
 };
 
+// NOTE: the same default tint lives in CourseDetailPage / MatrixPage /
+// LibraryPage / LabsPage (API themeColor fallback). A shared
+// lib/courseMeta constant needs a wave that owns lib/ — flagged in the
+// worklog for the orchestrator.
+const DEFAULT_COURSE_TINT = '#3D6BD6';
+
 type AgendaAssignment = StudentDashboard['agenda']['assignments'][number];
 
 /** Exported for unit tests (submission-modal validation wiring). */
@@ -42,13 +49,33 @@ const TYPE_LABELS: Record<string, string> = {
   EXAM: 'امتحان',
 };
 
+/** Filter buckets mirror the KPI strip semantics (mutually real, counts
+ *  derived from data — never invented). */
+type CourseFilter = 'all' | 'active' | 'done' | 'attention';
+
+const FILTERS: Array<{ key: CourseFilter; label: string }> = [
+  { key: 'all', label: 'الكل' },
+  { key: 'active', label: 'قيد التقدّم' },
+  { key: 'done', label: 'مكتملة' },
+  { key: 'attention', label: 'بحاجة إلى اهتمام' },
+];
+
+function matchesFilter(e: MyEnrollment, f: CourseFilter): boolean {
+  if (f === 'done') return e.progressPct >= 100;
+  if (f === 'active') return e.progressPct > 0 && e.progressPct < 100;
+  if (f === 'attention') return e.progressPct < 30;
+  return true;
+}
+
+/** Honest relative due date with proper Arabic plurals (not "بعد 2 أيّام"). */
 function formatDue(iso: string): string {
   const d = new Date(iso);
   const days = Math.round((d.getTime() - Date.now()) / 86_400_000);
   if (days < 0) return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
   if (days === 0) return 'اليوم';
   if (days === 1) return 'غداً';
-  if (days < 7) return `بعد ${days} أيّام`;
+  if (days === 2) return 'بعد يومين';
+  if (days <= 10) return `بعد ${days} أيام`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
@@ -60,13 +87,49 @@ function dueStatus(dueAt: string): { label: string; color: 'green' | 'amber' | '
   return { label: 'متبقّي وقت', color: 'green' };
 }
 
+/** Shape-matched loading skeleton for the course card grid (audit 0-d
+ *  P2 — the page used a bare spinner where a thumb-card grid fits). */
+function CourseGridSkeleton() {
+  return (
+    <div className="grid-3" aria-busy="true" aria-live="polite">
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <div className="thumb-card" key={i} aria-hidden>
+          <div className="thumb-card-image">
+            <Skeleton width={56} height={56} rounded="var(--r-lg)" />
+          </div>
+          <div className="thumb-card-body">
+            <Skeleton width="85%" height={16} />
+            <Skeleton width="55%" height={12} />
+            <div style={{ marginTop: 'var(--sp-3)' }}>
+              <Skeleton width="100%" height={4} rounded="var(--r-full)" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function StudentCoursesPage() {
   const { data, isPending, isError, error, refetch } = useMyEnrollments();
   const dashboard = useStudentDashboard();
 
   const [submitTarget, setSubmitTarget] = useState<{ assignment: AgendaAssignment; offeringId: string } | null>(null);
+  const [filter, setFilter] = useState<CourseFilter>('all');
+  // The re-stagger authored moment fires on filter CHANGES only — the
+  // first data render lands without an entrance (no same-entrance
+  // antipattern); `data-stagger` opts the grid into the CSS animation.
+  const [stagger, setStagger] = useState(false);
 
   const upcoming = dashboard.data?.agenda.assignments ?? [];
+
+  const counts: Record<CourseFilter, number> = {
+    all: data?.length ?? 0,
+    active: data?.filter((e) => matchesFilter(e, 'active')).length ?? 0,
+    done: data?.filter((e) => matchesFilter(e, 'done')).length ?? 0,
+    attention: data?.filter((e) => matchesFilter(e, 'attention')).length ?? 0,
+  };
+  const filtered = (data ?? []).filter((e) => matchesFilter(e, filter));
 
   return (
     <div className="page">
@@ -77,71 +140,108 @@ export default function StudentCoursesPage() {
         </div>
       </header>
 
-      <div className="grid-4">
-        <MetricCard
-          icon={BookOpen}
-          label="مواد مسجَّلة"
-          value={data?.length ?? '—'}
-          change="هذا الفصل"
-          color="brand"
-        />
-        <MetricCard
-          icon={CheckCircle2}
-          label="مكتملة"
-          value={data?.filter((e) => e.progressPct >= 100).length ?? 0}
-          color="green"
-        />
-        <MetricCard
-          icon={Clock}
-          label="قيد التقدم"
-          value={data?.filter((e) => e.progressPct > 0 && e.progressPct < 100).length ?? 0}
-          color="amber"
-        />
-        <MetricCard
-          icon={AlertTriangle}
-          label="تحتاج اهتمام"
-          value={data?.filter((e) => e.progressPct < 30).length ?? 0}
-          change="أداء منخفض"
-          color="red"
-        />
-      </div>
-
       {isPending ? (
-        <Card><LoadingState /></Card>
+        <>
+          <KpiSkeleton />
+          <CourseGridSkeleton />
+        </>
       ) : isError ? (
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       ) : !data?.length ? (
-        <Card><EmptyState icon={BookOpen} title="لم تُسجَّل في أي مادة بعد" description="تواصل مع إدارة الكلية لإكمال التسجيل." /></Card>
+        <Card><EmptyState icon={BookOpen} title="لم تُسجَّل في أي مادة بعد" description="تواصل مع إدارة الكلية لإكمال تسجيل مواد الفصل — ستظهر هنا فور اعتمادها." /></Card>
       ) : (
-        <div className="grid-3">
-          {data.map((e) => {
-            const c = e.offering.course;
-            const Cmp = courseIcon(c.code ?? c.name);
-            const tint = c.themeColor ?? '#3D6BD6';
-            return (
-              <Link to={`/student/courses/${e.offering.id}`} className="thumb-card" key={e.id}>
-                <div className="thumb-card-image" style={{ background: `${tint}10` }}>
-                  <span style={{ color: tint }}>
-                    <Icon icon={Cmp} size={28} strokeWidth={1.6} />
-                  </span>
-                </div>
-                <div className="thumb-card-body">
-                  <div className="thumb-card-title">{c.name}</div>
-                  <div className="thumb-card-sub">د. {e.offering.teacher.firstName} {e.offering.teacher.lastName}</div>
-                  <div style={{ marginTop: 'var(--sp-2)' }}>
-                    <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+        <>
+          <div className="grid-4">
+            <MetricCard
+              icon={BookOpen}
+              label="مواد مسجَّلة"
+              value={data.length}
+              change="هذا الفصل"
+              color="brand"
+            />
+            <MetricCard
+              icon={CheckCircle2}
+              label="مكتملة"
+              value={counts.done}
+              color="green"
+            />
+            <MetricCard
+              icon={Clock}
+              label="قيد التقدم"
+              value={counts.active}
+              color="amber"
+            />
+            <MetricCard
+              icon={AlertTriangle}
+              label="بحاجة إلى اهتمام"
+              value={counts.attention}
+              change="أداء منخفض"
+              color="red"
+            />
+          </div>
 
+          {data.length > 1 && (
+            <div className="courses-filter" role="group" aria-label="تصفية المواد حسب الحالة">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.key}
+                  type="button"
+                  className={`pill${filter === f.key ? ' on' : ''}`}
+                  aria-pressed={filter === f.key}
+                  onClick={() => { setFilter(f.key); setStagger(true); }}
+                >
+                  {f.label}
+                  <span className="courses-filter-count" aria-hidden>{counts[f.key]}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* key={filter} remounts the grid on filter change so the CSS
+              re-stagger replays — data refetches alone never replay it. */}
+          <div className="grid-3 courses-grid" key={filter} data-stagger={stagger ? '' : undefined}>
+            {filtered.length ? filtered.map((e, i) => {
+              const c = e.offering.course;
+              const Cmp = courseIcon(c.code ?? c.name);
+              const tint = c.themeColor ?? DEFAULT_COURSE_TINT;
+              const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
+              return (
+                <Link
+                  to={`/student/courses/${e.offering.id}`}
+                  className="thumb-card"
+                  key={e.id}
+                  style={{ '--cc-i': i, '--course-tint': tint } as CSSProperties}
+                >
+                  <div className="thumb-card-image">
+                    <span>
+                      <Icon icon={Cmp} size={28} strokeWidth={1.6} />
+                    </span>
+                  </div>
+                  <div className="thumb-card-body">
+                    <div className="thumb-card-title" title={c.name}>{c.name}</div>
+                    <div className="thumb-card-sub" title={teacher}>{teacher}</div>
+                    <div style={{ marginTop: 'var(--sp-2)' }}>
+                      <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            }) : (
+              <div className="courses-grid-empty">
+                <EmptyState
+                  icon={BookOpen}
+                  title="لا توجد مواد في هذا التصنيف"
+                  description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض موادك."
+                />
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
       <Card title="الواجبات القادمة" icon={ClipboardList} subtitle="واجباتك المستحقة فعلياً خلال الأسبوع القادم ولم تُسلّمها بعد">
         {dashboard.isPending ? (
-          <LoadingState />
+          <TableSkeleton rows={4} cols={5} />
         ) : dashboard.isError ? (
           <ErrorState error={dashboard.error} onRetry={() => dashboard.refetch()} />
         ) : !upcoming.length ? (
@@ -151,8 +251,8 @@ export default function StudentCoursesPage() {
             description="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة موادك."
           />
         ) : (
-          <div className="tbl-wrap">
-            <table className="tbl">
+          <div className="table-wrap courses-assignments">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th>المادة</th>
@@ -167,14 +267,14 @@ export default function StudentCoursesPage() {
                   const due = dueStatus(a.dueAt);
                   return (
                     <tr key={a.id}>
-                      <td className="tbl-strong">{a.courseName}</td>
-                      <td>
+                      <td className="tbl-strong" data-label="المادة">{a.courseName}</td>
+                      <td data-label="الواجب">
                         <Badge>{TYPE_LABELS[a.type] ?? a.type}</Badge>{' '}
                         {a.title}
                       </td>
-                      <td className="tbl-num">{formatDue(a.dueAt)}</td>
-                      <td><Badge color={due.color}>{due.label}</Badge></td>
-                      <td>
+                      <td className="tbl-num" data-label="الموعد النهائي">{formatDue(a.dueAt)}</td>
+                      <td data-label="الحالة"><Badge color={due.color}>{due.label}</Badge></td>
+                      <td data-label="التسليم">
                         {a.offeringId ? (
                           <button
                             type="button"
@@ -257,7 +357,7 @@ export function SubmitAssignmentModal({
       <div className="modal-body">
         <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{assignment.title}</div>
         <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }}>
-          {assignment.courseName} · <span className="font-mono">{assignment.courseCode}</span> · الموعد النهائي:{' '}
+          {assignment.courseName} · <bdi className="font-mono">{assignment.courseCode}</bdi> · الموعد النهائي:{' '}
           {new Date(assignment.dueAt).toLocaleDateString('ar-LY', { dateStyle: 'medium' })}
         </div>
 
