@@ -3,9 +3,22 @@
  *
  * Per specs/012-design-graphics-uplift/contracts/illustration-system.md.
  *
- * V1 ships two surfaces eagerly (homepage-hero is critical first-paint;
- * empty-notifs and empty-search are tiny). The remaining V1 scenes are
- * lazy-loaded as their owning surfaces ship in subsequent slices.
+ * Scene inventory (wave 8-c audit — every V1 scene is consumed):
+ *   homepage-hero        → LandingPage hero (eager, first paint)
+ *   error-404            → NotFoundPage via ErrorState illustration=
+ *   empty-notifs         → NotificationDropdown empty state (the
+ *                          notifications panel's inbox)
+ *   empty-search         → LibraryPage filtered/book empty states
+ *   milestone-section    → MilestoneScene celebration + LandingPage
+ *                          pilot-study anchor (decorative reuse)
+ *   onboarding-frame-1..3 → OnboardingFlow frames 0–2
+ *   onboarding-role-intro → OnboardingFlow frame 3 (5 role motifs)
+ *
+ * Deviation from the contract (documented, audit 0-f P3-26): scenes
+ * are statically imported rather than React.lazy — each is ≤ ~6KB, the
+ * registry is one chunk, and every consumer mounts inside an already-
+ * code-split surface, so lazy boundaries would add complexity for a
+ * negligible payload win.
  *
  * The registry maps a scene name to a React component. Scene components
  * read CSS variables (--ill-hue-1..6, --ill-stroke, --ill-paper,

@@ -49,14 +49,19 @@ export default function LandingPage() {
 
   const year = new Date().getFullYear();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [megamenuOpen, setMegamenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
+  const megamenuTriggerRef = useRef<HTMLButtonElement>(null);
 
-  // Returning-visitor calm (FR-029, SC-010). On the first homepage visit
-  // of a session we set a sessionStorage flag; subsequent visits within
-  // the same session apply data-intro-seen="true" to the landing root,
-  // which CSS uses to short-circuit the full hero/intro motion.
-  const [introSeen, setIntroSeen] = useState<boolean>(() => {
+  // Returning-visitor calm (FR-029, SC-010). The first homepage visit
+  // of a session MARKS the sessionStorage flag but keeps playing the
+  // full intro — the calm (data-intro-seen="true" on the landing root)
+  // applies from the NEXT in-session visit onward, exactly as the CSS
+  // contract describes. (8-a: the old effect also flipped the state
+  // immediately, which calmed the very first visit too — every visit
+  // got the short fade and the theatrical first-visit reveal never ran.)
+  const [introSeen] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     try {
       return window.sessionStorage.getItem('madarek.intro.seen') === '1';
@@ -66,13 +71,12 @@ export default function LandingPage() {
   });
 
   useEffect(() => {
-    if (introSeen) return;
+    if (introSeen) return; // already marked by an earlier visit this session
     try {
       window.sessionStorage.setItem('madarek.intro.seen', '1');
     } catch {
       // sessionStorage may be blocked in private mode — that's fine.
     }
-    setIntroSeen(true);
   }, [introSeen]);
 
   useEffect(() => {
@@ -203,12 +207,33 @@ export default function LandingPage() {
           </Link>
 
           <nav className="landing-nav-links">
-            <div className="landing-nav-group">
-              <button type="button" className="landing-nav-link">
+            <div
+              className={`landing-nav-group${megamenuOpen ? ' open' : ''}`}
+              onBlur={(e) => {
+                // close when focus leaves the trigger + panel as a whole
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                  setMegamenuOpen(false);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape' && megamenuOpen) {
+                  setMegamenuOpen(false);
+                  megamenuTriggerRef.current?.focus();
+                }
+              }}
+            >
+              <button
+                type="button"
+                className="landing-nav-link"
+                aria-haspopup="true"
+                aria-expanded={megamenuOpen}
+                ref={megamenuTriggerRef}
+                onClick={() => setMegamenuOpen((v) => !v)}
+              >
                 المنصة
                 <Icon icon={ChevronDown} size={14} />
               </button>
-              <div className="landing-megamenu">
+              <div className="landing-megamenu" onClick={() => setMegamenuOpen(false)}>
                 <a href="#flipped" className="landing-megamenu-item">
                   <span className="sticker sm peach"><Icon icon={GraduationCap} size={20} /></span>
                   <span className="landing-megamenu-item-body">
@@ -317,15 +342,15 @@ export default function LandingPage() {
           </button>
         </Reveal>
         <Reveal as="div" className="landing-cta-meta" delay={4}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span className="landing-inline-cluster">
             <Icon icon={Check} size={14} /> بدون بطاقة ائتمان
           </span>
           <span className="landing-cta-meta-dot" />
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span className="landing-inline-cluster">
             <Icon icon={Check} size={14} /> دعم RTL كامل
           </span>
           <span className="landing-cta-meta-dot" />
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span className="landing-inline-cluster">
             <Icon icon={Check} size={14} /> اعتماد رسميّ
           </span>
         </Reveal>
@@ -533,7 +558,7 @@ export default function LandingPage() {
         <div className="marketing-container band-split">
           <Reveal as="div">
             <span className="sticker xl peach"><Icon icon={GraduationCap} size={48} strokeWidth={1.6} /></span>
-            <span className="band-eyebrow" style={{ display: 'block', marginBlockStart: 24 }}>الفصل المعكوس</span>
+            <span className="band-eyebrow">الفصل المعكوس</span>
             <h2 className="band-title">
               محاضرات مسجَّلة <em>تتفاعل</em> مع الطالب
             </h2>
@@ -617,7 +642,7 @@ export default function LandingPage() {
           </Reveal>
           <Reveal as="div" delay={2}>
             <span className="sticker xl lavender"><Icon icon={Sparkles} size={48} strokeWidth={1.6} /></span>
-            <span className="band-eyebrow" style={{ display: 'block', marginBlockStart: 24 }}>المساعد الأكاديمي</span>
+            <span className="band-eyebrow">المساعد الأكاديمي</span>
             <h2 className="band-title">
               <em><bdi>«Oasis»</bdi></em> — يفهم سياق دراستك
             </h2>
@@ -752,29 +777,29 @@ export default function LandingPage() {
               <Illustration name="milestone-section" decorative />
             </Reveal>
             <h2 className="band-title">نتائج <em>تجربة فعلية</em></h2>
-            <p className="band-lede" style={{ marginInline: 'auto' }}>
+            <p className="band-lede">
               اعتمدنا استراتيجية الصفّ المعكوس على مادة اللغة الإنجليزية مع طلَّاب
               من جنوب ليبيا — هذه أرقام التجربة.
             </p>
           </SectionAccent>
-          <div className="landing-pilot-grid" style={{ paddingBlock: 0, marginBlockStart: 24 }}>
+          <div className="landing-pilot-grid">
             <Reveal as="div" className="landing-pilot-stat">
-              <div className="landing-pilot-value" style={{ color: 'var(--c-sand-deep)' }}><CountUp value="40" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="40" />٪</div>
               <div className="landing-pilot-label">تحسُّن الاستيعاب</div>
               <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div>
             </Reveal>
             <Reveal as="div" className="landing-pilot-stat" delay={1}>
-              <div className="landing-pilot-value" style={{ color: 'var(--c-sand-deep)' }}><CountUp value="70" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="70" />٪</div>
               <div className="landing-pilot-label">زيادة في المشاركة</div>
               <div className="landing-pilot-note">داخل الحلقات النقاشية</div>
             </Reveal>
             <Reveal as="div" className="landing-pilot-stat" delay={2}>
-              <div className="landing-pilot-value" style={{ color: 'var(--c-sand-deep)' }}><CountUp value="30" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="30" />٪</div>
               <div className="landing-pilot-label">تحسُّن في الالتزام</div>
               <div className="landing-pilot-note">بمتابعة الجلسات</div>
             </Reveal>
             <Reveal as="div" className="landing-pilot-stat" delay={3}>
-              <div className="landing-pilot-value" style={{ color: 'var(--c-sand-deep)' }}><CountUp value="90" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="90" />٪</div>
               <div className="landing-pilot-label">تحقيق أهداف التعلُّم</div>
               <div className="landing-pilot-note">ضمن الإطار الزمني</div>
             </Reveal>
@@ -858,7 +883,7 @@ export default function LandingPage() {
                   <span className="landing-brand-sub">جامعة الزاوية</span>
                 </span>
               </Link>
-              <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.65, marginBlockStart: 8, maxInlineSize: '32ch' }}>
+              <p className="landing-footer-about">
                 المنصّة الرسمية لجامعة الزاوية تحت إشراف وزارة التعليم العالي والبحث العلمي.
               </p>
             </div>
@@ -885,7 +910,7 @@ export default function LandingPage() {
           </div>
           <div className="landing-footer-bottom">
             <span>© {year} مدارك · جامعة الزاوية</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <span className="landing-inline-cluster">
               <LibyaFlag size={14} /> صُنع في ليبيا
             </span>
           </div>

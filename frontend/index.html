@@ -8,6 +8,75 @@
     <meta name="theme-color" content="#FBFAF9" media="(prefers-color-scheme: light)" />
     <meta name="description" content="مدارك — منصة التعليم الذكي لجامعة الزاوية · وزارة التعليم العالي والبحث العلمي · ليبيا" />
     <title>مدارك · منصة التعليم الذكي · جامعة الزاوية</title>
+    <!-- 8-a (0-b P2-17) — canonical + Open Graph / Twitter card. og:image
+         is the brand mark sheet (public/brand/madarek-logo-lg.jpg, 1280×698
+         jpg, 54KB): jpg survives every crawler (webp still doesn't), and
+         the URLs are absolute because social scrapers don't resolve
+         relative paths. -->
+    <link rel="canonical" href="https://madarek.onrender.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="مدارك — جامعة الزاوية" />
+    <meta property="og:title" content="مدارك · منصة التعليم الذكي · جامعة الزاوية" />
+    <meta property="og:description" content="مدارك — منصة التعليم الذكي لجامعة الزاوية · وزارة التعليم العالي والبحث العلمي · ليبيا" />
+    <meta property="og:url" content="https://madarek.onrender.com/" />
+    <meta property="og:image" content="https://madarek.onrender.com/brand/madarek-logo-lg.jpg" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="698" />
+    <meta property="og:image:alt" content="شعار منصة مدارك — جامعة الزاوية" />
+    <meta property="og:locale" content="ar_AR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="مدارك · منصة التعليم الذكي · جامعة الزاوية" />
+    <meta name="twitter:description" content="مدارك — منصة التعليم الذكي لجامعة الزاوية · وزارة التعليم العالي والبحث العلمي · ليبيا" />
+    <meta name="twitter:image" content="https://madarek.onrender.com/brand/madarek-logo-lg.jpg" />
+    <!-- 8-a — structured data: the university truth is 25 colleges
+         (backend seed + zu.edu.ly structured list; the prose "26" and
+         older docs' "29" are both wrong — see data/colleges.config.ts).
+         Departments transcribed 1:1 from the canonical registry. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "جامعة الزاوية",
+      "alternateName": ["University of Zawia", "منصة مدارك — جامعة الزاوية للتعليم الذكي"],
+      "url": "https://madarek.onrender.com/",
+      "logo": "https://madarek.onrender.com/brand/madarek-logo-lg.jpg",
+      "image": "https://madarek.onrender.com/main_photo.jpg",
+      "foundingDate": "1988",
+      "description": "المنصّة الرسمية لجامعة الزاوية تحت إشراف وزارة التعليم العالي والبحث العلمي — ليبيا.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "LY",
+        "addressLocality": "الزاوية"
+      },
+      "department": [
+        { "@type": "College", "name": "كلية تقنية المعلومات", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الهندسة", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية العلوم", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الطب البشري", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الآداب", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الاقتصاد", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية التربية", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية القانون", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الصيدلة", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية طب وجراحة الفم والأسنان", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية التقنية الطبية", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الرياضة والتربية البدنية", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية التمريض", "address": { "@type": "PostalAddress", "addressLocality": "الزاوية" } },
+        { "@type": "College", "name": "كلية الاقتصاد", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية البيطرة والعلوم الزراعية", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية التربية", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية الشريعة والقانون", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية العلوم", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية الصحة العامة", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية هندسة الموارد الطبيعية", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية هندسة النفط والغاز", "address": { "@type": "PostalAddress", "addressLocality": "العجيلات" } },
+        { "@type": "College", "name": "كلية الآداب", "address": { "@type": "PostalAddress", "addressLocality": "زوارة" } },
+        { "@type": "College", "name": "كلية التربية", "address": { "@type": "PostalAddress", "addressLocality": "أبو عيسى" } },
+        { "@type": "College", "name": "كلية التربية", "address": { "@type": "PostalAddress", "addressLocality": "ناصر" } },
+        { "@type": "College", "name": "كلية الموارد الطبيعية", "address": { "@type": "PostalAddress", "addressLocality": "مناطق أخرى" } }
+      ]
+    }
+    </script>
     <!-- Self-hosted IBM Plex (src/styles/fonts.css) — preload the two most
          critical arabic subsets: body 400 + display 700. crossorigin is
          required because fonts are always fetched in CORS mode. -->

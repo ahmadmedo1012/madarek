@@ -48,6 +48,17 @@ export function SceneEmptyNotifs(): ReactElement {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+      {/* Inner highlight — traces the bell's shoulder so the body reads
+          as a dimensional shell rather than a flat cutout (the hero
+          scene layers strokes the same way). */}
+      <path
+        d="M84 124
+           C 84 104, 89 90, 100 88"
+        fill="none"
+        stroke="var(--ill-paper)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
 
       {/* Bell crown */}
       <path

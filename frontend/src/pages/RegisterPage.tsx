@@ -4,9 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Mail, Lock, Home, GraduationCap, School,
+  Mail, Lock, GraduationCap, School,
   AlertCircle, ArrowLeft, ArrowRight, User, Hash, Building2, BookOpen, Lock as LockIcon,
-  Eye, EyeOff,
+  Eye, EyeOff, Check,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { useRegister } from '../hooks/useAuth';
@@ -54,134 +54,162 @@ const teacherSchema = z.object({
 type StudentInputs = z.infer<typeof studentSchema>;
 type TeacherInputs = z.infer<typeof teacherSchema>;
 
+/** Direction of the last step change — keys the slide animation so
+ *  step 2 always enters from the reading-ahead edge and step 1 comes
+ *  back from where it came (RTL-aware via --motion-direction). */
+type StepDir = 'forward' | 'back';
+
 export default function RegisterPage() {
   useThemeSync();
   const navigate = useNavigate();
   const register = useRegister();
   const facultiesQ = useFaculties();
   const [role, setRole] = useState<AcademicRole | null>(null);
+  const [stepDir, setStepDir] = useState<StepDir>('forward');
   const facultiesState: FacultiesState = {
     status: facultiesQ.isLoading ? 'loading' : facultiesQ.isError ? 'error' : 'ready',
     items: facultiesQ.data ?? [],
     retry: () => void facultiesQ.refetch(),
   };
 
-  if (!role) {
-    return (
-      <div className="auth-shell">
-        <div className="auth-top">
-          <Link to="/auth" className="auth-back-home">
-            <Icon icon={Home} size={14} />
-            تسجيل الدخول
-          </Link>
-          <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>إنشاء حساب جديد</span>
-        </div>
-
-        <main className="auth-center">
-          <div className="auth-card" style={{ maxWidth: 520 }}>
-            <div className="auth-brand-mini">
-              <span className="auth-brand-mini-mark">م</span>
-              <span className="auth-brand-mini-text">مدارك</span>
-            </div>
-
-            <div className="auth-form-header">
-              <h1 className="auth-form-title">من أنت؟</h1>
-              <p className="auth-form-sub">
-                اختر نوع الحساب لإنشاء وصولك إلى منصّة جامعة الزاوية.
-              </p>
-            </div>
-
-            <div className="role-card-grid" style={{ display: 'grid', gap: 12 }}>
-              <button type="button" className="role-card" onClick={() => setRole('STUDENT')}>
-                <span className="role-card-icon"><Icon icon={GraduationCap} size={22} /></span>
-                <span className="role-card-body">
-                  <span className="role-card-title">طالب</span>
-                  <span className="role-card-sub">مقيَّد في إحدى كليّات الجامعة</span>
-                </span>
-                <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
-              </button>
-
-              <button type="button" className="role-card" onClick={() => setRole('TEACHER')}>
-                <span className="role-card-icon"><Icon icon={School} size={22} /></span>
-                <span className="role-card-body">
-                  <span className="role-card-title">عضو هيئة تدريس</span>
-                  <span className="role-card-sub">أستاذ في إحدى الأقسام الأكاديمية</span>
-                </span>
-                <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
-              </button>
-            </div>
-
-            <div className="role-invitation-note" role="note">
-              <Icon icon={LockIcon} size={13} />
-              <span>
-                المناصب القياديّة (عميد، رئيس قسم) والإدارة وضمان الجودة تُمنح بالتعيين، وليست
-                متاحة للتسجيل الذاتيّ. تواصل مع إدارة جامعتك للحصول على الوصول.
-              </span>
-            </div>
-          </div>
-        </main>
-
-        <div className="auth-bottom">
-          دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
-        </div>
-      </div>
-    );
-  }
+  const chooseRole = (r: AcademicRole) => {
+    setStepDir('forward');
+    setRole(r);
+  };
+  const backToRoles = () => {
+    setStepDir('back');
+    setRole(null);
+  };
 
   return (
     <div className="auth-shell">
       <div className="auth-top">
-        <button type="button" className="auth-back-home" onClick={() => setRole(null)}>
-          <Icon icon={ArrowRight} size={14} />
-          تغيير نوع الحساب
-        </button>
-        <Link to="/auth" className="auth-back-home">
-          تسجيل الدخول
-          <Icon icon={ArrowLeft} size={14} />
-        </Link>
+        {role ? (
+          <button type="button" className="auth-back-home" onClick={backToRoles}>
+            <Icon icon={ArrowRight} size={14} />
+            تغيير نوع الحساب
+          </button>
+        ) : (
+          <Link to="/auth" className="auth-back-home">
+            <Icon icon={ArrowRight} size={14} />
+            تسجيل الدخول
+          </Link>
+        )}
+        {role ? (
+          <Link to="/auth" className="auth-back-home">
+            تسجيل الدخول
+            <Icon icon={ArrowLeft} size={14} />
+          </Link>
+        ) : (
+          <span className="auth-context">إنشاء حساب جديد</span>
+        )}
       </div>
 
       <main className="auth-center">
-        <div className="auth-card" style={{ maxWidth: 560 }}>
+        {/* One card for BOTH steps (same width, same chrome) — stepping
+            never reflows the layout; only the keyed panel slides. */}
+        <div className="auth-card auth-card--wide">
           <div className="auth-brand-mini">
             <span className="auth-brand-mini-mark">م</span>
             <span className="auth-brand-mini-text">مدارك</span>
           </div>
 
-          <div className="auth-form-header">
-            <h1 className="auth-form-title">
-              {role === 'STUDENT' ? 'تسجيل طالب جديد' : 'تسجيل عضو هيئة تدريس'}
-            </h1>
-            <p className="auth-form-sub">
-              املأ بياناتك لإنشاء الحساب. كل الحقول المطلوبة مُعلَّمة.
-            </p>
-          </div>
+          <ol className="auth-steps" aria-label="مراحل إنشاء الحساب">
+            <li
+              className="auth-step"
+              data-state={role ? 'done' : 'current'}
+              aria-current={role ? undefined : 'step'}
+            >
+              <span className="auth-step-dot" aria-hidden>
+                {role ? <Icon icon={Check} size={12} /> : '1'}
+              </span>
+              نوع الحساب
+            </li>
+            <li
+              className="auth-step"
+              data-state={role ? 'current' : 'todo'}
+              aria-current={role ? 'step' : undefined}
+            >
+              <span className="auth-step-dot" aria-hidden>2</span>
+              البيانات
+            </li>
+          </ol>
 
-          {role === 'STUDENT' ? (
-            <StudentForm
-              isPending={register.isPending}
-              isError={register.isError}
-              faculties={facultiesState}
-              onSubmit={async (values) => {
-                try {
-                  const res = await register.mutateAsync({ role: 'STUDENT', ...values });
-                  navigate(ROLE_HOME[res.user.role], { replace: true });
-                } catch { /* surfaced below */ }
-              }}
-            />
-          ) : (
-            <TeacherForm
-              isPending={register.isPending}
-              isError={register.isError}
-              faculties={facultiesState}
-              onSubmit={async (values) => {
-                try {
-                  const res = await register.mutateAsync({ role: 'TEACHER', ...values });
-                  navigate(ROLE_HOME[res.user.role], { replace: true });
-                } catch { /* surfaced below */ }
-              }}
-            />
-          )}
+          <div className="auth-step-panel" key={role ?? 'role'} data-dir={stepDir}>
+            {role ? (
+              <>
+                <div className="auth-form-header">
+                  <h1 className="auth-form-title">
+                    {role === 'STUDENT' ? 'تسجيل طالب جديد' : 'تسجيل عضو هيئة تدريس'}
+                  </h1>
+                  <p className="auth-form-sub">جميع الحقول مطلوبة لإتمام إنشاء الحساب.</p>
+                </div>
+
+                {role === 'STUDENT' ? (
+                  <StudentForm
+                    isPending={register.isPending}
+                    isError={register.isError}
+                    faculties={facultiesState}
+                    onSubmit={async (values) => {
+                      try {
+                        const res = await register.mutateAsync({ role: 'STUDENT', ...values });
+                        navigate(ROLE_HOME[res.user.role], { replace: true });
+                      } catch { /* surfaced below */ }
+                    }}
+                  />
+                ) : (
+                  <TeacherForm
+                    isPending={register.isPending}
+                    isError={register.isError}
+                    faculties={facultiesState}
+                    onSubmit={async (values) => {
+                      try {
+                        const res = await register.mutateAsync({ role: 'TEACHER', ...values });
+                        navigate(ROLE_HOME[res.user.role], { replace: true });
+                      } catch { /* surfaced below */ }
+                    }}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <div className="auth-form-header">
+                  <h1 className="auth-form-title">من أنت؟</h1>
+                  <p className="auth-form-sub">
+                    اختر نوع الحساب لإنشاء وصولك إلى منصّة جامعة الزاوية.
+                  </p>
+                </div>
+
+                <div className="role-card-grid">
+                  <button type="button" className="role-card" onClick={() => chooseRole('STUDENT')}>
+                    <span className="role-card-icon"><Icon icon={GraduationCap} size={22} /></span>
+                    <span className="role-card-body">
+                      <span className="role-card-title">طالب</span>
+                      <span className="role-card-sub">مقيَّد في إحدى كليّات الجامعة</span>
+                    </span>
+                    <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
+                  </button>
+
+                  <button type="button" className="role-card" onClick={() => chooseRole('TEACHER')}>
+                    <span className="role-card-icon"><Icon icon={School} size={22} /></span>
+                    <span className="role-card-body">
+                      <span className="role-card-title">عضو هيئة تدريس</span>
+                      <span className="role-card-sub">أستاذ في إحدى الأقسام الأكاديمية</span>
+                    </span>
+                    <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
+                  </button>
+                </div>
+
+                <div className="role-invitation-note" role="note">
+                  <Icon icon={LockIcon} size={13} />
+                  <span>
+                    المناصب القياديّة (عميد، رئيس قسم) والإدارة وضمان الجودة تُمنح بالتعيين، وليست
+                    متاحة للتسجيل الذاتيّ. تواصل مع إدارة جامعتك للحصول على الوصول.
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </main>
 
@@ -227,22 +255,22 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
       <div className="auth-row-2">
         <Field label="الاسم الأول" error={form.formState.errors.firstName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input" autoComplete="given-name" {...form.register('firstName')} />
+          <input className="input auth-input" type="text" autoComplete="given-name" {...form.register('firstName')} />
         </Field>
         <Field label="اللقب" error={form.formState.errors.lastName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input" autoComplete="family-name" {...form.register('lastName')} />
+          <input className="input auth-input" type="text" autoComplete="family-name" {...form.register('lastName')} />
         </Field>
       </div>
 
       <Field label="البريد الإلكتروني" error={form.formState.errors.email?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="auth-input" type="email" dir="ltr" autoComplete="email" {...form.register('email')} />
+        <input className="input auth-input" type="email" dir="ltr" autoComplete="email" {...form.register('email')} />
       </Field>
 
       <Field label="كلمة المرور (٨ أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-        <input className="auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
+        <input className="input auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
         <button
           type="button"
           className="auth-input-toggle"
@@ -258,7 +286,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
         <span className="auth-input-icon" aria-hidden><Icon icon={Hash} size={16} /></span>
         {/* dir="ltr": university IDs are Latin/digit runs (2024-CS-1234)
             that bidi-scramble inside an RTL input. */}
-        <input className="auth-input" placeholder="مثلاً 2024-CS-1234" dir="ltr" {...form.register('universityId')} />
+        <input className="input auth-input" type="text" placeholder="مثلاً 2024-CS-1234" dir="ltr" {...form.register('universityId')} />
       </Field>
 
       <div className="auth-row-2">
@@ -267,7 +295,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
           {faculties.status === 'error' && (
             <div className="auth-error" role="alert">
               <Icon icon={AlertCircle} size={14} />
-              <span>تعذّر تحميل الكلّيّات.</span>
+              <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
               <button type="button" className="auth-retry-link" onClick={faculties.retry}>
                 إعادة المحاولة
               </button>
@@ -297,7 +325,10 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
       {isError && (
         <div className="auth-error" role="alert">
           <Icon icon={AlertCircle} size={14} />
-          <span>تعذَّر إنشاء الحساب. تحقَّق من البيانات وحاول مجدداً.</span>
+          <span>
+            تعذَّر إنشاء الحساب. راجع البيانات المدخلة وتأكَّد من اتصالك بالشبكة ثم أعد
+            المحاولة — وإن كان بريدك مسجَّلاً مسبقاً فجرِّب تسجيل الدخول.
+          </span>
         </div>
       )}
 
@@ -333,22 +364,22 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
       <div className="auth-row-2">
         <Field label="الاسم الأول" error={form.formState.errors.firstName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input" autoComplete="given-name" {...form.register('firstName')} />
+          <input className="input auth-input" type="text" autoComplete="given-name" {...form.register('firstName')} />
         </Field>
         <Field label="اللقب" error={form.formState.errors.lastName?.message}>
           <span className="auth-input-icon" aria-hidden><Icon icon={User} size={16} /></span>
-          <input className="auth-input" autoComplete="family-name" {...form.register('lastName')} />
+          <input className="input auth-input" type="text" autoComplete="family-name" {...form.register('lastName')} />
         </Field>
       </div>
 
       <Field label="البريد الجامعي" error={form.formState.errors.email?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Mail} size={16} /></span>
-        <input className="auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
+        <input className="input auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
       </Field>
 
       <Field label="كلمة المرور (٨ أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-        <input className="auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
+        <input className="input auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
         <button
           type="button"
           className="auth-input-toggle"
@@ -366,7 +397,7 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
           {faculties.status === 'error' && (
             <div className="auth-error" role="alert">
               <Icon icon={AlertCircle} size={14} />
-              <span>تعذّر تحميل الكلّيّات.</span>
+              <span>تعذّر تحميل الكلّيّات — تحقّق من اتصالك بالشبكة.</span>
               <button type="button" className="auth-retry-link" onClick={faculties.retry}>
                 إعادة المحاولة
               </button>
@@ -389,7 +420,7 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
 
       <Field label="التخصص العلمي" error={form.formState.errors.specialty?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={BookOpen} size={16} /></span>
-        <input className="auth-input" placeholder="مثلاً: الذكاء الاصطناعي" {...form.register('specialty')} />
+        <input className="input auth-input" type="text" placeholder="مثلاً: الذكاء الاصطناعي" {...form.register('specialty')} />
       </Field>
 
       <div className="role-invitation-note" role="note">
@@ -402,7 +433,10 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
       {isError && (
         <div className="auth-error" role="alert">
           <Icon icon={AlertCircle} size={14} />
-          <span>تعذَّر إنشاء الحساب. تحقَّق من البيانات وحاول مجدداً.</span>
+          <span>
+            تعذَّر إنشاء الحساب. راجع البيانات المدخلة وتأكَّد من اتصالك بالشبكة ثم أعد
+            المحاولة — وإن كان بريدك مسجَّلاً مسبقاً فجرِّب تسجيل الدخول.
+          </span>
         </div>
       )}
 

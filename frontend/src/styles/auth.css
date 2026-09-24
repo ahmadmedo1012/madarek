@@ -1,9 +1,26 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Auth page (Notion-clean)
+   MADARK — Auth + Register + 404 pages (Notion-clean)
    Single centered column · large fields · soft card · friendly tone
+   ─────────────────────────────────────────────────────────────────────
+   Wave 8-b reorganization notes:
+   · .auth-input is now a THIN MODIFIER on the shared .input system
+     (components.css styles every bare input/select/textarea). The icon
+     gutter applies only when a leading icon exists — the old baked-in
+     40px start padding dented the app forms that borrow .auth-input
+     (audits 0-b P1-11, 0-e P1-31).
+   · Focus language is NOT declared here: polish v15 owns the input
+     accent border + halo, v22 owns the single AA-safe :focus-visible
+     ring (ruling #13 — the overrides layer has the final word).
+   · The card rise-in entrance is owned by polish (madark-auth-card-in,
+     with its own reduced-motion kill). Nothing animates the card here.
+   · The classes consumed outside these pages (community / curriculum /
+     student forms: .auth-input, .auth-field, .auth-error,
+     .auth-field-error, .auth-row) keep their contracts.
    ════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
+
+  /* ══ 1 · SHELL — login / register / 404 share the ground ═══════════ */
 
   .auth-shell {
     min-block-size: 100dvh;
@@ -21,43 +38,79 @@
     background: radial-gradient(ellipse at 50% 50%,
       var(--c-copper-bg) 0%,
       transparent 60%);
-    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
+    z-index: 0; /* local paint-order baseline — not a --z-* layer */
     pointer-events: none;
     opacity: 0.6;
   }
   [data-theme="dark"] .auth-shell::before { opacity: 0.4; }
 
   .auth-top {
-    position: relative; z-index: 1; /* local paint-order above the ::before glow — not a --z-* layer */
+    position: relative; z-index: 1; /* above the ::before glow — local */
     padding: var(--sp-5) var(--page-gutter);
-    display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--sp-3);
+    flex-wrap: wrap; /* 320px: the two nav actions never clip */
     max-inline-size: var(--marketing-max-w);
     margin-inline: auto;
     inline-size: 100%;
   }
-  @media (max-width: 920px) { .auth-top { padding: var(--sp-4) var(--page-gutter-mobile); } }
+  @media (max-width: 920px) {
+    .auth-top { padding: var(--sp-4) var(--page-gutter-mobile); }
+  }
 
   .auth-back-home {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: var(--fs-sm);
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
     color: var(--text-secondary);
-    padding: 8px 14px;
+    padding: var(--sp-2) var(--sp-4);
+    min-block-size: 40px;
     border-radius: var(--r-full);
     border: 1px solid var(--rule);
     background: var(--surface);
     transition: var(--t-clean);
-    font-weight: var(--fw-semibold);
     text-decoration: none;
+    cursor: pointer;
   }
-  .auth-back-home:hover { color: var(--text); background: var(--surface-2); border-color: var(--border-strong); }
+  .auth-back-home:hover {
+    color: var(--text);
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  @media (max-width: 640px) {
+    /* touch floor — the only nav element on phones (audit 0-b P2-21) */
+    .auth-back-home { min-block-size: 44px; }
+  }
+
+  /* Muted context chip in the top bar (was an inline style object). */
+  .auth-context {
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    font-size: var(--type-label-size);
+    color: var(--text-muted);
+  }
 
   .auth-center {
     flex: 1;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    justify-content: center;
     padding: var(--sp-5) var(--page-gutter) var(--sp-9);
-    position: relative; z-index: 1; /* local paint-order above the ::before glow — not a --z-* layer */
+    position: relative; z-index: 1; /* above the ::before glow — local */
   }
-  @media (max-width: 920px) { .auth-center { padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-9); } }
+  @media (max-width: 920px) {
+    .auth-center { padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-9); }
+  }
+
+  .auth-bottom {
+    position: relative; z-index: 1; /* above the ::before glow — local */
+    padding: var(--sp-5) var(--page-gutter);
+    text-align: center;
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    border-block-start: 1px solid var(--rule);
+  }
+  .auth-bottom strong { color: var(--text-secondary); font-weight: var(--fw-semibold); }
+
+  /* ══ 2 · CARD — the elevated single-surface moment ═════════════════ */
 
   .auth-card {
     inline-size: 100%;
@@ -67,20 +120,38 @@
     border: 1px solid var(--rule);
     border-radius: var(--r-2xl);
     padding: clamp(var(--sp-7), 4vw, var(--sp-9));
-    box-shadow: var(--shadow-pop);
-    animation: madarek-fade-up var(--motion-duration-long) var(--motion-ease-decelerate) both;
+    /* The .card elevation language (ruling #1): hairline border + the
+       small resting shadow — NOT the old border + wide pop shadow
+       ghost. Hover deepens to the card-h shadow. */
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--motion-duration-medium) var(--motion-ease-standard);
     position: relative;
+    /* Safe vertical centering: with free space the auto margins center
+       the card; once the form outgrows the viewport they collapse and
+       the card scrolls from the top (flex align-center would clip it). */
+    margin-block: auto;
   }
+  .auth-card:hover { box-shadow: var(--shadow-card-h); }
+  @media (max-width: 480px) {
+    .auth-card { padding: var(--sp-6); }
+  }
+
+  /* Incumbent identity: the short copper hairline on the card's top
+     edge — refined 3px → 2px (ruling #4 spirit: hairline accents). */
   .auth-card::before {
     content: '';
     position: absolute;
     inset-block-start: 0;
     inset-inline: 30%;
-    block-size: 3px;
+    block-size: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    border-radius: 0 0 3px 3px;
+    border-radius: 0 0 2px 2px; /* matches the 2px bar — no radius token at this scale */
     pointer-events: none;
   }
+
+  /* Register keeps one card width across BOTH steps so stepping never
+     reflows the layout (was inline maxWidth 520 vs 560). */
+  .auth-card--wide { max-inline-size: 560px; }
 
   .auth-brand-mini {
     display: inline-flex; align-items: center; gap: var(--sp-2);
@@ -94,129 +165,312 @@
     background: var(--neutral-900); color: var(--neutral-50);
     font-family: var(--font-display);
     font-weight: var(--fw-black);
-    font-size: 16px;
+    font-size: 16px; /* glyph scale — matches the 16/18/20 icon ladder */
   }
   [data-theme="dark"] .auth-brand-mini-mark { background: var(--accent); color: var(--accent-fg); }
   .auth-brand-mini-text {
     font-family: var(--font-display);
-    font-size: var(--fs-h3);
+    font-size: var(--type-headline-size-sm);
     font-weight: var(--fw-black);
     letter-spacing: var(--ls-tight);
     color: var(--text);
   }
+
+  /* ══ 3 · HEADER + REGISTER STEP INDICATOR ══════════════════════════ */
 
   .auth-form-header {
     display: flex; flex-direction: column; gap: var(--sp-2);
   }
   .auth-form-title {
     font-family: var(--font-display);
-    font-size: clamp(28px, 3.4vw, 36px);
-    font-weight: var(--fw-black);
+    font-size: var(--type-display-size-md);
+    font-weight: var(--type-display-weight);
     color: var(--text);
     letter-spacing: var(--ls-tight);
+    /* Arabic display floor (base.css .page-title precedent — the 1.05
+       display role is Latin-tuned and clips Arabic diacritics). */
     line-height: 1.1;
   }
   .auth-form-sub {
-    font-size: var(--fs-body);
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line-height);
     color: var(--text-secondary);
-    line-height: var(--lh-base);
   }
 
-  .auth-form { display: flex; flex-direction: column; gap: var(--sp-4); }
+  /* Two-step register flow: نوع الحساب → البيانات. The indicator is
+     the stable element between steps (never slides with the panel). */
+  .auth-steps {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .auth-step {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+    color: var(--text-muted);
+  }
+  .auth-step + .auth-step::before {
+    content: '';
+    inline-size: var(--sp-5);
+    block-size: 1px; /* hairline connector — never a colored stripe */
+    background: var(--rule);
+    margin-inline-end: var(--sp-2);
+  }
+  .auth-step-dot {
+    inline-size: 20px; block-size: 20px;
+    border-radius: var(--r-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    flex: 0 0 auto;
+  }
+  .auth-step[data-state="current"] {
+    color: var(--text);
+    font-weight: var(--fw-semibold);
+  }
+  .auth-step[data-state="current"] .auth-step-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+  /* Done dot auto-inverts per theme: light = ink ground/cream glyph,
+     dark = sand ground/ink glyph (same pattern as .auth-submit). */
+  .auth-step[data-state="done"] .auth-step-dot {
+    border-color: var(--neutral-900);
+    background: var(--neutral-900);
+    color: var(--neutral-50);
+  }
+
+  /* The keyed step surface — ONE authored moment: the panel slides in
+     from the direction of travel. --motion-direction flips the sign
+     under [dir="rtl] so forward always enters from the reading-ahead
+     edge (physical left in RTL, right in LTR). */
+  .auth-step-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+  }
+  .auth-step-panel[data-dir="forward"] {
+    animation: auth-step-forward-in
+      var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .auth-step-panel[data-dir="back"] {
+    animation: auth-step-back-in
+      var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  @keyframes auth-step-forward-in {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--motion-direction) * var(--motion-distance-medium)));
+    }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes auth-step-back-in {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--motion-direction) * var(--motion-distance-medium) * -1));
+    }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ══ 4 · FIELDS — thin modifiers over the shared .input base ═══════ */
+
+  .auth-form { display: flex; flex-direction: column; gap: var(--sp-5); }
+
+  /* Legacy two-column row (also consumed by the curriculum authoring
+   *  panels — keep the contract). */
   .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
   @media (max-width: 480px) { .auth-row { grid-template-columns: 1fr; } }
 
-  .auth-field { display: flex; flex-direction: column; gap: 6px; }
-  .auth-input-wrap { position: relative; display: flex; align-items: center; }
+  .auth-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+  @media (max-width: 480px) { .auth-row-2 { grid-template-columns: 1fr; } }
+
+  .auth-field {
+    display: flex; flex-direction: column; gap: var(--sp-2);
+    min-inline-size: 0;
+  }
+  /* Label = the type-label role. The role's 0.02em tracking is
+     Latin-tuned — Arabic joins must stay untracked. The field's gap
+     owns the label→control rhythm (.form-label's own 6px margin would
+     double it). */
+  .auth-field .form-label {
+    margin-block-end: 0;
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+    letter-spacing: 0;
+    color: var(--text-secondary);
+  }
+
+  /* Block (not flex) so the faculties skeleton / error banner swap in
+     at full width; the icon + toggle are absolutely positioned. */
+  .auth-input-wrap { position: relative; display: block; }
   .auth-input-icon {
     position: absolute;
     inset-inline-start: var(--sp-3);
+    /* 16px glyph centered in the 48px auth input */
+    inset-block-start: calc(50% - var(--sp-2));
     color: var(--text-muted);
     pointer-events: none;
-    display: inline-flex; align-items: center;
+    display: inline-flex;
   }
-  .auth-input {
-    inline-size: 100%;
-    block-size: 48px;
-    padding-inline-start: 40px;
-    padding-inline-end: var(--sp-4);
-    font-size: var(--fs-body);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    color: var(--text);
+
+  /* The auth large-field scale on top of the shared 44px base. Only
+     real controls grow — textareas that borrow .auth-input keep their
+     native auto height (min 96px from the shared base). */
+  input.auth-input,
+  select.auth-input { block-size: 48px; }
+
+  /* Icon gutter — ONLY when a leading icon actually exists. Selects
+     and the app forms that borrow .auth-input get the clean shared
+     padding (this finishes audit 0-b P1-11: the phantom 40px dent). */
+  .auth-input-wrap:has(> .auth-input-icon) .auth-input {
+    padding-inline-start: var(--sp-8);
+  }
+  /* LTR inputs (email / university ID) inside the RTL wrap: the icon
+     sits on the physical right = the input's inline END, so the gutter
+     mirrors (audit 0-b P1-7). Scoped to icon wraps for the same
+     reason as above. */
+  .auth-input-wrap:has(> .auth-input-icon) .auth-input[dir="ltr"] {
+    padding-inline-start: var(--sp-4);
+    padding-inline-end: var(--sp-8);
+  }
+
+  /* Invalid control state — errors are not text-only. --danger is the
+     fill/stroke token (3.19:1 ≥ the 3:1 non-text floor in light;
+     remapped under dark theme). Focus keeps the shared accent
+     language (focus > validity). */
+  .auth-input[aria-invalid="true"] { border-color: var(--danger); }
+
+  /* Password visibility toggle — 44px hit area per the craft floor. */
+  .auth-input-toggle {
+    position: absolute;
+    inset-inline-end: var(--sp-1);
+    /* centers the 44px button in the 48px auth input */
+    inset-block-start: calc(var(--sp-1) / 2);
+    inline-size: 44px;
+    block-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
     transition: var(--t-clean);
   }
-  .auth-input:hover { border-color: var(--border-strong); }
-  .auth-input:focus {
-    border-color: var(--neutral-900);
-    /* Off-token by design: light-theme neutral focus whisper (8%); the
-       copper --focus-ring is reserved for the dark block below where it
-       reads. No neutral-ring token exists yet. */
-    box-shadow: 0 0 0 3px rgba(25,25,24,0.08);
-    outline: none;
+  .auth-input-toggle:hover { color: var(--text); background: var(--surface-2); }
+  .auth-input-toggle:active { transform: scale(0.94); }
+  /* Clears the toggle (4px inset + 44px wide + 4px breathing) so text
+     never runs under the glyph. */
+  .auth-input-wrap.has-toggle .auth-input {
+    padding-inline-end: calc(var(--sp-8) + var(--sp-3));
   }
-  [data-theme="dark"] .auth-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--focus-ring);
+
+  /* Shape-matched placeholder while the faculties lookup loads
+     (audit 0-b P0-4). Consumed by the Skeleton primitive. */
+  .auth-select-skeleton {
+    display: block;
+    inline-size: 100%;
+    block-size: 48px;
+    border-radius: var(--r-md);
   }
 
   .auth-field-error {
-    font-size: var(--fs-xs);
-    color: var(--c-rose-deep);
-    line-height: 1.4;
+    font-size: var(--type-label-size-sm);
     font-weight: var(--fw-medium);
+    line-height: var(--type-label-line-height);
+    color: var(--danger-ink); /* rose-deep light / rose-ink dark — AA both */
   }
-  [data-theme="dark"] .auth-field-error { color: var(--c-rose-ink); }
 
+  /* Submit-level banner: danger-ink on danger-soft (status text
+     consumes the -ink tokens — theme-aware without overrides). */
   .auth-error {
+    display: flex; align-items: center; gap: var(--sp-2);
     padding: var(--sp-3) var(--sp-4);
     border-radius: var(--r-md);
-    background: var(--c-rose-bg);
-    color: var(--c-rose-deep);
-    font-size: var(--fs-sm);
-    display: flex; align-items: center; gap: var(--sp-2);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--type-label-size);
     font-weight: var(--fw-semibold);
+    line-height: var(--type-label-line-height);
   }
-  [data-theme="dark"] .auth-error { color: var(--c-rose-ink); }
+
+  /* Inline retry action inside an .auth-error box (faculties lookup). */
+  .auth-retry-link {
+    margin-inline-start: auto;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    font-weight: var(--fw-bold);
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+  .auth-retry-link:hover { opacity: 0.8; }
+
+  /* ══ 5 · LOGIN EXTRAS ══════════════════════════════════════════════ */
 
   .auth-forgot-row {
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: var(--fs-sm);
-    margin-block-start: -2px;
+    display: flex;
+    align-items: center;
+    font-size: var(--type-label-size);
+    /* the row belongs to the password field — pulled out of the form gap */
+    margin-block-start: calc(-1 * var(--sp-2));
   }
   .auth-forgot {
+    margin-inline-start: auto;
     color: var(--text-muted);
-    font-size: var(--fs-xs);
-    transition: color var(--t-fast) var(--ease);
+    font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-sm);
     background: transparent; border: 0; cursor: pointer;
+    transition: color var(--motion-duration-short) var(--motion-ease-standard);
   }
   .auth-forgot:hover { color: var(--accent-ink, var(--accent)); }
+  @media (max-width: 640px) {
+    .auth-forgot { min-block-size: 44px; } /* touch floor */
+  }
+
   .auth-forgot-notice {
-    font-size: var(--fs-xs);
-    color: var(--text-secondary);
-    background: var(--c-yellow-bg);
-    color: var(--c-yellow-deep);
+    font-size: var(--type-label-size-sm);
+    line-height: var(--type-label-line-height);
+    background: var(--warning-soft);
+    color: var(--warning-ink); /* yellow-deep light / yellow-ink dark */
     padding: var(--sp-3) var(--sp-4);
     border-radius: var(--r-md);
     margin-block-start: var(--sp-2);
-    line-height: 1.5;
   }
-  [data-theme="dark"] .auth-forgot-notice { color: var(--c-yellow-ink); }
 
   .auth-submit {
-    inline-size: 100%;
+    inline-size: 100%; /* full-width at every breakpoint; ≥44px */
     block-size: 48px;
     background: var(--neutral-900);
     color: var(--neutral-50);
     border: 0;
     border-radius: var(--r-md);
-    font-size: var(--fs-body);
+    font-size: var(--type-body-size);
     font-weight: var(--fw-bold);
     cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
-    transition: background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      transform var(--motion-duration-short) var(--motion-ease-standard);
     margin-block-start: var(--sp-2);
   }
   [data-theme="dark"] .auth-submit { background: var(--accent); color: var(--accent-fg); }
@@ -224,93 +478,102 @@
   [data-theme="dark"] .auth-submit:hover { background: var(--accent-hover); }
   .auth-submit:active { transform: translateY(1px); }
   .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  /* currentColor spins on both themes (ink-on-cream light, ink-on-
+     copper dark) — the old raw rgba/#fff pair is gone. */
   .auth-submit-spinner {
     inline-size: 16px; block-size: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-block-start-color: #fff;
+    border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
+    border-block-start-color: currentColor;
     border-radius: 50%;
     animation: madarek-spin var(--motion-duration-stat) linear infinite;
   }
-  [data-theme="dark"] .auth-submit-spinner {
-    border-color: rgba(25,25,24,0.3);
-    border-block-start-color: #191918;
-  }
 
-  .auth-divider {
-    display: flex; align-items: center; gap: var(--sp-3);
-    color: var(--text-muted); font-size: var(--fs-xs);
-    margin-block: var(--sp-3);
-    font-weight: var(--fw-medium);
-  }
-  .auth-divider::before, .auth-divider::after {
-    content: ''; flex: 1; block-size: 1px; background: var(--rule);
-  }
-
-  .auth-demo {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--sp-2);
-  }
-  .auth-demo-btn {
+  /* Demo-account hint (dev-only): a quiet, dismissible panel — surface
+     one step off the card, hairline rule, muted text. No pastels, no
+     shouting; the chips FILL the form, the visitor submits it. */
+  .auth-demo-hint {
+    display: flex; flex-direction: column; gap: var(--sp-2);
     padding: var(--sp-3);
     border: 1px solid var(--rule);
-    background: var(--surface);
     border-radius: var(--r-md);
-    color: var(--text-secondary);
-    font-size: var(--fs-xs);
+    background: var(--surface-2);
+  }
+  .auth-demo-hint-head {
+    display: flex; align-items: center; gap: var(--sp-2);
+    font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
-    text-align: start;
+    color: var(--text-secondary);
+  }
+  .auth-demo-hint-close {
+    margin-inline-start: auto;
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 32px; block-size: 32px;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-muted);
     cursor: pointer;
     transition: var(--t-clean);
-    display: flex; align-items: center; gap: var(--sp-2);
+  }
+  .auth-demo-hint-close:hover { color: var(--text); background: var(--surface); }
+  .auth-demo-hint-body {
+    font-size: var(--type-label-size-sm);
+    line-height: var(--type-label-line-height);
+    color: var(--text-muted);
+  }
+  .auth-demo-actions {
+    display: flex; flex-wrap: wrap; gap: var(--sp-2);
+  }
+  .auth-demo-btn {
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    min-block-size: 36px;
+    padding-inline: var(--sp-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: var(--t-clean);
   }
   .auth-demo-btn:hover {
     border-color: var(--border-strong);
-    color: var(--text);
     background: var(--surface-2);
-    transform: translateY(-1px);
+    color: var(--text);
+  }
+  .auth-demo-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  @media (max-width: 640px) {
+    .auth-demo-hint-close { inline-size: 44px; block-size: 44px; }
+    .auth-demo-btn { min-block-size: 44px; } /* touch floor */
   }
 
   .auth-register-prompt {
     text-align: center;
-    font-size: var(--fs-sm);
+    font-size: var(--type-label-size);
     color: var(--text-muted);
     margin-block-start: var(--sp-3);
   }
-  .auth-register-prompt a { color: var(--accent-ink, var(--accent)); font-weight: var(--fw-bold); text-decoration: none; }
+  .auth-register-prompt a,
+  .auth-register-prompt .auth-register-link {
+    color: var(--accent-ink, var(--accent));
+    font-weight: var(--fw-bold);
+    text-decoration: none;
+  }
   .auth-register-prompt a:hover { color: var(--accent-hover); }
 
-  .auth-bottom {
-    position: relative; z-index: 1; /* local paint-order above the ::before glow — not a --z-* layer */
-    padding: var(--sp-5) var(--page-gutter);
-    text-align: center;
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    border-block-start: 1px solid var(--rule);
-  }
-  .auth-bottom strong { color: var(--text-secondary); font-weight: var(--fw-semibold); }
-
-  /* ── Register page — role selector + form layout ─────────── */
-  .auth-row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sp-3);
-  }
-  @media (max-width: 480px) {
-    .auth-row-2 { grid-template-columns: 1fr; }
-  }
+  /* ══ 6 · REGISTER — role cards + appointment note ══════════════════ */
 
   .role-card-grid {
     display: grid;
     gap: var(--sp-3);
-    margin-block-end: var(--sp-3);
   }
 
   .role-card {
     display: flex;
     align-items: center;
     gap: var(--sp-3);
-    width: 100%;
+    inline-size: 100%;
     padding: var(--sp-4);
     border-radius: var(--r-lg);
     background: var(--surface-1);
@@ -325,18 +588,17 @@
     background: var(--surface-2);
     transform: translateY(-1px);
   }
-  .role-card:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-    border-color: var(--accent);
-  }
+  .role-card:active { transform: translateY(1px); }
+  /* Border cue only — the v22 :focus-visible ring owns the focus
+     indicator (no second halo). */
+  .role-card:focus-visible { border-color: var(--accent); }
 
   .role-card-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    inline-size: 44px;
+    block-size: 44px;
     border-radius: var(--r-md);
     background: var(--surface-2);
     /* T3-F4 — --accent on --surface-2 is 2.98:1 (non-text 3:1 floor);
@@ -347,16 +609,17 @@
   .role-card-body {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--sp-1);
     flex: 1 1 auto;
-    min-width: 0;
+    min-inline-size: 0;
   }
   .role-card-title {
-    font-size: var(--fs-md);
+    font-size: var(--type-body-size);
     font-weight: var(--fw-semibold);
   }
   .role-card-sub {
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
+    line-height: var(--type-label-line-height);
     color: var(--text-muted);
   }
   .role-card-arrow {
@@ -372,96 +635,99 @@
     border-radius: var(--r-md);
     background: var(--surface-2);
     border: 1px solid var(--border);
-    font-size: var(--fs-xs);
+    font-size: var(--type-label-size-sm);
+    line-height: var(--type-label-line-height);
     color: var(--text-muted);
-    line-height: 1.6;
-    margin-block-start: var(--sp-3);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .role-card { transition: none; }
-    .role-card:hover { transform: none; }
-  }
-}
+  /* ══ 7 · 404 — the designed not-found scene ════════════════════════ */
 
-/* ═════════════════════════════════════════════════════════════════════
-   Wave 1-c additions — form control states (append-only)
-   select padding fix · select skeleton · password visibility toggle ·
-   aria-invalid control state · retry link · forgot-row alignment
-   ═════════════════════════════════════════════════════════════════════ */
-
-@layer pages {
-
-  /* Selects carry no leading icon — the 40px icon gutter baked into
-     .auth-input dents their text (audit 0-b P1-11). */
-  select.auth-input { padding-inline-start: var(--sp-4); }
-
-  /* Shape-matched placeholder while the faculties lookup loads
-     (audit 0-b P0-4). Consumed by the Skeleton primitive. */
-  .auth-select-skeleton {
-    display: block;
-    inline-size: 100%;
-    block-size: 48px;
-    border-radius: var(--r-md);
-  }
-
-  /* Password visibility toggle (audit 0-b P1-5) — sits inside
-     .auth-input-wrap; 44px hit area per the craft floor. */
-  .auth-input-toggle {
-    position: absolute;
-    inset-inline-end: var(--sp-2);
-    inline-size: 44px;
-    block-size: 44px;
-    display: inline-flex;
+  .nf-shell {
+    min-block-size: 100dvh;
+    display: flex;
     align-items: center;
     justify-content: center;
-    border: 0;
-    border-radius: var(--r-sm);
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: var(--t-clean);
+    padding: var(--sp-6) var(--page-gutter-mobile);
+    background: var(--bg);
+    position: relative;
   }
-  .auth-input-toggle:hover { color: var(--text); background: var(--surface-2); }
-  .auth-input-toggle:focus-visible { outline: none; box-shadow: var(--focus-ring); }
-  .auth-input-toggle:active { transform: scale(0.94); }
-  .auth-input-wrap.has-toggle .auth-input { padding-inline-end: var(--sp-9); }
-
-  /* Invalid control state — errors are no longer text-only
-     (audit 0-b P1-6). --danger is the fill/stroke token (3.19:1 ≥ the
-     3:1 non-text floor in light; remapped under dark theme). */
-  .auth-input[aria-invalid="true"] { border-color: var(--danger); }
-
-  /* Inline retry action inside an .auth-error box (faculties lookup). */
-  .auth-retry-link {
-    background: none;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    font: inherit;
-    font-weight: var(--fw-bold);
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    border-radius: var(--r-sm);
+  /* Same copper ambient as the auth shell — one public-surface family. */
+  .nf-shell::before {
+    content: '';
+    position: absolute;
+    inset-block-start: -180px;
+    inset-inline: 0;
+    block-size: 480px;
+    background: radial-gradient(ellipse at 50% 50%,
+      var(--c-copper-bg) 0%,
+      transparent 60%);
+    z-index: 0; /* local paint-order baseline — not a --z-* layer */
+    pointer-events: none;
+    opacity: 0.6;
   }
-  .auth-retry-link:hover { opacity: 0.8; }
-  .auth-retry-link:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  [data-theme="dark"] .nf-shell::before { opacity: 0.4; }
 
-  /* The forgot-password link now floats alone in its row (the empty
-     <span /> spacer was removed — audit 0-b P3-31). */
-  .auth-forgot-row .auth-forgot { margin-inline-start: auto; }
-
-  /* LTR inputs (email / university ID, audit 0-b P1-7) live inside an
-     RTL wrap whose leading icon sits on the physical right — the icon
-     gutter must flip to the input's inline END so text clears it. */
-  .auth-input[dir="ltr"] {
-    padding-inline-start: var(--sp-4);
-    padding-inline-end: 40px;
+  .nf-scene {
+    position: relative; z-index: 1; /* above the ::before glow — local */
+    inline-size: 100%;
+    max-inline-size: 460px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    gap: var(--sp-3);
+    /* ONE authored moment — the whole scene rises in as one piece. */
+    animation: nf-scene-in var(--motion-duration-long) var(--motion-ease-decelerate) both;
   }
+  @keyframes nf-scene-in {
+    from { opacity: 0; transform: translateY(var(--motion-distance-medium)); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .nf-illustration { inline-size: clamp(180px, 42vw, 264px); }
+  .nf-illustration .illustration > svg {
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .nf-title {
+    font-family: var(--font-display);
+    font-size: var(--type-display-size-md);
+    font-weight: var(--type-display-weight);
+    letter-spacing: var(--ls-tight);
+    /* Arabic display floor (base.css .page-title precedent). */
+    line-height: 1.1;
+    color: var(--text);
+  }
+  .nf-sub {
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-line-height);
+    color: var(--text-secondary);
+    max-inline-size: 42ch;
+  }
+  .nf-actions {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-2);
+  }
+  @media (max-width: 480px) {
+    /* stack + stretch: both ways home stay thumb-sized at 320px */
+    .nf-actions { flex-direction: column; align-items: stretch; inline-size: 100%; }
+    .nf-actions .btn { inline-size: 100%; }
+  }
+
+  /* ══ REDUCED MOTION — local off-switches for this file's keyframes ═ */
 
   @media (prefers-reduced-motion: reduce) {
-    .auth-input-toggle { transition: none; }
+    .auth-step-panel,
+    .nf-scene { animation: none; }
+    .auth-card { transition: none; }
+    .role-card,
+    .auth-back-home,
+    .auth-forgot,
+    .auth-input-toggle,
+    .auth-demo-btn,
+    .auth-demo-hint-close { transition: none; }
+    .role-card:hover { transform: none; }
+    .role-card:active,
     .auth-input-toggle:active { transform: none; }
   }
 }

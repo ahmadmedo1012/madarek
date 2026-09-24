@@ -14,12 +14,24 @@
  *     focus-trapped modals would fight for focus. The gate is the
  *     store-derived `selectCanShowMilestone`.
  *   - reduced-motion users see the final state without the cascade
+ *
+ * Wave 8-c:
+ *   - celebration beat (components.css): the illustration POPS in with
+ *     a settle overshoot, the title rises just behind it — one authored
+ *     moment, off-switch included for reduced motion
+ *   - smooth handoff: when the onboarding flow closes while a
+ *     milestone is queued, the flow's modal is still playing its exit
+ *     animation (useDelayedUnmount keeps it mounted with
+ *     data-closing). Presenting the celebration the same instant would
+ *     cross-fade two modal cards (a "double flash"); the scene waits
+ *     out the exit window first — see the handoff effect below.
  */
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal } from '../overlays/Modal';
 import { Illustration } from '../Illustration';
 import { useMilestone } from '../../hooks/useMilestone';
 import { useOnboardingStore, selectCanShowMilestone } from '../../stores/onboarding.store';
+import { readMotionDurationMs } from '../overlays/useDelayedUnmount';
 
 const HEADLINE_BY_ID: Record<string, string> = {
   'first-assignment-complete': 'مبروك أوّل واجب!',
@@ -35,7 +47,7 @@ function describe(id: string): { headline: string; body: string } {
   if (id.startsWith('exam-window-opens:')) {
     return {
       headline: 'فُتحت نافذة امتحانك',
-      body: 'حظاً موفقاً. أنت جاهز.',
+      body: 'بالتوفيق! حان وقت عرض ما تعلّمته بثقة.',
     };
   }
   return {
@@ -44,7 +56,18 @@ function describe(id: string): { headline: string; body: string } {
   };
 }
 
+/**
+ * Auto-dismiss hold. Budget: the entrance beat (illustration pop +
+ * title rise) plays within ~--motion-duration-long (380ms), leaving
+ * roughly 3.5s to read two short lines and land on the CTA before the
+ * scene dismisses itself. The timer only arms once the scene is
+ * actually visible, so a queued milestone never burns its hold.
+ */
 const HOLD_MS = 4000;
+
+/** Slack added to the exit-window read so the handoff never cuts the
+ * onboarding modal's fade short (mirrors useDelayedUnmount's math). */
+const HANDOFF_SLACK_MS = 80;
 
 export interface MilestoneSceneProps {
   /** Override the auto-dismiss hold (ms). Default 4000. */
@@ -58,21 +81,44 @@ export function MilestoneScene({ holdMs = HOLD_MS }: MilestoneSceneProps = {}) {
   // it presents the moment onboarding completes or is dismissed.
   const canShowMilestone = useOnboardingStore(selectCanShowMilestone);
 
-  // Auto-dismiss after the hold elapses — the timer only arms once
-  // the scene is actually visible, so a queued milestone never burns
-  // its hold while hidden behind the onboarding modal.
+  // Smooth handoff (see docblock): if the gate opens while the
+  // onboarding modal is still exiting (data-closing overlay in the
+  // DOM), hold the milestone for the exit window so the two modals
+  // never cross-fade. Derived from the live DOM rather than a fixed
+  // timer — when no closing overlay exists (standalone milestones,
+  // reduced motion, test harnesses without the flow mounted) the scene
+  // presents immediately.
+  const [handoffReady, setHandoffReady] = useState(true);
+  const prevGateRef = useRef(canShowMilestone);
   useEffect(() => {
-    if (!pendingScene || !canShowMilestone) return;
+    const wasBlocked = !prevGateRef.current;
+    prevGateRef.current = canShowMilestone;
+    if (!canShowMilestone || !wasBlocked) return;
+    const closingOverlay = document.querySelector('.modal-overlay[data-closing="true"]');
+    if (!closingOverlay) return;
+    const exitMs =
+      readMotionDurationMs('--motion-duration-medium', 240) + HANDOFF_SLACK_MS;
+    setHandoffReady(false);
+    const t = window.setTimeout(() => setHandoffReady(true), exitMs);
+    return () => window.clearTimeout(t);
+  }, [canShowMilestone]);
+
+  // Auto-dismiss after the hold elapses — the timer only arms once
+  // the scene is actually visible (gate open AND handoff complete), so
+  // a queued or handed-off milestone never burns its hold while
+  // hidden behind the onboarding modal or its exit animation.
+  useEffect(() => {
+    if (!pendingScene || !canShowMilestone || !handoffReady) return;
     const t = window.setTimeout(dismissPending, holdMs);
     return () => window.clearTimeout(t);
-  }, [pendingScene, dismissPending, holdMs, canShowMilestone]);
+  }, [pendingScene, dismissPending, holdMs, canShowMilestone, handoffReady]);
 
-  if (!pendingScene || !canShowMilestone) return null;
+  if (!pendingScene || !canShowMilestone || !handoffReady) return null;
   const { headline, body } = describe(pendingScene);
 
   return (
     <Modal open onClose={dismissPending} ariaLabel={headline} closeOnOverlayClick>
-      <div className="onboarding-flow" data-milestone={pendingScene}>
+      <div className="onboarding-flow onboarding-flow--milestone" data-milestone={pendingScene}>
         <div className="onboarding-flow-illustration">
           <Illustration name="milestone-section" decorative />
         </div>

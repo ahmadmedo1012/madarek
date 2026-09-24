@@ -15,6 +15,7 @@ import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check } from 'lucide-react';
 import { Icon } from '../Icon';
+import { Illustration } from '../Illustration';
 import { NotificationPanel } from '../overlays';
 import { useNotifications, useUnreadNotifications, useMarkNotifRead, type Notification } from '../../hooks/useResources';
 import type { LucideIcon } from 'lucide-react';
@@ -121,7 +122,13 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
             </div>
           ) : items.length === 0 ? (
             <div className="notif-empty">
-              <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
+              {/* Bespoke empty-notifs scene (illustration registry; audit
+                  0-f P2-21 — the designed scene was dead inventory while
+                  the panel showed a generic Lucide bell). Sizing lives in
+                  the wave 8-c section of components.css. */}
+              <div className="notif-empty-illustration" aria-hidden>
+                <Illustration name="empty-notifs" decorative />
+              </div>
               <p className="notif-empty-text">لا توجد إشعارات</p>
             </div>
           ) : (

@@ -516,17 +516,19 @@
 }
 .gallery-clear:hover { color: var(--text); }
 
-/* Identity-profile accent stripe on the leading edge of the card. */
+/* Identity-profile accent stripe on the leading edge of the card.
+   1px hairline (orchestrator ruling #4 — normalize every >1px colored
+   leading stripe; the accent reads through color, not weight). */
 .college-card[data-college-accent] {
-  border-inline-start: 3px solid var(--college-accent, var(--rule));
+  border-inline-start: 1px solid var(--college-accent, var(--rule));
 }
 
 /* T3-F4 — detail-page cards mirror the index-card leading stripe so
    the gated college accent (inherited from the .college-detail root)
-   actually reaches the page content chrome. */
+   actually reaches the page content chrome. 1px per ruling #4. */
 .college-detail .card,
 .college-detail .metric {
-  border-inline-start: 3px solid var(--college-accent, var(--rule));
+  border-inline-start: 1px solid var(--college-accent, var(--rule));
 }
 
 /* "→ زيارة الصفحة" hover affordance — fades in on hover, suppressed
@@ -865,7 +867,9 @@
   padding: var(--sp-3);
   border-radius: var(--r-md);
   background: var(--surface-2);
-  border-inline-start: 3px solid var(--accent);
+  /* 1px hairline (ruling #4; the per-competition themeColor still
+     overrides just the color via the inline style in CollegePages). */
+  border-inline-start: 1px solid var(--accent);
 }
 .comp-emoji {
   font-size: 22px;

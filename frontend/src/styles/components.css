@@ -3489,3 +3489,241 @@
     }
   }
 }
+
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  wave 8-c: onboarding premium pass + illustration refinements    ║
+   ║  (append-only; later source order within @layer components wins) ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+@layer components {
+
+  /* ── Onboarding frame transitions ─────────────────────────────────
+     The frame body (illustration + copy + controls) is keyed by the
+     frame index in OnboardingFlow.tsx, so every frame change remounts
+     it and replays ONE authored moment:
+       · the whole body slides in direction-aware — forward follows the
+         reading direction (--motion-direction = -1 under dir="rtl", so
+         the next frame arrives from the left, mirroring the page-turn
+         of an Arabic book); stepping back mirrors it;
+       · inside the slide, three beats stagger under the
+         --motion-stagger-cap: illustration settles → copy rises →
+         CTA rises.
+     The skip row and dot strip persist outside the keyed body so the
+     dots' fill transition animates BETWEEN frames. */
+  .onboarding-flow-frame {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    animation: onboarding-frame-in
+      var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+  .onboarding-flow-frame[data-frame-direction="back"] {
+    animation-name: onboarding-frame-in-back;
+  }
+
+  @keyframes onboarding-frame-in {
+    from {
+      opacity: 0;
+      transform: translateX(
+        calc(var(--motion-direction, 1) * var(--motion-distance-medium))
+      );
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes onboarding-frame-in-back {
+    from {
+      opacity: 0;
+      transform: translateX(
+        calc(var(--motion-direction, 1) * var(--motion-distance-medium) * -1)
+      );
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Beat 1 — the illustration settles (subtle scale, no travel). */
+  .onboarding-flow-frame > .onboarding-flow-illustration {
+    animation: onboarding-beat-settle
+      var(--motion-duration-long) var(--motion-ease-decelerate) both;
+  }
+  /* Beats 2 + 3 — copy, then CTA. */
+  .onboarding-flow-frame > .onboarding-flow-copy,
+  .onboarding-flow-frame > .onboarding-flow-actions {
+    animation: onboarding-beat-rise
+      var(--motion-duration-short) var(--motion-ease-decelerate) both;
+  }
+  .onboarding-flow-frame > .onboarding-flow-copy {
+    animation-delay: var(--motion-stagger-step);
+  }
+  .onboarding-flow-frame > .onboarding-flow-actions {
+    animation-delay: calc(var(--motion-stagger-step) * 2);
+  }
+
+  @keyframes onboarding-beat-settle {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes onboarding-beat-rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── Progress dots that fill ──────────────────────────────────────
+     Upcoming = hollow hairline ring; visited = filled; the current
+     frame = the wide pill. Filling animates because the strip persists
+     across the keyed frame body. */
+  .onboarding-flow-dot {
+    background: transparent;
+    border: 1px solid var(--rule);
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard),
+      inline-size var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .onboarding-flow-dot.is-done {
+    background: var(--onboarding-accent);
+    border-color: var(--onboarding-accent);
+  }
+  .onboarding-flow-dot.is-active {
+    background: var(--onboarding-accent);
+    border-color: var(--onboarding-accent);
+  }
+
+  /* ── Role-accent tint on the role-intro frame (frame 3) ──────────
+     body[data-role] (useRoleAccent) resolves --role-accent per theme;
+     the modal portal lives under body, so the token inherits. The
+     copper default stays for the three generic frames. */
+  .onboarding-flow {
+    --onboarding-accent: var(--accent);
+  }
+  .onboarding-flow[data-frame="3"] {
+    --onboarding-accent: var(--role-accent, var(--accent));
+  }
+
+  /* Illustration halo: a soft role-tinted ground behind the scene (a
+     wash, not a shadow — the craft floor's halo ban is about
+     box-shadow glows). */
+  .onboarding-flow[data-frame="3"] .onboarding-flow-illustration {
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--onboarding-accent) 12%, transparent),
+      transparent 74%
+    );
+  }
+
+  /* CTA: the primary button keeps its ink identity but takes a
+     role-hued cast. Contrast math (light text on the mixed ground):
+     mixing 30% of ANY role accent into the ink ground keeps relative
+     luminance ≤ ~0.035 → ≥ 12:1 for light theme text and ≥ 9:1 in
+     dark (worst cases: department-head #BF6A2A light, faculty
+     #3CC2B0 dark) — AA-safe for every role × theme pair. */
+  .onboarding-flow[data-frame="3"] .onboarding-flow-actions .btn.primary {
+    --_btn-bg: color-mix(in srgb, var(--onboarding-accent) 30%, var(--neutral-900));
+    --_btn-bd: color-mix(in srgb, var(--onboarding-accent) 46%, var(--neutral-900));
+    --_btn-bg-hover: color-mix(in srgb, var(--onboarding-accent) 40%, var(--neutral-700));
+    --_btn-bd-hover: color-mix(in srgb, var(--onboarding-accent) 56%, var(--neutral-700));
+  }
+
+  /* ── Milestone celebration beat ───────────────────────────────────
+     One authored moment (MilestoneScene): the illustration POPS with
+     a settle overshoot, the title rises just behind it, the CTA fades
+     in last. The auto-dismiss hold (4s) covers the entrance + reading
+     time; a queued milestone waits out the onboarding exit window in
+     the component before this beat ever plays (no double flash). */
+  .onboarding-flow--milestone .onboarding-flow-illustration {
+    animation: milestone-pop
+      var(--motion-duration-long) var(--motion-ease-decelerate) both;
+  }
+  .onboarding-flow--milestone .onboarding-flow-copy {
+    animation: onboarding-beat-rise
+      var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--motion-stagger-step) * 2);
+  }
+  .onboarding-flow--milestone .onboarding-flow-actions {
+    animation: onboarding-beat-rise
+      var(--motion-duration-short) var(--motion-ease-decelerate) both;
+    animation-delay: calc(var(--motion-stagger-step) * 3);
+  }
+
+  @keyframes milestone-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.72);
+    }
+    62% {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Reduced-motion off-switch (brief guardrail #6 — these keyframes
+     have no animationend dependency, so animation:none is safe: every
+     element renders in its natural, fully-visible state). The dots'
+     fill transition collapses automatically via the duration tokens. */
+  @media (prefers-reduced-motion: reduce) {
+    .onboarding-flow-frame,
+    .onboarding-flow-frame > .onboarding-flow-illustration,
+    .onboarding-flow-frame > .onboarding-flow-copy,
+    .onboarding-flow-frame > .onboarding-flow-actions,
+    .onboarding-flow--milestone .onboarding-flow-illustration,
+    .onboarding-flow--milestone .onboarding-flow-copy,
+    .onboarding-flow--milestone .onboarding-flow-actions {
+      animation: none;
+    }
+  }
+
+  /* ── prefers-contrast: display strokes keep their authored weight ─
+     Refines the tokens.css contrast rule (audit 0-f P2-22): that rule
+     lifts the family's 1.5 fine strokes to 2.0 — correct — but it also
+     flattens intentional display weights (error-404 numerals at 6,
+     quality checkmark at 3.5, magnifier handle at 3, sprout stem at
+     2.5), REDUCING hierarchy exactly when the user asked for more
+     contrast. These rules re-assert the authored weight for display
+     strokes by matching the SVG presentation attribute; the 1.5 fine
+     strokes keep their 2.0 lift. CSS value === attribute value, so
+     outside contrast mode every declaration is a visual no-op. */
+  .illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse)[stroke-width="2.5"] {
+    stroke-width: 2.5;
+  }
+  .illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse)[stroke-width="3"] {
+    stroke-width: 3;
+  }
+  .illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse)[stroke-width="3.5"] {
+    stroke-width: 3.5;
+  }
+  .illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse)[stroke-width="6"] {
+    stroke-width: 6;
+  }
+
+  /* ── empty-notifs scene inside the notifications panel ────────────
+     Wave 8-c adopts the dead scene (audit 0-f P2-21) as the panel's
+     empty state. notifications.css owns .notif-empty; this sizing
+     block lives here because components.css is this wave's append
+     surface — 96px keeps the scene inside the 540px panel without
+     dwarfing the copy. */
+  .notif-empty-illustration {
+    inline-size: 96px;
+    block-size: 96px;
+    margin-block-start: var(--sp-1);
+  }
+}

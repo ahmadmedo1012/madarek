@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Mail, Lock, Home, GraduationCap, School,
   Building2, AlertCircle, ShieldCheck, ArrowLeft, Crown, Eye, EyeOff,
+  FlaskConical, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
@@ -47,6 +48,7 @@ const DEMO_EMAIL: Record<AppRole, string> = {
   QUALITY: 'quality@zu.edu.ly',
   OWNER:   'owner@zu.edu.ly',
 };
+const DEMO_PASSWORD = '1234';
 
 /** Deep link a visitor was trying to reach when ProtectedRoute bounced
  *  them here (ProtectedRoute passes `state={{ from: location }}`). Only
@@ -64,6 +66,7 @@ export default function AuthPage() {
   const login = useLogin();
   const [forgotNotice, setForgotNotice] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [demoHintOpen, setDemoHintOpen] = useState(true);
 
   const loginForm = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
@@ -83,11 +86,12 @@ export default function AuthPage() {
     } catch { /* error displayed below */ }
   });
 
-  const onDemoLogin = async (role: AppRole) => {
-    try {
-      const result = await login.mutateAsync({ email: DEMO_EMAIL[role], password: '1234' });
-      navigateAfterLogin(result.user.role);
-    } catch { /* */ }
+  /** One-click FILL of the demo credentials — the visitor reviews the
+   *  filled fields and submits the form themselves (no hidden
+   *  auto-login; the action stays visible and honest). */
+  const fillDemo = (role: AppRole) => {
+    loginForm.setValue('email', DEMO_EMAIL[role], { shouldValidate: false });
+    loginForm.setValue('password', DEMO_PASSWORD, { shouldValidate: false });
   };
 
   return (
@@ -98,7 +102,7 @@ export default function AuthPage() {
           <Icon icon={Home} size={14} />
           الصفحة الرئيسية
         </Link>
-        <span style={{ fontSize: 13, color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+        <span className="auth-context">
           <LibyaFlag size={14} /> جامعة الزاوية
         </span>
       </div>
@@ -129,7 +133,7 @@ export default function AuthPage() {
                   id="auth-email"
                   type="text"
                   dir="ltr"
-                  className="auth-input"
+                  className="input auth-input"
                   placeholder="example@zu.edu.ly"
                   autoComplete="username"
                   aria-invalid={!!loginForm.formState.errors.email}
@@ -151,7 +155,7 @@ export default function AuthPage() {
                 <input
                   id="auth-password"
                   type={showPassword ? 'text' : 'password'}
-                  className="auth-input"
+                  className="input auth-input"
                   placeholder="••••••••"
                   autoComplete="current-password"
                   aria-invalid={!!loginForm.formState.errors.password}
@@ -190,7 +194,10 @@ export default function AuthPage() {
             {login.isError && (
               <div className="auth-error" role="alert">
                 <Icon icon={AlertCircle} size={14} />
-                <span>تعذَّر تسجيل الدخول. تحقَّق من البيانات وحاول مجدداً.</span>
+                <span>
+                  تعذَّر تسجيل الدخول. تحقَّق من البريد وكلمة المرور وتأكَّد من اتصالك
+                  بالشبكة، ثم أعد المحاولة.
+                </span>
               </div>
             )}
 
@@ -208,33 +215,46 @@ export default function AuthPage() {
               )}
             </button>
 
-            {SHOW_DEMO_LOGIN && (
-              <>
-                <div className="auth-divider">أو جرِّب بحساب تجريبيّ</div>
-
-                <div className="auth-demo">
-                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('STUDENT')} disabled={login.isPending}>
+            {SHOW_DEMO_LOGIN && demoHintOpen && (
+              <div className="auth-demo-hint">
+                <div className="auth-demo-hint-head">
+                  <Icon icon={FlaskConical} size={14} />
+                  <span>حسابات تجريبية — بيئة التطوير</span>
+                  <button
+                    type="button"
+                    className="auth-demo-hint-close"
+                    onClick={() => setDemoHintOpen(false)}
+                    aria-label="إخفاء لوحة الحسابات التجريبية"
+                  >
+                    <Icon icon={X} size={14} />
+                  </button>
+                </div>
+                <p className="auth-demo-hint-body">
+                  اضغط دوراً لتعبئة الحقول ببيانات حساب تجريبي، ثم اضغط زر تسجيل الدخول.
+                </p>
+                <div className="auth-demo-actions">
+                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('STUDENT')} disabled={login.isPending}>
                     <Icon icon={GraduationCap} size={14} />
                     <span>طالب</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('TEACHER')} disabled={login.isPending}>
+                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('TEACHER')} disabled={login.isPending}>
                     <Icon icon={School} size={14} />
                     <span>أستاذ</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('ADMIN')} disabled={login.isPending}>
+                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('ADMIN')} disabled={login.isPending}>
                     <Icon icon={Building2} size={14} />
                     <span>الإدارة</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('QUALITY')} disabled={login.isPending}>
+                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('QUALITY')} disabled={login.isPending}>
                     <Icon icon={ShieldCheck} size={14} />
-                    <span>الجودة</span>
+                    <span>ضمان الجودة</span>
                   </button>
-                  <button type="button" className="auth-demo-btn" onClick={() => onDemoLogin('OWNER')} disabled={login.isPending}>
+                  <button type="button" className="auth-demo-btn" onClick={() => fillDemo('OWNER')} disabled={login.isPending}>
                     <Icon icon={Crown} size={14} />
                     <span>المالك</span>
                   </button>
                 </div>
-              </>
+              </div>
             )}
 
             <p className="auth-register-prompt">
