@@ -434,7 +434,12 @@
   .landing-title-highlight {
     display: inline-block;
     background: var(--c-yellow-bg);
-    padding: 0 0.18em;
+    /* Wave-10 visual check (VLM): the box hugged the baseline with zero
+       vertical padding, so Arabic descenders (ك tail) poked past the
+       highlight's bottom edge and read as clipped. 0.08em block padding
+       covers the descender depth at display sizes without inflating the
+       line box (inline-block already isolates it from line-height). */
+    padding: 0.08em 0.18em;
     border-radius: var(--r-xs);
     color: var(--text);
     box-decoration-break: clone;
