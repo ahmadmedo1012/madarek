@@ -77,3 +77,8 @@ frontend/tests/audit/screenshots/
 
 # Secrets (contains credentials, never committed)
 secrets.txt
+
+# WS-F6 — Playwright surface-inventory audit artifacts (only the committed
+# surface-baseline.json is tracked; screenshots + fresh sweeps are local)
+frontend/tests/audit/surface-inventory.json
+frontend/tests/audit/screenshots/
