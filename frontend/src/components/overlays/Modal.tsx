@@ -9,13 +9,16 @@
  *   - Esc to close
  *   - click-outside on the overlay to close
  *   - body scroll lock while open
+ *   - wave 7-a: scale-fade EXIT animation before unmount
+ *     (useDelayedUnmount + data-closing — audit 0-c P2-1)
  *
  * Other primitives (Sheet, Popover, Dropdown, Toast, …) follow the
- * same pattern in subsequent commits.
+ * same pattern.
  */
 import { useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useFocusTrap } from './useFocusTrap';
+import { useDelayedUnmount } from './useDelayedUnmount';
 
 export interface ModalProps {
   open: boolean;
@@ -40,15 +43,20 @@ export function Modal({
 }: ModalProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap({ open, containerRef: cardRef, closeOnEscape, onClose });
+  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
 
-  if (!open || typeof document === 'undefined') return null;
+  if (!rendered || typeof document === 'undefined') return null;
 
   return createPortal(
     <div
       className="modal-overlay"
+      data-closing={!open ? 'true' : undefined}
       onClick={(e) => {
         if (!closeOnOverlayClick) return;
         if (e.target === e.currentTarget) onClose();
+      }}
+      onAnimationEnd={(e) => {
+        if (!open && e.animationName === 'madarek-overlay-out') onExitEnd();
       }}
     >
       <div

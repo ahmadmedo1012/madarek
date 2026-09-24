@@ -5,6 +5,11 @@
  * Tokens: --elev-4 + --z-sheet + --r-2xl on the leading edge of the sheet
  * (top-radius for `bottom`, leading-edge radius for `start`/`end`).
  *
+ * Wave 7-a (audit 0-c P2-1): the exit animation plays before unmount
+ * (useDelayedUnmount + data-closing) — side sheets slide back toward
+ * their own edge (direction-aware via --motion-direction), bottom
+ * sheets slide down.
+ *
  * Usage:
  *   <Sheet open={isOpen} onClose={() => setIsOpen(false)} side="end" ariaLabel="Filters">
  *     ...
@@ -18,6 +23,7 @@
 import { useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useFocusTrap } from './useFocusTrap';
+import { useDelayedUnmount } from './useDelayedUnmount';
 
 export type SheetSide = 'start' | 'end' | 'bottom';
 
@@ -46,15 +52,20 @@ export function Sheet({
 }: SheetProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap({ open, containerRef: panelRef, closeOnEscape, onClose });
+  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
 
-  if (!open || typeof document === 'undefined') return null;
+  if (!rendered || typeof document === 'undefined') return null;
 
   return createPortal(
     <div
       className={`sheet-overlay sheet-overlay-${side}`}
+      data-closing={!open ? 'true' : undefined}
       onClick={(e) => {
         if (!closeOnOverlayClick) return;
         if (e.target === e.currentTarget) onClose();
+      }}
+      onAnimationEnd={(e) => {
+        if (!open && e.animationName === 'madarek-overlay-out') onExitEnd();
       }}
     >
       <div

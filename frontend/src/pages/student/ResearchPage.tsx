@@ -9,6 +9,7 @@ import { Card, MetricCard, Badge } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
+import { toast } from '../../lib/toast';
 import {
   useMyResearch, useUploadPaper, useScanPaper,
   useMyEnrollments, apiErrorMessage,
@@ -178,6 +179,9 @@ export default function StudentResearchPage() {
             try {
               await upload.mutateAsync(input);
               setUploadOpen(false);
+              toast.success('سيخضع البحث لفحص الانتحال ثم يصل إلى أستاذك للتقييم.', {
+                title: 'تمّ رفع البحث',
+              });
             } catch (e) {
               // Keep the modal open with the entered values; the message
               // renders inside the modal so the student can retry.

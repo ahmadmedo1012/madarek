@@ -3331,3 +3331,161 @@
     }
   }
 }
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  wave 7-a: overlays — viewport intelligence + exit animations  ║
+   ║  (audit 0-c P1-6 / P2-1 / P3). APPEND-ONLY section: the        ║
+   ║  incumbent rules above keep their layer position; everything   ║
+   ║  here wins by source order within @layer components.           ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+@layer components {
+
+  /* ── Anchored panels: reachable content (0-c P1-6). Long menus
+     scroll INSIDE the panel (overflow-y: auto beats the incumbent
+     `overflow: clip` y-axis; x stays clipped) and never scroll-chain
+     to the page behind. A JS-computed max-height (px, set inline by
+     Dropdown/Popover/NotificationPanel) caps the panel to the room
+     the viewport actually has. */
+  .dropdown,
+  .popover {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Transform origin aims the enter/exit scale at the trigger: menus
+     hanging below grow from their top edge, flipped menus (set to
+     data-side="above" by the positioning pass) from their bottom. */
+  .dropdown,
+  .popover,
+  .notification-panel {
+    transform-origin: center top;
+  }
+  .dropdown[data-side="above"],
+  .popover[data-side="above"],
+  .notification-panel[data-side="above"] {
+    transform-origin: center bottom;
+  }
+
+  /* ── Anchored-panel exit: scale-out fade. The component stays
+     mounted (data-closing, useDelayedUnmount) until this ends.
+     Duration is the token nearest the requested ~120ms — guardrail #1
+     forbids raw values, and --motion-duration-short (160ms) reads
+     cleanly at menu scale. */
+  .dropdown[data-closing="true"],
+  .popover[data-closing="true"],
+  .notification-panel[data-closing="true"] {
+    animation: madarek-popover-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  @keyframes madarek-popover-out {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: scale(0.97); }
+  }
+
+  /* ── Modal exit: scrim fades, card settles down + fades. */
+  .modal-overlay[data-closing="true"] {
+    animation: madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  .modal-overlay[data-closing="true"] .modal-card {
+    animation: madarek-modal-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  @keyframes madarek-overlay-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes madarek-modal-out {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateY(8px) scale(0.98); }
+  }
+
+  /* ── Sheet exit: each side slides back toward its own edge.
+     Direction-aware — `end` docks inline-end (right in LTR, left in
+     RTL), so the exit multiplies by --motion-direction. Bottom
+     sheets slide fully down. */
+  .sheet-overlay[data-closing="true"] {
+    animation: madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  .sheet-overlay[data-closing="true"] .sheet-panel-end {
+    animation: madarek-sheet-out-end var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  .sheet-overlay[data-closing="true"] .sheet-panel-start {
+    animation: madarek-sheet-out-start var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  .sheet-overlay[data-closing="true"] .sheet-panel-bottom {
+    animation: madarek-sheet-out-bottom var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  @keyframes madarek-sheet-out-end {
+    to { opacity: 0; transform: translateX(calc(var(--motion-direction) * 8%)); }
+  }
+  @keyframes madarek-sheet-out-start {
+    to { opacity: 0; transform: translateX(calc(var(--motion-direction) * -8%)); }
+  }
+  @keyframes madarek-sheet-out-bottom {
+    to { opacity: 0; transform: translateY(100%); }
+  }
+
+  /* ── Lightbox exit: the media surface fades (scrim + content),
+     content scaling down a hair so the close reads as "release". */
+  .lightbox-overlay[data-closing="true"] {
+    animation: madarek-lightbox-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  .lightbox-overlay[data-closing="true"] .lightbox-content {
+    animation: madarek-lightbox-content-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+  }
+  @keyframes madarek-lightbox-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+  @keyframes madarek-lightbox-content-out {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: scale(0.98); }
+  }
+
+  /* ── Tooltip caret (0-c P3): aims at the anchor via the
+     JS-computed --tip-arrow-x offset (physical px — viewport
+     geometry, not logical flow), so clamping the bubble never
+     detaches the arrow. The caret is a 45°-rotated square; its
+     outward edge pair is PHYSICAL geometry (border-right +
+     border-bottom for a downward point), so physical borders are
+     correct under [dir="rtl"] too. */
+  .tooltip::after {
+    content: '';
+    position: absolute;
+    left: var(--tip-arrow-x, 50%);
+    inset-block-end: -4px;
+    inline-size: 8px;
+    block-size: 8px;
+    background: var(--surface);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    transform: rotate(45deg);
+  }
+  .tooltip[data-side="below"]::after {
+    inset-block-end: auto;
+    inset-block-start: -4px;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 1px solid var(--rule);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── Reduced-motion off-switches for every keyframe in this wave
+     (guardrail #6). Durations collapse via the tokens — kept as
+     animations (never `animation: none`) because animationend drives
+     the delayed unmount in useDelayedUnmount; the base.css belt
+     (0.01ms !important) guarantees they effectively never play. */
+  @media (prefers-reduced-motion: reduce) {
+    .dropdown[data-closing="true"],
+    .popover[data-closing="true"],
+    .notification-panel[data-closing="true"],
+    .modal-overlay[data-closing="true"],
+    .modal-overlay[data-closing="true"] .modal-card,
+    .sheet-overlay[data-closing="true"],
+    .sheet-overlay[data-closing="true"] .sheet-panel-end,
+    .sheet-overlay[data-closing="true"] .sheet-panel-start,
+    .sheet-overlay[data-closing="true"] .sheet-panel-bottom,
+    .lightbox-overlay[data-closing="true"],
+    .lightbox-overlay[data-closing="true"] .lightbox-content {
+      animation-duration: var(--motion-duration-short);
+    }
+  }
+}

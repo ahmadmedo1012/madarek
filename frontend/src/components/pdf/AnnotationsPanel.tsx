@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import {
-  MessageSquare, Plus, Trash2, X, ChevronLeft,
+  MessageSquare, Plus, Trash2, ChevronLeft,
 } from 'lucide-react';
 import { Icon } from '../Icon';
 import { UserAvatar, Badge } from '../primitives';
-import { LoadingState, EmptyState } from '../primitives/States';
+import { EmptyState, ErrorState, Skeleton } from '../primitives/States';
 import { useAnnotations, useCreateAnnotation, useDeleteAnnotation } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 
@@ -18,7 +18,47 @@ interface AnnotationsPanelProps {
   onJumpToPage: (page: number) => void;
 }
 
-const TEACHER_COLORS = ['#F5A623', '#3DD68C', '#5B6FE0', '#EF4444', '#8B5CF6'];
+/**
+ * Teacher pen palette — the design world's section-color family inks,
+ * quoted by value (copper / mint / sky / rose / yellow / lavender).
+ *
+ * These values are PERSISTED to the API as the annotation's color, so
+ * they must be concrete hexes that stay stable across themes — a var()
+ * reference would resolve differently per theme and is not a color
+ * outside this CSS runtime (raw hex here is the documented guardrail-4
+ * exception). Each is a light-palette family ink: a mid-tone that
+ * keeps ≥3:1 against the dark theme's card ground and reads as a
+ * bounded swatch on light (the chip itself carries a border + ring).
+ * Annotations written before this palette keep rendering — the stored
+ * color string is rendered verbatim.
+ */
+const PEN_COLORS = [
+  { value: '#B57438', name: 'نحاسي' },   // copper family ink
+  { value: '#4FA66D', name: 'أخضر' },    // mint family ink
+  { value: '#5C8FCE', name: 'أزرق' },    // sky family ink
+  { value: '#DD6E78', name: 'أحمر' },    // rose family ink
+  { value: '#D6A330', name: 'ذهبي' },    // yellow family ink
+  { value: '#8A6FE0', name: 'بنفسجي' },  // lavender family ink
+] as const;
+
+/** Shape-matched list placeholder — mirrors an annotation card
+ *  (avatar + author line + two comment lines), craft floor. */
+function AnnotationsSkeleton() {
+  return (
+    <div role="status" aria-label="جاري تحميل الملاحظات…" className="annotations-skeleton">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="annotations-skeleton-item">
+          <Skeleton width={28} height={28} rounded="var(--r-full)" />
+          <div className="annotations-skeleton-lines">
+            <Skeleton width="42%" height={10} />
+            <Skeleton width="94%" height={10} />
+            <Skeleton width="68%" height={10} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function AnnotationsPanel({ paperId, currentPage, numPages, onJumpToPage }: AnnotationsPanelProps) {
   const annotations = useAnnotations(paperId);
@@ -30,7 +70,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
   const [composing, setComposing] = useState(false);
   const [draft, setDraft] = useState('');
   const [draftPage, setDraftPage] = useState(currentPage);
-  const [draftColor, setDraftColor] = useState(TEACHER_COLORS[0]!);
+  const [draftColor, setDraftColor] = useState<string>(PEN_COLORS[0].value);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,7 +120,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
       {/* Composer */}
       {composing && (
         <form onSubmit={submit} className="annotation-composer">
-          <div className="flex items-center gap-2" style={{ marginBottom: 'var(--sp-2)' }}>
+          <div className="annotation-composer-meta flex items-center gap-2">
             <span className="text-xxs text-subtle">الصفحة</span>
             <input
               type="number"
@@ -89,18 +129,22 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
               value={draftPage}
               onChange={(e) => setDraftPage(Math.max(1, Math.min(numPages, +e.target.value || 1)))}
               className="annotation-page-input font-mono"
+              aria-label={`رقم الصفحة، من ${numPages}`}
             />
             <span className="text-xxs text-subtle">/ {numPages}</span>
-            <div className="annotation-colors">
-              {TEACHER_COLORS.map((c) => (
+            <div className="annotation-colors" role="group" aria-label="لون القلم">
+              {PEN_COLORS.map((c) => (
                 <button
-                  key={c}
+                  key={c.value}
                   type="button"
-                  className={`annotation-color${draftColor === c ? ' on' : ''}`}
-                  style={{ background: c }}
-                  onClick={() => setDraftColor(c)}
-                  aria-label={`اللون ${c}`}
-                />
+                  className={`annotation-color${draftColor === c.value ? ' on' : ''}`}
+                  onClick={() => setDraftColor(c.value)}
+                  aria-pressed={draftColor === c.value}
+                  aria-label={`قلم ${c.name}`}
+                  title={`قلم ${c.name}`}
+                >
+                  <span className="annotation-color-dot" style={{ background: c.value }} />
+                </button>
               ))}
             </div>
           </div>
@@ -108,7 +152,9 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder="اكتب ملاحظتك على هذه الصفحة…"
+            aria-label="نص الملاحظة"
             rows={3}
+            maxLength={2000}
             className="annotation-textarea"
             autoFocus
           />
@@ -129,11 +175,13 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
       {/* List */}
       <div className="annotations-list">
         {annotations.isPending ? (
-          <LoadingState />
+          <AnnotationsSkeleton />
         ) : annotations.isError ? (
-          <div className="text-sm text-muted text-center" style={{ padding: 'var(--sp-4)' }}>
-            تعذّر تحميل الملاحظات
-          </div>
+          <ErrorState
+            message="تعذّر تحميل الملاحظات"
+            error={annotations.error}
+            onRetry={() => annotations.refetch()}
+          />
         ) : !annotations.data?.length ? (
           <EmptyState
             icon={MessageSquare}
@@ -148,7 +196,9 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
               <article
                 key={a.id}
                 className="annotation-item"
-                style={{ borderInlineStart: `3px solid ${a.color ?? 'var(--accent)'}` }}
+                /* 1px author-color hairline (orchestrator ruling #4: the
+                   Notion hairline language — no >1px accent stripes). */
+                style={{ borderInlineStart: `1px solid ${a.color ?? 'var(--accent)'}` }}
               >
                 <div className="annotation-item-head">
                   <UserAvatar initials={initials} color={a.author.avatarColor ?? undefined} size={28} />
@@ -167,6 +217,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
                     className="annotation-jump"
                     onClick={() => onJumpToPage(a.page)}
                     title={`اذهب إلى الصفحة ${a.page}`}
+                    aria-label={`الانتقال إلى الصفحة ${a.page}`}
                   >
                     <Icon icon={ChevronLeft} size={12} />
                     <span className="font-mono">صفحة {a.page}</span>

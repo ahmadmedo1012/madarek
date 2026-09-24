@@ -8,6 +8,7 @@ import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
 import { Icon } from './components/Icon';
+import { ToastStack } from './components/overlays';
 import NotFoundPage from './pages/NotFoundPage';
 
 /* ───────────────────────────────────────────────────────────
@@ -167,6 +168,9 @@ function CollegesLayout() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      {/* Global toast region — mounted once at the root so any page
+          can fire lib/toast.ts feedback (ruling #3, audit 0-c P1-7). */}
+      <ToastStack />
       <BrowserRouter>
         <Suspense fallback={<PageSkeleton />}>
           <Routes>

@@ -9,6 +9,7 @@ import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/prim
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
+import { toast } from '../../lib/toast';
 import {
   useResearchQueue, useGradePaper, usePublishPaper, useMyTeacherProfile,
   useAnnotations, apiErrorMessage,
@@ -229,6 +230,9 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
     try {
       await grade.mutateAsync({ id: paper.id, grade: score, feedback: feedback || undefined });
       onClose();
+      toast.success('صار البحث مُقيَّماً؛ يمكنك نشره في المكتبة من صفحة البحوث.', {
+        title: 'تمّ حفظ التقييم',
+      });
     } catch (err) {
       setGradeError(apiErrorMessage(err, 'تعذَّر حفظ التقييم — تحقّق من اتصالك ثم أعد المحاولة.'));
     }
@@ -238,6 +242,9 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
     try {
       await publish.mutateAsync(paper.id);
       onClose();
+      toast.success('أصبح البحث متاحاً للطلاب في مكتبة الجامعة.', {
+        title: 'تمّ نشر البحث',
+      });
     } catch (err) {
       setPublishError(apiErrorMessage(err, 'تعذَّر نشر البحث في المكتبة — تحقّق من اتصالك ثم أعد المحاولة.'));
     }

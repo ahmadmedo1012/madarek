@@ -18,6 +18,17 @@
   min-height: 600px;
 }
 
+/* Fullscreen: the viewer root IS the screen — drop the card chrome,
+   keep the ground + paper (state synced by the fullscreenchange
+   listener in PdfViewer.tsx). */
+.pdf-viewer:fullscreen {
+  border: 0;
+  border-radius: 0;
+  min-height: 0;
+  height: 100%;
+}
+.pdf-viewer::backdrop { background: var(--bg); }
+
 /* Toolbar */
 .pdf-toolbar {
   display: flex;
@@ -33,6 +44,7 @@
   align-items: center;
   gap: 4px;
 }
+.pdf-toolbar-actions { margin-inline-start: auto; }
 .pdf-title {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
@@ -58,6 +70,7 @@
   text-decoration: none;
 }
 .pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
+.pdf-btn:active:not(:disabled) { background: var(--surface-3); }
 .pdf-btn.on { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
 .pdf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .pdf-btn.sm { width: 28px; height: 28px; }
@@ -74,8 +87,10 @@
   color: var(--text);
   cursor: pointer;
   font-variant-numeric: tabular-nums;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .pdf-scale-pill:hover { border-color: var(--accent-border); }
+.pdf-scale-pill:active { background: var(--surface-2); }
 
 .pdf-pageinfo {
   display: inline-flex;
@@ -84,6 +99,8 @@
   font-size: var(--fs-xs);
   color: var(--text-muted);
 }
+.pdf-pageinfo-word,
+.pdf-pageinfo-total { white-space: nowrap; }
 .pdf-pageinfo input {
   width: 48px;
   height: 28px;
@@ -99,7 +116,6 @@
 .pdf-pageinfo input::-webkit-outer-spin-button,
 .pdf-pageinfo input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .pdf-pageinfo input[type=number] { -moz-appearance: textfield; }
-.pdf-pageinfo-total { white-space: nowrap; }
 
 /* Search bar */
 .pdf-searchbar {
@@ -109,22 +125,28 @@
   padding: 6px var(--sp-3);
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 .pdf-searchbar-icon { color: var(--text-subtle); flex-shrink: 0; }
 .pdf-searchbar input {
   flex: 1;
-  height: 28px;
+  min-width: 120px;
+  height: 32px;
   border: 0;
   background: transparent;
   color: var(--text);
   font-family: inherit;
   font-size: var(--fs-sm);
-  outline: none;
+  /* No `outline: none` — the global :focus-visible ring (polish.css
+     v22, overrides layer) is the single focus system; suppressing the
+     outline locally would strand keyboard users if layer order ever
+     changes. */
 }
 .pdf-searchbar-count {
   font-size: var(--fs-xxs);
   color: var(--text-subtle);
   padding: 0 var(--sp-2);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Canvas area */
@@ -142,24 +164,115 @@
 .pdf-page {
   position: relative;
   display: inline-block;
+  /* The paper is a physical object: white in BOTH themes (the PDF
+     paints its own ground); the elevation is the designed sheet
+     shadow, not the card shadow. */
   background: white;
-  box-shadow: var(--shadow-md);
-  border-radius: 4px;
+  box-shadow: var(--elev-3);
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 .pdf-page canvas { display: block; }
 
-/* Text layer overlays the canvas, transparent, supports text selection */
+/* Shape-matched loading placeholder — mirrors the .pdf-page frame
+   with a heading block + text-line texture (static, no keyframes:
+   the initial paper wait is calm, and reduced-motion is trivially
+   safe). */
+.pdf-page-skeleton {
+  width: min(100%, 620px);
+  max-height: 100%;
+  aspect-ratio: 210 / 297;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  position: relative;
+  overflow: hidden;
+}
+.pdf-page-skeleton::before {
+  /* heading block */
+  content: "";
+  position: absolute;
+  top: var(--sp-6);
+  inset-inline-start: var(--sp-6);
+  inline-size: 55%;
+  block-size: var(--sp-4);
+  border-radius: var(--r-sm);
+  background: var(--surface-3);
+}
+.pdf-page-skeleton::after {
+  /* body text lines */
+  content: "";
+  position: absolute;
+  top: calc(var(--sp-6) + var(--sp-4) + var(--sp-3));
+  bottom: var(--sp-6);
+  inset-inline: var(--sp-6);
+  border-radius: var(--r-sm);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--surface-3) 0 var(--sp-2),
+    transparent var(--sp-2) calc(var(--sp-2) + var(--sp-3))
+  );
+}
+
+/* Page-render indicator — the canvas keeps the previous page's pixels
+   until the new render lands, so an honest busy cue matters during
+   page flips / zoom changes. */
+.pdf-rendering {
+  position: absolute;
+  top: var(--sp-3);
+  inset-inline-end: var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  box-shadow: var(--elev-2);
+  color: var(--text-muted);
+}
+
+/* Coarse-pointer pinch hint — the browser's pinch gesture is the only
+   touch zoom this viewer has (native pinch handling is a roadmap
+   item, audit 0-f P3-38). Decorative; never intercepts touches. */
+.pdf-touch-hint {
+  display: none;
+  position: absolute;
+  bottom: var(--sp-3);
+  inset-inline: 0;
+  margin: 0 auto;
+  width: max-content;
+  align-items: center;
+  gap: 6px;
+  padding: 6px var(--sp-3);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  box-shadow: var(--elev-2);
+  pointer-events: none;
+}
+
+/* Text layer overlays the canvas, transparent, supports text selection.
+   Layer opacity is 1 (modern pdf.js pattern — the OLD 0.25 dimmed the
+   ::selection/highlight colors to a quarter of their strength, making
+   the themed AA selection pair below impossible); the spans themselves
+   are color: transparent, so the idle layer paints nothing. */
 .pdf-textLayer {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  opacity: 0.25;
+  opacity: 1;
   line-height: 1;
-  --highlight-bg-color: rgba(255, 222, 0, 0.4);
-  --highlight-selected-bg-color: rgba(255, 158, 0, 0.6);
+  /* pdf.js find-controller highlight tints — the paper is white in
+     both themes, so the accent is mixed with transparency and stays
+     readable on white regardless of theme (raw rgba(255,222,0,….)
+     removed, audit 0-f P2-10). */
+  --highlight-bg-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  --highlight-selected-bg-color: color-mix(in srgb, var(--accent) 55%, transparent);
 }
-.pdf-textLayer ::selection { background: rgba(0, 100, 255, 0.3); }
 .pdf-textLayer span,
 .pdf-textLayer br {
   color: transparent;
@@ -169,29 +282,19 @@
   transform-origin: 0% 0%;
 }
 
-/* Status states */
-.pdf-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-3);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-  padding: var(--sp-8);
-  text-align: center;
-}
-.pdf-status-error { color: var(--danger-ink, var(--danger)); }
-.spin { animation: pdf-spin 1s linear infinite; } /* loop cadence — off-token by design */
-@keyframes pdf-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-
-/* Mobile */
+/* Mobile — 44px touch floor on every control (craft floor), toolbar
+   groups wrap as units at 320px (flex-wrap on .pdf-toolbar). */
 @media (max-width: 600px) {
   .pdf-toolbar { padding: 6px var(--sp-2); gap: var(--sp-2); }
   .pdf-title { display: none; }
-  .pdf-btn { width: 30px; height: 30px; }
-  .pdf-scale-pill { min-width: 64px; padding: 0 var(--sp-2); }
+  .pdf-btn,
+  .pdf-btn.sm { width: 44px; height: 44px; }
+  .pdf-scale-pill { min-width: 64px; padding: 0 var(--sp-2); height: 44px; }
+  .pdf-pageinfo input { height: 44px; }
   .pdf-canvas-wrap { padding: var(--sp-2); }
+}
+@media (max-width: 600px) and (pointer: coarse) {
+  .pdf-touch-hint { display: inline-flex; }
 }
 
 /* ─── Annotations panel ──────────────────────────────────── */
@@ -229,6 +332,7 @@
   background: var(--accent-soft);
   border-bottom: 1px solid var(--border);
 }
+.annotation-composer-meta { flex-wrap: wrap; }
 .annotation-textarea {
   width: 100%;
   min-height: 70px;
@@ -254,22 +358,67 @@
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
 }
+
+/* Pen chips — the button carries the 28px hit target (44 on mobile)
+   with the colored dot centered inside; selection is the copper ring
+   on the dot, focus is the global ring on the button. */
 .annotation-colors {
   display: inline-flex;
   gap: 6px;
   margin-inline-start: auto;
+  flex-wrap: wrap;
 }
 .annotation-color {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: var(--r-full);
+  cursor: pointer;
+}
+.annotation-color-dot {
+  display: inline-block;
   width: 18px;
   height: 18px;
   border-radius: var(--r-full);
-  border: 2px solid transparent;
-  cursor: pointer;
-  padding: 0;
-  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  /* bounded swatch — keeps pale inks identifiable on light grounds */
+  border: 1px solid var(--border-strong);
+  transition: transform var(--t-fast) var(--ease);
 }
-.annotation-color:hover { transform: scale(1.15); }
-.annotation-color.on { border-color: var(--text); }
+.annotation-color:hover .annotation-color-dot { transform: scale(1.15); }
+.annotation-color:active .annotation-color-dot { transform: scale(0.95); }
+.annotation-color.on .annotation-color-dot {
+  border-color: var(--text);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* List skeleton — mirrors an annotation card (avatar + author line +
+   two comment lines). */
+.annotations-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.annotations-skeleton-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+.annotations-skeleton-lines {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
 
 .annotation-item {
   position: relative;
@@ -290,18 +439,20 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 3px 8px;
+  padding: 6px 10px;
   background: var(--accent-soft);
   color: var(--accent-ink, var(--accent));
   border: 0;
   border-radius: var(--r-full);
-  font-size: 10px;
+  font-size: var(--fs-xxs);
   font-weight: var(--fw-semibold);
   cursor: pointer;
   font-family: inherit;
+  font-variant-numeric: tabular-nums;
   transition: background var(--t-fast) var(--ease);
 }
 .annotation-jump:hover { background: var(--accent); color: var(--accent-fg); }
+.annotation-jump:active { background: var(--accent-strong); color: var(--accent-fg); }
 .annotation-comment {
   font-size: var(--fs-sm);
   color: var(--text);
@@ -326,9 +477,18 @@
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 .annotation-delete:hover { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
+.annotation-delete:active { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
 
 @media (max-width: 800px) {
   .annotations-panel { width: 100%; max-height: 320px; }
+  /* 44px touch floor: chips/jump/delete grow for real (visual weight
+     on a touch surface beats pseudo-element hit hacks here — the
+     chips row wraps to its own line via .annotation-composer-meta). */
+  .annotation-color { width: 44px; height: 44px; }
+  .annotation-colors { margin-inline-start: 0; width: 100%; }
+  .annotation-jump { min-height: 44px; padding-inline: var(--sp-3); }
+  .annotation-delete { width: 44px; height: 44px; top: 0; inset-inline-end: 0; }
+  .annotation-page-input { height: 44px; }
 }
 
 /* ─── Document viewer layout ───────────────────────────── */
@@ -348,4 +508,69 @@
 @media (max-width: 800px) {
   .document-viewer-layout { flex-direction: column; }
 }
+
+/* ─── Print — the paper, not the chrome ────────────────────
+   Scoped to the document-viewer route only. The GLOBAL print
+   contract (chrome hiding, dark→light lock, effect freeze, link
+   underlining, pagination) is owned by polish.css v22 — this block
+   just shapes this page's surfaces around the paper and hides the
+   pieces v22 doesn't know about (toolbar, search bar, annotations
+   sidebar, back link, the inline 100vh height). */
+@media print {
+  .document-viewer-page { height: auto !important; }
+  .document-viewer-layout { display: block; }
+  .document-viewer-back,
+  .pdf-toolbar,
+  .pdf-searchbar,
+  .annotations-panel,
+  .pdf-rendering,
+  .pdf-touch-hint { display: none !important; }
+
+  .pdf-viewer,
+  .pdf-viewer.fill {
+    height: auto;
+    min-height: 0;
+    border: 0;
+    background: transparent;
+  }
+  .pdf-canvas-wrap {
+    overflow: visible;
+    padding: 0;
+    background: transparent;
+  }
+  .pdf-page {
+    border-radius: 0;
+    break-inside: avoid;
+    /* box-shadow is already frozen globally by the v22 print belt */
+  }
+  /* The canvas carries inline px sizing from the on-screen render —
+     cap it to the printed sheet width, keep the aspect ratio. */
+  .pdf-page canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+}
+
+/* ═══ Text selection inside the paper (browser surface) ═════════
+   Deliberately NOT inside @layer pages: this scoped pair must
+   out-rank polish.css v22's overrides-layer global ::selection —
+   pdf.css is imported earlier, so layer order alone would let the
+   global win. Unlayered normal declarations beat every layered one,
+   and the blast radius is exactly the PDF text layer.
+
+   The text layer's glyphs are transparent, so ::selection paints
+   both the highlight ground AND the glyph ink. The paper is white in
+   both themes, so the dark pair must stand on its own (the global
+   recipe — warm-sand text over a 28% translucent ground — is
+   invisible over white paper in dark theme). Both pairs clear AA:
+   light #5C3416 on #F4E4D2 = 8.62:1; dark --neutral-50 #191918 on
+   --c-copper-ink #E0A067 = 7.87:1. */
+.pdf-textLayer ::selection {
+  background: var(--c-copper-bg);
+  color: var(--c-copper-deep);
+}
+:root[data-theme='dark'] .pdf-textLayer ::selection {
+  background: var(--c-copper-ink);
+  color: var(--neutral-50); /* the ink ground — #191918 in dark */
 }

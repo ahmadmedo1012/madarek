@@ -316,4 +316,131 @@
     box-shadow: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   wave 7-a: TOAST STACK — the app-wide passive-feedback region
+   (audit 0-c P1-7/P1-8). Rendered by <ToastStack /> (overlays/
+   Toast.tsx) from the lib/toast.ts store; the standalone <Toast />
+   primitive keeps its own fixed anchoring in components.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+.toast-stack {
+  position: fixed;
+  inset-block-end: var(--sp-5);
+  inset-inline-end: var(--sp-5);
+  z-index: var(--z-toast, 500);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  /* The region never blocks the page beneath it; each toast
+     re-enables pointer events for itself. */
+  pointer-events: none;
+  max-inline-size: min(420px, calc(100vw - var(--sp-6)));
+}
+
+/* Stack items reuse the .toast surface (components.css + polish v18/v22
+   variant hairlines) but live in flow inside the region — the (0,2,0)
+   selector takes the cascade over the standalone (0,1,0) fixed rules. */
+.toast-stack .toast {
+  position: static;
+  pointer-events: auto;
+  touch-action: pan-y; /* horizontal swipes dismiss; vertical scrolls pass */
+  will-change: transform;
+  animation: madarek-toast-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+}
+.toast-stack .toast[data-closing="true"] {
+  animation: madarek-toast-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
+}
+@keyframes madarek-toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes madarek-toast-out {
+  to { opacity: 0; transform: translateY(12px); }
+}
+
+/* Toast anatomy: tone-coded icon well (soft ground + -ink icon —
+   WCAG-pinned status pairing, same language as .notif-item-icon). */
+.toast-stack .toast-icon {
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--r-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-block-start: 1px;
+}
+.toast-icon-info    { background: var(--info-soft);    color: var(--info-ink); }
+.toast-icon-success { background: var(--success-soft); color: var(--success-ink); }
+.toast-icon-warning { background: var(--warning-soft); color: var(--warning-ink); }
+.toast-icon-error   { background: var(--danger-soft);  color: var(--danger-ink); }
+
+.toast-stack .toast-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  line-height: 1.4;
+}
+.toast-stack .toast-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-block-start: 2px;
+  overflow-wrap: anywhere;
+}
+.toast-stack .toast-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+}
+.toast-stack .toast-action {
+  border: 0;
+  background: transparent;
+  padding: var(--sp-1) 0;
+  margin-block-start: 2px;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-ink);
+  cursor: pointer;
+  border-radius: var(--r-xs);
+  min-block-size: 44px; /* craft floor: touch target */
+  display: inline-flex;
+  align-items: center;
+}
+.toast-stack .toast-action:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+.toast-stack .toast-action:focus-visible { outline: var(--state-focus-ring); outline-offset: -2px; }
+.toast-stack .toast-action:active { opacity: 0.7; }
+
+/* Toasts never render in print output. */
+@media print {
+  .toast-stack { display: none; }
+}
+
+/* Mobile: full-measure toasts, centered stack, above the bottom-nav
+   dock + home-indicator safe area (the dock is ≤640px — same band). */
+@media (max-width: 640px) {
+  .toast-stack {
+    inset-inline: var(--sp-3);
+    align-items: stretch;
+    inset-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  .toast-stack .toast {
+    min-inline-size: 0;
+    max-inline-size: none;
+  }
+}
+
+/* Reduced-motion off-switch (guardrail #6). Duration collapses via the
+   token (never `animation: none`) so the animationend that drives the
+   delayed unmount still fires. */
+@media (prefers-reduced-motion: reduce) {
+  .toast-stack .toast,
+  .toast-stack .toast[data-closing="true"] {
+    animation-duration: var(--motion-duration-short);
+  }
+}
 }

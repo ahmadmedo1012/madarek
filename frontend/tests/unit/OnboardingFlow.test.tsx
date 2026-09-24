@@ -89,7 +89,11 @@ describe('OnboardingFlow — shared-store wiring', () => {
     });
     expect(flowEl().getAttribute('data-frame')).toBe('3');
     fireEvent.click(screen.getByRole('button', { name: 'لنبدأ' }));
-    expect(document.querySelector('.onboarding-flow')).toBeNull();
+    // Modal now plays a short exit animation before unmounting
+    // (wave 7-a useDelayedUnmount) — await the designed unmount.
+    await waitFor(() => {
+      expect(document.querySelector('.onboarding-flow')).toBeNull();
+    });
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledTimes(1);
     });
@@ -100,7 +104,9 @@ describe('OnboardingFlow — shared-store wiring', () => {
     renderFlow();
     act(() => { useOnboardingStore.getState().start(); });
     fireEvent.click(screen.getByRole('button', { name: 'تخطّي' }));
-    expect(document.querySelector('.onboarding-flow')).toBeNull();
+    await waitFor(() => {
+      expect(document.querySelector('.onboarding-flow')).toBeNull();
+    });
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith('/me/onboarding/complete');
     });
@@ -114,7 +120,9 @@ describe('OnboardingFlow — shared-store wiring', () => {
       s.goTo(3);
     });
     fireEvent.click(screen.getByRole('button', { name: 'لنبدأ' }));
-    expect(document.querySelector('.onboarding-flow')).toBeNull();
+    await waitFor(() => {
+      expect(document.querySelector('.onboarding-flow')).toBeNull();
+    });
     // Wait a tick to confirm no fetch happens.
     await new Promise((r) => setTimeout(r, 50));
     expect(api.post).not.toHaveBeenCalled();

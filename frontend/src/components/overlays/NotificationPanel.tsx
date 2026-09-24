@@ -9,11 +9,18 @@
  * surface (--r-xl rounded only on the bottom corners — top corners
  * meet the topbar).
  *
+ * Anchoring (wave 7-a, audit 0-c P1-6): the panel hangs from the
+ * anchor's inline-end edge (RTL-aware), flips above the anchor when
+ * there is no room below, and clamps inside the viewport — long lists
+ * already scroll inside .notif-panel-list.
+ *
  * Used by the bell icon in the topbar to drop down a list of recent
  * notifications.
  */
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { useAnchoredPosition } from './anchoredPosition';
+import { useDelayedUnmount } from './useDelayedUnmount';
 
 export interface NotificationPanelProps {
   open: boolean;
@@ -27,22 +34,6 @@ export interface NotificationPanelProps {
   children: ReactNode;
 }
 
-interface Position {
-  top: number;
-  inlineEndPx: number; // distance from viewport's inline-end (rtl-aware)
-}
-
-function readPosition(anchor: HTMLElement): Position {
-  const r = anchor.getBoundingClientRect();
-  const isRtl = document.documentElement.dir === 'rtl';
-  // The panel hangs from the anchor's inline-end edge.
-  if (isRtl) {
-    // In RTL, "inline-end" is the LEFT side of the viewport.
-    return { top: r.bottom + 4, inlineEndPx: r.left };
-  }
-  return { top: r.bottom + 4, inlineEndPx: window.innerWidth - r.right };
-}
-
 export function NotificationPanel({
   open,
   onClose,
@@ -53,24 +44,10 @@ export function NotificationPanel({
   children,
 }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const [pos, setPos] = useState<Position | null>(null);
-
-  useLayoutEffect(() => {
-    if (!open || !anchorRef.current) {
-      setPos(null);
-      return;
-    }
-    const update = () => {
-      if (anchorRef.current) setPos(readPosition(anchorRef.current));
-    };
-    update();
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, true);
-    return () => {
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
-    };
-  }, [open, anchorRef]);
+  const { rendered, onExitEnd } = useDelayedUnmount(open);
+  // The panel hangs from the anchor's inline-end edge — the shared
+  // "end" placement resolves that per writing direction.
+  const pos = useAnchoredPosition({ open, anchorRef, panelRef, placement: 'end' });
 
   useEffect(() => {
     if (!open || !closeOnEscape) return;
@@ -97,12 +74,13 @@ export function NotificationPanel({
     return () => document.removeEventListener('mousedown', onDoc);
   }, [open, closeOnOutsideClick, onClose, anchorRef]);
 
-  if (!open || !pos || typeof document === 'undefined') return null;
+  if (!rendered || !pos || typeof document === 'undefined') return null;
 
-  const isRtl = document.documentElement.dir === 'rtl';
-  const style: React.CSSProperties = isRtl
-    ? { top: pos.top, left: pos.inlineEndPx }
-    : { top: pos.top, right: pos.inlineEndPx };
+  // Keep the design cap from components.css (.notification-panel
+  // max-block-size: min(540px, 80dvh)) — an inline max-height would
+  // otherwise override the stylesheet's logical cap when the viewport
+  // allows more room.
+  const maxH = Math.min(pos.maxHeight, 540);
 
   return createPortal(
     <div
@@ -110,7 +88,12 @@ export function NotificationPanel({
       className="notification-panel"
       role="dialog"
       aria-label={ariaLabel}
-      style={style}
+      style={{ top: pos.top, left: pos.left, maxHeight: maxH }}
+      data-side={pos.flipped ? 'above' : 'below'}
+      data-closing={!open ? 'true' : undefined}
+      onAnimationEnd={(e) => {
+        if (!open && e.animationName === 'madarek-popover-out') onExitEnd();
+      }}
     >
       {children}
     </div>,

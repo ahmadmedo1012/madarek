@@ -1,6 +1,7 @@
 import {
   Wallet, Receipt, Building2, Phone, Mail, Clock, ArrowLeft, Info, CheckCircle2,
 } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
@@ -8,6 +9,7 @@ import { Reveal } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyProfile } from '../../hooks/useResources';
+import { toast } from '../../lib/toast';
 
 /**
  * Honest financial-affairs landing.
@@ -26,6 +28,18 @@ export default function PaymentPage() {
   const fullName = user ? `${user.firstName} ${user.lastName}` : '—';
   const universityId = profile.data?.student?.universityId ?? null;
   const facultyName = profile.data?.student?.faculty?.name ?? null;
+
+  // There is deliberately no checkout flow to confirm (see docblock) —
+  // the page's one action needing success feedback is a retry that
+  // recovers the student's data after a failed load.
+  const hadLoadError = useRef(false);
+  useEffect(() => {
+    if (profile.isError) hadLoadError.current = true;
+    else if (profile.isSuccess && hadLoadError.current) {
+      hadLoadError.current = false;
+      toast.success('تم تحميل بياناتك الدراسية من الخادم.', { title: 'تمّ التحديث' });
+    }
+  }, [profile.isError, profile.isSuccess]);
 
   return (
     <div className="page">

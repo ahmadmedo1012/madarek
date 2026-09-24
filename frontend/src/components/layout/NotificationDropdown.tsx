@@ -39,7 +39,8 @@ function timeAgo(iso: string): string {
   if (seconds < 3600)      return `منذ ${Math.floor(seconds / 60)} د`;
   if (seconds < 86400)     return `منذ ${Math.floor(seconds / 3600)} س`;
   if (seconds < 7 * 86400) return `منذ ${Math.floor(seconds / 86400)} يوم`;
-  return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  // Older than a week — short Arabic date (was en-GB; audit 0-c P3).
+  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
 }
 
 export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {

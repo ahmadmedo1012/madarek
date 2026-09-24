@@ -1,6 +1,6 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
@@ -122,36 +122,6 @@ function resolveTitle(pathname: string): string {
 }
 
 /* ───────────────────────────────────────────────────────────
-   LAYOUT METRICS LOCK — pin sidebar/topbar dimensions to CSS
-   custom properties on <html> so layout-dependent code reads
-   canonical values without forcing a layout calculation.
-   ─────────────────────────────────────────────────────────── */
-function useLayoutMetrics() {
-  useLayoutEffect(() => {
-    const el = document.documentElement;
-    const apply = () => {
-      const sidebar = document.querySelector<HTMLElement>('.sidebar');
-      const topbar = document.querySelector<HTMLElement>('.topbar');
-      const w = sidebar?.offsetWidth ?? 264;
-      const h = topbar?.offsetHeight ?? 64;
-      el.style.setProperty('--measured-sidebar-w', `${w}px`);
-      el.style.setProperty('--measured-topbar-h', `${h}px`);
-    };
-    apply();
-    const ro = new ResizeObserver(apply);
-    const sb = document.querySelector('.sidebar');
-    const tb = document.querySelector('.topbar');
-    if (sb) ro.observe(sb);
-    if (tb) ro.observe(tb);
-    window.addEventListener('resize', apply);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', apply);
-    };
-  }, []);
-}
-
-/* ───────────────────────────────────────────────────────────
    THEME TRANSITION GUARD — opt into View Transitions API for
    buttery cross-fades when the theme attribute changes.
    ─────────────────────────────────────────────────────────── */
@@ -224,9 +194,11 @@ export function AppShell({ children }: { children?: ReactNode }) {
   useThemeSync();
   useThemeProfileSync();
   useRoleAccent();
-  useLayoutMetrics();
   useThemeTransitionGuard();
   useCardPointerGlow();
+  // (useLayoutMetrics deleted in wave 7-b — audit 0-c P2-6: it wrote
+  // --measured-sidebar-w/--measured-topbar-h on <html> that zero CSS/TSX
+  // consumers ever read; dead code under the no-dead-code floor.)
 
   const {
     shouldAutoStart: onboardingShouldAutoStart,
@@ -292,7 +264,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
         <Topbar title={title} scrolled={scrolled} />
         <div className="content" ref={contentRef}>
           <PageTransition>
-            <div className="content-inner" key={location.pathname}>
+            <div className="content-inner">
               {children ?? <Outlet />}
             </div>
           </PageTransition>

@@ -5549,3 +5549,111 @@
      and the 4px training-card stripe are gone entirely — see tombstones
      in v9/v19. */
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   wave 7-b: shell — AppShell scroll/RTL/route-transition corrections
+   (append-only section; see audits/0-c P2-3/P2-4 + 3-agent RTL finding)
+   ═══════════════════════════════════════════════════════════════════ */
+@layer overrides {
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  1. SKIP-LINK — restore v20's fixed positioning                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* THE "760px RTL scrollWidth at 390px" production bug (flagged by 3
+     agents, attributed to the off-canvas sidebar — that was a
+     misdiagnosis). Measured in-browser: the fixed, translated mobile
+     sidebar contributes NOTHING to scrollable overflow (fixed boxes
+     are excluded); the real culprit was the skip-link. v19's universal
+     link-underline rule
+     `a:not(.btn):not(.nav-item):not(…) { position: relative }` carries
+     specificity (0,7,1) and silently out-ranked v20's `.skip-link
+     { position: fixed }` (0,1,0) in this same overrides layer. The
+     pill then became a stretched in-flow grid item at relative offset
+     `inset-inline-start: 50%` + translateX(-50%) — in RTL that lands
+     it entirely at negative x (~-380px), and negative-x content IS
+     scrollable in RTL documents → every page h-scrolled by ~370px.
+     (In LTR the same offsets net out to ~0, which is why the bug was
+     RTL-only.) One !important is the only tool an append-only section
+     has against a same-layer (0,7,1) selector; verified fixed in
+     Chromium at 320/390/768px, RTL + LTR, drawer open and closed. */
+  .skip-link {
+    position: fixed !important;
+  }
+  /* v19's ::after animated underline also paints a stray 1px line
+     inside the focused pill — the skip-link is a button-shaped
+     control, not a text link. Same specificity story, same tool. */
+  .skip-link::after {
+    content: none !important;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  2. COLLAPSED RAIL — retire the CSS-only tooltip (0-c P2-4)    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Sidebar.tsx (wave 7-b) wires the portaled <Tooltip> primitive on
+     collapsed nav items — keyboard-focusable, aria-describedby, never
+     clipped. That replaces v8's `::after { content: attr(title) }`
+     tooltip, which was triply broken: (a) clipped to invisibility by
+     the sidebar's own `overflow-x: hidden` (the pill hangs outside the
+     rail's padding box — verified: pseudo right edge ≈ x=1168 vs clip
+     edge x=1206), (b) hover-only — keyboard focus got no label, and
+     (c) its [dir="rtl"] override anchors the tooltip off the physical
+     right edge, i.e. off-screen in RTL. With the title attribute gone
+     from the markup, attr(title) resolves to "" and the leftover rule
+     would paint an empty dark box — stand it down here. Scoped to
+     non-active items so v16's rail-dot ::after (which shares the
+     pseudo-element and wins the cascade on .on/.active anyway) keeps
+     rendering while the active item is hovered. */
+  @media (min-width: 921px) {
+    .sidebar.collapsed .nav-item:not(.on):not(.active):hover::after {
+      content: none;
+    }
+    /* The portaled tooltip supersedes the v8 pseudo entirely on
+       focus-visible too (defense against attr(title) leftovers). */
+    .sidebar.collapsed .nav-item:not(.on):not(.active):focus-visible::after {
+      content: none;
+    }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  3. NAV-ICON — micro press feedback (DESIGN_POLISH_PLAN ph. 2) ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Plan phase 2: "nav-icon micro-rotate on press". Composes with the
+     established press language (cards 0.995 / pills 0.985 / bottom-nav
+     0.93) and with v13's hover scale-up on the same transform. */
+  .nav-item:active .nav-icon {
+    transform: scale(0.94) rotate(-6deg);
+    transition-duration: var(--t-micro);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  3b. DRAWER NAV TARGETS — 44px across the whole drawer band    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* 0-c P2-11: layout.css gives .nav-item a 30px min-block-size and
+     v6's 44px floor only reaches 640px — but the mobile drawer the
+     items live in opens all the way to 920px, leaving the 641–920px
+     tablet drawer with 30px tap targets (guardrail: ≥44px on touch).
+     Extend the floor to the full drawer band. */
+  @media (max-width: 920px) {
+    .sidebar .nav-item {
+      min-block-size: 44px;
+    }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  4. PRINT — unbound the viewport-bounded shell                  ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* layout.css (wave 7-b) bounds .has-shell to 100dvh so .content can
+     be the scroll container. Paper is not a viewport: release the
+     bound and let the content flow across pages (comes after v22's
+     print block in this layer, so it wins the properties it sets). */
+  @media print {
+    .has-shell {
+      block-size: auto;
+      grid-template-rows: auto;
+    }
+    .content {
+      overflow: visible;
+    }
+  }
+}

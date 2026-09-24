@@ -1,6 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useReducedMotion } from './useReducedMotion';
 
 type PageTransitionProps = {
   children: ReactNode;
@@ -9,74 +8,46 @@ type PageTransitionProps = {
 };
 
 /**
- * PageTransition — wraps the route outlet to deliver a consistent
- * cross-fade + small lift on every navigation.
+ * PageTransition — the shell's single, deliberate route transition.
  *
- * Behavior:
- *   - On supporting browsers, uses document.startViewTransition() so the
- *     OS-level page transition kicks in.
- *   - On non-supporting browsers, applies `is-route-transitioning` to
- *     the inner wrapper so the CSS keyframe in motion.css runs instead.
- *   - Reduced-motion: caller already gets the <80ms fade via the
- *     reduced-motion CSS override on --motion-duration-page.
- *   - Persistent shell stays mounted: only this component's children
- *     animate. Place this component INSIDE the shell.
+ * Wave 7-b consolidation (audit 0-c P2-2/P2-3): route changes used to
+ * run THREE compounding animations — (1) the keyed `.content-inner`
+ * remount playing the polish `page-enter` fade, (2) an
+ * `.is-route-transitioning` class-toggle fallback, and (3) a root
+ * View Transition captured AFTER React had already committed (so the
+ * old snapshot was the new DOM — a silent no-op that still froze the
+ * page for its duration; the `::view-transition-*(route)` rules never
+ * matched anything because no element ever set
+ * `view-transition-name: route`).
+ *
+ * The ONE mechanism that survives is the keyed remount: this component
+ * keys its inner wrapper on the pathname, so `.content-inner` (and the
+ * page tree under it) remounts on every route change and plays the
+ * single `page-enter` fade defined in polish.css v9 (160ms
+ * `--motion-duration-short` + `--ease-out`, disabled under
+ * `prefers-reduced-motion` by v9's own media block). Purely
+ * declarative: no JS timing, no effect races, interruptible by nature,
+ * and scroll restoration (which scrolls the persistent `.content`
+ * container, not this subtree) is unaffected.
+ *
+ * The wrapper div stays mounted across routes (stable data-route-key
+ * contract) — only the inner node remounts.
  *
  * See specs/001-premium-motion-system/contracts/motion-primitives.tsx.md
+ * (the contract's startViewTransition/class-toggle clauses are retired
+ * by this wave — docs update flagged in the worklog).
  */
 export function PageTransition({ children, className }: PageTransitionProps): JSX.Element {
   const location = useLocation();
-  const innerRef = useRef<HTMLDivElement | null>(null);
-  const reduced = useReducedMotion();
-  const previousKey = useRef<string>(location.key);
-
-  useEffect(() => {
-    if (location.key === previousKey.current) {
-      return;
-    }
-    previousKey.current = location.key;
-
-    const node = innerRef.current;
-    if (!node) return;
-
-    if (reduced) {
-      // Reduced-motion: no animation; the new content is already mounted
-      // by react-router. We deliberately do nothing here — the static
-      // CSS fallback (80ms fade) is handled by the @media block.
-      return;
-    }
-
-    // Prefer the View Transitions API where available.
-    const startViewTransition = (
-      document as Document & {
-        startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> };
-      }
-    ).startViewTransition;
-
-    if (typeof startViewTransition === 'function') {
-      // We're already past the React commit — the new content has been
-      // painted. View Transitions captures the snapshot on entry, so
-      // calling it here animates the just-rendered tree.
-      startViewTransition.call(document, () => {
-        // No-op: React already updated the DOM.
-      });
-      return;
-    }
-
-    // Fallback: CSS keyframe via class toggle.
-    node.classList.remove('is-route-transitioning');
-    // force reflow to restart animation
-    void node.offsetWidth;
-    node.classList.add('is-route-transitioning');
-  }, [location.key, reduced]);
 
   return (
     <div
-      ref={innerRef}
       className={`page-transition${className ? ` ${className}` : ''}`}
       data-route-key={location.key}
     >
-      {children}
+      <div className="page-transition-inner" key={location.pathname}>
+        {children}
+      </div>
     </div>
   );
 }

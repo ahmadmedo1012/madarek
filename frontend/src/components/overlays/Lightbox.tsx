@@ -5,6 +5,10 @@
  * Tokens: --elev-5 + --z-lightbox (600). NO glass — the contract uses an
  * 85% black scrim instead so media reads cleanly above it.
  *
+ * Wave 7-a (audit 0-c P2-1/P3): fade exit before unmount
+ * (useDelayedUnmount + data-closing) and the close affordance uses the
+ * Lucide X icon (one icon family).
+ *
  * Per the contract:
  *   - DOES trap focus (uses the shared useFocusTrap hook).
  *   - DOES lock body scroll while open.
@@ -13,7 +17,10 @@
  */
 import { useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
+import { Icon } from '../Icon';
 import { useFocusTrap } from './useFocusTrap';
+import { useDelayedUnmount } from './useDelayedUnmount';
 
 export interface LightboxProps {
   open: boolean;
@@ -40,15 +47,20 @@ export function Lightbox({
 }: LightboxProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   useFocusTrap({ open, containerRef: contentRef, closeOnEscape, onClose });
+  const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
 
-  if (!open || typeof document === 'undefined') return null;
+  if (!rendered || typeof document === 'undefined') return null;
 
   return createPortal(
     <div
       className="lightbox-overlay"
+      data-closing={!open ? 'true' : undefined}
       onClick={(e) => {
         if (!closeOnOverlayClick) return;
         if (e.target === e.currentTarget) onClose();
+      }}
+      onAnimationEnd={(e) => {
+        if (!open && e.animationName === 'madarek-lightbox-out') onExitEnd();
       }}
     >
       <div
@@ -64,7 +76,7 @@ export function Lightbox({
           aria-label={closeLabel}
           onClick={onClose}
         >
-          ×
+          <Icon icon={X} size={18} />
         </button>
         {children}
       </div>

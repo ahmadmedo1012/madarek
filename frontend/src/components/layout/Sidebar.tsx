@@ -4,6 +4,7 @@ import { LogOut, ChevronsLeft, ChevronsRight, X, Compass } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
+import { Tooltip } from '../overlays';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuthStore } from '../../stores/auth.store';
 import { useLogout, useMe } from '../../hooks/useAuth';
@@ -113,25 +114,41 @@ export function Sidebar() {
         {groups.map((g) => (
           <div className="nav-group" key={g.label}>
             <div className="nav-section-label">{g.label}</div>
-            {g.items.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
-                onClick={closeSidebar}
-                title={sidebarCollapsed ? item.label : undefined}
-              >
-                <span className="nav-icon">
-                  <Icon icon={item.icon} size={17} />
-                </span>
-                <span className="nav-label">{item.label}</span>
-                {item.badge && (
-                  <span className={`nav-badge${item.badge.tone ? ' ' + item.badge.tone : ''}`}>
-                    {item.badge.text}
+            {g.items.map((item) => {
+              const link = (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <span className="nav-icon">
+                    <Icon icon={item.icon} size={17} />
                   </span>
-                )}
-              </NavLink>
-            ))}
+                  <span className="nav-label">{item.label}</span>
+                  {item.badge && (
+                    <span className={`nav-badge${item.badge.tone ? ' ' + item.badge.tone : ''}`}>
+                      {item.badge.text}
+                    </span>
+                  )}
+                </NavLink>
+              );
+              /* Collapsed icon rail: label via the portaled Tooltip
+                 primitive — hover-intent + instant on keyboard focus +
+                 aria-describedby. Replaces the old title-attribute ::after
+                 tooltip, which was clipped by the sidebar's
+                 overflow-x:hidden and hover-only (audit 0-c P2-4). Tooltip
+                 renders a fragment (no wrapper DOM), so the NavLink stays
+                 a direct .nav-group child and the v16 drawer :nth-child
+                 stagger keeps matching. */
+              return sidebarCollapsed ? (
+                <Tooltip key={`tip-${item.to}`} content={item.label}>
+                  {link}
+                </Tooltip>
+              ) : (
+                link
+              );
+            })}
           </div>
         ))}
 

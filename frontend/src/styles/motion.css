@@ -176,39 +176,16 @@
   }
   .skeleton-still-loading[data-visible="true"] { opacity: 1; }
 
-  /* ───────────────────────────────────────────────────────────────────
-     Route-transition keyframes — used by <PageTransition>.
-     CSS-class fallback for browsers without the View Transitions API.
-     The route outlet gets `is-route-transitioning` for one transition
-     duration, during which content cross-fades + lifts.
-     ─────────────────────────────────────────────────────────────────── */
-  @keyframes route-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(var(--motion-distance-small));
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .is-route-transitioning {
-    animation: route-fade-in var(--motion-duration-page) var(--motion-ease-decelerate) both;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .is-route-transitioning {
-      animation: reveal-fade 80ms var(--motion-ease-standard) both;
-    }
-  }
-
-  /* View Transitions API hooks — Chromium/WebKit support. */
-  ::view-transition-old(route),
-  ::view-transition-new(route) {
-    animation-duration: var(--motion-duration-page);
-    animation-timing-function: var(--motion-ease-decelerate);
-  }
+  /* (wave 7-b — route-transition block deleted: the shell's route change
+     is now ONE animation, the keyed .content-inner remount playing
+     polish.css v9's `page-enter` fade, driven by <PageTransition>'s
+     keyed wrapper. Deleted with it: `.is-route-transitioning` +
+     route-fade-in + its RM variant (the class was toggled only by
+     PageTransition's fallback path — a second animation compounding
+     with the remount on Firefox), and `::view-transition-old/new(route)`
+     (never matched — nothing ever set `view-transition-name: route`;
+     audit 0-c P2-2/P2-3). The root View Transition hooks in base.css
+     stay: they serve the theme-swap path only.) */
 
   /* ───────────────────────────────────────────────────────────────────
      Sheet bottom entrance — wave 2-a.

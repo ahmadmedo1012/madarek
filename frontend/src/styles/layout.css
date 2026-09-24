@@ -5,6 +5,34 @@
 @layer layout {
 
   /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SHELL SCROLL ARCHITECTURE (wave 7-b)                          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* The whole shell contract (useScrollRestoration, useHideOnScroll,
+     AppShell's topbar `scrolled` elevation) is written against
+     `.content` as the app's scroll container — but base.css sized the
+     grid with `min-height: 100dvh`, so the single implicit row grew
+     with page content, .main stretched to full document height and the
+     WINDOW scrolled instead. All three .content listeners silently
+     never fired (verified in-browser: `.topbar.scrolled` and
+     `.bottom-nav.is-hidden` never appeared; PUSH navigations kept the
+     old scroll offset). Bounding the shell to the viewport with a
+     minmax(0,1fr) row (the 0 floor stops the row's automatic
+     min-content growth) restores the intended architecture:
+     .main = 100dvh, .content = the real scroller. The skip-link must
+     stay position:fixed (see polish.css wave 7-b) so exactly one
+     in-flow child (.main) occupies the row. Print override + rationale
+     live in the polish.css wave 7-b section. */
+  .has-shell {
+    block-size: 100dvh;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  /* iOS scroll-chaining containment: when .content hits its edge the
+     gesture must not chain to the (non-scrolling) document. */
+  .content {
+    overscroll-behavior-y: contain;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SIDEBAR — Notion workspace style                              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar {

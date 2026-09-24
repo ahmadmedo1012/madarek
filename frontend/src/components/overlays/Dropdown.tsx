@@ -13,11 +13,19 @@
  *   - Tab dismisses (matches OS menu UX)
  *   - First item is auto-focused on open
  *
+ * Viewport intelligence (wave 7-a, audit 0-c P1-6): flips above the
+ * anchor when there is no room below, clamps inside the horizontal
+ * bounds (RTL-aware logical placement), and caps its height so long
+ * menus scroll internally instead of clipping. Closing plays a
+ * scale-out exit before unmount (useDelayedUnmount).
+ *
  * Pair with `<DropdownItem>` for the standard menu row, or render any
  * custom child (the keyboard nav scans for `[role="menuitem"]`).
  */
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { useAnchoredPosition } from './anchoredPosition';
+import { useDelayedUnmount } from './useDelayedUnmount';
 
 export interface DropdownProps {
   open: boolean;
@@ -39,21 +47,6 @@ export interface DropdownItemProps {
   children: ReactNode;
 }
 
-interface Position {
-  top: number;
-  left: number;
-  inlineEnd: boolean;
-}
-
-function readPosition(anchor: HTMLElement, placement: 'start' | 'end'): Position {
-  const r = anchor.getBoundingClientRect();
-  const isRtl = document.documentElement.dir === 'rtl';
-  if (placement === 'end') {
-    return { top: r.bottom + 4, left: isRtl ? r.left : 0, inlineEnd: !isRtl };
-  }
-  return { top: r.bottom + 4, left: r.left, inlineEnd: false };
-}
-
 export function Dropdown({
   open,
   onClose,
@@ -65,24 +58,8 @@ export function Dropdown({
   children,
 }: DropdownProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const [pos, setPos] = useState<Position | null>(null);
-
-  useLayoutEffect(() => {
-    if (!open || !anchorRef.current) {
-      setPos(null);
-      return;
-    }
-    const update = () => {
-      if (anchorRef.current) setPos(readPosition(anchorRef.current, placement));
-    };
-    update();
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, true);
-    return () => {
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
-    };
-  }, [open, placement, anchorRef]);
+  const { rendered, onExitEnd } = useDelayedUnmount(open);
+  const pos = useAnchoredPosition({ open, anchorRef, panelRef: menuRef, placement });
 
   // Auto-focus first item on open.
   useEffect(() => {
@@ -151,14 +128,7 @@ export function Dropdown({
     return () => document.removeEventListener('mousedown', onDoc);
   }, [open, closeOnOutsideClick, onClose, anchorRef]);
 
-  if (!open || !pos || typeof document === 'undefined') return null;
-
-  const style: React.CSSProperties = pos.inlineEnd
-    ? {
-        top: pos.top,
-        right: window.innerWidth - (anchorRef.current?.getBoundingClientRect().right ?? 0),
-      }
-    : { top: pos.top, left: pos.left };
+  if (!rendered || !pos || typeof document === 'undefined') return null;
 
   return createPortal(
     <div
@@ -166,7 +136,12 @@ export function Dropdown({
       className="dropdown"
       role="menu"
       aria-label={ariaLabel}
-      style={style}
+      style={{ top: pos.top, left: pos.left, maxHeight: pos.maxHeight }}
+      data-side={pos.flipped ? 'above' : 'below'}
+      data-closing={!open ? 'true' : undefined}
+      onAnimationEnd={(e) => {
+        if (!open && e.animationName === 'madarek-popover-out') onExitEnd();
+      }}
     >
       {children}
     </div>,

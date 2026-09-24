@@ -6,6 +6,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerAlerts, useResolveAlert } from '../../hooks/useOwner';
+import { toast } from '../../lib/toast';
 
 const SEVERITY_LABELS: Record<string, string> = {
   critical: 'حرج',
@@ -63,6 +64,13 @@ export function OwnerAlertsPage() {
   const alertsQuery = useOwnerAlerts();
   const resolveAlert = useResolveAlert();
   const alerts = alertsQuery.data ?? [];
+
+  // Toast confirms the resolve actually landed (the card disappears
+  // silently otherwise — no inline success surface on this page).
+  const resolve = (id: string) =>
+    resolveAlert.mutate(id, {
+      onSuccess: () => toast.success('أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.', { title: 'تمّ حلّ التنبيه' }),
+    });
 
   const criticalCount = alerts.filter((a) => a.severity === 'critical').length;
   const warningCount = alerts.filter((a) => a.severity === 'warning').length;
@@ -149,7 +157,7 @@ export function OwnerAlertsPage() {
                     <button
                       type="button"
                       className="btn primary"
-                      onClick={() => resolveAlert.mutate(alert.id)}
+                      onClick={() => resolve(alert.id)}
                       disabled={resolving}
                     >
                       <Icon icon={CheckCircle2} size={13} />
@@ -164,7 +172,7 @@ export function OwnerAlertsPage() {
                       <button
                         type="button"
                         className="btn ghost sm"
-                        onClick={() => resolveAlert.mutate(alert.id)}
+                        onClick={() => resolve(alert.id)}
                         disabled={resolveAlert.isPending}
                       >
                         <Icon icon={RefreshCw} size={12} />
