@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Building2, GraduationCap, Search, X, ArrowLeft } from 'lucide-react';
 import { Icon } from './Icon';
+import { Skeleton } from './motion';
 import { api, unwrap } from '../lib/api';
+import { collegeIcon, getCollegeIdentityByRecord } from '../data/colleges.config';
 import { filterColleges, type FilterableCollege } from '../pages/colleges/filter-colleges';
 
 /**
@@ -134,7 +136,11 @@ export function CollegesPopover({
 
         <div className="colleges-popover-body" role="list" aria-busy={q.isLoading}>
           {q.isLoading && (
-            <div className="colleges-popover-state">جارٍ تحميل الكلّيّات…</div>
+            <div className="colleges-popover-skeleton" aria-hidden>
+              {[0, 1, 2].map((i) => (
+                <Skeleton key={i} variant="list-row" />
+              ))}
+            </div>
           )}
           {q.isError && (
             <div className="colleges-popover-state colleges-popover-state-err">
@@ -159,23 +165,31 @@ export function CollegesPopover({
                 <span className="colleges-popover-group-count">{list.length}</span>
               </header>
               <ul className="colleges-popover-list">
-                {list.map((c) => (
-                  <li key={c.id}>
-                    <Link
-                      to={`/colleges/${c.id}`}
-                      className="colleges-popover-row"
-                      onClick={onClose}
-                    >
-                      <span className="colleges-popover-row-icon" aria-hidden>
-                        <Icon icon={GraduationCap} size={14} />
-                      </span>
-                      <span className="colleges-popover-row-name">{c.name}</span>
-                      {c.nameEn && (
-                        <span className="colleges-popover-row-sub">{c.nameEn}</span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
+                {list.map((c) => {
+                  // Per-college identity icon from the registry (audit 0-f
+                  // P3-27: every row used the generic GraduationCap). The
+                  // API record is id-keyed → deterministic (name, city)
+                  // bridge onto the slug-keyed registry.
+                  const profile = getCollegeIdentityByRecord(c.name, c.city);
+                  const rowIcon = profile ? collegeIcon(profile.icon) : null;
+                  return (
+                    <li key={c.id}>
+                      <Link
+                        to={`/colleges/${c.id}`}
+                        className="colleges-popover-row"
+                        onClick={onClose}
+                      >
+                        <span className="colleges-popover-row-icon" aria-hidden>
+                          <Icon icon={rowIcon ?? GraduationCap} size={14} />
+                        </span>
+                        <span className="colleges-popover-row-name">{c.name}</span>
+                        {c.nameEn && (
+                          <span className="colleges-popover-row-sub">{c.nameEn}</span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}

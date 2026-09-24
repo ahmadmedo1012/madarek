@@ -1411,16 +1411,9 @@
 }
 .comp-entry-file:hover { text-decoration: underline; }
 
-.comp-entry-rank {
-  font-size: 22px;
-  width: 36px;
-  height: 36px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  font-weight: var(--fw-bold);
-}
+/* (Wave 6-c dead-selector sweep: .comp-entry-rank deleted — zero TSX
+   consumers (rg over frontend/src = 0 hits); 5-c moved JUDGED rows to
+   the leaderboard-rank treatment. See audits/0-f P3 / wave 5-c notes.) */
 
 .comp-score-input {
   display: flex;
@@ -1594,6 +1587,64 @@
 @media (prefers-reduced-motion: reduce) {
   .digital-stat-row,
   .top-courses-row { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   wave 6-c — identity registry live (append-only)
+
+   The 25-entry registry in data/colleges.config.ts activates the
+   --college-accent machinery above. This section owns the two OPTIONAL
+   profile-driven hero surfaces (contract college-identity-profile.md):
+   both stay dormant until real UoZ photography lands under
+   public/colleges/<slug>/ (Principle III — no synthetic imagery).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* heroImage — real photography replaces the emoji chip; mirrors its
+   geometry (72px chip, r-md, accent-soft hairline). */
+.college-hero-media {
+  inline-size: 72px;
+  block-size: 72px;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  border: 1px solid var(--college-accent-soft, var(--border));
+  flex: 0 0 auto;
+}
+
+/* motif — decorative trailing wash behind the hero titles. The base
+   .college-hero rule predates the motif and must stay untouched
+   (append-only), so the positioning context is scoped via :has(). */
+.college-hero:has(.college-hero-motif) {
+  position: relative;
+  overflow: clip;
+}
+.college-hero-motif {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  block-size: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  opacity: 0.14;
+  pointer-events: none;
+  border-start-end-radius: var(--r-lg);
+  /* Gradients take physical directions only — flip the fade per dir.
+     Mask color is irrelevant (alpha channel only); black is conventional. */
+  mask-image: linear-gradient(to left, black 30%, transparent);
+  -webkit-mask-image: linear-gradient(to left, black 30%, transparent);
+}
+[dir="rtl"] .college-hero-motif {
+  mask-image: linear-gradient(to right, black 30%, transparent);
+  -webkit-mask-image: linear-gradient(to right, black 30%, transparent);
+}
+
+/* Popover loading state — shape-matched 3-row skeleton replacing the
+   plain-text placeholder (audit 0-f P3-27, craft floor: data surfaces
+   get skeletons). */
+.colleges-popover-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
 }
 
 }

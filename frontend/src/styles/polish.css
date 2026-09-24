@@ -1908,11 +1908,10 @@
     flex-shrink: 0;
   }
 
-  .matrix-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sp-4);
-  }
+  /* (Wave 6-c dead-selector sweep: .matrix-grid deleted — its only
+     consumer (MatrixPage concept grid) switched to the designed
+     .matrix-cells in wave 4-a; rg over frontend/src = 0 hits since.
+     See worklog 4-a follow-up #1.) */
 
   .matrix-course {
     border: 1px solid var(--rule);

@@ -52,13 +52,17 @@ export function useOwnerStats() {
   });
 }
 
-export function useOwnerUsers(params: { page?: number; limit?: number; q?: string } = {}) {
-  const { page = 1, limit = 20, q } = params;
+// `role` is the server-side role filter (wave 6-b, audit 0-e P1-24): the
+// backend GET /owner/users accepts `role` and paginates WITHIN it. The
+// previous client-side filter only hid rows on the current page, so the
+// role pills and the pagination meta disagreed.
+export function useOwnerUsers(params: { page?: number; limit?: number; q?: string; role?: string } = {}) {
+  const { page = 1, limit = 20, q, role } = params;
   return useQuery({
-    queryKey: ['owner', 'users', { page, limit, q }],
+    queryKey: ['owner', 'users', { page, limit, q, role }],
     queryFn: async () => {
       const res = await api.get<PaginatedResponse<OwnerUser>>('/owner/users', {
-        params: { page, limit, q },
+        params: { page, limit, q, role },
       });
       return res.data;
     },

@@ -1,7 +1,10 @@
-import { AlertTriangle, ShieldAlert, Bell, CheckCircle2 } from 'lucide-react';
-import { Card, MetricCard, Badge, Pill } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { AlertTriangle, ShieldAlert, Bell, CheckCircle2, Activity, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import type { CSSProperties } from 'react';
+import { Card, MetricCard, Badge } from '../../components/primitives';
+import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerAlerts, useResolveAlert } from '../../hooks/useOwner';
 
 const SEVERITY_LABELS: Record<string, string> = {
@@ -23,12 +26,37 @@ const CATEGORY_LABELS: Record<string, string> = {
   system: 'النظام',
   storage: 'التخزين',
   database: 'قاعدة البيانات',
-  api: 'الـ API',
+  api: 'واجهة البرمجة',
 };
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString('ar-LY') + ' ' + d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
+}
+
+/** Shape-matched skeleton for the alert-card list — a badge row, a
+ *  title line and a message line per card (craft floor: never a bare
+ *  spinner where the shape is known). */
+function AlertListSkeleton() {
+  return (
+    <div aria-busy="true" aria-live="polite">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="owner-alert-skel">
+          <div className="owner-alert-skel-head">
+            <Skeleton width={54} height={20} rounded="var(--r-full)" />
+            <Skeleton width={90} height={13} />
+            <Skeleton width="45%" height={13} />
+            <span style={{ flex: 1 }} />
+            <Skeleton width={110} height={11} />
+          </div>
+          <Skeleton width="94%" height={12} />
+          <div style={{ marginBlockStart: 'var(--sp-2)' }}>
+            <Skeleton width="62%" height={12} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function OwnerAlertsPage() {
@@ -38,6 +66,12 @@ export function OwnerAlertsPage() {
 
   const criticalCount = alerts.filter((a) => a.severity === 'critical').length;
   const warningCount = alerts.filter((a) => a.severity === 'warning').length;
+
+  // Honest KPIs (audit 0-e P2-46): '…' while loading, '—' when the
+  // query failed — an API-down feed never renders a confident "0".
+  const kpiValue = (n: number) =>
+    alertsQuery.isPending ? '…' : alertsQuery.isError ? '—' : <bdi>{n.toLocaleString('ar-LY')}</bdi>;
+  const kpiKnown = alertsQuery.isSuccess;
 
   return (
     <div className="page">
@@ -52,59 +86,95 @@ export function OwnerAlertsPage() {
         <MetricCard
           icon={Bell}
           label="تنبيهات مفتوحة"
-          value={alertsQuery.isPending ? '…' : alerts.length.toLocaleString('ar-LY')}
-          color={alerts.length === 0 ? 'green' : 'brand'}
+          value={kpiValue(alerts.length)}
+          color={kpiKnown ? (alerts.length === 0 ? 'green' : 'brand') : 'brand'}
         />
         <MetricCard
           icon={ShieldAlert}
           label="تنبيهات حرجة"
-          value={alertsQuery.isPending ? '…' : criticalCount.toLocaleString('ar-LY')}
-          color={criticalCount === 0 ? 'green' : 'red'}
+          value={kpiValue(criticalCount)}
+          color={kpiKnown ? (criticalCount === 0 ? 'green' : 'red') : 'brand'}
         />
         <MetricCard
           icon={AlertTriangle}
           label="تحذيرات"
-          value={alertsQuery.isPending ? '…' : warningCount.toLocaleString('ar-LY')}
-          color={warningCount === 0 ? 'green' : 'amber'}
+          value={kpiValue(warningCount)}
+          color={kpiKnown ? (warningCount === 0 ? 'green' : 'amber') : 'brand'}
         />
       </div>
 
       <Card title="التنبيهات النشطة">
         {alertsQuery.isPending ? (
-          <LoadingState />
+          <AlertListSkeleton />
         ) : alertsQuery.isError ? (
           <ErrorState error={alertsQuery.error} onRetry={() => alertsQuery.refetch()} />
         ) : alerts.length === 0 ? (
           <EmptyState
             icon={CheckCircle2}
             title="لا توجد تنبيهات مفتوحة"
-            description="كل أنظمة المنصّة في حالة طبيعيّة الآن."
+            description="كل أنظمة المنصّة تعمل بشكل طبيعيّ — تابع آخر العمليّات من سجلّ النشاط."
+            action={(
+              <Link to="/owner/activity" className="btn ghost sm">
+                <Icon icon={Activity} size={12} />
+                استعراض سجلّ النشاط
+              </Link>
+            )}
           />
         ) : (
-          <div style={{ padding: 'var(--sp-2) 0' }}>
-            {alerts.map((alert) => (
-              <div key={alert.id} className={`owner-alert-card ${alert.severity}`}>
-                <div className="owner-alert-card-header">
-                  <Badge color={SEVERITY_COLORS[alert.severity]}>{SEVERITY_LABELS[alert.severity] ?? alert.severity}</Badge>
-                  <Pill>{CATEGORY_LABELS[alert.category] ?? alert.category}</Pill>
-                  <span className="title">{alert.title}</span>
-                  <span className="time">{formatTime(alert.createdAt)}</span>
+          <div>
+            {alerts.map((alert, i) => {
+              // Per-card mutation state (audit 0-e P2-36): only the
+              // clicked card's button is busy — resolving one alert no
+              // longer disables every other card's action.
+              const resolving = resolveAlert.isPending && resolveAlert.variables === alert.id;
+              const failed = resolveAlert.isError && resolveAlert.variables === alert.id;
+              return (
+                <div
+                  key={alert.id}
+                  className={`owner-alert-card ${alert.severity}`}
+                  style={{ '--owner-alert-i': i } as CSSProperties}
+                >
+                  <div className="owner-alert-card-header">
+                    <Badge color={SEVERITY_COLORS[alert.severity] ?? 'brand'}>
+                      {SEVERITY_LABELS[alert.severity] ?? <bdi>{alert.severity}</bdi>}
+                    </Badge>
+                    {/* A static category label — Badge (a span), not a
+                        Pill (a button the user can't actually press). */}
+                    <Badge>{CATEGORY_LABELS[alert.category] ?? <bdi>{alert.category}</bdi>}</Badge>
+                    <span className="title">{alert.title}</span>
+                    <span className="time">{formatTime(alert.createdAt)}</span>
+                  </div>
+                  <div className="message">{alert.message}</div>
+                  <div className="actions">
+                    <button
+                      type="button"
+                      className="btn primary"
+                      onClick={() => resolveAlert.mutate(alert.id)}
+                      disabled={resolving}
+                    >
+                      <Icon icon={CheckCircle2} size={13} />
+                      {resolving ? 'جارٍ الحلّ…' : 'حلّ التنبيه'}
+                    </button>
+                  </div>
+                  {failed && (
+                    <div className="inline-retry" role="alert">
+                      <span className="owner-alert-error">
+                        {apiErrorMessage(resolveAlert.error, 'تعذّر حلّ التنبيه.')}
+                      </span>
+                      <button
+                        type="button"
+                        className="btn ghost sm"
+                        onClick={() => resolveAlert.mutate(alert.id)}
+                        disabled={resolveAlert.isPending}
+                      >
+                        <Icon icon={RefreshCw} size={12} />
+                        إعادة المحاولة
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <div className="message">{alert.message}</div>
-                <div className="actions">
-                  <button
-                    type="button"
-                    className="btn primary"
-                    style={{ fontSize: 'var(--fs-xs)', padding: '4px 12px' }}
-                    onClick={() => resolveAlert.mutate(alert.id)}
-                    disabled={resolveAlert.isPending}
-                  >
-                    <Icon icon={CheckCircle2} size={13} />
-                    حلّ التنبيه
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </Card>

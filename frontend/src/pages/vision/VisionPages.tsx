@@ -1,11 +1,52 @@
 import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import {
-  Sparkles, ArrowLeft, ChevronLeft, Bell, CheckCircle2, type LucideIcon,
+  Sparkles, ArrowLeft, ChevronLeft, Bell, CheckCircle2,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
+import { EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { VISION_CONCEPTS, STATUS_LABEL, STATUS_COLOR } from '../../lib/vision';
+import { VISION_CONCEPTS, STATUS_LABEL, STATUS_COLOR, type VisionConcept } from '../../lib/vision';
+
+/**
+ * Vision pages — static roadmap content (no API: no skeleton/error states
+ * by design; the empty state below is the honest guard if the concept
+ * list is ever emptied). Craft notes (wave 6-c):
+ *   - Headers adopt the platform's .page-header / .page-title-block
+ *     system — real typography plus the designed entrance, which is this
+ *     page's one authored moment (the vision-statement reveal).
+ *   - The eyebrow/kicker is removed per ruling #2 (app-internal page) —
+ *     its letter-spacing also broke Arabic cursive joins.
+ *   - Concept gradient hexes never color TEXT anymore (audit 0-b P2-30):
+ *     they only fill decorative icon chips; values/steps read through
+ *     gated tokens.
+ */
+
+/** Decorative gradient chip carrying a concept's icon. The gradient comes
+ *  from the concept data (lib/vision.ts); the glyph is white in both
+ *  themes — the one place a literal white is correct (documented raw
+ *  value, guardrail 4: there is no on-color token). */
+function ConceptChip({ concept, box, glyph }: { concept: VisionConcept; box: number; glyph: number }) {
+  return (
+    <span
+      className="vision-chip"
+      aria-hidden
+      style={{
+        inlineSize: box,
+        blockSize: box,
+        borderRadius: 'var(--r-md)',
+        background: `linear-gradient(135deg, ${concept.gradient[0]}, ${concept.gradient[1]})`,
+        color: '#fff',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}
+    >
+      <Icon icon={concept.icon} size={glyph} />
+    </span>
+  );
+}
 
 export function VisionGalleryPage() {
   const grouped = {
@@ -14,70 +55,75 @@ export function VisionGalleryPage() {
     planning: VISION_CONCEPTS.filter((c) => c.status === 'planning'),
     research: VISION_CONCEPTS.filter((c) => c.status === 'research'),
   };
+  // Count truth: the headline number derives from the data — never a
+  // hardcoded digit (audit 0-b P1-10 pattern).
+  const total = VISION_CONCEPTS.length;
 
   return (
     <div className="page">
-      <div className="vision-hero">
-        <div className="vision-eyebrow">
-          <Icon icon={Sparkles} size={12} />
-          رؤية المنصة المستقبلية
-        </div>
-        <h1 className="vision-title">
-          12 ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.
-        </h1>
-        <p className="vision-tagline">
-          هذه نظرة على المسار التقني للمنصة خلال السنوات الثلاث القادمة —
-          من الذكاء الاصطناعي والميتافيرس إلى البلوكشين والترجمة الفورية.
-        </p>
-      </div>
-
-      {/* Status summary */}
-      <div className="grid-4">
-        <MetricCard label="إصدار تجريبي" value={grouped.beta.length} color="green" />
-        <MetricCard label="نموذج أولي" value={grouped.prototype.length} color="brand" />
-        <MetricCard label="قيد التخطيط" value={grouped.planning.length} color="amber" />
-        <MetricCard label="قيد البحث" value={grouped.research.length} color="red" />
-      </div>
-
-      {/* The 12 concepts */}
-      <div className="vision-grid">
-        {VISION_CONCEPTS.map((c) => (
-          <Link to={`/vision/${c.slug}`} key={c.slug} className="vision-card">
-            {/* Decorative gradient mark */}
-            <div
-              className="vision-card-icon"
-              style={{
-                background: `linear-gradient(135deg, ${c.gradient[0]}, ${c.gradient[1]})`,
-                color: '#fff',
-              }}
-            >
-              <Icon icon={c.icon} size={20} />
-            </div>
-            <div>
-              <div className="vision-card-title">{c.title}</div>
-              <div className="vision-card-sub">{c.subtitle}</div>
-            </div>
-            <div className="vision-card-foot">
-              <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
-              <span className="text-xxs text-subtle flex items-center gap-1">
-                التفاصيل
-                <Icon icon={ArrowLeft} size={11} />
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Bottom note */}
-      <Card>
-        <div className="flex items-center gap-3">
-          <Icon icon={Sparkles} size={20} className="text-accent" />
-          <p className="text-sm text-muted" style={{ flex: 1, lineHeight: 'var(--lh-base)' }}>
-            هذه الرؤية ليست وعداً تسويقياً. كل ابتكار له موارد مخصّصة، تواريخ
-            إطلاق متوقّعة، ومؤشرات قياس واضحة. سنشاركها مع الجامعة كل ربع سنة.
+      {/* Standard page header — the page-title-block carries the authored
+          entrance (vision-statement reveal, polish.css). */}
+      <header className="page-header">
+        <div className="page-title-block">
+          <h1 className="page-title">
+            {total.toLocaleString('ar-LY')} ابتكاراً قادماً، نبني التعليم في يدك خطوة بخطوة.
+          </h1>
+          <p className="page-subtitle">
+            هذه نظرة على المسار التقني للمنصة خلال السنوات الثلاث القادمة —
+            من الذكاء الاصطناعي والميتافيرس إلى البلوكشين والترجمة الفورية.
           </p>
         </div>
-      </Card>
+      </header>
+
+      {total === 0 ? (
+        <EmptyState
+          icon={Sparkles}
+          title="لا توجد ابتكارات معروضة بعد"
+          description="ستظهر خارطة الطريق التقنية للمنصة هنا حين تُنشر."
+        />
+      ) : (
+        <>
+          {/* Status summary */}
+          <div className="grid-4">
+            <MetricCard label="إصدار تجريبي" value={grouped.beta.length} color="green" />
+            <MetricCard label="نموذج أولي" value={grouped.prototype.length} color="brand" />
+            <MetricCard label="قيد التخطيط" value={grouped.planning.length} color="amber" />
+            <MetricCard label="قيد البحث" value={grouped.research.length} color="red" />
+          </div>
+
+          {/* The concepts — shared card + grid system (the page-local
+              vision-* classes stay as hooks for a future vision.css). */}
+          <div className="grid-3 vision-grid">
+            {VISION_CONCEPTS.map((c) => (
+              <Link to={`/vision/${c.slug}`} key={c.slug} className="card vision-card">
+                <ConceptChip concept={c} box={44} glyph={20} />
+                <div>
+                  <div className="vision-card-title font-semibold">{c.title}</div>
+                  <div className="vision-card-sub text-sm text-muted">{c.subtitle}</div>
+                </div>
+                <div className="vision-card-foot flex items-center justify-between gap-2">
+                  <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
+                  <span className="text-xxs text-subtle flex items-center gap-1">
+                    التفاصيل
+                    <Icon icon={ArrowLeft} size={11} />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Bottom note */}
+          <Card>
+            <div className="flex items-center gap-3">
+              <Icon icon={Sparkles} size={20} className="text-accent" />
+              <p className="text-sm text-muted flex-1" style={{ lineHeight: 'var(--lh-base)' }}>
+                هذه الرؤية ليست وعداً تسويقياً. كل ابتكار له موارد مخصّصة، تواريخ
+                إطلاق متوقّعة، ومؤشرات قياس واضحة. سنشاركها مع الجامعة كل ربع سنة.
+              </p>
+            </div>
+          </Card>
+        </>
+      )}
     </div>
   );
 }
@@ -96,40 +142,18 @@ export function VisionDetailPage() {
         كل الابتكارات
       </Link>
 
-      {/* Hero */}
-      <div className="vision-detail-hero">
-        <div
-          className="vision-detail-hero-bg"
-          style={{
-            background: `linear-gradient(135deg, ${concept.gradient[0]}, ${concept.gradient[1]})`,
-          }}
-        />
-        <div
-          className="vision-detail-hero-icon"
-          style={{
-            background: `linear-gradient(135deg, ${concept.gradient[0]}, ${concept.gradient[1]})`,
-            color: '#fff',
-          }}
-        >
-          <Icon icon={concept.icon} size={32} />
+      {/* Hero — gradient chip + status + statement on the .page-title
+          system (the old raw clamp/letterSpacing inline blob and the
+          0px-rendering .vision-detail-hero-bg div are gone). */}
+      <div className="vision-detail-hero flex-col gap-2">
+        <ConceptChip concept={concept} box={64} glyph={32} />
+        <div>
+          <Badge color={STATUS_COLOR[concept.status]} icon={Sparkles}>
+            {STATUS_LABEL[concept.status]}
+          </Badge>
         </div>
-        <Badge color={STATUS_COLOR[concept.status]} icon={Sparkles}>
-          {STATUS_LABEL[concept.status]}
-        </Badge>
-        <h1 style={{
-          fontSize: 'clamp(22px, 3vw, 32px)',
-          fontWeight: 700,
-          color: 'var(--text)',
-          letterSpacing: '-0.5px',
-          lineHeight: 1.2,
-          margin: 'var(--sp-3) 0 var(--sp-2)',
-          position: 'relative',
-        }}>
-          {concept.title}
-        </h1>
-        <p className="text-md text-muted" style={{ maxWidth: 580, lineHeight: 'var(--lh-base)', position: 'relative' }}>
-          {concept.subtitle}
-        </p>
+        <h1 className="page-title vision-detail-title">{concept.title}</h1>
+        <p className="page-subtitle" style={{ maxInlineSize: 580 }}>{concept.subtitle}</p>
       </div>
 
       {/* Description */}
@@ -139,12 +163,13 @@ export function VisionDetailPage() {
         </p>
       </Card>
 
-      {/* Metrics */}
+      {/* Metrics — the designed .metric-value treatment (concept hexes no
+          longer color values; audit 0-b P2-30). */}
       <div className="grid-3">
         {concept.metrics.map((m) => (
           <div key={m.label} className="metric">
             <div className="metric-label">{m.label}</div>
-            <div className="metric-value" style={{ color: concept.gradient[0] }}>{m.value}</div>
+            <div className="metric-value">{m.value}</div>
             {m.sub && <div className="metric-change">{m.sub}</div>}
           </div>
         ))}
@@ -156,7 +181,7 @@ export function VisionDetailPage() {
           <div className="flex-col gap-2">
             {concept.features.map((f, i) => (
               <div key={i} className="list-row">
-                <span style={{ color: concept.gradient[0] }}>
+                <span className="text-accent">
                   <Icon icon={Sparkles} size={14} />
                 </span>
                 <div className="list-row-body">
@@ -167,29 +192,32 @@ export function VisionDetailPage() {
           </div>
         </Card>
 
-        {/* How it works */}
+        {/* How it works — numbered steps on gated tokens (was white-on-
+            concept-gradient text, ungated). */}
         <Card title="كيف تعمل">
           <div className="flex-col gap-3">
             {concept.steps.map((s, i) => (
-              <div key={i} style={{
-                display: 'flex',
-                gap: 'var(--sp-3)',
-                padding: 'var(--sp-3)',
-                background: 'var(--surface-2)',
-                borderRadius: 'var(--r-md)',
-              }}>
-                <div style={{
-                  width: 26, height: 26, borderRadius: '50%',
-                  background: concept.gradient[0], color: '#fff',
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12,
-                  flexShrink: 0,
-                }}>
+              <div key={i} className="flex gap-3" style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
+                <span
+                  aria-hidden
+                  className="flex items-center justify-center"
+                  style={{
+                    inlineSize: 26,
+                    blockSize: 26,
+                    borderRadius: 'var(--r-full)',
+                    background: 'var(--accent-soft)',
+                    color: 'var(--accent-ink, var(--accent))',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 'var(--fw-bold)',
+                    fontSize: 'var(--fs-xs)',
+                    flexShrink: 0,
+                  }}
+                >
                   {i + 1}
-                </div>
+                </span>
                 <div>
                   <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{s.title}</div>
-                  <div className="text-xs text-muted" style={{ marginTop: 'var(--sp-1)', lineHeight: 'var(--lh-base)' }}>
+                  <div className="text-xs text-muted" style={{ marginBlockStart: 'var(--sp-1)', lineHeight: 'var(--lh-base)' }}>
                     {s.desc}
                   </div>
                 </div>
@@ -211,19 +239,27 @@ export function VisionDetailPage() {
       {/* Notify CTA */}
       <Card>
         <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
-          <div style={{
-            width: 44, height: 44, borderRadius: 'var(--r-md)',
-            background: 'var(--gold-soft)', color: 'var(--gold)',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-          }}>
+          <span
+            aria-hidden
+            className="flex items-center justify-center"
+            style={{
+              inlineSize: 44,
+              blockSize: 44,
+              borderRadius: 'var(--r-md)',
+              background: 'var(--gold-soft)',
+              /* --gold on --gold-soft is 2.2:1; --gold-ink is the
+                 designed text-on-gold pair (6.98:1 light / 8.18:1 dark). */
+              color: 'var(--gold-ink, var(--gold))',
+              flexShrink: 0,
+            }}
+          >
             <Icon icon={Bell} size={18} />
-          </div>
-          <div style={{ flex: 1, minWidth: 200 }}>
+          </span>
+          <div className="flex-1" style={{ minInlineSize: 200 }}>
             <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
               {notified ? 'تم تفعيل التنبيه' : 'نبّهني عند إطلاق هذه الميزة'}
             </div>
-            <div className="text-xs text-subtle" style={{ marginTop: 2 }}>
+            <div className="text-xs text-subtle" style={{ marginBlockStart: 2 }}>
               {notified
                 ? 'سنُعلمك على بريدك الجامعي فور توفّر النسخة التجريبية.'
                 : 'ستتلقى إشعاراً على بريدك الجامعي فور توفّر النسخة التجريبية.'}
@@ -243,7 +279,7 @@ export function VisionDetailPage() {
 
       {/* Bottom navigation between concepts */}
       <Card flush>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--sp-4) var(--sp-5)' }}>
+        <div className="flex justify-between" style={{ padding: 'var(--sp-4) var(--sp-5)' }}>
           {(() => {
             const idx = VISION_CONCEPTS.findIndex((c) => c.slug === slug);
             const prev = idx > 0 ? VISION_CONCEPTS[idx - 1] : null;
@@ -270,6 +306,3 @@ export function VisionDetailPage() {
     </div>
   );
 }
-
-// Re-export for nav use
-export const VisionIcon: LucideIcon = Sparkles;

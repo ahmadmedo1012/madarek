@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Palette, Type, Bell, ToggleRight, ArrowLeft, Info,
@@ -18,20 +19,37 @@ import { Icon } from '../../components/Icon';
  * at POST /announcements (used in /community) and feature flags live
  * at /owner/feature-flags (used in /owner/system). The hero/brand
  * editor has no backend yet.
+ *
+ * Wave 6-b: structural inline styles → owner.css §6-b classes, the
+ * brand hexes are bidi-isolated as Latin runs, and the identity card's
+ * swatches settle in staggered (the page's authored moment).
  */
+
+/**
+ * Official University of Zawiya brand palette — DISPLAYED DATA, not style
+ * tokens: these hexes document the brand the platform currently carries
+ * (docs/FRONTEND-REFERENCE.md — «brand navy #003461, gold»). They render
+ * as content here, so the raw values are the point, not a token gap.
+ */
+const BRAND_SWATCHES = [
+  { label: 'اللون الأساسيّ', hex: '#003461' },
+  { label: 'اللون الثانويّ', hex: '#fed65b' },
+  { label: 'لون التمييز', hex: '#a3c9ff' },
+] as const;
+
 export function OwnerContentPage() {
   return (
-    <div className="page">
+    <div className="page owner-content-page">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المحتوى والعلامة التجاريّة</h1>
-          <p className="page-subtitle">إدارة محتوى المنصّة، الإعلانات، والميزات.</p>
+          <p className="page-subtitle">إدارة الإعلانات، أعلام الميزات، والهويّة البصريّة للمنصّة</p>
         </div>
       </header>
 
       <div className="grid-2">
         <Card title="الإعلانات الرسميّة" icon={Bell}>
-          <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-3) 0', lineHeight: 1.6 }}>
+          <p className="owner-card-lead">
             إنشاء وبثّ الإعلانات على مستوى المنصّة أو الكلّيّة أو القسم — مع نطاق محدّد، وأيقونة،
             وخيار التثبيت في أعلى القائمة.
           </p>
@@ -42,7 +60,7 @@ export function OwnerContentPage() {
         </Card>
 
         <Card title="ميزات المنصّة" icon={ToggleRight}>
-          <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-3) 0', lineHeight: 1.6 }}>
+          <p className="owner-card-lead">
             تشغيل وإطفاء الميزات (المعامل الافتراضيّة، البثّ المباشر، الاختبارات...) عبر نظام أعلام
             الميزات. التغييرات تُطبَّق فوراً على جميع المستخدمين.
           </p>
@@ -53,53 +71,35 @@ export function OwnerContentPage() {
         </Card>
       </div>
 
-      <Card title="الهويّة البصريّة" icon={Palette}>
-        <div style={{
-          padding: 'var(--sp-3)',
-          background: 'var(--accent-soft)',
-          color: 'var(--accent)',
-          borderRadius: 'var(--r-md)',
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 'var(--sp-2)',
-          fontSize: 'var(--fs-xs)',
-          lineHeight: 1.6,
-        }}>
-          <Icon icon={Info} size={14} style={{ flexShrink: 0, marginBlockStart: 2 }} />
+      <Card title="الهويّة البصريّة" icon={Palette} className="owner-card-settle">
+        <div className="owner-brand-notice">
+          <Icon icon={Info} size={14} />
           <span>
             تعديل ألوان العلامة التجاريّة (الأساسيّ، الثانويّ، التمييز) ومحتوى الصفحة الرئيسيّة قيد
             التطوير. حالياً تُعتمَد ألوان وزارة التعليم العالي وجامعة الزاوية الرسميّة.
           </span>
         </div>
 
-        <div className="grid-3" style={{ marginBlockStart: 'var(--sp-3)', gap: 'var(--sp-2)' }}>
-          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
-            <div className="text-xxs text-subtle">اللون الأساسيّ</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockStart: 4 }}>
-              <span style={{ width: 20, height: 20, borderRadius: 4, background: '#003461', display: 'inline-block' }} />
-              <span className="font-mono text-xs">#003461</span>
+        <div className="owner-swatch-grid">
+          {BRAND_SWATCHES.map((s, i) => (
+            <div key={s.hex} className="owner-swatch" style={{ '--swatch-i': i } as CSSProperties}>
+              <div className="text-xxs text-subtle">{s.label}</div>
+              <div className="owner-swatch-row">
+                <span
+                  className="owner-swatch-chip"
+                  style={{ background: s.hex }}
+                  aria-hidden
+                />
+                <bdi className="owner-swatch-hex" dir="ltr">{s.hex}</bdi>
+              </div>
             </div>
-          </div>
-          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
-            <div className="text-xxs text-subtle">اللون الثانويّ</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockStart: 4 }}>
-              <span style={{ width: 20, height: 20, borderRadius: 4, background: '#fed65b', display: 'inline-block' }} />
-              <span className="font-mono text-xs">#fed65b</span>
-            </div>
-          </div>
-          <div style={{ padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)' }}>
-            <div className="text-xxs text-subtle">لون التمييز</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBlockStart: 4 }}>
-              <span style={{ width: 20, height: 20, borderRadius: 4, background: '#a3c9ff', display: 'inline-block' }} />
-              <span className="font-mono text-xs">#a3c9ff</span>
-            </div>
-          </div>
+          ))}
         </div>
       </Card>
 
-      <Card title="محتوى الواجهة الرئيسيّة" icon={Type}>
-        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>
-          محرّر العنوان والوصف الفرعيّ ونصّ زرّ "ابدأ الآن" قيد التطوير. النصوص الحاليّة محدّدة
+      <Card title="محتوى الواجهة الرئيسيّة" icon={Type} className="owner-card-settle">
+        <p className="owner-card-lead">
+          محرّر العنوان والوصف الفرعيّ ونصّ زرّ «ابدأ الآن» قيد التطوير. النصوص الحاليّة محدّدة
           في كود الصفحة الرئيسيّة.
         </p>
       </Card>

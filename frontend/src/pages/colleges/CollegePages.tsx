@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Building2, Users, BookOpen, GraduationCap, Trophy, Megaphone,
@@ -15,7 +15,9 @@ import { EmptyState, ErrorState, LoadingState, DetailSkeleton } from '../../comp
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
-import { getCollegeIdentity } from '../../data/colleges.config';
+import {
+  colleges, getCollegeIdentityByRecord,
+} from '../../data/colleges.config';
 import { gateCollegeAccent } from '../../lib/theme';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
@@ -164,6 +166,21 @@ export function CollegesIndexPage() {
 
   const hasActiveFilters = state.query.trim() !== '' || state.campus !== null;
 
+  // Dev-time drift guard (ruling #6 follow-through): the identity registry
+  // and the API faculty list must stay in lock-step — count AND per-record
+  // resolution. DEV-only; compiled out of production builds.
+  useEffect(() => {
+    if (!import.meta.env.DEV || !q.data) return;
+    const unmatched = q.data.filter((c) => !getCollegeIdentityByRecord(c.name, c.city));
+    if (q.data.length === colleges.length && unmatched.length === 0) return;
+    const detail = unmatched.length > 0
+      ? `; unmatched records: ${unmatched.map((c) => `${c.name} (${c.city})`).join('، ')}`
+      : '';
+    console.warn(
+      `[colleges] identity registry drift: ${colleges.length} profiles vs ${q.data.length} API faculties${detail}`,
+    );
+  }, [q.data]);
+
   return (
     <div className="page colleges-index">
       <SectionAccent kind="scene-paint" as="header" className="page-header">
@@ -283,7 +300,10 @@ export function CollegesIndexPage() {
                 </header>
                 <div className="college-grid">
                   {list.map((c) => {
-                    const profile = getCollegeIdentity(c.id);
+                    // API records are id-keyed; reconcile with the slug-keyed
+                    // identity registry through the deterministic
+                    // (nameAr, city) bridge.
+                    const profile = getCollegeIdentityByRecord(c.name, c.city);
                     const accent = profile?.accent ?? null;
                     const accentStyle = accent
                       ? ({ ['--college-accent']: accent } as React.CSSProperties)
@@ -386,13 +406,14 @@ export function CollegeDetailPage() {
   }
 
   const c = q.data;
-  // Resolve the college identity profile (accent, hero, icon).
-  // When no profile exists for this slug, the page falls back to the
-  // default Madrak chrome — no synthetic identity is invented.
+  // Resolve the college identity profile (accent, hero, icon). The API
+  // record is id-keyed, so the deterministic (nameAr, city) bridge maps it
+  // onto the slug-keyed registry. When no profile matches, the page falls
+  // back to the default Madrak chrome — no synthetic identity is invented.
   // 012-design-graphics-uplift FR-005: gate the identity colour at
   // runtime; if it fails AA-large vs the active chrome surface, drop
   // the inline override so the page falls back to var(--role-accent).
-  const identity = getCollegeIdentity(id);
+  const identity = getCollegeIdentityByRecord(c.name, c.city);
   const activeSurface = resolveTheme(themeMode);
   const gatedAccent = identity ? gateCollegeAccent(identity.accent, activeSurface) : null;
   const collegeStyle = gatedAccent
@@ -410,9 +431,19 @@ export function CollegeDetailPage() {
       data-college={identity?.slug || undefined}
       style={collegeStyle}
     >
-      {/* Hero / masthead */}
+      {/* Hero / masthead — real photography via identity.heroImage when it
+          lands (Principle III: never synthetic); the API emoji chip is the
+          default treatment. The optional motif renders as a decorative
+          trailing wash behind the titles. */}
       <SectionAccent kind="scene-paint" as="header" className="college-hero page-header">
-        <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
+        {identity?.motif && (
+          <img className="college-hero-motif" src={identity.motif.src} alt={identity.motif.alt} aria-hidden />
+        )}
+        {identity?.heroImage ? (
+          <img className="college-hero-media" src={identity.heroImage.src} alt={identity.heroImage.alt} />
+        ) : (
+          <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
+        )}
         <div className="college-hero-titles">
           <div className="college-hero-eyebrow">جامعة الزاوية · {c.city}</div>
           <h1 className="page-title college-hero-name">{c.name}</h1>
@@ -587,7 +618,7 @@ export function CollegeDetailPage() {
           <div className="comp-grid">
             {c.activeCompetitions.map((comp) => (
               <div key={comp.id} className="comp-card" style={comp.themeColor ? { borderInlineStartColor: comp.themeColor } : undefined}>
-                <div className="comp-emoji" aria-hidden>{comp.iconEmoji ?? '🏆'}</div>
+                <div className="comp-emoji" aria-hidden><EmojiIcon emoji={comp.iconEmoji ?? '🏆'} size={22} /></div>
                 <div className="comp-body">
                   <div className="comp-title">{comp.title}</div>
                   <div className="comp-meta">
@@ -703,7 +734,7 @@ export function CollegesLeaderboardPage() {
                     <tr key={c.id}>
                       <td className="leaderboard-college">
                         <Link to={`/colleges/${c.id}`} className="leaderboard-college-link">
-                          <span className="leaderboard-emoji" aria-hidden>{c.iconEmoji ?? '🏛️'}</span>
+                          <span className="leaderboard-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={20} /></span>
                           <div>
                             <div className="leaderboard-college-name">{c.name}</div>
                             <div className="leaderboard-college-meta">

@@ -705,4 +705,593 @@
 /* (wave 3-c dead-code sweep, audit 0-e P2-45: .owner-flag-loading
    deleted — zero consumers; OwnerSystemPage renders real loading and
    error states. rg over src = 0 hits.) */
+
+/* ═════════════════════════════════════════════════════════════
+   wave 6-a — owner core pages
+   Dashboard status-band honesty (1-b follow-up, audit 0-e P0-3),
+   alerts-page states + per-card resolve errors (P2-36), the realtime
+   heartbeat moment (P2-41: dataUpdatedAt honesty), activity-feed
+   craft (P1-27, P2-46, P2-47). Token-first, logical properties only,
+   motion tokens only, and every keyframe below carries its own
+   reduced-motion off-switch (guardrail #6, belt-and-braces over the
+   global token belts).
+   ═════════════════════════════════════════════════════════════ */
+
+/* ── Status band states (OwnerDashboard + OwnerRealtime) ──────
+   The band never claims "all normal" unless the alerts query
+   actually answered (ruling #14): pending = neutral text + frozen
+   dot, error = degraded danger band with a retry, success = the
+   honest count. The warning wash (DESIGN_POLISH_PLAN phase 3
+   "alert glow") paints ONLY on a confirmed count > 0 — never on
+   pending or error, so the glow can never lie. */
+.owner-live-status.is-pending .owner-live-pulse {
+  background: var(--text-faint);
+  animation: none;
+}
+
+.owner-live-status.is-pending .status-text {
+  color: var(--text-muted);
+}
+
+.owner-live-status.is-degraded {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
+}
+
+.owner-live-status.is-degraded .owner-live-pulse {
+  background: var(--danger);
+  animation: none;
+}
+
+.owner-live-status.is-degraded .status-text {
+  color: var(--danger-ink, var(--danger));
+}
+
+.owner-live-status.has-alerts {
+  border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
+  background: color-mix(in srgb, var(--warning) 6%, var(--surface-1));
+}
+
+.owner-live-status.has-alerts .owner-live-pulse {
+  background: var(--warning);
+}
+
+/* Trailing tools (retry chip + "آخر تحديث" stamp) pinned to the
+   inline-end edge; one auto margin instead of one per child so the
+   group never splits its free space. */
+.owner-live-tools {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.owner-live-meta {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  white-space: nowrap;
+}
+
+/* ── owner-table utilities (audit 0-e P3: the per-cell inline
+   fontFamily/fontSize/color repeats → classes; shared family, the
+   cells opt in from the four core pages) ───────────────────── */
+.owner-table td.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.owner-table td.muted {
+  color: var(--text-muted);
+}
+
+/* Inline health dot inside a summary-table cell (was an inline
+   display:inline-block style, audit P1-27 sibling). */
+.owner-health-dot.inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Neutral dot — the "unknown" state (query pending) so the health
+   list never paints a claims-health green while loading. */
+.owner-health-dot.neutral {
+  background: var(--text-faint);
+}
+
+/* wave 6-a: the dashboard health card's outer rhythm (was an inline
+   padding style on a wrapper div). */
+.owner-health-list {
+  padding: var(--sp-3) 0;
+}
+
+/* ── Realtime heartbeat (the authored moment) ────────────────
+   One pulsing dot per live tile + a one-shot settle on every value
+   change (the TSX remounts the value node on data change). The
+   pulse cadence rides --motion-duration-skeleton, the platform's
+   infinite-loop token (webinar/live-ping precedent, wave 4-c). */
+.owner-live-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.owner-live-tick {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: var(--r-full);
+  background: var(--success);
+  flex-shrink: 0;
+  animation: owner-tick-pulse var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
+}
+
+@keyframes owner-tick-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.35); }
+}
+
+.owner-value-tick {
+  display: inline-block;
+  animation: owner-value-in var(--motion-duration-short) var(--motion-ease-decelerate) backwards;
+}
+
+@keyframes owner-value-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Alerts page ──────────────────────────────────────────────
+   Shape-matched skeleton for the alert-card list (craft floor:
+   never a bare spinner where a shape fits), a capped stagger when
+   the cards land, the per-card resolve-error row, and a 44px
+   mobile floor for the resolve action (the old inline
+   fontSize/padding shrank it below the craft floor, audit 0-e
+   P2-36). */
+.owner-alert-skel {
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-block-end: var(--sp-3);
+}
+
+.owner-alert-skel-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-3);
+}
+
+.owner-alert-card {
+  animation: owner-alert-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(
+    var(--motion-stagger-step) * min(var(--owner-alert-i, 0), var(--motion-stagger-cap))
+  );
+}
+
+@keyframes owner-alert-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.owner-alert-error {
+  color: var(--danger-ink, var(--danger));
+  font-size: var(--fs-xs);
+}
+
+@media (max-width: 640px) {
+  /* !important is a documented layer-precedence exception (wave 5-a
+     precedent): polish.css (overrides layer) pins .btn at
+     min-block-size 40px — a pages-layer rule can never win it. */
+  .owner-alert-card .actions .btn {
+    min-block-size: 44px !important;
+  }
+}
+
+/* ── Activity feed ────────────────────────────────────────────
+   Row stagger (the page's authored moment, capped with the shared
+   --motion-stagger grammar), comfortable row density (list-row
+   language: horizontal breathing room so the hover wash reads as a
+   row instead of a full-bleed stripe), a real disclosure button
+   with hover/focus/active + a 44px mobile floor (was a stateless
+   inline-styled button, audit 0-e P1-27), the meta-line anatomy,
+   and the pagination footer class (was .admin-pagination +
+   inline styles — out-of-surface CSS coupling). */
+.owner-timeline-item {
+  padding: var(--sp-3) var(--sp-2);
+  animation: owner-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(
+    var(--motion-stagger-step) * min(var(--owner-row-i, 0), var(--motion-stagger-cap))
+  );
+}
+
+@keyframes owner-row-in {
+  from { opacity: 0; transform: translateX(calc(6px * var(--motion-direction))); }
+  to { opacity: 1; transform: none; }
+}
+
+.owner-timeline-body {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.owner-timeline-title {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+.owner-timeline-meta {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  margin-block-start: 2px;
+}
+
+.owner-timeline-email {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.owner-timeline-time {
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.owner-detail-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-block-start: var(--sp-1);
+  padding: 2px 4px;
+  background: none;
+  border: none;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  transition: color var(--t-fast) var(--ease);
+}
+
+.owner-detail-toggle:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.owner-detail-toggle:active {
+  color: var(--accent-strong);
+}
+
+.owner-detail-chevron {
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.owner-detail-toggle[aria-expanded='true'] .owner-detail-chevron {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 640px) {
+  .owner-detail-toggle {
+    min-block-size: 44px;
+    align-items: flex-start;
+  }
+}
+
+/* wave 6-a: pretty-printed JSON has newlines — without pre-wrap the
+   metadata preview collapses into a single run-on line. dir is set
+   per-instance in the TSX (audit 0-e P1-27). */
+.owner-meta-preview {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.owner-activity-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-4);
+  padding-block-start: var(--sp-4);
+  border-block-start: 1px solid var(--rule);
+}
+
+.owner-activity-count {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.owner-activity-footer-actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* Mobile 44px touch floors for this wave's own controls. !important
+   is the documented layer-precedence exception (wave 5-a precedent):
+   polish.css (overrides layer) pins .btn at 40px / .btn.sm at 32px
+   inside its own max-640 block — pages-layer rules can never win
+   without it. (The ErrorState/EmptyState retry buttons remain 32px —
+   a shared-primitive gap flagged by waves 3-b/4/5, not owned here.) */
+@media (max-width: 640px) {
+  .owner-live-tools .btn.sm,
+  .owner-alert-card .inline-retry .btn.sm,
+  .owner-activity-footer-actions .btn.sm {
+    min-block-size: 44px !important;
+  }
+}
+
+/* Shape-matched skeleton for the activity timeline — the 32px icon
+   well, the title/meta lines and the trailing time stamp. */
+.owner-timeline-skel {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: var(--sp-3) var(--sp-2);
+}
+
+.owner-timeline-skel-lines {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ── wave 6-a reduced-motion off-switches (guardrail #6) ───── */
+@media (prefers-reduced-motion: reduce) {
+  .owner-live-tick,
+  .owner-value-tick,
+  .owner-alert-card,
+  .owner-timeline-item {
+    animation: none;
+  }
+
+  .owner-detail-chevron {
+    transition: none;
+  }
+}
+}
+
+/* ═════════════════════════════════════════════════════════════
+   wave 6-b — owner management pages
+   (audit 0-e: OwnerUsersPage P1-24/P1-25 + craft sweep across
+   Governance / Education / Content / AI). Append-only section:
+   every rule below is NEW — nothing above is touched. The core
+   owner pages belong to the wave 6-a section above.
+   ═════════════════════════════════════════════════════════════ */
+@layer pages {
+
+/* ── Numeric cell utility (audit 0-e P2-118, .table side) ────
+   One class replaces the per-cell style={{fontFamily:'var(--font-mono)'}}
+   repetition on the pages that migrated to the .table system: mono
+   stack + tabular numerals so columns stay optically aligned. Status
+   variants read through the -ink tokens (WCAG-pinned, guardrail #3).
+   (The legacy .owner-table family's td.num lives in wave 6-a above.) */
+.owner-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs);
+}
+
+.owner-num-success { color: var(--success-ink); }
+
+.owner-num-warning { color: var(--warning-ink); }
+
+/* muted secondary cell (e.g. the faculty column of top-courses) */
+.owner-cell-muted {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+/* ── Users table ───────────────────────────────────────────── */
+/* Row entrance stagger — the page's authored moment, paired with the
+   .table-row-actions hover/focus reveal (components.css). One-shot:
+   fill-mode backwards never pins the row transform, the ladder is
+   capped at 8 so long first pages don't crawl, and rows remount on
+   every page flip so the moment repeats per page, not per hover. */
+.owner-users-table tbody tr {
+  animation: owner-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(min(var(--row-i, 0), 8) * var(--motion-stagger-step));
+}
+
+@keyframes owner-row-in {
+  from { opacity: 0; transform: translateY(4px); }
+}
+
+/* joined-date cell: "joined this week" dot + date on one line */
+.owner-joined {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.owner-joined .owner-health-dot { flex-shrink: 0; }
+
+/* ellipsis run between windowed page numbers (bounded pagination,
+   audit 0-e P1-25); sized to sit on the .table-pagination-actions
+   button rhythm (36px desktop / 44px phones). */
+.owner-page-gap {
+  min-inline-size: 36px;
+  block-size: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-subtle);
+  user-select: none;
+}
+
+/* search icon tint (de-inlined from the TSX) */
+.owner-search-bar > svg {
+  color: var(--text-subtle);
+  flex-shrink: 0;
+}
+
+/* the inline action-error alert sits above the table — give it the
+   card's rhythm (the .alert primitive itself is margin-free) */
+.owner-users-card .alert {
+  margin-block-end: var(--sp-4);
+}
+
+/* ── Meters (Education workload + AI token share) ──────────── */
+.owner-workload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* The fill grows out of its inline-start edge on load: scaleX composes
+   with the ProgressBar's inline width (so later value changes keep the
+   .progress-fill width transition) and the transform-origin tracks the
+   reading direction. Staggered via --meter-i, capped 8. */
+.owner-meter .progress-fill {
+  animation: owner-meter-in var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(min(var(--meter-i, 0), 8) * var(--motion-stagger-step));
+  transform-origin: left center;
+}
+
+[dir="rtl"] .owner-meter .progress-fill { transform-origin: right center; }
+
+@keyframes owner-meter-in {
+  from { transform: scaleX(0); }
+}
+
+/* in-table token-share meter (AI page) — the same grow language */
+.owner-share {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-inline-size: 140px;
+}
+
+.owner-share-track {
+  flex: 1;
+  block-size: 6px;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  overflow: clip;
+}
+
+.owner-share-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  animation: owner-meter-in var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(min(var(--meter-i, 0), 8) * var(--motion-stagger-step));
+  transform-origin: left center;
+}
+
+[dir="rtl"] .owner-share-fill { transform-origin: right center; }
+
+/* ── Content page: de-inlined identity card ────────────────── */
+.owner-card-lead {
+  margin: 0 0 var(--sp-3) 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  line-height: var(--lh-base);
+}
+
+.owner-brand-notice {
+  padding: var(--sp-3);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+}
+
+.owner-brand-notice > svg {
+  flex-shrink: 0;
+  margin-block-start: 2px;
+}
+
+.owner-swatch-grid {
+  margin-block-start: var(--sp-3);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+}
+
+.owner-swatch {
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+
+.owner-swatch-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-1);
+}
+
+/* Brand chip — the raw hex on it is displayed DATA (see the TSX
+   docblock); the hairline keeps the pale chip (#a3c9ff) readable on
+   cream. The one-shot settle is the page's authored moment. */
+.owner-swatch-chip {
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  animation: owner-swatch-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(var(--swatch-i, 0) * var(--motion-stagger-step));
+}
+
+@keyframes owner-swatch-in {
+  from { transform: scale(0.6); opacity: 0; }
+}
+
+.owner-swatch-hex {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs);
+  color: var(--text);
+}
+
+/* stacked cards below the grid-2 (the grid children already ride the
+   global mount stagger in polish.css) */
+.owner-card-settle {
+  animation: owner-card-rise var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
+}
+
+@keyframes owner-card-rise {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+/* ── Touch floors + narrow viewports (craft floor: ≥44px) ──── */
+/* .btn.sm is pinned at 32px inside the polish overrides layer, so
+   page-local floors need !important to win the layer contest — the
+   documented 4-a/5-a/5-c precedent. */
+@media (max-width: 640px) {
+  .owner-filter-pills .pill { min-block-size: 44px; }
+  .owner-row-actions .btn,
+  .owner-users-card .alert .btn,
+  .owner-users-card .state .btn,
+  .owner-content-page .btn.sm { min-block-size: 44px !important; }
+  .owner-page-gap { min-inline-size: 44px; block-size: 44px; }
+  .owner-swatch-grid { grid-template-columns: 1fr; }
+}
+
+/* ── wave 6-b reduced-motion off-switches (guardrail #6) ───── */
+/* The global belts zero the duration tokens, but these entrances carry
+   animation-delay ladders — kill the whole animation so no element
+   waits invisible through a delay that no longer resolves. */
+@media (prefers-reduced-motion: reduce) {
+  .owner-users-table tbody tr,
+  .owner-meter .progress-fill,
+  .owner-share-fill,
+  .owner-swatch-chip,
+  .owner-card-settle { animation: none; }
+}
 }

@@ -19,15 +19,14 @@ import { Illustration } from '../components/Illustration';
 import { SectionAccent } from '../components/motion/SectionAccent';
 
 /**
- * University truth: UoZ operates 29 colleges (zu_university_report.md
- * faculty table; specs/011 scale note; ruling #6 plans to fill the college
- * identity registry with exactly 29 entries). The registry in
- * data/colleges.config.ts is the canonical machine source and currently
- * sits dormant (0/29), so its length takes over automatically the moment
- * it is filled. Both display sites consume this single constant — never
- * a hardcoded digit (audit 0-b P1-10).
+ * University truth: UoZ operates 25 colleges (backend seed faculty table;
+ * the zu.edu.ly structured list agrees — its prose header's "26" and older
+ * docs' "29" are both wrong). The registry in data/colleges.config.ts is
+ * the canonical machine source (25 entries since wave 6-c); the fallback
+ * constant only applies if it is ever emptied. Both display sites consume
+ * this single constant — never a hardcoded digit (audit 0-b P1-10).
  */
-const COLLEGES_COUNT = colleges.length > 0 ? colleges.length : 29;
+const COLLEGES_COUNT = colleges.length > 0 ? colleges.length : 25;
 
 export default function LandingPage() {
   useThemeSync();

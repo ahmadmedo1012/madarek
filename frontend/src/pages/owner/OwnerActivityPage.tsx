@@ -1,14 +1,18 @@
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
 import {
   LogIn, FileText, UserCog, Server, AlertTriangle, Activity, Shield, Clock, XCircle,
+  RefreshCw, ChevronDown, ChevronRight, ChevronLeft,
 } from 'lucide-react';
 import { Card, MetricCard, Tabs } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useOwnerActivity } from '../../hooks/useOwner';
 import type { LucideIcon } from 'lucide-react';
 
 type EventType = 'all' | 'login' | 'content' | 'roles' | 'system';
+
+const PAGE_SIZE = 50;
 
 const TYPE_CONFIG: Record<'login' | 'content' | 'roles' | 'system' | 'error', { icon: LucideIcon; colorClass: string; label: string }> = {
   login:   { icon: LogIn, colorClass: 'green', label: 'تسجيل دخول' },
@@ -28,10 +32,21 @@ function classifyAction(action: string): { category: keyof typeof TYPE_CONFIG; l
   if (action.startsWith('user.logout')) return { category: 'login', label: 'تسجيل خروج' };
   if (action.startsWith('user.role') || action.startsWith('user.status') || action.startsWith('roles.')) return { category: 'roles', label: 'تعديل صلاحيات' };
   if (action.startsWith('user.created')) return { category: 'roles', label: 'إنشاء حساب' };
+  // Real backend audit actions (owner/permissions/teacher routes) —
+  // uppercase enums, mapped so they never render raw in the feed.
+  if (
+    action.startsWith('ROLE_') || action.startsWith('STATUS_') ||
+    action.startsWith('CAPABILITY_') || action.startsWith('USER_SCOPE') ||
+    action.startsWith('TEACHER_')
+  ) return { category: 'roles', label: 'تعديل صلاحيات' };
   if (action.startsWith('material.') || action.startsWith('course.') || action.startsWith('paper.') || action.startsWith('announcement.') || action.startsWith('competition.')) {
     return { category: 'content', label: 'تعديل محتوى' };
   }
-  if (action.startsWith('sync.') || action.startsWith('system.')) return { category: 'system', label: 'تشغيل نظام' };
+  if (action.startsWith('sync.') || action.startsWith('system.') || action.startsWith('ALERT_') ||
+    action.startsWith('SETTING_') || action.startsWith('FEATURE_FLAG') ||
+    action.startsWith('theme.') || action.startsWith('onboarding.') || action.startsWith('milestone.')) {
+    return { category: 'system', label: 'تشغيل نظام' };
+  }
   if (action.includes('error') || action.includes('failed')) return { category: 'error', label: 'خطأ' };
   return { category: 'system', label: action };
 }
@@ -52,19 +67,68 @@ const ACTION_LABEL: Record<string, string> = {
   'announcement.created': 'بثّ إعلان',
   'competition.created': 'إنشاء مسابقة',
   'sync.run': 'تشغيل المزامنة',
+  ROLE_CHANGE: 'تغيير صلاحيات مستخدم',
+  STATUS_CHANGE: 'تعديل حالة الحساب',
+  CAPABILITY_OVERRIDE: 'تجاوز صلاحية',
+  USER_SCOPE_CHANGE: 'تعديل نطاق مستخدم',
+  TEACHER_POSITION: 'تعيين موقع أستاذ',
+  TEACHER_VERIFY: 'توثيق أستاذ',
+  ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
+  SETTING_UPDATED: 'تحديث إعداد المنصّة',
+  FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
+  'theme.update': 'تغيير مظهر المنصّة',
+  'onboarding.complete': 'إكمال جولة التعريف',
+  'milestone.fire': 'تحقيق إنجاز',
 };
+
+/** Audit-log resource types as written by the backend (Prisma models). */
+const RESOURCE_LABELS: Record<string, string> = {
+  User: 'مستخدم',
+  TeacherProfile: 'ملف أستاذ',
+  UserPermission: 'صلاحية مستخدم',
+  OperationalAlert: 'تنبيه تشغيليّ',
+  PlatformSetting: 'إعداد منصّة',
+  FeatureFlag: 'ميزة',
+};
+
+/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
+function countAr(n: number, forms: [string, string, string, string]): string {
+  if (n === 1) return forms[0];
+  if (n === 2) return forms[1];
+  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
+  return `${n} ${forms[3]}`;
+}
 
 function formatRelative(iso: string): string {
   const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const m = Math.round(diff / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  const dd = Math.round(h / 24);
-  if (dd < 7) return `منذ ${dd} يوم`;
+  const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
+  if (diffMin < 1) return 'الآن';
+  if (diffMin < 60) return `منذ ${countAr(diffMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}`;
+  const diffHr = Math.round(diffMin / 60);
+  if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
+  const diffD = Math.round(diffHr / 24);
+  if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+}
+
+/** Shape-matched skeleton for the activity timeline — the 32px icon
+ *  well, the title/meta lines and the trailing time stamp (craft
+ *  floor: never a bare spinner where the shape is known). */
+function TimelineSkeleton({ rows = 7 }: { rows?: number }) {
+  return (
+    <div aria-busy="true" aria-live="polite">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="owner-timeline-skel">
+          <Skeleton width={32} height={32} rounded="50%" />
+          <div className="owner-timeline-skel-lines">
+            <Skeleton width="55%" height={13} />
+            <Skeleton width="38%" height={11} />
+          </div>
+          <Skeleton width={54} height={11} />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function OwnerActivityPage() {
@@ -72,7 +136,7 @@ export function OwnerActivityPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
-  const activity = useOwnerActivity({ page, limit: 50 });
+  const activity = useOwnerActivity({ page, limit: PAGE_SIZE });
 
   const tabItems: Array<{ value: EventType; label: string }> = [
     { value: 'all', label: 'الكل' },
@@ -107,6 +171,12 @@ export function OwnerActivityPage() {
     roles: decorated.filter((e) => e.category === 'roles').length,
   };
 
+  // Honest KPIs (audit 0-e P1-27): '…' while loading, '—' on error —
+  // never a confident "0" for data we don't have.
+  const kpiValue = (n: number) =>
+    activity.isPending ? '…' : activity.isError ? '—' : <bdi>{n.toLocaleString('ar-LY')}</bdi>;
+  const kpiKnown = activity.isSuccess;
+
   return (
     <div className="page">
       <header className="page-header">
@@ -120,29 +190,29 @@ export function OwnerActivityPage() {
       <div className="grid-4">
         <MetricCard
           icon={Activity}
-          label={`أحدث ${kpi.total.toLocaleString('ar-LY')} حدثاً`}
-          value={(activity.data?.meta.total ?? kpi.total).toLocaleString('ar-LY')}
-          change="إجمالي الأحداث المسجَّلة"
+          label="إجمالي الأحداث"
+          value={kpiValue(activity.data?.meta.total ?? kpi.total)}
+          change="المسجَّلة على المنصّة"
           color="brand"
         />
         <MetricCard
           icon={LogIn}
           label="تسجيلات دخول"
-          value={kpi.logins.toLocaleString('ar-LY')}
+          value={kpiValue(kpi.logins)}
           change="ضمن الصفحة الحاليّة"
           color="green"
         />
         <MetricCard
           icon={XCircle}
           label="عمليّات فاشلة"
-          value={kpi.failed.toLocaleString('ar-LY')}
+          value={kpiValue(kpi.failed)}
           change="ضمن الصفحة الحاليّة"
-          color={kpi.failed === 0 ? 'green' : 'red'}
+          color={kpiKnown ? (kpi.failed === 0 ? 'green' : 'red') : 'brand'}
         />
         <MetricCard
           icon={Shield}
           label="تغييرات صلاحيّات"
-          value={kpi.roles.toLocaleString('ar-LY')}
+          value={kpiValue(kpi.roles)}
           change="ضمن الصفحة الحاليّة"
           color="purple"
         />
@@ -154,48 +224,62 @@ export function OwnerActivityPage() {
 
       <Card title="سجلّ الأحداث" icon={Clock}>
         {activity.isPending ? (
-          <LoadingState />
+          <TimelineSkeleton rows={7} />
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : filtered.length === 0 ? (
           <EmptyState
             title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
             description={filter === 'all'
-              ? 'سيظهر هنا سجلّ كامل لكلّ نشاط على المنصّة فور حدوثه.'
-              : 'جرِّب تبويباً آخر لرؤية أنواع مختلفة من الأحداث.'}
+              ? 'تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة.'
+              : 'جرِّب تبويباً آخر لمتابعة أنواع مختلفة من الأحداث.'}
+            action={filter === 'all' && (
+              <button type="button" className="btn ghost sm" onClick={() => activity.refetch()}>
+                <Icon icon={RefreshCw} size={12} />
+                تحديث السجلّ
+              </button>
+            )}
           />
         ) : (
           <div className="owner-timeline">
-            {filtered.map((event) => (
-              <div key={event.id} className="owner-timeline-item">
+            {filtered.map((event, i) => (
+              <div
+                key={event.id}
+                className="owner-timeline-item"
+                style={{ '--owner-row-i': i } as CSSProperties}
+              >
                 <div className={`owner-event-icon ${event.config.colorClass}`}>
                   <Icon icon={event.config.icon} size={16} />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: 'var(--fs-sm)', color: 'var(--text)' }}>
-                    {event.actionLabel}
-                  </div>
-                  <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', marginTop: 2 }}>
+                <div className="owner-timeline-body">
+                  <div className="owner-timeline-title">{event.actionLabel}</div>
+                  <div className="owner-timeline-meta">
                     {event.user ? `${event.user.firstName} ${event.user.lastName}` : 'النظام'}
-                    {event.user && <> &middot; <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xxs)' }}>{event.user.email}</span></>}
-                    {event.resourceType && <> &middot; {event.resourceType}</>}
+                    {event.user && (
+                      <> &middot; <bdi className="owner-timeline-email">{event.user.email}</bdi></>
+                    )}
+                    {event.resourceType && (
+                      <> &middot; {RESOURCE_LABELS[event.resourceType] ?? <bdi>{event.resourceType}</bdi>}</>
+                    )}
                   </div>
                   {event.metadata !== null && event.metadata !== undefined && (
                     <button
                       type="button"
-                      style={{ fontSize: 'var(--fs-xxs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: 4 }}
+                      className="owner-detail-toggle"
+                      aria-expanded={expanded === event.id}
                       onClick={() => setExpanded(expanded === event.id ? null : event.id)}
                     >
+                      <Icon icon={ChevronDown} size={12} className="owner-detail-chevron" />
                       {expanded === event.id ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
                     </button>
                   )}
                   {expanded === event.id && event.metadata !== null && event.metadata !== undefined && (
-                    <div className="owner-meta-preview">
+                    <div className="owner-meta-preview" dir="ltr">
                       {JSON.stringify(event.metadata, null, 2)}
                     </div>
                   )}
                 </div>
-                <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-subtle)', fontFamily: 'var(--font-mono)', flexShrink: 0 }}>
+                <span className="owner-timeline-time" title={new Date(event.createdAt).toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' })}>
                   {formatRelative(event.createdAt)}
                 </span>
               </div>
@@ -204,24 +288,32 @@ export function OwnerActivityPage() {
         )}
 
         {activity.data && activity.data.meta.totalPages > 1 && (
-          <div className="admin-pagination" style={{ marginBlockStart: 'var(--sp-3)', paddingBlockStart: 'var(--sp-3)' }}>
-            <span className="text-xs text-muted">
-              الصفحة {activity.data.meta.page} من {activity.data.meta.totalPages} ·
-              {' '}{activity.data.meta.total.toLocaleString('ar-LY')} حدث
+          <div className="owner-activity-footer">
+            <span className="owner-activity-count">
+              الصفحة <bdi>{activity.data.meta.page}</bdi> من <bdi>{activity.data.meta.totalPages}</bdi>
+              {' '}· <bdi>{activity.data.meta.total.toLocaleString('ar-LY')}</bdi> حدث
             </span>
-            <div className="admin-pagination-actions">
+            <div className="owner-activity-footer-actions">
+              {/* RTL: "previous" points inline-start-ward = the right
+                  chevron (wave 5-a convention). */}
               <button
                 type="button"
                 className="btn ghost sm"
                 disabled={page === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >السابق</button>
+              >
+                <Icon icon={ChevronRight} size={14} />
+                السابق
+              </button>
               <button
                 type="button"
                 className="btn ghost sm"
                 disabled={page >= activity.data.meta.totalPages}
                 onClick={() => setPage((p) => p + 1)}
-              >التالي</button>
+              >
+                التالي
+                <Icon icon={ChevronLeft} size={14} />
+              </button>
             </div>
           </div>
         )}

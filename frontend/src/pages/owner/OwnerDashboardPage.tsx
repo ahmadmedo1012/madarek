@@ -1,25 +1,41 @@
-import { Users, Activity, BookOpen, GraduationCap, Bot, Bell, ShieldCheck, FileWarning, Clock, Radio, AlertTriangle, Settings } from 'lucide-react';
+import {
+  Users, Activity, BookOpen, GraduationCap, Bot, Bell, ShieldCheck, FileWarning,
+  Clock, Radio, AlertTriangle, Settings, RefreshCw,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import type { ReactNode } from 'react';
 import { Card, MetricCard } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState, PageSkeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, PageSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity } from '../../hooks/useOwner';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+/** Proper Arabic counted nouns: [one, two, few (3–10), many (11+)]. */
+function countAr(n: number, forms: [string, string, string, string]): string {
+  if (n === 1) return forms[0];
+  if (n === 2) return forms[1];
+  if (n >= 3 && n <= 10) return `${n} ${forms[2]}`;
+  return `${n} ${forms[3]}`;
+}
+
+const OPEN_ALERT_FORMS: [string, string, string, string] = [
+  'تنبيه مفتوح واحد', 'تنبيهان مفتوحان', 'تنبيهات مفتوحة', 'تنبيهاً مفتوحاً',
+];
+
 function formatRelative(iso: string): string {
   const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const m = Math.round(diff / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  const dd = Math.round(h / 24);
-  if (dd < 7) return `منذ ${dd} يوم`;
+  const diffMin = Math.round((Date.now() - d.getTime()) / 60000);
+  if (diffMin < 1) return 'الآن';
+  if (diffMin < 60) return `منذ ${countAr(diffMin, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])}`;
+  const diffHr = Math.round(diffMin / 60);
+  if (diffHr < 24) return `منذ ${countAr(diffHr, ['ساعة', 'ساعتين', 'ساعات', 'ساعة'])}`;
+  const diffD = Math.round(diffHr / 24);
+  if (diffD < 7) return `منذ ${countAr(diffD, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
@@ -37,10 +53,39 @@ const ACTION_LABEL: Record<string, string> = {
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
   'sync.run': 'مزامنة بيانات الجامعة',
+  // Real backend audit actions (owner/permissions/teacher routes) —
+  // without these the feed shows raw English enums.
+  ROLE_CHANGE: 'تغيير صلاحيات مستخدم',
+  STATUS_CHANGE: 'تعديل حالة الحساب',
+  CAPABILITY_OVERRIDE: 'تجاوز صلاحية',
+  USER_SCOPE_CHANGE: 'تعديل نطاق مستخدم',
+  TEACHER_POSITION: 'تعيين موقع أستاذ',
+  TEACHER_VERIFY: 'توثيق أستاذ',
+  ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
+  SETTING_UPDATED: 'تحديث إعداد المنصّة',
+  FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
+  'theme.update': 'تغيير مظهر المنصّة',
+  'onboarding.complete': 'إكمال جولة التعريف',
+  'milestone.fire': 'تحقيق إنجاز',
 };
 
-function actionLabel(action: string): string {
-  return ACTION_LABEL[action] ?? action;
+/** Audit-log resource types as written by the backend (Prisma models). */
+const RESOURCE_LABELS: Record<string, string> = {
+  User: 'مستخدم',
+  TeacherProfile: 'ملف أستاذ',
+  UserPermission: 'صلاحية مستخدم',
+  OperationalAlert: 'تنبيه تشغيليّ',
+  PlatformSetting: 'إعداد منصّة',
+  FeatureFlag: 'ميزة',
+};
+
+function actionLabel(action: string): ReactNode {
+  return ACTION_LABEL[action] ?? <bdi>{action}</bdi>;
+}
+
+function resourceLabel(resourceType: string | null): ReactNode {
+  if (!resourceType) return '—';
+  return RESOURCE_LABELS[resourceType] ?? <bdi>{resourceType}</bdi>;
 }
 
 export function OwnerDashboardPage() {
@@ -85,14 +130,40 @@ export function OwnerDashboardPage() {
   if (!data || !realtimeData) {
     return <PageSkeleton />;
   }
+
+  // The status band and the alerts KPI derive from the alerts query's
+  // REAL state (audit 0-e P0-3, 1-b follow-up): "healthy" is only ever
+  // shown after the query answered with zero open alerts — pending
+  // renders a neutral band, an error renders a degraded band with a
+  // working retry (ruling #14: never mask an error as "all normal").
   const alerts = alertsQuery.data ?? [];
-  const hasAlerts = alerts.length > 0;
+  const hasAlerts = alertsQuery.isSuccess && alerts.length > 0;
+
   const events = activity.data?.data ?? [];
+  const lastEventAt = events[0]?.createdAt ?? null;
+  const lastActivityLabel = activity.isPending
+    ? '…'
+    : activity.isError
+      ? 'تعذّر الجلب'
+      : lastEventAt
+        ? formatRelative(lastEventAt)
+        : '—';
+
+  const segments = [
+    { label: 'طلاب', value: data.students },
+    { label: 'أساتذة', value: data.teachers },
+    { label: 'إداريون', value: data.admins },
+    { label: 'جودة', value: data.quality },
+  ];
+  const topSegment = segments.reduce((a, b) => (b.value > a.value ? b : a));
+  const chartSummary = data.totalUsers === 0
+    ? 'لا مستخدمين مسجَّلين بعد.'
+    : `${topSegment.label} الفئة الأكبر من مستخدمي المنصّة.`;
 
   const chartData = {
-    labels: ['طلاب', 'أساتذة', 'إداريون', 'جودة'],
+    labels: segments.map((s) => s.label),
     datasets: [{
-      data: [data.students, data.teachers, data.admins, data.quality],
+      data: segments.map((s) => s.value),
       backgroundColor: chartPalette().slice(0, 4),
       borderWidth: 0,
       hoverOffset: 6,
@@ -100,7 +171,29 @@ export function OwnerDashboardPage() {
   };
   const chartOptions = radialOptions({ legend: true });
 
-  const lastEventAt = events[0]?.createdAt ?? null;
+  const alertBand = alertsQuery.isError ? (
+    <div className="owner-live-status is-degraded" role="alert">
+      <div className="owner-live-pulse" />
+      <span className="status-text">تعذّر جلب حالة التنبيهات</span>
+      <div className="owner-live-tools">
+        <button type="button" className="btn ghost sm" onClick={() => alertsQuery.refetch()}>
+          <Icon icon={RefreshCw} size={12} />
+          إعادة المحاولة
+        </button>
+      </div>
+    </div>
+  ) : (
+    <div className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}${alertsQuery.isPending ? ' is-pending' : ''}`}>
+      <div className="owner-live-pulse" />
+      <span className="status-text">
+        {alertsQuery.isPending
+          ? 'جارٍ جلب حالة التنبيهات…'
+          : hasAlerts
+            ? countAr(alerts.length, OPEN_ALERT_FORMS)
+            : 'النظام يعمل بشكل طبيعي'}
+      </span>
+    </div>
+  );
 
   return (
     <div className="page">
@@ -111,96 +204,110 @@ export function OwnerDashboardPage() {
         </div>
       </header>
 
-      {/* Live Status — uses real alerts count */}
-      <div className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}`}>
-        <div className="owner-live-pulse" />
-        <span className="status-text">{hasAlerts ? `${alerts.length} تنبيهات مفتوحة` : 'النظام يعمل بشكل طبيعي'}</span>
-      </div>
+      {/* Live Status — never claims "normal" unless the alerts query
+          answered (see alertBand above). */}
+      {alertBand}
 
       {/* Metric Cards — every value comes from the API */}
       <div className="grid-4">
-        <MetricCard icon={Users} label="إجمالي المستخدمين" value={data.totalUsers.toLocaleString('ar-LY')} color="brand" />
-        <MetricCard icon={Activity} label="الجلسات النشطة" value={realtimeData.activeSessions.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={BookOpen} label="المقررات الدراسية" value={data.totalCourses.toLocaleString('ar-LY')} color="purple" />
-        <MetricCard icon={GraduationCap} label="إجمالي التسجيلات" value={data.totalEnrollments.toLocaleString('ar-LY')} color="gold" />
+        <MetricCard icon={Users} label="إجمالي المستخدمين" value={<bdi>{data.totalUsers.toLocaleString('ar-LY')}</bdi>} color="brand" />
+        <MetricCard icon={Activity} label="الجلسات النشطة" value={<bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>} color="green" />
+        <MetricCard icon={BookOpen} label="المقررات الدراسية" value={<bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>} color="purple" />
+        <MetricCard icon={GraduationCap} label="إجمالي التسجيلات" value={<bdi>{data.totalEnrollments.toLocaleString('ar-LY')}</bdi>} color="gold" />
       </div>
 
-      {/* Extra Row */}
+      {/* Extra Row — the alerts tile turns amber only on a confirmed
+          count > 0 (DESIGN_POLISH_PLAN phase 3). */}
       <div className="grid-2">
         <MetricCard
           icon={Bot}
           label="طلبات AI / دقيقة"
-          value={realtimeData.aiRequestsPerMin.toLocaleString('ar-LY')}
+          value={<bdi>{realtimeData.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>}
           color="purple"
         />
         <MetricCard
           icon={Bell}
           label="تنبيهات مفتوحة"
-          value={alerts.length.toLocaleString('ar-LY')}
-          color={alerts.length === 0 ? 'green' : 'amber'}
+          value={
+            alertsQuery.isPending ? '…'
+              : alertsQuery.isError ? '—'
+                : <bdi>{alerts.length.toLocaleString('ar-LY')}</bdi>
+          }
+          color={hasAlerts ? 'amber' : alertsQuery.isSuccess ? 'green' : 'brand'}
         />
       </div>
 
       {/* Chart + Operational status */}
       <div className="grid-2-1">
         <Card title="توزيع المستخدمين">
-          <div className="owner-chart-container">
+          <ChartFrame
+            className="owner-chart-container"
+            ariaLabel="مخطط دائري يوزّع مستخدمي المنصّة على الأدوار: طلاب وأساتذة وإداريّون وفريق جودة"
+            summary={chartSummary}
+            table={{
+              caption: 'توزيع المستخدمين حسب الدور',
+              columns: ['الدور', 'العدد'],
+              rows: segments.map((s) => [s.label, s.value]),
+            }}
+          >
             <Doughnut key={themeKey} data={chartData} options={chartOptions} />
-          </div>
+          </ChartFrame>
         </Card>
 
         <Card title="الحالة التشغيليّة">
-          <div style={{ padding: 'var(--sp-3) 0' }}>
+          <div className="owner-health-list">
             <div className="owner-health-row">
-              <div className={`owner-health-dot ${hasAlerts ? 'amber' : 'green'}`} />
+              <div className={`owner-health-dot ${alertsQuery.isPending ? 'neutral' : alertsQuery.isError ? 'red' : hasAlerts ? 'amber' : 'green'}`} />
               <span className="owner-health-label">حالة المنصة</span>
               <span className="owner-health-value">
-                {hasAlerts ? `${alerts.length} تنبيهات` : 'سليمة'}
+                {alertsQuery.isPending ? '…' : alertsQuery.isError ? 'تعذّر الجلب' : hasAlerts ? countAr(alerts.length, OPEN_ALERT_FORMS) : 'سليمة'}
               </span>
             </div>
             <div className="owner-health-row">
               <div className="owner-health-dot green" />
               <span className="owner-health-label">جلسات نشطة الآن</span>
               <span className="owner-health-value">
-                {realtimeData.activeSessions.toLocaleString('ar-LY')}
+                <bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.liveBroadcasts > 0 ? 'green' : 'amber'}`} />
               <span className="owner-health-label">بثّ مباشر جارٍ</span>
               <span className="owner-health-value">
-                {realtimeData.liveBroadcasts.toLocaleString('ar-LY')}
+                <bdi>{realtimeData.liveBroadcasts.toLocaleString('ar-LY')}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.activeExams > 0 ? 'green' : 'amber'}`} />
               <span className="owner-health-label">امتحانات جارية</span>
               <span className="owner-health-value">
-                {realtimeData.activeExams.toLocaleString('ar-LY')}
+                <bdi>{realtimeData.activeExams.toLocaleString('ar-LY')}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
-              <div className="owner-health-dot green" />
+              <div className={`owner-health-dot ${lastEventAt && !activity.isError ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">آخر نشاط مسجَّل</span>
-              <span className="owner-health-value">
-                {lastEventAt ? formatRelative(lastEventAt) : '—'}
-              </span>
+              <span className="owner-health-value">{lastActivityLabel}</span>
             </div>
             <div className="owner-health-row">
               <div className="owner-health-dot green" />
               <span className="owner-health-label">سجلّات آخر 7 أيام</span>
               <span className="owner-health-value">
-                {data.recentAuditLogs.toLocaleString('ar-LY')}
+                <bdi>{data.recentAuditLogs.toLocaleString('ar-LY')}</bdi>
               </span>
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Recent Events — real audit log */}
+      {/* Recent Events — real audit log; every state is honest
+          (pending = shape-matched skeleton, error = retry — an API
+          failure no longer renders as "no events", ruling #14). */}
       <Card title="الأحداث الأخيرة" icon={Clock} subtitle="آخر العمليّات على المنصّة">
         {activity.isPending ? (
-          <LoadingState />
+          <TableSkeleton rows={6} cols={4} />
+        ) : activity.isError ? (
+          <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : events.length === 0 ? (
           <EmptyState title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
         ) : (
@@ -217,15 +324,11 @@ export function OwnerDashboardPage() {
               {events.map((ev) => (
                 <tr key={ev.id}>
                   <td>{actionLabel(ev.action)}</td>
-                  <td style={{ color: 'var(--text-muted)' }}>
+                  <td className="muted">
                     {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
                   </td>
-                  <td style={{ color: 'var(--text-subtle)' }}>
-                    {ev.resourceType ?? '—'}
-                  </td>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)', color: 'var(--text-subtle)' }}>
-                    {formatRelative(ev.createdAt)}
-                  </td>
+                  <td className="muted">{resourceLabel(ev.resourceType)}</td>
+                  <td className="muted">{formatRelative(ev.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

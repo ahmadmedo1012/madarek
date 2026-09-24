@@ -104,8 +104,10 @@ async function main(): Promise<number> {
     for (const key of ['slug', 'nameAr', 'nameEn', 'accent', 'icon'] as const) {
       if (!c[key]) errs.push(`missing required field: ${key}`);
     }
-    if (!c.heroImage?.src || !c.heroImage?.alt) {
-      errs.push('heroImage requires src and alt');
+    // heroImage is optional since wave 6-c (contract v1.1 — no synthetic
+    // imagery per Principle III). When present, both fields are required.
+    if (c.heroImage && (!c.heroImage.src || !c.heroImage.alt)) {
+      errs.push('heroImage requires src and alt when present');
     }
     if (c.motif && (!c.motif.src || !c.motif.alt)) {
       errs.push('motif requires both src and alt when present');
