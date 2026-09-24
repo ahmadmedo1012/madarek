@@ -52,7 +52,7 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .sidebar-brand-sub {
-    font-size: 11px;
+    font-size: var(--fs-xxs);
     color: var(--text-muted);
   }
 
@@ -63,7 +63,7 @@
     padding-block: var(--sp-2);
   }
   .nav-section-label {
-    font-size: 11px;
+    font-size: var(--fs-xxs);
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
     padding: var(--sp-2) var(--sp-3) 4px;
@@ -120,7 +120,9 @@
   .nav-item.on .nav-icon, .nav-item.active .nav-icon { color: var(--role-accent, var(--accent)); }
 
   .nav-badge {
-    font-size: 10px;
+    /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
+       (11px) per the craft-floor font sweep. */
+    font-size: var(--fs-xxs);
     padding: 2px 7px;
     border-radius: var(--r-full);
     background: var(--surface-3);
@@ -156,7 +158,7 @@
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .sidebar-user-role { font-size: 11px; color: var(--text-muted); }
+  .sidebar-user-role { font-size: var(--fs-xxs); color: var(--text-muted); }
   .sidebar-logout {
     inline-size: 26px; block-size: 26px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -269,7 +271,12 @@
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
-    padding: 4px 10px 4px 4px;
+    /* Logical properties (0-c P2-5): the avatar sits at inline-start,
+       so it gets the tight 4px inset and the chevron end gets 10px —
+       the old physical shorthand `4px 10px 4px 4px` put the wide inset
+       on the avatar side in RTL. */
+    padding-block: var(--sp-1);
+    padding-inline: var(--sp-1) 10px;
     border-radius: var(--r-full);
     border: 1px solid var(--rule);
     background: var(--surface);
@@ -287,37 +294,92 @@
   .topbar-user-menu-header { padding: var(--sp-3) var(--sp-4); border-block-end: 1px solid var(--rule); background: var(--surface-2); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  GLOBAL SEARCH                                                 ║
+     ║  GLOBAL SEARCH (wave 2-b — audit 0-c P0-1)                     ║
+     ║  The pill IS the input, styled in components.css right after   ║
+     ║  the global input rules (the layout layer cannot override      ║
+     ║  them — layer order layout < components; the old rules here    ║
+     ║  were dead for that reason AND lost to polish v8's reset).     ║
+     ║  This section owns the wrapper + the absolutely-positioned      ║
+     ║  chrome inside the pill: search icon (inline-start), kbd       ║
+     ║  shortcut hint / clear button (inline-end). All logical        ║
+     ║  properties — RTL-correct. LibraryPage reuses the same markup  ║
+     ║  for its page-level search bars (icon + input only).          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .global-search { position: relative; }
-  .global-search-input-wrap { position: relative; display: flex; align-items: center; }
-  .global-search-input-wrap > svg {
+  /* (.global-search-input-wrap / .global-search-kbd and the
+     .global-search input pill were dead selectors — the markup was
+     renamed to .topbar-search* without renaming the CSS, and every
+     declaration lost the cascade anyway. Deleted in wave 2-b.) */
+
+  .topbar-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    inline-size: 100%;
+    /* The v22 focus ring resolves `border-radius: inherit` on the
+       focused input — pinning the wrapper's radius to the pill makes
+       the ring hug the input exactly. */
+    border-radius: var(--r-full);
+    /* Clicking anywhere in the pill (label wraps the input) focuses
+       the field — advertise it. */
+    cursor: text;
+  }
+  .topbar-search-icon {
     position: absolute;
-    inset-inline-start: var(--sp-3);
+    inset-inline-start: var(--sp-2);
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
     color: var(--text-muted);
     pointer-events: none;
   }
-  .global-search input {
-    block-size: 38px;
-    padding-inline: 38px;
-    background: var(--surface-2);
-    border: 1px solid transparent;
-    border-radius: var(--r-md);
-    font-size: var(--fs-sm);
-    transition: var(--t-clean);
-  }
-  .global-search input:hover { background: var(--surface-3); }
-  .global-search input:focus {
-    background: var(--surface);
-    border-color: var(--border-strong);
-    /* T3-F4 — was hardcoded rgba(25,25,24,0.06): invisible in dark.
-       The state token carries the theme-aware ring colour. */
-    box-shadow: var(--state-focus-ring);
-  }
-  .global-search-kbd {
+  /* ⌘K / Ctrl+K hint — mirrors the .kbd chip language (components.css).
+     The glyphs are a Latin/symbol run, so the TSX sets dir="ltr". */
+  .topbar-search-shortcut {
     position: absolute;
     inset-inline-end: var(--sp-2);
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 22px;
+    padding: 2px var(--sp-1);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xs);
     pointer-events: none;
+  }
+  /* Clear button — rendered only when text is present (mutually
+     exclusive with the shortcut hint; the TSX marks the wrapper with
+     .has-clear / .has-shortcut so the input's end padding can reserve
+     the right zone). */
+  .topbar-search-clear {
+    position: absolute;
+    inset-inline-end: var(--sp-1);
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: var(--r-full);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      color var(--t-fast) var(--ease),
+      background var(--t-fast) var(--ease);
+  }
+  .topbar-search-clear:hover { color: var(--text); background: var(--surface-3); }
+  @media (max-width: 640px) {
+    /* 44px touch target on phones — the transparent button fills the
+       (44px) pill exactly there; the :focus-visible ring comes from
+       the v22 system like every other button. */
+    .topbar-search-clear { inline-size: 44px; block-size: 44px; }
   }
 
   .search-dropdown {
@@ -335,7 +397,7 @@
   .search-section { padding: var(--sp-2) 0; }
   .search-section-label {
     padding: 0 var(--sp-3);
-    font-size: 10px;
+    font-size: var(--fs-xxs);
     text-transform: uppercase; letter-spacing: 0.06em;
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
@@ -364,43 +426,19 @@
   .search-empty-title { font-size: var(--fs-body); color: var(--text); font-weight: var(--fw-bold); }
   .search-empty-hint { font-size: var(--fs-sm); color: var(--text-muted); }
   .search-empty-tips { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: center; margin-block-start: var(--sp-3); }
-  .search-tip-pill { padding: 4px 10px; border: 1px solid var(--rule); border-radius: var(--r-full); font-size: 11px; color: var(--text-muted); }
+  .search-tip-pill { padding: 4px 10px; border: 1px solid var(--rule); border-radius: var(--r-full); font-size: var(--fs-xxs); color: var(--text-muted); }
   .search-loading, .search-shimmer { display: flex; align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
-  .search-footer { padding: var(--sp-3); border-block-start: 1px solid var(--rule); font-size: 11px; color: var(--text-muted); display: flex; gap: var(--sp-3); justify-content: center; }
+  .search-footer { padding: var(--sp-3); border-block-start: 1px solid var(--rule); font-size: var(--fs-xxs); color: var(--text-muted); display: flex; gap: var(--sp-3); justify-content: center; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BOTTOM NAV (mobile only)                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .bottom-nav {
-    display: none;
-    position: fixed;
-    inset-block-end: 0;
-    inset-inline: 0;
-    background: var(--topbar-bg);
-    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    border-block-start: 1px solid var(--rule);
-    z-index: var(--z-dropdown);
-    padding: 6px max(var(--sp-2), env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
-    grid-template-columns: repeat(5, 1fr);
-    transition: transform var(--t-base) var(--ease);
-  }
-  .bottom-nav.is-hidden { transform: translateY(110%); }
-  @media (max-width: 920px) { .bottom-nav { display: grid; } }
-
-  .bottom-nav-item {
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    padding: 8px 4px;
-    border-radius: var(--r-sm);
-    color: var(--text-muted);
-    font-size: 10px;
-    font-weight: var(--fw-medium);
-    transition: color var(--t-fast) var(--ease);
-    text-decoration: none;
-  }
-  .bottom-nav-item:hover { color: var(--text); }
-  .bottom-nav-item.active { color: var(--accent-ink, var(--accent)); }
-  .bottom-nav-icon { display: inline-flex; }
+  /* (wave 2-b — this block was deleted: every declaration lost the
+     cascade war. The container + .is-hidden were redefined 1:1 by
+     polish v22 (overrides layer, ruling #8); the .bottom-nav-item
+     rules were fully superseded by notifications.css (pages layer).
+     The BottomNav TSX classes stay — only the dead CSS went. See
+     audits/0-c P1-3 + worklog Task 1-a.) */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  THEME TOGGLE                                                  ║

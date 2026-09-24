@@ -10,8 +10,18 @@
    font-family / --fw-* / font-style usage in src/):
    · IBM Plex Sans Arabic 400/500/600/700 — body text + display
      headings + chart.js labels. (The old <link> also loaded 300,
-     which no rule ever requests; 800 “--fw-black” synthesizes from
-     700 exactly as before — the family has no true 800 on Google.)
+     which no rule ever requests.) The family has NO true 800 cut
+     anywhere (not even on Google Fonts), and 700 is the heaviest
+     file that ships here — so `font-weight: 800` never painted an
+     800: CSS font matching selects the closest available face (the
+     REAL 700 file) and, because a face matched, applies NO
+     synthetic bold (synthesis only happens when no face of the
+     family matches at all). Every --fw-black consumer therefore
+     always rendered the 700 cut. wave 2-a: tokens.css now resolves
+     --fw-black to var(--fw-bold) (700) so the heaviest display
+     weight is what the tokens actually say — zero visual delta,
+     same woff2, and the fallback stacks get a real 700 instead of
+     a synthetic 800 while the webfont swaps in.
    · IBM Plex Serif italic 400/500 — every --font-serif usage in
      src/ is an italic <em>/flourish (landing + polish), so only the
      italic cuts are shipped. Arabic glyphs were never in Plex

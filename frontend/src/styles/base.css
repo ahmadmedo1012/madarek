@@ -1,6 +1,6 @@
 /* ═════════════════════════════════════════════════════════════════════
    MADARK — Base layer (Notion-flavored)
-   Reset · document · shell · scrollbars · RTL · typography
+   Reset · document · shell · browser surfaces · RTL · typography
    ════════════════════════════════════════════════════════════════════ */
 
 @layer base {
@@ -14,6 +14,10 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern", "liga", "calt", "ss01", "tnum";
+    /* wave 2-a — kill the grey tap flash on every touch target (button
+       already had it; the document-level rule covers links, cards and
+       all the click-handled non-button chrome). */
+    -webkit-tap-highlight-color: transparent;
     background: var(--bg);
     color: var(--text);
     color-scheme: light;
@@ -51,6 +55,12 @@
   a {
     color: inherit;
     text-decoration: none;
+    /* wave 2-a — Arabic-appropriate underline metrics for every context
+       that re-enables underlines (print, helper links): 0.18em clears
+       the descenders of ج/ع/ي without detaching the stroke; 1px keeps
+       the hairline language. Inert while links are undecorated. */
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: 1px;
     transition: color var(--t-fast) var(--ease);
   }
   /* T3-F4 — link hover uses the text-safe accent ink: light --accent
@@ -74,28 +84,66 @@
 
   hr { border: 0; border-top: 1px solid var(--rule); margin-block: var(--sp-6); }
 
-  ::selection { background: var(--accent-soft); color: var(--accent-strong); }
+  /* (wave 2-a) ::selection deleted — polish v22 owns the single live
+     definition (overrides layer: accent 28% mix + --text); this token
+     recipe was dead weight it beat (0-a P1-1). */
 
-  :focus { outline: none; }
-  /* Universal :focus-visible ring is owned by motion.css (single source:
-     outline + offset + border-radius: inherit). The former duplicate
-     here forced border-radius: var(--r-xs) and fought the motion layer
-     — removed in T3-F4. */
+  /* wave 2-a — neutered from bare `:focus { outline: none }`. The old
+     rule tied motion.css's :where():focus-visible ring on specificity
+     and won on import order (base.css loads after motion.css), which
+     silently killed the universal base-layer ring — a latent gap that
+     polish v22's overrides-layer ring masked. Scoping the suppression
+     to non-focus-visible focus keeps the "no outline on mouse/touch
+     focus" behavior while letting :focus-visible rings through from
+     every layer. The visible ring itself stays owned by polish v22
+     (ruling #13) — nothing new is added here. */
+  :focus:not(:focus-visible) { outline: none; }
 
-  /* ─── scrollbar ─────────────────────────────────────────────────── */
-  * { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) transparent; }
-  *::-webkit-scrollbar { width: 10px; height: 10px; }
-  *::-webkit-scrollbar-track { background: transparent; }
-  *::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: var(--r-full);
-    border: 2px solid transparent;
-    background-clip: padding-box;
+  /* (wave 2-a) global scrollbar block deleted — polish v22 owns the
+     single live definition (and finally consumes the
+     --scrollbar-thumb/-hover tokens); this identical copy was dead
+     under the overrides layer (0-a P1-2). */
+
+  /* ─── browser surfaces (wave 2-a) ─────────────────────────────
+     Audit 0-a P2-1/2/3: caret / autofill / underline-offset were
+     completely absent. All themed from the palette so native chrome
+     stops flashing white/blue on themed inputs. */
+  input,
+  textarea,
+  [contenteditable]:not([contenteditable="false"]) {
+    caret-color: var(--accent-ink);
   }
-  *::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-    background-clip: padding-box;
+
+  /* Chromium/Safari autofill: the UA repaints its pale-yellow/blue
+     fill on hover+focus, so all three states are covered. The inset
+     box-shadow is the only reliable cover (the UA paints
+     background-color under it); -webkit-text-fill-color pins the typed
+     text to the theme ink. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--accent-ink);
+    transition: background-color 9999s ease-out;
   }
+  /* Firefox equivalent (its UA lock on :autofill backgrounds lifted
+     long ago — a plain background-color override sticks). */
+  input:autofill,
+  textarea:autofill {
+    background-color: var(--surface);
+    color: var(--text);
+    caret-color: var(--accent-ink);
+  }
+
+  /* Placeholder — components.css sets the same color token on
+     input/textarea; declaring it here keeps the reset self-sufficient,
+     and opacity: 1 undoes Firefox's default ::placeholder 0.54 fade
+     (no double-fainting on top of --text-faint). */
+  ::placeholder { color: var(--text-faint); opacity: 1; }
 
   /* ═══════════════════════════════════════════════════════════════════
      APP SHELL — sidebar / main / content / bottom-nav
@@ -215,7 +263,12 @@
   }
   .page-title {
     font-family: var(--font-display);
-    font-size: clamp(28px, 3.4vw, 40px);
+    /* wave 2-a (0-a P1-6) — was raw clamp(28px, 3.4vw, 40px); now the
+       display-size role (28..40px, 3.6vw mid-band — a ≤2px normalization
+       at laptop widths). Line-height deliberately NOT the display role
+       (1.05 is Latin-tuned): Arabic display keeps 1.1 until the P1-12
+       Arabic-leading study lands. */
+    font-size: var(--type-display-size-md);
     font-weight: var(--fw-black);
     line-height: 1.1;
     letter-spacing: var(--ls-tight);
@@ -230,8 +283,11 @@
   .page-actions { display: flex; gap: var(--sp-2); flex-shrink: 0; flex-wrap: wrap; }
 
   @media (max-width: 640px) {
-    .page-title { font-size: 28px; }
-    .page-lede  { font-size: 15px; }
+    /* wave 2-a — the dead `.page-title { font-size: 28px }` line was
+       removed (polish's 22px var(--fs-xl) wins at this width; the
+       clamp's 28px floor covers the no-polish case). Lede consumes its
+       token (same 15px). */
+    .page-lede  { font-size: var(--fs-body); }
   }
 
   /* helpers retained */
@@ -244,35 +300,23 @@
     clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 
-  /* Skip-to-content link — WCAG 2.4.1.
-     Hidden off-screen until keyboard focus lands on it, then slides
-     into view as a high-contrast chip. Keyboard-only affordance;
-     mouse users never see it. */
-  .skip-link {
-    position: fixed;
-    inset-block-start: 8px;
-    inset-inline-start: -9999px;
-    z-index: 9999;
-    padding: var(--sp-2) var(--sp-4);
-    background: var(--accent);
-    color: var(--accent-contrast, #fff);
-    border-radius: var(--r-md);
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    box-shadow: var(--shadow-md);
-    transition: inset-inline-start var(--t-fast) var(--ease-out);
+  /* (wave 2-a) .skip-link block deleted — polish v20 owns the single
+     live definition (overrides layer: top-center translateY pill,
+     --z-toast, --accent-fg, universal :focus-visible ring). This copy
+     was fully superseded except font-size: 14px → the pill now
+     inherits --fs-body (15px); its raw z-index: 9999 and the ghost
+     token --accent-contrast died with it (0-a P1-9). */
+
+  /* When the skip link moves focus to .main (tabindex="-1" — outside
+     the universal ring's [tabindex]:not([tabindex="-1"]) selector),
+     show an inset indicator so the destination is perceivable.
+     wave 2-a: color/width now the canonical focus-ring tokens
+     (10.29:1 light / 7.87:1 dark — was raw --accent at 3.65:1 in
+     light, below the interaction-tokens contract's 4.5:1 bar). */
+  .main:focus-visible {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: -2px;
   }
-  .skip-link:focus,
-  .skip-link:focus-visible {
-    inset-inline-start: 8px;
-    outline: 3px solid var(--accent);
-    outline-offset: 2px;
-  }
-  /* When the skip target receives focus (via Tab on the link), scroll
-     it into view smoothly and make it visible as a focus indicator. */
-  .main:focus { outline: none; }
-  .main:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
   ::view-transition-old(root),
   ::view-transition-new(root) {
@@ -281,12 +325,17 @@
   }
   html[data-theme-swapping] * { transition: none !important; animation-duration: 0ms !important; }
 
-  /* ─── Reduced motion ───────────────────────────────────────────── */
+  /* ─── Reduced motion ─────────────────────────────────────────────
+     Global safety belt (allowlisted). wave 2-a: delays reset too, so
+     `animation … both` staggers stop revealing content sequentially
+     under reduced motion (0-a P1-3; mirrors polish v22's belt). */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
       scroll-behavior: auto !important;
     }
   }

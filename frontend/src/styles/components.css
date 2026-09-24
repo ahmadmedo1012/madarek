@@ -726,21 +726,59 @@
   input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
   .input:focus,
   input:focus, textarea:focus, select:focus {
-    border-color: var(--neutral-900);
-    /* Off-token by design: light-theme neutral focus whisper (8%); the
-       copper --focus-ring is reserved for the dark block below where it
-       reads. No neutral-ring token exists yet. */
-    box-shadow: 0 0 0 3px rgba(25,25,24,0.08);
+    /* wave 2-b (0-a P2-8): the off-token light whisper
+       rgba(25,25,24,0.08) and the duplicated dark block are gone.
+       The RENDERED focus language is owned by polish v15 (overrides
+       layer): accent border + soft accent halo, plus the single
+       AA-safe :focus-visible ring from v22. This components-layer
+       recipe now states the same accent border via the state token
+       so no layer disagrees. */
+    border-color: var(--state-input-focus-border);
     outline: none;
   }
-  [data-theme="dark"] .input:focus,
-  [data-theme="dark"] input:focus,
-  [data-theme="dark"] textarea:focus,
-  [data-theme="dark"] select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--focus-ring);
-  }
   .input::placeholder, input::placeholder, textarea::placeholder { color: var(--text-faint); }
+
+  /* ── Topbar search pill (wave 2-b — audit 0-c P0-1) ──────────────────
+     The input itself is the pill: surface-1 ground, hairline --border,
+     --r-full. One focus treatment — the shared input focus language
+     (polish v15's accent border + soft halo, and the v22
+     :focus-visible ring, which resolves border-radius: inherit from
+     the .topbar-search wrapper). The wrapper (.topbar-search,
+     layout.css) positions the icon / kbd hint / clear chrome on top.
+     LibraryPage reuses the exact markup for its page-level search
+     bars (icon + input only → the bare padding). Lives HERE — after
+     the global input rules — because the layout layer cannot override
+     them (layer order: layout < components). */
+  .topbar-search input {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    block-size: 38px;
+    /* Start zone: icon at inset sp-2 (8px) + 14px glyph + breathing. */
+    padding-inline: var(--sp-7) var(--sp-4);
+    font-size: var(--fs-sm);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+  }
+  /* End padding reserves the overlay zone. Bare (LibraryPage) keeps a
+     tight end; the clear button and the ⌘K/Ctrl+K hint — mutually
+     exclusive, marked via .has-clear / .has-shortcut on the wrapper —
+     each get their own run-out. */
+  .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-2)); }
+  .topbar-search.has-shortcut input { padding-inline-end: calc(var(--sp-9) + var(--sp-4)); }
+  .topbar-search input:hover { border-color: var(--state-card-hover-border); }
+  /* No pill-specific :focus rule: the pill joins the app-wide input
+     focus language — polish v15's accent border + soft halo (overrides
+     layer beats anything here) and the v22 :focus-visible ring, which
+     resolves border-radius: inherit from the .topbar-search wrapper. */
+  @media (max-width: 640px) {
+    /* 44px touch target on phones. The topbar hides the search at
+       ≤920px — this serves LibraryPage's page-level pills. */
+    .topbar-search input { block-size: 44px; }
+    /* …and the clear button grows with it (44px at inset-inline-end
+       sp-1) — widen the reserved zone so text never runs under it. */
+    .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-4)); }
+  }
 
   .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
   @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
@@ -755,19 +793,30 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TABLE                                                         ║
+     ║  .tbl / .tbl-wrap are aliases for .table / .table-wrap         ║
+     ║  (orchestrator ruling #5): the ten live tables render .tbl —   ║
+     ║  page waves migrate to the .table names and the aliases are    ║
+     ║  then removed. Row hover polish (zebra shift + leading dot)    ║
+     ║  lives in polish v13/v17 and keeps winning — this is the base. ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .table-wrap {
+  .table-wrap, .tbl-wrap {
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    overflow: clip;
+    /* wave 2-b: overflow-x auto (was clip) — wide tables scroll on
+       narrow viewports instead of losing columns to a clip (craft
+       floor: mobile tables scroll or stack). overflow-y stays clipped
+       at the radius box; the .sticky opt-in below turns it into the
+       capped vertical scrollport. */
+    overflow-x: auto;
+    overflow-y: clip;
     background: var(--surface);
   }
-  table.table, .table {
+  table.table, .table, table.tbl, .tbl {
     inline-size: 100%;
     border-collapse: collapse;
     font-size: var(--fs-sm);
   }
-  .table thead th {
+  .table thead th, .tbl thead th {
     text-align: start;
     padding: var(--sp-3) var(--sp-4);
     font-size: var(--fs-xxs);
@@ -779,14 +828,102 @@
     border-block-end: 1px solid var(--rule);
     white-space: nowrap;
   }
-  .table tbody td {
+  .table tbody td, .tbl tbody td {
     padding: var(--sp-3) var(--sp-4);
     color: var(--text);
     border-block-end: 1px solid var(--rule);
     vertical-align: middle;
   }
-  .table tbody tr:last-child td { border-block-end: 0; }
-  .table tbody tr:hover { background: var(--surface-2); }
+  .table tbody tr:last-child td, .tbl tbody tr:last-child td { border-block-end: 0; }
+  /* Zebra-on-hover — a quiet background shift only. Elevation on rows
+     is background OR border, never border + shadow (craft floor). */
+  .table tbody tr:hover, .tbl tbody tr:hover { background: var(--surface-2); }
+
+  /* Emphasized cell — the leading name/title column of .tbl tables
+     (8 live usages; was referenced but undefined → silent no-op). */
+  .tbl-strong { font-weight: var(--fw-semibold); color: var(--text); }
+
+  /* Opt-in sticky header: the wrap becomes the capped scroll container
+     so the pinned header never slides under the sticky topbar. */
+  .table-wrap.sticky, .tbl-wrap.sticky {
+    max-block-size: min(60vh, 480px);
+    overflow-y: auto;
+  }
+  .table-wrap.sticky thead th, .tbl-wrap.sticky thead th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1; /* local paint-order above scrolling rows — not a --z-* layer */
+  }
+
+  /* CSS-only action reveal: actions parked in the last cell (e.g. a
+     .table-row-actions cluster of icon buttons) stay hidden until the
+     row is hovered — or focused, so keyboard paths stay visible.
+     Touch devices (hover: none) show them persistently. */
+  .table-row-actions {
+    opacity: 0;
+    transition: opacity var(--t-fast) var(--ease);
+  }
+  .table tbody tr:hover .table-row-actions,
+  .tbl tbody tr:hover .table-row-actions,
+  .table tbody tr:focus-within .table-row-actions,
+  .tbl tbody tr:focus-within .table-row-actions { opacity: 1; }
+  @media (hover: none) { .table-row-actions { opacity: 1; } }
+
+  /* Pagination footer of the table system. Long-content cells use the
+     .truncate utility (base.css) — remember the title attribute when
+     truncating (craft floor). NOTE (page waves): OwnerUsersPage still
+     renders ‹ › glyph buttons in .owner-pagination (owner.css, 32px,
+     and the glyphs don't flip in RTL) — adopt .table-pagination as
+     tables migrate to .table (ruling #5) and swap the glyphs for
+     ChevronLeft/ChevronRight icons. */
+  .table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-block-start: 1px solid var(--rule);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .table-pagination-actions { display: flex; align-items: center; gap: var(--sp-2); }
+  .table-pagination-actions button {
+    min-inline-size: 36px;
+    block-size: 36px;
+    padding-inline: var(--sp-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  .table-pagination-actions button:hover:not(:disabled) {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .table-pagination-actions button.active,
+  .table-pagination-actions button[aria-current="page"] {
+    background: var(--accent-soft);
+    color: var(--accent-ink, var(--accent));
+    border-color: var(--accent);
+    font-weight: var(--fw-semibold);
+  }
+  .table-pagination-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+  @media (max-width: 640px) {
+    /* 44px touch targets on phones (craft floor). */
+    .table-pagination-actions button { min-inline-size: 44px; min-block-size: 44px; }
+  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SECTION TITLE                                                 ║
@@ -988,7 +1125,10 @@
   }
   .state-title { font-family: var(--font-display); font-size: var(--type-headline-size-sm); color: var(--text); font-weight: var(--type-headline-weight); }
   .state-desc  { font-size: var(--fs-sm); color: var(--text-muted); max-inline-size: 42ch; }
-  .empty-state { composes: state; }
+  /* (wave 2-b — `.empty-state { composes: state; }` deleted:
+     `composes` is a CSS-Modules feature and never worked in plain
+     CSS — a silent no-op since day one (0-a P2-9). polish v6/v11 own
+     the rendered .empty-state look.) */
 
   .spinner {
     inline-size: 22px; block-size: 22px;
@@ -1055,8 +1195,40 @@
   .text-xs { font-size: var(--fs-xs); }
   .text-sm { font-size: var(--fs-sm); }
   .text-md { font-size: var(--fs-body); }
+  /* wave 2-b (audits 0-d/0-e): the utilities below were referenced
+     1–126× each but never defined — every consumer silently rendered
+     at inherited size/color. */
+  .text-xxs {
+    font-size: var(--fs-xxs);
+    line-height: var(--type-label-line-height);
+    /* No letter-spacing: consumers are Arabic meta lines and tracking
+       breaks cursive joining (orchestrator ruling #2). */
+  }
+  .text-2xl {
+    /* Backed by the wave 1-a token --text-2xl (= --fs-2xl = 30px). */
+    font-size: var(--text-2xl);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    /* No letter-spacing — Arabic headline (ruling #2). */
+  }
   .text-muted { color: var(--text-muted); }
   .text-secondary { color: var(--text-secondary); }
+  .text-subtle { color: var(--text-subtle); }
+  /* Status text colors — text-safe -ink tokens (guardrail #3). */
+  .text-green { color: var(--success-ink); }
+  .text-red { color: var(--danger-ink); }
+  /* Inline text link — used on bare <button>s that must read as links
+     (e.g. the CollegesPopover retry). Native underline, not the v19
+     animated ::after (that path targets anchors only). */
+  .text-link {
+    color: var(--accent-ink);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent-ink) 45%, transparent);
+    /* Arabic descender clearance — same metric base.css pins on <a>. */
+    text-underline-offset: 0.18em;
+    cursor: pointer;
+  }
+  .text-link:hover { text-decoration-color: var(--accent-ink); }
   .hide-on-mobile { display: revert; }
   @media (max-width: 640px) { .hide-on-mobile { display: none; } }
 
@@ -1069,6 +1241,19 @@
     background: var(--surface-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-xs);
+  }
+
+  /* ── <mark> — sanitized search-snippet highlight (audit 0-d P1) ──
+     Replaces the browser-default yellow/black, which was hostile in
+     dark theme. Theme-aware through the --c-yellow-* [data-theme]
+     remaps, so one rule serves both themes:
+     light #FCF1CD ground + #6B4C0B ink = 6.98:1 ✓ AA (4.5:1);
+     dark  #3A3017 ground + #F8E5B5 ink = 10.44:1 ✓ AA. */
+  mark {
+    background: var(--c-yellow-bg);
+    color: var(--c-yellow-deep);
+    border-radius: var(--r-xs);
+    padding-inline: var(--sp-1);
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1172,12 +1357,20 @@
     from { opacity: 0; transform: translateX(-8%); }
     to   { opacity: 1; transform: none; }
   }
+  /* wave 2-b (0-c P1-4): referenced by .sheet-panel-bottom since T061
+     but never defined — mobile bottom sheets popped in with no motion. */
+  @keyframes madarek-sheet-slide-bottom {
+    from { opacity: 0; transform: translateY(100%); }
+    to   { opacity: 1; transform: none; }
+  }
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TOAST — 012-design-graphics-uplift T064.                      ║
      ║  Passive notification surface. --elev-3 + --r-lg + --z-toast,  ║
      ║  no glass. Positioned bottom-end on desktop, bottom-center on  ║
-     ║  mobile via the existing .toast block in polish.css. Variants  ║
-     ║  tint the leading edge with the semantic palette.              ║
+     ║  mobile via the existing .toast block in polish.css. Status    ║
+     ║  variants code on a 1px colored hairline (ruling #4 + v22) —   ║
+     ║  the old 4px leading stripe is gone; polish v18 owns the 1px   ║
+     ║  border + entrance and v22 re-asserts the variant colors.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .toast {
     position: fixed;
@@ -1194,7 +1387,6 @@
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
     box-shadow: var(--elev-3, var(--shadow-card-h));
-    border-inline-start-width: 4px;
     pointer-events: auto;
   }
   .toast-info     { border-inline-start-color: var(--info, var(--accent)); }

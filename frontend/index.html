@@ -30,6 +30,28 @@
         } catch (_) {
           document.documentElement.setAttribute('data-theme', 'light');
         }
+        /* wave 2-a — theme-color follows the RESOLVED theme (stored
+             preference + runtime toggles via useThemeSync), not just the
+             OS scheme. The two media-query metas above remain as the
+             pre-JS / no-JS baseline; once this script runs they are
+             unified to the app's actual theme and kept in sync on every
+             data-theme change. */
+        var syncThemeColor = function () {
+          var color =
+            document.documentElement.getAttribute('data-theme') === 'dark'
+              ? '#191918'
+              : '#FBFAF9';
+          var metas = document.querySelectorAll('meta[name="theme-color"]');
+          for (var i = 0; i < metas.length; i++) {
+            metas[i].removeAttribute('media');
+            metas[i].setAttribute('content', color);
+          }
+        };
+        syncThemeColor();
+        new MutationObserver(syncThemeColor).observe(
+          document.documentElement,
+          { attributes: true, attributeFilter: ['data-theme'] },
+        );
       })();
     </script>
   </head>

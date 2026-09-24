@@ -8,7 +8,11 @@
         specs/001-premium-motion-system/contracts/interaction-tokens.md
    ════════════════════════════════════════════════════════════════════ */
 
-@layer tokens, base, components, overrides;
+/* wave 2-a — full canonical layer order (was `tokens, base, components,
+   overrides`, which omitted layout/pages: harmless only while tokens.css
+   is imported first; repeating the canonical order makes motion.css safe
+   under any import order — 0-a P3-2). */
+@layer tokens, base, layout, components, pages, overrides;
 
 @layer tokens {
 
@@ -48,8 +52,14 @@
   ):focus-visible {
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
     outline-offset: var(--state-focus-ring-offset);
-    /* prevent surrounding layout from shifting */
-    border-radius: inherit;
+    /* wave 2-a — `border-radius: inherit` removed: it overwrote the
+       focused element's OWN radius with its parent's (a pill button
+       inside a 12px card squared its corners for as long as it was
+       focused). Outlines already track the element's own border-radius
+       in every current engine, so no declaration is needed at all.
+       NOTE: polish v22 carries the same stray line in its overrides
+       layer — polish.css is wave-1 territory, so it is flagged to the
+       orchestrator in the 2-a worklog entry rather than edited here. */
   }
 
   /* Forms that already render a custom focus ring may opt out. */
@@ -198,6 +208,42 @@
   ::view-transition-new(route) {
     animation-duration: var(--motion-duration-page);
     animation-timing-function: var(--motion-ease-decelerate);
+  }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Sheet bottom entrance — wave 2-a.
+     `madarek-sheet-slide-bottom` is consumed by .sheet-panel-bottom
+     (components.css) but was never defined anywhere, so bottom sheets
+     popped in with no entrance while their end/start siblings slid.
+     Defined here (motion.css is allowlisted for raw values) with a
+     settle-overshoot spring feel and a vertical-only transform:
+     translateY is direction-agnostic, so the entrance is identical in
+     LTR and RTL — no --motion-direction multiplier needed. The easing
+     comes from the consumer (components.css passes
+     --motion-ease-decelerate); the mid-keyframe overshoot supplies the
+     spring. Sibling keyframes madarek-sheet-slide-end/-start live with
+     the sheet styles in components.css.
+     ─────────────────────────────────────────────────────────────────── */
+  @keyframes madarek-sheet-slide-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(8%);
+    }
+    62% {
+      opacity: 1;
+      transform: translateY(-1.25%);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Explicit off-switch (brief guardrail #6 — keyframe animations get
+     their own reduced-motion kill, independent of the global belts):
+     under reduced motion the bottom sheet simply renders in place. */
+  @media (prefers-reduced-motion: reduce) {
+    .sheet-panel-bottom { animation: none; }
   }
 
   /* ───────────────────────────────────────────────────────────────────

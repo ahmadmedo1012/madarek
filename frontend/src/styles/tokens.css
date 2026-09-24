@@ -797,3 +797,62 @@
     --text-2xl: var(--fs-2xl);
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   6b. Wave 2-a additions (append-only — worklog Task 2-a)
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+
+  :root {
+    /* wave 2-a — display-weight honesty (mission D, fonts audit).
+       The self-hosted IBM Plex Sans Arabic ships 400/500/600/700 only
+       (public/fonts/, 12 woff2 verified); the family has no true 800
+       anywhere. Until now --fw-black: 800 asked for a weight no file
+       provides: CSS font matching resolved it to the closest face —
+       the real 700 — and, because a face matched, applied NO
+       synthetic bold (synthesis only occurs when no face of the
+       family matches at all). Every --fw-black consumer (h1–h6,
+       .page-title, --type-display-weight, the landing/auth display
+       sizes) therefore already painted the 700 cut. This redefinition
+       makes the token say what actually renders.
+       Zero visual delta: 800 and 700 resolve to the same
+       plex-sans-arabic-700 woff2 — and the fallback stacks now get a
+       real 700 instead of a synthetic 800 while the webfont swaps in.
+       This is the ONE deliberate value redefinition in this
+       append-only wave (explicitly authorized by mission D: "set the
+       display tokens to the best REAL weight"); role-accent hexes and
+       every other existing value are untouched. */
+    --fw-black: var(--fw-bold);
+  }
+
+  /* wave 2-a — close the 0-a P2-6 gap: the original reduced-motion
+     block above (tokens.css :607) zeroes --t-fast…--t-cinema but not
+     --t-micro (80ms), so the three direct --t-micro consumers (press
+     snap-backs in components.css:71 + polish.css:273/285) still
+     animated under reduced motion. The semantic layer (motion.css)
+     already zeroes --motion-duration-micro; this zeroes the raw token
+     the same way. Appended as a NEW media block — the original is
+     untouched, per the append-only rule. */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --t-micro: 0ms;
+    }
+  }
+
+  /* wave 2-a — no-JS elevation defaults (0-a P3-1): --elev-1..5 were
+     only defined under :root[data-theme="light"|"dark"], so with JS
+     disabled (data-theme never set by the index.html script) every
+     --elev-* consumer — e.g. .btn's resting shadow — silently lost
+     its shadow. These plain-:root defaults carry the light values;
+     the [data-theme] blocks above are more specific and still win in
+     both themes once the runtime sets the attribute. Same values as
+     the light block (duplicated on purpose — a default, not a fork). */
+  :root {
+    --elev-1: 0 1px 2px rgba(0,0,0,0.04), 0 1px 1px rgba(0,0,0,0.06);
+    --elev-2: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --elev-3: 0 8px 16px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.05);
+    --elev-4: 0 16px 32px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
+    --elev-5: 0 32px 64px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.08);
+  }
+}

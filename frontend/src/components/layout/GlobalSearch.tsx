@@ -12,6 +12,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X, ArrowRight, type LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
+import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
 
 interface SearchHit {
@@ -81,10 +82,27 @@ export function GlobalSearch() {
 
   useEffect(() => { setActiveIdx(0); }, [flatHits.length]);
 
-  // Global "/" shortcut
+  // Global shortcuts: "/" focuses the search from anywhere (except
+  // text fields), ⌘K / Ctrl+K focuses it unconditionally (chords don't
+  // type characters, and some browsers reserve Ctrl+K — claim it).
+  // The guard mirrors Sidebar's Ctrl+B handler: contentEditable hosts
+  // are text fields too (0-c P2-12 partial).
+  const isMac =
+    typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName ?? '')) {
+      const target = e.target as HTMLElement | null;
+      const inTextField =
+        ['INPUT', 'TEXTAREA'].includes(target?.tagName ?? '') ||
+        target?.isContentEditable === true;
+      if (e.key === '/' && !inTextField) {
+        e.preventDefault();
+        inputRef.current?.focus();
+        setOpen(true);
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         inputRef.current?.focus();
         setOpen(true);
@@ -141,7 +159,10 @@ export function GlobalSearch() {
 
   return (
     <div className="global-search" ref={containerRef}>
-      <label className="topbar-search" onClick={() => setOpen(true)}>
+      <label
+        className={`topbar-search${query ? ' has-clear' : ' has-shortcut'}`}
+        onClick={() => setOpen(true)}
+      >
         <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
         <input
           ref={inputRef}
@@ -164,7 +185,15 @@ export function GlobalSearch() {
             <Icon icon={X} size={12} />
           </button>
         )}
-        {!query && <span className="topbar-search-shortcut">/</span>}
+        {!query && (
+          <span className="topbar-search-shortcut">
+            {/* bdi isolates the Latin/symbol run (⌘ first, then K) while
+                letting the span keep the RTL context — a dir="ltr" on the
+                span itself would flip its inset-inline-end anchor to the
+                wrong physical side. */}
+            <bdi>{isMac ? '⌘K' : 'Ctrl+K'}</bdi>
+          </span>
+        )}
       </label>
 
       {showDropdown && (
@@ -201,6 +230,9 @@ export function GlobalSearch() {
                 {items.map((hit) => {
                   const idx = runningIdx++;
                   const isActive = idx === activeIdx;
+                  /* wave 2-b (0-c P2-9): `${accent}1a` produced invalid CSS
+                     whenever themeColor was null (`var(--accent)1a`). A
+                     color-mix tint is valid for both hex and var() accents. */
                   const accent = hit.themeColor ?? 'var(--accent)';
                   return (
                     <button
@@ -212,8 +244,14 @@ export function GlobalSearch() {
                       onMouseEnter={() => setActiveIdx(idx)}
                       onClick={() => goTo(hit.href)}
                     >
-                      <span className="search-row-icon" style={{ background: `${accent}1a`, color: accent }}>
-                        {hit.iconEmoji ?? '🔎'}
+                      <span
+                        className="search-row-icon"
+                        style={{
+                          background: `color-mix(in srgb, ${accent} 10%, transparent)`,
+                          color: accent,
+                        }}
+                      >
+                        <EmojiIcon emoji={hit.iconEmoji} size={16} fallback={Search} />
                       </span>
                       <span className="search-row-body">
                         <span className="search-row-title">{hit.title}</span>

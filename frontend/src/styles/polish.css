@@ -117,7 +117,10 @@
   .nav-item:hover { background: var(--surface-2); }
   .nav-item.on {
     background: var(--accent-soft, var(--surface-2));
-    color: var(--accent);
+    /* Wave-2 orchestrator fix (audit 0-c P1-1): label on pastel must use the
+       deep ink — --accent #B57438 on --accent-soft #F4E4D2 = 3.06:1 ✗ AA.
+       --accent-ink = --c-copper-deep #5C3416 = 8.62:1 ✓. Rail/icon stay --accent. */
+    color: var(--accent-ink, var(--accent-strong));
   }
   /* (Wave 1-a focus consolidation: the inset-only nav-item ring deleted —
      it suppressed the universal outline. Nav items (anchors) now get the
@@ -1239,9 +1242,13 @@
   /* ═══════════════════════════════════════════════════════════════
      Search input pattern — unify .topbar-search style across pages
      ═══════════════════════════════════════════════════════════════ */
-  .topbar-search input,
-  .admin-students-search input,
-  .global-search input {
+  /* wave 2-b — .topbar-search / .global-search dropped from this
+     reset: the input itself is the pill now (components.css Inputs
+     section + the .topbar-search overlay chrome in layout.css), and
+     this pages-layer strip was killing it (audit 0-c P0-1). Only
+     .admin-students-search keeps the bare-input reset — colleges.css
+     owns that wrapper-as-pill surface. */
+  .admin-students-search input {
     background: transparent;
     border: 0;
     outline: 0;
@@ -1249,9 +1256,7 @@
     height: auto;
     padding: 0;
   }
-  .topbar-search input:focus,
-  .admin-students-search input:focus,
-  .global-search input:focus {
+  .admin-students-search input:focus {
     background: transparent;
     border: 0;
     box-shadow: none;
@@ -5156,7 +5161,9 @@
   ):focus-visible {
     outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
     outline-offset: var(--state-focus-ring-offset);
-    border-radius: inherit;
+    /* wave 2: border-radius: inherit removed — it mutated the focused
+       element's own corners (a square outline would round the host);
+       the ring follows the element's real geometry instead. */
   }
   /* Components that draw their own focus treatment may opt out. */
   :where([data-focus-ring="custom"]):focus-visible {
