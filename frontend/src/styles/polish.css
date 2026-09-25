@@ -3690,6 +3690,10 @@
      ║  STUDENT DASHBOARD — welcome card photo overlay                ║
      ║  Subtle campus photo bleeds into the background of the welcome ║
      ║  card at low opacity, theme-aware so it never crushes text.    ║
+     ║  (D15 / audit 11-g P2-3: uses main_photo-card.webp — a 640px   ║
+     ║  q55 WebP (~25KB) cut for this decorative role — instead of    ║
+     ║  the 99.6KB full-res hero photo the authed landing was paying  ║
+     ║  for behind near-opaque gradients.)                            ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .student-dashboard .page-header.welcome-card {
     background:
@@ -3698,7 +3702,7 @@
         color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
         transparent 100%
       ),
-      url('/main_photo.webp') 50% 30% / cover no-repeat;
+      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
   }
   [data-theme="dark"] .student-dashboard .page-header.welcome-card {
     background:
@@ -3707,7 +3711,7 @@
         color-mix(in srgb, var(--bg) 75%, transparent) 60%,
         var(--bg) 100%
       ),
-      url('/main_photo.webp') 50% 30% / cover no-repeat;
+      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
   }
 
 

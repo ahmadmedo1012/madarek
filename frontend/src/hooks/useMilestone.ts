@@ -15,7 +15,7 @@
  *   - dismissPending(): mark the pending id as presented, clearing
  *     pendingScene so the next render does not re-mount the scene
  */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMe } from './useAuth';
 
 export type MilestoneId =
@@ -64,7 +64,11 @@ export function useMilestone(): MilestoneState {
     }
   }, [me?.id, me?.firedMilestones, pendingScene]);
 
-  const dismissPending = () => setPendingScene(null);
+  // Stable identity: MilestoneScene's auto-dismiss hold and the
+  // Modal's focus-trap listeners depend on this callback — an inline
+  // closure would restart the hold timer on every parent re-render
+  // during the 4s window (audit 11-e P2-8).
+  const dismissPending = useCallback(() => setPendingScene(null), []);
 
   return { pendingScene, dismissPending };
 }

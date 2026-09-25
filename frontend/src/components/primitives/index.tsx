@@ -3,6 +3,23 @@ import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 
+/* ─── Primitive inventory (wave 13-16 — zero-consumer inventory
+   documentation per WAVE-13-MAP, in the spirit of audit 11-e P2-1;
+   cf. the sibling note overlays/index.ts from wave 12-14).
+   Deliberate zero-consumer API surface — documented, not deleted:
+   - Button / Input (Form.tsx): no app consumers yet. They are the
+     canonical consumers of the .btn / .input token systems and their
+     loading contracts are pinned by motion.css companions
+     (.btn[data-loading] + .motion-spinner, .input-affix). Pages still
+     hand-write className="btn …"; new code should adopt these instead.
+   - Pill's non-interactive branch: when `onClick` is omitted the pill
+     renders a <span> so the primitive can never emit a fake control;
+     today's only consumer (LibraryPage category filter) always passes
+     onClick, so the span branch is platform robustness, not dead weight.
+   - PermissionDeniedState (States.tsx): no external consumers; it is
+     rendered internally by ErrorState's 403 branch and exported for
+     pages that KNOW they are rendering an authorization wall. */
+
 export type ThemeColor = 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand';
 
 export { Button, Input } from './Form';
@@ -125,10 +142,15 @@ export function ProgressBar({
   color?: string;
   label?: ReactNode;
   showValue?: boolean;
-  /** Accessible name for the progressbar; omitted when not provided. */
+  /**
+   * Accessible name for the progressbar. Falls back to the visible
+   * `label` when it is a plain string; unnamed only when neither is
+   * given (pass ariaLabel when `label` is markup or omitted).
+   */
   ariaLabel?: string;
 }) {
   const v = Math.max(0, Math.min(100, value));
+  const name = ariaLabel ?? (typeof label === 'string' ? label : undefined);
   return (
     <div className="progress">
       {(label !== undefined || showValue) && (
@@ -144,7 +166,7 @@ export function ProgressBar({
       <div
         className="progress-track"
         role="progressbar"
-        aria-label={ariaLabel}
+        aria-label={name}
         aria-valuenow={v}
         aria-valuemin={0}
         aria-valuemax={100}
@@ -203,6 +225,10 @@ export function UserAvatar({
   color?: string;
   size?: number;
 }) {
+  // No aria-label: initials are not a name, and an aria-label on a
+  // generic <span> is ignored by the accessibility tree anyway. The
+  // initials stay as visible text next to the user's name, which is
+  // what actually names them in context (audit 11-e P2-4).
   return (
     <span
       className="avatar"
@@ -212,7 +238,6 @@ export function UserAvatar({
         fontSize: Math.round(size * 0.4),
         ...(color ? { background: color } : {}),
       }}
-      aria-label={initials}
     >
       {initials}
     </span>
@@ -231,10 +256,23 @@ export function Pill({
   children: ReactNode;
   onClick?: () => void;
 }) {
-  return (
-    <button type="button" className={`pill${on ? ' on' : ''}`} onClick={onClick}>
+  const cls = `pill${on ? ' on' : ''}`;
+  const content = (
+    <>
       {icon && <Icon icon={icon} size={13} />}
       {children}
+    </>
+  );
+  // Without a handler a <button> would be a fake control, so passive
+  // pills render as text; interactive pills expose their toggle state
+  // via aria-pressed instead of the visual-only `on` class
+  // (audit 11-e P2-4).
+  if (!onClick) {
+    return <span className={cls}>{content}</span>;
+  }
+  return (
+    <button type="button" className={cls} onClick={onClick} aria-pressed={on}>
+      {content}
     </button>
   );
 }
@@ -247,7 +285,12 @@ export function SectionTitle({ children }: { children: ReactNode }) {
 /* ─── Tabs (segmented control) ──────────────────────────── */
 // ARIA tabs pattern with roving tabindex, arrow/Home/End navigation (RTL
 // aware — in RTL, ArrowLeft advances and ArrowRight goes back) and stable
-// id/aria-controls wiring via useId. The public API is unchanged.
+// ids via useId. No aria-controls is emitted: every consumer today uses
+// Tabs as a segmented filter control and renders no role="tabpanel", so
+// aria-controls would reference panels that do not exist (audit 11-e
+// P2-2). When a panel-ed consumer arrives, grow the API (idPrefix or
+// panel registration) and restore the wiring on both sides. The public
+// API is otherwise unchanged.
 export function Tabs<T extends string>({
   value,
   onChange,
@@ -305,7 +348,6 @@ export function Tabs<T extends string>({
             type="button"
             role="tab"
             id={`${uid}-tab-${it.value}`}
-            aria-controls={`${uid}-panel-${it.value}`}
             aria-selected={selected}
             tabIndex={selected ? 0 : -1}
             className={`tab${selected ? ' on' : ''}`}

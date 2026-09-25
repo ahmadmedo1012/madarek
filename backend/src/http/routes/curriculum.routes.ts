@@ -131,7 +131,13 @@ export const createChapterBodySchema = chapterFields.refine(
   (b) => b.endSec > b.startSec,
   { message: 'endSec must be greater than startSec' },
 );
-export const updateChapterBodySchema = chapterFields.partial();
+// PATCH semantics: `conceptId: null` explicitly CLEARS the concept tag
+// (previously there was no way to un-tag a chapter — omitted meant
+// unchanged and null was a 400); omitting the field still means
+// unchanged. Create keeps the non-nullable shape.
+export const updateChapterBodySchema = chapterFields
+  .partial()
+  .extend({ conceptId: z.string().min(1).max(100).nullable().optional() });
 
 const checkpointFields = z
   .object({
@@ -149,7 +155,12 @@ export const createCheckpointBodySchema = checkpointFields.refine(
   (b) => b.correctIndex < b.options.length,
   { message: 'correctIndex must point at one of the options' },
 );
-export const updateCheckpointBodySchema = checkpointFields.partial();
+// PATCH semantics: `conceptId: null` explicitly CLEARS the concept tag;
+// omitting the field still means unchanged (same as chapters — create
+// keeps the non-nullable shape).
+export const updateCheckpointBodySchema = checkpointFields
+  .partial()
+  .extend({ conceptId: z.string().min(1).max(100).nullable().optional() });
 
 // ─── Helpers ──────────────────────────────────────────────────────
 
@@ -377,6 +388,8 @@ router.patch(
       }
       if (body.conceptId) await assertConceptForCourse(body.conceptId, chapter.lecture.offering.courseId);
 
+      // conceptId: null clears the tag; undefined leaves it untouched
+      // (updateChapterBodySchema PATCH semantics).
       const updated = await prisma.lectureChapter.update({
         where: { id: chapterId },
         data: {
@@ -507,6 +520,8 @@ router.patch(
         correctIndex = resolved;
       }
 
+      // conceptId: null clears the tag; undefined leaves it untouched
+      // (updateCheckpointBodySchema PATCH semantics).
       const updated = await prisma.lectureCheckpoint.update({
         where: { id: checkpointId },
         data: {

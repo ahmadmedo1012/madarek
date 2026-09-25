@@ -47,13 +47,13 @@ themeRouter.get('/', async (req, res, next) => {
 
 themeRouter.put('/', validate(themePutBodySchema), async (req, res, next) => {
   try {
-    const next_value = (req.body as z.infer<typeof themePutBodySchema>).themePreference;
+    const nextValue = (req.body as z.infer<typeof themePutBodySchema>).themePreference;
     const now = new Date();
     const updated = await prisma.$transaction(async (tx) => {
       const u = await tx.user.update({
         where: { id: req.user!.id },
         data: {
-          themePreference: next_value,
+          themePreference: nextValue,
           themePreferenceUpdatedAt: now,
         },
         select: { themePreference: true, themePreferenceUpdatedAt: true },
@@ -64,7 +64,7 @@ themeRouter.put('/', validate(themePutBodySchema), async (req, res, next) => {
           resourceType: 'User',
           resourceId: req.user!.id,
           userId: req.user!.id,
-          metadata: { themePreference: next_value },
+          metadata: { themePreference: nextValue },
         },
       });
       return u;

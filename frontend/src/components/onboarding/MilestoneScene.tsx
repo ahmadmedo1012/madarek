@@ -25,11 +25,21 @@
  *     data-closing). Presenting the celebration the same instant would
  *     cross-fade two modal cards (a "double flash"); the scene waits
  *     out the exit window first — see the handoff effect below.
+ *
+ * Wave 13-16 (audit 11-e P2-8):
+ *   - the Modal owns its own close: it stays mounted with
+ *     open={presenting} instead of MilestoneScene returning null on
+ *     dismissal, so the wave-7a exit animation finally plays for
+ *     milestones too (parity with OnboardingFlow). The last-presented
+ *     scene is remembered so the card keeps its content through the
+ *     exit window.
+ *   - the auto-dismiss hold no longer restarts on parent re-renders
+ *     (useMilestone's dismissPending is now referentially stable).
  */
 import { useEffect, useRef, useState } from 'react';
 import { Modal } from '../overlays/Modal';
 import { Illustration } from '../Illustration';
-import { useMilestone } from '../../hooks/useMilestone';
+import { useMilestone, type MilestoneId } from '../../hooks/useMilestone';
 import { useOnboardingStore, selectCanShowMilestone } from '../../stores/onboarding.store';
 import { readMotionDurationMs } from '../overlays/useDelayedUnmount';
 
@@ -103,22 +113,40 @@ export function MilestoneScene({ holdMs = HOLD_MS }: MilestoneSceneProps = {}) {
     return () => window.clearTimeout(t);
   }, [canShowMilestone]);
 
+  // The scene is VISIBLE while a milestone is pending AND the queue
+  // gates are open. The Modal stays mounted from the first
+  // presentation onward — its useDelayedUnmount owns the exit window,
+  // so dismissal flips `open` to false and the wave-7a exit animation
+  // plays instead of an instant unmount (audit 11-e P2-8).
+  const presenting = Boolean(pendingScene) && canShowMilestone && handoffReady;
+
+  // The last-presented scene outlives pendingScene (which goes null on
+  // dismissal) so the modal card keeps its content through the exit
+  // animation instead of fading out empty.
+  const [presentedScene, setPresentedScene] = useState<MilestoneId | null>(null);
+  useEffect(() => {
+    if (presenting && pendingScene !== null) setPresentedScene(pendingScene);
+  }, [presenting, pendingScene]);
+
   // Auto-dismiss after the hold elapses — the timer only arms once
   // the scene is actually visible (gate open AND handoff complete), so
   // a queued or handed-off milestone never burns its hold while
-  // hidden behind the onboarding modal or its exit animation.
+  // hidden behind the onboarding modal or its exit animation. With a
+  // referentially stable dismissPending, parent re-renders no longer
+  // tear the timer down mid-hold (audit 11-e P2-8).
   useEffect(() => {
     if (!pendingScene || !canShowMilestone || !handoffReady) return;
     const t = window.setTimeout(dismissPending, holdMs);
     return () => window.clearTimeout(t);
   }, [pendingScene, dismissPending, holdMs, canShowMilestone, handoffReady]);
 
-  if (!pendingScene || !canShowMilestone || !handoffReady) return null;
-  const { headline, body } = describe(pendingScene);
+  // Nothing has ever presented — no modal in the tree at all.
+  if (!presentedScene) return null;
+  const { headline, body } = describe(presentedScene);
 
   return (
-    <Modal open onClose={dismissPending} ariaLabel={headline} closeOnOverlayClick>
-      <div className="onboarding-flow onboarding-flow--milestone" data-milestone={pendingScene}>
+    <Modal open={presenting} onClose={dismissPending} ariaLabel={headline} closeOnOverlayClick>
+      <div className="onboarding-flow onboarding-flow--milestone" data-milestone={presentedScene}>
         <div className="onboarding-flow-illustration">
           <Illustration name="milestone-section" decorative />
         </div>

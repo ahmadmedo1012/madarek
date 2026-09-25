@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 import { Card, MetricCard } from '../../components/primitives';
+import { useReducedMotion } from '../../components/motion';
 import { EmptyState, ErrorState, PageSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
@@ -81,6 +83,39 @@ export function OwnerDashboardPage() {
   const activity = useOwnerActivity({ page: 1, limit: 8 });
   // Remounts the chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
+  // Baking the reduced-motion animation profile into memoized options
+  // requires re-building them when the OS flag flips mid-session too.
+  const reducedMotion = useReducedMotion();
+  const statsData = stats.data;
+
+  // Chart props are memoized (audit 11-f P2-2): the realtime poll
+  // re-renders this page every 15 s and react-chartjs-2 re-applies any
+  // identity-changed data/options prop with an animated chart.update() —
+  // unmemoized objects meant a full relayout on every poll tick.
+  // themeKey participates because chartPalette()/radialOptions() resolve
+  // CSS custom properties at call time, and the remounted canvas must
+  // re-resolve them for the new theme.
+  const segments = useMemo(() => statsData ? [
+    { label: 'طلاب', value: statsData.students },
+    { label: 'أساتذة', value: statsData.teachers },
+    { label: 'إداريون', value: statsData.admins },
+    { label: 'جودة', value: statsData.quality },
+  ] : [], [statsData]);
+
+  const chartData = useMemo(() => ({
+    labels: segments.map((s) => s.label),
+    datasets: [{
+      data: segments.map((s) => s.value),
+      backgroundColor: chartPalette().slice(0, 4),
+      borderWidth: 0,
+      hoverOffset: 6,
+    }],
+  }), [segments, themeKey]);
+
+  const chartOptions = useMemo(
+    () => radialOptions({ legend: true }),
+    [themeKey, reducedMotion],
+  );
 
   // Don't lie with placeholder numbers. Every value on this page comes
   // from a real query. TanStack Query v5 gating: the page is only ready
@@ -108,7 +143,7 @@ export function OwnerDashboardPage() {
     );
   }
 
-  const data = stats.data;
+  const data = statsData;
   const realtimeData = realtime.data;
   // The gates above guarantee both are defined; this guard keeps the
   // page honest (skeleton, never a crash) if a future refactor breaks
@@ -135,27 +170,10 @@ export function OwnerDashboardPage() {
         ? formatRelativeAr(lastEventAt)
         : '—';
 
-  const segments = [
-    { label: 'طلاب', value: data.students },
-    { label: 'أساتذة', value: data.teachers },
-    { label: 'إداريون', value: data.admins },
-    { label: 'جودة', value: data.quality },
-  ];
   const topSegment = segments.reduce((a, b) => (b.value > a.value ? b : a));
   const chartSummary = data.totalUsers === 0
     ? 'لا مستخدمين مسجَّلين بعد.'
     : `${topSegment.label} الفئة الأكبر من مستخدمي المنصّة.`;
-
-  const chartData = {
-    labels: segments.map((s) => s.label),
-    datasets: [{
-      data: segments.map((s) => s.value),
-      backgroundColor: chartPalette().slice(0, 4),
-      borderWidth: 0,
-      hoverOffset: 6,
-    }],
-  };
-  const chartOptions = radialOptions({ legend: true });
 
   const alertBand = alertsQuery.isError ? (
     <div className="owner-live-status is-degraded" role="alert">

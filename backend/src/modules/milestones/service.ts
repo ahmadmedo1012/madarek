@@ -31,7 +31,20 @@
  */
 import { prisma } from '../../db.js';
 import { AppError } from '../../lib/errors.js';
-import { MILESTONE_ID_PATTERN } from './router.js';
+
+/**
+ * V1 milestone-id catalogue (fixed per Q4 of the clarifications):
+ *   - first-assignment-complete
+ *   - first-course-complete
+ *   - exam-window-opens:<windowId>
+ *
+ * Defined here — next to its only consumer — instead of the router, so
+ * the service no longer imports from the router that imports it
+ * (the old router ↔ service cycle only worked because the pattern was
+ * referenced at call time, not at module init).
+ */
+export const MILESTONE_ID_PATTERN =
+  /^(first-assignment-complete|first-course-complete|exam-window-opens:[a-zA-Z0-9_-]+)$/;
 
 export interface FireMilestoneResult {
   fired: boolean;

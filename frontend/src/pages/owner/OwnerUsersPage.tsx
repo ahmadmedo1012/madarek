@@ -61,9 +61,10 @@ const PAGE_NEIGHBORS = 2;
  * Bounded page list: always 1 and the last page, a window around the
  * current page, and 'gap' markers where numbers were elided — a
  * 200-page result renders ≤ 2·PAGE_NEIGHBORS + 4 buttons, never 200
- * (audit 0-e P1-25).
+ * (audit 0-e P1-25). Exported pure — pinned by
+ * tests/unit/OwnerUsersPage-pagination.test.ts (audit 11-f P2-14).
  */
-function pageList(page: number, totalPages: number): Array<number | 'gap'> {
+export function pageList(page: number, totalPages: number): Array<number | 'gap'> {
   const include = new Set<number>([1, totalPages]);
   const from = Math.max(1, page - PAGE_NEIGHBORS);
   const to = Math.min(totalPages, page + PAGE_NEIGHBORS);

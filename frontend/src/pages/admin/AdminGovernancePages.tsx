@@ -28,6 +28,7 @@ import {
 import { api, unwrap } from '../../lib/api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
+import '../../styles/colleges.css'; // borrowed .comp-form-field (D14 css split, 13-17)
 
 const DEGREE_LABEL: Record<string, string> = {
   BACHELORS: 'بكالوريوس', MASTERS: 'ماجستير', PHD: 'دكتوراه',

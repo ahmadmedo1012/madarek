@@ -25,7 +25,9 @@ import {
   type AnnouncementRow, type CompetitionRow, type CampusEventRow,
 } from '../../hooks/useResources';
 import { formatDate, formatTime } from '../../utils/numbers';
+import { arUnit } from '../../lib/format';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
+import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
 
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'كل المنصة', FACULTY: 'كلية', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
@@ -37,15 +39,8 @@ const ROLE_LABEL: Record<string, string> = {
   STUDENT: 'طالب', TEACHER: 'أستاذ', ADMIN: 'الإدارة', QUALITY: 'مكتب الجودة',
 };
 
-/* Local Arabic counted-noun helper (same contract as the one in
-   MorePages.tsx — a shared util extraction is queued for a wave that
-   owns utils/): 1 → singular, 2 → dual, 3–10 → plural, 11+ → singular. */
-function arUnit(n: number, one: string, two: string, few: string): string {
-  if (n === 1) return one;
-  if (n === 2) return two;
-  if (n <= 10) return `${n} ${few}`;
-  return `${n} ${one}`;
-}
+/* arUnit (Arabic counted-noun helper) lives in lib/format.ts — the 13-15
+   fold of the identical local copies this page shared with MorePages. */
 
 type CommunityTab = 'announcements' | 'competitions' | 'events';
 

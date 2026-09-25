@@ -9,12 +9,11 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { useLecture, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
+import { formatMmSs } from '../../lib/format';
 
-function fmtTime(sec: number) {
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60);
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
+/* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
+ * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,
+ * which promotes to h:mm:ss past the hour. */
 
 /* Audit 11-f P0-1 (frontend half of the D9 rule): `durationSec` is an
    optional authoring field — 0 means "unset". A raw
@@ -295,7 +294,7 @@ export default function LecturePlayerPage() {
             <div className="lecture-meta-title">{data.title}</div>
             <div className="lecture-meta-sub">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
-              <bdi className="font-mono">{fmtTime(currentSec)} / {fmtTime(totalSec)}</bdi>
+              <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(totalSec)}</bdi>
               {checkpointsTotal > 0 && <> · {checkpointsTotal} نقطة تفاعل</>}
             </div>
           </div>
@@ -361,7 +360,7 @@ export default function LecturePlayerPage() {
                     style={{ '--ch-i': i } as CSSProperties}
                     onClick={() => seekTo(ch.startSec)}
                   >
-                    <span className="chapter-time" dir="ltr">{fmtTime(ch.startSec)}</span>
+                    <span className="chapter-time" dir="ltr">{formatMmSs(ch.startSec)}</span>
                     <span className="chapter-body">
                       <span className="chapter-title">{ch.title}</span>
                       {ch.concept && <span className="chapter-concept">{ch.concept.name}</span>}

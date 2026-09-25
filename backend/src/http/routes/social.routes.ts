@@ -1,14 +1,112 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { AnnouncementScope, CompetitionStatus, RsvpStatus, Role } from '@prisma/client';
+import { AnnouncementScope, CompetitionStatus, Prisma, RsvpStatus, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+import { assertCapability } from '../../lib/permissions.js';
 
 const router = Router();
 router.use(authMiddleware);
+
+// ─────────────────────────────────────────────────────────────────
+// Pure logic — DB-free, unit-tested in tests/modules/social-logic.test.ts
+// ─────────────────────────────────────────────────────────────────
+
+/** Cap for every social list read — a growing platform must not turn these into unbounded scans (audit 11-c P2-14). */
+const SOCIAL_LIST_TAKE = 50;
+
+/** Facts about one caller, as needed to build their announcement-feed scope filter. */
+export interface AnnouncementScopeFacts {
+  /** STUDENT's faculty id (StudentProfile.facultyId), if the profile has one. */
+  studentFacultyId: string | null;
+  /** STUDENT's department id, if the profile has one. */
+  studentDepartmentId: string | null;
+  /** Offerings the STUDENT is enrolled in. */
+  enrolledOfferingIds: readonly string[];
+  /** TEACHER's faculty id (derived from their home department), if any. */
+  teacherFacultyId: string | null;
+  /** TEACHER's home department id, if they have a profile. */
+  teacherDepartmentId: string | null;
+  /** Offerings the TEACHER teaches. */
+  taughtOfferingIds: readonly string[];
+}
+
+/**
+ * Build the OR-conditions matching announcements visible to one caller:
+ * PLATFORM always, plus their own FACULTY / DEPARTMENT / OFFERING scopes.
+ * Pure extraction of the feed's previous inline construction.
+ */
+export function buildAnnouncementScopeConditions(facts: AnnouncementScopeFacts): Prisma.AnnouncementWhereInput[] {
+  const conditions: Prisma.AnnouncementWhereInput[] = [{ scope: 'PLATFORM' }];
+  if (facts.studentFacultyId) conditions.push({ scope: 'FACULTY', scopeId: facts.studentFacultyId });
+  if (facts.studentDepartmentId) conditions.push({ scope: 'DEPARTMENT', scopeId: facts.studentDepartmentId });
+  if (facts.enrolledOfferingIds.length > 0) {
+    conditions.push({ scope: 'OFFERING', scopeId: { in: [...facts.enrolledOfferingIds] } });
+  }
+  if (facts.teacherFacultyId) conditions.push({ scope: 'FACULTY', scopeId: facts.teacherFacultyId });
+  if (facts.teacherDepartmentId) conditions.push({ scope: 'DEPARTMENT', scopeId: facts.teacherDepartmentId });
+  if (facts.taughtOfferingIds.length > 0) {
+    conditions.push({ scope: 'OFFERING', scopeId: { in: [...facts.taughtOfferingIds] } });
+  }
+  return conditions;
+}
+
+/**
+ * Announcements with no expiry, or one still in the future. Applied to EVERY
+ * feed read (oversight and scoped): expiresAt previously existed only on the
+ * write path, so expired announcements rendered forever (audit 11-c P2-14).
+ * Expired rows stay in the DB for history — they just leave the feeds.
+ */
+export function unexpiredAnnouncementFilter(now: Date): Prisma.AnnouncementWhereInput {
+  return { OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] };
+}
+
+/** Entry fields safe for non-organizer viewing — bodies and files stay organizer-only. */
+export interface CompetitionEntryPublicView {
+  id: string;
+  title: string;
+  user: { firstName: string; lastName: string; avatarColor: string | null; avatarInitials: string | null };
+  submittedAt: Date;
+  score: number | null;
+}
+
+/** Project a full entry down to the non-organizer view (drops body/fileUrl). */
+export function toPublicEntryView(entry: CompetitionEntryPublicView): CompetitionEntryPublicView {
+  return { id: entry.id, title: entry.title, user: entry.user, submittedAt: entry.submittedAt, score: entry.score };
+}
+
+/**
+ * JUDGED is the competition's final state — entry scores lock once judging
+ * completes (audit 11-c P2-14: they previously stayed writable forever).
+ */
+export function isScoreLocked(status: CompetitionStatus): boolean {
+  return status === 'JUDGED';
+}
+
+/**
+ * Judging requires at least one scored entry — unless the competition
+ * received no entries at all, in which case finalizing the empty set is fine.
+ */
+export function canFinalizeJudging(entries: ReadonlyArray<{ score: number | null }>): boolean {
+  return entries.length === 0 || entries.some((e) => e.score !== null);
+}
+
+/**
+ * Pure capacity decision for an RSVP write: only a transition INTO 'GOING'
+ * from a non-GOING state consumes a new seat — a user already GOING keeps
+ * their seat, and MAYBE/NO never touch capacity.
+ */
+export function rsvpWouldExceedCapacity(
+  requested: RsvpStatus,
+  currentStatus: RsvpStatus | null,
+  goingCount: number,
+  capacity: number,
+): boolean {
+  return requested === 'GOING' && currentStatus !== 'GOING' && goingCount >= capacity;
+}
 
 // ════════════════════════════════════════════════════════════════
 //  Announcements
@@ -19,10 +117,16 @@ router.get('/announcements/feed', async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const role = req.user!.role;
+    const now = new Date();
 
-    // Admin and Quality see everything (oversight).
-    if (role === 'ADMIN' || role === 'QUALITY') {
+    // Oversight roles see every live announcement. OWNER belongs here too:
+    // the create path and lib/permissions.ts both treat OWNER as oversight,
+    // but the feed previously dropped them into the scoped branch with no
+    // student/teacher profile — leaving them only PLATFORM rows
+    // (audit 11-c P1-3).
+    if (role === Role.ADMIN || role === Role.QUALITY || role === Role.OWNER) {
       const all = await prisma.announcement.findMany({
+        where: unexpiredAnnouncementFilter(now),
         include: { author: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true, role: true } } },
         orderBy: [{ pinned: 'desc' }, { publishedAt: 'desc' }],
         take: 30,
@@ -32,37 +136,38 @@ router.get('/announcements/feed', async (req, res, next) => {
     }
 
     // Build scope filter for student/teacher.
-    const profile = role === 'STUDENT' ? await prisma.studentProfile.findUnique({
+    const profile = role === Role.STUDENT ? await prisma.studentProfile.findUnique({
       where: { userId },
       select: { facultyId: true, departmentId: true },
     }) : null;
-    const enrollments = role === 'STUDENT' ? await prisma.enrollment.findMany({
+    const enrollments = role === Role.STUDENT ? await prisma.enrollment.findMany({
       where: { studentId: userId }, select: { offeringId: true },
     }) : [];
-    const offeringIds = enrollments.map((e) => e.offeringId);
 
-    const teacherProfile = role === 'TEACHER' ? await prisma.teacherProfile.findUnique({
+    const teacherProfile = role === Role.TEACHER ? await prisma.teacherProfile.findUnique({
       where: { userId },
       select: { departmentId: true, department: { select: { facultyId: true } } },
     }) : null;
-    const teacherOfferings = role === 'TEACHER' ? await prisma.courseOffering.findMany({
+    const teacherOfferings = role === Role.TEACHER ? await prisma.courseOffering.findMany({
       where: { teacherId: userId }, select: { id: true },
     }) : [];
 
-    const scopeOR: Array<Record<string, unknown>> = [{ scope: 'PLATFORM' }];
-    if (profile) {
-      if (profile.facultyId) scopeOR.push({ scope: 'FACULTY', scopeId: profile.facultyId });
-      if (profile.departmentId) scopeOR.push({ scope: 'DEPARTMENT', scopeId: profile.departmentId });
-      if (offeringIds.length) scopeOR.push({ scope: 'OFFERING', scopeId: { in: offeringIds } });
-    }
-    if (teacherProfile) {
-      if (teacherProfile.department.facultyId) scopeOR.push({ scope: 'FACULTY', scopeId: teacherProfile.department.facultyId });
-      scopeOR.push({ scope: 'DEPARTMENT', scopeId: teacherProfile.departmentId });
-      if (teacherOfferings.length) scopeOR.push({ scope: 'OFFERING', scopeId: { in: teacherOfferings.map((o) => o.id) } });
-    }
-
     const announcements = await prisma.announcement.findMany({
-      where: { OR: scopeOR },
+      where: {
+        AND: [
+          {
+            OR: buildAnnouncementScopeConditions({
+              studentFacultyId: profile?.facultyId ?? null,
+              studentDepartmentId: profile?.departmentId ?? null,
+              enrolledOfferingIds: enrollments.map((e) => e.offeringId),
+              teacherFacultyId: teacherProfile?.department.facultyId ?? null,
+              teacherDepartmentId: teacherProfile?.departmentId ?? null,
+              taughtOfferingIds: teacherOfferings.map((o) => o.id),
+            }),
+          },
+          unexpiredAnnouncementFilter(now),
+        ],
+      },
       include: {
         author: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true, role: true } },
       },
@@ -91,10 +196,10 @@ router.post(
   async (req, res, next) => {
     try {
       const body = req.body as z.infer<typeof createAnnouncementSchema>;
-      // PLATFORM scope requires ANNOUNCE_PLATFORM specifically
+      // PLATFORM scope requires ANNOUNCE_PLATFORM specifically. Re-check:
+      // the route middleware above admits either ANNOUNCE_FACULTY or
+      // ANNOUNCE_PLATFORM; only the latter may address the whole platform.
       if (body.scope === 'PLATFORM') {
-        // Re-check (the middleware allows either)
-        const { assertCapability } = await import('../../lib/permissions.js');
         await assertCapability(req.user!.id, req.user!.role, 'ANNOUNCE_PLATFORM');
       }
       // For non-platform scopes, scopeId is required
@@ -204,7 +309,13 @@ router.get('/competitions', async (_req, res, next) => {
         organizer: { select: { firstName: true, lastName: true, role: true } },
         _count: { select: { entries: true } },
       },
+      // Postgres orders native enums by DECLARATION order — the migration
+      // creates CompetitionStatus as ('OPEN', 'CLOSED', 'JUDGED') — so
+      // status asc surfaces actionable competitions first (OPEN, then
+      // CLOSED-under-judging, then JUDGED archive); deadline asc breaks
+      // ties within each status.
       orderBy: [{ status: 'asc' }, { deadline: 'asc' }],
+      take: SOCIAL_LIST_TAKE,
     });
     res.json({ data: competitions });
   } catch (e) { next(e); }
@@ -219,6 +330,7 @@ router.get('/competitions/:id', async (req, res, next) => {
         entries: {
           include: { user: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true } } },
           orderBy: { submittedAt: 'desc' },
+          take: SOCIAL_LIST_TAKE,
         },
       },
     });
@@ -228,7 +340,7 @@ router.get('/competitions/:id', async (req, res, next) => {
     res.json({
       data: {
         ...c,
-        entries: c.entries.map((e) => isOrg ? e : { id: e.id, title: e.title, user: e.user, submittedAt: e.submittedAt, score: e.score }),
+        entries: c.entries.map((e) => (isOrg ? e : toPublicEntryView(e))),
       },
     });
   } catch (e) { next(e); }
@@ -246,8 +358,9 @@ const createCompSchema = z.object({
 
 router.post('/competitions', requireCapability('COMPETITIONS_RUN'), validate(createCompSchema), async (req, res, next) => {
   try {
+    const body = req.body as z.infer<typeof createCompSchema>;
     const created = await prisma.competition.create({
-      data: { ...req.body, organizerId: req.user!.id },
+      data: { ...body, organizerId: req.user!.id },
     });
     res.status(201).json({ data: created });
   } catch (e) { next(e); }
@@ -263,8 +376,8 @@ router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, re
   try {
     const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
     if (!comp) throw AppError.notFound('Competition not found');
-    if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'مسابقة مغلقة', 400);
-    if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'انتهى الموعد النهائي', 400);
+    if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'Competition is closed for entries', 400);
+    if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'Competition deadline has passed', 400);
 
     const entry = await prisma.competitionEntry.upsert({
       where: { competitionId_userId: { competitionId: comp.id, userId: req.user!.id } },
@@ -288,7 +401,7 @@ router.post('/competitions/:id/close', requireCapability('COMPETITIONS_RUN'), as
     if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
     const updated = await prisma.competition.update({
       where: { id: comp.id },
-      data: { status: 'CLOSED' as CompetitionStatus },
+      data: { status: 'CLOSED' },
     });
     res.json({ data: updated });
   } catch (e) { next(e); }
@@ -308,12 +421,18 @@ router.post(
   validate(scoreEntrySchema),
   async (req, res, next) => {
     try {
-      const comp = await prisma.competition.findUnique({ where: { id: req.params.id! } });
+      const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
       if (!comp) throw AppError.notFound('Competition not found');
       if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
 
-      const entry = await prisma.competitionEntry.findUnique({ where: { id: req.params.entryId! } });
+      const entry = await prisma.competitionEntry.findUnique({ where: { id: req.params.entryId } });
       if (!entry || entry.competitionId !== comp.id) throw AppError.notFound('Entry not found');
+
+      // JUDGED is the final state — scores are locked once judging
+      // completes (audit 11-c P2-14: they previously stayed writable).
+      if (isScoreLocked(comp.status)) {
+        throw AppError.conflict('Competition already judged — scores are final');
+      }
 
       const updated = await prisma.competitionEntry.update({
         where: { id: entry.id },
@@ -335,22 +454,21 @@ router.post(
   async (req, res, next) => {
     try {
       const comp = await prisma.competition.findUnique({
-        where: { id: req.params.id! },
+        where: { id: req.params.id },
         include: { entries: { select: { score: true } } },
       });
       if (!comp) throw AppError.notFound('Competition not found');
       if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
       if (comp.status !== 'CLOSED') {
-        throw new AppError('BAD_REQUEST', 'يجب إغلاق المسابقة أوّلاً قبل التحكيم', 400);
+        throw new AppError('BAD_REQUEST', 'Competition must be closed before judging', 400);
       }
-      const scoredCount = comp.entries.filter((e) => e.score !== null).length;
-      if (scoredCount === 0 && comp.entries.length > 0) {
-        throw new AppError('BAD_REQUEST', 'لم تُقَيَّم أي مشاركة بعد', 400);
+      if (!canFinalizeJudging(comp.entries)) {
+        throw new AppError('BAD_REQUEST', 'No entry has been scored yet', 400);
       }
 
       const updated = await prisma.competition.update({
         where: { id: comp.id },
-        data: { status: 'JUDGED' as CompetitionStatus },
+        data: { status: 'JUDGED' },
       });
       res.json({ data: updated });
     } catch (e) { next(e); }
@@ -371,12 +489,13 @@ router.get('/events', async (_req, res, next) => {
         _count: { select: { rsvps: true } },
       },
       orderBy: { startsAt: 'asc' },
+      take: SOCIAL_LIST_TAKE,
     });
     res.json({ data: events });
   } catch (e) { next(e); }
 });
 
-const createEventSchema = z
+export const createEventSchema = z
   .object({
     title: z.string().min(3).max(200),
     description: z.string().min(10).max(4000),
@@ -394,38 +513,46 @@ const createEventSchema = z
 
 router.post('/events', requireCapability('EVENTS_RUN'), validate(createEventSchema), async (req, res, next) => {
   try {
+    const body = req.body as z.infer<typeof createEventSchema>;
     const created = await prisma.campusEvent.create({
-      data: { ...req.body, organizerId: req.user!.id },
+      data: { ...body, organizerId: req.user!.id },
     });
     res.status(201).json({ data: created });
   } catch (e) { next(e); }
 });
 
-const rsvpSchema = z.object({
+export const rsvpSchema = z.object({
   status: z.nativeEnum(RsvpStatus),
 }).strict();
 
 router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => {
   try {
+    const { status } = req.body as z.infer<typeof rsvpSchema>;
+    const userId = req.user!.id;
     const event = await prisma.campusEvent.findUnique({ where: { id: req.params.id } });
     if (!event) throw AppError.notFound('Event not found');
-    // Capacity check + upsert in one transaction: only GOING RSVPs count
-    // against capacity, and a user already GOING may switch status freely.
+    // Capacity check + upsert in one transaction, serialized per event via
+    // SELECT … FOR UPDATE on the parent row (same pattern as POST
+    // /enrollments). Without the row lock, two concurrent GOING rsvps can
+    // both pass the count check and oversell the event (audit 11-c P2-14).
+    // Only GOING RSVPs count against capacity, and a user already GOING
+    // may switch status freely.
     const rsvp = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM "CampusEvent" WHERE id = ${event.id} FOR UPDATE`;
       const [goingCount, mine] = await Promise.all([
         tx.eventRSVP.count({ where: { eventId: event.id, status: 'GOING' } }),
         tx.eventRSVP.findUnique({
-          where: { eventId_userId: { eventId: event.id, userId: req.user!.id } },
+          where: { eventId_userId: { eventId: event.id, userId } },
           select: { status: true },
         }),
       ]);
-      if (req.body.status === 'GOING' && mine?.status !== 'GOING' && goingCount >= event.capacity) {
+      if (rsvpWouldExceedCapacity(status, mine?.status ?? null, goingCount, event.capacity)) {
         throw AppError.conflict('Event is at capacity');
       }
       return tx.eventRSVP.upsert({
-        where: { eventId_userId: { eventId: event.id, userId: req.user!.id } },
-        update: { status: req.body.status },
-        create: { eventId: event.id, userId: req.user!.id, status: req.body.status },
+        where: { eventId_userId: { eventId: event.id, userId } },
+        update: { status },
+        create: { eventId: event.id, userId, status },
       });
     });
     res.json({ data: rsvp });

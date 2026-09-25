@@ -27,8 +27,9 @@ import {
   useTrainingCatalog, useTrainingTrack, useEnrollTrack, useCompleteLesson,
   useTrainingMe, useMyBadges, useMyTrainingCerts, useTrainingLeaderboard,
   type TrainingCategory, type TrainingTrackCard, type TrainingLessonView,
-  type BadgeRarity, type Tier,
+  type Tier,
 } from '../../hooks/useResources';
+import { TIER_LABEL, TIER_COLOR, RARITY_COLOR, RARITY_LABEL } from '../../lib/gamification';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
@@ -51,38 +52,11 @@ const LEVEL_LABEL: Record<string, string> = {
   ADVANCED: 'متقدم',
 };
 
-// Data-driven tier/rarity hexes (API gamification palette). Consumed only
-// through color-mix tints over var(--surface) — never as a text ground.
-// NOTE: duplicated verbatim in MorePages.tsx (GamificationPage) — the two
-// training pages are its only consumers; extraction to lib/gamification.ts
-// is queued for the wave that owns lib/ shared files (audit 0-d P2).
-const TIER_COLOR: Record<Tier, string> = {
-  BRONZE: '#A7724E',
-  SILVER: '#9CA3AF',
-  GOLD: '#D4A537',
-  PLATINUM: '#7B3AED',
-};
-
-const TIER_LABEL: Record<Tier, string> = {
-  BRONZE: 'برونزي',
-  SILVER: 'فضي',
-  GOLD: 'ذهبي',
-  PLATINUM: 'بلاتيني',
-};
-
-const RARITY_COLOR: Record<BadgeRarity, string> = {
-  COMMON: '#9CA3AF',
-  RARE: '#2952C8',
-  EPIC: '#7B3AED',
-  LEGENDARY: '#D4A537',
-};
-
-const RARITY_LABEL: Record<BadgeRarity, string> = {
-  COMMON: 'شائع',
-  RARE: 'نادر',
-  EPIC: 'أسطوري',
-  LEGENDARY: 'فريد',
-};
+// Tier/rarity display maps (labels + the API gamification palette)
+// live in lib/gamification.ts (13-15 fold, audit 11-f P2-1) — shared
+// with the GamificationPage; consumed only through color-mix tints over
+// var(--surface) or the --tier-color / --rarity custom properties,
+// never as a text ground.
 
 /* ═══════════════ Catalog page ═══════════════ */
 export default function TrainingCatalogPage() {

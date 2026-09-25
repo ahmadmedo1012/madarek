@@ -38,3 +38,19 @@ export const courseIcon = (codeOrName: string): LucideIcon => {
   if (s.includes('sec') || s.includes('أمن')) return Shield;
   return BookOpen;
 };
+
+/**
+ * The assignment-kind enum shared by the dashboard agenda, the course
+ * detail tables and the submission flow (wave 13-15 fold per D13 — the
+ * identical label map lived as TYPE_LABELS / ASSIGNMENT_LABEL in four
+ * page files; values are byte-identical to the copies they replace).
+ */
+export type AssignmentKind = 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+
+/** Arabic labels for the assignment-kind enum. */
+export const ASSIGNMENT_KIND_LABEL: Record<AssignmentKind, string> = {
+  HOMEWORK: 'واجب',
+  QUIZ: 'اختبار قصير',
+  PROJECT: 'مشروع',
+  EXAM: 'امتحان',
+};

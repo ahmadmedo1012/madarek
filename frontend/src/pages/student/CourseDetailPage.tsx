@@ -9,20 +9,12 @@ import { ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../
 import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull } from '../../hooks/useResources';
-import { countAr } from '../../lib/format';
-import { courseIcon, courseTint } from '../../lib/courseMeta';
+import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, type AssignmentKind } from '../../lib/courseMeta';
 
-/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
- * lib/courseMeta.ts; countAr lives in lib/format.ts (wave 9-a). */
-
-const DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-
-const TYPE_LABELS: Record<string, string> = {
-  HOMEWORK: 'واجب',
-  QUIZ: 'اختبار قصير',
-  PROJECT: 'مشروع',
-  EXAM: 'امتحان',
-};
+/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
+ * labels live in lib/courseMeta.ts; countAr, formatDateAr + WEEKDAY_NAMES_AR
+ * live in lib/format.ts (waves 9-a / 13-15). */
 
 /** Latin format codes stay Latin (proper nouns) in bdi; the rest get
  *  real Arabic labels (audit 0-d — raw enum in an Arabic UI). */
@@ -41,10 +33,8 @@ function fmtDuration(sec: number) {
   return `${m}د`;
 }
 
-function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
-}
-
+/* fmtDate (short ar-LY date) is lib/format.formatDateAr (13-15 fold).
+ * The weekday names + assignment-kind labels are imported above. */
 /** Reads a --motion-duration-* token (ms) so JS-driven animation timing
  *  stays on the design scale — guardrail #1 applies to TSX too. */
 function motionTokenMs(name: string, fallback: number): number {
@@ -278,7 +268,7 @@ export default function CourseDetailPage() {
                     <Icon icon={FileText} size={16} className="text-muted" />
                     <div className="list-row-body">
                       <div className="list-row-title" title={m.name}>{m.name}</div>
-                      <div className="list-row-sub"><bdi>{label}</bdi> · {fmtDate(m.createdAt)}</div>
+                      <div className="list-row-sub"><bdi>{label}</bdi> · {formatDateAr(m.createdAt)}</div>
                     </div>
                     <Badge><bdi>{label}</bdi></Badge>
                   </div>
@@ -301,7 +291,7 @@ export default function CourseDetailPage() {
                 <div key={s.id} className="list-row">
                   <span className="list-row-meta"><bdi className="font-mono">{s.startTime}–{s.endTime}</bdi></span>
                   <div className="list-row-body">
-                    <div className="list-row-title">{DAYS[s.dayOfWeek] ?? '—'}</div>
+                    <div className="list-row-title">{WEEKDAY_NAMES_AR[s.dayOfWeek] ?? '—'}</div>
                     <div className="list-row-sub">{s.room ?? 'قاعة تُحدَّد لاحقاً'}</div>
                   </div>
                 </div>
@@ -328,8 +318,8 @@ export default function CourseDetailPage() {
                 {data.assignments.map((a) => (
                   <tr key={a.id}>
                     <td className="tbl-strong" data-label="العنوان">{a.title}</td>
-                    <td data-label="النوع">{TYPE_LABELS[a.type] ?? a.type}</td>
-                    <td className="tbl-num" data-label="الموعد النهائي">{fmtDate(a.dueAt)}</td>
+                    <td data-label="النوع">{ASSIGNMENT_KIND_LABEL[a.type as AssignmentKind] ?? a.type}</td>
+                    <td className="tbl-num" data-label="الموعد النهائي">{formatDateAr(a.dueAt)}</td>
                     <td className="tbl-num" data-label="الوزن">{a.weight}%</td>
                   </tr>
                 ))}

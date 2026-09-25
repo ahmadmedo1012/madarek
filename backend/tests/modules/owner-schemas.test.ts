@@ -1,16 +1,22 @@
 /**
- * Backend unit test — .strict() envelopes for the OWNER governance
- * schemas in `backend/src/http/routes/owner.routes.ts`.
+ * Backend unit test — the OWNER governance surface in
+ * `backend/src/http/routes/owner.routes.ts`.
  *
- * The OWNER router mutates platform-critical state (roles, account
- * status, settings, feature flags); non-strict zod objects silently
- * ignored unknown keys, so a typo'd field name made a request look
- * accepted while its payload was dropped. These schemas must now be
- * closed-world, and the settings :key param must be a bounded
- * identifier (it feeds an upsert's create branch).
+ * Covers:
+ *  - the .strict() zod envelopes (the OWNER router mutates
+ *    platform-critical state — roles, account status, settings,
+ *    feature flags; non-strict zod objects silently ignored unknown
+ *    keys, so a typo'd field name made a request look accepted while
+ *    its payload was dropped);
+ *  - the settings payload caps (an unbounded value/category let a
+ *    single 1 MB JSON body become a 1 MB setting row);
+ *  - the pure Education-page aggregation folds (attendance trend,
+ *    teacher workload) extracted so the SQL-backed routes stay thin.
  */
 import { describe, expect, it } from 'vitest';
 import {
+  bucketTeacherWorkload,
+  buildAttendanceTrend,
   changeRoleSchema,
   settingKeySchema,
   toggleFlagSchema,
@@ -67,12 +73,26 @@ describe('upsertSettingSchema (.strict)', () => {
     expect(upsertSettingSchema.safeParse({ value: '42', category: 'ai' }).success).toBe(true);
   });
 
+  it('accepts a bare value (category defaults server-side)', () => {
+    expect(upsertSettingSchema.safeParse({ value: '42' }).success).toBe(true);
+  });
+
   it('rejects unknown keys', () => {
     expect(upsertSettingSchema.safeParse({ value: '42', ttl: 60 }).success).toBe(false);
   });
 
   it('rejects a non-string value', () => {
     expect(upsertSettingSchema.safeParse({ value: 42 }).success).toBe(false);
+  });
+
+  it('caps value at 2000 chars (no 1 MB setting rows)', () => {
+    expect(upsertSettingSchema.safeParse({ value: 'x'.repeat(2000) }).success).toBe(true);
+    expect(upsertSettingSchema.safeParse({ value: 'x'.repeat(2001) }).success).toBe(false);
+  });
+
+  it('caps category at 40 chars, matching the key param rigor', () => {
+    expect(upsertSettingSchema.safeParse({ value: '42', category: 'c'.repeat(40) }).success).toBe(true);
+    expect(upsertSettingSchema.safeParse({ value: '42', category: 'c'.repeat(41) }).success).toBe(false);
   });
 });
 
@@ -104,5 +124,124 @@ describe('settingKeySchema (PUT /settings/:key param)', () => {
   it('rejects empty and over-long keys', () => {
     expect(settingKeySchema.safeParse('').success).toBe(false);
     expect(settingKeySchema.safeParse('x'.repeat(101)).success).toBe(false);
+  });
+});
+
+// ── Education-page aggregation folds (pure) ──────────────────────
+
+describe('buildAttendanceTrend (Education page, 6-month fold)', () => {
+  // Fixed clock: mid-June 2026 → buckets Jan..Jun 2026 (UTC starts).
+  const now = new Date('2026-06-15T12:00:00Z');
+  const monthRow = (year: number, monthIndex: number, samples: number, present: number) => ({
+    month: new Date(Date.UTC(year, monthIndex, 1)),
+    samples,
+    present,
+  });
+
+  it('always returns six buckets, oldest first, labeled with ar-LY month names', () => {
+    const trend = buildAttendanceTrend(now, []);
+    expect(trend).toHaveLength(6);
+    expect(trend.map((t) => t.month)).toEqual([
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+    ]);
+  });
+
+  it('renders months without records as a gap (null pct), not a fake 0%', () => {
+    const trend = buildAttendanceTrend(now, [monthRow(2026, 5, 10, 9)]);
+    expect(trend.slice(0, 5).every((t) => t.attendancePct === null && t.samples === 0)).toBe(true);
+    expect(trend[5]).toEqual({ month: 'يونيو', attendancePct: 90, samples: 10 });
+  });
+
+  it('computes the rounded attendance percentage per matched month', () => {
+    const trend = buildAttendanceTrend(now, [
+      monthRow(2026, 1, 4, 3), // Feb: 75%
+      monthRow(2026, 2, 3, 1), // Mar: 33% (rounds down)
+      monthRow(2026, 3, 7, 6), // Apr: 86% (rounds up from 85.7)
+    ]);
+    expect(trend[1]).toEqual({ month: 'فبراير', attendancePct: 75, samples: 4 });
+    expect(trend[2]).toEqual({ month: 'مارس', attendancePct: 33, samples: 3 });
+    expect(trend[3]).toEqual({ month: 'أبريل', attendancePct: 86, samples: 7 });
+  });
+
+  it('normalizes mid-month row dates onto their month bucket', () => {
+    const trend = buildAttendanceTrend(now, [
+      { month: new Date(Date.UTC(2026, 1, 17)), samples: 5, present: 5 },
+    ]);
+    expect(trend[1]).toEqual({ month: 'فبراير', attendancePct: 100, samples: 5 });
+  });
+
+  it('ignores months outside the six-bucket window', () => {
+    const trend = buildAttendanceTrend(now, [
+      monthRow(2025, 11, 8, 8), // Dec 2025 — before the window
+      monthRow(2026, 6, 9, 9), // Jul 2026 — after `now`'s month
+    ]);
+    expect(trend.every((t) => t.samples === 0 && t.attendancePct === null)).toBe(true);
+  });
+
+  it('rolls the window back across a year boundary', () => {
+    // Mid-March 2026 → buckets Oct 2025 .. Mar 2026.
+    const trend = buildAttendanceTrend(new Date('2026-03-15T00:00:00Z'), [
+      monthRow(2025, 9, 6, 3), // Oct 2025: 50%
+    ]);
+    expect(trend.map((t) => t.month)).toEqual([
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
+      'يناير',
+      'فبراير',
+      'مارس',
+    ]);
+    expect(trend[0]).toEqual({ month: 'أكتوبر', attendancePct: 50, samples: 6 });
+  });
+});
+
+describe('bucketTeacherWorkload (Education page, workload fold)', () => {
+  it('all teachers idle when no offerings exist', () => {
+    expect(bucketTeacherWorkload([], 5)).toEqual({
+      idle: 5,
+      one: 0,
+      two: 0,
+      three: 0,
+      fourPlus: 0,
+    });
+  });
+
+  it('distributes per-teacher offering counts into buckets', () => {
+    expect(bucketTeacherWorkload([1, 2, 3, 4, 7], 6)).toEqual({
+      idle: 1,
+      one: 1,
+      two: 1,
+      three: 1,
+      fourPlus: 2,
+    });
+  });
+
+  it('clamps idle to 0 when offering holders exceed the teacher count (anomalous data)', () => {
+    expect(bucketTeacherWorkload([1, 1, 1, 1], 2)).toEqual({
+      idle: 0,
+      one: 4,
+      two: 0,
+      three: 0,
+      fourPlus: 0,
+    });
+  });
+
+  it('zero-count entries land in no bucket (groupBy never emits them)', () => {
+    // A 0-count groupBy row is impossible; if one ever arrived it must
+    // not distort the distribution buckets. It still counts as a row
+    // holder for the idle calc — exactly like the previous inline code
+    // (idle = teachers − groupBy row count).
+    expect(bucketTeacherWorkload([0, 1], 3)).toEqual({
+      idle: 1,
+      one: 1,
+      two: 0,
+      three: 0,
+      fourPlus: 0,
+    });
   });
 });

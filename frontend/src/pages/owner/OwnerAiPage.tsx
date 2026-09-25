@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Bot, Zap, CheckCircle2, Clock } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
+import { useMemo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,6 +21,7 @@ import {
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
+import { useReducedMotion } from '../../components/motion';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, Filler);
 
@@ -38,9 +40,45 @@ function featureLabel(feature: string) {
 export function OwnerAiPage() {
   const aiMetrics = useOwnerAiMetrics();
   const data = aiMetrics.data;
-  const c = chartColors();
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
+  // Baking the reduced-motion animation profile into memoized options
+  // requires re-building them when the OS flag flips mid-session too.
+  const reducedMotion = useReducedMotion();
+
+  // Chart data/options are memoized (audit 11-f P2-2 — same treatment as
+  // the other owner chart pages): react-chartjs-2 re-applies any
+  // identity-changed prop with an animated chart.update(), so both charts
+  // used to churn on every unrelated re-render. themeKey participates
+  // because chartColors()/cartesianOptions() resolve CSS custom properties
+  // at call time — the remounted canvas must re-resolve them.
+  const c = useMemo(() => chartColors(), [themeKey]);
+
+  const barData = useMemo(() => ({
+    labels: (data?.byFeature ?? []).map((f) => FEATURE_LABELS[f.feature] ?? f.feature),
+    datasets: [{
+      label: 'عدد الطلبات',
+      data: (data?.byFeature ?? []).map((f) => f.count),
+      backgroundColor: c.accent,
+      borderRadius: 6,
+    }],
+  }), [data, c]);
+
+  const lineData = useMemo(() => ({
+    labels: (data?.trend ?? []).map((t) => t.date.slice(5)),
+    datasets: [{
+      label: 'الطلبات اليوميّة',
+      data: (data?.trend ?? []).map((t) => t.count),
+      borderColor: c.success,
+      backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 4,
+      pointBackgroundColor: c.success,
+    }],
+  }), [data, c]);
+
+  const chartOptions = useMemo(() => cartesianOptions(), [themeKey, reducedMotion]);
 
   return (
     <div className="page">
@@ -106,19 +144,7 @@ export function OwnerAiPage() {
                   }}
                   height={240}
                 >
-                  <Bar
-                    key={themeKey}
-                    data={{
-                      labels: data.byFeature.map((f) => FEATURE_LABELS[f.feature] ?? f.feature),
-                      datasets: [{
-                        label: 'عدد الطلبات',
-                        data: data.byFeature.map((f) => f.count),
-                        backgroundColor: c.accent,
-                        borderRadius: 6,
-                      }],
-                    }}
-                    options={cartesianOptions()}
-                  />
+                  <Bar key={themeKey} data={barData} options={chartOptions} />
                 </ChartFrame>
               )}
             </Card>
@@ -137,23 +163,7 @@ export function OwnerAiPage() {
                   }}
                   height={240}
                 >
-                  <Line
-                    key={themeKey}
-                    data={{
-                      labels: data.trend.map((t) => t.date.slice(5)),
-                      datasets: [{
-                        label: 'الطلبات اليوميّة',
-                        data: data.trend.map((t) => t.count),
-                        borderColor: c.success,
-                        backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointBackgroundColor: c.success,
-                      }],
-                    }}
-                    options={cartesianOptions()}
-                  />
+                  <Line key={themeKey} data={lineData} options={chartOptions} />
                 </ChartFrame>
               )}
             </Card>

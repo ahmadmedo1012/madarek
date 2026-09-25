@@ -4,14 +4,17 @@
  * Coverage:
  * Tabs (internal ARIA wiring + keyboard support — no public API change):
  *   - tablist/tab roles + aria-selected reflect the controlled value
- *   - stable id / aria-controls wiring via useId
+ *   - stable tab ids via useId; NO aria-controls is emitted — every
+ *     app consumer renders Tabs as a segmented filter control with no
+ *     role="tabpanel", so panel references would dangle (11-e P2-2)
  *   - roving tabindex (selected tab is the tab stop, others −1)
  *   - ArrowLeft/ArrowRight follow the writing direction (RTL: Left advances)
  *     and wrap around
  *   - Home / End jump to first / last
  *   - selection change moves focus with the roving tabindex
  * ProgressBar:
- *   - ariaLabel names the progressbar; absent label leaves it unnamed
+ *   - ariaLabel names the progressbar; a plain-string visible `label`
+ *     names it when ariaLabel is absent; neither → unnamed
  *   - aria-valuenow is clamped to 0..100
  * AlertRow (regression for the removed display:none dot hack):
  *   - icon rows render no dot; iconless rows keep the aria-hidden dot
@@ -55,15 +58,17 @@ describe('Tabs', () => {
     expect(tab('الثالث')).toHaveAttribute('aria-selected', 'false');
   });
 
-  it('wires tab ids to matching panel aria-controls', () => {
+  it('emits stable tab ids and NO aria-controls (no dangling panel refs)', () => {
     render(<Harness initial="a" />);
+    const ids = ITEMS.map((it) => tab(it.label).id);
+    // Stable useId-derived ids, unique per tab…
+    expect(ids.every((id) => /-tab-/.test(id))).toBe(true);
+    expect(new Set(ids).size).toBe(ITEMS.length);
+    // …but no tab references a panel: no consumer renders
+    // role="tabpanel" today, so aria-controls would point at nothing
+    // (audit 11-e P2-2). The wiring returns with a panel-ed consumer.
     for (const it of ITEMS) {
-      const btn = tab(it.label);
-      expect(btn.id).toMatch(/-tab-/);
-      expect(btn).toHaveAttribute(
-        'aria-controls',
-        btn.id.replace('-tab-', '-panel-'),
-      );
+      expect(tab(it.label).getAttribute('aria-controls')).toBeNull();
     }
   });
 
@@ -129,10 +134,18 @@ describe('ProgressBar', () => {
     expect(bar).toHaveAttribute('aria-valuemax', '100');
   });
 
-  it('stays unnamed (no aria-label) when ariaLabel is absent', () => {
+  it('stays unnamed (no aria-label) when neither ariaLabel nor a string label is given', () => {
     render(<ProgressBar value={10} />);
     const bar = screen.getByRole('progressbar');
     expect(bar.getAttribute('aria-label')).toBeNull();
+  });
+
+  it('falls back to the visible string label as the accessible name', () => {
+    render(<ProgressBar value={30} label="الإنجاز" />);
+    expect(screen.getByRole('progressbar', { name: 'الإنجاز' })).toHaveAttribute(
+      'aria-valuenow',
+      '30',
+    );
   });
 
   it('clamps aria-valuenow into 0..100', () => {

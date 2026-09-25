@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { AiMessageRole, Prisma, Role } from '@prisma/client';
-import rateLimit from 'express-rate-limit';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
@@ -11,14 +11,9 @@ import { logger } from '../../logger.js';
 const router = Router();
 router.use(authMiddleware);
 
-// AI is expensive — stricter rate limit per user.
-const aiLimiter = rateLimit({
-  windowMs: 60_000,
-  max: 20,
-  keyGenerator: (req) => req.user?.id ?? req.ip ?? 'anon',
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// AI is expensive — stricter rate limit per user (shared factory defaults:
+// 20 req / 60 s, keyed per-user; see middleware/rateLimit.ts).
+const aiLimiter = createRouteLimiter();
 
 const chatSchema = z
   .object({
@@ -200,7 +195,10 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     // Failure telemetry (best-effort) so /owner/ai-metrics successRate is
     // grounded in real outcomes, not just happy paths.
     await writeAiTelemetry(prisma, {
-      userId: req.user?.id ?? 'unknown',
+      // authMiddleware guarantees req.user on every route in this router
+      // (the handler itself already relies on req.user!.id above); the old
+      // 'unknown' fallback would have violated the aiTelemetry.userId FK.
+      userId: req.user!.id,
       latencyMs: Date.now() - startedAt,
       success: false,
       errorMessage: e instanceof Error ? e.message.slice(0, 200) : 'unknown error',
@@ -228,10 +226,16 @@ router.get('/conversations/:id/messages', async (req, res, next) => {
       where: { id: req.params.id!, userId: req.user!.id },
     });
     if (!conv) throw AppError.notFound('Conversation not found');
-    const data = await prisma.aiMessage.findMany({
+    // Bounded read: fetch the newest window then restore chronological
+    // order — a plain asc+take would silently cut the NEWEST turns of a
+    // long conversation. cuids are time-ordered, so the id tiebreaker
+    // keeps same-millisecond turns (user+assistant pair) stable.
+    const rows = await prisma.aiMessage.findMany({
       where: { conversationId: conv.id },
-      orderBy: { createdAt: 'asc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: 200,
     });
+    const data = rows.reverse();
     res.json({ data });
   } catch (e) {
     next(e);

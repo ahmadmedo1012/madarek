@@ -13,35 +13,21 @@ import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitl
 import { LoadingState, ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Tier, type Post } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post } from '../../hooks/useResources';
 import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
+import { arUnit, timeAgoAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 
 /* ─── Gamification ─────────────────────────────────────────── */
-// Tier display maps for the training-points economy (mirrors the labels
-// used on the self-development pages so the wording stays consistent).
-// Visual system shared with the training module: styles/training.css
-// §gamification (tier orbs, XP bar, achievement rows, leaderboard ranks).
-const TIER_LABEL: Record<Tier, string> = {
-  BRONZE: 'برونزي',
-  SILVER: 'فضي',
-  GOLD: 'ذهبي',
-  PLATINUM: 'بلاتيني',
-};
-// Data-driven tier hexes (API gamification palette) — consumed only via
-// the --tier-color custom property / color-mix tints, never under text.
-// NOTE: duplicated in TrainingPages.tsx — extraction to lib/gamification.ts
-// is queued for the wave that owns lib/ shared files (audit 0-d P2).
-const TIER_COLOR: Record<Tier, string> = {
-  BRONZE: '#A7724E',
-  SILVER: '#9CA3AF',
-  GOLD: '#D4A537',
-  PLATINUM: '#7B3AED',
-};
+/* Tier display maps (lib/gamification.ts, 13-15) for the training-points
+ * economy. Visual system shared with the training module:
+ * styles/training.css §gamification (tier orbs, XP bar, achievement
+ * rows, leaderboard ranks). */
 
 export function GamificationPage() {
   const ach = useMyAchievements();
@@ -222,26 +208,9 @@ export function GamificationPage() {
   );
 }
 
-/* ─── Local Arabic unit helper (shared by Alerts + Social) ─────── */
-/* Counted-noun forms: 1 → singular, 2 → dual, 3–10 → plural,
-   11+ → singular again (Arabic number grammar). */
-function arUnit(n: number, one: string, two: string, few: string): string {
-  if (n === 1) return one;
-  if (n === 2) return two;
-  if (n <= 10) return `${n} ${few}`;
-  return `${n} ${one}`;
-}
-function timeAgoAr(iso: string): string {
-  const s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
-  if (s < 60) return 'الآن';
-  const m = Math.round(s / 60);
-  if (m < 60) return `منذ ${arUnit(m, 'دقيقة', 'دقيقتين', 'دقائق')}`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${arUnit(h, 'ساعة', 'ساعتين', 'ساعات')}`;
-  const d = Math.round(h / 24);
-  if (d < 7) return `منذ ${arUnit(d, 'يوم', 'يومين', 'أيام')}`;
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
-}
+/* ─── Local Arabic unit helper — arUnit + timeAgoAr now live in
+   lib/format.ts (13-15 fold, audit 11-f P2-1; byte-identical copies
+   of the former local helpers shared with CommunityPages). ── */
 
 /* ─── Skills ───────────────────────────────────────────── */
 export function SkillsPage() {
@@ -405,7 +374,7 @@ export function AlertsPage() {
 }
 
 /* ─── Schedule ─────────────────────────────────────────── */
-const DAY_NAMES = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+/* Weekday names live in lib/format.ts (WEEKDAY_NAMES_AR, 13-15). */
 
 export function SchedulePage() {
   const q = useMyEnrollments();
@@ -477,7 +446,7 @@ export function SchedulePage() {
         <div className="flex-col gap-5">
           {daysWithItems.map((d) => (
             <div key={d.dow}>
-              <SectionTitle>{DAY_NAMES[d.dow]}</SectionTitle>
+              <SectionTitle>{WEEKDAY_NAMES_AR[d.dow]}</SectionTitle>
               <Card flush>
                 <div className="flex-col">
                   {d.items.map((it, i) => (

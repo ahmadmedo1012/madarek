@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import { BookOpen, Users, Calendar, TrendingUp } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
@@ -12,6 +13,7 @@ import {
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerEducation } from '../../hooks/useOwner';
+import { useReducedMotion } from '../../components/motion';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -36,6 +38,61 @@ export function OwnerEducationPage() {
   const q = useOwnerEducation();
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
+  // Baking the reduced-motion animation profile into memoized options
+  // requires re-building them when the OS flag flips mid-session too.
+  const reducedMotion = useReducedMotion();
+  const edu = q.data;
+
+  // Chart data/options are memoized (audit 11-f P2-2): react-chartjs-2
+  // re-applies any identity-changed prop with an animated chart.update(),
+  // so every unrelated re-render used to churn both charts. chartColors()
+  // resolves CSS custom properties at call time — it is resolved once per
+  // theme flip and captured by the data memos, while the option factories
+  // re-resolve inside their own memos keyed on the same themeKey.
+  const c = useMemo(() => chartColors(), [themeKey]);
+
+  const barData = useMemo(() => ({
+    labels: (edu?.byFaculty ?? []).map((f) => f.name),
+    datasets: [{
+      label: 'عدد المقررات',
+      data: (edu?.byFaculty ?? []).map((f) => f.courseCount),
+      backgroundColor: `color-mix(in srgb, ${c.accent} 60%, transparent)`,
+      borderColor: c.accent,
+      borderWidth: 1,
+      borderRadius: 4,
+    }],
+  }), [edu, c]);
+
+  const barOptions = useMemo(
+    () => ({ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }),
+    [themeKey, reducedMotion],
+  );
+
+  const lineData = useMemo(() => ({
+    labels: (edu?.attendanceTrend ?? []).map((t) => t.month),
+    datasets: [{
+      label: 'نسبة الحضور %',
+      data: (edu?.attendanceTrend ?? []).map((t) => t.attendancePct ?? null),
+      borderColor: c.success,
+      backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 4,
+      pointBackgroundColor: c.success,
+      spanGaps: true,
+    }],
+  }), [edu, c]);
+
+  const lineOptions = useMemo(() => {
+    const base = cartesianOptions();
+    return {
+      ...base,
+      scales: {
+        ...base.scales,
+        y: { ...base.scales!.y, min: 0, max: 100 },
+      },
+    };
+  }, [themeKey, reducedMotion]);
 
   if (q.isPending) {
     return (
@@ -55,7 +112,7 @@ export function OwnerEducationPage() {
       </div>
     );
   }
-  if (q.isError || !q.data) {
+  if (q.isError || !edu) {
     return (
       <div className="page">
         <header className="page-header">
@@ -68,8 +125,7 @@ export function OwnerEducationPage() {
     );
   }
 
-  const d = q.data;
-  const { totals, byFaculty, topCourses, workloadBuckets, attendanceTrend } = d;
+  const { totals, byFaculty, topCourses, workloadBuckets, attendanceTrend } = edu;
 
   const totalTeachers =
     workloadBuckets.idle +
@@ -79,47 +135,9 @@ export function OwnerEducationPage() {
     workloadBuckets.fourPlus;
   const pct = (n: number) => (totalTeachers > 0 ? Math.round((n / totalTeachers) * 100) : 0);
 
-  const c = chartColors();
-  // Build the shared chart options ONCE per render (each cartesianOptions()
-  // call resolves CSS custom properties — it is not free).
-  const baseOpts = cartesianOptions();
-
-  const barData = {
-    labels: byFaculty.map((f) => f.name),
-    datasets: [{
-      label: 'عدد المقررات',
-      data: byFaculty.map((f) => f.courseCount),
-      backgroundColor: `color-mix(in srgb, ${c.accent} 60%, transparent)`,
-      borderColor: c.accent,
-      borderWidth: 1,
-      borderRadius: 4,
-    }],
-  };
-  const barOptions = { ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const };
   const barHeight = Math.max(220, byFaculty.length * 36);
 
   const trendHasData = attendanceTrend.some((t) => t.attendancePct !== null);
-  const lineData = {
-    labels: attendanceTrend.map((t) => t.month),
-    datasets: [{
-      label: 'نسبة الحضور %',
-      data: attendanceTrend.map((t) => t.attendancePct ?? null),
-      borderColor: c.success,
-      backgroundColor: `color-mix(in srgb, ${c.success} 12%, transparent)`,
-      fill: true,
-      tension: 0.4,
-      pointRadius: 4,
-      pointBackgroundColor: c.success,
-      spanGaps: true,
-    }],
-  };
-  const lineOptions = {
-    ...baseOpts,
-    scales: {
-      ...baseOpts.scales,
-      y: { ...baseOpts.scales!.y, min: 0, max: 100 },
-    },
-  };
   const trendMax = attendanceTrend.length > 0
     ? Math.max(...attendanceTrend.map((t) => t.attendancePct ?? 0))
     : 0;

@@ -4,9 +4,12 @@
  * foldings + read-time matcher) as wired into `search.routes.ts`.
  *
  * DB-free: mirrors the style of `tests/modules/theme-schema.test.ts`.
- * The existing `src/modules/search/__tests__/normalize.test.ts` is NOT
- * picked up by vitest (config includes `tests/**` only), so the canonical
- * assertions are mirrored here.
+ * The co-located normalize suite under `src/modules/search/__tests__`
+ * runs too (vitest.config.ts collects BOTH the top-level tests tree
+ * and the co-located src test suites); the two intentionally overlap
+ * on the core foldings — this one pins the assertions that matter for
+ * the route's find-then-reverify wiring, the co-located one is the
+ * exhaustive catalogue (hamza/yaa/waw variants, NFC decomposition).
  */
 import { describe, expect, it } from 'vitest';
 import {

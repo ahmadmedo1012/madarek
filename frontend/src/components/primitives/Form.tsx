@@ -13,9 +13,14 @@ import type {
  * for `<button className="btn primary">` etc.
  *
  * Loading semantics:
- *   - Replaces the label with the canonical `.motion-spinner` (no
- *     visible label change in width — the button reserves text width
- *     via a hidden label).
+ *   - Swaps the VISIBLE content to the canonical `.motion-spinner`;
+ *     the real label stays in the DOM inside a visually-hidden span, so
+ *     screen readers keep the button's actual name while it is busy
+ *     (aria-busy announces the loading state).
+ *     The button is NOT pixel-width-locked: the hidden span is
+ *     absolutely positioned, so the button reflows to the spinner
+ *     while loading (audit 11-e P2-5 — the old comment claimed width
+ *     preservation it did not deliver).
  *   - Sets aria-busy="true" so screen readers announce the loading
  *     state.
  *   - Disables clicks via `aria-disabled` + native `disabled` so
@@ -81,8 +86,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     .filter(Boolean)
     .join(' ');
 
-  // While loading we keep the same width by leaving the label in the
-  // DOM but visually hidden. Spinner overlays via CSS positioning.
+  // While loading, the spinner replaces the visible content and the
+  // real children move into a visually-hidden span: the accessible
+  // name survives (the hidden span still names the button) while
+  // aria-busy flags the in-flight request. See the header note on
+  // width behavior.
   const isBusy = loading || ariaBusyProp === true || ariaBusyProp === 'true';
   const isDisabled = disabled === true || loading === true;
 
@@ -100,7 +108,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {loading ? (
         <>
           <span className="motion-spinner" aria-hidden="true" />
-          <span className="visually-hidden">جارٍ التحميل…</span>
+          <span className="visually-hidden">
+            {leadingIcon}
+            {children}
+          </span>
         </>
       ) : (
         <>

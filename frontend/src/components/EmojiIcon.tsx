@@ -8,6 +8,15 @@
  *
  * Falls back to a sensible default (BookOpen) for unknown emojis
  * so we never render the raw emoji glyph.
+ *
+ * Usage review (brief §3.10, wave 13-16): every current consumer
+ * keys off a DATA-DRIVEN emoji string — college/course `iconEmoji`,
+ * exam `courseIcon`, track/badge/announcement/event/competition
+ * icons, and GlobalSearch result hits. No chrome, navigation, or
+ * static UI uses EmojiIcon, and no raw emoji glyph ever renders.
+ * Verdict: compliant. Keep it that way — new chrome icons use
+ * `Icon` with a Lucide component directly; EmojiIcon is exclusively
+ * the data-layer emoji → Lucide bridge.
  */
 import {
   Megaphone,

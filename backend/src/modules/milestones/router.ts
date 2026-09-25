@@ -10,6 +10,13 @@
  * exists for out-of-process callers (workers, ops scripts) that
  * need to fire a milestone without the user's JWT.
  *
+ * Namespace caveat (11-a P2-20): the path lives under the
+ * user-namespace `/me/…` prefix even though authentication is a
+ * service token, never a user session. Renaming to
+ * `/internal/milestones` would break the wire contract for existing
+ * callers for zero behavioral gain — a future API version may move
+ * it; until then this comment is the map.
+ *
  * Authorisation: an internal service token in the
  * `x-internal-service-token` header. When INTERNAL_SERVICE_TOKEN
  * env is unset, every call is rejected (fail-closed).
@@ -21,7 +28,7 @@
  */
 import { Router } from 'express';
 import { z } from 'zod';
-import { timingSafeEqual } from 'node:crypto';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { env } from '../../env.js';
 import { validate } from '../../http/validate.js';
 import { AppError } from '../../lib/errors.js';
@@ -29,8 +36,10 @@ import { fireMilestone } from './service.js';
 
 export const milestonesRouter = Router();
 
-export const MILESTONE_ID_PATTERN =
-  /^(first-assignment-complete|first-course-complete|exam-window-opens:[a-zA-Z0-9_-]+)$/;
+// The id catalogue lives in ./service.ts (its only other consumer);
+// re-exported here so the public surface of the module — and the
+// pinned contract test — stays unchanged.
+export { MILESTONE_ID_PATTERN } from './service.js';
 
 const fireBodySchema = z
   .object({
@@ -46,12 +55,17 @@ const fireBodySchema = z
  *
  * Uses `crypto.timingSafeEqual`, which is the only Node-native way to
  * compare secrets without leaking length / character info via timing.
- * (`timingSafeEqual` requires equal-length inputs, so we hash both
- * sides — same approach as `crypto.subtle.timingSafeEqual` in browsers.
- * Hashing also removes the length dependency entirely, so attackers
- * can't probe the expected token length by measuring response time.)
+ * (`timingSafeEqual` requires equal-length inputs, so both sides are
+ * hashed to fixed-length SHA-256 digests first — same approach as
+ * `crypto.subtle.timingSafeEqual` in browsers. Hashing also removes
+ * the length dependency entirely, so attackers can't probe the
+ * expected token length by measuring response time.)
+ *
+ * Exported for unit testing (same pattern as theme/router.ts's
+ * themePutBodySchema) — `tests/modules/milestones-service-auth.test.ts`
+ * drives it with fake req/next without booting a server.
  */
-function serviceAuthMiddleware(req: { header(name: string): string | undefined }, _res: unknown, next: (err?: unknown) => void) {
+export function serviceAuthMiddleware(req: { header(name: string): string | undefined }, _res: unknown, next: (err?: unknown) => void) {
   const expected = env.INTERNAL_SERVICE_TOKEN;
   if (!expected) {
     return next(AppError.forbidden('Service token required'));
@@ -61,16 +75,11 @@ function serviceAuthMiddleware(req: { header(name: string): string | undefined }
     return next(AppError.forbidden('Service token required'));
   }
   try {
-    // Hash both values with a fixed output length before comparison.
-    // This removes the length-mismatch short-circuit while keeping
-    // the comparison constant-time.
-    const a = Buffer.from(header);
-    const b = Buffer.from(expected);
-    // Pad to equal length so timingSafeEqual doesn't throw.
-    const len = Math.max(a.length, b.length);
-    const aPad = Buffer.concat([a, Buffer.alloc(len - a.length)]);
-    const bPad = Buffer.concat([b, Buffer.alloc(len - b.length)]);
-    if (!timingSafeEqual(aPad, bPad)) {
+    // SHA-256 both values → fixed-length digests → the comparison is
+    // constant-time AND independent of either side's length.
+    const a = createHash('sha256').update(header, 'utf8').digest();
+    const b = createHash('sha256').update(expected, 'utf8').digest();
+    if (!timingSafeEqual(a, b)) {
       return next(AppError.forbidden('Service token required'));
     }
     next();

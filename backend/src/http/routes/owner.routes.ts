@@ -7,6 +7,12 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+import {
+  assertNotLastActiveOwner,
+  buildTeacherProvision,
+  planTeacherProvisioning,
+  requiresLastOwnerGuard,
+} from '../../lib/governance.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -28,10 +34,10 @@ router.get('/stats', async (_req, res, next) => {
       recentAuditLogs,
     ] = await Promise.all([
       prisma.user.count(),
-      prisma.user.count({ where: { role: 'STUDENT' } }),
-      prisma.user.count({ where: { role: 'TEACHER' } }),
-      prisma.user.count({ where: { role: 'ADMIN' } }),
-      prisma.user.count({ where: { role: 'QUALITY' } }),
+      prisma.user.count({ where: { role: Role.STUDENT } }),
+      prisma.user.count({ where: { role: Role.TEACHER } }),
+      prisma.user.count({ where: { role: Role.ADMIN } }),
+      prisma.user.count({ where: { role: Role.QUALITY } }),
       prisma.user.count({ where: { role: Role.OWNER } }),
       prisma.course.count(),
       prisma.courseOffering.count(),
@@ -159,8 +165,10 @@ export const toggleStatusSchema = z
 
 export const upsertSettingSchema = z
   .object({
-    value: z.string(),
-    category: z.string().optional(),
+    // Caps match the :key param's rigor — without them a single 1 MB
+    // JSON body becomes a 1 MB setting row (audit 11-c P2-15).
+    value: z.string().max(2000),
+    category: z.string().max(40).optional(),
   })
   .strict();
 
@@ -177,23 +185,23 @@ export const settingKeySchema = z
   .regex(/^[a-z0-9_.:-]+$/i, 'Setting key must be alphanumeric/dot/dash/colon/underscore');
 
 /**
- * Guard: never demote or deactivate the last ACTIVE OWNER.
- * Without at least one active OWNER the platform loses its master
- * governance role (OWNER is invitation-only and cannot be re-minted
- * via any API) — a self-inflicted lockout. 409, not 403: the request
- * is understood and valid, but applying it would leave the system in
- * an unusable state.
+ * Last-active-OWNER protection is shared with the admin governance
+ * paths via `lib/governance.ts` (assertNotLastActiveOwner decides,
+ * requiresLastOwnerGuard says when it applies) — the ADMIN and OWNER
+ * paths can no longer diverge on this semantics (audit 11-c P0-1).
+ *
+ * TOCTOU serialization for that guard (audit 11-c P2-15): the guard's
+ * count is a plain read, so two concurrent demotions of the last two
+ * owners could both pass it under Read-Committed. Locking every
+ * active OWNER row FOR UPDATE inside the mutation transaction closes
+ * the window: the second transaction blocks on the first's row locks,
+ * then sees the post-commit state (one owner already gone) and its
+ * count rejects with 409. Must run inside the same transaction as the
+ * mutation and BEFORE assertNotLastActiveOwner. This completes the
+ * residual risk governance.ts documents for the admin paths.
  */
-const assertNotLastActiveOwner = async (targetId: string): Promise<void> => {
-  const otherActiveOwners = await prisma.user.count({
-    where: { role: Role.OWNER, isActive: true, id: { not: targetId } },
-  });
-  if (otherActiveOwners === 0) {
-    throw AppError.conflict(
-      'Cannot demote or deactivate the last active OWNER — the platform must retain at least one active OWNER',
-    );
-  }
-};
+const lockActiveOwnerRows = (tx: Prisma.TransactionClient): Promise<unknown> =>
+  tx.$queryRaw`SELECT id FROM "User" WHERE "role" = 'OWNER' AND "isActive" = true ORDER BY id FOR UPDATE`;
 
 router.post(
   '/users/:id/role',
@@ -225,44 +233,39 @@ router.post(
 
       const oldRole = user.role;
 
-      // Demoting/modifying the last active OWNER would lock the platform
-      // out of its master governance role.
-      if (oldRole === Role.OWNER) await assertNotLastActiveOwner(id);
-
       // ── Profile provisioning for TEACHER promotions ────────────
-      // A STUDENT→TEACHER promotion previously left the user with NO
-      // TeacherProfile, so every teacher surface 404'd. Provision the
-      // required profile fields in the SAME transaction as the role
-      // change. Demotions keep profile data intact (read routes 403
-      // non-teachers) — no dangling state is created either way.
-      let teacherProvision: ((tx: Prisma.TransactionClient) => Promise<unknown>) | null = null;
-      if (
-        role === Role.TEACHER &&
-        oldRole !== Role.TEACHER &&
-        !user.teacherProfile // already provisioned (e.g. previously demoted)
-      ) {
-        const homeDepartmentId = departmentId ?? user.studentProfile?.departmentId ?? null;
-        if (!homeDepartmentId) {
-          throw AppError.badRequest(
-            'Promotion to TEACHER requires a home department — pass departmentId (or promote from a student profile that has one)',
-          );
-        }
-        teacherProvision = (tx) =>
-          tx.teacherProfile.create({
-            data: {
-              userId: id,
-              // Placeholder specialty — an OWNER/admin fills the real one via
-              // the teacher verification flow. Never invented data beyond this.
-              specialty: specialty ?? 'غير محدد',
-              departmentId: homeDepartmentId,
-            },
-          });
+      // Shared semantics with the admin path (lib/governance.ts): a
+      // STUDENT→TEACHER promotion previously left the user with NO
+      // TeacherProfile, so every teacher surface 404'd. The profile is
+      // created in the SAME transaction as the role change; demotions
+      // keep profile data intact (read routes 403 non-teachers) — no
+      // dangling state is created either way.
+      const provisionPlan = planTeacherProvisioning({
+        newRole: role,
+        oldRole,
+        hasTeacherProfile: Boolean(user.teacherProfile),
+        explicitDepartmentId: departmentId ?? null,
+        studentDepartmentId: user.studentProfile?.departmentId ?? null,
+      });
+      if (provisionPlan.kind === 'missing-department') {
+        throw AppError.badRequest(
+          'Promotion to TEACHER requires a home department — pass departmentId (or promote from a student profile that has one)',
+        );
       }
+      const teacherProvision =
+        provisionPlan.kind === 'create' ? buildTeacherProvision(id, provisionPlan, specialty) : null;
 
-      // Role + provisioning + audit atomically; tokenVersion bump kills
-      // the target's outstanding refresh tokens so stale JWTs with the old
-      // role can't be refreshed back into use.
+      // Role + guard + provisioning + audit atomically; tokenVersion
+      // bump kills the target's outstanding refresh tokens so stale
+      // JWTs with the old role can't be refreshed back into use. The
+      // last-owner guard runs INSIDE the transaction, after the owner
+      // row locks — demoting/modifying the sole active OWNER would
+      // lock the platform out of its master governance role.
       const updated = await prisma.$transaction(async (tx) => {
+        if (requiresLastOwnerGuard({ targetRole: oldRole, newRole: role })) {
+          await lockActiveOwnerRows(tx);
+          await assertNotLastActiveOwner(id, tx);
+        }
         const u = await tx.user.update({
           where: { id },
           data: { role, tokenVersion: { increment: 1 } },
@@ -278,6 +281,7 @@ router.post(
             metadata: {
               oldRole,
               newRole: role,
+              source: 'owner',
               ...(teacherProvision ? { teacherProfileProvisioned: true } : {}),
             },
           },
@@ -302,8 +306,12 @@ router.patch(
       const id = req.params.id!;
       const { isActive } = req.body as { isActive: boolean };
 
-      // Self-deactivation guard
-      if (id === req.user!.id) {
+      // Self-deactivation guard — re-activation stays allowed: an
+      // OWNER re-activating their own previously deactivated account
+      // is a recovery, not a lockout risk (same shape as
+      // users.routes.ts). Blocking every self status change made
+      // recovery impossible (audit 11-c P2-15).
+      if (!isActive && id === req.user!.id) {
         throw AppError.forbidden('Cannot deactivate your own account');
       }
 
@@ -313,26 +321,40 @@ router.patch(
       });
       if (!user) throw AppError.notFound('User not found');
 
-      // Deactivating the last active OWNER = governance lockout.
-      if (user.role === Role.OWNER && !isActive) await assertNotLastActiveOwner(id);
-
-      // tokenVersion bump revokes the target's refresh tokens: a
-      // deactivated account must not keep a live 7-day session.
-      const updated = await prisma.user.update({
-        where: { id },
-        data: { isActive, tokenVersion: { increment: 1 } },
-        select: { id: true, isActive: true },
+      // Guard + mutation + audit atomically. Deactivating the last
+      // active OWNER = governance lockout, so the guard (and its row
+      // locks) share the mutation's transaction (audit 11-c P2-15
+      // TOCTOU). The tokenVersion bump on deactivation kills the
+      // target's refresh tokens: a deactivated account must not keep a
+      // live 7-day session (parity with users.routes.ts — activation
+      // revokes nothing, so a re-activation is not a logout event).
+      const deactivatesOwner = requiresLastOwnerGuard({
+        targetRole: user.role,
+        newIsActive: isActive,
       });
-
-      // Audit logging
-      await prisma.auditLog.create({
-        data: {
-          action: 'STATUS_CHANGE',
-          resourceType: 'User',
-          resourceId: id,
-          userId: req.user!.id,
-          metadata: { isActive },
-        },
+      const updated = await prisma.$transaction(async (tx) => {
+        if (deactivatesOwner) {
+          await lockActiveOwnerRows(tx);
+          await assertNotLastActiveOwner(id, tx);
+        }
+        const u = await tx.user.update({
+          where: { id },
+          data: {
+            isActive,
+            ...(isActive ? {} : { tokenVersion: { increment: 1 } }),
+          },
+          select: { id: true, isActive: true },
+        });
+        await tx.auditLog.create({
+          data: {
+            action: 'STATUS_CHANGE',
+            resourceType: 'User',
+            resourceId: id,
+            userId: req.user!.id,
+            metadata: { isActive },
+          },
+        });
+        return u;
       });
 
       res.json({ data: updated });
@@ -343,23 +365,145 @@ router.patch(
 );
 
 // ── GET /owner/education — aggregate for the Education page ────
+
+/** Top-course row shape (SQL aggregation over Course→Offering→Enrollment). */
+interface TopCourseRow {
+  code: string;
+  name: string;
+  facultyName: string;
+  enrolled: number;
+}
+
+/** Row shape of the per-month attendance SQL aggregation. */
+export interface AttendanceMonthRow {
+  month: Date;
+  samples: number;
+  present: number;
+}
+
+/** ar-LY calendar month name for a bucket start (Education page labels). */
+const monthLabel = (d: Date) => d.toLocaleDateString('ar-LY', { month: 'long' });
+
+/**
+ * Pure transform: fold the SQL per-month attendance aggregates into the
+ * fixed 6-bucket trend the Education page renders (the current month
+ * plus the five before it — always six entries, oldest first). A month
+ * with no records keeps `attendancePct: null` so the chart renders a
+ * gap, not a fake 0%. Rows are normalized to their UTC month start —
+ * exactly what the SQL date_trunc('month', …) grouping produces.
+ */
+export function buildAttendanceTrend(
+  now: Date,
+  rows: AttendanceMonthRow[],
+): Array<{ month: string; attendancePct: number | null; samples: number }> {
+  const byMonthStart = new Map<number, AttendanceMonthRow>();
+  for (const row of rows) {
+    const m = new Date(row.month);
+    byMonthStart.set(Date.UTC(m.getUTCFullYear(), m.getUTCMonth(), 1), row);
+  }
+  const trend: Array<{ month: string; attendancePct: number | null; samples: number }> = [];
+  for (let i = 5; i >= 0; i--) {
+    const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
+    const row = byMonthStart.get(start.getTime());
+    trend.push({
+      month: monthLabel(start),
+      attendancePct:
+        row && row.samples > 0 ? Math.round((row.present / row.samples) * 100) : null,
+      samples: row?.samples ?? 0,
+    });
+  }
+  return trend;
+}
+
+/**
+ * Pure transform: fold the per-teacher offering counts (SQL groupBy
+ * rows) into the workload distribution. `teacherCount` is the total
+ * TEACHER-role count — teachers with zero offerings form the idle
+ * bucket, clamped at 0 for the anomalous case of offerings held by
+ * non-teacher rows.
+ */
+export function bucketTeacherWorkload(
+  offeringsPerTeacher: number[],
+  teacherCount: number,
+): { idle: number; one: number; two: number; three: number; fourPlus: number } {
+  const buckets = { idle: 0, one: 0, two: 0, three: 0, fourPlus: 0 };
+  for (const n of offeringsPerTeacher) {
+    if (n === 1) buckets.one += 1;
+    else if (n === 2) buckets.two += 1;
+    else if (n === 3) buckets.three += 1;
+    else if (n >= 4) buckets.fourPlus += 1;
+  }
+  buckets.idle = Math.max(0, teacherCount - offeringsPerTeacher.length);
+  return buckets;
+}
+
+/**
+ * Everything heavy is aggregated in SQL: the previous implementation
+ * hydrated the ENTIRE Course table (with per-offering enrollment
+ * counts) plus every AttendanceRecord of the last six months on each
+ * request to bucket them in JS (audit 11-c P1-7 — the worst page in
+ * the platform on day one of real usage).
+ */
 router.get('/education', async (_req, res, next) => {
   try {
     const now = new Date();
-    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    // Six calendar months INCLUDING the current one. UTC month starts
+    // so the JS bucket keys match the SQL date_trunc('month', …).
+    const sixMonthsAgo = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 5, 1));
 
-    const [totalCourses, totalOfferings, teachers, totalEnrollments] = await Promise.all([
+    const [
+      totalCourses,
+      totalOfferings,
+      teachers,
+      totalEnrollments,
+      faculties,
+      topCourses,
+      teacherOfferings,
+      attendanceRows,
+    ] = await Promise.all([
       prisma.course.count(),
       prisma.courseOffering.count(),
       prisma.user.count({ where: { role: Role.TEACHER } }),
       prisma.enrollment.count(),
+      prisma.faculty.findMany({
+        orderBy: { name: 'asc' },
+        include: { departments: { select: { _count: { select: { courses: true } } } } },
+      }),
+      // Top 8 courses by total enrolments across their offerings,
+      // aggregated in SQL (LEFT JOINs keep zero-enrolment courses
+      // rankable, matching the previous in-memory semantics; the code
+      // tiebreaker replaces the previous unspecified order).
+      prisma.$queryRaw<TopCourseRow[]>`
+        SELECT c."code" AS "code",
+               c."name" AS "name",
+               f."name" AS "facultyName",
+               COUNT(e."id")::int AS "enrolled"
+        FROM "Course" c
+        JOIN "Department" d ON d."id" = c."departmentId"
+        JOIN "Faculty" f ON f."id" = d."facultyId"
+        LEFT JOIN "CourseOffering" o ON o."courseId" = c."id"
+        LEFT JOIN "Enrollment" e ON e."offeringId" = o."id"
+        GROUP BY c."id", c."code", c."name", f."name"
+        ORDER BY "enrolled" DESC, c."code" ASC
+        LIMIT 8`,
+      prisma.courseOffering.groupBy({
+        by: ['teacherId'],
+        _count: { teacherId: true },
+      }),
+      // Per-month attendance aggregates (PRESENT|LATE counts as
+      // attended) — the six-month trend without hydrating records.
+      prisma.$queryRaw<AttendanceMonthRow[]>`
+        SELECT date_trunc('month', s."date") AS "month",
+               COUNT(*)::int AS "samples",
+               COUNT(*) FILTER (WHERE r."status" IN ('PRESENT', 'LATE'))::int AS "present"
+        FROM "AttendanceRecord" r
+        JOIN "AttendanceSession" s ON s."id" = r."sessionId"
+        WHERE s."date" >= ${sixMonthsAgo}
+        GROUP BY 1`,
     ]);
+
     const avgEnrolment = totalOfferings > 0 ? +(totalEnrollments / totalOfferings).toFixed(1) : 0;
 
-    const faculties = await prisma.faculty.findMany({
-      orderBy: { name: 'asc' },
-      include: { departments: { select: { _count: { select: { courses: true } } } } },
-    });
     const byFaculty = faculties
       .map((f) => ({
         name: f.name,
@@ -368,55 +512,12 @@ router.get('/education', async (_req, res, next) => {
       .sort((a, b) => b.courseCount - a.courseCount)
       .slice(0, 8);
 
-    const courses = await prisma.course.findMany({
-      include: {
-        department: { select: { faculty: { select: { name: true } } } },
-        offerings: { select: { _count: { select: { enrollments: true } } } },
-      },
-    });
-    const topCourses = courses
-      .map((c) => ({
-        code: c.code,
-        name: c.name,
-        facultyName: c.department.faculty.name,
-        enrolled: c.offerings.reduce((s, o) => s + o._count.enrollments, 0),
-      }))
-      .sort((a, b) => b.enrolled - a.enrolled)
-      .slice(0, 8);
+    const workloadBuckets = bucketTeacherWorkload(
+      teacherOfferings.map((t) => t._count.teacherId),
+      teachers,
+    );
 
-    const teacherOfferings = await prisma.courseOffering.groupBy({
-      by: ['teacherId'],
-      _count: { teacherId: true },
-    });
-    const buckets = { one: 0, two: 0, three: 0, fourPlus: 0 };
-    for (const t of teacherOfferings) {
-      const n = t._count.teacherId;
-      if (n === 1) buckets.one++;
-      else if (n === 2) buckets.two++;
-      else if (n === 3) buckets.three++;
-      else if (n >= 4) buckets.fourPlus++;
-    }
-    const teachingTeacherCount = teacherOfferings.length;
-    const idle = Math.max(0, teachers - teachingTeacherCount);
-    const workloadBuckets = { idle, one: buckets.one, two: buckets.two, three: buckets.three, fourPlus: buckets.fourPlus };
-
-    const allRecent = await prisma.attendanceRecord.findMany({
-      where: { session: { date: { gte: sixMonthsAgo } } },
-      select: { status: true, session: { select: { date: true } } },
-    });
-    const monthLabel = (d: Date) => d.toLocaleDateString('ar-LY', { month: 'long' });
-    const attendanceTrend: Array<{ month: string; attendancePct: number | null; samples: number }> = [];
-    for (let i = 5; i >= 0; i--) {
-      const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
-      const inMonth = allRecent.filter((r) => r.session.date >= start && r.session.date < end);
-      const present = inMonth.filter((r) => r.status === 'PRESENT' || r.status === 'LATE').length;
-      attendanceTrend.push({
-        month: monthLabel(start),
-        attendancePct: inMonth.length > 0 ? Math.round((present / inMonth.length) * 100) : null,
-        samples: inMonth.length,
-      });
-    }
+    const attendanceTrend = buildAttendanceTrend(now, attendanceRows);
 
     res.json({
       data: {
@@ -528,7 +629,7 @@ router.get('/ai-metrics', async (_req, res, next) => {
   try {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const [totals, byFeatureRaw, trendRecords, successCount] = await Promise.all([
+    const [totals, byFeatureRaw, trend, successCount] = await Promise.all([
       prisma.aiTelemetry.aggregate({
         _count: { _all: true },
         _sum: { inputTokens: true, outputTokens: true },
@@ -539,10 +640,16 @@ router.get('/ai-metrics', async (_req, res, next) => {
         _count: { _all: true },
         _sum: { inputTokens: true, outputTokens: true },
       }),
-      prisma.aiTelemetry.findMany({
-        where: { createdAt: { gte: sevenDaysAgo } },
-        select: { createdAt: true },
-      }),
+      // Daily request counts aggregated in SQL — the previous version
+      // hydrated every 7-day telemetry row just to bucket it by day in
+      // JS (same unbounded-load defect class as login-analytics,
+      // audit 11-c P1-8). Already the exact response shape.
+      prisma.$queryRaw<{ date: string; count: number }[]>`
+        SELECT to_char("createdAt", 'YYYY-MM-DD') AS "date", COUNT(*)::int AS "count"
+        FROM "AiTelemetry"
+        WHERE "createdAt" >= ${sevenDaysAgo}
+        GROUP BY 1
+        ORDER BY 1`,
       prisma.aiTelemetry.count({ where: { success: true } }),
     ]);
 
@@ -555,16 +662,6 @@ router.get('/ai-metrics', async (_req, res, next) => {
       count: f._count._all,
       tokens: (f._sum.inputTokens || 0) + (f._sum.outputTokens || 0),
     }));
-
-    // Bucket trend records by date
-    const trendMap = new Map<string, number>();
-    for (const record of trendRecords) {
-      const dateKey = record.createdAt.toISOString().slice(0, 10);
-      trendMap.set(dateKey, (trendMap.get(dateKey) || 0) + 1);
-    }
-    const trend = Array.from(trendMap.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, count]) => ({ date, count }));
 
     res.json({
       data: {
@@ -603,20 +700,30 @@ router.post('/alerts/:id/resolve', async (req, res, next) => {
 
     const alert = await prisma.operationalAlert.findUnique({ where: { id } });
     if (!alert) throw AppError.notFound('Alert not found');
+    // Idempotency guard: re-resolving would silently overwrite the
+    // original resolution timestamp and resolver with no new
+    // information (audit 11-c P2-15).
+    if (alert.resolvedAt) {
+      throw AppError.conflict('Alert is already resolved');
+    }
 
-    const updated = await prisma.operationalAlert.update({
-      where: { id },
-      data: { resolvedAt: new Date(), resolvedBy: req.user!.id },
-    });
-
-    await prisma.auditLog.create({
-      data: {
-        action: 'ALERT_RESOLVED',
-        resourceType: 'OperationalAlert',
-        resourceId: id,
-        userId: req.user!.id,
-        metadata: { severity: alert.severity, title: alert.title },
-      },
+    // Resolution + audit atomically — a crash between the two must
+    // not leave a resolved alert with no trail (audit 11-c P2-9).
+    const updated = await prisma.$transaction(async (tx) => {
+      const a = await tx.operationalAlert.update({
+        where: { id },
+        data: { resolvedAt: new Date(), resolvedBy: req.user!.id },
+      });
+      await tx.auditLog.create({
+        data: {
+          action: 'ALERT_RESOLVED',
+          resourceType: 'OperationalAlert',
+          resourceId: id,
+          userId: req.user!.id,
+          metadata: { severity: alert.severity, title: alert.title },
+        },
+      });
+      return a;
     });
 
     res.json({ data: updated });
@@ -626,43 +733,48 @@ router.post('/alerts/:id/resolve', async (req, res, next) => {
 });
 
 // ── GET /owner/login-analytics — login event aggregates ──────────
+
+/** Row shape of the per-day login SQL aggregation (UTC day buckets). */
+interface LoginDailyRow {
+  date: string;
+  success: number;
+  failure: number;
+}
+
 router.get('/login-analytics', async (_req, res, next) => {
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    const [total, successCount, failureCount, loginRecords, topReasonsRaw] =
-      await Promise.all([
-        prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
-        prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo }, success: true } }),
-        prisma.loginEvent.count({ where: { createdAt: { gte: thirtyDaysAgo }, success: false } }),
-        prisma.loginEvent.findMany({
-          where: { createdAt: { gte: thirtyDaysAgo } },
-          select: { createdAt: true, success: true },
-        }),
-        prisma.loginEvent.groupBy({
-          by: ['reason'],
-          where: { createdAt: { gte: thirtyDaysAgo }, success: false, reason: { not: null } },
-          _count: { _all: true },
-          orderBy: { _count: { reason: 'desc' } },
-          take: 10,
-        }),
-      ]);
+    // One SQL aggregation replaces three COUNT queries plus a full
+    // 30-day row hydration: LoginEvent is attacker-inflatable (every
+    // failed login attempt writes a row), so this page must never
+    // materialize the rows (audit 11-c P1-8). Day buckets are UTC
+    // (to_char on a timestamp column renders the stored UTC value),
+    // identical to the previous toISOString().slice(0, 10) keys.
+    const [daily, topReasonsRaw] = await Promise.all([
+      prisma.$queryRaw<LoginDailyRow[]>`
+        SELECT to_char("createdAt", 'YYYY-MM-DD') AS "date",
+               COUNT(*) FILTER (WHERE "success")::int AS "success",
+               COUNT(*) FILTER (WHERE NOT "success")::int AS "failure"
+        FROM "LoginEvent"
+        WHERE "createdAt" >= ${thirtyDaysAgo}
+        GROUP BY 1
+        ORDER BY 1`,
+      prisma.loginEvent.groupBy({
+        by: ['reason'],
+        where: { createdAt: { gte: thirtyDaysAgo }, success: false, reason: { not: null } },
+        _count: { _all: true },
+        orderBy: { _count: { reason: 'desc' } },
+        take: 10,
+      }),
+    ]);
 
-    // Bucket login records by date into { date, success, failure }
-    const dailyMap = new Map<string, { success: number; failure: number }>();
-    for (const record of loginRecords) {
-      const dateKey = record.createdAt.toISOString().slice(0, 10);
-      const bucket = dailyMap.get(dateKey) || { success: 0, failure: 0 };
-      if (record.success) {
-        bucket.success += 1;
-      } else {
-        bucket.failure += 1;
-      }
-      dailyMap.set(dateKey, bucket);
-    }
-    const daily = Array.from(dailyMap.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, counts]) => ({ date, success: counts.success, failure: counts.failure }));
+    // Totals fold the same daily buckets — success is a non-nullable
+    // boolean, so success + failure partitions the window exactly
+    // like the previous three COUNT queries did.
+    const total = daily.reduce((s, r) => s + r.success + r.failure, 0);
+    const successCount = daily.reduce((s, r) => s + r.success, 0);
+    const failureCount = daily.reduce((s, r) => s + r.failure, 0);
 
     // Transform topReasons from Prisma groupBy shape
     const topReasons = topReasonsRaw.map((r) => ({
@@ -713,20 +825,24 @@ router.put(
       }
       const { value, category } = req.body as { value: string; category?: string };
 
-      const data = await prisma.platformSetting.upsert({
-        where: { key },
-        create: { key, value, category: category || 'general', updatedBy: req.user!.id },
-        update: { value, ...(category ? { category } : {}), updatedBy: req.user!.id },
-      });
-
-      await prisma.auditLog.create({
-        data: {
-          action: 'SETTING_UPDATED',
-          resourceType: 'PlatformSetting',
-          resourceId: key,
-          userId: req.user!.id,
-          metadata: { key, value, category },
-        },
+      // Upsert + audit atomically — a crash between the two must not
+      // leave a silent setting change with no trail (audit 11-c P2-9).
+      const data = await prisma.$transaction(async (tx) => {
+        const s = await tx.platformSetting.upsert({
+          where: { key },
+          create: { key, value, category: category || 'general', updatedBy: req.user!.id },
+          update: { value, ...(category ? { category } : {}), updatedBy: req.user!.id },
+        });
+        await tx.auditLog.create({
+          data: {
+            action: 'SETTING_UPDATED',
+            resourceType: 'PlatformSetting',
+            resourceId: key,
+            userId: req.user!.id,
+            metadata: { key, value, category },
+          },
+        });
+        return s;
       });
 
       res.json({ data });
@@ -762,19 +878,23 @@ router.put(
       const flag = await prisma.featureFlag.findUnique({ where: { slug } });
       if (!flag) throw AppError.notFound('Feature flag not found');
 
-      const data = await prisma.featureFlag.update({
-        where: { slug },
-        data: { enabled, updatedBy: req.user!.id },
-      });
-
-      await prisma.auditLog.create({
-        data: {
-          action: 'FEATURE_FLAG_TOGGLED',
-          resourceType: 'FeatureFlag',
-          resourceId: slug,
-          userId: req.user!.id,
-          metadata: { slug, enabled, previousState: flag.enabled },
-        },
+      // Toggle + audit atomically; previousState comes from the same
+      // read that proved the flag exists (audit 11-c P2-9).
+      const data = await prisma.$transaction(async (tx) => {
+        const f = await tx.featureFlag.update({
+          where: { slug },
+          data: { enabled, updatedBy: req.user!.id },
+        });
+        await tx.auditLog.create({
+          data: {
+            action: 'FEATURE_FLAG_TOGGLED',
+            resourceType: 'FeatureFlag',
+            resourceId: slug,
+            userId: req.user!.id,
+            metadata: { slug, enabled, previousState: flag.enabled },
+          },
+        });
+        return f;
       });
 
       res.json({ data });
@@ -793,7 +913,7 @@ router.get('/governance', async (_req, res, next) => {
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    const [permissionChanges, roleChanges, newUsersThisMonth, recentUsers] = await Promise.all([
+    const [permissionChanges, roleChanges, newUsersThisMonth, weeklyGrowth] = await Promise.all([
       prisma.userPermission.count({
         where: { grantedAt: { gte: thirtyDaysAgo } },
       }),
@@ -803,27 +923,17 @@ router.get('/governance', async (_req, res, next) => {
       prisma.user.count({
         where: { createdAt: { gte: startOfMonth } },
       }),
-      prisma.user.findMany({
-        where: { createdAt: { gte: eightWeeksAgo } },
-        select: { createdAt: true },
-      }),
+      // Weekly signup buckets aggregated in SQL — date_trunc('week')
+      // is ISO Monday-start, matching the previous JS bucketing,
+      // without hydrating every 8-week signup row (same unbounded-load
+      // defect class as login-analytics, audit 11-c P1-8).
+      prisma.$queryRaw<{ week: string; count: number }[]>`
+        SELECT to_char(date_trunc('week', "createdAt"), 'YYYY-MM-DD') AS "week", COUNT(*)::int AS "count"
+        FROM "User"
+        WHERE "createdAt" >= ${eightWeeksAgo}
+        GROUP BY 1
+        ORDER BY 1`,
     ]);
-
-    // Bucket users by week
-    const weeklyMap = new Map<string, number>();
-    for (const user of recentUsers) {
-      const date = user.createdAt;
-      // Get ISO week start (Monday)
-      const d = new Date(date);
-      const day = d.getDay();
-      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      d.setDate(diff);
-      const weekKey = d.toISOString().slice(0, 10);
-      weeklyMap.set(weekKey, (weeklyMap.get(weekKey) || 0) + 1);
-    }
-    const weeklyGrowth = Array.from(weeklyMap.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([week, count]) => ({ week, count }));
 
     res.json({
       data: {

@@ -286,7 +286,9 @@
     padding-block: clamp(var(--sp-9), 8vw, var(--sp-12)) clamp(var(--sp-10), 9vw, var(--sp-12));
     text-align: center;
     position: relative;
-    isolation: isolate;
+    /* 13-17 (D14 dedupe): `isolation: isolate` deleted — polish.css's
+       pages-layer .landing-hero supplies the identical value eagerly, so
+       the within-layer tie no longer depends on this file loading first. */
     /* magnetic spotlight lag — smooths the JS-written --hero-mx/--hero-my
        (see the @property registrations at the top of this file). */
     transition: --hero-mx var(--t-base) var(--ease-out),
@@ -679,7 +681,8 @@
   .band-yellow   { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
   .band-rose     { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
   .band-sand     { background: var(--c-sand-bg);     color: var(--c-sand-deep); }
-  .band-grey     { background: var(--c-grey-bg);     color: var(--c-grey-deep); }
+  /* 13-17 dead-selector sweep (11-g P2-7): .band-grey deleted — zero
+     TSX consumers (no landing band uses the grey family). */
   .band-copper   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
   .band-dark     { background: var(--neutral-900);   color: var(--neutral-50); }
 
@@ -830,29 +833,23 @@
   @media (max-width: 1100px) { .landing-features-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px)  { .landing-features-grid { grid-template-columns: 1fr; } }
 
+  /* 13-17 (D14 dedupe): `position`/`overflow` deleted — polish.css's
+     pages-layer .landing-feature-card/.landing-bento-card block owns them
+     (position: relative identical; overflow: hidden is the approved final
+     over this clip) and no longer depends on load order. */
   .landing-feature-card {
     display: flex; flex-direction: column; gap: var(--sp-4);
     padding: var(--sp-5);
     transition: transform var(--t-base) var(--ease);
-    position: relative;
-    overflow: clip;
     isolation: isolate;
   }
+  /* 13-17 (D14 dedupe): content/position/inset/background/opacity/
+     transition/pointer-events/z-index deleted — polish.css's cursor-
+     spotlight ::after (638) supersedes each; only the radius stays ours. */
   .landing-feature-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
     border-radius: inherit;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%),
-      color-mix(in oklab, var(--accent-soft) 70%, transparent) 0%,
-      transparent 55%);
-    opacity: 0;
-    transition: opacity var(--t-base) var(--ease);
-    pointer-events: none;
-    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
   }
   .landing-feature-card:hover { transform: translateY(-4px); }
-  .landing-feature-card:hover::after { opacity: 1; }
   .landing-feature-card:hover .sticker { transform: rotate(-6deg) scale(1.06); }
   .landing-feature-title {
     /* headline role (0-b P2-25); no tracking — Arabic titles (ruling #2).
@@ -887,7 +884,6 @@
     border-radius: var(--r-2xl);
     padding: var(--sp-7);
     display: flex; flex-direction: column; gap: var(--sp-3);
-    position: relative; overflow: clip;
     transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
     isolation: isolate;
   }
@@ -902,20 +898,13 @@
     z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     transition: transform var(--t-slow) var(--ease-out);
   }
+  /* 13-17 (D14 dedupe): ::after glow + `> *` stacking + :hover::after
+     opacity deleted — polish.css's pages-layer spotlight block (638-662)
+     supersedes all three with the approved final values; only the radius
+     stays ours. */
   .landing-bento-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
     border-radius: inherit;
-    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%),
-      color-mix(in oklab, currentColor 14%, transparent) 0%,
-      transparent 55%);
-    opacity: 0;
-    transition: opacity var(--t-base) var(--ease);
-    pointer-events: none;
-    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
   }
-  .landing-bento-card > * { position: relative; z-index: 1; /* local paint-order above the ::before/::after glows */ }
   .landing-bento-card:hover {
     transform: translateY(-3px);
     /* Off-token by design: bento accent glow in oklab currentColor —
@@ -923,7 +912,6 @@
     box-shadow: 0 18px 40px -22px color-mix(in oklab, currentColor 50%, transparent);
   }
   .landing-bento-card:hover::before { transform: scale(1.15) rotate(-12deg); }
-  .landing-bento-card:hover::after { opacity: 1; }
   .landing-bento-card.span-2 { grid-column: span 2; }
   .landing-bento-card.span-3 { grid-column: span 3; }
   /* 8-a dead-CSS sweep — .span-4/.span-6 had zero TSX consumers
@@ -1167,11 +1155,13 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* Legacy reveal system — superseded by <Reveal> primitive (Phase 7).
      Kept token-driven during the transition. */
-  .reveal-up { opacity: 0; transform: translateY(var(--motion-distance-medium));
-    transition:
-      opacity var(--motion-duration-stat) var(--motion-ease-decelerate),
-      transform var(--motion-duration-stat) var(--motion-ease-decelerate); }
-  .reveal-up.in-view { opacity: 1; transform: none; }
+  /* 13-17 (D14 dedupe): the .reveal-up / .reveal-up.in-view base rules
+     were deleted — polish.css's pages-layer block (583-601) is the
+     approved final (520ms/14px entrance + its own reduced-motion
+     off-switch) and no longer depends on this file loading before it.
+     The .reveal-d-* base delays stay: they never tie with polish's
+     higher-specificity .reveal-d-*.in-view delays, so load order is
+     irrelevant to their outcome. */
   .reveal-d-1 { transition-delay: calc(var(--motion-stagger-step) * 1); }
   .reveal-d-2 { transition-delay: calc(var(--motion-stagger-step) * 2); }
   .reveal-d-3 { transition-delay: calc(var(--motion-stagger-step) * 3); }
@@ -1222,101 +1212,12 @@
     transition: none;
     transition-delay: 0s;
   }
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SECTION-ACCENT — 012-design-graphics-uplift T110 / T111.      ║
-     ║  Five accent kinds. Each has a pre-fire (initial) state and a  ║
-     ║  fired-state cascade triggered by .is-fired (added by the      ║
-     ║  useSectionAccent hook on viewport entry).                     ║
-     ║                                                                ║
-     ║  Reduced-motion: the hook fires immediately, so .is-fired is   ║
-     ║  applied without the cascade ever running. The selectors here  ║
-     ║  cover both paths.                                             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .section-accent {
-    position: relative;
-  }
-
-  /* ─── underline-draw ────────────────────────────────────────────── */
-  .section-accent-underline-draw::after {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-end: 0;
-    block-size: 2px;
-    inline-size: 100%;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform var(--motion-duration-long) var(--motion-ease-emphasized);
-  }
-  .section-accent-underline-draw.is-fired::after {
-    transform: scaleX(1);
-  }
-  [dir="rtl"] .section-accent-underline-draw::after {
-    transform-origin: right center;
-  }
-
-  /* ─── number-tick — gentle scale-in (number animation itself is in
-        AnimatedNumber from 001-*; this is the surface treatment). */
-  .section-accent-number-tick {
-    opacity: 0;
-    transform: scale(0.96);
-    transition: opacity var(--motion-duration-medium) var(--motion-ease-decelerate),
-                transform var(--motion-duration-medium) var(--motion-ease-decelerate);
-  }
-  .section-accent-number-tick.is-fired {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* ─── scene-paint — fade + 6 px lift, matches Reveal cadence. */
-  .section-accent-scene-paint {
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity var(--motion-duration-reveal) var(--motion-ease-decelerate),
-                transform var(--motion-duration-reveal) var(--motion-ease-decelerate);
-  }
-  .section-accent-scene-paint.is-fired {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* ─── quote-fade — calm fade only, no translation. */
-  .section-accent-quote-fade {
-    opacity: 0;
-    transition: opacity var(--motion-duration-long) var(--motion-ease-standard);
-  }
-  .section-accent-quote-fade.is-fired {
-    opacity: 1;
-  }
-
-  /* ─── parallax-shift — bounded translation (≤ 8 px), one-shot. */
-  .section-accent-parallax-shift {
-    transform: translateY(8px);
-    opacity: 0;
-    transition: opacity var(--motion-duration-long) var(--motion-ease-emphasized),
-                transform var(--motion-duration-long) var(--motion-ease-emphasized);
-  }
-  .section-accent-parallax-shift.is-fired {
-    transform: none;
-    opacity: 1;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .section-accent,
-    .section-accent::after {
-      transition: none !important;
-    }
-    .section-accent-underline-draw::after,
-    .section-accent-number-tick,
-    .section-accent-scene-paint,
-    .section-accent-quote-fade,
-    .section-accent-parallax-shift {
-      transform: none;
-      opacity: 1;
-    }
-  }
+  /* SECTION-ACCENT moved to motion.css (13-17, D14): SectionAccent
+     renders on BOTH the LandingPage chunk and the CollegePages chunk,
+     so its cascade rules must stay on the eager critical path. Same
+     @layer (pages) + same intra-layer position relative to every other
+     pages-layer author (eager files import before every lazy chunk) —
+     zero cascade outcome change. */
 
   /* ── 8-a — local keyframe off-switches (0-b P2-19, guardrail #6) ──
      The global belt (base.css + polish v22) already flattens every

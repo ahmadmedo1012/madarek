@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { Role, AttendanceStatus, SubmissionStatus, ResearchPaperStatus } from '@prisma/client';
+import { Role, AttendanceStatus, SubmissionStatus, ResearchPaperStatus, Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
-import { AppError } from '../../lib/errors.js';
 
 /**
  * Teacher dashboard aggregate — Phase 7.
@@ -13,6 +12,9 @@ import { AppError } from '../../lib/errors.js';
  *  · KPI strip — student count, avg grade, attendance %, "needs review" total
  *  · 6-week trend — weekly avg grade + weekly avg attendance
  *  · Activity feed — pending submissions, pending papers, attendance gaps
+ *
+ * Scalar aggregates run as groupBy/count queries (audit 11-d P1-11) — no
+ * unbounded row sets are pulled into JS to compute averages.
  */
 const router = Router();
 router.use(authMiddleware);
@@ -20,6 +22,99 @@ router.use(requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER));
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
+
+/**
+ * Canonical attendance percentage — audit 11-d P1-5/P2-2 (wave 13-6).
+ * Mirrors the semantics of `attendancePct()` in teacher.routes.ts:
+ *
+ *   pct = round(100 × (PRESENT + 0.5·LATE) / (PRESENT + LATE + ABSENT))
+ *
+ * · LATE earns half credit (the dashboards used to give it full credit;
+ *   course analytics used to give it none — wave 13 unifies all surfaces).
+ * · EXCUSED marks are removed from the denominator — an excused absence
+ *   neither credits nor penalizes.
+ * · null when there is nothing countable: the dashboards' display
+ *   convention (KPI renders "—"), whereas teacher.routes' risk math uses
+ *   the neutral 100 empty state.
+ *
+ * Takes groupBy status counts instead of a status array. Deliberately
+ * duplicated in student-dashboard.routes.ts — both copies run the same
+ * table in tests/modules/dashboard-logic.test.ts; folding into src/lib is
+ * the audit P2-20 consolidation wave's job (keeps wave-13 batches
+ * file-disjoint).
+ */
+export function attendancePctFromStatusCounts(
+  countsByStatus: Array<{ status: AttendanceStatus; count: number }>,
+): number | null {
+  let present = 0;
+  let late = 0;
+  let absent = 0;
+  for (const { status, count } of countsByStatus) {
+    if (status === AttendanceStatus.PRESENT) present = count;
+    else if (status === AttendanceStatus.LATE) late = count;
+    else if (status === AttendanceStatus.ABSENT) absent = count;
+    // EXCUSED — deliberately not accumulated.
+  }
+  const denominator = present + late + absent;
+  if (denominator === 0) return null;
+  return Math.round(((present + late * 0.5) / denominator) * 100);
+}
+
+/** Per-assignment graded-submission rollup produced by the groupBy
+ *  queries below: Σ grade points + row count per assignment. */
+export interface SubmissionGradeGroup {
+  assignmentId: string;
+  sumGrade: number;
+  count: number;
+}
+
+/**
+ * Average graded-submission percentage from per-assignment sums — audit
+ * 11-d P1-11 (wave 13-6). Mathematically identical to averaging
+ * grade/maxScore·100 over the individual rows (Σᵢ gᵢ/mᵢ·100 ==
+ * Σₐ sumGradeₐ/mₐ·100) but computed from groupBy results instead of
+ * loading every submission into JS. Assignments with maxScore ≤ 0 are
+ * skipped, mirroring the old per-row filter. Exported for DB-free tests.
+ */
+export function avgGradePctFromGroups(
+  groups: ReadonlyArray<SubmissionGradeGroup>,
+  maxScoreByAssignment: ReadonlyMap<string, number>,
+): number | null {
+  let pctSum = 0;
+  let submissions = 0;
+  for (const group of groups) {
+    const maxScore = maxScoreByAssignment.get(group.assignmentId);
+    if (!maxScore || maxScore <= 0) continue;
+    pctSum += (group.sumGrade / maxScore) * 100;
+    submissions += group.count;
+  }
+  return submissions > 0 ? Math.round(pctSum / submissions) : null;
+}
+
+/** groupBy row → SubmissionGradeGroup (Decimal sum → number). */
+const toGradeGroup = (group: {
+  assignmentId: string;
+  _sum: { grade: Prisma.Decimal | null };
+  _count: { assignmentId: number };
+}): SubmissionGradeGroup => ({
+  assignmentId: group.assignmentId,
+  sumGrade: group._sum.grade === null ? 0 : Number(group._sum.grade.toString()),
+  count: group._count.assignmentId,
+});
+
+/**
+ * Papers that wait on the teacher: uploaded but not yet scanned, or
+ * finished automatic checks (passed or failed) and awaiting grading.
+ * SCANNING is excluded — the machine is mid-flight, nothing is actionable
+ * yet. One set for BOTH the needsReview KPI and the feed (audit 11-d
+ * P2-5: they used to count different state sets — CHECKS_FAILED showed in
+ * the feed but was not counted; SCANNING was counted but never shown).
+ */
+const PAPERS_AWAITING_TEACHER: ResearchPaperStatus[] = [
+  ResearchPaperStatus.UPLOADED,
+  ResearchPaperStatus.CHECKS_PASSED,
+  ResearchPaperStatus.CHECKS_FAILED,
+];
 
 /**
  * GET /teacher/me/materials — every material the teacher has ever uploaded,
@@ -128,102 +223,120 @@ router.get('/dashboard', async (req, res, next) => {
       return;
     }
 
-    // ── Distinct enrolled students across offerings ──────────
-    const enrollments = await prisma.enrollment.findMany({
-      where: { offeringId: { in: offeringIds }, status: 'active' },
-      select: { studentId: true },
-    });
-    const studentCount = new Set(enrollments.map((e) => e.studentId)).size;
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * DAY_MS);
 
-    // ── Attendance % across all sessions in the teacher's offerings ──
-    const [presentish, totalAttendance] = await Promise.all([
-      prisma.attendanceRecord.count({
+    // ── 6-week trend windows, oldest → newest (labels: أسبوع 1 … أسبوع 6) ──
+    const trendWeeks = Array.from({ length: 6 }, (_, idx) => {
+      const weeksAgo = 5 - idx;
+      return {
+        label: `أسبوع ${6 - weeksAgo}`,
+        start: new Date(now.getTime() - (weeksAgo + 1) * WEEK_MS),
+        end: new Date(now.getTime() - weeksAgo * WEEK_MS),
+      };
+    });
+
+    // ── All scalar aggregates in one parallel round (audit 11-d P1-11:
+    //    groupBy/count instead of loading every graded submission the
+    //    teacher ever graded, and every 6-week attendance record, into JS) ──
+    const [
+      enrollments,
+      kpiGradeGroups,
+      weeklyPairs,
+      kpiAttendanceGroups,
+      pendingSubmissions,
+      pendingPapers,
+    ] = await Promise.all([
+      // Distinct enrolled students across offerings
+      prisma.enrollment.findMany({
+        where: { offeringId: { in: offeringIds }, status: 'active' },
+        select: { studentId: true },
+      }),
+      // All-time graded-submission rollup per assignment → KPI avg grade
+      prisma.submission.groupBy({
+        by: ['assignmentId'],
         where: {
-          session: { offeringId: { in: offeringIds } },
-          status: { in: [AttendanceStatus.PRESENT, AttendanceStatus.LATE] },
+          assignment: { offeringId: { in: offeringIds } },
+          status: SubmissionStatus.GRADED,
+          grade: { not: null },
         },
+        _sum: { grade: true },
+        _count: { assignmentId: true },
       }),
-      prisma.attendanceRecord.count({
+      // Per trend week: graded-submission rollup + attendance status counts
+      Promise.all(trendWeeks.map(async (week) => {
+        const [gradeGroups, attendanceGroups] = await Promise.all([
+          prisma.submission.groupBy({
+            by: ['assignmentId'],
+            where: {
+              assignment: { offeringId: { in: offeringIds } },
+              status: SubmissionStatus.GRADED,
+              gradedAt: { gte: week.start, lt: week.end },
+              grade: { not: null },
+            },
+            _sum: { grade: true },
+            _count: { assignmentId: true },
+          }),
+          prisma.attendanceRecord.groupBy({
+            by: ['status'],
+            where: {
+              session: { offeringId: { in: offeringIds }, date: { gte: week.start, lt: week.end } },
+            },
+            _count: { status: true },
+          }),
+        ]);
+        return { label: week.label, gradeGroups, attendanceGroups };
+      })),
+      // All-time attendance status counts → KPI attendance %
+      prisma.attendanceRecord.groupBy({
+        by: ['status'],
         where: { session: { offeringId: { in: offeringIds } } },
+        _count: { status: true },
       }),
-    ]);
-    const attendancePct = totalAttendance > 0 ? Math.round((presentish / totalAttendance) * 100) : null;
-
-    // ── Average grade across submissions and exam attempts ──
-    const gradedSubmissions = await prisma.submission.findMany({
-      where: {
-        assignment: { offeringId: { in: offeringIds } },
-        status: SubmissionStatus.GRADED,
-        grade: { not: null },
-      },
-      select: { grade: true, gradedAt: true, assignment: { select: { maxScore: true } } },
-    });
-    const allGrades = gradedSubmissions
-      .filter((s) => s.grade !== null && s.assignment.maxScore > 0)
-      .map((s) => Number(s.grade!.toString()) / s.assignment.maxScore * 100);
-    const avgGradePct = allGrades.length
-      ? Math.round(allGrades.reduce((a, b) => a + b, 0) / allGrades.length)
-      : null;
-
-    // ── "Needs review" — pending submissions + pending papers ─
-    const [pendingSubmissions, pendingPapers] = await Promise.all([
+      // "Needs review" — pending submissions…
       prisma.submission.count({
         where: {
           assignment: { offeringId: { in: offeringIds } },
           status: SubmissionStatus.SUBMITTED,
         },
       }),
+      // …+ papers awaiting the teacher (same set as the feed — P2-5)
       prisma.researchPaper.count({
-        where: {
-          offeringId: { in: offeringIds },
-          status: { in: [ResearchPaperStatus.UPLOADED, ResearchPaperStatus.SCANNING, ResearchPaperStatus.CHECKS_PASSED] },
-        },
+        where: { offeringId: { in: offeringIds }, status: { in: PAPERS_AWAITING_TEACHER } },
       }),
     ]);
+
+    // ── maxScore lookup shared by both grade rollups (bounded by the
+    //    teacher's assignment count, not their submission count) ──
+    const assignmentIds = new Set<string>();
+    for (const group of kpiGradeGroups) assignmentIds.add(group.assignmentId);
+    for (const week of weeklyPairs) {
+      for (const group of week.gradeGroups) assignmentIds.add(group.assignmentId);
+    }
+    const assignmentRows = assignmentIds.size > 0
+      ? await prisma.assignment.findMany({
+          where: { id: { in: [...assignmentIds] } },
+          select: { id: true, maxScore: true },
+        })
+      : [];
+    const maxScoreByAssignment = new Map(assignmentRows.map((a) => [a.id, a.maxScore]));
+
+    // ── KPI strip ────────────────────────────
+    const studentCount = new Set(enrollments.map((e) => e.studentId)).size;
+    const attendancePct = attendancePctFromStatusCounts(
+      kpiAttendanceGroups.map((g) => ({ status: g.status, count: g._count.status })),
+    );
+    const avgGradePct = avgGradePctFromGroups(kpiGradeGroups.map(toGradeGroup), maxScoreByAssignment);
     const needsReview = pendingSubmissions + pendingPapers;
 
     // ── 6-week trend: avg grade + avg attendance per week ──
-    const now = new Date();
-    const sixWeeksAgo = new Date(now.getTime() - 6 * WEEK_MS);
-
-    const [weekGrades, weekAttendance] = await Promise.all([
-      prisma.submission.findMany({
-        where: {
-          assignment: { offeringId: { in: offeringIds } },
-          status: SubmissionStatus.GRADED,
-          gradedAt: { gte: sixWeeksAgo },
-          grade: { not: null },
-        },
-        select: { grade: true, gradedAt: true, assignment: { select: { maxScore: true } } },
-      }),
-      prisma.attendanceRecord.findMany({
-        where: {
-          session: { offeringId: { in: offeringIds }, date: { gte: sixWeeksAgo } },
-        },
-        select: {
-          status: true,
-          session: { select: { date: true } },
-        },
-      }),
-    ]);
-
-    const trend: Array<{ week: string; avgGradePct: number | null; attendancePct: number | null }> = [];
-    for (let i = 5; i >= 0; i--) {
-      const start = new Date(now.getTime() - (i + 1) * WEEK_MS);
-      const end = new Date(now.getTime() - i * WEEK_MS);
-      const wgs = weekGrades.filter((s) => s.gradedAt && s.gradedAt >= start && s.gradedAt < end && s.assignment.maxScore > 0);
-      const wgPct = wgs.length
-        ? Math.round(wgs.reduce((a, s) => a + Number(s.grade!.toString()) / s.assignment.maxScore * 100, 0) / wgs.length)
-        : null;
-      const was = weekAttendance.filter((a) => a.session.date >= start && a.session.date < end);
-      const wPresent = was.filter((a) => a.status === AttendanceStatus.PRESENT || a.status === AttendanceStatus.LATE).length;
-      const wAttPct = was.length ? Math.round((wPresent / was.length) * 100) : null;
-      trend.push({
-        week: `أسبوع ${6 - i}`,
-        avgGradePct: wgPct,
-        attendancePct: wAttPct,
-      });
-    }
+    const trend = weeklyPairs.map((week) => ({
+      week: week.label,
+      avgGradePct: avgGradePctFromGroups(week.gradeGroups.map(toGradeGroup), maxScoreByAssignment),
+      attendancePct: attendancePctFromStatusCounts(
+        week.attendanceGroups.map((g) => ({ status: g.status, count: g._count.status })),
+      ),
+    }));
 
     // ── Activity feed — real items, sorted by recency ──
     const [recentSubs, recentPapers, lowAttendanceStudents] = await Promise.all([
@@ -247,11 +360,12 @@ router.get('/dashboard', async (req, res, next) => {
           },
         },
       }),
-      // Papers that finished automatic checks but await teacher grading
+      // Papers awaiting the teacher — unscanned or finished checks. Same
+      // state set as the needsReview KPI above (audit 11-d P2-5).
       prisma.researchPaper.findMany({
         where: {
           offeringId: { in: offeringIds },
-          status: { in: [ResearchPaperStatus.CHECKS_PASSED, ResearchPaperStatus.CHECKS_FAILED] },
+          status: { in: PAPERS_AWAITING_TEACHER },
         },
         orderBy: { uploadedAt: 'desc' },
         take: 4,
@@ -265,7 +379,7 @@ router.get('/dashboard', async (req, res, next) => {
       prisma.attendanceRecord.groupBy({
         by: ['studentId'],
         where: {
-          session: { offeringId: { in: offeringIds }, date: { gte: new Date(now.getTime() - 30 * DAY_MS) } },
+          session: { offeringId: { in: offeringIds }, date: { gte: thirtyDaysAgo } },
           status: AttendanceStatus.ABSENT,
         },
         _count: { studentId: true },
@@ -275,14 +389,32 @@ router.get('/dashboard', async (req, res, next) => {
       }),
     ]);
 
-    // Resolve student names for the absent-students bucket.
+    // Resolve student names + most-recent-absence dates for the alert
+    // bucket. The real date stamps each alert with honest recency (audit
+    // 11-d P2-6 — `when: now` made absence alerts permanently outrank
+    // genuinely fresh submissions and papers in the recency sort below).
     const absentStudentIds = lowAttendanceStudents.map((g) => g.studentId);
-    const absentStudents = absentStudentIds.length
-      ? await prisma.user.findMany({
-          where: { id: { in: absentStudentIds } },
-          select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
-        })
-      : [];
+    const [absentStudents, lastAbsenceEntries] = await Promise.all([
+      absentStudentIds.length
+        ? prisma.user.findMany({
+            where: { id: { in: absentStudentIds } },
+            select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
+          })
+        : [],
+      Promise.all(lowAttendanceStudents.map(async (g) => {
+        const latest = await prisma.attendanceRecord.findFirst({
+          where: {
+            studentId: g.studentId,
+            status: AttendanceStatus.ABSENT,
+            session: { offeringId: { in: offeringIds }, date: { gte: thirtyDaysAgo } },
+          },
+          orderBy: { session: { date: 'desc' } },
+          select: { session: { select: { date: true } } },
+        });
+        return [g.studentId, latest?.session.date ?? now] as const;
+      })),
+    ]);
+    const lastAbsenceAt = new Map(lastAbsenceEntries);
 
     const feed = [
       ...recentSubs.map((s) => ({
@@ -300,9 +432,11 @@ router.get('/dashboard', async (req, res, next) => {
         author: p.student,
         meta: p.offering ? `بحث · ${p.offering.course.code}` : 'بحث',
         when: p.uploadedAt,
-        title: `«${p.title}» — ${p.status === ResearchPaperStatus.CHECKS_PASSED
-          ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}٪، AI ${p.aiContentPct ?? '—'}٪)`
-          : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
+        title: `«${p.title}» — ${p.status === ResearchPaperStatus.UPLOADED
+          ? 'لم يُفحص بعد — بانتظار فحص الانتحال'
+          : p.status === ResearchPaperStatus.CHECKS_PASSED
+            ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}٪، AI ${p.aiContentPct ?? '—'}٪)`
+            : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
         actionTo: '/research',
       })),
       ...lowAttendanceStudents.map((g) => {
@@ -312,7 +446,7 @@ router.get('/dashboard', async (req, res, next) => {
           id: `att-${g.studentId}`,
           author: u ?? null,
           meta: 'تنبيه حضور',
-          when: now,
+          when: lastAbsenceAt.get(g.studentId) ?? now,
           title: `${g._count.studentId} غيابات في آخر 30 يوماً — ${u ? `${u.firstName} ${u.lastName}` : 'طالب'} يحتاج متابعة`,
           actionTo: '/attendance',
         };

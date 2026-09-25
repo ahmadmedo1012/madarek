@@ -15,6 +15,7 @@ import { EmptyState, ErrorState, LoadingState, DetailSkeleton } from '../../comp
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
+import { formatDateTimeAr } from '../../lib/format';
 import {
   colleges, getCollegeIdentityByRecord,
 } from '../../data/colleges.config';
@@ -23,6 +24,10 @@ import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
 import { useUrlQueryState } from '../../hooks/useUrlQueryState';
 import type { AcademicPosition } from '../../stores/auth.store';
+// D14 CSS split (13-17): this sheet also styles the .comp-* competitions
+// grid rendered by the page below and is shared with five other lazy
+// consumers, so it lands in the chunk-shared CSS.
+import '../../styles/colleges.css';
 
 interface CollegeListItem {
   id: string;
@@ -118,10 +123,10 @@ const POSITION_LABEL: Record<AcademicPosition, string> = {
   DEPARTMENT_HEAD: 'رئيس قسم',
 };
 
-function formatDateTime(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' });
-}
+/* formatDateTime (ar-LY medium date + short time) is
+ * lib/format.formatDateTimeAr (13-15 fold, audit 11-f P2-1) — identical
+ * to the copy that still lives in OwnerSystemPage (owner pages belong
+ * to another batch; hand-off noted in the wave-13 worklog). */
 
 function formatRelative(iso: string): string {
   const d = new Date(iso);
@@ -434,13 +439,34 @@ export function CollegeDetailPage() {
       {/* Hero / masthead — real photography via identity.heroImage when it
           lands (Principle III: never synthetic); the API emoji chip is the
           default treatment. The optional motif renders as a decorative
-          trailing wash behind the titles. */}
+          trailing wash behind the titles. Both imgs are dormant today; the
+          width/height attrs are square ratio hints matching the CSS-pinned
+          geometry (72px chip / aspect-ratio:1 wash) so the day real
+          photography lands it reserves layout without CLS (audit 11-g
+          P2-4) — lazy+async keeps the decorative wash off the load path. */}
       <SectionAccent kind="scene-paint" as="header" className="college-hero page-header">
         {identity?.motif && (
-          <img className="college-hero-motif" src={identity.motif.src} alt={identity.motif.alt} aria-hidden />
+          <img
+            className="college-hero-motif"
+            src={identity.motif.src}
+            alt={identity.motif.alt}
+            aria-hidden
+            width={512}
+            height={512}
+            loading="lazy"
+            decoding="async"
+          />
         )}
         {identity?.heroImage ? (
-          <img className="college-hero-media" src={identity.heroImage.src} alt={identity.heroImage.alt} />
+          <img
+            className="college-hero-media"
+            src={identity.heroImage.src}
+            alt={identity.heroImage.alt}
+            width={72}
+            height={72}
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <div className="college-hero-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={36} /></div>
         )}
@@ -578,7 +604,7 @@ export function CollegeDetailPage() {
                     <div className="event-title">{e.title}</div>
                     <div className="event-meta">
                       <span><Icon icon={MapPin} size={12} /> {e.location}</span>
-                      <span><Icon icon={Clock} size={12} /> {formatDateTime(e.startsAt)}</span>
+                      <span><Icon icon={Clock} size={12} /> {formatDateTimeAr(e.startsAt)}</span>
                       <span>{e._count.rsvps}/{e.capacity}</span>
                     </div>
                   </div>
@@ -600,7 +626,7 @@ export function CollegeDetailPage() {
                   <div className="live-body">
                     <div className="live-title">{l.title}</div>
                     <div className="live-meta">
-                      {l.offering.course.code} · {l.teacher.firstName} {l.teacher.lastName} · {formatDateTime(l.scheduledAt)}
+                      {l.offering.course.code} · {l.teacher.firstName} {l.teacher.lastName} · {formatDateTimeAr(l.scheduledAt)}
                     </div>
                   </div>
                 </li>

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { AttendanceStatus, Role } from '@prisma/client';
+import { AttendanceStatus, Role, SubmissionStatus } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -8,16 +9,33 @@ import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
+import { assertWithinScope, getGovernanceScope } from '../../lib/governance.js';
 
 const router = Router();
 router.use(authMiddleware);
 
 // ════════════════════════════════════════════════════════════════
 //  Teacher view of their teaching scope
+//
+//  NOTE (audit 11-d P2-19): this file also hosts the admin/owner
+//  governance surface for teacher onboarding (suggestions, verify,
+//  leadership positions) and ADMIN/QUALITY governance scopes
+//  (`/admin/users/:id/scope`) — a placement left over from early
+//  routing. Paths are stable; relocation belongs to a dedicated
+//  refactor wave, not a fix wave.
 // ════════════════════════════════════════════════════════════════
 
-/** GET /teacher/me/offerings — offerings I teach with summary KPIs */
-router.get('/teacher/me/offerings', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
+/**
+ * GET /teacher/me/offerings — offerings I teach with summary KPIs.
+ *
+ * Roles: TEACHER (+ OWNER — an owner can hold teaching assignments and
+ * assertOwnsOffering already grants them the same offering surfaces).
+ * ADMIN dropped (audit 11-d P2-12): admins are never the `teacherId`
+ * of an offering (their access flows through CURRICULUM_EDIT_ANY per
+ * offering), so requireRole(ADMIN) only ever produced an empty 200 —
+ * the same incoherent split teacher-profile.routes.ts removed.
+ */
+router.get('/teacher/me/offerings', requireRole(Role.TEACHER, Role.OWNER), async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const offerings = await prisma.courseOffering.findMany({
@@ -49,26 +67,186 @@ interface StudentRow {
   avgGrade: number;
   watchPct: number;
   riskScore: number;
-  riskLevel: 'OK' | 'WATCH' | 'AT_RISK' | 'CRITICAL';
+  riskLevel: RiskLevel;
   signals: string[];
   suggestion: string;
 }
 
-function classifyRisk(score: number): 'OK' | 'WATCH' | 'AT_RISK' | 'CRITICAL' {
+// ─── Pure analytics helpers (exported for DB-free tests) ──────────
+// One shared implementation of the three KPI formulas that used to
+// drift between /students, /analytics and /risks (audit 11-d P1-4,
+// P1-5, P1-6). The dashboards (teacher-dashboard / student-dashboard)
+// must mirror these semantics; the eventual move into src/lib/risk.ts
+// is a consolidation-wave job (audit P2-20).
+
+export type RiskLevel = 'OK' | 'WATCH' | 'AT_RISK' | 'CRITICAL';
+
+export function classifyRisk(score: number): RiskLevel {
   if (score >= 80) return 'OK';
   if (score >= 65) return 'WATCH';
   if (score >= 45) return 'AT_RISK';
   return 'CRITICAL';
 }
 
-function suggestionFor(row: { attendancePct: number; avgGrade: number; watchPct: number; absences: number }): string {
+/**
+ * Unified attendance percentage (audit 11-d P1-5 + P2-2).
+ *
+ *   pct = (PRESENT + 0.5·LATE) / (opportunities − EXCUSED)
+ *
+ * LATE earns half credit; EXCUSED marks are removed from the
+ * denominator (an excused absence never counts against the student).
+ * `opportunities` is the total number of countable marks — per student
+ * it is the offering's session count, course-wide it is the total
+ * record count. The empty state (nothing countable yet — a brand-new
+ * course) is 100: the platform's neutral convention, so a course with
+ * no roll-calls never reads as mass absence.
+ */
+export function attendancePct(statuses: ReadonlyArray<AttendanceStatus>, opportunities: number): number {
+  let present = 0;
+  let late = 0;
+  let excused = 0;
+  for (const status of statuses) {
+    if (status === AttendanceStatus.PRESENT) present += 1;
+    else if (status === AttendanceStatus.LATE) late += 1;
+    else if (status === AttendanceStatus.EXCUSED) excused += 1;
+  }
+  const counted = opportunities - excused;
+  if (counted <= 0) return 100;
+  return Math.round(((present + late * 0.5) / counted) * 100);
+}
+
+/**
+ * Watch-through percentage of a lecture set: round(watched/total).
+ * 0 whenever there is nothing watchable (totalSec ≤ 0) or nothing
+ * watched — the two states are indistinguishable at this layer; the
+ * risk assessment separates them via `watchTotalSec`.
+ */
+export function watchPctOf(watchedSec: number, totalSec: number): number {
+  return totalSec > 0 ? Math.round((watchedSec / totalSec) * 100) : 0;
+}
+
+/**
+ * Percentage score of one graded artifact (a Grade-table row or a
+ * GRADED submission). Returns null when the artifact carries no
+ * signal — unset grade or a non-positive maxScore — so ÷0 → NaN can
+ * never poison an average.
+ */
+export function gradePct(score: number | null, maxScore: number): number | null {
+  if (score === null || !(maxScore > 0) || !Number.isFinite(score)) return null;
+  return (score / maxScore) * 100;
+}
+
+/**
+ * Mean percentage of a list of scores, rounded; null when nothing was
+ * graded yet — each surface picks its own empty-state semantics (risk
+ * scoring treats "no grades" as neutral, displays show 0).
+ */
+export function meanPct(pcts: ReadonlyArray<number>): number | null {
+  if (pcts.length === 0) return null;
+  return Math.round(pcts.reduce((sum, x) => sum + x, 0) / pcts.length);
+}
+
+/**
+ * Per-student percentage scores of every graded artifact (audit 11-d
+ * P1-6, read side): Grade-table rows AND teacher-graded submissions —
+ * assignment grading only writes `Submission.grade`, so ignoring
+ * submissions silently omitted all assignment work from the roster,
+ * analytics and risk scoring.
+ */
+export function gradePctsByStudent(input: {
+  grades: ReadonlyArray<{ studentId: string; score: number | Prisma.Decimal; maxScore: number }>;
+  assignments: ReadonlyArray<{
+    maxScore: number;
+    submissions: ReadonlyArray<{ studentId: string; grade: number | Prisma.Decimal | null }>;
+  }>;
+}): Map<string, number[]> {
+  const byStudent = new Map<string, number[]>();
+  const push = (studentId: string, pct: number | null) => {
+    if (pct === null) return;
+    const cur = byStudent.get(studentId);
+    if (cur) cur.push(pct);
+    else byStudent.set(studentId, [pct]);
+  };
+  for (const g of input.grades) push(g.studentId, gradePct(Number(g.score), g.maxScore));
+  for (const a of input.assignments) {
+    for (const s of a.submissions) push(s.studentId, gradePct(s.grade === null ? null : Number(s.grade), a.maxScore));
+  }
+  return byStudent;
+}
+
+/**
+ * Suggestion text for the risk cards. `avgGrade` is the risk-model
+ * value (neutral 100 when nothing is graded yet) and `watchPct` is
+ * null when the course has nothing watchable — an ungraded student
+ * must not be told their grades are below 50%, nor a lecture-less
+ * course told to open the platform more.
+ */
+function suggestionFor(row: { attendancePct: number; avgGrade: number; watchPct: number | null; absences: number }): string {
   const issues: string[] = [];
   if (row.attendancePct < 60) issues.push('حضوره منخفض — تواصل معه قبل المحاضرة القادمة');
   if (row.avgGrade < 50) issues.push('درجاته أقل من 50% — اقترح جلسة دعم فردية');
-  if (row.watchPct < 40) issues.push('متابعة المحاضرات المسجَّلة ضعيفة — تأكد أنه يفتح المنصة');
+  if (row.watchPct !== null && row.watchPct < 40) issues.push('متابعة المحاضرات المسجَّلة ضعيفة — تأكد أنه يفتح المنصة');
   if (row.absences >= 3) issues.push(`غاب ${row.absences} مرات متتالية — قد يكون انقطع عن الدراسة`);
   if (issues.length === 0) return 'الأداء مستقر — استمر في المتابعة الدورية';
   return issues.join(' · ');
+}
+
+/**
+ * Unified risk assessment (audit 11-d P1-4): risk = 40%·attendance +
+ * 40%·grade + 20%·watch, with ONE empty-state semantics — a student
+ * with nothing graded and no roll-calls is NEUTRAL (score 80, OK),
+ * never CRITICAL. Previously /students defaulted the grade factor to
+ * 0 (every new-course student flagged CRITICAL) while /risks
+ * defaulted it to 100 — the same student was labeled differently per
+ * page.
+ */
+export interface StudentRiskInput {
+  attendancePct: number;
+  /** Cumulative watched/total seconds of this student's lecture-view
+   *  events in the offering. totalSec = 0 → the course has nothing
+   *  watchable yet: the watch signal and suggestion stay silent (a
+   *  brand-new course must not read as weak follow-through) and the
+   *  watch factor is 0. */
+  watchedSec: number;
+  watchTotalSec: number;
+  /** Percentage scores of every graded artifact for this student
+   *  (Grade table + GRADED submissions). Empty = nothing graded yet. */
+  gradePcts: ReadonlyArray<number>;
+  absences: number;
+}
+
+export interface StudentRiskAssessment {
+  riskScore: number;
+  riskLevel: RiskLevel;
+  /** Watch-through percentage as displayed (0 when nothing watchable). */
+  watchPct: number;
+  signals: string[];
+  suggestion: string;
+}
+
+export function assessStudentRisk(input: StudentRiskInput): StudentRiskAssessment {
+  const hasGrades = input.gradePcts.length > 0;
+  const avgGrade = meanPct(input.gradePcts) ?? 100; // neutral: no grades yet ≠ failing
+  const watchPct = watchPctOf(input.watchedSec, input.watchTotalSec);
+  const hasWatchableContent = input.watchTotalSec > 0;
+  const riskScore = Math.round(0.4 * input.attendancePct + 0.4 * avgGrade + 0.2 * watchPct);
+  const signals: string[] = [];
+  if (input.attendancePct < 60) signals.push('حضور منخفض');
+  if (hasGrades && avgGrade < 50) signals.push('درجات منخفضة');
+  if (hasWatchableContent && watchPct < 40) signals.push('متابعة ضعيفة');
+  if (input.absences >= 3) signals.push('غياب متكرر');
+  return {
+    riskScore,
+    riskLevel: classifyRisk(riskScore),
+    watchPct,
+    signals,
+    suggestion: suggestionFor({
+      attendancePct: input.attendancePct,
+      avgGrade,
+      watchPct: hasWatchableContent ? watchPct : null,
+      absences: input.absences,
+    }),
+  };
 }
 
 /**
@@ -96,6 +274,15 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
         },
         attendance: { include: { records: true } },
         grades: true,
+        // GRADED submissions feed the same averages as Grade-table rows
+        // (audit 11-d P1-6 read side) — assignment grading never writes
+        // a Grade row.
+        assignments: {
+          select: {
+            maxScore: true,
+            submissions: { where: { status: SubmissionStatus.GRADED }, select: { studentId: true, grade: true } },
+          },
+        },
         lectures: { select: { id: true } },
       },
     });
@@ -121,33 +308,36 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
       eventsByStudent.set(ev.studentId, cur);
     }
 
+    // Per-student graded-artifact percentages (Grade table + GRADED
+    // submissions — audit 11-d P1-6).
+    const gradePcts = gradePctsByStudent({ grades: offering.grades, assignments: offering.assignments });
+
     const students: StudentRow[] = offering.enrollments.map((enr) => {
       const stu = enr.student;
-      // Attendance breakdown
+      // Attendance breakdown (unified formula: late = half credit,
+      // excused excluded — audit 11-d P1-5/P2-2)
       const myAttendance = offering.attendance.flatMap((s) => s.records.filter((r) => r.studentId === stu.id));
-      const presentCount = myAttendance.filter((r) => r.status === AttendanceStatus.PRESENT).length;
-      const lateCount = myAttendance.filter((r) => r.status === AttendanceStatus.LATE).length;
       const absences = myAttendance.filter((r) => r.status === AttendanceStatus.ABSENT).length;
-      const attendancePct = totalSessions === 0 ? 100 : Math.round(((presentCount + lateCount * 0.5) / totalSessions) * 100);
+      const lateCount = myAttendance.filter((r) => r.status === AttendanceStatus.LATE).length;
+      const attPct = attendancePct(myAttendance.map((r) => r.status), totalSessions);
 
-      // Average grade
-      const myGrades = offering.grades.filter((g) => g.studentId === stu.id);
-      const avgGrade = myGrades.length === 0
-        ? 0
-        : Math.round(myGrades.reduce((sum, g) => sum + Number(g.score) / g.maxScore * 100, 0) / myGrades.length);
+      // Displayed average over every graded artifact; 0 when nothing
+      // is graded yet (the risk model stays neutral — see below).
+      const myGradePcts = gradePcts.get(stu.id) ?? [];
+      const avgGrade = meanPct(myGradePcts) ?? 0;
 
-      // Watch% over course lectures (from the grouped events)
+      // Grouped watch events for this student (the risk assessment
+      // derives the watch% and its signal from watchedSec/totalSec).
       const agg = eventsByStudent.get(stu.id);
-      const watchPct = agg && agg.duration > 0 ? Math.round((agg.watched / agg.duration) * 100) : 0;
 
-      const riskScore = Math.round(0.4 * attendancePct + 0.4 * avgGrade + 0.2 * watchPct);
-      const riskLevel = classifyRisk(riskScore);
-
-      const signals: string[] = [];
-      if (attendancePct < 60) signals.push('حضور منخفض');
-      if (avgGrade < 50 && myGrades.length > 0) signals.push('درجات منخفضة');
-      if (watchPct < 40) signals.push('متابعة ضعيفة');
-      if (absences >= 3) signals.push('غياب متكرر');
+      // Risk uses the unified neutral defaults (no grades yet ≠ failing)
+      const risk = assessStudentRisk({
+        attendancePct: attPct,
+        watchedSec: agg?.watched ?? 0,
+        watchTotalSec: agg?.duration ?? 0,
+        gradePcts: myGradePcts,
+        absences,
+      });
 
       return {
         studentId: stu.id,
@@ -155,15 +345,15 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
         universityId: stu.studentProfile?.universityId ?? '—',
         avatarInitials: stu.avatarInitials,
         avatarColor: stu.avatarColor,
-        attendancePct,
+        attendancePct: attPct,
         absences,
         lateCount,
         avgGrade,
-        watchPct,
-        riskScore,
-        riskLevel,
-        signals,
-        suggestion: suggestionFor({ attendancePct, avgGrade, watchPct, absences }),
+        watchPct: risk.watchPct,
+        riskScore: risk.riskScore,
+        riskLevel: risk.riskLevel,
+        signals: risk.signals,
+        suggestion: risk.suggestion,
       };
     });
 
@@ -185,8 +375,17 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
         enrollments: { select: { studentId: true } },
         attendance: { include: { records: true } },
         grades: true,
-        assignments: { include: { _count: { select: { submissions: true } } } },
-        examTemplates: { include: { _count: { select: { attempts: true } } } },
+        // GRADED submissions feed the same average/pass-rate as Grade
+        // table rows (audit 11-d P1-6 read side). The old `_count`
+        // includes on assignments/examTemplates were loaded and never
+        // read (only `.length` is used) — dropped.
+        assignments: {
+          select: {
+            maxScore: true,
+            submissions: { where: { status: SubmissionStatus.GRADED }, select: { studentId: true, grade: true } },
+          },
+        },
+        examTemplates: { select: { id: true } },
       },
     });
     if (!offering) throw AppError.notFound('Offering not found');
@@ -194,13 +393,22 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
     const enrolled = offering.enrollments.length;
     const totalSessions = offering.attendance.length;
     const allRecords = offering.attendance.flatMap((s) => s.records);
-    const presents = allRecords.filter((r) => r.status === 'PRESENT').length;
-    const totalRecords = allRecords.length;
-    const overallAttendance = totalRecords === 0 ? 0 : Math.round((presents / totalRecords) * 100);
+    // Same unified formula as the roster (late = half credit, excused
+    // excluded, empty course = neutral 100) — previously this surface
+    // used a different formula (late = zero credit) than the roster.
+    const overallAttendance = attendancePct(allRecords.map((r) => r.status), allRecords.length);
 
-    const allGrades = offering.grades.map((g) => Number(g.score) / g.maxScore * 100);
-    const avgGrade = allGrades.length === 0 ? 0 : Math.round(allGrades.reduce((s, x) => s + x, 0) / allGrades.length);
-    const passRate = allGrades.length === 0 ? 0 : Math.round((allGrades.filter((g) => g >= 50).length / allGrades.length) * 100);
+    // Course grade stats over every graded artifact: Grade-table rows
+    // AND teacher-graded submissions (audit 11-d P1-6).
+    const allGradePcts = [
+      ...offering.grades.map((g) => gradePct(Number(g.score), g.maxScore)),
+      ...offering.assignments.flatMap((a) =>
+        a.submissions.map((s) => gradePct(s.grade === null ? null : Number(s.grade), a.maxScore))),
+    ].filter((p): p is number => p !== null);
+    const avgGrade = meanPct(allGradePcts) ?? 0;
+    const passRate = allGradePcts.length === 0
+      ? 0
+      : Math.round((allGradePcts.filter((p) => p >= 50).length / allGradePcts.length) * 100);
 
     res.json({
       data: {
@@ -217,8 +425,15 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
 });
 
 /**
- * GET /teacher/risks — at-risk students across ALL my offerings (top 10).
- * Uses the same risk scoring logic.
+ * GET /teacher/risks — at-risk students across my offerings (top 15
+ * by ascending riskScore). Same scoring and empty-state defaults as
+ * the roster (assessStudentRisk) — OK students are skipped.
+ *
+ * The scan covers the teacher's 20 most recently created offerings:
+ * the query hydrates full enrollment/attendance/grade trees per
+ * offering, so the window is a deliberate bound (audit 11-d P2-3 —
+ * teachers with more than 20 offerings lose risk visibility on the
+ * oldest ones).
  */
 router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
@@ -236,6 +451,14 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
         },
         attendance: { include: { records: true } },
         grades: true,
+        // Same read-side widening as the roster (audit 11-d P1-6):
+        // GRADED submissions count as graded artifacts.
+        assignments: {
+          select: {
+            maxScore: true,
+            submissions: { where: { status: SubmissionStatus.GRADED }, select: { studentId: true, grade: true } },
+          },
+        },
         lectures: { select: { id: true } },
       },
       orderBy: { createdAt: 'desc' },
@@ -274,49 +497,45 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
       courseIcon: string | null;
       courseColor: string | null;
       riskScore: number;
-      riskLevel: 'OK' | 'WATCH' | 'AT_RISK' | 'CRITICAL';
+      riskLevel: RiskLevel;
       signals: string[];
       suggestion: string;
     }
     const all: RiskRow[] = [];
     for (const off of offerings) {
       const totalSessions = off.attendance.length;
+      const gradePcts = gradePctsByStudent({ grades: off.grades, assignments: off.assignments });
       for (const enr of off.enrollments) {
-        const myAtt = off.attendance.flatMap((s) => s.records.filter((r) => r.studentId === enr.student.id));
-        const presentCount = myAtt.filter((r) => r.status === 'PRESENT').length;
-        const lateCount = myAtt.filter((r) => r.status === 'LATE').length;
-        const absences = myAtt.filter((r) => r.status === 'ABSENT').length;
-        const attendancePct = totalSessions === 0 ? 100 : Math.round(((presentCount + lateCount * 0.5) / totalSessions) * 100);
+        const stu = enr.student;
+        const myAtt = off.attendance.flatMap((s) => s.records.filter((r) => r.studentId === stu.id));
+        const absences = myAtt.filter((r) => r.status === AttendanceStatus.ABSENT).length;
+        const attPct = attendancePct(myAtt.map((r) => r.status), totalSessions);
 
-        const myGrades = off.grades.filter((g) => g.studentId === enr.student.id);
-        const avgGrade = myGrades.length === 0
-          ? 100  // assume OK if no grades yet
-          : Math.round(myGrades.reduce((s, g) => s + Number(g.score) / g.maxScore * 100, 0) / myGrades.length);
+        const watchAggEntry = watchAgg.get(`${off.id}|${stu.id}`);
 
-        const watchAggEntry = watchAgg.get(`${off.id}|${enr.student.id}`);
-        const watchPct = watchAggEntry && watchAggEntry.duration > 0
-          ? Math.round((watchAggEntry.watched / watchAggEntry.duration) * 100)
-          : 0; // real signal — no more hardcoded 70 placeholder
-        const riskScore = Math.round(0.4 * attendancePct + 0.4 * avgGrade + 0.2 * watchPct);
-        const level = classifyRisk(riskScore);
-        if (level === 'OK') continue; // skip green students
-        const signals: string[] = [];
-        if (attendancePct < 60) signals.push('حضور منخفض');
-        if (avgGrade < 50 && myGrades.length > 0) signals.push('درجات منخفضة');
-        if (absences >= 3) signals.push('غياب متكرر');
+        // Unified with the roster: same formula, same neutral defaults
+        // (no grades yet ≠ failing), same signal set.
+        const risk = assessStudentRisk({
+          attendancePct: attPct,
+          watchedSec: watchAggEntry?.watched ?? 0,
+          watchTotalSec: watchAggEntry?.duration ?? 0,
+          gradePcts: gradePcts.get(stu.id) ?? [],
+          absences,
+        });
+        if (risk.riskLevel === 'OK') continue; // skip green students
         all.push({
-          studentId: enr.student.id,
-          name: `${enr.student.firstName} ${enr.student.lastName}`,
-          avatarInitials: enr.student.avatarInitials,
-          avatarColor: enr.student.avatarColor,
+          studentId: stu.id,
+          name: `${stu.firstName} ${stu.lastName}`,
+          avatarInitials: stu.avatarInitials,
+          avatarColor: stu.avatarColor,
           offeringId: off.id,
           courseName: off.course.name,
           courseIcon: off.course.iconEmoji,
           courseColor: off.course.themeColor,
-          riskScore,
-          riskLevel: level,
-          signals,
-          suggestion: suggestionFor({ attendancePct, avgGrade, watchPct, absences }),
+          riskScore: risk.riskScore,
+          riskLevel: risk.riskLevel,
+          signals: risk.signals,
+          suggestion: risk.suggestion,
         });
       }
     }
@@ -733,10 +952,45 @@ router.post(
  *
  * Restricted to users with ROLES_ASSIGN. Refuses if the target isn't
  * ADMIN/QUALITY (other roles use scope differently or not at all).
+ *
+ * CRITICAL guards (12-4 hand-off #1): the scope-setter used to accept
+ * ANY ROLES_ASSIGN holder with no actor-scope or self check — a
+ * faculty-scoped ADMIN could clear their own scopeFacultyId
+ * (self-escalation to university-wide) or rewrite any ADMIN/QUALITY
+ * scope. Now:
+ *  - self-changes are refused outright (widening or narrowing — the
+ *    actor's own scope must never be movable by the actor); and
+ *  - ADMIN/QUALITY are platform-governance roles (never within a
+ *    faculty scope), so only a university-wide actor may write a
+ *    scope at all.
  */
-const assignScopeSchema = z.object({
+export const assignScopeSchema = z.object({
   scopeFacultyId: z.string().cuid().nullable(),
 }).strict();
+
+/**
+ * Pure decision half of the scope guards — exported for DB-free
+ * tests. `actorScopeFacultyId` must come from a fresh
+ * `getGovernanceScope` read, never from client claims.
+ */
+export function assertCanAssignScope(input: {
+  actorId: string;
+  actorScopeFacultyId: string | null;
+  targetId: string;
+  targetRole: Role;
+}): void {
+  if (input.actorId === input.targetId) {
+    throw AppError.forbidden('You cannot change your own governance scope');
+  }
+  assertWithinScope(input.actorScopeFacultyId, {
+    role: input.targetRole,
+    // Platform-governance targets carry no faculty association — the
+    // predicate decides purely on the role (always out of faculty
+    // scope for a scoped actor).
+    studentFacultyId: null,
+    teacherFacultyId: null,
+  });
+}
 
 router.post(
   '/admin/users/:id/scope',
@@ -749,9 +1003,20 @@ router.post(
         select: { id: true, role: true, scopeFacultyId: true },
       });
       if (!target) throw AppError.notFound('User not found');
-      if (target.role !== 'ADMIN' && target.role !== 'QUALITY') {
-        throw new AppError('BAD_REQUEST', 'Scope only applies to ADMIN/QUALITY users', 400);
+      if (target.role !== Role.ADMIN && target.role !== Role.QUALITY) {
+        throw AppError.badRequest('Scope only applies to ADMIN/QUALITY users');
       }
+      // Fresh actor-scope read (never trust a client-side claim): the
+      // guard must reflect the actor's CURRENT reach, and self-changes
+      // are refused outright (see assertCanAssignScope). Read once,
+      // reused in the audit metadata.
+      const actorScopeFacultyId = await getGovernanceScope(req.user!.id);
+      assertCanAssignScope({
+        actorId: req.user!.id,
+        actorScopeFacultyId,
+        targetId: target.id,
+        targetRole: target.role,
+      });
       // Wrap update + audit in a transaction — scope changes are
       // governance-sensitive (university-wide ↔ faculty-scoped) and
       // must be auditable.
@@ -771,6 +1036,9 @@ router.post(
               oldScopeFacultyId: target.scopeFacultyId,
               newScopeFacultyId: req.body.scopeFacultyId,
               targetRole: target.role,
+              // Actor's own reach at decision time — forensic trail for
+              // a governance-sensitive write.
+              actorScopeFacultyId,
             },
           },
         });

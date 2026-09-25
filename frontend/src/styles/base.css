@@ -254,13 +254,8 @@
     display: flex; flex-direction: column; gap: var(--sp-2);
     min-inline-size: 0; max-inline-size: 100%;
   }
-  .page-eyebrow {
-    font-size: var(--fs-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--text-muted);
-    font-weight: var(--fw-semibold);
-  }
+  /* 13-17 dead-selector sweep (11-g P2-7): .page-eyebrow deleted —
+     zero TSX consumers. */
   .page-title {
     font-family: var(--font-display);
     /* wave 2-a (0-a P1-6) — was raw clamp(28px, 3.4vw, 40px); now the
@@ -274,26 +269,15 @@
     letter-spacing: var(--ls-tight);
     color: var(--text);
   }
-  .page-lede {
-    font-size: var(--fs-body-lg);
-    color: var(--text-secondary);
-    max-inline-size: 64ch;
-    line-height: var(--lh-base);
-  }
-  .page-actions { display: flex; gap: var(--sp-2); flex-shrink: 0; flex-wrap: wrap; }
-
-  @media (max-width: 640px) {
-    /* wave 2-a — the dead `.page-title { font-size: 28px }` line was
-       removed (polish's 22px var(--fs-xl) wins at this width; the
-       clamp's 28px floor covers the no-polish case). Lede consumes its
-       token (same 15px). */
-    .page-lede  { font-size: var(--fs-body); }
-  }
+  /* 13-17 dead-selector sweep (11-g P2-7): .page-lede and .page-actions
+     deleted — zero TSX consumers (page headers render the title block;
+     ledes live in page-scoped sheets). */
 
   /* helpers retained */
   .stack > * + * { margin-block-start: var(--sp-5); }
   .row { display: flex; align-items: center; gap: var(--sp-3); }
-  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; }
+  /* 13-17 dead-selector sweep (11-g P2-7): .truncate deleted — zero
+     TSX consumers. */
   .visually-hidden {
     position: absolute; width: 1px; height: 1px;
     padding: 0; margin: -1px; overflow: hidden;

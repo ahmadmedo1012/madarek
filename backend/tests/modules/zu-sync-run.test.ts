@@ -1,16 +1,18 @@
 /**
  * Backend unit test — `runSync` from `backend/src/lib/zu-sync/index.ts`.
  *
- * DB-free contract test with a mocked Prisma client and a tiny mocked
- * STATIC_FACTS source. Pins down the three guarantees the admin sync
- * page relies on:
+ * DB-free contract test with a mocked Prisma client, a tiny mocked
+ * STATIC_FACTS source and a mocked pino logger. Pins down the
+ * guarantees the admin sync page relies on:
  *   - fact add / update / refresh / stale transitions
  *   - SyncRun finalized exactly once on both success and failure paths
  *     (finally block) — a mid-loop throw must not strand it in RUNNING
  *   - stale RUNNING rows (>15 min) are auto-failed before a new run row
  *     is created
+ *   - failures surface through the structured logger (logger.error),
+ *     never `console.error` (12-8 hand-off #3)
  */
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import type { FactPatch } from '../../src/lib/zu-sync/static-source.js';
 
 vi.mock('../../src/db.js', () => ({
@@ -36,9 +38,13 @@ vi.mock('../../src/lib/zu-sync/static-source.js', () => ({
     { key: 'motto', value: 'same-value', category: 'strategic', source: 'zu.edu.ly:about' },
   ] satisfies FactPatch[],
 }));
+vi.mock('../../src/logger.js', () => ({
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+}));
 
 import { runSync, STALE_RUNNING_RUN_MS } from '../../src/lib/zu-sync/index';
 import { prisma } from '../../src/db.js';
+import { logger } from '../../src/logger.js';
 
 const syncRunUpdate = vi.mocked(prisma.syncRun.update);
 const syncRunCreate = vi.mocked(prisma.syncRun.create);
@@ -57,15 +63,12 @@ const factFindMany = vi.mocked(prisma.universityFact.findMany);
  */
 type FactFindUniqueImpl = NonNullable<Parameters<typeof factFindUnique.mockImplementation>[0]>;
 
-let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+// runSync failures must surface on the structured logger (12-8 hand-off
+// #3: console.error → logger.error) — the spy pins the pino call shape.
+const loggerError = vi.mocked(logger.error);
 
 beforeEach(() => {
   vi.clearAllMocks();
-  consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-});
-
-afterEach(() => {
-  consoleErrorSpy.mockRestore();
 });
 
 describe('runSync — stale RUNNING reap', () => {
@@ -197,7 +200,11 @@ describe('runSync — SyncRun finalization', () => {
     expect(data.errorMsg).toContain('connection reset');
     // …and not report phantom progress in the return value.
     expect(result.factsAdded).toBe(0);
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(loggerError).toHaveBeenCalledTimes(1);
+    expect(loggerError).toHaveBeenCalledWith(
+      { err: expect.any(Error), source: 'static-markdown' },
+      '[sync] run failed',
+    );
   });
 
   it('does not mask the sync outcome when the finalizing write itself fails', async () => {
@@ -209,9 +216,10 @@ describe('runSync — SyncRun finalization', () => {
 
     // The sync succeeded; the bookkeeping failure is logged, not thrown.
     expect(result.status).toBe('SUCCESS');
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(loggerError).toHaveBeenCalledTimes(1);
+    expect(loggerError).toHaveBeenCalledWith(
+      { err: expect.any(Error), runId: 'run-1' },
       '[sync] failed to finalize SyncRun row',
-      expect.any(Error),
     );
   });
 

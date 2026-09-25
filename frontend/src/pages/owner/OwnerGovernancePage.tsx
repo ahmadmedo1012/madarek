@@ -1,5 +1,6 @@
 import { ShieldCheck, UserPlus, Key } from 'lucide-react';
 import { Line, Doughnut } from 'react-chartjs-2';
+import { useMemo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,6 +20,7 @@ import {
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
+import { useReducedMotion } from '../../components/motion';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
 
@@ -44,11 +46,21 @@ export function OwnerGovernancePage() {
   const loginAnalytics = useOwnerLoginAnalytics();
   const govData = governance.data;
   const loginData = loginAnalytics.data;
-  const c = chartColors();
   // Remounts each chart canvas when the light/dark theme flips.
   const themeKey = useChartThemeKey();
+  // Baking the reduced-motion animation profile into memoized options
+  // requires re-building them when the OS flag flips mid-session too.
+  const reducedMotion = useReducedMotion();
 
-  const growthChartData = govData ? {
+  // Chart data/options are memoized (audit 11-f P2-2): either query
+  // settling re-rendered the page and rebuilt every data/options object,
+  // re-triggering react-chartjs-2's options reapply + animated update.
+  // themeKey participates because the colors and option factories resolve
+  // CSS custom properties at call time — the remounted canvas must
+  // re-resolve them for the new theme.
+  const c = useMemo(() => chartColors(), [themeKey]);
+
+  const growthChartData = useMemo(() => govData ? {
     labels: govData.weeklyGrowth.map((w) => w.week),
     datasets: [
       {
@@ -62,11 +74,14 @@ export function OwnerGovernancePage() {
         pointBackgroundColor: c.accent,
       },
     ],
-  } : null;
+  } : null, [govData, c]);
 
-  const growthOptions = cartesianOptions();
+  const growthOptions = useMemo(
+    () => cartesianOptions(),
+    [themeKey, reducedMotion],
+  );
 
-  const doughnutData = loginData ? {
+  const doughnutData = useMemo(() => loginData ? {
     labels: ['ناجحة', 'فاشلة'],
     datasets: [
       {
@@ -76,17 +91,17 @@ export function OwnerGovernancePage() {
         hoverOffset: 6,
       },
     ],
-  } : null;
+  } : null, [loginData, c]);
 
   // The authored moment: the total attempt count lands in the doughnut's
   // center (madarekCenterLabelPlugin, metric type tokens) while the arcs
   // rotate in — the figure was previously invisible behind the legend.
-  const doughnutOptions = radialOptions({
+  const doughnutOptions = useMemo(() => radialOptions({
     legend: true,
     centerLabel: loginData
       ? { value: loginData.total.toLocaleString('ar-LY'), label: 'إجمالي المحاولات' }
       : undefined,
-  });
+  }), [loginData, themeKey, reducedMotion]);
 
   return (
     <div className="page">

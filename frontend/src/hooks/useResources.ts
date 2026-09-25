@@ -1655,10 +1655,33 @@ export interface StartedAttempt {
   status?: string;
   questions: Array<{ id: string; type: QType; prompt: string; choices: string[] | null; points: number }>;
 }
+/* D5 (WAVE-12-MAP, backend batch 12-1) — exam resume contract: when an
+   IN_PROGRESS attempt exists, POST /exams/templates/:id/start returns the
+   fresh-start shape PLUS `resumed: true` and the saved attempt; a GRADED /
+   EXPIRED / SUBMITTED attempt answers `alreadyAttempted: true` instead
+   (terminal states). `value` is the raw saved input — the choice index for
+   MCQ / TRUE_FALSE, the answer text otherwise (null when nothing was
+   saved); the object form is accepted defensively. Structurally identical
+   to the page-local mirror in pages/exams/OnlineExamsPages.tsx (12-10),
+   which keeps its own copies until it migrates to these shared types. */
+export interface SavedAnswerValue {
+  choiceIndex?: number | null;
+  answerText?: string | null;
+}
+export interface ResumedAttempt {
+  id: string;
+  status: string;
+  expiresAt: string;
+  answers: Array<{ questionId: string; value: SavedAnswerValue | number | string | null }>;
+}
+export type StartExamResponse = StartedAttempt & {
+  resumed?: boolean;
+  attempt?: ResumedAttempt;
+};
 export function useStartExam() {
   return useMutation({
     mutationFn: (templateId: string) =>
-      unwrap<StartedAttempt>(api.post(`/exams/templates/${templateId}/start`, {})),
+      unwrap<StartExamResponse>(api.post(`/exams/templates/${templateId}/start`, {})),
   });
 }
 

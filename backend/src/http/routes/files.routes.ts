@@ -25,7 +25,10 @@ const STORAGE_ROOT = path.resolve(__dirname, '../../../storage');
  * Access gate (previously ANY authenticated user could read ANY paper PDF):
  * the filename is resolved through the ResearchPaper table — access is
  * granted when the paper is PUBLISHED, the requester is the paper's owner
- * (student) or its reviewer, or the requester is ADMIN/OWNER (oversight).
+ * (student) or its reviewer, or the requester is ADMIN/OWNER/QUALITY
+ * (oversight). QUALITY matches the paper-annotation route's model: a role
+ * that can read annotations on any paper can also fetch the artifact it
+ * audits.
  * A local file with no matching paper row is an orphan and is not served.
  */
 router.get('/papers/:filename', async (req, res, next) => {
@@ -42,16 +45,22 @@ router.get('/papers/:filename', async (req, res, next) => {
     // ── Access gate: resolve the file to its paper row(s) ──────────
     const uid = req.user!.id;
     const role = req.user!.role;
-    if (role !== Role.ADMIN && role !== Role.OWNER) {
-      const papers = await prisma.researchPaper.findMany({
-        where: { fileUrl: { endsWith: `/${filename}` } },
-        select: { status: true, studentId: true, reviewerId: true },
-        take: 10,
+    const isOversight = role === Role.ADMIN || role === Role.OWNER || role === Role.QUALITY;
+    if (!isOversight) {
+      // The grant predicate lives inside the query (was: fetch up to 10
+      // matching rows and check in memory — a filename shared by >10 papers
+      // could push the authorizing row past the take window and 404 a file
+      // the user is entitled to). findFirst stops at the first row that
+      // both matches the filename AND grants access, no matter how many
+      // non-granting papers share it.
+      const accessible = await prisma.researchPaper.findFirst({
+        where: {
+          fileUrl: { endsWith: `/${filename}` },
+          OR: [{ status: 'PUBLISHED' }, { studentId: uid }, { reviewerId: uid }],
+        },
+        select: { id: true },
       });
-      const allowed = papers.some(
-        (p) => p.status === 'PUBLISHED' || p.studentId === uid || p.reviewerId === uid,
-      );
-      if (!allowed) throw AppError.notFound('File not found');
+      if (!accessible) throw AppError.notFound('File not found');
     }
 
     const safeName = path.basename(filename);

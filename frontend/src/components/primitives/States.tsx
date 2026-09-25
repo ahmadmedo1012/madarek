@@ -90,6 +90,14 @@ export function ErrorState({
    */
   illustration?: IllustrationName;
   error?: unknown;
+  /**
+   * Retry affordance. Rendered by the generic branch and — as of
+   * audit 11-e P2-18 — the 404 branch, where the miss can be a
+   * transient race (an item that just published). NOT rendered by
+   * the 403 branch: authorization is not transient, so refetching
+   * cannot fix it — PermissionDeniedState's back affordance is the
+   * honest action there.
+   */
   onRetry?: () => void;
 }) {
   const apiDetail = extractErrorDetail(error);
@@ -103,7 +111,10 @@ export function ErrorState({
   if (status === 403) {
     return <PermissionDeniedState detail={apiDetail} />;
   }
-  // 404 → show a "not found" message instead of generic error.
+  // 404 → show a "not found" message instead of generic error. A miss
+  // can be a transient race (an item that just published), so a
+  // caller-provided onRetry is honored here rather than silently
+  // dropped (audit 11-e P2-18).
   if (status === 404) {
     return (
       <div className="state state-error" role="alert">
@@ -112,6 +123,14 @@ export function ErrorState({
         </div>
         <div className="state-title">العنصر غير موجود</div>
         <div className="state-desc">{apiDetail ?? 'ربما تم حذفه أو أن الرابط غير صحيح.'}</div>
+        {onRetry && (
+          <div style={{ marginTop: 'var(--sp-3)' }}>
+            <button type="button" className="btn primary sm" onClick={onRetry}>
+              <Icon icon={RefreshCw} size={13} />
+              إعادة المحاولة
+            </button>
+          </div>
+        )}
       </div>
     );
   }

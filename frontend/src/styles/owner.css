@@ -377,57 +377,10 @@
 }
 
 /* ── Pagination ────────────────────────────────────────────── */
-/* wave 3-c (audit 0-e P1-25 + craft floor): 32px glyph buttons →
-   44px touch targets with the .table-pagination hover/active language
-   (components.css). The ‹ › glyphs still don't flip for RTL and the
-   page-button list is still unbounded — both are OwnerUsersPage TSX
-   fixes owned by wave 6. */
-.owner-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-  padding: var(--sp-4) 0;
-}
-
-.owner-pagination button {
-  min-inline-size: 44px;
-  min-block-size: 44px;
-  padding-inline: var(--sp-2);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition:
-    background var(--t-fast) var(--ease),
-    color var(--t-fast) var(--ease),
-    border-color var(--t-fast) var(--ease);
-}
-
-.owner-pagination button:hover:not(:disabled) {
-  background: var(--surface-2);
-  color: var(--text);
-  border-color: var(--border-strong);
-}
-
-.owner-pagination button.active {
-  background: var(--accent-soft);
-  color: var(--accent-ink, var(--accent));
-  border-color: var(--accent-border);
-  font-weight: var(--fw-semibold);
-}
-
-.owner-pagination button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+/* 13-17 dead-selector sweep (11-g P2-7): .owner-pagination deleted —
+   OwnerUsersPage finished the ruling-#5 migration to the
+   .table-pagination system (components.css) with flippable
+   ChevronLeft/ChevronRight icons; zero TSX consumers remain. */
 
 /* ── Search bar ────────────────────────────────────────────── */
 .owner-search-bar {
@@ -625,24 +578,9 @@
 }
 
 /* ── Command Center: Stat Highlight ───────────────────────── */
-.owner-stat-highlight {
-  text-align: center;
-  padding: var(--sp-4);
-}
-
-.owner-stat-highlight .value {
-  font-size: 2rem;
-  font-weight: var(--fw-bold);
-  font-family: var(--font-mono);
-  color: var(--accent-ink, var(--accent));
-  line-height: 1;
-  margin-bottom: var(--sp-1);
-}
-
-.owner-stat-highlight .label {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
+/* 13-17 dead-selector sweep (11-g P2-7): .owner-stat-highlight and
+   its .value/.label children deleted — zero TSX consumers (the
+   command center renders the .metric-card/.metric families). */
 
 /* ── Command Center: AI Chart Grid ───────────────────────── */
 .owner-ai-chart-grid {

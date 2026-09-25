@@ -23,6 +23,10 @@ router.get('/:id', async (req, res, next) => {
         schedule: true,
       },
     });
+    // assertOfferingAccess short-circuits for ADMIN/OWNER without an
+    // existence check — a deleted/unknown id used to serialize as
+    // `{ data: null }` instead of a 404 (audit P2-12).
+    if (!offering) throw AppError.notFound('Offering not found');
     res.json({ data: offering });
   } catch (e) {
     next(e);
@@ -33,9 +37,12 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/materials', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // Bounded read (audit P2-18): newest materials first, capped well
+    // above a realistic per-offering material count.
     const data = await prisma.material.findMany({
       where: { offeringId: req.params.id! },
       orderBy: { createdAt: 'desc' },
+      take: 200,
       include: {
         uploader: { select: { id: true, firstName: true, lastName: true } },
       },
@@ -66,7 +73,9 @@ router.post(
       const created = await prisma.material.create({
         data: {
           ...req.body,
-          sizeBytes: BigInt(req.body.sizeBytes ?? 0),
+          // zod's `.default(0)` guarantees a number here — the old
+          // `?? 0` fallback was dead code (audit P2-15).
+          sizeBytes: BigInt(req.body.sizeBytes),
           offeringId: req.params.id!,
           uploaderId: req.user!.id,
         },
@@ -82,9 +91,12 @@ router.post(
 router.get('/:id/assignments', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // Bounded read (audit P2-18): soonest-due first, capped well above
+    // a realistic per-offering assignment count.
     const data = await prisma.assignment.findMany({
       where: { offeringId: req.params.id! },
       orderBy: { dueAt: 'asc' },
+      take: 200,
     });
     res.json({ data });
   } catch (e) {
@@ -133,6 +145,9 @@ router.get('/:id/grades', async (req, res, next) => {
       where,
       include: { student: { select: { id: true, firstName: true, lastName: true } } },
       orderBy: { recordedAt: 'desc' },
+      // Bounded read (audit P2-18): covers roster × the 6 GradeKind
+      // values with margin; students are pre-filtered to their own rows.
+      take: 500,
     });
     res.json({ data });
   } catch (e) {
@@ -140,21 +155,30 @@ router.get('/:id/grades', async (req, res, next) => {
   }
 });
 
+const gradeItemSchema = z
+  .object({
+    studentId: z.string().cuid(),
+    kind: z.nativeEnum(GradeKind),
+    score: z.number().min(0).max(100),
+    maxScore: z.number().int().positive().default(100),
+    weight: z.number().int().min(0).max(100).default(10),
+    feedback: z.string().max(2000).optional(),
+  })
+  .superRefine((g, ctx) => {
+    // Cross-field validation (audit P2-15): score must fit within
+    // maxScore — `score: 90, maxScore: 50` used to store as 180%.
+    if (g.score > g.maxScore) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['score'],
+        message: `score (${g.score}) must not exceed maxScore (${g.maxScore})`,
+      });
+    }
+  });
+
 const gradesUpsertSchema = z
   .object({
-    grades: z
-      .array(
-        z.object({
-          studentId: z.string().cuid(),
-          kind: z.nativeEnum(GradeKind),
-          score: z.number().min(0).max(100),
-          maxScore: z.number().int().positive().default(100),
-          weight: z.number().int().min(0).max(100).default(10),
-          feedback: z.string().max(2000).optional(),
-        }),
-      )
-      .min(1)
-      .max(200),
+    grades: z.array(gradeItemSchema).min(1).max(200),
   })
   .strict();
 
@@ -184,7 +208,10 @@ router.post(
         prisma.grade.upsert({
           where: { offeringId_studentId_kind: { offeringId, studentId: g.studentId, kind: g.kind } },
           create: { offeringId, ...g },
-          update: { score: g.score, maxScore: g.maxScore, weight: g.weight, feedback: g.feedback },
+          // `feedback: g.feedback ?? null` — absent feedback now CLEARS
+          // the stored value instead of silently keeping the previous
+          // one (a full-payload upsert could never clear it, P2-15).
+          update: { score: g.score, maxScore: g.maxScore, weight: g.weight, feedback: g.feedback ?? null },
         }),
       );
       const result = await prisma.$transaction(ops);
@@ -263,15 +290,22 @@ router.post(
 router.get('/:id/attendance', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
+    // Bounded reads (audit P2-18): sessions newest-first (a term holds
+    // far fewer than the cap); per-session records are bounded by the
+    // roster size, and the explicit orderBy keeps the take deterministic
+    // (take without orderBy yields an arbitrary subset).
     const sessions = await prisma.attendanceSession.findMany({
       where: { offeringId: req.params.id! },
       include: {
         records: {
           ...(req.user!.role === Role.STUDENT ? { where: { studentId: req.user!.id } } : {}),
+          take: 500,
+          orderBy: { studentId: 'asc' },
           include: { student: { select: { id: true, firstName: true, lastName: true } } },
         },
       },
       orderBy: { date: 'desc' },
+      take: 200,
     });
     res.json({ data: sessions });
   } catch (e) {

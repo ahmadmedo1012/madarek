@@ -87,4 +87,27 @@ describe('useMilestone', () => {
     rerender();
     expect(result.current.pendingScene).toBe('exam-window-opens:abc123');
   });
+
+  it('returns a referentially stable dismissPending across renders (P2-8)', () => {
+    let fired: string[] = [];
+    mockMe.mockImplementation(() => ({ data: { id: 'u1', firedMilestones: fired } }));
+    const { result, rerender } = renderHook(() => useMilestone());
+
+    fired = ['first-assignment-complete'];
+    rerender();
+    const first = result.current.dismissPending;
+    // Unrelated re-renders (parent state changes, me refetches) must not
+    // produce a new callback — MilestoneScene's auto-dismiss hold and the
+    // Modal's focus-trap listeners depend on it and would restart on
+    // every re-render (audit 11-e P2-8).
+    rerender();
+    rerender();
+    expect(result.current.dismissPending).toBe(first);
+
+    // Stability must not come at the cost of behavior.
+    act(() => {
+      result.current.dismissPending();
+    });
+    expect(result.current.pendingScene).toBeNull();
+  });
 });

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { NotificationType, Role, SubmissionStatus } from '@prisma/client';
+import type { Submission } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { logger } from '../../logger.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -70,6 +71,17 @@ export const gradeBodySchema = z
   })
   .strict();
 
+/**
+ * Statuses a re-submission may overwrite. GRADED/RETURNED rows are
+ * immutable from the student side — the conditional update in the
+ * submit handler enforces this atomically (no check-then-write window).
+ */
+const RESUBMITTABLE_STATUSES: SubmissionStatus[] = [
+  SubmissionStatus.SUBMITTED,
+  SubmissionStatus.LATE,
+  SubmissionStatus.DRAFT,
+];
+
 // ─── POST /offerings/:offeringId/assignments/:assignmentId/submit ──
 
 router.post(
@@ -82,16 +94,13 @@ router.post(
       const studentId = req.user!.id;
       const body = req.body as z.infer<typeof submitBodySchema>;
 
-      // Offering-level access (student must be able to read the offering).
+      // Offering-level access: the student must be ACTIVELY enrolled —
+      // assertOfferingAccess filters enrollment rows by status 'active'
+      // server-side (lib/permissions.ts), so dropped/completed
+      // enrollments are rejected here. The former inline duplicate of
+      // this check was removed once the shared guard took over the
+      // status filter (wave 12-8).
       await assertOfferingAccess(offeringId, studentId, Role.STUDENT);
-
-      // Explicit active-enrollment guard (assertOfferingAccess counts any
-      // enrollment row regardless of status).
-      const enrollment = await prisma.enrollment.findFirst({
-        where: { studentId, offeringId, status: 'active' },
-        select: { id: true },
-      });
-      if (!enrollment) throw AppError.forbidden('يجب أن تكون مسجلاً في هذا المقرر لتسليم التكليف');
 
       // Assignment must exist AND belong to the offering in the path.
       const assignment = await prisma.assignment.findUnique({
@@ -104,37 +113,56 @@ router.post(
 
       const status = submissionStatusFor(assignment.dueAt);
 
-      // Re-submitting an already-graded/returned submission is not allowed —
-      // check BEFORE the upsert so a graded row can never be stomped.
-      const existing = await prisma.submission.findUnique({
-        where: { assignmentId_studentId: { assignmentId, studentId } },
-        select: { status: true },
-      });
-      if (existing && (existing.status === SubmissionStatus.GRADED || existing.status === SubmissionStatus.RETURNED)) {
-        throw AppError.conflict('لا يمكن إعادة تسليم تكليف تم تصحيحه');
-      }
-
       // First-ever submission? (milestone fires after a successful write).
       const priorSubmissions = await prisma.submission.count({ where: { studentId } });
 
-      const submission = await prisma.submission.upsert({
-        where: { assignmentId_studentId: { assignmentId, studentId } },
-        create: {
-          assignmentId,
-          studentId,
-          textAnswer: body.textAnswer ?? null,
-          fileUrl: body.fileUrl ?? null,
-          status,
-          submittedAt: new Date(),
-        },
-        update: {
-          // Re-submit before grading: overwrite answer, reset status/submittedAt.
-          textAnswer: body.textAnswer ?? null,
-          fileUrl: body.fileUrl ?? null,
-          status,
-          submittedAt: new Date(),
-        },
+      // Re-submitting an already-graded/returned submission is not
+      // allowed. The guard IS the update's WHERE clause: only rows still
+      // in a re-submittable state match, so a teacher grade landing
+      // mid-request can never be stomped back to SUBMITTED with its
+      // grade/gradedAt still attached (audit 11-d P2-15). Under READ
+      // COMMITTED, Postgres re-evaluates the predicate against the
+      // concurrently committed row — the losing write matches zero rows.
+      const submittedAt = new Date();
+      const write = {
+        textAnswer: body.textAnswer ?? null,
+        fileUrl: body.fileUrl ?? null,
+        status,
+        submittedAt,
+      };
+      const claim = await prisma.submission.updateMany({
+        where: { assignmentId, studentId, status: { in: RESUBMITTABLE_STATUSES } },
+        data: write,
       });
+
+      let submission: Submission;
+      if (claim.count === 0) {
+        // No re-submittable row: either nothing was ever submitted
+        // (create below) or the existing row is graded/returned (409).
+        const existing = await prisma.submission.findUnique({
+          where: { assignmentId_studentId: { assignmentId, studentId } },
+          select: { status: true },
+        });
+        if (existing) {
+          throw AppError.conflict('لا يمكن إعادة تسليم تكليف تم تصحيحه');
+        }
+        // Two concurrent first-ever submissions race here: the unique
+        // (assignmentId, studentId) constraint turns the loser's create
+        // into a P2002 → 409 (centralized error handler).
+        submission = await prisma.submission.create({
+          data: { assignmentId, studentId, ...write },
+        });
+      } else {
+        // updateMany returns no row — read back what was written.
+        const updated = await prisma.submission.findUnique({
+          where: { assignmentId_studentId: { assignmentId, studentId } },
+        });
+        if (!updated) {
+          // Unreachable barring a mid-request cascade delete of the row.
+          throw AppError.internal();
+        }
+        submission = updated;
+      }
 
       // 'first-assignment-complete' milestone — best-effort, never blocks the submission.
       if (priorSubmissions === 0) {
@@ -174,13 +202,16 @@ router.post(
       });
       if (!submission) throw AppError.notFound('Submission not found');
 
+      // Teacher must own the offering FIRST (ADMIN via CURRICULUM_EDIT_ANY,
+      // OWNER bypass) — a teacher probing foreign submission IDs must not
+      // learn the assignment's maxScore from the ceiling error below
+      // (audit 11-d P2-14).
+      await assertOwnsOffering(submission.assignment.offeringId, req.user!.id, req.user!.role);
+
       // Grade ceiling is per-assignment (dynamic → checked here, not in zod).
       if (grade > submission.assignment.maxScore) {
-        throw new AppError('BAD_REQUEST', `الدرجة يجب ألا تتجاوز الحد الأقصى (${submission.assignment.maxScore})`, 400);
+        throw AppError.badRequest(`الدرجة يجب ألا تتجاوز الحد الأقصى (${submission.assignment.maxScore})`);
       }
-
-      // Teacher must own the offering (ADMIN via CURRICULUM_EDIT_ANY, OWNER bypass).
-      await assertOwnsOffering(submission.assignment.offeringId, req.user!.id, req.user!.role);
 
       const gradedAt = new Date();
       const updated = await prisma.$transaction(async (tx) => {

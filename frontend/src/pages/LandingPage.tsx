@@ -17,6 +17,13 @@ import { colleges } from '../data/colleges.config';
 import { Parallax } from '../components/motion/Parallax';
 import { Illustration } from '../components/Illustration';
 import { SectionAccent } from '../components/motion/SectionAccent';
+// D14 CSS split (13-17): landing.css is this page's own sheet; colleges.css
+// rides here for the .landing-colleges-trigger + .colleges-popover surfaces
+// (CollegesPopover below) and lands in the chunk shared with its other lazy
+// consumers (CollegePages, CompetitionsPages, AdminExtraPages, CommunityPages,
+// AdminGovernancePages).
+import '../styles/landing.css';
+import '../styles/colleges.css';
 
 /**
  * University truth: UoZ operates 25 colleges (backend seed faculty table;
@@ -478,15 +485,22 @@ export default function LandingPage() {
           <Parallax amount={6} direction="up">
             {/* Optimized hero art: WebP first (99KB vs 2MB PNG), JPEG fallback
                 for ancient browsers. width/height pin the 1377×768 aspect
-                ratio so the browser reserves layout space (no CLS). */}
+                ratio so the browser reserves layout space (no CLS). The
+                responsive srcSet serves a 750w WebP (~43KB) to phones via
+                `sizes` — the frame spans the marketing container minus its
+                gutters (20px mobile / 48px desktop, 1200px container cap). */}
             <picture>
-              <source type="image/webp" srcSet="/main_photo.webp" />
+              <source
+                type="image/webp"
+                srcSet="/main_photo-750.webp 750w, /main_photo.webp 1377w"
+              />
               <img
                 src="/main_photo.jpg"
                 alt="جامعة الزاوية — المدخل الرئيسي"
                 className="landing-campus-photo"
                 width={1377}
                 height={768}
+                sizes="(max-width: 920px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1104px"
                 loading="lazy"
                 decoding="async"
               />

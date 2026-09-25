@@ -10,6 +10,7 @@ import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/St
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
+import { formatDateWithYearAr } from '../../lib/format';
 import {
   useMyResearch, useUploadPaper, useScanPaper,
   useMyEnrollments, apiErrorMessage,
@@ -34,10 +35,8 @@ const STATUS_TONE: Record<PaperStatus, 'brand' | 'green' | 'amber' | 'red' | 'go
   PUBLISHED: 'purple',
 };
 
-function fmtDate(iso?: string | null) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short', year: 'numeric' });
-}
+/* fmtDate (short ar-LY date with year, '—' for missing values) is
+ * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
 
 function plagColor(pct?: number | null) {
   if (pct == null) return 'ok';
@@ -219,7 +218,7 @@ function PaperRow({
         </div>
         <div className="paper-row-side">
           <Badge color={STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
-          <span className="text-xxs text-subtle">رُفع: {fmtDate(paper.uploadedAt)}</span>
+          <span className="text-xxs text-subtle">رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
         </div>
       </div>
 

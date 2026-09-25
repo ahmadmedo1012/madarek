@@ -14,8 +14,10 @@ router.use(authMiddleware);
  * tolerant, and limited in scope.
  *
  * Permission model: respects the user's role.
- *  - STUDENT/TEACHER: only their own offerings/lectures
- *  - ADMIN/QUALITY: everything
+ *  - STUDENT: only offerings with an ACTIVE enrollment (the platform-wide
+ *    convention — dropped/completed leftovers never grant content access)
+ *  - TEACHER: only the offerings they teach
+ *  - ADMIN/QUALITY/OWNER: everything (oversight)
  *
  * Arabic-aware matching (per specs/011 …/contracts/search.md, read-time half):
  * the incoming q is normalized with the canonical `normalizeArabicSearch`
@@ -42,12 +44,14 @@ router.get('/search/global', async (req, res, next) => {
 
     const ic = (s: string) => ({ contains: s, mode: 'insensitive' as const });
 
-    // Scope: which offerings is this user related to?
+    // Scope: which offerings is this user related to? Mirrors
+    // assertOfferingAccess's enrollment convention — only
+    // status 'active' enrollments count (lib/permissions.ts).
     const offeringFilter =
       role === 'TEACHER'
         ? { teacherId: userId }
         : role === 'STUDENT'
-          ? { enrollments: { some: { studentId: userId } } }
+          ? { enrollments: { some: { studentId: userId, status: 'active' } } }
           : {};
 
     // Query both the raw and the normalized form so hamza/alif-variant
@@ -58,69 +62,82 @@ router.get('/search/global', async (req, res, next) => {
     const CANDIDATE_TAKE = 15;
     const RESULT_TAKE = 5;
 
-    // Course offerings (matched on course name + code)
-    const courseCandidates = await prisma.courseOffering.findMany({
-      where: {
-        ...offeringFilter,
-        OR: [
-          ...variants.map((v) => ({ course: { name: ic(v) } })),
-          { course: { code: ic(q) } },
-        ],
-      },
-      include: {
-        course: { select: { name: true, code: true, iconEmoji: true, themeColor: true } },
-      },
-      take: CANDIDATE_TAKE,
-    });
+    // The four candidate scans are independent — run them concurrently.
+    // This endpoint fires per keystroke client-side; four serial awaits
+    // summed four DB round-trips into every keystroke's latency.
+    // Every take is paired with an explicit orderBy: Postgres otherwise
+    // returns rows in arbitrary order, so the 15-of-N candidate subset
+    // (and which 5 survive the JS re-verify below) would flip between
+    // keystrokes. Ordering follows each domain's own list convention.
+    const [courseCandidates, lectureCandidates, paperCandidates, trackCandidates] = await Promise.all([
+      // Course offerings (matched on course name + code) — newest first.
+      prisma.courseOffering.findMany({
+        where: {
+          ...offeringFilter,
+          OR: [
+            ...variants.map((v) => ({ course: { name: ic(v) } })),
+            { course: { code: ic(q) } },
+          ],
+        },
+        include: {
+          course: { select: { name: true, code: true, iconEmoji: true, themeColor: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: CANDIDATE_TAKE,
+      }),
 
-    // Lectures (within scope)
-    const lectureCandidates = await prisma.lecture.findMany({
-      where: {
-        OR: [
-          ...variants.map((v) => ({ title: ic(v) })),
-          { description: ic(q) },
-        ],
-        offering: offeringFilter,
-      },
-      include: {
-        offering: {
-          select: {
-            id: true,
-            course: { select: { name: true, iconEmoji: true } },
+      // Lectures (within scope) — curriculum order.
+      prisma.lecture.findMany({
+        where: {
+          OR: [
+            ...variants.map((v) => ({ title: ic(v) })),
+            { description: ic(q) },
+          ],
+          offering: offeringFilter,
+        },
+        include: {
+          offering: {
+            select: {
+              id: true,
+              course: { select: { name: true, iconEmoji: true } },
+            },
           },
         },
-      },
-      orderBy: { ordinal: 'asc' },
-      take: CANDIDATE_TAKE,
-    });
+        orderBy: { ordinal: 'asc' },
+        take: CANDIDATE_TAKE,
+      }),
 
-    // Published research papers (anyone authenticated can search the library)
-    const paperCandidates = await prisma.researchPaper.findMany({
-      where: {
-        status: 'PUBLISHED',
-        OR: [
-          ...variants.map((v) => ({ title: ic(v) })),
-          { abstract: ic(q) },
-        ],
-      },
-      include: {
-        student: { select: { firstName: true, lastName: true } },
-      },
-      take: CANDIDATE_TAKE,
-    });
+      // Published research papers (anyone authenticated can search the
+      // library) — publishedAt desc, like /research/library.
+      prisma.researchPaper.findMany({
+        where: {
+          status: 'PUBLISHED',
+          OR: [
+            ...variants.map((v) => ({ title: ic(v) })),
+            { abstract: ic(q) },
+          ],
+        },
+        include: {
+          student: { select: { firstName: true, lastName: true } },
+        },
+        orderBy: { publishedAt: 'desc' },
+        take: CANDIDATE_TAKE,
+      }),
 
-    // Training tracks
-    const trackCandidates = await prisma.trainingTrack.findMany({
-      where: {
-        isPublished: true,
-        OR: [
-          ...variants.map((v) => ({ title: ic(v) })),
-          { titleEn: ic(q) },
-          { summary: ic(q) },
-        ],
-      },
-      take: CANDIDATE_TAKE,
-    });
+      // Training tracks — catalog order, like /training.
+      prisma.trainingTrack.findMany({
+        where: {
+          isPublished: true,
+          OR: [
+            ...variants.map((v) => ({ title: ic(v) })),
+            { titleEn: ic(q) },
+            { summary: ic(q) },
+          ],
+        },
+        orderBy: { order: 'asc' },
+        take: CANDIDATE_TAKE,
+      }),
+    ]);
 
     // JS re-verification with the canonical foldings (raw OR normalized hit).
     const hits = (haystacks: string[]) => haystacks.some((h) => h.toLowerCase().includes(q.toLowerCase()) || matchesNormalizedQuery(h, qN));

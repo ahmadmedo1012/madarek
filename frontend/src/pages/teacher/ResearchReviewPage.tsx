@@ -10,16 +10,16 @@ import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { toast } from '../../lib/toast';
+import { formatDateAr } from '../../lib/format';
 import {
   useResearchQueue, useGradePaper, usePublishPaper, useMyTeacherProfile,
   useAnnotations, apiErrorMessage,
   type ResearchPaper, type PaperStatus,
 } from '../../hooks/useResources';
 
-function fmtDate(iso?: string | null) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
-}
+/* fmtDate (short ar-LY date, '—' for missing values) is
+ * lib/format.formatDateAr (13-15 fold, audit 11-f P2-1) — shared with
+ * CourseDetailPage's former unguarded copy. */
 
 function fmtRelative(iso: string): string {
   const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -27,7 +27,7 @@ function fmtRelative(iso: string): string {
   if (m < 60) return `منذ ${m} دقيقة`;
   const h = Math.round(m / 60);
   if (h < 24) return `منذ ${h} ساعة`;
-  return fmtDate(iso);
+  return formatDateAr(iso);
 }
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
@@ -188,7 +188,7 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
           <bdi>AI</bdi>: <bdi className="font-mono">{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
         </span>
         <span className="text-subtle">·</span>
-        <span className="text-subtle">رُفع {fmtDate(paper.uploadedAt)}</span>
+        <span className="text-subtle">رُفع {formatDateAr(paper.uploadedAt)}</span>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
         <button type="button" className="btn primary sm" onClick={onOpen}>

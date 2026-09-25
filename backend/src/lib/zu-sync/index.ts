@@ -1,4 +1,5 @@
 import { prisma } from '../../db.js';
+import { logger } from '../../logger.js';
 import { STATIC_FACTS, type FactPatch } from './static-source.js';
 import { raiseOperationalAlert } from '../operational-alerts.js';
 
@@ -155,8 +156,7 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
     status = 'SUCCESS';
   } catch (err) {
     errorMsg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-    // eslint-disable-next-line no-console
-    console.error('[sync] failed', errorMsg);
+    logger.error({ err, source }, '[sync] run failed');
   } finally {
     // Exactly-once finalization on both the success and failure paths.
     // A failure of this bookkeeping write itself must never mask the
@@ -186,8 +186,7 @@ export async function runSync(opts: { source?: string } = {}): Promise<SyncResul
               },
       });
     } catch (finalizeErr) {
-      // eslint-disable-next-line no-console
-      console.error('[sync] failed to finalize SyncRun row', finalizeErr);
+      logger.error({ err: finalizeErr, runId: run.id }, '[sync] failed to finalize SyncRun row');
     }
   }
 

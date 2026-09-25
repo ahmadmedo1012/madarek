@@ -119,10 +119,13 @@ router.post('/library/loans/:id/return', async (req, res, next) => {
 
 router.get('/me/loans', async (req, res, next) => {
   try {
+    // Bounded read (audit P2-18): a personal loan history far below
+    // this cap — newest first.
     const data = await prisma.loan.findMany({
       where: { userId: req.user!.id },
       include: { book: true },
       orderBy: { borrowedAt: 'desc' },
+      take: 100,
     });
     res.json({ data });
   } catch (e) {
@@ -244,9 +247,17 @@ router.get(
 
 router.post('/jobs/:id/apply', async (req, res, next) => {
   try {
+    // Unknown jobIds previously surfaced as a P2003 FK error (400
+    // «Related record does not exist») — resolve to a clean 404, the
+    // same shape as POST /library/loans above (audit P2-14).
+    const job = await prisma.job.findUnique({
+      where: { id: req.params.id! },
+      select: { id: true },
+    });
+    if (!job) throw AppError.notFound('Job not found');
     const created = await prisma.jobApplication.upsert({
-      where: { jobId_userId: { jobId: req.params.id!, userId: req.user!.id } },
-      create: { jobId: req.params.id!, userId: req.user!.id },
+      where: { jobId_userId: { jobId: job.id, userId: req.user!.id } },
+      create: { jobId: job.id, userId: req.user!.id },
       update: {},
     });
     res.status(201).json({ data: created });
@@ -260,9 +271,14 @@ router.post('/jobs/:id/apply', async (req, res, next) => {
 // ════════════════════════════════════════════════════
 router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next) => {
   try {
-    const { page, limit } = req.query as unknown as { page: number; limit: number };
+    const { page, limit, q } = req.query as unknown as { page: number; limit: number; q?: string };
+    // `q` used to be accepted by the query schema and then silently
+    // ignored — a ?q= search returned the unfiltered page. Apply the
+    // same body-text filter as the other catalog lists (audit P2-8).
+    const where = q ? { body: { contains: q, mode: 'insensitive' as const } } : {};
     const [data, total] = await Promise.all([
       prisma.post.findMany({
+        where,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -271,7 +287,7 @@ router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next)
           _count: { select: { comments: true, reactions: true } },
         },
       }),
-      prisma.post.count(),
+      prisma.post.count({ where }),
     ]);
     res.json({ data, meta: buildMeta(page, limit, total) });
   } catch (e) {
@@ -380,7 +396,8 @@ router.get('/leaderboard', async (_req, res, next) => {
 // ════════════════════════════════════════════════════
 router.get('/labs', async (_req, res, next) => {
   try {
-    const data = await prisma.virtualLab.findMany({ orderBy: { name: 'asc' } });
+    // Bounded read (audit P2-18) — catalog domain, well below this cap.
+    const data = await prisma.virtualLab.findMany({ orderBy: { name: 'asc' }, take: 200 });
     res.json({ data });
   } catch (e) {
     next(e);
@@ -389,7 +406,8 @@ router.get('/labs', async (_req, res, next) => {
 
 router.get('/ar-experiences', async (_req, res, next) => {
   try {
-    const data = await prisma.arExperience.findMany({ orderBy: { title: 'asc' } });
+    // Bounded read (audit P2-18) — catalog domain, well below this cap.
+    const data = await prisma.arExperience.findMany({ orderBy: { title: 'asc' }, take: 200 });
     res.json({ data });
   } catch (e) {
     next(e);
@@ -504,21 +522,37 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
       return { month: label, submitted, graded, published };
     });
 
-    // 2) Top performing courses — by completion rate
+    // 2) Top courses — ranked by TOTAL enrollments across their
+    //    offerings, aggregated per course so a multi-offering course
+    //    occupies ONE row (the old per-offering rows duplicated course
+    //    codes in the admin table). The metric is enrollment count,
+    //    matching the admin UI's «أكثر المقررات تسجيلاً» label — NOT a
+    //    completion rate (audit P2-22). Bounded to the 50 most recent
+    //    offerings; code tie-break keeps the top-8 stable.
     const offerings = await prisma.courseOffering.findMany({
-      include: {
+      select: {
+        courseId: true,
         course: { select: { name: true, code: true } },
         _count: { select: { enrollments: true, lectures: true } },
       },
       take: 50,
       orderBy: { createdAt: 'desc' },
     });
-    const courseStats = offerings.map((o) => ({
-      code: o.course.code,
-      name: o.course.name,
-      enrollments: o._count.enrollments,
-      lectures: o._count.lectures,
-    })).sort((a, b) => b.enrollments - a.enrollments).slice(0, 8);
+    const byCourse = new Map<
+      string,
+      { code: string; name: string; enrollments: number; lectures: number }
+    >();
+    for (const o of offerings) {
+      const row =
+        byCourse.get(o.courseId) ??
+        { code: o.course.code, name: o.course.name, enrollments: 0, lectures: 0 };
+      row.enrollments += o._count.enrollments;
+      row.lectures += o._count.lectures;
+      byCourse.set(o.courseId, row);
+    }
+    const courseStats = Array.from(byCourse.values())
+      .sort((a, b) => b.enrollments - a.enrollments || a.code.localeCompare(b.code))
+      .slice(0, 8);
 
     // 3) Headline counts
     const [totalPapers, publishedPapers, totalUsers, activeStudents] = await Promise.all([
@@ -539,6 +573,10 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
 });
 
 // ── Admin: courses list with full counts ─────────────────────
+// NOTE: `offerings` here is a PREVIEW (3 most recent, for the
+// recentOfferings column only) — per-course totals are computed from
+// a second bounded query over ALL of the page's courses' offerings,
+// so courses with 4+ offerings are no longer undercounted (P2-7).
 const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
   department: { select: { name: true, faculty: { select: { name: true, iconEmoji: true } } } },
   _count: { select: { offerings: true, concepts: true } },
@@ -546,7 +584,7 @@ const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
     select: {
       id: true,
       term: true,
-      _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
+      _count: { select: { enrollments: true, lectures: true } },
       teacher: { select: { firstName: true, lastName: true } },
     },
     orderBy: { term: 'desc' },
@@ -571,10 +609,33 @@ router.get(
         prisma.course.count(),
       ]);
 
+      // Real per-course totals across ALL of each course's offerings
+      // (count aggregation, not hydration) — summing the take:3 preview
+      // above undercounted courses with more offerings (audit P2-7).
+      const courseIds = courses.map((c) => c.id);
+      const offeringTotals = courseIds.length
+        ? await prisma.courseOffering.findMany({
+            where: { courseId: { in: courseIds } },
+            select: {
+              courseId: true,
+              _count: { select: { enrollments: true, lectures: true, materials: true } },
+            },
+          })
+        : [];
+      const totalsByCourse = new Map<
+        string,
+        { enrollments: number; lectures: number; materials: number }
+      >();
+      for (const o of offeringTotals) {
+        const t = totalsByCourse.get(o.courseId) ?? { enrollments: 0, lectures: 0, materials: 0 };
+        t.enrollments += o._count.enrollments;
+        t.lectures += o._count.lectures;
+        t.materials += o._count.materials;
+        totalsByCourse.set(o.courseId, t);
+      }
+
       const data = courses.map((c) => {
-        const totalEnrollments = c.offerings.reduce((s, o) => s + o._count.enrollments, 0);
-        const totalLectures = c.offerings.reduce((s, o) => s + o._count.lectures, 0);
-        const totalMaterials = c.offerings.reduce((s, o) => s + o._count.materials, 0);
+        const totals = totalsByCourse.get(c.id) ?? { enrollments: 0, lectures: 0, materials: 0 };
         return {
           id: c.id,
           code: c.code,
@@ -586,9 +647,9 @@ router.get(
           department: c.department?.name ?? null,
           offeringCount: c._count.offerings,
           conceptCount: c._count.concepts,
-          totalEnrollments,
-          totalLectures,
-          totalMaterials,
+          totalEnrollments: totals.enrollments,
+          totalLectures: totals.lectures,
+          totalMaterials: totals.materials,
           recentOfferings: c.offerings.map((o) => ({
             id: o.id,
             term: o.term,

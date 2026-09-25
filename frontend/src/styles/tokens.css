@@ -330,8 +330,11 @@
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(25,25,24,0.06);
     --rule:          var(--neutral-200);
-    /* 012 theme-tokens contract §1 — formalised surface edge tokens
-       (components.css .surface-card consumes --surface-border). */
+    /* 012 theme-tokens contract §1 — formalised surface edge tokens.
+       (13-17: .surface-card was deleted in the dead sweep, so
+       --surface-border currently has no component consumer; kept for
+       the contract's token surface — any future elevation utility
+       should consume it.) */
     --surface-border:  rgba(0,0,0,0.08);
     --surface-divider: rgba(0,0,0,0.05);
 

@@ -935,14 +935,15 @@
   box-shadow: var(--focus-ring);
 }
 .admin-students-search input {
-  border: 0;
-  background: transparent;
+  /* 13-17 (D14 dedupe): border/background/height/outline deleted —
+     polish.css's pages-layer bare-input reset (height: auto, padding: 0)
+     is the approved final for this wrapper-as-pill surface and no longer
+     depends on this file loading first. Colleges keeps only what polish
+     does not set: flow, family, size and ink. */
   flex: 1 1 auto;
-  height: 36px;
   font-family: inherit;
   font-size: var(--fs-sm);
   color: var(--text);
-  outline: none;
 }
 .admin-students-input {
   height: 36px;

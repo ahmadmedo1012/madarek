@@ -11,7 +11,7 @@
  * Pure fs assertions — no jsdom interaction needed.
  */
 import { describe, expect, it } from 'vitest';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -74,13 +74,25 @@ describe('hero image optimization (perf fix: 2 MB PNG)', () => {
     expect(jpg.size).toBeLessThan(400 * 1024);
   });
 
-  it('LandingPage renders the <picture> art with intrinsic dimensions', () => {
+  it('750w mobile srcset variant exists within budget (~43 KB)', () => {
+    const v = statSync(path.join(root, 'public/main_photo-750.webp'));
+    expect(v.size).toBeGreaterThan(0);
+    // must meaningfully beat the 99.6 KB full-size file it saves phones from
+    expect(v.size).toBeLessThan(60 * 1024);
+  });
+
+  it('LandingPage renders the responsive <picture> art with intrinsic dimensions', () => {
     const src = read('src/pages/LandingPage.tsx');
     expect(src).toContain('<picture>');
-    expect(src).toContain('srcSet="/main_photo.webp"');
+    expect(src).toContain('srcSet="/main_photo-750.webp 750w, /main_photo.webp 1377w"');
     expect(src).toContain('src="/main_photo.jpg"');
     expect(src).toMatch(/width=\{1377\}/);
     expect(src).toMatch(/height=\{768\}/);
+    // sizes mirrors the marketing-container gutters (20px mobile / 48px
+    // desktop, 1200px container cap → 1104px max frame width)
+    expect(src).toContain(
+      'sizes="(max-width: 920px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1104px"',
+    );
     expect(src).toContain('loading="lazy"');
     expect(src).toContain('decoding="async"');
   });
@@ -88,6 +100,49 @@ describe('hero image optimization (perf fix: 2 MB PNG)', () => {
   it('no source file references the deleted PNG anymore', () => {
     const landing = read('src/pages/LandingPage.tsx');
     expect(landing).not.toContain('main_photo.png');
+  });
+});
+
+describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4)', () => {
+  it('student welcome card uses the lightweight cut, not the full-res hero', () => {
+    const v = statSync(path.join(root, 'public/main_photo-card.webp'));
+    expect(v.size).toBeGreaterThan(0);
+    // decorative low-visibility role: ≪ the 99.6 KB hero it replaced
+    expect(v.size).toBeLessThan(32 * 1024);
+
+    const css = read('src/styles/polish.css');
+    expect(css).toContain("url('/main_photo-card.webp')");
+    expect(css).not.toContain("url('/main_photo.webp')");
+  });
+
+  it('no stylesheet ships the full-res hero as a CSS background', () => {
+    // CSS backgrounds cannot do responsive srcset — the 99.6 KB hero must
+    // only ever be consumed via the <picture> art on the landing page.
+    for (const f of readdirSync(path.join(root, 'src/styles'))) {
+      if (!f.endsWith('.css')) continue;
+      const css = read(`src/styles/${f}`);
+      expect(css, `${f} references the full-res hero as a background`).not.toMatch(
+        /url\('\/main_photo\.(webp|jpg)'\)/,
+      );
+    }
+  });
+
+  it('dead brand assets stay deleted; the three referenced keepers remain', () => {
+    const dead = [
+      'madarek-logo-full.jpg',
+      'madarek-logo.jpg',
+      'madarek-logo-md.jpg',
+      'madarek-logo-sm.jpg',
+      'zu-campus.jpg',
+      'zu-campus-sm.jpg',
+    ];
+    for (const f of dead) {
+      expect(existsSync(path.join(root, 'public/brand', f)), `${f} should stay deleted`).toBe(false);
+    }
+    // keepers: og:image/twitter/JSON-LD (index.html), seed posterUrl, BrandMark
+    for (const f of ['madarek-logo-lg.jpg', 'madarek-mark.svg', 'zu-mark.svg']) {
+      expect(existsSync(path.join(root, 'public/brand', f)), `${f} must remain`).toBe(true);
+    }
   });
 });
 

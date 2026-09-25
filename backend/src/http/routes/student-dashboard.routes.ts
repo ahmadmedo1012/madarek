@@ -1,8 +1,7 @@
 import { Router } from 'express';
-import { Role, AttendanceStatus, SubmissionStatus } from '@prisma/client';
+import { Role, AttendanceStatus, SubmissionStatus, Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
-import { requireRole } from '../middleware/requireRole.js';
 import { AppError } from '../../lib/errors.js';
 
 /**
@@ -24,14 +23,53 @@ router.use(authMiddleware);
 // QUALITY users whenever something — a notification dropdown probe, a
 // query-cache prefetch, a stale tab — tried to read these endpoints.
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-const WEEK_MS = 7 * DAY_MS;
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Canonical attendance percentage — audit 11-d P1-5/P2-2 (wave 13-6).
+ * Mirrors the semantics of `attendancePct()` in teacher.routes.ts and the
+ * copy in teacher-dashboard.routes.ts:
+ *
+ *   pct = round(100 × (PRESENT + 0.5·LATE) / (PRESENT + LATE + ABSENT))
+ *
+ * · LATE earns half credit (this dashboard used to give it full credit —
+ *   a student saw different attendance numbers for the same course on
+ *   different pages).
+ * · EXCUSED marks are removed from the denominator — an excused absence
+ *   neither credits nor penalizes.
+ * · null when there is nothing countable (the KPI renders "—"; the
+ *   teacher-side risk math in teacher.routes.ts uses the neutral 100
+ *   empty state instead — different consumers, different convention).
+ *
+ * Takes groupBy status counts. Deliberately duplicated across the two
+ * dashboard route files — both copies run the same table in
+ * tests/modules/dashboard-logic.test.ts; folding into src/lib is the
+ * audit P2-20 consolidation wave's job (keeps wave-13 batches
+ * file-disjoint).
+ */
+export function attendancePctFromStatusCounts(
+  countsByStatus: Array<{ status: AttendanceStatus; count: number }>,
+): number | null {
+  let present = 0;
+  let late = 0;
+  let absent = 0;
+  for (const { status, count } of countsByStatus) {
+    if (status === AttendanceStatus.PRESENT) present = count;
+    else if (status === AttendanceStatus.LATE) late = count;
+    else if (status === AttendanceStatus.ABSENT) absent = count;
+    // EXCUSED — deliberately not accumulated.
+  }
+  const denominator = present + late + absent;
+  if (denominator === 0) return null;
+  return Math.round(((present + late * 0.5) / denominator) * 100);
+}
 
 /** Term anchors — fixed for now per the institutional academic calendar.
- *  Easy to swap to a database lookup once /admin/terms is wired. */
-function currentTerm(): { code: string; startsAt: Date; endsAt: Date } {
-  // Anchor: a generic two-semester cycle. The fall term runs Sep-Jan.
-  const now = new Date();
+ *  Easy to swap to a database lookup once /admin/terms is wired.
+ *  Pure (takes `now`) and exported for DB-free unit tests. */
+export function currentTerm(now = new Date()): { code: string; startsAt: Date; endsAt: Date } {
+  // Anchor: a generic two-semester cycle. The fall term runs Sep 10 –
+  // Jan 15 (of the next calendar year), the spring term Feb 5 – Jun 15.
   const y = now.getFullYear();
   const fallStart = new Date(y, 8, 10);   // ~Sep 10
   const fallEnd = new Date(y + 1, 0, 15); // ~Jan 15
@@ -43,8 +81,13 @@ function currentTerm(): { code: string; startsAt: Date; endsAt: Date } {
   if (now >= springStart && now <= springEnd) {
     return { code: `${y}-SPRING`, startsAt: springStart, endsAt: springEnd };
   }
-  // Off-cycle (summer / winter break) — return whichever term is closest in past.
-  return now > fallEnd
+  // Off-cycle — return whichever term just ended (audit 11-d P2-1: the
+  // old `now > fallEnd` test could never be true inside year y, so the
+  // summer window fell through to a term that had ended ~5 months
+  // earlier instead of the just-finished spring):
+  //  · Jun 16 – Sep 9 (summer break) → this year's spring term
+  //  · Jan 1 – Feb 4 (winter break)  → last year's fall term
+  return now > springEnd
     ? { code: `${y}-SPRING`, startsAt: springStart, endsAt: springEnd }
     : { code: `${y - 1}-FALL`, startsAt: new Date(y - 1, 8, 10), endsAt: new Date(y, 0, 15) };
 }
@@ -53,6 +96,12 @@ function currentTerm(): { code: string; startsAt: Date; endsAt: Date } {
  * GET /me/results — every grade the student has, rolled up per course
  * with a weighted percentage. Replaces the hardcoded 5-row RESULTS array
  * that lived in the frontend.
+ *
+ * Graded assignment submissions are folded into the same weighted rollup
+ * (audit 11-d P1-6, read side): grading a submission only ever wrote the
+ * Submission row, so teacher-graded assignment work was silently missing
+ * from these numbers. `breakdown` stays Grade-table-only (officially
+ * recorded kinds); recent graded submissions surface in recentAssignments.
  */
 router.get('/me/results', async (req, res, next) => {
   try {
@@ -109,6 +158,52 @@ router.get('/me/results', async (req, res, next) => {
       });
     }
 
+    // Graded assignment submissions (audit 11-d P1-6): one query feeds
+    // both the rollup fold below and the recent feed — bounded by the
+    // student's own submission count.
+    const gradedSubs = await prisma.submission.findMany({
+      where: { studentId: userId, status: SubmissionStatus.GRADED, grade: { not: null } },
+      orderBy: { gradedAt: 'desc' },
+      select: {
+        id: true,
+        gradedAt: true,
+        grade: true,
+        assignment: {
+          select: {
+            title: true, type: true, weight: true, maxScore: true, offeringId: true,
+            offering: { select: { term: true, course: { select: { code: true, name: true, themeColor: true } } } },
+          },
+        },
+      },
+    });
+
+    // Fold each graded submission into its course's weighted rollup with
+    // the same arithmetic the Grade rows use: score/maxScore as pct,
+    // weighted by the assignment's weight. A course graded only through
+    // submissions now shows up instead of being invisible.
+    for (const s of gradedSubs) {
+      if (s.grade === null) continue; // defensive — the where already filters
+      const pct = s.assignment.maxScore > 0
+        ? Number(s.grade.toString()) / s.assignment.maxScore * 100
+        : 0;
+      let row = byOffering.get(s.assignment.offeringId);
+      if (!row) {
+        row = {
+          offeringId: s.assignment.offeringId,
+          term: s.assignment.offering.term,
+          courseCode: s.assignment.offering.course.code,
+          courseName: s.assignment.offering.course.name,
+          themeColor: s.assignment.offering.course.themeColor,
+          weightedSum: 0,
+          weightTotal: 0,
+          breakdown: [],
+        };
+        byOffering.set(s.assignment.offeringId, row);
+      }
+      row.weightedSum += pct * s.assignment.weight;
+      row.weightTotal += s.assignment.weight;
+    }
+
     const courses = Array.from(byOffering.values()).map((r) => ({
       offeringId: r.offeringId,
       term: r.term,
@@ -119,17 +214,9 @@ router.get('/me/results', async (req, res, next) => {
       breakdown: r.breakdown,
     })).sort((a, b) => (b.gradePct ?? -1) - (a.gradePct ?? -1));
 
-    // Recent graded submissions — separate from Grade table, useful as a
-    // secondary "what was just returned to me" feed.
-    const subs = await prisma.submission.findMany({
-      where: { studentId: userId, status: 'GRADED', grade: { not: null } },
-      include: {
-        assignment: { select: { offeringId: true, maxScore: true, title: true, type: true } },
-      },
-      orderBy: { gradedAt: 'desc' },
-      take: 20,
-    });
-    const recentAssignments = subs.map((s) => ({
+    // Secondary "what was just returned to me" feed — the 20 most recent
+    // of the same graded submissions folded into the rollup above.
+    const recentAssignments = gradedSubs.slice(0, 20).map((s) => ({
       id: s.id,
       title: s.assignment.title,
       type: s.assignment.type,
@@ -207,20 +294,26 @@ router.get('/me/materials', async (req, res, next) => {
 router.get('/me/lab-sessions', async (req, res, next) => {
   try {
     const userId = req.user!.id;
-    const sessions = await prisma.labSession.findMany({
-      where: { userId },
-      orderBy: { startedAt: 'desc' },
-      take: 50,
-      include: { lab: { select: { id: true, name: true } } },
-    });
-    const active = sessions.filter((s) => s.completedAt === null).length;
-    const completed = sessions.filter((s) => s.completedAt !== null).length;
+    // Counts come from count() queries — the old shape derived active/
+    // completed/total from the take:50 slice, freezing `total` at 50 past
+    // the 50th session (audit 11-d P1-9). `recent` only ever rendered 10
+    // rows, so the fetch takes exactly 10.
+    const [active, completed, recentSessions] = await Promise.all([
+      prisma.labSession.count({ where: { userId, completedAt: null } }),
+      prisma.labSession.count({ where: { userId, completedAt: { not: null } } }),
+      prisma.labSession.findMany({
+        where: { userId },
+        orderBy: { startedAt: 'desc' },
+        take: 10,
+        include: { lab: { select: { id: true, name: true } } },
+      }),
+    ]);
     res.json({
       data: {
         active,
         completed,
-        total: sessions.length,
-        recent: sessions.slice(0, 10).map((s) => ({
+        total: active + completed,
+        recent: recentSessions.map((s) => ({
           id: s.id,
           experimentName: s.experimentName,
           progressPct: s.progressPct,
@@ -297,40 +390,47 @@ router.get('/me/dashboard', async (req, res, next) => {
       ? Math.round(enrollments.reduce((s, e) => s + e.progressPct, 0) / enrollments.length)
       : 0;
 
-    // ── Attendance % (whole-history; trivial enough to recompute) ──
-    const [presentish, totalAttendance] = await Promise.all([
-      prisma.attendanceRecord.count({
-        where: { studentId: userId, status: { in: [AttendanceStatus.PRESENT, AttendanceStatus.LATE] } },
-      }),
-      prisma.attendanceRecord.count({ where: { studentId: userId } }),
-    ]);
-    const attendancePct = totalAttendance > 0 ? Math.round((presentish / totalAttendance) * 100) : null;
+    // ── Attendance % (whole-history; one groupBy per status) ──
+    const attByStatus = await prisma.attendanceRecord.groupBy({
+      by: ['status'],
+      where: { studentId: userId },
+      _count: { status: true },
+    });
+    const attendancePct = attendancePctFromStatusCounts(
+      attByStatus.map((g) => ({ status: g.status, count: g._count.status })),
+    );
 
-    // ── Pending assignments — due in the future, not yet submitted ──
-    const upcomingAssignments = await prisma.assignment.findMany({
-      where: {
-        offeringId: { in: offeringIds },
-        dueAt: { gte: now, lte: horizon },
-        // Exclude assignments the student has already submitted.
-        submissions: {
-          none: {
-            studentId: userId,
-            status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED, SubmissionStatus.RETURNED] },
-          },
+    // ── Pending assignments — due within the week, not yet submitted ──
+    // One predicate feeds BOTH the agenda list (take: 6) and the uncapped
+    // KPI count — the count used to be `list.length`, so a student with 9
+    // assignments due this week saw "6" on the KPI card (audit 11-d P1-8).
+    const pendingAssignmentsWhere = {
+      offeringId: { in: offeringIds },
+      dueAt: { gte: now, lte: horizon },
+      // Exclude assignments the student has already submitted.
+      submissions: {
+        none: {
+          studentId: userId,
+          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED, SubmissionStatus.RETURNED] },
         },
       },
-      orderBy: { dueAt: 'asc' },
-      take: 6,
-      select: {
-        id: true, title: true, type: true, dueAt: true,
-        // offeringId lets the frontend submit directly
-        // (POST /offerings/:offeringId/assignments/:id/submit) without
-        // the per-offering assignment useQueries round-trips.
-        offeringId: true,
-        offering: { select: { course: { select: { name: true, code: true } } } },
-      },
-    });
-    const pendingAssignmentsCount = upcomingAssignments.length;
+    } satisfies Prisma.AssignmentWhereInput;
+    const [upcomingAssignments, pendingAssignmentsCount] = await Promise.all([
+      prisma.assignment.findMany({
+        where: pendingAssignmentsWhere,
+        orderBy: { dueAt: 'asc' },
+        take: 6,
+        select: {
+          id: true, title: true, type: true, dueAt: true,
+          // offeringId lets the frontend submit directly
+          // (POST /offerings/:offeringId/assignments/:id/submit) without
+          // the per-offering assignment useQueries round-trips.
+          offeringId: true,
+          offering: { select: { course: { select: { name: true, code: true } } } },
+        },
+      }),
+      prisma.assignment.count({ where: pendingAssignmentsWhere }),
+    ]);
 
     // ── Upcoming live sessions for enrolled offerings ─────────
     const upcomingLive = await prisma.liveSession.findMany({
@@ -372,13 +472,16 @@ router.get('/me/dashboard', async (req, res, next) => {
     );
 
     // ── XP rank within faculty (for "place X in your batch") ──
-    const facultyPeers = await prisma.studentProfile.findMany({
-      where: { facultyId: profile.facultyId },
-      select: { totalXp: true },
-    });
-    const myXp = profile.totalXp;
-    const rank = facultyPeers.filter((p) => p.totalXp > myXp).length + 1;
-    const cohortSize = facultyPeers.length;
+    // Two indexed counts instead of loading every profile in the faculty
+    // to filter in JS (audit 11-d P1-11). Same semantics as before:
+    // rank = number of peers strictly ahead + 1.
+    const [peersAhead, cohortSize] = await Promise.all([
+      prisma.studentProfile.count({
+        where: { facultyId: profile.facultyId, totalXp: { gt: profile.totalXp } },
+      }),
+      prisma.studentProfile.count({ where: { facultyId: profile.facultyId } }),
+    ]);
+    const rank = peersAhead + 1;
 
     // ── Term progress fraction ────────────────────────────────
     const termTotalMs = term.endsAt.getTime() - term.startsAt.getTime();

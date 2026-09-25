@@ -23,6 +23,7 @@ import { useAuthStore } from '../../stores/auth.store';
 import { formatRelativeArShort } from '../../lib/format';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .leaderboard-list/-points families (D11 css split, 12-15)
+import '../../styles/colleges.css'; // .comp-* index/hero/entry/modal families (D14 css split, 13-17)
 
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',

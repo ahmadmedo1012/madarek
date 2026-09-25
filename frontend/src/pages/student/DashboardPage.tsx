@@ -16,6 +16,7 @@ import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useStudentDashboard } from '../../hooks/useResources';
 import { useChartThemeKey, chartColors, radialOptions } from '../../lib/chartTheme';
+import { ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -37,12 +38,9 @@ const ASSIGNMENT_ICON: Record<'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM', LucideIc
   EXAM: FileText,
 };
 
-const ASSIGNMENT_LABEL: Record<'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM', string> = {
-  HOMEWORK: 'واجب',
-  QUIZ: 'اختبار قصير',
-  PROJECT: 'مشروع',
-  EXAM: 'امتحان',
-};
+/* ASSIGNMENT_KIND_LABEL (the assignment-kind Arabic labels) lives in
+ * lib/courseMeta.ts — the 13-15 fold of this page's ASSIGNMENT_LABEL
+ * and CourseDetailPage's TYPE_LABELS (values byte-identical). */
 
 const DAY_LABEL: Record<'today' | 'tomorrow', string> = {
   today: 'اليوم',
@@ -220,7 +218,7 @@ export default function StudentDashboardPage() {
     })),
     ...d.agenda.assignments.slice(0, 3).map<AgendaItem>((a) => ({
       kind: 'assign', id: `a-${a.id}`,
-      title: <>{ASSIGNMENT_LABEL[a.type]}: {a.title} (<bdi>{a.courseCode}</bdi>)</>,
+      title: <>{ASSIGNMENT_KIND_LABEL[a.type]}: {a.title} (<bdi>{a.courseCode}</bdi>)</>,
       meta: <>تسليم {formatDue(a.dueAt)}</>,
       icon: ASSIGNMENT_ICON[a.type], tone: 'gold',
     })),

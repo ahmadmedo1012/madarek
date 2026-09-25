@@ -214,6 +214,22 @@ describe('updateChapterBodySchema', () => {
     expect(updateChapterBodySchema.safeParse({ conceptId: '' }).success).toBe(false);
     expect(updateChapterBodySchema.safeParse({ bogus: 'x' }).success).toBe(false);
   });
+
+  it('accepts conceptId: null to CLEAR the concept tag (P2-23)', () => {
+    expect(updateChapterBodySchema.safeParse({ conceptId: null }).success).toBe(true);
+    expect(updateChapterBodySchema.safeParse({ title: 'فصل', startSec: 0, endSec: 10, conceptId: null }).success).toBe(true);
+  });
+
+  it('still rejects empty/over-length conceptId strings (null or a real id only)', () => {
+    expect(updateChapterBodySchema.safeParse({ conceptId: '' }).success).toBe(false);
+    expect(updateChapterBodySchema.safeParse({ conceptId: 'a'.repeat(101) }).success).toBe(false);
+    expect(updateChapterBodySchema.safeParse({ conceptId: 'ckConcept01' }).success).toBe(true);
+  });
+
+  it('keeps the create schema non-nullable (null means nothing at create)', () => {
+    expect(createChapterBodySchema.safeParse({ ...VALID_CHAPTER, conceptId: null }).success).toBe(false);
+    expect(createChapterBodySchema.safeParse({ ...VALID_CHAPTER, conceptId: 'ckConcept01' }).success).toBe(true);
+  });
 });
 
 describe('createCheckpointBodySchema', () => {
@@ -267,6 +283,21 @@ describe('updateCheckpointBodySchema', () => {
     expect(updateCheckpointBodySchema.safeParse({ options: ['أ'] }).success).toBe(false);
     expect(updateCheckpointBodySchema.safeParse({ correctIndex: -1 }).success).toBe(false);
     expect(updateCheckpointBodySchema.safeParse({ bogus: 'x' }).success).toBe(false);
+  });
+
+  it('accepts conceptId: null to CLEAR the concept tag (P2-23)', () => {
+    expect(updateCheckpointBodySchema.safeParse({ conceptId: null }).success).toBe(true);
+    expect(
+      updateCheckpointBodySchema.safeParse({ question: 'سؤال', conceptId: null, correctIndex: 0 }).success,
+    ).toBe(true);
+    // Empty string is still rejected — null or a real id only.
+    expect(updateCheckpointBodySchema.safeParse({ conceptId: '' }).success).toBe(false);
+    expect(updateCheckpointBodySchema.safeParse({ conceptId: 'ckConcept01' }).success).toBe(true);
+  });
+
+  it('keeps the create schema non-nullable (null means nothing at create)', () => {
+    expect(createCheckpointBodySchema.safeParse({ ...VALID_CHECKPOINT, conceptId: null }).success).toBe(false);
+    expect(createCheckpointBodySchema.safeParse({ ...VALID_CHECKPOINT, conceptId: 'ckConcept01' }).success).toBe(true);
   });
 });
 

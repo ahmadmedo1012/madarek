@@ -12,10 +12,13 @@
  *     onboarding role-intro) pick their motif from it; symmetric scenes
  *     ignore it.
  *   - When `decorative` is true, renders aria-hidden and skips alt text.
- *     When false (default), renders role="img" + aria-label. The app is
- *     Arabic-only and ships no i18n runtime, so alt text is passed
- *     directly as an Arabic string via `alt` (the old altKey/i18n path
- *     resolved keys to themselves — raw keys leaked into aria-labels).
+ *     When false (default), renders role="img" + aria-label. The alt
+ *     text is REQUIRED at the type level in that branch — a role="img"
+ *     with no accessible name is a contract violation, not a soft
+ *     warning (audit 11-e P2-18). The app is Arabic-only and ships no
+ *     i18n runtime, so alt text is passed directly as an Arabic string
+ *     via `alt` (the old altKey/i18n path resolved keys to themselves
+ *     — raw keys leaked into aria-labels).
  *   - On unregistered names: emits a within-family neutral fallback,
  *     never a broken image.
  *
@@ -32,18 +35,23 @@ import {
 import type { AppRole } from '../stores/auth.store';
 import { useMemo } from 'react';
 
-export interface IllustrationProps {
+interface IllustrationBaseProps {
   name: IllustrationName;
   /** Required when name === 'onboarding-role-intro' (keys the role motif). */
   role?: AppRole;
-  /** When true, the SVG is hidden from the accessibility tree. */
-  decorative?: boolean;
-  /** Arabic alt text; required when decorative !== true. */
-  alt?: string;
   /** Optional override for layout direction. Defaults to document.dir. */
   dir?: 'ltr' | 'rtl';
   className?: string;
 }
+
+/**
+ * Discriminated by `decorative`: decorative scenes are aria-hidden and
+ * must not carry alt text; non-decorative scenes are role="img" and
+ * REQUIRE a non-empty Arabic alt string (audit 11-e P2-18).
+ */
+export type IllustrationProps =
+  | (IllustrationBaseProps & { decorative: true; alt?: undefined })
+  | (IllustrationBaseProps & { decorative?: false; alt: string });
 
 function resolveDir(override: 'ltr' | 'rtl' | undefined): 'ltr' | 'rtl' {
   if (override) return override;

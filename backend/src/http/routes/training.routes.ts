@@ -5,6 +5,12 @@ import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+// D12: the quiz matcher is consolidated in lib/grading.ts (shared with
+// the exam short-answer gate); re-exported because the DB-free tests
+// import it from this module.
+import { quizAnswerMatches } from '../../lib/grading.js';
+
+export { quizAnswerMatches };
 
 const router = Router();
 router.use(authMiddleware);
@@ -36,21 +42,6 @@ export function levelFor(points: number): { level: number; tier: 'BRONZE' | 'SIL
   const tier: 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM' =
     level >= 8 ? 'PLATINUM' : level >= 5 ? 'GOLD' : level >= 3 ? 'SILVER' : 'BRONZE';
   return { level, tier, toNext, pctIntoLevel: Math.round((into / POINTS_PER_LEVEL) * 100) };
-}
-
-/**
- * D8 short-answer gate: an answer passes ONLY on an exact match after
- * normalization (trim + case-fold + collapsing separator noise such as
- * commas, Arabic comma, dots, dashes, quotes and repeated spaces).
- * Never a substring `includes` in either direction — that let a
- * one-character answer farm lesson points, track badges, certificates
- * and leaderboard rank.
- */
-export function quizAnswerMatches(submitted: string, expected: string): boolean {
-  const norm = (s: string) => s.replace(/[\s,،.\-_/'"]+/g, ' ').trim().toLowerCase();
-  const normalizedExpected = norm(expected);
-  if (!normalizedExpected) return false; // a blank key can never be satisfied
-  return norm(submitted) === normalizedExpected;
 }
 
 /** Minimal user shape leaderboard rows are built from (matches the route's prisma select). */

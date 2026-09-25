@@ -9,6 +9,12 @@ import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering, assertOfferingAccess, getEffectiveCapabilities } from '../../lib/permissions.js';
+// D12: the short-answer matcher is consolidated in lib/grading.ts (shared
+// with the training quiz gate); re-exported because the DB-free tests
+// import it from this module.
+import { shortAnswerMatches } from '../../lib/grading.js';
+
+export { shortAnswerMatches };
 
 const router = Router();
 router.use(authMiddleware);
@@ -19,20 +25,6 @@ router.use(authMiddleware);
 
 /** Late-submit grace window past expiresAt (network latency buffer). */
 export const SUBMIT_GRACE_MS = 60_000;
-
-/**
- * Short-answer matcher: exact equality after trimming, or the same
- * comparison case-insensitively — NEVER substring containment. A
- * one-character answer must not score against a longer model answer,
- * and a model answer must not match a single word of a verbose reply.
- */
-export function shortAnswerMatches(expected: unknown, submitted: string | null | undefined): boolean {
-  if (typeof expected !== 'string') return false;
-  const e = expected.trim();
-  const s = (submitted ?? '').trim();
-  if (e === '' || s === '') return false;
-  return s === e || s.toLowerCase() === e.toLowerCase();
-}
 
 export type AutoGrade =
   | { kind: 'auto'; awarded: number; isCorrect: boolean }

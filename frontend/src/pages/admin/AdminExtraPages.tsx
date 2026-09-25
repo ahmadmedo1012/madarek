@@ -11,6 +11,12 @@ import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, TableSkeleton } from
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { useFaculties } from '../../hooks/useResources';
+// D14 css split (13-17): colleges.css has owned the admin-extras surfaces
+// (.admin-students-*, .admin-pagination, .digital-stat-*, .trend-table,
+// .settings-*, .top-courses-*) since "Sub-project D" — see its ownership
+// banner. It lands in the chunk shared with CollegePages / CompetitionsPages /
+// LandingPage (the other consumers).
+import '../../styles/colleges.css';
 
 /* ───────────────────────── /admin/students ─────────────────────────
  *

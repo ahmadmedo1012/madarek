@@ -20,7 +20,7 @@ import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListS
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
-import { formatRelativeArShort } from '../../lib/format';
+import { formatRelativeArShort, WEEKDAY_NAMES_AR } from '../../lib/format';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
@@ -166,7 +166,8 @@ const useQualityAlerts = () => useQuery({
 // a module-level `cartesianOptions()` would freeze the resolved CSS colours
 // at import time and never follow a light/dark theme switch.
 
-const WEEKDAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+/* WEEKDAY_NAMES_AR (Sunday-first Arabic weekday names) lives in
+ * lib/format.ts (13-15 fold). */
 
 /**
  * Read a --motion-duration-* token as milliseconds. Returns 0 when the
@@ -331,20 +332,20 @@ export function QualityDashboardPage() {
             ariaLabel={`مخطط خطّي للنشاط الأسبوعي — جلسات نشطة يومياً${e.weeklyActiveEstimated ? ' (منحنى تقديري)' : ''}`}
             summary={
               e.weeklyActive.length > 0
-                ? `ذروة النشاط ${Math.max(...e.weeklyActive)} جلسة يوم ${WEEKDAYS[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
+                ? `ذروة النشاط ${Math.max(...e.weeklyActive)} جلسة يوم ${WEEKDAY_NAMES_AR[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
                 : 'لا بيانات نشاط لهذا الأسبوع.'
             }
             table={{
               caption: 'النشاط الأسبوعي — جلسات نشطة يومياً',
               columns: ['اليوم', 'جلسات'],
-              rows: WEEKDAYS.map((day, i) => [day, e.weeklyActive[i] ?? 0]),
+              rows: WEEKDAY_NAMES_AR.map((day, i) => [day, e.weeklyActive[i] ?? 0]),
             }}
             height={220}
           >
           <Line
             key={themeKey}
             data={{
-              labels: WEEKDAYS,
+              labels: WEEKDAY_NAMES_AR,
               datasets: [{
                 label: 'مستخدم نشط',
                 data: e.weeklyActive,
@@ -678,14 +679,14 @@ export function QualityEngagementPage() {
             table={{
               caption: 'النشاط الأسبوعي — جلسات نشطة يومياً',
               columns: ['اليوم', 'جلسات'],
-              rows: WEEKDAYS.map((day, i) => [day, d.weeklyActive[i] ?? 0]),
+              rows: WEEKDAY_NAMES_AR.map((day, i) => [day, d.weeklyActive[i] ?? 0]),
             }}
             height={240}
           >
             <Bar
               key={themeKey}
               data={{
-                labels: WEEKDAYS,
+                labels: WEEKDAY_NAMES_AR,
                 datasets: [{
                   label: 'نشاط يومي',
                   data: d.weeklyActive,
