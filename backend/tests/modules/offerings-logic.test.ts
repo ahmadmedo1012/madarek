@@ -11,17 +11,23 @@
  * guard (TOP-11) + the material BigInt serialization (15-i P1-5 / 15-c
  * hand-off — the exact res.json 500 the materials GET used to throw)
  * + a tombstone pin that the dead roll-call twin POST /:id/attendance
- * (15-h P2-8) stays deleted. Integration coverage (auth gate,
+ * (15-h P2-8) stays deleted + the GET / catalog list's query schema,
+ * role door and minimal row projection (18-F2 — announcement OFFERING
+ * scoping, 17-E7's gap). Integration coverage (auth gate,
  * assertOfferingAccess, the grade upsert transaction) needs a DB
  * harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
+import { Role } from '@prisma/client';
 import offeringsRouter, {
+  OFFERINGS_LIST_ROLES,
   assignmentCreateSchema,
   foreignStudentIds,
   gradeItemSchema,
   gradesUpsertSchema,
   materialCreateSchema,
+  offeringListRow,
+  offeringsListQuerySchema,
   serializeMaterial,
 } from '../../src/http/routes/offerings.routes';
 
@@ -365,5 +371,64 @@ describe('route inventory (the dead roll-call twin stays deleted — 15-h P2-8)'
     expect(has('/:id/materials', 'post')).toBe(true);
     expect(has('/:id/assignments', 'post')).toBe(true);
     expect(has('/:id/grades', 'post')).toBe(true);
+  });
+
+  it('the catalog list registers at GET / — beside, not inside, /:id (18-F2)', () => {
+    const has = (path: string, method: string) =>
+      routes.some((r) => r.path === path && r.methods[method] === true);
+    expect(has('/', 'get')).toBe(true);
+    expect(has('/:id', 'get')).toBe(true);
+  });
+});
+
+/* ═══════════════ Catalog list (GET /offerings — 17-E7's gap, 18-F2) ═══════════════ */
+
+describe('offeringsListQuerySchema', () => {
+  it('defaults page 1 / limit 20 and accepts the 200-row cap', () => {
+    const parsed = offeringsListQuerySchema.safeParse({});
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      expect(parsed.data.page).toBe(1);
+      expect(parsed.data.limit).toBe(20);
+    }
+    expect(offeringsListQuerySchema.safeParse({ limit: 200 }).success).toBe(true);
+    expect(offeringsListQuerySchema.safeParse({ limit: 201 }).success).toBe(false);
+  });
+
+  it('rejects non-positive pages and over-long q (the platform pagination bounds)', () => {
+    expect(offeringsListQuerySchema.safeParse({ page: 0 }).success).toBe(false);
+    expect(offeringsListQuerySchema.safeParse({ page: -1 }).success).toBe(false);
+    expect(offeringsListQuerySchema.safeParse({ q: 'x'.repeat(121) }).success).toBe(false);
+    expect(offeringsListQuerySchema.safeParse({ q: 'شبكات' }).success).toBe(true);
+  });
+});
+
+describe('offeringListRow — the minimal scoping projection', () => {
+  const row = {
+    id: 'off1234567890123456789012',
+    term: '2026-1',
+    course: { name: 'شبكات الحاسوب', code: 'CS301' },
+  };
+
+  it('projects exactly id + course name/code + term', () => {
+    expect(offeringListRow(row)).toEqual(row);
+  });
+
+  it('carries nothing else — teacher identity, room and capacity stay off the wire', () => {
+    const wide = { ...row, teacherId: 't9', room: 'قاعة 12', capacity: 40 };
+    const out = offeringListRow(wide);
+    expect(out).not.toHaveProperty('teacherId');
+    expect(out).not.toHaveProperty('room');
+    expect(out).not.toHaveProperty('capacity');
+    expect(out).toEqual(row);
+  });
+});
+
+describe('OFFERINGS_LIST_ROLES (the catalog list door)', () => {
+  it('admits TEACHER, ADMIN, OWNER and QUALITY — STUDENT stays out', () => {
+    // QUALITY is the announcement author 17-E7 could not serve
+    // (/teacher/me/offerings is TEACHER+OWNER only); STUDENT reaches
+    // offerings through their enrolled surfaces.
+    expect([...OFFERINGS_LIST_ROLES]).toEqual([Role.TEACHER, Role.ADMIN, Role.OWNER, Role.QUALITY]);
   });
 });

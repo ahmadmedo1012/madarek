@@ -17,15 +17,21 @@
  *    rollup, the student transcript (15-i TOP-2): weight normalization,
  *    submission-only courses, the Prisma-Decimal toString() path, the
  *    maxScore-0 fold, null-gradePct exclusion, nulls-last sort.
+ *  · submissionFeedItem — the pending-submissions feed item and its
+ *    `late` flag (15-a P0-1 follow-up, 16-B1 hand-off): the marker must
+ *    ride its own field and NEVER leak into `title` (TeacherPages
+ *    matches the grade modal's maxScore by stripped title).
  *
  * Integration coverage (auth gate, ownership, query shapes, feed assembly)
  * needs a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
-import { AttendanceStatus, Prisma } from '@prisma/client';
+import { AssignmentType, AttendanceStatus, Prisma, SubmissionStatus } from '@prisma/client';
 import {
   attendancePctFromStatusCounts as teacherAttendancePct,
   avgGradePctFromGroups,
+  submissionFeedItem,
+  type PendingSubmissionFeedRow,
 } from '../../src/http/routes/teacher-dashboard.routes';
 import {
   attendancePctFromStatusCounts as studentAttendancePct,
@@ -302,5 +308,60 @@ describe('resultsHeadline (avg/highest/lowest exclude null-gradePct courses)', (
       lowest: null,
       courseCount: 1,
     });
+  });
+});
+
+// ─── Pending-submissions feed item + `late` flag (16-B1 hand-off) ────
+// Row factory shaped like the feed query's select (numbers/dates stand in
+// for the Prisma column values the builder reads).
+const pendingSub = (overrides?: Partial<PendingSubmissionFeedRow>): PendingSubmissionFeedRow => ({
+  id: 'sub1',
+  submittedAt: new Date('2026-02-01T09:00:00Z'),
+  status: SubmissionStatus.SUBMITTED,
+  student: { firstName: 'سالم', lastName: 'العامري', avatarInitials: 'سع', avatarColor: null },
+  assignment: {
+    title: 'واجب الفصل الأول',
+    type: AssignmentType.HOMEWORK,
+    offering: { course: { code: 'CS101', name: 'مقرّر CS101' } },
+  },
+  ...overrides,
+});
+
+describe('submissionFeedItem (pending-submissions feed, `late` flag)', () => {
+  it('maps status to the flag: LATE → true, SUBMITTED → false', () => {
+    expect(submissionFeedItem(pendingSub({ status: SubmissionStatus.LATE })).late).toBe(true);
+    expect(submissionFeedItem(pendingSub({ status: SubmissionStatus.SUBMITTED })).late).toBe(false);
+  });
+
+  it('keeps the pre-flag item shape byte-identical apart from `late`', () => {
+    const row = pendingSub();
+    expect(submissionFeedItem(row)).toEqual({
+      kind: 'submissions',
+      id: 's-sub1',
+      author: row.student,
+      meta: 'مقرّر CS101 · CS101',
+      when: row.submittedAt,
+      title: 'سلّم واجب الفصل الأول',
+      actionTo: '/grades',
+      late: false,
+    });
+  });
+
+  it('EXAM assignments keep the «سلّم/ت» feminine form', () => {
+    const item = submissionFeedItem(pendingSub({
+      assignment: {
+        title: 'اختبار المنتصف',
+        type: AssignmentType.EXAM,
+        offering: { course: { code: 'MA201', name: 'مقرّر MA201' } },
+      },
+    }));
+    expect(item.title).toBe('سلّم/ت اختبار المنتصف');
+  });
+
+  it('never leaks lateness into `title` — TeacherPages matches maxScore by stripped title (16-B1 hand-off)', () => {
+    const onTime = submissionFeedItem(pendingSub());
+    const late = submissionFeedItem(pendingSub({ status: SubmissionStatus.LATE }));
+    expect(late.title).toBe(onTime.title);
+    expect(late.title.startsWith('سلّم ')).toBe(true);
   });
 });

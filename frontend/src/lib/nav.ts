@@ -4,7 +4,7 @@ import {
   GraduationCap, Briefcase, Building2,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
-  FileText, ShieldCheck, Activity, Compass, BookMarked,
+  FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked,
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
   Palette, Settings, AlertTriangle,
   type LucideIcon,
@@ -75,6 +75,10 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/teacher/grades', icon: ListChecks, label: 'الدرجات' },
       { to: '/teacher/materials', icon: Upload, label: 'الملفات التعليمية' },
       { to: '/teacher/assignments', icon: ClipboardList, label: 'الواجبات والاختبارات' },
+      // 18-F1 — unified online-exam authoring (question bank + templates).
+      // Distinct from الواجبات والاختبارات (classroom grading): this is the
+      // bank/template/publish pipeline. D17-1: اختبار, never امتحان.
+      { to: '/teacher/exams', icon: FileQuestion, label: 'بنك الأسئلة والاختبارات' },
     ],
   },
   {

@@ -7,9 +7,88 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { assertOfferingAccess } from '../../lib/permissions.js';
 import { AppError } from '../../lib/errors.js';
+import { paginationSchema, buildMeta } from '../../lib/pagination.js';
+// The list-side role/visibility twin of assertOfferingAccess — shared
+// with GET /courses/:id and the global search (its docblock names this
+// file's consumers). Importing a route module for a helper follows the
+// search.routes.ts precedent (no cycle: courses.routes does not import
+// this file).
+import { offeringVisibilityFilter } from './courses.routes.js';
 
 const router = Router();
 router.use(authMiddleware);
+
+// ─── Catalog list (announcement OFFERING scoping — 17-E7's gap) ───
+
+/** Roles allowed to enumerate offerings: the announcement authors who
+ *  may target an ARBITRARY offering (ADMIN/QUALITY/OWNER — the
+ *  permission map in social.routes.ts grants them `offering: 'any'`)
+ *  plus TEACHER, whose rows stay teacher-scoped through
+ *  offeringVisibilityFilter (never wider than what they may announce
+ *  to). STUDENT is excluded — students reach offerings through their
+ *  enrolled surfaces. Pinned DB-free by tests/modules/offerings-logic.test.ts. */
+export const OFFERINGS_LIST_ROLES: readonly Role[] = [Role.TEACHER, Role.ADMIN, Role.OWNER, Role.QUALITY];
+
+/** GET /offerings query — the platform pagination schema with this
+ *  surface's 200-row cap (default 20). */
+export const offeringsListQuerySchema = paginationSchema.extend({
+  limit: z.coerce.number().int().positive().max(200).default(20),
+});
+
+/**
+ * The minimal row of GET /offerings — exactly what an announcement
+ * OFFERING scope picker needs (id + course name/code + term), nothing
+ * more: teacher identity, room, capacity and schedule stay off this
+ * wire (the detail surface owns them, behind assertOfferingAccess).
+ */
+export function offeringListRow(
+  o: { id: string; term: string; course: { name: string; code: string } },
+): { id: string; term: string; course: { name: string; code: string } } {
+  return { id: o.id, term: o.term, course: { name: o.course.name, code: o.course.code } };
+}
+
+router.get(
+  '/',
+  requireRole(...OFFERINGS_LIST_ROLES),
+  validate(offeringsListQuerySchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const { page, limit, q } = req.query as unknown as {
+        page: number;
+        limit: number;
+        q?: string;
+      };
+      // Role-scoped rows (TEACHER sees only what they teach) + the
+      // standard q filter over the course name/code a picker searches by.
+      const where = {
+        ...offeringVisibilityFilter(req.user!.role, req.user!.id),
+        ...(q
+          ? {
+              OR: [
+                { course: { name: { contains: q, mode: 'insensitive' as const } } },
+                { course: { code: { contains: q, mode: 'insensitive' as const } } },
+              ],
+            }
+          : {}),
+      };
+      const [rows, total] = await Promise.all([
+        prisma.courseOffering.findMany({
+          where,
+          skip: (page - 1) * limit,
+          take: limit,
+          // Course-name order — the shape a scope picker browses in;
+          // code breaks ties so pages stay deterministic.
+          orderBy: [{ course: { name: 'asc' } }, { course: { code: 'asc' } }],
+          select: { id: true, term: true, course: { select: { name: true, code: true } } },
+        }),
+        prisma.courseOffering.count({ where }),
+      ]);
+      res.json({ data: rows.map(offeringListRow), meta: buildMeta(page, limit, total) });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 
 router.get('/:id', async (req, res, next) => {
   try {

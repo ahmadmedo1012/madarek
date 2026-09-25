@@ -8,26 +8,34 @@
  * status-transition rules (resume / alreadyAttempted / retake), the
  * exam-start assembly (blocking statuses / maxScore / shuffle), the
  * answer-save dimension rules, the manual-grading payload
- * reconciliation, and the authoring zod schemas. Integration coverage
- * (auth, transactions, the FOR UPDATE start/submit races) needs a DB
- * harness the project does not have yet.
+ * reconciliation, the authoring zod schemas, and the attempts-list
+ * read half of the manual-grading surface (18-F2: the role door, the
+ * authorization map, the ?status= filter, the points map and the row
+ * builder). Integration coverage (auth, transactions, the FOR UPDATE
+ * start/submit races) needs a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
-import { ExamKind } from '@prisma/client';
+import { AttemptStatus, ExamKind, Prisma, QuestionType, Role } from '@prisma/client';
 import {
+  EXAM_GRADING_ROLES,
   SUBMIT_GRACE_MS,
   answerPatchFor,
+  attemptListRow,
   attemptBlockingStatuses,
   createQuestionSchema,
   createTemplateSchema,
+  decideAttemptsAccess,
   decideExamStart,
   gradeExamAnswer,
   manualGradeSchema,
+  parseAttemptStatusFilter,
   reconcileManualGrades,
   shuffleQuestions,
   shortAnswerMatches,
   submitAnswerSchema,
   templateMaxScore,
+  templateQuestionPoints,
+  type TemplateAttemptSource,
 } from '../../src/http/routes/exams.routes';
 
 /* ═══════════════ Short-answer matcher (never substring) ═══════════════ */
@@ -608,5 +616,221 @@ describe('manualGradeSchema', () => {
   it('rejects extra fields on both levels (strict mode)', () => {
     expect(manualGradeSchema.safeParse({ answers: [{ answerId: 'c12345678', isCorrect: true, awardedPoints: 5 }] }).success).toBe(false);
     expect(manualGradeSchema.safeParse({ answers: [], finalize: true }).success).toBe(false);
+  });
+});
+
+/* ═══════════════ Attempts list (GET /exams/templates/:id/attempts — 18-F2) ═══════════════ */
+
+describe('EXAM_GRADING_ROLES (the grading-surface door)', () => {
+  it('admits exactly TEACHER, ADMIN and OWNER — STUDENT and QUALITY are structurally out', () => {
+    // STUDENT is the graded party; QUALITY moderates templates, never
+    // student answers. Both would 403 at requireRole before any query.
+    expect([...EXAM_GRADING_ROLES]).toEqual([Role.TEACHER, Role.ADMIN, Role.OWNER]);
+  });
+});
+
+describe('decideAttemptsAccess — the grade-route authorization map', () => {
+  const offeringTemplate = { offeringId: 'off1234567890123456789012', authorId: 'author1' };
+  const facultyTemplate = { offeringId: null, authorId: 'author1' };
+
+  it('routes offering-scoped templates through the offering-ownership check for every role', () => {
+    // The caps/teacherId resolution is assertOwnsOffering's job — the
+    // decision only picks WHICH check runs.
+    for (const role of [Role.TEACHER, Role.ADMIN, Role.OWNER] as const) {
+      expect(decideAttemptsAccess(offeringTemplate, { id: 'anyone', role })).toEqual({
+        ok: true,
+        via: 'offering',
+        offeringId: offeringTemplate.offeringId,
+      });
+    }
+  });
+
+  it('a keyless (faculty/general) template belongs to its author — author and OWNER pass', () => {
+    expect(decideAttemptsAccess(facultyTemplate, { id: 'author1', role: Role.TEACHER }))
+      .toEqual({ ok: true, via: 'author' });
+    expect(decideAttemptsAccess(facultyTemplate, { id: 'whoever', role: Role.OWNER }))
+      .toEqual({ ok: true, via: 'owner' });
+  });
+
+  it('another teacher — and ADMIN — are refused on a keyless template (the grade route asymmetry)', () => {
+    // ADMIN oversight flows through assertOwnsOffering (CURRICULUM_EDIT_ANY),
+    // which only exists for offering-scoped templates; a keyless template
+    // still needs its author.
+    expect(decideAttemptsAccess(facultyTemplate, { id: 'other-teacher', role: Role.TEACHER }))
+      .toEqual({ ok: false, reason: 'not-author' });
+    expect(decideAttemptsAccess(facultyTemplate, { id: 'admin1', role: Role.ADMIN }))
+      .toEqual({ ok: false, reason: 'not-author' });
+  });
+});
+
+describe('parseAttemptStatusFilter (the ?status= query param)', () => {
+  it('accepts every AttemptStatus value (enum completeness)', () => {
+    for (const s of Object.values(AttemptStatus)) {
+      expect(parseAttemptStatusFilter(s)).toBe(s);
+    }
+  });
+
+  it('returns null for absent, malformed and non-string values — the list stays unfiltered', () => {
+    expect(parseAttemptStatusFilter(undefined)).toBeNull();
+    expect(parseAttemptStatusFilter('')).toBeNull();
+    expect(parseAttemptStatusFilter('GRADED ')).toBeNull();
+    expect(parseAttemptStatusFilter('submitted')).toBeNull(); // enum values are UPPER
+    expect(parseAttemptStatusFilter('GRADED&x=1')).toBeNull();
+    expect(parseAttemptStatusFilter(['SUBMITTED'])).toBeNull();
+    expect(parseAttemptStatusFilter(42)).toBeNull();
+  });
+});
+
+describe('templateQuestionPoints (pointsOverride ?? question.points)', () => {
+  it('the per-template override wins over the question default, per question', () => {
+    const points = templateQuestionPoints([
+      { questionId: 'q1', pointsOverride: null, question: { points: 5 } },
+      { questionId: 'q2', pointsOverride: 4, question: { points: 2 } },
+    ]);
+    expect(points.get('q1')).toBe(5);
+    expect(points.get('q2')).toBe(4);
+    expect(points.has('q9')).toBe(false);
+  });
+
+  it('matches templateMaxScore when summed (the two rules cannot drift)', () => {
+    const links = [
+      { questionId: 'q1', pointsOverride: null, question: { points: 5 } },
+      { questionId: 'q2', pointsOverride: 4, question: { points: 2 } },
+      { questionId: 'q3', pointsOverride: null, question: { points: 3 } },
+    ];
+    let sum = 0;
+    for (const l of links) sum += templateQuestionPoints(links).get(l.questionId)!;
+    expect(sum).toBe(templateMaxScore(links));
+  });
+});
+
+describe('attemptListRow — the grading list row (18-F2)', () => {
+  const points = templateQuestionPoints([
+    { questionId: 'q1', pointsOverride: null, question: { points: 5 } },
+    { questionId: 'q2', pointsOverride: 4, question: { points: 2 } },
+    { questionId: 'q3', pointsOverride: null, question: { points: 3 } },
+  ]);
+
+  function srcAnswer(
+    id: string,
+    questionId: string,
+    over: Partial<Omit<TemplateAttemptSource['answers'][number], 'id' | 'questionId'>> = {},
+  ): TemplateAttemptSource['answers'][number] {
+    return {
+      id,
+      questionId,
+      isCorrect: null,
+      answerText: null,
+      choiceIndex: null,
+      question: { prompt: `سؤال ${questionId}`, type: 'ESSAY' as QuestionType, choices: null },
+      ...over,
+    };
+  }
+
+  function srcAttempt(over: Partial<TemplateAttemptSource> = {}): TemplateAttemptSource {
+    return {
+      id: 'at1',
+      status: 'SUBMITTED' as AttemptStatus,
+      startedAt: new Date('2026-06-01T09:00:00.000Z'),
+      submittedAt: new Date('2026-06-01T09:40:00.000Z'),
+      score: new Prisma.Decimal('7.50'),
+      maxScore: new Prisma.Decimal('10'),
+      student: { id: 'st1', firstName: 'آمنة', lastName: 'العبيدي' },
+      answers: [],
+      ...over,
+    };
+  }
+
+  it('projects the row shape: student identity, dates, Decimal→number score pair', () => {
+    // Prisma Decimal serializes as a string through res.json — the row
+    // builder converts (the /exams/me convention), pinned here.
+    expect(attemptListRow(srcAttempt(), points)).toEqual({
+      id: 'at1',
+      studentId: 'st1',
+      studentName: 'آمنة العبيدي',
+      status: 'SUBMITTED',
+      startedAt: new Date('2026-06-01T09:00:00.000Z'),
+      submittedAt: new Date('2026-06-01T09:40:00.000Z'),
+      score: 7.5,
+      maxScore: 10,
+      pendingReview: 0,
+      pendingAnswers: [],
+    });
+  });
+
+  it('keeps score null before any verdict exists — never a fabricated 0', () => {
+    const row = attemptListRow(srcAttempt({ score: null }), points);
+    expect(row.score).toBeNull();
+    expect(row.maxScore).toBe(10);
+  });
+
+  it('counts only verdict-less answer rows as pendingReview', () => {
+    const row = attemptListRow(srcAttempt({
+      answers: [
+        srcAnswer('a1', 'q1', { isCorrect: true, answerText: 'جيدة' }),
+        srcAnswer('a2', 'q2'), // parked — no verdict yet
+        srcAnswer('a3', 'q3', { isCorrect: false }),
+      ],
+    }), points);
+    expect(row.pendingReview).toBe(1);
+  });
+
+  it('embeds full grading detail for the parked answers of a SUBMITTED attempt', () => {
+    const row = attemptListRow(srcAttempt({
+      answers: [
+        srcAnswer('a1', 'q1', { isCorrect: true, answerText: 'جيدة' }),
+        srcAnswer('a2', 'q2', { answerText: 'شرح وافٍ للبروتوكول' }),
+        srcAnswer('a3', 'q3', {
+          choiceIndex: 1,
+          question: { prompt: 'بروتوكول UDP موثوق؟', type: 'TRUE_FALSE' as QuestionType, choices: ['صح', 'خطأ'] },
+        }),
+      ],
+    }), points);
+    expect(row.pendingAnswers).toEqual([
+      { answerId: 'a2', questionId: 'q2', prompt: 'سؤال q2', type: 'ESSAY', points: 4, studentAnswer: 'شرح وافٍ للبروتوكول' },
+      // Objective answers render the chosen option's TEXT — a bare index
+      // means nothing to a human grader.
+      { answerId: 'a3', questionId: 'q3', prompt: 'بروتوكول UDP موثوق؟', type: 'TRUE_FALSE', points: 3, studentAnswer: 'خطأ' },
+    ]);
+  });
+
+  it('never embeds answer detail outside SUBMITTED — IN_PROGRESS rows are mid-exam, EXPIRED terminal', () => {
+    for (const status of ['IN_PROGRESS', 'GRADED', 'EXPIRED'] as AttemptStatus[]) {
+      const row = attemptListRow(srcAttempt({
+        status,
+        submittedAt: status === 'IN_PROGRESS' ? null : new Date('2026-06-01T09:40:00.000Z'),
+        answers: [srcAnswer('a1', 'q2', { answerText: 'إجابة' })],
+      }), points);
+      expect(row.pendingAnswers).toEqual([]);
+      // The count stays truthful — a fact about the row, not an affordance.
+      expect(row.pendingReview).toBe(1);
+    }
+  });
+
+  it('renders an effectively-unanswered parked question as studentAnswer: null (the FE writes its own note)', () => {
+    // An unanswered essay never got an ExamAnswer row; a saved-then-blank
+    // one did. Both must read as "no answer" — never an empty string.
+    const row = attemptListRow(srcAttempt({
+      answers: [srcAnswer('a1', 'q2', { answerText: '   ' })],
+    }), points);
+    expect(row.pendingAnswers[0]?.studentAnswer).toBeNull();
+  });
+
+  it('falls back to the prose when a legacy choice index points past the choices array', () => {
+    const row = attemptListRow(srcAttempt({
+      answers: [srcAnswer('a1', 'q1', {
+        choiceIndex: 7,
+        answerText: 'خيار مكتوب',
+        question: { prompt: 'سؤال قديم', type: 'MCQ' as QuestionType, choices: ['أ', 'ب'] },
+      })],
+    }), points);
+    expect(row.pendingAnswers[0]?.studentAnswer).toBe('خيار مكتوب');
+  });
+
+  it('falls back to 0 points for an answer whose question left the template (defensive)', () => {
+    const row = attemptListRow(srcAttempt({
+      answers: [srcAnswer('a1', 'q-gone', { answerText: 'إجابة' })],
+    }), points);
+    expect(row.pendingAnswers[0]?.points).toBe(0);
   });
 });

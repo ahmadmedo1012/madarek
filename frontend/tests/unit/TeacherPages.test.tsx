@@ -420,6 +420,52 @@ describe('GradeSubmissionModal — discard guard (15-e P1-6)', () => {
   });
 });
 
+describe('NeedsReviewCard — the late-submission chip (18-G feed flag, 18-F2 consumption)', () => {
+  it('badges a LATE submission «متأخر» beside the title — never inside it', () => {
+    // A late submission: the same shape the dashboard now serves, with
+    // the marker on its own field.
+    mocks.dashboard = {
+      data: {
+        kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
+        trend: [],
+        feed: [{ ...FEED_SUBMISSION, late: true }],
+      },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
+    mocks.assignments = [ASSIGNMENT];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    // The chip renders beside the title…
+    expect(screen.getByText('متأخر')).toBeInTheDocument();
+    // …and the title itself stays byte-stable — the grade modal's
+    // maxScore lookup matches assignments BY the stripped title
+    // (the 16-B1 hazard the flag exists to avoid).
+    expect(screen.getByText('مشروع UML')).toBeInTheDocument();
+    expect(screen.queryByText('مشروع UML متأخر')).toBeNull();
+  });
+
+  it('an on-time submission carries no chip', () => {
+    seedGradeFeed();
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('مشروع UML')).toBeInTheDocument();
+    expect(screen.queryByText('متأخر')).toBeNull();
+  });
+});
+
 describe('MessagesPage — server-side pagination (15-d P2-7)', () => {
   it('renders every row of the fetched page — no client-side slice', () => {
     seedMessages();

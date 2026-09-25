@@ -33,12 +33,14 @@ const ROLE_HOME: Record<AppRole, string> = {
 const studentSchema = z.object({
   // D17-4 parity with the backend register schema (auth.dto.ts):
   // user-input strings trim BEFORE length validation — whitespace-only
-  // values fail min() instead of minting an account. Passwords never
-  // trim (a space can be a legitimate part of the secret); the faculty/
-  // department ids are fixed-list cuids, not free input.
+  // values fail min() instead of minting an account; emails additionally
+  // lowercase BEFORE validation (case-insensitive identity, same as the
+  // backend's .trim().toLowerCase()). Passwords never trim (a space can
+  // be a legitimate part of the secret); the faculty/department ids are
+  // fixed-list cuids, not free input.
   firstName: z.string().trim().min(1, 'مطلوب').max(60),
   lastName: z.string().trim().min(1, 'مطلوب').max(60),
-  email: z.string().trim().email('بريد إلكتروني غير صالح').max(120),
+  email: z.string().trim().toLowerCase().email('بريد إلكتروني غير صالح').max(120),
   password: z.string().min(8, '8 أحرف على الأقل').max(72),
   universityId: z.string().trim().min(3, 'مطلوب').max(40),
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
@@ -49,7 +51,7 @@ const studentSchema = z.object({
 const teacherSchema = z.object({
   firstName: z.string().trim().min(1, 'مطلوب').max(60),
   lastName: z.string().trim().min(1, 'مطلوب').max(60),
-  email: z.string().trim().email('بريد إلكتروني غير صالح').max(120),
+  email: z.string().trim().toLowerCase().email('بريد إلكتروني غير صالح').max(120),
   password: z.string().min(8, '8 أحرف على الأقل').max(72),
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),

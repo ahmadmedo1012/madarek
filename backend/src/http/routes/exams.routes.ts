@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, Role } from '@prisma/client';
+import { DifficultyLevel, ExamKind, QuestionType, AttemptStatus, Prisma, Role } from '@prisma/client';
 import type { ExamAttempt, ExamAnswer } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -1025,6 +1025,221 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
 // ════════════════════════════════════════════════════════════════
 //  Teacher manual grading
 // ════════════════════════════════════════════════════════════════
+
+/** Role door of the grading teacher surface — the same trio the manual
+ *  grade route below admits. STUDENT (the graded party) and QUALITY
+ *  (template moderation, never student answers) are structurally out;
+ *  pinned DB-free by tests/modules/exams-logic.test.ts. */
+export const EXAM_GRADING_ROLES: readonly Role[] = [Role.TEACHER, Role.ADMIN, Role.OWNER];
+
+/** Outcome of `decideAttemptsAccess`. */
+export type AttemptsAccess =
+  | { ok: true; via: 'offering'; offeringId: string }
+  | { ok: true; via: 'author' | 'owner' }
+  | { ok: false; reason: 'not-author' };
+
+/**
+ * Pure access decision for a template's attempts — the read half of the
+ * manual-grading authorization, mirroring the grade route's map exactly:
+ * an offering-scoped template is gated through `assertOwnsOffering`
+ * (the offering's teacher, ADMIN via CURRICULUM_EDIT_ANY, OWNER bypass);
+ * a faculty-wide/general template belongs to its author (OWNER passes,
+ * ADMIN does not — oversight reaches offerings through the caps check,
+ * never keyless templates). The role door has already excluded
+ * STUDENT/QUALITY by the time this runs.
+ */
+export function decideAttemptsAccess(
+  template: { offeringId: string | null; authorId: string },
+  viewer: { id: string; role: Role },
+): AttemptsAccess {
+  if (template.offeringId !== null) {
+    return { ok: true, via: 'offering', offeringId: template.offeringId };
+  }
+  if (viewer.role === Role.OWNER) return { ok: true, via: 'owner' };
+  if (template.authorId === viewer.id) return { ok: true, via: 'author' };
+  return { ok: false, reason: 'not-author' };
+}
+
+/** ?status= filter of the attempts list — every AttemptStatus value is
+ *  accepted; anything else (absent, malformed, wrong case) lists
+ *  unfiltered, the question-bank query-param convention. */
+export function parseAttemptStatusFilter(raw: unknown): AttemptStatus | null {
+  return typeof raw === 'string' && (Object.values(AttemptStatus) as string[]).includes(raw)
+    ? (raw as AttemptStatus)
+    : null;
+}
+
+/** Points at stake per question id — `pointsOverride ?? question.points`
+ *  from the template's question links, the same rule both graders apply
+ *  (templateMaxScore at start, the manual grade write at finalize). */
+export type QuestionPoints = ReadonlyMap<string, number>;
+
+export function templateQuestionPoints(
+  links: ReadonlyArray<{ questionId: string; pointsOverride: number | null; question: { points: number } }>,
+): QuestionPoints {
+  return new Map(links.map((l) => [l.questionId, l.pointsOverride ?? l.question.points]));
+}
+
+/** One parked answer of a SUBMITTED attempt, as the grading modal
+ *  consumes it. `studentAnswer` carries the dimension the question is
+ *  graded on — the chosen option's TEXT for MCQ/TRUE_FALSE (a bare index
+ *  means nothing to a human grader), the prose otherwise; null when the
+ *  student wrote nothing (the FE renders its own no-answer note). */
+export interface PendingAnswerDetail {
+  answerId: string;
+  questionId: string;
+  prompt: string;
+  type: QuestionType;
+  points: number;
+  studentAnswer: string | null;
+}
+
+/** Source row of the attempts list query — the Prisma include below
+ *  (kept in sync with this shape; test factories build it DB-free).
+ *  `choices` is the raw Json column (the grader's Array.isArray guard
+ *  narrows it, exactly like gradeExamAnswer). */
+export interface TemplateAttemptSource {
+  id: string;
+  status: AttemptStatus;
+  startedAt: Date;
+  submittedAt: Date | null;
+  score: Prisma.Decimal | null;
+  maxScore: Prisma.Decimal;
+  student: { id: string; firstName: string; lastName: string };
+  answers: ReadonlyArray<{
+    id: string;
+    questionId: string;
+    isCorrect: boolean | null;
+    answerText: string | null;
+    choiceIndex: number | null;
+    question: { prompt: string; type: QuestionType; choices: unknown };
+  }>;
+}
+
+/** GET /exams/templates/:id/attempts row. `pendingReview` counts the
+ *  answer rows without a verdict (isCorrect null) — for SUBMITTED
+ *  attempts those are the auto-grader's parked essays/keyless shorts
+ *  (the grading modal's workload). `pendingAnswers` embeds their full
+ *  detail ONLY on SUBMITTED rows, the one status the grade write
+ *  accepts: IN_PROGRESS answers are mid-exam (serving them buys nothing
+ *  but leakage) and EXPIRED ones are terminal — both keep the honest
+ *  count but ship an empty array. */
+export interface TemplateAttemptItem {
+  id: string;
+  studentId: string;
+  studentName: string;
+  status: AttemptStatus;
+  startedAt: Date;
+  submittedAt: Date | null;
+  score: number | null;
+  maxScore: number;
+  pendingReview: number;
+  pendingAnswers: PendingAnswerDetail[];
+}
+
+/** The human-readable form of one parked answer (module-private helper
+ *  of attemptListRow): the chosen option's text when the index points
+ *  into the choices, the prose otherwise, null when nothing was
+ *  written — never an empty string. */
+function answerTextForGrader(ans: {
+  answerText: string | null;
+  choiceIndex: number | null;
+  question: { choices: unknown };
+}): string | null {
+  const choices = Array.isArray(ans.question.choices) ? ans.question.choices : null;
+  if (ans.choiceIndex !== null && choices !== null && ans.choiceIndex >= 0 && ans.choiceIndex < choices.length) {
+    return String(choices[ans.choiceIndex]);
+  }
+  return ans.answerText !== null && ans.answerText.trim() !== '' ? ans.answerText : null;
+}
+
+/** Pure row builder of the attempts list — Decimal columns are
+ *  converted here (res.json would serialize them as strings; the
+ *  platform's /exams/me convention). */
+export function attemptListRow(a: TemplateAttemptSource, points: QuestionPoints): TemplateAttemptItem {
+  const pending = a.answers.filter((ans) => ans.isCorrect === null);
+  return {
+    id: a.id,
+    studentId: a.student.id,
+    studentName: `${a.student.firstName} ${a.student.lastName}`.trim(),
+    status: a.status,
+    startedAt: a.startedAt,
+    submittedAt: a.submittedAt,
+    score: a.score === null ? null : Number(a.score),
+    maxScore: Number(a.maxScore),
+    pendingReview: pending.length,
+    pendingAnswers:
+      a.status === AttemptStatus.SUBMITTED
+        ? pending.map((ans) => ({
+            answerId: ans.id,
+            questionId: ans.questionId,
+            prompt: ans.question.prompt,
+            type: ans.question.type,
+            points: points.get(ans.questionId) ?? 0,
+            studentAnswer: answerTextForGrader(ans),
+          }))
+        : [],
+  };
+}
+
+/**
+ * GET /exams/templates/:id/attempts — the attempts of one template for
+ * the manual-grading surface: the read half of the workflow the POST
+ * grade route below completes (SUBMITTED essays/keyless shorts parked
+ * forever with no surface to reach them — 18-F1 hand-off #3).
+ * Authorization mirrors the grade route exactly.
+ */
+router.get(
+  '/exams/templates/:id/attempts',
+  requireRole(...EXAM_GRADING_ROLES),
+  async (req, res, next) => {
+    try {
+      const template = await prisma.examTemplate.findUnique({
+        where: { id: req.params.id },
+        include: {
+          questions: {
+            select: { questionId: true, pointsOverride: true, question: { select: { points: true } } },
+          },
+        },
+      });
+      if (!template) throw AppError.notFound('قالب الاختبار غير موجود');
+
+      const access = decideAttemptsAccess(template, { id: req.user!.id, role: req.user!.role });
+      if (!access.ok) throw AppError.forbidden('هذا الاختبار ليس من إنشائك');
+      if (access.via === 'offering') {
+        await assertOwnsOffering(access.offeringId, req.user!.id, req.user!.role);
+      }
+
+      const status = parseAttemptStatusFilter(req.query.status);
+      const attempts = await prisma.examAttempt.findMany({
+        where: { templateId: template.id, ...(status ? { status } : {}) },
+        include: {
+          student: { select: { id: true, firstName: true, lastName: true } },
+          answers: {
+            select: {
+              id: true,
+              questionId: true,
+              isCorrect: true,
+              answerText: true,
+              choiceIndex: true,
+              question: { select: { prompt: true, type: true, choices: true } },
+            },
+          },
+        },
+        // Newest first via startedAt — every row has one (submittedAt is
+        // null mid-exam, which Postgres would sort AHEAD of DESC dates).
+        orderBy: { startedAt: 'desc' },
+        // Bounded read: a template's realistic attempt population (a
+        // class roster, practice-exam retakes included) stays far below
+        // this cap.
+        take: 200,
+      });
+
+      const points = templateQuestionPoints(template.questions);
+      res.json({ data: attempts.map((a) => attemptListRow(a, points)) });
+    } catch (e) { next(e); }
+  },
+);
 
 export const manualGradeSchema = z.object({
   answers: z.array(z.object({

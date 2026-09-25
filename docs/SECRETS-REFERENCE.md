@@ -22,6 +22,8 @@
 | `INTERNAL_SERVICE_TOKEN` | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; **fail-closed when unset** — every call is rejected). Comparison is constant-time: both sides are SHA-256-hashed to fixed-length digests, then compared with `crypto.timingSafeEqual`, so attackers cannot probe the token length via response timing. A user JWT never authenticates this endpoint |
 | `DIRECT_DATABASE_URL` | Neon **direct** (non-pooled) connection. When set, `prisma migrate deploy` uses it directly. When unset, the migrate script derives it from `DATABASE_URL` by stripping the `-pooler` hostname suffix + `pgbouncer`/`connection_limit` query params. |
 
+> The three optional vars above (`CORS_ORIGINS`, `INTERNAL_SERVICE_TOKEN`, `DIRECT_DATABASE_URL`) are declared in `render.yaml` with `sync: false` — visible in IaC, never required by Render. `TZ` is also pinned to `UTC` there (not a secret — see the timezone-model note in `BACKEND.md` / `docs/PROJECT-REFERENCE.md`).
+
 ## Neon Connection Strategy (Render deployment)
 
 Madarek uses two distinct connection URLs:
@@ -82,7 +84,7 @@ here — take them from your Neon dashboard (Connection Details).
 3. `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` auto-generate via `generateValue: true`
 4. Set `DATABASE_URL` manually in Render's Environment tab (pooled Neon URL)
 5. (Optional) Set `DIRECT_DATABASE_URL` if your Neon pooler URL doesn't follow the standard `-pooler` suffix convention
-6. Build sequence: `npm install --include=dev && npm run build`
+6. Build sequence: `npm ci --include=dev && npm run build` (lockfile-exact; `npm ci` keeps the deployed artifact identical to what the committed `package-lock.json` was CI-tested against)
    - `npm run build` runs: `frontend build` → `backend build` → `db:deploy` (migrate-deploy.mjs)
 7. Start: `npm run start` (`node backend/dist/index.js`)
 8. Seed (one-time, from local): `DATABASE_URL='...' JWT_ACCESS_SECRET='...' JWT_REFRESH_SECRET='...' npm run db:seed`

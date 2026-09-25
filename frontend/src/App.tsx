@@ -93,6 +93,10 @@ const PerformancePage = lazy(() => import('./pages/teacher/TeacherPages').then((
 const AssignmentsPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.AssignmentsPage })));
 const MessagesPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.MessagesPage })));
 
+// 18-F1 — unified exam authoring (question bank + templates + moderation)
+const ExamAuthoringPage = lazy(() => import('./pages/teacher/ExamAuthorPages'));
+const ExamTemplateDetailPage = lazy(() => import('./pages/teacher/ExamAuthorPages').then((m) => ({ default: m.ExamTemplateDetailPage })));
+
 const TeacherDashboardPage = lazy(() => import('./pages/teacher/TeacherDashboardPage').then((m) => ({ default: m.TeacherDashboardPage })));
 
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminDashboardPage })));
@@ -243,6 +247,8 @@ export default function App() {
                 <Route path="/teacher/students" element={<StudentsListPage />} />
                 <Route path="/teacher/performance" element={<PerformancePage />} />
                 <Route path="/teacher/assignments" element={<AssignmentsPage />} />
+                <Route path="/teacher/exams" element={<ExamAuthoringPage />} />
+                <Route path="/teacher/exams/:templateId" element={<ExamTemplateDetailPage />} />
                 <Route path="/teacher/messages" element={<MessagesPage />} />
                 <Route path="/teacher/ai" element={<AiAssistantPage />} />
                 <Route path="/teacher/library" element={<LibraryPage />} />

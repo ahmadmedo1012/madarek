@@ -48,15 +48,22 @@ function fmtPosted(iso: string): string {
   return d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
 }
 
-function JobRow({ job }: { job: Job }) {
+/** One jobs-table row. `applied` is the SERVER truth seeded from the
+ *  payload's appliedJobIds (18-G) plus any application this session
+ *  landed — the old useState(false) was client-local fiction, un-liking
+ *  the badge on every remount while the server row persisted. */
+function JobRow({ job, applied }: { job: Job; applied: boolean }) {
   const apply = useApplyJob();
-  const [applied, setApplied] = useState(false);
+  // Optimistic in-session flag: pressing تقدّم shows the badge before the
+  // invalidation refetch confirms it (a failure rolls it back below).
+  const [justApplied, setJustApplied] = useState(false);
+  const isApplied = applied || justApplied;
   const Cmp = jobIcon(job.category, job.title);
 
   const onApply = async () => {
     try {
       await apply.mutateAsync(job.id);
-      setApplied(true);
+      setJustApplied(true);
     } catch {
       // surfaced inline from apply.isError below
     }
@@ -95,7 +102,7 @@ function JobRow({ job }: { job: Job }) {
           {fmtPosted(job.postedAt)}
         </td>
         <td data-label="الإجراء">
-          {applied ? (
+          {isApplied ? (
             <Badge color="green" icon={CheckCircle2}>تمّ التقديم</Badge>
           ) : (
             /* The authored moment: actions stay quiet until the row is
@@ -129,6 +136,10 @@ function JobRow({ job }: { job: Job }) {
 
 export default function JobsPage() {
   const { data, isPending, isError, error, refetch } = useJobs();
+  // 18-G: the payload carries the viewer's applications beside the
+  // jobs — the «تمّ التقديم» badge starts from server truth.
+  const jobs = data?.data ?? [];
+  const appliedJobIds = new Set(data?.appliedJobIds ?? []);
   return (
     <div className="page">
       <header className="page-header">
@@ -142,7 +153,7 @@ export default function JobsPage() {
         <Card><TableSkeleton rows={5} cols={6} /></Card>
       ) : isError ? (
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
-      ) : !data?.length ? (
+      ) : jobs.length === 0 ? (
         <Card><EmptyState
           icon={Briefcase}
           title="لا توجد فرص نشطة هذا الأسبوع"
@@ -150,7 +161,7 @@ export default function JobsPage() {
         /></Card>
       ) : (
         <>
-          <p className="jobs-count" aria-live="polite">{openJobsLabel(data.length)}</p>
+          <p className="jobs-count" aria-live="polite">{openJobsLabel(jobs.length)}</p>
           <div className="table-wrap">
             <table className="table tbl-stack jobs-table">
               <thead>
@@ -164,7 +175,9 @@ export default function JobsPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((j) => <JobRow key={j.id} job={j} />)}
+                {jobs.map((j) => (
+                  <JobRow key={j.id} job={j} applied={appliedJobIds.has(j.id)} />
+                ))}
               </tbody>
             </table>
           </div>

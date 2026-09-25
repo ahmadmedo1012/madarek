@@ -23,7 +23,21 @@
 # Per-instance overrides need an `// allow-emoji: <reason>` comment on
 # the same line.
 #
+# Scanner hardening (17-c hand-off #1, wave 18-G; parity with
+# check-motion-tokens.sh / check-i18n-coverage.sh): every scanner runs
+# ALONE so its own exit status is inspectable — 0 (matches) and 1 (no
+# match) are the only legitimate outcomes; any other failure (bad
+# pattern, unreadable path, python3 crash) FAILS the gate with exit 4
+# instead of a vacuous pass. The old svg pipeline
+# (`grep … | grep -v … | grep -v … || status`) could not distinguish
+# "no match" (exit 1) from an IMMEDIATE pattern-compile error — the
+# first grep exited 2 before producing output, the downstream `grep -v`s
+# then exited 1 on empty input, and pipefail reported the rightmost
+# status: 1, read as "clean".
+#
 # See specs/002-visual-uplift/contracts/icon-policy.md
+#
+# Exit codes: 0 = clean · 1 = violations · 4 = scanner error.
 
 set -euo pipefail
 
@@ -45,7 +59,11 @@ ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration)\.tsx|fr
 
 # The scan runs through python3 — most portable + UTF-8 correct on Linux
 # (shell grep cannot express supplementary-plane emoji ranges portably).
-emoji_hits=$(python3 - "$ALLOWED" <<'PYEOF'
+# A python3 failure (crash, unreadable file) is a SCANNER ERROR: the
+# script prints nothing to stdout, exits non-zero, and the gate fails
+# with exit 4 below — never a silent skip.
+emoji_status=0
+emoji_hits="$(python3 - "$ALLOWED" <<'PYEOF'
 import os, re, sys
 
 allowed_re = re.compile(sys.argv[1])
@@ -75,12 +93,20 @@ for root, dirs, files in os.walk("frontend/src"):
                         continue
                     if emoji_re.search(line):
                         hits.append(f"{path}:{i}: {line.rstrip()}")
-        except Exception:
-            pass
+        except Exception as err:
+            # Unreadable/undecodable file — the svg grep below fails closed
+            # on the same condition (exit 2); so must we.
+            print(f"scanner-error: {path}: {err}", file=sys.stderr)
+            sys.exit(2)
 
 print("\n".join(hits))
 PYEOF
-)
+)" || emoji_status=$?
+if [[ $emoji_status -ne 0 ]]; then
+  echo "✗ Emoji scanner error (python3 exit $emoji_status) — real failure, not a clean pass." >&2
+  echo "See specs/002-visual-uplift/contracts/icon-policy.md" >&2
+  exit 4
+fi
 
 if [[ -n "$emoji_hits" ]]; then
   echo "✗ Emoji found in chrome/components/pages (use Lucide via <Icon icon={...} />):"
@@ -101,18 +127,33 @@ fi
 #    -e so the `$` anchor stays POSIX-portable (mid-alternation `$` is
 #    GNU-only). Lines carrying an `// allow-emoji: <reason>` override
 #    are exempt, same as in the emoji check above.
-#    A scanner error (pipeline exit >= 2 under pipefail — bad pattern,
-#    unreadable path) FAILS the gate: the previous `|| true` would have
-#    silently turned a broken regex into a vacuous pass.
+#    Separated two-stage greps (motion-gate parity): each stage's exit
+#    status is inspected on its own — only 0/1 are legitimate; ≥2 (bad
+#    pattern, unreadable path) fails the gate with exit 4.
 svg_status=0
-svg_hits="$(grep -RInE -e '<svg[[:space:]>/]' -e '<svg$' frontend/src \
-  --include='*.tsx' --include='*.ts' \
-  | grep -vE "$ALLOWED" \
-  | grep -v 'allow-emoji:')" || svg_status=$?
+svg_out="$(grep -RInE -e '<svg[[:space:]>/]' -e '<svg$' frontend/src \
+  --include='*.tsx' --include='*.ts')" || svg_status=$?
 if [[ $svg_status -ge 2 ]]; then
-  echo "✗ svg check scanner error (exit $svg_status) — real failure, not a clean pass."
-  echo "See specs/002-visual-uplift/contracts/icon-policy.md"
-  exit 1
+  echo "✗ svg check scanner error (svg grep exit $svg_status) — real failure, not a clean pass." >&2
+  echo "See specs/002-visual-uplift/contracts/icon-policy.md" >&2
+  exit 4
+fi
+svg_hits=""
+if [[ -n "$svg_out" ]]; then
+  allow_status=0
+  svg_hits="$(printf '%s\n' "$svg_out" | grep -vE "$ALLOWED")" || allow_status=$?
+  if [[ $allow_status -ge 2 ]]; then
+    echo "✗ svg check scanner error (allowlist filter exit $allow_status) — real failure, not a clean pass." >&2
+    exit 4
+  fi
+fi
+if [[ -n "$svg_hits" ]]; then
+  override_status=0
+  svg_hits="$(printf '%s\n' "$svg_hits" | grep -v 'allow-emoji:')" || override_status=$?
+  if [[ $override_status -ge 2 ]]; then
+    echo "✗ svg check scanner error (override filter exit $override_status) — real failure, not a clean pass." >&2
+    exit 4
+  fi
 fi
 
 if [[ -n "$svg_hits" ]]; then

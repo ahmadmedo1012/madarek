@@ -74,7 +74,7 @@ interface ThemeState {
 
 ### Hooks (`src/hooks/`)
 - `useAuth.ts` — login, register, me, logout (each session transition clears the query cache)
-- `useResources.ts` (**2,083 lines**) — all domain hooks: enrollments, courses, offerings/lectures, library, MOOCs, jobs, notifications (unread badge polls 60s), messages, community, labs/AR, faculties, admin, AI, research, training/gamification, teacher intelligence, permissions. Exports the D5 exam-resume wire types (`StartExamResponse` with `resumed`/`attempt`)
+- `useResources.ts` (**2,160 lines**) — all domain hooks: enrollments, courses, offerings/lectures, library, MOOCs, jobs, notifications (unread badge polls 60s), messages, community, labs/AR, faculties, admin, AI, research, training/gamification, teacher intelligence, permissions. Exports the D5 exam-start contract as a **tagged discriminated union** (`StartExamResponse` with `type: 'fresh' | 'resumed' | 'alreadyAttempted'` — the backend sends no tag; the pure `tagStartExamResponse()` attaches it client-side and `useStartExam` tags every response)
 - `useOwner.ts` — owner panel (realtime snapshot polls 15s, settings, flags, education, login analytics)
 - `useReveal.ts` — `RevealCssClass` scroll-reveal class wrapper (NOT the `components/motion/Reveal` primitive)
 - `useHideOnScroll.ts` — mobile bottom-nav hide on scroll down
@@ -88,12 +88,15 @@ interface ThemeState {
 - `api.ts` / `queryClient.ts` — data platform (above)
 - `overlayStack.ts` — open-overlay registry: topmost layer owns Escape; consumers guard global chords (⌘K/" in GlobalSearch) via `overlayStack.isEmpty()`
 - `scrollLock.ts` — ref-counted body scroll lock (one class, keyed holders — Sidebar drawer + every overlay compose instead of clobbering)
+- `format.ts` — Arabic formatting helpers: `countAr`, `arUnit` (counted nouns — the only sanctioned plural forms), `formatRelativeAr`, `formatRelativeArShort`, `timeAgoAr`, `formatDateAr`, `formatDateWithYearAr`, `formatDateTimeAr`, `formatMmSs`, `WEEKDAY_NAMES_AR`, plus the **Arabic-first error surface**: `isArabicText` (detector), `apiErrorCode` (machine code chip), `apiErrorDetail` (Arabic-guarded — Latin/transport leaks fall back to the caller's Arabic fallback), `apiErrorDetailRaw` (opt-in raw passthrough for string-matching mappers), `apiErrorMessage`
+- `utils/numbers.ts` — `toWestern`, `formatNum` / `formatDate` / `formatTime` — the unified numeral surface on **`ar-LY`** (Latin digits, dot grouping, comma decimal: `1.234.567,5`; negatives carry ICU's leading LRM). `tests/unit/numbers.test.ts` pins the format and its byte-equivalence with the `toLocaleString('ar-LY')` call sites so the two spellings can't drift
 - `gamification.ts` — tier/rarity label + color maps (API gamification palette)
-- `format.ts` — Arabic formatting helpers: `countAr`, `arUnit`, `timeAgoAr`, `formatDateAr`, `formatDateWithYearAr`, `formatDateTimeAr`, `formatMmSs`, `formatRelativeArShort`, `WEEKDAY_NAMES_AR`
 - `courseMeta.ts` — course card tint/icon maps + `ASSIGNMENT_KIND_LABEL`
 - `nav.ts` — role navigation trees (below)
 - `chartTheme.ts` — chart palette/factories (below)
 - `theme.ts`, `toast.ts` (zustand toast store), `vision.ts` (vision gallery data), `illustrations/` (scene registry)
+
+**Numeral & copy policy (campaign 3, binding):** Latin digits everywhere (never ٠-٩), `%` never ٪, all quantities via `formatNum`/`ar-LY`, counted nouns only through `countAr`/`arUnit`. Glossary rulings (مقرّر / كلّيّة / اختبار — never مادة-as-course or امتحان; the shadda register) live in `docs/PROJECT-REFERENCE.md` § Copy Style.
 
 ---
 
@@ -132,8 +135,8 @@ interface ThemeState {
 | `Sidebar` | Role-aware navigation (from `lib/nav.ts`), responsive drawer (ref-counted scroll lock) |
 | `Topbar` | Title, GlobalSearch, AI button, notifications dropdown, user menu, ThemeToggle. `useMyProfile` fires only for the STUDENT scope chip |
 | `BottomNav` | Mobile 5-item nav, hide-on-scroll-down |
-| `GlobalSearch` | Search overlay (calls `/search/global`); ⌘K + "/" shortcuts guard against open overlays |
-| `NotificationDropdown` | Bell + unread badge (60s poll); the 50-item list query fires on first open, not every shell mount |
+| `GlobalSearch` | Search combobox (calls `/search/global` via TanStack Query on a debounced key — superseded keystrokes abort; ARIA combobox/listbox wiring with per-option ids); ⌘K + "/" shortcuts guard against open overlays |
+| `NotificationDropdown` | Bell + unread badge (60s poll); the 50-item list query fires on first open, not every shell mount; mark-all is a single bulk `POST /notifications/read-all` |
 | `ThemeToggle` | Sun/Moon icon button + `useThemeSync` effect to set `[data-theme]` on `<html>` |
 | `ProtectedRoute` | Auth guard + role gate (travels in the AppShell chunk) |
 
@@ -180,7 +183,7 @@ Unified platform: every overlay registers in `lib/overlayStack` (topmost layer o
 | `pdf/AnnotationsPanel` | Paper annotation side panel (inline retryable error states) |
 | `Illustration` | SVG illustration wrapper (reads CSS vars for theming; discriminated decorative/alt props) |
 | `BrandMark` | Madarek logo/brand mark |
-| `Icon` | Lucide icon wrapper |
+| `Icon` | Lucide icon wrapper — **decorative by default** (`aria-hidden="true"` unless the call site opts out with `aria-hidden={false}` + `aria-label`) |
 | `EmojiIcon` | Data-driven emoji→Lucide bridge (API `iconEmoji` strings only — never chrome) |
 | `CollegesPopover` | College selection popover (homepage) |
 | `CountUp` | Animated KPI counter |
@@ -270,3 +273,26 @@ Scenes read CSS variables (`--ill-hue-1..6`, `--ill-stroke`, `--ill-paper`, `--i
 - Dark-tuned palette when `data-theme="dark"`; charts remount via `key={themeKey}`
 - Owner chart pages memoize data/options props (deps include `themeKey` + `reducedMotion`) so realtime poll ticks don't relayout the canvases
 - `ChartFrame` wraps every chart with an sr-only data table
+
+---
+
+### Exam authoring & manual grading (campaign 3 wave 18)
+- `pages/teacher/ExamAuthorPages.tsx` (~2,300 lines): hub `/teacher/exams` (my templates · question bank · EXAMS_MODERATE tab) + detail `/teacher/exams/:templateId` (questions, answer key when served, publish gate, «التصحيح» attempts table + GradeAttemptModal with per-answer verdicts + feedback). Hooks: useExamTemplate, useCreateQuestion, useCreateExamTemplate, usePublishExamTemplate, useModerateQuestion, useTemplateAttempts, useGradeAttempt (useResources.ts exam section). Zero new CSS — 100% existing primitives.
+
+## Testing (Vitest — 766 tests, jsdom, DB-free)
+
+`tests/unit/` (59 files) + `tests/motion/` (4) + `tests/gallery/` (2); the Playwright audit harness under `tests/audit/` is excluded from Vitest and runs via `npm run test:audit`. Waves 16–17 added nine new suites (behavior + contract pins for the surfaces those waves hardened):
+
+| New file (wave 16) | Pins |
+|---|---|
+| `numbers.test.ts` | `formatNum` ar-LY format (`1.234.567,5`, LRM negatives) + `toLocaleString('ar-LY')` equivalence |
+| `useResources-contracts.test.tsx` | `tagStartExamResponse` union shapes, `useGradeSubmission` invalidation keys |
+| `Icon.test.tsx` | Icon decorative default + `aria-hidden={false}`/label opt-out |
+| `Sidebar-Topbar.test.tsx` | Drawer overlay-stack registration, Esc/Ctrl+B chord guards, burger aria-expanded |
+| `GlobalSearch.test.tsx` | Combobox ARIA contract, SR announcements, hung-GET never sticks loading |
+| `AdminGovernancePages.test.tsx` | Server-side teachers roster contract, `pageList` pagination (twin-guard vs OwnerUsersPage) |
+| `TeacherPages.test.tsx` | Roll-call/EXCUSED toggle, grade-modal discard guard, messages pagination |
+| `CommunityPages.test.tsx` | RSVP trio (GOING/MAYBE/NO), OFFERING announcement scope, discard guards, deadline chip |
+| `ResearchReviewPage.test.tsx` | Review-modal discard guard, canonical relative-time rendering |
+
+Playwright exists only as the `audit` project (`npm run test:audit`); there is no e2e suite in the repo.

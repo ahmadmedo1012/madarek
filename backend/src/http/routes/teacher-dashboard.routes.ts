@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role, AttendanceStatus, SubmissionStatus, ResearchPaperStatus, Prisma } from '@prisma/client';
+import { Role, AttendanceStatus, SubmissionStatus, ResearchPaperStatus, Prisma, AssignmentType } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -90,6 +90,50 @@ const PAPERS_AWAITING_TEACHER: ResearchPaperStatus[] = [
   ResearchPaperStatus.CHECKS_PASSED,
   ResearchPaperStatus.CHECKS_FAILED,
 ];
+
+/** Row of the pending-submissions feed query below — the select is kept
+ * in sync with this shape (test factories in dashboard-logic.test.ts
+ * build it DB-free). */
+export interface PendingSubmissionFeedRow {
+  id: string;
+  submittedAt: Date;
+  status: SubmissionStatus;
+  student: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
+  assignment: {
+    title: string;
+    type: AssignmentType;
+    offering: { course: { code: string; name: string } };
+  };
+}
+
+/**
+ * Feed item for one pending submission. `late` (audit 15-a P0-1 follow-up,
+ * 16-B1 hand-off) lets the FE badge late work WITHOUT touching `title` —
+ * TeacherPages derives the grade modal's maxScore by stripping the
+ * «سلّم / سلّم/ت» prefix and matching the remainder BY TITLE, so the
+ * marker must travel as its own field, never as a title suffix.
+ */
+export function submissionFeedItem(s: PendingSubmissionFeedRow): {
+  kind: 'submissions';
+  id: string;
+  author: PendingSubmissionFeedRow['student'];
+  meta: string;
+  when: Date;
+  title: string;
+  actionTo: string;
+  late: boolean;
+} {
+  return {
+    kind: 'submissions',
+    id: `s-${s.id}`,
+    author: s.student,
+    meta: `${s.assignment.offering.course.name} · ${s.assignment.offering.course.code}`,
+    when: s.submittedAt,
+    title: `سلّم${s.assignment.type === AssignmentType.EXAM ? '/ت' : ''} ${s.assignment.title}`,
+    actionTo: '/grades',
+    late: s.status === SubmissionStatus.LATE,
+  };
+}
 
 /**
  * GET /teacher/me/materials — every material the teacher has ever uploaded,
@@ -330,6 +374,8 @@ router.get('/dashboard', async (req, res, next) => {
         select: {
           id: true,
           submittedAt: true,
+          // Feeds the `late` flag on the feed item (16-B1 hand-off).
+          status: true,
           student: { select: { firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
           assignment: {
             select: {
@@ -396,15 +442,7 @@ router.get('/dashboard', async (req, res, next) => {
     const lastAbsenceAt = new Map(lastAbsenceEntries);
 
     const feed = [
-      ...recentSubs.map((s) => ({
-        kind: 'submissions' as const,
-        id: `s-${s.id}`,
-        author: s.student,
-        meta: `${s.assignment.offering.course.name} · ${s.assignment.offering.course.code}`,
-        when: s.submittedAt,
-        title: `سلّم${s.assignment.type === 'EXAM' ? '/ت' : ''} ${s.assignment.title}`,
-        actionTo: '/grades',
-      })),
+      ...recentSubs.map(submissionFeedItem),
       ...recentPapers.map((p) => ({
         kind: 'research' as const,
         id: `p-${p.id}`,

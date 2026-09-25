@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Trophy, Star, Medal, Award, Activity, Crown,
@@ -745,6 +745,15 @@ export function SocialPage() {
   const user = useAuthStore((s) => s.user);
   const [draft, setDraft] = useState('');
   const [reactedIds, setReactedIds] = useState<Set<string>>(new Set());
+  /* 18-G's viewerReacted (18-F2 consumption): the server's own-reaction
+     truth seeds the hearts — the session-local set above now only rides
+     this session's optimistic toggles on TOP of it (a reload used to
+     un-like the UI while the server reaction persisted). */
+  const serverReactedIds = useMemo(
+    () => new Set((posts.data ?? []).filter((p) => p.viewerReacted).map((p) => p.id)),
+    [posts.data],
+  );
+  const hasReacted = (id: string) => serverReactedIds.has(id) || reactedIds.has(id);
   /* Reaction-count snapshot at click time. When a like succeeds, the
      ['posts'] invalidation delivers a server count that ALREADY includes
      the like — displaying max(server, snapshot + 1) keeps the optimistic
@@ -777,7 +786,7 @@ export function SocialPage() {
   };
 
   const onLike = (id: string, serverCount: number) => {
-    if (reactedIds.has(id)) return;
+    if (hasReacted(id)) return;
     setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
     setReactedIds((prev) => new Set([...prev, id]));
     // reaction burst — fires on interaction only, never idle
@@ -902,8 +911,12 @@ export function SocialPage() {
           ) : (
             posts.data.map((p) => {
               const initials = p.author.avatarInitials ?? `${p.author.firstName[0] ?? ''}${p.author.lastName[0] ?? ''}`;
-              const reacted = reactedIds.has(p.id);
-              const displayed = reacted
+              const reacted = hasReacted(p.id);
+              /* The optimistic +1 applies ONLY to this session's clicks —
+                 a server-truth like is already inside _count.reactions
+                 (max(server, base+1) would double-count it). */
+              const optimistic = reactedIds.has(p.id);
+              const displayed = optimistic
                 ? Math.max(p._count.reactions, (reactionBase[p.id] ?? p._count.reactions) + 1)
                 : p._count.reactions;
               return (

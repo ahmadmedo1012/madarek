@@ -232,6 +232,35 @@ router.post('/mooc/:id/enroll', async (req, res, next) => {
 // ════════════════════════════════════════════════════
 // JOBS
 // ════════════════════════════════════════════════════
+/** The viewer's JobApplication rows for the current jobs page — the
+ * select below projects exactly this (audit 15-d P2-10). */
+export interface ViewerApplicationRow {
+  jobId: string;
+}
+
+/**
+ * GET /jobs payload (audit 15-d P2-10): `appliedJobIds` tells the FE
+ * which jobs on THIS page the viewer already applied to — the
+ * «تمّ التقديم» badge used to be client-local fiction (`useState(false)`
+ * seeded from nothing), lost on every remount while the server-side
+ * upsert kept the application. Reads `jobId` (NOT the application's own
+ * id — the realistic mix-up this extraction pins) and preserves row
+ * order; the (jobId, userId) unique constraint guarantees no duplicates.
+ */
+export function jobsListPayload<T extends { id: string }>(
+  data: readonly T[],
+  total: number,
+  page: number,
+  limit: number,
+  applications: readonly ViewerApplicationRow[],
+): { data: T[]; meta: ReturnType<typeof buildMeta>; appliedJobIds: string[] } {
+  return {
+    data: [...data],
+    meta: buildMeta(page, limit, total),
+    appliedJobIds: applications.map((a) => a.jobId),
+  };
+}
+
 router.get(
   '/jobs',
   validate(paginationSchema.extend({ category: z.string().optional() }), 'query'),
@@ -263,7 +292,17 @@ router.get(
         }),
         prisma.job.count({ where }),
       ]);
-      res.json({ data, meta: buildMeta(page, limit, total) });
+      // Viewer's applications, bounded by the page (≤ limit) — never an
+      // unbounded scan of a user's whole application history (11-c P2-14).
+      // Runs for every authenticated caller: POST /jobs/:id/apply has no
+      // role guard, so truth is not role-gated either.
+      const applications = data.length > 0
+        ? await prisma.jobApplication.findMany({
+            where: { userId: req.user!.id, jobId: { in: data.map((j) => j.id) } },
+            select: { jobId: true },
+          })
+        : [];
+      res.json(jobsListPayload(data, total, page, limit, applications));
     } catch (e) {
       next(e);
     }
@@ -295,6 +334,34 @@ router.post('/jobs/:id/apply', async (req, res, next) => {
 // List convention (audit 15-i P1-4): browse-style feeds are paginated
 // (page/limit + meta); only search-as-you-type endpoints are capped.
 // `/posts` follows the paginated rule — the capped twin lives in social.
+
+/** Feed row of GET /posts — the Prisma include below. `reactions` holds
+ * ONLY the viewer's own rows (filtered by userId in the query); it is a
+ * derivation helper, folded away before the wire (audit 15-d P2-13). */
+export interface PostFeedRow {
+  id: string;
+  authorId: string;
+  body: string;
+  hashtags: string[];
+  imageUrl: string | null;
+  createdAt: Date;
+  author: { id: string; firstName: string; lastName: string; avatarColor: string | null; avatarInitials: string | null };
+  _count: { comments: number; reactions: number };
+  reactions: ReadonlyArray<{ kind: string }>;
+}
+
+/**
+ * GET /posts list item — the feed row plus the additive `viewerReacted`
+ * flag (audit 15-d P2-13-reaction): the FE heart used to be session-local
+ * state, so a reload un-liked the UI while the server reaction persisted.
+ * True when the viewer has ANY reaction row (like or save) on the post;
+ * the raw rows are stripped from the item.
+ */
+export function postFeedItem(row: PostFeedRow): Omit<PostFeedRow, 'reactions'> & { viewerReacted: boolean } {
+  const { reactions: _viewerRows, ...post } = row;
+  return { ...post, viewerReacted: _viewerRows.length > 0 };
+}
+
 router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next) => {
   try {
     const { page, limit, q } = req.query as unknown as { page: number; limit: number; q?: string };
@@ -311,11 +378,13 @@ router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next)
         include: {
           author: { select: { id: true, firstName: true, lastName: true, avatarColor: true, avatarInitials: true } },
           _count: { select: { comments: true, reactions: true } },
+          // The viewer's own reactions — feeds `viewerReacted` above.
+          reactions: { where: { userId: req.user!.id }, select: { kind: true } },
         },
       }),
       prisma.post.count({ where }),
     ]);
-    res.json({ data, meta: buildMeta(page, limit, total) });
+    res.json({ data: data.map(postFeedItem), meta: buildMeta(page, limit, total) });
   } catch (e) {
     next(e);
   }

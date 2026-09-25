@@ -23,6 +23,11 @@ export interface TeacherDashboard {
     when: string;
     title: string;
     actionTo: string;
+    /** Submissions only (18-G): the submission landed past its deadline
+     *  (status LATE). Consume for a «متأخر» chip — NEVER a title suffix:
+     *  TeacherPages derives the grade modal's maxScore by matching the
+     *  stripped title, so the marker rides its own field. */
+    late?: boolean;
   }>;
 }
 export function useTeacherDashboard() {
@@ -335,10 +340,26 @@ export interface Job {
   iconEmoji?: string | null;
   postedAt: string;
 }
+
+/** GET /jobs payload (18-G): the page's jobs beside `appliedJobIds` —
+ *  the jobs ON THE CURRENT PAGE the viewer already applied to
+ *  (page-scoped, so the set stays correct under future pagination;
+ *  computed for every authenticated caller). */
+export interface JobsPayload {
+  data: Job[];
+  meta: { page: number; limit: number; total: number; totalPages: number };
+  appliedJobIds: string[];
+}
 export function useJobs() {
   return useQuery({
     queryKey: ['jobs'],
-    queryFn: () => unwrap<Job[]>(api.get('/jobs?limit=50')),
+    // The whole body is the query result — `unwrap` would drop
+    // appliedJobIds (18-G's shape note: the honest «تمّ التقديم» state
+    // was client-local fiction before, lost on every remount).
+    queryFn: async (): Promise<JobsPayload> => {
+      const res = await api.get<JobsPayload>('/jobs?limit=50');
+      return res.data;
+    },
   });
 }
 
@@ -400,6 +421,10 @@ export interface Post {
   createdAt: string;
   author: { id: string; firstName: string; lastName: string; avatarColor?: string | null; avatarInitials?: string | null };
   _count: { comments: number; reactions: number };
+  /** 18-G: the viewer has a like/save row on this post — the heart's
+   *  honest initial state (it was session-local fiction before: a
+   *  reload un-liked the UI while the server reaction persisted). */
+  viewerReacted: boolean;
 }
 // 15-d P2-13: the feed limit is a parameter (keyed, so two limits never
 // share a cache entry) — consumers can page beyond the newest 20 posts;
@@ -1608,6 +1633,151 @@ export function useExamTemplates() {
   });
 }
 
+/** Full template payload of GET /exams/templates/:id. `correctAnswer` is
+ *  nulled server-side for every viewer the answer key is not for (the
+ *  author, ADMIN/OWNER oversight, QUALITY holding EXAMS_MODERATE —
+ *  exams.routes.ts canSeeAnswers) — null here is a wire truth, not a
+ *  missing field. Question-level `isApproved` / `moderationNote` are the
+ *  moderation state of each bank question (the only read surface that
+ *  exposes them — the bank listing filters to approved only). */
+export interface ExamTemplateDetail {
+  id: string;
+  title: string;
+  description: string | null;
+  kind: ExamKindFE;
+  status: ExamStatusFE;
+  durationMin: number;
+  passingScore: number;
+  randomized: boolean;
+  moderationNote: string | null;
+  openAt: string | null;
+  closeAt: string | null;
+  offeringId: string | null;
+  facultyId: string | null;
+  authorId: string;
+  createdAt: string;
+  offering: { id: string; teacherId: string; course: { name: string; code: string } } | null;
+  faculty: { name: string } | null;
+  author: { firstName: string; lastName: string };
+  moderatedBy: { firstName: string; lastName: string } | null;
+  questions: Array<{
+    id: string;
+    order: number;
+    pointsOverride: number | null;
+    question: {
+      id: string;
+      type: QType;
+      prompt: string;
+      choices: string[] | null;
+      correctAnswer: string | number | boolean | null;
+      difficulty: Difficulty;
+      points: number;
+      isApproved: boolean;
+      moderationNote: string | null;
+      tags: string[];
+      category: { title: string } | null;
+    };
+  }>;
+  _count: { attempts: number };
+}
+export function useExamTemplate(id: string | undefined) {
+  return useQuery({
+    queryKey: ['exams', 'templates', id],
+    enabled: !!id,
+    queryFn: () => unwrap<ExamTemplateDetail>(api.get(`/exams/templates/${id}`)),
+  });
+}
+
+/** POST /question-bank body — mirrors the backend's createQuestionSchema
+ *  (MCQ/TRUE_FALSE carry choices + an integer correctAnswer index,
+ *  SHORT carries a model-answer string, ESSAY an optional rubric). */
+export interface CreateQuestionInput {
+  categoryId: string;
+  type: QType;
+  prompt: string;
+  choices?: string[];
+  correctAnswer?: string | number;
+  difficulty: Difficulty;
+  points: number;
+  tags: string[];
+}
+export function useCreateQuestion() {
+  const qc = useQueryClient();
+  return useMutation({
+    // New questions land in moderation (isApproved: false) — they enter
+    // the bank listing only after an EXAMS_MODERATE holder approves.
+    mutationFn: (input: CreateQuestionInput) =>
+      unwrap<{ id: string; isApproved: boolean }>(api.post('/question-bank', input)),
+    onSuccess: () => {
+      // Family-level: covers every filter view + the categories query
+      // (['question-bank','categories']) whose _count.questions shifts.
+      qc.invalidateQueries({ queryKey: ['question-bank'] });
+    },
+  });
+}
+
+/** POST /exams/templates body — questionIds are 1..60 approved bank
+ *  questions; openAt/closeAt are ISO strings the backend coerces to Date. */
+export interface CreateExamTemplateInput {
+  offeringId?: string;
+  facultyId?: string;
+  title: string;
+  kind: ExamKindFE;
+  description?: string;
+  durationMin: number;
+  passingScore: number;
+  randomized: boolean;
+  questionIds: string[];
+  openAt?: string;
+  closeAt?: string;
+}
+export function useCreateExamTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    // Creation writes PENDING_REVIEW directly (the moderation gate).
+    mutationFn: (input: CreateExamTemplateInput) =>
+      unwrap<ExamTemplateRow>(api.post('/exams/templates', input)),
+    onSuccess: () => {
+      // ['exams'] covers the templates list + detail + the moderation
+      // queue; the Intelligence offering cards carry _count.examTemplates.
+      qc.invalidateQueries({ queryKey: ['exams'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+    },
+  });
+}
+
+/** Author publish — the backend only flips APPROVED→PUBLISHED while the
+ *  row is still APPROVED (a landing rejection 409s, never leapfrogs). */
+export function usePublishExamTemplate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (templateId: string) =>
+      unwrap<ExamTemplateRow>(api.post(`/exams/templates/${templateId}/publish`, {})),
+    onSuccess: () => {
+      // PUBLISHED templates surface in the student exam list + every
+      // author/moderation view — the ['exams'] family covers all of them.
+      qc.invalidateQueries({ queryKey: ['exams'] });
+    },
+  });
+}
+
+/** Question-level moderation (POST /question-bank/:id/moderate) — the
+ *  same approve/note body as the template moderate endpoint. Approval
+ *  flips the question into every bank filter view; a rejection pulls it
+ *  from the authoring pool (existing templates keep their rows). */
+export function useModerateQuestion() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, approve, note }: { id: string; approve: boolean; note?: string }) =>
+      unwrap<{ id: string; isApproved: boolean }>(api.post(`/question-bank/${id}/moderate`, { approve, note })),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['question-bank'] });
+      // Template detail payloads embed the moderated question rows.
+      qc.invalidateQueries({ queryKey: ['exams'] });
+    },
+  });
+}
+
 export interface ModerationQueueItem {
   id: string;
   title: string;
@@ -1631,6 +1801,76 @@ export function useModerateExam() {
     mutationFn: ({ id, approve, note }: { id: string; approve: boolean; note?: string }) =>
       unwrap<{ id: string; status: ExamStatusFE }>(api.post(`/exams/templates/${id}/moderate`, { approve, note })),
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['exams'] });
+    },
+  });
+}
+
+/* ── Manual grading (18-F2 — the exam lifecycle's missing half) ── */
+
+export type ExamAttemptStatusFE = 'IN_PROGRESS' | 'SUBMITTED' | 'GRADED' | 'EXPIRED';
+
+/** One parked answer of a SUBMITTED exam attempt — the grading modal's
+ *  unit of work (essays and keyless shorts the auto-grader parked).
+ *  `studentAnswer` is the chosen option's text for objective questions,
+ *  the prose otherwise; null = the student wrote nothing. */
+export interface PendingExamAnswer {
+  answerId: string;
+  questionId: string;
+  prompt: string;
+  type: QType;
+  points: number;
+  studentAnswer: string | null;
+}
+
+/** GET /exams/templates/:id/attempts row. `pendingReview` counts the
+ *  answers awaiting a verdict; `pendingAnswers` embeds their grading
+ *  detail ONLY on SUBMITTED rows — the one status the grade write
+ *  accepts (IN_PROGRESS is mid-exam, EXPIRED is terminal; both ship an
+ *  honest count with an empty array). */
+export interface ExamAttemptRow {
+  id: string;
+  studentId: string;
+  studentName: string;
+  status: ExamAttemptStatusFE;
+  startedAt: string;
+  submittedAt: string | null;
+  score: number | null;
+  maxScore: number;
+  pendingReview: number;
+  pendingAnswers: PendingExamAnswer[];
+}
+
+/** The attempts of one template for the grading surface — keyed under
+ *  the template detail key, so both refresh together (the ['exams']
+ *  family reaches them all). */
+export function useExamAttempts(templateId: string | undefined) {
+  return useQuery({
+    queryKey: ['exams', 'templates', templateId, 'attempts'],
+    enabled: !!templateId,
+    queryFn: () => unwrap<ExamAttemptRow[]>(api.get(`/exams/templates/${templateId}/attempts`)),
+  });
+}
+
+/** POST /exams/attempts/:attemptId/grade body — mirrors the backend's
+ *  manualGradeSchema: every pending answer exactly once (isCorrect +
+ *  optional feedback ≤ 2000), finalize SUBMITTED → GRADED with the
+ *  machine score + the teacher's verdicts. */
+export interface ManualExamGradeInput {
+  attemptId: string;
+  answers: Array<{ answerId: string; isCorrect: boolean; feedback?: string }>;
+}
+export function useGradeExamAttempt() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: ManualExamGradeInput) =>
+      unwrap<{ score: number; maxScore: number; status: string; passed: boolean }>(
+        api.post(`/exams/attempts/${input.attemptId}/grade`, { answers: input.answers }),
+      ),
+    onSuccess: () => {
+      // Finalizing SUBMITTED→GRADED shifts the attempts list, the
+      // detail's _count.attempts and the author's template rows — the
+      // ['exams'] family covers all of them.
       qc.invalidateQueries({ queryKey: ['exams'] });
     },
   });

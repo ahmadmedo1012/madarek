@@ -2,7 +2,17 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 188 endpoints (187 route registrations + `/health`), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 190 endpoints (189 route registrations + `/health`), one row each
+
+## Conventions
+
+- **Envelope:** success → `{ data: T }`; paginated lists → `{ data: T[], meta }` where `meta = { page, limit, total, totalPages }` (`lib/pagination.ts` `buildMeta`). Errors → `{ error: { code, message, details? } }`.
+- **DELETE:** every delete route returns **200 `{ data: { ok: true } }`** — there are no 204s on the platform (courses, curriculum lecture/chapter/checkpoint, research annotation, enrollments — the last one flipped from 204 in wave 17).
+- **Create/upsert POSTs:** return **201** (register, enroll, submit, enter competition, research submit, material/assignment/grade upserts, …).
+- **Validation:** zod schemas on body + query; failures → 400 `VALIDATION_ERROR` (or `BAD_REQUEST`) with the `code` in **UPPER_SNAKE** and `details.fieldErrors` carrying the per-field issues. Schemas are `.strict()` where spoofed extra keys matter (e.g. manual grading).
+- **Message language:** `message` is **Arabic** for everything user-facing (envelope defaults in `lib/errors.ts`, route guards, rate limiter, zod envelopes — wave 17). `code` stays English; dev-facing internals (Prisma mapping detail, zod field names inside `details`) stay English — the frontend's `apiErrorDetail` Arabic-guard keeps them out of the UI.
+- **Input trimming:** user-content strings `.trim()` **before** `.min()`/`.max()` (wave 17, 68 fields — whitespace-only content is rejected, padded names/titles stored trimmed). Carve-outs: passwords (never trimmed) and answer-value prose (exam `answerText`, submission `textAnswer` — a space can be a legitimate answer fragment).
+- **Per-domain limit caps:** every list/feed bounds its window — shared pagination schema `limit` ≤100 (default 20); admin user list ≤200; admin students ≤50; read windows per domain (`take` 20–500: materials/assignments 200, grades 500, social feeds/`SOCIAL_LIST_TAKE` 50, labs/AR 200); body fields capped per domain (messages/announcements body ≤4000 chars, grade `feedback` ≤2000, titles ≤200); grades batch ≤200 items; `q` search ≤120 chars; request body capped at 1 MB globally.
 
 **Auth column legend:**
 - **Bearer** — any authenticated user (`authMiddleware`)
@@ -238,6 +248,7 @@ Mounted at `/api/v1/teacher` (router: `authMiddleware + requireRole(TEACHER, ADM
 | POST | `/exams/templates/:id/start` | STUDENT | Start attempt (timed; Fisher-Yates shuffle when randomized). **Resume:** a live IN_PROGRESS attempt within the grace window returns 200 with the full fresh-start shape plus `resumed: true` and `attempt: { id, status, expiresAt, answers: [{ questionId, value }] }` (value = choiceIndex number \| answerText string; no reshuffle). Closed attempts (GRADED/EXPIRED/SUBMITTED) → `{ attemptId, status, alreadyAttempted: true }`. Expired-but-unflipped rows are flipped to EXPIRED inside the start transaction. One attempt per exam — EXPIRED included (PRACTICE retakeable while no live attempt) |
 | POST | `/exams/attempts/:id/answer` | STUDENT | Answer question (saves only the provided dimension — text-only retry keeps a saved choice; type-appropriate field required) |
 | POST | `/exams/attempts/:id/submit` | STUDENT | Submit attempt. Short answers graded by exact match (trim + case-fold, never substring); unanswered ESSAY / keyless SHORT park the attempt as SUBMITTED for manual grading. `passed` is `boolean\|null` (null while manual grading pending); late EXPIRED flip is claim-guarded (concurrently graded attempts are never overwritten) |
+| GET | `/exams/templates/:id/attempts` | TEACHER/ADMIN/OWNER | Attempts of a template for grading — `{data: [{id, studentId, studentName, status, startedAt, submittedAt, score, maxScore, pendingReview, pendingAnswers: [{answerId, questionId, prompt, type, points, studentAnswer}]}]}`; pendingAnswers embedded on SUBMITTED rows only (IN_PROGRESS/EXPIRED keep counts, empty array); `?status=` filter, take 200; offering-owner teacher / keyless-template author / OWNER (ADMIN refused on keyless) |
 | POST | `/exams/attempts/:attemptId/grade` | TEACHER/ADMIN/OWNER | **Manual grading** — body `{ answers: [{ answerId, isCorrect, feedback? }] }` (strict, both levels). SUBMITTED-only transition (claim-guarded, concurrent grade → 409); payload must grade exactly the pending answers (duplicates/not-pending/missing → 400 with offending ids); finalizes to GRADED with score = machine points + teacher decisions. Returns `{ score, maxScore, status, passed }` |
 | GET | `/exams/moderation-queue` | EXAMS_MODERATE | Pending moderation |
 

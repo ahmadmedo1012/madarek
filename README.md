@@ -40,7 +40,7 @@ This is a complete LMS for a public university:
 2. In Render, click **New + → Blueprint** and pick this repository. Render reads `render.yaml` and creates the web service. `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are generated automatically.
 3. In the service's **Environment** tab, set **`DATABASE_URL`** to your Neon pooler connection string (`?sslmode=require&channel_binding=require`).
 
-The build command runs `npm install --include=dev && npm run build` (dev deps are needed for the TypeScript/vite build steps). The build script:
+The build command runs `npm ci --include=dev && npm run build` (dev deps are needed for the TypeScript/vite build steps; `npm ci` keeps the deployed artifact lockfile-exact). The build script:
 
 1. Builds the Vite frontend → `frontend/dist`
 2. Compiles the Express backend → `backend/dist`
@@ -83,7 +83,7 @@ npm run dev:web                     # frontend on :5173 (proxies /api → :4000)
 
 **Database** (`backend/prisma/`): 75 models (users, courses, enrollments, materials, grades, attendance, library, MOOCs, jobs, posts, achievements, virtual labs, AR experiences, AI conversations, research papers + annotations, submissions, audit log) and 30 enums. Migrations are committed and applied via `prisma migrate deploy` during the Render build.
 
-> **Note:** typechecks (`npm --prefix backend|frontend run typecheck`) and the full unit-test suites (`npm run test`) run **without any database** — backend tests set `NODE_ENV=test` (placeholder secrets, no DB calls); frontend tests run in jsdom. You only need a live `DATABASE_URL` for migrations, seeding and running the server.
+> **Note:** typechecks (`npm run typecheck` — a root aggregate over backend + frontend, src and tests) and the full unit-test suites (`npm run test`) run **without any database** — backend tests set `NODE_ENV=test` (placeholder secrets, no DB calls); frontend tests run in jsdom. You only need a live `DATABASE_URL` for migrations, seeding and running the server.
 
 **API reference:** the complete, code-accurate endpoint table lives in [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md).
 

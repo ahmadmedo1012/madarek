@@ -55,7 +55,7 @@ const ROLE_LABEL: Record<string, string> = {
   ADMIN: 'إداري',
   // Person-noun, unified with nav.ts ROLE_LABELS (17-a2 / 15-j P1-8).
   QUALITY: 'أخصائي جودة',
-  OWNER: 'مالك',
+  OWNER: 'مالك المنصة',
 };
 const CAP_LABEL: Record<AppCapability, string> = {
   RESEARCH_GRADE_OWN: 'تقييم بحوث طلابي',

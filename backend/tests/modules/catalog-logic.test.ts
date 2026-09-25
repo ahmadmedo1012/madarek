@@ -1,12 +1,15 @@
 /**
  * Backend unit test — pure logic from
- * `backend/src/http/routes/catalog.routes.ts` (audits 15-b P2-3, 15-i TOP-8).
+ * `backend/src/http/routes/catalog.routes.ts` (audits 15-b P2-3, 15-i TOP-8,
+ * 15-d P2-10 + P2-13-reaction).
  *
  * Covers the /admin/reports aggregation folds extracted for DB-free
  * testing — the OWNER/ADMIN headline metrics already survived two
  * honesty bugs (per-offering undercount, mislabeled metric) so the
  * bucket boundaries and fold/sort/cap semantics are pinned exactly —
- * plus the catalog write-path body schemas (15-i §5 item 9).
+ * plus the catalog write-path body schemas (15-i §5 item 9), the jobs
+ * payload's `appliedJobIds` derivation (15-d P2-10) and the posts feed
+ * item's `viewerReacted` flag (15-d P2-13-reaction).
  *
  * DB-free: everything here is pure. The loan claim/dedupe transaction,
  * the pagination wiring and the guarded inventory writes need a DB
@@ -17,8 +20,11 @@ import {
   borrowBookSchema,
   buildPaperTrend,
   createPostSchema,
+  jobsListPayload,
+  postFeedItem,
   reactSchema,
   topCoursesByEnrollments,
+  type PostFeedRow,
 } from '../../src/http/routes/catalog.routes';
 import type { PaperTrendInput, TopCourseOfferingInput } from '../../src/http/routes/catalog.routes';
 
@@ -245,5 +251,86 @@ describe('borrowBookSchema', () => {
     expect(borrowBookSchema.safeParse({ bookId: 'not-a-cuid' }).success).toBe(false);
     expect(borrowBookSchema.safeParse({}).success).toBe(false);
     expect(borrowBookSchema.safeParse({ bookId: `c${'x'.repeat(24)}`, userId: 'spoof' }).success).toBe(false);
+  });
+});
+
+// ── jobsListPayload (GET /jobs `appliedJobIds`, audit 15-d P2-10) ──
+
+describe('jobsListPayload', () => {
+  const jobs = [
+    { id: 'j1', title: 'مطوّر واجهات' },
+    { id: 'j2', title: 'محلّل بيانات' },
+    { id: 'j3', title: 'مصمّم' },
+  ];
+
+  it('adds appliedJobIds next to data/meta — the page shape the FE badge consumes', () => {
+    const payload = jobsListPayload(jobs, 7, 1, 3, [{ jobId: 'j2' }, { jobId: 'j3' }]);
+    expect(Object.keys(payload).sort()).toEqual(['appliedJobIds', 'data', 'meta']);
+    expect(payload.appliedJobIds).toEqual(['j2', 'j3']);
+    expect(payload.data).toEqual(jobs);
+    expect(payload.meta).toEqual({ page: 1, limit: 3, total: 7, totalPages: 3 });
+  });
+
+  it('reads jobId (NOT an application id) and preserves row order', () => {
+    // The rows the route feeds in carry jobId only — an accidental
+    // `a.id` read fails to compile against ViewerApplicationRow.
+    const payload = jobsListPayload(jobs, 3, 1, 3, [
+      { jobId: 'j3' }, { jobId: 'j1' },
+    ]);
+    expect(payload.appliedJobIds).toEqual(['j3', 'j1']);
+  });
+
+  it('no applications → empty set (never undefined/missing)', () => {
+    const payload = jobsListPayload([], 0, 1, 20, []);
+    expect(payload.appliedJobIds).toEqual([]);
+    expect(payload.data).toEqual([]);
+    // buildMeta keeps totalPages ≥ 1 even for an empty catalog.
+    expect(payload.meta).toEqual({ page: 1, limit: 20, total: 0, totalPages: 1 });
+  });
+});
+
+// ── postFeedItem (GET /posts `viewerReacted`, audit 15-d P2-13) ────
+
+const feedRow = (overrides?: Partial<PostFeedRow>): PostFeedRow => ({
+  id: 'p1',
+  authorId: 'u1',
+  body: 'منشور تجريبي',
+  hashtags: ['منصة'],
+  imageUrl: null,
+  createdAt: new Date('2026-02-01T10:00:00Z'),
+  author: { id: 'u1', firstName: 'سالم', lastName: 'العامري', avatarColor: null, avatarInitials: 'سع' },
+  _count: { comments: 2, reactions: 5 },
+  reactions: [],
+  ...overrides,
+});
+
+describe('postFeedItem', () => {
+  it('viewer with a like row → viewerReacted true', () => {
+    expect(postFeedItem(feedRow({ reactions: [{ kind: 'like' }] })).viewerReacted).toBe(true);
+  });
+
+  it('any reaction kind counts — a save also marks the post reacted', () => {
+    expect(postFeedItem(feedRow({ reactions: [{ kind: 'save' }] })).viewerReacted).toBe(true);
+  });
+
+  it('viewer with no reaction rows → false', () => {
+    expect(postFeedItem(feedRow()).viewerReacted).toBe(false);
+  });
+
+  it('strips the viewer-rows helper and passes every existing field through unchanged', () => {
+    const row = feedRow({ reactions: [{ kind: 'like' }] });
+    const item = postFeedItem(row);
+    expect('reactions' in item).toBe(false);
+    expect(item).toEqual({
+      id: 'p1',
+      authorId: 'u1',
+      body: 'منشور تجريبي',
+      hashtags: ['منصة'],
+      imageUrl: null,
+      createdAt: row.createdAt,
+      author: row.author,
+      _count: { comments: 2, reactions: 5 },
+      viewerReacted: true,
+    });
   });
 });

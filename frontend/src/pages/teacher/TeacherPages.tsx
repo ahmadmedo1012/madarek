@@ -759,6 +759,10 @@ interface GradeTarget {
   courseCode?: string;
   maxScore?: number;
   submittedAt: string;
+  /** LATE submissions (18-G's feed flag) — drives the «متأخر» chip on
+   *  the row. Never folded into assignmentTitle: the maxScore lookup
+   *  matches by the stripped title. */
+  late: boolean;
 }
 
 /* ─── Pending submissions awaiting grading ───────────────── */
@@ -796,6 +800,7 @@ function NeedsReviewCard({
           courseCode,
           maxScore: maxScoreFor(assignmentTitle, courseCode),
           submittedAt: f.when,
+          late: f.late ?? false,
         } satisfies GradeTarget;
       });
   }, [feed, maxScoreFor]);
@@ -824,7 +829,13 @@ function NeedsReviewCard({
                 size={32}
               />
               <div className="list-row-body">
-                <div className="list-row-title">{p.assignmentTitle}</div>
+                <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <span>{p.assignmentTitle}</span>
+                  {/* 18-G's late flag — a small warning chip beside the
+                      title, never a suffix inside it (maxScore matches
+                      the stripped title). */}
+                  {p.late && <Badge color="amber">متأخر</Badge>}
+                </div>
                 <div className="list-row-sub">
                   {p.studentName}{p.courseCode ? <> · <bdi>{p.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(p.submittedAt)}
                 </div>
