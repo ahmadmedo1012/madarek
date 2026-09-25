@@ -195,7 +195,14 @@ export default function OnlineExamsPage() {
         <ErrorState error={q.error} onRetry={() => void q.refetch()} />
       ) : (
         <>
-          <Card title="اختبارات متاحة لك الآن" icon={ClipboardCheck} subtitle={`${available.length} اختبار`}>
+          {/* 22-c (A4 P2-3): counted nouns — «1 اختبار» broke the
+              glossary (Latin digit + wrong noun form). countAr is
+              already imported for the timer aria-label. */}
+          <Card
+            title="اختبارات متاحة لك الآن"
+            icon={ClipboardCheck}
+            subtitle={countAr(available.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+          >
             {available.length === 0 && (
               <div className="state">
                 <div className="state-icon state-icon-success"><Icon icon={CheckCircle2} size={20} /></div>
@@ -218,7 +225,11 @@ export default function OnlineExamsPage() {
               visible with their real schedule («يفتح …» / «أغلق باب
               التسليم») instead of masquerading as startable. */}
           {unavailable.length > 0 && (
-            <Card title="اختبارات غير متاحة الآن" icon={CalendarClock} subtitle={`${unavailable.length} اختبار`}>
+            <Card
+              title="اختبارات غير متاحة الآن"
+              icon={CalendarClock}
+              subtitle={countAr(unavailable.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+            >
               <div className="track-grid">
                 {unavailable.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
               </div>
@@ -226,7 +237,11 @@ export default function OnlineExamsPage() {
           )}
 
           {taken.length > 0 && (
-            <Card title="اختبارات أجريتها" icon={FileText} subtitle={`${taken.length} اختبار`}>
+            <Card
+              title="اختبارات أجريتها"
+              icon={FileText}
+              subtitle={countAr(taken.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+            >
               <div className="track-grid">
                 {taken.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
               </div>
@@ -835,6 +850,10 @@ export function ExamModerationPage() {
   const [acting, setActing] = useState<{ id: string; approve: boolean } | null>(null);
   // A failed decision surfaces inline on its row, with a working retry.
   const [actionError, setActionError] = useState<{ id: string; approve: boolean; message: string } | null>(null);
+  // Reject removes the template from the queue with no undo — a
+  // confirmation dialog gates it (audit 4-A8 P2-3; approve stays
+  // instant — it is the safe/default outcome).
+  const [confirmingReject, setConfirmingReject] = useState<string | null>(null);
 
   const runModeration = async (id: string, approve: boolean) => {
     setActionError(null);
@@ -951,7 +970,7 @@ export function ExamModerationPage() {
                         <button
                           type="button"
                           className={`btn danger sm${rowPending && !acting?.approve ? ' moderation-pulse' : ''}`}
-                          onClick={() => void runModeration(item.id, false)}
+                          onClick={() => setConfirmingReject(item.id)}
                           disabled={rowPending}
                         >
                           <Icon icon={AlertTriangle} size={13} />
@@ -979,6 +998,25 @@ export function ExamModerationPage() {
           </div>
         )}
       </Card>
+
+      {/* Reject is destructive and unundoable — the queue loses the
+          template on click. The dialog names the consequence before the
+          mutation runs (audit 4-A8 P2-3); the optional note above still
+          ships with the decision. */}
+      <ConfirmDialog
+        open={confirmingReject !== null}
+        title="رفض قالب الاختبار"
+        message="سيُرفض القالب ويُعاد إلى مؤلفه مع ملاحظاتك، ويخرج من قائمة الانتظار. لا يمكن التراجع عن هذا القرار."
+        confirmLabel="رفض القالب"
+        cancelLabel="مراجعة القالب"
+        danger
+        onConfirm={async () => {
+          const id = confirmingReject;
+          setConfirmingReject(null);
+          if (id) await runModeration(id, false);
+        }}
+        onCancel={() => setConfirmingReject(null)}
+      />
     </div>
   );
 }

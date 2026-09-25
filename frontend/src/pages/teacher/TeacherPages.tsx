@@ -397,19 +397,19 @@ export function AttendancePage() {
             </div>
           ) : (
             <div className="flex-col gap-4">
-              <div style={{ opacity: counts.p === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+              <div style={{ opacity: counts.p === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.p / counts.total) * 100) : 0} label={`الحضور (${counts.p})`} color="var(--success)" />
               </div>
-              <div style={{ opacity: counts.l === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+              <div style={{ opacity: counts.l === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.l / counts.total) * 100) : 0} label={`التأخّر (${counts.l})`} color="var(--warning)" />
               </div>
-              <div style={{ opacity: counts.a === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+              <div style={{ opacity: counts.a === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
               </div>
               {/* بعذر counts out of the session total (same denominator as
                   the other bars) — the analytics KPI keeps its own
                   EXCUSED-excluded math server-side. */}
-              <div style={{ opacity: counts.e === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+              <div style={{ opacity: counts.e === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
                 <ProgressBar value={counts.total > 0 ? Math.round((counts.e / counts.total) * 100) : 0} label={`بعذر (${counts.e})`} color="var(--accent)" />
               </div>
             </div>
@@ -754,7 +754,7 @@ export function PerformancePage() {
                  "rendering bug" wall. */
               <div className="flex-col gap-3">
                 {distribution.map(({ band, pct }) => (
-                  <div key={band.key} style={{ opacity: pct === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+                  <div key={band.key} style={{ opacity: pct === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
                     <ProgressBar
                       value={pct}
                       /* ReactNode label → the accessible name needs the

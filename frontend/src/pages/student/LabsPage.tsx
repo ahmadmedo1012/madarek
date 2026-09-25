@@ -11,6 +11,7 @@ import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion/useReducedMotion';
 import { useLabs, useMyLabSessions, type VirtualLab } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
+import { countAr } from '../../lib/format';
 
 interface LabExperiment {
   title: string;
@@ -161,7 +162,14 @@ export default function LabsPage() {
                 icon={Play}
                 label="جلسات نشطة"
                 value={labStats.data?.active.toLocaleString('ar-LY') ?? '—'}
-                change={labStats.data ? `من أصل ${labStats.data.total} جلسة` : undefined}
+                /* 22-c (A4 P3-3): with zero lab sessions ever the change
+                   line read «من أصل 0 جلسة» — dead copy. Only surface the
+                   denominator once one exists. */
+                change={
+                  labStats.data && labStats.data.total > 0
+                    ? `من أصل ${countAr(labStats.data.total, ['جلسة واحدة', 'جلستين', 'جلسات', 'جلسة'])}`
+                    : undefined
+                }
                 color="green"
               />
               <MetricCard
@@ -264,7 +272,18 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
         setRunning(false);
         return;
       }
-      setTerminalLines((prev) => [...prev, lines[i] ?? '']);
+      /* 22-c (A4 P1-1): capture the line BEFORE the updater. Reading the
+         mutable closure `i` inside setTerminalLines is an impure updater —
+         React's eager-state pass invoked it once at call time (i = current)
+         and the render queue invoked it AGAIN after `i += 1`, so the
+         render-time result committed lines[i+1]: the FIRST line of every
+         step was dropped (incl. the Ohm's-law formula the instructions
+         tell the student to verify) and the last guard-passing tick
+         committed lines[n] ?? '' = a phantom blank line. Freezing the
+         value makes the updater pure — verified with the audit's
+         MutationObserver probe (.agents/tmp/a4-probe7.mjs). */
+      const line = lines[i] ?? '';
+      setTerminalLines((prev) => [...prev, line]);
       i += 1;
     }, TYPE_INTERVAL_MS);
     return () => clearInterval(id);

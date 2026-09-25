@@ -8,6 +8,7 @@ import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { useMatrix, useGaps } from '../../hooks/useResources';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
+import { countAr } from '../../lib/format';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
@@ -102,6 +103,12 @@ export default function MatrixPage() {
     for (const k of c.concepts) levelCounts[levelClass(k.level, k.attempts)]++;
     totalConcepts += c.concepts.length;
   }
+
+  /* 22-c (A4 P3-7): partition mapped/un-mapped courses — un-mapped
+     ones collapse into one summary line instead of five identical
+     empty cards burying the one real heatmap. */
+  const mappedCourses = (matrix.data ?? []).filter((c) => c.concepts.length > 0);
+  const unmappedCount = (matrix.data ?? []).length - mappedCourses.length;
 
   return (
     <div className="page">
@@ -227,7 +234,12 @@ export default function MatrixPage() {
             </div>
           </Card>
 
-          {matrix.data.map((c) => {
+          {/* 22-c (A4 P3-7): the seed maps concepts on ONE course — the
+              other five each rendered the same «لم تُحدَّد مفاهيم هذا
+              المقرّر بعد» empty card, burying the one real heatmap under
+              an empty-state directory. Un-mapped courses collapse into a
+              single summary line; mapped ones render in full. */}
+          {mappedCourses.map((c) => {
             const Cmp = courseIcon(c.courseCode);
             const tint = courseTint(c.themeColor);
             const totalConceptsInCourse = c.concepts.length;
@@ -264,38 +276,36 @@ export default function MatrixPage() {
                   </Link>
                 </div>
 
-                {!c.concepts.length ? (
-                  <EmptyState
-                    icon={Compass}
-                    title="لم تُحدَّد مفاهيم هذا المقرّر بعد"
-                    description="ستظهر خريطة المفاهيم فور إضافتها من الأستاذ."
-                  />
-                ) : (
-                  <div className="matrix-cells">
-                    {c.concepts.map((k) => {
-                      const cls = levelClass(k.level, k.attempts);
-                      const dimmed = filter !== 'all' && cls !== filter;
-                      return (
-                        <div
-                          className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
-                          key={k.id}
-                          title={`${k.name} — ${levelLabel(k.level, k.attempts)}${k.attempts > 0 ? ` (${Math.round(k.level * 100)}%)` : ''}`}
-                        >
-                          <div className="matrix-name">{k.name}</div>
-                          <div className="matrix-meta">
-                            <span>{levelLabel(k.level, k.attempts)}</span>
-                            <span className="matrix-meta-pct">
-                              {k.attempts > 0 ? `${Math.round(k.level * 100)}%` : '—'}
-                            </span>
-                          </div>
+                <div className="matrix-cells">
+                  {c.concepts.map((k) => {
+                    const cls = levelClass(k.level, k.attempts);
+                    const dimmed = filter !== 'all' && cls !== filter;
+                    return (
+                      <div
+                        className={`matrix-cell ${cls}${dimmed ? ' is-dim' : ''}`}
+                        key={k.id}
+                        title={`${k.name} — ${levelLabel(k.level, k.attempts)}${k.attempts > 0 ? ` (${Math.round(k.level * 100)}%)` : ''}`}
+                      >
+                        <div className="matrix-name">{k.name}</div>
+                        <div className="matrix-meta">
+                          <span>{levelLabel(k.level, k.attempts)}</span>
+                          <span className="matrix-meta-pct">
+                            {k.attempts > 0 ? `${Math.round(k.level * 100)}%` : '—'}
+                          </span>
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}
+          {unmappedCount > 0 && (
+            <p className="matrix-unmapped-note">
+              {countAr(unmappedCount, ['مقرّر واحد آخر في قائمتك', 'مقرّران آخران في قائمتك', 'مقرّرات أخرى في قائمتك', 'مقرّراً آخر في قائمتك'])}
+              {' '}بلا مفاهيم محدَّدة بعد — تظهر خرائطها هنا فور إضافتها من الأستاذ.
+            </p>
+          )}
         </div>
       )}
     </div>

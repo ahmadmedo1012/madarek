@@ -3,7 +3,7 @@
  *
  *   /admin/sync   show last run, stats, facts by category, manual trigger
  */
-import { useState, type CSSProperties } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   RefreshCw, CheckCircle2, AlertTriangle, Clock, Database,
@@ -78,6 +78,28 @@ const CATEGORY_LABEL: Record<string, string> = {
   colleges: 'الكلّيّات',
   general: 'عام',
 };
+
+/** A8 P3-7: the sync source is a Latin slug (zu-sync/index.ts —
+ *  currently only `static-markdown`). Map it beside CATEGORY_LABEL so
+ *  the Arabic KPI line never shows a raw slug; unknown future sources
+ *  fall back to the verbatim value (bdi-wrapped, Latin). */
+const SOURCE_LABEL: Record<string, string> = {
+  'static-markdown': 'بيانات جامعية موثّقة',
+};
+function sourceLabelAr(source: string): ReactNode {
+  return SOURCE_LABEL[source] ?? <bdi>{source}</bdi>;
+}
+
+/** A8 P3-7: sub-second runs used to render as the broken-looking
+ *  «0.0 ث». Honest durations: under a second says so, seconds are
+ *  integers, minutes carry their seconds. */
+function formatDurationAr(ms: number): string {
+  if (ms < 1_000) return 'أقل من ثانية';
+  if (ms < 60_000) return `${Math.round(ms / 1_000)} ث`;
+  const min = Math.floor(ms / 60_000);
+  const sec = Math.round((ms % 60_000) / 1_000);
+  return sec > 0 ? `${min} د و${sec} ث` : `${min} د`;
+}
 
 function useSyncStatus() {
   return useQuery({
@@ -203,14 +225,14 @@ export function AdminSyncPage() {
           icon={Clock}
           label="آخر مزامنة ناجحة"
           value={lastSuccess?.completedAt ? formatRelativeArShort(lastSuccess.completedAt) : '—'}
-          change={lastSuccess ? <bdi>{lastSuccess.source}</bdi> : 'لم تكتمل بعد'}
+          change={lastSuccess ? sourceLabelAr(lastSuccess.source) : 'لم تكتمل بعد'}
           color="brand"
         />
         <MetricCard
           icon={STATUS_ICON[lastRun ? lastRun.status : 'SUCCESS']}
           label="حالة آخر تشغيل"
           value={lastRun ? (STATUS_LABEL[lastRun.status] ?? lastRun.status) : '—'}
-          change={lastRun?.durationMs ? <>{(lastRun.durationMs / 1000).toFixed(1)} ث</> : ''}
+          change={lastRun?.durationMs != null && lastRun.durationMs > 0 ? formatDurationAr(lastRun.durationMs) : ''}
           color={lastRun ? STATUS_COLOR[lastRun.status] : 'brand'}
         />
         <MetricCard
@@ -275,13 +297,13 @@ export function AdminSyncPage() {
                       <td data-label="وقت البدء">
                         <bdi>{formatDate(r.startedAt, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</bdi>
                       </td>
-                      <td data-label="المصدر" className="font-mono text-subtle">
-                        <bdi>{r.source}</bdi>
+                      <td data-label="المصدر" className="text-subtle">
+                        {sourceLabelAr(r.source)}
                       </td>
                       <td className="admin-table-num font-mono" data-label="حقول جديدة">{r.factsAdded}</td>
                       <td className="admin-table-num font-mono" data-label="حقول محدّثة">{r.factsUpdated}</td>
                       <td className="admin-table-num font-mono" data-label="المدة">
-                        {r.durationMs ? `${(r.durationMs / 1000).toFixed(1)} ث` : '—'}
+                        {r.durationMs ? formatDurationAr(r.durationMs) : '—'}
                       </td>
                     </tr>
                   );

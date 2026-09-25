@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Users, GraduationCap, BookOpen, Activity, ShieldCheck, Server,
   Wifi, FlaskConical, Microscope, Radio, FileText, Search, Settings,
-  Download, RefreshCw, Mail, ChevronLeft, ChevronRight,
+  Download, RefreshCw, Mail, ChevronLeft, ChevronRight, X,
 } from 'lucide-react';
-import { Card, MetricCard } from '../../components/primitives';
+import { Card, MetricCard, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -66,6 +66,15 @@ export function AdminStudentsPage() {
   const [debouncedQ, setDebouncedQ] = useState('');
   const [facultyId, setFacultyId] = useState('');
   const facQ = useFaculties();
+  // A8 P3-4: the empty-search state gets the same reset affordance its
+  // teachers twin has — a dead end otherwise.
+  const hasActiveFilters = debouncedQ !== '' || facultyId !== '';
+  const clearSearch = () => {
+    setQ('');
+    setDebouncedQ('');
+    setFacultyId('');
+    setPage(1);
+  };
 
   // Debounce the search input (OwnerUsersPage pattern) so the server query
   // fires once typing pauses instead of on every keystroke.
@@ -148,7 +157,12 @@ export function AdminStudentsPage() {
                 </thead>
                 <tbody>
                   {studentsQ.data.data.length === 0 && (
-                    <tr><td colSpan={7}><EmptyState title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." /></td></tr>
+                    <tr><td colSpan={7}><EmptyState title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
+                      <button type="button" className="btn ghost sm" onClick={clearSearch}>
+                        <Icon icon={X} size={13} />
+                        مسح البحث
+                      </button>
+                    ) : undefined} /></td></tr>
                   )}
                   {studentsQ.data.data.map((s) => (
                     <tr key={s.id}>
@@ -430,11 +444,31 @@ export function AdminAnalysisPage() {
 
 /* ───────────────────────── /admin/settings ─────────────────────────
  *
- * Static settings page. Keeps the system-level controls visible even
- * before the per-setting endpoints are wired (cache, branding, sync).
+ * Settings landing. Keeps the system-level facts visible even before
+ * the per-setting endpoints are wired. Infrastructure rows are driven
+ * by the real /health probe (A8 P2-6): the old hardcoded «متصلة/آمنة»
+ * pills and the wrong «Postgres (Neon Serverless)» vendor line were
+ * unfalsifiable decoration next to honest «قيد التطوير» copy.
  */
 
+/** GET /api/v1/health payload (raw — not the {data} envelope). */
+interface HealthStatus {
+  ok: boolean;
+  dbLatencyMs: number;
+}
+
 export function AdminSettingsPage() {
+  const health = useQuery({
+    queryKey: ['admin', 'health'],
+    queryFn: async () => {
+      const res = await api.get<HealthStatus>('/health');
+      return res.data;
+    },
+    staleTime: 30_000,
+    retry: 1,
+  });
+  const dbOk = health.isSuccess && health.data?.ok === true;
+
   return (
     <div className="page admin-settings">
       <header className="page-header">
@@ -470,16 +504,23 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">قاعدة البيانات</div>
-              <div className="settings-value"><bdi>Postgres (Neon Serverless)</bdi></div>
+              <div className="settings-value">
+                {health.isPending
+                  ? 'جارٍ التحقق…'
+                  : dbOk
+                    ? `متصلة · زمن الاستجابة ${health.data!.dbLatencyMs} مث`
+                    : 'تعذّر التحقق من الاتصال'}
+              </div>
             </div>
-            <span className="pill on">متصلة</span>
+            {!health.isPending && (
+              <Badge color={dbOk ? 'green' : 'red'}>{dbOk ? 'متصلة' : 'غير متاحة'}</Badge>
+            )}
           </div>
           <div className="settings-row">
             <div>
               <div className="settings-label">المصادقة</div>
               <div className="settings-value">صلاحية الرمز 15 دقيقة · التحديث كل 7 أيام</div>
             </div>
-            <span className="pill on">آمنة</span>
           </div>
           <div className="settings-row">
             <div>

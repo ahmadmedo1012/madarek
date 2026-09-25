@@ -92,16 +92,21 @@ describe('SocialPage — viewerReacted (the honest heart state)', () => {
   it('starts the heart PRESSED on a post the viewer already reacted to (server truth)', () => {
     render(<SocialPage />);
 
+    /* 22-c (A5 P2-2): the pressed label names the STATE («أعجبك هذا
+       المنشور») + aria-disabled — it no longer promises an un-like
+       the handler refuses to perform (was «إزالة الإعجاب»). */
     const reacted = within(articleOf('منشور تفاعلت معه سابقاً')).getByRole('button', {
-      name: 'إزالة الإعجاب',
+      name: 'أعجبك هذا المنشور',
     });
     expect(reacted).toHaveAttribute('aria-pressed', 'true');
+    expect(reacted).toHaveAttribute('aria-disabled', 'true');
 
     // The un-reacted post stays pressable.
     const fresh = within(articleOf('منشور لم أتفاعل معه')).getByRole('button', {
       name: 'أعجبني بهذا المنشور',
     });
     expect(fresh).toHaveAttribute('aria-pressed', 'false');
+    expect(fresh).not.toHaveAttribute('aria-disabled');
   });
 
   it('does NOT double-count the server reaction into the displayed count', () => {
@@ -128,7 +133,7 @@ describe('SocialPage — viewerReacted (the honest heart state)', () => {
 
   it('a server-reacted post cannot be liked again (the guard reads server truth)', () => {
     render(<SocialPage />);
-    fireEvent.click(within(articleOf('منشور تفاعلت معه سابقاً')).getByRole('button', { name: 'إزالة الإعجاب' }));
+    fireEvent.click(within(articleOf('منشور تفاعلت معه سابقاً')).getByRole('button', { name: 'أعجبك هذا المنشور' }));
     expect(h.react.mutate).not.toHaveBeenCalled();
   });
 });

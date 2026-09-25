@@ -939,6 +939,12 @@
   .dash-progress-card { min-block-size: 156px; }
 
   .dash-gpa-body { display: flex; align-items: center; gap: var(--sp-5); }
+  /* 22-c (A3 P3-9): orb 88px + text ~88px left ~78px of dead trailing
+     space in the ~294px phone track (flush-inline-start content) —
+     space-between spreads the pair across the card instead. */
+  @media (max-width: 640px) {
+    .dash-gpa-body { justify-content: space-between; }
+  }
   .dash-gpa-orb {
     inline-size: 88px; block-size: 88px;
     /* no 24px step on the radius scale — 2xl (20) and 3xl (28) are
@@ -991,6 +997,18 @@
     gap: var(--sp-6);
   }
   .dash-progress-card .dash-progress-text { flex: 1; min-inline-size: 0; }
+  /* 22-c (A3 P1-1): at ≤640px the row left the text column 114px wide
+     next to the unshrinkable 168px doughnut — the 22px progress value
+     wrapped to ~6 ragged lines. Stack below phone, mirroring the
+     .dash-progress-body base rule above. */
+  @media (max-width: 640px) {
+    .dash-progress-card .dash-progress-body {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--sp-4);
+    }
+  }
 
   .dash-term-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
   .dash-term-foot { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-muted); }

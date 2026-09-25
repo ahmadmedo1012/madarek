@@ -54,7 +54,12 @@ function formatDue(iso: string): string {
   const diff = d.getTime() - Date.now();
   const days = Math.round(diff / 86400000);
   const time = d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
-  if (days <= 0) return `اليوم · ${time}`;
+  /* 22-c (A3 P3-2): a PAST-due assignment read «اليوم» (days <= 0) —
+     "due today" for something due yesterday. Overdue gets its own
+     label with the date; same-day (days === 0, incl. a passed hour)
+     keeps «اليوم · الوقت». */
+  if (days < 0) return `فات الموعد · ${d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' })}`;
+  if (days === 0) return `اليوم · ${time}`;
   if (days === 1) return `غداً · ${time}`;
   // Arabic plural rules inside the ≤6-day window: dual, then plural.
   if (days === 2) return `بعد يومين · ${time}`;

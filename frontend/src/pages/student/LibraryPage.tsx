@@ -3,7 +3,7 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search, Library as LibraryIcon, BookOpen, Clock,
-  Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap,
+  Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap, X,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
@@ -170,7 +170,10 @@ export default function LibraryPage() {
         <div className="page-title-block">
           <h1 className="page-title">المكتبة الإلكترونية</h1>
           <p className="page-subtitle">
-            آلاف الكتب الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.
+            {/* 22-c (A3 P3-10): «آلاف الكتب» overclaimed a single-digit
+                seeded library — honest scope instead. */}
+            كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة
+            للاستعارة الفورية والاطّلاع المرجعي.
           </p>
         </div>
       </header>
@@ -203,9 +206,9 @@ export default function LibraryPage() {
           <div className="grid-3">
             <MetricCard
               icon={LibraryIcon}
-              label="كتب الفئة الحاليّة"
+              label={booksFiltered ? 'نتائج البحث' : 'كتب الفئة الحاليّة'}
               value={books.isPending ? <Skeleton width={48} height={24} /> : (totalBooks !== null ? totalBooks.toLocaleString('ar-LY') : '—')}
-              change={cat === 'all' ? 'الكلّ' : categoryLabel(cat)}
+              change={debouncedQ ? `بحث: ${debouncedQ}` : cat === 'all' ? 'الكلّ' : categoryLabel(cat)}
               color="brand"
             />
             <MetricCard
@@ -226,14 +229,30 @@ export default function LibraryPage() {
 
           <Card compact>
             <div className="flex gap-3 items-center flex-wrap">
-              <div className="topbar-search" style={{ width: '100%', maxWidth: 320 }}>
+              {/* 22-c (A3 P1-3): the search was placeholder-only (no
+                  label association) and had no clear affordance — the
+                  GlobalSearch grammar instead: aria-label + a × clear
+                  button when the field carries text (has-clear reserves
+                  the input's end padding for it). */}
+              <div className={`topbar-search${q ? ' has-clear' : ''}`} style={{ width: '100%', maxWidth: 320 }}>
                 <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
                 <input
                   type="text"
                   placeholder="ابحث عن كتاب أو مؤلف…"
+                  aria-label="ابحث في الكتب"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                 />
+                {q && (
+                  <button
+                    type="button"
+                    className="topbar-search-clear"
+                    onClick={() => setQ('')}
+                    aria-label="مسح البحث"
+                  >
+                    <Icon icon={X} size={12} />
+                  </button>
+                )}
               </div>
               <div className="filter-bar lib-filters">
                 {CATEGORIES.map((c) => (
@@ -333,14 +352,28 @@ export default function LibraryPage() {
 
           <Card compact>
             <div className="flex gap-3 items-center flex-wrap">
-              <div className="topbar-search" style={{ width: '100%', maxWidth: 360 }}>
+              {/* 22-c (A3 P1-3): same grammar as the books search —
+                  labelled + clearable (this is the tab's primary
+                  interaction). */}
+              <div className={`topbar-search${q ? ' has-clear' : ''}`} style={{ width: '100%', maxWidth: 360 }}>
                 <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
                 <input
                   type="text"
                   placeholder="ابحث في عنوان البحث، الملخص، أو محتوى البحث الكامل…"
+                  aria-label="ابحث في البحوث المنشورة"
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                 />
+                {q && (
+                  <button
+                    type="button"
+                    className="topbar-search-clear"
+                    onClick={() => setQ('')}
+                    aria-label="مسح البحث"
+                  >
+                    <Icon icon={X} size={12} />
+                  </button>
+                )}
               </div>
               <div className="lib-count" style={{ marginInlineStart: 'auto' }}>
                 {researchInUse
@@ -431,11 +464,17 @@ export default function LibraryPage() {
                     </p>
                   ) : null}
                   <div className="research-card-stats">
+                    {/* 22-c (A3 P2-1): the Arabic labels («انتحال»،
+                        «ذكاء اصطناعي») sat inside font-mono — Plex Mono
+                        has no Arabic glyphs, so the words fell to a system
+                        face mid-line while the digits stayed Plex. The
+                        mono costume now rides the numeric <bdi> only,
+                        mirroring the correct pattern at :394/:402. */}
                     {p.plagiarismPct != null && (
-                      <span className="font-mono">انتحال: <bdi>{p.plagiarismPct}%</bdi></span>
+                      <span>انتحال: <bdi className="font-mono">{p.plagiarismPct}%</bdi></span>
                     )}
                     {p.aiContentPct != null && (
-                      <span className="font-mono">ذكاء اصطناعي: <bdi>{p.aiContentPct}%</bdi></span>
+                      <span>ذكاء اصطناعي: <bdi className="font-mono">{p.aiContentPct}%</bdi></span>
                     )}
                     <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       <Icon icon={ShieldCheck} size={11} strokeWidth={2} />

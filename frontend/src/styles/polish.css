@@ -2043,6 +2043,10 @@
     color: var(--accent-strong);
     background: var(--accent-soft);
   }
+  /* 22-c (A5 P2-2): a reacted heart is a STATE, not an available
+     action (the backend cannot un-react) — the pointer cursor would
+     keep promising the click the handler refuses. */
+  .post-action[aria-disabled="true"] { cursor: default; }
 
   /* ═══════════════════════════════════════════════════════════════
      Faculty / city chips inside University Info
@@ -4456,6 +4460,10 @@
   @media (hover: hover) {
     .announce-row:hover .announce-emoji,
     .event-row:hover .event-emoji,
+    /* 22-c (A5 P1-1): the old `li:hover > .announcement-icon` never
+       fired — the community feed cards are <article>s, not list items.
+       Keyed to the card itself now that the family has a real surface. */
+    .announcement-card:hover .announcement-icon,
     li:hover > .announcement-icon {
       transform: scale(1.15) rotate(-6deg);
     }
@@ -4534,6 +4542,9 @@
     .vision-detail-hero img {
       transition: none !important;
     }
+    /* 22-c: the announcement icon's hover bobble (block above) is a
+       pure-decoration transform — off under reduced motion. */
+    .announcement-icon { transition: none !important; }
   }
 }
 

@@ -110,7 +110,9 @@ export default function TrainingCatalogPage() {
           skeletons; error → honest message + retry (never a fake summary). */}
       {meQ.isPending ? (
         <>
-          <KpiStripSkeleton />
+          {/* 22-c (A4 P2-2): 4-tile skeleton matches the landed grid-4
+              KPI band (was the shared 3-tile grid-3 — shift on load). */}
+          <KpiStripSkeleton count={4} />
           <LevelBandSkeleton />
         </>
       ) : meQ.isError ? (
@@ -273,11 +275,15 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
   );
 }
 
-/* Shape-matched loading skeletons (catalog). */
-function KpiStripSkeleton() {
+/* Shape-matched loading skeletons (catalog). 22-c (A4 P2-2): the
+   skeleton is parameterized by tile count — the catalog's real KPI band
+   is grid-4 (نقاطك/الأوسمة/مسارات نشطة/الشهادات) while AchievementsPage
+   renders grid-3, and one shared 3-tile skeleton fed both (a layout lie
+   + a shift on load). Each caller now matches its landed band. */
+function KpiStripSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="grid-3" aria-busy="true" aria-live="polite">
-      {[0, 1, 2].map((i) => (
+    <div className={count >= 4 ? 'grid-4' : 'grid-3'} aria-busy="true" aria-live="polite">
+      {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="metric" aria-hidden>
           <div className="metric-head">
             <Skeleton width={86} height={11} />
@@ -613,11 +619,16 @@ export function TrainingLessonPage() {
               <Icon icon={Target} size={12} />
               سؤال التحقق
             </div>
-            <div className="lesson-quiz-q">{lesson.quizQuestion}</div>
+            <div className="lesson-quiz-q" id={`${lesson.id}-quiz-q`}>{lesson.quizQuestion}</div>
+            {/* 22-c (A4 P2-4): the graded answer field was placeholder-
+                only — an unnamed control for screen readers. Labelled by
+                the question node, mirroring the exam-taker's
+                aria-labelledby wiring (OnlineExamsPages). */}
             <input
               type="text"
               className="input"
               placeholder="إجابتك…"
+              aria-labelledby={`${lesson.id}-quiz-q`}
               value={quizAnswer}
               onChange={(e) => setQuizAnswer(e.target.value)}
               disabled={lesson.isCompleted}

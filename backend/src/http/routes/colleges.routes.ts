@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Role, AnnouncementScope, CompetitionStatus } from '@prisma/client';
 import { prisma } from '../../db.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { optionalAuthMiddleware } from '../middleware/auth.js';
 import { AppError } from '../../lib/errors.js';
 
 /**
@@ -16,10 +16,19 @@ import { AppError } from '../../lib/errors.js';
  * the UI snappy and avoid a waterfall of small fetches.
  *
  * Auth policy:
- *   - GET /colleges is PUBLIC — light list (name, city, counts). No PII.
- *     Lets the marketing homepage popover + public gallery render without
- *     login. Authenticated routes register the auth middleware locally.
- *   - GET /colleges/leaderboard, GET /colleges/:id remain authenticated.
+ *   - GET /colleges, GET /colleges/leaderboard are PUBLIC (audit
+ *     4-A14 P1-2): the landing popover and the public gallery deep-link
+ *     guests into both surfaces, so an auth wall dead-ends the marketing
+ *     funnel with a retryable 401. The leaderboard is aggregate-only
+ *     (college-level numbers, zero PII) — safe to open as-is.
+ *   - GET /colleges/:id is public WITH PII narrowing: the bundle's
+ *     topStudents carry student names (personal data), so unauthenticated
+ *     requests get them through `anonymizeGuestUser` (given name + family
+ *     initial); authenticated users keep the full names. Staff figures
+ *     (leadership, announcement authors, live-session teachers) are
+ *     university officials — their names are public information and are
+ *     not narrowed.
+ *   - Other authenticated routes elsewhere register auth middleware locally.
  */
 const router = Router();
 
@@ -149,8 +158,31 @@ export function buildLeaderboardRow(
   };
 }
 
+/** A person projection that carries a real name (user select shape). */
+interface PersonName {
+  firstName: string;
+  lastName: string;
+}
+
 /**
- * GET /colleges/leaderboard
+ * Guest-safe projection of a person's name (audit 4-A14 P1-2): keeps the
+ * given name, reduces the family name to its first letter + full stop
+ * («أحمد المهدي» → «أحمد م.»). The Arabic definite article «ال» is
+ * stripped first — most family names carry it and the bare alif it
+ * leaves behind identifies nobody («أحمد ا.»). Pure so the narrowing
+ * contract is unit-testable without a DB (colleges-public-access.test.ts).
+ * Keys the caller passes in (id, avatarColor, …) pass through untouched.
+ */
+export function anonymizeGuestUser<U extends PersonName>(user: U): U {
+  // Strip a leading «ال» only when a stem of ≥2 characters remains
+  // (never strips a name that IS just «ال…»-plus-one-letter).
+  const stem = user.lastName.trim().replace(/^ال(?=.{2})/, '');
+  const initial = stem.charAt(0);
+  return { ...user, lastName: initial ? `${initial}.` : '' };
+}
+
+/**
+ * GET /colleges/leaderboard  (PUBLIC — aggregate-only, no PII)
  * Inter-college comparison — sub-project C.
  *
  * For each faculty, aggregates the metrics that meaningfully compare colleges:
@@ -158,7 +190,7 @@ export function buildLeaderboardRow(
  * exam attempts, and lab sessions. Returns one row per faculty + rank-per-metric
  * so the frontend can render medals without recomputing.
  */
-router.get('/colleges/leaderboard', authMiddleware, async (_req, res, next) => {
+router.get('/colleges/leaderboard', async (_req, res, next) => {
   try {
     // Constant query count per request (~10), independent of college count.
     // Relation-keyed metrics (papers by offering, attempts by template,
@@ -348,10 +380,11 @@ router.get('/colleges/leaderboard', authMiddleware, async (_req, res, next) => {
 });
 
 /**
- * GET /colleges/:id
+ * GET /colleges/:id  (public with PII narrowing — see the auth-policy
+ * note at the top of this file)
  * Per-college overview bundle. Single response with everything the page renders.
  */
-router.get('/colleges/:id', authMiddleware, async (req, res, next) => {
+router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
   try {
     const id = req.params.id!;
     const faculty = await prisma.faculty.findUnique({
@@ -489,6 +522,15 @@ router.get('/colleges/:id', authMiddleware, async (req, res, next) => {
       }),
     ]);
 
+    // Guest narrowing (audit 4-A14 P1-2): anonymous visitors keep the
+    // bundle — the section survives the public funnel — but student
+    // names are projected to given name + family initial. Authenticated
+    // users (any role) keep the full names.
+    const isGuest = !req.user;
+    const topStudentsOut = isGuest
+      ? topStudents.map((s) => ({ ...s, user: anonymizeGuestUser(s.user) }))
+      : topStudents;
+
     res.json({
       data: {
         id: faculty.id,
@@ -515,7 +557,7 @@ router.get('/colleges/:id', authMiddleware, async (req, res, next) => {
           department: l.positionDepartment,
           faculty: l.positionFaculty,
         })),
-        topStudents,
+        topStudents: topStudentsOut,
         announcements,
         upcomingEvents,
         upcomingLive,

@@ -225,7 +225,10 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="admin-stat-row">
       <span className="text-sm text-muted">{label}</span>
-      <span className="font-mono text-sm admin-stat-value">{value}</span>
+      {/* A8 P3-3: no font-mono — the value is often a full Arabic faculty
+          name («أكبر كلّيّة»); mono only ever wraps codes/emails/numbers
+          (digits keep tabular-nums via tokens). */}
+      <span className="text-sm admin-stat-value">{value}</span>
     </div>
   );
 }
@@ -297,10 +300,12 @@ export function AdminFacultiesPage() {
                     )}
                   </div>
                   <div className="admin-faculty-meta">
-                    <span className="font-mono">{countAr(f.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
-                    <span className="font-mono">{countAr(f.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
-                    <span className="font-mono">{countAr(f.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
-                    <span className="font-mono">{countAr(f.teacherCount, ['عضو هيئة تدريس واحد', 'عضوا هيئة تدريس', 'أعضاء هيئة تدريس', 'عضواً هيئة تدريس'])}</span>
+                    {/* A8 P3-3: counted Arabic phrases — mono is a costume
+                        here (IBM Plex Mono has no Arabic); plain text. */}
+                    <span>{countAr(f.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
+                    <span>{countAr(f.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
+                    <span>{countAr(f.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+                    <span>{countAr(f.teacherCount, ['عضو هيئة تدريس واحد', 'عضوا هيئة تدريس', 'أعضاء هيئة تدريس', 'عضواً هيئة تدريس'])}</span>
                   </div>
                 </div>
               </div>
@@ -310,7 +315,7 @@ export function AdminFacultiesPage() {
                   {f.departments.map((d) => (
                     <div key={d.id} className="admin-faculty-dept">
                       <span className="admin-faculty-dept-name">{d.name}</span>
-                      <span className="admin-faculty-dept-meta font-mono">
+                      <span className="admin-faculty-dept-meta">
                         {countAr(d.students, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])} · {countAr(d.teachers, ['مدرّس واحد', 'مدرّسان', 'مدرّسون', 'مدرّساً'])} · {countAr(d.courses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
                       </span>
                     </div>

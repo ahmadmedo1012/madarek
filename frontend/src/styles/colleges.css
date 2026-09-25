@@ -1174,6 +1174,27 @@
   border-block-end: 1px solid var(--border);
   white-space: nowrap;
 }
+/* Sort affordance (A8 leaderboard polish): the header cell's content is
+   a real button — transparent chrome, inherits the th color, hover
+   darkens like every header link in the app. */
+.leaderboard-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--sp-1) var(--sp-2);
+  margin-inline: calc(var(--sp-2) * -1);
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  transition: color var(--t-fast);
+}
+.leaderboard-sort:hover { color: var(--text); }
+.leaderboard-sort-on { color: var(--accent-strong); }
+.leaderboard-sort:hover .leaderboard-sort-on { color: var(--accent-strong); }
 .leaderboard-table tbody td {
   padding: var(--sp-3);
   border-block-end: 1px solid var(--border);
@@ -1223,9 +1244,29 @@
   color: var(--text);
   font-weight: var(--fw-bold);
 }
+/* A8 P3-2: an all-zero column has no leader — its values read as
+   muted “no data”, never as a celebrated rank-1 of nothing. */
+.leaderboard-cell.is-dead .leaderboard-value {
+  color: var(--text-muted);
+}
+/* A8 P3-1: medals are the platform's icon system (lucide Medal),
+   tinted gold/silver/bronze through text-grade tokens (each ≥3:1 on
+   the card surface — measured, not a raw hex). */
 .leaderboard-medal {
   margin-inline-start: 6px;
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+.leaderboard-medal .medal-1 { color: var(--gold-ink, var(--gold)); }
+.leaderboard-medal .medal-2 { color: var(--text-muted); }
+.leaderboard-medal .medal-3 { color: var(--accent); }
+
+/* A8 P2-5: the leaderboard joins the shared .tbl-stack collapse — on
+   phones the 720px floor would still force the stacked cards wide. */
+@media (max-width: 640px) {
+  .leaderboard-table.tbl-stack { min-width: 0; }
+  .leaderboard-table.tbl-stack .leaderboard-college-link { align-items: flex-start; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

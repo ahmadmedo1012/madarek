@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import {
-  Sparkles, ArrowLeft, ChevronLeft, Bell, CheckCircle2,
+  Sparkles, ArrowLeft, ChevronLeft, Bell,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { EmptyState } from '../../components/primitives/States';
@@ -132,7 +131,6 @@ export function VisionGalleryPage() {
 export function VisionDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const concept = VISION_CONCEPTS.find((c) => c.slug === slug);
-  const [notified, setNotified] = useState(false);
   if (!concept) return <Navigate to="/vision" replace />;
 
   return (
@@ -236,7 +234,12 @@ export function VisionDetailPage() {
         </div>
       </Card>
 
-      {/* Notify CTA */}
+      {/* Launch notification — HONEST state (audit 4-A8 P2-2): the old
+          CTA promised «ستتلقى إشعاراً على بريدك الجامعي» with zero API
+          calls and a state that reset on reload — an unsatisfiable
+          claim. No notification endpoint exists yet, so the card says
+          so: a disabled «قريباً» button, no email promise. When a real
+          subscription endpoint lands, wire it here and drop this note. */}
       <Card>
         <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
           <span
@@ -257,22 +260,15 @@ export function VisionDetailPage() {
           </span>
           <div className="flex-1" style={{ minInlineSize: 200 }}>
             <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
-              {notified ? 'تم تفعيل التنبيه' : 'نبّهني عند إطلاق هذه الميزة'}
+              نبّهني عند إطلاق هذه الميزة
             </div>
             <div className="text-xs text-subtle" style={{ marginBlockStart: 2 }}>
-              {notified
-                ? 'سنُعلمك على بريدك الجامعي فور توفّر النسخة التجريبية.'
-                : 'ستتلقى إشعاراً على بريدك الجامعي فور توفّر النسخة التجريبية.'}
+              خدمة التنبيه على البريد قيد التطوير — تابع صفحة الرؤية: حالة كل ابتكار تُحدَّث هنا فور تغيّرها.
             </div>
           </div>
-          <button
-            type="button"
-            className={notified ? 'btn outline' : 'btn primary'}
-            onClick={() => setNotified((v) => !v)}
-            disabled={notified}
-          >
-            <Icon icon={notified ? CheckCircle2 : Bell} size={13} />
-            {notified ? 'مُفعَّل' : 'تفعيل التنبيه'}
+          <button type="button" className="btn outline" disabled>
+            <Icon icon={Bell} size={13} />
+            قريباً
           </button>
         </div>
       </Card>

@@ -485,6 +485,11 @@
   /* Agenda rows are informational cards, not links — the inherited
      pointer cursor promises navigation that never happens. */
   .dash-agenda-item { cursor: default; }
+  /* 22-c (A3 P3-1): the cursor half of the affordance lie was fixed
+     above; the hover half wasn't — rows still lit a surface-2
+     background while nothing is clickable. Rest-state only now
+     (pages layer wins over the components-layer :hover rule). */
+  .dash-agenda-item:hover { background: var(--surface); }
 
   /* ═══ Matrix — the heatmap filter signature ═══ */
 
@@ -524,6 +529,20 @@
   @keyframes matrix-gap-in {
     from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -8px)); }
     to { opacity: 1; transform: none; }
+  }
+
+  /* 22-c (A4 P3-7): one quiet summary line for courses with no mapped
+     concepts yet (was: N identical empty-state cards). Dashed rule =
+     "pending", matching the colleges announce-row separators. */
+  .matrix-unmapped-note {
+    margin: 0;
+    padding: var(--sp-3) var(--sp-4);
+    border: 1px dashed color-mix(in srgb, var(--border-strong) 45%, var(--rule));
+    border-radius: var(--r-lg);
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+    text-align: center;
   }
 
   /* ═══ AiAssistant — typing indicator + gap cards + error rows ═══ */
@@ -882,6 +901,19 @@
   }
 
   /* ═══ MoocPage ═══ */
+  /* 22-c (A4 P3-1): grid-3 orphaned the 4th card (a lone tile 283px
+     below the first row). The track-grid auto-fill recipe instead —
+     pages layer overrides the components-layer .grid-3 at every
+     width; phone collapses to one column like the recipe's own
+     mobile clause. */
+  .mooc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--sp-5);
+  }
+  @media (max-width: 640px) {
+    .mooc-grid { grid-template-columns: 1fr; gap: var(--sp-3); }
+  }
   /* Same opt-out as the courses grid: escape the global mount stagger's
      fill:both transform pin (restores the thumb-card hover lift), then
      re-own the incumbent mount entrance with the same keyframe so the
@@ -1598,7 +1630,10 @@
     inset-block-end: -16px;
     inline-size: 2px;
     border-radius: 1px;
-    background: var(--surface-3);
+    /* 22-c (A4 P3-6): plain --surface-3 measured ≈1.1:1 against the
+       card ground — the spine was invisible. Border-strong mixed toward
+       the old value keeps it quiet but visible in both themes. */
+    background: color-mix(in srgb, var(--border-strong) 60%, var(--surface-3));
   }
   .step.done:not(:last-child)::before {
     background: color-mix(in srgb, var(--success) 35%, var(--surface-3));
@@ -2063,6 +2098,106 @@
     gap: 4px;
     color: var(--danger-ink);
     font-size: var(--type-label-size-sm);
+  }
+
+  /* ═══ Community — announcement feed cards (22-c, A5 P1-1).
+     The family had NO CSS anywhere: the DEFAULT tab of /community
+     rendered as unstyled HTML (no surface, head display:block so the
+     icon dropped to its own line, meta inline on inherited spaces,
+     hover lifting an invisible box) — the platform's worst page at
+     4.5/10. Grammar: the .post feed-card recipe — polish.css owns the
+     radius + hover lift (its .post/.testimonial-card/.announcement-card
+     group, overrides layer); this block adds the surface, the head
+     row, the icon well, the pin state, the meta line and the reading
+     width. ═══ */
+  .announcement-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+  }
+  /* Pinned — the platform's "on" grammar (tinted ground + accent-mixed
+     border), scannable without the craft-floor-banned >1px side stripe. */
+  .announcement-card.pinned {
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+  }
+  .announcement-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+  .announcement-head-main {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  /* leading icon well — .job-icon-well grammar, 40px for the 20px glyph */
+  .announcement-icon {
+    inline-size: 40px;
+    block-size: 40px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+  }
+  /* headline-role tokens (A5 P3-5: was five inline style props on the
+     demoted title div — the treatment belongs in CSS, not in TSX) */
+  .announcement-title {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    letter-spacing: var(--type-headline-letter-spacing);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .announcement-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-1) var(--sp-2);
+  }
+  .announcement-meta-item {
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+  }
+  /* pin chip — badge grammar (soft ground + strong ink), anchored to
+     the head's inline-end corner */
+  .announcement-pin {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    padding: 3px var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+  }
+  .announcement-body {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--type-body-size);
+    line-height: var(--lh-base);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    /* craft floor body measure (65–75ch): the feed column already sits
+       inside that band; the cap only binds if the card ever lands on a
+       wider track, keeping prose scannable instead of stretched */
+    max-inline-size: 70ch;
   }
 
   /* ── Keyframes (wave 4-d; reduced-motion off-switch below) ── */

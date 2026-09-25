@@ -1,11 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Building2, Users, BookOpen, GraduationCap, Trophy, Megaphone,
   Calendar, Radio, Award, ArrowLeft, MapPin, Clock,
   FlaskConical, Microscope, ClipboardCheck, Medal, BarChart3,
-  Search, X,
+  Search, X, ChevronRight, ChevronDown, ChevronUp, ArrowUpDown,
 } from 'lucide-react';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -445,6 +445,13 @@ export function CollegeDetailPage() {
       data-college={identity?.slug || undefined}
       style={collegeStyle}
     >
+      {/* Back to the gallery (A14 P2-3): the one detail page in the app
+          without a back affordance — copies the CourseDetail idiom
+          (ghost button, ChevronRight = the RTL back direction). */}
+      <Link to="/colleges" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
+        <Icon icon={ChevronRight} size={13} />
+        كلّيّات الجامعة
+      </Link>
       {/* Hero / masthead — real photography via identity.heroImage when it
           lands (Principle III: never synthetic); the API emoji chip is the
           default treatment. The optional motif renders as a decorative
@@ -677,7 +684,11 @@ export function CollegeDetailPage() {
  * Sub-project C: inter-college comparison. Single page with a sortable
  * table that ranks every college on shared metrics (XP, GPA, papers,
  * exam attempts, lab activity, completed enrollments). Each metric
- * shows the rank as a medal glyph on the leader. // allow-emoji: doc comment describing leaderboard glyphs
+ * shows the rank as a lucide Medal glyph on the leader (the platform's
+ * icon language — raw emoji medals were per-OS inconsistent, audit
+ * 4-A8 P3-1) — except when the whole column is zero, where a “rank 1
+ * of nothing” gets no celebration at all (P3-2). Mobile collapses to
+ * labelled cards via the shared .tbl-stack pattern (P2-5).
  */
 
 interface LeaderboardCollege {
@@ -717,12 +728,7 @@ const METRICS = [
   { key: 'completedEnrollments' as const, label: 'تسجيلات مكتملة', icon: GraduationCap, format: (n: number) => n.toLocaleString('ar-LY') },
 ];
 
-function rankMedal(rank: number): string {
-  if (rank === 1) return '🥇'; // allow-emoji: medal rank glyph
-  if (rank === 2) return '🥈'; // allow-emoji: medal rank glyph
-  if (rank === 3) return '🥉'; // allow-emoji: medal rank glyph
-  return '';
-}
+type MetricKey = (typeof METRICS)[number]['key'];
 
 export function CollegesLeaderboardPage() {
   const q = useQuery({
@@ -730,6 +736,30 @@ export function CollegesLeaderboardPage() {
     queryFn: () => unwrap<LeaderboardData>(api.get('/colleges/leaderboard')),
     staleTime: 5 * 60_000,
   });
+
+  // Sort affordance (A8 leaderboard polish): every metric column is a
+  // real sort control with aria-sort — the table used to be silently
+  // hard-wired to totalXp.
+  const [sort, setSort] = useState<{ key: MetricKey; dir: 1 | -1 }>({ key: 'totalXp', dir: -1 });
+  const toggleSort = (key: MetricKey) =>
+    setSort((s) => (s.key === key ? { key, dir: s.dir === -1 ? 1 : -1 } : { key, dir: -1 }));
+
+  // A8 P3-2: a column where every college holds 0 has no leader — no
+  // medals, no bold, and a muted value. Computed once per payload.
+  const maxByMetric = useMemo(() => {
+    const map = {} as Record<MetricKey, number>;
+    for (const m of METRICS) {
+      map[m.key] = q.data ? Math.max(...q.data.colleges.map((c) => c[m.key])) : 0;
+    }
+    return map;
+  }, [q.data]);
+
+  const sorted = useMemo(() => {
+    if (!q.data) return [];
+    return q.data.colleges
+      .slice()
+      .sort((a, b) => sort.dir * (a[sort.key] - b[sort.key]));
+  }, [q.data, sort]);
 
   return (
     <div className="page colleges-leaderboard">
@@ -750,49 +780,87 @@ export function CollegesLeaderboardPage() {
       {q.data && q.data.colleges.length > 0 && (
         <Card title="لوحة المتصدّرين" icon={Trophy}>
           <div className="leaderboard-table-wrap">
-            <table className="leaderboard-table">
+            {/* tbl-stack (A8 P2-5): collapses to labelled cards on phones
+                — the 720px min-width table used to scroll 398px sideways
+                at 390px. */}
+            <table className="leaderboard-table tbl-stack">
               <thead>
                 <tr>
                   <th className="leaderboard-college">الكلّيّة</th>
-                  {METRICS.map((m) => (
-                    <th key={m.key} title={m.label}>
-                      <span className="leaderboard-th">
-                        <Icon icon={m.icon} size={13} />
-                        <span>{m.label}</span>
-                      </span>
-                    </th>
-                  ))}
+                  {METRICS.map((m) => {
+                    const active = sort.key === m.key;
+                    const ariaSort = active ? (sort.dir === -1 ? 'descending' : 'ascending') : 'none';
+                    return (
+                      <th
+                        key={m.key}
+                        title={m.label}
+                        aria-sort={ariaSort}
+                      >
+                        <button
+                          type="button"
+                          className="leaderboard-sort"
+                          onClick={() => toggleSort(m.key)}
+                          aria-label={`ترتيب حسب ${m.label}${active ? (sort.dir === -1 ? ' — تنازليّ' : ' — تصاعديّ') : ''}`}
+                        >
+                          <span className="leaderboard-th">
+                            <Icon icon={m.icon} size={13} />
+                            <span>{m.label}</span>
+                          </span>
+                          <Icon
+                            icon={active ? (sort.dir === -1 ? ChevronDown : ChevronUp) : ArrowUpDown}
+                            size={12}
+                            className={active ? 'leaderboard-sort-on' : undefined}
+                          />
+                        </button>
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
-                {q.data.colleges
-                  .slice()
-                  .sort((a, b) => b.totalXp - a.totalXp)
-                  .map((c) => (
-                    <tr key={c.id}>
-                      <td className="leaderboard-college">
-                        <Link to={`/colleges/${c.id}`} className="leaderboard-college-link">
-                          <span className="leaderboard-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={20} /></span>
-                          <div>
-                            <div className="leaderboard-college-name">{c.name}</div>
-                            <div className="leaderboard-college-meta">
-                              {c.city} · {countedGroupedAr(c.studentCount, 'طالب واحد', 'طالبان', 'طلاب', 'طالباً')} · {countedGroupedAr(c.teacherCount, 'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً')}
-                            </div>
+                {sorted.map((c) => (
+                  <tr key={c.id}>
+                    <td className="leaderboard-college" data-label="الكلّيّة">
+                      <Link to={`/colleges/${c.id}`} className="leaderboard-college-link">
+                        <span className="leaderboard-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={20} /></span>
+                        <div>
+                          <div className="leaderboard-college-name">{c.name}</div>
+                          <div className="leaderboard-college-meta">
+                            {c.city} · {countedGroupedAr(c.studentCount, 'طالب واحد', 'طالبان', 'طلاب', 'طالباً')} · {countedGroupedAr(c.teacherCount, 'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً')}
                           </div>
-                        </Link>
-                      </td>
-                      {METRICS.map((m) => {
-                        const value = c[m.key];
-                        const rank = c.ranks[m.key];
-                        return (
-                          <td key={m.key} className={`leaderboard-cell rank-${rank}`}>
-                            <span className="leaderboard-value font-mono">{m.format(value)}</span>
-                            {rank <= 3 && <span className="leaderboard-medal" aria-label={`الترتيب ${rank}`}>{rankMedal(rank)}</span>}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
+                        </div>
+                      </Link>
+                    </td>
+                    {METRICS.map((m) => {
+                      const value = c[m.key];
+                      const rank = c.ranks[m.key];
+                      const columnAlive = maxByMetric[m.key] > 0;
+                      // Medals need an actual score: a college holding 0
+                      // in a live column still ties at rank 2 (backend
+                      // ties share ranks) — silver next to «0» is the
+                      // same dishonesty P3-2 flagged on all-zero columns.
+                      const earnsMedal = columnAlive && value > 0 && rank <= 3;
+                      return (
+                        <td
+                          key={m.key}
+                          data-label={m.label}
+                          className={`leaderboard-cell${columnAlive && rank === 1 ? ' rank-1' : ''}${columnAlive ? '' : ' is-dead'}`}
+                        >
+                          <span className="leaderboard-value font-mono">{m.format(value)}</span>
+                          {/* lucide Medal (A8 P3-1) — the icon language the
+                              page already speaks; suppressed on all-zero
+                              columns AND on zero-valued cells (P3-2: no
+                              “rank of nothing”). */}
+                          {earnsMedal && (
+                            <span className="leaderboard-medal" role="img" aria-label={`الترتيب ${rank}`}>
+                              <Icon icon={Medal} size={14} className={`medal-${rank}`} />
+                            </span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

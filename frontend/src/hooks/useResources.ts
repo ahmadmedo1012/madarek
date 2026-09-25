@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../lib/api';
 import type { AppRole } from '../stores/auth.store';
 
@@ -262,6 +262,13 @@ export function useBooks(opts: { category?: string; q?: string } = {}) {
           params: { limit: 100, category: opts.category, q: opts.q },
         }),
       ),
+    /* 22-c (A3 P2-2): every NEW category/query key transitions
+       isPending → true, unmounting the grid into its skeleton — the
+       flash was intermittent (cached keys re-show instantly) so it
+       felt random. keepPreviousData keeps the previous page mounted
+       while the new key resolves; the skeleton still owns the true
+       first load (no previous data exists). */
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -1047,6 +1054,10 @@ export function useResearchSearch(query: string) {
       );
       return res.data;
     },
+    /* 22-c (A3 P2-2): same flicker as useBooks — each new query term
+       collapsed the list into its skeleton. Previous results stay
+       mounted until the new search resolves. */
+    placeholderData: keepPreviousData,
   });
 }
 

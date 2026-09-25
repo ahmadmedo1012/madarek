@@ -412,7 +412,16 @@ export function QualityDashboardPage() {
             <EmptyState
               icon={AlertTriangle}
               title="تعذّر تحميل التنبيهات"
-              description="حدّث الصفحة أو راجع صفحة تنبيهات الجودة."
+              description="حدث خطأ في الاتصال أثناء جلب التنبيهات."
+              action={
+                <div className="flex items-center gap-2" style={{ flexWrap: 'wrap' }}>
+                  <button type="button" className="btn ghost sm" onClick={() => void al.refetch()}>
+                    <Icon icon={ArrowLeft} size={13} style={{ transform: 'scaleX(-1)' }} />
+                    إعادة المحاولة
+                  </button>
+                  <Link to="/quality/alerts" className="btn ghost sm">صفحة التنبيهات</Link>
+                </div>
+              }
             />
           ) : !al.data || al.data.alerts.length === 0 ? (
             <EmptyState
@@ -466,8 +475,11 @@ export function QualityCoursesPage() {
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
        !c.data?.length ? <Card><EmptyState icon={BookOpen} title="لا توجد مقرّرات نشطة بعد" description="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ." /></Card> : (
         <Card title="المقرّرات النشطة" icon={BookOpen}>
+          {/* tbl-stack (A8 P1-1): the roster collapses to labelled cards
+              on phones — same .table-wrap > .table.tbl-stack pattern as
+              every admin roster (OwnerUsersPage reference). */}
           <div className="table-wrap">
-            <table className="table">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th>المقرّر</th>
@@ -476,22 +488,32 @@ export function QualityCoursesPage() {
                   <th>الطلاب</th>
                   <th>المحاضرات</th>
                   <th>الملفات</th>
-                  <th>الجودة</th>
+                  {/* A8 P2-4: this is an estimated completion index, not
+                      a measured “quality” — renamed + weights surfaced so
+                      the number names its own formula. */}
+                  <th title="تقدير اكتمال المحتوى: كل محاضرة 20 نقطة، كل ملف 5، كل واجب 10 — بحدّ أقصى 100">اكتمال المحتوى</th>
                 </tr>
               </thead>
               <tbody>
                 {c.data.map((o) => {
                   const score = Math.min(100, o._count.lectures * 20 + o._count.materials * 5 + o._count.assignments * 10);
-                  const color = score >= 80 ? 'green' : score >= 50 ? 'amber' : 'red';
+                  // Score 0 = no content yet — a neutral state, never a
+                  // danger register (A8 P2-4: red “0%” spent the danger
+                  // color on “no data”).
+                  const color = score === 0 ? null : score >= 80 ? 'green' : score >= 50 ? 'amber' : 'red';
                   return (
                     <tr key={o.id}>
-                      <td className="tbl-strong">{o.course.name}</td>
-                      <td>د. {o.teacher.firstName} {o.teacher.lastName}</td>
-                      <td className="font-mono text-xs"><bdi>{o.term}</bdi></td>
-                      <td className="tbl-num">{o._count.enrollments}</td>
-                      <td className="tbl-num">{o._count.lectures}</td>
-                      <td className="tbl-num">{o._count.materials}</td>
-                      <td><Badge color={color as never}>{score}%</Badge></td>
+                      <td className="tbl-strong" data-label="المقرّر">{o.course.name}</td>
+                      <td data-label="الأستاذ">د. {o.teacher.firstName} {o.teacher.lastName}</td>
+                      <td className="font-mono text-xs" data-label="الفصل"><bdi>{o.term}</bdi></td>
+                      <td className="tbl-num" data-label="الطلاب">{o._count.enrollments}</td>
+                      <td className="tbl-num" data-label="المحاضرات">{o._count.lectures}</td>
+                      <td className="tbl-num" data-label="الملفات">{o._count.materials}</td>
+                      <td data-label="اكتمال المحتوى">
+                        {score === 0
+                          ? <Badge>لا محتوى بعد</Badge>
+                          : <Badge color={color as never}>{score}%</Badge>}
+                      </td>
                     </tr>
                   );
                 })}
@@ -545,8 +567,11 @@ export function QualityProfessorsPage() {
       </div>
 
       <Card title="هيئة التدريس" icon={School}>
+        {/* tbl-stack (A8 P1-1): 8 columns sideways-scrolled 524px at
+            390px — the roster now collapses to labelled cards like the
+            admin siblings. */}
         <div className="table-wrap">
-          <table className="table">
+          <table className="table tbl-stack">
             <thead>
               <tr>
                 <th>الأستاذ</th>
@@ -564,7 +589,7 @@ export function QualityProfessorsPage() {
                 const compColor = t.compliance >= 75 ? 'green' : t.compliance >= 50 ? 'amber' : 'red';
                 return (
                   <tr key={t.id}>
-                    <td>
+                    <td data-label="الأستاذ">
                       <div className="flex items-center gap-2">
                         <div
                           className="avatar"
@@ -581,16 +606,16 @@ export function QualityProfessorsPage() {
                         </div>
                       </div>
                     </td>
-                    <td>
+                    <td data-label="الكلّيّة / القسم">
                       <div>{t.faculty}</div>
                       <div className="text-xxs text-subtle">{t.department}</div>
                     </td>
-                    <td><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>
-                    <td className="tbl-num">{t.offerings}</td>
-                    <td className="tbl-num">{t.totals.materials}</td>
-                    <td className="tbl-num" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
-                    <td className="tbl-num">{t.responseHours}س</td>
-                    <td>
+                    <td data-label="الرتبة"><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>
+                    <td className="tbl-num" data-label="المقرّرات">{t.offerings}</td>
+                    <td className="tbl-num" data-label="الملفات المرفوعة">{t.totals.materials}</td>
+                    <td className="tbl-num" data-label="رضا الطلاب" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
+                    <td className="tbl-num" data-label="زمن الاستجابة">{t.responseHours}س</td>
+                    <td data-label="الالتزام">
                       <div className="q-compliance">
                         <ProgressBar value={t.compliance} showValue={false} ariaLabel={`التزام د. ${t.firstName} ${t.lastName}`} />
                         <Badge color={compColor as never}>{t.compliance}%</Badge>

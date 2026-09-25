@@ -74,7 +74,10 @@ export default function CommunityPage() {
   const canAnnounceOffering = user?.role === 'TEACHER' || user?.role === 'OWNER';
 
   const openComps = comps.data?.filter((c) => c.status === 'OPEN').length ?? 0;
-  const upcomingEvents = events.data?.length ?? 0;
+  /* 22-c (A5 P3-7): the KPI reads «فعاليات قادمة» — count only
+     sessions actually in the future instead of the whole feed. */
+  const upcomingEvents =
+    events.data?.filter((e) => new Date(e.startsAt).getTime() > Date.now()).length ?? 0;
 
   /* KPI values — honest query states (pending → ellipsis, error → dash,
      never a fabricated 0) + Arabic-Indic numerals like the rest of the
@@ -201,38 +204,38 @@ export default function CommunityPage() {
 
 function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }) {
   return (
-    <div className={`announcement-card${a.pinned ? ' pinned' : ''}`}>
-      {a.pinned && (
-        <div className="announcement-pin"><Icon icon={Pin} size={12} /> مثبت</div>
-      )}
+    <article className={`announcement-card${a.pinned ? ' pinned' : ''}`}>
       <div className="announcement-head">
-        <span className="announcement-icon"><EmojiIcon emoji={a.iconEmoji ?? '📢'} size={20} /></span>
-        <div style={{ flex: 1 }}>
+        <span className="announcement-icon" aria-hidden>
+          <EmojiIcon emoji={a.iconEmoji ?? '📢'} size={20} />
+        </span>
+        <div className="announcement-head-main">
           {/* Card title demoted from h3 to a styled div (15-g P2-5 — card
               titles sat at h3 directly under the page h1, a skipped level).
-              Inline styles replicate the base h3 treatment (this class has
-              no CSS of its own) via the headline role tokens. */}
-          <div
-            className="announcement-title"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'var(--type-headline-size-sm)',
-              fontWeight: 'var(--type-headline-weight)',
-              lineHeight: 'var(--type-headline-line-height)',
-            }}
-          >{a.title}</div>
+              22-c (A5 P1-1/P3-5): the headline treatment moved from five
+              inline style props into .announcement-title (student.css). */}
+          <div className="announcement-title">{a.title}</div>
           <div className="announcement-meta">
             <Badge color={SCOPE_COLOR[a.scope]}>{SCOPE_LABEL[a.scope]}</Badge>
-            <span className="text-xxs text-subtle">
+            <span className="announcement-meta-item">
               {a.author.firstName} {a.author.lastName} · {ROLE_LABEL[a.author.role]}
             </span>
-            <span className="text-xxs text-subtle">·</span>
-            <span className="text-xxs text-subtle">{formatDate(a.publishedAt, { day: 'numeric', month: 'short' })}</span>
+            <time
+              className="announcement-meta-item"
+              dateTime={a.publishedAt}
+            >
+              {formatDate(a.publishedAt, { day: 'numeric', month: 'short' })}
+            </time>
           </div>
         </div>
+        {a.pinned && (
+          <span className="announcement-pin">
+            <Icon icon={Pin} size={11} /> مثبت
+          </span>
+        )}
       </div>
       <p className="announcement-body">{a.body}</p>
-    </div>
+    </article>
   );
 }
 

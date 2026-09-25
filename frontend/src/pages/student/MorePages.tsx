@@ -58,7 +58,9 @@ export function GamificationPage() {
           <h1 className="page-title">الإنجازات والنقاط</h1>
           <p className="page-subtitle">تقدّمك ومستواك مقارنة بزملائك في المنصة.</p>
         </div>
-        {xp !== null && <Badge color="gold" icon={Star}><bdi>{formatNum(xp)} XP</bdi></Badge>}
+        {/* 22-c (A5 P3-2): one unit voice — the page mixed «XP»,
+            «نقطة/نقاط» and bare «+N». pointsAr everywhere. */}
+        {xp !== null && <Badge color="gold" icon={Star}>{pointsAr(xp)}</Badge>}
       </header>
 
       <div className="grid-2">
@@ -96,7 +98,7 @@ export function GamificationPage() {
                 <div className="text-xs text-subtle" style={{ marginBottom: 8 }}>
                   {xp !== null ? (
                     <>
-                      نقاط الإنجاز: <span className="font-mono"><bdi>{formatNum(xp)} XP</bdi></span>
+                      {pointsAr(xp)}
                       {rank !== null && cohortSize > 1 && ` · المركز ${formatNum(rank)} من ${formatNum(cohortSize)} على دفعتك`}
                     </>
                   ) : dash.isError ? (
@@ -170,7 +172,7 @@ export function GamificationPage() {
                     <div className="achievement-name">{a.achievement.name}</div>
                     <div className="achievement-desc">{a.achievement.description}</div>
                   </div>
-                  <Badge color="gold"><bdi>+{formatNum(a.achievement.xp)}</bdi></Badge>
+                  <Badge color="gold">+{pointsAr(a.achievement.xp)}</Badge>
                 </div>
               ))}
             </div>
@@ -217,10 +219,10 @@ export function GamificationPage() {
                   <span className="leaderboard-name" title={`${l.firstName} ${l.lastName}`}>
                     {l.firstName} {l.lastName}
                   </span>
-                  <span className="leaderboard-tier"><bdi>L{l.level}</bdi></span>
-                  <span className="leaderboard-points">
-                    <bdi>{formatNum(l.totalXp)} XP</bdi>
-                  </span>
+                  {/* 22-c (A5 P3-1): «L2» Latin tier label → Arabic
+                      «المستوى ٢» (formatNum = ar-LY digits). */}
+                  <span className="leaderboard-tier">المستوى <bdi>{formatNum(l.level)}</bdi></span>
+                  <span className="leaderboard-points">{pointsAr(l.totalXp)}</span>
                 </li>
               ))}
             </ol>
@@ -457,6 +459,16 @@ export function SchedulePage() {
     .map(([dow, items]) => ({ dow: Number(dow), items }))
     .filter((d) => d.items.length > 0);
 
+  /* 22-c (A5 P3-6): the week rendered in a fixed 0–6 order regardless
+     of the actual day. Anchor the rotation on TODAY (today's group
+     first, then the coming days) and badge today's title. */
+  const todayDow = new Date().getDay();
+  const orderedDays = [
+    ...daysWithItems.filter((d) => d.dow === todayDow),
+    ...daysWithItems.filter((d) => d.dow !== todayDow)
+      .sort((a, b) => ((a.dow - todayDow + 7) % 7) - ((b.dow - todayDow + 7) % 7)),
+  ];
+
   return (
     <div className="page">
       <header className="page-header">
@@ -473,9 +485,14 @@ export function SchedulePage() {
         />
       ) : (
         <div className="flex-col gap-5">
-          {daysWithItems.map((d) => (
+          {orderedDays.map((d) => (
             <div key={d.dow}>
-              <SectionTitle>{WEEKDAY_NAMES_AR[d.dow]}</SectionTitle>
+              <SectionTitle>
+                {WEEKDAY_NAMES_AR[d.dow]}
+                {d.dow === todayDow && (
+                  <Badge color="brand" >اليوم</Badge>
+                )}
+              </SectionTitle>
               <Card flush>
                 <div className="flex-col">
                   {d.items.map((it, i) => (
@@ -700,7 +717,7 @@ export function ArVrPage() {
                 <div className="metric-icon" style={{ color: 'var(--brand-purple)' }}>
                   <Icon icon={Headset} size={20} />
                 </div>
-                <Badge color={e.type === 'VR' ? 'purple' : 'brand'}>{e.type}</Badge>
+                <Badge color={e.type === 'VR' ? 'purple' : 'brand'}><bdi>{e.type}</bdi></Badge>
               </div>
               <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{e.title}</div>
               <div className="text-xs text-subtle" style={{ marginTop: 4 }}>{e.subject}</div>
@@ -942,7 +959,18 @@ export function SocialPage() {
                       className={`post-action${reacted ? ' on' : ''}`}
                       onClick={() => onLike(p.id, p._count.reactions)}
                       aria-pressed={reacted}
-                      aria-label={reacted ? 'إزالة الإعجاب' : 'أعجبني بهذا المنشور'}
+                      /* 22-c (A5 P2-2): the pressed state used to announce
+                         «إزالة الإعجاب» — an un-like the backend cannot
+                         perform (POST /posts/:id/react is an upsert-only;
+                         onLike early-returns on an existing reaction, so
+                         the button was a dead control promising an
+                         action). The pressed label now names the STATE,
+                         and aria-disabled stops it from presenting as an
+                         available action. Implementing a real un-like
+                         needs a DELETE reaction route — noted as a
+                         hand-off. */
+                      aria-disabled={reacted || undefined}
+                      aria-label={reacted ? 'أعجبك هذا المنشور' : 'أعجبني بهذا المنشور'}
                       disabled={likeInFlight(p.id)}
                     >
                       <Icon icon={Heart} size={13} aria-hidden />
@@ -977,6 +1005,12 @@ export function SocialPage() {
             title="الأكثر تداولاً"
             icon={TrendingUp}
             subtitle="الوسوم الأكثر تكراراً في آخر 20 منشوراً محمَّلاً."
+            /* 22-c (A5 P2-1): grid children stretch by default, so this
+               rail card matched the feed column's height — 352px of empty
+               card body under a 191px list, and the hover-lift made the
+               hollow shell feel interactive. Start-aligned: the card now
+               hugs its content like a summary rail. */
+            style={{ alignSelf: 'start' }}
           >
             <ol className="trend-list">
               {trending.map((t, i) => (

@@ -102,43 +102,57 @@ export default function LivePage() {
             <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
           </div>
 
-          {/* Live now — always rendered (15-j §3 #10, the promotion
-              17-a1 deferred): "is anything on air?" deserves a stable
-              answer even when it is «لا», so the card keeps its slot
-              in the layout and carries an EmptyState instead of
-              vanishing between states. */}
-          <Card
-            title="مباشرة الآن"
-            icon={Radio}
-            subtitle={live.length > 0 ? 'انضمّ إلى أيّ جلسة بنقرة واحدة' : undefined}
-          >
-            {live.length === 0 ? (
+          {/* 22-c (A4 P2-1): an empty schedule used to stack THREE
+              «nothing» cards (per-status empties + a global «لا توجد
+              بثوث بعد») on top of the 0/0/0 KPIs — a zero wall. The
+              per-status cards keep their stable slots (15-j §3 #10:
+              "is anything on air?" deserves a stable answer) only when
+              the schedule has ANY content; a fully-empty list gets the
+              single global empty card instead. */}
+          {list.length === 0 ? (
+            <Card>
               <EmptyState
+                icon={Video}
+                title="لا توجد بثوث بعد"
+                description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+              />
+            </Card>
+          ) : (
+            <>
+              <Card
+                title="مباشرة الآن"
                 icon={Radio}
-                title="لا بثّ مباشر الآن"
-                description="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
-              />
-            ) : (
-              <div className="flex-col gap-2">
-                {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
-              </div>
-            )}
-          </Card>
+                subtitle={live.length > 0 ? 'انضمّ إلى أيّ جلسة بنقرة واحدة' : undefined}
+              >
+                {live.length === 0 ? (
+                  <EmptyState
+                    icon={Radio}
+                    title="لا بثّ مباشر الآن"
+                    description="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
+                  />
+                ) : (
+                  <div className="flex-col gap-2">
+                    {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
+                  </div>
+                )}
+              </Card>
 
-          {/* Upcoming */}
-          <Card title="جلسات قادمة" icon={Calendar}>
-            {upcoming.length === 0 ? (
-              <EmptyState
-                icon={Calendar}
-                title="لا توجد جلسات مجدولة"
-                description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
-              />
-            ) : (
-              <div className="flex-col gap-2">
-                {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
-              </div>
-            )}
-          </Card>
+              {/* Upcoming */}
+              <Card title="جلسات قادمة" icon={Calendar}>
+                {upcoming.length === 0 ? (
+                  <EmptyState
+                    icon={Calendar}
+                    title="لا توجد جلسات مجدولة"
+                    description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
+                  />
+                ) : (
+                  <div className="flex-col gap-2">
+                    {upcoming.map((s) => <StudentSessionRow key={s.id} session={s} />)}
+                  </div>
+                )}
+              </Card>
+            </>
+          )}
 
           {/* Recent */}
           {recent.length > 0 && (
@@ -146,16 +160,6 @@ export default function LivePage() {
               <div className="flex-col gap-2">
                 {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
               </div>
-            </Card>
-          )}
-
-          {list.length === 0 && (
-            <Card>
-              <EmptyState
-                icon={Video}
-                title="لا توجد بثوث بعد"
-                description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
-              />
             </Card>
           )}
         </>
@@ -194,7 +198,10 @@ function StudentSessionRow({
             })}
           </bdi>
           {' · '}
-          الأستاذ: د. {s.teacher.firstName} {s.teacher.lastName}
+          {/* 22-c (A4 P3-5): a transliterated/Latin teacher name would
+              scramble the Arabic sentence — isolated like the course
+              code above. */}
+          الأستاذ: د. <bdi>{s.teacher.firstName} {s.teacher.lastName}</bdi>
         </div>
       </div>
       {s.status === 'LIVE' && (
