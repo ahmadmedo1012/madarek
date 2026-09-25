@@ -8,7 +8,12 @@
  *             + UserPermission grants
  *             − UserPermission revokes
  *
- * DB-free: only the pure `mergeCapabilities` export is exercised.
+ * Plus the documented governance invariants of the role defaults
+ * themselves (admin isolation, quality oversight-not-control, owner
+ * completeness) and the override-ordering edge cases.
+ *
+ * DB-free: only the pure `mergeCapabilities` export and the static
+ * DEFAULT_ROLE_CAPABILITIES table are exercised.
  */
 import { describe, expect, it } from 'vitest';
 import { Capability, Role } from '@prisma/client';
@@ -74,5 +79,70 @@ describe('mergeCapabilities', () => {
     const caps = mergeCapabilities(Role.ADMIN, [], []);
     expect(caps.has('USERS_MANAGE')).toBe(true);
     expect(caps.has('RESEARCH_GRADE_OWN')).toBe(false);
+  });
+
+  it('duplicate overrides for one capability: the last one wins', () => {
+    const revokedThenGranted = mergeCapabilities(Role.TEACHER, [], [
+      { capability: 'EXAMS_AUTHOR', grant: false },
+      { capability: 'EXAMS_AUTHOR', grant: true },
+    ]);
+    expect(revokedThenGranted.has('EXAMS_AUTHOR')).toBe(true);
+
+    const grantedThenRevoked = mergeCapabilities(Role.TEACHER, [], [
+      { capability: 'EXAMS_AUTHOR', grant: true },
+      { capability: 'EXAMS_AUTHOR', grant: false },
+    ]);
+    expect(grantedThenRevoked.has('EXAMS_AUTHOR')).toBe(false);
+  });
+
+  it('revoking a capability the user does not have is a no-op', () => {
+    const caps = mergeCapabilities(Role.STUDENT, [], [
+      { capability: 'USERS_MANAGE', grant: false },
+    ]);
+    expect(caps.has('USERS_MANAGE')).toBe(false);
+    expect(caps.has('EXAMS_TAKE')).toBe(true); // sibling default untouched
+  });
+
+  it('a RolePermission row duplicating a role default is idempotent', () => {
+    const caps = mergeCapabilities(Role.TEACHER, [row(Role.TEACHER, 'EXAMS_AUTHOR')], []);
+    expect(caps.has('EXAMS_AUTHOR')).toBe(true);
+    expect(caps.size).toBe(new Set(DEFAULT_ROLE_CAPABILITIES.TEACHER).size);
+  });
+});
+
+describe('DEFAULT_ROLE_CAPABILITIES — documented governance invariants', () => {
+  it('every role default list is duplicate-free', () => {
+    // A duplicated entry would silently mask real coverage of the table.
+    for (const caps of Object.values(DEFAULT_ROLE_CAPABILITIES)) {
+      expect(new Set(caps).size).toBe(caps.length);
+    }
+  });
+
+  it('STUDENT defaults are minimal (EXAMS_TAKE only)', () => {
+    expect(DEFAULT_ROLE_CAPABILITIES.STUDENT).toEqual(['EXAMS_TAKE']);
+  });
+
+  it('ADMIN does not auto-inherit teacher-only or quality-only capabilities', () => {
+    // Documented rule: governance ≠ grading/moderating/quality-viewing.
+    const caps = new Set(DEFAULT_ROLE_CAPABILITIES.ADMIN);
+    for (const offLimits of [
+      'RESEARCH_GRADE_OWN',
+      'RESEARCH_GRADE_ANY',
+      'EXAMS_AUTHOR',
+      'EXAMS_MODERATE',
+      'QUALITY_VIEW',
+    ] as const) {
+      expect(caps.has(offLimits)).toBe(false);
+    }
+  });
+
+  it('QUALITY is oversight, not control — no USERS_MANAGE / ROLES_ASSIGN', () => {
+    const caps = new Set(DEFAULT_ROLE_CAPABILITIES.QUALITY);
+    expect(caps.has('USERS_MANAGE')).toBe(false);
+    expect(caps.has('ROLES_ASSIGN')).toBe(false);
+  });
+
+  it('OWNER holds the full capability set (master control panel role)', () => {
+    expect(new Set(DEFAULT_ROLE_CAPABILITIES.OWNER)).toEqual(new Set(Object.values(Capability)));
   });
 });

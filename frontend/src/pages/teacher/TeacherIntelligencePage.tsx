@@ -25,6 +25,8 @@ import {
   useTeacherRisks, useCurriculumSuggest,
   type TeacherOffering, type RiskLevel, type TeacherStudentRow,
 } from '../../hooks/useResources';
+import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
+import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
 
 /* Non-text edge for the 1px leading hairline (ruling #4)… */
 const RISK_EDGE: Record<RiskLevel, string> = {

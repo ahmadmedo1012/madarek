@@ -1,12 +1,13 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
 import { useThemeSync } from './ThemeToggle';
 import { useScrollRestoration } from './useScrollRestoration';
 import { PageTransition } from '../motion';
+import { PageSkeleton } from '../primitives/States';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useMe } from '../../hooks/useAuth';
 import { useRoleAccent } from '../../hooks/useRoleAccent';
@@ -265,7 +266,17 @@ export function AppShell({ children }: { children?: ReactNode }) {
         <div className="content" ref={contentRef}>
           <PageTransition>
             <div className="content-inner">
-              {children ?? <Outlet />}
+              {/* Inner Suspense boundary (11-e P1-1): the only boundary
+                  used to sit above <Routes>, so the first navigation to
+                  each lazy chunk unmounted the whole shell — sidebar,
+                  topbar, bottom-nav state died with it. A boundary here
+                  swaps a page-shaped skeleton into the content track
+                  while the chrome (and its scroll/dropdown state)
+                  persists. The root boundary in App.tsx still covers
+                  the shell chunk itself. */}
+              <Suspense fallback={<PageSkeleton />}>
+                {children ?? <Outlet />}
+              </Suspense>
             </div>
           </PageTransition>
         </div>

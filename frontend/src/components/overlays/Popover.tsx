@@ -18,11 +18,20 @@
  * scrolling (never `clip`), and plays a scale-out exit before
  * unmounting. Repositions on resize/scroll — measured on event, never
  * per-render.
+ *
+ * Wave 12-14 (audit 11-e P1-2 + P2-11): registers in the overlay
+ * stack — Escape answers only the topmost layer (consumed via
+ * stopImmediatePropagation) and returns focus to the trigger; the
+ * trigger's aria-expanded/aria-haspopup are synced unless the consumer
+ * declares them itself.
  */
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { overlayStack } from '../../lib/overlayStack';
 import { useAnchoredPosition } from './anchoredPosition';
+import { useAnchorAria } from './useAnchorAria';
 import { useDelayedUnmount } from './useDelayedUnmount';
+import { useOverlayRegistration } from './useOverlayRegistration';
 
 export interface PopoverProps {
   open: boolean;
@@ -54,21 +63,26 @@ export function Popover({
   children,
 }: PopoverProps) {
   const popoverRef = useRef<HTMLDivElement | null>(null);
+  const overlayId = useOverlayRegistration(open, 'popover');
+  useAnchorAria(open, anchorRef, role === 'menu' ? 'menu' : 'dialog');
   const { rendered, onExitEnd } = useDelayedUnmount(open);
   const pos = useAnchoredPosition({ open, anchorRef, panelRef: popoverRef, placement });
 
-  // Esc dismiss.
+  // Esc dismiss — only the topmost overlay layer answers (P1-2), and
+  // the trigger gets focus back so keyboard users keep their place
+  // (P2-11, matching Dropdown).
   useEffect(() => {
     if (!open || !closeOnEscape) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
-      }
+      if (e.key !== 'Escape') return;
+      if (!overlayStack.isTop(overlayId)) return;
+      e.stopImmediatePropagation();
+      onClose();
+      anchorRef.current?.focus?.();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, closeOnEscape, onClose]);
+  }, [open, closeOnEscape, onClose, anchorRef, overlayId]);
 
   // Click-outside dismiss. The trigger element's click is excluded so
   // the toggle pattern (click trigger to open OR close) keeps working.

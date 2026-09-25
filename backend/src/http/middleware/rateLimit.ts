@@ -20,7 +20,11 @@ export const globalRateLimiter = rateLimit({
   message: { error: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests' } },
 });
 
-/** 10 req / 15 min / IP — protects /auth/login from brute force. */
+/**
+ * 10 req / 15 min / IP — protects /auth/login + /auth/register from
+ * brute force. Only FAILED attempts count (`skipSuccessfulRequests`),
+ * so honest users never edge toward the limit.
+ */
 export const authRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
   max: 10,
@@ -32,9 +36,9 @@ export const authRateLimiter = rateLimit({
 
 /**
  * Factory for stricter per-route limiters (expensive / abuse-prone
- * endpoints like AI chat, file upload, bulk exports). Defaults mirror
- * the AI endpoint pattern: per-user key when authenticated, IP
- * otherwise, 60s window.
+ * endpoints like AI chat, file upload, bulk exports). Defaults: 20 req /
+ * 60 s, keyed per-user when authenticated, per-IP otherwise (mirroring
+ * the AI endpoint pattern).
  *
  * Usage: `router.post('/heavy', createRouteLimiter({ max: 5 }), handler)`
  */

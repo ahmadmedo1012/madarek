@@ -13,19 +13,23 @@ router.use(authMiddleware);
  * Self-Development module — training tracks, lessons, badges, points.
  *
  *  GET  /training/catalog                      list all published tracks (with progress for current user)
- *  GET  /training/tracks/:slug                 single track with lessons + my progress
- *  POST /training/tracks/:slug/enroll          enroll the current user
+ *  GET  /training/tracks/:slug                 single published track with lessons + my progress
+ *  POST /training/tracks/:slug/enroll          enroll the current user (published tracks only)
  *  POST /training/lessons/:lessonId/complete   mark lesson done (idempotent), award points
  *  GET  /training/me                           summary for current user (level, points, badges, certs)
  *  GET  /training/me/badges                    full badge list for current user
  *  GET  /training/me/certificates              certificates earned via training
  *  GET  /training/leaderboard                  top 20 by total points
+ *
+ * Unpublished tracks are drafts: read, enrollment and lesson completion
+ * all 404 (the catalog already lists published tracks only) — draft content
+ * must never leak, and must never award points/badges/certificates.
  */
 
-// ─── Helpers ──────────────────────────────────────────────────────
+// ─── Pure logic (exported for DB-free unit tests) ─────────────────
 const POINTS_PER_LEVEL = 500;
 
-function levelFor(points: number): { level: number; tier: 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM'; toNext: number; pctIntoLevel: number } {
+export function levelFor(points: number): { level: number; tier: 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM'; toNext: number; pctIntoLevel: number } {
   const level = Math.floor(points / POINTS_PER_LEVEL) + 1;
   const into = points % POINTS_PER_LEVEL;
   const toNext = POINTS_PER_LEVEL - into;
@@ -34,6 +38,70 @@ function levelFor(points: number): { level: number; tier: 'BRONZE' | 'SILVER' | 
   return { level, tier, toNext, pctIntoLevel: Math.round((into / POINTS_PER_LEVEL) * 100) };
 }
 
+/**
+ * D8 short-answer gate: an answer passes ONLY on an exact match after
+ * normalization (trim + case-fold + collapsing separator noise such as
+ * commas, Arabic comma, dots, dashes, quotes and repeated spaces).
+ * Never a substring `includes` in either direction — that let a
+ * one-character answer farm lesson points, track badges, certificates
+ * and leaderboard rank.
+ */
+export function quizAnswerMatches(submitted: string, expected: string): boolean {
+  const norm = (s: string) => s.replace(/[\s,،.\-_/'"]+/g, ' ').trim().toLowerCase();
+  const normalizedExpected = norm(expected);
+  if (!normalizedExpected) return false; // a blank key can never be satisfied
+  return norm(submitted) === normalizedExpected;
+}
+
+/** Minimal user shape leaderboard rows are built from (matches the route's prisma select). */
+export interface LeaderboardUserRow {
+  id: string;
+  firstName: string;
+  lastName: string;
+  avatarColor: string | null;
+  avatarInitials: string | null;
+}
+
+export interface LeaderboardRow {
+  rank: number;
+  userId: string;
+  name: string;
+  avatarColor: string | null;
+  avatarInitials: string | null;
+  points: number;
+  level: ReturnType<typeof levelFor>;
+}
+
+/**
+ * Build leaderboard rows from pre-sorted (points-desc) ledger sums.
+ * Entries whose user no longer resolves are skipped defensively (the FK
+ * should prevent orphans, but a stale row must not crash the route with
+ * a TypeError → 500) and ranks stay contiguous after a skip.
+ */
+export function buildLeaderboardRows(
+  entries: ReadonlyArray<{ userId: string; totalPoints: number | null }>,
+  users: ReadonlyArray<LeaderboardUserRow>,
+): LeaderboardRow[] {
+  const userMap = new Map(users.map((u) => [u.id, u]));
+  const rows: LeaderboardRow[] = [];
+  for (const entry of entries) {
+    const u = userMap.get(entry.userId);
+    if (!u) continue;
+    const points = entry.totalPoints ?? 0;
+    rows.push({
+      rank: rows.length + 1,
+      userId: entry.userId,
+      name: `${u.firstName} ${u.lastName}`,
+      avatarColor: u.avatarColor,
+      avatarInitials: u.avatarInitials,
+      points,
+      level: levelFor(points),
+    });
+  }
+  return rows;
+}
+
+// ─── DB helpers ───────────────────────────────────────────────────
 async function totalPointsFor(userId: string): Promise<number> {
   const agg = await prisma.pointsLedger.aggregate({
     where: { userId },
@@ -109,7 +177,11 @@ router.get('/training/tracks/:slug', async (req, res, next) => {
       where: { slug: req.params.slug },
       include: { lessons: { orderBy: { order: 'asc' } } },
     });
-    if (!track) throw new AppError('NOT_FOUND', 'Track not found', 404);
+    if (!track || !track.isPublished) {
+      // Draft tracks 404 exactly like unknown slugs — unpublished content
+      // (full lesson contentMarkdown) must not be readable via a guessed slug.
+      throw AppError.notFound('Track not found');
+    }
 
     const enrollment = await prisma.trainingEnrollment.findUnique({
       where: { userId_trackId: { userId, trackId: track.id } },
@@ -155,7 +227,10 @@ router.post('/training/tracks/:slug/enroll', async (req, res, next) => {
   try {
     const userId = req.user!.id;
     const track = await prisma.trainingTrack.findUnique({ where: { slug: req.params.slug } });
-    if (!track) throw new AppError('NOT_FOUND', 'Track not found', 404);
+    if (!track || !track.isPublished) {
+      // Cannot enroll into a draft track — same 404 as an unknown slug.
+      throw AppError.notFound('Track not found');
+    }
     const enrollment = await prisma.trainingEnrollment.upsert({
       where: { userId_trackId: { userId, trackId: track.id } },
       update: {},
@@ -166,8 +241,10 @@ router.post('/training/tracks/:slug/enroll', async (req, res, next) => {
 });
 
 // ─── Complete a lesson ───────────────────────────────────────────
-const completeLessonSchema = z.object({
-  // Optional quiz answer; if track requires one, server checks vs stored answer (case-insensitive).
+export const completeLessonSchema = z.object({
+  // Optional quiz answer; if the lesson defines one, the server checks it
+  // against the stored answer with an exact (case-insensitive,
+  // separator-normalized) match — see quizAnswerMatches (D8).
   quizAnswer: z.string().max(500).optional(),
 }).strict();
 
@@ -178,21 +255,25 @@ router.post(
     try {
       const userId = req.user!.id;
       const lessonId = req.params.lessonId;
+      const body = req.body as z.infer<typeof completeLessonSchema>;
       const lesson = await prisma.trainingLesson.findUnique({
         where: { id: lessonId },
         include: { track: true },
       });
-      if (!lesson) throw new AppError('NOT_FOUND', 'Lesson not found', 404);
+      if (!lesson) throw AppError.notFound('Lesson not found');
+      // A lesson of an unpublished track cannot be completed — that path
+      // awards points, badges and a completion certificate (audit 11-d P1-7).
+      if (!lesson.track.isPublished) throw AppError.notFound('Lesson not found');
 
       // Validate quiz answer if the lesson defines one
       if (lesson.quizAnswer) {
-        const submitted = (req.body.quizAnswer ?? '').toString().trim().toLowerCase();
-        const expected = lesson.quizAnswer.trim().toLowerCase();
-        if (!submitted) throw new AppError('BAD_REQUEST', 'يجب الإجابة على السؤال أولاً', 400);
-        // Tolerant matching: compare alphanumeric tokens
-        const norm = (s: string) => s.replace(/[\s,،.\-_/'"]+/g, ' ').trim();
-        if (!norm(submitted).includes(norm(expected)) && !norm(expected).includes(norm(submitted))) {
-          throw new AppError('BAD_REQUEST', 'الإجابة غير صحيحة، حاول مجدداً', 400);
+        const submitted = (body.quizAnswer ?? '').trim();
+        if (!submitted) throw AppError.badRequest('يجب الإجابة على السؤال أولاً');
+        // Exact match after normalization (D8): a substring — e.g. a single
+        // character of the model answer — must never pass, because points,
+        // badges, certificates and leaderboard rank all sit behind this gate.
+        if (!quizAnswerMatches(submitted, lesson.quizAnswer)) {
+          throw AppError.badRequest('الإجابة غير صحيحة، حاول مجدداً');
         }
       }
 
@@ -406,21 +487,11 @@ router.get('/training/leaderboard', async (req, res, next) => {
       where: { id: { in: top.map((t) => t.userId) } },
       select: { id: true, firstName: true, lastName: true, avatarColor: true, avatarInitials: true },
     });
-    const userMap = new Map(users.map((u) => [u.id, u]));
     res.json({
-      data: top.map((t, i) => {
-        const u = userMap.get(t.userId)!;
-        const points = t._sum.points ?? 0;
-        return {
-          rank: i + 1,
-          userId: t.userId,
-          name: `${u.firstName} ${u.lastName}`,
-          avatarColor: u.avatarColor,
-          avatarInitials: u.avatarInitials,
-          points,
-          level: levelFor(points),
-        };
-      }),
+      data: buildLeaderboardRows(
+        top.map((t) => ({ userId: t.userId, totalPoints: t._sum.points })),
+        users,
+      ),
     });
   } catch (e) { next(e); }
 });

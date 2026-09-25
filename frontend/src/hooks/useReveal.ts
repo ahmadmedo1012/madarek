@@ -7,7 +7,7 @@
  *
  * Lightweight, no library, respects prefers-reduced-motion.
  */
-import { useEffect, useRef } from 'react';
+import { createElement, useEffect, useRef, type ReactNode, type ElementType } from 'react';
 
 export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
   threshold?: number;
@@ -55,13 +55,21 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
 }
 
 /**
- * Helper: wrap any block with a reveal-up animation.
+ * RevealCssClass — thin JSX wrapper around useReveal that manages the
+ * `.reveal-up` / `.reveal-d-{1..5}` class contract used by the landing
+ * page's choreography (landing.css + polish.css).
+ *
+ * NOT the platform reveal primitive. `components/motion/Reveal.tsx`
+ * (data-reveal / data-revealed + --reveal-distance tokens, RevealGroup
+ * staggering) is the sanctioned component for app pages. The two used to
+ * share the `Reveal` name and this file's docblock even advertised the
+ * other component's API — renamed so nobody picks the wrong one
+ * (audit 11-f P2-10).
+ *
  * Usage:
- *   <Reveal as="section" className="...">...</Reveal>
+ *   <RevealCssClass as="section" className="..." delay={2}>…</RevealCssClass>
  */
-import { createElement, type ReactNode, type ElementType } from 'react';
-
-export function Reveal({
+export function RevealCssClass({
   as = 'div',
   className = '',
   children,

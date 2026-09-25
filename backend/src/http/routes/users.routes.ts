@@ -7,6 +7,14 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+import {
+  assertNotLastActiveOwner,
+  assertWithinScope,
+  buildScopedUserWhere,
+  getGovernanceScope,
+  loadGovernanceTarget,
+  requiresLastOwnerGuard,
+} from '../../lib/governance.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -24,7 +32,12 @@ router.get(
         q?: string;
         role?: Role;
       };
-      const where = {
+      // Faculty governance scope: a scoped ADMIN only ever sees the
+      // users of their own faculty (OWNER / unscoped ADMIN =
+      // university-wide). The filter mirrors the write guards below —
+      // what you cannot govern, you do not list.
+      const scopeFacultyId = await getGovernanceScope(req.user!.id);
+      const where = buildScopedUserWhere(scopeFacultyId, {
         ...(role ? { role } : {}),
         ...(q
           ? {
@@ -35,7 +48,7 @@ router.get(
               ],
             }
           : {}),
-      };
+      });
       const [data, total] = await Promise.all([
         prisma.user.findMany({
           where,
@@ -67,17 +80,65 @@ router.get(
 router.get('/:id', async (req, res, next) => {
   try {
     const id = req.params.id!;
-    if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER && req.user!.id !== id) {
+    const actor = req.user!;
+    const isPrivileged = actor.role === Role.ADMIN || actor.role === Role.OWNER;
+    if (!isPrivileged && actor.id !== id) {
       throw AppError.forbidden();
     }
+    // Explicit allow-list select: the previous destructure-rest strip
+    // leaked account-security metadata (failedLoginCount, lockedUntil,
+    // emailVerifiedAt) through this shape. Profile rows carry no
+    // secrets and are part of the self/admin view contract.
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { studentProfile: true, teacherProfile: true },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        firstName: true,
+        lastName: true,
+        avatarColor: true,
+        avatarInitials: true,
+        isActive: true,
+        createdAt: true,
+        studentProfile: {
+          select: {
+            universityId: true,
+            facultyId: true,
+            departmentId: true,
+            year: true,
+            gpa: true,
+            totalXp: true,
+            level: true,
+          },
+        },
+        teacherProfile: {
+          select: {
+            specialty: true,
+            rank: true,
+            departmentId: true,
+            department: { select: { facultyId: true } },
+            bio: true,
+            position: true,
+            verifiedAt: true,
+          },
+        },
+      },
     });
     if (!user) throw AppError.notFound();
-    const { passwordHash: _h, tokenVersion: _v, ...safe } = user;
-    void _h; void _v;
-    res.json({ data: safe });
+
+    // Faculty governance scope — a scoped ADMIN cannot read
+    // out-of-faculty users (self-view is never scope-checked).
+    if (isPrivileged && actor.id !== id) {
+      const scopeFacultyId = await getGovernanceScope(actor.id);
+      assertWithinScope(scopeFacultyId, {
+        role: user.role,
+        studentFacultyId: user.studentProfile?.facultyId ?? null,
+        teacherFacultyId: user.teacherProfile?.department.facultyId ?? null,
+      });
+    }
+
+    res.json({ data: user });
   } catch (e) {
     next(e);
   }
@@ -93,25 +154,85 @@ const patchSchema = z
   })
   .strict();
 
+type PatchBody = z.infer<typeof patchSchema>;
+
 router.patch('/:id', validate(patchSchema), async (req, res, next) => {
   try {
     const id = req.params.id!;
-    if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER && req.user!.id !== id) throw AppError.forbidden();
-    const data: typeof req.body = { ...req.body };
-    if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) delete data.isActive; // only admins/owner toggle active
+    const actor = req.user!;
+    const isPrivileged = actor.role === Role.ADMIN || actor.role === Role.OWNER;
+    if (!isPrivileged && actor.id !== id) throw AppError.forbidden();
+    const data: Partial<PatchBody> = { ...(req.body as PatchBody) };
+    if (!isPrivileged) delete data.isActive; // only admins/owner toggle active
     // Self-deactivation guard — an ADMIN/OWNER who deactivates their own
     // account instantly loses the ability to undo it (the API requires an
     // active privileged account to re-activate). The OWNER user-management
     // route has the same guard; this is the ADMIN-facing path.
-    if (data.isActive === false && id === req.user!.id) {
+    if (data.isActive === false && id === actor.id) {
       throw AppError.forbidden('Cannot deactivate your own account');
     }
-    const user = await prisma.user.update({
-      where: { id },
-      data,
-      select: { id: true, firstName: true, lastName: true, avatarColor: true, isActive: true },
+
+    // Pre-load the target: a clean 404 (an update on a missing id
+    // surfaces as P2025) plus the context the governance guards need.
+    const target = await loadGovernanceTarget(id);
+    if (!target) throw AppError.notFound('User not found');
+
+    if (isPrivileged && actor.id !== id) {
+      // Faculty governance scope — a scoped ADMIN cannot modify
+      // out-of-faculty users (profile, status or otherwise).
+      const scopeFacultyId = await getGovernanceScope(actor.id);
+      assertWithinScope(scopeFacultyId, target);
+    }
+
+    // Plain profile edits are routine; only status moves are
+    // governance-relevant and get the guard + audit treatment.
+    if (data.isActive === undefined) {
+      const user = await prisma.user.update({
+        where: { id },
+        data,
+        select: { id: true, firstName: true, lastName: true, avatarColor: true, isActive: true },
+      });
+      return res.json({ data: user });
+    }
+
+    // Status change by a privileged actor (self-deactivation is
+    // impossible here — the guard above rejected it; non-privileged
+    // actors never carry isActive at all).
+    //
+    // Never deactivate the last active OWNER (governance lockout —
+    // OWNER is invitation-only), revoke the target's refresh tokens
+    // immediately on deactivation, and write the STATUS_CHANGE audit
+    // row — all inside one transaction, mirroring the OWNER path.
+    const deactivatesOwner = requiresLastOwnerGuard({
+      targetRole: target.role,
+      newIsActive: data.isActive,
     });
-    res.json({ data: user });
+    const updated = await prisma.$transaction(async (tx) => {
+      if (deactivatesOwner) await assertNotLastActiveOwner(id, tx);
+      const u = await tx.user.update({
+        where: { id },
+        data: {
+          ...data,
+          // tokenVersion bump on deactivation kills the target's
+          // outstanding refresh tokens outright instead of waiting for
+          // the isActive re-check on their next refresh.
+          ...(data.isActive === false ? { tokenVersion: { increment: 1 } } : {}),
+        },
+        select: { id: true, firstName: true, lastName: true, avatarColor: true, isActive: true },
+      });
+      await tx.auditLog.create({
+        data: {
+          action: 'STATUS_CHANGE',
+          resourceType: 'User',
+          resourceId: id,
+          userId: actor.id,
+          metadata: { isActive: data.isActive },
+        },
+      });
+      return u;
+    });
+
+    res.json({ data: updated });
   } catch (e) {
     next(e);
   }

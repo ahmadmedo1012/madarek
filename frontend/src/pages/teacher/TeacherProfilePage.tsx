@@ -29,6 +29,7 @@ import {
   type TeacherFullProfile,
 } from '../../hooks/useResources';
 import { formatDate } from '../../utils/numbers';
+import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'مُعيد / محاضر',

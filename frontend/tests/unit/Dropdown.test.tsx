@@ -10,6 +10,9 @@
  *   - Enter activates the focused item
  *   - Tab dismisses (matches OS menu UX)
  *   - Esc dismisses + restores focus to anchor
+ *   - Esc is consumed only by the topmost layer (stack awareness)
+ *   - the trigger's aria-expanded/aria-haspopup are synced when the
+ *     consumer does not declare them (wave 12-14)
  *   - click on item activates onSelect
  *   - disabled items are skipped and not selectable
  *   - DropdownSeparator renders with role=separator
@@ -149,6 +152,48 @@ describe('Dropdown', () => {
     await flush();
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('Esc dismisses and restores focus to the anchor', async () => {
+    const onClose = vi.fn();
+    render(<Harness open onClose={onClose} />);
+    await flush();
+    expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'A' }));
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(document.activeElement).toBe(screen.getByTestId('anchor'));
+  });
+
+  it('syncs aria-expanded/aria-haspopup onto a trigger that does not declare them', () => {
+    const { rerender } = render(<Harness open onClose={() => {}} />);
+    const anchor = screen.getByTestId('anchor');
+    expect(anchor).toHaveAttribute('aria-expanded', 'true');
+    expect(anchor).toHaveAttribute('aria-haspopup', 'menu');
+    rerender(<Harness open={false} onClose={() => {}} />);
+    expect(anchor).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('leaves the trigger alone when the consumer declares aria-expanded itself', () => {
+    function OwnedHarness({ open }: { open: boolean }) {
+      const ref = useRef<HTMLButtonElement | null>(null);
+      return (
+        <>
+          {/* React writes these declaratively during commit — the
+              platform must never fight it. */}
+          <button ref={ref} type="button" data-testid="owned" aria-expanded={open} aria-haspopup="menu">
+            trigger
+          </button>
+          <Dropdown open={open} onClose={() => {}} anchorRef={ref} ariaLabel="actions">
+            <DropdownItem onSelect={() => {}}>A</DropdownItem>
+          </Dropdown>
+        </>
+      );
+    }
+    const { rerender } = render(<OwnedHarness open={false} />);
+    const anchor = screen.getByTestId('owned');
+    expect(anchor).toHaveAttribute('aria-expanded', 'false');
+    rerender(<OwnedHarness open />);
+    expect(anchor).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('renders DropdownSeparator with role=separator', () => {

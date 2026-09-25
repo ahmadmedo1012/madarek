@@ -9,10 +9,16 @@
 #   - frontend/src/components/EmojiIcon.tsx        (the primitive itself)
 #   - frontend/src/components/LibyaFlag.tsx        (national symbol)
 #   - frontend/src/components/Icon.tsx             (Lucide wrapper)
+#   - frontend/src/components/Illustration.tsx     (scene wrapper)
+#   - frontend/src/lib/illustrations/              (bespoke scene SVGs)
 #   - frontend/src/styles/                         (CSS / decorative)
 #   - frontend/public/                             (static assets)
 #   - frontend/tests/                              (fixtures)
 #   - backend/, scripts/, design-system/           (not user-facing chrome)
+#
+# The svg check shares this allowlist — it matches AGENTS-BRIEF §3.2's
+# documented exception set (Illustration.tsx and lib/illustrations/**
+# were previously missing from both checks' exclusion lists).
 #
 # Per-instance overrides need an `// allow-emoji: <reason>` comment on
 # the same line.
@@ -27,7 +33,7 @@ cd "$ROOT"
 violations=0
 
 # Files we scan: every .ts/.tsx under frontend/src EXCEPT the allowlist.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon)\.tsx|frontend/src/styles/|frontend/public/|frontend/tests/'
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration)\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):
@@ -36,9 +42,9 @@ ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon)\.tsx|frontend/src/st
 #    We exclude the codepoints we DO allow:
 #       U+200C-U+200F   (ZWJ / RTL marks)
 #       U+202A-U+202E   (bidi formatting)
-# We use ripgrep/grep with PCRE if available, else perl one-liner.
 
-# Build a python emoji scan — most portable + UTF-8 correct on Linux.
+# The scan runs through python3 — most portable + UTF-8 correct on Linux
+# (shell grep cannot express supplementary-plane emoji ranges portably).
 emoji_hits=$(python3 - "$ALLOWED" <<'PYEOF'
 import os, re, sys
 
@@ -86,10 +92,28 @@ if [[ -n "$emoji_hits" ]]; then
 fi
 
 # 2. Inline <svg> markup outside allowlist.
-svg_hits=$(grep -RInE '<svg[ >]' frontend/src \
+#    `<svg` followed by whitespace, `>`, `/`, or end-of-line. The repo's
+#    JSX convention writes multiline svg (`<svg\n  viewBox=…`) — the old
+#    `<svg[ >]` ERE never matched the line-end form, so every real
+#    illustration file evaded the check and it passed vacuously.
+#    `[[:space:]>/]` (whitespace class + `>` + `/`) cannot continue an
+#    identifier, so `<svgx`-ish tags stay unflagged; `<svg$` gets its own
+#    -e so the `$` anchor stays POSIX-portable (mid-alternation `$` is
+#    GNU-only). Lines carrying an `// allow-emoji: <reason>` override
+#    are exempt, same as in the emoji check above.
+#    A scanner error (pipeline exit >= 2 under pipefail — bad pattern,
+#    unreadable path) FAILS the gate: the previous `|| true` would have
+#    silently turned a broken regex into a vacuous pass.
+svg_status=0
+svg_hits="$(grep -RInE -e '<svg[[:space:]>/]' -e '<svg$' frontend/src \
   --include='*.tsx' --include='*.ts' \
-  | grep -vE 'frontend/src/components/(EmojiIcon|LibyaFlag|Icon)\.tsx' \
-  || true)
+  | grep -vE "$ALLOWED" \
+  | grep -v 'allow-emoji:')" || svg_status=$?
+if [[ $svg_status -ge 2 ]]; then
+  echo "✗ svg check scanner error (exit $svg_status) — real failure, not a clean pass."
+  echo "See specs/002-visual-uplift/contracts/icon-policy.md"
+  exit 1
+fi
 
 if [[ -n "$svg_hits" ]]; then
   echo "✗ Raw <svg> markup found (use Lucide via <Icon icon={...} />):"

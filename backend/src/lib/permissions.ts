@@ -173,8 +173,12 @@ export async function getEffectiveCapabilities(userId: string, role: Role): Prom
 }
 
 /**
- * Throw if the user lacks ALL of the listed capabilities.
- * (any-of semantics — possessing one is enough)
+ * Throw unless the user has ANY of the listed capabilities
+ * (any-of semantics — possessing one is enough).
+ *
+ * The thrown message names the missing capabilities: they are part of the
+ * operator-facing permissions surface (RolePermission/UserPermission rows,
+ * /permissions routes), not internal identifiers.
  */
 export async function assertCapability(
   userId: string,
@@ -228,13 +232,51 @@ export async function assertOwnsOffering(offeringId: string, userId: string, rol
   if (offering.teacherId !== userId) throw AppError.forbidden('Not your offering');
 }
 
+/** Facts about one offering + caller, as needed by the access decision. */
+export interface OfferingAccessFacts {
+  /** The offering row exists (a missing row 404s for every non-bypass role). */
+  exists: boolean;
+  /** The offering is taught by the calling user (teacher path). */
+  taughtBy: boolean;
+  /** The caller has an enrollment row with status 'active' (student path). */
+  activelyEnrolled: boolean;
+}
+
+/** Outcome of `decideOfferingAccess` — mapped to AppError by the wrapper. */
+export type OfferingAccessDecision = 'ok' | 'not_found' | 'forbidden';
+
+/**
+ * Pure access decision for a CourseOffering, factored out of
+ * `assertOfferingAccess` so the role matrix is unit-testable without a DB.
+ *
+ * Semantics (mirrors the platform-wide enrollment convention — only
+ * `status: 'active'` rows grant content access, never dropped/completed
+ * leftovers):
+ *   - offering missing → 'not_found' (never leak existence)
+ *   - TEACHER → allowed iff they teach the offering
+ *   - STUDENT → allowed iff actively enrolled
+ *   - QUALITY → allowed (oversight role, read-only)
+ *
+ * Precondition: ADMIN/OWNER bypass entirely in `assertOfferingAccess`
+ * (they are allowed without touching the DB) and never reach this.
+ */
+export function decideOfferingAccess(role: Role, facts: OfferingAccessFacts): OfferingAccessDecision {
+  if (!facts.exists) return 'not_found';
+  if (role === Role.TEACHER) return facts.taughtBy ? 'ok' : 'forbidden';
+  if (role === Role.STUDENT) return facts.activelyEnrolled ? 'ok' : 'forbidden';
+  if (role === Role.QUALITY) return 'ok'; // oversight role — read-only
+  return 'forbidden';
+}
+
 /**
  * Resource-level read access guard for a CourseOffering.
  *
  * Allowed if ANY of:
- *   - role is ADMIN or OWNER (oversight)
+ *   - role is ADMIN or OWNER (oversight — bypasses the DB check entirely)
  *   - role is TEACHER and the offering is taught by this user
- *   - role is STUDENT and the user is actively enrolled in the offering
+ *   - role is STUDENT and the user is actively enrolled (status 'active')
+ *     in the offering
+ *   - role is QUALITY (oversight — read-only)
  *
  * Throws AppError.notFound if the offering doesn't exist (don't leak existence)
  * and AppError.forbidden if the caller has no business reading it.
@@ -246,14 +288,21 @@ export async function assertOwnsOffering(offeringId: string, userId: string, rol
  */
 export async function assertOfferingAccess(offeringId: string, userId: string, role: Role): Promise<void> {
   if (role === Role.ADMIN || role === Role.OWNER) return;
+  // Only teacherId + the caller's ACTIVE enrollment existence feed the
+  // decision — fetch exactly that, filtered server-side by status.
   const offering = await prisma.courseOffering.findUnique({
     where: { id: offeringId },
-    include: { enrollments: { where: { studentId: userId }, take: 1 } },
+    select: {
+      teacherId: true,
+      enrollments: { where: { studentId: userId, status: 'active' }, take: 1, select: { id: true } },
+    },
   });
-  if (!offering) throw AppError.notFound('Offering not found');
-  if (role === Role.TEACHER && offering.teacherId === userId) return;
-  if (role === Role.STUDENT && offering.enrollments.length > 0) return;
-  if (role === Role.QUALITY) return; // oversight role — read-only
-  throw AppError.forbidden('You do not have access to this offering');
+  const decision = decideOfferingAccess(role, {
+    exists: offering !== null,
+    taughtBy: offering?.teacherId === userId,
+    activelyEnrolled: (offering?.enrollments.length ?? 0) > 0,
+  });
+  if (decision === 'not_found') throw AppError.notFound('Offering not found');
+  if (decision === 'forbidden') throw AppError.forbidden('You do not have access to this offering');
 }
 

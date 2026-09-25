@@ -15,6 +15,49 @@ import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
 
+/* ── Focus-trapped overlay guard (11-e P1-6) ─────────────────────
+   ⌘K and "/" must never steal focus while a modal / sheet /
+   lightbox / command palette is open: their focus traps guard Tab
+   and Escape, not programmatic focus moves, so the input would
+   land behind the modal scrim and this dropdown would render
+   underneath it.
+
+   Two signals, OR'd so either can veto:
+   1. The overlay-stack platform (lib/overlayStack, batch 12-14) —
+      any registered open layer (incl. anchored dropdowns) owns the
+      keyboard. Resolved through an eager import.meta.glob so this
+      build stays valid whether or not that parallel batch has
+      merged: an absent file compiles to an empty record and the
+      DOM fallback below carries the guard alone. Verified: the
+      glob resolves to the same module singleton a static import
+      would (registry identity is preserved).
+   2. DOM fallback: any live [aria-modal="true"] dialog — the marker
+      every focus-trapped overlay renders, and the only signal that
+      also covers the exit-animation window after a modal starts
+      closing but is still mounted. */
+
+type OverlayStackModule = { overlayStack: { isEmpty(): boolean } };
+
+declare global {
+  interface ImportMeta {
+    /** Only the import.meta.glob member this file consumes — declared
+     *  locally because the project's tsconfig does not reference
+     *  vite/client (src/vite-env.d.ts hand-rolls ImportMeta). Both
+     *  overloads mirror vite/client's shapes: lazy globs map to a
+     *  loader, eager globs ({ eager: true }) inline the module. */
+    glob<M = Record<string, unknown>>(pattern: string): Record<string, () => Promise<M>>;
+    glob<M = Record<string, unknown>>(pattern: string, options: { eager: true }): Record<string, M>;
+  }
+}
+
+const overlayStackModules = import.meta.glob<OverlayStackModule>('../../lib/overlayStack.ts', { eager: true });
+const overlayStack = overlayStackModules['../../lib/overlayStack.ts']?.overlayStack ?? null;
+
+function focusTrappedOverlayOpen(): boolean {
+  if (overlayStack && !overlayStack.isEmpty()) return true;
+  return document.querySelector('[aria-modal="true"]') !== null;
+}
+
 interface SearchHit {
   id: string;
   title: string;
@@ -85,13 +128,16 @@ export function GlobalSearch() {
   // Global shortcuts: "/" focuses the search from anywhere (except
   // text fields), ⌘K / Ctrl+K focuses it unconditionally (chords don't
   // type characters, and some browsers reserve Ctrl+K — claim it).
-  // The guard mirrors Sidebar's Ctrl+B handler: contentEditable hosts
-  // are text fields too (0-c P2-12 partial).
+  // Both are inert while a focus-trapped overlay is open (see the
+  // guard above) — the chord must not yank focus behind a scrim.
+  // The inTextField guard mirrors Sidebar's Ctrl+B handler:
+  // contentEditable hosts are text fields too (0-c P2-12 partial).
   const isMac =
     typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (focusTrappedOverlayOpen()) return;
       const target = e.target as HTMLElement | null;
       const inTextField =
         ['INPUT', 'TEXTAREA'].includes(target?.tagName ?? '') ||

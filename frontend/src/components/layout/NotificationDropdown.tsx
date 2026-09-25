@@ -10,6 +10,13 @@
  * click-outside dismiss, repositioning on scroll/resize) — this
  * component only owns the data flow (unread refetch, mark-read,
  * navigation) and the inner list markup.
+ *
+ * Data split (11-e P1-5): the closed bell needs only the unread
+ * count (the 60s one-item poll). The 50-item list query lives in
+ * <NotificationPanelContent>, which NotificationPanel mounts only
+ * while the panel is open — the payload fetches on first open, not
+ * on every shell mount. Query cache (30s stale / 5min gc) serves
+ * instant re-opens.
  */
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -47,27 +54,12 @@ function timeAgo(iso: string): string {
 export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const [open, setOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
-  const navigate = useNavigate();
+  // The only data the closed bell needs: unread count (1-item poll).
   const unreadQ = useUnreadNotifications();
   const unread = unreadQ.data ?? 0;
 
-  // Lazy-load list only when the dropdown is opened
-  const listQ = useNotifications();
-  const items = (listQ.data ?? []).slice(0, 6);
-  const markRead = useMarkNotifRead();
-
   // Outside-click, Esc and anchored repositioning are provided by the
   // NotificationPanel primitive.
-
-  const onItemClick = (n: Notification) => {
-    if (!n.readAt) markRead.mutate(n.id);
-    setOpen(false);
-    navigate(alertsPath);
-  };
-
-  const onMarkAll = () => {
-    items.filter((n) => !n.readAt).forEach((n) => markRead.mutate(n.id));
-  };
 
   return (
     <div className="notif-dropdown">
@@ -94,79 +86,117 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
         anchorRef={bellRef}
         ariaLabel="الإشعارات"
       >
-        <header className="notif-panel-head">
-          <h3 className="notif-panel-title">الإشعارات</h3>
-          <div className="notif-panel-actions">
-            {unread > 0 && (
-              <button type="button" className="notif-panel-action" onClick={onMarkAll}>
-                <Icon icon={Check} size={12} />
-                <span>تعليم الكل كمقروء</span>
-              </button>
-            )}
-            <button
-              type="button"
-              className="notif-panel-close"
-              onClick={() => setOpen(false)}
-              aria-label="إغلاق"
-            >
-              <Icon icon={X} size={14} />
-            </button>
-          </div>
-        </header>
-
-        <div className="notif-panel-list">
-          {listQ.isPending ? (
-            <div className="notif-empty">
-              <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
-              <p className="notif-empty-text">جاري التحميل…</p>
-            </div>
-          ) : items.length === 0 ? (
-            <div className="notif-empty">
-              {/* Bespoke empty-notifs scene (illustration registry; audit
-                  0-f P2-21 — the designed scene was dead inventory while
-                  the panel showed a generic Lucide bell). Sizing lives in
-                  the wave 8-c section of components.css. */}
-              <div className="notif-empty-illustration" aria-hidden>
-                <Illustration name="empty-notifs" decorative />
-              </div>
-              <p className="notif-empty-text">لا توجد إشعارات</p>
-            </div>
-          ) : (
-            items.map((n) => {
-              const IconCmp = TYPE_ICON[n.type];
-              return (
-                <button
-                  key={n.id}
-                  type="button"
-                  className={`notif-item ${TYPE_TONE[n.type]}${n.readAt ? '' : ' unread'}`}
-                  onClick={() => onItemClick(n)}
-                >
-                  <span className="notif-item-icon">
-                    <Icon icon={IconCmp} size={14} />
-                  </span>
-                  <span className="notif-item-body">
-                    <span className="notif-item-title">{n.title}</span>
-                    {n.body && <span className="notif-item-desc">{n.body}</span>}
-                    <span className="notif-item-time">{timeAgo(n.createdAt)}</span>
-                  </span>
-                  {!n.readAt && <span className="notif-item-dot" aria-hidden />}
-                </button>
-              );
-            })
-          )}
-        </div>
-
-        <footer className="notif-panel-foot">
-          <Link
-            to={alertsPath}
-            onClick={() => setOpen(false)}
-            className="notif-panel-viewall"
-          >
-            <span>عرض جميع الإشعارات</span>
-            <Icon icon={ChevronLeft} size={12} />
-          </Link>
-        </footer>
+        <NotificationPanelContent
+          alertsPath={alertsPath}
+          unread={unread}
+          onClose={() => setOpen(false)}
+        />
       </NotificationPanel>
     </div>
+  );
+}
+
+/** Panel body — mounted only while the panel is open, so the
+ * notifications list query fires on first open (lazy), never on
+ * shell mount. See the file docblock for the data split. */
+function NotificationPanelContent({
+  alertsPath,
+  unread,
+  onClose,
+}: {
+  alertsPath: string;
+  unread: number;
+  onClose: () => void;
+}) {
+  const listQ = useNotifications();
+  const items = (listQ.data ?? []).slice(0, 6);
+  const markRead = useMarkNotifRead();
+  const navigate = useNavigate();
+
+  const onItemClick = (n: Notification) => {
+    if (!n.readAt) markRead.mutate(n.id);
+    onClose();
+    navigate(alertsPath);
+  };
+
+  const onMarkAll = () => {
+    items.filter((n) => !n.readAt).forEach((n) => markRead.mutate(n.id));
+  };
+
+  return (
+    <>
+    <header className="notif-panel-head">
+      <h3 className="notif-panel-title">الإشعارات</h3>
+      <div className="notif-panel-actions">
+        {unread > 0 && (
+          <button type="button" className="notif-panel-action" onClick={onMarkAll}>
+            <Icon icon={Check} size={12} />
+            <span>تعليم الكل كمقروء</span>
+          </button>
+        )}
+        <button
+          type="button"
+          className="notif-panel-close"
+          onClick={onClose}
+          aria-label="إغلاق"
+        >
+          <Icon icon={X} size={14} />
+        </button>
+      </div>
+    </header>
+
+    <div className="notif-panel-list">
+      {listQ.isPending ? (
+        <div className="notif-empty">
+          <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
+          <p className="notif-empty-text">جاري التحميل…</p>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="notif-empty">
+          {/* Bespoke empty-notifs scene (illustration registry; audit
+              0-f P2-21 — the designed scene was dead inventory while
+              the panel showed a generic Lucide bell). Sizing lives in
+              the wave 8-c section of components.css. */}
+          <div className="notif-empty-illustration" aria-hidden>
+            <Illustration name="empty-notifs" decorative />
+          </div>
+          <p className="notif-empty-text">لا توجد إشعارات</p>
+        </div>
+      ) : (
+        items.map((n) => {
+          const IconCmp = TYPE_ICON[n.type];
+          return (
+            <button
+              key={n.id}
+              type="button"
+              className={`notif-item ${TYPE_TONE[n.type]}${n.readAt ? '' : ' unread'}`}
+              onClick={() => onItemClick(n)}
+            >
+              <span className="notif-item-icon">
+                <Icon icon={IconCmp} size={14} />
+              </span>
+              <span className="notif-item-body">
+                <span className="notif-item-title">{n.title}</span>
+                {n.body && <span className="notif-item-desc">{n.body}</span>}
+                <span className="notif-item-time">{timeAgo(n.createdAt)}</span>
+              </span>
+              {!n.readAt && <span className="notif-item-dot" aria-hidden />}
+            </button>
+          );
+        })
+      )}
+    </div>
+
+    <footer className="notif-panel-foot">
+      <Link
+        to={alertsPath}
+        onClick={onClose}
+        className="notif-panel-viewall"
+      >
+        <span>عرض جميع الإشعارات</span>
+        <Icon icon={ChevronLeft} size={12} />
+      </Link>
+    </footer>
+    </>
   );
 }

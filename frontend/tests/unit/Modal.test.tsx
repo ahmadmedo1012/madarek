@@ -10,11 +10,17 @@
  *     closeOnOverlayClick=false
  *   - clicks inside the card do NOT dismiss
  *   - Tab/Shift-Tab cycle focus within the card
- *   - body overflow is locked while open and restored on close
+ *   - body scroll is locked while open and restored on close (the
+ *     ref-counted scrollLock class — wave 12-14)
+ *   - stacked overlays: one Escape dismisses ONE layer (wave 12-14,
+ *     audit 11-e P1-2) — Modal over Modal and Dropdown over Modal
  */
 import { describe, expect, it, vi } from 'vitest';
+import { useRef } from 'react';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { Modal } from '../../src/components/overlays/Modal';
+import { Dropdown, DropdownItem } from '../../src/components/overlays/Dropdown';
+import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
 
 const flush = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
@@ -106,20 +112,19 @@ describe('Modal', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('locks body overflow while open and restores on close', () => {
-    document.body.style.overflow = '';
+  it('locks body scroll while open and releases on close (ref-counted class)', () => {
     const { rerender } = render(
       <Modal open onClose={() => {}} ariaLabel="X">
         <p>x</p>
       </Modal>,
     );
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
     rerender(
       <Modal open={false} onClose={() => {}} ariaLabel="X">
         <p>x</p>
       </Modal>,
     );
-    expect(document.body.style.overflow).toBe('');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
 
   it('Tab cycles focus from last back to first', async () => {
@@ -148,5 +153,92 @@ describe('Modal', () => {
     first.focus();
     fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'last' }));
+  });
+
+  it('stacked modals: one Escape dismisses only the topmost layer', () => {
+    const onCloseBase = vi.fn();
+    const onCloseTop = vi.fn();
+    render(
+      <>
+        <Modal open onClose={onCloseBase} ariaLabel="base">
+          <p>base</p>
+        </Modal>
+        <Modal open onClose={onCloseTop} ariaLabel="top">
+          <p>top</p>
+        </Modal>
+      </>,
+    );
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onCloseTop).toHaveBeenCalledTimes(1);
+    expect(onCloseBase).not.toHaveBeenCalled();
+  });
+
+  it('stacked modals: the scroll lock composes — closing the top keeps the base locked', () => {
+    const { rerender } = render(
+      <>
+        <Modal open onClose={() => {}} ariaLabel="base">
+          <p>base</p>
+        </Modal>
+        <Modal open onClose={() => {}} ariaLabel="top">
+          <p>top</p>
+        </Modal>
+      </>,
+    );
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
+    rerender(
+      <>
+        <Modal open onClose={() => {}} ariaLabel="base">
+          <p>base</p>
+        </Modal>
+        <Modal open={false} onClose={() => {}} ariaLabel="top">
+          <p>top</p>
+        </Modal>
+      </>,
+    );
+    // The base modal still holds its lock after the top one released.
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
+  });
+
+  it('stacked modal + dropdown: Escape dismisses the dropdown, not the modal beneath', async () => {
+    const onCloseModal = vi.fn();
+    const onCloseMenu = vi.fn();
+    function Host() {
+      const anchorRef = useRef<HTMLButtonElement | null>(null);
+      return (
+        <>
+          <Modal open onClose={onCloseModal} ariaLabel="dialog">
+            <button ref={anchorRef} type="button">menu trigger</button>
+          </Modal>
+          <Dropdown open onClose={onCloseMenu} anchorRef={anchorRef} ariaLabel="actions">
+            <DropdownItem onSelect={() => {}}>A</DropdownItem>
+          </Dropdown>
+        </>
+      );
+    }
+    render(<Host />);
+    await flush();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onCloseMenu).toHaveBeenCalledTimes(1);
+    expect(onCloseModal).not.toHaveBeenCalled();
+  });
+
+  it('stacked modals: a closeOnEscape=false top layer consumes Escape without closing', () => {
+    const onCloseBase = vi.fn();
+    const onCloseTop = vi.fn();
+    render(
+      <>
+        <Modal open onClose={onCloseBase} ariaLabel="base">
+          <p>base</p>
+        </Modal>
+        <Modal open onClose={onCloseTop} ariaLabel="top" closeOnEscape={false}>
+          <p>top</p>
+        </Modal>
+      </>,
+    );
+    fireEvent.keyDown(document, { key: 'Escape' });
+    // The top layer owns the key (e.g. a pending mutation guard) — it
+    // declines to close AND shields the layer below from the press.
+    expect(onCloseTop).not.toHaveBeenCalled();
+    expect(onCloseBase).not.toHaveBeenCalled();
   });
 });

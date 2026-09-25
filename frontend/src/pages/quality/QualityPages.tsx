@@ -21,6 +21,7 @@ import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { formatRelativeArShort } from '../../lib/format';
+import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 

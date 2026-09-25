@@ -11,6 +11,8 @@ export type ErrorCode =
   | 'FORBIDDEN'
   | 'NOT_FOUND'
   | 'CONFLICT'
+  | 'PAYLOAD_TOO_LARGE'
+  | 'UNSUPPORTED_MEDIA_TYPE'
   | 'TOO_MANY_REQUESTS'
   | 'INTERNAL';
 
@@ -47,5 +49,15 @@ export class AppError extends Error {
   }
   static tooMany(message = 'Too many requests') {
     return new AppError('TOO_MANY_REQUESTS', message, 429);
+  }
+  /**
+   * Intentional server fault. Deliberately takes no `details` and its
+   * message must stay client-safe: the error handler forwards AppError
+   * payloads verbatim, so internals (stacks, SQL, file paths) belong
+   * in the server log — the default matches the catch-all 500 text
+   * exactly.
+   */
+  static internal(message = 'Internal server error') {
+    return new AppError('INTERNAL', message, 500);
   }
 }

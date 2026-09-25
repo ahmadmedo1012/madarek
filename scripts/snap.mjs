@@ -105,7 +105,7 @@ for (const theme of THEMES) {
       try {
         await page.goto('http://localhost:5173/auth', { waitUntil: 'networkidle', timeout: 20_000 });
         await page.fill('#auth-email', cohort.email);
-        await page.fill('#auth-password', '1234');
+        await page.fill('#auth-password', 'Madarek2026!');
         await Promise.all([
           page.waitForURL((url) => !url.pathname.includes('/auth'), { timeout: 20_000 }),
           page.click('button[type="submit"].auth-submit'),

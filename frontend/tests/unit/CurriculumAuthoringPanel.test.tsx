@@ -14,6 +14,14 @@
  *   5. destructive actions go through the shared ConfirmDialog
  *   6. the page-level tab is gated by role (TEACHER sees it, QUALITY
  *      does not)
+ * Plus the wave 12-13 fixes:
+ *   7. delete failures close the dialog and surface via toast + banner
+ *      (audit 11-f P1-2 — previously the error rendered behind the
+ *      modal overlay)
+ *   8. dirty forms require a discard-confirm on close (unsaved-edits
+ *      guard) and Esc is owned by the topmost dialog
+ *   9. removing a checkpoint option keeps the correct-answer mark honest
+ *      (audit 11-f P1-7 — shift / reset-with-nudge)
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -22,6 +30,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CurriculumAuthoringPanel } from '../../src/components/curriculum/CurriculumAuthoringPanel';
 import { TeacherOfferingDetailPage } from '../../src/pages/teacher/TeacherIntelligencePage';
 import { useAuthStore } from '../../src/stores/auth.store';
+import { useToastStore } from '../../src/lib/toast';
 import type { AuthUser } from '../../src/stores/auth.store';
 
 /* ── lib/api mock (query + mutation surfaces) ──────────────────── */
@@ -127,6 +136,7 @@ beforeEach(() => {
 
 afterEach(() => {
   useAuthStore.setState({ user: null });
+  useToastStore.setState({ items: [] });
 });
 
 /* ── panel ─────────────────────────────────────────────────────── */
@@ -237,6 +247,147 @@ describe('Lecture deletion — ConfirmDialog gating', () => {
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'حذف المحاضرة' })).toBeNull();
+    });
+  });
+
+  it('on failure: closes the dialog, reports via error toast, keeps the inline banner (11-f P1-2)', async () => {
+    const { api } = await import('../../src/lib/api');
+    vi.mocked(api.delete).mockRejectedValueOnce({
+      response: { data: { error: { message: 'لا يمكن حذف محاضرة عليها سجل مشاهدات' } } },
+    });
+    renderPanel();
+
+    fireEvent.click(await screen.findByRole('button', { name: 'حذف المحاضرة الأولى: مدخل الشبكات' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'حذف نهائي' }));
+
+    // The dialog must close on failure — the old bug kept it open while
+    // the Arabic error rendered invisibly behind the overlay.
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'حذف المحاضرة' })).toBeNull();
+    });
+
+    // Error toasts ride the toast channel (z-index above any modal) and
+    // never auto-dismiss.
+    const toasts = useToastStore.getState().items;
+    expect(toasts).toHaveLength(1);
+    expect(toasts[0]).toMatchObject({
+      variant: 'error',
+      title: 'تعذّر حذف المحاضرة',
+      message: 'لا يمكن حذف محاضرة عليها سجل مشاهدات',
+    });
+
+    // The context-anchored list banner persists underneath.
+    expect(await screen.findByText('لا يمكن حذف محاضرة عليها سجل مشاهدات')).toBeInTheDocument();
+  });
+});
+
+describe('Authoring forms — dirty-close discard guard (12-13)', () => {
+  it('closes a clean form directly, but a dirty form requires an explicit discard', async () => {
+    renderPanel();
+
+    // Clean form: ✕ closes immediately, no blocking confirm.
+    fireEvent.click(screen.getByRole('button', { name: 'محاضرة جديدة' }));
+    await screen.findByRole('dialog', { name: 'محاضرة جديدة' });
+    fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'محاضرة جديدة' })).toBeNull();
+    });
+    expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
+
+    // Dirty form: ✕ routes into the discard confirm, draft intact.
+    fireEvent.click(screen.getByRole('button', { name: 'محاضرة جديدة' }));
+    await screen.findByRole('dialog', { name: 'محاضرة جديدة' });
+    fireEvent.change(screen.getByLabelText('عنوان المحاضرة'), { target: { value: 'مسودة محاضرة' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }));
+
+    await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
+    expect(screen.getByLabelText('عنوان المحاضرة')).toHaveValue('مسودة محاضرة');
+
+    // Esc while the discard-confirm is stacked cancels the discard only —
+    // the form modal (Esc locked underneath) stays open.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
+    });
+    expect(screen.getByRole('dialog', { name: 'محاضرة جديدة' })).toBeInTheDocument();
+
+    // Explicit discard closes the form.
+    fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }));
+    await screen.findByRole('dialog', { name: 'تعديلات غير محفوظة' });
+    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'محاضرة جديدة' })).toBeNull();
+    });
+  });
+
+  it('arms a beforeunload guard only while the form is dirty', async () => {
+    renderPanel();
+
+    // Spy records the dispatched events; defaultPrevented is read AFTER
+    // dispatch so listener registration order never matters.
+    const events: Event[] = [];
+    const spy = (e: Event) => {
+      events.push(e);
+    };
+    window.addEventListener('beforeunload', spy);
+    try {
+      fireEvent.click(screen.getByRole('button', { name: 'محاضرة جديدة' }));
+      await screen.findByRole('dialog', { name: 'محاضرة جديدة' });
+
+      // Clean draft — no guard armed yet, nothing cancels the unload.
+      window.dispatchEvent(new Event('beforeunload', { cancelable: true }));
+      expect(events).toHaveLength(1);
+      expect(events[0]!.defaultPrevented).toBe(false);
+
+      // Dirty draft — the guard cancels the unload (native browser prompt).
+      fireEvent.change(screen.getByLabelText('عنوان المحاضرة'), { target: { value: 'مسودة' } });
+      window.dispatchEvent(new Event('beforeunload', { cancelable: true }));
+      expect(events).toHaveLength(2);
+      expect(events[1]!.defaultPrevented).toBe(true);
+    } finally {
+      window.removeEventListener('beforeunload', spy);
+    }
+  });
+});
+
+describe('CheckpointBuilder — option removal keeps the correct mark honest (11-f P1-7)', () => {
+  it('shifts the mark when an earlier option is removed; resets it with a nudge when the marked one goes', async () => {
+    renderPanel();
+
+    fireEvent.click(await screen.findByText('المحاضرة الأولى: مدخل الشبكات'));
+    fireEvent.click(await screen.findByRole('button', { name: 'إضافة سؤال تفاعلي' }));
+    await screen.findByRole('dialog', { name: 'سؤال تفاعلي جديد' });
+
+    // Four options; mark the fourth as the correct answer.
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة خيار' }));
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة خيار' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'تعيين الخيار 4 إجابةً صحيحة' }));
+    expect(screen.getByRole('radio', { name: 'تعيين الخيار 4 إجابةً صحيحة' })).toBeChecked();
+
+    // Removing option 1 shifts the mark onto old option 4 (now الخيار 3) —
+    // the OLD behavior silently kept the mark at index 3 or re-pointed it
+    // at whatever shifted into view.
+    fireEvent.click(screen.getByRole('button', { name: 'إزالة الخيار 1' }));
+    expect(screen.getByRole('radio', { name: 'تعيين الخيار 3 إجابةً صحيحة' })).toBeChecked();
+    expect(screen.queryByRole('radio', { name: 'تعيين الخيار 4 إجابةً صحيحة' })).toBeNull();
+
+    // Removing the MARKED option resets the mark and shows the re-pick
+    // nudge instead of silently pointing at a neighbor.
+    fireEvent.click(screen.getByRole('button', { name: 'إزالة الخيار 3' }));
+    expect(
+      screen.getByText('حُذِف الخيار المحدَّد كإجابة صحيحة — حدِّد الإجابة الصحيحة من جديد'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'تعيين الخيار 1 إجابةً صحيحة' })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: 'تعيين الخيار 2 إجابةً صحيحة' })).not.toBeChecked();
+
+    // Actively re-picking clears the nudge (field re-validation is async —
+    // the zod resolver resolves on a microtask, hence waitFor).
+    fireEvent.click(screen.getByRole('radio', { name: 'تعيين الخيار 2 إجابةً صحيحة' }));
+    await waitFor(() => {
+      expect(screen.getByRole('radio', { name: 'تعيين الخيار 2 إجابةً صحيحة' })).toBeChecked();
+      expect(
+        screen.queryByText('حُذِف الخيار المحدَّد كإجابة صحيحة — حدِّد الإجابة الصحيحة من جديد'),
+      ).toBeNull();
     });
   });
 });

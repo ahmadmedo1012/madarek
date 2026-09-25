@@ -16,19 +16,32 @@ export const prisma =
 if (env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 /**
+ * Prisma "known request error" codes that are transient connection problems:
+ *   - P1017 — server closed the connection (Neon drops idle connections)
+ *   - P1001 — can't reach the database server
+ *   - P1002 — server reached, but timed out during the handshake
+ * (Per the Prisma 5 error reference these are the connection-transient set.)
+ */
+const TRANSIENT_CONNECTION_CODES = new Set(['P1017', 'P1001', 'P1002']);
+
+/**
  * Run a Prisma operation with one transparent retry on transient
  * connection errors. Neon's serverless Postgres occasionally drops idle
  * connections; Prisma surfaces those as P1017/P1001/P1002. The first retry
- * reopens the connection and almost always succeeds.
+ * almost always succeeds.
+ *
+ * We deliberately do NOT `$disconnect()` / `$connect()` around the retry:
+ * `prisma` is a process-wide singleton shared by every in-flight request,
+ * so a forced disconnect would kill all of their queries and turn one
+ * transient blip into a burst of failures (which could itself trigger
+ * more retries → more disconnects). Prisma re-establishes the connection
+ * lazily on the next query, so simply re-running the operation is enough.
  *
  * Important: we DON'T retry on:
  *   - P1003 (DB doesn't exist) — permanent, retrying wastes time
  *   - P1004 / P1010 (auth failures) — permanent
  *   - P2002 (unique violation) — application logic, not transient
  *   - P2025 (record not found) — application logic, not transient
- *
- * For each retried error, we force a `$disconnect` + `$connect` so the
- * next attempt uses a fresh connection rather than the broken one.
  */
 export async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T> {
   try {
@@ -37,16 +50,9 @@ export async function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T
     if (
       retries > 0 &&
       err instanceof Prisma.PrismaClientKnownRequestError &&
-      (err.code === 'P1017' || err.code === 'P1001' || err.code === 'P1002' || err.code === 'P1018')
+      TRANSIENT_CONNECTION_CODES.has(err.code)
     ) {
-      // Force a reconnect and retry once.
-      // Catch any disconnect/connect errors so we don't mask the original.
-      try {
-        await prisma.$disconnect();
-        await prisma.$connect();
-      } catch {
-        // Swallow — the retry will surface the underlying error if still broken.
-      }
+      // The client reconnects itself on the next attempt.
       return withRetry(fn, retries - 1);
     }
     throw err;

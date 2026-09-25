@@ -37,10 +37,15 @@ export function useThemeProfileSync(): void {
 
   useEffect(() => {
     if (!me?.id || !me.themePreference) return;
-    // Re-run sync once per (user, profile-update) pair, not on every
-    // render. This avoids a put-loop when the server echoes our value
-    // back through useMe's refetch.
-    const fingerprint = `${me.id}:${me.themePreferenceUpdatedAt ?? ''}`;
+    // Re-run sync once per (user, profile-update, local-choice) tuple,
+    // not on every render. The local side MUST be part of the
+    // fingerprint: without it, an in-session theme toggle re-runs this
+    // effect but early-returns on the unchanged server fingerprint, so
+    // the push paths below stay unreachable until the next sign-in
+    // (audit P1-3). No put-loop results: a successful push changes the
+    // server's `themePreferenceUpdatedAt` on the next `me` observation
+    // and the values then agree (Case 3 no-op).
+    const fingerprint = `${me.id}:${me.themePreferenceUpdatedAt ?? ''}:${localMode}:${localTs}`;
     if (lastSyncedFor.current === fingerprint) return;
     lastSyncedFor.current = fingerprint;
 

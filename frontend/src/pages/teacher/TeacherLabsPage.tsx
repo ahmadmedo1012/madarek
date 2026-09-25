@@ -24,6 +24,7 @@ import { Card, Badge, MetricCard } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
+import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
   net: Network,

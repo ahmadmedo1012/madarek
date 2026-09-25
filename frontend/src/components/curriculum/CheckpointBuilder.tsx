@@ -23,6 +23,7 @@ import { CircleHelp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
+import { toast } from '../../lib/toast';
 import {
   apiErrorMessage,
   useCreateCheckpoint,
@@ -33,6 +34,7 @@ import {
 } from '../../hooks/useResources';
 import {
   CORRECT_INDEX_UNCHANGED,
+  adjustCorrectIndexOnRemove,
   checkpointFormOptions,
   checkpointFormSchema,
   formatSec,
@@ -48,6 +50,7 @@ import {
   ModalActions,
   MutationError,
   TimeInput,
+  useDiscardGuard,
   useFieldId,
 } from './AuthoringModal';
 
@@ -104,6 +107,33 @@ export function CheckpointFormModal({
     },
   });
   const options = useFieldArray({ control: form.control, name: 'options' });
+  const err = form.formState.errors;
+  const correctIndex = form.watch('correctIndex');
+
+  // Unsaved-edits guard: Esc / X / cancel / overlay-click route through a
+  // blocking discard-confirm instead of silently dropping the draft.
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending,
+    onClose,
+  });
+
+  /** Remove an option while keeping the correct-answer mark honest:
+   *  shift the mark when an earlier option disappears, reset it (with a
+   *  visible nudge) when the marked option itself is deleted — never let
+   *  the mark silently re-point at whichever option shifted into the
+   *  deleted slot (audit 11-f P1-7). */
+  const removeOption = (index: number) => {
+    const next = adjustCorrectIndexOnRemove(correctIndex, index);
+    options.remove(index);
+    if (next === correctIndex) return;
+    form.setValue('correctIndex', next);
+    if (next === CORRECT_INDEX_UNCHANGED) {
+      form.setError('correctIndex', {
+        message: 'حُذِف الخيار المحدَّد كإجابة صحيحة — حدِّد الإجابة الصحيحة من جديد',
+      });
+    }
+  };
 
   const questionId = useFieldId('cp-question');
   const triggerId = useFieldId('cp-trigger');
@@ -157,14 +187,12 @@ export function CheckpointFormModal({
     }
   });
 
-  const err = form.formState.errors;
-  const correctIndex = form.watch('correctIndex');
-
   return (
     <AuthoringModal
       title={isEdit ? 'تعديل سؤال التفاعل' : 'سؤال تفاعلي جديد'}
-      onClose={onClose}
+      onClose={requestClose}
       closeOnOverlayClick={!pending}
+      closeOnEscape={!escapeLocked}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -243,7 +271,7 @@ export function CheckpointFormModal({
                       className="btn ghost sm"
                       style={{ marginTop: 12, color: 'var(--danger)' }}
                       disabled={options.fields.length <= MIN_CHECKPOINT_OPTIONS}
-                      onClick={() => options.remove(index)}
+                      onClick={() => removeOption(index)}
                       aria-label={`إزالة الخيار ${index + 1}`}
                       title={options.fields.length <= MIN_CHECKPOINT_OPTIONS ? 'خياران على الأقل' : undefined}
                     >
@@ -281,10 +309,11 @@ export function CheckpointFormModal({
           <ModalActions
             pending={pending}
             submitLabel={isEdit ? 'حفظ التعديلات' : 'إضافة السؤال'}
-            onCancel={onClose}
+            onCancel={requestClose}
           />
         </div>
       </form>
+      {guard}
     </AuthoringModal>
   );
 }
@@ -307,9 +336,15 @@ export function CheckpointList({
     if (!deleting) return;
     try {
       await del.mutateAsync(deleting.id);
+    } catch (error) {
+      // Close the dialog on failure so the error is never trapped behind
+      // the overlay — the toast (z-index above the modal) reports it and
+      // the inline list banner below persists the context (audit 11-f P1-2).
+      toast.error(apiErrorMessage(error, 'تعذَّر حذف السؤال — حاول مرة أخرى.'), {
+        title: 'تعذّر حذف السؤال',
+      });
+    } finally {
       setDeleting(null);
-    } catch {
-      /* inline below */
     }
   };
 

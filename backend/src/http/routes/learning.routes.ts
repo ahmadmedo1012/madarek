@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { prisma, withRetry } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -9,36 +9,27 @@ import { AppError } from '../../lib/errors.js';
 import { extractPaperText } from '../../lib/pdf.js';
 import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
 import { requireCapability } from '../middleware/requireCapability.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
 
 const router = Router();
 router.use(authMiddleware);
 
 /**
  * Helper — convert Decimal columns to Numbers for JSON.
+ * Exported for unit tests (pure logic, no DB). Prisma Decimals always
+ * expose toNumber() in-process; there is deliberately no serialized-shape
+ * fallback because these handlers only ever see live Prisma rows.
  */
-function decToNum<T>(o: T): T {
+export function decToNum<T>(o: T): T {
   if (o === null || o === undefined) return o;
   if (typeof o === 'object') {
     // Pass-through for native types we shouldn't traverse.
     if (o instanceof Date) return o;
     if (Array.isArray(o)) return o.map(decToNum) as never;
     // Prisma Decimal exposes toNumber() — convert to plain number.
-    const obj = o as unknown as { toNumber?: () => number; s?: number; e?: number; d?: number[] };
+    const obj = o as unknown as { toNumber?: () => number };
     if (typeof obj.toNumber === 'function') {
       return obj.toNumber() as never;
-    }
-    // Fallback: detect serialized Decimal shape { s, e, d:[...] }
-    if (
-      typeof obj.s === 'number' &&
-      typeof obj.e === 'number' &&
-      Array.isArray(obj.d) &&
-      Object.keys(o).length <= 3
-    ) {
-      // Reconstruct a number from the Decimal internal representation.
-      // s = sign, e = exponent, d = digits array.
-      const digits = obj.d.join('');
-      const num = Number(`${obj.s < 0 ? '-' : ''}${digits.slice(0, obj.e + 1)}.${digits.slice(obj.e + 1) || '0'}`);
-      return (Number.isFinite(num) ? num : 0) as never;
     }
     const out: Record<string, unknown> = {};
     for (const k of Object.keys(o as object)) out[k] = decToNum((o as Record<string, unknown>)[k]);
@@ -104,16 +95,10 @@ router.get('/offerings/:id/lectures', async (req, res, next) => {
 
 router.get('/lectures/:id', async (req, res, next) => {
   try {
-    // Fetch the offeringId first so we can enforce offering-level access
-    // before returning lecture content (chapters, checkpoints, etc.).
-    // Without this check any authenticated user could read any lecture.
-    const stub = await prisma.lecture.findUnique({
-      where: { id: req.params.id! },
-      select: { offeringId: true },
-    });
-    if (!stub) throw AppError.notFound();
-    await assertOfferingAccess(stub.offeringId, req.user!.id, req.user!.role);
-
+    // Single fetch: the full lecture row already carries offeringId, so
+    // the access gate below reads it off the result instead of paying
+    // for a separate stub lookup first. Without the gate any
+    // authenticated user could read any lecture's content.
     const lec = await prisma.lecture.findUnique({
       where: { id: req.params.id! },
       include: {
@@ -140,15 +125,44 @@ router.get('/lectures/:id', async (req, res, next) => {
       },
     });
     if (!lec) throw AppError.notFound();
+    // Offering-level access gate before any lecture content is returned.
+    await assertOfferingAccess(lec.offeringId, req.user!.id, req.user!.role);
     res.json({ data: lec });
   } catch (e) { next(e); }
 });
 
-const watchSchema = z.object({
+export const watchSchema = z.object({
   watchedSec: z.number().int().nonnegative(),
   totalSec: z.number().int().nonnegative(),
   completed: z.boolean().optional(),
 }).strict();
+
+/**
+ * Server-side completion rule for recorded-lecture watching (decision D9):
+ * a client `completed:true` claim is only accepted when the reported
+ * progress covers at least 90% of the effective video length —
+ * min(client totalSec, lecture durationSec) — and both clock values are
+ * positive. The 90% test uses integer cross-multiplication so the exact
+ * boundary (e.g. 900 of 1000 seconds) is never lost to float rounding.
+ * Exported for unit tests.
+ */
+export function watchProgressCompletes(watchedSec: number, totalSec: number, durationSec: number): boolean {
+  if (totalSec <= 0 || durationSec <= 0) return false;
+  const effectiveLength = Math.min(totalSec, durationSec);
+  return watchedSec * 10 >= effectiveLength * 9;
+}
+
+/**
+ * High-water clamp for watch progress: stored watchedSec must never
+ * rewind (a client bug or clock skew must not erase progress), and a
+ * single tick can never claim more than the reported video length (so
+ * aggregate engagement ratios can't be inflated past 100%). Exported
+ * for unit tests.
+ */
+export function clampWatchedSec(priorWatchedSec: number | undefined, incomingSec: number, totalSec: number): number {
+  const bounded = totalSec > 0 ? Math.min(incomingSec, totalSec) : incomingSec;
+  return Math.max(priorWatchedSec ?? 0, bounded);
+}
 
 router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next) => {
   try {
@@ -164,57 +178,76 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
     // could fake attendance signals for any lecture.
     const lectureStub = await prisma.lecture.findUnique({
       where: { id: lectureId },
-      select: { offeringId: true },
+      // durationSec feeds the server-side completion rule (D9).
+      select: { offeringId: true, durationSec: true },
     });
     if (!lectureStub) throw AppError.notFound();
     await assertOfferingAccess(lectureStub.offeringId, studentId, req.user!.role);
 
-    // Read the previous state so we know if this call transitions
-    // the watch event from "not completed" → "completed", and so we
-    // can clamp watchedSec to its high-water mark (a client bug or
-    // clock skew must never be able to REWIND progress).
-    const prior = await prisma.watchEvent.findUnique({
-      where: { lectureId_studentId: { lectureId, studentId } },
-      select: { completed: true, watchedSec: true },
-    });
-
-    const ev = await prisma.watchEvent.upsert({
-      where: { lectureId_studentId: { lectureId, studentId } },
-      create: {
-        lectureId,
-        studentId,
-        watchedSec,
-        totalSec,
-        completed: completed ?? false,
-      },
-      update: {
-        watchedSec: Math.max(prior?.watchedSec ?? 0, watchedSec),
-        totalSec,
-        completed: completed ?? undefined,
-        lastSeenAt: new Date(),
-      },
-    });
-
-    // Smart auto-attendance: when a recorded lecture transitions into
-    // "fully watched" for the first time, register the student as PRESENT
-    // on that day's attendance session for the offering. Spec calls this
-    // out: "هل شاهد الطالب الدرس بالكامل" feeds the attendance signal.
-    if (req.user!.role === Role.STUDENT && completed === true && !prior?.completed) {
-      // lectureStub already carries offeringId — no second lookup needed.
-      // Bucket attendance by calendar day.
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const session = await prisma.attendanceSession.upsert({
-        where: { offeringId_date: { offeringId: lectureStub.offeringId, date: today } },
-        create: { offeringId: lectureStub.offeringId, date: today, topic: 'حضور افتراضي تلقائي' },
-        update: {},
+    // One transaction for the whole flow — prior-state read, high-water
+    // clamp, watch-event upsert and both attendance upserts — so the
+    // writes are atomic (no "completed but no attendance row" states).
+    // Concurrent posts are serialized per lecture via a row lock (the
+    // same pattern enrollments.routes uses for seat capacity); without
+    // it two racing ticks could read the same prior row and the later
+    // commit would rewind watchedSec.
+    const ev = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM "Lecture" WHERE id = ${lectureId} FOR UPDATE`;
+      const prior = await tx.watchEvent.findUnique({
+        where: { lectureId_studentId: { lectureId, studentId } },
+        select: { completed: true, watchedSec: true },
       });
-      await prisma.attendanceRecord.upsert({
-        where: { sessionId_studentId: { sessionId: session.id, studentId } },
-        create: { sessionId: session.id, studentId, status: 'PRESENT', notes: 'تم تسجيله تلقائياً بعد إكمال مشاهدة المحاضرة المسجّلة' },
-        update: {}, // don't overwrite if a teacher has already marked something
+      const effectiveWatchedSec = clampWatchedSec(prior?.watchedSec, watchedSec, totalSec);
+      // The server — never the client — decides completion (D9).
+      const earnedCompletion =
+        completed === true &&
+        watchProgressCompletes(effectiveWatchedSec, totalSec, lectureStub.durationSec);
+      // Completion is monotonic: once true it stays true — a client
+      // sending completed:false can't un-complete a lecture.
+      const nextCompleted = (prior?.completed ?? false) || earnedCompletion;
+
+      const saved = await tx.watchEvent.upsert({
+        where: { lectureId_studentId: { lectureId, studentId } },
+        create: {
+          lectureId,
+          studentId,
+          watchedSec: effectiveWatchedSec,
+          totalSec,
+          completed: nextCompleted,
+        },
+        update: {
+          watchedSec: effectiveWatchedSec,
+          totalSec,
+          completed: nextCompleted,
+          lastSeenAt: new Date(),
+        },
       });
-    }
+
+      // Smart auto-attendance: when a recorded lecture transitions into
+      // "fully watched" for the first time, register the student as PRESENT
+      // on that day's attendance session for the offering. Spec calls this
+      // out: "هل شاهد الطالب الدرس بالكامل" feeds the attendance signal.
+      // The transition condition keeps it idempotent — re-posting a
+      // completed lecture never fires it twice.
+      if (req.user!.role === Role.STUDENT && nextCompleted && !prior?.completed) {
+        // lectureStub already carries offeringId — no second lookup needed.
+        // Bucket attendance by calendar day.
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const session = await tx.attendanceSession.upsert({
+          where: { offeringId_date: { offeringId: lectureStub.offeringId, date: today } },
+          create: { offeringId: lectureStub.offeringId, date: today, topic: 'حضور افتراضي تلقائي' },
+          update: {},
+        });
+        await tx.attendanceRecord.upsert({
+          where: { sessionId_studentId: { sessionId: session.id, studentId } },
+          create: { sessionId: session.id, studentId, status: 'PRESENT', notes: 'تم تسجيله تلقائياً بعد إكمال مشاهدة المحاضرة المسجّلة' },
+          update: {}, // don't overwrite if a teacher has already marked something
+        });
+      }
+
+      return saved;
+    });
 
     res.json({ data: ev });
   } catch (e) { next(e); }
@@ -264,6 +297,11 @@ router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), as
           lastUpdatedAt: new Date(),
         },
       });
+      // NOTE: the level recompute below is deliberately a read-modify-write.
+      // The increment above is atomic; the ratio recompute can interleave
+      // with a concurrent answer and briefly store a stale ratio, but the
+      // next answer always converges — cosmetic staleness only, not worth
+      // a row lock on this hot path.
       const fresh = await prisma.studentMastery.findUnique({
         where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
         select: { attempts: true, correct: true },
@@ -381,7 +419,9 @@ router.get('/me/resume', async (req, res, next) => {
 
     // 2. No in-progress: first lecture of an enrolled offering with lectures.
     const enrollments = await prisma.enrollment.findMany({
-      where: { studentId: req.user!.id },
+      // Active enrollments only — mirrors the platform-wide convention
+      // (a non-active enrollment must not surface course content).
+      where: { studentId: req.user!.id, status: 'active' },
       include: {
         offering: {
           include: {
@@ -423,9 +463,9 @@ router.get('/me/matrix', async (req, res, next) => {
       res.json({ data: [] });
       return;
     }
-    // Get all concepts across the student's enrolled courses, with mastery if any.
+    // Get all concepts across the student's actively enrolled courses, with mastery if any.
     const enrollments = await prisma.enrollment.findMany({
-      where: { studentId: req.user!.id },
+      where: { studentId: req.user!.id, status: 'active' },
       include: { offering: { include: { course: { include: { concepts: true } } } } },
     });
     const masteries = await prisma.studentMastery.findMany({
@@ -475,6 +515,9 @@ router.get('/me/gaps', async (req, res, next) => {
         },
       },
       orderBy: { level: 'asc' },
+      // Bounded read — the weakest 50 concepts are plenty for the
+      // "learning gaps" surface.
+      take: 50,
     });
     const data = masteries.map((m) => ({
       conceptId: m.conceptId,
@@ -554,16 +597,21 @@ router.post('/me/research', validate(createPaperSchema), async (req, res, next) 
 });
 
 // Simulated plagiarism + AI-content scan. Picks deterministic-feeling values.
-router.post('/research/:id/scan', async (req, res, next) => {
+// Rate-limited: every run parses a full PDF (extractPaperText) — the
+// limiter keeps abuse and accidental client loops off the parser.
+router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, res, next) => {
   try {
     const id = req.params.id!;
     const paper = await prisma.researchPaper.findUnique({ where: { id } });
     if (!paper) throw AppError.notFound();
     // Students may only scan their own papers.
-    if (req.user!.role === Role.STUDENT && paper.studentId !== req.user!.id) {
-      throw AppError.forbidden();
-    }
-    if (req.user!.role !== Role.STUDENT && req.user!.role !== Role.TEACHER && req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) {
+    if (req.user!.role === Role.STUDENT) {
+      if (paper.studentId !== req.user!.id) throw AppError.forbidden();
+    } else if (req.user!.role === Role.TEACHER) {
+      // Teachers may only scan papers tied to offerings they teach — the
+      // same per-row ownership rule the grade and publish steps enforce.
+      await assertOwnsResearchPaper(id, req.user!.id, req.user!.role);
+    } else if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) {
       throw AppError.forbidden();
     }
     // Refuse to re-scan papers already graded or published.
@@ -595,10 +643,23 @@ router.post('/research/:id/scan', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-const gradePaperSchema = z.object({
+export const gradePaperSchema = z.object({
   grade: z.number().min(0).max(20),
   feedback: z.string().max(4000).optional(),
 }).strict();
+
+/**
+ * Papers are gradeable only after the scan step has run (checks passed
+ * OR failed — a failed scan can still be graded, e.g. a low grade with
+ * feedback), and re-grading is allowed until the paper is published.
+ * This keeps the pipeline UPLOADED → scan → grade → publish from being
+ * skipped at the grade step. Exported for unit tests.
+ */
+export const GRADEABLE_PAPER_STATUSES = ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] as const;
+
+export function isPaperGradeable(status: string): boolean {
+  return (GRADEABLE_PAPER_STATUSES as readonly string[]).includes(status);
+}
 
 router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESEARCH_GRADE_ANY'), validate(gradePaperSchema), async (req, res, next) => {
   try {
@@ -606,6 +667,20 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
     // Per-row ownership: teacher must own the offering the paper belongs to,
     // unless they hold RESEARCH_GRADE_ANY.
     await assertOwnsResearchPaper(id, req.user!.id, req.user!.role);
+    // Status precondition: the scan step cannot be skipped, and a
+    // published paper is final.
+    const paper = await prisma.researchPaper.findUnique({
+      where: { id },
+      select: { status: true },
+    });
+    if (!paper) throw AppError.notFound();
+    if (!isPaperGradeable(paper.status)) {
+      throw AppError.conflict(
+        paper.status === 'PUBLISHED'
+          ? 'Published papers cannot be re-graded'
+          : 'Paper must be scanned before it can be graded',
+      );
+    }
     const updated = await prisma.researchPaper.update({
       where: { id },
       data: {
@@ -621,10 +696,15 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
 });
 
 // Teacher / admin queue: papers passing checks, awaiting grade.
-router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (_req, res, next) => {
+router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const data = await prisma.researchPaper.findMany({
-      where: { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] } },
+      // Scoped like the teacher dashboard feed: a TEACHER sees only
+      // papers tied to offerings they teach; ADMIN/OWNER keep the
+      // institution-wide oversight view.
+      where: req.user!.role === Role.TEACHER
+        ? { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] }, offering: { teacherId: req.user!.id } }
+        : { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] } },
       // Explicit select: NEVER ship extractedText (full PDF text — huge).
       select: {
         id: true, studentId: true, reviewerId: true, offeringId: true,
@@ -633,7 +713,8 @@ router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
         uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
         student: {
           select: {
-            id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true, email: true,
+            // No email — graders need name + avatar, not student PII.
+            id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true,
           },
         },
         offering: { include: { course: { select: { name: true, code: true } } } },
@@ -693,7 +774,7 @@ router.get('/research/published', async (_req, res, next) => {
 // surrounded by `<mark>…</mark>` for the UI to render highlighted.
 const SNIPPET_RADIUS = 80; // chars of context on each side of the first hit
 
-function buildSnippet(text: string, q: string): string | null {
+export function buildSnippet(text: string, q: string): string | null {
   const lower = text.toLowerCase();
   const idx = lower.indexOf(q.toLowerCase());
   if (idx === -1) return null;
@@ -710,16 +791,13 @@ function buildSnippet(text: string, q: string): string | null {
 
 router.get('/research/search', async (req, res, next) => {
   try {
-    // Cap the query at 120 chars — unbounded q flows straight into ILIKE.
+    // Cap the query at 120 chars — unbounded q flows straight into ILIKE
+    // and into the highlight RegExp below.
     const q = String(req.query.q ?? '').trim().slice(0, 120);
     if (!q) {
       res.json({ data: [], meta: { query: '', total: 0 } });
       return;
     }
-    // Cap query length to prevent regex/memory DoS. A 200-char search
-    // is generous (longer than any academic title) and keeps RegExp
-    // compilation fast.
-    if (q.length > 200) throw AppError.badRequest('Search query too long (max 200 chars)');
     if (q.length < 2) {
       res.json({ data: [], meta: { query: q, total: 0, error: 'too_short' } });
       return;
@@ -728,31 +806,37 @@ router.get('/research/search', async (req, res, next) => {
     // ILIKE on three fields is sufficient at our demo scale and works for
     // both Arabic and English. Tsvector/GIN can be layered on top later
     // if the dataset grows.
-    const papers = await withRetry(() => prisma.researchPaper.findMany({
-      where: {
-        status: 'PUBLISHED',
-        OR: [
-          { title:         { contains: q, mode: 'insensitive' } },
-          { abstract:      { contains: q, mode: 'insensitive' } },
-          { extractedText: { contains: q, mode: 'insensitive' } },
-        ],
-      },
-      orderBy: { publishedAt: 'desc' },
-      take: 50,
-      // extractedText is selected for snippet generation ONLY — it is
-      // stripped from the response payload below (it can be megabytes).
-      select: {
-        id: true, studentId: true, reviewerId: true, offeringId: true,
-        title: true, abstract: true, fileUrl: true, status: true,
-        plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
-        uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
-        extractedText: true,
-        student: {
-          select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
+    const where: Prisma.ResearchPaperWhereInput = {
+      status: 'PUBLISHED',
+      OR: [
+        { title:         { contains: q, mode: 'insensitive' } },
+        { abstract:      { contains: q, mode: 'insensitive' } },
+        { extractedText: { contains: q, mode: 'insensitive' } },
+      ],
+    };
+    // `total` is the true match count, not the page length — the result
+    // list is capped at 50 rows but the meta must not lie about it.
+    const [papers, total] = await withRetry(() => Promise.all([
+      prisma.researchPaper.findMany({
+        where,
+        orderBy: { publishedAt: 'desc' },
+        take: 50,
+        // extractedText is selected for snippet generation ONLY — it is
+        // stripped from the response payload below (it can be megabytes).
+        select: {
+          id: true, studentId: true, reviewerId: true, offeringId: true,
+          title: true, abstract: true, fileUrl: true, status: true,
+          plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
+          uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
+          extractedText: true,
+          student: {
+            select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true },
+          },
+          offering: { include: { course: { select: { name: true, code: true } } } },
         },
-        offering: { include: { course: { select: { name: true, code: true } } } },
-      },
-    }));
+      }),
+      prisma.researchPaper.count({ where }),
+    ]));
 
     type Match = 'title' | 'abstract' | 'body';
     const results = papers.map((p) => {
@@ -789,7 +873,7 @@ router.get('/research/search', async (req, res, next) => {
       snippet: r.snippet,
     }));
 
-    res.json({ data, meta: { query: q, total: data.length } });
+    res.json({ data, meta: { query: q, total } });
   } catch (e) { next(e); }
 });
 
@@ -877,6 +961,25 @@ router.delete('/research/annotations/:id', async (req, res, next) => {
 // ════════════════════════════════════════════════════════════════
 
 /**
+ * Attendance alert thresholds: an offering is only judged once it has
+ * at least MIN_RECORDS attendance records in the window; an absence
+ * rate ≥25% is a warning, ≥40% is critical. Exported for unit tests.
+ */
+export const ATTENDANCE_ALERT_MIN_RECORDS = 5;
+export const ATTENDANCE_ALERT_WARNING_RATE = 0.25;
+export const ATTENDANCE_ALERT_CRITICAL_RATE = 0.4;
+
+export function attendanceAlertSeverity(
+  absentRate: number,
+  totalRecords: number,
+): 'warning' | 'critical' | null {
+  if (totalRecords < ATTENDANCE_ALERT_MIN_RECORDS) return null;
+  if (absentRate >= ATTENDANCE_ALERT_CRITICAL_RATE) return 'critical';
+  if (absentRate >= ATTENDANCE_ALERT_WARNING_RATE) return 'warning';
+  return null;
+}
+
+/**
  * Quality alerts — derived from real signals in the database. No persisted
  * "alert" rows; this endpoint computes a fresh list each call from:
  *   · low attendance over the last 30 days (offering / class level)
@@ -899,15 +1002,31 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
     };
     const alerts: Alert[] = [];
 
-    // Low-attendance offerings (last 30d)
-    const recentSessions = await prisma.attendanceSession.findMany({
-      where: { date: { gte: thirtyDaysAgo } },
-      select: {
-        offeringId: true,
-        offering: { select: { course: { select: { name: true, code: true } } } },
-        records: { select: { status: true } },
-      },
-    });
+    // Low-attendance offerings (last 30d). Aggregated in the database
+    // (groupBy) — never hydrate every attendance record of the
+    // institution into memory.
+    const [recentSessions, recordGroups, absentGroups] = await Promise.all([
+      prisma.attendanceSession.findMany({
+        where: { date: { gte: thirtyDaysAgo } },
+        select: {
+          id: true,
+          offeringId: true,
+          offering: { select: { course: { select: { name: true, code: true } } } },
+        },
+      }),
+      prisma.attendanceRecord.groupBy({
+        by: ['sessionId'],
+        where: { session: { date: { gte: thirtyDaysAgo } } },
+        _count: { _all: true },
+      }),
+      prisma.attendanceRecord.groupBy({
+        by: ['sessionId'],
+        where: { session: { date: { gte: thirtyDaysAgo } }, status: 'ABSENT' },
+        _count: { _all: true },
+      }),
+    ]);
+    const recordTotals = new Map(recordGroups.map((g) => [g.sessionId, g._count._all]));
+    const absentTotals = new Map(absentGroups.map((g) => [g.sessionId, g._count._all]));
     const byOffering = new Map<string, { courseName: string; courseCode: string; total: number; absent: number }>();
     for (const s of recentSessions) {
       const cur = byOffering.get(s.offeringId) ?? {
@@ -915,25 +1034,22 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
         courseCode: s.offering.course.code,
         total: 0, absent: 0,
       };
-      for (const r of s.records) {
-        cur.total += 1;
-        if (r.status === 'ABSENT') cur.absent += 1;
-      }
+      cur.total += recordTotals.get(s.id) ?? 0;
+      cur.absent += absentTotals.get(s.id) ?? 0;
       byOffering.set(s.offeringId, cur);
     }
     for (const [oid, row] of byOffering) {
-      if (row.total < 5) continue;
-      const rate = row.absent / row.total;
-      if (rate >= 0.25) {
-        alerts.push({
-          id: `att-${oid}`,
-          severity: rate >= 0.4 ? 'critical' : 'warning',
-          category: 'attendance',
-          title: `غياب جماعيّ بنسبة ${Math.round(rate * 100)}٪`,
-          description: `${row.courseName} (${row.courseCode}) — ${row.absent} غياب من ${row.total} جلسة آخر 30 يوماً`,
-          occurredAt: now,
-        });
-      }
+      const rate = row.total > 0 ? row.absent / row.total : 0;
+      const severity = attendanceAlertSeverity(rate, row.total);
+      if (!severity) continue;
+      alerts.push({
+        id: `att-${oid}`,
+        severity,
+        category: 'attendance',
+        title: `غياب جماعيّ بنسبة ${Math.round(rate * 100)}٪`,
+        description: `${row.courseName} (${row.courseCode}) — ${row.absent} غياب من ${row.total} جلسة آخر 30 يوماً`,
+        occurredAt: now,
+      });
     }
 
     // High-plagiarism research papers
@@ -970,6 +1086,9 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
         teacher: { select: { firstName: true, lastName: true } },
         _count: { select: { materials: true } },
       },
+      // Deterministic order (longest-stale first) — `take` without
+      // `orderBy` would return an arbitrary subset.
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
       take: 10,
     });
     for (const o of stale) {
@@ -1034,11 +1153,26 @@ router.get('/quality/courses', requireCapability('QUALITY_VIEW'), async (_req, r
         teacher: { select: { id: true, firstName: true, lastName: true } },
         _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
       },
+      // Deterministic order — `take` without `orderBy` returns an
+      // arbitrary subset (newest offerings are the relevant ones here).
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
       take: 50,
     });
     res.json({ data: offerings });
   } catch (e) { next(e); }
 });
+
+/**
+ * Stable positive seed derived from an entity id — used for estimated
+ * (placeholder) metrics so a teacher's numbers never change between
+ * calls, regardless of row order. Same id → same seed, always.
+ * Exported for unit tests.
+ */
+export function stableSeed(id: string): number {
+  let h = 5381;
+  for (let i = 0; i < id.length; i++) h = ((h * 33) ^ id.charCodeAt(i)) >>> 0;
+  return h;
+}
 
 router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
   try {
@@ -1056,13 +1190,17 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
           },
         },
       },
+      // Deterministic order — `take` without `orderBy` returns an
+      // arbitrary subset, and the estimated metrics below must not be
+      // reassigned when row order shifts.
+      orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }, { id: 'asc' }],
       take: 100,
     }));
 
     // Compute per-teacher aggregate metrics. Where real signals are sparse,
     // we fall back to deterministic seed-based values so the UI is meaningful —
     // flagged with `estimated: true` so consumers can label them as such.
-    const data = teachers.map((t, idx) => {
+    const data = teachers.map((t) => {
       const off = t.taughtOfferings;
       const totals = off.reduce(
         (acc, o) => ({
@@ -1074,10 +1212,12 @@ router.get('/quality/professors', requireCapability('QUALITY_VIEW'), async (_req
         }),
         { enrollments: 0, materials: 0, lectures: 0, assignments: 0, attendance: 0 },
       );
-      // Deterministic but plausible mock satisfaction & response time per teacher.
-      const seed = (idx + 1) * 7;
-      const satisfaction = 3.5 + ((seed * 13) % 13) / 10; // 3.5 - 4.8
-      const responseHours = 2 + ((seed * 5) % 22); // 2 - 24
+      // Deterministic but plausible mock satisfaction & response time per
+      // teacher, seeded from the teacher's stable id (never the row
+      // index — a row-order shift must not reassign estimated metrics).
+      const seed = stableSeed(t.id);
+      const satisfaction = 3.5 + (seed % 14) / 10; // 3.5 - 4.8
+      const responseHours = 2 + (seed % 23); // 2 - 24
       // Compliance score = simple weighted mix of materials + lectures + attendance.
       const compliance = Math.min(
         100,
@@ -1133,6 +1273,9 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
 
     const totalWatched = watchTotals._sum.watchedSec ?? 0;
     const totalDuration = watchTotals._sum.totalSec ?? 0;
+    // Share of total video length actually watched across all watch
+    // events (a watch-time ratio — the number of fully completed
+    // lectures is reported separately as completedLectures).
     const completionRate = totalDuration > 0 ? (totalWatched / totalDuration) * 100 : 0;
 
     // Weekly active: count unique students per day for the last 7 days.

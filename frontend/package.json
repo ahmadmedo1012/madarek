@@ -17,7 +17,7 @@
     "test:audit": "playwright test tests/audit",
     "test:audit:drift": "tsx tests/audit/run-drift.ts",
     "audit:baseline": "tsx tests/audit/promote-baseline.ts",
-    "build:report": "vite build --mode production"
+    "build:report": "BUNDLE_REPORT=1 vite build --mode production"
   },
   "dependencies": {
     "@hookform/resolvers": "3.10.0",

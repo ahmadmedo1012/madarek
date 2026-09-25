@@ -11,8 +11,11 @@
  *
  * Per the contract:
  *   - DOES trap focus (uses the shared useFocusTrap hook).
- *   - DOES lock body scroll while open.
- *   - DOES dismiss on Esc, on backdrop click, and via the close button.
+ *   - DOES lock body scroll while open (ref-counted scrollLock,
+ *     wave 12-14).
+ *   - DOES dismiss on Esc, on backdrop click, and via the close
+ *     button — Escape answers one layer per press while stacked
+ *     (overlayStack, wave 12-14).
  *   - z-index 600 — above every other overlay.
  */
 import { useRef, type ReactNode } from 'react';
@@ -46,7 +49,7 @@ export function Lightbox({
   children,
 }: LightboxProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  useFocusTrap({ open, containerRef: contentRef, closeOnEscape, onClose });
+  useFocusTrap({ open, containerRef: contentRef, closeOnEscape, onClose, overlayKind: 'lightbox' });
   const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
 
   if (!rendered || typeof document === 'undefined') return null;

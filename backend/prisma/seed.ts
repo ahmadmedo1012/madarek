@@ -10,6 +10,7 @@
  *   teacher@zu.edu.ly  → TEACHER (د. سالم البوسيفي)
  *   admin@zu.edu.ly    → ADMIN   (إدارة الجامعة)
  *   quality@zu.edu.ly  → QUALITY (ضمان الجودة)
+ *   owner@zu.edu.ly    → OWNER   (مالك المنصة)
  */
 
 import {
@@ -221,6 +222,25 @@ async function main() {
       lastName: 'الجودة',
       avatarInitials: 'جو',
       avatarColor: '#D4A537',
+      emailVerifiedAt: new Date(),
+    },
+  });
+
+  // Platform owner — Master Control Panel demo account. Like ADMIN and
+  // QUALITY it carries no profile and keeps scopeFacultyId NULL (the
+  // schema's governance convention: NULL = university-wide). The AuthPage
+  // OWNER demo button and the snap.mjs owner cohort log in as this user.
+  await prisma.user.upsert({
+    where: { email: 'owner@zu.edu.ly' },
+    update: { passwordHash: password },
+    create: {
+      email: 'owner@zu.edu.ly',
+      passwordHash: password,
+      role: Role.OWNER,
+      firstName: 'مالك',
+      lastName: 'المنصة',
+      avatarInitials: 'مل',
+      avatarColor: '#6B7280',
       emailVerifiedAt: new Date(),
     },
   });

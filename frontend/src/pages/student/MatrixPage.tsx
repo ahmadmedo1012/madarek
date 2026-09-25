@@ -8,6 +8,7 @@ import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { useMatrix, useGaps } from '../../hooks/useResources';
 import { courseIcon, courseTint } from '../../lib/courseMeta';
+import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
  * lib/courseMeta.ts (wave 9-a). */

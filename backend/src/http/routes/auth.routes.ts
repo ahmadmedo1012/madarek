@@ -3,19 +3,26 @@ import { env } from '../../env.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
 import { authRateLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
-import { loginSchema, registerSchema } from '../../modules/auth/auth.dto.js';
+import { changePasswordSchema, loginSchema, registerSchema } from '../../modules/auth/auth.dto.js';
 import {
+  changePassword,
   getCurrentUser,
   loginUser,
   logoutUser,
   refreshTokens,
   registerUser,
 } from '../../modules/auth/auth.service.js';
-import { verifyRefreshToken } from '../../lib/jwt.js';
+import { parseDurationMs, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
 
 const router = Router();
 const REFRESH_COOKIE = 'mdrk_refresh';
+
+// Derived from the SAME string jsonwebtoken signs the refresh token with
+// (env.jwtRefreshTtl) — the cookie must die with its token, not before
+// (stranded valid tokens) or after (client keeps shipping dead tokens).
+// Previously a second, hardcoded 7d copy lived here (audit 11-a P2-10).
+const REFRESH_COOKIE_MAX_AGE_MS = parseDurationMs(env.jwtRefreshTtl);
 
 const setRefreshCookie = (res: import('express').Response, token: string) => {
   res.cookie(REFRESH_COOKIE, token, {
@@ -23,7 +30,7 @@ const setRefreshCookie = (res: import('express').Response, token: string) => {
     secure: env.cookieSecure,
     sameSite: 'strict',
     path: '/api/v1/auth',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: REFRESH_COOKIE_MAX_AGE_MS,
   });
 };
 
@@ -54,9 +61,44 @@ router.post('/login', authRateLimiter, validate(loginSchema), async (req, res, n
   }
 });
 
-router.post('/refresh', async (req, res, next) => {
+/**
+ * Password change for the authenticated user.
+ *
+ * - argon2-verifies the CURRENT password first (never trust a live
+ *   session alone — shared machines),
+ * - enforces the shared password policy (same schema as register),
+ * - updates the hash and bumps tokenVersion in ONE atomic conditional
+ *   write (D3 revocation event): every OTHER device's refresh cookie
+ *   dies, while this device seamlessly continues on the fresh tokens
+ *   issued below (cookie rotated + new access token returned).
+ */
+router.post(
+  '/change-password',
+  authMiddleware,
+  authRateLimiter,
+  validate(changePasswordSchema),
+  async (req, res, next) => {
+    try {
+      const { user, accessToken, refreshToken } = await changePassword(
+        req.user!.id,
+        req.body.currentPassword,
+        req.body.newPassword,
+      );
+      setRefreshCookie(res, refreshToken);
+      res.json({ data: { user, accessToken } });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// Refresh gets the same strict limiter as login/register (audit 11-c
+// P2-4): legitimate clients refresh at most once per access-TTL per
+// device and successful refreshes are skipped by the limiter, so only
+// replay/brute-force attempts against the cookie are ever counted.
+router.post('/refresh', authRateLimiter, async (req, res, next) => {
   try {
-    const token = (req.cookies?.[REFRESH_COOKIE] as string | undefined) ?? '';
+    const token = req.cookies?.[REFRESH_COOKIE] ?? '';
     if (!token) throw AppError.unauthenticated('No refresh token');
     const { user, accessToken, refreshToken } = await refreshTokens(token);
     setRefreshCookie(res, refreshToken);
@@ -87,7 +129,7 @@ router.post('/logout', optionalAuthMiddleware, async (req, res, _next) => {
     }
   } else {
     // ...otherwise try to revoke via the refresh cookie.
-    const token = (req.cookies?.[REFRESH_COOKIE] as string | undefined) ?? '';
+    const token = req.cookies?.[REFRESH_COOKIE] ?? '';
     if (token) {
       try {
         const payload = verifyRefreshToken(token);

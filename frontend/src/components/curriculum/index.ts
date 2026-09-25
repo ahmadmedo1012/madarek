@@ -10,6 +10,7 @@ export {
   formatSec,
   parseTimeToSec,
   withinDuration,
+  adjustCorrectIndexOnRemove,
   LECTURE_MEDIA_URL_PATTERN,
   MAX_MEDIA_SEC,
   MAX_ORDINAL,

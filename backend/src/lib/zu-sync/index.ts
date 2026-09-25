@@ -32,7 +32,10 @@ export const STALE_RUNNING_RUN_MS = 15 * 60 * 1000;
 
 export interface SyncResult {
   runId: string;
-  status: 'SUCCESS' | 'PARTIAL' | 'FAILED';
+  // A run either lands all facts ('SUCCESS') or is failed whole — there
+  // are no partial semantics here. (The DB-level SyncRunStatus enum keeps
+  // a PARTIAL value, but runSync never produces it.)
+  status: 'SUCCESS' | 'FAILED';
   factsAdded: number;
   factsUpdated: number;
   durationMs: number;

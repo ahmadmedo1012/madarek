@@ -2,6 +2,7 @@ import { lazy, Suspense, useRef, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import '../styles/pdf.css'; // pdf viewer + annotations surfaces (D11 css split, 12-15)
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.
 const PdfViewer = lazy(() => import('../components/pdf/PdfViewer'));

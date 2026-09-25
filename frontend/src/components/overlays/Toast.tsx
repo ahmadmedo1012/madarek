@@ -75,12 +75,21 @@ export function Toast({
 }: ToastProps) {
   const labelId = useId();
 
+  // Latest-callback ref (audit 11-e P2-6): an inline onClose from the
+  // parent must not re-run the auto-dismiss effect — otherwise every
+  // parent re-render restarted the 5s clock and could defer dismissal
+  // indefinitely.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
     if (variant === 'error') return; // Error requires manual dismiss.
-    const t = window.setTimeout(onClose, durationMs);
+    const t = window.setTimeout(() => onCloseRef.current(), durationMs);
     return () => window.clearTimeout(t);
-  }, [open, variant, durationMs, onClose]);
+  }, [open, variant, durationMs]);
 
   if (!open || typeof document === 'undefined') return null;
 
@@ -121,9 +130,11 @@ const VARIANT_ICON: Record<ToastVariant, LucideIcon> = {
 
 /** Horizontal travel (px) after which a touch swipe dismisses. */
 const SWIPE_THRESHOLD_PX = 64;
-/** Token + slack safety net when animationend never fires (jsdom etc.). */
-const EXIT_FALLBACK_MS = readExitFallbackMs();
 
+/** Token + slack safety net when animationend never fires (jsdom etc.).
+ * Read lazily per close (audit 11-e P2-7) — a module-load read would
+ * freeze the value before CSS is parsed and ignore later
+ * reduced-motion flips. */
 function readExitFallbackMs(): number {
   return readMotionDurationMs('--motion-duration-short', 160) + 80;
 }
@@ -171,7 +182,8 @@ function ToastCard({ item }: { item: ToastItem }) {
   /* ── Exit: animationend drives the unmount, timer is the net ── */
   useEffect(() => {
     if (!item.closing) return;
-    const t = window.setTimeout(() => remove(item.id), EXIT_FALLBACK_MS);
+    const fallbackMs = readExitFallbackMs();
+    const t = window.setTimeout(() => remove(item.id), fallbackMs);
     return () => window.clearTimeout(t);
   }, [item.closing, item.id, remove]);
 

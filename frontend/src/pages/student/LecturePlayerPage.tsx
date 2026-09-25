@@ -16,6 +16,31 @@ function fmtTime(sec: number) {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
+/* Audit 11-f P0-1 (frontend half of the D9 rule): `durationSec` is an
+   optional authoring field — 0 means "unset". A raw
+   currentTime / durationSec division yields Infinity when the duration
+   is unset, so the periodic reporter used to send completed:true for
+   lectures that can never honestly complete. Completion requires a
+   real authored duration AND a finite share of it actually watched. */
+export function isWatchComplete(currentTime: number, durationSec: number): boolean {
+  if (!(durationSec > 0)) return false;
+  const share = currentTime / durationSec;
+  return Number.isFinite(share) && share >= 0.95;
+}
+
+/* Audit 11-f P1-6 — resume-seek target for a returning student: the
+   server-saved high-water mark, rewound 3s for context, clamped inside
+   the real video duration. null = don't seek (already completed, or a
+   trivial saved position not worth interrupting the start for). */
+export function resumeSeekSec(savedSec: number, completed: boolean, videoDuration: number): number | null {
+  if (completed || savedSec <= 5) return null;
+  const target = Math.max(0, savedSec - 3);
+  if (Number.isFinite(videoDuration) && videoDuration > 0) {
+    return Math.min(target, Math.max(0, Math.floor(videoDuration) - 1));
+  }
+  return target;
+}
+
 /* Option markers — checkpoint options are 2..6 (curriculumValidation.ts
    caps them at MAX_CHECKPOINT_OPTIONS = 6); the numeral is a fallback. */
 const OPTION_MARKS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
@@ -66,6 +91,10 @@ export default function LecturePlayerPage() {
   const qc = useQueryClient();
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  // One-shot resume-seek guard: the saved position is applied on the
+  // first loadedmetadata only — manual seeks and chapter clicks are
+  // never affected (audit 11-f P1-6).
+  const resumeSeekedRef = useRef(false);
   const [currentSec, setCurrentSec] = useState(0);
   const [activeCheckpoint, setActiveCheckpoint] = useState<LectureCheckpoint | null>(null);
   const [answeredCheckpointIds, setAnsweredCheckpointIds] = useState<Set<string>>(new Set());
@@ -83,7 +112,10 @@ export default function LecturePlayerPage() {
         lectureId: data.id,
         watchedSec: Math.round(v.currentTime),
         totalSec: data.durationSec,
-        completed: v.currentTime / data.durationSec >= 0.95,
+        // P0-1 guard: an unset duration (0) can never complete — the
+        // old raw division turned ÷0 into Infinity and marked every
+        // duration-less lecture complete after 10 seconds.
+        completed: isWatchComplete(v.currentTime, data.durationSec),
       });
     }, 10_000);
     return () => clearInterval(id);
@@ -175,8 +207,9 @@ export default function LecturePlayerPage() {
   };
 
   // Watch progress — live position (throttled to 1 render/sec below)
-  // floored by the server-saved maximum, so a resumed lecture starts
-  // at its recorded progress instead of 0%.
+  // floored by the server-saved maximum; a resumed lecture also seeks
+  // the <video> itself to the saved position on first metadata load
+  // (see onLoadedMetadata), so the bar and the playback agree.
   const totalSec = data.durationSec;
   const livePct = totalSec > 0 ? Math.min(100, Math.round((currentSec / totalSec) * 100)) : 0;
   const savedSec = (data.watchEvents ?? []).reduce((max, e) => Math.max(max, e.watchedSec), 0);
@@ -208,6 +241,16 @@ export default function LecturePlayerPage() {
               playsInline
               preload="metadata"
               aria-label={`محاضرة: ${data.title}`}
+              onLoadedMetadata={(e) => {
+                // Resume-seek (audit 11-f P1-6): on the first metadata
+                // load, continue from the server-saved position instead
+                // of restarting at 0:00 — completed lectures and
+                // near-start positions are skipped (see resumeSeekSec).
+                if (resumeSeekedRef.current) return;
+                resumeSeekedRef.current = true;
+                const target = resumeSeekSec(savedSec, completed, e.currentTarget.duration);
+                if (target !== null && target > 0) e.currentTarget.currentTime = target;
+              }}
               onTimeUpdate={(e) => {
                 // `timeupdate` fires ~4×/sec; the elapsed-time label,
                 // chapter highlight and checkpoint triggers all work at
@@ -219,13 +262,19 @@ export default function LecturePlayerPage() {
                 const t = e.currentTarget.currentTime;
                 setCurrentSec((prev) => (Math.floor(prev) === Math.floor(t) ? prev : Math.floor(t)));
               }}
-              onEnded={() => {
+              onEnded={(e) => {
                 if (data) {
+                  // Honest end-of-video report: the actually-watched
+                  // amount, not the authored duration. Completion still
+                  // requires an authored duration (0 = unset is never
+                  // completable, mirroring the server-side D9 rule — the
+                  // server stays the authority on what counts as done).
+                  const watched = Math.round(e.currentTarget.currentTime);
                   reportWatch.mutate({
                     lectureId: data.id,
-                    watchedSec: data.durationSec,
+                    watchedSec: watched,
                     totalSec: data.durationSec,
-                    completed: true,
+                    completed: data.durationSec > 0,
                   });
                 }
               }}

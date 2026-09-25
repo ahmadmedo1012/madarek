@@ -12,6 +12,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  adjustCorrectIndexOnRemove,
   chapterFormSchema,
   checkpointFormOptions,
   checkpointFormSchema,
@@ -233,5 +234,43 @@ describe('checkpointFormSchema — options bounds + correctIndex', () => {
   });
   it('flattens the object rows into the API string[]', () => {
     expect(checkpointFormOptions(VALID_CHECKPOINT)).toEqual(['طبقة الشبكة', 'طبقة النقل']);
+  });
+});
+
+/* ── Option removal → correctIndex adjustment (11-f P1-7) ────── */
+
+describe('adjustCorrectIndexOnRemove — keeps the marked answer honest', () => {
+  it('shifts the mark down when an earlier option is removed', () => {
+    expect(adjustCorrectIndexOnRemove(2, 0)).toBe(1);
+    expect(adjustCorrectIndexOnRemove(5, 2)).toBe(4);
+    // create-mode default: option 1 is marked, a draft option above it is removed
+    expect(adjustCorrectIndexOnRemove(0, 0)).toBe(CORRECT_INDEX_UNCHANGED);
+  });
+  it('resets the mark when the marked option itself is removed', () => {
+    expect(adjustCorrectIndexOnRemove(0, 0)).toBe(CORRECT_INDEX_UNCHANGED);
+    expect(adjustCorrectIndexOnRemove(3, 3)).toBe(CORRECT_INDEX_UNCHANGED);
+    expect(adjustCorrectIndexOnRemove(MAX_CHECKPOINT_OPTIONS - 1, MAX_CHECKPOINT_OPTIONS - 1)).toBe(
+      CORRECT_INDEX_UNCHANGED,
+    );
+  });
+  it('keeps the mark when a later option is removed', () => {
+    expect(adjustCorrectIndexOnRemove(1, 3)).toBe(1);
+    expect(adjustCorrectIndexOnRemove(0, MAX_CHECKPOINT_OPTIONS - 1)).toBe(0);
+  });
+  it('leaves the edit-mode sentinel untouched (nothing is marked)', () => {
+    expect(adjustCorrectIndexOnRemove(CORRECT_INDEX_UNCHANGED, 0)).toBe(CORRECT_INDEX_UNCHANGED);
+    expect(adjustCorrectIndexOnRemove(CORRECT_INDEX_UNCHANGED, 5)).toBe(CORRECT_INDEX_UNCHANGED);
+  });
+  it('a reset mark is the schema-valid sentinel — the create-mode submit guard owns the re-pick', () => {
+    const values = {
+      ...VALID_CHECKPOINT,
+      correctIndex: adjustCorrectIndexOnRemove(VALID_CHECKPOINT.correctIndex, VALID_CHECKPOINT.correctIndex),
+      options: [{ value: 'أ' }, { value: 'ب' }],
+    };
+    // The sentinel itself is schema-valid (edit mode relies on it); what
+    // matters is that removal NEVER silently re-points the mark at a
+    // shifted option — it goes to -1 and the create-mode guard blocks.
+    expect(values.correctIndex).toBe(CORRECT_INDEX_UNCHANGED);
+    expect(checkpointFormSchema.safeParse(values).success).toBe(true);
   });
 });

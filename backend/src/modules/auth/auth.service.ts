@@ -1,12 +1,12 @@
-import { Role, type User } from '@prisma/client';
+import { AcademicRank, Role, type User } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { hashPassword, verifyPassword } from '../../lib/password.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
-
-const MAX_FAILED_LOGINS = 5;
-const LOCK_DURATION_MS = 15 * 60 * 1000;
+import { decideRefresh, interpretRevocationBump } from './rotation.js';
+import { LOCK_DURATION_MS, MAX_FAILED_LOGINS, shouldLock } from './lockout.js';
+import { passwordSchema } from './auth.dto.js';
 
 /**
  * Login-attempt context captured by the route layer for telemetry.
@@ -53,9 +53,19 @@ const writeLoginEvent = async (event: {
  * identifier" path costs the same ~100ms as the "wrong password" path.
  * Without it, response-time deltas let attackers enumerate which emails
  * are registered. Computed once at module load with the same argon2
- * parameters as real password hashes.
+ * parameters as real password hashes. Also burned on the ACCOUNT_LOCKED
+ * path so lock state isn't timing-visible either.
  */
 const DUMMY_HASH_PROMISE = hashPassword('madarek-timing-equalizer-no-account');
+
+/** Burn one dummy-hash argon2 verify; never changes the rejection path. */
+const burnDummyVerify = async (password: string): Promise<void> => {
+  try {
+    await verifyPassword(await DUMMY_HASH_PROMISE, password);
+  } catch {
+    // Even a broken dummy hash must not change the rejection path.
+  }
+};
 
 const arabicInitials = (firstName: string, lastName: string) => {
   const f = firstName.trim()[0] ?? '';
@@ -92,7 +102,9 @@ export interface RegisterInput {
   universityId?: string;
   year?: number;
   specialty?: string;
-  rank?: string;
+  // Prisma enum union — the DTO's z.enum validates the same members, so
+  // no cast is needed when writing TeacherProfile.rank.
+  rank?: AcademicRank;
 }
 
 export const registerUser = async (input: RegisterInput) => {
@@ -149,7 +161,7 @@ export const registerUser = async (input: RegisterInput) => {
         data: {
           userId: created.id,
           specialty: input.specialty,
-          rank: (input.rank as never) ?? 'LECTURER',
+          rank: input.rank ?? 'LECTURER',
           departmentId: input.departmentId,
         },
       });
@@ -169,8 +181,15 @@ export const registerUser = async (input: RegisterInput) => {
  *     The LoginEvent is written best-effort: if the DB write fails,
  *     the login itself still succeeds (we don't want logging to
  *     block auth).
- *   - On failed password: bumps failedLoginCount, locks the account
- *     after MAX_FAILED_LOGINS attempts for LOCK_DURATION_MS.
+ *   - On failed password: increments failedLoginCount ATOMICALLY (the
+ *     authoritative post-increment value is read back — racing logins
+ *     each count exactly once) and locks the account for
+ *     LOCK_DURATION_MS once the live count reaches MAX_FAILED_LOGINS.
+ *   - On locked account: burns the same argon2 work as the other
+ *     failure paths so lock state isn't timing-visible. (The 429 status
+ *     itself still discloses "identifier exists AND is locked" — an
+ *     accepted tradeoff, because a genuinely locked-out user needs the
+ *     explanation; the argon2 burn removes the silent timing oracle.)
  *   - On unknown identifier: burns equal argon2 work (timing
  *     equalization) so identifier enumeration via response time is
  *     not possible.
@@ -198,16 +217,16 @@ export const loginUser = async (
   if (!user) {
     // Burn the same argon2 work a real password check would cost so a
     // timing side-channel can't reveal which identifiers exist.
-    try {
-      await verifyPassword(await DUMMY_HASH_PROMISE, password);
-    } catch {
-      // Even a broken dummy hash must not change the rejection path.
-    }
+    await burnDummyVerify(password);
     await writeLoginEvent({ email: identifier, success: false, reason: 'USER_NOT_FOUND', ...ctx });
     throw AppError.invalidCredentials();
   }
 
   if (user.lockedUntil && user.lockedUntil > new Date()) {
+    // Timing-equalize the locked path too: skipping argon2 here made the
+    // 429 ~100ms faster than a wrong-password 401, revealing both that
+    // the identifier exists AND that it is locked (audit 11-c P2-1).
+    await burnDummyVerify(password);
     await writeLoginEvent({
       email: identifier,
       success: false,
@@ -220,15 +239,25 @@ export const loginUser = async (
 
   const ok = await verifyPassword(user.passwordHash, password);
   if (!ok) {
-    const failed = user.failedLoginCount + 1;
-    await prisma.user.update({
+    // Atomic failure accounting (see modules/auth/lockout.ts for the
+    // guarantee level). The increment is atomic in SQL and the value
+    // read back is authoritative, so racing failures can no longer
+    // under-count their way past the lock threshold.
+    const { failedLoginCount: failed } = await prisma.user.update({
       where: { id: user.id },
-      data: {
-        failedLoginCount: failed,
-        lockedUntil:
-          failed >= MAX_FAILED_LOGINS ? new Date(Date.now() + LOCK_DURATION_MS) : null,
-      },
+      data: { failedLoginCount: { increment: 1 } },
+      select: { failedLoginCount: true },
     });
+    if (shouldLock(failed)) {
+      // Re-check the threshold against the LIVE row (not our possibly
+      // stale read): concurrent failures converge on locking, and a
+      // concurrent SUCCESSFUL login (which resets the counter) makes
+      // this condition miss — correctly leaving the account unlocked.
+      await prisma.user.updateMany({
+        where: { id: user.id, failedLoginCount: { gte: MAX_FAILED_LOGINS } },
+        data: { lockedUntil: new Date(Date.now() + LOCK_DURATION_MS) },
+      });
+    }
     await writeLoginEvent({
       email: identifier,
       success: false,
@@ -262,6 +291,21 @@ export const loginUser = async (
   return issueTokens(user);
 };
 
+/**
+ * Refresh the session from a refresh token.
+ *
+ * D3 (BINDING): a normal refresh does NOT bump tokenVersion. The version
+ * is one user-level counter shared by every device; bumping it here would
+ * invalidate every other device's 7-day cookie within one access-TTL
+ * (~15 min) — the old multi-device forced-logout bug. The re-issued
+ * refresh token carries the SAME version (sliding session, not one-time
+ * rotation). Revocation happens ONLY via explicit version bumps — see
+ * logoutUser / changePassword — which are atomic conditionals.
+ *
+ * Honest tradeoff: the PREVIOUS refresh token stays valid until its own
+ * 7-day expiry (no blacklisting). Per-session revocation would need a
+ * RefreshToken table — schema change, reported to the orchestrator.
+ */
 export const refreshTokens = async (refreshToken: string) => {
   let payload;
   try {
@@ -270,20 +314,99 @@ export const refreshTokens = async (refreshToken: string) => {
     throw AppError.unauthenticated('Invalid refresh token');
   }
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
-  if (!user || !user.isActive) throw AppError.unauthenticated();
-  if (user.tokenVersion !== payload.ver) throw AppError.unauthenticated('Refresh token revoked');
-
-  // Rotate: bump tokenVersion so the old refresh becomes invalid.
-  const updated = await prisma.user.update({
-    where: { id: user.id },
-    data: { tokenVersion: { increment: 1 } },
-  });
-  return issueTokens(updated);
+  if (!user) throw AppError.unauthenticated();
+  const decision = decideRefresh(user, payload.ver);
+  if (decision.outcome === 'reauth') {
+    // Keep the distinct message: the SPA treats "revoked" as a hard
+    // logout (drop to the login screen) vs a generic 401.
+    throw decision.reason === 'revoked'
+      ? AppError.unauthenticated('Refresh token revoked')
+      : AppError.unauthenticated();
+  }
+  return issueTokens(user);
 };
 
+/**
+ * Logout = revoke every refresh token for the user (all devices).
+ *
+ * D3 revocation event: the bump is an ATOMIC CONDITIONAL on the version
+ * our decision was based on. count === 0 means a concurrent writer
+ * (password change, role change, deactivation, another logout) already
+ * moved tokenVersion — which itself revokes every token — so the
+ * revocation goal is already achieved and we no-op.
+ */
 export const logoutUser = async (userId: string) => {
-  // Revoke all refresh tokens by bumping the version.
-  await prisma.user.update({ where: { id: userId }, data: { tokenVersion: { increment: 1 } } });
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { tokenVersion: true },
+  });
+  if (!user) return;
+  const result = await prisma.user.updateMany({
+    where: { id: userId, tokenVersion: user.tokenVersion },
+    data: { tokenVersion: { increment: 1 } },
+  });
+  if (interpretRevocationBump(result.count) === 'superseded') {
+    // A concurrent writer (password change, role change, deactivation,
+    // another logout) already moved tokenVersion — which itself revokes
+    // every token. The logout goal is already achieved; logout must
+    // never fail because someone else revoked first.
+    logger.debug({ userId }, 'logout revocation superseded by a concurrent writer');
+  }
+};
+
+/**
+ * Change the authenticated user's password.
+ *
+ * Revocation event per D3: the hash update AND the tokenVersion bump
+ * happen in ONE atomic conditional write, so a password change can never
+ * land without revoking every session (and a concurrent revocation can
+ * never be silently overwritten). count === 0 → a concurrent writer won
+ * → the change did NOT apply → the client must re-authenticate.
+ *
+ * On success a fresh session is issued for THIS device (new access token
+ * + new refresh cookie); every OTHER device is logged out by the bump.
+ */
+export const changePassword = async (
+  userId: string,
+  currentPassword: string,
+  newPassword: string,
+) => {
+  // Defense-in-depth: the route DTO enforces the same policy; this guard
+  // keeps programmatic callers (scripts, future admin flows) honest.
+  const policy = passwordSchema.safeParse(newPassword);
+  if (!policy.success) {
+    throw AppError.badRequest('Password does not meet the policy', policy.error.flatten());
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || !user.isActive) throw AppError.unauthenticated();
+
+  const ok = await verifyPassword(user.passwordHash, currentPassword);
+  if (!ok) {
+    // Rate limiting (route limiter) is the brute-force guard here; the
+    // login lockout counters intentionally stay untouched.
+    throw AppError.invalidCredentials('Current password is incorrect');
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+  const result = await prisma.user.updateMany({
+    where: { id: user.id, tokenVersion: user.tokenVersion },
+    data: { passwordHash, tokenVersion: { increment: 1 } },
+  });
+  if (interpretRevocationBump(result.count) === 'superseded') {
+    // A concurrent revocation moved the version between our read and
+    // write. Our change did not apply — do NOT retry blindly (the
+    // current-password check was made against the pre-concurrent state).
+    // Surface re-authentication per D3.
+    throw AppError.unauthenticated('Session changed concurrently. Please sign in again.');
+  }
+
+  // Re-read for the fresh version (the bump is atomic, but another
+  // revocation could still land before we issue; that token would 401
+  // on its next refresh — acceptable and documented).
+  const updated = await prisma.user.findUnique({ where: { id: user.id } });
+  if (!updated) throw AppError.unauthenticated();
+  return issueTokens(updated);
 };
 
 export const getCurrentUser = async (userId: string) => {

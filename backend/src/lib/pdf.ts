@@ -39,7 +39,17 @@ export async function extractPaperText(fileUrl: string | null | undefined): Prom
   // Only handle local /api/v1/files/papers/... URLs and bare filenames.
   let filename: string | null = null;
   if (fileUrl.startsWith('/api/v1/files/papers/')) {
-    filename = decodeURIComponent(fileUrl.slice('/api/v1/files/papers/'.length));
+    const raw = fileUrl.slice('/api/v1/files/papers/'.length);
+    try {
+      filename = decodeURIComponent(raw);
+    } catch {
+      // Malformed percent sequence (e.g. `.../papers/100%.pdf`) throws
+      // URIError. fileUrl is user-controlled input stored on the paper
+      // row — honor the no-throw contract below instead of 500ing the
+      // scan route.
+      logger.warn({ fileUrl }, 'paper fileUrl has malformed percent-encoding; skipping extraction');
+      return null;
+    }
   } else if (!fileUrl.includes('://') && !fileUrl.startsWith('/')) {
     filename = fileUrl;
   }

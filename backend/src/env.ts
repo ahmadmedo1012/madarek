@@ -21,6 +21,12 @@ const schema = z.object({
   // (012-design-graphics-uplift). When unset, every gated endpoint
   // refuses every request — fail-closed by default.
   INTERNAL_SERVICE_TOKEN: z.string().min(16).optional(),
+  // Optional comma-separated CORS origin allow-list, e.g.
+  // CORS_ORIGINS="https://madarek.onrender.com,https://staging.example.com".
+  // Unset (or empty after trimming) → DEFAULT_CORS_ORIGINS below.
+  // Wildcards are NOT supported on purpose: credentials are enabled,
+  // so reflecting arbitrary origins would be a CSRF/CORS hole.
+  CORS_ORIGINS: z.string().optional(),
 });
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -49,14 +55,32 @@ if (!parsed.success) {
 
 const isProd = parsed.data.NODE_ENV === 'production';
 
+/** CORS allow-list fallback — production is same-origin, so this mostly serves local Vite dev. */
+const DEFAULT_CORS_ORIGINS = ['https://madarek.onrender.com', 'http://localhost:5173'];
+
+/**
+ * Parse CORS_ORIGINS (comma-separated) into a normalized allow-list.
+ * Trailing slashes are stripped because the Origin header never has
+ * one ("https://x.com/" would silently never match "https://x.com").
+ */
+function parseCorsOrigins(raw: string | undefined): string[] {
+  if (!raw) return DEFAULT_CORS_ORIGINS;
+  const origins = raw
+    .split(',')
+    .map((entry) => entry.trim().replace(/\/+$/, ''))
+    .filter((entry) => entry.length > 0);
+  return origins.length > 0 ? origins : DEFAULT_CORS_ORIGINS;
+}
+
 export const env = {
   ...parsed.data,
   isProd,
   // In production we serve the built frontend from Express and require HTTPS cookies.
   serveStatic: isProd,
   cookieSecure: isProd,
-  // CORS allow-list — production is same-origin so this is mostly for local Vite dev.
-  corsOrigins: ['https://madarek.onrender.com', 'http://localhost:5173'],
+  // CORS allow-list — env-driven (CORS_ORIGINS), hardcoded default kept
+  // for backward compatibility (11-a P2-11).
+  corsOrigins: parseCorsOrigins(parsed.data.CORS_ORIGINS),
   jwtAccessTtl: '15m' as const,
   jwtRefreshTtl: '7d' as const,
 };

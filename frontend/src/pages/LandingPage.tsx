@@ -11,7 +11,7 @@ import { CollegesPopover } from '../components/CollegesPopover';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
-import { Reveal } from '../hooks/useReveal';
+import { RevealCssClass } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
 import { colleges } from '../data/colleges.config';
 import { Parallax } from '../components/motion/Parallax';
@@ -32,22 +32,27 @@ export default function LandingPage() {
   useThemeSync();
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
-  const [collegesOpen, setCollegesOpen] = useState(false);
 
   // Authenticated visitors never see the landing page — redirect via the
-  // declarative <Navigate> (navigate() during render is a React anti-pattern:
-  // it fires side effects mid-render and warns in StrictMode).
-  if (isHydrated && user) {
-    const home =
-      user.role === 'TEACHER' ? '/teacher/dashboard' :
-      user.role === 'ADMIN'   ? '/admin/dashboard'   :
-      user.role === 'QUALITY' ? '/quality/dashboard' :
-      user.role === 'OWNER'   ? '/owner/dashboard'   :
-      '/student/dashboard';
-    return <Navigate to={home} replace />;
-  }
+  // declarative <Navigate> (navigate() during render is a React
+  // anti-pattern: it fires side effects mid-render and warns in
+  // StrictMode). The target is only COMPUTED here; the <Navigate> itself
+  // is rendered after every hook below has run. Returning before the
+  // hooks violated the rules of hooks (audit 11-f P1-4): it held only
+  // while zustand rehydrated synchronously, and would crash the route
+  // the moment the auth state flipped while mounted. App.tsx's
+  // HomeRedirect already gates `/` for signed-in users, so this branch
+  // is defense-in-depth (direct mounts, in-session login flips).
+  const redirectHome =
+    isHydrated && user
+      ? user.role === 'TEACHER' ? '/teacher/dashboard'
+        : user.role === 'ADMIN' ? '/admin/dashboard'
+          : user.role === 'QUALITY' ? '/quality/dashboard'
+            : user.role === 'OWNER' ? '/owner/dashboard'
+              : '/student/dashboard'
+      : null;
 
-  const year = new Date().getFullYear();
+  const [collegesOpen, setCollegesOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [megamenuOpen, setMegamenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -71,13 +76,15 @@ export default function LandingPage() {
   });
 
   useEffect(() => {
-    if (introSeen) return; // already marked by an earlier visit this session
+    // redirectHome: don't burn the one "first visit" marker on a render
+    // that immediately redirects an already-authenticated visitor.
+    if (redirectHome || introSeen) return; // already marked by an earlier visit this session
     try {
       window.sessionStorage.setItem('madarek.intro.seen', '1');
     } catch {
       // sessionStorage may be blocked in private mode — that's fine.
     }
-  }, [introSeen]);
+  }, [redirectHome, introSeen]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -178,6 +185,14 @@ export default function LandingPage() {
       cancelAnimationFrame(raf);
     };
   }, []);
+
+  // Rules-of-hooks-safe redirect (see redirectHome above): every hook has
+  // already run unconditionally, so the auth state flipping while mounted
+  // no longer changes the hook count — it just swaps the landing tree for
+  // <Navigate>.
+  if (redirectHome) return <Navigate to={redirectHome} replace />;
+
+  const year = new Date().getFullYear();
 
   return (
     <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
@@ -303,27 +318,27 @@ export default function LandingPage() {
       <main>
       {/* HERO — huge centered title + mockup */}
       <section ref={heroRef} className="marketing-container landing-hero">
-        <Reveal as="div" className="landing-hero-scene">
+        <RevealCssClass as="div" className="landing-hero-scene">
           <Illustration name="homepage-hero" decorative />
-        </Reveal>
-        <Reveal as="span" className="landing-hero-eyebrow">
+        </RevealCssClass>
+        <RevealCssClass as="span" className="landing-hero-eyebrow">
           <strong>جديد</strong>
           المساعد الأكاديمي «Oasis» متاح الآن
           <Icon icon={ArrowLeft} size={12} />
-        </Reveal>
-        <Reveal as="h1" className="landing-title" delay={1}>
+        </RevealCssClass>
+        <RevealCssClass as="h1" className="landing-title" delay={1}>
           <span className="word">منصّة</span>{' '}
           <span className="word"><em>التعليم</em></span>{' '}
           <span className="word">الذكيّ</span>
           <br />
           <span className="word">لجامعة</span>{' '}
           <span className="word landing-title-highlight">الزّاوية</span>
-        </Reveal>
-        <Reveal as="p" className="landing-subtitle" delay={2}>
+        </RevealCssClass>
+        <RevealCssClass as="p" className="landing-subtitle" delay={2}>
           مساحة عمل أكاديمية واحدة تُمكّن الطالب والأستاذ والإدارة وضمان الجودة
           من إدارة المحاضرات، البحوث، الامتحانات والتقييم — بهدوء وسهولة.
-        </Reveal>
-        <Reveal as="div" className="landing-cta-row" delay={3}>
+        </RevealCssClass>
+        <RevealCssClass as="div" className="landing-cta-row" delay={3}>
           <Link to="/auth" className="btn primary xl">
             ابدأ مجاناً الآن
             <Icon icon={ArrowLeft} size={16} />
@@ -340,8 +355,8 @@ export default function LandingPage() {
             <span>تصفّح الكلّيّات</span>
             <span className="landing-colleges-trigger-badge">{COLLEGES_COUNT}</span>
           </button>
-        </Reveal>
-        <Reveal as="div" className="landing-cta-meta" delay={4}>
+        </RevealCssClass>
+        <RevealCssClass as="div" className="landing-cta-meta" delay={4}>
           <span className="landing-inline-cluster">
             <Icon icon={Check} size={14} /> بدون بطاقة ائتمان
           </span>
@@ -353,10 +368,10 @@ export default function LandingPage() {
           <span className="landing-inline-cluster">
             <Icon icon={Check} size={14} /> اعتماد رسميّ
           </span>
-        </Reveal>
+        </RevealCssClass>
 
         {/* mockup */}
-        <Reveal as="div" className="landing-mockup" delay={5}>
+        <RevealCssClass as="div" className="landing-mockup" delay={5}>
           <div className="landing-mockup-frame">
             <div className="landing-mockup-chrome">
               <span className="landing-mockup-dot" />
@@ -415,7 +430,7 @@ export default function LandingPage() {
               <span className="landing-mockup-badge-sub">يحضِّر ملخَّص الفصل…</span>
             </span>
           </div>
-        </Reveal>
+        </RevealCssClass>
       </section>
 
       {/* Logo strip */}
@@ -434,32 +449,32 @@ export default function LandingPage() {
       {/* University facts — straight from zu.edu.ly */}
       <section className="marketing-container">
         <div className="landing-pilot-grid">
-          <Reveal as="div" className="landing-pilot-stat">
+          <RevealCssClass as="div" className="landing-pilot-stat">
             <div className="landing-pilot-value"><CountUp value={String(COLLEGES_COUNT)} /></div>
             <div className="landing-pilot-label">كلّيّة أكاديميّة</div>
             <div className="landing-pilot-note">حسب الموقع الرسميّ للجامعة</div>
-          </Reveal>
-          <Reveal as="div" className="landing-pilot-stat" delay={1}>
+          </RevealCssClass>
+          <RevealCssClass as="div" className="landing-pilot-stat" delay={1}>
             <div className="landing-pilot-value"><CountUp value="4" /></div>
             <div className="landing-pilot-label">مدن وفروع</div>
             <div className="landing-pilot-note">الزاوية، العجيلات، زوارة وأخرى</div>
-          </Reveal>
-          <Reveal as="div" className="landing-pilot-stat" delay={2}>
+          </RevealCssClass>
+          <RevealCssClass as="div" className="landing-pilot-stat" delay={2}>
             <div className="landing-pilot-value">1988</div>
             <div className="landing-pilot-label">عام التأسيس</div>
             <div className="landing-pilot-note">بقرار رقم 135</div>
-          </Reveal>
-          <Reveal as="div" className="landing-pilot-stat" delay={3}>
+          </RevealCssClass>
+          <RevealCssClass as="div" className="landing-pilot-stat" delay={3}>
             <div className="landing-pilot-value"><CountUp value="3" /></div>
             <div className="landing-pilot-label">عضويّات دوليّة</div>
             <div className="landing-pilot-note">عربيّة، أفريقيّة، إسلاميّة</div>
-          </Reveal>
+          </RevealCssClass>
         </div>
       </section>
 
       {/* Campus showcase — optimized hero (WebP/JPEG) with parallax + interactive overlay */}
       <section id="campus" className="marketing-container landing-campus" aria-label="جامعة الزاوية">
-        <Reveal as="figure" className="landing-campus-frame">
+        <RevealCssClass as="figure" className="landing-campus-frame">
           <Parallax amount={6} direction="up">
             {/* Optimized hero art: WebP first (99KB vs 2MB PNG), JPEG fallback
                 for ancient browsers. width/height pin the 1377×768 aspect
@@ -485,7 +500,7 @@ export default function LandingPage() {
               <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل
             </span>
           </figcaption>
-        </Reveal>
+        </RevealCssClass>
       </section>
 
       {/* FEATURES — sticker grid */}
@@ -502,61 +517,61 @@ export default function LandingPage() {
         </SectionAccent>
 
         <div className="landing-features-grid">
-          <Reveal as="article" id="matrix" className="landing-feature-card sticker-wiggle">
+          <RevealCssClass as="article" id="matrix" className="landing-feature-card sticker-wiggle">
             <span className="sticker lg peach"><Icon icon={Compass} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
             <p className="landing-feature-desc">
               مسارات تعلُّم تتكيَّف مع مستوى تقدُّمك ونقاط قوَّتك، تكشف الفجوات وتربطها
               تلقائياً بالدقائق التي تشرحها.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={1}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={1}>
             <span className="sticker lg lavender"><Icon icon={Brain} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">المساعد الأكاديمي</h3>
             <p className="landing-feature-desc">
               «Oasis» — رفيق دراسي يفهم سياق دراستك. شروحات مخصَّصة، تلخيصات،
               واختبارات تفاعلية حسب أدائك الفعلي.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={2}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={2}>
             <span className="sticker lg sky"><Icon icon={BarChart3} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">تحليلات أكاديمية</h3>
             <p className="landing-feature-desc">
               لوحة دقيقة لتقدُّمك لحظة بلحظة — الدرجات، الحضور، المهام، والمؤشرات
               المؤسسية، بصياغة تخدم القرار.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={3}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={3}>
             <span className="sticker lg mint"><Icon icon={BookOpen} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">مكتبة وبحوث</h3>
             <p className="landing-feature-desc">
               فهرس بحثيّ وفحص للنزاهة العلمية (الانتحال + المحتوى المُولَّد آلياً)
               مع مراجعة معلَّمة من الأستاذ.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={4}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={4}>
             <span className="sticker lg yellow"><Icon icon={Network} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">منظومة موحَّدة</h3>
             <p className="landing-feature-desc">
               المحاضرات، الحضور، الدرجات، الامتحانات، البحوث، والمعامل الافتراضية —
               كلها في تجربة واحدة آمنة ومتجاوبة.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={5}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={5}>
             <span className="sticker lg rose"><Icon icon={ShieldCheck} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">جودة مؤسسية</h3>
             <p className="landing-feature-desc">
               مؤشرات لقطاع الجودة: تقييم الأساتذة، مراجعة الاختبارات، أداء المقررات،
               وتقارير شاملة بصياغة رسمية.
             </p>
-          </Reveal>
+          </RevealCssClass>
         </div>
       </section>
 
       {/* COLORED BAND 1 — peach: Flipped classroom */}
       <section id="flipped" className="band band-peach">
         <div className="marketing-container band-split">
-          <Reveal as="div">
+          <RevealCssClass as="div">
             <span className="sticker xl peach"><Icon icon={GraduationCap} size={48} strokeWidth={1.6} /></span>
             <span className="band-eyebrow">الفصل المعكوس</span>
             <h2 className="band-title">
@@ -569,8 +584,8 @@ export default function LandingPage() {
             <div style={{ marginBlockStart: 32, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <Link to="/auth" className="btn primary lg">جرّب المحاضرة <Icon icon={ArrowLeft} size={14} /></Link>
             </div>
-          </Reveal>
-          <Reveal as="div" className="band-visual" delay={2}>
+          </RevealCssClass>
+          <RevealCssClass as="div" className="band-visual" delay={2}>
             <div className="band-visual-row">
               <span className="band-visual-checkbox on"><Icon icon={Check} size={12} strokeWidth={3} /></span>
               <span className="band-visual-text done">مقدمة في خوارزميات الفرز</span>
@@ -596,14 +611,14 @@ export default function LandingPage() {
               <span className="band-visual-text">امتحان قصير — أسبوع 4</span>
               <span className="band-visual-tag sky">امتحان</span>
             </div>
-          </Reveal>
+          </RevealCssClass>
         </div>
       </section>
 
       {/* COLORED BAND 2 — lavender: AI assistant */}
       <section id="ai" className="band band-lavender">
         <div className="marketing-container band-split">
-          <Reveal as="div" className="band-visual">
+          <RevealCssClass as="div" className="band-visual">
             {/* Chat mockup — de-inlined to .landing-ai-* classes in
                 landing.css (wave 9-a, 8-a follow-up); same visual result. */}
             <div className="landing-ai-head">
@@ -628,8 +643,8 @@ export default function LandingPage() {
               <span className="typing-dots"><span /><span /><span /></span>
               <span className="landing-ai-typing-label"><bdi>Oasis</bdi> يكتب…</span>
             </div>
-          </Reveal>
-          <Reveal as="div" delay={2}>
+          </RevealCssClass>
+          <RevealCssClass as="div" delay={2}>
             <span className="sticker xl lavender"><Icon icon={Sparkles} size={48} strokeWidth={1.6} /></span>
             <span className="band-eyebrow">المساعد الأكاديمي</span>
             <h2 className="band-title">
@@ -651,7 +666,7 @@ export default function LandingPage() {
                 </li>
               ))}
             </ul>
-          </Reveal>
+          </RevealCssClass>
         </div>
       </section>
 
@@ -665,43 +680,43 @@ export default function LandingPage() {
         </SectionAccent>
 
         <div className="landing-bento-grid">
-          <Reveal as="div" id="research" className="landing-bento-card span-3 band-mint">
+          <RevealCssClass as="div" id="research" className="landing-bento-card span-3 band-mint">
             <span className="sticker mint"><Icon icon={Microscope} size={28} /></span>
             <h3 className="landing-bento-title">البحوث والمكتبة</h3>
             <p className="landing-bento-desc">
               فهرس بحثيّ بفحص نزاهة علمية تلقائي (انتحال + AI) ومراجعة معلَّمة على
               الـPDF. آلاف الكتب الأكاديمية للاستعارة الفورية.
             </p>
-          </Reveal>
-          <Reveal as="div" className="landing-bento-card span-3 band-yellow" delay={1}>
+          </RevealCssClass>
+          <RevealCssClass as="div" className="landing-bento-card span-3 band-yellow" delay={1}>
             <span className="sticker yellow"><Icon icon={Calendar} size={28} /></span>
             <h3 className="landing-bento-title">الجدول الدراسي</h3>
             <p className="landing-bento-desc">
               جدول أسبوعيّ ذكيّ يجمع المحاضرات، التسليمات، الامتحانات، والاجتماعات —
               بمُذكِّرات تلقائية وروابط مباشرة لكل بند.
             </p>
-          </Reveal>
-          <Reveal as="div" className="landing-bento-card span-2 band-sky" delay={2}>
+          </RevealCssClass>
+          <RevealCssClass as="div" className="landing-bento-card span-2 band-sky" delay={2}>
             <span className="sticker sky"><Icon icon={ClipboardCheck} size={28} /></span>
             <h3 className="landing-bento-title">الامتحانات الإلكترونية</h3>
             <p className="landing-bento-desc">
               MCQ · صح/خطأ · إجابة قصيرة · مقالة. تصحيح تلقائي للموضوعي.
             </p>
-          </Reveal>
-          <Reveal as="div" id="labs" className="landing-bento-card span-2 band-rose" delay={3}>
+          </RevealCssClass>
+          <RevealCssClass as="div" id="labs" className="landing-bento-card span-2 band-rose" delay={3}>
             <span className="sticker rose"><Icon icon={FlaskConical} size={28} /></span>
             <h3 className="landing-bento-title">المعامل الافتراضية</h3>
             <p className="landing-bento-desc">
               <bdi>Cisco Packet Tracer</bdi>، <bdi>Arduino Sim</bdi>، وتجارب <bdi>AR/VR</bdi> للتطبيق العملي.
             </p>
-          </Reveal>
-          <Reveal as="div" id="achievements" className="landing-bento-card span-2 band-copper" delay={4}>
+          </RevealCssClass>
+          <RevealCssClass as="div" id="achievements" className="landing-bento-card span-2 band-copper" delay={4}>
             <span className="sticker copper"><Icon icon={Trophy} size={28} /></span>
             <h3 className="landing-bento-title">الإنجازات والشارات</h3>
             <p className="landing-bento-desc">
               نقاط، مستويات، شارات — لتشجيع الالتزام دون فرضه.
             </p>
-          </Reveal>
+          </RevealCssClass>
         </div>
       </section>
 
@@ -717,38 +732,38 @@ export default function LandingPage() {
           </p>
         </SectionAccent>
         <div className="landing-features-grid">
-          <Reveal as="article" className="landing-feature-card sticker-wiggle">
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle">
             <span className="sticker lg copper"><Icon icon={GraduationCap} size={32} /></span>
             <h3 className="landing-feature-title">الطالب</h3>
             <p className="landing-feature-desc">
               مقرَّرات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات،
               فرص عمل، ومكتبة بحوث.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={1}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={1}>
             <span className="sticker lg lavender"><Icon icon={Brain} size={32} /></span>
             <h3 className="landing-feature-title">الأستاذ</h3>
             <p className="landing-feature-desc">
               ذكاء أكاديميّ يكشف الطلَّاب المعرَّضين، إدارة المحاضرات والدرجات،
               ومعامل افتراضية بصلاحيات تحكُّم.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={2}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={2}>
             <span className="sticker lg sky"><Icon icon={Building2} size={32} /></span>
             <h3 className="landing-feature-title">الإدارة</h3>
             <p className="landing-feature-desc">
               إدارة الكليَّات والأساتذة والمقرَّرات، تقارير، ومزامنة يومية مع
               البيانات الرسمية لجامعة الزاوية.
             </p>
-          </Reveal>
-          <Reveal as="article" className="landing-feature-card sticker-wiggle" delay={3}>
+          </RevealCssClass>
+          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={3}>
             <span className="sticker lg mint"><Icon icon={ShieldCheck} size={32} /></span>
             <h3 className="landing-feature-title">ضمان الجودة</h3>
             <p className="landing-feature-desc">
               رؤية للمؤشرات المؤسسية: جودة المقرَّرات، تقييم الأساتذة،
               مراجعة الاختبارات والمناهج.
             </p>
-          </Reveal>
+          </RevealCssClass>
         </div>
       </section>
 
@@ -757,9 +772,9 @@ export default function LandingPage() {
         <div className="marketing-container">
           <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
             <span className="landing-section-eyebrow">دراسة ميدانية</span>
-            <Reveal as="div" className="landing-section-anchor" delay={1}>
+            <RevealCssClass as="div" className="landing-section-anchor" delay={1}>
               <Illustration name="milestone-section" decorative />
-            </Reveal>
+            </RevealCssClass>
             <h2 className="band-title">نتائج <em>تجربة فعلية</em></h2>
             <p className="band-lede">
               اعتمدنا استراتيجية الصفّ المعكوس على مادة اللغة الإنجليزية مع طلَّاب
@@ -767,26 +782,26 @@ export default function LandingPage() {
             </p>
           </SectionAccent>
           <div className="landing-pilot-grid">
-            <Reveal as="div" className="landing-pilot-stat">
+            <RevealCssClass as="div" className="landing-pilot-stat">
               <div className="landing-pilot-value"><CountUp value="40" />٪</div>
               <div className="landing-pilot-label">تحسُّن الاستيعاب</div>
               <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div>
-            </Reveal>
-            <Reveal as="div" className="landing-pilot-stat" delay={1}>
+            </RevealCssClass>
+            <RevealCssClass as="div" className="landing-pilot-stat" delay={1}>
               <div className="landing-pilot-value"><CountUp value="70" />٪</div>
               <div className="landing-pilot-label">زيادة في المشاركة</div>
               <div className="landing-pilot-note">داخل الحلقات النقاشية</div>
-            </Reveal>
-            <Reveal as="div" className="landing-pilot-stat" delay={2}>
+            </RevealCssClass>
+            <RevealCssClass as="div" className="landing-pilot-stat" delay={2}>
               <div className="landing-pilot-value"><CountUp value="30" />٪</div>
               <div className="landing-pilot-label">تحسُّن في الالتزام</div>
               <div className="landing-pilot-note">بمتابعة الجلسات</div>
-            </Reveal>
-            <Reveal as="div" className="landing-pilot-stat" delay={3}>
+            </RevealCssClass>
+            <RevealCssClass as="div" className="landing-pilot-stat" delay={3}>
               <div className="landing-pilot-value"><CountUp value="90" />٪</div>
               <div className="landing-pilot-label">تحقيق أهداف التعلُّم</div>
               <div className="landing-pilot-note">ضمن الإطار الزمني</div>
-            </Reveal>
+            </RevealCssClass>
           </div>
         </div>
       </section>
@@ -814,7 +829,7 @@ export default function LandingPage() {
               role: 'الإدارة وضمان الجودة', sub: 'حوكمة وإشراف دقيق',
             },
           ].map((t, i) => (
-            <Reveal as="figure" className="testimonial-card" key={t.role} delay={(i + 1) as 1 | 2 | 3}>
+            <RevealCssClass as="figure" className="testimonial-card" key={t.role} delay={(i + 1) as 1 | 2 | 3}>
               <blockquote className="testimonial-quote">{t.q}</blockquote>
               <figcaption className="testimonial-author">
                 <span className="testimonial-author-meta">
@@ -822,7 +837,7 @@ export default function LandingPage() {
                   <span className="testimonial-role">{t.sub}</span>
                 </span>
               </figcaption>
-            </Reveal>
+            </RevealCssClass>
           ))}
         </div>
       </section>

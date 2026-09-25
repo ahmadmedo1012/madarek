@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-// Opt-in bundle analysis: `BUNDLE_REPORT=1 npm run build` writes
+// Opt-in bundle analysis: `BUNDLE_REPORT=1 npm run build` (or
+// `npm run build:report`, which sets the flag) writes
 // dist/bundle-report.html. Zero cost when the flag is absent.
 const enableBundleReport = !!process.env.BUNDLE_REPORT;
 
@@ -26,7 +27,11 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // No production sourcemaps: the repo has no error-tracking consumer
+    // (no sentry/bugsnag), so public .map files only added ~5.9 MB to the
+    // deploy and exposed the full client source. Local debugging can
+    // flip this to true (or 'hidden' for unreferenced maps).
+    sourcemap: false,
     target: 'es2022',
     chunkSizeWarningLimit: 600,
     rollupOptions: {

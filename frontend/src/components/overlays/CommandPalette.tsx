@@ -8,9 +8,14 @@
  *
  * Per the contract:
  *   - DOES trap focus (uses useFocusTrap)
- *   - DOES lock body scroll
- *   - DOES dismiss on Esc + backdrop click
+ *   - DOES lock body scroll (ref-counted scrollLock, wave 12-14)
+ *   - DOES dismiss on Esc + backdrop click — Escape answers one layer
+ *     per press while stacked (overlayStack, wave 12-14)
  *   - The search input is auto-focused on open
+ *
+ * Global ⌘K/Ctrl-K triggers that OPEN a palette-like surface must bail
+ * out while any overlay is open (audit 11-e P1-6) — see the guard
+ * snippet in lib/overlayStack.ts.
  */
 import { useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
@@ -37,7 +42,7 @@ export function CommandPalette({
   children,
 }: CommandPaletteProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
-  useFocusTrap({ open, containerRef: cardRef, closeOnEscape, onClose });
+  useFocusTrap({ open, containerRef: cardRef, closeOnEscape, onClose, overlayKind: 'command-palette' });
 
   if (!open || typeof document === 'undefined') return null;
 

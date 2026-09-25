@@ -48,19 +48,31 @@ interface RegisterPayload {
 
 export function useLogin() {
   const setSession = useAuthStore((s) => s.setSession);
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: LoginPayload) =>
       unwrap<{ user: AuthUser; accessToken: string }>(api.post('/auth/login', input)),
-    onSuccess: ({ user, accessToken }) => setSession(user, accessToken),
+    onSuccess: ({ user, accessToken }) => {
+      // Session boundary (P0-1): drop the previous account's cached
+      // queries BEFORE the new session renders — shared lab machines
+      // must never see the predecessor's `me`/milestones/profile.
+      qc.clear();
+      setSession(user, accessToken);
+    },
   });
 }
 
 export function useRegister() {
   const setSession = useAuthStore((s) => s.setSession);
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: RegisterPayload) =>
       unwrap<{ user: AuthUser; accessToken: string }>(api.post('/auth/register', input)),
-    onSuccess: ({ user, accessToken }) => setSession(user, accessToken),
+    onSuccess: ({ user, accessToken }) => {
+      // Same session boundary as useLogin (P0-1).
+      qc.clear();
+      setSession(user, accessToken);
+    },
   });
 }
 

@@ -19,13 +19,22 @@
  * menus scroll internally instead of clipping. Closing plays a
  * scale-out exit before unmount (useDelayedUnmount).
  *
+ * Wave 12-14 (audit 11-e P1-2 + P2 polish): the menu registers in
+ * lib/overlayStack.ts while open — Escape answers only the topmost
+ * layer (one press, one layer) and is consumed via
+ * stopImmediatePropagation. The trigger's aria-expanded/aria-haspopup
+ * are synced onto the anchor unless the consumer declares them itself.
+ *
  * Pair with `<DropdownItem>` for the standard menu row, or render any
  * custom child (the keyboard nav scans for `[role="menuitem"]`).
  */
-import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } from 'react';
+import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { overlayStack } from '../../lib/overlayStack';
 import { useAnchoredPosition } from './anchoredPosition';
+import { useAnchorAria } from './useAnchorAria';
 import { useDelayedUnmount } from './useDelayedUnmount';
+import { useOverlayRegistration } from './useOverlayRegistration';
 
 export interface DropdownProps {
   open: boolean;
@@ -58,6 +67,8 @@ export function Dropdown({
   children,
 }: DropdownProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const overlayId = useOverlayRegistration(open, 'dropdown');
+  useAnchorAria(open, anchorRef, 'menu');
   const { rendered, onExitEnd } = useDelayedUnmount(open);
   const pos = useAnchoredPosition({ open, anchorRef, panelRef: menuRef, placement });
 
@@ -75,10 +86,16 @@ export function Dropdown({
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (closeOnEscape && e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
-        anchorRef.current?.focus?.();
+      if (e.key === 'Escape') {
+        // Only the topmost overlay answers Escape (P1-2) — one press
+        // dismisses one layer. The key is consumed even when Esc-dismiss
+        // is disabled: layers below and global shortcuts must not act.
+        if (!overlayStack.isTop(overlayId)) return;
+        e.stopImmediatePropagation();
+        if (closeOnEscape) {
+          onClose();
+          anchorRef.current?.focus?.();
+        }
         return;
       }
       if (e.key === 'Tab') {
@@ -112,7 +129,7 @@ export function Dropdown({
     };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [open, closeOnEscape, onClose, anchorRef]);
+  }, [open, closeOnEscape, onClose, anchorRef, overlayId]);
 
   // Click-outside dismiss.
   useEffect(() => {

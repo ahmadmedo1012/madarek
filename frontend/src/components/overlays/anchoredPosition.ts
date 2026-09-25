@@ -19,6 +19,11 @@
  * own box and lands the final position synchronously before paint.
  * Nothing measures per-render; resize/scroll repositions (robust,
  * already the established behavior).
+ *
+ * Wave 12-14 (audit 11-e P2-14): scroll/resize repositioning is
+ * rAF-throttled, a scroll that originates INSIDE the panel (its own
+ * list scrolling) never repositions it, and an unchanged position
+ * bails out of the state write — no re-render per scroll frame.
  */
 import { useLayoutEffect, useState, type RefObject } from 'react';
 
@@ -126,26 +131,47 @@ export function useAnchoredPosition({
   }, [open, placement, anchorRef, gap, viewportPadding, minPanelHeight]);
 
   // Phase B — refine with the panel's own box + reposition on
-  // resize/scroll (measure-on-event, never per-render).
+  // resize/scroll (measure-on-event, never per-render). Scroll and
+  // resize events are coalesced to one pass per animation frame; the
+  // panel's own internal scrolling is ignored (it captures through to
+  // window, but repositioning on it would both fight the reader and
+  // re-render the panel every frame). The initial refine stays
+  // synchronous so the first paint lands on the final position.
   useLayoutEffect(() => {
     if (!open || !estimate) return;
+    let rafId = 0;
     const refine = () => {
+      rafId = 0;
       const anchor = anchorRef.current;
       if (!anchor) return;
-      setPos(
-        computeAnchoredPosition(anchor, panelRef.current, placement, {
-          gap,
-          viewportPadding,
-          minPanelHeight,
-        }),
+      const next = computeAnchoredPosition(anchor, panelRef.current, placement, {
+        gap,
+        viewportPadding,
+        minPanelHeight,
+      });
+      setPos((prev) =>
+        prev && prev.top === next.top && prev.left === next.left &&
+          prev.maxHeight === next.maxHeight && prev.flipped === next.flipped
+          ? prev
+          : next,
       );
     };
+    const schedule = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(refine);
+    };
+    const onScroll = (e: Event) => {
+      const target = e.target;
+      if (target instanceof Node && panelRef.current?.contains(target)) return;
+      schedule();
+    };
     refine();
-    window.addEventListener('resize', refine);
-    window.addEventListener('scroll', refine, true);
+    window.addEventListener('resize', schedule);
+    window.addEventListener('scroll', onScroll, true);
     return () => {
-      window.removeEventListener('resize', refine);
-      window.removeEventListener('scroll', refine, true);
+      if (rafId) window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', schedule);
+      window.removeEventListener('scroll', onScroll, true);
     };
   }, [open, estimate, placement, anchorRef, panelRef, gap, viewportPadding, minPanelHeight]);
 

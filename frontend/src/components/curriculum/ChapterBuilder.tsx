@@ -16,6 +16,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
+import { toast } from '../../lib/toast';
 import {
   apiErrorMessage,
   useCreateChapter,
@@ -37,6 +38,7 @@ import {
   ModalActions,
   MutationError,
   TimeInput,
+  useDiscardGuard,
   useFieldId,
 } from './AuthoringModal';
 
@@ -71,6 +73,14 @@ export function ChapterFormModal({
   const titleId = useFieldId('ch-title');
   const startId = useFieldId('ch-start');
   const endId = useFieldId('ch-end');
+
+  // Unsaved-edits guard: Esc / X / cancel / overlay-click route through a
+  // blocking discard-confirm instead of silently dropping the draft.
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending,
+    onClose,
+  });
 
   const onSubmit = form.handleSubmit(async (values) => {
     const startSec = parseTimeToSec(values.start)!;
@@ -114,8 +124,9 @@ export function ChapterFormModal({
   return (
     <AuthoringModal
       title={isEdit ? 'تعديل الفصل' : 'فصل جديد'}
-      onClose={onClose}
+      onClose={requestClose}
       closeOnOverlayClick={!pending}
+      closeOnEscape={!escapeLocked}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -155,10 +166,11 @@ export function ChapterFormModal({
           <ModalActions
             pending={pending}
             submitLabel={isEdit ? 'حفظ التعديلات' : 'إضافة الفصل'}
-            onCancel={onClose}
+            onCancel={requestClose}
           />
         </div>
       </form>
+      {guard}
     </AuthoringModal>
   );
 }
@@ -181,9 +193,15 @@ export function ChapterList({
     if (!deleting) return;
     try {
       await del.mutateAsync(deleting.id);
+    } catch (error) {
+      // Close the dialog on failure so the error is never trapped behind
+      // the overlay — the toast (z-index above the modal) reports it and
+      // the inline list banner below persists the context (audit 11-f P1-2).
+      toast.error(apiErrorMessage(error, 'تعذَّر حذف الفصل — حاول مرة أخرى.'), {
+        title: 'تعذّر حذف الفصل',
+      });
+    } finally {
       setDeleting(null);
-    } catch {
-      /* inline below */
     }
   };
 

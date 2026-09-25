@@ -64,7 +64,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const [doc, setDoc] = useState<DocState | null>(null);
   const [page, setPage] = useState(1);
   const [scale, setScale] = useState<number | 'fit-width'>('fit-width');
-  const [error, setError] = useState<{ message: string; cause: unknown } | null>(null);
+  const [error, setError] = useState<{ message: string; cause: unknown; kind?: 'password' } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRendering, setIsRendering] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -74,6 +74,9 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const [isFullscreen, setIsFullscreen] = useState(false);
   /** Bumped by the error-state retry button — re-runs the load effect. */
   const [retryToken, setRetryToken] = useState(0);
+  /** True while a search walk is visiting pages — without it, a
+   *  300-page PDF looks frozen mid-search. */
+  const [isSearching, setIsSearching] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
@@ -83,6 +86,22 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null);
   /** Content-box width of the canvas wrap, seeded by the ResizeObserver. */
   const containerWRef = useRef(0);
+  /**
+   * Monotonic search generation. Every document load, every new search
+   * and every search close bumps it; an in-flight walk compares its
+   * captured generation before each await and before each state write,
+   * so a walk orphaned by a document switch or unmount can neither
+   * plant page numbers from the wrong document nor surface as an
+   * unhandled promise rejection (audit 11-f P1-3).
+   */
+  const searchGenRef = useRef(0);
+  /**
+   * The document currently on screen. Render errors are only honest for
+   * this doc: after a src switch the destroyed predecessor rejects inside
+   * the superseded render, and that stale catch must not plant an error
+   * over the newly loading document (audit 11-f P2-9).
+   */
+  const docRef = useRef<DocState | null>(null);
 
   // ── Load document ────────────────────────────────────────────────
   useEffect(() => {
@@ -90,6 +109,14 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     setLoading(true);
     setError(null);
     setDoc(null);
+    docRef.current = null;
+    // Kill any search walk from the previous document and drop its hits —
+    // page numbers from document A must never navigate a viewer that is
+    // now loading document B (audit 11-f P1-3).
+    searchGenRef.current += 1;
+    setSearchHits([]);
+    setSearchIdx(0);
+    setIsSearching(false);
 
     const task = getDocument({
       url: src,
@@ -103,22 +130,38 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     task.promise.then(
       (pdf) => {
         if (cancelled) { pdf.destroy(); return; }
-        setDoc({ pdf, numPages: pdf.numPages });
+        const next: DocState = { pdf, numPages: pdf.numPages };
+        docRef.current = next;
+        setDoc(next);
         setPage(1);
+        // A superseded render of the previous document may have planted a
+        // stale page error after this effect's initial reset — clear it
+        // again so the fresh document starts clean (audit 11-f P2-9).
+        setError(null);
         setLoading(false);
         onDocumentLoaded?.(pdf.numPages);
       },
       (err) => {
         if (cancelled) return;
-        // Missing / corrupt PDF: surface an honest error state with retry
-        // (orchestrator ruling #14) — the detail line comes from ErrorState.
-        setError({ message: 'تعذّر تحميل المستند', cause: err });
+        // Password-protected PDF: pdfjs rejects with PasswordException and
+        // re-running the same no-credential load can never succeed — show
+        // the honest message without a retry affordance (audit 11-f P2-8).
+        if ((err as { name?: string } | null)?.name === 'PasswordException') {
+          setError({ message: 'هذا المستند محمي بكلمة مرور', cause: err, kind: 'password' });
+        } else {
+          // Missing / corrupt PDF: surface an honest error state with retry
+          // (orchestrator ruling #14) — the detail line comes from ErrorState.
+          setError({ message: 'تعذّر تحميل المستند', cause: err });
+        }
         setLoading(false);
       },
     );
 
     return () => {
       cancelled = true;
+      // Orphan any search walk mid-flight on this document (src switch or
+      // unmount) before destroying the doc underneath it.
+      searchGenRef.current += 1;
       task.destroy();
     };
     // retryToken: the retry button re-runs this effect for the same src.
@@ -144,11 +187,17 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
 
   // ── Render current page ──────────────────────────────────────────
   const renderPage = useCallback(async () => {
-    if (!doc || !canvasRef.current || !containerRef.current) return;
+    // Snapshot the doc and DOM nodes up front: after the first await the
+    // viewer may have moved on (src switch / unmount) and the refs can be
+    // null again — a superseded render must not dereference them.
+    const docSnapshot = doc;
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!docSnapshot || !canvas || !container) return;
     setIsRendering(true);
     setError(null);
     try {
-      const pageObj = await doc.pdf.getPage(page);
+      const pageObj = await docSnapshot.pdf.getPage(page);
 
       // Resolve effective scale.
       const baseViewport = pageObj.getViewport({ scale: 1 });
@@ -158,14 +207,13 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         // excluded — honest at every breakpoint). Fallback for the first
         // paint: clientWidth minus the --sp-4 × 2 canvas padding.
         const containerW = containerWRef.current
-          || Math.max(0, containerRef.current.clientWidth - 32);
+          || Math.max(0, container.clientWidth - 32);
         effectiveScale = Math.max(0.5, Math.min(3, containerW / baseViewport.width));
       } else {
         effectiveScale = scale;
       }
 
       const viewport = pageObj.getViewport({ scale: effectiveScale });
-      const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
@@ -188,7 +236,11 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         // anything else (corrupt page content) becomes a retryable error.
         const e = err as { name?: string };
         if (e?.name !== 'RenderingCancelledException') {
-          setError({ message: 'تعذّر عرض هذه الصفحة', cause: err });
+          // Only honest for the document still on screen — see the catch
+          // below (audit 11-f P2-9).
+          if (docSnapshot === docRef.current) {
+            setError({ message: 'تعذّر عرض هذه الصفحة', cause: err });
+          }
         }
         return;
       }
@@ -201,11 +253,12 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         try {
           const textContent = await pageObj.getTextContent();
           // pdfjs-dist v4 exposes TextLayer as a named export at runtime,
-          // but its type surface marks it optional in some build modes.
-          // We import the type explicitly and access the constructor at
-          // runtime via a dynamic property lookup so the bundler can
-          // tree-shake the rest of the library when this component is
-          // code-split out of the main bundle.
+          // but its type surface marks it optional in some build modes, so
+          // the constructor is resolved with a runtime lookup + truthiness
+          // check. Note this dynamic import does NOT shave anything off
+          // the bundle — the module is already statically imported above
+          // (getDocument), so this resolves to the same chunk; it is kept
+          // only because it works and degrades cleanly (audit 11-f P2-11).
           const TextLayerCtor = (await import('pdfjs-dist')).TextLayer;
           if (TextLayerCtor) {
             const textLayer = new TextLayerCtor({
@@ -221,14 +274,27 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         }
       }
     } catch (err) {
-      // getPage() rejection — corrupt document past the load phase.
-      setError({ message: 'تعذّر عرض هذه الصفحة', cause: err });
+      // getPage() rejection — corrupt document past the load phase. Only
+      // surface it for the document still on screen: a src switch destroys
+      // the old doc, and its rejected renders must not plant an error over
+      // the newly loading document (audit 11-f P2-9).
+      if (docSnapshot === docRef.current) {
+        setError({ message: 'تعذّر عرض هذه الصفحة', cause: err });
+      }
     } finally {
       setIsRendering(false);
     }
   }, [doc, page, scale]);
 
-  useEffect(() => { renderPage(); }, [renderPage]);
+  // Cancel the in-flight canvas render whenever the rendered page/scale/
+  // document changes or the viewer unmounts — without this, a render keeps
+  // painting into a detached canvas until the worker dies (audit 11-f
+  // P2-9). The superseded render rejects with
+  // RenderingCancelledException, which renderPage classifies and ignores.
+  useEffect(() => {
+    renderPage();
+    return () => { renderTaskRef.current?.cancel(); };
+  }, [renderPage]);
 
   // ── Fit-width recalculation ──────────────────────────────────────
   // The canvas wrap's width changes WITHOUT any window resize when the
@@ -289,6 +355,25 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     });
   }, [SCALES]);
 
+  // ── Search walk invalidation (declared before the keyboard shortcuts
+  // that use them — the effect's dependency array reads these consts at
+  // render, so TDZ rules apply) ─────────────────────────────
+  /** Invalidate any in-flight search walk without touching the results
+   *  UI — used when the search bar closes while a walk is still running. */
+  const stopSearchWalk = useCallback(() => {
+    searchGenRef.current += 1;
+    setIsSearching(false);
+  }, []);
+  /** Close the search bar: kills any in-flight walk and clears the term
+   *  and its hits together (the hits belong to the term). */
+  const closeSearch = useCallback(() => {
+    searchGenRef.current += 1;
+    setIsSearching(false);
+    setSearchOpen(false);
+    setSearchHits([]);
+    setSearchTerm('');
+  }, []);
+
   // ── Keyboard shortcuts ───────────────────────────────────────────
   // Scope: the viewer owns its shortcuts only while the keystroke
   // originates inside the viewer (chrome/canvas) or while nothing more
@@ -329,6 +414,9 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         setSearchOpen(true);
       } else if (e.key === 'Escape') {
         setSearchOpen(false);
+        // A walk can still be visiting pages while the bar is closed —
+        // it must not jump the page from outside the visible search UI.
+        stopSearchWalk();
       } else if (e.key === '+' || e.key === '=') {
         e.preventDefault();
         zoomIn();
@@ -339,26 +427,55 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [doc, zoomIn, zoomOut]);
+  }, [doc, zoomIn, zoomOut, stopSearchWalk]);
 
   // ── Search ───────────────────────────────────────────────────────
+  // The walk visits every page asynchronously and is invalidated by the
+  // searchGenRef generation counter (see its declaration). Every state
+  // write is guarded by the captured generation and the whole walk is
+  // wrapped in try/catch, so a destroyed document rejects quietly
+  // instead of surfacing an unhandled promise rejection (audit 11-f P1-3).
   const runSearch = async () => {
-    if (!doc || !searchTerm.trim()) { setSearchHits([]); return; }
+    if (!doc || !searchTerm.trim()) {
+      // Nothing to walk — cancel whatever is in flight and reset the UI.
+      searchGenRef.current += 1;
+      setSearchHits([]);
+      setSearchIdx(0);
+      setIsSearching(false);
+      return;
+    }
+    const gen = ++searchGenRef.current; // supersedes any earlier walk
+    const docSnapshot = doc;
     const term = searchTerm.trim().toLowerCase();
     const hits: { page: number; text: string }[] = [];
-    for (let n = 1; n <= doc.numPages; n++) {
-      const p = await doc.pdf.getPage(n);
-      const tc = await p.getTextContent();
-      const text = tc.items.map((it) => ('str' in it ? it.str : '')).join(' ').toLowerCase();
-      if (text.includes(term)) {
-        const idx = text.indexOf(term);
-        const snippet = text.slice(Math.max(0, idx - 30), idx + term.length + 30);
-        hits.push({ page: n, text: snippet });
+    setIsSearching(true);
+    try {
+      for (let n = 1; n <= docSnapshot.numPages; n++) {
+        if (gen !== searchGenRef.current) return; // superseded — stop walking
+        const p = await docSnapshot.pdf.getPage(n);
+        const tc = await p.getTextContent();
+        const text = tc.items.map((it) => ('str' in it ? it.str : '')).join(' ').toLowerCase();
+        if (text.includes(term)) {
+          const idx = text.indexOf(term);
+          const snippet = text.slice(Math.max(0, idx - 30), idx + term.length + 30);
+          hits.push({ page: n, text: snippet });
+        }
       }
+      if (gen !== searchGenRef.current) return; // superseded — drop results
+      setSearchHits(hits);
+      setSearchIdx(0);
+      if (hits.length > 0 && hits[0]) setPage(hits[0].page);
+    } catch {
+      // The document was destroyed mid-walk (src switch / unmount): the
+      // generation check already discarded this walk — swallow the destroy
+      // rejection instead of surfacing an unhandled promise rejection. For
+      // a genuine page failure on the live document, keep the hits found.
+      if (gen !== searchGenRef.current) return;
+      setSearchHits(hits);
+      setSearchIdx(0);
+    } finally {
+      if (gen === searchGenRef.current) setIsSearching(false);
     }
-    setSearchHits(hits);
-    setSearchIdx(0);
-    if (hits.length > 0 && hits[0]) setPage(hits[0].page);
   };
 
   const nextHit = () => {
@@ -493,7 +610,11 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
             onKeyDown={(e) => { if (e.key === 'Enter') runSearch(); }}
             autoFocus
           />
-          {searchHits.length > 0 && (
+          {isSearching ? (
+            <span className="pdf-searchbar-count" role="status" aria-live="polite">
+              جارٍ البحث…
+            </span>
+          ) : searchHits.length > 0 && (
             <span className="pdf-searchbar-count font-mono" aria-live="polite">
               {searchIdx + 1} / {searchHits.length}
             </span>
@@ -507,7 +628,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           <button type="button" className="pdf-btn sm" onClick={runSearch}>
             بحث
           </button>
-          <button type="button" className="pdf-btn sm" onClick={() => { setSearchOpen(false); setSearchHits([]); setSearchTerm(''); }} aria-label="إغلاق البحث">
+          <button type="button" className="pdf-btn sm" onClick={closeSearch} aria-label="إغلاق البحث">
             <Icon icon={X} size={14} />
           </button>
         </div>
@@ -516,8 +637,17 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
       {/* Document area */}
       <div className="pdf-canvas-wrap" ref={containerRef}>
         {loading && <PdfPageSkeleton />}
-        {error && (
-          <ErrorState message={error.message} error={error.cause} onRetry={retry} />
+        {/* !loading gate: a superseded render of the previous document can
+            plant a page error right as the next load starts — the skeleton
+            and the error must never render together (audit 11-f P2-9).
+            Password-protected PDFs hide the retry affordance: re-running
+            the same no-credential load can never succeed (P2-8). */}
+        {!loading && error && (
+          <ErrorState
+            message={error.message}
+            error={error.cause}
+            onRetry={error.kind === 'password' ? undefined : retry}
+          />
         )}
         {!loading && !error && (
           <div

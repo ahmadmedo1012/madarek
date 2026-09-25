@@ -29,6 +29,7 @@ import {
   type TrainingCategory, type TrainingTrackCard, type TrainingLessonView,
   type BadgeRarity, type Tier,
 } from '../../hooks/useResources';
+import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ONBOARDING: 'تعريف بالمنصة',

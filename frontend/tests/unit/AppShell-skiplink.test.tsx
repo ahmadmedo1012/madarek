@@ -13,17 +13,9 @@ import type { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-// AppShell's useLayoutMetrics reads sidebar/topbar metrics via ResizeObserver,
-// which jsdom does not implement. Install a silent stub (tests/setup.ts only
-// provides IntersectionObserver).
-class ResizeObserverStub {
-  observe = () => undefined;
-  unobserve = () => undefined;
-  disconnect = () => undefined;
-}
-if (typeof window !== 'undefined' && !('ResizeObserver' in window)) {
-  (window as unknown as { ResizeObserver: typeof ResizeObserverStub }).ResizeObserver = ResizeObserverStub;
-}
+// (A ResizeObserver stub used to live here for useLayoutMetrics, which
+// wave 7-b deleted — audit 11-e P2-17 flagged both the stub and this
+// comment as stale. Nothing in AppShell observes layout anymore.)
 
 vi.mock('../../src/components/layout/Sidebar', () => ({
   Sidebar: () => <aside data-testid="sidebar" />,

@@ -14,6 +14,7 @@ import { Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp } from 'luci
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
+import { toast } from '../../lib/toast';
 import {
   apiErrorMessage,
   useCreateLecture,
@@ -34,6 +35,7 @@ import {
   ModalActions,
   MutationError,
   TimeInput,
+  useDiscardGuard,
   useFieldId,
 } from './AuthoringModal';
 
@@ -71,6 +73,14 @@ export function LectureFormModal({
   const durId = useFieldId('lec-dur');
   const ordId = useFieldId('lec-ord');
 
+  // Unsaved-edits guard: Esc / X / cancel / overlay-click route through a
+  // blocking discard-confirm instead of silently dropping the draft.
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending,
+    onClose,
+  });
+
   const onSubmit = form.handleSubmit(async (values) => {
     try {
       if (existing) {
@@ -89,8 +99,9 @@ export function LectureFormModal({
   return (
     <AuthoringModal
       title={isEdit ? 'تعديل المحاضرة' : 'محاضرة جديدة'}
-      onClose={onClose}
+      onClose={requestClose}
       closeOnOverlayClick={!pending}
+      closeOnEscape={!escapeLocked}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -127,10 +138,11 @@ export function LectureFormModal({
           <ModalActions
             pending={pending}
             submitLabel={isEdit ? 'حفظ التعديلات' : 'إضافة المحاضرة'}
-            onCancel={onClose}
+            onCancel={requestClose}
           />
         </div>
       </form>
+      {guard}
     </AuthoringModal>
   );
 }
@@ -156,9 +168,17 @@ export function LectureAuthoringList({
     if (!deleting) return;
     try {
       await del.mutateAsync(deleting.id);
+    } catch (error) {
+      // Close the dialog on failure so the 409 message is never trapped
+      // behind the overlay — the toast (z-index above the modal) reports
+      // it and the inline list banner below persists the context
+      // (audit 11-f P1-2).
+      toast.error(
+        apiErrorMessage(error, 'تعذَّر حذف المحاضرة — تحقّق من اتصالك وحاول مرة أخرى.'),
+        { title: 'تعذّر حذف المحاضرة' },
+      );
+    } finally {
       setDeleting(null);
-    } catch {
-      /* the 409 Arabic message renders inline below */
     }
   };
 

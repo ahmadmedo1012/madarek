@@ -1,11 +1,16 @@
 /**
  * CommandPalette + NotificationPanel unit tests.
+ *
+ * Wave 12-14 additions: the scroll lock is the ref-counted class
+ * (CommandPalette), Escape returns focus to the bell trigger
+ * (NotificationPanel, P2-11) and the panel never locks body scroll.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { useRef } from 'react';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { CommandPalette } from '../../src/components/overlays/CommandPalette';
 import { NotificationPanel } from '../../src/components/overlays/NotificationPanel';
+import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
 
 const flush = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
@@ -73,20 +78,19 @@ describe('CommandPalette', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('locks body overflow while open and restores on close', () => {
-    document.body.style.overflow = '';
+  it('locks body scroll while open and releases on close (ref-counted class)', () => {
     const { rerender } = render(
       <CommandPalette open onClose={() => {}} ariaLabel="X">
         <input />
       </CommandPalette>,
     );
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
     rerender(
       <CommandPalette open={false} onClose={() => {}} ariaLabel="X">
         <input />
       </CommandPalette>,
     );
-    expect(document.body.style.overflow).toBe('');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
 });
 
@@ -152,10 +156,21 @@ describe('NotificationPanel', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
+  it('Esc dismisses and returns focus to the bell trigger', () => {
+    const onClose = vi.fn();
+    render(<PanelHarness open onClose={onClose} />);
+    const bell = screen.getByTestId('bell');
+    bell.focus();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(document.activeElement).toBe(bell);
+  });
+
   it('does NOT lock body scroll', () => {
     document.body.style.overflow = 'auto';
     render(<PanelHarness open onClose={() => {}} />);
     expect(document.body.style.overflow).toBe('auto');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
 
   it('does NOT steal focus on mount', () => {

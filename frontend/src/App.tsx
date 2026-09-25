@@ -3,7 +3,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
-import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
@@ -14,8 +13,21 @@ import NotFoundPage from './pages/NotFoundPage';
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
    becomes its own chunk at build time, so the initial load
-   only ships the shell + the first page the user lands on.
+   only ships the first page the user lands on.
+
+   The authed shell is lazy too (11-g P1-3): its eager import was
+   ~35% of the old entry (useResources + axios + sidebar/topbar/
+   onboarding chrome) that the public funnel (landing / auth /
+   colleges / 404) never renders. ProtectedRoute travels in the
+   same chunk — every authed branch renders it, so the first
+   protected-route load needs that chunk anyway. The root
+   <Suspense> below covers the shell chunk itself; AppShell keeps
+   its own inner boundary so page chunks never unmount the chrome
+   (11-e P1-1).
    ─────────────────────────────────────────────────────────── */
+const AppShell = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })));
+const ProtectedRoute = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.ProtectedRoute })));
+
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));

@@ -1,11 +1,13 @@
 /**
- * Backend unit test — Prisma error → HTTP mapping in
+ * Backend unit test — error routing in
  * `backend/src/http/middleware/errorHandler.ts`.
  *
  * DB-free: constructs real `PrismaClientKnownRequestError` shapes and a
  * fake express response. Covers the P2003 (foreign-key violation) →
  * 400 BAD_REQUEST mapping (was a leaky 500) plus the pre-existing
- * P2002/P2025 mappings, and the 5xx → OperationalAlert feed.
+ * P2002/P2025 mappings, the 5xx → OperationalAlert feed policy
+ * (AppError.internal() alerts, 4xx never does), and the headersSent
+ * delegation guard.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Prisma } from '@prisma/client';
@@ -21,12 +23,14 @@ vi.mock('../../src/db.js', () => ({
 
 import { prisma } from '../../src/db.js';
 import { errorHandler } from '../../src/http/middleware/errorHandler';
+import { AppError } from '../../src/lib/errors';
 import { resetOperationalAlertThrottle } from '../../src/lib/operational-alerts';
 
 const flushMicrotasks = () => new Promise<void>((resolve) => setImmediate(resolve));
 
-const makeRes = () => {
+const makeRes = (headersSent = false) => {
   const res = {
+    headersSent,
     status: vi.fn().mockReturnThis(),
     json: vi.fn(),
   };
@@ -146,5 +150,52 @@ describe('errorHandler — 5xx OperationalAlert feed', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: { code: 'INTERNAL', message: 'Internal server error' },
     });
+  });
+
+  it('alerts (APP_INTERNAL) for an intentional AppError.internal() — 5xx AppError branch is reachable', async () => {
+    const res = makeRes();
+    errorHandler(AppError.internal(), makeReq(), res, next);
+    await flushMicrotasks();
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: { code: 'INTERNAL', message: 'Internal server error', details: undefined },
+    });
+    expect(prisma.operationalAlert.create).toHaveBeenCalledTimes(1);
+    expect(prisma.operationalAlert.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        severity: 'error',
+        category: 'app',
+        title: 'APP_INTERNAL',
+      }),
+    });
+  });
+
+  it('never writes alert rows for 4xx AppErrors (client faults are not telemetry)', async () => {
+    const res = makeRes();
+    errorHandler(AppError.badRequest('nope'), makeReq(), res, next);
+    await flushMicrotasks();
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: { code: 'BAD_REQUEST', message: 'nope', details: undefined },
+    });
+    expect(prisma.operationalAlert.create).not.toHaveBeenCalled();
+  });
+});
+
+describe('errorHandler — dispatch hardening', () => {
+  it('delegates to the express default handler when headers are already sent', async () => {
+    const res = makeRes(true);
+    const err = new Error('stream crashed mid-write');
+    errorHandler(err, makeReq(), res, next);
+    await flushMicrotasks();
+
+    expect(next).toHaveBeenCalledWith(err);
+    expect(res.status).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
+    // No alert either — writing a status is impossible, so the 500 path
+    // (log + alert + response) must not half-fire.
+    expect(prisma.operationalAlert.create).not.toHaveBeenCalled();
   });
 });

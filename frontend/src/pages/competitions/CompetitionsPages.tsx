@@ -21,6 +21,8 @@ import {
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { formatRelativeArShort } from '../../lib/format';
+import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
+import '../../styles/training.css'; // shared .leaderboard-list/-points families (D11 css split, 12-15)
 
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',
@@ -215,11 +217,14 @@ export function CompetitionDetailPage() {
       if (p && (p.score !== v.score || p.rank !== v.rank)) changed.add(eid);
     });
     prevBoardRef.current = board;
-    if (changed.size > 0) {
-      setPulseIds(changed);
-      const t = window.setTimeout(() => setPulseIds(new Set()), RANK_PULSE_CLEAR_MS);
-      return () => window.clearTimeout(t);
-    }
+    // Set AND clear unconditionally (audit 11-f P2-12): a later snapshot
+    // with no rank/score change still re-runs this effect, and its cleanup
+    // has already cancelled the previous run's clear-timer — unless every
+    // run arms one, a displayed pulse would stick on its row forever. An
+    // empty set simply clears any pulse instantly.
+    setPulseIds(changed);
+    const t = window.setTimeout(() => setPulseIds(new Set()), RANK_PULSE_CLEAR_MS);
+    return () => window.clearTimeout(t);
   }, [q.data]);
 
   if (q.isPending) return <div className="page"><LoadingState /></div>;

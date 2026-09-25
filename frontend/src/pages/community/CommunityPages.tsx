@@ -25,6 +25,7 @@ import {
   type AnnouncementRow, type CompetitionRow, type CampusEventRow,
 } from '../../hooks/useResources';
 import { formatDate, formatTime } from '../../utils/numbers';
+import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'كل المنصة', FACULTY: 'كلية', DEPARTMENT: 'قسم', OFFERING: 'مقرر',

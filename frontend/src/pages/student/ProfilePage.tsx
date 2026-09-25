@@ -8,6 +8,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
+import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
 
 type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
 
@@ -52,6 +53,19 @@ function validateLink(kind: LinkKind, raw: string): string | null {
   }
   if (!URL_RE.test(v)) return 'أدخل رابطاً كاملاً يبدأ بـ https://';
   return null;
+}
+
+/* localStorage writes can throw where reads are already guarded (the
+   lazy initializer above): Safari private mode gives storage a 0 quota
+   and some embedded browsers disable it entirely. Saving a link must
+   never crash the page (audit 11-f P2-5) — fall back quietly to the
+   in-memory state, which keeps working for the rest of the session. */
+function persistLinks(next: Record<string, string>) {
+  try {
+    localStorage.setItem('mdrk-academic-links', JSON.stringify(next));
+  } catch {
+    // storage unavailable — keep the change in memory only
+  }
 }
 
 type ProfileTab = 'academic' | 'links' | 'achievements';
@@ -114,7 +128,7 @@ export default function ProfilePage() {
     if (draftError) { setRevealError(true); return; }
     const next = { ...links, [editing]: draft.trim() };
     setLinks(next);
-    localStorage.setItem('mdrk-academic-links', JSON.stringify(next));
+    persistLinks(next);
     const done = editing;
     setEditing(null);
     setDraft('');
@@ -129,7 +143,7 @@ export default function ProfilePage() {
     const next = { ...links };
     delete next[kind];
     setLinks(next);
-    localStorage.setItem('mdrk-academic-links', JSON.stringify(next));
+    persistLinks(next);
   };
 
   if (!user) return null;

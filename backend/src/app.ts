@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import { env } from './env.js';
 import { logger } from './logger.js';
 import { prisma } from './db.js';
+import { compression } from './lib/compression.js';
 
 import { errorHandler } from './http/middleware/errorHandler.js';
 import { globalRateLimiter } from './http/middleware/rateLimit.js';
@@ -55,12 +56,51 @@ import { AppError } from './lib/errors.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
 
+/**
+ * CSP (decision D7) — conservative allow-list. The one deliberate
+ * addition to D7's raw directive list is a sha256 pin for the inline
+ * theme-bootstrap <script> in frontend/index.html (the attribute-less
+ * <script> block): without it, script-src 'self' would block that
+ * script and dark-theme users would get a light flash on every load.
+ * The hash covers the exact bytes between <script> and </script>. If
+ * that block is ever edited, recompute the hash the same way:
+ *
+ *   const html = fs.readFileSync('frontend/index.html', 'utf8');
+ *   const start = html.indexOf('<script>') + '<script>'.length;
+ *   const end = html.indexOf('</script>', start);
+ *   crypto.createHash('sha256').update(html.slice(start, end)).digest('base64');
+ */
+const THEME_BOOTSTRAP_SHA256 = 'vZhJuNUG5QI+pIb0CuXTThoCbDbkvVP7QhluuwJrybY=';
+
 export function createApp() {
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
 
-  app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        // useDefaults: false → the policy below is the COMPLETE policy
+        // (helmet's own defaults — upgrade-insecure-requests, form-action,
+        // frame-ancestors, script-src-attr — are intentionally opted out
+        // of so the emitted header matches D7 verbatim and stays
+        // smoke-testable).
+        useDefaults: false,
+        directives: {
+          'default-src': ["'self'"],
+          'script-src': ["'self'", `'sha256-${THEME_BOOTSTRAP_SHA256}'`],
+          'style-src': ["'self'", "'unsafe-inline'"],
+          'img-src': ["'self'", 'data:', 'blob:'],
+          'font-src': ["'self'"],
+          'connect-src': ["'self'"],
+          'worker-src': ["'self'", 'blob:'],
+          'object-src': ["'none'"],
+          'base-uri': ["'self'"],
+        },
+      },
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.use(
     cors({
       origin: (origin, cb) => {
@@ -74,6 +114,15 @@ export function createApp() {
       credentials: true,
     }),
   );
+  // Response compression (D10) — mounted before every body-producing
+  // middleware and route (static assets + API JSON). Applies
+  // `Vary: Accept-Encoding` to all responses and gzips compressible
+  // MIME types ≥ 1 KB; HEAD and already-encoded responses pass through.
+  app.use(compression());
+
+  // 1 MB request-body cap for JSON + urlencoded. Body-parser rejections
+  // (entity.parse.failed / entity.too.large) are mapped to 400/413 by the
+  // error handler (wave 12-5) — coordinate here if the limit ever changes.
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: true, limit: '1mb' }));
   app.use(cookieParser());
@@ -82,7 +131,7 @@ export function createApp() {
   // BUILD_ID is bumped on every deploy that needs a force-rebuild.
   // Curl /api/v1/health to check whether Render is serving the
   // latest commit. If the buildId matches, the fix is live.
-  const BUILD_ID = '2026-09-24T00:00Z-hardening-pass';
+  const BUILD_ID = '2026-09-25T00:00Z-edge-cache-csp-gzip';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon
@@ -161,8 +210,10 @@ export function createApp() {
   app.use('/api/v1/me/onboarding', onboardingRouter);
   app.use('/api/v1/me/milestones', milestonesRouter);
 
-  // 404 for unknown API paths
-  app.use('/api/v1', (_req, _res, next) => next(AppError.notFound('Route not found')));
+  // 404 for unknown API paths — ANY /api/* path that fell through the
+  // routers (including /api/v2/… and /api/ghost) gets the standard JSON
+  // error envelope, never Express's default HTML error page (11-a P2-12).
+  app.use('/api', (_req, _res, next) => next(AppError.notFound('Route not found')));
 
   // ── Static frontend + SPA fallback (single-service mode) ──
   if (env.serveStatic) {
@@ -170,18 +221,50 @@ export function createApp() {
       logger.warn({ FRONTEND_DIST }, 'Frontend build missing — did you run `npm run build`?');
     } else {
       logger.info({ FRONTEND_DIST }, 'Serving frontend');
+      // Cache policy (11-a P1-1 / 11-g P0-1):
+      //  (1) /assets/** — Vite content-hashes these filenames, so a
+      //      content change always means a new URL → safe for the
+      //      full year-long immutable treatment.
       app.use(
-        express.static(FRONTEND_DIST, {
+        '/assets',
+        express.static(path.join(FRONTEND_DIST, 'assets'), {
           index: false,
           maxAge: '1y',
           immutable: true,
+        }),
+      );
+      //  (2) Everything else in dist/ is NOT hashed (fonts, pdfjs cmaps
+      //      + standard fonts, brand imagery, favicon, hero photo).
+      //      `immutable, 1y` here would hide any update from returning
+      //      visitors for up to a year — serve with ETag revalidation
+      //      and a short max-age so changes reach users within an hour.
+      //      setHeaders runs after send()'s own defaults, so these
+      //      values are final.
+      app.use(
+        express.static(FRONTEND_DIST, {
+          index: false,
+          etag: true,
           setHeaders: (res, filePath) => {
-            if (filePath.endsWith('index.html')) res.setHeader('Cache-Control', 'no-cache');
+            if (filePath.endsWith('index.html')) {
+              // The SPA entry document must always revalidate: it
+              // references hashed chunks that are DELETED on every
+              // deploy — a stale copy renders a white screen.
+              res.setHeader('Cache-Control', 'no-cache');
+            } else {
+              res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+            }
           },
         }),
       );
+      //  (3) SPA fallback — the canonical entry (GET / and every client
+      //      route) must never be served stale after a deploy. send()
+      //      only writes Cache-Control when none is set, so the explicit
+      //      header below survives sendFile. `no-cache` (revalidate,
+      //      ETag 304 on no-change) beats `no-store` because unchanged
+      //      deploys cost a 304 instead of a full document refetch.
       app.get('*', (req, res, next) => {
         if (req.path.startsWith('/api/')) return next();
+        res.setHeader('Cache-Control', 'no-cache');
         res.sendFile(path.join(FRONTEND_DIST, 'index.html'));
       });
     }

@@ -8,7 +8,8 @@
  * Wave 7-a (audit 0-c P2-1): the exit animation plays before unmount
  * (useDelayedUnmount + data-closing) — side sheets slide back toward
  * their own edge (direction-aware via --motion-direction), bottom
- * sheets slide down.
+ * sheets slide down. Wave 12-14: Escape answers one layer per press
+ * and the scroll lock is ref-counted (overlayStack + scrollLock).
  *
  * Usage:
  *   <Sheet open={isOpen} onClose={() => setIsOpen(false)} side="end" ariaLabel="Filters">
@@ -51,7 +52,7 @@ export function Sheet({
   children,
 }: SheetProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
-  useFocusTrap({ open, containerRef: panelRef, closeOnEscape, onClose });
+  useFocusTrap({ open, containerRef: panelRef, closeOnEscape, onClose, overlayKind: 'sheet' });
   const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
 
   if (!rendered || typeof document === 'undefined') return null;

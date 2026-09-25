@@ -48,7 +48,11 @@ const DEMO_EMAIL: Record<AppRole, string> = {
   QUALITY: 'quality@zu.edu.ly',
   OWNER:   'owner@zu.edu.ly',
 };
-const DEMO_PASSWORD = '1234';
+/** Demo password — canonical value shared with the backend seed
+ *  (backend/prisma/seed.ts) and the snap/probe scripts. Keeping one
+ *  constant means a fresh `npm run db:seed` demo database always
+ *  matches what these dev-only buttons fill in. */
+const DEMO_PASSWORD = 'Madarek2026!';
 
 /** Deep link a visitor was trying to reach when ProtectedRoute bounced
  *  them here (ProtectedRoute passes `state={{ from: location }}`). Only

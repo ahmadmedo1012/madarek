@@ -8,11 +8,13 @@
  *   - overlay click dismissal (default) and opt-out
  *   - clicks inside the panel do NOT dismiss
  *   - side variants apply correct CSS classes
- *   - body overflow lock + restore
+ *   - body scroll lock + release (the ref-counted scrollLock class,
+ *     wave 12-14)
  */
 import { describe, expect, it, vi } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { Sheet } from '../../src/components/overlays/Sheet';
+import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
 
 const flush = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
@@ -121,19 +123,18 @@ describe('Sheet', () => {
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'first' }));
   });
 
-  it('locks body overflow while open and restores on close', () => {
-    document.body.style.overflow = '';
+  it('locks body scroll while open and releases on close (ref-counted class)', () => {
     const { rerender } = render(
       <Sheet open onClose={() => {}} ariaLabel="X">
         <p>x</p>
       </Sheet>,
     );
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
     rerender(
       <Sheet open={false} onClose={() => {}} ariaLabel="X">
         <p>x</p>
       </Sheet>,
     );
-    expect(document.body.style.overflow).toBe('');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
 });

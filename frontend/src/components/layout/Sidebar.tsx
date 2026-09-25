@@ -10,6 +10,7 @@ import { useAuthStore } from '../../stores/auth.store';
 import { useLogout, useMe } from '../../hooks/useAuth';
 import { useOnboardingStore } from '../../stores/onboarding.store';
 import { useUiStore } from '../../stores/ui.store';
+import { acquireScrollLock, releaseScrollLock } from '../../lib/scrollLock';
 import { NAV_BY_ROLE, displayRoleLabel } from '../../lib/nav';
 
 export function Sidebar() {
@@ -25,10 +26,14 @@ export function Sidebar() {
   // same store <OnboardingFlow /> renders from (audit 0-f P0-2 fix).
   const startOnboarding = useOnboardingStore((s) => s.start);
 
-  // Lock body scroll only while the mobile drawer is open.
+  // Lock body scroll only while the mobile drawer is open. Goes through
+  // the shared ref-counted lock (lib/scrollLock, 11-e P2-12) so a drawer
+  // cycle can no longer silently drop a modal's lock: the old inline
+  // `body.style.overflow` write clobbered whatever useFocusTrap had saved.
   useEffect(() => {
-    document.body.style.overflow = sidebarOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (!sidebarOpen) return;
+    acquireScrollLock('sidebar-drawer');
+    return () => releaseScrollLock('sidebar-drawer');
   }, [sidebarOpen]);
 
   // Close mobile drawer on Escape so users always have an easy out.

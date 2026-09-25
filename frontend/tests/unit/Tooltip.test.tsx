@@ -9,6 +9,8 @@
  *   - hides on blur
  *   - applies aria-describedby when open
  *   - removes aria-describedby when closed
+ *   - merges with (not replaces) the trigger's own aria-describedby
+ *     while open (wave 12-14)
  *   - hover delay can be customised via showDelayMs
  *   - portal mount with role=tooltip
  */
@@ -100,6 +102,23 @@ describe('Tooltip', () => {
     expect(btn.getAttribute('aria-describedby')).toBeTruthy();
     fireEvent.blur(btn);
     expect(btn.getAttribute('aria-describedby')).toBeNull();
+  });
+
+  it('merges with the trigger’s own aria-describedby while open, restores it on close', () => {
+    render(
+      <Tooltip content="help">
+        <button type="button" aria-describedby="permanent-hint">trigger</button>
+      </Tooltip>,
+    );
+    const btn = screen.getByRole('button');
+    expect(btn).toHaveAttribute('aria-describedby', 'permanent-hint');
+    fireEvent.focus(btn);
+    const tip = screen.getByRole('tooltip');
+    const ids = btn.getAttribute('aria-describedby')!.split(' ');
+    expect(ids).toContain('permanent-hint');
+    expect(ids).toContain(tip.id);
+    fireEvent.blur(btn);
+    expect(btn).toHaveAttribute('aria-describedby', 'permanent-hint');
   });
 
   it('forwards original onMouseEnter / onMouseLeave handlers', () => {

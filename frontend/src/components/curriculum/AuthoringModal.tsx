@@ -9,9 +9,10 @@
  * .auth-field-error, .auth-error, .btn) + design tokens inline, so the
  * panel matches the rest of the app without touching styles/.
  */
-import { useId, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useState, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { Modal } from '../overlays/Modal';
+import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { apiErrorMessage } from '../../hooks/useResources';
 
@@ -19,16 +20,26 @@ export function AuthoringModal({
   title,
   onClose,
   closeOnOverlayClick,
+  closeOnEscape = true,
   children,
 }: {
   title: string;
   onClose: () => void;
   /** Defaults to true; pass false while a mutation is pending. */
   closeOnOverlayClick?: boolean;
+  /** Defaults to true; pass false while a stacked dialog (e.g. the
+   *  discard-confirm of useDiscardGuard) owns the Escape key. */
+  closeOnEscape?: boolean;
   children: ReactNode;
 }) {
   return (
-    <Modal open onClose={onClose} ariaLabel={title} closeOnOverlayClick={closeOnOverlayClick}>
+    <Modal
+      open
+      onClose={onClose}
+      ariaLabel={title}
+      closeOnOverlayClick={closeOnOverlayClick}
+      closeOnEscape={closeOnEscape}
+    >
       <header
         style={{
           display: 'flex',
@@ -184,4 +195,82 @@ export function TimeInput({
 export function useFieldId(prefix: string) {
   const uid = useId();
   return `${prefix}-${uid}`;
+}
+
+/**
+ * Dirty-state close guard for the authoring form dialogs.
+ *
+ * Every close path of an authoring modal (Esc, the header X button, the overlay
+ * click, the footer cancel button) normally calls onClose directly — with
+ * unsaved edits that silently drops the teacher's draft. While `dirty` is
+ * true and no mutation is pending, `requestClose` reroutes those paths
+ * into a blocking ConfirmDialog instead, and a `beforeunload` listener
+ * covers browser-level navigation (reload / tab close) for the same
+ * window.
+ *
+ * While the discard-confirm is stacked, `escapeLocked` is true — pass it
+ * to AuthoringModal's closeOnEscape so a stray Esc cannot dismiss both
+ * dialogs at once (the topmost confirm handles Esc as its cancel).
+ *
+ * In-app SPA route changes (e.g. the browser back button) are NOT
+ * interceptable from here: react-router's useBlocker requires a data
+ * router and App still mounts a plain BrowserRouter — follow-up for the
+ * routing wave once a createBrowserRouter migration lands.
+ */
+export function useDiscardGuard({
+  dirty,
+  pending,
+  onClose,
+}: {
+  dirty: boolean;
+  pending: boolean;
+  onClose: () => void;
+}): {
+  /** Guarded close — wire to AuthoringModal onClose + ModalActions onCancel. */
+  requestClose: () => void;
+  /** True while the discard-confirm is stacked — disables Esc on the form modal. */
+  escapeLocked: boolean;
+  /** The stacked ConfirmDialog (portal-mounted) — render inside the modal tree. */
+  guard: ReactNode;
+} {
+  const [confirming, setConfirming] = useState(false);
+
+  const requestClose = useCallback(() => {
+    if (dirty && !pending) {
+      setConfirming(true);
+      return;
+    }
+    onClose();
+  }, [dirty, pending, onClose]);
+
+  // Browser unload (reload / tab close / external link) while dirty —
+  // same pattern as the exam taker's live-attempt guard.
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      // Legacy requirement for Chrome/Edge to show the native prompt.
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [dirty]);
+
+  const guard = confirming ? (
+    <ConfirmDialog
+      open
+      title="تعديلات غير محفوظة"
+      message="لديك تعديلات لم تُحفظ بعد. الإغلاق الآن يتخلّى عنها نهائياً."
+      confirmLabel="التخلّي عن التعديلات"
+      cancelLabel="متابعة التحرير"
+      danger
+      onConfirm={() => {
+        setConfirming(false);
+        onClose();
+      }}
+      onCancel={() => setConfirming(false)}
+    />
+  ) : null;
+
+  return { requestClose, escapeLocked: confirming, guard };
 }

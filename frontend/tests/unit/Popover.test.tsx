@@ -11,11 +11,15 @@
  *   - clicks on the anchor itself do NOT dismiss (toggle pattern)
  *   - does NOT lock body scroll (passive surface)
  *   - does NOT trap focus
+ *   - Esc returns focus to the trigger (wave 12-14, P2-11)
+ *   - the trigger's aria-expanded/aria-haspopup are synced when the
+ *     consumer does not declare them (wave 12-14)
  */
 import { describe, expect, it, vi } from 'vitest';
 import { useRef } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Popover } from '../../src/components/overlays/Popover';
+import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
 
 function Harness({
   open,
@@ -118,10 +122,52 @@ describe('Popover', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
+  it('Esc dismisses and returns focus to the trigger', () => {
+    const onClose = vi.fn();
+    render(<Harness open onClose={onClose} />);
+    const anchor = screen.getByTestId('anchor');
+    anchor.focus();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(document.activeElement).toBe(anchor);
+  });
+
   it('does NOT lock body scroll (passive surface)', () => {
     document.body.style.overflow = 'auto';
     render(<Harness open onClose={() => {}} />);
     expect(document.body.style.overflow).toBe('auto');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
+  });
+
+  it('syncs aria-expanded/aria-haspopup onto a trigger that does not declare them', () => {
+    render(<Harness open onClose={() => {}} />);
+    const anchor = screen.getByTestId('anchor');
+    expect(anchor).toHaveAttribute('aria-expanded', 'true');
+    expect(anchor).toHaveAttribute('aria-haspopup', 'dialog');
+  });
+
+  it('leaves the trigger alone when the consumer declares aria-expanded itself', () => {
+    function OwnedHarness({ open }: { open: boolean }) {
+      const ref = useRef<HTMLButtonElement | null>(null);
+      return (
+        <>
+          {/* React writes these declaratively during commit — the
+              platform must never fight it (attribute already present
+              on the effect's first look ⇒ consumer-owned). */}
+          <button ref={ref} type="button" data-testid="owned" aria-expanded={open} aria-haspopup="dialog">
+            trigger
+          </button>
+          <Popover open={open} onClose={() => {}} anchorRef={ref} ariaLabel="X">
+            <p>content</p>
+          </Popover>
+        </>
+      );
+    }
+    const { rerender } = render(<OwnedHarness open={false} />);
+    const anchor = screen.getByTestId('owned');
+    expect(anchor).toHaveAttribute('aria-expanded', 'false');
+    rerender(<OwnedHarness open />);
+    expect(anchor).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('does NOT steal focus on mount', () => {

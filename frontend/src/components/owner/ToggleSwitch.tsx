@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 interface ToggleSwitchProps {
   label: string;
   description?: string;
@@ -17,7 +19,11 @@ interface ToggleSwitchProps {
  *     extends the touch target to the full row)
  */
 export function ToggleSwitch({ label, description, checked, onChange, disabled = false, id }: ToggleSwitchProps) {
-  const descId = description && id ? `${id}-desc` : description ? `toggle-desc-${label.replace(/\s+/g, '-')}` : undefined;
+  // Fallback id must be unique per instance — deriving it from the Arabic
+  // label collides when two rows share a label (duplicate DOM ids and
+  // aria-describedby pointing at the first match). (audit 11-f P2-7)
+  const autoId = useId();
+  const descId = description ? `${id ?? autoId}-desc` : undefined;
 
   return (
     <div className="owner-toggle-row">

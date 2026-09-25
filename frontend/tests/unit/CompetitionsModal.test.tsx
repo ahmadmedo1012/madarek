@@ -9,10 +9,14 @@
  *   - Esc closes the dialog
  *   - click on the backdrop closes the dialog
  *   - form labels are associated with their inputs (useId + htmlFor/id)
+ *
+ * Wave 12-14: the scroll lock is the ref-counted scrollLock body
+ * class (lib/scrollLock.ts), not an inline overflow write.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
 
 vi.mock('../../src/hooks/useResources', () => ({
   useCompetitions: () => ({
@@ -65,14 +69,14 @@ describe('CompetitionsIndexPage — migrated create-competition modal', () => {
     expect(dialog.closest('.page')).toBeNull();
   });
 
-  it('locks body scroll while open and restores it on Esc close', () => {
+  it('locks body scroll while open and releases it on Esc close (scrollLock class)', () => {
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /مسابقة جديدة/ }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(document.body.style.overflow).toBe('');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
 
   it('closes on backdrop (overlay) click', () => {

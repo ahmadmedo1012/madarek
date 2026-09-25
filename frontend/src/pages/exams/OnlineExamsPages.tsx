@@ -2,7 +2,8 @@
  * Unified online exams.
  *
  *   /student/online-exams         student exam list (available + history)
- *   /student/online-exams/:id     student exam taker (start → answer → submit)
+ *   /student/online-exams/:id     student exam taker (start → answer → submit,
+ *                                  with D5 resume for IN_PROGRESS attempts)
  *   /quality/exam-moderation      quality moderation queue
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -21,6 +22,8 @@ import {
   useExamModerationQueue, useModerateExam, apiErrorMessage,
   type MyExam, type StartedAttempt,
 } from '../../hooks/useResources';
+import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
+import '../../styles/training.css'; // shared .track-card / .back-link families (D11 css split, 12-15)
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
@@ -32,12 +35,73 @@ const KIND_COLOR: Record<string, string> = {
   PRACTICE: 'var(--chart-2)',
 };
 
+/* D5 (WAVE-12-MAP, backend batch 12-1) — exam resume contract: when an
+   IN_PROGRESS attempt exists, POST /exams/templates/:id/start returns
+   the fresh-start shape PLUS `resumed: true` and the saved attempt.
+   `alreadyAttempted: true` stays reserved for GRADED / EXPIRED attempts
+   (terminal states → the existing "already taken" UI). These local types
+   widen StartedAttempt because useResources.ts belongs to another batch;
+   they mirror the D5 wire shape exactly. */
+export interface SavedAnswerValue {
+  choiceIndex?: number | null;
+  answerText?: string | null;
+}
+export interface ResumedAttempt {
+  id: string;
+  status: string;
+  expiresAt: string;
+  answers: Array<{ questionId: string; value: SavedAnswerValue | number | string | null }>;
+}
+export type StartExamResponse = StartedAttempt & {
+  resumed?: boolean;
+  attempt?: ResumedAttempt;
+};
+
+/* Restore server-saved answers into the taker's form state. Per D5 the
+   backend serializes each saved answer as { questionId, value } where
+   value is the raw input — the choice index for MCQ / TRUE_FALSE, the
+   text otherwise (null / '' when a row holds nothing). Raw string and
+   object forms ({ choiceIndex, answerText }) are also accepted so any
+   faithful serialization restores correctly. Blank text answers are
+   skipped — they must keep counting as unanswered. */
+export function restoreSavedAnswers(
+  saved: ResumedAttempt['answers'],
+): Record<string, { choiceIndex?: number; answerText?: string }> {
+  const restored: Record<string, { choiceIndex?: number; answerText?: string }> = {};
+  for (const { questionId, value } of saved) {
+    if (typeof value === 'number' && Number.isInteger(value) && value >= 0) {
+      restored[questionId] = { choiceIndex: value };
+    } else if (typeof value === 'string' && value.trim() !== '') {
+      restored[questionId] = { answerText: value };
+    } else if (value && typeof value === 'object') {
+      const entry: { choiceIndex?: number; answerText?: string } = {};
+      if (typeof value.choiceIndex === 'number') entry.choiceIndex = value.choiceIndex;
+      if (typeof value.answerText === 'string' && value.answerText.trim() !== '') {
+        entry.answerText = value.answerText;
+      }
+      if (entry.choiceIndex !== undefined || entry.answerText !== undefined) {
+        restored[questionId] = entry;
+      }
+    }
+  }
+  return restored;
+}
+
 /* ═══════════════ Student exam list ═══════════════ */
 export default function OnlineExamsPage() {
   const q = useMyExams();
   const exams = q.data;
-  const available = useMemo(() => (exams ?? []).filter((e) => !e.myAttempt), [exams]);
-  const taken = useMemo(() => (exams ?? []).filter((e) => e.myAttempt), [exams]);
+  const available = useMemo(
+    // D5: an IN_PROGRESS attempt is resumable, not taken — keep the
+    // card linked so a mid-exam reload can find its way back to the
+    // taker (GRADED / EXPIRED / SUBMITTED stay in the history list).
+    () => (exams ?? []).filter((e) => !e.myAttempt || e.myAttempt.status === 'IN_PROGRESS'),
+    [exams],
+  );
+  const taken = useMemo(
+    () => (exams ?? []).filter((e) => e.myAttempt && e.myAttempt.status !== 'IN_PROGRESS'),
+    [exams],
+  );
 
   return (
     <div className="page">
@@ -114,6 +178,11 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
           <span><Icon icon={ClipboardCheck} size={12} /> <bdi>{exam.questionCount}</bdi> سؤال</span>
           <span>درجة النجاح <bdi>≥ {exam.passingScore}%</bdi></span>
         </div>
+        {exam.myAttempt?.status === 'IN_PROGRESS' && (
+          <div style={{ marginTop: 8 }}>
+            <Badge color="amber">محاولة قيد التقدم — متابعة</Badge>
+          </div>
+        )}
         {exam.myAttempt && exam.myAttempt.score !== null && (
           <div style={{ marginTop: 8 }}>
             <Badge color={passed ? 'green' : 'amber'}>
@@ -178,10 +247,14 @@ export function ExamTakerPage() {
     if (!id) return;
     setStartError(null);
     try {
-      const r = await start.mutateAsync(id);
+      // D5: the response may carry resumed:true + the saved attempt
+      // (an IN_PROGRESS attempt) — the cast widens StartedAttempt with
+      // the contract's extra fields (useResources.ts is another batch's
+      // file; the wire shape is documented at StartExamResponse above).
+      const r = (await start.mutateAsync(id)) as StartExamResponse;
       if (r.alreadyAttempted) {
-        // Already taken — honest state, real result shown from the
-        // exams list payload (no fabricated score).
+        // Already taken (GRADED / EXPIRED per D5) — honest state, real
+        // result shown from the exams list payload (no fabricated score).
         setAlreadyDone(true);
         return;
       }
@@ -189,12 +262,15 @@ export function ExamTakerPage() {
       setUrgentNote(null);
       setConfirming(false);
       setAttempt(r);
+      // D5 resume: restore the answers the server already holds so a
+      // mid-exam reload continues exactly where it left off (a fresh
+      // start resets the map, as before).
+      setAnswers(r.resumed && r.attempt ? restoreSavedAnswers(r.attempt.answers) : {});
+      // The timer restores from the attempt's expiresAt — for a resumed
+      // attempt that is the ORIGINAL deadline, so the countdown shows
+      // the true remaining time, not a fresh durationMin.
       const expiry = new Date(r.expiresAt).getTime();
-      const tick = () => {
-        const s = Math.max(0, Math.round((expiry - Date.now()) / 1000));
-        setSecondsLeft(s);
-      };
-      tick();
+      setSecondsLeft(Math.max(0, Math.round((expiry - Date.now()) / 1000)));
     } catch (e) {
       setStartError(apiErrorMessage(e, 'تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.'));
     }
@@ -219,14 +295,20 @@ export function ExamTakerPage() {
   });
 
   // Countdown — auto-submits exactly once when the timer hits 00:00.
+  // Deps are [attempt] only: the submit path goes through
+  // submitAttemptRef (always-current closure), and depending on the
+  // `finish` mutation object tore the interval down and recreated it on
+  // every render (audit 11-f P2-3). Wall-clock math on every tick keeps
+  // the display immune to interval drift.
   useEffect(() => {
     if (!attempt) return;
-    const id = setInterval(() => {
-      const expiry = new Date(attempt.expiresAt).getTime();
+    const expiry = new Date(attempt.expiresAt).getTime();
+    let intervalId: ReturnType<typeof setInterval> | undefined;
+    const readClock = () => {
       const s = Math.max(0, Math.round((expiry - Date.now()) / 1000));
       setSecondsLeft(s);
       if (s <= 0) {
-        clearInterval(id);
+        if (intervalId !== undefined) clearInterval(intervalId);
         // Auto-submit when the timer hits 0 (double-fire guarded via
         // autoSubmittedRef). Without this, students were stranded on a
         // dead "00:00" page with in-progress answers silently lost.
@@ -237,9 +319,20 @@ export function ExamTakerPage() {
           void submitAttemptRef.current();
         }
       }
-    }, 1000);
-    return () => clearInterval(id);
-  }, [attempt, finish]);
+    };
+    intervalId = setInterval(readClock, 1000);
+    // Background tabs throttle setInterval to a minute or more — on
+    // returning to the tab, re-read the wall clock immediately so the
+    // countdown (and the 00:00 auto-submit) are never minutes stale.
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') readClock();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      if (intervalId !== undefined) clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [attempt]);
 
   // Warn before a full page close/reload while an attempt is live —
   // answers autosave per question, but a mid-question reload loses the
@@ -295,6 +388,14 @@ export function ExamTakerPage() {
         return !a || (a.choiceIndex === undefined && (a.answerText ?? '').trim() === '');
       }).length
     : 0;
+
+  // D5 orientation: if the exams list already knows this student has an
+  // IN_PROGRESS attempt, the entry screen speaks the truth — the timer
+  // never stopped and saved answers will reappear. Deep links that skip
+  // the list fall back to the fresh-start copy until start() reveals
+  // the resume.
+  const listedExam = (examsQ.data ?? []).find((e) => e.id === id);
+  const hasLiveAttempt = listedExam?.myAttempt?.status === 'IN_PROGRESS';
 
   // Already-attempted honest state: real score from the exams list if
   // the attempt has been graded, otherwise "awaiting result".
@@ -361,10 +462,13 @@ export function ExamTakerPage() {
         <Card>
           <div className="empty-state">
             <Icon icon={ClipboardCheck} size={32} style={{ color: 'var(--accent)' }} />
-            <h2 style={{ margin: 'var(--sp-3) 0 var(--sp-2)' }}>هل أنت مستعد للبدء؟</h2>
+            <h2 style={{ margin: 'var(--sp-3) 0 var(--sp-2)' }}>
+              {hasLiveAttempt ? 'متابعة الاختبار' : 'هل أنت مستعد للبدء؟'}
+            </h2>
             <p className="text-sm text-muted" style={{ maxWidth: 480, textAlign: 'center' }}>
-              بمجرد الضغط على "بدء الاختبار" سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً
-              قبل الإجابة. الأسئلة تُسجَّل تلقائياً عند تغيير الإجابة.
+              {hasLiveAttempt
+                ? 'لديك محاولة قيد التقدم لهذا الاختبار — الوقت لم يتوقف منذ البدء، وإجاباتك المحفوظة ستظهر كما تركتها.'
+                : 'بمجرد الضغط على "بدء الاختبار" سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. الأسئلة تُسجَّل تلقائياً عند تغيير الإجابة.'}
             </p>
             {startError && (
               <div className="form-error" role="alert" style={{ marginTop: 'var(--sp-3)', maxWidth: 480 }}>
@@ -373,7 +477,7 @@ export function ExamTakerPage() {
               </div>
             )}
             <button type="button" className="btn primary" onClick={onStart} disabled={start.isPending} style={{ marginTop: 'var(--sp-3)' }}>
-              {start.isPending ? 'جارٍ التحضير…' : 'بدء الاختبار'}
+              {start.isPending ? 'جارٍ التحضير…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
             </button>
           </div>
         </Card>

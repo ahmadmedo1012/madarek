@@ -14,13 +14,22 @@
  * there is no room below, and clamps inside the viewport — long lists
  * already scroll inside .notif-panel-list.
  *
+ * Wave 12-14 (audit 11-e P1-2 + P2-11): registers in the overlay
+ * stack — Escape answers only the topmost layer (consumed via
+ * stopImmediatePropagation) and returns focus to the bell trigger;
+ * the trigger's aria-expanded/aria-haspopup are synced unless the
+ * consumer declares them itself.
+ *
  * Used by the bell icon in the topbar to drop down a list of recent
  * notifications.
  */
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { overlayStack } from '../../lib/overlayStack';
 import { useAnchoredPosition } from './anchoredPosition';
+import { useAnchorAria } from './useAnchorAria';
 import { useDelayedUnmount } from './useDelayedUnmount';
+import { useOverlayRegistration } from './useOverlayRegistration';
 
 export interface NotificationPanelProps {
   open: boolean;
@@ -44,22 +53,28 @@ export function NotificationPanel({
   children,
 }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const overlayId = useOverlayRegistration(open, 'notification-panel');
+  useAnchorAria(open, anchorRef, 'dialog');
   const { rendered, onExitEnd } = useDelayedUnmount(open);
   // The panel hangs from the anchor's inline-end edge — the shared
   // "end" placement resolves that per writing direction.
   const pos = useAnchoredPosition({ open, anchorRef, panelRef, placement: 'end' });
 
+  // Esc dismiss — only the topmost overlay layer answers (P1-2), and
+  // the trigger gets focus back so keyboard users keep their place
+  // (P2-11, matching Dropdown).
   useEffect(() => {
     if (!open || !closeOnEscape) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
-      }
+      if (e.key !== 'Escape') return;
+      if (!overlayStack.isTop(overlayId)) return;
+      e.stopImmediatePropagation();
+      onClose();
+      anchorRef.current?.focus?.();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [open, closeOnEscape, onClose]);
+  }, [open, closeOnEscape, onClose, anchorRef, overlayId]);
 
   useEffect(() => {
     if (!open || !closeOnOutsideClick) return;

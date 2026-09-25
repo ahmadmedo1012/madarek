@@ -11,8 +11,11 @@
  *   - close button has accessible label
  *   - clicks on the toast body do NOT dismiss
  *   - mounting toast does NOT steal focus from current activeElement
+ *   - the auto-dismiss timer is NOT restarted by parent re-renders
+ *     that pass a fresh inline onClose (wave 12-14, audit 11-e P2-6)
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { useState } from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Toast } from '../../src/components/overlays/Toast';
 
@@ -132,5 +135,35 @@ describe('Toast', () => {
 
     expect(document.activeElement).toBe(externalButton);
     document.body.removeChild(externalButton);
+  });
+
+  it('auto-dismiss timer is NOT restarted by a parent re-render (inline onClose)', () => {
+    function Host() {
+      const [open, setOpen] = useState(true);
+      const [, setTick] = useState(0);
+      return (
+        <>
+          <Toast open={open} onClose={() => setOpen(false)} durationMs={3000}>
+            ok
+          </Toast>
+          {/* Re-render with a fresh inline onClose — with the old
+              effect deps this restarted the 3s clock every click. */}
+          <button type="button" onClick={() => setTick((t) => t + 1)}>
+            rerender
+          </button>
+        </>
+      );
+    }
+    render(<Host />);
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'rerender' }));
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    // 3000ms since mount — the timer must fire on schedule despite the
+    // re-render (the toast closes itself: open flips false → hidden).
+    expect(screen.queryByText('ok')).toBeNull();
   });
 });

@@ -6,6 +6,7 @@ import { Icon } from '../Icon';
 import { UserAvatar, Badge } from '../primitives';
 import { EmptyState, ErrorState, Skeleton } from '../primitives/States';
 import { useAnnotations, useCreateAnnotation, useDeleteAnnotation } from '../../hooks/useResources';
+import { apiErrorMessage } from '../../lib/format';
 import { useAuthStore } from '../../stores/auth.store';
 
 interface AnnotationsPanelProps {
@@ -158,6 +159,16 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
             className="annotation-textarea"
             autoFocus
           />
+          {/* Failed save: the composer stays open with the draft intact so
+              the user can retry — the failure is never silent (audit 11-f
+              P1-1). */}
+          {createA.isError && (
+            <div className="form-error" role="alert" style={{ marginTop: 'var(--sp-2)' }}>
+              <span className="form-error-msg">
+                {apiErrorMessage(createA.error, 'تعذّر حفظ الملاحظة — تحقّق من اتصالك ثم أعد المحاولة.')}
+              </span>
+            </div>
+          )}
           <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
             <span className="text-xxs text-subtle">{draft.length} / 2000</span>
             <div className="flex gap-2">
@@ -174,6 +185,16 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
 
       {/* List */}
       <div className="annotations-list">
+        {/* Failed delete: the annotation stays in the list (the honest
+            state — the server still has it) and the failure is surfaced
+            inline instead of silently vanishing (audit 11-f P1-1). */}
+        {deleteA.isError && (
+          <div className="form-error" role="alert" style={{ marginBlockEnd: 'var(--sp-2)' }}>
+            <span className="form-error-msg">
+              {apiErrorMessage(deleteA.error, 'تعذّر حذف الملاحظة — تحقّق من اتصالك ثم أعد المحاولة.')}
+            </span>
+          </div>
+        )}
         {annotations.isPending ? (
           <AnnotationsSkeleton />
         ) : annotations.isError ? (

@@ -17,6 +17,7 @@ import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost
 import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
+import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 

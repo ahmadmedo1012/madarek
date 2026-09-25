@@ -6,9 +6,9 @@
  * (already uses --elev-4 + --z-modal after the T060 sweep) with:
  *   - portal mount on document.body
  *   - focus trap (Tab/Shift-Tab cycle) via useFocusTrap
- *   - Esc to close
+ *   - Esc to close — one layer per press (overlayStack, wave 12-14)
  *   - click-outside on the overlay to close
- *   - body scroll lock while open
+ *   - body scroll lock while open (ref-counted scrollLock, wave 12-14)
  *   - wave 7-a: scale-fade EXIT animation before unmount
  *     (useDelayedUnmount + data-closing — audit 0-c P2-1)
  *
@@ -42,7 +42,7 @@ export function Modal({
   children,
 }: ModalProps) {
   const cardRef = useRef<HTMLDivElement | null>(null);
-  useFocusTrap({ open, containerRef: cardRef, closeOnEscape, onClose });
+  useFocusTrap({ open, containerRef: cardRef, closeOnEscape, onClose, overlayKind: 'modal' });
   const { rendered, onExitEnd } = useDelayedUnmount(open, '--motion-duration-medium');
 
   if (!rendered || typeof document === 'undefined') return null;

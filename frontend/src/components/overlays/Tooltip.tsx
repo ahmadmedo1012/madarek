@@ -12,6 +12,12 @@
  * computed in px so clamping never detaches it), viewport clamping in
  * both axes, and Escape closes.
  *
+ * Wave 12-14 (audit 11-e P1-2 + P2 polish): tooltips are passive —
+ * they never join the overlay stack — so Escape only closes a tooltip
+ * while no real overlay layer is open (the topmost overlay owns the
+ * key). While open, the tooltip's id is MERGED into any aria-
+ * describedby the trigger already carries instead of replacing it.
+ *
  * Per the contract:
  *   - Tooltips DO NOT trap focus.
  *   - Tooltips DO NOT lock body scroll.
@@ -31,6 +37,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { overlayStack } from '../../lib/overlayStack';
 
 export interface TooltipProps {
   /** The trigger element. Must be a single element that accepts a ref. */
@@ -122,11 +129,15 @@ export function Tooltip({ children, content, showDelayMs = 300 }: TooltipProps) 
     };
   }, [open]);
 
-  // Escape closes (instant — no exit animation for tooltips).
+  // Escape closes (instant — no exit animation for tooltips). Tooltips
+  // are passive surfaces, so they stay out of the overlay-stack ranking:
+  // while any real overlay layer is open, that layer owns the Escape key
+  // (and its stopImmediatePropagation usually keeps us from seeing it at
+  // all — this check makes the outcome order-independent).
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') hide();
+      if (e.key === 'Escape' && overlayStack.isEmpty()) hide();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -135,6 +146,13 @@ export function Tooltip({ children, content, showDelayMs = 300 }: TooltipProps) 
   if (!isValidElement(children)) return children as unknown as ReactElement;
 
   const child = children;
+  // While open, the tooltip id joins any describedby the trigger
+  // already carries (space-separated id list per ARIA) instead of
+  // shadowing it; on close the trigger's own value is restored.
+  const ownDescribedBy = child.props['aria-describedby'];
+  const describedBy = open
+    ? [ownDescribedBy, tooltipId].filter(Boolean).join(' ')
+    : ownDescribedBy;
   const trigger = cloneElement(child, {
     ref: (node: HTMLElement | null) => {
       anchorRef.current = node;
@@ -143,7 +161,7 @@ export function Tooltip({ children, content, showDelayMs = 300 }: TooltipProps) 
       else if (ref && typeof ref === 'object')
         (ref as { current: HTMLElement | null }).current = node;
     },
-    'aria-describedby': open ? tooltipId : child.props['aria-describedby'],
+    'aria-describedby': describedBy,
     onMouseEnter: (e: React.MouseEvent) => {
       child.props.onMouseEnter?.(e);
       show();

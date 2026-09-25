@@ -10,11 +10,13 @@
  *   - clicks inside the content do NOT dismiss
  *   - close button calls onClose
  *   - close button has accessible label
- *   - body overflow lock + restore
+ *   - body scroll lock + release (the ref-counted scrollLock class,
+ *     wave 12-14)
  */
 import { describe, expect, it, vi } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { Lightbox } from '../../src/components/overlays/Lightbox';
+import { SCROLL_LOCK_BODY_CLASS } from '../../src/lib/scrollLock';
 
 const flush = () => act(() => new Promise((r) => setTimeout(r, 0)));
 
@@ -118,19 +120,18 @@ describe('Lightbox', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('locks body overflow while open and restores on close', () => {
-    document.body.style.overflow = '';
+  it('locks body scroll while open and releases on close (ref-counted class)', () => {
     const { rerender } = render(
       <Lightbox open onClose={() => {}} ariaLabel="X">
         <p>x</p>
       </Lightbox>,
     );
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(true);
     rerender(
       <Lightbox open={false} onClose={() => {}} ariaLabel="X">
         <p>x</p>
       </Lightbox>,
     );
-    expect(document.body.style.overflow).toBe('');
+    expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
 });

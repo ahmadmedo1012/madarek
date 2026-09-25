@@ -13,7 +13,7 @@ const page = await ctx.newPage();
 if (email) {
   await page.goto('http://localhost:5173/auth', { waitUntil: 'networkidle' });
   await page.fill('#auth-email', email);
-  await page.fill('#auth-password', '1234');
+  await page.fill('#auth-password', 'Madarek2026!');
   await Promise.all([
     page.waitForURL((u) => !u.pathname.includes('/auth')),
     page.click('button.auth-submit'),

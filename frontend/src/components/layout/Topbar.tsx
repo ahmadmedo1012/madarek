@@ -18,6 +18,25 @@ interface TopbarProps {
   scrolled?: boolean;
 }
 
+/** Student scope chip — the college name next to the page title.
+ *
+ * Lives in its own component so `useMyProfile` (GET /me/profile)
+ * only fires for the one role that renders the chip (11-e P1-4):
+ * the query used to run for every role even though TEACHER/ADMIN/
+ * QUALITY/OWNER never read it — four roles paying a likely-403
+ * request per shell mount. The hook itself is ungated
+ * (hooks/useResources.ts is 12-9's), so the gate is structural. */
+function StudentScopeChip() {
+  const profileQ = useMyProfile();
+  const name = profileQ.data?.student?.faculty?.name ?? null;
+  if (!name) return null;
+  return (
+    <span className="topbar-scope" title={`الكلية: ${name}`}>
+      {name}
+    </span>
+  );
+}
+
 export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   const toggle = useUiStore((s) => s.toggleSidebar);
   const user = useAuthStore((s) => s.user);
@@ -28,11 +47,10 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const logoutM = useLogout();
-  // PRD: student should see their college as a quick scope indicator.
-  // Only fetched for students — useMyProfile is no-op for other roles.
-  const profileQ = useMyProfile();
+  // PRD: students see their college as a quick scope indicator.
+  // `/me/profile` is student-only — see StudentScopeChip above for why
+  // the request must not fire for the other four roles.
   const meQ = useMe();
-  const studentFacultyName = role === 'STUDENT' ? profileQ.data?.student?.faculty?.name ?? null : null;
   // Governance scope chip — ADMIN/QUALITY users may be university-wide (NULL)
   // or scoped to a single faculty (set). Surfacing this prevents
   // "which college am I admin of?" ambiguity at a glance.
@@ -80,11 +98,7 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
 
       <div className="topbar-title">
         {title}
-        {studentFacultyName && (
-          <span className="topbar-scope" title={`الكلية: ${studentFacultyName}`}>
-            {studentFacultyName}
-          </span>
-        )}
+        {role === 'STUDENT' && <StudentScopeChip />}
         {scopeFacultyName && (
           <span className="topbar-scope" title={`نطاق الإدارة: ${scopeFacultyName}`}>
             {role === 'QUALITY' ? 'جودة كلية' : 'إداري كلية'} · {scopeFacultyName}

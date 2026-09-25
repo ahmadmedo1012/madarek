@@ -51,6 +51,10 @@ export function ConfirmDialog({
       <h3 className="owner-confirm-title">{title}</h3>
       <p className="owner-confirm-message">{message}</p>
       <div className="owner-confirm-actions">
+        {/* Both buttons stay disabled while an async confirm runs, and the
+            modal's overlay-click path is gated too (closeOnOverlayClick
+            above) — a pending confirm can neither double-fire nor be
+            dismissed midway. */}
         <button type="button" className="btn ghost" onClick={onCancel} disabled={loading}>
           {cancelLabel}
         </button>
@@ -59,12 +63,8 @@ export function ConfirmDialog({
           className={`btn ${danger ? 'danger' : 'primary'}`}
           onClick={() => void handleConfirm()}
           disabled={loading}
-          // Disable the cancel button's underlying click-outside path
-          // while async confirm is running: Modal's closeOnOverlayClick
-          // already gates on `loading`, but the cancel button itself
-          // is also disabled to avoid double-submits.
         >
-          {loading ? '...' : confirmLabel}
+          {loading ? 'جارٍ…' : confirmLabel}
         </button>
       </div>
     </Modal>

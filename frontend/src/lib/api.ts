@@ -1,5 +1,6 @@
 import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { useAuthStore } from '../stores/auth.store';
+import { queryClient } from './queryClient';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 
@@ -36,6 +37,12 @@ async function tryRefresh(): Promise<string | null> {
       })
       .catch(() => {
         useAuthStore.getState().clear();
+        // Session ended (refresh rejected). The next visitor on this
+        // tab — a shared lab machine is a real deployment scenario —
+        // must never render the previous account's cached queries
+        // (role accent, milestones, profile). Same boundary the
+        // login/register/logout hooks enforce.
+        queryClient.clear();
         return null;
       })
       .finally(() => {

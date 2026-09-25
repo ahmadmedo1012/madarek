@@ -195,6 +195,26 @@ export const checkpointFormSchema = z
   );
 export type CheckpointFormValues = z.infer<typeof checkpointFormSchema>;
 
+/**
+ * New correctIndex after the option at `removedIndex` is deleted:
+ *   - removed BEFORE the marked answer → shift the mark down so it keeps
+ *     pointing at the same option,
+ *   - removed IS the marked answer → reset to CORRECT_INDEX_UNCHANGED:
+ *     nothing stays marked and submit gates force a conscious re-pick
+ *     (create mode via the «حدِّد الإجابة الصحيحة» guard; edit mode via
+ *     the server re-validating the saved answer against the new options),
+ *   - removed AFTER the marked answer → the mark stays put.
+ * Pure so the shift/reset rule is unit-testable (audit 11-f P1-7: the
+ * old behavior silently re-pointed the answer at whatever option shifted
+ * into the deleted slot and persisted the wrong correctIndex).
+ */
+export function adjustCorrectIndexOnRemove(correctIndex: number, removedIndex: number): number {
+  if (correctIndex === CORRECT_INDEX_UNCHANGED) return CORRECT_INDEX_UNCHANGED;
+  if (removedIndex === correctIndex) return CORRECT_INDEX_UNCHANGED;
+  if (removedIndex < correctIndex) return correctIndex - 1;
+  return correctIndex;
+}
+
 /** Form options rows → the flat string[] the API expects. */
 export function checkpointFormOptions(values: CheckpointFormValues): string[] {
   return values.options.map((o) => o.value.trim());
