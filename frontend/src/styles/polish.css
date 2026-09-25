@@ -281,7 +281,14 @@
   /* ── Tab items: pointer + hover underline ───────────────────── */
   .tab { cursor: pointer; }
   .tab:hover { color: var(--text); }
-  .tab[aria-selected="true"] { color: var(--accent); font-weight: var(--fw-semibold); }
+  /* 15-g P1-4 — selected-tab label is body-size text (.tab base is
+     --type-label-size 13px/600), so 4.5:1 applies: light --accent
+     #B57438 reads 3.52–3.80:1 on card surfaces. --accent-ink keeps
+     the label AA in both themes (10.29:1 light / 7.87:1 dark) — same
+     fix class as the nav-item 0-c P1-1. The underline indicator keeps
+     its own color (components.css: --neutral-900 light, --accent
+     dark), so the accent read survives via the indicator. */
+  .tab[aria-selected="true"] { color: var(--accent-ink); font-weight: var(--fw-semibold); }
 
   /* ── Pill active state: subtle press ────────────────────────── */
   .pill:active:not(.on) {
@@ -4370,12 +4377,17 @@
      of fixed positioning — the root cause of the "760px RTL
      scrollWidth at 390px" bug (full diagnosis in the 7-b section).
      .landing-progress needs no exclusion: it renders a <div>, not an
-     <a>.) */
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link) {
+     <a>.)
+     (16-E4, 15-f FE-9: the `:not(.card-link)` exclusion was dropped
+     from every selector in this family — the .card-link rule itself
+     was deleted in the 13-17 sweep (tombstone at components.css:53)
+     and no element has carried the class since, so the exclusion was
+     a no-op token.) */
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link) {
     position: relative;
     transition: color var(--motion-duration-short) var(--ease, ease);
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link)::after {
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link)::after {
     content: '';
     position: absolute;
     inset-block-end: -2px;
@@ -4388,14 +4400,14 @@
     transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     pointer-events: none;
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link)::after {
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link)::after {
     transform-origin: left;
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
     transform: scaleX(1);
     transform-origin: left;
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.card-link):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
     transform-origin: right;
   }
 

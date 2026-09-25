@@ -5,7 +5,9 @@
  *
  * Scene inventory (wave 8-c audit — every V1 scene is consumed):
  *   homepage-hero        → LandingPage hero (eager, first paint)
- *   error-404            → NotFoundPage via ErrorState illustration=
+ *   error-404            → NotFoundPage (direct <Illustration name=
+ *                          "error-404">; ErrorState's illustration=
+ *                          prop is app-dead, test-only — 15-f FE-11)
  *   empty-notifs         → NotificationDropdown empty state (the
  *                          notifications panel's inbox)
  *   empty-search         → LibraryPage filtered/book empty states

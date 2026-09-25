@@ -32,6 +32,7 @@ import {
   isLastActiveOwner,
   isUserWithinScope,
   loadGovernanceTarget,
+  lockActiveOwnerRows,
   planTeacherProvisioning,
   requiresLastOwnerGuard,
 } from '../../src/lib/governance';
@@ -81,6 +82,59 @@ describe('requiresLastOwnerGuard (pure applicability decision)', () => {
 
   it('does not fire when neither a role nor a status is being changed', () => {
     expect(requiresLastOwnerGuard({ targetRole: Role.OWNER })).toBe(false);
+  });
+});
+
+describe('lockActiveOwnerRows (promoted TOCTOU lock — audit 15-b P1-1)', () => {
+  it('locks exactly the rows the guard counts: active OWNER rows, FOR UPDATE, via the passed transaction client', async () => {
+    const $queryRaw = vi.fn().mockResolvedValue([{ id: 'owner-1' }, { id: 'owner-2' }]);
+    const tx = { $queryRaw } as unknown as Prisma.TransactionClient;
+
+    await lockActiveOwnerRows(tx);
+
+    expect($queryRaw).toHaveBeenCalledTimes(1);
+    // Tagged-template invocation with no interpolations: the whole
+    // statement is the single literal chunk strings[0].
+    const [strings] = $queryRaw.mock.calls[0] as unknown as [TemplateStringsArray];
+    expect(strings).toHaveLength(1);
+    expect(strings[0]).toContain('FROM "User"');
+    expect(strings[0]).toContain('"role" = \'OWNER\'');
+    expect(strings[0]).toContain('"isActive" = true');
+    // FOR UPDATE, acquired in a deterministic id order so concurrent
+    // guard transactions on different surfaces queue instead of
+    // deadlocking each other.
+    expect(strings[0]).toMatch(/ORDER BY id FOR UPDATE$/);
+  });
+
+  it('resolves with the locked row ids (the caller may ignore them)', async () => {
+    const rows = [{ id: 'owner-1' }, { id: 'owner-2' }];
+    const tx = { $queryRaw: vi.fn().mockResolvedValue(rows) } as unknown as Prisma.TransactionClient;
+
+    await expect(lockActiveOwnerRows(tx)).resolves.toBe(rows);
+  });
+
+  it('runs BEFORE the guard count on the SAME transaction client (the sequence all four call sites use)', async () => {
+    const order: string[] = [];
+    const tx = {
+      $queryRaw: vi.fn(async () => {
+        order.push('lock');
+        return [{ id: 'owner-2' }];
+      }),
+      user: {
+        count: vi.fn(async () => {
+          order.push('count');
+          return 1;
+        }),
+      },
+    } as unknown as Prisma.TransactionClient;
+
+    await lockActiveOwnerRows(tx);
+    await assertNotLastActiveOwner('owner-1', tx);
+
+    expect(order).toEqual(['lock', 'count']);
+    expect(tx.user.count).toHaveBeenCalledWith({
+      where: { role: Role.OWNER, isActive: true, id: { not: 'owner-1' } },
+    });
   });
 });
 

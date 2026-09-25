@@ -66,7 +66,3 @@ export const changePasswordSchema = z
     newPassword: passwordSchema,
   })
   .strict();
-
-export type RegisterDto = z.infer<typeof registerSchema>;
-export type LoginDto = z.infer<typeof loginSchema>;
-export type ChangePasswordDto = z.infer<typeof changePasswordSchema>;

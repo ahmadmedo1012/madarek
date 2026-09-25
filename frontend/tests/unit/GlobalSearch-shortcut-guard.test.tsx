@@ -10,18 +10,27 @@
  *     GlobalSearch resolves it through an eager import.meta.glob, so
  *     this test also proves the glob resolves to the same registry
  *     singleton a direct import sees.
+ *
+ * Since wave 16-E3 the component lives on the query cache (15-d P2-8),
+ * so the render carries a fresh QueryClient — the shortcut tests never
+ * type, so no query ever fires (the debounced key stays under the
+ * 2-char gate and disabled).
  */
 import { describe, expect, it, afterEach } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GlobalSearch } from '../../src/components/layout/GlobalSearch';
 import { overlayStack } from '../../src/lib/overlayStack';
 
 function renderSearch() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
-    <MemoryRouter>
-      <GlobalSearch />
-    </MemoryRouter>,
+    <QueryClientProvider client={client}>
+      <MemoryRouter>
+        <GlobalSearch />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 

@@ -6,22 +6,28 @@
  * covers the short-answer matcher (exact-trim / case-insensitive exact —
  * never substring), the pure auto-grading rules, the exam-start
  * status-transition rules (resume / alreadyAttempted / retake), the
- * manual-grading payload reconciliation, and the authoring zod schemas.
- * Integration coverage (auth, transactions, the FOR UPDATE start race)
- * needs a DB harness the project does not have yet.
+ * exam-start assembly (blocking statuses / maxScore / shuffle), the
+ * answer-save dimension rules, the manual-grading payload
+ * reconciliation, and the authoring zod schemas. Integration coverage
+ * (auth, transactions, the FOR UPDATE start/submit races) needs a DB
+ * harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
 import { ExamKind } from '@prisma/client';
 import {
   SUBMIT_GRACE_MS,
+  answerPatchFor,
+  attemptBlockingStatuses,
   createQuestionSchema,
   createTemplateSchema,
   decideExamStart,
   gradeExamAnswer,
   manualGradeSchema,
   reconcileManualGrades,
+  shuffleQuestions,
   shortAnswerMatches,
   submitAnswerSchema,
+  templateMaxScore,
 } from '../../src/http/routes/exams.routes';
 
 /* ═══════════════ Short-answer matcher (never substring) ═══════════════ */
@@ -222,6 +228,149 @@ describe('decideExamStart', () => {
 
   it('pins the grace window at 60 seconds', () => {
     expect(SUBMIT_GRACE_MS).toBe(60_000);
+  });
+});
+
+/* ═══════════════ Exam-start assembly (blocking statuses / maxScore / shuffle) ═══════════════ */
+
+describe('attemptBlockingStatuses', () => {
+  it('blocks PRACTICE retakes only while an attempt is live', () => {
+    expect(attemptBlockingStatuses(ExamKind.PRACTICE)).toEqual(['IN_PROGRESS']);
+  });
+
+  it('blocks graded kinds on every closed status — EXPIRED included (no retake after seeing the board)', () => {
+    for (const kind of [ExamKind.QUIZ, ExamKind.MIDTERM, ExamKind.FINAL]) {
+      expect(attemptBlockingStatuses(kind)).toEqual(['IN_PROGRESS', 'SUBMITTED', 'GRADED', 'EXPIRED']);
+    }
+  });
+
+  it('returns a fresh array per call (callers build Prisma in-filters from it)', () => {
+    const first = attemptBlockingStatuses(ExamKind.QUIZ);
+    first.push('IN_PROGRESS');
+    expect(attemptBlockingStatuses(ExamKind.QUIZ)).toEqual(['IN_PROGRESS', 'SUBMITTED', 'GRADED', 'EXPIRED']);
+  });
+});
+
+describe('templateMaxScore', () => {
+  it('sums the question points across the template', () => {
+    expect(templateMaxScore([
+      { pointsOverride: null, question: { points: 3 } },
+      { pointsOverride: null, question: { points: 5 } },
+      { pointsOverride: null, question: { points: 2 } },
+    ])).toBe(10);
+  });
+
+  it('gives pointsOverride precedence over the question default points', () => {
+    expect(templateMaxScore([
+      { pointsOverride: 10, question: { points: 3 } },
+      { pointsOverride: null, question: { points: 5 } },
+      { pointsOverride: 1, question: { points: 20 } },
+    ])).toBe(16);
+  });
+
+  it('is 0 for an empty question set', () => {
+    expect(templateMaxScore([])).toBe(0);
+  });
+});
+
+describe('shuffleQuestions', () => {
+  const rows = [{ id: 'q1' }, { id: 'q2' }, { id: 'q3' }, { id: 'q4' }, { id: 'q5' }];
+  const byId = (list: Array<{ id: string }>) => [...list].sort((a, b) => a.id.localeCompare(b.id));
+
+  it('returns a permutation of the input — same length, same multiset, same references', () => {
+    for (let i = 0; i < 20; i++) {
+      const shuffled = shuffleQuestions(rows);
+      expect(shuffled).toHaveLength(rows.length);
+      expect(byId(shuffled)).toEqual(byId(rows));
+      // References are moved, never cloned — the route's question payload
+      // is built from the template rows themselves.
+      expect(shuffled.every((r) => rows.includes(r))).toBe(true);
+    }
+  });
+
+  it('never mutates the input array', () => {
+    const before = rows.map((r) => r.id);
+    shuffleQuestions(rows);
+    expect(rows.map((r) => r.id)).toEqual(before);
+  });
+
+  it('is deterministic under an injected rng (rng 0 → rotate the tail to the front each step)', () => {
+    expect(shuffleQuestions(rows, () => 0).map((r) => r.id)).toEqual(['q2', 'q3', 'q4', 'q5', 'q1']);
+  });
+
+  it('is deterministic under an injected rng (rng 0.999 → picks the current index, identity)', () => {
+    expect(shuffleQuestions(rows, () => 0.999).map((r) => r.id)).toEqual(['q1', 'q2', 'q3', 'q4', 'q5']);
+  });
+
+  it('returns a copy, not the input reference (routes must not hand out template rows)', () => {
+    expect(shuffleQuestions(rows)).not.toBe(rows);
+  });
+
+  it('handles empty and single-question boards (loop never runs)', () => {
+    expect(shuffleQuestions([])).toEqual([]);
+    expect(shuffleQuestions([{ id: 'only' }])).toEqual([{ id: 'only' }]);
+    // The rng is never consulted — a throwing rng proves it.
+    expect(shuffleQuestions([], () => { throw new Error('rng must not be called'); })).toEqual([]);
+    expect(shuffleQuestions([{ id: 'only' }], () => { throw new Error('rng must not be called'); })).toEqual([{ id: 'only' }]);
+  });
+});
+
+/* ═══════════════ Answer-save dimension rules ═══════════════ */
+
+describe('answerPatchFor', () => {
+  it('MCQ/TRUE_FALSE saves require the choiceIndex dimension', () => {
+    expect(answerPatchFor('MCQ', { answerText: 'I insist on prose' })).toEqual({
+      patch: {},
+      error: 'This question is answered with choiceIndex',
+    });
+    expect(answerPatchFor('TRUE_FALSE', { answerText: 'true?' })).toEqual({
+      patch: {},
+      error: 'This question is answered with choiceIndex',
+    });
+  });
+
+  it('SHORT/ESSAY saves require the answerText dimension', () => {
+    expect(answerPatchFor('SHORT', { choiceIndex: 0 })).toEqual({
+      patch: {},
+      error: 'This question is answered with answerText',
+    });
+    expect(answerPatchFor('ESSAY', { choiceIndex: 1 })).toEqual({
+      patch: {},
+      error: 'This question is answered with answerText',
+    });
+  });
+
+  it('a text-only retry keeps the patch free of choiceIndex — a previously saved choice survives', () => {
+    const { patch, error } = answerPatchFor('ESSAY', { answerText: 'updated prose' });
+    expect(error).toBe(null);
+    expect(patch).toEqual({ answerText: 'updated prose' });
+    expect('choiceIndex' in patch).toBe(false);
+  });
+
+  it('an index-only retry keeps the patch free of answerText — a previously saved text survives', () => {
+    const { patch, error } = answerPatchFor('MCQ', { choiceIndex: 3 });
+    expect(error).toBe(null);
+    expect(patch).toEqual({ choiceIndex: 3 });
+    expect('answerText' in patch).toBe(false);
+  });
+
+  it('a both-dimension save writes both fields', () => {
+    const { patch, error } = answerPatchFor('SHORT', { answerText: 'HTML', choiceIndex: 1 });
+    expect(error).toBe(null);
+    expect(patch).toEqual({ answerText: 'HTML', choiceIndex: 1 });
+  });
+
+  it('treats an empty string as a provided dimension, not a missing one', () => {
+    const { patch, error } = answerPatchFor('ESSAY', { answerText: '' });
+    expect(error).toBe(null);
+    expect(patch).toEqual({ answerText: '' });
+    expect('choiceIndex' in patch).toBe(false);
+  });
+
+  it('MCQ/TRUE_FALSE with both dimensions is valid (index drives grading, text is saved)', () => {
+    const { patch, error } = answerPatchFor('TRUE_FALSE', { answerText: 'لأنه صحيح', choiceIndex: 0 });
+    expect(error).toBe(null);
+    expect(patch).toEqual({ answerText: 'لأنه صحيح', choiceIndex: 0 });
   });
 });
 

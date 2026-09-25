@@ -200,4 +200,39 @@ describe('Dropdown', () => {
     render(<Harness open onClose={() => {}} />);
     expect(screen.getByRole('separator')).toBeInTheDocument();
   });
+
+  // 15-g P2-9 — non-item chrome belongs OUTSIDE the role=menu element:
+  // ARIA menus may own only menuitem/separator children.
+  it('renders an optional header inside the panel but outside the menu', () => {
+    function HeaderHarness() {
+      const ref = useRef<HTMLButtonElement | null>(null);
+      return (
+        <>
+          <button ref={ref} type="button">trigger</button>
+          <Dropdown
+            open
+            onClose={() => {}}
+            anchorRef={ref}
+            ariaLabel="actions"
+            header={<div className="menu-header">الاسم الكامل</div>}
+          >
+            <DropdownItem onSelect={() => {}}>A</DropdownItem>
+            <DropdownSeparator />
+            <DropdownItem onSelect={() => {}}>C</DropdownItem>
+          </Dropdown>
+        </>
+      );
+    }
+    render(<HeaderHarness />);
+    const menu = screen.getByRole('menu', { name: 'actions' });
+    // The header renders inside the positioned panel…
+    const panel = menu.parentElement!;
+    expect(panel).toHaveClass('dropdown');
+    expect(panel.querySelector('.menu-header')?.textContent).toBe('الاسم الكامل');
+    // …but is NOT owned by the menu element…
+    expect(menu.querySelector('.menu-header')).toBeNull();
+    // …and the menu still exposes exactly its item/separator children.
+    expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+    expect(screen.getByRole('separator')).toBeInTheDocument();
+  });
 });

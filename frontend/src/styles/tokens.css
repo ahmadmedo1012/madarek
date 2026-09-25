@@ -460,7 +460,14 @@
     --chart-3: var(--c-sky-ink);
     --chart-4: var(--c-rose-ink);
     --chart-5: var(--c-lavender-ink);
-    --chart-6: #E8B547;   /* gold accent */
+    /* 15-g P2-1 — gold accent. Was #E8B547 = 1.81:1 on the cream plot
+       ground (WCAG 1.4.11 non-text needs 3:1) — an invisible-on-cream
+       series the moment any ≥6-series chart cycles past index 5
+       (today's only consumer slices to 4, so the fix is latent-safe).
+       #A67A22 = 3.71:1 on --bg #FBFAF9, 3.87:1 on --surface #FFFFFF
+       (cards), 3.58:1 on --surface-2 #F7F6F3 — clears 3:1 on every
+       light plot surface. Dark keeps #F2C766 (11.01:1 on --bg). */
+    --chart-6: #A67A22;
     --chart-7: #3F8B8B;   /* teal */
     --chart-8: #A65D8A;   /* mauve */
   }
@@ -504,7 +511,18 @@
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  var(--neutral-500);
-    --text-faint:  var(--neutral-400);
+    /* 15-g P1-3 — the light T3-F4 lift was never mirrored here: dark
+       --text-faint resolved --neutral-400 #6E6B61 = 3.30:1 on --bg
+       #191918 (body-size AA needs 4.5; real consumers: every input
+       ::placeholder, locked-lesson numbers, .trend-rank, .perm-row-key,
+       .scan-cell-meta…). #8E8A7E → 5.10:1 on --bg, 4.78:1 on --surface
+       #1F1F1E (what dark inputs paint), 4.56:1 on --surface-2 #232322
+       — AA-safe on every dark text surface while staying one step
+       fainter than --text-muted #9A968A (5.95:1 on --bg). One RGB step
+       above the audit's #8D897C, whose surface-2 ratio is 4.4959:1 — a
+       hair under AA that 2-dp rounding hid; --neutral-400 itself stays
+       untouched (ramp intact for non-text uses, mirroring light). */
+    --text-faint:  #8E8A7E;
     --text-on-accent: #191918;
     --text-on-dark:   var(--neutral-900);
 

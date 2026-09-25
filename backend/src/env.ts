@@ -48,7 +48,6 @@ if (isTest) {
 
 const parsed = schema.safeParse(envInput);
 if (!parsed.success) {
-  // eslint-disable-next-line no-console
   console.error('❌ Invalid environment:', parsed.error.flatten().fieldErrors);
   process.exit(1);
 }
@@ -84,5 +83,3 @@ export const env = {
   jwtAccessTtl: '15m' as const,
   jwtRefreshTtl: '7d' as const,
 };
-
-export type Env = typeof env;

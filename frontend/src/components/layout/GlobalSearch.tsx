@@ -1,16 +1,28 @@
 /**
  * Global in-app search.
  *
- * Pattern (per UI/UX Pro Max guidelines):
- *  - Debounced fetch (300ms)
+ * Pattern:
+ *  - Debounced query key (300ms) on the shared TanStack cache — identical
+ *    re-searches are served without refetching, and the AbortController
+ *    TanStack hands the queryFn rides on the raw GET, so a superseded
+ *    keystroke's request is aborted instead of racing the newer term
+ *    (15-e P1-3 + 15-d P2-8; clearing the query simply disables the
+ *    query, so the loading state can never stick the way the old manual
+ *    effect's cancelled-flag path could)
  *  - Autocomplete dropdown — never reload the page
- *  - "No results" with helpful suggestions, never a blank screen
+ *  - "No results" with helpful suggestions; a failed fetch renders a
+ *    retryable error row, never a fake "no results"
+ *  - Combobox ARIA (15-g P1-1): input role="combobox" + aria-expanded /
+ *    aria-controls / aria-activedescendant, listbox → group → option
+ *    roles with stable ids, and a visually-hidden live region announcing
+ *    the Arabic result count once loading settles
  *  - Keyboard nav: ↑/↓ to move, Enter to open, Esc to close
  *  - "/" focuses the input from anywhere on the page
  */
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useId, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, X, ArrowRight, type LucideIcon } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Search, X, ArrowRight } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
@@ -80,16 +92,26 @@ const SECTION_LABEL: Record<keyof SearchResults, string> = {
   tracks: 'مسارات تدريب',
 };
 
+/* SR result-count announcement, Arabic counted-noun rules: 0 → none,
+   1 → singular, 2 → dual, 3–10 → plural, 11+ → singular again.
+   Latin digits per the platform's ar-LY numeral convention. */
+function resultsCountAr(n: number): string {
+  if (n === 0) return 'لم نعثر على نتائج';
+  if (n === 1) return 'نتيجة واحدة';
+  if (n === 2) return 'نتيجتان';
+  if (n <= 10) return `${n} نتائج`;
+  return `${n} نتيجة`;
+}
+
 export function GlobalSearch() {
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
   const [open, setOpen] = useState(false);
-  const [results, setResults] = useState<SearchResults | null>(null);
-  const [loading, setLoading] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listboxId = useId();
 
   // Debounce the query
   useEffect(() => {
@@ -97,20 +119,30 @@ export function GlobalSearch() {
     return () => clearTimeout(t);
   }, [query]);
 
-  // Fetch results
-  useEffect(() => {
-    if (debounced.length < 2) {
-      setResults(null);
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    unwrap<SearchResults>(api.get(`/search/global?q=${encodeURIComponent(debounced)}`))
-      .then((d) => { if (!cancelled) setResults(d); })
-      .catch(() => { if (!cancelled) setResults(null); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [debounced]);
+  /* Live on the shared query cache (15-d P2-8): the debounced term is
+     the query key, the ≥2-char gate enables it, and the AbortController
+     TanStack passes the queryFn rides on the raw GET (15-e P1-3) — a
+     superseded request is aborted instead of burning the socket, and
+     clearing the query disables the query outright, so `loading` can
+     never stick. Cache freshness + the retry policy come from the
+     shared client defaults; a failed fetch renders a retryable error
+     row, never a fake "no results". */
+  const enabled = debounced.length >= 2;
+  const { data, isPending, isFetching, isError, refetch } = useQuery({
+    queryKey: ['search', 'global', debounced],
+    enabled,
+    queryFn: ({ signal }) =>
+      unwrap<SearchResults>(
+        api.get(`/search/global?q=${encodeURIComponent(debounced)}`, { signal }),
+      ),
+  });
+  /* isPending covers the one-render gap between a key change and the
+     fetch actually starting (status pending, fetchStatus idle) — without
+     it the empty-state branch would flash for a frame before the
+     shimmer. The manual effect had the same gap; the query layer lets
+     us close it. */
+  const loading = enabled && (isFetching || isPending);
+  const results = data ?? null;
 
   // Flatten for keyboard nav
   const flatHits = useMemo(() => {
@@ -193,13 +225,30 @@ export function GlobalSearch() {
     setOpen(false);
     setQuery('');
     setDebounced('');
-    setResults(null);
     navigate(href);
   };
 
   const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
   const totalHits = flatHits.length;
-  const showDropdown = open && (loading || debounced.length >= 2);
+  const showDropdown = open && (loading || enabled);
+  /* aria-activedescendant must resolve to a live option — only when the
+     listbox is rendered and the active row exists. */
+  const activeOptionId =
+    showDropdown && flatHits[activeIdx] ? `${listboxId}-opt-${activeIdx}` : undefined;
+
+  /* SR announcement (15-g P1-1): keyboard focus never leaves the input
+     while ↑/↓ move aria-activedescendant, so the only proactive signal
+     a screen-reader user gets is this polite status region — the
+     Arabic result count once loading settles, the error verdict on
+     failure, silence while idle or below the 2-char gate. */
+  const announcement =
+    !enabled || loading
+      ? ''
+      : isError && !results
+        ? 'تعذَّر إتمام البحث'
+        : results
+          ? resultsCountAr(totalHits)
+          : '';
 
   let runningIdx = 0;
 
@@ -215,6 +264,11 @@ export function GlobalSearch() {
           type="text"
           placeholder="ابحث في المنصة (مقررات، محاضرات، بحوث، مسارات)…"
           aria-label="بحث"
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded={showDropdown}
+          aria-controls={showDropdown ? listboxId : undefined}
+          aria-activedescendant={activeOptionId}
           value={query}
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
@@ -242,18 +296,45 @@ export function GlobalSearch() {
         )}
       </label>
 
+      {/* Results-count live region — mounted unconditionally so a
+          settled announcement is never clipped by the dropdown's own
+          mount/unmount (it would unmount before SRs read it). */}
+      <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
+
       {showDropdown && (
-        <div className="search-dropdown" role="listbox" aria-label="نتائج البحث">
+        <div
+          className="search-dropdown"
+          role="listbox"
+          id={listboxId}
+          aria-label="نتائج البحث"
+        >
           {loading && (
-            <div className="search-row search-loading">
+            <div className="search-row search-loading" role="presentation">
               <span className="search-shimmer" />
               <span className="search-shimmer" />
               <span className="search-shimmer" />
             </div>
           )}
 
-          {!loading && debounced.length >= 2 && totalHits === 0 && (
-            <div className="search-empty">
+          {/* Fetch failure ≠ "no results" (15-d P2-8) — a retryable
+              error row; stale cached hits (refetch failed on a term
+              already in the cache) stay rendered below instead. */}
+          {!loading && isError && !results && (
+            <div className="search-empty" role="presentation">
+              <div className="search-empty-title">تعذَّر إتمام البحث</div>
+              <div className="search-empty-tips">
+                <button type="button" className="search-tip-pill" onClick={() => refetch()}>
+                  إعادة المحاولة
+                </button>
+              </div>
+              <div className="search-empty-hint">تحقّق من اتصالك ثم أعد المحاولة.</div>
+            </div>
+          )}
+
+          {!loading && !isError && enabled && totalHits === 0 && (
+            <div className="search-empty" role="presentation">
               <div className="search-empty-title">لم نعثر على نتائج لـ "{debounced}"</div>
               <div className="search-empty-tips">
                 جرّب: <button type="button" className="search-tip-pill" onClick={() => setQuery('هندسة')}>هندسة</button>
@@ -270,9 +351,15 @@ export function GlobalSearch() {
           {!loading && results && totalHits > 0 && sections.map((section) => {
             const items = results[section];
             if (items.length === 0) return null;
+            const sectionLabelId = `${listboxId}-sec-${section}`;
             return (
-              <div key={section} className="search-section">
-                <div className="search-section-label">{SECTION_LABEL[section]}</div>
+              <div
+                key={section}
+                className="search-section"
+                role="group"
+                aria-labelledby={sectionLabelId}
+              >
+                <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
                 {items.map((hit) => {
                   const idx = runningIdx++;
                   const isActive = idx === activeIdx;
@@ -283,6 +370,7 @@ export function GlobalSearch() {
                   return (
                     <button
                       key={hit.id}
+                      id={`${listboxId}-opt-${idx}`}
                       type="button"
                       role="option"
                       aria-selected={isActive}
@@ -311,8 +399,8 @@ export function GlobalSearch() {
             );
           })}
 
-          {!loading && totalHits > 0 && (
-            <div className="search-footer">
+          {!loading && !isError && totalHits > 0 && (
+            <div className="search-footer" role="presentation">
               <span className="kbd">↑</span><span className="kbd">↓</span> للتنقّل
               <span className="kbd">↵</span> للفتح
               <span className="kbd">Esc</span> للإغلاق

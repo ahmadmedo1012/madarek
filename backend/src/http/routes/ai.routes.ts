@@ -15,7 +15,10 @@ router.use(authMiddleware);
 // 20 req / 60 s, keyed per-user; see middleware/rateLimit.ts).
 const aiLimiter = createRouteLimiter();
 
-const chatSchema = z
+/** Chat request envelope — .strict (a typo'd field must fail, not be
+ *  silently dropped). Exported for DB-free schema edge tests
+ *  (tests/modules/ai-logic.test.ts, audit 15-i §5 item 10). */
+export const chatSchema = z
   .object({
     conversationId: z.string().cuid().optional(),
     message: z.string().min(1).max(4000),
@@ -35,13 +38,82 @@ const STUDY_TIPS = [
   'نصيحة: اشرح المفهوم لزميل لك — التعليم أفضل طريقة للتعلم.',
 ];
 
+// ─── Pure reply-composition logic (tests/modules/ai-logic.test.ts) ──
+
+/** Mastery levels arrive as Prisma Decimal on the wire; tests pass
+ *  plain numbers. Both coerce through Number() exactly like the
+ *  original inline branches did. */
+export type MasteryLevel = number | Prisma.Decimal;
+
+/**
+ * Role gate: only STUDENT gets mastery-aware replies — students are
+ * the only role with mastery rows, so every other role gets a generic
+ * response instead of an empty-data reply.
+ */
+export function isMasteryAwareRole(role: Role): boolean {
+  return role === Role.STUDENT;
+}
+
+/**
+ * Does the user's message mention this concept? Matches on the full
+ * concept name, or on any single word of it longer than 3 characters
+ * (short words must never claim a match). An empty concept name never
+ * matches — `includes('')` is true for every string, so the
+ * pre-extraction code would have let an unnamed concept claim ANY
+ * message (latent, now guarded).
+ */
+export function matchConceptInMessage(message: string, conceptName: string): boolean {
+  const name = conceptName.toLowerCase();
+  if (name.length === 0) return false;
+  const lower = message.toLowerCase();
+  if (lower.includes(name)) return true;
+  return name.split(/\s+/).filter((w) => w.length > 3).some((w) => lower.includes(w));
+}
+
+/** The three advice tiers every reply branch hangs on. */
+export type MasteryTier = 'gap' | 'developing' | 'strong';
+
+/** Mastery tier thresholds: < 0.5 gap, < 0.8 developing, else strong. */
+export function masteryTier(level: MasteryLevel): MasteryTier {
+  const n = Number(level);
+  if (n < 0.5) return 'gap';
+  if (n < 0.8) return 'developing';
+  return 'strong';
+}
+
+/** Display percentage — Math.round, so 0.499 renders as 50% while its
+ *  tier is still 'gap' (existing behavior, pinned by tests). */
+export function masteryPct(level: MasteryLevel): number {
+  return Math.round(Number(level) * 100);
+}
+
+/** Conversation title cap — the conversations list shows the opening
+ *  message truncated to 60 characters. */
+export function conversationTitle(message: string): string {
+  return message.slice(0, 60);
+}
+
+/**
+ * Fallback "surface your worst gap" pick: the concept furthest below
+ * the gap threshold (lowest level first — most urgent first).
+ * Non-mutating (filter copies before sort); undefined when nothing is
+ * in the gap tier. Single-sources the 0.5 boundary through masteryTier.
+ */
+export function worstGapMastery<T extends { level: MasteryLevel }>(
+  masteries: readonly T[],
+): T | undefined {
+  return masteries
+    .filter((m) => masteryTier(m.level) === 'gap')
+    .sort((a, b) => Number(a.level) - Number(b.level))[0];
+}
+
 /**
  * Gap-aware response composer.
  * Tries to find a concept the user mentions in the message and craft
  * a tailored response using their actual mastery data.
  */
 async function composeReply(userId: string, message: string, role: Role): Promise<string> {
-  if (role !== Role.STUDENT) {
+  if (!isMasteryAwareRole(role)) {
     return GENERIC_RESPONSES[Math.floor(Math.random() * GENERIC_RESPONSES.length)]!;
   }
 
@@ -59,34 +131,29 @@ async function composeReply(userId: string, message: string, role: Role): Promis
   });
 
   // Try to match a concept name in the message.
-  const lower = message.toLowerCase();
-  const matched = masteries.find((m) => {
-    const name = m.concept.name.toLowerCase();
-    if (lower.includes(name)) return true;
-    // Match on a meaningful word from the concept name.
-    return name.split(/\s+/).filter((w) => w.length > 3).some((w) => lower.includes(w));
-  });
+  const matched = masteries.find((m) => matchConceptInMessage(message, m.concept.name));
 
   if (matched) {
-    const pct = Math.round(Number(matched.level) * 100);
+    const pct = masteryPct(matched.level);
+    const tier = masteryTier(matched.level);
     const lec = matched.concept.chapters[0]?.lecture;
     const courseName = matched.concept.course.name;
     const tip = STUDY_TIPS[Math.floor(Math.random() * STUDY_TIPS.length)]!;
 
-    if (Number(matched.level) < 0.5) {
+    if (tier === 'gap') {
       return [
-        `لاحظت من بياناتك أنك بحاجة لتعزيز فهمك في "${matched.concept.name}" — إتقانك الحالي ${pct}% في مادة ${courseName}.`,
+        `لاحظت من بياناتك أنك بحاجة لتعزيز فهمك في «${matched.concept.name}» — إتقانك الحالي ${pct}% في مقرّر ${courseName}.`,
         '',
         `الفكرة الأساسية: هذا المفهوم يعتمد على ثلاث ركائز يجب إتقانها بترتيب. ابدأ بالأساس النظري ثم الانتقال إلى التطبيق العملي.`,
         '',
-        lec ? `🎯 توصية: راجع محاضرة "${lec.title}" — مدتها قصيرة وتحتوي على أمثلة عملية.` : '',
+        lec ? `🎯 توصية: راجع محاضرة «${lec.title}» — مدتها قصيرة وتحتوي على أمثلة عملية.` : '',
         '',
         tip,
       ].filter(Boolean).join('\n');
     }
-    if (Number(matched.level) < 0.8) {
+    if (tier === 'developing') {
       return [
-        `بالنسبة لـ "${matched.concept.name}"، أنت تتقن ${pct}% منه في مادة ${courseName} — أداء جيد لكن يمكن تطويره.`,
+        `بالنسبة لـ «${matched.concept.name}»، أنت تتقن ${pct}% منه في مقرّر ${courseName} — أداء جيد لكن يمكن تطويره.`,
         '',
         `لتعميق فهمك: حاول الإجابة على 3 أسئلة من اختبارات سنوات سابقة، وراجع نقاط التفاعل التي أخطأت فيها.`,
         '',
@@ -94,23 +161,21 @@ async function composeReply(userId: string, message: string, role: Role): Promis
       ].join('\n');
     }
     return [
-      `أحسنت! إتقانك لـ "${matched.concept.name}" ممتاز (${pct}%) في مادة ${courseName}.`,
+      `أحسنت! إتقانك لـ «${matched.concept.name}» ممتاز (${pct}%) في مقرّر ${courseName}.`,
       '',
       `للحفاظ على هذا المستوى: حاول مساعدة زملائك في فهم هذا المفهوم — التعليم يعزّز إتقانك أنت أيضاً.`,
     ].join('\n');
   }
 
   // No specific concept mentioned — try to surface the worst gap.
-  const worstGap = masteries
-    .filter((m) => Number(m.level) < 0.5)
-    .sort((a, b) => Number(a.level) - Number(b.level))[0];
+  const worstGap = worstGapMastery(masteries);
 
   if (worstGap) {
-    const pct = Math.round(Number(worstGap.level) * 100);
+    const pct = masteryPct(worstGap.level);
     return [
       'سأساعدك بكل تأكيد. لكن قبل ذلك:',
       '',
-      `لاحظت أن لديك فجوة في "${worstGap.concept.name}" — إتقانك ${pct}% فقط. أنصح بالتركيز عليها أولاً قبل الانتقال لمواضيع جديدة.`,
+      `لاحظت أن لديك فجوة في «${worstGap.concept.name}» — إتقانك ${pct}% فقط. أنصح بالتركيز عليها أولاً قبل الانتقال لمواضيع جديدة.`,
       '',
       'عُد إليّ بسؤال محدّد عن هذا المفهوم وسأساعدك خطوة بخطوة.',
     ].join('\n');
@@ -174,7 +239,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     const { conversationId: finalId, assistantContent } = await prisma.$transaction(
       async (tx) => {
         const conversation =
-          conv ?? (await tx.aiConversation.create({ data: { userId, title: message.slice(0, 60) } }));
+          conv ?? (await tx.aiConversation.create({ data: { userId, title: conversationTitle(message) } }));
         await tx.aiMessage.create({
           data: { conversationId: conversation.id, role: AiMessageRole.USER, content: message },
         });

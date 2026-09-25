@@ -148,6 +148,40 @@ describe('AnnotationsPanel — mutation failure surfacing (audit 11-f P1-1)', ()
     );
   });
 
+  it('never renders a Latin-only API message raw — the Arabic fallback replaces it (15-j P0-1)', () => {
+    // The backend ships English defaults ('Duplicate value', …); before
+    // the 16-E10 guard these overrode the panel's Arabic fallback and
+    // rendered raw inside the RTL composer.
+    mocks.create = {
+      isPending: false,
+      isError: true,
+      error: { response: { data: { error: { code: 'CONFLICT', message: 'Duplicate value' } } } },
+      mutate: () => undefined,
+    };
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    renderPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة ملاحظة' }));
+
+    expect(screen.queryByText(/Duplicate value/)).toBeNull();
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'تعذّر حفظ الملاحظة — تحقّق من اتصالك ثم أعد المحاولة.',
+    );
+  });
+
+  it('labels an OWNER annotation author «مالك المنصة» and lets OWNER compose (16-E2 hand-off)', () => {
+    // The backend allows TEACHER/ADMIN/OWNER to annotate; the 4-role
+    // union used to fall an OWNER author through to «طالب» and hid the
+    // composer for an OWNER viewer.
+    mocks.annotations.data = [{ ...ANNOTATION, author: { ...ANNOTATION.author, id: 'o1', role: 'OWNER' as const } }];
+    act(() => { useAuthStore.setState({ user: { ...TEACHER, id: 'o1', role: 'OWNER' } }); });
+
+    renderPanel();
+
+    expect(screen.getByText('مالك المنصة')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'إضافة ملاحظة' })).toBeInTheDocument();
+  });
+
   it('shows an inline alert above the list on a failed delete and keeps the annotation visible', () => {
     const mutate = vi.fn();
     mocks.annotations.data = [ANNOTATION];

@@ -15,11 +15,21 @@
  *    curriculumValidation.formatSec's h:mm:ss promotion).
  *  - WEEKDAY_NAMES_AR: the Sunday-first Date#getDay() order.
  *
+ * 16-E10 re-pins (guardrail 7 — intentional copy changes, same wave):
+ *  - formatRelativeArShort now renders counted plurals (15-j P1-1 /
+ *    15-h P2-1: "منذ 3 دقيقة" was wrong Arabic for 3–10).
+ *  - the Arabic-first API-error guard (15-j P0-1): apiErrorDetail /
+ *    apiErrorMessage never surface a Latin-only API message.
+ *
  * Date fixtures are pinned at noon UTC so the calendar day is stable
  * for any |UTC offset| ≤ 12 h (the suite runs with TZ=UTC).
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  apiErrorCode,
+  apiErrorDetail,
+  apiErrorDetailRaw,
+  apiErrorMessage,
   arUnit,
   countAr,
   formatDateAr,
@@ -28,6 +38,7 @@ import {
   formatMmSs,
   formatRelativeAr,
   formatRelativeArShort,
+  isArabicText,
   timeAgoAr,
   WEEKDAY_NAMES_AR,
 } from '../../src/lib/format';
@@ -107,16 +118,25 @@ describe('timeAgoAr (folded from MorePages)', () => {
   });
 });
 
-describe('formatRelativeAr / formatRelativeArShort (wave 9-a, contrast pins)', () => {
+describe('formatRelativeAr / formatRelativeArShort (wave 9-a; counted nouns unified 16-E10)', () => {
   it('formatRelativeAr switches to "منذ دقيقة" at 30 s — the window timeAgoAr does not have', () => {
     expect(formatRelativeAr(ago(20))).toBe('الآن');
     expect(formatRelativeAr(ago(45))).toBe('منذ دقيقة');
   });
 
-  it('formatRelativeArShort keeps plain numerals with no counted plurals', () => {
-    expect(formatRelativeArShort(ago(90))).toBe('منذ 2 دقيقة');
-    expect(formatRelativeArShort(ago(3 * 3600))).toBe('منذ 3 ساعة');
-    expect(formatRelativeArShort(ago(3 * 86_400))).toBe('منذ 3 يوم');
+  it('formatRelativeArShort renders counted plurals — the 15-j P1-1 fix (was "منذ 3 دقيقة")', () => {
+    expect(formatRelativeArShort(ago(90))).toBe('منذ دقيقتين');
+    expect(formatRelativeArShort(ago(3 * 60))).toBe('منذ 3 دقائق');
+    expect(formatRelativeArShort(ago(11 * 60))).toBe('منذ 11 دقيقة');
+    expect(formatRelativeArShort(ago(3 * 3600))).toBe('منذ 3 ساعات');
+    expect(formatRelativeArShort(ago(3 * 86_400))).toBe('منذ 3 أيام');
+    expect(formatRelativeArShort(ago(12 * 86_400))).toBe('منذ 12 يوماً');
+  });
+
+  it('formatRelativeArShort never falls back to a calendar date — days keep counting', () => {
+    // The KPI contract that separates it from formatRelativeAr (sync
+    // "last success", audit tables) — however old the instant is.
+    expect(formatRelativeArShort(ago(30 * 86_400))).toBe('منذ 30 يوماً');
   });
 });
 
@@ -177,5 +197,60 @@ describe('WEEKDAY_NAMES_AR (folded from DAYS / DAY_NAMES / WEEKDAYS)', () => {
       'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت',
     ]);
     expect(WEEKDAY_NAMES_AR[NOW.getDay()]).toBe('الأحد'); // NOW is a Sunday
+  });
+});
+
+describe('apiError* — Arabic-first guard (15-j P0-1, 16-E10)', () => {
+  const apiError = (message: string, code = 'VALIDATION_ERROR') => ({
+    response: { status: 400, data: { error: { code, message } } },
+  });
+
+  it('isArabicText detects Arabic script anywhere in the string', () => {
+    expect(isArabicText('الصفحة خارج النطاق')).toBe(true);
+    expect(isArabicText('endSec يجب أن يكون بعد startSec')).toBe(true);
+    expect(isArabicText('Exam not open yet')).toBe(false);
+    expect(isArabicText('12345')).toBe(false);
+    expect(isArabicText('')).toBe(false);
+  });
+
+  it('passes an Arabic API message through to the user', () => {
+    expect(apiErrorDetail(apiError('الصفحة خارج نطاق المستند'))).toBe('الصفحة خارج نطاق المستند');
+    expect(apiErrorMessage(apiError('الصفحة خارج نطاق المستند'), 'بديل عربي')).toBe(
+      'الصفحة خارج نطاق المستند',
+    );
+  });
+
+  it('never surfaces a Latin-only API message — the caller Arabic fallback wins', () => {
+    // The backend still ships English defaults ('Validation failed',
+    // 'Duplicate value', 'Exam not open yet'…); before 16-E10 these
+    // overrode every Arabic fallback and rendered raw in the RTL UI.
+    expect(apiErrorDetail(apiError('Exam not open yet'))).toBeNull();
+    expect(apiErrorMessage(apiError('Validation failed'), 'تعذَّر إتمام الطلب')).toBe(
+      'تعذَّر إتمام الطلب',
+    );
+  });
+
+  it('treats a mostly-Arabic message (Latin identifiers inside) as Arabic', () => {
+    const mixed = 'endSec يجب أن يكون بعد startSec';
+    expect(apiErrorDetail(apiError(mixed))).toBe(mixed);
+  });
+
+  it('keeps the sanity bounds: empty and ≥240-char messages are ignored', () => {
+    expect(apiErrorDetail(apiError(''))).toBeNull();
+    expect(apiErrorDetail({ response: { data: { error: { message: 'أ'.repeat(240) } } } })).toBeNull();
+  });
+
+  it('apiErrorDetailRaw still exposes the verbatim message for known-string mapping', () => {
+    // OnlineExamsPages' exam-window mapper matches the backend's exact
+    // English strings — the guard would hide them before the mapping.
+    expect(apiErrorDetailRaw(apiError('Exam closed'))).toBe('Exam closed');
+    expect(apiErrorDetailRaw(apiError('أغلق باب التسليم'))).toBe('أغلق باب التسليم');
+    expect(apiErrorDetailRaw(new Error('Network Error'))).toBeNull();
+  });
+
+  it('apiErrorCode extracts the machine code for support surfaces', () => {
+    expect(apiErrorCode(apiError('Validation failed'))).toBe('VALIDATION_ERROR');
+    expect(apiErrorCode(apiError('Too many requests', 'TOO_MANY_REQUESTS'))).toBe('TOO_MANY_REQUESTS');
+    expect(apiErrorCode(new Error('Network Error'))).toBeNull();
   });
 });

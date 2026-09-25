@@ -17,10 +17,11 @@ import {
   useCompetitions, useCompetition, useCreateCompetition, useEnterCompetition,
   useCloseCompetition, useMyPermissions,
   useScoreCompetitionEntry, useJudgeCompetition,
-  type CompetitionRow, type CompetitionDetail,
+  type CompetitionRow,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
-import { formatRelativeArShort } from '../../lib/format';
+import { formatRelativeArShort, countAr } from '../../lib/format';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .leaderboard-list/-points families (D11 css split, 12-15)
 import '../../styles/colleges.css'; // .comp-* index/hero/entry/modal families (D14 css split, 13-17)
@@ -45,15 +46,20 @@ const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '�
  *  --motion-duration-stat animation it hosts. */
 const RANK_PULSE_CLEAR_MS = 1200;
 
+/** Deadline label for the index/hero meta rows. Units are floor-ed
+ *  ("full units remaining", 15-h P2-2): the last <24 h stays on the
+ *  «ينتهي اليوم» branch instead of Math.round claiming a phantom extra
+ *  day from 12–24 h out. Counted nouns go through countAr (15-h P2-3):
+ *  «بعد أسبوع» / «بعد أسبوعين» instead of the broken «بعد 1 أسابيع». */
 function formatDeadline(iso: string): string {
   const d = new Date(iso);
   const diff = d.getTime() - Date.now();
-  const days = Math.round(diff / 86400000);
-  if (days < 0) return 'انتهى';
+  if (diff < 0) return 'انتهى';
+  const days = Math.floor(diff / 86400000);
   if (days === 0) return 'ينتهي اليوم';
   if (days === 1) return 'ينتهي غداً';
-  if (days < 7) return `بعد ${days} أيام`;
-  if (days < 30) return `بعد ${Math.round(days / 7)} أسابيع`;
+  if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
+  if (days < 30) return `بعد ${countAr(Math.round(days / 7), ['أسبوع', 'أسبوعين', 'أسابيع', 'أسبوعاً'])}`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
@@ -164,7 +170,11 @@ export function CompetitionsIndexPage() {
                   <span className="comp-index-category">{c.category}</span>
                   <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
                 </div>
-                <h3 className="comp-index-title">{c.title}</h3>
+                {/* Card title demoted from h3 to a styled div (15-g P2-5
+                    — card titles sat at h3 directly under the page h1, a
+                    skipped level). The class carries the sizing; the inline
+                    family keeps the display voice the h3 rule provided. */}
+                <div className="comp-index-title" style={{ fontFamily: 'var(--font-display)' }}>{c.title}</div>
                 <p className="comp-index-desc">{c.description}</p>
                 <div className="comp-index-meta">
                   <span><Icon icon={Calendar} size={12} /> {formatDeadline(c.deadline)}</span>
@@ -530,7 +540,13 @@ const createSchema = z.object({
   description: z.string().min(10, 'الوصف قصير جدّاً').max(4000),
   category: z.string().min(1, 'اختر فئة'),
   prize: z.string().max(200).optional(),
-  deadline: z.string().min(1, 'حدِّد الموعد النهائي'),
+  deadline: z.string().min(1, 'حدِّد الموعد النهائي').refine(
+    // 15-h P2-5: an OPEN competition whose deadline already passed is
+    // inert (the backend blocks entering) but rendered confusingly
+    // everywhere — reject it at the form like the live-session create does.
+    (d) => new Date(d).getTime() > Date.now(),
+    'يجب أن يكون الموعد النهائي في المستقبل',
+  ),
   iconEmoji: z.string().max(8).optional(),
 });
 type CreateInputs = z.infer<typeof createSchema>;
@@ -549,6 +565,15 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
     defaultValues: { title: '', description: '', category: CATEGORIES[0], prize: '', deadline: '', iconEmoji: '🏆' },
   });
 
+  /* Close-parity (15-e P2-3): Esc / X / cancel / overlay-click confirm
+     before dropping a dirty draft, and stay inert while the create
+     mutation is in flight. */
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending: create.isPending,
+    onClose,
+  });
+
   const onSubmit = form.handleSubmit(async (values) => {
     try {
       await create.mutateAsync({
@@ -560,10 +585,16 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    <Modal open onClose={onClose} ariaLabel="مسابقة جديدة">
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel="مسابقة جديدة"
+      closeOnOverlayClick={!create.isPending}
+      closeOnEscape={!escapeLocked}
+    >
       <header className="comp-modal-head">
         <h2>مسابقة جديدة</h2>
-        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </header>
@@ -615,12 +646,13 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           <div className="form-error" role="alert">تعذَّر إنشاء المسابقة. تحقَّق من البيانات وحاول مرة أخرى.</div>
         )}
         <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={create.isPending}>
             {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء'}
           </button>
         </div>
       </form>
+      {guard}
     </Modal>
   );
 }
@@ -651,6 +683,14 @@ function EnterCompetitionModal({
     defaultValues: { title: existing?.title ?? '', body: existing?.body ?? '', fileUrl: '' },
   });
 
+  /* Close-parity (15-e P2-3) — the entry body is long-form prose; a
+     stray Esc / scrim click must confirm before discarding it. */
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending: enter.isPending,
+    onClose,
+  });
+
   const onSubmit = form.handleSubmit(async (values) => {
     try {
       await enter.mutateAsync({
@@ -663,10 +703,16 @@ function EnterCompetitionModal({
   });
 
   return (
-    <Modal open onClose={onClose} ariaLabel={existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}>
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel={existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}
+      closeOnOverlayClick={!enter.isPending}
+      closeOnEscape={!escapeLocked}
+    >
       <header className="comp-modal-head">
         <h2>{existing ? 'تعديل مشاركتي' : 'تقديم مشاركة'}</h2>
-        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={enter.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </header>
@@ -688,13 +734,14 @@ function EnterCompetitionModal({
         </div>
         {enter.isError && <div className="form-error" role="alert">تعذَّر تقديم المشاركة. تحقَّق من البيانات وحاول مرة أخرى.</div>}
         <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={enter.isPending}>
             <Icon icon={Send} size={14} />
             {enter.isPending ? 'جارٍ الإرسال…' : existing ? 'حفظ التعديلات' : 'إرسال'}
           </button>
         </div>
       </form>
+      {guard}
     </Modal>
   );
 }

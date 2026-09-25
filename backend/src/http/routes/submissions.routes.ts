@@ -75,12 +75,36 @@ export const gradeBodySchema = z
  * Statuses a re-submission may overwrite. GRADED/RETURNED rows are
  * immutable from the student side — the conditional update in the
  * submit handler enforces this atomically (no check-then-write window).
+ * The teacher-side counterpart of this contract is the grade claim's
+ * optimistic `submittedAt` guard below: every student write stamps a
+ * fresh `submittedAt`, so a row still carrying the `submittedAt` the
+ * teacher read cannot have been re-submitted since.
  */
-const RESUBMITTABLE_STATUSES: SubmissionStatus[] = [
+export const RESUBMITTABLE_STATUSES: SubmissionStatus[] = [
   SubmissionStatus.SUBMITTED,
   SubmissionStatus.LATE,
   SubmissionStatus.DRAFT,
 ];
+
+/**
+ * The write a student (re)submission applies — absent optional fields
+ * normalize to null so a re-submission clears the dimension the student
+ * dropped. `submittedAt` is always stamped fresh: it doubles as the
+ * optimistic-concurrency token the teacher grade claim pins against
+ * (audit 15-b P2-4), so every student write must move it.
+ */
+export function buildSubmissionWrite(
+  body: Pick<z.infer<typeof submitBodySchema>, 'textAnswer' | 'fileUrl'>,
+  status: SubmissionStatus,
+  submittedAt: Date = new Date(),
+) {
+  return {
+    textAnswer: body.textAnswer ?? null,
+    fileUrl: body.fileUrl ?? null,
+    status,
+    submittedAt,
+  };
+}
 
 // ─── POST /offerings/:offeringId/assignments/:assignmentId/submit ──
 
@@ -124,12 +148,7 @@ router.post(
       // COMMITTED, Postgres re-evaluates the predicate against the
       // concurrently committed row — the losing write matches zero rows.
       const submittedAt = new Date();
-      const write = {
-        textAnswer: body.textAnswer ?? null,
-        fileUrl: body.fileUrl ?? null,
-        status,
-        submittedAt,
-      };
+      const write = buildSubmissionWrite(body, status, submittedAt);
       const claim = await prisma.submission.updateMany({
         where: { assignmentId, studentId, status: { in: RESUBMITTABLE_STATUSES } },
         data: write,
@@ -215,8 +234,19 @@ router.post(
 
       const gradedAt = new Date();
       const updated = await prisma.$transaction(async (tx) => {
-        const row = await tx.submission.update({
-          where: { id: submissionId },
+        // Optimistic `submittedAt` guard (audit 15-b P2-4): the student
+        // side rewrites `submittedAt` on every (re)submission, so it is a
+        // content version stamp. Pinning the grade write to the
+        // `submittedAt` we validated against means a resubmission that
+        // committed between the read above and this claim matches zero
+        // rows — the grade can never land on content the teacher never
+        // saw (which would also lock the student out: resubmission 409s
+        // on GRADED rows). Under READ COMMITTED the WHERE re-evaluates
+        // against the concurrently committed row; the losing teacher
+        // reloads and re-grades. Re-grading still works: grading does
+        // not touch `submittedAt`, so a second pass matches again.
+        const claim = await tx.submission.updateMany({
+          where: { id: submissionId, submittedAt: submission.submittedAt },
           data: {
             grade,
             feedback: feedback ?? null,
@@ -224,6 +254,9 @@ router.post(
             gradedAt,
           },
         });
+        if (claim.count === 0) {
+          throw AppError.conflict('Submission changed while grading — reload and re-grade');
+        }
         await tx.notification.create({
           data: {
             userId: submission.studentId,
@@ -233,6 +266,12 @@ router.post(
             body: `حصلت على ${grade} من ${submission.assignment.maxScore} في «${submission.assignment.title}»`,
           },
         });
+        // updateMany returns no row — read back what was written.
+        const row = await tx.submission.findUnique({ where: { id: submissionId } });
+        if (!row) {
+          // Unreachable barring a mid-request cascade delete of the row.
+          throw AppError.internal();
+        }
         return row;
       });
 

@@ -3,16 +3,24 @@
  *
  *   /admin/teachers           list of teachers + verify + view suggestions
  *   /admin/permissions/:id    per-user capability editor (effective + overrides)
+ *
+ * Wave 16-E5 (audits 15-d P1-1 + 15-e P1-5): the teachers roster is
+ * filtered/searched/paginated SERVER-side (GET /admin/users page/limit/q/
+ * role — the old no-params call silently capped at 200 users and filtered
+ * TEACHER client-side, so user #201 was invisible), and the position/scope
+ * editors reset only on identity change, so an invalidation refetch can no
+ * longer clobber selects the admin is editing toward the next save.
  */
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   ShieldCheck, GraduationCap, Award, ChevronLeft, ChevronRight, CheckCircle2,
   AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
+  Search, X,
 } from 'lucide-react';
 import { Card, Badge, MetricCard, UserAvatar, AlertRow } from '../../components/primitives';
 import {
-  CardSkeleton, DetailSkeleton, ErrorState, EmptyState, KpiSkeleton, Skeleton,
+  CardSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton,
 } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -69,16 +77,43 @@ const CAP_LABEL: Record<AppCapability, string> = {
 
 
 // ─── Local hooks ─────────────────────────────────────────────
-interface AdminUserRow {
+/** Row of GET /admin/users (also the wire shape tests build). */
+export interface AdminUserRow {
   id: string; email: string; firstName: string; lastName: string;
   role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
   avatarColor: string | null; avatarInitials: string | null;
   isActive: boolean; createdAt: string;
 }
-function useAdminUsers() {
+/** GET /admin/users wire shape — `{ data, meta }` (backend buildMeta). */
+interface AdminUsersResponse {
+  data: AdminUserRow[];
+  meta: { page: number; limit: number; total: number; totalPages: number };
+}
+
+/**
+ * Server-side role filter + search + pagination (audit 15-d P1-1): the
+ * backend paginates WITHIN the role (page/limit/q/role, limit ≤ 200) — the
+ * old no-params call silently capped the roster at 200 users and the
+ * TEACHER filter ran client-side, so the KPIs undercounted and user #201
+ * was invisible. Key mirrors useOwnerUsers so the ['admin','users']
+ * prefix invalidations (useSetCapability, useAssignUserScope) still reach
+ * every parameterized page.
+ */
+function useAdminUsers(
+  params: { page?: number; limit?: number; q?: string; role?: string } = {},
+) {
+  const { page = 1, limit = 20, q, role } = params;
   return useQuery({
-    queryKey: ['admin', 'users'],
-    queryFn: () => unwrap<AdminUserRow[]>(api.get('/admin/users')),
+    queryKey: ['admin', 'users', { page, limit, q, role }],
+    queryFn: async () => {
+      const res = await api.get<AdminUsersResponse>('/admin/users', {
+        params: { page, limit, q, role },
+      });
+      return res.data;
+    },
+    // Keeps the current roster on screen while the next page/search
+    // loads (AdminStudentsPage pattern) — no skeleton flash mid-browse.
+    placeholderData: (prev) => prev,
   });
 }
 
@@ -134,11 +169,89 @@ function useVerifyTeacher() {
 
 
 /* ═══════════════ Teachers list with onboarding suggestions ═══════════════ */
+
+/** Pages rendered either side of the current one before an ellipsis gap. */
+const PAGE_NEIGHBORS = 2;
+
+/**
+ * Bounded page list for the roster's pagination footer — the wave-6-b
+ * OwnerUsersPage helper (always page 1 and the last page, a window of
+ * PAGE_NEIGHBORS around the current one, 'gap' markers where numbers
+ * were elided; a 200-page result renders ≤ 2·PAGE_NEIGHBORS + 4 buttons).
+ * Local twin, not a cross-page import (pages must not pull each other's
+ * lazy chunks); tests pin it against the OwnerUsersPage original so the
+ * two cannot drift before a shared-lib extraction.
+ */
+export function pageList(page: number, totalPages: number): Array<number | 'gap'> {
+  const include = new Set<number>([1, totalPages]);
+  const from = Math.max(1, page - PAGE_NEIGHBORS);
+  const to = Math.min(totalPages, page + PAGE_NEIGHBORS);
+  for (let p = from; p <= to; p++) include.add(p);
+  const out: Array<number | 'gap'> = [];
+  let prev = 0;
+  for (const p of [...include].sort((a, b) => a - b)) {
+    if (p - prev > 1) out.push('gap');
+    out.push(p);
+    prev = p;
+  }
+  return out;
+}
+
+/** Proper Arabic counted plural for the roster footer's teachers total. */
+function teachersCountLabel(n: number): string {
+  if (n === 0) return 'لا أساتذة';
+  if (n === 1) return 'أستاذ واحد';
+  if (n === 2) return 'أستاذان';
+  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} أساتذة`;
+  return `${n.toLocaleString('ar-LY')} أستاذاً`;
+}
+
 export function AdminTeachersPage() {
-  const { data: users, isPending, isError, error, refetch } = useAdminUsers();
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const teachers = users?.filter((u) => u.role === 'TEACHER') ?? [];
+  // Debounce the search input (OwnerUsersPage pattern) so the roster
+  // query fires once typing pauses instead of on every keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Population count for the KPI — a dedicated server count (role filter,
+  // one-row window), decoupled from the search exactly like
+  // OwnerUsersPage's stats query. The old code counted the fetched
+  // slice, which undercounted the moment the platform passed 200 users
+  // (audit 15-d P1-1).
+  const count = useAdminUsers({ page: 1, limit: 1, role: 'TEACHER' });
+  // The roster itself — the TEACHER filter runs SERVER-side (the API
+  // paginates within the role); the old client-side filter hid every
+  // teacher past the silent 200-user cap (audit 15-d P1-1).
+  const roster = useAdminUsers({
+    page,
+    limit: 20,
+    role: 'TEACHER',
+    q: debouncedSearch || undefined,
+  });
+
+  const teachers = roster.data?.data ?? [];
+  const meta = roster.data?.meta;
+  const totalPages = meta?.totalPages ?? 1;
+  const isSearching = debouncedSearch !== '';
+
+  // KPI honesty: '…' while loading, '—' on error — never a fake zero.
+  // The count query's meta is the only server-backed teacher total.
+  const teacherCount =
+    count.isPending ? '…' : count.data ? count.data.meta.total.toLocaleString('ar-LY') : '—';
+
+  const clearSearch = () => {
+    setSearch('');
+    setPage(1);
+  };
 
   return (
     <div className="page">
@@ -151,34 +264,58 @@ export function AdminTeachersPage() {
         </div>
       </header>
 
-      {isPending ? (
-        <>
-          <KpiSkeleton />
-          <div className="grid-2-1">
-            <Card><TeacherListSkeleton rows={5} /></Card>
-            <CardSkeleton lines={6} />
-          </div>
-        </>
-      ) : isError ? (
-        /* API-down must never read as "no teachers registered" — the KPIs
-           hide with it (no fake zeros, ruling #14). */
-        <Card>
-          <ErrorState
-            error={error}
-            message="تعذّر تحميل قائمة الأساتذة"
-            onRetry={() => refetch()}
-          />
-        </Card>
-      ) : (
-        <>
-          <div className="grid-3">
-            <MetricCard icon={Users} label="عدد الأساتذة" value={teachers.length.toString()} color="brand" />
-            <MetricCard icon={CheckCircle2} label="نشطون" value={teachers.filter((t) => t.isActive).length.toString()} color="green" />
-            <MetricCard icon={ShieldCheck} label="نظام التوثيق" value="فعّال" color="purple" change="مطابق لمتطلبات الجودة" />
+      {/* Metrics — real values only: '…' while loading, '—' on error
+          (never a fake zero). The old «نشطون» KPI counted the fetched
+          slice; no endpoint counts active teachers, so it left with the
+          client-side filter instead of lying at scale (audit 15-d P1-1). */}
+      <div className="grid-2">
+        <MetricCard icon={Users} label="عدد الأساتذة" value={teacherCount} color="brand" />
+        <MetricCard icon={ShieldCheck} label="نظام التوثيق" value="فعّال" color="purple" change="مطابق لمتطلبات الجودة" />
+      </div>
+
+      <div className="grid-2-1">
+        <Card title="قائمة الأساتذة" icon={Users}>
+          {/* Borrowed admin-family search chrome from colleges.css (the
+              AdminStudentsPage look) — the sheet is already imported for
+              .comp-form-field. */}
+          <div className="admin-students-search">
+            <Icon icon={Search} size={14} />
+            <input
+              type="search"
+              className="admin-students-input"
+              placeholder="ابحث بالاسم أو البريد الإلكتروني…"
+              aria-label="البحث في الأساتذة"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
 
-          <div className="grid-2-1">
-            <Card title="قائمة الأساتذة" icon={Users}>
+          {roster.isPending ? (
+            <TeacherListSkeleton rows={5} />
+          ) : roster.isError ? (
+            /* API-down must never read as "no teachers registered" — a
+               retryable error, with the KPI degrading to '—' above. */
+            <ErrorState
+              error={roster.error}
+              message="تعذّر تحميل قائمة الأساتذة"
+              onRetry={() => roster.refetch()}
+            />
+          ) : teachers.length === 0 ? (
+            <EmptyState
+              icon={Users}
+              title={isSearching ? 'لا نتائج مطابقة' : 'لم يتم تسجيل أساتذة بعد'}
+              description={isSearching
+                ? 'لم نجد أساتذة تطابق البحث الحالي.'
+                : 'ستظهر القائمة فور تسجيل أول أستاذ في النظام.'}
+              action={isSearching ? (
+                <button type="button" className="btn ghost sm" onClick={clearSearch}>
+                  <Icon icon={X} size={13} />
+                  مسح البحث
+                </button>
+              ) : undefined}
+            />
+          ) : (
+            <>
               <div className="flex-col gap-2">
                 {teachers.map((t) => (
                   <button
@@ -195,28 +332,73 @@ export function AdminTeachersPage() {
                     <Icon icon={ChevronLeft} size={14} className="text-subtle" />
                   </button>
                 ))}
-                {teachers.length === 0 && (
-                  <EmptyState
-                    icon={Users}
-                    title="لم يتم تسجيل أساتذة بعد"
-                    description="ستظهر القائمة فور تسجيل أول أستاذ في النظام."
-                  />
-                )}
               </div>
-            </Card>
 
-            {selectedId ? <TeacherProfileCard teacherId={selectedId} /> : (
-              <Card>
-                <EmptyState
-                  icon={GraduationCap}
-                  title="اختر أستاذاً من القائمة"
-                  description="اعرض الملف الأكاديمي والمقررات المقترحة لتوثيقه أو إسناد منصب له."
-                />
-              </Card>
-            )}
-          </div>
-        </>
-      )}
+              {/* Server-side pagination footer — the .table-pagination
+                  system with a bounded page window, RTL-correct chevrons
+                  (prev points right) and the honest "page X of Y · N
+                  teachers" line: the OwnerUsersPage wave-6-b pattern
+                  (.owner-page-gap borrowed from the eager owner.css). */}
+              {meta && totalPages > 1 && (
+                <div className="table-pagination">
+                  <span>
+                    الصفحة {page} من {totalPages} · {teachersCountLabel(meta.total)}
+                  </span>
+                  <div className="table-pagination-actions">
+                    <button
+                      type="button"
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page <= 1}
+                      aria-label="الصفحة السابقة"
+                    >
+                      <Icon icon={ChevronRight} size={14} aria-hidden />
+                      السابق
+                    </button>
+                    {pageList(page, totalPages).map((item, i) =>
+                      item === 'gap' ? (
+                        <span key={`gap-${i}`} className="owner-page-gap" aria-hidden>…</span>
+                      ) : (
+                        <button
+                          key={item}
+                          type="button"
+                          aria-current={item === page ? 'page' : undefined}
+                          aria-label={`الصفحة ${item}`}
+                          onClick={() => setPage(item)}
+                        >
+                          {item}
+                        </button>
+                      ),
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={page >= totalPages}
+                      aria-label="الصفحة التالية"
+                    >
+                      التالي
+                      <Icon icon={ChevronLeft} size={14} aria-hidden />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </Card>
+
+        {selectedId ? (
+          <TeacherProfileCard teacherId={selectedId} />
+        ) : roster.isPending ? (
+          <CardSkeleton lines={6} />
+        ) : (
+          <Card>
+            <EmptyState
+              icon={GraduationCap}
+              title="اختر أستاذاً من القائمة"
+              description="اعرض الملف الأكاديمي والمقررات المقترحة لتوثيقه أو إسناد منصب له."
+            />
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
@@ -325,7 +507,9 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         </div>
       </Card>
 
-      <PositionAssignmentCard teacher={data.teacher} />
+      {/* key = teacher identity → a fresh mount per teacher re-runs the
+          useState initializers below (15-e P1-5's identity-reset rule). */}
+      <PositionAssignmentCard key={data.teacher.id} teacher={data.teacher} />
 
       {data.teacher.certifications.length > 0 && (
         <Card title="الشهادات والاعتمادات" icon={Award}>
@@ -411,16 +595,15 @@ function PositionAssignmentCard({
 }) {
   const facs = useFaculties();
   const assign = useAssignTeacherPosition(teacher.id);
+  // Local draft state, initialized once per mount — the parent keys this
+  // card by teacher id, so switching teachers remounts it. There is
+  // deliberately NO server-sync effect: an invalidation refetch (assign
+  // or verify) delivers a new teacher object for the SAME id, and
+  // resetting on it clobbered selects the admin had already changed
+  // toward the next save (audit 15-e P1-5).
   const [position, setPosition] = useState<'NONE' | 'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD'>(teacher.position ?? 'NONE');
   const [facultyId, setFacultyId] = useState<string>(teacher.positionFacultyId ?? teacher.facultyId);
   const [departmentId, setDepartmentId] = useState<string>(teacher.positionDepartmentId ?? teacher.departmentId);
-
-  // Reset selectors whenever the underlying teacher changes (admin clicked another teacher).
-  useEffect(() => {
-    setPosition(teacher.position ?? 'NONE');
-    setFacultyId(teacher.positionFacultyId ?? teacher.facultyId);
-    setDepartmentId(teacher.positionDepartmentId ?? teacher.departmentId);
-  }, [teacher.id, teacher.position, teacher.positionFacultyId, teacher.positionDepartmentId, teacher.facultyId, teacher.departmentId]);
 
   const facultyOptions = facs.data ?? [];
   const departmentsForFaculty = facultyOptions.find((f) => f.id === facultyId)?.departments ?? [];
@@ -571,13 +754,13 @@ function ScopeAssignmentCard({
 }) {
   const facs = useFaculties();
   const assign = useAssignUserScope(userId);
+  // Local draft state, initialized once per mount — the parent keys this
+  // card by user id. No server-sync effect on purpose: the capability
+  // mutations invalidate ['admin','users'], whose prefix also refetches
+  // this page's permissions query, and resetting on that refetch clobbered
+  // a scope the admin was mid-way through changing (audit 15-e P1-5).
   const [scope, setScope] = useState<'UNIVERSITY' | 'FACULTY'>(scopeFacultyId ? 'FACULTY' : 'UNIVERSITY');
   const [facultyId, setFacultyId] = useState<string>(scopeFacultyId ?? '');
-
-  useEffect(() => {
-    setScope(scopeFacultyId ? 'FACULTY' : 'UNIVERSITY');
-    setFacultyId(scopeFacultyId ?? '');
-  }, [userId, scopeFacultyId]);
 
   const dirty =
     (scope === 'UNIVERSITY' && scopeFacultyId !== null) ||
@@ -750,6 +933,7 @@ export function AdminPermissionsPage() {
 
         {(data.user.role === 'ADMIN' || data.user.role === 'QUALITY') && (
           <ScopeAssignmentCard
+            key={data.user.id}
             userId={data.user.id}
             role={data.user.role as 'ADMIN' | 'QUALITY'}
             scopeFacultyId={data.user.scopeFacultyId}

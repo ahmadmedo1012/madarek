@@ -503,6 +503,3 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
     </div>
   );
 }
-
-// Re-export
-export { TeacherOfferingDetailPage as TeacherIntelligenceDetail };

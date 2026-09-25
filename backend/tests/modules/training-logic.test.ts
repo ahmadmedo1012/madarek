@@ -11,14 +11,22 @@
  *   - completeLessonSchema: the complete-lesson body envelope
  *   - buildLeaderboardRows: leaderboard row building incl. the orphaned-
  *     ledger-row null guard (audit 11-d P2-10) and contiguous ranks
+ *   - completesTrack: the track-completion predicate feeding the
+ *     completedAt claim (audit 15-b P0-1 / 15-i TOP-5)
+ *   - earnedMilestoneBadges: the badge-economy thresholds — first-step
+ *     at 1 lesson completion, pioneer at 5 completed tracks, polymath
+ *     at 3 DISTINCT categories (audit 15-i TOP-5)
  *
- * The isPublished gates (audit P1-7) and the awarding transaction are
+ * The isPublished gates (audit P1-7) and the awarding transaction
+ * (enrollment-row FOR UPDATE + conditional completedAt claim) are
  * DB-coupled and need a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
 import {
   buildLeaderboardRows,
   completeLessonSchema,
+  completesTrack,
+  earnedMilestoneBadges,
   levelFor,
   quizAnswerMatches,
 } from '../../src/http/routes/training.routes';
@@ -153,6 +161,132 @@ describe('completeLessonSchema', () => {
   it('rejects non-object bodies', () => {
     expect(completeLessonSchema.safeParse('html').success).toBe(false);
     expect(completeLessonSchema.safeParse(null).success).toBe(false);
+  });
+});
+
+describe('completesTrack (15-b P0-1 completion predicate / 15-i TOP-5)', () => {
+  it('completes when the final lesson lands (completed === total, not yet completed)', () => {
+    expect(completesTrack(1, 1, false)).toBe(true);
+    expect(completesTrack(2, 2, false)).toBe(true);
+    expect(completesTrack(12, 12, false)).toBe(true);
+  });
+
+  it('does not complete while lessons remain', () => {
+    expect(completesTrack(0, 1, false)).toBe(false);
+    expect(completesTrack(0, 5, false)).toBe(false);
+    expect(completesTrack(1, 2, false)).toBe(false);
+    expect(completesTrack(4, 10, false)).toBe(false);
+  });
+
+  it('is idempotent: an already-completed track never re-completes (double-award guard)', () => {
+    // The retry path re-runs this predicate with alreadyCompleted=true —
+    // the arm that keeps healed completions from double-awarding points,
+    // badge and certificate.
+    expect(completesTrack(2, 2, true)).toBe(false);
+    expect(completesTrack(5, 5, true)).toBe(false);
+  });
+
+  it('pins the 0-lesson edge (unreachable from the route: completing a lesson requires the track to hold it)', () => {
+    // 0 === 0 is formally true — pinned consciously so any future reuse
+    // of the predicate knows the exact contract. The route can never see
+    // it: a completion request always carries a lesson of the track.
+    expect(completesTrack(0, 0, false)).toBe(true);
+    expect(completesTrack(0, 0, true)).toBe(false);
+  });
+});
+
+describe('earnedMilestoneBadges (badge-economy thresholds, 15-i TOP-5)', () => {
+  it('unlocks nothing at zero facts', () => {
+    expect(earnedMilestoneBadges({ totalLessonCompletions: 0, completedTracks: 0, distinctCategories: 0 })).toEqual({
+      firstStep: false,
+      pioneer: false,
+      polymath: false,
+    });
+  });
+
+  it('first-step unlocks at exactly the first lesson completion', () => {
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 1, completedTracks: 0, distinctCategories: 0 }).firstStep,
+    ).toBe(true);
+    // The very first completion can also finish a 1-lesson track.
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 1, completedTracks: 1, distinctCategories: 1 }).firstStep,
+    ).toBe(true);
+  });
+
+  it('first-step never re-unlocks on later completions', () => {
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 2, completedTracks: 1, distinctCategories: 1 }).firstStep,
+    ).toBe(false);
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 47, completedTracks: 9, distinctCategories: 4 }).firstStep,
+    ).toBe(false);
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 0, completedTracks: 5, distinctCategories: 3 }).firstStep,
+    ).toBe(false);
+  });
+
+  it('pioneer unlocks at exactly 5 completed tracks', () => {
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 30, completedTracks: 5, distinctCategories: 2 }).pioneer,
+    ).toBe(true);
+  });
+
+  it('pioneer does NOT unlock at 4 completed tracks (the 5th completion is the trigger)', () => {
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 29, completedTracks: 4, distinctCategories: 4 }).pioneer,
+    ).toBe(false);
+  });
+
+  it('polymath unlocks at 3 distinct categories', () => {
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 20, completedTracks: 3, distinctCategories: 3 }).polymath,
+    ).toBe(true);
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 40, completedTracks: 7, distinctCategories: 3 }).polymath,
+    ).toBe(true);
+  });
+
+  it('polymath needs DISTINCT categories — 3 completed tracks in one category never unlock it', () => {
+    // The distinct-count is computed over categories, not tracks: three
+    // finished tracks all filed under «مهارات التفكير» stay at 1.
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 20, completedTracks: 3, distinctCategories: 1 }).polymath,
+    ).toBe(false);
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 20, completedTracks: 3, distinctCategories: 2 }).polymath,
+    ).toBe(false);
+    expect(
+      earnedMilestoneBadges({ totalLessonCompletions: 20, completedTracks: 12, distinctCategories: 2 }).polymath,
+    ).toBe(false);
+  });
+
+  it('a single sweep can unlock all three milestones at once', () => {
+    // First ever lesson completion that also finishes the 5th track and
+    // the 3rd distinct category (the facts are gathered after the claim).
+    expect(earnedMilestoneBadges({ totalLessonCompletions: 1, completedTracks: 5, distinctCategories: 3 })).toEqual({
+      firstStep: true,
+      pioneer: true,
+      polymath: true,
+    });
+  });
+
+  it('keeps the three rules independent (each threshold holds alone)', () => {
+    expect(earnedMilestoneBadges({ totalLessonCompletions: 1, completedTracks: 1, distinctCategories: 1 })).toEqual({
+      firstStep: true,
+      pioneer: false,
+      polymath: false,
+    });
+    expect(earnedMilestoneBadges({ totalLessonCompletions: 50, completedTracks: 5, distinctCategories: 1 })).toEqual({
+      firstStep: false,
+      pioneer: true,
+      polymath: false,
+    });
+    expect(earnedMilestoneBadges({ totalLessonCompletions: 50, completedTracks: 3, distinctCategories: 3 })).toEqual({
+      firstStep: false,
+      pioneer: false,
+      polymath: true,
+    });
   });
 });
 

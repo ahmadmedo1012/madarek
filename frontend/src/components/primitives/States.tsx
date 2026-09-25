@@ -3,7 +3,7 @@ import { Inbox, AlertTriangle, RefreshCw, ShieldAlert, ArrowRight } from 'lucide
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import type { IllustrationName } from '../../lib/illustrations';
-import { apiErrorDetail } from '../../lib/format';
+import { apiErrorDetail, apiErrorCode, isArabicText } from '../../lib/format';
 
 type LoadingVariant = 'inline' | 'page' | 'card' | 'minimal';
 
@@ -29,7 +29,14 @@ export function EmptyState({
   icon = Inbox,
   illustration,
   title = 'لا توجد بيانات لعرضها بعد',
-  description,
+  /**
+   * Actionable default (15-j Batch F): a description-less empty state
+   * used to be a dead end — "لا توجد بيانات لعرضها بعد" with no path
+   * forward. Every surface that forgets to override now tells the
+   * user what to do next. Pass an explicit description to override;
+   * pass '' to opt out entirely (nothing renders).
+   */
+  description = 'تعال لاحقاً — أو حدّث الصفحة للتحقق من وجود محتوى جديد.',
   action,
 }: {
   icon?: LucideIcon;
@@ -66,13 +73,18 @@ export function EmptyState({
  * objects, and arbitrary thrown values. The API-message branch is the
  * shared lib helper (wave 9-a); this adds the plain-`message` fallback
  * ErrorState has always had.
+ *
+ * 15-j P0-1: BOTH branches are Arabic-guarded — a Latin-only message
+ * (the backend's English defaults, axios's 'Network Error') returns
+ * null so ErrorState falls back to its Arabic copy instead of leaking
+ * English into the RTL page.
  */
 function extractErrorDetail(error: unknown): string | null {
   if (!error) return null;
   const apiMsg = apiErrorDetail(error);
   if (apiMsg) return apiMsg;
   const msg = (error as { message?: string }).message;
-  if (typeof msg === 'string' && msg.length > 0 && msg.length < 240) return msg;
+  if (typeof msg === 'string' && msg.length > 0 && msg.length < 240 && isArabicText(msg)) return msg;
   return null;
 }
 
@@ -101,7 +113,15 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   const apiDetail = extractErrorDetail(error);
-  const detail = apiDetail ?? 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.';
+  // 15-j P0-1 — an API refusal whose message isn't Arabic never renders
+  // raw: the detail becomes the generic Arabic refusal and the machine
+  // code rides along in a mono <bdi> for support. A network fault (no
+  // response at all) keeps the connection-advice default — checking
+  // the connection is the actual fix there.
+  const apiAnswered = !!(error as { response?: unknown } | undefined)?.response;
+  const supportCode = apiAnswered && !apiDetail ? apiErrorCode(error) : null;
+  const detail = apiDetail
+    ?? (apiAnswered ? 'تعذَّر إتمام الطلب، حاول مرة أخرى.' : 'حاول مرة أخرى، أو تحقّق من اتصالك بالشبكة.');
 
   // Branch on HTTP 403 — distinguish "you don't have permission" from
   // generic server errors. Without this, every 403 looks like a 500 to
@@ -147,7 +167,12 @@ export function ErrorState({
         </div>
       )}
       <div className="state-title">{message}</div>
-      <div className="state-desc">{detail}</div>
+      <div className="state-desc">
+        {detail}
+        {supportCode && (
+          <>{' '}(<bdi className="font-mono">{supportCode}</bdi>)</>
+        )}
+      </div>
       {onRetry && (
         <div style={{ marginTop: 'var(--sp-3)' }}>
           <button type="button" className="btn primary sm" onClick={onRetry}>
@@ -302,8 +327,11 @@ export function CardSkeleton({ lines = 3, withTitle = true }: { lines?: number; 
  * Full-page skeleton — for routes whose entire payload is one
  * blocking query. Renders a header skeleton + KPI strip + 2 cards.
  * Use when there's nothing meaningful to show until data lands.
+ *
+ * 16-E8 (15-f FE-11): the `kpis` prop was removed — all 7 call sites
+ * render `<PageSkeleton />` bare, so the KPI strip is unconditional.
  */
-export function PageSkeleton({ kpis = true }: { kpis?: boolean }) {
+export function PageSkeleton() {
   return (
     <div className="page" aria-busy="true" aria-live="polite">
       {/* Page header skeleton */}
@@ -317,7 +345,7 @@ export function PageSkeleton({ kpis = true }: { kpis?: boolean }) {
         <Skeleton width={120} height={24} rounded="var(--r-full)" />
       </div>
 
-      {kpis && <KpiSkeleton />}
+      <KpiSkeleton />
       <CardSkeleton lines={4} />
       <CardSkeleton lines={3} />
     </div>

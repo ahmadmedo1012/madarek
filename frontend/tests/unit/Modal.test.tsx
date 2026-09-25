@@ -10,6 +10,10 @@
  *     closeOnOverlayClick=false
  *   - clicks inside the card do NOT dismiss
  *   - Tab/Shift-Tab cycle focus within the card
+ *   - body-focus leak: Tab from <body> (click on non-focusable modal
+ *     chrome) is reclaimed into the card instead of escaping the
+ *     scrim (15-g P2-2) — and never steals the key from an anchored
+ *     layer opened above the modal
  *   - body scroll is locked while open and restored on close (the
  *     ref-counted scrollLock class — wave 12-14)
  *   - stacked overlays: one Escape dismisses ONE layer (wave 12-14,
@@ -153,6 +157,65 @@ describe('Modal', () => {
     first.focus();
     fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'last' }));
+  });
+
+  // 15-g P2-2 — body-focus leak: clicking non-focusable chrome inside
+  // the modal blurs focus to <body>; Tab must not escape the scrim and
+  // walk the app behind the overlay.
+  it('reclaims focus from <body> on Tab (pulls to the first element)', async () => {
+    render(
+      <Modal open onClose={() => {}} ariaLabel="X">
+        <p>non-focusable chrome</p>
+        <button type="button">first</button>
+        <button type="button">last</button>
+      </Modal>,
+    );
+    await flush();
+    // Simulate a click on the paragraph / card surface: the browser
+    // blurs the focused button to <body>.
+    (document.activeElement as HTMLElement | null)?.blur();
+    expect(document.activeElement).toBe(document.body);
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'first' }));
+  });
+
+  it('reclaims focus from <body> on Shift+Tab (pulls to the last element)', async () => {
+    render(
+      <Modal open onClose={() => {}} ariaLabel="X">
+        <button type="button">first</button>
+        <button type="button">last</button>
+      </Modal>,
+    );
+    await flush();
+    (document.activeElement as HTMLElement | null)?.blur();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'last' }));
+  });
+
+  it('a body-focus Tab never steals the key from a dropdown opened above the modal', async () => {
+    function Host() {
+      const anchorRef = useRef<HTMLButtonElement | null>(null);
+      return (
+        <>
+          <Modal open onClose={() => {}} ariaLabel="dialog">
+            <button ref={anchorRef} type="button">menu trigger</button>
+          </Modal>
+          <Dropdown open onClose={() => {}} anchorRef={anchorRef} ariaLabel="actions">
+            <DropdownItem onSelect={() => {}}>A</DropdownItem>
+          </Dropdown>
+        </>
+      );
+    }
+    render(<Host />);
+    await flush();
+    // Focus lands on the dropdown's first item (portal — OUTSIDE the
+    // modal container); blur it to body as if the user clicked the
+    // panel's padding. The modal is NOT the topmost layer, so its
+    // body-focus guard must stay silent: the dropdown owns Tab and
+    // dismisses back to its anchor, not into the modal's first button.
+    (document.activeElement as HTMLElement | null)?.blur();
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'menu trigger' }));
   });
 
   it('stacked modals: one Escape dismisses only the topmost layer', () => {

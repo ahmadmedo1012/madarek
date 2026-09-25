@@ -228,8 +228,9 @@
     gap: 4px;
     font-variant-numeric: tabular-nums;
   }
-  .metric-change .up { color: var(--success-ink, var(--success)); font-weight: var(--fw-semibold); }
-  .metric-change .dn { color: var(--danger-ink, var(--danger)); font-weight: var(--fw-semibold); }
+  /* 16-E8: .metric-change .up/.dn deleted with MetricCard.changeDirection —
+     the prop was never passed by any of the 175 call sites (15-f FE-11),
+     so the ↑/↓ arrow span those rules styled never rendered. */
   .metric-icon {
     inline-size: 44px;
     block-size: 44px;
@@ -247,24 +248,10 @@
 
   /* compact KPI strip */
   /* 13-17 dead-selector sweep (11-g P2-7): .kpi-strip, .kpi-cell and
-     .kpi-icon deleted — zero TSX consumers (TeacherDashboard renders
-     the .compact-kpi* family below; landing renders its own
-     .landing-mockup-kpi-*). */
-  .kpi-label {
-    font-size: var(--type-label-size-sm); color: var(--text-muted);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    font-weight: var(--fw-semibold);
-  }
-  .kpi-value {
-    font-family: var(--font-display);
-    font-size: var(--type-metric-size);
-    font-weight: var(--type-metric-weight);
-    color: var(--text);
-    line-height: var(--type-metric-line-height);
-    letter-spacing: var(--type-metric-letter-spacing);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: var(--type-metric-feature-settings);
-  }
+     .kpi-icon deleted — zero TSX consumers. 16-E8 (15-f FE-8) completed
+     the family: .kpi-label and .kpi-value deleted too — the only live
+     KPI markups are TeacherDashboard's .compact-kpi* below and the
+     landing page's own .landing-mockup-kpi-* (landing.css). */
   .compact-kpis {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
     gap: var(--sp-3); padding: var(--sp-4);
@@ -1007,10 +994,9 @@
   .dash-agenda-title { font-weight: var(--fw-semibold); font-size: var(--fs-sm); color: var(--text); }
   .dash-agenda-meta  { font-size: var(--fs-xs); color: var(--text-muted); }
 
-  /* generic chart container — bound height */
-  .chart-container { position: relative; inline-size: 100%; block-size: 220px; }
-  .chart-container.tall { block-size: 280px; }
-  .chart-container.short { block-size: 160px; }
+  /* 16-E8 (15-f FE-8): .chart-container/.tall/.short deleted — zero TSX
+     consumers; every chart lives in .owner-chart-container (owner.css)
+     or a Card. */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LIST ROW                                                      ║
@@ -1143,7 +1129,8 @@
     /* No letter-spacing — Arabic headline (ruling #2). */
   }
   .text-muted { color: var(--text-muted); }
-  .text-secondary { color: var(--text-secondary); }
+  /* 16-E8 (15-f FE-8): the .text-secondary class was never applied by
+     any component — only the --text-secondary token is consumed. */
   .text-subtle { color: var(--text-subtle); }
   /* Status text colors — text-safe -ink tokens (guardrail #3). */
   .text-green { color: var(--success-ink); }

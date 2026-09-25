@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -58,31 +58,44 @@ router.get('/', validate(listQuerySchema, 'query'), async (req, res, next) => {
   }
 });
 
+/**
+ * The offering-visibility filter — WHICH CourseOffering rows each role may
+ * enumerate. This is the list-side twin of `assertOfferingAccess`
+ * (lib/permissions.ts): the same role matrix expressed as a Prisma `where`
+ * instead of a per-row decision.
+ *   - TEACHER → only the offerings they teach
+ *   - STUDENT → only offerings with an ACTIVE enrollment (the platform-wide
+ *     enrollment convention: dropped/completed leftovers never grant
+ *     content access)
+ *   - ADMIN / QUALITY / OWNER → unfiltered (oversight)
+ *
+ * Single source of truth for both consumers of the branch (this file's
+ * GET /:id offering roster and search.routes' global search scope) — the
+ * two hand-maintained copies had already drifted once (search grew the
+ * `status: 'active'` enrollment constraint first; audit 15-i TOP-10).
+ * Pinned DB-free by tests/modules/visibility-logic.test.ts.
+ */
+export function offeringVisibilityFilter(role: Role, userId: string): Prisma.CourseOfferingWhereInput {
+  if (role === Role.TEACHER) return { teacherId: userId };
+  if (role === Role.STUDENT) return { enrollments: { some: { studentId: userId, status: 'active' } } };
+  return {};
+}
+
 router.get('/:id', async (req, res, next) => {
   try {
     // Course metadata (name/code/department/faculty) is visible to any
     // authenticated user — the list route ships the same data. The
     // offering roster, however (teacher identity, schedule, room), is
-    // gated exactly like GET /offerings/:id (assertOfferingAccess):
-    // oversight roles see every offering, a TEACHER only the ones they
-    // teach, a STUDENT only the ones they are actively enrolled in.
-    // Un-enrolled students must not be able to enumerate offerings the
-    // rest of the API carefully gates.
-    const role = req.user!.role;
-    const userId = req.user!.id;
-    const offeringWhere =
-      role === Role.TEACHER
-        ? { teacherId: userId }
-        : role === Role.STUDENT
-          ? { enrollments: { some: { studentId: userId, status: 'active' } } }
-          : {}; // ADMIN / QUALITY / OWNER — oversight
-
+    // gated exactly like GET /offerings/:id (assertOfferingAccess) via
+    // the shared offeringVisibilityFilter above. Un-enrolled students
+    // must not be able to enumerate offerings the rest of the API
+    // carefully gates.
     const course = await prisma.course.findUnique({
       where: { id: req.params.id! },
       include: {
         department: { include: { faculty: true } },
         offerings: {
-          where: offeringWhere,
+          where: offeringVisibilityFilter(req.user!.role, req.user!.id),
           include: {
             teacher: { select: { id: true, firstName: true, lastName: true } },
             schedule: true,

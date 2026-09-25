@@ -16,6 +16,7 @@ import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
 import { formatDateTimeAr } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 import {
   colleges, getCollegeIdentityByRecord,
 } from '../../data/colleges.config';
@@ -701,7 +702,7 @@ interface LeaderboardData {
 
 const METRICS = [
   { key: 'totalXp' as const, label: 'إجمالي نقاط الخبرة', icon: Award, format: (n: number) => n.toLocaleString('ar-LY') },
-  { key: 'avgGpa' as const, label: 'المعدّل العام', icon: BarChart3, format: (n: number) => n.toFixed(2) },
+  { key: 'avgGpa' as const, label: 'المعدّل العام', icon: BarChart3, format: (n: number) => formatNum(n, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) },
   { key: 'publishedPapers' as const, label: 'الأبحاث المنشورة', icon: Microscope, format: (n: number) => n.toLocaleString('ar-LY') },
   { key: 'examAttempts' as const, label: 'محاولات الاختبارات', icon: ClipboardCheck, format: (n: number) => n.toLocaleString('ar-LY') },
   { key: 'labSessions' as const, label: 'جلسات المعامل', icon: FlaskConical, format: (n: number) => n.toLocaleString('ar-LY') },

@@ -135,6 +135,75 @@ export function reconcileManualGrades(
   return { ok: true };
 }
 
+/**
+ * Which attempt statuses block starting a new attempt on a template
+ * of this kind. One attempt per exam — EXPIRED included: a student who
+ * has seen every question must not get a fresh retake. PRACTICE exams
+ * are retakeable, so only a live attempt blocks them. Returns a fresh
+ * array per call (callers build Prisma `in` filters from it).
+ */
+export function attemptBlockingStatuses(kind: ExamKind): AttemptStatus[] {
+  return kind === ExamKind.PRACTICE
+    ? ['IN_PROGRESS']
+    : ['IN_PROGRESS', 'SUBMITTED', 'GRADED', 'EXPIRED'];
+}
+
+/**
+ * Total gradeable points of a template's question set — a per-template
+ * pointsOverride wins over the question's default points.
+ */
+export function templateMaxScore(
+  questions: ReadonlyArray<{ pointsOverride: number | null; question: { points: number } }>,
+): number {
+  return questions.reduce((sum, eq) => sum + (eq.pointsOverride ?? eq.question.points), 0);
+}
+
+/**
+ * Fisher-Yates shuffle returning a copy — `sort()` with a random
+ * comparator is biased and not a uniform shuffle. The `rng` parameter
+ * exists so unit tests can pin the exact permutation; production calls
+ * use `Math.random`. The input array is never mutated.
+ */
+export function shuffleQuestions<T>(rows: readonly T[], rng: () => number = Math.random): T[] {
+  const out = rows.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    const tmp = out[i]!;
+    out[i] = out[j]!;
+    out[j] = tmp;
+  }
+  return out;
+}
+
+/** The write performed by one answer save — only the dimension(s) the
+ *  request actually carries. */
+export type AnswerPatch = { answerText?: string; choiceIndex?: number };
+
+/**
+ * Dimension-aware validation + patch for one answer save. The save must
+ * carry the field this question type is graded on — an MCQ answer with
+ * only text (or an essay with only an index) would silently grade as
+ * unanswered. The patch contains only the provided dimension, so a
+ * text-only retry never erases a previously saved choiceIndex (and
+ * vice versa). Returns the missing-dimension error instead of a usable
+ * patch when validation fails.
+ */
+export function answerPatchFor(
+  type: QuestionType,
+  body: { answerText?: string; choiceIndex?: number },
+): { patch: AnswerPatch; error: string | null } {
+  if ((type === 'MCQ' || type === 'TRUE_FALSE') && body.choiceIndex === undefined) {
+    return { patch: {}, error: 'This question is answered with choiceIndex' };
+  }
+  if ((type === 'SHORT' || type === 'ESSAY') && body.answerText === undefined) {
+    return { patch: {}, error: 'This question is answered with answerText' };
+  }
+  const patch: AnswerPatch = {};
+  if (body.answerText !== undefined) patch.answerText = body.answerText;
+  if (body.choiceIndex !== undefined) patch.choiceIndex = body.choiceIndex;
+  return { patch, error: null };
+}
+
 /** An exam attempt row including its saved answers. */
 type AttemptWithAnswers = ExamAttempt & { answers: ExamAnswer[] };
 
@@ -504,10 +573,18 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
     if (t.status !== 'APPROVED') {
       throw AppError.badRequest('Template must be APPROVED by quality before publishing');
     }
-    const updated = await prisma.examTemplate.update({
-      where: { id: t.id },
+    // Conditional claim: a moderation rejection landing between the
+    // status read above and this write must not be leapfrogged to
+    // PUBLISHED — a quality-rejected exam must never go live. The flip
+    // only fires while the row is still APPROVED.
+    const claim = await prisma.examTemplate.updateMany({
+      where: { id: t.id, status: 'APPROVED' },
       data: { status: 'PUBLISHED' },
     });
+    if (claim.count === 0) {
+      throw AppError.conflict('Template is no longer approved');
+    }
+    const updated = await prisma.examTemplate.findUnique({ where: { id: t.id } });
     res.json({ data: updated });
   } catch (e) { next(e); }
 });
@@ -559,7 +636,18 @@ router.get('/exams/me', async (req, res, next) => {
       where: { studentId: userId, templateId: { in: available.map((t) => t.id) } },
       select: { id: true, templateId: true, status: true, score: true, maxScore: true, submittedAt: true },
     });
-    const attemptByTemplate = new Map(myAttempts.map((a) => [a.templateId, a]));
+    // score/maxScore are Prisma Decimal columns — the platform convention
+    // (like every other Decimal on the wire: /me/results, lab sessions,
+    // submit/grade below) is to convert before res.json, which would
+    // otherwise serialize them as strings.
+    const attemptByTemplate = new Map(myAttempts.map((a) => [a.templateId, {
+      id: a.id,
+      templateId: a.templateId,
+      status: a.status,
+      score: a.score === null ? null : Number(a.score),
+      maxScore: Number(a.maxScore),
+      submittedAt: a.submittedAt,
+    }]));
 
     res.json({
       data: available.map((t) => ({
@@ -618,16 +706,10 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     // per template via SELECT … FOR UPDATE on the template row, so the
     // find-then-create sequence is atomic per (template, student).
     const expiresAt = new Date(Date.now() + template.durationMin * 60_000);
-    const maxScore = template.questions.reduce((s, eq) => s + (eq.pointsOverride ?? eq.question.points), 0);
+    const maxScore = templateMaxScore(template.questions);
     const now = new Date();
 
-    // One attempt per exam — EXPIRED included: a student who has seen
-    // every question must not get a fresh retake. PRACTICE exams are
-    // retakeable, so only a live attempt blocks them.
-    const blockingStatuses: AttemptStatus[] =
-      template.kind === ExamKind.PRACTICE
-        ? ['IN_PROGRESS']
-        : ['IN_PROGRESS', 'SUBMITTED', 'GRADED', 'EXPIRED'];
+    const blockingStatuses = attemptBlockingStatuses(template.kind);
 
     const toQuestionPayload = (eq: (typeof template.questions)[number]) => ({
       id: eq.question.id,
@@ -718,19 +800,12 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     }
     const attempt = started.created!;
 
-
-    // Optional shuffle on randomized templates — Fisher-Yates (sort()
-    // with a random comparator is biased and not a uniform shuffle).
-    let serializedQs = template.questions.slice();
-    if (template.randomized) {
-
-      for (let i = serializedQs.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const tmp = serializedQs[i]!;
-        serializedQs[i] = serializedQs[j]!;
-        serializedQs[j] = tmp;
-      }
-    }
+    // Optional shuffle on randomized templates (Fisher-Yates). A
+    // non-randomized template serves its stable authoring order — still
+    // a copy, never the shared template rows.
+    const serializedQs = template.randomized
+      ? shuffleQuestions(template.questions)
+      : template.questions.slice();
 
     res.status(201).json({
       data: {
@@ -773,7 +848,12 @@ router.post(
       if (!attempt) throw AppError.notFound('Attempt not found');
       if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
       if (attempt.status !== 'IN_PROGRESS') throw AppError.forbidden('Attempt closed');
-      if (attempt.expiresAt < new Date()) throw AppError.forbidden('Attempt expired');
+      // Same grace deadline the submit route enforces: the frontend
+      // flushes pending saves before auto-submitting at expiresAt, so a
+      // save landing seconds past the deadline must still be accepted —
+      // a submit in the same window grades it.
+      const graceDeadline = new Date(attempt.expiresAt.getTime() + SUBMIT_GRACE_MS);
+      if (new Date() > graceDeadline) throw AppError.forbidden('Attempt expired');
 
       // The question must belong to THIS attempt's template, and a choice
       // index must point inside that question's choices array.
@@ -787,31 +867,43 @@ router.post(
           throw AppError.badRequest(`choiceIndex out of range (question has ${choiceCount} choices)`);
         }
       }
-      // The save must carry the field this question type is graded on —
-      // an MCQ answer with only text (or an essay with only an index)
-      // would silently grade as unanswered.
-      if ((link.question.type === 'MCQ' || link.question.type === 'TRUE_FALSE') && body.choiceIndex === undefined) {
-        throw AppError.badRequest('This question is answered with choiceIndex');
-      }
-      if ((link.question.type === 'SHORT' || link.question.type === 'ESSAY') && body.answerText === undefined) {
-        throw AppError.badRequest('This question is answered with answerText');
-      }
 
-      // Save only the provided dimension — a text-only retry must not
-      // erase a previously saved choiceIndex (and vice versa).
-      const patch: { answerText?: string | null; choiceIndex?: number | null } = {};
-      if (body.answerText !== undefined) patch.answerText = body.answerText;
-      if (body.choiceIndex !== undefined) patch.choiceIndex = body.choiceIndex;
+      // Dimension requirement + partial patch (pure logic, unit-tested).
+      // The save must carry the field this question type is graded on,
+      // and the patch must contain only the provided dimension so a
+      // text-only retry never erases a previously saved choiceIndex
+      // (and vice versa).
+      const { patch, error } = answerPatchFor(link.question.type, body);
+      if (error !== null) throw AppError.badRequest(error);
 
-      await prisma.examAnswer.upsert({
-        where: { attemptId_questionId: { attemptId: attempt.id, questionId: body.questionId } },
-        update: patch,
-        create: {
-          attemptId: attempt.id,
-          questionId: body.questionId,
-          answerText: body.answerText ?? null,
-          choiceIndex: body.choiceIndex ?? null,
-        },
+      // Serialize against submit (and concurrent saves) on the attempt
+      // row: FOR UPDATE, re-check the guards, then upsert — all in one
+      // transaction (the same pattern as start, on the attempt row).
+      // A submit that graded the attempt between our read and this lock
+      // makes the re-check fail with 409 instead of mutating the answers
+      // of a graded attempt; a submit arriving later blocks on the same
+      // row and grades this save (submit re-reads the answers inside its
+      // claim transaction), so no saved answer is silently scored 0.
+      await prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT id FROM "ExamAttempt" WHERE id = ${attempt.id} FOR UPDATE`;
+        const locked = await tx.examAttempt.findUnique({
+          where: { id: attempt.id },
+          select: { status: true, expiresAt: true },
+        });
+        if (!locked || locked.status !== 'IN_PROGRESS') throw AppError.conflict('Attempt closed');
+        if (locked.expiresAt.getTime() + SUBMIT_GRACE_MS < Date.now()) {
+          throw AppError.forbidden('Attempt expired');
+        }
+        await tx.examAnswer.upsert({
+          where: { attemptId_questionId: { attemptId: attempt.id, questionId: body.questionId } },
+          update: patch,
+          create: {
+            attemptId: attempt.id,
+            questionId: body.questionId,
+            answerText: body.answerText ?? null,
+            choiceIndex: body.choiceIndex ?? null,
+          },
+        });
       });
       res.json({ data: { ok: true } });
     } catch (e) { next(e); }
@@ -824,7 +916,6 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
       where: { id: req.params.id },
       include: {
         template: { include: { questions: { include: { question: true } } } },
-        answers: true,
       },
     });
     if (!attempt) throw AppError.notFound('Attempt not found');
@@ -848,40 +939,47 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
       throw AppError.forbidden('Attempt expired');
     }
 
-    // Auto-grade MCQ + TF + SHORT (exact match); ESSAY — and anything
-    // without a machine-usable key — is parked for manual grading.
-    let totalAwarded = 0;
-    let needsManual = 0;
-    const answerByQId = new Map(attempt.answers.map((a) => [a.questionId, a]));
+    // Template questions are immutable once a template is published (no
+    // edit route), so the question set read above is safe to grade
+    // against inside the transaction. The ANSWERS are not: an answer
+    // save can commit between the read above and the claim below, so
+    // they are re-read inside the transaction, after the attempt row is
+    // locked (the answer-save route takes the same row lock) — a
+    // late-committing answer is graded, never silently scored 0.
+    const result = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM "ExamAttempt" WHERE id = ${attempt.id} FOR UPDATE`;
+      const freshAnswers = await tx.examAnswer.findMany({ where: { attemptId: attempt.id } });
 
-    // Compute grading results FIRST (pure computation), then persist
-    // everything in ONE transaction.
-    const gradedAnswers: Array<{ id: string; isCorrect: boolean | null; awardedPoints: number }> = [];
-    for (const eq of attempt.template.questions) {
-      const q = eq.question;
-      const ans = answerByQId.get(q.id);
-      const points = eq.pointsOverride ?? q.points;
-      if (!ans) {
-        // Unanswered: objective questions simply score 0, but a blank
-        // essay (or keyless short answer) still needs a human decision
-        // before the attempt can be finalized.
-        if (gradeExamAnswer(q, { choiceIndex: null, answerText: null }, points).kind === 'manual') {
-          needsManual++;
+      // Auto-grade MCQ + TF + SHORT (exact match); ESSAY — and anything
+      // without a machine-usable key — is parked for manual grading.
+      let totalAwarded = 0;
+      let needsManual = 0;
+      const answerByQId = new Map(freshAnswers.map((a) => [a.questionId, a]));
+      const gradedAnswers: Array<{ id: string; isCorrect: boolean | null; awardedPoints: number }> = [];
+      for (const eq of attempt.template.questions) {
+        const q = eq.question;
+        const ans = answerByQId.get(q.id);
+        const points = eq.pointsOverride ?? q.points;
+        if (!ans) {
+          // Unanswered: objective questions simply score 0, but a blank
+          // essay (or keyless short answer) still needs a human decision
+          // before the attempt can be finalized.
+          if (gradeExamAnswer(q, { choiceIndex: null, answerText: null }, points).kind === 'manual') {
+            needsManual++;
+          }
+          continue;
         }
-        continue;
+        const grade = gradeExamAnswer(q, ans, points);
+        if (grade.kind === 'manual') {
+          needsManual++;
+          gradedAnswers.push({ id: ans.id, isCorrect: null, awardedPoints: 0 });
+        } else {
+          totalAwarded += grade.awarded;
+          gradedAnswers.push({ id: ans.id, isCorrect: grade.isCorrect, awardedPoints: grade.awarded });
+        }
       }
-      const grade = gradeExamAnswer(q, ans, points);
-      if (grade.kind === 'manual') {
-        needsManual++;
-        gradedAnswers.push({ id: ans.id, isCorrect: null, awardedPoints: 0 });
-      } else {
-        totalAwarded += grade.awarded;
-        gradedAnswers.push({ id: ans.id, isCorrect: grade.isCorrect, awardedPoints: grade.awarded });
-      }
-    }
 
-    const finalStatus: AttemptStatus = needsManual > 0 ? 'SUBMITTED' : 'GRADED';
-    const updated = await prisma.$transaction(async (tx) => {
+      const finalStatus: AttemptStatus = needsManual > 0 ? 'SUBMITTED' : 'GRADED';
       // Double-grading guard: the status flip only applies while the
       // attempt is still IN_PROGRESS — a concurrent submit loses the race
       // and gets a 409 instead of double-writing grades.
@@ -900,24 +998,25 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
           data: { isCorrect: ga.isCorrect, awardedPoints: ga.awardedPoints },
         });
       }
-      return tx.examAttempt.findUnique({ where: { id: attempt.id } });
+      const updated = await tx.examAttempt.findUnique({ where: { id: attempt.id } });
+      return { updated, finalStatus, totalAwarded, needsManual };
     });
 
     const maxScore = Number(attempt.maxScore);
     res.json({
       data: {
-        score: totalAwarded,
+        score: result.totalAwarded,
         maxScore,
-        status: (updated?.status ?? finalStatus) as AttemptStatus,
-        needsManual,
+        status: (result.updated?.status ?? result.finalStatus) as AttemptStatus,
+        needsManual: result.needsManual,
         // While manual grading is pending the pass verdict is not final —
         // report null instead of a verdict the teacher's grading can
         // flip. A zero maxScore can never produce a meaningful
         // percentage, so it never "passes".
         passed:
-          needsManual > 0
+          result.needsManual > 0
             ? null
-            : maxScore > 0 && (totalAwarded / maxScore) * 100 >= attempt.template.passingScore,
+            : maxScore > 0 && (result.totalAwarded / maxScore) * 100 >= attempt.template.passingScore,
       },
     });
   } catch (e) { next(e); }

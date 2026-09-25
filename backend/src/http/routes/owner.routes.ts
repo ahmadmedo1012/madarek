@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Prisma, Role } from '@prisma/client';
+import { Role, SyncRunStatus } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -10,6 +10,7 @@ import { AppError } from '../../lib/errors.js';
 import {
   assertNotLastActiveOwner,
   buildTeacherProvision,
+  lockActiveOwnerRows,
   planTeacherProvisioning,
   requiresLastOwnerGuard,
 } from '../../lib/governance.js';
@@ -190,18 +191,12 @@ export const settingKeySchema = z
  * requiresLastOwnerGuard says when it applies) — the ADMIN and OWNER
  * paths can no longer diverge on this semantics (audit 11-c P0-1).
  *
- * TOCTOU serialization for that guard (audit 11-c P2-15): the guard's
- * count is a plain read, so two concurrent demotions of the last two
- * owners could both pass it under Read-Committed. Locking every
- * active OWNER row FOR UPDATE inside the mutation transaction closes
- * the window: the second transaction blocks on the first's row locks,
- * then sees the post-commit state (one owner already gone) and its
- * count rejects with 409. Must run inside the same transaction as the
- * mutation and BEFORE assertNotLastActiveOwner. This completes the
- * residual risk governance.ts documents for the admin paths.
+ * TOCTOU serialization for that guard is shared too: the promoted
+ * `lockActiveOwnerRows` (governance.ts, audit 15-b P1-1) locks every
+ * active OWNER row FOR UPDATE inside the mutation transaction, before
+ * the guard's count — so the ADMIN paths and this console serialize
+ * against each other instead of only against themselves.
  */
-const lockActiveOwnerRows = (tx: Prisma.TransactionClient): Promise<unknown> =>
-  tx.$queryRaw`SELECT id FROM "User" WHERE "role" = 'OWNER' AND "isActive" = true ORDER BY id FOR UPDATE`;
 
 router.post(
   '/users/:id/role',
@@ -532,32 +527,118 @@ router.get('/education', async (_req, res, next) => {
 });
 
 // ── GET /owner/system — operational telemetry for the System page ─
+
+/** Row shape the sync feed needs from the SyncRun table (a full row). */
+export interface SyncRunFeedRow {
+  id: string;
+  startedAt: Date;
+  completedAt: Date | null;
+  status: SyncRunStatus;
+  source: string;
+  factsAdded: number;
+  factsUpdated: number;
+  errorMsg: string | null;
+  durationMs: number | null;
+  notes: string | null;
+}
+
+/**
+ * Feed entry the System page consumes — shape-compatible with the
+ * previous AuditLog-derived feed (`useOwner.ts` OwnerSystem.sync.recent
+ * pins id / action / at / actor / metadata).
+ */
+export interface SyncFeedEntry {
+  id: string;
+  action: string;
+  at: Date;
+  actor: string;
+  metadata: {
+    status: SyncRunStatus;
+    source: string;
+    factsAdded: number;
+    factsUpdated: number;
+    durationMs: number | null;
+    completedAt: Date | null;
+    errorMsg: string | null;
+    notes: string | null;
+  };
+}
+
+/**
+ * Actor shown for every run: syncs are system-initiated (the scheduler
+ * tick or the overlap-guarded manual trigger) — SyncRun carries no
+ * user attribution, and the manual trigger's label is not persisted.
+ */
+export const SYNC_FEED_ACTOR = 'النظام';
+
+/**
+ * Map a SyncRun status onto the sync-feed action vocabulary. The
+ * System page's label map knows exactly three actions — 'sync.run',
+ * 'sync.partial', 'sync.failed' — so the feed derives `action` from
+ * the REAL run status instead of the AuditLog 'sync.' prefix no code
+ * path ever writes (audit 15-a P1-5):
+ *  - SUCCESS → 'sync.run'   (every run is a full sync — runSync has
+ *    no partial semantics)
+ *  - FAILED  → 'sync.failed'
+ *  - PARTIAL → 'sync.partial' (enum value reserved; runSync never
+ *    writes it today)
+ *  - RUNNING → 'sync.partial' — an in-flight run is neither a success
+ *    nor a failure; the amber not-complete rendering is the honest
+ *    interim state (bounded: syncs complete in seconds, and the
+ *    stale-run reaper auto-fails orphaned RUNNING rows after 15 min).
+ */
+export function syncRunAction(status: SyncRunStatus): 'sync.run' | 'sync.partial' | 'sync.failed' {
+  switch (status) {
+    case SyncRunStatus.SUCCESS:
+      return 'sync.run';
+    case SyncRunStatus.FAILED:
+      return 'sync.failed';
+    default:
+      return 'sync.partial';
+  }
+}
+
+/**
+ * Pure transform: SyncRun row → System-page feed entry. `at` is the
+ * run's start (the admin sync view orders by startedAt too), and
+ * `metadata` carries the run's outcome detail for diagnosis.
+ */
+export function toSyncFeedEntry(run: SyncRunFeedRow): SyncFeedEntry {
+  return {
+    id: run.id,
+    action: syncRunAction(run.status),
+    at: run.startedAt,
+    actor: SYNC_FEED_ACTOR,
+    metadata: {
+      status: run.status,
+      source: run.source,
+      factsAdded: run.factsAdded,
+      factsUpdated: run.factsUpdated,
+      durationMs: run.durationMs,
+      completedAt: run.completedAt,
+      errorMsg: run.errorMsg,
+      notes: run.notes,
+    },
+  };
+}
+
 router.get('/system', async (_req, res, next) => {
   try {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    const [
-      recentSyncRuns,
-      lastSyncEntry,
-      openAlerts,
-      criticalAlertCount,
-      auditCountLast7Days,
-    ] = await Promise.all([
-      // Last 10 sync runs derived from AuditLog (action prefixed with "sync.")
-      prisma.auditLog.findMany({
-        where: { action: { startsWith: 'sync.' } },
-        orderBy: { createdAt: 'desc' },
+    const [recentSyncRuns, openAlerts, criticalAlertCount, auditCountLast7Days] = await Promise.all([
+      // Last 10 REAL sync runs from the SyncRun table the scheduler
+      // and the guarded manual trigger write (audit 15-a P1-5). The
+      // previous feed was derived from AuditLog rows with an action
+      // prefixed 'sync.' — an action string no code path ever writes
+      // (syncs record themselves as SyncRun rows, not audit rows), so
+      // lastRunAt was permanently null and recent permanently empty
+      // while real runs existed. Ordered by startedAt desc — [0] is
+      // the latest run, which is what lastRunAt reports.
+      prisma.syncRun.findMany({
+        orderBy: { startedAt: 'desc' },
         take: 10,
-        select: {
-          id: true, action: true, createdAt: true, metadata: true,
-          user: { select: { firstName: true, lastName: true } },
-        },
-      }),
-      prisma.auditLog.findFirst({
-        where: { action: { startsWith: 'sync.' } },
-        orderBy: { createdAt: 'desc' },
-        select: { createdAt: true, action: true },
       }),
       prisma.operationalAlert.findMany({
         where: { resolvedAt: null },
@@ -574,17 +655,13 @@ router.get('/system', async (_req, res, next) => {
       prisma.auditLog.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
     ]);
 
+    const lastSyncRun = recentSyncRuns[0] ?? null;
+
     res.json({
       data: {
         sync: {
-          lastRunAt: lastSyncEntry?.createdAt ?? null,
-          recent: recentSyncRuns.map((r) => ({
-            id: r.id,
-            action: r.action,
-            at: r.createdAt,
-            actor: r.user ? `${r.user.firstName} ${r.user.lastName}` : 'النظام',
-            metadata: r.metadata as unknown,
-          })),
+          lastRunAt: lastSyncRun?.startedAt ?? null,
+          recent: recentSyncRuns.map(toSyncFeedEntry),
         },
         alerts: {
           open: openAlerts,

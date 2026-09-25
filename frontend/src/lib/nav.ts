@@ -5,7 +5,7 @@ import {
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
   FileText, ShieldCheck, Activity, Compass, BookMarked,
-  Radio, Wallet, MapPin, Mic2, UserCircle, Brain, Megaphone, RefreshCw,
+  Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
   Palette, Settings, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';

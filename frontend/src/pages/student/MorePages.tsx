@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Trophy, Star, Medal, Award, Activity, Crown,
-  Target, FlaskConical, Headset,
-  Bell, Calendar, AlertTriangle, BookOpen, Download,
+  Target, Headset,
+  Bell, AlertTriangle, BookOpen, Download,
   CheckCircle2, MessageCircle, Heart, GraduationCap,
   TrendingUp, Building2, Users2, Microscope,
 } from 'lucide-react';

@@ -27,6 +27,13 @@
  *
  * Pair with `<DropdownItem>` for the standard menu row, or render any
  * custom child (the keyboard nav scans for `[role="menuitem"]`).
+ *
+ * Non-item chrome (a user name/email card, 15-g P2-9): pass it via
+ * `header` — it renders inside the panel but OUTSIDE the role=menu
+ * element, because ARIA menus may own only menuitem/separator
+ * children and a plain div inside the menu was announced as an
+ * unnamed item in some screen-reader modes. Keyboard navigation
+ * (arrows/Home/End scan menuitem roles) never reaches the header.
  */
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
@@ -47,6 +54,13 @@ export interface DropdownProps {
   /** Set false to disable click-outside dismissal. Defaults to true. */
   closeOnOutsideClick?: boolean;
   ariaLabel: string;
+  /**
+   * Non-interactive chrome rendered above the list but outside the
+   * role=menu element (15-g P2-9) — e.g. the account header card in
+   * the topbar user menu. Styling belongs to the consumer's own
+   * classes; the slot only owns placement.
+   */
+  header?: ReactNode;
   children: ReactNode;
 }
 
@@ -64,6 +78,7 @@ export function Dropdown({
   closeOnEscape = true,
   closeOnOutsideClick = true,
   ariaLabel,
+  header,
   children,
 }: DropdownProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -148,11 +163,15 @@ export function Dropdown({
   if (!rendered || !pos || typeof document === 'undefined') return null;
 
   return createPortal(
+    // 15-g P2-9: the positioned panel is a plain container; the menu
+    // SEMANTICS live on the inner list, so the optional header can sit
+    // in the panel without violating the menu's owned-children contract.
+    // menuRef stays on the outer panel: positioning measures the full
+    // panel (header included) and click-outside must treat header
+    // clicks as inside.
     <div
       ref={menuRef}
       className="dropdown"
-      role="menu"
-      aria-label={ariaLabel}
       style={{ top: pos.top, left: pos.left, maxHeight: pos.maxHeight }}
       data-side={pos.flipped ? 'above' : 'below'}
       data-closing={!open ? 'true' : undefined}
@@ -160,7 +179,10 @@ export function Dropdown({
         if (!open && e.animationName === 'madarek-popover-out') onExitEnd();
       }}
     >
-      {children}
+      {header}
+      <div role="menu" aria-label={ariaLabel} className="dropdown-list">
+        {children}
+      </div>
     </div>,
     document.body,
   );

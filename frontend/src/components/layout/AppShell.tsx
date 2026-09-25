@@ -9,7 +9,6 @@ import { useScrollRestoration } from './useScrollRestoration';
 import { PageTransition } from '../motion';
 import { PageSkeleton } from '../primitives/States';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
-import { useMe } from '../../hooks/useAuth';
 import { useRoleAccent } from '../../hooks/useRoleAccent';
 import { useThemeProfileSync } from '../../hooks/useThemeProfileSync';
 import { useOnboardingState } from '../../hooks/useOnboardingState';
@@ -20,6 +19,10 @@ import { HydrationSplash } from '../HydrationSplash';
 /* ───────────────────────────────────────────────────────────
    PAGE TITLES — single source of truth for topbar resolution
    ─────────────────────────────────────────────────────────── */
+// The static <title> from index.html — restored whenever the shell
+// unmounts (see the document.title effect in AppShell).
+const DOC_TITLE_BASE = 'مدارك · منصة التعليم الذكي · جامعة الزاوية';
+
 const PAGE_TITLES: Record<string, string> = {
   '/student/dashboard': 'لوحة التحكم',
   '/student/schedule': 'الجدول الدراسي',
@@ -225,6 +228,20 @@ export function AppShell({ children }: { children?: ReactNode }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
+  /* 15-g P2-3: SPA navigations never touched document.title — the
+     static <title> from index.html lived forever, so screen-reader
+     users (and browser tabs / history entries) got no page-change
+     signal on client-side routes. Mirror the topbar's resolved
+     per-route title into the tab, restoring the static platform
+     title when the shell unmounts (the logout redirect lands on
+     /auth, which owns no title logic of its own). */
+  useEffect(() => {
+    document.title = `${title} · مدارك`;
+    return () => {
+      document.title = DOC_TITLE_BASE;
+    };
+  }, [title]);
+
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
@@ -308,7 +325,5 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   return <Outlet />;
 }
 
-export function HydrateMe() {
-  useMe();
-  return null;
-}
+/* (HydrateMe deleted in wave 16-E3 — 15-f FE-3 / 15-d P1-4: it was
+   never rendered anywhere; every consumer calls useMe() directly.) */

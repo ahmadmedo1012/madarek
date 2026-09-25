@@ -7,6 +7,8 @@
  *
  * Heavy layout children (Sidebar / Topbar / BottomNav / onboarding) are
  * stubbed so the test isolates AppShell's own markup.
+ *
+ * 16-E3 adds the per-route document.title suite (15-g P2-3).
  */
 import { describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
@@ -16,6 +18,8 @@ import { MemoryRouter } from 'react-router-dom';
 // (A ResizeObserver stub used to live here for useLayoutMetrics, which
 // wave 7-b deleted — audit 11-e P2-17 flagged both the stub and this
 // comment as stale. Nothing in AppShell observes layout anymore.)
+// (The hooks/useAuth mock also died in 16-E3: HydrateMe was this file's
+// only useMe consumer and it was deleted — 15-f FE-3.)
 
 vi.mock('../../src/components/layout/Sidebar', () => ({
   Sidebar: () => <aside data-testid="sidebar" />,
@@ -41,9 +45,6 @@ vi.mock('../../src/components/onboarding/MilestoneScene', () => ({
 vi.mock('../../src/components/motion', () => ({
   PageTransition: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
-vi.mock('../../src/hooks/useAuth', () => ({
-  useMe: () => ({ data: undefined }),
-}));
 vi.mock('../../src/hooks/useOnboardingState', () => ({
   useOnboardingState: () => ({
     shouldAutoStart: false,
@@ -66,9 +67,9 @@ vi.mock('../../src/hooks/useRoleAccent', () => ({
 
 import { AppShell } from '../../src/components/layout/AppShell';
 
-function renderShell(content = 'محتوى الصفحة') {
+function renderShell(content = 'محتوى الصفحة', initialEntry = '/') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <AppShell>
         <div>{content}</div>
       </AppShell>
@@ -106,5 +107,24 @@ describe('AppShell — skip link', () => {
   it('keeps the onboarding flow mounted inside the shell', () => {
     renderShell();
     expect(screen.getByTestId('onboarding')).toBeInTheDocument();
+  });
+});
+
+describe('AppShell — document.title per route (15-g P2-3)', () => {
+  it('mirrors the resolved route title into document.title', () => {
+    renderShell('محتوى', '/student/dashboard');
+    expect(document.title).toBe('لوحة التحكم · مدارك');
+  });
+
+  it('falls back to the platform title for unlisted routes', () => {
+    renderShell(); // MemoryRouter default entry '/' — no PAGE_TITLES match
+    expect(document.title).toBe('منصة الزاوية · مدارك');
+  });
+
+  it('restores the static index.html title when the shell unmounts (logout path)', () => {
+    const { unmount } = renderShell('محتوى', '/student/dashboard');
+    expect(document.title).toBe('لوحة التحكم · مدارك');
+    unmount();
+    expect(document.title).toBe('مدارك · منصة التعليم الذكي · جامعة الزاوية');
   });
 });

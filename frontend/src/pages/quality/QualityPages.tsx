@@ -1010,26 +1010,3 @@ export function QualityAlertsPage() {
     </div>
   );
 }
-
-/* ════════════════════════════════════════════════════════════════
-   Generic placeholder kept for any quality routes we don't fill
-   ════════════════════════════════════════════════════════════════ */
-export function QualityPlaceholder({
-  title,
-  subtitle = 'هذه الشاشة تعرض بيانات مفصلة عن جودة العملية التعليمية.',
-  icon = ListChecks,
-}: { title: string; subtitle?: string; icon?: LucideIcon }) {
-  return (
-    <div className="page">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">{title}</h1>
-          <p className="page-subtitle">{subtitle}</p>
-        </div>
-      </header>
-      <Card>
-        <EmptyState icon={icon} title="قريباً" description="هذه الشاشة قيد التطوير ضمن المرحلة التالية." />
-      </Card>
-    </div>
-  );
-}

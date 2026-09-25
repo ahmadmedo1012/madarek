@@ -24,7 +24,8 @@ import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check 
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import { NotificationPanel } from '../overlays';
-import { useNotifications, useUnreadNotifications, useMarkNotifRead, type Notification } from '../../hooks/useResources';
+import { useNotifications, useUnreadNotifications, useMarkNotifRead, useMarkAllNotifsRead, type Notification } from '../../hooks/useResources';
+import { timeAgoAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
 
 const TYPE_ICON: Record<Notification['type'], LucideIcon> = {
@@ -41,15 +42,10 @@ const TYPE_TONE: Record<Notification['type'], string> = {
   SOCIAL:   'tone-success',
 };
 
-function timeAgo(iso: string): string {
-  const seconds = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
-  if (seconds < 60)        return 'الآن';
-  if (seconds < 3600)      return `منذ ${Math.floor(seconds / 60)} د`;
-  if (seconds < 86400)     return `منذ ${Math.floor(seconds / 3600)} س`;
-  if (seconds < 7 * 86400) return `منذ ${Math.floor(seconds / 86400)} يوم`;
-  // Older than a week — short Arabic date (was en-GB; audit 0-c P3).
-  return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
-}
+// Relative time is the canonical lib/format helper (15-h P2-2): the
+// same counted-plural wording + Math.round rounding the /alerts page
+// already renders for these very rows — the old local compact twin
+// («منذ 5 د», Math.floor) disagreed with it on the same data.
 
 export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const [open, setOpen] = useState(false);
@@ -111,6 +107,11 @@ function NotificationPanelContent({
   const listQ = useNotifications();
   const items = (listQ.data ?? []).slice(0, 6);
   const markRead = useMarkNotifRead();
+  // 15-d P1-2: one bulk POST /notifications/read-all covers EVERY
+  // unread row (the per-item path below only ever reaches the 6
+  // visible ones) and invalidates the notifications cache once — no
+  // more ≤6 refetch storms of the 50-item list + count poll.
+  const markAllRead = useMarkAllNotifsRead();
   const navigate = useNavigate();
 
   const onItemClick = (n: Notification) => {
@@ -120,7 +121,7 @@ function NotificationPanelContent({
   };
 
   const onMarkAll = () => {
-    items.filter((n) => !n.readAt).forEach((n) => markRead.mutate(n.id));
+    markAllRead.mutate();
   };
 
   return (
@@ -129,7 +130,7 @@ function NotificationPanelContent({
       <h3 className="notif-panel-title">الإشعارات</h3>
       <div className="notif-panel-actions">
         {unread > 0 && (
-          <button type="button" className="notif-panel-action" onClick={onMarkAll}>
+          <button type="button" className="notif-panel-action" onClick={onMarkAll} disabled={markAllRead.isPending}>
             <Icon icon={Check} size={12} />
             <span>تعليم الكل كمقروء</span>
           </button>
@@ -178,7 +179,7 @@ function NotificationPanelContent({
               <span className="notif-item-body">
                 <span className="notif-item-title">{n.title}</span>
                 {n.body && <span className="notif-item-desc">{n.body}</span>}
-                <span className="notif-item-time">{timeAgo(n.createdAt)}</span>
+                <span className="notif-item-time">{timeAgoAr(n.createdAt)}</span>
               </span>
               {!n.readAt && <span className="notif-item-dot" aria-hidden />}
             </button>

@@ -87,8 +87,7 @@ export const DEFAULT_ROLE_CAPABILITIES: Record<Role, Capability[]> = {
 // A short in-process cache (global, 30s TTL) avoids one RolePermission
 // query per `requireCapability` check. Nothing in the app writes
 // RolePermission at runtime (it is changed by operators/seed), so a
-// 30s staleness window is acceptable. `clearRolePermissionCache()` is
-// exported for tests and for future write paths.
+// 30s staleness window is acceptable.
 // ─────────────────────────────────────────────────────────────────
 const ROLE_PERMISSION_CACHE_TTL_MS = 30_000;
 
@@ -130,11 +129,6 @@ async function getRolePermissions(): Promise<RolePermissionRow[]> {
   const rows = await rolePermissionFetch;
   rolePermissionCache = { rows, fetchedAt: Date.now() };
   return rows;
-}
-
-/** Test/utility hook — drop the in-process RolePermission cache. */
-export function clearRolePermissionCache(): void {
-  rolePermissionCache = null;
 }
 
 /**
@@ -233,7 +227,7 @@ export async function assertOwnsOffering(offeringId: string, userId: string, rol
 }
 
 /** Facts about one offering + caller, as needed by the access decision. */
-export interface OfferingAccessFacts {
+interface OfferingAccessFacts {
   /** The offering row exists (a missing row 404s for every non-bypass role). */
   exists: boolean;
   /** The offering is taught by the calling user (teacher path). */
@@ -243,7 +237,7 @@ export interface OfferingAccessFacts {
 }
 
 /** Outcome of `decideOfferingAccess` — mapped to AppError by the wrapper. */
-export type OfferingAccessDecision = 'ok' | 'not_found' | 'forbidden';
+type OfferingAccessDecision = 'ok' | 'not_found' | 'forbidden';
 
 /**
  * Pure access decision for a CourseOffering, factored out of

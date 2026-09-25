@@ -15,7 +15,12 @@ router.use(authMiddleware);
 // Pure logic — DB-free, unit-tested in tests/modules/social-logic.test.ts
 // ─────────────────────────────────────────────────────────────────
 
-/** Cap for every social list read — a growing platform must not turn these into unbounded scans (audit 11-c P2-14). */
+/**
+ * Cap for every social list read — a growing platform must not turn these
+ * into unbounded scans (audit 11-c P2-14). This is the file's single feed
+ * cap: the announcements feed previously used a private `take: 30` next to
+ * this 50, two caps for the same feed concept (audit 15-i P1-4).
+ */
 const SOCIAL_LIST_TAKE = 50;
 
 /** Facts about one caller, as needed to build their announcement-feed scope filter. */
@@ -95,6 +100,60 @@ export function canFinalizeJudging(entries: ReadonlyArray<{ score: number | null
 }
 
 /**
+ * Statuses from which closing (→ CLOSED) is a legal claim — OPEN only.
+ * Close previously wrote unconditionally, so a stale organizer UI could
+ * regress a JUDGED competition back to CLOSED, after which
+ * `isScoreLocked(CLOSED) === false` and final scores became writable
+ * again (audit 15-b P2-1). JUDGED is terminal. Exported for unit tests.
+ */
+export const CLOSABLE_COMPETITION_STATUSES = ['OPEN'] as const;
+
+/** Statuses from which judging (CLOSED → JUDGED) is a legal claim. */
+export const JUDGEABLE_COMPETITION_STATUSES = ['CLOSED'] as const;
+
+/** Pure transition decision backing the close route's conditional claim. */
+export function isCompetitionClosable(status: CompetitionStatus): boolean {
+  return (CLOSABLE_COMPETITION_STATUSES as readonly CompetitionStatus[]).includes(status);
+}
+
+/** Pure transition decision backing the judge route's conditional claim. */
+export function isCompetitionJudgeable(status: CompetitionStatus): boolean {
+  return (JUDGEABLE_COMPETITION_STATUSES as readonly CompetitionStatus[]).includes(status);
+}
+
+/** Permitted announcement targets for one author — `'any'` (oversight
+ *  roles) or the explicit allowlist of target ids (TEACHER/STUDENT own
+ *  scopes). Shape of the wave-12-4 forgery guard, extracted pure so the
+ *  permission matrix is unit-testable (audit 15-i TOP-7). */
+export interface AnnouncementTargetPermissions {
+  faculty: 'any' | readonly string[];
+  department: 'any' | readonly string[];
+  offering: 'any' | readonly string[];
+}
+
+/**
+ * Pure half of the scopeId forgery guard: is `scopeId` inside the author's
+ * permitted targets for `scope`? Throws FORBIDDEN when it is not. The
+ * existence of the target row is the handler's half (DB read, stays there).
+ * PLATFORM addresses the whole platform — there is no target to forge, so
+ * any stray scopeId is ignored.
+ */
+export function assertScopeTargetPermitted(
+  scope: AnnouncementScope,
+  scopeId: string,
+  permitted: AnnouncementTargetPermissions,
+): void {
+  if (scope === 'PLATFORM') return;
+  const allow: 'any' | readonly string[] =
+    scope === 'FACULTY' ? permitted.faculty
+    : scope === 'DEPARTMENT' ? permitted.department
+    : permitted.offering;
+  if (allow !== 'any' && !allow.includes(scopeId)) {
+    throw AppError.forbidden(`You cannot announce to this ${scope.toLowerCase()}`);
+  }
+}
+
+/**
  * Pure capacity decision for an RSVP write: only a transition INTO 'GOING'
  * from a non-GOING state consumes a new seat — a user already GOING keeps
  * their seat, and MAYBE/NO never touch capacity.
@@ -129,7 +188,7 @@ router.get('/announcements/feed', async (req, res, next) => {
         where: unexpiredAnnouncementFilter(now),
         include: { author: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true, role: true } } },
         orderBy: [{ pinned: 'desc' }, { publishedAt: 'desc' }],
-        take: 30,
+        take: SOCIAL_LIST_TAKE,
       });
       res.json({ data: all });
       return;
@@ -172,22 +231,38 @@ router.get('/announcements/feed', async (req, res, next) => {
         author: { select: { firstName: true, lastName: true, avatarColor: true, avatarInitials: true, role: true } },
       },
       orderBy: [{ pinned: 'desc' }, { publishedAt: 'desc' }],
-      take: 30,
+      take: SOCIAL_LIST_TAKE,
     });
 
     res.json({ data: announcements });
   } catch (e) { next(e); }
 });
 
-const createAnnouncementSchema = z.object({
-  scope: z.nativeEnum(AnnouncementScope),
-  scopeId: z.string().cuid().optional(),
-  title: z.string().min(3).max(200),
-  body: z.string().min(3).max(4000),
-  pinned: z.boolean().default(false),
-  iconEmoji: z.string().max(8).optional(),
-  expiresAt: z.coerce.date().optional(),
-}).strict();
+export const createAnnouncementSchema = z
+  .object({
+    scope: z.nativeEnum(AnnouncementScope),
+    scopeId: z.string().cuid().optional(),
+    title: z.string().min(3).max(200),
+    body: z.string().min(3).max(4000),
+    pinned: z.boolean().default(false),
+    iconEmoji: z.string().max(8).optional(),
+    expiresAt: z.coerce.date().optional(),
+  })
+  .strict()
+  .superRefine((v, ctx) => {
+    // A non-PLATFORM announcement needs a target id. Previously enforced
+    // only inside the handler, so the rule was invisible to schema tests
+    // and missed the fast-fail validation path (audit 15-i TOP-7 / §5-3).
+    // PLATFORM ignores scopeId (a stray one is inert — no feed read looks
+    // at scopeId for PLATFORM rows).
+    if (v.scope !== 'PLATFORM' && !v.scopeId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['scopeId'],
+        message: 'scopeId required for non-platform scope',
+      });
+    }
+  });
 
 router.post(
   '/announcements',
@@ -199,12 +274,10 @@ router.post(
       // PLATFORM scope requires ANNOUNCE_PLATFORM specifically. Re-check:
       // the route middleware above admits either ANNOUNCE_FACULTY or
       // ANNOUNCE_PLATFORM; only the latter may address the whole platform.
+      // (scopeId-required-for-non-PLATFORM now lives in the schema's
+      // superRefine — fail-fast and unit-tested.)
       if (body.scope === 'PLATFORM') {
         await assertCapability(req.user!.id, req.user!.role, 'ANNOUNCE_PLATFORM');
-      }
-      // For non-platform scopes, scopeId is required
-      if (body.scope !== 'PLATFORM' && !body.scopeId) {
-        throw new AppError('BAD_REQUEST', 'scopeId required for non-platform scope', 400);
       }
 
       // scopeId forgery guard: the target must EXIST and be inside the
@@ -217,68 +290,64 @@ router.post(
         // Permitted target ids per role. ADMIN/QUALITY (ANNOUNCE_FACULTY
         // holders) may target any EXISTING faculty/department/offering;
         // TEACHER/STUDENT are limited to their own scopes.
-        let permittedFaculty: 'any' | string[];
-        let permittedDepartments: 'any' | string[];
-        let permittedOfferings: 'any' | string[];
+        let permitted: AnnouncementTargetPermissions;
         if (role === Role.ADMIN || role === Role.QUALITY || role === Role.OWNER) {
-          permittedFaculty = 'any';
-          permittedDepartments = 'any';
-          permittedOfferings = 'any';
+          permitted = { faculty: 'any', department: 'any', offering: 'any' };
         } else if (role === Role.TEACHER) {
           const tp = await prisma.teacherProfile.findUnique({
             where: { userId: uid },
             select: { departmentId: true, department: { select: { facultyId: true } } },
           });
-          permittedFaculty = tp?.department.facultyId ? [tp.department.facultyId] : [];
-          permittedDepartments = tp ? [tp.departmentId] : [];
           const own = await prisma.courseOffering.findMany({
             where: { teacherId: uid },
             select: { id: true },
           });
-          permittedOfferings = own.map((o) => o.id);
+          permitted = {
+            faculty: tp?.department.facultyId ? [tp.department.facultyId] : [],
+            department: tp ? [tp.departmentId] : [],
+            offering: own.map((o) => o.id),
+          };
         } else {
           // STUDENT (or unusual grant) — own faculty/department/enrolled offerings.
           const sp = await prisma.studentProfile.findUnique({
             where: { userId: uid },
             select: { facultyId: true, departmentId: true },
           });
-          permittedFaculty = sp?.facultyId ? [sp.facultyId] : [];
-          permittedDepartments = sp?.departmentId ? [sp.departmentId] : [];
           const enr = await prisma.enrollment.findMany({
             where: { studentId: uid },
             select: { offeringId: true },
           });
-          permittedOfferings = enr.map((e) => e.offeringId);
+          permitted = {
+            faculty: sp?.facultyId ? [sp.facultyId] : [],
+            department: sp?.departmentId ? [sp.departmentId] : [],
+            offering: enr.map((e) => e.offeringId),
+          };
         }
 
+        // Existence half of the guard (DB reads — 404 before 403, so a
+        // nonexistent target is not leaked as "exists but forbidden").
         if (body.scope === 'FACULTY') {
           const faculty = await prisma.faculty.findUnique({
             where: { id: body.scopeId },
             select: { id: true },
           });
           if (!faculty) throw AppError.notFound('Faculty not found');
-          if (permittedFaculty !== 'any' && !permittedFaculty.includes(body.scopeId)) {
-            throw AppError.forbidden('You cannot announce to this faculty');
-          }
         } else if (body.scope === 'DEPARTMENT') {
           const dept = await prisma.department.findUnique({
             where: { id: body.scopeId },
             select: { id: true },
           });
           if (!dept) throw AppError.notFound('Department not found');
-          if (permittedDepartments !== 'any' && !permittedDepartments.includes(body.scopeId)) {
-            throw AppError.forbidden('You cannot announce to this department');
-          }
         } else if (body.scope === 'OFFERING') {
           const offering = await prisma.courseOffering.findUnique({
             where: { id: body.scopeId },
-            select: { id: true, teacherId: true },
+            select: { id: true },
           });
           if (!offering) throw AppError.notFound('Offering not found');
-          if (permittedOfferings !== 'any' && !permittedOfferings.includes(body.scopeId)) {
-            throw AppError.forbidden('You cannot announce to this offering');
-          }
         }
+
+        // Permission half (pure, unit-tested — audit 15-i TOP-7).
+        assertScopeTargetPermitted(body.scope, body.scopeId, permitted);
       }
 
       const created = await prisma.announcement.create({
@@ -374,21 +443,33 @@ const enterCompSchema = z.object({
 
 router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, res, next) => {
   try {
-    const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
-    if (!comp) throw AppError.notFound('Competition not found');
-    if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'Competition is closed for entries', 400);
-    if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'Competition deadline has passed', 400);
+    const userId = req.user!.id;
+    const entry = await prisma.$transaction(async (tx) => {
+      // Serialize per competition (the RSVP pattern below): under plain
+      // READ COMMITTED the old pre-read → upsert pair let an entry land in
+      // a competition that closed mid-request (audit 15-b P2-1). The row
+      // lock makes the status/deadline re-check authoritative — a close or
+      // judge claim either committed before us (we re-read its outcome) or
+      // waits and re-evaluates its own status condition after we commit.
+      const rows = await tx.$queryRaw<
+        Array<{ id: string; status: CompetitionStatus; deadline: Date }>
+      >`SELECT id, status, deadline FROM "Competition" WHERE id = ${req.params.id} FOR UPDATE`;
+      const comp = rows[0];
+      if (!comp) throw AppError.notFound('Competition not found');
+      if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'Competition is closed for entries', 400);
+      if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'Competition deadline has passed', 400);
 
-    const entry = await prisma.competitionEntry.upsert({
-      where: { competitionId_userId: { competitionId: comp.id, userId: req.user!.id } },
-      update: { title: req.body.title, body: req.body.body, fileUrl: req.body.fileUrl ?? null },
-      create: {
-        competitionId: comp.id,
-        userId: req.user!.id,
-        title: req.body.title,
-        body: req.body.body,
-        fileUrl: req.body.fileUrl ?? null,
-      },
+      return tx.competitionEntry.upsert({
+        where: { competitionId_userId: { competitionId: comp.id, userId } },
+        update: { title: req.body.title, body: req.body.body, fileUrl: req.body.fileUrl ?? null },
+        create: {
+          competitionId: comp.id,
+          userId,
+          title: req.body.title,
+          body: req.body.body,
+          fileUrl: req.body.fileUrl ?? null,
+        },
+      });
     });
     res.status(201).json({ data: entry });
   } catch (e) { next(e); }
@@ -399,10 +480,29 @@ router.post('/competitions/:id/close', requireCapability('COMPETITIONS_RUN'), as
     const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
     if (!comp) throw AppError.notFound('Competition not found');
     if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
-    const updated = await prisma.competition.update({
-      where: { id: comp.id },
+    // Conditional claim (audit 15-b P2-1): only an OPEN competition may
+    // close. The write previously had no status guard at all, so a stale
+    // organizer UI could regress a JUDGED competition to CLOSED — after
+    // which isScoreLocked(CLOSED) is false and final scores became
+    // writable again. JUDGED is terminal.
+    const claimed = await prisma.competition.updateMany({
+      where: { id: comp.id, status: { in: [...CLOSABLE_COMPETITION_STATUSES] } },
       data: { status: 'CLOSED' },
     });
+    if (claimed.count === 0) {
+      const current = await prisma.competition.findUnique({
+        where: { id: comp.id },
+        select: { status: true },
+      });
+      throw AppError.conflict(
+        current?.status === CompetitionStatus.JUDGED
+          ? 'Competition already judged — it cannot be closed again'
+          : 'Competition is no longer open',
+      );
+    }
+    // Read the row back — updateMany returns only a count, and the response
+    // keeps the full-row shape the unconditional update used to return.
+    const updated = await prisma.competition.findUnique({ where: { id: comp.id } });
     res.json({ data: updated });
   } catch (e) { next(e); }
 });
@@ -434,12 +534,24 @@ router.post(
         throw AppError.conflict('Competition already judged — scores are final');
       }
 
-      const updated = await prisma.competitionEntry.update({
-        where: { id: entry.id },
+      // Conditional claim: the guard above is a plain read, so judging
+      // could commit between it and the write. The claim re-checks the
+      // parent status atomically with the write — a score can no longer
+      // land on a JUDGED competition (the "locked scores stay locked"
+      // invariant of audit 15-b P2-1).
+      const claimed = await prisma.competitionEntry.updateMany({
+        where: {
+          id: entry.id,
+          competition: { status: { not: CompetitionStatus.JUDGED } },
+        },
         data: { score: req.body.score },
-        select: { id: true, score: true },
       });
-      res.json({ data: updated });
+      if (claimed.count === 0) {
+        throw AppError.conflict('Competition already judged — scores are final');
+      }
+      // The claim wrote exactly the validated score — the response keeps
+      // the {id, score} shape the unconditional update returned.
+      res.json({ data: { id: entry.id, score: req.body.score } });
     } catch (e) { next(e); }
   },
 );
@@ -466,10 +578,31 @@ router.post(
         throw new AppError('BAD_REQUEST', 'No entry has been scored yet', 400);
       }
 
-      const updated = await prisma.competition.update({
-        where: { id: comp.id },
+      // Conditional claim (audit 15-b P2-1): judging claims exactly CLOSED.
+      // A concurrent finalize (double-click racing the first, or a close
+      // landing between the read above and this write) can no longer be
+      // leapfrogged — JUDGED is reached exactly once, from CLOSED.
+      // Accepted micro-window: a score CLEARED in the same instant judging
+      // finalizes can leave a JUDGED competition with no scored entry —
+      // locked either way; the precondition above is the UX guard, the
+      // claim is the integrity guard.
+      const claimed = await prisma.competition.updateMany({
+        where: { id: comp.id, status: { in: [...JUDGEABLE_COMPETITION_STATUSES] } },
         data: { status: 'JUDGED' },
       });
+      if (claimed.count === 0) {
+        const current = await prisma.competition.findUnique({
+          where: { id: comp.id },
+          select: { status: true },
+        });
+        throw AppError.conflict(
+          current?.status === CompetitionStatus.JUDGED
+            ? 'Competition already judged'
+            : 'Competition must be closed before judging',
+        );
+      }
+      // Read the row back — full-row shape, same as close.
+      const updated = await prisma.competition.findUnique({ where: { id: comp.id } });
       res.json({ data: updated });
     } catch (e) { next(e); }
   },

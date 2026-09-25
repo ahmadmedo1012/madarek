@@ -6,8 +6,6 @@ export const paginationSchema = z.object({
   q: z.string().trim().max(120).optional(),
 });
 
-export type PaginationQuery = z.infer<typeof paginationSchema>;
-
 export const buildMeta = (page: number, limit: number, total: number) => ({
   page,
   limit,

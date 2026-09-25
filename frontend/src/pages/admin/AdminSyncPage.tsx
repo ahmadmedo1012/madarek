@@ -14,6 +14,7 @@ import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitive
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { apiErrorMessage } from '../../hooks/useResources';
+import { formatRelativeArShort } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 
 interface SyncRun {
@@ -83,6 +84,11 @@ function useSyncStatus() {
     queryKey: ['admin', 'sync'],
     queryFn: () => unwrap<SyncResponse>(api.get('/admin/sync')),
     refetchInterval: 30_000,
+    // Explicit like the three sibling polls (useResources ×2, useOwner):
+    // TanStack's default is already false — this pins it so a future
+    // global default flip can't silently start background-polling
+    // admins (15-e P2-5).
+    refetchIntervalInBackground: false,
   });
 }
 
@@ -94,14 +100,9 @@ function useTriggerSync() {
   });
 }
 
-function fmtRelative(iso: string | null): string {
-  if (!iso) return '—';
-  const ms = Date.now() - new Date(iso).getTime();
-  if (ms < 60_000) return 'الآن';
-  if (ms < 3_600_000) return `منذ ${Math.round(ms / 60_000)} دقيقة`;
-  if (ms < 86_400_000) return `منذ ${Math.round(ms / 3_600_000)} ساعة`;
-  return `منذ ${Math.round(ms / 86_400_000)} يوم`;
-}
+// fmtRelative (local near-verbatim copy of formatRelativeArShort) was
+// deleted in 16-E10 — the KPI below uses the canonical helper from
+// lib/format (15-h P2-2 consolidation).
 
 export function AdminSyncPage() {
   const { data, isPending, isError, error, refetch } = useSyncStatus();
@@ -201,7 +202,7 @@ export function AdminSyncPage() {
         <MetricCard
           icon={Clock}
           label="آخر مزامنة ناجحة"
-          value={fmtRelative(lastSuccess?.completedAt ?? null)}
+          value={lastSuccess?.completedAt ? formatRelativeArShort(lastSuccess.completedAt) : '—'}
           change={lastSuccess ? <bdi>{lastSuccess.source}</bdi> : 'لم تكتمل بعد'}
           color="brand"
         />

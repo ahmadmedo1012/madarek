@@ -307,30 +307,6 @@ export function lineFillGradient(color: string) {
   };
 }
 
-/**
- * Build a horizontal gradient that fades the accent across the bar width.
- * Use as bar chart `backgroundColor` for an extra dimension of polish.
- */
-export function barTintGradient(color: string) {
-  return (ctx: ScriptableContext<'bar'>): string | CanvasGradient => {
-    const { chart } = ctx;
-    const { chartArea, ctx: c } = chart;
-    if (!chartArea) return color;
-    return safeLinearGradient(
-      c,
-      chartArea.left,
-      0,
-      chartArea.right,
-      0,
-      [
-        [0, color],
-        [1, withAlpha(color, 0.7)],
-      ],
-      color,
-    );
-  };
-}
-
 /* ─── Motion profile ───────────────────────────────────────────────── */
 
 export type ChartAnimationProfile = { duration: number; easing: 'easeOutQuart' };
@@ -360,13 +336,6 @@ const GRID_FADE_EXTENT = 0.08;
 const GRID_FADE_EXTENT_MORE_CONTRAST = 0.02;
 
 type FadingGridColor = (ctx: ScriptableScaleContext) => string | CanvasGradient;
-
-function isFadingGridColor(value: unknown): value is FadingGridColor {
-  return (
-    typeof value === 'function' &&
-    (value as { __madarekFadingGrid?: boolean }).__madarekFadingGrid === true
-  );
-}
 
 /**
  * Scriptable grid color: gridlines fade to transparent at both ends of
@@ -398,7 +367,6 @@ export function fadingGridColor(scaleId: 'x' | 'y', base: string): FadingGridCol
       ? safeLinearGradient(ctx.chart.ctx, area.left, 0, area.right, 0, stops, base)
       : safeLinearGradient(ctx.chart.ctx, 0, area.top, 0, area.bottom, stops, base);
   };
-  (fade as { __madarekFadingGrid?: boolean }).__madarekFadingGrid = true;
   return fade;
 }
 

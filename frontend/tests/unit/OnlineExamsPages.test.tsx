@@ -1,5 +1,5 @@
 /**
- * 12-10 — Exam taker + list resume behavior (WAVE-12 D5 contract).
+ * 12-10 / 16-E1 — Exam taker + list behavior.
  *
  * 1. restoreSavedAnswers: the D5 wire shape → taker form state (object,
  *    raw-number and raw-string values; empty text stays unanswered).
@@ -12,16 +12,34 @@
  * 5. The countdown interval is not recreated on unrelated re-renders
  *    (audit 11-f P2-3 — the deps no longer include the finish mutation).
  * 6. A failed autosave surfaces the sticky warning chip and a
- *    successful save clears it (audit-verified-clean pin).
+ *    successful save of that question clears it (audit-verified-clean
+ *    pin, updated for the 16-E1 per-question copy).
  * 7. List page: an IN_PROGRESS attempt stays resumable (linked card);
  *    GRADED attempts stay static history.
  * 8. The entry screen offers honest resume copy when the list already
  *    knows the attempt is live.
+ * 9. 16-E1 / 15-e P0-1: submit flushes in-flight answer saves before
+ *    finishing — and stops waiting after SUBMIT_FLUSH_MS so a hung
+ *    save cannot block the submit.
+ * 10. 16-E1 / 15-e P0-2: a manual submit settles the attempt — the
+ *     interval and beforeunload listener retire with it and the
+ *     deadline passing on the result screen never re-fires finish.
+ * 11. 16-E1 / 15-e P1-1: save failures are tracked per question — a
+ *     success on another question never clears the failing one's chip.
+ * 12. 16-E1 / 15-c P1-1: passed === null renders the neutral
+ *     «بانتظار التصحيح اليدوي» badge, never «لم يجتز».
+ * 13. 16-E1 / 15-g P1-5: the answer textarea and the MCQ choice group
+ *     carry accessible names tied to the question prompt.
+ * 14. 16-E1 / 15-h P1-5: exam windows are visible — the list groups
+ *     open / not-yet-open / closed exams, the cards carry window chips,
+ *     and the two raw English start errors are spoken in Arabic.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import OnlineExamsPage, { ExamTakerPage, restoreSavedAnswers } from '../../src/pages/exams/OnlineExamsPages';
+import OnlineExamsPage, {
+  ExamTakerPage, restoreSavedAnswers, examWindowState, SUBMIT_FLUSH_MS,
+} from '../../src/pages/exams/OnlineExamsPages';
 
 interface AttemptFixture {
   id: string;
@@ -283,7 +301,7 @@ describe('ExamTakerPage resume (D5)', () => {
     setIntervalSpy.mockRestore();
   });
 
-  it('surfaces a failed autosave and clears the chip once a save succeeds', async () => {
+  it('surfaces a failed autosave and clears the chip once that question saves again', async () => {
     vi.useFakeTimers();
     mocks.start.mockResolvedValue(startedPayload());
     renderTaker();
@@ -295,12 +313,12 @@ describe('ExamTakerPage resume (D5)', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('radio', { name: 'الخيار الأول' }));
     });
-    expect(screen.getByText('تعذَّر حفظ آخر إجابة — أعد تحديدها')).toBeTruthy();
+    expect(screen.getByText('تعذَّر حفظ إجابة السؤال 1 — أعد الإجابة عليه')).toBeTruthy();
 
     await act(async () => {
       fireEvent.click(screen.getByRole('radio', { name: 'الخيار الثاني' }));
     });
-    expect(screen.queryByText('تعذَّر حفظ آخر إجابة — أعد تحديدها')).toBeNull();
+    expect(screen.queryByText(/تعذَّر حفظ/)).toBeNull();
   });
 
   it('offers honest resume copy when the list already knows the attempt is live', () => {
@@ -354,6 +372,268 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
     // untouched exam links exactly as before.
     expect(screen.queryByRole('link', { name: /اختبار منتهٍ/ })).toBeNull();
     expect(screen.getByRole('link', { name: /اختبار جديد/ })).toBeTruthy();
+    expect(screen.getByText('اختبار منتهٍ')).toBeTruthy();
+  });
+});
+
+describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
+  beforeEach(() => {
+    mocks.exams = [];
+    mocks.start.mockReset();
+    mocks.finish.mockReset();
+    mocks.answer.mockReset();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  async function startExam() {
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+  }
+
+  async function confirmSubmit() {
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'تسليم الاختبار' }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'تسليم نهائي' }));
+    });
+  }
+
+  it('submit awaits in-flight answer saves before finishing (15-e P0-1)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 7, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+
+    await startExam();
+
+    // An answer save that never settles on its own (hung mobile network).
+    let settle: (() => void) | undefined;
+    mocks.answer.mockImplementation(
+      () => new Promise<void>((resolve) => { settle = resolve; }),
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByRole('radio', { name: 'الخيار الأول' }));
+    });
+    expect(settle).toBeDefined();
+
+    // Manual submit through the confirm dialog: the finish request must
+    // NOT fire while the answer save is still in flight.
+    await confirmSubmit();
+    expect(mocks.finish).not.toHaveBeenCalled();
+
+    // The save settles → the finish fires strictly after it.
+    await act(async () => {
+      settle!();
+    });
+    expect(mocks.finish).toHaveBeenCalledTimes(1);
+    expect(mocks.finish).toHaveBeenCalledWith('a1');
+    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+  });
+
+  it('submit stops waiting for a hung save after the flush timeout (15-e P0-1)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 7, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+
+    await startExam();
+
+    // A save that never settles at all.
+    mocks.answer.mockImplementation(() => new Promise<void>(() => {}));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('radio', { name: 'الخيار الأول' }));
+    });
+
+    await confirmSubmit();
+    expect(mocks.finish).not.toHaveBeenCalled();
+
+    // The bounded flush gives up after SUBMIT_FLUSH_MS and finishes.
+    await act(async () => {
+      vi.advanceTimersByTime(SUBMIT_FLUSH_MS);
+    });
+    expect(mocks.finish).toHaveBeenCalledTimes(1);
+    expect(mocks.finish).toHaveBeenCalledWith('a1');
+  });
+
+  it('a manual submit settles the attempt — no second finish, timer + beforeunload torn down (15-e P0-2)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 8, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+    const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');
+    const removeListenerSpy = vi.spyOn(window, 'removeEventListener');
+
+    await startExam();
+    expect(clearIntervalSpy).not.toHaveBeenCalled();
+
+    await confirmSubmit();
+    expect(mocks.finish).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+
+    // The countdown interval and the beforeunload listener retired with
+    // the attempt…
+    expect(clearIntervalSpy).toHaveBeenCalled();
+    expect(removeListenerSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function));
+
+    // …so the deadline passing while the student reads the result can
+    // never re-fire finish.
+    await act(async () => {
+      vi.advanceTimersByTime(31 * 60_000);
+    });
+    expect(mocks.finish).toHaveBeenCalledTimes(1);
+
+    clearIntervalSpy.mockRestore();
+    removeListenerSpy.mockRestore();
+  });
+
+  it('tracks save failures per question — a success elsewhere never clears the chip (15-e P1-1)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+
+    await startExam();
+
+    // Q1 (MCQ) fails to save.
+    mocks.answer.mockRejectedValueOnce(new Error('offline'));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('radio', { name: 'الخيار الأول' }));
+    });
+    expect(screen.getByText('تعذَّر حفظ إجابة السؤال 1 — أعد الإجابة عليه')).toBeTruthy();
+
+    // Q2 (short answer) saves fine — Q1's failure must persist.
+    await act(async () => {
+      fireEvent.blur(screen.getByPlaceholderText('اكتب إجابتك هنا…'));
+    });
+    expect(screen.getByText('تعذَّر حفظ إجابة السؤال 1 — أعد الإجابة عليه')).toBeTruthy();
+
+    // Re-answering Q1 succeeds — now the chip clears.
+    await act(async () => {
+      fireEvent.click(screen.getByRole('radio', { name: 'الخيار الثاني' }));
+    });
+    expect(screen.queryByText(/تعذَّر حفظ/)).toBeNull();
+  });
+
+  it('renders the neutral awaiting-manual-grading badge when passed is null (15-c P1-1)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload({ expiresAt: new Date(Date.now() + 3_000).toISOString() }));
+    mocks.finish.mockResolvedValue({ score: 4, maxScore: 10, status: 'SUBMITTED', needsManual: 2, passed: null });
+
+    await startExam();
+    await act(async () => {
+      vi.advanceTimersByTime(5_000); // 00:00 → auto-submit fires
+    });
+    expect(mocks.finish).toHaveBeenCalledTimes(1);
+
+    expect(screen.getByText('تم تسليم اختبارك')).toBeTruthy();
+    expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
+    expect(screen.queryByText('لم يجتز')).toBeNull();
+    expect(screen.queryByText('ناجح')).toBeNull();
+  });
+
+  it('names the answer fields after their question prompts (15-g P1-5)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+
+    await startExam();
+
+    expect(screen.getByRole('radiogroup', { name: /سؤال اختيار من متعدد/ })).toBeTruthy();
+    expect(screen.getByRole('textbox', { name: /سؤال قصير/ })).toBeTruthy();
+  });
+
+  it('speaks the server’s window guards in Arabic on the start path (15-h P1-5)', async () => {
+    mocks.exams = [examFixture({ closeAt: new Date(Date.now() - 3_600_000).toISOString() })];
+    mocks.start.mockRejectedValueOnce({ response: { data: { error: { message: 'Exam closed' } } } });
+
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+
+    expect(screen.getByText('أغلق باب التسليم لهذا الاختبار.')).toBeTruthy();
+    expect(screen.queryByText('Exam closed')).toBeNull();
+  });
+
+  it('adds the real opening time to the not-open-yet copy (15-h P1-5)', async () => {
+    mocks.exams = [examFixture({ openAt: new Date(Date.now() + 86_400_000).toISOString() })];
+    mocks.start.mockRejectedValueOnce({ response: { data: { error: { message: 'Exam not open yet' } } } });
+
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+
+    expect(screen.getByText(/لم يفتح باب هذا الاختبار بعد — يفتح /)).toBeTruthy();
+    expect(screen.queryByText('Exam not open yet')).toBeNull();
+  });
+});
+
+describe('exam window visibility (15-h P1-5)', () => {
+  beforeEach(() => {
+    mocks.exams = [];
+  });
+
+  it('examWindowState mirrors the server start rule', () => {
+    const now = Date.now();
+    expect(examWindowState({ openAt: null, closeAt: null }, now)).toBe('open');
+    expect(examWindowState({ openAt: new Date(now + 3_600_000).toISOString(), closeAt: null }, now)).toBe('upcoming');
+    expect(examWindowState({ openAt: null, closeAt: new Date(now - 3_600_000).toISOString() }, now)).toBe('closed');
+    expect(
+      examWindowState(
+        { openAt: new Date(now - 7_200_000).toISOString(), closeAt: new Date(now + 7_200_000).toISOString() },
+        now,
+      ),
+    ).toBe('open');
+  });
+
+  it('groups windowed exams — available now / not available / history — with honest chips', () => {
+    mocks.exams = [
+      examFixture({
+        id: 'open',
+        title: 'اختبار مفتوح',
+        openAt: new Date(Date.now() - 3_600_000).toISOString(),
+        closeAt: new Date(Date.now() + 3_600_000).toISOString(),
+      }),
+      examFixture({
+        id: 'later',
+        title: 'اختبار لاحق',
+        openAt: new Date(Date.now() + 86_400_000).toISOString(),
+        closeAt: null,
+      }),
+      examFixture({
+        id: 'shut',
+        title: 'اختبار مغلق',
+        openAt: new Date(Date.now() - 172_800_000).toISOString(),
+        closeAt: new Date(Date.now() - 3_600_000).toISOString(),
+      }),
+      examFixture({
+        id: 'done',
+        title: 'اختبار منتهٍ',
+        myAttempt: { id: 'a-done', status: 'GRADED', score: 8, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+    ];
+
+    render(
+      <MemoryRouter>
+        <OnlineExamsPage />
+      </MemoryRouter>,
+    );
+
+    // The open-window exam stays linked under "available" and shows its
+    // close deadline.
+    expect(screen.getByRole('link', { name: /اختبار مفتوح/ })).toBeTruthy();
+    expect(screen.getByText(/يغلق /)).toBeTruthy();
+
+    // Not-yet-open and closed exams keep their own dated group, carry
+    // their schedule chips, and are not presented as startable links.
+    expect(screen.getByText('اختبارات غير متاحة الآن')).toBeTruthy();
+    expect(screen.getByText(/يفتح /)).toBeTruthy();
+    expect(screen.getByText('أغلق باب التسليم')).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /اختبار لاحق/ })).toBeNull();
+    expect(screen.queryByRole('link', { name: /اختبار مغلق/ })).toBeNull();
+
+    // History is untouched.
+    expect(screen.queryByRole('link', { name: /اختبار منتهٍ/ })).toBeNull();
     expect(screen.getByText('اختبار منتهٍ')).toBeTruthy();
   });
 });

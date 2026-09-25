@@ -26,7 +26,6 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useMyTeacherProfile, useUpdateTeacherProfile, apiErrorMessage,
-  type TeacherFullProfile,
 } from '../../hooks/useResources';
 import { formatDate } from '../../utils/numbers';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)

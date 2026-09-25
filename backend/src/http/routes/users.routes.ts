@@ -13,6 +13,7 @@ import {
   buildScopedUserWhere,
   getGovernanceScope,
   loadGovernanceTarget,
+  lockActiveOwnerRows,
   requiresLastOwnerGuard,
 } from '../../lib/governance.js';
 
@@ -202,13 +203,21 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
     // Never deactivate the last active OWNER (governance lockout —
     // OWNER is invitation-only), revoke the target's refresh tokens
     // immediately on deactivation, and write the STATUS_CHANGE audit
-    // row — all inside one transaction, mirroring the OWNER path.
+    // row — all inside one transaction, mirroring the OWNER path
+    // including its FOR UPDATE owner-row lock (audit 15-b P1-1: a
+    // plain guard count is a read that row locks never block under
+    // Read-Committed, so this ADMIN path must take the same lock the
+    // OWNER console does or the two surfaces can race each other into
+    // a zero-active-OWNER lockout).
     const deactivatesOwner = requiresLastOwnerGuard({
       targetRole: target.role,
       newIsActive: data.isActive,
     });
     const updated = await prisma.$transaction(async (tx) => {
-      if (deactivatesOwner) await assertNotLastActiveOwner(id, tx);
+      if (deactivatesOwner) {
+        await lockActiveOwnerRows(tx);
+        await assertNotLastActiveOwner(id, tx);
+      }
       const u = await tx.user.update({
         where: { id },
         data: {

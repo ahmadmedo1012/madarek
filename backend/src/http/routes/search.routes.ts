@@ -2,9 +2,33 @@ import { Router } from 'express';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { normalizeArabicSearch, matchesNormalizedQuery } from '../../modules/search/normalize.js';
+import { offeringVisibilityFilter } from './courses.routes.js';
 
 const router = Router();
 router.use(authMiddleware);
+
+/**
+ * Parse the `q` query param into a usable search string: non-string
+ * values (missing param, arrays, objects) collapse to '', then trim and
+ * hard-cap at 120 chars — q flows into ILIKE patterns, so the cap bounds
+ * the pattern the DB ever sees (audit 15-i TOP-9).
+ * Pinned DB-free by tests/modules/visibility-logic.test.ts.
+ */
+export function sanitizeSearchQuery(raw: unknown): string {
+  return (typeof raw === 'string' ? raw : '').trim().slice(0, 120);
+}
+
+/**
+ * Candidate re-verification predicate: does ANY haystack match the query
+ * raw (case-insensitive substring) OR through the canonical Arabic
+ * foldings (`matchesNormalizedQuery`, incl. the ال prefix tolerance — that
+ * matcher is lib-tested; this pins it at the wire). Callers gate on
+ * `q.length >= 2 && qN.length >= 2` first, so `q` is never empty here.
+ * (audit 15-i TOP-9; pinned DB-free by visibility-logic.test.ts)
+ */
+export function searchHit(haystacks: string[], q: string, qN: string): boolean {
+  return haystacks.some((h) => h.toLowerCase().includes(q.toLowerCase()) || matchesNormalizedQuery(h, qN));
+}
 
 /**
  * GET /search/global?q=...
@@ -13,7 +37,8 @@ router.use(authMiddleware);
  * Returns at most 5 hits per category. Designed for autocomplete dropdown — fast,
  * tolerant, and limited in scope.
  *
- * Permission model: respects the user's role.
+ * Permission model: respects the user's role, via the shared
+ * `offeringVisibilityFilter` (courses.routes.ts — audit 15-i TOP-10):
  *  - STUDENT: only offerings with an ACTIVE enrollment (the platform-wide
  *    convention — dropped/completed leftovers never grant content access)
  *  - TEACHER: only the offerings they teach
@@ -31,8 +56,7 @@ router.use(authMiddleware);
  */
 router.get('/search/global', async (req, res, next) => {
   try {
-    // Trim + hard cap at 120 chars (q flows into ILIKE patterns).
-    const q = (typeof req.query.q === 'string' ? req.query.q : '').trim().slice(0, 120);
+    const q = sanitizeSearchQuery(req.query.q);
     const qN = normalizeArabicSearch(q);
     if (q.length < 2 || qN.length < 2) {
       res.json({ data: { courses: [], lectures: [], papers: [], tracks: [] } });
@@ -44,15 +68,11 @@ router.get('/search/global', async (req, res, next) => {
 
     const ic = (s: string) => ({ contains: s, mode: 'insensitive' as const });
 
-    // Scope: which offerings is this user related to? Mirrors
-    // assertOfferingAccess's enrollment convention — only
-    // status 'active' enrollments count (lib/permissions.ts).
-    const offeringFilter =
-      role === 'TEACHER'
-        ? { teacherId: userId }
-        : role === 'STUDENT'
-          ? { enrollments: { some: { studentId: userId, status: 'active' } } }
-          : {};
+    // Scope: which offerings is this user related to? The shared
+    // offering-visibility filter (courses.routes.ts) — the same role
+    // matrix as assertOfferingAccess; only status 'active' enrollments
+    // count (lib/permissions.ts).
+    const offeringFilter = offeringVisibilityFilter(role, userId);
 
     // Query both the raw and the normalized form so hamza/alif-variant
     // queries still hit the DB's raw-text contains index.
@@ -139,13 +159,12 @@ router.get('/search/global', async (req, res, next) => {
       }),
     ]);
 
-    // JS re-verification with the canonical foldings (raw OR normalized hit).
-    const hits = (haystacks: string[]) => haystacks.some((h) => h.toLowerCase().includes(q.toLowerCase()) || matchesNormalizedQuery(h, qN));
-
-    const courses = courseCandidates.filter((o) => hits([o.course.name, o.course.code])).slice(0, RESULT_TAKE);
-    const lectures = lectureCandidates.filter((l) => hits([l.title, l.description ?? ''])).slice(0, RESULT_TAKE);
-    const papers = paperCandidates.filter((p) => hits([p.title, p.abstract ?? ''])).slice(0, RESULT_TAKE);
-    const tracks = trackCandidates.filter((t) => hits([t.title, t.titleEn ?? '', t.summary])).slice(0, RESULT_TAKE);
+    // JS re-verification with the canonical foldings (raw OR normalized
+    // hit) — searchHit, extracted above.
+    const courses = courseCandidates.filter((o) => searchHit([o.course.name, o.course.code], q, qN)).slice(0, RESULT_TAKE);
+    const lectures = lectureCandidates.filter((l) => searchHit([l.title, l.description ?? ''], q, qN)).slice(0, RESULT_TAKE);
+    const papers = paperCandidates.filter((p) => searchHit([p.title, p.abstract ?? ''], q, qN)).slice(0, RESULT_TAKE);
+    const tracks = trackCandidates.filter((t) => searchHit([t.title, t.titleEn ?? '', t.summary], q, qN)).slice(0, RESULT_TAKE);
 
     res.json({
       data: {

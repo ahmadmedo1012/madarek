@@ -78,14 +78,12 @@ export function MetricCard({
   label,
   value,
   change,
-  changeDirection,
   icon,
   color,
 }: {
   label: ReactNode;
   value: ReactNode;
   change?: ReactNode;
-  changeDirection?: 'up' | 'dn';
   icon?: LucideIcon;
   color?: ThemeColor;
 }) {
@@ -97,7 +95,6 @@ export function MetricCard({
         <div className="metric-value">{value}</div>
         {change !== undefined && (
           <div className="metric-change">
-            {changeDirection && <span className={changeDirection}>{changeDirection === 'up' ? '↑' : '↓'}</span>}
             <span>{change}</span>
           </div>
         )}

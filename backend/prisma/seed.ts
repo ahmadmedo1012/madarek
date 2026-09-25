@@ -27,6 +27,7 @@ import {
   NotificationType,
 } from '@prisma/client';
 import { hashPassword } from '../src/lib/password.js';
+import { utcDayStart } from '../src/lib/dates.js';
 
 const prisma = new PrismaClient();
 
@@ -338,8 +339,12 @@ async function main() {
   });
 
   // ─── Attendance demo ────────────────────────────────────────
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Day-key on the UTC data calendar (lib/dates.ts, audit 15-h P1-1) —
+  // the same calendar the FE roll-call dates and learning.routes.ts
+  // auto-attendance use, so @@unique(offeringId, date) can never split
+  // one calendar day into two sessions when seeding from a non-UTC
+  // machine. Identical value to the old setHours(0,0,0,0) on a UTC box.
+  const today = utcDayStart(new Date());
   const session = await prisma.attendanceSession.upsert({
     where: { offeringId_date: { offeringId: seFirst.id, date: today } },
     update: {},

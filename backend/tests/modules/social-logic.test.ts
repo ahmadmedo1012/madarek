@@ -15,17 +15,32 @@
  *   - toPublicEntryView: entry bodies/files never reach non-organizers
  *   - rsvpSchema / createEventSchema envelopes (strictness, bounds, refine)
  *
- * The FOR UPDATE RSVP serialization and the DB-coupled handlers (feed
- * reads, forgery guard, transactions) need a DB harness the project does
- * not have yet.
+ * Wave 16-B8 additions (audits 15-b P2-1 + 15-i TOP-7):
+ *   - createAnnouncementSchema: the scopeId-required-for-non-PLATFORM rule
+ *     moved from the handler into a superRefine (fail-fast + testable)
+ *   - assertScopeTargetPermitted: the pure permission matrix of the scopeId
+ *     forgery guard (3 scopes × any / in-list / not-in-list; PLATFORM ignores)
+ *   - CLOSABLE/JUDGEABLE claim sets: close claims exactly OPEN, judge
+ *     exactly CLOSED — JUDGED is terminal, so a stale close can never
+ *     regress a judged competition and re-open its locked scores
+ *
+ * The FOR UPDATE serializations (RSVP, competition enter) and the DB-coupled
+ * handlers (feed reads, forgery-guard existence checks, conditional-claim
+ * writes) need a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
-import { CompetitionStatus, RsvpStatus } from '@prisma/client';
+import { AnnouncementScope, CompetitionStatus, RsvpStatus } from '@prisma/client';
 import {
+  assertScopeTargetPermitted,
   buildAnnouncementScopeConditions,
   canFinalizeJudging,
+  CLOSABLE_COMPETITION_STATUSES,
+  createAnnouncementSchema,
   createEventSchema,
+  isCompetitionClosable,
+  isCompetitionJudgeable,
   isScoreLocked,
+  JUDGEABLE_COMPETITION_STATUSES,
   rsvpSchema,
   rsvpWouldExceedCapacity,
   toPublicEntryView,
@@ -131,6 +146,106 @@ describe('unexpiredAnnouncementFilter', () => {
   });
 });
 
+/* ═══════════════ Announcement create envelope + forgery matrix ═══════════════ */
+
+describe('createAnnouncementSchema (scopeId superRefine — 15-i TOP-7)', () => {
+  const base = {
+    scope: AnnouncementScope.FACULTY,
+    scopeId: 'cku5c2x9p0000fac1',
+    title: 'إعلان هام لطلبة الكلية',
+    body: 'نص الإعلان الكامل مع التفاصيل اللازمة للطلبة',
+  };
+
+  it('accepts every non-platform scope when its target id is present', () => {
+    for (const scope of [AnnouncementScope.FACULTY, AnnouncementScope.DEPARTMENT, AnnouncementScope.OFFERING]) {
+      expect(createAnnouncementSchema.safeParse({ ...base, scope }).success).toBe(true);
+    }
+  });
+
+  it('rejects a non-platform scope without scopeId (previously handler-only)', () => {
+    for (const scope of [AnnouncementScope.FACULTY, AnnouncementScope.DEPARTMENT, AnnouncementScope.OFFERING]) {
+      const parsed = createAnnouncementSchema.safeParse({ ...base, scope, scopeId: undefined });
+      expect(parsed.success).toBe(false);
+    }
+  });
+
+  it('reports the violation on the scopeId path (field-level fail-fast)', () => {
+    const parsed = createAnnouncementSchema.safeParse({ ...base, scopeId: undefined });
+    expect(parsed.success).toBe(false);
+    if (!parsed.success) {
+      expect(parsed.error.issues.some((i) => i.path.length === 1 && i.path[0] === 'scopeId')).toBe(true);
+    }
+  });
+
+  it('PLATFORM needs no scopeId — and ignores one when present', () => {
+    expect(createAnnouncementSchema.safeParse({ ...base, scope: AnnouncementScope.PLATFORM, scopeId: undefined }).success)
+      .toBe(true);
+    // A stray scopeId on a PLATFORM row is inert — no feed read looks at
+    // scopeId for PLATFORM scope (pinned: the schema accepts, per audit).
+    expect(createAnnouncementSchema.safeParse({ ...base, scope: AnnouncementScope.PLATFORM }).success).toBe(true);
+  });
+
+  it('rejects a non-cuid scopeId', () => {
+    expect(createAnnouncementSchema.safeParse({ ...base, scopeId: 'not-a-cuid' }).success).toBe(false);
+  });
+
+  it('keeps the envelope: strict keys, title/body bounds, pinned default, expiresAt coercion', () => {
+    expect(createAnnouncementSchema.safeParse({ ...base, sneaky: true }).success).toBe(false);
+    expect(createAnnouncementSchema.safeParse({ ...base, title: 'قص' }).success).toBe(false);
+    expect(createAnnouncementSchema.safeParse({ ...base, title: 'x'.repeat(201) }).success).toBe(false);
+    expect(createAnnouncementSchema.safeParse({ ...base, body: 'x'.repeat(4001) }).success).toBe(false);
+    const parsed = createAnnouncementSchema.parse({ ...base, expiresAt: '2026-06-01T00:00:00.000Z' });
+    expect(parsed.pinned).toBe(false);
+    expect(parsed.expiresAt).toBeInstanceOf(Date);
+  });
+});
+
+describe('assertScopeTargetPermitted (scope-forgery matrix — 15-i TOP-7)', () => {
+  // A teacher with one home faculty/department and one taught offering.
+  const OWN = { faculty: ['fac1'], department: ['dep1'], offering: ['off1'] } as const;
+  // Oversight roles (ADMIN/QUALITY/OWNER) may target any existing row.
+  const ANY = { faculty: 'any', department: 'any', offering: 'any' } as const;
+  // A teacher with no profile and no offerings — nothing is targetable.
+  const NONE = { faculty: [], department: [], offering: [] } as const;
+
+  it('oversight (any) may target every scope', () => {
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.FACULTY, 'fac-any', ANY)).not.toThrow();
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.DEPARTMENT, 'dep-any', ANY)).not.toThrow();
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.OFFERING, 'off-any', ANY)).not.toThrow();
+  });
+
+  it('an in-list target is permitted on every scope', () => {
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.FACULTY, 'fac1', OWN)).not.toThrow();
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.DEPARTMENT, 'dep1', OWN)).not.toThrow();
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.OFFERING, 'off1', OWN)).not.toThrow();
+  });
+
+  it('an out-of-list target is forbidden on every scope, with the per-scope message', () => {
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.FACULTY, 'fac2', OWN)).toThrowError(
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'You cannot announce to this faculty' }),
+    );
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.DEPARTMENT, 'dep2', OWN)).toThrowError(
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'You cannot announce to this department' }),
+    );
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.OFFERING, 'off2', OWN)).toThrowError(
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'You cannot announce to this offering' }),
+    );
+  });
+
+  it('PLATFORM ignores scopeId entirely — there is no target to forge', () => {
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.PLATFORM, 'fac2', NONE)).not.toThrow();
+  });
+
+  it('an empty allowlist (no profile, no offerings) forbids every target', () => {
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.FACULTY, 'fac1', NONE)).toThrowError(
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403 }),
+    );
+    expect(() => assertScopeTargetPermitted(AnnouncementScope.OFFERING, 'off1', NONE)).toThrowError(
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403 }),
+    );
+  });
+});
+
 /* ═══════════════ RSVP capacity decision ═══════════════ */
 
 describe('rsvpWouldExceedCapacity', () => {
@@ -181,6 +296,38 @@ describe('canFinalizeJudging', () => {
 
   it('allows finalizing a competition that received no entries', () => {
     expect(canFinalizeJudging([])).toBe(true);
+  });
+});
+
+describe('competition lifecycle claim sets (15-b P2-1)', () => {
+  it('closing claims exactly OPEN — a JUDGED competition can never regress to CLOSED', () => {
+    expect([...CLOSABLE_COMPETITION_STATUSES]).toEqual(['OPEN']);
+    expect(isCompetitionClosable(CompetitionStatus.OPEN)).toBe(true);
+    expect(isCompetitionClosable(CompetitionStatus.CLOSED)).toBe(false);
+    // The P2-1 regression pin: this is the exact transition that used to
+    // re-open locked scores (isScoreLocked(CLOSED) === false) after winners
+    // were announced.
+    expect(isCompetitionClosable(CompetitionStatus.JUDGED)).toBe(false);
+  });
+
+  it('judging claims exactly CLOSED', () => {
+    expect([...JUDGEABLE_COMPETITION_STATUSES]).toEqual(['CLOSED']);
+    expect(isCompetitionJudgeable(CompetitionStatus.CLOSED)).toBe(true);
+    // No skip: judging straight from OPEN stays illegal.
+    expect(isCompetitionJudgeable(CompetitionStatus.OPEN)).toBe(false);
+    expect(isCompetitionJudgeable(CompetitionStatus.JUDGED)).toBe(false);
+  });
+
+  it('the status × action matrix — JUDGED is terminal for every lifecycle write', () => {
+    // The single table the conditional updateMany claims enforce. Locked
+    // scores stay locked by construction: close cannot leave OPEN behind a
+    // JUDGED row, judge cannot leave CLOSED, and the score write claims
+    // exactly the negation of isScoreLocked.
+    for (const s of [CompetitionStatus.OPEN, CompetitionStatus.CLOSED, CompetitionStatus.JUDGED]) {
+      expect(isCompetitionClosable(s)).toBe(s === CompetitionStatus.OPEN);
+      expect(isCompetitionJudgeable(s)).toBe(s === CompetitionStatus.CLOSED);
+      expect(isScoreLocked(s)).toBe(s === CompetitionStatus.JUDGED);
+    }
   });
 });
 

@@ -9,8 +9,9 @@ import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/prim
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { toast } from '../../lib/toast';
-import { formatDateAr } from '../../lib/format';
+import { formatDateAr, timeAgoAr } from '../../lib/format';
 import {
   useResearchQueue, useGradePaper, usePublishPaper, useMyTeacherProfile,
   useAnnotations, apiErrorMessage,
@@ -19,16 +20,11 @@ import {
 
 /* fmtDate (short ar-LY date, '—' for missing values) is
  * lib/format.formatDateAr (13-15 fold, audit 11-f P2-1) — shared with
- * CourseDetailPage's former unguarded copy. */
-
-function fmtRelative(iso: string): string {
-  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
-  if (m < 1) return 'الآن';
-  if (m < 60) return `منذ ${m} دقيقة`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `منذ ${h} ساعة`;
-  return formatDateAr(iso);
-}
+ * CourseDetailPage's former unguarded copy. The local fmtRelative twin
+ * of formatRelativeArShort is gone too (15-h P2-2 consolidation,
+ * 16-E10): annotation rows render timeAgoAr — the same helper the
+ * AnnotationsPanel uses for the very same notes in the PDF reader, so
+ * both surfaces agree on one instant. */
 
 const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
@@ -214,8 +210,10 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
   const grade = useGradePaper();
   const publish = usePublishPaper();
   const annotations = useAnnotations(paper.id);
-  const [score, setScore] = useState<number>(paper.grade ?? 15);
-  const [feedback, setFeedback] = useState<string>(paper.feedback ?? '');
+  const initialScore = paper.grade ?? 15;
+  const initialFeedback = paper.feedback ?? '';
+  const [score, setScore] = useState<number>(initialScore);
+  const [feedback, setFeedback] = useState<string>(initialFeedback);
   // Inline, action-named feedback (audit 0-e P0-11): both mutations used to
   // await mutateAsync with no catch — an API failure was an unhandled
   // rejection while the modal kept looking usable.
@@ -224,6 +222,17 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
 
   const isGraded = paper.status === 'GRADED' || paper.status === 'PUBLISHED';
   const busy = grade.isPending || publish.isPending;
+
+  // 15-e P1-6 — this is one of the three longest unsaved-prose modals
+  // (up to a full review write-up): Esc / X / cancel / overlay click
+  // route through the shared discard confirm while edits exist instead
+  // of silently destroying the draft. A pending save still closes
+  // freely (existing parity with the curriculum builders).
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: score !== initialScore || feedback !== initialFeedback,
+    pending: busy,
+    onClose,
+  });
 
   const submit = async () => {
     setGradeError(null);
@@ -255,10 +264,10 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
     : [];
 
   return (
-    <Modal open onClose={onClose} ariaLabel="مراجعة بحث" closeOnOverlayClick={!busy}>
+    <Modal open onClose={requestClose} ariaLabel="مراجعة بحث" closeOnOverlayClick={!busy} closeOnEscape={!escapeLocked}>
       <div className="modal-header">
         <div className="modal-title">مراجعة بحث</div>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={busy}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={busy}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -364,7 +373,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
                   <div className="flex-1">
                     <div className="text-sm">{a.comment}</div>
                     <div className="text-xxs text-subtle">
-                      {a.author.firstName} {a.author.lastName} · صفحة <bdi>{a.page}</bdi> · {fmtRelative(a.createdAt)}
+                      {a.author.firstName} {a.author.lastName} · صفحة <bdi>{a.page}</bdi> · {timeAgoAr(a.createdAt)}
                     </div>
                   </div>
                 </div>
@@ -397,7 +406,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
       <div className="modal-footer">
         {!isGraded ? (
           <>
-            <button type="button" className="btn ghost" onClick={onClose} disabled={busy}>إلغاء</button>
+            <button type="button" className="btn ghost" onClick={requestClose} disabled={busy}>إلغاء</button>
             <button type="button" className="btn primary" onClick={() => void submit()} disabled={busy}>
               <Icon icon={CheckCircle2} size={14} />
               {grade.isPending ? 'جارٍ الحفظ…' : 'تأكيد التقييم'}
@@ -405,7 +414,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
           </>
         ) : (
           <>
-            <button type="button" className="btn ghost" onClick={onClose} disabled={busy}>إغلاق</button>
+            <button type="button" className="btn ghost" onClick={requestClose} disabled={busy}>إغلاق</button>
             {paper.status === 'GRADED' && (
               <button type="button" className="btn primary" onClick={() => void publishNow()} disabled={busy}>
                 <Icon icon={Sparkles} size={14} />
@@ -415,6 +424,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
           </>
         )}
       </div>
+      {guard}
     </Modal>
   );
 }

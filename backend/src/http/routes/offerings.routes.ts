@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AssignmentType, AttendanceStatus, GradeKind, MaterialType, Role } from '@prisma/client';
+import { AssignmentType, GradeKind, MaterialType, Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -34,12 +34,28 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // ─── Materials ───
+
+/**
+ * Prisma `BigInt` columns crash `res.json` (TypeError → 500), so every
+ * material row must stringify `sizeBytes` before it crosses the wire
+ * (audits 15-i P1-5 + 15-c hand-off: this file's GET used to ship the
+ * raw BigInt, making the endpoint 500 whenever a material existed,
+ * while the POST one route below already stringified). A string is
+ * also exact beyond Number.MAX_SAFE_INTEGER and matches the platform's
+ * materials wire format (`GET /offerings/:id/full` ships strings too).
+ */
+export function serializeMaterial<T extends { sizeBytes: bigint }>(
+  material: T,
+): Omit<T, 'sizeBytes'> & { sizeBytes: string } {
+  return { ...material, sizeBytes: material.sizeBytes.toString() };
+}
+
 router.get('/:id/materials', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);
     // Bounded read (audit P2-18): newest materials first, capped well
     // above a realistic per-offering material count.
-    const data = await prisma.material.findMany({
+    const rows = await prisma.material.findMany({
       where: { offeringId: req.params.id! },
       orderBy: { createdAt: 'desc' },
       take: 200,
@@ -47,13 +63,13 @@ router.get('/:id/materials', async (req, res, next) => {
         uploader: { select: { id: true, firstName: true, lastName: true } },
       },
     });
-    res.json({ data });
+    res.json({ data: rows.map(serializeMaterial) });
   } catch (e) {
     next(e);
   }
 });
 
-const materialCreateSchema = z
+export const materialCreateSchema = z
   .object({
     name: z.string().min(1).max(200),
     description: z.string().max(2000).optional(),
@@ -80,7 +96,7 @@ router.post(
           uploaderId: req.user!.id,
         },
       });
-      res.status(201).json({ data: { ...created, sizeBytes: created.sizeBytes.toString() } });
+      res.status(201).json({ data: serializeMaterial(created) });
     } catch (e) {
       next(e);
     }
@@ -104,7 +120,7 @@ router.get('/:id/assignments', async (req, res, next) => {
   }
 });
 
-const assignmentCreateSchema = z
+export const assignmentCreateSchema = z
   .object({
     title: z.string().min(2).max(200),
     description: z.string().max(4000).optional(),
@@ -155,7 +171,7 @@ router.get('/:id/grades', async (req, res, next) => {
   }
 });
 
-const gradeItemSchema = z
+export const gradeItemSchema = z
   .object({
     studentId: z.string().cuid(),
     kind: z.nativeEnum(GradeKind),
@@ -176,11 +192,26 @@ const gradeItemSchema = z
     }
   });
 
-const gradesUpsertSchema = z
+export const gradesUpsertSchema = z
   .object({
     grades: z.array(gradeItemSchema).min(1).max(200),
   })
   .strict();
+
+/**
+ * The requested studentIds that are NOT enrolled in the offering — the
+ * foreign-student guard behind the grade upsert (audit 15-i TOP-11:
+ * the guard existed but was unpinned; a regression here would let
+ * grades be recorded for arbitrary users). Deduplicates the requested
+ * list and keeps first-seen order.
+ */
+export function foreignStudentIds(
+  requested: readonly string[],
+  enrolled: readonly string[],
+): string[] {
+  const enrolledSet = new Set(enrolled);
+  return Array.from(new Set(requested)).filter((id) => !enrolledSet.has(id));
+}
 
 router.post(
   '/:id/grades',
@@ -199,8 +230,11 @@ router.post(
         where: { offeringId, studentId: { in: studentIds } },
         select: { studentId: true },
       });
-      const enrolledSet = new Set(enrolled.map((e) => e.studentId));
-      if (studentIds.some((id) => !enrolledSet.has(id))) {
+      const foreign = foreignStudentIds(
+        grades.map((g) => g.studentId),
+        enrolled.map((e) => e.studentId),
+      );
+      if (foreign.length > 0) {
         throw AppError.badRequest('Grades contain students not enrolled in this offering');
       }
 
@@ -222,71 +256,16 @@ router.post(
   },
 );
 
-// ─── Attendance ───
-const attendanceUpsertSchema = z
-  .object({
-    date: z.coerce.date(),
-    topic: z.string().max(200).optional(),
-    records: z
-      .array(
-        z.object({
-          studentId: z.string().cuid(),
-          status: z.nativeEnum(AttendanceStatus),
-          notes: z.string().max(500).optional(),
-        }),
-      )
-      .min(1)
-      .max(500),
-  })
-  .strict();
-
-router.post(
-  '/:id/attendance',
-  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
-  validate(attendanceUpsertSchema),
-  async (req, res, next) => {
-    try {
-      const offeringId = req.params.id!;
-      await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
-      const { date, topic, records } = req.body as z.infer<typeof attendanceUpsertSchema>;
-      // Every studentId must be an enrolled student of this offering —
-      // otherwise attendance could be recorded for arbitrary users.
-      const studentIds = Array.from(new Set(records.map((r) => r.studentId)));
-      const enrolled = await prisma.enrollment.findMany({
-        where: { offeringId, studentId: { in: studentIds } },
-        select: { studentId: true },
-      });
-      const enrolledSet = new Set(enrolled.map((e) => e.studentId));
-      if (studentIds.some((id) => !enrolledSet.has(id))) {
-        throw AppError.badRequest('Records contain students not enrolled in this offering');
-      }
-
-      // Wrap session upsert + record upserts in a SINGLE transaction so
-      // the session can't exist with no records if the records fail
-      // (silent data loss). Previously the session upsert ran outside
-      // the $transaction(ops) call.
-      const result = await prisma.$transaction(async (tx) => {
-        const session = await tx.attendanceSession.upsert({
-          where: { offeringId_date: { offeringId, date } },
-          create: { offeringId, date, topic },
-          update: { topic },
-        });
-        await Promise.all(records.map((r) =>
-          tx.attendanceRecord.upsert({
-            where: { sessionId_studentId: { sessionId: session.id, studentId: r.studentId } },
-            create: { sessionId: session.id, studentId: r.studentId, status: r.status, notes: r.notes },
-            update: { status: r.status, notes: r.notes },
-          }),
-        ));
-        return session;
-      });
-      res.status(201).json({ data: { sessionId: result.id, count: records.length } });
-    } catch (e) {
-      next(e);
-    }
-  },
-);
-
+// ─── Attendance (read-only) ───
+// The roll-call WRITE path is POST /teacher/offerings/:id/attendance
+// (teacher.routes.ts) — the frontend's only caller (useResources.ts).
+// The parallel upsert twin that used to live here was dead, carried a
+// diverging schema (notes max 500 vs the live route's 300), and was a
+// second attendance-day write surface to remember in every timezone
+// fix — deleted (audit 15-h P2-8, wave 16-B7). With it gone this file
+// writes no calendar-day values at all; the two live attendance
+// writers (teacher.routes roll-call, learning.routes auto-attendance)
+// both normalize their day keys through lib/dates.ts.
 router.get('/:id/attendance', async (req, res, next) => {
   try {
     await assertOfferingAccess(req.params.id!, req.user!.id, req.user!.role);

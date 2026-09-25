@@ -244,7 +244,7 @@ const lifecycleSchema = z.object({
   action: z.enum(['START', 'END', 'CANCEL']),
 }).strict();
 
-type LiveSessionAction = z.infer<typeof lifecycleSchema>['action'];
+export type LiveSessionAction = z.infer<typeof lifecycleSchema>['action'];
 
 // A session can only move FORWARD through its lifecycle:
 //   SCHEDULED → LIVE (START) | CANCELLED (CANCEL)
@@ -252,12 +252,20 @@ type LiveSessionAction = z.infer<typeof lifecycleSchema>['action'];
 // ENDED/CANCELLED are terminal. Previously every action applied to every
 // status — END a never-started session, re-START an ENDED one (resetting
 // startedAt), START a CANCELLED one (audit 11-d P2-11a).
-const LIVE_SESSION_TRANSITIONS: Record<LiveSessionStatus, Partial<Record<LiveSessionAction, LiveSessionStatus>>> = {
+// Exported + pinned DB-free (audit 15-i TOP-3, wave 16-B10) — session
+// states are broadcast to student LIVE lists, so an accidental map edit
+// that resurrects cancelled sessions must fail a test, not production.
+export const LIVE_SESSION_TRANSITIONS: Record<LiveSessionStatus, Partial<Record<LiveSessionAction, LiveSessionStatus>>> = {
   SCHEDULED: { START: 'LIVE', CANCEL: 'CANCELLED' },
   LIVE: { END: 'ENDED', CANCEL: 'CANCELLED' },
   ENDED: {},
   CANCELLED: {},
 };
+
+/** The next status for `action` from `status`, or null when the move is illegal (terminal/backwards). */
+export function nextLiveSessionStatus(status: LiveSessionStatus, action: LiveSessionAction): LiveSessionStatus | null {
+  return LIVE_SESSION_TRANSITIONS[status][action] ?? null;
+}
 
 // Arabic labels for the teacher-facing conflict messages (the UI shows
 // server error text verbatim).
@@ -273,6 +281,15 @@ const LIVE_STATUS_LABEL: Record<LiveSessionStatus, string> = {
   CANCELLED: 'ملغاة',
 };
 
+/**
+ * The 409 body for an illegal lifecycle move — the teacher UI shows this
+ * text verbatim, so the Arabic action/status labels are the contract
+ * (audit 15-i TOP-3; pinned by visibility-logic.test.ts).
+ */
+export function liveTransitionConflictMessage(status: LiveSessionStatus, action: LiveSessionAction): string {
+  return `لا يمكن ${LIVE_ACTION_LABEL[action]} جلسة ${LIVE_STATUS_LABEL[status]}`;
+}
+
 router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), validate(lifecycleSchema), async (req, res, next) => {
   try {
     const session = await prisma.liveSession.findUnique({ where: { id: req.params.id } });
@@ -282,9 +299,9 @@ router.post('/live/sessions/:id/lifecycle', requireRole(Role.TEACHER, Role.ADMIN
     await assertOwnsOffering(session.offeringId, req.user!.id, req.user!.role);
 
     const action = (req.body as z.infer<typeof lifecycleSchema>).action;
-    const nextStatus = LIVE_SESSION_TRANSITIONS[session.status][action];
+    const nextStatus = nextLiveSessionStatus(session.status, action);
     if (!nextStatus) {
-      throw AppError.conflict(`لا يمكن ${LIVE_ACTION_LABEL[action]} جلسة ${LIVE_STATUS_LABEL[session.status]}`);
+      throw AppError.conflict(liveTransitionConflictMessage(session.status, action));
     }
 
     // Conditional claim: the flip only applies while the row is still in

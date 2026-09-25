@@ -4,8 +4,9 @@ import { AppError } from './errors.js';
 
 /**
  * Shared governance guards for the user-management surfaces
- * (`users.routes.ts`, `permissions.routes.ts`; the OWNER console is
- * expected to adopt these in a follow-up wave).
+ * (`users.routes.ts`, `permissions.routes.ts`, and the OWNER console
+ * in `owner.routes.ts` — all three surfaces share this module since
+ * 13-1, so the ADMIN and OWNER semantics can never diverge).
  *
  * Three concerns live here:
  *  1. Last-active-OWNER protection — demoting or deactivating the only
@@ -17,7 +18,7 @@ import { AppError } from './errors.js';
  *     role change with a TeacherProfile, or every teacher surface 404s.
  *
  * The decision logic is split into pure, unit-testable helpers; the
- * DB-backed wrappers stay thin so both route families share one
+ * DB-backed wrappers stay thin so all three surfaces share one
  * semantic (previously the ADMIN and OWNER paths diverged — audit 11-c
  * P0-1/P0-2).
  */
@@ -56,17 +57,45 @@ export function requiresLastOwnerGuard(change: {
 }
 
 /**
+ * TOCTOU serialization for the last-owner guard, shared by ALL FOUR
+ * guarded mutations (owner console role change + status toggle,
+ * `PATCH /users/:id` deactivation, `POST /admin/users/:id/role`).
+ *
+ * The guard's count in `assertNotLastActiveOwner` is a plain read, and
+ * a plain SELECT is never blocked by another transaction's row locks
+ * under Read-Committed — so two concurrent demotions/deactivations of
+ * the last two active OWNERs (via different surfaces; a lock taken on
+ * one surface never protects another) could both pass the count and
+ * commit, permanently locking the platform out of its master
+ * governance role (OWNER is invitation-only, seed-only recovery).
+ *
+ * Locking every active OWNER row FOR UPDATE inside the mutation
+ * transaction closes the window: the second transaction blocks on the
+ * first's row locks, then its count sees the post-commit state (one
+ * owner already gone) and rejects with 409. Must run inside the SAME
+ * transaction as the mutation and immediately BEFORE
+ * `assertNotLastActiveOwner`. (Audit 15-b P1-1 — promotes the 13-1
+ * OWNER-console fix to every surface; `ORDER BY id` keeps the lock
+ * acquisition order deterministic across transactions.)
+ */
+export function lockActiveOwnerRows(tx: Prisma.TransactionClient): Promise<unknown> {
+  return tx.$queryRaw`SELECT id FROM "User" WHERE "role" = 'OWNER' AND "isActive" = true ORDER BY id FOR UPDATE`;
+}
+
+/**
  * Throw 409 when the target is the last ACTIVE OWNER. 409, not 403:
  * the request is understood and valid, but applying it would leave the
  * platform in an unusable state. Pass the surrounding transaction
  * client so the count sees the same snapshot as the mutation (and a
  * crash between check and write is impossible).
  *
- * Note: like the original OWNER-path guard, the count is a read — two
- * *concurrent* demotions of the last two owners can still both pass
- * (Read-Committed snapshot). Full serialization would need
- * `SELECT … FOR UPDATE` on the owner rows; accepted residual risk
- * until the OWNER console consolidates on this helper.
+ * Concurrency contract (audit 15-b P1-1): the count alone is a plain
+ * read two concurrent demotions can both pass under Read-Committed.
+ * Every caller must run `lockActiveOwnerRows(tx)` inside the SAME
+ * transaction immediately before this guard — all four guarded
+ * mutations (owner role, owner status, users PATCH, permissions role)
+ * do, which closes the residual this helper used to document as
+ * accepted.
  */
 export async function assertNotLastActiveOwner(
   targetId: string,

@@ -268,11 +268,14 @@ router.get('/dashboard', async (req, res, next) => {
         where: { session: { offeringId: { in: offeringIds } } },
         _count: { status: true },
       }),
-      // "Needs review" — pending submissions…
+      // "Needs review" — pending submissions. SUBMITTED + LATE (audit
+      // 15-a P0-1): submissions.routes.ts writes LATE for anything after
+      // dueAt, so a SUBMITTED-only filter silently hid late work from the
+      // teacher's entire grading-discovery surface — it never got graded.
       prisma.submission.count({
         where: {
           assignment: { offeringId: { in: offeringIds } },
-          status: SubmissionStatus.SUBMITTED,
+          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.LATE] },
         },
       }),
       // …+ papers awaiting the teacher (same set as the feed — P2-5)
@@ -315,11 +318,12 @@ router.get('/dashboard', async (req, res, next) => {
 
     // ── Activity feed — real items, sorted by recency ──
     const [recentSubs, recentPapers, lowAttendanceStudents] = await Promise.all([
-      // Pending submissions waiting for grading
+      // Pending submissions waiting for grading — SUBMITTED + LATE, the
+      // exact set the needsReview KPI counts above (audit 15-a P0-1).
       prisma.submission.findMany({
         where: {
           assignment: { offeringId: { in: offeringIds } },
-          status: SubmissionStatus.SUBMITTED,
+          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.LATE] },
         },
         orderBy: { submittedAt: 'desc' },
         take: 6,

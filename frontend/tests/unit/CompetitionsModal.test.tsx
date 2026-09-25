@@ -96,4 +96,18 @@ describe('CompetitionsIndexPage — migrated create-competition modal', () => {
     expect(screen.getByLabelText('الموعد النهائي')).toBeInTheDocument();
     expect(screen.getByLabelText('الجائزة (اختياري)')).toBeInTheDocument();
   });
+
+  // 16-E7 (15-e P2-3): dirty close paths route through useDiscardGuard.
+  it('Esc on a dirty create form stacks the discard confirm instead of closing', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /مسابقة جديدة/ }));
+    fireEvent.change(screen.getByLabelText('العنوان'), { target: { value: 'تحدي الذكاء الاصطناعي' } });
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.getByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'مسابقة جديدة' })).toBeInTheDocument();
+    // Confirming the discard closes both dialogs.
+    fireEvent.click(screen.getByRole('button', { name: 'التخلّي عن التعديلات' }));
+    expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
+    expect(screen.queryByRole('dialog', { name: 'مسابقة جديدة' })).toBeNull();
+  });
 });

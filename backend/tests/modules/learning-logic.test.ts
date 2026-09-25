@@ -5,21 +5,31 @@
  * Mirrors the DB-free style of `tests/modules/curriculum-logic.test.ts`:
  * zod acceptance/rejection envelopes + the watch-progress completion rule
  * (decision D9) + the high-water clamp + snippet building + decimal
- * conversion + quality-alert thresholds + the research-paper gradeable
- * state machine. Integration coverage (auth gate, the watch transaction
- * with its row lock, attendance upserts, ownership guards) needs a DB
- * harness the project does not have yet.
+ * conversion + quality-alert thresholds + the research-paper state machine
+ * (gradeable / scannable / publishable claim sets — audit 15-b P1-3 —
+ * plus the deterministic scan values and the upload dedupe lookup, 15-b
+ * P2-5). Integration coverage (auth gate, the watch transaction with its
+ * row lock, attendance upserts, ownership guards, the conditional
+ * updateMany claims themselves) needs a DB harness the project does not
+ * have yet.
  */
 import { describe, expect, it } from 'vitest';
 import {
   ATTENDANCE_ALERT_MIN_RECORDS,
   GRADEABLE_PAPER_STATUSES,
+  PUBLISHABLE_PAPER_STATUSES,
+  RESEARCH_DEDUPE_WINDOW_MS,
+  SCANNABLE_PAPER_STATUSES,
   attendanceAlertSeverity,
   buildSnippet,
   clampWatchedSec,
   decToNum,
   gradePaperSchema,
   isPaperGradeable,
+  isPaperPublishable,
+  isPaperScannable,
+  recentDuplicatePaperWhere,
+  scanResultsFor,
   stableSeed,
   watchProgressCompletes,
   watchSchema,
@@ -216,6 +226,126 @@ describe('gradePaperSchema', () => {
     expect(gradePaperSchema.safeParse({ grade: 20.1 }).success).toBe(false);
     expect(gradePaperSchema.safeParse({ grade: -1 }).success).toBe(false);
     expect(gradePaperSchema.safeParse({ grade: 10, reviewerId: 'x' }).success).toBe(false);
+  });
+});
+
+describe('isPaperScannable (scan-step claim set — 15-b P1-3)', () => {
+  it('claims exactly UPLOADED and the CHECKS_* states (re-scan stays allowed)', () => {
+    expect([...SCANNABLE_PAPER_STATUSES]).toEqual(['UPLOADED', 'CHECKS_PASSED', 'CHECKS_FAILED']);
+    expect(isPaperScannable('UPLOADED')).toBe(true);
+    expect(isPaperScannable('CHECKS_PASSED')).toBe(true);
+    expect(isPaperScannable('CHECKS_FAILED')).toBe(true);
+  });
+
+  it('never claims GRADED or PUBLISHED — a scan cannot revert them to CHECKS_*', () => {
+    expect(isPaperScannable('GRADED')).toBe(false);
+    expect(isPaperScannable('PUBLISHED')).toBe(false);
+  });
+
+  it('excludes the never-written SCANNING value (a mid-flight paper must not re-scan)', () => {
+    // Verified by rg: no code path ever writes SCANNING — excluding it is
+    // behaviorally identical to the old "not GRADED/PUBLISHED" check.
+    expect(isPaperScannable('SCANNING')).toBe(false);
+  });
+});
+
+describe('isPaperPublishable (publish-step claim set — 15-b P1-3)', () => {
+  it('claims exactly GRADED', () => {
+    expect([...PUBLISHABLE_PAPER_STATUSES]).toEqual(['GRADED']);
+    expect(isPaperPublishable('GRADED')).toBe(true);
+  });
+
+  it('rejects every other state — publishing is one-way, PUBLISHED is terminal', () => {
+    for (const s of ['UPLOADED', 'SCANNING', 'CHECKS_PASSED', 'CHECKS_FAILED', 'PUBLISHED']) {
+      expect(isPaperPublishable(s)).toBe(false);
+    }
+  });
+});
+
+describe('research pipeline step × status acceptance matrix (terminal-state regression pins)', () => {
+  // The single table the conditional updateMany claims enforce. The 15-b
+  // P1-3 regressions are impossible by construction: a scan finishing
+  // after a grade/publish can never match GRADED/PUBLISHED (no
+  // PUBLISHED → CHECKS_* revert), a re-grade can never match PUBLISHED
+  // (no un-publish), a re-publish can never match PUBLISHED (publishedAt
+  // is immutable once set).
+  const ALL = ['UPLOADED', 'SCANNING', 'CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED', 'PUBLISHED'] as const;
+
+  it('pins which steps accept which status — PUBLISHED is accepted by none', () => {
+    for (const s of ALL) {
+      expect(isPaperScannable(s)).toBe(s === 'UPLOADED' || s === 'CHECKS_PASSED' || s === 'CHECKS_FAILED');
+      expect(isPaperGradeable(s)).toBe(s === 'CHECKS_PASSED' || s === 'CHECKS_FAILED' || s === 'GRADED');
+      expect(isPaperPublishable(s)).toBe(s === 'GRADED');
+    }
+  });
+
+  it('no step dead-ends the pipeline — CHECKS_* and GRADED stay gradeable, GRADED publishable', () => {
+    expect(isPaperGradeable('CHECKS_PASSED')).toBe(true);
+    expect(isPaperGradeable('CHECKS_FAILED')).toBe(true);
+    expect(isPaperGradeable('GRADED')).toBe(true); // re-grade before publish
+    expect(isPaperPublishable('GRADED')).toBe(true);
+  });
+});
+
+describe('scanResultsFor (deterministic simulated scan values)', () => {
+  it('is deterministic for the same paper id', () => {
+    expect(scanResultsFor('cku5c2x9p0000abcd')).toEqual(scanResultsFor('cku5c2x9p0000abcd'));
+  });
+
+  it('pins the hash-derived values for concrete ids (seed = charCodeAt(0) + charCodeAt(2))', () => {
+    expect(scanResultsFor('cku5c2x9p0000abcd')).toEqual({ plagiarismPct: 3, aiContentPct: 4, passed: true });
+    expect(scanResultsFor('cm3xq7z2w0001paper')).toEqual({ plagiarismPct: 9, aiContentPct: 4, passed: true });
+    // plagiarism 15 fails the < 15 rule → not passed.
+    expect(scanResultsFor('cz9a1b8d0002univ')).toEqual({ plagiarismPct: 15, aiContentPct: 4, passed: false });
+  });
+
+  it('keeps plagiarism within 3–20 and AI content within 4–25, at most one decimal', () => {
+    for (let i = 0; i < 300; i++) {
+      // Vary the chars at index 0 and 2 — the only positions the hash reads.
+      const id = `${String.fromCharCode(33 + (i % 90))}x${String.fromCharCode(33 + ((i * 37) % 90))}cuid-tail-${i}`;
+      const r = scanResultsFor(id);
+      expect(r.plagiarismPct).toBeGreaterThanOrEqual(3);
+      expect(r.plagiarismPct).toBeLessThanOrEqual(20);
+      expect(r.aiContentPct).toBeGreaterThanOrEqual(4);
+      expect(r.aiContentPct).toBeLessThanOrEqual(25);
+      expect(r.plagiarismPct).toBe(Math.round(r.plagiarismPct * 10) / 10);
+      expect(r.aiContentPct).toBe(Math.round(r.aiContentPct * 10) / 10);
+    }
+  });
+
+  it('passed is exactly plagiarism < 15 AND aiContent < 25', () => {
+    for (let i = 0; i < 300; i++) {
+      const id = `${String.fromCharCode(33 + (i % 90))}x${String.fromCharCode(33 + ((i * 37) % 90))}cuid-${i}`;
+      const r = scanResultsFor(id);
+      expect(r.passed).toBe(r.plagiarismPct < 15 && r.aiContentPct < 25);
+    }
+  });
+});
+
+describe('recentDuplicatePaperWhere (upload double-submit dedupe — 15-b P2-5)', () => {
+  it('matches the identical (student, title, fileUrl) triple inside the window', () => {
+    const now = new Date('2026-03-01T12:00:00Z');
+    expect(recentDuplicatePaperWhere('stu1', 'بحث مشترك', '/api/v1/files/papers/a.pdf', now)).toEqual({
+      studentId: 'stu1',
+      title: 'بحث مشترك',
+      fileUrl: '/api/v1/files/papers/a.pdf',
+      uploadedAt: { gte: new Date('2026-03-01T11:55:00.000Z') },
+    });
+  });
+
+  it('maps a missing file to null so Prisma matches file-less rows (IS NULL) — never undefined', () => {
+    // An undefined fileUrl would silently drop the filter and dedupe the
+    // student's entire recent upload history.
+    const where = recentDuplicatePaperWhere('stu1', 'title', null, new Date('2026-03-01T12:00:00Z'));
+    expect(where.fileUrl).toBeNull();
+    expect(where.fileUrl).not.toBeUndefined();
+  });
+
+  it('pins the 5-minute window', () => {
+    expect(RESEARCH_DEDUPE_WINDOW_MS).toBe(5 * 60 * 1000);
+    const now = new Date('2026-03-01T12:00:00Z');
+    const where = recentDuplicatePaperWhere('s', 't', null, now);
+    expect((where.uploadedAt as { gte: Date }).gte).toEqual(new Date(now.getTime() - RESEARCH_DEDUPE_WINDOW_MS));
   });
 });
 

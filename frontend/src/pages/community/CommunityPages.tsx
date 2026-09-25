@@ -5,7 +5,7 @@
  *   The existing /student/social (posts) stays as it is.
  */
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
@@ -22,8 +22,11 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useAnnouncements, useCompetitions, useCampusEvents, useRsvpEvent,
   useCreateAnnouncement, useCreateCampusEvent, useFaculties, useMyPermissions,
+  useTeacherOfferings,
   type AnnouncementRow, type CompetitionRow, type CampusEventRow,
 } from '../../hooks/useResources';
+import { useAuthStore } from '../../stores/auth.store';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { formatDate, formatTime } from '../../utils/numbers';
 import { arUnit } from '../../lib/format';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
@@ -58,11 +61,17 @@ export default function CommunityPage() {
   const comps = useCompetitions();
   const events = useCampusEvents();
   const perms = useMyPermissions();
+  const user = useAuthStore((s) => s.user);
 
   const canAnnounceFaculty = perms.data?.capabilities.includes('ANNOUNCE_FACULTY') ?? false;
   const canAnnouncePlatform = perms.data?.capabilities.includes('ANNOUNCE_PLATFORM') ?? false;
   const canAnnounce = canAnnounceFaculty || canAnnouncePlatform;
   const canRunEvents = perms.data?.capabilities.includes('EVENTS_RUN') ?? false;
+  /* OFFERING scope is offered where an existing hook can enumerate the
+     author's permitted targets: /teacher/me/offerings (TEACHER + OWNER —
+     15-a P1-2). ADMIN/QUALITY may address any offering server-side but
+     no all-offerings list endpoint exists yet (worklog hand-off). */
+  const canAnnounceOffering = user?.role === 'TEACHER' || user?.role === 'OWNER';
 
   const openComps = comps.data?.filter((c) => c.status === 'OPEN').length ?? 0;
   const upcomingEvents = events.data?.length ?? 0;
@@ -179,6 +188,7 @@ export default function CommunityPage() {
       {creatingAnnouncement && (
         <CreateAnnouncementModal
           canPlatform={canAnnouncePlatform}
+          canOffering={canAnnounceOffering}
           onClose={() => setCreatingAnnouncement(false)}
         />
       )}
@@ -198,7 +208,19 @@ function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }
       <div className="announcement-head">
         <span className="announcement-icon"><EmojiIcon emoji={a.iconEmoji ?? '📢'} size={20} /></span>
         <div style={{ flex: 1 }}>
-          <h3 className="announcement-title">{a.title}</h3>
+          {/* Card title demoted from h3 to a styled div (15-g P2-5 — card
+              titles sat at h3 directly under the page h1, a skipped level).
+              Inline styles replicate the base h3 treatment (this class has
+              no CSS of its own) via the headline role tokens. */}
+          <div
+            className="announcement-title"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--type-headline-size-sm)',
+              fontWeight: 'var(--type-headline-weight)',
+              lineHeight: 'var(--type-headline-line-height)',
+            }}
+          >{a.title}</div>
           <div className="announcement-meta">
             <Badge color={SCOPE_COLOR[a.scope]}>{SCOPE_LABEL[a.scope]}</Badge>
             <span className="text-xxs text-subtle">
@@ -216,13 +238,24 @@ function AnnouncementCard({ announcement: a }: { announcement: AnnouncementRow }
 
 function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
   const accent = c.themeColor ?? 'var(--accent)';
-  const days = Math.max(0, Math.round((new Date(c.deadline).getTime() - Date.now()) / 86400000));
-  const isOpen = c.status === 'OPEN' && days > 0;
+  /* Deadline truth is instant-based (15-h P1-4): an OPEN competition
+     stays open until its deadline actually passes — the previous
+     `Math.round(days) > 0` gate flipped the amber «مغلقة» badge on for
+     the final <12 h. Units are floor-ed ("full units remaining") so the
+     last 24 h reach the ends-in-hours branch instead of claiming a
+     phantom extra day. */
+  const msLeft = new Date(c.deadline).getTime() - Date.now();
+  const isOpen = c.status === 'OPEN' && msLeft > 0;
+  const days = Math.max(0, Math.floor(msLeft / 86400000));
+  const hours = Math.max(0, Math.floor(msLeft / 3600000));
   const daysLabel =
-    days === 1 ? 'يوم واحد متبقٍ'
-      : days === 2 ? 'يومان متبقيان'
-        : days <= 10 ? `${days} أيام متبقية`
-          : `${days} يوماً متبقياً`;
+    days >= 1
+      ? days === 1 ? 'يوم واحد متبقٍ'
+        : days === 2 ? 'يومان متبقيان'
+          : days <= 10 ? `${days} أيام متبقية`
+            : `${days} يوماً متبقياً`
+      : hours >= 1 ? `تنتهي بعد ${arUnit(hours, 'ساعة', 'ساعتين', 'ساعات')}`
+        : 'تنتهي خلال دقائق';
   return (
     <div className="track-card" style={{ ['--track-accent' as never]: accent, cursor: 'default' }}>
       <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
@@ -260,14 +293,15 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
   /* Session-local RSVP reflection — the event row carries no "my RSVP"
      field from the API, so the pressed state is tracked locally after a
      successful mutate (audit 0-f P2-17: pending / pressed / failure
-     feedback instead of double-submitting blind). */
-  const [mine, setMine] = useState<'GOING' | 'MAYBE' | null>(null);
+     feedback instead of double-submitting blind). The trio mirrors the
+     backend's full RsvpStatus enum — GOING / MAYBE / NO (15-a P1-1). */
+  const [mine, setMine] = useState<'GOING' | 'MAYBE' | 'NO' | null>(null);
   const [failed, setFailed] = useState(false);
   const failTimer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(failTimer.current), []);
 
   const rsvpPending = rsvp.isPending && rsvp.variables?.eventId === e.id;
-  const rsvpTo = (status: 'GOING' | 'MAYBE') => {
+  const rsvpTo = (status: 'GOING' | 'MAYBE' | 'NO') => {
     if (rsvpPending) return;
     rsvp.mutate(
       { eventId: e.id, status },
@@ -293,7 +327,9 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
           <EmojiIcon emoji={e.iconEmoji ?? '📅'} size={22} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{ fontSize: 'var(--fs-md)', margin: '0 0 6px 0' }}>{e.title}</h3>
+          {/* Title demoted from h3 to a styled div (15-g P2-5 heading
+              skip) — inline styles keep the exact rendered look. */}
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-md)', margin: '0 0 6px 0' }}>{e.title}</div>
           <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-2) 0' }}>{e.description}</p>
           <div className="event-meta">
             <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>
@@ -319,6 +355,15 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
               onClick={() => rsvpTo('MAYBE')}
             >
               ربما
+            </button>
+            <button
+              type="button"
+              className={`btn ${mine === 'NO' ? 'primary' : 'outline'} sm`}
+              aria-pressed={mine === 'NO'}
+              disabled={rsvpPending}
+              onClick={() => rsvpTo('NO')}
+            >
+              لن أحضر
             </button>
             {failed && (
               <span className="event-rsvp-fail" role="alert">
@@ -350,7 +395,11 @@ type AnnouncementInputs = z.infer<typeof announcementSchema>;
 
 const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '🗓️']; // allow-emoji: admin icon-picker palette
 
-function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolean; onClose: () => void }) {
+function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
+  canPlatform: boolean;
+  canOffering: boolean;
+  onClose: () => void;
+}) {
   const create = useCreateAnnouncement();
   const facs = useFaculties();
   const scopeId = useId();
@@ -371,6 +420,16 @@ function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolea
     },
   });
   const scope = form.watch('scope');
+  const scopeRegistration = form.register('scope');
+
+  /* Close-parity (15-e P2-3): Esc / X / cancel / overlay-click confirm
+     before dropping a dirty draft, and every close path stays inert
+     while the create mutation is in flight. */
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending: create.isPending,
+    onClose,
+  });
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
@@ -387,10 +446,16 @@ function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolea
   });
 
   return (
-    <Modal open onClose={onClose} ariaLabel="إعلان جديد">
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel="إعلان جديد"
+      closeOnOverlayClick={!create.isPending}
+      closeOnEscape={!escapeLocked}
+    >
       <header className="comp-modal-head">
         <h2>إعلان جديد</h2>
-        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </header>
@@ -398,13 +463,26 @@ function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolea
         <div className="comp-form-row">
           <div className="comp-form-field">
             <label htmlFor={scopeSelectId}>النطاق</label>
-            <select id={scopeSelectId} {...form.register('scope')} className="auth-input">
+            <select
+              id={scopeSelectId}
+              className="auth-input"
+              {...scopeRegistration}
+              onChange={(e) => {
+                scopeRegistration.onChange(e);
+                // A target id chosen for the previous scope type is
+                // invalid for the new one (a faculty id is not an offering
+                // id) — restart the target select clean instead of
+                // submitting a stale id the backend would reject.
+                form.setValue('scopeId', '');
+              }}
+            >
               {canPlatform && <option value="PLATFORM">على مستوى المنصّة</option>}
               <option value="FACULTY">كلّيّة</option>
               <option value="DEPARTMENT">قسم</option>
+              {canOffering && <option value="OFFERING">مقرر</option>}
             </select>
           </div>
-          {scope !== 'PLATFORM' && (
+          {(scope === 'FACULTY' || scope === 'DEPARTMENT') && (
             <div className="comp-form-field">
               <label htmlFor={scopeId}>{scope === 'FACULTY' ? 'الكلّيّة' : 'القسم'}</label>
               <select id={scopeId} {...form.register('scopeId')} className="auth-input">
@@ -418,6 +496,13 @@ function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolea
               </select>
               {form.formState.errors.scopeId && <span className="auth-field-error">{form.formState.errors.scopeId.message}</span>}
             </div>
+          )}
+          {scope === 'OFFERING' && (
+            <OfferingScopeSelect
+              id={scopeId}
+              registration={form.register('scopeId')}
+              error={form.formState.errors.scopeId?.message}
+            />
           )}
         </div>
 
@@ -458,14 +543,48 @@ function CreateAnnouncementModal({ canPlatform, onClose }: { canPlatform: boolea
         {create.isError && <div className="auth-error">تعذَّر النشر. تحقَّق من البيانات.</div>}
 
         <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={create.isPending}>
             <Icon icon={Send} size={14} />
             {create.isPending ? 'جارٍ النشر…' : 'نشر الإعلان'}
           </button>
         </div>
       </form>
+      {guard}
     </Modal>
+  );
+}
+
+/* OFFERING-scope target picker — the courses the announcing teacher
+   teaches (the backend permits exactly those for TEACHER, and the same
+   taught list for OWNER). Mounted only while that scope is selected so
+   roles without the teacher-offerings endpoint never fire the query.
+   ADMIN/QUALITY may address any offering server-side, but no
+   all-offerings list endpoint exists yet — 16-E7 worklog hand-off. */
+function OfferingScopeSelect({
+  id, registration, error,
+}: {
+  id: string;
+  registration: UseFormRegisterReturn;
+  error?: string;
+}) {
+  const offerings = useTeacherOfferings();
+  return (
+    <div className="comp-form-field">
+      <label htmlFor={id}>المقرر</label>
+      <select id={id} className="auth-input" {...registration}>
+        <option value="">اختر…</option>
+        {offerings.data?.map((o) => (
+          <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+        ))}
+      </select>
+      {offerings.isPending && <span className="text-xxs text-subtle">جارٍ تحميل مقرّراتك…</span>}
+      {offerings.isError && <span className="auth-field-error">تعذَّر تحميل المقرّرات.</span>}
+      {!offerings.isPending && !offerings.isError && (offerings.data?.length ?? 0) === 0 && (
+        <span className="text-xxs text-subtle">لا توجد مقرّرات مُسنَدة إليك حالياً.</span>
+      )}
+      {error && <span className="auth-field-error">{error}</span>}
+    </div>
   );
 }
 
@@ -505,6 +624,13 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
     },
   });
 
+  /* Close-parity (15-e P2-3) — same contract as the announcement modal. */
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: form.formState.isDirty,
+    pending: create.isPending,
+    onClose,
+  });
+
   const onSubmit = form.handleSubmit(async (values) => {
     try {
       await create.mutateAsync({
@@ -521,10 +647,16 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    <Modal open onClose={onClose} ariaLabel="فعاليّة جديدة">
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel="فعاليّة جديدة"
+      closeOnOverlayClick={!create.isPending}
+      closeOnEscape={!escapeLocked}
+    >
       <header className="comp-modal-head">
         <h2>فعاليّة جديدة</h2>
-        <button type="button" className="comp-modal-close" onClick={onClose} aria-label="إغلاق">
+        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </header>
@@ -577,13 +709,14 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
         </div>
         {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة. تحقَّق من البيانات.</div>}
         <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={onClose}>إلغاء</button>
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
           <button type="submit" className="btn primary" disabled={create.isPending}>
             <Icon icon={Send} size={14} />
             {create.isPending ? 'جارٍ الحفظ…' : 'إنشاء الفعاليّة'}
           </button>
         </div>
       </form>
+      {guard}
     </Modal>
   );
 }

@@ -39,6 +39,9 @@ function StudentScopeChip() {
 
 export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
   const toggle = useUiStore((s) => s.toggleSidebar);
+  // 15-g P2-7: the burger must REFLECT the drawer state — an
+  // always-«فتح» label hid the open/closed state from screen readers.
+  const sidebarOpen = useUiStore((s) => s.sidebarOpen);
   const user = useAuthStore((s) => s.user);
   const role = user?.role;
   const themeMode = useThemeStore((s) => s.mode);
@@ -91,7 +94,8 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
         type="button"
         className="topbar-mobile-toggle"
         onClick={toggle}
-        aria-label="فتح القائمة"
+        aria-label={sidebarOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
+        aria-expanded={sidebarOpen}
       >
         <Icon icon={Menu} size={18} />
       </button>
@@ -148,15 +152,17 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
               anchorRef={userMenuTriggerRef}
               placement="end"
               ariaLabel="قائمة حساب المستخدم"
+              header={
+                <div className="topbar-user-menu-header">
+                  <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="text-xxs font-mono text-subtle" style={{ marginTop: 2 }}>
+                    {user.email}
+                  </div>
+                </div>
+              }
             >
-              <div className="topbar-user-menu-header">
-                <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
-                  {user.firstName} {user.lastName}
-                </div>
-                <div className="text-xxs font-mono text-subtle" style={{ marginTop: 2 }}>
-                  {user.email}
-                </div>
-              </div>
               {profilePath && (
                 <DropdownItem onSelect={() => { setMenuOpen(false); navigate(profilePath); }}>
                   <Icon icon={UserIcon} size={14} />

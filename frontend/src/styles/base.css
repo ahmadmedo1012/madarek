@@ -221,10 +221,8 @@
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes madarek-fade-up {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  /* 16-E8 (15-f FE-8): @keyframes madarek-fade-up deleted — zero
+     `animation` consumers (page enter uses madarek-page-enter above). */
 
   /* mobile shell */
   @media (max-width: 920px) {

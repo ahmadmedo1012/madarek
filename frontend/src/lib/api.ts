@@ -28,7 +28,14 @@ async function tryRefresh(): Promise<string | null> {
       .post<{ data: { accessToken: string; user: import('../stores/auth.store').AuthUser } }>(
         `${baseURL}/auth/refresh`,
         {},
-        { withCredentials: true },
+        // 15-d P2-6: this call deliberately bypasses the `api` instance
+        // (to avoid interceptor recursion), which also bypassed its
+        // 20s timeout — a hung refresh endpoint pinned the
+        // refreshPromise singleton and every queued 401-retry for the
+        // browser's default of several minutes. Explicit 15s, tighter
+        // than the instance on purpose: the refresh is payload-free
+        // and gates every other request, so it should fail first.
+        { withCredentials: true, timeout: 15_000 },
       )
       .then((r) => {
         const { user, accessToken } = r.data.data;

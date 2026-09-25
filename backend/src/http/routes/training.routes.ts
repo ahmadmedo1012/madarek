@@ -21,7 +21,7 @@ router.use(authMiddleware);
  *  GET  /training/catalog                      list all published tracks (with progress for current user)
  *  GET  /training/tracks/:slug                 single published track with lessons + my progress
  *  POST /training/tracks/:slug/enroll          enroll the current user (published tracks only)
- *  POST /training/lessons/:lessonId/complete   mark lesson done (idempotent), award points
+ *  POST /training/lessons/:lessonId/complete   mark lesson done (idempotent, self-heals lost track completions), award points
  *  GET  /training/me                           summary for current user (level, points, badges, certs)
  *  GET  /training/me/badges                    full badge list for current user
  *  GET  /training/me/certificates              certificates earned via training
@@ -90,6 +90,61 @@ export function buildLeaderboardRows(
     });
   }
   return rows;
+}
+
+/**
+ * Track-completion predicate (extracted per audit 15-i TOP-5 so the
+ * award gate is pinned by DB-free tests; raced per audit 15-b P0-1).
+ * A track completes exactly when every lesson has a progress row and
+ * the enrollment was not already completed — the `alreadyCompleted`
+ * arm is what keeps completion idempotent (no double track points /
+ * badge / certificate). The 0-lesson edge (0 === 0) is unreachable from
+ * the route — completing a lesson requires the track to hold at least
+ * that lesson — and is pinned as-is by the unit tests.
+ */
+export function completesTrack(
+  completedLessons: number,
+  totalLessons: number,
+  alreadyCompleted: boolean,
+): boolean {
+  return completedLessons === totalLessons && !alreadyCompleted;
+}
+
+/** Milestone-badge facts gathered inside the completion transaction. */
+export interface MilestoneBadgeFacts {
+  /** Lesson completions across ALL of the user's enrollments. */
+  totalLessonCompletions: number;
+  /** Enrollments with completedAt set (i.e. completed tracks). */
+  completedTracks: number;
+  /** Distinct track categories among those completed tracks. */
+  distinctCategories: number;
+}
+
+/** Which milestone badges the given facts unlock. */
+export interface MilestoneBadges {
+  /** First ever lesson completion. */
+  firstStep: boolean;
+  /** Pioneer — 5+ completed tracks. */
+  pioneer: boolean;
+  /** Polymath — completed tracks across 3+ distinct categories. */
+  polymath: boolean;
+}
+
+/**
+ * Milestone-badge eligibility thresholds (the badge economy, extracted
+ * per audit 15-i TOP-5): first-step at the very first lesson
+ * completion, pioneer at 5 completed tracks, polymath at 3 DISTINCT
+ * categories — three completed tracks in one category never unlock it.
+ * The caller re-checks these on every completion; awarding stays
+ * idempotent via `awardBadgeBySlug`, so re-checking is also what heals
+ * milestone badges lost to pre-fix races.
+ */
+export function earnedMilestoneBadges(facts: MilestoneBadgeFacts): MilestoneBadges {
+  return {
+    firstStep: facts.totalLessonCompletions === 1,
+    pioneer: facts.completedTracks >= 5,
+    polymath: facts.distinctCategories >= 3,
+  };
 }
 
 // ─── DB helpers ───────────────────────────────────────────────────
@@ -271,7 +326,10 @@ router.post(
       // Everything from the enrollment upsert through badges/certificate
       // runs in ONE interactive transaction — a crash mid-flow used to
       // leave half-awarded state (points without progress, etc.).
-      // Idempotency is preserved: an existing lessonProgress row is a no-op.
+      // Idempotency is preserved: an existing lessonProgress row skips the
+      // lesson awards but NO LONGER returns early — the track-completion
+      // check below still re-runs so a completion lost to the pre-lock race
+      // (or to a lesson being removed from the track) heals (15-b P0-1).
       const newBadges: Array<{ slug: string; title: string; iconEmoji: string }> = [];
       let newlyCompleted = false;
 
@@ -283,77 +341,99 @@ router.post(
           create: { userId, trackId: lesson.trackId },
         });
 
-        // Idempotent complete
+        // Serialize completions per enrollment (15-b P0-1): two concurrent
+        // lesson completions used to both count N-1 progress rows and both
+        // skip the track completion — permanently losing the track points,
+        // badge and certificate, because nothing else ever writes
+        // completedAt. The row lock (same pattern as exam start) makes the
+        // count-then-complete sequence atomic per (user, track).
+        await tx.$queryRaw`SELECT id FROM "TrainingEnrollment" WHERE id = ${enrollment.id} FOR UPDATE`;
+
+        // Idempotent lesson award — only when the progress row is created.
+        // This route is the only writer of lessonProgress, so after the
+        // lock every progress row of this enrollment is committed.
         const existing = await tx.lessonProgress.findUnique({
           where: { enrollmentId_lessonId: { enrollmentId: enrollment.id, lessonId: lesson.id } },
         });
-        if (existing) return;
-        newlyCompleted = true;
+        if (!existing) {
+          newlyCompleted = true;
+          await tx.lessonProgress.create({
+            data: { enrollmentId: enrollment.id, lessonId: lesson.id, pointsAwarded: lesson.pointsAward },
+          });
+          await awardPoints(tx, userId, lesson.pointsAward, 'lesson_completed', 'TrainingLesson', lesson.id);
+        }
 
-        await tx.lessonProgress.create({
-          data: { enrollmentId: enrollment.id, lessonId: lesson.id, pointsAwarded: lesson.pointsAward },
-        });
-        await awardPoints(tx, userId, lesson.pointsAward, 'lesson_completed', 'TrainingLesson', lesson.id);
+        // ── Track completion + self-heal ──
+        // The counts run under the enrollment lock, so they include a
+        // concurrent completer's committed progress. `enrollment` itself
+        // may be a pre-lock snapshot, so the completedAt claim is
+        // conditional (the platform's updateMany-claim pattern): a retry
+        // racing the final lesson can never double-award the track.
+        const [totalLessons, completedLessons] = await Promise.all([
+          tx.trainingLesson.count({ where: { trackId: lesson.trackId } }),
+          tx.lessonProgress.count({ where: { enrollmentId: enrollment.id } }),
+        ]);
+        if (completesTrack(completedLessons, totalLessons, !!enrollment.completedAt)) {
+          const claim = await tx.trainingEnrollment.updateMany({
+            where: { id: enrollment.id, completedAt: null },
+            data: { completedAt: new Date() },
+          });
+          if (claim.count === 1) {
+            await awardPoints(tx, userId, lesson.track.pointsAward, 'track_completed', 'TrainingTrack', lesson.trackId);
 
-        // First-step badge — first ever lesson completion
-        const totalCompleted = await tx.lessonProgress.count({
-          where: { enrollment: { userId } },
+            // Award the track's badge (if any)
+            const trackBadge = await tx.badge.findFirst({ where: { trackId: lesson.trackId } });
+            if (trackBadge) {
+              const b = await awardBadgeBySlug(tx, userId, trackBadge.slug);
+              if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
+            }
+
+            // Issue completion certificate
+            await tx.certificate.create({
+              data: {
+                userId,
+                title: lesson.track.title,
+                issuer: 'منصة جامعة الزاوية للتعليم الذكي',
+                issuedAt: new Date(),
+                hours: Math.max(1, Math.round(lesson.track.estMinutes / 60)),
+                status: 'COMPLETED',
+                trackId: lesson.trackId,
+              },
+            });
+          }
+        }
+
+        // ── Milestone badges (first-step / pioneer / polymath) ──
+        // Re-checked on every completion with fresh facts: awards are
+        // idempotent (awardBadgeBySlug no-ops on an earned badge), and the
+        // re-check heals milestone badges lost to pre-fix races. Gathered
+        // after the completion claim so a just-completed track counts.
+        const [totalCompleted, completedTracks, catRows] = await Promise.all([
+          tx.lessonProgress.count({ where: { enrollment: { userId } } }),
+          tx.trainingEnrollment.count({ where: { userId, completedAt: { not: null } } }),
+          tx.trainingEnrollment.findMany({
+            where: { userId, completedAt: { not: null } },
+            include: { track: { select: { category: true } } },
+          }),
+        ]);
+        const milestones = earnedMilestoneBadges({
+          totalLessonCompletions: totalCompleted,
+          completedTracks,
+          distinctCategories: new Set(catRows.map((e) => e.track.category)).size,
         });
-        if (totalCompleted === 1) {
+        if (milestones.firstStep) {
           const b = await awardBadgeBySlug(tx, userId, 'badge-first-step');
           if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
         }
-
-        // Track-completion check
-        const totalLessons = await tx.trainingLesson.count({ where: { trackId: lesson.trackId } });
-        const completedLessons = await tx.lessonProgress.count({
-          where: { enrollmentId: enrollment.id },
-        });
-        if (completedLessons === totalLessons && !enrollment.completedAt) {
-          await tx.trainingEnrollment.update({
-            where: { id: enrollment.id },
-            data: { completedAt: new Date() },
-          });
-          await awardPoints(tx, userId, lesson.track.pointsAward, 'track_completed', 'TrainingTrack', lesson.trackId);
-
-          // Award the track's badge (if any)
-          const trackBadge = await tx.badge.findFirst({ where: { trackId: lesson.trackId } });
-          if (trackBadge) {
-            const b = await awardBadgeBySlug(tx, userId, trackBadge.slug);
-            if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
-          }
-
-          // Issue completion certificate
-          await tx.certificate.create({
-            data: {
-              userId,
-              title: lesson.track.title,
-              issuer: 'منصة جامعة الزاوية للتعليم الذكي',
-              issuedAt: new Date(),
-              hours: Math.max(1, Math.round(lesson.track.estMinutes / 60)),
-              status: 'COMPLETED',
-              trackId: lesson.trackId,
-            },
-          });
-
-          // Total-tracks-completed badges
-          const completedTracks = await tx.trainingEnrollment.count({
-            where: { userId, completedAt: { not: null } },
-          });
-          if (completedTracks >= 5) {
-            const b = await awardBadgeBySlug(tx, userId, 'badge-zu-pioneer');
-            if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
-          }
-          // 3 in different categories → polymath
-          const distinctCats = await tx.trainingEnrollment.findMany({
-            where: { userId, completedAt: { not: null } },
-            include: { track: { select: { category: true } } },
-          });
-          const cats = new Set(distinctCats.map((e) => e.track.category));
-          if (cats.size >= 3) {
-            const b = await awardBadgeBySlug(tx, userId, 'badge-polymath');
-            if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
-          }
+        // Pioneer: 5+ completed tracks
+        if (milestones.pioneer) {
+          const b = await awardBadgeBySlug(tx, userId, 'badge-zu-pioneer');
+          if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
+        }
+        // Polymath: 3+ distinct categories
+        if (milestones.polymath) {
+          const b = await awardBadgeBySlug(tx, userId, 'badge-polymath');
+          if (b) newBadges.push({ slug: b.slug, title: b.title, iconEmoji: b.iconEmoji });
         }
       });
 
@@ -462,7 +542,7 @@ router.get('/training/me/certificates', async (req, res, next) => {
 });
 
 // ─── Leaderboard ─────────────────────────────────────────────────
-router.get('/training/leaderboard', async (req, res, next) => {
+router.get('/training/leaderboard', async (_req, res, next) => {
   try {
     const top = await prisma.pointsLedger.groupBy({
       by: ['userId'],

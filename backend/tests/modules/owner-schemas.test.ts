@@ -11,14 +11,20 @@
  *  - the settings payload caps (an unbounded value/category let a
  *    single 1 MB JSON body become a 1 MB setting row);
  *  - the pure Education-page aggregation folds (attendance trend,
- *    teacher workload) extracted so the SQL-backed routes stay thin.
+ *    teacher workload) extracted so the SQL-backed routes stay thin;
+ *  - the pure System-page sync-feed mapping (SyncRun row → feed
+ *    entry — the feed reads the REAL SyncRun table since audit 15-a
+ *    P1-5, so the mapping is pinned like every other fold).
  */
+import { SyncRunStatus } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 import {
   bucketTeacherWorkload,
   buildAttendanceTrend,
   changeRoleSchema,
   settingKeySchema,
+  syncRunAction,
+  toSyncFeedEntry,
   toggleFlagSchema,
   toggleStatusSchema,
   upsertSettingSchema,
@@ -243,5 +249,98 @@ describe('bucketTeacherWorkload (Education page, workload fold)', () => {
       three: 0,
       fourPlus: 0,
     });
+  });
+});
+
+// ── System-page sync feed (pure SyncRun mapping — audit 15-a P1-5) ─
+
+describe('syncRunAction (SyncRun status → feed action vocabulary)', () => {
+  it('maps every SyncRunStatus onto an action the System page label map knows', () => {
+    // The FE label map (OwnerSystemPage SYNC_ACTION_LABEL) knows
+    // exactly 'sync.run' / 'sync.partial' / 'sync.failed' — no status
+    // may leak a raw enum string into the Arabic UI.
+    expect([...new Set(Object.values(SyncRunStatus).map(syncRunAction))].sort()).toEqual([
+      'sync.failed',
+      'sync.partial',
+      'sync.run',
+    ]);
+  });
+
+  it("SUCCESS → sync.run (every run is a full sync — runSync has no partial semantics)", () => {
+    expect(syncRunAction(SyncRunStatus.SUCCESS)).toBe('sync.run');
+  });
+
+  it('FAILED → sync.failed (the FE badge turns red on .includes("failed"))', () => {
+    expect(syncRunAction(SyncRunStatus.FAILED)).toBe('sync.failed');
+  });
+
+  it('PARTIAL → sync.partial (reserved enum value runSync never writes today)', () => {
+    expect(syncRunAction(SyncRunStatus.PARTIAL)).toBe('sync.partial');
+  });
+
+  it('RUNNING → sync.partial — an in-flight run renders as not-complete, never as success', () => {
+    expect(syncRunAction(SyncRunStatus.RUNNING)).toBe('sync.partial');
+  });
+});
+
+describe('toSyncFeedEntry (SyncRun row → System-page feed entry)', () => {
+  const run = {
+    id: 'run-1',
+    startedAt: new Date('2026-06-15T08:00:00Z'),
+    completedAt: new Date('2026-06-15T08:00:03Z'),
+    status: SyncRunStatus.SUCCESS,
+    source: 'static-markdown',
+    factsAdded: 12,
+    factsUpdated: 3,
+    durationMs: 3_140,
+    errorMsg: null,
+    notes: 'Synced 15 fact(s) from static-markdown.',
+  };
+
+  it('keeps the feed shape the System page consumes (id / action / at / actor / metadata)', () => {
+    const entry = toSyncFeedEntry(run);
+
+    expect(entry.id).toBe('run-1');
+    expect(entry.action).toBe('sync.run');
+    expect(entry.at).toBe(run.startedAt);
+    // SyncRun carries no user attribution — every run is
+    // system-initiated (scheduler tick or guarded manual trigger).
+    expect(entry.actor).toBe('النظام');
+  });
+
+  it('carries the run outcome detail in metadata for diagnosis', () => {
+    expect(toSyncFeedEntry(run).metadata).toEqual({
+      status: SyncRunStatus.SUCCESS,
+      source: 'static-markdown',
+      factsAdded: 12,
+      factsUpdated: 3,
+      durationMs: 3_140,
+      completedAt: run.completedAt,
+      errorMsg: null,
+      notes: 'Synced 15 fact(s) from static-markdown.',
+    });
+  });
+
+  it('preserves the failure detail of a FAILED run', () => {
+    const entry = toSyncFeedEntry({
+      ...run,
+      id: 'run-2',
+      status: SyncRunStatus.FAILED,
+      factsAdded: 0,
+      factsUpdated: 0,
+      errorMsg: 'Error: connection reset',
+      notes: null,
+    });
+
+    expect(entry.action).toBe('sync.failed');
+    expect(entry.metadata.errorMsg).toBe('Error: connection reset');
+  });
+
+  it("anchors the timeline on the run START (matching the admin sync view’s startedAt ordering)", () => {
+    const entry = toSyncFeedEntry({ ...run, status: SyncRunStatus.RUNNING, completedAt: null });
+
+    expect(entry.at).toBe(run.startedAt);
+    expect(entry.action).toBe('sync.partial');
+    expect(entry.metadata.completedAt).toBeNull();
   });
 });

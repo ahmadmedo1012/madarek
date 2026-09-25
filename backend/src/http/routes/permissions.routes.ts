@@ -14,6 +14,7 @@ import {
   buildTeacherProvision,
   getGovernanceScope,
   loadGovernanceTarget,
+  lockActiveOwnerRows,
   planTeacherProvisioning,
   requiresLastOwnerGuard,
 } from '../../lib/governance.js';
@@ -276,12 +277,17 @@ router.post(
       // Role + guard + provisioning + audit atomically; tokenVersion
       // bump kills the target's outstanding refresh tokens so stale
       // JWTs with the old role can't be refreshed back into use.
-      // The last-active-owner count runs INSIDE the transaction —
-      // without it an ADMIN could demote the sole OWNER account and
-      // permanently lock the platform out of its master governance
-      // role (OWNER is invitation-only; audit 11-c P0-1).
+      // The last-active-owner guard runs INSIDE the transaction, after
+      // locking the active OWNER rows FOR UPDATE — without it an ADMIN
+      // could demote the sole OWNER account and permanently lock the
+      // platform out of its master governance role (OWNER is
+      // invitation-only; audit 11-c P0-1), and without the lock the
+      // plain count is a read that a concurrent demotion/deactivation
+      // on another surface can race past under Read-Committed (audit
+      // 15-b P1-1 — same lock the OWNER console takes).
       const updated = await prisma.$transaction(async (tx) => {
         if (requiresLastOwnerGuard({ targetRole: oldRole, newRole })) {
+          await lockActiveOwnerRows(tx);
           await assertNotLastActiveOwner(id, tx);
         }
         const u = await tx.user.update({

@@ -18,9 +18,64 @@ const __dirname = path.dirname(__filename);
 // __dirname is .../backend/dist/http/routes (prod) or .../backend/src/http/routes (dev)
 const STORAGE_ROOT = path.resolve(__dirname, '../../../storage');
 
+// ─── Pure guard layer (tests/modules/files-guard.test.ts) ──────────
+
+/**
+ * Traversal shape gate: `..` (relative escape) plus `/` and `\\`
+ * (absolute or nested paths). Deliberately over-broad — a benign
+ * `my..notes.pdf` is rejected too; for a file-serving endpoint the
+ * safe side is the right side. NOTE on encoding: this gate sees the
+ * DECODED param — express decodes route params before the handler
+ * runs, so an encoded `%2e%2e` attack arrives here as a literal `..`
+ * and is caught. The function never decodes anything itself
+ * (double-decoding would be the bug).
+ */
+export function containsTraversalPatterns(filename: string): boolean {
+  return filename.includes('..') || filename.includes('/') || filename.includes('\\');
+}
+
+/** The endpoint serves papers only — extension gate, case-insensitive. */
+export function isPdfFilename(filename: string): boolean {
+  return filename.toLowerCase().endsWith('.pdf');
+}
+
+/** Aggregate filename gate: no traversal shape AND a .pdf extension. */
+export function isSafePaperFilename(filename: string): boolean {
+  return !containsTraversalPatterns(filename) && isPdfFilename(filename);
+}
+
+/**
+ * Role gate for the DB access check: oversight roles may fetch any
+ * paper without a matching paper row. QUALITY mirrors the
+ * paper-annotation route's oversight model (audit 11-b P2-5): a role
+ * that can read annotations on any paper can also fetch the artifact
+ * it audits.
+ */
+export function isPaperOversightRole(role: Role): boolean {
+  return role === Role.ADMIN || role === Role.OWNER || role === Role.QUALITY;
+}
+
+/**
+ * Directory pin: the resolved file path must sit DIRECTLY inside
+ * `<storageRoot>/papers`. Comparing against `expectedDir + path.sep`
+ * (not a bare `startsWith(expectedDir)`) is what rejects sibling
+ * directories like `storage/papers-evil/` — the classic prefix-check
+ * bug. `resolved` must be a normalized absolute path (the route always
+ * passes `path.resolve` output): this function does not normalize and
+ * judges the literal string, so an un-normalized `..` segment fails
+ * conservatively.
+ */
+export function isWithinPapersDir(resolved: string, storageRoot: string): boolean {
+  const expectedDir = path.resolve(storageRoot, 'papers');
+  return resolved.startsWith(expectedDir + path.sep);
+}
+
 /**
  * Serve a file from /storage/papers/.
  * Auth-required. Path traversal is blocked by basename + dir-pin check.
+ * The filename / role / directory gates are extracted as pure functions
+ * below and pinned DB-free by tests/modules/files-guard.test.ts
+ * (audit 15-i TOP-6, wave 16-B11).
  *
  * Access gate (previously ANY authenticated user could read ANY paper PDF):
  * the filename is resolved through the ResearchPaper table — access is
@@ -34,19 +89,20 @@ const STORAGE_ROOT = path.resolve(__dirname, '../../../storage');
 router.get('/papers/:filename', async (req, res, next) => {
   try {
     const filename = req.params.filename!;
-    // Reject anything that smells like traversal.
-    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    // Reject anything that smells like traversal. The aggregate gate is
+    // isSafePaperFilename; the two checks stay split so each rejection
+    // carries its own message.
+    if (containsTraversalPatterns(filename)) {
       throw AppError.badRequest('Invalid filename');
     }
-    if (!filename.toLowerCase().endsWith('.pdf')) {
+    if (!isPdfFilename(filename)) {
       throw AppError.badRequest('Only PDF files are served from this endpoint');
     }
 
     // ── Access gate: resolve the file to its paper row(s) ──────────
     const uid = req.user!.id;
     const role = req.user!.role;
-    const isOversight = role === Role.ADMIN || role === Role.OWNER || role === Role.QUALITY;
-    if (!isOversight) {
+    if (!isPaperOversightRole(role)) {
       // The grant predicate lives inside the query (was: fetch up to 10
       // matching rows and check in memory — a filename shared by >10 papers
       // could push the authorizing row past the take window and 404 a file
@@ -67,8 +123,7 @@ router.get('/papers/:filename', async (req, res, next) => {
     const filePath = path.resolve(STORAGE_ROOT, 'papers', safeName);
 
     // Pin to the storage/papers directory.
-    const expectedDir = path.resolve(STORAGE_ROOT, 'papers');
-    if (!filePath.startsWith(expectedDir + path.sep)) {
+    if (!isWithinPapersDir(filePath, STORAGE_ROOT)) {
       throw AppError.badRequest('Invalid path');
     }
 

@@ -1,10 +1,10 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  Brain, GraduationCap, Network, Building2, Users2, Award, Compass,
+  Brain, GraduationCap, Network, Building2, Compass,
   BarChart3, ShieldCheck, ArrowLeft, Menu, X, BookOpen, Sparkles,
-  Microscope, FlaskConical, MessageSquare, Calendar, ClipboardCheck,
-  Layers, Trophy, Check, ChevronDown,
+  Microscope, FlaskConical, Calendar, ClipboardCheck,
+  Trophy, Check, ChevronDown,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { CollegesPopover } from '../components/CollegesPopover';
@@ -403,7 +403,7 @@ export default function LandingPage() {
                   </div>
                   <div className="landing-mockup-kpi">
                     <div className="landing-mockup-kpi-label">حضور</div>
-                    <div className="landing-mockup-kpi-value">92٪</div>
+                    <div className="landing-mockup-kpi-value">92%</div>
                   </div>
                   <div className="landing-mockup-kpi">
                     <div className="landing-mockup-kpi-label">مهام</div>
@@ -797,22 +797,22 @@ export default function LandingPage() {
           </SectionAccent>
           <div className="landing-pilot-grid">
             <RevealCssClass as="div" className="landing-pilot-stat">
-              <div className="landing-pilot-value"><CountUp value="40" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="40" />%</div>
               <div className="landing-pilot-label">تحسُّن الاستيعاب</div>
               <div className="landing-pilot-note">مقارنة بالأسلوب التقليدي</div>
             </RevealCssClass>
             <RevealCssClass as="div" className="landing-pilot-stat" delay={1}>
-              <div className="landing-pilot-value"><CountUp value="70" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="70" />%</div>
               <div className="landing-pilot-label">زيادة في المشاركة</div>
               <div className="landing-pilot-note">داخل الحلقات النقاشية</div>
             </RevealCssClass>
             <RevealCssClass as="div" className="landing-pilot-stat" delay={2}>
-              <div className="landing-pilot-value"><CountUp value="30" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="30" />%</div>
               <div className="landing-pilot-label">تحسُّن في الالتزام</div>
               <div className="landing-pilot-note">بمتابعة الجلسات</div>
             </RevealCssClass>
             <RevealCssClass as="div" className="landing-pilot-stat" delay={3}>
-              <div className="landing-pilot-value"><CountUp value="90" />٪</div>
+              <div className="landing-pilot-value"><CountUp value="90" />%</div>
               <div className="landing-pilot-label">تحقيق أهداف التعلُّم</div>
               <div className="landing-pilot-note">ضمن الإطار الزمني</div>
             </RevealCssClass>

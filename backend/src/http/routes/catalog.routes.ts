@@ -52,9 +52,14 @@ router.get(
   },
 );
 
+// ─── Pure logic (exported for DB-free unit tests) ─────────────────
+
+/** Body of POST /library/loans — a book reference and nothing else. */
+export const borrowBookSchema = z.object({ bookId: z.string().cuid() }).strict();
+
 router.post(
   '/library/loans',
-  validate(z.object({ bookId: z.string().cuid() }).strict()),
+  validate(borrowBookSchema),
   async (req, res, next) => {
     try {
       const result = await prisma.$transaction(async (tx) => {
@@ -68,6 +73,26 @@ router.post(
           data: { availableCopies: { decrement: 1 } },
         });
         if (claim.count === 0) throw AppError.conflict('No copies available');
+        // Per-(user, book) active-loan dedupe (audit 15-b P2-3). The check
+        // runs AFTER the copy claim on purpose: the claim's row lock on the
+        // book is the serialization point for every borrow of the same book,
+        // so a same-user transaction that committed while this one waited is
+        // already visible here — the classic find-then-create race is closed
+        // without a schema edit. (Report-only: a partial unique on
+        // (bookId, userId) WHERE status <> 'RETURNED' would make it airtight
+        // at the DB level too.) Throwing rolls the whole transaction back,
+        // so the decremented copy is restored. OVERDUE counts as possession:
+        // nothing flips loans to OVERDUE today, but "still in the borrower's
+        // hands" is "not RETURNED", not "ACTIVE".
+        const activeLoan = await tx.loan.findFirst({
+          where: {
+            bookId: book.id,
+            userId: req.user!.id,
+            status: { in: [LoanStatus.ACTIVE, LoanStatus.OVERDUE] },
+          },
+          select: { id: true },
+        });
+        if (activeLoan) throw AppError.conflict('You already have this book on loan');
         return tx.loan.create({
           data: {
             bookId: book.id,
@@ -266,9 +291,10 @@ router.post('/jobs/:id/apply', async (req, res, next) => {
   }
 });
 
-// ════════════════════════════════════════════════════
-// POSTS (community feed)
-// ════════════════════════════════════════════════════
+// ── POSTS (community feed) ────────────────────────────────────────
+// List convention (audit 15-i P1-4): browse-style feeds are paginated
+// (page/limit + meta); only search-as-you-type endpoints are capped.
+// `/posts` follows the paginated rule — the capped twin lives in social.
 router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next) => {
   try {
     const { page, limit, q } = req.query as unknown as { page: number; limit: number; q?: string };
@@ -295,7 +321,7 @@ router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next)
   }
 });
 
-const createPostSchema = z
+export const createPostSchema = z
   .object({
     body: z.string().min(1).max(2000),
     hashtags: z.array(z.string().min(1).max(40)).max(10).default([]),
@@ -314,7 +340,10 @@ router.post('/posts', validate(createPostSchema), async (req, res, next) => {
   }
 });
 
-router.post('/posts/:id/react', validate(z.object({ kind: z.enum(['like', 'save']) }).strict()), async (req, res, next) => {
+/** Body of POST /posts/:id/react — toggling one reaction kind. */
+export const reactSchema = z.object({ kind: z.enum(['like', 'save']) }).strict();
+
+router.post('/posts/:id/react', validate(reactSchema), async (req, res, next) => {
   try {
     const created = await prisma.postReaction.upsert({
       where: { postId_userId_kind: { postId: req.params.id!, userId: req.user!.id, kind: req.body.kind } },
@@ -490,6 +519,75 @@ router.get('/admin/faculties', requireRole(Role.ADMIN, Role.OWNER), async (_req,
   } catch (e) { next(e); }
 });
 
+// ── Pure logic: /admin/reports folds (exported for DB-free tests) ──
+
+/** The /admin/reports projection of a research paper — just the three
+ *  activity timestamps the trend buckets are built from. */
+export type PaperTrendInput = {
+  uploadedAt: Date;
+  gradedAt: Date | null;
+  publishedAt: Date | null;
+};
+
+export type PaperTrendBucket = { month: string; submitted: number; graded: number; published: number };
+
+/**
+ * Last-`bucketCount` monthly paper-activity buckets, oldest → newest.
+ * `monthStart(n)` must return the FIRST instant of the month `n` months
+ * before "now" (the route passes its local-calendar closure). Bucket i is
+ * the half-open range [start, end): a paper timestamped exactly at a
+ * boundary belongs to the newer bucket, and null gradedAt/publishedAt
+ * never count in those dimensions.
+ */
+export function buildPaperTrend(
+  papers: readonly PaperTrendInput[],
+  monthStart: (monthsAgo: number) => Date,
+  bucketCount = 6,
+): PaperTrendBucket[] {
+  return Array.from({ length: bucketCount }, (_, i) => {
+    const start = monthStart(bucketCount - 1 - i);
+    const end = monthStart(bucketCount - 2 - i);
+    const label = start.toLocaleDateString('ar-LY', { month: 'short' });
+    const submitted = papers.filter((p) => p.uploadedAt >= start && p.uploadedAt < end).length;
+    const graded = papers.filter((p) => p.gradedAt !== null && p.gradedAt >= start && p.gradedAt < end).length;
+    const published = papers.filter((p) => p.publishedAt !== null && p.publishedAt >= start && p.publishedAt < end).length;
+    return { month: label, submitted, graded, published };
+  });
+}
+
+/** The /admin/reports offering projection folded by `topCoursesByEnrollments`. */
+export type TopCourseOfferingInput = {
+  courseId: string;
+  course: { name: string; code: string };
+  _count: { enrollments: number; lectures: number };
+};
+
+export type CourseEnrollmentStat = { code: string; name: string; enrollments: number; lectures: number };
+
+/**
+ * Fold bounded offering rows into per-COURSE totals so a multi-offering
+ * course occupies ONE row (per-course code/name comes from the FIRST row
+ * seen), ranked by total enrollments with a code tie-break that keeps the
+ * order stable, capped at `max` rows (the admin table renders the top 8).
+ */
+export function topCoursesByEnrollments(
+  offerings: readonly TopCourseOfferingInput[],
+  max = 8,
+): CourseEnrollmentStat[] {
+  const byCourse = new Map<string, CourseEnrollmentStat>();
+  for (const o of offerings) {
+    const row =
+      byCourse.get(o.courseId) ??
+      { code: o.course.code, name: o.course.name, enrollments: 0, lectures: 0 };
+    row.enrollments += o._count.enrollments;
+    row.lectures += o._count.lectures;
+    byCourse.set(o.courseId, row);
+  }
+  return Array.from(byCourse.values())
+    .sort((a, b) => b.enrollments - a.enrollments || a.code.localeCompare(b.code))
+    .slice(0, max);
+}
+
 // ── Admin: institutional reports
 router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
   try {
@@ -509,18 +607,10 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
           { uploadedAt: { gte: sixMonthsAgo } },
         ],
       },
-      select: { status: true, publishedAt: true, gradedAt: true, uploadedAt: true },
+      select: { publishedAt: true, gradedAt: true, uploadedAt: true },
     });
 
-    const monthBuckets = Array.from({ length: 6 }, (_, i) => {
-      const start = monthStart(5 - i);
-      const end = monthStart(4 - i);
-      const label = start.toLocaleDateString('ar-LY', { month: 'short' });
-      const submitted = allRecentPapers.filter((p) => p.uploadedAt >= start && p.uploadedAt < end).length;
-      const graded = allRecentPapers.filter((p) => p.gradedAt && p.gradedAt >= start && p.gradedAt < end).length;
-      const published = allRecentPapers.filter((p) => p.publishedAt && p.publishedAt >= start && p.publishedAt < end).length;
-      return { month: label, submitted, graded, published };
-    });
+    const monthBuckets = buildPaperTrend(allRecentPapers, monthStart);
 
     // 2) Top courses — ranked by TOTAL enrollments across their
     //    offerings, aggregated per course so a multi-offering course
@@ -538,21 +628,7 @@ router.get('/admin/reports', requireRole(Role.ADMIN, Role.OWNER), async (_req, r
       take: 50,
       orderBy: { createdAt: 'desc' },
     });
-    const byCourse = new Map<
-      string,
-      { code: string; name: string; enrollments: number; lectures: number }
-    >();
-    for (const o of offerings) {
-      const row =
-        byCourse.get(o.courseId) ??
-        { code: o.course.code, name: o.course.name, enrollments: 0, lectures: 0 };
-      row.enrollments += o._count.enrollments;
-      row.lectures += o._count.lectures;
-      byCourse.set(o.courseId, row);
-    }
-    const courseStats = Array.from(byCourse.values())
-      .sort((a, b) => b.enrollments - a.enrollments || a.code.localeCompare(b.code))
-      .slice(0, 8);
+    const courseStats = topCoursesByEnrollments(offerings);
 
     // 3) Headline counts
     const [totalPapers, publishedPapers, totalUsers, activeStudents] = await Promise.all([

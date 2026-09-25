@@ -6,8 +6,12 @@ import { Icon } from '../Icon';
 import { UserAvatar, Badge } from '../primitives';
 import { EmptyState, ErrorState, Skeleton } from '../primitives/States';
 import { useAnnotations, useCreateAnnotation, useDeleteAnnotation } from '../../hooks/useResources';
-import { apiErrorMessage } from '../../lib/format';
-import { useAuthStore } from '../../stores/auth.store';
+import { apiErrorMessage, timeAgoAr } from '../../lib/format';
+import { useAuthStore, type AppRole } from '../../stores/auth.store';
+
+/* Relative time is lib/format.timeAgoAr (15-h P2-2 consolidation,
+ * 16-E10) — the local "منذ 5 د" compact twin is gone, so this panel and
+ * the notification dropdown agree on the same instant. */
 
 interface AnnotationsPanelProps {
   paperId: string;
@@ -66,7 +70,11 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
   const createA = useCreateAnnotation(paperId);
   const deleteA = useDeleteAnnotation(paperId);
   const user = useAuthStore((s) => s.user);
-  const canAnnotate = user?.role === 'TEACHER' || user?.role === 'ADMIN';
+  // Mirrors the backend permission model (learning.routes POST
+  // /research/:id/annotations → requireRole TEACHER/ADMIN/OWNER): an
+  // OWNER reviewer can annotate too — the composer used to hide for
+  // them while the server accepted their writes.
+  const canAnnotate = user?.role === 'TEACHER' || user?.role === 'ADMIN' || user?.role === 'OWNER';
 
   const [composing, setComposing] = useState(false);
   const [draft, setDraft] = useState('');
@@ -91,15 +99,6 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
     setDraftPage(currentPage);
     setComposing(true);
     setDraft('');
-  };
-
-  const fmtTime = (iso: string) => {
-    const d = new Date(iso);
-    const diffSec = Math.round((Date.now() - +d) / 1000);
-    if (diffSec < 60) return 'الآن';
-    if (diffSec < 3600) return `منذ ${Math.round(diffSec / 60)} د`;
-    if (diffSec < 86400) return `منذ ${Math.round(diffSec / 3600)} س`;
-    return d.toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
   };
 
   return (
@@ -230,7 +229,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
                     <div className="flex items-center gap-2 text-xxs text-subtle">
                       <RoleBadge role={a.author.role} />
                       <span>·</span>
-                      <span>{fmtTime(a.createdAt)}</span>
+                      <span>{timeAgoAr(a.createdAt)}</span>
                     </div>
                   </div>
                   <button
@@ -265,11 +264,15 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
   );
 }
 
-function RoleBadge({ role }: { role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' }) {
+function RoleBadge({ role }: { role: AppRole }) {
+  // OWNER added 16-E10 (PaperAnnotation.author.role widened to AppRole —
+  // 16-E2 hand-off); label matches nav.ts ROLE_LABELS so the same role
+  // reads identically in the sidebar and on an annotation author line.
   const label =
     role === 'TEACHER' ? 'أستاذ' :
     role === 'ADMIN' ? 'إدارة' :
     role === 'QUALITY' ? 'جودة' :
+    role === 'OWNER' ? 'مالك المنصة' :
     'طالب';
   return <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{label}</span>;
 }

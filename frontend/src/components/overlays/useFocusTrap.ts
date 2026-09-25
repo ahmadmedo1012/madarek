@@ -84,6 +84,23 @@ export function useFocusTrap({
       const first = nodes[0]!;
       const last = nodes[nodes.length - 1]!;
       const active = document.activeElement;
+      // 15-g P2-2 — body-focus leak: clicking non-focusable chrome
+      // inside an open overlay (a paragraph, the card surface) blurs
+      // focus to <body>, and the boundary checks below never match, so
+      // Tab escapes the scrim and walks the app BEHIND the overlay.
+      // Reclaim instead: pull focus back to the leading edge the key
+      // press is heading toward. Scoped to the topmost layer via the
+      // overlay stack so a focus-trapped overlay never steals a Tab
+      // aimed at an anchored layer opened above it (dropdown /
+      // notification panel — those own Tab-dismiss themselves).
+      if (
+        overlayStack.isTop(overlayId) &&
+        (!(active instanceof Node) || !containerRef.current.contains(active))
+      ) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+        return;
+      }
       if (e.shiftKey && active === first) {
         e.preventDefault();
         last.focus();

@@ -6,6 +6,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+import { utcDayStart } from '../../lib/dates.js';
 import { extractPaperText } from '../../lib/pdf.js';
 import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
 import { requireCapability } from '../middleware/requireCapability.js';
@@ -231,9 +232,14 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
       // completed lecture never fires it twice.
       if (req.user!.role === Role.STUDENT && nextCompleted && !prior?.completed) {
         // lectureStub already carries offeringId — no second lookup needed.
-        // Bucket attendance by calendar day.
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // Bucket attendance by calendar day. The day-key lives on the UTC
+        // data calendar (lib/dates.ts, audit 15-h P1-1): the FE roll-call
+        // sends UTC-midnight dates and the seed writes utcDayStart too, so
+        // the @@unique(offeringId, date) constraint can never split one
+        // calendar day into two sessions on a non-UTC machine. On the UTC
+        // deployment this is byte-identical to the old setHours(0,0,0,0)
+        // computation — the implicit assumption is now explicit + tested.
+        const today = utcDayStart(new Date());
         const session = await tx.attendanceSession.upsert({
           where: { offeringId_date: { offeringId: lectureStub.offeringId, date: today } },
           create: { offeringId: lectureStub.offeringId, date: today, topic: 'حضور افتراضي تلقائي' },
@@ -573,6 +579,34 @@ const createPaperSchema = z.object({
     .optional(),
 }).strict();
 
+/**
+ * Double-submit guard for paper uploads (audit 15-b P2-5): an identical
+ * (student, title, fileUrl) upload inside this window 409s instead of
+ * stacking a permanent duplicate in the grader queue — research papers
+ * have no delete route, so a duplicate sits there forever. Re-uploading
+ * the same title with a different file (a legitimate revision) stays
+ * allowed, as does re-submitting the same file after the window.
+ * Exported for unit tests.
+ */
+export const RESEARCH_DEDUPE_WINDOW_MS = 5 * 60 * 1000;
+
+/** The dedupe lookup for POST /me/research. Exported for unit tests. */
+export function recentDuplicatePaperWhere(
+  studentId: string,
+  title: string,
+  fileUrl: string | null,
+  now: Date,
+): Prisma.ResearchPaperWhereInput {
+  return {
+    studentId,
+    title,
+    // null (never undefined) so Prisma matches file-less rows (IS NULL);
+    // an undefined value would silently drop the filter entirely.
+    fileUrl,
+    uploadedAt: { gte: new Date(now.getTime() - RESEARCH_DEDUPE_WINDOW_MS) },
+  };
+}
+
 router.post('/me/research', validate(createPaperSchema), async (req, res, next) => {
   try {
     if (req.user!.role !== Role.STUDENT) throw AppError.forbidden();
@@ -589,8 +623,22 @@ router.post('/me/research', validate(createPaperSchema), async (req, res, next) 
         throw new AppError('BAD_REQUEST', 'offeringId must be an offering you are enrolled in', 400);
       }
     }
-    const created = await prisma.researchPaper.create({
-      data: { ...body, studentId: req.user!.id, status: 'UPLOADED' },
+    const created = await prisma.$transaction(async (tx) => {
+      // Serialize per student (the watch-flow row-lock pattern): the FOR
+      // UPDATE closes the double-submit TOCTOU — two racing POSTs can't
+      // both pass the dedupe read, the loser blocks until the winner
+      // commits and then sees the duplicate row (audit 15-b P2-5).
+      await tx.$queryRaw`SELECT id FROM "User" WHERE id = ${req.user!.id} FOR UPDATE`;
+      const duplicate = await tx.researchPaper.findFirst({
+        where: recentDuplicatePaperWhere(req.user!.id, body.title, body.fileUrl ?? null, new Date()),
+        select: { id: true },
+      });
+      if (duplicate) {
+        throw AppError.conflict('This paper was already uploaded moments ago');
+      }
+      return tx.researchPaper.create({
+        data: { ...body, studentId: req.user!.id, status: 'UPLOADED' },
+      });
     });
     res.status(201).json({ data: created });
   } catch (e) { next(e); }
@@ -599,10 +647,46 @@ router.post('/me/research', validate(createPaperSchema), async (req, res, next) 
 // Simulated plagiarism + AI-content scan. Picks deterministic-feeling values.
 // Rate-limited: every run parses a full PDF (extractPaperText) — the
 // limiter keeps abuse and accidental client loops off the parser.
+
+/**
+ * Papers that may enter (or re-enter) the scan step. GRADED and PUBLISHED
+ * are excluded — a graded or published paper must never be re-scanned.
+ * The scan write is a conditional claim on this set (audit 15-b P1-3) so
+ * a scan that finishes its seconds-long PDF extraction after a reviewer
+ * graded/published the paper 409s instead of reverting the terminal
+ * state. The never-written SCANNING value is excluded too: no code path
+ * produces it, and a hypothetical mid-flight paper should not re-scan.
+ * Exported for unit tests.
+ */
+export const SCANNABLE_PAPER_STATUSES = ['UPLOADED', 'CHECKS_PASSED', 'CHECKS_FAILED'] as const;
+
+export function isPaperScannable(status: string): boolean {
+  return (SCANNABLE_PAPER_STATUSES as readonly string[]).includes(status);
+}
+
+/**
+ * Deterministic-feeling simulated scan results, derived from the paper id
+ * hash (previously inline in the scan route; extracted for unit tests).
+ * plagiarismPct lands in 3–20, aiContentPct in 4–25, both with at most one
+ * decimal. Exported for unit tests.
+ */
+export function scanResultsFor(paperId: string): { plagiarismPct: number; aiContentPct: number; passed: boolean } {
+  const seed = paperId.charCodeAt(0) + paperId.charCodeAt(2);
+  const plagiarismPct = Number((((seed * 7) % 18) + 3).toFixed(1)); // 3 - 20
+  const aiContentPct = Number((((seed * 11) % 22) + 4).toFixed(1)); // 4 - 25
+  return { plagiarismPct, aiContentPct, passed: plagiarismPct < 15 && aiContentPct < 25 };
+}
+
 router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, res, next) => {
   try {
     const id = req.params.id!;
-    const paper = await prisma.researchPaper.findUnique({ where: { id } });
+    const paper = await prisma.researchPaper.findUnique({
+      where: { id },
+      // Narrow select — the scan needs the identity/ownership/status/file
+      // fields only; never hydrate the potentially-megabyte extractedText
+      // column for a precondition check.
+      select: { id: true, studentId: true, fileUrl: true, status: true },
+    });
     if (!paper) throw AppError.notFound();
     // Students may only scan their own papers.
     if (req.user!.role === Role.STUDENT) {
@@ -614,23 +698,27 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
     } else if (req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) {
       throw AppError.forbidden();
     }
-    // Refuse to re-scan papers already graded or published.
-    if (paper.status === 'GRADED' || paper.status === 'PUBLISHED') {
+    // Refuse to re-scan papers already graded or published (fast path —
+    // the conditional claim below is the race-safe backstop).
+    if (!isPaperScannable(paper.status)) {
       throw AppError.conflict('Cannot rescan a graded paper');
     }
-    // Deterministic-looking results derived from id hash.
-    const seed = paper.id.charCodeAt(0) + paper.id.charCodeAt(2);
-    const plagiarismPct = Number((((seed * 7) % 18) + 3).toFixed(1)); // 3 - 21
-    const aiContentPct = Number((((seed * 11) % 22) + 4).toFixed(1)); // 4 - 26
-    const passed = plagiarismPct < 15 && aiContentPct < 25;
+    const { plagiarismPct, aiContentPct, passed } = scanResultsFor(paper.id);
 
     // Best-effort full-text extraction so the paper becomes searchable
     // in the library archive after scanning. Local files only (those
     // served by /api/v1/files/papers/...).
     const extractedText = await extractPaperText(paper.fileUrl);
 
-    const updated = await prisma.researchPaper.update({
-      where: { id },
+    // Conditional claim (audit 15-b P1-3): the scan result only lands
+    // while the paper is still in a scannable status. If a reviewer
+    // graded and/or published the paper during the seconds-long
+    // extraction above, the claim matches zero rows and this request
+    // 409s — the PUBLISHED paper stays published. The old unconditional
+    // update silently reverted it to CHECKS_* while publishedAt stayed
+    // set, vanishing the paper from the public archive.
+    const claim = await prisma.researchPaper.updateMany({
+      where: { id, status: { in: [...SCANNABLE_PAPER_STATUSES] } },
       data: {
         status: passed ? 'CHECKS_PASSED' : 'CHECKS_FAILED',
         plagiarismPct,
@@ -639,6 +727,11 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
         ...(extractedText ? { extractedText } : {}),
       },
     });
+    if (claim.count === 0) throw AppError.conflict('Cannot rescan a graded paper');
+    // updateMany returns only a count — read the row back so the response
+    // keeps the exact shape the unconditional update used to return.
+    const updated = await prisma.researchPaper.findUnique({ where: { id } });
+    if (!updated) throw AppError.notFound();
     res.json({ data: decToNum(updated) });
   } catch (e) { next(e); }
 });
@@ -653,7 +746,8 @@ export const gradePaperSchema = z.object({
  * OR failed — a failed scan can still be graded, e.g. a low grade with
  * feedback), and re-grading is allowed until the paper is published.
  * This keeps the pipeline UPLOADED → scan → grade → publish from being
- * skipped at the grade step. Exported for unit tests.
+ * skipped at the grade step. The grade write is a conditional claim on
+ * this set (audit 15-b P1-3). Exported for unit tests.
  */
 export const GRADEABLE_PAPER_STATUSES = ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] as const;
 
@@ -667,8 +761,8 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
     // Per-row ownership: teacher must own the offering the paper belongs to,
     // unless they hold RESEARCH_GRADE_ANY.
     await assertOwnsResearchPaper(id, req.user!.id, req.user!.role);
-    // Status precondition: the scan step cannot be skipped, and a
-    // published paper is final.
+    // Status precondition (fast path): the scan step cannot be skipped,
+    // and a published paper is final.
     const paper = await prisma.researchPaper.findUnique({
       where: { id },
       select: { status: true },
@@ -681,8 +775,14 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
           : 'Paper must be scanned before it can be graded',
       );
     }
-    const updated = await prisma.researchPaper.update({
-      where: { id },
+    // Conditional claim (audit 15-b P1-3): the grade only lands while the
+    // paper is still in a gradeable status. If a concurrent publish
+    // committed between the read above and this write, the claim matches
+    // zero rows and this request 409s — instead of the old unconditional
+    // update flipping PUBLISHED back to GRADED, silently un-publishing a
+    // live archive paper.
+    const claim = await prisma.researchPaper.updateMany({
+      where: { id, status: { in: [...GRADEABLE_PAPER_STATUSES] } },
       data: {
         grade: req.body.grade,
         feedback: req.body.feedback,
@@ -691,6 +791,13 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
         gradedAt: new Date(),
       },
     });
+    // The only reachable claim failure (the fast-path read passed) is a
+    // concurrent publish → PUBLISHED.
+    if (claim.count === 0) throw AppError.conflict('Published papers cannot be re-graded');
+    // updateMany returns only a count — read the row back so the response
+    // keeps the exact shape the unconditional update used to return.
+    const updated = await prisma.researchPaper.findUnique({ where: { id } });
+    if (!updated) throw AppError.notFound();
     res.json({ data: decToNum(updated) });
   } catch (e) { next(e); }
 });
@@ -726,6 +833,18 @@ router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
   } catch (e) { next(e); }
 });
 
+/**
+ * Only a GRADED paper may be published, and publishing is one-way: a
+ * PUBLISHED paper is terminal. The publish write is a conditional claim
+ * on this set (audit 15-b P1-3) so two racing publishes can't
+ * double-write publishedAt. Exported for unit tests.
+ */
+export const PUBLISHABLE_PAPER_STATUSES = ['GRADED'] as const;
+
+export function isPaperPublishable(status: string): boolean {
+  return (PUBLISHABLE_PAPER_STATUSES as readonly string[]).includes(status);
+}
+
 // Publish a graded paper to the library.
 router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
@@ -733,13 +852,29 @@ router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN, Role.
     // Per-row ownership check: a teacher may publish only papers tied to
     // offerings they teach. ADMIN/OWNER bypass via assertOwnsResearchPaper.
     await assertOwnsResearchPaper(id, req.user!.id, req.user!.role);
-    const paper = await prisma.researchPaper.findUnique({ where: { id } });
-    if (!paper) throw AppError.notFound();
-    if (paper.status !== 'GRADED') throw AppError.conflict('Paper must be graded before publishing');
-    const updated = await prisma.researchPaper.update({
+    // Fast-path precondition; the conditional claim below is the
+    // race-safe backstop. Narrow select — status is all this handler
+    // needs; never hydrate extractedText.
+    const paper = await prisma.researchPaper.findUnique({
       where: { id },
+      select: { status: true },
+    });
+    if (!paper) throw AppError.notFound();
+    if (!isPaperPublishable(paper.status)) throw AppError.conflict('Paper must be graded before publishing');
+    // Conditional claim (audit 15-b P1-3): the publish only lands while
+    // the paper is still GRADED — a paper that left GRADED between the
+    // read and this write 409s instead of being leapfrogged into the
+    // public archive, and a re-publish of a PUBLISHED paper can never
+    // move publishedAt.
+    const claim = await prisma.researchPaper.updateMany({
+      where: { id, status: { in: [...PUBLISHABLE_PAPER_STATUSES] } },
       data: { status: 'PUBLISHED', publishedAt: new Date() },
     });
+    if (claim.count === 0) throw AppError.conflict('Paper must be graded before publishing');
+    // updateMany returns only a count — read the row back so the response
+    // keeps the exact shape the unconditional update used to return.
+    const updated = await prisma.researchPaper.findUnique({ where: { id } });
+    if (!updated) throw AppError.notFound();
     res.json({ data: decToNum(updated) });
   } catch (e) { next(e); }
 });

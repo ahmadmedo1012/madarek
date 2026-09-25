@@ -4,6 +4,7 @@ import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { AppError } from '../../lib/errors.js';
 import { attendancePctFromStatusCounts } from '../../lib/risk.js';
+import { tripoliDayDow } from '../../lib/dates.js';
 
 /**
  * Student dashboard aggregate — Phase 7.
@@ -66,6 +67,163 @@ export function currentTerm(now = new Date()): { code: string; startsAt: Date; e
     : { code: `${y - 1}-FALL`, startsAt: new Date(y - 1, 8, 10), endsAt: new Date(y, 0, 15) };
 }
 
+// ─── /me/results weighted rollup — pure fold, DB-free (audit 15-i TOP-2) ──
+// The arithmetic below used to live inline in the handler; it is extracted
+// so the student-transcript math is pinned by tests/modules/
+// dashboard-logic.test.ts without a DB harness.
+
+/** Prisma `Decimal` duck-type: the fold only needs `toString()` (the
+ *  `Number(x.toString())` path Prisma Decimals require), which keeps the
+ *  extracted function DB-free — plain numbers satisfy it too. */
+export type DecimalLike = { toString(): string };
+
+/** Structural subset of the `prisma.grade.findMany` rows the rollup reads. */
+export interface GradeRollupRow {
+  offeringId: string;
+  kind: string;
+  score: DecimalLike;
+  maxScore: number;
+  weight: number;
+  feedback: string | null;
+  offering: {
+    term: string;
+    course: { code: string; name: string; themeColor: string | null };
+  };
+}
+
+/** Structural subset of the graded-submission rows the rollup reads. */
+export interface GradedSubmissionRollupRow {
+  grade: DecimalLike | null; // null defensively skipped (the where filters)
+  assignment: {
+    weight: number;
+    maxScore: number;
+    offeringId: string;
+    offering: {
+      term: string;
+      course: { code: string; name: string; themeColor: string | null };
+    };
+  };
+}
+
+/** One course's weighted rollup — a `courses[]` row of /me/results. */
+export interface CourseRollup {
+  offeringId: string;
+  term: string;
+  courseCode: string;
+  courseName: string;
+  themeColor: string | null;
+  gradePct: number | null;
+  breakdown: Array<{ kind: string; score: number; maxScore: number; weight: number; feedback: string | null }>;
+}
+
+/**
+ * Fold Grade rows + graded submissions into per-course weighted
+ * percentages. Grade-table rows and graded submissions share one
+ * arithmetic — score/maxScore as pct, weighted by the item's weight — and
+ * a course graded only through submissions shows up instead of being
+ * invisible (audit 11-d P1-6). `breakdown` stays Grade-table-only.
+ * Courses sort by gradePct descending, nulls (weightTotal 0) last.
+ */
+export function rollupCourseGrades(
+  gradeRows: readonly GradeRollupRow[],
+  gradedSubs: readonly GradedSubmissionRollupRow[],
+): CourseRollup[] {
+  interface CourseRow {
+    offeringId: string;
+    term: string;
+    courseCode: string;
+    courseName: string;
+    themeColor: string | null;
+    weightedSum: number;
+    weightTotal: number;
+    breakdown: Array<{ kind: string; score: number; maxScore: number; weight: number; feedback: string | null }>;
+  }
+  const byOffering = new Map<string, CourseRow>();
+  const rowFor = (
+    offeringId: string,
+    offering: GradeRollupRow['offering'],
+  ): CourseRow => {
+    let row = byOffering.get(offeringId);
+    if (!row) {
+      row = {
+        offeringId,
+        term: offering.term,
+        courseCode: offering.course.code,
+        courseName: offering.course.name,
+        themeColor: offering.course.themeColor,
+        weightedSum: 0,
+        weightTotal: 0,
+        breakdown: [],
+      };
+      byOffering.set(offeringId, row);
+    }
+    return row;
+  };
+
+  // Officially recorded Grade rows — each also lands in `breakdown`.
+  // A maxScore ≤ 0 row contributes a 0 pct but still its weight — pinned
+  // historical semantics (score/0 would be Infinity without the guard).
+  for (const g of gradeRows) {
+    const pct = g.maxScore > 0 ? (Number(g.score.toString()) / g.maxScore) * 100 : 0;
+    const row = rowFor(g.offeringId, g.offering);
+    row.weightedSum += pct * g.weight;
+    row.weightTotal += g.weight;
+    row.breakdown.push({
+      kind: g.kind,
+      score: Number(g.score.toString()),
+      maxScore: g.maxScore,
+      weight: g.weight,
+      feedback: g.feedback,
+    });
+  }
+
+  // Graded assignment submissions (audit 11-d P1-6) — folded with the
+  // same arithmetic the Grade rows use, never into `breakdown`.
+  for (const s of gradedSubs) {
+    if (s.grade === null) continue; // defensive — the where already filters
+    const pct = s.assignment.maxScore > 0
+      ? (Number(s.grade.toString()) / s.assignment.maxScore) * 100
+      : 0;
+    const row = rowFor(s.assignment.offeringId, s.assignment.offering);
+    row.weightedSum += pct * s.assignment.weight;
+    row.weightTotal += s.assignment.weight;
+  }
+
+  return Array.from(byOffering.values()).map((r) => ({
+    offeringId: r.offeringId,
+    term: r.term,
+    courseCode: r.courseCode,
+    courseName: r.courseName,
+    themeColor: r.themeColor,
+    gradePct: r.weightTotal > 0 ? Math.round(r.weightedSum / r.weightTotal) : null,
+    breakdown: r.breakdown,
+  })).sort((a, b) => (b.gradePct ?? -1) - (a.gradePct ?? -1));
+}
+
+/** The `headline` object of /me/results — avg / highest / lowest over the
+ *  graded (non-null gradePct) courses only; courseCount counts them all. */
+export interface ResultsHeadline {
+  avgGradePct: number | null;
+  highest: { courseName: string; gradePct: number } | null;
+  lowest: { courseName: string; gradePct: number } | null;
+  courseCount: number;
+}
+
+/** Pure fold of `courses` → the /me/results headline. Null-gradePct
+ *  courses (weightTotal 0) never reach avg/highest/lowest. */
+export function resultsHeadline(courses: readonly CourseRollup[]): ResultsHeadline {
+  const valid = courses.filter((c): c is CourseRollup & { gradePct: number } => c.gradePct !== null);
+  const avg = valid.length > 0 ? Math.round(valid.reduce((a, c) => a + c.gradePct, 0) / valid.length) : null;
+  const top = valid.length > 0 ? valid.reduce((a, c) => (c.gradePct > a.gradePct ? c : a)) : null;
+  const low = valid.length > 0 ? valid.reduce((a, c) => (c.gradePct < a.gradePct ? c : a)) : null;
+  return {
+    avgGradePct: avg,
+    highest: top ? { courseName: top.courseName, gradePct: top.gradePct } : null,
+    lowest: low ? { courseName: low.courseName, gradePct: low.gradePct } : null,
+    courseCount: courses.length,
+  };
+}
+
 /**
  * GET /me/results — every grade the student has, rolled up per course
  * with a weighted percentage. Replaces the hardcoded 5-row RESULTS array
@@ -94,44 +252,6 @@ router.get('/me/results', async (req, res, next) => {
       orderBy: { recordedAt: 'desc' },
     });
 
-    interface CourseRow {
-      offeringId: string;
-      term: string;
-      courseCode: string;
-      courseName: string;
-      themeColor: string | null;
-      weightedSum: number;
-      weightTotal: number;
-      breakdown: Array<{ kind: string; score: number; maxScore: number; weight: number; feedback: string | null }>;
-    }
-    const byOffering = new Map<string, CourseRow>();
-    for (const g of grades) {
-      const pct = g.maxScore > 0 ? Number(g.score.toString()) / g.maxScore * 100 : 0;
-      let row = byOffering.get(g.offeringId);
-      if (!row) {
-        row = {
-          offeringId: g.offeringId,
-          term: g.offering.term,
-          courseCode: g.offering.course.code,
-          courseName: g.offering.course.name,
-          themeColor: g.offering.course.themeColor,
-          weightedSum: 0,
-          weightTotal: 0,
-          breakdown: [],
-        };
-        byOffering.set(g.offeringId, row);
-      }
-      row.weightedSum += pct * g.weight;
-      row.weightTotal += g.weight;
-      row.breakdown.push({
-        kind: g.kind,
-        score: Number(g.score.toString()),
-        maxScore: g.maxScore,
-        weight: g.weight,
-        feedback: g.feedback,
-      });
-    }
-
     // Graded assignment submissions (audit 11-d P1-6): one query feeds
     // both the rollup fold below and the recent feed — bounded by the
     // student's own submission count.
@@ -151,42 +271,7 @@ router.get('/me/results', async (req, res, next) => {
       },
     });
 
-    // Fold each graded submission into its course's weighted rollup with
-    // the same arithmetic the Grade rows use: score/maxScore as pct,
-    // weighted by the assignment's weight. A course graded only through
-    // submissions now shows up instead of being invisible.
-    for (const s of gradedSubs) {
-      if (s.grade === null) continue; // defensive — the where already filters
-      const pct = s.assignment.maxScore > 0
-        ? Number(s.grade.toString()) / s.assignment.maxScore * 100
-        : 0;
-      let row = byOffering.get(s.assignment.offeringId);
-      if (!row) {
-        row = {
-          offeringId: s.assignment.offeringId,
-          term: s.assignment.offering.term,
-          courseCode: s.assignment.offering.course.code,
-          courseName: s.assignment.offering.course.name,
-          themeColor: s.assignment.offering.course.themeColor,
-          weightedSum: 0,
-          weightTotal: 0,
-          breakdown: [],
-        };
-        byOffering.set(s.assignment.offeringId, row);
-      }
-      row.weightedSum += pct * s.assignment.weight;
-      row.weightTotal += s.assignment.weight;
-    }
-
-    const courses = Array.from(byOffering.values()).map((r) => ({
-      offeringId: r.offeringId,
-      term: r.term,
-      courseCode: r.courseCode,
-      courseName: r.courseName,
-      themeColor: r.themeColor,
-      gradePct: r.weightTotal > 0 ? Math.round(r.weightedSum / r.weightTotal) : null,
-      breakdown: r.breakdown,
-    })).sort((a, b) => (b.gradePct ?? -1) - (a.gradePct ?? -1));
+    const courses = rollupCourseGrades(grades, gradedSubs);
 
     // Secondary "what was just returned to me" feed — the 20 most recent
     // of the same graded submissions folded into the rollup above.
@@ -201,19 +286,9 @@ router.get('/me/results', async (req, res, next) => {
       gradedAt: s.gradedAt,
     }));
 
-    const valid = courses.filter((c): c is typeof c & { gradePct: number } => c.gradePct !== null);
-    const avg = valid.length > 0 ? Math.round(valid.reduce((a, c) => a + c.gradePct, 0) / valid.length) : null;
-    const top = valid.length > 0 ? valid.reduce((a, c) => (c.gradePct > a.gradePct ? c : a)) : null;
-    const low = valid.length > 0 ? valid.reduce((a, c) => (c.gradePct < a.gradePct ? c : a)) : null;
-
     res.json({
       data: {
-        headline: {
-          avgGradePct: avg,
-          highest: top ? { courseName: top.courseName, gradePct: top.gradePct } : null,
-          lowest: low ? { courseName: low.courseName, gradePct: low.gradePct } : null,
-          courseCount: courses.length,
-        },
+        headline: resultsHeadline(courses),
         courses,
         recentAssignments,
       },
@@ -422,7 +497,12 @@ router.get('/me/dashboard', async (req, res, next) => {
     });
 
     // ── Today / tomorrow class slots from schedule ────────────
-    const todayDow = now.getDay();
+    // Audience calendar (audit 15-h P1-2): the «اليوم/غداً» labels must
+    // follow the Libyan civil day (Africa/Tripoli, UTC+2), not the
+    // server's UTC day — between 00:00 and 02:00 Tripoli time the UTC
+    // weekday still points at yesterday and the agenda would label
+    // yesterday's slots «اليوم».
+    const todayDow = tripoliDayDow(now);
     const tomorrowDow = (todayDow + 1) % 7;
     const todayClasses: Array<{ id: string; offeringId: string; courseName: string; courseCode: string; startTime: string; endTime: string; room: string | null; when: 'today' | 'tomorrow' }> = [];
     for (const e of enrollments) {

@@ -168,3 +168,26 @@ describe('single-flight refresh', () => {
     expect(refreshCalls).toBe(1);
   });
 });
+
+describe('refresh request hardening (15-d P2-6)', () => {
+  it('sends the refresh POST with an explicit 15s timeout', async () => {
+    let refreshTimeout: number | undefined;
+    installAdapter((config) => {
+      if ((config.url ?? '').includes('/auth/refresh')) {
+        refreshTimeout = config.timeout;
+        return respond(config, 200, { data: { accessToken: 'fresh-token', user: USER_A } });
+      }
+      // The retried request 401s again; the __retried guard stops the
+      // loop — what matters here is the refresh call's config.
+      rejectWith(config, 401, { error: { code: 'TOKEN_EXPIRED' } });
+    });
+
+    useAuthStore.getState().setSession(USER_A, 'expired-token');
+
+    await expect(unwrap(api.get('/anything'))).rejects.toMatchObject({ response: { status: 401 } });
+    // The refresh deliberately bypasses the `api` instance (and its
+    // 20s timeout) — without an explicit timeout, a hung endpoint
+    // pinned the refreshPromise singleton for the browser default.
+    expect(refreshTimeout).toBe(15_000);
+  });
+});

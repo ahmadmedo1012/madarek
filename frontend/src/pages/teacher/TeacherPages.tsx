@@ -4,8 +4,9 @@ import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload,
   TrendingUp, MessageSquare, Send, FileText, X, CheckCircle2,
-  type LucideIcon,
+  ChevronRight, ChevronLeft,
 } from 'lucide-react';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
@@ -119,12 +120,34 @@ export function TeacherSchedulePage() {
 type AttStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED';
 /* Selected state rides on [data-tone] + .on (CSS owns the colors) — the
  * old inline style block had no aria-pressed and no class-based state
- * (audit 0-e P1-32). */
-const ATT_OPTIONS: Array<{ v: AttStatus; label: string; tone: 'success' | 'warning' | 'danger' }> = [
+ * (audit 0-e P1-32). EXCUSED (15-a P1-7) is the 4th AttendanceStatus:
+ * the backend accepts it and the risk/analytics stack excludes it from
+ * denominators — it was unreachable from this, its only write surface. */
+const ATT_OPTIONS: Array<{ v: AttStatus; label: string; tone: 'success' | 'warning' | 'danger' | 'brand' }> = [
   { v: 'PRESENT', label: 'حاضر',   tone: 'success' },
   { v: 'LATE',    label: 'متأخّر', tone: 'warning' },
   { v: 'ABSENT',  label: 'غائب',   tone: 'danger' },
+  { v: 'EXCUSED', label: 'بعذر',   tone: 'brand' },
 ];
+
+/* Selected wash for the brand tone. `.att-toggle[data-tone]` covers
+ * success/warning/danger in components.css; the brand rule
+ * (`.att-toggle[aria-pressed='true'][data-tone='brand']`) is the natural
+ * home but that stylesheet belongs to another wave-16 batch — until it
+ * lands, the copper selected state rides tokens here (same shape as the
+ * CSS rules: soft wash, transparent border, -ink text). */
+const ATT_BRAND_SELECTED_STYLE = {
+  background: 'var(--accent-soft)',
+  borderColor: 'transparent',
+  color: 'var(--accent-ink)',
+} as const;
+
+/** 'YYYY-MM-DD' of the client-local calendar day — the roll-call default
+ *  (15-h P1-6): slicing `toISOString()` yields the UTC day, which reads
+ *  as yesterday's date during the first ~2h of a Libyan night. */
+function localDayKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
 
 export function AttendancePage() {
   const offsQ = useTeacherOfferings();
@@ -134,8 +157,10 @@ export function AttendancePage() {
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
   const record = useRecordAttendance();
 
-  const today = new Date().toISOString().slice(0, 10);
-  const [date, setDate] = useState<string>(today);
+  // 15-h P1-6: default = the client-local day (never the UTC slice —
+  // between 00:00 and ~02:00 Libya time that is yesterday's date).
+  const [date, setDate] = useState<string>(() => localDayKey(new Date()));
+  const [dateError, setDateError] = useState<string | null>(null);
   const [topic, setTopic] = useState<string>('');
   const [statusByStudent, setStatusByStudent] = useState<Record<string, AttStatus>>({});
 
@@ -143,18 +168,28 @@ export function AttendancePage() {
   const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
 
   const counts = useMemo(() => {
-    let p = 0, l = 0, a = 0;
+    let p = 0, l = 0, a = 0, e = 0;
     for (const s of students) {
       const st = statusByStudent[s.studentId] ?? 'PRESENT';
       if (st === 'PRESENT') p++;
       else if (st === 'LATE') l++;
       else if (st === 'ABSENT') a++;
+      else if (st === 'EXCUSED') e++;
     }
-    return { p, l, a, total: students.length };
+    return { p, l, a, e, total: students.length };
   }, [students, statusByStudent]);
 
   const onSave = () => {
     if (!effectiveOfferingId || students.length === 0) return;
+    // 15-h P1-6: a cleared <input type="date"> yields '' — new Date('')
+    // is an Invalid Date whose toISOString() would throw inside this
+    // handler (the save silently did nothing). Block with an inline
+    // Arabic message instead; the wire value stays a UTC-midnight ISO.
+    if (!date) {
+      setDateError('حدّد تاريخ الجلسة قبل الحفظ.');
+      return;
+    }
+    setDateError(null);
     record.mutate({
       offeringId: effectiveOfferingId,
       date: new Date(date).toISOString(),
@@ -196,13 +231,28 @@ export function AttendancePage() {
           </label>
           <label>
             <span className="form-label">تاريخ الجلسة</span>
-            <input type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} />
+            <input
+              type="date"
+              className="input"
+              value={date}
+              aria-invalid={dateError ? true : undefined}
+              onChange={(e) => {
+                setDate(e.target.value);
+                setDateError(null);
+              }}
+            />
           </label>
           <label>
             <span className="form-label">الموضوع (اختياريّ)</span>
             <input type="text" className="input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="مثال: مقدّمة في UML" />
           </label>
         </div>
+        {dateError && (
+          <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+            <Icon icon={AlertTriangle} size={14} />
+            <span className="flex-1">{dateError}</span>
+          </div>
+        )}
       </Card>
 
       <div className="grid-2-1">
@@ -231,18 +281,22 @@ export function AttendancePage() {
                       <div className="list-row-sub font-mono"><bdi>{s.universityId}</bdi></div>
                     </div>
                     <div className="flex gap-1" role="group" aria-label={`حضور ${s.name}`}>
-                      {ATT_OPTIONS.map((opt) => (
-                        <button
-                          key={opt.v}
-                          type="button"
-                          className={`att-toggle${status === opt.v ? ' on' : ''}`}
-                          data-tone={opt.tone}
-                          aria-pressed={status === opt.v}
-                          onClick={() => setStatusByStudent({ ...statusByStudent, [s.studentId]: opt.v })}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
+                      {ATT_OPTIONS.map((opt) => {
+                        const on = status === opt.v;
+                        return (
+                          <button
+                            key={opt.v}
+                            type="button"
+                            className={`att-toggle${on ? ' on' : ''}`}
+                            data-tone={opt.tone}
+                            aria-pressed={on}
+                            onClick={() => setStatusByStudent({ ...statusByStudent, [s.studentId]: opt.v })}
+                            style={on && opt.tone === 'brand' ? ATT_BRAND_SELECTED_STYLE : undefined}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -256,6 +310,10 @@ export function AttendancePage() {
             <ProgressBar value={counts.total > 0 ? Math.round((counts.p / counts.total) * 100) : 0} label={`الحضور (${counts.p})`} color="var(--success)" />
             <ProgressBar value={counts.total > 0 ? Math.round((counts.l / counts.total) * 100) : 0} label={`التأخّر (${counts.l})`} color="var(--warning)" />
             <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
+            {/* بعذر counts out of the session total (same denominator as
+                the other bars) — the analytics KPI keeps its own
+                EXCUSED-excluded math server-side. */}
+            <ProgressBar value={counts.total > 0 ? Math.round((counts.e / counts.total) * 100) : 0} label={`بعذر (${counts.e})`} color="var(--accent)" />
           </div>
           {record.isError && (
             <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
@@ -809,6 +867,17 @@ function GradeSubmissionModal({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  // 15-e P1-6: the score + up-to-2000-char feedback is the teacher's
+  // longest unsaved prose — Esc / close X / cancel / overlay-click now
+  // route through the shared discard guard (the same one the curriculum
+  // builders use) instead of silently dropping the draft. Once the save
+  // lands the draft is no longer unsaved — closing is free.
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: !done && (score !== '' || feedback !== ''),
+    pending: grade.isPending,
+    onClose,
+  });
+
   const onSubmit = async () => {
     const value = Number(score);
     if (score.trim() === '' || Number.isNaN(value)) {
@@ -838,13 +907,14 @@ function GradeSubmissionModal({
   return (
     <Modal
       open
-      onClose={onClose}
+      onClose={requestClose}
       ariaLabel={`تقييم تسليم ${target.assignmentTitle}`}
       closeOnOverlayClick={!grade.isPending}
+      closeOnEscape={!escapeLocked}
     >
       <div className="modal-header">
         <div className="modal-title">تقييم التسليم</div>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={grade.isPending}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={grade.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -910,7 +980,7 @@ function GradeSubmissionModal({
         )}
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn ghost" onClick={onClose} disabled={grade.isPending}>
+        <button type="button" className="btn ghost" onClick={requestClose} disabled={grade.isPending}>
           {done ? 'إغلاق' : 'إلغاء'}
         </button>
         {!done && (
@@ -924,18 +994,29 @@ function GradeSubmissionModal({
           </button>
         )}
       </div>
+      {guard}
     </Modal>
   );
 }
 
+/* One server page of the messages list (15-d P2-7). The old call
+ * fetched 50 rows and rendered a client-side `.slice(0, 30)` — rows
+ * 31–50 never showed and message #51+ was unreachable. */
+const MESSAGES_PAGE_SIZE = 30;
+
 export function MessagesPage() {
-  const q = useMyMessages(1, 50);
+  const [page, setPage] = useState(1);
+  const q = useMyMessages(page, MESSAGES_PAGE_SIZE);
   // Read the current user's ID directly from the auth store. Previously
   // this code tried to *infer* `meId` by picking the first message's
   // `toUser.id` — which breaks for sent messages (where the current
   // user is the *sender*, not the recipient). Result: incoming/outgoing
   // bubbles were swapped, and the avatar shown was wrong.
   const meId = useAuthStore((s) => s.user?.id) ?? null;
+
+  const meta = q.data?.meta;
+  const totalPages = Math.max(1, meta?.totalPages ?? 1);
+  const messages = q.data?.data ?? [];
 
   return (
     <div className="page">
@@ -945,31 +1026,67 @@ export function MessagesPage() {
           <LoadingState />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
-        ) : !q.data || q.data.data.length === 0 ? (
+        ) : !q.data || messages.length === 0 ? (
           <EmptyState title="لا توجد رسائل بعد" description="ستظهر هنا الرسائل المُرسَلة إليك أو منك." />
         ) : (
-          <div className="flex-col gap-2">
-            {q.data.data.slice(0, 30).map((m) => {
-              const incoming = m.toUser?.id === meId;
-              const other = incoming ? m.fromUser : m.toUser;
-              return (
-                <div key={m.id} className="list-row">
-                  <UserAvatar
-                    initials={`${other.firstName[0] ?? ''}${other.lastName[0] ?? ''}`}
-                    color={other.avatarColor ?? undefined}
-                    size={32}
-                  />
-                  <div className="list-row-body">
-                    <div className="list-row-title">{other.firstName} {other.lastName}</div>
-                    <div className="list-row-sub">
-                      {incoming ? '' : 'أنت: '}{m.body}
+          <>
+            <div className="flex-col gap-2">
+              {messages.map((m) => {
+                const incoming = m.toUser?.id === meId;
+                const other = incoming ? m.fromUser : m.toUser;
+                return (
+                  <div key={m.id} className="list-row">
+                    <UserAvatar
+                      initials={`${other.firstName[0] ?? ''}${other.lastName[0] ?? ''}`}
+                      color={other.avatarColor ?? undefined}
+                      size={32}
+                    />
+                    <div className="list-row-body">
+                      <div className="list-row-title">{other.firstName} {other.lastName}</div>
+                      <div className="list-row-sub">
+                        {incoming ? '' : 'أنت: '}{m.body}
+                      </div>
                     </div>
+                    <div className="text-xxs text-subtle">{formatRelativeArShort(m.createdAt)}</div>
                   </div>
-                  <div className="text-xxs text-subtle">{formatRelativeArShort(m.createdAt)}</div>
+                );
+              })}
+            </div>
+            {meta && totalPages > 1 && (
+              <div
+                className="flex items-center justify-between flex-wrap gap-3"
+                style={{ marginBlockStart: 'var(--sp-4)' }}
+              >
+                <span className="text-xs text-muted">
+                  الصفحة <bdi>{page}</bdi> من <bdi>{totalPages}</bdi> ·{' '}
+                  {countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])}
+                </span>
+                <div className="flex gap-2">
+                  {/* RTL: "previous" points inline-start-ward = the right
+                      chevron (wave 5-a convention, same as the owner
+                      timeline pager). */}
+                  <button
+                    type="button"
+                    className="btn ghost sm"
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    aria-label="الصفحة السابقة"
+                  >
+                    <Icon icon={ChevronRight} size={14} /> السابق
+                  </button>
+                  <button
+                    type="button"
+                    className="btn ghost sm"
+                    disabled={page >= totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    aria-label="الصفحة التالية"
+                  >
+                    التالي <Icon icon={ChevronLeft} size={14} />
+                  </button>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            )}
+          </>
         )}
       </Card>
     </div>

@@ -1,6 +1,7 @@
 /**
  * Backend unit test — pure logic from
- * `backend/src/http/routes/teacher.routes.ts` (wave 13-5).
+ * `backend/src/http/routes/teacher.routes.ts` (wave 13-5, extended
+ * 16-B5).
  *
  * DB-free, mirroring learning-logic.test.ts. Locks the unified KPI
  * semantics that used to drift between /students, /analytics and
@@ -11,10 +12,16 @@
  *    and no roll-calls = NEUTRAL/OK, never CRITICAL),
  *  - grade aggregation over Grade-table rows AND GRADED submissions,
  *  - the governance-scope decision matrix for POST /admin/users/:id/
- *    scope (12-4 hand-off #1 — the self-escalation guard).
+ *    scope (12-4 hand-off #1 — the self-escalation guard),
+ *  - course-level grade aggregates for the analytics surface (audit
+ *    15-i TOP-14 — the deliberate {0,0} empty state and the ≥50
+ *    inclusive pass mark),
+ *  - the leadership-seat anchor map behind POST /admin/teachers/:id/
+ *    position's FOR UPDATE serialization (audit 15-b P2-2).
  *
  * Route-level integration (auth gates, assertOwnsOffering, roll-call
- * transactions) needs a DB harness the project does not have.
+ * transactions, the seat FOR UPDATE lock itself) needs a DB harness
+ * the project does not have.
  */
 import { describe, expect, it } from 'vitest';
 import { AttendanceStatus, Prisma, Role } from '@prisma/client';
@@ -22,12 +29,15 @@ import { AppError } from '../../src/lib/errors';
 import {
   assessStudentRisk,
   assertCanAssignScope,
+  assignPositionSchema,
   assignScopeSchema,
   attendancePct,
   classifyRisk,
+  courseGradeStats,
   gradePct,
   gradePctsByStudent,
   meanPct,
+  seatLockTarget,
   watchPctOf,
 } from '../../src/http/routes/teacher.routes';
 
@@ -377,5 +387,87 @@ describe('assignScopeSchema', () => {
     expect(assignScopeSchema.safeParse({ scopeFacultyId: 123 }).success).toBe(false);
     expect(assignScopeSchema.safeParse({ scopeFacultyId: null, extra: 1 }).success).toBe(false);
     expect(assignScopeSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe('courseGradeStats (analytics surface — audit 15-i TOP-14)', () => {
+  it('empty course → {avg: 0, passRate: 0} — the analytics card shows 0, not "—" (deliberate policy, unlike the dashboards\' null)', () => {
+    expect(courseGradeStats([])).toEqual({ avg: 0, passRate: 0 });
+    // an all-null course (only unset/÷0 artifacts — gradePct → null)
+    // is the same empty state, never NaN
+    expect(courseGradeStats([null, null])).toEqual({ avg: 0, passRate: 0 });
+  });
+
+  it('pass mark is ≥ 50 INCLUSIVE — exactly 50 passes', () => {
+    expect(courseGradeStats([50])).toEqual({ avg: 50, passRate: 100 });
+    expect(courseGradeStats([49, 50])).toEqual({ avg: 50, passRate: 50 });
+    expect(courseGradeStats([49])).toEqual({ avg: 49, passRate: 0 });
+  });
+
+  it('mixed nulls are filtered — they neither poison the mean nor dilute the pass rate', () => {
+    expect(courseGradeStats([null, 80, 20])).toEqual({ avg: 50, passRate: 50 });
+    expect(courseGradeStats([100, null, null])).toEqual({ avg: 100, passRate: 100 });
+  });
+
+  it('averages and rounds like the roster mean (meanPct semantics)', () => {
+    expect(courseGradeStats([80])).toEqual({ avg: 80, passRate: 100 });
+    expect(courseGradeStats([10, 20, 30])).toEqual({ avg: 20, passRate: 0 });
+    // avg 125/3 → 42, passRate 2/3 → 67 — both round half-up
+    expect(courseGradeStats([50, 55, 20])).toEqual({ avg: 42, passRate: 67 });
+  });
+});
+
+describe('assignPositionSchema (leadership appointment — discriminated union)', () => {
+  const cuid = 'cabcdefgh12345678';
+
+  it('accepts each appointment shape and the clear shape', () => {
+    expect(assignPositionSchema.safeParse({ position: 'DEAN', positionFacultyId: cuid }).success).toBe(true);
+    expect(assignPositionSchema.safeParse({ position: 'ASSOCIATE_DEAN', positionFacultyId: cuid }).success).toBe(true);
+    expect(assignPositionSchema.safeParse({ position: 'DEPARTMENT_HEAD', positionDepartmentId: cuid }).success).toBe(true);
+    expect(assignPositionSchema.safeParse({ position: null }).success).toBe(true);
+  });
+
+  it('rejects a seat without its anchor id or with a non-cuid anchor', () => {
+    expect(assignPositionSchema.safeParse({ position: 'DEAN' }).success).toBe(false);
+    expect(assignPositionSchema.safeParse({ position: 'DEPARTMENT_HEAD' }).success).toBe(false);
+    expect(assignPositionSchema.safeParse({ position: 'DEAN', positionFacultyId: 'not-a-cuid' }).success).toBe(false);
+  });
+
+  it('rejects the wrong anchor kind for a position (DEAN takes a faculty, not a department)', () => {
+    expect(assignPositionSchema.safeParse({ position: 'DEAN', positionDepartmentId: cuid }).success).toBe(false);
+    expect(assignPositionSchema.safeParse({ position: 'DEPARTMENT_HEAD', positionFacultyId: cuid }).success).toBe(false);
+  });
+
+  it('rejects unknown positions', () => {
+    expect(assignPositionSchema.safeParse({ position: 'RECTOR' }).success).toBe(false);
+    expect(assignPositionSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe('seatLockTarget (leadership-seat serialization — audit 15-b P2-2)', () => {
+  it('DEAN and ASSOCIATE_DEAN seats anchor to the Faculty row — one lock per faculty', () => {
+    expect(seatLockTarget({ position: 'DEAN', positionFacultyId: 'cfaculty0001' }))
+      .toEqual({ table: 'Faculty', id: 'cfaculty0001' });
+    expect(seatLockTarget({ position: 'ASSOCIATE_DEAN', positionFacultyId: 'cfaculty0001' }))
+      .toEqual({ table: 'Faculty', id: 'cfaculty0001' });
+  });
+
+  it('DEPARTMENT_HEAD seats anchor to the Department row', () => {
+    expect(seatLockTarget({ position: 'DEPARTMENT_HEAD', positionDepartmentId: 'cdepartment01' }))
+      .toEqual({ table: 'Department', id: 'cdepartment01' });
+  });
+
+  it('clearing a position holds no seat — nothing to lock, no conflict possible', () => {
+    expect(seatLockTarget({ position: null })).toBeNull();
+  });
+
+  it('agrees with the schema: every appointable body anchors to exactly one row', () => {
+    const dean = assignPositionSchema.parse({ position: 'DEAN', positionFacultyId: 'cfaculty0001' });
+    const assoc = assignPositionSchema.parse({ position: 'ASSOCIATE_DEAN', positionFacultyId: 'cfaculty0002' });
+    const head = assignPositionSchema.parse({ position: 'DEPARTMENT_HEAD', positionDepartmentId: 'cdepartment01' });
+    expect(seatLockTarget(dean)).toEqual({ table: 'Faculty', id: 'cfaculty0001' });
+    expect(seatLockTarget(assoc)).toEqual({ table: 'Faculty', id: 'cfaculty0002' });
+    expect(seatLockTarget(head)).toEqual({ table: 'Department', id: 'cdepartment01' });
+    expect(seatLockTarget(assignPositionSchema.parse({ position: null }))).toBeNull();
   });
 });

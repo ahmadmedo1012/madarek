@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../lib/api';
+import type { AppRole } from '../stores/auth.store';
 
 // ── Teacher dashboard aggregate ───────────────────────────────
 export interface TeacherDashboard {
@@ -209,6 +210,19 @@ export function useMarkNotifRead() {
   });
 }
 
+/** Bulk "mark all as read" — ONE POST /notifications/read-all (backend
+ *  updateMany over the unread rows, returns { updated }) instead of a
+ *  per-item PATCH loop that only reached the visible slice and refetched
+ *  the list once per item (15-d P1-2). The per-item PATCH above stays for
+ *  single-notification clicks. */
+export function useMarkAllNotifsRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unwrap<{ updated: number }>(api.post('/notifications/read-all', {})),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
+  });
+}
+
 // Unread count from response meta — backend returns it on the notifications endpoint.
 export function useUnreadNotifications() {
   return useQuery({
@@ -387,10 +401,13 @@ export interface Post {
   author: { id: string; firstName: string; lastName: string; avatarColor?: string | null; avatarInitials?: string | null };
   _count: { comments: number; reactions: number };
 }
-export function usePosts() {
+// 15-d P2-13: the feed limit is a parameter (keyed, so two limits never
+// share a cache entry) — consumers can page beyond the newest 20 posts;
+// the default keeps every existing call site byte-identical.
+export function usePosts(limit: number = 20) {
   return useQuery({
-    queryKey: ['posts'],
-    queryFn: () => unwrap<Post[]>(api.get('/posts?limit=20')),
+    queryKey: ['posts', limit],
+    queryFn: () => unwrap<Post[]>(api.get(`/posts?limit=${limit}`)),
   });
 }
 export function useCreatePost() {
@@ -565,27 +582,6 @@ export function useGaps() {
   });
 }
 
-// ── Resume learning ────────────────────────────────────────────
-export interface ResumeLecture {
-  mode: 'continue' | 'start';
-  progressPct: number;
-  watchedSec: number;
-  lecture: {
-    id: string;
-    title: string;
-    durationSec: number;
-    ordinal: number;
-    course: { id: string; name: string; code: string; themeColor?: string | null };
-    offeringId: string;
-  };
-}
-export function useResume() {
-  return useQuery({
-    queryKey: ['me', 'resume'],
-    queryFn: () => unwrap<ResumeLecture | null>(api.get('/me/resume')),
-  });
-}
-
 // ── Lectures ───────────────────────────────────────────────────
 export interface Lecture {
   id: string;
@@ -732,7 +728,6 @@ export function useDeleteLecture() {
       qc.invalidateQueries({ queryKey: ['offerings'] });
       qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
       qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
-      qc.invalidateQueries({ queryKey: ['me', 'resume'] });
     },
   });
 }
@@ -870,22 +865,6 @@ export function useOfferingFull(offeringId: string | undefined) {
   });
 }
 
-// ── Offering assignments ────
-// The agenda payload now carries offeringId directly (backend
-// student-dashboard.routes.ts), so the submit flow no longer needs the
-// per-offering resolution queries. This hook remains for pages that
-// list a single offering's assignments (e.g. course detail page).
-export interface OfferingAssignment {
-  id: string;
-  offeringId: string;
-  title: string;
-  type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
-  description?: string | null;
-  dueAt: string;
-  weight: number;
-  maxScore: number;
-}
-
 // ── Assignment submissions (student submit + teacher grade) ────
 export type SubmissionStatusFE = 'SUBMITTED' | 'LATE' | 'GRADED' | 'RETURNED' | 'DRAFT';
 
@@ -945,7 +924,15 @@ export function useSubmitAssignment(offeringId: string, assignmentId: string) {
   });
 }
 
-export function useGradeSubmission(submissionId: string) {
+// 15-d P1-3: a grade flows into more than the two dashboards — the
+// student's results page (['me','results'] recentAssignments / course
+// gradePct) and, for the graded offering, the Intelligence page's student
+// rows and analytics (avgGrade / passRate). The offering keys need the
+// offering's id, so the signature takes it as an optional second param:
+// call sites that cannot know it (the dashboard feed target carries only
+// courseCode today) keep compiling and still refresh everything
+// session-wide they could before.
+export function useGradeSubmission(submissionId: string, offeringId?: string) {
   const qc = useQueryClient();
   return useMutation({
     // Envelope: { data: <graded submission> } with status GRADED.
@@ -956,6 +943,11 @@ export function useGradeSubmission(submissionId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
       qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
+      qc.invalidateQueries({ queryKey: ['me', 'results'] });
+      if (offeringId) {
+        qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'students'] });
+        qc.invalidateQueries({ queryKey: ['teacher', 'offering', offeringId, 'analytics'] });
+      }
     },
   });
 }
@@ -1045,7 +1037,10 @@ export interface PaperAnnotation {
     id: string;
     firstName: string;
     lastName: string;
-    role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
+    // AppRole (16-E2 hand-off, landed 16-E10): the backend ships user.role
+    // raw and OWNER may annotate (learning.routes POST requireRole
+    // TEACHER/ADMIN/OWNER) — the 4-role union mislabeled an OWNER author.
+    role: AppRole;
     avatarColor: string | null;
     avatarInitials: string | null;
   };
@@ -1080,7 +1075,10 @@ export interface MyProfile {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
+  // Backend ships req.user.role raw — the Prisma Role enum includes
+  // OWNER, and OWNER accounts do hit /me/profile (15-c P1-4). AppRole
+  // (stores/auth.store) is the single source of truth for the wire union.
+  role: AppRole;
   avatarColor: string | null;
   avatarInitials: string | null;
   emailVerifiedAt: string | null;
@@ -1146,6 +1144,10 @@ export function usePublishPaper() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['research', 'queue'] });
       qc.invalidateQueries({ queryKey: ['me', 'research'] });
+      // 15-d P2-1: the library list surfaces published papers — a fresh
+      // publish must appear there immediately, not after the 30s stale
+      // window lapses on a later mount.
+      qc.invalidateQueries({ queryKey: ['research', 'published'] });
     },
   });
 }
@@ -1251,7 +1253,14 @@ export function useCompleteLesson() {
         api.post(`/training/lessons/${lessonId}/complete`, { quizAnswer }),
       ),
     onSuccess: () => {
+      // 15-d P2-4: lesson completion awards XP / level / badges, so the
+      // XP leaderboard, the achievements list and the student dashboard
+      // KPIs (totalXp / level) all read stale data until these are
+      // invalidated alongside the training family.
       qc.invalidateQueries({ queryKey: ['training'] });
+      qc.invalidateQueries({ queryKey: ['leaderboard'] });
+      qc.invalidateQueries({ queryKey: ['me', 'achievements'] });
+      qc.invalidateQueries({ queryKey: ['me', 'dashboard'] });
     },
   });
 }
@@ -1339,7 +1348,9 @@ export type AppCapability =
   | 'COMPETITIONS_RUN' | 'EVENTS_RUN';
 
 export interface MyPermissions {
-  role: 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY';
+  // Same wire truth as MyProfile.role (15-c P1-4): the backend echoes
+  // req.user.role raw, OWNER included.
+  role: AppRole;
   capabilities: AppCapability[];
   roleDefaults: AppCapability[];
 }
@@ -1651,19 +1662,21 @@ export interface StartedAttempt {
   expiresAt: string;
   durationMin: number;
   title: string;
-  alreadyAttempted?: boolean;
-  status?: string;
+  /** Present (as `true`) only on the TERMINAL start response. Declared
+   *  as the literal `true` — not `boolean` — so the optional property
+   *  doubles as a discriminant: `if (r.alreadyAttempted)` narrows the
+   *  StartExamResponse union (the wire never sends `false`). */
+  alreadyAttempted?: true;
   questions: Array<{ id: string; type: QType; prompt: string; choices: string[] | null; points: number }>;
 }
 /* D5 (WAVE-12-MAP, backend batch 12-1) — exam resume contract: when an
    IN_PROGRESS attempt exists, POST /exams/templates/:id/start returns the
    fresh-start shape PLUS `resumed: true` and the saved attempt; a GRADED /
-   EXPIRED / SUBMITTED attempt answers `alreadyAttempted: true` instead
-   (terminal states). `value` is the raw saved input — the choice index for
-   MCQ / TRUE_FALSE, the answer text otherwise (null when nothing was
-   saved); the object form is accepted defensively. Structurally identical
-   to the page-local mirror in pages/exams/OnlineExamsPages.tsx (12-10),
-   which keeps its own copies until it migrates to these shared types. */
+   EXPIRED / SUBMITTED attempt answers with a TERMINAL `{ attemptId,
+   status, alreadyAttempted: true }` that carries no questions, expiry or
+   title. `value` is the raw saved input — the choice index for MCQ /
+   TRUE_FALSE, the answer text otherwise (null when nothing was
+   saved); the object form is accepted defensively. */
 export interface SavedAnswerValue {
   choiceIndex?: number | null;
   answerText?: string | null;
@@ -1674,14 +1687,69 @@ export interface ResumedAttempt {
   expiresAt: string;
   answers: Array<{ questionId: string; value: SavedAnswerValue | number | string | null }>;
 }
-export type StartExamResponse = StartedAttempt & {
-  resumed?: boolean;
-  attempt?: ResumedAttempt;
-};
+/* 15-c P1-3 — the backend ships three disjoint payloads with no tag of
+   its own (exams.routes.ts start route: fresh 201 / resume 200 /
+   terminal 200). The old flat type declared questions + expiresAt +
+   durationMin + title on EVERY response, so the terminal shape was a
+   type-level lie any future consumer could crash on. The union is
+   discriminated by a `type` tag attached client-side (the backend is
+   unchanged — see tagStartExamResponse), and the raw `alreadyAttempted`
+   flag stays accessible so existing consumers' `if (r.alreadyAttempted)`
+   early-return compiles and narrows unchanged. */
+export type StartExamResponse =
+  | (StartedAttempt & { type: 'fresh'; resumed?: undefined; attempt?: undefined })
+  | (StartedAttempt & { type: 'resumed'; resumed: true; attempt: ResumedAttempt })
+  | { type: 'alreadyAttempted'; attemptId: string; status: string; alreadyAttempted: true };
+
+/** Untagged wire payload of POST /exams/templates/:id/start — exactly
+ *  what the backend sends: a start-OK shape (fresh, or resume with the
+ *  saved answers) or the terminal no-questions shape. No `type` field
+ *  exists on the wire; the union is discriminated structurally. */
+export type StartExamWire =
+  | (StartedAttempt & { resumed?: boolean; attempt?: ResumedAttempt })
+  | { attemptId: string; status: string; alreadyAttempted: true };
+
+/** Attach the `type` discriminant to a raw start response (15-c P1-3):
+ *  the terminal payload carries `alreadyAttempted: true` and no
+ *  questions; a resume carries `resumed: true` + the saved attempt;
+ *  everything else is a fresh start. Pure and exported so the union
+ *  contract is unit-pinned without a server. */
+export function tagStartExamResponse(wire: StartExamWire): StartExamResponse {
+  if ('questions' in wire) {
+    // Start-OK payload — rebuild the normalized base so the tagged
+    // result carries exactly the declared fields (wire-only extras
+    // like a stray `resumed: false` never leak through).
+    const base: StartedAttempt = {
+      attemptId: wire.attemptId,
+      expiresAt: wire.expiresAt,
+      durationMin: wire.durationMin,
+      title: wire.title,
+      questions: wire.questions,
+    };
+    if (wire.resumed === true && wire.attempt) {
+      return { ...base, type: 'resumed', resumed: true, attempt: wire.attempt };
+    }
+    return { ...base, type: 'fresh' };
+  }
+  // Terminal payload — the attempt is closed for this student
+  // (GRADED / EXPIRED / SUBMITTED awaiting grading).
+  return {
+    type: 'alreadyAttempted',
+    attemptId: wire.attemptId,
+    status: wire.status,
+    alreadyAttempted: true,
+  };
+}
+
 export function useStartExam() {
   return useMutation({
-    mutationFn: (templateId: string) =>
-      unwrap<StartExamResponse>(api.post(`/exams/templates/${templateId}/start`, {})),
+    // The backend sends one of three disjoint payloads with no tag of
+    // its own — tagStartExamResponse attaches the `type` discriminant
+    // so consumers branch on a truthful union (15-c P1-3).
+    mutationFn: async (templateId: string) =>
+      tagStartExamResponse(
+        await unwrap<StartExamWire>(api.post(`/exams/templates/${templateId}/start`, {})),
+      ),
   });
 }
 
@@ -1695,8 +1763,11 @@ export function useSubmitAnswer() {
 export function useFinishExam() {
   const qc = useQueryClient();
   return useMutation({
+    // `passed` is null while manual grading pends (needsManual > 0) —
+    // the backend deliberately withholds the verdict (15-c P1-1);
+    // consumers must render a neutral state, never a failed one.
     mutationFn: (attemptId: string) =>
-      unwrap<{ score: number; maxScore: number; status: string; needsManual: number; passed: boolean }>(
+      unwrap<{ score: number; maxScore: number; status: string; needsManual: number; passed: boolean | null }>(
         api.post(`/exams/attempts/${attemptId}/submit`, {}),
       ),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['exams', 'me'] }),
@@ -1808,7 +1879,13 @@ export function useEnterCompetition(competitionId: string) {
   return useMutation({
     mutationFn: (input: EnterCompetitionInput) =>
       unwrap<{ id: string }>(api.post(`/competitions/${competitionId}/enter`, input)),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['competitions', competitionId] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['competitions', competitionId] });
+      // 15-d P2-2: the list row's _count.entries changes on entry — match
+      // useCloseCompetition / useJudgeCompetition, which already refresh
+      // both the detail key and the list.
+      qc.invalidateQueries({ queryKey: ['competitions'] });
+    },
   });
 }
 

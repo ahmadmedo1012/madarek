@@ -50,8 +50,7 @@ export type CollegeIdentityProfile = {
   /**
    * Arabic city name exactly as the API/seed records it (e.g. 'الزاوية').
    * The deterministic API-record bridge (`getCollegeIdentityByRecord`)
-   * keys on `nameAr|cityAr`. Optional per contract v1.1 (minor change):
-   * entries without it are only reachable via the slug lookup.
+   * keys on `nameAr|cityAr`; entries without it match no API record.
    */
   cityAr?: string;
   /** Primary accent (hex). AA-validated at build. */
@@ -228,12 +227,6 @@ export const colleges: CollegeIdentityProfile[] = [
     cityAr: 'مناطق أخرى', accent: '#657233', icon: 'Sprout',
   },
 ];
-
-/** Lookup by slug — used by the college page to resolve identity at render. */
-export function getCollegeIdentity(slug: string | undefined): CollegeIdentityProfile | null {
-  if (!slug) return null;
-  return colleges.find((c) => c.slug === slug) ?? null;
-}
 
 /**
  * Deterministic API-record bridge: (nameAr, city) → profile. The API keys

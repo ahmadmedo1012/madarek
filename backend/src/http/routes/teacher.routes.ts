@@ -17,6 +17,7 @@ import {
   meanPct,
   type RiskLevel,
 } from '../../lib/risk.js';
+import { utcDayStart } from '../../lib/dates.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -212,6 +213,30 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
 });
 
 /**
+ * Course-level grade aggregates for the analytics surface (audit 15-i
+ * TOP-14): mean over every graded artifact + the share of artifacts
+ * at or above the pass mark.
+ *
+ * Empty-state policy is DELIBERATE and differs from the dashboards'
+ * null convention (`attendancePctFromStatusCounts`): a course with
+ * nothing graded yet reports `{avg: 0, passRate: 0}` — the teacher
+ * analytics card shows 0, not "—". Nulls (artifacts carrying no
+ * signal — unset grade or ÷0 maxScore, already null from `gradePct`)
+ * are filtered before both aggregates, so they can neither poison
+ * the mean nor dilute the pass rate. Pass mark is ≥ 50 INCLUSIVE.
+ * Exported for DB-free tests (tests/modules/teacher-logic.test.ts).
+ */
+export function courseGradeStats(gradePcts: ReadonlyArray<number | null>): { avg: number; passRate: number } {
+  const valid = gradePcts.filter((p): p is number => p !== null);
+  return {
+    avg: meanPct(valid) ?? 0,
+    passRate: valid.length === 0
+      ? 0
+      : Math.round((valid.filter((p) => p >= 50).length / valid.length) * 100),
+  };
+}
+
+/**
  * GET /teacher/offerings/:id/analytics — course-level aggregates
  */
 router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
@@ -249,16 +274,13 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
     const overallAttendance = attendancePct(allRecords.map((r) => r.status), allRecords.length);
 
     // Course grade stats over every graded artifact: Grade-table rows
-    // AND teacher-graded submissions (audit 11-d P1-6).
-    const allGradePcts = [
+    // AND teacher-graded submissions (audit 11-d P1-6). Signal-less
+    // artifacts (gradePct → null) are filtered inside courseGradeStats.
+    const { avg: avgGrade, passRate } = courseGradeStats([
       ...offering.grades.map((g) => gradePct(Number(g.score), g.maxScore)),
       ...offering.assignments.flatMap((a) =>
         a.submissions.map((s) => gradePct(s.grade === null ? null : Number(s.grade), a.maxScore))),
-    ].filter((p): p is number => p !== null);
-    const avgGrade = meanPct(allGradePcts) ?? 0;
-    const passRate = allGradePcts.length === 0
-      ? 0
-      : Math.round((allGradePcts.filter((p) => p >= 50).length / allGradePcts.length) * 100);
+    ]);
 
     res.json({
       data: {
@@ -415,7 +437,17 @@ router.post(
     try {
       const offeringId = req.params.id!;
       await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
-      const { date, topic, records } = req.body as z.infer<typeof recordAttSchema>;
+      const { date: rawDate, topic, records } = req.body as z.infer<typeof recordAttSchema>;
+
+      // Attendance day-keys live on the UTC data calendar (audit 15-h
+      // P1-1): the FE sends UTC-midnight ISO dates, but any client
+      // sending a datetime-local string would parse to a non-midnight
+      // instant and silently fork the same teaching day into two
+      // sessions (the @@unique([offeringId, date]) lookup would miss).
+      // Snap the incoming date to its UTC-day midnight — the same
+      // convention auto-attendance (learning.routes.ts) and the seed
+      // use via utcDayKey/utcDayStart (lib/dates.ts).
+      const date = utcDayStart(rawDate);
 
       // Every studentId in the roll-call must be an enrolled student of
       // this offering — otherwise arbitrary users could be marked present.
@@ -697,12 +729,34 @@ router.post(
  * Sets `appointedAt = now` on a fresh appointment; preserves it on a re-save
  * unless the position changed.
  */
-const assignPositionSchema = z.discriminatedUnion('position', [
+export const assignPositionSchema = z.discriminatedUnion('position', [
   z.object({ position: z.literal('DEAN'), positionFacultyId: z.string().cuid() }),
   z.object({ position: z.literal('ASSOCIATE_DEAN'), positionFacultyId: z.string().cuid() }),
   z.object({ position: z.literal('DEPARTMENT_HEAD'), positionDepartmentId: z.string().cuid() }),
   z.object({ position: z.null() }),
 ]);
+
+export type PositionAssignment = z.infer<typeof assignPositionSchema>;
+
+/**
+ * The governance row that anchors a leadership seat (audit 15-b
+ * P2-2): DEAN / ASSOCIATE_DEAN seats are exclusive per Faculty row,
+ * DEPARTMENT_HEAD seats per Department row; clearing a position
+ * (`null`) holds no seat. The position route locks this row FOR
+ * UPDATE inside its transaction BEFORE the conflict read, so two
+ * concurrent appointments of different teachers to the same seat
+ * serialize instead of both passing a plain read-check-write under
+ * Read-Committed (the loser re-reads after the winner commits and
+ * gets the 409). Exported for DB-free tests.
+ */
+export function seatLockTarget(
+  body: PositionAssignment,
+): { table: 'Faculty' | 'Department'; id: string } | null {
+  if (body.position === null) return null;
+  return body.position === 'DEPARTMENT_HEAD'
+    ? { table: 'Department', id: body.positionDepartmentId }
+    : { table: 'Faculty', id: body.positionFacultyId };
+}
 
 router.post(
   '/admin/teachers/:id/position',
@@ -721,8 +775,10 @@ router.post(
 
       // A leadership seat is exclusive: refuse to appoint a second active
       // DEAN/ASSOCIATE_DEAN for the same faculty, or a second DEPARTMENT_HEAD
-      // for the same department (409 instead of silently shadowing).
-      // The check + write run in one transaction to shrink the race window.
+      // for the same department (409 instead of silently shadowing). The
+      // check + write run in one transaction, and the seat's anchor row is
+      // locked FOR UPDATE before the conflict read (seatLockTarget) so two
+      // concurrent appointments to the same seat serialize (audit 15-b P2-2).
       const conflictWhere =
         body.position === 'DEAN' || body.position === 'ASSOCIATE_DEAN'
           ? { position: body.position, positionFacultyId: body.positionFacultyId, userId: { not: targetId } }
@@ -750,6 +806,28 @@ router.post(
 
       const updated = await prisma.$transaction(async (tx) => {
         if (conflictWhere) {
+          // Serialize the seat claim, don't just check it (audit 15-b
+          // P2-2): the conflict read below is a plain SELECT, so two
+          // concurrent appointments of DIFFERENT teachers to the same
+          // seat could both pass it under Read-Committed and produce
+          // two DEANs of one faculty. Locking the seat's anchor row
+          // (Faculty/Department) FOR UPDATE first makes the second
+          // transaction block on the first's row lock; when it resumes
+          // post-commit, the conflict read sees the committed holder
+          // and 409s — the platform pattern (exam-start, enrollment
+          // capacity, the last-owner guard). The lock doubles as an
+          // existence check: a seat anchored to a missing Faculty /
+          // Department (bogus cuid) is a 404 here, not an
+          // FK-violation 500 from the update below.
+          const seat = seatLockTarget(body);
+          if (seat) {
+            const locked = seat.table === 'Faculty'
+              ? await tx.$queryRaw<{ id: string }[]>`SELECT id FROM "Faculty" WHERE id = ${seat.id} FOR UPDATE`
+              : await tx.$queryRaw<{ id: string }[]>`SELECT id FROM "Department" WHERE id = ${seat.id} FOR UPDATE`;
+            if (locked.length === 0) {
+              throw AppError.notFound(seat.table === 'Faculty' ? 'Faculty not found' : 'Department not found');
+            }
+          }
           const conflict = await tx.teacherProfile.findFirst({
             where: conflictWhere,
             select: { userId: true },

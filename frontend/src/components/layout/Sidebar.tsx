@@ -5,12 +5,14 @@ import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
 import { UserAvatar } from '../primitives';
 import { Tooltip } from '../overlays';
+import { useOverlayRegistration } from '../overlays/useOverlayRegistration';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuthStore } from '../../stores/auth.store';
 import { useLogout, useMe } from '../../hooks/useAuth';
 import { useOnboardingStore } from '../../stores/onboarding.store';
 import { useUiStore } from '../../stores/ui.store';
 import { acquireScrollLock, releaseScrollLock } from '../../lib/scrollLock';
+import { overlayStack } from '../../lib/overlayStack';
 import { NAV_BY_ROLE, displayRoleLabel } from '../../lib/nav';
 
 export function Sidebar() {
@@ -26,6 +28,14 @@ export function Sidebar() {
   // same store <OnboardingFlow /> renders from (audit 0-f P0-2 fix).
   const startOnboarding = useOnboardingStore((s) => s.start);
 
+  // Register the mobile drawer as an overlay layer while open
+  // (15-g P2-7 — the 'sidebar-drawer' kind was reserved in
+  // lib/overlayStack.ts). Membership makes the drawer participate in
+  // the platform's Escape choreography (see the Esc effect below) and
+  // automatically inerts every document-level chord (⌘K, "/", Ctrl+B)
+  // while the drawer owns the screen — the same contract as a modal.
+  const drawerId = useOverlayRegistration(sidebarOpen, 'sidebar-drawer');
+
   // Lock body scroll only while the mobile drawer is open. Goes through
   // the shared ref-counted lock (lib/scrollLock, 11-e P2-12) so a drawer
   // cycle can no longer silently drop a modal's lock: the old inline
@@ -37,14 +47,22 @@ export function Sidebar() {
   }, [sidebarOpen]);
 
   // Close mobile drawer on Escape so users always have an easy out.
+  // 15-g P2-7: the drawer answers Escape ONLY as the topmost stack
+  // layer and consumes the key (capture phase + stopImmediatePropagation
+  // — the same mechanics useFocusTrap/Dropdown use), so an overlay
+  // opened above the drawer owns the press and the drawer no longer
+  // closes out from under a layer the user is interacting with.
   useEffect(() => {
     if (!sidebarOpen) return;
     const onEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeSidebar();
+      if (e.key !== 'Escape') return;
+      if (!overlayStack.isTop(drawerId)) return;
+      e.stopImmediatePropagation();
+      closeSidebar();
     };
-    window.addEventListener('keydown', onEsc);
-    return () => window.removeEventListener('keydown', onEsc);
-  }, [sidebarOpen, closeSidebar]);
+    document.addEventListener('keydown', onEsc, true);
+    return () => document.removeEventListener('keydown', onEsc, true);
+  }, [sidebarOpen, closeSidebar, drawerId]);
 
   // Reflect collapse state on the shell so the grid track resizes.
   // Toggled on documentElement so any descendent (topbar, etc.) can read it.
@@ -55,9 +73,15 @@ export function Sidebar() {
   }, [sidebarCollapsed]);
 
   // Cmd/Ctrl+B toggles the desktop collapse (Notion-style).
+  // 15-e P1-4: inert while ANY overlay layer is open — the same guard
+  // ⌘K uses (GlobalSearch) — so a keyboard user focused on a dialog
+  // never toggles shell state behind the scrim. This now also covers
+  // the mobile drawer itself (registered above): while the drawer is
+  // open, the chord belongs to the overlay layer, not the shell.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'b' || e.key === 'B')) {
+        if (!overlayStack.isEmpty()) return;
         const t = e.target as HTMLElement | null;
         if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
         e.preventDefault();
