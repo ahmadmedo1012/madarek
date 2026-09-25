@@ -163,6 +163,30 @@ export default function LandingPage() {
     return () => obs.disconnect();
   }, []);
 
+  // 20-a P2 (4-A1) — offscreen infinite-loop pause. One observer tags
+  // every top-level <main> section that is fully out of view (with a
+  // 96px grace margin so edge-straddling sections keep running) with
+  // [data-offscreen]; landing.css maps that attribute to
+  // animation-play-state: paused for every infinite loop the page runs
+  // — hero ambient + chip effects + mockup breathe/float, the AI band's
+  // typing dots, sticker idle. Loops resume mid-keyframe when their
+  // section re-enters. Reduced-motion users never see these loops (the
+  // global belt flattens every animation), so nothing extra to honour.
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return;
+    const sections = document.querySelectorAll<HTMLElement>('.landing main > section');
+    if (sections.length === 0) return;
+    const obs = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const el = entry.target as HTMLElement;
+        if (entry.isIntersecting) el.removeAttribute('data-offscreen');
+        else el.setAttribute('data-offscreen', '');
+      }
+    }, { rootMargin: '96px 0px 96px 0px' });
+    sections.forEach((s) => obs.observe(s));
+    return () => obs.disconnect();
+  }, []);
+
   // Mockup parallax — exposes a scroll progress var on the mockup itself,
   // ranging roughly -1 (mockup well below viewport) … +1 (above). CSS
   // multiplies it for a gentle rise + scale-out as the user scrolls.
@@ -519,8 +543,10 @@ export default function LandingPage() {
 
       {/* FEATURES — sticker grid */}
       <section id="features" className="marketing-container landing-features">
+        {/* 20-a P2-1 (4-A1): «المنظومة» eyebrow dropped — one of 7 removed
+            (scroll-craft: at most one eyebrow per three sections; the
+            heading carries itself). */}
         <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
-          <span className="landing-section-eyebrow">المنظومة</span>
           <h2 className="landing-section-title">
             كل ما يحتاجه <em>الجامعيّ</em> في مكان واحد
           </h2>
@@ -587,7 +613,7 @@ export default function LandingPage() {
         <div className="marketing-container band-split">
           <RevealCssClass as="div">
             <span className="sticker xl peach"><Icon icon={GraduationCap} size={48} strokeWidth={1.6} /></span>
-            <span className="band-eyebrow">الفصل المعكوس</span>
+            {/* 20-a P2-1: «الفصل المعكوس» band eyebrow dropped (7 removed). */}
             <h2 className="band-title">
               محاضرات مسجَّلة <em>تتفاعل</em> مع الطالب
             </h2>
@@ -660,9 +686,9 @@ export default function LandingPage() {
           </RevealCssClass>
           <RevealCssClass as="div" delay={2}>
             <span className="sticker xl lavender"><Icon icon={Sparkles} size={48} strokeWidth={1.6} /></span>
-            <span className="band-eyebrow">المساعد الأكاديمي</span>
+            {/* 20-a P2-1: «المساعد الأكاديمي» band eyebrow dropped (7 removed). */}
             <h2 className="band-title">
-              <em><bdi>«Oasis»</bdi></em> — يفهم سياق دراستك
+              <em className="landing-serif-latin"><bdi>«Oasis»</bdi></em> — يفهم سياق دراستك
             </h2>
             <p className="band-lede">
               مساعد أكاديمي يعرف مقرَّراتك ومحاضراتك ودرجاتك. يقدِّم شروحات مخصَّصة،
@@ -686,8 +712,8 @@ export default function LandingPage() {
 
       {/* BENTO mosaic */}
       <section className="marketing-container landing-bento">
+        {/* 20-a P2-1: «منظومة كاملة» eyebrow dropped (7 removed). */}
         <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
-          <span className="landing-section-eyebrow">منظومة كاملة</span>
           <h2 className="landing-section-title">
             من <em>المحاضرة</em> إلى <em>الشهادة</em>
           </h2>
@@ -734,51 +760,55 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ROLE PILLARS */}
-      <section id="roles" className="marketing-container landing-features">
-        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
-          <span className="landing-section-eyebrow">الأدوار</span>
+      {/* ROLE LEDGER — 20-a (4-A1 P1-3): this section used to reuse
+          .landing-features* (a FOURTH identical icon-card grid — 4 cards
+          in a 3-col grid even orphaned the fourth card). Re-grammared as
+          a definition ledger: start-aligned head (the page's only
+          non-centered one), role names as a fixed index column,
+          hairline rows, descriptions at a readable measure. Copy is
+          verbatim from the audited cards. */}
+      <section id="roles" className="marketing-container landing-roles">
+        <div className="landing-roles-head">
           <h2 className="landing-section-title">
             أربعة <em>أدوار</em>، تجربة موحَّدة
           </h2>
           <p className="landing-section-lede">
             كلّ دور أكاديميّ يرى ما يخصّه فقط — صلاحيّات مدروسة وفصلٌ واضح بين الواجبات.
           </p>
-        </SectionAccent>
-        <div className="landing-features-grid">
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle">
-            <span className="sticker lg copper"><Icon icon={GraduationCap} size={32} /></span>
-            <h3 className="landing-feature-title">الطالب</h3>
-            <p className="landing-feature-desc">
-              مقرَّرات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات،
-              فرص عمل، ومكتبة بحوث.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={1}>
-            <span className="sticker lg lavender"><Icon icon={Brain} size={32} /></span>
-            <h3 className="landing-feature-title">الأستاذ</h3>
-            <p className="landing-feature-desc">
-              ذكاء أكاديميّ يكشف الطلَّاب المعرَّضين، إدارة المحاضرات والدرجات،
-              ومعامل افتراضية بصلاحيات تحكُّم.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={2}>
-            <span className="sticker lg sky"><Icon icon={Building2} size={32} /></span>
-            <h3 className="landing-feature-title">الإدارة</h3>
-            <p className="landing-feature-desc">
-              إدارة الكليَّات والأساتذة والمقرَّرات، تقارير، ومزامنة يومية مع
-              البيانات الرسمية لجامعة الزاوية.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={3}>
-            <span className="sticker lg mint"><Icon icon={ShieldCheck} size={32} /></span>
-            <h3 className="landing-feature-title">ضمان الجودة</h3>
-            <p className="landing-feature-desc">
-              رؤية للمؤشرات المؤسسية: جودة المقرَّرات، تقييم الأساتذة،
-              مراجعة الاختبارات والمناهج.
-            </p>
-          </RevealCssClass>
         </div>
+        <ul className="landing-roles-list">
+          {[
+            {
+              icon: GraduationCap, tone: 'copper', name: 'الطالب',
+              desc: 'مقرَّرات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات، فرص عمل، ومكتبة بحوث.',
+            },
+            {
+              icon: Brain, tone: 'lavender', name: 'الأستاذ',
+              desc: 'ذكاء أكاديميّ يكشف الطلَّاب المعرَّضين، إدارة المحاضرات والدرجات، ومعامل افتراضية بصلاحيات تحكُّم.',
+            },
+            {
+              icon: Building2, tone: 'sky', name: 'الإدارة',
+              desc: 'إدارة الكليَّات والأساتذة والمقرَّرات، تقارير، ومزامنة يومية مع البيانات الرسمية لجامعة الزاوية.',
+            },
+            {
+              icon: ShieldCheck, tone: 'mint', name: 'ضمان الجودة',
+              desc: 'رؤية للمؤشرات المؤسسية: جودة المقرَّرات، تقييم الأساتذة، مراجعة الاختبارات والمناهج.',
+            },
+          ].map((r, i) => (
+            <RevealCssClass
+              as="li"
+              key={r.name}
+              className="landing-role-row"
+              delay={(i + 1) as 1 | 2 | 3 | 4}
+            >
+              <span className="landing-role-key">
+                <span className={`sticker lg ${r.tone}`}><Icon icon={r.icon} size={32} /></span>
+                <span className="landing-role-name">{r.name}</span>
+              </span>
+              <p className="landing-role-desc">{r.desc}</p>
+            </RevealCssClass>
+          ))}
+        </ul>
       </section>
 
       {/* PROOF — pilot results in colored band */}
@@ -822,8 +852,8 @@ export default function LandingPage() {
 
       {/* WHO IT'S FOR — role-based, not fabricated quotes */}
       <section className="marketing-container landing-features">
+        {/* 20-a P2-1: «لمن صُمِّمت» eyebrow dropped (7 removed). */}
         <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
-          <span className="landing-section-eyebrow">لمن صُمِّمت</span>
           <h2 className="landing-section-title">
             أداة كلّ <em>دور</em> أكاديميّ في الجامعة
           </h2>
@@ -859,10 +889,8 @@ export default function LandingPage() {
       {/* FINAL CTA — dark band */}
       <section className="band band-dark">
         <div className="marketing-container landing-final-cta">
-          <div className="landing-final-cta-eyebrow">
-            <span className="landing-final-cta-dot" />
-            ابدأ الآن
-          </div>
+          {/* 20-a P2-1: «ابدأ الآن» eyebrow + pulse dot dropped (7 removed)
+              — the title, lede and actions carry the close on their own. */}
           <h2 className="landing-final-cta-title">
             منصّتك الأكاديميّة <em>بانتظارك</em>
           </h2>

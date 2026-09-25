@@ -74,20 +74,12 @@
      border cue is re-homed in v22; the AA-safe ring comes from the single
      system re-asserted there. See audits/0-a-foundation.md P0-1/P0-2.) */
 
-  /* ── Skeleton refinement — softer, slower, less stripey ─────────── */
-  .skeleton {
-    background:
-      linear-gradient(90deg,
-        var(--surface-2) 0%,
-        var(--surface-3) 50%,
-        var(--surface-2) 100%);
-    background-size: 200% 100%;
-    animation: polish-shimmer 1800ms var(--motion-ease-standard) infinite;
-  }
-  @keyframes polish-shimmer {
-    0%   { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
-  }
+  /* (4-A11 P2-9: the pages-layer `.skeleton` refinement (softer
+     gradient + polish-shimmer 1800ms, eased) used to live here — fully
+     shadowed by the overrides-layer SKELETON block further down
+     (every property it set is re-set there), and its eased 1800ms
+     loop violated the linear doctrine. Deleted rather than kept as a
+     dead third shimmer system.) */
 
   /* ── Topbar scrolled shadow refinement ─────────────────────────────
      The .topbar.scrolled state was a flat border underline. A whisper
@@ -527,20 +519,20 @@
   .landing-mockup {
     --parallax: 0;
     transform: translateY(calc(var(--parallax) * -16px)) scale(calc(1 - var(--parallax) * 0.012));
-    transition: transform var(--motion-duration-micro) linear;
+    transition: transform var(--motion-duration-micro) var(--ease-linear);
     will-change: transform;
   }
   .landing-mockup-frame {
     /* Inner frame gets a counter-shift so chrome bars pop slightly
        differently than badges (creates a faint depth difference). */
     transform: translateY(calc(var(--parallax) * 4px));
-    transition: transform var(--motion-duration-micro) linear;
+    transition: transform var(--motion-duration-micro) var(--ease-linear);
   }
   .landing-mockup-badge-1,
   .landing-mockup-badge-2 {
     /* Floating badges drift twice as much as the frame — true parallax. */
     transform: translateY(calc(var(--parallax) * -22px)) translateX(var(--badge-tx, 0));
-    transition: transform var(--motion-duration-micro) linear;
+    transition: transform var(--motion-duration-micro) var(--ease-linear);
   }
   @media (prefers-reduced-motion: reduce) {
     .landing-mockup,
@@ -621,7 +613,10 @@
       color-mix(in srgb, var(--accent-fg, white) 35%, transparent) 50%,
       transparent 100%);
     transform: translateX(-100%);
-    animation: polish-shimmer-sweep 3.2s var(--motion-ease-standard) infinite;
+    /* (4-A11 P2-9: linear per the loop doctrine — tokens.css:110-113.
+       The 3.2s ambient duration stays raw until an ambient-duration
+       token family exists; listed as gate debt.) */
+    animation: polish-shimmer-sweep 3.2s var(--ease-linear) infinite;
   }
   @keyframes polish-shimmer-sweep {
     0%, 60%   { transform: translateX(-100%); }
@@ -1397,12 +1392,19 @@
   .notif-item {
     padding: 12px 16px;
     border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
-    transition: background var(--t-fast) var(--ease), padding-inline-start var(--t-fast) var(--ease);
+    /* (4-A11 P2-10: the hover affordance used to grow
+       padding-inline-start 16→18px — text reflow on every hover of
+       every notification row. The row now stays put; the icon nudges
+       toward the content instead, compositor-only.) */
+    transition: background var(--t-fast) var(--ease);
   }
   .notif-item:last-child { border-block-end: 0; }
-  .notif-item:hover { padding-inline-start: 18px; }
+  .notif-item:hover .notif-item-icon {
+    transform: translateX(calc(2px * var(--motion-direction)));
+  }
 
   .notif-item-icon {
+    transition: transform var(--t-fast) var(--ease);
     inline-size: 32px;
     block-size: 32px;
     border-radius: var(--r-md);
@@ -1491,9 +1493,16 @@
     font-weight: var(--fw-semibold);
     color: var(--accent-strong);
     text-decoration: none;
-    transition: gap var(--t-fast) var(--ease);
+    /* (4-A11 P2-10: the "view all" link used to transition gap 4→8px
+       on hover — layout on every hover. The chevron now translates
+       away from the label instead, compositor-only.) */
   }
-  .notif-panel-viewall:hover { gap: 8px; }
+  .notif-panel-viewall svg {
+    transition: transform var(--t-fast) var(--ease);
+  }
+  .notif-panel-viewall:hover svg {
+    transform: translateX(calc(4px * var(--motion-direction)));
+  }
 
   /* ═══════════════════════════════════════════════════════════════
      SIDEBAR MOBILE CLOSE — visible only on phones
@@ -2419,7 +2428,7 @@
   @media (hover: hover) and (min-width: 920px) {
     .landing-mockup {
       transform-style: preserve-3d;
-      transition: transform var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+      transition: transform var(--t-slower) var(--ease-out);
     }
     .landing-mockup:hover {
       transform: perspective(1200px) rotateX(2deg) rotateY(-2deg) scale(1.012);
@@ -2453,7 +2462,7 @@
         transparent 60%
       );
       opacity: 0;
-      transition: opacity var(--motion-duration-medium) var(--ease, ease);
+      transition: opacity var(--motion-duration-medium) var(--ease);
       pointer-events: none;
     }
     .landing-feature-card:hover::before,
@@ -2477,7 +2486,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STICKER ICONS — gentle bobbing                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-megamenu-item .sticker { transition: transform var(--motion-duration-medium) var(--ease, ease); }
+  .landing-megamenu-item .sticker { transition: transform var(--motion-duration-medium) var(--ease); }
   .landing-megamenu-item:hover .sticker {
     transform: rotate(-6deg) scale(1.06);
   }
@@ -2537,7 +2546,7 @@
      ║  starts on mount because the element is fresh in the DOM.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .page {
-    animation: madark-page-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-page-in var(--motion-duration-long) var(--ease-out) both;
   }
   @keyframes madark-page-in {
     from {
@@ -2566,7 +2575,7 @@
        every hover-lift in gridded cards. `backwards` keeps the stagger
        (from-state held during each child's delay) and releases the element
        to its own styles once done. */
-    animation: madark-stagger-up var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) backwards;
+    animation: madark-stagger-up var(--motion-duration-long) var(--ease-out) backwards;
   }
   .grid-2 > *:nth-child(1),
   .grid-3 > *:nth-child(1),
@@ -2614,9 +2623,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .metric {
     transition:
-      border-color var(--t-base, 240ms) var(--ease, ease),
-      box-shadow var(--t-base, 240ms) var(--ease, ease),
-      transform var(--t-base, 240ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+      border-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease),
+      transform var(--t-base) var(--ease-out);
   }
   @media (hover: hover) {
     .metric:hover {
@@ -2629,7 +2638,7 @@
     }
   }
   .metric-value {
-    animation: madark-pop-in var(--t-slower) var(--ease-spring, cubic-bezier(0.34, 1.36, 0.64, 1)) both;
+    animation: madark-pop-in var(--t-slower) var(--ease-spring) both;
   }
   @keyframes madark-pop-in {
     from { opacity: 0; transform: scale(0.92); }
@@ -2642,11 +2651,11 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .btn {
     transition:
-      background var(--t-fast, 160ms) var(--ease, ease),
-      border-color var(--t-fast, 160ms) var(--ease, ease),
-      color var(--t-fast, 160ms) var(--ease, ease),
-      transform var(--motion-duration-micro) var(--ease, ease),
-      box-shadow var(--t-fast, 160ms) var(--ease, ease);
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform var(--motion-duration-micro) var(--ease),
+      box-shadow var(--t-fast) var(--ease);
   }
   .btn:active:not(:disabled) {
     transform: scale(0.97);
@@ -2670,13 +2679,13 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .nav-item {
     transition:
-      background var(--t-fast, 160ms) var(--ease, ease),
-      color var(--t-fast, 160ms) var(--ease, ease);
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
   }
   .nav-item::before {
     transition:
-      transform var(--t-base, 240ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
-      opacity var(--t-fast, 160ms) var(--ease, ease);
+      transform var(--t-base) var(--ease-out),
+      opacity var(--t-fast) var(--ease);
   }
   .nav-item:not(.on):not(.active)::before {
     opacity: 0;
@@ -2692,7 +2701,7 @@
     transform: scaleY(1);
   }
   .nav-icon {
-    transition: transform var(--t-fast, 160ms) var(--ease, ease);
+    transition: transform var(--t-fast) var(--ease);
   }
   .nav-item:hover .nav-icon {
     transform: scale(1.08);
@@ -2703,7 +2712,7 @@
      ║  TOPBAR — slides down on first paint                           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar {
-    animation: madark-topbar-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-topbar-in var(--motion-duration-long) var(--ease-out) both;
   }
   @keyframes madark-topbar-in {
     from { opacity: 0; transform: translateY(-6px); }
@@ -2743,10 +2752,10 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .pill, .tab {
     transition:
-      background var(--t-fast, 160ms) var(--ease, ease),
-      color var(--t-fast, 160ms) var(--ease, ease),
-      border-color var(--t-fast, 160ms) var(--ease, ease),
-      transform var(--t-fast, 160ms) var(--ease, ease);
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .pill.on, .tab.on, .tab.active {
     /* soft accent selection halo — interaction state, not elevation */
@@ -2764,8 +2773,8 @@
   .feed-item,
   .owner-timeline-item {
     transition:
-      background var(--t-fast, 160ms) var(--ease, ease),
-      transform var(--t-fast, 160ms) var(--ease, ease);
+      background var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   @media (hover: hover) {
     .list-row:hover,
@@ -2781,7 +2790,7 @@
   .owner-table tbody tr,
   .admin-students-table tbody tr,
   .leaderboard-table tbody tr {
-    transition: background var(--t-fast, 160ms) var(--ease, ease);
+    transition: background var(--t-fast) var(--ease);
   }
   @media (hover: hover) {
     .owner-table tbody tr:hover,
@@ -2797,7 +2806,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .btn .icon,
   .btn svg {
-    transition: transform var(--motion-duration-medium) var(--ease, ease);
+    transition: transform var(--motion-duration-medium) var(--ease);
   }
   .btn:hover .icon,
   .btn:hover svg {
@@ -2815,7 +2824,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-doughnut,
   .owner-chart-container {
-    animation: madark-chart-in var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-chart-in var(--t-slower) var(--ease-out) both;
   }
   @keyframes madark-chart-in {
     from { opacity: 0; transform: scale(0.96); }
@@ -2877,10 +2886,35 @@
     --elevation-4: 0 8px 16px rgba(20, 14, 6, 0.08), 0 16px 32px rgba(20, 14, 6, 0.12);
     --elevation-5: 0 16px 32px rgba(20, 14, 6, 0.10), 0 32px 64px rgba(20, 14, 6, 0.16);
 
-    /* Spring easings */
+    /* Spring easings — (4-A11 P3-17 debt: defined here outside
+       tokens.css; the motion gate allowlists exactly these three
+       definitions pending their adoption into tokens.css next to
+       --ease-spring/--ease-bounce.) */
     --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
     --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
+
+    /* (4-A11 P1-3 — `all` smuggled out of --t-clean.
+       tokens.css:118 ships `--t-clean: all var(--t-base) var(--ease)`,
+       so every one of its 22 consumers (components/layout/auth/landing
+       + this file) ran phantom transitions on scrollbar-color,
+       outline-* and every other changed property — live-measured:
+       .icon-btn fading scrollbar-color over 240ms on modal open, focus
+       rings fading in over 160–240ms instead of appearing instantly
+       (WCAG 2.4.7 smell). tokens.css is file-disjoint from the 20-c
+       motion batch, so the de-smuggled definition lives here for now —
+       the overrides layer wins the custom-property cascade over
+       @layer tokens — until tokens.css adopts the same list at :118
+       and drops `all`. Property list = exactly what the consumers
+       actually animate (hover/press/focus surfaces), plus opacity for
+       the disabled fades.) */
+    --t-clean:
+      background-color var(--t-base) var(--ease),
+      color var(--t-base) var(--ease),
+      border-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease),
+      transform var(--t-base) var(--ease),
+      opacity var(--t-base) var(--ease);
 
     /* Focus halo ring — tuned per theme */
     --ring-focus: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
@@ -2916,7 +2950,7 @@
     box-shadow: var(--elevation-4);
     aspect-ratio: 16 / 7;
     transform-style: preserve-3d;
-    transition: transform var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: transform var(--t-slower) var(--ease-out);
     will-change: transform;
   }
   @media (max-width: 720px) {
@@ -2936,9 +2970,12 @@
     block-size: 100%;
     object-fit: cover;
     transform: scale(1.05);
-    transition: transform 1200ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    /* (4-A11 sweep: the photo used to zoom 1.05→1.08 over a raw
+       1200ms transition on frame hover — animating an image on hover
+       through its parent is refused (craft floor); the frame's own
+       perspective tilt above carries the hover feedback, and the
+       1200ms raw duration dies with it.) */
   }
-  .landing-campus-frame:hover .landing-campus-photo { transform: scale(1.08); }
 
   /* 012-design-graphics-uplift fix — when the photo is wrapped in a
      Parallax helper, the helper's transform creates a new containing
@@ -3081,7 +3118,7 @@
       to   { transform: translateX(-50%) scale(1); }
     }
     .bottom-nav-item:active { transform: scale(0.93); }
-    .bottom-nav-icon { transition: transform var(--motion-duration-short) var(--ease, ease); }
+    .bottom-nav-icon { transition: transform var(--motion-duration-short) var(--ease); }
     .bottom-nav-item.active .bottom-nav-icon {
       transform: translateY(-2px);
     }
@@ -3162,7 +3199,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .card {
     transition:
-      border-color var(--motion-duration-medium) var(--ease, ease),
+      border-color var(--motion-duration-medium) var(--ease),
       box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
       transform var(--motion-duration-medium) var(--ease-spring-soft);
     position: relative;
@@ -3187,7 +3224,7 @@
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0;
-    transition: opacity var(--motion-duration-page) var(--ease, ease);
+    transition: opacity var(--motion-duration-page) var(--ease);
     pointer-events: none;
   }
   @media (hover: hover) {
@@ -3202,11 +3239,11 @@
     position: relative;
     overflow: hidden;
     transition:
-      background var(--t-fast, 160ms) var(--ease, ease),
-      border-color var(--t-fast, 160ms) var(--ease, ease),
-      color var(--t-fast, 160ms) var(--ease, ease),
-      transform var(--motion-duration-micro) var(--ease, ease),
-      box-shadow var(--motion-duration-medium) var(--ease, ease);
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform var(--motion-duration-micro) var(--ease),
+      box-shadow var(--motion-duration-medium) var(--ease);
   }
   /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
      removed — zero TSX consumers; only the .btn.primary variant is
@@ -3222,26 +3259,43 @@
   .btn.ghost:hover {
     border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
   }
-  /* Press ripple effect — radial pulse at click origin */
+  /* Press ripple — rewritten (4-A11 P2-6).
+     The old version animated inline-size/block-size 0→240% (layout +
+     paint on every button press, app-wide), was painted
+     rgba(255,255,255,.25) — imperceptible on light grounds (Δ≈4/255
+     on --surface; VLM-verified "no visible ripple") — and its comment
+     claimed a click-origin pulse while the origin was hardcoded
+     center. Now: a fixed-size pseudo-element scaled by transform
+     (compositor-only), tinted from the button's own ink via color-mix
+     so it reads on light AND dark grounds alike. Origin stays the
+     geometric center — a true click-origin ripple needs pointer
+     coordinates from JS (deferred with the Button primitive); this
+     comment no longer claims otherwise. */
   .btn::after {
     content: '';
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 50%;
-    inline-size: 0;
-    block-size: 0;
+    inline-size: 240%;
+    block-size: 240%;
     border-radius: 50%;
-    background: rgba(255,255,255,0.25);
-    transform: translate(-50%, -50%);
+    background: color-mix(in srgb, currentColor 20%, transparent);
+    transform: translate(-50%, -50%) scale(0);
     pointer-events: none;
     opacity: 0;
   }
   .btn:active:not(:disabled)::after {
-    animation: madark-ripple var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-ripple var(--t-slower) var(--ease-out) both;
   }
   @keyframes madark-ripple {
-    0%   { inline-size: 0; block-size: 0; opacity: 0.5; }
-    100% { inline-size: 240%; block-size: 240%; opacity: 0; }
+    from { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
+    to   { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  }
+  /* The ripple is decorative feedback — no animation under reduced
+     motion (base.css's global belt would already collapse it to a
+     sub-millisecond flash; this makes the intent explicit). */
+  @media (prefers-reduced-motion: reduce) {
+    .btn:active:not(:disabled)::after { animation: none; }
   }
 
 
@@ -3276,11 +3330,11 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .pill {
     transition:
-      background var(--motion-duration-short) var(--ease, ease),
-      color var(--motion-duration-short) var(--ease, ease),
-      border-color var(--motion-duration-short) var(--ease, ease),
-      transform var(--motion-duration-short) var(--ease, ease),
-      box-shadow var(--motion-duration-medium) var(--ease, ease);
+      background var(--motion-duration-short) var(--ease),
+      color var(--motion-duration-short) var(--ease),
+      border-color var(--motion-duration-short) var(--ease),
+      transform var(--motion-duration-short) var(--ease),
+      box-shadow var(--motion-duration-medium) var(--ease);
   }
   .pill.on {
     /* soft accent selection halo — interaction state, not elevation */
@@ -3293,7 +3347,7 @@
   .tab::after {
     transition:
       transform var(--motion-duration-page) var(--ease-spring-soft),
-      opacity var(--motion-duration-short) var(--ease, ease);
+      opacity var(--motion-duration-short) var(--ease);
   }
 
 
@@ -3302,7 +3356,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .badge {
     animation: madark-badge-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
-    transition: transform var(--motion-duration-short) var(--ease, ease);
+    transition: transform var(--motion-duration-short) var(--ease);
   }
   @keyframes madark-badge-in {
     from { opacity: 0; transform: scale(0.85); }
@@ -3320,9 +3374,9 @@
   input[type="tel"], input[type="date"], input[type="time"],
   textarea, select {
     transition:
-      border-color var(--motion-duration-short) var(--ease, ease),
-      box-shadow var(--motion-duration-medium) var(--ease, ease),
-      background var(--motion-duration-short) var(--ease, ease);
+      border-color var(--motion-duration-short) var(--ease),
+      box-shadow var(--motion-duration-medium) var(--ease),
+      background var(--motion-duration-short) var(--ease);
   }
   .input:focus,
   input:focus, textarea:focus, select:focus {
@@ -3343,7 +3397,13 @@
       var(--surface-3) 100%
     );
     background-size: 200% 100%;
-    animation: madark-shimmer-rtl 1600ms var(--motion-ease-standard) infinite;
+    /* (4-A11 P2-9: was `madark-shimmer-rtl 1600ms
+       var(--motion-ease-standard)` — a raw duration AND an eased
+       infinite sweep (visible velocity pulse each iteration). The
+       RTL-aware direction stays (genuinely good); duration + easing
+       now follow the skeleton token and the linear-loop doctrine
+       (tokens.css:110–113).) */
+    animation: madark-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
   }
   [dir="ltr"] .skeleton {
     animation-name: madark-shimmer-ltr;
@@ -3364,8 +3424,20 @@
   /* (Wave 9-b dead-selector sweep: the .progressbar / .progress-bar
      names removed — zero TSX consumers; the attribute-substring
      selector subsumes them and matches the live progress bars.) */
-  [class*="progress"] > span {
-    transition: width var(--t-slower) var(--ease-spring-soft);
+  /* (4-A11 P2-10: the shotgun `[class*="progress"] > span` matched ~5
+     TEXT spans (lecture-progress-head > span, course-hero-progress-head
+     > span…) — giving labels meaningless width transitions — while
+     MISSING the canonical .progress-fill (a div, not a span). Narrowed
+     to real fills; timing aligned with the canonical .progress-fill in
+     components.css (var(--t-slow) var(--ease-out)) so fills stop
+     animating at three different speeds. Width remains a layout
+     transition only because fills get their width inline from TSX
+     (LecturePlayerPage watchPct etc.) — the transform: scaleX()
+     conversion needs TSX coordination; tracked as 4-A11 P2-10
+     follow-up + gate debt entry.) */
+  .progress-fill,
+  [class*="progress-fill"] {
+    transition: width var(--t-slow) var(--ease-out);
   }
 
 
@@ -3373,7 +3445,7 @@
      ║  AVATAR — subtle hover lift                                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .avatar {
-    transition: transform var(--motion-duration-short) var(--ease, ease), box-shadow var(--motion-duration-medium) var(--ease, ease);
+    transition: transform var(--motion-duration-short) var(--ease), box-shadow var(--motion-duration-medium) var(--ease);
   }
   @media (hover: hover) {
     a:hover .avatar,
@@ -3466,7 +3538,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .nav-section-label {
     position: relative;
-    transition: color var(--motion-duration-short) var(--ease, ease);
+    transition: color var(--motion-duration-short) var(--ease);
   }
   .nav-section-label::before {
     content: '';
@@ -3491,7 +3563,7 @@
       transition: transform var(--motion-duration-long) var(--ease-spring-soft);
     }
     .sidebar.open .nav-item {
-      animation: madark-drawer-item-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+      animation: madark-drawer-item-in var(--motion-duration-long) var(--ease-out) both;
     }
     .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(1) { animation-delay: 60ms; }
     .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(2) { animation-delay: 90ms; }
@@ -3520,8 +3592,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar-backdrop {
     transition:
-      opacity var(--motion-duration-medium) var(--ease, ease),
-      backdrop-filter var(--motion-duration-medium) var(--ease, ease);
+      opacity var(--motion-duration-medium) var(--ease),
+      backdrop-filter var(--motion-duration-medium) var(--ease);
   }
   .sidebar-backdrop.show {
     backdrop-filter: blur(var(--scrim-blur)) saturate(85%);
@@ -3537,8 +3609,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar {
     transition:
-      box-shadow var(--motion-duration-medium) var(--ease, ease),
-      border-color var(--motion-duration-medium) var(--ease, ease);
+      box-shadow var(--motion-duration-medium) var(--ease),
+      border-color var(--motion-duration-medium) var(--ease);
   }
   /* Scroll-state class is set by CSS-only sticky shadow trick: when
      the topbar is sticky and there's content above it, this kicks in. */
@@ -3554,10 +3626,10 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar-user-trigger {
     transition:
-      background var(--t-fast, 160ms) var(--ease, ease),
-      border-color var(--t-fast, 160ms) var(--ease, ease),
-      box-shadow var(--motion-duration-medium) var(--ease, ease),
-      transform var(--motion-duration-short) var(--ease, ease);
+      background var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      box-shadow var(--motion-duration-medium) var(--ease),
+      transform var(--motion-duration-short) var(--ease);
   }
   .topbar-user-trigger:hover {
     box-shadow: var(--elevation-1);
@@ -3586,9 +3658,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar .global-search {
     transition:
-      box-shadow var(--motion-duration-medium) var(--ease, ease),
-      border-color var(--motion-duration-medium) var(--ease, ease),
-      transform var(--motion-duration-medium) var(--ease, ease);
+      box-shadow var(--motion-duration-medium) var(--ease),
+      border-color var(--motion-duration-medium) var(--ease),
+      transform var(--motion-duration-medium) var(--ease);
   }
   .topbar .global-search:focus-within {
     box-shadow: var(--ring-focus), var(--elevation-1);
@@ -3726,7 +3798,7 @@
      ║  STUDENT DASHBOARD — agenda items glide in                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-agenda-list .dash-agenda-item {
-    animation: madark-agenda-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-agenda-in var(--motion-duration-long) var(--ease-out) both;
   }
   .dash-agenda-list .dash-agenda-item:nth-child(1) { animation-delay: 80ms; }
   .dash-agenda-list .dash-agenda-item:nth-child(2) { animation-delay: 140ms; }
@@ -3755,7 +3827,7 @@
   .dash-doughnut-center {
     transition:
       transform var(--t-slower) var(--ease-spring-bounce),
-      color var(--motion-duration-page) var(--ease, ease);
+      color var(--motion-duration-page) var(--ease);
   }
 
 
@@ -3763,7 +3835,7 @@
      ║  TEACHER FEED — items glide in from the start side             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .feed .feed-item {
-    animation: madark-feed-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-feed-in var(--motion-duration-long) var(--ease-out) both;
   }
   .feed .feed-item:nth-child(1) { animation-delay: 60ms; }
   .feed .feed-item:nth-child(2) { animation-delay: 120ms; }
@@ -3785,7 +3857,7 @@
     position: relative;
     overflow: hidden;
     transition:
-      border-color var(--motion-duration-medium) var(--ease, ease),
+      border-color var(--motion-duration-medium) var(--ease),
       box-shadow var(--motion-duration-medium) var(--ease-spring-soft),
       transform var(--motion-duration-medium) var(--ease-spring-soft);
   }
@@ -3813,7 +3885,7 @@
   }
   .compact-kpi-value {
     font-variant-numeric: tabular-nums;
-    transition: color var(--motion-duration-medium) var(--ease, ease);
+    transition: color var(--motion-duration-medium) var(--ease);
   }
 
 
@@ -3875,7 +3947,7 @@
   .owner-chart-container canvas,
   .dash-doughnut canvas,
   [class*="chart-container"] canvas {
-    animation: madark-canvas-in var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-canvas-in var(--t-slower) var(--ease-out) both;
   }
   @keyframes madark-canvas-in {
     from { opacity: 0; }
@@ -4004,7 +4076,7 @@
   .landing-pilot-stat {
     transition:
       transform var(--motion-duration-page) var(--ease-spring-soft),
-      box-shadow var(--motion-duration-page) var(--ease, ease);
+      box-shadow var(--motion-duration-page) var(--ease);
   }
   @media (hover: hover) {
     .landing-pilot-stat:hover {
@@ -4083,9 +4155,9 @@
      overlay. Only .comp-modal-close below is still referenced.) */
   .comp-modal-close {
     transition:
-      background var(--motion-duration-short) var(--ease, ease),
-      color var(--motion-duration-short) var(--ease, ease),
-      transform var(--motion-duration-short) var(--ease, ease);
+      background var(--motion-duration-short) var(--ease),
+      color var(--motion-duration-short) var(--ease),
+      transform var(--motion-duration-short) var(--ease);
   }
   .comp-modal-close:hover {
     transform: rotate(90deg);
@@ -4103,17 +4175,15 @@
     border-radius: var(--r-md);
     background: var(--surface);
     border: 1px solid var(--rule);
-    animation: madark-toast-in var(--motion-duration-page) var(--ease-spring-bounce) both;
-  }
-  @keyframes madark-toast-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+    /* (4-A11 P2-13: the entrance animation override + madark-toast-in
+       keyframes were deleted — they fought the DESIGNED entrance in
+       notifications.css (.toast-stack .toast: madarek-toast-in 240ms
+       --motion-ease-decelerate) and, living here in the overrides
+       layer, won by cascade: every toast bounced in on a spring curve
+       meant for playful confirmations, not passive notifications.
+       Visual refinements above stay; the choreography is owned by
+       notifications.css. Exit stays 160ms accelerate — exit faster
+       than entrance holds: 240/160.) */
   }
 
 
@@ -4121,7 +4191,7 @@
      ║  MEGA-MENU (landing) — items stagger                           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-megamenu .landing-megamenu-item {
-    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both;
   }
   .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
   .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
@@ -4148,8 +4218,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .comp-icon-btn {
     transition:
-      background var(--motion-duration-short) var(--ease, ease),
-      border-color var(--motion-duration-short) var(--ease, ease),
+      background var(--motion-duration-short) var(--ease),
+      border-color var(--motion-duration-short) var(--ease),
       transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   .comp-icon-btn:hover {
@@ -4197,7 +4267,7 @@
   .thumb-card {
     overflow: hidden;
     transition:
-      border-color var(--motion-duration-medium) var(--ease, ease),
+      border-color var(--motion-duration-medium) var(--ease),
       box-shadow var(--motion-duration-page) var(--ease-spring-soft),
       transform var(--motion-duration-page) var(--ease-spring-soft);
   }
@@ -4206,7 +4276,7 @@
     position: relative;
   }
   .thumb-card-image > * {
-    transition: transform var(--t-slower) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: transform var(--t-slower) var(--ease-out);
   }
   @media (hover: hover) {
     .thumb-card:hover {
@@ -4314,14 +4384,12 @@
     overflow: hidden;
     transition: transform var(--motion-duration-page) var(--ease-spring-soft);
   }
-  .vision-card img,
-  .vision-detail-hero img {
-    transition: transform var(--t-cinema) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-  }
+  /* (4-A11 P2-11 / craft floor: images are not action targets — the
+     img used to scale 1.05 over 720ms on card hover. The container
+     now carries the feedback instead; the img never animates.) */
   @media (hover: hover) {
-    .vision-card:hover img,
-    .vision-detail-hero:hover img {
-      transform: scale(1.05);
+    .vision-card:hover {
+      transform: scale(1.02);
     }
   }
 
@@ -4342,7 +4410,7 @@
   /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
      zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
   .pdf-toolbar {
-    animation: madark-pdf-controls-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both 100ms;
+    animation: madark-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
   }
   @keyframes madark-pdf-controls-in {
     from { opacity: 0; transform: translateY(-6px); }
@@ -4385,7 +4453,7 @@
      a no-op token.) */
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link) {
     position: relative;
-    transition: color var(--motion-duration-short) var(--ease, ease);
+    transition: color var(--motion-duration-short) var(--ease);
   }
   a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link)::after {
     content: '';
@@ -4588,7 +4656,7 @@
      ║  Native lazy-loaded images fade in once decoded.               ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   img[loading="lazy"] {
-    animation: madark-img-in var(--motion-duration-long) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+    animation: madark-img-in var(--motion-duration-long) var(--ease-out) both;
   }
   @keyframes madark-img-in {
     from { opacity: 0; }
@@ -4656,7 +4724,7 @@
   }
   .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
   .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
-    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)) both !important;
+    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both !important;
   }
 
 
@@ -4740,7 +4808,7 @@
     text-align: start;
     cursor: pointer;
     transition:
-      background var(--motion-duration-short) var(--ease, ease),
+      background var(--motion-duration-short) var(--ease),
       padding-inline-start var(--motion-duration-medium) var(--ease-spring-soft);
     position: relative;
   }
@@ -4807,7 +4875,7 @@
     color: var(--text-muted);
     flex-shrink: 0;
     opacity: 0.5;
-    transition: transform var(--motion-duration-short) var(--ease, ease), opacity var(--motion-duration-short) var(--ease, ease);
+    transition: transform var(--motion-duration-short) var(--ease), opacity var(--motion-duration-short) var(--ease);
   }
   .search-row:hover .search-row-arrow,
   .search-row.active .search-row-arrow {
@@ -4844,7 +4912,8 @@
       var(--surface-3) 100%
     );
     background-size: 200% 100%;
-    animation: madark-search-shimmer 1400ms var(--motion-ease-standard) infinite;
+    /* (4-A11 P2-9: raw 1400ms + eased loop → skeleton token + linear.) */
+    animation: madark-search-shimmer var(--motion-duration-skeleton) var(--ease-linear) infinite;
     display: block;
   }
   .search-shimmer:nth-child(1) { inline-size: 100%; }
@@ -4888,9 +4957,9 @@
     font-size: var(--fs-xs);
     cursor: pointer;
     transition:
-      background var(--motion-duration-short) var(--ease, ease),
-      color var(--motion-duration-short) var(--ease, ease),
-      border-color var(--motion-duration-short) var(--ease, ease),
+      background var(--motion-duration-short) var(--ease),
+      color var(--motion-duration-short) var(--ease),
+      border-color var(--motion-duration-short) var(--ease),
       transform var(--motion-duration-short) var(--ease-spring-soft);
   }
   .search-tip-pill:hover {

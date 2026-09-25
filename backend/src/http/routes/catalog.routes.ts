@@ -9,6 +9,45 @@ import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
 
 const router = Router();
+
+// ════════════════════════════════════════════════════
+// FACULTIES & DEPARTMENTS (public catalog)
+// ════════════════════════════════════════════════════
+// PUBLIC — declared BEFORE the router-level authMiddleware
+// below (audit 4-A13 P0-1): the anonymous /auth/register
+// funnel reads this lookup (useFaculties), as do the campus
+// map and the university directory. Express dispatches in
+// registration order, so this route answers before the auth
+// gate ever runs — previously the router-level middleware
+// swallowed it and every anonymous visitor got a 401, making
+// self-serve registration impossible.
+//
+// Projection: names/ids/emoji/city only — no PII, and
+// strictly narrower than the already-public GET /colleges
+// bundle (which additionally ships the per-faculty counts).
+// Still behind the app-level global rate limiter (app.ts
+// mounts it for the whole /api/v1 prefix).
+router.get('/faculties', async (_req, res, next) => {
+  try {
+    const data = await prisma.faculty.findMany({
+      select: {
+        id: true,
+        name: true,
+        iconEmoji: true,
+        city: true,
+        departments: { select: { id: true, name: true } },
+      },
+      orderBy: { name: 'asc' },
+    });
+    res.json({ data });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Everything below this line requires a session. Public
+// routes MUST be declared above (they would otherwise be
+// 401'd by this gate before their handler runs).
 router.use(authMiddleware);
 
 // ════════════════════════════════════════════════════
@@ -506,21 +545,6 @@ router.get('/ar-experiences', async (_req, res, next) => {
   try {
     // Bounded read (audit P2-18) — catalog domain, well below this cap.
     const data = await prisma.arExperience.findMany({ orderBy: { title: 'asc' }, take: 200 });
-    res.json({ data });
-  } catch (e) {
-    next(e);
-  }
-});
-
-// ════════════════════════════════════════════════════
-// FACULTIES & DEPARTMENTS (public catalog)
-// ════════════════════════════════════════════════════
-router.get('/faculties', async (_req, res, next) => {
-  try {
-    const data = await prisma.faculty.findMany({
-      include: { departments: true },
-      orderBy: { name: 'asc' },
-    });
     res.json({ data });
   } catch (e) {
     next(e);

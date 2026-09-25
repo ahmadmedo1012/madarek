@@ -242,6 +242,12 @@ export function CompetitionDetailPage() {
   if (q.isError || !q.data) return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
 
   const c = q.data;
+  // 4-A14 P0-1 — the DETAIL payload ships the entries ARRAY (the list
+  // endpoint ships `_count`; the detail endpoint never did). Reading
+  // `c._count.entries` here threw a TypeError for every role and
+  // blanked the whole app. Read the shipped field, defensively: a
+  // future payload drift degrades to an empty list, never a crash.
+  const entries = Array.isArray(c.entries) ? c.entries : [];
   const isOrganizer = !!user && c.organizerId === user.id;
   // myEntry — prefer an exact id match when the payload carries one (the
   // organizer path returns the raw entry, which includes userId), and fall
@@ -249,18 +255,18 @@ export function CompetitionDetailPage() {
   // (non-organizer) competition detail payload does NOT include user ids or
   // emails — see backend social.routes.ts — so the name fallback is the best
   // available signal until the backend adds `userId` to entry selects.
-  const myEntry = c.entries.find((e) => {
+  const myEntry = entries.find((e) => {
     const entryUserId = (e as { userId?: string }).userId;
     if (entryUserId) return entryUserId === user?.id;
     return e.user.firstName === user?.firstName && e.user.lastName === user?.lastName;
   });
   const canEnter = c.status === 'OPEN' && new Date(c.deadline) > new Date();
-  const allScored = c.entries.length > 0 && c.entries.every((e) => e.score !== null);
-  const someScored = c.entries.some((e) => e.score !== null);
-  const unscoredCount = c.entries.filter((e) => e.score === null).length;
+  const allScored = entries.length > 0 && entries.every((e) => e.score !== null);
+  const someScored = entries.some((e) => e.score !== null);
+  const unscoredCount = entries.filter((e) => e.score === null).length;
   const sortedEntries = c.status === 'JUDGED'
-    ? [...c.entries].sort((a, b) => (b.score ?? -1) - (a.score ?? -1))
-    : c.entries;
+    ? [...entries].sort((a, b) => (b.score ?? -1) - (a.score ?? -1))
+    : entries;
 
   return (
     <div className="page comp-detail">
@@ -281,7 +287,7 @@ export function CompetitionDetailPage() {
           <p className="comp-hero-desc">{c.description}</p>
           <div className="comp-hero-stats">
             <div><Icon icon={Calendar} size={13} /> {formatDeadline(c.deadline)}</div>
-            <div><Icon icon={Award} size={13} /> <bdi>{c._count.entries}</bdi> مشترك</div>
+            <div><Icon icon={Award} size={13} /> <bdi>{entries.length}</bdi> مشترك</div>
             {c.prize && <div><Icon icon={Trophy} size={13} /> {c.prize}</div>}
             <div className="text-subtle">نظَّمها {c.organizer.firstName} {c.organizer.lastName}</div>
           </div>
@@ -341,8 +347,8 @@ export function CompetitionDetailPage() {
           rank chips with medal treatment, entrance stagger via --lb-i,
           tabular points), OPEN/CLOSED keep the comp-entry rows with
           the organizer scoring affordances. */}
-      <Card title="المشاركات" subtitle={`${countAr(c.entries.length, ['مشاركة واحدة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
-        {c.entries.length === 0 ? (
+      <Card title="المشاركات" subtitle={`${countAr(entries.length, ['مشاركة واحدة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
+        {entries.length === 0 ? (
           <EmptyState
             title="لم يشارك أحد بعد"
             description={canEnter ? 'كن أوّل من يشارك!' : 'انتهت مهلة التقديم على هذه المسابقة.'}

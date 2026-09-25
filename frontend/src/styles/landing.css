@@ -424,13 +424,20 @@
      so no single word is ever orphaned between 320–1920px */
     text-wrap: balance;
   }
+  /* 20-a P1 (4-A1 P1-1 / 4-A12 P1-6): Arabic has no italic — the serif
+     accent was a phantom (IBM Plex Serif ships latin-only unicode-range,
+     so «التعليم» fell to an OS naskh + synthetic slant — the page's
+     strongest machine-made tell). Upright, same family as the headline,
+     emphasis carried by weight + the AA-pinned accent ink
+     (--accent-strong #5C3416 = 10.29:1 on --bg; was --accent 3.65:1
+     at weight 400 — 4-A1 P2-5's weak-keyword contrast). */
   .landing-title em {
-    font-style: italic;
-    font-family: var(--font-serif);
-    font-weight: var(--fw-regular);
-    color: var(--accent);
+    font-style: normal;
+    font-family: inherit;
+    font-weight: var(--fw-black);
+    color: var(--accent-strong);
     /* the accent word «التعليم» is Arabic — tracking (even negative)
-       breaks the serif fallback's cursive joins (ruling #2) */
+       breaks cursive joins (ruling #2) */
     letter-spacing: var(--ls-normal);
   }
   .landing-title-highlight {
@@ -652,16 +659,29 @@
     grid-template-columns: repeat(6, 1fr);
     gap: var(--sp-6);
     align-items: center;
-    opacity: 0.55;
+    /* 20-a P2 (4-A1 P2-2): the 0.55 ghosting measured an effective
+       2.49:1 — the 6 axe contrast errors the console prints on load
+       and a "forgot to swap the wireframe assets" read. No
+       institutional logo assets exist, so the honest treatment is a
+       deliberate typographic wordmark row: full-strength secondary
+       ink (8.1:1 light / 9.9:1 dark), one step up the scale,
+       hairline separators. */
   }
   @media (max-width: 920px) { .landing-logos-grid { grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); } }
   .landing-logo {
     text-align: center;
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
     color: var(--text-secondary);
     /* no letter-spacing — Arabic institution names (ruling #2) */
+    padding-block: var(--sp-2);
+  }
+  /* hairline separators turn six floating labels into one authored
+     institutional row (row-start items keep a clean inline edge) */
+  .landing-logo + .landing-logo { border-inline-start: 1px solid var(--rule); }
+  @media (max-width: 920px) {
+    .landing-logo:nth-child(3n+1) { border-inline-start: none; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -672,7 +692,14 @@
   .band {
     /* 0-b P2-26 — the hand-rolled clamp was byte-identical to the token. */
     padding-block: var(--section-pad-y-wide);
-    margin-block-start: var(--sp-9);
+    /* 20-a P2 (4-A12 hand-off — band patchwork): the 48px block-start
+       margin printed a bg-colored sliver above every full-bleed band
+       (and nothing below it), so cream→white→lavender alternation read
+       as accidental patchwork. Bands now sit flush like the rest of
+       the page (hero→logos→facts→campus are already contiguous) — the
+       rhythm lives in the padding tokens, and band-to-band cuts are
+       honest hard cuts. */
+    margin-block-start: 0;
   }
   .band-peach    { background: var(--c-peach-bg);    color: var(--c-peach-deep); }
   .band-mint     { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
@@ -689,13 +716,10 @@
   /* eyebrow anatomy (ruling #2): size + weight + color only. Displayed
      as a block under the sticker — replaces the matching inline styles
      that used to sit on the TSX spans (0-b P1-15). */
-  .band .band-eyebrow {
-    display: block;
-    margin-block-start: var(--sp-6);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-bold);
-    opacity: 0.7;
-  }
+  /* 20-a P2-1 (4-A1): .band .band-eyebrow deleted — both band eyebrows
+     («الفصل المعكوس» / «المساعد الأكاديمي») were dropped from the TSX;
+     the sticker + title carry the band heads now (scroll-craft: at most
+     one eyebrow per three sections). */
   .band .band-title {
     font-family: var(--font-display);
     font-size: var(--type-display-size-lg);
@@ -706,10 +730,25 @@
     max-inline-size: 22ch;
     color: inherit;
   }
+  /* 20-a P1 (4-A1 P1-1): same phantom-serif fix as .landing-title em —
+     upright + weight + accent ink. --accent-strong clears AA on every
+     band ground in both themes (light #5C3416 on pastels ≥ 7:1;
+     dark #F8DDBC on dark band grounds ≥ 10:1). */
   .band .band-title em {
-    font-style: italic;
+    font-style: normal;
+    font-family: inherit;
+    font-weight: var(--fw-black);
+    color: var(--accent-strong);
+  }
+  /* The one sanctioned serif-italic survivor: «Oasis» is a Latin-only
+     run, so the REAL IBM Plex Serif Italic file paints it (no synthetic
+     slant, no fallback). Scoped to the class the TSX adds — every
+     Arabic em on the page is upright. */
+  .band .band-title em.landing-serif-latin {
     font-family: var(--font-serif);
+    font-style: italic;
     font-weight: var(--fw-regular);
+    color: inherit;
   }
   .band .band-lede {
     font-size: var(--type-body-size-lg);
@@ -812,11 +851,14 @@
     inset-inline-end: 0;
     background: linear-gradient(-90deg, var(--accent), transparent);
   }
+  /* 20-a P1 (4-A1 P1-1): phantom-serif sweep — upright, same family,
+     accent-strong ink (was --accent at weight 400 = 3.65:1, the weakest
+     element in every section heading). */
   .landing-section-title em {
-    font-style: italic;
-    font-family: var(--font-serif);
-    font-weight: var(--fw-regular);
-    color: var(--accent);
+    font-style: normal;
+    font-family: inherit;
+    font-weight: var(--fw-black);
+    color: var(--accent-strong);
   }
   .landing-section-lede {
     font-size: var(--type-body-size-lg);
@@ -864,6 +906,85 @@
     font-size: var(--type-body-size);
     color: var(--text-secondary);
     line-height: var(--type-body-line-height);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ROLE LEDGER (20-a · 4-A1 P1-3)                               ║
+     ║  The roles section used to be a FOURTH icon-card grid — it    ║
+     ║  literally reused .landing-features* classes (the audit's     ║
+     ║  biggest template tell: 4 cards in a 3-col grid even left     ║
+     ║  the fourth card orphaned). Re-grammared as a definition      ║
+     ║  ledger: role names index full-width hairline rows, the       ║
+     ║  descriptions set a readable measure, and the section head    ║
+     ║  starts inline-start — the page's only non-centered head.     ║
+     ║  No hover state on purpose: rows are informational, and a     ║
+     ║  hover wash on a non-interactive row is a false affordance     ║
+     ║  (0-b P3-35 ruling).                                          ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .landing-roles {
+    padding-block: var(--section-pad-y-wide);
+  }
+  .landing-roles-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-4);
+    margin-block-end: var(--sp-8);
+  }
+  .landing-roles-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* VLM 20-a follow-up: at the full 1104px container the arc between
+       the index column and the description start read as "a tiring
+       horizontal distance". Capping the ledger's measure keeps the
+       description column in the 45–75ch body range while the head
+       stays start-aligned. */
+    max-inline-size: 56rem;
+  }
+  .landing-role-row {
+    display: grid;
+    grid-template-columns: minmax(200px, 300px) 1fr;
+    gap: var(--sp-4) var(--sp-8);
+    align-items: center;
+    padding-block: var(--sp-6);
+    border-block-start: 1px solid var(--rule);
+  }
+  .landing-role-row:last-of-type {
+    border-block-end: 1px solid var(--rule);
+  }
+  .landing-role-key {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-inline-size: 0;
+  }
+  /* lg stickers (72px) anchor the rows — the default 56px circle read
+     "small and passive" next to 40px display names (VLM 20-a). */
+  .landing-role-key .sticker { flex-shrink: 0; }
+  .landing-role-name {
+    /* display role; no tracking override — the names are Arabic but
+       carry no tashkeel, so the role's own letter-spacing holds */
+    font-family: var(--font-display);
+    font-size: var(--type-display-size-md);
+    font-weight: var(--type-display-weight);
+    line-height: var(--type-display-line-height);
+    letter-spacing: var(--type-display-letter-spacing);
+    color: var(--text);
+  }
+  .landing-role-desc {
+    font-size: var(--type-body-size-lg);
+    line-height: var(--type-body-line-height);
+    color: var(--text-secondary);
+    max-inline-size: 62ch;
+  }
+  @media (max-width: 920px) {
+    .landing-role-row {
+      grid-template-columns: 1fr;
+      gap: var(--sp-3);
+      padding-block: var(--sp-5);
+    }
+    .landing-role-desc { font-size: var(--type-body-size); }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -964,7 +1085,11 @@
     font-feature-settings: var(--type-metric-feature-settings);
   }
   .landing-pilot-label { font-size: var(--type-label-size); color: var(--text); font-weight: var(--fw-bold); }
-  .landing-pilot-note { font-size: var(--type-label-size-sm); color: var(--text-muted); }
+  /* 20-a (4-A12 P2-7): --text-muted measured 4.46:1 on the sand proof
+     band (0.04 under AA at 12px). --text-secondary is the same neutral
+     family one step darker: 7.15:1 on sand / 8.25:1 on dark sand,
+     6.9:1 on the white facts row — AA everywhere it renders. */
+  .landing-pilot-note { font-size: var(--type-label-size-sm); color: var(--text-secondary); }
   /* proof band (band-sand): the grid sits inside a section head — no
      double vertical padding, and the lede centers under the centered
      head (de-inlined from matching style objects, 0-b P1-15). */
@@ -1014,20 +1139,23 @@
     padding-block: var(--section-pad-y-wide);
     text-align: center;
   }
+  /* ── 20-a P0 (4-A1 P0-1/P0-2 + 4-A12 P0-1) — the invisible close ──
+     band-dark paints var(--neutral-900) and flips WITH the theme
+     (light: #191918 ink band / dark: #F2EAD8 cream band), while
+     --text resolves to exactly the same value in both themes → the
+     title and ghost button painted 1.00:1 in BOTH themes (probe:
+     rgb(25,25,24) on rgb(25,25,24) light; cream-on-cream dark).
+     Fix: paint the band's OWN ink pair — var(--neutral-50) is the
+     documented opposite stop (16.6:1 / 15.9:1), same family the
+     -eyebrow/-lede/-meta 82/18 mixes already derive from. */
   /* band-dark inverts with the theme (neutral-900/neutral-50 swap under
      [data-theme="dark"]), so muted copy must be mixed from the band's own
      pair, never from --text-muted (light-theme muted on the light-theme
      ink band measured 3.37:1 — 0-b E). 82/18 oklab mix: light ≈ #CDCBC7 on
      #191918 ≈ 10.7:1; dark ≈ #43403A on #F2EAD8 ≈ 10.3:1. */
-  .landing-final-cta-eyebrow {
-    display: inline-flex; align-items: center; gap: 6px;
-    /* eyebrow anatomy (ruling #2): size + weight + color only */
-    font-size: var(--type-label-size-sm);
-    color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
-    font-weight: var(--fw-bold);
-    margin-block-end: var(--sp-5);
-  }
-  .landing-final-cta-dot { inline-size: 6px; block-size: 6px; border-radius: 50%; background: var(--accent); }
+  /* 20-a P2-1: .landing-final-cta-eyebrow / -dot deleted — the «ابدأ الآن»
+     eyebrow was dropped from the TSX (one of 7 removed; the band's title,
+     lede, actions and meta carry the close on their own). */
   /* display role (0-b P2-25) — the four raw values were the role's own
      numbers written inline. */
   .landing-final-cta-title {
@@ -1037,16 +1165,25 @@
     line-height: var(--type-display-line-height);
     letter-spacing: var(--type-display-letter-spacing);
     max-inline-size: 24ch;
-    /* var(--neutral-50) was cream-on-cream in light mode (invisible)
-       and dark-ink-on-dark in dark mode (also invisible). */
-    color: var(--text);
+    /* 20-a P0: was var(--text) — the theme token that always equals
+       the band ground (1.00:1 × both themes). The band's own ink pair:
+       #FBFAF9 on #191918 ≈ 16.6:1 (light) / #191918 on #F2EAD8 ≈ 15.9:1
+       (dark). */
+    color: var(--neutral-50);
     margin-inline: auto;
   }
+  /* 20-a P1 (4-A1 P1-1): Arabic has no italic — the phantom IBM Plex
+     Serif (latin-only unicode-range) fell to an OS serif + synthetic
+     slant on «بانتظارك». Upright, same family, and a two-stop copper
+     keyed to the band ground (taste floor: a page that hard-cuts
+     between light and dark grounds carries one hue in two lightnesses):
+     mix the page accent with the band's own ink — light band ≈ tan
+     copper, dark band ≈ espresso copper, both >3:1 at display size. */
   .landing-final-cta-title em {
-    font-style: italic;
-    font-family: var(--font-serif);
-    font-weight: var(--fw-regular);
-    color: var(--accent);
+    font-style: normal;
+    font-family: inherit;
+    font-weight: var(--fw-black);
+    color: color-mix(in oklab, var(--accent) 60%, var(--neutral-50));
   }
   .landing-final-cta-lede {
     font-size: var(--type-body-size-lg);
@@ -1089,18 +1226,32 @@
   }
   .landing-final-cta-btn.ghost {
     background: transparent;
-    color: var(--text);
-    border: 1px solid var(--rule);
+    /* 20-a P0: var(--text) = the band ground (1.00:1 × both themes).
+     Band-scoped ink + a border mixed from the same pair keeps the
+     ghost legible on both band grounds; hover wash + border deepen
+     from the same pair so the button never inverts against its band.
+     Border stop 55%: composited ≈ #959594 on the light-theme ink band
+     = 5.9:1 — clears WCAG 1.4.11 (3:1) with room, and reads as an
+     intentional outline rather than a disabled ghost (VLM 20-a
+     follow-up: the 38% stop passed 1.4.11 at 3.4:1 but still read
+     "ghost-like"). */
+    color: var(--neutral-50);
+    border: 1px solid color-mix(in oklab, var(--neutral-50) 55%, transparent);
   }
   .landing-final-cta-btn.ghost:hover {
-    background: var(--surface-2);
-    border-color: var(--border-strong);
+    background: color-mix(in oklab, var(--neutral-50) 12%, transparent);
+    border-color: color-mix(in oklab, var(--neutral-50) 78%, transparent);
   }
   .landing-final-cta-meta {
     margin-block-start: var(--sp-6);
     font-size: var(--type-label-size-sm);
     color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
   }
+  /* 20-a P2-1 (4-A1): the «ابدأ الآن» eyebrow + pulse dot was one of
+     the 9 eyebrow labels the page carried — dropped with 6 siblings;
+     its rules (.landing-final-cta-eyebrow / -dot) deleted with the TSX
+     (scroll-craft: at most one eyebrow per three sections — this page
+     now keeps only the logos strip label + the proof-band qualifier). */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FOOTER                                                        ║
@@ -1262,8 +1413,13 @@
     color: var(--text);
   }
   .landing-ai-status {
-    font-size: var(--fs-xxs);
-    color: var(--c-mint-ink);
+    /* 20-a (4-A12 P2-8): --c-mint-ink as 11px text = 3.0:1 on the white
+       visual card. The status-INK token is the semantic pair:
+       #1F4F30 = 7.8:1 on the card (light); dark keeps its own mint
+       ink value (8.6:1). Also snapped to the --fs-xs floor — 11px
+       clipped the Arabic descenders in «متَّصل». */
+    font-size: var(--fs-xs);
+    color: var(--success-ink);
     font-weight: var(--fw-semibold);
     display: inline-flex;
     align-items: center;
@@ -1323,5 +1479,53 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   20-a P2 (4-A1) — offscreen infinite-loop pause
+   The TSX layer tags every <main> section that is fully out of view
+   with [data-offscreen]; every infinite loop inside those sections
+   halts (animation-play-state only — paused loops resume mid-keyframe
+   when their section re-enters). Covered loops (the page's full 27):
+   hero ambient drift (belt-and-braces next to the .is-past rule in
+   the pages layer), the eyebrow pulse dot (hero chip + AI status
+   dot), both chip shimmer sweeps, mockup bar breathe ×7, floating
+   badges ×2, typing dots ×3, sticker idle/sway.
+
+   WHY @layer overrides and not the pages layer above: the sticker
+   sway's animation shorthand lives in polish.css's OWN overrides
+   block, and a shorthand's implicit animation-play-state: running
+   outranks ANY pages-layer pause no matter the specificity (motion.css
+   fixes the layer order as tokens < base < layout < components <
+   pages < overrides). Riding the same top rung — with a higher-
+   specificity selector — is the only clean win. Nothing else in the
+   codebase declares animation-play-state, so this block is the single
+   owner of the property. Reduced-motion users are unaffected: the
+   global belt already flattens every animation.
+   ═══════════════════════════════════════════════════════════════════ */
+@layer overrides {
+  .landing-hero[data-offscreen]::before,
+  .landing [data-offscreen] .landing-hero-eyebrow::after,
+  .landing [data-offscreen] .landing-hero-eyebrow strong::after,
+  .landing [data-offscreen] .landing-hero-eyebrow-dot,
+  .landing [data-offscreen] .landing-mockup-bar,
+  .landing [data-offscreen] .landing-mockup-badge-1,
+  .landing [data-offscreen] .landing-mockup-badge-2,
+  .landing [data-offscreen] .typing-dots span,
+  .landing [data-offscreen] .sticker-wiggle .sticker {
+    animation-play-state: paused;
+  }
+
+  /* 20-a P1 (4-A1 P1-1): the campus caption em («منذ 1988») — Arabic +
+     digits, so polish.css's serif italic was a phantom on «منذ» (the
+     latin-only IBM Plex Serif can never paint it). polish declares the
+     italic in ITS overrides block, so the un-slant rides the same rung
+     with one extra ancestor class; polish's photo-scrim color and the
+     caption's position stay untouched. */
+  .landing .landing-campus-line em {
+    font-style: normal;
+    font-family: inherit;
+    font-weight: var(--fw-bold);
   }
 }

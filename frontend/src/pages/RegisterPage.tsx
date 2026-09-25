@@ -1,5 +1,5 @@
-import { Children, cloneElement, isValidElement, useId, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Children, cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
@@ -79,6 +79,36 @@ export default function RegisterPage() {
     retry: () => void facultiesQ.refetch(),
   };
 
+  // Form state lives at PAGE level, above the keyed step panel
+  // (audit 4-A13 P2-3): the panel's keyed remount drives the slide
+  // animation but used to destroy everything typed into it — a
+  // student who picked the wrong role (or stepped away and back)
+  // retyped the whole form. With the RHF state hoisted here, the
+  // remount only resets transient view state (the password toggle).
+  const studentForm = useForm<StudentInputs>({
+    resolver: zodResolver(studentSchema),
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', facultyId: '', departmentId: '', year: 1 },
+  });
+  const teacherForm = useForm<TeacherInputs>({
+    resolver: zodResolver(teacherSchema),
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', facultyId: '', departmentId: '', specialty: '' },
+  });
+
+  // Focus continuity (audit 4-A13 P2-2): the step panel's keyed
+  // remount unmounts the clicked role card, which used to drop
+  // focus to <body> at the exact moment the screen changed. Move
+  // focus to the incoming step's heading instead (tabIndex={-1}),
+  // the same pattern OnboardingFlow uses for its CTA. The previous-
+  // role guard skips the very first mount — a fresh page load keeps
+  // the browser's default focus behaviour.
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const prevRoleRef = useRef<AcademicRole | null>(null);
+  useEffect(() => {
+    if (prevRoleRef.current === role) return;
+    prevRoleRef.current = role;
+    stepHeadingRef.current?.focus();
+  }, [role]);
+
   const chooseRole = (r: AcademicRole) => {
     setStepDir('forward');
     setRole(r);
@@ -146,7 +176,7 @@ export default function RegisterPage() {
             {role ? (
               <>
                 <div className="auth-form-header">
-                  <h1 className="auth-form-title">
+                  <h1 className="auth-form-title" tabIndex={-1} ref={stepHeadingRef}>
                     {role === 'STUDENT' ? 'تسجيل طالب جديد' : 'تسجيل عضو هيئة تدريس'}
                   </h1>
                   <p className="auth-form-sub">جميع الحقول مطلوبة لإتمام إنشاء الحساب.</p>
@@ -154,6 +184,7 @@ export default function RegisterPage() {
 
                 {role === 'STUDENT' ? (
                   <StudentForm
+                    form={studentForm}
                     isPending={register.isPending}
                     isError={register.isError}
                     faculties={facultiesState}
@@ -166,6 +197,7 @@ export default function RegisterPage() {
                   />
                 ) : (
                   <TeacherForm
+                    form={teacherForm}
                     isPending={register.isPending}
                     isError={register.isError}
                     faculties={facultiesState}
@@ -181,7 +213,7 @@ export default function RegisterPage() {
             ) : (
               <>
                 <div className="auth-form-header">
-                  <h1 className="auth-form-title">من أنت؟</h1>
+                  <h1 className="auth-form-title" tabIndex={-1} ref={stepHeadingRef}>من أنت؟</h1>
                   <p className="auth-form-sub">
                     اختر نوع الحساب لإنشاء وصولك إلى منصّة جامعة الزاوية.
                   </p>
@@ -239,17 +271,17 @@ interface FacultiesState {
 }
 
 interface StudentFormProps {
+  /** Injected from RegisterPage — the RHF state must live ABOVE the
+   *  keyed step panel so step changes never destroy typed data
+   *  (audit 4-A13 P2-3). */
+  form: UseFormReturn<StudentInputs>;
   faculties: FacultiesState;
   isPending: boolean;
   isError: boolean;
   onSubmit: (values: StudentInputs) => Promise<void>;
 }
 
-function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormProps) {
-  const form = useForm<StudentInputs>({
-    resolver: zodResolver(studentSchema),
-    defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', facultyId: '', departmentId: '', year: 1 },
-  });
+function StudentForm({ form, faculties, isPending, isError, onSubmit }: StudentFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   const departments = useMemo(
@@ -348,17 +380,16 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
 }
 
 interface TeacherFormProps {
+  /** Injected from RegisterPage — same hoisting rationale as
+   *  StudentFormProps.form (audit 4-A13 P2-3). */
+  form: UseFormReturn<TeacherInputs>;
   faculties: FacultiesState;
   isPending: boolean;
   isError: boolean;
   onSubmit: (values: TeacherInputs) => Promise<void>;
 }
 
-function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormProps) {
-  const form = useForm<TeacherInputs>({
-    resolver: zodResolver(teacherSchema),
-    defaultValues: { firstName: '', lastName: '', email: '', password: '', facultyId: '', departmentId: '', specialty: '' },
-  });
+function TeacherForm({ form, faculties, isPending, isError, onSubmit }: TeacherFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   const departments = useMemo(

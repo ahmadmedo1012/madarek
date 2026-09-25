@@ -187,8 +187,16 @@ export function createApp() {
   //    for /api/v1/colleges and 401s the request before reaching
   //    the (now-public) GET /colleges handler. ────────────────
   app.use('/api/v1', collegesRoutes);
-  app.use('/api/v1', meRoutes);
+  // catalogRoutes mounts here (before meRoutes) for the same reason:
+  // its GET /faculties is a PUBLIC route declared above the router's
+  // own auth gate (audit 4-A13 P0-1 — the register funnel). Any
+  // broad-mount authed router mounted earlier (meRoutes) would 401
+  // anonymous /faculties requests before catalogRoutes ever runs.
+  // Catalog's remaining routes sit below its internal gate, so their
+  // auth semantics are unchanged by this position; no catalog path
+  // collides with a meRoutes path.
   app.use('/api/v1', catalogRoutes);
+  app.use('/api/v1', meRoutes);
   app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
   app.use('/api/v1', trainingRoutes); // /training/* (catalog, lessons, badges, certificates, leaderboard)
   app.use('/api/v1', teacherRoutes);  // /teacher/* (offerings, students, risks, attendance, curriculum)

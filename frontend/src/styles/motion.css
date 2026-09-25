@@ -190,31 +190,12 @@
   /* ───────────────────────────────────────────────────────────────────
      Sheet bottom entrance — wave 2-a.
      `madarek-sheet-slide-bottom` is consumed by .sheet-panel-bottom
-     (components.css) but was never defined anywhere, so bottom sheets
-     popped in with no entrance while their end/start siblings slid.
-     Defined here (motion.css is allowlisted for raw values) with a
-     settle-overshoot spring feel and a vertical-only transform:
-     translateY is direction-agnostic, so the entrance is identical in
-     LTR and RTL — no --motion-direction multiplier needed. The easing
-     comes from the consumer (components.css passes
-     --motion-ease-decelerate); the mid-keyframe overshoot supplies the
-     spring. Sibling keyframes madarek-sheet-slide-end/-start live with
+     (components.css). The keyframes themselves now live in the
+     `@layer overrides` block after this file's components layer —
+     see that block's comment for why (audit 4-A11 P2-8).
+     Sibling keyframes madarek-sheet-slide-end/-start live with
      the sheet styles in components.css.
      ─────────────────────────────────────────────────────────────────── */
-  @keyframes madarek-sheet-slide-bottom {
-    from {
-      opacity: 0;
-      transform: translateY(8%);
-    }
-    62% {
-      opacity: 1;
-      transform: translateY(-1.25%);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
 
   /* Explicit off-switch (brief guardrail #6 — keyframe animations get
      their own reduced-motion kill, independent of the global belts):
@@ -222,6 +203,9 @@
   @media (prefers-reduced-motion: reduce) {
     .sheet-panel-bottom { animation: none; }
   }
+
+  /* (The @keyframes madarek-sheet-slide-bottom definition moved to the
+     @layer overrides block below — 4-A11 P2-8 duplicate-keyframe kill.) */
 
   /* ───────────────────────────────────────────────────────────────────
      Loading spinner — used by Button[loading] and inline spinners.
@@ -324,6 +308,42 @@
    and eager CSS always precedes lazy chunk CSS — zero cascade outcome
    change.
    ═══════════════════════════════════════════════════════════════════ */
+/* SHEET BOTTOM ENTRANCE — the authored spring (audit 4-A11 P2-8).
+   `madarek-sheet-slide-bottom` is defined twice: this settle-overshoot
+   spring (wave 2-a) and a plain `translateY(100%)` slide at
+   components.css:1280 (whose comment — like motion.css's old one —
+   claims the keyframe "was never defined anywhere"; both were added
+   independently). Same-name keyframes do not merge: within one
+   cascade layer the later import wins, and components.css is imported
+   after motion.css, so the plain slide silently overrode the authored
+   spring for the entire document. Placing the spring in @layer
+   overrides — which the layer order at the top of this file puts
+   AFTER components — makes the authored choreography win
+   deterministically, independent of import order. When the duplicate
+   in components.css is deleted by its file owner, this definition
+   continues to govern: translateY only, so the entrance is identical
+   in LTR and RTL (no --motion-direction multiplier); the easing comes
+   from the consumer (.sheet-panel-bottom passes
+   --motion-ease-decelerate); the 62% mid-keyframe supplies the spring.
+   The reduced-motion kill for .sheet-panel-bottom stays in the
+   components block above (plus base.css's global belt). */
+@layer overrides {
+  @keyframes madarek-sheet-slide-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(8%);
+    }
+    62% {
+      opacity: 1;
+      transform: translateY(-1.25%);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
 @layer pages {
 
   /* ╔═══════════════════════════════════════════════════════════════╗

@@ -7,6 +7,7 @@ import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
 import { Icon } from './components/Icon';
+import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -188,8 +189,15 @@ export default function App() {
           can fire lib/toast.ts feedback (ruling #3, audit 0-c P1-7). */}
       <ToastStack />
       <BrowserRouter>
-        <Suspense fallback={<PageSkeleton />}>
-          <Routes>
+        {/* Route-level error boundary (audit 4-A14 P1-3): a render
+            crash in ANY route now shows the designed recovery surface
+            (reload + home) instead of blanking the whole app; it clears
+            itself on navigation so a crash on one route never holds
+            the app hostage. Placed OUTSIDE the Suspense so lazy
+            chunk-load failures (stale deploys) are caught too. */}
+        <RouteErrorBoundary>
+          <Suspense fallback={<PageSkeleton />}>
+            <Routes>
             <Route path="/auth" element={<AuthPage />} />
             {/* /auth is the canonical login route; /login is a legacy alias. */}
             <Route path="/login" element={<Navigate to="/auth" replace />} />
@@ -336,7 +344,8 @@ export default function App() {
             <Route path="/404" element={<NotFoundPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        </Suspense>
+          </Suspense>
+        </RouteErrorBoundary>
       </BrowserRouter>
     </QueryClientProvider>
   );
