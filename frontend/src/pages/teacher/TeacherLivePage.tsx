@@ -127,7 +127,7 @@ export default function TeacherLivePage() {
         <div className="page-title-block">
           <h1 className="page-title">إدارة البث المباشر</h1>
           <p className="page-subtitle">
-            جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرراتهم.
+            جدولة المحاضرات الحية وتشغيلها وإيقافها. الطلاب يرون فقط الجلسات الخاصة بمقرّراتهم.
           </p>
         </div>
         <button type="button" className="btn primary" onClick={() => setShowForm((v) => !v)}>
@@ -177,7 +177,7 @@ export default function TeacherLivePage() {
                 )}
                 <div className="form-grid-2">
                   <label>
-                    <span className="form-label">المقرر</span>
+                    <span className="form-label">المقرّر</span>
                     <select
                       className="input"
                       value={form.offeringId}

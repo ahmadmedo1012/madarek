@@ -15,7 +15,7 @@ import { EmptyState, ErrorState, LoadingState, DetailSkeleton } from '../../comp
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
-import { formatDateTimeAr } from '../../lib/format';
+import { formatDateTimeAr, countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 import {
   colleges, getCollegeIdentityByRecord,
@@ -119,10 +119,18 @@ interface CollegeDetail {
 }
 
 const POSITION_LABEL: Record<AcademicPosition, string> = {
-  DEAN: 'عميد الكلية',
+  DEAN: 'عميد الكلّيّة',
   ASSOCIATE_DEAN: 'وكيل العميد',
   DEPARTMENT_HEAD: 'رئيس قسم',
 };
+
+/** Counted noun with ar-LY digit grouping for large counts (leaderboard
+ *  meta line) — countAr's plain template doesn't group thousands. */
+function countedGroupedAr(n: number, one: string, two: string, few: string, many: string): string {
+  if (n === 1) return one;
+  if (n === 2) return two;
+  return `${n.toLocaleString('ar-LY')} ${n <= 10 ? few : many}`;
+}
 
 /* formatDateTime (ar-LY medium date + short time) is
  * lib/format.formatDateTimeAr (13-15 fold, audit 11-f P2-1) — identical
@@ -217,7 +225,7 @@ export function CollegesIndexPage() {
         <>
           {/* Toolbar: search + campus chip strip + clear-filters. */}
           <div className="gallery-toolbar" role="search">
-            <label className="visually-hidden" htmlFor="gallery-search">ابحث عن كلية</label>
+            <label className="visually-hidden" htmlFor="gallery-search">ابحث عن كلّيّة</label>
             <div style={{ flex: '1 1 240px', position: 'relative' }}>
               <Icon
                 icon={Search}
@@ -235,7 +243,7 @@ export function CollegesIndexPage() {
                 id="gallery-search"
                 type="search"
                 className="input gallery-search-input"
-                placeholder="ابحث عن كلية…"
+                placeholder="ابحث عن كلّيّة…"
                 value={state.query}
                 onChange={(e) => setQuery(e.target.value)}
                 style={{ paddingInlineStart: 'var(--sp-9)' }}
@@ -283,7 +291,7 @@ export function CollegesIndexPage() {
 
           {/* Polite live region for filter result count (FR-031). */}
           <div role="status" aria-live="polite" aria-atomic="true" className="visually-hidden">
-            {`${result.total} نتيجة`}
+            {`${countAr(result.total, ['نتيجة واحدة', 'نتيجتان', 'نتائج', 'نتيجة'])}`}
           </div>
 
           {result.total === 0 ? (
@@ -302,7 +310,7 @@ export function CollegesIndexPage() {
               <Reveal as="section" key={city} className="college-city-section" distance="medium">
                 <header className="college-city-header">
                   <h2 className="college-city-name">{city}</h2>
-                  <span className="college-city-count">{list.length} كلّيّة</span>
+                  <span className="college-city-count">{countAr(list.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])}</span>
                 </header>
                 <div className="college-grid">
                   {list.map((c) => {
@@ -514,7 +522,7 @@ export function CollegeDetailPage() {
         </Card>
 
         {/* Departments */}
-        <Card title="الأقسام" subtitle={`${c.departments.length} قسماً`}>
+        <Card title="الأقسام" subtitle={countAr(c.departments.length, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}>
           {c.departments.length === 0 ? (
             <p className="text-muted text-sm">لم تُضَف أقسام بعد.</p>
           ) : (
@@ -733,7 +741,10 @@ export function CollegesLeaderboardPage() {
       {q.isLoading && <LoadingState />}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.colleges.length === 0 && (
-        <EmptyState title="لا توجد بيانات" description="ستظهر المنافسة حين تتوفّر بيانات للكلّيّات." />
+        <EmptyState
+          title="لوحة منافسة الكلّيّات فارغة"
+          description="تُحتسب النقاط من نشاط الطلاب المسجّل؛ ستظهر أولى النتائج مع بداية النشاط هذا الفصل."
+        />
       )}
 
       {q.data && q.data.colleges.length > 0 && (
@@ -765,7 +776,7 @@ export function CollegesLeaderboardPage() {
                           <div>
                             <div className="leaderboard-college-name">{c.name}</div>
                             <div className="leaderboard-college-meta">
-                              {c.city} · {c.studentCount.toLocaleString('ar-LY')} طالب · {c.teacherCount} أستاذ
+                              {c.city} · {countedGroupedAr(c.studentCount, 'طالب واحد', 'طالبان', 'طلاب', 'طالباً')} · {countedGroupedAr(c.teacherCount, 'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً')}
                             </div>
                           </div>
                         </Link>

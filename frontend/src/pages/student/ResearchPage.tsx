@@ -327,7 +327,7 @@ function PaperRow({
 /* ─── Process explainer (helps demo storytelling) ──────── */
 function ProcessExplainer() {
   const STEPS: Array<{ n: number; title: string; desc: string; icon: LucideIcon }> = [
-    { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، الملف، والمادة المرتبطة.', icon: Upload },
+    { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، الملف، والمقرّر المرتبط.', icon: Upload },
     { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ.', icon: ScanSearch },
     { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: BarChart3 },
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة وResearchGate.', icon: BookMarked },
@@ -414,9 +414,9 @@ function UploadModal({
         </div>
 
         <div className="auth-field">
-          <label htmlFor={offeringFieldId}>المادة الأكاديمية المرتبطة (اختياري)</label>
+          <label htmlFor={offeringFieldId}>المقرّر الأكاديمي المرتبط (اختياري)</label>
           <select id={offeringFieldId} className="input" value={offeringId} onChange={(e) => setOfferingId(e.target.value)}>
-            <option value="">— غير مرتبط بمادة محدّدة —</option>
+            <option value="">— غير مرتبط بمقرّر محدّد —</option>
             {enrollmentsPending && (
               <option value="" disabled>جارٍ تحميل مقرراتك المسجَّلة…</option>
             )}

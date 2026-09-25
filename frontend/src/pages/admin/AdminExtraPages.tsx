@@ -10,6 +10,7 @@ import { Card, MetricCard } from '../../components/primitives';
 import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
+import { countAr } from '../../lib/format';
 import { useFaculties } from '../../hooks/useResources';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
 // (.admin-students-*, .admin-pagination, .digital-stat-*, .trend-table,
@@ -47,6 +48,16 @@ interface AdminStudentRow {
 interface PaginatedStudents {
   data: AdminStudentRow[];
   meta: { total: number; page: number; limit: number; totalPages: number };
+}
+
+/** Grouped counted plural for the roster footer — ar-LY grouping like
+ *  the OwnerUsersPage/AdminGovernancePages footers (countAr renders raw
+ *  digits; a five-digit students total wants the separators). */
+function studentsCountLabel(n: number): string {
+  if (n === 1) return 'طالب واحد';
+  if (n === 2) return 'طالبان';
+  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} طلاب`;
+  return `${n.toLocaleString('ar-LY')} طالباً`;
 }
 
 export function AdminStudentsPage() {
@@ -105,15 +116,15 @@ export function AdminStudentsPage() {
             value={facultyId}
             onChange={(e) => { setFacultyId(e.target.value); setPage(1); }}
             disabled={facQ.isPending}
-            aria-label="تصفية حسب الكلية"
+            aria-label="تصفية حسب الكلّيّة"
           >
-            <option value="">{facQ.isPending ? 'جارٍ تحميل الكليات…' : 'كلّ الكلّيّات'}</option>
+            <option value="">{facQ.isPending ? 'جارٍ تحميل الكلّيّات…' : 'كلّ الكلّيّات'}</option>
             {facQ.data?.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
           </select>
           {facQ.isError && (
             <button type="button" className="btn ghost sm" onClick={() => facQ.refetch()}>
               <Icon icon={RefreshCw} size={13} />
-              إعادة تحميل الكليات
+              إعادة تحميل الكلّيّات
             </button>
           )}
         </div>
@@ -177,7 +188,7 @@ export function AdminStudentsPage() {
               <div className="admin-pagination">
                 <span className="text-xs text-muted">
                   الصفحة {studentsQ.data.meta.page} من {studentsQ.data.meta.totalPages} ·
-                  {' '}{studentsQ.data.meta.total.toLocaleString('ar-LY')} طالباً
+                  {' '}{studentsCountLabel(studentsQ.data.meta.total)}
                 </span>
                 <div className="admin-pagination-actions">
                   <button
@@ -262,7 +273,7 @@ export function AdminDigitalPage() {
               change={`${q.data.activeUsers}/${q.data.totalUsers}`}
               color="amber"
             />
-            <MetricCard icon={BookOpen} label="موادّ تعليمية مرفوعة" value={q.data.materialsUploaded.toLocaleString('ar-LY')} color="purple" />
+            <MetricCard icon={BookOpen} label="ملفات تعليمية مرفوعة" value={q.data.materialsUploaded.toLocaleString('ar-LY')} color="purple" />
           </div>
 
           <div className="grid-2">
@@ -349,10 +360,10 @@ export function AdminAnalysisPage() {
             <MetricCard icon={FileText} label="إجمالي الأوراق" value={q.data.headline.totalPapers.toLocaleString('ar-LY')} color="brand" />
             <MetricCard icon={Microscope} label="منشورة في المكتبة" value={q.data.headline.publishedPapers.toLocaleString('ar-LY')} color="green" />
             <MetricCard icon={Users} label="إجمالي المستخدمين" value={q.data.headline.totalUsers.toLocaleString('ar-LY')} color="amber" />
-            <MetricCard icon={GraduationCap} label="طلّاب نشطون" value={q.data.headline.activeStudents.toLocaleString('ar-LY')} color="purple" />
+            <MetricCard icon={GraduationCap} label="طلاب نشطون" value={q.data.headline.activeStudents.toLocaleString('ar-LY')} color="purple" />
           </div>
 
-          <Card title="تطوّر الإنتاج العلميّ — آخر ٦ أشهر" icon={Activity}>
+          <Card title="تطوّر الإنتاج العلميّ — آخر 6 أشهر" icon={Activity}>
             {q.data.paperTrend.length === 0 ? (
               <EmptyState
                 icon={Activity}
@@ -403,9 +414,9 @@ export function AdminAnalysisPage() {
                     <span className="top-courses-rank">{i + 1}</span>
                     <div className="top-courses-body">
                       <div className="top-courses-name">{c.name}</div>
-                      <div className="top-courses-meta"><bdi>{c.code}</bdi> · {c.lectures} محاضرة</div>
+                      <div className="top-courses-meta"><bdi>{c.code}</bdi> · {countAr(c.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</div>
                     </div>
-                    <strong className="font-mono">{c.enrollments.toLocaleString('ar-LY')} تسجيل</strong>
+                    <strong className="font-mono">{countAr(c.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}</strong>
                   </li>
                 ))}
               </ol>
@@ -466,14 +477,14 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">المصادقة</div>
-              <div className="settings-value"><bdi>JWT · ١٥د/٧ي</bdi></div>
+              <div className="settings-value">صلاحية الرمز 15 دقيقة · التحديث كل 7 أيام</div>
             </div>
             <span className="pill on">آمنة</span>
           </div>
           <div className="settings-row">
             <div>
               <div className="settings-label">معدّل الطلبات</div>
-              <div className="settings-value">عامّ ٢٠٠/د · مصادقة ٣٠/د</div>
+              <div className="settings-value">حدّ عامّ 200 طلب في الدقيقة · مصادقة 30 طلباً في الدقيقة</div>
             </div>
           </div>
         </Card>

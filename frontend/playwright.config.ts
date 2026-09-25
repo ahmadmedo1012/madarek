@@ -1,14 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Playwright config for the frontend a11y + e2e suite.
+ * Playwright config for the frontend surface-inventory audit
+ * (specs/012 T142 / WS-F6 — npm run test:audit).
  *
- * See specs/011-platform-completeness-uplift/research.md R-002 — the suite
- * runs the same spec files four times (light × dark × ar × en) so the
- * a11y matrix in tests/e2e/a11y.spec.ts produces 9 routes × 4 = 36 cases.
+ * The a11y/e2e matrix originally scaffolded here (4 projects over a
+ * planned tests/e2e/a11y.spec.ts — light/dark × ar/en) never shipped:
+ * tests/e2e/ has never existed in git and specs/011's e2e tasks
+ * (T040/T049/T062) remain unchecked. The dead projects were removed
+ * (15-k P2-5); the audit project below is the only live suite. Land a
+ * real e2e suite before re-adding projects + a testDir for it.
  */
 export default defineConfig({
-  testDir: './tests/e2e',
   timeout: 30_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -23,48 +26,11 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'light-ar',
-      use: {
-        ...devices['Desktop Chrome'],
-        colorScheme: 'light',
-        locale: 'ar',
-        extraHTTPHeaders: { 'Accept-Language': 'ar' },
-      },
-    },
-    {
-      name: 'light-en',
-      use: {
-        ...devices['Desktop Chrome'],
-        colorScheme: 'light',
-        locale: 'en-US',
-        extraHTTPHeaders: { 'Accept-Language': 'en-US,en' },
-      },
-    },
-    {
-      name: 'dark-ar',
-      use: {
-        ...devices['Desktop Chrome'],
-        colorScheme: 'dark',
-        locale: 'ar',
-        extraHTTPHeaders: { 'Accept-Language': 'ar' },
-      },
-    },
-    {
-      name: 'dark-en',
-      use: {
-        ...devices['Desktop Chrome'],
-        colorScheme: 'dark',
-        locale: 'en-US',
-        extraHTTPHeaders: { 'Accept-Language': 'en-US,en' },
-      },
-    },
-    {
       // WS-F6 — surface-inventory producer (audit-script.md). Own testDir
       // so Playwright never picks up the vitest suites under
-      // tests/unit|gallery|motion, and the a11y matrix above stays
-      // untouched. The spec itself skips unless AUDIT_BASELINE=1 — it
-      // needs the app + a seeded DB (see its file header for the local
-      // run recipe). Reach it via: npm run test:audit
+      // tests/unit|gallery|motion. The spec itself skips unless
+      // AUDIT_BASELINE=1 — it needs the app + a seeded DB (see its file
+      // header for the local run recipe). Reach it via: npm run test:audit
       name: 'audit',
       testDir: './tests/audit',
       testMatch: /surface-inventory\.spec\.ts/,

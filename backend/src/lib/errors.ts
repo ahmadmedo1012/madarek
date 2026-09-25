@@ -29,25 +29,29 @@ export class AppError extends Error {
     this.details = details;
   }
 
-  static badRequest(message = 'Bad request', details?: unknown) {
+  // Default messages are Arabic per D17-3 (message language policy):
+  // UPPER_SNAKE codes stay English for the FE support-code chip; the
+  // human-readable message is what toasts render. Keep them short, calm
+  // and user-actionable — they surface verbatim in the UI.
+  static badRequest(message = 'طلب غير صالح — تحقّق من البيانات المُرسلة', details?: unknown) {
     return new AppError('BAD_REQUEST', message, 400, details);
   }
-  static unauthenticated(message = 'Authentication required') {
+  static unauthenticated(message = 'يلزم تسجيل الدخول للمتابعة') {
     return new AppError('UNAUTHENTICATED', message, 401);
   }
-  static invalidCredentials(message = 'Invalid email or password') {
+  static invalidCredentials(message = 'البريد الإلكتروني أو كلمة المرور غير صحيحة') {
     return new AppError('INVALID_CREDENTIALS', message, 401);
   }
-  static forbidden(message = 'Forbidden') {
+  static forbidden(message = 'لا تملك صلاحية تنفيذ هذا الإجراء') {
     return new AppError('FORBIDDEN', message, 403);
   }
-  static notFound(message = 'Resource not found') {
+  static notFound(message = 'العنصر المطلوب غير موجود') {
     return new AppError('NOT_FOUND', message, 404);
   }
-  static conflict(message = 'Conflict', details?: unknown) {
+  static conflict(message = 'تعارض في البيانات — حدّث الصفحة ثم أعد المحاولة', details?: unknown) {
     return new AppError('CONFLICT', message, 409, details);
   }
-  static tooMany(message = 'Too many requests') {
+  static tooMany(message = 'طلبات كثيرة — انتظر قليلاً ثم أعد المحاولة') {
     return new AppError('TOO_MANY_REQUESTS', message, 429);
   }
   /**
@@ -57,7 +61,7 @@ export class AppError extends Error {
    * in the server log — the default matches the catch-all 500 text
    * exactly.
    */
-  static internal(message = 'Internal server error') {
+  static internal(message = 'حدث خطأ غير متوقع — حاول مرة أخرى') {
     return new AppError('INTERNAL', message, 500);
   }
 }

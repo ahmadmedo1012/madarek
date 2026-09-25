@@ -11,6 +11,7 @@ import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
+import { countAr } from '../../lib/format';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -211,7 +212,7 @@ export default function LibraryPage() {
               icon={BookOpen}
               label="استعارات نشطة"
               value={loans.isPending ? <Skeleton width={48} height={24} /> : activeLoans.length.toLocaleString('ar-LY')}
-              change={loans.data ? `من أصل ${loans.data.length.toLocaleString('ar-LY')} استعارة` : '—'}
+              change={loans.data ? `من أصل ${countAr(loans.data.length, ['استعارة واحدة', 'استعارتين', 'استعارات', 'استعارة'])}` : '—'}
               color={activeLoans.length === 0 ? 'brand' : 'green'}
             />
             <MetricCard

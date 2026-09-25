@@ -9,10 +9,10 @@ import { AppError } from '../../lib/errors.js';
 export const authMiddleware: RequestHandler = (req, _res, next) => {
   const header = req.header('authorization');
   if (!header?.toLowerCase().startsWith('bearer ')) {
-    return next(AppError.unauthenticated('Missing bearer token'));
+    return next(AppError.unauthenticated());
   }
   const token = header.slice(7).trim();
-  if (!token) return next(AppError.unauthenticated('Empty bearer token'));
+  if (!token) return next(AppError.unauthenticated());
 
   try {
     const payload = verifyAccessToken(token);
@@ -20,10 +20,10 @@ export const authMiddleware: RequestHandler = (req, _res, next) => {
     next();
   } catch (err: unknown) {
     if (err instanceof Error && err.name === 'TokenExpiredError') {
-      next(new AppError('TOKEN_EXPIRED', 'Access token expired', 401));
+      next(new AppError('TOKEN_EXPIRED', 'انتهت صلاحية الجلسة — سجّل الدخول من جديد', 401));
       return;
     }
-    next(AppError.unauthenticated('Invalid token'));
+    next(AppError.unauthenticated('جلسة غير صالحة — سجّل الدخول من جديد'));
   }
 };
 

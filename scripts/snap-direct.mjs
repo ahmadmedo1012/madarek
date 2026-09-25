@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { chromium } from 'playwright';
 const route = process.argv[2] || '/';
 const out = process.argv[3];

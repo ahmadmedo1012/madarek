@@ -330,7 +330,7 @@ export default function LandingPage() {
         </RevealCssClass>
         <RevealCssClass as="span" className="landing-hero-eyebrow">
           <strong>جديد</strong>
-          المساعد الأكاديمي «Oasis» متاح الآن
+          المساعد الأكاديمي <bdi>«Oasis»</bdi> متاح الآن
           <Icon icon={ArrowLeft} size={12} />
         </RevealCssClass>
         <RevealCssClass as="h1" className="landing-title" delay={1}>
@@ -343,11 +343,11 @@ export default function LandingPage() {
         </RevealCssClass>
         <RevealCssClass as="p" className="landing-subtitle" delay={2}>
           مساحة عمل أكاديمية واحدة تُمكّن الطالب والأستاذ والإدارة وضمان الجودة
-          من إدارة المحاضرات، البحوث، الامتحانات والتقييم — بهدوء وسهولة.
+          من إدارة المحاضرات، البحوث، الاختبارات والتقييم — بهدوء وسهولة.
         </RevealCssClass>
         <RevealCssClass as="div" className="landing-cta-row" delay={3}>
           <Link to="/auth" className="btn primary xl">
-            ابدأ مجاناً الآن
+            أنشئ حسابك الجامعي
             <Icon icon={ArrowLeft} size={16} />
           </Link>
           <a href="#features" className="btn outline xl">شاهد كيف تعمل</a>
@@ -365,7 +365,7 @@ export default function LandingPage() {
         </RevealCssClass>
         <RevealCssClass as="div" className="landing-cta-meta" delay={4}>
           <span className="landing-inline-cluster">
-            <Icon icon={Check} size={14} /> بدون بطاقة ائتمان
+            <Icon icon={Check} size={14} /> بإيميلك الجامعي
           </span>
           <span className="landing-cta-meta-dot" />
           <span className="landing-inline-cluster">
@@ -567,7 +567,7 @@ export default function LandingPage() {
             <span className="sticker lg yellow"><Icon icon={Network} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">منظومة موحَّدة</h3>
             <p className="landing-feature-desc">
-              المحاضرات، الحضور، الدرجات، الامتحانات، البحوث، والمعامل الافتراضية —
+              المحاضرات، الحضور، الدرجات، الاختبارات، البحوث، والمعامل الافتراضية —
               كلها في تجربة واحدة آمنة ومتجاوبة.
             </p>
           </RevealCssClass>
@@ -622,8 +622,8 @@ export default function LandingPage() {
             </div>
             <div className="band-visual-row">
               <span className="band-visual-checkbox" />
-              <span className="band-visual-text">امتحان قصير — أسبوع 4</span>
-              <span className="band-visual-tag sky">امتحان</span>
+              <span className="band-visual-text">اختبار قصير — أسبوع 4</span>
+              <span className="band-visual-tag sky">اختبار</span>
             </div>
           </RevealCssClass>
         </div>
@@ -706,13 +706,13 @@ export default function LandingPage() {
             <span className="sticker yellow"><Icon icon={Calendar} size={28} /></span>
             <h3 className="landing-bento-title">الجدول الدراسي</h3>
             <p className="landing-bento-desc">
-              جدول أسبوعيّ ذكيّ يجمع المحاضرات، التسليمات، الامتحانات، والاجتماعات —
+              جدول أسبوعيّ ذكيّ يجمع المحاضرات، التسليمات، الاختبارات، والاجتماعات —
               بمُذكِّرات تلقائية وروابط مباشرة لكل بند.
             </p>
           </RevealCssClass>
           <RevealCssClass as="div" className="landing-bento-card span-2 band-sky" delay={2}>
             <span className="sticker sky"><Icon icon={ClipboardCheck} size={28} /></span>
-            <h3 className="landing-bento-title">الامتحانات الإلكترونية</h3>
+            <h3 className="landing-bento-title">الاختبارات الإلكترونية</h3>
             <p className="landing-bento-desc">
               MCQ · صح/خطأ · إجابة قصيرة · مقالة. تصحيح تلقائي للموضوعي.
             </p>
@@ -791,7 +791,7 @@ export default function LandingPage() {
             </RevealCssClass>
             <h2 className="band-title">نتائج <em>تجربة فعلية</em></h2>
             <p className="band-lede">
-              اعتمدنا استراتيجية الصفّ المعكوس على مادة اللغة الإنجليزية مع طلَّاب
+              اعتمدنا استراتيجية الصفّ المعكوس على مقرّر اللغة الإنجليزية مع طلَّاب
               من جنوب ليبيا — هذه أرقام التجربة.
             </p>
           </SectionAccent>

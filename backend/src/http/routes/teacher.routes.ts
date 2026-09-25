@@ -137,7 +137,7 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
         lectures: { select: { id: true } },
       },
     });
-    if (!offering) throw AppError.notFound('Offering not found');
+    if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
 
     const totalSessions = offering.attendance.length;
     const lectureIds = offering.lectures.map((l) => l.id);
@@ -263,7 +263,7 @@ router.get('/teacher/offerings/:id/analytics', requireRole(Role.TEACHER, Role.AD
         examTemplates: { select: { id: true } },
       },
     });
-    if (!offering) throw AppError.notFound('Offering not found');
+    if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
 
     const enrolled = offering.enrollments.length;
     const totalSessions = offering.attendance.length;
@@ -421,11 +421,11 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
 // ════════════════════════════════════════════════════════════════
 const recordAttSchema = z.object({
   date: z.coerce.date(),
-  topic: z.string().max(200).optional(),
+  topic: z.string().trim().max(200).optional(),
   records: z.array(z.object({
     studentId: z.string().cuid(),
     status: z.nativeEnum(AttendanceStatus),
-    notes: z.string().max(300).optional(),
+    notes: z.string().trim().max(300).optional(),
   })).min(1),
 }).strict();
 
@@ -458,7 +458,7 @@ router.post(
       });
       const enrolledSet = new Set(enrollments.map((e) => e.studentId));
       if (studentIds.some((id) => !enrolledSet.has(id))) {
-        throw AppError.badRequest('Records contain students not enrolled in this offering');
+        throw AppError.badRequest('تحتوي السجلات على طلاب غير مسجّلين في هذا المقرر');
       }
 
       // Session upsert + record replacement must be atomic — a crash between
@@ -506,7 +506,7 @@ router.post('/teacher/offerings/:id/curriculum/suggest', requireCapability('CURR
         lectures: { orderBy: { ordinal: 'asc' } },
       },
     });
-    if (!offering) throw AppError.notFound('Offering not found');
+    if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
 
     const courseName = offering.course.name;
     const lectureCount = offering.lectures.length;
@@ -594,7 +594,7 @@ router.get(
           department: { include: { faculty: true } },
         },
       });
-      if (!profile) throw AppError.notFound('Teacher profile not found');
+      if (!profile) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
 
       // Get all courses, prefer same department first then same faculty
       const sameDeptCourses = await prisma.course.findMany({
@@ -679,7 +679,7 @@ router.get(
 
 const verifyTeacherSchema = z.object({
   verified: z.boolean(),
-  notes: z.string().max(1000).optional(),
+  notes: z.string().trim().max(1000).optional(),
 }).strict();
 
 router.post(
@@ -771,7 +771,7 @@ router.post(
         where: { userId: targetId },
         select: { position: true, appointedAt: true },
       });
-      if (!existing) throw AppError.notFound('Teacher profile not found');
+      if (!existing) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
 
       // A leadership seat is exclusive: refuse to appoint a second active
       // DEAN/ASSOCIATE_DEAN for the same faculty, or a second DEPARTMENT_HEAD
@@ -825,7 +825,7 @@ router.post(
               ? await tx.$queryRaw<{ id: string }[]>`SELECT id FROM "Faculty" WHERE id = ${seat.id} FOR UPDATE`
               : await tx.$queryRaw<{ id: string }[]>`SELECT id FROM "Department" WHERE id = ${seat.id} FOR UPDATE`;
             if (locked.length === 0) {
-              throw AppError.notFound(seat.table === 'Faculty' ? 'Faculty not found' : 'Department not found');
+              throw AppError.notFound(seat.table === 'Faculty' ? 'الكلّيّة غير موجودة' : 'القسم غير موجود');
             }
           }
           const conflict = await tx.teacherProfile.findFirst({
@@ -833,7 +833,7 @@ router.post(
             select: { userId: true },
           });
           if (conflict) {
-            throw AppError.conflict('This position is already held by another teacher');
+            throw AppError.conflict('هذا المنصب شغلته من قبل أستاذ آخر');
           }
         }
         const r = await tx.teacherProfile.update({
@@ -908,7 +908,7 @@ export function assertCanAssignScope(input: {
   targetRole: Role;
 }): void {
   if (input.actorId === input.targetId) {
-    throw AppError.forbidden('You cannot change your own governance scope');
+    throw AppError.forbidden('لا يمكنك تغيير نطاق إدارتك بنفسك');
   }
   assertWithinScope(input.actorScopeFacultyId, {
     role: input.targetRole,
@@ -930,9 +930,9 @@ router.post(
         where: { id: req.params.id! },
         select: { id: true, role: true, scopeFacultyId: true },
       });
-      if (!target) throw AppError.notFound('User not found');
+      if (!target) throw AppError.notFound('المستخدم غير موجود');
       if (target.role !== Role.ADMIN && target.role !== Role.QUALITY) {
-        throw AppError.badRequest('Scope only applies to ADMIN/QUALITY users');
+        throw AppError.badRequest('نطاق الإدارة يخص الإداريين وأخصائيي الجودة فقط');
       }
       // Fresh actor-scope read (never trust a client-side claim): the
       // guard must reflect the actor's CURRENT reach, and self-changes

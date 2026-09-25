@@ -34,6 +34,7 @@ import {
   type AcademicPositionInput,
 } from '../../hooks/useResources';
 import { api, unwrap } from '../../lib/api';
+import { countAr } from '../../lib/format';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 import '../../styles/colleges.css'; // borrowed .comp-form-field (D14 css split, 13-17)
@@ -52,7 +53,8 @@ const ROLE_LABEL: Record<string, string> = {
   STUDENT: 'طالب',
   TEACHER: 'أستاذ',
   ADMIN: 'إداري',
-  QUALITY: 'مكتب الجودة',
+  // Person-noun, unified with nav.ts ROLE_LABELS (17-a2 / 15-j P1-8).
+  QUALITY: 'أخصائي جودة',
   OWNER: 'مالك',
 };
 const CAP_LABEL: Record<AppCapability, string> = {
@@ -62,7 +64,7 @@ const CAP_LABEL: Record<AppCapability, string> = {
   EXAMS_AUTHOR: 'إنشاء اختبارات',
   EXAMS_MODERATE: 'مراجعة الاختبارات',
   EXAMS_TAKE: 'تأدية الاختبارات',
-  CURRICULUM_EDIT_OWN: 'تعديل منهج مقرراتي',
+  CURRICULUM_EDIT_OWN: 'تعديل منهج مقرّراتي',
   CURRICULUM_EDIT_ANY: 'تعديل أي منهج',
   USERS_MANAGE: 'إدارة المستخدمين',
   ROLES_ASSIGN: 'إسناد الأدوار',
@@ -70,7 +72,7 @@ const CAP_LABEL: Record<AppCapability, string> = {
   QUALITY_VIEW: 'عرض لوحة الجودة',
   QUALITY_REPORT: 'إصدار تقارير الجودة',
   ANNOUNCE_PLATFORM: 'إعلانات على مستوى المنصة',
-  ANNOUNCE_FACULTY: 'إعلانات الكلية',
+  ANNOUNCE_FACULTY: 'إعلانات الكلّيّة',
   COMPETITIONS_RUN: 'إنشاء مسابقات',
   EVENTS_RUN: 'إنشاء فعاليات',
 };
@@ -259,7 +261,7 @@ export function AdminTeachersPage() {
         <div className="page-title-block">
           <h1 className="page-title">إدارة الأساتذة</h1>
           <p className="page-subtitle">
-            توثيق الملفات الأكاديمية واقتراح المقررات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته.
+            توثيق الملفات الأكاديمية واقتراح المقرّرات الأنسب لكل أستاذ بناء على تخصصه ودرجته العلمية وشهاداته.
           </p>
         </div>
       </header>
@@ -394,7 +396,7 @@ export function AdminTeachersPage() {
             <EmptyState
               icon={GraduationCap}
               title="اختر أستاذاً من القائمة"
-              description="اعرض الملف الأكاديمي والمقررات المقترحة لتوثيقه أو إسناد منصب له."
+              description="اعرض الملف الأكاديمي والمقرّرات المقترحة لتوثيقه أو إسناد منصب له."
             />
           </Card>
         )}
@@ -490,7 +492,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           <FactRow label="الرتبة الأكاديمية" value={RANK_LABEL[data.teacher.rank] ?? data.teacher.rank} />
           <FactRow label="سنوات الخبرة" value={`${data.teacher.yearsExperience} سنة`} />
           <FactRow label="القسم" value={data.teacher.department} />
-          <FactRow label="الكلية" value={data.teacher.faculty} />
+          <FactRow label="الكلّيّة" value={data.teacher.faculty} />
         </div>
         {data.teacher.subjectKeywords.length > 0 && (
           <div className="gov-keywords">
@@ -527,7 +529,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
         </Card>
       )}
 
-      <Card title="المقررات المقترحة لتدريسها" icon={Briefcase} subtitle={data.suggestedCourses.length > 0 ? `${data.suggestedCourses.length} مقرر مرتب حسب القرب من تخصصه` : undefined}>
+      <Card title="المقرّرات المقترحة لتدريسها" icon={Briefcase} subtitle={data.suggestedCourses.length > 0 ? `${countAr(data.suggestedCourses.length, ['مقرّر مرتّب', 'مقرّران مرتّبان', 'مقرّرات مرتّبة', 'مقرّراً مرتّباً'])} حسب القرب من تخصصه` : undefined}>
         <div className="flex-col gap-2">
           {data.suggestedCourses.map((c) => (
             <div key={c.id} className="suggested-course-row">
@@ -547,7 +549,7 @@ function TeacherProfileCard({ teacherId }: { teacherId: string }) {
           {data.suggestedCourses.length === 0 && (
             <EmptyState
               icon={Briefcase}
-              title="لا توجد مقررات مطابقة بعد"
+              title="لا توجد مقرّرات مطابقة بعد"
               description="أضف كلمات مفتاحية إلى ملف الأستاذ لتوليد اقتراحات أدق."
             />
           )}

@@ -38,7 +38,7 @@ themeRouter.get('/', async (req, res, next) => {
       where: { id: req.user!.id },
       select: { themePreference: true, themePreferenceUpdatedAt: true },
     });
-    if (!user) throw AppError.notFound('User not found');
+    if (!user) throw AppError.notFound('المستخدم غير موجود');
     res.json({ data: user });
   } catch (e) {
     next(e);

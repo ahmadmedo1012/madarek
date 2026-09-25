@@ -101,8 +101,8 @@ export function resolveCorrectIndex(
 
 const lectureFields = z
   .object({
-    title: z.string().min(1).max(200),
-    description: z.string().max(4000).optional(),
+    title: z.string().trim().min(1).max(200),
+    description: z.string().trim().max(4000).optional(),
     videoUrl: z
       .string()
       .max(500)
@@ -119,7 +119,7 @@ export const updateLectureBodySchema = lectureFields.partial();
 
 const chapterFields = z
   .object({
-    title: z.string().min(1).max(200),
+    title: z.string().trim().min(1).max(200),
     // Model invariant: endSec is required (LectureChapter.endSec Int).
     startSec: z.number().int().min(0).max(MAX_MEDIA_SEC),
     endSec: z.number().int().min(0).max(MAX_MEDIA_SEC),
@@ -143,11 +143,11 @@ const checkpointFields = z
   .object({
     // Model field is `question` (the spec's "prompt"); triggerSec is required.
     triggerSec: z.number().int().min(0).max(MAX_MEDIA_SEC),
-    question: z.string().min(1).max(1000),
-    options: z.array(z.string().min(1).max(300)).min(2).max(6),
+    question: z.string().trim().min(1).max(1000),
+    options: z.array(z.string().trim().min(1).max(300)).min(2).max(6),
     correctIndex: z.number().int().min(0),
     conceptId: z.string().min(1).max(100).optional(),
-    explanation: z.string().max(2000).optional(),
+    explanation: z.string().trim().max(2000).optional(),
   })
   .strict();
 
@@ -179,7 +179,7 @@ async function assertConceptForCourse(conceptId: string, courseId: string): Prom
     where: { id: conceptId },
     select: { courseId: true },
   });
-  if (!concept) throw AppError.notFound('Knowledge concept not found');
+  if (!concept) throw AppError.notFound('المفهوم المعرفي غير موجود');
   if (concept.courseId !== courseId) {
     throw AppError.badRequest('المفهوم المختار لا ينتمي إلى مقرر هذه المحاضرة');
   }
@@ -239,7 +239,7 @@ router.patch(
         where: { id: lectureId },
         select: { offeringId: true },
       });
-      if (!stub) throw AppError.notFound('Lecture not found');
+      if (!stub) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(stub.offeringId, req.user!.id, req.user!.role);
 
       // The Lecture model carries no isPublished/publishedAt flag, so a
@@ -274,7 +274,7 @@ router.delete(
         where: { id: lectureId },
         select: { offeringId: true },
       });
-      if (!stub) throw AppError.notFound('Lecture not found');
+      if (!stub) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(stub.offeringId, req.user!.id, req.user!.role);
 
       // FK audit (schema.prisma @relation onDelete):
@@ -318,7 +318,7 @@ router.post(
           offering: { select: { courseId: true } },
         },
       });
-      if (!lecture) throw AppError.notFound('Lecture not found');
+      if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
 
       if (
@@ -371,12 +371,12 @@ router.patch(
           },
         },
       });
-      if (!chapter) throw AppError.notFound('Chapter not found');
+      if (!chapter) throw AppError.notFound('الفصل غير موجود');
       await assertOwnsOffering(chapter.lecture.offeringId, req.user!.id, req.user!.role);
 
       // Merged (existing ⊕ patch) window must stay coherent.
       if (!chapterWindowValid(chapter, body)) {
-        throw AppError.badRequest('endSec يجب أن يكون بعد startSec');
+        throw AppError.badRequest('يجب أن تأتي نهاية الفصل بعد بدايته');
       }
       const startSec = body.startSec ?? chapter.startSec;
       const endSec = body.endSec ?? chapter.endSec;
@@ -421,7 +421,7 @@ router.delete(
         where: { id: chapterId },
         select: { lecture: { select: { offeringId: true } } },
       });
-      if (!chapter) throw AppError.notFound('Chapter not found');
+      if (!chapter) throw AppError.notFound('الفصل غير موجود');
       await assertOwnsOffering(chapter.lecture.offeringId, req.user!.id, req.user!.role);
 
       await prisma.lectureChapter.delete({ where: { id: chapterId } });
@@ -453,7 +453,7 @@ router.post(
           offering: { select: { courseId: true } },
         },
       });
-      if (!lecture) throw AppError.notFound('Lecture not found');
+      if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
       await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
 
       if (!withinLectureDuration(body.triggerSec, lecture.durationSec)) {
@@ -498,7 +498,7 @@ router.patch(
           },
         },
       });
-      if (!cp) throw AppError.notFound('Checkpoint not found');
+      if (!cp) throw AppError.notFound('السؤال التفاعلي غير موجود');
       await assertOwnsOffering(cp.lecture.offeringId, req.user!.id, req.user!.role);
 
       if (body.triggerSec !== undefined && !withinLectureDuration(body.triggerSec, cp.lecture.durationSec)) {
@@ -515,7 +515,7 @@ router.patch(
           body,
         );
         if (resolved === null) {
-          throw AppError.badRequest('correctIndex غير صالح مع الخيارات الجديدة — أعد تحديده مع options');
+          throw AppError.badRequest('الإجابة الصحيحة لم تعد ضمن الخيارات الجديدة — أعد تحديدها');
         }
         correctIndex = resolved;
       }
@@ -555,7 +555,7 @@ router.delete(
         where: { id: checkpointId },
         select: { lecture: { select: { offeringId: true } } },
       });
-      if (!cp) throw AppError.notFound('Checkpoint not found');
+      if (!cp) throw AppError.notFound('السؤال التفاعلي غير موجود');
       await assertOwnsOffering(cp.lecture.offeringId, req.user!.id, req.user!.role);
 
       await prisma.lectureCheckpoint.delete({ where: { id: checkpointId } });

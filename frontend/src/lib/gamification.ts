@@ -46,10 +46,13 @@ export const RARITY_COLOR: Record<BadgeRarity, string> = {
   LEGENDARY: '#D4A537',
 };
 
-/** Arabic badge-rarity names shown on achievement tiles. */
+/** Arabic badge-rarity names shown on achievement tiles.
+ * EPIC/LEGENDARY corrected per 15-j P2-8: LEGENDARY conventionally
+ * translates أسطوري, while the old LEGENDARY label «فريد» read as
+ * "unique" — EPIC takes ملحمي so the top tier keeps its name. */
 export const RARITY_LABEL: Record<BadgeRarity, string> = {
   COMMON: 'شائع',
   RARE: 'نادر',
-  EPIC: 'أسطوري',
-  LEGENDARY: 'فريد',
+  EPIC: 'ملحمي',
+  LEGENDARY: 'أسطوري',
 };

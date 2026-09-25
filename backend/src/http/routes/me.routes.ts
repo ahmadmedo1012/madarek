@@ -88,7 +88,7 @@ router.get('/messages', validate(paginationSchema, 'query'), async (req, res, ne
 const sendMessageSchema = z
   .object({
     toUserId: z.string().cuid(),
-    body: z.string().min(1).max(4000),
+    body: z.string().trim().min(1).max(4000),
   })
   .strict();
 
@@ -102,7 +102,7 @@ router.post(
   async (req, res, next) => {
     try {
       const { toUserId, body } = req.body as z.infer<typeof sendMessageSchema>;
-      if (toUserId === req.user!.id) throw AppError.badRequest('Cannot message yourself');
+      if (toUserId === req.user!.id) throw AppError.badRequest('لا يمكنك إرسال رسالة إلى نفسك');
 
       // Pre-validate recipient + sender in one round-trip. Without the
       // recipient check a DM to a deleted/unknown id exploded as a P2003
@@ -118,8 +118,8 @@ router.post(
           select: { firstName: true },
         }),
       ]);
-      if (!recipient) throw AppError.notFound('Recipient not found');
-      if (!recipient.isActive) throw AppError.badRequest('Recipient account is inactive');
+      if (!recipient) throw AppError.notFound('المستلم غير موجود');
+      if (!recipient.isActive) throw AppError.badRequest('حساب المستلم غير نشط حالياً');
 
       // Message + recipient notification atomically — a DM the recipient
       // never hears about is a broken loop, and a notification without

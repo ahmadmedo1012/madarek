@@ -267,7 +267,7 @@ export default function MatrixPage() {
                 {!c.concepts.length ? (
                   <EmptyState
                     icon={Compass}
-                    title="لم تُحدَّد مفاهيم هذه المادة بعد"
+                    title="لم تُحدَّد مفاهيم هذا المقرّر بعد"
                     description="ستظهر خريطة المفاهيم فور إضافتها من الأستاذ."
                   />
                 ) : (

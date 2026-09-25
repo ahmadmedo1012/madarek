@@ -279,7 +279,7 @@ router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), as
     const optionCount = Array.isArray(cp.options) ? cp.options.length : 0;
     const answerIndex = (req.body as z.infer<typeof answerSchema>).answerIndex;
     if (answerIndex >= optionCount) {
-      throw AppError.badRequest(`answerIndex out of range (checkpoint has ${optionCount} options)`);
+      throw AppError.badRequest('رقم الإجابة المرسل غير صالح لهذا السؤال التفاعلي');
     }
     const correct = cp.correctIndex === answerIndex;
 
@@ -566,11 +566,12 @@ router.get('/me/research', async (req, res, next) => {
 });
 
 const createPaperSchema = z.object({
-  title: z.string().min(3).max(280),
-  abstract: z.string().max(4000).optional(),
+  title: z.string().trim().min(3).max(280),
+  abstract: z.string().trim().max(4000).optional(),
   offeringId: z.string().cuid().optional(),
   // Accept either an absolute URL or a path under our /api/v1/files/papers/ namespace.
   fileUrl: z.string()
+    .trim()
     .max(500)
     .refine(
       (s) => /^https?:\/\//i.test(s) || s.startsWith('/api/v1/files/papers/'),
@@ -634,7 +635,7 @@ router.post('/me/research', validate(createPaperSchema), async (req, res, next) 
         select: { id: true },
       });
       if (duplicate) {
-        throw AppError.conflict('This paper was already uploaded moments ago');
+        throw AppError.conflict('تم رفع هذه الورقة قبل قليل');
       }
       return tx.researchPaper.create({
         data: { ...body, studentId: req.user!.id, status: 'UPLOADED' },
@@ -701,7 +702,7 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
     // Refuse to re-scan papers already graded or published (fast path —
     // the conditional claim below is the race-safe backstop).
     if (!isPaperScannable(paper.status)) {
-      throw AppError.conflict('Cannot rescan a graded paper');
+      throw AppError.conflict('لا يمكن إعادة فحص ورقة مصحّحة');
     }
     const { plagiarismPct, aiContentPct, passed } = scanResultsFor(paper.id);
 
@@ -727,7 +728,7 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
         ...(extractedText ? { extractedText } : {}),
       },
     });
-    if (claim.count === 0) throw AppError.conflict('Cannot rescan a graded paper');
+    if (claim.count === 0) throw AppError.conflict('لا يمكن إعادة فحص ورقة مصحّحة');
     // updateMany returns only a count — read the row back so the response
     // keeps the exact shape the unconditional update used to return.
     const updated = await prisma.researchPaper.findUnique({ where: { id } });
@@ -738,7 +739,7 @@ router.post('/research/:id/scan', createRouteLimiter({ max: 10 }), async (req, r
 
 export const gradePaperSchema = z.object({
   grade: z.number().min(0).max(20),
-  feedback: z.string().max(4000).optional(),
+  feedback: z.string().trim().max(4000).optional(),
 }).strict();
 
 /**
@@ -771,8 +772,8 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
     if (!isPaperGradeable(paper.status)) {
       throw AppError.conflict(
         paper.status === 'PUBLISHED'
-          ? 'Published papers cannot be re-graded'
-          : 'Paper must be scanned before it can be graded',
+          ? 'لا يمكن إعادة تصحيح ورقة منشورة'
+          : 'يجب فحص الورقة قبل تصحيحها',
       );
     }
     // Conditional claim (audit 15-b P1-3): the grade only lands while the
@@ -793,7 +794,7 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
     });
     // The only reachable claim failure (the fast-path read passed) is a
     // concurrent publish → PUBLISHED.
-    if (claim.count === 0) throw AppError.conflict('Published papers cannot be re-graded');
+    if (claim.count === 0) throw AppError.conflict('لا يمكن إعادة تصحيح ورقة منشورة');
     // updateMany returns only a count — read the row back so the response
     // keeps the exact shape the unconditional update used to return.
     const updated = await prisma.researchPaper.findUnique({ where: { id } });
@@ -860,7 +861,7 @@ router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN, Role.
       select: { status: true },
     });
     if (!paper) throw AppError.notFound();
-    if (!isPaperPublishable(paper.status)) throw AppError.conflict('Paper must be graded before publishing');
+    if (!isPaperPublishable(paper.status)) throw AppError.conflict('يجب تصحيح الورقة قبل نشرها');
     // Conditional claim (audit 15-b P1-3): the publish only lands while
     // the paper is still GRADED — a paper that left GRADED between the
     // read and this write 409s instead of being leapfrogged into the
@@ -870,7 +871,7 @@ router.post('/research/:id/publish', requireRole(Role.TEACHER, Role.ADMIN, Role.
       where: { id, status: { in: [...PUBLISHABLE_PAPER_STATUSES] } },
       data: { status: 'PUBLISHED', publishedAt: new Date() },
     });
-    if (claim.count === 0) throw AppError.conflict('Paper must be graded before publishing');
+    if (claim.count === 0) throw AppError.conflict('يجب تصحيح الورقة قبل نشرها');
     // updateMany returns only a count — read the row back so the response
     // keeps the exact shape the unconditional update used to return.
     const updated = await prisma.researchPaper.findUnique({ where: { id } });
@@ -1020,7 +1021,7 @@ router.get('/research/search', async (req, res, next) => {
 
 const annotationCreateSchema = z.object({
   page: z.number().int().min(1).max(2000),
-  comment: z.string().min(1).max(2000),
+  comment: z.string().trim().min(1).max(2000),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
 }).strict();
 
@@ -1039,7 +1040,7 @@ router.get('/research/:id/annotations', async (req, res, next) => {
       role === Role.QUALITY ||
       paper.studentId === uid ||
       paper.reviewerId === uid;
-    if (!allowed) throw AppError.forbidden('Not allowed to view annotations on this paper');
+    if (!allowed) throw AppError.forbidden('لا تملك صلاحية عرض الملاحظات على هذه الورقة');
 
     const data = await prisma.paperAnnotation.findMany({
       where: { paperId: req.params.id! },
@@ -1060,7 +1061,7 @@ router.post('/research/:id/annotations', requireRole(Role.TEACHER, Role.ADMIN, R
     });
     if (!paper) throw AppError.notFound();
     if (req.user!.role === Role.TEACHER && paper.reviewerId !== req.user!.id) {
-      throw AppError.forbidden('Only the assigned reviewer can annotate this paper');
+      throw AppError.forbidden('الملاحظات متاحة للمراجع المكلَّف بهذه الورقة فقط');
     }
 
     const created = await prisma.paperAnnotation.create({
@@ -1084,7 +1085,7 @@ router.delete('/research/annotations/:id', async (req, res, next) => {
     const note = await prisma.paperAnnotation.findUnique({ where: { id: req.params.id! } });
     if (!note) throw AppError.notFound();
     if (note.authorId !== req.user!.id && req.user!.role !== Role.ADMIN && req.user!.role !== Role.OWNER) {
-      throw AppError.forbidden('You can only delete your own annotations');
+      throw AppError.forbidden('لا يمكنك حذف إلا ملاحظاتك الخاصة');
     }
     await prisma.paperAnnotation.delete({ where: { id: note.id } });
     res.json({ data: { ok: true } });
@@ -1181,7 +1182,7 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
         id: `att-${oid}`,
         severity,
         category: 'attendance',
-        title: `غياب جماعيّ بنسبة ${Math.round(rate * 100)}٪`,
+        title: `غياب جماعيّ بنسبة ${Math.round(rate * 100)}%`,
         description: `${row.courseName} (${row.courseCode}) — ${row.absent} غياب من ${row.total} جلسة آخر 30 يوماً`,
         occurredAt: now,
       });
@@ -1206,7 +1207,7 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
         id: `plag-${p.id}`,
         severity: pct >= 40 ? 'critical' : 'warning',
         category: 'plagiarism',
-        title: `بحث برسبة انتحال ${pct.toFixed(1)}٪`,
+        title: `بحث بنسبة انتحال ${pct.toFixed(1)}%`,
         description: `«${p.title}» — ${p.student.firstName} ${p.student.lastName}`,
         occurredAt: p.uploadedAt,
       });

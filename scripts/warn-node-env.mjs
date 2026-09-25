@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * warn-node-env — install-time safety net (WARNING ONLY, never fails).
  *

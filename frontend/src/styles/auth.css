@@ -485,7 +485,7 @@
     border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
     border-block-start-color: currentColor;
     border-radius: 50%;
-    animation: madarek-spin var(--motion-duration-stat) linear infinite;
+    animation: madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite;
   }
 
   /* Demo-account hint (dev-only): a quiet, dismissible panel — surface

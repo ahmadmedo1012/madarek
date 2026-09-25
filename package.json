@@ -17,6 +17,7 @@
     "dev": "npm run dev -w backend",
     "dev:web": "npm run dev -w frontend",
     "test": "npm run test -w frontend && npm run test -w backend",
+    "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend && npm run typecheck:tests -w backend && npm run typecheck:tests -w frontend",
     "db:migrate": "npm run prisma:migrate -w backend",
     "db:deploy": "npm run prisma:deploy -w backend",
     "db:seed": "npm run prisma:seed -w backend",
@@ -27,13 +28,5 @@
   },
   "devDependencies": {
     "tsx": "^4.22.4"
-  },
-  "allowScripts": {
-    "esbuild@0.28.0": true,
-    "esbuild@0.21.5": true,
-    "argon2@0.41.1": true,
-    "prisma@5.22.0": true,
-    "@prisma/client@5.22.0": true,
-    "@prisma/engines@5.22.0": true
   }
 }

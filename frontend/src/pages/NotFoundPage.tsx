@@ -36,7 +36,7 @@ export default function NotFoundPage() {
           </Link>
           <Link to="/colleges" className="btn lg">
             <Icon icon={Building2} size={16} />
-            تصفّح كليات الجامعة
+            تصفّح كلّيّات الجامعة
           </Link>
         </div>
       </div>

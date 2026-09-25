@@ -18,7 +18,7 @@ function ViewerFallback() {
   return (
     <div className="pdf-viewer fill" aria-busy="true">
       <div className="pdf-canvas-wrap">
-        <div className="pdf-page-skeleton" role="status" aria-label="جاري تحضير عارض المستندات…" />
+        <div className="pdf-page-skeleton" role="status" aria-label="جارٍ تحضير عارض المستندات…" />
       </div>
     </div>
   );

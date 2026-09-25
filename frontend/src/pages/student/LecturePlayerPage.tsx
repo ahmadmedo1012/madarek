@@ -9,7 +9,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { useLecture, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
-import { formatMmSs } from '../../lib/format';
+import { countAr, formatMmSs } from '../../lib/format';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
  * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,
@@ -295,7 +295,7 @@ export default function LecturePlayerPage() {
             <div className="lecture-meta-sub">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
               <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(totalSec)}</bdi>
-              {checkpointsTotal > 0 && <> · {checkpointsTotal} نقطة تفاعل</>}
+              {checkpointsTotal > 0 && <> · {countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}</>}
             </div>
           </div>
 
@@ -326,7 +326,7 @@ export default function LecturePlayerPage() {
             </div>
             {checkpointsTotal > 0 && (
               <div className={`lecture-progress-note${allCheckpointsAnswered ? ' done' : ''}`}>
-                أُجيب عن {checkpointsAnswered} من {checkpointsTotal} نقطة تفاعل
+                أُجيب عن {checkpointsAnswered} من {countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])}
               </div>
             )}
           </div>

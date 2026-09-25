@@ -32,7 +32,8 @@
  *     carry accessible names tied to the question prompt.
  * 14. 16-E1 / 15-h P1-5: exam windows are visible — the list groups
  *     open / not-yet-open / closed exams, the cards carry window chips,
- *     and the two raw English start errors are spoken in Arabic.
+ *     and the start path speaks the backend's Arabic window guards
+ *     (17-b D17-3) with the real opening date when the list knows it.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
@@ -543,20 +544,25 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
 
   it('speaks the server’s window guards in Arabic on the start path (15-h P1-5)', async () => {
     mocks.exams = [examFixture({ closeAt: new Date(Date.now() - 3_600_000).toISOString() })];
-    mocks.start.mockRejectedValueOnce({ response: { data: { error: { message: 'Exam closed' } } } });
+    // The exact Arabic string the backend start route raises since 17-b
+    // (exams.routes.ts D17-3) — rendered verbatim by the fall-through.
+    mocks.start.mockRejectedValueOnce({ response: { data: { error: { message: 'أغلق باب التسليم لهذا الاختبار' } } } });
 
     renderTaker();
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
     });
 
-    expect(screen.getByText('أغلق باب التسليم لهذا الاختبار.')).toBeTruthy();
-    expect(screen.queryByText('Exam closed')).toBeNull();
+    expect(screen.getByText('أغلق باب التسليم لهذا الاختبار')).toBeTruthy();
+    // The specific guard won — not the generic refusal fallback.
+    expect(screen.queryByText(/تحقّق من اتصالك/)).toBeNull();
   });
 
   it('adds the real opening time to the not-open-yet copy (15-h P1-5)', async () => {
     mocks.exams = [examFixture({ openAt: new Date(Date.now() + 86_400_000).toISOString() })];
-    mocks.start.mockRejectedValueOnce({ response: { data: { error: { message: 'Exam not open yet' } } } });
+    // The exact Arabic string the backend start route raises since 17-b
+    // (exams.routes.ts D17-3) — the branch enriches it with openAt.
+    mocks.start.mockRejectedValueOnce({ response: { data: { error: { message: 'لم يفتح باب هذا الاختبار بعد' } } } });
 
     renderTaker();
     await act(async () => {
@@ -564,7 +570,8 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     });
 
     expect(screen.getByText(/لم يفتح باب هذا الاختبار بعد — يفتح /)).toBeTruthy();
-    expect(screen.queryByText('Exam not open yet')).toBeNull();
+    // The enriched copy won — not the generic refusal fallback.
+    expect(screen.queryByText(/تحقّق من اتصالك/)).toBeNull();
   });
 });
 

@@ -150,7 +150,7 @@ describe('refreshTokens — multi-device survival (D3)', () => {
     await expect(refreshTokens(signRefreshToken('user-1', 4))).rejects.toMatchObject({
       code: 'UNAUTHENTICATED',
       status: 401,
-      message: 'Refresh token revoked',
+      message: 'انتهت صلاحية هذه الجلسة — سجّل الدخول من جديد',
     });
     expect(prisma.user.updateMany).not.toHaveBeenCalled();
   });
@@ -172,7 +172,7 @@ describe('refreshTokens — multi-device survival (D3)', () => {
 
     await expect(refreshTokens('not-a-jwt')).rejects.toMatchObject({
       code: 'UNAUTHENTICATED',
-      message: 'Invalid refresh token',
+      message: 'جلسة غير صالحة — سجّل الدخول من جديد',
     });
   });
 });
@@ -243,7 +243,7 @@ describe('changePassword', () => {
     await expect(changePassword('user-1', 'wrong-current', NEW_PASSWORD)).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
       status: 401,
-      message: 'Current password is incorrect',
+      message: 'كلمة المرور الحالية غير صحيحة',
     });
     expect(prisma.user.updateMany).not.toHaveBeenCalled();
   });

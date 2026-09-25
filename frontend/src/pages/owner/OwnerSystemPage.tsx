@@ -32,6 +32,17 @@ const SYNC_ACTION_LABEL: Record<string, string> = {
   'sync.failed': 'مزامنة فاشلة',
 };
 
+/** Sync-run outcome metadata as written by the backend since 16-B6 —
+ *  the feed action carries no in-flight state (RUNNING maps to
+ *  'sync.partial'), so the status field is the honest source. */
+function syncRunStatus(metadata: unknown): string | null {
+  if (metadata && typeof metadata === 'object' && 'status' in metadata) {
+    const status = (metadata as { status?: unknown }).status;
+    if (typeof status === 'string') return status;
+  }
+  return null;
+}
+
 export function OwnerSystemPage() {
   const flagsQuery = useOwnerFeatureFlags();
   const toggleFlag = useToggleFeatureFlag();
@@ -101,7 +112,7 @@ export function OwnerSystemPage() {
         />
         <MetricCard
           icon={Activity}
-          label="أحداث آخر ٧ أيام"
+          label="أحداث آخر 7 أيام"
           value={sysData ? sysData.activity.recentEventsLast7Days.toLocaleString('ar-LY') : unknownValue}
           color="purple"
         />
@@ -136,20 +147,26 @@ export function OwnerSystemPage() {
               </tr>
             </thead>
             <tbody>
-              {sysData.sync.recent.map((run) => (
-                <tr key={run.id}>
-                  <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>
-                    {formatDateTimeAr(run.at)}
-                  </td>
-                  <td>
-                    <Badge color={run.action.includes('failed') ? 'red' : run.action.includes('partial') ? 'amber' : 'green'}>
-                      {SYNC_ACTION_LABEL[run.action] ?? run.action}
-                    </Badge>
-                  </td>
-                  <td style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-xs)' }}>{run.actor}</td>
-                  <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-subtle)' }}>{formatRelative(run.at)}</td>
-                </tr>
-              ))}
+              {sysData.sync.recent.map((run) => {
+                const running = syncRunStatus(run.metadata) === 'RUNNING';
+                return (
+                  <tr key={run.id}>
+                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>
+                      {formatDateTimeAr(run.at)}
+                    </td>
+                    <td>
+                      {/* 16-B6 hand-off: a RUNNING row reads as in-flight
+                          (amber), not «مزامنة جزئية» — matches
+                          AdminSyncPage's STATUS_LABEL vocabulary. */}
+                      <Badge color={run.action.includes('failed') ? 'red' : running || run.action.includes('partial') ? 'amber' : 'green'}>
+                        {running ? 'قيد التنفيذ' : SYNC_ACTION_LABEL[run.action] ?? run.action}
+                      </Badge>
+                    </td>
+                    <td style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-xs)' }}>{run.actor}</td>
+                    <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-subtle)' }}>{formatRelative(run.at)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -160,7 +177,10 @@ export function OwnerSystemPage() {
         <div style={{ padding: 'var(--sp-2) 0' }}>
           {flagsQuery.isPending && <LoadingState />}
           {!flagsQuery.isPending && featureFlags.length === 0 && (
-            <EmptyState title="لا توجد أعلام مُعرَّفة" />
+            <EmptyState
+              title="لا توجد أعلام مُعرَّفة"
+              description="لم تُعرَّف أي أعلام ميزات بعد؛ يمكن إضافتها من إعدادات النظام."
+            />
           )}
           {featureFlags.map((flag) => (
             <ToggleSwitch
@@ -236,7 +256,10 @@ export function OwnerSystemPage() {
           {settingsQuery.isPending ? (
             <LoadingState />
           ) : settings.length === 0 ? (
-            <EmptyState title="لا توجد إعدادات مُعرَّفة" />
+            <EmptyState
+              title="لا توجد إعدادات مُعرَّفة"
+              description="لا توجد إعدادات مخصّصة بعد؛ القيم الافتراضية تعمل."
+            />
           ) : (
             <>
               {settings.map((setting) => (

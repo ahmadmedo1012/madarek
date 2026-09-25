@@ -64,7 +64,7 @@ router.post(
     try {
       const result = await prisma.$transaction(async (tx) => {
         const book = await tx.book.findUnique({ where: { id: req.body.bookId } });
-        if (!book) throw AppError.notFound('Book not found');
+        if (!book) throw AppError.notFound('الكتاب غير موجود');
         // Guarded decrement: only a request that actually flips
         // availableCopies > 0 → ≥ 0 can claim a copy, so two concurrent
         // borrows can't both take the last copy (classic check-then-update race).
@@ -72,7 +72,7 @@ router.post(
           where: { id: book.id, availableCopies: { gt: 0 } },
           data: { availableCopies: { decrement: 1 } },
         });
-        if (claim.count === 0) throw AppError.conflict('No copies available');
+        if (claim.count === 0) throw AppError.conflict('لا توجد نسخ متاحة للاستعارة حالياً');
         // Per-(user, book) active-loan dedupe (audit 15-b P2-3). The check
         // runs AFTER the copy claim on purpose: the claim's row lock on the
         // book is the serialization point for every borrow of the same book,
@@ -92,7 +92,7 @@ router.post(
           },
           select: { id: true },
         });
-        if (activeLoan) throw AppError.conflict('You already have this book on loan');
+        if (activeLoan) throw AppError.conflict('استعرت هذا الكتاب مسبقاً ولم تُعده بعد');
         return tx.loan.create({
           data: {
             bookId: book.id,
@@ -123,13 +123,13 @@ router.post('/library/loans/:id/return', async (req, res, next) => {
         where: { id: loan.id, userId: loan.userId, status: LoanStatus.ACTIVE },
         data: { returnedAt: new Date(), status: LoanStatus.RETURNED },
       });
-      if (claim.count === 0) throw AppError.conflict('Loan already closed');
+      if (claim.count === 0) throw AppError.conflict('أُعيد هذا الكتاب مسبقاً');
       // Restore the copy, but never above totalCopies (data-integrity clamp).
       const book = await tx.book.findUnique({
         where: { id: loan.bookId },
         select: { totalCopies: true },
       });
-      if (!book) throw AppError.notFound('Book not found');
+      if (!book) throw AppError.notFound('الكتاب غير موجود');
       await tx.book.updateMany({
         where: { id: loan.bookId, availableCopies: { lt: book.totalCopies } },
         data: { availableCopies: { increment: 1 } },
@@ -279,7 +279,7 @@ router.post('/jobs/:id/apply', async (req, res, next) => {
       where: { id: req.params.id! },
       select: { id: true },
     });
-    if (!job) throw AppError.notFound('Job not found');
+    if (!job) throw AppError.notFound('الوظيفة غير موجودة');
     const created = await prisma.jobApplication.upsert({
       where: { jobId_userId: { jobId: job.id, userId: req.user!.id } },
       create: { jobId: job.id, userId: req.user!.id },
@@ -323,9 +323,9 @@ router.get('/posts', validate(paginationSchema, 'query'), async (req, res, next)
 
 export const createPostSchema = z
   .object({
-    body: z.string().min(1).max(2000),
-    hashtags: z.array(z.string().min(1).max(40)).max(10).default([]),
-    imageUrl: z.string().url().optional(),
+    body: z.string().trim().min(1).max(2000),
+    hashtags: z.array(z.string().trim().min(1).max(40)).max(10).default([]),
+    imageUrl: z.string().trim().url().optional(),
   })
   .strict();
 

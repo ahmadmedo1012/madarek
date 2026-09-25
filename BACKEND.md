@@ -3,7 +3,7 @@
 Express 4.22.3 (TypeScript, ESM) + Prisma 5.22 over Neon PostgreSQL.
 All endpoints are mounted under the base path **`/api/v1`** and return a
 `{ data: T }` envelope (errors return `{ error: { code, message } }`).
-The complete, code-accurate endpoint table (189 endpoints) lives in
+The complete, code-accurate endpoint table (188 endpoints) lives in
 [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — the tables below are a
 condensed overview.
 
@@ -22,10 +22,10 @@ condensed overview.
 | `http/validate.ts` | Generic Zod validation middleware factory |
 | `http/middleware/*` | `auth`, `requireRole`, `requireCapability`, `rateLimit`, `errorHandler` |
 | `http/routes/*` | 25 route modules (incl. `submissions.routes.ts` + `curriculum.routes.ts`) |
-| `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `governance`, `grading`, `compression`, `operational-alerts`, `zu-sync/` |
+| `lib/*` | `jwt`, `password`, `errors`, `pagination`, `pdf`, `permissions`, `governance`, `grading`, `risk`, `dates`, `compression`, `operational-alerts`, `zu-sync/` |
 | `modules/auth/*` | `auth.service.ts`, `auth.dto.ts`, `password-policy`, `lockout`, `rotation` |
 | `modules/search/*` | Arabic-aware search normalization (`normalize.ts`) backing `/search/global` |
-| `modules/theme/*` | `router.ts` + `service.ts` — `GET/PUT /me/theme` |
+| `modules/theme/*` | `router.ts` — `GET/PUT /me/theme` (handler inline; the separate service module was folded in wave 16) |
 | `modules/onboarding/*` | `router.ts` + `service.ts` — `POST /me/onboarding/complete` (idempotent, race-safe) |
 | `modules/milestones/*` | `router.ts` + `service.ts` — `POST /me/milestones/:id/fire` (service-token auth only) |
 
@@ -281,7 +281,9 @@ condensed overview.
 ## 7. Scripts
 
 **Root:** `build` (frontend + backend + `db:deploy`), `start`, `dev`, `dev:web`,
-`db:migrate`, `db:deploy`, `db:seed`.
+`test` (both workspaces), `typecheck` (src + tests, both workspaces),
+`db:migrate`, `db:deploy`, `db:seed`, `validate:colleges`,
+`check:motion-tokens` / `check:icons` / `check:i18n`.
 **Backend:** `dev` (tsx watch), `build` (tsc → `dist/`), `start`, `typecheck`,
 `prisma:generate|migrate|deploy|seed`, `postinstall` (prisma generate).
 
@@ -292,6 +294,14 @@ condensed overview.
 - **Scheduler** (`scheduler.ts`): runs `runSync()` 5 s after boot, then every 24 h
   (overlap-guarded); results recorded in `SyncRun`. Also prunes `LoginEvent`
   rows older than 180 days in bounded batches (never rejects, capped per day).
+- **Timezone model** (`lib/dates.ts` — 15-h, campaign 3): the server runs with
+  `TZ=UTC` (declared in `render.yaml`); every stored instant is UTC. Date-only
+  *data* concepts (attendance day-keys, `@@unique(offeringId, date)` buckets)
+  use UTC day-keys via `utcDayKey()` — stable regardless of who computes them;
+  *display* labels («اليوم»/«غداً», agenda weekdays, month buckets) use
+  Africa/Tripoli civil days via `tripoliDayKey()`/`tripoliDayDow()` (Libya is
+  UTC+2 with no DST since 2013 — always use the tz name, never a hardcoded
+  offset, so a DST return widens nothing silently).
 - **University sync** (`lib/zu-sync/`): pulls institutional facts from a static
   source into `UniversityFact`.
 - **PDF** (`lib/pdf.ts`): `extractPaperText()` via `pdf-parse` for library

@@ -30,6 +30,7 @@ import {
   type Tier,
 } from '../../hooks/useResources';
 import { TIER_LABEL, TIER_COLOR, RARITY_COLOR, RARITY_LABEL } from '../../lib/gamification';
+import { apiErrorMessage, countAr } from '../../lib/format';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
@@ -51,6 +52,15 @@ const LEVEL_LABEL: Record<string, string> = {
   INTERMEDIATE: 'متوسط',
   ADVANCED: 'متقدم',
 };
+
+/** Counted Arabic noun for point values (D17-2): ar-LY grouping with the
+ *  proper one/dual/few/many forms — «نقطة واحدة»، «نقطتان»، «5 نقاط»، «25 نقطة».
+ *  Local twin of MorePages' helper (lib/format is frozen this wave). */
+function pointsAr(n: number): string {
+  if (n === 1) return 'نقطة واحدة';
+  if (n === 2) return 'نقطتان';
+  return `${formatNum(n)} ${n <= 10 ? 'نقاط' : 'نقطة'}`;
+}
 
 // Tier/rarity display maps (labels + the API gamification palette)
 // live in lib/gamification.ts (13-15 fold, audit 11-f P2-1) — shared
@@ -124,13 +134,13 @@ export default function TrainingCatalogPage() {
               icon={Award} color="purple"
               label="الأوسمة"
               value={formatNum(me.badgeCount)}
-              change={badgesQ.data ? `من ${formatNum(badgesQ.data.length)} وسام في المنصة` : 'في مسارات التطوير الذاتي'}
+              change={badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])} في المنصة` : 'في مسارات التطوير الذاتي'}
             />
             <MetricCard
               icon={GraduationCap} color="brand"
               label="مسارات نشطة"
               value={formatNum(enrolledCount)}
-              change={`${formatNum(completedCount)} مكتمل`}
+              change={countAr(completedCount, ['واحد مكتمل', 'مكتملان', 'مكتملة', 'مكتمل'])}
             />
             <MetricCard
               icon={Medal} color="green"
@@ -157,7 +167,7 @@ export default function TrainingCatalogPage() {
                 <ProgressBar
                   value={me.level.pctIntoLevel}
                   color={TIER_COLOR[me.level.tier]}
-                  label={`${formatNum(me.level.toNext)} نقطة للمستوى التالي`}
+                  label={`${pointsAr(me.level.toNext)} للمستوى التالي`}
                   ariaLabel="التقدّم نحو المستوى التالي في التطوير الذاتي"
                 />
               </div>
@@ -247,14 +257,14 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
         <p className="track-card-summary" title={track.summary}>{track.summary}</p>
         <div className="track-card-meta">
           <span><Icon icon={Clock} size={12} /> {formatNum(track.estMinutes)} د</span>
-          <span><Icon icon={BookOpen} size={12} /> {formatNum(track.totalLessons)} درس</span>
-          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {formatNum(track.pointsAward)} نقطة</span>
+          <span><Icon icon={BookOpen} size={12} /> {countAr(track.totalLessons, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</span>
+          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {pointsAr(track.pointsAward)}</span>
         </div>
         {track.enrolled && (
           <ProgressBar
             value={track.progressPct}
             color={accent}
-            label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${track.totalLessons} دروس`}
+            label={track.isCompleted ? 'مكتمل' : `${track.completedLessons} / ${countAr(track.totalLessons, ['درس', 'درسان', 'دروس', 'درساً'])}`}
             ariaLabel={`تقدّم مسار ${track.title}`}
           />
         )}
@@ -384,9 +394,9 @@ export function TrainingTrackPage() {
           {track.titleEn && <div className="text-xs text-subtle font-mono"><bdi>{track.titleEn}</bdi></div>}
           <p className="track-hero-summary">{track.summary}</p>
           <div className="track-hero-meta">
-            <Badge><Icon icon={Clock} size={11} /> {formatNum(track.estMinutes)} دقيقة</Badge>
-            <Badge><Icon icon={BookOpen} size={11} /> {formatNum(track.lessons.length)} درس</Badge>
-            <Badge color="gold"><Icon icon={Sparkles} size={11} /> {formatNum(track.pointsAward)} نقطة عند الإكمال</Badge>
+            <Badge><Icon icon={Clock} size={11} /> {countAr(track.estMinutes, ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'])}</Badge>
+            <Badge><Icon icon={BookOpen} size={11} /> {countAr(track.lessons.length, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</Badge>
+            <Badge color="gold"><Icon icon={Sparkles} size={11} /> {pointsAr(track.pointsAward)} عند الإكمال</Badge>
             <Badge color="purple">{LEVEL_LABEL[track.level]}</Badge>
           </div>
         </div>
@@ -415,7 +425,7 @@ export function TrainingTrackPage() {
           <ProgressBar
             value={Math.round((completedCount / track.lessons.length) * 100)}
             color={accent}
-            label={track.isCompleted ? 'هذا المسار مكتمل — شهادة جاهزة' : `${completedCount} / ${track.lessons.length} درس مكتمل`}
+            label={track.isCompleted ? 'هذا المسار مكتمل — شهادة جاهزة' : `${completedCount} / ${countAr(track.lessons.length, ['درس مكتمل', 'درسان مكتملان', 'دروس مكتملة', 'درساً مكتملًا'])}`}
             ariaLabel={`تقدّم مسار ${track.title}`}
           />
         </Card>
@@ -558,7 +568,7 @@ export function TrainingLessonPage() {
       if (res.newlyCompleted) {
         setFeedback({
           ok: true,
-          msg: `أحسنت! حصلت على ${formatNum(res.pointsAwarded)} نقطة.`,
+          msg: `أحسنت! حصلت على ${pointsAr(res.pointsAwarded)}.`,
           reward: {
             points: res.pointsAwarded,
             level: res.level.level,
@@ -570,8 +580,8 @@ export function TrainingLessonPage() {
         setFeedback({ ok: true, msg: 'تم احتساب هذا الدرس مسبقاً.' });
       }
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { error?: { message?: string } } } };
-      setFeedback({ ok: false, msg: e.response?.data?.error?.message ?? 'حدث خطأ، حاول مجدداً' });
+      // Arabic-first guard (15-j P0-1): an English API message never renders raw.
+      setFeedback({ ok: false, msg: apiErrorMessage(err, 'تعذّر احتساب الدرس — تحقّق من اتصالك وحاول مرة أخرى.') });
     }
   };
 
@@ -586,7 +596,7 @@ export function TrainingLessonPage() {
         <div className="lesson-kicker">
           <span>الدرس <bdi>{lesson.order}</bdi> من <bdi>{track.lessons.length}</bdi></span>
           <span>·</span>
-          <span><Icon icon={Clock} size={10} /> {formatNum(lesson.estMinutes)} دقيقة</span>
+          <span><Icon icon={Clock} size={10} /> {countAr(lesson.estMinutes, ['دقيقة واحدة', 'دقيقتين', 'دقائق', 'دقيقة'])}</span>
         </div>
         <h1 className="lesson-title">{lesson.title}</h1>
         {lesson.summary && <p className="text-sm text-muted" style={{ marginBottom: 'var(--sp-3)' }}>{lesson.summary}</p>}
@@ -744,7 +754,7 @@ export function AchievementsPage() {
       ) : me ? (
         <div className="grid-3">
           <MetricCard icon={Trophy} color="gold" label="مجموع النقاط" value={formatNum(me.points)} change={`المستوى ${me.level.level} · ${TIER_LABEL[me.level.tier]}`} />
-          <MetricCard icon={Award} color="purple" label="الأوسمة المحقّقة" value={formatNum(me.badgeCount)} change={badgesQ.data ? `من ${formatNum(badgesQ.data.length)} متاح` : undefined} />
+          <MetricCard icon={Award} color="purple" label="الأوسمة المحقّقة" value={formatNum(me.badgeCount)} change={badgesQ.data ? `من ${countAr(badgesQ.data.length, ['وسام واحد', 'وسامين', 'أوسمة', 'وساماً'])}` : undefined} />
           <MetricCard icon={Medal} color="green" label="الشهادات" value={formatNum(me.certificateCount)} change="معتمدة من المنصة" />
         </div>
       ) : null}
@@ -851,7 +861,7 @@ export function AchievementsPage() {
                         {c.issuedAt && (
                           <Badge>{formatDate(c.issuedAt, { year: 'numeric', month: 'short', day: 'numeric' })}</Badge>
                         )}
-                        <Badge>{formatNum(c.hours)} ساعة معتمدة</Badge>
+                        <Badge>{countAr(c.hours, ['ساعة معتمدة واحدة', 'ساعتان معتمدتان', 'ساعات معتمدة', 'ساعة معتمدة'])}</Badge>
                       </div>
                     </div>
                   </div>
@@ -870,7 +880,12 @@ export function AchievementsPage() {
             ) : lbQ.isError ? (
               <ErrorState message="تعذَّر تحميل الترتيب" error={lbQ.error} onRetry={() => lbQ.refetch()} />
             ) : !lbQ.data?.length ? (
-              <EmptyState icon={Crown} title="لا توجد بيانات بعد" description="سيظهر الترتيب مع أول نقاط مسجّلة على المنصة." />
+              <EmptyState
+                icon={Crown}
+                title="لا يوجد ترتيب بعد"
+                description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+                action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
+              />
             ) : (
               <ol className="leaderboard-list" aria-label="ترتيب الطلاب بالنقاط">
                 {lbQ.data.map((r, i) => (

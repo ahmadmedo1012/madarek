@@ -104,7 +104,7 @@ router.get('/admin/users/:id/permissions', requireCapability('ROLES_ASSIGN'), as
     // Faculty governance scope — a scoped ADMIN cannot inspect the
     // permission profile of an out-of-faculty user.
     const targetScope = await loadGovernanceTarget(req.params.id!);
-    if (!targetScope) throw AppError.notFound('User not found');
+    if (!targetScope) throw AppError.notFound('المستخدم غير موجود');
     const actorScopeFacultyId = await getGovernanceScope(req.user!.id);
     assertWithinScope(actorScopeFacultyId, targetScope);
 
@@ -116,7 +116,7 @@ router.get('/admin/users/:id/permissions', requireCapability('ROLES_ASSIGN'), as
         scopeFaculty: { select: { id: true, name: true } },
       },
     });
-    if (!target) throw AppError.notFound('User not found');
+    if (!target) throw AppError.notFound('المستخدم غير موجود');
     const caps = await getEffectiveCapabilities(target.id, target.role);
     const overrides = await prisma.userPermission.findMany({
       where: { userId: target.id },
@@ -138,7 +138,7 @@ const setOverrideSchema = z.object({
   // grant=true → explicitly add; grant=false → explicitly revoke;
   // grant=null → remove the override (back to role default)
   grant: z.boolean().nullable(),
-  reason: z.string().max(500).optional(),
+  reason: z.string().trim().max(500).optional(),
 }).strict();
 
 router.post(
@@ -153,7 +153,7 @@ router.post(
       // non-existent user surfaced as a P2003 foreign-key 500 instead
       // of a clean 404.
       const target = await loadGovernanceTarget(userId);
-      if (!target) throw AppError.notFound('User not found');
+      if (!target) throw AppError.notFound('المستخدم غير موجود');
 
       // Faculty governance scope — capability overrides change what a
       // user can do platform-wide; a scoped ADMIN may only touch the
@@ -205,7 +205,7 @@ const setRoleSchema = z
   .object({
     role: z.nativeEnum(Role),
     departmentId: z.string().cuid().optional(),
-    specialty: z.string().min(2).max(120).optional(),
+    specialty: z.string().trim().min(2).max(120).optional(),
   })
   .strict();
 
@@ -220,14 +220,14 @@ router.post(
 
       // Self-modification guard — same protection the OWNER endpoint enforces.
       if (id === req.user!.id) {
-        throw AppError.forbidden('Cannot change your own role');
+        throw AppError.forbidden('لا يمكنك تغيير دورك بنفسك');
       }
 
       // OWNER is invitation-only — never mint an OWNER account through the
       // admin role-assignment API. The OWNER-only path
       // (`POST /api/v1/owner/users/:id/role`) enforces the same guard.
       if (newRole === Role.OWNER) {
-        throw AppError.forbidden('Cannot promote to OWNER via API');
+        throw AppError.forbidden('لا يمكن منح دور المالك عبر النظام — تواصل مع الدعم الفني');
       }
 
       const target = await prisma.user.findUnique({
@@ -239,7 +239,7 @@ router.post(
           teacherProfile: { select: { userId: true, department: { select: { facultyId: true } } } },
         },
       });
-      if (!target) throw AppError.notFound('User not found');
+      if (!target) throw AppError.notFound('المستخدم غير موجود');
 
       const oldRole = target.role;
 
@@ -268,7 +268,7 @@ router.post(
       });
       if (provisionPlan.kind === 'missing-department') {
         throw AppError.badRequest(
-          'Promotion to TEACHER requires a home department — pass departmentId (or promote from a student profile that has one)',
+          'ترقية المستخدم إلى أستاذ تتطلب قسماً أكاديمياً — حدّد القسم أو رقّه من ملف طالب لديه قسم',
         );
       }
       const teacherProvision =

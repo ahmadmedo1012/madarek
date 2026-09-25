@@ -56,7 +56,7 @@ function isEditableTarget(target: EventTarget | null): boolean {
  * text-line texture, mirroring the .pdf-page it stands in for (craft floor:
  * "never a bare spinner where a shape-matched skeleton fits").
  */
-function PdfPageSkeleton({ label = 'جاري تحميل المستند…' }: { label?: string }) {
+function PdfPageSkeleton({ label = 'جارٍ تحميل المستند…' }: { label?: string }) {
   return <div className="pdf-page-skeleton" role="status" aria-label={label} />;
 }
 
@@ -663,7 +663,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           </div>
         )}
         {isRendering && !loading && !error && (
-          <div className="pdf-rendering" role="status" aria-label="جاري عرض الصفحة…">
+          <div className="pdf-rendering" role="status" aria-label="جارٍ عرض الصفحة…">
             <span className="spinner spinner-sm" aria-hidden="true" />
           </div>
         )}

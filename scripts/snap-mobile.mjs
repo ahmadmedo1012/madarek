@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { chromium } from 'playwright';
 import { mkdirSync } from 'node:fs';
 mkdirSync('/tmp/madarek-shots', { recursive: true });

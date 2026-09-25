@@ -38,7 +38,10 @@ export function formatDate(
 ): string {
   const d = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date;
   if (!d || isNaN(d.getTime())) return '';
-  return new Intl.DateTimeFormat('ar-EG-u-nu-latn', options).format(d);
+  // ar-LY renders the same Arabic month names + Latin digits the direct
+  // toLocaleString('ar-LY') surfaces use (15-j P1-5: the former ar-EG-u-nu-latn
+  // spelling was byte-identical output — pure locale drift, now closed).
+  return new Intl.DateTimeFormat('ar-LY', options).format(d);
 }
 
 export function formatTime(

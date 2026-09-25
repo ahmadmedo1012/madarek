@@ -7,6 +7,6 @@ export const requireRole =
   (...roles: Role[]): RequestHandler =>
   (req, _res, next) => {
     if (!req.user) return next(AppError.unauthenticated());
-    if (!roles.includes(req.user.role)) return next(AppError.forbidden('Insufficient role'));
+    if (!roles.includes(req.user.role)) return next(AppError.forbidden('دورك الحالي لا يتيح الوصول إلى هذا القسم'));
     next();
   };

@@ -33,7 +33,7 @@ import '../../styles/training.css'; // shared .track-grid/.track-card family (D1
 import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
 
 const SCOPE_LABEL: Record<string, string> = {
-  PLATFORM: 'كل المنصة', FACULTY: 'كلية', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
+  PLATFORM: 'كل المنصة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
 };
 const SCOPE_COLOR: Record<string, 'brand' | 'green' | 'gold' | 'purple'> = {
   PLATFORM: 'brand', FACULTY: 'green', DEPARTMENT: 'purple', OFFERING: 'gold',

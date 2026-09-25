@@ -67,7 +67,7 @@ export const gradeBodySchema = z
       .refine((v) => Math.round(v * 100) === v * 100, {
         message: 'grade supports at most 2 decimal places',
       }),
-    feedback: z.string().max(2000).optional(),
+    feedback: z.string().trim().max(2000).optional(),
   })
   .strict();
 
@@ -132,7 +132,7 @@ router.post(
         select: { offeringId: true, dueAt: true },
       });
       if (!assignment || assignment.offeringId !== offeringId) {
-        throw AppError.notFound('Assignment not found');
+        throw AppError.notFound('التكليف المطلوب غير موجود');
       }
 
       const status = submissionStatusFor(assignment.dueAt);
@@ -219,7 +219,7 @@ router.post(
           student: { select: { firstName: true, lastName: true } },
         },
       });
-      if (!submission) throw AppError.notFound('Submission not found');
+      if (!submission) throw AppError.notFound('التسليم المطلوب غير موجود');
 
       // Teacher must own the offering FIRST (ADMIN via CURRICULUM_EDIT_ANY,
       // OWNER bypass) — a teacher probing foreign submission IDs must not
@@ -255,7 +255,7 @@ router.post(
           },
         });
         if (claim.count === 0) {
-          throw AppError.conflict('Submission changed while grading — reload and re-grade');
+          throw AppError.conflict('تغيّر هذا التسليم أثناء التصحيح — حدّث الصفحة ثم أعد التصحيح');
         }
         await tx.notification.create({
           data: {

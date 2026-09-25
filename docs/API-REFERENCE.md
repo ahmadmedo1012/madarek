@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 189 endpoints (188 route registrations + `/health`), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 188 endpoints (187 route registrations + `/health`), one row each
 
 **Auth column legend:**
 - **Bearer** — any authenticated user (`authMiddleware`)
@@ -75,7 +75,7 @@
 |--------|------|------|-------------|
 | GET | `/enrollments/me` | STUDENT | My enrollments (narrow select: progress + offering/course/teacher/schedule cards) |
 | POST | `/enrollments` | ADMIN/OWNER | Enroll a STUDENT — pre-validates the target inside the capacity transaction (unknown student 404, non-STUDENT target 400, capacity full 409, duplicate 409); seat count filters `status:'active'`; writes an `ENROLLMENT_CREATED` audit row |
-| DELETE | `/enrollments/:id` | ADMIN/OWNER | Remove enrollment (hard delete; 404 unknown) + `ENROLLMENT_REMOVED` audit row in one transaction. Returns 204 |
+| DELETE | `/enrollments/:id` | ADMIN/OWNER | Remove enrollment (hard delete; 404 unknown) + `ENROLLMENT_REMOVED` audit row in one transaction. Returns `200 {data:{ok:true}}` |
 
 ## Offerings
 
@@ -88,8 +88,7 @@
 | POST | `/offerings/:id/assignments` | TEACHER/ADMIN/OWNER | Create assignment |
 | GET | `/offerings/:id/grades` | access-checked | Grades (take 500; students see only their own rows) |
 | POST | `/offerings/:id/grades` | TEACHER/ADMIN/OWNER | Bulk upsert grades — each item cross-validated (`score > maxScore` → path-scoped 400); an absent `feedback` clears the stored value |
-| GET | `/offerings/:id/attendance` | access-checked | Attendance sessions (take 200) with records (take 500, deterministic order) |
-| POST | `/offerings/:id/attendance` | TEACHER/ADMIN/OWNER | Record/upsert attendance for a session |
+| GET | `/offerings/:id/attendance` | access-checked | Attendance sessions (take 200) with records (take 500, deterministic order). The write path is `POST /teacher/offerings/:id/attendance` (the offerings-side twin was removed as dead code in wave 16) |
 
 ## Submissions (assignments)
 

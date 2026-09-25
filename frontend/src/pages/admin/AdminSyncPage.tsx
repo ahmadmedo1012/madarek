@@ -14,7 +14,7 @@ import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitive
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { apiErrorMessage } from '../../hooks/useResources';
-import { formatRelativeArShort } from '../../lib/format';
+import { formatRelativeArShort, countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 
 interface SyncRun {
@@ -75,7 +75,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   grading: 'نظام التقييم',
   programs: 'الدراسة والشهادات',
   memberships: 'العضويات',
-  colleges: 'الكليات',
+  colleges: 'الكلّيّات',
   general: 'عام',
 };
 
@@ -196,7 +196,7 @@ export function AdminSyncPage() {
           icon={Database}
           label="حقول مُزامنة"
           value={data.factCount.toString()}
-          change={data.staleCount > 0 ? `${data.staleCount} حقل قديم` : 'كل البيانات حديثة'}
+          change={data.staleCount > 0 ? countAr(data.staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً']) : 'كل البيانات حديثة'}
           color={data.staleCount > 0 ? 'amber' : 'green'}
         />
         <MetricCard

@@ -20,7 +20,7 @@ import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListS
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
-import { formatRelativeArShort, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { formatRelativeArShort, WEEKDAY_NAMES_AR, countAr } from '../../lib/format';
 import '../../styles/training.css'; // .filter-pill family (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
@@ -308,12 +308,12 @@ export function QualityDashboardPage() {
       <div className="grid-4">
         <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={<CountIn value={d.users.STUDENT ?? 0} />} change="مسجَّل في النظام" color="brand" />
         <MetricCard icon={Users} label="هيئة التدريس" value={<CountIn value={d.users.TEACHER ?? 0} />} color="green" />
-        <MetricCard icon={BookOpen} label="مقررات نشطة" value={<CountIn value={d.offerings} />} change={<><bdi>{d.lectures}</bdi> محاضرة</>} color="amber" />
+        <MetricCard icon={BookOpen} label="مقرّرات نشطة" value={<CountIn value={d.offerings} />} change={countAr(d.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} color="amber" />
         <MetricCard
           icon={Activity}
           label="معدل الحضور"
           value={<CountIn value={Math.round(e.attendance.presentRate)} suffix="%" />}
-          change={<><bdi>{e.attendance.total}</bdi> سجل</>}
+          change={countAr(e.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])}
           color="purple"
         />
       </div>
@@ -332,7 +332,7 @@ export function QualityDashboardPage() {
             ariaLabel={`مخطط خطّي للنشاط الأسبوعي — جلسات نشطة يومياً${e.weeklyActiveEstimated ? ' (منحنى تقديري)' : ''}`}
             summary={
               e.weeklyActive.length > 0
-                ? `ذروة النشاط ${Math.max(...e.weeklyActive)} جلسة يوم ${WEEKDAY_NAMES_AR[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
+                ? `ذروة النشاط ${countAr(Math.max(...e.weeklyActive), ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])} يوم ${WEEKDAY_NAMES_AR[e.weeklyActive.indexOf(Math.max(...e.weeklyActive))] ?? ''}.`
                 : 'لا بيانات نشاط لهذا الأسبوع.'
             }
             table={{
@@ -400,7 +400,7 @@ export function QualityDashboardPage() {
           <div className="flex-col gap-4">
             <ProgressBar value={e.attendance.presentRate} label="معدل الحضور التراكمي" ariaLabel="معدل الحضور التراكمي" color="var(--success)" />
             <ProgressBar value={e.videos.completionRate} label="معدل إكمال المحاضرات" ariaLabel="معدل إكمال المحاضرات" color="var(--accent)" />
-            <ProgressBar value={enrollmentRate} label="معدل تسجيل الطلاب في المقررات" ariaLabel="معدل تسجيل الطلاب في المقررات" color="var(--brand-purple)" />
+            <ProgressBar value={enrollmentRate} label="معدل تسجيل الطلاب في المقرّرات" ariaLabel="معدل تسجيل الطلاب في المقرّرات" color="var(--brand-purple)" />
             <ProgressBar value={paperProgress} label="نسبة البحوث المكتملة التقييم" ariaLabel="نسبة البحوث المكتملة التقييم" color="var(--gold)" />
           </div>
         </Card>
@@ -456,26 +456,26 @@ export function QualityCoursesPage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">جودة المقررات</h1>
-          <p className="page-subtitle">تتبّع جودة كل مقرر: المحاضرات، المواد، الواجبات، التسجيلات.</p>
+          <h1 className="page-title">جودة المقرّرات</h1>
+          <p className="page-subtitle">تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات، التسجيلات.</p>
         </div>
       </header>
       {c.isPending ? (
-        <Card title="المقررات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={7} /></Card>
+        <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={7} /></Card>
       ) :
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
-       !c.data?.length ? <Card><EmptyState title="لا مقررات" /></Card> : (
-        <Card title="المقررات النشطة" icon={BookOpen}>
+       !c.data?.length ? <Card><EmptyState icon={BookOpen} title="لا توجد مقرّرات نشطة بعد" description="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ." /></Card> : (
+        <Card title="المقرّرات النشطة" icon={BookOpen}>
           <div className="table-wrap">
             <table className="table">
               <thead>
                 <tr>
-                  <th>المقرر</th>
+                  <th>المقرّر</th>
                   <th>الأستاذ</th>
                   <th>الفصل</th>
                   <th>الطلاب</th>
                   <th>المحاضرات</th>
-                  <th>المواد</th>
+                  <th>الملفات</th>
                   <th>الجودة</th>
                 </tr>
               </thead>
@@ -550,10 +550,10 @@ export function QualityProfessorsPage() {
             <thead>
               <tr>
                 <th>الأستاذ</th>
-                <th>الكلية / القسم</th>
+                <th>الكلّيّة / القسم</th>
                 <th>الرتبة</th>
-                <th>المقررات</th>
-                <th>المواد المرفوعة</th>
+                <th>المقرّرات</th>
+                <th>الملفات المرفوعة</th>
                 <th>رضا الطلاب</th>
                 <th>زمن الاستجابة</th>
                 <th>الالتزام</th>
@@ -661,9 +661,9 @@ export function QualityEngagementPage() {
       {pageHeader}
 
       <div className="grid-4">
-        <MetricCard icon={ClipboardCheck} label="معدل الحضور" value={<CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />} change={<><bdi>{d.attendance.total}</bdi> سجل</>} color="green" />
-        <MetricCard icon={Activity} label="إكمال المحاضرات" value={<CountIn value={Math.round(d.videos.completionRate)} suffix="%" />} change={<><bdi>{d.videos.completedLectures}</bdi> محاضرة مكتملة</>} color="brand" />
-        <MetricCard icon={GraduationCap} label="معدل التسجيل" value={<CountIn value={Math.round(enrollmentRate)} suffix="%" />} change={<><bdi>{d.enrollments.toLocaleString('ar-LY')}</bdi> تسجيل</>} color="amber" />
+        <MetricCard icon={ClipboardCheck} label="معدل الحضور" value={<CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />} change={countAr(d.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])} color="green" />
+        <MetricCard icon={Activity} label="إكمال المحاضرات" value={<CountIn value={Math.round(d.videos.completionRate)} suffix="%" />} change={countAr(d.videos.completedLectures, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} color="brand" />
+        <MetricCard icon={GraduationCap} label="معدل التسجيل" value={<CountIn value={Math.round(enrollmentRate)} suffix="%" />} change={countAr(d.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])} color="amber" />
         <MetricCard icon={TrendingUp} label="متوسط النشاط الأسبوعي" value={weeklyAvg === null ? '—' : <CountIn value={weeklyAvg} />} change="مستخدم/يوم" color="purple" />
       </div>
 
@@ -673,7 +673,7 @@ export function QualityEngagementPage() {
             ariaLabel="مخطط أعمدة للنشاط الأسبوعي — عدد الجلسات النشطة يومياً"
             summary={
               peak !== null
-                ? `ذروة النشاط ${peak} جلسة نشطة.`
+                ? `ذروة النشاط ${countAr(peak, ['جلسة نشطة واحدة', 'جلستان نشطتان', 'جلسات نشطة', 'جلسة نشطة'])}.`
                 : 'لا بيانات نشاط لهذا الأسبوع.'
             }
             table={{
@@ -752,7 +752,7 @@ export function QualityCurriculumPage() {
     <header className="page-header">
       <div className="page-title-block">
         <h1 className="page-title">مراجعة المناهج</h1>
-        <p className="page-subtitle">شجرة الكليات والأقسام والمقررات، مع مؤشرات اكتمال المحتوى.</p>
+        <p className="page-subtitle">شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.</p>
       </div>
     </header>
   );
@@ -797,7 +797,7 @@ export function QualityCurriculumPage() {
           segmented-control family; cells dim (not disappear) so the
           heatmap stays whole while filtering (matrix-page language). */}
       <Card>
-        <div className="filter-pill-row" role="group" aria-label="تصفية المقررات بحسب نسبة اكتمال المحتوى">
+        <div className="filter-pill-row" role="group" aria-label="تصفية المقرّرات بحسب نسبة اكتمال المحتوى">
           <button
             type="button"
             className="filter-pill"
@@ -834,7 +834,7 @@ export function QualityCurriculumPage() {
       <div className="flex-col gap-4">
         {c.data.map((f) => (
           <Card key={f.id} title={f.name} icon={Building2}
-            subtitle={`${f.departments.length} قسم · ${f.departments.reduce((s, d) => s + d.courses.length, 0)} مقرر`}>
+            subtitle={`${countAr(f.departments.length, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])} · ${countAr(f.departments.reduce((s, d) => s + d.courses.length, 0), ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}`}>
             <div className="flex-col gap-4">
               {f.departments.map((d) => {
                 const completions = d.courses.map((co) => courseCompletion(co));
@@ -845,11 +845,11 @@ export function QualityCurriculumPage() {
                   <div key={d.id}>
                     <div className="section-title">{d.name}</div>
                     {!d.courses.length ? (
-                      <div className="text-xs text-subtle" style={{ padding: '6px 0' }}>لا مقررات</div>
+                      <div className="text-xs text-subtle" style={{ padding: '6px 0' }}>لا مقرّرات</div>
                     ) : (
                       <>
                         <div className="q-dept-stat">
-                          <span><bdi>{d.courses.length}</bdi> مقرر</span>
+                          <span>{countAr(d.courses.length, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
                           <span>متوسط الاكتمال <bdi>{deptAvg}%</bdi></span>
                         </div>
                         {/* The heatmap — .matrix-cells/.matrix-cell + .lvl-*
@@ -868,7 +868,7 @@ export function QualityCurriculumPage() {
                               <div
                                 key={co.id}
                                 className={`matrix-cell ${lvl === 'strong' ? 'lvl-strong' : lvl === 'weak' ? 'lvl-weak' : 'lvl-poor'}${level !== 'all' && lvl !== level ? ' is-dim' : ''}`}
-                                title={`${co.name} (${co.code}) — اكتمال ${completion}% · ${lectures} محاضرة · ${materials} مادة · ${co._count.concepts} مفهوم`}
+                                title={`${co.name} (${co.code}) — اكتمال ${completion}% · ${countAr(lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} · ${countAr(materials, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])} · ${countAr(co._count.concepts, ['مفهوم واحد', 'مفهومان', 'مفاهيم', 'مفهوماً'])}`}
                               >
                                 <div><bdi className="font-mono text-xxs">{co.code}</bdi></div>
                                 <div>{co.name}</div>
@@ -908,7 +908,7 @@ export function QualityReportsPage() {
       <div className="grid-2">
         <Card title="جودة المقرّرات" icon={BookOpen} subtitle="تحليل لكلّ عرض دراسيّ — تسجيلات، محتوى، تقييم">
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            تستعرض اللوحة كل العروض الدراسيّة مع تفصيل عدد المسجَّلين، ساعات المحاضرات، المواد، والاختبارات.
+            تستعرض اللوحة كل العروض الدراسيّة مع تفصيل عدد المسجَّلين، ساعات المحاضرات، الملفات، والاختبارات.
           </p>
           <Link to="/quality/courses" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
@@ -928,7 +928,7 @@ export function QualityReportsPage() {
 
         <Card title="الانخراط والحضور" icon={Activity} subtitle="نسب الحضور ومؤشّرات التفاعل أسبوعيّاً">
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            نسب الحضور والغياب، مشاهدات المحاضرات، الطلّاب النشطين أسبوعيّاً، حالة البحوث.
+            نسب الحضور والغياب، مشاهدات المحاضرات، الطلاب النشطين أسبوعيّاً، حالة البحوث.
           </p>
           <Link to="/quality/engagement" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
@@ -938,7 +938,7 @@ export function QualityReportsPage() {
 
         <Card title="مراجعة المناهج" icon={ListChecks} subtitle="نسبة اكتمال المحتوى الرقميّ في كل قسم">
           <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            مؤشّر اكتمال رفع المحاضرات والمواد الدراسيّة عبر الكلّيّات والأقسام.
+            مؤشّر اكتمال رفع المحاضرات والملفات التعليميّة عبر الكلّيّات والأقسام.
           </p>
           <Link to="/quality/curriculum" className="btn primary sm">
             <Icon icon={ArrowLeft} size={13} />
@@ -973,7 +973,7 @@ export function QualityAlertsPage() {
           <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
         </div>
         {q.data && q.data.counts.critical > 0 && (
-          <Badge color="red"><CountIn value={q.data.counts.critical} /> تنبيهات حرجة</Badge>
+          <Badge color="red">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</Badge>
         )}
       </header>
 

@@ -42,20 +42,23 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
     return;
   }
   if (err instanceof ZodError) {
+    // D17-3: envelope message Arabic; the zod issue details (field errors)
+    // stay English — they are dev-internals the FE guard keeps out of the UI.
     res.status(400).json({
-      error: { code: 'VALIDATION_ERROR', message: 'Validation failed', details: err.flatten() },
+      error: { code: 'VALIDATION_ERROR', message: 'تحقّق من البيانات المُدخلة', details: err.flatten() },
     });
     return;
   }
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === 'P2002') {
       res.status(409).json({
-        error: { code: 'CONFLICT', message: 'Duplicate value', details: { target: err.meta?.target } },
+        // target stays a raw Prisma field name (dev-internals, D17-3).
+        error: { code: 'CONFLICT', message: 'هذه القيمة مستخدمة مسبقاً', details: { target: err.meta?.target } },
       });
       return;
     }
     if (err.code === 'P2025') {
-      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Record not found' } });
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'العنصر المطلوب غير موجود' } });
       return;
     }
     // P2003 = foreign-key constraint violation. A missing related row is a
@@ -69,7 +72,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
       res.status(400).json({
         error: {
           code: 'BAD_REQUEST',
-          message: 'Related record does not exist',
+          message: 'العنصر المرتبط غير موجود',
           details: { target: field ?? err.meta?.field_name },
         },
       });
@@ -99,7 +102,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
     code: 'HTTP_500',
     message: 'Unhandled server error — check backend logs for the stack trace',
   });
-  res.status(500).json({ error: { code: 'INTERNAL', message: 'Internal server error' } });
+  res.status(500).json({ error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع — حاول مرة أخرى' } });
 };
 
 // ── Client-reject mapping (body-parser / http-errors) ─────────────
@@ -109,22 +112,23 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
  * Body-parser produces 400 (parse / abort / size), 413 (too large, too
  * many urlencoded parameters) and 415 (charset / content-encoding);
  * the remaining entries keep any other http-errors-shaped 4xx honest.
+ * Messages are Arabic per D17-3; codes stay UPPER_SNAKE English.
  */
 const CLIENT_REJECT_ENVELOPE: Readonly<Record<number, { code: ErrorCode; message: string }>> = {
-  400: { code: 'BAD_REQUEST', message: 'Malformed request body' },
-  401: { code: 'UNAUTHENTICATED', message: 'Authentication required' },
-  403: { code: 'FORBIDDEN', message: 'Forbidden' },
-  404: { code: 'NOT_FOUND', message: 'Resource not found' },
-  409: { code: 'CONFLICT', message: 'Conflict' },
-  413: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body exceeds the allowed size limit' },
-  415: { code: 'UNSUPPORTED_MEDIA_TYPE', message: 'Unsupported request body encoding' },
-  429: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests' },
+  400: { code: 'BAD_REQUEST', message: 'صيغة الطلب غير صالحة' },
+  401: { code: 'UNAUTHENTICATED', message: 'يلزم تسجيل الدخول للمتابعة' },
+  403: { code: 'FORBIDDEN', message: 'لا تملك صلاحية تنفيذ هذا الإجراء' },
+  404: { code: 'NOT_FOUND', message: 'العنصر المطلوب غير موجود' },
+  409: { code: 'CONFLICT', message: 'تعارض في البيانات — حدّث الصفحة ثم أعد المحاولة' },
+  413: { code: 'PAYLOAD_TOO_LARGE', message: 'حجم الطلب يتجاوز الحد المسموح' },
+  415: { code: 'UNSUPPORTED_MEDIA_TYPE', message: 'ترميز الطلب غير مدعوم' },
+  429: { code: 'TOO_MANY_REQUESTS', message: 'طلبات كثيرة — انتظر قليلاً ثم أعد المحاولة' },
 };
 
 /** Fallback envelope for a 4xx status without a dedicated entry above. */
 const GENERIC_CLIENT_REJECT: { code: ErrorCode; message: string } = {
   code: 'BAD_REQUEST',
-  message: 'Request rejected',
+  message: 'تم رفض الطلب',
 };
 
 /**

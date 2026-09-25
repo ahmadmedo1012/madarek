@@ -115,8 +115,8 @@ export default function StudentCoursesPage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">المواد الدراسية</h1>
-          <p className="page-subtitle">جميع المواد التي سجّلت فيها هذا الفصل، مع تقدّمك في كل واحدة.</p>
+          <h1 className="page-title">مقرّراتي الدراسية</h1>
+          <p className="page-subtitle">جميع المقرّرات التي سجّلت فيها هذا الفصل، مع تقدّمك في كل واحد منها.</p>
         </div>
       </header>
 
@@ -128,13 +128,13 @@ export default function StudentCoursesPage() {
       ) : isError ? (
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       ) : !data?.length ? (
-        <Card><EmptyState icon={BookOpen} title="لم تُسجَّل في أي مادة بعد" description="تواصل مع إدارة الكلية لإكمال تسجيل مواد الفصل — ستظهر هنا فور اعتمادها." /></Card>
+        <Card><EmptyState icon={BookOpen} title="لم تُسجَّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." /></Card>
       ) : (
         <>
           <div className="grid-4">
             <MetricCard
               icon={BookOpen}
-              label="مواد مسجَّلة"
+              label="مقرّرات مسجَّلة"
               value={data.length}
               change="هذا الفصل"
               color="brand"
@@ -147,7 +147,7 @@ export default function StudentCoursesPage() {
             />
             <MetricCard
               icon={Clock}
-              label="قيد التقدم"
+              label="قيد التقدّم"
               value={counts.active}
               color="amber"
             />
@@ -161,7 +161,7 @@ export default function StudentCoursesPage() {
           </div>
 
           {data.length > 1 && (
-            <div className="courses-filter" role="group" aria-label="تصفية المواد حسب الحالة">
+            <div className="courses-filter" role="group" aria-label="تصفية المقرّرات حسب الحالة">
               {FILTERS.map((f) => (
                 <button
                   key={f.key}
@@ -210,8 +210,8 @@ export default function StudentCoursesPage() {
               <div className="courses-grid-empty">
                 <EmptyState
                   icon={BookOpen}
-                  title="لا توجد مواد في هذا التصنيف"
-                  description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض موادك."
+                  title="لا توجد مقرّرات في هذا التصنيف"
+                  description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
                 />
               </div>
             )}
@@ -228,14 +228,14 @@ export default function StudentCoursesPage() {
           <EmptyState
             icon={ClipboardList}
             title="لا توجد واجبات قادمة"
-            description="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة موادك."
+            description="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة مقرّراتك."
           />
         ) : (
           <div className="table-wrap courses-assignments">
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>المادة</th>
+                  <th>المقرّر</th>
                   <th>الواجب</th>
                   <th>الموعد النهائي</th>
                   <th>الحالة</th>
@@ -247,7 +247,7 @@ export default function StudentCoursesPage() {
                   const due = dueStatus(a.dueAt);
                   return (
                     <tr key={a.id}>
-                      <td className="tbl-strong" data-label="المادة">{a.courseName}</td>
+                      <td className="tbl-strong" data-label="المقرّر">{a.courseName}</td>
                       <td data-label="الواجب">
                         <Badge>{ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}</Badge>{' '}
                         {a.title}
@@ -360,7 +360,7 @@ export function SubmitAssignmentModal({
             </div>
             <p className="text-xs" style={{ color: 'var(--text-muted)', lineHeight: 'var(--lh-base)' }}>
               {late
-                ? 'استُلمت إجابتك وسيُعلَّم تسليمك كمتأخر؛ الحسم النهائي يعود إلى أستاذ المادة.'
+                ? 'استُلمت إجابتك وسيُعلَّم تسليمك كمتأخر؛ الحسم النهائي يعود إلى أستاذ المقرّر.'
                 : 'استُلمت إجابتك وستظهر للأستاذ بانتظار التقييم.'}
             </p>
           </div>

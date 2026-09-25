@@ -198,6 +198,13 @@ describe('createAnnouncementSchema (scopeId superRefine — 15-i TOP-7)', () => 
     expect(parsed.pinned).toBe(false);
     expect(parsed.expiresAt).toBeInstanceOf(Date);
   });
+
+  it('trims title/body before min/max (D17-4): whitespace-only content rejected', () => {
+    expect(createAnnouncementSchema.safeParse({ ...base, title: '   ' }).success).toBe(false);
+    expect(createAnnouncementSchema.safeParse({ ...base, body: ' '.repeat(10) }).success).toBe(false);
+    const parsed = createAnnouncementSchema.parse({ ...base, title: '  إعلان هام لطلبة الكلية  ' });
+    expect(parsed.title).toBe('إعلان هام لطلبة الكلية');
+  });
 });
 
 describe('assertScopeTargetPermitted (scope-forgery matrix — 15-i TOP-7)', () => {
@@ -222,13 +229,13 @@ describe('assertScopeTargetPermitted (scope-forgery matrix — 15-i TOP-7)', () 
 
   it('an out-of-list target is forbidden on every scope, with the per-scope message', () => {
     expect(() => assertScopeTargetPermitted(AnnouncementScope.FACULTY, 'fac2', OWN)).toThrowError(
-      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'You cannot announce to this faculty' }),
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'لا يمكنك النشر إلى هذه الكلّيّة' }),
     );
     expect(() => assertScopeTargetPermitted(AnnouncementScope.DEPARTMENT, 'dep2', OWN)).toThrowError(
-      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'You cannot announce to this department' }),
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'لا يمكنك النشر إلى هذا القسم' }),
     );
     expect(() => assertScopeTargetPermitted(AnnouncementScope.OFFERING, 'off2', OWN)).toThrowError(
-      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'You cannot announce to this offering' }),
+      expect.objectContaining({ code: 'FORBIDDEN', status: 403, message: 'لا يمكنك النشر إلى هذا المقرر' }),
     );
   });
 

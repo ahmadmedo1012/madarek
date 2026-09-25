@@ -22,7 +22,7 @@ import {
   useExamModerationQueue, useModerateExam,
   type MyExam, type StartedAttempt, type ResumedAttempt,
 } from '../../hooks/useResources';
-import { apiErrorDetailRaw, apiErrorMessage, formatDateTimeAr } from '../../lib/format';
+import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '../../lib/format';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-card / .back-link families (D11 css split, 12-15)
 
@@ -91,21 +91,21 @@ export function examWindowState(
   return 'open';
 }
 
-/* 15-h P1-5 — those same guards surface as raw English AppError
-   messages on the start path; map them to honest Arabic, enriched with
-   the real window dates the list payload already carries. Any other
-   error falls through to the usual Arabic fallback. apiErrorDetailRaw
-   (not the guarded apiErrorDetail) because this mapper matches the
-   backend's exact English strings — the 15-j P0-1 guard would hide
-   them before the mapping runs. */
+/* 15-h P1-5 — the start route's window guards used to arrive as raw
+   English AppErrors; since 17-b (D17-3) the backend sends the same
+   guards in Arabic — «لم يفتح باب هذا الاختبار بعد» /
+   «أغلق باب التسليم لهذا الاختبار» — so they render verbatim through
+   the apiErrorMessage fall-through below. The one kept branch
+   enriches the bare not-open message with the real opening time the
+   list payload already carries; anything non-Arabic still falls back
+   to the generic Arabic refusal. apiErrorDetailRaw (not the guarded
+   apiErrorDetail) because the enrichment match must be exact against
+   the wire string. */
 function startErrorAr(error: unknown, exam: MyExam | undefined): string {
   const detail = apiErrorDetailRaw(error);
-  if (detail === 'Exam not open yet') {
-    return exam?.openAt
-      ? `لم يفتح باب هذا الاختبار بعد — يفتح ${formatDateTimeAr(exam.openAt)}.`
-      : 'لم يفتح باب هذا الاختبار بعد.';
+  if (detail === 'لم يفتح باب هذا الاختبار بعد' && exam?.openAt) {
+    return `لم يفتح باب هذا الاختبار بعد — يفتح ${formatDateTimeAr(exam.openAt)}.`;
   }
-  if (detail === 'Exam closed') return 'أغلق باب التسليم لهذا الاختبار.';
   return apiErrorMessage(error, 'تعذَّر بدء الاختبار — تحقّق من اتصالك وحاول مرة أخرى.');
 }
 
@@ -727,7 +727,7 @@ export function ExamTakerPage() {
         <div
           className={`exam-timer${timeUrgent ? ' urgent' : ''}`}
           role="timer"
-          aria-label={`الوقت المتبقي: ${m} دقيقة و${s} ثانية`}
+          aria-label={`الوقت المتبقي: ${countAr(m, ['دقيقة', 'دقيقتين', 'دقائق', 'دقيقة'])} و${countAr(s, ['ثانية', 'ثانيتين', 'ثوانٍ', 'ثانية'])}`}
         >
           <Icon icon={Clock} size={14} />
           <span className="font-mono" dir="ltr">{m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}</span>

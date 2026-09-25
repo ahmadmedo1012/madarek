@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
+import path from 'node:path';
 
 // Opt-in bundle analysis: `BUNDLE_REPORT=1 npm run build` (or
 // `npm run build:report`, which sets the flag) writes
@@ -15,6 +16,15 @@ export default defineConfig({
       ? [visualizer({ filename: 'dist/bundle-report.html', template: 'sunburst', gzipSize: true })]
       : []),
   ],
+  // The `@/` alias mirrors vitest.config.ts so the two runners agree:
+  // `@/…` imports resolve identically in tests and in the build (the
+  // doc-comments in lib/scrollLock.ts + lib/overlayStack.ts instruct
+  // contributors to use it).
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
   server: {
     port: 5173,
     proxy: {

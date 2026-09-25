@@ -26,7 +26,7 @@ router.get('/:id', async (req, res, next) => {
     // assertOfferingAccess short-circuits for ADMIN/OWNER without an
     // existence check — a deleted/unknown id used to serialize as
     // `{ data: null }` instead of a 404 (audit P2-12).
-    if (!offering) throw AppError.notFound('Offering not found');
+    if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
     res.json({ data: offering });
   } catch (e) {
     next(e);
@@ -71,11 +71,11 @@ router.get('/:id/materials', async (req, res, next) => {
 
 export const materialCreateSchema = z
   .object({
-    name: z.string().min(1).max(200),
-    description: z.string().max(2000).optional(),
+    name: z.string().trim().min(1).max(200),
+    description: z.string().trim().max(2000).optional(),
     type: z.nativeEnum(MaterialType),
     sizeBytes: z.number().int().nonnegative().default(0),
-    url: z.string().url().max(500),
+    url: z.string().trim().url().max(500),
   })
   .strict();
 
@@ -122,8 +122,8 @@ router.get('/:id/assignments', async (req, res, next) => {
 
 export const assignmentCreateSchema = z
   .object({
-    title: z.string().min(2).max(200),
-    description: z.string().max(4000).optional(),
+    title: z.string().trim().min(2).max(200),
+    description: z.string().trim().max(4000).optional(),
     type: z.nativeEnum(AssignmentType),
     dueAt: z.coerce.date(),
     weight: z.number().int().min(0).max(100).default(10),
@@ -178,7 +178,7 @@ export const gradeItemSchema = z
     score: z.number().min(0).max(100),
     maxScore: z.number().int().positive().default(100),
     weight: z.number().int().min(0).max(100).default(10),
-    feedback: z.string().max(2000).optional(),
+    feedback: z.string().trim().max(2000).optional(),
   })
   .superRefine((g, ctx) => {
     // Cross-field validation (audit P2-15): score must fit within
@@ -235,7 +235,7 @@ router.post(
         enrolled.map((e) => e.studentId),
       );
       if (foreign.length > 0) {
-        throw AppError.badRequest('Grades contain students not enrolled in this offering');
+        throw AppError.badRequest('تحتوي الدرجات على طلاب غير مسجّلين في هذا المقرر');
       }
 
       const ops = grades.map((g) =>

@@ -56,7 +56,7 @@ const TEACHER: BottomItem[] = [
    /admin/teachers, /admin/reports — no /admin/users or /admin/courses-only route. */
 const ADMIN: BottomItem[] = [
   { to: '/admin/dashboard',  label: 'الرئيسية',     icon: Home          },
-  { to: '/admin/faculties',  label: 'الكليات',      icon: Building2     },
+  { to: '/admin/faculties',  label: 'الكلّيّات',      icon: Building2     },
   { to: '/admin/students',   label: 'الطلاب',       icon: GraduationCap },
   { to: '/admin/teachers',   label: 'الأساتذة',     icon: Users         },
   { to: '/admin/reports',    label: 'التقارير',     icon: ClipboardList },

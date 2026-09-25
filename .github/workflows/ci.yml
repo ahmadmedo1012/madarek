@@ -42,6 +42,10 @@ jobs:
       # base config and adds the tests/ trees (no emit).
       - run: npm --prefix backend run typecheck:tests
       - run: npm --prefix frontend run typecheck:tests
+      # College identity profiles (WCAG AA contrast, asset existence,
+      # lucide validity) — tsx is a root devDep, lucide-react is hoisted.
+      # Validates the claim in scripts/validate-college-identity.ts:11.
+      - run: npm run validate:colleges
 
   build:
     name: Build (DB-free)

@@ -40,6 +40,9 @@ function classifyAction(action: string): { category: keyof typeof TYPE_CONFIG; l
     action.startsWith('CAPABILITY_') || action.startsWith('USER_SCOPE') ||
     action.startsWith('TEACHER_')
   ) return { category: 'roles', label: 'تعديل صلاحيات' };
+  // Enrollment audit actions the backend actually writes (15-a P1-4:
+  // without the branch these fell through to the raw-English fallback).
+  if (action.startsWith('ENROLLMENT_')) return { category: 'content', label: 'تسجيل في مقرّر' };
   if (action.startsWith('material.') || action.startsWith('course.') || action.startsWith('paper.') || action.startsWith('announcement.') || action.startsWith('competition.')) {
     return { category: 'content', label: 'تعديل محتوى' };
   }
@@ -62,8 +65,8 @@ const ACTION_LABEL: Record<string, string> = {
   'course.created': 'إنشاء مقرّر',
   'course.updated': 'تحديث مقرّر',
   'enrollment.created': 'تسجيل في مقرّر',
-  'material.uploaded': 'رفع مادة',
-  'material.deleted': 'حذف مادة',
+  'material.uploaded': 'رفع ملف',
+  'material.deleted': 'حذف ملف',
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
   'competition.created': 'إنشاء مسابقة',
@@ -74,6 +77,10 @@ const ACTION_LABEL: Record<string, string> = {
   USER_SCOPE_CHANGE: 'تعديل نطاق مستخدم',
   TEACHER_POSITION: 'تعيين موقع أستاذ',
   TEACHER_VERIFY: 'توثيق أستاذ',
+  // The two enrollment audit actions the backend writes (15-a P1-4) —
+  // before 17-a2 these rendered raw English in the timeline.
+  ENROLLMENT_CREATED: 'تسجيل طالب في مقرّر',
+  ENROLLMENT_REMOVED: 'إلغاء تسجيل طالب',
   ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
   SETTING_UPDATED: 'تحديث إعداد المنصّة',
   FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
@@ -91,6 +98,17 @@ const RESOURCE_LABELS: Record<string, string> = {
   PlatformSetting: 'إعداد منصّة',
   FeatureFlag: 'ميزة',
 };
+
+/** Grouped counted plural for the footer's events total — ar-LY grouping
+ *  like the OwnerUsersPage/AdminGovernancePages footers (countAr renders
+ *  raw digits; a large audit total wants the separators). */
+function eventsCountLabel(n: number): string {
+  if (n === 0) return 'لا أحداث';
+  if (n === 1) return 'حدث واحد';
+  if (n === 2) return 'حدثان';
+  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} أحداث`;
+  return `${n.toLocaleString('ar-LY')} حدثاً`;
+}
 
 /* formatRelativeAr (counted-plural relative time) lives in lib/format.ts
  * (wave 9-a) — identical strings to the former local copy. */
@@ -275,7 +293,7 @@ export function OwnerActivityPage() {
           <div className="owner-activity-footer">
             <span className="owner-activity-count">
               الصفحة <bdi>{activity.data.meta.page}</bdi> من <bdi>{activity.data.meta.totalPages}</bdi>
-              {' '}· <bdi>{activity.data.meta.total.toLocaleString('ar-LY')}</bdi> حدث
+              {' '}· {eventsCountLabel(activity.data.meta.total)}
             </span>
             <div className="owner-activity-footer-actions">
               {/* RTL: "previous" points inline-start-ward = the right

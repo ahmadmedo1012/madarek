@@ -33,11 +33,11 @@ const ACTION_LABEL: Record<string, string> = {
   'user.created': 'إنشاء حساب',
   'user.role_changed': 'تغيير صلاحيات',
   'user.status_changed': 'تعديل حالة الحساب',
-  'course.created': 'إنشاء مقرر',
-  'course.updated': 'تحديث مقرر',
-  'enrollment.created': 'تسجيل في مقرر',
-  'material.uploaded': 'رفع مادة',
-  'material.deleted': 'حذف مادة',
+  'course.created': 'إنشاء مقرّر',
+  'course.updated': 'تحديث مقرّر',
+  'enrollment.created': 'تسجيل في مقرّر',
+  'material.uploaded': 'رفع ملف',
+  'material.deleted': 'حذف ملف',
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
   'sync.run': 'مزامنة بيانات الجامعة',
@@ -49,6 +49,10 @@ const ACTION_LABEL: Record<string, string> = {
   USER_SCOPE_CHANGE: 'تعديل نطاق مستخدم',
   TEACHER_POSITION: 'تعيين موقع أستاذ',
   TEACHER_VERIFY: 'توثيق أستاذ',
+  // The two enrollment audit actions the backend writes (15-a P1-4) —
+  // before 17-a2 these rendered raw English in the events table.
+  ENROLLMENT_CREATED: 'تسجيل طالب في مقرّر',
+  ENROLLMENT_REMOVED: 'إلغاء تسجيل طالب',
   ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
   SETTING_UPDATED: 'تحديث إعداد المنصّة',
   FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
@@ -99,7 +103,9 @@ export function OwnerDashboardPage() {
     { label: 'طلاب', value: statsData.students },
     { label: 'أساتذة', value: statsData.teachers },
     { label: 'إداريون', value: statsData.admins },
-    { label: 'جودة', value: statsData.quality },
+    // Person-group noun — «جودة» alone is the function, not the people
+    // (15-j P1-8; matches the aria-label's «فريق جودة» phrasing).
+    { label: 'فريق جودة', value: statsData.quality },
   ] : [], [statsData]);
 
   const chartData = useMemo(() => ({
@@ -216,7 +222,7 @@ export function OwnerDashboardPage() {
       <div className="grid-4">
         <MetricCard icon={Users} label="إجمالي المستخدمين" value={<bdi>{data.totalUsers.toLocaleString('ar-LY')}</bdi>} color="brand" />
         <MetricCard icon={Activity} label="الجلسات النشطة" value={<bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>} color="green" />
-        <MetricCard icon={BookOpen} label="المقررات الدراسية" value={<bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>} color="purple" />
+        <MetricCard icon={BookOpen} label="المقرّرات الدراسية" value={<bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>} color="purple" />
         <MetricCard icon={GraduationCap} label="إجمالي التسجيلات" value={<bdi>{data.totalEnrollments.toLocaleString('ar-LY')}</bdi>} color="gold" />
       </div>
 
@@ -283,7 +289,7 @@ export function OwnerDashboardPage() {
             </div>
             <div className="owner-health-row">
               <div className={`owner-health-dot ${realtimeData.activeExams > 0 ? 'green' : 'amber'}`} />
-              <span className="owner-health-label">امتحانات جارية</span>
+              <span className="owner-health-label">اختبارات جارية</span>
               <span className="owner-health-value">
                 <bdi>{realtimeData.activeExams.toLocaleString('ar-LY')}</bdi>
               </span>

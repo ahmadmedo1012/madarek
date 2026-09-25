@@ -16,7 +16,9 @@ export const validate =
       return next(
         new AppError(
           'VALIDATION_ERROR',
-          'Validation failed',
+          // D17-3: Arabic envelope message; the zod field errors ride in
+          // `details` and stay English (dev-internals the FE guard hides).
+          'تحقّق من البيانات المُدخلة',
           400,
           result.error.flatten(),
         ),

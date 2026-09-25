@@ -335,7 +335,7 @@ export function GlobalSearch() {
 
           {!loading && !isError && enabled && totalHits === 0 && (
             <div className="search-empty" role="presentation">
-              <div className="search-empty-title">لم نعثر على نتائج لـ "{debounced}"</div>
+              <div className="search-empty-title">لم نعثر على نتائج لـ«{debounced}»</div>
               <div className="search-empty-tips">
                 جرّب: <button type="button" className="search-tip-pill" onClick={() => setQuery('هندسة')}>هندسة</button>
                 <button type="button" className="search-tip-pill" onClick={() => setQuery('بحث')}>بحث</button>

@@ -430,7 +430,7 @@ router.get('/me/dashboard', async (req, res, next) => {
         });
         return;
       }
-      throw AppError.notFound('Student profile not found');
+      throw AppError.notFound('لا يوجد ملف أكاديمي للطالب');
     }
 
     const offeringIds = enrollments.map((e) => e.offering.id);

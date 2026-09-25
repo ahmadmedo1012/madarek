@@ -213,7 +213,7 @@ export function createApp() {
   // 404 for unknown API paths — ANY /api/* path that fell through the
   // routers (including /api/v2/… and /api/ghost) gets the standard JSON
   // error envelope, never Express's default HTML error page (11-a P2-12).
-  app.use('/api', (_req, _res, next) => next(AppError.notFound('Route not found')));
+  app.use('/api', (_req, _res, next) => next(AppError.notFound('المسار المطلوب غير موجود')));
 
   // ── Static frontend + SPA fallback (single-service mode) ──
   if (env.serveStatic) {

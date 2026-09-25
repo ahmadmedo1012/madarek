@@ -106,7 +106,7 @@ export async function assertNotLastActiveOwner(
   });
   if (isLastActiveOwner(otherActiveOwners)) {
     throw AppError.conflict(
-      'Cannot demote or deactivate the last active OWNER — the platform must retain at least one active OWNER',
+      'لا يمكن خفض دور أو تعطيل آخر مالك نشط للمنصة',
     );
   }
 }
@@ -154,7 +154,7 @@ export function assertWithinScope(
   target: GovernanceScopeTarget,
 ): void {
   if (!isUserWithinScope(actorScopeFacultyId, target)) {
-    throw AppError.forbidden('This user is outside your faculty governance scope');
+    throw AppError.forbidden('هذا المستخدم خارج نطاق الكلّيّة التي تديرها');
   }
 }
 

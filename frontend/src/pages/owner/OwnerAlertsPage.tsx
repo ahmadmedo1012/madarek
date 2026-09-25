@@ -8,14 +8,19 @@ import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerAlerts, useResolveAlert } from '../../hooks/useOwner';
 import { toast } from '../../lib/toast';
 
+// severity 'error' added 17-a2 (15-a P1-6): the errorHandler raises it
+// on every unhandled 5xx — without the entry those cards rendered raw
+// English with the default brand color.
 const SEVERITY_LABELS: Record<string, string> = {
   critical: 'حرج',
+  error: 'خطأ',
   warning: 'تحذير',
   info: 'معلومة',
 };
 
 const SEVERITY_COLORS: Record<string, 'red' | 'amber' | 'brand'> = {
   critical: 'red',
+  error: 'red',
   warning: 'amber',
   info: 'brand',
 };

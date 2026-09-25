@@ -71,7 +71,7 @@ describe('MilestoneScene — presentation', () => {
     presentMilestone();
     expect(document.querySelector('[data-milestone="first-assignment-complete"]')).not.toBeNull();
     expect(document.querySelector('.onboarding-flow-headline')?.textContent)
-      .toBe('مبروك أوّل واجب!');
+      .toBe('تهانينا على أوّل واجب!');
     expect(overlay()?.getAttribute('data-closing')).toBeNull();
   });
 });
@@ -89,7 +89,7 @@ describe('MilestoneScene — Modal owns the close (P2-8)', () => {
     expect(el).not.toBeNull();
     expect(el?.getAttribute('data-closing')).toBe('true');
     expect(document.querySelector('.onboarding-flow-headline')?.textContent)
-      .toBe('مبروك أوّل واجب!');
+      .toBe('تهانينا على أوّل واجب!');
 
     // Safety net elapses → the card finally leaves the DOM.
     act(() => { vi.advanceTimersByTime(EXIT_WINDOW_MS + 50); });

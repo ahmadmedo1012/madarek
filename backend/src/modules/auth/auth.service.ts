@@ -111,7 +111,7 @@ export const registerUser = async (input: RegisterInput) => {
   // Defensive guard: even if the DTO drifted, never let public registration mint
   // ADMIN / QUALITY / OWNER accounts. Those are invitation-only.
   if (input.role !== Role.STUDENT && input.role !== Role.TEACHER) {
-    throw AppError.forbidden('This role is invitation-only. Contact an administrator.');
+    throw AppError.forbidden('هذا النوع من الحسابات يتطلب دعوة من إدارة الجامعة');
   }
 
   const existing = await prisma.user.findUnique({
@@ -119,7 +119,7 @@ export const registerUser = async (input: RegisterInput) => {
     // compare against the SAME casing or "A@x.com" slips past "a@x.com".
     where: { email: input.email.toLowerCase() },
   });
-  if (existing) throw AppError.conflict('Email already registered');
+  if (existing) throw AppError.conflict('البريد الإلكتروني مسجّل مسبقاً');
 
   const passwordHash = await hashPassword(input.password);
 
@@ -138,7 +138,7 @@ export const registerUser = async (input: RegisterInput) => {
 
     if (input.role === Role.STUDENT) {
       if (!input.facultyId || !input.departmentId || !input.universityId) {
-        throw AppError.badRequest('Student profile requires facultyId, departmentId, universityId');
+        throw AppError.badRequest('بيانات الطالب غير مكتملة — الكلية والقسم والرقم الجامعي مطلوبة');
       }
       await tx.studentProfile.create({
         data: {
@@ -152,7 +152,7 @@ export const registerUser = async (input: RegisterInput) => {
     }
     if (input.role === Role.TEACHER) {
       if (!input.departmentId || !input.specialty) {
-        throw AppError.badRequest('Teacher profile requires departmentId and specialty');
+        throw AppError.badRequest('بيانات الأستاذ غير مكتملة — القسم والتخصص مطلوبان');
       }
       // Note: `position` (Dean / Dept Head / Associate Dean) is intentionally
       // NOT settable via self-serve registration. Appointments are made by an
@@ -234,7 +234,7 @@ export const loginUser = async (
       userId: user.id,
       ...ctx,
     });
-    throw AppError.tooMany('Account temporarily locked. Try again later.');
+    throw AppError.tooMany('الحساب مقفل مؤقتاً — حاول مرة أخرى بعد قليل');
   }
 
   const ok = await verifyPassword(user.passwordHash, password);
@@ -276,7 +276,7 @@ export const loginUser = async (
       userId: user.id,
       ...ctx,
     });
-    throw AppError.forbidden('Account disabled');
+    throw AppError.forbidden('هذا الحساب معطّل — تواصل مع إدارة الجامعة');
   }
 
   // Reset failure counters
@@ -311,16 +311,18 @@ export const refreshTokens = async (refreshToken: string) => {
   try {
     payload = verifyRefreshToken(refreshToken);
   } catch {
-    throw AppError.unauthenticated('Invalid refresh token');
+    throw AppError.unauthenticated('جلسة غير صالحة — سجّل الدخول من جديد');
   }
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
   if (!user) throw AppError.unauthenticated();
   const decision = decideRefresh(user, payload.ver);
   if (decision.outcome === 'reauth') {
-    // Keep the distinct message: the SPA treats "revoked" as a hard
-    // logout (drop to the login screen) vs a generic 401.
+    // Keep the distinct message: the SPA treats a revoked session as a
+    // hard logout (drop to the login screen) vs a generic 401. The wire
+    // discriminator is the code field; the message stays human-readable
+    // Arabic (D17-3).
     throw decision.reason === 'revoked'
-      ? AppError.unauthenticated('Refresh token revoked')
+      ? AppError.unauthenticated('انتهت صلاحية هذه الجلسة — سجّل الدخول من جديد')
       : AppError.unauthenticated();
   }
   return issueTokens(user);
@@ -375,7 +377,7 @@ export const changePassword = async (
   // keeps programmatic callers (scripts, future admin flows) honest.
   const policy = passwordSchema.safeParse(newPassword);
   if (!policy.success) {
-    throw AppError.badRequest('Password does not meet the policy', policy.error.flatten());
+    throw AppError.badRequest('كلمة المرور لا تستوفي الشروط المطلوبة', policy.error.flatten());
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -385,7 +387,7 @@ export const changePassword = async (
   if (!ok) {
     // Rate limiting (route limiter) is the brute-force guard here; the
     // login lockout counters intentionally stay untouched.
-    throw AppError.invalidCredentials('Current password is incorrect');
+    throw AppError.invalidCredentials('كلمة المرور الحالية غير صحيحة');
   }
 
   const passwordHash = await hashPassword(newPassword);
@@ -398,7 +400,7 @@ export const changePassword = async (
     // write. Our change did not apply — do NOT retry blindly (the
     // current-password check was made against the pre-concurrent state).
     // Surface re-authentication per D3.
-    throw AppError.unauthenticated('Session changed concurrently. Please sign in again.');
+    throw AppError.unauthenticated('تغيّرت الجلسة من جهاز آخر — سجّل الدخول من جديد');
   }
 
   // Re-read for the fresh version (the bump is atomic, but another
@@ -424,7 +426,7 @@ export const getCurrentUser = async (userId: string) => {
       scopeFaculty: true,
     },
   });
-  if (!u) throw AppError.notFound('User not found');
+  if (!u) throw AppError.notFound('المستخدم غير موجود');
   return {
     ...sanitize(u),
     scopeFaculty: u.scopeFaculty

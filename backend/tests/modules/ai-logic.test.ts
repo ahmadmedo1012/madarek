@@ -43,6 +43,8 @@ describe('chatSchema (.strict + message bounds — audit 15-i §5 item 10)', () 
 
   it('rejects empty, missing, and non-string messages', () => {
     expect(chatSchema.safeParse({ message: '' }).success).toBe(false);
+    // D17-4: trim before min — whitespace-only no longer passes min(1).
+    expect(chatSchema.safeParse({ message: '   ' }).success).toBe(false);
     expect(chatSchema.safeParse({}).success).toBe(false);
     expect(chatSchema.safeParse({ message: 42 }).success).toBe(false);
   });

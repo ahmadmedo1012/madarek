@@ -113,7 +113,7 @@ export default function MoocPage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">كورسات خارجية</h1>
+          <h1 className="page-title">دورات خارجية</h1>
           <p className="page-subtitle">شراكات مع منصات عالمية وبرامج معتمدة من جامعة الزاوية.</p>
         </div>
       </header>
@@ -125,8 +125,8 @@ export default function MoocPage() {
       ) : !data?.length ? (
         <Card><EmptyState
           icon={GraduationCap}
-          title="لا توجد كورسات خارجية مرتبطة الآن"
-          description="هذا القسم يضم كورسات Coursera وedX المعتمدة من الجامعة. سيتم إضافة كورسات جديدة قبل بداية الفصل القادم."
+          title="لا توجد دورات خارجية مرتبطة"
+          description="تربط إدارة الكلّيّة دورات Coursera ودورات edX المعتمدة بمقرّراتك؛ راجع المرشد الأكاديمي لمعرفة المعتمد هذا الفصل."
         /></Card>
       ) : (
         <div className="grid-3 mooc-grid">

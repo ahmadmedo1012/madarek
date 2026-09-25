@@ -367,7 +367,7 @@ router.get('/colleges/:id', authMiddleware, async (req, res, next) => {
         },
       },
     });
-    if (!faculty) throw AppError.notFound('College not found');
+    if (!faculty) throw AppError.notFound('الكلّيّة غير موجودة');
 
     const departmentIds = faculty.departments.map((d) => d.id);
     const now = new Date();

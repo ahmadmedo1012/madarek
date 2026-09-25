@@ -92,7 +92,7 @@ router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), as
           _count: { select: { enrollments: { where: { status: 'active' } } } },
         },
       });
-      if (!offering) throw AppError.notFound('Offering not found');
+      if (!offering) throw AppError.notFound('المقرر المحدد غير موجود');
       // Pre-validate the target: a TEACHER/ADMIN/OWNER id passes zod's
       // cuid check, but enrolling a non-student must fail with a clean
       // 400 — not a generic FK error — and an unknown id is a 404
@@ -101,12 +101,12 @@ router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), as
         where: { id: studentId },
         select: { role: true },
       });
-      if (!student) throw AppError.notFound('Student not found');
+      if (!student) throw AppError.notFound('الطالب المحدد غير موجود');
       if (student.role !== Role.STUDENT) {
-        throw AppError.badRequest('Enrollment target must be a STUDENT');
+        throw AppError.badRequest('يمكن التسجيل في المقررات للطلاب فقط');
       }
       if (offering._count.enrollments >= offering.capacity) {
-        throw AppError.conflict('Offering is at capacity');
+        throw AppError.conflict('اكتمل العدد في هذا المقرر');
       }
       // @@unique([studentId, offeringId]) is the race-safe backstop; this
       // explicit check just upgrades the generic P2002 "Duplicate value"
@@ -117,7 +117,7 @@ router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(enrollSchema), as
         select: { id: true },
       });
       if (existing) {
-        throw AppError.conflict('Student is already enrolled in this offering');
+        throw AppError.conflict('الطالب مسجّل مسبقاً في هذا المقرر');
       }
       const enrollment = await tx.enrollment.create({ data: { studentId, offeringId } });
       // Seat changes are governance-visible mutations — write the audit
@@ -166,7 +166,11 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
       });
       return removed;
     });
-    res.status(204).end();
+    // 200 + envelope (not 204) — D17-5: the platform's dominant delete
+    // shape ({data:{ok:true}} — courses, curriculum, learning annotation
+    // deletes). No FE consumer exists for this route today (latent,
+    // admin-only), so the convention flip is client-safe.
+    res.json({ data: { ok: true } });
   } catch (e) {
     next(e);
   }

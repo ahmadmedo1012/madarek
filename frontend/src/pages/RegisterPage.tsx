@@ -31,24 +31,29 @@ const ROLE_HOME: Record<AppRole, string> = {
 };
 
 const studentSchema = z.object({
-  firstName: z.string().min(1, 'مطلوب').max(60),
-  lastName: z.string().min(1, 'مطلوب').max(60),
-  email: z.string().email('بريد إلكتروني غير صالح').max(120),
-  password: z.string().min(8, '٨ أحرف على الأقل').max(72),
-  universityId: z.string().min(3, 'مطلوب').max(40),
-  facultyId: z.string().min(1, 'اختر الكلية'),
+  // D17-4 parity with the backend register schema (auth.dto.ts):
+  // user-input strings trim BEFORE length validation — whitespace-only
+  // values fail min() instead of minting an account. Passwords never
+  // trim (a space can be a legitimate part of the secret); the faculty/
+  // department ids are fixed-list cuids, not free input.
+  firstName: z.string().trim().min(1, 'مطلوب').max(60),
+  lastName: z.string().trim().min(1, 'مطلوب').max(60),
+  email: z.string().trim().email('بريد إلكتروني غير صالح').max(120),
+  password: z.string().min(8, '8 أحرف على الأقل').max(72),
+  universityId: z.string().trim().min(3, 'مطلوب').max(40),
+  facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
   year: z.coerce.number().int().min(1).max(7),
 });
 
 const teacherSchema = z.object({
-  firstName: z.string().min(1, 'مطلوب').max(60),
-  lastName: z.string().min(1, 'مطلوب').max(60),
-  email: z.string().email('بريد إلكتروني غير صالح').max(120),
-  password: z.string().min(8, '٨ أحرف على الأقل').max(72),
-  facultyId: z.string().min(1, 'اختر الكلية'),
+  firstName: z.string().trim().min(1, 'مطلوب').max(60),
+  lastName: z.string().trim().min(1, 'مطلوب').max(60),
+  email: z.string().trim().email('بريد إلكتروني غير صالح').max(120),
+  password: z.string().min(8, '8 أحرف على الأقل').max(72),
+  facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
-  specialty: z.string().min(2, 'مطلوب').max(120),
+  specialty: z.string().trim().min(2, 'مطلوب').max(120),
 });
 
 type StudentInputs = z.infer<typeof studentSchema>;
@@ -268,7 +273,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
         <input className="input auth-input" type="email" dir="ltr" autoComplete="email" {...form.register('email')} />
       </Field>
 
-      <Field label="كلمة المرور (٨ أحرف على الأقل)" error={form.formState.errors.password?.message}>
+      <Field label="كلمة المرور (8 أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
         <input className="input auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
         <button
@@ -290,7 +295,7 @@ function StudentForm({ faculties, isPending, isError, onSubmit }: StudentFormPro
       </Field>
 
       <div className="auth-row-2">
-        <Field label="الكلية" error={form.formState.errors.facultyId?.message}>
+        <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
           {faculties.status === 'loading' && <Skeleton className="auth-select-skeleton" />}
           {faculties.status === 'error' && (
             <div className="auth-error" role="alert">
@@ -377,7 +382,7 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
         <input className="input auth-input" type="email" dir="ltr" autoComplete="email" placeholder="example@zu.edu.ly" {...form.register('email')} />
       </Field>
 
-      <Field label="كلمة المرور (٨ أحرف على الأقل)" error={form.formState.errors.password?.message}>
+      <Field label="كلمة المرور (8 أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
         <input className="input auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
         <button
@@ -392,7 +397,7 @@ function TeacherForm({ faculties, isPending, isError, onSubmit }: TeacherFormPro
       </Field>
 
       <div className="auth-row-2">
-        <Field label="الكلية" error={form.formState.errors.facultyId?.message}>
+        <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
           {faculties.status === 'loading' && <Skeleton className="auth-select-skeleton" />}
           {faculties.status === 'error' && (
             <div className="auth-error" role="alert">

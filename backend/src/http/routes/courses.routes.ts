@@ -13,13 +13,13 @@ router.use(authMiddleware);
 
 const createCourseSchema = z
   .object({
-    code: z.string().min(2).max(20),
-    name: z.string().min(2).max(120),
-    nameEn: z.string().max(120).optional(),
-    description: z.string().max(2000).optional(),
+    code: z.string().trim().min(2).max(20),
+    name: z.string().trim().min(2).max(120),
+    nameEn: z.string().trim().max(120).optional(),
+    description: z.string().trim().max(2000).optional(),
     credits: z.number().int().min(1).max(10).default(3),
-    iconEmoji: z.string().max(8).optional(),
-    themeColor: z.string().max(20).optional(),
+    iconEmoji: z.string().trim().max(8).optional(),
+    themeColor: z.string().trim().max(20).optional(),
     departmentId: z.string().cuid(),
   })
   .strict();

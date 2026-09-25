@@ -25,7 +25,7 @@ describe('ASSIGNMENT_KIND_LABEL (folded from TYPE_LABELS / ASSIGNMENT_LABEL)', (
       HOMEWORK: 'واجب',
       QUIZ: 'اختبار قصير',
       PROJECT: 'مشروع',
-      EXAM: 'امتحان',
+      EXAM: 'اختبار',
     });
     expect(Object.keys(ASSIGNMENT_KIND_LABEL).sort()).toEqual([
       'EXAM', 'HOMEWORK', 'PROJECT', 'QUIZ',

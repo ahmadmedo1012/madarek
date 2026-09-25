@@ -36,7 +36,7 @@ export default function ExamsPage() {
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title">تحليل الامتحانات</h1>
+          <h1 className="page-title">تحليل الاختبارات</h1>
           <p className="page-subtitle">روابط مباشرة إلى الاختبارات والنتائج الفعليّة الخاصّة بك.</p>
         </div>
       </header>

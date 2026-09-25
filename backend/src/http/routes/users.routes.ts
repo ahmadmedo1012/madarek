@@ -148,8 +148,8 @@ router.get('/:id', async (req, res, next) => {
 // ── Update profile (self or admin) ───────────────────────────────
 const patchSchema = z
   .object({
-    firstName: z.string().min(1).max(60).optional(),
-    lastName: z.string().min(1).max(60).optional(),
+    firstName: z.string().trim().min(1).max(60).optional(),
+    lastName: z.string().trim().min(1).max(60).optional(),
     avatarColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
     isActive: z.boolean().optional(),
   })
@@ -170,13 +170,13 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
     // active privileged account to re-activate). The OWNER user-management
     // route has the same guard; this is the ADMIN-facing path.
     if (data.isActive === false && id === actor.id) {
-      throw AppError.forbidden('Cannot deactivate your own account');
+      throw AppError.forbidden('لا يمكنك تعطيل حسابك الخاص');
     }
 
     // Pre-load the target: a clean 404 (an update on a missing id
     // surfaces as P2025) plus the context the governance guards need.
     const target = await loadGovernanceTarget(id);
-    if (!target) throw AppError.notFound('User not found');
+    if (!target) throw AppError.notFound('المستخدم غير موجود');
 
     if (isPrivileged && actor.id !== id) {
       // Faculty governance scope — a scoped ADMIN cannot modify

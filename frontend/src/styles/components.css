@@ -1056,7 +1056,7 @@
     border: 2px solid var(--rule);
     border-block-start-color: var(--neutral-900);
     border-radius: 50%;
-    animation: madarek-spin var(--motion-duration-stat) linear infinite;
+    animation: madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite;
   }
   [data-theme="dark"] .spinner { border-block-start-color: var(--accent); }
   @keyframes madarek-spin { to { transform: rotate(360deg); } }
@@ -3087,6 +3087,16 @@
     background: var(--danger-soft);
     border-color: transparent;
     color: var(--danger-ink);
+  }
+  /* Brand tone (the EXCUSED «بعذر» toggle, 15-a P1-7) — the copper
+     selected wash. Landed in CSS in 17-a2 (E6 hand-off): TeacherPages
+     carried this as an inline style block until components.css had a
+     free owner; visually identical (soft wash, transparent border,
+     -ink text — same shape as the three rules above). */
+  .att-toggle[aria-pressed='true'][data-tone='brand'] {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent-ink);
   }
   @media (max-width: 640px) {
     .att-toggle { min-block-size: 44px; min-inline-size: 44px; }

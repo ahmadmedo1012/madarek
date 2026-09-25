@@ -31,7 +31,7 @@ export function CountUp({ value, duration = 1100 }: { value: string; duration?: 
     if (Number.isNaN(target)) return;
 
     const fmt = (n: number) =>
-      `${prefix}${n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`;
+      `${prefix}${n.toLocaleString('ar-LY', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`;
 
     let raf = 0;
     let started = false;

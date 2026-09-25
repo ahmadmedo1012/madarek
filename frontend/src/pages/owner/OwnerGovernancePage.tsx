@@ -20,6 +20,7 @@ import {
 import { ChartFrame } from '../../components/charts/ChartFrame';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerGovernance, useOwnerLoginAnalytics } from '../../hooks/useOwner';
+import { countAr } from '../../lib/format';
 import { useReducedMotion } from '../../components/motion';
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, ArcElement, Filler, Title, Tooltip, Legend);
@@ -148,7 +149,7 @@ export function OwnerGovernancePage() {
             <ChartFrame
               className="owner-chart-container"
               ariaLabel="مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً على مدى 8 أسابيع"
-              summary={`أعلى نموّ ${Math.max(...govData.weeklyGrowth.map((w) => w.count)).toLocaleString('ar-LY')} مستخدماً جديداً في أسبوع واحد.`}
+              summary={`أعلى نموّ ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوع واحد.`}
               table={{
                 caption: 'نموّ المستخدمين الأسبوعي',
                 columns: ['الأسبوع', 'مستخدمون جدد'],
@@ -174,8 +175,8 @@ export function OwnerGovernancePage() {
           ) : (
             <ChartFrame
               className="owner-chart-container"
-              ariaLabel={`توزيع محاولات تسجيل الدخول: ${loginData.successCount} ناجحة و${loginData.failureCount} فاشلة`}
-              summary={`نجحت ${loginData.successCount.toLocaleString('ar-LY')} محاولة وفشلت ${loginData.failureCount.toLocaleString('ar-LY')}.`}
+              ariaLabel={`توزيع محاولات تسجيل الدخول: ${countAr(loginData.successCount, ['محاولة ناجحة واحدة', 'محاولتان ناجحتان', 'محاولات ناجحة', 'محاولة ناجحة'])} و${countAr(loginData.failureCount, ['محاولة فاشلة واحدة', 'محاولتان فاشلتان', 'محاولات فاشلة', 'محاولة فاشلة'])}`}
+              summary={`نجحت ${countAr(loginData.successCount, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])} وفشلت ${countAr(loginData.failureCount, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}.`}
               table={{
                 caption: 'محاولات تسجيل الدخول',
                 columns: ['النتيجة', 'العدد'],

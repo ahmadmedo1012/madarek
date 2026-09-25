@@ -17,7 +17,7 @@ export const globalRateLimiter = rateLimit({
   max: 1000,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  message: { error: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests' } },
+  message: { error: { code: 'TOO_MANY_REQUESTS', message: 'طلبات كثيرة — انتظر قليلاً ثم أعد المحاولة' } },
 });
 
 /**
@@ -31,7 +31,7 @@ export const authRateLimiter = rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   skipSuccessfulRequests: true,
-  message: { error: { code: 'TOO_MANY_REQUESTS', message: 'Too many auth attempts' } },
+  message: { error: { code: 'TOO_MANY_REQUESTS', message: 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة' } },
 });
 
 /**

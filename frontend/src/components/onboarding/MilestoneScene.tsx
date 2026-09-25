@@ -44,8 +44,10 @@ import { useOnboardingStore, selectCanShowMilestone } from '../../stores/onboard
 import { readMotionDurationMs } from '../overlays/useDelayedUnmount';
 
 const HEADLINE_BY_ID: Record<string, string> = {
-  'first-assignment-complete': 'مبروك أوّل واجب!',
-  'first-course-complete': 'مبروك إنهاء أوّل مادة!',
+  // تهانينا — the formal register (15-j P2-12: مبروك is colloquial);
+  // مادة → مقرّر per D17-1.
+  'first-assignment-complete': 'تهانينا على أوّل واجب!',
+  'first-course-complete': 'تهانينا على إتمام أوّل مقرّر!',
 };
 
 const BODY_BY_ID: Record<string, string> = {
@@ -56,7 +58,7 @@ const BODY_BY_ID: Record<string, string> = {
 function describe(id: string): { headline: string; body: string } {
   if (id.startsWith('exam-window-opens:')) {
     return {
-      headline: 'فُتحت نافذة امتحانك',
+      headline: 'فُتحت نافذة اختبارك',
       body: 'بالتوفيق! حان وقت عرض ما تعلّمته بثقة.',
     };
   }

@@ -47,12 +47,12 @@ export const courseIcon = (codeOrName: string): LucideIcon => {
  */
 export type AssignmentKind = 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
 
-/** Arabic labels for the assignment-kind enum. */
+/** Arabic labels for the assignment-kind enum (D17-1: اختبار, never امتحان). */
 export const ASSIGNMENT_KIND_LABEL: Record<AssignmentKind, string> = {
   HOMEWORK: 'واجب',
   QUIZ: 'اختبار قصير',
   PROJECT: 'مشروع',
-  EXAM: 'امتحان',
+  EXAM: 'اختبار',
 };
 
 /**

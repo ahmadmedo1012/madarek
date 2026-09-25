@@ -121,7 +121,7 @@ describe('QualityDashboardPage — real payload, no fabricated KPIs', () => {
       .toHaveAttribute('aria-valuenow', '66.5');
 
     // enrollments ÷ totalStudents = 240/300 → 80
-    expect(screen.getByRole('progressbar', { name: 'معدل تسجيل الطلاب في المقررات' }))
+    expect(screen.getByRole('progressbar', { name: 'معدل تسجيل الطلاب في المقرّرات' }))
       .toHaveAttribute('aria-valuenow', '80');
 
     // papers GRADED+PUBLISHED ÷ total = 8/10 → 80

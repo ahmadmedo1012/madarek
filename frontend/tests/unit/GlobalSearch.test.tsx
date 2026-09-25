@@ -158,7 +158,8 @@ describe('GlobalSearch — combobox ARIA (15-g P1-1)', () => {
     await type('برمجة');
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('لم نعثر على نتائج'));
     // The visible empty state names the term; the live region stays generic.
-    expect(screen.getByText('لم نعثر على نتائج لـ "برمجة"')).toBeInTheDocument();
+    // (15-j P2-1: Latin quotes → Arabic «» — pin updated with the copy change.)
+    expect(screen.getByText('لم نعثر على نتائج لـ«برمجة»')).toBeInTheDocument();
   });
 });
 

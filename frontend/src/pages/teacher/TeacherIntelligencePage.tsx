@@ -25,6 +25,7 @@ import {
   useTeacherRisks, useCurriculumSuggest,
   type TeacherOffering, type RiskLevel, type TeacherStudentRow,
 } from '../../hooks/useResources';
+import { countAr } from '../../lib/format';
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
 
@@ -72,7 +73,7 @@ export default function TeacherIntelligencePage() {
         icon={AlertTriangle}
         subtitle={
           risks.isPending ? 'جارٍ التحميل…'
-          : risks.data && risks.data.length > 0 ? `${risks.data.length} طالب موزّعون على مقرّراتك`
+          : risks.data && risks.data.length > 0 ? countAr(risks.data.length, ['طالب موزّع', 'طالبان موزّعان', 'طلاب موزّعون', 'طالباً موزّعاً'])
           : undefined
         }
         actions={<Badge color="amber"><Icon icon={Brain} size={11} /> AI</Badge>}
@@ -125,7 +126,7 @@ export default function TeacherIntelligencePage() {
         icon={BookOpen}
         subtitle={
           offerings.isPending ? 'جارٍ التحميل…'
-          : offerings.data && offerings.data.length > 0 ? `${offerings.data.length} مقرر هذا الفصل`
+          : offerings.data && offerings.data.length > 0 ? countAr(offerings.data.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])
           : undefined
         }
       >
@@ -190,11 +191,11 @@ function OfferingCard({ offering }: { offering: TeacherOffering }) {
         <div className="track-card-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
         <div className="track-card-title">{offering.course.name}</div>
         <div className="track-card-meta">
-          <span><Icon icon={Users} size={12} /> {offering._count.enrollments} طالب</span>
-          <span><Icon icon={BookOpen} size={12} /> {offering._count.lectures} محاضرة</span>
-          <span><Icon icon={ClipboardCheck} size={12} /> {offering._count.assignments} واجب</span>
+          <span><Icon icon={Users} size={12} /> {countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span><Icon icon={BookOpen} size={12} /> {countAr(offering._count.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
+          <span><Icon icon={ClipboardCheck} size={12} /> {countAr(offering._count.assignments, ['واجب واحد', 'واجبان', 'واجبات', 'واجباً'])}</span>
           {offering._count.examTemplates > 0 && (
-            <span><Icon icon={Sparkles} size={12} /> {offering._count.examTemplates} اختبار</span>
+            <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}</span>
           )}
         </div>
       </div>
@@ -248,7 +249,7 @@ export function TeacherOfferingDetailPage() {
           </div>
         </header>
         <ErrorState
-          message="تعذَّر تحميل بيانات المقرر"
+          message="تعذَّر تحميل بيانات المقرّر"
           error={offerings.error}
           onRetry={() => offerings.refetch()}
         />
@@ -269,7 +270,7 @@ export function TeacherOfferingDetailPage() {
         </header>
         <EmptyState
           icon={BookOpen}
-          title="المقرر غير موجود"
+          title="المقرّر غير موجود"
           description="ربما حُذف هذا العرض أو أن الرابط غير صحيح."
         />
       </div>
@@ -299,8 +300,8 @@ export function TeacherOfferingDetailPage() {
           <div className="track-hero-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
           <h1 className="track-hero-title">{offering.course.name}</h1>
           <div className="track-hero-meta">
-            <Badge><Icon icon={Users} size={11} /> {offering._count.enrollments} طالب</Badge>
-            <Badge>{offering.course.credits} وحدة</Badge>
+            <Badge><Icon icon={Users} size={11} /> {countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</Badge>
+            <Badge>{countAr(offering.course.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</Badge>
             {offering.room && <Badge>قاعة {offering.room}</Badge>}
           </div>
         </div>
@@ -309,7 +310,7 @@ export function TeacherOfferingDetailPage() {
       {analytics.isPending && <KpiSkeleton />}
       {analytics.isError && (
         <div className="inline-retry" role="alert">
-          <span className="text-sm text-muted">تعذَّر تحميل مؤشرات المقرر.</span>
+          <span className="text-sm text-muted">تعذَّر تحميل مؤشرات المقرّر.</span>
           <button type="button" className="btn ghost sm" onClick={() => analytics.refetch()}>
             <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
           </button>
@@ -352,7 +353,7 @@ export function TeacherOfferingDetailPage() {
             <EmptyState
               icon={Users}
               title="لا يوجد طلاب مسجَّلون"
-              description="ستظهر قائمة الطلاب هنا فور تسجيلهم في المقرر."
+              description="ستظهر قائمة الطلاب هنا فور تسجيلهم في المقرّر."
             />
           ) : (
             <>
@@ -421,7 +422,7 @@ export function TeacherOfferingDetailPage() {
             <div className="empty-state">
               <Icon icon={Lightbulb} size={28} style={{ color: 'var(--gold-ink)' }} />
               <p className="text-sm text-muted">
-                اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرر، القسم،
+                اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرّر، القسم،
                 والمحاضرات الموجودة بالفعل.
               </p>
             </div>
@@ -431,10 +432,10 @@ export function TeacherOfferingDetailPage() {
               <div className="ai-rationale" style={{ ['--track-accent' as never]: accent }}>
                 <div className="text-xs text-muted">{suggest.data.rationale}</div>
                 <div className="flex gap-2 flex-wrap" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                  <Badge>{suggest.data.outline.length} فصول</Badge>
-                  <Badge color="brand">{suggest.data.suggestedTotalLectures} محاضرة مقترحة</Badge>
+                  <Badge>{countAr(suggest.data.outline.length, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])}</Badge>
+                  <Badge color="brand">{countAr(suggest.data.suggestedTotalLectures, ['محاضرة مقترحة واحدة', 'محاضرتان مقترحتان', 'محاضرات مقترحة', 'محاضرة مقترحة'])}</Badge>
                   {suggest.data.currentLectureCount > 0 && (
-                    <Badge color="green">{suggest.data.currentLectureCount} محاضرة موجودة</Badge>
+                    <Badge color="green">{countAr(suggest.data.currentLectureCount, ['محاضرة موجودة واحدة', 'محاضرتان موجودتان', 'محاضرات موجودة', 'محاضرة موجودة'])}</Badge>
                   )}
                 </div>
               </div>
@@ -443,7 +444,7 @@ export function TeacherOfferingDetailPage() {
                   <div key={i} className="curriculum-chapter">
                     <div className="curriculum-chapter-head" style={{ color: accentInk }}>
                       <span>{ch.title}</span>
-                      <Badge>{ch.estLectures} محاضرة</Badge>
+                      <Badge>{countAr(ch.estLectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</Badge>
                     </div>
                     <ul className="curriculum-topics">
                       {ch.topics.map((t) => (

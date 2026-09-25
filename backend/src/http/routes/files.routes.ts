@@ -93,10 +93,10 @@ router.get('/papers/:filename', async (req, res, next) => {
     // isSafePaperFilename; the two checks stay split so each rejection
     // carries its own message.
     if (containsTraversalPatterns(filename)) {
-      throw AppError.badRequest('Invalid filename');
+      throw AppError.badRequest('اسم الملف غير صالح');
     }
     if (!isPdfFilename(filename)) {
-      throw AppError.badRequest('Only PDF files are served from this endpoint');
+      throw AppError.badRequest('تُقدَّم الملفات من هذه الخدمة بصيغة PDF فقط');
     }
 
     // ── Access gate: resolve the file to its paper row(s) ──────────
@@ -116,7 +116,7 @@ router.get('/papers/:filename', async (req, res, next) => {
         },
         select: { id: true },
       });
-      if (!accessible) throw AppError.notFound('File not found');
+      if (!accessible) throw AppError.notFound('الملف غير موجود');
     }
 
     const safeName = path.basename(filename);
@@ -124,15 +124,15 @@ router.get('/papers/:filename', async (req, res, next) => {
 
     // Pin to the storage/papers directory.
     if (!isWithinPapersDir(filePath, STORAGE_ROOT)) {
-      throw AppError.badRequest('Invalid path');
+      throw AppError.badRequest('مسار غير صالح');
     }
 
     if (!existsSync(filePath)) {
-      throw AppError.notFound('File not found');
+      throw AppError.notFound('الملف غير موجود');
     }
     const stat = statSync(filePath);
     if (!stat.isFile()) {
-      throw AppError.badRequest('Not a file');
+      throw AppError.badRequest('المسار المطلوب ليس ملفاً');
     }
 
     res.setHeader('Content-Type', 'application/pdf');

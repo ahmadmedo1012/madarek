@@ -154,7 +154,7 @@ export const changeRoleSchema = z
   .object({
     role: z.nativeEnum(Role),
     departmentId: z.string().cuid().optional(),
-    specialty: z.string().min(2).max(120).optional(),
+    specialty: z.string().trim().min(2).max(120).optional(),
   })
   .strict();
 
@@ -168,8 +168,8 @@ export const upsertSettingSchema = z
   .object({
     // Caps match the :key param's rigor — without them a single 1 MB
     // JSON body becomes a 1 MB setting row (audit 11-c P2-15).
-    value: z.string().max(2000),
-    category: z.string().max(40).optional(),
+    value: z.string().trim().max(2000),
+    category: z.string().trim().max(40).optional(),
   })
   .strict();
 
@@ -212,19 +212,19 @@ router.post(
 
       // Self-demotion guard
       if (id === req.user!.id) {
-        throw AppError.forbidden('Cannot change your own role');
+        throw AppError.forbidden('لا يمكنك تغيير دورك بنفسك');
       }
 
       // OWNER promotion guard
       if (role === Role.OWNER) {
-        throw AppError.forbidden('Cannot promote to OWNER via API');
+        throw AppError.forbidden('لا يمكن منح دور المالك عبر النظام — تواصل مع الدعم الفني');
       }
 
       const user = await prisma.user.findUnique({
         where: { id },
         include: { studentProfile: { select: { departmentId: true } }, teacherProfile: { select: { userId: true } } },
       });
-      if (!user) throw AppError.notFound('User not found');
+      if (!user) throw AppError.notFound('المستخدم غير موجود');
 
       const oldRole = user.role;
 
@@ -244,7 +244,7 @@ router.post(
       });
       if (provisionPlan.kind === 'missing-department') {
         throw AppError.badRequest(
-          'Promotion to TEACHER requires a home department — pass departmentId (or promote from a student profile that has one)',
+          'ترقية المستخدم إلى أستاذ تتطلب قسماً أكاديمياً — حدّد القسم أو رقّه من ملف طالب لديه قسم',
         );
       }
       const teacherProvision =
@@ -307,14 +307,14 @@ router.patch(
       // users.routes.ts). Blocking every self status change made
       // recovery impossible (audit 11-c P2-15).
       if (!isActive && id === req.user!.id) {
-        throw AppError.forbidden('Cannot deactivate your own account');
+        throw AppError.forbidden('لا يمكنك تعطيل حسابك الخاص');
       }
 
       const user = await prisma.user.findUnique({
         where: { id },
         select: { id: true, role: true, isActive: true },
       });
-      if (!user) throw AppError.notFound('User not found');
+      if (!user) throw AppError.notFound('المستخدم غير موجود');
 
       // Guard + mutation + audit atomically. Deactivating the last
       // active OWNER = governance lockout, so the guard (and its row
@@ -776,12 +776,12 @@ router.post('/alerts/:id/resolve', async (req, res, next) => {
     const { id } = req.params;
 
     const alert = await prisma.operationalAlert.findUnique({ where: { id } });
-    if (!alert) throw AppError.notFound('Alert not found');
+    if (!alert) throw AppError.notFound('التنبيه غير موجود');
     // Idempotency guard: re-resolving would silently overwrite the
     // original resolution timestamp and resolver with no new
     // information (audit 11-c P2-15).
     if (alert.resolvedAt) {
-      throw AppError.conflict('Alert is already resolved');
+      throw AppError.conflict('تمت معالجة هذا التنبيه مسبقاً');
     }
 
     // Resolution + audit atomically — a crash between the two must
@@ -898,7 +898,7 @@ router.put(
       // junk rows (the upsert's create branch has no other gate).
       const parsedKey = settingKeySchema.safeParse(key);
       if (!parsedKey.success) {
-        throw AppError.badRequest('Invalid setting key', parsedKey.error.flatten());
+        throw AppError.badRequest('مفتاح الإعداد غير صالح', parsedKey.error.flatten());
       }
       const { value, category } = req.body as { value: string; category?: string };
 
@@ -953,7 +953,7 @@ router.put(
       const { enabled } = req.body as { enabled: boolean };
 
       const flag = await prisma.featureFlag.findUnique({ where: { slug } });
-      if (!flag) throw AppError.notFound('Feature flag not found');
+      if (!flag) throw AppError.notFound('مفتاح الميزة غير موجود');
 
       // Toggle + audit atomically; previousState comes from the same
       // read that proved the flag exists (audit 11-c P2-9).

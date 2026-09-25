@@ -12,6 +12,7 @@ import {
 import { ChartFrame } from '../../components/charts';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses } from '../../hooks/useResources';
+import { countAr } from '../../lib/format';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
@@ -71,9 +72,9 @@ export function AdminDashboardPage() {
       <div className="grid-4">
         <MetricCard
           icon={Building2}
-          label="الكليات"
+          label="الكلّيّات"
           value={facultyCount.toLocaleString('ar-LY')}
-          change={`موزّعة على ${cityCount} ${cityCount === 1 ? 'مدينة' : 'مدن'}`}
+          change={`موزّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`}
           color="brand"
         />
         <MetricCard
@@ -92,29 +93,29 @@ export function AdminDashboardPage() {
         />
         <MetricCard
           icon={BookOpen}
-          label="المقررات"
+          label="المقرّرات"
           value={s.totalCourses.toLocaleString('ar-LY')}
-          change={`${s.totalEnrollments.toLocaleString('ar-LY')} تسجيل`}
+          change={countAr(s.totalEnrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}
           color="purple"
         />
       </div>
 
       <div className="grid-2-1">
-        <Card title="توزّع الطلاب حسب الكلية" icon={BarChart3} subtitle={topByStudents.length > 0 ? `أعلى ${topByStudents.length} كلّيّة من حيث عدد الطلاب` : undefined}>
+        <Card title="توزّع الطلاب حسب الكلّيّة" icon={BarChart3} subtitle={topByStudents.length > 0 ? `أعلى ${countAr(topByStudents.length, ['كلّيّة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} من حيث عدد الطلاب` : undefined}>
           {topByStudents.length === 0 ? (
             <EmptyState
               icon={BarChart3}
               title="لا توجد بيانات طلاب بعد"
-              description="ستظهر التوزيعة هنا فور تسجيل الطلاب في الكليات."
+              description="ستظهر التوزيعة هنا فور تسجيل الطلاب في الكلّيّات."
             />
           ) : (
             <ChartFrame
-              ariaLabel={`توزيع الطلاب حسب الكلية — ${topByStudents.length} كليات الأعلى عددًا`}
-              summary={topFaculty ? `أعلى كلية عددًا للطلاب: ${topFaculty.name} بـ${topFaculty.studentCount.toLocaleString('ar-LY')} طالبًا.` : undefined}
+              ariaLabel={`توزيع الطلاب حسب الكلّيّة — أعلى ${countAr(topByStudents.length, ['كلّيّة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} عددًا`}
+              summary={topFaculty ? `أعلى كلّيّة عددًا للطلاب: ${topFaculty.name} بـ${countAr(topFaculty.studentCount, ['طالب واحد', 'طالبين', 'طلاب', 'طالباً'])}.` : undefined}
               height={Math.max(180, topByStudents.length * 36)}
               table={{
-                caption: 'توزيع الطلاب حسب الكلية',
-                columns: ['الكلية', 'عدد الطلاب'],
+                caption: 'توزيع الطلاب حسب الكلّيّة',
+                columns: ['الكلّيّة', 'عدد الطلاب'],
                 rows: topByStudents.map((row) => [row.name, row.studentCount]),
               }}
             >
@@ -165,7 +166,7 @@ export function AdminDashboardPage() {
         </Card>
       </div>
 
-      <Card title="نشاط الإنتاج العلميّ — آخر ٦ أشهر" icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
+      <Card title="نشاط الإنتاج العلميّ — آخر 6 أشهر" icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
         {r.paperTrend.length === 0 || r.paperTrend.every((m) => m.submitted + m.graded + m.published === 0) ? (
           <EmptyState
             icon={TrendingUp}
@@ -247,7 +248,7 @@ export function AdminFacultiesPage() {
   if (isPending) {
     return (
       <div className="page">
-        <PageHeader title="الكليات والأقسام" subtitle="جميع كليات الجامعة وأقسامها مع إحصائيات حية." />
+        <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
         <KpiSkeleton />
         <CardSkeleton lines={7} />
       </div>
@@ -256,7 +257,7 @@ export function AdminFacultiesPage() {
   if (isError || !data) {
     return (
       <div className="page">
-        <PageHeader title="الكليات والأقسام" subtitle="جميع كليات الجامعة وأقسامها مع إحصائيات حية." />
+        <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
@@ -269,16 +270,16 @@ export function AdminFacultiesPage() {
 
   return (
     <div className="page">
-      <PageHeader title="الكليات والأقسام" subtitle="جميع كليات الجامعة وأقسامها مع إحصائيات حية." />
+      <PageHeader title="الكلّيّات والأقسام" subtitle="جميع كلّيّات الجامعة وأقسامها مع إحصائيات حية." />
 
       <div className="grid-4">
-        <MetricCard icon={Building2} label="عدد الكليات" value={data.length} color="brand" />
+        <MetricCard icon={Building2} label="عدد الكلّيّات" value={data.length} color="brand" />
         <MetricCard icon={School} label="عدد الأقسام" value={totalDepts} color="purple" />
         <MetricCard icon={GraduationCap} label="إجمالي الطلاب" value={totalStudents.toLocaleString('ar-LY')} color="green" />
         <MetricCard icon={Users} label="هيئة التدريس" value={totalTeachers.toLocaleString('ar-LY')} color="amber" />
       </div>
 
-      <Card title={`الكليات (${data.length})`} icon={Building2} subtitle={`${totalDepts} قسم · ${totalCourses} مقرر`}>
+      <Card title={`الكلّيّات (${data.length})`} icon={Building2} subtitle={`${countAr(totalDepts, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])} · ${countAr(totalCourses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}`}>
         <div className="flex-col gap-3">
           {data.map((f) => (
             <div key={f.id} className="admin-faculty-card">
@@ -296,10 +297,10 @@ export function AdminFacultiesPage() {
                     )}
                   </div>
                   <div className="admin-faculty-meta">
-                    <span className="font-mono">{f.departmentCount} قسم</span>
-                    <span className="font-mono">{f.courseCount} مقرر</span>
-                    <span className="font-mono">{f.studentCount.toLocaleString('ar-LY')} طالب</span>
-                    <span className="font-mono">{f.teacherCount} عضو هيئة تدريس</span>
+                    <span className="font-mono">{countAr(f.departmentCount, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}</span>
+                    <span className="font-mono">{countAr(f.courseCount, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</span>
+                    <span className="font-mono">{countAr(f.studentCount, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+                    <span className="font-mono">{countAr(f.teacherCount, ['عضو هيئة تدريس واحد', 'عضوا هيئة تدريس', 'أعضاء هيئة تدريس', 'عضواً هيئة تدريس'])}</span>
                   </div>
                 </div>
               </div>
@@ -310,7 +311,7 @@ export function AdminFacultiesPage() {
                     <div key={d.id} className="admin-faculty-dept">
                       <span className="admin-faculty-dept-name">{d.name}</span>
                       <span className="admin-faculty-dept-meta font-mono">
-                        {d.students} طالب · {d.teachers} مدرّس · {d.courses} مقرر
+                        {countAr(d.students, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])} · {countAr(d.teachers, ['مدرّس واحد', 'مدرّسان', 'مدرّسون', 'مدرّساً'])} · {countAr(d.courses, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}
                       </span>
                     </div>
                   ))}
@@ -321,8 +322,8 @@ export function AdminFacultiesPage() {
           {data.length === 0 && (
             <EmptyState
               icon={Building2}
-              title="لم تُسجَّل كليات بعد"
-              description="ستظهر الكليات وأقسامها هنا فور إضافتها إلى قاعدة البيانات."
+              title="لم تُسجَّل كلّيّات بعد"
+              description="ستظهر الكلّيّات وأقسامها هنا فور إضافتها إلى قاعدة البيانات."
             />
           )}
         </div>
@@ -414,12 +415,12 @@ export function AdminReportsPage() {
       </Card>
 
       {/* Top courses */}
-      <Card title="أكثر المقررات تسجيلاً" icon={ClipboardCheck} subtitle={data.topCourses.length > 0 ? `أعلى ${data.topCourses.length} مقرر بناءً على عدد الطلاب` : undefined}>
+      <Card title="أكثر المقرّرات تسجيلاً" icon={ClipboardCheck} subtitle={data.topCourses.length > 0 ? `أعلى ${countAr(data.topCourses.length, ['مقرّر', 'مقرّرين', 'مقرّرات', 'مقرّراً'])} بناءً على عدد الطلاب` : undefined}>
         {data.topCourses.length === 0 ? (
           <EmptyState
             icon={ClipboardCheck}
             title="لا توجد تسجيلات بعد"
-            description="ستظهر المقررات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرراتهم."
+            description="ستظهر المقرّرات الأعلى تسجيلاً هنا فور تسجيل الطلاب في مقرّراتهم."
           />
         ) : (
           <div className="table-wrap">
@@ -427,7 +428,7 @@ export function AdminReportsPage() {
               <thead>
                 <tr>
                   <th style={{ width: 110 }}>الكود</th>
-                  <th>اسم المقرر</th>
+                  <th>اسم المقرّر</th>
                   <th className="admin-table-num" style={{ width: 130 }}>طلاب مسجَّلون</th>
                   <th className="admin-table-num" style={{ width: 110 }}>المحاضرات</th>
                 </tr>
@@ -436,7 +437,7 @@ export function AdminReportsPage() {
                 {data.topCourses.map((c) => (
                   <tr key={c.code}>
                     <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                    <td data-label="اسم المقرر">{c.name}</td>
+                    <td data-label="اسم المقرّر">{c.name}</td>
                     <td className="admin-table-num font-mono" data-label="طلاب مسجَّلون">{c.enrollments}</td>
                     <td className="admin-table-num font-mono" data-label="المحاضرات">{c.lectures}</td>
                   </tr>
@@ -467,7 +468,7 @@ export function AdminCoursesPage() {
   if (isPending) {
     return (
       <div className="page">
-        <PageHeader title="إدارة المقررات" subtitle="جميع المقررات الجامعية مع إحصائيات حية." />
+        <PageHeader title="إدارة المقرّرات" subtitle="جميع المقرّرات الجامعية مع إحصائيات حية." />
         <KpiSkeleton />
         <TableSkeleton rows={6} cols={7} />
       </div>
@@ -476,7 +477,7 @@ export function AdminCoursesPage() {
   if (isError || !data) {
     return (
       <div className="page">
-        <PageHeader title="إدارة المقررات" subtitle="جميع المقررات الجامعية مع إحصائيات حية." />
+        <PageHeader title="إدارة المقرّرات" subtitle="جميع المقرّرات الجامعية مع إحصائيات حية." />
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       </div>
     );
@@ -492,18 +493,18 @@ export function AdminCoursesPage() {
 
   return (
     <div className="page">
-      <PageHeader title="إدارة المقررات" subtitle={`${data.length} مقرر · ${totalEnroll.toLocaleString('ar-LY')} تسجيل`} />
+      <PageHeader title="إدارة المقرّرات" subtitle={`${countAr(data.length, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])} · ${countAr(totalEnroll, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}`} />
 
       <div className="grid-4">
-        <MetricCard icon={BookOpen} label="إجمالي المقررات" value={data.length} color="brand" />
+        <MetricCard icon={BookOpen} label="إجمالي المقرّرات" value={data.length} color="brand" />
         <MetricCard icon={GraduationCap} label="تسجيلات الطلاب" value={totalEnroll.toLocaleString('ar-LY')} color="green" />
-        <MetricCard icon={FileText} label="المحاضرات + المواد" value={(totalLec + totalMat).toLocaleString('ar-LY')} color="purple" />
+        <MetricCard icon={FileText} label="المحاضرات والملفات" value={(totalLec + totalMat).toLocaleString('ar-LY')} color="purple" />
         <MetricCard icon={Award} label="متوسط الساعات" value={avgCredits} color="gold" />
       </div>
 
       {/* Faculty filter pills */}
       <Card compact>
-        <div className="filter-bar" role="group" aria-label="تصفية المقررات حسب الكلية">
+        <div className="filter-bar" role="group" aria-label="تصفية المقرّرات حسب الكلّيّة">
           <button
             type="button"
             className={`pill${filter === 'all' ? ' on' : ''}`}
@@ -530,14 +531,14 @@ export function AdminCoursesPage() {
       </Card>
 
       {/* Courses table */}
-      <Card title={`المقررات (${visible.length})`} icon={BookOpen}>
+      <Card title={`المقرّرات (${visible.length})`} icon={BookOpen}>
         <div className="table-wrap">
           <table className="table tbl-stack">
             <thead>
               <tr>
                 <th style={{ width: 100 }}>الكود</th>
-                <th>اسم المقرر</th>
-                <th>الكلية / القسم</th>
+                <th>اسم المقرّر</th>
+                <th>الكلّيّة / القسم</th>
                 <th className="admin-table-num" style={{ width: 70 }}>س.م</th>
                 <th className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>
                 <th className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
@@ -549,11 +550,11 @@ export function AdminCoursesPage() {
                 <tr>
                   <td colSpan={7}>
                     <EmptyState
-                      title="لا توجد مقررات في هذه الكلية"
-                      description="اختر كلية أخرى أو أعد ضبط التصفية لعرض جميع المقررات."
+                      title="لا توجد مقرّرات في هذه الكلّيّة"
+                      description="اختر كلّيّة أخرى أو أعد ضبط التصفية لعرض جميع المقرّرات."
                       action={
                         <button type="button" className="btn ghost sm" onClick={() => setFilter('all')}>
-                          عرض جميع المقررات
+                          عرض جميع المقرّرات
                         </button>
                       }
                     />
@@ -563,7 +564,7 @@ export function AdminCoursesPage() {
               {visible.map((c) => (
                 <tr key={c.id}>
                   <td className="font-mono text-subtle" data-label="الكود"><bdi>{c.code}</bdi></td>
-                  <td data-label="اسم المقرر">
+                  <td data-label="اسم المقرّر">
                     <div className="flex items-center gap-2">
                       {c.themeColor && (
                         <span className="admin-course-tint" style={{ background: c.themeColor }} aria-hidden />
@@ -571,7 +572,7 @@ export function AdminCoursesPage() {
                       <span className="font-semibold" style={{ color: 'var(--text)' }}>{c.name}</span>
                     </div>
                   </td>
-                  <td data-label="الكلية / القسم">
+                  <td data-label="الكلّيّة / القسم">
                     {c.faculty ? (
                       <div className="flex items-center gap-1">
                         <EmojiIcon emoji={c.facultyEmoji} fallback={BookOpen} size={16} className="text-subtle" />

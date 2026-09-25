@@ -31,7 +31,7 @@ function StudentScopeChip() {
   const name = profileQ.data?.student?.faculty?.name ?? null;
   if (!name) return null;
   return (
-    <span className="topbar-scope" title={`الكلية: ${name}`}>
+    <span className="topbar-scope" title={`الكلّيّة: ${name}`}>
       {name}
     </span>
   );
@@ -105,7 +105,7 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
         {role === 'STUDENT' && <StudentScopeChip />}
         {scopeFacultyName && (
           <span className="topbar-scope" title={`نطاق الإدارة: ${scopeFacultyName}`}>
-            {role === 'QUALITY' ? 'جودة كلية' : 'إداري كلية'} · {scopeFacultyName}
+            {role === 'QUALITY' ? 'أخصائي جودة كلّيّة' : 'إداري كلّيّة'} · {scopeFacultyName}
           </span>
         )}
       </div>

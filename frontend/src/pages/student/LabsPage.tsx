@@ -22,7 +22,7 @@ interface LabExperiment {
 const EXPERIMENT_LIBRARY: Record<string, LabExperiment> = {
   net: {
     title: 'إعداد شبكة LAN مع VLAN',
-    description: 'تكوين راوتر و سويتش، إعداد VLANs، اختبار الاتصال بين الأجهزة.',
+    description: 'تكوين راوتر وسويتش، إعداد VLANs، اختبار الاتصال بين الأجهزة.',
     steps: [
       {
         title: 'تكوين الراوتر',

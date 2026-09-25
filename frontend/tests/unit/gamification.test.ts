@@ -56,8 +56,8 @@ describe('RARITY_LABEL (folded from TrainingPages)', () => {
     expect(RARITY_LABEL).toEqual({
       COMMON: 'شائع',
       RARE: 'نادر',
-      EPIC: 'أسطوري',
-      LEGENDARY: 'فريد',
+      EPIC: 'ملحمي',
+      LEGENDARY: 'أسطوري',
     });
     expect(Object.keys(RARITY_LABEL).sort()).toEqual(['COMMON', 'EPIC', 'LEGENDARY', 'RARE']);
   });

@@ -186,6 +186,13 @@ describe('materialCreateSchema', () => {
     expect(materialCreateSchema.safeParse({ ...validMaterial, name: 'م'.repeat(201) }).success).toBe(false);
   });
 
+  it('name trims before min/max (D17-4): whitespace-only rejected, padded input stored trimmed', () => {
+    expect(materialCreateSchema.safeParse({ ...validMaterial, name: '   ' }).success).toBe(false);
+    const parsed = materialCreateSchema.safeParse({ ...validMaterial, name: '  محاضرة المقدمة  ' });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) expect(parsed.data.name).toBe('محاضرة المقدمة');
+  });
+
   it('description is optional, capped at 2000 chars', () => {
     expect(materialCreateSchema.safeParse({ ...validMaterial, description: undefined }).success).toBe(true);
     expect(materialCreateSchema.safeParse({ ...validMaterial, description: 'د'.repeat(2001) }).success).toBe(false);

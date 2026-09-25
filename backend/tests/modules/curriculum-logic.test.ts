@@ -257,6 +257,12 @@ describe('createCheckpointBodySchema', () => {
     ).toBe(true);
   });
 
+  it('trims options before min (D17-4): whitespace-only option rejected, padded option stored trimmed', () => {
+    expect(createCheckpointBodySchema.safeParse({ ...VALID_CHECKPOINT, options: ['أ', '   '] }).success).toBe(false);
+    const parsed = createCheckpointBodySchema.parse({ ...VALID_CHECKPOINT, options: ['  خيار  ', 'ب'] });
+    expect(parsed.options[0]).toBe('خيار');
+  });
+
   it('rejects correctIndex outside the option list', () => {
     expect(createCheckpointBodySchema.safeParse({ ...VALID_CHECKPOINT, correctIndex: 2 }).success).toBe(false);
     expect(createCheckpointBodySchema.safeParse({ ...VALID_CHECKPOINT, correctIndex: -1 }).success).toBe(false);

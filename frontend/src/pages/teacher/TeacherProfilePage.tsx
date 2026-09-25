@@ -27,6 +27,7 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   useMyTeacherProfile, useUpdateTeacherProfile, apiErrorMessage,
 } from '../../hooks/useResources';
+import { countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
 
@@ -215,23 +216,23 @@ export default function TeacherProfilePage() {
       <div className="grid-3">
         <MetricCard
           icon={BookOpen}
-          label="المقررات هذا الفصل"
+          label="المقرّرات هذا الفصل"
           value={profile.workload.courseCount.toString()}
-          change={`${profile.workload.totalCredits} وحدة معتمدة`}
+          change={countAr(profile.workload.totalCredits, ['وحدة معتمدة واحدة', 'وحدتان معتمدتان', 'وحدات معتمدة', 'وحدة معتمدة'])}
           color="brand"
         />
         <MetricCard
           icon={Users2}
           label="إجمالي الطلاب"
           value={profile.workload.totalEnrolled.toString()}
-          change="مسجَّلون في مقرراتك"
+          change="مسجَّلون في مقرّراتك"
           color="green"
         />
         <MetricCard
           icon={Award}
           label="الدرجة العلمية"
           value={DEGREE_LABEL[profile.degreeLevel] ?? profile.degreeLevel}
-          change={`${profile.yearsExperience} سنة خبرة`}
+          change={countAr(profile.yearsExperience, ['سنة خبرة واحدة', 'سنتا خبرة', 'سنوات خبرة', 'سنة خبرة'])}
           color="purple"
         />
       </div>
@@ -259,7 +260,7 @@ export default function TeacherProfilePage() {
             <div className="flex-col gap-2">
               <input
                 className="input"
-                placeholder="موقع المكتب — مثال: مبنى الكلية - مكتب 305"
+                placeholder="موقع المكتب — مثال: مبنى الكلّيّة - مكتب 305"
                 value={draft.officeLocation}
                 onChange={(e) => setDraft({ ...draft, officeLocation: e.target.value })}
               />
@@ -394,11 +395,11 @@ export default function TeacherProfilePage() {
       </Card>
 
       {/* Courses currently teaching */}
-      <Card title="المقررات الحالية" icon={BookOpen} subtitle={`${profile.courses.length} مقرر هذا الفصل`}>
+      <Card title="المقرّرات الحالية" icon={BookOpen} subtitle={countAr(profile.courses.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])}>
         {profile.courses.length === 0 ? (
           <EmptyState
             icon={BookOpen}
-            title="لم يُسند إليك أي مقرر بعد"
+            title="لم يُسند إليك أي مقرّر بعد"
             description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
           />
         ) : (
@@ -419,8 +420,8 @@ export default function TeacherProfilePage() {
                   <div className="track-card-cat"><bdi>{c.code}</bdi> · {c.term}</div>
                   <div className="track-card-title" title={c.name}>{c.name}</div>
                   <div className="track-card-meta">
-                    <span><Icon icon={Users2} size={12} /> {c.enrolled} طالب</span>
-                    <span>{c.credits} وحدة</span>
+                    <span><Icon icon={Users2} size={12} /> {countAr(c.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+                    <span>{countAr(c.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</span>
                   </div>
                 </div>
               </Link>

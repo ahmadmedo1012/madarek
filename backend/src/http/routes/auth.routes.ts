@@ -99,7 +99,7 @@ router.post(
 router.post('/refresh', authRateLimiter, async (req, res, next) => {
   try {
     const token = req.cookies?.[REFRESH_COOKIE] ?? '';
-    if (!token) throw AppError.unauthenticated('No refresh token');
+    if (!token) throw AppError.unauthenticated('جلسة غير صالحة — سجّل الدخول من جديد');
     const { user, accessToken, refreshToken } = await refreshTokens(token);
     setRefreshCookie(res, refreshToken);
     res.json({ data: { user, accessToken } });

@@ -58,7 +58,6 @@ stitch*.zip
 
 # Visual audit artifacts (Playwright snapshots — not committed)
 audit-out/
-.claude/
 
 # Local agent / vector DB tooling artifacts (Ruflo / RVF)
 ruvector.db
@@ -71,15 +70,12 @@ agentdb.rvf.lock
 # Stray nested copy of the repo (created by some tooling)
 /madarek/
 
-# 012-design-graphics-uplift — generated audit inventory
-frontend/tests/audit/surface-inventory.json
-frontend/tests/audit/screenshots/
-
 # Secrets (contains credentials, never committed)
 secrets.txt
 
-# WS-F6 — Playwright surface-inventory audit artifacts (only the committed
-# surface-baseline.json is tracked; screenshots + fresh sweeps are local)
+# Playwright surface-inventory audit artifacts (specs/012 + WS-F6) —
+# only the committed surface-baseline.json is tracked; screenshots +
+# generated inventories are local-only
 frontend/tests/audit/surface-inventory.json
 frontend/tests/audit/screenshots/
 

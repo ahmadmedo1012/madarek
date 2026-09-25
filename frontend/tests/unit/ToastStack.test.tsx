@@ -38,7 +38,7 @@ describe('toast store', () => {
     const items = useToastStore.getState().items;
     expect(items).toHaveLength(2);
     expect(items[0]).toMatchObject({ variant: 'success', title: 'تمّ بنجاح', message: 'تم الحفظ' });
-    expect(items[1]).toMatchObject({ variant: 'error', title: 'حدث خطأ', message: 'تعذّر الحفظ' });
+    expect(items[1]).toMatchObject({ variant: 'error', title: 'تعذَّر إتمام العملية', message: 'تعذّر الحفظ' });
   });
 
   it('info/warning helpers map to their variants', () => {

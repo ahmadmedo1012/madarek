@@ -21,15 +21,15 @@ const aiLimiter = createRouteLimiter();
 export const chatSchema = z
   .object({
     conversationId: z.string().cuid().optional(),
-    message: z.string().min(1).max(4000),
+    message: z.string().trim().min(1).max(4000),
   })
   .strict();
 
 const GENERIC_RESPONSES = [
   'سؤال جيد! دعني أساعدك في فهم هذا الموضوع بطريقة عملية. ابدأ بمراجعة الأمثلة في محاضراتك ثم انتقل للتطبيق.',
-  'بناءً على أدائك في المواد المسجَّلة، أنصحك بتقسيم الموضوع إلى أجزاء صغيرة ودراستها يومياً لمدة 30 دقيقة.',
+  'بناءً على أدائك في المقرّرات المسجَّلة، أنصحك بتقسيم الموضوع إلى أجزاء صغيرة ودراستها يومياً لمدة 30 دقيقة.',
   'الموضوع يتطلب فهماً نظرياً وتطبيقاً عملياً. اقرأ النظرية أولاً ثم جرّب التمارين العملية في المعامل الافتراضية.',
-  'أستطيع مساعدتك في إعداد خطة دراسة أسبوعية مخصصة. أخبرني عن المادة التي تواجه فيها تحدياً.',
+  'أستطيع مساعدتك في إعداد خطة دراسة أسبوعية مخصصة. أخبرني عن المقرّر الذي تواجه فيه تحدياً.',
 ];
 
 const STUDY_TIPS = [
@@ -229,7 +229,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     const conv = conversationId
       ? await prisma.aiConversation.findFirst({ where: { id: conversationId, userId } })
       : null;
-    if (conversationId && !conv) throw AppError.notFound('Conversation not found');
+    if (conversationId && !conv) throw AppError.notFound('المحادثة غير موجودة');
 
     const reply = await composeReply(userId, message, req.user!.role);
 
@@ -290,7 +290,7 @@ router.get('/conversations/:id/messages', async (req, res, next) => {
     const conv = await prisma.aiConversation.findFirst({
       where: { id: req.params.id!, userId: req.user!.id },
     });
-    if (!conv) throw AppError.notFound('Conversation not found');
+    if (!conv) throw AppError.notFound('المحادثة غير موجودة');
     // Bounded read: fetch the newest window then restore chronological
     // order — a plain asc+take would silently cut the NEWEST turns of a
     // long conversation. cuids are time-ordered, so the id tiebreaker

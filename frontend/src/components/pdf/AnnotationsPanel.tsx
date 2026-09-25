@@ -50,7 +50,7 @@ const PEN_COLORS = [
  *  (avatar + author line + two comment lines), craft floor. */
 function AnnotationsSkeleton() {
   return (
-    <div role="status" aria-label="جاري تحميل الملاحظات…" className="annotations-skeleton">
+    <div role="status" aria-label="جارٍ تحميل الملاحظات…" className="annotations-skeleton">
       {[0, 1, 2].map((i) => (
         <div key={i} className="annotations-skeleton-item">
           <Skeleton width={28} height={28} rounded="var(--r-full)" />
@@ -175,7 +175,7 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
                 إلغاء
               </button>
               <button type="submit" className="btn primary sm" disabled={!draft.trim() || createA.isPending}>
-                {createA.isPending ? 'جاري…' : 'حفظ'}
+                {createA.isPending ? 'جارٍ…' : 'حفظ'}
               </button>
             </div>
           </div>
@@ -266,12 +266,13 @@ export default function AnnotationsPanel({ paperId, currentPage, numPages, onJum
 
 function RoleBadge({ role }: { role: AppRole }) {
   // OWNER added 16-E10 (PaperAnnotation.author.role widened to AppRole —
-  // 16-E2 hand-off); label matches nav.ts ROLE_LABELS so the same role
-  // reads identically in the sidebar and on an annotation author line.
+  // 16-E2 hand-off); labels match nav.ts ROLE_LABELS so the same role
+  // reads identically in the sidebar and on an annotation author line
+  // (17-a2: ADMIN «إدارة» → «إداري», QUALITY person-noun per 15-j P1-8).
   const label =
     role === 'TEACHER' ? 'أستاذ' :
-    role === 'ADMIN' ? 'إدارة' :
-    role === 'QUALITY' ? 'جودة' :
+    role === 'ADMIN' ? 'إداري' :
+    role === 'QUALITY' ? 'أخصائي جودة' :
     role === 'OWNER' ? 'مالك المنصة' :
     'طالب';
   return <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{label}</span>;

@@ -17,6 +17,8 @@ import { useAuthStore } from '../../stores/auth.store';
 import { useStudentDashboard } from '../../hooks/useResources';
 import { useChartThemeKey, chartColors, radialOptions } from '../../lib/chartTheme';
 import { ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
+import { countAr } from '../../lib/format';
+import { formatNum } from '../../utils/numbers';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -282,7 +284,7 @@ export default function StudentDashboardPage() {
           <div className="dash-gpa-body">
             <div className="dash-gpa-text">
               <div className="dash-eyebrow">المعدل التراكمي</div>
-              <div className="dash-gpa-value" data-numeric="true">{d.profile.gpa.toFixed(2)}</div>
+              <div className="dash-gpa-value" data-numeric="true">{formatNum(d.profile.gpa, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               <Badge color={tone.color}>{tone.label}</Badge>
             </div>
             <div className="dash-gpa-orb">
@@ -299,7 +301,7 @@ export default function StudentDashboardPage() {
                 ariaLabel={`متوسط التقدّم في المقرّرات: ${courseProgressPct}% منجز و${remainingPct}% متبقٍّ`}
                 summary={
                   d.kpi.courseCount > 0
-                    ? `أنجزت ${courseProgressPct}% من متوسط موادك المسجَّلة هذا الفصل.`
+                    ? `أنجزت ${courseProgressPct}% من متوسط مقرّراتك المسجَّلة هذا الفصل.`
                     : 'لم تسجّل في أي مقرّر بعد.'
                 }
                 table={{
@@ -334,11 +336,11 @@ export default function StudentDashboardPage() {
               <div className="dash-eyebrow">تقدّم المقرّرات</div>
               <div className="dash-progress-value">
                 {d.kpi.courseCount > 0
-                  ? `متوسّط تقدّمك في ${d.kpi.courseCount.toLocaleString('ar-LY')} مقرّر نشط`
+                  ? `متوسّط تقدّمك في ${countAr(d.kpi.courseCount, ['مقرّر نشط واحد', 'مقرّرين نشطين', 'مقرّرات نشطة', 'مقرّراً نشطاً'])}`
                   : 'لم تسجّل في أي مقرّر بعد'}
               </div>
               <div className="dash-progress-note">
-                {courseProgressPct >= 75 ? 'متقدّم جدّاً ممّا هو مطلوب' :
+                {courseProgressPct >= 75 ? 'متقدّم كثيراً عن المطلوب' :
                   courseProgressPct >= 50 ? 'على الطريق الصحيح' :
                   d.kpi.courseCount > 0 ? 'تحتاج إلى دفعة إضافيّة' : '—'}
               </div>

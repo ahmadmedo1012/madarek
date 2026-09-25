@@ -28,7 +28,7 @@ export async function completeOnboarding(userId: string): Promise<CompleteOnboar
     where: { id: userId },
     select: { onboardingCompletedAt: true },
   });
-  if (!existing) throw AppError.notFound('User not found');
+  if (!existing) throw AppError.notFound('المستخدم غير موجود');
   if (existing.onboardingCompletedAt) {
     return { onboardingCompletedAt: existing.onboardingCompletedAt };
   }
@@ -63,12 +63,12 @@ export async function completeOnboarding(userId: string): Promise<CompleteOnboar
     where: { id: userId },
     select: { onboardingCompletedAt: true },
   });
-  if (!reread) throw AppError.notFound('User not found');
+  if (!reread) throw AppError.notFound('المستخدم غير موجود');
   if (!reread.onboardingCompletedAt) {
     // Unreachable with a consistent database: the conditional write
     // reports zero rows only when the column is already set. Fail loud
     // rather than fabricate a completion timestamp.
-    throw AppError.internal('Onboarding completion state is inconsistent');
+    throw AppError.internal('حدث خلل في بيانات التهيئة — حاول مرة أخرى');
   }
   return { onboardingCompletedAt: reread.onboardingCompletedAt };
 }

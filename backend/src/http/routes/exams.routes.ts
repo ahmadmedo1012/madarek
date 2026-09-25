@@ -122,15 +122,15 @@ export function reconcileManualGrades(
     seen.add(s.answerId);
   }
   if (duplicates.length > 0) {
-    return { ok: false, message: 'Duplicate answerId in grading payload', answerIds: duplicates };
+    return { ok: false, message: 'إجابات مكرّرة في طلب التصحيح', answerIds: duplicates };
   }
   const notPending = submitted.map((s) => s.answerId).filter((id) => !pending.has(id));
   if (notPending.length > 0) {
-    return { ok: false, message: 'Answers are not awaiting manual grading', answerIds: notPending };
+    return { ok: false, message: 'بعض الإجابات المرسلة ليست بانتظار التصحيح اليدوي', answerIds: notPending };
   }
   const missing = pendingAnswerIds.filter((id) => !seen.has(id));
   if (missing.length > 0) {
-    return { ok: false, message: 'All pending answers must be graded before finalizing', answerIds: missing };
+    return { ok: false, message: 'يجب تصحيح كل الإجابات المعلّقة قبل إنهاء المحاولة', answerIds: missing };
   }
   return { ok: true };
 }
@@ -193,10 +193,10 @@ export function answerPatchFor(
   body: { answerText?: string; choiceIndex?: number },
 ): { patch: AnswerPatch; error: string | null } {
   if ((type === 'MCQ' || type === 'TRUE_FALSE') && body.choiceIndex === undefined) {
-    return { patch: {}, error: 'This question is answered with choiceIndex' };
+    return { patch: {}, error: 'يُجاب على هذا السؤال باختيار أحد الخيارات' };
   }
   if ((type === 'SHORT' || type === 'ESSAY') && body.answerText === undefined) {
-    return { patch: {}, error: 'This question is answered with answerText' };
+    return { patch: {}, error: 'يُجاب على هذا السؤال بكتابة نص الإجابة' };
   }
   const patch: AnswerPatch = {};
   if (body.answerText !== undefined) patch.answerText = body.answerText;
@@ -273,12 +273,12 @@ export const createQuestionSchema = z
   .object({
     categoryId: z.string().cuid(),
     type: z.nativeEnum(QuestionType),
-    prompt: z.string().min(5).max(2000),
-    choices: z.array(z.string().max(500)).min(2).max(20).optional(),
+    prompt: z.string().trim().min(5).max(2000),
+    choices: z.array(z.string().trim().max(500)).min(2).max(20).optional(),
     correctAnswer: z.union([z.string(), z.number(), z.boolean()]).optional(),
     difficulty: z.nativeEnum(DifficultyLevel).default('MEDIUM'),
     points: z.number().int().min(1).max(20).default(1),
-    tags: z.array(z.string().max(40)).max(8).default([]),
+    tags: z.array(z.string().trim().max(40)).max(8).default([]),
   })
   .strict()
   .superRefine((body, ctx) => {
@@ -340,7 +340,7 @@ router.post('/question-bank', requireCapability('EXAMS_AUTHOR'), validate(create
 /** POST /question-bank/:id/moderate — approve/reject */
 const moderateSchema = z.object({
   approve: z.boolean(),
-  note: z.string().max(500).optional(),
+  note: z.string().trim().max(500).optional(),
 }).strict();
 
 router.post(
@@ -370,9 +370,9 @@ export const createTemplateSchema = z
   .object({
     offeringId: z.string().cuid().optional(),
     facultyId: z.string().cuid().optional(),
-    title: z.string().min(3).max(200),
+    title: z.string().trim().min(3).max(200),
     kind: z.nativeEnum(ExamKind).default('QUIZ'),
-    description: z.string().max(2000).optional(),
+    description: z.string().trim().max(2000).optional(),
     durationMin: z.number().int().min(5).max(480).default(45),
     passingScore: z.number().int().min(0).max(100).default(50),
     randomized: z.boolean().default(true),
@@ -408,7 +408,7 @@ router.post('/exams/templates', requireCapability('EXAMS_AUTHOR'), validate(crea
     const approvedIds = new Set(questions.filter((q) => q.isApproved).map((q) => q.id));
     const rejectedQuestionIds = body.questionIds.filter((qid) => !approvedIds.has(qid));
     if (rejectedQuestionIds.length > 0) {
-      throw AppError.badRequest('All questions must exist and be approved', { questionIds: rejectedQuestionIds });
+      throw AppError.badRequest('يجب أن تكون جميع الأسئلة موجودة ومعتمدة', { questionIds: rejectedQuestionIds });
     }
     const template = await prisma.examTemplate.create({
       data: {
@@ -491,7 +491,7 @@ router.get('/exams/templates/:id', async (req, res, next) => {
         _count: { select: { attempts: true } },
       },
     });
-    if (!template) throw AppError.notFound('Template not found');
+    if (!template) throw AppError.notFound('قالب الاختبار غير موجود');
 
     // Authorization: students can only see PUBLISHED templates
     if (req.user!.role === 'STUDENT' && template.status !== 'PUBLISHED') {
@@ -510,7 +510,7 @@ router.get('/exams/templates/:id', async (req, res, next) => {
           select: { facultyId: true },
         });
         if (!profile || profile.facultyId !== template.facultyId) {
-          throw AppError.forbidden('This exam is for a different faculty');
+          throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
         }
       }
     }
@@ -568,10 +568,10 @@ router.post(
 router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), async (req, res, next) => {
   try {
     const t = await prisma.examTemplate.findUnique({ where: { id: req.params.id } });
-    if (!t) throw AppError.notFound('Template not found');
-    if (req.user!.role !== Role.OWNER && t.authorId !== req.user!.id) throw AppError.forbidden('Not your template');
+    if (!t) throw AppError.notFound('قالب الاختبار غير موجود');
+    if (req.user!.role !== Role.OWNER && t.authorId !== req.user!.id) throw AppError.forbidden('هذا القالب ليس من إنشائك');
     if (t.status !== 'APPROVED') {
-      throw AppError.badRequest('Template must be APPROVED by quality before publishing');
+      throw AppError.badRequest('يجب اعتماد القالب من وحدة الجودة قبل نشره');
     }
     // Conditional claim: a moderation rejection landing between the
     // status read above and this write must not be leapfrogged to
@@ -582,7 +582,7 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
       data: { status: 'PUBLISHED' },
     });
     if (claim.count === 0) {
-      throw AppError.conflict('Template is no longer approved');
+      throw AppError.conflict('لم يعد القالب معتمداً — حدّث الصفحة ثم أعد المحاولة');
     }
     const updated = await prisma.examTemplate.findUnique({ where: { id: t.id } });
     res.json({ data: updated });
@@ -680,10 +680,10 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
         },
       },
     });
-    if (!template) throw AppError.notFound('Template not found');
-    if (template.status !== 'PUBLISHED') throw AppError.forbidden('Exam not published');
-    if (template.openAt && template.openAt > new Date()) throw AppError.forbidden('Exam not open yet');
-    if (template.closeAt && template.closeAt < new Date()) throw AppError.forbidden('Exam closed');
+    if (!template) throw AppError.notFound('قالب الاختبار غير موجود');
+    if (template.status !== 'PUBLISHED') throw AppError.forbidden('هذا الاختبار غير منشور');
+    if (template.openAt && template.openAt > new Date()) throw AppError.forbidden('لم يفتح باب هذا الاختبار بعد');
+    if (template.closeAt && template.closeAt < new Date()) throw AppError.forbidden('أغلق باب التسليم لهذا الاختبار');
 
     // Enrollment / scoping check — students may only start exams that
     // belong to an offering they're enrolled in, or a faculty they
@@ -697,7 +697,7 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
         select: { facultyId: true },
       });
       if (!profile || profile.facultyId !== template.facultyId) {
-        throw AppError.forbidden('This exam is for a different faculty');
+        throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
       }
     }
 
@@ -845,26 +845,26 @@ router.post(
           },
         },
       });
-      if (!attempt) throw AppError.notFound('Attempt not found');
+      if (!attempt) throw AppError.notFound('المحاولة غير موجودة');
       if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
-      if (attempt.status !== 'IN_PROGRESS') throw AppError.forbidden('Attempt closed');
+      if (attempt.status !== 'IN_PROGRESS') throw AppError.forbidden('انتهت هذه المحاولة');
       // Same grace deadline the submit route enforces: the frontend
       // flushes pending saves before auto-submitting at expiresAt, so a
       // save landing seconds past the deadline must still be accepted —
       // a submit in the same window grades it.
       const graceDeadline = new Date(attempt.expiresAt.getTime() + SUBMIT_GRACE_MS);
-      if (new Date() > graceDeadline) throw AppError.forbidden('Attempt expired');
+      if (new Date() > graceDeadline) throw AppError.forbidden('انتهى وقت هذه المحاولة');
 
       // The question must belong to THIS attempt's template, and a choice
       // index must point inside that question's choices array.
       const link = attempt.template.questions.find((q) => q.questionId === body.questionId);
       if (!link) {
-        throw AppError.badRequest('Question does not belong to this exam');
+        throw AppError.badRequest('هذا السؤال ليس ضمن أسئلة الاختبار');
       }
       if (body.choiceIndex !== undefined) {
         const choiceCount = Array.isArray(link.question.choices) ? link.question.choices.length : 0;
         if (body.choiceIndex >= choiceCount) {
-          throw AppError.badRequest(`choiceIndex out of range (question has ${choiceCount} choices)`);
+          throw AppError.badRequest('رقم الخيار المرسل غير صالح لهذا السؤال');
         }
       }
 
@@ -890,9 +890,9 @@ router.post(
           where: { id: attempt.id },
           select: { status: true, expiresAt: true },
         });
-        if (!locked || locked.status !== 'IN_PROGRESS') throw AppError.conflict('Attempt closed');
+        if (!locked || locked.status !== 'IN_PROGRESS') throw AppError.conflict('انتهت هذه المحاولة');
         if (locked.expiresAt.getTime() + SUBMIT_GRACE_MS < Date.now()) {
-          throw AppError.forbidden('Attempt expired');
+          throw AppError.forbidden('انتهى وقت هذه المحاولة');
         }
         await tx.examAnswer.upsert({
           where: { attemptId_questionId: { attemptId: attempt.id, questionId: body.questionId } },
@@ -918,9 +918,9 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
         template: { include: { questions: { include: { question: true } } } },
       },
     });
-    if (!attempt) throw AppError.notFound('Attempt not found');
+    if (!attempt) throw AppError.notFound('المحاولة غير موجودة');
     if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
-    if (attempt.status !== 'IN_PROGRESS') throw AppError.conflict('Already submitted');
+    if (attempt.status !== 'IN_PROGRESS') throw AppError.conflict('تم تسليم هذه المحاولة مسبقاً');
 
     // Expiry: submissions are accepted up to 60s past expiresAt (network
     // latency grace). Beyond that the attempt is hard-closed as EXPIRED
@@ -935,8 +935,8 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
         where: { id: attempt.id, status: 'IN_PROGRESS' },
         data: { status: AttemptStatus.EXPIRED },
       });
-      if (expiredClaim.count === 0) throw AppError.conflict('Already submitted');
-      throw AppError.forbidden('Attempt expired');
+      if (expiredClaim.count === 0) throw AppError.conflict('تم تسليم هذه المحاولة مسبقاً');
+      throw AppError.forbidden('انتهى وقت هذه المحاولة');
     }
 
     // Template questions are immutable once a template is published (no
@@ -991,7 +991,7 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
           submittedAt: new Date(),
         },
       });
-      if (claim.count === 0) throw AppError.conflict('Already submitted');
+      if (claim.count === 0) throw AppError.conflict('تم تسليم هذه المحاولة مسبقاً');
       for (const ga of gradedAnswers) {
         await tx.examAnswer.update({
           where: { id: ga.id },
@@ -1030,7 +1030,7 @@ export const manualGradeSchema = z.object({
   answers: z.array(z.object({
     answerId: z.string().cuid(),
     isCorrect: z.boolean(),
-    feedback: z.string().max(2000).optional(),
+    feedback: z.string().trim().max(2000).optional(),
   }).strict()).max(60),
 }).strict();
 
@@ -1055,7 +1055,7 @@ router.post(
           answers: { include: { question: { select: { points: true } } } },
         },
       });
-      if (!attempt) throw AppError.notFound('Attempt not found');
+      if (!attempt) throw AppError.notFound('المحاولة غير موجودة');
 
       // Authorization: the teacher who owns the exam's offering
       // (assertOwnsOffering — OWNER bypass, ADMIN via
@@ -1064,13 +1064,13 @@ router.post(
       if (attempt.template.offeringId) {
         await assertOwnsOffering(attempt.template.offeringId, req.user!.id, req.user!.role);
       } else if (req.user!.role !== Role.OWNER && attempt.template.authorId !== req.user!.id) {
-        throw AppError.forbidden('Not your exam');
+        throw AppError.forbidden('هذا الاختبار ليس من إنشائك');
       }
 
       // Manual grading is the SUBMITTED → GRADED transition: it exists
       // for attempts the auto-grader parked because answers need a
       // human decision.
-      if (attempt.status !== 'SUBMITTED') throw AppError.conflict('Attempt is not awaiting manual grading');
+      if (attempt.status !== 'SUBMITTED') throw AppError.conflict('هذه المحاولة ليست بانتظار التصحيح اليدوي');
 
       // The payload must grade exactly the pending answers.
       const pendingIds = attempt.answers.filter((a) => a.isCorrect === null).map((a) => a.id);
@@ -1106,7 +1106,7 @@ router.post(
           where: { id: attempt.id, status: 'SUBMITTED' },
           data: { status: AttemptStatus.GRADED, score: totalAwarded },
         });
-        if (claim.count === 0) throw AppError.conflict('Attempt is not awaiting manual grading');
+        if (claim.count === 0) throw AppError.conflict('هذه المحاولة ليست بانتظار التصحيح اليدوي');
         for (const g of body.answers) {
           await tx.examAnswer.update({
             where: { id: g.answerId },

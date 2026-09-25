@@ -341,7 +341,7 @@ export function CompetitionDetailPage() {
           rank chips with medal treatment, entrance stagger via --lb-i,
           tabular points), OPEN/CLOSED keep the comp-entry rows with
           the organizer scoring affordances. */}
-      <Card title="المشاركات" subtitle={`${c.entries.length} مشاركة${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
+      <Card title="المشاركات" subtitle={`${countAr(c.entries.length, ['مشاركة واحدة', 'مشاركتان', 'مشاركات', 'مشاركة'])}${isOrganizer ? '' : c.status === 'JUDGED' ? ' · مرتَّبة حسب النتيجة' : ' (يظهر العنوان فقط حتى يتمّ التحكيم)'}`}>
         {c.entries.length === 0 ? (
           <EmptyState
             title="لم يشارك أحد بعد"
@@ -454,7 +454,7 @@ export function CompetitionDetailPage() {
         message={
           allScored
             ? 'ستُنشر النتائج والترتيب النهائي وتصبح مرئية لجميع المشاركين.'
-            : `${unscoredCount} مشاركة بلا تقييم — ستترتّب في نهاية اللوحة عند الإعلان.`
+            : `${countAr(unscoredCount, ['مشاركة واحدة بلا تقييم', 'مشاركتان بلا تقييم', 'مشاركات بلا تقييم', 'مشاركة بلا تقييم'])} — ستترتّب في نهاية اللوحة عند الإعلان.`
         }
         confirmLabel="إعلان النتائج"
         onConfirm={async () => {

@@ -43,7 +43,7 @@
       var(--c-mint-ink) 100%);
     transform-origin: 0 50%;
     transform: scaleX(var(--p, 0));
-    transition: transform var(--motion-duration-micro) linear;
+    transition: transform var(--motion-duration-micro) var(--ease-linear);
     /* asymmetric progress-bar tail corners — shape, not a scale radius */
     border-end-end-radius: 2px;
     border-end-start-radius: 2px;

@@ -17,11 +17,20 @@ import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost
 import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
-import { arUnit, timeAgoAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR } from '../../lib/format';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
+
+/** Counted Arabic noun for point values (D17-2): ar-LY grouping with the
+ *  proper one/dual/few/many forms — «نقطة واحدة»، «نقطتان»، «5 نقاط»، «25 نقطة».
+ *  Local twin of TrainingPages' helper (lib/format is frozen this wave). */
+function pointsAr(n: number): string {
+  if (n === 1) return 'نقطة واحدة';
+  if (n === 2) return 'نقطتان';
+  return `${formatNum(n)} ${n <= 10 ? 'نقاط' : 'نقطة'}`;
+}
 
 /* ─── Gamification ─────────────────────────────────────────── */
 /* Tier display maps (lib/gamification.ts, 13-15) for the training-points
@@ -121,7 +130,7 @@ export function GamificationPage() {
                       <div className="xp-fill" style={{ width: `${me.level.pctIntoLevel}%`, background: 'var(--tier-color)' }} />
                     </div>
                     <div className="text-xxs text-subtle" style={{ marginTop: 4 }}>
-                      متبقّي <span className="font-mono"><bdi>{formatNum(me.level.toNext)}</bdi></span> نقطة للمستوى التالي
+                      متبقّي <bdi>{pointsAr(me.level.toNext)}</bdi> للمستوى التالي
                     </div>
                   </>
                 )}
@@ -145,7 +154,14 @@ export function GamificationPage() {
               ))}
             </div>
           ) : ach.isError ? <ErrorState error={ach.error} onRetry={() => ach.refetch()} /> :
-           !ach.data?.length ? <EmptyState icon={Award} title="لا إنجازات بعد" /> : (
+           !ach.data?.length ? (
+            <EmptyState
+              icon={Award}
+              title="لا إنجازات بعد"
+              description="أكمل دروساً ومسارات في التطوير الذاتي لتفتح أول إنجاز."
+              action={<Link to="/training" className="btn primary sm">استكشف المسارات</Link>}
+            />
+          ) : (
             <div className="flex-col gap-2">
               {ach.data.map((a) => (
                 <div className="achievement" key={a.achievement.id}>
@@ -175,7 +191,14 @@ export function GamificationPage() {
               ))}
             </div>
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
-           !lb.data?.length ? <EmptyState icon={Crown} title="لا توجد بيانات بعد" description="سيظهر الترتيب مع أول نقاط مسجّلة على المنصة." /> : (
+           !lb.data?.length ? (
+            <EmptyState
+              icon={Crown}
+              title="لا يوجد ترتيب بعد"
+              description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
+              action={<Link to="/training" className="btn primary sm">ابدأ من التطوير الذاتي</Link>}
+            />
+          ) : (
             /* same ranked-list grammar as the training achievements page
                (styles/training.css §achievements) — one system */
             <ol className="leaderboard-list" aria-label="ترتيب الطلاب بالنقاط">
@@ -244,7 +267,13 @@ export function SkillsPage() {
             </div>
           </div>
         ) : skills.isError ? <ErrorState error={skills.error} onRetry={() => skills.refetch()} /> :
-         !skills.data?.length ? <EmptyState icon={Target} title="لم تُسجَّل أي مهارة بعد" /> : (
+         !skills.data?.length ? (
+          <EmptyState
+            icon={Target}
+            title="لم تُسجَّل أي مهارة بعد"
+            description="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
+          />
+        ) : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
             <div style={{ height: 300, position: 'relative' }}>
               <Radar
@@ -540,7 +569,7 @@ export function ResultsPage() {
           icon={Activity}
           label="المتوسّط"
           value={d.headline.avgGradePct !== null ? `${d.headline.avgGradePct}` : '—'}
-          change={d.headline.courseCount > 0 ? `عبر ${d.headline.courseCount} مقرّر` : 'لا تقييمات بعد'}
+          change={d.headline.courseCount > 0 ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}` : 'لا تقييمات بعد'}
           color={d.headline.avgGradePct !== null && d.headline.avgGradePct >= 70 ? 'brand' : 'amber'}
         />
         <MetricCard
@@ -650,7 +679,7 @@ export function ArVrPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تجارب AR / VR</h1>
-          <p className="page-subtitle">محتوى تفاعليّ ثلاثيّ الأبعاد للمواد العمليّة.</p>
+          <p className="page-subtitle">محتوى تفاعليّ ثلاثيّ الأبعاد للمقرّرات العمليّة.</p>
         </div>
       </header>
 
@@ -782,7 +811,7 @@ export function SocialPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">الشبكة الاجتماعية</h1>
-          <p className="page-subtitle">تواصل مع زملائك وأساتذتك حول المواد والمشاريع.</p>
+          <p className="page-subtitle">تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع.</p>
         </div>
       </header>
 
@@ -826,7 +855,7 @@ export function SocialPage() {
                     className="btn primary sm"
                     disabled={!draft.trim() || createPost.isPending}
                   >
-                    {createPost.isPending ? 'جاري النشر…' : 'نشر'}
+                    {createPost.isPending ? 'جارٍ النشر…' : 'نشر'}
                   </button>
                 </div>
               </form>
@@ -978,7 +1007,7 @@ export function DownloadsPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">مركز التحميلات</h1>
-          <p className="page-subtitle">جميع المواد الدراسية في مقرّراتك متاحة للتحميل.</p>
+          <p className="page-subtitle">جميع الملفات التعليمية في مقرّراتك متاحة للتحميل.</p>
         </div>
       </header>
 
@@ -998,7 +1027,7 @@ export function DownloadsPage() {
               <thead>
                 <tr>
                   <th>الملفّ</th>
-                  <th>المادة</th>
+                  <th>المقرّر</th>
                   <th>النوع</th>
                   <th>الحجم</th>
                   <th>التاريخ</th>
@@ -1009,7 +1038,7 @@ export function DownloadsPage() {
                 {q.data.map((f) => (
                   <tr key={f.id}>
                     <td className="tbl-strong" data-label="الملفّ">{f.name}</td>
-                    <td data-label="المادة">{f.course.name}</td>
+                    <td data-label="المقرّر">{f.course.name}</td>
                     <td data-label="النوع"><Badge>{f.type}</Badge></td>
                     <td className="tbl-num" data-label="الحجم">{f.sizeBytes > 0 ? formatSize(f.sizeBytes) : '—'}</td>
                     <td className="text-subtle" data-label="التاريخ">{formatShortDate(f.createdAt)}</td>
@@ -1060,7 +1089,7 @@ export function UniversityInfoPage() {
           icon={Building2}
           label="عدد الكليّات"
           value={facs.isPending ? '…' : faculties.length > 0 ? faculties.length.toLocaleString('ar-LY') : '—'}
-          change={cityCount > 0 ? `موزَّعة على ${cityCount.toLocaleString('ar-LY')} ${cityCount === 1 ? 'مدينة' : 'مدن'}` : undefined}
+          change={cityCount > 0 ? `موزَّعة على ${countAr(cityCount, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}` : undefined}
           color="brand"
         />
         <MetricCard
@@ -1074,7 +1103,7 @@ export function UniversityInfoPage() {
           icon={Users2}
           label="فروع خارجيّة"
           value={facs.isPending ? '…' : facs.isError ? '—' : outsideCampus.length.toLocaleString('ar-LY')}
-          change={`في ${Math.max(0, cityCount - 1).toLocaleString('ar-LY')} مدن`}
+          change={`في ${countAr(Math.max(0, cityCount - 1), ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`}
           color="purple"
         />
         <MetricCard
@@ -1128,7 +1157,7 @@ export function UniversityInfoPage() {
           <Card
             title="الكليّات داخل الحرم الجامعيّ"
             icon={Building2}
-            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${insideCampus.length.toLocaleString('ar-LY')} كلّيّة في مدينة الزاوية`}
+            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(insideCampus.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} في مدينة الزاوية`}
           >
             {facs.isPending ? (
               <div className="flex-col gap-2" aria-busy="true">
@@ -1163,7 +1192,7 @@ export function UniversityInfoPage() {
           <Card
             title="الكليّات الفرعيّة"
             icon={Building2}
-            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${outsideCampus.length.toLocaleString('ar-LY')} كلّيّة موزَّعة على ${new Set(outsideCampus.map((c) => c.city)).size.toLocaleString('ar-LY')} مدن`}
+            subtitle={facs.isPending ? 'جارٍ التحميل…' : `${countAr(outsideCampus.length, ['كلّيّة واحدة', 'كلّيّتان', 'كلّيّات', 'كلّيّة'])} موزَّعة على ${countAr(new Set(outsideCampus.map((c) => c.city)).size, ['مدينة واحدة', 'مدينتين', 'مدن', 'مدينة'])}`}
           >
             {facs.isPending ? (
               <div className="flex-col gap-2" aria-busy="true">

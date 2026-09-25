@@ -122,25 +122,15 @@ type AttStatus = 'PRESENT' | 'LATE' | 'ABSENT' | 'EXCUSED';
  * old inline style block had no aria-pressed and no class-based state
  * (audit 0-e P1-32). EXCUSED (15-a P1-7) is the 4th AttendanceStatus:
  * the backend accepts it and the risk/analytics stack excludes it from
- * denominators — it was unreachable from this, its only write surface. */
+ * denominators — it was unreachable from this, its only write surface.
+ * The brand selected wash lives in components.css since 17-a2 (E6
+ * hand-off) — all four tones are class-based now. */
 const ATT_OPTIONS: Array<{ v: AttStatus; label: string; tone: 'success' | 'warning' | 'danger' | 'brand' }> = [
   { v: 'PRESENT', label: 'حاضر',   tone: 'success' },
   { v: 'LATE',    label: 'متأخّر', tone: 'warning' },
   { v: 'ABSENT',  label: 'غائب',   tone: 'danger' },
   { v: 'EXCUSED', label: 'بعذر',   tone: 'brand' },
 ];
-
-/* Selected wash for the brand tone. `.att-toggle[data-tone]` covers
- * success/warning/danger in components.css; the brand rule
- * (`.att-toggle[aria-pressed='true'][data-tone='brand']`) is the natural
- * home but that stylesheet belongs to another wave-16 batch — until it
- * lands, the copper selected state rides tokens here (same shape as the
- * CSS rules: soft wash, transparent border, -ink text). */
-const ATT_BRAND_SELECTED_STYLE = {
-  background: 'var(--accent-soft)',
-  borderColor: 'transparent',
-  color: 'var(--accent-ink)',
-} as const;
 
 /** 'YYYY-MM-DD' of the client-local calendar day — the roll-call default
  *  (15-h P1-6): slicing `toISOString()` yields the UTC day, which reads
@@ -256,7 +246,7 @@ export function AttendancePage() {
       </Card>
 
       <div className="grid-2-1">
-        <Card title={offering ? `طلّاب ${offering.course.name}` : 'الطلّاب'} icon={ClipboardCheck}>
+        <Card title={offering ? `طلاب ${offering.course.name}` : 'الطلاب'} icon={ClipboardCheck}>
           {!effectiveOfferingId ? (
             <EmptyState title="لا توجد مقرّرات" description="ستظهر المقرّرات هنا حين تُسنَد إليك." />
           ) : stuQ.isPending ? (
@@ -264,7 +254,7 @@ export function AttendancePage() {
           ) : stuQ.isError ? (
             <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
           ) : students.length === 0 ? (
-            <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
+            <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
           ) : (
             <div className="flex-col gap-2">
               {students.map((s) => {
@@ -291,7 +281,6 @@ export function AttendancePage() {
                             data-tone={opt.tone}
                             aria-pressed={on}
                             onClick={() => setStatusByStudent({ ...statusByStudent, [s.studentId]: opt.v })}
-                            style={on && opt.tone === 'brand' ? ATT_BRAND_SELECTED_STYLE : undefined}
                           >
                             {opt.label}
                           </button>
@@ -346,8 +335,8 @@ export function GradesPage() {
   return (
     <div className="page">
       <PageHeader
-        title="درجات الطلّاب"
-        subtitle="نظرة على متوسّط درجات طلّاب المقرّر الحاليّ."
+        title="درجات الطلاب"
+        subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ."
       />
 
       <Card title="المقرّر">
@@ -377,7 +366,7 @@ export function GradesPage() {
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : (stuQ.data ?? []).length === 0 ? (
-          <EmptyState title="لا يوجد طلّاب" description="لا توجد تسجيلات في هذا المقرّر بعد." />
+          <EmptyState title="لا يوجد طلاب" description="لا توجد تسجيلات في هذا المقرّر بعد." />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -438,27 +427,27 @@ export function MaterialsPage() {
 
   return (
     <div className="page">
-      <PageHeader title="المواد الدراسيّة" subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ." />
+      <PageHeader title="الملفات التعليمية" subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ." />
 
-      <Card title="رفع مواد جديدة" icon={Upload}>
+      <Card title="رفع ملفات جديدة" icon={Upload}>
         <div className="dropzone-ghost">
           <Icon icon={Upload} size={28} className="text-muted" />
           <div className="dropzone-ghost-title">
             واجهة الرفع المباشر قيد التطوير
           </div>
           <div className="text-xs text-subtle" style={{ marginBlockStart: 4 }}>
-            حالياً تُرفع المواد عبر إدارة المقرّر · PDF · PPT · MP4 · DOC · ZIP
+            حالياً تُرفع الملفات عبر إدارة المقرّر · PDF · PPT · MP4 · DOC · ZIP
           </div>
         </div>
       </Card>
 
-      <Card title="موادّك" icon={FileText}>
+      <Card title="ملفاتك" icon={FileText}>
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لم ترفع موادّ بعد" description="ستظهر هنا فور رفع أيّ ملفّ على أحد مقرّراتك." />
+          <EmptyState title="لم ترفع ملفات بعد" description="ستظهر هنا فور رفع أيّ ملفّ على أحد مقرّراتك." />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -513,7 +502,7 @@ export function StudentsListPage() {
 
   return (
     <div className="page">
-      <PageHeader title="قائمة الطلّاب" subtitle="جميع الطلّاب المسجَّلين في موادّك." />
+      <PageHeader title="قائمة الطلاب" subtitle="جميع الطلاب المسجَّلين في مقرّراتك." />
 
       <Card title="المقرّر">
         <label>
@@ -525,14 +514,14 @@ export function StudentsListPage() {
           >
             {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
             {offerings.map((o) => (
-              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code}) · {o._count.enrollments} طالب</option>
+              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code}) · {countAr(o._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</option>
             ))}
           </select>
         </label>
       </Card>
 
       <Card
-        title={offering ? `${offering.course.name} · ${offering.course.code} · ${students.length} طالب` : 'الطلّاب'}
+        title={offering ? `${offering.course.name} · ${offering.course.code} · ${countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}` : 'الطلاب'}
         icon={Users}
       >
         {!effectiveOfferingId ? (
@@ -542,7 +531,7 @@ export function StudentsListPage() {
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
-          <EmptyState title="لا يوجد طلّاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
+          <EmptyState title="لا يوجد طلاب مسجَّلون" description="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -635,7 +624,7 @@ export function PerformancePage() {
       ) : stuQ.isError ? (
         <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
       ) : analytics.isError ? (
-        <ErrorState message="تعذَّر تحميل مؤشّرات المقرر" error={analytics.error} onRetry={() => analytics.refetch()} />
+        <ErrorState message="تعذَّر تحميل مؤشّرات المقرّر" error={analytics.error} onRetry={() => analytics.refetch()} />
       ) : (
         <>
           <div className="grid-3">
@@ -648,7 +637,7 @@ export function PerformancePage() {
             />
             <MetricCard
               icon={Users}
-              label="طلّاب متفوّقون"
+              label="طلاب متفوّقون"
               value={top.toString()}
               change={students.length > 0 ? `من ${students.length}` : '—'}
               color="brand"
@@ -742,9 +731,11 @@ export function AssignmentsPage() {
                       {a.course.name} · يستحقّ {formatDue(a.dueAt)}
                     </div>
                   </div>
-                  {/* LTR fraction order stays stable inside the RTL line */}
+                  {/* LTR fraction order stays stable inside the RTL line;
+                      the counted noun follows the numerator (1/few/many) */}
                   <div className="text-xs font-mono text-muted">
-                    <bdi>{a.submissions} / {a.enrolled}</bdi> تسليم
+                    <bdi>{a.submissions} / {a.enrolled}</bdi>{' '}
+                    {a.submissions === 1 ? 'تسليم' : a.submissions === 2 ? 'تسليمان' : a.submissions <= 10 ? 'تسليمات' : 'تسليماً'}
                   </div>
                   <Badge color={tone}>{Math.round(ratio * 100)}%</Badge>
                 </div>
@@ -813,7 +804,7 @@ function NeedsReviewCard({
     <Card
       title="تسليمات بانتظار التقييم"
       icon={ClipboardCheck}
-      subtitle={`${pending.length} تسليم بانتظار درجتك`}
+      subtitle={`${countAr(pending.length, ['تسليم واحد بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}`}
     >
       {isPending ? (
         <LoadingState />
@@ -822,7 +813,7 @@ function NeedsReviewCard({
       ) : pending.length === 0 ? (
         <EmptyState
           title="لا توجد تسليمات بانتظار التقييم"
-          description="ستظهر هنا تسليمات طلّابك فور وصولها."
+          description="ستظهر هنا تسليمات طلابك فور وصولها."
         />
       ) : (
         <div className="flex-col gap-2">

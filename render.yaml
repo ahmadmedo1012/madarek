@@ -17,16 +17,34 @@ services:
     # `--include=dev` is required because Render sets NODE_ENV=production
     # before `npm install` runs, which would otherwise skip devDependencies
     # (typescript, vite, @types/*, prisma CLI, …) that we need for the build.
-    buildCommand: npm install --include=dev && npm run build
+    # `npm ci` (not install) keeps the deployed artifact byte-identical to
+    # what the committed package-lock.json was CI-tested against.
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /api/v1/health
     autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
+      # Pin the runtime clock to UTC — the backend's timezone model
+      # (backend/src/lib/dates.ts) computes date-only day-keys on the UTC
+      # calendar and renders display labels in Africa/Tripoli; a drifting
+      # host TZ would split/merge attendance days at the wrong boundary.
+      - key: TZ
+        value: UTC
       - key: DATABASE_URL
         sync: false
+      # generateValue produces 32-char secrets — exactly env.ts's min(32).
+      # Raising that floor would break every existing deployment's boot.
       - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
         generateValue: true
+      # Optional vars — defaults/fail-closed behavior lives in
+      # backend/src/env.ts; sync:false so Render never requires them.
+      - key: CORS_ORIGINS
+        sync: false
+      - key: INTERNAL_SERVICE_TOKEN
+        sync: false
+      - key: DIRECT_DATABASE_URL
+        sync: false

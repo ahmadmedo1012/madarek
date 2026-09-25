@@ -1,13 +1,13 @@
 <!-- SPECKIT START -->
-Active feature: **Design, Theming & Graphics Uplift — World-Class Tier** (`012-design-graphics-uplift`)
+Status: feature 012 (**Design, Theming & Graphics Uplift — World-Class Tier**,
+`012-design-graphics-uplift`) **shipped** — campaigns 1–2 landed it end to
+end (see `specs/012-design-graphics-uplift/plan.md`; wave-14
+SPECS-REFERENCE marks it Complete). The platform is now in a
+maintenance/deepening phase (campaign 3: per-dimension audits + fixes).
+For current technologies, project structure, shell commands, and state,
+start with **`docs/PROJECT-REFERENCE.md`** — it is kept current.
 
-Layered on top of `001-premium-motion-system` (motion primitives,
-identity profiles), `002-visual-uplift` (type roles + chart palette),
-and `003-motion-graphics-layer` (decorative motion).
-
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan at
-`specs/012-design-graphics-uplift/plan.md` and the supporting artifacts:
+The 012 artifacts remain the reference for the theming/design layer:
 
 - `specs/012-design-graphics-uplift/spec.md` — feature specification (with Clarifications)
 - `specs/012-design-graphics-uplift/research.md` — Phase 0 decisions (R-001..R-012)

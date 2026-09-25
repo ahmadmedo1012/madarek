@@ -20,7 +20,7 @@ const SUGGESTIONS = [
   'كيف أحسّن درجتي في الذكاء الاصطناعي؟',
   'اشرح لي خوارزمية الفرز السريع',
   'ما الفرق بين SQL و NoSQL؟',
-  'نصائح لإدارة الوقت أثناء الامتحانات',
+  'نصائح لإدارة الوقت أثناء الاختبارات',
   'كيف أبني محفظة مشاريع قوية؟',
 ];
 
@@ -205,7 +205,7 @@ export default function AiAssistantPage() {
 
           {/* Quick-action chips above the input — Stitch signature */}
           <div className="ai-quick-actions">
-            <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المادة')} disabled={chat.isPending}>
+            <button type="button" className="ai-quick-chip" onClick={() => void send('لخّص لي الفصل الأخير من المقرّر')} disabled={chat.isPending}>
               لخّص الفصل الأخير
             </button>
             <button type="button" className="ai-quick-chip" onClick={() => void send('اشرح لي مفهوماً صعباً واجهته اليوم')} disabled={chat.isPending}>

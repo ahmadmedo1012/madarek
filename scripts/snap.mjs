@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // Quick screenshot harness for the Madarek rebuild — uses Playwright's
 // bundled chromium-headless-shell so it doesn't need /opt/google/chrome.
 import { chromium } from 'playwright';

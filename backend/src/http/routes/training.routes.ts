@@ -226,7 +226,7 @@ router.get('/training/tracks/:slug', async (req, res, next) => {
     if (!track || !track.isPublished) {
       // Draft tracks 404 exactly like unknown slugs — unpublished content
       // (full lesson contentMarkdown) must not be readable via a guessed slug.
-      throw AppError.notFound('Track not found');
+      throw AppError.notFound('المسار التدريبي غير موجود');
     }
 
     const enrollment = await prisma.trainingEnrollment.findUnique({
@@ -275,7 +275,7 @@ router.post('/training/tracks/:slug/enroll', async (req, res, next) => {
     const track = await prisma.trainingTrack.findUnique({ where: { slug: req.params.slug } });
     if (!track || !track.isPublished) {
       // Cannot enroll into a draft track — same 404 as an unknown slug.
-      throw AppError.notFound('Track not found');
+      throw AppError.notFound('المسار التدريبي غير موجود');
     }
     const enrollment = await prisma.trainingEnrollment.upsert({
       where: { userId_trackId: { userId, trackId: track.id } },
@@ -306,10 +306,10 @@ router.post(
         where: { id: lessonId },
         include: { track: true },
       });
-      if (!lesson) throw AppError.notFound('Lesson not found');
+      if (!lesson) throw AppError.notFound('الدرس غير موجود');
       // A lesson of an unpublished track cannot be completed — that path
       // awards points, badges and a completion certificate (audit 11-d P1-7).
-      if (!lesson.track.isPublished) throw AppError.notFound('Lesson not found');
+      if (!lesson.track.isPublished) throw AppError.notFound('الدرس غير موجود');
 
       // Validate quiz answer if the lesson defines one
       if (lesson.quizAnswer) {

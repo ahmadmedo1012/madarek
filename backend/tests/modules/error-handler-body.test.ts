@@ -116,7 +116,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.status).not.toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'BAD_REQUEST', message: 'Malformed request body' },
+      error: { code: 'BAD_REQUEST', message: 'صيغة الطلب غير صالحة' },
     });
   });
 
@@ -136,7 +136,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
     expect(res.status).toHaveBeenCalledWith(413);
     expect(res.status).not.toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body exceeds the allowed size limit' },
+      error: { code: 'PAYLOAD_TOO_LARGE', message: 'حجم الطلب يتجاوز الحد المسموح' },
     });
   });
 
@@ -146,7 +146,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
 
     expect(res.status).toHaveBeenCalledWith(413);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body exceeds the allowed size limit' },
+      error: { code: 'PAYLOAD_TOO_LARGE', message: 'حجم الطلب يتجاوز الحد المسموح' },
     });
   });
 
@@ -156,7 +156,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
 
     expect(res.status).toHaveBeenCalledWith(413);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body exceeds the allowed size limit' },
+      error: { code: 'PAYLOAD_TOO_LARGE', message: 'حجم الطلب يتجاوز الحد المسموح' },
     });
   });
 
@@ -166,7 +166,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
 
     expect(res.status).toHaveBeenCalledWith(415);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'UNSUPPORTED_MEDIA_TYPE', message: 'Unsupported request body encoding' },
+      error: { code: 'UNSUPPORTED_MEDIA_TYPE', message: 'ترميز الطلب غير مدعوم' },
     });
   });
 
@@ -176,7 +176,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'BAD_REQUEST', message: 'Malformed request body' },
+      error: { code: 'BAD_REQUEST', message: 'صيغة الطلب غير صالحة' },
     });
   });
 
@@ -191,7 +191,7 @@ describe('errorHandler — body-parser rejects (P0: no user-triggerable 500s)', 
 
     expect(res.status).toHaveBeenCalledWith(413);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body exceeds the allowed size limit' },
+      error: { code: 'PAYLOAD_TOO_LARGE', message: 'حجم الطلب يتجاوز الحد المسموح' },
     });
   });
 
@@ -228,7 +228,7 @@ describe('errorHandler — reject detection is shape-guarded', () => {
     expect(res.status).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'INTERNAL', message: 'Internal server error' },
+      error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع — حاول مرة أخرى' },
     });
     expect(prisma.operationalAlert.create).toHaveBeenCalledTimes(1);
   });
@@ -263,7 +263,7 @@ describe('errorHandler — reject detection is shape-guarded', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: {
         code: 'VALIDATION_ERROR',
-        message: 'Validation failed',
+        message: 'تحقّق من البيانات المُدخلة',
         details: { formErrors: [], fieldErrors: { title: ['Expected string, received number'] } },
       },
     });

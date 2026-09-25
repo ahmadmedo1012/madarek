@@ -181,7 +181,7 @@ export async function assertCapability(
 ): Promise<void> {
   const caps = await getEffectiveCapabilities(userId, role);
   for (const r of required) if (caps.has(r)) return;
-  throw AppError.forbidden(`Missing capability: ${required.join(' or ')}`);
+  throw AppError.forbidden(`صلاحية مفقودة: ${required.join(' أو ')}`);
 }
 
 /**
@@ -196,7 +196,7 @@ export async function assertOwnsResearchPaper(paperId: string, userId: string, r
   if (role === Role.OWNER) return;
   const caps = await getEffectiveCapabilities(userId, role);
   if (caps.has('RESEARCH_GRADE_ANY')) return;
-  if (!caps.has('RESEARCH_GRADE_OWN')) throw AppError.forbidden('Cannot grade research papers');
+  if (!caps.has('RESEARCH_GRADE_OWN')) throw AppError.forbidden('لا تملك صلاحية تصحيح الأوراق البحثية');
 
   const paper = await prisma.researchPaper.findUnique({
     where: { id: paperId },
@@ -205,11 +205,11 @@ export async function assertOwnsResearchPaper(paperId: string, userId: string, r
       offering: { select: { teacherId: true } },
     },
   });
-  if (!paper) throw AppError.notFound('Paper not found');
+  if (!paper) throw AppError.notFound('الورقة البحثية غير موجودة');
   // No offering linked → orphaned paper, only ADMIN with GRADE_ANY can touch
-  if (!paper.offering) throw AppError.forbidden('Paper not linked to your offering');
+  if (!paper.offering) throw AppError.forbidden('هذه الورقة البحثية غير مرتبطة بأي مقرر');
   if (paper.offering.teacherId !== userId) {
-    throw AppError.forbidden('You do not teach the offering this paper belongs to');
+    throw AppError.forbidden('لا تدرّس المقرر المرتبط بهذه الورقة');
   }
 }
 
@@ -217,13 +217,13 @@ export async function assertOwnsOffering(offeringId: string, userId: string, rol
   if (role === Role.OWNER) return;
   const caps = await getEffectiveCapabilities(userId, role);
   if (caps.has('CURRICULUM_EDIT_ANY')) return;
-  if (!caps.has('CURRICULUM_EDIT_OWN')) throw AppError.forbidden('Cannot edit curriculum');
+  if (!caps.has('CURRICULUM_EDIT_OWN')) throw AppError.forbidden('لا تملك صلاحية تعديل المحتوى التعليمي');
   const offering = await prisma.courseOffering.findUnique({
     where: { id: offeringId },
     select: { teacherId: true },
   });
-  if (!offering) throw AppError.notFound('Offering not found');
-  if (offering.teacherId !== userId) throw AppError.forbidden('Not your offering');
+  if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
+  if (offering.teacherId !== userId) throw AppError.forbidden('أنت لا تدرّس هذا المقرر');
 }
 
 /** Facts about one offering + caller, as needed by the access decision. */
@@ -296,7 +296,7 @@ export async function assertOfferingAccess(offeringId: string, userId: string, r
     taughtBy: offering?.teacherId === userId,
     activelyEnrolled: (offering?.enrollments.length ?? 0) > 0,
   });
-  if (decision === 'not_found') throw AppError.notFound('Offering not found');
-  if (decision === 'forbidden') throw AppError.forbidden('You do not have access to this offering');
+  if (decision === 'not_found') throw AppError.notFound('المقرر المطلوب غير موجود');
+  if (decision === 'forbidden') throw AppError.forbidden('لا تملك صلاحية الوصول إلى هذا المقرر');
 }
 

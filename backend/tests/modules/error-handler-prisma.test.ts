@@ -61,7 +61,7 @@ describe('errorHandler — Prisma known-request-error mapping', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: {
         code: 'BAD_REQUEST',
-        message: 'Related record does not exist',
+        message: 'العنصر المرتبط غير موجود',
         details: { target: 'toUserId' },
       },
     });
@@ -116,7 +116,7 @@ describe('errorHandler — 5xx OperationalAlert feed', () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'INTERNAL', message: 'Internal server error' },
+      error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع — حاول مرة أخرى' },
     });
     expect(prisma.operationalAlert.create).toHaveBeenCalledTimes(1);
     expect(prisma.operationalAlert.create).toHaveBeenCalledWith({
@@ -148,7 +148,7 @@ describe('errorHandler — 5xx OperationalAlert feed', () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'INTERNAL', message: 'Internal server error' },
+      error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع — حاول مرة أخرى' },
     });
   });
 
@@ -159,7 +159,7 @@ describe('errorHandler — 5xx OperationalAlert feed', () => {
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: { code: 'INTERNAL', message: 'Internal server error', details: undefined },
+      error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع — حاول مرة أخرى', details: undefined },
     });
     expect(prisma.operationalAlert.create).toHaveBeenCalledTimes(1);
     expect(prisma.operationalAlert.create).toHaveBeenCalledWith({

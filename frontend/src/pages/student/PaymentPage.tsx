@@ -121,7 +121,7 @@ export default function PaymentPage() {
             </div>
           </div>
           <p className="text-xxs text-subtle" style={{ marginBlockStart: 'var(--sp-3)', lineHeight: 1.6 }}>
-            الساعات المعتمدة من الإدارة. قد تتغيّر خلال فترات الامتحانات والإجازات الرسميّة.
+            الساعات المعتمدة من الإدارة. قد تتغيّر خلال فترات الاختبارات والإجازات الرسميّة.
           </p>
         </Card>
       </div>

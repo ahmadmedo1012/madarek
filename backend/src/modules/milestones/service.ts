@@ -74,7 +74,7 @@ export async function fireMilestone(
       where: { id: userId },
       select: { firedMilestones: true },
     });
-    if (!existing) throw AppError.notFound('User not found');
+    if (!existing) throw AppError.notFound('المستخدم غير موجود');
     return { fired: false, firedMilestones: existing.firedMilestones };
   }
 

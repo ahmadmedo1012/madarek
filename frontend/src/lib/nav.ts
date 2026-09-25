@@ -25,7 +25,7 @@ export const STUDENT_NAV: NavGroup[] = [
     items: [
       { to: '/student/dashboard', icon: LayoutDashboard, label: 'لوحة التحكم' },
       { to: '/student/schedule', icon: Calendar, label: 'الجدول الدراسي' },
-      { to: '/student/courses', icon: BookOpen, label: 'مواد مسجلة' },
+      { to: '/student/courses', icon: BookOpen, label: 'مقرّراتي الدراسية' },
       { to: '/student/results', icon: BarChart3, label: 'النتائج والتقييمات' },
     ],
   },
@@ -73,7 +73,7 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/teacher/schedule', icon: Calendar, label: 'الجدول' },
       { to: '/teacher/attendance', icon: ClipboardCheck, label: 'الحضور' },
       { to: '/teacher/grades', icon: ListChecks, label: 'الدرجات' },
-      { to: '/teacher/materials', icon: Upload, label: 'المواد الدراسية' },
+      { to: '/teacher/materials', icon: Upload, label: 'الملفات التعليمية' },
       { to: '/teacher/assignments', icon: ClipboardList, label: 'الواجبات والاختبارات' },
     ],
   },
@@ -104,9 +104,9 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة الإدارة' },
       { to: '/admin/teachers', icon: School, label: 'إدارة الأساتذة' },
-      { to: '/admin/faculties', icon: Building2, label: 'الكليات والأقسام' },
+      { to: '/admin/faculties', icon: Building2, label: 'الكلّيّات والأقسام' },
       { to: '/colleges', icon: Building2, label: 'صفحات الكلّيّات' },
-      { to: '/admin/courses', icon: BookOpen, label: 'إدارة المقررات' },
+      { to: '/admin/courses', icon: BookOpen, label: 'إدارة المقرّرات' },
     ],
   },
   {
@@ -128,7 +128,7 @@ export const QUALITY_NAV: NavGroup[] = [
     label: 'مركز ضمان الجودة',
     items: [
       { to: '/quality/dashboard', icon: ShieldCheck, label: 'لوحة الجودة' },
-      { to: '/quality/courses', icon: BookOpen, label: 'جودة المقررات' },
+      { to: '/quality/courses', icon: BookOpen, label: 'جودة المقرّرات' },
       { to: '/quality/professors', icon: School, label: 'تقييم الأساتذة' },
       { to: '/quality/engagement', icon: Activity, label: 'الانخراط والحضور' },
     ],
@@ -184,7 +184,9 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   STUDENT: 'طالب',
   TEACHER: 'أستاذ',
   ADMIN: 'إداري',
-  QUALITY: 'جودة',
+  // A person, not the function — «جودة» read as a role chip under a
+  // user's name is not a person (15-j P1-8).
+  QUALITY: 'أخصائي جودة',
   OWNER: 'مالك المنصة',
 };
 
@@ -199,9 +201,9 @@ const POSITION_LABELS: Record<AcademicPosition, string> = {
  * Examples:
  *  - regular teacher → "أستاذ"
  *  - dept head       → "أستاذ · رئيس قسم"
- *  - dean            → "أستاذ · عميد كلية الهندسة"  (when faculty name supplied)
+ *  - dean            → "أستاذ · عميد كلّيّة الهندسة"  (when faculty name supplied)
  *  - admin university-wide → "إداري"
- *  - admin scoped to faculty → "إداري كلية"  (faculty name shown separately as a chip)
+ *  - admin scoped to faculty → "إداري كلّيّة"  (faculty name shown separately as a chip)
  */
 export function displayRoleLabel(
   role: AppRole,

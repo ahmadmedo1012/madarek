@@ -127,10 +127,10 @@ export function CollegesPopover({
           <Icon icon={Search} size={16} aria-hidden />
           <input
             type="search"
-            placeholder="ابحث عن كلية…"
+            placeholder="ابحث عن كلّيّة…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label="ابحث عن كلية"
+            aria-label="ابحث عن كلّيّة"
           />
         </div>
 

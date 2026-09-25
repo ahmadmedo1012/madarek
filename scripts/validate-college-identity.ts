@@ -5,10 +5,11 @@
  * Cross-references frontend/src/data/colleges.config.ts entries:
  *  - asset existence on disk (hero image, motif)
  *  - lucide-react icon validity
- *  - WCAG AA contrast against the platform surface (#FBFAF9 light / #191918 dark)
+ *  - WCAG AA contrast of accent text on the platform light surface (#FBFAF9)
  *  - allowlist for namedTokens keys
  *
- * Exits non-zero on any validation error so it gates the CI build.
+ * Exits non-zero on any validation error. Runs in CI (typecheck job,
+ * .github/workflows/ci.yml — `npm run validate:colleges`) and manually.
  */
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
@@ -20,9 +21,8 @@ const PUBLIC_DIR = resolve(REPO_ROOT, 'frontend/public');
 
 const ALLOWED_TOKEN_KEYS = new Set(['college-accent-soft', 'college-accent-fg']);
 
-// Reference platform backgrounds — mirror tokens.css.
+// Reference platform background — mirrors tokens.css.
 const SURFACE_LIGHT = '#FBFAF9';
-const TEXT_INK_LIGHT = '#191918';
 
 type CollegeIdentityProfile = {
   slug: string;
@@ -168,18 +168,6 @@ async function main(): Promise<number> {
       errors += errs.length;
     }
   }
-
-  // Sanity: prevent system-token shadowing.
-  const reserved = ['success', 'warning', 'danger'];
-  for (const c of colleges) {
-    if (c.accent && reserved.some((r) => c.accent.toLowerCase().includes(r))) {
-      // not a real check, just a hook for future regex
-    }
-  }
-
-  // Ink contrast suppressed for now: TEXT_INK_LIGHT is the page text,
-  // accent is decorative. Both are checked above against the surface.
-  void TEXT_INK_LIGHT;
 
   if (errors > 0) {
     console.error(`\nFAIL: ${errors} validation error(s) across ${colleges.length} profile(s).`);

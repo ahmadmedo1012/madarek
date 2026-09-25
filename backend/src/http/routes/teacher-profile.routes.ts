@@ -31,7 +31,7 @@ router.get('/me/teacher-profile', requireRole(Role.TEACHER, Role.OWNER), async (
     });
     if (!profile) {
       // Return 404 without crashing — admins logging in won't have one
-      throw AppError.notFound('No teacher profile for this user');
+      throw AppError.notFound('لا يوجد ملف أكاديمي للأستاذ لهذا المستخدم');
     }
 
     // Courses currently taught + simple workload metric
@@ -105,20 +105,20 @@ const profileYearSchema = z
   });
 
 const updateProfileSchema = z.object({
-  bio: z.string().max(2000).nullable().optional(),
-  officeLocation: z.string().max(200).nullable().optional(),
-  officeHours: z.string().max(200).nullable().optional(),
-  websiteUrl: z.string().max(300).nullable().optional(),
+  bio: z.string().trim().max(2000).nullable().optional(),
+  officeLocation: z.string().trim().max(200).nullable().optional(),
+  officeHours: z.string().trim().max(200).nullable().optional(),
+  websiteUrl: z.string().trim().max(300).nullable().optional(),
   publications: z.array(z.object({
-    title: z.string().min(2).max(300),
-    venue: z.string().max(200).optional(),
+    title: z.string().trim().min(2).max(300),
+    venue: z.string().trim().max(200).optional(),
     year: profileYearSchema,
-    url: z.string().max(500).optional(),
+    url: z.string().trim().max(500).optional(),
   })).max(50).optional(),
   awards: z.array(z.object({
-    title: z.string().min(2).max(200),
+    title: z.string().trim().min(2).max(200),
     year: profileYearSchema,
-    issuer: z.string().max(200).optional(),
+    issuer: z.string().trim().max(200).optional(),
   })).max(30).optional(),
 }).strict();
 
@@ -193,11 +193,11 @@ router.get('/live/sessions', async (req, res, next) => {
 
 const createSessionSchema = z.object({
   offeringId: z.string().cuid(),
-  title: z.string().min(3).max(200),
-  description: z.string().max(2000).optional(),
-  topic: z.string().max(200).optional(),
+  title: z.string().trim().min(3).max(200),
+  description: z.string().trim().max(2000).optional(),
+  topic: z.string().trim().max(200).optional(),
   scheduledAt: z.coerce.date(),
-  joinUrl: z.string().max(500).optional(),
+  joinUrl: z.string().trim().max(500).optional(),
 }).strict();
 
 // Small grace so "starts now" survives client clock skew and the

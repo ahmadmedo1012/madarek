@@ -131,6 +131,14 @@ export interface AnnouncementTargetPermissions {
   offering: 'any' | readonly string[];
 }
 
+/** Arabic labels for the announcement scopes (D17-3 message policy —
+ * user-facing error text names the scope in Arabic, never the raw enum). */
+const ANNOUNCEMENT_SCOPE_LABEL_AR: Record<Exclude<AnnouncementScope, 'PLATFORM'>, string> = {
+  FACULTY: 'هذه الكلّيّة',
+  DEPARTMENT: 'هذا القسم',
+  OFFERING: 'هذا المقرر',
+};
+
 /**
  * Pure half of the scopeId forgery guard: is `scopeId` inside the author's
  * permitted targets for `scope`? Throws FORBIDDEN when it is not. The
@@ -149,7 +157,7 @@ export function assertScopeTargetPermitted(
     : scope === 'DEPARTMENT' ? permitted.department
     : permitted.offering;
   if (allow !== 'any' && !allow.includes(scopeId)) {
-    throw AppError.forbidden(`You cannot announce to this ${scope.toLowerCase()}`);
+    throw AppError.forbidden(`لا يمكنك النشر إلى ${ANNOUNCEMENT_SCOPE_LABEL_AR[scope]}`);
   }
 }
 
@@ -242,10 +250,10 @@ export const createAnnouncementSchema = z
   .object({
     scope: z.nativeEnum(AnnouncementScope),
     scopeId: z.string().cuid().optional(),
-    title: z.string().min(3).max(200),
-    body: z.string().min(3).max(4000),
+    title: z.string().trim().min(3).max(200),
+    body: z.string().trim().min(3).max(4000),
     pinned: z.boolean().default(false),
-    iconEmoji: z.string().max(8).optional(),
+    iconEmoji: z.string().trim().max(8).optional(),
     expiresAt: z.coerce.date().optional(),
   })
   .strict()
@@ -331,19 +339,19 @@ router.post(
             where: { id: body.scopeId },
             select: { id: true },
           });
-          if (!faculty) throw AppError.notFound('Faculty not found');
+          if (!faculty) throw AppError.notFound('الكلّيّة غير موجودة');
         } else if (body.scope === 'DEPARTMENT') {
           const dept = await prisma.department.findUnique({
             where: { id: body.scopeId },
             select: { id: true },
           });
-          if (!dept) throw AppError.notFound('Department not found');
+          if (!dept) throw AppError.notFound('القسم غير موجود');
         } else if (body.scope === 'OFFERING') {
           const offering = await prisma.courseOffering.findUnique({
             where: { id: body.scopeId },
             select: { id: true },
           });
-          if (!offering) throw AppError.notFound('Offering not found');
+          if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
         }
 
         // Permission half (pure, unit-tested — audit 15-i TOP-7).
@@ -403,7 +411,7 @@ router.get('/competitions/:id', async (req, res, next) => {
         },
       },
     });
-    if (!c) throw AppError.notFound('Competition not found');
+    if (!c) throw AppError.notFound('المسابقة غير موجودة');
     // Hide entry bodies from non-organizers (only show summary)
     const isOrg = c.organizerId === req.user!.id;
     res.json({
@@ -416,13 +424,13 @@ router.get('/competitions/:id', async (req, res, next) => {
 });
 
 const createCompSchema = z.object({
-  title: z.string().min(3).max(200),
-  description: z.string().min(10).max(4000),
-  category: z.string().max(40),
-  prize: z.string().max(200).optional(),
+  title: z.string().trim().min(3).max(200),
+  description: z.string().trim().min(10).max(4000),
+  category: z.string().trim().max(40),
+  prize: z.string().trim().max(200).optional(),
   deadline: z.coerce.date(),
-  iconEmoji: z.string().max(8).optional(),
-  themeColor: z.string().max(20).optional(),
+  iconEmoji: z.string().trim().max(8).optional(),
+  themeColor: z.string().trim().max(20).optional(),
 }).strict();
 
 router.post('/competitions', requireCapability('COMPETITIONS_RUN'), validate(createCompSchema), async (req, res, next) => {
@@ -436,9 +444,9 @@ router.post('/competitions', requireCapability('COMPETITIONS_RUN'), validate(cre
 });
 
 const enterCompSchema = z.object({
-  title: z.string().min(3).max(200),
-  body: z.string().min(10).max(4000),
-  fileUrl: z.string().max(500).optional(),
+  title: z.string().trim().min(3).max(200),
+  body: z.string().trim().min(10).max(4000),
+  fileUrl: z.string().trim().max(500).optional(),
 }).strict();
 
 router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, res, next) => {
@@ -455,8 +463,8 @@ router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, re
         Array<{ id: string; status: CompetitionStatus; deadline: Date }>
       >`SELECT id, status, deadline FROM "Competition" WHERE id = ${req.params.id} FOR UPDATE`;
       const comp = rows[0];
-      if (!comp) throw AppError.notFound('Competition not found');
-      if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'Competition is closed for entries', 400);
+      if (!comp) throw AppError.notFound('المسابقة غير موجودة');
+      if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'أُغلقت المسابقة أمام المشاركات', 400);
       if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'Competition deadline has passed', 400);
 
       return tx.competitionEntry.upsert({
@@ -478,8 +486,8 @@ router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, re
 router.post('/competitions/:id/close', requireCapability('COMPETITIONS_RUN'), async (req, res, next) => {
   try {
     const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
-    if (!comp) throw AppError.notFound('Competition not found');
-    if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+    if (!comp) throw AppError.notFound('المسابقة غير موجودة');
+    if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('هذه المسابقة ليست من تنظيمك');
     // Conditional claim (audit 15-b P2-1): only an OPEN competition may
     // close. The write previously had no status guard at all, so a stale
     // organizer UI could regress a JUDGED competition to CLOSED — after
@@ -496,8 +504,8 @@ router.post('/competitions/:id/close', requireCapability('COMPETITIONS_RUN'), as
       });
       throw AppError.conflict(
         current?.status === CompetitionStatus.JUDGED
-          ? 'Competition already judged — it cannot be closed again'
-          : 'Competition is no longer open',
+          ? 'سبق تحكيم هذه المسابقة — لا يمكن إغلاقها مرة أخرى'
+          : 'لم تعد المسابقة مفتوحة',
       );
     }
     // Read the row back — updateMany returns only a count, and the response
@@ -522,16 +530,16 @@ router.post(
   async (req, res, next) => {
     try {
       const comp = await prisma.competition.findUnique({ where: { id: req.params.id } });
-      if (!comp) throw AppError.notFound('Competition not found');
-      if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+      if (!comp) throw AppError.notFound('المسابقة غير موجودة');
+      if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('هذه المسابقة ليست من تنظيمك');
 
       const entry = await prisma.competitionEntry.findUnique({ where: { id: req.params.entryId } });
-      if (!entry || entry.competitionId !== comp.id) throw AppError.notFound('Entry not found');
+      if (!entry || entry.competitionId !== comp.id) throw AppError.notFound('المشاركة غير موجودة');
 
       // JUDGED is the final state — scores are locked once judging
       // completes (audit 11-c P2-14: they previously stayed writable).
       if (isScoreLocked(comp.status)) {
-        throw AppError.conflict('Competition already judged — scores are final');
+        throw AppError.conflict('سبق تحكيم هذه المسابقة — النتائج نهائية');
       }
 
       // Conditional claim: the guard above is a plain read, so judging
@@ -547,7 +555,7 @@ router.post(
         data: { score: req.body.score },
       });
       if (claimed.count === 0) {
-        throw AppError.conflict('Competition already judged — scores are final');
+        throw AppError.conflict('سبق تحكيم هذه المسابقة — النتائج نهائية');
       }
       // The claim wrote exactly the validated score — the response keeps
       // the {id, score} shape the unconditional update returned.
@@ -569,8 +577,8 @@ router.post(
         where: { id: req.params.id },
         include: { entries: { select: { score: true } } },
       });
-      if (!comp) throw AppError.notFound('Competition not found');
-      if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('Not your competition');
+      if (!comp) throw AppError.notFound('المسابقة غير موجودة');
+      if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('هذه المسابقة ليست من تنظيمك');
       if (comp.status !== 'CLOSED') {
         throw new AppError('BAD_REQUEST', 'Competition must be closed before judging', 400);
       }
@@ -597,8 +605,8 @@ router.post(
         });
         throw AppError.conflict(
           current?.status === CompetitionStatus.JUDGED
-            ? 'Competition already judged'
-            : 'Competition must be closed before judging',
+            ? 'سبق تحكيم هذه المسابقة'
+            : 'يجب إغلاق المسابقة قبل تحكيمها',
         );
       }
       // Read the row back — full-row shape, same as close.
@@ -630,14 +638,14 @@ router.get('/events', async (_req, res, next) => {
 
 export const createEventSchema = z
   .object({
-    title: z.string().min(3).max(200),
-    description: z.string().min(10).max(4000),
-    location: z.string().max(200),
+    title: z.string().trim().min(3).max(200),
+    description: z.string().trim().min(10).max(4000),
+    location: z.string().trim().max(200),
     startsAt: z.coerce.date(),
     endsAt: z.coerce.date(),
     capacity: z.number().int().min(1).max(10_000).default(100),
-    iconEmoji: z.string().max(8).optional(),
-    themeColor: z.string().max(20).optional(),
+    iconEmoji: z.string().trim().max(8).optional(),
+    themeColor: z.string().trim().max(20).optional(),
   })
   .strict()
   .refine((v) => v.endsAt > v.startsAt, {
@@ -663,7 +671,7 @@ router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => 
     const { status } = req.body as z.infer<typeof rsvpSchema>;
     const userId = req.user!.id;
     const event = await prisma.campusEvent.findUnique({ where: { id: req.params.id } });
-    if (!event) throw AppError.notFound('Event not found');
+    if (!event) throw AppError.notFound('الفعالية غير موجودة');
     // Capacity check + upsert in one transaction, serialized per event via
     // SELECT … FOR UPDATE on the parent row (same pattern as POST
     // /enrollments). Without the row lock, two concurrent GOING rsvps can
@@ -680,7 +688,7 @@ router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => 
         }),
       ]);
       if (rsvpWouldExceedCapacity(status, mine?.status ?? null, goingCount, event.capacity)) {
-        throw AppError.conflict('Event is at capacity');
+        throw AppError.conflict('اكتمل العدد في هذه الفعالية');
       }
       return tx.eventRSVP.upsert({
         where: { eventId_userId: { eventId: event.id, userId } },

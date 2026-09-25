@@ -327,13 +327,13 @@ describe('assertCanAssignScope (12-4 hand-off #1 — self-escalation guard)', ()
   it('refuses a self-scope-change even for a university-wide actor', () => {
     expect(() =>
       assertCanAssignScope({ actorId: 'admin-1', actorScopeFacultyId: null, targetId: 'admin-1', targetRole: Role.ADMIN }),
-    ).toThrowError('You cannot change your own governance scope');
+    ).toThrowError('لا يمكنك تغيير نطاق إدارتك بنفسك');
   });
 
   it('refuses a self-scope-change for a scoped actor (widening OR narrowing)', () => {
     expect(() =>
       assertCanAssignScope({ actorId: 'admin-1', actorScopeFacultyId: 'f1', targetId: 'admin-1', targetRole: Role.ADMIN }),
-    ).toThrowError('You cannot change your own governance scope');
+    ).toThrowError('لا يمكنك تغيير نطاق إدارتك بنفسك');
   });
 
   it('a faculty-scoped actor cannot rewrite an ADMIN scope', () => {

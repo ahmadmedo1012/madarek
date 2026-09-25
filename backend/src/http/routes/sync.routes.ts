@@ -73,7 +73,7 @@ router.post('/admin/sync/trigger', requireCapability('USERS_MANAGE'), async (_re
     // UniversityFact rows. 409 tells the admin a run is already in flight.
     const outcome = await runSyncGuarded('admin-trigger');
     if (!outcome.ran) {
-      throw AppError.conflict('A sync is already in progress — try again once it completes.');
+      throw AppError.conflict('تعمل عملية مزامنة أخرى الآن — حاول مجدداً بعد انتهائها');
     }
     res.json({ data: outcome.result });
   } catch (e) {

@@ -25,7 +25,7 @@ import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import { NotificationPanel } from '../overlays';
 import { useNotifications, useUnreadNotifications, useMarkNotifRead, useMarkAllNotifsRead, type Notification } from '../../hooks/useResources';
-import { timeAgoAr } from '../../lib/format';
+import { arUnit, timeAgoAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
 
 const TYPE_ICON: Record<Notification['type'], LucideIcon> = {
@@ -63,7 +63,7 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
         ref={bellRef}
         type="button"
         className="topbar-notif"
-        aria-label={unread > 0 ? `${unread} إشعار غير مقروء` : 'الإشعارات'}
+        aria-label={unread > 0 ? arUnit(unread, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة') : 'الإشعارات'}
         aria-expanded={open}
         aria-haspopup="dialog"
         onClick={() => setOpen((v) => !v)}
@@ -150,7 +150,7 @@ function NotificationPanelContent({
       {listQ.isPending ? (
         <div className="notif-empty">
           <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
-          <p className="notif-empty-text">جاري التحميل…</p>
+          <p className="notif-empty-text">جارٍ التحميل…</p>
         </div>
       ) : items.length === 0 ? (
         <div className="notif-empty">

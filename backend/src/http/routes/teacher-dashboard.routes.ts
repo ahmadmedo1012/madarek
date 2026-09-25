@@ -414,7 +414,7 @@ router.get('/dashboard', async (req, res, next) => {
         title: `«${p.title}» — ${p.status === ResearchPaperStatus.UPLOADED
           ? 'لم يُفحص بعد — بانتظار فحص الانتحال'
           : p.status === ResearchPaperStatus.CHECKS_PASSED
-            ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}٪، AI ${p.aiContentPct ?? '—'}٪)`
+            ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}%، AI ${p.aiContentPct ?? '—'}%)`
             : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
         actionTo: '/research',
       })),

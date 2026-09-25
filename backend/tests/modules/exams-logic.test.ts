@@ -321,22 +321,22 @@ describe('answerPatchFor', () => {
   it('MCQ/TRUE_FALSE saves require the choiceIndex dimension', () => {
     expect(answerPatchFor('MCQ', { answerText: 'I insist on prose' })).toEqual({
       patch: {},
-      error: 'This question is answered with choiceIndex',
+      error: 'يُجاب على هذا السؤال باختيار أحد الخيارات',
     });
     expect(answerPatchFor('TRUE_FALSE', { answerText: 'true?' })).toEqual({
       patch: {},
-      error: 'This question is answered with choiceIndex',
+      error: 'يُجاب على هذا السؤال باختيار أحد الخيارات',
     });
   });
 
   it('SHORT/ESSAY saves require the answerText dimension', () => {
     expect(answerPatchFor('SHORT', { choiceIndex: 0 })).toEqual({
       patch: {},
-      error: 'This question is answered with answerText',
+      error: 'يُجاب على هذا السؤال بكتابة نص الإجابة',
     });
     expect(answerPatchFor('ESSAY', { choiceIndex: 1 })).toEqual({
       patch: {},
-      error: 'This question is answered with answerText',
+      error: 'يُجاب على هذا السؤال بكتابة نص الإجابة',
     });
   });
 
@@ -396,7 +396,7 @@ describe('reconcileManualGrades', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.answerIds).toEqual(['a1']);
-      expect(result.message).toContain('Duplicate');
+      expect(result.message).toContain('مكرّرة');
     }
   });
 
@@ -408,7 +408,7 @@ describe('reconcileManualGrades', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.answerIds).toEqual(['graded1']);
-      expect(result.message).toContain('not awaiting');
+      expect(result.message).toContain('ليست بانتظار التصحيح اليدوي');
     }
   });
 
@@ -420,7 +420,7 @@ describe('reconcileManualGrades', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.answerIds).toEqual(['a2', 'a3']);
-      expect(result.message).toContain('All pending answers');
+      expect(result.message).toContain('يجب تصحيح كل الإجابات المعلّقة');
     }
   });
 });

@@ -77,7 +77,7 @@ export default function LivePage() {
               على الهواء الآن
             </span>
           ) : (
-            !isError && <Badge>لا توجد جلسات نشطة</Badge>
+            !isError && <Badge>لا بثّ مباشر الآن</Badge>
           )
         )}
       </header>
@@ -102,14 +102,28 @@ export default function LivePage() {
             <MetricCard icon={CheckCircle2} label="منتهية" value={recent.length.toString()} color="green" />
           </div>
 
-          {/* Live now */}
-          {live.length > 0 && (
-            <Card title="مباشرة الآن" icon={Radio} subtitle="انضمّ إلى أيّ جلسة بنقرة واحدة">
+          {/* Live now — always rendered (15-j §3 #10, the promotion
+              17-a1 deferred): "is anything on air?" deserves a stable
+              answer even when it is «لا», so the card keeps its slot
+              in the layout and carries an EmptyState instead of
+              vanishing between states. */}
+          <Card
+            title="مباشرة الآن"
+            icon={Radio}
+            subtitle={live.length > 0 ? 'انضمّ إلى أيّ جلسة بنقرة واحدة' : undefined}
+          >
+            {live.length === 0 ? (
+              <EmptyState
+                icon={Radio}
+                title="لا بثّ مباشر الآن"
+                description="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
+              />
+            ) : (
               <div className="flex-col gap-2">
                 {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
               </div>
-            </Card>
-          )}
+            )}
+          </Card>
 
           {/* Upcoming */}
           <Card title="جلسات قادمة" icon={Calendar}>
@@ -190,7 +204,11 @@ function StudentSessionRow({
         </span>
       )}
       {s.status === 'SCHEDULED' && <Badge color="amber">مجدولة</Badge>}
-      {ended && <Badge color="green">منتهية</Badge>}
+      {ended && (
+        <Badge color={s.status === 'CANCELLED' ? 'red' : 'green'}>
+          {s.status === 'CANCELLED' ? 'ملغاة' : 'منتهية'}
+        </Badge>
+      )}
       {canJoin && s.joinUrl && (
         <a
           href={s.joinUrl}

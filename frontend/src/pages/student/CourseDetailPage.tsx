@@ -120,7 +120,7 @@ export default function CourseDetailPage() {
         <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
           {/* ChevronRight = the RTL back direction (matches LecturePlayerPage) */}
           <Icon icon={ChevronRight} size={13} />
-          المواد الدراسية
+          مقرّراتي الدراسية
         </Link>
         <div className="course-hero-row">
           <div className="course-hero-icon" aria-hidden>

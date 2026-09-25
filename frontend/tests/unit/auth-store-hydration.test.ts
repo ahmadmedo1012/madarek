@@ -105,7 +105,7 @@ describe('auth store hydration (P2-13)', () => {
         removeItem: (k: string) => {
           mem.delete(k);
         },
-        setItem: (k: string, v: string) => {
+        setItem: (_k: string, _v: string) => {
           throw new Error('QuotaExceededError');
         },
       },

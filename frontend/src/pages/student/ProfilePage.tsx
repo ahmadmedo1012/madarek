@@ -198,7 +198,7 @@ export default function ProfilePage() {
       <div className="grid-4">
         <MetricCard
           icon={BookOpen}
-          label="مواد مسجَّلة"
+          label="مقرّرات مسجَّلة"
           value={enrollments.isPending ? '…' : enrollments.isError ? '—' : (enrollments.data?.length ?? 0).toLocaleString('ar-LY')}
           color="brand"
         />
@@ -237,7 +237,7 @@ export default function ProfilePage() {
             <ProfileField label="الاسم الكامل" value={`${user.firstName} ${user.lastName}`} icon={User} />
             <ProfileField label="البريد الجامعي" value={user.email} icon={Mail} mono />
             <ProfileField
-              label="الكلية"
+              label="الكلّيّة"
               value={profile.data?.student?.faculty?.name ?? '—'}
               icon={GraduationCap}
             />

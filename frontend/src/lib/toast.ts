@@ -46,10 +46,12 @@ export interface ToastItem {
   closing: boolean;
 }
 
-/** Arabic default titles per variant (guardrail: real, concise copy). */
+/** Arabic default titles per variant (guardrail: real, concise copy).
+ *  error names the failure mode, not the vague fact of one (15-j
+ *  P2-9) — callers that can should still pass a specific title. */
 const DEFAULT_TITLES: Record<ToastVariant, string> = {
   success: 'تمّ بنجاح',
-  error: 'حدث خطأ',
+  error: 'تعذَّر إتمام العملية',
   info: 'معلومة',
   warning: 'تنبيه',
 };

@@ -156,10 +156,12 @@ export function formatMmSs(sec: number): string {
 /**
  * Arabic-script detection — the 15-j P0-1 guard. An API/JS message is
  * user-presentable in the RTL UI only when it carries Arabic script
- * anywhere in the string; Latin-only messages (the backend's English
- * defaults: 'Validation failed', 'Duplicate value', 'Exam not open
- * yet'…, axios's 'Network Error') are language leaks and must fall
- * back to Arabic copy at the rendering boundary.
+ * anywhere in the string; Latin-only messages are language leaks and
+ * must fall back to Arabic copy at the rendering boundary. Since 17-b
+ * (D17-3) the backend's user-facing envelope is Arabic-first, so the
+ * Latin-only strings this still catches are transport- and client-
+ * level prose — axios's 'Network Error', JS exception messages,
+ * dev-internal fallbacks — defense in depth rather than the hot path.
  */
 export function isArabicText(text: string): boolean {
   return /[\u0600-\u06FF]/.test(text);

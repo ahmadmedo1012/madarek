@@ -42,7 +42,8 @@ const ROLE_LABELS: Record<string, string> = {
   STUDENT: 'طالب',
   TEACHER: 'أستاذ',
   ADMIN: 'إداري',
-  QUALITY: 'جودة',
+  // Person-noun, unified with nav.ts ROLE_LABELS (17-a2 / 15-j P1-8).
+  QUALITY: 'أخصائي جودة',
   OWNER: 'مالك',
 };
 
@@ -202,7 +203,7 @@ export function OwnerUsersPage() {
     { value: 'STUDENT', label: 'طلاب' },
     { value: 'TEACHER', label: 'أساتذة' },
     { value: 'ADMIN', label: 'إداريون' },
-    { value: 'QUALITY', label: 'جودة' },
+    { value: 'QUALITY', label: 'أخصائيو جودة' },
   ];
 
   const clearFilters = () => {
