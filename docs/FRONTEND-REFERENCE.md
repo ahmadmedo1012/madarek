@@ -279,7 +279,7 @@ Scenes read CSS variables (`--ill-hue-1..6`, `--ill-stroke`, `--ill-paper`, `--i
 ### Exam authoring & manual grading (campaign 3 wave 18)
 - `pages/teacher/ExamAuthorPages.tsx` (~2,300 lines): hub `/teacher/exams` (my templates · question bank · EXAMS_MODERATE tab) + detail `/teacher/exams/:templateId` (questions, answer key when served, publish gate, «التصحيح» attempts table + GradeAttemptModal with per-answer verdicts + feedback). Hooks: useExamTemplate, useCreateQuestion, useCreateExamTemplate, usePublishExamTemplate, useModerateQuestion, useTemplateAttempts, useGradeAttempt (useResources.ts exam section). Zero new CSS — 100% existing primitives.
 
-## Testing (Vitest — 766 tests, jsdom, DB-free)
+## Testing (Vitest — 855 tests, jsdom, DB-free)
 
 `tests/unit/` (59 files) + `tests/motion/` (4) + `tests/gallery/` (2); the Playwright audit harness under `tests/audit/` is excluded from Vitest and runs via `npm run test:audit`. Waves 16–17 added nine new suites (behavior + contract pins for the surfaces those waves hardened):
 
