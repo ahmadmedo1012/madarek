@@ -23,6 +23,7 @@ import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,
 } from '../../hooks/useResources';
+import { formatDateTimeAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 
 const STATUS_LABEL: Record<LiveSessionRow['status'], string> = {
@@ -157,9 +158,30 @@ export default function TeacherLivePage() {
       ) : (
         <>
           <div className="grid-3">
-            <MetricCard icon={Radio} label="مباشرة الآن" value={live.length.toString()} color="red" />
-            <MetricCard icon={Calendar} label="مجدولة" value={scheduled.length.toString()} color="amber" />
-            <MetricCard icon={CheckCircle2} label="منتهية" value={past.length.toString()} color="green" />
+            {/* A6 P2 (22-a): keep the honest zeros, add the one-word
+                context — the bare 0/0/0 wall read as a malfunction
+                ("Zero Wall" / "depressing" VLM verdicts). */}
+            <MetricCard
+              icon={Radio}
+              label="مباشرة الآن"
+              value={live.length.toString()}
+              color="red"
+              change={live.length === 0 ? 'لا بثّ نشط حالياً' : undefined}
+            />
+            <MetricCard
+              icon={Calendar}
+              label="مجدولة"
+              value={scheduled.length.toString()}
+              color="amber"
+              change={scheduled.length === 0 ? 'لا جلسات قادمة' : undefined}
+            />
+            <MetricCard
+              icon={CheckCircle2}
+              label="منتهية"
+              value={past.length.toString()}
+              color="green"
+              change={past.length === 0 ? 'لا جلسات سابقة' : undefined}
+            />
           </div>
 
           {/* New-session form */}
@@ -195,16 +217,33 @@ export default function TeacherLivePage() {
                       ))}
                     </select>
                   </label>
-                  <label>
-                    <span className="form-label">موعد الجلسة</span>
+                  {/* The hint sits OUTSIDE the label so it never leaks
+                      into the input's accessible name (A6 P2, 22-a):
+                      Chromium paints datetime-local in the browser's
+                      locale (en-US → mm/dd/yyyy) inside this Arabic
+                      form — the hint names the native calendar as the
+                      safe path, and the Arabic echo verifies what was
+                      actually picked (datetime-local values carry no
+                      offset, so the echo renders in the same local
+                      time). */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+                    <label htmlFor="live-when"><span className="form-label">موعد الجلسة</span></label>
                     <input
+                      id="live-when"
                       type="datetime-local"
                       className="input"
+                      dir="ltr"
                       value={form.scheduledAt}
                       onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
                       required
+                      aria-describedby="live-when-hint"
                     />
-                  </label>
+                    <span id="live-when-hint" className="form-field-hint">
+                      {form.scheduledAt
+                        ? <>المحدَّد: {formatDateTimeAr(form.scheduledAt)}</>
+                        : 'اختر التاريخ والوقت من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+                    </span>
+                  </div>
                 </div>
                 <label>
                   <span className="form-label">عنوان الجلسة</span>

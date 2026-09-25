@@ -1,5 +1,5 @@
 import {
-  Users, Activity, BookOpen, GraduationCap, Bot, Bell, ShieldCheck, FileWarning,
+  Users, Activity, BookOpen, GraduationCap, ShieldCheck, FileWarning,
   Clock, Radio, AlertTriangle, Settings, RefreshCw,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -218,33 +218,17 @@ export function OwnerDashboardPage() {
           answered (see alertBand above). */}
       {alertBand}
 
-      {/* Metric Cards — every value comes from the API */}
+      {/* Metric Cards — every value comes from the API. 22-b (4-A7
+          P2-3): the second grid-2 strip (طلبات AI + تنبيهات مفتوحة)
+          folded away — six identical tiles flattened the page's
+          hierarchy; the AI rate now lives in the health list below and
+          the alert count is already carried by the status band +
+          «حالة المنصة» row, so no signal was lost. */}
       <div className="grid-4">
         <MetricCard icon={Users} label="إجمالي المستخدمين" value={<bdi>{data.totalUsers.toLocaleString('ar-LY')}</bdi>} color="brand" />
         <MetricCard icon={Activity} label="الجلسات النشطة" value={<bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>} color="green" />
         <MetricCard icon={BookOpen} label="المقرّرات الدراسية" value={<bdi>{data.totalCourses.toLocaleString('ar-LY')}</bdi>} color="purple" />
         <MetricCard icon={GraduationCap} label="إجمالي التسجيلات" value={<bdi>{data.totalEnrollments.toLocaleString('ar-LY')}</bdi>} color="gold" />
-      </div>
-
-      {/* Extra Row — the alerts tile turns amber only on a confirmed
-          count > 0 (DESIGN_POLISH_PLAN phase 3). */}
-      <div className="grid-2">
-        <MetricCard
-          icon={Bot}
-          label="طلبات AI / دقيقة"
-          value={<bdi>{realtimeData.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>}
-          color="purple"
-        />
-        <MetricCard
-          icon={Bell}
-          label="تنبيهات مفتوحة"
-          value={
-            alertsQuery.isPending ? '…'
-              : alertsQuery.isError ? '—'
-                : <bdi>{alerts.length.toLocaleString('ar-LY')}</bdi>
-          }
-          color={hasAlerts ? 'amber' : alertsQuery.isSuccess ? 'green' : 'brand'}
-        />
       </div>
 
       {/* Chart + Operational status */}
@@ -281,17 +265,28 @@ export function OwnerDashboardPage() {
               </span>
             </div>
             <div className="owner-health-row">
-              <div className={`owner-health-dot ${realtimeData.liveBroadcasts > 0 ? 'green' : 'amber'}`} />
+              {/* 22-b (4-A7 P2-1): zero live broadcasts/exams/AI calls
+                  means a QUIET campus, not a degraded one — the dot is
+                  neutral (the pending/unknown color), amber stays
+                  reserved for real thresholds. */}
+              <div className={`owner-health-dot ${realtimeData.liveBroadcasts > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">بثّ مباشر جارٍ</span>
               <span className="owner-health-value">
                 <bdi>{realtimeData.liveBroadcasts.toLocaleString('ar-LY')}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
-              <div className={`owner-health-dot ${realtimeData.activeExams > 0 ? 'green' : 'amber'}`} />
+              <div className={`owner-health-dot ${realtimeData.activeExams > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">اختبارات جارية</span>
               <span className="owner-health-value">
                 <bdi>{realtimeData.activeExams.toLocaleString('ar-LY')}</bdi>
+              </span>
+            </div>
+            <div className="owner-health-row">
+              <div className={`owner-health-dot ${realtimeData.aiRequestsPerMin > 0 ? 'green' : 'neutral'}`} />
+              <span className="owner-health-label">طلبات الذكاء الاصطناعيّ / دقيقة</span>
+              <span className="owner-health-value">
+                <bdi>{realtimeData.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>
               </span>
             </div>
             <div className="owner-health-row">
@@ -321,28 +316,33 @@ export function OwnerDashboardPage() {
         ) : events.length === 0 ? (
           <EmptyState title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
         ) : (
-          <table className="owner-table">
-            <thead>
-              <tr>
-                <th>الحدث</th>
-                <th>المستخدم</th>
-                <th>المورد</th>
-                <th>الوقت</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((ev) => (
-                <tr key={ev.id}>
-                  <td>{actionLabel(ev.action)}</td>
-                  <td className="muted">
-                    {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
-                  </td>
-                  <td className="muted">{resourceLabel(ev.resourceType)}</td>
-                  <td className="muted">{formatRelativeAr(ev.createdAt)}</td>
+          /* 22-b (4-A7 P1-5): the shared .table.tbl-stack migration (the
+           * users page's pattern) — the bare .owner-table overflowed its
+           * card at 390px; on phones each row becomes a labelled card. */
+          <div className="table-wrap">
+            <table className="table tbl-stack owner-events-table">
+              <thead>
+                <tr>
+                  <th>الحدث</th>
+                  <th>المستخدم</th>
+                  <th>المورد</th>
+                  <th>الوقت</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {events.map((ev) => (
+                  <tr key={ev.id}>
+                    <td className="tbl-strong" data-label="الحدث">{actionLabel(ev.action)}</td>
+                    <td className="owner-cell-muted" data-label="المستخدم">
+                      {ev.user ? `${ev.user.firstName} ${ev.user.lastName}` : 'النظام'}
+                    </td>
+                    <td className="owner-cell-muted" data-label="المورد">{resourceLabel(ev.resourceType)}</td>
+                    <td className="owner-cell-muted" data-label="الوقت">{formatRelativeAr(ev.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </Card>
 

@@ -76,7 +76,11 @@ export default function TeacherIntelligencePage() {
           : risks.data && risks.data.length > 0 ? countAr(risks.data.length, ['طالب موزّع', 'طالبان موزّعان', 'طلاب موزّعون', 'طالباً موزّعاً'])
           : undefined
         }
-        actions={<Badge color="amber"><Icon icon={Brain} size={11} /> AI</Badge>}
+        actions={(
+          /* A6 P3 (22-a): the Latin run is bdi-isolated like every other
+           * Latin fragment on teacher surfaces (ResearchReview grammar). */
+          <Badge color="amber"><Icon icon={Brain} size={11} /> <bdi>AI</bdi></Badge>
+        )}
       >
         {risks.isPending ? (
           <ListSkeleton rows={3} />
@@ -111,7 +115,7 @@ export default function TeacherIntelligencePage() {
                   </div>
                 </div>
                 <div className="risk-row-score" style={{ color: RISK_INK[r.riskLevel] }}>
-                  <div className="risk-row-pct">{r.riskScore}%</div>
+                  <div className="risk-row-pct"><bdi>{r.riskScore}%</bdi></div>
                   <div className="risk-row-label">{RISK_LABEL[r.riskLevel]}</div>
                 </div>
               </div>
@@ -484,9 +488,9 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
         <div className="risk-row-name">{student.name}</div>
         <div className="risk-row-meta">
           <bdi className="font-mono text-xxs">{student.universityId}</bdi>
-          <span><Icon icon={ClipboardCheck} size={11} /> حضور {student.attendancePct}%</span>
-          <span><Icon icon={BarChart3} size={11} /> درجة {student.avgGrade}%</span>
-          <span><Icon icon={BookOpen} size={11} /> متابعة {student.watchPct}%</span>
+          <span><Icon icon={ClipboardCheck} size={11} /> حضور <bdi>{student.attendancePct}%</bdi></span>
+          <span><Icon icon={BarChart3} size={11} /> درجة <bdi>{student.avgGrade}%</bdi></span>
+          <span><Icon icon={BookOpen} size={11} /> متابعة <bdi>{student.watchPct}%</bdi></span>
         </div>
         {student.signals.length > 0 && (
           <div className="risk-row-meta" style={{ marginBlockStart: 4 }}>
@@ -498,7 +502,7 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
         </div>
       </div>
       <div className="risk-row-score" style={{ color: RISK_INK[student.riskLevel] }}>
-        <div className="risk-row-pct">{student.riskScore}%</div>
+        <div className="risk-row-pct"><bdi>{student.riskScore}%</bdi></div>
         <div className="risk-row-label">{RISK_LABEL[student.riskLevel]}</div>
       </div>
     </div>

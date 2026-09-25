@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import {
@@ -25,8 +25,8 @@ import {
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
-import { countAr, formatRelativeArShort, WEEKDAY_NAMES_AR } from '../../lib/format';
-import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL } from '../../lib/courseMeta';
+import { countAr, formatRelativeArShort, formatDateWithYearAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } from '../../lib/courseMeta';
 import ResearchReviewPage from './ResearchReviewPage';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
@@ -51,7 +51,55 @@ function PageHeader({ title, subtitle, actions }: { title: string; subtitle: str
 /* countAr, formatRelativeArShort + WEEKDAY_NAMES_AR live in lib/format.ts
  * (waves 9-a / 13-15); ASSIGNMENT_KIND_LABEL + MATERIAL_TYPE_LABEL live
  * in lib/courseMeta.ts (waves 13-15 / 14-2) — the former page-local maps
- * here were byte-identical to the shared exports. */
+ * here were byte-identical to the shared exports. GRADE_BANDS /
+ * gradeBand (22-a, A6 P2) is the platform's ONE grade taxonomy,
+ * consumed by the grades table, the students table and the performance
+ * distribution — one student reads as one chip everywhere. */
+
+/* ─── Shared course picker (A6 P3, 22-a) ─────────────────────
+ * The grades/students/performance trio each carried a copy of the
+ * "first offering by default" picker logic inside a full titled Card
+ * that wasted the first fold. One hook + the header-actions mount
+ * (the attendance save-button pattern) replaces all three. */
+function useOfferingPicker() {
+  const offsQ = useTeacherOfferings();
+  const offerings = offsQ.data ?? [];
+  const [offeringId, setOfferingId] = useState<string>('');
+  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
+  return { offsQ, offerings, effectiveOfferingId, setOfferingId, offering };
+}
+
+/** The picker control shared by the three analytical pages — a labeled
+ * select sized for the header-actions slot (max-inline-size lives on
+ * .course-select). */
+function OfferingPickerSelect({
+  offerings,
+  effectiveOfferingId,
+  onChange,
+  label,
+}: {
+  offerings: NonNullable<ReturnType<typeof useTeacherOfferings>['data']>;
+  effectiveOfferingId: string;
+  onChange: (id: string) => void;
+  label: string;
+}) {
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)', minInlineSize: 0 }}>
+      <span className="form-label" style={{ margin: 0 }}>{label}</span>
+      <select
+        className="input course-select"
+        value={effectiveOfferingId}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
+        {offerings.map((o) => (
+          <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
+        ))}
+      </select>
+    </label>
+  );
+}
 
 export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
@@ -76,6 +124,10 @@ export function TeacherSchedulePage() {
   }
   for (const list of Object.values(byDay)) list.sort((a, b) => a.startTime.localeCompare(b.startTime));
   const days = Object.entries(byDay).map(([dow, items]) => ({ dow: Number(dow), items })).filter((d) => d.items.length > 0);
+  // A6 P3 (22-a): a "اليوم" anchor — the same dayOfWeek convention as
+  // Date#getDay() (0=Sunday), so a teacher scanning for today's
+  // lectures stops at the marked header instead of reading them all.
+  const todayDow = new Date().getDay();
 
   return (
     <div className="page">
@@ -90,7 +142,10 @@ export function TeacherSchedulePage() {
           <div className="flex-col gap-3">
             {days.map((d) => (
               <div key={d.dow}>
-                <SectionTitle>{WEEKDAY_NAMES_AR[d.dow]}</SectionTitle>
+                <div className="flex items-center gap-2">
+                  <SectionTitle>{WEEKDAY_NAMES_AR[d.dow]}</SectionTitle>
+                  {d.dow === todayDow && <Badge color="brand">اليوم</Badge>}
+                </div>
                 <div className="flex-col">
                   {d.items.map((it, i) => (
                     <div key={i} className="list-row">
@@ -219,26 +274,45 @@ export function AttendancePage() {
               ))}
             </select>
           </label>
-          <label>
-            <span className="form-label">تاريخ الجلسة</span>
+          {/* The hint sits OUTSIDE the label — a wrapping label would
+              fold the hint into the input's accessible name (the
+              15-h test suite pins the name to «تاريخ الجلسة»). */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+            <label htmlFor="att-date"><span className="form-label">تاريخ الجلسة</span></label>
             <input
+              id="att-date"
               type="date"
               className="input"
+              dir="ltr"
               value={date}
               aria-invalid={dateError ? true : undefined}
+              aria-describedby={dateError ? 'att-date-error' : 'att-date-hint'}
               onChange={(e) => {
                 setDate(e.target.value);
                 setDateError(null);
               }}
             />
-          </label>
+            {/* A6 P2 (22-a): Chromium paints native date fields in the
+                browser's locale (en-US → mm/dd/yyyy) inside this Arabic
+                form. The hint names the calendar as the safe path and the
+                Arabic echo below verifies what was actually picked —
+                the value renders localized whatever the field shows. */}
+            <span id="att-date-hint" className="form-field-hint">
+              {date
+                /* Local-noon anchor: a bare YYYY-MM-DD parses as UTC
+                 * midnight and would echo the previous day west of
+                 * Greenwich; the teacher picked a calendar DAY. */
+                ? <>المحدَّد: {formatDateWithYearAr(`${date}T12:00:00`)}</>
+                : 'اختر التاريخ من تقويم الحقل — ترتيب الصيغة داخل الحقل يتبع إعدادات المتصفح.'}
+            </span>
+          </div>
           <label>
             <span className="form-label">الموضوع (اختياريّ)</span>
             <input type="text" className="input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="مثال: مقدّمة في UML" />
           </label>
         </div>
         {dateError && (
-          <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
+          <div id="att-date-error" className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
             <Icon icon={AlertTriangle} size={14} />
             <span className="flex-1">{dateError}</span>
           </div>
@@ -295,15 +369,51 @@ export function AttendancePage() {
         </Card>
 
         <Card title="إحصائيّات الجلسة">
-          <div className="flex-col gap-4">
-            <ProgressBar value={counts.total > 0 ? Math.round((counts.p / counts.total) * 100) : 0} label={`الحضور (${counts.p})`} color="var(--success)" />
-            <ProgressBar value={counts.total > 0 ? Math.round((counts.l / counts.total) * 100) : 0} label={`التأخّر (${counts.l})`} color="var(--warning)" />
-            <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
-            {/* بعذر counts out of the session total (same denominator as
-                the other bars) — the analytics KPI keeps its own
-                EXCUSED-excluded math server-side. */}
-            <ProgressBar value={counts.total > 0 ? Math.round((counts.e / counts.total) * 100) : 0} label={`بعذر (${counts.e})`} color="var(--accent)" />
-          </div>
+          {/* A6 P2 (22-a): the stats card mirrors the roster's state —
+              never four fake 0% bars while nothing is loaded. Empty
+              buckets dim instead of painting full-weight zero tracks
+              (the old "barely visible grey … looks like a rendering
+              bug" VLM verdict). */}
+          {!effectiveOfferingId ? (
+            <p className="text-xs text-muted" style={{ margin: 0 }}>
+              اختر مقرّراً لعرض إحصائيّات جلساته.
+            </p>
+          ) : stuQ.isPending ? (
+            <div className="flex-col gap-4" aria-busy="true" aria-live="polite">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} aria-hidden>
+                  <div className="flex items-center justify-between" style={{ marginBlockEnd: 'var(--sp-2)' }}>
+                    <Skeleton width={90} height={11} />
+                    <Skeleton width={34} height={11} />
+                  </div>
+                  <Skeleton width="100%" height={6} rounded="var(--r-full)" />
+                </div>
+              ))}
+            </div>
+          ) : students.length === 0 ? (
+            <div className="empty-state">
+              <Icon icon={ClipboardCheck} size={24} className="text-subtle" />
+              <p className="text-sm text-muted">لا طلاب في هذا المقرّر بعد — لا إحصائيّات لعرضها.</p>
+            </div>
+          ) : (
+            <div className="flex-col gap-4">
+              <div style={{ opacity: counts.p === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+                <ProgressBar value={counts.total > 0 ? Math.round((counts.p / counts.total) * 100) : 0} label={`الحضور (${counts.p})`} color="var(--success)" />
+              </div>
+              <div style={{ opacity: counts.l === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+                <ProgressBar value={counts.total > 0 ? Math.round((counts.l / counts.total) * 100) : 0} label={`التأخّر (${counts.l})`} color="var(--warning)" />
+              </div>
+              <div style={{ opacity: counts.a === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+                <ProgressBar value={counts.total > 0 ? Math.round((counts.a / counts.total) * 100) : 0} label={`الغياب (${counts.a})`} color="var(--danger)" />
+              </div>
+              {/* بعذر counts out of the session total (same denominator as
+                  the other bars) — the analytics KPI keeps its own
+                  EXCUSED-excluded math server-side. */}
+              <div style={{ opacity: counts.e === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+                <ProgressBar value={counts.total > 0 ? Math.round((counts.e / counts.total) * 100) : 0} label={`بعذر (${counts.e})`} color="var(--accent)" />
+              </div>
+            </div>
+          )}
           {record.isError && (
             <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
               <Icon icon={AlertTriangle} size={14} />
@@ -325,42 +435,30 @@ export function AttendancePage() {
 }
 
 export function GradesPage() {
-  const offsQ = useTeacherOfferings();
-  const offerings = offsQ.data ?? [];
-  const [offeringId, setOfferingId] = useState<string>('');
-  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  const { offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
-  const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
 
   return (
     <div className="page">
       <PageHeader
         title="درجات الطلاب"
         subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ."
+        actions={
+          <OfferingPickerSelect
+            offerings={offerings}
+            effectiveOfferingId={effectiveOfferingId}
+            onChange={setOfferingId}
+            label="المقرّر"
+          />
+        }
       />
-
-      <Card title="المقرّر">
-        <label>
-          <span className="form-label">اختر المقرّر لعرض درجاته</span>
-          <select
-            className="input course-select"
-            value={effectiveOfferingId}
-            onChange={(e) => setOfferingId(e.target.value)}
-          >
-            {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
-            {offerings.map((o) => (
-              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
-            ))}
-          </select>
-        </label>
-      </Card>
 
       <Card
         title={offering ? `${offering.course.name} · ${offering.course.code}` : 'الدرجات'}
         icon={ClipboardList}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك أعلاه لعرض درجات طلابه." />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض درجات طلابه." />
         ) : stuQ.isPending ? (
           <LoadingState />
         ) : stuQ.isError ? (
@@ -381,19 +479,17 @@ export function GradesPage() {
               </thead>
               <tbody>
                 {(stuQ.data ?? []).map((s) => {
-                  const total = s.avgGrade;
-                  const grade = total >= 85 ? { l: 'ممتاز', c: 'green' as const } :
-                                total >= 75 ? { l: 'جيّد جدّاً', c: 'brand' as const } :
-                                total >= 65 ? { l: 'جيّد', c: 'amber' as const } :
-                                total >= 50 ? { l: 'مقبول', c: 'amber' as const } :
-                                { l: 'ضعيف', c: 'red' as const };
+                  /* One taxonomy everywhere (A6 P2, 22-a): the same
+                   * gradeBand chip this student wears on /students and
+                   * the same bucket they count into on /performance. */
+                  const band = gradeBand(s.avgGrade);
                   return (
                     <tr key={s.studentId}>
                       <td className="tbl-strong" data-label="الطالب">{s.name}</td>
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
-                      <td className="tbl-num" data-label="متوسّط الدرجات">{s.avgGrade}</td>
+                      <td className="tbl-num" data-label="متوسّط الدرجات"><bdi>{s.avgGrade}%</bdi></td>
                       <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
-                      <td data-label="التقدير"><Badge color={grade.c}>{grade.l}</Badge></td>
+                      <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
                     </tr>
                   );
                 })}
@@ -429,14 +525,17 @@ export function MaterialsPage() {
     <div className="page">
       <PageHeader title="الملفات التعليمية" subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ." />
 
+      {/* A6 P3 (22-a): an honest notice, not a dashed drop target — the
+          old .dropzone-ghost shape invited real drag-and-drop onto a
+          surface that can't receive it. No upload channel ships in the
+          FE yet, so the copy names the reality instead of pointing at
+          a destination that doesn't exist. */}
       <Card title="رفع ملفات جديدة" icon={Upload}>
-        <div className="dropzone-ghost">
-          <Icon icon={Upload} size={28} className="text-muted" />
-          <div className="dropzone-ghost-title">
-            واجهة الرفع المباشر قيد التطوير
-          </div>
-          <div className="text-xs text-subtle" style={{ marginBlockStart: 4 }}>
-            حالياً تُرفع الملفات عبر إدارة المقرّر · PDF · PPT · MP4 · DOC · ZIP
+        <div className="flex items-center gap-3">
+          <Icon icon={Upload} size={18} style={{ color: 'var(--accent)', flexShrink: 0 }} />
+          <div className="text-xs text-muted">
+            <strong>الرفع المباشر من هذه الصفحة قيد التطوير.</strong>{' '}
+            لا توجد قناة رفع متاحة حالياً — الملفات أدناه هي ما أُضيف إلى مقرّراتك.
           </div>
         </div>
       </Card>
@@ -492,40 +591,31 @@ export function ResearchPage() {
 }
 
 export function StudentsListPage() {
-  const offsQ = useTeacherOfferings();
-  const offerings = offsQ.data ?? [];
-  const [offeringId, setOfferingId] = useState<string>('');
-  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  const { offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
-  const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
   const students = stuQ.data ?? [];
 
   return (
     <div className="page">
-      <PageHeader title="قائمة الطلاب" subtitle="جميع الطلاب المسجَّلين في مقرّراتك." />
-
-      <Card title="المقرّر">
-        <label>
-          <span className="form-label">اختر المقرّر لعرض طلابه</span>
-          <select
-            className="input course-select"
-            value={effectiveOfferingId}
-            onChange={(e) => setOfferingId(e.target.value)}
-          >
-            {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
-            {offerings.map((o) => (
-              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code}) · {countAr(o._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</option>
-            ))}
-          </select>
-        </label>
-      </Card>
+      <PageHeader
+        title="قائمة الطلاب"
+        subtitle="جميع الطلاب المسجَّلين في مقرّراتك."
+        actions={
+          <OfferingPickerSelect
+            offerings={offerings}
+            effectiveOfferingId={effectiveOfferingId}
+            onChange={setOfferingId}
+            label="المقرّر"
+          />
+        }
+      />
 
       <Card
         title={offering ? `${offering.course.name} · ${offering.course.code} · ${countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}` : 'الطلاب'}
         icon={Users}
       >
         {!effectiveOfferingId ? (
-          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك أعلاه لعرض قائمة طلابه." />
+          <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض قائمة طلابه." />
         ) : stuQ.isPending ? (
           <LoadingState />
         ) : stuQ.isError ? (
@@ -541,20 +631,23 @@ export function StudentsListPage() {
                   <th>الرقم الجامعيّ</th>
                   <th>الحضور</th>
                   <th>المتوسّط</th>
-                  <th>الحالة</th>
+                  {/* A6 P2 (22-a): «التقدير» — the same column name and
+                      the same gradeBand chip as the grades table; the
+                      old «الحالة» column carried a private vocabulary
+                      (متفوّق/متوسّط) that disagreed with its sisters. */}
+                  <th>التقدير</th>
                 </tr>
               </thead>
               <tbody>
                 {students.map((s) => {
-                  const tone = s.avgGrade >= 80 ? 'green' : s.avgGrade >= 60 ? 'amber' : 'red';
-                  const label = s.avgGrade >= 80 ? 'متفوّق' : s.avgGrade >= 60 ? 'متوسّط' : 'بحاجة دعم';
+                  const band = gradeBand(s.avgGrade);
                   return (
                     <tr key={s.studentId}>
                       <td className="tbl-strong" data-label="الاسم">{s.name}</td>
                       <td data-label="الرقم الجامعيّ"><bdi className="font-mono text-xs">{s.universityId}</bdi></td>
                       <td className="tbl-num" data-label="الحضور">{s.attendancePct}%</td>
-                      <td className="tbl-num" data-label="المتوسّط">{s.avgGrade}</td>
-                      <td data-label="الحالة"><Badge color={tone}>{label}</Badge></td>
+                      <td className="tbl-num" data-label="المتوسّط"><bdi>{s.avgGrade}%</bdi></td>
+                      <td data-label="التقدير"><Badge color={band.color}>{band.label}</Badge></td>
                     </tr>
                   );
                 })}
@@ -568,57 +661,52 @@ export function StudentsListPage() {
 }
 
 export function PerformancePage() {
-  const offsQ = useTeacherOfferings();
-  const offerings = offsQ.data ?? [];
-  const [offeringId, setOfferingId] = useState<string>('');
-  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  const { offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
   const analytics = useOfferingAnalytics(effectiveOfferingId || undefined);
-  const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
   const students = stuQ.data ?? [];
 
-  // Derive grade distribution from real avgGrade per student.
+  // Derive the grade distribution from the SAME gradeBand the grades
+  // and students tables render (A6 P2, 22-a) — a student at 62 counts
+  // into «جيّد» here and wears a «جيّد» chip everywhere; the old
+  // private buckets (85+/75-84/60-74/<60) disagreed with both tables.
   const distribution = useMemo(() => {
     const total = students.length;
-    if (total === 0) return { excellent: 0, good: 0, fair: 0, poor: 0 };
-    let excellent = 0, good = 0, fair = 0, poor = 0;
-    for (const s of students) {
-      if (s.avgGrade >= 85) excellent++;
-      else if (s.avgGrade >= 75) good++;
-      else if (s.avgGrade >= 60) fair++;
-      else poor++;
+    const counts = new Map(GRADE_BANDS.map((b) => [b.key, 0]));
+    if (total > 0) {
+      for (const s of students) {
+        const band = gradeBand(s.avgGrade);
+        counts.set(band.key, (counts.get(band.key) ?? 0) + 1);
+      }
     }
-    const pct = (n: number) => Math.round((n / total) * 100);
-    return { excellent: pct(excellent), good: pct(good), fair: pct(fair), poor: pct(poor) };
+    return GRADE_BANDS.map((band) => {
+      const count = counts.get(band.key) ?? 0;
+      return { band, count, pct: total > 0 ? Math.round((count / total) * 100) : 0 };
+    });
   }, [students]);
 
   const passing = students.filter((s) => s.avgGrade >= 50).length;
   const passRate = students.length > 0 ? Math.round((passing / students.length) * 100) : 0;
-  const top = students.filter((s) => s.avgGrade >= 85).length;
+  const top = students.filter((s) => gradeBand(s.avgGrade).key === 'EXCELLENT').length;
   const atRisk = students.filter((s) => s.riskLevel === 'AT_RISK' || s.riskLevel === 'CRITICAL').length;
 
   return (
     <div className="page">
-      <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
-
-      <Card title="المقرّر">
-        <label>
-          <span className="form-label">اختر المقرّر لعرض تحليل أدائه</span>
-          <select
-            className="input course-select"
-            value={effectiveOfferingId}
-            onChange={(e) => setOfferingId(e.target.value)}
-          >
-            {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
-            {offerings.map((o) => (
-              <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
-            ))}
-          </select>
-        </label>
-      </Card>
+      <PageHeader
+        title="الأداء والتحليل"
+        subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة."
+        actions={
+          <OfferingPickerSelect
+            offerings={offerings}
+            effectiveOfferingId={effectiveOfferingId}
+            onChange={setOfferingId}
+            label="المقرّر"
+          />
+        }
+      />
 
       {!effectiveOfferingId ? (
-        <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك أعلاه لعرض تحليل أداء فصلك." />
+        <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض تحليل أداء فصلك." />
       ) : stuQ.isPending || analytics.isPending ? (
         <LoadingState />
       ) : stuQ.isError ? (
@@ -661,11 +749,23 @@ export function PerformancePage() {
                 description="سيظهر توزيع الدرجات هنا فور تسجيل طلاب في المقرّر."
               />
             ) : (
+              /* A6 P2 (22-a): empty buckets dim instead of painting
+                 full-weight 0% tracks — the honest zero, not the
+                 "rendering bug" wall. */
               <div className="flex-col gap-3">
-                <ProgressBar value={distribution.excellent} label={`ممتاز (85+) · ${distribution.excellent}%`} color="var(--success)" />
-                <ProgressBar value={distribution.good}      label={`جيّد جدّاً (75-84) · ${distribution.good}%`} color="var(--accent)" />
-                <ProgressBar value={distribution.fair}      label={`جيّد ومقبول (60-74) · ${distribution.fair}%`} color="var(--warning)" />
-                <ProgressBar value={distribution.poor}      label={`أقلّ من 60 · ${distribution.poor}%`} color="var(--danger)" />
+                {distribution.map(({ band, pct }) => (
+                  <div key={band.key} style={{ opacity: pct === 0 ? 0.55 : 1, transition: 'opacity 0.2s' }}>
+                    <ProgressBar
+                      value={pct}
+                      /* ReactNode label → the accessible name needs the
+                         explicit ariaLabel (ProgressBar's string-label
+                         fallback can't fire for markup). */
+                      ariaLabel={`حصة تقدير ${band.label} (${band.range}): ${pct}%`}
+                      label={<>{band.label} (<bdi>{band.range}</bdi>) · <bdi>{pct}%</bdi></>}
+                      color={band.barColor}
+                    />
+                  </div>
+                ))}
               </div>
             )}
           </Card>
@@ -1022,14 +1122,30 @@ export function MessagesPage() {
 
   return (
     <div className="page">
-      <PageHeader title="الرسائل" subtitle="محادثاتك المباشرة عبر المنصّة." />
-      <Card title="الرسائل الأخيرة" icon={MessageSquare}>
+      {/* A6 P2 (22-a): honest retitle — the old subtitle promised
+          «محادثاتك المباشرة» but no compose/reply affordance exists
+          anywhere in the FE; this is a read-only log until messaging
+          ships. The page header carries the name; the card's subtitle
+          carries the count (the redundant «الرسائل الأخيرة» title is
+          gone — A6 P3). */}
+      <PageHeader
+        title="صندوق الرسائل"
+        subtitle="كل رسالة وصلتك أو أرسلتها عبر المنصّة — الصفحة للقراءة حالياً، والردّ والإنشاء غير متاحَين بعد."
+      />
+      <Card
+        title="سجلّ الرسائل"
+        icon={MessageSquare}
+        subtitle={meta ? countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة']) : undefined}
+      >
         {q.isPending ? (
           <LoadingState />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || messages.length === 0 ? (
-          <EmptyState title="لا توجد رسائل بعد" description="ستظهر هنا الرسائل المُرسَلة إليك أو منك." />
+          <EmptyState
+            title="لا توجد رسائل بعد"
+            description="ستظهر هنا الرسائل المُرسَلة إليك أو منك عبر المنصّة."
+          />
         ) : (
           <>
             <div className="flex-col gap-2">

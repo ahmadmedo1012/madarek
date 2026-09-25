@@ -11,7 +11,8 @@
  *  - the settings payload caps (an unbounded value/category let a
  *    single 1 MB JSON body become a 1 MB setting row);
  *  - the pure Education-page aggregation folds (attendance trend,
- *    teacher workload) extracted so the SQL-backed routes stay thin;
+ *    teacher workload, byFaculty name-aggregation — 4-A7 P1-3)
+ *    extracted so the SQL-backed routes stay thin;
  *  - the pure System-page sync-feed mapping (SyncRun row → feed
  *    entry — the feed reads the REAL SyncRun table since audit 15-a
  *    P1-5, so the mapping is pinned like every other fold).
@@ -21,6 +22,7 @@ import { describe, expect, it } from 'vitest';
 import {
   bucketTeacherWorkload,
   buildAttendanceTrend,
+  buildByFaculty,
   changeRoleSchema,
   settingKeySchema,
   syncRunAction,
@@ -249,6 +251,55 @@ describe('bucketTeacherWorkload (Education page, workload fold)', () => {
       three: 0,
       fourPlus: 0,
     });
+  });
+});
+
+// ── buildByFaculty (Education page, 4-A7 P1-3 name-aggregation fold) ──
+
+describe('buildByFaculty (Education page, byFaculty fold)', () => {
+  const row = (name: string, ...deptCourseCounts: number[]) => ({
+    name,
+    departments: deptCourseCounts.map((courses) => ({ _count: { courses } })),
+  });
+
+  it('merges same-name multi-campus faculties into one aggregated bar', () => {
+    // The seeded reality: كلية التربية exists as four (name, city)
+    // rows — the chart must show it ONCE, with the summed course count.
+    const result = buildByFaculty([
+      row('كلية التربية', 0),
+      row('كلية تقنية المعلومات', 4),
+      row('كلية التربية', 2),
+      row('كلية التربية', 0),
+      row('كلية التربية', 1),
+    ]);
+    expect(result).toEqual([
+      { name: 'كلية تقنية المعلومات', courseCount: 4 },
+      { name: 'كلية التربية', courseCount: 3 },
+    ]);
+  });
+
+  it('drops zero-course faculties — the chart shows signal, not census padding', () => {
+    expect(
+      buildByFaculty([row('كلية الهندسة', 0, 0), row('كلية الآداب'), row('كلية العلوم', 6)]),
+    ).toEqual([{ name: 'كلية العلوم', courseCount: 6 }]);
+  });
+
+  it('sorts by courseCount desc with a deterministic Arabic-name tiebreaker', () => {
+    const result = buildByFaculty([
+      row('كلية القانون', 3),
+      row('كلية الهندسة', 7),
+      row('كلية الآداب', 3),
+    ]);
+    expect(result.map((f) => f.name)).toEqual(['كلية الهندسة', 'كلية الآداب', 'كلية القانون']);
+  });
+
+  it('keeps at most 8 faculties (the card was designed for 8 bars)', () => {
+    const rows = Array.from({ length: 12 }, (_, i) => row(`كلية رقم ${i + 1}`, 1));
+    expect(buildByFaculty(rows)).toHaveLength(8);
+  });
+
+  it('returns an empty series when no faculty carries courses (honest empty chart)', () => {
+    expect(buildByFaculty([row('كلية الهندسة'), row('كلية التربية', 0)])).toEqual([]);
   });
 });
 

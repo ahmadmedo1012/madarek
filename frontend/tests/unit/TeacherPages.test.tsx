@@ -23,7 +23,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AttendancePage, AssignmentsPage, MessagesPage } from '../../src/pages/teacher/TeacherPages';
+import { AttendancePage, AssignmentsPage, MessagesPage, GradesPage, StudentsListPage } from '../../src/pages/teacher/TeacherPages';
 import { useAuthStore } from '../../src/stores/auth.store';
 import type { AuthUser } from '../../src/stores/auth.store';
 
@@ -517,5 +517,76 @@ describe('MessagesPage — server-side pagination (15-d P2-7)', () => {
     expect(screen.getByText('السلام عليكم')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'الصفحة السابقة' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'الصفحة التالية' })).toBeNull();
+  });
+
+  /* 22-a (A6 P2) — the honest read-only retitle: the old subtitle
+   * promised «محادثاتك المباشرة» while no compose/reply affordance
+   * exists anywhere in the FE. */
+  it('titles the page as a read-only message log — no live-conversations promise', () => {
+    seedMessages();
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    renderMessages();
+
+    expect(screen.getByRole('heading', { level: 1, name: 'صندوق الرسائل' })).toBeInTheDocument();
+    // The over-promising subtitle and the redundant «الرسائل الأخيرة»
+    // card title (A6 P3) are both gone.
+    expect(screen.queryByText('محادثاتك المباشرة عبر المنصّة.')).toBeNull();
+    expect(screen.queryByText('الرسائل الأخيرة')).toBeNull();
+    // The card carries the real count instead of a duplicate title.
+    expect(screen.getByText('45 رسالة')).toBeInTheDocument();
+  });
+});
+
+/* 22-a (A6 P2) — ONE grade taxonomy across the teacher surfaces: the
+ * same student renders the same gradeBand chip on the grades table and
+ * the students table (the old private vocabularies said «جيّد جدّاً» on
+ * /grades but «متفوّق» on /students for an 84). */
+describe('GradesPage + StudentsListPage — one student, one band chip (22-a / A6 P2)', () => {
+  it('renders the same gradeBand chip and the % unit on both tables', () => {
+    mocks.offerings = [OFFERING];
+    mocks.students = [{ ...STUDENT, avgGrade: 84 }];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <GradesPage />
+      </MemoryRouter>,
+    );
+    // 84 → the shared «جيّد جدّاً» band (not the old students-page
+    // «متفوّق»), with the % unit the attendance column always had.
+    expect(screen.getByText('جيّد جدّاً')).toBeInTheDocument();
+    expect(screen.getByText('84%')).toBeInTheDocument();
+    unmount();
+
+    render(
+      <MemoryRouter>
+        <StudentsListPage />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('جيّد جدّاً')).toBeInTheDocument();
+    expect(screen.getByText('84%')).toBeInTheDocument();
+    // The column is «التقدير» like the grades table — the old
+    // «الحالة» header named a vocabulary that no longer exists.
+    expect(screen.getByRole('columnheader', { name: 'التقدير' })).toBeInTheDocument();
+    expect(screen.queryByRole('columnheader', { name: 'الحالة' })).toBeNull();
+  });
+
+  it('moves the course picker into the page header — no heavy one-select Card', () => {
+    mocks.offerings = [OFFERING];
+    mocks.students = [STUDENT];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <GradesPage />
+      </MemoryRouter>,
+    );
+    // The select lives in the page header (A6 P3)…
+    expect(
+      screen.getByRole('combobox', { name: 'المقرّر' }),
+    ).toBeInTheDocument();
+    // …and the old full-Card wrapper is gone.
+    expect(screen.queryByText('اختر المقرّر لعرض درجاته')).toBeNull();
+    unmount();
   });
 });

@@ -108,36 +108,41 @@ export function OwnerRealtimePage() {
                 </tr>
               </thead>
               <tbody>
+                {/* 22-b (4-A7 P2-1): zero activity is a QUIET campus, not
+                     a warning — the summary rows used to paint all four
+                     dots amber while the band above said «النظام يعمل
+                     بشكل طبيعيّ». Quiet = neutral (the unknown/pending
+                     tone); amber stays reserved for real thresholds. */}
                 <tr>
                   <td>الجلسات المتّصلة</td>
                   <td className="num"><bdi>{data.activeSessions.toLocaleString('ar-LY')}</bdi></td>
                   <td>
-                    <span className={`owner-health-dot ${data.activeSessions > 0 ? 'green' : 'amber'} inline`} />
-                    <span className="visually-hidden">{data.activeSessions > 0 ? 'نشط' : 'لا نشاط'}</span>
+                    <span className={`owner-health-dot ${data.activeSessions > 0 ? 'green' : 'neutral'} inline`} />
+                    <span className="visually-hidden">{data.activeSessions > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
                 <tr>
                   <td>طلبات الذكاء الاصطناعيّ</td>
                   <td className="num"><bdi>{data.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>/دقيقة</td>
                   <td>
-                    <span className={`owner-health-dot ${data.aiRequestsPerMin > 0 ? 'green' : 'amber'} inline`} />
-                    <span className="visually-hidden">{data.aiRequestsPerMin > 0 ? 'نشط' : 'لا نشاط'}</span>
+                    <span className={`owner-health-dot ${data.aiRequestsPerMin > 0 ? 'green' : 'neutral'} inline`} />
+                    <span className="visually-hidden">{data.aiRequestsPerMin > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
                 <tr>
                   <td>غرف البثّ المباشر</td>
                   <td className="num"><bdi>{data.liveBroadcasts.toLocaleString('ar-LY')}</bdi></td>
                   <td>
-                    <span className={`owner-health-dot ${data.liveBroadcasts > 0 ? 'green' : 'amber'} inline`} />
-                    <span className="visually-hidden">{data.liveBroadcasts > 0 ? 'نشط' : 'لا نشاط'}</span>
+                    <span className={`owner-health-dot ${data.liveBroadcasts > 0 ? 'green' : 'neutral'} inline`} />
+                    <span className="visually-hidden">{data.liveBroadcasts > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
                 <tr>
                   <td>اختبارات قيد التنفيذ</td>
                   <td className="num"><bdi>{data.activeExams.toLocaleString('ar-LY')}</bdi></td>
                   <td>
-                    <span className={`owner-health-dot ${data.activeExams > 0 ? 'green' : 'amber'} inline`} />
-                    <span className="visually-hidden">{data.activeExams > 0 ? 'نشط' : 'لا نشاط'}</span>
+                    <span className={`owner-health-dot ${data.activeExams > 0 ? 'green' : 'neutral'} inline`} />
+                    <span className="visually-hidden">{data.activeExams > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
               </tbody>

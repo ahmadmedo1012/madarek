@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
-import { Bot, Zap, CheckCircle2, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Bot, Zap, CheckCircle2, Clock, Settings } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
 import { useMemo } from 'react';
 import {
@@ -19,6 +20,7 @@ import {
   ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts/ChartFrame';
+import { Icon } from '../../components/Icon';
 import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerAiMetrics } from '../../hooks/useOwner';
 import { useReducedMotion } from '../../components/motion';
@@ -103,23 +105,20 @@ export function OwnerAiPage() {
         <Card>
           <ErrorState error={aiMetrics.error} onRetry={() => aiMetrics.refetch()} />
         </Card>
-      ) : data.totalRequests === 0 ? (
-        <EmptyState
-          icon={Bot}
-          title="لا توجد طلبات ذكاء اصطناعيّ بعد"
-          description="ستظهر مؤشّرات الاستخدام هنا فور تشغيل أيّ خدمة ذكاء اصطناعيّ على المنصّة."
-        />
       ) : (
         <>
-          {/* Metric Cards — real values; Latin unit runs are bidi-isolated. */}
+          {/* Metric Cards — real values; Latin unit runs are bidi-isolated.
+              22-b (4-A7 P2-6): a zero-request platform still gets its KPI
+              strip — honest zeros are this console's own convention, and
+              the page no longer collapses to a single dead-end EmptyState. */}
           <div className="grid-4">
-            <MetricCard icon={Bot} label="إجمالي الطلبات" value={data.totalRequests.toLocaleString('ar-LY')} color="brand" />
+            <MetricCard icon={Bot} label="إجمالي الطلبات" value={<bdi>{data.totalRequests.toLocaleString('ar-LY')}</bdi>} color="brand" />
             <MetricCard
               icon={Zap}
               label="إجمالي التوكنات"
               value={data.totalTokens >= 1_000_000
                 ? <bdi>{(data.totalTokens / 1_000_000).toFixed(1)}M</bdi>
-                : data.totalTokens.toLocaleString('ar-LY')}
+                : <bdi>{data.totalTokens.toLocaleString('ar-LY')}</bdi>}
               color="purple"
             />
             <MetricCard icon={CheckCircle2} label="معدّل النجاح" value={<bdi>{data.successRate}%</bdi>} color="green" />
@@ -130,8 +129,15 @@ export function OwnerAiPage() {
             <Card title="الطلبات حسب الميزة">
               {data.byFeature.length === 0 ? (
                 <EmptyState
+                  icon={Bot}
                   title="لا توجد طلبات لعرضها"
-                  description="ستظهر بيانات الاستخدام هنا فور تسجيل أوّل طلب ذكاء اصطناعيّ."
+                  description="تُفعَّل خدمات الذكاء الاصطناعيّ عبر أعلام الميزات وإعدادات المنصّة، وتظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب."
+                  action={(
+                    <Link to="/owner/system" className="btn ghost sm">
+                      <Icon icon={Settings} size={12} />
+                      فتح إعدادات النظام
+                    </Link>
+                  )}
                 />
               ) : (
                 <ChartFrame

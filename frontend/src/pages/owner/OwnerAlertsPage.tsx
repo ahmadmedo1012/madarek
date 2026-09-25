@@ -6,34 +6,12 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerAlerts, useResolveAlert } from '../../hooks/useOwner';
+import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS } from '../../lib/ownerLabels';
 import { toast } from '../../lib/toast';
 
-// severity 'error' added 17-a2 (15-a P1-6): the errorHandler raises it
-// on every unhandled 5xx — without the entry those cards rendered raw
-// English with the default brand color.
-const SEVERITY_LABELS: Record<string, string> = {
-  critical: 'حرج',
-  error: 'خطأ',
-  warning: 'تحذير',
-  info: 'معلومة',
-};
-
-const SEVERITY_COLORS: Record<string, 'red' | 'amber' | 'brand'> = {
-  critical: 'red',
-  error: 'red',
-  warning: 'amber',
-  info: 'brand',
-};
-
-const CATEGORY_LABELS: Record<string, string> = {
-  infrastructure: 'البنية التحتية',
-  security: 'الأمان',
-  performance: 'الأداء',
-  system: 'النظام',
-  storage: 'التخزين',
-  database: 'قاعدة البيانات',
-  api: 'واجهة البرمجة',
-};
+/* severity 'error' added 17-a2 (15-a P1-6) and the maps hoisted to
+ * lib/ownerLabels.ts by 22-b (4-A7 P1-1) so the System page renders
+ * the same vocabulary — one console, one set of words. */
 
 /* Deliberately local (13-14/14-2 audit): NOT lib/format.formatDateTimeAr
  * — this shape renders the default-locale ar-LY date plus a separately

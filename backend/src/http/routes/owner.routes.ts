@@ -432,6 +432,46 @@ export function bucketTeacherWorkload(
   return buckets;
 }
 
+/** Row shape the byFaculty fold consumes (Faculty + per-dept course
+ *  counts — exactly what the /education query includes). */
+export interface FacultyCourseRow {
+  name: string;
+  departments: Array<{ _count: { courses: number } }>;
+}
+
+/**
+ * Pure transform (audit 4-A7 P1-3): fold the per-ROW faculty census
+ * into the Education chart's per-NAME series. The Faculty table
+ * deliberately holds same-name rows — the university really runs
+ * كلية التربية in four campuses (docs/archive/zu.edu.ly.md; the
+ * (name, city) unique key is the documented source-of-truth model,
+ * consumed city-aware by /colleges and the campus map) — but a
+ * per-row list made the chart render «كلية التربية» ×4 with count 0:
+ * duplicated categories and census padding on a decision surface.
+ *
+ * The fold: same-name rows aggregate into ONE bar (their department
+ * course counts sum), zero-course faculties drop — the chart shows
+ * WHERE courses live, not the institutional census — sorted by count
+ * desc (Arabic-name collation as the deterministic tiebreaker) and
+ * capped at the 8 bars the card was designed for.
+ */
+export function buildByFaculty(
+  rows: FacultyCourseRow[],
+): Array<{ name: string; courseCount: number }> {
+  const byName = new Map<string, number>();
+  for (const f of rows) {
+    const count = f.departments.reduce((s, d) => s + d._count.courses, 0);
+    byName.set(f.name, (byName.get(f.name) ?? 0) + count);
+  }
+  return [...byName.entries()]
+    .filter(([, courseCount]) => courseCount > 0)
+    .map(([name, courseCount]) => ({ name, courseCount }))
+    .sort(
+      (a, b) => b.courseCount - a.courseCount || a.name.localeCompare(b.name, 'ar'),
+    )
+    .slice(0, 8);
+}
+
 /**
  * Everything heavy is aggregated in SQL: the previous implementation
  * hydrated the ENTIRE Course table (with per-offering enrollment
@@ -499,13 +539,10 @@ router.get('/education', async (_req, res, next) => {
 
     const avgEnrolment = totalOfferings > 0 ? +(totalEnrollments / totalOfferings).toFixed(1) : 0;
 
-    const byFaculty = faculties
-      .map((f) => ({
-        name: f.name,
-        courseCount: f.departments.reduce((s, d) => s + d._count.courses, 0),
-      }))
-      .sort((a, b) => b.courseCount - a.courseCount)
-      .slice(0, 8);
+    // 4-A7 P1-3: name-aggregated, zero-dropped, top-8 (see
+    // buildByFaculty) — the API tells the chart where courses live,
+    // never the raw per-campus census with duplicate names.
+    const byFaculty = buildByFaculty(faculties);
 
     const workloadBuckets = bucketTeacherWorkload(
       teacherOfferings.map((t) => t._count.teacherId),

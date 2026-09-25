@@ -75,3 +75,54 @@ export const MATERIAL_TYPE_LABEL: Record<MaterialType, string> = {
   IMAGE: 'صورة',
   OTHER: 'ملف',
 };
+
+/* ──────────────────────────────────────────────────────────────────
+   Grade bands — the platform's ONE student-grade taxonomy (A6 P2,
+   wave 22-a). Three adjacent teacher surfaces used to carry three
+   private vocabularies for the same number: the grades table said
+   «جيّد جدّاً» (≥75), the students table said «متفوّق» (≥80) and the
+   performance distribution merged everything 60–74 into «جيّد
+   ومقبول» — a teacher could not carry a chip's meaning across
+   pages. One student now reads as one chip everywhere: the ladder
+   keeps the grades page's thresholds (the most granular of the
+   three). ResearchReview's /20 paper scale stays separate by
+   design (different denominator, different surface).
+   ────────────────────────────────────────────────────────────────── */
+
+export type GradeBandKey = 'EXCELLENT' | 'VERY_GOOD' | 'GOOD' | 'PASS' | 'WEAK';
+
+export interface GradeBand {
+  key: GradeBandKey;
+  /** Arabic band label — the shared vocabulary. */
+  label: string;
+  /** Badge color (matches the primitives' ThemeColor union). */
+  color: 'green' | 'brand' | 'amber' | 'gold' | 'red';
+  /** ProgressBar fill token (CSS color). */
+  barColor: string;
+  /** Human range for distribution labels, Latin digits inside. */
+  range: string;
+  /** Inclusive lower bound (out of 100). */
+  min: number;
+}
+
+/** Ordered best → weak; index order is the distribution draw order. */
+export const GRADE_BANDS: readonly GradeBand[] = [
+  { key: 'EXCELLENT', label: 'ممتاز',     color: 'green', barColor: 'var(--success)', range: '85 فأعلى', min: 85 },
+  { key: 'VERY_GOOD', label: 'جيّد جدّاً', color: 'brand', barColor: 'var(--accent)',  range: '75–84',    min: 75 },
+  { key: 'GOOD',      label: 'جيّد',      color: 'amber', barColor: 'var(--warning)', range: '65–74',    min: 65 },
+  { key: 'PASS',      label: 'مقبول',     color: 'gold',  barColor: 'var(--gold)',    range: '50–64',    min: 50 },
+  { key: 'WEAK',      label: 'ضعيف',      color: 'red',   barColor: 'var(--danger)',  range: 'أقلّ من 50', min: 0 },
+];
+
+/**
+ * Resolve a student's average grade (0–100 scale, the teacher-students
+ * wire contract) to the platform's single grade band. One chip per
+ * student, identical on the grades table, the students table and the
+ * performance distribution.
+ */
+export function gradeBand(avgGrade: number): GradeBand {
+  for (const band of GRADE_BANDS) {
+    if (avgGrade >= band.min) return band;
+  }
+  return GRADE_BANDS[GRADE_BANDS.length - 1]!;
+}

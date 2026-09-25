@@ -584,20 +584,31 @@ async function main() {
   }
 
   // 3 lectures with chapters and embedded checkpoints
+  //
+  // 22-b (audit 4-A3 P2-5, durationSec honesty): the demo media below
+  //  is a 10-SECOND Big Buck Bunny clip. The old defs claimed
+  //  durationSec 600/720/540 — chapters sought to 0:03/0:07/0:07,
+  //  the checkpoint triggers (200s/280s/560s/250s) could never fire,
+  //  and the seeded 30% watch progress (180/600) was a position the
+  //  media physically cannot reach. Every temporal value below is
+  //  now scaled to the real clip length so chapters, checkpoints and
+  //  progress are all exercisable live.
+  const LECTURE_DEMO_VIDEO =
+    'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
   const lectureDefs = [
     {
       title: 'مقدمة هندسة البرمجيات',
       description: 'تعريف الهندسة، أهميتها، ودورة حياة المشروع البرمجي.',
       ordinal: 1,
-      durationSec: 600,
+      durationSec: 10,
       chapters: [
-        { title: 'ما هي هندسة البرمجيات؟', startSec: 0, endSec: 180, conceptIdx: 0 },
-        { title: 'دورة حياة تطوير البرمجيات', startSec: 180, endSec: 420, conceptIdx: 1 },
-        { title: 'النماذج: Waterfall, Agile', startSec: 420, endSec: 600, conceptIdx: 1 },
+        { title: 'ما هي هندسة البرمجيات؟', startSec: 0, endSec: 4, conceptIdx: 0 },
+        { title: 'دورة حياة تطوير البرمجيات', startSec: 4, endSec: 8, conceptIdx: 1 },
+        { title: 'النماذج: Waterfall, Agile', startSec: 8, endSec: 10, conceptIdx: 1 },
       ],
       checkpoints: [
         {
-          triggerSec: 200,
+          triggerSec: 5,
           conceptIdx: 1,
           question: 'أي نموذج من نماذج التطوير يُعتمد على التكرار والاستجابة السريعة للتغيير؟',
           options: ['Waterfall', 'V-Model', 'Agile', 'Spiral'],
@@ -610,15 +621,15 @@ async function main() {
       title: 'تحليل المتطلبات ومخططات UML',
       description: 'كيف نلتقط متطلبات المستخدم ونمثلها بمخططات Use Case و Class Diagram.',
       ordinal: 2,
-      durationSec: 720,
+      durationSec: 10,
       chapters: [
-        { title: 'تحليل المتطلبات', startSec: 0, endSec: 240, conceptIdx: 2 },
-        { title: 'مخططات Use Case', startSec: 240, endSec: 480, conceptIdx: 3 },
-        { title: 'مخططات Class Diagram', startSec: 480, endSec: 720, conceptIdx: 4 },
+        { title: 'تحليل المتطلبات', startSec: 0, endSec: 3, conceptIdx: 2 },
+        { title: 'مخططات Use Case', startSec: 3, endSec: 6, conceptIdx: 3 },
+        { title: 'مخططات Class Diagram', startSec: 6, endSec: 10, conceptIdx: 4 },
       ],
       checkpoints: [
         {
-          triggerSec: 280,
+          triggerSec: 4,
           conceptIdx: 3,
           question: 'في مخطط Use Case، ماذا يمثّل العنصر الذي يبدو كرجل تخطيطي (Stick figure)؟',
           options: ['وظيفة (Use Case)', 'علاقة Include', 'فاعل (Actor)', 'حدّ النظام'],
@@ -626,7 +637,7 @@ async function main() {
           explanation: 'الفاعل (Actor) يمثّل أي مستخدم أو نظام يتفاعل مع النظام الذي ندرسه.',
         },
         {
-          triggerSec: 560,
+          triggerSec: 7,
           conceptIdx: 4,
           question: 'ما الذي يمثّله السهم ذو الرأس المثلث المُفرَّغ في Class Diagram؟',
           options: ['Aggregation', 'Composition', 'Inheritance', 'Dependency'],
@@ -639,15 +650,15 @@ async function main() {
       title: 'نماذج التصميم وأفضل الممارسات',
       description: 'تطبيق نماذج التصميم Singleton, Factory, Observer لحل مشاكل برمجية شائعة.',
       ordinal: 3,
-      durationSec: 540,
+      durationSec: 10,
       chapters: [
-        { title: 'لماذا نماذج التصميم؟', startSec: 0, endSec: 120, conceptIdx: 5 },
-        { title: 'Singleton و Factory', startSec: 120, endSec: 360, conceptIdx: 5 },
-        { title: 'Observer ومبادئ SOLID', startSec: 360, endSec: 540, conceptIdx: 5 },
+        { title: 'لماذا نماذج التصميم؟', startSec: 0, endSec: 2, conceptIdx: 5 },
+        { title: 'Singleton و Factory', startSec: 2, endSec: 6, conceptIdx: 5 },
+        { title: 'Observer ومبادئ SOLID', startSec: 6, endSec: 10, conceptIdx: 5 },
       ],
       checkpoints: [
         {
-          triggerSec: 250,
+          triggerSec: 3,
           conceptIdx: 5,
           question: 'ما الهدف الأساسي من نموذج Singleton؟',
           options: [
@@ -679,18 +690,22 @@ async function main() {
           description: def.description,
           ordinal: def.ordinal,
           durationSec: def.durationSec,
-          videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+          videoUrl: LECTURE_DEMO_VIDEO,
           posterUrl: '/brand/madarek-mark.svg',
         },
       });
     } else {
+      // The update branch is what heals an older seeded row on re-run
+      // (4-A3 P2-5): a 600s durationSec on a 10s clip gets rewritten
+      // to the honest value, and the chapters/checkpoints are rebuilt
+      // to match below.
       await prisma.lecture.update({
         where: { id: lec.id },
         data: {
           description: def.description,
           ordinal: def.ordinal,
           durationSec: def.durationSec,
-          videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4',
+          videoUrl: LECTURE_DEMO_VIDEO,
           posterUrl: '/brand/madarek-mark.svg',
         },
       });

@@ -71,19 +71,50 @@ export function OwnerGovernancePage() {
         backgroundColor: `color-mix(in srgb, ${c.accent} 12%, transparent)`,
         fill: true,
         tension: 0.4,
-        pointRadius: 4,
+        // A lone point draws with more presence — a 2px-radius dot
+        // alone on an integer axis reads as "one week of data", not
+        // "broken chart" (4-A7 P1-4). Still inside the memo so the
+        // prop identity stays stable across unrelated re-renders
+        // (audit 11-f P2-2 — the pinned contract).
+        pointRadius: govData.weeklyGrowth.length === 1 ? 5 : 4,
+        pointHoverRadius: 7,
         pointBackgroundColor: c.accent,
       },
     ],
   } : null, [govData, c]);
 
-  const growthOptions = useMemo(
-    () => cartesianOptions(),
-    [themeKey, reducedMotion],
-  );
+  /* 22-b (4-A7 P1-4): a COUNT series — weekly signups — must never
+   * render fractional y-ticks (4.75→5.25 step 0.05 signalled false
+   * precision around a single point). Extends the shared theme's
+   * cartesianOptions exactly like the Education page's 0–100 y-clamp:
+   * beginAtZero + ticks.precision 0 keeps the axis integer and
+   * anchored at zero. (chartTheme's cartesianOptions itself stays
+   * 4-A9-owned; this is a page-local scale override.) */
+  const growthOptions = useMemo(() => {
+    const base = cartesianOptions();
+    return {
+      ...base,
+      scales: {
+        ...base.scales,
+        y: {
+          ...base.scales!.y,
+          beginAtZero: true,
+          ticks: { ...base.scales!.y?.ticks, precision: 0 },
+        },
+      },
+      // Same cast idiom the theme factory itself uses — the spread of
+      // the line|bar union scale needs narrowing back to the base type.
+    } as typeof base;
+  }, [themeKey, reducedMotion]);
 
+  /* 22-b (4-A7 P3-6): the legend carries its counts («ناجحة · 156») so
+   * the small legend text stops reading as empty labels next to the
+   * ring's big center figure. */
   const doughnutData = useMemo(() => loginData ? {
-    labels: ['ناجحة', 'فاشلة'],
+    labels: [
+      `ناجحة · ${loginData.successCount.toLocaleString('ar-LY')}`,
+      `فاشلة · ${loginData.failureCount.toLocaleString('ar-LY')}`,
+    ],
     datasets: [
       {
         data: [loginData.successCount, loginData.failureCount],
@@ -103,6 +134,12 @@ export function OwnerGovernancePage() {
       ? { value: loginData.total.toLocaleString('ar-LY'), label: 'إجمالي المحاولات' }
       : undefined,
   }), [loginData, themeKey, reducedMotion]);
+
+  // 22-b (4-A7 P1-4): one week of signups is not a trend — the card
+  // title drops its «(8 أسابيع)» window claim until a second week
+  // exists, the lone point draws larger, and the summary states
+  // exactly how much data there is.
+  const growthWeeks = govData?.weeklyGrowth.length ?? 0;
 
   return (
     <div className="page">
@@ -134,7 +171,7 @@ export function OwnerGovernancePage() {
       )}
 
       <div className="owner-ai-chart-grid">
-        <Card title="نموّ المستخدمين (8 أسابيع)">
+        <Card title={growthWeeks > 1 ? 'نموّ المستخدمين (8 أسابيع)' : 'نموّ المستخدمين'}>
           {governance.isPending ? (
             <ChartSkeleton height={236} />
           ) : governance.isError || !govData ? (
@@ -149,7 +186,9 @@ export function OwnerGovernancePage() {
             <ChartFrame
               className="owner-chart-container"
               ariaLabel="مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً على مدى 8 أسابيع"
-              summary={`أعلى نموّ ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوع واحد.`}
+              summary={govData.weeklyGrowth.length === 1
+                ? `أسبوع واحد من البيانات حتى الآن — ${countAr(govData.weeklyGrowth[0]!.count, ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوعه الأول، ويُرسم المنحنى فور تسجيل الأسبوع القادم.`
+                : `أعلى نموّ ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوع واحد.`}
               table={{
                 caption: 'نموّ المستخدمين الأسبوعي',
                 columns: ['الأسبوع', 'مستخدمون جدد'],

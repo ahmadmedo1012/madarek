@@ -9,7 +9,10 @@
  * "labs you can recommend to your students"):
  *  - List of available virtual labs (DB-backed)
  *  - Per-lab: short description, platform, category, "open student view"
- *  - Hint to students: "labs are also accessible from /student/labs"
+ *  - «معاينة كطالب» opens the student labs explorer at /student/labs —
+ *    mounted role-permissively (STUDENT+TEACHER) since 22-a; the old
+ *    STUDENT-only guard made this CTA silently bounce every teacher
+ *    back to their dashboard (A6 P1).
  *
  * The simulation logic itself lives in the student page — teachers
  * don't drive a state machine inside the lab; they curate which

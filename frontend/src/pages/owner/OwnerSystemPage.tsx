@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import { Server, Clock, AlertTriangle, Activity, RefreshCw, Settings, CheckCircle2 } from 'lucide-react';
+import { Server, Clock, AlertTriangle, Activity, RefreshCw, Settings, CheckCircle2, ChevronDown } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
-import { LoadingState, EmptyState, ErrorState } from '../../components/primitives/States';
+import { EmptyState, ErrorState, TableSkeleton, ListSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { ToggleSwitch } from '../../components/owner/ToggleSwitch';
 import {
   useOwnerFeatureFlags, useToggleFeatureFlag, useOwnerSettings, useUpdateSetting, useOwnerSystem,
 } from '../../hooks/useOwner';
 import type { FeatureFlag } from '../../hooks/useOwner';
+import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS } from '../../lib/ownerLabels';
 import { formatDateTimeAr, formatRelativeArShort } from '../../lib/format';
+import { toast } from '../../lib/toast';
 
-const SEVERITY_COLOR: Record<string, 'green' | 'amber' | 'red'> = {
-  info: 'green',
-  warning: 'amber',
-  error: 'red',
-  critical: 'red',
-};
+/* 22-b (4-A7 P1-1): the severity/category label maps now live in
+ * lib/ownerLabels.ts — the System page's operational-alert feed and the
+ * Alerts page render ONE vocabulary (حرج/خطأ/تحذير/معلومة), never the
+ * raw English enums the API ships. */
 
 /* Relative time for nullable timestamps — the shared compact formatter
  * from lib/format.ts (wave 9-a) with this page's '—' null convention. */
@@ -43,6 +43,14 @@ function syncRunStatus(metadata: unknown): string | null {
   return null;
 }
 
+/** Counted plural for failed setting saves (the toast names the damage). */
+function failedSavesLabel(n: number): string {
+  if (n === 1) return 'إعداد واحد';
+  if (n === 2) return 'إعدادان';
+  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} إعدادات`;
+  return `${n.toLocaleString('ar-LY')} إعداداً`;
+}
+
 export function OwnerSystemPage() {
   const flagsQuery = useOwnerFeatureFlags();
   const toggleFlag = useToggleFeatureFlag();
@@ -55,15 +63,41 @@ export function OwnerSystemPage() {
 
   const [editedSettings, setEditedSettings] = useState<Record<string, string>>({});
   const [expandedAlert, setExpandedAlert] = useState<string | null>(null);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const handleSettingChange = (key: string, value: string) => {
     setEditedSettings((prev) => ({ ...prev, [key]: value }));
   };
-  const handleSaveSettings = () => {
-    Object.entries(editedSettings).forEach(([key, value]) => {
-      updateSetting.mutate({ key, value });
-    });
-    setEditedSettings({});
+
+  /* 22-b (4-A7 P2-4): the save used to fire N parallel fire-and-forget
+   * mutations and clear the local edits immediately — a failure left no
+   * trace and no retry path. Now every mutation is awaited via
+   * Promise.allSettled: full success clears the edits and toasts; any
+   * rejection keeps ONLY the failed keys editable (the saved ones drop
+   * out of the draft) and the toast names how many failed. */
+  const handleSaveSettings = async () => {
+    const entries = Object.entries(editedSettings);
+    if (entries.length === 0 || savingSettings) return;
+    setSavingSettings(true);
+    const results = await Promise.allSettled(
+      entries.map(([key, value]) => updateSetting.mutateAsync({ key, value })),
+    );
+    const failedKeys = new Set(
+      entries.filter((_, i) => results[i]!.status === 'rejected').map(([key]) => key),
+    );
+    if (failedKeys.size === 0) {
+      setEditedSettings({});
+      toast.success('حُفظت الإعدادات المعدَّلة بنجاح.', { title: 'تمّ الحفظ' });
+    } else {
+      setEditedSettings((prev) =>
+        Object.fromEntries(Object.entries(prev).filter(([key]) => failedKeys.has(key))),
+      );
+      toast.error(
+        `تعذّر حفظ ${failedSavesLabel(failedKeys.size)} — أُبقيت قيمه في المحرّر، حاول مجدداً.`,
+        { title: 'فشل حفظ الإعدادات' },
+      );
+    }
+    setSavingSettings(false);
   };
   const handleFlagToggle = (flag: FeatureFlag) => {
     toggleFlag.mutate({ slug: flag.slug, enabled: !flag.enabled });
@@ -86,8 +120,8 @@ export function OwnerSystemPage() {
           <h1 className="page-title">
             النظام والتشغيل
             {sysData && sysData.alerts.openCount > 0 && (
-              <span className="owner-badge-counter" style={{ marginInlineStart: '8px' }}>
-                {sysData.alerts.openCount}
+              <span className="owner-badge-counter">
+                <bdi>{sysData.alerts.openCount.toLocaleString('ar-LY')}</bdi>
               </span>
             )}
           </h1>
@@ -124,7 +158,9 @@ export function OwnerSystemPage() {
           rather than left unwired. */}
       <Card title="سجلّ المزامنة" icon={RefreshCw}>
         {sys.isPending ? (
-          <LoadingState />
+          /* Shape-matched (4-A7 P2-5): a 4-col table skeleton, not a
+           * bare spinner — the shape this card fills is known. */
+          <TableSkeleton rows={4} cols={4} />
         ) : sys.isError ? (
           <ErrorState
             message="تعذّر جلب سجلّ المزامنة"
@@ -137,49 +173,59 @@ export function OwnerSystemPage() {
             description="ستظهر آخر عمليّات المزامنة هنا فور تشغيلها."
           />
         ) : (
-          <table className="owner-table">
-            <thead>
-              <tr>
-                <th>التاريخ</th>
-                <th>النوع</th>
-                <th>المنفِّذ</th>
-                <th>منذ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sysData.sync.recent.map((run) => {
-                const running = syncRunStatus(run.metadata) === 'RUNNING';
-                return (
-                  <tr key={run.id}>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>
-                      {formatDateTimeAr(run.at)}
-                    </td>
-                    <td>
-                      {/* 16-B6 hand-off: a RUNNING row reads as in-flight
-                          (amber), not «مزامنة جزئية» — matches
-                          AdminSyncPage's STATUS_LABEL vocabulary. */}
-                      <Badge color={run.action.includes('failed') ? 'red' : running || run.action.includes('partial') ? 'amber' : 'green'}>
-                        {running ? 'قيد التنفيذ' : SYNC_ACTION_LABEL[run.action] ?? run.action}
-                      </Badge>
-                    </td>
-                    <td style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-xs)' }}>{run.actor}</td>
-                    <td style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-subtle)' }}>{formatRelative(run.at)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          /* 22-b (4-A7 P1-5): migrated to the shared .table.tbl-stack
+           * pattern (the users page's reference migration) — the bare
+           * .owner-table clipped its 4 columns inside the card at
+           * 390px; the stack pattern turns every row into a labelled
+           * card on phones instead. */
+          <div className="table-wrap">
+            <table className="table tbl-stack owner-sync-table">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>النوع</th>
+                  <th>المنفِّذ</th>
+                  <th>منذ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sysData.sync.recent.map((run) => {
+                  const running = syncRunStatus(run.metadata) === 'RUNNING';
+                  return (
+                    <tr key={run.id}>
+                      <td className="owner-cell-muted" data-label="التاريخ">{formatDateTimeAr(run.at)}</td>
+                      <td data-label="النوع">
+                        {/* 16-B6 hand-off: a RUNNING row reads as in-flight
+                            (amber), not «مزامنة جزئية» — matches
+                            AdminSyncPage's STATUS_LABEL vocabulary. */}
+                        <Badge color={run.action.includes('failed') ? 'red' : running || run.action.includes('partial') ? 'amber' : 'green'}>
+                          {running ? 'قيد التنفيذ' : SYNC_ACTION_LABEL[run.action] ?? <bdi>{run.action}</bdi>}
+                        </Badge>
+                      </td>
+                      <td className="owner-cell-muted" data-label="المنفِّذ">{run.actor}</td>
+                      <td className="owner-cell-muted" data-label="منذ">{formatRelative(run.at)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </Card>
 
       {/* Feature Flags — already real data */}
       <Card title="أعلام الميزات (Feature Flags)" icon={Settings}>
-        <div style={{ padding: 'var(--sp-2) 0' }}>
-          {flagsQuery.isPending && <LoadingState />}
+        <div className="owner-list-pad">
+          {flagsQuery.isPending && <ListSkeleton rows={3} />}
           {!flagsQuery.isPending && featureFlags.length === 0 && (
             <EmptyState
               title="لا توجد أعلام مُعرَّفة"
-              description="لم تُعرَّف أي أعلام ميزات بعد؛ يمكن إضافتها من إعدادات النظام."
+              /* 22-b (4-A7 P2-9): the old copy pointed at "إعدادات النظام"
+               * as the creation path — no such affordance exists on this
+               * page (the settings editor only edits existing keys), so
+               * the empty state names the real state instead of a dead
+               * end. */
+              description="لم تُعرَّف أعلام ميزات بعد؛ تُدار حالياً مباشرةً من قاعدة بيانات المنصّة."
             />
           )}
           {featureFlags.map((flag) => (
@@ -199,9 +245,9 @@ export function OwnerSystemPage() {
           An API failure surfaces as an honest error state, never as
           the "لا توجد تنبيهات" empty state. */}
       <Card title="التنبيهات التشغيلية المفتوحة" icon={AlertTriangle}>
-        <div style={{ padding: 'var(--sp-2) 0' }}>
+        <div className="owner-list-pad">
           {sys.isPending ? (
-            <LoadingState />
+            <ListSkeleton rows={3} />
           ) : sys.isError ? (
             <ErrorState
               message="تعذّر جلب التنبيهات التشغيلية"
@@ -217,28 +263,34 @@ export function OwnerSystemPage() {
           ) : (
             sysData.alerts.open.map((alert) => (
               <div key={alert.id} className="owner-error-entry">
-                <div
+                {/* 22-b (4-A7 P1-2): a real disclosure <button> (was a
+                    click-only div — WCAG 2.1.1). aria-expanded + the
+                    rotating chevron reuse the activity feed's
+                    .owner-detail-toggle motion language. */}
+                <button
+                  type="button"
                   className="owner-error-entry-head"
+                  aria-expanded={expandedAlert === alert.id}
                   onClick={() => setExpandedAlert(expandedAlert === alert.id ? null : alert.id)}
                 >
                   <span className="timestamp">{formatDateTimeAr(alert.createdAt)}</span>
                   <span className="message">
-                    <Badge color={SEVERITY_COLOR[alert.severity] ?? 'amber'}>
-                      {alert.severity}
+                    <Badge color={SEVERITY_COLORS[alert.severity] ?? 'amber'}>
+                      {SEVERITY_LABELS[alert.severity] ?? <bdi>{alert.severity}</bdi>}
                     </Badge>
                     {' · '}
                     {alert.title}
                   </span>
-                  <Icon icon={AlertTriangle} size={14} style={{ color: 'var(--warning)' }} />
-                </div>
+                  <Icon icon={ChevronDown} size={14} className="owner-detail-chevron" aria-hidden />
+                </button>
                 {expandedAlert === alert.id && (
                   <div className="owner-error-entry-stack">
-                    <div style={{ marginBlockEnd: 'var(--sp-2)' }}>
-                      <strong>الفئة:</strong> {alert.category}
+                    <div className="owner-stack-field">
+                      <strong>الفئة:</strong> {CATEGORY_LABELS[alert.category] ?? <bdi>{alert.category}</bdi>}
                     </div>
                     <div>{alert.message}</div>
                     {alert.metadata !== null && (
-                      <pre style={{ marginBlockStart: 'var(--sp-2)', fontSize: 'var(--fs-xxs)' }}>
+                      <pre>
                         {JSON.stringify(alert.metadata, null, 2)}
                       </pre>
                     )}
@@ -252,9 +304,9 @@ export function OwnerSystemPage() {
 
       {/* Platform settings — already real data */}
       <Card title="إعدادات المنصّة" icon={Settings}>
-        <div style={{ padding: 'var(--sp-2) 0' }}>
+        <div className="owner-list-pad">
           {settingsQuery.isPending ? (
-            <LoadingState />
+            <ListSkeleton rows={3} />
           ) : settings.length === 0 ? (
             <EmptyState
               title="لا توجد إعدادات مُعرَّفة"
@@ -272,15 +324,15 @@ export function OwnerSystemPage() {
                   />
                 </div>
               ))}
-              <div style={{ paddingTop: 'var(--sp-4)' }}>
+              <div className="owner-save-row">
                 <button
                   type="button"
                   className="btn primary"
                   onClick={handleSaveSettings}
-                  disabled={updateSetting.isPending || Object.keys(editedSettings).length === 0}
+                  disabled={savingSettings || updateSetting.isPending || Object.keys(editedSettings).length === 0}
                 >
                   <Icon icon={CheckCircle2} size={14} />
-                  حفظ الإعدادات
+                  {savingSettings ? 'جارٍ الحفظ…' : 'حفظ الإعدادات'}
                 </button>
               </div>
             </>

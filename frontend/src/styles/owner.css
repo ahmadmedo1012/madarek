@@ -19,7 +19,11 @@
   top: 12px;
   bottom: 12px;
   width: 2px;
-  background: var(--border);
+  /* 22-b (4-A7 P3-1): the spine was var(--border) = 1.24:1 on the
+     white card — the VLM read the timeline as "a standard list". A
+     tinted accent hairline (28% copper into the strong border) reads
+     as structure in BOTH themes without shouting. */
+  background: color-mix(in srgb, var(--accent) 28%, var(--border-strong));
   /* hairline spine — micro-radius below the --r-xs floor, kept raw */
   border-radius: 1px;
 }
@@ -305,11 +309,45 @@
 }
 
 .owner-error-entry-head {
+  /* 22-b (4-A7 P1-2): now a real <button> (was a click-only div —
+     WCAG 2.1.1). Full-row hit target, UA button chrome reset, and
+     the rotating chevron reuses the activity feed's disclosure
+     motion language. */
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
   font-size: var(--fs-sm);
+  inline-size: 100%;
+  padding: 2px 0;
+  background: none;
+  border: none;
+  border-radius: var(--r-xs);
+  color: inherit;
+  font-family: inherit;
+  text-align: start;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.owner-error-entry-head:hover .message {
+  color: var(--danger-ink, var(--danger));
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.owner-error-entry-head:focus-visible {
+  outline: 2px solid var(--state-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.owner-error-entry-head .owner-detail-chevron {
+  color: var(--text-subtle);
+  flex-shrink: 0;
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.owner-error-entry-head[aria-expanded='true'] .owner-detail-chevron {
+  transform: rotate(180deg);
 }
 
 .owner-error-entry-head .timestamp {
@@ -336,6 +374,17 @@
   line-height: var(--lh-base);
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+/* 22-b (4-A7 P3-7): the stack's structural spacing de-inlined from
+   per-node style props (the classes the 6-b section reserved for
+   exactly this). */
+.owner-stack-field {
+  margin-block-end: var(--sp-2);
+}
+
+.owner-error-entry-stack pre {
+  margin-block-start: var(--sp-2);
 }
 
 /* ── Table enhancements ────────────────────────────────────── */
@@ -444,7 +493,15 @@
 }
 
 .owner-health-dot.green { background: var(--success); }
-.owner-health-dot.amber { background: var(--warning); }
+
+/* 22-b (4-A7 P2-2): the raw --warning fill measured 2.30:1 on the
+   white card — under the 3:1 WCAG 1.4.11 floor for meaningful
+   graphics (the dots carry state). Deepening 38% toward the
+   warning-ink family lands ≈ #AE8222 ≈ 3.5:1 in light; in dark the
+   mix is a no-op (--warning and --warning-ink resolve to the same
+   light amber, already 11:1) so both themes pass from one rule. */
+.owner-health-dot.amber { background: color-mix(in srgb, var(--warning) 62%, var(--warning-ink)); }
+
 .owner-health-dot.red { background: var(--danger); }
 
 .owner-health-label {
@@ -457,7 +514,16 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text);
+  /* 22-b (4-A7 P3-3): the mono stack came OFF the container — these
+     values include Arabic words ('سليمة', 'تعذّر الجلب', counted
+     plurals) and IBM Plex Mono has no Arabic glyphs, so every Arabic
+     run fell to a per-glyph system fallback mid-line. The numeric
+     <bdi> runs below keep the mono + tabular numerals treatment. */
+}
+
+.owner-health-value bdi {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Filter pills row ──────────────────────────────────────── */
@@ -618,6 +684,10 @@
   font-size: 11px;
   font-weight: var(--fw-bold);
   line-height: 1;
+  /* 22-b (4-A7 P2-8 + P3-7): the count rides next to the page title
+     (was an inline margin style; the digits inside are now an ar-LY
+     <bdi> like every other numeric on the console). */
+  margin-inline-start: var(--sp-2);
 }
 
 /* ── Command Center: Realtime Grid ────────────────────────── */
@@ -1237,5 +1307,44 @@
   .owner-share-fill,
   .owner-swatch-chip,
   .owner-card-settle { animation: none; }
+}
+}
+
+/* ═════════════════════════════════════════════════════════════
+   wave 22-b — owner console fixes (audit 4-A7: P1-2 expander
+   button chrome + P1-5 stack-table paddings, P2-5 skeletons,
+   P3-7 de-inlined system-page spacing, P3-9 realtime tile
+   squeeze). Value tweaks on pre-existing rules (spine tint, amber
+   dot mix, health-value mono split) were edited in place above.
+   ═════════════════════════════════════════════════════════════ */
+@layer pages {
+
+/* System page list sections (flags / alerts / settings) — the shared
+   vertical rhythm the three cards used to carry as per-wrapper inline
+   styles (4-A7 P3-7). */
+.owner-list-pad {
+  padding: var(--sp-2) 0;
+}
+
+/* The settings save row (was an inline padding-block-start). */
+.owner-save-row {
+  padding-block-start: var(--sp-4);
+}
+
+/* 4-A7 P3-9: at 390px the 2×2 live tiles squeeze to ~171px each and
+   the longest label wraps awkwardly; under 360px the grid goes
+   single-column so every live tile gets the full track. */
+@media (max-width: 360px) {
+  .owner-realtime-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 4-A7 P1-2 touch floor: the alert disclosure is now a real button —
+   it gets the console's 44px mobile floor like every other control. */
+@media (max-width: 640px) {
+  .owner-error-entry-head {
+    min-block-size: 44px;
+  }
 }
 }

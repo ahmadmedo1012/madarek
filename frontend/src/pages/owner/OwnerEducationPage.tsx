@@ -11,7 +11,7 @@ import {
   ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, TableSkeleton, ListSkeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts/ChartFrame';
-import { cartesianOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
+import { cartesianOptions, chartColors, valueLabels, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerEducation } from '../../hooks/useOwner';
 import { useReducedMotion } from '../../components/motion';
 
@@ -67,6 +67,13 @@ export function OwnerEducationPage() {
     () => ({ ...cartesianOptions({ horizontal: true }), indexAxis: 'y' as const }),
     [themeKey, reducedMotion],
   );
+
+  /* 22-b (4-A7 P3-2): bar-end value labels via the shared theme's
+   * valueLabels plugin (the admin pages' convention) — the reader no
+   * longer has to trace the axis for a count. Every bar carries a
+   * non-zero count since 22-b's API fold drops zero-course faculties
+   * (4-A7 P1-3), so no empty bar gets a meaningless "0". */
+  const barPlugins = useMemo(() => [valueLabels], []);
 
   const lineData = useMemo(() => ({
     labels: (edu?.attendanceTrend ?? []).map((t) => t.month),
@@ -182,7 +189,7 @@ export function OwnerEducationPage() {
             }}
             height={barHeight}
           >
-            <Bar key={themeKey} data={barData} options={barOptions} />
+            <Bar key={themeKey} data={barData} options={barOptions} plugins={barPlugins} />
           </ChartFrame>
         )}
       </Card>

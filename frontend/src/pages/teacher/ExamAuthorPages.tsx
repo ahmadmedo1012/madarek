@@ -463,11 +463,14 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
 }
 
 function TemplateRow({ template }: { template: ExamTemplateRow }) {
+  // A6 P3 (22-a): one label for the general scope everywhere — the row
+  // used to say «عام» while the detail said «عام — كل الكلّيّات».
+  const GENERAL_SCOPE = 'عام — كل الكلّيّات';
   const scope = template.offering
     ? `${template.offering.course.name} · ${template.offering.course.code}`
     : template.faculty
       ? `كلّيّة ${template.faculty.name}`
-      : 'عام';
+      : GENERAL_SCOPE;
   return (
     <div className="list-row">
       <div className="list-row-body">
@@ -541,7 +544,10 @@ function PublishButton({
         variant="primary"
         size="sm"
         onClick={() => setConfirming(true)}
-        title="النشر متاح بعد اعتماد الجودة"
+        /* A6 P3 (22-a): the tooltip names the consequence — the old
+           «النشر متاح بعد اعتماد الجودة» was stale on an APPROVED
+           row, where publishing is exactly what is available. */
+        title="النشر يعرض الاختبار للطلاب حسب نطاقه ولا يمكن التراجع عنه"
       >
         <Icon icon={Send} size={12} /> نشر
       </Button>
@@ -563,6 +569,16 @@ function PublishButton({
 }
 
 /* ═══════════════ Question bank tab ═══════════════ */
+
+/* A6 P2 (22-a): the bank filter row (hub) and the picker filter row
+ * (builder modal) are sibling surfaces — they used to carry eight
+ * drifting inline magic-number widths (280/200/160/140 vs
+ * 220/150/130/120). One shared width budget keeps them identical;
+ * the `.filter-bar` CSS class + `--w-input-filter` tokens land with
+ * 22-c (components.css owner this wave) and can consume these same
+ * constants. The `topbar-search` reuse is part of that hand-off. */
+const FILTER_SEARCH_MAXW = 260;
+const FILTER_SELECT_MAXW = 170;
 
 function QuestionBankSection() {
   const [q, setQ] = useState('');
@@ -601,7 +617,7 @@ function QuestionBankSection() {
       }
     >
       <div className="flex gap-3 items-center flex-wrap" style={{ marginBlockEnd: 'var(--sp-4)' }}>
-        <div className="topbar-search" style={{ width: '100%', maxWidth: 280 }}>
+        <div className="topbar-search" style={{ width: '100%', maxWidth: FILTER_SEARCH_MAXW }}>
           <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
           <input
             type="text"
@@ -613,7 +629,7 @@ function QuestionBankSection() {
         </div>
         <select
           className="input"
-          style={{ maxWidth: 200 }}
+          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية حسب التصنيف"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -625,7 +641,7 @@ function QuestionBankSection() {
         </select>
         <select
           className="input"
-          style={{ maxWidth: 160 }}
+          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية حسب نوع السؤال"
           value={type}
           onChange={(e) => setType(e.target.value as '' | QType)}
@@ -637,7 +653,7 @@ function QuestionBankSection() {
         </select>
         <select
           className="input"
-          style={{ maxWidth: 140 }}
+          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية حسب مستوى الصعوبة"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as '' | Difficulty)}
@@ -1322,7 +1338,19 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
             />
 
             <div className="flex gap-3 flex-wrap">
-              <Field label="يفتح في (اختياري)" htmlFor="tpl-open">
+              {/* A6 P2 (22-a): the datetime-local field renders in the
+                  browser's locale (en-US → mm/dd/yyyy) inside this Arabic
+                  modal. The hint names the native calendar as the safe
+                  path; once a value is picked it becomes an Arabic echo
+                  the author can verify against (datetime-local values
+                  carry no offset — the echo is the same local time). */}
+              <Field
+                label="يفتح في (اختياري)"
+                htmlFor="tpl-open"
+                hint={draft.openAt
+                  ? `المحدَّد: ${formatDateTimeAr(draft.openAt)}`
+                  : 'اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+              >
                 <input
                   id="tpl-open"
                   type="datetime-local"
@@ -1332,7 +1360,13 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   onChange={(e) => patch({ openAt: e.target.value })}
                 />
               </Field>
-              <Field label="يغلق في (اختياري)" htmlFor="tpl-close">
+              <Field
+                label="يغلق في (اختياري)"
+                htmlFor="tpl-close"
+                hint={draft.closeAt
+                  ? `المحدَّد: ${formatDateTimeAr(draft.closeAt)}`
+                  : 'اختر من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+              >
                 <input
                   id="tpl-close"
                   type="datetime-local"
@@ -1450,7 +1484,9 @@ function QuestionPicker({
       </div>
 
       <div className="flex gap-2 items-center flex-wrap">
-        <div className="topbar-search" style={{ width: '100%', maxWidth: 220 }}>
+        {/* Same shared width budget as the hub's bank filter row (the
+            A6 P2 unification) — only the gap tightens for the modal. */}
+        <div className="topbar-search" style={{ width: '100%', maxWidth: FILTER_SEARCH_MAXW }}>
           <span className="topbar-search-icon"><Icon icon={Search} size={13} /></span>
           <input
             type="text"
@@ -1462,7 +1498,7 @@ function QuestionPicker({
         </div>
         <select
           className="input"
-          style={{ maxWidth: 150 }}
+          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية أسئلة البنك حسب التصنيف"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -1474,7 +1510,7 @@ function QuestionPicker({
         </select>
         <select
           className="input"
-          style={{ maxWidth: 130 }}
+          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية أسئلة البنك حسب النوع"
           value={type}
           onChange={(e) => setType(e.target.value as '' | QType)}
@@ -1486,7 +1522,7 @@ function QuestionPicker({
         </select>
         <select
           className="input"
-          style={{ maxWidth: 120 }}
+          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية أسئلة البنك حسب الصعوبة"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as '' | Difficulty)}
@@ -1649,7 +1685,22 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
     <>
       <header className="page-header">
         <div className="page-title-block">
-          <h1 className="page-title" title={template.title}>{template.title}</h1>
+          {/* A6 P3 (22-a): 2-line clamp — authored titles run long and
+              pushed the whole page down; the full title stays in the
+              title attr (and the clamp keeps the first two lines
+              readable, not a truncation). */}
+          <h1
+            className="page-title"
+            title={template.title}
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            } as React.CSSProperties}
+          >
+            {template.title}
+          </h1>
           <p className="page-subtitle" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
             <Badge color="purple">{KIND_LABEL[template.kind]}</Badge>
             <TemplateStatusBadge status={template.status} />
@@ -1767,8 +1818,21 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
 
 function DetailLine({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-3 flex-wrap">
-      <span className="text-xs text-muted">{label}</span>
+    /* A6 P3 (22-a): a dotted leader gives each label/value pair a scan
+     * line — the old bare justify-between rows had no rhythm and VLM
+     * read the card as noise. Baseline-aligned; long values wrap to
+     * their own line (flex-wrap) with the leader shrinking to min. */
+    <div className="flex items-baseline gap-2 flex-wrap">
+      <span className="text-xs text-muted" style={{ flexShrink: 0 }}>{label}</span>
+      <span
+        aria-hidden
+        style={{
+          flex: '1 1 2rem',
+          minInlineSize: '1rem',
+          borderBottom: '1px dotted var(--border-strong)',
+          transform: 'translateY(-0.2em)',
+        }}
+      />
       <span className="text-sm" style={{ textAlign: 'end' }}>{children}</span>
     </div>
   );

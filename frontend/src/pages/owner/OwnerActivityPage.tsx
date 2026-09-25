@@ -156,7 +156,11 @@ export function OwnerActivityPage() {
     return {
       ...e,
       category,
-      actionLabel: ACTION_LABEL[e.action] ?? fallback,
+      // 22-b (4-A7 P2-7): an unknown action's raw enum is
+      // bidi-isolated — a future Latin enum (e.g. EXPORT_RUN) must
+      // never flow un-isolated through the RTL title line. Mirrors
+      // the dashboard's actionLabel helper.
+      actionLabel: ACTION_LABEL[e.action] ?? (fallback === e.action ? <bdi>{e.action}</bdi> : fallback),
       config: TYPE_CONFIG[category],
     };
   });

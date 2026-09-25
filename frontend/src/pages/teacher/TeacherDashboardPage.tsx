@@ -51,6 +51,28 @@ const KIND_ACTION: Record<'submissions' | 'research' | 'attendance', string> = {
 
 /* countAr + formatRelativeAr live in lib/format.ts (wave 9-a). */
 
+/**
+ * Trend drawability floor (A6 P2, 22-a). The 6-week window comes back
+ * with 5/6 weeks null server-side early in a term; a line chart with a
+ * single non-null point renders one floating dot that reads as a
+ * rendering bug (VLM flagged it on desktop, mobile AND dark). A series
+ * needs ≥2 non-null points to draw a trend — exported for the unit
+ * suite.
+ */
+export function trendCoverage(trend: TeacherDashboard['trend']): {
+  /** True when at least one series has ≥2 non-null points. */
+  drawable: boolean;
+  /** Weeks with any recorded value (grade OR attendance). */
+  weeksRecorded: number;
+} {
+  const gradePoints = trend.filter((t) => t.avgGradePct !== null).length;
+  const attendancePoints = trend.filter((t) => t.attendancePct !== null).length;
+  return {
+    drawable: gradePoints >= 2 || attendancePoints >= 2,
+    weeksRecorded: trend.filter((t) => t.avgGradePct !== null || t.attendancePct !== null).length,
+  };
+}
+
 export function TeacherDashboardPage() {
   const [filter, setFilter] = useState<FeedFilter>('all');
   const dash = useTeacherDashboard();
@@ -123,6 +145,21 @@ export function TeacherDashboardPage() {
   // call resolves CSS custom properties — it is not free).
   const baseOpts = cartesianOptions({ legend: true });
 
+  // A6 P2 (22-a): a series needs ≥2 non-null points to draw a trend.
+  // Below that floor the canvas is replaced by the platform empty-state
+  // grammar — a lone dot on an empty grid read as a rendering bug, not
+  // as "not enough data yet". The sr-only data table feeds both branches.
+  const coverage = trendCoverage(d.trend);
+  const trendTable = {
+    caption: 'اتجاه الأداء والحضور — آخر ستة أسابيع',
+    columns: ['الأسبوع', 'متوسط الأداء', 'الحضور'],
+    rows: d.trend.map((t) => [
+      t.week,
+      t.avgGradePct === null ? '—' : `${t.avgGradePct}%`,
+      t.attendancePct === null ? '—' : `${t.attendancePct}%`,
+    ]),
+  } as const;
+
   return (
     <div className="page">
       <header className="page-header">
@@ -174,36 +211,62 @@ export function TeacherDashboardPage() {
       {/* Performance + attendance trend — real 6-week data, wrapped for
           screen readers (aria-label + sr-only data table, audit 0-f). */}
       <Card title="اتجاه الأداء والحضور" icon={Sparkles} subtitle="متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية">
-        <ChartFrame
-          ariaLabel="مخطط خطي لمتوسط الأداء ونسبة الحضور خلال الأسابيع الستة الماضية"
-          summary={
-            d.trend.length === 0
-              ? 'لا توجد بيانات اتجاه بعد.'
-              : 'مقارنة أسبوعية بين متوسط درجات الطلاب ونسبة الحضور.'
-          }
-          height={240}
-          table={{
-            caption: 'اتجاه الأداء والحضور — آخر ستة أسابيع',
-            columns: ['الأسبوع', 'متوسط الأداء', 'الحضور'],
-            rows: d.trend.map((t) => [
-              t.week,
-              t.avgGradePct === null ? '—' : `${t.avgGradePct}%`,
-              t.attendancePct === null ? '—' : `${t.attendancePct}%`,
-            ]),
-          }}
-        >
-          <Line
-            key={themeKey}
-            data={trendChartData(d.trend)}
-            options={{
-              ...baseOpts,
-              scales: {
-                ...baseOpts.scales,
-                y: { ...baseOpts.scales!.y, min: 0, max: 100 },
-              },
-            }}
-          />
-        </ChartFrame>
+        {!coverage.drawable ? (
+          <>
+            <div className="state state-empty" role="status">
+              <div className="state-icon">
+                <Icon icon={Sparkles} size={20} />
+              </div>
+              <div className="state-title">لا تتوفّر بيانات كافية بعد لرسم الاتجاه</div>
+              <div className="state-desc">
+                {coverage.weeksRecorded === 0
+                  ? 'لم يُسجَّل أي أسبوع حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.'
+                  : `${countAr(coverage.weeksRecorded, ['أسبوع واحد مسجَّل', 'أسبوعان مسجَّلان', 'أسابيع مسجَّلة', 'أسبوعاً مسجَّلاً'])} حتى الآن — يُرسم المخطط تلقائياً بعد اكتمال أسبوعين على الأقل.`}
+              </div>
+            </div>
+            {/* The real data points stay available to screen readers
+                even while the canvas is withheld. */}
+            <div className="visually-hidden">
+              <p>لا تتوفّر بيانات كافية بعد لرسم المخطط الخطي.</p>
+              <table>
+                <caption>{trendTable.caption}</caption>
+                <thead>
+                  <tr>
+                    {trendTable.columns.map((column, i) => (
+                      <th key={`${column}-${i}`} scope="col">{column}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {trendTable.rows.map((row, i) => (
+                    <tr key={i}>
+                      {row.map((cell, j) => <td key={j}>{cell}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <ChartFrame
+            ariaLabel="مخطط خطي لمتوسط الأداء ونسبة الحضور خلال الأسابيع الستة الماضية"
+            summary="مقارنة أسبوعية بين متوسط درجات الطلاب ونسبة الحضور."
+            height={240}
+            table={trendTable}
+          >
+            <Line
+              key={themeKey}
+              data={trendChartData(d.trend)}
+              options={{
+                ...baseOpts,
+                scales: {
+                  ...baseOpts.scales,
+                  y: { ...baseOpts.scales!.y, min: 0, max: 100 },
+                },
+              }}
+            />
+          </ChartFrame>
+        )}
       </Card>
 
       {/* Filter toolbar */}
