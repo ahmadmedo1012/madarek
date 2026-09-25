@@ -116,9 +116,36 @@ describe('AppShell — document.title per route (15-g P2-3)', () => {
     expect(document.title).toBe('لوحة التحكم · مدارك');
   });
 
-  it('falls back to the platform title for unlisted routes', () => {
+  it('falls back to the full platform title for unlisted routes (4-A14 P2-1)', () => {
     renderShell(); // MemoryRouter default entry '/' — no PAGE_TITLES match
-    expect(document.title).toBe('منصة الزاوية · مدارك');
+    // The fallback used to read «منصة الزاوية · مدارك» — the wrong
+    // brand (the university platform, not the product) with a doubled
+    // suffix. The product name alone resolves to the base title.
+    expect(document.title).toBe('مدارك · منصة التعليم الذكي · جامعة الزاوية');
+  });
+
+  it('resolves the previously-unmapped teacher/admin routes (4-A14 P2-1)', () => {
+    const cases: Array<[string, string]> = [
+      ['/teacher/exams', 'بنك الأسئلة والاختبارات · مدارك'],
+      ['/teacher/ai', 'المساعد الذكي · مدارك'],
+      ['/teacher/library', 'المكتبة · مدارك'],
+      ['/teacher/alerts', 'الإشعارات · مدارك'],
+      ['/admin/alerts', 'الإشعارات · مدارك'],
+      ['/student/ar', 'تجارب AR/VR · مدارك'],
+      // nav.ts-canonical labels after the orphan surfacing (A14 P3-2)
+      ['/student/gamification', 'النقاط والمستويات · مدارك'],
+      ['/student/skills', 'مهاراتي · مدارك'],
+    ];
+    for (const [path, expected] of cases) {
+      const { unmount } = renderShell('محتوى', path);
+      expect(document.title, path).toBe(expected);
+      unmount();
+    }
+  });
+
+  it('resolves the exam-template detail route via DYNAMIC_TITLES (4-A14 P2-1)', () => {
+    renderShell('محتوى', '/teacher/exams/tpl_123');
+    expect(document.title).toBe('بنك الأسئلة والاختبارات · مدارك');
   });
 
   it('restores the static index.html title when the shell unmounts (logout path)', () => {

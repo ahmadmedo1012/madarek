@@ -10,6 +10,11 @@
  * their own edge (direction-aware via --motion-direction), bottom
  * sheets slide down. Wave 12-14: Escape answers one layer per press
  * and the scroll lock is ref-counted (overlayStack + scrollLock).
+ * Wave 21-b (A9 P1-1): the ENTRANCE keyframes are direction-aware
+ * too (madarek-sheet-slide-end/-start in components.css multiply the
+ * translateX offset by --motion-direction), so an `end` sheet now
+ * arrives FROM its own edge in RTL (left) instead of entering out of
+ * the page interior.
  *
  * Usage:
  *   <Sheet open={isOpen} onClose={() => setIsOpen(false)} side="end" ariaLabel="Filters">

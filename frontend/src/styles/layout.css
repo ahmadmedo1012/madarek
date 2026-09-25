@@ -38,9 +38,28 @@
   .sidebar {
     inline-size: var(--sidebar-w);
     padding: var(--sp-3) var(--sp-3) var(--sp-3);
-    overflow-y: auto;
-    overflow-x: hidden;
+    /* 4-A2 P1-2: the sidebar itself must NOT be the scroll container —
+       with the whole rail scrolling, the pinned-intent footer
+       (margin-block-start: auto) only won free space that never
+       existed, and the account cluster sat 177-577px below the fold
+       in every shell state. The scroller is .sidebar-nav below; the
+       footer stays pinned. overflow:hidden (not clip) keeps the
+       programmatic-overflow behavior identical for the drawer band. */
+    overflow: hidden;
     font-size: var(--fs-sm);
+  }
+
+  /* The nav scroller (4-A2 P1-2): takes all the free block space so
+     .sidebar-footer below stays on-screen; the rail/drawer chrome
+     (brand + footer) never scrolls away. Mirrors polish.css:814's
+     thin scrollbar intent for the old whole-sidebar scroller. */
+  .sidebar-nav {
+    flex: 1;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent;
   }
 
   .sidebar-brand {
@@ -50,10 +69,11 @@
     padding: var(--sp-3);
     border-radius: var(--r-md);
     margin-block-end: var(--sp-2);
-    transition: background var(--t-fast) var(--ease);
-    cursor: pointer;
+    /* 4-A2 P3-15: cursor:pointer + hover bg were an affordance lie —
+       the brand is not a control (no onClick in Sidebar.tsx). A static
+       element must not advertise interactivity. */
+    flex-shrink: 0;
   }
-  .sidebar-brand:hover { background: var(--sidebar-item-hover-bg); }
   .sidebar-brand-mark {
     inline-size: 28px;
     block-size: 28px;
@@ -164,12 +184,15 @@
   .nav-badge.amber{ background: var(--c-yellow-bg); color: var(--c-yellow-deep); }
 
   .sidebar-footer {
-    margin-block-start: auto;
+    margin-block-start: var(--sp-3);
     padding-block-start: var(--sp-3);
     border-block-start: 1px solid var(--rule);
     display: flex;
     flex-direction: column;
     gap: var(--sp-2);
+    /* 4-A2 P1-2: pinned — never absorbed into the .sidebar-nav
+       scroller, never pushed below the fold. */
+    flex-shrink: 0;
   }
 
   .sidebar-user {
@@ -188,7 +211,7 @@
   }
   .sidebar-user-role { font-size: var(--fs-xxs); color: var(--text-muted); }
   .sidebar-logout {
-    inline-size: 26px; block-size: 26px;
+    inline-size: 32px; block-size: 32px;
     display: inline-flex; align-items: center; justify-content: center;
     color: var(--text-muted);
     border-radius: var(--r-xs);
@@ -213,11 +236,20 @@
       display: flex;
       position: fixed;
       inset-block-start: 0; inset-block-end: 0;
-      inset-inline-end: 0;
+      /* 4-A2 P1-4: dock the drawer to the inline-START edge — physical
+         RIGHT in RTL, the same side as the burger trigger and the
+         desktop sidebar column. The old inset-inline-end anchored it
+         to the physical LEFT in RTL while everything else about the
+         shell (reading direction, desktop grid, trigger cluster) put
+         navigation on the right — rotating/resizing across 920px made
+         the nav jump sides. */
+      inset-inline-start: 0;
       inline-size: min(86vw, 320px);
       max-inline-size: 320px;
       background: var(--sidebar-bg);
-      border-inline-start: 1px solid var(--sidebar-rule);
+      /* Content sits on the drawer's inline-END side in both
+         directions — that edge carries the hairline now. */
+      border-inline-end: 1px solid var(--sidebar-rule);
       transition: transform var(--t-base) var(--ease-out);
       box-shadow: var(--shadow-modal);
       /* 012 elevation-language: the mobile drawer is a side sheet. */
@@ -226,10 +258,19 @@
                      max(var(--sp-3), env(safe-area-inset-bottom));
       will-change: transform;
     }
-    [dir="rtl"] .sidebar { transform: translateX(-100%); }
-    [dir="ltr"] .sidebar { transform: translateX(100%); }
+    /* Hidden transforms mirror the new dock: off-screen means +100%
+     (to the right) in RTL and -100% (to the left) in LTR. */
+    [dir="rtl"] .sidebar { transform: translateX(100%); }
+    [dir="ltr"] .sidebar { transform: translateX(-100%); }
     .sidebar.open { transform: translateX(0); }
     .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
+
+    /* 4-A2 P2-6 (partial, in-file surfaces): 44px touch floor for the
+       drawer's own chrome. min-* props beat the physical width/height
+       declarations of later layers at used-value time, so the visual
+       language of the buttons is untouched — only the hit area grows. */
+    .sidebar-mobile-close { min-inline-size: 44px; min-block-size: 44px; }
+    .sidebar-logout { min-inline-size: 44px; min-block-size: 44px; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -262,7 +303,28 @@
     color: var(--text-secondary);
   }
   .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
-  @media (max-width: 920px) { .topbar-mobile-toggle { display: inline-flex; } }
+  @media (max-width: 920px) {
+    .topbar-mobile-toggle { display: inline-flex; }
+    /* 4-A2 P2-6: 44px touch floor — min-* grows the hit area over the
+       38px visual box regardless of source/later-layer width writes. */
+    .topbar-mobile-toggle { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* Mobile-band search entry point (4-A2 P1-3): opens the command
+     palette (⌘K surface), which carries the full combobox search +
+     quick actions. Hidden ≥921px where the search pill lives. */
+  .topbar-search-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: 44px;
+    block-size: 44px;
+    border-radius: var(--r-full);
+    color: var(--text-secondary);
+    transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  }
+  .topbar-search-toggle:hover { background: var(--surface-3); color: var(--text); }
+  @media (max-width: 920px) { .topbar-search-toggle { display: inline-flex; } }
 
   .topbar-title {
     font-family: var(--font-display);
@@ -290,6 +352,31 @@
     .topbar .global-search { display: none; }
     .topbar-scope { display: none; }
     .topbar-title { font-size: var(--fs-body); }
+    /* Real truncation (4-A10 P2): .topbar-title is a flex row on
+       desktop (title + scope chips), but text-overflow never applies
+       to a flex container — on phones the two-word page names just
+       clipped with no ellipsis. The chips are display:none in this
+       band, so the flex row buys nothing: become a block so the
+       ellipsis actually renders. */
+    .topbar-title {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* 4-A2 P2-6: 44px floor for the topbar chrome that stays visible
+       on phones (the AI pill + bell live in this cluster). min-*
+       beats the physical height/width writes of later layers
+       (polish.css .topbar-actions .btn.primary.sm height:32px,
+       .topbar-notif 36×36) at used-value time. */
+    .topbar-actions .btn.primary.sm { min-inline-size: 44px; min-block-size: 44px; }
+    .topbar-notif { min-inline-size: 44px; min-block-size: 44px; }
+  }
+  @media (max-width: 420px) {
+    /* 4-A10 P2: at ≤420px the actions cluster starves the title —
+     drop the «اسأل AI» quick-action (freed ~47px; the destination
+     stays reachable via BottomNav «المساعد» and the sidebar/palette). */
+    .topbar-actions .btn.primary.sm { display: none; }
   }
 
   .topbar-actions { display: flex; align-items: center; gap: var(--sp-2); }
@@ -493,4 +580,90 @@
     color: var(--text);
     box-shadow: var(--shadow-card);
   }
+
+  /* Collapsed icon rail (4-A2 P2-9): the 3 options used to squeeze
+     side-by-side into ~40px of rail content — three 13×28 slivers.
+     Stack them vertically instead: each option becomes a real
+     ~34×30 button. Desktop-only band, matching every other
+     .sidebar.collapsed rule (the mobile drawer never collapses). */
+  @media (min-width: 921px) {
+    .sidebar.collapsed .theme-toggle {
+      flex-direction: column;
+      align-items: stretch;
+      inline-size: 100%;
+    }
+    .sidebar.collapsed .theme-toggle-option {
+      inline-size: 100%;
+      block-size: 30px;
+    }
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  COMMAND PALETTE BODY (wave 21-a — 4-A2 P2-8 wiring)           ║
+     ║  The overlay/card chrome lives in components.css (T066). This  ║
+     ║  section styles the search-first body mounted inside the card: ║
+     ║  input row, scrollable list (reusing the .search-row family    ║
+     ║  this file already owns), and the kbd hint footer.             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .cmd-body {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 0;
+  }
+  .cmd-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-block-end: 1px solid var(--rule);
+  }
+  .cmd-input-icon {
+    display: inline-flex;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .cmd-input {
+    flex: 1;
+    min-inline-size: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: var(--fs-md);
+    padding: var(--sp-2) 0;
+  }
+  .cmd-input::placeholder { color: var(--text-muted); }
+  .cmd-input:focus { outline: none; }
+  .cmd-input-esc { color: var(--text-muted); flex-shrink: 0; display: inline-flex; }
+  .cmd-list {
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--sp-2);
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent;
+  }
+  .cmd-row .search-row-title { font-size: var(--fs-sm); }
+  .cmd-row-icon {
+    inline-size: 28px;
+    block-size: 28px;
+  }
+  .cmd-foot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+  }
+  /* Touch floor: phones/tablets get 44px rows; pointer users keep
+     the compact palette rhythm. */
+  @media (hover: none) {
+    .cmd-row { min-block-size: 44px; }
+    .cmd-input { min-block-size: 44px; }
+  }
+  /* The card's own max-block-size (calc(76dvh), components.css) plus
+     the sticky input/footer rows means the LIST is the scroller. */
 }

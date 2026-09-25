@@ -10,8 +10,19 @@
  * never fires (jsdom, `animation: none` edges, background-tab
  * throttling). Durations come from the --motion-duration-* tokens, so
  * the wait collapses to ~nothing under prefers-reduced-motion.
+ *
+ * The OPEN branch runs as a useLayoutEffect (audit 4-A2 P1-1): with a
+ * passive effect, `rendered` flipped one commit AFTER the anchored-
+ * position hooks had already run their refine pass — with the panel
+ * still unmounted, `panelRef.current` was null, the refine saw a 0px
+ * panel and the horizontal clamp never moved the panel off the
+ * viewport edge (26px of the notification panel sat off-screen on a
+ * 390px phone, every open, every role). Flipping `rendered` in the
+ * same pre-paint layout flush means the re-render that mounts the
+ * panel also re-runs the refine — now with a real panel box — before
+ * anything paints. Same latent fix for Dropdown/Popover consumers.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 /** Event-delivery slack added on top of the token duration so the
  * safety net never cuts a playing exit animation short. (Not a motion
@@ -43,11 +54,19 @@ export function useDelayedUnmount(
 ): DelayedUnmount {
   const [rendered, setRendered] = useState(open);
 
-  useEffect(() => {
+  // Open branch: layout-phase flip so the panel mounts in the SAME
+  // pre-paint flush the anchored-position refine re-runs in (see the
+  // docblock). Close branch: plain timeout — the exit window is
+  // asynchronous by design.
+  useLayoutEffect(() => {
     if (open) {
       setRendered(true);
       return;
     }
+  }, [open]);
+
+  useEffect(() => {
+    if (open) return;
     const ms = readMotionDurationMs(durationToken, 160) + EXIT_SLACK_MS;
     const t = window.setTimeout(() => setRendered(false), ms);
     return () => window.clearTimeout(t);

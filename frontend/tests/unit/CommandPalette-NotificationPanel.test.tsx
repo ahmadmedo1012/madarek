@@ -92,6 +92,61 @@ describe('CommandPalette', () => {
     );
     expect(document.body.classList.contains(SCROLL_LOCK_BODY_CLASS)).toBe(false);
   });
+
+  /* ── Exit animation wiring (wave 21-a — 4-A2 P2-8) ──────────────
+     The dormant data-closing CSS (components.css wave 7-a) needed the
+     delayed unmount on the component side: the overlay must stay
+     mounted through the exit window, then leave on animationend (or
+     the token-driven safety timeout). */
+
+  it('keeps the overlay mounted through the exit window with data-closing, then unmounts on animationend', () => {
+    const { rerender } = render(
+      <CommandPalette open onClose={() => {}} ariaLabel="X">
+        <input />
+      </CommandPalette>,
+    );
+    rerender(
+      <CommandPalette open={false} onClose={() => {}} ariaLabel="X">
+        <input />
+      </CommandPalette>,
+    );
+    // Still mounted for the exit animation, marked for the CSS pair.
+    const overlay = document.querySelector('.cmd-palette-overlay') as HTMLElement;
+    expect(overlay).not.toBeNull();
+    expect(overlay).toHaveAttribute('data-closing', 'true');
+    // The card's own animationend BUBBLES to the overlay handler —
+    // it must not end the exit window (target = card ≠ overlay).
+    const card = document.querySelector('.cmd-palette-card') as HTMLElement;
+    fireEvent.animationEnd(card);
+    expect(document.querySelector('.cmd-palette-overlay')).not.toBeNull();
+    // The overlay's own animationend ends it.
+    fireEvent.animationEnd(overlay);
+    expect(document.querySelector('.cmd-palette-overlay')).toBeNull();
+  });
+
+  it('unmounts via the safety timeout when animationend never fires (jsdom/reduced-motion belt)', () => {
+    vi.useFakeTimers();
+    try {
+      const { rerender } = render(
+        <CommandPalette open onClose={() => {}} ariaLabel="X">
+          <input />
+        </CommandPalette>,
+      );
+      rerender(
+        <CommandPalette open={false} onClose={() => {}} ariaLabel="X">
+          <input />
+        </CommandPalette>,
+      );
+      expect(document.querySelector('.cmd-palette-overlay')).not.toBeNull();
+      // readMotionDurationMs falls back to 160ms in jsdom + 80ms slack.
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+      expect(document.querySelector('.cmd-palette-overlay')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 function PanelHarness({

@@ -166,14 +166,20 @@
      3px track inset */
   inset-block-start: 14px;
   inset-inline-start: 5px;
-  transition: inset-inline-start var(--t-base) var(--ease);
+  /* 21-b (A11 latent P2-10): the thumb used to animate
+     inset-inline-start — a layout property (reflows every frame and
+     the motion gate's P2-10 class). Travel is now a composited
+     transform; --motion-direction keeps it flowing toward the
+     inline-end edge in RTL exactly like the inset it replaced
+     (5px → 23px = 18px of travel). */
+  transition: transform var(--t-base) var(--ease);
   /* small-control thumb shadow — needs more local pop than --elev-1
      (alpha 0.2 vs 0.04/0.06); off-token by design */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .owner-toggle-track.on .owner-toggle-thumb {
-  inset-inline-start: 23px;
+  transform: translateX(calc(var(--motion-direction) * 18px));
 }
 
 .owner-toggle-label {

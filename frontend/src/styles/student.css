@@ -497,6 +497,12 @@
     color: var(--text-subtle);
   }
   .filter-pill[aria-pressed='true'] .filter-pill-count { color: inherit; }
+  /* 21-c (A12 P1-4): the teacher dashboard renders the count inside
+     the SHARED .pill.on (not .filter-pill) — the aria-pressed rule
+     never matched, so the light-tuned muted met neither inverted
+     ground (3.35 on neutral-900 light / 1.32 on copper dark).
+     Inheriting the pill's own AA pair fixes both (17.4 / 7.87). */
+  .pill.on .filter-pill-count { color: inherit; }
 
   /* THE signature: on a filter change, non-matching cells recede (shade
      desaturates + fades) while the matching level keeps its color — the
@@ -547,13 +553,21 @@
   .ai-gap-card:active:not(:disabled) { transform: translateY(1px); }
   .ai-gap-card:disabled { cursor: default; }
   .ai-gap-head { display: flex; align-items: center; gap: var(--sp-2); }
-  .ai-gap-warn { color: var(--warning); flex-shrink: 0; }
+  /* 21-c: same -ink pairing as .ai-gap-pct — the 14px warning glyph is
+     the card's gap marker (non-text 3:1 floor; --warning was 2.13 on
+     the light card ground). */
+  .ai-gap-warn { color: var(--warning-ink); flex-shrink: 0; }
   .ai-gap-pct {
     margin-inline-start: auto;
     font-family: var(--font-mono);
     font-size: var(--type-label-size-sm);
     font-weight: var(--fw-semibold);
-    color: var(--warning);
+    /* 21-c (A5 P1-2): --warning gold measured 2.13:1 on the card's
+       surface-2 ground in light (the one number each gap card exists
+       to show). --warning-ink keeps the hue family and clears AA
+       both themes: 7.29:1 light / 9.90:1 dark (dark value identical
+       to the old token, so dark is a no-op). */
+    color: var(--warning-ink);
     font-variant-numeric: tabular-nums;
   }
   .ai-gap-name {
@@ -721,6 +735,15 @@
     background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
     border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
     border-radius: var(--r-xl);
+  }
+  /* 21-c (A3 P2-7): the 7% tint wash read near-invisible in dark —
+     measured dark hero rgb(34,39,45) vs card rgb(31,31,30) vs page
+     rgb(25,25,24): ~3 RGB points of separation, the hero survived on
+     its border alone (VLM: "card edges dissolve"). Dark raises the
+     wash to 12% + border to 35% per the audit's sketch. */
+  [data-theme="dark"] .course-hero {
+    background: color-mix(in srgb, var(--course-tint) 12%, var(--surface));
+    border-color: color-mix(in srgb, var(--course-tint) 35%, var(--rule));
   }
   .course-hero-row {
     display: flex;
@@ -1712,6 +1735,13 @@
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
   }
+  /* 21-c (A5 P2-3): on the selected row the ground becomes
+     --accent-soft and the muted count failed AA (4.22 light / 4.47
+     dark). The name already took the on-state ink (:1688) — the count
+     follows it onto the WCAG-pinned pair the block comment above
+     documents: accent-strong on accent-soft = 8.62:1 light / 10.10:1
+     dark. */
+  .campus-city-row.on .campus-city-count { color: var(--accent-strong); }
   /* skeleton rows share the band's grid so the loading shape matches */
   .campus-skel-row {
     display: grid;
@@ -1897,7 +1927,9 @@
     block-size: auto;
     padding: var(--sp-2) var(--sp-3);
     background: var(--surface-2);
-    font-size: var(--type-label-size);
+    /* 21-c (A5 P2-X / A10 P1): was var(--type-label-size) 13px — iOS
+       Safari zooms on any <16px control focus. 16px floor. */
+    font-size: 16px;
     line-height: var(--lh-base);
     font-family: inherit;
     color: var(--text);

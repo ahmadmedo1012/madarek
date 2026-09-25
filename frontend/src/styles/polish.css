@@ -862,7 +862,14 @@
     margin-block-end: 0;
   }
   .page-title {
-    letter-spacing: -0.012em;
+    /* 21-c (A3 P2-4 / A12 ruling #2): the -0.012em tracking broke
+       Arabic cursive joins on every page title («مقرّراتي الدراسية»…).
+       This block also lands the Arabic display-leading floor the
+       base.css .page-title TODO ("until the P1-12 Arabic-leading
+       study lands") parked at 1.1 — 1.15 clears diacritic stacks
+       (شدّة + تنوين) at 28–40px. */
+    letter-spacing: var(--ls-normal);
+    line-height: 1.15;
   }
   .page-subtitle {
     line-height: 1.55;
@@ -993,7 +1000,7 @@
     /* Make the greeting feel like the hero of the page. */
     font-size: clamp(var(--fs-2xl), 4.5vw, var(--fs-3xl, 32px));
     line-height: 1.18;
-    letter-spacing: -0.02em;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
   }
   .welcome-card .page-subtitle {
     color: var(--text-muted);
@@ -1005,7 +1012,7 @@
      ═══════════════════════════════════════════════════════════════ */
   .topbar-title {
     font-weight: var(--fw-semibold);
-    letter-spacing: -0.005em;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
   }
   .topbar-scope {
     /* Smaller, calmer chip than the title */
@@ -1033,7 +1040,7 @@
   label.form-label,
   .auth-field label {
     font-weight: var(--fw-semibold);
-    letter-spacing: -0.005em;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     color: var(--text);
   }
 
@@ -1383,7 +1390,7 @@
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
     font-size: 14px;
-    letter-spacing: -0.005em;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     color: var(--text);
   }
 
@@ -1609,7 +1616,7 @@
   }
   .welcome-card .page-title {
     font-size: clamp(20px, 3.4vw, 28px);
-    letter-spacing: -0.018em;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     line-height: 1.22;
   }
   @media (max-width: 640px) {
@@ -1635,7 +1642,17 @@
     overflow-wrap: break-word;
   }
 
-  /* Avatars — never let one render as a flat coloured square */
+  /* Avatars — never let one render as a flat coloured square.
+     21-c (A12 P1-2): the default ink is now the theme's accent-fg
+     pair, not white — the default ground IS --accent (copper), and
+     white on it measured 3.80:1 light / 2.24:1 dark at 11–16px
+     semibold. --accent-fg: 4.95:1 light / 7.87:1 dark. The ink on
+     DB-hex grounds is gated per-avatar in the UserAvatar primitive;
+     this CSS pair covers the no-color default + hand-rolled spans
+     (near-black ink passes on every seed avatarColor except the
+     owner grey #6B7280, which only flows through the primitive's
+     gate). The 10% black text-shadow was a white-ink legibility
+     crutch (and axe noise) — gone with the white ink. */
   .avatar {
     border-radius: var(--r-full);
     display: inline-flex;
@@ -1643,8 +1660,7 @@
     justify-content: center;
     flex-shrink: 0;
     font-weight: var(--fw-semibold);
-    color: #fff;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    color: var(--accent-fg);
     background: var(--accent);
     line-height: 1;
   }
@@ -1788,7 +1804,10 @@
     background: var(--surface-2);
     color: var(--text);
     font-family: inherit;
-    font-size: var(--fs-sm);
+    /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
+       zooms the viewport on any <16px input focus. 16px floor
+       (components.css's shared .input takes the same fix from 21-b). */
+    font-size: 16px;
     transition: var(--t-clean);
   }
   .chat-input:focus {
@@ -3040,13 +3059,21 @@
     font-size: clamp(var(--fs-h2), 2.4vw, var(--fs-display-md));
     font-weight: var(--fw-bold);
     line-height: 1.25;
-    letter-spacing: var(--ls-snug);
+    /* 21-c (ruling #2): -0.012em tracking broke the cursive joins of
+       «الحرم الجامعيّ» — Arabic display is never tracked. */
+    letter-spacing: var(--ls-normal);
   }
   .landing-campus-line em {
-    font-family: var(--font-serif);
-    font-style: italic;
+    /* 21-c (A12 P1-6): Arabic has no italic — the phantom IBM Plex
+       Serif (latin-only unicode-range) let «منذ» fall to an OS naskh
+       face + synthetic slant. Same fix wave 20-a applied on landing:
+       upright, same family as the line, emphasis via weight. The
+       accent-mixed color stays — it clears 6.68:1 (light) / 9.92:1
+       (dark) on the caption vignette's darkened bottom edge. */
+    font-family: inherit;
+    font-style: normal;
     color: color-mix(in srgb, var(--accent) 80%, white);
-    font-weight: var(--fw-medium);
+    font-weight: var(--fw-bold);
   }
 
   /* (Wave 1-a dead-code sweep: the floating campus-chip family deleted
@@ -4786,8 +4813,11 @@
   .search-section-label {
     padding: var(--sp-2) var(--sp-4);
     font-size: var(--fs-xxs);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
+    /* 21-c ruling #2: the section labels are Arabic («مقررات»، «محاضرات»…)
+       — uppercase is a Latin-only concept here and 0.12em tracking
+       broke the cursive joins (same call as .landing-campus-eyebrow). */
+    text-transform: none;
+    letter-spacing: normal;
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
     background: linear-gradient(90deg, var(--surface-2), transparent);
@@ -5649,3 +5679,44 @@
    Layer hygiene: sections v6–v8 remain @layer pages; v9 onward
    (including wave 7-b above) remain @layer overrides — the incumbent
    structure is unchanged, so this comment-only banner adds no layer. */
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   21-c — Arabic typography platform rulings (A12 P1-6/P2-7 · A3 P2-4)
+   ─────────────────────────────────────────────────────────────────────
+   Two system-level resets for the Arabic document, riding the overrides
+   rung (the only rung that beats base/components/pages declarations
+   regardless of specificity):
+
+   1. NO TRACKING ON ARABIC HEADINGS (platform ruling #2 — cursive
+      joins). base.css ships Latin-tuned --ls-snug/-tight on h1–h6,
+      components.css on .dash-section-title + the onboarding headline
+      (A3's measured -0.264px @ 22px). Those files are sibling-owned
+      (base = 20s, components.css = 21-b); this reset neutralizes their
+      tracking for :lang(ar) without touching them. Numerals/metrics
+      keep their tracking (no joins to break) — the reset is scoped to
+      heading/title roles only.
+
+   2. NO PHANTOM ITALIC ON ARABIC <em> (A12 P1-6): Arabic has no
+      italic; the browser's default synthetic slant on cursive script
+      is the same machine-made tell wave 20-a killed on landing. <em>
+      keeps its semantics and gains weight+accent emphasis. Latin runs
+      that explicitly opt into serif italic (em.landing-serif-latin,
+      «Oasis») are excluded by class.
+   ═══════════════════════════════════════════════════════════════════ */
+@layer overrides {
+  :lang(ar) :is(h1, h2, h3, h4, h5, h6, .page-title, .dash-section-title,
+                .onboarding-flow-headline) {
+    letter-spacing: normal;
+  }
+
+  /* No font-weight here on purpose: the landing ems carry their own
+     weight accents (fw-black / fw-bold, 20-a) in the pages layer — an
+     overrides-layer weight would clobber them through the layer
+     backdoor (measured: hero em dropped 800→600 when this rule carried
+     fw-semibold). The reset's single job is killing the synthetic
+     slant; emphasis stays whatever the surface authored. */
+  :lang(ar) em:not(.landing-serif-latin) {
+    font-style: normal;
+  }
+}

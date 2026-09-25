@@ -1,7 +1,8 @@
-import { forwardRef } from 'react';
+import { cloneElement, forwardRef, useId } from 'react';
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
+  ReactElement,
   ReactNode,
 } from 'react';
 
@@ -173,3 +174,85 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     </span>
   );
 });
+
+/* ─── FormField ────────────────────────────────────────────
+   Label + control + hint/error with the FULL ARIA association
+   contract (A9 P2-4, 21-b): the label is htmlFor-wired, the error
+   message is role="alert", and — the part every hand-rolled copy in
+   the app was missing — the control itself gets aria-invalid plus
+   aria-describedby pointing at the message id, so the error state is
+   announced again on re-focus instead of living only in the initial
+   alert. The control keeps its own consumer props; only the
+   association attributes are injected (merged with any
+   consumer-passed aria-describedby).
+
+   Drop-in replacement for the hand-rolled patterns in
+   TeacherPages.tsx (grade modal), ResearchReviewPage.tsx and
+   curriculum/AuthoringModal.tsx (FormField/TimeInput) — migrating
+   those callers is the page-wave hand-off.
+
+   Usage:
+     <FormField label="الدرجة" error={scoreError}>
+       <Input type="number" value={score} onChange={…} />
+     </FormField>
+*/
+
+/** Props FormField may inject into its child control element. */
+type FieldControlProps = {
+  id?: string;
+  'aria-invalid'?: boolean | 'false' | 'true';
+  'aria-describedby'?: string;
+};
+
+export function FormField({
+  label,
+  hint,
+  error,
+  id,
+  children,
+}: {
+  /** Visible control label (htmlFor-wired to the control id). */
+  label: ReactNode;
+  /** Static helper copy under the control — always rendered when set. */
+  hint?: ReactNode;
+  /** Validation message — its presence marks the control aria-invalid. */
+  error?: ReactNode;
+  /** Explicit control id; defaults to a stable useId(). */
+  id?: string;
+  /** The control (input/select/textarea/Input …) — a single element. */
+  children: ReactElement<FieldControlProps>;
+}) {
+  const autoId = useId();
+  const controlId = id ?? autoId;
+  const hintId = hint ? `${controlId}-hint` : undefined;
+  const errorId = error ? `${controlId}-error` : undefined;
+  const describedBy =
+    [hintId, errorId, children.props['aria-describedby']]
+      .filter(Boolean)
+      .join(' ') || undefined;
+
+  const control = cloneElement(children, {
+    id: controlId,
+    ...(error ? { 'aria-invalid': true as const } : {}),
+    ...(describedBy ? { 'aria-describedby': describedBy } : {}),
+  });
+
+  return (
+    <div className="form-field">
+      <label className="form-field-label" htmlFor={controlId}>
+        {label}
+      </label>
+      {control}
+      {hint && (
+        <p id={hintId} className="form-field-hint">
+          {hint}
+        </p>
+      )}
+      {error && (
+        <p id={errorId} className="form-field-error" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}

@@ -444,3 +444,36 @@
   }
 }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNLAYERED — notification badge digit contrast (4-A2 P2-7, 21-a)
+   ═══════════════════════════════════════════════════════════════════
+   The badge's background/color live in polish.css's `@layer overrides`
+   (.topbar-notif-badge — background: var(--danger); color: #fff), and
+   `--danger` is a theme-tuned INK: light #DD6E78 (white digits =
+   3.2:1) and dark #F09BA3 (white digits = 2.12:1) — both under the
+   4.5:1 AA floor for the 10px bold count.
+
+   This override intentionally sits OUTSIDE any @layer: per the CSS
+   cascade, unlayered normal declarations beat every layered
+   declaration regardless of source order, which is the only way a
+   rule in this file (imported before polish.css) can win the
+   overrides layer without !important.
+
+   Fix per the audit sketch: pair the badge with per-theme rose tokens
+   whose contrast is already contract-documented (tokens.css light
+   block: "--c-rose-deep #6B2128 = 10.75:1" on white):
+     light — bg --c-rose-deep (#6B2128) + white digits  → 10.75:1
+     dark  — bg --c-rose-ink  (#F09BA3) + --c-rose-bg (#3D2126) digits
+             → ≈5.3:1 (light pink ground + deep maroon digits, the
+             dark theme's danger pairing)
+   The 2px var(--surface) ring (polish.css) keeps the badge isolated
+   from the bell icon in both themes. */
+.topbar-notif-badge {
+  background: var(--c-rose-deep);
+  color: #fff;
+}
+[data-theme="dark"] .topbar-notif-badge {
+  background: var(--c-rose-ink);
+  color: var(--c-rose-bg);
+}

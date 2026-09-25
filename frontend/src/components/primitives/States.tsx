@@ -243,7 +243,7 @@ export function Skeleton({
 /** Skeleton for a row of 4 KPI cards */
 export function KpiSkeleton() {
   return (
-    <div className="grid-4">
+    <div className="grid-4" aria-busy="true" aria-live="polite">
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="metric">
           <div style={{ marginBottom: 'var(--sp-3)' }}>
@@ -262,7 +262,7 @@ export function KpiSkeleton() {
 /** Skeleton for a vertical list of rows (e.g. courses progress) */
 export function ListSkeleton({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="flex-col gap-3">
+    <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
       {Array.from({ length: rows }).map((_, i) => (
         <div key={i} className="flex items-center gap-3" style={{ padding: 'var(--sp-2) 0' }}>
           <Skeleton width={140} height={12} />
@@ -289,7 +289,7 @@ export function ChartSkeleton({ height = 220 }: { height?: number }) {
 /** Skeleton for a table — N rows × M columns. */
 export function TableSkeleton({ rows = 4, cols = 5 }: { rows?: number; cols?: number }) {
   return (
-    <div className="flex-col gap-2" style={{ padding: 'var(--sp-3) 0' }}>
+    <div className="flex-col gap-2" style={{ padding: 'var(--sp-3) 0' }} aria-busy="true" aria-live="polite">
       {Array.from({ length: rows }).map((_, r) => (
         <div key={r} className="flex gap-3 items-center" style={{ padding: 'var(--sp-2) 0' }}>
           {Array.from({ length: cols }).map((_, c) => (
@@ -337,9 +337,14 @@ export function PageSkeleton() {
       {/* Page header skeleton */}
       <div className="page-header">
         <div className="page-title-block">
-          <Skeleton width={260} height={28} />
+          {/* A10 P1-1 (21-b): fixed 260/420px skeleton bars overflow the
+              ~280px content box on ≤390px viewports — the first thing a
+              phone shows on every cold route-load (AppShell's Suspense
+              fallback). min(px, 100%) keeps desktop exact and clamps
+              mobile. */}
+          <Skeleton width="min(260px, 100%)" height={28} />
           <div style={{ marginTop: 8 }}>
-            <Skeleton width={420} height={12} />
+            <Skeleton width="min(420px, 100%)" height={12} />
           </div>
         </div>
         <Skeleton width={120} height={24} rounded="var(--r-full)" />
@@ -361,9 +366,11 @@ export function DetailSkeleton() {
     <div className="page" aria-busy="true" aria-live="polite">
       <div className="page-header">
         <div className="page-title-block">
-          <Skeleton width={300} height={28} />
+          {/* Same ≤390px overflow guard as PageSkeleton (A10 P1-1): the
+              detail header's 300/480px bars clamped to the content box. */}
+          <Skeleton width="min(300px, 100%)" height={28} />
           <div style={{ marginTop: 8 }}>
-            <Skeleton width={480} height={12} />
+            <Skeleton width="min(480px, 100%)" height={12} />
           </div>
         </div>
       </div>

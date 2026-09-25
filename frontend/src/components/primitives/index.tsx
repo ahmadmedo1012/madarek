@@ -7,11 +7,14 @@ import { Icon } from '../Icon';
    documentation per WAVE-13-MAP, in the spirit of audit 11-e P2-1;
    cf. the sibling note overlays/index.ts from wave 12-14).
    Deliberate zero-consumer API surface — documented, not deleted:
-   - Button / Input (Form.tsx): no app consumers yet. They are the
-     canonical consumers of the .btn / .input token systems and their
-     loading contracts are pinned by motion.css companions
-     (.btn[data-loading] + .motion-spinner, .input-affix). Pages still
-     hand-write className="btn …"; new code should adopt these instead.
+   - Button / Input / FormField (Form.tsx): no app consumers yet. They
+     are the canonical consumers of the .btn / .input token systems;
+     Button/Input loading contracts are pinned by motion.css
+     companions (.btn[data-loading] + .motion-spinner, .input-affix),
+     and FormField (21-b, A9 P2-4) carries the aria-invalid /
+     aria-describedby association contract the hand-rolled grade-modal
+     and curriculum forms were missing. Pages still hand-write
+     className="btn …"; new code should adopt these instead.
    - Pill's non-interactive branch: when `onClick` is omitted the pill
      renders a <span> so the primitive can never emit a fake control;
      today's only consumer (LibraryPage category filter) always passes
@@ -22,7 +25,7 @@ import { Icon } from '../Icon';
 
 export type ThemeColor = 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand';
 
-export { Button, Input } from './Form';
+export { Button, Input, FormField } from './Form';
 export type { ButtonVariant, ButtonSize } from './Form';
 
 /* ─── Card ──────────────────────────────────────────────── */
@@ -136,6 +139,12 @@ export function ProgressBar({
   ariaLabel,
 }: {
   value: number;
+  /**
+   * Bar-fill colour (any CSS color). Decorative — drives the fill
+   * only, never the % readout (21-c / A12 P1-3: raw DB course hues
+   * painted as 12px text measured 1.88–3.60:1 on white; semantic
+   * fills like --warning measured 2.30:1).
+   */
   color?: string;
   label?: ReactNode;
   showValue?: boolean;
@@ -146,7 +155,10 @@ export function ProgressBar({
    */
   ariaLabel?: string;
 }) {
-  const v = Math.max(0, Math.min(100, value));
+  // A9 P3-7 (21-b): Math.max/min propagate NaN straight into
+  // `width: "NaN%"` and aria-valuenow="NaN" — an undefined/unparsable
+  // value renders as an honest zero instead.
+  const v = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
   const name = ariaLabel ?? (typeof label === 'string' ? label : undefined);
   return (
     <div className="progress">
@@ -154,7 +166,10 @@ export function ProgressBar({
         <div className="progress-head">
           {label !== undefined ? <span>{label}</span> : <span />}
           {showValue && (
-            <span className="font-mono text-xs" style={{ color: color ?? 'var(--text-muted)' }}>
+            /* 21-c (A12 P1-3): the % is 12px text — AA 4.5:1. It consumes
+               --text-secondary (8.44:1 light / 9.28:1 dark) instead of the
+               raw fill colour; the fill keeps the caller's hue. */
+            <span className="font-mono text-xs" style={{ color: 'var(--text-secondary)' }}>
               {v}%
             </span>
           )}
@@ -213,6 +228,67 @@ export function AlertRow({
 }
 
 /* ─── User avatar ───────────────────────────────────────── */
+/* 21-c (A12 P1-2): the initials ink is LUMINANCE-GATED against the
+   background. `color` arrives un-gated from the DB (`avatarColor`:
+   #4F8EF7, #3DD68C, #9B6FE8, #D4A537, #6B7280 — seed.ts:162-244), and
+   the old CSS default painted white on all of them (1.88–3.60:1 at
+   11–16px semibold). The gate picks the better of white / near-black
+   ink by WCAG contrast — the same idea as lib/theme.ts's
+   gateCollegeAccent, self-contained here because theme.ts exports its
+   helpers for tests only. Post-gate worst case on the seed palette:
+   4.83:1 (#6B7280 keeps white); #3DD68C flips 1.88 → 9.38.
+
+   Contract by `color` shape:
+   · hex            → gated ink (best of #fff / #191918)
+   · var()/other    → ink var(--text) — the only non-hex callers pass
+                      neutral surface tokens (var(--surface-3), AI chat
+                      user well), where the text role is the safe pair
+   · undefined      → no inline ink — the CSS default pair applies
+                      (accent ground + --accent-fg ink, polish.css) */
+const AVATAR_INKS = { light: '#FFFFFF', dark: '#191918' } as const;
+
+function parseHexColor(s: string): { r: number; g: number; b: number } | null {
+  const m = s.trim().replace(/^#/, '');
+  if (m.length !== 3 && m.length !== 6) return null;
+  const hex = m.length === 3 ? [...m].map((c) => c + c).join('') : m;
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+  return {
+    r: parseInt(hex.slice(0, 2), 16),
+    g: parseInt(hex.slice(2, 4), 16),
+    b: parseInt(hex.slice(4, 6), 16),
+  };
+}
+
+function relativeLuminance({ r, g, b }: { r: number; g: number; b: number }): number {
+  const norm = (c: number) => {
+    const cs = c / 255;
+    return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * norm(r) + 0.7152 * norm(g) + 0.0722 * norm(b);
+}
+
+function contrastRatio(
+  a: { r: number; g: number; b: number },
+  b: { r: number; g: number; b: number },
+): number {
+  const la = relativeLuminance(a);
+  const lb = relativeLuminance(b);
+  const hi = Math.max(la, lb);
+  const lo = Math.min(la, lb);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+function avatarInk(color: string | undefined): string | undefined {
+  if (!color) return undefined;
+  const rgb = parseHexColor(color);
+  if (!rgb) return 'var(--text)';
+  const lightInk = parseHexColor(AVATAR_INKS.light)!;
+  const darkInk = parseHexColor(AVATAR_INKS.dark)!;
+  return contrastRatio(lightInk, rgb) >= contrastRatio(darkInk, rgb)
+    ? AVATAR_INKS.light
+    : AVATAR_INKS.dark;
+}
+
 export function UserAvatar({
   initials,
   color,
@@ -226,6 +302,7 @@ export function UserAvatar({
   // generic <span> is ignored by the accessibility tree anyway. The
   // initials stay as visible text next to the user's name, which is
   // what actually names them in context (audit 11-e P2-4).
+  const ink = avatarInk(color);
   return (
     <span
       className="avatar"
@@ -234,6 +311,7 @@ export function UserAvatar({
         height: size,
         fontSize: Math.round(size * 0.4),
         ...(color ? { background: color } : {}),
+        ...(ink ? { color: ink } : {}),
       }}
     >
       {initials}

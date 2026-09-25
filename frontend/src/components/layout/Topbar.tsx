@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import { useState, useRef } from 'react';
-import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon } from 'lucide-react';
+import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon, Search } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
+import { UserAvatar } from '../primitives';
 import { GlobalSearch } from './GlobalSearch';
 import { NotificationDropdown } from './NotificationDropdown';
 import { Dropdown, DropdownItem, DropdownSeparator } from '../overlays';
@@ -16,6 +17,10 @@ interface TopbarProps {
   title: ReactNode;
   rightSlot?: ReactNode;
   scrolled?: boolean;
+  /** Opens the ⌘K command palette — the mobile-band search surface
+   *  (4-A2 P1-3): the search pill is display:none ≤920px, so the
+   *  topbar's search icon button and the "/" chord both route here. */
+  onOpenCommandPalette?: () => void;
 }
 
 /** Student scope chip — the college name next to the page title.
@@ -37,7 +42,7 @@ function StudentScopeChip() {
   );
 }
 
-export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
+export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalette }: TopbarProps) {
   const toggle = useUiStore((s) => s.toggleSidebar);
   // 15-g P2-7: the burger must REFLECT the drawer state — an
   // always-«فتح» label hid the open/closed state from screen readers.
@@ -110,9 +115,25 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
         )}
       </div>
 
-      <GlobalSearch />
+      <GlobalSearch onOpenCommandPalette={onOpenCommandPalette} />
 
       <div className="topbar-actions">
+        {/* Mobile-band search entry point (4-A2 P1-3): the pill is
+            display:none ≤920px, so phones had ZERO search access. The
+            button opens the command palette — the same surface ⌘K
+            opens — which carries the full combobox search + quick
+            nav actions. Hidden ≥921px where the pill lives. */}
+        {onOpenCommandPalette && (
+          <button
+            type="button"
+            className="topbar-search-toggle"
+            onClick={onOpenCommandPalette}
+            aria-label="البحث والأوامر"
+            title="البحث والأوامر (Ctrl+K)"
+          >
+            <Icon icon={Search} size={18} />
+          </button>
+        )}
         {rightSlot ?? (showAiButton && (
           <NavLink to={aiPath} className="btn primary sm" title="اسأل الذكاء الاصطناعي">
             <Icon icon={Sparkles} size={13} />
@@ -132,15 +153,12 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
               aria-expanded={menuOpen}
               aria-label="ملف المستخدم"
             >
-              <span
-                className="avatar"
-                style={{
-                  width: 30, height: 30, fontSize: 12,
-                  ...(user.avatarColor ? { background: user.avatarColor } : {}),
-                }}
-              >
-                {initials}
-              </span>
+              {/* 21-c (A12 P1-2, spillover): was a hand-rolled .avatar
+                  span — white initials on the un-gated DB avatarColor
+                  (3.21:1 on #4F8EF7, the audit's measured topbar pair).
+                  The UserAvatar primitive luminance-gates the ink; the
+                  no-color fallback keeps the accent + --accent-fg pair. */}
+              <UserAvatar initials={initials} size={30} color={user.avatarColor ?? undefined} />
               <span className="topbar-user-name hide-on-mobile">
                 {user.firstName}
               </span>
@@ -169,7 +187,10 @@ export function Topbar({ title, rightSlot, scrolled = false }: TopbarProps) {
                   ملفي الشخصي
                 </DropdownItem>
               )}
-              <DropdownItem onSelect={() => setThemeMode(resolved === 'dark' ? 'light' : 'dark')}>
+              {/* 4-A2 P2-10: the theme item used to leave the menu
+                  open (aria-expanded stuck true) while the sibling
+                  items closed — match their behavior. */}
+              <DropdownItem onSelect={() => { setMenuOpen(false); setThemeMode(resolved === 'dark' ? 'light' : 'dark'); }}>
                 <Icon icon={resolved === 'dark' ? Sun : Moon} size={14} />
                 {resolved === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}
               </DropdownItem>

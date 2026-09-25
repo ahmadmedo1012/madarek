@@ -18,8 +18,8 @@
  * on every shell mount. Query cache (30s stale / 5min gc) serves
  * instant re-opens.
  */
-import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check } from 'lucide-react';
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
@@ -50,6 +50,15 @@ const TYPE_TONE: Record<Notification['type'], string> = {
 export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const [open, setOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
+  // 4-A14 P2-2: the panel survived browser-back — still open, bell
+  // aria-expanded="true", hovering over the previous page. Sidebar
+  // clicks closed it via outside-click, but history navigations never
+  // passed through the document mousedown path. Any location change
+  // (back/forward included) now dismisses it.
+  const location = useLocation();
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
   // The only data the closed bell needs: unread count (1-item poll).
   const unreadQ = useUnreadNotifications();
   const unread = unreadQ.data ?? 0;

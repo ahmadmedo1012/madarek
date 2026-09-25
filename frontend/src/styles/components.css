@@ -409,10 +409,24 @@
 
   .btn.danger {
     --_btn-bg: var(--danger);
-    --_btn-fg: #fff;
+    /* A12 (21-b): white ink failed contrast on the rose --danger in
+       BOTH themes — 3.19:1 on light #DD6E78, ~1.9:1 on dark #F09BA3.
+       Same near-black ink as the owner badge counter (owner.css:608):
+       #191918 passes both at 5.51:1 / 8.31:1 (measured live, 21-b).
+       The hover follows the solid-button family convention
+       (.btn.success / .btn.accent: BRIGHTEN toward white) because the
+       old darken-toward-black hover — tuned for white ink — drops the
+       near-black ink to 3.24:1 in light; the brightened mix clears
+       6.6:1 / 9.3:1. The Button primitive's `danger` variant inherits
+       this via the class map. */
+    --_btn-fg: #191918;
     --_btn-bd: var(--danger);
-    --_btn-bg-hover: color-mix(in oklab, var(--danger) 80%, black);
-    --_btn-bd-hover: color-mix(in oklab, var(--danger) 80%, black);
+    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
+    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
+  }
+  [data-theme='dark'] .btn.danger {
+    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, #fff);
+    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, #fff);
   }
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
@@ -628,7 +642,15 @@
     inline-size: 100%;
     block-size: 44px;
     padding-inline: var(--sp-4);
-    font-size: var(--type-body-size);
+    /* A10 P1-2 (21-b): iOS Safari zooms the whole page whenever a
+       focused control renders below 16px — and this recipe resolved to
+       --type-body-size (15px), so 100% of mobile users hit the zoom on
+       their first tap into the login form. Floor every form control at
+       16px; body copy stays 15px (the 1px difference is imperceptible
+       inside a control). Remaining sub-16 outliers live in page
+       stylesheets — student.css:1900 (13px composer) is 21-c's, and
+       pdf.css's page-number/search inputs are handed off with it. */
+    font-size: max(16px, var(--type-body-size));
     color: var(--text);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -671,7 +693,9 @@
     block-size: 38px;
     /* Start zone: icon at inset sp-2 (8px) + 14px glyph + breathing. */
     padding-inline: var(--sp-7) var(--sp-4);
-    font-size: var(--type-label-size);
+    /* Same iOS 16px focus-zoom floor as the shared recipe (A10 P1-2):
+       this pill resolved to --type-label-size (13px). */
+    font-size: max(16px, var(--type-label-size));
     background: var(--surface-1);
     border: 1px solid var(--border);
     border-radius: var(--r-full);
@@ -1267,12 +1291,18 @@
     border-start-end-radius: var(--r-2xl);
     animation: madarek-sheet-slide-bottom var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
+  /* Entrance mirrors the exit direction (A9 P1-1, 21-b): `end` docks
+     inline-end (right in LTR, left in RTL), so the sheet must ARRIVE
+     from its own edge too — the offsets multiply by
+     --motion-direction exactly like the exit keyframes at the bottom
+     of this file. The previous physical translateX(±8%) entered from
+     the page interior under [dir="rtl"]. */
   @keyframes madarek-sheet-slide-end {
-    from { opacity: 0; transform: translateX(8%); }
+    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * 8%)); }
     to   { opacity: 1; transform: none; }
   }
   @keyframes madarek-sheet-slide-start {
-    from { opacity: 0; transform: translateX(-8%); }
+    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -8%)); }
     to   { opacity: 1; transform: none; }
   }
   /* wave 2-b (0-c P1-4): referenced by .sheet-panel-bottom since T061
@@ -1436,6 +1466,36 @@
     from { opacity: 0; transform: translateY(2px); }
     to   { opacity: 1; transform: none; }
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ANCHORED-OVER-BLOCKING PROMOTION — A9 P2-2 (21-b)             ║
+     ╚═══════════════════════════════════════════════════════════════╝
+     The z ladder (dropdown 100 < popover 200 < tooltip 250 < sheet
+     300 < modal 400 < toast 500) traps the anchored primitives UNDER
+     any open modal/sheet scrim: a Dropdown/Popover opened from INSIDE
+     a Modal portals to document.body and would paint behind the scrim
+     it belongs to (invisible + click-blocked).
+
+     Signal: scrollLock's single body class (mdrk-scroll-locked) is
+     held exactly while a BLOCKING overlay is open — Modal, Sheet,
+     Lightbox, CommandPalette (via useFocusTrap) and the mobile
+     sidebar drawer. Anchored layers never hold it themselves, so the
+     class reads as "a blocking layer is up". While it is set, any
+     live anchored layer can only have been opened from within that
+     layer (the scrim blocks everything else), so promoting ALL of
+     them is safe — and a no-op when nothing is stacked.
+
+     Promotion lands above --z-modal (stacked modals: both scrims sit
+     at 400, later DOM wins — 410+ clears them all) while toast (500)
+     and lightbox (600) stay on top of everything. Relative anchored
+     ladder preserved: tooltip > popover > dropdown. Escape ranking is
+     unaffected — overlayStack already ranks layers independently of
+     paint order. Known edge (documented, out of A9 scope): an
+     anchored layer opened from inside a LIGHTBOX (600) still paints
+     under it. */
+  body.mdrk-scroll-locked .dropdown { z-index: calc(var(--z-modal, 400) + 10); }
+  body.mdrk-scroll-locked .popover  { z-index: calc(var(--z-modal, 400) + 15); }
+  body.mdrk-scroll-locked .tooltip  { z-index: calc(var(--z-modal, 400) + 20); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LIGHTBOX — 012-design-graphics-uplift T067.                   ║
@@ -2432,6 +2492,28 @@
     line-height: 1.4;
   }
 
+  /* ── FormField primitive (21-b, A9 P2-4) — the shared label +
+     control + hint/error row the primitives/Form.tsx FormField
+     renders. The error copy reuses .form-field-error above (role=alert
+     + aria-describedby wiring live in the TSX); this adds the row
+     rhythm, the label and the hint. ── */
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    min-inline-size: 0;
+  }
+  .form-field-label {
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+  }
+  .form-field-hint {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
   /* ── .btn.success — completes the variant set (.btn.danger already
      exists, audit 0-e P1-28 wanted both). Ground = --success-ink so
      BOTH themes stay AA with the same declaration: light resolves it
@@ -2635,11 +2717,14 @@
   }
 
   /* ── Mobile touch floor (craft floor: ≥44px) for the competitions
-     modal controls + moderation actions. !important is a documented
-     layer-precedence exception: polish (overrides layer) pins
-     .btn.sm at 32px and colleges.css (pages layer) pins
-     .comp-icon-btn at 36×36 — a same-layer rule can never win, and
-     min-block-size composes with (never fights) the pinned sizes. ── */
+     modal controls + moderation actions. 21-b correction: the ONE
+     general mobile floor is polish.css's overrides-layer block
+     (.btn.sm → min-block-size 44px, wave 9-b consolidation) — the
+     older comments claiming a 32px pin there are stale. These
+     same-value !important pins stay as local belt-and-braces:
+     colleges.css (pages layer) pins .comp-icon-btn at 36×36, a
+     same-layer rule can never win, and min-block-size composes with
+     (never fights) the pinned sizes. ── */
   @media (max-width: 640px) {
     .comp-icon-btn,
     .comp-modal-close { min-inline-size: 44px; min-block-size: 44px; }
@@ -2916,9 +3001,10 @@
   /* ── Mobile touch floor (craft floor: ≥44px) for the governance
      card actions. !important is a documented layer-precedence
      exception (same as wave 5-c): polish's overrides-layer mobile
-     block pins .btn at 40px / .btn.sm at 32px — a components-layer
-     rule can never win without it. (.teacher-row already carries a
-     48px min from wave 3-c.) ────────────────────────────────────── */
+     block now pins .btn at 40px / .btn.sm at 44px (wave 9-b), so
+     this same-value !important pin is belt-and-braces, not the
+     load-bearing floor the older comment described. (.teacher-row
+     already carries a 48px min from wave 3-c.) ──────────────────── */
   @media (max-width: 640px) {
     .perm-row-actions .btn.sm,
     .gov-form-actions .btn { min-block-size: 44px !important; }
@@ -3668,10 +3754,11 @@
 
   /* ErrorState / PermissionDeniedState / EmptyState action buttons
      (.btn.sm inside .state) reach the 44px touch floor on phones
-     (craft floor; flagged by 3-b / 4-a / 4-b / 5-a / 6-b). polish's
-     overrides-layer mobile block pins .btn.sm at min-block-size 32px,
-     so — like components.css:2737 and owner.css:1281 before it — this
-     needs the !important. Desktop keeps the compact 32px row. */
+     (craft floor; flagged by 3-b / 4-a / 4-b / 5-a / 6-b). 21-b
+     correction: polish's overrides-layer mobile block has pinned
+     .btn.sm at 44px since the wave 9-b consolidation — this same-
+     value !important pin is belt-and-braces, not the only floor.
+     Desktop keeps the compact 32px row. */
   @media (max-width: 640px) {
     .state .btn.sm { min-block-size: 44px !important; }
   }

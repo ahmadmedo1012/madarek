@@ -142,6 +142,10 @@ export default function AiAssistantPage() {
                 <div className="ai-gap-head">
                   <Icon icon={AlertCircle} size={14} className="ai-gap-warn" />
                   <span className="text-xxs text-subtle">{g.courseName}</span>
+                  {/* 21-c (A5 P1-2): the mastery % is the card's whole
+                      point — student.css pairs it with --warning-ink
+                      (7.29:1 light / 9.90:1 dark) after the raw
+                      --warning gold measured 2.13:1 on the light card. */}
                   <span className="ai-gap-pct">{Math.round(g.level * 100)}%</span>
                 </div>
                 <div className="ai-gap-name">{g.conceptName}</div>

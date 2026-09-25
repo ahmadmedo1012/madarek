@@ -4,6 +4,8 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
+import { CommandPaletteBody } from './GlobalSearch';
+import { CommandPalette } from '../overlays';
 import { useThemeSync } from './ThemeToggle';
 import { useScrollRestoration } from './useScrollRestoration';
 import { PageTransition } from '../motion';
@@ -15,6 +17,21 @@ import { useOnboardingState } from '../../hooks/useOnboardingState';
 import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
 import { HydrationSplash } from '../HydrationSplash';
+import { overlayStack } from '../../lib/overlayStack';
+
+/* ───────────────────────────────────────────────────────────
+   ROLE HOME — the single map for guard redirects (ProtectedRoute)
+   AND the onboarding auto-start gate (A13 P1-1). Keeping one map
+   means the tour can never aim at a different route than the guard
+   bounces users to.
+   ─────────────────────────────────────────────────────────── */
+const ROLE_HOME: Record<AppRole, string> = {
+  STUDENT: '/student/dashboard',
+  TEACHER: '/teacher/dashboard',
+  ADMIN:   '/admin/dashboard',
+  QUALITY: '/quality/dashboard',
+  OWNER:   '/owner/dashboard',
+};
 
 /* ───────────────────────────────────────────────────────────
    PAGE TITLES — single source of truth for topbar resolution
@@ -30,8 +47,8 @@ const PAGE_TITLES: Record<string, string> = {
   '/student/results': 'النتائج والتقييمات',
   '/student/ai': 'المساعد الذكي',
   '/student/library': 'المكتبة الإلكترونية',
-  '/student/gamification': 'الإنجازات والنقاط',
-  '/student/skills': 'المهارات والشهادات',
+  '/student/gamification': 'النقاط والمستويات',
+  '/student/skills': 'مهاراتي',
   '/student/labs': 'المعامل الافتراضية',
   '/student/social': 'الشبكة الاجتماعية',
   '/student/mooc': 'دورات خارجية',
@@ -47,6 +64,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/student/live': 'البث المباشر',
   '/student/payment': 'الشؤون المالية',
   '/student/map': 'خريطة الحرم الجامعي',
+  '/student/ar': 'تجارب AR/VR',
   '/teacher/dashboard': 'لوحة الأستاذ',
   '/teacher/schedule': 'جدول المحاضرات',
   '/teacher/attendance': 'الحضور والغياب',
@@ -55,6 +73,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/teacher/students': 'قائمة الطلاب',
   '/teacher/performance': 'الأداء والتحليل',
   '/teacher/assignments': 'الواجبات والاختبارات',
+  '/teacher/exams': 'بنك الأسئلة والاختبارات',
   '/teacher/messages': 'الرسائل',
   '/teacher/research': 'البحث العلمي',
   '/admin/dashboard': 'لوحة الإدارة',
@@ -99,6 +118,10 @@ const PAGE_TITLES: Record<string, string> = {
   '/teacher/profile': 'الملف الأكاديمي',
   '/teacher/live': 'إدارة البث المباشر',
   '/teacher/labs': 'المعامل الافتراضية',
+  '/teacher/ai': 'المساعد الذكي',
+  '/teacher/library': 'المكتبة',
+  '/teacher/alerts': 'الإشعارات',
+  '/admin/alerts': 'الإشعارات',
   '/student/online-exams': 'الاختبارات الإلكترونية',
 };
 
@@ -110,19 +133,22 @@ const DYNAMIC_TITLES: Array<[RegExp, string]> = [
   [/^\/training\/[^/]+\/lesson\/[^/]+$/,     'درس تدريبي'],
   [/^\/training\/[^/]+$/,                    'مسار تدريبي'],
   [/^\/teacher\/intelligence\/[^/]+$/,       'تفاصيل المقرّر'],
+  [/^\/teacher\/exams\/[^/]+$/,             'بنك الأسئلة والاختبارات'],
   [/^\/student\/online-exams\/[^/]+$/,       'اختبار جارٍ'],
   [/^\/admin\/permissions\/[^/]+$/,          'إدارة الصلاحيات'],
   [/^\/colleges\/[^/]+$/,                    'كلّيّة'],
   [/^\/competitions\/[^/]+$/,                'مسابقة'],
 ];
 
-function resolveTitle(pathname: string): string {
+export function resolveTitle(pathname: string): string {
   const exact = PAGE_TITLES[pathname];
   if (exact) return exact;
   for (const [pattern, title] of DYNAMIC_TITLES) {
     if (pattern.test(pathname)) return title;
   }
-  return 'منصة الزاوية';
+  // 4-A14 P2-1: the fallback used to name «منصة الزاوية» — the
+  // university platform, not the product. The product is «مدارك».
+  return 'مدارك';
 }
 
 /* ───────────────────────────────────────────────────────────
@@ -209,21 +235,29 @@ export function AppShell({ children }: { children?: ReactNode }) {
     isOpen: onboardingOpen,
     open: openOnboarding,
   } = useOnboardingState();
-  // Auto-mount the onboarding flow once per shell mount when the
-  // server has never recorded completion. The flow's open/frame state
-  // lives in the shared onboarding store, so this `open()` drives the
-  // same <OnboardingFlow /> rendered below. The once-guard matters now
-  // that the wiring actually works: without it, skipping the tour
-  // would re-open it during the window before the me-refetch lands.
+  const location = useLocation();
+  const role = useAuthStore((s) => s.user?.role);
+  // A13 P1-1: auto-start ONLY on the role's home route. The old effect
+  // ran on every shell mount, so a deep-linked task (shared lecture
+  // URL, emailed exam link) was greeted by a focus-trapped modal +
+  // scroll lock before the user could do the one thing they came for.
+  // The tour's copy is dashboard-centric ("لوحة يومك") and the
+  // sidebar replay («عرض الجولة») stays the durable invitation
+  // elsewhere. The once-guard matters now that the wiring actually
+  // works: without it, skipping the tour would re-open it during the
+  // window before the me-refetch lands — and it must only arm on the
+  // home route, so arriving at the dashboard LATER in the same
+  // session still shows the tour once.
+  const isRoleHome = role != null && location.pathname === ROLE_HOME[role];
   const onboardingAutoStarted = useRef(false);
   useEffect(() => {
     if (onboardingAutoStarted.current) return;
+    if (!isRoleHome) return;
     if (!onboardingShouldAutoStart || onboardingOpen) return;
     onboardingAutoStarted.current = true;
     openOnboarding();
-  }, [onboardingShouldAutoStart, onboardingOpen, openOnboarding]);
+  }, [isRoleHome, onboardingShouldAutoStart, onboardingOpen, openOnboarding]);
 
-  const location = useLocation();
   const title = resolveTitle(location.pathname);
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -234,9 +268,11 @@ export function AppShell({ children }: { children?: ReactNode }) {
      signal on client-side routes. Mirror the topbar's resolved
      per-route title into the tab, restoring the static platform
      title when the shell unmounts (the logout redirect lands on
-     /auth, which owns no title logic of its own). */
+     /auth, which owns no title logic of its own). The fallback title
+     resolves to the full platform title (4-A14 P2-1) — appending the
+     suffix would read «مدارك · مدارك». */
   useEffect(() => {
-    document.title = `${title} · مدارك`;
+    document.title = title === 'مدارك' ? DOC_TITLE_BASE : `${title} · مدارك`;
     return () => {
       document.title = DOC_TITLE_BASE;
     };
@@ -269,6 +305,33 @@ export function AppShell({ children }: { children?: ReactNode }) {
 
   useScrollRestoration(contentRef);
 
+  /* ── Command palette (4-A2 P2-8 + P1-3, wave 21-a) ──────────────
+     ⌘K / Ctrl+K opens the palette shell-wide — every role, every
+     viewport (on ≤920px it is THE search surface: the pill is
+     display:none and the topbar search button routes here). The chord
+     toggles: pressing it while the palette is open closes it. While
+     any OTHER overlay layer owns the screen (drawer, modal, dropdown,
+     notif panel) the chord is inert — the same contract GlobalSearch's
+     old ⌘K binding honored (11-e P1-6), now owned in exactly one
+     place so the two listeners can never fight over a press. */
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const closePalette = () => setPaletteOpen(false);
+  const openPalette = () => setPaletteOpen(true);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
+      if (e.key !== 'k' && e.key !== 'K') return;
+      e.preventDefault();
+      setPaletteOpen((v) => {
+        if (v) return false; // toggle: the palette itself owns the open state
+        if (!overlayStack.isEmpty()) return false; // another layer owns the screen
+        return true;
+      });
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div className="has-shell">
       {/* Skip-to-content link — WCAG 2.4.1. Visually hidden until focused
@@ -279,7 +342,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
       </a>
       <Sidebar />
       <main className="main" id="main" tabIndex={-1}>
-        <Topbar title={title} scrolled={scrolled} />
+        <Topbar title={title} scrolled={scrolled} onOpenCommandPalette={openPalette} />
         <div className="content" ref={contentRef}>
           <PageTransition>
             <div className="content-inner">
@@ -301,6 +364,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
       <BottomNav />
       <OnboardingFlow />
       <MilestoneScene />
+      <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">
+        <CommandPaletteBody onClose={closePalette} />
+      </CommandPalette>
     </div>
   );
 }
@@ -313,14 +379,7 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   if (!isHydrated) return <HydrationSplash />;
   if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
   if (allow && !allow.includes(user.role)) {
-    const home: Record<AppRole, string> = {
-      STUDENT: '/student/dashboard',
-      TEACHER: '/teacher/dashboard',
-      ADMIN:   '/admin/dashboard',
-      QUALITY: '/quality/dashboard',
-      OWNER:   '/owner/dashboard',
-    };
-    return <Navigate to={home[user.role]} replace />;
+    return <Navigate to={ROLE_HOME[user.role]} replace />;
   }
   return <Outlet />;
 }

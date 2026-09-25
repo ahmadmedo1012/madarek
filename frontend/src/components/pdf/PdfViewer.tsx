@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { Icon } from '../Icon';
 import { ErrorState } from '../primitives/States';
+import { useAuthStore } from '../../stores/auth.store';
+import { toast } from '../../lib/toast';
 // pdfjs-dist v4 ships ESM. Use named imports so Vite/Rollup can tree-shake
 // the rest of the public surface out of the bundle. Previously a namespace
 // import (`import * as pdfjsLib`) pulled in everything pdfjs-dist exports
@@ -118,9 +120,15 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     setSearchIdx(0);
     setIsSearching(false);
 
+    // A9 P0-1: API auth is Bearer-header-only (backend auth middleware +
+    // lib/api.ts) — the access token never rides a cookie, so pdf.js's
+    // own fetch used to arrive unauthenticated and every research
+    // document 401'd. Pass the header explicitly; same-origin requests
+    // already carry the refresh cookie, so no withCredentials is needed.
+    const token = useAuthStore.getState().accessToken;
     const task = getDocument({
       url: src,
-      withCredentials: true, // include auth cookies for same-origin /files/*
+      ...(token ? { httpHeaders: { Authorization: `Bearer ${token}` } } : {}),
       // Self-hosted assets (public/pdfjs/*) — no runtime dependency on unpkg.com
       cMapUrl: '/pdfjs/cmaps/',
       cMapPacked: true,
@@ -525,6 +533,47 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     return () => document.removeEventListener('fullscreenchange', onChange);
   }, []);
 
+  // ── Download ─────────────────────────────────────────────────────
+  // A9 P0-1 (second half): the old `<a href={src} download>` navigated
+  // without the Authorization header and 401'd exactly like the viewer
+  // fetch did. Download the blob with the Bearer token, hand it to the
+  // browser as an object URL, and clean the URL up on the next
+  // download / unmount so blobs never leak.
+  const [isDownloading, setIsDownloading] = useState(false);
+  const downloadUrlRef = useRef<string | null>(null);
+  useEffect(() => () => {
+    if (downloadUrlRef.current) URL.revokeObjectURL(downloadUrlRef.current);
+  }, []);
+
+  const downloadPdf = useCallback(async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const token = useAuthStore.getState().accessToken;
+      const res = await fetch(src, token ? { headers: { Authorization: `Bearer ${token}` } } : undefined);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      if (downloadUrlRef.current) URL.revokeObjectURL(downloadUrlRef.current);
+      const url = URL.createObjectURL(blob);
+      downloadUrlRef.current = url;
+      // Filename from the last path segment; decode Arabic filenames,
+      // keeping the raw segment if it is not valid percent-encoding.
+      const rawName = src.split('/').pop() || 'document.pdf';
+      let filename = rawName;
+      try { filename = decodeURIComponent(rawName); } catch { /* keep raw */ }
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename.endsWith('.pdf') ? filename : `${filename}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch {
+      toast.error('تعذّر تنزيل المستند — تحقّق من اتصالك ثم أعد المحاولة.');
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [src, isDownloading]);
+
   const scaleLabel = scale === 'fit-width' ? 'ملاءمة' : `${Math.round(scale * 100)}%`;
   const numPages = doc?.numPages ?? 1;
 
@@ -579,9 +628,17 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           <button type="button" className={`pdf-btn${searchOpen ? ' on' : ''}`} onClick={() => setSearchOpen((v) => !v)} aria-pressed={searchOpen} title="بحث في المستند" aria-label="بحث في المستند">
             <Icon icon={Search} size={16} />
           </button>
-          <a href={src} download className="pdf-btn" title="تحميل المستند" aria-label="تحميل المستند">
+          <button
+            type="button"
+            className="pdf-btn"
+            onClick={downloadPdf}
+            disabled={isDownloading}
+            aria-busy={isDownloading || undefined}
+            title="تحميل المستند"
+            aria-label="تحميل المستند"
+          >
             <Icon icon={Download} size={16} />
-          </a>
+          </button>
           {fullscreenSupported && (
             <button
               ref={fullscreenBtnRef}

@@ -140,46 +140,56 @@ export function Sidebar() {
           </button>
         </div>
 
-        {groups.map((g) => (
-          <div className="nav-group" key={g.label}>
-            <div className="nav-section-label">{g.label}</div>
-            {g.items.map((item) => {
-              const link = (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
-                  onClick={closeSidebar}
-                >
-                  <span className="nav-icon">
-                    <Icon icon={item.icon} size={17} />
-                  </span>
-                  <span className="nav-label">{item.label}</span>
-                  {item.badge && (
-                    <span className={`nav-badge${item.badge.tone ? ' ' + item.badge.tone : ''}`}>
-                      {item.badge.text}
+        {/* 4-A2 P1-2: the nav groups live in their own .sidebar-nav
+            scroller so the footer below stays PINNED — the whole
+            .sidebar used to be the scroll container, which pushed the
+            account cluster (logout / theme / tour) below the fold in
+            every shell state (footer y=924+ on a 900px viewport).
+            Descendant selectors (drawer stagger, tooltips) are
+            unaffected: the .nav-group elements stay siblings inside
+            this wrapper. */}
+        <div className="sidebar-nav">
+          {groups.map((g) => (
+            <div className="nav-group" key={g.label}>
+              <div className="nav-section-label">{g.label}</div>
+              {g.items.map((item) => {
+                const link = (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
+                    onClick={closeSidebar}
+                  >
+                    <span className="nav-icon">
+                      <Icon icon={item.icon} size={17} />
                     </span>
-                  )}
-                </NavLink>
-              );
-              /* Collapsed icon rail: label via the portaled Tooltip
-                 primitive — hover-intent + instant on keyboard focus +
-                 aria-describedby. Replaces the old title-attribute ::after
-                 tooltip, which was clipped by the sidebar's
-                 overflow-x:hidden and hover-only (audit 0-c P2-4). Tooltip
-                 renders a fragment (no wrapper DOM), so the NavLink stays
-                 a direct .nav-group child and the v16 drawer :nth-child
-                 stagger keeps matching. */
-              return sidebarCollapsed ? (
-                <Tooltip key={`tip-${item.to}`} content={item.label}>
-                  {link}
-                </Tooltip>
-              ) : (
-                link
-              );
-            })}
-          </div>
-        ))}
+                    <span className="nav-label">{item.label}</span>
+                    {item.badge && (
+                      <span className={`nav-badge${item.badge.tone ? ' ' + item.badge.tone : ''}`}>
+                        {item.badge.text}
+                      </span>
+                    )}
+                  </NavLink>
+                );
+                /* Collapsed icon rail: label via the portaled Tooltip
+                   primitive — hover-intent + instant on keyboard focus +
+                   aria-describedby. Replaces the old title-attribute ::after
+                   tooltip, which was clipped by the sidebar's
+                   overflow-x:hidden and hover-only (audit 0-c P2-4). Tooltip
+                   renders a fragment (no wrapper DOM), so the NavLink stays
+                   a direct .nav-group child and the v16 drawer :nth-child
+                   stagger keeps matching. */
+                return sidebarCollapsed ? (
+                  <Tooltip key={`tip-${item.to}`} content={item.label}>
+                    {link}
+                  </Tooltip>
+                ) : (
+                  link
+                );
+              })}
+            </div>
+          ))}
+        </div>
 
         <div className="sidebar-footer">
           <ThemeToggle />

@@ -267,7 +267,8 @@
   border: none;
   outline: none;
   color: var(--text);
-  font-size: var(--type-body-size);
+  /* 21-c (A10 P1 cross-ref): 15px → 16px iOS-zoom floor. */
+  font-size: 16px;
   font-family: inherit;
   min-block-size: 28px;
 }
@@ -500,6 +501,15 @@
   font-variant-numeric: tabular-nums;
   font-size: var(--type-label-size-sm);
 }
+/* 21-c (A8 P1-2): on the ACTIVE chip the ground flips to --accent-soft
+   and the muted count failed AA in the gallery's DEFAULT state (4.22
+   light / 4.47 dark — axe flags it on every /colleges load). The label
+   already takes --accent-strong (:491); the count joins it on the
+   WCAG-pinned pair: 8.62:1 light / 10.10:1 dark. */
+.gallery-chip.gallery-chip-on .gallery-chip-count,
+.gallery-chip[aria-selected="true"] .gallery-chip-count {
+  color: var(--accent-strong);
+}
 
 .gallery-clear {
   display: inline-flex;
@@ -653,8 +663,12 @@
 .college-hero-eyebrow {
   font-size: var(--fs-xxs);
   color: color-mix(in srgb, var(--college-accent, var(--accent)) 55%, var(--text));
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  /* 21-c (A8 P2-1): 0.05em letter-spacing broke the cursive joins of
+     «جامعة الزاوية · {city}», and uppercase is a Latin-only concept.
+     Same ruling as the Vision eyebrow (removed per ruling #2) and
+     polish.css's .landing-campus-eyebrow: size + weight + color only. */
+  letter-spacing: normal;
+  text-transform: none;
   margin-block-end: 4px;
 }
 .college-hero-name {
@@ -939,10 +953,12 @@
      polish.css's pages-layer bare-input reset (height: auto, padding: 0)
      is the approved final for this wrapper-as-pill surface and no longer
      depends on this file loading first. Colleges keeps only what polish
-     does not set: flow, family, size and ink. */
+     does not set: flow, family, size and ink.
+     21-c (A10 P1 cross-ref): 13px → 16px — iOS Safari zooms the
+     viewport on any <16px input focus. */
   flex: 1 1 auto;
   font-family: inherit;
-  font-size: var(--fs-sm);
+  font-size: 16px;
   color: var(--text);
 }
 .admin-students-input {
@@ -952,7 +968,8 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: var(--fs-sm);
+  /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor. */
+  font-size: 16px;
   font-family: inherit;
 }
 .admin-students-input:focus {
@@ -1264,8 +1281,10 @@
 .comp-index-category {
   font-size: var(--fs-xxs);
   color: var(--text-subtle);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  /* 21-c (ruling #2): Arabic category labels — no uppercase, no
+     0.05em tracking (breaks cursive joins). */
+  text-transform: none;
+  letter-spacing: normal;
 }
 .comp-index-title {
   font-size: var(--fs-md);
@@ -1335,8 +1354,9 @@
 }
 .comp-hero-category {
   color: var(--text-subtle);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  /* 21-c (ruling #2): Arabic category label — no uppercase/tracking. */
+  text-transform: none;
+  letter-spacing: normal;
 }
 .comp-hero-title {
   font-size: var(--fs-2xl);

@@ -172,7 +172,7 @@
     font-family: var(--font-display);
     font-size: var(--type-headline-size-sm);
     font-weight: var(--fw-black);
-    letter-spacing: var(--ls-tight);
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins (was --ls-tight) */
     color: var(--text);
   }
 
@@ -186,10 +186,11 @@
     font-size: var(--type-display-size-md);
     font-weight: var(--type-display-weight);
     color: var(--text);
-    letter-spacing: var(--ls-tight);
-    /* Arabic display floor (base.css .page-title precedent — the 1.05
-       display role is Latin-tuned and clips Arabic diacritics). */
-    line-height: 1.1;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
+    /* 21-c (A12 P2-7): Arabic display leading floor — 1.1 was the
+       base.css-parked compromise; 1.15 clears diacritic stacks at
+       28–40px display sizes. */
+    line-height: 1.15;
   }
   .auth-form-sub {
     font-size: var(--type-body-size);
@@ -327,7 +328,17 @@
 
   /* The auth large-field scale on top of the shared 44px base. Only
      real controls grow — textareas that borrow .auth-input keep their
-     native auto height (min 96px from the shared base). */
+     native auto height (min 96px from the shared base).
+     21-c (A10 P1): the shared .input system ships 15px
+     (var(--type-body-size)); iOS Safari zooms the viewport on any
+     <16px control focus. Auth floors its controls at 16px here —
+     components.css's shared recipe takes the same fix from 21-b. */
+  .auth-input,
+  input.auth-input,
+  select.auth-input,
+  textarea.auth-input {
+    font-size: 16px;
+  }
   input.auth-input,
   select.auth-input { block-size: 48px; }
 
@@ -692,9 +703,9 @@
     font-family: var(--font-display);
     font-size: var(--type-display-size-md);
     font-weight: var(--type-display-weight);
-    letter-spacing: var(--ls-tight);
-    /* Arabic display floor (base.css .page-title precedent). */
-    line-height: 1.1;
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
+    /* 21-c (A12 P2-7): Arabic display leading floor (was 1.1). */
+    line-height: 1.15;
     color: var(--text);
   }
   .nf-sub {

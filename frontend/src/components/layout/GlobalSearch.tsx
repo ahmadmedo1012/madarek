@@ -1,5 +1,5 @@
 /**
- * Global in-app search.
+ * Global in-app search + the ⌘K command-palette body.
  *
  * Pattern:
  *  - Debounced query key (300ms) on the shared TanStack cache — identical
@@ -17,15 +17,23 @@
  *    roles with stable ids, and a visually-hidden live region announcing
  *    the Arabic result count once loading settles
  *  - Keyboard nav: ↑/↓ to move, Enter to open, Esc to close
- *  - "/" focuses the input from anywhere on the page
+ *  - "/" focuses the input from anywhere on the page — except on the
+ *    ≤920px band where the pill is display:none: there the chord opens
+ *    the command palette, the mobile search surface (4-A2 P1-3).
+ *    ⌘K/Ctrl+K opens the command palette shell-wide (AppShell owns the
+ *    chord — wave 21-a wiring of 4-A2 P2-8).
  */
 import { useEffect, useId, useRef, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Search, X, ArrowRight } from 'lucide-react';
+import { Search, X, ArrowLeft, Sun, Moon, CornerDownLeft } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
+import { useAuthStore } from '../../stores/auth.store';
+import { useThemeStore, resolveTheme } from '../../stores/theme.store';
+import { NAV_BY_ROLE } from '../../lib/nav';
 
 /* ── Focus-trapped overlay guard (11-e P1-6) ─────────────────────
    ⌘K and "/" must never steal focus while a modal / sheet /
@@ -103,7 +111,17 @@ function resultsCountAr(n: number): string {
   return `${n} نتيجة`;
 }
 
-export function GlobalSearch() {
+/* Same counted-noun rules for the palette's mixed action+result list —
+   nav destinations are «خيارات», not «نتائج». */
+function optionsCountAr(n: number): string {
+  if (n === 0) return 'لا توجد خيارات';
+  if (n === 1) return 'خيار واحد';
+  if (n === 2) return 'خياران';
+  if (n <= 10) return `${n} خيارات`;
+  return `${n} خياراً`;
+}
+
+export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: () => void } = {}) {
   const [query, setQuery] = useState('');
   const [debounced, setDebounced] = useState('');
   const [open, setOpen] = useState(false);
@@ -157,13 +175,33 @@ export function GlobalSearch() {
 
   useEffect(() => { setActiveIdx(0); }, [flatHits.length]);
 
-  // Global shortcuts: "/" focuses the search from anywhere (except
-  // text fields), ⌘K / Ctrl+K focuses it unconditionally (chords don't
-  // type characters, and some browsers reserve Ctrl+K — claim it).
-  // Both are inert while a focus-trapped overlay is open (see the
-  // guard above) — the chord must not yank focus behind a scrim.
-  // The inTextField guard mirrors Sidebar's Ctrl+B handler:
-  // contentEditable hosts are text fields too (0-c P2-12 partial).
+  // ≤920px band: the pill is display:none (layout.css) — a focus() on
+  // the hidden input is a no-op, so the "/" chord must route to the
+  // command palette instead (4-A2 P1-3). matchMedia keeps this in sync
+  // across resizes; jsdom's stub returns matches:false so unit tests
+  // keep exercising the desktop path.
+  const [mobileBand, setMobileBand] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(max-width: 920px)').matches,
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(max-width: 920px)');
+    const onChange = () => setMobileBand(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Global shortcut: "/" focuses the search from anywhere (except text
+  // fields). On the ≤920px band — where the pill isn't rendered — it
+  // opens the command palette, the mobile search surface. ⌘K/Ctrl+K no
+  // longer lives here: the chord opens the command palette and is owned
+  // shell-wide by AppShell (wave 21-a), so the two listeners can never
+  // fight over one press. Both paths stay inert while a focus-trapped
+  // overlay is open (see the guard above) — the chord must not yank
+  // focus behind a scrim.
   const isMac =
     typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.userAgent);
 
@@ -176,19 +214,17 @@ export function GlobalSearch() {
         target?.isContentEditable === true;
       if (e.key === '/' && !inTextField) {
         e.preventDefault();
-        inputRef.current?.focus();
-        setOpen(true);
-        return;
-      }
-      if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
-        e.preventDefault();
+        if (mobileBand) {
+          onOpenCommandPalette?.();
+          return;
+        }
         inputRef.current?.focus();
         setOpen(true);
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, []);
+  }, [mobileBand, onOpenCommandPalette]);
 
   // Close on outside click
   useEffect(() => {
@@ -391,7 +427,7 @@ export function GlobalSearch() {
                         <span className="search-row-title">{hit.title}</span>
                         <span className="search-row-sub">{hit.subtitle}</span>
                       </span>
-                      <Icon icon={ArrowRight} size={12} className="search-row-arrow" />
+                      <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
                     </button>
                   );
                 })}
@@ -408,6 +444,292 @@ export function GlobalSearch() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/* ───────────────────────────────────────────────────────────────
+   COMMAND PALETTE BODY (wave 21-a — audits 4-A2 P2-8 + P1-3)
+   ───────────────────────────────────────────────────────────────
+   The content of the ⌘K surface, mounted by AppShell inside the
+   <CommandPalette> primitive (focus trap + scroll lock + Esc are the
+   primitive's). Two federated sources in ONE listbox:
+
+     1. Quick actions — the very nav items the sidebar renders
+        (lib/nav.ts NAV_BY_ROLE, so the palette and the sidebar can
+        never drift) plus a theme toggle. Filtered by the query,
+        capped at a curated few while the box is empty.
+     2. Live global-search results — the SAME ['search','global',term]
+        query key GlobalSearch uses, so the two surfaces share one
+        cache entry per term: opening the palette on a term the pill
+        already fetched is served without a second GET. That is the
+        "no duplicated state" contract — only the input text is local.
+
+   Combobox ARIA mirrors GlobalSearch (the pattern A2 verified-good):
+   role=combobox + aria-expanded/controls/activedescendant over one
+   listbox of labelled groups, ↑/↓/Enter keyboard loop, and a polite
+   counted-noun live region announcing the combined option count.
+   Opens for every role; fully keyboard-operable; rows carry a 44px
+   touch floor (layout.css, hover:none band). */
+const PALETTE_ACTIONS_EMPTY_CAP = 7;
+
+interface PaletteAction {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  run: () => void;
+}
+
+export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
+  const [query, setQuery] = useState('');
+  const [debounced, setDebounced] = useState('');
+  const [activeIdx, setActiveIdx] = useState(0);
+  const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const listboxId = useId();
+
+  const role = useAuthStore((s) => s.user?.role);
+  const themeMode = useThemeStore((s) => s.mode);
+  const setThemeMode = useThemeStore((s) => s.setMode);
+  const resolvedTheme = resolveTheme(themeMode);
+
+  // Debounce — same cadence as the pill so the shared cache key only
+  // sees settled terms.
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(query.trim()), 300);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  // Identical query to GlobalSearch — the shared queryClient cache is
+  // the dedupe layer between the two surfaces.
+  const enabled = debounced.length >= 2;
+  const { data, isPending, isFetching, isError, refetch } = useQuery({
+    queryKey: ['search', 'global', debounced],
+    enabled,
+    queryFn: ({ signal }) =>
+      unwrap<SearchResults>(
+        api.get(`/search/global?q=${encodeURIComponent(debounced)}`, { signal }),
+      ),
+  });
+  const loading = enabled && (isFetching || isPending);
+  const results = data ?? null;
+
+  const goTo = (href: string) => {
+    onClose();
+    navigate(href);
+  };
+
+  // Quick actions: the role's nav destinations + the theme toggle.
+  const actions = useMemo<PaletteAction[]>(() => {
+    const navItems = role
+      ? NAV_BY_ROLE[role].flatMap((g) => g.items).map((item) => ({
+          id: `nav:${item.to}`,
+          label: item.label,
+          icon: item.icon,
+          run: () => goTo(item.to),
+        }))
+      : [];
+    const theme: PaletteAction = {
+      id: 'action:theme',
+      label: resolvedTheme === 'dark' ? 'التبديل إلى الوضع الفاتح' : 'التبديل إلى الوضع الداكن',
+      icon: resolvedTheme === 'dark' ? Sun : Moon,
+      run: () => {
+        setThemeMode(resolvedTheme === 'dark' ? 'light' : 'dark');
+        onClose();
+      },
+    };
+    const all = [...navItems, theme];
+    const q = debounced; // settled term — matching on the raw keystroke flickers
+    if (!q) return all.slice(0, PALETTE_ACTIONS_EMPTY_CAP);
+    return all.filter((a) => a.label.includes(q));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- goTo closes over navigate only
+  }, [role, debounced, resolvedTheme, setThemeMode, onClose, navigate]);
+
+  const flatHits = useMemo(() => {
+    if (!results) return [];
+    return [
+      ...results.courses,
+      ...results.lectures,
+      ...results.papers,
+      ...results.tracks,
+    ];
+  }, [results]);
+
+  // One flat keyboard order across both sources.
+  const flatOptions = useMemo(() => [...actions, ...flatHits], [actions, flatHits]);
+  useEffect(() => { setActiveIdx(0); }, [flatOptions.length]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!flatOptions.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveIdx((i) => (i + 1) % flatOptions.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveIdx((i) => (i - 1 + flatOptions.length) % flatOptions.length);
+    } else if (e.key === 'Enter') {
+      const item = flatOptions[activeIdx];
+      if (item) {
+        e.preventDefault();
+        if ('href' in item) goTo(item.href);
+        else item.run();
+      }
+    }
+  };
+
+  /* aria-activedescendant must resolve to a live option. */
+  const activeOptionId =
+    flatOptions[activeIdx] != null ? `${listboxId}-opt-${activeIdx}` : undefined;
+
+  /* Polite count announcement — actions + results settle together. */
+  const announcement = loading ? '' : optionsCountAr(flatOptions.length);
+
+  const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
+  const showEmpty =
+    !loading && !isError && actions.length === 0 && (!enabled || flatHits.length === 0);
+
+  let runningIdx = 0;
+
+  return (
+    <div className="cmd-body">
+      <div className="cmd-input-row">
+        <span className="cmd-input-icon"><Icon icon={Search} size={16} /></span>
+        <input
+          ref={inputRef}
+          type="text"
+          className="cmd-input"
+          placeholder="ابحث أو نفّذ أمراً…"
+          aria-label="الأوامر والبحث"
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded="true"
+          aria-controls={listboxId}
+          aria-activedescendant={activeOptionId}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={onKeyDown}
+          autoComplete="off"
+          spellCheck={false}
+        />
+        <span className="cmd-input-esc"><span className="kbd">Esc</span></span>
+      </div>
+
+      <div className="cmd-list" role="listbox" id={listboxId} aria-label="الأوامر والنتائج">
+        {loading && (
+          <div className="search-row search-loading" role="presentation">
+            <span className="search-shimmer" />
+            <span className="search-shimmer" />
+            <span className="search-shimmer" />
+          </div>
+        )}
+
+        {!loading && isError && !results && (
+          <div className="search-empty" role="presentation">
+            <div className="search-empty-title">تعذَّر إتمام البحث</div>
+            <div className="search-empty-tips">
+              <button type="button" className="search-tip-pill" onClick={() => refetch()}>
+                إعادة المحاولة
+              </button>
+            </div>
+            <div className="search-empty-hint">تحقّق من اتصالك ثم أعد المحاولة.</div>
+          </div>
+        )}
+
+        {actions.length > 0 && (
+          <div className="search-section" role="group" aria-labelledby={`${listboxId}-sec-actions`}>
+            <div className="search-section-label" id={`${listboxId}-sec-actions`}>إجراءات سريعة</div>
+            {actions.map((action, idx) => {
+              const isActive = idx === activeIdx;
+              return (
+                <button
+                  key={action.id}
+                  id={`${listboxId}-opt-${idx}`}
+                  type="button"
+                  role="option"
+                  aria-selected={isActive}
+                  className={`search-row cmd-row${isActive ? ' active' : ''}`}
+                  onMouseEnter={() => setActiveIdx(idx)}
+                  onClick={() => action.run()}
+                >
+                  <span className="search-row-icon cmd-row-icon">
+                    <Icon icon={action.icon} size={15} />
+                  </span>
+                  <span className="search-row-body">
+                    <span className="search-row-title">{action.label}</span>
+                  </span>
+                  <Icon icon={CornerDownLeft} size={12} className="search-row-arrow" />
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {!loading && results && sections.map((section) => {
+          const items = results[section];
+          if (items.length === 0) return null;
+          const sectionLabelId = `${listboxId}-sec-${section}`;
+          return (
+            <div key={section} className="search-section" role="group" aria-labelledby={sectionLabelId}>
+              <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
+              {items.map((hit) => {
+                const idx = actions.length + runningIdx++;
+                const isActive = idx === activeIdx;
+                const accent = hit.themeColor ?? 'var(--accent)';
+                return (
+                  <button
+                    key={hit.id}
+                    id={`${listboxId}-opt-${idx}`}
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    className={`search-row cmd-row${isActive ? ' active' : ''}`}
+                    onMouseEnter={() => setActiveIdx(idx)}
+                    onClick={() => goTo(hit.href)}
+                  >
+                    <span
+                      className="search-row-icon cmd-row-icon"
+                      style={{
+                        background: `color-mix(in srgb, ${accent} 10%, transparent)`,
+                        color: accent,
+                      }}
+                    >
+                      <EmojiIcon emoji={hit.iconEmoji} size={16} fallback={Search} />
+                    </span>
+                    <span className="search-row-body">
+                      <span className="search-row-title">{hit.title}</span>
+                      <span className="search-row-sub">{hit.subtitle}</span>
+                    </span>
+                    <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
+
+        {showEmpty && (
+          <div className="search-empty" role="presentation">
+            <div className="search-empty-title">
+              {debounced ? `لم نعثر على أوامر تطابق «${debounced}»` : 'لا توجد أوامر متاحة'}
+            </div>
+            <div className="search-empty-hint">
+              جرّب كلمة من اسم المقرّر أو وجهة من القائمة الجانبية.
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="cmd-foot" role="presentation">
+        <span className="kbd">↑</span><span className="kbd">↓</span> للتنقّل
+        <span className="kbd">↵</span> للتنفيذ
+        <span className="kbd">Esc</span> للإغلاق
+      </div>
+
+      {/* Combined-count live region — mounted unconditionally so a
+          settled announcement is never clipped by the palette unmount. */}
+      <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
     </div>
   );
 }

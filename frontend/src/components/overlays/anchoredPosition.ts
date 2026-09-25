@@ -18,7 +18,12 @@
  * estimate mounts the panel, then a refinement pass reads the panel's
  * own box and lands the final position synchronously before paint.
  * Nothing measures per-render; resize/scroll repositions (robust,
- * already the established behavior).
+ * already the established behavior). A one-shot rAF refine after the
+ * initial pass is the post-mount safety net (audit 4-A2 P1-1): any
+ * consumer whose panel mounts later than this effect's first run
+ * (delayed-unmount wrappers, portal timing edges) still gets exactly
+ * one re-measure with the real panel box instead of keeping the
+ * pw=0 estimate forever.
  *
  * Wave 12-14 (audit 11-e P2-14): scroll/resize repositioning is
  * rAF-throttled, a scroll that originates INSIDE the panel (its own
@@ -136,7 +141,11 @@ export function useAnchoredPosition({
   // panel's own internal scrolling is ignored (it captures through to
   // window, but repositioning on it would both fight the reader and
   // re-render the panel every frame). The initial refine stays
-  // synchronous so the first paint lands on the final position.
+  // synchronous so the first paint lands on the final position; the
+  // one-shot schedule() right after it is the 4-A2 P1-1 post-mount
+  // pass — if the panel wasn't mounted when the synchronous refine
+  // ran (pw=0 estimate), the next frame re-measures with the real box
+  // and the equality bail keeps the common case a no-op.
   useLayoutEffect(() => {
     if (!open || !estimate) return;
     let rafId = 0;
@@ -166,6 +175,7 @@ export function useAnchoredPosition({
       schedule();
     };
     refine();
+    schedule(); // 4-A2 P1-1: one post-mount refine (see the docblock)
     window.addEventListener('resize', schedule);
     window.addEventListener('scroll', onScroll, true);
     return () => {

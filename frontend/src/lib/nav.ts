@@ -4,9 +4,10 @@ import {
   GraduationCap, Briefcase, Building2,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
-  FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked,
+  FileText, FileQuestion, FileBarChart, ShieldCheck, Activity, Compass, BookMarked,
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
-  Palette, Settings, AlertTriangle,
+  Palette, Settings, AlertTriangle, MessageCircle, Video, Globe,
+  Download, Medal, BadgeCheck, Box, Telescope,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole, AcademicPosition } from '../stores/auth.store';
@@ -34,6 +35,10 @@ export const STUDENT_NAV: NavGroup[] = [
     items: [
       { to: '/student/matrix', icon: Compass, label: 'المصفوفة التعليمية' },
       { to: '/student/online-exams', icon: ClipboardCheck, label: 'الاختبارات الإلكترونية' },
+      // 4-A14 P1-1 (wave 21-a): this route rendered real seeded
+      // analytics but had ZERO inbound links anywhere — same for the
+      // seven surfaces in the «المزيد» group below + /vision.
+      { to: '/student/exams', icon: FileBarChart, label: 'تحليل الاختبارات' },
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
       { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
@@ -60,6 +65,26 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/student/university', icon: Building2, label: 'جامعة الزاوية' },
       { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
       { to: '/student/map', icon: MapPin, label: 'خريطة الحرم' },
+    ],
+  },
+  {
+    /* 4-A14 P1-1 (wave 21-a): the «المزيد» bucket surfaces the seven
+       built student surfaces that previously had no inbound link
+       (social feed, webinars, external MOOCs, downloads center, XP
+       levels, skills, AR/VR) plus the shared «الابتكارات القادمة»
+       roadmap. Labels per A14 P3-2: «النقاط والمستويات» and «مهاراتي»
+       disambiguate from /achievements «الإنجازات والشهادات» — the
+       PAGE_TITLES map follows these strings (nav.ts is canonical). */
+    label: 'المزيد',
+    items: [
+      { to: '/student/social', icon: MessageCircle, label: 'الشبكة الاجتماعية' },
+      { to: '/student/webinars', icon: Video, label: 'الندوات وورش العمل' },
+      { to: '/student/mooc', icon: Globe, label: 'دورات خارجية' },
+      { to: '/student/downloads', icon: Download, label: 'مركز التحميلات' },
+      { to: '/student/gamification', icon: Medal, label: 'النقاط والمستويات' },
+      { to: '/student/skills', icon: BadgeCheck, label: 'مهاراتي' },
+      { to: '/student/ar', icon: Box, label: 'تجارب AR/VR' },
+      { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
 ];
@@ -98,6 +123,8 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/teacher/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
       { to: '/competitions', icon: Trophy, label: 'المسابقات' },
+      // 4-A14 P1-1: the shared roadmap entry (any-auth route).
+      { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
 ];
@@ -123,6 +150,8 @@ export const ADMIN_NAV: NavGroup[] = [
       { to: '/admin/sync', icon: RefreshCw, label: 'مزامنة الجامعة' },
       { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
       { to: '/admin/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      // 4-A14 P1-1: the shared roadmap entry (any-auth route).
+      { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
 ];
@@ -144,6 +173,8 @@ export const QUALITY_NAV: NavGroup[] = [
       { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
       { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
       { to: '/quality/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      // 4-A14 P1-1: the shared roadmap entry (any-auth route).
+      { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
 ];
@@ -172,6 +203,8 @@ export const OWNER_NAV: NavGroup[] = [
       { to: '/owner/ai', icon: Bot, label: 'مركز الذكاء الاصطناعي', badge: { text: 'AI', tone: 'gold' } },
       { to: '/owner/alerts', icon: AlertTriangle, label: 'التنبيهات التشغيلية' },
       { to: '/owner/governance', icon: ShieldCheck, label: 'الحوكمة المتقدمة' },
+      // 4-A14 P1-1: the shared roadmap entry (any-auth route).
+      { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
 ];

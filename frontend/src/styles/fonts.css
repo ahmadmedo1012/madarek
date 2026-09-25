@@ -22,10 +22,16 @@
      weight is what the tokens actually say — zero visual delta,
      same woff2, and the fallback stacks get a real 700 instead of
      a synthetic 800 while the webfont swaps in.
-   · IBM Plex Serif italic 400/500 — every --font-serif usage in
-     src/ is an italic <em>/flourish (landing + polish), so only the
-     italic cuts are shipped. Arabic glyphs were never in Plex
-     Serif — those fall back to Georgia/system-serif as before.
+   · IBM Plex Serif italic 400/500 — SANCTIONED LATIN RUNS ONLY
+     (21-c, A12 P1-6): Arabic was never in Plex Serif (latin-only
+     unicode-range below), so every Arabic em that asked for the
+     serif-italic "accent" silently fell to an OS naskh face +
+     synthetic slant — an uncontrolled phantom on the flagship
+     accent. Platform ruling since 20-a/21-c: Arabic emphasis is
+     UPRIGHT weight + accent ink (see polish.css's :lang(ar) em
+     reset); these italic cuts load only for the explicitly-tagged
+     Latin survivors (em.landing-serif-latin, «Oasis»). No Arabic
+     glyph can reach them.
    · IBM Plex Mono 400/500 — codes, IDs, numbers, emails (latin).
    Subsets: arabic + latin for Sans Arabic, latin for the rest —
    the browser downloads only what the page paints.

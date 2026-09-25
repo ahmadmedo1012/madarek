@@ -201,6 +201,11 @@ export default function StudentCoursesPage() {
                     <div className="thumb-card-title" title={c.name}>{c.name}</div>
                     <div className="thumb-card-sub" title={teacher}>{teacher}</div>
                     <div style={{ marginTop: 'var(--sp-2)' }}>
+                      {/* 21-c (A12 P1-3): `color` is the BAR FILL hue
+                          (decorative, rides the track) — the primitive
+                          paints the 12px % readout in --text-secondary
+                          (8.44:1) after the raw themeColor text measured
+                          1.88–3.60:1 on the white cards. */}
                       <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
                     </div>
                   </div>

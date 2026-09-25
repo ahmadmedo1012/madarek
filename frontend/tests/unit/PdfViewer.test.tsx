@@ -22,6 +22,7 @@
 import { describe, expect, it, vi, beforeAll, afterAll, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import PdfViewer from '../../src/components/pdf/PdfViewer';
+import { useAuthStore } from '../../src/stores/auth.store';
 
 const getDocumentMock = vi.hoisted(() => vi.fn());
 // NOTE: the factory must not use class FIELDS (only methods) — vitest's
@@ -224,6 +225,82 @@ describe('PdfViewer — search', () => {
       expect(unhandled).not.toHaveBeenCalled();
     } finally {
       process.off('unhandledRejection', unhandled);
+    }
+  });
+});
+
+describe('PdfViewer — authorized document access (A9 P0-1)', () => {
+  afterEach(() => {
+    // The auth store is module-global — never leak a token into other
+    // test files through the persisted sessionStorage entry.
+    useAuthStore.getState().clear();
+  });
+
+  it('passes the access token to pdf.js as an Authorization header', async () => {
+    useAuthStore.getState().setAccessToken('unit-access-token');
+    getDocumentMock.mockReturnValueOnce(taskFor(makeDoc(['صفحة'])));
+
+    render(<PdfViewer src="/papers/x.pdf" />);
+    await screen.findByText('من 1');
+
+    expect(getDocumentMock).toHaveBeenCalledTimes(1);
+    const args = getDocumentMock.mock.calls[0]![0] as { httpHeaders?: Record<string, string> };
+    expect(args.httpHeaders?.Authorization).toBe('Bearer unit-access-token');
+  });
+
+  it('omits the header when no session token exists (public documents)', async () => {
+    getDocumentMock.mockReturnValueOnce(taskFor(makeDoc(['صفحة'])));
+
+    render(<PdfViewer src="/papers/x.pdf" />);
+    await screen.findByText('من 1');
+
+    const args = getDocumentMock.mock.calls[0]![0] as { httpHeaders?: Record<string, string> };
+    expect(args.httpHeaders).toBeUndefined();
+  });
+
+  it('downloads through an authorized fetch → blob → object URL, not a bare <a href>', async () => {
+    useAuthStore.getState().setAccessToken('unit-access-token');
+    getDocumentMock.mockReturnValueOnce(taskFor(makeDoc(['صفحة'])));
+
+    const view = render(<PdfViewer src="/api/v1/files/papers/%D8%A8%D8%AD%D8%AB.pdf" />);
+    await screen.findByText('من 1');
+
+    // jsdom implements neither URL.createObjectURL nor a real fetch —
+    // stub both, plus the programmatic anchor click.
+    const createObjectURL = vi.fn(() => 'blob:unit');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
+    const fetchMock = vi.fn(async () => ({ ok: true, blob: async () => new Blob(['%PDF-1.4']) }));
+    vi.stubGlobal('fetch', fetchMock);
+    const clickedAnchors: HTMLAnchorElement[] = [];
+    const clickSpy = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(function (this: HTMLAnchorElement) { clickedAnchors.push(this); });
+
+    try {
+      // The affordance must be a button now — the old bare
+      // <a href={src} download> 401'd without the header.
+      fireEvent.click(view.getByRole('button', { name: 'تحميل المستند' }));
+      // Two awaited hops (fetch → blob) — flush a macrotask so every
+      // microtask in the handler chain settles inside act().
+      await act(async () => { await new Promise((r) => setTimeout(r, 0)); });
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/v1/files/papers/%D8%A8%D8%AD%D8%AB.pdf',
+        { headers: { Authorization: 'Bearer unit-access-token' } },
+      );
+      expect(createObjectURL).toHaveBeenCalledTimes(1);
+      expect(clickedAnchors).toHaveLength(1);
+      expect(clickedAnchors[0]!.download).toBe('بحث.pdf'); // decoded Arabic filename
+      expect(clickedAnchors[0]!.href).toBe('blob:unit');
+      expect(view.container.querySelector('a[download]')).toBeNull();
+    } finally {
+      // Unmount while the URL stub is still active (the cleanup effect
+      // revokes the object URL), then restore the real globals.
+      view.unmount();
+      expect(revokeObjectURL).toHaveBeenCalledWith('blob:unit');
+      clickSpy.mockRestore();
+      vi.unstubAllGlobals();
     }
   });
 });

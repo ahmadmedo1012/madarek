@@ -18,7 +18,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BookOpen } from 'lucide-react';
-import { Pill, UserAvatar, Button } from '../../src/components/primitives';
+import { Pill, UserAvatar, Button, FormField, Input } from '../../src/components/primitives';
 
 describe('Pill', () => {
   it('exposes the toggle state via aria-pressed when interactive', () => {
@@ -112,5 +112,63 @@ describe('Button[loading]', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: 'إرسال' }));
     expect(onClick).not.toHaveBeenCalled();
+  });
+});
+
+describe('FormField (A9 P2-4 — aria association contract)', () => {
+  it('wires label → control and marks the control aria-invalid + aria-describedby → the error id', () => {
+    render(
+      <FormField label="الدرجة" error="أدخل درجة صحيحة.">
+        <Input type="number" />
+      </FormField>,
+    );
+    const control = screen.getByLabelText('الدرجة');
+    expect(control).toHaveAttribute('aria-invalid', 'true');
+    const describedBy = control.getAttribute('aria-describedby');
+    expect(describedBy).toBeTruthy();
+    // The described-by list includes the (single) error message id, and
+    // that message is the role=alert announcement.
+    const error = screen.getByRole('alert');
+    expect(describedBy).toContain(error.id);
+    expect(error).toHaveTextContent('أدخل درجة صحيحة.');
+    expect(error.id).toBe(`${control.id}-error`);
+  });
+
+  it('associates a static hint too, and drops the invalid state once the error clears', () => {
+    const { rerender } = render(
+      <FormField label="الدرجة" hint="من 0 إلى 20" error="أدخل درجة صحيحة.">
+        <input type="number" />
+      </FormField>,
+    );
+    const control = screen.getByLabelText('الدرجة');
+    const hint = screen.getByText('من 0 إلى 20');
+    expect(control.getAttribute('aria-describedby')).toContain(hint.id);
+    expect(control.getAttribute('aria-describedby')).toContain(
+      screen.getByRole('alert').id,
+    );
+
+    rerender(
+      <FormField label="الدرجة" hint="من 0 إلى 20">
+        <input type="number" />
+      </FormField>,
+    );
+    expect(screen.getByLabelText('الدرجة')).not.toHaveAttribute('aria-invalid');
+    expect(screen.getByLabelText('الدرجة').getAttribute('aria-describedby')).toBe(
+      hint.id,
+    );
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('respects an explicit control id and merges a consumer-passed aria-describedby', () => {
+    render(
+      <FormField label="العنوان" id="title-field" hint="مطلوب">
+        <input aria-describedby="consumer-extra" />
+      </FormField>,
+    );
+    const control = screen.getByLabelText('العنوان');
+    expect(control.id).toBe('title-field');
+    const ids = control.getAttribute('aria-describedby')?.split(' ') ?? [];
+    expect(ids).toContain('consumer-extra');
+    expect(ids).toContain('title-field-hint');
   });
 });

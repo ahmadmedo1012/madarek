@@ -3,7 +3,11 @@
    ─────────────────────────────────────────────────────────────────────
    Warm cream ground · big bold type · multi-color pastel sections
    Soft shadows · rounded surfaces · sticker icons · friendly motion
-   Plex Sans Arabic 800 display · Plex Serif italic accent · Plex Mono nums
+   Plex Sans Arabic 800 display · upright weight-accent emphasis · Plex Mono nums
+   (21-c: the stated “Plex Serif italic accent” was a phantom on Arabic —
+   IBM Plex Serif ships latin-only, so every Arabic em fell to an OS naskh
+   + synthetic slant. The platform accent is now upright weight + ink;
+   the serif italic files survive only for sanctioned Latin runs.)
    ════════════════════════════════════════════════════════════════════ */
 
 @layer tokens, base, layout, components, pages, overrides;
@@ -81,7 +85,11 @@
     --fw-bold: 700;
     --fw-black: 800;
 
-    /* line-heights — Arabic-comfortable, headline-tight */
+    /* line-heights — Arabic-comfortable, headline-tight.
+       21-c (A12 P2-7): --lh-tight (1.05) is the RAW Latin-tuned scale
+       value — no role consumes it anymore. The display role used to
+       alias it and clipped Arabic diacritic stacks (شدّة+تنوين); the
+       role now carries an Arabic-appropriate literal below. */
     --lh-tight: 1.05;
     --lh-snug:  1.20;
     --lh-base:  1.65;
@@ -204,7 +212,12 @@
     --type-display-size-xl:        var(--fs-display-xl);   /* 40..72px */
     --type-display-size-mega:      var(--fs-mega);         /* 48..104px */
     --type-display-weight:         var(--fw-black);        /* 800 */
-    --type-display-line-height:    var(--lh-tight);        /* 1.05 */
+    /* 21-c (A12 P2-7 — the P1-12 “Arabic-leading study”): 1.05 was
+       Latin-tuned and clipped Arabic diacritic stacks at display
+       sizes; 1.15 is the Arabic floor (dark adds one more step —
+       typeset guidance: light-on-dark wants slightly more leading).
+       Landing's mega already rode calc(display-lh + .05) → 1.20. */
+    --type-display-line-height:    1.15;
     --type-display-letter-spacing: var(--ls-mega);         /* -0.032em */
 
     /* Headline — page titles, section titles, modal headers. */
@@ -213,7 +226,13 @@
     --type-headline-size-sm:        var(--fs-h3);          /* 18px */
     --type-headline-weight:         var(--fw-bold);        /* 700 */
     --type-headline-line-height:    var(--lh-snug);        /* 1.20 */
-    --type-headline-letter-spacing: var(--ls-snug);        /* -0.012em */
+    /* 21-c (A3 P2-4 / ruling #2): was --ls-snug (-0.012em) — tracking
+       breaks Arabic cursive joins on every headline consumer
+       (colleges.css ×4, student.css ×2, the modal title). The role is
+       consumed only by Arabic headings, so the role token itself is
+       normalized; polish.css additionally resets raw tracking on
+       h1–h6/:lang(ar) for sibling-owned files. */
+    --type-headline-letter-spacing: var(--ls-normal);      /* 0 */
 
     /* Body — paragraphs, descriptions, prose. */
     --type-body-size:           var(--fs-body);            /* 15px */
@@ -228,7 +247,10 @@
     --type-label-size-sm:        var(--fs-xs);             /* 12px */
     --type-label-weight:         var(--fw-medium);         /* 500 */
     --type-label-line-height:    1.50;
-    --type-label-letter-spacing: 0.02em;
+    /* 21-c (ruling #2): was 0.02em — Latin-tuned tracking on Arabic
+       labels breaks cursive joins (auth.css already overrode it to 0
+       with this exact comment; the role now says what renders). */
+    --type-label-letter-spacing: var(--ls-normal);         /* 0 */
 
     /* Metric — KPI numbers, big stats, counters. Always tabular. */
     --type-metric-size:               var(--fs-metric-md); /* 22px */
@@ -387,6 +409,15 @@
     --danger-ink:  var(--c-rose-deep);
     --info-ink:    var(--c-sky-deep);
 
+    /* 21-c (A12 P1-5): the both-theme ink for TEXT ON A --danger FILL.
+       White on --danger measured 3.19:1 light / 2.12:1 dark — the
+       .btn.danger + notif-badge family (components.css / polish.css,
+       21-b's file). Exposed here so the fix is a one-line token swap:
+       --_btn-fg: var(--danger-fg). Mirrors the owner.css:611 pattern
+       already proven in-repo (#191918 on danger: 5.51 light / 8.31
+       dark) and the --accent-fg precedent (T3-F4). */
+    --danger-fg:   #191918;
+
     --brand:         var(--accent);
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--c-yellow-ink);
@@ -428,27 +459,12 @@
     --scrollbar-thumb: rgba(25,25,24,0.16);
     --scrollbar-thumb-hover: rgba(25,25,24,0.28);
 
-    /* legacy aliases */
-    --paper-0:   var(--neutral-0);
-    --paper-50:  var(--neutral-50);
-    --paper-100: var(--neutral-100);
-    --paper-200: var(--neutral-200);
-    --paper-300: var(--neutral-300);
-    --ink-900: var(--neutral-900);
-    --ink-700: var(--neutral-700);
-    --ink-500: var(--neutral-500);
-    --ink-400: var(--neutral-400);
-    --ink-300: var(--neutral-300);
-    --ink-200: var(--neutral-200);
-    --gold-700: var(--c-copper-ink);
-    --gold-500: var(--c-copper-ink);
-    --gold-100: var(--c-copper-bg);
-    --gold-900: var(--c-copper-deep);
-    --gold-300: #D9B873;
-    --green-700: var(--success); --green-100: var(--success-soft);
-    --amber-700: var(--warning); --amber-100: var(--warning-soft);
-    --red-700:   var(--danger);  --red-100:   var(--danger-soft);
-    --blue-700:  var(--info);    --blue-100:  var(--info-soft);
+    /* legacy aliases — 21-c dead-alias sweep (A12 P3-12):
+       --paper-*/--ink-*/--gold-1,3,5,7,9/--{green,amber,red,blue}-{100,700}
+       had ZERO consumers across src+tests (rg-verified 0 var() uses
+       outside their own definitions). Deleted from BOTH theme blocks;
+       the LIVE aliases stay: --text-subtle (×38), --shadow-sm (×2),
+       --accent-border (×1), --gold / --gold-ink / --gold-soft. */
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);
@@ -480,6 +496,12 @@
      DARK THEME — Notion-dark feel: deep ink, warm sand text
      ════════════════════════════════════════════════════════════════════ */
   [data-theme="dark"] {
+    /* 21-c (A12 P2-7): one more leading step for light-on-dark display
+       text (typeset guidance — compensate on all perceptual axes; the
+       tracking/weight axes are banned on Arabic cursive, leading is
+       the legal one). Landing mega rides calc(display-lh + .05) → 1.25. */
+    --type-display-line-height: 1.2;
+
     --neutral-0:   #1F1F1E;
     --neutral-50:  #191918;
     --neutral-100: #232322;
@@ -555,6 +577,12 @@
     --danger-ink:   var(--c-rose-ink);
     --info-ink:     var(--c-sky-ink);
 
+    /* 21-c (A12 P1-5): dark-side pair of the light block's --danger-fg
+       (the value is theme-identical #191918 — on dark's brighter rose
+       fill it measures 8.31:1). Consumed by .btn.danger / notif badge
+       when 21-b swaps their white ink. */
+    --danger-fg:    #191918;
+
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
     --warning:      var(--c-yellow-ink);
@@ -596,19 +624,9 @@
     --scrollbar-thumb: rgba(242,234,216,0.16);
     --scrollbar-thumb-hover: rgba(242,234,216,0.28);
 
-    --paper-0: var(--neutral-0); --paper-50: var(--neutral-50);
-    --paper-100: var(--neutral-100); --paper-200: var(--neutral-200);
-    --paper-300: var(--neutral-300);
-    --ink-900: var(--neutral-900); --ink-700: var(--neutral-700);
-    --ink-500: var(--neutral-500); --ink-400: var(--neutral-400);
-    --ink-300: var(--neutral-300); --ink-200: var(--neutral-200);
-    --gold-700: var(--accent); --gold-500: var(--accent);
-    --gold-100: var(--accent-soft); --gold-900: var(--accent-strong);
-    --gold-300: #886820;
-    --green-700: var(--success); --green-100: var(--success-soft);
-    --amber-700: var(--warning); --amber-100: var(--warning-soft);
-    --red-700: var(--danger); --red-100: var(--danger-soft);
-    --blue-700: var(--info); --blue-100: var(--info-soft);
+    /* (dark block of the 21-c dead-alias sweep — see the light block's
+       banner; the same 25 paper/ink/gold-{100,300,500,700,900}/
+       {green,amber,red,blue}-{100,700} definitions were deleted here.) */
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);

@@ -100,10 +100,9 @@ DEBT = [
     (r'^frontend/src/styles/landing\.css:\d+:.*animation: madarek-(typing|hero-drift|pulse-dot) \d+(?:\.\d+)?s',
      'landing ambient loops (typing indicator, hero drift, pulse dot) — landing.css '
      'is outside the 20-c file set; tokenize when an ambient-duration token exists'),
-    (r'^frontend/src/styles/owner\.css:\d+:.*transition: inset-inline-start var\(--t-base\)',
-     'toggle-switch thumb via inset-inline-start — latent (zero feature flags '
-     'seeded, ToggleSwitch never renders); convert to translateX when it ships '
-     '(4-A11 P2-10)'),
+    # toggle-switch thumb via inset-inline-start — CONVERTED to a composited
+    # translateX(calc(var(--motion-direction) * 18px)) by 21-b (A11 P2-10);
+    # debt entry removed per the gate protocol (entry stopped matching).
     (r'^frontend/src/styles/student\.css:\d+:.*transition: inline-size var\(--motion-duration-stat\)',
      'lecture-progress-fill inline-size — width set inline by the page; scaleX() '
      'conversion needs TSX coordination (4-A11 P2-10)'),
