@@ -442,15 +442,22 @@
      carry. */
 
   /* Term progress fill — the span carried only an inline width with no
-     background/height anywhere: the bar rendered as an empty track. */
+     background/height anywhere: the bar rendered as an empty track.
+     23-b (A11 P2-10 — scaleX debt cleared): the value rides
+     transform: scaleX() (set inline by the page) from the inline-start
+     edge; the width layout transition is gone. */
   .dash-term-bar > span {
     display: block;
     block-size: 100%;
+    inline-size: 100%;
     border-radius: inherit;
     background: var(--accent);
-    /* the calm "term is moving" fill; width is set inline by the page */
-    transition: width var(--motion-duration-stat) var(--motion-ease-decelerate);
+    transform-origin: left center;
+    transform: scaleX(0);
+    /* the calm "term is moving" fill */
+    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
   }
+  [dir="rtl"] .dash-term-bar > span { transform-origin: right center; }
 
   /* ChartFrame adoption: the frame fills the fixed doughnut well; the
      center number overlays it (positioning stays on .dash-doughnut). */

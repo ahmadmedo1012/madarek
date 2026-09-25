@@ -134,7 +134,14 @@ const DYNAMIC_TITLES: Array<[RegExp, string]> = [
   [/^\/training\/[^/]+$/,                    'مسار تدريبي'],
   [/^\/teacher\/intelligence\/[^/]+$/,       'تفاصيل المقرّر'],
   [/^\/teacher\/exams\/[^/]+$/,             'بنك الأسئلة والاختبارات'],
-  [/^\/student\/online-exams\/[^/]+$/,       'اختبار جارٍ'],
+  /* A4 P2-5: this one route hosts FOUR states — pre-start («هل أنت
+     مستعد للبدء؟»), a live attempt, the result screen, and the
+     already-completed screen. The shell resolves titles from the
+     pathname alone, so it cannot know an exam is running — the old
+     «اختبار جارٍ» asserted exactly that on the pre-start and result
+     screens (anxiety-inducing copy the page contradicts). The neutral
+     section title never lies in any state. */
+  [/^\/student\/online-exams\/[^/]+$/,       'اختبار إلكتروني'],
   [/^\/admin\/permissions\/[^/]+$/,          'إدارة الصلاحيات'],
   [/^\/colleges\/[^/]+$/,                    'كلّيّة'],
   [/^\/competitions\/[^/]+$/,                'مسابقة'],

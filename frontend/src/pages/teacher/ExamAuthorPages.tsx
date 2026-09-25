@@ -570,15 +570,14 @@ function PublishButton({
 
 /* ═══════════════ Question bank tab ═══════════════ */
 
-/* A6 P2 (22-a): the bank filter row (hub) and the picker filter row
- * (builder modal) are sibling surfaces — they used to carry eight
+/* A6 P2 (22-a + 23-b): the bank filter row (hub) and the picker filter
+ * row (builder modal) are sibling surfaces — they used to carry eight
  * drifting inline magic-number widths (280/200/160/140 vs
- * 220/150/130/120). One shared width budget keeps them identical;
- * the `.filter-bar` CSS class + `--w-input-filter` tokens land with
- * 22-c (components.css owner this wave) and can consume these same
- * constants. The `topbar-search` reuse is part of that hand-off. */
-const FILTER_SEARCH_MAXW = 260;
-const FILTER_SELECT_MAXW = 170;
+ * 220/150/130/120). Both rows now consume the shared `.filter-bar`
+ * class whose scoped `--w-input-filter-*` tokens own the width budget
+ * (components.css, 23-b): the hub renders the boxed toolbar, the
+ * picker nests inside the already-boxed "أسئلة القالب" section so it
+ * takes the chrome-less `.filter-bar.flush` variant. */
 
 function QuestionBankSection() {
   const [q, setQ] = useState('');
@@ -616,8 +615,13 @@ function QuestionBankSection() {
         </Button>
       }
     >
-      <div className="flex gap-3 items-center flex-wrap" style={{ marginBlockEnd: 'var(--sp-4)' }}>
-        <div className="topbar-search" style={{ width: '100%', maxWidth: FILTER_SEARCH_MAXW }}>
+      <div
+        className="filter-bar"
+        role="group"
+        aria-label="تصفية بنك الأسئلة"
+        style={{ marginBlockEnd: 'var(--sp-4)' }}
+      >
+        <div className="topbar-search">
           <span className="topbar-search-icon"><Icon icon={Search} size={14} /></span>
           <input
             type="text"
@@ -629,7 +633,6 @@ function QuestionBankSection() {
         </div>
         <select
           className="input"
-          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية حسب التصنيف"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -641,7 +644,6 @@ function QuestionBankSection() {
         </select>
         <select
           className="input"
-          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية حسب نوع السؤال"
           value={type}
           onChange={(e) => setType(e.target.value as '' | QType)}
@@ -653,7 +655,6 @@ function QuestionBankSection() {
         </select>
         <select
           className="input"
-          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية حسب مستوى الصعوبة"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as '' | Difficulty)}
@@ -1483,10 +1484,16 @@ function QuestionPicker({
         </span>
       </div>
 
-      <div className="flex gap-2 items-center flex-wrap">
-        {/* Same shared width budget as the hub's bank filter row (the
-            A6 P2 unification) — only the gap tightens for the modal. */}
-        <div className="topbar-search" style={{ width: '100%', maxWidth: FILTER_SEARCH_MAXW }}>
+      <div
+        className="filter-bar flush"
+        role="group"
+        aria-label="تصفية أسئلة البنك"
+      >
+        {/* Same shared `.filter-bar` width budget as the hub's bank
+            filter row (the A6 P2 unification) — the flush variant drops
+            the toolbar chrome because the picker already lives inside
+            the boxed «أسئلة القالب» section. */}
+        <div className="topbar-search">
           <span className="topbar-search-icon"><Icon icon={Search} size={13} /></span>
           <input
             type="text"
@@ -1498,7 +1505,6 @@ function QuestionPicker({
         </div>
         <select
           className="input"
-          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية أسئلة البنك حسب التصنيف"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
@@ -1510,7 +1516,6 @@ function QuestionPicker({
         </select>
         <select
           className="input"
-          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية أسئلة البنك حسب النوع"
           value={type}
           onChange={(e) => setType(e.target.value as '' | QType)}
@@ -1522,7 +1527,6 @@ function QuestionPicker({
         </select>
         <select
           className="input"
-          style={{ maxWidth: FILTER_SELECT_MAXW }}
           aria-label="تصفية أسئلة البنك حسب الصعوبة"
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value as '' | Difficulty)}

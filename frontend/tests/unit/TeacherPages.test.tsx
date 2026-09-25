@@ -420,6 +420,51 @@ describe('GradeSubmissionModal — discard guard (15-e P1-6)', () => {
   });
 });
 
+/* 23-b (21-b hand-off, A9 P2-4) — the grade modal rides the shared
+ * FormField primitive: the validation error now reaches the control
+ * itself (aria-invalid + aria-describedby → the alert), not only a
+ * loose role=alert paragraph under the form. */
+describe('GradeSubmissionModal — FormField aria wiring (23-b)', () => {
+  it('marks the score input aria-invalid and describes it by the alert on a failed submit', async () => {
+    seedGradeFeed();
+    await openGradeModal();
+
+    const score = screen.getByLabelText('الدرجة (من 0 إلى 10)');
+    expect(score).not.toHaveAttribute('aria-invalid');
+
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
+
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('أدخل درجة صحيحة.');
+    expect(score).toHaveAttribute('aria-invalid', 'true');
+    expect(score.getAttribute('aria-describedby')).toContain(alert.id);
+
+    // An out-of-range value keeps the control invalid (the message
+    // swaps to the bound check).
+    fireEvent.change(score, { target: { value: '99' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
+    const rangeAlert = await screen.findByRole('alert');
+    expect(rangeAlert).toHaveTextContent('الدرجة يجب ألّا تتجاوز 10.');
+    expect(screen.getByLabelText('الدرجة (من 0 إلى 10)')).toHaveAttribute('aria-invalid', 'true');
+
+    // A valid value lands the save — the error surface unmounts with
+    // the form (success card replaces it).
+    fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
+    expect(await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('keeps both field labels htmlFor-wired through the primitive', async () => {
+    seedGradeFeed();
+    await openGradeModal();
+
+    const feedback = screen.getByLabelText('ملاحظات للطالب (اختياري)') as HTMLTextAreaElement;
+    fireEvent.change(feedback, { target: { value: 'أحسنت' } });
+    expect(screen.getByLabelText('ملاحظات للطالب (اختياري)')).toHaveValue('أحسنت');
+  });
+});
+
 describe('NeedsReviewCard — the late-submission chip (18-G feed flag, 18-F2 consumption)', () => {
   it('badges a LATE submission «متأخر» beside the title — never inside it', () => {
     // A late submission: the same shape the dashboard now serves, with

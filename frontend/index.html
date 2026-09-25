@@ -85,16 +85,40 @@
     <script>
       (function () {
         try {
-          var stored = localStorage.getItem('madarek-theme');
-          var pref = stored ? JSON.parse(stored).state.mode : 'system';
-          var resolved;
-          if (pref === 'system' || !pref) {
-            resolved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          } else if (pref === 'dark' || pref === 'light') {
-            resolved = pref;
-          } else {
-            resolved = 'light';
-          }
+          /* 23-a (A5 P2-5): resolve the theme BEFORE first paint from
+             BOTH localStorage signals —
+               1. the theme store ('madarek-theme', zustand persist):
+                  the device's own choice + its timestamp, and
+               2. 'mdrk-theme-profile': the profile preference cached
+                  by useThemeProfileSync on every `me` observation.
+             Same rules as the hook: an explicit profile wins over the
+             local default ('system'), and a strictly NEWER profile
+             wins over a stale stored local choice (the old bootstrap
+             painted light and flipped to dark ~1–2s later once `me`
+             resolved). A cached 'SYSTEM' means the profile made no
+             explicit choice — the local mode governs. */
+          var mode = 'system', modeUpdatedAt = 0;
+          try {
+            var stored = JSON.parse(localStorage.getItem('madarek-theme'));
+            if (stored && stored.state) {
+              var st = stored.state;
+              if (st.mode === 'dark' || st.mode === 'light' || st.mode === 'system') {
+                mode = st.mode;
+              }
+              if (typeof st.modeUpdatedAt === 'number') modeUpdatedAt = st.modeUpdatedAt;
+            }
+          } catch (_) {}
+          try {
+            var prof = JSON.parse(localStorage.getItem('mdrk-theme-profile'));
+            if (prof && (prof.pref === 'DARK' || prof.pref === 'LIGHT')
+                && (mode === 'system'
+                    || (typeof prof.ts === 'number' && prof.ts > modeUpdatedAt))) {
+              mode = prof.pref === 'DARK' ? 'dark' : 'light';
+            }
+          } catch (_) {}
+          var resolved = mode === 'dark' || mode === 'light'
+            ? mode
+            : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', resolved);
         } catch (_) {
           document.documentElement.setAttribute('data-theme', 'light');

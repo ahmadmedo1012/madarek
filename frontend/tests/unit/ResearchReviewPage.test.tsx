@@ -154,6 +154,25 @@ describe('ReviewModal — discard guard (15-e P1-6)', () => {
   });
 });
 
+describe('ReviewModal — FormField migration (23-b, 21-b hand-off)', () => {
+  it('keeps the three review fields label-wired through the shared primitive', async () => {
+    mocks.queue.data = [PAPER];
+    renderPage();
+    await openModal();
+
+    // All three controls stay associated with their visible labels
+    // (the primitive injects the ids — the hand-rolled useId wiring is
+    // gone) and typing still drives the state.
+    const score = screen.getByLabelText('الدرجة (من 20)') as HTMLInputElement;
+    expect(score).toHaveValue(15);
+    fireEvent.change(score, { target: { value: '18' } });
+    expect(screen.getByLabelText('الدرجة (من 20)')).toHaveValue(18);
+    // The derived rating reactively follows the score.
+    expect((screen.getByLabelText('التقدير') as HTMLInputElement).value).toBe('ممتاز');
+    expect(screen.getByLabelText('ملاحظات للطالب')).toBeInTheDocument();
+  });
+});
+
 describe('ReviewModal — error language (15-j P0-1)', () => {
   it('a failed grade save shows the Arabic fallback — the English API message never renders raw', async () => {
     mocks.queue.data = [PAPER];

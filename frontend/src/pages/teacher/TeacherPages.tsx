@@ -7,7 +7,7 @@ import {
   ChevronRight, ChevronLeft,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
-import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle } from '../../components/primitives';
+import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
@@ -1034,12 +1034,17 @@ function GradeSubmissionModal({
           </div>
         ) : (
           <>
-            <div className="flex-col gap-2">
-              <label className="form-label" htmlFor="grade-score">
-                الدرجة{target.maxScore !== undefined ? ` (من 0 إلى ${target.maxScore})` : ''}
-              </label>
+            {/* 23-b (21-b hand-off, A9 P2-4): the two grade-modal fields
+                ride the shared FormField primitive — the label is
+                htmlFor-wired and the validation error now injects
+                aria-invalid + aria-describedby into the control itself
+                (announced on re-focus, not only via the role=alert),
+                instead of the hand-rolled label + loose alert <p>. */}
+            <FormField
+              label={`الدرجة${target.maxScore !== undefined ? ` (من 0 إلى ${target.maxScore})` : ''}`}
+              error={validationError}
+            >
               <input
-                id="grade-score"
                 type="number"
                 className="input input-narrow"
                 placeholder={target.maxScore !== undefined ? `0 – ${target.maxScore}` : '0'}
@@ -1051,12 +1056,10 @@ function GradeSubmissionModal({
                 onChange={(e) => setScore(e.target.value)}
                 disabled={grade.isPending}
               />
-            </div>
+            </FormField>
 
-            <div className="flex-col gap-2">
-              <label className="form-label" htmlFor="grade-feedback">ملاحظات للطالب (اختياري)</label>
+            <FormField label="ملاحظات للطالب (اختياري)">
               <textarea
-                id="grade-feedback"
                 className="input"
                 rows={4}
                 placeholder="اكتب ملاحظاتك على الإجابة…"
@@ -1066,13 +1069,8 @@ function GradeSubmissionModal({
                 maxLength={2000}
                 style={{ resize: 'vertical', fontFamily: 'inherit' }}
               />
-            </div>
+            </FormField>
 
-            {validationError && (
-              <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                {validationError}
-              </p>
-            )}
             {grade.isError && (
               <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
                 {apiErrorMessage(grade.error, 'تعذَّر حفظ الدرجة — حاول مرة أخرى.')}

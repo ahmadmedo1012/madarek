@@ -1160,10 +1160,11 @@
   gap: var(--sp-3);
 }
 
-/* The fill grows out of its inline-start edge on load: scaleX composes
-   with the ProgressBar's inline width (so later value changes keep the
-   .progress-fill width transition) and the transform-origin tracks the
-   reading direction. Staggered via --meter-i, capped 8. */
+/* The fill grows out of its inline-start edge on load: the keyframe's
+   implicit `to` composes with the ProgressBar's inline scaleX (23-b:
+   the value rides transform, so later value changes keep the
+   .progress-fill transform transition) and the transform-origin tracks
+   the reading direction. Staggered via --meter-i, capped 8. */
 .owner-meter .progress-fill {
   animation: owner-meter-in var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
   animation-delay: calc(min(var(--meter-i, 0), 8) * var(--motion-stagger-step));

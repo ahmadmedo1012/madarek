@@ -25,6 +25,16 @@
     .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--sp-3); }
     .grid-auto-200, .grid-auto-260 { grid-template-columns: 1fr; gap: var(--sp-3); }
   }
+  /* 23-b (A8 P3-9): every live .grid-4 consumer is a compact KPI strip
+     (MetricCard / KpiStripSkeleton — 30+ mounts, census 23-b), so four
+     stacked full-width cards pushed all page content below the small-
+     phone fold (390px probe: 4×340px cards). 2×2 at ≤480px keeps the
+     strip a strip; grid-3/grid-2 keep their 1-column stack, and a row
+     that genuinely needs full-width cards opts into .grid-2 + stacked
+     children or its own section rule (dash-progress-card etc.). */
+  @media (max-width: 480px) {
+    .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  CARD — Notion-soft. Subtle border, soft shadow on hover.      ║
@@ -581,10 +591,20 @@
   }
   .progress-fill {
     block-size: 100%;
+    /* 23-b (A11 P2-10 — scaleX debt cleared): the fill paints at full
+       track width and the VALUE rides transform: scaleX() — the width
+       layout transition (reflow per frame) is gone. The primitive sets
+       the scale inline (primitives/index.tsx ProgressBar); transform-
+       origin follows the reading direction like the owner-meter fills
+       (owner.css): inline-start edge = right in RTL. */
+    inline-size: 100%;
     background: var(--neutral-900);
     border-radius: inherit;
-    transition: width var(--t-slow) var(--ease-out);
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform var(--t-slow) var(--ease-out);
   }
+  [dir="rtl"] .progress-fill { transform-origin: right center; }
   [data-theme="dark"] .progress-fill { background: var(--accent); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1746,12 +1766,36 @@
   }
 
   .filter-bar {
+    /* ── Filter-bar input width budget (23-b, A6 P2) ─────────────────
+       The exam-authoring filter rows (question bank hub + builder-modal
+       picker) used to carry eight drifting inline magic-number widths.
+       The shared budget lives here as scoped tokens so every filter row
+       renders identically: the search pill grows to its cap and fills
+       the row on wrap, the selects cap at the label-safe width. */
+    --w-input-filter-search: 260px;
+    --w-input-filter-select: 170px;
     display: flex; align-items: center; flex-wrap: wrap;
     gap: var(--sp-2);
     padding: var(--sp-3) var(--sp-4);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
     background: var(--surface-2);
+  }
+  .filter-bar .topbar-search {
+    /* .topbar-search is inline-size:100% by default (layout.css) — the
+       cap keeps it a pill beside the selects instead of a full row. */
+    max-inline-size: var(--w-input-filter-search);
+  }
+  .filter-bar > .input {
+    max-inline-size: var(--w-input-filter-select);
+  }
+  /* Chrome-less variant for filter rows nested inside an already-boxed
+    surface (the builder modal's question picker) — keeps the wrap +
+    width-budget grammar, drops the toolbar box. */
+  .filter-bar.flush {
+    padding: 0;
+    border: 0;
+    background: none;
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗

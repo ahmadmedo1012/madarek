@@ -88,9 +88,12 @@ DEBT = [
     (r'^frontend/src/styles/polish\.css:\d+:.*--ease-spring-(soft|bounce|snappy):',
      'spring easing vocabulary defined outside tokens.css, pending adoption there '
      '(4-A11 P3-17)'),
-    (r'^frontend/src/styles/polish\.css:\d+:.*transition: width var\(--t-slow\) var\(--ease-out\)',
-     'progress-fill width transition — fills get width inline from TSX; the '
-     'transform: scaleX() conversion needs TSX coordination (4-A11 P2-10 follow-up)'),
+    # progress-fill width debt (polish mirror + canonical + term-progress
+    # + training xp-fill) — CONVERTED to transform: scaleX() by 23-b
+    # (A11 P2-10: components.css/.progress-fill + primitives/index.tsx,
+    # student.css/.dash-term-bar + DashboardPage, training.css/.xp-fill +
+    # MorePages, polish.css mirror retired); debt entries removed per the
+    # gate protocol (entries stopped matching once the lines were fixed).
     (r'^frontend/src/styles/owner\.css:\d+:.*animation: pulse-live 2s',
      'ambient live-status pulse, 2s — owner.css is outside the 20-c file set; '
      'tokenize when an ambient-duration token exists (4-A11 §1.3)'),
@@ -106,15 +109,8 @@ DEBT = [
     (r'^frontend/src/styles/student\.css:\d+:.*transition: inline-size var\(--motion-duration-stat\)',
      'lecture-progress-fill inline-size — width set inline by the page; scaleX() '
      'conversion needs TSX coordination (4-A11 P2-10)'),
-    (r'^frontend/src/styles/student\.css:\d+:.*transition: width var\(--motion-duration-stat\)',
-     'term-progress fill width — same scaleX() follow-up (4-A11 P2-10)'),
     (r'^frontend/src/styles/student\.css:\d+:.*@keyframes campus-fill-in',
      'campus-fill-in keyframes animate inline-size — scaleX() follow-up (4-A11 P2-10)'),
-    (r'^frontend/src/styles/training\.css:\d+:.*transition: width var\(--motion-duration-stat\)',
-     'training progress fill width — same scaleX() follow-up (4-A11 P2-10)'),
-    (r'^frontend/src/styles/components\.css:\d+:.*transition: width var\(--t-slow\)',
-     'canonical .progress-fill width transition — same scaleX() follow-up '
-     '(4-A11 P2-10; polish.css now mirrors this timing)'),
     (r'^frontend/src/styles/components\.css:\d+:.*transition: background var\(--t-fast\) var\(--ease\), inline-size var\(--t-fast\)',
      'onboarding flow-dot inline-size (pill grows when active) — scaleX() follow-up '
      '(4-A11 P2-10)'),

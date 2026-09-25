@@ -129,7 +129,13 @@ export function GamificationPage() {
                       aria-valuemin={0}
                       aria-valuemax={100}
                     >
-                      <div className="xp-fill" style={{ width: `${me.level.pctIntoLevel}%`, background: 'var(--tier-color)' }} />
+                      {/* 23-b (A11 P2-10): scaleX (RTL transform-origin in
+                          training.css) instead of an inline width —
+                          compositor-only fill animation. */}
+                      <div
+                        className="xp-fill"
+                        style={{ transform: `scaleX(${me.level.pctIntoLevel / 100})`, background: 'var(--tier-color)' }}
+                      />
                     </div>
                     <div className="text-xxs text-subtle" style={{ marginTop: 4 }}>
                       متبقّي <bdi>{pointsAr(me.level.toNext)}</bdi> للمستوى التالي

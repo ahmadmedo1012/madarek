@@ -745,9 +745,12 @@
      ║   ProfilePage renders the same achievement markup)             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
 
-  /* XP bar — the fill is a plain block whose width grows from the
-     inline-start edge (right in RTL): direction-correct by construction
-     (same mechanism as .progress-fill). */
+  /* XP bar — 23-b (A11 P2-10 — scaleX debt cleared): the fill paints at
+     full track width and the value rides transform: scaleX() (set
+     inline by the page), growing from the inline-start edge (right in
+     RTL via the [dir] override) — compositor-only, no per-frame
+     reflow (previously the same mechanism class as .progress-fill's
+     width transition). */
   .xp-track {
     display: block;
     block-size: 10px;
@@ -758,11 +761,14 @@
   .xp-fill {
     display: block;
     block-size: 100%;
-    width: 0%;
+    inline-size: 100%;
     border-radius: var(--r-full);
     background: var(--gold);
-    transition: width var(--motion-duration-stat) var(--motion-ease-decelerate);
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
   }
+  [dir="rtl"] .xp-fill { transform-origin: right center; }
 
   /* Tier orb — level medallion. The tier hex rides on --tier-color
      (set inline by TSX) and is only consumed through color-mix. */

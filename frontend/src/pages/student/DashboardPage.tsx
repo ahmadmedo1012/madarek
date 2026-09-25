@@ -368,7 +368,10 @@ export default function StudentDashboardPage() {
           aria-valuemin={0}
           aria-valuemax={100}
         >
-          <span style={{ width: `${d.term.progressPct}%` }} />
+          {/* 23-b (A11 P2-10): scaleX from the inline-start edge (RTL
+              transform-origin in student.css) instead of an inline
+              width — compositor-only fill animation. */}
+          <span style={{ transform: `scaleX(${d.term.progressPct / 100})` }} />
         </div>
         <footer className="dash-term-foot">
           <span>بداية الفصل · {new Date(d.term.startsAt).toLocaleDateString('ar-LY', { day: '2-digit', month: '2-digit' })}</span>

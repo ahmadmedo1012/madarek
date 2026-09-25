@@ -70,6 +70,31 @@ function persistLinks(next: Record<string, string>) {
 
 type ProfileTab = 'academic' | 'links' | 'achievements';
 
+/* A5 P2-4: the shared .grid-4 collapses to ONE column ≤640px
+   (components.css), so four full-width KPI cards pushed the tabs and
+   academic info down to ≈950px — below the 844px fold on a 390×844
+   phone; the hero already carries identity, the KPI strip is the
+   least important block on the page. The shared utility belongs to
+   the components-owning wave (A10's cross-cutting), so the profile
+   scopes its own 2×2 override: an inline grid-template-columns on
+   exactly this strip (inline style wins the cascade over the media
+   query; the ≤640px `gap: var(--sp-3)` from the utility still
+   applies, which is the right rhythm for half-width cards). */
+function useIsNarrowLayout(maxWidthPx = 640): boolean {
+  const [narrow, setNarrow] = useState(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+    return window.matchMedia(`(max-width: ${maxWidthPx}px)`).matches;
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia(`(max-width: ${maxWidthPx}px)`);
+    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [maxWidthPx]);
+  return narrow;
+}
+
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const enrollments = useMyEnrollments();
@@ -78,6 +103,7 @@ export default function ProfilePage() {
   const profile = useMyProfile();
 
   const [tab, setTab] = useState<ProfileTab>('academic');
+  const kpiTwoByTwo = useIsNarrowLayout(640);
 
   // Persist link state in localStorage — a LOCAL browser preference.
   // Nothing here is sent to any API (no server-side field exists for it),
@@ -194,8 +220,13 @@ export default function ProfilePage() {
         </div>
       </Card>
 
-      {/* KPIs — honest query states: pending → ellipsis, error → dash */}
-      <div className="grid-4">
+      {/* KPIs — honest query states: pending → ellipsis, error → dash.
+          A5 P2-4: 2×2 instead of 4 stacked cards ≤640px so the tabs
+          and academic info stay above the mobile fold. */}
+      <div
+        className="grid-4"
+        style={kpiTwoByTwo ? { gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' } : undefined}
+      >
         <MetricCard
           icon={BookOpen}
           label="مقرّرات مسجَّلة"

@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import {
   Search, Library as LibraryIcon, BookOpen, Clock,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap, X,
+  SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
+import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
@@ -110,11 +112,53 @@ function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
+/* 21-b hand-off (23-a): the category pills wrap into a tall stack on
+   phones, so ≤640px swaps the inline pill bar for a «تصفية» trigger +
+   the platform Sheet (its first real consumer — side="end" is the
+   elevation contract's designated edge for filter panels, inline-end
+   = left edge in RTL). Conditional rendering instead of CSS so the
+   pills stay in the DOM on desktop and the Sheet mounts only where
+   it can open. */
+function useIsNarrowLayout(maxWidthPx = 640): boolean {
+  const [narrow, setNarrow] = useState(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+    return window.matchMedia(`(max-width: ${maxWidthPx}px)`).matches;
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia(`(max-width: ${maxWidthPx}px)`);
+    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [maxWidthPx]);
+  return narrow;
+}
+
 export default function LibraryPage() {
   const [tab, setTab] = useState<Tab>('books');
   const [cat, setCat] = useState('all');
   const [q, setQ] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
+  // Mobile category-filter Sheet (21-b hand-off): draft-then-apply —
+  // the chips edit `draftCat`; «تطبيق» commits it to the live query,
+  // «مسح» resets to 'all', Esc/overlay-close discards the draft.
+  const isNarrow = useIsNarrowLayout(640);
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [draftCat, setDraftCat] = useState('all');
+
+  const openFilterSheet = () => {
+    setDraftCat(cat);
+    setFilterSheetOpen(true);
+  };
+  const applyFilters = () => {
+    setCat(draftCat);
+    setFilterSheetOpen(false);
+  };
+  const clearFilters = () => {
+    setDraftCat('all');
+    setCat('all');
+    setFilterSheetOpen(false);
+  };
 
   // Debounce the search input — wait 250ms of idle typing before firing.
   useEffect(() => {
@@ -254,15 +298,85 @@ export default function LibraryPage() {
                   </button>
                 )}
               </div>
-              <div className="filter-bar lib-filters">
+              {isNarrow ? (
+                /* 21-b hand-off (23-a): ≤640px the wrapped pill stack
+                   becomes one «تصفية» trigger + Sheet. The trigger
+                   names the active category so the collapsed state
+                   never hides what the list is filtered by. */
+                <button
+                  type="button"
+                  className="btn outline sm"
+                  onClick={openFilterSheet}
+                  aria-haspopup="dialog"
+                  aria-expanded={filterSheetOpen}
+                >
+                  <Icon icon={SlidersHorizontal} size={14} />
+                  تصفية{cat !== 'all' ? ` · ${categoryLabel(cat)}` : ''}
+                </button>
+              ) : (
+                <div className="filter-bar lib-filters">
+                  {CATEGORIES.map((c) => (
+                    <Pill key={c.id} on={cat === c.id} icon={c.icon} onClick={() => setCat(c.id)}>
+                      {c.label}
+                    </Pill>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Rendered unconditionally so a viewport resize while open
+              never tears the exit animation; Sheet paints null when
+              closed. side="end" = the elevation contract's filter-panel
+              edge (inline-end → left in RTL, arriving from its own
+              edge after 21-b). The .lib-filters class keeps the
+              ≤640px 44px pill floor (student.css) inside the sheet. */}
+          <Sheet
+            open={filterSheetOpen}
+            onClose={() => setFilterSheetOpen(false)}
+            side="end"
+            ariaLabel="تصفية الكتب"
+          >
+            <div className="flex-col" style={{ padding: 'var(--sp-4)', gap: 'var(--sp-4)', minWidth: 260 }}>
+              <div className="flex items-center justify-between" style={{ gap: 'var(--sp-2)' }}>
+                <h2 className="text-md font-semibold" style={{ color: 'var(--text)' }}>
+                  تصفية الكتب
+                </h2>
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => setFilterSheetOpen(false)}
+                  aria-label="إغلاق التصفية"
+                >
+                  <Icon icon={X} size={14} />
+                </button>
+              </div>
+              <div className="filter-bar lib-filters" role="group" aria-label="فئات الكتب">
                 {CATEGORIES.map((c) => (
-                  <Pill key={c.id} on={cat === c.id} icon={c.icon} onClick={() => setCat(c.id)}>
+                  <Pill
+                    key={c.id}
+                    on={draftCat === c.id}
+                    icon={c.icon}
+                    onClick={() => setDraftCat(c.id)}
+                  >
                     {c.label}
                   </Pill>
                 ))}
               </div>
+              {/* Actions sit directly under the chips — a six-option
+                  single-select is one control group; bottom-docking
+                  them in the full-height panel read as missing content
+                  (VLM-verified void, 586px). */}
+              <div className="flex gap-2">
+                <button type="button" className="btn primary sm" style={{ flex: 1 }} onClick={applyFilters}>
+                  تطبيق
+                </button>
+                <button type="button" className="btn ghost sm" style={{ flex: 1 }} onClick={clearFilters}>
+                  مسح
+                </button>
+              </div>
             </div>
-          </Card>
+          </Sheet>
 
           {books.isPending ? (
             <BookGridSkeleton />

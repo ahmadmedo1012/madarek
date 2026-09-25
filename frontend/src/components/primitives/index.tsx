@@ -183,7 +183,15 @@ export function ProgressBar({
         aria-valuemin={0}
         aria-valuemax={100}
       >
-        <div className="progress-fill" style={{ width: `${v}%`, ...(color ? { background: color } : {}) }} />
+        {/* 23-b (A11 P2-10): the value rides transform: scaleX() — the
+            fill paints at full track width and scales from its
+            inline-start edge (RTL-aware transform-origin in
+            components.css), so value changes animate on the compositor
+            instead of relayouting width every frame. */}
+        <div
+          className="progress-fill"
+          style={{ transform: `scaleX(${v / 100})`, ...(color ? { background: color } : {}) }}
+        />
       </div>
     </div>
   );

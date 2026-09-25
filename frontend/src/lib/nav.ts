@@ -173,6 +173,10 @@ export const QUALITY_NAV: NavGroup[] = [
       { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
       { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
       { to: '/quality/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      // 4-A14 P3-5 (23-b): quality + owner can access the public
+      // colleges pages (any-auth routes) — the sidebar link follows the
+      // teacher/admin grammar (Building2 · كلّيّات الجامعة).
+      { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
@@ -195,6 +199,9 @@ export const OWNER_NAV: NavGroup[] = [
       { to: '/owner/content', icon: Palette, label: 'المحتوى والعلامة التجارية' },
       { to: '/owner/system', icon: Settings, label: 'النظام والتشغيل' },
       { to: '/owner/education', icon: GraduationCap, label: 'النظرة التعليمية' },
+      // 4-A14 P3-5 (23-b): the public colleges pages are reachable for
+      // the owner too — grouped with the platform-content items.
+      { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
     ],
   },
   {

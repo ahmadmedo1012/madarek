@@ -24,11 +24,24 @@ function ViewerFallback() {
   );
 }
 
+/** A13 P2-5: `?back=` flows unvalidated into the back-link `to`, so a
+ *  crafted URL (`/document/x.pdf?back=https://evil.example.com`) put an
+ *  off-app href in the DOM — middle-click / open-in-new-tab left the
+ *  app and the link was shareable. Same guard as AuthPage's
+ *  `readFromPath`: only in-app pathnames are honored (a leading `//`
+ *  is protocol-relative → off-app); anything else falls back to the
+ *  library research tab. */
+function safeBackPath(raw: string | null): string {
+  return raw !== null && raw.startsWith('/') && !raw.startsWith('//')
+    ? raw
+    : '/student/library?tab=research';
+}
+
 export default function DocumentViewerPage() {
   const params = useParams<{ filename: string }>();
   const [search] = useSearchParams();
   const title = search.get('title') ?? undefined;
-  const back = search.get('back') ?? '/student/library?tab=research';
+  const back = safeBackPath(search.get('back'));
   const paperId = search.get('paper') ?? undefined;
 
   const controlRef = useRef<{ jumpToPage: (n: number) => void } | null>(null);

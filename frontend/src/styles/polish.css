@@ -3454,22 +3454,16 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (Wave 9-b dead-selector sweep: the .progressbar / .progress-bar
      names removed — zero TSX consumers; the attribute-substring
-     selector subsumes them and matches the live progress bars.) */
-  /* (4-A11 P2-10: the shotgun `[class*="progress"] > span` matched ~5
-     TEXT spans (lecture-progress-head > span, course-hero-progress-head
-     > span…) — giving labels meaningless width transitions — while
-     MISSING the canonical .progress-fill (a div, not a span). Narrowed
-     to real fills; timing aligned with the canonical .progress-fill in
-     components.css (var(--t-slow) var(--ease-out)) so fills stop
-     animating at three different speeds. Width remains a layout
-     transition only because fills get their width inline from TSX
-     (LecturePlayerPage watchPct etc.) — the transform: scaleX()
-     conversion needs TSX coordination; tracked as 4-A11 P2-10
-     follow-up + gate debt entry.) */
-  .progress-fill,
-  [class*="progress-fill"] {
-    transition: width var(--t-slow) var(--ease-out);
-  }
+     selector subsumed them and matched the live progress bars.) */
+  /* (4-A11 P2-10 shotgun fix, then 23-b retired this mirror: the
+     canonical .progress-fill now transitions transform: scaleX() at
+     its definition site (components.css — the value is set inline by
+     the ProgressBar primitive), and .lecture-progress-fill owns its
+     authored inline-size transition in student.css, which this
+     overrides-layer width mirror used to clobber (the lecture fill
+     silently never animated). No fill timing is mirrored here any
+     more; the remaining width/inline-size fill debt lives at its
+     definition sites with the gate's debt entries.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗

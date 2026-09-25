@@ -110,7 +110,11 @@
   background: var(--surface-1);
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  /* 21-b hand-off (23-a, A10 iOS-zoom class): 16px floor — iOS
+     Safari zooms the page on any focused input <16px; the old
+     fs-xs (12px) made every page jump on tap. Same recipe as the
+     shared input (components.css). */
+  font-size: max(16px, var(--fs-xs));
   font-variant-numeric: tabular-nums;
 }
 .pdf-pageinfo input::-webkit-outer-spin-button,
@@ -136,7 +140,8 @@
   background: transparent;
   color: var(--text);
   font-family: inherit;
-  font-size: var(--fs-sm);
+  /* 16px floor — see the pageinfo note above (fs-sm was 14px). */
+  font-size: max(16px, var(--fs-sm));
   /* No `outline: none` — the global :focus-visible ring (polish.css
      v22, overrides layer) is the single focus system; suppressing the
      outline locally would strand keyboard users if layer order ever
@@ -342,7 +347,9 @@
   border-radius: var(--r-sm);
   color: var(--text);
   font-family: inherit;
-  font-size: var(--fs-sm);
+  /* 16px floor — textarea focus zooms iOS like any input (see the
+     pageinfo note above). */
+  font-size: max(16px, var(--fs-sm));
   line-height: var(--lh-base);
   resize: vertical;
 }
@@ -355,7 +362,8 @@
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   color: var(--text);
-  font-size: var(--fs-xs);
+  /* 16px floor — same iOS-zoom class as the toolbar inputs above. */
+  font-size: max(16px, var(--fs-xs));
   font-variant-numeric: tabular-nums;
 }
 

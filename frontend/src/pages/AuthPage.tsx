@@ -13,6 +13,29 @@ import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import type { AppRole } from '../stores/auth.store';
+import type { AxiosError } from 'axios';
+
+/** Login-error envelope the backend rejects with (lib/errors.ts):
+ *  `{ error: { code, message } }` — the message is authored Arabic. */
+type LoginErrorBody = { error?: { code?: string; message?: string } };
+
+/** A13 P2-1: a 429 lockout is NOT a credentials problem. The generic
+ *  «تحقَّق من البريد وكلمة المرور» banner actively misled students
+ *  during the 10/15-min rate-limit window (they kept "fixing" a
+ *  password that was fine). Detect the lockout — by status OR by the
+ *  backend's TOO_MANY_REQUESTS code — and surface the honest Arabic
+ *  message the backend already sends («محاولات دخول كثيرة — انتظر
+ *  قليلاً ثم أعد المحاولة»). */
+function isRateLimitError(error: unknown): boolean {
+  const ax = error as AxiosError<LoginErrorBody> | null;
+  return ax?.response?.status === 429 || ax?.response?.data?.error?.code === 'TOO_MANY_REQUESTS';
+}
+
+function rateLimitMessage(error: unknown): string {
+  const ax = error as AxiosError<LoginErrorBody> | null;
+  const serverMessage = ax?.response?.data?.error?.message;
+  return serverMessage ?? 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.';
+}
 
 const loginSchema = z.object({
   email: z
@@ -199,8 +222,11 @@ export default function AuthPage() {
               <div className="auth-error" role="alert">
                 <Icon icon={AlertCircle} size={14} />
                 <span>
-                  تعذَّر تسجيل الدخول. تحقَّق من البريد وكلمة المرور وتأكَّد من اتصالك
-                  بالشبكة، ثم أعد المحاولة.
+                  {/* A13 P2-1: the lockout copy must name the lockout —
+                      credential advice during a 429 window is a lie. */}
+                  {isRateLimitError(login.error)
+                    ? rateLimitMessage(login.error)
+                    : 'تعذَّر تسجيل الدخول. تحقَّق من البريد وكلمة المرور وتأكَّد من اتصالك بالشبكة، ثم أعد المحاولة.'}
                 </span>
               </div>
             )}

@@ -23,6 +23,7 @@ import {
   type MyExam, type StartedAttempt, type ResumedAttempt,
 } from '../../hooks/useResources';
 import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '../../lib/format';
+import { overlayStack } from '../../lib/overlayStack';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-card / .back-link families (D11 css split, 12-15)
 
@@ -854,6 +855,28 @@ export function ExamModerationPage() {
   // confirmation dialog gates it (audit 4-A8 P2-3; approve stays
   // instant — it is the safe/default outcome).
   const [confirmingReject, setConfirmingReject] = useState<string | null>(null);
+  // 4-A8 P3-6 (23-b): the disclosure panel is keyboard-reachable —
+  // Escape closes the open row and returns focus to its toggle (the
+  // toggle ref is captured on open so Esc can hand focus back).
+  const openToggleRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (open === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      // A stacked overlay (the reject ConfirmDialog…) owns the key while
+      // it is up — the panel must not also close underneath it (the
+      // global-shortcut guard idiom: react only when the overlay stack
+      // is empty).
+      if (!overlayStack.isEmpty()) return;
+      setOpen(null);
+      setNote('');
+      setActionError(null);
+      openToggleRef.current?.focus();
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
+  }, [open]);
 
   const runModeration = async (id: string, approve: boolean) => {
     setActionError(null);
@@ -934,10 +957,12 @@ export function ExamModerationPage() {
                       type="button"
                       className="btn ghost sm"
                       aria-expanded={open === item.id}
-                      onClick={() => {
+                      aria-controls={`moderation-panel-${item.id}`}
+                      onClick={(e) => {
                         // Switching rows starts a fresh note — a stale
                         // note must never leak into another author's
                         // review.
+                        openToggleRef.current = e.currentTarget;
                         setOpen(open === item.id ? null : item.id);
                         setNote('');
                         setActionError(null);
@@ -947,7 +972,12 @@ export function ExamModerationPage() {
                     </button>
                   </div>
                   {open === item.id && (
-                    <div className="moderation-panel">
+                    <div
+                      className="moderation-panel"
+                      id={`moderation-panel-${item.id}`}
+                      role="region"
+                      aria-label={`مراجعة ${item.title}`}
+                    >
                       <textarea
                         className="input"
                         rows={2}

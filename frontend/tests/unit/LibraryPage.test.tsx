@@ -9,7 +9,7 @@
  *    else is escaped).
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { act, render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { sanitizeSnippetHtml, default as LibraryPage } from '../../src/pages/student/LibraryPage';
 
@@ -27,6 +27,27 @@ vi.mock('../../src/hooks/useResources', () => ({
 }));
 
 const lastBooksQ = () => booksCalls.mock.calls.at(-1)?.[0]?.q;
+const lastBooksCategory = () => booksCalls.mock.calls.at(-1)?.[0]?.category;
+
+/** matchMedia stub with a controllable narrow result (the setup file's
+ *  default always answers false). Non-640 queries (e.g. the theme
+ *  store's prefers-color-scheme probe) keep answering false. */
+function setNarrowViewport(narrow: boolean): void {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: narrow && query.includes('max-width: 640px'),
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+}
 
 describe('LibraryPage books search debounce wiring', () => {
   beforeEach(() => {
@@ -125,5 +146,120 @@ describe('sanitizeSnippetHtml (mark-only allowlist)', () => {
   it('full snippet shape from the API survives round-trip', () => {
     const snippet = '…استخدام <mark>قواعد البيانات</mark> في الطبقة الثانية…';
     expect(sanitizeSnippetHtml(snippet)).toBe(snippet);
+  });
+});
+
+/** Wave 23-a (21-b hand-off) — mobile category-filter Sheet: the
+ *  platform Sheet's first real consumer. ≤640px swaps the wrapped
+ *  inline pill stack for a «تصفية» trigger + draft-then-apply sheet
+ *  (side="end" = the elevation contract's filter-panel edge); the
+ *  desktop pill bar must stay untouched. */
+describe('LibraryPage mobile category-filter Sheet (23-a / 21-b hand-off)', () => {
+  beforeEach(() => {
+    booksCalls.mockClear();
+  });
+
+  it('desktop: the inline pill bar renders and there is no sheet trigger', () => {
+    setNarrowViewport(false);
+    render(
+      <MemoryRouter>
+        <LibraryPage />
+      </MemoryRouter>,
+    );
+
+    // Inline pills present (categories are directly clickable)…
+    expect(screen.getByRole('button', { name: /برمجة/ })).toBeInTheDocument();
+    // …and the collapsed mobile trigger is absent.
+    expect(screen.queryByRole('button', { name: /^تصفية/ })).toBeNull();
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('narrow: the pill bar is replaced by a «تصفية» trigger that opens the sheet', async () => {
+    setNarrowViewport(true);
+    render(
+      <MemoryRouter>
+        <LibraryPage />
+      </MemoryRouter>,
+    );
+
+    const trigger = screen.getByRole('button', { name: /^تصفية/ });
+    expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    // The inline category pills are gone on the narrow layout.
+    expect(screen.queryByRole('button', { name: /^برمجة$/ })).toBeNull();
+
+    fireEvent.click(trigger);
+
+    const sheet = await screen.findByRole('dialog', { name: 'تصفية الكتب' });
+    expect(sheet).toBeInTheDocument();
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    // The draft starts at the applied category ('all').
+    expect(screen.getByRole('button', { name: /الكل/ })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('narrow: «تطبيق» commits the drafted category to the books query', async () => {
+    setNarrowViewport(true);
+    render(
+      <MemoryRouter>
+        <LibraryPage />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /^تصفية/ }));
+    await screen.findByRole('dialog', { name: 'تصفية الكتب' });
+
+    // Draft «برمجة» (the query must NOT see it before Apply).
+    fireEvent.click(screen.getByRole('button', { name: /برمجة/ }));
+    expect(lastBooksCategory()).toBeUndefined();
+
+    fireEvent.click(screen.getByRole('button', { name: 'تطبيق' }));
+
+    expect(lastBooksCategory()).toBe('prog');
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  });
+
+  it('narrow: «مسح» resets the filter to all and closes', async () => {
+    setNarrowViewport(true);
+    render(
+      <MemoryRouter>
+        <LibraryPage />
+      </MemoryRouter>,
+    );
+
+    // Start from an applied category.
+    fireEvent.click(screen.getByRole('button', { name: /^تصفية/ }));
+    await screen.findByRole('dialog', { name: 'تصفية الكتب' });
+    fireEvent.click(screen.getByRole('button', { name: /قواعد بيانات/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'تطبيق' }));
+    expect(lastBooksCategory()).toBe('db');
+
+    // Reopen and clear.
+    fireEvent.click(screen.getByRole('button', { name: /^تصفية · قواعد بيانات/ }));
+    await screen.findByRole('dialog', { name: 'تصفية الكتب' });
+    fireEvent.click(screen.getByRole('button', { name: 'مسح' }));
+
+    expect(lastBooksCategory()).toBeUndefined();
+    // The trigger no longer names a category.
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /^تصفية/ })).toHaveTextContent('تصفية'),
+    );
+  });
+
+  it('narrow: closing via Esc discards the draft (no accidental apply)', async () => {
+    setNarrowViewport(true);
+    render(
+      <MemoryRouter>
+        <LibraryPage />
+      </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /^تصفية/ }));
+    await screen.findByRole('dialog', { name: 'تصفية الكتب' });
+    fireEvent.click(screen.getByRole('button', { name: /برمجة/ }));
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(lastBooksCategory()).toBeUndefined();
   });
 });

@@ -2,18 +2,19 @@
  * Shared scaffolding for the curriculum authoring dialogs
  * (lectures · chapters · checkpoints) — a consistent header + scrollable
  * body on top of the shared `Modal` primitive (portal, focus trap, Esc,
- * click-outside, body scroll lock) plus a labelled form field with an
- * inline Arabic error slot.
+ * click-outside, body scroll lock) plus the shared FormField primitive
+ * from primitives/Form.tsx (23-b migration, A9 P2-4).
  *
  * No new CSS files: everything reuses global classes (.auth-input,
- * .auth-field-error, .auth-error, .btn) + design tokens inline, so the
+ * .form-field*, .auth-error, .btn) + design tokens inline, so the
  * panel matches the rest of the app without touching styles/.
  */
-import { useCallback, useEffect, useId, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useState, type ReactElement, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { Modal } from '../overlays/Modal';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
+import { FormField as SharedFormField } from '../primitives/Form';
 import { apiErrorMessage } from '../../hooks/useResources';
 
 export function AuthoringModal({
@@ -78,6 +79,17 @@ export function AuthoringModal({
   );
 }
 
+/* Thin re-export of the platform FormField under the signature the
+ * curriculum builders consume (label + htmlFor + hint + error around a
+ * single control). 23-b (21-b hand-off, A9 P2-4): the implementation
+ * delegates to primitives/Form.tsx FormField, which adds the half the
+ * hand-rolled copy never had — aria-invalid + aria-describedby injected
+ * into the control, with the error re-announced via role=alert — while
+ * the visual row moves from inline styles to the shared .form-field
+ * classes (components.css). Behavior note: the shared primitive keeps
+ * the hint rendered beside an error (the old local copy hid it), so the
+ * format hint (e.g. «بصيغة دقائق:ثوانٍ») stays available exactly when
+ * the teacher needs it to fix the invalid value. */
 export function FormField({
   label,
   htmlFor,
@@ -89,23 +101,14 @@ export function FormField({
   htmlFor?: string;
   error?: string;
   hint?: string;
-  children: ReactNode;
+  /** A single control element (input/textarea/TimeInput) — the
+   * primitive injects the id + aria wiring into it. */
+  children: ReactElement;
 }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <label htmlFor={htmlFor} className="text-sm" style={{ fontWeight: 'var(--fw-semibold, 600)' }}>
-        {label}
-      </label>
+    <SharedFormField label={label} id={htmlFor} hint={hint} error={error}>
       {children}
-      {hint && !error && (
-        <span className="text-xs text-muted" style={{ margin: 0 }}>{hint}</span>
-      )}
-      {error && (
-        <span className="auth-field-error" role="alert" style={{ margin: 0 }}>
-          {error}
-        </span>
-      )}
-    </div>
+    </SharedFormField>
   );
 }
 
@@ -156,7 +159,10 @@ export function MutationError({ error, fallback }: { error: unknown; fallback: s
   );
 }
 
-/** Time input (mm:ss / seconds) — LTR digits inside an RTL page. */
+/** Time input (mm:ss / seconds) — LTR digits inside an RTL page.
+ * 23-b: forwards the ARIA state FormField injects (aria-invalid /
+ * aria-describedby) onto the real <input> — the previous explicit-props
+ * copy silently swallowed cloned-in attributes. */
 export function TimeInput({
   id,
   value,
@@ -165,6 +171,7 @@ export function TimeInput({
   placeholder = '12:30',
   invalid,
   ariaLabel,
+  ...rest
 }: {
   id: string;
   value: string;
@@ -173,6 +180,9 @@ export function TimeInput({
   placeholder?: string;
   invalid?: boolean;
   ariaLabel: string;
+  /** Injected by FormField — forwarded to the input. */
+  'aria-invalid'?: boolean | 'false' | 'true';
+  'aria-describedby'?: string;
 }) {
   return (
     <input
@@ -187,6 +197,7 @@ export function TimeInput({
       aria-label={ariaLabel}
       onChange={(e) => onChange(e.target.value)}
       onBlur={onBlur}
+      {...rest}
     />
   );
 }

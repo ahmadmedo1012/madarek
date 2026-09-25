@@ -1,11 +1,11 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Microscope, FileText, ShieldCheck, Bot as BotIcon,
   ScanSearch, CheckCircle2, X, Sparkles, BookMarked, BarChart3, MessageSquare,
   Award, StickyNote, RefreshCw,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar, Tabs } from '../../components/primitives';
+import { Card, MetricCard, Badge, UserAvatar, Tabs, FormField } from '../../components/primitives';
 import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
@@ -206,7 +206,6 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
 }
 
 function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => void }) {
-  const uid = useId();
   const grade = useGradePaper();
   const publish = usePublishPaper();
   const annotations = useAnnotations(paper.id);
@@ -308,11 +307,13 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
         </div>
 
         <div className="section-title">التقييم</div>
+        {/* 23-b (21-b hand-off, A9 P2-4): the review form rides the
+            shared FormField primitive — labels stay htmlFor-wired (ids
+            are generated + injected by the primitive) instead of the
+            hand-rolled useId wiring. */}
         <div className="form-grid-2" style={{ marginBlockEnd: 'var(--sp-4)' }}>
-          <div>
-            <label className="form-label" htmlFor={`${uid}-score`}>الدرجة (من 20)</label>
+          <FormField label="الدرجة (من 20)">
             <input
-              id={`${uid}-score`}
               type="number"
               min={0}
               max={20}
@@ -323,11 +324,9 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
               onChange={(e) => setScore(Math.max(0, Math.min(20, Number(e.target.value))))}
               disabled={isGraded || grade.isPending}
             />
-          </div>
-          <div>
-            <label className="form-label" htmlFor={`${uid}-rating`}>التقدير</label>
+          </FormField>
+          <FormField label="التقدير">
             <input
-              id={`${uid}-rating`}
               type="text"
               className="input"
               value={
@@ -339,13 +338,11 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
               disabled
               readOnly
             />
-          </div>
+          </FormField>
         </div>
 
-        <div className="flex-col gap-2">
-          <label className="form-label" htmlFor={`${uid}-feedback`}>ملاحظات للطالب</label>
+        <FormField label="ملاحظات للطالب">
           <textarea
-            id={`${uid}-feedback`}
             rows={4}
             className="input"
             placeholder="اكتب ملاحظاتك على البحث…"
@@ -354,7 +351,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
             disabled={isGraded || grade.isPending}
             style={{ resize: 'vertical', fontFamily: 'inherit' }}
           />
-        </div>
+        </FormField>
 
         {/* Margin notes the teacher left on the document — the newest one
             pulses once (the page's authored moment): returning from the
