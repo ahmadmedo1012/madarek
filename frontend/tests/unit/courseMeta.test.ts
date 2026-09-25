@@ -3,9 +3,11 @@
  *
  * ASSIGNMENT_KIND_LABEL is the wave 13-15 fold of the identical label
  * maps that lived as TYPE_LABELS (CourseDetailPage, CoursesPage) and
- * ASSIGNMENT_LABEL (DashboardPage); these pins hold the exact Arabic
- * labels. The courseTint/courseIcon assertions pin the pre-existing
- * wave 9-a contract alongside them.
+ * ASSIGNMENT_LABEL (DashboardPage); MATERIAL_TYPE_LABEL is the 14-2
+ * fold of the identical map that lived as MATERIAL_TYPE_LABEL
+ * (TeacherPages) and MATERIAL_LABELS (CourseDetailPage); these pins
+ * hold the exact Arabic labels. The courseTint/courseIcon assertions
+ * pin the pre-existing wave 9-a contract alongside them.
  */
 import { describe, expect, it } from 'vitest';
 import { BookOpen, Cog } from 'lucide-react';
@@ -14,6 +16,7 @@ import {
   courseIcon,
   courseTint,
   DEFAULT_COURSE_TINT,
+  MATERIAL_TYPE_LABEL,
 } from '../../src/lib/courseMeta';
 
 describe('ASSIGNMENT_KIND_LABEL (folded from TYPE_LABELS / ASSIGNMENT_LABEL)', () => {
@@ -26,6 +29,23 @@ describe('ASSIGNMENT_KIND_LABEL (folded from TYPE_LABELS / ASSIGNMENT_LABEL)', (
     });
     expect(Object.keys(ASSIGNMENT_KIND_LABEL).sort()).toEqual([
       'EXAM', 'HOMEWORK', 'PROJECT', 'QUIZ',
+    ]);
+  });
+});
+
+describe('MATERIAL_TYPE_LABEL (folded from TeacherPages / CourseDetailPage)', () => {
+  it('holds the exact labels for every material format (Latin codes stay Latin)', () => {
+    expect(MATERIAL_TYPE_LABEL).toEqual({
+      PDF: 'PDF',
+      PPT: 'PPT',
+      DOC: 'DOC',
+      ZIP: 'ZIP',
+      VIDEO: 'فيديو',
+      IMAGE: 'صورة',
+      OTHER: 'ملف',
+    });
+    expect(Object.keys(MATERIAL_TYPE_LABEL).sort()).toEqual([
+      'DOC', 'IMAGE', 'OTHER', 'PDF', 'PPT', 'VIDEO', 'ZIP',
     ]);
   });
 });

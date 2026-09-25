@@ -30,6 +30,11 @@ const CATEGORY_LABELS: Record<string, string> = {
   api: 'واجهة البرمجة',
 };
 
+/* Deliberately local (13-14/14-2 audit): NOT lib/format.formatDateTimeAr
+ * — this shape renders the default-locale ar-LY date plus a separately
+ * formatted 2-digit hour:minute, while the lib helper uses one combined
+ * Intl call (medium date + short time). Swapping would change rendered
+ * copy; fold only if a lib export with this exact shape is ever added. */
 function formatTime(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleDateString('ar-LY') + ' ' + d.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });

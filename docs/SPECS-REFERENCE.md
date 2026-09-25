@@ -4,18 +4,20 @@
 
 | Branch | Feature | Status |
 |--------|---------|--------|
-| `001-premium-motion-system` | Motion tokens, primitives (Reveal, AnimatedNumber, Skeleton) | Complete |
-| `002-visual-uplift` | Typography roles, chart palette, icon discipline | Complete |
+| `001-premium-motion-system` | Motion tokens, primitives (Reveal, Skeleton, PageTransition, Parallax) | Complete (merged) |
+| `002-visual-uplift` | Typography roles, chart palette, icon discipline | Complete (merged) |
 | `003-motion-graphics-layer` | Decorative motion patterns (spec only) | Spec only |
-| `004-colleges-gallery` | College gallery pages | Complete |
-| `005-colleges-popover` | College popover component | Complete |
-| `006-colleges-list-public` | Public college listing | Complete |
+| `004-colleges-gallery` | College gallery pages | Complete (merged) |
+| `005-colleges-popover` | College popover component | Complete (merged) |
+| `006-colleges-list-public` | Public college listing | Complete (merged) |
 | `007-force-redeploy` | - | Complete |
-| `008-colleges-mount-order` | College mount order fix | Complete |
-| `011-platform-completeness-uplift` | Locale, search, notifications, session policy | Complete |
-| `012-design-graphics-uplift` | **Active** — Themes, illustrations, overlays, onboarding | In Progress |
+| `008-colleges-mount-order` | College mount order fix | Complete (merged) |
+| `011-platform-completeness-uplift` | Search, notifications, session policy | **Partial** — locale/i18n user story (US7) never implemented: no i18next/react-i18next dependency, no `frontend/src/i18n/` layer, no locale model. Landed parts: Arabic-aware search normalization (`modules/search/normalize.ts`), notification preferences groundwork, a11y CI deps, splash/skeleton primitives |
+| `012-design-graphics-uplift` | Themes, illustrations, overlays, onboarding, milestones | **Complete** — landed via migration `20260602190000_012_design_uplift_state`, branch merged to `main` |
 
-## Active Feature: 012-design-graphics-uplift
+Spec directories on `main`: 001, 002, 003, 004, 011, 012 (no 009/010 ever existed).
+
+## Feature 012-design-graphics-uplift (landed)
 
 **Goal:** World-class design tier — full dark mode, role/college accent expressions, bespoke SVG illustrations, cinematic scroll storytelling, onboarding, milestones.
 
@@ -82,8 +84,9 @@
 
 ## Database Layer Overview
 
-- 60+ models in Prisma schema
-- 20 enums
+- 75 models in the Prisma schema
+- 30 enums
 - PostgreSQL on Neon (serverless)
-- Prisma client with `withRetry()` for transient errors (P1017/P1001/P1002)
+- Prisma client with `withRetry()` for transient errors (P1017/P1001/P1002) — retries without force-disconnecting the shared client
+- LoginEvent retention: the scheduler prunes rows older than 180 days (batched)
 - Migrations committed, applied via `prisma migrate deploy` during build

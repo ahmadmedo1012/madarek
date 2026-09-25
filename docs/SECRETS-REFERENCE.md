@@ -18,7 +18,8 @@
 |----------|---------|
 | `NODE_ENV` | `production` enables static serving + secure cookies + `info` log level |
 | `PORT` | Listen port (default: 4000) |
-| `INTERNAL_SERVICE_TOKEN` | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; fail-closed when unset) |
+| `CORS_ORIGINS` | Comma-separated CORS origin allow-list (e.g. `"https://madarek.onrender.com,https://staging.example.com"`). Trailing slashes are stripped, empty entries dropped; unset/empty → default list (`https://madarek.onrender.com`, `http://localhost:5173`). Wildcards are deliberately unsupported because credentials are enabled |
+| `INTERNAL_SERVICE_TOKEN` | Service-to-service auth for `POST /api/v1/me/milestones/:id/fire` (≥16 chars; **fail-closed when unset** — every call is rejected). Comparison is constant-time: both sides are SHA-256-hashed to fixed-length digests, then compared with `crypto.timingSafeEqual`, so attackers cannot probe the token length via response timing. A user JWT never authenticates this endpoint |
 | `DIRECT_DATABASE_URL` | Neon **direct** (non-pooled) connection. When set, `prisma migrate deploy` uses it directly. When unset, the migrate script derives it from `DATABASE_URL` by stripping the `-pooler` hostname suffix + `pgbouncer`/`connection_limit` query params. |
 
 ## Neon Connection Strategy (Render deployment)
@@ -48,7 +49,7 @@ override is applied only to the `prisma migrate deploy` child process.
 
 ## Demo Accounts
 
-All use password `1234` (after seeding):
+All use password `Madarek2026!` (after seeding — re-seeding resets the password so it always matches the docs):
 
 | Email | Role | Arabic Name |
 |-------|------|-------------|
@@ -56,6 +57,7 @@ All use password `1234` (after seeding):
 | `teacher@zu.edu.ly` | TEACHER | د. سالم البوسيفي |
 | `admin@zu.edu.ly` | ADMIN | إدارة الجامعة |
 | `quality@zu.edu.ly` | QUALITY | مكتب ضمان الجودة |
+| `owner@zu.edu.ly` | OWNER | مالك المنصة |
 
 ## Production URLs
 

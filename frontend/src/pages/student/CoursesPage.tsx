@@ -8,7 +8,7 @@ import { Card, MetricCard, ProgressBar, Badge } from '../../components/primitive
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
-import { courseIcon, courseTint } from '../../lib/courseMeta';
+import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
 import {
   useMyEnrollments,
   useStudentDashboard,
@@ -20,20 +20,14 @@ import {
   type Submission,
 } from '../../hooks/useResources';
 
-/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) live in
- * lib/courseMeta.ts (wave 9-a). */
+/* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
+ * labels live in lib/courseMeta.ts (waves 9-a / 13-15 — this page's former
+ * TYPE_LABELS was byte-identical to ASSIGNMENT_KIND_LABEL). */
 
 type AgendaAssignment = StudentDashboard['agenda']['assignments'][number];
 
 /** Exported for unit tests (submission-modal validation wiring). */
 export type SubmitModalAssignment = AgendaAssignment;
-
-const TYPE_LABELS: Record<string, string> = {
-  HOMEWORK: 'واجب',
-  QUIZ: 'اختبار قصير',
-  PROJECT: 'مشروع',
-  EXAM: 'امتحان',
-};
 
 /** Filter buckets mirror the KPI strip semantics (mutually real, counts
  *  derived from data — never invented). */
@@ -255,7 +249,7 @@ export default function StudentCoursesPage() {
                     <tr key={a.id}>
                       <td className="tbl-strong" data-label="المادة">{a.courseName}</td>
                       <td data-label="الواجب">
-                        <Badge>{TYPE_LABELS[a.type] ?? a.type}</Badge>{' '}
+                        <Badge>{ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}</Badge>{' '}
                         {a.title}
                       </td>
                       <td className="tbl-num" data-label="الموعد النهائي">{formatDue(a.dueAt)}</td>

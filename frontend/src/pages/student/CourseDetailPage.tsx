@@ -10,23 +10,12 @@ import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull } from '../../hooks/useResources';
 import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
-import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, type AssignmentKind } from '../../lib/courseMeta';
+import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind } from '../../lib/courseMeta';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts; countAr, formatDateAr + WEEKDAY_NAMES_AR
  * live in lib/format.ts (waves 9-a / 13-15). */
 
-/** Latin format codes stay Latin (proper nouns) in bdi; the rest get
- *  real Arabic labels (audit 0-d — raw enum in an Arabic UI). */
-const MATERIAL_LABELS: Record<string, string> = {
-  PDF: 'PDF',
-  PPT: 'PPT',
-  DOC: 'DOC',
-  ZIP: 'ZIP',
-  VIDEO: 'فيديو',
-  IMAGE: 'صورة',
-  OTHER: 'ملف',
-};
 
 function fmtDuration(sec: number) {
   const m = Math.round(sec / 60);
@@ -262,7 +251,7 @@ export default function CourseDetailPage() {
           ) : (
             <div className="flex-col gap-2">
               {data.materials.map((m) => {
-                const label = MATERIAL_LABELS[m.type] ?? m.type;
+                const label = MATERIAL_TYPE_LABEL[m.type as keyof typeof MATERIAL_TYPE_LABEL] ?? m.type;
                 return (
                   <div key={m.id} className="list-row">
                     <Icon icon={FileText} size={16} className="text-muted" />

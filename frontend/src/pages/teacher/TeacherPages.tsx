@@ -24,7 +24,8 @@ import {
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
-import { countAr, formatRelativeArShort } from '../../lib/format';
+import { countAr, formatRelativeArShort, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL } from '../../lib/courseMeta';
 import ResearchReviewPage from './ResearchReviewPage';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
@@ -46,21 +47,10 @@ function PageHeader({ title, subtitle, actions }: { title: string; subtitle: str
   );
 }
 
-const DAY_NAMES_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-
-/* countAr + formatRelativeArShort live in lib/format.ts (wave 9-a). */
-
-/* Latin format codes stay Latin (proper nouns) — same map as the student
- * course page (wave 4-b); the rest get real Arabic labels (audit 0-e D). */
-const MATERIAL_TYPE_LABEL: Record<string, string> = {
-  PDF: 'PDF',
-  PPT: 'PPT',
-  DOC: 'DOC',
-  ZIP: 'ZIP',
-  VIDEO: 'فيديو',
-  IMAGE: 'صورة',
-  OTHER: 'ملف',
-};
+/* countAr, formatRelativeArShort + WEEKDAY_NAMES_AR live in lib/format.ts
+ * (waves 9-a / 13-15); ASSIGNMENT_KIND_LABEL + MATERIAL_TYPE_LABEL live
+ * in lib/courseMeta.ts (waves 13-15 / 14-2) — the former page-local maps
+ * here were byte-identical to the shared exports. */
 
 export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
@@ -99,7 +89,7 @@ export function TeacherSchedulePage() {
           <div className="flex-col gap-3">
             {days.map((d) => (
               <div key={d.dow}>
-                <SectionTitle>{DAY_NAMES_AR[d.dow]}</SectionTitle>
+                <SectionTitle>{WEEKDAY_NAMES_AR[d.dow]}</SectionTitle>
                 <div className="flex-col">
                   {d.items.map((it, i) => (
                     <div key={i} className="list-row">
@@ -641,9 +631,6 @@ export function PerformancePage() {
 export function AssignmentsPage() {
   const q = useTeacherAssignments();
   const dashboard = useTeacherDashboard();
-  const ASSIGNMENT_LABEL: Record<string, string> = {
-    HOMEWORK: 'واجب', QUIZ: 'اختبار قصير', PROJECT: 'مشروع', EXAM: 'امتحان',
-  };
   const formatDue = (iso: string) => {
     const d = new Date(iso);
     const days = Math.round((d.getTime() - Date.now()) / 86400000);
@@ -691,7 +678,7 @@ export function AssignmentsPage() {
                 <div key={a.id} className="list-row">
                   <div className="list-row-body">
                     <div className="list-row-title">
-                      {ASSIGNMENT_LABEL[a.type] ?? <bdi>{a.type}</bdi>}: {a.title}
+                      {ASSIGNMENT_KIND_LABEL[a.type] ?? <bdi>{a.type}</bdi>}: {a.title}
                     </div>
                     <div className="list-row-sub">
                       {a.course.name} · يستحقّ {formatDue(a.dueAt)}

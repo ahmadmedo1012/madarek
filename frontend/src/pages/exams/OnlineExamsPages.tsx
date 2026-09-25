@@ -20,7 +20,7 @@ import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import {
   useMyExams, useStartExam, useSubmitAnswer, useFinishExam,
   useExamModerationQueue, useModerateExam, apiErrorMessage,
-  type MyExam, type StartedAttempt,
+  type MyExam, type StartedAttempt, type ResumedAttempt,
 } from '../../hooks/useResources';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-card / .back-link families (D11 css split, 12-15)
@@ -39,23 +39,10 @@ const KIND_COLOR: Record<string, string> = {
    IN_PROGRESS attempt exists, POST /exams/templates/:id/start returns
    the fresh-start shape PLUS `resumed: true` and the saved attempt.
    `alreadyAttempted: true` stays reserved for GRADED / EXPIRED attempts
-   (terminal states → the existing "already taken" UI). These local types
-   widen StartedAttempt because useResources.ts belongs to another batch;
-   they mirror the D5 wire shape exactly. */
-export interface SavedAnswerValue {
-  choiceIndex?: number | null;
-  answerText?: string | null;
-}
-export interface ResumedAttempt {
-  id: string;
-  status: string;
-  expiresAt: string;
-  answers: Array<{ questionId: string; value: SavedAnswerValue | number | string | null }>;
-}
-export type StartExamResponse = StartedAttempt & {
-  resumed?: boolean;
-  attempt?: ResumedAttempt;
-};
+   (terminal states → the existing "already taken" UI). The wire types
+   (SavedAnswerValue / ResumedAttempt / StartExamResponse) live in
+   hooks/useResources.ts since 13-13 — the page-local mirrors this file
+   used to carry were structurally identical and were deleted in 14-2. */
 
 /* Restore server-saved answers into the taker's form state. Per D5 the
    backend serializes each saved answer as { questionId, value } where
@@ -248,10 +235,9 @@ export function ExamTakerPage() {
     setStartError(null);
     try {
       // D5: the response may carry resumed:true + the saved attempt
-      // (an IN_PROGRESS attempt) — the cast widens StartedAttempt with
-      // the contract's extra fields (useResources.ts is another batch's
-      // file; the wire shape is documented at StartExamResponse above).
-      const r = (await start.mutateAsync(id)) as StartExamResponse;
+      // (an IN_PROGRESS attempt) — useStartExam already unwraps
+      // StartExamResponse (13-13), so no cast is needed.
+      const r = await start.mutateAsync(id);
       if (r.alreadyAttempted) {
         // Already taken (GRADED / EXPIRED per D5) — honest state, real
         // result shown from the exams list payload (no fabricated score).

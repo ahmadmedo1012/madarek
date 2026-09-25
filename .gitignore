@@ -85,3 +85,11 @@ frontend/tests/audit/screenshots/
 
 # audit working dir
 .audit-shots/
+
+# local agent/tooling workspaces (kept on disk, not tracked)
+.agents/
+.claude-flow/
+.swarm/
+.specify/
+.claude/
+test-results/

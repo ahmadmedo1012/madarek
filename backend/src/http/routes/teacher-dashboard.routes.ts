@@ -3,6 +3,7 @@ import { Role, AttendanceStatus, SubmissionStatus, ResearchPaperStatus, Prisma }
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
+import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 
 /**
  * Teacher dashboard aggregate — Phase 7.
@@ -23,42 +24,16 @@ router.use(requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER));
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEEK_MS = 7 * DAY_MS;
 
-/**
- * Canonical attendance percentage — audit 11-d P1-5/P2-2 (wave 13-6).
- * Mirrors the semantics of `attendancePct()` in teacher.routes.ts:
- *
- *   pct = round(100 × (PRESENT + 0.5·LATE) / (PRESENT + LATE + ABSENT))
- *
- * · LATE earns half credit (the dashboards used to give it full credit;
- *   course analytics used to give it none — wave 13 unifies all surfaces).
- * · EXCUSED marks are removed from the denominator — an excused absence
- *   neither credits nor penalizes.
- * · null when there is nothing countable: the dashboards' display
- *   convention (KPI renders "—"), whereas teacher.routes' risk math uses
- *   the neutral 100 empty state.
- *
- * Takes groupBy status counts instead of a status array. Deliberately
- * duplicated in student-dashboard.routes.ts — both copies run the same
- * table in tests/modules/dashboard-logic.test.ts; folding into src/lib is
- * the audit P2-20 consolidation wave's job (keeps wave-13 batches
- * file-disjoint).
- */
-export function attendancePctFromStatusCounts(
-  countsByStatus: Array<{ status: AttendanceStatus; count: number }>,
-): number | null {
-  let present = 0;
-  let late = 0;
-  let absent = 0;
-  for (const { status, count } of countsByStatus) {
-    if (status === AttendanceStatus.PRESENT) present = count;
-    else if (status === AttendanceStatus.LATE) late = count;
-    else if (status === AttendanceStatus.ABSENT) absent = count;
-    // EXCUSED — deliberately not accumulated.
-  }
-  const denominator = present + late + absent;
-  if (denominator === 0) return null;
-  return Math.round(((present + late * 0.5) / denominator) * 100);
-}
+// ─── Canonical attendance % (src/lib/risk.ts) ──────────────────────
+// round(100 × (PRESENT + 0.5·LATE) / (PRESENT + LATE + ABSENT)) —
+// LATE = half credit, EXCUSED excluded from the denominator, null when
+// nothing is countable (the KPI renders "—"). This used to be a
+// deliberate route-local duplicate; the audit P2-20 consolidation
+// (wave 14-3) moved it to src/lib/risk.ts, shared with
+// student-dashboard.routes.ts and teacher.routes.ts' risk math.
+// Re-exported here because tests/modules/dashboard-logic.test.ts
+// imports this module's copy.
+export { attendancePctFromStatusCounts };
 
 /** Per-assignment graded-submission rollup produced by the groupBy
  *  queries below: Σ grade points + row count per assignment. */

@@ -54,3 +54,24 @@ export const ASSIGNMENT_KIND_LABEL: Record<AssignmentKind, string> = {
   PROJECT: 'مشروع',
   EXAM: 'امتحان',
 };
+
+/**
+ * The material-format enum shared by the teacher materials table and the
+ * student course-detail materials list (14-2 fold per 13-15 hand-off #2 —
+ * the identical label map lived as MATERIAL_TYPE_LABEL in TeacherPages
+ * and MATERIAL_LABELS in CourseDetailPage; values are byte-identical to
+ * the copies they replace). Latin format codes stay Latin (proper
+ * nouns); the rest get real Arabic labels (audits 0-d / 0-e).
+ */
+export type MaterialType = 'PDF' | 'PPT' | 'VIDEO' | 'DOC' | 'ZIP' | 'IMAGE' | 'OTHER';
+
+/** Arabic labels for the material-format enum (Latin codes stay Latin). */
+export const MATERIAL_TYPE_LABEL: Record<MaterialType, string> = {
+  PDF: 'PDF',
+  PPT: 'PPT',
+  DOC: 'DOC',
+  ZIP: 'ZIP',
+  VIDEO: 'فيديو',
+  IMAGE: 'صورة',
+  OTHER: 'ملف',
+};

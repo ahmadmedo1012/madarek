@@ -8,7 +8,7 @@ import {
   useOwnerFeatureFlags, useToggleFeatureFlag, useOwnerSettings, useUpdateSetting, useOwnerSystem,
 } from '../../hooks/useOwner';
 import type { FeatureFlag } from '../../hooks/useOwner';
-import { formatRelativeArShort } from '../../lib/format';
+import { formatDateTimeAr, formatRelativeArShort } from '../../lib/format';
 
 const SEVERITY_COLOR: Record<string, 'green' | 'amber' | 'red'> = {
   info: 'green',
@@ -23,10 +23,8 @@ function formatRelative(iso: string | null): string {
   return iso ? formatRelativeArShort(iso) : '—';
 }
 
-function formatDateTime(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleString('ar-LY', { dateStyle: 'medium', timeStyle: 'short' });
-}
+/* formatDateTime is lib/format.formatDateTimeAr (13-14 hand-off, 13-15
+ * fold): the local copy was byte-identical to the shared helper. */
 
 const SYNC_ACTION_LABEL: Record<string, string> = {
   'sync.run': 'مزامنة كاملة',
@@ -141,7 +139,7 @@ export function OwnerSystemPage() {
               {sysData.sync.recent.map((run) => (
                 <tr key={run.id}>
                   <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--fs-xs)' }}>
-                    {formatDateTime(run.at)}
+                    {formatDateTimeAr(run.at)}
                   </td>
                   <td>
                     <Badge color={run.action.includes('failed') ? 'red' : run.action.includes('partial') ? 'amber' : 'green'}>
@@ -203,7 +201,7 @@ export function OwnerSystemPage() {
                   className="owner-error-entry-head"
                   onClick={() => setExpandedAlert(expandedAlert === alert.id ? null : alert.id)}
                 >
-                  <span className="timestamp">{formatDateTime(alert.createdAt)}</span>
+                  <span className="timestamp">{formatDateTimeAr(alert.createdAt)}</span>
                   <span className="message">
                     <Badge color={SEVERITY_COLOR[alert.severity] ?? 'amber'}>
                       {alert.severity}

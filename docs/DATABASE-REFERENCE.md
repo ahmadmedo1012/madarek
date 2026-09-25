@@ -1,8 +1,8 @@
 # Madarek — Database Reference
 
 **Platform:** PostgreSQL (Neon serverless) via Prisma 5.22
-**Models:** 60+ across ~27 domain groups
-**Enums:** 20+
+**Models:** 75 across ~27 domain groups
+**Enums:** 30
 
 ---
 
@@ -26,6 +26,7 @@ The central identity model. Every person is a User with one role.
 | lockedUntil | DateTime? | 15min lock |
 | scopeFacultyId | String? | Facility scope for ADMIN/QUALITY |
 | themePreference | ThemePreference | LIGHT/DARK/SYSTEM (012 feature) |
+| themePreferenceUpdatedAt | DateTime | Sync tiebreak (012 feature) |
 | onboardingCompletedAt | DateTime? | (012 feature) |
 | firedMilestones | String[] | (012 feature) |
 
@@ -85,7 +86,9 @@ Relations: StudentProfile (1:1), TeacherProfile (1:1), ~30 other relations
 | id | String (cuid) | PK |
 | code | String | Unique (e.g. "CS101") |
 | name / nameEn | String/String? | Arabic/English name |
+| description | String? | |
 | credits | Int | Default 3 |
+| iconEmoji / themeColor | String? | Card presentation |
 | departmentId | String | FK→Department |
 
 ### CourseOffering
@@ -116,6 +119,20 @@ A specific instance of a course in a term taught by a teacher.
 | startTime / endTime | String | "08:00" format |
 | room | String? | |
 
+### Material
+Course materials attached to an offering (consumed by `/offerings/:id/materials` and `/me/materials`).
+
+| Field | Type | Notes |
+|-------|------|-------|
+| id | String (cuid) | PK |
+| offeringId | String | FK→CourseOffering |
+| uploaderId | String | FK→User ("MaterialUploader") |
+| name / description | String/String? | |
+| type | MaterialType | PDF/PPT/VIDEO/DOC/ZIP/IMAGE/OTHER |
+| sizeBytes | BigInt | Default 0 |
+| url | String | |
+| views / downloads | Int | Counters |
+
 ---
 
 ## Flipped Classroom
@@ -125,8 +142,9 @@ A specific instance of a course in a term taught by a teacher.
 |-------|------|-------|
 | offeringId | String | FK→CourseOffering |
 | title | String | |
+| description | String? | |
 | ordinal | Int | Ordering |
-| durationSec | Int | |
+| durationSec | Int | Drives the ≥90% watch-completion rule |
 | videoUrl | String | |
 | transcriptUrl / posterUrl | String? | |
 
@@ -230,6 +248,26 @@ A specific instance of a course in a term taught by a teacher.
 
 ---
 
+## Notifications & Messaging
+
+### Notification
+| Field | Type | Notes |
+|-------|------|-------|
+| userId | String | FK→User |
+| type | NotificationType | URGENT/ACADEMIC/SYSTEM/SOCIAL |
+| icon | String? | |
+| title / body / link | String/Text? | |
+| readAt | DateTime? | |
+
+### Message (DM)
+| Field | Type | Notes |
+|-------|------|-------|
+| fromUserId / toUserId | String | FK→User (sender/receiver) |
+| body | String | ≤4000 |
+| readAt | DateTime? | Written by `PATCH /me/messages/:id/read` |
+
+---
+
 ## Research Papers
 
 ### ResearchPaper
@@ -286,6 +324,16 @@ Full workflow: UPLOADED → SCANNING → CHECKS_PASSED/FAILED → GRADED → PUB
 | randomized | Boolean | Default true |
 | status | ExamStatus | DRAFT→PENDING_REVIEW→APPROVED/REJECTED→PUBLISHED→CLOSED |
 | openAt / closeAt | DateTime? | |
+
+### ExamTemplateQuestion
+Join table ExamTemplate ⇄ Question.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| templateId / questionId | String | FKs |
+| order | Int | Unique per template |
+| pointsOverride | Int? | Overrides the question's default points |
+| **Unique** | [templateId, questionId] + [templateId, order] | |
 
 ### ExamAttempt
 | Field | Type | Notes |
@@ -383,6 +431,32 @@ Full workflow: UPLOADED → SCANNING → CHECKS_PASSED/FAILED → GRADED → PUB
 ### PointsLedger
 Append-only audit of every point award.
 
+### Achievement / UserAchievement
+Platform-wide achievements (distinct from training badges).
+
+| Field | Type | Notes |
+|-------|------|-------|
+| code | String | Unique |
+| name / description / icon | String/String? | |
+| xp | Int | Default 50 |
+| **UserAchievement** | PK [userId, achievementId] | unlockedAt |
+
+### Skill / UserSkill
+| Field | Type | Notes |
+|-------|------|-------|
+| name | String | Unique (Skill) |
+| category / icon | String? | |
+| **UserSkill** | PK [userId, skillId] | level 1..5, progressPct |
+
+### Certificate
+| Field | Type | Notes |
+|-------|------|-------|
+| title / issuer | String | |
+| status | CertificateStatus | ONGOING/COMPLETED/EXPIRED |
+| hours / issuedAt | Int/DateTime? | |
+| externalUrl / fileUrl | String? | |
+| trackId | String? | FK→TrainingTrack (training certificates) |
+
 ---
 
 ## Library & MOOCs & Jobs
@@ -416,6 +490,38 @@ Append-only audit of every point award.
 ### AiConversation / AiMessage
 - Conversation per user with title
 - Messages: role (USER/ASSISTANT/SYSTEM), content, token count
+
+---
+
+## Live Sessions
+
+### LiveSession
+| Field | Type | Notes |
+|-------|------|-------|
+| offeringId / teacherId | String | FK→CourseOffering / User |
+| title / description / topic | String/Text?/String? | |
+| scheduledAt / startedAt / endedAt | DateTime? | Lifecycle timestamps |
+| status | LiveSessionStatus | SCHEDULED/LIVE/ENDED/CANCELLED (state machine — invalid transitions 409) |
+| joinUrl / recordingUrl | String? | Provider link / recording |
+
+---
+
+## Governance & Permissions
+
+### RolePermission
+Default capability set per role — composite PK `[role, capability]`.
+
+### UserPermission
+Per-user capability overrides.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| userId + capability | | **Unique** together |
+| grant | Boolean | true = explicit grant, false = explicit revoke |
+| grantedById / grantedAt | String?/DateTime | Audit trail |
+| reason | String? | |
+
+Effective capabilities = (role defaults) ∪ (grants) ∖ (revokes).
 
 ---
 
@@ -466,13 +572,21 @@ Append-only audit of every point award.
 | NotificationType | URGENT, ACADEMIC, SYSTEM, SOCIAL |
 | MaterialType | PDF, PPT, VIDEO, DOC, ZIP, IMAGE, OTHER |
 | JobType | FULL_TIME, PART_TIME, INTERNSHIP, FREELANCE, REMOTE |
+| JobApplicationStatus | APPLIED, REVIEWED, SHORTLISTED, REJECTED, HIRED |
+| CertificateStatus | ONGOING, COMPLETED, EXPIRED |
+| LoanStatus | ACTIVE, RETURNED, OVERDUE |
+| ArExperienceType | AR, VR |
+| AiMessageRole | USER, ASSISTANT, SYSTEM |
 | ResearchPaperStatus | UPLOADED, SCANNING, CHECKS_PASSED, CHECKS_FAILED, GRADED, PUBLISHED |
 | QuestionType | MCQ, TRUE_FALSE, SHORT, ESSAY |
 | DifficultyLevel | EASY, MEDIUM, HARD |
 | ExamKind | QUIZ, MIDTERM, FINAL, PRACTICE |
 | ExamStatus | DRAFT, PENDING_REVIEW, APPROVED, REJECTED, PUBLISHED, CLOSED |
 | AttemptStatus | IN_PROGRESS, SUBMITTED, GRADED, EXPIRED |
-| Capability | 17 values (RESEARCH_*, EXAMS_*, CURRICULUM_*, USERS_*, QUALITY_*, ANNOUNCE_*, COMPETITIONS_*, EVENTS_*) |
+| AnnouncementScope | PLATFORM, FACULTY, DEPARTMENT, OFFERING |
+| CompetitionStatus | OPEN, CLOSED, JUDGED |
+| RsvpStatus | GOING, MAYBE, NO |
+| Capability | 17 values (RESEARCH_*, EXAMS_*, CURRICULUM_*, USERS_*, ROLES_ASSIGN, TEACHERS_VERIFY, QUALITY_*, ANNOUNCE_*, COMPETITIONS_RUN, EVENTS_RUN) |
 | DegreeLevel | BACHELORS, MASTERS, PHD |
 | ThemePreference | LIGHT, DARK, SYSTEM |
 | TrainingTrackCategory | ONBOARDING, ACADEMIC, FLIPPED, STUDY_SKILLS, RESEARCH, CAREER, COMMUNICATION, ENGLISH, PROGRAMMING, PRODUCTIVITY, VISION |
@@ -484,8 +598,9 @@ Append-only audit of every point award.
 ```
 User ──1:1── StudentProfile ──N:1── Faculty
 User ──1:1── TeacherProfile ──N:1── Department
+User ──1:N── Notification / Message (sender + receiver)
 Faculty ──1:N── Department ──1:N── Course
-Course ──1:N── CourseOffering ──1:N── Enrollment
+Course ──1:N── CourseOffering ──1:N── Enrollment / Material / LiveSession
 CourseOffering ──1:N── Lecture ──1:N── LectureChapter
 CourseOffering ──1:N── Assignment ──1:N── Submission
 Lecture ──1:N── WatchEvent ──N:1── User
@@ -495,5 +610,7 @@ ExamTemplate ──N:M── Question (via ExamTemplateQuestion)
 ExamTemplate ──1:N── ExamAttempt ──1:N── ExamAnswer
 TrainingTrack ──1:N── TrainingLesson ──1:N── LessonProgress
 User ──N:M── Badge (via UserBadge)
+User ──N:M── Achievement (via UserAchievement) / Skill (via UserSkill)
 User ──1:N── PointsLedger
+User ──1:N── UserPermission (overrides) ──N:1── Capability
 ```

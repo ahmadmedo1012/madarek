@@ -10,12 +10,13 @@ Single-service deployment: one Express server runs the API and serves the React 
 
 ## Demo accounts
 
-After seeding, all use password `Madarek2026!`:
+After seeding, all use password `Madarek2026!` (re-seeding resets it):
 
 - `student@zu.edu.ly` → STUDENT (أحمد الزروق)
 - `teacher@zu.edu.ly` → TEACHER (د. سالم البوسيفي)
 - `admin@zu.edu.ly` → ADMIN (إدارة الجامعة)
 - `quality@zu.edu.ly` → QUALITY (مكتب ضمان الجودة)
+- `owner@zu.edu.ly` → OWNER (مالك المنصة)
 
 ## What's inside
 
@@ -23,7 +24,7 @@ This is a complete LMS for a public university:
 
 - **Flipped classroom** — recorded lectures with embedded checkpoint questions, watch tracking, auto-attendance
 - **Educational matrix** — per-concept mastery tracing, gap detection, recommendation engine
-- **Research papers workflow** — upload → automatic plagiarism+AI scan → teacher review with inline annotations → publish to library
+- **Research papers workflow** — submit a paper (registers its `fileUrl`; PDFs are served from `backend/storage/papers/`) → simulated plagiarism+AI scan → teacher review with inline annotations → publish to library
 - **Cross-document library search** — full-text search across published papers (title + abstract + extracted body)
 - **Quality oversight (4th sector)** — read-only institutional health: per-course quality, professor performance, engagement, curriculum tree
 - **Admin** — faculties, courses, reports with real DB-driven KPIs
@@ -31,7 +32,7 @@ This is a complete LMS for a public university:
 - **PDF viewer** — page nav, zoom, search, highlight, fullscreen, RTL chrome, mobile-responsive
 - **Live notifications** — bell badge with real unread count, refetches every 60s
 - **Social feed** — student/teacher posts persist with hashtags + reactions
-- **University info** — official UoZ data: 25 colleges across the Zawiya, Ajlulat and Zwara campuses (plus Abu Issa, Nasser and other areas), vision/mission, rankings, contacts
+- **University info** — official UoZ data: the colleges gallery profiles 25 colleges across the Zawiya, Ajlulat and Zwara campuses (plus Abu Issa, Nasser and other areas); the university's own listing counts 26 faculties (served as the official `collegeCount` fact). Vision/mission, rankings, contacts included
 
 ## Deploy on Render (3 steps)
 
@@ -39,7 +40,7 @@ This is a complete LMS for a public university:
 2. In Render, click **New + → Blueprint** and pick this repository. Render reads `render.yaml` and creates the web service. `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are generated automatically.
 3. In the service's **Environment** tab, set **`DATABASE_URL`** to your Neon pooler connection string (`?sslmode=require&channel_binding=require`).
 
-The build command runs `npm install && npm run build`. The build script:
+The build command runs `npm install --include=dev && npm run build` (dev deps are needed for the TypeScript/vite build steps). The build script:
 
 1. Builds the Vite frontend → `frontend/dist`
 2. Compiles the Express backend → `backend/dist`
@@ -76,7 +77,7 @@ npm run dev:web                     # frontend on :5173 (proxies /api → :4000)
 
 ## Tech notes
 
-**Backend** (`backend/src/`): Express + TypeScript, Prisma 5, JWT (15 min access + 7 d refresh, rotation via `tokenVersion`), Argon2id, Helmet, CORS allow-list, `express-rate-limit`, Zod request validation, `pino` logs. SPA fallback returns `index.html` for any non-`/api/*` path. PDF text extraction via `pdf-parse`.
+**Backend** (`backend/src/`): Express + TypeScript, Prisma 5, JWT (15 min access + 7 d refresh cookie; `tokenVersion` bump on logout / password change / role change / deactivation revokes sessions), Argon2id, Helmet (CSP allow-list), CORS allow-list, gzip compression, `express-rate-limit` (1000 req/15 min global, 10/15 min on auth endpoints), Zod request validation, `pino` logs (secret redaction). SPA fallback returns `index.html` for any non-`/api/*` path. PDF text extraction via `pdf-parse`.
 
 **Frontend** (`frontend/src/`): Vite + React 18 + TypeScript, React Router 6, TanStack Query 5, Zustand, react-hook-form + Zod, axios with 401-refresh interceptor, Chart.js, `pdfjs-dist` (lazy-loaded chunk for the document viewer).
 
