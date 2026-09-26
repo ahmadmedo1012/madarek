@@ -124,9 +124,11 @@ export default function WebinarsPage() {
       <Card title="أين أجد الفعاليّات الحقيقيّة؟" icon={Globe}>
         <div className="webinar-dest-grid">
           <div className="webinar-dest">
-            <h3 className="webinar-dest-title">
+            {/* 5-D3 (A3 P3-2): demoted from h3 — card-internal labels
+                under the page's lone h1 (class carries the visuals). */}
+            <div className="webinar-dest-title">
               <Icon icon={MessageSquare} size={16} aria-hidden /> المجتمع الجامعيّ
-            </h3>
+            </div>
             <p className="webinar-dest-desc">
               تابع الفعاليّات والإعلانات والمسابقات على مستوى الجامعة. جميع الأحداث القادمة ظاهرة هناك مع
               زر «سأحضر» للتأكيد.
@@ -138,9 +140,9 @@ export default function WebinarsPage() {
           </div>
 
           <div className="webinar-dest">
-            <h3 className="webinar-dest-title">
+            <div className="webinar-dest-title">
               <Icon icon={Video} size={16} aria-hidden /> البثّ المباشر
-            </h3>
+            </div>
             <p className="webinar-dest-desc">
               جلسات البثّ المباشر الخاصّة بمقرّراتك مع التسجيلات بعد الجلسة.
             </p>

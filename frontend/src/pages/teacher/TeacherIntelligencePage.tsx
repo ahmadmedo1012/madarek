@@ -29,10 +29,13 @@ import { countAr } from '../../lib/format';
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
 
-/* Non-text edge for the 1px leading hairline (ruling #4)… */
+/* Non-text edge for the 1px leading hairline (ruling #4). 5-D3 (5-D1
+ * hand-off): WATCH's --gold measured 2.30:1 on the light .risk-row —
+ * the amber graphics tier (chart-6, 3.87:1 light / 10.32:1 dark)
+ * instead; dark --gold was passing but resolved to the accent itself. */
 const RISK_EDGE: Record<RiskLevel, string> = {
   OK: 'var(--success)',
-  WATCH: 'var(--gold)',
+  WATCH: 'var(--chart-6)',
   AT_RISK: 'var(--warning)',
   CRITICAL: 'var(--danger)',
 };

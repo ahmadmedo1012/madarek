@@ -146,6 +146,17 @@
     display: inline-flex; align-items: center; gap: var(--sp-2);
     color: var(--text); text-decoration: none;
   }
+  /* 5-D3 (A2 P3-17): the brand link never answered hover — its children
+     carry explicit colors that defeat base.css's a:hover inheritance.
+     The mark answers instead: gentle lift + soft shadow, gated to
+     hover-capable pointers (the iOS sticky-hover guard). The base
+     :focus-visible ring already covers the link itself. */
+  @media (hover: hover) and (pointer: fine) {
+    .landing-brand:hover .landing-brand-mark {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
+    }
+  }
   .landing-brand-mark {
     inline-size: 28px; block-size: 28px;
     border-radius: var(--r-sm);
@@ -155,6 +166,9 @@
     font-weight: var(--fw-black);
     font-size: 14px;
     flex-shrink: 0;
+    /* 5-D3 (A2 P3-17) — see the hover note above. */
+    transition: transform var(--motion-duration-short) var(--motion-ease-standard),
+      box-shadow var(--motion-duration-short) var(--motion-ease-standard);
   }
   [data-theme="dark"] .landing-brand-mark { background: var(--accent); color: var(--accent-fg); }
   .landing-brand-text { display: flex; flex-direction: column; gap: 0; line-height: 1; }
@@ -484,6 +498,26 @@
     .landing-hero { padding-block-start: var(--sp-3); }
     .landing-hero-eyebrow { display: none; }
   }
+  @media (min-width: 480px) and (max-height: 480px) {
+    /* 5-D1 (A5 P2-2) — landscape phone (844×390): the portrait stack
+       measured hero 1200px tall in a 390px viewport — h1 top 306,
+       primary CTA top 588, i.e. headline and CTAs a full screen below
+       the fold (first screen = header + scene + eyebrow only). Same
+       philosophy as the ≤640px step-down above: every rung steps down
+       one notch so the headline + primary CTA own the first screen —
+       the scene and the announcement chip stand down (the ≤360px rule
+       sets the precedent; the chip's news lives in the megamenu +
+       Oasis band), the mega title drops to a landscape clamp, the
+       subtitle takes the standard body size. Measured @844×390:
+       h1 top 127, primary CTA bottom 368 — both inside the 390px
+       fold; the mockup stays as the scroll payoff below. */
+    .landing-hero { padding-block: var(--sp-3) var(--sp-6); }
+    .landing-hero-scene { display: none; }
+    .landing-hero-eyebrow { display: none; }
+    .landing-title { font-size: clamp(28px, 11vh, 44px); }
+    .landing-subtitle { margin-block-start: var(--sp-3); font-size: var(--type-body-size); }
+    .landing-cta-row { margin-block-start: var(--sp-4); }
+  }
   .landing-cta-meta {
     /* 5-B2 (P3-1): moved under the product shot as its caption. */
     margin-block-start: var(--sp-5);
@@ -674,7 +708,11 @@
     font-weight: var(--type-display-weight);
     line-height: var(--type-display-line-height);
     letter-spacing: var(--type-display-letter-spacing);
-    margin-block-start: var(--sp-4);
+    /* 5-D3 (A3 P3-4): measured 16px above vs 20px below — taste's
+       "more space above a heading than below" wants strictly more
+       above (the audit's sp-5 sketch landed at 20/20 parity with the
+       lede's own sp-5 margin; one notch gives 24/20). */
+    margin-block-start: var(--sp-6);
     max-inline-size: 22ch;
     color: inherit;
   }
@@ -1196,6 +1234,26 @@
     font-size: var(--type-label-size-sm);
     color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
   }
+  /* 5-D1 (A11 P1-1) — band-scoped focus ring. band-dark inverts its
+     ground per theme (light: neutral-900 = ink band; dark: neutral-900
+     flips to cream #F2EAD8) but the theme-global
+     --state-focus-ring-color does not follow it: copper-deep #5C3416
+     on the light ink band measured 1.64:1, copper-cream #F8DDBC on
+     the dark cream band 1.09:1 — invisible in BOTH themes (WCAG
+     2.4.7 focus-visible / 1.4.11 3:1). taste.md inverted-ground rule:
+     restate the colour wherever the ground is restated. Restating the
+     TOKEN on the band subtree is the clean mechanism — the universal
+     ring (motion.css + polish.css A) consumes
+     var(--state-focus-ring-color) at the focused element, so the
+     band-scoped value re-inks every focusable inside without a
+     cascade fight. var(--neutral-50) flips WITH the band, so one
+     declaration is the sanctioned two-stop pattern (one hue, two
+     lightnesses, keyed to the ground): light = cream ring (#FBFAF9 —
+     15.9:1 on the ink band, 3.66:1 against the copper CTA fill at
+     the ring's inner edge); dark = ink ring (#191918 — 14.5:1 on the
+     cream band, 7.8:1 against the lifted copper fill). Both edges of
+     the ring clear 3:1 on both buttons in both themes. */
+  .band-dark { --state-focus-ring-color: var(--neutral-50); }
   /* 20-a P2-1 (4-A1): the «ابدأ الآن» eyebrow + pulse dot was one of
      the 9 eyebrow labels the page carried — dropped with 6 siblings;
      its rules (.landing-final-cta-eyebrow / -dot) deleted with the TSX

@@ -544,7 +544,12 @@
        (today's only consumer slices to 4, so the fix is latent-safe).
        #A67A22 = 3.71:1 on --bg #FBFAF9, 3.87:1 on --surface #FFFFFF
        (cards), 3.58:1 on --surface-2 #F7F6F3 — clears 3:1 on every
-       light plot surface. Dark keeps #F2C766 (11.01:1 on --bg). */
+       light plot surface. Dark keeps #F2C766 (11.01:1 on --bg).
+       5-D1 (A11 P2-4): this is now also the SERIES amber —
+       chartColors().gold/.warning resolve it (the base --gold/--warning
+       fills measured 2.30:1 on white plot cards) and the amber
+       .alert-dot paints it (graphics on light cards). Same tier, one
+       documented home. */
     --chart-6: #A67A22;
     --chart-7: #3F8B8B;   /* teal */
     --chart-8: #A65D8A;   /* mauve */

@@ -476,7 +476,11 @@ export function AdminSettingsPage() {
             <li><Link to="/admin/sync">مزامنة الكلّيّات والأقسام</Link></li>
             <li><Link to="/admin/teachers">صلاحيات أعضاء هيئة التدريس</Link></li>
             <li><Link to="/admin/reports">تقارير الإدارة</Link></li>
-            <li><Link to="/colleges">صفحات الكلّيّات</Link></li>
+            {/* 5-B5 hand-off (one-name-per-surface): the surface's own
+                title is «كلّيّات الجامعة» — the former «صفحات الكلّيّات»
+                label drifted from the folded reality (the public
+                colleges + leaderboard page). */}
+            <li><Link to="/colleges">كلّيّات الجامعة</Link></li>
           </ul>
         </Card>
       </div>

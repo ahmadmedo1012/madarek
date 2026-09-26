@@ -730,14 +730,21 @@
     gap: var(--sp-2);
     align-items: center;
   }
-  /* live counts ride inside the pills — tabular so columns of digits align */
+  /* live counts ride inside the pills — tabular so columns of digits align.
+     5-D1 (A11 P2-1): was `color: inherit; opacity: 0.7` — the opacity
+     dim left the 12px mono count at 3.82:1 on the idle white pill and
+     4.28:1 on the active copper pill (dark) — opacity-as-secondary-text
+     is the taste anti-pattern. The .filter-pill-count grammar one page
+     over is the fix: the muted tinted ink at rest (5.04:1 light /
+     5.95:1 dark), full inherit on the inverted active grounds (17.4:1
+     light neutral-900 / 7.87:1 dark copper). */
   .courses-filter-count {
     font-family: var(--font-mono);
     font-size: var(--type-label-size-sm);
-    color: inherit;
-    opacity: 0.7;
+    color: var(--text-subtle);
     font-variant-numeric: tabular-nums;
   }
+  .pill.on .courses-filter-count { color: inherit; }
   .courses-grid > .thumb-card { animation: none !important; }
   .courses-grid[data-stagger] > .thumb-card {
     animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
@@ -1055,6 +1062,10 @@
     font-size: var(--type-body-size);
     font-weight: var(--fw-semibold);
     color: var(--text);
+    /* 5-D3 (A3 P3-2): the element demoted h3→div — the display family
+       the h3 base rule supplied stays pinned here so rendering is
+       unchanged. */
+    font-family: var(--font-display);
   }
   .webinar-dest-desc {
     margin: 0 0 var(--sp-3) 0;
@@ -2458,6 +2469,75 @@
     margin: 0;
     max-inline-size: 52ch;
     color: var(--text-muted);
+  }
+
+  /* ── Post-grading review (5-D3 — 5-B3 hand-off #1): the student's
+     own questions + verdicts + released key, collapsed behind one
+     toggle — the verdict stays the moment; the detail is opt-in. The
+     section lives inside .empty-state's centered column, so the list
+     re-asserts start alignment and a readable measure. ── */
+  .exam-review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+  }
+  .exam-review-chevron { transition: rotate var(--motion-duration-micro) var(--motion-ease-standard); }
+  .exam-review-chevron.is-open { rotate: 180deg; }
+  .exam-review-list {
+    inline-size: min(100%, 640px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    text-align: start;
+  }
+  .exam-review-q {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .exam-review-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+  }
+  .exam-review-num {
+    flex-shrink: 0;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+  .exam-review-prompt {
+    flex: 1;
+    min-inline-size: 0;
+    font-weight: var(--fw-semibold);
+  }
+  .exam-review-head .badge { flex-shrink: 0; }
+  .exam-review-meta {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .exam-review-label { color: var(--text-muted); font-size: var(--fs-sm); }
+  .exam-review-ans, .exam-review-key, .exam-review-feedback {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
+  .exam-review-text { overflow-wrap: anywhere; }
+  .exam-review-missed { color: var(--text-muted); font-style: normal; }
+  .exam-review-key {
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    color: var(--success-ink);
+  }
+  .exam-review-feedback {
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
   }
 
   /* ── Student mobile order (P2-9/P2-10, 5-A6 plan): .page is a flex

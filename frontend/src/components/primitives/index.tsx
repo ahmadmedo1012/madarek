@@ -294,13 +294,27 @@ export function AlertRow({
   time?: ReactNode;
   actions?: ReactNode;
 }) {
+  /* 5-D1 (A11 P2-3/P2-4): the amber marker rides the graphics tier —
+     the base --warning ink measured 2.30:1 on the white .alert card
+     (non-text floor 3:1). --chart-6 is the documented amber for
+     graphics on light surfaces (#A67A22 = 3.87:1 light / #F2C766
+     dark, tokens.css) — the same tier .alert.amber .alert-dot paints
+     (components.css), so the icon and its dot fallback never diverge.
+     The other markers already clear 3:1 on white. */
+  const ICON_INK: Record<AlertColor, string> = {
+    brand: 'var(--accent)',
+    red: 'var(--danger)',
+    amber: 'var(--chart-6)',
+    green: 'var(--success)',
+    purple: 'var(--brand-purple)',
+  };
   return (
     <div className={`alert ${color}`}>
       {/* The coloured dot is the fallback marker; when an icon is present it
           replaces the dot entirely (no hidden placeholder spans). */}
       {!icon && <span className="alert-dot" aria-hidden />}
       {icon && (
-        <span style={{ color: `var(--${color === 'brand' ? 'accent' : color === 'red' ? 'danger' : color === 'amber' ? 'warning' : color === 'green' ? 'success' : 'brand-purple'})`, marginTop: 2 }}>
+        <span style={{ color: ICON_INK[color], marginTop: 2 }}>
           <Icon icon={icon} size={16} />
         </span>
       )}

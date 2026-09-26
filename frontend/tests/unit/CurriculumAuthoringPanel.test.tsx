@@ -255,6 +255,102 @@ describe('LectureAuthoringList — up/down reorder (5-B6 / A7 P2-3)', () => {
   });
 });
 
+/* ── 5-D3 (5-B6 hand-off #2): chapter reorder ────────────────── */
+describe('ChapterList — up/down reorder (5-D3 / 5-B6 hand-off #2)', () => {
+  // Two chapters on the selected lecture (out of ordinal order — the
+  // list must re-sort locally, the panel's lecture-list pattern).
+  const TWO_CHAPTERS = {
+    ...LECTURE_DETAIL,
+    chapters: [
+      { id: 'chB', lectureId: 'lec1', title: 'الفصل الثاني: التوجيه', startSec: 320, endSec: 900, ordinal: 2, conceptId: null, concept: null },
+      { id: 'chA', lectureId: 'lec1', title: 'الفصل الأول: المقدمة', startSec: 0, endSec: 320, ordinal: 1, conceptId: null, concept: null },
+    ],
+  };
+
+  beforeEach(() => {
+    FIXTURES['/lectures/lec1'] = TWO_CHAPTERS;
+  });
+
+  async function openStructure() {
+    renderPanel();
+    fireEvent.click(await screen.findByText('المحاضرة الأولى: مدخل الشبكات'));
+    await screen.findByText('الفصل الأول: المقدمة');
+  }
+
+  it('renders rows re-sorted by ordinal and disables the move pair at the list ends', async () => {
+    await openStructure();
+
+    // ordinal order regardless of the fixture's array order
+    const first = screen.getByText('الفصل الأول: المقدمة').closest('div');
+    const second = screen.getByText('الفصل الثاني: التوجيه').closest('div');
+    expect(first).not.toBeNull();
+    expect(second).not.toBeNull();
+    expect(
+      (first!.compareDocumentPosition(second!) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
+    ).toBe(true);
+
+    expect(
+      screen.getByRole('button', { name: 'انقل الفصل الأول: المقدمة لأعلى القائمة' }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'انقل الفصل الثاني: التوجيه لأسفل القائمة' }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'انقل الفصل الأول: المقدمة لأسفل القائمة' }),
+    ).toBeEnabled();
+    expect(
+      screen.getByRole('button', { name: 'انقل الفصل الثاني: التوجيه لأعلى القائمة' }),
+    ).toBeEnabled();
+  });
+
+  it('swaps ordinals with the neighbor through two PATCHes', async () => {
+    const { api } = await import('../../src/lib/api');
+    // The lecture-reorder suite above shares this module-level mock —
+    // count only THIS swap's calls.
+    vi.mocked(api.patch).mockClear();
+    await openStructure();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'انقل الفصل الأول: المقدمة لأسفل القائمة' }),
+    );
+
+    await waitFor(() => {
+      expect(api.patch).toHaveBeenCalledTimes(2);
+    });
+    // The pair swap: chA takes chB's ordinal, then chB takes chA's
+    expect(api.patch).toHaveBeenNthCalledWith(1, '/chapters/chA', { ordinal: 2 });
+    expect(api.patch).toHaveBeenNthCalledWith(2, '/chapters/chB', { ordinal: 1 });
+  });
+
+  it('reports a failed swap as an error toast and unlocks the pair', async () => {
+    const { api } = await import('../../src/lib/api');
+    vi.mocked(api.patch).mockRejectedValueOnce({
+      response: { data: { error: { message: 'انتهت صلاحية الجلسة' } } },
+    });
+    await openStructure();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'انقل الفصل الأول: المقدمة لأسفل القائمة' }),
+    );
+
+    const toasts = await waitFor(() => {
+      const items = useToastStore.getState().items;
+      expect(items).toHaveLength(1);
+      return items;
+    });
+    expect(toasts[0]).toMatchObject({
+      variant: 'error',
+      title: 'تعذّر إعادة الترتيب',
+      message: 'انتهت صلاحية الجلسة',
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'انقل الفصل الأول: المقدمة لأسفل القائمة' }),
+      ).toBeEnabled();
+    });
+  });
+});
+
 describe('CurriculumAuthoringPanel — lecture structure (chapters + checkpoints)', () => {
   it('loads the structure on selection and renders m:ss windows and triggers', async () => {
     renderPanel();

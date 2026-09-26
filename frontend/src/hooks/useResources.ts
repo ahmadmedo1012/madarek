@@ -861,6 +861,9 @@ export interface ChapterPatchInput {
   title?: string;
   startSec?: number;
   endSec?: number;
+  /** 5-D3 (5-B6 hand-off #2): joined updateChapterBodySchema in wave
+   *  26 — the FE chapter reorder swaps ordinals through PATCHes. */
+  ordinal?: number;
 }
 export function useCreateChapter(lectureId: string) {
   const qc = useQueryClient();
@@ -2109,6 +2112,43 @@ export function useFinishExam() {
         api.post(`/exams/attempts/${attemptId}/submit`, {}),
       ),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['exams', 'me'] }),
+  });
+}
+
+/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the student's own post-grading
+ * review — GET /exams/attempts/:id/review (STUDENT, own attempt,
+ * GRADED-only server-side). `correctAnswer` is the released key:
+ * MCQ/TRUE_FALSE choice index, SHORT model answer, null for ESSAY
+ * (the rubric stays teacher-side) and keyless shorts. */
+export interface AttemptReviewQuestion {
+  questionId: string;
+  type: QType;
+  prompt: string;
+  choices: string[] | null;
+  points: number;
+  myChoiceIndex: number | null;
+  myAnswerText: string | null;
+  isCorrect: boolean | null;
+  awardedPoints: number | null;
+  feedback: string | null;
+  correctAnswer: string | number | null;
+}
+export interface AttemptReview {
+  attemptId: string;
+  templateTitle: string;
+  score: number | null;
+  maxScore: number;
+  submittedAt: string | null;
+  questions: AttemptReviewQuestion[];
+}
+export function useExamReview(attemptId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ['exams', 'review', attemptId],
+    enabled,
+    // A graded attempt's answers are immutable — refetching on every
+    // mount buys nothing.
+    staleTime: 5 * 60_000,
+    queryFn: () => unwrap<AttemptReview>(api.get(`/exams/attempts/${attemptId}/review`)),
   });
 }
 

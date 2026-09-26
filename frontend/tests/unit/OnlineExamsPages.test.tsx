@@ -31,8 +31,10 @@
  * 13. 5-A6 P2-2: the question map — answered/failed dots, answered
  *     subline, inline submit count, jump-to-card + focus, and the
  *     IntersectionObserver-tracked current-position ring.
- * 14. 5-A6 P2-4: the result screen carries the honest
- *     «مراجعة الأسئلة بعد التسليم غير متاحة حالياً» note.
+ * 14. 5-A6 P2-4 → 5-D3 (5-B3 hand-off #1): the review endpoint ships —
+ *     a GRADED result/deep-link offers the collapsible «مراجعة الأسئلة»
+ *     (my answer, released key, verdict chips); a SUBMITTED result keeps
+ *     the honest «بعد اكتمال التصحيح» promise instead of a dead toggle.
  * 13. 16-E1 / 15-g P1-5: the answer textarea and the MCQ choice group
  *     carry accessible names tied to the question prompt.
  * 14. 16-E1 / 15-h P1-5: exam windows are visible — the list groups
@@ -74,6 +76,7 @@ const mocks = vi.hoisted(() => ({
   start: vi.fn(),
   finish: vi.fn(),
   answer: vi.fn(),
+  review: { data: null as unknown, isPending: false, isError: false, error: null, refetch: vi.fn() },
 }));
 
 vi.mock('../../src/hooks/useResources', () => ({
@@ -89,6 +92,9 @@ vi.mock('../../src/hooks/useResources', () => ({
   // Fresh object per render — exactly like the real useMutation result —
   // so the interval-deps assertion (P2-3) stays meaningful.
   useFinishExam: () => ({ mutateAsync: mocks.finish, isPending: false }),
+  // 5-D3 (5-B3 hand-off #1): the post-grading review read — a fresh
+  // object per render, mirroring the real useQuery result shape.
+  useExamReview: (_attemptId: string, _enabled: boolean) => ({ ...mocks.review }),
   useExamModerationQueue: () => ({
     data: [],
     isPending: false,
@@ -695,16 +701,89 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(screen.queryByText('ناجح')).toBeNull();
   });
 
-  it('says per-question review is not available yet — an honest note, not silence (5-A6 P2-4)', async () => {
+  it('offers the per-question review on a GRADED result — a toggle, then my answer + the released key (5-D3 / 5-B3 hand-off #1)', async () => {
     vi.useFakeTimers();
     mocks.start.mockResolvedValue(startedPayload());
     mocks.finish.mockResolvedValue({ score: 7, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+    mocks.review = {
+      data: {
+        attemptId: 'a1',
+        templateTitle: 'اختبار الشبكات',
+        score: 7,
+        maxScore: 10,
+        submittedAt: '2026-06-01T09:40:00.000Z',
+        questions: [
+          {
+            questionId: 'q1', type: 'MCQ', prompt: 'سؤال اختيار من متعدد',
+            choices: ['الخيار الأول', 'الخيار الثاني'], points: 5,
+            myChoiceIndex: 0, myAnswerText: null, isCorrect: false, awardedPoints: 0, feedback: null,
+            correctAnswer: 1,
+          },
+          {
+            questionId: 'q2', type: 'SHORT', prompt: 'سؤال قصير',
+            choices: null, points: 5,
+            myChoiceIndex: null, myAnswerText: 'جوابي', isCorrect: true, awardedPoints: 5, feedback: null,
+            correctAnswer: 'الجواب النموذجي',
+          },
+        ],
+      },
+      isPending: false, isError: false, error: null, refetch: vi.fn(),
+    };
 
     await startExam();
     await confirmSubmit();
 
     expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
-    expect(screen.getByText('مراجعة الأسئلة بعد التسليم غير متاحة حالياً.')).toBeTruthy();
+    // Collapsed by default — the verdict stays the moment.
+    const toggle = screen.getByRole('button', { name: 'مراجعة الأسئلة' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    // My wrong MCQ pick, its released key, and the SHORT model answer.
+    expect(screen.getByText('خاطئة')).toBeTruthy();
+    expect(screen.getByText('الخيار الأول')).toBeTruthy();
+    expect(screen.getByText('الخيار الثاني')).toBeTruthy();
+    expect(screen.getByText('جوابي')).toBeTruthy();
+    expect(screen.getByText('الجواب النموذجي')).toBeTruthy();
+  });
+
+  it('keeps the honest awaiting-note while manual grading pends — no dead review toggle (5-D3)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 4, maxScore: 10, status: 'SUBMITTED', needsManual: 2, passed: null });
+
+    await startExam();
+    await act(async () => {
+      vi.advanceTimersByTime(30 * 60_000 + 5_000); // 00:00 → auto-submit
+    });
+
+    expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
+    expect(screen.getByText('ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
+  });
+
+  it('deep-link done-state on a GRADED attempt offers the same review toggle (5-D3)', async () => {
+    mocks.exams = [examFixture({
+      myAttempt: { id: 'att-done', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-06-01T09:40:00.000Z' },
+    })];
+
+    renderTaker();
+
+    expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    const toggle = screen.getByRole('button', { name: 'مراجعة الأسئلة' });
+    expect(toggle).toHaveAttribute('aria-controls', 'exam-review-att-done');
+  });
+
+  it('deep-link done-state on an EXPIRED attempt keeps the honest promise, never a dead toggle (5-D3)', async () => {
+    mocks.exams = [examFixture({
+      myAttempt: { id: 'att-exp', status: 'EXPIRED', score: null, maxScore: 10, submittedAt: null },
+    })];
+
+    renderTaker();
+
+    expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
   it('names the answer fields after their question prompts (15-g P1-5)', async () => {

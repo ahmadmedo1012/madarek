@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight,
+  ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown,
   Sparkles, ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
@@ -19,9 +19,9 @@ import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { useReducedMotion } from '../../components/motion';
 import { courseIcon } from '../../lib/courseMeta';
 import {
-  useMyExams, useStartExam, useSubmitAnswer, useFinishExam,
+  useMyExams, useStartExam, useSubmitAnswer, useFinishExam, useExamReview,
   useExamModerationQueue, useModerateExam,
-  type MyExam, type StartedAttempt, type ResumedAttempt,
+  type MyExam, type StartedAttempt, type ResumedAttempt, type AttemptReviewQuestion,
 } from '../../hooks/useResources';
 import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '../../lib/format';
 import { overlayStack } from '../../lib/overlayStack';
@@ -344,6 +344,97 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
   );
 }
 
+/* ═══════════════ Post-grading review (5-D3 — 5-B3 hand-off #1) ═══════════════ */
+
+/** The teacher-side null verdict (manually graded, no boolean to
+ *  report) reads as its own neutral chip — the awarded points carry
+ *  the decision, the chip never invents a صحيحة/خاطئة the server did
+ *  not state. */
+function reviewVerdict(q: AttemptReviewQuestion): { color: 'green' | 'red' | undefined; label: string } {
+  if (q.isCorrect === true) return { color: 'green', label: 'صحيحة' };
+  if (q.isCorrect === false) return { color: 'red', label: 'خاطئة' };
+  return { color: undefined, label: 'بتقييم الأستاذ' };
+}
+
+/** One reviewed question — the prompt, my answer, the released key
+ *  and the verdict in one tight row group (student.css §5-D3). */
+function ReviewQuestionRow({ q, index }: { q: AttemptReviewQuestion; index: number }) {
+  const myChoice = q.myChoiceIndex !== null && q.choices ? q.choices[q.myChoiceIndex] ?? null : null;
+  const keyChoice = typeof q.correctAnswer === 'number' && q.choices ? q.choices[q.correctAnswer] ?? null : null;
+  const verdict = reviewVerdict(q);
+  const answered = myChoice !== null || (q.myAnswerText ?? '').trim() !== '';
+  return (
+    <div className="exam-review-q">
+      <div className="exam-review-head">
+        <span className="exam-review-num" aria-hidden><bdi>{index + 1}</bdi></span>
+        <span className="exam-review-prompt">{q.prompt}</span>
+        <Badge color={verdict.color}>{verdict.label}</Badge>
+      </div>
+      <div className="exam-review-meta">
+        <bdi>{q.awardedPoints ?? 0} / {q.points}</bdi> درجة
+      </div>
+      <div className="exam-review-ans">
+        <span className="exam-review-label">إجابتك:</span>{' '}
+        {answered
+          ? (myChoice ?? <span className="exam-review-text">{q.myAnswerText}</span>)
+          : <span className="exam-review-missed">لم تُجب عن هذا السؤال</span>}
+      </div>
+      {/* The released key: MCQ/TRUE_FALSE choice text, SHORT model
+          answer. ESSAY rubrics and keyless shorts stay teacher-side
+          (null) — nothing renders, the verdict + feedback carry it. */}
+      {(keyChoice !== null || typeof q.correctAnswer === 'string') && (
+        <div className="exam-review-key">
+          <span className="exam-review-label">الإجابة الصحيحة:</span>{' '}
+          {keyChoice ?? <span className="exam-review-text">{q.correctAnswer as string}</span>}
+        </div>
+      )}
+      {q.feedback && (
+        <div className="exam-review-feedback">
+          <span className="exam-review-label">ملاحظة الأستاذ:</span>{' '}
+          <span className="exam-review-text">{q.feedback}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Collapsible «مراجعة الأسئلة» on the terminal screens — the verdict
+ *  stays the moment; the per-question detail is one toggle away and
+ *  only fetches when the student actually opens it (the attempt is
+ *  GRADED by construction here — the hook is server-gated to that). */
+function ExamReviewSection({ attemptId }: { attemptId: string }) {
+  const [open, setOpen] = useState(false);
+  const reviewQ = useExamReview(attemptId, open);
+  const listId = `exam-review-${attemptId}`;
+  return (
+    <div className="exam-review">
+      <button
+        type="button"
+        className="btn ghost sm exam-review-toggle"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <Icon icon={ChevronDown} size={14} className={open ? 'exam-review-chevron is-open' : 'exam-review-chevron'} />
+        مراجعة الأسئلة
+      </button>
+      {open && (
+        <div id={listId} className="exam-review-list">
+          {reviewQ.isPending ? (
+            <ListSkeleton rows={3} />
+          ) : reviewQ.isError ? (
+            <ErrorState error={reviewQ.error} onRetry={() => reviewQ.refetch()} />
+          ) : (
+            (reviewQ.data?.questions ?? []).map((q, i) => (
+              <ReviewQuestionRow key={q.questionId} q={q} index={i} />
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ═══════════════ Student exam taker ═══════════════ */
 export function ExamTakerPage() {
   const { id } = useParams<{ id: string }>();
@@ -358,8 +449,13 @@ export function ExamTakerPage() {
   // 15-c P1-1: the backend deliberately reports `passed: null` while
   // manual grading pends (needsManual > 0) — the state is typed
   // honestly so null renders the neutral «بانتظار التصحيح اليدوي»
-  // badge, never a «لم يجتز» verdict the server withheld.
-  const [result, setResult] = useState<{ score: number; maxScore: number; passed: boolean | null; needsManual: number } | null>(null);
+  // badge, never a «لم يجتز» verdict the server withheld. attemptId +
+  // status (5-D3) ride along so the GRADED result screen can offer the
+  // post-grading review without a second navigation.
+  const [result, setResult] = useState<{
+    attemptId: string;
+    score: number; maxScore: number; passed: boolean | null; needsManual: number; status: string;
+  } | null>(null);
   const [alreadyDone, setAlreadyDone] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -478,7 +574,14 @@ export function ExamTakerPage() {
       // The wire truth is `passed: boolean | null` (null while manual
       // grading pends); the hook's declared type still says boolean —
       // coerce so null flows into the three-way badge (15-c P1-1).
-      setResult({ score: Number(r.score), maxScore: Number(r.maxScore), passed: r.passed ?? null, needsManual: r.needsManual });
+      setResult({
+        attemptId: attempt.attemptId,
+        score: Number(r.score),
+        maxScore: Number(r.maxScore),
+        passed: r.passed ?? null,
+        needsManual: r.needsManual,
+        status: r.status,
+      });
     } catch (e) {
       setSubmitError(apiErrorMessage(e, 'تعذَّر تسليم الاختبار — حاول مرة أخرى.'));
       // A failed manual submit must not block the countdown's later
@@ -721,10 +824,15 @@ export function ExamTakerPage() {
                   <Badge color={passed ? 'green' : 'red'}>{passed ? 'ناجح' : 'لم يجتز'}</Badge>
                 </div>
                 <p className="exam-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
-                {/* 5-A6 P2-4 — no student-side per-question review surface
-                    exists yet (the attempts endpoint is grading-roles-only);
-                    say so instead of leaving the question unanswered. */}
-                <p className="exam-result-note">مراجعة الأسئلة بعد التسليم غير متاحة حالياً.</p>
+                {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the deep-link
+                    done-state offers the same review on a GRADED
+                    attempt; anything short of GRADED keeps the honest
+                    promise instead of a dead toggle. */}
+                {myAttempt.status === 'GRADED' ? (
+                  <ExamReviewSection attemptId={myAttempt.id} />
+                ) : (
+                  <p className="exam-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح.</p>
+                )}
               </>
             ) : examsQ.isPending ? (
               <p className="exam-result-note">جارٍ جلب نتيجتك…</p>
@@ -837,12 +945,16 @@ export function ExamTakerPage() {
                 ? <><bdi>{result.needsManual}</bdi> سؤال بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.</>
                 : 'تم احتساب النتيجة فوراً.'}
             </p>
-            {/* 5-A6 P2-4 — per-question review needs a student-side
-                endpoint the backend does not expose yet (the attempts
-                list is grading-roles-only); the honest note stands in
-                until that lands (FE+BE coordination, filed in the
-                worklog). */}
-            <p className="exam-result-note">مراجعة الأسئلة بعد التسليم غير متاحة حالياً.</p>
+            {/* 5-D3 (5-B3 hand-off #1 / A6 P2-4): the review endpoint
+                ships — the GRADED result offers the per-question
+                review behind one toggle; while manual grading pends
+                the honest promise replaces the old "not available"
+                note (the key is not released until GRADED). */}
+            {awaitingManual ? (
+              <p className="exam-result-note">ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.</p>
+            ) : (
+              <ExamReviewSection attemptId={result.attemptId} />
+            )}
             <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')}>
               العودة للقائمة
             </button>

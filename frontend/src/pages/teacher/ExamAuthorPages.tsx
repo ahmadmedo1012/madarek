@@ -497,7 +497,7 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
         <Link className="btn ghost sm" to={`/teacher/exams/${template.id}`}>
           عرض
         </Link>
-        <PublishButton template={template} />
+        <PublishButton template={template} viewHref={`/teacher/exams/${template.id}`} />
       </div>
     </div>
   );
@@ -508,15 +508,22 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
 function PublishButton({
   template,
   authorId,
+  viewHref,
 }: {
   template: Pick<ExamTemplateRow, 'id' | 'status'>;
   /** Present on the detail surface — hides the button for a non-author
    *  viewing someone else's APPROVED template (the backend would 403). */
   authorId?: string;
+  /** 5-D3 (A10 P3-2): when the publish fires from the LIST row, the
+   *  success toast offers the natural next step («عرض الاختبار») as an
+   *  inline action. Absent on the detail surface — the button already
+   *  sits on that page, the action would navigate nowhere. */
+  viewHref?: string;
 }) {
   const publish = usePublishExamTemplate();
   const [confirming, setConfirming] = useState(false);
   const meId = useAuthStore((s) => s.user?.id);
+  const navigate = useNavigate();
   const perms = useMyPermissions();
   const canAuthor = perms.data?.capabilities.includes('EXAMS_AUTHOR') ?? false;
 
@@ -530,7 +537,15 @@ function PublishButton({
     try {
       await publish.mutateAsync(template.id);
       setConfirming(false);
-      toast.success('أصبح الاختبار متاحاً للطلاب حسب نطاقه.', { title: 'تمّ نشر الاختبار' });
+      toast.success('أصبح الاختبار متاحاً للطلاب حسب نطاقه.', {
+        title: 'تمّ نشر الاختبار',
+        ...(viewHref ? {
+          action: {
+            label: 'عرض الاختبار',
+            onClick: () => navigate(viewHref),
+          },
+        } : {}),
+      });
     } catch {
       setConfirming(false);
       // surfaced inline below — the backend's Arabic conflict message

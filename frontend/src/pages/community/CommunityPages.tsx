@@ -310,7 +310,9 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
           ) : (
             <Badge color="amber">انتهى التقديم</Badge>
           )}
-          {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {c.prize}</span>}
+          {/* 5-D3 (5-D1 hand-off): --gold measured 2.30:1 on the light
+              card — the amber graphics tier (chart-6) instead. */}
+          {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {c.prize}</span>}
           {/* A8 §7.7: a zero here reads as a dead competition — while
               entries are still possible the honest line is an invitation
               (the empty-state inside the detail page already speaks this

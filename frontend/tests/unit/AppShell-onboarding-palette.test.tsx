@@ -64,6 +64,7 @@ vi.mock('../../src/hooks/useAuth', () => ({
 import { AppShell } from '../../src/components/layout/AppShell';
 import { useAuthStore } from '../../src/stores/auth.store';
 import { useOnboardingStore } from '../../src/stores/onboarding.store';
+import { useUiStore } from '../../src/stores/ui.store';
 import { overlayStack } from '../../src/lib/overlayStack';
 
 const STUDENT = {
@@ -215,5 +216,100 @@ describe('AppShell — ⌘K command palette (4-A2 P2-8 + P1-3)', () => {
     fireEvent.keyDown(document, { key: 'Escape' });
     fireEvent.keyDown(document, { key: 'k', metaKey: true });
     expect(screen.getByRole('combobox')).toHaveValue('');
+  });
+});
+
+/* ── 5-D3 (A10 P3-5): palette recents ─────────────────────────────
+   The last-run action ids persist in the ui store (localStorage via
+   zustand persist), render as a «الأخيرة» section above the quick
+   actions on the EMPTY query, ride the flat keyboard order first, and
+   are excluded from the quick list so no row renders twice. */
+describe('AppShell — palette recents (5-D3 / A10 P3-5)', () => {
+  beforeEach(() => {
+    act(() => {
+      useUiStore.setState({ recentPaletteIds: [] });
+    });
+    localStorage.removeItem('mdrk-ui');
+  });
+
+  afterEach(() => {
+    act(() => {
+      useUiStore.setState({ recentPaletteIds: [] });
+    });
+    localStorage.removeItem('mdrk-ui');
+  });
+
+  it('records a run and surfaces it as the first row of «الأخيرة» on reopen', async () => {
+    renderShell('/student/dashboard');
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    // Run a quick action (the student's online-exams destination —
+    // within the 7-item cap). Regex name-match: the row's trailing
+    // arrow icon is part of its accessible name, exact never matches.
+    fireEvent.click(screen.getByRole('option', { name: /الاختبارات الإلكترونية/ }));
+    await waitFor(
+      () => expect(screen.queryByRole('dialog', { name: 'لوحة الأوامر والبحث' })).toBeNull(),
+      { timeout: 2000 },
+    );
+    expect(useUiStore.getState().recentPaletteIds).toEqual(['nav:/student/online-exams']);
+
+    // Reopen — the recents section renders above the quick actions.
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    const recents = screen.getByRole('group', { name: 'الأخيرة' });
+    const rows = recents.querySelectorAll('[role="option"]');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.textContent).toContain('الاختبارات الإلكترونية');
+    // The quick list no longer repeats it.
+    const quick = screen.getByRole('group', { name: 'إجراءات سريعة' });
+    expect(quick.textContent).not.toContain('الاختبارات الإلكترونية');
+    // The recents are keyboard-first: aria-activedescendant points at
+    // the first option = the recent row's id.
+    expect(screen.getByRole('combobox')).toHaveAttribute(
+      'aria-activedescendant',
+      rows[0]!.id,
+    );
+  });
+
+  it('runs the focused recent with Enter and moves it to the front', async () => {
+    act(() => {
+      useUiStore.setState({ recentPaletteIds: ['nav:/student/library', 'action:theme'] });
+    });
+    renderShell('/student/dashboard');
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    const recents = screen.getByRole('group', { name: 'الأخيرة' });
+    expect(recents.querySelectorAll('[role="option"]')).toHaveLength(2);
+
+    // Enter on the focused first recent (المكتبة الإلكترونية) — the
+    // run navigates and the id stays at the front of the store.
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter' });
+    expect(useUiStore.getState().recentPaletteIds).toEqual([
+      'nav:/student/library',
+      'action:theme',
+    ]);
+  });
+
+  it('renders no recents section for a stale id from another role (honest absence)', () => {
+    act(() => {
+      useUiStore.setState({ recentPaletteIds: ['nav:/owner/system'] });
+    });
+    renderShell('/student/dashboard');
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    expect(screen.queryByRole('group', { name: 'الأخيرة' })).toBeNull();
+    // The quick actions are untouched by the unresolvable id.
+    expect(screen.getByRole('group', { name: 'إجراءات سريعة' }).textContent).toContain('لوحة التحكم');
+  });
+
+  it('keeps recents out of the typed query — the filter answers alone', async () => {
+    act(() => {
+      useUiStore.setState({ recentPaletteIds: ['nav:/student/library'] });
+    });
+    renderShell('/student/dashboard');
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'الاختبارات' } });
+    await waitFor(() => {
+      expect(screen.queryByRole('group', { name: 'الأخيرة' })).toBeNull();
+      expect(screen.getByRole('group', { name: 'إجراءات سريعة' }).textContent).not.toContain(
+        'المكتبة الإلكترونية',
+      );
+    });
   });
 });

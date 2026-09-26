@@ -217,13 +217,17 @@
   /* (Wave 9-b dead-selector sweep: .kpi-cell, .surface-card,
      .table-row-clickable and tr[data-clickable] removed from this
      group — zero TSX consumers; dashboards render .metric/.compact-kpi
-     and row-level affordances are buttons inside cells now.) */
+     and row-level affordances are buttons inside cells now.)
+     5-D3 (A2 P3-16): select joins the group — the native control kept
+     the default arrow while every sibling control answers pointer
+     (measured on the admin filters). */
   .compact-kpi,
   .metric,
   [role="button"],
   [role="tab"],
   [role="menuitem"],
   [role="option"],
+  select:not(:disabled),
   summary,
   label[tabindex] { cursor: pointer; }
 
@@ -2125,7 +2129,12 @@
   .state.state-card   { padding: var(--sp-7) var(--sp-5); }
   .state.state-error .state-icon {
     background: var(--danger-soft, rgba(220, 38, 38, 0.10));
-    color: var(--danger, #dc2626);
+    /* 5-D1 (A11 P2-3): --danger on --danger-soft measured 2.59:1 light
+       (non-text floor is 3:1). The -deep ink pair mirrors the
+       .state-icon-success grammar (components.css) and the base
+       .state-icon's own -deep pairing; dark's -ink maps to the same
+       value the base token already resolves to (no dark change). */
+    color: var(--danger-ink, var(--danger));
   }
   .state.state-empty .state-icon {
     background: var(--surface-2);
@@ -2210,12 +2219,17 @@
 
   /* Tighter tap targets on phone — buttons reach the 44px guideline.
      (Wave 9-b tap-target consolidation, 6-a follow-up #5: this
-     overrides-layer block is now the ONE owner of the mobile .btn.sm
-     floor — 44px per the iOS HIG / Material guideline, matching the
+     overrides-layer block is now the ONE owner of the mobile .btn
+     floors — 44px per the iOS HIG / Material guideline, matching the
      per-surface 44px !important floors waves 5-6 already pin. The old
-     32px silently beat v6's pages-layer 44px copy, which is deleted.) */
+     32px silently beat v6's pages-layer 44px copy, which is deleted.
+     5-D1 (A5 P2-3): the BASE .btn floor was 40px while only .btn.sm
+     reached 44 — every default-size CTA measured 40 tall @390
+     (te-exams «قالب اختبار جديد» 153×40, exam-taker «بدء الاختبار»
+     98×40). Both floors now sit at 44; min-* beats the components-
+     layer block-size at used-value time, so no visual change ≥641px.) */
   @media (max-width: 640px) {
-    .btn { min-block-size: 40px; }
+    .btn { min-block-size: 44px; }
     .btn.sm { min-block-size: 44px; }
     .bottom-nav-item { min-block-size: 52px; padding-block: 8px; }
   }
@@ -2977,17 +2991,44 @@
     inset: 0;
   }
 
-  /* Top-down vignette darkens for legible caption */
+  /* Caption scrim — taste.md scrim shape #1 (5-D3, 5-B2's flagged
+     follow-up): the caption anchors the bottom-start corner (≤640px
+     wide), so the density sits WHERE THE COPY IS — a corner gradient
+     anchored to the same corner, fading up and toward inline-end. The
+     old full-width bottom band darkened 100% of the frame to cover
+     one corner (VLM's "patch-like" read: a visible dark slab under an
+     otherwise bright photo). Element stays a SIBLING of the caption
+     (taste.md: a scrim must not live inside the text it protects);
+     logical insets position it at the same corner the caption uses.
+     Geometry mirrors the 5-B6 section-title rule: LTR base + explicit
+     [dir="rtl"] gradient mirroring. */
   .landing-campus-vignette {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg,
-      transparent 0%,
-      transparent 40%,
-      rgba(8, 6, 2, 0.45) 80%,
-      rgba(8, 6, 2, 0.78) 100%
-    );
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    /* Copy block (≤640px) + breathing room for the fades. */
+    inline-size: min(760px, 100%);
+    block-size: 62%;
+    background:
+      linear-gradient(to top, rgba(8, 6, 2, 0.78), rgba(8, 6, 2, 0.40) 46%, transparent 78%),
+      linear-gradient(to right, rgba(8, 6, 2, 0.50), transparent 80%);
     pointer-events: none;
+  }
+  [dir="rtl"] .landing-campus-vignette {
+    background:
+      linear-gradient(to top, rgba(8, 6, 2, 0.78), rgba(8, 6, 2, 0.40) 46%, transparent 78%),
+      linear-gradient(to left, rgba(8, 6, 2, 0.50), transparent 80%);
+  }
+  /* taste.md shape #2: below ~860px the corner-anchored copy spans the
+     frame — the corner gradient becomes a band (transparent above
+     ~58%), exactly what the corner shape degenerates into anyway. */
+  @media (max-width: 860px) {
+    .landing-campus-vignette {
+      inset-inline: 0;
+      inline-size: auto;
+      block-size: 58%;
+      background: linear-gradient(to top, rgba(8, 6, 2, 0.78), rgba(8, 6, 2, 0.38) 52%, transparent 78%);
+    }
   }
   /* Subtle film grain overlay */
   .landing-campus-grain {
@@ -3013,6 +3054,9 @@
     gap: var(--sp-2);
     max-inline-size: 640px;
     z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
+    /* 5-D3: photo-text edge insurance under the corner scrim (the
+       5-B2 sketch's second half) — a directional drop, never a glow. */
+    text-shadow: 0 1px 2px rgba(8, 6, 2, 0.5);
   }
   .landing-campus-eyebrow {
     font-size: var(--fs-xs);

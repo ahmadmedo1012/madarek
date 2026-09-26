@@ -122,9 +122,15 @@
   justify-content: center;
   flex-shrink: 0;
 }
-.notif-item.tone-accent  .notif-item-icon { background: var(--accent-soft);  color: var(--accent);  }
-.notif-item.tone-danger  .notif-item-icon { background: var(--danger-soft);  color: var(--danger);  }
-.notif-item.tone-success .notif-item-icon { background: var(--success-soft); color: var(--success); }
+/* 5-D1 (A11 P2-3): the tone wells painted the BASE status tokens —
+   2.53-3.06:1 on their -soft grounds in light (non-text floor 3:1).
+   The -ink pair mirrors the toast VARIANT wells in this file (the
+   in-repo correct grammar): light gets the -deep shades, dark's -ink
+   tokens resolve to the same values the base tokens already had (no
+   dark change). tone-neutral already passed (4.86:1). */
+.notif-item.tone-accent  .notif-item-icon { background: var(--accent-soft);  color: var(--accent-ink);  }
+.notif-item.tone-danger  .notif-item-icon { background: var(--danger-soft);  color: var(--danger-ink);  }
+.notif-item.tone-success .notif-item-icon { background: var(--success-soft); color: var(--success-ink); }
 .notif-item.tone-neutral .notif-item-icon { background: var(--surface-2);    color: var(--text-muted); }
 
 .notif-item-body {
@@ -441,6 +447,11 @@
   cursor: pointer;
   border-radius: var(--r-xs);
   min-block-size: 44px; /* craft floor: touch target */
+  /* 5-D3 (A10 P3-2): the block floor alone left short labels («عرض»)
+     with a ~30px-wide hit area — floor the inline axis too; the button
+     is transparent, so the wider target is invisible. */
+  min-inline-size: 44px;
+  justify-content: center;
   display: inline-flex;
   align-items: center;
 }

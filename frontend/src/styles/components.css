@@ -664,7 +664,14 @@
     flex-shrink: 0;
   }
   .alert.red    .alert-dot { background: var(--danger); }
-  .alert.amber  .alert-dot { background: var(--warning); }
+  /* 5-D1 (A11 P2-4): --warning #D6A330 on the white .alert card
+     measured 2.30:1 (non-text floor 3:1). The chart-safe amber tier
+     (--chart-6: #A67A22 light = 3.87:1 on --surface / #F2C766 dark)
+     is the documented graphics-on-light-surfaces amber — the same
+     tier chartColors().gold/.warning resolve through now. Sibling
+     dots keep their c-*-ink family; this one is a step deeper to
+     clear the floor while still reading amber. */
+  .alert.amber  .alert-dot { background: var(--chart-6); }
   .alert.green  .alert-dot { background: var(--success); }
   .alert.purple .alert-dot { background: var(--c-lavender-ink); }
   .alert-body { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; flex: 1; }
@@ -1216,6 +1223,18 @@
   }
   .lec-move-btn { padding-inline: var(--sp-1); }
   .lec-move-btn + .lec-move-btn { border-block-start: 1px solid var(--rule); }
+
+  /* Chapter reorder pair (5-D3 — 5-B6 hand-off #2, the ordinal landed
+     in wave 26): same neighbor-swap grammar as .lec-move but HORIZONTAL —
+     chapter rows are single-line compact rows (~36px), a vertical chevron
+     stack would double their height. Same .btn.ghost.sm base, square
+     targets, hairline divider between the pair. */
+  .ch-move {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .ch-move-btn { padding-inline: var(--sp-1); }
+  .ch-move-btn + .ch-move-btn { border-inline-start: 1px solid var(--rule); }
 
   /* 5-B6 (A7 P2-2): the grading modal wraps body + footer in one
      <form> so Enter submits. The form is the card's flex item besides
@@ -2564,7 +2583,14 @@
     clip-path: inset(0 0 0 calc(100% - var(--trend-scale, 0) * 100%) round var(--r-xs));
   }
   .trend-submitted { background: var(--accent); }
-  .trend-graded    { background: var(--gold); }
+  /* 5-D1 (A11 P2-4): the "مقيَّمة" series rode --gold — #D6A330 =
+     2.30:1 on the white reports card (non-text floor 3:1), and in
+     DARK --gold resolves to var(--accent), collapsing this bar onto
+     the مرفوعة bar (identical copper). --chart-6 is the amber
+     series tier chartColors().gold/.warning already resolve through
+     (light #A67A22 = 3.87:1 / dark #F2C766 = distinct from accent) —
+     the CSS-bar sibling of the same series the audit filed. */
+  .trend-graded    { background: var(--chart-6); }
   .trend-published { background: var(--success); }
   .trend-bar-val {
     padding-inline: var(--sp-2);

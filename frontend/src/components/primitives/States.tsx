@@ -162,7 +162,10 @@ export function ErrorState({
           <Illustration name={illustration} decorative />
         </div>
       ) : (
-        <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
+        /* 5-D1 (A11 P2-3): -deep ink on the soft well — the base
+           --danger measured 2.59:1 in light (non-text floor 3:1);
+           mirrors .state-icon-success and the toast well grammar. */
+        <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger-ink)' }}>
           <Icon icon={AlertTriangle} size={20} />
         </div>
       )}
@@ -203,7 +206,9 @@ export function PermissionDeniedState({
 }) {
   return (
     <div className="state state-error" role="alert">
-      <div className="state-icon" style={{ background: 'var(--warning-soft)', color: 'var(--warning)' }}>
+      {/* 5-D1 (A11 P2-3): warning-ink on the soft well (was the base
+          --warning at 2.03:1 light — the audit's worst status icon). */}
+      <div className="state-icon" style={{ background: 'var(--warning-soft)', color: 'var(--warning-ink)' }}>
         <Icon icon={ShieldAlert} size={20} />
       </div>
       <div className="state-title">{title}</div>

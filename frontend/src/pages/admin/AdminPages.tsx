@@ -988,7 +988,10 @@ export function AdminReportsPage() {
             </div>
             <div className="trend-legend">
               <LegendDot color="var(--accent)" label="مرفوعة" />
-              <LegendDot color="var(--gold)" label="مقيَّمة" />
+              {/* 5-D1 (A11 P2-4): matches .trend-graded — the amber series
+                  tier (--chart-6), not --gold (2.30:1 on the white card in
+                  light; collapses onto the accent bar in dark). */}
+              <LegendDot color="var(--chart-6)" label="مقيَّمة" />
               <LegendDot color="var(--success)" label="منشورة" />
             </div>
           </>

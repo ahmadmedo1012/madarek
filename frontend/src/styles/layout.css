@@ -598,6 +598,21 @@
     }
   }
 
+  /* 5-D1 (A5 P2-4) — the drawer footer's last sub-44 controls: the
+     three theme options measured 30×28 with gap 0 (the worst touch
+     cluster on the platform; logout + mobile-close already carry the
+     4-A2 P2-6 floor above). min-* grows only the hit area — glyphs
+     stay 14-16px — and beats the physical inline/block-size above at
+     used-value time. The 4px gap keeps adjacent 44px options from
+     sharing an edge (a mis-tap lands in the gutter, not the
+     neighbour). Scoped to the mobile band: the desktop sidebar keeps
+     its compact 30×28 segmented pill (pointer-fine). */
+  @media (max-width: 920px) {
+    .theme-toggle { gap: var(--sp-1); }
+    .theme-toggle-option { min-inline-size: 44px; min-block-size: 44px; }
+    .sidebar-tour-trigger { min-block-size: 44px; }
+  }
+
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  COMMAND PALETTE BODY (wave 21-a — 4-A2 P2-8 wiring)           ║
      ║  The overlay/card chrome lives in components.css (T066). This  ║

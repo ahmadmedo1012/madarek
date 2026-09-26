@@ -260,7 +260,9 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
         <div className="track-card-meta">
           <span><Icon icon={Clock} size={12} /> {formatNum(track.estMinutes)} د</span>
           <span><Icon icon={BookOpen} size={12} /> {countAr(track.totalLessons, ['درس واحد', 'درسان', 'دروس', 'درساً'])}</span>
-          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {pointsAr(track.pointsAward)}</span>
+          {/* 5-D3 (5-D1 hand-off): --gold measured 2.30:1 on the light
+              card — the amber graphics tier (chart-6) instead. */}
+          <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--chart-6)' }} /> {pointsAr(track.pointsAward)}</span>
         </div>
         {track.enrolled && (
           <ProgressBar
@@ -865,7 +867,11 @@ export function AchievementsPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div className="text-xxs text-subtle">شهادة إتمام مسار</div>
-                      <h3 style={{ fontSize: 'var(--fs-md)', margin: '4px 0 6px' }}>{c.title}</h3>
+                      {/* 5-D3 (A3 P3-2): demoted from h3 — the page's only
+                          heading is the h1; a cert title is a list-item
+                          label. Visuals byte-identical (display family,
+                          bold, fs-md, lh 1.3, same margins). */}
+                      <div style={{ fontSize: 'var(--fs-md)', fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', lineHeight: 1.3, margin: '4px 0 6px' }}>{c.title}</div>
                       <div className="text-xs text-muted">{c.issuer}</div>
                       <div style={{ display: 'flex', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)', flexWrap: 'wrap' }}>
                         <Badge color="green"><Icon icon={CheckCircle2} size={11} /> مكتملة</Badge>
