@@ -553,6 +553,21 @@
     --chart-6: #A67A22;
     --chart-7: #3F8B8B;   /* teal */
     --chart-8: #A65D8A;   /* mauve */
+
+    /* ─── Immersive journey scene (ConstellationCanvas + landing
+       bands — docs/immersive-redesign-plan.md §7). Paint-only,
+       decorative: these feed canvas strokes and ambient washes, never
+       body text, so the 3:1 non-text floor is the bar. Light theme:
+       copper threads on cream — node 3.65:1 on --bg, line alpha
+       tuned for atmosphere, not contrast. */
+    --journey-node:        var(--accent);        /* #B57438 copper */
+    --journey-node-major:  var(--accent-strong); /* #8F5A2B deep copper */
+    --journey-line:        rgba(181, 116, 56, 0.30);
+    --journey-core:        var(--ink);           /* #191918 */
+    --journey-glow:        rgba(181, 116, 56, 0.10);   /* ambient wash */
+    /* Marquee ticker + scrub choreography */
+    --journey-ticker-ink:  var(--neutral-500);
+    --journey-ticker-sep:  var(--accent);
   }
 
   /* ════════════════════════════════════════════════════════════════════
@@ -712,6 +727,18 @@
     --chart-6: #F2C766;   /* gold accent (lifted for dark) */
     --chart-7: #5FAFAF;   /* teal (lifted for dark) */
     --chart-8: #C57DA9;   /* mauve (lifted for dark) */
+
+    /* ─── Immersive journey scene — dark variants. Brightened copper
+       (#E0A067 = 9.05:1 on the ink ground) keeps nodes present on
+       #191918 without glare; threads lift one alpha step so the
+       constellation reads against dark. Non-text 3:1 floor cleared. */
+    --journey-node:        var(--accent);        /* #E0A067 bright copper */
+    --journey-node-major:  var(--accent-strong);
+    --journey-line:        rgba(224, 160, 103, 0.34);
+    --journey-core:        var(--ink);
+    --journey-glow:        rgba(224, 160, 103, 0.12);
+    --journey-ticker-ink:  var(--neutral-400);
+    --journey-ticker-sep:  var(--accent);
   }
 
   @media (prefers-reduced-motion: reduce) {
