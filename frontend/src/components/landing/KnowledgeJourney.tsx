@@ -1,90 +1,140 @@
 import { Link } from 'react-router-dom';
-import {
-  ArrowLeft, BarChart3, BookOpen, Brain, Check, Compass,
-  GraduationCap, Network, ShieldCheck,
-} from 'lucide-react';
+import { ArrowLeft, Check, Compass, GraduationCap } from 'lucide-react';
 import { Icon } from '../Icon';
 import { RevealCssClass } from '../../hooks/useReveal';
-import { SectionAccent } from '../motion/SectionAccent';
+import { MaskReveal, SequentialHighlight, type SequentialItem } from '../motion';
+import '../../styles/landing-journey.css';
 
 /**
- * KnowledgeJourney — the «كيف تتعلم في مدارك» act.
+ * KnowledgeJourney — «رحلة معرفة تتوسّع» (immersive wave 2, scene 4).
  *
- * Wave-1.5 extraction: behavior-identical move of the features zigzag
- * + flipped-classroom band out of LandingPage. The immersive redesign
- * (wave 2) re-grammars this into the sequential scroll-scrubbed
- * timeline (SequentialHighlight) — the learning-path narrative —
- * while preserving every feature's copy and the #flipped/#matrix
- * anchors the megamenu links to.
+ * The wave-1.5 features zigzag is re-grammared as ONE authored
+ * sequential act: a scroll-scrubbed learning-path timeline
+ * (SequentialHighlight) whose stages light up progressively —
+ * knowledge accumulating, never a lone cursor — the campaign's
+ * signature mid-page moment. The six stage descriptions are the old
+ * feature cards' copy, verbatim (they are real product truths); the
+ * flipped-classroom band below stays byte-identical as the concrete
+ * demo of the journey's first stage.
+ *
+ * Anchor contract (megamenu + footer targets; ids are page-wide
+ * unique and owned by this scene):
+ *   #features — the scene section (also the mobile-menu «المميزات»)
+ *   #matrix   — stage م-٠١ on the timeline rail
+ *   #ai       — stage م-٠٢, one stage down the rail
+ *   #flipped  — the flipped-classroom band
+ * SequentialHighlight stamps its own <li> ids with a useId prefix, so
+ * the stable targets render as zero-size rail spans inside
+ * .journey-track, positioned per stage in landing-journey.css.
+ * (#research stays in BentoScene — deliberately NOT created here.)
  */
+const JOURNEY_STEPS: SequentialItem[] = [
+  {
+    id: 'matrix',
+    code: '( م-٠١ )',
+    title: 'المصفوفة التعليمية',
+    description:
+      'مسارات تعلُّم تتكيَّف مع مستوى تقدُّمك ونقاط قوَّتك، تكشف الفجوات وتربطها تلقائياً بالدقائق التي تشرحها.',
+  },
+  {
+    id: 'ai',
+    code: '( م-٠٢ )',
+    title: 'المساعد الأكاديمي',
+    description:
+      '«Oasis»: رفيق دراسي يفهم سياق دراستك. شروحات مخصَّصة، تلخيصات، واختبارات تفاعلية حسب أدائك الفعلي.',
+  },
+  {
+    id: 'analytics',
+    code: '( م-٠٣ )',
+    title: 'تحليلات أكاديمية',
+    description:
+      'لوحة دقيقة لتقدُّمك لحظة بلحظة: الدرجات، الحضور، المهام، والمؤشرات المؤسسية، بصياغة تخدم القرار.',
+  },
+  {
+    id: 'research',
+    code: '( م-٠٤ )',
+    title: 'مكتبة وبحوث',
+    description:
+      'فهرس بحثيّ وفحص للنزاهة العلمية (الانتحال + المحتوى المُولَّد آلياً) مع مراجعة معلَّمة من الأستاذ.',
+  },
+  {
+    id: 'unified',
+    code: '( م-٠٥ )',
+    title: 'منظومة موحَّدة',
+    description:
+      'المحاضرات، الحضور، الدرجات، الاختبارات، البحوث، والمعامل الافتراضية، كلها في تجربة واحدة آمنة ومتجاوبة.',
+  },
+  {
+    id: 'quality',
+    code: '( م-٠٦ )',
+    title: 'جودة مؤسسية',
+    description:
+      'مؤشرات لقطاع الجودة: تقييم الأساتذة، مراجعة الاختبارات، أداء المقررات، وتقارير شاملة بصياغة رسمية.',
+  },
+];
+
 export function KnowledgeJourney(): JSX.Element {
   return (
     <>
-      {/* FEATURES — two-column zigzag of horizontal cards. */}
-      <section id="features" className="marketing-container landing-features">
-        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
-          <h2 className="landing-section-title">
-            كل ما يحتاجه <em>الجامعيّ</em> في مكان واحد
-          </h2>
-          <p className="landing-section-lede">
-            أدوات أكاديمية متكاملة تربط الفصل الدراسي بالمحتوى الرقمي والتحليلات
-            الذكية، بدون تشتيت ودون تعقيد.
-          </p>
-        </SectionAccent>
+      {/* THE LEARNING-PATH TIMELINE — one section, one scrubbed gesture. */}
+      <section
+        id="features"
+        className="marketing-container journey-scene"
+        aria-labelledby="journey-title"
+      >
+        <div className="journey-head">
+          <div className="journey-head-copy">
+            <RevealCssClass as="p" className="journey-meta">
+              ( ر-٠١ · مسار التعلّم )
+            </RevealCssClass>
+            {/*
+              The display title keeps its <em> accent word AND its
+              word-mask reveal: MaskReveal only masks plain-string
+              children, so the three words ride three single-word
+              masks sequenced at one --motion-stagger-step apart (60ms,
+              120ms) — the same cascade one MaskReveal staggers
+              internally, never a per-character split (Arabic ruling).
+            */}
+            <h2 id="journey-title" className="journey-title">
+              <MaskReveal as="span">رحلة</MaskReveal>{' '}
+              <em>
+                <MaskReveal as="span" delay={60}>معرفة</MaskReveal>
+              </em>{' '}
+              <MaskReveal as="span" delay={120}>تتوسّع</MaskReveal>
+            </h2>
+            <RevealCssClass as="p" className="journey-lede" delay={1}>
+              من أوّل محاضرة تفتحها حتى إتقان المقرّر، ترافقك مدارك في
+              كلّ مرحلة من مسار تعلُّمك.
+            </RevealCssClass>
+          </div>
+          {/* The scene's single icon moment — house taste: fewer icons,
+              more type. Copper = the rail/node family of the timeline. */}
+          <RevealCssClass
+            as="span"
+            className="sticker lg copper journey-sticker"
+            delay={2}
+          >
+            <Icon icon={Compass} size={32} strokeWidth={1.8} />
+          </RevealCssClass>
+        </div>
 
-        <div className="landing-features-grid">
-          <RevealCssClass as="article" id="matrix" className="landing-feature-card sticker-wiggle">
-            <span className="sticker lg peach"><Icon icon={Compass} size={32} strokeWidth={1.8} /></span>
-            <h3 className="landing-feature-title">المصفوفة التعليمية</h3>
-            <p className="landing-feature-desc">
-              مسارات تعلُّم تتكيَّف مع مستوى تقدُّمك ونقاط قوَّتك، تكشف الفجوات وتربطها
-              تلقائياً بالدقائق التي تشرحها.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={1}>
-            <span className="sticker lg lavender"><Icon icon={Brain} size={32} strokeWidth={1.8} /></span>
-            <h3 className="landing-feature-title">المساعد الأكاديمي</h3>
-            <p className="landing-feature-desc">
-              «Oasis»: رفيق دراسي يفهم سياق دراستك. شروحات مخصَّصة، تلخيصات،
-              واختبارات تفاعلية حسب أدائك الفعلي.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={2}>
-            <span className="sticker lg sky"><Icon icon={BarChart3} size={32} strokeWidth={1.8} /></span>
-            <h3 className="landing-feature-title">تحليلات أكاديمية</h3>
-            <p className="landing-feature-desc">
-              لوحة دقيقة لتقدُّمك لحظة بلحظة: الدرجات، الحضور، المهام، والمؤشرات
-              المؤسسية، بصياغة تخدم القرار.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={3}>
-            <span className="sticker lg mint"><Icon icon={BookOpen} size={32} strokeWidth={1.8} /></span>
-            <h3 className="landing-feature-title">مكتبة وبحوث</h3>
-            <p className="landing-feature-desc">
-              فهرس بحثيّ وفحص للنزاهة العلمية (الانتحال + المحتوى المُولَّد آلياً)
-              مع مراجعة معلَّمة من الأستاذ.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={4}>
-            <span className="sticker lg yellow"><Icon icon={Network} size={32} strokeWidth={1.8} /></span>
-            <h3 className="landing-feature-title">منظومة موحَّدة</h3>
-            <p className="landing-feature-desc">
-              المحاضرات، الحضور، الدرجات، الاختبارات، البحوث، والمعامل الافتراضية،
-              كلها في تجربة واحدة آمنة ومتجاوبة.
-            </p>
-          </RevealCssClass>
-          <RevealCssClass as="article" className="landing-feature-card sticker-wiggle" delay={5}>
-            <span className="sticker lg rose"><Icon icon={ShieldCheck} size={32} strokeWidth={1.8} /></span>
-            <h3 className="landing-feature-title">جودة مؤسسية</h3>
-            <p className="landing-feature-desc">
-              مؤشرات لقطاع الجودة: تقييم الأساتذة، مراجعة الاختبارات، أداء المقررات،
-              وتقارير شاملة بصياغة رسمية.
-            </p>
-          </RevealCssClass>
+        <div className="journey-track">
+          <SequentialHighlight
+            className="journey-timeline"
+            items={JOURNEY_STEPS}
+            label="مراحل رحلة التعلُّم"
+          />
+          {/* Stable megamenu targets on the rail — SequentialHighlight
+              owns the <li> ids (useId-prefixed), so #matrix/#ai live
+              here and are pinned to their stages' heights in CSS. */}
+          <span id="matrix" className="journey-anchor" />
+          <span id="ai" className="journey-anchor journey-anchor--step-2" />
         </div>
       </section>
 
-      {/* COLORED BAND 1 — peach: Flipped classroom */}
+      {/* COLORED BAND 1 — peach: Flipped classroom (stage-one demo,
+          markup untouched from wave 1.5; this scene only owns its
+          below-fold rendering cost in landing-journey.css). */}
       <section id="flipped" className="band band-peach">
         <div className="marketing-container band-split">
           <RevealCssClass as="div">

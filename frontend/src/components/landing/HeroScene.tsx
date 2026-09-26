@@ -1,19 +1,33 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { ArrowLeft, Brain, Check, GraduationCap } from 'lucide-react';
 import { Icon } from '../Icon';
 import { RevealCssClass } from '../../hooks/useReveal';
+import { ConstellationCanvas, MaskReveal } from '../motion';
+import '../../styles/landing-hero.css';
 
 /**
- * HeroScene — the landing's opening act.
+ * HeroScene — the landing's signature opening act, «مدارك تتوسّع».
  *
- * Wave-1.5 extraction: a pure move of the hero markup + its three
- * hero-local effects (spotlight, is-past pause, mockup parallax) out
- * of LandingPage — behavior-identical. The immersive redesign
- * (wave 2) rebuilds the composition here — asymmetric RTL diagonal,
- * MaskReveal title, ConstellationCanvas ambient — while keeping the
- * #top anchor, the CTA/colleges-trigger behaviors, and the real
- * dashboard mockup (2× capture of the seeded student dashboard).
+ * Wave-2 immersive rebuild of the wave-1.5 extraction:
+ * · LIVE SCENE — ConstellationCanvas (copper knowledge nodes on three
+ *   orbital rings around an off-center core) mounted as an absolute
+ *   layer behind all text, over a calm --journey-glow wash and three
+ *   faint static ring outlines that keep the "orbits" reading even if
+ *   the canvas never paints. Pointer-transparent, aria-hidden, zero
+ *   layout impact (hero is above the fold — no content-visibility).
+ * · ASYMMETRIC RTL DIAGONAL — eyebrow+title cluster anchors
+ *   inline-start in the upper third; subtitle+CTA block anchors
+ *   inline-end a step lower (named grid areas, ≥921px only; below
+ *   that the centered column from landing.css stands back up).
+ * · TITLE — word-mask reveal (MaskReveal, never char-split), the
+ *   exact same copy, «الذكيّ» carrying the <em> accent and a single
+ *   copper period closing the sentence (reference principle #6).
+ * · CTA CRAFT — the three CTAs keep their behaviors; the primary one
+ *   rolls its label on hover/focus (principle #7, CSS-only).
+ * · KEPT — the three hero-local effects (cursor spotlight, is-past
+ *   ambient pause, mockup parallax), the #top anchor, the real
+ *   dashboard mockup + Oasis badge + micro-tagline row.
  */
 export function HeroScene(props: {
   collegesCount: number;
@@ -94,47 +108,97 @@ export function HeroScene(props: {
   }, []);
 
   return (
-    <section ref={heroRef} id="top" className="marketing-container landing-hero">
-      <div className="landing-hero-scene" aria-hidden="true">
-        {/* Illustration slot — wave 2 replaces with ConstellationCanvas. */}
+    <section
+      ref={heroRef}
+      id="top"
+      className="marketing-container landing-hero landing-hero-diagonal"
+    >
+      {/* ── Live scene — orbits, wash and static fallback rings.
+          Decorative as a whole; behind every content act; never
+          intercepts a pointer (see landing-hero.css §1). ─────────── */}
+      <div className="hero-scene" aria-hidden="true">
+        <div className="hero-scene-glow" />
+        <div className="hero-orbits">
+          <span className="hero-orbit hero-orbit-1" />
+          <span className="hero-orbit hero-orbit-2" />
+          <span className="hero-orbit hero-orbit-3" />
+        </div>
+        <ConstellationCanvas hostRef={heroRef} className="hero-constellation" />
       </div>
-      <RevealCssClass as="span" className="landing-hero-eyebrow">
-        <strong>جديد</strong>
-        المساعد الأكاديمي <bdi>«Oasis»</bdi> متاح الآن
-        <Icon icon={ArrowLeft} size={12} />
-      </RevealCssClass>
-      <RevealCssClass as="h1" className="landing-title" delay={1}>
-        <span className="word">منصّة</span>{' '}
-        <span className="word"><em>التعليم</em></span>{' '}
-        <span className="word">الذكيّ</span>
-        <br />
-        <span className="word">لجامعة</span>{' '}
-        <span className="word landing-title-highlight">الزّاوية</span>
-      </RevealCssClass>
-      <RevealCssClass as="p" className="landing-subtitle" delay={2}>
-        مساحة عمل أكاديمية واحدة تُمكّن الطالب والأستاذ والإدارة وضمان الجودة
-        من إدارة المحاضرات، البحوث، الاختبارات والتقييم، بهدوء وسهولة.
-      </RevealCssClass>
-      <RevealCssClass as="div" className="landing-cta-row" delay={3}>
-        <Link to="/auth" className="btn primary xl">
-          أنشئ حسابك الجامعي
-          <Icon icon={ArrowLeft} size={16} />
-        </Link>
-        <a href="#features" className="btn outline xl">شاهد كيف تعمل</a>
-        <button
-          type="button"
-          className="btn ghost xl landing-colleges-trigger"
-          onClick={props.onOpenColleges}
-          aria-haspopup="dialog"
-          aria-expanded={props.collegesOpen}
-        >
-          <Icon icon={GraduationCap} size={16} />
-          <span>تصفّح الكلّيّات</span>
-          <span className="landing-colleges-trigger-badge">{props.collegesCount}</span>
-        </button>
-      </RevealCssClass>
 
-      <RevealCssClass as="div" delay={5}>
+      {/* ── Upper act — eyebrow + title, anchored inline-start ───── */}
+      <div className="hero-head">
+        <RevealCssClass as="span" className="landing-hero-eyebrow">
+          <strong>جديد</strong>
+          المساعد الأكاديمي <bdi>«Oasis»</bdi> متاح الآن
+          <Icon icon={ArrowLeft} size={12} />
+        </RevealCssClass>
+
+        {/* Word-mask title — Arabic words are masked whole (never
+            split per character). Per-word MaskReveal instances carry
+            the stagger explicitly so the <em> accent and the copper
+            period can live inside the same masked flow. The period
+            rides motion.css's documented mask contract (data-mask-word
+            + --mask-delay custom property) so it rises WITH the last
+            word instead of floating before it. */}
+        <h1 className="landing-title landing-title-mask">
+          <MaskReveal as="span" delay={0}>منصّة</MaskReveal>{' '}
+          <MaskReveal as="span" delay={60}>التعليم</MaskReveal>{' '}
+          <em>
+            <MaskReveal as="span" delay={120}>الذكيّ</MaskReveal>
+          </em>{' '}
+          <br />
+          <MaskReveal as="span" delay={180}>لجامعة</MaskReveal>{' '}
+          <MaskReveal as="span" delay={240}>الزّاوية</MaskReveal>
+          <span
+            className="landing-title-period"
+            aria-hidden="true"
+            data-mask-word="true"
+            style={
+              { '--mask-delay': 'calc(5 * var(--motion-stagger-step))' } as CSSProperties
+            }
+          >
+            <span data-mask-word-inner="true">.</span>
+          </span>
+        </h1>
+      </div>
+
+      {/* ── Lower act — subtitle + CTAs, anchored inline-end (the
+          diagonal's second step). Collapses into the centered column
+          at ≤920px. ─────────────────────────────────────────────── */}
+      <div className="hero-lead">
+        <RevealCssClass as="p" className="landing-subtitle" delay={2}>
+          مساحة عمل أكاديمية واحدة تُمكّن الطالب والأستاذ والإدارة وضمان الجودة
+          من إدارة المحاضرات، البحوث، الاختبارات والتقييم، بهدوء وسهولة.
+        </RevealCssClass>
+        <RevealCssClass as="div" className="landing-cta-row" delay={3}>
+          {/* Primary CTA — label-roll micro-interaction: the visible
+              label translates up while an aria-hidden duplicate rolls
+              in from below (CSS-only, reduced-motion-safe). */}
+          <Link to="/auth" className="btn primary xl" data-labelroll="true">
+            <span className="labelroll">
+              <span className="labelroll-text">أنشئ حسابك الجامعي</span>
+              <span className="labelroll-text" aria-hidden="true">أنشئ حسابك الجامعي</span>
+            </span>
+            <Icon icon={ArrowLeft} size={16} />
+          </Link>
+          <a href="#features" className="btn outline xl">شاهد كيف تعمل</a>
+          <button
+            type="button"
+            className="btn ghost xl landing-colleges-trigger"
+            onClick={props.onOpenColleges}
+            aria-haspopup="dialog"
+            aria-expanded={props.collegesOpen}
+          >
+            <Icon icon={GraduationCap} size={16} />
+            <span>تصفّح الكلّيّات</span>
+            <span className="landing-colleges-trigger-badge">{props.collegesCount}</span>
+          </button>
+        </RevealCssClass>
+      </div>
+
+      {/* ── Bottom act — mockup + micro-taglines, full width ─────── */}
+      <RevealCssClass as="div" className="hero-act" delay={5}>
         <div className="landing-mockup">
           <div className="landing-mockup-frame">
             <div className="landing-mockup-chrome">

@@ -20,6 +20,7 @@ import { HeroScene } from '../components/landing/HeroScene';
 import { KnowledgeJourney } from '../components/landing/KnowledgeJourney';
 import { BentoScene } from '../components/landing/BentoScene';
 import { CloseScene } from '../components/landing/CloseScene';
+import { TickerScene } from '../components/landing/TickerScene';
 // D14 CSS split (13-17): landing.css is this page's own sheet; colleges.css
 // rides here for the .landing-colleges-trigger + .colleges-popover surfaces
 // (CollegesPopover below) and lands in the chunk shared with its other lazy
@@ -331,21 +332,10 @@ export default function LandingPage() {
         collegesOpen={collegesOpen}
       />
 
-      {/* Logo strip */}
-      <section className="marketing-container landing-logos" aria-label="الشركاء الأكاديميون">
-        <div className="landing-logos-eyebrow">معتمدة من</div>
-        {/* 5-B2 (P1-2/P2-7): quote-fade — the quiet credibility register
-            before the campus peak; a calm fade (no rise) so the row stops
-            reading as glued-on after the hero's theatrics. */}
-        <SectionAccent kind="quote-fade" as="div" className="landing-logos-grid">
-          <div className="landing-logo">جامعة الزاوية</div>
-          <div className="landing-logo">وزارة التعليم العالي</div>
-          <div className="landing-logo">قطاع ضمان الجودة</div>
-          <div className="landing-logo">مكتب البحوث</div>
-          <div className="landing-logo">مركز التعليم الذكي</div>
-          <div className="landing-logo">عمادة الطلاب</div>
-        </SectionAccent>
-      </section>
+      {/* Immersive wave 2 — the Arabic facts ticker replaces the static
+          logos strip (same real facts, marquee presentation; the
+          credibility register now moves). */}
+      <TickerScene />
 
       {/* University facts — straight from zu.edu.ly */}
       <section className="marketing-container">
@@ -420,8 +410,10 @@ export default function LandingPage() {
           sequential scroll-scrubbed learning-path timeline). */}
       <KnowledgeJourney />
 
-      {/* COLORED BAND 2 — lavender: AI assistant */}
-      <section id="ai" className="band band-lavender">
+      {/* COLORED BAND 2 — lavender: AI assistant deep-dive. The #ai
+          anchor lives on the journey timeline's stage م-٠٢ (wave 2);
+          this band keeps its content without the duplicate id. */}
+      <section className="band band-lavender">
         <div className="marketing-container band-split">
           <RevealCssClass as="div" className="band-visual">
             {/* Chat mockup — de-inlined to .landing-ai-* classes in
