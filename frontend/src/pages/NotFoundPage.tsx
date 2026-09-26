@@ -13,8 +13,10 @@ import { Link } from 'react-router-dom';
 import { Building2, Home } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { Illustration } from '../components/Illustration';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function NotFoundPage() {
+  usePageTitle('الصفحة غير موجودة');
   return (
     <main className="nf-shell">
       <div className="nf-scene">

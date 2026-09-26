@@ -1,0 +1,144 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — Landing ticker scene («الشريط», immersive plan §6 scene 2)
+   Full-bleed Arabic facts marquee: one continuous CSS translate over a
+   duplicated track, copper diamond separators, hairline banding, no
+   fill. Imported by components/landing/TickerScene.tsx (landing chunk).
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  .ticker-scene {
+    /* hairline top/bottom banding only — NO background fill (the strip
+       is quiet chrome between the hero and the facts row). --rule IS
+       the semantic neutral-200 hairline (remaps with the theme). */
+    border-block: 1px solid var(--rule);
+    padding-block: var(--sp-3);
+    /* the strip is a <section>: LandingPage's offscreen observer tags
+       it with [data-offscreen] (landing.css overrides block pauses the
+       loop below); also guards the track's sub-pixel spill. */
+    overflow: clip;
+  }
+
+  /* the clip window — one line tall, full-bleed */
+  .ticker-clip {
+    overflow: clip;
+  }
+
+  /* ── The loop ─────────────────────────────────────────────────────
+     DIRECTION PROOF (why calc(var(--motion-direction) * -50%) is
+     provably correct in RTL):
+
+     RTL inline-start = RIGHT; a width:max-content block overflowing
+     its parent spills toward the LEFT, so the viewport shows the
+     FIRST copy (the rightmost <ul>). Arabic marquees must scroll in
+     the READING direction — new items enter from the LEFT edge
+     (inline-end) and travel right — so the track translates
+     0 → +50% (one copy width) in RTL, and 0 → −50% in LTR (the
+     classic leftward marquee, new items entering from the right).
+
+     --motion-direction is +1 (LTR) / −1 ([dir=rtl]), so
+     translateX(calc(var(--motion-direction) * -50%)) yields −50% in
+     LTR and +50% in RTL — one expression, both directions correct.
+
+     SEAMLESSNESS PROOF: the track holds EXACTLY two identical <ul>s
+     with NO gap between them (item spacing lives inside each <li> as
+     padding-inline), so one copy ≡ precisely 50% of the track. At the
+     loop's end the duplicate occupies the exact pixels the first copy
+     started on — the reset to 0 is invisible. Any inter-copy gap or
+     track-level column-gap would break that equality. */
+  .ticker-track {
+    display: flex;
+    inline-size: max-content;
+    will-change: transform;
+    /* ambient-scene band (22s/loop): the slowest rung of the ambient
+       ladder — calm, steady, never attention-grabbing. Constant speed
+       consumes the --ease-linear token (named `linear` is gated). */
+    animation: ticker-marquee-scroll
+      var(--motion-duration-ambient-scene)
+      var(--ease-linear)
+      infinite;
+  }
+
+  @keyframes ticker-marquee-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(var(--motion-direction) * -50%)); }
+  }
+
+  .ticker-list {
+    display: flex;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding-inline: var(--sp-4);
+    white-space: nowrap;
+    /* label-size type role (~13px register); letter-spacing stays
+       normal — tracking breaks Arabic cursive joins (ruling #2). */
+    font-size: var(--type-label-size);
+    font-weight: var(--type-label-weight);
+    line-height: var(--type-label-line-height);
+    color: var(--journey-ticker-ink);
+  }
+
+  /* copper diamond separator — one per fact, at the inline-start of
+     its item, so the strip reads «◆ fact ◆ fact …» with the diamonds
+     doubling as the item rhythm. --journey-ticker-sep = --accent in
+     both themes (3.65:1 light / 7.87:1 dark — non-text floor). */
+  .ticker-item::before {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    flex-shrink: 0;
+    transform: rotate(45deg);
+    /* micro-radius softens the rotated square's points */
+    border-radius: 1px;
+    background: var(--journey-ticker-sep);
+    margin-inline-end: var(--sp-3);
+  }
+
+  /* readability pause — hovering the strip (or tabbing into it) halts
+     the loop so a fact can actually be read */
+  .ticker-scene:hover .ticker-track,
+  .ticker-scene:focus-within .ticker-track {
+    animation-play-state: paused;
+  }
+
+  /* ── Reduced motion (guardrail #6 off-switch) ─────────────────────
+     The marquee stops and becomes a static wrapped row: the duplicate
+     list is dropped entirely, the primary list wraps (nothing cut
+     off) and centers. The strip keeps its hairlines and ink. */
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+      /* release max-content so the single list can wrap inside the
+         clip instead of overflowing it */
+      inline-size: auto;
+      display: block;
+    }
+    .ticker-list {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .ticker-list[aria-hidden='true'] {
+      display: none;
+    }
+  }
+}
+
+@layer overrides {
+  /* Offscreen pause (house pattern from landing.css's overrides
+     block): LandingPage's observer tags every fully-out-of-view
+     <main> section with [data-offscreen]; the infinite loop halts
+     (animation-play-state only — it resumes mid-keyframe when the
+     strip re-enters). Riding the top layer rung guarantees the
+     pages-layer animation shorthand can never out-rank the pause. */
+  .ticker-scene[data-offscreen] .ticker-track {
+    animation-play-state: paused;
+  }
+}

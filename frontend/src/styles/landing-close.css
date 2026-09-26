@@ -1,0 +1,236 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — Landing close scene («الختام», immersive plan §6 scene 7)
+   The giant cropped «مدارك» wordmark above a calm CTA row on the dark
+   band. Imported by components/landing/CloseScene.tsx (landing chunk).
+
+   The band keeps landing.css's .band/.band-dark grounds (which flip
+   WITH the theme: light = ink band, dark = cream band) and the
+   band-scoped focus ring this sheet must not fight — only the close's
+   own grammar lives here.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── The band ─────────────────────────────────────────────────────
+     .band supplies padding-block (wide) — not restated here. */
+  .close-scene {
+    position: relative;   /* containing block for the glow layer */
+    overflow: clip;       /* the wordmark crop guard */
+    text-align: center;
+    /* below-fold scene: skip rendering until near the viewport. The
+       intrinsic estimate covers band padding + wordmark + CTA stack at
+       desktop scale (mobile runs ~200px shorter — `auto` adopts the
+       real size once rendered, so the scrollbar never jumps twice). */
+    content-visibility: auto;
+    /* imm-4-visualqa P1-2: measured 985px at 1440w once rendered; the
+     `auto` keyword locks realized size after first render. */
+    contain-intrinsic-size: auto 985px;
+  }
+
+  /* The one sanctioned decoration: a quiet copper radial behind the
+     wordmark. --journey-glow is a 10%/12% copper ambient wash paired
+     to the theme; on band-dark's inverted grounds it reads as lit air,
+     not a stain. Decorative — aria-hidden in the TSX. */
+  .close-glow {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    block-size: min(72vh, 620px);
+    background: radial-gradient(
+      ellipse 62% 100% at 50% 12%,
+      var(--journey-glow),
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
+  /* content paints above the glow (later in DOM + positioned) */
+  .close-inner { position: relative; }
+
+  /* ── The wordmark — the hero of the act ─────────────────────────── */
+  .close-wordmark {
+    display: block;
+    margin-inline: auto;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    /* giant display scale (plan §7's --wordmark-size logic authored
+       inline — tokens.css is frozen this wave; the clamp values are
+       the brief's own numbers) */
+    font-size: clamp(72px, 16vw, 240px);
+    /* letter-spacing stays 0: «مدارك» is connected Arabic script and
+       tracking splits the cursive joins (platform ruling #2 — the
+       same reason --type-display-letter-spacing is normalized to 0).
+       The brief's "slightly tightened" intent is carried by weight +
+       scale instead. */
+    line-height: 1;
+    /* THE CROP — the confident cropped-wordmark close. The frame is
+       exactly one em (the line box); the wordmark's descender area is
+       allowed to bleed past it and is cut by the clip.
+       Metric proof (IBM Plex Sans Arabic 700, parsed from the shipped
+       woff2): «مدارك» ink spans −0.304em…+0.741em around the baseline.
+       With line-height 1 the baseline lands 0.76–0.84em from the
+       frame top across engine metric choices (hhea 1085/415 vs usWin
+       1128/601 per 1000upm), so the frame cuts ~0.07–0.14em (≈8–14%
+       of the em) off the descender tails of م/ر while every ascender
+       stays inside. line-height 1 is a deliberate instrument on this
+       decorative single word (aria-hidden) — not a reading-text
+       leading choice. */
+    block-size: 1em;
+    overflow: clip;
+    /* Copper keyed to the band's own ground — the house two-stop
+       recipe (.landing-final-cta-title em, landing.css): raw --accent
+       measures 4.6:1 on the light-theme ink band but only 1.87:1 on
+       the dark-theme cream band (band-dark flips WITH the theme), so
+       it cannot be the wordmark's ink alone. Mixing 60% accent with
+       40% of the band's own ink keeps a true copper that clears the
+       3:1 display floor in BOTH themes (≈7:1 light / ≈3.2:1 dark). */
+    color: color-mix(in oklab, var(--accent) 60%, var(--neutral-50));
+    /* air to the title below: sp-6 above it vs the lede's sp-5 below
+       the title — strictly more above the heading (craft floor). The
+       cropped frame edge is what the eye measures, so the gap stays
+       tight despite the baseline letters ending higher. */
+    margin-block-end: var(--sp-6);
+  }
+
+  /* ── The CTA stack — calm, the wordmark is the hero ─────────────── */
+  .close-title {
+    font-family: var(--font-display);
+    /* demoted from the display role so the WORDMARK owns the act
+       (~24–28px per brief) */
+    font-size: clamp(22px, 2.2vw, 28px);
+    font-weight: var(--fw-bold);
+    line-height: var(--type-headline-line-height);
+    text-wrap: balance;
+    color: var(--neutral-50);
+    max-inline-size: 24ch;
+    margin-inline: auto;
+    /* strictly more air above the heading than below it (craft
+       floor); the wordmark's margin-block-end sets the above */
+  }
+  .close-title em {
+    font-style: normal;
+    font-weight: var(--fw-black);
+    /* same two-stop copper recipe as the wordmark — ≥3:1 at 28px bold
+       (large-text) in both themes, the band's established accent voice */
+    color: color-mix(in oklab, var(--accent) 60%, var(--neutral-50));
+  }
+
+  .close-lede {
+    font-size: var(--type-body-size-lg);
+    line-height: var(--type-body-line-height);
+    text-wrap: pretty;
+    /* band's own 82/18 ink pair (≈10.7:1 light / ≈10.3:1 dark — the
+       documented .landing-final-cta-lede mix) */
+    color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
+    max-inline-size: 56ch;
+    margin-inline: auto;
+    margin-block-start: var(--sp-5);
+  }
+
+  .close-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-3);
+    margin-block-start: var(--sp-8);
+  }
+
+  /* ── Buttons + label roll ───────────────────────────────────────── */
+  .close-cta {
+    /* 52px ≥ the 44px touch floor */
+    min-block-size: 52px;
+    padding-inline: var(--sp-7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    background: var(--accent);
+    color: var(--accent-fg);
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      transform var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .close-cta:hover {
+    background: var(--accent-hover);
+    color: var(--accent-fg);
+    transform: translateY(-2px);
+  }
+  /* light-theme hover brightens the copper instead of darkening it —
+     the documented WCAG fix from .landing-final-cta-btn:hover
+     (--accent-hover's 3.47:1 → 6.1:1 with the light --accent-fg) */
+  :root:not([data-theme='dark']) .close-cta:not(.ghost):hover {
+    background: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
+  }
+  .close-cta:active {
+    transform: translateY(0);
+  }
+
+  .close-cta.ghost {
+    background: transparent;
+    /* the band's own ink pair keys the ghost (var(--text) is the band
+       ground — 1.00:1 in both themes); border at the 55% stop reads as
+       an intentional outline (≈5.9:1 composited, documented) */
+    color: var(--neutral-50);
+    border: 1px solid color-mix(in oklab, var(--neutral-50) 55%, transparent);
+  }
+  .close-cta.ghost:hover {
+    background: color-mix(in oklab, var(--neutral-50) 12%, transparent);
+    border-color: color-mix(in oklab, var(--neutral-50) 78%, transparent);
+    color: var(--neutral-50);
+  }
+
+  /* Label roll — the vertical hover micro-interaction on both close
+     CTAs. Vertical translate is direction-neutral by construction
+     (no X axis, nothing to mirror in RTL). Structure: .labelroll >
+     .labelroll-face (in flow) + .labelroll-flip (absolutely placed
+     one line below, clipped until hover). Both faces carry the same
+     text; the flip is aria-hidden so the accessible name is read
+     once. Durations ride tokens — motion.css's reduced-motion belt
+     zeroes them, collapsing the roll to an instant swap (the faces
+     are identical, so nothing is lost). */
+  .labelroll {
+    position: relative;   /* clip context + containing block for the flip */
+    display: inline-block;
+    overflow: clip;
+    /* the frame is exactly one button line (the label role's own
+       line-height) */
+    line-height: var(--type-label-line-height);
+  }
+  .labelroll-face,
+  .labelroll-flip {
+    display: block;
+    white-space: nowrap;
+    transition: transform var(--motion-duration-short) var(--motion-ease-emphasized);
+  }
+  .labelroll-flip {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    text-align: center;
+  }
+  .close-cta:hover .labelroll-face,
+  .close-cta:focus-visible .labelroll-face,
+  .close-cta:hover .labelroll-flip,
+  .close-cta:focus-visible .labelroll-flip {
+    /* both faces shift up by exactly one line: the face exits through
+       the clip, the flip takes its place */
+    transform: translateY(-100%);
+  }
+
+  /* ── The quiet meta line ────────────────────────────────────────── */
+  .close-meta {
+    margin-block-start: var(--sp-6);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--type-label-weight);
+    /* the band's own 82/18 ink pair (≈10:1 in both themes) */
+    color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
+  }
+}

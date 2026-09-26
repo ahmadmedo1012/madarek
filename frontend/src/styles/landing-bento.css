@@ -1,0 +1,136 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — Landing bento mosaic · coded-metadata voice (immersive 2)
+   Owned by components/landing/BentoScene.tsx (task imm-3-bento).
+
+   landing.css keeps the base anatomy (.landing-bento-grid / -card /
+   band-* / sticker / magnetic glow). This sheet layers ONLY the wave-2
+   scene on top, scoped through the .landing-bento-scene wrapper: every
+   rule out-specifies the shared sheet's (0,1,0)–(0,2,0) selectors, so
+   chunk CSS order never decides the outcome (both sheets write into
+   @layer pages, and this component's import evaluates BEFORE
+   LandingPage's landing.css import — file order alone is not a
+   contract here). No !important anywhere.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── Scene efficiency (redesign plan §10) ─────────────────────────
+     Below-fold scene: rendering is skipped until it approaches the
+     viewport. 800px estimates head + three mosaic rows; the `auto`
+     keyword swaps in the real height after first paint. Headless-
+     Chromium-verified: children (the #exams anchor the journey rail
+     samples each scroll frame) keep correct geometry while skipped. */
+  .landing-bento-scene {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
+  }
+
+  /* ── Asymmetric mosaic ─────────────────────────────────────────────
+     The flat 3+3 / 2+2+2 span grid read as a symmetric table. Re-
+     grammared as ONE confident 2:1 split: البحوث (the act's subject)
+     is the feature tile — wide × two rows at the inline-start — with
+     a rail of three compact tiles (schedule → exams → achievements)
+     at the inline-end, and labs closing wide under the feature. Never
+     three equal columns. template-areas flips automatically in RTL
+     (first area column = inline-start). */
+  .landing-bento-scene .landing-bento-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-areas:
+      "research research research research schedule schedule"
+      "research research research research exams    exams"
+      "labs     labs     labs     labs     achieve  achieve";
+    /* Tracks implied by template-areas are EXPLICIT tracks — the base
+       sheet's grid-auto-rows floor only sizes implicit ones — so the
+       same 180px floor is restated here. */
+    grid-template-rows: repeat(3, minmax(180px, auto));
+  }
+  .landing-bento-scene .bento-research     { grid-area: research; }
+  .landing-bento-scene .bento-schedule     { grid-area: schedule; }
+  .landing-bento-scene .bento-exams        { grid-area: exams; }
+  .landing-bento-scene .bento-labs         { grid-area: labs; }
+  .landing-bento-scene .bento-achievements { grid-area: achieve; }
+
+  /* Feature tile — البحوث والمكتبة carries the act: one headline step
+     up, body step to lg with a capped measure. Compact tiles keep the
+     inherited roles. */
+  .landing-bento-scene .bento-research .landing-bento-title {
+    font-size: var(--type-headline-size-lg);
+  }
+  .landing-bento-scene .bento-research .landing-bento-desc {
+    font-size: var(--type-body-size-lg);
+    max-inline-size: 56ch;
+  }
+
+  /* ── Coded metadata voice — ( ن-٠١ )…( ن-٠٥ ) ──────────────────────
+     Terminal-metadata register: mono face, metric-role features, 12px
+     (the plan's Arabic floor for mono badges), one quiet step under
+     the card ink. Sits between the sticker and the title; negative
+     margins pull the uniform sp-3 card gap to 8px / 4px so the code
+     reads as the title's index, never as a fourth paragraph. */
+  .landing-bento-scene .bento-meta {
+    /* Genuinely new composite value (token-guardrail note): a mixed-
+       script mono stack. The self-hosted IBM Plex Mono is latin-only,
+       so the Arabic letter + Arabic-Indic digits (U+0660–U+0669) must
+       resolve to the Arabic face — placed BEFORE the generic mono on
+       purpose, because platform mono fonts (Courier New on Windows)
+       do carry Arabic glyphs and would otherwise steal them. */
+    font-family: 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, monospace;
+    font-size: var(--type-label-size-sm); /* 12px — mono-badge floor */
+    font-weight: var(--fw-medium);
+    line-height: var(--type-metric-line-height);
+    /* Metric-role tracking is safe on this artifact: ن is isolated by
+       the hyphen and Arabic-Indic digits never join — ruling #2 guards
+       running Arabic prose, not coded labels. */
+    letter-spacing: var(--type-metric-letter-spacing);
+    font-feature-settings: var(--type-metric-feature-settings);
+    color: inherit;
+    /* Muted, never competing: 0.85 keeps ≥ 4.5:1 on every band in
+       both themes (worst case yellow-deep on yellow-bg, light theme:
+       4.87:1; the rest measure 5.4–6.3:1, dark theme ≥ 8:1). */
+    opacity: 0.85;
+    margin-block: calc(var(--sp-1) * -1) calc(var(--sp-2) * -1);
+  }
+
+  /* ── Hover / focus lift ────────────────────────────────────────────
+     The magnetic glow stays exactly as the shared sheets author it
+     (LandingPage sets --mx/--my; polish.css paints the cursor
+     spotlight ::after; landing.css the currentColor leak). This only
+     re-voices the lift — −2px instead of the base −3px — and extends
+     it to :focus-visible; the spotlight rule below mirrors polish's
+     hover wiring so a focused tile can never lift without its glow.
+     The transition stays the base card's tokenized transform
+     transition (var(--t-base) var(--ease)). */
+  .landing-bento-scene .landing-bento-card:hover,
+  .landing-bento-scene .landing-bento-card:focus-visible {
+    transform: translateY(-2px);
+  }
+  .landing-bento-scene .landing-bento-card:focus-visible::after {
+    opacity: 1;
+  }
+
+  /* ── Reduced motion: feedback flattens to color-only ─────────────
+     The lift is removed; the glow (opacity/color paint) remains the
+     hover signal. Same selector rank as the rule above, later in the
+     file — no !important needed. */
+  @media (prefers-reduced-motion: reduce) {
+    .landing-bento-scene .landing-bento-card:hover,
+    .landing-bento-scene .landing-bento-card:focus-visible {
+      transform: none;
+    }
+  }
+
+  /* ── ≤920px: back to the shared sheet's single column ─────────────
+     The desktop wiring above is (0,2,0), so it would out-specify
+     landing.css's (0,1,0) mobile switch — the reset lives here, in
+     the same sheet that raised the stakes. */
+  @media (max-width: 920px) {
+    .landing-bento-scene .landing-bento-grid {
+      grid-template-columns: 1fr;
+      grid-template-areas: none;
+      grid-template-rows: none;
+    }
+    .landing-bento-scene .landing-bento-grid > .landing-bento-card {
+      grid-area: auto;
+    }
+  }
+}

@@ -1,0 +1,224 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — Landing hero scene, wave-2 immersive rebuild
+   «مدارك تتوسّع» — the opening act of the landing journey.
+
+   Composition (docs/immersive-redesign-plan.md §6, ref-analysis §5):
+   · Asymmetric RTL diagonal — the eyebrow+title cluster anchors
+     inline-start in the upper third, the subtitle+CTA block anchors
+     inline-end one step lower, the mockup act stays full-width
+     beneath. The diagonal exists only ≥921px; below that the original
+     centered column from landing.css takes over unchanged.
+   · A live scene layer — ConstellationCanvas copper knowledge orbits
+     above a calm --journey-glow wash and three faint static ring
+     outlines (the always-on fallback that still reads "orbits" if
+     the canvas never paints).
+   · CTA craft — the primary button's label rolls up on hover/focus
+     (principle #7: feedback on every channel).
+
+   Cascade note: this sheet is imported by HeroScene (landing chunk),
+   which loads BEFORE landing.css in module order — so every rule that
+   overrides a landing.css declaration compounds .landing-hero-diagonal
+   (or .landing-hero) to win on specificity, never on source order.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · Live scene layer ────────────────────────────────────────
+     Absolutely-positioned, zero layout impact, pointer-transparent,
+     painted above the ::before/::after washes (z −2/−1) and below
+     every content act (z 1). Decorative — hidden from AT as a whole,
+     which also covers the glow, the rings and the canvas inside. */
+  .landing-hero .hero-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    /* decorative bleed (ring edges on short viewports) stays inside
+       the act — never spills into the campus band below */
+    overflow: clip;
+  }
+
+  /* Calm radial copper wash under the whole scene — the "horizon"
+     ambient the orbits float on. Anchored on the same off-center
+     point ConstellationCanvas uses for its core (inline-end third in
+     RTL), so wash, rings and nodes read as one system. */
+  .landing-hero .hero-scene-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 62% 55% at var(--hero-core-x, 34%) 46%,
+      var(--journey-glow),
+      transparent 72%
+    );
+  }
+  [dir="ltr"] .landing-hero .hero-scene-glow { --hero-core-x: 66%; }
+
+  /* Static orbit hints — always painted, faint by design. If the
+     canvas fails (no 2D context) the hero still reads as «مدارك
+     تتوسّع»: three copper ring outlines breathing around the core. */
+  .landing-hero .hero-orbits {
+    position: absolute;
+    /* a zero-size anchor point at the system core */
+    inline-size: 0;
+    block-size: 0;
+    inset-block-start: 46%;
+    inset-inline-end: 34%;
+  }
+  .landing-hero .hero-orbit {
+    --orbit-d: 40vmin;
+    position: absolute;
+    inline-size: var(--orbit-d);
+    block-size: var(--orbit-d);
+    /* center each ring on the anchor — logical offsets are symmetric
+       in both directions, so the math stays RTL-free */
+    inset-inline-start: calc(var(--orbit-d) / -2);
+    inset-block-start: calc(var(--orbit-d) / -2);
+    border: 1px solid var(--journey-line);
+    border-radius: 50%;
+  }
+  .landing-hero .hero-orbit-1 { --orbit-d: clamp(170px, 30vmin, 340px); opacity: 0.45; }
+  .landing-hero .hero-orbit-2 { --orbit-d: clamp(250px, 46vmin, 520px); opacity: 0.30; }
+  .landing-hero .hero-orbit-3 { --orbit-d: clamp(330px, 64vmin, 700px); opacity: 0.20; }
+
+  /* The live canvas rides above the wash + rings (DOM order) and
+     still owns zero layout and zero pointer surface. */
+  .landing-hero .hero-constellation {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .landing-hero .hero-constellation .constellation-canvas {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* Content acts always paint above the scene layer (a positioned
+     z:0 sibling would otherwise sit over in-flow text — CSS painting
+     order, Appendix E). Local paint-order, not a --z-* rung. */
+  .landing-hero .hero-head,
+  .landing-hero .hero-lead,
+  .landing-hero .hero-act {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 640px) {
+    /* phones keep the two inner hints only — the outer ring at 64vmin
+       is mostly clipped noise behind the centered column */
+    .landing-hero .hero-orbit-3 { display: none; }
+  }
+
+  /* ── 2 · Title — mask spacing + the single copper glyph ──────────
+     .landing-title keeps its size/typography from landing.css; this
+     modifier only tunes the word-mask choreography for display-mega
+     (a slightly deeper rise reads better at 48–104px) and carries the
+     accent period. Emphasis stays weight + ONE copper glyph — never
+     gradient text, never a glow (design bar). */
+  .landing-hero .landing-title-mask {
+    --mask-pad: 0.22em;
+  }
+  .landing-hero .landing-title-period {
+    color: var(--accent);
+    font-weight: inherit;
+  }
+  /* Returning-visitor calm (LandingPage's data-intro-seen contract —
+     the same pattern landing.css uses to calm polish's .word cascade):
+     from the second in-session visit the title lands instantly, no
+     word-mask cascade. Same @layer (pages) + the extra .landing
+     ancestor wins over motion.css's (0,3,0) mask selectors without
+     touching its file. */
+  .landing[data-intro-seen="true"] .landing-title [data-mask-word-inner],
+  .landing[data-intro-seen="true"] .landing-title [data-mask-reveal].in-view [data-mask-word-inner] {
+    animation: none;
+    transform: none;
+  }
+
+  /* ── 3 · CTA label-roll (principle #7) ───────────────────────────
+     The primary CTA's label translates up on hover/focus while a
+     duplicate slides in from below — pure CSS, transform-only,
+     direction-neutral (vertical), reduced-motion-safe. The track is
+     exactly one label tall; the duplicate parks one label below,
+     clipped by the track. */
+  .landing-hero [data-labelroll] .labelroll {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    /* labels stay centered inside the track so the roll is purely
+       vertical regardless of the hero's text-align */
+    text-align: center;
+  }
+  .landing-hero [data-labelroll] .labelroll-text {
+    display: block;
+    transition: transform var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .landing-hero [data-labelroll] .labelroll-text[aria-hidden="true"] {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+  }
+  .landing-hero [data-labelroll]:focus-visible .labelroll-text {
+    transform: translateY(-100%);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .landing-hero [data-labelroll]:hover .labelroll-text {
+      transform: translateY(-100%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* no roll — the button's plain color/shadow hover carries the
+       feedback (mission: reduced motion = pure color change) */
+    .landing-hero [data-labelroll] .labelroll-text {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  /* ── 4 · The asymmetric RTL diagonal (≥921px only) ───────────────
+     One grid, three named acts. The head anchors inline-start in the
+     upper third; the lead block anchors inline-end one step lower
+     (justify-self needs the grid — block layout has no such axis) —
+     a deliberate diagonal reading flow, not a centered stack. At
+     ≤920px every rule here stands down and landing.css's centered
+     column applies untouched. */
+  @media (min-width: 921px) {
+    .landing-hero.landing-hero-diagonal {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "head"
+        "lead"
+        "act";
+      text-align: start;
+    }
+    .landing-hero-diagonal .hero-head { grid-area: head; }
+    .landing-hero-diagonal .hero-lead {
+      grid-area: lead;
+      /* the inline-end anchor of the diagonal — sizes to its content
+         (subtitle cap 56ch + the CTA row) and hugs the end edge */
+      justify-self: end;
+      /* the vertical step that makes the flow read diagonal */
+      margin-block-start: clamp(var(--sp-5), 4vw, var(--sp-7));
+    }
+    .landing-hero-diagonal .hero-act {
+      grid-area: act;
+      /* the lower act keeps its centered caption row — the mockup is
+         margin-inline: auto and the micro-taglines stay centered
+         under it, exactly as the centered column renders them */
+      text-align: center;
+    }
+
+    /* landing.css centers these for the mobile column; the diagonal
+       re-anchors them (compound selectors beat the source-order tie) */
+    .landing-hero-diagonal .landing-title {
+      /* start margin 0, end margin auto — the block hugs inline-start */
+      margin-inline: 0 auto;
+    }
+    .landing-hero-diagonal .landing-subtitle {
+      margin-inline: 0;
+    }
+    .landing-hero-diagonal .landing-cta-row {
+      justify-content: flex-start;
+    }
+  }
+}

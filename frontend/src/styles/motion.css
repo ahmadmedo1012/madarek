@@ -451,4 +451,51 @@
       opacity: 1;
     }
   }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Word-mask reveal — <MaskReveal> primitive (immersive wave 1).
+     Words (NEVER characters — Arabic cursive joining) rise from below
+     an overflow mask. The mask carries vertical padding with matching
+     negative margin so Arabic descenders (س ج ي ن …) never clip at
+     rest. Stagger = DOM order; in RTL the first word sits rightmost,
+     so the cascade reads right→left with zero direction math.
+     `--mask-delay` is set per-word by the component (base + index ×
+     token step); delays are exempt from tokenization by policy
+     (choreography offsets — check-motion-tokens.sh §Policy notes).
+     ─────────────────────────────────────────────────────────────────── */
+  [data-mask-word] {
+    display: inline-block;
+    overflow: hidden;
+    /* Descender headroom: pad the clip box, reclaim the space in flow. */
+    padding-block: 0.16em;
+    margin-block: -0.16em;
+    vertical-align: top;
+  }
+
+  [data-mask-word-inner] {
+    display: inline-block;
+    transform: translateY(calc(115% + var(--mask-pad, 0.16em)));
+    will-change: transform;
+  }
+
+  [data-mask-reveal].in-view [data-mask-word-inner] {
+    animation: mask-word-rise var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: var(--mask-delay, 0ms);
+  }
+
+  @keyframes mask-word-rise {
+    from { transform: translateY(calc(115% + var(--mask-pad, 0.16em))); }
+    to   { transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-mask-word-inner],
+    [data-mask-reveal].in-view [data-mask-word-inner] {
+      animation: none;
+      transform: none;
+    }
+    [data-mask-word] {
+      overflow: visible;
+    }
+  }
 }
