@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LogOut, ChevronsLeft, ChevronsRight, X, Compass } from 'lucide-react';
 import { Icon } from '../Icon';
 import { BrandMark } from '../BrandMark';
@@ -144,7 +144,19 @@ export function Sidebar() {
 
   // Reflect collapse state on the shell so the grid track resizes.
   // Toggled on documentElement so any descendent (topbar, etc.) can read it.
-  useEffect(() => {
+  // 5-C3 (A9 P1-2 residual, live-measured): this ran in useEffect, so
+  // the FIRST shell paint rendered the .has-shell grid with the
+  // expanded default track (no attribute yet) and the attribute then
+  // animated the track 240px→64px AFTER paint — a cascade of
+  // layout-shift entries under the whole content column whenever the
+  // shell chunk resolved past the first frame (measured CLS up to
+  // 0.242 on /teacher/assignments, intermittent by chunk timing).
+  // useLayoutEffect lands the attribute before the browser ever
+  // paints the shell, so a returning user's persisted collapsed state
+  // applies from pixel one — exactly like the pre-paint theme script.
+  // User-initiated toggles still animate (the .has-shell transition
+  // is the sanctioned structural-resize exception, 5-C1).
+  useLayoutEffect(() => {
     const root = document.documentElement;
     if (sidebarCollapsed) root.setAttribute('data-sidebar-collapsed', '');
     else root.removeAttribute('data-sidebar-collapsed');

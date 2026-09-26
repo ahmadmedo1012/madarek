@@ -30,7 +30,10 @@
   font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
+  /* 5-C2 (A3 P3-8 dead-declaration sweep): letter-spacing -0.01em
+     removed — superseded by polish.css:1393 (ls normal, 21-c ruling
+     #2); the remaining declarations mirror the polish values (the
+     overrides layer owns the render), margin:0 stays unique-live. */
   margin: 0;
 }
 .notif-panel-actions { display: flex; align-items: center; gap: 4px; }
@@ -132,18 +135,21 @@
   gap: 2px;
 }
 .notif-item-title {
-  font-size: 13.5px;
   font-weight: 600;
   color: var(--text);
   line-height: 1.35;
-  letter-spacing: -0.005em;
+  /* 5-C2 (A3 P3-8 + ruling #2): font-size 13.5px + letter-spacing
+     -0.005em removed — size superseded by polish.css:1422 (13px), and
+     the tracking rendered -0.065px on Arabic titles (polish sets no
+     ls, so the pages-layer value was live, not dead). */
   /* Long titles wrap, never overflow */
   overflow-wrap: anywhere;
 }
 .notif-item-desc {
-  font-size: 12.5px;
   color: var(--text-muted);
   line-height: 1.45;
+  /* 5-C2 (A3 P3-8): font-size 12.5px removed — superseded by
+     polish.css:1428 (12px); the private px scale entry never rendered. */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -231,9 +237,10 @@
   background: transparent;
   color: var(--text-subtle);
   text-decoration: none;
-  font-size: 10.5px;
+  /* 5-C2 (A3 P3-8): font-size 10.5px + letter-spacing 0.01em removed —
+     dead since the label re-declares both on itself (.bottom-nav-label
+     is the item's only text; BottomNav.tsx renders icon + label spans). */
   font-weight: 600;
-  letter-spacing: 0.01em;
   border-radius: var(--r-lg);
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
@@ -280,12 +287,17 @@
 .bottom-nav-label {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.005em;
+  /* 5-C2 (A3 P2-5 / ruling #2): tracking removed (+0.055px rendered on
+     «الرئيسية») — no letter-spacing on Arabic, ever. */
+  letter-spacing: normal;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  line-height: 1;
+  /* 5-C2 (A3 P2-5): was 1.0 — Arabic descenders (ج/ي/ك tails) crowded
+     at 1.0 single-line; 1.3 gives the labels real descender room
+     (bar grows ~3px, well inside the 80px content clearance). */
+  line-height: 1.3;
   /* Tabular-nums via font feature is on globally; ensures any number
      in the label aligns. */
 }
@@ -295,13 +307,15 @@
   font-weight: 700;
 }
 
-/* On tighter phones the labels can be condensed — let them shrink instead
-   of overflow. With 5 items × 10.5 px text + 36 px icon, even at 320 px
-   viewport, each cell has ~62 px to play with. */
+/* On tighter phones the labels can be condensed — the icon and gaps
+   shrink instead of the type. 5-C2 (A3 P2-5): the old 10px label size
+   sat below the --fs-xxs 11px scale floor and under any sane Arabic
+   legibility floor — the label now holds 11px at every width and the
+   ≤360 band only buys back space via the smaller icon/padding.
+   (5 items × 11px labels + 32px icons still fit the 320px viewport.) */
 @media (max-width: 360px) {
   .bottom-nav { padding: 6px 6px max(8px, env(safe-area-inset-bottom)) 6px; gap: 2px; }
   .bottom-nav-icon { width: 32px; height: 26px; }
-  .bottom-nav-label { font-size: 10px; }
 }
 
 @media (max-width: 640px) {
@@ -349,6 +363,25 @@
   will-change: transform;
   animation: madarek-toast-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
 }
+
+/* Swipe visual tracking (5-C4, measured live): the entrance's `both`
+   fill keeps applying `transform: none` after it finishes, and
+   animation declarations outrank inline styles — the swipe's inline
+   translateX never painted (finger at −90px, computed transform
+   still identity). While a touch drag owns the card, data-dragging
+   suspends the animation; the active phase tracks the finger, the
+   release phase springs a cancelled swipe back. The state persists
+   after a cancelled swipe (removing it would REPLAY the entrance);
+   these rules sit BEFORE the closing rule so the equal-specificity
+   exit animation wins the tie when the toast finally dismisses. */
+.toast-stack .toast[data-dragging] { animation: none; }
+.toast-stack .toast[data-dragging][data-drag-phase='active'] { transition: none; }
+.toast-stack .toast[data-dragging][data-drag-phase='release'] {
+  /* --ease-spring-soft: the raw spring family (no semantic spring in
+     --motion-ease-*); a gentle overshoot fits a released toast. */
+  transition: transform var(--motion-duration-short) var(--ease-spring-soft);
+}
+
 .toast-stack .toast[data-closing="true"] {
   animation: madarek-toast-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
 }

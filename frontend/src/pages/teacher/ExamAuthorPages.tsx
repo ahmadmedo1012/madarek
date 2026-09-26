@@ -22,7 +22,7 @@
  * (useMyPermissions) — a holder of neither sees the honest
  * PermissionDeniedState, and a pure moderator lands on the queue tab.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle, Archive, BadgeCheck, Ban, BookOpen, CheckCircle2,
@@ -30,7 +30,7 @@ import {
   ListChecks, Plus, Search, Send, ShieldCheck, Target, Trash2, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Badge, Button, Card, Input, MetricCard, Tabs } from '../../components/primitives';
+import { Badge, Button, Card, FormField, Input, MetricCard, Tabs } from '../../components/primitives';
 import type { ThemeColor } from '../../components/primitives';
 import {
   DetailSkeleton, EmptyState, ErrorState, ListSkeleton, LoadingState,
@@ -835,12 +835,19 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
             noValidate
             style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
           >
-            <Field label="تصنيف السؤال" htmlFor="newq-category" error={errors.categoryId}>
+            {/* 5-C4: the empty-categories notice rides the hint slot
+                (single-child contract) — it stays announced via
+                aria-describedby alongside any validation error. */}
+            <Field
+              label="تصنيف السؤال"
+              htmlFor="newq-category"
+              error={errors.categoryId}
+              hint={categoriesEmpty ? 'تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم لإضافتها.' : undefined}
+            >
               <select
                 id="newq-category"
                 className="input"
                 value={draft.categoryId}
-                aria-invalid={!!errors.categoryId}
                 onChange={(e) => patch({ categoryId: e.target.value })}
                 disabled={categories.isPending || categoriesEmpty}
               >
@@ -859,9 +866,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                   </>
                 )}
               </select>
-              {categoriesEmpty && (
-                <span className="text-xs text-muted">تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم لإضافتها.</span>
-              )}
             </Field>
 
             <Field label="نوع السؤال" htmlFor="newq-type" hint="النوع يحدد شكل الإجابة وطريقة التصحيح">
@@ -884,7 +888,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 rows={3}
                 maxLength={2000}
                 placeholder="اكتب نص السؤال كما سيظهر للطالب…"
-                aria-invalid={!!errors.prompt}
                 style={{ resize: 'vertical', fontFamily: 'inherit' }}
                 value={draft.prompt}
                 onChange={(e) => patch({ prompt: e.target.value })}
@@ -950,7 +953,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                   dir="ltr"
                   value={draft.points}
                   error={!!errors.points}
-                  aria-invalid={!!errors.points}
                   onChange={(e) => patch({ points: e.target.value })}
                 />
               </Field>
@@ -1000,8 +1002,14 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** Labelled field scaffold — the modal-body rhythm the curriculum
- *  builders use (FormField), reading the platform's form-label class. */
+/** Labelled field scaffold — 5-C4 (A10 P2-3): delegates to the
+ *  platform FormField (primitives/Form.tsx), which completes the
+ *  association contract the local copy was missing — aria-invalid +
+ *  aria-describedby injected into the control (the errors re-announce
+ *  on re-focus, not only as a one-shot role=alert) — while the row
+ *  keeps its flex-1/min-width so the side-by-side pairs (points +
+ *  difficulty, duration + pass mark, open + close) share the row and
+ *  wrap at the same widths as before. */
 function Field({
   label,
   htmlFor,
@@ -1013,19 +1021,21 @@ function Field({
   htmlFor?: string;
   error?: string;
   hint?: string;
-  children: React.ReactNode;
+  /** A single control element — the shared primitive injects the id +
+   *  the aria wiring into it. */
+  children: ReactElement;
 }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, minWidth: 140 }}>
-      <label className="form-label" htmlFor={htmlFor}>{label}</label>
+    <FormField
+      label={label}
+      id={htmlFor}
+      error={error}
+      hint={hint}
+      className="flex-1"
+      style={{ minWidth: 140 }}
+    >
       {children}
-      {hint && !error && <span className="text-xs text-muted" style={{ margin: 0 }}>{hint}</span>}
-      {error && (
-        <span role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
-          {error}
-        </span>
-      )}
-    </div>
+    </FormField>
   );
 }
 
@@ -1231,7 +1241,6 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   id="tpl-scope"
                   className="input"
                   value={draft.scope}
-                  aria-invalid={!!errors.scope}
                   onChange={(e) => patch({ scope: e.target.value as TemplateDraftState['scope'] })}
                 >
                   <option value="offering">مقرّر من مقرّراتي</option>
@@ -1309,7 +1318,6 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   dir="ltr"
                   value={draft.durationMin}
                   error={!!errors.durationMin}
-                  aria-invalid={!!errors.durationMin}
                   onChange={(e) => patch({ durationMin: e.target.value })}
                 />
               </Field>
@@ -1325,7 +1333,6 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   dir="ltr"
                   value={draft.passingScore}
                   error={!!errors.passingScore}
-                  aria-invalid={!!errors.passingScore}
                   onChange={(e) => patch({ passingScore: e.target.value })}
                 />
               </Field>

@@ -912,8 +912,13 @@ export default function LandingPage() {
         <div className="marketing-container landing-final-cta">
           {/* 20-a P2-1: «ابدأ الآن» eyebrow + pulse dot dropped (7 removed)
               — the title, lede and actions carry the close on their own. */}
+          {/* 5-C2 (A3 P2-6): «بانتظارك» alone ended the 3-word title as a
+              single-word orphan line at 390px (balance can't rescue a
+              3-word title whose accent word is last). «في انتظارك» keeps
+              the meaning natural and guarantees a 2-word last line —
+              verified: [منصّتك الأكاديميّة] / [في انتظارك]. */}
           <h2 className="landing-final-cta-title">
-            منصّتك الأكاديميّة <em>بانتظارك</em>
+            منصّتك الأكاديميّة في <em>انتظارك</em>
           </h2>
           <p className="landing-final-cta-lede">
             سجِّل دخولك ببريدك الجامعيّ أو رقم قيدك للوصول إلى مقرَّراتك ومتابعة تقدُّمك الأكاديمي.

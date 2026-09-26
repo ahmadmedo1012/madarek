@@ -32,6 +32,17 @@
       --motion-duration-reveal:   80ms;
       --motion-duration-stat:     0ms;    /* counters snap to value */
       --motion-duration-skeleton: 0ms;    /* static block, no shimmer */
+      /* 5-C1 (A2 §1a): the ambient loop family joins the semantic
+         kill — ambient motion is decorative by definition, so under
+         reduced motion every loop on the ladder collapses (the
+         global belt in base.css backstops this at 0.01ms; owning the
+         kill here keeps the family belt-independent). */
+      --motion-duration-ambient-pulse:  0ms;
+      --motion-duration-ambient:        0ms;
+      --motion-duration-ambient-slow:   0ms;
+      --motion-duration-ambient-drift:  0ms;
+      --motion-duration-ambient-cinema: 0ms;
+      --motion-duration-ambient-scene:  0ms;
     }
   }
 }

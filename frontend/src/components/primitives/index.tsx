@@ -5,22 +5,25 @@ import type { LucideIcon } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../Icon';
 
-/* ─── Primitive inventory (wave 13-16 — zero-consumer inventory
-   documentation per WAVE-13-MAP, in the spirit of audit 11-e P2-1;
-   cf. the sibling note overlays/index.ts from wave 12-14).
-   Deliberate zero-consumer API surface — documented, not deleted:
-   - Button / Input / FormField (Form.tsx): no app consumers yet. They
-     are the canonical consumers of the .btn / .input token systems;
-     Button/Input loading contracts are pinned by motion.css
-     companions (.btn[data-loading] + .motion-spinner, .input-affix),
-     and FormField (21-b, A9 P2-4) carries the aria-invalid /
-     aria-describedby association contract the hand-rolled grade-modal
-     and curriculum forms were missing. Pages still hand-write
-     className="btn …"; new code should adopt these instead.
+/* ─── Primitive inventory (refreshed 5-C4 per audit A10 P3-8 — the
+   wave-13-16 list had gone stale; cf. the sibling note in
+   overlays/index.ts).
+   - FormField (Form.tsx): the association-contract field scaffold
+     (aria-invalid + aria-describedby injection, 21-b / A9 P2-4) —
+     consumers: the grade modal (TeacherPages), research review,
+     curriculum AuthoringModal, ExamAuthorPages' Field, and since 5-C4
+     the competitions + community composer forms. New labelled fields
+     should adopt it instead of hand-rolled label/error rows.
+   - Button / Input (Form.tsx): consumed by ExamAuthorPages (question
+     form). The rest of the app still hand-writes className="btn …" /
+     className="input" — the primitives remain the canonical consumers
+     of those token systems, with the loading contracts pinned by
+     motion.css companions (.btn[data-loading] + .motion-spinner,
+     .input-affix).
    - Pill's non-interactive branch: when `onClick` is omitted the pill
      renders a <span> so the primitive can never emit a fake control;
-     today's only consumer (LibraryPage category filter) always passes
-     onClick, so the span branch is platform robustness, not dead weight.
+     the LibraryPage category filter always passes onClick, so the
+     span branch is platform robustness, not dead weight.
    - PermissionDeniedState (States.tsx): no external consumers; it is
      rendered internally by ErrorState's 403 branch and exported for
      pages that KNOW they are rendering an authorization wall. */

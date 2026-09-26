@@ -98,6 +98,10 @@ export interface PendingSubmissionFeedRow {
   id: string;
   submittedAt: Date;
   status: SubmissionStatus;
+  /** Student's actual answer — 5-B6 P1-2: the grading modal renders the
+   * content it grades. Nullable: assignments may be file-only/text-only. */
+  textAnswer: string | null;
+  fileUrl: string | null;
   student: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
   assignment: {
     title: string;
@@ -133,6 +137,10 @@ export function submissionFeedItem(s: PendingSubmissionFeedRow): {
   title: string;
   actionTo: string;
   late: boolean;
+  /** 5-B6 P1-2 — dormant-until-now answer fields, now projected so the
+   * FE grading modal can show what it grades. */
+  textAnswer: string | null;
+  fileUrl: string | null;
 } {
   return {
     kind: 'submissions',
@@ -143,6 +151,8 @@ export function submissionFeedItem(s: PendingSubmissionFeedRow): {
     title: `سلّم${s.assignment.type === AssignmentType.EXAM ? '/ت' : ''} ${s.assignment.title}`,
     actionTo: TEACHER_FEED_ACTIONS.grades,
     late: s.status === SubmissionStatus.LATE,
+    textAnswer: s.textAnswer,
+    fileUrl: s.fileUrl,
   };
 }
 
@@ -458,6 +468,9 @@ router.get('/dashboard', async (req, res, next) => {
           submittedAt: true,
           // Feeds the `late` flag on the feed item (16-B1 hand-off).
           status: true,
+          // 5-B6 P1-2 — the answer the modal grades (file- or text-only OK).
+          textAnswer: true,
+          fileUrl: true,
           student: { select: { firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
           assignment: {
             select: {

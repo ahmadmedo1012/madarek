@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import {
@@ -234,6 +234,36 @@ export function AttendancePage() {
     return { p, l, a, e, total: students.length };
   }, [students, statusByStudent]);
 
+  /* 5-C3 (A9 P1-3): the offerings query was never gated — while it
+     loaded (and when it failed) the select said «— لا توجد مقرّرات —»
+     and the roster card a false «لا توجد مقرّرات»: a teacher with a
+     dead request was told they have no courses, with no retry. Same
+     two-branch gate as TeacherSchedulePage (:106-107), shape-matched
+     to this page (session form card + roster list). */
+  if (offsQ.isPending) {
+    return (
+      <div className="page">
+        <PageHeader
+          title="الحضور والغياب"
+          subtitle="سجّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
+        />
+        <CardSkeleton lines={3} />
+        <ListSkeleton rows={5} />
+      </div>
+    );
+  }
+  if (offsQ.isError) {
+    return (
+      <div className="page">
+        <PageHeader
+          title="الحضور والغياب"
+          subtitle="سجّل الحضور لكلّ محاضرة. يحفظ سجلّاً واحداً لكلّ تاريخ في قاعدة البيانات."
+        />
+        <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
+      </div>
+    );
+  }
+
   const onSave = () => {
     if (!effectiveOfferingId || students.length === 0) return;
     // 15-h P1-6: a cleared <input type="date"> yields '' — new Date('')
@@ -334,7 +364,7 @@ export function AttendancePage() {
           {!effectiveOfferingId ? (
             <EmptyState title="لا توجد مقرّرات" description="ستظهر المقرّرات هنا حين تُسنَد إليك." />
           ) : stuQ.isPending ? (
-            <LoadingState />
+            <ListSkeleton rows={5} />
           ) : stuQ.isError ? (
             <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
           ) : students.length === 0 ? (
@@ -445,8 +475,29 @@ export function AttendancePage() {
 }
 
 export function GradesPage() {
-  const { offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
+  const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
+
+  /* 5-C3 (A9 P1-3): gate the offerings query — during load AND on
+     error this page rendered the false «اختر مقرّراً» empty plus a
+     select claiming «— لا توجد مقرّرات —». Skeleton shaped like the
+     table that lands; retry on failure. */
+  if (offsQ.isPending) {
+    return (
+      <div className="page">
+        <PageHeader title="درجات الطلاب" subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ." />
+        <TableSkeleton rows={5} cols={5} />
+      </div>
+    );
+  }
+  if (offsQ.isError) {
+    return (
+      <div className="page">
+        <PageHeader title="درجات الطلاب" subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ." />
+        <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -470,7 +521,7 @@ export function GradesPage() {
         {!effectiveOfferingId ? (
           <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض درجات طلابه." />
         ) : stuQ.isPending ? (
-          <LoadingState />
+          <TableSkeleton rows={5} cols={5} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : (stuQ.data ?? []).length === 0 ? (
@@ -552,7 +603,7 @@ export function MaterialsPage() {
 
       <Card title="ملفاتك" icon={FileText}>
         {q.isPending ? (
-          <LoadingState />
+          <TableSkeleton rows={4} cols={7} />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
@@ -601,9 +652,28 @@ export function ResearchPage() {
 }
 
 export function StudentsListPage() {
-  const { offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
+  const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
   const students = stuQ.data ?? [];
+
+  /* 5-C3 (A9 P1-3): same offerings gate as GradesPage — the false
+     «اختر مقرّراً» empty fired during load and on error here too. */
+  if (offsQ.isPending) {
+    return (
+      <div className="page">
+        <PageHeader title="قائمة الطلاب" subtitle="جميع الطلاب المسجّلين في مقرّراتك." />
+        <TableSkeleton rows={5} cols={5} />
+      </div>
+    );
+  }
+  if (offsQ.isError) {
+    return (
+      <div className="page">
+        <PageHeader title="قائمة الطلاب" subtitle="جميع الطلاب المسجّلين في مقرّراتك." />
+        <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -637,7 +707,7 @@ export function StudentsListPage() {
         {!effectiveOfferingId ? (
           <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض قائمة طلابه." />
         ) : stuQ.isPending ? (
-          <LoadingState />
+          <TableSkeleton rows={5} cols={5} />
         ) : stuQ.isError ? (
           <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
         ) : students.length === 0 ? (
@@ -681,7 +751,7 @@ export function StudentsListPage() {
 }
 
 export function PerformancePage() {
-  const { offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
+  const { offsQ, offerings, effectiveOfferingId, setOfferingId, offering } = useOfferingPicker();
   const stuQ = useTeacherStudents(effectiveOfferingId || undefined);
   const analytics = useOfferingAnalytics(effectiveOfferingId || undefined);
   const students = stuQ.data ?? [];
@@ -704,6 +774,28 @@ export function PerformancePage() {
       return { band, count, pct: total > 0 ? Math.round((count / total) * 100) : 0 };
     });
   }, [students]);
+
+  /* 5-C3 (A9 P1-3): offerings gate, performance edition — the page
+     used to render its «اختر مقرّراً» empty while the picker data was
+     still in flight (or dead). Skeleton mirrors what lands: the KPI
+     row + the distribution card. */
+  if (offsQ.isPending) {
+    return (
+      <div className="page">
+        <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
+        <KpiSkeleton />
+        <CardSkeleton lines={5} />
+      </div>
+    );
+  }
+  if (offsQ.isError) {
+    return (
+      <div className="page">
+        <PageHeader title="الأداء والتحليل" subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة." />
+        <ErrorState error={offsQ.error} onRetry={() => void offsQ.refetch()} />
+      </div>
+    );
+  }
 
   const passing = students.filter((s) => s.avgGrade >= 50).length;
   const passRate = students.length > 0 ? Math.round((passing / students.length) * 100) : 0;
@@ -728,7 +820,14 @@ export function PerformancePage() {
       {!effectiveOfferingId ? (
         <EmptyState title="اختر مقرّراً" description="حدّد أحد مقرّراتك من أعلى الصفحة لعرض تحليل أداء فصلك." />
       ) : stuQ.isPending || analytics.isPending ? (
-        <LoadingState />
+        /* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
+           3-KPI row + the distribution card — so the data-land swap
+           doesn't move the page (A9 V1 measured the spinner→content
+           jump on this family). */
+        <>
+          <KpiSkeleton />
+          <CardSkeleton lines={5} />
+        </>
       ) : stuQ.isError ? (
         <ErrorState error={stuQ.error} onRetry={() => stuQ.refetch()} />
       ) : analytics.isError ? (
@@ -867,7 +966,7 @@ export function AssignmentsPage() {
 
       <Card title="جميع الواجبات" icon={ClipboardList}>
         {q.isPending ? (
-          <LoadingState />
+          <ListSkeleton rows={5} />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
@@ -1056,7 +1155,7 @@ function NeedsReviewCard({
       }
     >
       {isPending ? (
-        <LoadingState />
+        <ListSkeleton rows={3} />
       ) : isError ? (
         <ErrorState error={error} onRetry={onRetry} />
       ) : pending.length === 0 ? (
@@ -1383,7 +1482,7 @@ export function MessagesPage() {
         subtitle={meta ? (meta.total === 0 ? 'لا رسائل' : countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])) : undefined}
       >
         {q.isPending ? (
-          <LoadingState />
+          <ListSkeleton rows={6} />
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || messages.length === 0 ? (

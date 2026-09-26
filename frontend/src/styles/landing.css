@@ -59,8 +59,10 @@
     border-radius: 50%;
     background: currentColor;
     opacity: 0.4;
-    /* loop cadence (1.2s typing blink) — off-token by design */
-    animation: madarek-typing 1.2s var(--motion-ease-standard) infinite;
+    /* 5-C1: the typing blink rides the ambient pulse band (1.6s —
+       was a raw 1.2s); the per-dot 0.2s/0.4s delays keep the wave
+       cadence. Gate debt entry retired. */
+    animation: madarek-typing var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
   }
   .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
   .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
@@ -310,8 +312,9 @@
     inset: -10% -5% 0 -5%;
     z-index: -2; /* decorative layer behind content — local paint-order, not a --z-* layer */
     filter: blur(8px);
-    /* loop cadence (22s ambient drift) — off-token by design */
-    animation: madarek-hero-drift 22s var(--motion-ease-standard) infinite alternate;
+    /* 5-C1: 22s → the ambient scene band (the hero backdrop's own
+       pace — the slowest rung of the ambient ladder). */
+    animation: madarek-hero-drift var(--motion-duration-ambient-scene) var(--motion-ease-standard) infinite alternate;
   }
   .landing-hero::after {
     content: '';
@@ -928,13 +931,15 @@
      "small and passive" next to 40px display names (VLM 20-a). */
   .landing-role-key .sticker { flex-shrink: 0; }
   .landing-role-name {
-    /* display role; no tracking override — the names are Arabic but
-       carry no tashkeel, so the role's own letter-spacing holds */
+    /* 5-C2 (A3 P1-1 / ruling #2): no letter-spacing — the names are
+       Arabic («الطالب», «الأستاذ»…) and the display role's tracking
+       (-0.032em → measured -1.28px @40px) broke the cursive joins.
+       The role token itself is normalized in tokens.css; the polish
+       overrides reset also carries the class (belt+braces). */
     font-family: var(--font-display);
     font-size: var(--type-display-size-md);
     font-weight: var(--type-display-weight);
     line-height: var(--type-display-line-height);
-    letter-spacing: var(--type-display-letter-spacing);
     color: var(--text);
   }
   .landing-role-desc {

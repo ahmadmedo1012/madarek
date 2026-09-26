@@ -59,6 +59,49 @@ describe('Modal', () => {
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'first' }));
   });
 
+  /* A10 P2-1 (5-C4): initial focus never lands on a dismiss affordance.
+   *   - a field-carrying dialog opens on the first control;
+   *   - a dialog whose ONLY focusable is the close (X) button opens on
+   *     its own surface (tabIndex -1) — one stray Enter can no longer
+   *     dismiss the layer; the close button stays the first Tab stop. */
+  it('opens on the first field control, skipping the header close button (A10 P2-1)', async () => {
+    render(
+      <Modal open onClose={() => {}} ariaLabel="X">
+        <div className="modal-header">
+          <div className="modal-title">Title</div>
+          <button type="button" className="icon-btn" onClick={() => {}} aria-label="إغلاق" data-close-button>
+            x
+          </button>
+        </div>
+        <div className="modal-body">
+          <input type="text" placeholder="answer" />
+          <button type="button">after</button>
+        </div>
+      </Modal>,
+    );
+    await flush();
+    expect(document.activeElement).toBe(screen.getByPlaceholderText('answer'));
+    expect(document.activeElement).not.toBe(screen.getByRole('button', { name: 'إغلاق' }));
+  });
+
+  it('a view-only modal (close button as the only focusable) opens on its own surface, not the X (A10 P2-1)', async () => {
+    render(
+      <Modal open onClose={() => {}} ariaLabel="X">
+        <div className="modal-header">
+          <div className="modal-title">Title</div>
+          <button type="button" className="icon-btn" onClick={() => {}} aria-label="إغلاق" data-close-button>
+            x
+          </button>
+        </div>
+        <p>view-only content</p>
+      </Modal>,
+    );
+    await flush();
+    expect(document.activeElement).toBe(screen.getByRole('dialog', { name: 'X' }));
+    // The close affordance stays reachable as the first Tab stop.
+    expect(screen.getByRole('button', { name: 'إغلاق' })).toBeInTheDocument();
+  });
+
   it('Esc dismisses by default', () => {
     const onClose = vi.fn();
     render(

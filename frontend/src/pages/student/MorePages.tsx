@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Trophy, Star, Medal, Award, Activity, Crown,
   Target, Headset,
@@ -10,7 +11,7 @@ import {
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { LoadingState, ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, KpiSkeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -19,6 +20,7 @@ import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import '../../styles/training.css'; // gamification .tier-orb/.xp-*/.leaderboard-*/.achievement-* families (D11 css split, 12-15)
 
@@ -426,7 +428,12 @@ export function SchedulePage() {
             <p className="page-subtitle">جارٍ جمع جدولك…</p>
           </div>
         </header>
-        <LoadingState />
+        {/* 5-C3 (A9 P2-2): bare spinner → day-card skeletons. The
+            settled page is a stack of day sections (title + card of
+            list rows); two card skeletons hold the visible band so the
+            data-land swap doesn't jump +410px (A9 V1). */}
+        <CardSkeleton lines={4} />
+        <CardSkeleton lines={3} />
       </div>
     );
   }
@@ -544,7 +551,11 @@ export function ResultsPage() {
             <p className="page-subtitle">جارٍ جمع درجاتك…</p>
           </div>
         </header>
-        <LoadingState />
+        {/* 5-C3 (A9 P2-2): bare spinner → the shapes that land — the
+            KPI row + the chart card (A9 V1 measured +204px on the
+            spinner→content swap). */}
+        <KpiSkeleton />
+        <CardSkeleton lines={6} />
       </div>
     );
   }
@@ -787,9 +798,37 @@ export function SocialPage() {
   const posts = usePosts();
   const createPost = useCreatePost();
   const reactToPost = useReactToPost();
+  const qc = useQueryClient();
   const user = useAuthStore((s) => s.user);
-  const [draft, setDraft] = useState('');
+  /* 5-C5 (A12 P3-3): the composer draft survives reload AND SPA
+   * navigation — sessionStorage keyed by user (a shared lab machine
+   * keeps students' drafts separate), cleared on successful publish.
+   * A draft is content, not state: losing it on a stray refresh was
+   * the audit's cheapest "this platform cares" miss. */
+  const draftKey = `mdrk:social-draft:${user?.id ?? 'me'}`;
+  const [draft, setDraft] = useState<string>(() => {
+    try {
+      return sessionStorage.getItem(draftKey) ?? '';
+    } catch {
+      return ''; // private-mode browsers: the draft stays session-local
+    }
+  });
+  useEffect(() => {
+    try {
+      if (draft) sessionStorage.setItem(draftKey, draft);
+      else sessionStorage.removeItem(draftKey);
+    } catch {
+      /* best-effort persistence only */
+    }
+  }, [draft, draftKey]);
   const [reactedIds, setReactedIds] = useState<Set<string>>(new Set());
+  /* 5-C5 (5-B1 hand-off): the real un-like. DELETE /posts/:id/react is
+   * own-reaction-only by construction (the compound key pins the
+   * caller), so the pressed heart is now a working toggle instead of
+   * the aria-disabled state-only control it was while the route was
+   * missing. The set below carries THIS session's optimistic
+   * un-presses on top of the server truth. */
+  const [unreactedIds, setUnreactedIds] = useState<Set<string>>(new Set());
   /* 18-G's viewerReacted (18-F2 consumption): the server's own-reaction
      truth seeds the hearts — the session-local set above now only rides
      this session's optimistic toggles on TOP of it (a reload used to
@@ -798,23 +837,34 @@ export function SocialPage() {
     () => new Set((posts.data ?? []).filter((p) => p.viewerReacted).map((p) => p.id)),
     [posts.data],
   );
-  const hasReacted = (id: string) => serverReactedIds.has(id) || reactedIds.has(id);
-  /* Reaction-count snapshot at click time. When a like succeeds, the
-     ['posts'] invalidation delivers a server count that ALREADY includes
-     the like — displaying max(server, snapshot + 1) keeps the optimistic
-     +1 during flight without double-counting after the refetch (audit
+  const hasReacted = (id: string) =>
+    (serverReactedIds.has(id) || reactedIds.has(id)) && !unreactedIds.has(id);
+  /* Reaction-count snapshot at click time. When a like/un-like succeeds,
+     the ['posts'] invalidation delivers a server count that ALREADY includes
+     the change — max(server, snapshot ± 1) keeps the optimistic delta
+     during flight without double-counting after the refetch (audit
      0-f P2 double-count risk). */
   const [reactionBase, setReactionBase] = useState<Record<string, number>>({});
   /* transient per-post feedback: burst = the scale-pop on the reacted
      counter, fail = the rollback note with retry */
   const [burstId, setBurstId] = useState<string | null>(null);
-  const [failedLike, setFailedLike] = useState<string | null>(null);
+  const [failedLike, setFailedLike] = useState<{ id: string; mode: 'like' | 'unlike' } | null>(null);
   const burstTimer = useRef<number | undefined>(undefined);
   const failTimer = useRef<number | undefined>(undefined);
   useEffect(() => () => {
     window.clearTimeout(burstTimer.current);
     window.clearTimeout(failTimer.current);
   }, []);
+  /* Server truth arrival (the invalidation's refetch lands) clears the
+     session-local toggles — the pressed states and counts then read
+     straight from the payload, so a stale optimistic delta can never
+     outlive its own refetch (and an un-pressed heart that the server
+     still counts re-syncs to the truth). */
+  useEffect(() => {
+    setReactedIds(new Set());
+    setUnreactedIds(new Set());
+    setReactionBase({});
+  }, [posts.data]);
 
   const publish = () => {
     if (!draft.trim() || createPost.isPending) return;
@@ -834,6 +884,12 @@ export function SocialPage() {
     if (hasReacted(id)) return;
     setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
     setReactedIds((prev) => new Set([...prev, id]));
+    // a pending un-like of the same post is superseded by this click
+    setUnreactedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
     // reaction burst — fires on interaction only, never idle
     setBurstId(id);
     window.clearTimeout(burstTimer.current);
@@ -848,7 +904,7 @@ export function SocialPage() {
             next.delete(id);
             return next;
           });
-          setFailedLike(id);
+          setFailedLike({ id, mode: 'like' });
           window.clearTimeout(failTimer.current);
           failTimer.current = window.setTimeout(() => setFailedLike(null), 5000);
         },
@@ -856,9 +912,37 @@ export function SocialPage() {
     );
   };
 
+  /* Un-like — 5-B1's DELETE route wired to the pressed heart (the
+     aria-disabled state-only control it used to be). Own-reaction-only
+     by construction server-side; optimistic un-press + −1 with
+     rollback, and the server's viewerReacted flips on the refetch. */
+  const removeLike = useMutation({
+    mutationFn: (postId: string) =>
+      unwrap<{ ok: boolean }>(api.delete(`/posts/${postId}/react`, { data: { kind: 'like' } })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
+  });
+  const onUnlike = (id: string, serverCount: number) => {
+    if (!hasReacted(id)) return;
+    setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
+    setUnreactedIds((prev) => new Set([...prev, id]));
+    removeLike.mutate(id, {
+      onError: () => {
+        setUnreactedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+        setFailedLike({ id, mode: 'unlike' });
+        window.clearTimeout(failTimer.current);
+        failTimer.current = window.setTimeout(() => setFailedLike(null), 5000);
+      },
+    });
+  };
+
   const trending = topHashtags(posts.data);
   const likeInFlight = (id: string) =>
-    reactToPost.isPending && reactToPost.variables?.postId === id;
+    (reactToPost.isPending && reactToPost.variables?.postId === id)
+    || (removeLike.isPending && removeLike.variables === id);
 
   return (
     <div className="page">
@@ -901,8 +985,9 @@ export function SocialPage() {
                   </div>
                 )}
                 <div className="flex items-center justify-between">
-                  <span className="text-xxs text-subtle">
-                    <bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi>
+                  <span className="text-xxs text-subtle" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    {draft.trim() !== '' && <span>مسودة محفوظة تلقائيّاً</span>}
+                    <span><bdi>{formatNum(draft.length)}</bdi> / <bdi>2000</bdi></span>
                   </span>
                   <button
                     type="submit"
@@ -957,13 +1042,17 @@ export function SocialPage() {
             posts.data.map((p) => {
               const initials = p.author.avatarInitials ?? `${p.author.firstName[0] ?? ''}${p.author.lastName[0] ?? ''}`;
               const reacted = hasReacted(p.id);
-              /* The optimistic +1 applies ONLY to this session's clicks —
-                 a server-truth like is already inside _count.reactions
-                 (max(server, base+1) would double-count it). */
-              const optimistic = reactedIds.has(p.id);
-              const displayed = optimistic
+              /* The optimistic ±1 applies ONLY to this session's clicks —
+                 a server-truth reaction is already inside _count.reactions.
+                 An un-like reads the click-time snapshot − 1 (the server
+                 count still carries the like until the refetch lands). */
+              const optimisticAdd = reactedIds.has(p.id) && !unreactedIds.has(p.id);
+              const optimisticRemove = !optimisticAdd && unreactedIds.has(p.id);
+              const displayed = optimisticAdd
                 ? Math.max(p._count.reactions, (reactionBase[p.id] ?? p._count.reactions) + 1)
-                : p._count.reactions;
+                : optimisticRemove
+                  ? Math.max(0, (reactionBase[p.id] ?? p._count.reactions) - 1)
+                  : p._count.reactions;
               return (
                 <article className="post" key={p.id}>
                   <div className="post-header">
@@ -977,7 +1066,10 @@ export function SocialPage() {
                   {p.hashtags && p.hashtags.length > 0 && (
                     <div className="flex flex-wrap gap-1" style={{ marginTop: 6 }}>
                       {p.hashtags.map((t) => (
-                        <span key={t} className="text-xxs font-mono" style={{ color: 'var(--accent)' }}>#{t}</span>
+                        // 5-C5 (A12 P2-5): --accent on white is 3.8:1 at
+                        // 11px — --accent-ink is the designed text-grade
+                        // pair (same family as A11 P2-2's profile fix).
+                        <span key={t} className="text-xxs font-mono" style={{ color: 'var(--accent-ink, var(--accent))' }}>#{t}</span>
                       ))}
                     </div>
                   )}
@@ -985,20 +1077,10 @@ export function SocialPage() {
                     <button
                       type="button"
                       className={`post-action${reacted ? ' on' : ''}`}
-                      onClick={() => onLike(p.id, p._count.reactions)}
+                      onClick={() =>
+                        (reacted ? onUnlike(p.id, p._count.reactions) : onLike(p.id, p._count.reactions))}
                       aria-pressed={reacted}
-                      /* 22-c (A5 P2-2): the pressed state used to announce
-                         «إزالة الإعجاب» — an un-like the backend cannot
-                         perform (POST /posts/:id/react is an upsert-only;
-                         onLike early-returns on an existing reaction, so
-                         the button was a dead control promising an
-                         action). The pressed label now names the STATE,
-                         and aria-disabled stops it from presenting as an
-                         available action. Implementing a real un-like
-                         needs a DELETE reaction route — noted as a
-                         hand-off. */
-                      aria-disabled={reacted || undefined}
-                      aria-label={reacted ? 'أعجبك هذا المنشور' : 'أعجبني بهذا المنشور'}
+                      aria-label={reacted ? 'إزالة الإعجاب' : 'أعجبني بهذا المنشور'}
                       disabled={likeInFlight(p.id)}
                     >
                       <Icon icon={Heart} size={13} aria-hidden />
@@ -1009,14 +1091,17 @@ export function SocialPage() {
                     {/* The old comment button was a dead control (there is no
                         post-comment API) — removed instead of faked. */}
                   </div>
-                  {failedLike === p.id && (
+                  {failedLike?.id === p.id && (
                     <div className="post-like-fail" role="alert">
                       <Icon icon={AlertTriangle} size={12} aria-hidden />
-                      <span>تعذّر تسجيل الإعجاب.</span>
+                      <span>{failedLike.mode === 'unlike' ? 'تعذّر إلغاء الإعجاب.' : 'تعذّر تسجيل الإعجاب.'}</span>
                       <button
                         type="button"
                         className="btn ghost sm"
-                        onClick={() => onLike(p.id, p._count.reactions)}
+                        onClick={() =>
+                          (failedLike.mode === 'unlike'
+                            ? onUnlike(p.id, p._count.reactions)
+                            : onLike(p.id, p._count.reactions))}
                       >
                         إعادة المحاولة
                       </button>

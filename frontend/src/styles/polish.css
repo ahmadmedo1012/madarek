@@ -21,31 +21,15 @@
 
 @layer pages {
 
-  /* ── Stagger reveal for KPI / dashboard grids ─────────────────────
-     Page-enter on .content-inner takes 220ms. Children of grid rows
-     ride a 40ms cascade behind it so the page reads as "appearing
-     in" rather than "blinking in". Caps at 6 children to bound delay. */
-  .grid-2 > *,
-  .grid-3 > *,
-  .grid-4 > *,
-  .grid-2-1 > *,
-  .grid-1-2 > *,
-  .grid-auto-200 > *,
-  .grid-auto-260 > * {
-    animation: polish-rise var(--motion-duration-reveal) var(--ease-out) both;
-  }
-  .grid-2 > *:nth-child(1),
-  .grid-3 > *:nth-child(1),
-  .grid-4 > *:nth-child(1) { animation-delay: 60ms; }
-  .grid-2 > *:nth-child(2),
-  .grid-3 > *:nth-child(2),
-  .grid-4 > *:nth-child(2) { animation-delay: 100ms; }
-  .grid-3 > *:nth-child(3),
-  .grid-4 > *:nth-child(3) { animation-delay: 140ms; }
-  .grid-4 > *:nth-child(4) { animation-delay: 180ms; }
-  .grid-4 > *:nth-child(5) { animation-delay: 220ms; }
-  .grid-4 > *:nth-child(6) { animation-delay: 260ms; }
-
+  /* (5-C1 entrance diet, A2 P1-1): v6's every-grid stagger is GONE.
+     It stamped an entrance on the children of EVERY .grid-* in the
+     app (128 grid usages / 43 files) and compounded with the v16
+     overrides-layer copy — a route change settled in ~680–900ms
+     through 3–4 stacked fades. The route entrance is now ONE
+     mechanism (PageTransition's keyed .content-inner remount playing
+     `page-enter`, 160ms) plus ONE authored stagger per page — the
+     hero grid only, scoped in the v16 block below. The polish-rise
+     keyframes stay: [data-numeric] count-up reveals ride them. */
   @keyframes polish-rise {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -260,6 +244,17 @@
   .nav-item:active {
     transform: scale(0.985);
     transition-duration: var(--t-micro);
+  }
+
+  /* ── Icon buttons: press feedback ─────────────────────────────
+     5-C1 (A2 P2-3): .icon-btn had NO :active in any sheet — the
+     most-pressed chrome class (modal close, overlay close, inline
+     tool buttons) showed only its hover bg while pressed. Joins the
+     .btn/.tab/.pill press family at the scale(0.97) register; the
+     snap-back rides the micro duration like .nav-item/.pill. */
+  .icon-btn:active:not(:disabled) {
+    transform: scale(0.97);
+    transition-duration: var(--motion-duration-micro);
   }
 
   /* ── Sidebar collapse btn: icon-only 44px touch target ───────── */
@@ -545,7 +540,7 @@
 
   /* ── Mockup bars: idle wave so the chart never sits still ─────── */
   .landing-mockup-bar {
-    animation: polish-bar-breathe 3.6s var(--motion-ease-standard) infinite;
+    animation: polish-bar-breathe var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
   }
   .landing-mockup-bar:nth-child(1) { animation-delay: 0ms; }
   .landing-mockup-bar:nth-child(2) { animation-delay: 220ms; }
@@ -562,9 +557,12 @@
     .landing-mockup-bar { animation: none; }
   }
 
-  /* ── Hero badges: float idle ───────────────────────────────────── */
-  .landing-mockup-badge-1 { animation: polish-float-1 6s var(--motion-ease-standard) infinite; }
-  .landing-mockup-badge-2 { animation: polish-float-2 7.5s var(--motion-ease-standard) infinite; }
+  /* ── Hero badges: float idle ── 5-C1: both loops ride the shared
+     --motion-duration-ambient-drift cadence (the old 6s/7.5s pair kept
+     the badges out of phase; they still counter-move — float-1 drifts
+     +6px, float-2 −6px — so the parallax read survives on one band). */
+  .landing-mockup-badge-1 { animation: polish-float-1 var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite; }
+  .landing-mockup-badge-2 { animation: polish-float-2 var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite; }
   @keyframes polish-float-1 {
     0%, 100% { --badge-tx: 0px; }
     50%      { --badge-tx: 6px; }
@@ -614,9 +612,9 @@
       transparent 100%);
     transform: translateX(-100%);
     /* (4-A11 P2-9: linear per the loop doctrine — tokens.css:110-113.
-       The 3.2s ambient duration stays raw until an ambient-duration
-       token family exists; listed as gate debt.) */
-    animation: polish-shimmer-sweep 3.2s var(--ease-linear) infinite;
+       5-C1: the 3.2s raw duration retired onto the ambient ladder
+       (--motion-duration-ambient-slow, 3.6s) — the debt entry is gone.) */
+    animation: polish-shimmer-sweep var(--motion-duration-ambient-slow) var(--ease-linear) infinite;
   }
   @keyframes polish-shimmer-sweep {
     0%, 60%   { transform: translateX(-100%); }
@@ -873,6 +871,12 @@
   }
   .page-subtitle {
     line-height: 1.55;
+    /* 5-C2 (A3 P1-2): the subtitle had no measure cap and stretched to
+       the full 1280px content column on every wide page (measured
+       131.6ch/1184px on exams · library · community · admin · vision).
+       taste floor: body measure 45–75ch. Wires the existing
+       --type-body-max-measure token (72ch) that nothing consumed. */
+    max-inline-size: var(--type-body-max-measure);
   }
 
   /* ── Card title icon — subtle accent tint ──────────────────── */
@@ -1151,7 +1155,7 @@
      Hydration splash — calmer fade-out when auth loads
      ═══════════════════════════════════════════════════════════════ */
   .hydration-splash {
-    animation: polish-hydration-pulse 1.4s var(--motion-ease-standard) infinite;
+    animation: polish-hydration-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
   }
   @keyframes polish-hydration-pulse {
     0%, 100% { opacity: 1; }
@@ -1364,7 +1368,7 @@
     /* Off-token by design: danger-tinted attention glow, not elevation. */
   box-shadow: 0 2px 6px -1px color-mix(in srgb, var(--danger) 50%, transparent);
     /* Calm pulse to draw attention without nagging */
-    animation: notif-bell-pulse 2.4s var(--ease-out) infinite;
+    animation: notif-bell-pulse var(--motion-duration-ambient) var(--ease-out) infinite;
   }
   @keyframes notif-bell-pulse {
     0%, 100% { transform: scale(1); }
@@ -1971,8 +1975,11 @@
                 box-shadow var(--t-fast) var(--ease);
   }
   .thumb-card:hover {
-    transform: translateY(-2px);
-    /* Off-token by design: accent-tinted hover glow, not elevation. */
+    /* Off-token by design: accent-tinted hover glow, not elevation.
+       5-C1 (A2 P2-8): the −2px transform LIFT that used to live here
+       moved into the (hover: hover) gate at the v18 block below —
+       ungated, iOS sticky-hover pinned it after the first tap. The
+       paint-only wash + glow are safe to keep ungated. */
     box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--accent) 14%, rgba(0,0,0,0.08));
   }
 
@@ -2405,7 +2412,7 @@
     );
     opacity: 0;
     filter: blur(14px);
-    animation: madark-breathe 4s var(--motion-ease-standard) infinite;
+    animation: madark-breathe var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
   }
   @keyframes madark-breathe {
     0%, 100% { opacity: 0; transform: scale(0.9); }
@@ -2433,7 +2440,7 @@
       transparent 100%
     );
     transform: translateX(-110%);
-    animation: madark-sweep 4.5s var(--motion-ease-standard) 1.2s infinite;
+    animation: madark-sweep var(--motion-duration-ambient-slow) var(--motion-ease-standard) 1.2s infinite;
     pointer-events: none;
   }
   @keyframes madark-sweep {
@@ -2563,78 +2570,40 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PAGE ENTER — every route fades + lifts in                     ║
-     ║  Triggered by class binding done in CSS only — animation       ║
-     ║  starts on mount because the element is fresh in the DOM.      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .page {
-    animation: madark-page-in var(--motion-duration-long) var(--ease-out) both;
-  }
-  @keyframes madark-page-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
+  /* (5-C1 entrance diet, A2 P1-1): v16's `.page { madark-page-in }`
+     is GONE. It double-faded the route — .content-inner already
+     plays `page-enter` (160ms) on the keyed PageTransition remount,
+     and this second container fade (380ms, `both` fill) compounded
+     with it on every navigation. The v16 RM kill list further down
+     keeps `.page` listed — harmless belt-and-braces. The keyed
+     remount in components/motion/PageTransition.tsx owns the route
+     entrance; see its docblock. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STAGGER — grid children fade-up in sequence                   ║
-     ║  CSS-only; uses :nth-child to delay each in turn. Caps at 8    ║
-     ║  so a long grid still finishes quickly.                        ║
+     ║  HERO-GRID STAGGER — one authored moment per page (5-C1)       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .grid-2 > *,
-  .grid-3 > *,
-  .grid-4 > *,
-  .grid-auto-200 > *,
-  .grid-auto-260 > * {
-    /* wave-5 orchestrator fix (flagged by 4-b): fill was `both`, which pins
-       `transform: none` on children after the entrance finishes and kills
-       every hover-lift in gridded cards. `backwards` keeps the stagger
-       (from-state held during each child's delay) and releases the element
-       to its own styles once done. */
-    animation: madark-stagger-up var(--motion-duration-long) var(--ease-out) backwards;
+  /* 5-C1 entrance diet (A2 P1-1): the stagger no longer stamps on
+     EVERY .grid-* child (128 usages / 43 files — every page played
+     the same cascade, nested grids included). It survives as the
+     page's ONE authored entrance: children of the FIRST grid that is
+     a direct child of .page — the hero/primary section (KPI band,
+     first card row), whatever its position among siblings
+     (:nth-child(An+B of S) matches the first sibling carrying any of
+     the grid classes; browsers without `of S` support degrade to no
+     stagger — the calm 160ms page-enter remains). Duration diets
+     380→240ms and the cascade caps at 4×50ms, so the last hero child
+     settles ≤390ms after navigation. Pages that own a bespoke
+     moment keep it (e.g. CoursesPage's filter re-stagger opts out
+     via student.css). `backwards` fill stays — the wave-5 fix that
+     keeps hover-lifts alive after the entrance. */
+  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > * {
+    animation: madark-stagger-up var(--motion-duration-medium) var(--ease-out) backwards;
   }
-  .grid-2 > *:nth-child(1),
-  .grid-3 > *:nth-child(1),
-  .grid-4 > *:nth-child(1),
-  .grid-auto-200 > *:nth-child(1),
-  .grid-auto-260 > *:nth-child(1) { animation-delay: 0ms; }
-  .grid-2 > *:nth-child(2),
-  .grid-3 > *:nth-child(2),
-  .grid-4 > *:nth-child(2),
-  .grid-auto-200 > *:nth-child(2),
-  .grid-auto-260 > *:nth-child(2) { animation-delay: 50ms; }
-  .grid-2 > *:nth-child(3),
-  .grid-3 > *:nth-child(3),
-  .grid-4 > *:nth-child(3),
-  .grid-auto-200 > *:nth-child(3),
-  .grid-auto-260 > *:nth-child(3) { animation-delay: 100ms; }
-  .grid-2 > *:nth-child(4),
-  .grid-3 > *:nth-child(4),
-  .grid-4 > *:nth-child(4),
-  .grid-auto-200 > *:nth-child(4),
-  .grid-auto-260 > *:nth-child(4) { animation-delay: 150ms; }
-  .grid-2 > *:nth-child(5),
-  .grid-3 > *:nth-child(5),
-  .grid-4 > *:nth-child(5),
-  .grid-auto-200 > *:nth-child(5),
-  .grid-auto-260 > *:nth-child(5) { animation-delay: 200ms; }
-  .grid-2 > *:nth-child(6),
-  .grid-3 > *:nth-child(6),
-  .grid-4 > *:nth-child(6),
-  .grid-auto-200 > *:nth-child(6),
-  .grid-auto-260 > *:nth-child(6) { animation-delay: 250ms; }
-  .grid-2 > *:nth-child(n+7),
-  .grid-3 > *:nth-child(n+7),
-  .grid-4 > *:nth-child(n+7),
-  .grid-auto-200 > *:nth-child(n+7),
-  .grid-auto-260 > *:nth-child(n+7) { animation-delay: 300ms; }
+  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(2) { animation-delay: 50ms; }
+  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(3) { animation-delay: 100ms; }
+  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(4) { animation-delay: 150ms; }
+  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(n+5) { animation-delay: 150ms; }
   @keyframes madark-stagger-up {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
@@ -2761,7 +2730,7 @@
       color-mix(in srgb, var(--accent) 18%, transparent) 0%,
       transparent 60%
     );
-    animation: madark-welcome-breathe 9s var(--motion-ease-standard) infinite alternate;
+    animation: madark-welcome-breathe var(--motion-duration-ambient-cinema) var(--motion-ease-standard) infinite alternate;
     pointer-events: none;
   }
   @keyframes madark-welcome-breathe {
@@ -2909,13 +2878,11 @@
     --elevation-4: 0 8px 16px rgba(20, 14, 6, 0.08), 0 16px 32px rgba(20, 14, 6, 0.12);
     --elevation-5: 0 16px 32px rgba(20, 14, 6, 0.10), 0 32px 64px rgba(20, 14, 6, 0.16);
 
-    /* Spring easings — (4-A11 P3-17 debt: defined here outside
-       tokens.css; the motion gate allowlists exactly these three
-       definitions pending their adoption into tokens.css next to
-       --ease-spring/--ease-bounce.) */
-    --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
-    --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
+    /* Spring easings — (5-C1, A2 §1b): MOVED to tokens.css next to
+       --ease-spring/--ease-bounce (adopted verbatim: soft 1.18 /
+       bounce 1.56 / snappy). The polish re-definitions died with the
+       adoption — same values from the token source, so the cascade
+       outcome is unchanged; the motion-gate debt entries are gone. */
 
     /* (4-A11 P1-3 — `all` smuggled out of --t-clean.
        tokens.css:118 ships `--t-clean: all var(--t-base) var(--ease)`,
@@ -3092,6 +3059,17 @@
      ║  SIDEBAR — smoother collapse easing, active rail dot          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sidebar {
+    /* (5-C1, A2 §1c residue): inline-size here is the ONE sanctioned
+       layout-property transition outside the wholesale foundation
+       files — the collapse is a STRUCTURAL resize (the rail's content
+       genuinely re-flows: labels fold away, the footer re-stacks),
+       and the box must stay in lockstep with the grid track that
+       base.css + the .has-shell rule below animate in parallel; drop
+       either side and the box desyncs from its track mid-flight
+       (layout.css owns the explicit inline-size declarations). It is
+       written multi-line, so the line-based gate never sees it —
+       deliberate, documented here rather than allowlisted. transform
+       is the mobile drawer slide (layout.css), compositor-only. */
     transition:
       inline-size var(--motion-duration-reveal) var(--ease-spring-soft),
       transform var(--motion-duration-reveal) var(--ease-spring-soft);
@@ -3293,28 +3271,28 @@
   .btn.ghost:hover {
     border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
   }
-  /* Press ripple — rewritten (4-A11 P2-6).
-     The old version animated inline-size/block-size 0→240% (layout +
-     paint on every button press, app-wide), was painted
-     rgba(255,255,255,.25) — imperceptible on light grounds (Δ≈4/255
-     on --surface; VLM-verified "no visible ripple") — and its comment
-     claimed a click-origin pulse while the origin was hardcoded
-     center. Now: a fixed-size pseudo-element scaled by transform
-     (compositor-only), tinted from the button's own ink via color-mix
-     so it reads on light AND dark grounds alike. Origin stays the
-     geometric center — a true click-origin ripple needs pointer
-     coordinates from JS (deferred with the Button primitive); this
-     comment no longer claims otherwise. */
+  /* Press ripple — rewritten again (5-C1, A2 §7 P2-6 / C4 follow-up).
+     4-A11 P2-6 made the ripple transform-only (a fixed 240% pseudo
+     scaled 0→1), but that 240% border box still hung outside the
+     padding box: live-measured .btn scrollWidth 343 vs clientWidth 89
+     during the press — document-contained, yet poisoning any
+     scrollWidth-based measurement on every primary/accent press (the
+     at-rest 187 inflation came from the hover sheen ::before, fixed
+     as a background-position sweep in components.css). Now: an
+     inset:0 pseudo (border-radius 50% → the button's inscribed
+     ellipse) scaling 0→1 — the transformed border box never exceeds
+     the padding box, so scrollWidth stays == clientWidth for the
+     whole press. Still compositor-only (transform + opacity), still
+     tinted from the button's own ink via color-mix, origin still the
+     geometric center (a true click-origin ripple needs pointer
+     coordinates from JS — deferred with the Button primitive). */
   .btn::after {
     content: '';
     position: absolute;
-    inset-block-start: 50%;
-    inset-inline-start: 50%;
-    inline-size: 240%;
-    block-size: 240%;
+    inset: 0;
     border-radius: 50%;
     background: color-mix(in srgb, currentColor 20%, transparent);
-    transform: translate(-50%, -50%) scale(0);
+    transform: scale(0);
     pointer-events: none;
     opacity: 0;
   }
@@ -3322,8 +3300,8 @@
     animation: madark-ripple var(--t-slower) var(--ease-out) both;
   }
   @keyframes madark-ripple {
-    from { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
-    to   { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    from { transform: scale(0); opacity: 0.6; }
+    to   { transform: scale(1); opacity: 0; }
   }
   /* The ripple is decorative feedback — no animation under reduced
      motion (base.css's global belt would already collapse it to a
@@ -3488,7 +3466,7 @@
      ║  STICKER ICONS — gentle sway when grouped                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sticker-wiggle .sticker {
-    animation: madark-sway 6s var(--motion-ease-standard) infinite;
+    animation: madark-sway var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
     transform-origin: bottom center;
   }
   .sticker-wiggle:nth-child(2n) .sticker { animation-delay: -1.5s; }
@@ -3697,17 +3675,15 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PAGE HEADER — eyebrow underline animation                     ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .page-header .page-title-block {
-    position: relative;
-    animation: madark-page-title-in var(--t-slower) var(--ease-spring-soft) both 80ms;
-  }
-  @keyframes madark-page-title-in {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: none; }
-  }
+  /* (5-C1 entrance diet, A2 P1-1): the title-block spring is GONE.
+     `madark-page-title-in` (520ms + 80ms delay, off-token spring)
+     was the FOURTH stacked entrance on every route — the title
+     re-faded on top of the page fade on top of the content fade.
+     The title now arrives with the page-enter fade like every other
+     header child. The `position: relative` it carried went with it:
+     its only consumer was the animation (the welcome-card override
+     at the v9 block sets its own relative + z-index). The RM kill
+     list below dropped its selector with it. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3746,8 +3722,7 @@
   @media (prefers-reduced-motion: reduce) {
     .nav-item.on::after,
     .nav-item.active::after,
-    .sidebar.open .nav-item,
-    .page-header .page-title-block {
+    .sidebar.open .nav-item {
       animation: none !important;
     }
   }
@@ -3931,7 +3906,7 @@
   .owner-health-dot.green,
   .owner-live-pulse {
     position: relative;
-    animation: madark-heartbeat 2.4s var(--motion-ease-standard) infinite;
+    animation: madark-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
   }
   .owner-health-dot.green::after,
   .owner-live-pulse::after {
@@ -3941,7 +3916,7 @@
     border-radius: inherit;
     background: inherit;
     opacity: 0.6;
-    animation: madark-pulse-ring 2.4s var(--motion-ease-decelerate) infinite;
+    animation: madark-pulse-ring var(--motion-duration-ambient) var(--motion-ease-decelerate) infinite;
     pointer-events: none;
   }
   @keyframes madark-heartbeat {
@@ -3966,7 +3941,7 @@
     box-shadow:
       0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent),
       var(--elevation-1);
-    animation: madark-alert-glow 3s var(--motion-ease-standard) infinite;
+    animation: madark-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
   }
   /* Keyframe states of the warning glow above — off-token by design. */
   @keyframes madark-alert-glow {
@@ -4324,13 +4299,24 @@
       transform: scale(1.08);
     }
   }
+  /* 5-C1 (A2 P2-4): cards-as-links press DOWN, not up. The hover lift
+     (−3px) used to persist through the press — live-measured
+     matrix(…,−3) on 6/6 course cards during real mousedown, the exact
+     inversion of taste's press rule. The press settles back to the
+     resting plane with a 0.99 compression, deliberately UNGATED so
+     touch presses (which never build a :hover) feel it; the snap-back
+     rides the micro duration like the rest of the press family. */
+  .thumb-card:active {
+    transform: translateY(0) scale(0.99);
+    transition-duration: var(--motion-duration-micro);
+  }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  EMPTY STATE — idle wiggle on the icon every 6s                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-empty .state-icon {
-    animation: madark-empty-wiggle 6s var(--motion-ease-standard) infinite;
+    animation: madark-empty-wiggle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
     transform-origin: center;
   }
   @keyframes madark-empty-wiggle {
@@ -4345,7 +4331,7 @@
      ║  ERROR STATE — icon throbs gently, retry button bounces in     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-error .state-icon {
-    animation: madark-error-throb 1.6s var(--motion-ease-standard) infinite;
+    animation: madark-error-throb var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
   }
   @keyframes madark-error-throb {
     0%, 100% { transform: scale(1); }
@@ -4853,9 +4839,13 @@
     color: var(--text);
     text-align: start;
     cursor: pointer;
-    transition:
-      background var(--motion-duration-short) var(--ease),
-      padding-inline-start var(--motion-duration-medium) var(--ease-spring-soft);
+    /* (5-C1, 4-A11 P2-10 family: the hover affordance used to grow
+       padding-inline-start 16→20px — text reflow on every hover of
+       every search/command row, and a layout-property transition the
+       line-based gate cannot see in multi-line form. The row now
+       stays put; the icon nudges toward the content exactly like
+       .notif-item above (compositor-only, direction-aware).) */
+    transition: background var(--motion-duration-short) var(--ease);
     position: relative;
   }
   .search-row::before {
@@ -4877,7 +4867,11 @@
   .search-row.active,
   .search-row[aria-selected="true"] {
     background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
-    padding-inline-start: calc(var(--sp-4) + 4px);
+  }
+  .search-row:hover .search-row-icon,
+  .search-row.active .search-row-icon,
+  .search-row[aria-selected="true"] .search-row-icon {
+    transform: translateX(calc(2px * var(--motion-direction)));
   }
   .search-row:hover::before,
   .search-row.active::before,
@@ -4894,6 +4888,7 @@
     justify-content: center;
     flex-shrink: 0;
     font-size: 18px;
+    transition: transform var(--motion-duration-short) var(--ease);
   }
   .search-row-body {
     flex: 1;
@@ -5074,7 +5069,7 @@
     opacity: 0.35;
     pointer-events: none;
     z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    animation: madark-loadingstate-pulse 1.6s var(--motion-ease-standard) infinite;
+    animation: madark-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
   }
   .card > .state.state-loading,
   .card > .state.state-inline {
@@ -5712,6 +5707,18 @@
       tracking for :lang(ar) without touching them. Numerals/metrics
       keep their tracking (no joins to break) — the reset is scoped to
       heading/title roles only.
+      5-C2 (A3 P1-1/P2-1..4): the reset list is extended to the
+      CLASS-STYLED Arabic display/label text the 21-c heading list
+      missed — .landing-role-name (measured -1.28px @40px «الطالب»),
+      .card-title (-0.216px @18px), .section-title + .thumb-card-title
+      (same --ls-snug family, div-rendered so the h1–h6 list never
+      matched), .sidebar-brand-name (-0.156px @13px «مدارك»), .avatar
+      (-0.12px Arabic initials), .btn (-0.06px on every Arabic button
+      label — source also fixed at components.css:324) and
+      .settings-label (colleges.css +0.55px, admin settings, swept).
+      Belt+braces: the landing/auth source declarations are also fixed
+      at their sites; this overrides-layer list guards the
+      sibling-owned components/layout/colleges sources in one place.
 
    2. NO PHANTOM ITALIC ON ARABIC <em> (A12 P1-6): Arabic has no
       italic; the browser's default synthetic slant on cursive script
@@ -5722,7 +5729,9 @@
    ═══════════════════════════════════════════════════════════════════ */
 @layer overrides {
   :lang(ar) :is(h1, h2, h3, h4, h5, h6, .page-title, .dash-section-title,
-                .onboarding-flow-headline) {
+                .onboarding-flow-headline, .landing-role-name, .card-title,
+                .section-title, .thumb-card-title, .sidebar-brand-name,
+                .avatar, .btn, .settings-label) {
     letter-spacing: normal;
   }
 

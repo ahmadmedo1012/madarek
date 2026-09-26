@@ -65,6 +65,11 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel}
+        /* Programmatic focus target for the trap's initial-focus fallback
+           (A10 P2-1): a dialog with no content focusables opens on its
+           own context instead of the close (X) button. -1 keeps the card
+           out of the Tab cycle. */
+        tabIndex={-1}
       >
         {children}
       </div>

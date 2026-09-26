@@ -1,15 +1,115 @@
 import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
 import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
 import { Icon } from './components/Icon';
-import { RouteErrorBoundary } from './components/ErrorBoundary';
+import { RouteErrorBoundary, isChunkLoadError } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays';
 import NotFoundPage from './pages/NotFoundPage';
+
+/* ───────────────────────────────────────────────────────────
+   Chunk-resilient lazy loading (5-C3, A9 P2-3)
+
+   A lazy route whose chunk fails to fetch used to reject straight
+   into the root RouteErrorBoundary: offline navigation to an
+   unvisited route killed the whole shell with a misdiagnosed
+   «خلل غير متوقّع» screen that stayed up even after the connection
+   returned (A9 V7). Every loader now goes through loadChunk:
+
+   - OFFLINE: the import parks on the browser's `online` event and
+     retries once it fires. The promise stays pending while offline,
+     so the nearest Suspense keeps its fallback — the shell (sidebar,
+     topbar, notifications) stays alive with a skeleton in the content
+     track, and the route renders BY ITSELF when connectivity
+     returns. No crash screen, no manual reload, honest loading.
+   - ONLINE: short spaced retries (a deploy race can serve a rotating
+     chunk exactly once), then the rejection surfaces to the boundary,
+     whose chunk-aware branch renders «تعذّر تحميل هذا القسم» with a
+     working reload instead of the generic crash copy.
+   - MODULE-MAP REALITY (live-measured): a failed dynamic import is
+     memoized by the browser's module map for its exact URL — calling
+     import() on the same specifier again rejects instantly WITHOUT a
+     network request, so a naive "call load() again" ladder can never
+     recover an offline failure (4 retries → 1 request total). When
+     the error message carries the module URL (Chromium), each retry
+     re-imports that URL with a fresh cache-buster so the fetch
+     actually fires; without a URL (Firefox/Safari phrasing) the
+     original loader is retried and the boundary's reload — which
+     resets the module map — remains the recovery path.
+   ─────────────────────────────────────────────────────────── */
+function waitForReconnect(): Promise<void> {
+  return new Promise((resolve) => {
+    window.addEventListener('online', () => resolve(), { once: true });
+  });
+}
+
+/** Best-effort extraction of the module URL from a Chromium dynamic-
+ * import failure («Failed to fetch dynamically imported module:
+ * <url>»). Firefox/Safari phrasings carry no URL — callers fall back
+ * to the same-URL ladder. Same-origin only: the string comes from a
+ * browser error message, so a computed import() must never leave this
+ * origin. */
+function chunkUrlFromError(error: unknown): string | null {
+  const msg = (error as { message?: unknown } | null | undefined)?.message;
+  if (typeof msg !== 'string') return null;
+  const match = /dynamically imported module:?\s*(\S+)/i.exec(msg);
+  if (!match || !match[1]) return null;
+  try {
+    const url = new URL(match[1], document.baseURI);
+    return url.origin === location.origin ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+async function loadChunk<T>(load: () => Promise<T>): Promise<T> {
+  try {
+    return await load();
+  } catch (error) {
+    if (!isChunkLoadError(error)) throw error;
+    /* Resilience ladder: offline → park on the browser's `online`
+     * event and retry once connectivity returns; online → short
+     * spaced retries (a deploy race serves a rotating chunk exactly
+     * once, and the first fetch right after the `online` event can
+     * still lose the race with the network stack coming up — measured
+     * live). Each busted retry mints a FRESH query so the previous
+     * attempt's failure is never the memoized one. Surfaces to the
+     * boundary only after the ladder is exhausted, so the boundary
+     * stays the genuinely-failed path. */
+    const bustedUrl = chunkUrlFromError(error);
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        await waitForReconnect();
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 300 * (attempt + 1)));
+      }
+      try {
+        if (!bustedUrl) return await load();
+        // @vite-ignore keeps Vite's import analysis away from a
+        // runtime-computed specifier (the literal loaders above are
+        // still statically analyzed and chunked as before).
+        return (await import(/* @vite-ignore */ `${bustedUrl}${bustedUrl.includes('?') ? '&' : '?'}retry=${attempt}-${Date.now()}`)) as T;
+      } catch (retryError) {
+        if (!isChunkLoadError(retryError)) throw retryError;
+      }
+    }
+    throw error;
+  }
+}
+
+/* Route components render bare (<LandingPage />), so every default
+ * export is a zero/optional-props component — Record<string, never>
+ * accepts exactly those while staying any-free (React.lazy's own
+ * constraint is ComponentType<any>). */
+function lazyWithRetry<T extends ComponentType<Record<string, never>>>(
+  load: () => Promise<{ default: T }>,
+): LazyExoticComponent<T> {
+  return lazy(() => loadChunk(load));
+}
 
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
@@ -26,118 +126,118 @@ import NotFoundPage from './pages/NotFoundPage';
    its own inner boundary so page chunks never unmount the chrome
    (11-e P1-1).
    ─────────────────────────────────────────────────────────── */
-const AppShell = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })));
-const ProtectedRoute = lazy(() => import('./components/layout/AppShell').then((m) => ({ default: m.ProtectedRoute })));
+const AppShell = lazyWithRetry(() => import('./components/layout/AppShell').then((m) => ({ default: m.AppShell })));
+const ProtectedRoute = lazyWithRetry(() => import('./components/layout/AppShell').then((m) => ({ default: m.ProtectedRoute })));
 
-const LandingPage = lazy(() => import('./pages/LandingPage'));
-const AuthPage = lazy(() => import('./pages/AuthPage'));
-const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const LandingPage = lazyWithRetry(() => import('./pages/LandingPage'));
+const AuthPage = lazyWithRetry(() => import('./pages/AuthPage'));
+const RegisterPage = lazyWithRetry(() => import('./pages/RegisterPage'));
 
-const StudentDashboardPage = lazy(() => import('./pages/student/DashboardPage'));
-const StudentCoursesPage = lazy(() => import('./pages/student/CoursesPage'));
-const LibraryPage = lazy(() => import('./pages/student/LibraryPage'));
-const MoocPage = lazy(() => import('./pages/student/MoocPage'));
-const JobsPage = lazy(() => import('./pages/student/JobsPage'));
-const AiAssistantPage = lazy(() => import('./pages/student/AiAssistantPage'));
-const CourseDetailPage = lazy(() => import('./pages/student/CourseDetailPage'));
-const LecturePlayerPage = lazy(() => import('./pages/student/LecturePlayerPage'));
-const MatrixPage = lazy(() => import('./pages/student/MatrixPage'));
-const StudentResearchPage = lazy(() => import('./pages/student/ResearchPage'));
-const ProfilePage = lazy(() => import('./pages/student/ProfilePage'));
-const WebinarsPage = lazy(() => import('./pages/student/WebinarsPage'));
-const ExamsPage = lazy(() => import('./pages/student/ExamsPage'));
-const DocumentViewerPage = lazy(() => import('./pages/DocumentViewerPage'));
-const LabsPage = lazy(() => import('./pages/student/LabsPage'));
-const LivePage = lazy(() => import('./pages/student/LivePage'));
-const PaymentPage = lazy(() => import('./pages/student/PaymentPage'));
-const CampusMapPage = lazy(() => import('./pages/student/CampusMapPage'));
+const StudentDashboardPage = lazyWithRetry(() => import('./pages/student/DashboardPage'));
+const StudentCoursesPage = lazyWithRetry(() => import('./pages/student/CoursesPage'));
+const LibraryPage = lazyWithRetry(() => import('./pages/student/LibraryPage'));
+const MoocPage = lazyWithRetry(() => import('./pages/student/MoocPage'));
+const JobsPage = lazyWithRetry(() => import('./pages/student/JobsPage'));
+const AiAssistantPage = lazyWithRetry(() => import('./pages/student/AiAssistantPage'));
+const CourseDetailPage = lazyWithRetry(() => import('./pages/student/CourseDetailPage'));
+const LecturePlayerPage = lazyWithRetry(() => import('./pages/student/LecturePlayerPage'));
+const MatrixPage = lazyWithRetry(() => import('./pages/student/MatrixPage'));
+const StudentResearchPage = lazyWithRetry(() => import('./pages/student/ResearchPage'));
+const ProfilePage = lazyWithRetry(() => import('./pages/student/ProfilePage'));
+const WebinarsPage = lazyWithRetry(() => import('./pages/student/WebinarsPage'));
+const ExamsPage = lazyWithRetry(() => import('./pages/student/ExamsPage'));
+const DocumentViewerPage = lazyWithRetry(() => import('./pages/DocumentViewerPage'));
+const LabsPage = lazyWithRetry(() => import('./pages/student/LabsPage'));
+const LivePage = lazyWithRetry(() => import('./pages/student/LivePage'));
+const PaymentPage = lazyWithRetry(() => import('./pages/student/PaymentPage'));
+const CampusMapPage = lazyWithRetry(() => import('./pages/student/CampusMapPage'));
 
 // MorePages exports several named components — bundle them as one lazy chunk
 // by importing the module once and re-exporting each as a thin lazy wrapper.
-const GamificationPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.GamificationPage })));
-const SkillsPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.SkillsPage })));
-const AlertsPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.AlertsPage })));
-const SchedulePage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.SchedulePage })));
-const ResultsPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.ResultsPage })));
-const ArVrPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.ArVrPage })));
-const SocialPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.SocialPage })));
-const DownloadsPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.DownloadsPage })));
-const UniversityInfoPage = lazy(() => import('./pages/student/MorePages').then((m) => ({ default: m.UniversityInfoPage })));
+const GamificationPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.GamificationPage })));
+const SkillsPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.SkillsPage })));
+const AlertsPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.AlertsPage })));
+const SchedulePage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.SchedulePage })));
+const ResultsPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.ResultsPage })));
+const ArVrPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.ArVrPage })));
+const SocialPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.SocialPage })));
+const DownloadsPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.DownloadsPage })));
+const UniversityInfoPage = lazyWithRetry(() => import('./pages/student/MorePages').then((m) => ({ default: m.UniversityInfoPage })));
 
-const TrainingCatalogPage = lazy(() => import('./pages/student/TrainingPages'));
-const TrainingTrackPage = lazy(() => import('./pages/student/TrainingPages').then((m) => ({ default: m.TrainingTrackPage })));
-const TrainingLessonPage = lazy(() => import('./pages/student/TrainingPages').then((m) => ({ default: m.TrainingLessonPage })));
-const AchievementsPage = lazy(() => import('./pages/student/TrainingPages').then((m) => ({ default: m.AchievementsPage })));
+const TrainingCatalogPage = lazyWithRetry(() => import('./pages/student/TrainingPages'));
+const TrainingTrackPage = lazyWithRetry(() => import('./pages/student/TrainingPages').then((m) => ({ default: m.TrainingTrackPage })));
+const TrainingLessonPage = lazyWithRetry(() => import('./pages/student/TrainingPages').then((m) => ({ default: m.TrainingLessonPage })));
+const AchievementsPage = lazyWithRetry(() => import('./pages/student/TrainingPages').then((m) => ({ default: m.AchievementsPage })));
 
-const TeacherIntelligencePage = lazy(() => import('./pages/teacher/TeacherIntelligencePage'));
-const TeacherOfferingDetailPage = lazy(() => import('./pages/teacher/TeacherIntelligencePage').then((m) => ({ default: m.TeacherOfferingDetailPage })));
-const TeacherProfilePage = lazy(() => import('./pages/teacher/TeacherProfilePage'));
-const TeacherLivePage = lazy(() => import('./pages/teacher/TeacherLivePage'));
-const TeacherLabsPage = lazy(() => import('./pages/teacher/TeacherLabsPage'));
-const OnlineExamsPage = lazy(() => import('./pages/exams/OnlineExamsPages'));
-const ExamTakerPage = lazy(() => import('./pages/exams/OnlineExamsPages').then((m) => ({ default: m.ExamTakerPage })));
-const ExamModerationPage = lazy(() => import('./pages/exams/OnlineExamsPages').then((m) => ({ default: m.ExamModerationPage })));
+const TeacherIntelligencePage = lazyWithRetry(() => import('./pages/teacher/TeacherIntelligencePage'));
+const TeacherOfferingDetailPage = lazyWithRetry(() => import('./pages/teacher/TeacherIntelligencePage').then((m) => ({ default: m.TeacherOfferingDetailPage })));
+const TeacherProfilePage = lazyWithRetry(() => import('./pages/teacher/TeacherProfilePage'));
+const TeacherLivePage = lazyWithRetry(() => import('./pages/teacher/TeacherLivePage'));
+const TeacherLabsPage = lazyWithRetry(() => import('./pages/teacher/TeacherLabsPage'));
+const OnlineExamsPage = lazyWithRetry(() => import('./pages/exams/OnlineExamsPages'));
+const ExamTakerPage = lazyWithRetry(() => import('./pages/exams/OnlineExamsPages').then((m) => ({ default: m.ExamTakerPage })));
+const ExamModerationPage = lazyWithRetry(() => import('./pages/exams/OnlineExamsPages').then((m) => ({ default: m.ExamModerationPage })));
 
-const CommunityPage = lazy(() => import('./pages/community/CommunityPages'));
+const CommunityPage = lazyWithRetry(() => import('./pages/community/CommunityPages'));
 
-const AdminTeachersPage = lazy(() => import('./pages/admin/AdminGovernancePages').then((m) => ({ default: m.AdminTeachersPage })));
-const AdminPermissionsPage = lazy(() => import('./pages/admin/AdminGovernancePages').then((m) => ({ default: m.AdminPermissionsPage })));
-const AdminSyncPage = lazy(() => import('./pages/admin/AdminSyncPage').then((m) => ({ default: m.AdminSyncPage })));
+const AdminTeachersPage = lazyWithRetry(() => import('./pages/admin/AdminGovernancePages').then((m) => ({ default: m.AdminTeachersPage })));
+const AdminPermissionsPage = lazyWithRetry(() => import('./pages/admin/AdminGovernancePages').then((m) => ({ default: m.AdminPermissionsPage })));
+const AdminSyncPage = lazyWithRetry(() => import('./pages/admin/AdminSyncPage').then((m) => ({ default: m.AdminSyncPage })));
 
-const TeacherSchedulePage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.TeacherSchedulePage })));
-const AttendancePage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.AttendancePage })));
-const GradesPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.GradesPage })));
-const MaterialsPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.MaterialsPage })));
-const ResearchPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.ResearchPage })));
-const StudentsListPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.StudentsListPage })));
-const PerformancePage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.PerformancePage })));
-const AssignmentsPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.AssignmentsPage })));
-const MessagesPage = lazy(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.MessagesPage })));
+const TeacherSchedulePage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.TeacherSchedulePage })));
+const AttendancePage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.AttendancePage })));
+const GradesPage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.GradesPage })));
+const MaterialsPage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.MaterialsPage })));
+const ResearchPage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.ResearchPage })));
+const StudentsListPage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.StudentsListPage })));
+const PerformancePage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.PerformancePage })));
+const AssignmentsPage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.AssignmentsPage })));
+const MessagesPage = lazyWithRetry(() => import('./pages/teacher/TeacherPages').then((m) => ({ default: m.MessagesPage })));
 
 // 18-F1 — unified exam authoring (question bank + templates + moderation)
-const ExamAuthoringPage = lazy(() => import('./pages/teacher/ExamAuthorPages'));
-const ExamTemplateDetailPage = lazy(() => import('./pages/teacher/ExamAuthorPages').then((m) => ({ default: m.ExamTemplateDetailPage })));
+const ExamAuthoringPage = lazyWithRetry(() => import('./pages/teacher/ExamAuthorPages'));
+const ExamTemplateDetailPage = lazyWithRetry(() => import('./pages/teacher/ExamAuthorPages').then((m) => ({ default: m.ExamTemplateDetailPage })));
 
-const TeacherDashboardPage = lazy(() => import('./pages/teacher/TeacherDashboardPage').then((m) => ({ default: m.TeacherDashboardPage })));
+const TeacherDashboardPage = lazyWithRetry(() => import('./pages/teacher/TeacherDashboardPage').then((m) => ({ default: m.TeacherDashboardPage })));
 
-const AdminDashboardPage = lazy(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminDashboardPage })));
-const AdminFacultiesPage = lazy(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminFacultiesPage })));
-const AdminReportsPage = lazy(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminReportsPage })));
-const AdminCoursesPage = lazy(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminCoursesPage })));
+const AdminDashboardPage = lazyWithRetry(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminDashboardPage })));
+const AdminFacultiesPage = lazyWithRetry(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminFacultiesPage })));
+const AdminReportsPage = lazyWithRetry(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminReportsPage })));
+const AdminCoursesPage = lazyWithRetry(() => import('./pages/admin/AdminPages').then((m) => ({ default: m.AdminCoursesPage })));
 
-const AdminStudentsPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminStudentsPage })));
-const AdminAnalysisPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminAnalysisPage })));
-const AdminDigitalPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminDigitalPage })));
-const AdminSettingsPage = lazy(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminSettingsPage })));
+const AdminStudentsPage = lazyWithRetry(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminStudentsPage })));
+const AdminAnalysisPage = lazyWithRetry(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminAnalysisPage })));
+const AdminDigitalPage = lazyWithRetry(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminDigitalPage })));
+const AdminSettingsPage = lazyWithRetry(() => import('./pages/admin/AdminExtraPages').then((m) => ({ default: m.AdminSettingsPage })));
 
-const QualityDashboardPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityDashboardPage })));
-const QualityCoursesPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityCoursesPage })));
-const QualityProfessorsPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityProfessorsPage })));
-const QualityEngagementPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityEngagementPage })));
-const QualityCurriculumPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityCurriculumPage })));
-const QualityReportsPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityReportsPage })));
-const QualityAlertsPage = lazy(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityAlertsPage })));
+const QualityDashboardPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityDashboardPage })));
+const QualityCoursesPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityCoursesPage })));
+const QualityProfessorsPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityProfessorsPage })));
+const QualityEngagementPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityEngagementPage })));
+const QualityCurriculumPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityCurriculumPage })));
+const QualityReportsPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityReportsPage })));
+const QualityAlertsPage = lazyWithRetry(() => import('./pages/quality/QualityPages').then((m) => ({ default: m.QualityAlertsPage })));
 
-const OwnerDashboardPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerDashboardPage })));
-const OwnerUsersPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerUsersPage })));
-const OwnerActivityPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerActivityPage })));
-const OwnerContentPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerContentPage })));
-const OwnerSystemPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerSystemPage })));
-const OwnerEducationPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerEducationPage })));
-const OwnerRealtimePage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerRealtimePage })));
-const OwnerAiPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerAiPage })));
-const OwnerAlertsPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerAlertsPage })));
-const OwnerGovernancePage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerGovernancePage })));
+const OwnerDashboardPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerDashboardPage })));
+const OwnerUsersPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerUsersPage })));
+const OwnerActivityPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerActivityPage })));
+const OwnerContentPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerContentPage })));
+const OwnerSystemPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerSystemPage })));
+const OwnerEducationPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerEducationPage })));
+const OwnerRealtimePage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerRealtimePage })));
+const OwnerAiPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerAiPage })));
+const OwnerAlertsPage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerAlertsPage })));
+const OwnerGovernancePage = lazyWithRetry(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerGovernancePage })));
 
-const VisionGalleryPage = lazy(() => import('./pages/vision/VisionPages').then((m) => ({ default: m.VisionGalleryPage })));
-const VisionDetailPage = lazy(() => import('./pages/vision/VisionPages').then((m) => ({ default: m.VisionDetailPage })));
+const VisionGalleryPage = lazyWithRetry(() => import('./pages/vision/VisionPages').then((m) => ({ default: m.VisionGalleryPage })));
+const VisionDetailPage = lazyWithRetry(() => import('./pages/vision/VisionPages').then((m) => ({ default: m.VisionDetailPage })));
 
-const CollegesIndexPage = lazy(() => import('./pages/colleges/CollegePages').then((m) => ({ default: m.CollegesIndexPage })));
-const CollegeDetailPage = lazy(() => import('./pages/colleges/CollegePages').then((m) => ({ default: m.CollegeDetailPage })));
-const CollegesLeaderboardPage = lazy(() => import('./pages/colleges/CollegePages').then((m) => ({ default: m.CollegesLeaderboardPage })));
+const CollegesIndexPage = lazyWithRetry(() => import('./pages/colleges/CollegePages').then((m) => ({ default: m.CollegesIndexPage })));
+const CollegeDetailPage = lazyWithRetry(() => import('./pages/colleges/CollegePages').then((m) => ({ default: m.CollegeDetailPage })));
+const CollegesLeaderboardPage = lazyWithRetry(() => import('./pages/colleges/CollegePages').then((m) => ({ default: m.CollegesLeaderboardPage })));
 
-const CompetitionsIndexPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionsIndexPage })));
-const CompetitionDetailPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionDetailPage })));
+const CompetitionsIndexPage = lazyWithRetry(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionsIndexPage })));
+const CompetitionDetailPage = lazyWithRetry(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionDetailPage })));
 
 /** Resolves the home path for an authenticated user, or `/` for guests. */
 function HomeRedirect() {

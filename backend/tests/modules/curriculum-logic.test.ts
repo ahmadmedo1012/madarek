@@ -209,6 +209,14 @@ describe('updateChapterBodySchema', () => {
     expect(updateChapterBodySchema.safeParse({}).success).toBe(true);
   });
 
+  it('accepts ordinal for chapter reorder — 5-B6 hand-off #2 (neighbor-swap from FE)', () => {
+    expect(updateChapterBodySchema.safeParse({ ordinal: 3 }).success).toBe(true);
+    expect(updateChapterBodySchema.safeParse({ ordinal: 0 }).success).toBe(true);
+    expect(updateChapterBodySchema.safeParse({ ordinal: -1 }).success).toBe(false);
+    expect(updateChapterBodySchema.safeParse({ ordinal: 501 }).success).toBe(false);
+    expect(updateChapterBodySchema.safeParse({ ordinal: '3' }).success).toBe(false);
+  });
+
   it('applies the same field validation as create', () => {
     expect(updateChapterBodySchema.safeParse({ startSec: -5 }).success).toBe(false);
     expect(updateChapterBodySchema.safeParse({ conceptId: '' }).success).toBe(false);

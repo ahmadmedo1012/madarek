@@ -7,6 +7,7 @@ import {
 import { Card, MetricCard, ProgressBar, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
 import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
 import {
@@ -310,6 +311,17 @@ export function SubmitAssignmentModal({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [done, setDone] = useState<Submission | null>(null);
 
+  /* Close-parity (A10 P1-1): the student's answer is the same class of
+     long-form prose the 11 teacher-side authoring modals guard — an
+     8000-character draft must not vanish on a stray Esc / scrim click.
+     Dirty while any field carries text and the submission hasn't landed;
+     inert while the mutation is in flight (A10's teacher-side pattern). */
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty: !done && (textAnswer.trim() !== '' || fileUrl.trim() !== ''),
+    pending: submit.isPending,
+    onClose,
+  });
+
   const onSubmit = async () => {
     const draft = {
       textAnswer: textAnswer.trim() || undefined,
@@ -332,10 +344,16 @@ export function SubmitAssignmentModal({
   const late = done?.status === 'LATE';
 
   return (
-    <Modal open onClose={onClose} ariaLabel={`تسليم الواجب ${assignment.title}`} closeOnOverlayClick={!submit.isPending}>
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel={`تسليم الواجب ${assignment.title}`}
+      closeOnOverlayClick={!submit.isPending}
+      closeOnEscape={!escapeLocked}
+    >
       <div className="modal-header">
         <div className="modal-title">تسليم الواجب</div>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={submit.isPending}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={submit.isPending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -419,7 +437,7 @@ export function SubmitAssignmentModal({
         )}
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn ghost" onClick={onClose} disabled={submit.isPending}>
+        <button type="button" className="btn ghost" onClick={requestClose} disabled={submit.isPending}>
           {done ? 'إغلاق' : 'إلغاء'}
         </button>
         {!done && (
@@ -433,6 +451,7 @@ export function SubmitAssignmentModal({
           </button>
         )}
       </div>
+      {guard}
     </Modal>
   );
 }

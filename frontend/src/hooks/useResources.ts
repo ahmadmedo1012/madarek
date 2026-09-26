@@ -2178,6 +2178,10 @@ export interface CompetitionDetail extends CompetitionRow {
     fileUrl?: string | null;
     submittedAt: string;
     score: number | null;
+    /** 5-B1 (A12 P1-1): present on the organizer's view and on the
+     *  viewer's OWN entry (entryViewForViewer) — enables the exact
+     *  own-entry match the edit flow needs. Absent on third parties. */
+    userId?: string;
     user: { firstName: string; lastName: string; avatarColor: string | null; avatarInitials: string | null };
   }>;
 }
@@ -2274,6 +2278,10 @@ export interface CampusEventRow {
   themeColor: string | null;
   organizer: { firstName: string; lastName: string; role: string };
   _count: { rsvps: number };
+  /** 5-B1 (A12 P2-2): the viewer's own RSVP status on /events rows —
+   *  null when never answered. Lets the pressed state survive reload
+   *  (the viewerReacted pattern). Additive: absent on older payloads. */
+  myRsvp?: 'GOING' | 'MAYBE' | 'NO' | null;
 }
 export function useCampusEvents() {
   return useQuery({

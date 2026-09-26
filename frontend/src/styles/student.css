@@ -117,11 +117,21 @@
   .lecture-progress-fill {
     display: block;
     block-size: 100%;
+    /* 5-C1 (A2 §1c #25 — layout-property debt cleared, 23-b
+       .progress-fill pattern): the fill paints at full track width
+       and the VALUE rides transform: scaleX() — the page sets the
+       scale inline (LecturePlayerPage), transform-origin follows the
+       reading direction, and the stat-duration transition (the
+       satisfying "section complete" fill) moves to transform. The
+       old inline-size transition re-laid-out the track per frame. */
+    inline-size: 100%;
     background: var(--neutral-900);
     border-radius: inherit;
-    /* stat duration = the satisfying "section complete" fill */
-    transition: inline-size var(--motion-duration-stat) var(--motion-ease-decelerate);
+    transform-origin: left center;
+    transform: scaleX(var(--fill-scale, 0));
+    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
   }
+  [dir="rtl"] .lecture-progress-fill { transform-origin: right center; }
   [data-theme="dark"] .lecture-progress-fill { background: var(--accent); }
   /* Checkpoint notches on the track (decorative — the note below and
      the quiz itself carry the information accessibly). inset-inline-
@@ -1760,16 +1770,22 @@
     background: var(--surface-3);
     overflow: clip;
   }
-  /* plain-block fill anchors at inline-start → RTL-correct growth
-     (same anatomy as .progress-track / .xp-track) */
+  /* fill anchors at inline-start → RTL-correct growth (same anatomy
+     as .progress-track / .xp-track). 5-C1 (A2 §1c #26): campus-fill-in
+     animates transform: scaleX now — the fill keeps its inline X%
+     width (set by CampusMapPage) and the keyframes reveal it from the
+     reading edge (transform-origin flips under [dir=rtl]); the RM
+     kill below still pins the full fill. */
   .campus-city-fill {
     display: block;
     block-size: 100%;
     border-radius: inherit;
     background: var(--accent);
+    transform-origin: left center;
     animation: campus-fill-in var(--motion-duration-stat) var(--motion-ease-decelerate) both;
     animation-delay: calc(var(--city-i, 0) * var(--motion-stagger-step));
   }
+  [dir="rtl"] .campus-city-fill { transform-origin: right center; }
   .campus-city-row.on .campus-city-fill { background: var(--accent-strong); }
   .campus-city-count {
     font-family: var(--font-mono);
@@ -2209,8 +2225,11 @@
 
   /* ── Keyframes (wave 4-d; reduced-motion off-switch below) ── */
   @keyframes campus-fill-in {
-    /* width-only growth — RTL-neutral by construction */
-    from { inline-size: 0; }
+    /* 5-C1 (A2 §1c #26): width-only growth became a scaleX reveal —
+     the consumer keeps its inline width and this keyframe scales the
+     fill up from the reading edge (transform-origin on the consumer,
+     flipped for [dir=rtl] above). RTL-neutral by construction. */
+    from { transform: scaleX(0); }
   }
   @keyframes social-count-pop {
     0% { transform: scale(1); }

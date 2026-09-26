@@ -135,9 +135,14 @@ export const createChapterBodySchema = chapterFields.refine(
 // (previously there was no way to un-tag a chapter — omitted meant
 // unchanged and null was a 400); omitting the field still means
 // unchanged. Create keeps the non-nullable shape.
+// `ordinal` (5-B6 hand-off #2): lets the FE authoring UI reorder chapters
+// via neighbor-swap — same convention the lecture reorder uses.
 export const updateChapterBodySchema = chapterFields
   .partial()
-  .extend({ conceptId: z.string().min(1).max(100).nullable().optional() });
+  .extend({
+    conceptId: z.string().min(1).max(100).nullable().optional(),
+    ordinal: z.number().int().min(0).max(500).optional(),
+  });
 
 const checkpointFields = z
   .object({
@@ -397,6 +402,8 @@ router.patch(
           startSec: body.startSec,
           endSec: body.endSec,
           conceptId: body.conceptId,
+          // 5-B6 hand-off #2 — chapter reorder (neighbor-swap from the FE).
+          ordinal: body.ordinal,
         },
       });
 

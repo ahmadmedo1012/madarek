@@ -118,7 +118,10 @@ export default function ExamsPage() {
       </div>
 
       <Card title="ملخّص الواجبات" icon={BookMarked}>
-        <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>
+        {/* notice-paragraph (5-C2 / A3 P1-2): caps the lead-in at the
+            72ch body-measure token — this full-width card paragraph
+            measured 1134px (~126ch) at 390–1440. */}
+        <p className="text-sm text-muted notice-paragraph" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>
           تحليل أعمق للواجبات والمشاريع — متوسّط أدائك مقارنة بزملائك في الفصل،
           ومسار التحسّن عبر الفصل الدراسيّ — قيد الإعداد حالياً.
         </p>

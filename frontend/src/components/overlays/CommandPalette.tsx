@@ -84,6 +84,7 @@ export function CommandPalette({
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel}
+        tabIndex={-1}
       >
         {children}
       </div>

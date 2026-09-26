@@ -14,8 +14,8 @@ import {
   CheckCircle2, Users, Sparkles, Plus, X, Send, AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, MetricCard } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Card, Badge, MetricCard, FormField } from '../../components/primitives';
+import { ErrorState, EmptyState, ListSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -132,7 +132,10 @@ export default function CommunityPage() {
         )}
       </header>
 
-      <div className="grid-3">
+      {/* KPI trio — .kpis-compact keeps the strip a strip on phones
+          (A12 P2-4): the plain .grid-3 stack burned 396px on three
+          single numbers and pushed the tabs below the fold. */}
+      <div className="grid-3 kpis-compact">
         <MetricCard icon={Megaphone} label="إعلانات نشطة" value={annCount} color="brand" />
         <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={compsCount} color="gold" />
         <MetricCard icon={CalendarDays} label="فعاليات قادمة" value={eventsCount} color="green" />
@@ -160,9 +163,13 @@ export default function CommunityPage() {
         ))}
       </div>
 
+      {/* Tab panels — shape-matched skeletons while pending (A9 P2-2,
+          5-C3 hand-off): each panel's skeleton mirrors its loaded
+          layout (announcement rows / track cards / event cards), never
+          a bare spinner. */}
       {tab === 'announcements' && (
         <div className="flex-col gap-3" role="tabpanel" id="community-panel-announcements" aria-labelledby="community-tab-announcements">
-          {ann.isPending ? <LoadingState label="جارٍ تحميل الإعلانات…" /> :
+          {ann.isPending ? <ListSkeleton rows={4} /> :
            ann.isError ? <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} /> :
            (ann.data?.length ?? 0) === 0 ? (
             <EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." />
@@ -171,7 +178,11 @@ export default function CommunityPage() {
       )}
       {tab === 'competitions' && (
         <div className="track-grid" role="tabpanel" id="community-panel-competitions" aria-labelledby="community-tab-competitions">
-          {comps.isPending ? <LoadingState label="جارٍ تحميل المسابقات…" /> :
+          {comps.isPending ? <>
+            <CardSkeleton lines={4} />
+            <CardSkeleton lines={4} />
+            <CardSkeleton lines={4} />
+          </> :
            comps.isError ? <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} /> :
            (comps.data?.length ?? 0) === 0 ? (
             <EmptyState title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />
@@ -180,7 +191,10 @@ export default function CommunityPage() {
       )}
       {tab === 'events' && (
         <div className="grid-2" role="tabpanel" id="community-panel-events" aria-labelledby="community-tab-events">
-          {events.isPending ? <LoadingState label="جارٍ تحميل الفعاليات…" /> :
+          {events.isPending ? <>
+            <CardSkeleton lines={3} />
+            <CardSkeleton lines={3} />
+          </> :
            events.isError ? <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} /> :
            (events.data?.length ?? 0) === 0 ? (
             <EmptyState title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />
@@ -260,7 +274,16 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
       : hours >= 1 ? `تنتهي بعد ${arUnit(hours, 'ساعة', 'ساعتين', 'ساعات')}`
         : 'تنتهي خلال دقائق';
   return (
-    <div className="track-card" style={{ ['--track-accent' as never]: accent, cursor: 'default' }}>
+    /* A real link, not a dead card (A12 P1-2 forward-path family): the
+     * community tab's competition cards were non-navigable divs — the
+     * only onward path was the header's «صفحة المسابقات الكاملة».
+     * .track-card already carries its anchor treatment (TrainingPages'
+     * tracks are Links through the same family). */
+    <Link
+      to={`/competitions/${c.id}`}
+      className="track-card"
+      style={{ ['--track-accent' as never]: accent }}
+    >
       <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
         <EmojiIcon emoji={c.iconEmoji ?? '🏆'} size={24} />
       </div>
@@ -272,16 +295,36 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
             without a tooltip) */}
         <p className="track-card-summary" title={c.description}>{c.description}</p>
         <div className="track-card-meta">
+          {/* 5-A12 P2-3: honest display state. The old ternary assumed
+              !OPEN ⇒ CLOSED|JUDGED, so an OPEN competition whose deadline
+              had passed rendered a FALSE «تم التحكيم». The three states
+              are now exhaustive: open countdown / closed / judged /
+              ended (OPEN but past deadline — awaiting the organizer's
+              close action). */}
           {isOpen ? (
             <Badge color="green"><Icon icon={Clock} size={11} /> {daysLabel}</Badge>
+          ) : c.status === 'CLOSED' ? (
+            <Badge color="amber">مغلقة</Badge>
+          ) : c.status === 'JUDGED' ? (
+            <Badge color="gold">تم التحكيم</Badge>
           ) : (
-            <Badge color="amber">{c.status === 'CLOSED' ? 'مغلقة' : 'تم التحكيم'}</Badge>
+            <Badge color="amber">انتهى التقديم</Badge>
           )}
           {c.prize && <span><Icon icon={Sparkles} size={12} style={{ color: 'var(--gold)' }} /> {c.prize}</span>}
-          <span><Icon icon={Users} size={12} /> {c._count.entries === 1 ? 'مشترك واحد' : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}</span>
+          {/* A8 §7.7: a zero here reads as a dead competition — while
+              entries are still possible the honest line is an invitation
+              (the empty-state inside the detail page already speaks this
+              copy); after the door closes it names the absence. */}
+          <span>
+            <Icon icon={Users} size={12} />
+            {' '}
+            {c._count.entries === 0
+              ? (isOpen ? 'كن أول المشاركين' : 'لا مشاركات')
+              : c._count.entries === 1 ? 'مشترك واحد' : arUnit(c._count.entries, 'مشترك', 'مشتركان', 'مشتركين')}
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -293,12 +336,11 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
   const fmtDateVal = (d: Date) => formatDate(d, { weekday: 'long', day: 'numeric', month: 'short' });
   const fmtTimeVal = (d: Date) => formatTime(d, { hour: '2-digit', minute: '2-digit' });
 
-  /* Session-local RSVP reflection — the event row carries no "my RSVP"
-     field from the API, so the pressed state is tracked locally after a
-     successful mutate (audit 0-f P2-17: pending / pressed / failure
-     feedback instead of double-submitting blind). The trio mirrors the
-     backend's full RsvpStatus enum — GOING / MAYBE / NO (15-a P1-1). */
-  const [mine, setMine] = useState<'GOING' | 'MAYBE' | 'NO' | null>(null);
+  /* RSVP reflection — 5-B1 ships `myRsvp` per viewer on /events (the
+     viewerReacted pattern), so the pressed state now SURVIVES RELOAD
+     (A12 P2-2): the server truth seeds the local state, and a
+     successful mutate updates it optimistically on top. */
+  const [mine, setMine] = useState<'GOING' | 'MAYBE' | 'NO' | null>(e.myRsvp ?? null);
   const [failed, setFailed] = useState(false);
   const failTimer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(failTimer.current), []);
@@ -338,7 +380,12 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
             <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>
             <span><Icon icon={Clock} size={11} /> {fmtTimeVal(start)} – {fmtTimeVal(end)}</span>
             <span><Icon icon={MapPin} size={11} /> {e.location}</span>
-            <span><Icon icon={Users} size={11} /> <bdi>{e._count.rsvps} / {e.capacity}</bdi></span>
+            {/* 5-B1: the count is GOING-only — «لن أحضر» declines never
+                occupied a seat; the tooltip states exactly what the pair
+                measures. */}
+            <span title="الحضور المؤكّدون من إجمالي السعة">
+              <Icon icon={Users} size={11} /> <bdi>{e._count.rsvps} / {e.capacity}</bdi>
+            </span>
           </div>
           <div className="event-actions">
             <button
@@ -405,10 +452,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
 }) {
   const create = useCreateAnnouncement();
   const facs = useFaculties();
-  const scopeId = useId();
-  const scopeSelectId = useId();
-  const titleId = useId();
-  const bodyId = useId();
+  const offeringScopeId = useId();
   const iconLabelId = useId();
   const pinnedId = useId();
 
@@ -462,12 +506,13 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
           <Icon icon={X} size={16} />
         </button>
       </header>
+      {/* 5-C4 (A10 P2-3): platform FormField — aria-invalid +
+          aria-describedby on every error-carrying control (the census
+          measured all four announcement controls unwired). */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
         <div className="comp-form-row">
-          <div className="comp-form-field">
-            <label htmlFor={scopeSelectId}>النطاق</label>
+          <FormField label="النطاق">
             <select
-              id={scopeSelectId}
               className="auth-input"
               {...scopeRegistration}
               onChange={(e) => {
@@ -484,11 +529,13 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
               <option value="DEPARTMENT">قسم</option>
               {canOffering && <option value="OFFERING">مقرر</option>}
             </select>
-          </div>
+          </FormField>
           {(scope === 'FACULTY' || scope === 'DEPARTMENT') && (
-            <div className="comp-form-field">
-              <label htmlFor={scopeId}>{scope === 'FACULTY' ? 'الكلّيّة' : 'القسم'}</label>
-              <select id={scopeId} {...form.register('scopeId')} className="auth-input">
+            <FormField
+              label={scope === 'FACULTY' ? 'الكلّيّة' : 'القسم'}
+              error={form.formState.errors.scopeId?.message}
+            >
+              <select {...form.register('scopeId')} className="auth-input">
                 <option value="">اختر…</option>
                 {scope === 'FACULTY' && facs.data?.map((f) => (
                   <option key={f.id} value={f.id}>{f.name}</option>
@@ -497,32 +544,27 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
                   <option key={d.id} value={d.id}>{f.name} — {d.name}</option>
                 )))}
               </select>
-              {form.formState.errors.scopeId && <span className="auth-field-error">{form.formState.errors.scopeId.message}</span>}
-            </div>
+            </FormField>
           )}
           {scope === 'OFFERING' && (
             <OfferingScopeSelect
-              id={scopeId}
+              id={offeringScopeId}
               registration={form.register('scopeId')}
               error={form.formState.errors.scopeId?.message}
             />
           )}
         </div>
 
-        <div className="comp-form-field">
-          <label htmlFor={titleId}>العنوان</label>
-          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
-          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
-        </div>
-        <div className="comp-form-field">
-          <label htmlFor={bodyId}>نصّ الإعلان</label>
-          <textarea id={bodyId} rows={5} {...form.register('body')} className="auth-input" />
-          {form.formState.errors.body && <span className="auth-field-error">{form.formState.errors.body.message}</span>}
-        </div>
+        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+          <input type="text" {...form.register('title')} className="auth-input" />
+        </FormField>
+        <FormField label="نصّ الإعلان" error={form.formState.errors.body?.message}>
+          <textarea rows={5} {...form.register('body')} className="auth-input" style={{ resize: 'vertical' }} />
+        </FormField>
 
         <div className="comp-form-row">
-          <div className="comp-form-field">
-            <label id={iconLabelId}>أيقونة</label>
+          <div className="form-field">
+            <label className="form-field-label" id={iconLabelId}>أيقونة</label>
             <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
               {ANN_ICONS.map((ic) => (
                 <button
@@ -534,12 +576,15 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
               ))}
             </div>
           </div>
-          <div className="comp-form-field">
-            <label htmlFor={pinnedId}>تثبيت</label>
-            <label htmlFor={pinnedId} className="flex items-center gap-2" style={{ marginBlockStart: 8 }}>
+          {/* 5-C4 (A10 P3-7 while in the row): ONE label names the
+              checkbox — the old pair (field label + wrapping label)
+              concatenated into a garbled accessible name. */}
+          <div className="form-field">
+            <label className="form-field-label" htmlFor={pinnedId}>تثبيت</label>
+            <span className="flex items-center gap-2" style={{ marginBlockStart: 8 }}>
               <input id={pinnedId} type="checkbox" {...form.register('pinned')} />
               <span className="text-sm text-muted">إبقاء الإعلان في أعلى التغذية</span>
-            </label>
+            </span>
           </div>
         </div>
 
@@ -572,22 +617,24 @@ function OfferingScopeSelect({
   error?: string;
 }) {
   const offerings = useTeacherOfferings();
+  /* 5-C4 (A10 P2-3): the load/empty notices ride the FormField hint
+     slot, so aria-describedby covers them too. */
+  const hint = offerings.isPending
+    ? 'جارٍ تحميل مقرّراتك…'
+    : offerings.isError
+      ? 'تعذَّر تحميل المقرّرات.'
+      : (offerings.data?.length ?? 0) === 0
+        ? 'لا توجد مقرّرات مُسنَدة إليك حالياً.'
+        : undefined;
   return (
-    <div className="comp-form-field">
-      <label htmlFor={id}>المقرر</label>
-      <select id={id} className="auth-input" {...registration}>
+    <FormField label="المقرر" id={id} error={error} hint={hint}>
+      <select className="auth-input" {...registration}>
         <option value="">اختر…</option>
         {offerings.data?.map((o) => (
           <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
         ))}
       </select>
-      {offerings.isPending && <span className="text-xxs text-subtle">جارٍ تحميل مقرّراتك…</span>}
-      {offerings.isError && <span className="auth-field-error">تعذَّر تحميل المقرّرات.</span>}
-      {!offerings.isPending && !offerings.isError && (offerings.data?.length ?? 0) === 0 && (
-        <span className="text-xxs text-subtle">لا توجد مقرّرات مُسنَدة إليك حالياً.</span>
-      )}
-      {error && <span className="auth-field-error">{error}</span>}
-    </div>
+    </FormField>
   );
 }
 
@@ -610,12 +657,6 @@ const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCampusEvent();
-  const titleId = useId();
-  const descId = useId();
-  const locId = useId();
-  const startId = useId();
-  const endId = useId();
-  const capId = useId();
   const iconLabelId = useId();
 
   const form = useForm<EventInputs>({
@@ -663,41 +704,32 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
           <Icon icon={X} size={16} />
         </button>
       </header>
+      {/* 5-C4 (A10 P2-3): platform FormField on the event form too —
+          same association contract as the announcement composer. */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
-        <div className="comp-form-field">
-          <label htmlFor={titleId}>العنوان</label>
-          <input id={titleId} type="text" {...form.register('title')} className="auth-input" />
-          {form.formState.errors.title && <span className="auth-field-error">{form.formState.errors.title.message}</span>}
-        </div>
-        <div className="comp-form-field">
-          <label htmlFor={descId}>الوصف</label>
-          <textarea id={descId} rows={3} {...form.register('description')} className="auth-input" />
-          {form.formState.errors.description && <span className="auth-field-error">{form.formState.errors.description.message}</span>}
-        </div>
-        <div className="comp-form-field">
-          <label htmlFor={locId}>المكان</label>
-          <input id={locId} type="text" placeholder="مدرَج الكلّيّة، قاعة 301…" {...form.register('location')} className="auth-input" />
-          {form.formState.errors.location && <span className="auth-field-error">{form.formState.errors.location.message}</span>}
+        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+          <input type="text" {...form.register('title')} className="auth-input" />
+        </FormField>
+        <FormField label="الوصف" error={form.formState.errors.description?.message}>
+          <textarea rows={3} {...form.register('description')} className="auth-input" style={{ resize: 'vertical' }} />
+        </FormField>
+        <FormField label="المكان" error={form.formState.errors.location?.message}>
+          <input type="text" placeholder="مدرَج الكلّيّة، قاعة 301…" {...form.register('location')} className="auth-input" />
+        </FormField>
+        <div className="comp-form-row">
+          <FormField label="البداية" error={form.formState.errors.startsAt?.message}>
+            <input type="datetime-local" {...form.register('startsAt')} className="auth-input" />
+          </FormField>
+          <FormField label="النهاية" error={form.formState.errors.endsAt?.message}>
+            <input type="datetime-local" {...form.register('endsAt')} className="auth-input" />
+          </FormField>
         </div>
         <div className="comp-form-row">
-          <div className="comp-form-field">
-            <label htmlFor={startId}>البداية</label>
-            <input id={startId} type="datetime-local" {...form.register('startsAt')} className="auth-input" />
-            {form.formState.errors.startsAt && <span className="auth-field-error">{form.formState.errors.startsAt.message}</span>}
-          </div>
-          <div className="comp-form-field">
-            <label htmlFor={endId}>النهاية</label>
-            <input id={endId} type="datetime-local" {...form.register('endsAt')} className="auth-input" />
-            {form.formState.errors.endsAt && <span className="auth-field-error">{form.formState.errors.endsAt.message}</span>}
-          </div>
-        </div>
-        <div className="comp-form-row">
-          <div className="comp-form-field">
-            <label htmlFor={capId}>السعة القصوى</label>
-            <input id={capId} type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
-          </div>
-          <div className="comp-form-field">
-            <label id={iconLabelId}>أيقونة</label>
+          <FormField label="السعة القصوى">
+            <input type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
+          </FormField>
+          <div className="form-field">
+            <label className="form-field-label" id={iconLabelId}>أيقونة</label>
             <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
               {EVENT_ICONS.map((ic) => (
                 <button

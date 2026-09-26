@@ -950,7 +950,11 @@ export function QualityCurriculumPage() {
         {pageHeader}
         <CardSkeleton lines={2} />
         <Card>
-          <div className="matrix-cells" aria-hidden>
+          {/* 5-C3 (A9 P2-5): the matrix placeholder announced nothing —
+              8 bars inside an aria-hidden wrapper with no busy signal
+              at all. Now it carries the primitives-family busy
+              semantics (the bars themselves stay aria-hidden). */}
+          <div className="matrix-cells" aria-busy="true" aria-live="polite">
             {Array.from({ length: 8 }).map((_, i) => (
               <Skeleton key={i} width="100%" height={56} />
             ))}

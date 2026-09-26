@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -959,21 +959,26 @@ export function AdminReportsPage() {
                     <div
                       className="trend-bar trend-submitted"
                       title={`مرفوعة: ${b.submitted}`}
-                      style={{ width: `${(b.submitted / maxBucket) * 100}%` }}
+                      /* 5-C1 (A2 §1c #28): the value rides --trend-scale (0..1)
+                         consumed by a clip-path wipe in components.css —
+                         paint-only, no per-frame reflow. The 0.004 floor
+                         keeps the old 2px min-inline-size sliver for
+                         zero-buckets (≈2px on the trend track). */
+                      style={{ '--trend-scale': Math.max(b.submitted / maxBucket, 0.004) } as CSSProperties}
                     >
                       {b.submitted > 0 && <span className="trend-bar-val">{b.submitted}</span>}
                     </div>
                     <div
                       className="trend-bar trend-graded"
                       title={`مقيَّمة: ${b.graded}`}
-                      style={{ width: `${(b.graded / maxBucket) * 100}%` }}
+                      style={{ '--trend-scale': Math.max(b.graded / maxBucket, 0.004) } as CSSProperties}
                     >
                       {b.graded > 0 && <span className="trend-bar-val">{b.graded}</span>}
                     </div>
                     <div
                       className="trend-bar trend-published"
                       title={`منشورة: ${b.published}`}
-                      style={{ width: `${(b.published / maxBucket) * 100}%` }}
+                      style={{ '--trend-scale': Math.max(b.published / maxBucket, 0.004) } as CSSProperties}
                     >
                       {b.published > 0 && <span className="trend-bar-val">{b.published}</span>}
                     </div>

@@ -327,6 +327,8 @@ const pendingSub = (overrides?: Partial<PendingSubmissionFeedRow>): PendingSubmi
   id: 'sub1',
   submittedAt: new Date('2026-02-01T09:00:00Z'),
   status: SubmissionStatus.SUBMITTED,
+  textAnswer: 'حلّ الواجب بالكامل مع الشرح.',
+  fileUrl: null,
   student: { firstName: 'سالم', lastName: 'العامري', avatarInitials: 'سع', avatarColor: null },
   assignment: {
     title: 'واجب الفصل الأول',
@@ -353,7 +355,21 @@ describe('submissionFeedItem (pending-submissions feed, `late` flag)', () => {
       title: 'سلّم واجب الفصل الأول',
       actionTo: '/teacher/grades',
       late: false,
+      textAnswer: 'حلّ الواجب بالكامل مع الشرح.',
+      fileUrl: null,
     });
+  });
+
+  it('projects the student answer so the grading modal can show what it grades (5-B6 P1-2)', () => {
+    // text-only
+    expect(submissionFeedItem(pendingSub({ fileUrl: null })).fileUrl).toBeNull();
+    // file-only
+    const fileOnly = submissionFeedItem(pendingSub({
+      textAnswer: null,
+      fileUrl: 'https://files.example.com/wajib.pdf',
+    }));
+    expect(fileOnly.textAnswer).toBeNull();
+    expect(fileOnly.fileUrl).toBe('https://files.example.com/wajib.pdf');
   });
 
   it('EXAM assignments keep the «سلّم/ت» feminine form', () => {

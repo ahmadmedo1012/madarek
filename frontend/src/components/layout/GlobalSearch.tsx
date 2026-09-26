@@ -31,7 +31,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
-import { matchesNormalizedQuery } from '../../lib/search';
+import { matchesQueryTokens } from '../../lib/search';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { NAV_BY_ROLE } from '../../lib/nav';
@@ -172,14 +172,15 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
      the palette uses (NAV_BY_ROLE). Queries the live index can't answer
      («اختبار»/«محاضرة» — no people/competitions rows server-side) used
      to dead-end here while ⌘K answered with nav actions; both surfaces
-     now speak with one voice. Filtered through the shared Arabic
-     normalizer (lib/search.ts — the backend's foldings), so a hamza or
-     taa-marbuta variant still finds its destination. */
+     now speak with one voice. 5-C4 (A10 P2-4): the filter runs the
+     word-level matcher — multiword queries match word-order-free
+     (same predicate as the palette below; one matcher, three
+     surfaces). */
   const navActions = useMemo(() => {
     if (!role || !debounced) return [];
     return NAV_BY_ROLE[role]
       .flatMap((g) => g.items)
-      .filter((item) => matchesNormalizedQuery(item.label, debounced));
+      .filter((item) => matchesQueryTokens(item.label, debounced));
   }, [role, debounced]);
 
   /* One flat keyboard order across both sources — actions first, then
@@ -611,8 +612,13 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
        «الاختبارات» never found «الاختبارات الإلكترونية» if the user's
        keyboard produced أ/إ variants. The shared normalizer (lib/search.ts)
        makes the palette's action filter answer exactly like the backend
-       search route (and now the pill's — one matcher, three surfaces). */
-    return all.filter((a) => matchesNormalizedQuery(a.label, q));
+       search route (and now the pill's — one matcher, three surfaces).
+       5-C4 (A10 P2-4): multiword goes through the word-level matcher —
+       word order no longer decides («الاختبارات بنك» → بنك الأسئلة
+       والاختبارات), 4+-letter words tolerate one edit («الطالب» →
+       «الطلاب»), and the colloquial «امتحان*» folds to the product
+       vocabulary «اختبار*» (nav.ts D17-1). */
+    return all.filter((a) => matchesQueryTokens(a.label, q));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- goTo closes over navigate only
   }, [role, debounced, resolvedTheme, setThemeMode, onClose, navigate]);
 

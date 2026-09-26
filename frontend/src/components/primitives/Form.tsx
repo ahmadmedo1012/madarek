@@ -1,6 +1,7 @@
 import { cloneElement, forwardRef, useId } from 'react';
 import type {
   ButtonHTMLAttributes,
+  CSSProperties,
   InputHTMLAttributes,
   ReactElement,
   ReactNode,
@@ -209,6 +210,8 @@ export function FormField({
   hint,
   error,
   id,
+  className,
+  style,
   children,
 }: {
   /** Visible control label (htmlFor-wired to the control id). */
@@ -219,6 +222,11 @@ export function FormField({
   error?: ReactNode;
   /** Explicit control id; defaults to a stable useId(). */
   id?: string;
+  /** Extra classes on the field row (e.g. 'flex-1' inside a shared row
+   *  grid — 5-C4: ExamAuthorPages' side-by-side field pairs). */
+  className?: string;
+  /** Inline row styles (same escape hatch as Card). */
+  style?: CSSProperties;
   /** The control (input/select/textarea/Input …) — a single element. */
   children: ReactElement<FieldControlProps>;
 }) {
@@ -238,7 +246,7 @@ export function FormField({
   });
 
   return (
-    <div className="form-field">
+    <div className={['form-field', className].filter(Boolean).join(' ')} style={style}>
       <label className="form-field-label" htmlFor={controlId}>
         {label}
       </label>

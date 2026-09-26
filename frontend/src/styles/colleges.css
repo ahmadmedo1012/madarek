@@ -63,6 +63,12 @@
   border: 1px solid var(--border);
   text-decoration: none;
   color: inherit;
+  /* Grid item: kill the automatic min-content minimum so the P3-2
+     nowrap English sub (see .college-card-sub) truncates instead of
+     sizing its track — without this the mobile 1fr column grew to the
+     longest name (303px inside a 270px grid at 320 viewport, a 3px
+     document overflow). */
+  min-width: 0;
   transition:
     transform var(--t-fast),
     border-color var(--t-fast),
@@ -111,6 +117,17 @@
   font-weight: var(--type-label-weight);
   color: var(--text-muted);
   margin-block-start: 2px;
+  /* P3-2 (A12): one line — long English names (Physical Education &
+     Sports) wrapped and split the grid into two card height classes
+     (223/260px). The full name rides the title attribute set in
+     CollegePages (craft floor: no truncation without a tooltip). */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* belt for the track fix on .college-card: the sub itself may never
+     push its ancestors wider than their box either. */
+  min-width: 0;
+  max-width: 100%;
 }
 .college-card-arrow {
   color: var(--text-subtle);
@@ -454,6 +471,18 @@
   border-radius: var(--r-lg);
 }
 
+/* Search wrapper — A5 P1-1: this sizing used to be an inline style
+   (CollegePages.tsx) written for the desktop row layout. It moved
+   here so the ≤767px column layout can reset it: in a column flex
+   container `flex-basis` applies to the VERTICAL axis, and 240px of
+   basis under a 44px input produced a ~196px dead gap + (with the
+   un-reset wrap) a 174-244px document overflow — the public funnel's
+   worst 320px cell. */
+.gallery-search-wrap {
+  flex: 1 1 240px;
+  position: relative;
+}
+
 .gallery-search-input {
   flex: 1 1 240px;
   min-inline-size: 240px;
@@ -526,6 +555,81 @@
 }
 .gallery-clear:hover { color: var(--text); }
 
+/* ═══════════════════════════════════════════════════════════════
+   Guest funnel chrome (5-A12 P1-2) — the ONLY auth affordances on
+   the world-readable colleges pages. Compact row on the listing
+   surfaces (header actions slot); one persuasive closing band on the
+   college detail. Buttons reuse the landing's exact grammar (ghost
+   «تسجيل الدخول» + primary «أنشئ حسابك الجامعي») so the funnel
+   speaks one vocabulary from first click to registration.
+   ═══════════════════════════════════════════════════════════════ */
+
+.guest-join-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.guest-join-note {
+  font-size: var(--type-label-size);
+  color: var(--text-muted);
+  /* the note rides inline-start of the pair; whitespace-nowrap keeps
+     «طالب جديد في الجامعة؟» one unbroken question */
+  white-space: nowrap;
+}
+
+.guest-cta-band {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  text-align: center;
+  padding: var(--sp-8) var(--sp-5);
+  border-radius: var(--r-xl);
+  background: var(--accent-soft);
+  margin-block-start: var(--sp-4);
+}
+.guest-cta-title {
+  font-family: var(--font-display);
+  font-size: var(--type-headline-size-md);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  letter-spacing: var(--ls-snug);
+  line-height: 1.2;
+  margin: 0;
+  text-wrap: balance;
+}
+.guest-cta-note {
+  font-size: var(--type-body-size);
+  line-height: var(--lh-base);
+  color: var(--text-secondary);
+  max-inline-size: var(--type-body-max-measure);
+  margin: 0;
+  text-wrap: pretty;
+}
+.guest-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-1);
+}
+
+/* A8 P1-2 public-zeros: a guest's single real stat (data-thin
+   college) renders at a sane measure — a full-width KPI tile for one
+   number would be all air. */
+.college-stat-solo {
+  max-inline-size: 360px;
+}
+
+/* The honest thin-board line (A8 P1-2): when a guest's college page
+   carries no real data at all, ONE line tells that story — never a
+   wall of internal «لا توجد…بعد» empties. */
+.college-coming-soon {
+  margin-block: 0 var(--sp-2);
+  line-height: var(--lh-loose);
+}
+
 /* Identity-profile accent stripe on the leading edge of the card.
    1px hairline (orchestrator ruling #4 — normalize every >1px colored
    leading stripe; the accent reads through color, not weight). */
@@ -588,6 +692,14 @@
     top: var(--topbar-h);
     z-index: var(--z-dropdown);
     flex-direction: column;
+    /* A5 P1-1: the base `flex-wrap: wrap` was never reset for the
+       column layout — wrap made the chip strip's nowrap max-content
+       (~595px) size the wrap line's cross axis and `align-items:
+       stretch` then stretched BOTH children to 552px inside a 380px
+       toolbar → 174px @390 / 244px @320 document overflow on a
+       PUBLIC page. nowrap + the search reset below kill both the
+       overflow and the 196px dead gap. */
+    flex-wrap: nowrap;
     align-items: stretch;
     gap: var(--sp-2);
     padding: var(--sp-3);
@@ -598,6 +710,10 @@
     -webkit-backdrop-filter: blur(var(--glass-blur));
     background: color-mix(in srgb, var(--surface) 88%, transparent);
   }
+
+  /* The column-direction twin of the A5 P1-1 fix: no vertical basis,
+     height collapses to the 44px input. */
+  .gallery-search-wrap { flex: none; }
 
   .gallery-chip-strip {
     flex-wrap: nowrap;
@@ -908,6 +1024,50 @@
   font-size: var(--fs-xxs);
   color: var(--accent-ink, var(--accent));
   font-weight: var(--fw-medium);
+}
+
+/* 5-C5 (A12 P1-2): on the college detail the comp cards are real
+   links now — the page was a dead-end hub where nothing onward was
+   clickable. Same hover language as the college cards (border
+   strengthens + a forward chevron fades in at the inline-end edge);
+   suppressed on touch like .college-card-cta. */
+a.comp-card {
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color var(--motion-duration-short) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-short) var(--motion-ease-standard);
+}
+a.comp-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--elev-2, var(--shadow-card-h));
+  transform: translateY(-1px);
+}
+.comp-go {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  color: var(--accent-strong);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-short) var(--motion-ease-decelerate);
+}
+a.comp-card:hover .comp-go,
+a.comp-card:focus-visible .comp-go {
+  opacity: 1;
+  transform: translateX(0);
+}
+@media (hover: none) {
+  .comp-go { opacity: 1; transform: none; background: transparent; border-color: transparent; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1711,6 +1871,50 @@
   flex-direction: column;
   gap: var(--sp-3);
   padding: var(--sp-4);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Community + competitions KPI strip — compact form (A12 P2-4).
+   These two pages' .grid-3 trios stacked into 3×132px full-width
+   tiles ≤640px (396px of single numbers) and pushed every real card
+   below the fold (tabs at 679px on an 844px screen). The strip keeps
+   three TILES (the information survives) but compact: tight padding,
+   small icon well, metric value one rung down. Opt-in per mount via
+   .kpis-compact — the shared .grid-3 has 30+ other consumers whose
+   stacking is correct. Loaded here because both /community and
+   /competitions already borrow this sheet (D14 css split).
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .kpis-compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+  .kpis-compact .metric {
+    min-block-size: 0;
+    padding: var(--sp-3);
+    gap: var(--sp-2);
+  }
+  .kpis-compact .metric-icon {
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: var(--r-sm);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--role-accent, var(--accent)) 30%, transparent);
+  }
+  .kpis-compact .metric-icon svg {
+    inline-size: 15px;
+    block-size: 15px;
+  }
+  .kpis-compact .metric-value {
+    font-size: var(--type-metric-size);
+  }
+  .kpis-compact .metric-head { gap: var(--sp-1); }
+}
+@media (max-width: 360px) {
+  /* smallest phones: the label can wrap to two lines; keep the tile
+     readable without letting the icon dominate the row */
+  .kpis-compact .metric { flex-direction: column-reverse; align-items: flex-start; }
+  .kpis-compact .metric-icon { align-self: flex-end; }
 }
 
 }

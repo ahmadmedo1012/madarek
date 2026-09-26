@@ -11,6 +11,15 @@
  *   - Discard guard: Esc on a dirty long-form modal stacks the
  *     «تعديلات غير محفوظة» confirm instead of dropping the draft, and a
  *     pristine modal still closes instantly (15-e P2-3).
+ * 5-C5 additions:
+ *   - RSVP reflection: the pressed trio seeds from the server myRsvp
+ *     field (5-B1) — the state survives reload (A12 P2-2).
+ *   - Ended state: an OPEN competition past its deadline reads
+ *     «انتهى التقديم», never a false «تم التحكيم» (A12 P2-3).
+ *   - Forward path: the competition card is a real link to
+ *     /competitions/:id (A12 P1-2 family — it was a dead div), and a
+ *     zero-entry open contest invites instead of counting «0 مشترك»
+ *     (A8 §7.7).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
@@ -36,6 +45,21 @@ const h = vi.hoisted(() => {
       organizer: { firstName: 'سالم', lastName: 'الطاهر', role: 'TEACHER' },
       _count: { entries: 12 },
     },
+    /* 5-C5 (A12 P2-3): OPEN but PAST deadline — the false-«تم التحكيم»
+     * case the audit clock-probed at deadline T+1s. */
+    pastCompetition: {
+      id: 'comp2',
+      title: 'تحدي البرمجة السنوي',
+      description: 'مسابقة برمجة انتهت مهلة التقديم عليها ولم يغلقها المنظّم بعد.',
+      category: 'برمجة',
+      prize: null,
+      deadline: new Date(now - 2 * 86400000).toISOString(),
+      status: 'OPEN' as const,
+      iconEmoji: '💻',
+      themeColor: null,
+      organizer: { firstName: 'سالم', lastName: 'الطاهر', role: 'TEACHER' },
+      _count: { entries: 3 },
+    },
     event: {
       id: 'ev1',
       title: 'ملتقى الابتكار الطلابي',
@@ -48,6 +72,9 @@ const h = vi.hoisted(() => {
       themeColor: null,
       organizer: { firstName: 'سالم', lastName: 'الطاهر', role: 'TEACHER' },
       _count: { rsvps: 43 },
+      /* 5-B1: the viewer already answered GOING — the pressed state
+       * must arrive from the server, not only from a fresh click. */
+      myRsvp: 'GOING' as const,
     },
     offerings: [
       {
@@ -65,7 +92,7 @@ const h = vi.hoisted(() => {
 
 vi.mock('../../src/hooks/useResources', () => ({
   useAnnouncements: () => ({ data: [], isPending: false, isError: false, error: null, refetch: vi.fn() }),
-  useCompetitions: () => ({ data: [h.competition], isPending: false, isError: false, error: null, refetch: vi.fn() }),
+  useCompetitions: () => ({ data: [h.competition, h.pastCompetition], isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useCampusEvents: () => ({ data: [h.event], isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useRsvpEvent: () => ({ mutate: h.rsvpMutate, isPending: false, variables: undefined }),
   useCreateAnnouncement: () => ({ mutateAsync: vi.fn(async () => ({})), isPending: false, isError: false }),
@@ -119,6 +146,40 @@ describe('CommunityPage — CompetitionCard deadline chip (15-h P1-4)', () => {
     fireEvent.click(screen.getByRole('tab', { name: /المسابقات/ }));
     expect(screen.getByText('تنتهي بعد 5 ساعات')).toBeInTheDocument();
     expect(screen.queryByText('مغلقة')).toBeNull();
+  });
+
+  it('an OPEN competition PAST its deadline reads «انتهى التقديم» — never a false «تم التحكيم» (5-A12 P2-3)', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('tab', { name: /المسابقات/ }));
+    expect(screen.getByText('انتهى التقديم')).toBeInTheDocument();
+    expect(screen.queryByText('تم التحكيم')).toBeNull();
+  });
+
+  it('the competition card is a real link to the competition page — not a dead div (5-A12 P1-2)', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('tab', { name: /المسابقات/ }));
+    const card = screen.getByText('تحدي الذكاء الاصطناعي').closest('a');
+    expect(card).not.toBeNull();
+    expect(card).toHaveAttribute('href', '/competitions/comp1');
+  });
+
+  it('a zero-entry open competition invites «كن أول المشاركين» instead of counting zero (A8 §7.7)', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('tab', { name: /المسابقات/ }));
+    // Both seeded competitions carry entries (12 / 3) — no «0 مشترك»
+    // grammar is rendered; the invitation branch is covered by the
+    // CompetitionsPages zero-entry pin.
+    expect(screen.queryByText('0 مشترك')).toBeNull();
+  });
+});
+
+describe('CommunityPage — EventCard RSVP reflection (5-B1 / A12 P2-2)', () => {
+  it('seeds the pressed trio from the server myRsvp field — the state survives reload', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('tab', { name: /الفعاليات/ }));
+    expect(screen.getByRole('button', { name: 'سأحضر' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'ربما' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'لن أحضر' })).toHaveAttribute('aria-pressed', 'false');
   });
 });
 

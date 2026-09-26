@@ -158,8 +158,9 @@
 
   /* sticker idle wiggle — only when in a card with .sticker-wiggle */
   .sticker-wiggle .sticker {
-    /* loop cadence (5s idle wiggle) — off-token by design */
-    animation: madarek-sticker-idle 5s var(--motion-ease-standard) infinite;
+    /* 5-C1: 5s → the ambient drift band (6s) — the gate debt entry
+       is gone; the wiggle beat lands once per ~6s instead of 5. */
+    animation: madarek-sticker-idle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
     animation-delay: var(--wiggle-delay, 0s);
   }
   .sticker-wiggle:nth-child(2) .sticker { --wiggle-delay: 0.6s; }
@@ -173,6 +174,13 @@
     96%           { transform: rotate(2deg) scale(1.02); }
   }
   .sticker-wiggle:hover .sticker { animation: none; transform: rotate(-4deg) scale(1.06); }
+
+  /* Guardrail #6 — the idle wiggle is this file's keyframe, so it
+     gets its own off-switch here (5-C1; polish.css's overrides-layer
+     kill already covered it — this makes the switch local + explicit). */
+  @media (prefers-reduced-motion: reduce) {
+    .sticker-wiggle .sticker { animation: none; }
+  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  METRIC / KPI                                                  ║
@@ -321,7 +329,10 @@
                 color var(--t-fast) var(--ease),
                 box-shadow var(--t-fast) var(--ease),
                 transform var(--t-fast) var(--ease);
-    letter-spacing: -0.005em;
+    /* 5-C2 (A3 P1-3 / ruling #2): the old -0.005em tracking rendered
+       -0.06px on every Arabic button label (all 15 surfaces). Sub-pixel
+       at 12px, but em-scaled with font size and banned on cursive.
+       No letter-spacing on .btn. */
     box-shadow: var(--_btn-shadow);
   }
   .btn:hover { background: var(--_btn-bg-hover); border-color: var(--_btn-bd-hover); color: var(--_btn-fg); }
@@ -330,7 +341,13 @@
      from these groups — zero TSX consumers (pages render the compound
      `btn primary` form; Form.tsx VARIANT_CLASS maps variants the same
      way). The compound selectors stay. */
-  .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); box-shadow: var(--elev-2); }
+  .btn.primary:hover, .btn.accent:hover { box-shadow: var(--elev-2); }
+  /* 5-C1 (A2 P2-8): the −1px button lift rides the hover-capable gate
+     (ungated, iOS sticky-hover pinned the lift on the first tap);
+     the bg/border/shadow hover stays ungated like .btn:hover above. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); }
+  }
   .btn:active { transform: translateY(1px); }
   .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
 
@@ -348,15 +365,29 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(105deg,
-      transparent 30%,
-      color-mix(in oklab, var(--neutral-50) 30%, transparent) 48%,
-      transparent 60%);
-    transform: translateX(-110%);
-    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
+    /* 5-C1 (A2 §7, C4 follow-up): the sheen rides background-position,
+       not a translateX-ed pseudo — backgrounds never contribute to
+       scrollable overflow, so .btn.scrollWidth stays == clientWidth at
+       rest AND mid-sweep (the old translateX(-110%) parking hung the
+       pseudo outside the padding box: measured scrollWidth 187 vs
+       clientWidth 89). The 300%-wide image re-stops the band to the
+       same ~30% of the button the 100%-wide gradient painted
+       (peak 60% into the band: 48% → 51% of the image); positions
+       160% / −60% park it fully off the left / right edge (offset =
+       (100% − 300%) × P), sweeping the same physical left→right
+       direction the transform did — sheen stays physical, unchanged
+       under [dir=rtl]. */
+    background-image: linear-gradient(105deg,
+      transparent 45%,
+      color-mix(in oklab, var(--neutral-50) 30%, transparent) 51%,
+      transparent 55%);
+    background-size: 300% 100%;
+    background-repeat: no-repeat;
+    background-position: 160% 0;
+    transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.primary:hover::before { transform: translateX(110%); }
+  .btn.primary:hover::before { background-position: -60% 0; }
   [data-theme="dark"] .btn.primary {
     --_btn-bg: var(--neutral-900);
     --_btn-fg: var(--neutral-50);
@@ -380,16 +411,20 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(105deg,
-      transparent 30%,
-      color-mix(in oklab, var(--accent-fg) 25%, transparent) 48%,
-      transparent 60%);
-    transform: translateX(-110%);
-    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
+    /* 5-C1 (A2 §7): same background-position sheen as .btn.primary
+       (scrollable-overflow-free sweep; see the primary block's note). */
+    background-image: linear-gradient(105deg,
+      transparent 45%,
+      color-mix(in oklab, var(--accent-fg) 25%, transparent) 51%,
+      transparent 55%);
+    background-size: 300% 100%;
+    background-repeat: no-repeat;
+    background-position: 160% 0;
+    transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
   .btn.accent:hover::before,
-  .btn.gold:hover::before { transform: translateX(110%); }
+  .btn.gold:hover::before { background-position: -60% 0; }
 
   /* T3-F4 WCAG — in LIGHT theme the accent pair is copper + deep
      espresso ink (--accent-fg #1A0F06 = 4.95:1 on --accent). The legacy
@@ -695,6 +730,26 @@
     outline: none;
   }
   .input::placeholder, input::placeholder, textarea::placeholder { color: var(--text-faint); }
+
+  /* ── Disabled text controls ──────────────────────────────────────
+     5-C1 (A2 P2-7): --state-input-disabled-opacity shipped in
+     tokens.css with ZERO consumers — input/select/textarea disabled
+     fell to UA defaults (synthetic-probe: UA grey wash, cursor
+     default, per-element inconsistency). The shared recipe: opacity
+     + not-allowed + a surface-2 ground so the control reads "locked"
+     in BOTH themes (checkbox/radio already carried this via
+     polish.css's forms block). Pointer-events stay on so the
+     not-allowed cursor renders; focus is already blocked by the UA. */
+  .input:disabled,
+  input:disabled, textarea:disabled, select:disabled,
+  .input[aria-disabled="true"],
+  input[aria-disabled="true"],
+  textarea[aria-disabled="true"],
+  select[aria-disabled="true"] {
+    opacity: var(--state-input-disabled-opacity);
+    cursor: not-allowed;
+    background: var(--surface-2);
+  }
 
   /* ── Topbar search pill (wave 2-b — audit 0-c P0-1) ──────────────────
      The input itself is the pill: surface-1 ground, hairline --border,
@@ -1422,11 +1477,108 @@
   }
   .sheet-panel-bottom {
     inline-size: 100%;
+    /* Desktop resize-while-open: a full-bleed bottom sheet on a 1440px
+       viewport is a wall — cap + center it (mobile, the variant's home,
+       is unaffected: 100% < 640px). */
+    max-inline-size: 640px;
+    margin-inline: auto;
     max-block-size: min(85dvh, 720px);
     border-start-start-radius: var(--r-2xl);
     border-start-end-radius: var(--r-2xl);
     animation: madarek-sheet-slide-bottom var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+    /* A10 P2-2: home-indicator clearance on the bottom presentation
+       (.bottom-nav / .toast-stack parity). Sits under header/body/
+       footer alike, so footer-less sheets clear it too. */
+    padding-block-end: env(safe-area-inset-bottom, 0px);
   }
+
+  /* ── Sheet package slots (A10 P2-2) — the .modal-header/-body/-footer
+     grammar on the sheet panel: the BODY is the scrolling region, so a
+     consumer whose content exceeds the panel scrolls instead of being
+     silently clipped by the panel's overflow: clip (the latent bug the
+     audit filed against the old raw-children API). ── */
+  .sheet-header {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5) var(--sp-3);
+  }
+  .sheet-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    color: var(--text);
+  }
+  .sheet-body {
+    flex: 1 1 auto;
+    min-block-size: 0; /* flex column: lets the region shrink + scroll */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .sheet-footer {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-5) var(--sp-4);
+    border-block-start: 1px solid var(--rule);
+  }
+  /* Drag affordance (bottom sheets) — visual only; the drag-to-dismiss
+     gesture is wired in Sheet.tsx on this element. --neutral-400 is the
+     palette's documented ≥3:1 non-text step (tokens.css) — a divider-tone
+     bar would vanish on the cream surface. */
+  .sheet-grabber {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    block-size: 24px;
+    margin-block-start: var(--sp-1);
+    cursor: grab;
+    touch-action: none; /* the drag gesture owns these touches */
+  }
+  .sheet-grabber:active { cursor: grabbing; }
+  .sheet-grabber::before {
+    content: '';
+    inline-size: 40px; block-size: 4px;
+    border-radius: var(--r-full);
+    background: var(--neutral-400);
+  }
+
+  /* ── Drag-to-dismiss cascade fix (5-C4) — the entrance animation's
+     `both` fill keeps applying `transform: none` after it finishes,
+     and animation declarations outrank inline styles, so the dragged
+     translateY never painted (live-measured: finger −90px, computed
+     transform still identity — same defect as the toast swipe).
+     While a touch drag owns the panel, data-dragging suspends the
+     animation so the inline transform is the truth; the active phase
+     tracks the finger directly, the release phase springs a cancelled
+     drag back. The state persists after a cancelled drag (removing it
+     would REPLAY the entrance keyframes); the exit animations
+     (0,3,0) outspecify the suspension (0,2,0). ── */
+  .sheet-panel[data-dragging] { animation: none; }
+  .sheet-panel[data-dragging][data-drag-phase='active'] { transition: none; }
+  .sheet-panel[data-dragging][data-drag-phase='release'] {
+    /* --ease-spring-soft: the raw spring family (the semantic
+       --motion-ease-* set has no spring member); a gentle overshoot
+       fits a released sheet. */
+    transition: transform var(--motion-duration-short) var(--ease-spring-soft);
+  }
+
+  /* ── Size control (A10 P2-2). data-size lives on the overlay.
+     'fit' side sheets center on the block axis instead of stretching
+     the full-height void the audit measured (390×844 panel holding
+     273px of content); 'full' bottom sheets stretch to their cap. ── */
+  .sheet-overlay[data-size='fit'] .sheet-panel-end,
+  .sheet-overlay[data-size='fit'] .sheet-panel-start {
+    block-size: auto;
+    max-block-size: 100%;
+  }
+  .sheet-overlay-end[data-size='fit'],
+  .sheet-overlay-start[data-size='fit'] { align-items: center; }
+  .sheet-overlay[data-size='full'] .sheet-panel-bottom {
+    block-size: min(85dvh, 720px);
+  }
+
   /* Entrance mirrors the exit direction (A9 P1-1, 21-b): `end` docks
      inline-end (right in LTR, left in RTL), so the sheet must ARRIVE
      from its own edge too — the offsets multiply by
@@ -1737,17 +1889,43 @@
     padding-block: var(--sp-2);
   }
   .onboarding-flow-dot {
-    inline-size: 8px;
+    /* 5-C1 (A2 §1c #27 — layout-property debt cleared): the dot box
+       is FIXED at the active pill's 22×8 so activating a step never
+       reflows the strip (the old 8→22px inline-size transition
+       re-laid-out every sibling per frame). The shapes ride two
+       paint-only pseudos: ::before = the fixed 8px ring/dot (never
+       transforms), ::after = the 22px pill scaling 0→1 from the
+       reading edge (transform-origin flips under [dir=rtl], the
+       23-b .progress-fill pattern). */
+    position: relative;
+    inline-size: 22px;
     block-size: 8px;
-    border-radius: 50%;
-    background: var(--rule);
-    transition: background var(--t-fast) var(--ease), inline-size var(--t-fast) var(--ease);
   }
-  .onboarding-flow-dot.is-active {
-    background: var(--accent);
+  .onboarding-flow-dot::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: transparent;
+    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  }
+  .onboarding-flow-dot::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
     inline-size: 22px;
     border-radius: var(--r-full);
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--t-fast) var(--ease);
   }
+  [dir="rtl"] .onboarding-flow-dot::after { transform-origin: right center; }
+  .onboarding-flow-dot.is-active::after { transform: scaleX(1); }
   .onboarding-flow-actions {
     display: flex;
     align-items: center;
@@ -1917,7 +2095,13 @@
   .thumb-card:hover {
     border-color: var(--border-strong);
     box-shadow: var(--shadow-card-h);
-    transform: translateY(-2px);
+  }
+  /* 5-C1 (A2 P2-8): the hover LIFT rides the hover-capable gate —
+     with it ungated, iOS sticky-hover pinned the −2px lift on every
+     card after the first tap. Color/shadow hovers stay ungated
+     (sticky paint is harmless; the stuck TRANSFORM was the tell). */
+  @media (hover: hover) and (pointer: fine) {
+    .thumb-card:hover { transform: translateY(-2px); }
   }
   .thumb-card-image {
     block-size: 110px;
@@ -2356,14 +2540,28 @@
     min-inline-size: 0;
   }
   .trend-bar {
+    /* 5-C1 (A2 §1c #28 — layout-property debt cleared): the bar paints
+       at FULL track width and the VALUE rides a reading-direction
+       clip-path wipe — paint-only, no reflow (the old inline-size
+       transition re-laid-out the row per frame). The count text stays
+       a child and clips with the same window, exactly like the old
+       width cut; `inset(… round …)` keeps BOTH edges capped (the old
+       width-cut end edge was square). The page sets --trend-scale
+       (0..1) inline; the [dir=rtl] fork wipes from the reading edge
+       (right), mirroring how a %-width bar anchored itself in RTL. */
+    position: relative;
     block-size: 14px;
-    min-inline-size: 2px;
+    inline-size: 100%;
     border-radius: var(--r-xs);
     display: flex;
     align-items: center;
     overflow: clip;
     white-space: nowrap;
-    transition: inline-size var(--t-slow) var(--ease-out);
+    clip-path: inset(0 calc(100% - var(--trend-scale, 0) * 100%) 0 0 round var(--r-xs));
+    transition: clip-path var(--t-slow) var(--ease-out);
+  }
+  [dir="rtl"] .trend-bar {
+    clip-path: inset(0 0 0 calc(100% - var(--trend-scale, 0) * 100%) round var(--r-xs));
   }
   .trend-submitted { background: var(--accent); }
   .trend-graded    { background: var(--gold); }
@@ -3363,6 +3561,10 @@
   .notice-paragraph {
     padding: var(--sp-3) 0;
     line-height: 1.7;
+    /* 5-C2 (A3 P1-2): full-width lead-in paragraphs measured 145.4ch
+       (1134px) on teacher-grades — cap prose at the body-role measure
+       token like .page-subtitle (taste floor 45–75ch). */
+    max-inline-size: var(--type-body-max-measure);
   }
   .dropzone-ghost {
     border: 2px dashed var(--border-strong);
@@ -3754,22 +3956,18 @@
   /* ── Progress dots that fill ──────────────────────────────────────
      Upcoming = hollow hairline ring; visited = filled; the current
      frame = the wide pill. Filling animates because the strip persists
-     across the keyed frame body. */
-  .onboarding-flow-dot {
-    background: transparent;
-    border: 1px solid var(--rule);
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard),
-      inline-size var(--motion-duration-short) var(--motion-ease-standard);
+     across the keyed frame body. (5-C1: the shapes live on the
+     pseudos now — see the anatomy block above; these rules only
+     re-skin them per state, no size animation anywhere.) */
+  .onboarding-flow-dot::before {
+    border-color: var(--rule);
   }
-  .onboarding-flow-dot.is-done {
+  .onboarding-flow-dot.is-done::before {
     background: var(--onboarding-accent);
     border-color: var(--onboarding-accent);
   }
-  .onboarding-flow-dot.is-active {
+  .onboarding-flow-dot.is-active::after {
     background: var(--onboarding-accent);
-    border-color: var(--onboarding-accent);
   }
 
   /* ── Role-accent tint on the role-intro frame (frame 3) ──────────
