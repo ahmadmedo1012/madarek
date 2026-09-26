@@ -7,6 +7,7 @@ import {
 import { Icon } from '../components/Icon';
 import { CollegesPopover } from '../components/CollegesPopover';
 import { useThemeSync } from '../components/layout/ThemeToggle';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuthStore } from '../stores/auth.store';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { RevealCssClass } from '../hooks/useReveal';
@@ -41,6 +42,7 @@ const COLLEGES_COUNT = colleges.length > 0 ? colleges.length : 25;
 
 export default function LandingPage() {
   useThemeSync();
+  usePageTitle('منصة التعليم الذكي · جامعة الزاوية');
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
 

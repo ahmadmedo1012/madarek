@@ -12,6 +12,7 @@ import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { AppRole } from '../stores/auth.store';
 import type { AxiosError } from 'axios';
 
@@ -88,6 +89,7 @@ function readFromPath(state: unknown): string | null {
 
 export default function AuthPage() {
   useThemeSync();
+  usePageTitle('تسجيل الدخول');
   const navigate = useNavigate();
   const location = useLocation();
   const login = useLogin();

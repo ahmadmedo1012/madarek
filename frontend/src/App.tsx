@@ -9,6 +9,7 @@ import { PageSkeleton } from './components/primitives/States';
 import { Icon } from './components/Icon';
 import { RouteErrorBoundary, isChunkLoadError } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays';
+import { GridOverlay } from './components/GridOverlay';
 import NotFoundPage from './pages/NotFoundPage';
 
 /* ───────────────────────────────────────────────────────────
@@ -288,6 +289,9 @@ export default function App() {
       {/* Global toast region — mounted once at the root so any page
           can fire lib/toast.ts feedback (ruling #3, audit 0-c P1-7). */}
       <ToastStack />
+      {/* ?grid=1 design QA overlay (immersive wave 3) — mounts
+          only when the flag is present; see components/GridOverlay. */}
+      <GridOverlay />
       <BrowserRouter>
         {/* Route-level error boundary (audit 4-A14 P1-3): a render
             crash in ANY route now shows the designed recovery surface
