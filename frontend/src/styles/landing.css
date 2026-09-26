@@ -753,6 +753,16 @@
   }
   @media (max-width: 920px) { .band-split { grid-template-columns: 1fr; gap: var(--sp-8); } }
 
+  /* Wave 1.5 extraction: the flipped band's CTA row was an inline
+     style on the page — this class carries the same declaration so
+     the KnowledgeJourney extraction renders identically. */
+  .landing-band-cta {
+    margin-block-start: var(--sp-8);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
   .band-visual {
     background: var(--surface);
     border-radius: var(--r-2xl);
