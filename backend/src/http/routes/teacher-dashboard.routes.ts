@@ -112,7 +112,18 @@ export interface PendingSubmissionFeedRow {
  * TeacherPages derives the grade modal's maxScore by stripping the
  * «سلّم / سلّم/ت» prefix and matching the remainder BY TITLE, so the
  * marker must travel as its own field, never as a title suffix.
+ *
+ * `actionTo` values are TEACHER-AREA paths (`/teacher/…`) — the FE renders
+ * them verbatim into <Link to>, so an unprefixed path 404s (audit 5-A4
+ * P1-1 / 5-A7 P1-1: '/grades' '/research' '/attendance' landed on the
+ * designed 404 page). Pinned by dashboard-logic tests.
  */
+export const TEACHER_FEED_ACTIONS = {
+  grades: '/teacher/grades',
+  research: '/teacher/research',
+  attendance: '/teacher/attendance',
+} as const;
+
 export function submissionFeedItem(s: PendingSubmissionFeedRow): {
   kind: 'submissions';
   id: string;
@@ -130,8 +141,79 @@ export function submissionFeedItem(s: PendingSubmissionFeedRow): {
     meta: `${s.assignment.offering.course.name} · ${s.assignment.offering.course.code}`,
     when: s.submittedAt,
     title: `سلّم${s.assignment.type === AssignmentType.EXAM ? '/ت' : ''} ${s.assignment.title}`,
-    actionTo: '/grades',
+    actionTo: TEACHER_FEED_ACTIONS.grades,
     late: s.status === SubmissionStatus.LATE,
+  };
+}
+
+/** Row of the pending-papers feed query below — kept in sync with the
+ * select (DB-free test factories build it; the Decimal-typed scan
+ * percentages only ever feed the title string, so tests may pass
+ * numbers). */
+export interface ResearchPaperFeedRow {
+  id: string;
+  title: string;
+  status: ResearchPaperStatus;
+  plagiarismPct: Prisma.Decimal | number | null;
+  aiContentPct: Prisma.Decimal | number | null;
+  uploadedAt: Date;
+  student: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
+  offering: { course: { code: string } } | null;
+}
+
+/** Feed item for one paper awaiting the teacher (audit 11-d P2-5 set). */
+export function researchFeedItem(p: ResearchPaperFeedRow): {
+  kind: 'research';
+  id: string;
+  author: ResearchPaperFeedRow['student'];
+  meta: string;
+  when: Date;
+  title: string;
+  actionTo: string;
+} {
+  return {
+    kind: 'research',
+    id: `p-${p.id}`,
+    author: p.student,
+    meta: p.offering ? `بحث · ${p.offering.course.code}` : 'بحث',
+    when: p.uploadedAt,
+    title: `«${p.title}» — ${p.status === ResearchPaperStatus.UPLOADED
+      ? 'لم يُفحص بعد — بانتظار فحص الانتحال'
+      : p.status === ResearchPaperStatus.CHECKS_PASSED
+        ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}%، AI ${p.aiContentPct ?? '—'}%)`
+        : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
+    actionTo: TEACHER_FEED_ACTIONS.research,
+  };
+}
+
+/** groupBy row of the absence-alert query (3+ absences / 30 days). */
+export interface AbsenceAlertGroup {
+  studentId: string;
+  _count: { studentId: number };
+}
+
+/** Feed item for one absence alert (3+ recent absences). */
+export function attendanceAlertFeedItem(
+  g: AbsenceAlertGroup,
+  student: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null } | null | undefined,
+  lastAbsenceAt: Date,
+): {
+  kind: 'attendance';
+  id: string;
+  author: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null } | null;
+  meta: string;
+  when: Date;
+  title: string;
+  actionTo: string;
+} {
+  return {
+    kind: 'attendance',
+    id: `att-${g.studentId}`,
+    author: student ?? null,
+    meta: 'تنبيه حضور',
+    when: lastAbsenceAt,
+    title: `${g._count.studentId} غيابات في آخر 30 يوماً — ${student ? `${student.firstName} ${student.lastName}` : 'طالب'} يحتاج متابعة`,
+    actionTo: TEACHER_FEED_ACTIONS.attendance,
   };
 }
 
@@ -443,31 +525,12 @@ router.get('/dashboard', async (req, res, next) => {
 
     const feed = [
       ...recentSubs.map(submissionFeedItem),
-      ...recentPapers.map((p) => ({
-        kind: 'research' as const,
-        id: `p-${p.id}`,
-        author: p.student,
-        meta: p.offering ? `بحث · ${p.offering.course.code}` : 'بحث',
-        when: p.uploadedAt,
-        title: `«${p.title}» — ${p.status === ResearchPaperStatus.UPLOADED
-          ? 'لم يُفحص بعد — بانتظار فحص الانتحال'
-          : p.status === ResearchPaperStatus.CHECKS_PASSED
-            ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}%، AI ${p.aiContentPct ?? '—'}%)`
-            : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
-        actionTo: '/research',
-      })),
-      ...lowAttendanceStudents.map((g) => {
-        const u = absentStudents.find((s) => s.id === g.studentId);
-        return {
-          kind: 'attendance' as const,
-          id: `att-${g.studentId}`,
-          author: u ?? null,
-          meta: 'تنبيه حضور',
-          when: lastAbsenceAt.get(g.studentId) ?? now,
-          title: `${g._count.studentId} غيابات في آخر 30 يوماً — ${u ? `${u.firstName} ${u.lastName}` : 'طالب'} يحتاج متابعة`,
-          actionTo: '/attendance',
-        };
-      }),
+      ...recentPapers.map(researchFeedItem),
+      ...lowAttendanceStudents.map((g) => attendanceAlertFeedItem(
+        g,
+        absentStudents.find((s) => s.id === g.studentId),
+        lastAbsenceAt.get(g.studentId) ?? now,
+      )),
     ].sort((a, b) => b.when.getTime() - a.when.getTime()).slice(0, 12);
 
     res.json({

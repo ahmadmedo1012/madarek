@@ -3,7 +3,7 @@
  *
  *   /admin/sync   show last run, stats, facts by category, manual trigger
  */
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   RefreshCw, CheckCircle2, AlertTriangle, Clock, Database,
@@ -12,6 +12,7 @@ import {
 import { Card, MetricCard, Badge, AlertRow } from '../../components/primitives';
 import { PageSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
+import { useReducedMotion } from '../../components/motion';
 import { api, unwrap } from '../../lib/api';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { formatRelativeArShort, countAr } from '../../lib/format';
@@ -130,6 +131,19 @@ export function AdminSyncPage() {
   const { data, isPending, isError, error, refetch } = useSyncStatus();
   const trigger = useTriggerSync();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const reducedMotion = useReducedMotion();
+  // 5-B4 (5-A8 §5 row 10 — client-side drill): the «حقول قديمة» KPI
+  // opens the first stale category and scrolls to it — the number
+  // becomes a question with a one-click answer.
+  const categoriesRef = useRef<HTMLDivElement | null>(null);
+  const focusStaleFields = () => {
+    const firstStale = data?.categories.find((cat) => cat.items.some((f) => f.isStale));
+    if (firstStale) setOpenCategory(firstStale.category);
+    categoriesRef.current?.scrollIntoView({
+      block: 'start',
+      behavior: reducedMotion ? 'auto' : 'smooth',
+    });
+  };
 
   if (isPending) return <PageSkeleton />;
   // Distinguish error (retry) from "no sync ever run" (empty state).
@@ -220,6 +234,7 @@ export function AdminSyncPage() {
           value={data.factCount.toString()}
           change={data.staleCount > 0 ? countAr(data.staleCount, ['حقل قديم واحد', 'حقلان قديمان', 'حقول قديمة', 'حقلاً قديماً']) : 'كل البيانات حديثة'}
           color={data.staleCount > 0 ? 'amber' : 'green'}
+          {...(data.staleCount > 0 ? { onClick: focusStaleFields, actionHint: 'عرض الحقول القديمة' } : {})}
         />
         <MetricCard
           icon={Clock}
@@ -315,6 +330,7 @@ export function AdminSyncPage() {
       </Card>
 
       {/* Synced data preview by category */}
+      <div ref={categoriesRef} style={{ scrollMarginBlockStart: 'var(--sp-4)' }}>
       <Card title="البيانات المُزامنة" icon={Database} subtitle="مجمّعة حسب الفئة — انقر للتوسيع">
         {data.categories.length === 0 ? (
           <EmptyState
@@ -356,6 +372,7 @@ export function AdminSyncPage() {
           </div>
         )}
       </Card>
+      </div>
     </div>
   );
 }

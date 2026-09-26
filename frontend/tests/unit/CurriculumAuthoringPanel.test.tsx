@@ -158,9 +158,12 @@ describe('CurriculumAuthoringPanel — lecture list', () => {
     // 3300s → 55:00; 0 → مدة غير محددة
     expect(screen.getByText('55:00')).toBeInTheDocument();
     expect(screen.getByText('مدة غير محددة')).toBeInTheDocument();
-    // _count badges
-    expect(screen.getByText('2 فصل')).toBeInTheDocument();
-    expect(screen.getByText('1 سؤال')).toBeInTheDocument();
+    // _count badges — 5-B6 (A7 P2-4): counted nouns (the old raw
+    // «2 فصل / 1 سؤال» is gone); the zero-count row says «لا فصول».
+    expect(screen.getByText('فصلان')).toBeInTheDocument();
+    expect(screen.getByText('سؤال واحد')).toBeInTheDocument();
+    expect(screen.getByText('لا فصول')).toBeInTheDocument();
+    expect(screen.getByText('لا أسئلة')).toBeInTheDocument();
   });
 
   it('renders a video link per lecture', async () => {
@@ -175,6 +178,80 @@ describe('CurriculumAuthoringPanel — lecture list', () => {
     FIXTURES['/offerings/off1/lectures'] = [];
     renderPanel();
     expect(await screen.findByText('لا توجد محاضرات بعد')).toBeInTheDocument();
+  });
+
+  it('counts the panel subtitle with proper counted nouns (5-B6 / A7 P2-4)', async () => {
+    renderPanel();
+    // 2 lectures · 2 chapters (lec2) · 1 checkpoint (lec2) — the old
+    // raw «2 محاضرة · 2 فصل · 1 سؤال تفاعلي» is gone.
+    expect(
+      await screen.findByText('محاضرتان · فصلان · سؤال تفاعلي واحد'),
+    ).toBeInTheDocument();
+  });
+});
+
+/* ── 5-B6 (audit 5-A7 P2-3): lecture reorder ─────────────────── */
+describe('LectureAuthoringList — up/down reorder (5-B6 / A7 P2-3)', () => {
+  it('disables the up button on the first row and down on the last', async () => {
+    renderPanel();
+    await screen.findByText('المحاضرة الأولى: مدخل الشبكات');
+
+    expect(
+      screen.getByRole('button', { name: 'انقل المحاضرة الأولى: مدخل الشبكات لأعلى القائمة' }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'انقل المحاضرة الثانية: عنونة IP لأسفل القائمة' }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'انقل المحاضرة الأولى: مدخل الشبكات لأسفل القائمة' }),
+    ).toBeEnabled();
+    expect(
+      screen.getByRole('button', { name: 'انقل المحاضرة الثانية: عنونة IP لأعلى القائمة' }),
+    ).toBeEnabled();
+  });
+
+  it('swaps ordinals with the neighbor through two PATCHes', async () => {
+    const { api } = await import('../../src/lib/api');
+    renderPanel();
+    await screen.findByText('المحاضرة الأولى: مدخل الشبكات');
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'انقل المحاضرة الأولى: مدخل الشبكات لأسفل القائمة' }),
+    );
+
+    await waitFor(() => {
+      expect(api.patch).toHaveBeenCalledTimes(2);
+    });
+    // The pair swap: lec1 takes lec2's ordinal, then lec2 takes lec1's
+    expect(api.patch).toHaveBeenNthCalledWith(1, '/lectures/lec1', { ordinal: 2 });
+    expect(api.patch).toHaveBeenNthCalledWith(2, '/lectures/lec2', { ordinal: 1 });
+  });
+
+  it('reports a failed swap as an error toast and unlocks the buttons', async () => {
+    const { api } = await import('../../src/lib/api');
+    vi.mocked(api.patch).mockRejectedValueOnce({
+      response: { data: { error: { message: 'انتهت صلاحية الجلسة' } } },
+    });
+    renderPanel();
+    await screen.findByText('المحاضرة الأولى: مدخل الشبكات');
+
+    const down = screen.getByRole('button', { name: 'انقل المحاضرة الأولى: مدخل الشبكات لأسفل القائمة' });
+    fireEvent.click(down);
+
+    const toasts = await waitFor(() => {
+      const items = useToastStore.getState().items;
+      expect(items).toHaveLength(1);
+      return items;
+    });
+    expect(toasts[0]).toMatchObject({
+      variant: 'error',
+      title: 'تعذّر إعادة الترتيب',
+      message: 'انتهت صلاحية الجلسة',
+    });
+    // movingId cleared — the pair is usable again after the failure
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'انقل المحاضرة الأولى: مدخل الشبكات لأسفل القائمة' })).toBeEnabled();
+    });
   });
 });
 

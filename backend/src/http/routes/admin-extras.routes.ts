@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Role } from '@prisma/client';
+import { ResearchPaperStatus, Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -7,6 +7,10 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { buildMeta, paginationSchema } from '../../lib/pagination.js';
 import { buildScopedUserWhere, getGovernanceScope } from '../../lib/governance.js';
+// Decimal→Number serializer for ResearchPaper rows — exported by the
+// research-owning route module (learning.routes) and reused here so the
+// admin projection serializes Decimals exactly like /research/queue.
+import { decToNum } from './learning.routes.js';
 
 /**
  * Admin-extras — sub-project D.
@@ -93,6 +97,67 @@ router.get('/students', validate(studentsQuerySchema, 'query'), async (req, res,
     ]);
 
     res.json({ data, meta: buildMeta(page, limit, total) });
+  } catch (e) { next(e); }
+});
+
+/**
+ * GET /admin/papers query envelope (audit 5-A8 §5 row 8 — the admin
+ * drill-down for «إجمالي الأوراق/منشورة»): the shared pagination schema
+ * (page/limit/q) plus the contract's `status` filter over the
+ * ResearchPaperStatus lifecycle. Exported for unit tests.
+ */
+export const papersQuerySchema = paginationSchema.extend({
+  status: z.nativeEnum(ResearchPaperStatus).optional(),
+});
+
+/**
+ * GET /admin/papers — the institution-wide research list for admins
+ * (audit 5-A8 §5, minimal backend ask #1). Projection of the existing
+ * research routes (/me/research's oversight branch + /research/queue):
+ * same explicit select — NEVER extractedText (full PDF text) — same
+ * no-email student projection. `status` pre-filters the lifecycle
+ * (PUBLISHED for «منشورة», UPLOADED for the unscanned intake…), `q`
+ * searches titles, and the response is a standard paginated list
+ * ({data, meta}) so the FE can land pre-filtered with a pagination
+ * footer — NOT another fixed silent cap (the 5-A8 P2-1 bug class).
+ */
+router.get('/papers', validate(papersQuerySchema, 'query'), async (req, res, next) => {
+  try {
+    const { page, limit, q, status } = req.query as unknown as {
+      page: number;
+      limit: number;
+      q?: string;
+      status?: ResearchPaperStatus;
+    };
+    const where = {
+      ...(status ? { status } : {}),
+      ...(q ? { title: { contains: q, mode: 'insensitive' as const } } : {}),
+    };
+    const [data, total] = await Promise.all([
+      prisma.researchPaper.findMany({
+        where,
+        // Explicit select: NEVER ship extractedText (full PDF text — huge).
+        select: {
+          id: true, studentId: true, reviewerId: true, offeringId: true,
+          title: true, abstract: true, fileUrl: true, status: true,
+          plagiarismPct: true, aiContentPct: true, grade: true, feedback: true,
+          uploadedAt: true, scannedAt: true, gradedAt: true, publishedAt: true,
+          student: {
+            select: {
+              // No email — the admin list needs name + avatar, not PII.
+              id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true,
+            },
+          },
+          reviewer: { select: { id: true, firstName: true, lastName: true } },
+          offering: { include: { course: { select: { name: true, code: true } } } },
+        },
+        orderBy: { uploadedAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      prisma.researchPaper.count({ where }),
+    ]);
+    res.json({ data: decToNum(data), meta: buildMeta(page, limit, total) });
   } catch (e) { next(e); }
 });
 

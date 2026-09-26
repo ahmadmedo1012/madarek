@@ -31,6 +31,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
+import { matchesNormalizedQuery } from '../../lib/search';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { NAV_BY_ROLE } from '../../lib/nav';
@@ -100,19 +101,12 @@ const SECTION_LABEL: Record<keyof SearchResults, string> = {
   tracks: 'مسارات تدريب',
 };
 
-/* SR result-count announcement, Arabic counted-noun rules: 0 → none,
+/* SR option-count announcement, Arabic counted-noun rules: 0 → none,
    1 → singular, 2 → dual, 3–10 → plural, 11+ → singular again.
-   Latin digits per the platform's ar-LY numeral convention. */
-function resultsCountAr(n: number): string {
-  if (n === 0) return 'لم نعثر على نتائج';
-  if (n === 1) return 'نتيجة واحدة';
-  if (n === 2) return 'نتيجتان';
-  if (n <= 10) return `${n} نتائج`;
-  return `${n} نتيجة`;
-}
-
-/* Same counted-noun rules for the palette's mixed action+result list —
-   nav destinations are «خيارات», not «نتائج». */
+   Latin digits per the platform's ar-LY numeral convention. Both
+   surfaces (pill + palette) list actions and results in ONE listbox,
+   so both count «خيارات» (5-B5, A4 P2-4 — the pill used to count
+   «نتائج» only, silently ignoring its own action rows). */
 function optionsCountAr(n: number): string {
   if (n === 0) return 'لا توجد خيارات';
   if (n === 1) return 'خيار واحد';
@@ -130,6 +124,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const listboxId = useId();
+  const role = useAuthStore((s) => s.user?.role);
 
   // Debounce the query
   useEffect(() => {
@@ -173,7 +168,32 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
     ];
   }, [results]);
 
-  useEffect(() => { setActiveIdx(0); }, [flatHits.length]);
+  /* 5-B5 (A4 P2-4): the pill answers with the SAME quick-action source
+     the palette uses (NAV_BY_ROLE). Queries the live index can't answer
+     («اختبار»/«محاضرة» — no people/competitions rows server-side) used
+     to dead-end here while ⌘K answered with nav actions; both surfaces
+     now speak with one voice. Filtered through the shared Arabic
+     normalizer (lib/search.ts — the backend's foldings), so a hamza or
+     taa-marbuta variant still finds its destination. */
+  const navActions = useMemo(() => {
+    if (!role || !debounced) return [];
+    return NAV_BY_ROLE[role]
+      .flatMap((g) => g.items)
+      .filter((item) => matchesNormalizedQuery(item.label, debounced));
+  }, [role, debounced]);
+
+  /* One flat keyboard order across both sources — actions first, then
+     live results (the palette's order, so ↑/↓ behave identically in
+     both surfaces). */
+  const flatOptions = useMemo(
+    () => [
+      ...navActions.map((item) => ({ kind: 'action' as const, to: item.to })),
+      ...flatHits.map((hit) => ({ kind: 'hit' as const, href: hit.href })),
+    ],
+    [navActions, flatHits],
+  );
+
+  useEffect(() => { setActiveIdx(0); }, [flatOptions.length]);
 
   // ≤920px band: the pill is display:none (layout.css) — a focus() on
   // the hidden input is a no-op, so the "/" chord must route to the
@@ -241,19 +261,26 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       setOpen(false);
+      /* 5-B5 (A4 P2-3): clear the term too — Escape used to leave the
+         stale query behind, so the next "/" refocus reopened the
+         dropdown with the old results and fresh typing concatenated
+         onto the old term (measured «هندسةاختبار»). */
+      setQuery('');
+      setDebounced('');
       inputRef.current?.blur();
       return;
     }
-    if (!flatHits.length) return;
+    if (!flatOptions.length) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveIdx((i) => (i + 1) % flatHits.length);
+      setActiveIdx((i) => (i + 1) % flatOptions.length);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActiveIdx((i) => (i - 1 + flatHits.length) % flatHits.length);
-    } else if (e.key === 'Enter' && flatHits[activeIdx]) {
+      setActiveIdx((i) => (i - 1 + flatOptions.length) % flatOptions.length);
+    } else if (e.key === 'Enter' && flatOptions[activeIdx]) {
       e.preventDefault();
-      goTo(flatHits[activeIdx]!.href);
+      const opt = flatOptions[activeIdx]!;
+      goTo(opt.kind === 'action' ? opt.to : opt.href);
     }
   };
 
@@ -266,25 +293,22 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
 
   const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
   const totalHits = flatHits.length;
+  const totalOptions = flatOptions.length;
   const showDropdown = open && (loading || enabled);
   /* aria-activedescendant must resolve to a live option — only when the
      listbox is rendered and the active row exists. */
   const activeOptionId =
-    showDropdown && flatHits[activeIdx] ? `${listboxId}-opt-${activeIdx}` : undefined;
+    showDropdown && flatOptions[activeIdx] ? `${listboxId}-opt-${activeIdx}` : undefined;
 
-  /* SR announcement (15-g P1-1): keyboard focus never leaves the input
-     while ↑/↓ move aria-activedescendant, so the only proactive signal
-     a screen-reader user gets is this polite status region — the
-     Arabic result count once loading settles, the error verdict on
-     failure, silence while idle or below the 2-char gate. */
+  /* SR announcement (15-g P1-1): the combined option count — actions
+     and results share ONE listbox now, so the palette's counted-noun
+     grammar («خيارات») applies here too (5-B5, A4 P2-4 consistency). */
   const announcement =
     !enabled || loading
       ? ''
       : isError && !results
         ? 'تعذَّر إتمام البحث'
-        : results
-          ? resultsCountAr(totalHits)
-          : '';
+        : optionsCountAr(totalOptions);
 
   let runningIdx = 0;
 
@@ -369,7 +393,41 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
             </div>
           )}
 
-          {!loading && !isError && enabled && totalHits === 0 && (
+          {/* 5-B5 (A4 P2-4): quick actions first — the palette's order. */}
+          {!loading && navActions.length > 0 && (
+            <div
+              className="search-section"
+              role="group"
+              aria-labelledby={`${listboxId}-sec-actions`}
+            >
+              <div className="search-section-label" id={`${listboxId}-sec-actions`}>إجراءات سريعة</div>
+              {navActions.map((item, idx) => {
+                const isActive = idx === activeIdx;
+                return (
+                  <button
+                    key={`act-${item.to}`}
+                    id={`${listboxId}-opt-${idx}`}
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    className={`search-row${isActive ? ' active' : ''}`}
+                    onMouseEnter={() => setActiveIdx(idx)}
+                    onClick={() => goTo(item.to)}
+                  >
+                    <span className="search-row-icon">
+                      <Icon icon={item.icon} size={16} />
+                    </span>
+                    <span className="search-row-body">
+                      <span className="search-row-title">{item.label}</span>
+                    </span>
+                    <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {!loading && !isError && enabled && totalOptions === 0 && (
             <div className="search-empty" role="presentation">
               <div className="search-empty-title">لم نعثر على نتائج لـ«{debounced}»</div>
               <div className="search-empty-tips">
@@ -397,7 +455,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
               >
                 <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
                 {items.map((hit) => {
-                  const idx = runningIdx++;
+                  const idx = navActions.length + runningIdx++;
                   const isActive = idx === activeIdx;
                   /* wave 2-b (0-c P2-9): `${accent}1a` produced invalid CSS
                      whenever themeColor was null (`var(--accent)1a`). A
@@ -435,7 +493,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
             );
           })}
 
-          {!loading && !isError && totalHits > 0 && (
+          {!loading && !isError && totalOptions > 0 && (
             <div className="search-footer" role="presentation">
               <span className="kbd">↑</span><span className="kbd">↓</span> للتنقّل
               <span className="kbd">↵</span> للفتح
@@ -517,6 +575,14 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
   const goTo = (href: string) => {
     onClose();
     navigate(href);
+    /* 5-B5 (A4 §7): release focus from the input NOW. The palette
+       unmounts asynchronously (exit window) — without this, the input
+       keeps focus through the navigation commit and only releases it
+       to <body> at the final unmount, AFTER the shell's pathname-keyed
+       focus rescue already checked. Blurring here makes the orphan
+       visible in time, so the shell lands focus on the new page's
+       topbar title. */
+    inputRef.current?.blur();
   };
 
   // Quick actions: the role's nav destinations + the theme toggle.
@@ -541,7 +607,12 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
     const all = [...navItems, theme];
     const q = debounced; // settled term — matching on the raw keystroke flickers
     if (!q) return all.slice(0, PALETTE_ACTIONS_EMPTY_CAP);
-    return all.filter((a) => a.label.includes(q));
+    /* 5-B5 (A4 P2-6): raw includes() missed hamza/diacritic variants —
+       «الاختبارات» never found «الاختبارات الإلكترونية» if the user's
+       keyboard produced أ/إ variants. The shared normalizer (lib/search.ts)
+       makes the palette's action filter answer exactly like the backend
+       search route (and now the pill's — one matcher, three surfaces). */
+    return all.filter((a) => matchesNormalizedQuery(a.label, q));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- goTo closes over navigate only
   }, [role, debounced, resolvedTheme, setThemeMode, onClose, navigate]);
 

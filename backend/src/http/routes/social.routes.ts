@@ -84,6 +84,21 @@ export function toPublicEntryView(entry: CompetitionEntryPublicView): Competitio
 }
 
 /**
+ * View rule for one competition entry (audit 5-A12 P1-1): the organizer
+ * sees every full row; the entry's AUTHOR sees their own full row — the
+ * edit flow («تعديل مشاركتي») needs body/fileUrl, and without them the
+ * modal opens empty and a blind submit silently overwrites the entry
+ * (the upsert on competitionId_userId keeps no history). Everyone else
+ * gets the summary projection. The full row keeps `userId`, so the FE
+ * can match the viewer's own entry exactly instead of by name.
+ */
+export function entryViewForViewer<
+  T extends CompetitionEntryPublicView & { userId: string },
+>(entry: T, viewer: { isOrganizer: boolean; viewerId: string }): T | CompetitionEntryPublicView {
+  return viewer.isOrganizer || entry.userId === viewer.viewerId ? entry : toPublicEntryView(entry);
+}
+
+/**
  * JUDGED is the competition's final state — entry scores lock once judging
  * completes (audit 11-c P2-14: they previously stayed writable forever).
  */
@@ -412,12 +427,15 @@ router.get('/competitions/:id', async (req, res, next) => {
       },
     });
     if (!c) throw AppError.notFound('المسابقة غير موجودة');
-    // Hide entry bodies from non-organizers (only show summary)
+    // Entry visibility (5-A12 P1-1): organizers see all full rows; an
+    // entrant sees their OWN full row (the edit flow needs body/fileUrl —
+    // a blind resubmit would overwrite it); everyone else gets the
+    // summary projection with bodies hidden.
     const isOrg = c.organizerId === req.user!.id;
     res.json({
       data: {
         ...c,
-        entries: c.entries.map((e) => (isOrg ? e : toPublicEntryView(e))),
+        entries: c.entries.map((e) => entryViewForViewer(e, { isOrganizer: isOrg, viewerId: req.user!.id })),
       },
     });
   } catch (e) { next(e); }
@@ -620,19 +638,44 @@ router.post(
 //  Events
 // ════════════════════════════════════════════════════════════════
 
-router.get('/events', async (_req, res, next) => {
+/**
+ * Merge the viewer's own RSVP rows into event list rows (audit 5-A12
+ * P2-2 — the `viewerReacted` pattern applied to events): each row gains
+ * an additive `myRsvp` (the viewer's current status) or null when they
+ * never answered, so the pressed state survives reload instead of being
+ * session-local. Pure + exported for unit tests.
+ */
+export function eventsWithMyRsvp<
+  T extends { id: string },
+>(events: readonly T[], myRsvps: ReadonlyArray<{ eventId: string; status: RsvpStatus }>): Array<T & { myRsvp: RsvpStatus | null }> {
+  const statusByEvent = new Map(myRsvps.map((r) => [r.eventId, r.status]));
+  return events.map((e) => ({ ...e, myRsvp: statusByEvent.get(e.id) ?? null }));
+}
+
+router.get('/events', async (req, res, next) => {
   try {
     const now = new Date();
     const events = await prisma.campusEvent.findMany({
       where: { endsAt: { gte: now } },
       include: {
         organizer: { select: { firstName: true, lastName: true, role: true } },
-        _count: { select: { rsvps: true } },
+        // 5-A12 P2-1: only GOING RSVPs hold a seat, so only they count
+        // against capacity — the unfiltered count turned every «لن أحضر»
+        // decline into an occupied seat («10 / 10» on an event nobody
+        // attends). Filtered relation counts are GA since Prisma 4.16.
+        _count: { select: { rsvps: { where: { status: 'GOING' } } } },
       },
       orderBy: { startsAt: 'asc' },
       take: SOCIAL_LIST_TAKE,
     });
-    res.json({ data: events });
+    // 5-A12 P2-2: the viewer's own answers, merged additively above.
+    const myRsvps = events.length
+      ? await prisma.eventRSVP.findMany({
+          where: { eventId: { in: events.map((e) => e.id) }, userId: req.user!.id },
+          select: { eventId: true, status: true },
+        })
+      : [];
+    res.json({ data: eventsWithMyRsvp(events, myRsvps) });
   } catch (e) { next(e); }
 });
 

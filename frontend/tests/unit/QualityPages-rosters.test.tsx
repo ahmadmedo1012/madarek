@@ -15,7 +15,7 @@
  *    reload the page).
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -35,9 +35,15 @@ const FIXTURES: Record<string, unknown> = {};
 
 vi.mock('../../src/lib/api', () => ({
   api: {
-    get: (url: string) => {
-      const data = FIXTURES[url];
-      if (data === undefined) return Promise.reject(new Error(`unexpected GET ${url}`));
+    // 5-B4: param-aware — the ?metric= drill (5-B1's endpoint) keys its
+    // fixture as `${url}?${params}`; paramless calls keep the bare url.
+    get: (url: string, opts?: { params?: Record<string, unknown> }) => {
+      const params = opts?.params;
+      const key = params && Object.keys(params).length > 0
+        ? `${url}?${Object.entries(params).map(([k, v]) => `${k}=${v}`).join('&')}`
+        : url;
+      const data = FIXTURES[key];
+      if (data === undefined) return Promise.reject(new Error(`unexpected GET ${key}`));
       return Promise.resolve({ data: { data } });
     },
   },
@@ -96,11 +102,11 @@ const PROFESSORS = [
   },
 ];
 
-function renderPage(ui: React.ReactElement) {
+function renderPage(ui: React.ReactElement, initialEntry = '/') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter>{ui}</MemoryRouter>
+      <MemoryRouter initialEntries={[initialEntry]}>{ui}</MemoryRouter>
     </QueryClientProvider>,
   );
 }
@@ -164,6 +170,71 @@ describe('QualityProfessorsPage — mobile collapse (A8 P1-1)', () => {
     }
     expect(cells.some((td) => td.getAttribute('data-label') === 'الملفات المرفوعة')).toBe(true);
     expect(cells.some((td) => td.getAttribute('data-label') === 'الالتزام')).toBe(true);
+  });
+});
+
+describe('QualityCoursesPage — ?metric= drill-down (5-B4, 5-A8 §5 row 11)', () => {
+  it('lands pre-filtered: metric column, honest «لا بيانات» for null metrics, reset affordance', async () => {
+    FIXTURES['/quality/courses?metric=attendance'] = [
+      {
+        ...COURSES[0],
+        metrics: { attendanceRate: 100, completionRate: null },
+      },
+      {
+        ...COURSES[1],
+        metrics: { attendanceRate: null, completionRate: 40 },
+      },
+    ];
+    renderPage(<QualityCoursesPage />, '/quality/courses?metric=attendance');
+
+    // The subtitle names the drill; the metric column rides the roster.
+    expect(await screen.findByText(/مقرّر مكتمل/)).toBeInTheDocument();
+    expect(screen.getByText(/من الأدنى أولا/)).toBeInTheDocument();
+    expect(screen.getByText('معدل الحضور', { selector: 'th' })).toBeInTheDocument();
+
+    // 100% for the counted offering (metric + completion columns); an
+    // honest neutral «لا بيانات» for the null one (never a fake 0/100%).
+    expect(screen.getAllByText('100%').length).toBeGreaterThan(0);
+    expect(screen.getByText('لا بيانات')).toBeInTheDocument();
+
+    // The reset affordance returns to the full roster (no metric param).
+    fireEvent.click(screen.getByRole('button', { name: /عرض الجدول الكامل/ }));
+    await waitFor(() => {
+      expect(screen.queryByText('معدل الحضور', { selector: 'th' })).toBeNull();
+    });
+  });
+});
+
+describe('QualityProfessorsPage — «بحاجة لمتابعة» filters the roster (5-B4, 5-A8 §5 row 12)', () => {
+  it('the KPI acts as a toggle: compliance < 50% roster, badge, and back', async () => {
+    FIXTURES['/quality/professors'] = [
+      PROFESSORS[0], // سالم — compliance 80
+      {
+        ...PROFESSORS[0],
+        id: 't2',
+        firstName: 'خالد',
+        lastName: 'العمروني',
+        compliance: 40,
+      },
+    ];
+    renderPage(<QualityProfessorsPage />);
+
+    // KPI counts the low-compliance teacher and renders as a BUTTON
+    // (the old tile was a terminal stat).
+    const toggle = await screen.findByRole('button', { name: /بحاجة لمتابعة/ });
+    expect(toggle.textContent).toContain('1');
+
+    fireEvent.click(toggle);
+    expect(await screen.findByText(/خالد/)).toBeInTheDocument();
+    expect(screen.queryByText(/سالم/)).toBeNull();
+    expect(screen.getByText('مصفّى: التزام أقلّ من 50%')).toBeInTheDocument();
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+
+    // And back — the full roster returns.
+    fireEvent.click(screen.getByRole('button', { name: /عرض جميع الأساتذة/ }));
+    await waitFor(() => {
+      expect(screen.getByText(/سالم/)).toBeInTheDocument();
+    });
   });
 });
 

@@ -19,11 +19,15 @@
  *    of the fetched page renders (the old `.slice(0, 30)` over a 50-row
  *    fetch is gone), the pager walks real server pages, and single-page
  *    results hide the pager.
+ * 5. 5-B6 (audit 5-A7): the answer surface in GradeSubmissionModal
+ *    (textAnswer block + /document/ file link, P1-2), the <form> +
+ *    «تقييم التالي» grading-throughput flow (P2-2), queue grouping with
+ *    per-assignment ceilings, and the countAr zero-cases (P2-1).
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AttendancePage, AssignmentsPage, MessagesPage, GradesPage, StudentsListPage } from '../../src/pages/teacher/TeacherPages';
+import { AttendancePage, AssignmentsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage, feedToPending } from '../../src/pages/teacher/TeacherPages';
 import { useAuthStore } from '../../src/stores/auth.store';
 import type { AuthUser } from '../../src/stores/auth.store';
 
@@ -160,6 +164,27 @@ const FEED_SUBMISSION = {
   actionTo: '/grades',
 };
 
+/* 5-B6 (A7 P1-2): the feed item carries the student's answer — the
+ * projection the backend hand-off adds. Used by the answer-surface
+ * tests below. */
+const FEED_SUBMISSION_WITH_ANSWER = {
+  ...FEED_SUBMISSION,
+  textAnswer: 'حللت التمرين بالاعتماد على نمط المراقب، والرسم في الصفحة الثانية.',
+  fileUrl: '/api/v1/files/papers/hw1-answer.pdf',
+};
+
+/* A second pending submission on a DIFFERENT assignment — drives the
+ * grouping (two groups) and the «تقييم التالي» flow. */
+const FEED_SUBMISSION_2 = {
+  kind: 'submissions',
+  id: 's-sub2',
+  author: { firstName: 'آمنة', lastName: 'العبيدي', avatarInitials: null, avatarColor: null },
+  meta: 'هندسة البرمجيات · SE101',
+  when: new Date(Date.now() - 1_800_000).toISOString(),
+  title: 'سلّم تمرين الشبكات',
+  actionTo: '/grades',
+};
+
 const ASSIGNMENT = {
   id: 'a1',
   title: 'مشروع UML',
@@ -167,6 +192,18 @@ const ASSIGNMENT = {
   dueAt: new Date(Date.now() + 86_400_000).toISOString(),
   weight: 1,
   maxScore: 10,
+  course: { code: 'SE101', name: 'هندسة البرمجيات' },
+  submissions: 1,
+  enrolled: 2,
+};
+
+const ASSIGNMENT_2 = {
+  id: 'a2',
+  title: 'تمرين الشبكات',
+  type: 'HOMEWORK',
+  dueAt: new Date(Date.now() + 3 * 86_400_000).toISOString(),
+  weight: 1,
+  maxScore: 20,
   course: { code: 'SE101', name: 'هندسة البرمجيات' },
   submissions: 1,
   enrolled: 2,
@@ -204,6 +241,39 @@ function seedGradeFeed() {
     refetch: vi.fn(),
   };
   mocks.assignments = [ASSIGNMENT];
+}
+
+/** 5-B6 (A7 P1-2/P2-2): the queue with the student's answer projected
+ *  — the payload shape the backend hand-off ships. */
+function seedGradeFeedWithAnswer() {
+  mocks.dashboard = {
+    data: {
+      kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
+      trend: [],
+      feed: [FEED_SUBMISSION_WITH_ANSWER],
+    },
+    isPending: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  };
+  mocks.assignments = [ASSIGNMENT];
+}
+
+/** Two pending submissions on two assignments — grouping + next-flow. */
+function seedGradeFeedMulti() {
+  mocks.dashboard = {
+    data: {
+      kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 2 },
+      trend: [],
+      feed: [FEED_SUBMISSION, FEED_SUBMISSION_2],
+    },
+    isPending: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  };
+  mocks.assignments = [ASSIGNMENT, ASSIGNMENT_2];
 }
 
 function renderAttendance() {
@@ -508,6 +578,263 @@ describe('NeedsReviewCard — the late-submission chip (18-G feed flag, 18-F2 co
 
     expect(screen.getByText('مشروع UML')).toBeInTheDocument();
     expect(screen.queryByText('متأخر')).toBeNull();
+  });
+});
+
+/* ── 5-B6 (audit 5-A7 P1-2): the answer the teacher is grading ── */
+describe('GradeSubmissionModal — the answer surface (5-B6 / A7 P1-2)', () => {
+  it('renders the student text answer readably and links the file to the in-app viewer', async () => {
+    seedGradeFeedWithAnswer();
+    await openGradeModal();
+
+    // The answer block: labelled, with the student's actual text
+    expect(screen.getByText('إجابة الطالب')).toBeInTheDocument();
+    expect(
+      screen.getByText('حللت التمرين بالاعتماد على نمط المراقب، والرسم في الصفحة الثانية.'),
+    ).toBeInTheDocument();
+
+    // The file link mirrors the research flow: /document/ viewer with
+    // the assignment title + a back path to the assignments page.
+    const fileLink = screen.getByRole('link', { name: 'فتح الملف في العارض' });
+    expect(fileLink.getAttribute('href')).toContain('/document/hw1-answer.pdf');
+    expect(fileLink.getAttribute('href')).toContain(
+      `title=${encodeURIComponent('مشروع UML')}`,
+    );
+    expect(fileLink.getAttribute('href')).toContain(
+      `back=${encodeURIComponent('/teacher/assignments')}`,
+    );
+  });
+
+  it('renders nothing extra when the feed item carries no answer fields', async () => {
+    seedGradeFeed();
+    await openGradeModal();
+
+    // The pre-hand-off payload (no textAnswer/fileUrl): no answer
+    // block, and — critically — no fabricated "empty answer" message.
+    expect(screen.queryByText('إجابة الطالب')).toBeNull();
+    expect(screen.queryByRole('link', { name: 'فتح الملف في العارض' })).toBeNull();
+    // The grading fields still work
+    expect(screen.getByLabelText('الدرجة (من 0 إلى 10)')).toBeInTheDocument();
+  });
+
+  it('links an external https file to a new tab instead of the viewer', async () => {
+    mocks.dashboard = {
+      data: {
+        kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
+        trend: [],
+        feed: [{ ...FEED_SUBMISSION, textAnswer: null, fileUrl: 'https://cdn.example.com/hw.pdf' }],
+      },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
+    mocks.assignments = [ASSIGNMENT];
+    await openGradeModal();
+
+    const external = screen.getByRole('link', { name: 'فتح الملف الخارجي' });
+    expect(external).toHaveAttribute('href', 'https://cdn.example.com/hw.pdf');
+    expect(external).toHaveAttribute('target', '_blank');
+  });
+});
+
+/* ── 5-B6 (audit 5-A7 P2-2): form + «تقييم التالي» throughput ── */
+describe('GradeSubmissionModal — form + next-submission flow (5-B6 / A7 P2-2)', () => {
+  it('wraps the fields in a real form — submit event saves the grade', async () => {
+    seedGradeFeed();
+    mocks.grade.mutateAsync.mockResolvedValueOnce({ id: 'sub1', status: 'GRADED' });
+    await openGradeModal();
+
+    const score = screen.getByLabelText('الدرجة (من 0 إلى 10)') as HTMLInputElement;
+    const form = score.closest('form');
+    expect(form).not.toBeNull();
+
+    fireEvent.change(score, { target: { value: '8' } });
+    fireEvent.submit(form!);
+
+    await waitFor(() => {
+      expect(mocks.grade.mutateAsync).toHaveBeenCalledWith({ grade: 8, feedback: undefined });
+    });
+    expect(await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.')).toBeInTheDocument();
+  });
+
+  it('grades one submission, then «تقييم التالي» opens the next one with a fresh draft', async () => {
+    seedGradeFeedMulti();
+    mocks.grade.mutateAsync.mockResolvedValue({ id: 'sub', status: 'GRADED' });
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    // Two groups: one per assignment, each with its own ceiling chip
+    expect(await screen.findByText('مشروع UML')).toBeInTheDocument();
+    expect(screen.getByText('تمرين الشبكات')).toBeInTheDocument();
+    // One pending submission per group → two «تسليم واحد» count chips
+    expect(screen.getAllByText('تسليم واحد')).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'تقييم' })[0]!);
+    await screen.findByRole('dialog', { name: 'تقييم تسليم مشروع UML' });
+
+    fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '9' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
+
+    // Done state offers the next pending submission (auto-focused)
+    const next = await screen.findByRole('button', { name: 'تقييم التالي' });
+    expect(next).toHaveFocus();
+    fireEvent.click(next);
+
+    // The second modal opens on the OTHER assignment — fresh score box
+    // (jest-dom reads an empty <input type="number"> as value null)
+    const second = await screen.findByRole('dialog', { name: 'تقييم تسليم تمرين الشبكات' });
+    expect(second).toBeInTheDocument();
+    expect(screen.getByLabelText('الدرجة (من 0 إلى 20)')).toHaveValue(null);
+  });
+
+  it('hides «تقييم التالي» when this was the last pending submission', async () => {
+    seedGradeFeed();
+    mocks.grade.mutateAsync.mockResolvedValueOnce({ id: 'sub1', status: 'GRADED' });
+    await openGradeModal();
+
+    fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
+    await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.');
+
+    expect(screen.queryByRole('button', { name: 'تقييم التالي' })).toBeNull();
+  });
+});
+
+/* ── 5-B6 (audit 5-A7 P2-1): countAr zero-cases ── */
+describe('NeedsReviewCard — queue zero-case + grouping (5-B6 / A7 P2-1)', () => {
+  it('renders the honest zero subtitle instead of «0 تسليماً بانتظار درجتك»', () => {
+    mocks.dashboard = {
+      data: { kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 0 }, trend: [], feed: [] },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
+    mocks.assignments = [ASSIGNMENT];
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('لا تسليمات بانتظار درجتك')).toBeInTheDocument();
+    expect(screen.queryByText(/0 تسليم/)).toBeNull();
+  });
+
+  it('groups same-assignment submissions under one header with a shared ceiling', () => {
+    mocks.dashboard = {
+      data: {
+        kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 2 },
+        trend: [],
+        // Two submissions on the SAME assignment → one group, 2 rows
+        feed: [FEED_SUBMISSION, { ...FEED_SUBMISSION, id: 's-sub3' }],
+      },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
+    mocks.assignments = [ASSIGNMENT];
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('مشروع UML')).toBeInTheDocument();
+    // The group carries the ceiling chip and the counted total. The
+    // chip's text spans a <bdi> child — match the whole badge (the
+    // page-indicator matcher pattern).
+    expect(
+      screen.getByText((_c, el) =>
+        el instanceof HTMLElement
+        && el.classList.contains('badge')
+        && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'الدرجة من 10'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('تسليمان')).toBeInTheDocument();
+    // …and two grade buttons for the two student rows
+    expect(screen.getAllByRole('button', { name: 'تقييم' })).toHaveLength(2);
+  });
+});
+
+describe('MessagesPage — zero-case subtitle (5-B6 / A7 P2-1)', () => {
+  it('renders «لا رسائل» instead of «0 رسالة»', () => {
+    mocks.messages.pages = { 1: [] };
+    mocks.messages.total = 0;
+    mocks.messages.totalPages = 1;
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    renderMessages();
+
+    expect(screen.getByText('لا رسائل')).toBeInTheDocument();
+    expect(screen.queryByText('0 رسالة')).toBeNull();
+  });
+
+  it('clamps a long body to one line with the full text on the title attribute (5-B6 craft)', () => {
+    const longBody = 'هذه رسالة طويلة جداً يتجاوز نصّها سطراً واحداً في سجلّ الصندوق، والنسخة الكاملة تظهر عند الوقوف على السطر بالمؤشّر.';
+    mocks.messages.pages = { 1: [messageRow('m1', longBody)] };
+    mocks.messages.total = 1;
+    mocks.messages.totalPages = 1;
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    renderMessages();
+
+    // One-line clamp (no wrapped prose ragging the log) + the no-truncation-
+    // without-tooltip rule: the full body rides the row's title. The CSS
+    // clamp itself is hover-gated (title tooltips never open on touch —
+    // phones keep the full wrapping body); the class + title are the
+    // unconditional contract this pins.
+    const body = screen.getByTitle(longBody);
+    expect(body).toHaveClass('msg-body');
+    expect(body).toHaveTextContent(longBody);
+  });
+});
+
+/* ── 5-B6 (audit 5-A7 P2-1): the remaining zero-cases, platform-wide ── */
+describe('AssignmentsPage + TeacherSchedulePage — countAr zero-cases (5-B6 / A7 P2-1)', () => {
+  it('renders «لا تسليمات بعد» on an assignment with no submissions — never «0 تسليماً»', () => {
+    mocks.dashboard = {
+      data: { kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 0 }, trend: [], feed: [] },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
+    mocks.assignments = [{ ...ASSIGNMENT, submissions: 0 }];
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('لا تسليمات بعد')).toBeInTheDocument();
+    expect(screen.queryByText('0 تسليماً')).toBeNull();
+  });
+
+  it('renders «لا طلاب مسجَّلين» on an empty scheduled slot — never «0 طالباً»', () => {
+    mocks.offerings = [{
+      ...OFFERING,
+      _count: { ...OFFERING._count, enrollments: 0 },
+      schedule: [{ dayOfWeek: 3, startTime: '09:00', endTime: '10:40', room: 'قاعة 12' }],
+    }];
+    render(
+      <MemoryRouter>
+        <TeacherSchedulePage />
+      </MemoryRouter>,
+    );
+
+    // The slot line carries the room prefix — match the whole sub-line
+    // (the page-indicator matcher pattern).
+    expect(
+      screen.getByText((_c, el) =>
+        el instanceof HTMLElement
+        && el.classList.contains('list-row-sub')
+        && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'قاعة 12 · لا طلاب مسجَّلين',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('0 طالباً')).toBeNull();
   });
 });
 

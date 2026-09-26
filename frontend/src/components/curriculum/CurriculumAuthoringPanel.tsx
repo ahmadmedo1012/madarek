@@ -18,6 +18,7 @@ import { Card, Badge } from '../primitives';
 import { EmptyState, ErrorState, LoadingState } from '../primitives/States';
 import { Icon } from '../Icon';
 import { useLecture, useOfferingLectures, type Lecture } from '../../hooks/useResources';
+import { countAr } from '../../lib/format';
 import { LectureAuthoringList, LectureFormModal } from './LectureAuthoring';
 import { ChapterList } from './ChapterBuilder';
 import { CheckpointList } from './CheckpointBuilder';
@@ -43,13 +44,20 @@ export function CurriculumAuthoringPanel({
   const selected = sorted.find((l) => l.id === selectedId) ?? null;
   const detail = useLecture(selected?.id);
 
+  // Structure totals for the card subtitle (5-B6 A7 P2-4).
+  const chapterTotal = sorted.reduce((s, l) => s + (l._count?.chapters ?? 0), 0);
+  const checkpointTotal = sorted.reduce((s, l) => s + (l._count?.checkpoints ?? 0), 0);
+
   return (
     <Card
       title="إدارة المنهج"
       icon={ListVideo}
       subtitle={
-        lectures.data
-          ? `${sorted.length} محاضرة · ${sorted.reduce((s, l) => s + (l._count?.chapters ?? 0), 0)} فصل · ${sorted.reduce((s, l) => s + (l._count?.checkpoints ?? 0), 0)} سؤال تفاعلي`
+        /* 5-B6 (A7 P2-4): counted nouns — the old «3 محاضرة · 9 فصل ·
+         * 4 سؤال تفاعلي» was raw. The empty list carries no count at
+         * all (the empty state below owns that message). */
+        lectures.data && sorted.length > 0
+          ? `${countAr(sorted.length, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} · ${countAr(chapterTotal, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])} · ${countAr(checkpointTotal, ['سؤال تفاعلي واحد', 'سؤالان تفاعليان', 'أسئلة تفاعلية', 'سؤالاً تفاعلياً'])}`
           : undefined
       }
       actions={

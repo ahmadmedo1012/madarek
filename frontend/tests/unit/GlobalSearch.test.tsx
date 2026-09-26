@@ -20,7 +20,7 @@
  * scope, exactly as in production.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -141,22 +141,24 @@ describe('GlobalSearch — combobox ARIA (15-g P1-1)', () => {
     expect(listbox).toContainElement(lecturesGroup);
   });
 
-  it('announces the Arabic plural result count in the polite live region', async () => {
+  it('announces the Arabic plural option count in the polite live region', async () => {
     renderSearch();
     getMock.mockResolvedValue({ data: { data: resultsWith([hit('a'), hit('b'), hit('c')]) } });
     await type('هندسة');
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('3 نتائج'));
+    // 5-B5 (A4 P2-4): the pill's listbox now carries actions + results,
+    // so it counts «خيارات» like the palette — was «3 نتائج».
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('3 خيارات'));
   });
 
   it('announces the singular count for one hit and the miss for zero hits', async () => {
     renderSearch();
     getMock.mockResolvedValueOnce({ data: { data: resultsWith([hit('a')]) } });
     await type('هندسة');
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('نتيجة واحدة'));
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('خيار واحد'));
 
     getMock.mockResolvedValueOnce({ data: { data: resultsWith([]) } });
     await type('برمجة');
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('لم نعثر على نتائج'));
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('لا توجد خيارات'));
     // The visible empty state names the term; the live region stays generic.
     // (15-j P2-1: Latin quotes → Arabic «» — pin updated with the copy change.)
     expect(screen.getByText('لم نعثر على نتائج لـ«برمجة»')).toBeInTheDocument();
@@ -217,6 +219,73 @@ describe('GlobalSearch — query-cache migration (15-d P2-8)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'إعادة المحاولة' }));
     await waitFor(() => expect(getMock).toHaveBeenCalledTimes(2));
     await waitFor(() => expect(screen.getAllByRole('option')).toHaveLength(2));
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('نتيجتان'));
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('خياران'));
+  });
+});
+
+describe('GlobalSearch — quick-action fallback + Escape reset (5-B5, A4 P2-3/P2-4)', () => {
+  it('answers index-missing queries with the role\'s nav actions — no dead end', async () => {
+    // «اختبار» has zero rows in /search/global (no exam rows in the
+    // index) but names two student nav destinations. The desktop pill
+    // used to show the bare empty state while ⌘K answered with actions.
+    const { useAuthStore } = await import('../../src/stores/auth.store');
+    useAuthStore.setState({
+      user: {
+        id: 'u1', email: 's@zu.edu.ly', firstName: 'سالم', lastName: 'الزوي',
+        role: 'STUDENT' as const,
+      },
+    });
+    try {
+      renderSearch();
+      getMock.mockResolvedValue({ data: { data: resultsWith([]) } });
+      await type('اختبار');
+
+      const actionsGroup = screen.getByRole('group', { name: 'إجراءات سريعة' });
+      expect(actionsGroup).toBeInTheDocument();
+      const options = within(actionsGroup).getAllByRole('option');
+      expect(options.map((o) => o.textContent)).toEqual([
+        'الاختبارات الإلكترونية',
+        'تحليل الاختبارات',
+      ]);
+      // Not the empty state — the pill answered.
+      expect(screen.queryByText(/لم نعثر على نتائج/)).not.toBeInTheDocument();
+      await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('خياران'));
+    } finally {
+      useAuthStore.setState({ user: null });
+    }
+  });
+
+  it('matches actions through the Arabic normalizer (hamza/ال tolerance)', async () => {
+    const { useAuthStore } = await import('../../src/stores/auth.store');
+    useAuthStore.setState({
+      user: {
+        id: 'u1', email: 's@zu.edu.ly', firstName: 'سالم', lastName: 'الزوي',
+        role: 'STUDENT' as const,
+      },
+    });
+    try {
+      renderSearch();
+      getMock.mockResolvedValue({ data: { data: resultsWith([]) } });
+      // إ variant + definite article — raw includes() finds nothing.
+      await type('إختبار');
+      const actionsGroup = screen.getByRole('group', { name: 'إجراءات سريعة' });
+      expect(within(actionsGroup).getAllByRole('option').length).toBeGreaterThan(0);
+    } finally {
+      useAuthStore.setState({ user: null });
+    }
+  });
+
+  it('Escape clears the query — no stale term on the next focus (A4 P2-3)', async () => {
+    renderSearch();
+    getMock.mockResolvedValue({ data: { data: resultsWith([hit('a')]) } });
+    await type('هندسة');
+    const input = searchInput();
+    fireEvent.keyDown(input, { key: 'Escape' });
+    await waitForClosedDropdown();
+    // The measured bug: the term survived Escape, so the next "/"
+    // refocus reopened the dropdown with old results and fresh typing
+    // concatenated («هندسةاختبار»). The term must be gone.
+    expect(input).toHaveValue('');
+    expect(input).toHaveAttribute('aria-expanded', 'false');
   });
 });

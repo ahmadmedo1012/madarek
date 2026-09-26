@@ -2245,4 +2245,254 @@
     .event-actions .btn { min-block-size: 44px; }
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     5-B3 — exam-taker ergonomics + student mobile order
+     (audit 5-A6: P1-1 chrome, P2-2 map/submit, P2-3 save state,
+     plan-6 timer hairline, plan-7 verdict lockup, P2-8/9/10 order).
+     The exam-taker base chrome (.exam-bar/.exam-choice/.exam-submit-bar)
+     lives in components.css waves 3-c/5-c; this block owns the new
+     pieces. student.css is eager (main.tsx, worklog 8-b) so these
+     apply on the /student/online-exams routes too.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* ── Question map (P2-2): one dot per question inside the sticky
+     bar. flex-basis 100% wraps it onto the bar's second row (the
+     bar wraps at 320px — 5-A5 measured the slot). Pagination-button
+     grammar: 36px desktop, 44px phone floor (the .table-pagination
+     precedent, components.css). ── */
+  .exam-qmap {
+    flex-basis: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-1);
+  }
+  .exam-qmap-dot {
+    min-inline-size: 36px;
+    min-block-size: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease);
+  }
+  .exam-qmap-dot:hover {
+    background: var(--surface-3);
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  /* Answered — accent-soft ground + accent-strong ink (8.62:1, the
+     WCAG math pinned in tokens.css; same pairing as .exam-choice.selected
+     and the pagination active page). */
+  .exam-qmap-dot.answered {
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    color: var(--accent-strong);
+  }
+  /* Save-failed — warning chip pairing (.exam-save-warn family). */
+  .exam-qmap-dot.failed {
+    background: var(--warning-soft);
+    border-color: color-mix(in srgb, var(--warning) 45%, transparent);
+    color: var(--warning-ink);
+  }
+  /* Current position (P2-2) — the question on screen wears a ring so a
+     long paper always shows where you are. Offset ring (focus-grammar),
+     not a shadow: the dot already carries its state in ground + ink. */
+  .exam-qmap-dot.current {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ── Time-consumed hairline (plan-6): the attempt window draining
+     from the inline-start edge along the sticky bar's bottom rule.
+     Color-only urgency — the no-pulse timer decision is documented. ── */
+  .exam-time-rail {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 2px;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border-end-start-radius: var(--r-lg);
+    border-end-end-radius: var(--r-lg);
+    overflow: clip;
+    pointer-events: none;
+  }
+  .exam-time-rail > span {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    background: var(--accent);
+    transform-origin: left center;
+  }
+  [dir='rtl'] .exam-time-rail > span { transform-origin: right center; }
+  .exam-time-rail[data-urgent] { background: color-mix(in srgb, var(--danger) 16%, transparent); }
+  .exam-time-rail[data-urgent] > span { background: var(--danger); }
+
+  /* ── Question wrapper (P2-2 jump target): the map scrolls here and
+     moves focus; scroll-margin lands the card clear of the sticky bar
+     (the bar carries the map row — measured heights: 113px bar at
+     ≥768, 162px at 390 with the 44px dots; +8px optical gap). ── */
+  .exam-q { scroll-margin-block-start: 124px; }
+  @media (max-width: 768px) { .exam-q { scroll-margin-block-start: 136px; } }
+  @media (max-width: 640px) { .exam-q { scroll-margin-block-start: 176px; } }
+  /* Programmatic focus lands here (tabIndex -1) — the universal
+     motion.css ring excludes tabindex=-1 by design, so the landing
+     cue is declared here: the ring shows while the jumped card owns
+     focus and leaves when the student clicks elsewhere. */
+  .exam-q:focus {
+    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+    outline-offset: var(--state-focus-ring-offset);
+    border-radius: var(--r-lg);
+  }
+
+  /* ── Save-state chip at the question footer (P2-3) — the positive
+     half of the autosave honesty pair; tone-mapped to the sticky
+     failure chip's inks. ── */
+  .exam-q-foot {
+    display: flex;
+    justify-content: flex-end;
+    margin-block-start: var(--sp-2);
+  }
+  .exam-q-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    animation: exam-save-in var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+  .exam-q-state.saved { color: var(--success-ink); }
+  .exam-q-state.saving { color: var(--text-muted); }
+  .exam-q-state.failed { color: var(--danger-ink); }
+  @keyframes exam-save-in { from { opacity: 0; } }
+
+  /* ── Submit bar (P2-2): the unanswered count rides inline next to
+     the submit control (not only inside the confirm dialog); on phone
+     the bar is bottom-sticky above the fixed bottom-nav so a long
+     paper never hides the way out. Overrides the components.css
+     end-aligned block via the pages layer (later in cascade order). ── */
+  .exam-submit-bar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+  }
+  .exam-submit-bar .form-error { flex-basis: 100%; }
+  .exam-submit-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+  }
+  .exam-submit-status.ok { color: var(--success-ink); }
+  .exam-submit-status.warn { color: var(--warning-ink); }
+  @media (max-width: 920px) {
+    .exam-submit-bar {
+      position: sticky;
+      /* Chromium measures the sticky inset from the scroller's padded
+         edge. 641–920px: .content has no bottom padding, so the full
+         nav clearance (≈72px + safe area) is declared here; the fixed
+         bottom-nav shows across this whole range (polish v22 @920). */
+      bottom: calc(72px + env(safe-area-inset-bottom) + var(--sp-2));
+      z-index: 20;
+      padding: var(--sp-2) var(--sp-3);
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow-card);
+    }
+  }
+  /* ≤640px: notifications.css reserves the nav clearance as the
+     scroller's own bottom padding (max(80px, 72px + safe area)) — the
+     sticky reference already sits at the nav's top edge, so 0 docks
+     the bar a hairline above it (measured: 8px gap, no overlap). */
+  @media (max-width: 640px) {
+    .exam-submit-bar { bottom: 0; }
+    .exam-qmap { flex-wrap: nowrap; overflow-x: auto; }
+    .exam-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  /* ── Verdict lockup (plan-7): icon → title → grade → badge read as
+     one tight group inside .empty-state's rhythm; the note and the
+     action get the breathing room instead. ── */
+  .exam-result .exam-result-title { margin: 0; }
+  .exam-result-lockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .exam-result-note {
+    margin: 0;
+    max-inline-size: 52ch;
+    color: var(--text-muted);
+  }
+
+  /* ── Student mobile order (P2-9/P2-10, 5-A6 plan): .page is a flex
+     column (base.css) — order moves whole sections without touching
+     the TSX. Desktop order stays authored. ── */
+
+  /* P2-10 — the dashboard's morning-first agenda: today's classes and
+     the nearest deadlines move to slot 2 (right after the welcome) on
+     phone; the term-progress bar is the least urgent fact on the page
+     and keeps its desktop depth. */
+  @media (max-width: 640px) {
+    .student-dashboard .welcome-card { order: -2; }
+    .student-dashboard .dash-agenda { order: -1; }
+  }
+
+  /* P2-9 — results: the page's one data visualization leads on phone
+     instead of starting below three stacked KPI cards (measured: chart
+     top 658px in a 784px viewport — past the fold). */
+  @media (max-width: 640px) {
+    .student-results .page-header { order: -2; }
+    .student-results .results-chart-card { order: -1; }
+  }
+
+  /* P2-8 — hero pair eyebrows on one line: the progress card's text
+     block centers against the 168px doughnut (components.css), landing
+     its eyebrow 24px below the GPA card's. Top-anchor the row so both
+     first lines share the card padding line (also improves the desktop
+     pair). The ≤640px stacked layout re-asserts its centered column —
+     this block's higher specificity would otherwise beat components.css. */
+  .student-dashboard .dash-progress-card .dash-progress-body { align-items: flex-start; }
+  @media (max-width: 640px) {
+    .student-dashboard .dash-progress-card .dash-progress-body { align-items: center; }
+  }
+
+  /* ── University accreditation chip (P2-7, page 7.5): the inline
+     style overrode the muted text utility with --accent on
+     --accent-soft (measured 3.06:1 at 11px). The class restores the
+     text-on-pastel rule — accent-strong holds 8.62:1 — and moves the
+     treatment into CSS where it belongs. ── */
+  .uni-accredit {
+    display: inline-block;
+    margin-block-start: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    border-radius: var(--r-sm);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-medium);
+  }
+
+  /* Reduced-motion off-switch for the one keyframe added above
+     (guardrail #6 — joins the wave-4d block at the top of this list). */
+  @media (prefers-reduced-motion: reduce) {
+    .exam-q-state { animation: none; }
+  }
+
 }

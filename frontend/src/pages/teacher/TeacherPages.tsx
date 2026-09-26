@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload,
   TrendingUp, MessageSquare, Send, FileText, X, CheckCircle2,
-  ChevronRight, ChevronLeft,
+  ChevronRight, ChevronLeft, ExternalLink,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
@@ -25,7 +25,14 @@ import {
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
-import { countAr, formatRelativeArShort, formatDateWithYearAr, WEEKDAY_NAMES_AR } from '../../lib/format';
+import { toast } from '../../lib/toast';
+import {
+  countAr,
+  formatRelativeArShort,
+  formatDateTimeAr,
+  formatDateWithYearAr,
+  WEEKDAY_NAMES_AR,
+} from '../../lib/format';
 import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } from '../../lib/courseMeta';
 import ResearchReviewPage from './ResearchReviewPage';
 
@@ -156,7 +163,10 @@ export function TeacherSchedulePage() {
                         <div className="list-row-title">{it.courseName}</div>
                         <div className="list-row-sub">
                           {it.room ? `${it.room} · ` : ''}
-                          {countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
+                          {/* P2-1 (5-A7): a scheduled slot with no enrollments
+                              names the reality — countAr(0) renders the
+                              broken «0 طالباً». */}
+                          {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
                         </div>
                       </div>
                       <Badge><bdi>{it.courseCode}</bdi></Badge>
@@ -574,7 +584,7 @@ export function MaterialsPage() {
                     <td className="tbl-num" data-label="الحجم">{m.sizeBytes > 0 ? <bdi>{formatSize(m.sizeBytes)}</bdi> : '—'}</td>
                     <td className="tbl-num" data-label="المشاهدات">{m.views.toLocaleString('ar-LY')}</td>
                     <td className="tbl-num" data-label="التحميلات">{m.downloads.toLocaleString('ar-LY')}</td>
-                    <td className="text-subtle" data-label="التاريخ">{formatRelativeArShort(m.createdAt)}</td>
+                    <td className="text-subtle" data-label="التاريخ" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -611,7 +621,17 @@ export function StudentsListPage() {
       />
 
       <Card
-        title={offering ? `${offering.course.name} · ${offering.course.code} · ${countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}` : 'الطلاب'}
+        title={
+          offering
+            ? `${offering.course.name} · ${offering.course.code} · ${
+              /* P2-1: «0 طالباً» is broken Arabic — the zero case names
+               * the reality (the empty-state below carries the guidance). */
+              students.length === 0
+                ? 'لا طلاب مسجَّلين'
+                : countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])
+            }`
+            : 'الطلاب'
+        }
         icon={Users}
       >
         {!effectiveOfferingId ? (
@@ -757,6 +777,10 @@ export function PerformancePage() {
                   <div key={band.key} style={{ opacity: pct === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
                     <ProgressBar
                       value={pct}
+                      /* A7 P2-6: the label already carries the pct — the
+                        bar's own value readout rendered it twice
+                        («0%0%» live in DOM). */
+                      showValue={false}
                       /* ReactNode label → the accessible name needs the
                          explicit ariaLabel (ProgressBar's string-label
                          fallback can't fire for markup). */
@@ -775,37 +799,69 @@ export function PerformancePage() {
   );
 }
 
+/* Relative due-date copy — module scope so the queue groups and the
+ * assignments list share ONE wording (5-B6). */
+function formatDue(iso: string): string {
+  const d = new Date(iso);
+  const days = Math.round((d.getTime() - Date.now()) / 86400000);
+  if (days < 0) return `انتهى ${countAr(-days, ['منذ يوم', 'منذ يومين', 'منذ أيام', 'منذ يوماً'])}`;
+  if (days === 0) return 'اليوم';
+  if (days === 1) return 'غداً';
+  if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
+  return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
+}
+
 export function AssignmentsPage() {
   const q = useTeacherAssignments();
   const dashboard = useTeacherDashboard();
-  const formatDue = (iso: string) => {
-    const d = new Date(iso);
-    const days = Math.round((d.getTime() - Date.now()) / 86400000);
-    if (days < 0) return `انتهى ${countAr(-days, ['منذ يوم', 'منذ يومين', 'منذ أيام', 'منذ يوماً'])}`;
-    if (days === 0) return 'اليوم';
-    if (days === 1) return 'غداً';
-    if (days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
-    return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
-  };
 
   const [gradeTarget, setGradeTarget] = useState<GradeTarget | null>(null);
+
+  /* 5-B6 (audit 5-A7 P1-2): the queue is derived in the PAGE so the
+   * modal's «تقييم التالي» can walk the same list the rows render —
+   * grading N submissions becomes N × (open → type → save → next)
+   * instead of N × (open → type → save → close → hunt the next row). */
+  const maxScoreFor = useCallback((title: string, courseCode?: string) => {
+    const match = (q.data ?? []).find(
+      (a) => a.title === title && (!courseCode || a.course.code === courseCode),
+    );
+    return match?.maxScore;
+  }, [q.data]);
+
+  /* The queue group header carries the assignment's due date (VLM
+   * residue, re-measured valid): urgency context per group, from the
+   * same assignment rows the ceiling lookup uses. */
+  const dueFor = useCallback((title: string, courseCode?: string) => {
+    const match = (q.data ?? []).find(
+      (a) => a.title === title && (!courseCode || a.course.code === courseCode),
+    );
+    return match?.dueAt;
+  }, [q.data]);
+
+  const pending = useMemo(
+    () => feedToPending(dashboard.data?.feed ?? [], maxScoreFor),
+    [dashboard.data, maxScoreFor],
+  );
+
+  /* The next row after the one on screen — computed from the same
+   * pending list, skipping the submission being graded. After a save
+   * the dashboard refetch (useGradeSubmission invalidation) drops the
+   * graded row, so this stays honest even mid-refetch. */
+  const nextTarget = gradeTarget
+    ? pending.find((p) => p.submissionId !== gradeTarget.submissionId) ?? null
+    : null;
 
   return (
     <div className="page">
       <PageHeader title="الواجبات والاختبارات" subtitle="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك." />
 
       <NeedsReviewCard
-        feed={dashboard.data?.feed ?? []}
+        pending={pending}
         isPending={dashboard.isPending}
         isError={dashboard.isError}
         error={dashboard.error}
         onRetry={() => dashboard.refetch()}
-        maxScoreFor={(title, courseCode) => {
-          const match = (q.data ?? []).find(
-            (a) => a.title === title && (!courseCode || a.course.code === courseCode),
-          );
-          return match?.maxScore;
-        }}
+        dueFor={dueFor}
         onGrade={(target) => setGradeTarget(target)}
       />
 
@@ -821,23 +877,44 @@ export function AssignmentsPage() {
             {q.data.map((a) => {
               const ratio = a.enrolled > 0 ? a.submissions / a.enrolled : 0;
               const tone: 'green' | 'amber' | 'red' = ratio > 0.5 ? 'green' : ratio > 0.25 ? 'amber' : 'red';
+              /* 5-B6 (A7 «assignments 7.5 → 9»): the due chip carries its
+               * own tone so a teacher scanning the list reads urgency
+               * without parsing relative dates — overdue red, ≤3 days
+               * amber, beyond green. The full date rides the title
+               * attribute (P3-2 parity with the exam attempts). */
+              const days = Math.round((new Date(a.dueAt).getTime() - Date.now()) / 86400000);
+              const dueTone: 'green' | 'amber' | 'red' = days < 0 ? 'red' : days <= 3 ? 'amber' : 'green';
               return (
                 <div key={a.id} className="list-row">
                   <div className="list-row-body">
                     <div className="list-row-title">
                       {ASSIGNMENT_KIND_LABEL[a.type] ?? <bdi>{a.type}</bdi>}: {a.title}
                     </div>
-                    <div className="list-row-sub">
-                      {a.course.name} · يستحقّ {formatDue(a.dueAt)}
+                    <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+                      <span>{a.course.name} · <bdi>{a.course.code}</bdi></span>
+                      {/* Grading context travels with the row — the same
+                          ceiling the modal enforces, visible up front. */}
+                      <span>الدرجة من <bdi className="font-mono">{a.maxScore}</bdi></span>
                     </div>
                   </div>
-                  {/* LTR fraction order stays stable inside the RTL line;
-                      the counted noun follows the numerator (1/few/many) */}
-                  <div className="text-xs font-mono text-muted">
-                    <bdi>{a.submissions} / {a.enrolled}</bdi>{' '}
-                    {a.submissions === 1 ? 'تسليم' : a.submissions === 2 ? 'تسليمان' : a.submissions <= 10 ? 'تسليمات' : 'تسليماً'}
+                  <div className="flex gap-2 items-center" style={{ flexShrink: 0 }}>
+                    {/* The due chip carries its own tone (A7 «assignments
+                        7.5 → 9»): overdue red, ≤3 days amber, beyond
+                        green — urgency readable without parsing relative
+                        dates. The full date rides the title (P3-2). */}
+                    <span title={formatDateTimeAr(a.dueAt)}>
+                      <Badge color={dueTone}>{formatDue(a.dueAt)}</Badge>
+                    </span>
+                    {/* LTR fraction order stays stable inside the RTL line;
+                        the counted noun follows the numerator (1/few/many).
+                        P2-1 (5-A7): the zero case names the reality —
+                        countAr(0) renders the broken «0 تسليماً». */}
+                    <span className="text-xs font-mono text-muted" title="التسليمات مقابل المسجّلين">
+                      <bdi>{a.submissions} / {a.enrolled}</bdi>{' '}
+                      {a.submissions === 0 ? 'لا تسليمات بعد' : countAr(a.submissions, ['تسليم', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                    </span>
+                    <Badge color={tone}>{Math.round(ratio * 100)}%</Badge>
                   </div>
-                  <Badge color={tone}>{Math.round(ratio * 100)}%</Badge>
                 </div>
               );
             })}
@@ -846,7 +923,16 @@ export function AssignmentsPage() {
       </Card>
 
       {gradeTarget && (
-        <GradeSubmissionModal target={gradeTarget} onClose={() => setGradeTarget(null)} />
+        /* Keyed by submission: «تقييم التالي» swaps the target and the
+         * fresh draft + done state remount with it — a graded-then-next
+         * flow never inherits the previous row's score box. */
+        <GradeSubmissionModal
+          key={gradeTarget.submissionId}
+          target={gradeTarget}
+          nextTarget={nextTarget}
+          onClose={() => setGradeTarget(null)}
+          onNext={() => nextTarget && setGradeTarget(nextTarget)}
+        />
       )}
     </div>
   );
@@ -863,53 +949,111 @@ interface GradeTarget {
    *  the row. Never folded into assignmentTitle: the maxScore lookup
    *  matches by the stripped title. */
   late: boolean;
+  /** 5-B6 (audit 5-A7 P1-2): the student's answer, carried from the
+   *  dashboard feed item when the backend projects it (see
+   *  TeacherDashboard['feed'] — the select currently omits these
+   *  columns; the modal renders the surface the moment they arrive). */
+  textAnswer?: string | null;
+  fileUrl?: string | null;
+}
+
+/** The dashboard feed prefixes submission ids with "s-" (papers use
+ *  "p-", attendance "att-"). Only submissions are gradeable here.
+ *  Exported for the unit suite; strips the «سلّم / سلّم/ت» title prefix
+ *  the same way the maxScore lookup expects. */
+export function feedToPending(
+  feed: TeacherDashboard['feed'],
+  maxScoreFor: (title: string, courseCode?: string) => number | undefined,
+): GradeTarget[] {
+  return feed
+    .filter((f) => f.kind === 'submissions' && f.id.startsWith('s-'))
+    .map((f) => {
+      const assignmentTitle = f.title
+        .replace(/^سلّم\/ت /, '')
+        .replace(/^سلّم /, '');
+      const courseCode = f.meta.split(' · ').pop()?.trim();
+      return {
+        submissionId: f.id.slice(2),
+        studentName: f.author ? `${f.author.firstName} ${f.author.lastName}` : 'طالب',
+        assignmentTitle,
+        courseCode,
+        maxScore: maxScoreFor(assignmentTitle, courseCode),
+        submittedAt: f.when,
+        late: f.late ?? false,
+        textAnswer: f.textAnswer ?? null,
+        fileUrl: f.fileUrl ?? null,
+      } satisfies GradeTarget;
+    });
 }
 
 /* ─── Pending submissions awaiting grading ───────────────── */
+
+/** One assignment's pending rows — the queue groups by assignment so 30
+ *  pending submissions read as a handful of groups (A7 plan item 4),
+ *  each carrying its own grading ceiling + due date. */
+interface QueueGroup {
+  key: string;
+  assignmentTitle: string;
+  courseCode?: string;
+  maxScore?: number;
+  /** The assignment's dueAt (ISO) — the group header renders the
+   * relative due copy (VLM residue 5-B6). */
+  dueAt?: string;
+  rows: GradeTarget[];
+}
+
+function groupPending(pending: GradeTarget[], dueFor: (title: string, courseCode?: string) => string | undefined): QueueGroup[] {
+  const groups: QueueGroup[] = [];
+  for (const p of pending) {
+    const key = `${p.assignmentTitle}·${p.courseCode ?? ''}`;
+    const existing = groups.find((g) => g.key === key);
+    if (existing) {
+      existing.rows.push(p);
+      existing.maxScore = existing.maxScore ?? p.maxScore;
+    } else {
+      groups.push({
+        key,
+        assignmentTitle: p.assignmentTitle,
+        courseCode: p.courseCode,
+        maxScore: p.maxScore,
+        dueAt: dueFor(p.assignmentTitle, p.courseCode),
+        rows: [p],
+      });
+    }
+  }
+  return groups;
+}
+
 function NeedsReviewCard({
-  feed,
+  pending,
   isPending,
   isError,
   error,
   onRetry,
-  maxScoreFor,
+  dueFor,
   onGrade,
 }: {
-  feed: TeacherDashboard['feed'];
+  pending: GradeTarget[];
   isPending: boolean;
   isError: boolean;
   error: unknown;
   onRetry: () => void;
-  maxScoreFor: (title: string, courseCode?: string) => number | undefined;
+  dueFor: (title: string, courseCode?: string) => string | undefined;
   onGrade: (target: GradeTarget) => void;
 }) {
-  // The dashboard feed prefixes submission ids with "s-" (papers use
-  // "p-", attendance "att-"). Only submissions are gradeable here.
-  const pending = useMemo(() => {
-    return feed
-      .filter((f) => f.kind === 'submissions' && f.id.startsWith('s-'))
-      .map((f) => {
-        const assignmentTitle = f.title
-          .replace(/^سلّم\/ت /, '')
-          .replace(/^سلّم /, '');
-        const courseCode = f.meta.split(' · ').pop()?.trim();
-        return {
-          submissionId: f.id.slice(2),
-          studentName: f.author ? `${f.author.firstName} ${f.author.lastName}` : 'طالب',
-          assignmentTitle,
-          courseCode,
-          maxScore: maxScoreFor(assignmentTitle, courseCode),
-          submittedAt: f.when,
-          late: f.late ?? false,
-        } satisfies GradeTarget;
-      });
-  }, [feed, maxScoreFor]);
+  const groups = useMemo(() => groupPending(pending, dueFor), [pending, dueFor]);
 
   return (
     <Card
       title="تسليمات بانتظار التقييم"
       icon={ClipboardCheck}
-      subtitle={`${countAr(pending.length, ['تسليم واحد بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])}`}
+      /* P2-1: countAr(0) renders the broken «0 تسليماً…» — the zero case
+       * gets its own honest copy (the dashboard-badge pattern). */
+      subtitle={
+        pending.length === 0
+          ? 'لا تسليمات بانتظار درجتك'
+          : countAr(pending.length, ['تسليم واحد بانتظار درجتك', 'تسليمان بانتظار درجتك', 'تسليمات بانتظار درجتك', 'تسليماً بانتظار درجتك'])
+      }
     >
       {isPending ? (
         <LoadingState />
@@ -921,32 +1065,60 @@ function NeedsReviewCard({
           description="ستظهر هنا تسليمات طلابك فور وصولها."
         />
       ) : (
-        <div className="flex-col gap-2">
-          {pending.map((p) => (
-            <div key={p.submissionId} className="list-row">
-              <UserAvatar
-                initials={p.studentName.split(' ').map((w) => w[0] ?? '').slice(0, 2).join('')}
-                size={32}
-              />
-              <div className="list-row-body">
-                <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <span>{p.assignmentTitle}</span>
-                  {/* 18-G's late flag — a small warning chip beside the
-                      title, never a suffix inside it (maxScore matches
-                      the stripped title). */}
-                  {p.late && <Badge color="amber">متأخر</Badge>}
+        <div className="flex-col gap-3">
+          {groups.map((g) => (
+            <div key={g.key} className="queue-group">
+              <div className="queue-group-head">
+                <div className="queue-group-main">
+                  <div className="queue-group-title">{g.assignmentTitle}</div>
+                  {(g.courseCode || g.dueAt) && (
+                    <div className="queue-group-sub">
+                      {g.courseCode && <bdi>{g.courseCode}</bdi>}
+                      {g.dueAt && (
+                        <>
+                          {g.courseCode ? ' · ' : ''}
+                          <span title={formatDateTimeAr(g.dueAt)}>يستحقّ {formatDue(g.dueAt)}</span>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <div className="list-row-sub">
-                  {p.studentName}{p.courseCode ? <> · <bdi>{p.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(p.submittedAt)}
-                </div>
+                {g.maxScore !== undefined && (
+                  <Badge>الدرجة من <bdi className="font-mono">{g.maxScore}</bdi></Badge>
+                )}
+                <Badge color="amber">
+                  {countAr(g.rows.length, ['تسليم واحد', 'تسليمان', 'تسليمات', 'تسليماً'])}
+                </Badge>
               </div>
-              <button
-                type="button"
-                className="btn primary sm"
-                onClick={() => onGrade(p)}
-              >
-                <Icon icon={Send} size={12} /> تقييم
-              </button>
+              <div className="flex-col gap-2">
+                {g.rows.map((p) => (
+                  <div key={p.submissionId} className="list-row">
+                    <UserAvatar
+                      initials={p.studentName.split(' ').map((w) => w[0] ?? '').slice(0, 2).join('')}
+                      size={32}
+                    />
+                    <div className="list-row-body">
+                      <div className="list-row-title" style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span>{p.studentName}</span>
+                        {/* 18-G's late flag — a small warning chip beside the
+                            name, never a suffix inside the assignment title
+                            (maxScore matches the stripped title). */}
+                        {p.late && <Badge color="amber">متأخر</Badge>}
+                      </div>
+                      <div className="list-row-sub" title={formatDateTimeAr(p.submittedAt)}>
+                        وصل {formatRelativeArShort(p.submittedAt)}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn primary sm"
+                      onClick={() => onGrade(p)}
+                    >
+                      <Icon icon={Send} size={12} /> تقييم
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -956,18 +1128,57 @@ function NeedsReviewCard({
 }
 
 /* ─── Teacher grading modal (grade + feedback) ──────────── */
+
+/** The student's file, linked the way the research flow links papers:
+ *  platform-served files open the in-app /document/ viewer (annotations
+ *  included); external https URLs open in a new tab. */
+function SubmissionFileLink({ fileUrl, assignmentTitle }: { fileUrl: string; assignmentTitle: string }) {
+  if (fileUrl.startsWith('/api/v1/files/papers/')) {
+    return (
+      <Link
+        to={`/document/${encodeURIComponent(fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(assignmentTitle)}&back=${encodeURIComponent('/teacher/assignments')}`}
+        className="btn outline sm"
+      >
+        <Icon icon={FileText} size={13} />
+        فتح الملف في العارض
+      </Link>
+    );
+  }
+  return (
+    <a href={fileUrl} target="_blank" rel="noreferrer" className="btn outline sm">
+      <Icon icon={ExternalLink} size={13} />
+      فتح الملف الخارجي
+    </a>
+  );
+}
+
 function GradeSubmissionModal({
   target,
+  nextTarget,
   onClose,
+  onNext,
 }: {
   target: GradeTarget;
+  /** The next pending submission after this one — powers «تقييم التالي»
+   *  (A7 P2-2): 30 submissions ≈ 30 saves, not 30 × save+close+hunt. */
+  nextTarget: GradeTarget | null;
   onClose: () => void;
+  onNext: () => void;
 }) {
   const grade = useGradeSubmission(target.submissionId);
   const [score, setScore] = useState('');
   const [feedback, setFeedback] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  /* «تقييم التالي» grabs focus when the done state renders — after a
+   * save the teacher's Enter key walks straight into the next
+   * submission (the whole queue is gradeable without the mouse).
+   * Imperative (not the autofocus attribute) so jsdom and every
+   * browser behave the same. */
+  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    if (done) nextBtnRef.current?.focus();
+  }, [done]);
 
   // 15-e P1-6: the score + up-to-2000-char feedback is the teacher's
   // longest unsaved prose — Esc / close X / cancel / overlay-click now
@@ -1001,6 +1212,7 @@ function GradeSubmissionModal({
         feedback: feedback.trim() || undefined,
       });
       setDone(true);
+      toast.success('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.', { title: 'تمّ التقييم' });
     } catch {
       // surfaced inline from grade.isError below
     }
@@ -1020,80 +1232,113 @@ function GradeSubmissionModal({
           <Icon icon={X} size={16} />
         </button>
       </div>
-      <div className="modal-body">
-        <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{target.assignmentTitle}</div>
-        <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }}>
-          {target.studentName}
-          {target.courseCode ? <> · <bdi>{target.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(target.submittedAt)}
-        </div>
-
-        {done ? (
-          <div className="form-feedback ok" role="status">
-            <Icon icon={CheckCircle2} size={15} />
-            <span className="flex-1">تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.</span>
+      {/* A7 P2-2: a real <form> — Enter in the score field submits the
+          grade (the GradeAttemptModal contract; this was the only
+          grading/authoring modal without one). */}
+      <form
+        onSubmit={(e) => { e.preventDefault(); void onSubmit(); }}
+        noValidate
+      >
+        <div className="modal-body">
+          <div className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{target.assignmentTitle}</div>
+          <div className="text-xs text-subtle" style={{ marginBottom: 'var(--sp-4)' }} title={formatDateTimeAr(target.submittedAt)}>
+            {target.studentName}
+            {target.courseCode ? <> · <bdi>{target.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(target.submittedAt)}
           </div>
-        ) : (
-          <>
-            {/* 23-b (21-b hand-off, A9 P2-4): the two grade-modal fields
-                ride the shared FormField primitive — the label is
-                htmlFor-wired and the validation error now injects
-                aria-invalid + aria-describedby into the control itself
-                (announced on re-focus, not only via the role=alert),
-                instead of the hand-rolled label + loose alert <p>. */}
-            <FormField
-              label={`الدرجة${target.maxScore !== undefined ? ` (من 0 إلى ${target.maxScore})` : ''}`}
-              error={validationError}
-            >
-              <input
-                type="number"
-                className="input input-narrow"
-                placeholder={target.maxScore !== undefined ? `0 – ${target.maxScore}` : '0'}
-                min={0}
-                max={target.maxScore}
-                step="any"
-                inputMode="decimal"
-                value={score}
-                onChange={(e) => setScore(e.target.value)}
-                disabled={grade.isPending}
-              />
-            </FormField>
 
-            <FormField label="ملاحظات للطالب (اختياري)">
-              <textarea
-                className="input"
-                rows={4}
-                placeholder="اكتب ملاحظاتك على الإجابة…"
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                disabled={grade.isPending}
-                maxLength={2000}
-                style={{ resize: 'vertical', fontFamily: 'inherit' }}
-              />
-            </FormField>
+          {/* A7 P1-2 — the answer the teacher is grading. Rendered only
+              when the feed payload carries it (see GradeTarget); a
+              submission always has at least one of textAnswer/fileUrl
+              server-side, so an absent pair means the projection hasn't
+              shipped yet, not an empty answer. */}
+          {(target.textAnswer != null && target.textAnswer !== '') || target.fileUrl != null ? (
+            <div className="grade-answer">
+              <div className="grade-answer-head">
+                <Icon icon={FileText} size={13} />
+                <span>إجابة الطالب</span>
+              </div>
+              {target.textAnswer != null && target.textAnswer !== '' && (
+                <p className="grade-answer-text">{target.textAnswer}</p>
+              )}
+              {target.fileUrl != null && (
+                <SubmissionFileLink fileUrl={target.fileUrl} assignmentTitle={target.assignmentTitle} />
+              )}
+            </div>
+          ) : null}
 
-            {grade.isError && (
-              <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
-                {apiErrorMessage(grade.error, 'تعذَّر حفظ الدرجة — حاول مرة أخرى.')}
-              </p>
-            )}
-          </>
-        )}
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="btn ghost" onClick={requestClose} disabled={grade.isPending}>
-          {done ? 'إغلاق' : 'إلغاء'}
-        </button>
-        {!done && (
-          <button
-            type="button"
-            className="btn primary"
-            onClick={() => void onSubmit()}
-            disabled={grade.isPending}
-          >
-            {grade.isPending ? 'جارٍ الحفظ…' : 'حفظ الدرجة'}
+          {done ? (
+            <div className="form-feedback ok" role="status">
+              <Icon icon={CheckCircle2} size={15} />
+              <span className="flex-1">تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.</span>
+            </div>
+          ) : (
+            <>
+              {/* 23-b (21-b hand-off, A9 P2-4): the two grade-modal fields
+                  ride the shared FormField primitive — the label is
+                  htmlFor-wired and the validation error now injects
+                  aria-invalid + aria-describedby into the control itself
+                  (announced on re-focus, not only via the role=alert),
+                  instead of the hand-rolled label + loose alert <p>. */}
+              <FormField
+                label={`الدرجة${target.maxScore !== undefined ? ` (من 0 إلى ${target.maxScore})` : ''}`}
+                error={validationError}
+              >
+                <input
+                  type="number"
+                  className="input input-narrow"
+                  placeholder={target.maxScore !== undefined ? `0 – ${target.maxScore}` : '0'}
+                  min={0}
+                  max={target.maxScore}
+                  step="any"
+                  inputMode="decimal"
+                  value={score}
+                  onChange={(e) => setScore(e.target.value)}
+                  disabled={grade.isPending}
+                />
+              </FormField>
+
+              <FormField label="ملاحظات للطالب (اختياري)">
+                <textarea
+                  className="input"
+                  rows={4}
+                  placeholder="اكتب ملاحظاتك على الإجابة…"
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  disabled={grade.isPending}
+                  maxLength={2000}
+                  style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                />
+              </FormField>
+
+              {grade.isError && (
+                <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
+                  {apiErrorMessage(grade.error, 'تعذَّر حفظ الدرجة — حاول مرة أخرى.')}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={grade.isPending}>
+            {done ? 'إغلاق' : 'إلغاء'}
           </button>
-        )}
-      </div>
+          {done ? (
+            nextTarget && (
+              <button type="button" className="btn primary" onClick={onNext} ref={nextBtnRef}>
+                <Icon icon={Send} size={13} /> تقييم التالي
+              </button>
+            )
+          ) : (
+            <button
+              type="submit"
+              className="btn primary"
+              disabled={grade.isPending}
+            >
+              {grade.isPending ? 'جارٍ الحفظ…' : 'حفظ الدرجة'}
+            </button>
+          )}
+        </div>
+      </form>
       {guard}
     </Modal>
   );
@@ -1133,7 +1378,9 @@ export function MessagesPage() {
       <Card
         title="سجلّ الرسائل"
         icon={MessageSquare}
-        subtitle={meta ? countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة']) : undefined}
+        /* P2-1: countAr(0) renders the broken «0 رسالة» — the zero case
+            gets its own honest copy. */
+        subtitle={meta ? (meta.total === 0 ? 'لا رسائل' : countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])) : undefined}
       >
         {q.isPending ? (
           <LoadingState />
@@ -1159,11 +1406,17 @@ export function MessagesPage() {
                     />
                     <div className="list-row-body">
                       <div className="list-row-title">{other.firstName} {other.lastName}</div>
-                      <div className="list-row-sub">
+                      {/* 5-B6 messages craft: the body clamps to one line —
+                          30 rows of arbitrary prose otherwise rag the log's
+                          rhythm — and the full text rides the title attribute
+                          (no truncation without a tooltip). */}
+                      <div className="list-row-sub msg-body" title={m.body}>
                         {incoming ? '' : 'أنت: '}{m.body}
                       </div>
                     </div>
-                    <div className="text-xxs text-subtle">{formatRelativeArShort(m.createdAt)}</div>
+                    {/* P3-2 parity: the relative stamp carries the full
+                        date on hover like the exam-attempt rows. */}
+                    <div className="text-xxs text-subtle" title={formatDateTimeAr(m.createdAt)}>{formatRelativeArShort(m.createdAt)}</div>
                   </div>
                 );
               })}

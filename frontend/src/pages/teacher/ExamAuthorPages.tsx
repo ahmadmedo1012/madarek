@@ -1782,7 +1782,11 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
             </DetailLine>
           )}
           <DetailLine label="محاولات الطلاب">
-            {countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
+            {/* P2-1 (5-A7): countAr(0) renders the broken «0 محاولة» —
+                the zero case names the reality. */}
+            {template._count.attempts === 0
+              ? 'لا محاولات بعد'
+              : countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
           </DetailLine>
           {template.description && <DetailLine label="الوصف">{template.description}</DetailLine>}
         </div>
@@ -1861,7 +1865,11 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
         q.isPending
           ? 'جارٍ التحميل…'
           : attempts.length > 0
-            ? countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك'])
+            ? /* P2-1 (5-A7): awaiting can be 0 while attempts exist —
+               * countAr(0) renders the broken «0 محاولة…». */
+              (awaiting === 0
+                ? 'لا محاولات بانتظار تصحيحك'
+                : countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك']))
             : undefined
       }
       actions={

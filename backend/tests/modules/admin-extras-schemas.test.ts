@@ -10,12 +10,19 @@
  *  - facultyId must be a well-formed cuid,
  *  - page/limit defaults match the frontend's requests (page 1, limit 20).
  *
+ * 5-B1 addition (audit 5-A8 §5 row 8): the GET /admin/papers envelope —
+ * the admin research-list drill-down. `status` must be a real
+ * ResearchPaperStatus lifecycle value (the FE lands pre-filtered on
+ * e.g. PUBLISHED); pagination rides the shared schema so the list is
+ * never another fixed silent cap (the 5-A8 P2-1 bug class).
+ *
  * DB-free: only the schema is exercised. The governance-scope filter
  * applied on top of it (getGovernanceScope + buildScopedUserWhere) is
  * covered by tests/modules/governance.test.ts.
  */
 import { describe, expect, it } from 'vitest';
-import { studentsQuerySchema } from '../../src/http/routes/admin-extras.routes';
+import { ResearchPaperStatus } from '@prisma/client';
+import { papersQuerySchema, studentsQuerySchema } from '../../src/http/routes/admin-extras.routes';
 
 describe('studentsQuerySchema (audit 11-c P1-1 — ?page=abc no longer 500s)', () => {
   it('accepts an empty query with the platform defaults (page 1, limit 20)', () => {
@@ -81,5 +88,44 @@ describe('studentsQuerySchema (audit 11-c P1-1 — ?page=abc no longer 500s)', (
 
     expect(studentsQuerySchema.safeParse({ q: 'a'.repeat(120) }).success).toBe(true);
     expect(studentsQuerySchema.safeParse({ q: 'a'.repeat(121) }).success).toBe(false);
+  });
+});
+
+describe('papersQuerySchema (5-A8 §5 row 8 — admin research-list drill-down)', () => {
+  it('accepts an empty query with the platform defaults (page 1, limit 20)', () => {
+    const r = papersQuerySchema.safeParse({});
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data.page).toBe(1);
+      expect(r.data.limit).toBe(20);
+      expect(r.data.status).toBeUndefined();
+      expect(r.data.q).toBeUndefined();
+    }
+  });
+
+  it('accepts every ResearchPaperStatus lifecycle value', () => {
+    for (const status of Object.values(ResearchPaperStatus)) {
+      expect(papersQuerySchema.safeParse({ status }).success).toBe(true);
+    }
+  });
+
+  it('rejects unknown statuses (no silent fall-through to the unfiltered list)', () => {
+    expect(papersQuerySchema.safeParse({ status: 'published' }).success).toBe(false);
+    expect(papersQuerySchema.safeParse({ status: 'ARCHIVED' }).success).toBe(false);
+    expect(papersQuerySchema.safeParse({ status: '' }).success).toBe(false);
+  });
+
+  it('keeps the shared pagination caps — the list is paginated, never a fixed silent cap', () => {
+    expect(papersQuerySchema.safeParse({ page: '2', limit: '100' }).success).toBe(true);
+    expect(papersQuerySchema.safeParse({ limit: '101' }).success).toBe(false);
+    expect(papersQuerySchema.safeParse({ page: 'abc' }).success).toBe(false);
+  });
+
+  it('status + q + pagination compose', () => {
+    const r = papersQuerySchema.safeParse({ status: 'PUBLISHED', q: 'ذكاء', page: '1', limit: '50' });
+    expect(r.success).toBe(true);
+    if (r.success) {
+      expect(r.data).toMatchObject({ status: ResearchPaperStatus.PUBLISHED, q: 'ذكاء', page: 1, limit: 50 });
+    }
   });
 });

@@ -82,9 +82,14 @@ export default function ExamsPage() {
           ) : avg !== null ? (
             <>
               {/* The grade-emphasis reveal: the real cumulative average
-                  lands as the visual anchor (§lists: exam-grade-in). */}
+                  lands as the visual anchor (§lists: exam-grade-in).
+                  5-A6 P2-1 — the % rides INSIDE the bdi: isolating only
+                  the digits drops the sign into RTL context where it
+                  flips to «%88»; «NN%» as one number run renders
+                  «88%» like every other percent on the platform
+                  (dash-doughnut-center, KPI cards — all measured). */}
               <div className="exam-grade">
-                <span className="exam-grade-value"><bdi>{avg}</bdi>%</span>
+                <span className="exam-grade-value"><bdi>{avg}%</bdi></span>
               </div>
               <p className="text-xs text-subtle" style={{ margin: 'var(--sp-2) 0 var(--sp-3) 0' }}>
                 متوسّطك العام عبر {gradedCoursesLabel(courseCount)}

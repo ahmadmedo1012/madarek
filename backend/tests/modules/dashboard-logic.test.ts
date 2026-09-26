@@ -21,17 +21,26 @@
  *    `late` flag (15-a P0-1 follow-up, 16-B1 hand-off): the marker must
  *    ride its own field and NEVER leak into `title` (TeacherPages
  *    matches the grade modal's maxScore by stripped title).
+ *  · researchFeedItem / attendanceAlertFeedItem / TEACHER_FEED_ACTIONS —
+ *    the other two feed buckets, extracted 5-B1 (audits 5-A4 P1-1 +
+ *    5-A7 P1-1): every feed CTA must point at a real TEACHER-area route
+ *    (`/teacher/…`) — the FE renders `actionTo` verbatim, and the old
+ *    unprefixed '/grades' '/research' '/attendance' 404'd.
  *
  * Integration coverage (auth gate, ownership, query shapes, feed assembly)
  * needs a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
-import { AssignmentType, AttendanceStatus, Prisma, SubmissionStatus } from '@prisma/client';
+import { AssignmentType, AttendanceStatus, Prisma, ResearchPaperStatus, SubmissionStatus } from '@prisma/client';
 import {
   attendancePctFromStatusCounts as teacherAttendancePct,
+  attendanceAlertFeedItem,
   avgGradePctFromGroups,
+  researchFeedItem,
   submissionFeedItem,
+  TEACHER_FEED_ACTIONS,
   type PendingSubmissionFeedRow,
+  type ResearchPaperFeedRow,
 } from '../../src/http/routes/teacher-dashboard.routes';
 import {
   attendancePctFromStatusCounts as studentAttendancePct,
@@ -342,7 +351,7 @@ describe('submissionFeedItem (pending-submissions feed, `late` flag)', () => {
       meta: 'مقرّر CS101 · CS101',
       when: row.submittedAt,
       title: 'سلّم واجب الفصل الأول',
-      actionTo: '/grades',
+      actionTo: '/teacher/grades',
       late: false,
     });
   });
@@ -363,5 +372,100 @@ describe('submissionFeedItem (pending-submissions feed, `late` flag)', () => {
     const late = submissionFeedItem(pendingSub({ status: SubmissionStatus.LATE }));
     expect(late.title).toBe(onTime.title);
     expect(late.title.startsWith('سلّم ')).toBe(true);
+  });
+});
+
+// ─── Feed CTA targets (5-A4 P1-1 / 5-A7 P1-1 — dead `/grades`-style links) ────
+
+describe('TEACHER_FEED_ACTIONS + feed item actionTo prefixes (5-A4/5-A7 P1-1)', () => {
+  it('every feed action is a real teacher-area route (FE renders actionTo verbatim)', () => {
+    // The regression pin: the three CTAs used to ship as '/grades',
+    // '/research' and '/attendance' — root-relative paths that 404'd
+    // because only /teacher/grades etc. exist in App.tsx.
+    expect(TEACHER_FEED_ACTIONS).toEqual({
+      grades: '/teacher/grades',
+      research: '/teacher/research',
+      attendance: '/teacher/attendance',
+    });
+    for (const path of Object.values(TEACHER_FEED_ACTIONS)) {
+      expect(path.startsWith('/teacher/')).toBe(true);
+    }
+  });
+
+  it('every feed bucket builder stamps its action with the prefixed route', () => {
+    expect(submissionFeedItem(pendingSub()).actionTo).toBe(TEACHER_FEED_ACTIONS.grades);
+    expect(researchFeedItem(pendingPaper()).actionTo).toBe(TEACHER_FEED_ACTIONS.research);
+    expect(attendanceAlertFeedItem({ studentId: 'st1', _count: { studentId: 3 } }, ABSENT_STUDENT, new Date()).actionTo)
+      .toBe(TEACHER_FEED_ACTIONS.attendance);
+  });
+});
+
+const pendingPaper = (overrides?: Partial<ResearchPaperFeedRow>): ResearchPaperFeedRow => ({
+  id: 'paper1',
+  title: 'تطبيقات الذكاء الاصطناعي في الزراعة',
+  status: ResearchPaperStatus.UPLOADED,
+  plagiarismPct: null,
+  aiContentPct: null,
+  uploadedAt: new Date('2026-02-02T10:00:00Z'),
+  student: { firstName: 'أحمد', lastName: 'الزروق', avatarInitials: 'أز', avatarColor: null },
+  offering: { course: { code: 'CS301' } },
+  ...overrides,
+});
+
+const ABSENT_STUDENT = { firstName: 'أحمد', lastName: 'الزروق', avatarInitials: 'أز', avatarColor: null };
+
+describe('researchFeedItem (pending-papers feed, audit 11-d P2-5 set)', () => {
+  it('UPLOADED — awaiting the plagiarism scan', () => {
+    const item = researchFeedItem(pendingPaper());
+    expect(item).toMatchObject({
+      kind: 'research',
+      id: 'p-paper1',
+      author: pendingPaper().student,
+      meta: 'بحث · CS301',
+      when: pendingPaper().uploadedAt,
+    });
+    expect(item.title).toContain('لم يُفحص بعد');
+    expect(item.actionTo).toBe('/teacher/research');
+  });
+
+  it('CHECKS_PASSED — embeds the scan percentages, keeps Prisma Decimal input working', () => {
+    const item = researchFeedItem(pendingPaper({
+      status: ResearchPaperStatus.CHECKS_PASSED,
+      plagiarismPct: new Prisma.Decimal('12.5'),
+      aiContentPct: 18,
+    }));
+    expect(item.title).toContain('انتحال 12.5%');
+    expect(item.title).toContain('AI 18%');
+  });
+
+  it('CHECKS_FAILED — needs guidance', () => {
+    expect(researchFeedItem(pendingPaper({ status: ResearchPaperStatus.CHECKS_FAILED })).title)
+      .toContain('يحتاج توجيهاً');
+  });
+
+  it('an offering-less paper falls back to the bare «بحث» meta', () => {
+    expect(researchFeedItem(pendingPaper({ offering: null })).meta).toBe('بحث');
+  });
+});
+
+describe('attendanceAlertFeedItem (absence-alert bucket)', () => {
+  it('names the student, their absence count and the last absence date', () => {
+    const lastAbsence = new Date('2026-02-03T08:00:00Z');
+    const item = attendanceAlertFeedItem({ studentId: 'st1', _count: { studentId: 4 } }, ABSENT_STUDENT, lastAbsence);
+    expect(item).toEqual({
+      kind: 'attendance',
+      id: 'att-st1',
+      author: ABSENT_STUDENT,
+      meta: 'تنبيه حضور',
+      when: lastAbsence,
+      title: '4 غيابات في آخر 30 يوماً — أحمد الزروق يحتاج متابعة',
+      actionTo: '/teacher/attendance',
+    });
+  });
+
+  it('an unresolved student (name lookup missed) degrades to «طالب», never crashes', () => {
+    const item = attendanceAlertFeedItem({ studentId: 'gone', _count: { studentId: 3 } }, undefined, new Date());
+    expect(item.author).toBeNull();
+    expect(item.title).toBe('3 غيابات في آخر 30 يوماً — طالب يحتاج متابعة');
   });
 });

@@ -10,13 +10,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight,
-  Sparkles, ShieldCheck, FileText, Hourglass, CalendarClock,
+  Sparkles, ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
-import { EmojiIcon } from '../../components/EmojiIcon';
 import { Skeleton, ListSkeleton, ErrorState } from '../../components/primitives/States';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
+import { useReducedMotion } from '../../components/motion';
+import { courseIcon } from '../../lib/courseMeta';
 import {
   useMyExams, useStartExam, useSubmitAnswer, useFinishExam,
   useExamModerationQueue, useModerateExam,
@@ -262,7 +263,11 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
   const body = (
     <>
       <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
-        <EmojiIcon emoji={exam.courseIcon ?? '📝'} size={22} />
+        {/* 5-A6 P3-3 — the courses grid resolves the same course through
+            the lucide courseIcon() map; the exam card now speaks the same
+            iconography for one concept (emoji stays for the seeded
+            training/community flavor surfaces). */}
+        <Icon icon={courseIcon(exam.courseName ?? exam.facultyName ?? '')} size={22} />
       </div>
       <div className="track-card-body">
         <div className="track-card-cat">{KIND_LABEL[exam.kind]} · {exam.courseName ?? exam.facultyName ?? 'موحد'}</div>
@@ -289,6 +294,17 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
             <Badge color={passed ? 'green' : 'amber'}>
               <bdi>{Number(exam.myAttempt.score)} / {Number(exam.myAttempt.maxScore)}</bdi> · {passed ? 'ناجح' : 'لم يجتز'}
             </Badge>
+          </div>
+        )}
+        {exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
+          <div style={{ marginTop: 8 }}>
+            {/* 5-A6 P1-1 companion — a finished attempt is not a dead end:
+              the taker renders the honest done-state (score or awaiting
+              grading) for this deep link, so history stays reachable. */}
+            <Link to={`/student/online-exams/${exam.id}`} className="btn ghost sm">
+              <Icon icon={ArrowLeft} size={13} />
+              عرض النتيجة
+            </Link>
           </div>
         )}
         {ws === 'upcoming' && exam.openAt && (
@@ -361,6 +377,18 @@ export function ExamTakerPage() {
   const pendingSavesRef = useRef(new Map<string, Promise<void>>());
   const [savingQids, setSavingQids] = useState<ReadonlySet<string>>(new Set());
   const [failedQids, setFailedQids] = useState<ReadonlySet<string>>(new Set());
+  // 5-A6 P2-3 — the positive half of the autosave honesty pair: the
+  // questions whose latest save the server has confirmed. A new save
+  // for a question retires its "saved" mark until the server answers,
+  // so the chip can never claim a stale answer is stored.
+  const [savedQids, setSavedQids] = useState<ReadonlySet<string>>(new Set());
+  // 5-A6 P2-2 — map jumps scroll smoothly unless the student asked the
+  // system for reduced motion (taste floor: fewer and gentler, not zero).
+  const reducedMotion = useReducedMotion();
+  // 5-A6 P2-2 — the question the student is currently looking at (the
+  // map dot wears a ring). Scroll-tracked via IntersectionObserver; the
+  // jump path needs no special casing because a jump scrolls too.
+  const [currentQid, setCurrentQid] = useState<string | null>(null);
   // Guards against double auto-submit when the countdown reaches 00:00
   // (the interval may tick once more before it is cleared).
   const autoSubmittedRef = useRef(false);
@@ -378,6 +406,15 @@ export function ExamTakerPage() {
   // the resume. Also feeds the Arabic window-error copy in onStart.
   const listedExam = (examsQ.data ?? []).find((e) => e.id === id);
   const hasLiveAttempt = listedExam?.myAttempt?.status === 'IN_PROGRESS';
+  // 5-A6 P1-1 — the list payload already knows this exam is finished for
+  // this student (GRADED / SUBMITTED / EXPIRED are exactly the statuses
+  // decideExamStart refuses). Render the honest done-state up front
+  // instead of offering a begin the server will reject a round-trip
+  // later. Practice exams are retakeable server-side and never carry a
+  // finished attempt in the list payload — the guard keeps the mirror
+  // of the start rule exact.
+  const hasFinishedAttempt =
+    !!listedExam?.myAttempt && listedExam.myAttempt.status !== 'IN_PROGRESS' && listedExam.kind !== 'PRACTICE';
 
   const onStart = async () => {
     if (!id) return;
@@ -398,13 +435,18 @@ export function ExamTakerPage() {
       pendingSavesRef.current.clear();
       setSavingQids(new Set());
       setFailedQids(new Set());
+      setSavedQids(new Set());
       setUrgentNote(null);
       setConfirming(false);
       setAttempt(r);
       // D5 resume: restore the answers the server already holds so a
       // mid-exam reload continues exactly where it left off (a fresh
-      // start resets the map, as before).
-      setAnswers(r.resumed && r.attempt ? restoreSavedAnswers(r.attempt.answers) : {});
+      // start resets the map, as before). Restored answers are BY
+      // DEFINITION saved — the per-question «محفوظة» state (5-A6 P2-3)
+      // starts true for them.
+      const restored = r.resumed && r.attempt ? restoreSavedAnswers(r.attempt.answers) : {};
+      setAnswers(restored);
+      setSavedQids(new Set(Object.keys(restored)));
       // The timer restores from the attempt's expiresAt — for a resumed
       // attempt that is the ORIGINAL deadline, so the countdown shows
       // the true remaining time, not a fresh durationMin.
@@ -519,6 +561,57 @@ export function ExamTakerPage() {
     }
   }, [attempt, secondsLeft, urgentNote]);
 
+  // 5-A6 P2-2 — which question is on screen right now. The observer is
+  // only the TRIGGER (it fires when any card crosses the band edge);
+  // the decision reads every card's live rect so a partial entries
+  // batch can never pick a stale winner. State flips only when the
+  // current question CHANGES, so scrolling costs nothing until the
+  // student crosses a card boundary. jsdom ships no
+  // IntersectionObserver — the guard keeps tests (and any ancient
+  // browser) on the no-ring path instead of crashing.
+  useEffect(() => {
+    if (!attempt || typeof IntersectionObserver === 'undefined') return;
+    const cards = attempt.questions
+      .map((q) => document.getElementById(`exam-q-${q.id}`))
+      .filter((el): el is HTMLElement => el !== null);
+    if (cards.length === 0) return;
+    // The reading band starts under the sticky bar (its measured height:
+    // 113px ≥768, 162px at 390 — student.css; the band top mirrors the
+    // rootMargin below) and ends at the viewport's lower half, so a card
+    // only counts once its title is actually readable. "Current" = the
+    // first card whose header entered the band. A card that only drips
+    // its tail into the band (the previous question scrolling out) never
+    // wins; a long card filling the whole band keeps the ring (fallback:
+    // topmost intersecting).
+    const BAND_TOP = 170;
+    const pickCurrent = () => {
+      const vh = window.innerHeight;
+      const bandBottom = vh * 0.5;
+      let inBand: HTMLElement | null = null;
+      let crossing: HTMLElement | null = null;
+      let inBandTop = Infinity;
+      let crossingTop = Infinity;
+      for (const el of cards) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom <= BAND_TOP || r.top >= bandBottom) continue; // outside the band
+        if (r.top >= BAND_TOP) {
+          if (r.top < inBandTop) { inBandTop = r.top; inBand = el; }
+        } else if (r.top < crossingTop) { crossingTop = r.top; crossing = el; }
+      }
+      const winner = inBand ?? crossing;
+      if (winner) {
+        const qid = winner.id.slice('exam-q-'.length);
+        setCurrentQid((prev) => (prev === qid ? prev : qid));
+      }
+    };
+    const io = new IntersectionObserver(pickCurrent, {
+      rootMargin: '-170px 0px -50% 0px',
+      threshold: 0,
+    });
+    cards.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [attempt]);
+
   // One autosave path for every answer shape. Saves chain per question
   // (a new save waits behind any still-in-flight one for the same
   // question), so an older, slower request can never land after a newer
@@ -533,8 +626,10 @@ export function ExamTakerPage() {
         try {
           await answer.mutateAsync({ attemptId, questionId: qid, ...payload });
           setFailedQids((prev) => withQid(prev, qid, false));
+          setSavedQids((prev) => withQid(prev, qid, true));
         } catch {
           setFailedQids((prev) => withQid(prev, qid, true));
+          setSavedQids((prev) => withQid(prev, qid, false));
         }
       })
       .finally(() => {
@@ -547,6 +642,9 @@ export function ExamTakerPage() {
       });
     pendingSavesRef.current.set(qid, tracked);
     setSavingQids((prev) => withQid(prev, qid, true));
+    // The new answer is not on the server yet — retire any earlier
+    // «محفوظة» mark for this question until this save resolves (P2-3).
+    setSavedQids((prev) => withQid(prev, qid, false));
   };
 
   const onChoiceChange = (qid: string, idx: number) => {
@@ -563,17 +661,35 @@ export function ExamTakerPage() {
     runAnswerSave(qid, { answerText: answers[qid]?.answerText ?? '' });
   };
 
+  // A question counts as answered with a picked choice or non-blank
+  // text — drives the bar subline, the question map dots, the sticky
+  // submit count and the confirm dialog copy (5-A6 P2-2).
+  const isAnswered = (qid: string) => {
+    const a = answers[qid];
+    return !!a && (a.choiceIndex !== undefined || (a.answerText ?? '').trim() !== '');
+  };
+
   // Unanswered count for the submit confirmation copy.
   const unanswered = attempt
-    ? attempt.questions.filter((qq) => {
-        const a = answers[qq.id];
-        return !a || (a.choiceIndex === undefined && (a.answerText ?? '').trim() === '');
-      }).length
+    ? attempt.questions.filter((qq) => !isAnswered(qq.id)).length
     : 0;
 
+  // 5-A6 P2-2 — jump target for the question map: scrolls the card
+  // clear of the sticky bar (scroll-margin on .exam-q) and moves focus
+  // so keyboard / screen-reader users land ON the question, not just
+  // near it. tabIndex={-1} keeps the wrapper out of tab order.
+  const jumpToQuestion = (qid: string) => {
+    const el = document.getElementById(`exam-q-${qid}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+    el.focus({ preventScroll: true });
+  };
+
   // Already-attempted honest state: real score from the exams list if
-  // the attempt has been graded, otherwise "awaiting result".
-  if (alreadyDone && !attempt && !result) {
+  // the attempt has been graded, otherwise "awaiting result". Reached
+  // two ways — the server said alreadyAttempted on click, or (5-A6
+  // P1-1) the list payload already said so before any click was offered.
+  if ((alreadyDone || hasFinishedAttempt) && !attempt && !result) {
     const exam = (examsQ.data ?? []).find((e) => e.id === id);
     const myAttempt = exam?.myAttempt ?? null;
     const score = myAttempt?.score;
@@ -588,35 +704,43 @@ export function ExamTakerPage() {
           كل الاختبارات
         </Link>
         <Card>
-          <div className="empty-state">
+          {/* 5-A6 plan-7 — verdict lockup: icon → title → grade → badge
+              read as one tight group (the grade and its verdict badge
+              are a single decision), generous break before the action. */}
+          <div className="empty-state exam-result">
             <Icon icon={CheckCircle2} size={32} style={{ color: 'var(--accent)' }} />
-            <h2 style={{ margin: 'var(--sp-3) 0 var(--sp-2)' }}>لقد أكملت هذا الاختبار مسبقاً</h2>
-            <p className="text-sm text-muted" style={{ maxWidth: 480, textAlign: 'center' }}>
-              لا يمكن إعادة المحاولة بعد التسليم. نتيجتك الفعلية:
-            </p>
+            <h2 className="exam-result-title">لقد أكملت هذا الاختبار مسبقاً</h2>
             {exam && myAttempt && score !== null && score !== undefined ? (
               <>
-                <div className="exam-grade" style={{ marginTop: 'var(--sp-2)' }}>
-                  <span className="exam-grade-value"><bdi>{Number(score)} / {Number(myAttempt.maxScore)}</bdi></span>
+                <div className="exam-result-lockup">
+                  <div className="exam-grade">
+                    <span className="exam-grade-value"><bdi>{Number(score)} / {Number(myAttempt.maxScore)}</bdi></span>
+                  </div>
+                  {/* The verdict badge carries the fail case at full danger
+                      weight — a withheld pass is not a soft warning. */}
+                  <Badge color={passed ? 'green' : 'red'}>{passed ? 'ناجح' : 'لم يجتز'}</Badge>
                 </div>
-                <Badge color={passed ? 'green' : 'amber'}>{passed ? 'ناجح' : 'لم يجتز'}</Badge>
+                <p className="exam-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
+                {/* 5-A6 P2-4 — no student-side per-question review surface
+                    exists yet (the attempts endpoint is grading-roles-only);
+                    say so instead of leaving the question unanswered. */}
+                <p className="exam-result-note">مراجعة الأسئلة بعد التسليم غير متاحة حالياً.</p>
               </>
             ) : examsQ.isPending ? (
-              <p className="text-sm text-muted" style={{ marginTop: 'var(--sp-2)' }}>
-                جارٍ جلب نتيجتك…
-              </p>
+              <p className="exam-result-note">جارٍ جلب نتيجتك…</p>
             ) : examsQ.isError ? (
-              <div className="form-error" role="alert" style={{ marginTop: 'var(--sp-2)', maxWidth: 480 }}>
+              <div className="form-error" role="alert">
                 <Icon icon={AlertTriangle} size={14} />
                 <span className="form-error-msg">تعذَّر جلب نتيجتك — تحقّق من اتصالك.</span>
                 <button type="button" className="btn ghost sm" onClick={() => void examsQ.refetch()}>إعادة المحاولة</button>
               </div>
             ) : (
-              <p className="text-sm text-muted" style={{ marginTop: 'var(--sp-2)' }}>
-                النتيجة قيد الاحتساب أو بانتظار تقييم الأسئلة المقالية.
-              </p>
+              <>
+                <p className="exam-result-note">لا يمكن إعادة المحاولة بعد التسليم.</p>
+                <p className="exam-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم الأسئلة المقالية.</p>
+              </>
             )}
-            <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')} style={{ marginTop: 'var(--sp-3)' }}>
+            <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')}>
               العودة للقائمة
             </button>
           </div>
@@ -650,8 +774,19 @@ export function ExamTakerPage() {
                 <span className="form-error-msg">{startError}</span>
               </div>
             )}
-            <button type="button" className="btn primary" onClick={onStart} disabled={start.isPending} style={{ marginTop: 'var(--sp-3)' }}>
-              {start.isPending ? 'جارٍ التحضير…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
+            {/* While the list payload is still in flight we cannot yet
+                know whether this exam is finished — the begin control
+                waits instead of offering a start the server may refuse
+                (the P1-1 pre-empt needs the list truth; cached lists
+                resolve instantly, so this only guards hard deep links). */}
+            <button
+              type="button"
+              className="btn primary"
+              onClick={onStart}
+              disabled={start.isPending || examsQ.isPending}
+              style={{ marginTop: 'var(--sp-3)' }}
+            >
+              {start.isPending ? 'جارٍ التحضير…' : examsQ.isPending ? 'جارٍ التحقق…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
             </button>
           </div>
         </Card>
@@ -672,32 +807,43 @@ export function ExamTakerPage() {
           كل الاختبارات
         </Link>
         <Card>
-          <div className="empty-state">
+          {/* 5-A6 plan-7 — verdict lockup (see the done-state screen). */}
+          <div className="empty-state exam-result">
             <Icon
               icon={awaitingManual ? Hourglass : result.passed ? CheckCircle2 : AlertTriangle}
               size={36}
               style={{ color: awaitingManual ? 'var(--info)' : result.passed ? 'var(--success)' : 'var(--warning)' }}
             />
-            <h2 style={{ margin: 'var(--sp-3) 0 var(--sp-2)' }}>
+            <h2 className="exam-result-title">
               {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
             </h2>
             {/* The authored moment — the grade reveal: the real score
                 lands as the visual anchor (same exam-grade language as
                 the student results card; one-shot rise + state ring). */}
-            <div className="exam-grade">
-              <span className="exam-grade-value"><bdi>{result.score} / {result.maxScore}</bdi></span>
+            <div className="exam-result-lockup">
+              <div className="exam-grade">
+                <span className="exam-grade-value"><bdi>{result.score} / {result.maxScore}</bdi></span>
+              </div>
+              {awaitingManual ? (
+                <Badge>بانتظار التصحيح اليدوي</Badge>
+              ) : (
+                /* Fail reads at full danger weight — the moment a retake
+                    is refused deserves more than a caution tint. */
+                <Badge color={result.passed ? 'green' : 'red'}>{result.passed ? 'ناجح' : 'لم يجتز'}</Badge>
+              )}
             </div>
-            {awaitingManual ? (
-              <Badge>بانتظار التصحيح اليدوي</Badge>
-            ) : (
-              <Badge color={result.passed ? 'green' : 'amber'}>{result.passed ? 'ناجح' : 'لم يجتز'}</Badge>
-            )}
-            <div className="text-sm text-muted" style={{ marginTop: 'var(--sp-2)' }}>
+            <p className="exam-result-note">
               {result.needsManual > 0
                 ? <><bdi>{result.needsManual}</bdi> سؤال بحاجة لتقييم يدوي من الأستاذ — ستظهر الدرجة النهائية بعد المراجعة.</>
                 : 'تم احتساب النتيجة فوراً.'}
-            </div>
-            <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')} style={{ marginTop: 'var(--sp-3)' }}>
+            </p>
+            {/* 5-A6 P2-4 — per-question review needs a student-side
+                endpoint the backend does not expose yet (the attempts
+                list is grading-roles-only); the honest note stands in
+                until that lands (FE+BE coordination, filed in the
+                worklog). */}
+            <p className="exam-result-note">مراجعة الأسئلة بعد التسليم غير متاحة حالياً.</p>
+            <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')}>
               العودة للقائمة
             </button>
           </div>
@@ -712,6 +858,12 @@ export function ExamTakerPage() {
   const m = Math.floor(secondsLeft / 60);
   const s = secondsLeft % 60;
   const timeUrgent = secondsLeft < 120;
+  // 5-A6 plan-6 — the time-consumed hairline fraction: elapsed share of
+  // the full attempt window (durationMin — the same window expiresAt
+  // was derived from), drained from the inline-start edge.
+  const totalMs = attempt.durationMin * 60_000;
+  const consumedFrac = Math.min(1, Math.max(0, (totalMs - secondsLeft * 1000) / totalMs));
+  const answeredCount = attempt.questions.length - unanswered;
   // Question positions (1-based) whose latest save failed — the chip
   // names them so the student knows exactly what to re-answer.
   const failedNumbers = attempt.questions
@@ -723,7 +875,12 @@ export function ExamTakerPage() {
       <div className="exam-bar">
         <div>
           <h1 className="exam-bar-title">{attempt.title}</h1>
-          <div className="text-xxs text-subtle"><bdi>{attempt.questions.length}</bdi> سؤال</div>
+          {/* 5-A6 P2-2 — answered progress rides the bar subline so the
+              unanswered count is visible while scrolling, not only in
+              the submit dialog. */}
+          <div className="text-xxs text-subtle">
+            <bdi>{attempt.questions.length}</bdi> سؤال · أُجيب عن <bdi>{answeredCount}</bdi>
+          </div>
         </div>
         {/* Per-question save honesty (15-e P1-1): the chip names the
             exact questions whose answers are NOT on the server, and
@@ -748,65 +905,125 @@ export function ExamTakerPage() {
           <Icon icon={Clock} size={14} />
           <span className="font-mono" dir="ltr">{m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}</span>
         </div>
+        {/* 5-A6 P2-2 — the question map: one dot per question, answered /
+            save-failed states at a glance, click or keyboard to jump.
+            flex-basis 100% wraps it onto its own bar row (the bar already
+            wraps at 320px — 5-A5 measured the slot). */}
+        <nav className="exam-qmap" aria-label="خريطة الأسئلة">
+          {attempt.questions.map((q, i) => {
+            const qFailed = failedQids.has(q.id);
+            const qAnswered = isAnswered(q.id);
+            const qCurrent = currentQid === q.id;
+            return (
+              <button
+                key={q.id}
+                type="button"
+                className={`exam-qmap-dot${qAnswered ? ' answered' : ''}${qFailed ? ' failed' : ''}${qCurrent ? ' current' : ''}`}
+                aria-current={qCurrent ? 'true' : undefined}
+                aria-label={`السؤال ${i + 1} من ${attempt.questions.length} — ${qFailed ? 'تعذَّر الحفظ' : qAnswered ? 'مُجاب' : 'بدون إجابة'}`}
+                onClick={() => jumpToQuestion(q.id)}
+              >
+                <bdi>{i + 1}</bdi>
+              </button>
+            );
+          })}
+        </nav>
+        {/* 5-A6 plan-6 — the time-consumed hairline: the window draining
+            from the inline-start edge; color-only urgency below two
+            minutes (the documented no-pulse decision stands). */}
+        <span className="exam-time-rail" aria-hidden="true" data-urgent={timeUrgent ? '' : undefined}>
+          <span style={{ transform: `scaleX(${consumedFrac})` }} />
+        </span>
       </div>
       {urgentNote && <span className="visually-hidden" role="alert">{urgentNote}</span>}
 
       <div className="flex-col gap-3">
-        {attempt.questions.map((q, i) => (
-          <Card key={q.id}>
-            {/* 15-g P1-5 — the prompt is the accessible name of both
-                answer fields: number + prompt ids are referenced by the
-                textarea (aria-labelledby) and the choice group
-                (role=radiogroup), so a screen reader never meets an
-                unnamed graded input. */}
-            <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`} style={{ marginBottom: 4 }}>
-              السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · <bdi>{q.points}</bdi> {q.points === 1 ? 'نقطة' : 'نقاط'}
-            </div>
-            <div className="exam-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
-            {(q.type === 'MCQ' || q.type === 'TRUE_FALSE') && q.choices && (
-              <div
-                className="flex-col gap-2"
-                style={{ marginTop: 'var(--sp-3)' }}
-                role="radiogroup"
-                aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
-              >
-                {q.choices.map((c, idx) => (
-                  <label
-                    key={idx}
-                    className={`exam-choice${answers[q.id]?.choiceIndex === idx ? ' selected' : ''}`}
+        {attempt.questions.map((q, i) => {
+          /* 5-A6 P2-3 — the save-state chip at the question footer: the
+              positive signal pairs the existing failure chip (failed →
+              danger, in-flight → muted, server-confirmed → success). */
+          const saveState = failedQids.has(q.id)
+            ? 'failed'
+            : savingQids.has(q.id)
+              ? 'saving'
+              : savedQids.has(q.id)
+                ? 'saved'
+                : null;
+          /* 5-A6 P2-2 — the wrapper is the map's jump target: id +
+             programmatic focus (tabIndex -1 keeps it out of tab order;
+             scroll-margin clears the sticky bar). */
+          return (
+            <div key={q.id} id={`exam-q-${q.id}`} className="exam-q" tabIndex={-1}>
+              <Card>
+                {/* 15-g P1-5 — the prompt is the accessible name of both
+                    answer fields: number + prompt ids are referenced by the
+                    textarea (aria-labelledby) and the choice group
+                    (role=radiogroup), so a screen reader never meets an
+                    unnamed graded input. */}
+                <div className="text-xxs text-subtle" id={`exam-q-${q.id}-num`} style={{ marginBottom: 4 }}>
+                  السؤال <bdi>{i + 1}</bdi> من <bdi>{attempt.questions.length}</bdi> · <bdi>{q.points}</bdi> {q.points === 1 ? 'نقطة' : 'نقاط'}
+                </div>
+                <div className="exam-prompt" id={`exam-q-${q.id}-prompt`}>{q.prompt}</div>
+                {(q.type === 'MCQ' || q.type === 'TRUE_FALSE') && q.choices && (
+                  <div
+                    className="flex-col gap-2"
+                    style={{ marginTop: 'var(--sp-3)' }}
+                    role="radiogroup"
+                    aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
                   >
-                    {/* Locked while this question's save is in flight
-                        (15-e P1-2) — the same honesty as the lecture
-                        checkpoint options; the .exam-choice:has(
-                        input:disabled) state already exists. */}
-                    <input
-                      type="radio"
-                      name={q.id}
-                      checked={answers[q.id]?.choiceIndex === idx}
-                      onChange={() => onChoiceChange(q.id, idx)}
-                      disabled={savingQids.has(q.id)}
-                    />
-                    <span>{c}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-            {(q.type === 'SHORT' || q.type === 'ESSAY') && (
-              <textarea
-                className="input"
-                rows={q.type === 'ESSAY' ? 6 : 2}
-                placeholder="اكتب إجابتك هنا…"
-                aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
-                value={answers[q.id]?.answerText ?? ''}
-                onChange={(e) => onTextChange(q.id, e.target.value)}
-                onBlur={() => onTextBlur(q.id)}
-                style={{ marginTop: 'var(--sp-3)' }}
-              />
-            )}
-          </Card>
-        ))}
+                    {q.choices.map((c, idx) => (
+                      <label
+                        key={idx}
+                        className={`exam-choice${answers[q.id]?.choiceIndex === idx ? ' selected' : ''}`}
+                      >
+                        {/* Locked while this question's save is in flight
+                            (15-e P1-2) — the same honesty as the lecture
+                            checkpoint options; the .exam-choice:has(
+                            input:disabled) state already exists. */}
+                        <input
+                          type="radio"
+                          name={q.id}
+                          checked={answers[q.id]?.choiceIndex === idx}
+                          onChange={() => onChoiceChange(q.id, idx)}
+                          disabled={savingQids.has(q.id)}
+                        />
+                        <span>{c}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+                {(q.type === 'SHORT' || q.type === 'ESSAY') && (
+                  <textarea
+                    className="input"
+                    rows={q.type === 'ESSAY' ? 6 : 2}
+                    placeholder="اكتب إجابتك هنا…"
+                    aria-labelledby={`exam-q-${q.id}-num exam-q-${q.id}-prompt`}
+                    value={answers[q.id]?.answerText ?? ''}
+                    onChange={(e) => onTextChange(q.id, e.target.value)}
+                    onBlur={() => onTextBlur(q.id)}
+                    style={{ marginTop: 'var(--sp-3)' }}
+                  />
+                )}
+                {saveState && (
+                  <div className="exam-q-foot">
+                    <span className={`exam-q-state ${saveState}`}>
+                      <Icon
+                        icon={saveState === 'failed' ? AlertTriangle : saveState === 'saving' ? Clock : CheckCircle2}
+                        size={12}
+                      />
+                      {saveState === 'failed' ? 'تعذَّر الحفظ' : saveState === 'saving' ? 'جارٍ الحفظ…' : 'محفوظة'}
+                    </span>
+                  </div>
+                )}
+              </Card>
+            </div>
+          );
+        })}
       </div>
 
+      {/* 5-A6 P2-2 — the submit bar carries the unanswered count inline
+          (not only inside the confirm dialog) and is bottom-sticky on
+          phone so a 60-question paper never hides the way out. */}
       <div className="exam-submit-bar">
         {submitError && (
           <div className="form-error" role="alert">
@@ -814,6 +1031,12 @@ export function ExamTakerPage() {
             <span className="form-error-msg">{submitError}</span>
           </div>
         )}
+        <span className={`exam-submit-status${unanswered > 0 ? ' warn' : ' ok'}`}>
+          <Icon icon={unanswered > 0 ? AlertTriangle : CheckCircle2} size={14} />
+          {unanswered > 0
+            ? countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])
+            : 'أُجيب عن كل الأسئلة'}
+        </span>
         <button type="button" className="btn primary" onClick={() => setConfirming(true)} disabled={finish.isPending}>
           {finish.isPending ? 'جارٍ التسليم…' : 'تسليم الاختبار'}
         </button>
@@ -826,7 +1049,9 @@ export function ExamTakerPage() {
         title="تسليم الاختبار"
         message={
           unanswered > 0
-            ? `لديك ${unanswered} سؤال بدون إجابة. بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.`
+            /* 22-c (A4 P2-3) counted-noun convention — the dialog speaks
+               the same «سؤال واحد بدون إجابة» grammar as the sticky bar. */
+            ? `لديك ${countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])}. بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.`
             : 'بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.'
         }
         confirmLabel="تسليم نهائي"

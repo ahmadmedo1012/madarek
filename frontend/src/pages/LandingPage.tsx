@@ -14,7 +14,7 @@ import { LibyaFlag } from '../components/LibyaFlag';
 import { RevealCssClass } from '../hooks/useReveal';
 import { CountUp } from '../components/CountUp';
 import { colleges } from '../data/colleges.config';
-import { Parallax } from '../components/motion/Parallax';
+import { JourneyRail } from '../components/motion/JourneyRail';
 import { Illustration } from '../components/Illustration';
 import { SectionAccent } from '../components/motion/SectionAccent';
 // D14 CSS split (13-17): landing.css is this page's own sheet; colleges.css
@@ -217,6 +217,48 @@ export default function LandingPage() {
     };
   }, []);
 
+  // 5-B2 (P1-3/P2-3) — campus peak scale-settle. The peak act replaces
+  // the old ≤6px threshold-quantized Parallax wrapper (30× under the
+  // perceptibility floor, devices.md §6) with a perceptible, transform-
+  // only settle: --campus-p sweeps 0→1 as the sticky frame fills the
+  // viewport, and landing.css drives the photo's scale (1.10 → 1) and
+  // the caption's arrival off it. rAF-throttled passive listener, same
+  // pattern as the mockup parallax above; reduced-motion users keep
+  // --campus-p unset so the photo rests at scale 1 (CSS default).
+  const campusStageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    const stage = campusStageRef.current;
+    if (!stage) return;
+
+    let raf = 0;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = stage.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // The settle spans the sticky pin itself: 0 when the frame
+        // first fills the screen, 1 when the pin releases — the camera
+        // keeps easing the whole hold, so no scroll notch is dead.
+        // (Stages shorter than the viewport — mobile — skip the var;
+        // their CSS transform is none anyway.)
+        const travel = r.height - vh;
+        if (travel <= 0) return;
+        const p = Math.min(1, Math.max(0, -r.top / travel));
+        stage.style.setProperty('--campus-p', p.toFixed(3));
+      });
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   // Rules-of-hooks-safe redirect (see redirectHome above): every hook has
   // already run unconditionally, so the auth state flipping while mounted
   // no longer changes the hook count — it just swaps the landing tree for
@@ -228,10 +270,16 @@ export default function LandingPage() {
   return (
     <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
 
-      {/* Top scroll-progress bar */}
+      {/* Top scroll-progress bar — single-accent hairline (5-B2 P2-4);
+          on ≤920px this is the mobile journey signal (the rail is
+          desktop/tablet-only). */}
       <div className="landing-progress" aria-hidden>
         <div className="landing-progress-bar" style={{ ['--p' as string]: scrollPct }} />
       </div>
+
+      {/* 5-B2 signature move — «سجلّ الرحلة» journey rail (fixed,
+          inline-start edge, hidden ≤920px via landing.css). */}
+      <JourneyRail />
 
       {/* Ministry strip */}
       <div className="ministry-strip">
@@ -305,7 +353,7 @@ export default function LandingPage() {
                   <span className="sticker sm sky"><Icon icon={Brain} size={20} /></span>
                   <span className="landing-megamenu-item-body">
                     <span className="landing-megamenu-item-title">المساعد الأكاديمي</span>
-                    <span className="landing-megamenu-item-desc"><bdi>«Oasis»</bdi> — رفيق دراسي ذكي</span>
+                    <span className="landing-megamenu-item-desc"><bdi>«Oasis»</bdi>: رفيق دراسي ذكي</span>
                   </span>
                 </a>
               </div>
@@ -347,8 +395,12 @@ export default function LandingPage() {
       </header>
 
       <main>
-      {/* HERO — huge centered title + mockup */}
-      <section ref={heroRef} className="marketing-container landing-hero">
+      {/* HERO — huge centered title + mockup. 5-B2 (P1-4/P3-1): the
+          stack is compressed to 4 text blocks above the CTA (eyebrow,
+          title, subtitle, CTA row); the micro-tagline row moved below
+          the product shot as its caption (taste: micro-taglines move
+          below the hero stack). */}
+      <section ref={heroRef} id="top" className="marketing-container landing-hero">
         <RevealCssClass as="div" className="landing-hero-scene">
           <Illustration name="homepage-hero" decorative />
         </RevealCssClass>
@@ -367,7 +419,7 @@ export default function LandingPage() {
         </RevealCssClass>
         <RevealCssClass as="p" className="landing-subtitle" delay={2}>
           مساحة عمل أكاديمية واحدة تُمكّن الطالب والأستاذ والإدارة وضمان الجودة
-          من إدارة المحاضرات، البحوث، الاختبارات والتقييم — بهدوء وسهولة.
+          من إدارة المحاضرات، البحوث، الاختبارات والتقييم، بهدوء وسهولة.
         </RevealCssClass>
         <RevealCssClass as="div" className="landing-cta-row" delay={3}>
           <Link to="/auth" className="btn primary xl">
@@ -387,78 +439,56 @@ export default function LandingPage() {
             <span className="landing-colleges-trigger-badge">{COLLEGES_COUNT}</span>
           </button>
         </RevealCssClass>
-        <RevealCssClass as="div" className="landing-cta-meta" delay={4}>
-          <span className="landing-inline-cluster">
-            <Icon icon={Check} size={14} /> بإيميلك الجامعي
-          </span>
-          <span className="landing-cta-meta-dot" />
-          <span className="landing-inline-cluster">
-            <Icon icon={Check} size={14} /> دعم RTL كامل
-          </span>
-          <span className="landing-cta-meta-dot" />
-          <span className="landing-inline-cluster">
-            <Icon icon={Check} size={14} /> اعتماد رسميّ
-          </span>
-        </RevealCssClass>
 
-        {/* mockup */}
-        <RevealCssClass as="div" className="landing-mockup" delay={5}>
-          <div className="landing-mockup-frame">
-            <div className="landing-mockup-chrome">
-              <span className="landing-mockup-dot" />
-              <span className="landing-mockup-dot" />
-              <span className="landing-mockup-dot" />
-            </div>
-            <div className="landing-mockup-body">
-              <aside className="landing-mockup-side">
-                <div className="landing-mockup-side-row on" />
-                <div className="landing-mockup-side-row" />
-                <div className="landing-mockup-side-row" />
-                <div className="landing-mockup-side-row" />
-                <div className="landing-mockup-side-row" style={{ width: '70%' }} />
-                <div className="landing-mockup-side-row" />
-              </aside>
-              <div className="landing-mockup-main">
-                <div className="landing-mockup-title">مساء النور، أحمد</div>
-                <div className="landing-mockup-kpis">
-                  <div className="landing-mockup-kpi">
-                    <div className="landing-mockup-kpi-label">معدّلك</div>
-                    <div className="landing-mockup-kpi-value">3.74</div>
-                  </div>
-                  <div className="landing-mockup-kpi">
-                    <div className="landing-mockup-kpi-label">حضور</div>
-                    <div className="landing-mockup-kpi-value">92%</div>
-                  </div>
-                  <div className="landing-mockup-kpi">
-                    <div className="landing-mockup-kpi-label">مهام</div>
-                    <div className="landing-mockup-kpi-value">3</div>
-                  </div>
-                </div>
-                <div className="landing-mockup-chart" aria-hidden>
-                  <span className="landing-mockup-bar" />
-                  <span className="landing-mockup-bar" />
-                  <span className="landing-mockup-bar" />
-                  <span className="landing-mockup-bar" />
-                  <span className="landing-mockup-bar" />
-                  <span className="landing-mockup-bar" />
-                  <span className="landing-mockup-bar" />
-                </div>
+        {/* mockup — 5-B2: (P1-1) the reveal classes moved to this wrapper
+            so .landing-mockup keeps its scroll-parallax transform (the old
+            same-element transform collision froze the parallax forever);
+            (P2-5) the div-built fake dashboard body is replaced by a real
+            2× capture of the seeded student dashboard: real markup, real
+            numbers, framed by the existing window chrome. The invented
+            «+12 طالباً» badge died with it (only the Oasis teaser
+            stays — a product feature, no fake precision). */}
+        <RevealCssClass as="div" delay={5}>
+          <div className="landing-mockup">
+            <div className="landing-mockup-frame">
+              <div className="landing-mockup-chrome">
+                <span className="landing-mockup-dot" />
+                <span className="landing-mockup-dot" />
+                <span className="landing-mockup-dot" />
               </div>
+              <img
+                src="/landing-dashboard.webp"
+                alt="لوحة تحكّم الطالب في مدارك: المقرّرات النشطة، نسبة الحضور، تقدّم الفصل، والمعدّل التراكمي"
+                className="landing-mockup-shot"
+                width={1760}
+                height={1100}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div className="landing-mockup-badge landing-mockup-badge-2">
+              <span className="sticker sm lavender"><Icon icon={Brain} size={18} /></span>
+              <span className="landing-mockup-badge-text">
+                <span className="landing-mockup-badge-title">Oasis</span>
+                <span className="landing-mockup-badge-sub">يحضِّر ملخَّص الفصل…</span>
+              </span>
             </div>
           </div>
 
-          <div className="landing-mockup-badge landing-mockup-badge-1">
-            <span className="sticker sm mint"><Icon icon={ClipboardCheck} size={18} /></span>
-            <span className="landing-mockup-badge-text">
-              <span className="landing-mockup-badge-title">+12 طالباً</span>
-              <span className="landing-mockup-badge-sub">سلَّم الواجب اليوم</span>
+          {/* micro-tagline caption — moved under the product shot (P3-1:
+              max 4 hero text blocks above the CTA). */}
+          <div className="landing-cta-meta">
+            <span className="landing-inline-cluster">
+              <Icon icon={Check} size={14} /> بإيميلك الجامعي
             </span>
-          </div>
-          <div className="landing-mockup-badge landing-mockup-badge-2">
-            <span className="sticker sm lavender"><Icon icon={Brain} size={18} /></span>
-            <span className="landing-mockup-badge-text">
-              <span className="landing-mockup-badge-title">Oasis</span>
-              <span className="landing-mockup-badge-sub">يحضِّر ملخَّص الفصل…</span>
+            <span className="landing-cta-meta-dot" />
+            <span className="landing-inline-cluster">
+              <Icon icon={Check} size={14} /> دعم RTL كامل
+            </span>
+            <span className="landing-cta-meta-dot" />
+            <span className="landing-inline-cluster">
+              <Icon icon={Check} size={14} /> اعتماد رسميّ
             </span>
           </div>
         </RevealCssClass>
@@ -467,46 +497,53 @@ export default function LandingPage() {
       {/* Logo strip */}
       <section className="marketing-container landing-logos" aria-label="الشركاء الأكاديميون">
         <div className="landing-logos-eyebrow">معتمدة من</div>
-        <div className="landing-logos-grid">
+        {/* 5-B2 (P1-2/P2-7): quote-fade — the quiet credibility register
+            before the campus peak; a calm fade (no rise) so the row stops
+            reading as glued-on after the hero's theatrics. */}
+        <SectionAccent kind="quote-fade" as="div" className="landing-logos-grid">
           <div className="landing-logo">جامعة الزاوية</div>
           <div className="landing-logo">وزارة التعليم العالي</div>
           <div className="landing-logo">قطاع ضمان الجودة</div>
           <div className="landing-logo">مكتب البحوث</div>
           <div className="landing-logo">مركز التعليم الذكي</div>
           <div className="landing-logo">عمادة الطلاب</div>
-        </div>
+        </SectionAccent>
       </section>
 
       {/* University facts — straight from zu.edu.ly */}
       <section className="marketing-container">
         <div className="landing-pilot-grid">
-          <RevealCssClass as="div" className="landing-pilot-stat">
+          <SectionAccent kind="number-tick" as="div" className="landing-pilot-stat">
             <div className="landing-pilot-value"><CountUp value={String(COLLEGES_COUNT)} /></div>
             <div className="landing-pilot-label">كلّيّة أكاديميّة</div>
             <div className="landing-pilot-note">حسب الموقع الرسميّ للجامعة</div>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="landing-pilot-stat" delay={1}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" className="landing-pilot-stat">
             <div className="landing-pilot-value"><CountUp value="4" /></div>
             <div className="landing-pilot-label">مدن وفروع</div>
             <div className="landing-pilot-note">الزاوية، العجيلات، زوارة وأخرى</div>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="landing-pilot-stat" delay={2}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" className="landing-pilot-stat">
             <div className="landing-pilot-value">1988</div>
             <div className="landing-pilot-label">عام التأسيس</div>
             <div className="landing-pilot-note">بقرار رقم 135</div>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="landing-pilot-stat" delay={3}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" className="landing-pilot-stat">
             <div className="landing-pilot-value"><CountUp value="3" /></div>
             <div className="landing-pilot-label">عضويّات دوليّة</div>
             <div className="landing-pilot-note">عربيّة، أفريقيّة، إسلاميّة</div>
-          </RevealCssClass>
+          </SectionAccent>
         </div>
       </section>
 
-      {/* Campus showcase — optimized hero (WebP/JPEG) with parallax + interactive overlay */}
-      <section id="campus" className="marketing-container landing-campus" aria-label="جامعة الزاوية">
-        <RevealCssClass as="figure" className="landing-campus-frame">
-          <Parallax amount={6} direction="up">
+      {/* CAMPUS — THE PEAK (5-B2 P1-3). The only photographic act,
+          promoted to the page's largest scroll span: full-bleed sticky
+          frame + a perceptible transform-only scale-settle (the old
+          ≤6px threshold-quantized Parallax is gone, P2-3). The facts
+          row above is the authored quiet before it. */}
+      <section id="campus" className="landing-campus" aria-label="جامعة الزاوية">
+        <div className="landing-campus-stage" ref={campusStageRef}>
+          <figure className="landing-campus-frame">
             {/* Optimized hero art: WebP first (99KB vs 2MB PNG), JPEG fallback
                 for ancient browsers. width/height pin the 1377×768 aspect
                 ratio so the browser reserves layout space (no CLS). The
@@ -520,7 +557,7 @@ export default function LandingPage() {
               />
               <img
                 src="/main_photo.jpg"
-                alt="جامعة الزاوية — المدخل الرئيسي"
+                alt="المدخل الرئيسي لجامعة الزاوية"
                 className="landing-campus-photo"
                 width={1377}
                 height={768}
@@ -529,19 +566,21 @@ export default function LandingPage() {
                 decoding="async"
               />
             </picture>
-          </Parallax>
-          <span className="landing-campus-vignette" aria-hidden />
-          <span className="landing-campus-grain" aria-hidden />
-          <figcaption className="landing-campus-caption">
-            <span className="landing-campus-eyebrow">جامعة الزاوية</span>
-            <span className="landing-campus-line">
-              <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل
-            </span>
-          </figcaption>
-        </RevealCssClass>
+            <span className="landing-campus-vignette" aria-hidden />
+            <span className="landing-campus-grain" aria-hidden />
+            <figcaption className="landing-campus-caption">
+              <span className="landing-campus-eyebrow">جامعة الزاوية</span>
+              <span className="landing-campus-line">
+                <em>منذ 1988</em>، مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل
+              </span>
+            </figcaption>
+          </figure>
+        </div>
       </section>
 
-      {/* FEATURES — sticker grid */}
+      {/* FEATURES — 5-B2 (P2-6): the AI-tell 3×2 identical grid is
+          re-grammared as a two-column zigzag of horizontal cards
+          (taste: never three equal feature columns) — CSS owns the weave. */}
       <section id="features" className="marketing-container landing-features">
         {/* 20-a P2-1 (4-A1): «المنظومة» eyebrow dropped — one of 7 removed
             (scroll-craft: at most one eyebrow per three sections; the
@@ -552,7 +591,7 @@ export default function LandingPage() {
           </h2>
           <p className="landing-section-lede">
             أدوات أكاديمية متكاملة تربط الفصل الدراسي بالمحتوى الرقمي والتحليلات
-            الذكية — بدون تشتيت ودون تعقيد.
+            الذكية، بدون تشتيت ودون تعقيد.
           </p>
         </SectionAccent>
 
@@ -569,7 +608,7 @@ export default function LandingPage() {
             <span className="sticker lg lavender"><Icon icon={Brain} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">المساعد الأكاديمي</h3>
             <p className="landing-feature-desc">
-              «Oasis» — رفيق دراسي يفهم سياق دراستك. شروحات مخصَّصة، تلخيصات،
+              «Oasis»: رفيق دراسي يفهم سياق دراستك. شروحات مخصَّصة، تلخيصات،
               واختبارات تفاعلية حسب أدائك الفعلي.
             </p>
           </RevealCssClass>
@@ -577,7 +616,7 @@ export default function LandingPage() {
             <span className="sticker lg sky"><Icon icon={BarChart3} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">تحليلات أكاديمية</h3>
             <p className="landing-feature-desc">
-              لوحة دقيقة لتقدُّمك لحظة بلحظة — الدرجات، الحضور، المهام، والمؤشرات
+              لوحة دقيقة لتقدُّمك لحظة بلحظة: الدرجات، الحضور، المهام، والمؤشرات
               المؤسسية، بصياغة تخدم القرار.
             </p>
           </RevealCssClass>
@@ -593,7 +632,7 @@ export default function LandingPage() {
             <span className="sticker lg yellow"><Icon icon={Network} size={32} strokeWidth={1.8} /></span>
             <h3 className="landing-feature-title">منظومة موحَّدة</h3>
             <p className="landing-feature-desc">
-              المحاضرات، الحضور، الدرجات، الاختبارات، البحوث، والمعامل الافتراضية —
+              المحاضرات، الحضور، الدرجات، الاختبارات، البحوث، والمعامل الافتراضية،
               كلها في تجربة واحدة آمنة ومتجاوبة.
             </p>
           </RevealCssClass>
@@ -622,10 +661,13 @@ export default function LandingPage() {
               إلى المفاهيم في المصفوفة المعرفية. الطالب يبني فهمه بإيقاعه.
             </p>
             <div style={{ marginBlockStart: 32, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <Link to="/auth" className="btn primary lg">جرّب المحاضرة <Icon icon={ArrowLeft} size={14} /></Link>
+              <Link to="/auth" className="btn primary lg">ابدأ الآن <Icon icon={ArrowLeft} size={14} /></Link>
             </div>
           </RevealCssClass>
-          <RevealCssClass as="div" className="band-visual" delay={2}>
+          {/* 5-B2 (P1-2): the checklist wipes in via clip-path
+              (the sanctioned third property) from the reading side —
+              a change of state, not another fade+rise. */}
+          <RevealCssClass as="div" className="band-visual reveal-wipe" delay={2}>
             <div className="band-visual-row">
               <span className="band-visual-checkbox on"><Icon icon={Check} size={12} strokeWidth={3} /></span>
               <span className="band-visual-text done">مقدمة في خوارزميات الفرز</span>
@@ -638,7 +680,7 @@ export default function LandingPage() {
             </div>
             <div className="band-visual-row">
               <span className="band-visual-checkbox" />
-              <span className="band-visual-text"><bdi>Quick Sort</bdi> — التقسيم الديناميكي</span>
+              <span className="band-visual-text"><bdi>Quick Sort</bdi>: التقسيم الديناميكي</span>
               <span className="band-visual-tag peach">قيد المتابعة</span>
             </div>
             <div className="band-visual-row">
@@ -648,7 +690,7 @@ export default function LandingPage() {
             </div>
             <div className="band-visual-row">
               <span className="band-visual-checkbox" />
-              <span className="band-visual-text">اختبار قصير — أسبوع 4</span>
+              <span className="band-visual-text">اختبار قصير، أسبوع 4</span>
               <span className="band-visual-tag sky">اختبار</span>
             </div>
           </RevealCssClass>
@@ -672,7 +714,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="landing-ai-bubble-user">
-              ساعدني في فهم خوارزميات <bdi>«Quick Sort»</bdi> — لم أستوعبها في المحاضرة.
+              ساعدني في فهم خوارزميات <bdi>«Quick Sort»</bdi>، لم أستوعبها في المحاضرة.
             </div>
             <div className="landing-ai-bubble-ai">
               فكرة <bdi>Quick Sort</bdi> بسيطة: نختار عنصراً <bdi>«pivot»</bdi>، ونفصل العناصر الأصغر
@@ -688,7 +730,7 @@ export default function LandingPage() {
             <span className="sticker xl lavender"><Icon icon={Sparkles} size={48} strokeWidth={1.6} /></span>
             {/* 20-a P2-1: «المساعد الأكاديمي» band eyebrow dropped (7 removed). */}
             <h2 className="band-title">
-              <em className="landing-serif-latin"><bdi>«Oasis»</bdi></em> — يفهم سياق دراستك
+              <em className="landing-serif-latin"><bdi>«Oasis»</bdi></em> يفهم سياق دراستك
             </h2>
             <p className="band-lede">
               مساعد أكاديمي يعرف مقرَّراتك ومحاضراتك ودرجاتك. يقدِّم شروحات مخصَّصة،
@@ -720,109 +762,65 @@ export default function LandingPage() {
         </SectionAccent>
 
         <div className="landing-bento-grid">
-          <RevealCssClass as="div" id="research" className="landing-bento-card span-3 band-mint">
+          {/* 5-B2 (P1-2): the bento cards stagger-scale in
+              (number-tick) — a different motion family from the
+              fade+rise grid above and the wipe before it. */}
+          <SectionAccent kind="number-tick" as="div" id="research" className="landing-bento-card span-3 band-mint">
             <span className="sticker mint"><Icon icon={Microscope} size={28} /></span>
             <h3 className="landing-bento-title">البحوث والمكتبة</h3>
             <p className="landing-bento-desc">
               فهرس بحثيّ بفحص نزاهة علمية تلقائي (انتحال + AI) ومراجعة معلَّمة على
               الـPDF. آلاف الكتب الأكاديمية للاستعارة الفورية.
             </p>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="landing-bento-card span-3 band-yellow" delay={1}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" className="landing-bento-card span-3 band-yellow">
             <span className="sticker yellow"><Icon icon={Calendar} size={28} /></span>
             <h3 className="landing-bento-title">الجدول الدراسي</h3>
             <p className="landing-bento-desc">
-              جدول أسبوعيّ ذكيّ يجمع المحاضرات، التسليمات، الاختبارات، والاجتماعات —
+              جدول أسبوعيّ ذكيّ يجمع المحاضرات، التسليمات، الاختبارات، والاجتماعات،
               بمُذكِّرات تلقائية وروابط مباشرة لكل بند.
             </p>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="landing-bento-card span-2 band-sky" delay={2}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" id="exams" className="landing-bento-card span-2 band-sky">
             <span className="sticker sky"><Icon icon={ClipboardCheck} size={28} /></span>
             <h3 className="landing-bento-title">الاختبارات الإلكترونية</h3>
             <p className="landing-bento-desc">
               MCQ · صح/خطأ · إجابة قصيرة · مقالة. تصحيح تلقائي للموضوعي.
             </p>
-          </RevealCssClass>
-          <RevealCssClass as="div" id="labs" className="landing-bento-card span-2 band-rose" delay={3}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" id="labs" className="landing-bento-card span-2 band-rose">
             <span className="sticker rose"><Icon icon={FlaskConical} size={28} /></span>
             <h3 className="landing-bento-title">المعامل الافتراضية</h3>
             <p className="landing-bento-desc">
               <bdi>Cisco Packet Tracer</bdi>، <bdi>Arduino Sim</bdi>، وتجارب <bdi>AR/VR</bdi> للتطبيق العملي.
             </p>
-          </RevealCssClass>
-          <RevealCssClass as="div" id="achievements" className="landing-bento-card span-2 band-copper" delay={4}>
+          </SectionAccent>
+          <SectionAccent kind="number-tick" as="div" id="achievements" className="landing-bento-card span-2 band-copper">
             <span className="sticker copper"><Icon icon={Trophy} size={28} /></span>
             <h3 className="landing-bento-title">الإنجازات والشارات</h3>
             <p className="landing-bento-desc">
-              نقاط، مستويات، شارات — لتشجيع الالتزام دون فرضه.
+              نقاط ومستويات وشارات، لتشجيع الالتزام دون فرضه.
             </p>
-          </RevealCssClass>
+          </SectionAccent>
         </div>
       </section>
 
-      {/* ROLE LEDGER — 20-a (4-A1 P1-3): this section used to reuse
-          .landing-features* (a FOURTH identical icon-card grid — 4 cards
-          in a 3-col grid even orphaned the fourth card). Re-grammared as
-          a definition ledger: start-aligned head (the page's only
-          non-centered one), role names as a fixed index column,
-          hairline rows, descriptions at a readable measure. Copy is
-          verbatim from the audited cards. */}
-      <section id="roles" className="marketing-container landing-roles">
-        <div className="landing-roles-head">
-          <h2 className="landing-section-title">
-            أربعة <em>أدوار</em>، تجربة موحَّدة
-          </h2>
-          <p className="landing-section-lede">
-            كلّ دور أكاديميّ يرى ما يخصّه فقط — صلاحيّات مدروسة وفصلٌ واضح بين الواجبات.
-          </p>
-        </div>
-        <ul className="landing-roles-list">
-          {[
-            {
-              icon: GraduationCap, tone: 'copper', name: 'الطالب',
-              desc: 'مقرَّرات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات، فرص عمل، ومكتبة بحوث.',
-            },
-            {
-              icon: Brain, tone: 'lavender', name: 'الأستاذ',
-              desc: 'ذكاء أكاديميّ يكشف الطلَّاب المعرَّضين، إدارة المحاضرات والدرجات، ومعامل افتراضية بصلاحيات تحكُّم.',
-            },
-            {
-              icon: Building2, tone: 'sky', name: 'الإدارة',
-              desc: 'إدارة الكليَّات والأساتذة والمقرَّرات، تقارير، ومزامنة يومية مع البيانات الرسمية لجامعة الزاوية.',
-            },
-            {
-              icon: ShieldCheck, tone: 'mint', name: 'ضمان الجودة',
-              desc: 'رؤية للمؤشرات المؤسسية: جودة المقرَّرات، تقييم الأساتذة، مراجعة الاختبارات والمناهج.',
-            },
-          ].map((r, i) => (
-            <RevealCssClass
-              as="li"
-              key={r.name}
-              className="landing-role-row"
-              delay={(i + 1) as 1 | 2 | 3 | 4}
-            >
-              <span className="landing-role-key">
-                <span className={`sticker lg ${r.tone}`}><Icon icon={r.icon} size={32} /></span>
-                <span className="landing-role-name">{r.name}</span>
-              </span>
-              <p className="landing-role-desc">{r.desc}</p>
-            </RevealCssClass>
-          ))}
-        </ul>
-      </section>
-
-      {/* PROOF — pilot results in colored band */}
+      {/* PROOF — pilot results in the sand band. 5-B2 (P1-5/P2-2):
+          moved BEFORE the roles ledger so the journey reads البحوث
+          (the field study) → المجتمع (the roles) → التخرّج,
+          matching the rail's stage order, and the old 462px roles→proof
+          dead-air boundary dissolves (the decorative milestone scene is
+          gone too — the page's second scene diluted the hero's). */}
       <section id="proof" className="band band-sand">
         <div className="marketing-container">
-          <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
+          {/* 5-B2 (P1-2): parallax-shift head — a bounded 8px settle,
+              distinct from the bento's scale family above. */}
+          <SectionAccent kind="parallax-shift" as="div" className="landing-section-head">
             <span className="landing-section-eyebrow">دراسة ميدانية</span>
-            <RevealCssClass as="div" className="landing-section-anchor" delay={1}>
-              <Illustration name="milestone-section" decorative />
-            </RevealCssClass>
             <h2 className="band-title">نتائج <em>تجربة فعلية</em></h2>
             <p className="band-lede">
-              اعتمدنا استراتيجية الصفّ المعكوس على مقرّر اللغة الإنجليزية مع طلَّاب
-              من جنوب ليبيا — هذه أرقام التجربة.
+              اعتمدنا استراتيجية الصفّ المعكوس على مقرّر اللغة الإنجليزية مع طلّاب
+              من جنوب ليبيا؛ هذه أرقام التجربة.
             </p>
           </SectionAccent>
           <div className="landing-pilot-grid">
@@ -850,44 +848,67 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* WHO IT'S FOR — role-based, not fabricated quotes */}
-      <section className="marketing-container landing-features">
-        {/* 20-a P2-1: «لمن صُمِّمت» eyebrow dropped (7 removed). */}
-        <SectionAccent kind="scene-paint" as="div" className="landing-section-head">
+      {/* ROLE LEDGER — 20-a (4-A1 P1-3): this section used to reuse
+          .landing-features* (a FOURTH identical icon-card grid). Re-grammared
+          as a definition ledger: start-aligned head, role names as a fixed
+          index column, hairline rows, descriptions at a readable measure.
+          5-B2 (P1-5): the who-for section that used to sit 551px below and
+          paraphrased these rows is cut — its human register folded into
+          the ledger's closing line below. */}
+      <section id="roles" className="marketing-container landing-roles">
+        {/* 5-B2 (P1-2): underline-draw — the ledger rule draws itself
+            under the start-aligned head (the section's authored moment). */}
+        <SectionAccent kind="underline-draw" as="div" className="landing-roles-head">
           <h2 className="landing-section-title">
-            أداة كلّ <em>دور</em> أكاديميّ في الجامعة
+            أربعة <em>أدوار</em>، تجربة موحّدة
           </h2>
+          <p className="landing-section-lede">
+            كلّ دور أكاديميّ يرى ما يخصّه فقط: صلاحيّات مدروسة وفصلٌ واضح بين الواجبات.
+          </p>
         </SectionAccent>
-        <div className="landing-testimonials">
+        <ul className="landing-roles-list">
           {[
             {
-              q: 'محاضرات منظَّمة، حضور وغياب آليّ، تحليل لفجواتك المعرفيّة، ومسارات تعلّم تتكيّف مع مستواك.',
-              role: 'الطالب', sub: 'مساحة دراسة شخصيّة موحَّدة',
+              icon: GraduationCap, tone: 'copper', name: 'الطالب',
+              desc: 'مقرّرات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات، فرص عمل، ومكتبة بحوث.',
             },
             {
-              q: 'تسجيل الحضور بنقرات، تتبّع الدرجات لكلّ مقرّر، ذكاء أكاديميّ يكشف الطلّاب الذين يحتاجون متابعة.',
-              role: 'عضو هيئة التدريس', sub: 'لوحة تدريس مدمجة',
+              icon: Brain, tone: 'lavender', name: 'الأستاذ',
+              desc: 'ذكاء أكاديميّ يكشف الطلّاب المعرّضين، إدارة المحاضرات والدرجات، ومعامل افتراضية بصلاحيات تحكُّم.',
             },
             {
-              q: 'لوحات حيّة على مستوى الجامعة، إدارة الصلاحيّات والأدوار، مزامنة بيانات الكلّيّات في مكان واحد.',
-              role: 'الإدارة وضمان الجودة', sub: 'حوكمة وإشراف دقيق',
+              icon: Building2, tone: 'sky', name: 'الإدارة',
+              desc: 'إدارة الكليّات والأساتذة والمقرّرات، تقارير، ومزامنة يومية مع البيانات الرسمية لجامعة الزاوية.',
             },
-          ].map((t, i) => (
-            <RevealCssClass as="figure" className="testimonial-card" key={t.role} delay={(i + 1) as 1 | 2 | 3}>
-              <blockquote className="testimonial-quote">{t.q}</blockquote>
-              <figcaption className="testimonial-author">
-                <span className="testimonial-author-meta">
-                  <span className="testimonial-name">{t.role}</span>
-                  <span className="testimonial-role">{t.sub}</span>
-                </span>
-              </figcaption>
+            {
+              icon: ShieldCheck, tone: 'mint', name: 'ضمان الجودة',
+              desc: 'رؤية للمؤشرات المؤسسية: جودة المقرّرات، تقييم الأساتذة، مراجعة الاختبارات والمناهج.',
+            },
+          ].map((r, i) => (
+            <RevealCssClass
+              as="li"
+              key={r.name}
+              className="landing-role-row reveal-fade"
+              delay={(i + 1) as 1 | 2 | 3 | 4}
+            >
+              <span className="landing-role-key">
+                <span className={`sticker lg ${r.tone}`}><Icon icon={r.icon} size={32} /></span>
+                <span className="landing-role-name">{r.name}</span>
+              </span>
+              <p className="landing-role-desc">{r.desc}</p>
             </RevealCssClass>
           ))}
-        </div>
+        </ul>
+        {/* the who-for section's human register, folded into one line
+            (P1-5: two acts delivering the same feeling — one was filler). */}
+        <RevealCssClass as="p" className="landing-roles-foot" delay={5}>
+          من أوّل محاضرة مسجّلة إلى آخر تقرير جودة، كلّ دور يجد ما يخصّه.
+        </RevealCssClass>
       </section>
 
-      {/* FINAL CTA — dark band */}
-      <section className="band band-dark">
+            {/* FINAL CTA — dark band. id="close": the journey rail's
+          graduation stamp lands exactly here (5-B2). */}
+      <section id="close" className="band band-dark">
         <div className="marketing-container landing-final-cta">
           {/* 20-a P2-1: «ابدأ الآن» eyebrow + pulse dot dropped (7 removed)
               — the title, lede and actions carry the close on their own. */}

@@ -1,16 +1,15 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Users, GraduationCap, BookOpen, Activity, ShieldCheck, Server,
-  Wifi, FlaskConical, Microscope, Radio, FileText, Search, Settings,
+  Users, BookOpen, Activity, ShieldCheck, Server,
+  Wifi, Radio, Settings, Search,
   Download, RefreshCw, Mail, ChevronLeft, ChevronRight, X,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
-import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
-import { countAr } from '../../lib/format';
 import { useFaculties } from '../../hooks/useResources';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
 // (.admin-students-*, .admin-pagination, .digital-stat-*, .trend-table,
@@ -61,10 +60,16 @@ function studentsCountLabel(n: number): string {
 }
 
 export function AdminStudentsPage() {
+  const [searchParams] = useSearchParams();
+  // 5-B4 (5-A8 §5 row 5 landing craft): drill-down links arrive with
+  // ?facultyId (the dashboard's chart bars / quick stats) or ?q — the
+  // roster opens PRE-FILTERED instead of making the admin re-pick the
+  // faculty the tile just named. Consumed once on mount (deep-link
+  // semantics); later param changes don't fight the user's edits.
   const [page, setPage] = useState(1);
-  const [q, setQ] = useState('');
-  const [debouncedQ, setDebouncedQ] = useState('');
-  const [facultyId, setFacultyId] = useState('');
+  const [q, setQ] = useState(() => searchParams.get('q') ?? '');
+  const [debouncedQ, setDebouncedQ] = useState(() => searchParams.get('q') ?? '');
+  const [facultyId, setFacultyId] = useState(() => searchParams.get('facultyId') ?? '');
   const facQ = useFaculties();
   // A8 P3-4: the empty-search state gets the same reset affordance its
   // teachers twin has — a dead end otherwise.
@@ -271,7 +276,7 @@ export function AdminDigitalPage() {
       {q.isPending && (
         <>
           <KpiSkeleton />
-          <CardSkeleton lines={5} />
+          <TableSkeleton rows={6} cols={3} />
         </>
       )}
       {q.isError && <ErrorState error={q.error} message="تعذّر تحميل مؤشّرات التحوّل الرقميّ" onRetry={() => q.refetch()} />}
@@ -290,156 +295,68 @@ export function AdminDigitalPage() {
             <MetricCard icon={BookOpen} label="ملفات تعليمية مرفوعة" value={q.data.materialsUploaded.toLocaleString('ar-LY')} color="purple" />
           </div>
 
-          <div className="grid-2">
-            <Card title="الاختبار الإلكترونيّ" icon={ShieldCheck}>
-              <ul className="digital-stat-list">
-                <DigitalStat label="اختبارات منشورة" value={q.data.onlineExams} index={0} />
-                <DigitalStat label="محاولات أداء" value={q.data.examAttempts} index={1} />
-              </ul>
-            </Card>
-
-            <Card title="التعلّم النشط" icon={FlaskConical}>
-              <ul className="digital-stat-list">
-                <DigitalStat label="جلسات معامل افتراضيّة" value={q.data.labSessions} index={0} />
-                <DigitalStat label="جلسات بثّ مباشر" value={q.data.liveSessions} index={1} />
-              </ul>
-            </Card>
-
-            <Card title="التعلّم الذاتيّ" icon={BookOpen}>
-              <ul className="digital-stat-list">
-                <DigitalStat label={<>تسجيلات <bdi>MOOC</bdi></>} value={q.data.moocEnrollments} index={0} />
-              </ul>
-            </Card>
-
-            <Card title="البحث العلميّ" icon={Microscope}>
-              <ul className="digital-stat-list">
-                <DigitalStat label="أوراق علميّة في النظام" value={q.data.researchPapers} index={0} />
-              </ul>
-            </Card>
-          </div>
+          {/* 5-A8 §6 step 4 (route identity): the four single-stat cards
+              fold into ONE «تبنّي المكوّنات» register — this was the third
+              consecutive 4-identical-tiles page in the nav. One card, one
+              scanning rhythm, mobile-safe via tbl-stack.
+              §6 step 6 (rhythm): the register is the page's primary
+              section — it takes the breath after the KPI band. */}
+          <Card
+            style={{ marginBlockStart: 'var(--sp-9)' }}
+            title="تبنّي المكوّنات"
+            icon={ShieldCheck}
+            subtitle="ما يجري فعلاً عبر المنصّة في كل مكوّن"
+          >
+            <div className="table-wrap">
+              <table className="table tbl-stack">
+                <thead>
+                  <tr>
+                    <th>المكوّن</th>
+                    <th>المؤشّر</th>
+                    <th className="admin-table-num" style={{ width: 120 }}>القيمة</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <DigitalRow component="الاختبار الإلكترونيّ" label="اختبارات منشورة" value={q.data.onlineExams} />
+                  <DigitalRow component="الاختبار الإلكترونيّ" label="محاولات أداء" value={q.data.examAttempts} />
+                  <DigitalRow component="التعلّم النشط" label="جلسات معامل افتراضيّة" value={q.data.labSessions} />
+                  <DigitalRow component="التعلّم النشط" label="جلسات بثّ مباشر" value={q.data.liveSessions} />
+                  <DigitalRow component="التعلّم الذاتيّ" label={<>تسجيلات <bdi>MOOC</bdi></>} value={q.data.moocEnrollments} />
+                  <DigitalRow component="البحث العلميّ" label="أوراق علميّة في النظام" value={q.data.researchPapers} />
+                </tbody>
+              </table>
+            </div>
+          </Card>
         </>
       )}
     </div>
   );
 }
 
-function DigitalStat({ label, value, index }: { label: ReactNode; value: number; index: number }) {
+function DigitalRow({ component, label, value }: { component: string; label: ReactNode; value: number }) {
   return (
-    <li className="digital-stat-row" style={{ '--stagger-i': index } as CSSProperties}>
-      <span className="text-sm text-muted">{label}</span>
-      <strong className="font-mono">{value.toLocaleString('ar-LY')}</strong>
-    </li>
+    <tr>
+      <td data-label="المكوّن"><span className="text-sm text-muted">{component}</span></td>
+      <td data-label="المؤشّر">{label}</td>
+      <td className="admin-table-num font-mono" data-label="القيمة">{value.toLocaleString('ar-LY')}</td>
+    </tr>
   );
 }
 
 /* ───────────────────────── /admin/analysis ─────────────────────────
  *
- * Performance analysis — pulls the existing /admin/reports bundle and
- * re-arranges it as a focused analysis page (publishing trend + top
- * courses) instead of duplicating the dashboard.
+ * 5-B4 (5-A8 §6 step 2): the analysis page was a third arrangement of
+ * the same /admin/reports bundle — the same four KPIs re-labeled plus
+ * the same trend series as a table (audit route score 6.0). It folds
+ * into /admin/reports as the trend's «جدول» view; this route now
+ * redirects there with the table view pre-set so old bookmarks keep
+ * working. NAV/RTE NOTE for 5-B5/orchestrator: remove the nav item
+ * (lib/nav.ts «تحليل الأداء»), the App.tsx route row and the AppShell
+ * title-map entry — listed in the 5-B4 worklog.
  */
 
-interface AdminReports {
-  headline: { totalPapers: number; publishedPapers: number; totalUsers: number; activeStudents: number };
-  paperTrend: { month: string; submitted: number; graded: number; published: number }[];
-  topCourses: { code: string; name: string; enrollments: number; lectures: number }[];
-}
-
 export function AdminAnalysisPage() {
-  const q = useQuery({
-    queryKey: ['admin', 'reports'],
-    queryFn: () => unwrap<AdminReports>(api.get('/admin/reports')),
-    staleTime: 60_000,
-  });
-
-  return (
-    <div className="page admin-analysis">
-      <header className="page-header">
-        <div className="page-title-block">
-          <h1 className="page-title">تحليل الأداء</h1>
-          <p className="page-subtitle">نظرة معمَّقة على الإنتاج العلميّ والمقرّرات الأعلى تفاعلاً.</p>
-        </div>
-      </header>
-
-      {q.isPending && (
-        <>
-          <KpiSkeleton />
-          <CardSkeleton lines={6} />
-        </>
-      )}
-      {q.isError && <ErrorState error={q.error} message="تعذّر تحميل بيانات تحليل الأداء" onRetry={() => q.refetch()} />}
-      {q.data && (
-        <>
-          <div className="grid-4">
-            <MetricCard icon={FileText} label="إجمالي الأوراق" value={q.data.headline.totalPapers.toLocaleString('ar-LY')} color="brand" />
-            <MetricCard icon={Microscope} label="منشورة في المكتبة" value={q.data.headline.publishedPapers.toLocaleString('ar-LY')} color="green" />
-            <MetricCard icon={Users} label="إجمالي المستخدمين" value={q.data.headline.totalUsers.toLocaleString('ar-LY')} color="amber" />
-            <MetricCard icon={GraduationCap} label="طلاب نشطون" value={q.data.headline.activeStudents.toLocaleString('ar-LY')} color="purple" />
-          </div>
-
-          <Card title="تطوّر الإنتاج العلميّ — آخر 6 أشهر" icon={Activity}>
-            {q.data.paperTrend.length === 0 ? (
-              <EmptyState
-                icon={Activity}
-                title="لا توجد بيانات نشر بعد"
-                description="ستظهر حركة الأوراق هنا بعد رفع أول بحث إلى المنصة."
-              />
-            ) : (
-              <div className="trend-table-wrap">
-                <table className="trend-table">
-                  <thead>
-                    <tr>
-                      <th>الشهر</th>
-                      <th>مُقدَّم</th>
-                      <th>تمّ تقييمه</th>
-                      <th>منشور</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {q.data.paperTrend.map((row, i) => (
-                      <tr key={i}>
-                        <td>{row.month}</td>
-                        <td className="font-mono">{row.submitted}</td>
-                        <td className="font-mono">{row.graded}</td>
-                        <td className="font-mono">{row.published}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
-
-          <Card title="المقرّرات الأعلى تفاعلاً" subtitle="حسب عدد التسجيلات" icon={BookOpen}>
-            {q.data.topCourses.length === 0 ? (
-              <EmptyState
-                icon={BookOpen}
-                title="لا توجد مقرّرات بتسجيلات بعد"
-                description="ستظهر هنا أعلى المقرّرات تفاعلاً فور تسجيل أيّ طالب."
-              />
-            ) : (
-              <ol className="top-courses-list">
-                {q.data.topCourses.map((c, i) => (
-                  <li
-                    key={c.code}
-                    className="top-courses-row"
-                    style={{ '--stagger-i': Math.min(i, 6) } as CSSProperties}
-                  >
-                    <span className="top-courses-rank">{i + 1}</span>
-                    <div className="top-courses-body">
-                      <div className="top-courses-name">{c.name}</div>
-                      <div className="top-courses-meta"><bdi>{c.code}</bdi> · {countAr(c.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</div>
-                    </div>
-                    <strong className="font-mono">{countAr(c.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])}</strong>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </Card>
-        </>
-      )}
-    </div>
-  );
+  return <Navigate to="/admin/reports?trend=table" replace />;
 }
 
 /* ───────────────────────── /admin/settings ─────────────────────────

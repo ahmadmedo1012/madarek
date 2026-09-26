@@ -200,4 +200,20 @@ describe('AppShell — ⌘K command palette (4-A2 P2-8 + P1-3)', () => {
       { timeout: 2000 },
     );
   });
+
+  it('reopens with a fresh input — no stale query inside the exit window (5-B5, A4 P2-3)', () => {
+    renderShell('/student/dashboard');
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'هندسة' } });
+    expect(screen.getByRole('combobox')).toHaveValue('هندسة');
+
+    // Close and reopen on the same tick — inside the delayed-unmount
+    // exit window the old body (and its query) used to survive, so a
+    // quick Esc→⌘K resurrected the previous term (A4 measured
+    // «zzzzqqد. أحمد»). The body is now keyed per open (AppShell
+    // paletteSeq) and always mounts fresh.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    fireEvent.keyDown(document, { key: 'k', metaKey: true });
+    expect(screen.getByRole('combobox')).toHaveValue('');
+  });
 });

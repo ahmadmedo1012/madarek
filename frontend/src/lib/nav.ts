@@ -8,6 +8,7 @@ import {
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
   Palette, Settings, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
+  Bell, Award, Landmark,
   type LucideIcon,
 } from 'lucide-react';
 import type { AppRole, AcademicPosition } from '../stores/auth.store';
@@ -37,23 +38,44 @@ export const STUDENT_NAV: NavGroup[] = [
       { to: '/student/online-exams', icon: ClipboardCheck, label: 'الاختبارات الإلكترونية' },
       // 4-A14 P1-1 (wave 21-a): this route rendered real seeded
       // analytics but had ZERO inbound links anywhere — same for the
-      // seven surfaces in the «المزيد» group below + /vision.
+      // seven former «المزيد» surfaces, now regrouped below (5-B5).
       { to: '/student/exams', icon: FileBarChart, label: 'تحليل الاختبارات' },
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
       { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
+      { to: '/student/ar', icon: Box, label: 'تجارب AR/VR' },
       { to: '/student/live', icon: Radio, label: 'البث المباشر' },
       { to: '/student/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
     ],
   },
   {
-    label: 'التطوير والمجتمع',
+    /* 5-B5 (A4 P2-7 curation): the old «التطوير والمجتمع» + «المزيد»
+       pair (7 + 8 items) is re-cut by intent. Growth surfaces — the
+       progress trio (achievements / XP / skills, A4 P3-4 icon dedupe:
+       Award / Medal / BadgeCheck) + external courses + webinars — form
+       one «التطوير والتقدّم» family; community surfaces move to
+       «المجتمع والفرص»; utility surfaces fold into «حسابي والخدمات».
+       The junk drawer is gone; every route keeps a sidebar home. */
+    label: 'التطوير والتقدّم',
     items: [
       { to: '/training', icon: GraduationCap, label: 'التطوير الذاتي' },
-      { to: '/achievements', icon: Trophy, label: 'الإنجازات والشهادات' },
+      { to: '/achievements', icon: Award, label: 'الإنجازات والشهادات' },
+      { to: '/student/gamification', icon: Medal, label: 'النقاط والمستويات' },
+      { to: '/student/skills', icon: BadgeCheck, label: 'مهاراتي' },
+      { to: '/student/mooc', icon: Globe, label: 'دورات خارجية' },
+      { to: '/student/webinars', icon: Video, label: 'الندوات وورش العمل' },
+    ],
+  },
+  {
+    /* 5-B5 (A4 P2-1 + P2-7): «منافسة الكلّيّات» left the sidebar — its
+       NavLink prefix-match lit BOTH /colleges and /colleges/leaderboard
+       (double-active). The destination stays one click away via the
+       leaderboard CTA on /colleges (CollegePages.tsx). */
+    label: 'المجتمع والفرص',
+    items: [
       { to: '/community', icon: Megaphone, label: 'المجتمع الجامعي' },
+      { to: '/student/social', icon: MessageCircle, label: 'الشبكة الاجتماعية' },
       { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
-      { to: '/colleges/leaderboard', icon: Trophy, label: 'منافسة الكلّيّات' },
       { to: '/competitions', icon: Trophy, label: 'المسابقات الأكاديميّة' },
       { to: '/student/jobs', icon: Briefcase, label: 'فرص العمل' },
     ],
@@ -62,28 +84,20 @@ export const STUDENT_NAV: NavGroup[] = [
     label: 'حسابي والخدمات',
     items: [
       { to: '/student/profile', icon: UserCircle, label: 'ملفي الشخصي' },
-      { to: '/student/university', icon: Building2, label: 'جامعة الزاوية' },
+      /* 5-B5 (A4 P1-3/P2-8): the alerts page was bottom-nav + bell
+         only — desktop had zero nav marker for it. Every role now
+         carries its alerts page as a first-class sidebar item. */
+      { to: '/student/alerts', icon: Bell, label: 'الإشعارات' },
       { to: '/student/payment', icon: Wallet, label: 'الشؤون المالية' },
-      { to: '/student/map', icon: MapPin, label: 'خريطة الحرم' },
-    ],
-  },
-  {
-    /* 4-A14 P1-1 (wave 21-a): the «المزيد» bucket surfaces the seven
-       built student surfaces that previously had no inbound link
-       (social feed, webinars, external MOOCs, downloads center, XP
-       levels, skills, AR/VR) plus the shared «الابتكارات القادمة»
-       roadmap. Labels per A14 P3-2: «النقاط والمستويات» and «مهاراتي»
-       disambiguate from /achievements «الإنجازات والشهادات» — the
-       PAGE_TITLES map follows these strings (nav.ts is canonical). */
-    label: 'المزيد',
-    items: [
-      { to: '/student/social', icon: MessageCircle, label: 'الشبكة الاجتماعية' },
-      { to: '/student/webinars', icon: Video, label: 'الندوات وورش العمل' },
-      { to: '/student/mooc', icon: Globe, label: 'دورات خارجية' },
+      /* 5-B5 (A4 P3-4): Building2 ×2 dedupe — the university page
+         takes Landmark, colleges keeps Building2. */
+      { to: '/student/university', icon: Landmark, label: 'جامعة الزاوية' },
+      /* 5-B5 (A4 P3-1): one name per surface — the page's own h1 is
+         «دليل الحرم الجامعيّ»; the title map used to say «خريطة الحرم
+         الجامعي» (a third variant). Titles now derive from these
+         labels, so the nav label IS the name. */
+      { to: '/student/map', icon: MapPin, label: 'دليل الحرم الجامعيّ' },
       { to: '/student/downloads', icon: Download, label: 'مركز التحميلات' },
-      { to: '/student/gamification', icon: Medal, label: 'النقاط والمستويات' },
-      { to: '/student/skills', icon: BadgeCheck, label: 'مهاراتي' },
-      { to: '/student/ar', icon: Box, label: 'تجارب AR/VR' },
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
   },
@@ -95,9 +109,20 @@ export const TEACHER_NAV: NavGroup[] = [
     items: [
       { to: '/teacher/dashboard', icon: LayoutDashboard, label: 'لوحة الأستاذ' },
       { to: '/teacher/intelligence', icon: Brain, label: 'الذكاء الأكاديمي', badge: { text: 'AI', tone: 'gold' } },
-      { to: '/teacher/schedule', icon: Calendar, label: 'الجدول' },
-      { to: '/teacher/attendance', icon: ClipboardCheck, label: 'الحضور' },
-      { to: '/teacher/grades', icon: ListChecks, label: 'الدرجات' },
+      /* 5-B5 (A4 P1-3): «الأداء والتحليل» was a full orphan — an
+         intended surface (PAGE_TITLES + App.tsx route) with zero
+         inbound links anywhere. It slots beside its analytics sibling. */
+      { to: '/teacher/performance', icon: TrendingUp, label: 'الأداء والتحليل' },
+      /* 5-B5 (A4 P3-1): the three short labels drifted from their
+         surfaces' own names (title map + page h1s said «جدول
+         المحاضرات» / «الحضور والغياب» / «درجات الطلاب»). One label
+         per intent — the fuller names win everywhere. */
+      { to: '/teacher/schedule', icon: Calendar, label: 'جدول المحاضرات' },
+      { to: '/teacher/attendance', icon: ClipboardCheck, label: 'الحضور والغياب' },
+      { to: '/teacher/grades', icon: ListChecks, label: 'درجات الطلاب' },
+      /* 5-B5 (A4 P1-3): «قائمة الطلاب» lived only in the mobile
+         bottom-nav — desktop-reachable by URL alone. */
+      { to: '/teacher/students', icon: Users, label: 'قائمة الطلاب' },
       { to: '/teacher/materials', icon: Upload, label: 'الملفات التعليمية' },
       { to: '/teacher/assignments', icon: ClipboardList, label: 'الواجبات والاختبارات' },
       // 18-F1 — unified online-exam authoring (question bank + templates).
@@ -110,9 +135,13 @@ export const TEACHER_NAV: NavGroup[] = [
     label: 'البحث والمحاضرة',
     items: [
       { to: '/teacher/research', icon: Microscope, label: 'البحث العلمي' },
-      { to: '/teacher/live', icon: Radio, label: 'البث المباشر' },
+      /* 5-B5 (A4 P3-1/P3-2): «البث المباشر» is the STUDENT viewing
+         surface's name; the teacher page manages broadcasts (h1
+         «إدارة البث المباشر»). «المكتبة» vs the student «المكتبة
+         الإلكترونية» was the same drift — one LibraryPage, one name. */
+      { to: '/teacher/live', icon: Radio, label: 'إدارة البث المباشر' },
       { to: '/teacher/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },
-      { to: '/teacher/library', icon: Library, label: 'المكتبة' },
+      { to: '/teacher/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/teacher/ai', icon: Bot, label: 'المساعد الذكي', badge: { text: 'AI', tone: 'gold' } },
     ],
   },
@@ -120,9 +149,16 @@ export const TEACHER_NAV: NavGroup[] = [
     label: 'حسابي',
     items: [
       { to: '/teacher/profile', icon: UserCircle, label: 'الملف الأكاديمي' },
+      /* 5-B5 (A4 P1-3): «الرسائل» was a full orphan (URL-only). */
+      { to: '/teacher/messages', icon: MessageCircle, label: 'الرسائل' },
+      /* 5-B5 (A4 P1-3/P2-8): the bell-only alerts page gains its
+         sidebar home — parity with the owner role. */
+      { to: '/teacher/alerts', icon: Bell, label: 'الإشعارات' },
       { to: '/teacher/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
-      { to: '/competitions', icon: Trophy, label: 'المسابقات' },
+      /* 5-B5 (A4 P3-2): same feature as the student's «المسابقات
+         الأكاديميّة» — one name per intent, not two. */
+      { to: '/competitions', icon: Trophy, label: 'المسابقات الأكاديميّة' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
@@ -136,7 +172,10 @@ export const ADMIN_NAV: NavGroup[] = [
       { to: '/admin/dashboard', icon: LayoutDashboard, label: 'لوحة الإدارة' },
       { to: '/admin/teachers', icon: School, label: 'إدارة الأساتذة' },
       { to: '/admin/faculties', icon: Building2, label: 'الكلّيّات والأقسام' },
-      { to: '/colleges', icon: Building2, label: 'صفحات الكلّيّات' },
+      /* 5-B5 (A4 P3-1/P3-2): the admin nav was the only role calling
+         the shared colleges surface «صفحات الكلّيّات» — one name per
+         intent across the five roles. */
+      { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
       { to: '/admin/courses', icon: BookOpen, label: 'إدارة المقرّرات' },
     ],
   },
@@ -144,9 +183,15 @@ export const ADMIN_NAV: NavGroup[] = [
     label: 'النظام',
     items: [
       { to: '/admin/students', icon: GraduationCap, label: 'إدارة الطلاب' },
-      { to: '/admin/analysis', icon: TrendingUp, label: 'تحليل الأداء' },
+      /* 5-B4 hand-off: «تحليل الأداء» (/admin/analysis) left the nav —
+         the surface is folded into /admin/reports (?trend=table). The
+         route row in App.tsx stays (it renders the redirect preserving
+         old bookmarks). */
       { to: '/admin/digital', icon: Activity, label: 'التحوّل الرقميّ' },
       { to: '/admin/reports', icon: FileText, label: 'التقارير' },
+      /* 5-B5 (A4 P1-3/P2-8): the bell-only alerts page gains its
+         sidebar home — parity with the owner role. */
+      { to: '/admin/alerts', icon: Bell, label: 'الإشعارات' },
       { to: '/admin/sync', icon: RefreshCw, label: 'مزامنة الجامعة' },
       { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
       { to: '/admin/community', icon: Megaphone, label: 'المجتمع الجامعي' },
@@ -172,6 +217,10 @@ export const QUALITY_NAV: NavGroup[] = [
       { to: '/quality/exam-moderation', icon: ClipboardCheck, label: 'مراجعة الاختبارات' },
       { to: '/quality/curriculum', icon: ListChecks, label: 'مراجعة المناهج' },
       { to: '/quality/reports', icon: FileText, label: 'تقارير الجودة' },
+      /* 5-B5 (A4 P1-3/P2-8): the quality alerts page keeps its own
+         canonical name (it is a distinct QualityAlertsPage surface,
+         like the owner's «التنبيهات التشغيلية»). */
+      { to: '/quality/alerts', icon: Bell, label: 'تنبيهات الجودة' },
       { to: '/quality/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       // 4-A14 P3-5 (23-b): quality + owner can access the public
       // colleges pages (any-auth routes) — the sidebar link follows the

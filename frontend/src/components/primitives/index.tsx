@@ -1,6 +1,8 @@
 import { useId, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../Icon';
 
 /* ─── Primitive inventory (wave 13-16 — zero-consumer inventory
@@ -77,22 +79,69 @@ export function Card({
 }
 
 /* ─── Metric / KPI ──────────────────────────────────────── */
+/* 5-B4 (audit 5-A8 P1-3): the KPI primitive gains an OPTIONAL navigable
+   form. Every one of the ~170 existing call sites passes only
+   {label, value, change, icon, color} and keeps rendering the exact
+   same <div> — the variant activates only when `to` (router link) or
+   `onClick` (in-page action) is passed. A tile that answers a
+   follow-up question is a map entry, not a terminal stat: the console
+   had 93/93 dead-end metrics before this.
+
+   The affordance is deliberately styled INLINE (position: absolute
+   chevron at the block-end/inline-end corner) so the primitive stays
+   CSS-file-agnostic — the hover lift already comes from the existing
+   .metric:hover family (components.css + polish overrides), the focus
+   ring from the global :focus-visible contract, and the cursor from
+   the native <a>/<button>. No new stylesheet rules needed. */
 export function MetricCard({
   label,
   value,
   change,
   icon,
   color,
+  to,
+  onClick,
+  actionHint,
+  pressed,
 }: {
   label: ReactNode;
   value: ReactNode;
   change?: ReactNode;
   icon?: LucideIcon;
   color?: ThemeColor;
+  /** Router destination — renders the tile as a <Link>. */
+  to?: string;
+  /** In-page action — renders the tile as a <button>. */
+  onClick?: () => void;
+  /** Short verb phrase naming where the tile goes («عرض الطلاب») —
+   *  tooltip + the chevron's accessible context. */
+  actionHint?: string;
+  /** Toggle state for onClick tiles that act as filters (aria-pressed). */
+  pressed?: boolean;
 }) {
-  const cls = ['metric', color && color !== 'brand' && color].filter(Boolean).join(' ');
-  return (
-    <div className={cls}>
+  const cls = ['metric', 'metric-link', color && color !== 'brand' && color].filter(Boolean).join(' ');
+  // The go-chevron names the tile's destination. INLINE styling keeps
+  // the primitive CSS-file-agnostic; the hover lift already comes from
+  // the existing .metric:hover family, the focus ring from the global
+  // :focus-visible contract, the cursor from the native <a>/<button>.
+  const goAffordance = (
+    <span
+      className="metric-go"
+      aria-hidden
+      style={{
+        position: 'absolute',
+        insetBlockEnd: 'var(--sp-3)',
+        insetInlineEnd: 'var(--sp-3)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        color: 'var(--accent-ink, var(--accent))',
+      }}
+    >
+      <Icon icon={ArrowLeft} size={14} />
+    </span>
+  );
+  const body = (
+    <>
       <div className="metric-head">
         <span className="metric-label">{label}</span>
         <div className="metric-value">{value}</div>
@@ -107,8 +156,35 @@ export function MetricCard({
           <Icon icon={icon} size={22} />
         </div>
       )}
-    </div>
+    </>
   );
+  // Navigable: the whole tile is the target (44px+ by construction —
+  // .metric has min-block-size 132px), so the chevron stays decorative.
+  if (to !== undefined) {
+    return (
+      <Link to={to} className={cls} title={actionHint} style={{ textDecoration: 'none' }}>
+        {body}
+        {goAffordance}
+      </Link>
+    );
+  }
+  if (onClick !== undefined) {
+    return (
+      <button
+        type="button"
+        className={cls}
+        onClick={onClick}
+        title={actionHint}
+        aria-pressed={pressed}
+        style={{ textAlign: 'start', width: '100%' }}
+      >
+        {body}
+        {goAffordance}
+      </button>
+    );
+  }
+  const divCls = ['metric', color && color !== 'brand' && color].filter(Boolean).join(' ');
+  return <div className={divCls}>{body}</div>;
 }
 
 /* ─── Badge (default: neutral. color = explicit only) ─── */

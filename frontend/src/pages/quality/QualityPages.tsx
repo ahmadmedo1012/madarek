@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Doughnut, Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement,
@@ -9,7 +9,7 @@ import {
 import {
   ShieldCheck, Users, BookOpen, GraduationCap, Activity,
   AlertTriangle, TrendingUp, FileText, ClipboardCheck, ListChecks,
-  Building2, School, Star, Clock, ArrowLeft,
+  Building2, School, Star, Clock, ArrowLeft, X,
   CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
@@ -48,10 +48,13 @@ interface QualityCourse {
   course: { id: string; name: string; code: string; themeColor?: string | null };
   teacher: { id: string; firstName: string; lastName: string };
   _count: { enrollments: number; lectures: number; materials: number; assignments: number };
+  /** Present only on ?metric= drill-downs (5-B1): null = no countable
+   *  data for this offering — render «لا بيانات», never a fake 0/100. */
+  metrics?: { attendanceRate?: number | null; completionRate?: number | null };
 }
-const useQualityCourses = () => useQuery({
-  queryKey: ['quality', 'courses'],
-  queryFn: () => unwrap<QualityCourse[]>(api.get('/quality/courses')),
+const useQualityCourses = (metric?: 'attendance' | 'completion') => useQuery({
+  queryKey: ['quality', 'courses', metric ?? 'all'],
+  queryFn: () => unwrap<QualityCourse[]>(api.get('/quality/courses', { params: metric ? { metric } : undefined })),
 });
 
 interface ProfessorRow {
@@ -280,6 +283,15 @@ export function QualityDashboardPage() {
   const cc = chartColors();
   const opts = cartesianOptions();
 
+  // 5-A8 P2-4 (chart honesty): a 100/0/0 distribution renders a solid
+  // ring with zero analytical signal — degenerate distributions get
+  // the honest ProgressBar form instead of the doughnut.
+  const attendanceDominant = Math.max(
+    e.attendance.presentRate,
+    e.attendance.lateRate,
+    e.attendance.absentRate,
+  ) >= 97;
+
   // KPI bars — every value derives from a real payload field:
   //   · معدل الحضور / إكمال المحاضرات  ← /quality/engagement
   //   · معدل التسجيل                   ← enrollments ÷ totalStudents
@@ -307,18 +319,22 @@ export function QualityDashboardPage() {
 
       <div className="grid-4">
         <MetricCard icon={GraduationCap} label="الطلاب النشطون" value={<CountIn value={d.users.STUDENT ?? 0} />} change="مسجَّل في النظام" color="brand" />
-        <MetricCard icon={Users} label="هيئة التدريس" value={<CountIn value={d.users.TEACHER ?? 0} />} color="green" />
-        <MetricCard icon={BookOpen} label="مقرّرات نشطة" value={<CountIn value={d.offerings} />} change={countAr(d.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} color="amber" />
+        <MetricCard icon={Users} label="هيئة التدريس" value={<CountIn value={d.users.TEACHER ?? 0} />} color="green" to="/quality/professors" actionHint="عرض تقييم الأساتذة" />
+        <MetricCard icon={BookOpen} label="مقرّرات نشطة" value={<CountIn value={d.offerings} />} change={countAr(d.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])} color="amber" to="/quality/courses" actionHint="عرض جودة المقرّرات" />
         <MetricCard
           icon={Activity}
           label="معدل الحضور"
           value={<CountIn value={Math.round(e.attendance.presentRate)} suffix="%" />}
           change={countAr(e.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])}
           color="purple"
+          to="/quality/courses?metric=attendance"
+          actionHint="عرض الحضور لكل مقرّر"
         />
       </div>
 
-      <div className="grid-2-1">
+      {/* 5-A8 §6 step 6 (rhythm): the charts row breathes — 88px above
+          it vs the KPI strip's 40px (taste.md: contrast, not uniformity). */}
+      <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
         <Card
           title="النشاط الأسبوعي"
           subtitle={
@@ -344,6 +360,7 @@ export function QualityDashboardPage() {
           >
           <Line
             key={themeKey}
+            aria-hidden="true"
             data={{
               labels: WEEKDAY_NAMES_AR,
               datasets: [{
@@ -357,6 +374,11 @@ export function QualityDashboardPage() {
                 pointRadius: 3,
                 pointHoverRadius: 5,
                 pointBackgroundColor: cc.accent,
+                // 5-A8 P2-4 (chart honesty): the backend's deterministic
+                // fallback is a binary square wave — smoothing it into a
+                // curve invents a trend that isn't in the data. Estimated
+                // series render as DOTS ONLY (no interpolation, no fill).
+                ...(e.weeklyActiveEstimated ? { showLine: false, fill: false, pointRadius: 5, pointHoverRadius: 7 } : {}),
               }],
             }}
             options={opts}
@@ -365,6 +387,19 @@ export function QualityDashboardPage() {
         </Card>
 
         <Card title="توزيع الحضور" icon={ClipboardCheck}>
+          {/* Degenerate distribution (5-A8 P2-4): one ProgressBar + the
+              honest note beats a solid ring that carries no signal. */}
+          {attendanceDominant ? (
+            <div className="flex-col gap-4">
+              <ProgressBar value={e.attendance.presentRate} label="حضور" ariaLabel="نسبة الحضور" color="var(--success)" />
+              <p className="text-sm text-muted">
+                تأخير <bdi>{Math.round(e.attendance.lateRate)}%</bdi> · غياب <bdi>{Math.round(e.attendance.absentRate)}%</bdi>
+              </p>
+              <p className="text-xs text-subtle">
+                كل السجلات تقريباً بوضع واحد؛ يظهر المخطط الدائريّ فور تنوّع حالات الحضور.
+              </p>
+            </div>
+          ) : (
           <ChartFrame
             ariaLabel={`توزيع الحضور: حضور ${Math.round(e.attendance.presentRate)}% وتأخر ${Math.round(e.attendance.lateRate)}% وغياب ${Math.round(e.attendance.absentRate)}%`}
             table={{
@@ -380,6 +415,7 @@ export function QualityDashboardPage() {
           >
             <Doughnut
               key={themeKey}
+              aria-hidden="true"
               data={{
                 labels: ['حضور', 'تأخر', 'غياب'],
                 datasets: [{
@@ -392,6 +428,7 @@ export function QualityDashboardPage() {
               options={radialOptions({ legend: true, cutout: '65%' })}
             />
           </ChartFrame>
+          )}
         </Card>
       </div>
 
@@ -460,21 +497,47 @@ export function QualityDashboardPage() {
    Quality Courses
    ════════════════════════════════════════════════════════════════ */
 export function QualityCoursesPage() {
-  const c = useQualityCourses();
+  // 5-B4 (5-A8 §5 row 11): ?metric=attendance|completion lands the roster
+  // pre-filtered from the dashboard's KPIs — a new metric column sorted
+  // worst-first (server), nulls rendered as honest «لا بيانات».
+  const [searchParams, setSearchParams] = useSearchParams();
+  const metricParam = searchParams.get('metric');
+  const metric = metricParam === 'attendance' || metricParam === 'completion' ? metricParam : undefined;
+  const c = useQualityCourses(metric);
+  const metricLabel = metric === 'attendance' ? 'معدل الحضور' : 'إكمال المحاضرات';
+  const metricValue = (o: QualityCourse): number | null | undefined =>
+    metric === 'attendance' ? o.metrics?.attendanceRate : o.metrics?.completionRate;
   return (
     <div className="page">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">جودة المقرّرات</h1>
-          <p className="page-subtitle">تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات، التسجيلات.</p>
+          <p className="page-subtitle">
+            {metric
+              ? `${metricLabel} لكل مقرّر · مرتَّبة من الأدنى أولاً`
+              : 'تتبّع جودة كل مقرّر: المحاضرات، الملفات، الواجبات، التسجيلات.'}
+          </p>
         </div>
       </header>
       {c.isPending ? (
-        <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={7} /></Card>
+        <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={8} /></Card>
       ) :
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
        !c.data?.length ? <Card><EmptyState icon={BookOpen} title="لا توجد مقرّرات نشطة بعد" description="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ." /></Card> : (
-        <Card title="المقرّرات النشطة" icon={BookOpen}>
+        <Card
+          title="المقرّرات النشطة"
+          icon={BookOpen}
+          actions={metric ? (
+            <button
+              type="button"
+              className="btn ghost sm"
+              onClick={() => setSearchParams({})}
+            >
+              <Icon icon={X} size={13} />
+              عرض الجدول الكامل
+            </button>
+          ) : undefined}
+        >
           {/* tbl-stack (A8 P1-1): the roster collapses to labelled cards
               on phones — same .table-wrap > .table.tbl-stack pattern as
               every admin roster (OwnerUsersPage reference). */}
@@ -488,6 +551,7 @@ export function QualityCoursesPage() {
                   <th>الطلاب</th>
                   <th>المحاضرات</th>
                   <th>الملفات</th>
+                  {metric && <th className="tbl-num">{metricLabel}</th>}
                   {/* A8 P2-4: this is an estimated completion index, not
                       a measured “quality” — renamed + weights surfaced so
                       the number names its own formula. */}
@@ -501,6 +565,8 @@ export function QualityCoursesPage() {
                   // danger register (A8 P2-4: red “0%” spent the danger
                   // color on “no data”).
                   const color = score === 0 ? null : score >= 80 ? 'green' : score >= 50 ? 'amber' : 'red';
+                  const mv = metric ? metricValue(o) : undefined;
+                  const metricColor = mv == null ? null : mv >= 80 ? 'green' : mv >= 50 ? 'amber' : 'red';
                   return (
                     <tr key={o.id}>
                       <td className="tbl-strong" data-label="المقرّر">{o.course.name}</td>
@@ -509,6 +575,13 @@ export function QualityCoursesPage() {
                       <td className="tbl-num" data-label="الطلاب">{o._count.enrollments}</td>
                       <td className="tbl-num" data-label="المحاضرات">{o._count.lectures}</td>
                       <td className="tbl-num" data-label="الملفات">{o._count.materials}</td>
+                      {metric && (
+                        <td className="tbl-num" data-label={metricLabel}>
+                          {mv == null
+                            ? <Badge>لا بيانات</Badge>
+                            : <Badge color={metricColor as never}><bdi>{Math.round(mv)}%</bdi></Badge>}
+                        </td>
+                      )}
                       <td data-label="اكتمال المحتوى">
                         {score === 0
                           ? <Badge>لا محتوى بعد</Badge>
@@ -529,8 +602,39 @@ export function QualityCoursesPage() {
 /* ════════════════════════════════════════════════════════════════
    Professor Evaluation
    ════════════════════════════════════════════════════════════════ */
+
+/**
+ * ≤1024px band (5-A8 P2-2): the 8-column roster sideways-scrolled
+ * 164px at 768 (and still 28px at 1024) because .tbl-stack only arms
+ * at ≤640. The audit's column-diet option, implemented TSX-side: at
+ * ≤1024 the rank folds under the name and the files count joins the
+ * courses count (8 → 6 columns, ~665px — fits the 666px wrap at 768).
+ * jsdom's matchMedia stub returns matches:false, so unit tests keep
+ * exercising the desktop path (same contract as GlobalSearch's band
+ * hook).
+ */
+function useCompactRosterBand(): boolean {
+  const [compact, setCompact] = useState(
+    () => typeof window !== 'undefined'
+      && typeof window.matchMedia === 'function'
+      && window.matchMedia('(max-width: 1024px)').matches,
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(max-width: 1024px)');
+    const onChange = () => setCompact(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return compact;
+}
+
 export function QualityProfessorsPage() {
   const p = useProfessors();
+  // 5-B4 (5-A8 §5 row 12 — client filter): «بحاجة لمتابعة» filters the
+  // roster to compliance < 50% instead of dead-ending on the count.
+  const [lowOnly, setLowOnly] = useState(false);
+  const compact = useCompactRosterBand();
   if (p.isPending) {
     return (
       <div className="page">
@@ -550,6 +654,7 @@ export function QualityProfessorsPage() {
   const avgSat = p.data.length ? p.data.reduce((s, t) => s + t.satisfaction, 0) / p.data.length : 0;
   const avgResp = p.data.length ? p.data.reduce((s, t) => s + t.responseHours, 0) / p.data.length : 0;
   const lowComp = p.data.filter((t) => t.compliance < 50).length;
+  const visible = lowOnly ? p.data.filter((t) => t.compliance < 50) : p.data;
 
   return (
     <div className="page">
@@ -563,29 +668,52 @@ export function QualityProfessorsPage() {
       <div className="grid-3">
         <MetricCard icon={Star} label="متوسط رضا الطلاب" value={<CountIn value={Math.round(avgSat * 10) / 10} />} change="من 5.0" color="gold" />
         <MetricCard icon={Clock} label="متوسط الاستجابة" value={<CountIn value={Math.round(avgResp)} suffix=" س" />} change="على رسائل الطلاب" color="brand" />
-        <MetricCard icon={AlertTriangle} label="بحاجة لمتابعة" value={<CountIn value={lowComp} />} change="أداء منخفض" color="red" />
+        <MetricCard
+          icon={AlertTriangle}
+          label="بحاجة لمتابعة"
+          value={<CountIn value={lowComp} />}
+          change="التزام أقلّ من 50%"
+          color="red"
+          {...(lowComp > 0 ? { onClick: () => setLowOnly((v) => !v), actionHint: lowOnly ? 'عرض جميع الأساتذة' : 'عرض الأساتذة بحاجة لمتابعة', pressed: lowOnly } : {})}
+        />
       </div>
 
-      <Card title="هيئة التدريس" icon={School}>
+      {/* 5-A8 §6 step 6 (rhythm): the roster is the page's primary
+          section — it takes the breath after the KPI band. */}
+      <Card
+        style={{ marginBlockStart: 'var(--sp-9)' }}
+        title={lowOnly ? `هيئة التدريس · بحاجة لمتابعة (${lowComp})` : 'هيئة التدريس'}
+        icon={School}
+      >
+        {lowOnly && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', flexWrap: 'wrap', marginBlockEnd: 'var(--sp-3)' }}>
+            <Badge color="red">مصفّى: التزام أقلّ من 50%</Badge>
+            <button type="button" className="btn ghost sm" onClick={() => setLowOnly(false)}>
+              <Icon icon={X} size={13} />
+              عرض جميع الأساتذة
+            </button>
+          </div>
+        )}
         {/* tbl-stack (A8 P1-1): 8 columns sideways-scrolled 524px at
             390px — the roster now collapses to labelled cards like the
-            admin siblings. */}
+            admin siblings. At ≤1024 the compact diet (above) keeps the
+            tablet band inside the wrap. */}
         <div className="table-wrap">
           <table className="table tbl-stack">
             <thead>
               <tr>
                 <th>الأستاذ</th>
                 <th>الكلّيّة / القسم</th>
-                <th>الرتبة</th>
-                <th>المقرّرات</th>
-                <th>الملفات المرفوعة</th>
+                {!compact && <th>الرتبة</th>}
+                {!compact ? <th>المقرّرات</th> : <th title="المقرّرات التي يدرّسها والملفات المرفوعة">النشاط التعليميّ</th>}
+                {!compact && <th>الملفات المرفوعة</th>}
                 <th>رضا الطلاب</th>
                 <th>زمن الاستجابة</th>
                 <th>الالتزام</th>
               </tr>
             </thead>
             <tbody>
-              {p.data.map((t) => {
+              {visible.map((t) => {
                 const compColor = t.compliance >= 75 ? 'green' : t.compliance >= 50 ? 'amber' : 'red';
                 return (
                   <tr key={t.id}>
@@ -602,7 +730,11 @@ export function QualityProfessorsPage() {
                         </div>
                         <div>
                           <div className="tbl-strong">د. {t.firstName} {t.lastName}</div>
-                          <div className="text-xxs text-subtle">{t.specialty}</div>
+                          <div className="text-xxs text-subtle">
+                            {compact
+                              ? `${RANK_LABEL[t.rank] ?? t.rank} · ${t.specialty}`
+                              : t.specialty}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -610,9 +742,16 @@ export function QualityProfessorsPage() {
                       <div>{t.faculty}</div>
                       <div className="text-xxs text-subtle">{t.department}</div>
                     </td>
-                    <td data-label="الرتبة"><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>
-                    <td className="tbl-num" data-label="المقرّرات">{t.offerings}</td>
-                    <td className="tbl-num" data-label="الملفات المرفوعة">{t.totals.materials}</td>
+                    {!compact && <td data-label="الرتبة"><Badge>{RANK_LABEL[t.rank] ?? t.rank}</Badge></td>}
+                    {!compact ? (
+                      <td className="tbl-num" data-label="المقرّرات">{t.offerings}</td>
+                    ) : (
+                      <td data-label="النشاط التعليميّ">
+                        <div>{countAr(t.offerings, ['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً'])}</div>
+                        <div className="text-xxs text-subtle">{countAr(t.totals.materials, ['ملف واحد', 'ملفان', 'ملفات', 'ملفاً'])}</div>
+                      </td>
+                    )}
+                    {!compact && <td className="tbl-num" data-label="الملفات المرفوعة">{t.totals.materials}</td>}
                     <td className="tbl-num" data-label="رضا الطلاب" style={{ color: 'var(--gold-ink, var(--c-yellow-deep))' }}><Icon icon={Star} size={14} /> {t.satisfaction}</td>
                     <td className="tbl-num" data-label="زمن الاستجابة">{t.responseHours}س</td>
                     <td data-label="الالتزام">
@@ -686,14 +825,37 @@ export function QualityEngagementPage() {
       {pageHeader}
 
       <div className="grid-4">
-        <MetricCard icon={ClipboardCheck} label="معدل الحضور" value={<CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />} change={countAr(d.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])} color="green" />
-        <MetricCard icon={Activity} label="إكمال المحاضرات" value={<CountIn value={Math.round(d.videos.completionRate)} suffix="%" />} change={countAr(d.videos.completedLectures, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} color="brand" />
+        <MetricCard
+          icon={ClipboardCheck}
+          label="معدل الحضور"
+          value={<CountIn value={Math.round(d.attendance.presentRate)} suffix="%" />}
+          change={countAr(d.attendance.total, ['سجل واحد', 'سجلان', 'سجلات', 'سجلاً'])}
+          color="green"
+          to="/quality/courses?metric=attendance"
+          actionHint="عرض الحضور لكل مقرّر"
+        />
+        <MetricCard
+          icon={Activity}
+          label="إكمال المحاضرات"
+          value={<CountIn value={Math.round(d.videos.completionRate)} suffix="%" />}
+          change={countAr(d.videos.completedLectures, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])}
+          color="brand"
+          to="/quality/courses?metric=completion"
+          actionHint="عرض الإكمال لكل مقرّر"
+        />
         <MetricCard icon={GraduationCap} label="معدل التسجيل" value={<CountIn value={Math.round(enrollmentRate)} suffix="%" />} change={countAr(d.enrollments, ['تسجيل واحد', 'تسجيلان', 'تسجيلات', 'تسجيلاً'])} color="amber" />
         <MetricCard icon={TrendingUp} label="متوسط النشاط الأسبوعي" value={weeklyAvg === null ? '—' : <CountIn value={weeklyAvg} />} change="مستخدم/يوم" color="purple" />
       </div>
 
-      <div className="grid-2-1">
-        <Card title="النشاط الأسبوعي" icon={TrendingUp}>
+      {/* 5-A8 §6 step 6 (rhythm): the charts row is the page's breathing
+          section after the tight KPI band (the quality dashboard's
+          charts row carries the same break). */}
+      <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
+        <Card
+          title="النشاط الأسبوعي"
+          icon={TrendingUp}
+          subtitle={d.weeklyActiveEstimated ? 'عدد الجلسات اليومية النشطة · بيانات تقديرية لحدّة النشاط المسجَّل' : undefined}
+        >
           <ChartFrame
             ariaLabel="مخطط أعمدة للنشاط الأسبوعي — عدد الجلسات النشطة يومياً"
             summary={
@@ -710,6 +872,7 @@ export function QualityEngagementPage() {
           >
             <Bar
               key={themeKey}
+              aria-hidden="true"
               data={{
                 labels: WEEKDAY_NAMES_AR,
                 datasets: [{
@@ -920,6 +1083,41 @@ export function QualityCurriculumPage() {
 /* ════════════════════════════════════════════════════════════════
    Reports — honest landing for institutional dashboards
    ════════════════════════════════════════════════════════════════ */
+/** The reports directory — one link-row list (5-B4 rhythm pass: the old
+ *  grid of four identical link-cards was the audit's "identical-grid
+ *  read"; the .alert row family gives each entry a full-width target). */
+const QUALITY_DASHBOARDS: Array<{
+  to: string;
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}> = [
+  {
+    to: '/quality/courses',
+    icon: BookOpen,
+    title: 'جودة المقرّرات',
+    desc: 'كل عرض دراسيّ: التسجيلات، المحتوى، اكتمال التقييم.',
+  },
+  {
+    to: '/quality/professors',
+    icon: School,
+    title: 'تقييم الأساتذة',
+    desc: 'رضا الطلاب، زمن الاستجابة، والالتزام بمعايير المنصة لكل عضو هيئة تدريس.',
+  },
+  {
+    to: '/quality/engagement',
+    icon: Activity,
+    title: 'الانخراط والحضور',
+    desc: 'نسب الحضور والغياب، إكمال المحاضرات، النشاط الأسبوعي.',
+  },
+  {
+    to: '/quality/curriculum',
+    icon: ListChecks,
+    title: 'مراجعة المناهج',
+    desc: 'نسبة اكتمال المحتوى الرقميّ عبر الكلّيّات والأقسام.',
+  },
+];
+
 export function QualityReportsPage() {
   return (
     <div className="page">
@@ -930,47 +1128,28 @@ export function QualityReportsPage() {
         </div>
       </header>
 
-      <div className="grid-2">
-        <Card title="جودة المقرّرات" icon={BookOpen} subtitle="تحليل لكلّ عرض دراسيّ — تسجيلات، محتوى، تقييم">
-          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            تستعرض اللوحة كل العروض الدراسيّة مع تفصيل عدد المسجَّلين، ساعات المحاضرات، الملفات، والاختبارات.
-          </p>
-          <Link to="/quality/courses" className="btn primary sm">
-            <Icon icon={ArrowLeft} size={13} />
-            فتح اللوحة
-          </Link>
-        </Card>
-
-        <Card title="تقييم الأساتذة" icon={School} subtitle="ملفّات أعضاء هيئة التدريس وتاريخ توثيقهم">
-          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            قائمة كاملة بأعضاء هيئة التدريس مرتَّبة بحسب القسم والكلّيّة، مع حالة التوثيق وتفاصيل التخصّص.
-          </p>
-          <Link to="/quality/professors" className="btn primary sm">
-            <Icon icon={ArrowLeft} size={13} />
-            فتح اللوحة
-          </Link>
-        </Card>
-
-        <Card title="الانخراط والحضور" icon={Activity} subtitle="نسب الحضور ومؤشّرات التفاعل أسبوعيّاً">
-          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            نسب الحضور والغياب، مشاهدات المحاضرات، الطلاب النشطين أسبوعيّاً، حالة البحوث.
-          </p>
-          <Link to="/quality/engagement" className="btn primary sm">
-            <Icon icon={ArrowLeft} size={13} />
-            فتح اللوحة
-          </Link>
-        </Card>
-
-        <Card title="مراجعة المناهج" icon={ListChecks} subtitle="نسبة اكتمال المحتوى الرقميّ في كل قسم">
-          <p className="text-sm text-muted" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-            مؤشّر اكتمال رفع المحاضرات والملفات التعليميّة عبر الكلّيّات والأقسام.
-          </p>
-          <Link to="/quality/curriculum" className="btn primary sm">
-            <Icon icon={ArrowLeft} size={13} />
-            فتح اللوحة
-          </Link>
-        </Card>
-      </div>
+      <Card title="اللوحات الحيّة" icon={ListChecks} subtitle="أربع لوحات مرتبطة ببعضها">
+        <div className="flex-col gap-2">
+          {QUALITY_DASHBOARDS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="alert brand"
+              title={`فتح ${item.title}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <span style={{ color: 'var(--accent-ink, var(--accent))', marginTop: 2 }}>
+                <Icon icon={item.icon} size={16} />
+              </span>
+              <div className="alert-body">
+                <div className="alert-title">{item.title}</div>
+                <div className="alert-desc">{item.desc}</div>
+              </div>
+              <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 2 }} />
+            </Link>
+          ))}
+        </div>
+      </Card>
 
       <Card title="تصدير تقارير ثابتة (PDF/Excel)" icon={FileText}>
         <p className="text-sm text-muted" style={{ padding: 'var(--sp-3) 0', lineHeight: 1.6 }}>

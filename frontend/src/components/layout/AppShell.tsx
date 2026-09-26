@@ -18,6 +18,7 @@ import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
 import { HydrationSplash } from '../HydrationSplash';
 import { overlayStack } from '../../lib/overlayStack';
+import { NAV_BY_ROLE } from '../../lib/nav';
 
 /* ───────────────────────────────────────────────────────────
    ROLE HOME — the single map for guard redirects (ProtectedRoute)
@@ -34,95 +35,34 @@ const ROLE_HOME: Record<AppRole, string> = {
 };
 
 /* ───────────────────────────────────────────────────────────
-   PAGE TITLES — single source of truth for topbar resolution
-   ─────────────────────────────────────────────────────────── */
+   PAGE TITLES — single source: nav.ts (5-B5, A4 P3-1/P3-2)
+   ───────────────────────────────────────────────────────────
+   Every sidebar destination's topbar/tab title DERIVES from its nav
+   label — nav.ts is the one place a route's name lives, so the
+   sidebar, the palette quick-actions, the topbar title and
+   document.title can no longer drift apart (A4 measured five
+   label↔title pairs that had: «الجدول» vs «جدول المحاضرات»,
+   «صفحات الكلّيّات» vs «كلّيّات الجامعة», «المسابقات» vs
+   «المسابقات الأكاديميّة»…). The manual map below only covers
+   routes that are NOT nav destinations; nav-coverage.test.ts pins
+   the drift guard — a manual row that shadows a nav item fails the
+   suite, and a route linked by two roles with two labels fails it
+   too. */
+const NAV_TITLES: Record<string, string> = {};
+for (const groups of Object.values(NAV_BY_ROLE)) {
+  for (const group of groups) {
+    for (const item of group.items) NAV_TITLES[item.to] = item.label;
+  }
+}
+
 // The static <title> from index.html — restored whenever the shell
 // unmounts (see the document.title effect in AppShell).
 const DOC_TITLE_BASE = 'مدارك · منصة التعليم الذكي · جامعة الزاوية';
 
 const PAGE_TITLES: Record<string, string> = {
-  '/student/dashboard': 'لوحة التحكم',
-  '/student/schedule': 'الجدول الدراسي',
-  '/student/courses': 'مقرّراتي الدراسية',
-  '/student/results': 'النتائج والتقييمات',
-  '/student/ai': 'المساعد الذكي',
-  '/student/library': 'المكتبة الإلكترونية',
-  '/student/gamification': 'النقاط والمستويات',
-  '/student/skills': 'مهاراتي',
-  '/student/labs': 'المعامل الافتراضية',
-  '/student/social': 'الشبكة الاجتماعية',
-  '/student/mooc': 'دورات خارجية',
-  '/student/jobs': 'فرص العمل',
-  '/student/alerts': 'الإشعارات',
-  '/student/downloads': 'مركز التحميلات',
-  '/student/university': 'جامعة الزاوية',
-  '/student/matrix': 'المصفوفة التعليمية',
-  '/student/research': 'بحوثي العلمية',
-  '/student/profile': 'ملفي الشخصي',
-  '/student/webinars': 'الندوات وورش العمل',
-  '/student/exams': 'تحليل الاختبارات',
-  '/student/live': 'البث المباشر',
-  '/student/payment': 'الشؤون المالية',
-  '/student/map': 'خريطة الحرم الجامعي',
-  '/student/ar': 'تجارب AR/VR',
-  '/teacher/dashboard': 'لوحة الأستاذ',
-  '/teacher/schedule': 'جدول المحاضرات',
-  '/teacher/attendance': 'الحضور والغياب',
-  '/teacher/grades': 'درجات الطلاب',
-  '/teacher/materials': 'الملفات التعليمية',
-  '/teacher/students': 'قائمة الطلاب',
-  '/teacher/performance': 'الأداء والتحليل',
-  '/teacher/assignments': 'الواجبات والاختبارات',
-  '/teacher/exams': 'بنك الأسئلة والاختبارات',
-  '/teacher/messages': 'الرسائل',
-  '/teacher/research': 'البحث العلمي',
-  '/admin/dashboard': 'لوحة الإدارة',
-  '/admin/students': 'إدارة الطلاب',
-  '/admin/teachers': 'إدارة الأساتذة',
-  '/admin/faculties': 'الكلّيّات والأقسام',
-  '/admin/courses': 'إدارة المقرّرات',
-  '/admin/analysis': 'تحليل الأداء',
-  '/admin/digital': 'التحول الرقمي',
-  '/admin/reports': 'التقارير',
-  '/admin/settings': 'الإعدادات',
-  '/admin/sync': 'مزامنة الجامعة',
-  '/quality/dashboard': 'لوحة الجودة',
-  '/quality/courses': 'جودة المقرّرات',
-  '/quality/professors': 'تقييم الأساتذة',
-  '/quality/engagement': 'الانخراط والحضور',
-  '/quality/reports': 'تقارير الجودة',
-  '/quality/curriculum': 'مراجعة المناهج',
-  '/quality/alerts': 'تنبيهات الجودة',
-  '/quality/exam-moderation': 'مراجعة الاختبارات',
-  '/owner/dashboard': 'لوحة التحكم الرئيسية',
-  '/owner/users': 'إدارة المستخدمين',
-  '/owner/activity': 'سجل النشاط',
-  '/owner/content': 'المحتوى والعلامة التجارية',
-  '/owner/system': 'النظام والتشغيل',
-  '/owner/education': 'النظرة التعليمية',
-  '/owner/realtime': 'المراقبة الحية',
-  '/owner/ai': 'مركز الذكاء الاصطناعي',
-  '/owner/alerts': 'التنبيهات التشغيلية',
-  '/owner/governance': 'الحوكمة المتقدمة',
-  '/vision': 'الابتكارات القادمة',
-  '/training': 'التطوير الذاتي',
-  '/achievements': 'الإنجازات والشهادات',
-  '/community': 'المجتمع الجامعي',
-  '/colleges': 'كلّيّات الجامعة',
+  // Folded out of the student sidebar (A4 P2-1) — still a real surface
+  // one click from /colleges (the leaderboard CTA), so it keeps a title.
   '/colleges/leaderboard': 'منافسة الكلّيّات',
-  '/competitions': 'المسابقات الأكاديميّة',
-  '/teacher/community': 'المجتمع الجامعي',
-  '/admin/community': 'المجتمع الجامعي',
-  '/quality/community': 'المجتمع الجامعي',
-  '/teacher/intelligence': 'الذكاء الأكاديمي',
-  '/teacher/profile': 'الملف الأكاديمي',
-  '/teacher/live': 'إدارة البث المباشر',
-  '/teacher/labs': 'المعامل الافتراضية',
-  '/teacher/ai': 'المساعد الذكي',
-  '/teacher/library': 'المكتبة',
-  '/teacher/alerts': 'الإشعارات',
-  '/admin/alerts': 'الإشعارات',
-  '/student/online-exams': 'الاختبارات الإلكترونية',
 };
 
 const DYNAMIC_TITLES: Array<[RegExp, string]> = [
@@ -148,7 +88,9 @@ const DYNAMIC_TITLES: Array<[RegExp, string]> = [
 ];
 
 export function resolveTitle(pathname: string): string {
-  const exact = PAGE_TITLES[pathname];
+  // Nav destinations first — nav.ts is the single source (NAV_TITLES);
+  // the manual map only carries non-nav surfaces.
+  const exact = NAV_TITLES[pathname] ?? PAGE_TITLES[pathname];
   if (exact) return exact;
   for (const [pattern, title] of DYNAMIC_TITLES) {
     if (pattern.test(pathname)) return title;
@@ -310,6 +252,33 @@ export function AppShell({ children }: { children?: ReactNode }) {
     setScrolled(false);
   }, [location.pathname]);
 
+  /* ── Focus rescue after navigation (5-B5, A4 §7) ──────────────────
+     Clicking a desktop sidebar link keeps focus on the link, a drawer
+     link returns it to the burger (the containment effect's
+     restore-on-close), and a palette navigation returns it to the
+     opener — all live-measured, none orphaned. The paths that DO drop
+     focus on document.body are unmounting triggers and redirect
+     routes (guard bounces, /admin/analysis → reports). A body-focused
+     SPA route change is silent for keyboard + SR users — nothing
+     announces the new page. When focus was orphaned, move it to the
+     topbar page title (tabindex=-1, Topbar.tsx): programmatic focus on
+     a -1 target shows no focus ring, and the focus itself + the
+     document.title effect give SR users the page-change signal. The
+     first mount is skipped (cold loads keep the natural focus order —
+     the skip link stays the first Tab stop). */
+  const prevPathname = useRef<string | null>(null);
+  useEffect(() => {
+    const isFirstRun = prevPathname.current === null;
+    const changedRoute = prevPathname.current !== location.pathname;
+    prevPathname.current = location.pathname;
+    if (isFirstRun || !changedRoute) return;
+    const active = document.activeElement;
+    const focusOrphaned = active === document.body || (active !== null && !document.contains(active));
+    if (!focusOrphaned) return;
+    const titleEl = document.querySelector<HTMLElement>('.topbar-title');
+    titleEl?.focus({ preventScroll: true });
+  }, [location.pathname]);
+
   useScrollRestoration(contentRef);
 
   /* ── Command palette (4-A2 P2-8 + P1-3, wave 21-a) ──────────────
@@ -322,18 +291,35 @@ export function AppShell({ children }: { children?: ReactNode }) {
      old ⌘K binding honored (11-e P1-6), now owned in exactly one
      place so the two listeners can never fight over a press. */
   const [paletteOpen, setPaletteOpen] = useState(false);
+  /* 5-B5 (A4 P2-3): every open remounts the body fresh — the palette's
+     delayed unmount kept the previous instance (and its query) alive
+     through the exit window, so reopening within it resurrected the
+     stale term (measured «zzzzqqد. أحمد»). */
+  const [paletteSeq, setPaletteSeq] = useState(0);
   const closePalette = () => setPaletteOpen(false);
-  const openPalette = () => setPaletteOpen(true);
+  const openPalette = () => {
+    setPaletteSeq((s) => s + 1);
+    setPaletteOpen(true);
+  };
+  /* Ref mirror so the document-level chord can read the open state
+     without re-registering (and without the functional-setState form,
+     which cannot bump paletteSeq atomically with the open). */
+  const paletteOpenRef = useRef(false);
+  useEffect(() => {
+    paletteOpenRef.current = paletteOpen;
+  }, [paletteOpen]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
       if (e.key !== 'k' && e.key !== 'K') return;
       e.preventDefault();
-      setPaletteOpen((v) => {
-        if (v) return false; // toggle: the palette itself owns the open state
-        if (!overlayStack.isEmpty()) return false; // another layer owns the screen
-        return true;
-      });
+      if (paletteOpenRef.current) {
+        setPaletteOpen(false); // toggle: the palette itself owns the open state
+        return;
+      }
+      if (!overlayStack.isEmpty()) return; // another layer owns the screen
+      setPaletteSeq((s) => s + 1); // fresh body per open (5-B5)
+      setPaletteOpen(true);
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
@@ -372,7 +358,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
       <OnboardingFlow />
       <MilestoneScene />
       <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">
-        <CommandPaletteBody onClose={closePalette} />
+        <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
       </CommandPalette>
     </div>
   );

@@ -28,6 +28,14 @@ export interface TeacherDashboard {
      *  TeacherPages derives the grade modal's maxScore by matching the
      *  stripped title, so the marker rides its own field. */
     late?: boolean;
+    /** Submissions only (5-B6 / audit 5-A7 P1-2): the student's answer,
+     *  so the grading modal can show the work it is grading. OPTIONAL —
+     *  the backend feed select does not project these columns yet
+     *  (teacher-dashboard.routes.ts PendingSubmissionFeedRow); the FE
+     *  renders the answer surface the moment they arrive. Hand-off
+     *  filed in the 5-B6 worklog entry. */
+    textAnswer?: string | null;
+    fileUrl?: string | null;
   }>;
 }
 export function useTeacherDashboard() {
@@ -565,10 +573,89 @@ export interface AdminCourse {
   totalMaterials: number;
   recentOfferings: Array<{ id: string; term: string; enrollments: number; lectures: number; teacher: string | null }>;
 }
-export function useAdminCourses() {
+/** GET /admin/courses meta (5-B1: server-side page/limit/q/facultyId). */
+export interface AdminCoursesMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+/**
+ * 5-B4 (audit 5-A8 P2-1 — the silent 20-row cap): /admin/courses is
+ * consumed as a PAGINATED list now. Server-side filters (q,
+ * facultyId — both shipped by 5-B1) + page/limit; the KPI total and
+ * the pagination footer read `meta`, never `data.length`. Keyed on
+ * the params object so every parameterized page caches separately;
+ * the ['admin','courses'] prefix still matches prefix invalidations.
+ */
+export function useAdminCourses(
+  params: { page?: number; limit?: number; q?: string; facultyId?: string } = {},
+) {
+  const { page = 1, limit = 20, q, facultyId } = params;
   return useQuery({
-    queryKey: ['admin', 'courses'],
-    queryFn: () => unwrap<AdminCourse[]>(api.get('/admin/courses')),
+    queryKey: ['admin', 'courses', { page, limit, q: q ?? null, facultyId: facultyId ?? null }],
+    queryFn: async () => {
+      const res = await api.get<{ data: AdminCourse[]; meta: AdminCoursesMeta }>('/admin/courses', {
+        params: {
+          page,
+          limit,
+          ...(q ? { q } : {}),
+          ...(facultyId ? { facultyId } : {}),
+        },
+      });
+      return { data: res.data.data, meta: res.data.meta };
+    },
+    // Keeps the roster on screen while the next page/filter loads
+    // (AdminStudentsPage pattern) — no skeleton flash mid-browse.
+    placeholderData: (prev) => prev,
+  });
+}
+
+// ── Admin papers (institution-wide research register) ──────────
+// 5-B4 (audit 5-A8 §5 row 8): the admin research drill-down. The
+// backend endpoint (5-B1) is a projection of the research routes —
+// no extractedText, no student email — paginated with the standard
+// { data, meta } envelope.
+export const RESEARCH_STATUSES = [
+  'UPLOADED', 'SCANNING', 'CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED', 'PUBLISHED',
+] as const;
+export type ResearchStatus = (typeof RESEARCH_STATUSES)[number];
+
+export interface AdminPaper {
+  id: string;
+  title: string;
+  status: ResearchStatus;
+  plagiarismPct: number | null;
+  aiContentPct: number | null;
+  uploadedAt: string;
+  student: { id: string; firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
+  reviewer: { id: string; firstName: string; lastName: string } | null;
+  offering: { course: { name: string; code: string } } | null;
+}
+export interface AdminPapersMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+export function useAdminPapers(
+  params: { page?: number; limit?: number; q?: string; status?: ResearchStatus } = {},
+) {
+  const { page = 1, limit = 20, q, status } = params;
+  return useQuery({
+    queryKey: ['admin', 'papers', { page, limit, q: q ?? null, status: status ?? null }],
+    queryFn: async () => {
+      const res = await api.get<{ data: AdminPaper[]; meta: AdminPapersMeta }>('/admin/papers', {
+        params: {
+          page,
+          limit,
+          ...(q ? { q } : {}),
+          ...(status ? { status } : {}),
+        },
+      });
+      return { data: res.data.data, meta: res.data.meta };
+    },
+    placeholderData: (prev) => prev,
   });
 }
 

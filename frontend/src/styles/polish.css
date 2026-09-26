@@ -3141,7 +3141,10 @@
       inline-size: 4px;
       block-size: 4px;
       border-radius: 50%;
-      background: var(--accent);
+      /* 5-B5 (A4 P2-2): the dot joins the role-accent system with the
+         item color and the ::before ring (below, v23 section) — it was
+         the last bottom-nav surface still reading raw copper. */
+      background: var(--role-accent, var(--accent));
       animation: madark-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both;
     }
     @keyframes madark-dot-in {
@@ -3712,14 +3715,22 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (max-width: 920px) {
     .bottom-nav-item.active {
-      color: var(--accent);
+      /* 5-B5 (A4 P2-2): role-accent, not the raw copper --accent. This
+         overrides-layer rule used to hard-code var(--accent) and beat
+         notifications.css's role-aware declaration (pages layer) — the
+         STUDENT bottom-nav read copper #B57438 while its sidebar icon
+         read the role accent #3B5BDB: two nav surfaces, two accent
+         systems. Role accents are pre-vetted ≥3:1 for non-text chrome;
+         the LABEL keeps the AA-safe --accent-ink from notifications.css
+         (text needs 4.5:1, which the role hexes are not vetted for). */
+      color: var(--role-accent, var(--accent));
     }
     .bottom-nav-item.active .bottom-nav-icon::before {
       content: '';
       position: absolute;
       inset: -8px;
       border-radius: var(--r-md);
-      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      background: color-mix(in srgb, var(--role-accent, var(--accent)) 10%, transparent);
       z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
     }
     .bottom-nav-item .bottom-nav-icon {
@@ -5723,5 +5734,76 @@
      slant; emphasis stays whatever the surface authored. */
   :lang(ar) em:not(.landing-serif-latin) {
     font-style: normal;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   5-B5 — topbar title craft on narrow viewports
+   (A4 P1-2 + P3-8, coordinated with A9 P1-2 cold-load CLS)
+   ─────────────────────────────────────────────────────────────────────
+   Measured BEFORE (5-A4): at 320px the flex topbar starved the title
+   track to 0–10px (clientW 0 on /student/results; actions cluster
+   202px + burger 44px) — the 4-A10 ellipsis rendered into a sliver no
+   one can read; 21 routes still truncated at 390px.
+
+   The fix is a diet + a wrap:
+   · ≤420px — the actions cluster shrinks (AI quick-action hidden,
+     user chip avatar-only, tighter tracks/gutter) so the title track
+     gets real width (~88px at 320).
+   · ≤920px — the title wraps to TWO full lines (line-clamp 2) instead
+     of ellipsizing one; the full name rides the title attribute
+     (Topbar.tsx, A4 P3-8).
+
+   Height stability (the A9 CLS coordinate): 2 × fs-body(15px) × 1.2
+   = 36px, comfortably under the 44px touch floor of the actions
+   cluster — the topbar keeps its 60px box on every route and every
+   breakpoint, so nothing below it ever shifts on navigation.
+   ═══════════════════════════════════════════════════════════════════ */
+@layer overrides {
+  /* A9 P1-2 sketch (a): pin the title box so the skeleton→real font
+     swap cannot resize it (A9 measured 22→24px at data-land). */
+  .topbar .topbar-title {
+    min-block-size: 24px;
+  }
+
+  @media (max-width: 920px) {
+    .topbar .topbar-title {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-height: 1.2;
+      white-space: normal;
+      min-block-size: 18px; /* A9: a settled one-line floor */
+    }
+  }
+
+  @media (max-width: 420px) {
+    .topbar {
+      padding-inline: var(--sp-3);
+      gap: var(--sp-2);
+    }
+    /* Drop the «اسأل AI» quick-action (A4 P1-2 sketch): the 4-A10 hide
+       in layout.css lost the cascade war to components.css's .btn
+       display (layer order) and never applied — re-asserted here, the
+       only layer that wins. The destination stays reachable via the
+       sidebar, the ⌘K palette and (student) the bottom-nav «المساعد». */
+    .topbar-actions > .btn.primary.sm {
+      display: none;
+    }
+    /* The user chip collapses to its avatar (the name is already
+       hidden ≤640px) — borderless, centered, 44px touch floor kept. */
+    .topbar .topbar-user-trigger {
+      min-inline-size: 44px;
+      min-block-size: 44px;
+      justify-content: center;
+      padding-inline: 0;
+      border-color: transparent;
+      background: transparent;
+    }
+    .topbar .topbar-user-trigger:hover {
+      background: var(--surface-3);
+      border-color: transparent;
+    }
   }
 }

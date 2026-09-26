@@ -11,6 +11,7 @@ import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
 import { LoadingState, ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post } from '../../hooks/useResources';
@@ -572,7 +573,7 @@ export function ResultsPage() {
   const baseOpts = cartesianOptions({ horizontal: true });
 
   return (
-    <div className="page">
+    <div className="page student-results">
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">النتائج والتقييمات</h1>
@@ -604,11 +605,32 @@ export function ResultsPage() {
         />
       </div>
 
-      <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة لكل مقرّر' : 'ستظهر درجاتك هنا فور تسجيلها'}>
+      {/* 5-A6 P2-9 — the chart card carries its own hook class: on phone
+          (≤640px, student.css) it re-orders above the stacked KPI cards
+          so the page's one data visualization starts at the fold. */}
+      <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة لكل مقرّر' : 'ستظهر درجاتك هنا فور تسجيلها'} className="results-chart-card">
         {!hasGrades ? (
           <EmptyState title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
         ) : (
-          <div style={{ height: Math.max(180, d.courses.length * 32) }}>
+          // 5-A6 P1-2 — ChartFrame: the canvas gains role=img + an
+          // accessible name, a prose summary and a visually-hidden data
+          // table (the dashboard doughnut's treatment 40 lines away in
+          // spirit; a bare <canvas> is opaque to screen readers).
+          <ChartFrame
+            className="results-chart-frame"
+            ariaLabel="درجاتك حسب المقرّر بالنسبة المئوية"
+            summary={
+              d.headline.avgGradePct !== null
+                ? `متوسّط درجاتك ${d.headline.avgGradePct}% عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}`
+                : 'لم تُسجَّل درجات بعد.'
+            }
+            height={Math.max(180, d.courses.length * 32)}
+            table={{
+              caption: 'درجاتك حسب المقرّر بالنسبة المئوية',
+              columns: ['المقرّر', 'الدرجة'],
+              rows: d.courses.map((r) => [r.courseName, `${r.gradePct}%`]),
+            }}
+          >
             {/* Horizontal bars — Arabic course names read at full width on
                 the start edge, and the reversed value axis anchors 0 at the
                 inline-start edge so bars grow in the reading direction
@@ -640,7 +662,7 @@ export function ResultsPage() {
                 },
               }}
             />
-          </div>
+          </ChartFrame>
         )}
       </Card>
 
@@ -1291,11 +1313,11 @@ export function UniversityInfoPage() {
             </div>
           ))}
         </div>
-        <div className="text-xxs text-subtle" style={{
-          marginTop: 'var(--sp-3)', padding: 'var(--sp-2) var(--sp-3)',
-          background: 'var(--accent-soft)', color: 'var(--accent)', borderRadius: 'var(--r-sm)',
-          display: 'inline-block',
-        }}>
+        {/* 5-A6 P2-7 — accreditation chip as a class (student.css
+            .uni-accredit): the old inline styles painted --accent on
+            --accent-soft at 11px (measured 3.06:1); the class pairs the
+            pastel with its -deep rung ink. */}
+        <div className="uni-accredit">
           معتمدة من وزارة التعليم العالي والبحث العلميّ — ليبيا
         </div>
       </Card>
