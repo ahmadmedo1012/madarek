@@ -220,9 +220,15 @@ describe('QualityProfessorsPage — «بحاجة لمتابعة» filters the ro
     renderPage(<QualityProfessorsPage />);
 
     // KPI counts the low-compliance teacher and renders as a BUTTON
-    // (the old tile was a terminal stat).
+    // (the old tile was a terminal stat). The value is a <CountIn>
+    // count-UP animation — the button mounts as soon as data lands but
+    // the digit may still read the pre-tick value, so await the settle
+    // (this was the campaign's one flaky assertion: findByRole resolved
+    // mid-animation and intermittently read '0').
     const toggle = await screen.findByRole('button', { name: /بحاجة لمتابعة/ });
-    expect(toggle.textContent).toContain('1');
+    await waitFor(() => {
+      expect(toggle.textContent).toContain('1');
+    });
 
     fireEvent.click(toggle);
     expect(await screen.findByText(/خالد/)).toBeInTheDocument();

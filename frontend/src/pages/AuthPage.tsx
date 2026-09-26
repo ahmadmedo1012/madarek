@@ -126,7 +126,11 @@ export default function AuthPage() {
   return (
     <div className="auth-shell">
 
-      <div className="auth-top">
+      {/* imm-5 a11y fix (axe "all content in landmarks" — was a bare
+          div): the page-level chrome reads as banner / contentinfo
+          landmarks; <main> above already carried the form. RegisterPage
+          shares this structure but is outside this task's file scope. */}
+      <header className="auth-top">
         <Link to="/" className="auth-back-home">
           <Icon icon={Home} size={14} />
           الصفحة الرئيسية
@@ -134,7 +138,7 @@ export default function AuthPage() {
         <span className="auth-context">
           <LibyaFlag size={14} /> جامعة الزاوية
         </span>
-      </div>
+      </header>
 
       <main className="auth-center">
         <div className="auth-card">
@@ -145,6 +149,12 @@ export default function AuthPage() {
           </div>
 
           <div className="auth-form-header">
+            {/* imm-5 journey alignment: the landing scenes' coded
+                metadata voice as a quiet eyebrow over the title
+                (.auth-meta, mono metric role). A real Arabic phrase —
+                journey-meta precedent — so it stays in the accessibility
+                tree, unlike the bento's purely decorative code badges. */}
+            <span className="auth-meta">( بوابة الجامعة )</span>
             <h1 className="auth-form-title">مرحباً بعودتك</h1>
             <p className="auth-form-sub">
               سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.
@@ -296,9 +306,9 @@ export default function AuthPage() {
         </div>
       </main>
 
-      <div className="auth-bottom">
+      <footer className="auth-bottom">
         دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
-      </div>
+      </footer>
     </div>
   );
 }

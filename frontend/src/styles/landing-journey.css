@@ -30,7 +30,10 @@
        the real height after first render, so the number only weights
        the far-away placeholder (plan §8 content-visibility). */
     content-visibility: auto;
-    contain-intrinsic-size: auto 1250px;
+    /* imm-4-visualqa P1-2: measured 1064px at 1440w once rendered (the
+       `auto` keyword then locks the realized size); 1100 keeps ~3%
+       headroom so first-visit anchor math stays close. */
+    contain-intrinsic-size: auto 1100px;
   }
 
   /* ── Scene head: coded meta → display title → lede ───────────────── */
@@ -263,7 +266,11 @@
      (~520px) ≈ 720px. */
   #flipped {
     content-visibility: auto;
-    contain-intrinsic-size: auto 720px;
+    contain-intrinsic-size: auto 760px;
+    /* imm-4-visualqa P1-2: URL jumps into a content-hidden band land
+       on placeholder geometry; the margin clears the sticky header
+       for both :target and scrollIntoView paths. */
+    scroll-margin-block-start: 88px;
   }
 
   /* ── Small screens ─────────────────────────────────────────────────── */

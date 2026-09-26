@@ -113,7 +113,7 @@ export default function LandingPage() {
 
   // Magnetic glow follow on feature cards
   useEffect(() => {
-    const cards = document.querySelectorAll<HTMLElement>('.landing-feature-card, .landing-bento-card');
+    const cards = document.querySelectorAll<HTMLElement>('.landing-bento-card');
     const onMove = (e: MouseEvent) => {
       const t = e.currentTarget as HTMLElement;
       const r = t.getBoundingClientRect();
@@ -200,6 +200,12 @@ export default function LandingPage() {
 
   return (
     <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
+      {/* Skip-to-content link — WCAG 2.4.1 (imm-4-visualqa P2: the
+          landing sits OUTSIDE AppShell, so it needs its own). Same
+          class + pattern as AppShell's; visually hidden until focused. */}
+      <a href="#main" className="skip-link">
+        تخطَّ إلى المحتوى الرئيسي
+      </a>
 
       {/* Top scroll-progress bar — single-accent hairline (5-B2 P2-4);
           on ≤920px this is the mobile journey signal (the rail is
@@ -325,7 +331,7 @@ export default function LandingPage() {
         )}
       </header>
 
-      <main>
+      <main id="main" tabIndex={-1}>
       {/* HERO — wave 1.5 extraction to components/landing/HeroScene
           (wave 2 rebuilds the composition there). */}
       <HeroScene

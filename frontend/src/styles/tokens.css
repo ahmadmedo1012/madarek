@@ -737,7 +737,10 @@
     --journey-line:        rgba(224, 160, 103, 0.34);
     --journey-core:        var(--ink);
     --journey-glow:        rgba(224, 160, 103, 0.12);
-    --journey-ticker-ink:  var(--neutral-400);
+    /* imm-4-visualqa P1-1: was --neutral-400 (#6E6B61 = 3.30:1 on the ink
+       ground — AA fail at the ticker's 13px). Dark --neutral-500
+       (#9A968A) = 5.95:1 — passes AA with the warm-sand register kept. */
+    --journey-ticker-ink:  var(--neutral-500);
     --journey-ticker-sep:  var(--accent);
   }
 

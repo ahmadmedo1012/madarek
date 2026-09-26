@@ -242,8 +242,12 @@
     transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
   }
   .landing-nav-group { position: relative; }
+  /* imm-4-visualqa P2: the :focus-within reveal is GONE — the trigger
+     is a real toggle (aria-expanded + click state), so panel visibility
+     must equal state or AT users are lied to. Keyboard: Enter opens
+     (state true), Esc closes + refocuses (handled in LandingPage).
+     Hover reveal stays for pointer users; .open covers touch. */
   .landing-nav-group:hover .landing-megamenu,
-  .landing-nav-group:focus-within .landing-megamenu,
   /* 8-a (0-b P3-34) — the trigger is a real toggle now (aria-expanded +
      click state); .open keeps the panel visible for touch/pointer users
      who click instead of hover. Item stagger stays polish-owned. */
@@ -359,23 +363,6 @@
 
   /* 012-design-graphics-uplift T100 — hero scene illustration sits
      above the eyebrow, below the chrome. Sized so it never crowds
-     the headline at any breakpoint and never grows past 320 px. */
-  .landing-hero-scene {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-block-end: var(--sp-3);
-    pointer-events: none;
-  }
-  .landing-hero-scene .illustration {
-    inline-size: clamp(130px, 15vw, 190px);
-    block-size: auto;
-  }
-  .landing-hero-scene .illustration > svg {
-    max-inline-size: 100%;
-    max-block-size: clamp(100px, 11vw, 150px);
-    inline-size: 100%;
-  }
   .landing-hero-eyebrow {
     display: inline-flex; align-items: center; gap: var(--sp-2);
     font-size: var(--type-label-size-sm);
@@ -440,20 +427,6 @@
        breaks cursive joins (ruling #2) */
     letter-spacing: var(--ls-normal);
   }
-  .landing-title-highlight {
-    display: inline-block;
-    background: var(--c-yellow-bg);
-    /* Wave-10 visual check (VLM): the box hugged the baseline with zero
-       vertical padding, so Arabic descenders (ك tail) poked past the
-       highlight's bottom edge and read as clipped. 0.08em block padding
-       covers the descender depth at display sizes without inflating the
-       line box (inline-block already isolates it from line-height). */
-    padding: 0.08em 0.18em;
-    border-radius: var(--r-xs);
-    color: var(--text);
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
   @media (max-width: 640px) {
     .landing-title {
       font-size: clamp(34px, 11vw, 56px);
@@ -484,7 +457,6 @@
        it overrides (equal specificity, later source order wins).
        ≥641px is untouched. */
     .landing-hero { padding-block-start: var(--sp-4); }
-    .landing-hero-scene { margin-block-end: var(--sp-2); }
     .landing-hero-eyebrow { margin-block-end: var(--sp-3); }
     .landing-subtitle { margin-block-start: var(--sp-4); font-size: var(--type-body-size); }
     .landing-cta-row { margin-block-start: var(--sp-5); }
@@ -512,7 +484,6 @@
        h1 top 127, primary CTA bottom 368 — both inside the 390px
        fold; the mockup stays as the scroll payoff below. */
     .landing-hero { padding-block: var(--sp-3) var(--sp-6); }
-    .landing-hero-scene { display: none; }
     .landing-hero-eyebrow { display: none; }
     .landing-title { font-size: clamp(28px, 11vh, 44px); }
     .landing-subtitle { margin-block-start: var(--sp-3); font-size: var(--type-body-size); }
@@ -610,7 +581,6 @@
        superseded by polish v7's polish-float-1/2 loops (their shorthand
        reset the delay too); deleted here, animation owned by polish. */
   }
-  .landing-mockup-badge-1 { inset-inline-end: -2%; inset-block-start: 18%; }
   .landing-mockup-badge-2 { inset-inline-start: -3%; inset-block-end: 12%; }
   .landing-mockup-badge-text { display: flex; flex-direction: column; gap: 2px; }
   .landing-mockup-badge-title { font-size: var(--fs-sm); font-weight: var(--fw-bold); color: var(--text); font-family: var(--font-display); }
@@ -621,44 +591,7 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LOGO STRIP                                                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-logos {
-    /* 0-b P2-26 — consume the section rhythm token (was a flat sp-9,
-     out of step with the band/features rhythm). */
-    padding-block: var(--section-pad-y-narrow);
-    text-align: center;
-  }
   /* eyebrow anatomy (ruling #2): size + weight + color only — no
-     letter-spacing, no text-transform on Arabic copy. */
-  .landing-logos-eyebrow {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-    font-weight: var(--fw-semibold);
-    margin-block-end: var(--sp-5);
-  }
-  .landing-logos-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: var(--sp-6);
-    align-items: center;
-    /* 20-a P2 (4-A1 P2-2): the 0.55 ghosting measured an effective
-       2.49:1 — the 6 axe contrast errors the console prints on load
-       and a "forgot to swap the wireframe assets" read. No
-       institutional logo assets exist, so the honest treatment is a
-       deliberate typographic wordmark row: full-strength secondary
-       ink (8.1:1 light / 9.9:1 dark), one step up the scale,
-       hairline separators. */
-  }
-  @media (max-width: 920px) { .landing-logos-grid { grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); } }
-  .landing-logo {
-    text-align: center;
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-body);
-    color: var(--text-secondary);
-    /* no letter-spacing — Arabic institution names (ruling #2) */
-    padding-block: var(--sp-2);
-  }
   /* hairline separators turn six floating labels into one authored
      institutional row (row-start items keep a clean inline edge) */
   .landing-logo + .landing-logo { border-inline-start: 1px solid var(--rule); }
@@ -803,10 +736,6 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BIG FEATURE GRID (3 across, sticker-led)                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-features {
-    padding-block: var(--section-pad-y-wide);
-  }
   .landing-section-head {
     text-align: center;
     margin-block-end: var(--sp-9);
@@ -867,62 +796,17 @@
      page's loudest AI-tell. Re-grammared as a two-column zigzag of
      horizontal cards: max two per row (taste), the inline-start column
      steps down for a woven rhythm, and the text measure widens to the
-     45–75ch body floor. */
-  .landing-features-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--sp-5) var(--sp-8);
-  }
   @media (min-width: 921px) {
-    .landing-feature-card:nth-child(even) {
-      margin-block-start: var(--sp-8);
-    }
   }
   @media (max-width: 920px)  { .landing-features-grid { grid-template-columns: 1fr; } }
 
   /* 13-17 (D14 dedupe): `position`/`overflow` deleted — polish.css's
      pages-layer .landing-feature-card/.landing-bento-card block owns them
      (position: relative identical; overflow: hidden is the approved final
-     over this clip) and no longer depends on load order. */
-  .landing-feature-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    /* row gap = the title↔desc pair (tight); col gap = sticker↔text */
-    gap: var(--sp-2) var(--sp-5);
-    align-items: start;
-    padding: var(--sp-6);
-    transition: transform var(--t-base) var(--ease);
-    isolation: isolate;
-  }
-  .landing-feature-card > .sticker {
-    grid-area: 1 / 1 / 3 / 2;
-  }
   @media (max-width: 640px) {
-    .landing-feature-card { grid-template-columns: 1fr; padding: var(--sp-5); }
-    .landing-feature-card > .sticker { grid-area: auto; }
   }
   /* 13-17 (D14 dedupe): content/position/inset/background/opacity/
      transition/pointer-events/z-index deleted — polish.css's cursor-
-     spotlight ::after (638) supersedes each; only the radius stays ours. */
-  .landing-feature-card::after {
-    border-radius: inherit;
-  }
-  .landing-feature-card:hover { transform: translateY(-4px); }
-  .landing-feature-card:hover .sticker { transform: rotate(-6deg) scale(1.06); }
-  .landing-feature-title {
-    /* headline role (0-b P2-25); no tracking — Arabic titles (ruling #2).
-       --fw-black renders as 700 in Plex Sans Arabic anyway (no 800 face). */
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-md);
-    font-weight: var(--type-headline-weight);
-    color: var(--text);
-    line-height: var(--type-headline-line-height);
-  }
-  .landing-feature-desc {
-    font-size: var(--type-body-size);
-    color: var(--text-secondary);
-    line-height: var(--type-body-line-height);
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  ROLE LEDGER (20-a · 4-A1 P1-3)                               ║
@@ -1131,11 +1015,6 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FINAL CTA — theme-aware (was hardcoded "dark band")           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-final-cta {
-    padding-block: var(--section-pad-y-wide);
-    text-align: center;
-  }
   /* ── 20-a P0 (4-A1 P0-1/P0-2 + 4-A12 P0-1) — the invisible close ──
      band-dark paints var(--neutral-900) and flips WITH the theme
      (light: #191918 ink band / dark: #F2EAD8 cream band), while
@@ -1154,96 +1033,15 @@
      eyebrow was dropped from the TSX (one of 7 removed; the band's title,
      lede, actions and meta carry the close on their own). */
   /* display role (0-b P2-25) — the four raw values were the role's own
-     numbers written inline. */
-  .landing-final-cta-title {
-    font-family: var(--font-display);
-    font-size: var(--type-display-size-xl);
-    font-weight: var(--type-display-weight);
-    line-height: var(--type-display-line-height);
-    letter-spacing: var(--type-display-letter-spacing);
-    max-inline-size: 24ch;
-    /* 20-a P0: was var(--text) — the theme token that always equals
-       the band ground (1.00:1 × both themes). The band's own ink pair:
-       #FBFAF9 on #191918 ≈ 16.6:1 (light) / #191918 on #F2EAD8 ≈ 15.9:1
-       (dark). */
-    color: var(--neutral-50);
-    margin-inline: auto;
-  }
   /* 20-a P1 (4-A1 P1-1): Arabic has no italic — the phantom IBM Plex
      Serif (latin-only unicode-range) fell to an OS serif + synthetic
      slant on «بانتظارك». Upright, same family, and a two-stop copper
      keyed to the band ground (taste floor: a page that hard-cuts
      between light and dark grounds carries one hue in two lightnesses):
      mix the page accent with the band's own ink — light band ≈ tan
-     copper, dark band ≈ espresso copper, both >3:1 at display size. */
-  .landing-final-cta-title em {
-    font-style: normal;
-    font-family: inherit;
-    font-weight: var(--fw-black);
-    color: color-mix(in oklab, var(--accent) 60%, var(--neutral-50));
-  }
-  .landing-final-cta-lede {
-    font-size: var(--type-body-size-lg);
-    color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
-    max-inline-size: 56ch; line-height: var(--type-body-line-height);
-    margin: var(--sp-5) auto 0;
-  }
-  .landing-final-cta-actions {
-    display: flex; gap: var(--sp-3); flex-wrap: wrap;
-    margin-block-start: var(--sp-8);
-    justify-content: center;
-  }
-  .landing-final-cta-btn {
-    block-size: 52px;
-    padding-inline: var(--sp-7);
-    /* The primary button is the platform's accent — works in both
-       themes via the existing accent + accent-fg pair. */
-    background: var(--accent);
-    color: var(--accent-fg);
-    border: 0;
-    border-radius: var(--r-md);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-bold);
-    display: inline-flex; align-items: center; gap: var(--sp-2);
-    cursor: pointer;
-    transition: background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
-    text-decoration: none;
-  }
-  .landing-final-cta-btn:hover {
-    background: var(--accent-hover);
-    transform: translateY(-2px);
-    color: var(--accent-fg);
-  }
   /* T3-F4 WCAG — light pair is copper + espresso ink (4.95:1); the
      legacy dark hover fill #9A5F25 drops it to 3.47:1, so the light
      hover brightens the copper (6.1:1), mirroring Dark's
-     brighten-on-hover. See components.css .btn.accent note. */
-  :root:not([data-theme="dark"]) .landing-final-cta-btn:hover {
-    background: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
-  }
-  .landing-final-cta-btn.ghost {
-    background: transparent;
-    /* 20-a P0: var(--text) = the band ground (1.00:1 × both themes).
-     Band-scoped ink + a border mixed from the same pair keeps the
-     ghost legible on both band grounds; hover wash + border deepen
-     from the same pair so the button never inverts against its band.
-     Border stop 55%: composited ≈ #959594 on the light-theme ink band
-     = 5.9:1 — clears WCAG 1.4.11 (3:1) with room, and reads as an
-     intentional outline rather than a disabled ghost (VLM 20-a
-     follow-up: the 38% stop passed 1.4.11 at 3.4:1 but still read
-     "ghost-like"). */
-    color: var(--neutral-50);
-    border: 1px solid color-mix(in oklab, var(--neutral-50) 55%, transparent);
-  }
-  .landing-final-cta-btn.ghost:hover {
-    background: color-mix(in oklab, var(--neutral-50) 12%, transparent);
-    border-color: color-mix(in oklab, var(--neutral-50) 78%, transparent);
-  }
-  .landing-final-cta-meta {
-    margin-block-start: var(--sp-6);
-    font-size: var(--type-label-size-sm);
-    color: color-mix(in oklab, var(--neutral-50) 82%, var(--neutral-900));
-  }
   /* 5-D1 (A11 P1-1) — band-scoped focus ring. band-dark inverts its
      ground per theme (light: neutral-900 = ink band; dark: neutral-900
      flips to cream #F2EAD8) but the theme-global
@@ -1581,10 +1379,8 @@
   /* ── 5-B2 (P3-6): balance/pretty beyond the hero title ─────────── */
   .landing-section-title,
   .band .band-title,
-  .landing-final-cta-title { text-wrap: balance; }
   .landing-section-lede,
   .band .band-lede,
-  .landing-final-cta-lede { text-wrap: pretty; }
 
   /* ── 5-B2: anchor targets clear the sticky glass header ───────── */
   .landing main > section[id] { scroll-margin-block-start: 80px; }
@@ -1738,9 +1534,6 @@
   .landing [data-offscreen] .landing-hero-eyebrow strong::after,
   .landing [data-offscreen] .landing-mockup-badge-2,
   .landing [data-offscreen] .typing-dots span,
-  .landing [data-offscreen] .sticker-wiggle .sticker {
-    animation-play-state: paused;
-  }
 
   /* 20-a P1 (4-A1 P1-1): the campus caption em («منذ 1988») — Arabic +
      digits, so polish.css's serif italic was a phantom on «منذ» (the

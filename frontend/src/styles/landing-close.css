@@ -22,7 +22,9 @@
        desktop scale (mobile runs ~200px shorter — `auto` adopts the
        real size once rendered, so the scrollbar never jumps twice). */
     content-visibility: auto;
-    contain-intrinsic-size: auto 780px;
+    /* imm-4-visualqa P1-2: measured 985px at 1440w once rendered; the
+     `auto` keyword locks realized size after first render. */
+    contain-intrinsic-size: auto 985px;
   }
 
   /* The one sanctioned decoration: a quiet copper radial behind the
