@@ -241,7 +241,13 @@ export default function LandingPage() {
       {!ritualSeen && <PreloaderRitual onDone={() => setRevealed(true)} />}
       <CursorCompanion />
 
-      {/* the room: fixed atmosphere layers over everything */}
+      {/* the room: fixed atmosphere layers over everything.
+          The world engine lives here too — a page-wide fixed sky so the
+          scene persists and evolves across every act (the instrument
+          recedes, the nebula cools, the stars answer each chapter). */}
+      <div className="ln-world" aria-hidden="true">
+        <SkyAtlas className="ln-hero-canvas" biasX={-0.5} />
+      </div>
       <div className="landing-stars" aria-hidden="true" />
       <div className="landing-grain" aria-hidden="true" />
       <div className="landing-vignette" aria-hidden="true" />
@@ -372,8 +378,6 @@ export default function LandingPage() {
       {/* ═══ الحركة ٠ — الانفتاح: the hero act (pinned 260vh) ═══ */}
       <section className="ln-hero" data-hero-holder ref={heroRef} aria-label="مدارك — منصة التعليم الذكي">
         <div className="ln-hero-stage" data-phase={heroPhase}>
-          {/* the living sky — five planes, self-measured scrub */}
-          <SkyAtlas className="ln-hero-canvas" biasX={-0.5} />
           <span className="ln-hero-horizon" aria-hidden />
 
           <div className="ln-hero-content">
