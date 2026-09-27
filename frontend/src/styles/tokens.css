@@ -695,7 +695,7 @@
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   var(--neutral-150);
+    --sidebar-item-active-bg:   rgb(233 180 76 / 0.10);  /* مدارك night: gold wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     --sidebar-active-bar:       var(--accent);
 
