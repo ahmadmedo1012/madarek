@@ -1,94 +1,56 @@
-# تحليل الفجوة الجذرية — مدارك vs المعيار العالمي
+# Radical Redesign — Gap Analysis (Round 3, evidence-based)
 
-> **التاريخ:** 2026-09-27 · **المرجع الإبداعي:** promo.emotion-agency.com (تفكيك مبادئ فقط، لا نسخ) · **الحكم الميداني من المالك:** النتيجة بعد مرحلتين أقل من 10% من المستوى المطلوب
->
-> **منهجية هذا التحليل:** أدلة مقاسة فعليًا — لقطات شاشة 1440×900 و390×844 لكل قسم، قياسات CSS محسوبة (`landing-measurements.json`)، قراءة كاملة للكود (LandingPage.tsx 676 سطر، landing.css 1400 سطر، tokens.css 997 سطر)، تفكيك آلي للمرجع (facts.json + مقاطع متتابعة)، وبحث مكتبات موثّق (Task 2-a/2-b/2-c في worklog).
+**Date:** 2026-09-28 · **Base:** main @ 4b4ddbe · **Reference:** promo.emotion-agency.com (craft-level reference ONLY — no copying of assets/code/identity; all techniques re-derived and applied to madarek's own «أطلس المعرفة» language)
 
----
+## 1. What was measured
 
-## 1. ما نُفّذ سابقًا بالفعل (الحقيقة، لا الوعود)
+Side-by-side capture at 1920×1080 (headless Chromium, `analysis/ref/full/` = 21 frames across the reference's 68,126px scroll journey incl. its 11 pinned acts; `analysis/mine/` = 17 frames of our landing at the same viewport). Two independent VLM jury audits (hero set + mid-page set), plus manual DOM/architecture dissection of the reference (Nuxt, single WebGL canvas, GSAP-pinned acts, custom scrollbar, entry-gate ritual).
 
-| المرحلة | ما نُفّذ فعلًا | الدليل |
+## 2. Reference architecture (dissected, principles only)
+
+- One persistent WebGL canvas behind **11 pinned acts** (~6 viewport-heights each; ~68k px of scrub). The WORLD persists and transforms per act (planet → canyon → tunnel → moonlit hills); text floats inside it.
+- Ultra-bold wide display type, cream on deep void; mono eyebrow labels in `[ … ]` brackets; size hierarchy first, color second.
+- Palette: deep void `#0A0514–#1a0b2e`, electric violet, cyan/teal, hot magenta accents; volumetric god-rays; starfield with per-star opacity; film grain.
+- Rituals: audio entry-gate, custom draggable scrollbar, sound toggle, act-indicator classes (`current-section`/`next-section`).
+- Zero native document scroll — a transformed container + wheel/touch/drag drivers (we will NOT copy this mechanic; native scroll + sticky acts is the accessible choice and ours already works).
+
+## 3. Jury scores (VLM, 10-point scale)
+
+| Dimension | Reference | Madarek (main @5dd3357) |
 |---|---|---|
-| حملات 1–5 + حملة «سيادة المظهر» | 25 وكيلًا فرعيًا، VLM متوسط 5.7→8.4، 970+855 اختبار أخضر، 5×P0 مُصلحة | commits 7a81dde→9a6d4b5 |
-| Immersive v2 «سماء مدارك» | OrbitScene بمحرك Canvas 2D (4 مدارات إهليلجية + 16 عقدة توهج + مسافر ذهبي)، عنوان بتتابع كلمات 95px، JourneyLightPath محسوب من مواضع البطاقات الفعلية، 8 فصول سردية، زحف dashoffset مرتبط بالتمرير | commits 9db9845→3dc6bab |
-| Immersive v3 «ليل مدارك» | ثيم ليلي للمنتج (قشرة + sidebars)، حالة فراغ «كوكبة»، تقرير | commits 2f4a938→6e06b6c |
+| Visual impact | 9.5 | 6.5 |
+| Composition | 9 | 7 |
+| **Depth / 3D** | **10** | **4** |
+| Typography craft | 8.5 | 8 |
+| Color artistry | 9 | 7 |
+| **Motion potential** | **10** | **5** |
+| Memorability | 9 | 6 |
+| Mid-page sections | 9–10 | 4–5 |
 
-**ما لم يُنفّذ قط:** لا WebGL، ولا مشهد ثلاثي الأبعاد، ولا GSAP، ولا مشاهد مثبتة pinned، ولا فيديو، ولا خط عرض عربي فوق 700، ولا نظام مكيّف حركة احترافي (كل الحركة CSS + rAF يدوي).
+Verdict quote: *"a digital installation vs a digital poster… stop designing layouts and start designing environments."*
 
-## 2. ما يبدو سطحيًا أو تقليديًا (بصراحة قاسية)
+## 4. Why the current build under-delivers (root causes)
 
-1. **الوسيط الخاطئ في قلب الصفحة:** «المدار» هو Canvas 2D مسطّح — خطوط إهليلجية بعرض 1px ونقاط متوهجة. لا إضاءة، لا عمق حقيقي، لا كاميرا، لا مواد. يُقرأ كرسم شرحٍ لا كعالم.
-2. **الكوكبة (الميزة التنافسية: 25 كلية) هي أضعف عنصر بصري** — حلقات SVG متقطعة بشفافية ~22% ونقاط 15px: مظهر «ديمو D3 افتراضي» (حكم VLM).
-3. **فصل التقدم = 4 div بحدود CSS** تتقلص من 0.72→1. هذا ليس تصورًا بصريًا للبيانات.
-4. **صورة واحدة على 8,721px من التمرير.** لا فيديو، لا تصوير فني موجَّه، لا نسيج. منتصف الصفحة صحراء بطاقات زجاجية رقيقة.
-5. **فصل الأدوار: 1,459px من صفوف نصية** بلا استعارة ولا تكوين.
-6. **توازن الهيرو ميت برمجيًا (مُقاس):** عمود النص يتمركز فعليًا (x=395, w=640 @1440) فوق حقل المدارات بدل التوتر غير المتماثل المقصود — `margin-inline-end:auto` فوق `margin-inline:auto` الأساسي = لا أثر.
-7. **الخطوة الأخيرة المفقودة في التيبوغرافيا:** العنوان 95px/700؛ المرجع 100–200px/800–900 مع line-height 1:1. الوزن 800 مُعرّف في tokens لكن Plex Sans Arabic لا يملكه أصلًا (لا يوجد قط 800 للخط الحالي).
+1. **Flat planes.** SkyAtlas parallax is 2D offset (±8/16/30px) — no perspective projection, no z-axis. The astrolabe is drawn with uniform strokes at 0.3–0.5 alpha: no volume, no occlusion, no light. It reads as an etching, not an instrument floating in space.
+2. **Timid light.** One 0.12-alpha halo + one haze sprite. The reference sells depth with volumetric rays and layered radial light at 3–4× our intensities plus screen-blend light leaks.
+3. **Type sits ON the world, not IN it.** Solid-color headline, no gradient clip, no light-pass, no interaction with the core's glow. Hierarchy mixes size and color arbitrarily (jury: "the eye jumps erratically").
+4. **Safe palette.** Gold `#ECBE69` on navy `#0A1024` is muted; no second accent creating chromatic tension; nebula clouds ≤0.1 alpha (invisible in practice).
+5. **Scene doesn't evolve.** After the hero, the fixed atmosphere layers are static — acts 2–6 happen over a dead sky. The reference's world transforms through every act.
+6. **Motion is ambient, not narrative.** Twinkle/drift/breath are loops, not staged choreography. The entrance has no ignition sequence (rings draw → core lights → type staggers).
 
-## 3. لماذا فشلت المراحل السابقة في الوصول (التشخيص البنيوي)
+## 5. What must be deleted vs evolved
 
-- **سياسة «صفر تبعيات جديدة»** كانت سقف الجودة نفسه. المرجع يصرّح في كوده بـ Nuxt + Three.js r165 + GSAP — أي أن المستوى المطلوب *هو* WebGL+GSAP، وحاولنا بلوغه بـ Canvas 2D + CSS. (أثبته Task 2-c بفحص باقة npm المرجع نفسها.)
-- **نهج تراكمي لا تأسيسي:** كل دورة أضافت طبقة تحسين فوق بنية «Hero + Cards + Features» الأصلية بدل إعادة التفكير في الصفحة كمشاهد.
-- **VLM 8.75/10 كانت مقياسًا خاطئًا** — قِيست بمعيار «موقع جيد» لا بمعيار «إخراج سينمائي عالمي» الذي يطلبه المالك.
-- **لا مدير فني واحد:** القرارات البصرية توزعت على وكلاء متوازيين فخرجت الصفحة بصوتين («مصممان مختلفان» — حكم VLM على التباين بين أعلى الصفحة وأسفلها).
+- **Delete:** the flat single-stroke astrolabe renderer; uniform-alpha star planes as the only depth cue; the static post-hero sky; the solid-color hero title treatment.
+- **Evolve (keep the bones):** 6-act narrative structure, pinned acts, GoldenThread, PreloaderRitual, CursorCompanion, KineticWords, zero-dependency canvas approach, full a11y/reduced-motion/perf contract (these are already world-class processes — the craft gap is visual, not structural).
 
-## 4. المقارنة العملية مع المرجع (16 بُعدًا)
+## 6. The leap (this round's definition of done)
 
-| البُعد | المرجع (مُقاس) | مدارك الآن (مُقاس) | الفجوة |
-|---|---|---|---|
-| أول 3 ثوانٍ | شاشة بنفسجية + سجل طرفية يُكتب حرفيًا + عداد (86%) حي + بوابة دخول = طقس دخول | صفحة جاهزة فورًا؛ الدخول = انتقال شفافية عادي | **قصيرة جدًا: لا لحظة افتتاح** |
-| Hero composition | نوع عرض full-bleed بعرض 1320px داخل هوامش 60px، مساحة سلبية 60–70% | عمود 640px متمركز فوق المدارات (التوازن المقصود لا يعمل) | **جذرية** |
-| Art Direction | لون واحد حبر-كحلي (#25293C، ليس أسود أبدًا) + كريمي للنص + صبغة رأسية حصرية + لمسة كهربائية واحدة | void كحلي + ذهبي في كل مكان 8,700px (رتيب) | **الانضباط معكوس** |
-| hierarchy | فجوة 8:1 بين أكبر عنوان وأصغر label | العنوان 95px وأصغر نص 11px لكن بلا نظام طبقتين للون | متوسطة |
-| typography | عرض 100px/400، line-height 1:1، سطر-قناع لكل سطر | 95px/700، line-height 1.2، تتابع كلمات | **قصيرة درجة + خطأ الوزن** |
-| الخلفيات والطبقات | كانفس WebGL واحد ثابت خلف الـDOM + 22 لوح زجاجي blur-20px | كانفس داخل قسم واحد فقط + بطاقات زجاجية | **جذرية: المرجع عالم، نحن قسم** |
-| جودة الأصول | 0 `<img>` — كل البصريات canvas/فيديو/SVG مولّدة | صورة فوتوغرافية واحدة | **جذرية** |
-| عمق وتنوع الحركة | مشاهد مثبتة 100vh تتحول داخليًا + 3D يستمر بالخلفية + 6 marquee | تتابع دخول + خيط ذهبي 2px واحد + scale 0.28 | **جذرية** |
-| تفاعل الماوس | المشهد ثلاثي الأبعاد يستجيب للمؤشر باستمرار | parallax ثلاثي الطبقات خفيف | متوسطة |
-| السرد أثناء التمرير | قوس قصة: خطاف → بيان → خدمات → إقناع عاطفي → آلية العمل → حالات | 4 فصول متسلسلة كتقلييم مستند | **جذرية** |
-| التحولات | قطع مشهد داخل تمرير مستمر + virtual scroll | حدود أقسام عادية | **جذرية** |
-| التفاصيل الدقيقة | عداد حي، مؤشر طرفية وامض 300ms، mono uppercase labels، tickers | قليل (drip line، badges) | كبيرة |
-| التجاوب | DOM نحيل ~2,007 عقدة | الصفحة الرئيسية جيدة جدًا (0 تجاوز @390) | صغيرة (نقطة قوة) |
-| الأداء | will-change لكل شيء متحرك، أصول مولدة | ممتاز: DPR≤2، إيقاف خارج الشاشة، reduced-motion كامل | صغيرة (نحافظ عليها) |
-| إحساس «منتج أصلي» | طقس دخول + لغة واحدة | قالب LMS مزخرف | **جذرية** |
-| استمرارية التجربة | — | السرد السينمائي يموت عند أول صفحة منتج (مشغل درس بعناصر المتصفح الأصلية) | كبيرة |
+**A. World Engine (SkyAtlas v2):** perspective-projected starfield (stars carry z, drift toward viewer with scroll); volumetric knowledge core — 3D-tilted rings with front/back occlusion and depth-graded alpha; 25 orbital discipline nodes on true 3D orbits; layered god-rays; global act-progress driving scene evolution (hue shift, core drift, nebula crossfade per act); parallax disparity ≥5× between near/far.
+**B. Type IN the world:** hero title at `clamp(64px, 10vw, 168px)`, gradient-clipped (hot gold → cream) with a slow light-pass; hierarchy by size/weight first; giant outlined Arabic-Indic act numerals as background depth.
+**C. Chromatic audacity:** hotter gold ramp (`#FFD98E→#F6A93B`), cyan tension accent (`#7AC8FF→#39C6FF`) against deep void `#05070F–#0A1024`; light leaks with `mix-blend-mode: screen`.
+**D. Entrance choreography:** ritual → ring-draw → core ignition → type stagger (all CSS/canvas staged, reduced-motion gets the composed still).
+**E. Every act gets a scene state** (the sky answers each chapter), verified by VLM re-audit ≥8/10 per frame and the full test matrix (855 tests, axe 0, build clean, Lighthouse-class hygiene).
 
-## 5. ما يجب **حذفه/استبداله** (وليس تحسينه)
+## 7. Measurement loop
 
-| العنصر | الحكم | السبب |
-|---|---|---|
-| OrbitScene (Canvas 2D) | **استبدال بمشهد R3F/WebGL أصلي** | الوسيط ذاته لا يستطيع حمل المستوى؛ **نُport الطبقات الهندسية** (DPR≤2، إيقاف IO، reduced-motion، saveData) |
-| كوكبة الكليات (حلقات SVG) | **استبدال** | أضعف عنصر بصري في الصفحة رغم أنه الميزة التنافسية |
-| تكوين الهيرو + قياسات العنوان | **استبدال** | التوازن ميت برمجيًا؛ 95px/700 لا يبلغ المستوى |
-| فصل التقدم (4 حلقات CSS) | **استبدال بتصور بيانات حقيقي مضيء** | حدود CSS ليست visualization |
-| صفوف الأدوار المسطحة | **استبدال بمعالجة فنية** | 1,459px بلا تكوين |
-| فتحات الثقة النصية | **استبدال بشريط marquee مكيّف RTL** | صف نصي ثابت = صفر إيقاع |
-| عناصر تحكم الفيديو الأصلية في مشغل الدرس | **استبدال بقشرة مدارك** | اللحظة الجوهرية للمنتج تبدو خارجة عن الهوية |
-
-**يُحافظ عليه (أصول حقيقية):** نظام tokens ثنائي الثيم (ممتاز)، عقد RTL والوصولية (axe=0)، طبقات الأداء، JourneyLightPath (منطق القياس)، بنية المنتج + مساراته + اختباراته (970+855)، البنية التحتية للفحص الآلي.
-
-## 6. قائمة العمل مرتبة حسب الأثر البصري والتجاري
-
-1. **[أقصى أثر] مشهد WebGL أصلي للهيرو** — «عالم مدارك»: نواة معرفة مضيئة + مدارات كليات ثلاثية الأبعاد + حقل جزيئات + شيدر ضباب/توهج أصلي + كاميرا تتنفس وتتبع المؤشر. R3F 8.18 + three 0.174 (محاكمة Task 2-c: متوافق مع React 18.3).
-2. **[أقصى أثر] إعادة بناء تكوين الهيرو + التيبوغرافيا**: Cairo VF (وزن 800–900، 30.2KB عربي فقط) عنوان 140–180px/1:1، إصلاح التوازن غير المتماثل فعليًا، كشف سطر-قناع SplitText (تتابع 60–90ms، expo-out).
-3. **[أثر كبير] لحظة افتتاح مدارك**: مقدمة عربية أصيلة (سجل «بيانات المعرفة» + عداد + مؤشر وامض) تختفي في 1.2–2s، مع بوابة حركة لـ reduced-motion — لا انتظار إجباري.
-4. **[أثر كبير] سرد مثبت**: فصول تُثبَّت 100vh وتتحول داخليًا (ScrollTrigger pin + scrub) بدل التكديس، Lenis للنعومة (يحترم reduced-motion افتراضيًا).
-5. **[أثر كبير] إعادة بناء الكوكبة** كنظام مداري حي يتفاعل مع التمرير والأهداف (أزرار الكليات الحقيقية تبقى).
-6. **[أثر متوسط] فصل التقدم** = بيانات حقيقية مضيئة (حلقات تقدم لكل مجال من الـAPI) بدل 4 حدود.
-7. **[أثر متوسط] marquee مجالات/أرقام مكيّف RTL** + تفاصيل micro (mono eyebrows، عدادات).
-8. **[أثر متوسط] CTA ختامي سينمائي** + قشرة مشغل الدرس بهوية مدارك.
-9. **[أثر داعم] توحيد صوت الصفحة** (طبقتا نص، انضباط الذهبي، أزرار موحدة).
-
-## 7. التعريف الملموس لـ«قفزة بصرية كبيرة» في هذه المهمة
-
-قفزة تُقاس لا تُوصف. الصفحة الجديدة تجتازها فقط إذا:
-
-1. **لحظة افتتاح:** خلال أول 2.5 ثانية توجد لحظة واحدة على الأقل لا يمكن إنتاجها بـCSS (كاميرا تدور/نواة تتشكل/جزيئات تتجمع إلى مدارات) — ويختفي المقدمة بعد ≤2s للمستخدم العائد.
-2. **الهيرو:** عنوان ≥120px بوزن ≥800 وline-height ≤1.15، والمشهد WebGL يعمل بسلاسة ≥50fps على لابتوب متوسط، مع fallback ثابت عالي الجودة عند reduced-motion/جهاز ضعيف.
-3. **السرد:** قسمان على الأقل مثبتان pinned يتحولان داخليًا أثناء التمرير — التمرير يشغّل قوسًا، لا يمر على بطاقات.
-4. **الفارق المُقاس:** مقارنة جنب-إلى-جنب 1440px لقطة hero وفصلين رئيسيين — حكم مستقل «موقع من فئة مختلفة»، وليس «نسخة محسنة».
-5. **الصندوق الأخضر رغم كل هذا:** typecheck + 855 اختبار واجهة + بناء نظيف + axe=0 + 0 تجاوز أفقي @320–430 + reduced-motion يعرض نسخة ساكنة كاملة.
-6. **الحزمة:** ≤90KB gzip لحركة الصفحة الرئيسية + ≤230KB chunk WebGL مؤجّل لا يحجب أول طلاء.
-
-**العتبة الفاصلة بين «تحسين» و«قفزة»:** إن أمكن وصف الفرق بين النسختين بـ«ألوان/بطاقات أفضل» فهذا فشل. القفزة تعني: وسط مختلف (WebGL)، إيقاع مختلف (تثبيت)، صوت تيبوغرافي مختلف (عرض 800+ عربي)، وقوس قصة يشعر به مستخدم عادي في أول تمريرة.
+Each cycle: build → capture 1920×1080 frames (hero + acts 2–6) → VLM jury vs reference frames → fix worst-scoring dimension → repeat until no dimension < 8/10 or two consecutive cycles gain < 0.25. Honest-stop rule applies: every claim in the final report must cite a command and its output.
