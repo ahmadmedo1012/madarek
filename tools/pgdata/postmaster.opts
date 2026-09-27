@@ -1,0 +1,1 @@
+/home/z/my-project/madarek/tools/node_modules/@embedded-postgres/linux-x64/native/bin/postgres "-D" "/home/z/my-project/madarek/tools/pgdata" "-p" "5433" "-k" "/home/z/my-project/madarek/tools/pgsock" "-c" "listen_addresses=127.0.0.1"

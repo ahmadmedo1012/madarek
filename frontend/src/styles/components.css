@@ -389,11 +389,16 @@
   }
   .btn.primary:hover::before { background-position: -60% 0; }
   [data-theme="dark"] .btn.primary {
-    --_btn-bg: var(--neutral-900);
-    --_btn-fg: var(--neutral-50);
-    --_btn-bd: var(--neutral-900);
-    --_btn-bg-hover: var(--neutral-800);
-    --_btn-bd-hover: var(--neutral-800);
+    /* مدارك night: the old ink-slab (#F2EFE6 cream on charcoal) reads
+       as a glaring white highlighter on the night ground. Primary
+       becomes the quiet elevated action — sky-2 ground, ink text,
+       hairline border — so the GOLD accent stays the single loud CTA
+       (same hierarchy the landing keeps: gold = the one call). */
+    --_btn-bg: var(--neutral-150);
+    --_btn-fg: var(--text);
+    --_btn-bd: var(--border-strong);
+    --_btn-bg-hover: var(--neutral-200);
+    --_btn-bd-hover: var(--border-strong);
   }
 
   .btn.accent,

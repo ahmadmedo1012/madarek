@@ -89,3 +89,4 @@ frontend/tests/audit/screenshots/
 .specify/
 .claude/
 test-results/
+.gstack/
