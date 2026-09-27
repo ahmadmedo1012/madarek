@@ -38,7 +38,8 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('every @font-face in fonts.css points to an existing woff2 file', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const urls = [...css.matchAll(/url\('?(\/fonts\/[^)']+\.woff2)'?\)/g)].map((m) => m[1]!);
-    expect(urls.length).toBe(12);
+    // 12 IBM Plex + 6 Noto Kufi Arabic (arabic/latin × 500/700/800) + 1 Amiri
+    expect(urls.length).toBe(19);
     for (const u of urls) {
       const file = path.join(root, 'public', u.replace(/^\//, ''));
       expect(existsSync(file), `${u} missing from public/fonts`).toBe(true);
@@ -48,7 +49,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('all font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(12);
+    expect(faces).toBe(19);
     expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
   });
 
