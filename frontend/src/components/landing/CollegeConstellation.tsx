@@ -112,12 +112,6 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
       <div className="ln-constellation-stage" aria-hidden={active ? undefined : 'true'}>
         <svg viewBox={`0 0 ${W} ${H}`} className="ln-constellation-svg" role="img"
           aria-label={`كوكبة ${count} كلية على ستة مدارات معرفية`}>
-          <defs>
-            <radialGradient id="ln-const-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="var(--ln-gold)" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="var(--ln-gold)" stopOpacity="0" />
-            </radialGradient>
-          </defs>
           {rings.map((r, i) => (
             <ellipse
               key={i}
@@ -126,14 +120,8 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
               transform={`rotate(${(r.rot * 180) / Math.PI} ${r.cx} ${r.cy})`}
             />
           ))}
-          {nodes.map((n) => (
-            <g key={n.slug} className="ln-constellation-node" transform={`translate(${n.x} ${n.y})`}
-              onMouseEnter={() => setActive(n)} onMouseLeave={() => setActive(null)}>
-              <circle className="ln-constellation-node-halo" r="14" fill="url(#ln-const-glow)" />
-              <circle className="ln-constellation-node-core" r="4" fill={n.color} />
-              <circle className="ln-constellation-node-hit" r="12" />
-            </g>
-          ))}
+          {/* node glows live in the DOM layer below — the SVG carries the
+              orbital tracks only, so every dot reads as riding its ring */}
         </svg>
         {/* labels are DOM (crisper Arabic, better a11y than <text>) */}
         {nodes.map((n) => (
@@ -141,7 +129,7 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
             key={n.slug}
             type="button"
             className="ln-constellation-dot"
-            style={{ insetInlineStart: `${(n.x / W) * 100}%`, top: `${(n.y / H) * 100}%`, '--dot': n.color } as React.CSSProperties}
+            style={{ left: `${(n.x / W) * 100}%`, top: `${(n.y / H) * 100}%`, '--dot': n.color } as React.CSSProperties}
             aria-label={`${n.name}${n.city ? ` — ${n.city}` : ''}`}
             onMouseEnter={() => setActive(n)}
             onFocus={() => setActive(n)}
@@ -153,7 +141,7 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
         {active && (
           <span
             className="ln-constellation-tip"
-            style={{ insetInlineStart: `${(active.x / W) * 100}%`, top: `${(active.y / H) * 100}%` }}
+            style={{ left: `${(active.x / W) * 100}%`, top: `${(active.y / H) * 100}%` }}
             role="status"
           >
             <b>{active.name}</b>

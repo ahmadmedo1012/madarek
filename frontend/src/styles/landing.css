@@ -55,6 +55,24 @@
     radial-gradient(120% 70% at 50% -10%, #111A3A 0%, transparent 60%),
     linear-gradient(180deg, var(--ln-void) 0%, var(--ln-sky-0) 26%, var(--ln-sky-0) 78%, var(--ln-void) 100%);
 }
+/* stage-wide star dust — one fixed layer above the gradient, under the
+   chrome (grain-style overlay; pointer-transparent, 1px dots) */
+.landing main::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.2px 1.2px at 22% 18%, rgb(242 239 230 / 0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 66% 52%, rgb(242 239 230 / 0.2) 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 84% 24%, rgb(233 180 76 / 0.24) 50%, transparent 51%),
+    radial-gradient(1px 1px at 12% 72%, rgb(111 168 255 / 0.2) 50%, transparent 51%),
+    radial-gradient(1.1px 1.1px at 47% 86%, rgb(242 239 230 / 0.18) 50%, transparent 51%);
+  background-repeat: repeat;
+  background-size: 520px 520px;
+  opacity: 0.5;
+}
 
 /* mono system layer — the «machine» voice */
 .landing .ln-mono {
@@ -524,9 +542,10 @@
 .landing .ln-hero-meta-dot { inline-size: 3px; block-size: 3px; border-radius: 50%; background: var(--ln-mist); opacity: 0.6; }
 
 /* scroll invitation */
+/* scroll invitation — physical centering, RTL-safe */
 .landing .ln-hero-scroll {
   position: absolute;
-  inset-inline-start: 50%;
+  left: 50%;
   translate: -50% 0;
   bottom: 26px;
   display: grid;
@@ -646,21 +665,15 @@
 .landing .ln-constellation-svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
 .landing .ln-constellation-ring {
   fill: none;
-  stroke: rgb(142 151 184 / 0.18);
-  stroke-width: 1;
+  stroke: rgb(142 151 184 / 0.22);
+  stroke-width: 1.2;
   stroke-dasharray: 3 7;
   animation: ln-ring-crawl 46s linear infinite;
 }
 @keyframes ln-ring-crawl { to { stroke-dashoffset: -100; } }
 
-.landing .ln-constellation-node-halo {
-  opacity: 0.45;
-  transition: opacity var(--t-base) var(--ln-ease-soft);
-}
-.landing .ln-constellation-node:hover .ln-constellation-node-halo { opacity: 1; }
-.landing .ln-constellation-node-hit { fill: transparent; }
-
-/* DOM overlay dots (crisp, focusable, RTL-friendly) */
+/* DOM overlay dots (crisp, focusable, RTL-safe — physical left/top
+   matches the SVG viewBox coordinate space) */
 .landing .ln-constellation-dot {
   position: absolute;
   translate: -50% -50%;
@@ -791,34 +804,51 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: clamp(48px, 8vh, 90px);
+  gap: clamp(36px, 6vh, 64px);
   position: relative;
   z-index: 1;
 }
-.landing .ln-station { position: relative; display: grid; }
-.landing .ln-station.from-start { justify-items: start; }
-.landing .ln-station.from-end { justify-items: end; }
-@media (min-width: 921px) {
-  .landing .ln-station.from-start,
-  .landing .ln-station.from-end { grid-template-columns: minmax(0, 460px); }
-}
+.landing .ln-station { position: relative; display: block; }
+.landing .ln-station-card { max-inline-size: 440px; }
+/* block + auto-margins actually flip sides per direction (grid
+   justify-items can't move the track itself) */
+.landing .ln-station.from-start .ln-station-card { margin-inline-end: auto; }
+.landing .ln-station.from-end .ln-station-card { margin-inline-start: auto; }
 
+/* nodes anchor to the CARD (not the wide li) so they hug the card's
+   center-facing edge at every breakpoint */
 .landing .ln-station-node {
   position: absolute;
-  top: 26px;
+  top: 30px;
   inline-size: 13px;
   block-size: 13px;
   border-radius: 50%;
   background: var(--ln-gold);
   box-shadow: 0 0 0 4px rgb(233 180 76 / 0.18), 0 0 18px 2px rgb(233 180 76 / 0.4);
+  z-index: 2;
 }
-.landing .ln-station.from-start .ln-station-node { inset-inline-start: -34px; }
-.landing .ln-station.from-end .ln-station-node { inset-inline-end: -34px; }
+.landing .ln-station.from-start .ln-station-card .ln-station-node { inset-inline-end: -40px; }
+.landing .ln-station.from-end .ln-station-card .ln-station-node { inset-inline-start: -40px; }
+/* mobile: nodes collapse to a glowing spine in the reading-start gutter;
+   the light path measures them there and becomes a vertical thread */
 @media (max-width: 920px) {
-  .landing .ln-station .ln-station-node { display: none; }
+  .landing .ln-station .ln-station-node {
+    top: 34px;
+    inset-inline-start: -23px;
+    inset-inline-end: auto;
+    inline-size: 11px;
+    block-size: 11px;
+  }
+  .landing .ln-station.from-start .ln-station-card .ln-station-node,
+  .landing .ln-station.from-end .ln-station-card .ln-station-node { inset-inline-start: -23px; inset-inline-end: auto; }
+  .landing .ln-journey-stage { padding-inline-start: 30px; }
+  .landing .ln-station-card { max-inline-size: none; }
+  .landing .ln-station.from-start .ln-station-card,
+  .landing .ln-station.from-end .ln-station-card { margin-inline: 0; }
 }
 
 .landing .ln-station-card {
+  position: relative;
   inline-size: 100%;
   padding: var(--sp-6) var(--sp-7);
   border-radius: var(--r-xl);
@@ -861,8 +891,15 @@
   color: var(--ln-ink-faint);
   font-size: 11.5px;
 }
-.landing .ln-station-title { margin: 0 0 var(--sp-3); font-size: 21px; font-weight: var(--fw-bold); color: var(--ln-ink); }
-.landing .ln-station-desc { margin: 0; color: var(--ln-ink-dim); font-size: 14.5px; line-height: 1.85; }
+.landing .ln-station-title { margin: 0 0 var(--sp-3); font-size: 22px; font-weight: var(--fw-bold); color: var(--ln-ink); }
+.landing .ln-station-desc { margin: 0; color: var(--ln-ink-dim); font-size: 15px; line-height: 1.85; }
+/* the final station is the destination — bigger node, gold-lit card */
+.landing .ln-station:last-child .ln-station-node {
+  inline-size: 17px;
+  block-size: 17px;
+  box-shadow: 0 0 0 5px rgb(233 180 76 / 0.22), 0 0 26px 4px rgb(233 180 76 / 0.55);
+}
+.landing .ln-station:last-child .ln-station-card { border-color: rgb(233 180 76 / 0.32); }
 
 /* ── 9 · progress story ────────────────────────────────────────────── */
 .landing .ln-progress {

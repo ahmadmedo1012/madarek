@@ -19,6 +19,7 @@ import { CountUp } from '../components/CountUp';
 import { colleges } from '../data/colleges.config';
 import { OrbitScene } from '../components/landing/OrbitScene';
 import { CollegeConstellation } from '../components/landing/CollegeConstellation';
+import { JourneyLightPath } from '../components/landing/JourneyLightPath';
 import { Parallax } from '../components/motion/Parallax';
 // landing.css is this page's own sheet (dark immersive world, scoped to
 // .landing); colleges.css rides here for the popover surfaces.
@@ -369,19 +370,8 @@ export default function LandingPage() {
         </div>
 
         <div className="ln-journey-stage">
-          {/* the light path — drawn by scroll (pure CSS, pathLength=1) */}
-          <svg className="ln-journey-path" viewBox="0 0 1000 1200" preserveAspectRatio="none" aria-hidden>
-            <path
-              className="ln-journey-path-base"
-              d="M 950 40 C 700 120, 300 60, 180 240 S 420 420, 500 560 S 820 640, 830 800 S 350 940, 170 1060 S 480 1160, 500 1180"
-              pathLength={1}
-            />
-            <path
-              className="ln-journey-path-light"
-              d="M 950 40 C 700 120, 300 60, 180 240 S 420 420, 500 560 S 820 640, 830 800 S 350 940, 170 1060 S 480 1160, 500 1180"
-              pathLength={1}
-            />
-          </svg>
+          {/* the light path — computed from the real station-node layout */}
+          <JourneyLightPath />
 
           <ol className="ln-journey-stations">
             {JOURNEY.map((s, i) => (
@@ -391,10 +381,10 @@ export default function LandingPage() {
                 className={`ln-station${i % 2 === 0 ? ' from-start' : ' from-end'}`}
                 delay={(i + 1) as 1 | 2 | 3 | 4 | 5}
               >
-                <span className="ln-station-node" aria-hidden>
-                  <span className="ln-station-node-core" />
-                </span>
                 <article className="ln-station-card">
+                  <span className="ln-station-node" aria-hidden>
+                    <span className="ln-station-node-core" />
+                  </span>
                   <header className="ln-station-head">
                     <span className="ln-mono ln-station-n">{s.n}</span>
                     <span className="ln-station-ico"><Icon icon={s.icon} size={20} /></span>
