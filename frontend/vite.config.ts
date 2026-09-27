@@ -57,10 +57,14 @@ export default defineConfig({
           react: ['react', 'react-dom', 'react-router-dom'],
           query: ['@tanstack/react-query'],
           charts: ['chart.js', 'react-chartjs-2'],
-          /* v4 cinematic kit — gsap+lenis ride the landing chunk; three+R3F
-             load only when the lazy HeroScene imports (async boundary). */
-          motion: ['gsap', '@gsap/react', 'lenis'],
-          webgl: ['three', '@react-three/fiber'],
+          // NOTE: the v4 cinematic kit (gsap/@gsap/react/lenis/three/@react-three/fiber)
+          // was listed here without ever being added to frontend/package.json —
+          // Rollup treats manualChunks entries as entry modules, so their mere
+          // presence broke the production build on Render ("Could not resolve
+          // entry module gsap"). The «أطلس المعرفة» landing ships its own
+          // zero-dependency canvas/motion kit, so these chunks are removed.
+          // If a cinematic lib is ever adopted: add it to package.json FIRST,
+          // then re-add its chunk entry in the same commit.
         },
       },
     },
