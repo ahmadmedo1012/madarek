@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
-import { Skeleton, ListSkeleton, ErrorState } from '../../components/primitives/States';
+import { Skeleton, ListSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { useReducedMotion } from '../../components/motion';
 import { courseIcon } from '../../lib/courseMeta';
@@ -206,17 +206,15 @@ export default function OnlineExamsPage() {
             subtitle={countAr(available.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
           >
             {available.length === 0 && (
-              <div className="state">
-                <div className="state-icon state-icon-success"><Icon icon={CheckCircle2} size={20} /></div>
-                <div className="state-title">لا توجد اختبارات متاحة حالياً</div>
-                <div className="state-desc">
-                  {/* When the only exams are windowed ones, point at their
-                      dated group below instead of implying nothing exists. */}
-                  {unavailable.length > 0
+              <EmptyState
+                illustration="empty-constellation"
+                title="لا توجد اختبارات متاحة حالياً"
+                description={
+                  unavailable.length > 0
                     ? 'بعض اختباراتك لم يفتح بابها بعد أو أُغلق — مواعيدها في القائمة أدناه.'
-                    : 'ستظهر الاختبارات هنا فور اعتمادها من مكتب الجودة ومُقرِّريك.'}
-                </div>
-              </div>
+                    : 'سماؤك صافية الليلة — ستُضيء النجوم هنا فور اعتماد مكتب الجودة ومُقرِّريك الاختبارات.'
+                }
+              />
             )}
             <div className="track-grid">
               {available.map((e) => <ExamCard key={e.id} exam={e} canStart />)}
