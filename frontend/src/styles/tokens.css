@@ -460,11 +460,12 @@
     --scrollbar-thumb-hover: rgba(25,25,24,0.28);
 
     /* legacy aliases — 21-c dead-alias sweep (A12 P3-12):
-       --paper-*/--ink-*/--gold-1,3,5,7,9/--{green,amber,red,blue}-{100,700}
-       had ZERO consumers across src+tests (rg-verified 0 var() uses
-       outside their own definitions). Deleted from BOTH theme blocks;
-       the LIVE aliases stay: --text-subtle (×38), --shadow-sm (×2),
-       --accent-border (×1), --gold / --gold-ink / --gold-soft. */
+       the paper/ink/gold-{1,3,5,7,9} and green/amber/red/blue-{100,700}
+       token families had ZERO consumers across src+tests (rg-verified
+       0 var() uses outside their own definitions). Deleted from BOTH
+       theme blocks; the LIVE aliases stay: --text-subtle (×38),
+       --shadow-sm (×2), --accent-border (×1),
+       --gold / --gold-ink / --gold-soft. */
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);

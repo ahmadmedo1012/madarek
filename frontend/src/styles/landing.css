@@ -697,6 +697,13 @@
   box-shadow: 0 0 20px 3px color-mix(in oklab, var(--dot) 55%, transparent);
 }
 .landing .ln-constellation-dot:focus-visible { outline: 2px solid var(--ln-gold-soft); outline-offset: 3px; }
+/* generous invisible hit target around each 15px dot */
+.landing .ln-constellation-dot::before {
+  content: '';
+  position: absolute;
+  inset: -13px;
+  border-radius: 50%;
+}
 
 .landing .ln-constellation-tip {
   position: absolute;
@@ -1011,6 +1018,14 @@
   display: grid;
   gap: clamp(40px, 6vh, 64px);
 }
+.landing .ln-campus-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(242 239 230 / 0.07);
+  pointer-events: none;
+}
 .landing .ln-campus-frame {
   margin: 0;
   position: relative;
@@ -1018,6 +1033,10 @@
   overflow: hidden;
   border: 1px solid var(--ln-hairline-strong);
   box-shadow: 0 40px 90px -40px rgb(0 0 0 / 0.8);
+  transition: box-shadow var(--t-slow) var(--ln-ease-soft);
+}
+.landing .ln-campus-frame:hover {
+  box-shadow: 0 50px 110px -40px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(233 180 76 / 0.18);
 }
 .landing .ln-campus-photo {
   display: block;
@@ -1080,6 +1099,15 @@
   background: rgb(16 23 49 / 0.45);
   border-color: var(--ln-hairline);
 }
+.landing .ln-role-row:hover .ln-role-ico {
+  box-shadow: 0 0 26px -4px rgb(233 180 76 / 0.35);
+}
+.landing .ln-role-ico { transition: box-shadow var(--t-base) var(--ln-ease-soft); }
+.landing .ln-role-row:hover .ln-role-ico.gold { background: rgb(233 180 76 / 0.2); }
+.landing .ln-role-row:hover .ln-role-ico.azure { background: rgb(111 168 255 / 0.2); }
+.landing .ln-role-row:hover .ln-role-ico.mist { background: rgb(142 151 184 / 0.2); }
+.landing .ln-role-index { transition: color var(--t-fast) var(--ln-ease-soft); }
+.landing .ln-role-row:hover .ln-role-index { color: var(--ln-gold); }
 @media (min-width: 921px) {
   .landing .ln-role-row { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); align-items: start; }
 }
@@ -1193,7 +1221,9 @@
 /* ── 10d · footer ──────────────────────────────────────────────────── */
 .landing .landing-footer {
   border-block-start: 1px solid var(--ln-hairline);
-  background: var(--ln-void);
+  background:
+    radial-gradient(50% 100% at 50% 0%, rgb(233 180 76 / 0.04) 0%, transparent 70%),
+    var(--ln-void);
   padding-block: clamp(56px, 8vh, 88px) var(--sp-8);
 }
 .landing .landing-footer-grid {
@@ -1231,6 +1261,12 @@
   font-size: 13px;
 }
 .landing .ln-footer-cluster { display: inline-flex; align-items: center; gap: 8px; }
+
+/* popover trigger badge rides the gold system inside the landing */
+.landing .landing-colleges-trigger-badge {
+  background: rgb(233 180 76 / 0.16);
+  color: var(--ln-gold-soft);
+}
 
 /* ── progress ribbon (top) ─────────────────────────────────────────── */
 .landing .landing-progress {
