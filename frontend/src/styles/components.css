@@ -389,11 +389,16 @@
   }
   .btn.primary:hover::before { background-position: -60% 0; }
   [data-theme="dark"] .btn.primary {
-    --_btn-bg: var(--neutral-900);
-    --_btn-fg: var(--neutral-50);
-    --_btn-bd: var(--neutral-900);
-    --_btn-bg-hover: var(--neutral-800);
-    --_btn-bd-hover: var(--neutral-800);
+    /* مدارك night: the old ink-slab (#F2EFE6 cream on charcoal) reads
+       as a glaring white highlighter on the night ground. Primary
+       becomes the quiet elevated action — sky-2 ground, ink text,
+       hairline border — so the GOLD accent stays the single loud CTA
+       (same hierarchy the landing keeps: gold = the one call). */
+    --_btn-bg: var(--neutral-150);
+    --_btn-fg: var(--text);
+    --_btn-bd: var(--border-strong);
+    --_btn-bg-hover: var(--neutral-200);
+    --_btn-bd-hover: var(--border-strong);
   }
 
   .btn.accent,
@@ -425,6 +430,22 @@
   }
   .btn.accent:hover::before,
   .btn.gold:hover::before { background-position: -60% 0; }
+
+  /* مدارك night — the gold CTA becomes metal: the landing's exact CTA
+     treatment (145° gold → deep-gold gradient + soft outer glow), so
+     the one loud call-to-action reads identically from the landing's
+     «ابدأ رحلتك» to the app's primary actions. Paint-only, rides the
+     same hover/press states. */
+  [data-theme="dark"] .btn.accent,
+  [data-theme="dark"] .btn.gold {
+    --_btn-bg: linear-gradient(145deg, #E9B44C 0%, #C9962F 100%);
+    --_btn-bg-hover: linear-gradient(145deg, #F5D48A 0%, #E9B44C 100%);
+    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.30), 0 6px 20px -8px rgb(233 180 76 / 0.35);
+  }
+  [data-theme="dark"] .btn.accent:hover,
+  [data-theme="dark"] .btn.gold:hover {
+    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.45), 0 8px 26px -8px rgb(233 180 76 / 0.45);
+  }
 
   /* T3-F4 WCAG — in LIGHT theme the accent pair is copper + deep
      espresso ink (--accent-fg #1A0F06 = 4.95:1 on --accent). The legacy

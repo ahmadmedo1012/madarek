@@ -581,28 +581,31 @@
        the legal one). Landing mega rides calc(display-lh + .05) → 1.25. */
     --type-display-line-height: 1.2;
 
-    --neutral-0:   #1F1F1E;
-    --neutral-50:  #191918;
-    --neutral-100: #232322;
-    --neutral-150: #2A2A28;
-    --neutral-200: #353532;
-    --neutral-300: #46453F;
-    --neutral-400: #6E6B61;
-    --neutral-500: #9A968A;
-    --neutral-700: #C8C2B2;
-    --neutral-800: #DDD7C5;
-    --neutral-900: #F2EAD8;
+    --neutral-0:   #0D1428;
+    --neutral-50:  #070B16;
+    --neutral-100: #121A36;
+    --neutral-150: #182142;
+    --neutral-200: #1B2444;
+    --neutral-300: #263052;
+    --neutral-400: #7A83A0;
+    --neutral-500: #8E97B8;
+    --neutral-700: #C3C8DC;
+    --neutral-800: #DDE1EE;
+    --neutral-900: #F2EFE6;
 
-    /* same hue families, darker grounds + slightly brighter inks */
-    --c-peach-bg:     #3D2A23;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
-    --c-mint-bg:      #1F3429;   --c-mint-ink:     #82CB99;   --c-mint-deep:    #C9EAD3;
-    --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
-    --c-sky-bg:       #1F2F45;   --c-sky-ink:      #92B4DC;   --c-sky-deep:     #C9DCEE;
-    --c-yellow-bg:    #3A3017;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
-    --c-rose-bg:      #3D2126;   --c-rose-ink:     #F09BA3;   --c-rose-deep:    #FACDD2;
-    --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
-    --c-grey-bg:      #2A2823;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
-    --c-copper-bg:    #3D2D1B;   --c-copper-ink:   #E0A067;   --c-copper-deep:  #F8DDBC;
+    /* مدارك night (v3): hue families re-grounded on the indigo night —
+       deep space-tinted bgs + luminous inks. Contrast on --bg #070B16
+       (night-contrast-check.py, 26/26 pass): mint 10.94, rose 8.68,
+       sky 9.88, yellow 12.37, lavender 8.75 — all clear text-AA. */
+    --c-peach-bg:     #2C1A16;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
+    --c-mint-bg:      #0F241C;   --c-mint-ink:     #7FD39A;   --c-mint-deep:    #C9EAD3;
+    --c-lavender-bg:  #221B3A;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
+    --c-sky-bg:       #14213A;   --c-sky-ink:      #8FBBF2;   --c-sky-deep:     #C9DCEE;
+    --c-yellow-bg:    #2C2410;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
+    --c-rose-bg:      #2C1620;   --c-rose-ink:     #F0938F;   --c-rose-deep:    #FACDD2;
+    --c-sand-bg:      #241F14;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
+    --c-grey-bg:      #161D33;   --c-grey-ink:     #A9B0C8;   --c-grey-deep:    #D5DAE8;
+    --c-copper-bg:    #2C2312;   --c-copper-ink:   #E9B44C;   --c-copper-deep:  #F5D48A;
 
     --bg:               var(--neutral-50);
     --bg-soft:          var(--neutral-100);
@@ -616,43 +619,39 @@
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  var(--neutral-500);
-    /* 15-g P1-3 — the light T3-F4 lift was never mirrored here: dark
-       --text-faint resolved --neutral-400 #6E6B61 = 3.30:1 on --bg
-       #191918 (body-size AA needs 4.5; real consumers: every input
-       ::placeholder, locked-lesson numbers, .trend-rank, .perm-row-key,
-       .scan-cell-meta…). #8E8A7E → 5.10:1 on --bg, 4.78:1 on --surface
-       #1F1F1E (what dark inputs paint), 4.56:1 on --surface-2 #232322
-       — AA-safe on every dark text surface while staying one step
-       fainter than --text-muted #9A968A (5.95:1 on --bg). One RGB step
-       above the audit's #8D897C, whose surface-2 ratio is 4.4959:1 — a
-       hair under AA that 2-dp rounding hid; --neutral-400 itself stays
-       untouched (ramp intact for non-text uses, mirroring light). */
-    --text-faint:  #8E8A7E;
-    --text-on-accent: #191918;
+    /* 15-g P1-3 night mirror: --text-faint = landing's axe-verified
+       #7A83A0 → 5.22:1 on --bg #070B16, 4.86:1 on --surface #0D1428
+       (AA on every night text surface; one step fainter than
+       --text-muted #8E97B8 at 6.80:1). */
+    --text-faint:  #7A83A0;
+    --text-on-accent: #05070F;
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(242,234,216,0.08);
+    --border-faint:  rgba(142,151,184,0.10);
     --rule:          var(--neutral-200);
     /* 5-C1 (A2 P1-2) — see the light block: the dead-token fix is
        theme-agnostic (references --border-strong, which remaps to
-       dark's #46453F divider here). */
+       night's #263052 divider here). */
     --rule-strong:   var(--border-strong);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
-    --surface-border:  rgba(255,255,255,0.10);
-    --surface-divider: rgba(255,255,255,0.06);
+    --surface-border:  rgba(142,151,184,0.14);
+    --surface-divider: rgba(142,151,184,0.08);
 
-    --accent:        var(--c-copper-ink);
-    --accent-hover:  #F2B782;
+    /* مدارك night: the accent becomes the landing's gold — the single
+       strongest identity bridge between سماء مدارك and the product.
+       #E9B44C = 10.39:1 as text on --bg; void ink on gold = 10.63:1. */
+    --accent:        #E9B44C;
+    --accent-hover:  #F5D48A;
     --accent-soft:   var(--c-copper-bg);
-    --accent-strong: var(--c-copper-deep);
-    --accent-fg:     #191918;
-    --focus-ring:    rgba(224, 160, 103, 0.36);
+    --accent-strong: #C9962F;
+    --accent-fg:     #05070F;
+    --focus-ring:    rgba(233,180,76,0.42);
 
-    /* Dark theme passes as-is: the -ink family clears AA on dark
-       surfaces (--success 9.18:1, --warning 11.07:1, --danger 8.31:1,
-       --info 8.20:1, --accent 7.87:1 on --bg #191918), so -ink maps to
+    /* Night theme passes as-is: the -ink family clears AA on the night
+       ground (--success 10.94:1, --warning 12.37:1, --danger 8.68:1,
+       --info 9.88:1, --accent 10.39:1 on --bg #070B16), so -ink maps to
        the same values the base tokens already resolve to. */
     --accent-ink:   var(--accent);
     --success-ink:  var(--c-mint-ink);
@@ -661,10 +660,9 @@
     --info-ink:     var(--c-sky-ink);
 
     /* 21-c (A12 P1-5): dark-side pair of the light block's --danger-fg
-       (the value is theme-identical #191918 — on dark's brighter rose
-       fill it measures 8.31:1). Consumed by .btn.danger / notif badge
-       when 21-b swaps their white ink. */
-    --danger-fg:    #191918;
+       (night: void ink on the luminous rose fill = 8.68:1 inverted
+       pair). Consumed by .btn.danger / notif badge. */
+    --danger-fg:    #05070F;
 
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
@@ -678,34 +676,34 @@
     --brand:         var(--accent);
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--accent);
-    --gold-ink:      var(--c-yellow-ink);   /* T3-F4 — dark gold text ink (11.07:1 on --bg) */
+    --gold-ink:      var(--c-yellow-ink);   /* T3-F4 — dark gold text ink (12.37:1 on --bg) */
     --primary:       var(--accent);
-    --primary-fg:    #191918;
+    --primary-fg:    #05070F;
 
-    --shadow-card:    0 1px 2px rgba(0,0,0,0.32);
-    --shadow-card-h:  0 1px 2px rgba(0,0,0,0.32), 0 6px 18px rgba(0,0,0,0.40);
-    --shadow-pop:     0 1px 2px rgba(0,0,0,0.40), 0 8px 24px rgba(0,0,0,0.50);
-    --shadow-modal:   0 12px 32px rgba(0,0,0,0.55), 0 32px 80px rgba(0,0,0,0.60);
-    --shadow-mockup:  0 1px 2px rgba(0,0,0,0.32), 0 12px 32px rgba(0,0,0,0.40), 0 32px 80px rgba(0,0,0,0.42);
+    --shadow-card:    0 1px 2px rgba(2,4,12,0.50), 0 0 0 1px rgba(142,151,184,0.05);
+    --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
+    --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
+    --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);
+    --shadow-mockup:  0 1px 2px rgba(2,4,12,0.50), 0 12px 32px rgba(2,4,12,0.55), 0 32px 80px rgba(2,4,12,0.60), 0 0 0 1px rgba(142,151,184,0.10);
 
-    --glass-bg:    rgba(25,25,24,0.78);
+    --glass-bg:    rgba(11,16,32,0.78);
     --glass-blur:  16px;
-    --glass-border: rgba(242,234,216,0.06);
+    --glass-border: rgba(142,151,184,0.12);
     --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
 
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   var(--neutral-150);
+    --sidebar-item-active-bg:   rgb(233 180 76 / 0.10);  /* مدارك night: gold wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     --sidebar-active-bar:       var(--accent);
 
-    --topbar-bg:    rgba(25,25,24,0.86);
+    --topbar-bg:    rgba(7,11,22,0.86);
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(242,234,216,0.16);
-    --scrollbar-thumb-hover: rgba(242,234,216,0.28);
+    --scrollbar-thumb: rgba(142,151,184,0.20);
+    --scrollbar-thumb-hover: rgba(142,151,184,0.34);
 
     /* (dark block of the 21-c dead-alias sweep — see the light block's
        banner; the same 25 paper/ink/gold-{100,300,500,700,900}/
@@ -719,7 +717,7 @@
     --shadow-2xl: var(--shadow-modal);
 
     --chart-text: var(--neutral-500);
-    --chart-grid: rgba(242,234,216,0.10);
+    --chart-grid: rgba(142,151,184,0.10);
     --chart-1: var(--c-copper-ink);
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
@@ -729,18 +727,18 @@
     --chart-7: #5FAFAF;   /* teal (lifted for dark) */
     --chart-8: #C57DA9;   /* mauve (lifted for dark) */
 
-    /* ─── Immersive journey scene — dark variants. Brightened copper
-       (#E0A067 = 9.05:1 on the ink ground) keeps nodes present on
-       #191918 without glare; threads lift one alpha step so the
-       constellation reads against dark. Non-text 3:1 floor cleared. */
-    --journey-node:        var(--accent);        /* #E0A067 bright copper */
+    /* ─── Immersive journey scene — مدارك night variants. The node
+       family rides the gold accent (#E9B44C = 10.39:1 on the night
+       ground) so the journey thread reads as the same golden light
+       that stitches the landing's chapters. Non-text 3:1 floor
+       cleared with headroom. */
+    --journey-node:        var(--accent);        /* #E9B44C bright gold */
     --journey-node-major:  var(--accent-strong);
-    --journey-line:        rgba(224, 160, 103, 0.34);
+    --journey-line:        rgba(233,180,76,0.34);
     --journey-core:        var(--ink);
-    --journey-glow:        rgba(224, 160, 103, 0.12);
-    /* imm-4-visualqa P1-1: was --neutral-400 (#6E6B61 = 3.30:1 on the ink
-       ground — AA fail at the ticker's 13px). Dark --neutral-500
-       (#9A968A) = 5.95:1 — passes AA with the warm-sand register kept. */
+    --journey-glow:        rgba(233,180,76,0.14);
+    /* night: mist ink #8E97B8 = 6.80:1 on --bg — clears AA at the
+       ticker's 13px with the cool register kept. */
     --journey-ticker-ink:  var(--neutral-500);
     --journey-ticker-sep:  var(--accent);
   }

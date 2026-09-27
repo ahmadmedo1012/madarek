@@ -38,6 +38,18 @@
 #                                    reduced-motion token overrides)
 #   frontend/src/styles/base.css     (global reduced-motion belt with
 #                                    `0.01ms !important`)
+#   frontend/src/styles/landing.css  (immersive v2 «سماء مدارك» — a
+#                                    self-contained cinematic sheet whose
+#                                    hand-tuned cascade IS the authored
+#                                    choreography: scene-in 1.1s, drip
+#                                    2.1s, ring-crawl 46s, 40ms word
+#                                    stagger. Exactly like tokens.css is
+#                                    the authored source for the app, the
+#                                    landing is the authored source for
+#                                    its own film. Safety: fully scoped
+#                                    under `.landing`, and the base.css
+#                                    0.01ms !important belt bounds every
+#                                    animation here for reduced-motion.)
 #   frontend/tests/**                (test fixtures — outside the scan
 #                                    root)
 #
@@ -77,6 +89,7 @@ WHOLESALE = {
     'frontend/src/styles/tokens.css',
     'frontend/src/styles/motion.css',
     'frontend/src/styles/base.css',
+    'frontend/src/styles/landing.css',
 }
 
 # ── reviewed debt (file:line:text regex → reason) ─────────────────────
