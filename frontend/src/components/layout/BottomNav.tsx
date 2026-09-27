@@ -42,13 +42,16 @@ const STUDENT: BottomItem[] = [
 
 /* TEACHER — 5 most-used: Home, Schedule, Students, Intelligence, Profile.
    Verified routes: /teacher/dashboard, /teacher/schedule, /teacher/students,
-   /teacher/intelligence, /teacher/profile — no /teacher/courses route exists. */
+   /teacher/intelligence, /teacher/profile — no /teacher/courses route exists.
+   5-B5 (A4 P3-3): labels use the sidebar label's head noun — «تحليلات»
+   renamed the الذكاء الأكاديمي destination and «طلابي» renamed قائمة
+   الطلاب; shortening is fine, renaming is not. */
 const TEACHER: BottomItem[] = [
-  { to: '/teacher/dashboard',    label: 'الرئيسية',  icon: Home       },
-  { to: '/teacher/schedule',     label: 'الجدول',    icon: Calendar   },
-  { to: '/teacher/students',     label: 'طلابي',     icon: Users      },
-  { to: '/teacher/intelligence', label: 'تحليلات',   icon: Brain      },
-  { to: '/teacher/profile',      label: 'حسابي',     icon: User       },
+  { to: '/teacher/dashboard',    label: 'الرئيسية',   icon: Home       },
+  { to: '/teacher/schedule',     label: 'الجدول',     icon: Calendar   },
+  { to: '/teacher/students',     label: 'الطلاب',     icon: Users      },
+  { to: '/teacher/intelligence', label: 'الذكاء',     icon: Brain      },
+  { to: '/teacher/profile',      label: 'حسابي',      icon: User       },
 ];
 
 /* ADMIN — 5 most-used: Home, Faculties, Students, Teachers, Reports.

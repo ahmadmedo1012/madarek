@@ -294,7 +294,11 @@
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   padding: 6px 10px;
-  font-size: var(--fs-sm);
+  /* 5-C2 (A3 1d, 21-b pattern): was var(--fs-sm) 13px — iOS Safari
+     zooms the whole page on any <16px control focus (the components.css
+     global input recipe already floors at 16; this pages-layer override
+     re-introduced the zoom for owner surfaces). */
+  font-size: max(16px, var(--type-body-size));
   color: var(--text);
 }
 
@@ -452,7 +456,9 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  font-size: var(--fs-sm);
+  /* 5-C2 (A3 1d, 21-b pattern): 13px → 16px floor, iOS zoom-on-focus
+     (same as .owner-kv-row input above). */
+  font-size: max(16px, var(--type-body-size));
   color: var(--text);
   transition: border-color var(--t-fast) var(--ease);
 }
@@ -557,9 +563,11 @@
   height: 10px;
   border-radius: 50%;
   background: var(--success);
-  /* loop cadence (2s pulse) — off-token by design; durations on infinite
-     loops are perceptible rhythm, not transition duration */
-  animation: pulse-live 2s var(--motion-ease-standard) infinite;
+  /* 5-C1: 2s → the ambient base band (2.4s) — the gate debt entry is
+     gone; polish.css's overrides-layer RM block (v18 owner list) still
+     kills this loop under reduced motion, and the local switch below
+     makes it self-contained (guardrail #6). */
+  animation: pulse-live var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
   flex-shrink: 0;
 }
 
@@ -1058,6 +1066,7 @@
 
 /* ── wave 6-a reduced-motion off-switches (guardrail #6) ───── */
 @media (prefers-reduced-motion: reduce) {
+  .owner-live-pulse,
   .owner-live-tick,
   .owner-value-tick,
   .owner-alert-card,

@@ -312,7 +312,13 @@ export default function LecturePlayerPage() {
               aria-valuemin={0}
               aria-valuemax={100}
             >
-              <span className="lecture-progress-fill" style={{ inlineSize: `${watchPct}%` }} />
+              {/* 5-C1 (A2 §1c #25): the value rides --fill-scale (0..1)
+                  consumed by the scaleX fill in student.css — the old
+                  inline inline-size transitioned layout per frame. */}
+              <span
+                className="lecture-progress-fill"
+                style={{ '--fill-scale': watchPct / 100 } as CSSProperties}
+              />
               {data.checkpoints.map((c) => (
                 <span
                   key={c.id}

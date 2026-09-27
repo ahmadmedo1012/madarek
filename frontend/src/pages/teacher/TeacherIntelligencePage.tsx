@@ -29,10 +29,13 @@ import { countAr } from '../../lib/format';
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.track-card/.filter-pill/.back-link families (D11 css split, 12-15)
 
-/* Non-text edge for the 1px leading hairline (ruling #4)… */
+/* Non-text edge for the 1px leading hairline (ruling #4). 5-D3 (5-D1
+ * hand-off): WATCH's --gold measured 2.30:1 on the light .risk-row —
+ * the amber graphics tier (chart-6, 3.87:1 light / 10.32:1 dark)
+ * instead; dark --gold was passing but resolved to the accent itself. */
 const RISK_EDGE: Record<RiskLevel, string> = {
   OK: 'var(--success)',
-  WATCH: 'var(--gold)',
+  WATCH: 'var(--chart-6)',
   AT_RISK: 'var(--warning)',
   CRITICAL: 'var(--danger)',
 };
@@ -195,9 +198,11 @@ function OfferingCard({ offering }: { offering: TeacherOffering }) {
         <div className="track-card-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
         <div className="track-card-title">{offering.course.name}</div>
         <div className="track-card-meta">
-          <span><Icon icon={Users} size={12} /> {countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
-          <span><Icon icon={BookOpen} size={12} /> {countAr(offering._count.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
-          <span><Icon icon={ClipboardCheck} size={12} /> {countAr(offering._count.assignments, ['واجب واحد', 'واجبان', 'واجبات', 'واجباً'])}</span>
+          {/* P2-1/P2-4 (5-A7): countAr(0) renders the broken «0 محاضرة» —
+              each zero case gets its own honest «لا …» copy. */}
+          <span><Icon icon={Users} size={12} /> {offering._count.enrollments === 0 ? 'لا طلاب' : countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</span>
+          <span><Icon icon={BookOpen} size={12} /> {offering._count.lectures === 0 ? 'لا محاضرات' : countAr(offering._count.lectures, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}</span>
+          <span><Icon icon={ClipboardCheck} size={12} /> {offering._count.assignments === 0 ? 'لا واجبات' : countAr(offering._count.assignments, ['واجب واحد', 'واجبان', 'واجبات', 'واجباً'])}</span>
           {offering._count.examTemplates > 0 && (
             <span><Icon icon={Sparkles} size={12} /> {countAr(offering._count.examTemplates, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}</span>
           )}
@@ -304,7 +309,14 @@ export function TeacherOfferingDetailPage() {
           <div className="track-hero-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
           <h1 className="track-hero-title">{offering.course.name}</h1>
           <div className="track-hero-meta">
-            <Badge><Icon icon={Users} size={11} /> {countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}</Badge>
+            {/* P2-1 (5-A7): countAr(0) renders the broken «0 طالباً» — the
+                zero case names the reality (same copy as OfferingCard). */}
+            <Badge>
+              <Icon icon={Users} size={11} />{' '}
+              {offering._count.enrollments === 0
+                ? 'لا طلاب'
+                : countAr(offering._count.enrollments, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
+            </Badge>
             <Badge>{countAr(offering.course.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</Badge>
             {offering.room && <Badge>قاعة {offering.room}</Badge>}
           </div>

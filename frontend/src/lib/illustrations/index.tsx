@@ -11,8 +11,9 @@
  *   empty-notifs         → NotificationDropdown empty state (the
  *                          notifications panel's inbox)
  *   empty-search         → LibraryPage filtered/book empty states
- *   milestone-section    → MilestoneScene celebration + LandingPage
- *                          pilot-study anchor (decorative reuse)
+ *   milestone-section    → MilestoneScene celebration (the landing's
+ *                          proof-head mount was dropped in 5-B2 — the
+ *                          page keeps one scene, the hero's)
  *   onboarding-frame-1..3 → OnboardingFlow frames 0–2
  *   onboarding-role-intro → OnboardingFlow frame 3 (5 role motifs)
  *

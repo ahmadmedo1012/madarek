@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check } from 'lucide-react';
+import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import { NotificationPanel } from '../overlays';
@@ -160,6 +160,21 @@ function NotificationPanelContent({
         <div className="notif-empty">
           <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
           <p className="notif-empty-text">جارٍ التحميل…</p>
+        </div>
+      ) : listQ.isError ? (
+        /* 5-C3 (A9 P1-1): an aborted / failed /notifications used to
+           fall through to the empty branch — the API being DOWN told
+           the user «لا توجد إشعارات», a lie about their data (the
+           exact class the craft floor bans: error must never read as
+           empty). Same .notif-empty shell, warning icon, honest copy
+           and a retry wired to the query. */
+        <div className="notif-empty" role="alert">
+          <div className="notif-empty-icon"><Icon icon={AlertTriangle} size={20} /></div>
+          <p className="notif-empty-text">تعذّر تحميل الإشعارات</p>
+          <button type="button" className="btn ghost sm" onClick={() => void listQ.refetch()}>
+            <Icon icon={RefreshCw} size={13} />
+            <span>إعادة المحاولة</span>
+          </button>
         </div>
       ) : items.length === 0 ? (
         <div className="notif-empty">

@@ -149,6 +149,31 @@ export function attemptBlockingStatuses(kind: ExamKind): AttemptStatus[] {
 }
 
 /**
+ * The LATEST attempt per template (5-D3 — 5-B3 hand-off #2).
+ * /exams/me collapses a student's attempts to one myAttempt row; the
+ * old un-ordered findMany + Map last-wins made that pick depend on the
+ * DB's return order. Folding by (startedAt, id) is order-independent —
+ * whichever row arrives last, the newest attempt wins. `id` breaks
+ * exact-ms ties (cuids are unique, so the order is total).
+ */
+export function latestAttemptPerTemplate<
+  T extends { templateId: string; startedAt: Date; id: string },
+>(attempts: ReadonlyArray<T>): Map<string, T> {
+  const latest = new Map<string, T>();
+  for (const a of attempts) {
+    const cur = latest.get(a.templateId);
+    if (
+      !cur ||
+      a.startedAt.getTime() > cur.startedAt.getTime() ||
+      (a.startedAt.getTime() === cur.startedAt.getTime() && a.id > cur.id)
+    ) {
+      latest.set(a.templateId, a);
+    }
+  }
+  return latest;
+}
+
+/**
  * Total gradeable points of a template's question set — a per-template
  * pointsOverride wins over the question's default points.
  */
@@ -634,20 +659,27 @@ router.get('/exams/me', async (req, res, next) => {
 
     const myAttempts = await prisma.examAttempt.findMany({
       where: { studentId: userId, templateId: { in: available.map((t) => t.id) } },
-      select: { id: true, templateId: true, status: true, score: true, maxScore: true, submittedAt: true },
+      select: { id: true, templateId: true, status: true, score: true, maxScore: true, submittedAt: true, startedAt: true },
+      // Newest-first documents the intent; the fold below is the real
+      // guarantee (order-independent latest-per-template).
+      orderBy: { startedAt: 'desc' },
     });
+    // 5-D3 (5-B3 hand-off #2): fold to the LATEST attempt per template
+    // — deterministic regardless of the DB's return order.
     // score/maxScore are Prisma Decimal columns — the platform convention
     // (like every other Decimal on the wire: /me/results, lab sessions,
     // submit/grade below) is to convert before res.json, which would
     // otherwise serialize them as strings.
-    const attemptByTemplate = new Map(myAttempts.map((a) => [a.templateId, {
-      id: a.id,
-      templateId: a.templateId,
-      status: a.status,
-      score: a.score === null ? null : Number(a.score),
-      maxScore: Number(a.maxScore),
-      submittedAt: a.submittedAt,
-    }]));
+    const attemptByTemplate = new Map(
+      [...latestAttemptPerTemplate(myAttempts).entries()].map(([templateId, a]) => [templateId, {
+        id: a.id,
+        templateId: a.templateId,
+        status: a.status,
+        score: a.score === null ? null : Number(a.score),
+        maxScore: Number(a.maxScore),
+        submittedAt: a.submittedAt,
+      }]),
+    );
 
     res.json({
       data: available.map((t) => ({
@@ -1019,6 +1051,162 @@ router.post('/exams/attempts/:id/submit', requireRole(Role.STUDENT), async (req,
             : maxScore > 0 && (result.totalAwarded / maxScore) * 100 >= attempt.template.passingScore,
       },
     });
+  } catch (e) { next(e); }
+});
+
+// ════════════════════════════════════════════════════════════════
+//  Student post-grading review (5-D3 — 5-B3 hand-off #1 / A6 P2-4)
+// ════════════════════════════════════════════════════════════════
+
+/** Question source of the review query — the template's ordered links
+ * (order asc, the taker's own presentation order). */
+export interface ReviewQuestionSource {
+  questionId: string;
+  pointsOverride: number | null;
+  question: {
+    type: QuestionType;
+    prompt: string;
+    choices: unknown;
+    correctAnswer: unknown;
+    points: number;
+  };
+}
+
+/** One reviewed question — the student's answer next to the verdict
+ * and (for machine-keyed kinds) the released key. */
+export interface AttemptReviewQuestion {
+  questionId: string;
+  type: QuestionType;
+  prompt: string;
+  choices: string[] | null;
+  points: number;
+  myChoiceIndex: number | null;
+  myAnswerText: string | null;
+  isCorrect: boolean | null;
+  awardedPoints: number | null;
+  feedback: string | null;
+  /** MCQ/TF: the correct choice index. SHORT: the model answer.
+   *  ESSAY: always null — the rubric is teacher-side material, the
+   *  teacher's per-answer feedback carries the student-facing verdict. */
+  correctAnswer: string | number | null;
+}
+
+export interface AttemptReview {
+  attemptId: string;
+  templateTitle: string;
+  score: number | null;
+  maxScore: number;
+  submittedAt: Date | null;
+  questions: AttemptReviewQuestion[];
+}
+
+/** Json choices → string[] (corrupt shapes collapse to null). */
+function reviewChoices(value: unknown): string[] | null {
+  return Array.isArray(value) && value.every((c) => typeof c === 'string') ? (value as string[]) : null;
+}
+
+/** The released key per question type — see AttemptReviewQuestion. */
+function releasedKey(type: QuestionType, correctAnswer: unknown): string | number | null {
+  if (type === QuestionType.ESSAY) return null;
+  if (typeof correctAnswer === 'number') return correctAnswer;
+  if (typeof correctAnswer === 'string') return correctAnswer;
+  return null; // keyless SHORT: parked for manual grading, nothing to release
+}
+
+/** Pure row builder of the review read — Decimal columns converted per
+ * the platform's wire convention. Unanswered questions (no ExamAnswer
+ * row) list with 0 awarded points: on a GRADED attempt every question
+ * contributed its points and a missing row scored 0. */
+export function attemptReview(
+  attempt: {
+    id: string;
+    score: Prisma.Decimal | null;
+    maxScore: Prisma.Decimal;
+    submittedAt: Date | null;
+    template: { title: string };
+    answers: ReadonlyArray<{
+      questionId: string;
+      answerText: string | null;
+      choiceIndex: number | null;
+      isCorrect: boolean | null;
+      awardedPoints: Prisma.Decimal | null;
+      feedback: string | null;
+    }>;
+  },
+  questions: ReadonlyArray<ReviewQuestionSource>,
+): AttemptReview {
+  const answerByQId = new Map(attempt.answers.map((a) => [a.questionId, a]));
+  return {
+    attemptId: attempt.id,
+    templateTitle: attempt.template.title,
+    score: attempt.score === null ? null : Number(attempt.score),
+    maxScore: Number(attempt.maxScore),
+    submittedAt: attempt.submittedAt,
+    questions: questions.map((eq) => {
+      const ans = answerByQId.get(eq.questionId);
+      return {
+        questionId: eq.questionId,
+        type: eq.question.type,
+        prompt: eq.question.prompt,
+        choices: reviewChoices(eq.question.choices),
+        points: eq.pointsOverride ?? eq.question.points,
+        myChoiceIndex: ans?.choiceIndex ?? null,
+        myAnswerText: ans?.answerText ?? null,
+        isCorrect: ans?.isCorrect ?? false,
+        awardedPoints: ans ? (ans.awardedPoints === null ? null : Number(ans.awardedPoints)) : 0,
+        feedback: ans?.feedback ?? null,
+        correctAnswer: releasedKey(eq.question.type, eq.question.correctAnswer),
+      };
+    }),
+  };
+}
+
+/**
+ * GET /exams/attempts/:id/review — the student's own attempt with the
+ * per-question verdicts and the released answer key. The 5-B3 hand-off
+ * #1 endpoint (A6 P2-4): the honest «المراجعة غير متاحة» note on the
+ * terminal screens ships until this exists.
+ *
+ * Authorization: own attempts only (attempt.studentId) — a student can
+ * only ever hold attempts on exams they were allowed to start, so
+ * attempt ownership IS the scope. The key releases ONLY on GRADED
+ * attempts: SUBMITTED still awaits manual grading (an unfinished
+ * verdict plus a leaked key), EXPIRED was never graded, IN_PROGRESS is
+ * mid-exam. Retake exposure is deliberate: graded kinds block retakes
+ * (attemptBlockingStatuses), and PRACTICE retakes with the key visible
+ * is immediate feedback — the point of practice.
+ */
+router.get('/exams/attempts/:id/review', requireRole(Role.STUDENT), async (req, res, next) => {
+  try {
+    const attempt = await prisma.examAttempt.findUnique({
+      where: { id: req.params.id },
+      include: {
+        template: {
+          select: {
+            title: true,
+            questions: {
+              orderBy: { order: 'asc' },
+              select: {
+                questionId: true,
+                pointsOverride: true,
+                question: {
+                  select: { type: true, prompt: true, choices: true, correctAnswer: true, points: true },
+                },
+              },
+            },
+          },
+        },
+        answers: {
+          select: { questionId: true, answerText: true, choiceIndex: true, isCorrect: true, awardedPoints: true, feedback: true },
+        },
+      },
+    });
+    if (!attempt) throw AppError.notFound('المحاولة غير موجودة');
+    if (attempt.studentId !== req.user!.id) throw AppError.forbidden();
+    if (attempt.status !== AttemptStatus.GRADED) {
+      throw AppError.forbidden('مراجعة الأسئلة متاحة بعد اكتمال تصحيح المحاولة');
+    }
+    res.json({ data: attemptReview(attempt, attempt.template.questions) });
   } catch (e) { next(e); }
 });
 

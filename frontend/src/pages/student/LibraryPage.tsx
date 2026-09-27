@@ -114,11 +114,11 @@ function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
 
 /* 21-b hand-off (23-a): the category pills wrap into a tall stack on
    phones, so ≤640px swaps the inline pill bar for a «تصفية» trigger +
-   the platform Sheet (its first real consumer — side="end" is the
-   elevation contract's designated edge for filter panels, inline-end
-   = left edge in RTL). Conditional rendering instead of CSS so the
-   pills stay in the DOM on desktop and the Sheet mounts only where
-   it can open. */
+   the platform Sheet (its first real consumer). 5-C4 (A10 P2-2): the
+   tray rides the bottom presentation — the ≤640px band is where the
+   old full-height inline-end panel measured a 571px void. Conditional
+   rendering instead of CSS so the pills stay in the DOM on desktop
+   and the Sheet mounts only where it can open. */
 function useIsNarrowLayout(maxWidthPx = 640): boolean {
   const [narrow, setNarrow] = useState(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
@@ -327,47 +327,23 @@ export default function LibraryPage() {
 
           {/* Rendered unconditionally so a viewport resize while open
               never tears the exit animation; Sheet paints null when
-              closed. side="end" = the elevation contract's filter-panel
-              edge (inline-end → left in RTL, arriving from its own
-              edge after 21-b). The .lib-filters class keeps the
-              ≤640px 44px pill floor (student.css) inside the sheet. */}
+              closed. 5-C4 (A10 P2-2): the filter tray migrates to the
+              Sheet package's bottom presentation — its trigger only
+              exists on the ≤640px band, where the old full-height
+              inline-end panel measured a 571px void (32% fill).
+              Bottom + 'fit' hugs the content, the apply/clear actions
+              dock in the footer above the safe-area inset, and the
+              grabber drags the tray away. The .lib-filters class keeps
+              the ≤640px 44px pill floor (student.css) inside the
+              sheet. */}
           <Sheet
             open={filterSheetOpen}
             onClose={() => setFilterSheetOpen(false)}
-            side="end"
+            side="bottom"
             ariaLabel="تصفية الكتب"
-          >
-            <div className="flex-col" style={{ padding: 'var(--sp-4)', gap: 'var(--sp-4)', minWidth: 260 }}>
-              <div className="flex items-center justify-between" style={{ gap: 'var(--sp-2)' }}>
-                <h2 className="text-md font-semibold" style={{ color: 'var(--text)' }}>
-                  تصفية الكتب
-                </h2>
-                <button
-                  type="button"
-                  className="btn ghost sm"
-                  onClick={() => setFilterSheetOpen(false)}
-                  aria-label="إغلاق التصفية"
-                >
-                  <Icon icon={X} size={14} />
-                </button>
-              </div>
-              <div className="filter-bar lib-filters" role="group" aria-label="فئات الكتب">
-                {CATEGORIES.map((c) => (
-                  <Pill
-                    key={c.id}
-                    on={draftCat === c.id}
-                    icon={c.icon}
-                    onClick={() => setDraftCat(c.id)}
-                  >
-                    {c.label}
-                  </Pill>
-                ))}
-              </div>
-              {/* Actions sit directly under the chips — a six-option
-                  single-select is one control group; bottom-docking
-                  them in the full-height panel read as missing content
-                  (VLM-verified void, 586px). */}
-              <div className="flex gap-2">
+            title="تصفية الكتب"
+            footer={
+              <div className="flex gap-2 flex-1">
                 <button type="button" className="btn primary sm" style={{ flex: 1 }} onClick={applyFilters}>
                   تطبيق
                 </button>
@@ -375,6 +351,19 @@ export default function LibraryPage() {
                   مسح
                 </button>
               </div>
+            }
+          >
+            <div className="filter-bar lib-filters" role="group" aria-label="فئات الكتب">
+              {CATEGORIES.map((c) => (
+                <Pill
+                  key={c.id}
+                  on={draftCat === c.id}
+                  icon={c.icon}
+                  onClick={() => setDraftCat(c.id)}
+                >
+                  {c.label}
+                </Pill>
+              ))}
             </div>
           </Sheet>
 

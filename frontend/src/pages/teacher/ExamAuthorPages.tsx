@@ -22,7 +22,7 @@
  * (useMyPermissions) — a holder of neither sees the honest
  * PermissionDeniedState, and a pure moderator lands on the queue tab.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle, Archive, BadgeCheck, Ban, BookOpen, CheckCircle2,
@@ -30,7 +30,7 @@ import {
   ListChecks, Plus, Search, Send, ShieldCheck, Target, Trash2, X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Badge, Button, Card, Input, MetricCard, Tabs } from '../../components/primitives';
+import { Badge, Button, Card, FormField, Input, MetricCard, Tabs } from '../../components/primitives';
 import type { ThemeColor } from '../../components/primitives';
 import {
   DetailSkeleton, EmptyState, ErrorState, ListSkeleton, LoadingState,
@@ -497,7 +497,7 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
         <Link className="btn ghost sm" to={`/teacher/exams/${template.id}`}>
           عرض
         </Link>
-        <PublishButton template={template} />
+        <PublishButton template={template} viewHref={`/teacher/exams/${template.id}`} />
       </div>
     </div>
   );
@@ -508,15 +508,22 @@ function TemplateRow({ template }: { template: ExamTemplateRow }) {
 function PublishButton({
   template,
   authorId,
+  viewHref,
 }: {
   template: Pick<ExamTemplateRow, 'id' | 'status'>;
   /** Present on the detail surface — hides the button for a non-author
    *  viewing someone else's APPROVED template (the backend would 403). */
   authorId?: string;
+  /** 5-D3 (A10 P3-2): when the publish fires from the LIST row, the
+   *  success toast offers the natural next step («عرض الاختبار») as an
+   *  inline action. Absent on the detail surface — the button already
+   *  sits on that page, the action would navigate nowhere. */
+  viewHref?: string;
 }) {
   const publish = usePublishExamTemplate();
   const [confirming, setConfirming] = useState(false);
   const meId = useAuthStore((s) => s.user?.id);
+  const navigate = useNavigate();
   const perms = useMyPermissions();
   const canAuthor = perms.data?.capabilities.includes('EXAMS_AUTHOR') ?? false;
 
@@ -530,7 +537,15 @@ function PublishButton({
     try {
       await publish.mutateAsync(template.id);
       setConfirming(false);
-      toast.success('أصبح الاختبار متاحاً للطلاب حسب نطاقه.', { title: 'تمّ نشر الاختبار' });
+      toast.success('أصبح الاختبار متاحاً للطلاب حسب نطاقه.', {
+        title: 'تمّ نشر الاختبار',
+        ...(viewHref ? {
+          action: {
+            label: 'عرض الاختبار',
+            onClick: () => navigate(viewHref),
+          },
+        } : {}),
+      });
     } catch {
       setConfirming(false);
       // surfaced inline below — the backend's Arabic conflict message
@@ -835,12 +850,19 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
             noValidate
             style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
           >
-            <Field label="تصنيف السؤال" htmlFor="newq-category" error={errors.categoryId}>
+            {/* 5-C4: the empty-categories notice rides the hint slot
+                (single-child contract) — it stays announced via
+                aria-describedby alongside any validation error. */}
+            <Field
+              label="تصنيف السؤال"
+              htmlFor="newq-category"
+              error={errors.categoryId}
+              hint={categoriesEmpty ? 'تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم لإضافتها.' : undefined}
+            >
               <select
                 id="newq-category"
                 className="input"
                 value={draft.categoryId}
-                aria-invalid={!!errors.categoryId}
                 onChange={(e) => patch({ categoryId: e.target.value })}
                 disabled={categories.isPending || categoriesEmpty}
               >
@@ -859,9 +881,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                   </>
                 )}
               </select>
-              {categoriesEmpty && (
-                <span className="text-xs text-muted">تصنيفات الأسئلة تنشئها إدارة المنصة — تواصل معهم لإضافتها.</span>
-              )}
             </Field>
 
             <Field label="نوع السؤال" htmlFor="newq-type" hint="النوع يحدد شكل الإجابة وطريقة التصحيح">
@@ -884,7 +903,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                 rows={3}
                 maxLength={2000}
                 placeholder="اكتب نص السؤال كما سيظهر للطالب…"
-                aria-invalid={!!errors.prompt}
                 style={{ resize: 'vertical', fontFamily: 'inherit' }}
                 value={draft.prompt}
                 onChange={(e) => patch({ prompt: e.target.value })}
@@ -950,7 +968,6 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
                   dir="ltr"
                   value={draft.points}
                   error={!!errors.points}
-                  aria-invalid={!!errors.points}
                   onChange={(e) => patch({ points: e.target.value })}
                 />
               </Field>
@@ -1000,8 +1017,14 @@ function CreateQuestionModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** Labelled field scaffold — the modal-body rhythm the curriculum
- *  builders use (FormField), reading the platform's form-label class. */
+/** Labelled field scaffold — 5-C4 (A10 P2-3): delegates to the
+ *  platform FormField (primitives/Form.tsx), which completes the
+ *  association contract the local copy was missing — aria-invalid +
+ *  aria-describedby injected into the control (the errors re-announce
+ *  on re-focus, not only as a one-shot role=alert) — while the row
+ *  keeps its flex-1/min-width so the side-by-side pairs (points +
+ *  difficulty, duration + pass mark, open + close) share the row and
+ *  wrap at the same widths as before. */
 function Field({
   label,
   htmlFor,
@@ -1013,19 +1036,21 @@ function Field({
   htmlFor?: string;
   error?: string;
   hint?: string;
-  children: React.ReactNode;
+  /** A single control element — the shared primitive injects the id +
+   *  the aria wiring into it. */
+  children: ReactElement;
 }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, minWidth: 140 }}>
-      <label className="form-label" htmlFor={htmlFor}>{label}</label>
+    <FormField
+      label={label}
+      id={htmlFor}
+      error={error}
+      hint={hint}
+      className="flex-1"
+      style={{ minWidth: 140 }}
+    >
       {children}
-      {hint && !error && <span className="text-xs text-muted" style={{ margin: 0 }}>{hint}</span>}
-      {error && (
-        <span role="alert" className="text-xs" style={{ margin: 0, color: 'var(--danger-ink)' }}>
-          {error}
-        </span>
-      )}
-    </div>
+    </FormField>
   );
 }
 
@@ -1231,7 +1256,6 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   id="tpl-scope"
                   className="input"
                   value={draft.scope}
-                  aria-invalid={!!errors.scope}
                   onChange={(e) => patch({ scope: e.target.value as TemplateDraftState['scope'] })}
                 >
                   <option value="offering">مقرّر من مقرّراتي</option>
@@ -1309,7 +1333,6 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   dir="ltr"
                   value={draft.durationMin}
                   error={!!errors.durationMin}
-                  aria-invalid={!!errors.durationMin}
                   onChange={(e) => patch({ durationMin: e.target.value })}
                 />
               </Field>
@@ -1325,7 +1348,6 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                   dir="ltr"
                   value={draft.passingScore}
                   error={!!errors.passingScore}
-                  aria-invalid={!!errors.passingScore}
                   onChange={(e) => patch({ passingScore: e.target.value })}
                 />
               </Field>
@@ -1782,7 +1804,11 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
             </DetailLine>
           )}
           <DetailLine label="محاولات الطلاب">
-            {countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
+            {/* P2-1 (5-A7): countAr(0) renders the broken «0 محاولة» —
+                the zero case names the reality. */}
+            {template._count.attempts === 0
+              ? 'لا محاولات بعد'
+              : countAr(template._count.attempts, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}
           </DetailLine>
           {template.description && <DetailLine label="الوصف">{template.description}</DetailLine>}
         </div>
@@ -1861,7 +1887,11 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
         q.isPending
           ? 'جارٍ التحميل…'
           : attempts.length > 0
-            ? countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك'])
+            ? /* P2-1 (5-A7): awaiting can be 0 while attempts exist —
+               * countAr(0) renders the broken «0 محاولة…». */
+              (awaiting === 0
+                ? 'لا محاولات بانتظار تصحيحك'
+                : countAr(awaiting, ['محاولة واحدة بانتظار تصحيحك', 'محاولتان بانتظار تصحيحك', 'محاولات بانتظار تصحيحك', 'محاولة بانتظار تصحيحك']))
             : undefined
       }
       actions={

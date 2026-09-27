@@ -7,8 +7,8 @@ import {
   Trophy, Calendar, Award, Plus, Filter, ChevronRight, Lock, Send, FileText, X, Check, Gavel,
   AlertTriangle,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, UserAvatar } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState } from '../../components/primitives/States';
+import { Card, MetricCard, Badge, UserAvatar, FormField } from '../../components/primitives';
+import { ErrorState, EmptyState, CardSkeleton, DetailSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { Icon } from '../../components/Icon';
@@ -25,6 +25,24 @@ import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .leaderboard-list/-points families (D11 css split, 12-15)
 import '../../styles/colleges.css'; // .comp-* index/hero/entry/modal families (D14 css split, 13-17)
+
+/* Payload document title (A12 P3-6): the h1 carries the competition's
+ * real name while the tab said «مسابقة · مدارك» for every competition.
+ * Same contract as CollegePages' useDocTitle — the set rides a 0ms
+ * macrotask so a cached payload landing in the same commit as the
+ * shell's pathname-title effect still wins (child effects run before
+ * the parent's). */
+function useDocTitle(title: string | null) {
+  useEffect(() => {
+    if (title === null) return;
+    const set = window.setTimeout(() => {
+      document.title = `${title} · مدارك`;
+    }, 0);
+    return () => {
+      window.clearTimeout(set);
+    };
+  }, [title]);
+}
 
 const STATUS_LABEL: Record<CompetitionRow['status'], string> = {
   OPEN: 'مفتوحة',
@@ -79,8 +97,16 @@ export function CompetitionsIndexPage() {
   const competitions = q.data ?? [];
   const visible = filter === 'all' ? competitions : competitions.filter((c) => c.status === filter);
 
+  /* 5-A12 P2-3 (same derived state as the detail hero + community
+   * tab): an OPEN competition past its deadline is «انتهى التقديم» —
+   * still OPEN in the organizer's workflow, but not «مفتوحة» to
+   * entrants. Drives the index badge AND the «مسابقات مفتوحة» KPI so
+   * the count never contradicts the cards below it. */
+  const submissionEnded = (c: CompetitionRow) =>
+    c.status === 'OPEN' && new Date(c.deadline).getTime() <= Date.now();
+
   const stats = {
-    open: competitions.filter((c) => c.status === 'OPEN').length,
+    open: competitions.filter((c) => c.status === 'OPEN' && !submissionEnded(c)).length,
     totalEntries: competitions.reduce((s, c) => s + c._count.entries, 0),
     closingSoon: competitions.filter((c) => {
       if (c.status !== 'OPEN') return false;
@@ -107,8 +133,9 @@ export function CompetitionsIndexPage() {
         )}
       </header>
 
-      {/* KPI strip */}
-      <div className="grid-3">
+      {/* KPI strip — .kpis-compact keeps the strip a strip on phones
+          (A12 P2-4, same rule as /community). */}
+      <div className="grid-3 kpis-compact">
         <MetricCard icon={Trophy} label="مسابقات مفتوحة" value={kpiValue(stats.open)} color="green" />
         <MetricCard icon={Calendar} label="تنتهي قريباً" value={kpiValue(stats.closingSoon)} color="amber" />
         <MetricCard icon={Award} label="إجمالي المشاركات" value={kpiValue(stats.totalEntries)} color="purple" />
@@ -133,7 +160,13 @@ export function CompetitionsIndexPage() {
         </div>
       </div>
 
-      {q.isPending ? <LoadingState /> :
+      {q.isPending ? (
+        <div className="comp-index-grid">
+          <CardSkeleton lines={4} />
+          <CardSkeleton lines={4} />
+          <CardSkeleton lines={4} />
+        </div>
+      ) :
        q.isError ? <ErrorState error={q.error} onRetry={() => q.refetch()} /> :
        visible.length === 0 ? (
         filter === 'all' ? (
@@ -168,7 +201,11 @@ export function CompetitionsIndexPage() {
               <div className="comp-index-body">
                 <div className="comp-index-head">
                   <span className="comp-index-category">{c.category}</span>
-                  <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
+                  {submissionEnded(c) ? (
+                    <Badge color="amber">انتهى التقديم</Badge>
+                  ) : (
+                    <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
+                  )}
                 </div>
                 {/* Card title demoted from h3 to a styled div (15-g P2-5
                     — card titles sat at h3 directly under the page h1, a
@@ -179,7 +216,15 @@ export function CompetitionsIndexPage() {
                 <div className="comp-index-meta">
                   <span><Icon icon={Calendar} size={12} /> {formatDeadline(c.deadline)}</span>
                   <span>·</span>
-                  <span><Icon icon={Award} size={12} /> {c._count.entries} مشترك</span>
+                  {/* A8 §7.7: a bare «0 مشترك» on every fresh competition
+                      reads as a dead contest — an invitation while the door
+                      is open, the honest absence after. */}
+                  <span>
+                    <Icon icon={Award} size={12} />{' '}
+                    {c._count.entries === 0
+                      ? (submissionEnded(c) || c.status !== 'OPEN' ? 'لا مشاركات' : 'كن أول المشاركين')
+                      : `${c._count.entries} مشترك`}
+                  </span>
                   {c.prize && <><span>·</span><span>الجائزة: {c.prize}</span></>}
                 </div>
               </div>
@@ -200,6 +245,8 @@ export function CompetitionDetailPage() {
   const q = useCompetition(id);
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
+  // Payload title (A12 P3-6) — the competition's real name in the tab.
+  useDocTitle(q.data?.title ?? null);
   const closer = useCloseCompetition(id ?? '');
   const judge = useJudgeCompetition(id ?? '');
   const [entering, setEntering] = useState(false);
@@ -238,7 +285,7 @@ export function CompetitionDetailPage() {
     return () => window.clearTimeout(t);
   }, [q.data]);
 
-  if (q.isPending) return <div className="page"><LoadingState /></div>;
+  if (q.isPending) return <div className="page"><DetailSkeleton /></div>;
   if (q.isError || !q.data) return <div className="page"><ErrorState error={q.error} onRetry={() => q.refetch()} /></div>;
 
   const c = q.data;
@@ -249,18 +296,23 @@ export function CompetitionDetailPage() {
   // future payload drift degrades to an empty list, never a crash.
   const entries = Array.isArray(c.entries) ? c.entries : [];
   const isOrganizer = !!user && c.organizerId === user.id;
-  // myEntry — prefer an exact id match when the payload carries one (the
-  // organizer path returns the raw entry, which includes userId), and fall
-  // back to a full first+last-name comparison otherwise. NOTE: the public
-  // (non-organizer) competition detail payload does NOT include user ids or
-  // emails — see backend social.routes.ts — so the name fallback is the best
-  // available signal until the backend adds `userId` to entry selects.
+  // myEntry — prefer an exact id match when the payload carries one
+  // (the organizer path AND the author's own entry both return the
+  // raw row incl. userId — 5-B1's entryViewForViewer), and fall back
+  // to a full first+last-name comparison otherwise (third-party
+  // entries ship neither userId nor body/fileUrl).
   const myEntry = entries.find((e) => {
-    const entryUserId = (e as { userId?: string }).userId;
-    if (entryUserId) return entryUserId === user?.id;
+    if (e.userId) return e.userId === user?.id;
     return e.user.firstName === user?.firstName && e.user.lastName === user?.lastName;
   });
-  const canEnter = c.status === 'OPEN' && new Date(c.deadline) > new Date();
+  /* 5-A12 P2-3: an OPEN competition whose deadline has passed is
+   * «انتهى التقديم» — the organizer hasn't closed it yet, but it is
+   * NOT «مفتوحة» either. One derived display status drives the hero
+   * badge; canEnter already refused the past deadline, so the entry
+   * CTA disappears with it (no more green «مفتوحة» beside «انتهى»
+   * with zero buttons). */
+  const submissionEnded = c.status === 'OPEN' && new Date(c.deadline).getTime() <= Date.now();
+  const canEnter = c.status === 'OPEN' && !submissionEnded;
   const allScored = entries.length > 0 && entries.every((e) => e.score !== null);
   const someScored = entries.some((e) => e.score !== null);
   const unscoredCount = entries.filter((e) => e.score === null).length;
@@ -281,13 +333,26 @@ export function CompetitionDetailPage() {
         <div className="comp-hero-body">
           <div className="comp-hero-meta">
             <span className="comp-hero-category">{c.category}</span>
-            <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
+            {/* P2-3: the badge carries the DERIVED state — «مفتوحة» only
+                while submissions are actually possible. */}
+            {submissionEnded ? (
+              <Badge color="amber">انتهى التقديم</Badge>
+            ) : (
+              <Badge color={STATUS_COLOR[c.status]}>{STATUS_LABEL[c.status]}</Badge>
+            )}
           </div>
           <h1 className="comp-hero-title">{c.title}</h1>
           <p className="comp-hero-desc">{c.description}</p>
           <div className="comp-hero-stats">
             <div><Icon icon={Calendar} size={13} /> {formatDeadline(c.deadline)}</div>
-            <div><Icon icon={Award} size={13} /> <bdi>{entries.length}</bdi> مشترك</div>
+            {/* A8 §7.7: «0 مشترك» on a fresh contest reads dead — invite
+                while entries are possible, name the absence after. */}
+            <div>
+              <Icon icon={Award} size={13} />{' '}
+              {entries.length === 0
+                ? (canEnter ? 'كن أول المشاركين' : 'لا مشاركات')
+                : <><bdi>{entries.length}</bdi> مشترك</>}
+            </div>
             {c.prize && <div><Icon icon={Trophy} size={13} /> {c.prize}</div>}
             <div className="text-subtle">نظَّمها {c.organizer.firstName} {c.organizer.lastName}</div>
           </div>
@@ -427,10 +492,18 @@ export function CompetitionDetailPage() {
         )}
       </Card>
 
+      {/* 5-B1 (A12 P1-1): the author's own entry now arrives with
+          body + fileUrl + userId, so «تعديل مشاركتي» PREFILLS —
+          including the file link, which a blind submit used to
+          silently drop (the upsert kept no history). */}
       {entering && id && (
         <EnterCompetitionModal
           competitionId={id}
-          existing={myEntry?.body !== undefined ? { title: myEntry.title, body: myEntry.body } : undefined}
+          existing={myEntry && myEntry.body !== undefined ? {
+            title: myEntry.title,
+            body: myEntry.body,
+            fileUrl: myEntry.fileUrl ?? '',
+          } : undefined}
           onClose={() => setEntering(false)}
         />
       )}
@@ -559,11 +632,6 @@ type CreateInputs = z.infer<typeof createSchema>;
 
 function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCompetition();
-  const titleId = useId();
-  const descId = useId();
-  const catId = useId();
-  const deadlineId = useId();
-  const prizeId = useId();
   const iconLabelId = useId();
 
   const form = useForm<CreateInputs>({
@@ -604,37 +672,32 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
           <Icon icon={X} size={16} />
         </button>
       </header>
+      {/* 5-C4 (A10 P2-3): the fields ride the platform FormField —
+          aria-invalid + aria-describedby land on the controls (the
+          hand-rolled rows rendered visible errors with zero ARIA). */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
-        <div className="comp-form-field">
-          <label htmlFor={titleId}>العنوان</label>
-          <input id={titleId} type="text" {...form.register('title')} className="input" />
-          {form.formState.errors.title && <span className="form-field-error">{form.formState.errors.title.message}</span>}
-        </div>
-        <div className="comp-form-field">
-          <label htmlFor={descId}>الوصف</label>
-          <textarea id={descId} rows={4} {...form.register('description')} className="input" />
-          {form.formState.errors.description && <span className="form-field-error">{form.formState.errors.description.message}</span>}
-        </div>
+        <FormField label="العنوان" error={form.formState.errors.title?.message}>
+          <input type="text" {...form.register('title')} className="input" />
+        </FormField>
+        <FormField label="الوصف" error={form.formState.errors.description?.message}>
+          <textarea rows={4} {...form.register('description')} className="input" style={{ resize: 'vertical' }} />
+        </FormField>
         <div className="comp-form-row">
-          <div className="comp-form-field">
-            <label htmlFor={catId}>الفئة</label>
-            <select id={catId} {...form.register('category')} className="input">
+          <FormField label="الفئة">
+            <select {...form.register('category')} className="input">
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-          </div>
-          <div className="comp-form-field">
-            <label htmlFor={deadlineId}>الموعد النهائي</label>
-            <input id={deadlineId} type="datetime-local" dir="ltr" {...form.register('deadline')} className="input" />
-            {form.formState.errors.deadline && <span className="form-field-error">{form.formState.errors.deadline.message}</span>}
-          </div>
+          </FormField>
+          <FormField label="الموعد النهائي" error={form.formState.errors.deadline?.message}>
+            <input type="datetime-local" dir="ltr" {...form.register('deadline')} className="input" />
+          </FormField>
         </div>
         <div className="comp-form-row">
-          <div className="comp-form-field">
-            <label htmlFor={prizeId}>الجائزة (اختياري)</label>
-            <input id={prizeId} type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="input" />
-          </div>
-          <div className="comp-form-field">
-            <label id={iconLabelId}>أيقونة</label>
+          <FormField label="الجائزة (اختياري)">
+            <input type="text" {...form.register('prize')} placeholder="شهادة، 500 د.ل، …" className="input" />
+          </FormField>
+          <div className="form-field">
+            <label className="form-field-label" id={iconLabelId}>أيقونة</label>
             <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
               {ICON_CHOICES.map((ic) => (
                 <button
@@ -676,17 +739,18 @@ function EnterCompetitionModal({
   competitionId, existing, onClose,
 }: {
   competitionId: string;
-  existing?: { title: string; body: string };
+  existing?: { title: string; body: string; fileUrl?: string };
   onClose: () => void;
 }) {
   const enter = useEnterCompetition(competitionId);
-  const titleId = useId();
-  const bodyId = useId();
-  const fileUrlId = useId();
 
   const form = useForm<EnterInputs>({
     resolver: zodResolver(enterSchema),
-    defaultValues: { title: existing?.title ?? '', body: existing?.body ?? '', fileUrl: '' },
+    defaultValues: {
+      title: existing?.title ?? '',
+      body: existing?.body ?? '',
+      fileUrl: existing?.fileUrl ?? '',
+    },
   });
 
   /* Close-parity (15-e P2-3) — the entry body is long-form prose; a
@@ -722,22 +786,20 @@ function EnterCompetitionModal({
           <Icon icon={X} size={16} />
         </button>
       </header>
+      {/* 5-C4 (A10 P2-3): platform FormField — aria-invalid +
+          aria-describedby on every control (the entry body is
+          long-form prose; its error state must re-announce on
+          re-focus, not only as a one-shot alert). */}
       <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
-        <div className="comp-form-field">
-          <label htmlFor={titleId}>عنوان المشاركة</label>
-          <input id={titleId} type="text" {...form.register('title')} className="input" />
-          {form.formState.errors.title && <span className="form-field-error">{form.formState.errors.title.message}</span>}
-        </div>
-        <div className="comp-form-field">
-          <label htmlFor={bodyId}>الوصف / المحتوى</label>
-          <textarea id={bodyId} rows={6} {...form.register('body')} className="input" />
-          {form.formState.errors.body && <span className="form-field-error">{form.formState.errors.body.message}</span>}
-        </div>
-        <div className="comp-form-field">
-          <label htmlFor={fileUrlId}>رابط الملف (اختياري)</label>
-          <input id={fileUrlId} type="url" dir="ltr" {...form.register('fileUrl')} placeholder="https://…" className="input" />
-          {form.formState.errors.fileUrl && <span className="form-field-error">{form.formState.errors.fileUrl.message}</span>}
-        </div>
+        <FormField label="عنوان المشاركة" error={form.formState.errors.title?.message}>
+          <input type="text" {...form.register('title')} className="input" />
+        </FormField>
+        <FormField label="الوصف / المحتوى" error={form.formState.errors.body?.message}>
+          <textarea rows={6} {...form.register('body')} className="input" style={{ resize: 'vertical' }} />
+        </FormField>
+        <FormField label="رابط الملف (اختياري)" error={form.formState.errors.fileUrl?.message}>
+          <input type="url" dir="ltr" {...form.register('fileUrl')} placeholder="https://…" className="input" />
+        </FormField>
         {enter.isError && <div className="form-error" role="alert">تعذَّر تقديم المشاركة. تحقَّق من البيانات وحاول مرة أخرى.</div>}
         <div className="comp-modal-actions">
           <button type="button" className="btn ghost" onClick={requestClose} disabled={enter.isPending}>إلغاء</button>

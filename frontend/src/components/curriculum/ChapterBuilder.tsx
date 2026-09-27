@@ -5,14 +5,17 @@
  *   (PATCH /chapters/:id — only changed fields travel; the merged
  *   start/end window is re-validated client-side AND server-side).
  * - ChapterList: rows with start–end as m:ss (font-mono, LTR), concept
- *   name when linked, edit (Modal) and delete (ConfirmDialog).
+ *   name when linked, up/down reorder (5-D3: ordinal neighbor-swap
+ *   via two PATCHes — the lecture pattern), edit (Modal) and delete
+ *   (ConfirmDialog).
  *
- * Chapter ordinals are auto-assigned by the API (max+1) — never edited here.
+ * Chapter ordinals are auto-assigned by the API (max+1) on create and
+ * reordered exclusively through the move pair (never a form field).
  */
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
@@ -185,9 +188,41 @@ export function ChapterList({
   chapters: LectureChapter[];
 }) {
   const del = useDeleteChapter();
+  const update = useUpdateChapter();
   const [editing, setEditing] = useState<LectureChapter | null>(null);
   const [adding, setAdding] = useState(false);
   const [deleting, setDeleting] = useState<LectureChapter | null>(null);
+
+  // The API sorts by ordinal, but re-sort locally so the list stays
+  // honest right after invalidation streaks (the panel's lecture-list
+  // pattern — no local ordering fiction).
+  const sorted = useMemo(
+    () => [...chapters].sort((a, b) => a.ordinal - b.ordinal),
+    [chapters],
+  );
+
+  /* 5-D3 (5-B6 hand-off #2): chapter reorder — the same neighbor-swap
+   * through PATCH /chapters/:id the lectures use (ordinal joined the
+   * update schema in wave 26). movingId locks every move button so two
+   * swaps can never interleave their two-PATCH sequence. */
+  const [movingId, setMovingId] = useState<string | null>(null);
+  const move = async (chapter: LectureChapter, dir: -1 | 1) => {
+    const index = sorted.findIndex((c) => c.id === chapter.id);
+    const neighbor = sorted[index + dir];
+    if (!neighbor) return;
+    setMovingId(chapter.id);
+    try {
+      await update.mutateAsync({ chapterId: chapter.id, ordinal: neighbor.ordinal });
+      await update.mutateAsync({ chapterId: neighbor.id, ordinal: chapter.ordinal });
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, 'تعذَّر تحديث ترتيب الفصول — حاول مرة أخرى.'),
+        { title: 'تعذّر إعادة الترتيب' },
+      );
+    } finally {
+      setMovingId(null);
+    }
+  };
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -207,12 +242,14 @@ export function ChapterList({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-      {chapters.length === 0 && (
+      {sorted.length === 0 && (
         <p className="text-sm text-muted" style={{ margin: 0 }}>
           لا توجد فصول محددة بعد — أضِف فصولاً لمساعدة الطلاب على التنقل داخل المحاضرة.
         </p>
       )}
-      {chapters.map((chapter) => (
+      {sorted.map((chapter, index) => {
+        const moveLocked = movingId !== null;
+        return (
         <div
           key={chapter.id}
           style={{
@@ -224,6 +261,33 @@ export function ChapterList({
             border: '1px solid var(--rule)',
           }}
         >
+          {/* 5-D3 (5-B6 hand-off #2): up/down swap with the neighbor —
+              the lecture pattern's mechanics (aria-labels, end-disable,
+              mid-swap lock) on a horizontal pair: chapter rows are
+              single-line compact rows, a vertical chevron stack would
+              double their height. */}
+          <div className="ch-move" role="group" aria-label={`ترتيب ${chapter.title}`}>
+            <button
+              type="button"
+              className="btn ghost sm ch-move-btn"
+              onClick={() => void move(chapter, -1)}
+              disabled={index === 0 || moveLocked}
+              aria-label={`انقل ${chapter.title} لأعلى القائمة`}
+              title="انقل لأعلى"
+            >
+              <Icon icon={ChevronUp} size={12} />
+            </button>
+            <button
+              type="button"
+              className="btn ghost sm ch-move-btn"
+              onClick={() => void move(chapter, 1)}
+              disabled={index === sorted.length - 1 || moveLocked}
+              aria-label={`انقل ${chapter.title} لأسفل القائمة`}
+              title="انقل لأسفل"
+            >
+              <Icon icon={ChevronDown} size={12} />
+            </button>
+          </div>
           <span dir="ltr" className="font-mono text-xs" style={{ color: 'var(--text-secondary, var(--text))', whiteSpace: 'nowrap' }}>
             {formatSec(chapter.startSec)} – {formatSec(chapter.endSec)}
           </span>
@@ -244,7 +308,8 @@ export function ChapterList({
             <Icon icon={Trash2} size={12} />
           </button>
         </div>
-      ))}
+        );
+      })}
 
       <div>
         <button type="button" className="btn ghost sm" onClick={() => setAdding(true)}>

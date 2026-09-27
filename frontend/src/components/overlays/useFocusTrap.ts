@@ -27,6 +27,21 @@ export const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), ' +
   'select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/** Field controls — the primary content of a form dialog. */
+const FIELD_CONTROL_SELECTOR =
+  'input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled])';
+
+/** Dismiss affordances (X buttons) — skipped by the initial-focus pass.
+ * The primitive-rendered ones carry data-close-button; every hand-rolled
+ * close in the app names itself «إغلاق …» ("close …") via aria-label,
+ * which this predicate recognizes too. The close button is never removed
+ * from the Tab cycle — it just stops being the first thing announced. */
+function isDismissControl(el: HTMLElement): boolean {
+  if (el.dataset.closeButton !== undefined) return true;
+  const name = (el.getAttribute('aria-label') ?? '').trim();
+  return name === 'إغلاق' || name.startsWith('إغلاق ') || name.toLowerCase() === 'close';
+}
+
 interface FocusTrapOpts {
   open: boolean;
   containerRef: React.RefObject<HTMLElement | null>;
@@ -46,13 +61,40 @@ export function useFocusTrap({
   const overlayId = useOverlayRegistration(open, overlayKind);
 
   // Body scroll lock (ref-counted) + initial focus + focus-restore.
+  //
+  // Initial-focus policy (A10 P2-1): the first thing a keyboard/SR user
+  // hears inside a blocking overlay used to be the header's close (X)
+  // button — one stray Enter dismissed the layer (data-loss-free only
+  // where a discard guard exists). Priority order now:
+  //   1. the first field control (input/select/textarea) — a form
+  //      dialog opens on the first thing to fill;
+  //   2. the first focusable that is NOT a dismiss affordance — a
+  //      button-only dialog (e.g. ConfirmDialog) opens on its leading
+  //      (safe) action, as measured live in the audit's verified-good
+  //      list;
+  //   3. the dialog surface itself (tabIndex -1 on the card) — a
+  //      view-only overlay opens on its context; the close button is
+  //      the first Tab stop (and Esc always works).
   useEffect(() => {
     if (!open) return;
     acquireScrollLock(overlayId);
     const previousActive = document.activeElement as HTMLElement | null;
     const t = window.setTimeout(() => {
-      const first = containerRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
-      first?.focus();
+      const root = containerRef.current;
+      if (!root) return;
+      const control = root.querySelector<HTMLElement>(FIELD_CONTROL_SELECTOR);
+      if (control) {
+        control.focus();
+        return;
+      }
+      const content = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).find(
+        (el) => !isDismissControl(el),
+      );
+      if (content) {
+        content.focus();
+        return;
+      }
+      root.focus();
     }, 0);
     return () => {
       window.clearTimeout(t);

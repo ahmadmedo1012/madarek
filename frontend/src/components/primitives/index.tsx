@@ -1,24 +1,29 @@
 import { useId, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../Icon';
 
-/* ─── Primitive inventory (wave 13-16 — zero-consumer inventory
-   documentation per WAVE-13-MAP, in the spirit of audit 11-e P2-1;
-   cf. the sibling note overlays/index.ts from wave 12-14).
-   Deliberate zero-consumer API surface — documented, not deleted:
-   - Button / Input / FormField (Form.tsx): no app consumers yet. They
-     are the canonical consumers of the .btn / .input token systems;
-     Button/Input loading contracts are pinned by motion.css
-     companions (.btn[data-loading] + .motion-spinner, .input-affix),
-     and FormField (21-b, A9 P2-4) carries the aria-invalid /
-     aria-describedby association contract the hand-rolled grade-modal
-     and curriculum forms were missing. Pages still hand-write
-     className="btn …"; new code should adopt these instead.
+/* ─── Primitive inventory (refreshed 5-C4 per audit A10 P3-8 — the
+   wave-13-16 list had gone stale; cf. the sibling note in
+   overlays/index.ts).
+   - FormField (Form.tsx): the association-contract field scaffold
+     (aria-invalid + aria-describedby injection, 21-b / A9 P2-4) —
+     consumers: the grade modal (TeacherPages), research review,
+     curriculum AuthoringModal, ExamAuthorPages' Field, and since 5-C4
+     the competitions + community composer forms. New labelled fields
+     should adopt it instead of hand-rolled label/error rows.
+   - Button / Input (Form.tsx): consumed by ExamAuthorPages (question
+     form). The rest of the app still hand-writes className="btn …" /
+     className="input" — the primitives remain the canonical consumers
+     of those token systems, with the loading contracts pinned by
+     motion.css companions (.btn[data-loading] + .motion-spinner,
+     .input-affix).
    - Pill's non-interactive branch: when `onClick` is omitted the pill
      renders a <span> so the primitive can never emit a fake control;
-     today's only consumer (LibraryPage category filter) always passes
-     onClick, so the span branch is platform robustness, not dead weight.
+     the LibraryPage category filter always passes onClick, so the
+     span branch is platform robustness, not dead weight.
    - PermissionDeniedState (States.tsx): no external consumers; it is
      rendered internally by ErrorState's 403 branch and exported for
      pages that KNOW they are rendering an authorization wall. */
@@ -77,22 +82,69 @@ export function Card({
 }
 
 /* ─── Metric / KPI ──────────────────────────────────────── */
+/* 5-B4 (audit 5-A8 P1-3): the KPI primitive gains an OPTIONAL navigable
+   form. Every one of the ~170 existing call sites passes only
+   {label, value, change, icon, color} and keeps rendering the exact
+   same <div> — the variant activates only when `to` (router link) or
+   `onClick` (in-page action) is passed. A tile that answers a
+   follow-up question is a map entry, not a terminal stat: the console
+   had 93/93 dead-end metrics before this.
+
+   The affordance is deliberately styled INLINE (position: absolute
+   chevron at the block-end/inline-end corner) so the primitive stays
+   CSS-file-agnostic — the hover lift already comes from the existing
+   .metric:hover family (components.css + polish overrides), the focus
+   ring from the global :focus-visible contract, and the cursor from
+   the native <a>/<button>. No new stylesheet rules needed. */
 export function MetricCard({
   label,
   value,
   change,
   icon,
   color,
+  to,
+  onClick,
+  actionHint,
+  pressed,
 }: {
   label: ReactNode;
   value: ReactNode;
   change?: ReactNode;
   icon?: LucideIcon;
   color?: ThemeColor;
+  /** Router destination — renders the tile as a <Link>. */
+  to?: string;
+  /** In-page action — renders the tile as a <button>. */
+  onClick?: () => void;
+  /** Short verb phrase naming where the tile goes («عرض الطلاب») —
+   *  tooltip + the chevron's accessible context. */
+  actionHint?: string;
+  /** Toggle state for onClick tiles that act as filters (aria-pressed). */
+  pressed?: boolean;
 }) {
-  const cls = ['metric', color && color !== 'brand' && color].filter(Boolean).join(' ');
-  return (
-    <div className={cls}>
+  const cls = ['metric', 'metric-link', color && color !== 'brand' && color].filter(Boolean).join(' ');
+  // The go-chevron names the tile's destination. INLINE styling keeps
+  // the primitive CSS-file-agnostic; the hover lift already comes from
+  // the existing .metric:hover family, the focus ring from the global
+  // :focus-visible contract, the cursor from the native <a>/<button>.
+  const goAffordance = (
+    <span
+      className="metric-go"
+      aria-hidden
+      style={{
+        position: 'absolute',
+        insetBlockEnd: 'var(--sp-3)',
+        insetInlineEnd: 'var(--sp-3)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        color: 'var(--accent-ink, var(--accent))',
+      }}
+    >
+      <Icon icon={ArrowLeft} size={14} />
+    </span>
+  );
+  const body = (
+    <>
       <div className="metric-head">
         <span className="metric-label">{label}</span>
         <div className="metric-value">{value}</div>
@@ -107,8 +159,35 @@ export function MetricCard({
           <Icon icon={icon} size={22} />
         </div>
       )}
-    </div>
+    </>
   );
+  // Navigable: the whole tile is the target (44px+ by construction —
+  // .metric has min-block-size 132px), so the chevron stays decorative.
+  if (to !== undefined) {
+    return (
+      <Link to={to} className={cls} title={actionHint} style={{ textDecoration: 'none' }}>
+        {body}
+        {goAffordance}
+      </Link>
+    );
+  }
+  if (onClick !== undefined) {
+    return (
+      <button
+        type="button"
+        className={cls}
+        onClick={onClick}
+        title={actionHint}
+        aria-pressed={pressed}
+        style={{ textAlign: 'start', width: '100%' }}
+      >
+        {body}
+        {goAffordance}
+      </button>
+    );
+  }
+  const divCls = ['metric', color && color !== 'brand' && color].filter(Boolean).join(' ');
+  return <div className={divCls}>{body}</div>;
 }
 
 /* ─── Badge (default: neutral. color = explicit only) ─── */
@@ -215,13 +294,27 @@ export function AlertRow({
   time?: ReactNode;
   actions?: ReactNode;
 }) {
+  /* 5-D1 (A11 P2-3/P2-4): the amber marker rides the graphics tier —
+     the base --warning ink measured 2.30:1 on the white .alert card
+     (non-text floor 3:1). --chart-6 is the documented amber for
+     graphics on light surfaces (#A67A22 = 3.87:1 light / #F2C766
+     dark, tokens.css) — the same tier .alert.amber .alert-dot paints
+     (components.css), so the icon and its dot fallback never diverge.
+     The other markers already clear 3:1 on white. */
+  const ICON_INK: Record<AlertColor, string> = {
+    brand: 'var(--accent)',
+    red: 'var(--danger)',
+    amber: 'var(--chart-6)',
+    green: 'var(--success)',
+    purple: 'var(--brand-purple)',
+  };
   return (
     <div className={`alert ${color}`}>
       {/* The coloured dot is the fallback marker; when an icon is present it
           replaces the dot entirely (no hidden placeholder spans). */}
       {!icon && <span className="alert-dot" aria-hidden />}
       {icon && (
-        <span style={{ color: `var(--${color === 'brand' ? 'accent' : color === 'red' ? 'danger' : color === 'amber' ? 'warning' : color === 'green' ? 'success' : 'brand-purple'})`, marginTop: 2 }}>
+        <span style={{ color: ICON_INK[color], marginTop: 2 }}>
           <Icon icon={icon} size={16} />
         </span>
       )}

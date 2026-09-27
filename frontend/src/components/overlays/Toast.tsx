@@ -187,13 +187,28 @@ function ToastCard({ item }: { item: ToastItem }) {
     return () => window.clearTimeout(t);
   }, [item.closing, item.id, remove]);
 
-  /* ── Swipe-to-dismiss (touch only — pointer events, no capture UI) ── */
+  /* ── Swipe-to-dismiss (touch only — pointer events, no capture UI) ──
+   * Cascade note (measured live, 5-C4 — same defect as the Sheet
+   * grabber): the entrance animation's `both` fill keeps applying
+   * `transform: none` after it finishes and animation declarations
+   * outrank inline styles, so the old bare `style.transform` never
+   * painted (finger at −90px, computed transform still identity).
+   * `data-dragging` suspends the animation while a drag owns the
+   * card (notifications.css two-phase pattern); on dismissal the
+   * state is cleared but the transform is KEPT so the exit keyframes'
+   * implicit `from` continues from the finger. */
   const dragRef = useRef<{ startX: number; dx: number } | null>(null);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType !== 'touch' || item.closing) return;
     dragRef.current = { startX: e.clientX, dx: 0 };
-    e.currentTarget.setPointerCapture(e.pointerId);
+    if (cardRef.current) {
+      cardRef.current.dataset.dragging = 'true';
+      cardRef.current.dataset.dragPhase = 'active';
+    }
+    // Touch pointers are implicitly captured per the pointer-events
+    // model; the explicit call makes it airtight (absent in jsdom).
+    e.currentTarget.setPointerCapture?.(e.pointerId);
     pauseTimer();
   };
 
@@ -201,21 +216,24 @@ function ToastCard({ item }: { item: ToastItem }) {
     const drag = dragRef.current;
     if (!drag || !cardRef.current) return;
     drag.dx = e.clientX - drag.startX;
-    cardRef.current.style.transition = 'none';
     cardRef.current.style.transform = `translateX(${drag.dx}px)`;
   };
 
   const endDrag = (cancelled: boolean) => {
     const drag = dragRef.current;
     dragRef.current = null;
-    if (!cardRef.current) return;
-    // Clear the dragged transform so the exit keyframe interpolates
-    // cleanly (keyframes beat inline style once the animation starts).
-    cardRef.current.style.transition = '';
-    cardRef.current.style.transform = '';
+    const card = cardRef.current;
+    if (!card) return;
     if (!cancelled && Math.abs(drag?.dx ?? 0) > SWIPE_THRESHOLD_PX) {
+      card.removeAttribute('data-dragging');
+      card.removeAttribute('data-drag-phase');
       dismiss(item.id);
     } else {
+      // Cancelled / short: spring back under the release-phase
+      // transition; the state persists — removing it would REPLAY the
+      // entrance keyframes (the exit rule outspecifies it, 0,3,0 both).
+      card.dataset.dragPhase = 'release';
+      card.style.transform = '';
       resumeTimer();
     }
   };
