@@ -50,13 +50,6 @@
     --font-serif:   'IBM Plex Serif', Georgia, serif;
     --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-    /* ─── Cinematic display voice (radical redesign) ─────────────────────
-       Cairo VF (arabic subset, 200–1000) renders TRUE 800/900 weights that
-       Plex Sans Arabic physically lacks (family caps at 700). Reserved for
-       landing hero + chapter headlines ONLY — product surfaces stay Plex
-       for continuity. Latin glyphs inside a cinematic headline fall through
-       unicode-range to Plex (Cairo latin subset intentionally not shipped). */
-    --font-cinematic: 'Cairo', 'IBM Plex Sans Arabic', system-ui, sans-serif;
     --fw-cine:       800;
     --fw-cine-heavy: 900;
     /* reference-bar display sizes: 130–200px headline class, 1:1–1:1.1 leading */
@@ -104,7 +97,6 @@
     --fw-bold: 700;
     --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800 */
     /* NOTE: --fw-cine (800) + --fw-cine-heavy (900) above are REAL weights —
-       they must only be paired with --font-cinematic (Cairo VF). */
 
     /* line-heights — Arabic-comfortable, headline-tight.
        21-c (A12 P2-7): --lh-tight (1.05) is the RAW Latin-tuned scale
