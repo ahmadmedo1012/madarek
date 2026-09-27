@@ -13,7 +13,7 @@
  * gets a per-test getBoundingClientRect mock standing in for scroll
  * position; scroll events are flushed through requestAnimationFrame.
  */
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { JourneyRail, JOURNEY_STAGES } from '../../src/components/motion/JourneyRail';
 
@@ -45,7 +45,7 @@ async function flushScroll() {
   });
 }
 
-let rafSpy: ReturnType<typeof vi.spyOn> | null = null;
+let rafSpy: MockInstance<typeof window.requestAnimationFrame> | null = null;
 
 beforeEach(() => {
   rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
@@ -80,27 +80,30 @@ describe('JourneyRail', () => {
   it('stamps stages as their sections arrive and keeps them stamped on the way back up', async () => {
     const cleanup = mountStages((id) => (id === 'top' ? 0 : 5000));
     const { container } = render(<JourneyRail />);
-    const stops = () => container.querySelectorAll<HTMLAnchorElement>('.journey-rail a');
+    const stops = () => {
+      const list = container.querySelectorAll<HTMLAnchorElement>('.journey-rail a');
+      return (i: number) => list[i]!;
+    };
 
     // at the top of the page only التسجيل (the hero) is stamped + current
     await flushScroll();
-    expect(stops()[0].className).toContain('is-stamped');
-    expect(stops()[0].className).toContain('is-current');
-    expect(stops()[1].className).not.toContain('is-stamped');
+    expect(stops()(0).className).toContain('is-stamped');
+    expect(stops()(0).className).toContain('is-current');
+    expect(stops()(1).className).not.toContain('is-stamped');
 
     // scroll down: campus arrives (top inside the stamp line)
     const campus = document.getElementById('campus')!;
     campus.getBoundingClientRect = () => ({ ...ZERO_RECT, top: 100 }) as DOMRect;
     await flushScroll();
-    expect(stops()[1].className).toContain('is-stamped');
-    expect(stops()[1].className).toContain('is-current');
-    expect(stops()[6].className).not.toContain('is-stamped');
+    expect(stops()(1).className).toContain('is-stamped');
+    expect(stops()(1).className).toContain('is-current');
+    expect(stops()(6).className).not.toContain('is-stamped');
 
     // scroll back to the top: stamps persist, the playhead returns home
     campus.getBoundingClientRect = () => ({ ...ZERO_RECT, top: 5000 }) as DOMRect;
     await flushScroll();
-    expect(stops()[0].className).toContain('is-current');
-    expect(stops()[1].className).toContain('is-stamped'); // the trace holds
+    expect(stops()(0).className).toContain('is-current');
+    expect(stops()(1).className).toContain('is-stamped'); // the trace holds
     cleanup();
   });
 
@@ -123,7 +126,7 @@ describe('JourneyRail', () => {
     const stops = container.querySelectorAll<HTMLAnchorElement>('.journey-rail a');
     stops.forEach((a) => expect(a.className).toContain('is-stamped'));
     // the last stop is the graduation-cap chip
-    const cap = stops[stops.length - 1];
+    const cap = stops[stops.length - 1]!;
     expect(cap.className).toContain('is-cap-stop');
     expect(cap.querySelector('.journey-rail-dot svg')).toBeTruthy();
     // the track is fully drawn (fill = 1 spans first → last centre)

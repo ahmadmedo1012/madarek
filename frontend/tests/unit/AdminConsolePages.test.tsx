@@ -603,9 +603,9 @@ describe('AdminSyncPage — «حقول قديمة» drills into the first stale 
     const tile = await screen.findByRole('button', { name: /حقول مُزامنة/ });
     fireEvent.click(tile);
     const heads = Array.from(document.querySelectorAll('.category-row-head'));
-    const contact = heads.find((h) => h.textContent.includes('بيانات التواصل'));
+    const contact = heads.find((h) => (h.textContent ?? '').includes('بيانات التواصل'));
     expect(contact!.getAttribute('aria-expanded')).toBe('true');
-    const identity = heads.find((h) => h.textContent.includes('هوية الجامعة'));
+    const identity = heads.find((h) => (h.textContent ?? '').includes('هوية الجامعة'));
     expect(identity!.getAttribute('aria-expanded')).toBe('false');
     // The stale fact row carries its «قديم» badge.
     expect(await screen.findByText('قديم')).toBeInTheDocument();

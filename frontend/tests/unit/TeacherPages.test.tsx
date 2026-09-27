@@ -27,7 +27,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AttendancePage, AssignmentsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage, feedToPending } from '../../src/pages/teacher/TeacherPages';
+import { AttendancePage, AssignmentsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage } from '../../src/pages/teacher/TeacherPages';
 import { useAuthStore } from '../../src/stores/auth.store';
 import type { AuthUser } from '../../src/stores/auth.store';
 

@@ -422,7 +422,9 @@ describe('Exam taker ergonomics (5-A6 P2-2/P2-3)', () => {
     vi.useFakeTimers();
     mocks.start.mockResolvedValue(startedPayload());
     // jsdom ships no scrollIntoView — stub the browser API (not app code).
-    const proto = Element.prototype as Element & { scrollIntoView?: (o?: object) => void };
+    const proto = Element.prototype as Omit<Element, 'scrollIntoView'> & {
+      scrollIntoView?: (o?: object) => void;
+    };
     const scrollIntoView = vi.fn();
     proto.scrollIntoView = scrollIntoView;
     try {
@@ -492,7 +494,7 @@ describe('Exam taker ergonomics (5-A6 P2-2/P2-3)', () => {
       (q1 as HTMLElement).getBoundingClientRect = () => rect(-400, -200);
       (q2 as HTMLElement).getBoundingClientRect = () => rect(200, 500);
       await act(async () => {
-        instances[0]([] as IntersectionObserverEntry[], {} as IntersectionObserver);
+        instances[0]!([] as IntersectionObserverEntry[], {} as IntersectionObserver);
       });
 
       const dot2 = screen.getByRole('button', { name: 'السؤال 2 من 2 — بدون إجابة' });

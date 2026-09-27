@@ -6,7 +6,7 @@
  * getBoundingClientRect mocks, and rAF is flushed manually.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { useScrollProgress } from '../../src/components/motion/useScrollProgress';
 import { MaskReveal } from '../../src/components/motion/MaskReveal';
 import { SequentialHighlight } from '../../src/components/motion/SequentialHighlight';
