@@ -57,6 +57,10 @@ export default defineConfig({
           react: ['react', 'react-dom', 'react-router-dom'],
           query: ['@tanstack/react-query'],
           charts: ['chart.js', 'react-chartjs-2'],
+          /* v4 cinematic kit — gsap+lenis ride the landing chunk; three+R3F
+             load only when the lazy HeroScene imports (async boundary). */
+          motion: ['gsap', '@gsap/react', 'lenis'],
+          webgl: ['three', '@react-three/fiber'],
         },
       },
     },

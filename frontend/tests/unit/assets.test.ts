@@ -38,7 +38,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('every @font-face in fonts.css points to an existing woff2 file', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const urls = [...css.matchAll(/url\('?(\/fonts\/[^)']+\.woff2)'?\)/g)].map((m) => m[1]!);
-    expect(urls.length).toBe(12);
+    expect(urls.length).toBe(13); // 12 Plex + Cairo VF (radical redesign display face)
     for (const u of urls) {
       const file = path.join(root, 'public', u.replace(/^\//, ''));
       expect(existsSync(file), `${u} missing from public/fonts`).toBe(true);
@@ -48,7 +48,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('all font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(12);
+    expect(faces).toBe(13); // 12 Plex + Cairo VF
     expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
   });
 
@@ -81,18 +81,16 @@ describe('hero image optimization (perf fix: 2 MB PNG)', () => {
     expect(v.size).toBeLessThan(60 * 1024);
   });
 
-  it('LandingPage renders the responsive <picture> art with intrinsic dimensions', () => {
-    const src = read('src/pages/LandingPage.tsx');
+  it('CampusChapter renders the responsive <picture> art with intrinsic dimensions', () => {
+    // v4: the campus photo moved from LandingPage into the chapter component
+    // (full-bleed parallax panel → sizes="100vw" by design).
+    const src = read('src/components/landing/CampusChapter.tsx');
     expect(src).toContain('<picture>');
     expect(src).toContain('srcSet="/main_photo-750.webp 750w, /main_photo.webp 1377w"');
     expect(src).toContain('src="/main_photo.jpg"');
     expect(src).toMatch(/width=\{1377\}/);
     expect(src).toMatch(/height=\{768\}/);
-    // sizes mirrors the marketing-container gutters (20px mobile / 48px
-    // desktop, 1200px container cap → 1104px max frame width)
-    expect(src).toContain(
-      'sizes="(max-width: 920px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1104px"',
-    );
+    expect(src).toContain('sizes="100vw"');
     expect(src).toContain('loading="lazy"');
     expect(src).toContain('decoding="async"');
   });
@@ -100,6 +98,7 @@ describe('hero image optimization (perf fix: 2 MB PNG)', () => {
   it('no source file references the deleted PNG anymore', () => {
     const landing = read('src/pages/LandingPage.tsx');
     expect(landing).not.toContain('main_photo.png');
+    expect(read('src/components/landing/CampusChapter.tsx')).not.toContain('main_photo.png');
   });
 });
 

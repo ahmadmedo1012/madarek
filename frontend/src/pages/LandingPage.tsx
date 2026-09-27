@@ -1,12 +1,15 @@
 import { Link, Navigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Brain, GraduationCap, Network, Building2, Compass,
-  ShieldCheck, ArrowLeft, Menu, X, BookOpen,
-  Microscope, FlaskConical, Calendar, ClipboardCheck,
+  Brain, GraduationCap, Network, Compass,
+  ArrowLeft, Menu, X,
+  Microscope, ClipboardCheck,
   Check, ChevronDown, PlayCircle, Route as RouteIcon,
-  Medal, Keyboard, Sparkles, MoonStar,
+  Medal, Keyboard, MoonStar,
 } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Icon } from '../components/Icon';
 import { CollegesPopover } from '../components/CollegesPopover';
 import { useThemeSync } from '../components/layout/ThemeToggle';
@@ -18,21 +21,34 @@ import { useSectionProgress } from '../hooks/useSectionProgress';
 import { useMagnetic } from '../hooks/useMagnetic';
 import { CountUp } from '../components/CountUp';
 import { colleges } from '../data/colleges.config';
-import { OrbitScene } from '../components/landing/OrbitScene';
 import { CollegeConstellation } from '../components/landing/CollegeConstellation';
 import { JourneyLightPath } from '../components/landing/JourneyLightPath';
-import { Parallax } from '../components/motion/Parallax';
+import IntroSequence from '../components/landing/IntroSequence';
+import TrustMarquee from '../components/landing/TrustMarquee';
+import RolesChapter from '../components/landing/RolesChapter';
+import CampusChapter from '../components/landing/CampusChapter';
+import FinalCtaChapter from '../components/landing/FinalCtaChapter';
+import { useLandingMotion } from '../hooks/useLandingMotion';
 // landing.css is this page's own sheet (dark immersive world, scoped to
-// .landing); colleges.css rides here for the popover surfaces.
+// .landing); landing-chapters.css rides AFTER it (v4 chapters override);
+// colleges.css for the popover surfaces.
 import '../styles/landing.css';
+import '../styles/landing-chapters.css';
 import '../styles/colleges.css';
 
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+/* three + R3F live in their own async chunk — the hero paints pure
+   HTML/CSS first and the WebGL world swaps in when ready. */
+const HeroScene = lazy(() => import('../components/landing/HeroScene'));
+
 /**
- * Landing — «سماء مدارك» immersive v2 (docs/immersive-redesign-plan.md).
+ * Landing — «عالم مدارك» radical redesign v4 (docs/radical-redesign-gap-analysis.md).
  *
- * The page is a journey, not a stack of sections:
- *   المدار (hero sky) → الثقة → مدارات الكلّيّات → كيف تتعلّم
- *   → قصّة التقدّم → الأرض (الحرم) → الأدوار → نقطة البداية.
+ * The page is a cinematic journey through one original world:
+ *   المدار (WebGL knowledge world) → الثقة (marquee) → مدارات الكلّيّات
+ *   → رحلة التعلّم (light path + station activation) → قصّة التقدّم
+ *   (pinned orbit-progress system) → الأرض → الأدوار → نقطة البداية.
  *
  * University truth: UoZ operates 25 colleges (backend seed faculty table;
  * registry in data/colleges.config.ts is the canonical machine source).
@@ -70,9 +86,19 @@ const JOURNEY: Array<{
   },
 ];
 
+/** Progress chapter data — real numbers from the flipped-classroom field
+ *  study (English course, southern Libya) — never invented. */
+const PROGRESS_STATS = [
+  { value: '40', label: 'تحسُّن الاستيعاب', note: 'مقارنة بالأسلوب التقليدي', frac: 0.4 },
+  { value: '70', label: 'زيادة في المشاركة', note: 'داخل الحلقات النقاشية', frac: 0.7 },
+  { value: '30', label: 'تحسُّن الالتزام', note: 'بمتابعة الجلسات', frac: 0.3 },
+  { value: '90', label: 'تحقيق أهداف التعلّم', note: 'ضمن الإطار الزمني', frac: 0.9 },
+] as const;
+
 export default function LandingPage() {
   useThemeSync();
   usePageTitle('منصة التعليم الذكي · جامعة الزاوية');
+  useLandingMotion();
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
 
@@ -93,9 +119,37 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
   const megamenuTriggerRef = useRef<HTMLButtonElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const progressRef = useRef<HTMLElement>(null);
+
+  /** Live hero scroll progress → HeroScene camera (ref, no re-renders). */
+  const heroProgress = useRef(0);
+
+  const prefersReduced = useMemo(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  );
+
+  /** Weak-device / save-data gate — the CSS sky alone carries the hero. */
+  const sceneAllowed = useMemo(() => {
+    try {
+      if ('connection' in navigator) {
+        const conn = navigator.connection as { saveData?: boolean };
+        if (conn.saveData) return false;
+      }
+      if ((navigator.hardwareConcurrency ?? 4) < 2) return false;
+      const probe = document.createElement('canvas');
+      return Boolean(probe.getContext('webgl2') ?? probe.getContext('webgl'));
+    } catch {
+      return false;
+    }
+  }, []);
 
   // Returning-visitor calm: first session visit plays the full intro; later
-  // visits this session skip straight to the calm state.
+  // visits this session skip straight to the settled hero.
   const [introSeen] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     try {
@@ -104,6 +158,9 @@ export default function LandingPage() {
       return false;
     }
   });
+
+  const [showIntro, setShowIntro] = useState(!introSeen && !prefersReduced);
+  const [heroReady, setHeroReady] = useState(introSeen || prefersReduced);
 
   useEffect(() => {
     if (redirectHome || introSeen) return;
@@ -114,29 +171,166 @@ export default function LandingPage() {
     }
   }, [redirectHome, introSeen]);
 
+  /* ── scroll state: ribbon + hero progress ref ─────────────────────── */
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 6);
       const max = document.documentElement.scrollHeight - window.innerHeight;
       setScrollPct(max > 0 ? Math.min(1, y / max) : 0);
+      const hero = heroRef.current;
+      if (hero) {
+        const h = hero.offsetHeight;
+        heroProgress.current = Math.min(1, Math.max(0, y / Math.max(1, h * 0.9)));
+      }
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Scroll-scrubbed chapters (native scrolling — no hijacking).
+  /* ── HERO entrance choreography (plays when the intro wipes open) ──── */
+  useGSAP(
+    () => {
+      if (!heroReady || prefersReduced) return;
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      tl.fromTo('.lnh-eyebrow', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, 0)
+        .fromTo(
+          '.lnh-line-inner',
+          { yPercent: 118 },
+          { yPercent: 0, duration: 1.1, stagger: 0.13 },
+          0.05,
+        )
+        .fromTo('.lnh-gold', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.75)
+        .fromTo('.lnh-sub', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85 }, 0.45)
+        .fromTo('.lnh-actions', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85 }, 0.58)
+        .fromTo('.lnh-meta', { opacity: 0 }, { opacity: 1, duration: 0.7 }, 0.74)
+        .fromTo('.lnh-scroll', { opacity: 0 }, { opacity: 0.9, duration: 0.8 }, 0.95);
+      return () => {
+        tl.kill();
+      };
+    },
+    { scope: rootRef, dependencies: [heroReady, prefersReduced] },
+  );
+
+  /* ── JOURNEY: stations light up as the light path reaches them ─────── */
+  useGSAP(
+    () => {
+      if (prefersReduced) return;
+      gsap.utils.toArray<HTMLElement>('.ln-station').forEach((st) => {
+        ScrollTrigger.create({
+          trigger: st,
+          start: 'top 64%',
+          end: 'bottom 30%',
+          toggleClass: { targets: st, className: 'on' },
+        });
+      });
+    },
+    { scope: rootRef, dependencies: [prefersReduced] },
+  );
+
+  /* ── PROGRESS: pinned orbit-system chapter (desktop) / enter-fill ──── */
+  useGSAP(
+    () => {
+      const arcs = gsap.utils.toArray<SVGPathElement>('.lnp-arc-fill');
+      const rows = gsap.utils.toArray<HTMLElement>('.lnp-row');
+      const core = rootRef.current?.querySelector('.lnp-core');
+      if (prefersReduced) return;
+
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 1024px)', () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: progressRef.current,
+            start: 'top top',
+            end: '+=170%',
+            pin: true,
+            scrub: 0.6,
+            anticipatePin: 1,
+          },
+        });
+        tl.fromTo('.lnp-head', { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0)
+          .fromTo('.lnp-lede', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.1);
+        arcs.forEach((arc, i) => {
+          tl.to(
+            arc,
+            { strokeDashoffset: 100 * (1 - PROGRESS_STATS[i]!.frac), duration: 0.7 },
+            0.18 + i * 0.16,
+          ).to(rows[i] ?? {}, { opacity: 1, x: 0, duration: 0.25 }, 0.3 + i * 0.16);
+        });
+        if (core) {
+          tl.fromTo(core, { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6 }, 0.2)
+            .to(core, { scale: 1.06, duration: 0.2 }, 0.85)
+            .to(core, { scale: 1, duration: 0.2 }, 1.0);
+        }
+        return () => {
+          tl.scrollTrigger?.kill();
+          tl.kill();
+        };
+      });
+
+      mm.add('(max-width: 1023px)', () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: progressRef.current,
+            start: 'top 72%',
+            once: true,
+          },
+        });
+        arcs.forEach((arc, i) => {
+          tl.to(
+            arc,
+            { strokeDashoffset: 100 * (1 - PROGRESS_STATS[i]!.frac), duration: 0.9, ease: 'expo.out' },
+            i * 0.12,
+          );
+        });
+        tl.to(rows, { opacity: 1, x: 0, duration: 0.6, stagger: 0.1 }, 0.2);
+        return () => {
+          tl.scrollTrigger?.kill();
+          tl.kill();
+        };
+      });
+
+      return () => mm.revert();
+    },
+    { scope: rootRef, dependencies: [prefersReduced] },
+  );
+
+  // Scroll-scrubbed journey light path (native CSS var, no hijack).
   const journeyRef = useSectionProgress<HTMLElement>();
-  const progressRef = useSectionProgress<HTMLElement>();
   const magneticCta = useMagnetic<HTMLAnchorElement>(7);
 
   if (redirectHome) return <Navigate to={redirectHome} replace />;
 
   const year = new Date().getFullYear();
 
+  /* Progress arcs — one 240° track per domain, radius stepped. */
+  const ARC_R = [176, 150, 124, 98];
+  const arcPath = (r: number, frac: number): string => {
+    // 240° sweep starting at -210° (top-left of the orbit system)
+    const start = (-210 * Math.PI) / 180;
+    const sweep = (240 * frac * Math.PI) / 180;
+    const cx = 210;
+    const cy = 210;
+    const x0 = cx + r * Math.cos(start);
+    const y0 = cy + r * Math.sin(start);
+    const x1 = cx + r * Math.cos(start + sweep);
+    const y1 = cy + r * Math.sin(start + sweep);
+    return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${frac > 0.5 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+  };
+
   return (
-    <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
+    <div className="landing" ref={rootRef} data-hero-wait={!heroReady ? 'true' : undefined}>
+
+      {/* Cinematic boot — first visit of the session only */}
+      {showIntro && (
+        <IntroSequence
+          onComplete={() => {
+            setShowIntro(false);
+            setHeroReady(true);
+          }}
+        />
+      )}
 
       {/* Top scroll-progress bar */}
       <div className="landing-progress" aria-hidden>
@@ -151,7 +345,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Header — dark glass over the sky */}
+      {/* Header — dark glass over the world */}
       <header className={`landing-header${scrolled ? ' scrolled' : ''}`}>
         <div className="landing-nav">
           <Link to="/" className="landing-brand" aria-label="مدارك">
@@ -247,101 +441,92 @@ export default function LandingPage() {
           <nav className="landing-mobile-menu" onClick={() => setMenuOpen(false)}>
             <a href="#colleges" className="btn ghost">الكلّيّات</a>
             <a href="#journey" className="btn ghost">رحلة التعلّم</a>
+            <a href="#progress" className="btn ghost">قصة التقدّم</a>
+            <a href="#campus" className="btn ghost">الجامعة</a>
             <a href="#roles" className="btn ghost">الأدوار</a>
-            <a href="#progress" className="btn ghost">النتائج</a>
-            <Link to="/auth" className="btn primary full">
-              ابدأ الآن
-              <Icon icon={ArrowLeft} size={14} />
-            </Link>
+            <Link to="/auth" className="btn primary">ابدأ الآن</Link>
           </nav>
         )}
       </header>
 
       <main>
-      {/* ═══ الفصل ٠ — المدار: the hero sky ═══ */}
-      <section className="ln-hero" aria-label="مدارك — منصة التعليم الذكي">
+      {/* ═══ الفصل ٠ — المدار: the knowledge world ═══ */}
+      <section className="ln-hero" ref={heroRef} aria-label="مدارك — منصة التعليم الذكي">
         {/* living scene (fails safe to the CSS sky below) */}
         <div className="ln-hero-sky" aria-hidden>
-          <OrbitScene className="ln-hero-canvas" biasX={-0.35} />
+          {sceneAllowed && (
+            <Suspense fallback={null}>
+              <HeroScene
+                className="ln-hero-canvas"
+                progressRef={heroProgress}
+                staticFrame={prefersReduced}
+              />
+            </Suspense>
+          )}
+          <span className="ln-hero-stars" />
           <span className="ln-hero-horizon" />
         </div>
 
-        <div className="ln-hero-content">
-          <RevealCssClass as="p" className="ln-hero-eyebrow">
-            <span className="ln-mono">جامعة الزاوية · {String(COLLEGES_COUNT).padStart(2, '0')} كلية · منذ 1988</span>
-          </RevealCssClass>
+        <div className="ln-hero-inner">
+          <div className="ln-hero-content">
+            <p className="lnh-eyebrow ln-mono lnh-a">
+              // جامعة الزاوية · {String(COLLEGES_COUNT).padStart(2, '0')} كلية · منذ 1988
+            </p>
 
-          <h1 className="ln-hero-title">
-            <RevealCssClass as="span" className="ln-hero-line">
-              <span className="ln-w">كلُّ</span>{' '}
-              <span className="ln-w">معرفةٍ</span>{' '}
-              <span className="ln-w">تبدأ</span>{' '}
-              <span className="ln-w"><em>نقطة</em></span>
-            </RevealCssClass>
-            <RevealCssClass as="span" className="ln-hero-line" delay={1}>
-              <span className="ln-w">وتصبح</span>{' '}
-              <span className="ln-w"><em className="ln-hero-gold">مدارًا</em></span>
-            </RevealCssClass>
-          </h1>
+            <h1 className="ln-hero-title">
+              <span className="lnh-line"><span className="lnh-line-inner lnh-a">كل معرفة تبدأ <em>نقطة</em></span></span>
+              <span className="lnh-line"><span className="lnh-line-inner lnh-a">وتصبح <em className="lnh-gold">مدارًا</em></span></span>
+            </h1>
 
-          <RevealCssClass as="p" className="ln-hero-sub" delay={2}>
-            مدارك — منصّة التعليم الذكي لجامعة الزاوية. محاضرات تفاعلية،
-            مصفوفة معرفية تتكيّف مع تقدّمك، ومساعد أكاديمي يرافقك
-            من أوّل درس حتى الإتقان.
-          </RevealCssClass>
+            <p className="lnh-sub lnh-a">
+              مدارك — منصّة التعليم الذكي لجامعة الزاوية. محاضرات تفاعلية،
+              مصفوفة معرفية تتكيّف مع تقدّمك، ومساعد أكاديمي يرافقك
+              من أوّل درس حتى الإتقان.
+            </p>
 
-          <RevealCssClass as="div" className="ln-hero-actions" delay={3}>
-            <Link to="/auth" className="ln-btn-gold" ref={magneticCta}>
-              ابدأ رحلتك
-              <Icon icon={ArrowLeft} size={16} />
-            </Link>
-            <a href="#journey" className="ln-btn-ghost">كيف تتّسع المدارك؟</a>
-            <button
-              type="button"
-              className="ln-btn-text landing-colleges-trigger"
-              onClick={() => setCollegesOpen(true)}
-              aria-haspopup="dialog"
-              aria-expanded={collegesOpen}
-            >
-              <Icon icon={GraduationCap} size={16} />
-              <span>الكلّيّات</span>
-              <span className="ln-btn-text-badge">{COLLEGES_COUNT}</span>
-            </button>
-          </RevealCssClass>
+            <div className="lnh-actions lnh-a ln-hero-actions">
+              <Link to="/auth" className="ln-btn-gold" ref={magneticCta}>
+                ابدأ رحلتك
+                <Icon icon={ArrowLeft} size={16} />
+              </Link>
+              <a href="#journey" className="ln-btn-ghost">كيف تتّسع المدارك؟</a>
+              <button
+                type="button"
+                className="ln-btn-text landing-colleges-trigger"
+                onClick={() => setCollegesOpen(true)}
+                aria-haspopup="dialog"
+                aria-expanded={collegesOpen}
+              >
+                <Icon icon={GraduationCap} size={16} />
+                <span>الكلّيّات</span>
+                <span className="ln-btn-text-badge">{COLLEGES_COUNT}</span>
+              </button>
+            </div>
 
-          <RevealCssClass as="ul" className="ln-hero-meta" delay={4}>
-            <li><Icon icon={Check} size={13} /> بإيميلك الجامعي</li>
-            <li aria-hidden className="ln-hero-meta-dot" />
-            <li><Icon icon={Keyboard} size={13} /> يعمل بلوحة المفاتيح</li>
-            <li aria-hidden className="ln-hero-meta-dot" />
-            <li><Icon icon={MoonStar} size={13} /> وضع تقليل الحركة محترم</li>
-          </RevealCssClass>
+            <ul className="lnh-meta lnh-a ln-hero-meta">
+              <li><Icon icon={Check} size={13} /> بإيميلك الجامعي</li>
+              <li aria-hidden className="ln-hero-meta-dot" />
+              <li><Icon icon={Keyboard} size={13} /> يعمل بلوحة المفاتيح</li>
+              <li aria-hidden className="ln-hero-meta-dot" />
+              <li><Icon icon={MoonStar} size={13} /> وضع تقليل الحركة محترم</li>
+            </ul>
+          </div>
         </div>
 
         {/* scroll invitation */}
-        <a href="#trust" className="ln-hero-scroll" aria-label="تابع الرحلة">
+        <a href="#trust" className="lnh-scroll ln-hero-scroll" aria-label="تابع الرحلة">
           <span className="ln-mono">تابع الرحلة</span>
           <span className="ln-hero-scroll-line" aria-hidden />
         </a>
       </section>
 
-      {/* ═══ الفصل ١ — الثقة ═══ */}
-      <section id="trust" className="ln-trust" aria-label="الاعتماد الرسمي">
-        <div className="ln-trust-inner">
-          <span className="ln-mono">معتمدة رسميًا</span>
-          <span className="ln-trust-sep" aria-hidden />
-          <span>وزارة التعليم العالي والبحث العلمي</span>
-          <span className="ln-trust-sep" aria-hidden />
-          <span>جامعة الزاوية</span>
-          <span className="ln-trust-sep" aria-hidden />
-          <span>قطاع ضمان الجودة</span>
-        </div>
-      </section>
+      {/* ═══ الفصل ١ — الثقة (marquee) ═══ */}
+      <TrustMarquee />
 
       {/* ═══ الفصل ٢ — مدارات الكلّيّات ═══ */}
       <section id="colleges" className="ln-chapter ln-colleges">
         <div className="ln-chapter-head">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الأول · الاكتشاف</RevealCssClass>
+          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">// الفصل الأول — الاكتشاف</RevealCssClass>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
             {String(COLLEGES_COUNT).padStart(2, '0')} كليةً في <em>سماءٍ واحدة</em>
           </RevealCssClass>
@@ -362,7 +547,7 @@ export default function LandingPage() {
       {/* ═══ الفصل ٣ — كيف تتعلّم مدارك ═══ */}
       <section id="journey" ref={journeyRef} className="ln-chapter ln-journey">
         <div className="ln-chapter-head">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الثاني · الطريق</RevealCssClass>
+          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">// الفصل الثاني — الطريق</RevealCssClass>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
             من أوّل درس إلى <em>الإتقان</em> — خمس محطات
           </RevealCssClass>
@@ -401,227 +586,78 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ الفصل ٤ — قصّة التقدّم ═══ */}
+      {/* ═══ الفصل ٤ — قصّة التقدّم (pinned orbit system) ═══ */}
       <section id="progress" ref={progressRef} className="ln-chapter ln-progress">
         <div className="ln-progress-grid">
           <div className="ln-progress-visual" aria-hidden>
-            <div className="ln-progress-orbits">
-              {/* expanding orbit system — scale driven by --sp */}
-              <span className="ln-progress-ring r0" />
-              <span className="ln-progress-ring r1" />
-              <span className="ln-progress-ring r2" />
-              <span className="ln-progress-ring r3" />
-              <span className="ln-progress-core" />
-              <span className="ln-progress-milestone m0" />
-              <span className="ln-progress-milestone m1" />
-              <span className="ln-progress-milestone m2" />
-              <span className="ln-progress-milestone m3" />
-              <span className="ln-progress-label"><span className="ln-mono">EXPAND · مدارك تتّسع</span></span>
-            </div>
+            <svg viewBox="0 0 420 420" className="ln-progress-system" role="presentation">
+              {ARC_R.map((r, i) => (
+                <g key={r}>
+                  <path
+                    className="lnp-arc-track"
+                    d={arcPath(r, 1)}
+                    fill="none"
+                    strokeWidth={i === 0 ? 2.5 : 1.5}
+                  />
+                  <path
+                    className="lnp-arc-fill"
+                    d={arcPath(r, 1)}
+                    fill="none"
+                    strokeWidth={i === 0 ? 4 : 3}
+                    pathLength={100}
+                    style={{ ['--lnp-fill' as string]: String(100 * (1 - (PROGRESS_STATS[i]?.frac ?? 0.4))) }}
+                  />
+                </g>
+              ))}
+              <g className="lnp-core">
+                <circle cx="210" cy="210" r="34" className="lnp-core-body" />
+                <circle cx="210" cy="210" r="52" className="lnp-core-halo" />
+              </g>
+            </svg>
+            <span className="lnp-caption ln-mono">EXPAND · مدارك تتّسع</span>
           </div>
 
           <div className="ln-progress-copy">
-            <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الثالث · التقدّم</RevealCssClass>
-            <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
+            <p className="ln-mono ln-mono-eyebrow lnp-head">// الفصل الثالث — التقدّم</p>
+            <h2 className="ln-chapter-title lnp-head">
               مدارُك يتّسع مع <em>كلّ خطوة</em>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="ln-chapter-lede" delay={2}>
+            </h2>
+            <p className="ln-chapter-lede lnp-lede">
               من أوّل درس تشاهده، إلى أوّل اختبار تجتازه، إلى مسار تُكمله —
               لوحة دقيقة ترسم تقدّمك لحظة بلحظة: الدرجات والحضور والمهام
               والمؤشرات المؤسسية، بصياغة تخدم القرار.
-            </RevealCssClass>
+            </p>
 
-            <div className="ln-progress-stats">
-              <RevealCssClass as="div" className="ln-stat">
-                <div className="ln-stat-value"><CountUp value="40" /><span className="ln-stat-unit">%</span></div>
-                <div className="ln-stat-label">تحسُّن الاستيعاب</div>
-                <div className="ln-stat-note">مقارنة بالأسلوب التقليدي</div>
-              </RevealCssClass>
-              <RevealCssClass as="div" className="ln-stat" delay={1}>
-                <div className="ln-stat-value"><CountUp value="70" /><span className="ln-stat-unit">%</span></div>
-                <div className="ln-stat-label">زيادة في المشاركة</div>
-                <div className="ln-stat-note">داخل الحلقات النقاشية</div>
-              </RevealCssClass>
-              <RevealCssClass as="div" className="ln-stat" delay={2}>
-                <div className="ln-stat-value"><CountUp value="30" /><span className="ln-stat-unit">%</span></div>
-                <div className="ln-stat-label">تحسُّن الالتزام</div>
-                <div className="ln-stat-note">بمتابعة الجلسات</div>
-              </RevealCssClass>
-              <RevealCssClass as="div" className="ln-stat" delay={3}>
-                <div className="ln-stat-value"><CountUp value="90" /><span className="ln-stat-unit">%</span></div>
-                <div className="ln-stat-label">تحقيق أهداف التعلّم</div>
-                <div className="ln-stat-note">ضمن الإطار الزمني</div>
-              </RevealCssClass>
+            <div className="lnp-rows">
+              {PROGRESS_STATS.map((s) => (
+                <div className="lnp-row" key={s.label}>
+                  <span className="lnp-row-value">
+                    <CountUp value={s.value} /><span className="lnp-row-unit">%</span>
+                  </span>
+                  <span className="lnp-row-body">
+                    <span className="lnp-row-label">{s.label}</span>
+                    <span className="lnp-row-note">{s.note}</span>
+                  </span>
+                </div>
+              ))}
             </div>
 
-            <RevealCssClass as="p" className="ln-progress-source" delay={3}>
+            <p className="ln-progress-source">
               دراسة ميدانية: استراتيجية الصفّ المعكوس على مقرّر اللغة الإنجليزية
               مع طلّاب من جنوب ليبيا — هذه أرقام التجربة الفعلية.
-            </RevealCssClass>
+            </p>
           </div>
         </div>
       </section>
 
       {/* ═══ الفصل ٥ — الأرض: الحرم الحقيقي ═══ */}
-      <section id="campus" className="ln-chapter ln-campus" aria-label="جامعة الزاوية">
-        <RevealCssClass as="figure" className="ln-campus-frame">
-          <Parallax amount={9} direction="up">
-            <picture>
-              <source
-                type="image/webp"
-                srcSet="/main_photo-750.webp 750w, /main_photo.webp 1377w"
-              />
-              <img
-                src="/main_photo.jpg"
-                alt="جامعة الزاوية — المدخل الرئيسي"
-                className="ln-campus-photo"
-                width={1377}
-                height={768}
-                sizes="(max-width: 920px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1104px"
-                loading="lazy"
-                decoding="async"
-              />
-            </picture>
-          </Parallax>
-          <span className="ln-campus-vignette" aria-hidden />
-          <figcaption className="ln-campus-caption">
-            <span className="ln-mono">ZAWIYA · 1988</span>
-            <span className="ln-campus-line">
-              <em>منذ 1988</em> — مساحة أكاديميّة تنبض بالحياة، أصبحت رقميّة بالكامل.
-            </span>
-          </figcaption>
-        </RevealCssClass>
-        <div className="ln-campus-facts">
-          <RevealCssClass as="div" className="ln-fact">
-            <div className="ln-fact-value"><CountUp value={String(COLLEGES_COUNT)} /></div>
-            <div className="ln-fact-label">كلية أكاديمية</div>
-            <div className="ln-fact-note">حسب الموقع الرسمي للجامعة</div>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="ln-fact" delay={1}>
-            <div className="ln-fact-value"><CountUp value="4" /></div>
-            <div className="ln-fact-label">مدن وفروع</div>
-            <div className="ln-fact-note">الزاوية، العجيلات، زوارة وأخرى</div>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="ln-fact" delay={2}>
-            <div className="ln-fact-value">1988</div>
-            <div className="ln-fact-label">عام التأسيس</div>
-            <div className="ln-fact-note">بقرار رقم 135</div>
-          </RevealCssClass>
-          <RevealCssClass as="div" className="ln-fact" delay={3}>
-            <div className="ln-fact-value"><CountUp value="3" /></div>
-            <div className="ln-fact-label">عضويّات دوليّة</div>
-            <div className="ln-fact-note">عربيّة، أفريقيّة، إسلاميّة</div>
-          </RevealCssClass>
-        </div>
-      </section>
+      <CampusChapter />
 
       {/* ═══ الفصل ٦ — الأدوار ═══ */}
-      <section id="roles" className="ln-chapter ln-roles">
-        <div className="ln-chapter-head">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الرابع · المجتمع</RevealCssClass>
-          <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
-            أربعة <em>أدوار</em>، تجربة موحَّدة
-          </RevealCssClass>
-          <RevealCssClass as="p" className="ln-chapter-lede" delay={2}>
-            كل دور أكاديمي يرى ما يخصّه فقط — صلاحيات مدروسة وفصل واضح بين الواجبات.
-          </RevealCssClass>
-        </div>
-
-        <ul className="ln-roles-list">
-          {[
-            {
-              icon: GraduationCap, tone: 'gold', name: 'الطالب',
-              desc: 'مقرَّرات، مصفوفة معرفية، مساعد ذكي، إنجازات وشهادات، فرص عمل، ومكتبة بحوث.',
-              quote: 'محاضرات منظَّمة، حضور وغياب آليّ، تحليل لفجواتك المعرفيّة، ومسارات تعلّم تتكيّف مع مستواك.',
-            },
-            {
-              icon: Brain, tone: 'azure', name: 'الأستاذ',
-              desc: 'ذكاء أكاديميّ يكشف الطلّاب المعرَّضين للتعثّر، إدارة المحاضرات والدرجات، ومعامل افتراضية بصلاحيات تحكُّم.',
-              quote: 'تسجيل الحضور بنقرات، تتبّع الدرجات لكلّ مقرّر، ذكاء أكاديميّ يكشف الطلّاب الذين يحتاجون متابعة.',
-            },
-            {
-              icon: Building2, tone: 'mist', name: 'الإدارة',
-              desc: 'إدارة الكليّات والأساتذة والمقرَّرات، تقارير، ومزامنة يومية مع البيانات الرسمية لجامعة الزاوية.',
-              quote: 'لوحات حيّة على مستوى الجامعة، إدارة الصلاحيات والأدوار، مزامنة بيانات الكليّات في مكان واحد.',
-            },
-            {
-              icon: ShieldCheck, tone: 'gold', name: 'ضمان الجودة',
-              desc: 'رؤية للمؤشرات المؤسسية: جودة المقرَّرات، تقييم الأساتذة، مراجعة الاختبارات والمناهج.',
-              quote: null,
-            },
-          ].map((r, i) => (
-            <RevealCssClass as="li" key={r.name} className="ln-role-row" delay={(i + 1) as 1 | 2 | 3 | 4}>
-              <span className="ln-role-key">
-                <span className={`ln-role-ico ${r.tone}`}><Icon icon={r.icon} size={26} strokeWidth={1.7} /></span>
-                <span className="ln-role-name">{r.name}</span>
-                <span className="ln-role-index ln-mono">{String(i + 1).padStart(2, '0')}</span>
-              </span>
-              <p className="ln-role-desc">{r.desc}</p>
-              {r.quote && (
-                <blockquote className="ln-role-quote">
-                  <span className="ln-role-quote-mark" aria-hidden>”</span>
-                  {r.quote}
-                </blockquote>
-              )}
-            </RevealCssClass>
-          ))}
-        </ul>
-
-        {/* the wider system — compact trio (content preserved from the old bento) */}
-        <div className="ln-system-trio">
-          {[
-            {
-              icon: BookOpen, tone: 'gold', title: 'مكتبة وبحوث',
-              desc: 'فهرس بحثيّ بفحص نزاهة علمية تلقائي (انتحال + AI) ومراجعة معلَّمة على الـPDF.',
-            },
-            {
-              icon: Calendar, tone: 'azure', title: 'جدول ذكي',
-              desc: 'جدول أسبوعيّ يجمع المحاضرات والتسليمات والاختبارات، بمذكّرات تلقائية وروابط مباشرة.',
-            },
-            {
-              icon: FlaskConical, tone: 'mist', title: 'معامل افتراضية',
-              desc: 'محاكاة شبكات وإلكترونيات وتجارب AR/VR للتطبيق العملي الآمن.',
-            },
-          ].map((c, i) => (
-            <RevealCssClass as="article" key={c.title} className="ln-system-card" delay={(i + 1) as 1 | 2 | 3}>
-              <span className={`ln-system-ico ${c.tone}`}><Icon icon={c.icon} size={22} /></span>
-              <h3 className="ln-system-title">{c.title}</h3>
-              <p className="ln-system-desc">{c.desc}</p>
-            </RevealCssClass>
-          ))}
-        </div>
-      </section>
+      <RolesChapter />
 
       {/* ═══ الفصل ٧ — نقطة البداية ═══ */}
-      <section className="ln-cta" aria-label="ابدأ رحلتك">
-        {/* converging orbits */}
-        <div className="ln-cta-orbits" aria-hidden>
-          <span className="ln-cta-orbit o0" />
-          <span className="ln-cta-orbit o1" />
-          <span className="ln-cta-orbit o2" />
-        </div>
-        <div className="ln-cta-inner">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الوصول · ACCESS</RevealCssClass>
-          <RevealCssClass as="h2" className="ln-cta-title" delay={1}>
-            نقطتك من الضوء <em>تبدأ من هنا</em>
-          </RevealCssClass>
-          <RevealCssClass as="p" className="ln-cta-lede" delay={2}>
-            سجِّل دخولك ببريدك الجامعي أو رقم قيدك للوصول إلى مقرَّراتك
-            ومتابعة تقدّمك الأكاديمي — الرحلة تبدأ بنقطة.
-          </RevealCssClass>
-          <RevealCssClass as="div" className="ln-cta-actions" delay={3}>
-            <Link to="/auth" className="ln-btn-gold xl">
-              أنشئ حسابك الجامعي
-              <Icon icon={ArrowLeft} size={16} />
-            </Link>
-            <a href="#colleges" className="ln-btn-ghost xl">استكشف الكلّيّات</a>
-          </RevealCssClass>
-          <RevealCssClass as="p" className="ln-cta-meta" delay={4}>
-            <Icon icon={Sparkles} size={13} />
-            وزارة التعليم العالي والبحث العلمي · جامعة الزاوية · {year}
-          </RevealCssClass>
-        </div>
-      </section>
+      <FinalCtaChapter />
       </main>
 
       {/* FOOTER */}

@@ -357,13 +357,13 @@
   font-weight: var(--fw-semibold);
 }
 
-/* ── 5 · HERO — «المدار» ───────────────────────────────────────────── */
+/* ── 5 · HERO — «المدار» (v4 cinematic: Cairo display + masked lines) ── */
 .landing .ln-hero {
   position: relative;
   min-block-size: max(680px, 100svh);
   display: grid;
   align-content: center;
-  padding: clamp(120px, 16vh, 170px) var(--page-gutter) 96px;
+  padding: clamp(120px, 16vh, 170px) var(--page-gutter) 110px;
   isolation: isolate;
 }
 .landing .ln-hero-sky {
@@ -377,6 +377,7 @@
     linear-gradient(180deg, var(--ln-void) 0%, var(--ln-sky-0) 55%, #0A0F22 100%);
 }
 /* CSS star dust — the permanent fallback sky (also under the canvas) */
+.landing .ln-hero-stars { position: absolute; inset: 0; pointer-events: none; }
 .landing .ln-hero-sky::before {
   content: '';
   position: absolute;
@@ -417,22 +418,21 @@
 }
 @keyframes ln-scene-in { to { opacity: 1; } }
 
-.landing .ln-hero-content {
+/* hero shell — 1280 marketing container; the copy column owns the RTL
+   START edge, the WebGL world owns the opposite sky (asymmetry FIXED:
+   the copy no longer centers — it hugs inline-start inside the shell). */
+.landing .ln-hero-inner {
   max-inline-size: 1280px;
   inline-size: 100%;
   margin-inline: auto;
   position: relative;
 }
-@media (min-width: 1025px) {
-  /* asymmetric composition — the copy column hugs the RTL start edge,
-     the orbital system owns the opposite side of the sky */
-  .landing .ln-hero-content {
-    max-inline-size: min(640px, 46vw);
-    margin-inline-end: auto;
-  }
-  .landing .ln-hero-content > * { text-align: start; }
-  .landing .ln-hero-actions { justify-content: flex-start; }
-  .landing .ln-hero-sub { max-inline-size: 46ch; }
+.landing .ln-hero-content {
+  max-inline-size: 640px;
+  position: relative;
+}
+@media (max-width: 640px) {
+  .landing .ln-hero-content { max-inline-size: 100%; }
 }
 /* volumetric light behind the copy — soft golden god-ray from the top */
 .landing .ln-hero-content::before {
@@ -444,79 +444,87 @@
   pointer-events: none;
   z-index: -1;
 }
-.landing .ln-hero-eyebrow { margin-block-end: var(--sp-6); }
-.landing .ln-hero-eyebrow .ln-mono { font-size: 13px; color: var(--ln-mist); }
 
+/* entrance gating — while the intro boot plays the hero stays dark;
+   gsap owns the choreography the moment data-hero-wait lifts. */
+.landing[data-hero-wait='true'] .lnh-a { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .landing[data-hero-wait='true'] .lnh-a { opacity: 1; }
+}
+
+.landing .lnh-eyebrow {
+  margin-block-end: var(--sp-6);
+  font-size: 13px;
+  color: var(--ln-mist);
+}
+
+/* THE headline — Cairo 800, reference-bar scale, mask-line reveals.
+   line-height 1.14 keeps Arabic diacritic stacks (كلُّ / معرفةٍ / مدارًا)
+   unclipped while still reading cinematic-tight. */
 .landing .ln-hero-title {
   margin: 0 0 var(--sp-7);
-  font-size: clamp(44px, 9.2vw, 118px);
-  line-height: 1.16;
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.02em;
+  font-family: var(--font-cinematic);
+  font-size: var(--fs-cine-hero);
+  font-weight: var(--fw-cine);
+  line-height: 1.18;
+  letter-spacing: 0; /* Arabic never tracks */
   color: var(--ln-ink);
-  max-inline-size: 14ch;
-  text-wrap: balance;
+  max-inline-size: 15ch;
 }
-.landing .ln-hero-line { display: block; }
-/* dramatic entrance — deeper travel than the stock reveal */
-.landing .ln-hero-title .ln-hero-line.reveal-up { transform: translateY(38px); }
-/* word-level stagger inside each line (safe for Arabic — split on
-   spaces only, never letters) */
-.landing .ln-hero-title .ln-w {
-  display: inline-block;
-  will-change: transform, opacity;
-  transform: translateY(0.55em);
-  opacity: 0;
-  filter: blur(6px);
-  transition:
-    transform 760ms var(--ln-ease-out),
-    opacity 560ms var(--ln-ease-out),
-    filter 560ms var(--ln-ease-out);
-  transition-delay: calc(var(--ln-wi, 0) * 85ms);
+.landing .lnh-line {
+  display: block;
+  overflow: hidden;           /* the mask */
+  padding-block: 0.1em;       /* diacritic headroom inside the mask */
+  margin-block: -0.1em;
 }
-.landing .ln-hero-title .ln-hero-line.in-view .ln-w {
-  transform: translateY(0);
-  opacity: 1;
-  filter: blur(0);
+.landing .lnh-line-inner {
+  display: block;
+  will-change: transform;
 }
-.landing .ln-hero-title .ln-w:nth-child(1) { --ln-wi: 0; }
-.landing .ln-hero-title .ln-w:nth-child(2) { --ln-wi: 1; }
-.landing .ln-hero-title .ln-w:nth-child(3) { --ln-wi: 2; }
-.landing .ln-hero-title .ln-w:nth-child(4) { --ln-wi: 3; }
 .landing .ln-hero-title em {
   font-style: normal;
   color: var(--ln-gold);
   position: relative;
   white-space: nowrap;
 }
-.landing .ln-hero-title .ln-hero-gold { text-shadow: 0 0 44px rgb(233 180 76 / 0.45); }
-/* thin orbital underline beneath «مدارًا» */
-.landing .ln-hero-title .ln-hero-gold::after {
+.landing .lnh-gold {
+  background: linear-gradient(105deg, var(--ln-gold-deep) 8%, var(--ln-gold) 38%, var(--ln-gold-soft) 72%, var(--ln-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+/* fallback where background-clip:text is unsupported */
+@supports not (background-clip: text) {
+  .landing .lnh-gold { color: var(--ln-gold); }
+}
+/* thin orbital underline beneath «مدارًا» — draws once the hero goes live */
+.landing .lnh-gold::after {
   content: '';
   position: absolute;
   inset-inline: 2%;
   bottom: 0.02em;
-  block-size: 0.055em;
+  block-size: 0.05em;
   border-radius: var(--r-full);
   background: linear-gradient(90deg, transparent, var(--ln-gold) 30%, var(--ln-gold) 70%, transparent);
   opacity: 0.75;
   transform: scaleX(0);
   transform-origin: inline-start;
-  transition: transform 900ms var(--ln-ease-out) 620ms;
+  transition: transform 900ms var(--ln-ease-out) 480ms;
 }
-.landing .ln-hero-title .ln-hero-line.in-view .ln-hero-gold::after { transform: scaleX(1); }
+.landing:not([data-hero-wait]) .lnh-gold::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .landing .lnh-gold::after { transform: scaleX(1); transition: none; }
+}
 
-.landing .ln-hero-sub {
+.landing .lnh-sub {
   margin: 0 0 var(--sp-9);
-  max-inline-size: 56ch;
+  max-inline-size: 52ch;
   font-size: clamp(16px, 1.6vw, 19px);
   line-height: 1.85;
   color: var(--ln-ink-dim);
 }
-@media (min-width: 1025px) {
-  .landing .ln-hero-title { max-inline-size: 13ch; font-size: clamp(50px, 6.6vw, 100px); }
-}
-.landing .ln-hero-sub strong { color: var(--ln-ink); font-weight: var(--fw-semibold); }
+.landing .lnh-sub strong { color: var(--ln-ink); font-weight: var(--fw-semibold); }
 
 .landing .ln-hero-actions {
   display: flex;
@@ -541,7 +549,6 @@
 .landing .ln-hero-meta li svg { color: var(--ln-gold); }
 .landing .ln-hero-meta-dot { inline-size: 3px; block-size: 3px; border-radius: 50%; background: var(--ln-mist); opacity: 0.6; }
 
-/* scroll invitation */
 /* scroll invitation — physical centering, RTL-safe */
 .landing .ln-hero-scroll {
   position: absolute;
@@ -584,11 +591,6 @@
   transform: translate(var(--mag-x, 0), calc(var(--mag-y, 0) - 2px));
   box-shadow: 0 0 0 1px rgb(233 180 76 / 0.6), 0 16px 40px -10px rgb(233 180 76 / 0.4);
 }
-
-/* returning visitors — calm entrance */
-.landing[data-intro-seen='true'] .ln-hero-canvas { animation-duration: 500ms; animation-delay: 0s; }
-.landing[data-intro-seen='true'] .ln-hero-title .ln-hero-line.reveal-up { transform: translateY(14px); }
-.landing[data-intro-seen='true'] .ln-hero-title .ln-w { transition-duration: 320ms; transition-delay: calc(var(--ln-wi, 0) * 40ms); filter: none; }
 
 /* ── 6 · trust strip ───────────────────────────────────────────────── */
 .landing .ln-trust {
@@ -908,97 +910,115 @@
 }
 .landing .ln-station:last-child .ln-station-card { border-color: rgb(233 180 76 / 0.32); }
 
-/* ── 9 · progress story ────────────────────────────────────────────── */
+/* v4 — station activation: as the light path reaches a station it lights */
+.landing .ln-station .ln-station-node { transition: box-shadow 600ms var(--ln-ease-out); }
+.landing .ln-station.on .ln-station-node {
+  box-shadow: 0 0 0 5px rgb(233 180 76 / 0.18), 0 0 30px 6px rgb(233 180 76 / 0.5);
+}
+.landing .ln-station.on .ln-station-card { border-color: rgb(233 180 76 / 0.3); }
+.landing .ln-station.on .ln-station-n { color: var(--ln-gold); }
+
+/* ── 9 · progress story — pinned orbit system (v4) ─────────────────── */
 .landing .ln-progress {
   background: radial-gradient(60% 60% at 78% 45%, rgb(19 28 62 / 0.5) 0%, transparent 72%);
 }
+@media (min-width: 1024px) {
+  /* pinned chapter — the section becomes a 100vh stage ScrollTrigger pins
+     for +170% while the orbit system fills domain-by-domain */
+  .landing .ln-progress {
+    min-block-size: 100svh;
+    display: grid;
+    align-content: center;
+  }
+}
 .landing .ln-progress-grid {
-  max-inline-size: 1280px;
-  margin-inline: auto;
   display: grid;
-  gap: clamp(40px, 6vw, 80px);
+  gap: clamp(36px, 6vh, 72px);
   align-items: center;
 }
-@media (min-width: 1025px) {
-  .landing .ln-progress-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+@media (min-width: 1024px) {
+  .landing .ln-progress-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
 }
-
-.landing .ln-progress-visual { display: grid; place-items: center; min-block-size: 380px; }
-.landing .ln-progress-orbits {
-  position: relative;
-  inline-size: min(400px, 78vw);
+.landing .ln-progress-visual { display: grid; place-items: center; min-block-size: 340px; position: relative; }
+.landing .ln-progress-system {
+  inline-size: min(92vw, 560px);
   aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  transform: scale(calc(0.72 + var(--sp, 0) * 0.28));
-  transition: transform 120ms linear;
+  overflow: visible;
 }
-.landing .ln-progress-ring {
+/* 240° orbital tracks — mist hairlines; the gold fills are scrub-drawn */
+.landing .lnp-arc-track { stroke: rgb(142 151 184 / 0.17); }
+.landing .lnp-arc-fill {
+  stroke: var(--ln-gold);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgb(233 180 76 / 0.45));
+  /* pathLength={100} normalizes the math: 100 = hidden, 100(1-frac) = drawn */
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.landing .lnp-core-body {
+  fill: url(#lnp-core-gradient, #E9B44C);
+  fill: #E9B44C;
+  filter: drop-shadow(0 0 18px rgb(233 180 76 / 0.55));
+}
+.landing .lnp-core-halo {
+  fill: none;
+  stroke: rgb(233 180 76 / 0.28);
+  stroke-dasharray: 3 7;
+  stroke-linecap: round;
+  animation: lnp-halo-spin 46s linear infinite;
+  transform-origin: 210px 210px;
+}
+@keyframes lnp-halo-spin { to { transform: rotate(360deg); } }
+.landing .lnp-caption {
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgb(142 151 184 / 0.2);
-}
-.landing .ln-progress-ring.r1 { inset: 12.5%; border-color: rgb(142 151 184 / 0.26); }
-.landing .ln-progress-ring.r2 { inset: 25%; border-color: rgb(233 180 76 / 0.24); }
-.landing .ln-progress-ring.r3 { inset: 37.5%; border-color: rgb(233 180 76 / 0.34); border-style: dashed; }
-.landing .ln-progress-core {
-  inline-size: 54px;
-  block-size: 54px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, var(--ln-gold-soft), var(--ln-gold-deep));
-  box-shadow: 0 0 34px 4px rgb(233 180 76 / 0.5);
-}
-.landing .ln-progress-milestone {
-  position: absolute;
-  inline-size: 11px;
-  block-size: 11px;
-  border-radius: 50%;
-  background: var(--ln-sky-1);
-  border: 1.5px solid var(--ln-mist);
-  transition:
-    background var(--t-slow) var(--ln-ease-soft),
-    border-color var(--t-slow) var(--ln-ease-soft),
-    box-shadow var(--t-slow) var(--ln-ease-soft);
-}
-.landing .ln-progress-milestone.m0 { inset-inline-start: 18%; inset-block-start: 30%; }
-.landing .ln-progress-milestone.m1 { inset-inline-start: 62%; inset-block-start: 12%; }
-.landing .ln-progress-milestone.m2 { inset-inline-start: 78%; inset-block-start: 64%; }
-.landing .ln-progress-milestone.m3 { inset-inline-start: 34%; inset-block-start: 80%; }
-.landing .ln-progress-label {
-  position: absolute;
-  inset-block-end: -34px;
+  inset-block-end: -6px;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
   color: var(--ln-ink-faint);
+  white-space: nowrap;
 }
-.landing .ln-progress-label .ln-mono { font-size: 10.5px; letter-spacing: 0.2em; }
 
 .landing .ln-progress-copy { display: grid; gap: var(--sp-4); }
 .landing .ln-progress-copy .ln-chapter-lede { margin: 0; }
 
-.landing .ln-progress-stats {
+/* stat rows — editorial, not card-traps; value first (RTL start), then
+   label + note. Activated row-by-row as each orbit arc fills. */
+.landing .lnp-rows {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: var(--sp-4);
-  margin-block-start: var(--sp-6);
+  gap: 2px;
+  margin-block-start: var(--sp-5);
+  border-block-start: 1px solid var(--ln-hairline);
 }
-.landing .ln-stat {
-  padding: var(--sp-5) var(--sp-5) var(--sp-4);
-  border-radius: var(--r-lg);
-  background: var(--ln-card);
-  border: 1px solid var(--ln-hairline);
-  border-block-start-color: rgb(233 180 76 / 0.35);
+.landing .lnp-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-5);
+  padding: var(--sp-4) var(--sp-2);
+  border-block-end: 1px solid var(--ln-hairline);
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 500ms var(--ln-ease-out), transform 500ms var(--ln-ease-out);
 }
-.landing .ln-stat-value {
-  font-family: var(--font-mono);
-  font-size: 40px;
-  font-weight: var(--fw-medium);
+.landing .lnp-row.lit { opacity: 1; transform: translateX(0); }
+@media (prefers-reduced-motion: reduce) {
+  .landing .lnp-row { opacity: 1; transform: none; transition: none; }
+  .landing .lnp-arc-fill { stroke-dashoffset: var(--lnp-fill, 40); }
+}
+.landing .lnp-row-value {
+  font-family: var(--font-cinematic);
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: var(--fw-cine);
+  line-height: 1;
   color: var(--ln-ink);
-  line-height: 1.1;
-  direction: ltr;
+  min-inline-size: 3.2ch;
+  font-variant-numeric: tabular-nums;
 }
-.landing .ln-stat-unit { color: var(--ln-gold); font-size: 24px; margin-inline-start: 2px; }
-.landing .ln-stat-label { margin-block-start: 8px; color: var(--ln-ink); font-size: 14px; font-weight: var(--fw-semibold); }
-.landing .ln-stat-note { margin-block-start: 3px; color: var(--ln-ink-faint); font-size: 12px; line-height: 1.7; }
+.landing .lnp-row-unit { color: var(--ln-gold); font-size: 0.5em; margin-inline-start: 2px; }
+.landing .lnp-row-body { display: grid; gap: 2px; }
+.landing .lnp-row-label { color: var(--ln-ink); font-size: 15px; font-weight: var(--fw-semibold); }
+.landing .lnp-row-note { color: var(--ln-ink-faint); font-size: 12.5px; line-height: 1.7; }
 
 .landing .ln-progress-source {
   margin: var(--sp-6) 0 0;

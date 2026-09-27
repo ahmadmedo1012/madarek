@@ -1,0 +1,794 @@
+/* ═════════════════════════════════════════════════════════════════════
+   Chapters v4 — cinematic (radical redesign). Scoped under .landing
+   ─────────────────────────────────────────────────────────────────────
+   Styles for the five self-contained chapter components built by task
+   R2-A (radical redesign of the madarek landing):
+
+     A · IntroSequence   (.ln-intro)     — the boot ritual overlay
+     B · TrustMarquee    (.ln-marquee)   — seamless RTL ticker
+     C · RolesChapter    (.ln-roles)     — stroked-numeral ledger
+     D · CampusChapter   (.ln-campus)    — full-bleed parallax photo
+     E · FinalCtaChapter (.ln-final)     — orbit-rings close
+
+   Design language (docs/radical-redesign-gap-analysis.md):
+     · night void #05070F → sky, ink cream, GOLD as the single accent,
+       azure + mist as support — never pure black, never drop shadows,
+       no decorative gradients (photo veils are functional legibility
+       layers; the gold CTA keeps its existing landing.css gradient).
+     · display type = Cairo VF (--font-cinematic, 800/900) with
+       --lh-cine-tight / --lh-cine leading; body = Plex Sans Arabic.
+     · mono eyebrows «// الفصل الأول — العنوان» = the machine voice.
+     · reveals = transform + opacity only; expo-out easing.
+
+   IMPORT ORDER: this sheet must be imported AFTER landing.css — the
+   campus section intentionally re-uses the .ln-campus* class names with
+   a new full-bleed layout and overrides the old rules at equal
+   specificity (source order wins inside @layer pages).
+
+   Flat selectors (repo convention — no native CSS nesting, keeps
+   iOS 15 / old WebView safe through the whole sheet).
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages;
+
+/* ── shared · mono eyebrow — the «machine» voice ──────────────────────
+   «// الفصل الأول — العنوان». IBM Plex Mono has NO Arabic glyphs, so
+   the stack pairs it with Plex Sans Arabic: latin runs (//, digits,
+   punctuation) render mono, Arabic renders in the platform voice —
+   never an unstyled system-naskh fallback. No letter-spacing anywhere
+   near this class: Arabic script is cursive and tracking breaks joins. */
+.landing .ln-ch-eyebrow {
+  font-family: 'IBM Plex Mono', var(--font-sans);
+  font-size: var(--fs-eyebrow);
+  line-height: 1.7;
+  color: var(--ln-mist);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   A · IntroSequence — «طقس الدخول» (boot ritual overlay)
+   Flat-scoped on purpose: the overlay is position:fixed and must sit
+   above the sticky header (z 60) and progress ribbon (z 90) — z 200.
+   Token fallbacks keep it self-sufficient if it ever mounts outside
+   .landing. All pre-animation states are set here so nothing can flash
+   before GSAP's layout-effect takes ownership.
+   ═════════════════════════════════════════════════════════════════════ */
+.ln-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--ln-void, #05070f); /* the void — never pure black */
+  cursor: pointer; /* click anywhere = skip */
+  overflow: hidden;
+}
+
+.ln-intro-inner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(30px, 6vh, 54px);
+  padding: var(--page-gutter, 48px);
+}
+
+.ln-intro-mark {
+  display: grid;
+  justify-items: center;
+  gap: clamp(14px, 2.4vh, 22px);
+}
+
+/* the wordmark — Cairo 900, brand-scale */
+.ln-intro-wordmark {
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine-heavy);
+  font-size: clamp(72px, 14vw, 150px);
+  line-height: var(--lh-cine-tight);
+  color: var(--ln-ink, #f2efe6);
+  opacity: 0; /* pre-animation — GSAP rises it y:48 → 0 */
+  transform: translateY(48px);
+  will-change: transform, opacity;
+}
+
+/* gold underline — a SOLID bar (gradient discipline), drawn from the
+   RTL reading start (transform-origin at the physical right edge) */
+.ln-intro-underline {
+  inline-size: clamp(96px, 13vw, 176px);
+  block-size: 3px;
+  border-radius: 2px;
+  background: var(--ln-gold, #e9b44c);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  will-change: transform;
+}
+
+/* boot log — right-aligned (RTL start) beneath the wordmark. The ul
+   centers under the wordmark at fit-content width; each line packs
+   against the RTL START edge (flex-start = physical right) so the
+   block reads like an Arabic terminal, ragged on the left. */
+.ln-intro-log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+  text-align: right;
+}
+
+.ln-intro-log-line {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* RTL: content hugs the right edge */
+  gap: 9px;
+  opacity: 0;
+  transform: translateY(8px);
+  will-change: transform, opacity;
+}
+
+.ln-intro-log-text {
+  font-family: 'IBM Plex Mono', var(--font-sans); /* mono latin + Plex arabic */
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--ln-mist, #8e97b8);
+  white-space: nowrap;
+}
+
+/* cursor — wrapper is GSAP-owned (autoAlpha hop between lines), the
+   block inside carries the CSS blink: two elements so the inline
+   opacity GSAP writes never fights the keyframes */
+.ln-intro-cursor {
+  display: inline-block;
+  flex-shrink: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ln-intro-cursor-block {
+  display: block;
+  inline-size: 7px;
+  block-size: 13px;
+  background: var(--ln-gold, #e9b44c);
+  animation: ln-intro-blink 560ms steps(1) infinite;
+}
+
+@keyframes ln-intro-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* counter 000 → 100 — physical bottom-left (inline-end in RTL), ltr,
+   real mono digits, tabular so the width never jitters */
+.ln-intro-counter {
+  position: absolute;
+  inset-block-end: clamp(20px, 4.5vh, 40px);
+  inset-inline-end: clamp(20px, 4vw, 44px);
+  direction: ltr;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  color: var(--ln-gold, #e9b44c);
+}
+
+/* skip — keyboard-reachable, ≥39px hit target, physical bottom-right
+   (inline-start in RTL); the whole overlay also skips on click */
+.ln-intro-skip {
+  position: absolute;
+  inset-block-end: clamp(20px, 4.5vh, 40px);
+  inset-inline-start: clamp(20px, 4vw, 44px);
+  min-block-size: 40px;
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--r-full, 9999px);
+  border: 1px solid var(--ln-hairline, rgb(142 151 184 / 0.16));
+  background: transparent;
+  color: var(--ln-mist, #8e97b8);
+  font-family: 'IBM Plex Mono', var(--font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    color var(--t-fast) var(--ease, ease),
+    border-color var(--t-fast) var(--ease, ease);
+}
+
+.ln-intro-skip:hover,
+.ln-intro-skip:focus-visible {
+  color: var(--ln-ink, #f2efe6);
+  border-color: var(--ln-mist, #8e97b8);
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   B · TrustMarquee — شريط الاعتماد والشراكات
+   56px strip, hairline top+bottom, mono 12px mist + gold diamonds.
+   The ANIMATION AXIS is physical: ltr flex + translateX(0 → -50%) on a
+   max-content mover (exactly two identical tracks ⇒ -50% = one track).
+   Fresh items always enter from the RIGHT — the RTL reading start.
+   Each item is an isolated RTL run, so mixed copy like «25 كلية · 4
+   مدن» keeps its page-order bidi rendering inside the ltr track.
+   Seam math: 20px track padding + 20px track padding = the 40px item
+   gap; space-around + min-width:100vw keeps the rhythm seamless even
+   on ultra-wide screens where six items alone would be too narrow.
+   ═════════════════════════════════════════════════════════════════════ */
+.landing .ln-marquee {
+  border-block: 1px solid var(--ln-hairline);
+  background: rgb(7 10 20 / 0.55);
+}
+
+.landing .ln-marquee-viewport {
+  block-size: 56px;
+  overflow: hidden;
+  direction: ltr; /* physical axis only — copy stays Arabic (see .ln-marquee-text) */
+  display: flex;
+}
+
+.landing .ln-marquee-mover {
+  display: flex;
+  inline-size: max-content;
+  animation: ln-marquee-scroll 48s linear infinite; /* constant speed token philosophy */
+  will-change: transform;
+}
+
+@keyframes ln-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.landing .ln-marquee-track {
+  margin: 0;
+  padding-inline: 20px; /* 20 + 20 across the seam = the 40px item gap */
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  min-inline-size: 100vw; /* a track is never narrower than the viewport */
+  justify-content: space-around; /* surplus spreads evenly, seam included */
+}
+
+.landing .ln-marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* text ↔ diamond — tighter than the item rhythm */
+}
+
+.landing .ln-marquee-text {
+  direction: rtl; /* isolated RTL run — page-order bidi inside the ltr track */
+  unicode-bidi: isolate;
+  white-space: nowrap;
+  font-family: 'IBM Plex Mono', var(--font-sans);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--ln-mist);
+}
+
+/* gold diamond — a rotated CSS square, never an emoji/icon font */
+.landing .ln-marquee-diamond {
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--ln-gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* pause on hover / focus-within — respect the reader's eye */
+.landing .ln-marquee-viewport:hover .ln-marquee-mover,
+.landing .ln-marquee-viewport:focus-within .ln-marquee-mover {
+  animation-play-state: paused;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   C · RolesChapter — «لمن هذه المنصّة»
+   A ledger, not a list: four hairline rows, each a diptych of a giant
+   STROKED numeral (Cairo 900, transparent fill) and editorial content
+   (Cairo 800 name + Plex description). Even rows mirror the numeral to
+   the inline-end. The quote expands on hover/focus via the
+   grid-template-rows 0fr → 1fr trick + opacity (400ms) — a real height
+   animation with zero JS and zero layout thrash.
+   ═════════════════════════════════════════════════════════════════════ */
+.landing .ln-roles-head {
+  max-inline-size: 1280px;
+  margin-inline: auto;
+  margin-block-end: clamp(40px, 7vh, 80px);
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.landing .ln-roles-title {
+  margin: 0;
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine);
+  font-size: var(--fs-cine-xl);
+  line-height: var(--lh-cine);
+  color: var(--ln-ink);
+  text-wrap: balance; /* one line when it fits, balanced pair when it wraps */
+}
+
+.landing .ln-roles-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-inline-size: 1280px;
+  margin-inline: auto;
+}
+
+/* [giant numeral | content] — numeral column hugs its own width */
+.landing .ln-roles-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(24px, 4.5vw, 72px);
+  align-items: center;
+  padding-block: clamp(28px, 5vh, 48px);
+}
+
+/* hairline separation between rows only — no boxes, no shadows */
+.landing .ln-roles-row + .ln-roles-row {
+  border-block-start: 1px solid var(--ln-hairline);
+}
+
+/* even rows mirror — numeral on the inline-end */
+.landing .ln-roles-row:nth-child(even) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.landing .ln-roles-row:nth-child(even) .ln-roles-num {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.landing .ln-roles-row:nth-child(even) .ln-roles-body {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* the numeral — hollow gold stroke. text-stroke is supported across
+   the modern fleet; the @supports fallback paints faint solid gold */
+.landing .ln-roles-num {
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine-heavy);
+  font-size: clamp(64px, 10vw, 128px);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(233 180 76 / 0.4);
+  transition: -webkit-text-stroke-color 300ms var(--ln-ease-soft);
+  user-select: none; /* decorative — hidden from the a11y tree in JSX */
+}
+
+@supports not (-webkit-text-stroke: 1px #000) {
+  .landing .ln-roles-num {
+    color: rgb(233 180 76 / 0.32);
+  }
+}
+
+/* the numeral lights up as the row wakes */
+.landing .ln-roles-row:hover .ln-roles-num,
+.landing .ln-roles-row:focus-within .ln-roles-num {
+  -webkit-text-stroke-color: rgb(233 180 76 / 0.8);
+}
+
+.landing .ln-roles-name {
+  margin: 0;
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine);
+  font-size: var(--fs-cine-lg);
+  line-height: var(--lh-cine);
+  color: var(--ln-ink);
+}
+
+.landing .ln-roles-desc {
+  margin: var(--sp-3) 0 0;
+  max-inline-size: 62ch;
+  font-size: clamp(15px, 1.5vw, 17px);
+  line-height: 1.85;
+  color: var(--ln-ink-dim);
+}
+
+/* quote — collapsed by default, opens on hover/focus-within.
+   0fr → 1fr on grid-template-rows animates the height; the clip child
+   (overflow:hidden + min-block-size:0) is what makes the trick work. */
+.landing .ln-roles-quote {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 400ms var(--ln-ease-soft),
+    opacity 400ms var(--ln-ease-soft);
+}
+
+.landing .ln-roles-quote-clip {
+  overflow: hidden;
+  min-block-size: 0;
+}
+
+.landing .ln-roles-row:hover .ln-roles-quote,
+.landing .ln-roles-row:focus-within .ln-roles-quote {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.landing .ln-roles-quote-text {
+  margin: var(--sp-4) 0 0;
+  padding-inline-start: var(--sp-4);
+  border-inline-start: 2px solid rgb(233 180 76 / 0.45);
+  max-inline-size: 56ch;
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: var(--ln-ink-faint);
+}
+
+/* phones — the diptych stacks; every row reads the same way */
+@media (max-width: 720px) {
+  .landing .ln-roles-row,
+  .landing .ln-roles-row:nth-child(even) {
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+    align-items: start;
+  }
+
+  .landing .ln-roles-row:nth-child(even) .ln-roles-num {
+    grid-column: auto;
+    grid-row: 1;
+  }
+
+  .landing .ln-roles-row:nth-child(even) .ln-roles-body {
+    grid-column: auto;
+    grid-row: 2;
+  }
+
+  .landing .ln-roles-num {
+    font-size: clamp(56px, 15vw, 84px);
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   D · CampusChapter — «الأرض» الحرم الجامعي
+   Full-bleed 86vh photo panel with a ±8% scroll-scrub parallax (GSAP
+   owns the img transform; the 116% height + -8% offset are the static
+   bleed that makes the travel invisible at the edges). The veil is
+   FUNCTIONAL, not decorative: the mandated bottom gradient grounds the
+   photo into the void, the faint top scrim keeps the top-anchored
+   caption legible on bright sky. Facts band sits UNDER the panel — a
+   single hairline row, gold Cairo-900 numerals + mist Plex labels.
+   NOTE: intentionally reuses the .ln-campus* class names with a new
+   full-bleed layout — every old landing.css property is overridden
+   below (this sheet must import AFTER landing.css).
+   ═════════════════════════════════════════════════════════════════════ */
+.landing .ln-campus {
+  position: relative;
+  display: block; /* was a constrained grid — now full-bleed */
+  max-inline-size: none;
+  margin-inline: 0;
+  padding-inline: 0;
+  padding-block: clamp(72px, 10vh, 128px) 0;
+}
+
+.landing .ln-campus-panel {
+  position: relative;
+  margin: 0;
+  inline-size: 100%;
+  block-size: clamp(420px, 86vh, 940px);
+  overflow: hidden;
+}
+
+.landing .ln-campus-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* the photo — absolutely positioned with bleed so yPercent ±8 (±8% of
+   the IMAGE height) never reveals an edge: 120% height + -10% offset
+   keeps [0, panel-height] covered at both scrub extremes; night-world
+   color grade keeps it in the palette */
+.landing .ln-campus-photo {
+  position: absolute;
+  inset-block-start: -10%;
+  inline-size: 100%;
+  block-size: 120%;
+  object-fit: cover;
+  object-position: center;
+  display: block; /* overrides old .ln-campus-photo block-size:auto */
+  filter: saturate(0.9) contrast(1.06) brightness(0.94);
+  will-change: transform;
+}
+
+/* functional veil — bottom: void grounding (mandated); top: caption
+   legibility scrim. Not decoration; no other gradients exist here. */
+.landing .ln-campus-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, var(--ln-void) 0%, transparent 55%),
+    linear-gradient(to bottom, rgb(5 7 15 / 0.52) 0%, transparent 32%);
+}
+
+/* editorial caption — TOP inline-start corner (overrides the old
+   bottom-anchored caption: every property it set is re-declared) */
+.landing .ln-campus-caption {
+  position: absolute;
+  inset-inline-start: clamp(20px, 4.5vw, 56px);
+  inset-inline-end: auto;
+  inset-block-start: clamp(24px, 5.5vh, 56px);
+  bottom: auto;
+  display: grid;
+  gap: 10px;
+  max-inline-size: min(600px, 86vw);
+  text-align: start;
+}
+
+.landing .ln-campus-title {
+  margin: 0;
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine);
+  font-size: var(--fs-cine-lg);
+  line-height: var(--lh-cine);
+  color: var(--ln-ink);
+  text-wrap: balance;
+}
+
+.landing .ln-campus-line {
+  margin: 0;
+  max-inline-size: 44ch;
+  color: var(--ln-ink-dim); /* was ink — editorial line, not headline */
+  font-size: clamp(14.5px, 1.4vw, 16.5px);
+  font-weight: var(--fw-regular); /* was medium */
+  line-height: 1.85;
+}
+
+/* facts band — under the photo, one hairline row, four anchors */
+.landing .ln-campus-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding-block: clamp(24px, 4vh, 40px) clamp(64px, 10vh, 120px);
+  padding-inline: var(--page-gutter);
+  border-block-start: 1px solid var(--ln-hairline);
+}
+
+.landing .ln-campus-fact {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  padding-inline: clamp(16px, 2.5vw, 40px);
+}
+
+/* first fact flush with the page gutter */
+.landing .ln-campus-fact:first-child {
+  padding-inline-start: 0;
+}
+
+/* gold numeral — Cairo 900 28px, ltr digits */
+.landing .ln-campus-fact-num {
+  direction: ltr;
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine-heavy);
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--ln-gold);
+}
+
+.landing .ln-campus-fact-label {
+  color: var(--ln-mist);
+  font-size: 13.5px;
+}
+
+/* shorter screens crop the panel, never the composition */
+@media (max-width: 860px) {
+  .landing .ln-campus-panel {
+    block-size: clamp(380px, 68vh, 640px);
+  }
+}
+
+/* phones — facts wrap 2×2, column-1 facts stay flush with the gutter */
+@media (max-width: 720px) {
+  .landing .ln-campus-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-6) 0;
+    padding-inline: var(--page-gutter-mobile);
+  }
+
+  .landing .ln-campus-fact {
+    padding-inline: 0;
+  }
+
+  .landing .ln-campus-fact:nth-child(even) {
+    padding-inline-start: var(--sp-5);
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   E · FinalCtaChapter — «نقطة البداية»
+   ~92vh of centered stillness. Three concentric gold orbit rings
+   (420/640/880px, 1px borders at .18/.12/.08 alpha) rotate on 66–90s
+   loops, each carrying one glowing node on its edge; GSAP breathes the
+   whole system in from 0.92 → 1. Headline lines unmask via clip-path.
+   The CTA pair reuses .ln-btn-gold / .ln-btn-ghost from landing.css —
+   deliberately NOT redefined here.
+   ═════════════════════════════════════════════════════════════════════ */
+.landing .ln-final {
+  position: relative;
+  min-block-size: 92vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: clamp(96px, 14vh, 168px);
+  padding-inline: var(--page-gutter);
+  text-align: center;
+}
+
+/* the orbital system — behind the copy, untouchable */
+.landing .ln-final-rings {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.landing .ln-final-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: clamp(20px, 3.5vh, 36px);
+  max-inline-size: 1080px;
+}
+
+/* one ring = one centered fixed-size box (inset:0 + margin:auto) */
+.landing .ln-final-ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid rgb(233 180 76 / 0.18);
+  animation: ln-final-orbit 66s linear infinite;
+  will-change: transform;
+}
+
+.landing .ln-final-ring.r1 {
+  inline-size: 420px;
+  block-size: 420px;
+  border-color: rgb(233 180 76 / 0.18);
+  animation-duration: 66s;
+}
+
+.landing .ln-final-ring.r2 {
+  inline-size: 640px;
+  block-size: 640px;
+  border-color: rgb(233 180 76 / 0.12);
+  animation-duration: 78s;
+  animation-direction: reverse; /* counter-rotation = depth */
+}
+
+.landing .ln-final-ring.r3 {
+  inline-size: 880px;
+  block-size: 880px;
+  border-color: rgb(233 180 76 / 0.08);
+  animation-duration: 90s;
+}
+
+@keyframes ln-final-orbit {
+  to { transform: rotate(360deg); }
+}
+
+/* the node — a small light source riding the ring's edge. Its glow is
+   emission, not a drop shadow; the ring's rotation carries it around */
+.landing .ln-final-node {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  translate: -50% 0;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background: var(--ln-gold);
+  box-shadow: 0 0 14px 2px rgb(233 180 76 / 0.55);
+}
+
+/* the headline — Cairo 900 at cine-xl scale: each line MUST stay one
+   visual line (the clip-path mask reveals per-line), so the size is the
+   xl step — hero-scale would force wraps at laptop widths */
+.landing .ln-final-title {
+  margin: 0;
+  font-family: var(--font-cinematic);
+  font-weight: var(--fw-cine-heavy);
+  font-size: var(--fs-cine-xl);
+  line-height: var(--lh-cine-tight);
+  color: var(--ln-ink);
+  text-wrap: balance;
+}
+
+.landing .ln-final-line {
+  display: block;
+}
+
+.landing .ln-final-line-gold {
+  color: var(--ln-gold); /* the single accent, spent on the brand line */
+}
+
+.landing .ln-final-sub {
+  margin: 0;
+  color: var(--ln-ink-dim);
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.85;
+}
+
+.landing .ln-final-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-4);
+  margin-block-start: var(--sp-2);
+}
+
+.landing .ln-final-meta {
+  margin: var(--sp-3) 0 0;
+  font-family: 'IBM Plex Mono', var(--font-sans);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--ln-ink-faint);
+}
+
+/* phones — CTAs stack full-width (the buttons themselves are NOT
+   redefined, only this chapter's action row layout) */
+@media (max-width: 560px) {
+  .landing .ln-final-actions .ln-btn-gold.xl,
+  .landing .ln-final-actions .ln-btn-ghost.xl {
+    inline-size: 100%;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   Motion + a11y — reduced motion
+   Every animated element lands in its FINAL state: the GSAP reveals
+   never hide anything in CSS (gsap.matchMedia simply doesn't create
+   them under `reduce`), so only the CSS-driven loops + transitions
+   need killing here.
+   ═════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  /* A · intro — renders null in JS; safety net if it ever mounts */
+  .ln-intro-cursor-block {
+    animation: none;
+    opacity: 1;
+  }
+
+  .ln-intro-skip {
+    transition: none;
+  }
+
+  /* B · marquee — animation off, clone hidden, single track wraps */
+  .landing .ln-marquee-viewport {
+    block-size: auto;
+  }
+
+  .landing .ln-marquee-mover {
+    animation: none;
+  }
+
+  .landing .ln-marquee-track {
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 28px;
+    padding-block: 14px;
+    padding-inline: var(--page-gutter);
+  }
+
+  .landing .ln-marquee-track[aria-hidden='true'] {
+    display: none;
+  }
+
+  /* C · roles — quote opens instantly (function kept, motion removed) */
+  .landing .ln-roles-quote,
+  .landing .ln-roles-num {
+    transition: none;
+  }
+
+  /* D · campus — no CSS animation of its own; parallax is GSAP-gated */
+
+  /* E · final — the orbits hold still; everything is already visible */
+  .landing .ln-final-ring {
+    animation: none;
+  }
+}
