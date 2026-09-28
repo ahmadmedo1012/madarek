@@ -7,15 +7,10 @@
    sky that answers the pointer. Scoped to `.landing`; the light app
    interior is never touched.
 
-   World (gap-analysis §4 → R3 chromatic brief):
-     void  #05070F → sky gradients        ink   #F2EFE6 (warm white)
+   World (gap-analysis §4 → leaders brief):
+     void  #04060D → sky gradients        ink   #F2EFE6 (warm white)
      sky   #0A101F/#101731 surfaces       dim   #A9B0C8
-     gold  #E9B44C brass (quiet chrome) · HOT RAMP for light itself:
-           #FFD98E (gold-hot) → #F6A93B (flame) → #E8912B (ember)
-           — glows, borders, gradient type, the CTA
-     cyan  #7AC8FF/#39C6FF tension accent ONLY (focus rings, the
-           on-air station, counter-ring labels, data units) — never
-           more than ~15% of the accent beats; tension, not a 2nd theme
+     gold  #E9B44C brass/knowledge-light  azure #6FA8FF secondary light
      mist  #8E97B8 orbit hairlines
    Voices: Noto Kufi Arabic (monumental display — no letter-spacing,
    Arabic ligatures are sacred) · IBM Plex Sans Arabic (body) ·
@@ -28,8 +23,7 @@
 
 /* ── 1 · scope tokens + page base ──────────────────────────────────── */
 .landing {
-  --ln-void: #05070F;
-  --ln-void-2: #0A1024;
+  --ln-void: #04060D;
   --ln-sky-0: #0A101F;
   --ln-sky-1: #101731;
   --ln-sky-2: #182142;
@@ -38,25 +32,14 @@
   --ln-ink-faint: #7A83A0; /* AA on --ln-sky-0 (axe-verified) */
   --ln-gold: #E9B44C;
   --ln-gold-soft: #F5D48A;
-  /* R3 hot ramp — the LIGHT tokens. Everything that glows, strokes or
-     gradient-clips reads from these; the quiet brass --ln-gold above
-     stays for small chrome (eyebrows, icons) so the page keeps a
-     whisper register under the shouts. --ln-gold-deep is re-pointed
-     from the muddy #C9962F to the saturated flame #F6A93B (the deep
-     end of gradients now carries #E8912B explicitly). */
-  --ln-gold-hot: #FFD98E;
-  --ln-gold-deep: #F6A93B;
-  --ln-ember: #FF9E45;
+  --ln-gold-deep: #C9962F;
   --ln-brass: #E4BA70;
   --ln-azure: #6FA8FF;
-  /* cyan tension pair — see the header contract for where it may appear */
-  --ln-cyan: #7AC8FF;
-  --ln-cyan-deep: #39C6FF;
   --ln-mist: #8E97B8;
   --ln-hairline: rgb(142 151 184 / 0.16);
   --ln-hairline-strong: rgb(142 151 184 / 0.28);
   --ln-card: rgb(16 23 49 / 0.62);
-  --ln-glow-gold: rgb(246 169 59 / 0.30);
+  --ln-glow-gold: rgb(233 180 76 / 0.22);
   --ln-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ln-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   --ln-ease-expo: cubic-bezier(0.23, 1, 0.32, 1);
@@ -71,48 +54,20 @@
   overflow-x: clip;
 }
 
-.landing ::selection { background: var(--ln-gold-hot); color: var(--ln-void); }
+.landing ::selection { background: var(--ln-gold); color: var(--ln-void); }
 .landing ::-webkit-scrollbar { inline-size: 10px; }
 .landing ::-webkit-scrollbar-thumb { background: #2A3352; border-radius: 8px; border: 2px solid var(--ln-void); }
 .landing ::-webkit-scrollbar-track { background: var(--ln-void); }
 
-/* ── the world: page-wide fixed sky (the scene persists across every act) ──
-   The canvas world engine lives here, behind all content. The CSS sky
-   below it is the permanent failure floor: if the canvas fails or is
-   paused, the page still reads as the same night. */
-.landing .ln-world {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(90% 60% at 34% 40%, #131C3E 0%, transparent 62%),
-    radial-gradient(46% 36% at 76% 10%, rgb(46 38 26 / 0.7) 0%, transparent 70%),
-    linear-gradient(180deg, var(--ln-void) 0%, var(--ln-sky-0) 55%, var(--ln-void-2) 100%);
-}
-.landing .ln-world .ln-hero-canvas {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  opacity: 0;
-  animation: ln-scene-in 1.4s var(--ln-ease-out) 0.2s forwards;
-}
-
 .landing main {
   position: relative;
   z-index: 2;
-  /* transparent over the fixed world — the canvas sky is the page's
-     ground. Forced-colors/print fall back to the solid floor below. */
-  background-color: transparent;
-  background-image: none;
-}
-@media (forced-colors: active) {
-  .landing main { background-color: #0A101F; }
-}
-@media print {
-  .landing .ln-world { display: none; }
-  .landing main { background-color: #0A101F; }
+  /* solid dark floor under the gradients — axe resolves real contrast,
+     forced-colors/print keep the world dark */
+  background-color: #0A101F;
+  background-image:
+    radial-gradient(120% 70% at 50% -10%, #111A3A 0%, transparent 60%),
+    linear-gradient(180deg, var(--ln-void) 0%, var(--ln-sky-0) 26%, var(--ln-sky-0) 78%, var(--ln-void) 100%);
 }
 
 /* ── the room: fixed atmosphere layers ─────────────────────────────── */
@@ -138,71 +93,25 @@
   to { transform: translate3d(-34px, 22px, 0); }
 }
 
-/* film grain — 5.9% opacity: the difference between “a dark page” and
-   “a lit room” (R3: +30% over the 4.5% base — the jury wanted the
-   atmosphere felt; at 4.5% it read as clean digital dark, not film) */
+/* film grain — 4.5% opacity: the difference between “a dark page” and “a lit room” */
 .landing .landing-grain {
   position: fixed;
   inset: 0;
   z-index: 80;
   pointer-events: none;
-  opacity: 0.059;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
 }
 
-/* foreground dust — near-plane motes drifting ABOVE the content.
-   The occluder layer that proves shared Z-space: when specks pass over
-   the headline the whole frame reads as one volume, not text printed
-   on a backdrop. Two sparse fields, warm + cool, slow drift. */
-.landing .landing-grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1.6px 1.6px at 12% 22%, rgb(255 224 168 / 0.5) 50%, transparent 51%),
-    radial-gradient(1.2px 1.2px at 78% 12%, rgb(242 239 230 / 0.4) 50%, transparent 51%),
-    radial-gradient(1.8px 1.8px at 42% 78%, rgb(255 214 150 / 0.35) 50%, transparent 51%),
-    radial-gradient(1.1px 1.1px at 88% 62%, rgb(180 214 255 / 0.4) 50%, transparent 51%),
-    radial-gradient(1.4px 1.4px at 26% 88%, rgb(255 224 168 / 0.3) 50%, transparent 51%),
-    radial-gradient(1px 1px at 58% 38%, rgb(242 239 230 / 0.32) 50%, transparent 51%);
-  background-repeat: repeat;
-  background-size: 640px 640px;
-  opacity: 0.07;
-  animation: ln-fgdust 90s linear infinite alternate;
-}
-@keyframes ln-fgdust {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-52px, 34px, 0); }
-}
-
-/* vignette — the lens the whole world is seen through. farthest-corner
-   circle: the corners (0.5 max) fall off harder than the edge
-   midpoints (~0.3) — a true cinematic vignette, not a soft halo */
+/* vignette — the lens the whole world is seen through */
 .landing .landing-vignette {
   position: fixed;
   inset: 0;
   z-index: 79;
   pointer-events: none;
   background:
-    radial-gradient(circle farthest-corner at 50% 44%, transparent 52%, rgb(5 7 15 / 0.5) 100%);
-}
-
-/* color grade — one fixed duotone split over the whole world: warm
-   where the knowledge core's light pools (bottom-left), cool at the
-   far sky (top-right). soft-light at ~5%: felt, never seen. Sits
-   below the vignette/grain (z 78) and above every page surface; no
-   backdrop-filter — a pure composited tint. */
-.landing::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 78;
-  pointer-events: none;
-  background:
-    radial-gradient(62% 54% at 16% 88%, rgb(255 190 110 / 0.055) 0%, transparent 70%),
-    radial-gradient(66% 58% at 86% 10%, rgb(96 156 255 / 0.05) 0%, transparent 72%);
-  mix-blend-mode: soft-light;
+    radial-gradient(122% 122% at 50% 44%, transparent 58%, rgb(4 6 13 / 0.42) 100%);
 }
 
 /* mono system layer — the «machine» voice */
@@ -279,28 +188,6 @@
   animation: ritual-ring-2 1650ms var(--ln-ease-expo) forwards;
 }
 .landing .ritual-core { fill: var(--ln-gold); animation: ritual-core 1650ms var(--ln-ease-soft) forwards; }
-/* the climax: when the rings align, the core blooms once — the world ignites */
-.landing .ritual-bloom {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-}
-.landing .ritual-bloom::before {
-  content: '';
-  inline-size: 14px;
-  block-size: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(246 222 170 / 0.9) 0%, rgb(233 180 76 / 0.35) 40%, transparent 70%);
-  opacity: 0;
-  animation: ritual-bloom 1650ms var(--ln-ease-expo) forwards;
-}
-@keyframes ritual-bloom {
-  0%, 48% { opacity: 0; transform: scale(1); }
-  58% { opacity: 1; transform: scale(3.4); }
-  100% { opacity: 0.22; transform: scale(7); }
-}
 @keyframes ritual-ring-0 {
   0% { transform: rotate(-128deg); stroke-dashoffset: 220; }
   60% { transform: rotate(8deg); stroke-dashoffset: 40; }
@@ -321,8 +208,6 @@
   55% { opacity: 1; transform: scale(1); }
   100% { opacity: 1; transform: scale(1); }
 }
-.landing .ln-progress-ring.r3 { animation: ln-orbit-slow 42s linear infinite; }
-@keyframes ln-orbit-slow { to { transform: rotate(360deg); } }
 
 .landing .ritual-word { display: flex; direction: rtl; font-family: var(--ln-font-display); font-size: clamp(34px, 6vw, 54px); font-weight: 700; color: var(--ln-ink); line-height: 1; }
 .landing .ritual-word-char { opacity: 0; transform: translateY(16px); animation: ritual-char 620ms var(--ln-ease-out) forwards; }
@@ -349,7 +234,7 @@
   block-size: 6px;
   border-radius: 50%;
   background: var(--ln-gold-soft);
-  box-shadow: 0 0 12px 2px rgb(255 217 142 / 0.6);
+  box-shadow: 0 0 12px 2px rgb(233 180 76 / 0.55);
   will-change: transform;
 }
 .landing .cc-halo {
@@ -359,7 +244,7 @@
   inline-size: 34px;
   block-size: 34px;
   border-radius: 50%;
-  border: 1px solid rgb(255 217 142 / 0.4);
+  border: 1px solid rgb(233 180 76 / 0.4);
   transition: inline-size 240ms var(--ln-ease-out), block-size 240ms var(--ln-ease-out), top 240ms var(--ln-ease-out), left 240ms var(--ln-ease-out), border-color 240ms var(--ln-ease-soft);
   will-change: transform;
 }
@@ -368,7 +253,7 @@
   left: -24px;
   inline-size: 48px;
   block-size: 48px;
-  border-color: rgb(255 217 142 / 0.9);
+  border-color: rgb(233 180 76 / 0.85);
 }
 
 /* ── 4 · kinetic display type ──────────────────────────────────────── */
@@ -414,27 +299,27 @@
 }
 .landing .gt-trail {
   fill: none;
-  stroke: rgb(246 169 59 / 0.18);
+  stroke: rgb(233 180 76 / 0.14);
   stroke-width: 7;
   stroke-linecap: round;
 }
 .landing .gt-path {
   fill: none;
-  stroke: var(--ln-gold-hot);
+  stroke: var(--ln-gold);
   stroke-width: 1.6;
   stroke-linecap: round;
   opacity: 0.9;
 }
 .landing .gt-traveller { opacity: 0; transition: opacity 400ms var(--ln-ease-soft); }
-.landing .gt-traveller-halo { fill: rgb(255 217 142 / 0.2); }
+.landing .gt-traveller-halo { fill: rgb(233 180 76 / 0.16); }
 .landing .gt-traveller-core { fill: #F6DEAA; }
 .landing .gt-node { opacity: 0; transition: opacity 600ms var(--ln-ease-soft); }
 .landing .gt-node-ring {
   fill: none;
-  stroke: rgb(255 217 142 / 0.55);
+  stroke: rgb(233 180 76 / 0.5);
   stroke-width: 1;
 }
-.landing .gt-node-core { fill: var(--ln-gold-deep); }
+.landing .gt-node-core { fill: var(--ln-gold); }
 /* invisible in-flow anchors (markers only) */
 .landing .thread-node {
   position: absolute;
@@ -486,12 +371,12 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: linear-gradient(150deg, #FFE3A9 0%, #F6A93B 55%, #E8912B 100%);
+  background: linear-gradient(145deg, var(--ln-gold) 0%, var(--ln-gold-deep) 100%);
   color: var(--ln-void);
   font-family: var(--ln-font-display);
   font-weight: 700;
   font-size: 19px;
-  box-shadow: 0 0 0 1px rgb(255 217 142 / 0.4), 0 6px 20px -6px var(--ln-glow-gold);
+  box-shadow: 0 0 0 1px rgb(233 180 76 / 0.35), 0 6px 20px -6px var(--ln-glow-gold);
 }
 .landing .landing-brand-name {
   display: block;
@@ -660,37 +545,21 @@
   position: relative;
   padding: 13px 26px;
   font-size: 15px;
-  /* struck gold — a 3-stop brass body with a lit top edge and an ember
-     base; the deep shadow is the core's light spilling onto the UI.
-     Ink #2A1B05 measures 13.3/8.4/6.8:1 across the three stops (AA). */
-  background: linear-gradient(180deg, #FFE3A9 0%, #F6A93B 55%, #E8912B 100%);
-  color: #2A1B05;
-  border: 1px solid rgb(255 220 150 / 0.55);
+  background: linear-gradient(160deg, var(--ln-gold-soft) 0%, var(--ln-gold) 45%, var(--ln-gold-deep) 100%);
+  color: var(--ln-void);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.35),
-    0 10px 32px rgb(246 169 59 / 0.28);
+    inset 0 1px 0 rgb(255 244 214 / 0.55),
+    0 0 0 1px rgb(233 180 76 / 0.4),
+    0 10px 30px -10px var(--ln-glow-gold);
 }
 .landing .ln-btn-gold:hover {
   transform: translate(var(--mag-x, 0), calc(var(--mag-y, 0) - 2px));
-  background: linear-gradient(180deg, #FFF0CB 0%, #FFBC50 55%, #F29C35 100%);
-  border-color: rgb(255 228 168 / 0.7);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.45),
-    0 14px 44px rgb(246 169 59 / 0.42);
+    inset 0 1px 0 rgb(255 244 214 / 0.7),
+    0 0 0 1px rgb(233 180 76 / 0.6),
+    0 16px 40px -10px rgb(233 180 76 / 0.45);
 }
-.landing .ln-btn-gold:active {
-  transform: translate(var(--mag-x, 0), var(--mag-y, 0)) scale(0.985);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.3),
-    0 7px 22px rgb(246 169 59 / 0.3);
-}
-/* the arrow leans into the journey — forward is LEFTWARD in RTL */
-.landing .ln-btn-gold svg {
-  transition: transform 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.landing .ln-btn-gold:hover svg {
-  transform: translateX(-3px);
-}
+.landing .ln-btn-gold:active { transform: translate(var(--mag-x, 0), var(--mag-y, 0)) scale(0.98); }
 .landing .ln-btn-gold.xl { padding: 16px 34px; font-size: 16.5px; }
 
 .landing .ln-btn-ghost {
@@ -703,8 +572,7 @@
   backdrop-filter: blur(6px);
 }
 .landing .ln-btn-ghost:hover {
-  /* cyan tension: the secondary path glints cold against the gold CTA */
-  border-color: rgb(122 200 255 / 0.42);
+  border-color: var(--ln-hairline-strong);
   color: var(--ln-ink);
   background: rgb(142 151 184 / 0.1);
   transform: translateY(-1px);
@@ -725,8 +593,8 @@
   display: inline-grid;
   place-items: center;
   border-radius: var(--r-full);
-  background: rgb(255 217 142 / 0.15);
-  color: var(--ln-gold-hot);
+  background: rgb(233 180 76 / 0.16);
+  color: var(--ln-gold-soft);
   font-family: var(--font-mono);
   font-size: 11.5px;
   font-weight: var(--fw-semibold);
@@ -755,11 +623,27 @@
   padding: clamp(90px, 12vh, 140px) var(--page-gutter) 72px;
   isolation: isolate;
 }
-/* the canvas now lives in .ln-world (page-wide fixed sky) — its rules
-   are at the top of the atmosphere section; ln-scene-in kept there. */
+.landing .ln-hero-canvas {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  z-index: 0;
+  opacity: 0;
+  animation: ln-scene-in 1.4s var(--ln-ease-out) 0.2s forwards;
+}
 @keyframes ln-scene-in { to { opacity: 1; } }
-/* CSS sky fallback — the .ln-world floor carries it page-wide now;
-   the hero stage adds only its grounding horizon. */
+/* CSS sky fallback — permanent under the canvas (also its failure floor) */
+.landing .ln-hero-stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(90% 60% at 34% 40%, #131C3E 0%, transparent 62%),
+    radial-gradient(46% 36% at 76% 10%, rgb(46 38 26 / 0.7) 0%, transparent 70%),
+    linear-gradient(180deg, var(--ln-void) 0%, var(--ln-sky-0) 55%, #0A0F22 100%);
+}
 .landing .ln-hero-horizon {
   position: absolute;
   inset-inline: 0;
@@ -767,7 +651,7 @@
   block-size: 30vh;
   z-index: 1;
   background:
-    radial-gradient(60% 100% at 50% 100%, rgb(246 169 59 / 0.1) 0%, transparent 70%),
+    radial-gradient(60% 100% at 50% 100%, rgb(233 180 76 / 0.07) 0%, transparent 70%),
     linear-gradient(180deg, transparent 0%, var(--ln-void) 94%);
   pointer-events: none;
 }
@@ -781,22 +665,15 @@
   display: grid;
 }
 @media (min-width: 1025px) {
-  /* R3: the title ramps to 10vw/168px — it needs the wider stage to
-     keep «وتصبح مدارًا» on one line and the first line in two */
-  .landing .ln-hero-content { max-inline-size: min(1120px, 66vw); margin-inline-end: auto; }
+  .landing .ln-hero-content { max-inline-size: min(680px, 48vw); margin-inline-end: auto; }
 }
-/* volumetric light behind the copy — the knowledge sun bleeds its warmth
-   into the text zone from the core's side (left, RTL), so the type reads
-   as lit BY the world rather than printed ON it */
+/* volumetric light behind the copy */
 .landing .ln-hero-content::before {
   content: '';
   position: absolute;
-  inset: -180px -80px auto -80px;
-  block-size: 460px;
-  background:
-    radial-gradient(58% 100% at 10% 32%, rgb(255 217 142 / 0.17) 0%, transparent 68%),
-    radial-gradient(46% 90% at 64% 112%, rgb(246 169 59 / 0.09) 0%, transparent 72%),
-    radial-gradient(30% 60% at 88% 8%, rgb(122 200 255 / 0.05) 0%, transparent 70%);
+  inset: -120px -40px auto -40px;
+  block-size: 340px;
+  background: radial-gradient(52% 100% at 78% 0%, rgb(233 180 76 / 0.09) 0%, transparent 70%);
   pointer-events: none;
   z-index: -1;
 }
@@ -825,17 +702,6 @@
    visible and its words descend back behind their masks instead. */
 .landing .ln-hero-stage[data-phase='b'] .ln-hero-state.a .ln-hero-title { visibility: visible; }
 .landing .ln-hero-title .kinetic-word { transition: transform 620ms var(--ln-ease-expo); }
-/* the hero's words carry BOTH animations — the rise (declared once for
-   every kinetic on the page in §4) and the title's light-pass. Declared
-   ABOVE the [data-phase='b'] block on purpose: both selectors tie at
-   (0,5,0), so source order lets phase B still cancel the pair and drop
-   the words back behind their masks. */
-.landing .ln-hero-title .kinetic.k-in .kinetic-word {
-  animation:
-    kinetic-rise 940ms var(--ln-ease-expo) forwards,
-    ln-title-lightpass 10.5s ease-in-out infinite;
-  animation-delay: var(--d, 0ms), 0s;
-}
 /* fill-mode:forwards would pin the words up — drop the animation when
    the title descends back behind its masks */
 .landing .ln-hero-stage[data-phase='b'] .ln-hero-title .kinetic-word {
@@ -849,52 +715,16 @@
 .landing .ln-hero-title {
   margin: 0 0 var(--sp-7);
   font-family: var(--ln-font-display);
-  font-size: clamp(64px, 10vw, 168px);
-  line-height: 1.04;
+  font-size: clamp(40px, 7.6vw, 122px);
+  line-height: 1.24;
   font-weight: 800;
-  max-inline-size: 14ch;
+  color: var(--ln-ink);
+  max-inline-size: 12ch;
   text-wrap: balance;
-  /* seat the type into the core's light — a barely-there warm bloom
-     that follows the glyph silhouette. filter, not text-shadow: the
-     kinetic masks would shear a text-shadow at every word edge. */
-  filter: drop-shadow(0 0 0.24em rgb(246 169 59 / 0.4));
 }
 .landing .ln-hero-line { display: block; }
-/* the title is cut from the core's own light — cream→hot-gold→flame
-     clipped to the glyphs (display type ≥64px; every stop clears
-     AA-large on the void with 3× headroom). The ramp rides EACH WORD,
-     not the h1: the kinetic words are transformed (`will-change` even
-     at rest), and Chromium excludes transformed descendants from an
-     ancestor's background-clip:text region — gradient on the h1
-     measured ZERO painted words (verified by pixel diff). Per-word is
-     the split-text idiom; all words lap the one light in sync. */
-.landing .ln-hero-title .kinetic-word {
-  background-image: linear-gradient(105deg, #F6F1E4 0%, var(--ln-gold-hot) 38%, var(--ln-gold-deep) 62%, #F6F1E4 100%);
-  background-size: 220% 100%;
-  background-position: 0% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-/* the accent word earns its emphasis from the EMBER end of the same
-   ramp — never a second hue family (hierarchy is size + light first;
-   Noto Kufi ships no 900, so 800 stays the weight everywhere) */
 .landing .ln-hero-title .kinetic-word.accent {
-  background-image: linear-gradient(105deg, #FFF3DA 0%, var(--ln-gold-hot) 34%, var(--ln-ember) 66%, var(--ln-gold-deep) 100%);
-}
-/* one slow breath of light per 10.5s: the hot band travels right→left
-   (the reading direction), then returns — a lap, not a ticker */
-@keyframes ln-title-lightpass {
-  0%, 100% { background-position: 0% 0; }
-  50% { background-position: 100% 0; }
-}
-/* Noto Kufi's ink box is ~1.9em tall; at the 1.04 leading the masks
-   need 0.22em of headroom above the line (negative margin cancels
-   layout) so shadda/damma stacks never clip — the raised baseline
-   buys the descenders extra room in the 0.18em pocket below */
-.landing .ln-hero-title .kinetic-mask {
-  padding-block-start: 0.22em;
-  margin-block-start: -0.22em;
+  text-shadow: 0 0 46px rgb(233 180 76 / 0.4);
 }
 .landing .ln-hero-sub {
   margin: 0 0 var(--sp-9);
@@ -944,15 +774,8 @@
 }
 .landing .ln-hero-b-line em {
   font-style: normal;
-  /* the promise line's accent rides the same hot ramp, statically —
-     calmer than the hero's light-pass, same family of light. The glow
-     is a filter, not a text-shadow: Chromium paints text-shadow OVER
-     a background-clipped gradient, hazing the glyphs */
-  background-image: linear-gradient(105deg, #FFE9BE 0%, var(--ln-gold-hot) 45%, var(--ln-gold-deep) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 40px rgb(255 217 142 / 0.35));
+  color: var(--ln-gold);
+  text-shadow: 0 0 40px rgb(233 180 76 / 0.35);
 }
 .landing .ln-hero-b-sub {
   margin: 0;
@@ -1046,18 +869,7 @@
   color: var(--ln-ink);
   text-wrap: balance;
 }
-/* every display accent in the page is cut from the same light the
-   core burns — the chapter titles' em words ride the hot ramp
-   statically (cream→hot→flame), the same family as the hero's pass */
-.landing .hr-title em,
-.landing .j-title em,
-.landing .ln-chapter-title em {
-  font-style: normal;
-  background-image: linear-gradient(105deg, #FFE9BE 0%, var(--ln-gold-hot) 45%, var(--ln-gold-deep) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+.landing .hr-title em { font-style: normal; color: var(--ln-gold); }
 .landing .hr-lede { margin: 0; color: var(--ln-ink-dim); font-size: 15.5px; line-height: 1.85; max-inline-size: 40ch; }
 
 .landing .hr-station {
@@ -1069,32 +881,18 @@
   gap: 12px;
   padding: 30px 26px;
   border-radius: var(--r-xl);
-  /* premium glass — a cool deep body with a warm 1px rim and a lit
-     top edge; the blur saturates the sky behind it */
-  background: linear-gradient(160deg, rgb(16 22 44 / 0.62), rgb(10 14 30 / 0.78));
-  border: 1px solid rgb(255 217 142 / 0.14);
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: inset 0 1px 0 rgb(255 232 190 / 0.10);
+  background: rgb(12 18 40 / 0.55);
+  border: 1px solid var(--ln-hairline);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgb(242 239 230 / 0.05);
   /* staggered settle — arriving reads as arriving, floor 0.55 */
   --in: clamp(0, calc(var(--p, 0) * 7.4 - var(--i, 1) - 0.4), 1);
   opacity: calc(0.55 + 0.45 * var(--in));
   transform: translateY(calc((1 - var(--in)) * 26px));
-  /* translate (not transform) carries the hover lift so the
-     scroll-driven settle transform stays 1:1 with the wheel */
-  transition:
-    border-color var(--t-base) var(--ln-ease-soft),
-    box-shadow var(--t-base) var(--ln-ease-soft),
-    translate var(--t-base) var(--ln-ease-out);
+  transition: border-color var(--t-base) var(--ln-ease-soft);
 }
-.landing .hr-station:hover {
-  border-color: rgb(255 217 142 / 0.32);
-  translate: 0 -3px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 232 190 / 0.14),
-    0 18px 48px rgb(0 0 0 / 0.4),
-    0 12px 44px -12px rgb(246 169 59 / 0.24);
-}
+.landing .hr-station:hover { border-color: rgb(233 180 76 / 0.38); }
 .landing .hr-node {
   position: absolute;
   inset-block-start: 26px;
@@ -1180,13 +978,10 @@
   gap: var(--sp-4);
   padding: 34px 30px;
   border-radius: var(--r-xl);
-  border: 1px solid rgb(255 217 142 / 0.26);
+  border: 1px solid rgb(233 180 76 / 0.3);
   background:
-    radial-gradient(80% 90% at 80% 10%, rgb(246 169 59 / 0.12) 0%, transparent 70%),
-    linear-gradient(160deg, rgb(16 22 44 / 0.62), rgb(10 14 30 / 0.78));
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: inset 0 1px 0 rgb(255 232 190 / 0.10);
+    radial-gradient(80% 90% at 80% 10%, rgb(233 180 76 / 0.1) 0%, transparent 70%),
+    rgb(14 20 44 / 0.72);
   --in: clamp(0, calc(var(--p, 0) * 7.4 - 6.2), 1);
   opacity: calc(0.55 + 0.45 * var(--in));
   transform: translateY(calc((1 - var(--in)) * 26px));
@@ -1198,7 +993,7 @@
   inline-size: 72%;
   aspect-ratio: 1;
   border-radius: 50%;
-  border: 1px solid rgb(255 217 142 / 0.2);
+  border: 1px solid rgb(233 180 76 / 0.16);
   pointer-events: none;
 }
 .landing .hr-cta-title {
@@ -1215,29 +1010,7 @@
   block-size: 500vh;
   background: radial-gradient(80% 50% at 50% 0%, rgb(19 28 62 / 0.5) 0%, transparent 70%);
 }
-.landing .ln-journey .act-stage { display: grid; isolation: isolate; }
-/* the act's numeral ٢, carved into the sky behind the stations —
-   stroke-only brass, a third of the glyph swallowed by the
-   reading-start edge (right, in RTL). Background depth, not
-   decoration. Stroke calibrated at 20%: the acts sit on navy washes
-   (≈rgb 12 18 40), and a 10% brass stroke blends to a still-cool
-   pixel (R stays under B) — the numeral vanished (VLM jury read the
-   acts as having none); 20% keeps it a felt ghost, never a headline. */
-.landing .ln-journey .act-stage::before {
-  content: '٢';
-  position: absolute;
-  top: 9%;
-  inset-inline-start: -0.12em;
-  z-index: -1;
-  font-family: var(--ln-font-display);
-  font-weight: 800;
-  font-size: clamp(180px, 24vw, 420px);
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px rgb(236 190 105 / 0.20);
-  pointer-events: none;
-  user-select: none;
-}
+.landing .ln-journey .act-stage { display: grid; }
 
 /* chapter head — greets at p≈0, hands over to the stations */
 .landing .j-head {
@@ -1263,6 +1036,7 @@
   line-height: 1.3;
   color: var(--ln-ink);
 }
+.landing .j-title em { font-style: normal; color: var(--ln-gold); }
 .landing .j-lede { margin: 0; color: var(--ln-ink-dim); font-size: 15px; }
 
 .landing .j-stations {
@@ -1283,12 +1057,10 @@
   gap: clamp(24px, 5vw, 72px);
   inline-size: min(1080px, 100%);
   pointer-events: none;
-  /* the station's window — --a/--b set inline per station; --onair is
-     1 only while the window is live (the cyan ring's gate) */
+  /* the station's window — --a/--b set inline per station */
   --lp: clamp(0, calc((var(--p, 0) - var(--a)) / (var(--b) - var(--a))), 1);
   --in: clamp(0, calc((var(--lp) - 0.08) / 0.18), 1);
   --out: clamp(0, calc((var(--lp) - 0.9) / 0.07), 1);
-  --onair: calc(clamp(0, calc((var(--lp) - 0.05) / 0.12), 1) * clamp(0, calc((0.95 - var(--lp)) / 0.1), 1));
   opacity: calc(var(--in) * (1 - var(--out)));
   transform: translateY(calc((1 - var(--in)) * 44px));
   will-change: transform, opacity;
@@ -1301,7 +1073,7 @@
   font-size: clamp(64px, 8vw, 118px);
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(255 217 142 / 0.6);
+  -webkit-text-stroke: 1px rgb(233 180 76 / 0.55);
   direction: ltr;
 }
 /* station copy stabilization — identical rhythm in every station */
@@ -1312,16 +1084,9 @@
   display: grid;
   place-items: center;
   border-radius: 13px;
-  background: rgb(246 169 59 / 0.14);
-  color: var(--ln-gold-hot);
+  background: rgb(233 180 76 / 0.12);
+  color: var(--ln-gold-soft);
   flex-shrink: 0;
-  /* ON-AIR — the one cyan beat of the journey: while this station's
-     window is live, a cool ring lights around its chip (gold = the
-     road; cyan = you, now). Fades in/out with the window itself. */
-  box-shadow:
-    0 0 0 1px rgb(122 200 255 / calc(var(--onair, 0) * 0.55)),
-    0 0 30px -6px rgb(122 200 255 / calc(var(--onair, 0) * 0.4));
-  transition: box-shadow 200ms var(--ln-ease-soft);
 }
 .landing .j-station-tag {
   padding: 4px 12px;
@@ -1345,12 +1110,12 @@
 .landing .j-station-sky { inline-size: 100%; max-inline-size: 460px; block-size: auto; overflow: visible; }
 .landing .j-sky-line {
   fill: none;
-  stroke: var(--ln-gold-hot);
+  stroke: var(--ln-gold-soft);
   stroke-width: 1.7;
   stroke-linejoin: round;
   stroke-dasharray: 100;
   stroke-dashoffset: calc(100 - var(--lp, 0) * 100);
-  filter: drop-shadow(0 0 7px rgb(255 217 142 / 0.55));
+  filter: drop-shadow(0 0 7px rgb(233 180 76 / 0.6));
 }
 .landing .j-sky-star {
   fill: #F8EFDB;
@@ -1384,8 +1149,8 @@
   --lp: clamp(0, calc((var(--p, 0) - var(--a)) / (var(--b) - var(--a))), 1);
   transition: transform 200ms var(--ln-ease-out), background 200ms var(--ln-ease-soft), box-shadow 200ms var(--ln-ease-soft);
   transform: scale(calc(1 + var(--lp) * 0.55));
-  background: rgb(255 217 142 / calc(0.3 + var(--lp) * 0.7));
-  box-shadow: 0 0 calc(var(--lp) * 12px) rgb(255 217 142 / calc(var(--lp) * 0.55));
+  background: rgb(233 180 76 / calc(0.3 + var(--lp) * 0.7));
+  box-shadow: 0 0 calc(var(--lp) * 12px) rgb(233 180 76 / calc(var(--lp) * 0.55));
 }
 
 /* ── chapter scaffolding (flow chapters) ────────────────────────────── */
@@ -1410,6 +1175,7 @@
   max-inline-size: 22ch;
   text-wrap: balance;
 }
+.landing .ln-chapter-title em { font-style: normal; color: var(--ln-gold); }
 .landing .ln-chapter-lede {
   margin: 0;
   max-inline-size: 62ch;
@@ -1420,29 +1186,7 @@
 
 /* ── 13 · progress story — «الإتساع» ───────────────────────────────── */
 .landing .ln-progress {
-  /* isolate so the act numeral's -1 z sits above the sky wash, below
-     the chapter's copy */
-  isolation: isolate;
   background: radial-gradient(60% 60% at 78% 45%, rgb(19 28 62 / 0.5) 0%, transparent 72%);
-}
-.landing .ln-progress::before {
-  content: '٣';
-  position: absolute;
-  /* 22%, not the chapter's top band: this is a FLOW chapter (no pin),
-     and at 4% the numeral left the viewport before the stats were
-     read — at 22% it rides behind the orbit instrument for the whole
-     chapter's screen time (verified at entry/mid/final scroll) */
-  top: 22%;
-  inset-inline-start: -0.10em;
-  z-index: -1;
-  font-family: var(--ln-font-display);
-  font-weight: 800;
-  font-size: clamp(180px, 24vw, 420px);
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px rgb(236 190 105 / 0.20);
-  pointer-events: none;
-  user-select: none;
 }
 .landing .ln-progress-grid {
   max-inline-size: 1280px;
@@ -1471,18 +1215,14 @@
   border: 1px solid rgb(142 151 184 / 0.2);
 }
 .landing .ln-progress-ring.r1 { inset: 12.5%; border-color: rgb(142 151 184 / 0.26); }
-.landing .ln-progress-ring.r2 { inset: 25%; border-color: rgb(246 169 59 / 0.28); }
-/* r3 is the alidade's counter-ring — the one cyan carrier in the
-   instrument: it turns against the gold system, cold against warm */
-.landing .ln-progress-ring.r3 { inset: 37.5%; border-color: rgb(122 200 255 / 0.42); border-style: dashed; }
+.landing .ln-progress-ring.r2 { inset: 25%; border-color: rgb(233 180 76 / 0.24); }
+.landing .ln-progress-ring.r3 { inset: 37.5%; border-color: rgb(233 180 76 / 0.34); border-style: dashed; }
 .landing .ln-progress-core {
   inline-size: 54px;
   block-size: 54px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, #FFF3D6 0%, #FFD98E 34%, #F6A93B 72%, #E8912B 100%);
-  box-shadow:
-    0 0 34px 4px rgb(246 169 59 / 0.55),
-    0 0 90px 18px rgb(255 217 142 / 0.16);
+  background: radial-gradient(circle at 34% 30%, var(--ln-gold-soft), var(--ln-gold-deep));
+  box-shadow: 0 0 34px 4px rgb(233 180 76 / 0.5);
 }
 /* milestones sit EXACTLY on the r2 ring (true radial positions) */
 .landing .ln-progress-milestone {
@@ -1506,13 +1246,7 @@
   inset-block-end: -34px;
   color: var(--ln-ink-faint);
 }
-.landing .ln-progress-label .ln-mono {
-  font-size: 10.5px;
-  letter-spacing: 0.2em;
-  /* the counter-ring's annotation — cyan, in register with r3 above
-     (#7AC8FF ≈ 11:1 on the void at 10.5px — AA clear) */
-  color: var(--ln-cyan);
-}
+.landing .ln-progress-label .ln-mono { font-size: 10.5px; letter-spacing: 0.2em; }
 .landing .ln-progress-copy { display: grid; gap: var(--sp-4); }
 .landing .ln-progress-copy .ln-chapter-lede { margin: 0; }
 .landing .ln-progress-stats {
@@ -1524,37 +1258,20 @@
 .landing .ln-stat {
   padding: var(--sp-5) var(--sp-5) var(--sp-4);
   border-radius: var(--r-lg);
-  /* the same premium glass as the road's cards — the data lives in
-     the world too, not in a spreadsheet chassis on top of it */
-  background: linear-gradient(160deg, rgb(16 22 44 / 0.62), rgb(10 14 30 / 0.78));
-  border: 1px solid rgb(255 217 142 / 0.14);
-  border-block-start-color: rgb(255 217 142 / 0.3);
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: inset 0 1px 0 rgb(255 232 190 / 0.10);
-  transition: border-color var(--t-base) var(--ln-ease-soft);
+  background: var(--ln-card);
+  border: 1px solid var(--ln-hairline);
+  border-block-start-color: rgb(233 180 76 / 0.35);
+  box-shadow: inset 0 1px 0 rgb(242 239 230 / 0.05);
 }
-/* data is not a button — it warms under the hand but never runs
-   from it (no lift on non-interactive cards) */
-.landing .ln-stat:hover { border-color: rgb(255 217 142 / 0.32); }
 .landing .ln-stat-value {
   font-family: var(--font-mono);
-  font-size: clamp(44px, 4.6vw, 64px);
+  font-size: 42px;
   font-weight: var(--fw-medium);
   color: var(--ln-ink);
   line-height: 1.1;
   direction: ltr;
-  /* the numbers are the act's monument — hot-ramp gradient with a cyan
-     unit tension beat. Monospace digits stay upright, the ramp gives
-     them the world's light. */
-  background: linear-gradient(180deg, #F6F1E4 20%, #FFD98E 78%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: none;
-  filter: drop-shadow(0 6px 24px rgb(246 169 59 / 0.18));
 }
-.landing .ln-stat-unit { color: var(--ln-cyan-deep); font-size: 24px; margin-inline-start: 2px; }
+.landing .ln-stat-unit { color: var(--ln-gold); font-size: 24px; margin-inline-start: 2px; }
 .landing .ln-stat-label { margin-block-start: 8px; color: var(--ln-ink); font-size: 14px; font-weight: var(--fw-semibold); }
 .landing .ln-stat-note { margin-block-start: 3px; color: var(--ln-ink-faint); font-size: 12px; line-height: 1.7; }
 .landing .ln-progress-source {
@@ -1562,7 +1279,7 @@
   color: var(--ln-ink-faint);
   font-size: 12.5px;
   line-height: 1.8;
-  border-inline-start: 2px solid rgb(255 217 142 / 0.45);
+  border-inline-start: 2px solid rgb(233 180 76 / 0.4);
   padding-inline-start: var(--sp-4);
   max-inline-size: 56ch;
 }
@@ -1599,7 +1316,7 @@
   position: absolute;
   inset: 10px;
   border-radius: calc(var(--r-2xl) - 8px);
-  border: 1px solid rgb(255 217 142 / 0.32);
+  border: 1px solid rgb(233 180 76 / 0.28);
   pointer-events: none;
   z-index: 3;
 }
@@ -1619,7 +1336,7 @@
   pointer-events: none;
 }
 .landing .ln-campus-frame:hover {
-  box-shadow: 0 50px 110px -40px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(255 217 142 / 0.22);
+  box-shadow: 0 50px 110px -40px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(233 180 76 / 0.18);
 }
 .landing .ln-campus-vignette {
   position: absolute;
@@ -1647,14 +1364,10 @@
 .landing .ln-fact {
   padding: var(--sp-6) var(--sp-5);
   border-radius: var(--r-lg);
-  border: 1px solid rgb(255 217 142 / 0.14);
-  background: linear-gradient(160deg, rgb(16 22 44 / 0.62), rgb(10 14 30 / 0.78));
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: inset 0 1px 0 rgb(255 232 190 / 0.10);
-  transition: border-color var(--t-base) var(--ln-ease-soft);
+  border: 1px solid var(--ln-hairline);
+  background: rgb(10 15 32 / 0.5);
+  box-shadow: inset 0 1px 0 rgb(242 239 230 / 0.04);
 }
-.landing .ln-fact:hover { border-color: rgb(255 217 142 / 0.32); }
 .landing .ln-fact-value { font-family: var(--font-mono); font-size: 34px; color: var(--ln-ink); direction: ltr; }
 .landing .ln-fact-label { margin-block-start: 6px; color: var(--ln-ink); font-weight: var(--fw-semibold); font-size: 14.5px; }
 .landing .ln-fact-note { margin-block-start: 3px; color: var(--ln-ink-faint); font-size: 12px; line-height: 1.7; }
@@ -1679,11 +1392,11 @@
   transition: background var(--t-base) var(--ln-ease-soft), border-color var(--t-base) var(--ln-ease-soft);
 }
 .landing .ln-role-row:hover {
-  background: linear-gradient(160deg, rgb(16 22 44 / 0.55), rgb(10 14 30 / 0.7));
-  border-color: rgb(255 217 142 / 0.22);
+  background: rgb(16 23 49 / 0.45);
+  border-color: var(--ln-hairline);
 }
 .landing .ln-role-row:hover .ln-role-ico {
-  box-shadow: 0 0 26px -4px rgb(246 169 59 / 0.4);
+  box-shadow: 0 0 26px -4px rgb(233 180 76 / 0.35);
 }
 .landing .ln-role-ico { transition: box-shadow var(--t-base) var(--ln-ease-soft); }
 .landing .ln-role-row:hover .ln-role-ico.gold { background: rgb(233 180 76 / 0.2); }
@@ -1712,13 +1425,13 @@
 .landing .ln-role-quote {
   margin: var(--sp-2) 0 0;
   padding: var(--sp-3) var(--sp-5);
-  border-inline-start: 2px solid rgb(255 217 142 / 0.5);
+  border-inline-start: 2px solid rgb(233 180 76 / 0.45);
   color: var(--ln-ink-faint);
   font-size: 13.5px;
   line-height: 1.9;
   max-inline-size: 64ch;
 }
-.landing .ln-role-quote-mark { color: rgb(255 217 142 / 0.55); font-size: 20px; margin-inline-end: 6px; }
+.landing .ln-role-quote-mark { color: rgb(233 180 76 / 0.5); font-size: 20px; margin-inline-end: 6px; }
 .landing .ln-system-trio {
   max-inline-size: 1280px;
   margin: clamp(48px, 8vh, 88px) auto 0;
@@ -1729,27 +1442,14 @@
 .landing .ln-system-card {
   padding: var(--sp-6);
   border-radius: var(--r-xl);
-  border: 1px solid rgb(255 217 142 / 0.14);
-  background: linear-gradient(160deg, rgb(16 22 44 / 0.62), rgb(10 14 30 / 0.78));
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: inset 0 1px 0 rgb(255 232 190 / 0.10);
+  border: 1px solid var(--ln-hairline);
+  background: var(--ln-card);
   display: grid;
   gap: var(--sp-3);
   align-content: start;
-  transition:
-    border-color var(--t-base) var(--ln-ease-soft),
-    box-shadow var(--t-base) var(--ln-ease-soft),
-    translate var(--t-base) var(--ln-ease-out);
+  transition: border-color var(--t-base) var(--ln-ease-soft), transform var(--t-base) var(--ln-ease-out);
 }
-.landing .ln-system-card:hover {
-  border-color: rgb(255 217 142 / 0.32);
-  translate: 0 -3px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 232 190 / 0.14),
-    0 18px 48px rgb(0 0 0 / 0.4),
-    0 12px 44px -12px rgb(246 169 59 / 0.24);
-}
+.landing .ln-system-card:hover { border-color: rgb(111 168 255 / 0.4); transform: translateY(-3px); }
 .landing .ln-system-ico {
   inline-size: 44px;
   block-size: 44px;
@@ -1773,10 +1473,8 @@
   overflow: clip;
   isolation: isolate;
   background:
-    radial-gradient(70% 90% at 50% 108%, rgb(255 217 142 / 0.12) 0%, transparent 62%),
-    linear-gradient(180deg, rgb(5 7 15 / 0.4) 0%, rgb(10 16 36 / 0.1) 100%);
-  /* translucent veil — the evolved world (cool, distant, the instrument
-     receded) shows through the final act; the warm floor glow grounds it. */
+    radial-gradient(70% 90% at 50% 108%, rgb(233 180 76 / 0.1) 0%, transparent 62%),
+    linear-gradient(180deg, var(--ln-void) 0%, #0A0F22 100%);
 }
 .landing .ln-finale-stage {
   position: relative;
@@ -1800,8 +1498,7 @@
   inline-size: min(1020px, 120vw);
   aspect-ratio: 1.55 / 1;
   border-radius: 50%;
-  border: 1px solid rgb(142 151 184 / 0.16);
-  box-shadow: 0 0 60px rgb(122 200 255 / 0.06), inset 0 0 80px rgb(122 200 255 / 0.04);
+  border: 1px solid rgb(142 151 184 / 0.13);
 }
 .landing .ln-finale-ring-b {
   position: absolute;
@@ -1810,33 +1507,10 @@
   inline-size: min(700px, 82vw);
   aspect-ratio: 1.55 / 1;
   border-radius: 50%;
-  border: 1px solid rgb(255 217 142 / 0.26);
+  border: 1px solid rgb(233 180 76 / 0.15);
   rotate: 10deg;
-  box-shadow: 0 0 70px rgb(255 217 142 / 0.1);
 }
 .landing .ln-finale-eyebrow { color: var(--ln-gold); }
-/* the last act's numeral ٥ — the circle's number, behind the resolve.
-   42% (the stage zone), not the section's top band: the finale is a
-   tall flow section and at the ARRIVAL view (page bottom) its top
-   40% has already left the viewport — at 14% the ٥ was gone exactly
-   when the CTA centered; at 42% it rides behind the rings + word
-   through the arrival (verified: glyph spans viewport y≈15–315 at
-   max scroll) */
-.landing .ln-finale::before {
-  content: '٥';
-  position: absolute;
-  top: 42%;
-  inset-inline-start: -0.08em;
-  z-index: -1;
-  font-family: var(--ln-font-display);
-  font-weight: 800;
-  font-size: clamp(180px, 24vw, 420px);
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px rgb(236 190 105 / 0.20);
-  pointer-events: none;
-  user-select: none;
-}
 .landing .ln-finale-word {
   margin: 0;
   font-family: var(--ln-font-display);
@@ -1845,7 +1519,7 @@
   line-height: 1.12;
   color: var(--ln-ink);
 }
-.landing .ln-finale-word .kinetic-word.accent { text-shadow: 0 0 80px rgb(255 217 142 / 0.45); }
+.landing .ln-finale-word .kinetic-word.accent { text-shadow: 0 0 80px rgb(233 180 76 / 0.4); }
 .landing .ln-finale-line {
   margin: 0;
   color: var(--ln-ink-dim);
@@ -1862,7 +1536,7 @@
   position: absolute;
   inset: -8px;
   border-radius: var(--r-full);
-  border: 1px solid rgb(255 217 142 / 0.26);
+  border: 1px solid rgb(233 180 76 / 0.22);
   pointer-events: none;
 }
 .landing .ln-finale-actions .ln-btn-gold::after {
@@ -1871,7 +1545,7 @@
   inset: -8px;
   border-radius: var(--r-full);
   border: 1.5px solid transparent;
-  border-block-start-color: rgb(255 217 142 / 0.85);
+  border-block-start-color: rgb(233 180 76 / 0.75);
   pointer-events: none;
   animation: finale-arc 7s linear infinite;
 }
@@ -1890,7 +1564,7 @@
 .landing .landing-footer {
   border-block-start: 1px solid var(--ln-hairline);
   background:
-    radial-gradient(50% 100% at 50% 0%, rgb(255 217 142 / 0.05) 0%, transparent 70%),
+    radial-gradient(50% 100% at 50% 0%, rgb(233 180 76 / 0.04) 0%, transparent 70%),
     var(--ln-void);
   padding-block: clamp(56px, 8vh, 88px) var(--sp-8);
 }
@@ -1930,8 +1604,8 @@
 }
 .landing .ln-footer-cluster { display: inline-flex; align-items: center; gap: 8px; }
 .landing .landing-colleges-trigger-badge {
-  background: rgb(255 217 142 / 0.15);
-  color: var(--ln-gold-hot);
+  background: rgb(233 180 76 / 0.16);
+  color: var(--ln-gold-soft);
 }
 
 /* ── progress ribbon (top) ─────────────────────────────────────────── */
@@ -1947,8 +1621,8 @@
 .landing .landing-progress-bar {
   block-size: 100%;
   inline-size: calc(var(--p, 0) * 100%);
-  background: linear-gradient(90deg, var(--ln-gold-deep), var(--ln-gold-hot));
-  box-shadow: 0 0 10px rgb(255 217 142 / 0.65);
+  background: linear-gradient(90deg, var(--ln-gold-deep), var(--ln-gold-soft));
+  box-shadow: 0 0 10px rgb(233 180 76 / 0.6);
 }
 
 /* ── 18 · responsive ───────────────────────────────────────────────── */
@@ -1997,29 +1671,8 @@
 
 @media (max-width: 1024px) {
   .landing .ln-hero { block-size: 220vh; }
-  .landing .ln-hero-title { font-size: clamp(44px, 8.8vw, 96px); }
+  .landing .ln-hero-title { font-size: clamp(38px, 8.8vw, 76px); }
   .landing .ln-hero-content { max-inline-size: 620px; }
-}
-/* tablets held landscape-short: the tablet ramp above still needs
-   ~840px of stage for its three rows — step it under the same law */
-@media (max-width: 1024px) and (max-height: 840px) {
-  .landing .ln-hero-title { font-size: clamp(44px, 7.4vw, 84px); }
-}
-
-/* short desktop windows, tier A (≤1006px tall): the full 168px
-   monument (three rows + its court) needs ~1015px of stage — before
-   that, step the ramp down and tighten the court's rhythm so the
-   stage never clips its own edges */
-@media (min-width: 1025px) and (max-height: 1006px) {
-  .landing .ln-hero-title { font-size: clamp(56px, 7.2vw, 134px); }
-  .landing .ln-hero-title { margin-block-end: var(--sp-5); }
-  .landing .ln-hero-sub { margin-block-end: var(--sp-6); }
-  .landing .ln-hero-actions { margin-block-end: var(--sp-6); }
-}
-/* tier B (≤840px tall — laptops with browser chrome): the ramp steps
-   once more; three rows stay three rows, just closer to the court */
-@media (min-width: 1025px) and (max-height: 840px) {
-  .landing .ln-hero-title { font-size: clamp(52px, 6.6vw, 115px); }
 }
 
 @media (max-width: 920px) {
@@ -2042,27 +1695,10 @@
 @media (max-width: 768px) {
   .landing .ln-hero { block-size: 200vh; }
   .landing .ln-hero-b-line { font-size: clamp(26px, 7.4vw, 44px); }
-  /* Mobile perf tier: backdrop-filter is the single most expensive
-     compositing effect on weak GPUs — the glass cards fall back to a
-     more opaque tint (the world still breathes behind, just less
-     refracted). The canvas already runs its 'low' density tier here. */
-  .landing .hr-station,
-  .landing .hr-cta,
-  .landing .ln-stat,
-  .landing .ln-fact,
-  .landing .ln-system-card,
-  .landing .ln-role-row,
-  .landing .landing-megamenu {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background: linear-gradient(160deg, rgb(16 22 44 / 0.88), rgb(10 14 30 / 0.94));
-  }
 }
 
 @media (max-width: 560px) {
-  /* 13vw keeps the phone title monumental (the jury's “timid type”
-     note) while «وتصبح مدارًا» still holds one row at 360–560px */
-  .landing .ln-hero-title { font-size: clamp(40px, 13vw, 56px); }
+  .landing .ln-hero-title { font-size: clamp(34px, 10.5vw, 54px); }
   .landing .ln-hero-actions { gap: var(--sp-3); }
   .landing .ln-hero-actions .ln-btn-gold,
   .landing .ln-hero-actions .ln-btn-ghost,
@@ -2078,40 +1714,18 @@
   .landing .ln-trust-inner { gap: var(--sp-3); font-size: 12.5px; }
 }
 
-/* short phones (≤760px tall): the court alone nearly fills the stage —
-   tighten the ramp, the rhythm AND the court's own sizes together
-   (touch targets stay ≥44px; the sub keeps a readable 14.5px body) */
-@media (max-width: 560px) and (max-height: 760px) {
-  .landing .ln-hero-title { font-size: clamp(34px, 10.5vw, 44px); }
-  .landing .ln-hero-stage { padding-block: 84px 56px; }
-  .landing .ln-hero-eyebrow { margin-block-end: var(--sp-4); }
-  .landing .ln-hero-sub { font-size: 14.5px; line-height: 1.75; margin-block-end: var(--sp-5); }
-  .landing .ln-hero-actions { gap: var(--sp-2); margin-block-end: var(--sp-5); }
-  .landing .ln-hero-actions .ln-btn-gold,
-  .landing .ln-hero-actions .ln-btn-ghost,
-  .landing .ln-hero-actions .ln-btn-text { padding-block: 11px; }
-  .landing .ln-hero-meta { font-size: 12px; }
-}
-
 /* landscape phones — keep the hero above the fold */
 @media (max-height: 560px) and (orientation: landscape) {
   .landing .ln-hero { block-size: 200vh; }
   .landing .ln-hero-stage { padding-block: 84px 48px; }
-  .landing .ln-hero-title { font-size: clamp(28px, 5vw, 44px); margin-block-end: var(--sp-4); }
-  .landing .ln-hero-eyebrow { margin-block-end: var(--sp-3); }
-  .landing .ln-hero-sub { max-inline-size: 44ch; font-size: 14px; margin-block-end: var(--sp-5); }
-  .landing .ln-hero-actions { margin-block-end: var(--sp-5); }
+  .landing .ln-hero-sub { max-inline-size: 44ch; }
 }
 
 /* ── 19 · focus + reduced motion ───────────────────────────────────── */
 .landing :focus-visible {
-  /* cyan tension — the focus ring is the coldest light on the page,
-     unmistakable against every gold surface (~11:1 on the void).
-     No border-radius override: outlines already track each element's
-     own radius (platform wave 2-a) — forcing 4px squared the pill CTA
-     while focused. */
-  outline: 2px solid var(--ln-cyan);
+  outline: 2px solid var(--ln-gold-soft);
   outline-offset: 3px;
+  border-radius: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2137,10 +1751,6 @@
   .landing .ln-hero-stage[data-phase='b'] .ln-hero-state.a { visibility: visible; }
   .landing .ln-hero-canvas { animation: none; opacity: 1; }
   .landing .kinetic-word { transform: none !important; animation: none !important; }
-  /* the light-pass composes to its still: light gathered at the
-     reading start, gradient intact — no animation, no shimmer */
-  .landing .ln-hero-title,
-  .landing .ln-hero-title .kinetic-word { animation: none; }
   .landing .j-head { position: static; opacity: 1; transform: none; padding-block-end: var(--sp-6); }
   .landing .j-stations { position: static; padding: 0; }
   .landing .j-station {
@@ -2164,26 +1774,16 @@
   .landing .gt-node { opacity: 1; }
   .landing .cursor-companion { display: none; }
   .landing .ln-progress-orbits { transition: none; transform: scale(1); }
-  .landing .ln-progress-ring.r3 { animation: none; }
   .landing .ln-campus-frame.reveal-up { clip-path: none; }
   .landing .ln-campus-frame.in-view { clip-path: none; transition: none; }
   .landing .ln-station-card,
   .landing .ln-system-card,
   .landing .ln-role-row,
-  .landing .hr-station,
-  .landing .ln-stat,
-  .landing .ln-fact,
-  .landing .j-station-ico,
   .landing .ln-btn-gold,
   .landing .ln-btn-ghost { transition: none; }
   .landing .landing-grain,
   .landing .landing-vignette { display: none; }
-  /* the color grade composes away with its siblings — the still world
-     stays clean, the type keeps its gradient */
-  .landing::after { content: none; }
   .landing .ln-btn-gold:hover { transform: none; }
-  .landing .hr-station:hover,
-  .landing .ln-system-card:hover { translate: none; }
   .landing .ln-finale-actions .ln-btn-gold::after { animation: none; transform: rotate(45deg); }
   /* the ritual composes statically — no ring rotation, no char stagger */
   .landing .ritual-ring,

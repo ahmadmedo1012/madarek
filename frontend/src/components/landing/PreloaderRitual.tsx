@@ -86,8 +86,6 @@ export function PreloaderRitual({ onDone }: { onDone?: () => void }) {
           <circle className="ritual-ring r2" cx="100" cy="100" r="55" />
           <circle className="ritual-core" cx="100" cy="100" r="3.2" />
         </svg>
-        {/* the climax bloom — the world ignites when the rings align */}
-        <span className="ritual-bloom" aria-hidden="true" />
         <div className="ritual-word">
           <span className="ritual-word-char">م</span>
           <span className="ritual-word-char">د</span>
