@@ -28,6 +28,13 @@
  *     success on another question never clears the failing one's chip.
  * 12. 16-E1 / 15-c P1-1: passed === null renders the neutral
  *     «بانتظار التصحيح اليدوي» badge, never «لم يجتز».
+ * 13. 5-A6 P2-2: the question map — answered/failed dots, answered
+ *     subline, inline submit count, jump-to-card + focus, and the
+ *     IntersectionObserver-tracked current-position ring.
+ * 14. 5-A6 P2-4 → 5-D3 (5-B3 hand-off #1): the review endpoint ships —
+ *     a GRADED result/deep-link offers the collapsible «مراجعة الأسئلة»
+ *     (my answer, released key, verdict chips); a SUBMITTED result keeps
+ *     the honest «بعد اكتمال التصحيح» promise instead of a dead toggle.
  * 13. 16-E1 / 15-g P1-5: the answer textarea and the MCQ choice group
  *     carry accessible names tied to the question prompt.
  * 14. 16-E1 / 15-h P1-5: exam windows are visible — the list groups
@@ -36,7 +43,7 @@
  *     (17-b D17-3) with the real opening date when the list knows it.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { act, render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import OnlineExamsPage, {
   ExamTakerPage, restoreSavedAnswers, examWindowState, SUBMIT_FLUSH_MS,
@@ -69,6 +76,7 @@ const mocks = vi.hoisted(() => ({
   start: vi.fn(),
   finish: vi.fn(),
   answer: vi.fn(),
+  review: { data: null as unknown, isPending: false, isError: false, error: null, refetch: vi.fn() },
 }));
 
 vi.mock('../../src/hooks/useResources', () => ({
@@ -84,6 +92,9 @@ vi.mock('../../src/hooks/useResources', () => ({
   // Fresh object per render — exactly like the real useMutation result —
   // so the interval-deps assertion (P2-3) stays meaningful.
   useFinishExam: () => ({ mutateAsync: mocks.finish, isPending: false }),
+  // 5-D3 (5-B3 hand-off #1): the post-grading review read — a fresh
+  // object per render, mirroring the real useQuery result shape.
+  useExamReview: (_attemptId: string, _enabled: boolean) => ({ ...mocks.review }),
   useExamModerationQueue: () => ({
     data: [],
     isPending: false,
@@ -229,12 +240,44 @@ describe('ExamTakerPage resume (D5)', () => {
     expect(screen.getByText('09:30')).toBeTruthy();
   });
 
-  it('keeps the terminal "already taken" UI for alreadyAttempted (GRADED / EXPIRED)', async () => {
+  it('pre-empts the done state from the list payload — no false «بدء الاختبار» offered (5-A6 P1-1)', () => {
     mocks.exams = [
       examFixture({
         myAttempt: { id: 'a1', status: 'GRADED', score: 80, maxScore: 100, submittedAt: '2026-01-02T00:00:00.000Z' },
       }),
     ];
+
+    renderTaker();
+
+    // The honest terminal screen renders immediately — the list payload
+    // already knows the attempt is finished, so no begin action is ever
+    // offered for the server to refuse.
+    expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'بدء الاختبار' })).toBeNull();
+    expect(screen.getByText('80 / 100')).toBeTruthy();
+    expect(screen.getByText('ناجح')).toBeTruthy();
+    expect(screen.queryByPlaceholderText('اكتب إجابتك هنا…')).toBeNull();
+  });
+
+  it('pre-empts a SUBMITTED attempt with the awaiting-grading copy, never a fake score', () => {
+    mocks.exams = [
+      examFixture({
+        myAttempt: { id: 'a2', status: 'SUBMITTED', score: null, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+    ];
+
+    renderTaker();
+
+    expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.getByText(/النتيجة قيد الاحتساب/)).toBeTruthy();
+    // No fabricated score while the teacher's grading pends.
+    expect(screen.queryByText(/\d+ \/ \d+/)).toBeNull();
+  });
+
+  it('keeps the terminal "already taken" UI for a server-side alreadyAttempted the list could not pre-empt', async () => {
+    // Deep link the list knows nothing about (fresh cache / other
+    // template) — the begin path still surfaces the server truth.
+    mocks.exams = [];
     mocks.start.mockResolvedValue({ attemptId: 'a1', status: 'GRADED', alreadyAttempted: true });
 
     renderTaker();
@@ -243,8 +286,7 @@ describe('ExamTakerPage resume (D5)', () => {
     });
 
     expect(screen.getByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
-    expect(screen.getByText('80 / 100')).toBeTruthy();
-    expect(screen.getByText('ناجح')).toBeTruthy();
+    expect(screen.getByText(/لا يمكن إعادة المحاولة بعد التسليم/)).toBeTruthy();
     expect(screen.queryByPlaceholderText('اكتب إجابتك هنا…')).toBeNull();
   });
 
@@ -335,6 +377,135 @@ describe('ExamTakerPage resume (D5)', () => {
     expect(screen.queryByRole('button', { name: 'بدء الاختبار' })).toBeNull();
     expect(screen.getByText('متابعة الاختبار', { selector: 'h2' })).toBeTruthy();
     expect(screen.getByText(/الوقت لم يتوقف منذ البدء/)).toBeTruthy();
+  });
+});
+
+describe('Exam taker ergonomics (5-A6 P2-2/P2-3)', () => {
+  beforeEach(() => {
+    mocks.exams = [];
+    mocks.start.mockReset();
+    mocks.finish.mockReset();
+    mocks.answer.mockReset();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('renders the question map with live answered states, the answered subline and the inline submit count', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+
+    // One dot per question, all initially unanswered.
+    const map = screen.getByRole('navigation', { name: 'خريطة الأسئلة' });
+    expect(within(map).getAllByRole('button')).toHaveLength(2);
+    expect(within(map).getByRole('button', { name: 'السؤال 1 من 2 — بدون إجابة' })).toBeTruthy();
+    expect(within(map).getByRole('button', { name: 'السؤال 2 من 2 — بدون إجابة' })).toBeTruthy();
+    expect(screen.getByText(/سؤال · أُجيب عن/)).toBeTruthy();
+
+    // Answer Q1 → its dot flips to answered, the count follows, the
+    // positive save micro-state appears at Q1's footer (P2-3) and the
+    // submit status names what is still missing inline (P2-2).
+    await act(async () => {
+      fireEvent.click(screen.getByRole('radio', { name: 'الخيار الأول' }));
+    });
+    expect(within(map).getByRole('button', { name: 'السؤال 1 من 2 — مُجاب' })).toBeTruthy();
+    expect(within(map).getByRole('button', { name: 'السؤال 2 من 2 — بدون إجابة' })).toBeTruthy();
+    expect(screen.getByText('محفوظة')).toBeTruthy();
+    expect(screen.getByText('سؤال واحد بدون إجابة')).toBeTruthy();
+  });
+
+  it('jumps from the map — scrollIntoView lands on the card and focus moves with it', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    // jsdom ships no scrollIntoView — stub the browser API (not app code).
+    const proto = Element.prototype as Omit<Element, 'scrollIntoView'> & {
+      scrollIntoView?: (o?: object) => void;
+    };
+    const scrollIntoView = vi.fn();
+    proto.scrollIntoView = scrollIntoView;
+    try {
+      renderTaker();
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: 'السؤال 2 من 2 — بدون إجابة' }));
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
+      expect(document.activeElement?.id).toBe('exam-q-q2');
+    } finally {
+      delete proto.scrollIntoView;
+    }
+  });
+
+  it('marks the save-failed question in the map dot and at its card footer', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+
+    mocks.answer.mockRejectedValueOnce(new Error('offline'));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('radio', { name: 'الخيار الأول' }));
+    });
+    // Footer chip at the point of action (P2-3)…
+    expect(screen.getByText('تعذَّر الحفظ')).toBeTruthy();
+    // …and the map dot names the failure (P2-2).
+    expect(screen.getByRole('button', { name: 'السؤال 1 من 2 — تعذَّر الحفظ' })).toBeTruthy();
+  });
+
+  it('rings the map dot of the question on screen and retires it on unmount (5-A6 P2-2)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+
+    // jsdom ships no IntersectionObserver — stub the browser API (not app
+    // code) and capture the callback so the test can act as the scroller.
+    const disconnect = vi.fn();
+    const instances: Array<IntersectionObserverCallback> = [];
+    class IntersectionObserverStub {
+      constructor(cb: IntersectionObserverCallback) {
+        instances.push(cb);
+      }
+      observe() {}
+      disconnect() { disconnect(); }
+    }
+    vi.stubGlobal('IntersectionObserver', IntersectionObserverStub);
+    try {
+      renderTaker();
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+      });
+      expect(instances).toHaveLength(1);
+
+      // The observer is only the trigger — the decision reads live card
+      // rects. Q1 scrolled out above the band, Q2's header inside it.
+      const q1 = document.getElementById('exam-q-q1');
+      const q2 = document.getElementById('exam-q-q2');
+      expect(q1 && q2).toBeTruthy();
+      const rect = (top: number, bottom: number) => ({
+        top, bottom, left: 0, right: 390, width: 390, height: bottom - top, x: 0, y: top,
+        toJSON: () => ({}),
+      }) as DOMRect;
+      (q1 as HTMLElement).getBoundingClientRect = () => rect(-400, -200);
+      (q2 as HTMLElement).getBoundingClientRect = () => rect(200, 500);
+      await act(async () => {
+        instances[0]!([] as IntersectionObserverEntry[], {} as IntersectionObserver);
+      });
+
+      const dot2 = screen.getByRole('button', { name: 'السؤال 2 من 2 — بدون إجابة' });
+      expect(dot2.getAttribute('aria-current')).toBe('true');
+      expect(dot2.className).toContain('current');
+      const dot1 = screen.getByRole('button', { name: 'السؤال 1 من 2 — بدون إجابة' });
+      expect(dot1.getAttribute('aria-current')).toBeNull();
+      expect(dot1.className).not.toContain('current');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
 
@@ -530,6 +701,91 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
     expect(screen.queryByText('لم يجتز')).toBeNull();
     expect(screen.queryByText('ناجح')).toBeNull();
+  });
+
+  it('offers the per-question review on a GRADED result — a toggle, then my answer + the released key (5-D3 / 5-B3 hand-off #1)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 7, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+    mocks.review = {
+      data: {
+        attemptId: 'a1',
+        templateTitle: 'اختبار الشبكات',
+        score: 7,
+        maxScore: 10,
+        submittedAt: '2026-06-01T09:40:00.000Z',
+        questions: [
+          {
+            questionId: 'q1', type: 'MCQ', prompt: 'سؤال اختيار من متعدد',
+            choices: ['الخيار الأول', 'الخيار الثاني'], points: 5,
+            myChoiceIndex: 0, myAnswerText: null, isCorrect: false, awardedPoints: 0, feedback: null,
+            correctAnswer: 1,
+          },
+          {
+            questionId: 'q2', type: 'SHORT', prompt: 'سؤال قصير',
+            choices: null, points: 5,
+            myChoiceIndex: null, myAnswerText: 'جوابي', isCorrect: true, awardedPoints: 5, feedback: null,
+            correctAnswer: 'الجواب النموذجي',
+          },
+        ],
+      },
+      isPending: false, isError: false, error: null, refetch: vi.fn(),
+    };
+
+    await startExam();
+    await confirmSubmit();
+
+    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
+    // Collapsed by default — the verdict stays the moment.
+    const toggle = screen.getByRole('button', { name: 'مراجعة الأسئلة' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    // My wrong MCQ pick, its released key, and the SHORT model answer.
+    expect(screen.getByText('خاطئة')).toBeTruthy();
+    expect(screen.getByText('الخيار الأول')).toBeTruthy();
+    expect(screen.getByText('الخيار الثاني')).toBeTruthy();
+    expect(screen.getByText('جوابي')).toBeTruthy();
+    expect(screen.getByText('الجواب النموذجي')).toBeTruthy();
+  });
+
+  it('keeps the honest awaiting-note while manual grading pends — no dead review toggle (5-D3)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 4, maxScore: 10, status: 'SUBMITTED', needsManual: 2, passed: null });
+
+    await startExam();
+    await act(async () => {
+      vi.advanceTimersByTime(30 * 60_000 + 5_000); // 00:00 → auto-submit
+    });
+
+    expect(screen.getByText('بانتظار التصحيح اليدوي')).toBeTruthy();
+    expect(screen.getByText('ستتمكّن من مراجعة أسئلتك بعد اكتمال التصحيح اليدوي.')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
+  });
+
+  it('deep-link done-state on a GRADED attempt offers the same review toggle (5-D3)', async () => {
+    mocks.exams = [examFixture({
+      myAttempt: { id: 'att-done', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-06-01T09:40:00.000Z' },
+    })];
+
+    renderTaker();
+
+    expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    const toggle = screen.getByRole('button', { name: 'مراجعة الأسئلة' });
+    expect(toggle).toHaveAttribute('aria-controls', 'exam-review-att-done');
+  });
+
+  it('deep-link done-state on an EXPIRED attempt keeps the honest promise, never a dead toggle (5-D3)', async () => {
+    mocks.exams = [examFixture({
+      myAttempt: { id: 'att-exp', status: 'EXPIRED', score: null, maxScore: 10, submittedAt: null },
+    })];
+
+    renderTaker();
+
+    expect(await screen.findByText('لقد أكملت هذا الاختبار مسبقاً')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
   it('names the answer fields after their question prompts (15-g P1-5)', async () => {

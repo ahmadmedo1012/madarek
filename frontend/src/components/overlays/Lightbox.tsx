@@ -72,11 +72,13 @@ export function Lightbox({
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel}
+        tabIndex={-1}
       >
         <button
           type="button"
           className="lightbox-close"
           aria-label={closeLabel}
+          data-close-button
           onClick={onClose}
         >
           <Icon icon={X} size={18} />

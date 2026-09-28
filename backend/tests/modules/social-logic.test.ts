@@ -13,6 +13,11 @@
  *   - isScoreLocked: JUDGED freezes entry scores (final state)
  *   - canFinalizeJudging: judging needs ≥1 scored entry (empty sets OK)
  *   - toPublicEntryView: entry bodies/files never reach non-organizers
+ *   - entryViewForViewer (5-A12 P1-1): the entry's AUTHOR keeps their
+ *     full row — the edit flow needs body/fileUrl or «تعديل مشاركتي»
+ *     opens an empty form and a blind submit overwrites the entry
+ *   - eventsWithMyRsvp (5-A12 P2-2): the per-viewer RSVP truth merged
+ *     additively into /events rows (the viewerReacted pattern)
  *   - rsvpSchema / createEventSchema envelopes (strictness, bounds, refine)
  *
  * Wave 16-B8 additions (audits 15-b P2-1 + 15-i TOP-7):
@@ -37,6 +42,8 @@ import {
   CLOSABLE_COMPETITION_STATUSES,
   createAnnouncementSchema,
   createEventSchema,
+  entryViewForViewer,
+  eventsWithMyRsvp,
   isCompetitionClosable,
   isCompetitionJudgeable,
   isScoreLocked,
@@ -362,6 +369,84 @@ describe('toPublicEntryView', () => {
     });
     expect('body' in view).toBe(false);
     expect('fileUrl' in view).toBe(false);
+  });
+});
+
+/* ═══════════════ Own-entry view rule (5-A12 P1-1) ═══════════════ */
+
+describe('entryViewForViewer (own-entry edit flow, 5-A12 P1-1)', () => {
+  const AUTHOR = 'user-author';
+  const OTHER = 'user-other';
+  // The full Prisma row shape the /competitions/:id select returns —
+  // userId rides along so the FE can match its own entry exactly.
+  const ownEntry = {
+    id: 'entry1',
+    userId: AUTHOR,
+    title: 'مشاركتي في الهاكاثون',
+    body: 'نص المشاركة الكامل — يجب أن يظهر في نموذج التعديل',
+    fileUrl: 'https://files.example/entry1.pdf',
+    submittedAt: new Date('2026-01-01T00:00:00.000Z'),
+    score: null,
+    user: { firstName: 'أحمد', lastName: 'الزروق', avatarColor: null, avatarInitials: 'أز' },
+  };
+  const someoneElsesEntry = { ...ownEntry, id: 'entry2', userId: OTHER };
+
+  it('the organizer sees every full row (bodies included)', () => {
+    const view = entryViewForViewer(someoneElsesEntry, { isOrganizer: true, viewerId: AUTHOR });
+    expect(view).toBe(someoneElsesEntry);
+  });
+
+  it('the entry author sees their OWN full row — body + fileUrl + userId survive', () => {
+    const view = entryViewForViewer(ownEntry, { isOrganizer: false, viewerId: AUTHOR });
+    expect(view).toBe(ownEntry);
+    expect('body' in view && 'fileUrl' in view && 'userId' in view).toBe(true);
+  });
+
+  it('a third party gets the summary projection — body/fileUrl/userId never leak', () => {
+    const view = entryViewForViewer(someoneElsesEntry, { isOrganizer: false, viewerId: AUTHOR });
+    expect(view).toEqual({
+      id: 'entry2',
+      title: someoneElsesEntry.title,
+      submittedAt: someoneElsesEntry.submittedAt,
+      score: someoneElsesEntry.score,
+      user: someoneElsesEntry.user,
+    });
+    expect('body' in view).toBe(false);
+    expect('fileUrl' in view).toBe(false);
+    expect('userId' in view).toBe(false);
+  });
+});
+
+/* ═══════════════ Per-viewer RSVP truth (5-A12 P2-2) ═══════════════ */
+
+describe('eventsWithMyRsvp (GET /events rows gain myRsvp)', () => {
+  const events = [
+    { id: 'ev1', title: 'ندوة' },
+    { id: 'ev2', title: 'ورشة' },
+    { id: 'ev3', title: 'يوم المهنة' },
+  ];
+
+  it('merges the viewer own answers additively — existing fields untouched', () => {
+    const rows = eventsWithMyRsvp(events, [
+      { eventId: 'ev1', status: RsvpStatus.GOING },
+      { eventId: 'ev2', status: RsvpStatus.NO },
+    ]);
+    expect(rows).toEqual([
+      { id: 'ev1', title: 'ندوة', myRsvp: RsvpStatus.GOING },
+      { id: 'ev2', title: 'ورشة', myRsvp: RsvpStatus.NO },
+      { id: 'ev3', title: 'يوم المهنة', myRsvp: null },
+    ]);
+  });
+
+  it('no answers at all → myRsvp null everywhere (never undefined/missing)', () => {
+    const rows = eventsWithMyRsvp(events, []);
+    expect(rows.every((r) => r.myRsvp === null)).toBe(true);
+    expect(rows.map((r) => r.id)).toEqual(['ev1', 'ev2', 'ev3']);
+  });
+
+  it('an RSVP for an event outside the list is ignored (defensive)', () => {
+    const rows = eventsWithMyRsvp([events[0]!], [{ eventId: 'evX', status: RsvpStatus.MAYBE }]);
+    expect(rows).toEqual([{ id: 'ev1', title: 'ندوة', myRsvp: null }]);
   });
 });
 

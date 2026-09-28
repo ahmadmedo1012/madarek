@@ -8,6 +8,7 @@ import {
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
 import { formatDateWithYearAr } from '../../lib/format';
@@ -373,17 +374,31 @@ function UploadModal({
   const offeringFieldId = useId();
   const fileId = useId();
 
+  /* Close-parity (A10 P1-1): the upload draft (title + abstract + the
+     picked file) is authoring work — a stray Esc / scrim click must
+     confirm before discarding it, exactly like the teacher-side upload
+     and review modals. Inert while the upload mutation is in flight. */
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty:
+      title.trim() !== '' ||
+      abstractText.trim() !== '' ||
+      offeringId !== '' ||
+      fileName !== '',
+    pending: isPending,
+    onClose,
+  });
+
   return (
     <Modal
       open
-      onClose={onClose}
+      onClose={requestClose}
       ariaLabel="رفع بحث جديد"
       closeOnOverlayClick={!isPending}
-      closeOnEscape={!isPending}
+      closeOnEscape={!escapeLocked}
     >
       <div className="modal-header">
         <div className="modal-title">رفع بحث جديد</div>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={isPending}>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={isPending}>
           <Icon icon={X} size={16} />
         </button>
       </div>
@@ -453,7 +468,7 @@ function UploadModal({
         )}
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn ghost" onClick={onClose} disabled={isPending}>
+        <button type="button" className="btn ghost" onClick={requestClose} disabled={isPending}>
           إلغاء
         </button>
         <button
@@ -471,6 +486,7 @@ function UploadModal({
           {isPending ? 'جارٍ الرفع…' : 'رفع البحث'}
         </button>
       </div>
+      {guard}
     </Modal>
   );
 }

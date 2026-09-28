@@ -30,7 +30,12 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      mode: 'system',
+      // مدارك v3: night is the product's flagship skin — the same سماء
+      // مدارك world the landing lives in. New sessions start in the
+      // night; the sidebar's 3-state toggle (فاتح · داكن · تلقائي) keeps
+      // the نهاري reading mode one tap away, and persisted choices are
+      // untouched (zustand merges stored state over this default).
+      mode: 'dark',
       modeUpdatedAt: 0,
       setMode: (mode) => set({ mode, modeUpdatedAt: Date.now() }),
       _hydrateFromProfile: (mode, serverTs) => set({ mode, modeUpdatedAt: serverTs }),

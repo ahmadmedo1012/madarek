@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Prisma, Role } from '@prisma/client';
+import { AttendanceStatus, Prisma, Role } from '@prisma/client';
 import { prisma, withRetry } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -9,6 +9,7 @@ import { AppError } from '../../lib/errors.js';
 import { utcDayStart } from '../../lib/dates.js';
 import { extractPaperText } from '../../lib/pdf.js';
 import { assertOwnsResearchPaper, assertOfferingAccess } from '../../lib/permissions.js';
+import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
 
@@ -1281,22 +1282,187 @@ router.get('/quality/overview', requireCapability('QUALITY_VIEW'), async (_req, 
   } catch (e) { next(e); }
 });
 
-router.get('/quality/courses', requireCapability('QUALITY_VIEW'), async (_req, res, next) => {
-  try {
-    const offerings = await prisma.courseOffering.findMany({
-      include: {
-        course: { select: { id: true, name: true, code: true, themeColor: true } },
-        teacher: { select: { id: true, firstName: true, lastName: true } },
-        _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
-      },
-      // Deterministic order — `take` without `orderBy` returns an
-      // arbitrary subset (newest offerings are the relevant ones here).
-      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
-      take: 50,
-    });
-    res.json({ data: offerings });
-  } catch (e) { next(e); }
-});
+/**
+ * GET /quality/courses query envelope (audit 5-A8 §5 row 11, minimal
+ * backend ask #2): `metric` selects the drill-down the quality dashboard
+ * lands on — attendance («معدل الحضور») or lecture-completion («إكمال
+ * المحاضرات»). Absent (or any other value rejected here) → the endpoint's
+ * historical unfiltered shape. Exported for unit tests.
+ */
+export const qualityCoursesQuerySchema = z
+  .object({
+    metric: z.enum(['attendance', 'completion']).optional(),
+  })
+  .strict();
+
+/** Per-offering metric attached when a `metric` drill-down is requested.
+ * null = no countable data for that offering (rendered «—», never a
+ * fabricated 0/100). */
+export interface QualityCourseMetric {
+  attendanceRate?: number | null;
+  completionRate?: number | null;
+}
+
+/**
+ * Roll up per-(session,status) attendance counts into per-offering
+ * attendance rates — the CANONICAL formula (lib/risk.ts
+ * attendancePctFromStatusCounts: round(100·(PRESENT+0.5·LATE)/
+ * (PRESENT+LATE+ABSENT)), EXCUSED excluded, null when nothing countable).
+ * `sessions` maps each session to its offering; counts for sessions
+ * outside that map (other offerings) are ignored. Pure + exported for
+ * unit tests.
+ */
+export function attendanceRateByOffering(
+  sessions: ReadonlyArray<{ id: string; offeringId: string }>,
+  statusCounts: ReadonlyArray<{ sessionId: string; status: AttendanceStatus; count: number }>,
+): Map<string, number | null> {
+  const offeringBySession = new Map(sessions.map((s) => [s.id, s.offeringId]));
+  // ACCUMULATE counts per (offering, status) first — the canonical
+  // formula expects ONE count per status, so separate rows for the same
+  // status (several sessions of the same offering) must be summed, not
+  // overwrite each other.
+  const countsByOffering = new Map<string, Map<AttendanceStatus, number>>();
+  for (const { sessionId, status, count } of statusCounts) {
+    const offeringId = offeringBySession.get(sessionId);
+    if (!offeringId) continue;
+    const byStatus = countsByOffering.get(offeringId) ?? new Map<AttendanceStatus, number>();
+    byStatus.set(status, (byStatus.get(status) ?? 0) + count);
+    countsByOffering.set(offeringId, byStatus);
+  }
+  const rateByOffering = new Map<string, number | null>();
+  for (const [offeringId, byStatus] of countsByOffering) {
+    rateByOffering.set(
+      offeringId,
+      attendancePctFromStatusCounts([...byStatus].map(([status, count]) => ({ status, count }))),
+    );
+  }
+  return rateByOffering;
+}
+
+/**
+ * Roll up per-lecture watch sums into per-offering completion rates —
+ * the same watch-time ratio /quality/engagement reports platform-wide
+ * (round(100·Σwatched/Σtotal)), null when an offering has no watchable
+ * time at all. `lectures` maps each lecture to its offering; sums for
+ * lectures outside that map are ignored. Pure + exported for unit tests.
+ */
+export function completionRateByOffering(
+  lectures: ReadonlyArray<{ id: string; offeringId: string }>,
+  watchSums: ReadonlyArray<{ lectureId: string; watchedSec: number; totalSec: number }>,
+): Map<string, number | null> {
+  const offeringByLecture = new Map(lectures.map((l) => [l.id, l.offeringId]));
+  const sumsByOffering = new Map<string, { watched: number; total: number }>();
+  for (const { lectureId, watchedSec, totalSec } of watchSums) {
+    const offeringId = offeringByLecture.get(lectureId);
+    if (!offeringId) continue;
+    const sums = sumsByOffering.get(offeringId) ?? { watched: 0, total: 0 };
+    sums.watched += watchedSec;
+    sums.total += totalSec;
+    sumsByOffering.set(offeringId, sums);
+  }
+  const rateByOffering = new Map<string, number | null>();
+  for (const [offeringId, sums] of sumsByOffering) {
+    rateByOffering.set(offeringId, sums.total > 0 ? Math.round((sums.watched / sums.total) * 100) : null);
+  }
+  return rateByOffering;
+}
+
+/**
+ * Drill-down sort: ascending (worst-first — the quality office lands on
+ * the courses that need attention), nulls (no data) last, ties keep the
+ * query's deterministic order (Array#sort is stable in Node). Pure +
+ * exported for unit tests.
+ */
+export function worstFirstMetricSort(a: number | null, b: number | null): number {
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  return a - b;
+}
+
+router.get(
+  '/quality/courses',
+  requireCapability('QUALITY_VIEW'),
+  validate(qualityCoursesQuerySchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const { metric } = req.query as unknown as { metric?: 'attendance' | 'completion' };
+      const offerings = await prisma.courseOffering.findMany({
+        include: {
+          course: { select: { id: true, name: true, code: true, themeColor: true } },
+          teacher: { select: { id: true, firstName: true, lastName: true } },
+          _count: { select: { enrollments: true, lectures: true, materials: true, assignments: true } },
+        },
+        // Deterministic order — `take` without `orderBy` returns an
+        // arbitrary subset (newest offerings are the relevant ones here).
+        orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+        take: 50,
+      });
+      if (metric === undefined) {
+        // No drill-down → the endpoint's historical shape, untouched.
+        res.json({ data: offerings });
+        return;
+      }
+      const offeringIds = offerings.map((o) => o.id);
+      // DB-side aggregation bounded to the listed offerings (groupBy, no
+      // row hydration) — same style as /quality/engagement.
+      if (metric === 'attendance') {
+        const [sessions, statusCounts] = await Promise.all([
+          offeringIds.length
+            ? prisma.attendanceSession.findMany({
+                where: { offeringId: { in: offeringIds } },
+                select: { id: true, offeringId: true },
+              })
+            : [],
+          offeringIds.length
+            ? prisma.attendanceRecord.groupBy({
+                by: ['sessionId', 'status'],
+                where: { session: { offeringId: { in: offeringIds } } },
+                _count: { status: true },
+              })
+            : [],
+        ]);
+        const rates = attendanceRateByOffering(
+          sessions,
+          statusCounts.map((g) => ({ sessionId: g.sessionId, status: g.status, count: g._count.status })),
+        );
+        const data = offerings
+          .map((o) => ({ ...o, metrics: { attendanceRate: rates.get(o.id) ?? null } as QualityCourseMetric }))
+          .sort((a, b) => worstFirstMetricSort(a.metrics.attendanceRate ?? null, b.metrics.attendanceRate ?? null));
+        res.json({ data });
+        return;
+      }
+      // metric === 'completion'
+      const [lectures, watchSums] = await Promise.all([
+        offeringIds.length
+          ? prisma.lecture.findMany({
+              where: { offeringId: { in: offeringIds } },
+              select: { id: true, offeringId: true },
+            })
+          : [],
+        offeringIds.length
+          ? prisma.watchEvent.groupBy({
+              by: ['lectureId'],
+              where: { lecture: { offeringId: { in: offeringIds } } },
+              _sum: { watchedSec: true, totalSec: true },
+            })
+          : [],
+      ]);
+      const rates = completionRateByOffering(
+        lectures,
+        watchSums.map((g) => ({
+          lectureId: g.lectureId,
+          watchedSec: g._sum.watchedSec ?? 0,
+          totalSec: g._sum.totalSec ?? 0,
+        })),
+      );
+      const data = offerings
+        .map((o) => ({ ...o, metrics: { completionRate: rates.get(o.id) ?? null } as QualityCourseMetric }))
+        .sort((a, b) => worstFirstMetricSort(a.metrics.completionRate ?? null, b.metrics.completionRate ?? null));
+      res.json({ data });
+    } catch (e) { next(e); }
+  },
+);
 
 /**
  * Stable positive seed derived from an entity id — used for estimated

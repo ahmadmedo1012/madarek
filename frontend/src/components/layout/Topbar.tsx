@@ -105,7 +105,16 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
         <Icon icon={Menu} size={18} />
       </button>
 
-      <div className="topbar-title">
+      {/* 5-B5: tabIndex=-1 makes this the focus-rescue target after
+          route changes that orphan focus (AppShell effect) — programmatic
+          focus only, never a Tab stop. The title attribute carries the
+          full name when the mobile band clamps it to two lines (A4 P3-8:
+          no truncation without a tooltip). */}
+      <div
+        className="topbar-title"
+        tabIndex={-1}
+        title={typeof title === 'string' ? title : undefined}
+      >
         {title}
         {role === 'STUDENT' && <StudentScopeChip />}
         {scopeFacultyName && (

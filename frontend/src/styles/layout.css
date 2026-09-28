@@ -147,6 +147,12 @@
     color: var(--sidebar-item-active-text);
     font-weight: var(--fw-semibold);
   }
+  /* مدارك night — the active orbit glows: a soft gold halo breathing
+     around the traveller's current station (paint-only, calm tier). */
+  [data-theme="dark"] .nav-item.on,
+  [data-theme="dark"] .nav-item.active {
+    box-shadow: 0 0 18px -4px rgb(233 180 76 / 0.16), inset 0 0 0 1px rgb(233 180 76 / 0.10);
+  }
   .nav-item.on::before, .nav-item.active::before {
     content: '';
     position: absolute;
@@ -229,6 +235,58 @@
     z-index: calc(var(--z-sheet) - 1);
   }
   [data-theme="dark"] .sidebar-backdrop { background: rgba(0,0,0,0.65); }
+
+  /* ═══ مدارك night shell (v3 wave B) — the sky you carry with you ═══
+     The sidebar stops being a flat dark panel and becomes a slice of
+     the سماء مدارك night: a vertical sky gradient, a faint gold
+     aurora behind the brand, and seven hand-placed constellation
+     points — the same star-dust language the landing paints, at
+     working-nav subtlety (all dots ≤ 0.14 alpha; they must never
+     compete with nav labels). Fully paint-only: zero layout, zero
+     motion (the shell is Tier-2 calm — entrances belong to pages). */
+  [data-theme="dark"] .has-shell > .sidebar {
+    position: sticky; /* keeps base.css sticky contract explicit here */
+    background:
+      radial-gradient(340px 200px at 82% -60px, rgb(233 180 76 / 0.06), transparent 72%),
+      radial-gradient(280px 220px at -20% 108%, rgb(111 168 255 / 0.05), transparent 70%),
+      linear-gradient(180deg, var(--neutral-100) 0%, var(--neutral-50) 34%, var(--neutral-50) 100%);
+  }
+  [data-theme="dark"] .sidebar { position: relative; }
+  [data-theme="dark"] .sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Constellation points — physical coordinates, direction-agnostic
+       (a sky has no reading order). Sizes 1–1.5px, alpha 0.08–0.14. */
+    background-image:
+      radial-gradient(1.8px 1.8px at 21% 12%, rgb(242 239 230 / 0.22), transparent 100%),
+      radial-gradient(1px 1px at 68% 7%,  rgb(142 151 184 / 0.16), transparent 100%),
+      radial-gradient(1.5px 1.5px at 87% 21%, rgb(242 239 230 / 0.15), transparent 100%),
+      radial-gradient(1px 1px at 42% 30%, rgb(142 151 184 / 0.12), transparent 100%),
+      radial-gradient(1.8px 1.8px at 9% 44%,  rgb(233 180 76 / 0.18), transparent 100%),
+      radial-gradient(1px 1px at 76% 58%, rgb(142 151 184 / 0.11), transparent 100%),
+      radial-gradient(1.5px 1.5px at 28% 74%, rgb(242 239 230 / 0.14), transparent 100%),
+      radial-gradient(1.2px 1.2px at 58% 88%,  rgb(233 180 76 / 0.12), transparent 100%);
+    background-repeat: no-repeat;
+  }
+  /* The mobile drawer rides the same sky (it paints its own bg in the
+     920px band below — this re-parents it to the same gradient). */
+  @media (max-width: 920px) {
+    [data-theme="dark"] .sidebar {
+      background:
+        radial-gradient(340px 200px at 82% -60px, rgb(233 180 76 / 0.06), transparent 72%),
+        linear-gradient(180deg, var(--neutral-100) 0%, var(--neutral-50) 34%, var(--neutral-50) 100%);
+    }
+  }
+  /* prefers-contrast: the belt in tokens.css already strengthens
+     borders; the sky washes step aside entirely so contrast comes
+     from the solid surfaces. */
+  @media (prefers-contrast: more) {
+    [data-theme="dark"] .has-shell > .sidebar,
+    [data-theme="dark"] .sidebar { background: var(--neutral-50); }
+    [data-theme="dark"] .sidebar::before { content: none; }
+  }
 
   /* mobile drawer */
   @media (max-width: 920px) {
@@ -596,6 +654,21 @@
       inline-size: 100%;
       block-size: 30px;
     }
+  }
+
+  /* 5-D1 (A5 P2-4) — the drawer footer's last sub-44 controls: the
+     three theme options measured 30×28 with gap 0 (the worst touch
+     cluster on the platform; logout + mobile-close already carry the
+     4-A2 P2-6 floor above). min-* grows only the hit area — glyphs
+     stay 14-16px — and beats the physical inline/block-size above at
+     used-value time. The 4px gap keeps adjacent 44px options from
+     sharing an edge (a mis-tap lands in the gutter, not the
+     neighbour). Scoped to the mobile band: the desktop sidebar keeps
+     its compact 30×28 segmented pill (pointer-fine). */
+  @media (max-width: 920px) {
+    .theme-toggle { gap: var(--sp-1); }
+    .theme-toggle-option { min-inline-size: 44px; min-block-size: 44px; }
+    .sidebar-tour-trigger { min-block-size: 44px; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗

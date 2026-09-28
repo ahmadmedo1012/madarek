@@ -52,7 +52,7 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="state state-empty">
+    <div className="state state-empty" role="status">
       {illustration ? (
         <div className="state-illustration" aria-hidden>
           <Illustration name={illustration} decorative />
@@ -162,7 +162,10 @@ export function ErrorState({
           <Illustration name={illustration} decorative />
         </div>
       ) : (
-        <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
+        /* 5-D1 (A11 P2-3): -deep ink on the soft well — the base
+           --danger measured 2.59:1 in light (non-text floor 3:1);
+           mirrors .state-icon-success and the toast well grammar. */
+        <div className="state-icon" style={{ background: 'var(--danger-soft)', color: 'var(--danger-ink)' }}>
           <Icon icon={AlertTriangle} size={20} />
         </div>
       )}
@@ -203,7 +206,9 @@ export function PermissionDeniedState({
 }) {
   return (
     <div className="state state-error" role="alert">
-      <div className="state-icon" style={{ background: 'var(--warning-soft)', color: 'var(--warning)' }}>
+      {/* 5-D1 (A11 P2-3): warning-ink on the soft well (was the base
+          --warning at 2.03:1 light — the audit's worst status icon). */}
+      <div className="state-icon" style={{ background: 'var(--warning-soft)', color: 'var(--warning-ink)' }}>
         <Icon icon={ShieldAlert} size={20} />
       </div>
       <div className="state-title">{title}</div>
@@ -246,11 +251,17 @@ export function KpiSkeleton() {
     <div className="grid-4" aria-busy="true" aria-live="polite">
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="metric">
-          <div style={{ marginBottom: 'var(--sp-3)' }}>
+          {/* 5-C3 (A9 P2-1): the bars now mirror the real MetricCard
+            anatomy — a .metric-head column (label / value / change),
+            exactly what MetricCard renders. The old bare spans were ROW
+            flex items of .metric: 80+70+120px overflowed the ~215px
+            content box and the empty value bar (min-content 0) absorbed
+            every pixel of shrink — computed width literally 0px on all
+            five dashboards (A9 V6), so the big-number placeholder, the
+            most important bar, never painted. */}
+          <div className="metric-head">
             <Skeleton width={80} height={11} />
-          </div>
-          <Skeleton width={70} height={26} />
-          <div style={{ marginTop: 'var(--sp-2)' }}>
+            <Skeleton width={70} height={26} />
             <Skeleton width={120} height={11} />
           </div>
         </div>
@@ -275,10 +286,18 @@ export function ListSkeleton({ rows = 5 }: { rows?: number }) {
   );
 }
 
-/** Skeleton placeholder for a chart container of arbitrary height. */
+/** Skeleton placeholder for a chart container of arbitrary height.
+ * 5-C3 (A9 P2-5): carries the primitives-family busy semantics
+ *  (aria-busy + polite live region, bars stay aria-hidden) — it was
+ *  the only member of the skeleton family with none, leaving the 2
+ *  charts on /quality/dashboard mid-load outside any aria context. */
 export function ChartSkeleton({ height = 220 }: { height?: number }) {
   return (
-    <div style={{ height, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8 }}>
+    <div
+      style={{ height, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8 }}
+      aria-busy="true"
+      aria-live="polite"
+    >
       {[60, 80, 50, 95, 70, 45, 85].map((pct, i) => (
         <Skeleton key={i} width={`${pct}%`} height={8} />
       ))}

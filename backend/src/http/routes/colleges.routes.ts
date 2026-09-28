@@ -476,7 +476,10 @@ router.get('/colleges/:id', optionalAuthMiddleware, async (req, res, next) => {
         select: {
           id: true, title: true, location: true, startsAt: true, endsAt: true,
           capacity: true, iconEmoji: true,
-          _count: { select: { rsvps: true } },
+          // 5-A12 P2-1 (same fix as GET /events): the capacity pair
+          // «N / capacity» counts GOING answers only — a «لن أحضر»
+          // decline never occupies a seat.
+          _count: { select: { rsvps: { where: { status: 'GOING' } } } },
         },
       }),
 

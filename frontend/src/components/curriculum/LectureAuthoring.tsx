@@ -4,17 +4,19 @@
  * - LectureFormModal: create (POST /offerings/:offeringId/lectures) and
  *   edit (PATCH /lectures/:id — only changed fields travel).
  * - LectureAuthoringList: rows ordered by ordinal with duration,
- *   video link, chapter/checkpoint counts, edit (Modal) and delete
+ *   video link, chapter/checkpoint counts, reorder (5-B6: up/down
+ *   ordinal swap via two PATCHes), edit (Modal) and delete
  *   (ConfirmDialog — the 409 "سجل مشاهدات" case surfaces inline).
  */
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
 import { toast } from '../../lib/toast';
+import { countAr } from '../../lib/format';
 import {
   apiErrorMessage,
   useCreateLecture,
@@ -147,7 +149,7 @@ export function LectureFormModal({
   );
 }
 
-/* ── List rows (selection + edit + delete) ─────────────────────── */
+/* ── List rows (selection + edit + delete + reorder) ─────────── */
 
 export function LectureAuthoringList({
   lectures,
@@ -162,7 +164,35 @@ export function LectureAuthoringList({
   onEdit: (lecture: Lecture) => void;
 }) {
   const del = useDeleteLecture();
+  const update = useUpdateLecture();
   const [deleting, setDeleting] = useState<Lecture | null>(null);
+  /* 5-B6 (A7 P2-3): the id mid-reorder — locks every move button so
+   * two swaps can never interleave their two-PATCH sequence. */
+  const [movingId, setMovingId] = useState<string | null>(null);
+
+  /* Reordering = swapping ordinals with the neighbor through the
+   * existing PATCH /lectures/:id (ordinal is already part of the
+   * update schema). The list re-sorts from the refetched data — no
+   * local ordering fiction; a failure surfaces as a toast and the
+   * invalidation restores the server truth. The «الترتيب» numeric
+   * field in the edit modal stays as the power path. */
+  const move = async (lecture: Lecture, dir: -1 | 1) => {
+    const index = lectures.findIndex((l) => l.id === lecture.id);
+    const neighbor = lectures[index + dir];
+    if (!neighbor) return;
+    setMovingId(lecture.id);
+    try {
+      await update.mutateAsync({ lectureId: lecture.id, ordinal: neighbor.ordinal });
+      await update.mutateAsync({ lectureId: neighbor.id, ordinal: lecture.ordinal });
+    } catch (error) {
+      toast.error(
+        apiErrorMessage(error, 'تعذَّر تحديث ترتيب المحاضرات — حاول مرة أخرى.'),
+        { title: 'تعذّر إعادة الترتيب' },
+      );
+    } finally {
+      setMovingId(null);
+    }
+  };
 
   const confirmDelete = async () => {
     if (!deleting) return;
@@ -184,8 +214,9 @@ export function LectureAuthoringList({
 
   return (
     <div className="flex-col gap-2">
-      {lectures.map((lecture) => {
+      {lectures.map((lecture, index) => {
         const selected = lecture.id === selectedId;
+        const moveLocked = movingId !== null;
         return (
           <div
             key={lecture.id}
@@ -199,6 +230,33 @@ export function LectureAuthoringList({
               background: selected ? 'var(--surface-2)' : 'transparent',
             }}
           >
+            {/* 5-B6 (A7 P2-3): up/down swap with the neighbor — the
+                accessible keyboard alternative to drag reorder. The
+                pair sits at the row's inline-start edge (the handle
+                position); disabled at the list ends and while a swap
+                is in flight. */}
+            <div className="lec-move" role="group" aria-label={`ترتيب ${lecture.title}`}>
+              <button
+                type="button"
+                className="btn ghost sm lec-move-btn"
+                onClick={() => void move(lecture, -1)}
+                disabled={index === 0 || moveLocked}
+                aria-label={`انقل ${lecture.title} لأعلى القائمة`}
+                title="انقل لأعلى"
+              >
+                <Icon icon={ChevronUp} size={12} />
+              </button>
+              <button
+                type="button"
+                className="btn ghost sm lec-move-btn"
+                onClick={() => void move(lecture, 1)}
+                disabled={index === lectures.length - 1 || moveLocked}
+                aria-label={`انقل ${lecture.title} لأسفل القائمة`}
+                title="انقل لأسفل"
+              >
+                <Icon icon={ChevronDown} size={12} />
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => onSelect(lecture.id)}
@@ -224,8 +282,10 @@ export function LectureAuthoringList({
                 </span>
                 <span className="text-xs text-muted" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', marginTop: 2 }}>
                   <span><Icon icon={Clock} size={11} /> {lecture.durationSec > 0 ? formatSec(lecture.durationSec) : 'مدة غير محددة'}</span>
-                  <span><Icon icon={ListVideo} size={11} /> {lecture._count?.chapters ?? 0} فصل</span>
-                  <span><Icon icon={CircleHelp} size={11} /> {lecture._count?.checkpoints ?? 0} سؤال</span>
+                  {/* 5-B6 (A7 P2-4): counted nouns — «3 فصل» was raw;
+                      the zero case names the reality instead of «0 فصل». */}
+                  <span><Icon icon={ListVideo} size={11} /> {(lecture._count?.chapters ?? 0) > 0 ? countAr(lecture._count!.chapters, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً']) : 'لا فصول'}</span>
+                  <span><Icon icon={CircleHelp} size={11} /> {(lecture._count?.checkpoints ?? 0) > 0 ? countAr(lecture._count!.checkpoints, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً']) : 'لا أسئلة'}</span>
                 </span>
               </span>
             </button>

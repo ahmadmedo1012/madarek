@@ -11,7 +11,10 @@
  * reconciliation, the authoring zod schemas, and the attempts-list
  * read half of the manual-grading surface (18-F2: the role door, the
  * authorization map, the ?status= filter, the points map and the row
- * builder). Integration coverage (auth, transactions, the FOR UPDATE
+ * builder), the /exams/me latest-attempt fold (5-D3 — 5-B3 hand-off #2),
+ * and the student post-grading review row builder (5-D3 — 5-B3
+ * hand-off #1: key release rules, unanswered honesty, Json shapes).
+ * Integration coverage (auth, transactions, the FOR UPDATE
  * start/submit races) needs a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
@@ -21,7 +24,9 @@ import {
   SUBMIT_GRACE_MS,
   answerPatchFor,
   attemptListRow,
+  attemptReview,
   attemptBlockingStatuses,
+  latestAttemptPerTemplate,
   createQuestionSchema,
   createTemplateSchema,
   decideAttemptsAccess,
@@ -35,6 +40,7 @@ import {
   submitAnswerSchema,
   templateMaxScore,
   templateQuestionPoints,
+  type ReviewQuestionSource,
   type TemplateAttemptSource,
 } from '../../src/http/routes/exams.routes';
 
@@ -832,5 +838,144 @@ describe('attemptListRow — the grading list row (18-F2)', () => {
       answers: [srcAnswer('a1', 'q-gone', { answerText: 'إجابة' })],
     }), points);
     expect(row.pendingAnswers[0]?.points).toBe(0);
+  });
+});
+
+/* ═══════════════ 5-D3 (5-B3 hand-off #2): /exams/me latest attempt ═══════════════ */
+
+describe('latestAttemptPerTemplate', () => {
+  const att = (id: string, templateId: string, startedAt: string, extra: object = {}) => ({
+    id,
+    templateId,
+    startedAt: new Date(startedAt),
+    ...extra,
+  });
+
+  it('picks the newest attempt per template regardless of the DB return order', () => {
+    const rows = [
+      att('old', 't1', '2026-06-01T09:00:00.000Z'),
+      att('new', 't1', '2026-06-05T09:00:00.000Z'),
+      att('mid', 't1', '2026-06-03T09:00:00.000Z'),
+      att('solo', 't2', '2026-06-02T09:00:00.000Z'),
+    ];
+    // Every permutation of the three t1 rows must fold to `new`.
+    const permutations = [
+      rows,
+      [rows[1]!, rows[0]!, rows[2]!, rows[3]!],
+      [rows[2]!, rows[1]!, rows[0]!, rows[3]!],
+      [rows[2]!, rows[0]!, rows[1]!, rows[3]!],
+    ];
+    for (const perm of permutations) {
+      const folded = latestAttemptPerTemplate(perm);
+      expect(folded.get('t1')?.id).toBe('new');
+      expect(folded.get('t2')?.id).toBe('solo');
+      expect(folded.size).toBe(2);
+    }
+  });
+
+  it('breaks exact-ms ties deterministically by id (the total order)', () => {
+    const folded = latestAttemptPerTemplate([
+      att('aaa', 't1', '2026-06-01T09:00:00.000Z'),
+      att('zzz', 't1', '2026-06-01T09:00:00.000Z'),
+    ]);
+    expect(folded.get('t1')?.id).toBe('zzz');
+  });
+
+  it('returns an empty map for no attempts (the healthy /exams/me case)', () => {
+    expect(latestAttemptPerTemplate([]).size).toBe(0);
+  });
+});
+
+/* ═══════════════ 5-D3 (5-B3 hand-off #1): student attempt review ═══════════════ */
+
+describe('attemptReview (student post-grading review)', () => {
+  const QS: Array<ReviewQuestionSource> = [
+    {
+      questionId: 'q1',
+      pointsOverride: null,
+      question: { type: 'MCQ', prompt: 'وحدة البيانات الأساسية؟', choices: ['البايت', 'البت'], correctAnswer: 0, points: 2 },
+    },
+    {
+      questionId: 'q2',
+      pointsOverride: 3,
+      question: { type: 'SHORT', prompt: 'لغة ترميز الصفحات؟', choices: null, correctAnswer: 'HTML', points: 1 },
+    },
+    {
+      questionId: 'q3',
+      pointsOverride: null,
+      question: { type: 'ESSAY', prompt: 'اشرح الفرق', choices: null, correctAnswer: 'rubric: 2 نقطة للتعريف…', points: 5 },
+    },
+    {
+      questionId: 'q4',
+      pointsOverride: null,
+      question: { type: 'SHORT', prompt: 'سؤال بلا مفتاح', choices: null, correctAnswer: null, points: 1 },
+    },
+  ];
+
+  function reviewSrc(
+    answers: ReadonlyArray<{
+      questionId: string;
+      answerText?: string | null;
+      choiceIndex?: number | null;
+      isCorrect?: boolean | null;
+      awardedPoints?: Prisma.Decimal | null;
+      feedback?: string | null;
+    }>,
+  ) {
+    return {
+      id: 'at1',
+      score: new Prisma.Decimal('4.50'),
+      maxScore: new Prisma.Decimal('11'),
+      submittedAt: new Date('2026-06-01T09:40:00.000Z'),
+      template: { title: 'اختبار الشبكات' },
+      answers: answers.map((a) => ({
+        questionId: a.questionId,
+        answerText: a.answerText ?? null,
+        choiceIndex: a.choiceIndex ?? null,
+        isCorrect: a.isCorrect ?? null,
+        awardedPoints: a.awardedPoints ?? null,
+        feedback: a.feedback ?? null,
+      })),
+    };
+  }
+
+  it('releases the key for machine-keyed kinds and keeps the ESSAY rubric teacher-side', () => {
+    const review = attemptReview(reviewSrc([
+      { questionId: 'q1', choiceIndex: 0, isCorrect: true, awardedPoints: new Prisma.Decimal('2') },
+      { questionId: 'q2', answerText: 'HTML', isCorrect: true, awardedPoints: new Prisma.Decimal('3') },
+      { questionId: 'q3', answerText: 'شرح…', isCorrect: false, awardedPoints: new Prisma.Decimal('0'), feedback: 'التعريف ناقص' },
+    ]), QS);
+
+    expect(review.templateTitle).toBe('اختبار الشبكات');
+    expect(review.score).toBe(4.5);
+    expect(review.maxScore).toBe(11);
+    // MCQ: numeric index; SHORT: the model answer string.
+    expect(review.questions[0]).toMatchObject({ correctAnswer: 0, myChoiceIndex: 0, isCorrect: true, awardedPoints: 2, points: 2 });
+    expect(review.questions[1]).toMatchObject({ correctAnswer: 'HTML', myAnswerText: 'HTML', awardedPoints: 3, points: 3 }); // pointsOverride wins
+    // ESSAY: rubric NEVER releases; the teacher feedback does.
+    expect(review.questions[2]).toMatchObject({ correctAnswer: null, feedback: 'التعريف ناقص' });
+    // Keyless SHORT: nothing to release.
+    expect(review.questions[3]).toMatchObject({ correctAnswer: null });
+  });
+
+  it('lists unanswered questions honestly: no answer, 0 awarded points, incorrect', () => {
+    const review = attemptReview(reviewSrc([]), QS);
+    // q4 was never answered — no ExamAnswer row exists.
+    expect(review.questions[3]).toMatchObject({
+      myChoiceIndex: null,
+      myAnswerText: null,
+      isCorrect: false,
+      awardedPoints: 0,
+      correctAnswer: null,
+    });
+  });
+
+  it('normalizes Json choices to string[] and collapses corrupt shapes to null', () => {
+    const review = attemptReview(reviewSrc([]), [
+      { ...QS[0]!, question: { ...QS[0]!.question, choices: ['أ', 'ب'] } },
+      { ...QS[0]!, question: { ...QS[0]!.question, choices: { corrupt: true } } },
+    ]);
+    expect(review.questions[0]!.choices).toEqual(['أ', 'ب']);
+    expect(review.questions[1]!.choices).toBeNull();
   });
 });

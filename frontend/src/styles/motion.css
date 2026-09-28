@@ -32,6 +32,17 @@
       --motion-duration-reveal:   80ms;
       --motion-duration-stat:     0ms;    /* counters snap to value */
       --motion-duration-skeleton: 0ms;    /* static block, no shimmer */
+      /* 5-C1 (A2 §1a): the ambient loop family joins the semantic
+         kill — ambient motion is decorative by definition, so under
+         reduced motion every loop on the ladder collapses (the
+         global belt in base.css backstops this at 0.01ms; owning the
+         kill here keeps the family belt-independent). */
+      --motion-duration-ambient-pulse:  0ms;
+      --motion-duration-ambient:        0ms;
+      --motion-duration-ambient-slow:   0ms;
+      --motion-duration-ambient-drift:  0ms;
+      --motion-duration-ambient-cinema: 0ms;
+      --motion-duration-ambient-scene:  0ms;
     }
   }
 }
@@ -438,6 +449,53 @@
     .section-accent-parallax-shift {
       transform: none;
       opacity: 1;
+    }
+  }
+
+  /* ───────────────────────────────────────────────────────────────────
+     Word-mask reveal — <MaskReveal> primitive (immersive wave 1).
+     Words (NEVER characters — Arabic cursive joining) rise from below
+     an overflow mask. The mask carries vertical padding with matching
+     negative margin so Arabic descenders (س ج ي ن …) never clip at
+     rest. Stagger = DOM order; in RTL the first word sits rightmost,
+     so the cascade reads right→left with zero direction math.
+     `--mask-delay` is set per-word by the component (base + index ×
+     token step); delays are exempt from tokenization by policy
+     (choreography offsets — check-motion-tokens.sh §Policy notes).
+     ─────────────────────────────────────────────────────────────────── */
+  [data-mask-word] {
+    display: inline-block;
+    overflow: hidden;
+    /* Descender headroom: pad the clip box, reclaim the space in flow. */
+    padding-block: 0.16em;
+    margin-block: -0.16em;
+    vertical-align: top;
+  }
+
+  [data-mask-word-inner] {
+    display: inline-block;
+    transform: translateY(calc(115% + var(--mask-pad, 0.16em)));
+    will-change: transform;
+  }
+
+  [data-mask-reveal].in-view [data-mask-word-inner] {
+    animation: mask-word-rise var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
+    animation-delay: var(--mask-delay, 0ms);
+  }
+
+  @keyframes mask-word-rise {
+    from { transform: translateY(calc(115% + var(--mask-pad, 0.16em))); }
+    to   { transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-mask-word-inner],
+    [data-mask-reveal].in-view [data-mask-word-inner] {
+      animation: none;
+      transform: none;
+    }
+    [data-mask-word] {
+      overflow: visible;
     }
   }
 }

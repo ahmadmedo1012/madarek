@@ -207,7 +207,14 @@ export default function ProfilePage() {
           <div className="flex-col gap-1" style={{ minWidth: 220 }}>
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted">اكتمال الملف</span>
-              <span className="font-mono font-semibold" style={{ color: completeness >= 80 ? 'var(--success)' : completeness >= 60 ? 'var(--accent)' : 'var(--warning)' }}>
+              {/* 5-D1 (A11 P2-2): the % is 12px mono TEXT — the base
+                  accent/success/warning fills measured 3.80/3.00/2.30:1
+                  on white (AA needs 4.5). The -ink pair (10.29/9.08/7.56:1)
+                  keeps the traffic-light tiers; dark's -ink tokens resolve
+                  to the same values the base tokens already had. The bar
+                  fill below keeps the base tokens (graphic, redundant with
+                  the % above it). */}
+              <span className="font-mono font-semibold" style={{ color: completeness >= 80 ? 'var(--success-ink)' : completeness >= 60 ? 'var(--accent-ink)' : 'var(--warning-ink)' }}>
                 {completeness}%
               </span>
             </div>
@@ -304,7 +311,10 @@ export default function ProfilePage() {
           )}
           <div className="text-xxs text-subtle" style={{ marginTop: 'var(--sp-4)', padding: 'var(--sp-2) var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
             هذه البيانات مصدرها سجلات الجامعة. لتحديثها تواصل مع شؤون الطلاب على{' '}
-            <bdi dir="ltr" className="font-mono" style={{ color: 'var(--accent)' }}>info@zu.edu.ly</bdi>.
+            {/* 5-D1 (A11 P2-2): 11px mono accent-as-text measured 3.52:1
+                on surface-2 — --accent-ink is the text-safe accent (10.72:1
+                on surface); dark already passed either way. */}
+            <bdi dir="ltr" className="font-mono" style={{ color: 'var(--accent-ink)' }}>info@zu.edu.ly</bdi>.
           </div>
         </Card>
       )}

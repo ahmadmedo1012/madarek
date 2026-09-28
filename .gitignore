@@ -90,3 +90,10 @@ frontend/tests/audit/screenshots/
 .claude/
 test-results/
 .gstack/
+
+# portable dev PG runtime artifacts (tools/boot-pg.sh)
+tools/pgdata/
+tools/pgsock/
+tools/pg.log
+tools/node_modules/
+tools/package*.json

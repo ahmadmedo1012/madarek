@@ -38,6 +38,18 @@
 #                                    reduced-motion token overrides)
 #   frontend/src/styles/base.css     (global reduced-motion belt with
 #                                    `0.01ms !important`)
+#   frontend/src/styles/landing.css  (immersive v2 «سماء مدارك» — a
+#                                    self-contained cinematic sheet whose
+#                                    hand-tuned cascade IS the authored
+#                                    choreography: scene-in 1.1s, drip
+#                                    2.1s, ring-crawl 46s, 40ms word
+#                                    stagger. Exactly like tokens.css is
+#                                    the authored source for the app, the
+#                                    landing is the authored source for
+#                                    its own film. Safety: fully scoped
+#                                    under `.landing`, and the base.css
+#                                    0.01ms !important belt bounds every
+#                                    animation here for reduced-motion.)
 #   frontend/tests/**                (test fixtures — outside the scan
 #                                    root)
 #
@@ -77,45 +89,39 @@ WHOLESALE = {
     'frontend/src/styles/tokens.css',
     'frontend/src/styles/motion.css',
     'frontend/src/styles/base.css',
+    'frontend/src/styles/landing.css',
 }
 
 # ── reviewed debt (file:line:text regex → reason) ─────────────────────
 # Each entry documents WHY the violation is allowed and WHO unpicks it.
+#
+# (5-C1 — debt list EMPTIED, the 28→0 motion-token diet):
+#   · 21 ambient infinite-loop durations (breathe/sway/float/pulse
+#     families across polish/components/owner/landing) retired onto the
+#     six-band --motion-duration-ambient-* ladder authored in tokens.css
+#     (4-A11 §1.3 P1-5 / A2 §1a).
+#   · 3 spring easings (--ease-spring-soft/-bounce/-snappy) adopted into
+#     tokens.css verbatim next to --ease-spring (A2 §1b; the polish
+#     re-definitions deleted — cascade outcome unchanged).
+#   · 4 layout-property transitions converted to composited equivalents
+#     (A2 §1c): student.css .lecture-progress-fill + @keyframes
+#     campus-fill-in → transform: scaleX() (23-b .progress-fill
+#     pattern, page sets --fill-scale); components.css .onboarding-
+#     flow-dot → fixed 22px box + scaleX pill pseudo; .trend-bar →
+#     full-width clip-path wipe (page sets --trend-scale).
+# Entries stopped matching once the lines were fixed, so they were
+# removed per the gate protocol (a stale entry fails the gate by
+# design, forcing re-review).
+#
+# Historical (already-removed entries, kept as protocol records):
+#   · progress-fill width debt — CONVERTED to transform: scaleX() by 23-b
+#     (A11 P2-10: components.css/.progress-fill + primitives/index.tsx,
+#     student.css/.dash-term-bar + DashboardPage, training.css/.xp-fill +
+#     MorePages, polish.css mirror retired).
+#   · toggle-switch thumb via inset-inline-start — CONVERTED to a
+#     composited translateX(calc(var(--motion-direction) * 18px)) by
+#     21-b (A11 P2-10).
 DEBT = [
-    (r'^frontend/src/styles/polish\.css:\d+:.*animation: [a-z0-9-]+ \d+(?:\.\d+)?s ',
-     'ambient infinite-loop durations (breathe/sway/float/pulse family) — awaiting an '
-     '--motion-duration-ambient token family in tokens.css (4-A11 §1.3, P1-5)'),
-    (r'^frontend/src/styles/polish\.css:\d+:.*--ease-spring-(soft|bounce|snappy):',
-     'spring easing vocabulary defined outside tokens.css, pending adoption there '
-     '(4-A11 P3-17)'),
-    # progress-fill width debt (polish mirror + canonical + term-progress
-    # + training xp-fill) — CONVERTED to transform: scaleX() by 23-b
-    # (A11 P2-10: components.css/.progress-fill + primitives/index.tsx,
-    # student.css/.dash-term-bar + DashboardPage, training.css/.xp-fill +
-    # MorePages, polish.css mirror retired); debt entries removed per the
-    # gate protocol (entries stopped matching once the lines were fixed).
-    (r'^frontend/src/styles/owner\.css:\d+:.*animation: pulse-live 2s',
-     'ambient live-status pulse, 2s — owner.css is outside the 20-c file set; '
-     'tokenize when an ambient-duration token exists (4-A11 §1.3)'),
-    (r'^frontend/src/styles/components\.css:\d+:.*animation: madarek-sticker-idle 5s',
-     'sticker idle wiggle delight beat (A11 verified-good) — 5s ambient loop; '
-     'tokenize when an ambient-duration token exists (4-A11 §1.3)'),
-    (r'^frontend/src/styles/landing\.css:\d+:.*animation: madarek-(typing|hero-drift|pulse-dot) \d+(?:\.\d+)?s',
-     'landing ambient loops (typing indicator, hero drift, pulse dot) — landing.css '
-     'is outside the 20-c file set; tokenize when an ambient-duration token exists'),
-    # toggle-switch thumb via inset-inline-start — CONVERTED to a composited
-    # translateX(calc(var(--motion-direction) * 18px)) by 21-b (A11 P2-10);
-    # debt entry removed per the gate protocol (entry stopped matching).
-    (r'^frontend/src/styles/student\.css:\d+:.*transition: inline-size var\(--motion-duration-stat\)',
-     'lecture-progress-fill inline-size — width set inline by the page; scaleX() '
-     'conversion needs TSX coordination (4-A11 P2-10)'),
-    (r'^frontend/src/styles/student\.css:\d+:.*@keyframes campus-fill-in',
-     'campus-fill-in keyframes animate inline-size — scaleX() follow-up (4-A11 P2-10)'),
-    (r'^frontend/src/styles/components\.css:\d+:.*transition: background var\(--t-fast\) var\(--ease\), inline-size var\(--t-fast\)',
-     'onboarding flow-dot inline-size (pill grows when active) — scaleX() follow-up '
-     '(4-A11 P2-10)'),
-    (r'^frontend/src/styles/components\.css:\d+:.*transition: inline-size var\(--t-slow\)',
-     'expandable trend chip inline-size — scaleX() follow-up (4-A11 P2-10)'),
 ]
 
 # ── helpers ────────────────────────────────────────────────────────────

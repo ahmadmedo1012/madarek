@@ -1,7 +1,8 @@
 import {
   Users, Activity, BookOpen, GraduationCap, ShieldCheck, FileWarning,
-  Clock, Radio, AlertTriangle, Settings, RefreshCw,
+  Clock, Radio, AlertTriangle, Settings, RefreshCw, ArrowLeft,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -13,7 +14,7 @@ import { EmptyState, ErrorState, PageSkeleton, TableSkeleton } from '../../compo
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
-import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity } from '../../hooks/useOwner';
+import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity, useOwnerEducation, type OperationalAlert } from '../../hooks/useOwner';
 import { countAr, formatRelativeAr } from '../../lib/format';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -78,6 +79,109 @@ function actionLabel(action: string): ReactNode {
 function resourceLabel(resourceType: string | null): ReactNode {
   if (!resourceType) return '—';
   return RESOURCE_LABELS[resourceType] ?? <bdi>{resourceType}</bdi>;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Action strip (5-D3 — 5-B4's admin «يحتاج انتباهك» pattern)
+   ════════════════════════════════════════════════════════════════ */
+
+interface OwnerActionRow {
+  key: string;
+  tone: 'amber' | 'brand';
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+  to: string;
+  hint: string;
+}
+
+const OWNER_ACTION_TONE_INK: Record<OwnerActionRow['tone'], string> = {
+  amber: 'var(--warning-ink)',
+  brand: 'var(--accent-ink, var(--accent))',
+};
+
+const CRITICAL_ALERT_FORMS: [string, string, string, string] = [
+  'تنبيه حرج واحد', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً',
+];
+const IDLE_TEACHER_FORMS: [string, string, string, string] = [
+  'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً',
+];
+
+/** The dashboard's server-side critical severities (the system route
+ *  counts the same pair for its criticalCount). */
+function isCriticalAlert(a: OperationalAlert): boolean {
+  return a.severity === 'critical' || a.severity === 'error';
+}
+
+/**
+ * The owner's "what needs a decision" list — 5-B4's admin-strip
+ * pattern, on data the OWNER role actually carries: the open
+ * operational alerts the page already fetched (the strip turns the
+ * status band's number into an action link) and the education
+ * payload's idle-teacher workload bucket. Rows appear only when
+ * their count > 0 — a healthy platform sees no strip, not a wall of
+ * zeros.
+ */
+function OwnerActionStrip({ alerts }: { alerts: OperationalAlert[] }) {
+  const education = useOwnerEducation();
+
+  const rows: OwnerActionRow[] = [];
+  if (alerts.length > 0) {
+    const critical = alerts.filter(isCriticalAlert).length;
+    rows.push({
+      key: 'open-alerts',
+      tone: critical > 0 ? 'amber' : 'brand',
+      icon: AlertTriangle,
+      title: 'تنبيهات تشغيليّة مفتوحة',
+      desc: critical > 0
+        ? `${countAr(alerts.length, OPEN_ALERT_FORMS)} — منها ${countAr(critical, CRITICAL_ALERT_FORMS)}`
+        : countAr(alerts.length, OPEN_ALERT_FORMS),
+      to: '/owner/alerts',
+      hint: 'فتح التنبيهات التشغيليّة',
+    });
+  }
+  const idle = education.data?.workloadBuckets.idle ?? 0;
+  if (education.isSuccess && idle > 0) {
+    rows.push({
+      key: 'idle-teachers',
+      tone: 'brand',
+      icon: GraduationCap,
+      title: 'أساتذة بلا حصص تدريس هذا الفصل',
+      desc: `${countAr(idle, IDLE_TEACHER_FORMS)} لم تُسند إليهم مقرّرات — راجع أعباء التدريس من لوحة التعليم`,
+      to: '/owner/education',
+      hint: 'فتح لوحة التعليم',
+    });
+  }
+
+  if (rows.length === 0) return null;
+  return (
+    <Card
+      title="يحتاج انتباهك"
+      icon={AlertTriangle}
+      subtitle={countAr(rows.length, ['بند واحد', 'بندان', 'بنود', 'بنداً'])}
+    >
+      <div className="flex-col gap-2">
+        {rows.map((r) => (
+          <Link
+            key={r.key}
+            to={r.to}
+            className={`alert ${r.tone}`}
+            title={r.hint}
+            style={{ textDecoration: 'none' }}
+          >
+            <span style={{ color: OWNER_ACTION_TONE_INK[r.tone], marginTop: 2 }}>
+              <Icon icon={r.icon} size={16} />
+            </span>
+            <div className="alert-body">
+              <div className="alert-title">{r.title}</div>
+              <div className="alert-desc">{r.desc}</div>
+            </div>
+            <Icon icon={ArrowLeft} size={14} style={{ color: 'var(--text-muted)', marginTop: 2 }} />
+          </Link>
+        ))}
+      </div>
+    </Card>
+  );
 }
 
 export function OwnerDashboardPage() {
@@ -217,6 +321,11 @@ export function OwnerDashboardPage() {
       {/* Live Status — never claims "normal" unless the alerts query
           answered (see alertBand above). */}
       {alertBand}
+
+      {/* 5-D3: the action list rides directly under the status band —
+          the dashboard answers "what needs me" before "how big are
+          we" (5-B4's admin ordering). */}
+      <OwnerActionStrip alerts={alerts} />
 
       {/* Metric Cards — every value comes from the API. 22-b (4-A7
           P2-3): the second grid-2 strip (طلبات AI + تنبيهات مفتوحة)
