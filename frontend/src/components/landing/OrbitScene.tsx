@@ -77,7 +77,15 @@ const LINK_STROKE = 'rgb(223,237,178)';
 const TRAIL_STROKE = 'rgb(223,237,178)';
 const HEAD_FILL = 'rgb(245,243,231)';
 
-type Star = { x: number; y: number; r: number; base: number; color: string };
+type Star = {
+  x: number;
+  y: number;
+  r: number;
+  base: number;
+  color: string;
+  /** 0 = far layer (slower parallax, smaller) · 1 = near layer */
+  depth: number;
+};
 type Node = {
   orbit: number;
   angle: number;
@@ -91,13 +99,13 @@ type Node = {
 
 /**
  * Orbit fractions of the system radius + tilt + angular speed + line alpha.
- * Visual diet: 3 hairlines (was 4), mist 0.05–0.10 (was 0.08–0.17) —
- * discoverable on the second look, never the first.
+ * Depth pass: mist lifted (0.05–0.10 → 0.08–0.16) so the rings read as
+ * drawn geometry, not placeholder wires — still hairlines, never neon.
  */
 const ORBITS = [
-  { f: 0.4, rot: -0.34, omega: 0.00016, mist: 0.1 },
-  { f: 0.61, rot: -0.28, omega: 0.00011, mist: 0.07 },
-  { f: 1, rot: -0.16, omega: 0.00006, mist: 0.05 },
+  { f: 0.4, rot: -0.34, omega: 0.00016, mist: 0.16 },
+  { f: 0.61, rot: -0.28, omega: 0.00011, mist: 0.11 },
+  { f: 1, rot: -0.16, omega: 0.00006, mist: 0.08 },
 ] as const;
 
 const NODE_PALETTE: readonly NodeColor[] = ['lime', 'lime', 'violet', 'cream', 'lime', 'violet'];
@@ -173,19 +181,22 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
 
     function buildScene() {
       const area = w * h;
-      // Final visual diet: ≤60 stars full tier / ≤36 low (was ≤140/≤70),
-      // STATIC alpha 0.22–0.45 (twinkle removed — nothing may flash),
-      // radius ≤1.2px. The sky whispers instead of sparkling.
+      // Depth pass: two parallax star layers (≈110 full / ≈52 low, was
+      // 60/36) with STATIC alpha 0.28–0.58. The far layer drifts at 40%
+      // of the near layer's parallax, so the sky reads as SPACE, not as
+      // a scatter of dots on glass. Still no twinkle — nothing flashes.
       const starCount = tier === 'low'
-        ? Math.min(36, Math.max(14, Math.round(area / 32000)))
-        : Math.min(60, Math.max(20, Math.round(area / 19000)));
+        ? Math.min(52, Math.max(18, Math.round(area / 22000)))
+        : Math.min(110, Math.max(28, Math.round(area / 10500)));
       stars = Array.from({ length: starCount }, () => {
         const tint = Math.random();
+        const depth = Math.random() < 0.62 ? 0 : 1; // majority far
         return {
           x: Math.random(),
           y: Math.random(),
-          r: 0.4 + Math.random() * 0.8,
-          base: 0.22 + Math.random() * 0.23,
+          r: (0.4 + Math.random() * 0.8) * (depth === 1 ? 1.15 : 0.85),
+          base: (0.28 + Math.random() * 0.3) * (depth === 1 ? 1 : 0.82),
+          depth,
           color:
             tint < 0.8 ? STAR_COLORS.cream : tint < 0.94 ? STAR_COLORS.lime : STAR_COLORS.violet,
         };
@@ -206,20 +217,26 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         };
       });
 
-      // Depth bloom — ONE violet radial over the flat ink ground, painted
-      // once per resize into an offscreen canvas. Spec §4.2 rule 3 ceiling
-      // is 0.12; the final visual diet holds it at 0.06 so the hero reads
-      // as FLAT navy with only the faintest depth — never a glow.
+      // Depth bloom — TWO tones painted once per resize into the same
+      // offscreen canvas (still one drawImage per frame): a violet radial
+      // around the orbital system (0.06 → 0.11: the sky now has a light
+      // source) + a wide cream horizon glow at the very bottom, as if the
+      // ink lifted a little where the page continues below the fold.
       nebula = document.createElement('canvas');
       nebula.width = Math.max(1, w);
       nebula.height = Math.max(1, h);
       const ng = nebula.getContext('2d');
       if (ng) {
-        const rr = orbitR * 1.5;
+        const rr = orbitR * 1.6;
         const grad = ng.createRadialGradient(systemCx, systemCy, 0, systemCx, systemCy, rr);
-        grad.addColorStop(0, `rgba(${VIOLET[0]},${VIOLET[1]},${VIOLET[2]},0.06)`);
+        grad.addColorStop(0, `rgba(${VIOLET[0]},${VIOLET[1]},${VIOLET[2]},0.11)`);
         grad.addColorStop(1, 'rgba(0,0,0,0)');
         ng.fillStyle = grad;
+        ng.fillRect(0, 0, w, h);
+        const hz = ng.createRadialGradient(w * 0.5, h * 1.18, 0, w * 0.5, h * 1.18, h * 0.75);
+        hz.addColorStop(0, `rgba(${CREAM[0]},${CREAM[1]},${CREAM[2]},0.07)`);
+        hz.addColorStop(1, 'rgba(0,0,0,0)');
+        ng.fillStyle = hz;
         ng.fillRect(0, 0, w, h);
       }
     }
@@ -346,16 +363,17 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         ctx.drawImage(nebula, 0, 0, w, h);
       }
 
-      // stars — deep parallax layer; STATIC alpha (twinkle removed in the
-      // visual diet — nothing in the sky may flash)
-      const starParX = (mouse.sx - 0.5) * 6;
-      const starParY = (mouse.sy - 0.5) * 5;
+      // stars — two parallax layers; STATIC alpha (nothing flashes).
+      // Near layer carries the full drift, far layer 40% of it → depth.
+      const starParX = (mouse.sx - 0.5) * 7;
+      const starParY = (mouse.sy - 0.5) * 6;
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i]!;
+        const k = s.depth === 1 ? 1 : 0.4;
         ctx.globalAlpha = s.base * fade;
         ctx.fillStyle = s.color;
         ctx.beginPath();
-        ctx.arc(s.x * w + starParX, s.y * h + starParY, s.r, 0, Math.PI * 2);
+        ctx.arc(s.x * w + starParX * k, s.y * h + starParY * k, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -408,7 +426,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
           const b = nodes[k]!;
           const d = Math.hypot(a.x - b.x, a.y - b.y);
           if (d < linkDist) {
-            ctx.globalAlpha = (1 - d / linkDist) * 0.14 * fade;
+            ctx.globalAlpha = (1 - d / linkDist) * 0.17 * fade;
             ctx.beginPath();
             ctx.moveTo(a.x + orbitParX, a.y + orbitParY);
             ctx.lineTo(b.x + orbitParX, b.y + orbitParY);
@@ -417,11 +435,12 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         }
       }
 
-      // node glows + cores (sprites at low alpha — flat craft, not neon)
+      // node glows + cores (sprites — flat craft, not neon). Glow disc
+      // slightly wider (r*10.5, was r*9) so each node reads as a lit body.
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i]!;
         const sprite = n.color === 'lime' ? glowLime : n.color === 'violet' ? glowViolet : glowCream;
-        const gs = n.r * 9;
+        const gs = n.r * 10.5;
         ctx.globalAlpha = fade;
         ctx.drawImage(sprite, n.x + orbitParX - gs / 2, n.y + orbitParY - gs / 2, gs, gs);
         ctx.fillStyle = NODE_FILL[n.color];
@@ -437,7 +456,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         const i0 = trailIndex(i - 1);
         const i1 = trailIndex(i);
         const t = (i + 1) / trailLen;
-        ctx.globalAlpha = t * 0.28 * fade;
+        ctx.globalAlpha = t * 0.32 * fade;
         ctx.lineWidth = 1 + t * 1.6;
         ctx.beginPath();
         ctx.moveTo(trailX[i0]! + orbitParX, trailY[i0]! + orbitParY);
@@ -449,7 +468,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         const hx = trailX[head]! + orbitParX;
         const hy = trailY[head]! + orbitParY;
         ctx.globalAlpha = fade;
-        ctx.drawImage(glowLime, hx - 22, hy - 22, 44, 44);
+        ctx.drawImage(glowLime, hx - 26, hy - 26, 52, 52);
         ctx.fillStyle = HEAD_FILL;
         ctx.beginPath();
         ctx.arc(hx, hy, 2, 0, Math.PI * 2);
@@ -574,10 +593,11 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     };
 
     try {
-      // visual diet: glow sprite cores ≤0.18 (was 0.26–0.34)
-      glowLime = makeGlowSprite(64, LIME, 0.18);
-      glowViolet = makeGlowSprite(64, VIOLET, 0.16);
-      glowCream = makeGlowSprite(64, CREAM, 0.14);
+      // depth pass: glow cores 0.17–0.24 (was 0.14–0.18) — lit bodies,
+      // still flat craft. The horizon nebula does the heavy lifting.
+      glowLime = makeGlowSprite(64, LIME, 0.24);
+      glowViolet = makeGlowSprite(64, VIOLET, 0.2);
+      glowCream = makeGlowSprite(64, CREAM, 0.17);
       resize();
     } catch {
       setFailed(true);

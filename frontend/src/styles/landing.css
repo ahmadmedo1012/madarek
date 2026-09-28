@@ -152,7 +152,8 @@
 .landing .ministry-strip {
   background: var(--ln-ink-2);
   color: var(--ln-cream-dim);
-  font-size: var(--fs-xs);
+  font-size: 13px; /* GAP-6: 12px read as government-portal fine print */
+  line-height: 1.5;
   border-block-end: 1px solid var(--ln-line-soft);
   position: relative;
   z-index: 61;
@@ -383,12 +384,14 @@
   letter-spacing: 0.01em;
   background: transparent;
   color: var(--ln-cream);
-  border: 1px solid var(--ln-line);
+  /* GAP-3: the old 0.14 hairline read as a disabled field — the pill
+     SHAPE must be visible before the text inside it can feel clickable. */
+  border: 1px solid rgb(245 243 231 / 0.34);
 }
 .landing .ln-btn-ghost:hover {
-  background: rgb(245 243 231 / 0.05);
+  background: rgb(245 243 231 / 0.07);
   color: var(--ln-cream);
-  border-color: var(--ln-line);
+  border-color: rgb(245 243 231 / 0.52);
 }
 .landing .ln-btn-ghost.xl { padding: 12px 32px; font-size: 16px; min-block-size: 48px; }
 
@@ -651,9 +654,15 @@
   justify-content: center;
   gap: 12px 24px;
   color: var(--ln-cream-dim);
-  font-size: 13.5px;
+  font-size: 14.5px; /* GAP-4: 13.5 read as fine print — social proof must be READ */
 }
-.landing .ln-trust-sep { inline-size: 22px; block-size: 1px; background: var(--ln-line); }
+/* GAP-4: institution names carry the proof — full cream, the mono label
+   stays dim as the eyebrow. Optical weight, not decoration. */
+.landing .ln-trust-inner > span:not(.ln-mono):not(.ln-trust-sep) {
+  color: var(--ln-cream);
+  font-weight: var(--fw-medium);
+}
+.landing .ln-trust-sep { inline-size: 26px; block-size: 1px; background: var(--ln-line); }
 
 /* ── 7 · chapter scaffolding — let every scene breathe ─────────────── */
 .landing .ln-chapter {
@@ -1359,6 +1368,16 @@
 }
 
 @media (max-width: 768px) {
+  /* GAP-5 · mobile density pass — the desktop 96–140px chapter rhythm
+     stretched a 390px phone into a 9900px scroll. Mobile is its own
+     experience (user directive): tighter chapters, tighter heads, a
+     calmer journey — same narrative, phone-native pacing. */
+  .landing .ln-chapter { padding-block: clamp(60px, 9vh, 84px); }
+  .landing .ln-chapter-head { margin-block-end: clamp(24px, 3.5vh, 36px); gap: var(--sp-4); }
+  .landing .ln-journey-stations { gap: 28px; }
+  .landing .ln-trust { padding-block: var(--sp-5); }
+  .landing .ln-cta { padding-block: clamp(72px, 11vh, 104px); }
+
   /* constellation: the full sky is too dense — domain strip instead */
   .landing .ln-constellation-stage { display: none; }
   .landing .ln-constellation-strip {
@@ -1426,8 +1445,12 @@
   .landing .ln-constellation-strip { grid-template-columns: 1fr; }
   .landing .ln-constellation-cta { flex-direction: column; align-items: stretch; text-align: center; }
   .landing .ln-constellation-browse { justify-content: center; }
-  .landing .ln-progress-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .landing .ln-stat-value { font-size: 32px; }
+  /* GAP-5: 2×2 at 390px was a solid text block — give the numbers room
+     to breathe (row gap up, value down one step) so each stat reads as
+     its own fact, not a spreadsheet cell. */
+  .landing .ln-progress-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-5) var(--sp-3); }
+  .landing .ln-stat-value { font-size: 28px; }
+  .landing .ln-stat-label { font-size: 12.5px; }
   .landing .ln-cta-actions .ln-btn-gold.xl,
   .landing .ln-cta-actions .ln-btn-ghost.xl { inline-size: 100%; }
 }
