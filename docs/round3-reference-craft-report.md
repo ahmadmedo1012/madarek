@@ -59,3 +59,17 @@
 
 - الإنتاج وقت كتابة هذا: قيد نشر Render للـmerge 783d6a2 — تحقق النهائي بعد النشر في التقرير.
 - الأرقام أعلاه كلها من build محلي مُتحقق منه بالمتصفح (نفس أصوات الإنتاج: نفس الأصول، نفس البناء).
+
+## 8. 🚨 اكتشاف حاسم: خط النشر معطّل منذ 25 سبتمبر
+
+**الإنتاج يخدم بناء 25 سبتمبر (buildId: edge-cache-csp-gzip) — كل الدفعات منذ ذلك الحين (62+ commit على main، 6+ دفعات على feat/immersive-redesign-v2) لم تُنشر أبدًا.**
+
+السلسلة الجذرية (مُثبتة بالتجربة في غرفة نظيفة Node 24.21/npm 11.19):
+1. **npm 11.19 سياسة السكربتات**: `npm ci` يحذف node_modules كاملًا (بما فيه عميل Prisma المولَّد) ولا يعيد تشغيل postinstall — الخدمة تبدأ ثم تنهار (حلَّها: `prisma generate` صريح في build الخلفية — موجود الآن) — تشخيص الجولة الموازية أن argon2 كان السبب كان **خاطئًا** (prebuilds تعمل بدون سكربتات، مثبت بالتجربة).
+2. **gsap/three/lenis في manualChunks دون تثبيتها** كسر بناء Vite على Render («Could not resolve entry module gsap») — أُصلح (حُذفت المدخلات).
+3. **السبب الحاكم الآن: لا يوجد أي webhook على مستودع GitHub** (تأكدت عبر GitHub API — القائمة فارغة []). Render لا يعلم بالدفعات إطلاقًا → autoDeploy لا ينطلق → لا بناء ولا نشر مهما انتظرنا.
+
+**كل البوابات مُثبتة على HEAD الحالي (0c5ed39)**: npm ci ✓ · بناء أمامي ✓ · بناء خلفي (prisma generate + tsc) ✓ · لا هجرات جديدة ✓ · إقلاع نظيف ✓ (اختبرناه من الصفر في worktree معزول).
+
+**الإجراء المطلوب من المالك (دقيقة واحدة):**
+في لوحة Render → خدمة madarek → Settings → تأكد أن Branch = `feat/immersive-redesign-v2` (أو main) و **Manual Deploy → Deploy latest commit**. إن رفض الربط، أعد ربط GitHub (Connect) ليتولد الـwebhook. عند نجاح النشر ستظهر `/api/v1/health` بقيمة buildId = `2026-09-28T11:15Z-round3-orbit-ink-60fps`.
