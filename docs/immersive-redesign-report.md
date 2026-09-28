@@ -102,3 +102,9 @@
 | مسؤول | `admin@zu.edu.ly` |
 | جودة | `quality@zu.edu.ly` |
 | مالك المنصة | `owner@zu.edu.ly` |
+
+## 11) حالة النشر (تحديث نهائي)
+
+الكود كله مدفوع إلى `main` (`fe0adce` → `56de4a9` → `fda2726` — BUILD_ID = `2026-09-29T00:00Z-premium-product-polish`) وكل البوابات خضراء محليًا. **لكن**: قائمة webhooks على مستودع GitHub فارغة (مُكتشف منذ 25 سبتمبر وموثّق في `0593a3b`)، والبيئة الحالية لا تملك مفتاح Render API — لذا لا يمكن تشغيل النشر من هنا. الموقع المباشر ما زال يقدّم بناء `final-polish-hero-videos` السابق.
+
+**الإجراء المطلوب منك (نقرة واحدة):** لوحة Render → خدمة `madarek` → **Manual Deploy → Deploy latest commit**. خط البناء سيطبّق migration حقيقة التقدم على قاعدة Neon الإنتاجية تلقائيًا (`npm run db:deploy` ضمن البناء). بعد النشر تحقّق من `https://madarek.onrender.com/api/v1/health` → `buildId: 2026-09-29T00:00Z-premium-product-polish`. (يُفضَّل بعدها إعادة ربط Auto-Deploy في إعدادات الخدمة ليعود الـwebhook.)
