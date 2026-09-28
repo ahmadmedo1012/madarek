@@ -297,7 +297,11 @@ async function main() {
     await prisma.enrollment.upsert({
       where: { studentId_offeringId: { studentId: student.id, offeringId: offering.id } },
       update: {},
-      create: { studentId: student.id, offeringId: offering.id, progressPct: 60 },
+      // Premium-polish P0-2 (progress truth): 0, never a decorative
+      // constant — POST /lectures/:id/watch recomputes this from
+      // completed watchEvents, so any non-zero seed value is a lie the
+      // course detail page immediately contradicts.
+      create: { studentId: student.id, offeringId: offering.id, progressPct: 0 },
     });
 
     // Schedule slot example. ScheduleSlot has no unique constraint, so a
@@ -752,6 +756,21 @@ async function main() {
     }
   }
 
+  // Honest demo progress (premium-polish P0-2): the demo student has
+  // fully watched exactly the FIRST lecture of SE301 (the watchEvent is
+  // written later in this file). The enrollment percentage below is
+  // derived with the same formula POST /lectures/:id/watch uses, so the
+  // dashboard, the course cards and the course detail page all agree
+  // (1 of 3 lectures = 33%) instead of the old frozen-60-vs-live-0
+  // contradiction.
+  {
+    const lectureCount = await prisma.lecture.count({ where: { offeringId: seOffering.id } });
+    await prisma.enrollment.updateMany({
+      where: { studentId: student.id, offeringId: seOffering.id },
+      data: { progressPct: lectureCount === 0 ? 0 : Math.round((1 / lectureCount) * 100) },
+    });
+  }
+
   // Per-student mastery — simulated, plausible distribution.
   // Strong on basics, weaker on UML and design patterns.
   const masteryDistribution = [0.85, 0.80, 0.65, 0.45, 0.40, 0.35, 0.55, 0.70];
@@ -869,22 +888,56 @@ async function main() {
     if (!existing) await prisma.researchPaper.create({ data: p });
   }
 
-  // ─── Watch event so the dashboard "Continue Learning" makes sense ──
-  const firstLecture = await prisma.lecture.findFirstOrThrow({
+  // ─── Watch events: honest progress + a live resume point ──
+  // (premium-polish P0-2 + P0-3): lecture 1 is FULLY watched (drives the
+  // derived 33% everywhere), lecture 2 is at 30% and uncompleted — so
+  // GET /me/resume returns mode:'continue' with a real next-step for the
+  // dashboard resume card. Both use the same source of truth as the
+  // course detail page.
+  const lectureByOrdinal = await prisma.lecture.findMany({
     where: { offeringId: seOffering.id },
     orderBy: { ordinal: 'asc' },
   });
-  await prisma.watchEvent.upsert({
-    where: { lectureId_studentId: { lectureId: firstLecture.id, studentId: student.id } },
-    update: {},
-    create: {
-      lectureId: firstLecture.id,
-      studentId: student.id,
-      watchedSec: Math.round(firstLecture.durationSec * 0.3),
-      totalSec: firstLecture.durationSec,
-      completed: false,
-    },
-  });
+  const seedLectureOne = lectureByOrdinal[0];
+  const seedLectureTwo = lectureByOrdinal[1];
+  if (seedLectureOne) {
+    await prisma.watchEvent.upsert({
+      where: { lectureId_studentId: { lectureId: seedLectureOne.id, studentId: student.id } },
+      create: {
+        lectureId: seedLectureOne.id,
+        studentId: student.id,
+        watchedSec: seedLectureOne.durationSec,
+        totalSec: seedLectureOne.durationSec,
+        completed: true,
+        lastSeenAt: daysAgo(2),
+      },
+      update: {
+        watchedSec: seedLectureOne.durationSec,
+        totalSec: seedLectureOne.durationSec,
+        completed: true,
+        lastSeenAt: daysAgo(2),
+      },
+    });
+  }
+  if (seedLectureTwo) {
+    await prisma.watchEvent.upsert({
+      where: { lectureId_studentId: { lectureId: seedLectureTwo.id, studentId: student.id } },
+      create: {
+        lectureId: seedLectureTwo.id,
+        studentId: student.id,
+        watchedSec: Math.round(seedLectureTwo.durationSec * 0.3),
+        totalSec: seedLectureTwo.durationSec,
+        completed: false,
+        lastSeenAt: daysAgo(1),
+      },
+      update: {
+        watchedSec: Math.round(seedLectureTwo.durationSec * 0.3),
+        totalSec: seedLectureTwo.durationSec,
+        completed: false,
+        lastSeenAt: daysAgo(1),
+      },
+    });
+  }
 
   // ─── Training tracks (Self-Development module) ───────────────
   // 11 tracks covering the categories required by the project brief.

@@ -160,11 +160,16 @@
     --transition-all:    var(--t-clean);
 
     /* ─── UI/UX PRO MAX — interactive feedback tokens ─────────── */
-    --press-scale: 0.995;
-    --press-translate: 1px;
+    --press-scale: 0.97;
+    /* Premium-polish (one press register): 0.97 for every control
+       (buttons/pills/filter pills/player big-play — the value the v13
+       "BUTTON PRESS" section made canonical). --press-translate (the
+       losing sink recipe) and --interactive-transition (an `all`
+       smuggler — see the --t-clean note) are RETIRED: buttons scale,
+       cards use --state-card-pressed-scale (0.99), and only the
+       bottom-nav keeps its deliberately stronger 0.93 thumb press. */
     --hover-lift: -1px;
-    --hover-lift-lg: -2px;
-    --interactive-transition: all var(--motion-duration-short) var(--motion-ease-emphasized);
+    --hover-lift-lg: -3px;
 
     /* ─── Motion (semantic layer — see contracts/motion-tokens.md) ───
        Canonical names new code MUST consume. Mapped to the raw --t-*
@@ -224,6 +229,12 @@
     --state-focus-ring-width:  2px;
     --state-focus-ring-offset: 2px;
     --state-focus-ring:        0 0 0 var(--state-focus-ring-width) var(--state-focus-ring-color);
+    /* Premium-polish (ONE focus language): the single sanctioned input/
+       wrapper focus halo — previously hand-spelled as ~8 near-identical
+       literals (22%/14%/16%/20% mixes, 3px/4px/6px rings) across
+       polish/colleges/auth. Dropdown/tooltip decorative halos may still
+       use --accent-soft, but every *focus* halo consumes this token. */
+    --state-input-focus-halo:  0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 
     --state-button-hover-bg-shift:   4%;
     --state-button-hover-translate:  -1px;
@@ -509,7 +520,10 @@
        incumbent pattern (dark ink on copper: #191918 on #E0A067 = 7.87:1),
        so accent buttons read as one family across themes. */
     --accent-fg:     #1A0F06;
-    --focus-ring:    rgba(181, 116, 56, 0.32);
+    /* --focus-ring retired (premium-polish): the ~32%-alpha halo measured
+       ≈1.5:1 on cream and survived only by losing layer order to the v22
+       outline. The ONE focus language is --state-focus-ring (outline) +
+       --state-input-focus-halo (input/wrapper halo). */
 
     /* T3-F4 — text-safe accent ink for links/eyebrows on light surfaces.
        #5C3416 = 10.29:1 on --bg, 10.72:1 on --surface, 8.62:1 on
@@ -562,8 +576,12 @@
     --primary:       var(--neutral-900);
     --primary-fg:    #FFFFFF;
 
-    /* shadows — Notion-soft */
-    --shadow-card:    0 1px 2px rgba(15,15,15,0.04);
+    /* shadows — Notion-soft
+       (premium-polish F2: --shadow-card now aliases the canonical
+       --elev-1 so .card and .metric paint the SAME dark shadow — the
+       legacy card ring and the elev inset-light were two grammars for
+       one elevation tier.) */
+    --shadow-card:    var(--elev-1);
     --shadow-card-h:  0 1px 2px rgba(15,15,15,0.04), 0 6px 18px rgba(15,15,15,0.06);
     --shadow-pop:     0 1px 2px rgba(15,15,15,0.04), 0 8px 24px rgba(15,15,15,0.08);
     --shadow-modal:   0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.14);
@@ -723,7 +741,7 @@
     --accent-soft:   var(--c-copper-bg);
     --accent-strong: #C9962F;
     --accent-fg:     #05070F;
-    --focus-ring:    rgba(233,180,76,0.42);
+    /* --focus-ring retired — see the light-theme note above. */
 
     /* Night theme passes as-is: the -ink family clears AA on the night
        ground (--success 10.94:1, --warning 12.37:1, --danger 8.68:1,
@@ -756,7 +774,7 @@
     --primary:       var(--accent);
     --primary-fg:    #05070F;
 
-    --shadow-card:    0 1px 2px rgba(2,4,12,0.50), 0 0 0 1px rgba(142,151,184,0.05);
+    --shadow-card:    var(--elev-1);
     --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
     --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
     --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);

@@ -166,7 +166,7 @@
     border-color: var(--border-strong);
     background: var(--surface-2);
   }
-  .filter-pill:active { transform: scale(0.97); }
+  .filter-pill:active { transform: scale(var(--press-scale)); }
   .filter-pill[aria-pressed="true"] {
     background: var(--neutral-900);
     border-color: var(--neutral-900);

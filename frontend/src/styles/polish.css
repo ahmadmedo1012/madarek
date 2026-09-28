@@ -109,10 +109,9 @@
       transform var(--motion-duration-micro) var(--ease);
   }
   /* (Wave 1-a focus consolidation: .btn outline suppression + weak halo
-     deleted — buttons take the single AA-safe ring from v22.) */
-  .btn:active:not(:disabled) {
-    transform: translateY(1px);
-  }
+     deleted — buttons take the single AA-safe ring from v22.)
+     (Premium-polish: the v6 `translateY(1px)` sink deleted — it lost the
+     cascade to v13's scale register and only misled edits.) */
 
   /* ── Dropdown / menu enter ──────────────────────────────────────
      (WS-D2 orphan sweep: the .topbar-user-menu / .notification-dropdown /
@@ -460,125 +459,12 @@
 @layer pages {
 
   /* ── Hero spotlight — radial glow follows the cursor ─────────── */
-  .landing-hero {
-    --hero-mx: 50%;
-    --hero-my: 30%;
-    isolation: isolate;
-  }
-  .landing-hero::before {
-    /* The existing ::before keeps its drift halo. We layer a second
-       radial via a separate ::after-cousin: the .landing-hero-spotlight
-       isn't easy to inject from CSS alone, so we ride on ::before by
-       raising it above the background. */
-    background:
-      radial-gradient(
-        circle at var(--hero-mx) var(--hero-my),
-        color-mix(in srgb, var(--accent) 14%, transparent) 0%,
-        transparent 30%
-      ),
-      radial-gradient(circle at 50% 0, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
-    transition: background-position var(--motion-duration-short) var(--ease-out);
-  }
-  @media (hover: none), (prefers-reduced-motion: reduce) {
-    .landing-hero::before {
-      background: radial-gradient(circle at 50% 0, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%);
-    }
-  }
-
-  /* ── Word-by-word title reveal (Notion / Linear / Stripe trick) ──
-     The Reveal wrapper adds .in-view to the parent when the title
-     enters the viewport. Children .word elements then cascade in
-     individually for a 'typed' feel. */
-  .landing-title .word {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(0.45em) scale(0.985);
-    filter: blur(4px);
-    transition:
-      opacity var(--t-slower) var(--ease-out),
-      transform var(--t-slower) var(--ease-out),
-      filter var(--t-slower) var(--ease-out);
-    /* Default delays — overridden per-position below. */
-    transition-delay: 0ms;
-  }
-  .landing-title.in-view .word {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-  .landing-title.in-view .word:nth-of-type(1) { transition-delay: 60ms; }
-  .landing-title.in-view .word:nth-of-type(2) { transition-delay: 160ms; }
-  .landing-title.in-view .word:nth-of-type(3) { transition-delay: 240ms; }
-  .landing-title.in-view .word:nth-of-type(4) { transition-delay: 360ms; }
-  .landing-title.in-view .word:nth-of-type(5) { transition-delay: 460ms; }
-
-  /* ── Mockup parallax ────────────────────────────────────────────
-     `--parallax` is set by JS in [-1, 1] as the user scrolls past the
-     mockup. We turn it into a gentle rise + slight scale for depth. */
-  .landing-mockup {
-    --parallax: 0;
-    transform: translateY(calc(var(--parallax) * -16px)) scale(calc(1 - var(--parallax) * 0.012));
-    transition: transform var(--motion-duration-micro) var(--ease-linear);
-    will-change: transform;
-  }
-  .landing-mockup-frame {
-    /* Inner frame gets a counter-shift so chrome bars pop slightly
-       differently than badges (creates a faint depth difference). */
-    transform: translateY(calc(var(--parallax) * 4px));
-    transition: transform var(--motion-duration-micro) var(--ease-linear);
-  }
-  .landing-mockup-badge-1,
-  .landing-mockup-badge-2 {
-    /* Floating badges drift twice as much as the frame — true parallax. */
-    transform: translateY(calc(var(--parallax) * -22px)) translateX(var(--badge-tx, 0));
-    transition: transform var(--motion-duration-micro) var(--ease-linear);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .landing-mockup,
-    .landing-mockup-frame,
-    .landing-mockup-badge-1,
-    .landing-mockup-badge-2 {
-      transform: none;
-    }
-  }
-
-  /* ── Mockup bars: idle wave so the chart never sits still ─────── */
-  .landing-mockup-bar {
-    animation: polish-bar-breathe var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
-  }
-  .landing-mockup-bar:nth-child(1) { animation-delay: 0ms; }
-  .landing-mockup-bar:nth-child(2) { animation-delay: 220ms; }
-  .landing-mockup-bar:nth-child(3) { animation-delay: 440ms; }
-  .landing-mockup-bar:nth-child(4) { animation-delay: 660ms; }
-  .landing-mockup-bar:nth-child(5) { animation-delay: 880ms; }
-  .landing-mockup-bar:nth-child(6) { animation-delay: 1100ms; }
-  .landing-mockup-bar:nth-child(7) { animation-delay: 1320ms; }
-  @keyframes polish-bar-breathe {
-    0%, 100% { transform: scaleY(1); opacity: 0.85; }
-    50%      { transform: scaleY(1.15); opacity: 1; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .landing-mockup-bar { animation: none; }
-  }
-
-  /* ── Hero badges: float idle ── 5-C1: both loops ride the shared
-     --motion-duration-ambient-drift cadence (the old 6s/7.5s pair kept
-     the badges out of phase; they still counter-move — float-1 drifts
-     +6px, float-2 −6px — so the parallax read survives on one band). */
-  .landing-mockup-badge-1 { animation: polish-float-1 var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite; }
-  .landing-mockup-badge-2 { animation: polish-float-2 var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite; }
-  @keyframes polish-float-1 {
-    0%, 100% { --badge-tx: 0px; }
-    50%      { --badge-tx: 6px; }
-  }
-  @keyframes polish-float-2 {
-    0%, 100% { --badge-tx: 0px; }
-    50%      { --badge-tx: -6px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .landing-mockup-badge-1,
-    .landing-mockup-badge-2 { animation: none; }
-  }
+  /* (Premium-polish dead-code sweep): the pre-immersive-v2 landing
+     family lived here — .landing-title word-stagger, .landing-mockup
+     parallax/bars/badges + their polish-float/bar-breathe keyframes.
+     Zero TSX consumers since the «سماء مدارك» rebuild (LandingPage
+     renders only .ln-* + .landing-brand/footer chrome); 50 lines
+     removed. The .reveal-up family below is LIVE. */
 
   /* ── Reveal-up — slightly snappier feel ──────────────────────── */
   .reveal-up {
@@ -602,24 +488,6 @@
   }
 
   /* ── Eyebrow pulse — make "جديد" badge actually feel live ─── */
-  .landing-hero-eyebrow strong {
-    position: relative;
-    overflow: hidden;
-  }
-  .landing-hero-eyebrow strong::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg,
-      transparent 0%,
-      color-mix(in srgb, var(--accent-fg, white) 35%, transparent) 50%,
-      transparent 100%);
-    transform: translateX(-100%);
-    /* (4-A11 P2-9: linear per the loop doctrine — tokens.css:110-113.
-       5-C1: the 3.2s raw duration retired onto the ambient ladder
-       (--motion-duration-ambient-slow, 3.6s) — the debt entry is gone.) */
-    animation: polish-shimmer-sweep var(--motion-duration-ambient-slow) var(--ease-linear) infinite;
-  }
   @keyframes polish-shimmer-sweep {
     0%, 60%   { transform: translateX(-100%); }
     80%, 100% { transform: translateX(100%); }
@@ -635,36 +503,9 @@
 
   /* ── Feature cards: subtle inner highlight on hover (Notion bento) ── */
   .landing-feature-card,
-  .landing-bento-card {
-    position: relative;
-    overflow: hidden;
-  }
   .landing-feature-card::after,
-  .landing-bento-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(
-        420px circle at var(--mx, 50%) var(--my, 50%),
-        color-mix(in srgb, var(--accent) 8%, transparent),
-        transparent 60%
-      );
-    opacity: 0;
-    transition: opacity var(--t-fast) var(--ease);
-    pointer-events: none;
-    z-index: 0; /* paint-order baseline — local, not a --z-* layer */
-  }
   .landing-feature-card:hover::after,
-  .landing-bento-card:hover::after {
-    opacity: 1;
-  }
   .landing-feature-card > *,
-  .landing-bento-card > * {
-    position: relative;
-    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-  }
-
   /* ── Pages without a .page-header convention still benefit from
         the page-enter, but their card grids weren't always
         .grid-{2,3,4}. Make custom-named grids ride the same cascade.  */
@@ -1061,9 +902,8 @@
       color var(--t-fast) var(--ease),
       transform var(--motion-duration-micro) var(--ease);
   }
-  .pill:active:not(:disabled) {
-    transform: translateY(1px);
-  }
+  /* (Premium-polish: the pill sink deleted — pills join the button
+     scale register via --press-scale at the :active rule below.) */
 
   /* ═══════════════════════════════════════════════════════════════
      Bottom-nav — scale-up icon on activate
@@ -2408,26 +2248,6 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (Wave 9-b dead-selector sweep: the .landing-cta-stack entries
      removed — zero TSX consumers; the hero CTA row is .landing-cta-row
-     inside .landing-hero.) */
-  .landing-hero .btn.primary {
-    position: relative;
-    isolation: isolate;
-  }
-  .landing-hero .btn.primary::before {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    border-radius: inherit;
-    background: radial-gradient(
-      circle at 50% 50%,
-      color-mix(in srgb, var(--accent) 65%, transparent) 0%,
-      transparent 70%
-    );
-    opacity: 0;
-    filter: blur(14px);
-    animation: madark-breathe var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
-  }
   @keyframes madark-breathe {
     0%, 100% { opacity: 0; transform: scale(0.9); }
     50%      { opacity: 0.55; transform: scale(1.04); }
@@ -2437,26 +2257,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  EYEBROW CHIP — one-time shimmer to draw the eye to "جديد"    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-hero-eyebrow {
-    position: relative;
-    overflow: hidden;
-  }
-  .landing-hero-eyebrow::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      105deg,
-      transparent 0%,
-      transparent 38%,
-      color-mix(in srgb, var(--accent) 45%, transparent) 50%,
-      transparent 62%,
-      transparent 100%
-    );
-    transform: translateX(-110%);
-    animation: madark-sweep var(--motion-duration-ambient-slow) var(--motion-ease-standard) 1.2s infinite;
-    pointer-events: none;
-  }
   @keyframes madark-sweep {
     0%   { transform: translateX(-110%); }
     65%  { transform: translateX(110%); }
@@ -2469,17 +2269,6 @@
      ║  LandingPage already writes --mx/--my on cards. Add a soft     ║
      ║  3D tilt that follows the cursor.                              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (hover: hover) and (min-width: 920px) {
-    .landing-mockup {
-      transform-style: preserve-3d;
-      transition: transform var(--t-slower) var(--ease-out);
-    }
-    .landing-mockup:hover {
-      transform: perspective(1200px) rotateX(2deg) rotateY(-2deg) scale(1.012);
-    }
-  }
-
-
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FEATURE CARDS — magnetic glow on cursor                       ║
      ║  LandingPage exposes --mx, --my via mousemove. Render a soft   ║
@@ -2487,28 +2276,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (hover: hover) {
     .landing-feature-card,
-    .landing-bento-card {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      --mx: 50%;
-      --my: 50%;
-    }
     .landing-feature-card::before,
-    .landing-bento-card::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-      background: radial-gradient(
-        320px circle at var(--mx) var(--my),
-        color-mix(in srgb, var(--accent) 22%, transparent) 0%,
-        transparent 60%
-      );
-      opacity: 0;
-      transition: opacity var(--motion-duration-medium) var(--ease);
-      pointer-events: none;
-    }
     .landing-feature-card:hover::before,
     .landing-bento-card:hover::before { opacity: 1; }
   }
@@ -2527,24 +2295,10 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STICKER ICONS — gentle bobbing                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-megamenu-item .sticker { transition: transform var(--motion-duration-medium) var(--ease); }
-  .landing-megamenu-item:hover .sticker {
-    transform: rotate(-6deg) scale(1.06);
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  REDUCED MOTION — kill the moving parts                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (prefers-reduced-motion: reduce) {
-    .landing-hero .btn.primary::before,
-    .landing-hero-eyebrow::after {
-      animation: none;
-    }
-  }
+  /* STICKER ICONS + landing reduced-motion list — RETIRED (premium-polish
+     dead-code sweep): the .sticker family never rendered (zero TSX
+     consumers); its bobbing rule and the reduced-motion kill list (which
+     referenced the removed .landing-hero family) went with it. */
 }
 
 
@@ -2664,7 +2418,7 @@
       box-shadow var(--t-fast) var(--ease);
   }
   .btn:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(var(--press-scale));
     transition-duration: var(--motion-duration-micro);
   }
 
@@ -2675,7 +2429,7 @@
   a > .card:active,
   button > .card:active,
   .card.interactive:active {
-    transform: scale(0.99);
+    transform: scale(var(--state-card-pressed-scale));
     transition-duration: var(--motion-duration-micro);
   }
 
@@ -2885,12 +2639,11 @@
      ║  TOKEN SYSTEM EXTENSIONS                                       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   :root {
-    /* Elevation scale — soft, warm shadows that match our palette */
-    --elevation-1: 0 1px 2px rgba(20, 14, 6, 0.04), 0 1px 3px rgba(20, 14, 6, 0.06);
-    --elevation-2: 0 2px 4px rgba(20, 14, 6, 0.05), 0 4px 8px rgba(20, 14, 6, 0.08);
-    --elevation-3: 0 4px 8px rgba(20, 14, 6, 0.06), 0 8px 16px rgba(20, 14, 6, 0.10);
-    --elevation-4: 0 8px 16px rgba(20, 14, 6, 0.08), 0 16px 32px rgba(20, 14, 6, 0.12);
-    --elevation-5: 0 16px 32px rgba(20, 14, 6, 0.10), 0 32px 64px rgba(20, 14, 6, 0.16);
+    /* Elevation scale — RETIRED (premium-polish F1): this second ladder
+       lived beside tokens.css's --elev-1..5 with different dark recipes,
+       so polish-styled surfaces and component-layer surfaces painted two
+       shadow grammars on one screen. All consumers now use the canonical
+       --elev-* tokens; --shadow-card aliases --elev-1. */
 
     /* Spring easings — (5-C1, A2 §1b): MOVED to tokens.css next to
        --ease-spring/--ease-bounce (adopted verbatim: soft 1.18 /
@@ -2920,16 +2673,12 @@
       transform var(--t-base) var(--ease),
       opacity var(--t-base) var(--ease);
 
-    /* Focus halo ring — tuned per theme */
-    --ring-focus: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+    /* Focus halo ring — RETIRED (premium-polish): the one focus language
+       is --state-focus-ring (outline) + --state-input-focus-halo
+       (tokens.css). The search pill below consumes the halo token. */
   }
   [data-theme="dark"] {
-    --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.20), 0 1px 3px rgba(0, 0, 0, 0.28);
-    --elevation-2: 0 2px 4px rgba(0, 0, 0, 0.24), 0 4px 8px rgba(0, 0, 0, 0.32);
-    --elevation-3: 0 4px 8px rgba(0, 0, 0, 0.28), 0 8px 16px rgba(0, 0, 0, 0.40);
-    --elevation-4: 0 8px 16px rgba(0, 0, 0, 0.32), 0 16px 32px rgba(0, 0, 0, 0.48);
-    --elevation-5: 0 16px 32px rgba(0, 0, 0, 0.36), 0 32px 64px rgba(0, 0, 0, 0.56);
-    --ring-focus: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+    /* --elevation-* + --ring-focus retired here too — see :root above. */
   }
 
   /* Selection color matches the brand */
@@ -2945,26 +2694,8 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-campus { padding-block: clamp(var(--sp-8), 6vw, var(--sp-11)); }
 
-  .landing-campus-frame {
-    position: relative;
-    margin: 0;
-    border-radius: var(--r-3xl);
-    overflow: hidden;
-    isolation: isolate;
-    box-shadow: var(--elevation-4);
-    aspect-ratio: 16 / 7;
-    transform-style: preserve-3d;
-    transition: transform var(--t-slower) var(--ease-out);
-    will-change: transform;
-  }
   @media (max-width: 720px) {
     .landing-campus-frame { aspect-ratio: 4 / 3; border-radius: var(--r-2xl); }
-  }
-
-  @media (hover: hover) and (min-width: 920px) {
-    .landing-campus-frame:hover {
-      transform: perspective(1400px) rotateX(2deg) rotateY(-2deg) scale(1.012);
-    }
   }
 
   .landing-campus-photo {
@@ -2986,11 +2717,6 @@
      block for absolutely-positioned descendants. Force the wrapper to
      fill the campus frame so the photo's `position: absolute; inset: 0`
      stays relative to the visible frame. */
-  .landing-campus-frame > .parallax {
-    position: absolute;
-    inset: 0;
-  }
-
   /* Caption scrim — taste.md scrim shape #1 (5-D3, 5-B2's flagged
      follow-up): the caption anchors the bottom-start corner (≤640px
      wide), so the density sits WHERE THE COPY IS — a corner gradient
@@ -3220,10 +2946,6 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
     .landing-campus-photo,
-    .landing-campus-frame {
-      animation: none !important;
-      transition: none !important;
-    }
     .landing-megamenu {
       animation: none !important;
     }
@@ -3396,8 +3118,8 @@
     /* soft accent selection halo — interaction state, not elevation */
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
   }
-  .pill:hover { transform: translateY(-1px); }
-  .pill:active { transform: scale(0.96); }
+  .pill:hover { transform: translateY(var(--hover-lift)); }
+  .pill:active:not(:disabled) { transform: scale(var(--press-scale)); }
 
   /* Tab underline becomes spring-easy */
   .tab::after {
@@ -3437,8 +3159,9 @@
   .input:focus,
   input:focus, textarea:focus, select:focus {
     border-color: var(--accent);
-    /* soft accent focus halo — interaction ring, not elevation */
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    /* soft accent focus halo — interaction ring, not elevation
+       (premium-polish: now the shared --state-input-focus-halo token) */
+    box-shadow: var(--state-input-focus-halo);
   }
 
 
@@ -3501,25 +3224,12 @@
     a:hover .avatar,
     button:hover .avatar {
       transform: scale(1.05);
-      box-shadow: var(--elevation-2);
+      box-shadow: var(--elev-2);
     }
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STICKER ICONS — gentle sway when grouped                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .sticker-wiggle .sticker {
-    animation: madark-sway var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
-    transform-origin: bottom center;
-  }
-  .sticker-wiggle:nth-child(2n) .sticker { animation-delay: -1.5s; }
-  .sticker-wiggle:nth-child(3n) .sticker { animation-delay: -3s; }
-  .sticker-wiggle:nth-child(4n) .sticker { animation-delay: -4.5s; }
-  @keyframes madark-sway {
-    0%, 100% { transform: rotate(0deg); }
-    50%      { transform: rotate(-2.5deg); }
-  }
+  /* STICKER sway — RETIRED with the family (premium-polish sweep). */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3528,9 +3238,6 @@
   @media (prefers-reduced-motion: reduce) {
     .badge,
     .skeleton,
-    .sticker-wiggle .sticker {
-      animation: none !important;
-    }
     .btn:active:not(:disabled)::after {
       animation: none !important;
     }
@@ -3570,8 +3277,9 @@
     block-size: 5px;
     border-radius: 50%;
     background: var(--accent);
-    /* accent halo ring around the active-rail dot — not elevation */
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    /* accent halo ring around the active-rail dot — not elevation
+       (premium-polish: shared --state-input-focus-halo token) */
+    box-shadow: var(--state-input-focus-halo);
     animation: madark-rail-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both 80ms;
   }
   @keyframes madark-rail-dot-in {
@@ -3682,11 +3390,11 @@
       transform var(--motion-duration-short) var(--ease);
   }
   .topbar-user-trigger:hover {
-    box-shadow: var(--elevation-1);
+    box-shadow: var(--elev-1);
   }
   .topbar-user-trigger[aria-expanded="true"] {
     background: var(--surface-2);
-    box-shadow: var(--elevation-2);
+    box-shadow: var(--elev-2);
   }
   /* Chevron in user trigger flips when menu opens */
   /* (Wave 9-b dead-selector sweep: the chevron-flip rule deleted —
@@ -3713,7 +3421,7 @@
       transform var(--motion-duration-medium) var(--ease);
   }
   .topbar .global-search:focus-within {
-    box-shadow: var(--ring-focus), var(--elevation-1);
+    box-shadow: var(--state-input-focus-halo), var(--elev-1);
     border-color: var(--accent);
     transform: scale(1.005);
   }
@@ -3936,7 +3644,7 @@
   .compact-kpi:hover::before { transform: scaleX(1); }
   .compact-kpi:hover {
     transform: translateY(-2px);
-    box-shadow: var(--elevation-2);
+    box-shadow: var(--elev-2);
   }
   .compact-kpi-value {
     font-variant-numeric: tabular-nums;
@@ -3984,13 +3692,13 @@
        --elevation-1 island — status attention, not pure elevation. */
     box-shadow:
       0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent),
-      var(--elevation-1);
+      var(--elev-1);
     animation: madark-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
   }
   /* Keyframe states of the warning glow above — off-token by design. */
   @keyframes madark-alert-glow {
-    0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent), var(--elevation-1); }
-    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #c97a18) 28%, transparent), var(--elevation-2); }
+    0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent), var(--elev-1); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #c97a18) 28%, transparent), var(--elev-2); }
   }
 
 
@@ -4128,26 +3836,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LANDING PILOT STATS — count-up effect via existing CountUp    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-pilot-stat {
-    transition:
-      transform var(--motion-duration-page) var(--ease-spring-soft),
-      box-shadow var(--motion-duration-page) var(--ease);
-  }
-  @media (hover: hover) {
-    .landing-pilot-stat:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--elevation-3);
-    }
-  }
-  .landing-pilot-value {
-    font-variant-numeric: tabular-nums;
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--text)));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  REDUCED MOTION                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
@@ -4226,7 +3914,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .toast,
   [role="status"][data-toast] {
-    box-shadow: var(--elevation-3);
+    box-shadow: var(--elev-3);
     border-radius: var(--r-md);
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -4336,7 +4024,7 @@
   @media (hover: hover) {
     .thumb-card:hover {
       transform: translateY(-3px);
-      box-shadow: var(--elevation-3);
+      box-shadow: var(--elev-3);
       border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
     }
     .thumb-card:hover .thumb-card-image > * {
@@ -4633,7 +4321,7 @@
     border-radius: var(--r-md);
     text-decoration: none;
     font-weight: var(--fw-semibold);
-    /* T3-F4 — was var(--elevation-3)/var(--ease-spring-soft) (the polish
+    /* T3-F4 — was var(--elev-3)/var(--ease-spring-soft) (the polish
        private token island); canonical 012 tokens: --elev-3 + --ease-spring. */
     box-shadow: var(--elev-3);
     z-index: var(--z-toast);
@@ -4804,16 +4492,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FIX 2 — pilot stat numbers visible again                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-pilot-value {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    background-clip: initial !important;
-    /* T3-F4 — numeric KPI ink: --accent is 3.65:1 (large-text only);
-       --accent-ink clears AAA (10.29:1 light / 7.87:1 dark). */
-    color: var(--accent-ink, var(--accent)) !important;
-    font-variant-numeric: tabular-nums;
-    /* Children of CountUp inherit color cleanly now */
-  }
   .landing-pilot-value > * { color: inherit; }
 
 
@@ -4837,7 +4515,7 @@
      ║  SEARCH DROPDOWN — richer presentation                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .search-dropdown {
-    box-shadow: var(--elevation-4);
+    box-shadow: var(--elev-4);
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
     overflow: hidden;

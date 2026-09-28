@@ -333,7 +333,7 @@
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
   .vpc-play-big:hover { transform: scale(1.06); }
-  .vpc-play-big:active { transform: scale(0.97); }
+  .vpc-play-big:active { transform: scale(var(--press-scale)); }
   .vpc-play-big:focus-visible {
     outline: 2px solid var(--vpc-gold-soft);
     outline-offset: 4px;

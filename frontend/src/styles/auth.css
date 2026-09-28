@@ -532,7 +532,9 @@
   [data-theme="dark"] .auth-submit { background: var(--accent); color: var(--accent-fg); }
   .auth-submit:hover { background: var(--neutral-700); }
   [data-theme="dark"] .auth-submit:hover { background: var(--accent-hover); }
-  .auth-submit:active { transform: translateY(1px); }
+  /* Premium-polish: joins the platform's single press register —
+     buttons scale (0.97), they don't sink. */
+  .auth-submit:active { transform: scale(var(--press-scale)); }
   .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   /* currentColor spins on both themes (ink-on-cream light, ink-on-
      copper dark) — the old raw rgba/#fff pair is gone. */

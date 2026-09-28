@@ -139,6 +139,11 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
             onClick={onOpenCommandPalette}
             aria-label="البحث والأوامر"
             title="البحث والأوامر (Ctrl+K)"
+            /* Premium-polish a11y: sibling topbar triggers (notifications,
+               account menu) expose their expanded state — the search toggle
+               launches the same labelled dialog, so it announces it too. */
+            aria-haspopup="dialog"
+            aria-expanded="false"
           >
             <Icon icon={Search} size={18} />
           </button>

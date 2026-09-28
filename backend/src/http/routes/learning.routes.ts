@@ -253,6 +253,38 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
         });
       }
 
+      // Progress truth (premium-polish P0-2): enrollment.progressPct is the
+      // one number the dashboard donut, the course cards and the course
+      // filters all read — while the course detail page derives its own %
+      // from watchEvents. It used to be a frozen seed constant with no
+      // writer, so the two surfaces openly contradicted each other (60% on
+      // the card, 0% on the detail page) and the dashboard average could
+      // never move. This recomputes it from the SAME source of truth the
+      // detail page uses (completed watchEvents / all lectures in the
+      // offering), inside the same transaction so a crash can't leave the
+      // enrollment stale relative to its watch events. Scoped to STUDENT
+      // (the only role with an enrollment row) and to completion
+      // transitions — progressPct can only change the moment a lecture
+      // flips completed, so watch ticks that don't complete anything pay
+      // nothing here.
+      if (req.user!.role === Role.STUDENT && nextCompleted !== (prior?.completed ?? false)) {
+        const [totalLectures, completedLectures] = await Promise.all([
+          tx.lecture.count({ where: { offeringId: lectureStub.offeringId } }),
+          tx.watchEvent.count({
+            where: {
+              studentId,
+              completed: true,
+              lecture: { offeringId: lectureStub.offeringId },
+            },
+          }),
+        ]);
+        const pct = totalLectures === 0 ? 0 : Math.round((completedLectures / totalLectures) * 100);
+        await tx.enrollment.updateMany({
+          where: { studentId, offeringId: lectureStub.offeringId },
+          data: { progressPct: pct },
+        });
+      }
+
       return saved;
     });
 
@@ -424,7 +456,11 @@ router.get('/me/resume', async (req, res, next) => {
       return;
     }
 
-    // 2. No in-progress: first lecture of an enrolled offering with lectures.
+    // 2. No in-progress: first UNCOMPLETED lecture of an enrolled offering
+    //    with lectures. Skipping already-completed lectures matters once a
+    //    student finishes early ordinals — suggesting «المحاضرة 1» to a
+    //    student who completed it yesterday is the exact class of
+    //    dishonest affordance this endpoint exists to remove.
     const enrollments = await prisma.enrollment.findMany({
       // Active enrollments only — mirrors the platform-wide convention
       // (a non-active enrollment must not surface course content).
@@ -433,13 +469,18 @@ router.get('/me/resume', async (req, res, next) => {
         offering: {
           include: {
             course: { select: { id: true, name: true, code: true, themeColor: true } },
-            lectures: { orderBy: { ordinal: 'asc' }, take: 1 },
+            lectures: {
+              orderBy: { ordinal: 'asc' },
+              include: {
+                watchEvents: { where: { studentId: req.user!.id }, select: { completed: true } },
+              },
+            },
           },
         },
       },
     });
     for (const e of enrollments) {
-      const lec = e.offering.lectures[0];
+      const lec = e.offering.lectures.find((l) => !l.watchEvents[0]?.completed);
       if (lec) {
         res.json({
           data: {
