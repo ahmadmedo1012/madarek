@@ -1069,7 +1069,8 @@
   inset-inline: var(--sp-6);
   bottom: var(--sp-6);
   display: grid;
-  gap: 6px;
+  gap: 8px; /* +2 — VLM note: caption sat tight against its own block */
+  padding-block-start: 10px; /* breathing room above the mono eyebrow */
 }
 .landing .ln-campus-line { color: var(--ln-cream); font-size: clamp(15px, 2vw, 19px); font-weight: var(--fw-medium); max-inline-size: 44ch; }
 .landing .ln-campus-line em { color: var(--ln-cream); font-style: normal; }
@@ -1339,7 +1340,12 @@
 }
 
 @media (max-width: 920px) {
-  /* gutter-mobile swap — including the chrome the old sheet missed */
+  /* journey spine — stations stack vertically, nodes ride the gutter.
+     Spine stroke up 1.5→2px: hairlines vanish on low-contrast OLED in
+     sunlight (VLM final-polish note) — the path must stay findable. */
+  .landing .ln-journey-path-base { stroke-width: 2; }
+  .landing .ln-journey-path-light { stroke-width: 2.5; }
+  .landing .ln-journey-stage { padding-inline-start: 30px; }
   .landing .landing-nav { padding-inline: 16px; }
   .landing .landing-mobile-menu { padding-inline: 16px; }
   .landing .ln-progress-grid { grid-template-columns: 1fr; }
@@ -1428,9 +1434,10 @@
   }
   .landing .ln-hero-title .ln-hero-line.reveal-up { transform: translateY(10px); }
 
-  /* footer: single column + 1px dividers (audit D6) */
+  /* footer: single column + 1px dividers (audit D6) — links gap up one
+     step for phone scannability (VLM final-polish note) */
   .landing .landing-footer-grid { grid-template-columns: 1fr; gap: 0; }
-  .landing .landing-footer-col { padding-block: var(--sp-5); border-block-end: 1px solid var(--ln-line-soft); }
+  .landing .landing-footer-col { padding-block: var(--sp-5); border-block-end: 1px solid var(--ln-line-soft); gap: var(--sp-4); }
   .landing .landing-footer-grid .landing-footer-col:last-child { border-block-end: 0; }
 
   .landing .ln-station-card { padding: var(--sp-5); }
