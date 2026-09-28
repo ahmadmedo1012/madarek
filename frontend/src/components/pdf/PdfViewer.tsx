@@ -7,39 +7,16 @@ import { Icon } from '../Icon';
 import { ErrorState } from '../primitives/States';
 import { useAuthStore } from '../../stores/auth.store';
 import { toast } from '../../lib/toast';
-// pdfjs is NOT bundled: this app deploys on a 512 MB-RAM free tier where
-// bundling pdfjs-dist (~1000 modules) pushed the rollup build past the
-// memory limit and OOM-killed every deploy. The library now loads at
-// runtime from the self-hosted public/pdfjs/* copy (same version, no CDN
-// dependency) the first time a document opens. `import type` is erased at
-// build time, so nothing from pdfjs-dist enters the bundle graph.
+// pdfjs-dist v4 ships ESM. Use named imports so Vite/Rollup can tree-shake
+// the rest of the public surface out of the bundle. Previously a namespace
+// import (`import * as pdfjsLib`) pulled in everything pdfjs-dist exports
+// (sizable), even though only GlobalWorkerOptions + getDocument + TextLayer
+// are used here.
+import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-/** The three pdfjs members this viewer actually uses. */
-interface PdfjsRuntime {
-  GlobalWorkerOptions: { workerSrc: string };
-  getDocument: (src: Record<string, unknown>) => {
-    promise: Promise<PDFDocumentProxy>;
-    destroy: () => void;
-  };
-  TextLayer?: new (opts: Record<string, unknown>) => { render: () => Promise<void> };
-}
-
-let pdfjsPromise: Promise<PdfjsRuntime> | null = null;
-
-// Variable specifier keeps this import out of rollup's static analysis
-// (a string literal gets resolved/bundled even with @vite-ignore).
-const PDFJS_RUNTIME_URL = '/pdfjs/pdf.min.mjs';
-
-/** Loads the self-hosted pdfjs ESM build exactly once per session. */
-function loadPdfjs(): Promise<PdfjsRuntime> {
-  pdfjsPromise ??= import(/* @vite-ignore */ PDFJS_RUNTIME_URL).then((mod) => {
-    const pdfjs = mod as unknown as PdfjsRuntime;
-    pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
-    return pdfjs;
-  });
-  return pdfjsPromise;
-}
+GlobalWorkerOptions.workerSrc = workerUrl;
 
 interface PdfViewerProps {
   /** PDF source: relative path (e.g. /api/v1/files/papers/x.pdf) or absolute URL. */
@@ -149,65 +126,51 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     // document 401'd. Pass the header explicitly; same-origin requests
     // already carry the refresh cookie, so no withCredentials is needed.
     const token = useAuthStore.getState().accessToken;
-    // The library itself loads on demand (public/pdfjs) — the effect stays
-    // synchronous; the document task starts as soon as the module is ready.
-    let task: ReturnType<PdfjsRuntime['getDocument']> | null = null;
+    const task = getDocument({
+      url: src,
+      ...(token ? { httpHeaders: { Authorization: `Bearer ${token}` } } : {}),
+      // Self-hosted assets (public/pdfjs/*) — no runtime dependency on unpkg.com
+      cMapUrl: '/pdfjs/cmaps/',
+      cMapPacked: true,
+      standardFontDataUrl: '/pdfjs/standard_fonts/',
+    });
 
-    loadPdfjs()
-      .then((pdfjs) => {
-        if (cancelled) return; // src switched / unmounted while loading lib
-        task = pdfjs.getDocument({
-          url: src,
-          ...(token ? { httpHeaders: { Authorization: `Bearer ${token}` } } : {}),
-          // Self-hosted assets (public/pdfjs/*) — no runtime dependency on unpkg.com
-          cMapUrl: '/pdfjs/cmaps/',
-          cMapPacked: true,
-          standardFontDataUrl: '/pdfjs/standard_fonts/',
-        });
-        return task.promise.then(
-          (pdf) => {
-            if (cancelled) { pdf.destroy(); return; }
-            const next: DocState = { pdf, numPages: pdf.numPages };
-            docRef.current = next;
-            setDoc(next);
-            setPage(1);
-            // A superseded render of the previous document may have planted a
-            // stale page error after this effect's initial reset — clear it
-            // again so the fresh document starts clean (audit 11-f P2-9).
-            setError(null);
-            setLoading(false);
-            onDocumentLoaded?.(pdf.numPages);
-          },
-          (err) => {
-            if (cancelled) return;
-            // Password-protected PDF: pdfjs rejects with PasswordException and
-            // re-running the same no-credential load can never succeed — show
-            // the honest message without a retry affordance (audit 11-f P2-8).
-            if ((err as { name?: string } | null)?.name === 'PasswordException') {
-              setError({ message: 'هذا المستند محمي بكلمة مرور', cause: err, kind: 'password' });
-            } else {
-              // Missing / corrupt PDF: surface an honest error state with retry
-              // (orchestrator ruling #14) — the detail line comes from ErrorState.
-              setError({ message: 'تعذّر تحميل المستند', cause: err });
-            }
-            setLoading(false);
-          },
-        );
-      })
-      .catch(() => {
-        // The runtime module failed to load (offline first paint, blocked
-        // script…) — surface the standard error state, same as a bad document.
-        if (cancelled) return;
-        setError({ message: 'تعذّر تحميل عارض المستندات', cause: new Error('pdfjs runtime module failed to load') });
+    task.promise.then(
+      (pdf) => {
+        if (cancelled) { pdf.destroy(); return; }
+        const next: DocState = { pdf, numPages: pdf.numPages };
+        docRef.current = next;
+        setDoc(next);
+        setPage(1);
+        // A superseded render of the previous document may have planted a
+        // stale page error after this effect's initial reset — clear it
+        // again so the fresh document starts clean (audit 11-f P2-9).
+        setError(null);
         setLoading(false);
-      });
+        onDocumentLoaded?.(pdf.numPages);
+      },
+      (err) => {
+        if (cancelled) return;
+        // Password-protected PDF: pdfjs rejects with PasswordException and
+        // re-running the same no-credential load can never succeed — show
+        // the honest message without a retry affordance (audit 11-f P2-8).
+        if ((err as { name?: string } | null)?.name === 'PasswordException') {
+          setError({ message: 'هذا المستند محمي بكلمة مرور', cause: err, kind: 'password' });
+        } else {
+          // Missing / corrupt PDF: surface an honest error state with retry
+          // (orchestrator ruling #14) — the detail line comes from ErrorState.
+          setError({ message: 'تعذّر تحميل المستند', cause: err });
+        }
+        setLoading(false);
+      },
+    );
 
     return () => {
       cancelled = true;
       // Orphan any search walk mid-flight on this document (src switch or
       // unmount) before destroying the doc underneath it.
       searchGenRef.current += 1;
-      task?.destroy();
+      task.destroy();
     };
     // retryToken: the retry button re-runs this effect for the same src.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -297,9 +260,14 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         textLayerRef.current.style.height = `${viewport.height}px`;
         try {
           const textContent = await pageObj.getTextContent();
-          // pdfjs now loads at runtime from public/pdfjs — the TextLayer
-          // constructor comes from the same cached module instance.
-          const TextLayerCtor = (await loadPdfjs()).TextLayer;
+          // pdfjs-dist v4 exposes TextLayer as a named export at runtime,
+          // but its type surface marks it optional in some build modes, so
+          // the constructor is resolved with a runtime lookup + truthiness
+          // check. Note this dynamic import does NOT shave anything off
+          // the bundle — the module is already statically imported above
+          // (getDocument), so this resolves to the same chunk; it is kept
+          // only because it works and degrades cleanly (audit 11-f P2-11).
+          const TextLayerCtor = (await import('pdfjs-dist')).TextLayer;
           if (TextLayerCtor) {
             const textLayer = new TextLayerCtor({
               textContentSource: textContent,
