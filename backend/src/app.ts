@@ -131,7 +131,7 @@ export function createApp() {
   // BUILD_ID is bumped on every deploy that needs a force-rebuild.
   // Curl /api/v1/health to check whether Render is serving the
   // latest commit. If the buildId matches, the fix is live.
-  const BUILD_ID = '2026-09-25T00:00Z-edge-cache-csp-gzip';
+  const BUILD_ID = '2026-09-28T00:00Z-round4-reference-rebuild';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon
