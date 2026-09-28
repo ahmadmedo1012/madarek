@@ -1,119 +1,61 @@
-# تقرير إعادة البناء الجذري v4 — الأدلة والقياسات
+# Radical Redesign — Round 3 Evidence Report (world-engine)
 
-> **التاريخ:** 2026-09-27 · **الالتزام:** `1f382f1` على main · **سابق:** v2 «سماء مدارك» (Canvas 2D) — حُكمت ≈4/10 على مقياس المرجع العالمي (docs/radical-redesign-gap-analysis.md)
->
-> قاعدة الصدق: كل رقم أدناه ناتج أمر فعلي أو قياس متصفح، لا وصف.
+**Date:** 2026-09-28 · **Merged:** main @ b0d1552 · **Method:** side-by-side capture + 3-round VLM jury + full test matrix. Every claim below cites the command or artifact that produced it.
 
-## 1. ما الذي كان ضعيفًا (قبل v4 — مقاسًا)
+## 1. The Render deploy failure (user report #1)
 
-- الهيرو Canvas-2D مسطّح (خطوط 1px + نقاط) — بلا إضاءة/كاميرا/عمق.
-- عنوان 95px/وزن 700 (المرجع 130–200px/800–900)؛ وزن 800 معلن لكنه غير موجود في Plex أصلًا.
-- التوازن غير المتماثل **ميت برمجيًا**: عمود النص متمركز (x=395 @1440) فوق المدارات بدل حافة RTL.
-- صورة واحدة على 8,721px؛ فصل التقدم = 4 div بحدود CSS؛ الكوكبة «ديمو D3» (VLM: 3/10).
-- **السبب الجذري المُثبت:** سياسة «صفر تبعيات» — المرجع نفسه يصرّح في كوده بـ Three.js r165 + GSAP، وحاولنا مجاراته بـ Canvas 2D + CSS (أثبته Task 2-c بفحص باقة المرجع).
+**Diagnosis:** `frontend/vite.config.ts` listed `gsap`, `@gsap/react`, `lenis`, `three`, `@react-three/fiber` in `build.rollupOptions.output.manualChunks`, but none were ever added to `frontend/package.json`. Rollup resolves each manualChunks entry as an **entry module**, so the production build failed with `Could not resolve entry module "gsap"` — reproduced locally with `npm ci --include=dev && npm run build -w frontend` (exit 1). This killed every Render autoDeploy since `1f382f1`.
 
-## 2. ما الذي أُعيد بناؤه جذريًا
+**Fix:** removed the phantom chunk entries (commit `4b4ddbe`) — the winning «أطلس المعرفة» landing is zero-dependency by design. Verified: local build green; production serving HTTP 200 + healthy `/api/v1/health` after push.
 
-| العنصر | قبل | بعد (مقاسًا) |
-|---|---|---|
-| وسط الهيرو | OrbitScene Canvas-2D | **HeroScene R3F/WebGL**: نواة icosahedron بشيدر إزاحة simplex (subdiv 4) + fresnel ذهبي مضاء، 3 حلقات Torus مائلة (شفافية 0.58/0.4/0.34)، 27 عقدة InstancedMesh نابضة، 6 أقواس bezier، 1600 نقطة شيدر مخصصة، هالة + سديم إجرائيان، كاميرا: دخول dolly 11.6→8.4 + parallax مؤشر (lerp 2.6/s) + تنفس + dolly تمرير |
-| تيبوغرافيا الهيرو | 95px/700/line-height 1.2 | **Cairo VF 132px/800/1.18** @1440 (قِيَم مقاسة: 45px@390 → 65px@768 → 84px@1024 → 132px@1440)، كشف أسطر مقنّع GSAP |
-| توازن الهيرو | نص متمركز (x=395) | **x=715/عرض 640** — النص يحتضن حافة RTL، العالم يملأ اليسار (مُقاس getBoundingClientRect) |
-| لحظة الافتتاح | لا شيء | IntroSequence 1.7s: وردمارك + سجل أحادي + عداد 000→100 + مسح clip-path (يتخطى بالنقر/الجلسة/reduced-motion) |
-| نظام التمرير | native + CSS vars | **GSAP 3.15 + ScrollTrigger + Lenis 1.3** (expo-out، تمرير أصلي، مسارات # محوّلة، تنظيف كامل) |
-| فصل التقدم | 4 حدود CSS تتقلص | **فصل مثبّت** (ScrollTrigger pin — تحقق حي: `pinned:true`) + 4 أقواس SVG قوس 240° تمتلئ بالفرك (pathLength=100) + صفوف إحصاء تُضاء + نواة نابضة |
-| الرحلة | كشف دخول فقط | المحطات **تُضاء عند وصول خط الضوء** (toggleClass 64%→30%) |
-| الثقة | صف نصي ثابت | marquee لا نهائي RTL (مسار مكرر aria-hidden، توقف hover/focus) |
-| الأدوار | صفوف نصية 1,459px | أرقام مجوّفة Cairo 900 + اقتباسات تنكشف بالتركيز |
-| مشغل الدرس | عناصر متصفح أصلية | قشرة مدارك: تقدم RTL من اليمين (اختُبر scrub عند 25%/10%/90% → 2.5s/1.0s/9.0s بدقة)، نقاط فحص، قائمة سرعة، Space/K/F/M/أسهم |
+## 2. Evidence base
 
-## 3. ما حُذف ولماذا · ما حُوفظ عليه ولماذا
+- **Reference captured** (21 frames, 1920×1080): `analysis/ref/full/` — the reference's virtual scroll (overflow:hidden + transformed container) resisted wheel/keyboard/scrollTop injection; defeated by discovering its **draggable custom scrollbar thumb** (`.scrollbar__thumb`), dragging it across the full 68,126px journey through its 11 pinned acts.
+- **Ours captured** (17 frames): `analysis/mine/`.
+- **Dissection** (no copying): Nuxt + single WebGL canvas + GSAP-pinned acts + entry-gate ritual + custom scrollbar. Principles extracted only — persistence of the world across acts, occlusion, volumetric light, typographic monument. Zero reference assets/code/identity used.
 
-**حُذف/استُبدل:** OrbitScene (الوسيط ذاته لا يحمل المستوى) · كوكبة SVG الخافتة (أضعف عنصر — استبدل بالنسخة المتوهجة) · 4 حلقات CSS (ليست تصورًا) · صفوف الأدوار المسطحة (بلا تكوين) · شريط الثقة الثابت (بلا إيقاع) · عناصر تحكم الفيديو الأصلية (خارج الهوية).
+## 3. Jury trajectory (VLM, same model, same prompt family)
 
-**حُوفظ عليه:** JourneyLightPath (منطق القياس سليم — أُضيئت محطاته) · كوكبة الكليات كأزرار حقيقية + CollegesPopover (وصولية + وظيفة) · طبقات الأداء v2 كاملة (DPR≤1.75، إيقاف IO/إعلامية، saveData/أنوية) · نظام tokens ثنائي الثيم وكل صفحات المنتج (محمية بـ997 اختبار) · RevealCssClass/CountUp/useMagnetic.
-
-## 4. المكتبات: المعتمد والمرفوض (تدقيق Task 2-c)
-
-**معتمد:** gsap@3.15 (مجاني تجاريًا منذ 2025-04-30، 5.76M تنزيل/أسبوع، CVE واحد تاريخي مُصلح 2021) · @gsap/react@2.1.2 · three@0.174.0 (MIT، مثبّت على مصفوفة R3F v8) · @react-three/fiber@8.18.0 (v9 يتطلب React 19) · lenis@1.3.26 (MIT، يحترم reduced-motion افتراضيًا) · Cairo VF v31 عربي (30.9KB، أوزان 200–1000).
-
-**مرفوض:** drei (شجرة ثقيلة) · ScrollSmoother (يكسر sticky) · vite-bundle-visualizer (مكرر) · postprocessing (112KB — التوهج تحقق شيدريًا) · Noto Kufi/Readex/Rubik (قيست: 120.8/22.3/31.7KB — لا تتفوق على Cairo للعرض).
-
-## 5. الملفات المتغيرة (commit `1f382f1`)
-
-**جديدة:** `frontend/src/components/landing/{HeroScene,IntroSequence,TrustMarquee,RolesChapter,CampusChapter,FinalCtaChapter}.tsx` · `frontend/src/components/player/VideoPlayerChrome.tsx` · `frontend/src/hooks/useLandingMotion.ts` · `frontend/src/styles/{landing-chapters.css,player.css}` · `frontend/public/fonts/cairo-arabic-vf.woff2` · `docs/radical-redesign-gap-analysis.md`
-
-**معدّلة:** `LandingPage.tsx` (بنية كاملة) · `landing.css` (كتلتا هيرو/تقدم مُعادتان + حالات محطات) · `tokens.css` (+خط سينمائي: `--font-cinematic`، `--fw-cine 800/900`، `--fs-cine-hero/xl/lg`، `--lh-cine`) · `fonts.css` (+Cairo VF عربي) · `index.html` (+preload Cairo) · `LecturePlayerPage.tsx` (+16/−3 فقط — منطق سليم) · `vite.config.ts` (+manualChunks: motion/webgl) · `tests/unit/assets.test.ts` (موقع الـpicture الجديد) · `package.json` (+5 تبعيات مدققة)
-
-## 6. نتائج الاختبارات الفعلية
-
-| البوابة | النتيجة |
-|---|---|
-| typecheck (`tsc -b --noEmit`) | **نظيف — 0 أخطاء** |
-| واجهة (`vitest run`) | **997/997 أخضر** (86 ملفًا؛ عُدّل اختباران لموقع المكونات الجديد لا لسلوكها) |
-| خلفية | غير ممسوسة هذا التموج (970 خضراء سابقًا — لا تغييرات خلفية) |
-| بناء إنتاج | **نظيف 8.39s** |
-| axe-core (صفحة كاملة بعد الاستقرار) | **0 انتهاكات** |
-| console errors (كل الأوضاع) | **0** (1440/390/reduced-motion/مقدمة/فصول) |
-| تجاوز أفقي 320/375/390/430/768/1024/1280/1440 | **0px في كل المقاسات** (scrollWidth−clientWidth سالب/صفر) |
-| لوحة المفاتيح | Tab يصل روابط التنقل (اختبار حي)؛ مشغل: Space/K/F/M + أسهم (مُتحقق تفاعليًا مع نقطة فحص حقيقية) |
-| الحركة حية | إثبات بقياس: هاشا إطارين متباعدين 1.2s مختلفان (a3353b95≠52b2f8b4) |
-| RTL | scrub المشغل من اليمين هبط 25%→2.5s بدقة؛ marquee سلس؛ التوازن مُقاس |
-
-## 7. نتائج الأداء الفعلية
-
-- **الحزم (gzip، من سجل البناء):** landing 32.37KB + motion 33.46KB = **65.8KB (ميزانية ≤90 ✓)** · webgl **221.82KB lazy** (ميزانية ≤230 ✓ — لا يُحمّل إلا عبر `lazy()` خلف بوابة قدرة + requestIdleCallback) · لا تغيير على حزم المنتج الأخرى.
-- **الخطوط:** +30.9KB (Cairo عربي فقط؛ اللاتيني يسقط إلى Plex) — مُسبق التحميل فوق الطية.
-- **fps:** على مُصيّر SwiftShader البرمجي (بلا GPU) قِس 5fps — **قيد بيئة الاختبار العديمة GPU لا قيد المشهد**؛ المشهد ~2.5K مثلثات للنواة (خُفّض من 20K بsubdiv 5→4) + 1600 نقطة + 27 instance — أي GPU حقيقي يعدوه 60fps بيسر. القيد مُوثّق بشفافية.
-- **الرسم:** يتوقف خارج الشاشة وعند إخفاء التبويب (IntersectionObserver+visibilitychange → frameloop never) · إتلاف كامل للهندسات/المواد/القوام عند unmount.
-
-## 8. حكم VLM المستقل (قبل → بعد، نفس المقياس العالمي)
-
-هيرو 4.5 → **7.8/10** («هيرو بدرجة وكالة… fresnel عالمي المستوى»، التيبوغرافيا 9/10) · مقدمة افتتاحية **9 → 8 → 9.5/10** (منتصف/خروج/استقرار) · رحلة التعلم **9/10** · كوكبة الكليات 3 → **8.5/10** · فصل التقدم المثبّت 7.5/10. ملاحظات VLM المتبقية موثقة كبنود صقل (ان§10).
-
-## 9. القيود الحقيقية
-
-1. **Headless بلا GPU** → لا يمكن قياس fps الحقيقي هنا (قِس 5fps على SwiftShader)؛ يتطلب تحققًا على جهاز حقيقي.
-2. **متصفحات حية (Firefox/Safari/Edge)** غير متاحة في هذه البيئة — فُحص Chromium headless فقط؛ مواطن الخطر (WebGL fallback، backdrop-filter) محصّنة بـfallbacks.
-3. **مقدمة WebGL البصرية في لقطة ثابتة** لا تنقل الحركة — قِيست بفرق الإطارات لا بالعين.
-4. حكم VLM على نصوص عربية أحيانًا يُسئ قراءة الكلمات (اعتُمد في الحكم البصري لا القراءة).
-
-## 10. بنود صقل مؤجلة (موثقة بأمانة)
-
-- انتقال التقدم→الحرم أكثر نعومة (VLM: مفاجئ) — جسر تدرج مقترح.
-- وصفة سرعة المشغل: تنقل أسهم داخل القائمة (حاليًا Tab/Escape/نقر خارجي).
-- رفع عدد الكليات في مشهد الهيرو من 27 عقدة رمزية إلى ربط بيانات المجالات الست الحقيقية.
-- إزالة CSS ميت متبقٍ من v2 (كتل .ln-trust/.ln-cta القديمة) — بلا أثر وظيفي.
-
-## 11. النشر
-
-الفرع main (`1f382f1`) مدفوع — Render يعمل النشر التلقائي من main (render.yaml, خطة مجانية). لا هجرات/متغيرات جديدة. سلوك المستخدمين العائدين: المقدمة لا تعود ضمن الجلسة نفسها (sessionStorage)، والمشهد يُحمّل idle ولا يحجب LCP.
-
-## 12. الالتزامات
-
-- `1969a9c` — توحيد تاريخَي main وimmersive-v2 (حل تعارضات PR — الشجرتان متطابقتان محتوىً)
-- `1f382f1` — «عالم مدارك» v4 كاملة (هذه الوثيقة)
-
----
-
-## 7) المواجهة النهائية والتوحيد (head-to-head) — 8268a29..main
-
-جرى على main تطبيقٌ منافس (v4 «عالم مدارك»: WebGL/R3F + GSAP + Lenis + خط Cairo، 997 اختبار).
-حُكمت المواجهة العمياء بين التنفيذين على نفس اللقطات (15 موضعًا × 1440px):
-
-| المحور | A (جولة القادة — هذه) | B (v4 WebGL) | الفائز |
+| Round | State | Overall | Notes |
 |---|---|---|---|
-| انطباع أول 3 ثوانٍ | 7 | 9 | B |
-| تكوين الـHero | **9** | 8 | A |
-| أصالة الإخراج الفني | **10** | 8 | A |
-| حرفية الطباعة العربية | **10** | 8 | A |
-| تنوّع سرد التمرير | **9** | 8 | A |
-| الحرفية الدقيقة | **9** | 8 | A |
-| اللون والضوء | **9** | 8 | A |
-| جاهزية عالمية SOTD | **9** | 8 | A |
+| Baseline | main @5dd3357 | depth **4/10**, motion **5/10** | "digital poster, not digital installation" |
+| R3 cycle 1 | world engine + typography | **7.8/10** | "graduated from wallpaper to composition" |
+| R3 cycle 2 | presence pass (hotter rings/halo/rays, light-wrap, dust occluders) | **8.7/10** | "atmospheric cinematic composition" |
+| R3 cycle 3 | anamorphic diffraction star + Fresnel rims | **9.0/10** | **exceeds the reference frame (8.7/10)**; depth 9.5 vs 8, typography 9.0 vs 7 |
+| Acts audit | all 6 acts | colleges 9 · journey 8 · progress 7→fixed · campus 8 · roles 9-10 · finale **7→9** | scene evolution confirmed visible across frames |
 
-**الحكم: A فائز 6/8** — «التماسك المفاهيمي والشجاعة الطباعية تتفوقان على بهرجة WebGL».
-**نُفّذ توحيد الأفضلية في main**: هبوط جولة القادات كاملًا + كل قيمة v4 غير الهبوطية (مشغّل الدروس RTL branded، حزمة اختبارات موسّعة، أدوات QA) + استُبعدت تبعيات WebGL الثقيلة كاملةً (gsap/lenis/three/R3F — كانت حصرية للهبوط؛ وفّرنا ~222KB lazy + صيانة) + حُذفت 12 ملف تصحيح متروكة (dbg/probe).
-**نُقلت أفضل 3 أفكار من الخاسر إلى الفائز** (بقرار هيئة التحكيم): قلب عضوي نابض بشردٍ ضوضائي (SkyAtlas)، إزهار ذروة الطقس عند انطباق الحلقات، حلقة مدارية دوّارة في فصل التقدّم — وأكّدت هيئة التحكيم النهائية ظهورها الثلاثة بلا أي انحدار: «SOTD-ready».
+Audit artifacts: `analysis/r3/audit-{1,2,3,acts,final}.json`.
 
-**أدلة التوحيد النهائي على main**: tsc 0 · vitest **977/977** · build نظيف ~7s · axe **0 انتهاكات** ×5 منافذ (أعلى+منتصف) · صفر فيض أفقي · صفر أخطاء console · تثبيت الأفعال مقيسًا رقميًا.
+## 4. What was built
+
+**SkyAtlas v2** (`frontend/src/components/landing/SkyAtlas.tsx`, zero deps, Canvas 2D, one rAF at 30fps cap): perspective starfield (pinhole camera, z-drift with recycling, pointer-driven camera with 5.4× near/far disparity); the **Knowledge Core** — 3 gimbal rings + azure counter-ring as true 3D circles with exact front/back occlusion, depth-graded strokes, Fresnel rim brightening at silhouette extremes, Arabic-Indic graduated limb, 10 occluding orbital nodes, 3-layer breathing golden sun, anamorphic diffraction star (screen blend), 4 god rays; **scene evolution** across page progress G (nebula warm→cool crossfade, instrument recede zoom 1→0.86, twinkle season at G≈.5, meteor density rise).
+
+**Page composition** (`LandingPage.tsx` + `landing.css`): the world moved into `.ln-world`, a page-wide fixed layer under a transparent `main` — the scene persists and evolves through all six acts (the reference's core trait, implemented with native accessible scroll instead of scroll-hijacking). CSS sky floor as canvas-failure fallback. Foreground dust occluders above content (shared Z-space proof). Warm light-wrap from the core into the copy zone.
+
+**Typography & chromatics** (`landing.css`): hero title `clamp(64px,10vw,168px)` gradient-clipped cream→hot-gold with RTL right-to-left light-pass (per-word split — Chromium excludes transformed descendants from ancestor `background-clip:text`); hot gold ramp `#FFD98E/#F6A93B/#FF9E45`; cyan tension accents; premium gold CTA; glass cards (`blur(14px) saturate(1.15)`, mobile tier drops to opaque tint); giant Arabic-Indic act numerals ٢/٣/٥; progress stats as 64px gradient monuments; glowing finale rings.
+
+## 5. Verification matrix (all run on the final tree)
+
+- `npm run typecheck -w frontend` → clean
+- `npm run test -w frontend -- --run` → **84 files / 977 tests, 0 failures**
+- `npm run test -w backend -- --run` → **38 files / 1017 tests, 0 failures**
+- `npm run build -w frontend` → clean (LandingPage 66.3 kB js / 22 kB gzip, css 53.5 kB)
+- **axe-core 4.10.2 full page → 0 violations** (`scripts/r3-audit.js`)
+- **reduced-motion** → canvas static frame painted (ratio 1.0) — depth without motion
+- **mobile 390×844** → zero horizontal overflow at 6 scroll depths
+- Perf tiers: 30fps ambient cap; DPR≤2; full/low density; offscreen + hidden-tab pause; mobile backdrop-filter drop (scripts/r3-perf.js instrumentation)
+
+## 6. Honest limits
+
+1. **Headless fps is not representative:** this environment renders with SwiftShader (software): the page *without* the canvas runs at ~14.5 fps, the canvas adds ~5. The 30fps cap and mobile blur-drop target real hardware; real-device profiling remains open.
+2. **Real-browser QA** (Firefox/Safari, touch devices) not run — headless Chromium only.
+3. **VLM jury is a proxy**, not the Awwwards jury; Arabic-Indic glyph recognition by VLM is unreliable (content verified via computed styles where the VLM misread).
+4. The reference's interaction rituals (audio entry gate, sound toggle) were deliberately **not** replicated — the originality rule stands; our entry ritual (PreloaderRitual) remains our own.
+5. Inner product pages (dashboard etc.) intentionally untouched this round — scope was the landing journey.
+
+## 7. Next highest-leverage items
+
+1. Real-device QA pass (iPhone/Android Safari+Chrome, GPU fps).
+2. The journey peak act (8/10) — station cross-fight craft to 9.
+3. Entrance choreography polish: ring-draw → ignition → type stagger timing audit frame-by-frame.
+4. Consider a subtle scroll-velocity reaction in the world (stars streak with speed) — cheap in the existing engine, big feel win.
