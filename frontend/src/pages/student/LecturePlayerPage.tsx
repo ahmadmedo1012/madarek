@@ -2,14 +2,14 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  CheckCircle2, ChevronRight, ListOrdered, ListVideo, Play, Sparkles, XCircle,
+  CheckCircle2, ChevronLeft, ChevronRight, ListOrdered, ListVideo, Play, Sparkles, XCircle,
 } from 'lucide-react';
 import { Badge, Card } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
-import { useLecture, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
+import { useLecture, useOfferingLectures, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
 import { countAr, formatMmSs } from '../../lib/format';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
@@ -89,6 +89,10 @@ export default function LecturePlayerPage() {
   const reportWatch = useReportWatch();
   const answerCheckpoint = useAnswerCheckpoint();
   const qc = useQueryClient();
+  /* PP-X2 (audit P1-7): the offering's siblings — the prev/next bar.
+   * Same cache the course cards read (['offerings', id, 'lectures']),
+   * ordered by ordinal server-side; sorted again defensively. */
+  const siblingsQ = useOfferingLectures(data?.offering.id);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   // One-shot resume-seek guard: the saved position is applied on the
@@ -101,6 +105,24 @@ export default function LecturePlayerPage() {
   const [pickedIndex, setPickedIndex] = useState<number | null>(null);
   const [revealResult, setRevealResult] = useState<{ correct: boolean; correctIndex: number; explanation?: string } | null>(null);
   const [answerError, setAnswerError] = useState(false);
+  // Set when the video ENDS — drives the next-lecture pulse (below).
+  const [pulseNext, setPulseNext] = useState(false);
+
+  /* PP-X2: prev/next navigation changes ONLY the :lectureId param, so
+   * the component instance SURVIVES the navigation — every per-lecture
+   * state must reset here or it leaks across lectures (answered
+   * checkpoints of the previous lecture, its resume-seek guard, the
+   * end-of-video pulse…). */
+  useEffect(() => {
+    setCurrentSec(0);
+    setActiveCheckpoint(null);
+    setAnsweredCheckpointIds(new Set());
+    setPickedIndex(null);
+    setRevealResult(null);
+    setAnswerError(false);
+    setPulseNext(false);
+    resumeSeekedRef.current = false;
+  }, [lectureId]);
 
   // Periodic watch-event reporting (every 10 sec while playing)
   useEffect(() => {
@@ -220,6 +242,18 @@ export default function LecturePlayerPage() {
   const checkpointsAnswered = answeredCheckpointIds.size;
   const allCheckpointsAnswered = checkpointsTotal > 0 && checkpointsAnswered === checkpointsTotal;
 
+  /* ── Prev / next lecture bar (PP-X2, audit P1-7) ─────────────────
+   * The watch loop's missing link: ending a lecture used to be a dead
+   * end (the training pages have a next button; the lectures didn't).
+   * prev = ordinal−1 (disabled on the first), next = ordinal+1; on the
+   * LAST lecture the dominant action becomes «عُد إلى المقرّر» (course
+   * detail — where the assignments/materials live). */
+  const siblings = [...(siblingsQ.data ?? [])].sort((a, b) => a.ordinal - b.ordinal);
+  const lecIdx = siblings.findIndex((l) => l.id === data.id);
+  const prevLec = lecIdx > 0 ? siblings[lecIdx - 1] : undefined;
+  const nextLec = lecIdx >= 0 && lecIdx < siblings.length - 1 ? siblings[lecIdx + 1] : undefined;
+  const siblingsLoading = siblingsQ.isPending;
+
   return (
     <div className="page">
       <Link to={`/student/courses/${data.offering.id}`} className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
@@ -242,6 +276,10 @@ export default function LecturePlayerPage() {
             videoRef={videoRef}
             checkpointTimes={data.checkpoints.map((c) => c.triggerSec)}
             className="lecture-video-wrap"
+            /* PP-X2 (P2-12): claim the media keys on mount — Space/K/
+               arrows answer from the first keypress (see the prop's
+               docblock for the focus-on-body guard). */
+            autoFocusOnMount
           >
             <video
               ref={videoRef}
@@ -286,6 +324,9 @@ export default function LecturePlayerPage() {
                     completed: data.durationSec > 0,
                   });
                 }
+                // PP-X2 (audit P1-7): the moment the lecture ends, the
+                // dominant next action is the NEXT lecture — pulse it.
+                setPulseNext(true);
               }}
               poster={data.posterUrl ?? undefined}
             />
@@ -346,6 +387,43 @@ export default function LecturePlayerPage() {
               </div>
             )}
           </div>
+
+          {/* Prev / next (PP-X2 / audit P1-7) — the watch loop's exit ramp.
+              prev rides the RTL back-chevron (ChevronRight), next the
+              forward one (ChevronLeft); on end, next pulses once. */}
+          <nav className="lecture-nav" aria-label="التنقّل بين محاضرات المقرّر">
+            {prevLec ? (
+              <Link to={`/student/lectures/${prevLec.id}`} className="btn ghost">
+                <Icon icon={ChevronRight} size={14} />
+                المحاضرة السابقة
+              </Link>
+            ) : (
+              <button type="button" className="btn ghost" disabled aria-disabled="true">
+                <Icon icon={ChevronRight} size={14} />
+                المحاضرة السابقة
+              </button>
+            )}
+            {nextLec ? (
+              <Link
+                to={`/student/lectures/${nextLec.id}`}
+                className={`btn primary lecture-nav-next${pulseNext ? ' pulse' : ''}`}
+                onAnimationEnd={() => setPulseNext(false)}
+              >
+                المحاضرة التالية · <bdi>{nextLec.ordinal}</bdi>
+                <Icon icon={ChevronLeft} size={14} />
+              </Link>
+            ) : siblingsLoading ? (
+              <button type="button" className="btn primary lecture-nav-next" disabled aria-disabled="true">
+                المحاضرة التالية
+                <Icon icon={ChevronLeft} size={14} />
+              </button>
+            ) : (
+              <Link to={`/student/courses/${data.offering.id}`} className="btn primary lecture-nav-next">
+                عُد إلى المقرّر
+                <Icon icon={ChevronLeft} size={14} />
+              </Link>
+            )}
+          </nav>
 
           {data.description && (
             <Card>

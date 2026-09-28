@@ -18,12 +18,13 @@
  * on every shell mount. Query cache (30s stale / 5min gc) serves
  * instant re-opens.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
 import { NotificationPanel } from '../overlays';
+import { useFocusTrap } from '../overlays/useFocusTrap';
 import { useNotifications, useUnreadNotifications, useMarkNotifRead, useMarkAllNotifsRead, type Notification } from '../../hooks/useResources';
 import { arUnit, timeAgoAr } from '../../lib/format';
 import type { LucideIcon } from 'lucide-react';
@@ -50,6 +51,34 @@ const TYPE_TONE: Record<Notification['type'], string> = {
 export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
   const [open, setOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
+  /* PP-X2 (audit P2-11 / PP-A4 finding 1): the panel already behaved
+   * like a blocking layer (Esc, click-outside, overlay registration)
+   * but never trapped Tab — a keyboard user pressing Tab walked the
+   * app BEHIND the panel while it stayed open. The shared useFocusTrap
+   * now rides the panel body (the children this component passes into
+   * NotificationPanel's portal). Because child effects register before
+   * parent effects, this trap's overlay entry sits ABOVE the panel
+   * primitive's own — it owns Esc (closing + restoring focus to the
+   * bell, the same contract the primitive implemented) and the Tab
+   * cycle. The wrapper div is a layout-neutral flex shim (all panel
+   * section styles are descendant selectors, so nothing moves). */
+  const panelBodyRef = useRef<HTMLDivElement | null>(null);
+  useFocusTrap({
+    open,
+    containerRef: panelBodyRef,
+    closeOnEscape: true,
+    onClose: () => setOpen(false),
+    overlayKind: 'notification-panel',
+  });
+  /* aria-modal="false" on the PANEL CONTAINER (the primitive's div —
+     NotificationPanel owns that element, so the attribute rides from
+     here): the panel is a non-modal dialog; the flag keeps AT quiet
+     mode OFF while the trap contains focus. Attached when the portal
+     mounts; it leaves with the panel (the portal unmounts). */
+  const setPanelBody = useCallback((el: HTMLDivElement | null) => {
+    panelBodyRef.current = el;
+    el?.closest<HTMLElement>('.notification-panel')?.setAttribute('aria-modal', 'false');
+  }, []);
   // 4-A14 P2-2: the panel survived browser-back — still open, bell
   // aria-expanded="true", hovering over the previous page. Sidebar
   // clicks closed it via outside-click, but history navigations never
@@ -91,11 +120,17 @@ export function NotificationDropdown({ alertsPath }: { alertsPath: string }) {
         anchorRef={bellRef}
         ariaLabel="الإشعارات"
       >
-        <NotificationPanelContent
-          alertsPath={alertsPath}
-          unread={unread}
-          onClose={() => setOpen(false)}
-        />
+        <div
+          ref={setPanelBody}
+          className="notif-panel-body"
+          style={{ display: 'flex', flexDirection: 'column' }}
+        >
+          <NotificationPanelContent
+            alertsPath={alertsPath}
+            unread={unread}
+            onClose={() => setOpen(false)}
+          />
+        </div>
       </NotificationPanel>
     </div>
   );

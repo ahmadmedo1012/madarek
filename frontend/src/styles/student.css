@@ -155,6 +155,29 @@
   }
   .lecture-progress-note.done { color: var(--success-ink); }
 
+  /* ── Prev / next lecture bar (PP-X2, audit P1-7) ─────────────────
+     The watch loop's exit ramp: prev (ghost) · next (primary — the
+     dominant action, becomes «عُد إلى المقرّر» on the last lecture).
+     Space-between keeps prev at the reading start (right in RTL) and
+     next at the forward edge. */
+  .lecture-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+  }
+  /* End-of-lecture pulse — ONE iteration of the state-ring language
+     (0 0 0 spread, the .exam-grade-ring recipe — never elevation):
+     the moment playback ends, the next action announces itself. */
+  .lecture-nav-next.pulse {
+    animation: lecture-next-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
+  }
+  @keyframes lecture-next-pulse {
+    from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+    to { box-shadow: 0 0 0 12px transparent; }
+  }
+
   /* ── Chapter sidebar rows (the .list-row language, button edition) ── */
   .chapter-list { display: flex; flex-direction: column; }
   .chapter-row {
@@ -499,14 +522,92 @@
     background: var(--c-rose-bg);
     color: var(--c-rose-deep);
   }
-  /* Agenda rows are informational cards, not links — the inherited
-     pointer cursor promises navigation that never happens. */
-  .dash-agenda-item { cursor: default; }
-  /* 22-c (A3 P3-1): the cursor half of the affordance lie was fixed
-     above; the hover half wasn't — rows still lit a surface-2
-     background while nothing is clickable. Rest-state only now
-     (pages layer wins over the components-layer :hover rule). */
-  .dash-agenda-item:hover { background: var(--surface); }
+  /* PP-X2 (audit P1-8): agenda rows ARE links now (class → course,
+     assignment → course, live → broadcast). The 22-c "affordance lie"
+     overrides below (cursor: default + rest-only hover) are reverted —
+     the pointer + surface-2 hover + chevron now tell the truth. Focus
+     rides the platform's global :focus-visible ring. */
+  .dash-agenda-item.agenda-row { cursor: pointer; }
+  .dash-agenda-item.agenda-row:hover { background: var(--surface-2); }
+  .agenda-row-chevron {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition:
+      color var(--motion-duration-short) var(--motion-ease-standard),
+      transform var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  /* The chevron nudges toward FORWARD (inline-end): --motion-direction
+     is −1 in RTL, so the translate lands leftward — the reading
+     direction's "next". */
+  .dash-agenda-item.agenda-row:hover .agenda-row-chevron,
+  .dash-agenda-item.agenda-row:focus-visible .agenda-row-chevron {
+    color: var(--accent-ink, var(--accent));
+    transform: translateX(calc(var(--motion-direction) * 2px));
+  }
+
+  /* ═══ Continue-learning hero (PP-X2, audit P0-3) ═══
+     The PRIMARY action of the dashboard: one click from cold-open to
+     the exact lecture second. Reuses the card/metric language — accent
+     only, no new colors: a 3px accent inline-start edge marks the
+     entry point on top of the .lesson-row.next wash recipe (accent
+     color-mix over --surface), so the hero reads as "the row to
+     continue" at the page's top. */
+  .dash-resume-card {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    flex-wrap: wrap;
+    border-inline-start: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+  }
+  /* Dark: the 5% wash reads near-invisible against the dark card —
+     same raise the .course-hero dark override applies (12%). */
+  [data-theme="dark"] .dash-resume-card {
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  }
+  .dash-resume-main {
+    flex: 1;
+    min-inline-size: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+  .dash-resume-course {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-wrap: wrap;
+  }
+  .dash-resume-course-name {
+    font-family: var(--font-display);
+    font-size: var(--type-headline-size-sm);
+    font-weight: var(--type-headline-weight);
+    line-height: var(--type-headline-line-height);
+    color: var(--text);
+  }
+  .dash-resume-lecture {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-base);
+  }
+  .dash-resume-progress { margin-block-start: var(--sp-2); max-inline-size: 360px; }
+  .dash-resume-cta { flex-shrink: 0; }
+  /* Desktop prominence (final VLM jury note): the resume CTA is the
+     page's primary action — give it lg-button mass on wide screens so
+     it visually outweighs the progress readout beside it. Mobile
+     already renders it full-width first-in-column. */
+  @media (min-width: 921px) {
+    .dash-resume-cta {
+      min-block-size: 48px;
+      padding-inline: var(--sp-6);
+      font-size: var(--fs-md);
+    }
+  }
+  @media (max-width: 640px) {
+    /* Phone: the CTA spans the full card width under the text — the
+       thumb target the primary action deserves. */
+    .dash-resume-cta { inline-size: 100%; justify-content: center; }
+  }
 
   /* ═══ Matrix — the heatmap filter signature ═══ */
 
@@ -760,6 +861,29 @@
     background: color-mix(in srgb, var(--course-tint, var(--accent)) 12%, var(--surface));
     color: var(--course-tint, var(--accent));
   }
+  /* PP-X2 (audit P2-9) — course-card scent: the code chip + counted
+     lecture noun above the title (the track-card-cat grammar — the
+     exams cards' category line), and the progress row gains a named
+     CTA so six same-teacher same-% cards are told apart and answer
+     "what happens when I click". */
+  .thumb-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-wrap: wrap;
+  }
+  .thumb-card-count {
+    font-size: var(--type-label-size-sm);
+    color: var(--text-muted);
+  }
+  .thumb-card-cta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block-start: var(--sp-1);
+  }
+  .thumb-card-cta .progress { flex: 1; min-inline-size: 0; }
+  .thumb-card-go { flex-shrink: 0; }
   @keyframes courses-card-in {
     from { opacity: 0; transform: translateY(8px) scale(0.985); }
     to { opacity: 1; transform: none; }
@@ -888,10 +1012,31 @@
     background: var(--success-soft);
     color: var(--success);
   }
+  /* PP-X2 (audit P1-7b): the "continue here" row — the training list's
+     .lesson-row.next grammar (training.css): course-tint wash + tinted
+     hairline, with a stronger inline-start edge marking the reading
+     entry point. Same color-mix recipe, --course-tint inherited from
+     the .course-page root. */
+  .course-lec-row.next {
+    border-radius: var(--r-md);
+    border-block-end-color: transparent;
+    background: color-mix(in srgb, var(--course-tint, var(--accent)) 6%, var(--surface));
+    border-inline-start: 3px solid color-mix(in srgb, var(--course-tint, var(--accent)) 45%, transparent);
+  }
+  .course-lec-row.next:hover {
+    background: color-mix(in srgb, var(--course-tint, var(--accent)) 10%, var(--surface));
+  }
+  .course-lec-row.next .course-lec-well {
+    background: color-mix(in srgb, var(--course-tint, var(--accent)) 14%, var(--surface));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--course-tint, var(--accent)) 30%, transparent);
+  }
   /* durations / counts in the curriculum rows stay digit-stable */
   .course-lectures .list-row-sub { font-variant-numeric: tabular-nums; }
 
-  /* ═══ ExamsPage — grade-emphasis reveal (the authored moment) ═══
+  /* ═══ Exam grade emphasis (PP-X2 note: the /student/exams hub that
+     hosted this block's first consumer was deleted — audit P3-25 —
+     but the classes stay: OnlineExamsPages' result screens render the
+     same .exam-grade reveal as their authored moment) ═══
      The real cumulative average lands as the visual anchor: metric
      scale + one-shot rise and a state-ring pulse (0 0 0 spread — the
      focus-ring language, never elevation). */
@@ -1128,15 +1273,21 @@
   }
 
   /* ── §lists touch floor + reduced-motion off-switches ── */
-  @media (max-width: 640px) {
-    /* !required: .btn/.pill base heights live in the components layer,
-       which beats the pages layer at any specificity — the same
-       layer-precedence flip as the entrance opt-outs above. */
+  @media (max-width: 920px) {
+    /* PP-X2 (audit P2-14): the floor was 640px — a landscape phone
+       (844×390) escaped it with 36px pills + a 32px «تسليم» button.
+       The 920px band is the app's own mobile breakpoint; !important
+       still required to beat the components layer (same precedence
+       flip as the entrance opt-outs above). Font sizes unchanged.
+       PP-X2 live-census follow-up: the course card's nested «تابع/ابدأ»
+       CTA (.thumb-card-go, a .btn.ghost.sm → 32px) joined the list —
+       the whole card is the primary target, but the labeled CTA must
+       stand on its own on touch too (zero sub-40px interactives). */
     .courses-filter .pill,
     .courses-assignments td .btn,
     .webinar-kpis .metric-change .btn,
-    .exam-results-card .btn,
-    .jobs-table .table-row-actions .btn { min-block-size: 44px !important; }
+    .jobs-table .table-row-actions .btn,
+    .thumb-card .thumb-card-go { min-block-size: 44px !important; }
   }
   @media (prefers-reduced-motion: reduce) {
     /* same-or-higher specificity + !important — the entrances above are
@@ -1147,9 +1298,15 @@
     .courses-grid[data-stagger] > .thumb-card,
     .mooc-grid > .thumb-card,
     .exam-grade,
+    .lecture-nav-next.pulse,
     .mooc-cta.confirmed,
     .webinar-live-dot { animation: none !important; }
     .webinar-row { transition: none; }
+    /* The agenda chevron nudge is a hover garnish, not information. */
+    .dash-agenda-item.agenda-row:hover .agenda-row-chevron,
+    .dash-agenda-item.agenda-row:focus-visible .agenda-row-chevron {
+      transform: none;
+    }
   }
 
   /* ── §research — ResearchPage · LibraryPage · LivePage · LabsPage (wave 4-c) ── */
@@ -2547,8 +2704,11 @@
   /* P2-10 — the dashboard's morning-first agenda: today's classes and
      the nearest deadlines move to slot 2 (right after the welcome) on
      phone; the term-progress bar is the least urgent fact on the page
-     and keeps its desktop depth. */
+     and keeps its desktop depth. PP-X2 (P0-3): the resume hero is the
+     FIRST thing on phone — the page's primary action sits above the
+     greeting, agenda second, KPIs after. */
   @media (max-width: 640px) {
+    .student-dashboard .dash-resume { order: -3; }
     .student-dashboard .welcome-card { order: -2; }
     .student-dashboard .dash-agenda { order: -1; }
   }

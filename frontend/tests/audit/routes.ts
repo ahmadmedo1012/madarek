@@ -50,7 +50,6 @@ export const AUDIT_ROUTES = [
   '/student/research',
   '/student/profile',
   '/student/webinars',
-  '/student/exams',
   '/student/online-exams',
   '/student/online-exams/:id',
   '/training',                // STUDENT-guarded in App.tsx

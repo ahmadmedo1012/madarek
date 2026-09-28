@@ -18,6 +18,7 @@ import LecturePlayerPage, { isWatchComplete, resumeSeekSec } from '../../src/pag
 
 const mocks = vi.hoisted(() => ({
   lecture: null as Record<string, unknown> | null,
+  lectures: null as Array<Record<string, unknown>> | null,
   reportWatch: vi.fn(),
   answerCheckpoint: vi.fn(),
 }));
@@ -26,6 +27,20 @@ vi.mock('../../src/hooks/useResources', () => ({
   useLecture: () => ({
     data: mocks.lecture,
     isPending: !mocks.lecture,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
+  /* PP-X2: the page's prev/next bar reads the offering's sibling
+     lectures (audit P1-7). Defaults to a three-lecture offering with
+     the base lecture in the middle — prev AND next exist. */
+  useOfferingLectures: () => ({
+    data: mocks.lectures ?? [
+      { id: 'lec0', ordinal: 2, title: 'المحاضرة السابقة' },
+      { id: 'lec1', ordinal: 3, title: 'محاضرة الشبكات' },
+      { id: 'lec2', ordinal: 4, title: 'المحاضرة التالية' },
+    ],
+    isPending: false,
     isError: false,
     error: null,
     refetch: vi.fn(),
@@ -268,5 +283,74 @@ describe('LecturePlayerPage resume-seek (P1-6)', () => {
 
     fireEvent(video, new Event('loadedmetadata'));
     expect(seeks).toEqual([]);
+  });
+});
+
+/* PP-X2 (audit P1-7) — the prev/next lecture bar: the watch loop's
+ * exit ramp. prev = ordinal−1 (disabled on the first), next =
+ * ordinal+1 (primary), and on the LAST lecture the dominant action
+ * becomes «عُد إلى المقرّر» back to the course detail. */
+describe('LecturePlayerPage prev/next bar (P1-7)', () => {
+  beforeEach(() => {
+    mocks.reportWatch.mockClear();
+    mocks.lectures = null;
+  });
+  afterEach(() => {
+    mocks.lectures = null;
+  });
+
+  it('links prev/next to the sibling lectures by ordinal', () => {
+    mocks.lecture = { ...baseLecture };
+    renderPlayer();
+
+    const prev = screen.getByRole('link', { name: /المحاضرة السابقة/ });
+    expect(prev).toHaveAttribute('href', '/student/lectures/lec0');
+    const next = screen.getByRole('link', { name: /المحاضرة التالية/ });
+    expect(next).toHaveAttribute('href', '/student/lectures/lec2');
+  });
+
+  it('disables prev on the first lecture', () => {
+    mocks.lecture = { ...baseLecture };
+    mocks.lectures = [
+      { id: 'lec1', ordinal: 1, title: 'الأولى' },
+      { id: 'lec2', ordinal: 2, title: 'الثانية' },
+    ];
+    renderPlayer();
+
+    // prev is a disabled button (no href to follow), next still links.
+    expect(screen.getByRole('button', { name: /المحاضرة السابقة/ })).toBeDisabled();
+    expect(screen.getByRole('link', { name: /المحاضرة التالية/ })).toHaveAttribute(
+      'href',
+      '/student/lectures/lec2',
+    );
+  });
+
+  it('the last lecture swaps next for «عُد إلى المقرّر» to the course', () => {
+    mocks.lecture = { ...baseLecture };
+    mocks.lectures = [
+      { id: 'lec0', ordinal: 2, title: 'السابقة' },
+      { id: 'lec1', ordinal: 3, title: 'محاضرة الشبكات' },
+    ];
+    renderPlayer();
+
+    expect(screen.queryByRole('link', { name: /المحاضرة التالية/ })).toBeNull();
+    const back = screen.getByRole('link', { name: /عُد إلى المقرّر/ });
+    expect(back).toHaveAttribute('href', '/student/courses/off1');
+  });
+
+  it('pulses the next button exactly once when the video ends', () => {
+    mocks.lecture = { ...baseLecture, durationSec: 600 };
+    renderPlayer();
+    const next = screen.getByRole('link', { name: /المحاضرة التالية/ });
+    expect(next).not.toHaveClass('pulse');
+
+    const video = getVideo();
+    fireEvent(video, new Event('ended'));
+
+    const pulsing = screen.getByRole('link', { name: /المحاضرة التالية/ });
+    expect(pulsing).toHaveClass('pulse');
+    // The animation end retires the pulse (one iteration, not a loop).
+    fireEvent.animationEnd(pulsing);
+    expect(screen.getByRole('link', { name: /المحاضرة التالية/ })).not.toHaveClass('pulse');
   });
 });

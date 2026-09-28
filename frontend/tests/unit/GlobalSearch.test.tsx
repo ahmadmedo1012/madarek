@@ -243,13 +243,16 @@ describe('GlobalSearch — quick-action fallback + Escape reset (5-B5, A4 P2-3/P
       const actionsGroup = screen.getByRole('group', { name: 'إجراءات سريعة' });
       expect(actionsGroup).toBeInTheDocument();
       const options = within(actionsGroup).getAllByRole('option');
+      // PP-X2 (audit P3-25): «تحليل الاختبارات» left the student nav —
+      // the /student/exams hub is deleted and the route redirects to
+      // /student/online-exams, so exactly ONE exams destination answers
+      // the «اختبار» query now.
       expect(options.map((o) => o.textContent)).toEqual([
         'الاختبارات الإلكترونية',
-        'تحليل الاختبارات',
       ]);
       // Not the empty state — the pill answered.
       expect(screen.queryByText(/لم نعثر على نتائج/)).not.toBeInTheDocument();
-      await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('خياران'));
+      await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('خيار واحد'));
     } finally {
       useAuthStore.setState({ user: null });
     }

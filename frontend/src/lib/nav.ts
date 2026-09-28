@@ -4,7 +4,7 @@ import {
   GraduationCap, Briefcase, Building2,
   Users, ClipboardCheck, ListChecks, Upload, TrendingUp,
   ClipboardList, Microscope, School,
-  FileText, FileQuestion, FileBarChart, ShieldCheck, Activity, Compass, BookMarked,
+  FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked,
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
   Palette, Settings, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
@@ -36,10 +36,12 @@ export const STUDENT_NAV: NavGroup[] = [
     items: [
       { to: '/student/matrix', icon: Compass, label: 'المصفوفة التعليمية' },
       { to: '/student/online-exams', icon: ClipboardCheck, label: 'الاختبارات الإلكترونية' },
-      // 4-A14 P1-1 (wave 21-a): this route rendered real seeded
-      // analytics but had ZERO inbound links anywhere — same for the
-      // seven former «المزيد» surfaces, now regrouped below (5-B5).
-      { to: '/student/exams', icon: FileBarChart, label: 'تحليل الاختبارات' },
+      // PP-X2 (audit P3-25): «تحليل الاختبارات» (/student/exams) left the
+      // sidebar — the hub page was 4 cards, 3 of them repeating sidebar
+      // destinations + 1 «قيد الإعداد». The route now redirects to
+      // /student/online-exams, so ONE exams entry remains (this one).
+      // 4-A14 P1-1 (wave 21-a) had surfaced it as a former orphan; the
+      // premium-polish audit ruled the hub a lost click + choice paralysis.
       { to: '/student/library', icon: Library, label: 'المكتبة الإلكترونية' },
       { to: '/student/research', icon: BookMarked, label: 'بحوثي العلمية' },
       { to: '/student/labs', icon: FlaskConical, label: 'المعامل الافتراضية' },

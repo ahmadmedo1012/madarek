@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { colleges } from '../../data/colleges.config';
@@ -22,25 +22,36 @@ import { Icon } from '../Icon';
  * · Dots are pure trigonometry: ring radius + equal angular steps +
  *   one fixed phase per ring (RING_PHASE, tuned so no two rings share
  *   a ray). Zero jitter, zero scatter — identical on every render.
- * · Idle dots are one uniform cream at 0.5 alpha — a quiet, regular
- *   field. Lime is reserved for the single hovered/focused node (one
- *   pop); violet is retired from the sky entirely (it survives only
- *   as a legend color in the mobile domain strip).
- * · Rings stay static 1px hairlines at 0.09 alpha, finely dashed to
- *   read as an astro-chart track, `animation: none` so no CSS layer
- *   can ever restart a crawl.
+ * · Idle dots are one uniform cream at 0.65 alpha (premium-polish
+ *   P2-13: was 0.5 — under the discoverability threshold). Lime is
+ *   reserved for the single hovered/focused node (one pop); violet is
+ *   retired from the sky entirely (it survives only as a legend color
+ *   in the mobile domain strip).
+ * · Rings stay static 1px hairlines at 0.16 alpha (P2-13: was 0.09),
+ *   finely dashed to read as an astro-chart track — styled from
+ *   landing.css (with its `animation: none` anti-crawl guard) so the
+ *   P3-21 entrance (dash-grow "chart plotting" + radial dot stagger)
+ *   can live in the same authored sheet.
  * · Nodes are real <button>s — keyboard focusable, aria-labelled,
  *   each carrying a guaranteed 44×44 hit area (inline, independent of
- *   any CSS dot resizing).
- * · Zero scroll/resize listeners, zero continuous animation, zero
- *   per-dot stagger or float — Swiss stillness. The entrance is the
- *   single group reveal LandingPage already wraps around this block.
+ *   any CSS dot resizing). The stage is NEVER aria-hidden while the
+ *   dots are focusable (P2-13 axe violation — the old aria-hidden
+ *   flip hid 25 buttons from assistive tech at rest).
+ * · Resting life (P2-13): one college node gently highlights at a
+ *   time on a ~4s cycle — the sky shows life without hover. Gated by
+ *   prefers-reduced-motion (never starts) and paused offscreen via
+ *   the component's own IntersectionObserver. The only continuous
+ *   behavior in an otherwise still scene.
+ * · Zero scroll/resize listeners; the entrance is the single group
+ *   reveal LandingPage already wraps around this block.
  */
 
 /** Hover pop — var()-chained to the Orbit Ink lime token with hex fallback. */
 const DOT_LIME = 'var(--ln-lime, #DFEDB2)';
-/** Idle paint — flat cream at half alpha (0.5, down from the old solid fills). */
-const DOT_IDLE = 'rgba(245,243,231,0.5)';
+/** Idle paint — flat cream (P2-13: 0.5 → 0.65 alpha — findable at rest). */
+const DOT_IDLE = 'rgba(245,243,231,0.65)';
+/** Resting-cycle paint — the one gently lit college (near-full cream). */
+const DOT_REST = 'rgba(245,243,231,0.95)';
 /** Legend-only colors — used by the mobile domain strip, never in the sky. */
 const DOT_VIOLET = 'var(--ln-violet, #7A6BF2)';
 const DOT_CREAM = 'var(--ln-cream, #F5F3E7)';
@@ -107,20 +118,16 @@ const RING_STEP = 36;
  */
 const RING_PHASE = [90, 0, 30, 60, 15, 105] as const;
 
+/** Resting-highlight cadence — one college every ~4s. */
+const REST_CYCLE_MS = 4000;
+
 /**
- * Static orbit ring treatment — 1px cream hairline at 0.09 alpha,
- * dashed to read as an astro-chart track, `animation: none` so the
- * retired dash crawl can never come back through CSS. Inline style
- * beats the stylesheet, keeping this scene still whatever the CSS
- * layer does.
+ * Static orbit ring geometry — radii only. The full treatment (dashed
+ * stroke at 0.16 alpha, `animation: none` crawl guard, and the P3-21
+ * dash-grow entrance keyed off the group reveal's `.in-view`) lives in
+ * landing.css next to the rest of the scene's authored choreography;
+ * per-ring `--ln-ri` feeds the entrance stagger below.
  */
-const RING_STYLE = {
-  fill: 'none',
-  stroke: 'rgba(245,243,231,0.09)',
-  strokeWidth: 1,
-  strokeDasharray: '2 7',
-  animation: 'none',
-} as const;
 
 /**
  * The square drawing layer. The stage frame keeps its wide 1000/640
@@ -138,8 +145,9 @@ const ORRERY_STYLE: CSSProperties = {
   translate: '-50%',
 };
 
-/** Idle dot geometry — a 6×6px pin (3px radius), overriding the 13px CSS dot. */
-const DOT_SIZE: CSSProperties = { inlineSize: 6, blockSize: 6 };
+/** Idle dot geometry — an 8×8px pin (P2-13: was 6×6), overriding the
+ * 13px CSS hit-dot box; the CSS class keeps the 44px invisible hit span. */
+const DOT_SIZE: CSSProperties = { inlineSize: 8, blockSize: 8 };
 
 /** Guaranteed ≥44px touch target around each dot (mobile spec §4.3). */
 const HIT_STYLE: CSSProperties = {
@@ -190,23 +198,64 @@ function buildConstellation(): { nodes: Node[]; rings: number[] } {
 
 export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
   const [active, setActive] = useState<Node | null>(null);
+  /** Index of the resting-highlight college (-1 = none) — P2-13 life. */
+  const [restIdx, setRestIdx] = useState(-1);
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const { nodes, rings } = useMemo(buildConstellation, []);
   const count = colleges.length;
+
+  // Resting-highlight cycle: rotate one gently lit college every ~4s so
+  // the sky reads as alive without hover. NEVER runs under
+  // prefers-reduced-motion; paused while the stage is offscreen (IO);
+  // fully torn down on unmount.
+  useEffect(() => {
+    if (typeof window.matchMedia === 'function'
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const stage = stageRef.current;
+    if (!stage || typeof IntersectionObserver === 'undefined') return;
+    let inView = false;
+    let timer = 0;
+    const start = () => {
+      if (timer) return;
+      timer = window.setInterval(() => {
+        setRestIdx((i) => (i + 1) % Math.max(1, nodes.length));
+      }, REST_CYCLE_MS);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = 0;
+    };
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries.some((e) => e.isIntersecting);
+      if (visible === inView) return;
+      inView = visible;
+      if (visible) start();
+      else stop();
+    });
+    io.observe(stage);
+    return () => {
+      io.disconnect();
+      stop();
+    };
+  }, [nodes.length]);
 
   return (
     <div className="ln-constellation" data-count={count}>
       {/* ── Desktop: the full sky ─────────────────────────────────── */}
-      <div className="ln-constellation-stage" aria-hidden={active ? undefined : 'true'}>
+      {/* P2-13: no aria-hidden here — the stage holds 25 focusable
+          buttons; hiding focusable content is an axe violation. The
+          SVG carries its own role="img" label; dots self-describe. */}
+      <div className="ln-constellation-stage" ref={stageRef}>
         <div className="ln-constellation-orrery" style={ORRERY_STYLE}>
           <svg viewBox={`0 0 ${SIZE} ${SIZE}`} preserveAspectRatio="xMidYMid meet" className="ln-constellation-svg" role="img" aria-label={`كوكبة ${count} كلية على ستة مدارات معرفية`}>{/* allow-emoji: bespoke scene SVG — six concentric orbit rings, not a Lucide icon slot */}
-            {rings.map((r) => (
+            {rings.map((r, i) => (
               <circle
                 key={r}
                 className="ln-constellation-ring"
                 cx={CENTER}
                 cy={CENTER}
                 r={r}
-                style={RING_STYLE}
+                style={{ '--ln-ri': i } as CSSProperties}
                 vectorEffect="non-scaling-stroke"
               />
             ))}
@@ -215,29 +264,33 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
                 exactly on its ring path */}
           </svg>
           {/* labels are DOM (crisper Arabic, better a11y than <text>) */}
-          {nodes.map((n) => (
-            <button
-              key={n.slug}
-              type="button"
-              className="ln-constellation-dot"
-              style={
-                {
-                  left: `${(n.x / SIZE) * 100}%`,
-                  top: `${(n.y / SIZE) * 100}%`,
-                  '--dot': active?.slug === n.slug ? DOT_LIME : DOT_IDLE,
-                  ...DOT_SIZE,
-                } as CSSProperties
-              }
-              aria-label={`${n.name}${n.city ? ` — ${n.city}` : ''}`}
-              onMouseEnter={() => setActive(n)}
-              onFocus={() => setActive(n)}
-              onMouseLeave={() => setActive(null)}
-              onBlur={() => setActive(null)}
-              onClick={onBrowse}
-            >
-              <span aria-hidden style={HIT_STYLE} />
-            </button>
-          ))}
+          {nodes.map((n, i) => {
+            const resting = !active && restIdx === i;
+            return (
+              <button
+                key={n.slug}
+                type="button"
+                className={`ln-constellation-dot${resting ? ' is-resting' : ''}`}
+                style={
+                  {
+                    left: `${(n.x / SIZE) * 100}%`,
+                    top: `${(n.y / SIZE) * 100}%`,
+                    '--dot': active?.slug === n.slug ? DOT_LIME : resting ? DOT_REST : DOT_IDLE,
+                    '--ln-ci': i,
+                    ...DOT_SIZE,
+                  } as CSSProperties
+                }
+                aria-label={`${n.name}${n.city ? ` — ${n.city}` : ''}`}
+                onMouseEnter={() => setActive(n)}
+                onFocus={() => setActive(n)}
+                onMouseLeave={() => setActive(null)}
+                onBlur={() => setActive(null)}
+                onClick={onBrowse}
+              >
+                <span aria-hidden style={HIT_STYLE} />
+              </button>
+            );
+          })}
           {active && (
             <span
               className="ln-constellation-tip"

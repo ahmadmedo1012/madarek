@@ -23,12 +23,15 @@ const allDestinations = (nav: ReturnType<typeof Object>) =>
   (nav as Array<{ items: Array<{ to: string }> }>).flatMap((g) => g.items.map((i) => i.to));
 
 /** The 4-A14 P1-1 census: routes that rendered real seeded content but
- *  had zero inbound links repo-wide. */
+ *  had zero inbound links repo-wide. PP-X2 (audit P3-25) removed
+ *  /student/exams from this list: the «تحليل الاختبارات» hub was 4
+ *  cards (3 repeating sidebar destinations + 1 «قيد الإعداد») — the
+ *  page is deleted and the route redirects to /student/online-exams,
+ *  so it is deliberately NOT nav-reachable anymore. */
 const FORMER_ORPHANS = [
   '/student/social',
   '/student/webinars',
   '/student/mooc',
-  '/student/exams',
   '/student/downloads',
   '/student/gamification',
   '/student/skills',
@@ -55,6 +58,19 @@ describe('nav.ts — no orphan routes (4-A14 P1-1)', () => {
       const dests = allDestinations(nav);
       expect(new Set(dests).size, role).toBe(dests.length);
     }
+  });
+
+  it('the exams hub left the student nav — /student/exams redirects (PP-X2, audit P3-25)', () => {
+    // One exams entry, one name: «الاختبارات الإلكترونية» is the real
+    // list; the former «تحليل الاختبارات» hub (a page of links to
+    // other sidebar destinations) is deleted and its route redirects.
+    const dests = allDestinations(STUDENT_NAV);
+    expect(dests).not.toContain('/student/exams');
+    expect(dests).toContain('/student/online-exams');
+    const examLabels = STUDENT_NAV.flatMap((g) => g.items)
+      .filter((i) => i.to.includes('exams'))
+      .map((i) => i.label);
+    expect(examLabels).toEqual(['الاختبارات الإلكترونية']);
   });
 
   it('labels disambiguate the three achievements surfaces (A14 P3-2)', () => {

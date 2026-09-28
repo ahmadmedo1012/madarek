@@ -78,6 +78,11 @@ export interface StudentDashboard {
   agenda: {
     classes: Array<{
       id: string;
+      /** PP-X2 (audit 3/8): agenda class rows became links to the
+       *  course — the backend already shipped offeringId on every slot
+       *  (student-dashboard.routes.ts todayClasses), the FE type just
+       *  never declared it. */
+      offeringId: string;
       courseName: string;
       courseCode: string;
       startTime: string;
@@ -108,6 +113,39 @@ export function useStudentDashboard() {
     queryKey: ['me', 'dashboard'],
     queryFn: () => unwrap<StudentDashboard>(api.get('/me/dashboard')),
     staleTime: 60_000,
+  });
+}
+
+// ── Continue-learning resume (PP-X2, audit P0-3) ─────────────
+/* GET /me/resume (learning.routes.ts, STUDENT only): the single
+ * "where did I leave off" answer — the most-recently-watched
+ * uncompleted lecture (mode 'continue', with its watched share), or
+ * the first uncompleted lecture across active enrollments (mode
+ * 'start'). data:null = nothing to resume (student with no in-progress
+ * and no startable lecture) — consumers render NOTHING, not an empty
+ * state; the dashboard keeps its metrics-first layout. Non-students
+ * also get null. */
+export interface ResumeState {
+  mode: 'continue' | 'start';
+  progressPct: number;
+  watchedSec: number;
+  lecture: {
+    id: string;
+    title: string;
+    durationSec: number;
+    ordinal: number;
+    course: { id: string; name: string; code: string; themeColor: string | null };
+    offeringId: string;
+  };
+}
+export function useResume() {
+  return useQuery({
+    queryKey: ['me', 'resume'],
+    queryFn: () => unwrap<ResumeState | null>(api.get('/me/resume')),
+    // 30s default staleTime would lag a just-finished lecture; the
+    // ['me'] invalidation on watch-completion (useReportWatch) covers
+    // the transition, and a window-focus refetch catches the rest.
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -756,16 +794,45 @@ export function useLecture(lectureId: string | undefined) {
   });
 }
 export function useReportWatch() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: { lectureId: string; watchedSec: number; totalSec: number; completed?: boolean }) =>
-      unwrap(
+      unwrap<WatchEventResult>(
         api.post(`/lectures/${input.lectureId}/watch`, {
           watchedSec: input.watchedSec,
           totalSec: input.totalSec,
           completed: input.completed,
         }),
       ),
+    /* PP-X2 (audit P2-10): completing a lecture changes numbers that
+     * live in THREE cached families — the dashboard KPIs + the resume
+     * card (['me', …]), the course cards' progressPct + the course
+     * detail's lecture list (['offerings', …]) — all behind staleTimes
+     * up to 60s. Without this invalidation the moment of achievement
+     * («مكتملة» + the new average) didn't show until a stale window
+     * expired, which reads as the platform ignoring the work. Fires
+     * only when the SAVED event is completed (the server merges
+     * monotonic completion), so ordinary 10s progress ticks — which
+     * never complete anything — stay invalidation-free. */
+    onSuccess: (data) => {
+      if (!data?.completed) return;
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+      qc.invalidateQueries({ queryKey: ['me'] });
+      // The player page's own lecture key — so «مكتملة» + the 100%
+      // watch bar land on the page the completion happened on, not on
+      // the next visit (live-verified: the badge stayed stale without
+      // it while the checkpoint loop kept the page mounted).
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+    },
   });
+}
+
+/* The /lectures/:id/watch response body (learning.routes.ts returns the
+ * upserted WatchEvent) — consumed by the invalidation gate above. */
+interface WatchEventResult {
+  completed: boolean;
+  watchedSec: number;
+  totalSec: number;
 }
 export function useAnswerCheckpoint() {
   return useMutation({

@@ -161,6 +161,12 @@ export default function LandingPage() {
   return (
     <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
 
+      {/* P3-24: skip-to-content — first Tab stop, hidden until focused
+          (same contract as the product's polish.css skip-link, re-skinned
+          to the landing pill language). The landing was the only page
+          without one. */}
+      <a href="#main" className="ln-skip-link">تخطَّ إلى المحتوى</a>
+
       {/* Top scroll-progress bar — driven imperatively via --p (see effect) */}
       <div className="landing-progress" aria-hidden>
         <div className="landing-progress-bar" ref={progressBarRef} style={{ ['--p' as string]: 0 }} />
@@ -280,7 +286,7 @@ export default function LandingPage() {
         )}
       </header>
 
-      <main>
+      <main id="main" tabIndex={-1}>
       {/* ═══ الفصل ٠ — المدار: the hero sky ═══ */}
       <section className="ln-hero" aria-label="مدارك — منصة التعليم الذكي">
         {/* living scene (fails safe to the CSS sky below) */}
@@ -360,16 +366,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ الفصل ١ — الثقة ═══ */}
-      <section id="trust" className="ln-trust" aria-label="الاعتماد الرسمي">
+      {/* ═══ الفصل ١ — الثقة (P3-22: a quiet mono DATA band — the ministry
+          accreditation lives in the top strip + footer only; it used to
+          repeat ×5 across the page) ═══ */}
+      <section id="trust" className="ln-trust" aria-label="أرقام الجامعة">
         <div className="ln-trust-inner">
-          <span className="ln-mono">معتمدة رسميًا</span>
+          <span className="ln-mono">تأسست 1988</span>
           <span className="ln-trust-sep" aria-hidden />
-          <span>وزارة التعليم العالي والبحث العلمي</span>
+          <span className="ln-mono">{`${String(COLLEGES_COUNT).padStart(2, '0')} كلية`}</span>
           <span className="ln-trust-sep" aria-hidden />
-          <span>جامعة الزاوية</span>
-          <span className="ln-trust-sep" aria-hidden />
-          <span>قطاع ضمان الجودة</span>
+          <span className="ln-mono">4 مدن وفروع</span>
         </div>
       </section>
 
@@ -441,7 +447,11 @@ export default function LandingPage() {
         <div className="ln-progress-grid">
           <div className="ln-progress-visual" aria-hidden>
             <div className="ln-progress-orbits">
-              {/* expanding orbit system — scale driven by --sp */}
+              {/* expanding orbit system — P2-18: scale / ring opacity /
+                  core growth / milestone ignition are all scrubbed by the
+                  section's --sp (written by useSectionProgress, consumed
+                  pure-CSS in landing.css §10) — the «EXPAND» promise is
+                  real now */}
               <span className="ln-progress-ring r0" />
               <span className="ln-progress-ring r1" />
               <span className="ln-progress-ring r2" />
@@ -582,7 +592,9 @@ export default function LandingPage() {
             {
               icon: ShieldCheck, tone: 'gold', name: 'ضمان الجودة',
               desc: 'رؤية للمؤشرات المؤسسية: جودة المقرَّرات، تقييم الأساتذة، مراجعة الاختبارات والمناهج.',
-              quote: null,
+              // P3-20: equal mass for the fourth row — it collapsed to
+              // 102px next to its 203px siblings without a remit quote.
+              quote: 'مؤشّرات جودة قابلة للقياس لكل مقرّر وكل أستاذ، ومراجعة دورية للاختبارات والمناهج قبل اعتمادها.',
             },
           ].map((r, i) => (
             <RevealCssClass as="li" key={r.name} className="ln-role-row" delay={(i + 1) as 1 | 2 | 3 | 4}>
@@ -602,7 +614,12 @@ export default function LandingPage() {
           ))}
         </ul>
 
-        {/* the wider system — compact trio (content preserved from the old bento) */}
+        {/* the wider system — compact trio (content preserved from the old bento).
+            P3-20: its own ln-label mini-head so it closes the chapter as a
+            sub-section instead of reading as an appendix. */}
+        <h3 className="ln-system-head">
+          <span className="ln-label">المنظومة الأوسع</span>
+        </h3>
         <div className="ln-system-trio">
           {[
             {
@@ -653,7 +670,9 @@ export default function LandingPage() {
           </RevealCssClass>
           <RevealCssClass as="p" className="ln-cta-meta" delay={4}>
             <Icon icon={Sparkles} size={13} />
-            وزارة التعليم العالي والبحث العلمي · جامعة الزاوية · {year}
+            {/* P3-22: the ministry line repeated ×5 — it stays in the top
+                strip + footer; the finale signs with the university */}
+            جامعة الزاوية · {year}
           </RevealCssClass>
         </div>
       </section>
