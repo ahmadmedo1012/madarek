@@ -8,6 +8,7 @@ import { Badge, Card } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
+import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
 import { useLecture, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
 import { countAr, formatMmSs } from '../../lib/format';
 
@@ -231,12 +232,21 @@ export default function LecturePlayerPage() {
       <div className="lecture-shell">
         {/* Video + meta */}
         <div className="lecture-main">
-          <div className="lecture-video-wrap">
+          {/* R2-B branded chrome: native `controls` removed — the
+              VideoPlayerChrome layers the مدارك player skin over the
+              SAME <video> (same ref, same reporting/checkpoint/
+              resume handlers below, byte-identical). The checkpoint
+              Modal portals to <body> at --z-modal, so the quiz always
+              sits above this chrome. */}
+          <VideoPlayerChrome
+            videoRef={videoRef}
+            checkpointTimes={data.checkpoints.map((c) => c.triggerSec)}
+            className="lecture-video-wrap"
+          >
             <video
               ref={videoRef}
               className="lecture-video"
               src={data.videoUrl}
-              controls
               playsInline
               preload="metadata"
               aria-label={`محاضرة: ${data.title}`}
@@ -283,7 +293,7 @@ export default function LecturePlayerPage() {
                 (see Lecture in useResources.ts) — when the API grows a
                 captionsUrl, render <track kind="captions" srcLang="ar">
                 here. Data-model gap, documented per audit 0-d. */}
-          </div>
+          </VideoPlayerChrome>
 
           <div className="lecture-meta">
             <div className="lecture-meta-badges">

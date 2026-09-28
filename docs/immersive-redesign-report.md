@@ -61,3 +61,39 @@ cd frontend && npm run build && npx vite preview --port 4173
 # ثم افتح http://localhost:4173 — جلسة جديدة = طقس الدخول كاملًا؛ أعد التحميل = دخول مباشر.
 ```
 أدلة بصرية: `/home/z/my-project/audit/leaders-v2/` (45 لقطة + 3 أوراق تماس + 4 تحكيمات VLM خام).
+
+---
+
+## Round 4 — Reference-Matched Rebuild (2026 session)
+
+**User direction:** full scrape of the reference site, understand it in detail,
+then apply its shapes / themes / patterns to be closest to it. Plus: fix the
+slow scrolling and the overlapping mobile version.
+
+**What was done (evidence-backed):**
+
+1. **Full reference scrape** (`/home/z/my-project/reference-scrape/`): HTML
+   (10 sections mapped), complete stylesheet (47KB), JS bundles (GSAP +
+   ScrollTrigger + Three.js detected, e-pin class-swap pinning system decoded).
+2. **Design system extracted and re-applied** (100% original code): palette
+   #110529 / #7367f0 / gradient 7367f0→8e2de2 / cream #f6f5e9 / blend
+   #e2efba / footer #5123af; Rubik display font (Gridular role) + Plex Sans
+   Arabic + Plex Mono; mono bracket tags; glass recipe (blur 20 + rgb(40 40
+   40/.2) + 1px white/16%); gradient pill buttons with roll-up labels +
+   accent glow; corner-composed hero (RTL-mirrored) with JS marquee;
+   (S-001) stat pill anatomy; violet footer bookend with giant wordmark.
+3. **Scroll jank eliminated** — the deployed version's smooth-scroll
+   hijacking was replaced with native scroll: ONE rAF listener writes a CSS
+   var (progress bar = compositor scaleX) + header class. OrbitScene
+   rebuilt: zero per-frame allocations (bucketed fills), no layout reads,
+   DPR 1.5 cap on mobile, scroll-velocity reactive, deterministic rebuilds.
+   useReveal centralized: 1 shared listener for all 47 elements.
+   **Measured: 60 fps / 0 long-frame gaps on 390px; 60 fps steady on 1440px.**
+4. **Mobile overlap fixes** — programmatic bounding-box audit now reports
+   ZERO viewport escapes; header CTA hidden ≤560; letter-spacing 0 on
+   Arabic display text; station headers wrap; menu is absolute +
+   max-height(100dvh) + scrollable; backdrop-filters and the fixed grain
+   layer are dropped ≤768 (solid surfaces); legibility floor 12.5px.
+5. **VLM-verified quality**: hero 8.5/10 desktop; mobile hero after-fix
+   header 9/10, readability 8/10, polish 8/10 (before: 6/5/6).
+6. **Tests**: 997/997 pass on the merged tree (tsc clean, build clean).

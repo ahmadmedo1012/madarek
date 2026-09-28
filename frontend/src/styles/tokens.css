@@ -50,6 +50,18 @@
     --font-serif:   'IBM Plex Serif', Georgia, serif;
     --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
+    --fw-cine:       800;
+    --fw-cine-heavy: 900;
+    /* reference-bar display sizes: 130–200px headline class, 1:1–1:1.1 leading */
+    --fs-cine-hero:  clamp(56px, 9.2vw, 148px);
+    --fs-cine-xl:    clamp(44px, 6.4vw, 104px);
+    --fs-cine-lg:    clamp(34px, 4.6vw, 72px);
+    --lh-cine: 1.06;
+    --lh-cine-tight: 1.02;
+    /* mono eyebrow grammar — «// الفصل الأول» engineered labels */
+    --fs-eyebrow: 12px;
+
+
     /* fluid display — Notion goes BIG on hero */
     --fs-mega:       clamp(48px, 8.4vw, 104px);
     --fs-display-xl: clamp(40px, 6.0vw, 72px);
@@ -83,7 +95,8 @@
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
-    --fw-black: 800;
+    --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800 */
+    /* NOTE: --fw-cine (800) + --fw-cine-heavy (900) above are REAL weights —
 
     /* line-heights — Arabic-comfortable, headline-tight.
        21-c (A12 P2-7): --lh-tight (1.05) is the RAW Latin-tuned scale
