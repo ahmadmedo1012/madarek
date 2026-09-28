@@ -1,5 +1,5 @@
 /**
- * useReveal — IntersectionObserver-based reveal hook.
+ * useReveal — IntersectionObserver-based reveal hook (shared belt).
  *
  * Adds a class (default `in-view`) to the target ref when it enters
  * the viewport, used by `.reveal-up` / `.reveal-fade` CSS classes
@@ -7,7 +7,21 @@
  *
  * Lightweight, no library, respects prefers-reduced-motion.
  *
- * Fling-hardening (audit 4-A11 P1-1, quantified live on `/`):
+ * ── Shared observer belt (perf audit R3 #7) ─────────────────────────
+ * The landing page mounts ~38 of these. The former per-instance design
+ * cost 38 IntersectionObservers + 38 scrollend/resize listener sets,
+ * and on Safari/iOS < 18 (no `scrollend`) it fell back to 38 global
+ * `scroll` listeners, each with its own rAF — up to 38
+ * `getBoundingClientRect()` calls per scroll frame (forced-layout
+ * thrash). Now the whole page shares ONE observer per options
+ * combination (the 38 default reveals all hit the same key), ONE
+ * scroll/resize belt and ONE rAF, and a settle frame reads every
+ * registered rect in a single batch BEFORE writing any reveal class —
+ * one layout pass for the entire belt instead of one per element.
+ * The belt attaches lazily on first registration and tears itself
+ * down when the last entry reveals or unmounts.
+ *
+ * ── Fling-hardening (audit 4-A11 P1-1, quantified live on `/`) ──────
  * a one-shot IO alone permanently hides content. Two blind spots —
  * (a) the `-8%` bottom rootMargin creates a dead zone at the fold:
  *     an element peeking above the viewport bottom but below the
@@ -21,11 +35,165 @@
  *        (or already scrolled past) reveals immediately;
  *     2. IO clause — a non-intersecting entry whose rect is fully
  *        above the viewport means the user flung past it → reveal;
- *     3. scroll-settle belt — on `scrollend` (rAF-throttled `scroll`
+ *     3. scroll-settle belt — on `scrollend` (rAF-coalesced `scroll`
  *        where scrollend is unsupported) reconcile anything the IO
  *        never saw. Content must never stay hidden behind a one-shot.
  */
 import { createElement, useEffect, useRef, type ReactNode, type ElementType } from 'react';
+
+/* ═══════════════════════════════════════════════════════════════════
+   Shared belt — module-level, shared by every useReveal instance.
+   Nothing here touches window/document at import time (SSR-safe);
+   everything runs lazily from component effects.
+   ═══════════════════════════════════════════════════════════════════ */
+
+interface RevealEntry {
+  el: HTMLElement;
+  /** one-shot semantics: reveal once, then leave the belt (default) */
+  once: boolean;
+  settled: boolean;
+  reveal: () => void;
+}
+
+/**
+ * One observer per options combination — every entry registered with
+ * the same threshold/rootMargin shares a single IntersectionObserver
+ * (the landing's ~38 reveals all share the default bucket).
+ */
+interface ObserverBucket {
+  obs: IntersectionObserver;
+  entries: Set<RevealEntry>;
+}
+
+/** All live registrations — what the scroll/settle belt reconciles. */
+const registry = new Set<RevealEntry>();
+const buckets = new Map<string, ObserverBucket>();
+
+let beltAttached = false;
+let beltRaf = 0;
+let fontsHooked = false;
+
+/**
+ * Read-phase → write-phase: every registered element's rect is read
+ * BEFORE any reveal class is written (adding `.in-view` only flips
+ * opacity/transform, so it cannot invalidate layout) — one forced
+ * layout for the whole belt per settle frame, not one per element.
+ */
+const reconcileAll = () => {
+  if (registry.size === 0) return;
+  const due: RevealEntry[] = [];
+  for (const entry of registry) {
+    if (!entry.settled && entry.el.getBoundingClientRect().top < window.innerHeight) {
+      due.push(entry);
+    }
+  }
+  for (const entry of due) entry.reveal();
+};
+
+/** ONE rAF per frame, no matter how many entries or belt events fired. */
+const scheduleReconcile = () => {
+  if (beltRaf) return;
+  beltRaf = requestAnimationFrame(() => {
+    beltRaf = 0;
+    reconcileAll();
+  });
+};
+
+const onScrollSettle = () => scheduleReconcile();
+const onResize = () => scheduleReconcile();
+const onLoadSettle = () => scheduleReconcile();
+const onFontsSettled = () => scheduleReconcile();
+
+const attachBelt = () => {
+  if (beltAttached) return;
+  beltAttached = true;
+  // (Stored in a const, not an inline `in` check: TS narrows an inline
+  // `'onscrollend' in window` else-branch to `never` because lib.dom
+  // types the handler — branching on the boolean keeps the window type
+  // wide.)
+  const supportsScrollEnd = 'onscrollend' in window;
+  if (supportsScrollEnd) {
+    window.addEventListener('scrollend', onScrollSettle, { passive: true });
+  } else {
+    // Safari & older engines: no scrollend — reconcile on scroll
+    // frames; the shared rAF above keeps it to one batch per frame.
+    window.addEventListener('scroll', onScrollSettle, { passive: true });
+  }
+  window.addEventListener('resize', onResize, { passive: true });
+  // Geometry drift: images/fonts settle after mount and can pull an
+  // element from below the fold into the rootMargin dead zone.
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', onLoadSettle, { once: true, passive: true });
+  }
+  if (!fontsHooked) {
+    fontsHooked = true;
+    document.fonts?.ready?.then(onFontsSettled).catch(() => {
+      /* fonts API rejected — the load/scrollend belts still cover */
+    });
+  }
+};
+
+const detachBelt = () => {
+  if (!beltAttached) return;
+  beltAttached = false;
+  // Removing a type that was never added (scrollend vs scroll) is a
+  // no-op, so both are attempted unconditionally.
+  window.removeEventListener('scrollend', onScrollSettle);
+  window.removeEventListener('scroll', onScrollSettle);
+  window.removeEventListener('resize', onResize);
+  window.removeEventListener('load', onLoadSettle);
+  if (beltRaf) {
+    cancelAnimationFrame(beltRaf);
+    beltRaf = 0;
+  }
+};
+
+const getBucket = (threshold: number, rootMargin: string): ObserverBucket => {
+  const key = `${threshold}|${rootMargin}`;
+  let bucket = buckets.get(key);
+  if (bucket) return bucket;
+  const entries = new Set<RevealEntry>();
+  const obs = new IntersectionObserver(
+    (list) => {
+      for (const e of list) {
+        for (const entry of entries) {
+          if (entry.el !== e.target || entry.settled) continue;
+          if (e.isIntersecting) {
+            if (entry.once) {
+              entry.reveal(); // also unregisters + reaps the belt when last
+            } else {
+              entry.el.classList.add('in-view');
+            }
+          } else if (entry.once && e.boundingClientRect.bottom < 0) {
+            // (b) Non-intersecting and fully above the viewport — the
+            // user flung/jumped past this element between observation
+            // frames. One-shot semantics: passed ⇒ revealed.
+            entry.reveal();
+          } else if (!entry.once) {
+            entry.el.classList.remove('in-view');
+          }
+        }
+      }
+    },
+    { threshold, rootMargin },
+  );
+  bucket = { obs, entries };
+  buckets.set(key, bucket);
+  return bucket;
+};
+
+const unregister = (entry: RevealEntry) => {
+  registry.delete(entry);
+  for (const [key, bucket] of [...buckets]) {
+    if (!bucket.entries.delete(entry)) continue;
+    if (bucket.entries.size === 0) {
+      bucket.obs.disconnect();
+      buckets.delete(key);
+    }
+    break; // an entry lives in exactly one bucket
+  }
+  if (registry.size === 0) detachBelt();
+};
 
 export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
   threshold?: number;
@@ -49,117 +217,41 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
     }
 
     const once = options?.once !== false;
-    let settled = false;
-    const cleanupFns: Array<() => void> = [];
+    const threshold = options?.threshold ?? 0.12;
+    const rootMargin = options?.rootMargin ?? '0px 0px -8% 0px';
 
-    const reveal = () => {
-      if (settled) return;
-      settled = true;
-      el.classList.add('in-view');
-      cleanupFns.splice(0).forEach((fn) => fn());
+    const entry: RevealEntry = {
+      el,
+      once,
+      settled: false,
+      reveal: () => {
+        if (entry.settled) return;
+        entry.settled = true;
+        el.classList.add('in-view');
+        unregister(entry); // one-shot ⇒ leaves the observer + belt
+      },
     };
 
     // (a) Mount check — already visible at the fold, or scrolled past
     // (scroll-restoration / anchor deep-link): reveal now. Mirrors the
     // platform <Reveal> component's above-the-fold clause.
     if (el.getBoundingClientRect().top < window.innerHeight) {
-      reveal();
+      entry.reveal();
       return;
     }
 
     if (typeof IntersectionObserver === 'undefined') {
-      reveal();
+      entry.reveal();
       return;
     }
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            if (once) {
-              reveal(); // also tears the belt down
-            } else {
-              e.target.classList.add('in-view');
-            }
-          } else if (
-            once &&
-            e.boundingClientRect.bottom < 0
-          ) {
-            // (b) Non-intersecting and fully above the viewport — the
-            // user flung/jumped past this element between observation
-            // frames. One-shot semantics: passed ⇒ revealed.
-            reveal();
-          } else if (!once) {
-            e.target.classList.remove('in-view');
-          }
-        });
-      },
-      {
-        threshold: options?.threshold ?? 0.12,
-        rootMargin: options?.rootMargin ?? '0px 0px -8% 0px',
-      },
-    );
+    const bucket = getBucket(threshold, rootMargin);
+    registry.add(entry);
+    bucket.entries.add(entry);
+    bucket.obs.observe(el);
+    attachBelt();
 
-    obs.observe(el);
-    cleanupFns.push(() => obs.disconnect());
-
-    // (c) Belt — IO provably never fires for elements that skip from
-    // below the root to above it, so reconcile once scrolling settles.
-    // Anything at/above the fold at that moment must be visible.
-    const reconcile = () => {
-      if (settled) return;
-      if (el.getBoundingClientRect().top < window.innerHeight) reveal();
-    };
-    let rafId = 0;
-    const onScrollEnd = () => reconcile();
-    const onScrollFallback = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = 0;
-        reconcile();
-      });
-    };
-    // (Stored in a const, not an inline `in` check: TS narrows an
-    // inline `'onscrollend' in window` else-branch to `never` because
-    // lib.dom types the handler — branching on the boolean keeps the
-    // window type wide.)
-    const supportsScrollEnd = 'onscrollend' in window;
-    if (supportsScrollEnd) {
-      window.addEventListener('scrollend', onScrollEnd, { passive: true });
-      cleanupFns.push(() => window.removeEventListener('scrollend', onScrollEnd));
-    } else {
-      // Safari & older engines: no scrollend — poll on scroll frames.
-      window.addEventListener('scroll', onScrollFallback, { passive: true });
-      cleanupFns.push(() => {
-        window.removeEventListener('scroll', onScrollFallback);
-        if (rafId) cancelAnimationFrame(rafId);
-      });
-    }
-
-    // Geometry drift: the mount check reads the rect at effect time,
-    // but fonts and images settle AFTER mount and can pull an element
-    // from below the fold into the fold dead-zone (the landing hero
-    // CTA on 882–959px viewports does exactly this — measured: mount
-    // top ≥ vh, settled top 892 at vh=900, forever inside the −8%
-    // rootMargin dead zone). Re-check when the page settles or the
-    // viewport changes.
-    const onSettle = () => reconcile();
-    const onResize = () => reconcile();
-    if (document.readyState === 'complete') {
-      onSettle();
-    } else {
-      window.addEventListener('load', onSettle, { once: true, passive: true });
-      cleanupFns.push(() => window.removeEventListener('load', onSettle));
-    }
-    document.fonts?.ready?.then(onSettle).catch(() => {
-      /* fonts API rejected — the load/scrollend belts still cover */
-    });
-    window.addEventListener('resize', onResize, { passive: true });
-    cleanupFns.push(() => window.removeEventListener('resize', onResize));
-
-    return () => {
-      cleanupFns.splice(0).forEach((fn) => fn());
-    };
+    return () => unregister(entry);
   }, [options?.threshold, options?.rootMargin, options?.once]);
 
   return ref;

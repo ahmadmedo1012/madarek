@@ -1,21 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * OrbitScene — «مدارات المعرفة» canvas engine.
+ * OrbitScene — «مدارات المعرفة» canvas engine (Orbit Ink edition).
  *
- * The living centerpiece of the immersive landing: a deep-night sky where
- * knowledge nodes travel along elliptical orbits, connect into
- * constellations, and a bright "traveller" (the learner) journeys between
- * orbits leaving a fading golden trail.
+ * A calm, flat orbital system over the hero's solid ink ground:
+ * knowledge nodes ride thin cream hairline rings, and a lime
+ * "traveller" (the learner) moves between orbits leaving a fading
+ * thread. Light comes from contrast, not glow — the round-3 craft.
  *
- * ── Craft contract (docs/immersive-redesign-plan.md §5) ──────────────
+ * ── Craft contract (docs/immersive-redesign-plan.md §5 +
+ *    round-3 REFERENCE-DESIGN-SPEC §4.4) ─────────────────────────
+ * · Final visual diet (round-3 VLM verdict vs the reference): the
+ *   reference hero is pure color + pure type — zero background
+ *   graphics. The orbit identity stays, but it whispers: ≤60 static
+ *   stars (α 0.22–0.45, no twinkle), ONE 0.06 nebula wash, 3 hairline
+ *   rings (α 0.05–0.10), 6 nodes (glow sprites α ≤0.18). The
+ *   reduced-motion static frame paints the same dim constants.
  * · Zero dependencies — Canvas 2D + one rAF loop.
- * · DPR capped at 2; density scales with viewport area.
+ * · DPR capped at 1.5 (retina paints ≤2.25× CSS pixels, not 4×).
+ * · Allocation-free draw loop: every per-frame color string, point
+ *   and buffer is built once (module scope or on resize) and only
+ *   rewritten numerically per frame — no GC churn, no 100ms frames.
+ * · No canvas shadow-blur filters anywhere — glows are pre-rendered
+ *   radial sprites at low alpha (audit §C: per-frame shadow filters
+ *   are far too slow).
+ * · Containment-first geometry: orbit radius ≤ min(w,h) × 0.45 and
+ *   the system is centered inside the canvas, so no ring is ever
+ *   amputated by the hero's overflow:hidden (mobile audit #10) and
+ *   rings keep a circular character instead of wide flat ellipses.
  * · Fully paused when offscreen (IntersectionObserver) or tab hidden.
- * · prefers-reduced-motion → one high-quality static frame, no loop.
+ * · prefers-reduced-motion → ONE composed static frame; no rAF, no
+ *   scroll/mouse listeners.
  * · navigator.saveData / low deviceMemory → reduced density.
  * · Any canvas failure → component unmounts itself; the hero's CSS
- *   gradient + SVG star fallback carries the scene (page stays complete).
+ *   sky fallback carries the scene (page stays complete).
  * · Every listener + rAF + observer is cleaned up on unmount.
  */
 
@@ -28,33 +46,64 @@ export type OrbitSceneProps = {
   /**
    * Horizontal bias of the orbital system, −1 … 1 (0 = centered).
    * The hero passes a negative value so the visual mass sits opposite
-   * the RTL text column, keeping the composition asymmetric.
+   * the RTL text column, keeping the composition asymmetric. The bias
+   * is clamped so the full system always stays inside the canvas.
    */
   biasX?: number;
   /** Ambient rotation speed multiplier. 1 = default. */
   speed?: number;
 };
 
-type Star = { x: number; y: number; r: number; base: number; phase: number; tint: number };
+/** Orbit Ink palette (round 3) — canvas-side of the --ln-* landing tokens. */
+const CREAM = [245, 243, 231] as const; // #F5F3E7 — stars / hairlines
+const LIME = [223, 237, 178] as const; // #DFEDB2 — the knowledge light
+const VIOLET = [122, 107, 242] as const; // #7A6BF2 — depth accent
+
+type NodeColor = 'lime' | 'violet' | 'cream';
+
+/** Per-frame color strings — built once, referenced every frame. */
+const STAR_COLORS = {
+  cream: 'rgb(245,243,231)',
+  lime: 'rgb(223,237,178)',
+  violet: 'rgb(122,107,242)',
+} as const;
+const NODE_FILL = {
+  lime: 'rgba(223,237,178,0.95)',
+  violet: 'rgba(122,107,242,0.95)',
+  cream: 'rgba(245,243,231,0.9)',
+} as const;
+const RING_STROKE = 'rgb(245,243,231)';
+const LINK_STROKE = 'rgb(223,237,178)';
+const TRAIL_STROKE = 'rgb(223,237,178)';
+const HEAD_FILL = 'rgb(245,243,231)';
+
+type Star = { x: number; y: number; r: number; base: number; color: string };
 type Node = {
   orbit: number;
   angle: number;
   omega: number;
   r: number;
-  color: 'gold' | 'azure' | 'mist';
+  color: NodeColor;
+  /** live position — preallocated, rewritten numerically every frame */
+  x: number;
+  y: number;
 };
-type TrailPoint = { x: number; y: number };
 
-const NODE_COLORS = {
-  gold: [233, 180, 76],
-  azure: [111, 168, 255],
-  mist: [168, 178, 210],
-} as const;
+/**
+ * Orbit fractions of the system radius + tilt + angular speed + line alpha.
+ * Visual diet: 3 hairlines (was 4), mist 0.05–0.10 (was 0.08–0.17) —
+ * discoverable on the second look, never the first.
+ */
+const ORBITS = [
+  { f: 0.4, rot: -0.34, omega: 0.00016, mist: 0.1 },
+  { f: 0.61, rot: -0.28, omega: 0.00011, mist: 0.07 },
+  { f: 1, rot: -0.16, omega: 0.00006, mist: 0.05 },
+] as const;
 
-const GOLD = NODE_COLORS.gold;
-const INK_RGB = [242, 239, 230] as const; // warm white — matches --ln-ink
+const NODE_PALETTE: readonly NodeColor[] = ['lime', 'lime', 'violet', 'cream', 'lime', 'violet'];
+const TRAIL_MAX = 16; // visual diet: shorter fading thread (was 24)
 
-/** Pre-rendered radial-glow sprites — shadowBlur is too slow per-frame. */
+/** Pre-rendered radial-glow sprite — per-frame shadow filters are far too slow. */
 function makeGlowSprite(size: number, rgb: readonly number[], coreAlpha: number): HTMLCanvasElement {
   const c = document.createElement('canvas');
   c.width = size;
@@ -99,75 +148,79 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
 
     const tier: Density = density ?? (saveData || lowMemory ? 'low' : 'full');
 
-    // ── sizing ────────────────────────────────────────────────────────
+    // ── sizing + containment-first geometry ───────────────────────────
     let w = 0;
     let h = 0;
     let dpr = 1;
+    // Whole orbital system: max radius ≤ min(w,h) × 0.45 (mobile audit
+    // #10) — nothing the scene draws can be amputated by overflow:hidden.
+    let orbitR = 1;
+    let systemCx = 0;
+    let systemCy = 0;
+    // rings stay rounder on tall (portrait) screens, disc-tilted on wide ones
+    let squash = 0.52;
+    let linkDist = 120;
     let stars: Star[] = [];
     let nodes: Node[] = [];
     let nebula: HTMLCanvasElement | null = null;
-    let glowGold: HTMLCanvasElement;
-    let glowAzure: HTMLCanvasElement;
-    let glowInk: HTMLCanvasElement;
-
-    // ── scene model ───────────────────────────────────────────────────
-    const ORBITS = [
-      { rx: 0.3, ry: 0.115, rot: -0.38, omega: 0.00016, mist: 0.16 },
-      { rx: 0.44, ry: 0.185, rot: -0.32, omega: 0.00011, mist: 0.12 },
-      { rx: 0.58, ry: 0.26, rot: -0.27, omega: 0.00008, mist: 0.09 },
-      { rx: 0.72, ry: 0.335, rot: -0.22, omega: 0.00006, mist: 0.07 },
-    ];
+    let glowLime: HTMLCanvasElement;
+    let glowViolet: HTMLCanvasElement;
+    let glowCream: HTMLCanvasElement;
 
     const mouse = { x: 0.5, y: 0.5, active: false, sx: 0.5, sy: 0.5 };
-    let scrollP = 0; // 0 … 1 as the hero scrolls away
+    let scrollP = 0; // 0 … 1 as the hero scrolls away (drives the fade only)
     let introT = 0; // 0 … 1 scene bloom on mount
 
     function buildScene() {
       const area = w * h;
+      // Final visual diet: ≤60 stars full tier / ≤36 low (was ≤140/≤70),
+      // STATIC alpha 0.22–0.45 (twinkle removed — nothing may flash),
+      // radius ≤1.2px. The sky whispers instead of sparkling.
       const starCount = tier === 'low'
-        ? Math.max(40, Math.round(area / 24000))
-        : Math.max(110, Math.round(area / 8200));
-      stars = Array.from({ length: Math.min(starCount, 260) }, () => ({
-        x: Math.random(),
-        y: Math.random(),
-        r: 0.4 + Math.random() * 1.3,
-        base: 0.12 + Math.random() * 0.4,
-        phase: Math.random() * Math.PI * 2,
-        tint: Math.random(),
-      }));
+        ? Math.min(36, Math.max(14, Math.round(area / 32000)))
+        : Math.min(60, Math.max(20, Math.round(area / 19000)));
+      stars = Array.from({ length: starCount }, () => {
+        const tint = Math.random();
+        return {
+          x: Math.random(),
+          y: Math.random(),
+          r: 0.4 + Math.random() * 0.8,
+          base: 0.22 + Math.random() * 0.23,
+          color:
+            tint < 0.8 ? STAR_COLORS.cream : tint < 0.94 ? STAR_COLORS.lime : STAR_COLORS.violet,
+        };
+      });
 
-      const nodeCount = tier === 'low' ? 10 : 16;
-      const palette: Array<'gold' | 'azure' | 'mist'> = ['gold', 'gold', 'azure', 'mist', 'gold', 'azure'];
+      // Visual diet: 6 nodes full tier / 4 low (was 10/6), flat 2px core.
+      const nodeCount = tier === 'low' ? 4 : 6;
       nodes = Array.from({ length: nodeCount }, (_, i) => {
         const orbit = i % ORBITS.length;
         return {
           orbit,
           angle: Math.random() * Math.PI * 2,
           omega: ORBITS[orbit]!.omega * (0.75 + Math.random() * 0.5) * (Math.random() < 0.5 ? 1 : -1),
-          r: 1.8 + Math.random() * 2.2,
-          color: palette[i % palette.length]!,
+          r: 2,
+          color: NODE_PALETTE[i % NODE_PALETTE.length]!,
+          x: 0,
+          y: 0,
         };
       });
 
-      // Nebula — painted once per resize into an offscreen canvas.
+      // Depth bloom — ONE violet radial over the flat ink ground, painted
+      // once per resize into an offscreen canvas. Spec §4.2 rule 3 ceiling
+      // is 0.12; the final visual diet holds it at 0.06 so the hero reads
+      // as FLAT navy with only the faintest depth — never a glow.
       nebula = document.createElement('canvas');
       nebula.width = Math.max(1, w);
       nebula.height = Math.max(1, h);
       const ng = nebula.getContext('2d');
       if (ng) {
-        const cx = w * (0.5 + biasX * 0.5);
-        const paint = (x: number, y: number, rr: number, rgb: readonly number[], a: number) => {
-          const grad = ng.createRadialGradient(x, y, 0, x, y, rr);
-          grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`);
-          grad.addColorStop(1, 'rgba(0,0,0,0)');
-          ng.fillStyle = grad;
-          ng.fillRect(x - rr, y - rr, rr * 2, rr * 2);
-        };
-        paint(cx, h * 0.42, Math.max(w, h) * 0.52, [26, 34, 74], 0.55); // deep indigo bloom
-        paint(cx, h * 0.46, Math.max(w, h) * 0.2, [58, 44, 22], 0.34); // focal glow at the orbital heart
-        paint(cx + w * 0.18, h * 0.3, Math.max(w, h) * 0.3, [46, 38, 20], 0.5); // faint warm dust
-        paint(w * 0.12, h * 0.75, Math.max(w, h) * 0.24, [18, 26, 58], 0.4);
-        paint(w * 0.9, h * 0.18, Math.max(w, h) * 0.2, [30, 24, 60], 0.35);
+        const rr = orbitR * 1.5;
+        const grad = ng.createRadialGradient(systemCx, systemCy, 0, systemCx, systemCy, rr);
+        grad.addColorStop(0, `rgba(${VIOLET[0]},${VIOLET[1]},${VIOLET[2]},0.06)`);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ng.fillStyle = grad;
+        ng.fillRect(0, 0, w, h);
       }
     }
 
@@ -175,48 +228,63 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
       const rect = canvas.getBoundingClientRect();
       w = Math.max(1, rect.width);
       h = Math.max(1, rect.height);
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Spec §4.4 — DPR cap 1.5: retina paints ≤2.25× CSS pixels.
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Containment-first system placement (mobile audit #10): radius
+      // capped at 45% of the short side; the bias can only consume the
+      // SLACK beyond the cap, so cx ± orbitR always lands inside [0, w].
+      orbitR = Math.min(w, h) * 0.45;
+      systemCx = w * 0.5 + biasX * Math.max(0, w * 0.5 - orbitR);
+      systemCy = h * 0.46;
+      squash = w < h ? 0.72 : 0.52;
+      linkDist = Math.min(190, orbitR * 0.7);
+
       buildScene();
     }
 
-    // ── helpers ───────────────────────────────────────────────────────
-    function orbitPoint(orbit: number, angle: number, scale: number) {
+    // ── helpers (all write into preallocated buffers) ────────────────
+    const scratch = { x: 0, y: 0 };
+
+    function orbitPoint(orbit: number, angle: number, scale: number, out: { x: number; y: number }) {
       const o = ORBITS[orbit]!;
-      const cx = w * (0.5 + biasX * 0.42);
-      const cy = h * 0.46;
-      const rx = w * o.rx * scale;
-      const ry = h * o.ry * scale;
+      const rx = orbitR * o.f * scale;
+      const ry = rx * squash;
       const cos = Math.cos(angle);
       const sin = Math.sin(angle);
       const x = cos * rx;
       const y = sin * ry;
       const rxr = Math.cos(o.rot);
       const ryr = Math.sin(o.rot);
-      return {
-        x: cx + x * rxr - y * ryr,
-        y: cy + x * ryr + y * rxr,
-      };
+      out.x = systemCx + x * rxr - y * ryr;
+      out.y = systemCy + x * ryr + y * rxr;
     }
 
     const traveller = {
       orbit: 1,
       angle: -Math.PI / 3,
       jumpFrom: null as null | { orbit: number; angle: number; t: number; dur: number; toOrbit: number; toAngle: number },
-      trail: [] as TrailPoint[],
     };
 
-    function systemScale() {
-      // orbits bloom in on mount, then expand slightly as the hero scrolls away
-      const bloom = 0.94 + 0.06 * introT;
-      return bloom * (1 + scrollP * 0.14);
+    // trail ring buffer — preallocated once, never reallocated
+    const trailX = new Float64Array(TRAIL_MAX);
+    const trailY = new Float64Array(TRAIL_MAX);
+    let trailLen = 0;
+    let trailHead = 0; // index of the next write
+
+    function pushTrail(x: number, y: number) {
+      trailX[trailHead] = x;
+      trailY[trailHead] = y;
+      trailHead = (trailHead + 1) % TRAIL_MAX;
+      if (trailLen < TRAIL_MAX) trailLen++;
     }
 
-    function pushTrail(pt: TrailPoint) {
-      traveller.trail.push(pt);
-      if (traveller.trail.length > 34) traveller.trail.shift();
+    /** Buffer index of the i-th oldest trail point. */
+    function trailIndex(i: number): number {
+      return (trailHead - trailLen + i + TRAIL_MAX) % TRAIL_MAX;
     }
 
     function updateTraveller(dt: number) {
@@ -225,10 +293,12 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         j.t += dt;
         const p = Math.min(1, j.t / j.dur);
         const ease = p * p * (3 - 2 * p); // smoothstep
-        const a = orbitPoint(j.orbit, j.angle, systemScale());
-        const b = orbitPoint(j.toOrbit, j.toAngle, systemScale());
+        orbitPoint(j.orbit, j.angle, systemScale(), scratch);
+        const ax = scratch.x;
+        const ay = scratch.y;
+        orbitPoint(j.toOrbit, j.toAngle, systemScale(), scratch);
         const lift = Math.sin(p * Math.PI) * 26;
-        pushTrail({ x: a.x + (b.x - a.x) * ease, y: a.y + (b.y - a.y) * ease - lift });
+        pushTrail(ax + (scratch.x - ax) * ease, ay + (scratch.y - ay) * ease - lift);
         if (p >= 1) {
           traveller.orbit = j.toOrbit;
           traveller.angle = j.toAngle;
@@ -238,7 +308,8 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         return;
       }
       traveller.angle += ORBITS[traveller.orbit]!.omega * 1.9 * speed * dt;
-      pushTrail(orbitPoint(traveller.orbit, traveller.angle, systemScale()));
+      orbitPoint(traveller.orbit, traveller.angle, systemScale(), scratch);
+      pushTrail(scratch.x, scratch.y);
     }
 
     let jumpTimer = 0;
@@ -257,126 +328,131 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
       }, 2600 + Math.random() * 4200);
     }
 
-    // ── draw ──────────────────────────────────────────────────────────
-    function draw(now: number, dt: number) {
+    function systemScale() {
+      // blooms in on mount only — no scroll expansion, so the radius cap
+      // holds at every scroll position (mobile audit #10 fix)
+      return 0.94 + 0.06 * introT;
+    }
+
+    // ── draw (allocation-free) ────────────────────────────────────────
+    function draw(dt: number) {
       ctx.clearRect(0, 0, w, h);
 
       const fade = 1 - scrollP * 0.55;
-      ctx.globalAlpha = fade;
 
-      if (nebula) ctx.drawImage(nebula, 0, 0, w, h);
+      // depth bloom — offscreen, one drawImage
+      if (nebula) {
+        ctx.globalAlpha = fade;
+        ctx.drawImage(nebula, 0, 0, w, h);
+      }
 
-      // stars — parallax layer (deep)
-      const starParX = (mouse.sx - 0.5) * 10;
-      const starParY = (mouse.sy - 0.5) * 8;
-      for (const s of stars) {
-        const tw = reducedMotion ? 1 : 0.6 + 0.4 * Math.sin(now * 0.0012 + s.phase);
-        const alpha = s.base * tw;
-        ctx.fillStyle =
-          s.tint < 0.78
-            ? `rgba(${INK_RGB[0]},${INK_RGB[1]},${INK_RGB[2]},${alpha})`
-            : s.tint < 0.92
-              ? `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},${alpha})`
-              : `rgba(${NODE_COLORS.azure[0]},${NODE_COLORS.azure[1]},${NODE_COLORS.azure[2]},${alpha})`;
+      // stars — deep parallax layer; STATIC alpha (twinkle removed in the
+      // visual diet — nothing in the sky may flash)
+      const starParX = (mouse.sx - 0.5) * 6;
+      const starParY = (mouse.sy - 0.5) * 5;
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i]!;
+        ctx.globalAlpha = s.base * fade;
+        ctx.fillStyle = s.color;
         ctx.beginPath();
         ctx.arc(s.x * w + starParX, s.y * h + starParY, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // orbit rings — parallax layer (mid)
-      const orbitParX = (mouse.sx - 0.5) * 22;
-      const orbitParY = (mouse.sy - 0.5) * 16;
+      // orbit rings — thin flat cream hairlines (1px); parallax amplitude
+      // trimmed ~40% (calm, not playful)
+      const orbitParX = (mouse.sx - 0.5) * 13;
+      const orbitParY = (mouse.sy - 0.5) * 10;
       const scale = systemScale();
+      const cx = systemCx + orbitParX;
+      const cy = systemCy + orbitParY;
       ctx.lineWidth = 1;
-      for (const o of ORBITS) {
-        ctx.strokeStyle = `rgba(142, 151, 184, ${o.mist * fade})`;
+      ctx.strokeStyle = RING_STROKE;
+      for (let i = 0; i < ORBITS.length; i++) {
+        const o = ORBITS[i]!;
+        ctx.globalAlpha = o.mist * fade;
         ctx.beginPath();
-        ctx.ellipse(
-          w * (0.5 + biasX * 0.42) + orbitParX,
-          h * 0.46 + orbitParY,
-          w * o.rx * scale,
-          h * o.ry * scale,
-          o.rot,
-          0,
-          Math.PI * 2,
-        );
+        ctx.ellipse(cx, cy, orbitR * o.f * scale, orbitR * o.f * scale * squash, o.rot, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // nodes
-      const pts: Array<{ x: number; y: number; r: number; color: 'gold' | 'azure' | 'mist' }> = [];
-      for (const n of nodes) {
+      // nodes — positions rewritten into the preallocated node objects
+      // (raw orbit coords; parallax is applied at draw time so nodes,
+      // rings and trail move as one system layer)
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i]!;
         n.angle += n.omega * speed * (reducedMotion ? 0 : 1) * dt;
-        const p = orbitPoint(n.orbit, n.angle, scale);
-        let px = p.x;
-        let py = p.y;
+        orbitPoint(n.orbit, n.angle, scale, scratch);
+        let ox = 0;
+        let oy = 0;
         if (canHover && mouse.active) {
-          const mx = mouse.sx * w;
-          const my = mouse.sy * h;
-          const dx = mx - p.x;
-          const dy = my - p.y;
+          const dx = mouse.sx * w - (scratch.x + orbitParX);
+          const dy = mouse.sy * h - (scratch.y + orbitParY);
           const dist = Math.hypot(dx, dy);
           if (dist < 170 && dist > 0.001) {
             const pull = (1 - dist / 170) * 14;
-            px += (dx / dist) * pull;
-            py += (dy / dist) * pull;
+            ox = (dx / dist) * pull;
+            oy = (dy / dist) * pull;
           }
         }
-        pts.push({ x: px, y: py, r: n.r, color: n.color });
+        n.x = scratch.x + ox;
+        n.y = scratch.y + oy;
       }
 
-      // constellation links between near nodes
+      // constellation links between near nodes (diet: 0.22 → 0.14)
       ctx.lineWidth = 1;
-      for (let i = 0; i < pts.length; i++) {
-        for (let k = i + 1; k < pts.length; k++) {
-          const a = pts[i]!;
-          const b = pts[k]!;
+      ctx.strokeStyle = LINK_STROKE;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i]!;
+        for (let k = i + 1; k < nodes.length; k++) {
+          const b = nodes[k]!;
           const d = Math.hypot(a.x - b.x, a.y - b.y);
-          if (d < 175) {
-            const alpha = (1 - d / 175) * 0.3 * fade;
-            ctx.strokeStyle = `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},${alpha})`;
+          if (d < linkDist) {
+            ctx.globalAlpha = (1 - d / linkDist) * 0.14 * fade;
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
+            ctx.moveTo(a.x + orbitParX, a.y + orbitParY);
+            ctx.lineTo(b.x + orbitParX, b.y + orbitParY);
             ctx.stroke();
           }
         }
       }
 
-      // node glows + cores
-      for (const p of pts) {
-        const sprite = p.color === 'gold' ? glowGold : p.color === 'azure' ? glowAzure : glowInk;
-        const gs = p.r * 11;
-        ctx.drawImage(sprite, p.x - gs / 2, p.y - gs / 2, gs, gs);
-        const rgb = NODE_COLORS[p.color];
-        ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0.95)`;
+      // node glows + cores (sprites at low alpha — flat craft, not neon)
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i]!;
+        const sprite = n.color === 'lime' ? glowLime : n.color === 'violet' ? glowViolet : glowCream;
+        const gs = n.r * 9;
+        ctx.globalAlpha = fade;
+        ctx.drawImage(sprite, n.x + orbitParX - gs / 2, n.y + orbitParY - gs / 2, gs, gs);
+        ctx.fillStyle = NODE_FILL[n.color];
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.arc(n.x + orbitParX, n.y + orbitParY, n.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // traveller + trail — parallax layer (front)
+      // traveller + trail — front layer, same system parallax
       if (!reducedMotion) updateTraveller(dt);
-      const tr = traveller.trail;
-      for (let i = 1; i < tr.length; i++) {
-        const p0 = tr[i - 1]!;
-        const p1 = tr[i]!;
-        const t = i / tr.length;
-        ctx.strokeStyle = `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},${t * 0.55 * fade})`;
-        ctx.lineWidth = 1 + t * 2.2;
+      ctx.strokeStyle = TRAIL_STROKE;
+      for (let i = 1; i < trailLen; i++) {
+        const i0 = trailIndex(i - 1);
+        const i1 = trailIndex(i);
+        const t = (i + 1) / trailLen;
+        ctx.globalAlpha = t * 0.28 * fade;
+        ctx.lineWidth = 1 + t * 1.6;
         ctx.beginPath();
-        ctx.moveTo(p0.x + orbitParX, p0.y + orbitParY);
-        ctx.lineTo(p1.x + orbitParX, p1.y + orbitParY);
+        ctx.moveTo(trailX[i0]! + orbitParX, trailY[i0]! + orbitParY);
+        ctx.lineTo(trailX[i1]! + orbitParX, trailY[i1]! + orbitParY);
         ctx.stroke();
       }
-      if (tr.length > 0) {
-        const head = tr[tr.length - 1]!;
-        const hx = head.x + orbitParX;
-        const hy = head.y + orbitParY;
-        ctx.drawImage(glowGold, hx - 33, hy - 33, 66, 66);
-        ctx.fillStyle = 'rgba(255, 236, 190, 0.98)';
+      if (trailLen > 0) {
+        const head = trailIndex(trailLen - 1);
+        const hx = trailX[head]! + orbitParX;
+        const hy = trailY[head]! + orbitParY;
+        ctx.globalAlpha = fade;
+        ctx.drawImage(glowLime, hx - 22, hy - 22, 44, 44);
+        ctx.fillStyle = HEAD_FILL;
         ctx.beginPath();
-        ctx.arc(hx, hy, 2.6, 0, Math.PI * 2);
+        ctx.arc(hx, hy, 2, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -386,13 +462,19 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     // ── static frame (reduced-motion path) ────────────────────────────
     function drawStatic() {
       introT = 1;
-      // seed a trail along the current orbit for a composed still
-      traveller.trail = [];
-      for (let i = 0; i < 34; i++) {
-        traveller.angle -= ORBITS[traveller.orbit]!.omega * 26;
-        traveller.trail.unshift(orbitPoint(traveller.orbit, traveller.angle, systemScale()));
+      trailLen = 0;
+      trailHead = 0;
+      // seed a trail along the current orbit for a composed still: walk
+      // back TRAIL_MAX steps, then push forward so the ring buffer runs
+      // oldest → newest exactly like the live loop (head glow on top)
+      const step = ORBITS[traveller.orbit]!.omega * 26;
+      traveller.angle -= step * TRAIL_MAX;
+      for (let i = 0; i < TRAIL_MAX; i++) {
+        traveller.angle += step;
+        orbitPoint(traveller.orbit, traveller.angle, systemScale(), scratch);
+        pushTrail(scratch.x, scratch.y);
       }
-      draw(0, 0);
+      draw(0);
     }
 
     // ── loop control ──────────────────────────────────────────────────
@@ -409,7 +491,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
       dtGlobal = Math.min(48, now - last || 16);
       last = now;
       if (introT < 1) introT = Math.min(1, introT + dtGlobal / 1400);
-      draw(now, dtGlobal);
+      draw(dtGlobal);
       if (running) raf = requestAnimationFrame(frame);
     }
 
@@ -437,13 +519,11 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
       },
       { rootMargin: '80px 0px' },
     );
-    io.observe(canvas);
 
     const onVisibility = () => {
       visible = !document.hidden;
       setRunning(visible);
     };
-    document.addEventListener('visibilitychange', onVisibility);
 
     const ro = new ResizeObserver(() => {
       resize();
@@ -451,14 +531,20 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     });
     ro.observe(canvas);
 
-    const onScroll = () => {
+    // scroll → fade progress; rAF-coalesced (one gBCR read per frame max)
+    let scrollRaf = 0;
+    const readScroll = () => {
+      scrollRaf = 0;
       const rect = canvas.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       scrollP = Math.max(0, Math.min(1, -rect.top / (vh * 0.9)));
     };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    const onScroll = () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(readScroll);
+    };
 
+    // mouse parallax — same pending-flag pattern
     let mouseRaf = 0;
     const onMouse = (e: MouseEvent) => {
       if (mouseRaf) return;
@@ -472,7 +558,6 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         mouse.sy += (mouse.y - mouse.sy) * 0.12;
       });
     };
-    if (canHover) window.addEventListener('mousemove', onMouse, { passive: true });
 
     // ── boot / teardown ───────────────────────────────────────────────
     const teardown = () => {
@@ -484,26 +569,35 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
       window.removeEventListener('mousemove', onMouse);
       if (raf) cancelAnimationFrame(raf);
       if (mouseRaf) cancelAnimationFrame(mouseRaf);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
       window.clearTimeout(jumpTimer);
     };
 
     try {
-      glowGold = makeGlowSprite(96, GOLD, 0.9);
-      glowAzure = makeGlowSprite(96, NODE_COLORS.azure, 0.85);
-      glowInk = makeGlowSprite(96, NODE_COLORS.mist, 0.8);
+      // visual diet: glow sprite cores ≤0.18 (was 0.26–0.34)
+      glowLime = makeGlowSprite(64, LIME, 0.18);
+      glowViolet = makeGlowSprite(64, VIOLET, 0.16);
+      glowCream = makeGlowSprite(64, CREAM, 0.14);
       resize();
-      if (reducedMotion) {
-        drawStatic();
-      } else {
-        scheduleJump();
-        setRunning(true);
-      }
     } catch {
       setFailed(true);
       teardown();
       return;
     }
 
+    if (reducedMotion) {
+      // ONE static composed frame — no loop, no scroll/mouse listeners.
+      drawStatic();
+      return teardown;
+    }
+
+    readScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    if (canHover) window.addEventListener('mousemove', onMouse, { passive: true });
+    io.observe(canvas);
+    document.addEventListener('visibilitychange', onVisibility);
+    scheduleJump();
+    setRunning(true);
     return teardown;
   }, [density, biasX, speed]);
 

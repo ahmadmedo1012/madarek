@@ -1,23 +1,39 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 
 /**
- * JourneyLightPath — the golden thread of the journey chapter.
+ * JourneyLightPath — the lime thread of the journey chapter.
  *
- * The serpentine light path is COMPUTED, not hand-drawn: after layout we
+ * The serpentine path is COMPUTED, not hand-drawn: after layout we
  * measure every `.ln-station-node` (layout position via offset chain —
  * immune to the reveal-up transform) and generate a smooth cubic path
  * guaranteed to pass through each node, so the thread visibly ties the
  * stations together at every breakpoint.
  *
- * · Scroll-scrub: the lit path uses pathLength=1 + stroke-dashoffset
- *   driven by the section's --sp var (pure CSS, written by
- *   useSectionProgress) — no per-frame JS.
- * · Recomputed on stage resize (ResizeObserver) + after webfonts load
- *   (heights shift) + on orientation change.
- * · Reduced motion: --sp snaps to 1 upstream, so the full thread shows.
+ * Craft notes (round 3 · perf audit A2/#6 + spec §4.2 flat craft):
+ * · Flat-craft stroke: the lit thread is a bright SOLID lime line that
+ *   reads by contrast against the flat ink ground — it carries
+ *   `filter: none` inline so it can never depend on a CSS drop-shadow
+ *   glow (filtered SVG repaint per scroll frame) again.
+ * · Scroll-scrub: pathLength=1 + stroke-dashoffset driven by the
+ *   section's --sp var (pure CSS, written by useSectionProgress) — no
+ *   per-frame JS; geometry is cached and only recomputed on stage
+ *   resize / webfont settle, rAF-coalesced.
+ * · Reduced motion: a static ~35% lit segment — no scrub.
  */
 
 type Pt = { x: number; y: number };
+
+/** Lit thread — bright lime, legible without any glow filter. */
+const LIGHT_STROKE = 'rgba(223,237,178,0.85)';
+/** Un-lit track — cream hairline. */
+const BASE_STROKE = 'rgba(245,243,231,0.14)';
+/** Reduced motion: static ~35% progress (dashoffset = 1 − 0.35). */
+const STATIC_DASHOFFSET = 0.65;
+
+const BASE_STYLE: CSSProperties = { stroke: BASE_STROKE };
+const LIGHT_STYLE: CSSProperties = { stroke: LIGHT_STROKE, filter: 'none' };
+const LIGHT_STYLE_STATIC: CSSProperties = { stroke: LIGHT_STROKE, filter: 'none', strokeDashoffset: STATIC_DASHOFFSET };
 
 /** Layout-box position of `el` relative to `ancestor` (transform-immune). */
 function layoutPos(el: HTMLElement, ancestor: HTMLElement): Pt | null {
@@ -48,6 +64,9 @@ function buildD(pts: Pt[]): string {
 export function JourneyLightPath() {
   const stageRef = useRef<SVGSVGElement | null>(null);
   const [geo, setGeo] = useState<{ d: string; w: number; h: number } | null>(null);
+  const [reducedMotion] = useState(
+    () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
 
   const measure = useCallback(() => {
     const svg = stageRef.current;
@@ -77,7 +96,18 @@ export function JourneyLightPath() {
 
     measure();
 
-    const ro = new ResizeObserver(() => measure());
+    // rAF-coalesce: at most one measure per frame, no matter how the
+    // resize / font-load / load events arrive.
+    let measureRaf = 0;
+    const scheduleMeasure = () => {
+      if (measureRaf) return;
+      measureRaf = requestAnimationFrame(() => {
+        measureRaf = 0;
+        measure();
+      });
+    };
+
+    const ro = new ResizeObserver(scheduleMeasure);
     ro.observe(stage);
     // card heights shift when webfonts swap + when reveals settle
     let t1 = 0;
@@ -85,14 +115,15 @@ export function JourneyLightPath() {
     const settle = () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
-      t1 = window.setTimeout(measure, 650);
-      t2 = window.setTimeout(measure, 2200);
+      t1 = window.setTimeout(scheduleMeasure, 650);
+      t2 = window.setTimeout(scheduleMeasure, 2200);
     };
     document.fonts?.ready.then(settle).catch(() => undefined);
     window.addEventListener('load', settle);
 
     return () => {
       ro.disconnect();
+      if (measureRaf) cancelAnimationFrame(measureRaf);
       window.clearTimeout(t1);
       window.clearTimeout(t2);
       window.removeEventListener('load', settle);
@@ -100,17 +131,17 @@ export function JourneyLightPath() {
   }, [measure]);
 
   return (
-    <svg
-      ref={stageRef}
-      className="ln-journey-path"
-      viewBox={geo ? `0 0 ${geo.w} ${geo.h}` : undefined}
-      preserveAspectRatio="none"
-      aria-hidden
-    >
+    <svg ref={stageRef} className="ln-journey-path" viewBox={geo ? `0 0 ${geo.w} ${geo.h}` : undefined} preserveAspectRatio="none" aria-hidden>{/* allow-emoji: bespoke scene SVG — computed thread path, not a Lucide icon slot */}
       {geo && (
         <>
-          <path className="ln-journey-path-base" d={geo.d} pathLength={1} />
-          <path className="ln-journey-path-light" d={geo.d} pathLength={1} />
+          <path className="ln-journey-path-base" d={geo.d} pathLength={1} vectorEffect="non-scaling-stroke" style={BASE_STYLE} />
+          <path
+            className="ln-journey-path-light"
+            d={geo.d}
+            pathLength={1}
+            vectorEffect="non-scaling-stroke"
+            style={reducedMotion ? LIGHT_STYLE_STATIC : LIGHT_STYLE}
+          />
         </>
       )}
     </svg>

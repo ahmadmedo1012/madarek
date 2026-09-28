@@ -30,13 +30,17 @@ import '../styles/colleges.css';
  * Landing — «سماء مدارك» immersive v2 (docs/immersive-redesign-plan.md).
  *
  * The page is a journey, not a stack of sections:
- *   المدار (hero sky) → الثقة → مدارات الكلّيّات → كيف تتعلّم
- *   → قصّة التقدّم → الأرض (الحرم) → الأدوار → نقطة البداية.
+ *   المدار (hero sky) → شريط الكلّيّات (marquee) → الثقة
+ *   → مدارات الكلّيّات → كيف تتعلّم → قصّة التقدّم
+ *   → الأرض (الحرم) → الأدوار → نقطة البداية.
  *
  * University truth: UoZ operates 25 colleges (backend seed faculty table;
  * registry in data/colleges.config.ts is the canonical machine source).
  */
 const COLLEGES_COUNT = colleges.length > 0 ? colleges.length : 25;
+
+/** Marquee strip — the real 25 college names, duplicated ×2 for a seamless CSS loop. */
+const MARQUEE_ITEMS = colleges.map((c) => c.nameAr);
 
 /** Journey stations — the «how learning works» chapter. */
 const JOURNEY: Array<{
@@ -88,9 +92,11 @@ export default function LandingPage() {
   const [collegesOpen, setCollegesOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [megamenuOpen, setMegamenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollPct, setScrollPct] = useState(0);
   const megamenuTriggerRef = useRef<HTMLButtonElement>(null);
+  // Scroll chrome lives on refs and is written imperatively below — a React
+  // re-render per scroll event was the round-3 performance regression.
+  const headerRef = useRef<HTMLElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   // Returning-visitor calm: first session visit plays the full intro; later
   // visits this session skip straight to the calm state.
@@ -112,16 +118,35 @@ export default function LandingPage() {
     }
   }, [redirectHome, introSeen]);
 
+  // Scroll-driven chrome with ZERO setState: coalesced to one rAF per frame
+  // (pending-flag pattern, mirrors useSectionProgress) and written straight
+  // to the DOM — the .scrolled class on the header and the --p var on the
+  // top ribbon. React never re-renders for scrolling anymore.
   useEffect(() => {
-    const onScroll = () => {
+    const header = headerRef.current;
+    const bar = progressBarRef.current;
+
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
       const y = window.scrollY;
-      setScrolled(y > 6);
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollPct(max > 0 ? Math.min(1, y / max) : 0);
+      if (header) header.classList.toggle('scrolled', y > 6);
+      if (bar) {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const p = max > 0 ? Math.min(1, y / max) : 0;
+        bar.style.setProperty('--p', p.toFixed(4));
+      }
     };
-    onScroll();
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+
+    apply();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   // Scroll-scrubbed chapters (native scrolling — no hijacking).
@@ -136,9 +161,9 @@ export default function LandingPage() {
   return (
     <div className="landing" data-intro-seen={introSeen ? 'true' : undefined}>
 
-      {/* Top scroll-progress bar */}
+      {/* Top scroll-progress bar — driven imperatively via --p (see effect) */}
       <div className="landing-progress" aria-hidden>
-        <div className="landing-progress-bar" style={{ ['--p' as string]: scrollPct }} />
+        <div className="landing-progress-bar" ref={progressBarRef} style={{ ['--p' as string]: 0 }} />
       </div>
 
       {/* Ministry strip */}
@@ -149,8 +174,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Header — dark glass over the sky */}
-      <header className={`landing-header${scrolled ? ' scrolled' : ''}`}>
+      {/* Header — the .scrolled state class is toggled imperatively */}
+      <header className="landing-header" ref={headerRef}>
         <div className="landing-nav">
           <Link to="/" className="landing-brand" aria-label="مدارك">
             <span className="landing-brand-mark">م</span>
@@ -323,6 +348,18 @@ export default function LandingPage() {
         </a>
       </section>
 
+      {/* ═══ شريط الكلّيّات — مدار واحد تنتظم فيه الأسماء (marquee) ═══ */}
+      <section className="ln-marquee" aria-hidden="true">
+        <div className="ln-marquee-track">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((it, i) => (
+            <span className="ln-marquee-item" key={i}>
+              {it}
+              <span className="ln-marquee-sep">·</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
       {/* ═══ الفصل ١ — الثقة ═══ */}
       <section id="trust" className="ln-trust" aria-label="الاعتماد الرسمي">
         <div className="ln-trust-inner">
@@ -339,7 +376,7 @@ export default function LandingPage() {
       {/* ═══ الفصل ٢ — مدارات الكلّيّات ═══ */}
       <section id="colleges" className="ln-chapter ln-colleges">
         <div className="ln-chapter-head">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الأول · الاكتشاف</RevealCssClass>
+          <span className="ln-label">{`01 — الاكتشاف`}</span>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
             {String(COLLEGES_COUNT).padStart(2, '0')} كليةً في <em>سماءٍ واحدة</em>
           </RevealCssClass>
@@ -360,7 +397,7 @@ export default function LandingPage() {
       {/* ═══ الفصل ٣ — كيف تتعلّم مدارك ═══ */}
       <section id="journey" ref={journeyRef} className="ln-chapter ln-journey">
         <div className="ln-chapter-head">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الثاني · الطريق</RevealCssClass>
+          <span className="ln-label">{`02 — الطريق`}</span>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
             من أوّل درس إلى <em>الإتقان</em> — خمس محطات
           </RevealCssClass>
@@ -419,7 +456,7 @@ export default function LandingPage() {
           </div>
 
           <div className="ln-progress-copy">
-            <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الثالث · التقدّم</RevealCssClass>
+            <span className="ln-label">{`03 — التقدّم`}</span>
             <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
               مدارُك يتّسع مع <em>كلّ خطوة</em>
             </RevealCssClass>
@@ -516,7 +553,7 @@ export default function LandingPage() {
       {/* ═══ الفصل ٦ — الأدوار ═══ */}
       <section id="roles" className="ln-chapter ln-roles">
         <div className="ln-chapter-head">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الفصل الرابع · المجتمع</RevealCssClass>
+          <span className="ln-label">{`04 — المجتمع`}</span>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
             أربعة <em>أدوار</em>، تجربة موحَّدة
           </RevealCssClass>
@@ -599,7 +636,7 @@ export default function LandingPage() {
           <span className="ln-cta-orbit o2" />
         </div>
         <div className="ln-cta-inner">
-          <RevealCssClass as="p" className="ln-mono ln-mono-eyebrow">الوصول · ACCESS</RevealCssClass>
+          <span className="ln-label">{`05 — الوصول · ACCESS`}</span>
           <RevealCssClass as="h2" className="ln-cta-title" delay={1}>
             نقطتك من الضوء <em>تبدأ من هنا</em>
           </RevealCssClass>
@@ -668,6 +705,8 @@ export default function LandingPage() {
         </div>
       </footer>
       <CollegesPopover open={collegesOpen} onClose={() => setCollegesOpen(false)} />
+      {/* film-grain texture layer — last child, painted over the whole world */}
+      <div className="ln-grain" aria-hidden="true" />
     </div>
   );
 }

@@ -284,6 +284,69 @@
     --section-gap:  var(--sp-12);
     --page-gutter:  var(--sp-9);
     --page-gutter-mobile: var(--sp-5);
+
+    /* ─── Orbit Ink — round-3 landing palette (R3-W2-6) ─────────────
+       Madarek "Orbit Ink" — round-3 pivot: inspired by the reference's
+       discipline, 100% original. The landing page's own scene family —
+       flat deep-ink grounds, warm cream type, lime + violet accents.
+       Declared on plain :root like --gold-soft: the landing paints these
+       exact values in BOTH data-themes (its dark stage is intentional),
+       so a single definition is correct and the theme blocks never
+       remap it. Landing-scoped by consumption (the --ln-* namespace is
+       only referenced from landing.css), not by selector.
+
+       WCAG duty (relative luminance, WCAG 2.1 — node-verified, see
+       worklog R3-W2-6):
+       · --ln-cream #F5F3E7 (L=0.8928) on --ln-ink #252A3E (L=0.0240) →
+         12.75:1 ✓ AAA body text (14.48:1 on --ln-ink-2).
+       · --ln-cream-dim #C9C6B4 (L=0.5610) on --ln-ink → 8.26:1 ✓ AAA
+         (9.39:1 on --ln-ink-2) — no adjustment needed.
+       · --ln-lime #DFEDB2 (L=0.7947) on --ln-ink → 11.42:1 ✓ AAA;
+         --ln-lime-deep #B9D778 → 8.82:1 ✓ AAA. Hover buttons invert the
+         pair (ink text on lime fill) at the same 11.42:1.
+       · --ln-violet #7A6BF2 on --ln-ink → 3.52:1 — accent / large-text
+         use only, never body copy; --ln-violet-deep #4E2FB8 → 1.64:1 —
+         decorative depth fills only, never text or icon strokes. */
+
+    --ln-ink:        #252A3E;   /* primary flat ground (ink family) */
+    --ln-ink-2:      #1C2032;   /* darker step — scene separation */
+    --ln-cream:      #F5F3E7;   /* primary text on ink — 12.75:1 AAA */
+    --ln-cream-dim:  #C9C6B4;   /* secondary text — 8.26:1 AAA on ink */
+    --ln-lime:       #DFEDB2;   /* accent 1 (pistachio) */
+    --ln-lime-deep:  #B9D778;   /* hover/active lime — 8.82:1 on ink */
+    --ln-violet:     #7A6BF2;   /* accent 2 — large-text/accent only */
+    --ln-violet-deep:#4E2FB8;   /* depth — decorative fill only */
+    --ln-line:       rgba(245,243,231,0.14);  /* 1px hairline on ink */
+    --ln-line-soft:  rgba(245,243,231,0.07);  /* resting card border */
+    --ln-grain-op:   0.05;      /* grain overlay opacity */
+    --ln-radius-pill: var(--r-full);  /* pills via --r-full (WS-D2) */
+    --ln-h1:         clamp(2.75rem, 8.2vw, 6.75rem);  /* hero, ≤108px */
+    --ln-h1-lh:      1.04;      /* hero leading; mobile lifts to 1.12
+                                   in landing.css (round-3 spec §4.3) */
+
+    /* Orbit Ink motion vocabulary — the legal forms landing.css
+       consumes so every landing motion value stays token-legal
+       (guardrail 1). The --ln-t-* and --ln-ease-* aliases chain the
+       canonical tokens above, so the reduced-motion zeroing of --t-*
+       flows through automatically. --ln-dur-marquee is the one raw
+       literal: an infinite ambient loop duration with no canonical
+       token yet (same gap as the --motion-duration-ambient debt
+       family) — legal HERE because tokens.css IS the token source
+       (wholesale allowlist in scripts/check-motion-tokens.sh).
+       Consumers must reference it as var(--ln-dur-marquee), never
+       re-spell 42s. Marquee keyframes still need their own
+       prefers-reduced-motion off-switch in landing.css (guardrail 6:
+       token zeroing does not stop a raw-duration loop). */
+    --ln-t-fast:      var(--t-fast);    /* 160ms */
+    --ln-t-base:      var(--t-base);    /* 240ms */
+    --ln-t-slow:      var(--t-slow);    /* 380ms */
+    --ln-t-cinema:    var(--t-cinema);  /* 720ms */
+    --ln-t-reveal:    var(--motion-duration-reveal);  /* 360ms */
+    --ln-ease-out:    var(--ease-out);    /* exponential settle */
+    --ln-ease-soft:   var(--ease-soft);   /* gentle emphasis */
+    --ln-ease-spring: var(--ease-spring); /* playful pop */
+    --ln-ease-linear: var(--ease-linear); /* constant speed — marquee */
+    --ln-dur-marquee: 42s;  /* one marquee loop pass — slow read */
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
