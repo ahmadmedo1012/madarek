@@ -37,6 +37,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    // Render free tier = 512 MB RAM: skip the gzip-size pass (it holds every
+    // chunk in memory) and keep minify on esbuild — both keep peak RSS low.
+    reportCompressedSize: false,
     // No production sourcemaps: the repo has no error-tracking consumer
     // (no sentry/bugsnag), so public .map files only added ~5.9 MB to the
     // deploy and exposed the full client source. Local debugging can
