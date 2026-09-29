@@ -333,7 +333,7 @@
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
   .vpc-play-big:hover { transform: scale(1.06); }
-  .vpc-play-big:active { transform: scale(0.97); }
+  .vpc-play-big:active { transform: scale(var(--press-scale)); }
   .vpc-play-big:focus-visible {
     outline: 2px solid var(--vpc-gold-soft);
     outline-offset: 4px;
@@ -355,7 +355,7 @@
     border-radius: var(--r-full);
     border: 2px solid rgb(142 151 184 / 0.25);
     border-top-color: var(--vpc-gold);
-    animation: vpc-spin var(--t-slow) var(--ease-linear) infinite;
+    animation: vpc-spin var(--t-cinema) var(--ease-linear) infinite; /* 720ms — the nearest duration token (premium-polish: gate-clean) */
   }
   @keyframes vpc-spin { to { transform: rotate(360deg); } }
 
@@ -404,13 +404,26 @@
     .vpc:not(:fullscreen):not(:-webkit-full-screen) .vpc-time { display: none; }
   }
 
+  /* ── Touch floor (PP-X2, audit P2-12): the six .vpc-btn controls
+     measured 40×40 on phone — under the platform's own 44px mobile
+     standard (bottom-nav 62, filter pills 44). min-block/inline-size
+     grows the HIT AREA + hover circle only; the icon (20px) and the
+     rest state (transparent ground) are unchanged. Same band as the
+     app shell's own mobile breakpoint. */
+  @media (max-width: 920px) {
+    .vpc-btn {
+      min-inline-size: 44px;
+      min-block-size: 44px;
+    }
+  }
+
   /* ── Reduced motion — no slide, opacity-only chrome (the spinner
      stays: loading status is essential feedback) ──────────────────── */
   @media (prefers-reduced-motion: reduce) {
     .vpc-bar {
       transform: none;
       transition:
-        opacity var(--motion-duration-page) linear,
+        opacity var(--motion-duration-page) var(--ease-linear),
         visibility 0s linear var(--motion-duration-page);
     }
     .vpc-scrim { transition: opacity var(--motion-duration-page) var(--ease-linear); }

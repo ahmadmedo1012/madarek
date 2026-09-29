@@ -43,6 +43,7 @@ export function Card({
   flush,
   compact,
   bordered,
+  heading,
   className,
   style,
 }: {
@@ -54,12 +55,19 @@ export function Card({
   flush?: boolean;
   compact?: boolean;
   bordered?: boolean;
+  /** Semantic heading level for the card title (premium-polish: course
+   *  detail rendered a single H1 and then pure <div>s — SR heading
+   *  navigation couldn't move between «المحاضرات / الواجبات / الموارد».
+   *  When passed, the title renders as <h2>/<h3>/… with the same
+   *  .card-title styling; omit it and nothing changes.) */
+  heading?: 'h2' | 'h3' | 'h4';
   className?: string;
   style?: CSSProperties;
 }) {
   const cls = ['card', flush && 'flush', compact && 'compact', bordered && 'bordered', className]
     .filter(Boolean)
     .join(' ');
+  const TitleTag = heading;
   return (
     <div className={cls} style={style}>
       {(title || actions) && (
@@ -68,7 +76,11 @@ export function Card({
             {title && (
               <div className="card-title">
                 {icon && <Icon icon={icon} size={14} className="card-title-icon" />}
-                <span>{title}</span>
+                {TitleTag ? (
+                  <TitleTag className="card-title-text">{title}</TitleTag>
+                ) : (
+                  <span>{title}</span>
+                )}
               </div>
             )}
             {subtitle && <div className="card-subtitle">{subtitle}</div>}

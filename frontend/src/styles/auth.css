@@ -642,7 +642,7 @@
       inset 0 1px 0 rgb(255 240 200 / 0.55);
     transform: translateY(-1px);
   }
-  .auth-submit:active { transform: translateY(1px); }
+  .auth-submit:active { transform: scale(var(--press-scale)); }
   .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
   /* currentColor spins on the gold CTA ink (no color-mix — rgb pair). */
   .auth-submit-spinner {

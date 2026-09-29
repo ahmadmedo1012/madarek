@@ -44,8 +44,18 @@ router.use(authMiddleware);
 
 // ─── Pure logic (exported for DB-free unit tests) ─────────────────
 
-/** Lecture videos may be an external https URL or a file served by our own files API. */
+/**
+ * Lecture videos may be an external https URL, a file served by our own
+ * files API, or a same-origin static asset shipped with the frontend build
+ * (root-relative path, e.g. "/lectures/se301-01.mp4" — the self-hosted
+ * sample lectures). Protocol-relative "//evil.com" stays rejected: only a
+ * root-relative path with a safe first segment is same-origin.
+ */
 export const CURRICULUM_MEDIA_URL_PATTERN = /^https:\/\/|^\/api\/v1\/files\/papers\//;
+export const CURRICULUM_MEDIA_SAME_ORIGIN_PATTERN = /^\/[A-Za-z0-9][A-Za-z0-9\-._~/]*$/;
+export const isSanctionedMediaUrl = (s: string): boolean =>
+  CURRICULUM_MEDIA_URL_PATTERN.test(s) ||
+  (CURRICULUM_MEDIA_SAME_ORIGIN_PATTERN.test(s) && !s.includes('..'));
 
 /** Upper bound for durationSec / triggerSec: one full day. */
 export const MAX_MEDIA_SEC = 86_400;
@@ -106,8 +116,8 @@ const lectureFields = z
     videoUrl: z
       .string()
       .max(500)
-      .refine((s) => CURRICULUM_MEDIA_URL_PATTERN.test(s), {
-        message: 'videoUrl must start with https:// or /api/v1/files/papers/',
+      .refine((s) => isSanctionedMediaUrl(s), {
+        message: 'videoUrl must start with https:// or / (same-origin asset), or be /api/v1/files/papers/',
       }),
     durationSec: z.number().int().min(1).max(MAX_MEDIA_SEC).optional(),
     ordinal: z.number().int().min(0).max(500).optional(),

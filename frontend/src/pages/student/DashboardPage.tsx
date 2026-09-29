@@ -6,15 +6,17 @@ import {
 import {
   GraduationCap, Presentation, FileText, FlaskConical,
   BookOpen, CalendarCheck, ClipboardList, Trophy, Radio,
+  Play, ChevronLeft,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, Badge, MetricCard } from '../../components/primitives';
-import { ErrorState, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { Link } from 'react-router-dom';
+import { Card, Badge, MetricCard, ProgressBar } from '../../components/primitives';
+import { ErrorState, KpiSkeleton, CardSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
-import { useStudentDashboard } from '../../hooks/useResources';
+import { useStudentDashboard, useResume } from '../../hooks/useResources';
 import { useChartThemeKey, chartColors, radialOptions } from '../../lib/chartTheme';
 import { ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
@@ -139,16 +141,72 @@ type AgendaTone = 'accent' | 'gold' | 'red';
 type AgendaItem = {
   kind: 'class' | 'assign' | 'live';
   id: string;
+  /** PP-X2 (audit P1-8): every agenda row is now a link — classes and
+   *  assignments deep-link to their course (the course page carries the
+   *  schedule + the upcoming-assignments table), live rows go to the
+   *  broadcast page. */
+  to: string;
   title: ReactNode;
   meta: ReactNode;
   icon: LucideIcon;
   tone: AgendaTone;
 };
 
+/* PP-X2 (audit P0-3) — the continue-learning hero. The PRIMARY action
+ * of the dashboard: one click from cold-open to the exact second the
+ * student left off (GET /me/resume). null → renders nothing; a pending
+ * query renders its own ~88px skeleton so the rest of the dashboard
+ * never waits on it. */
+function ResumeHero({ resume }: { resume: ReturnType<typeof useResume> }) {
+  if (resume.isPending) {
+    // The card's own skeleton — same footprint as the loaded card, so
+    // the KPI row below doesn't shift when the resume payload lands.
+    return (
+      <section className="dash-resume" aria-busy="true">
+        <Skeleton width="100%" height={88} rounded="var(--r-xl)" />
+      </section>
+    );
+  }
+  const r = resume.data;
+  if (!r) return null;
+  const continuing = r.mode === 'continue';
+  return (
+    <section className="dash-resume" aria-label="أكمل من حيث توقفت">
+      <Card className="dash-resume-card">
+        <div className="dash-resume-main">
+          <div className="dash-eyebrow">أكمل من حيث توقفت</div>
+          <div className="dash-resume-course">
+            <span className="dash-resume-course-name">{r.lecture.course.name}</span>
+            <Badge><bdi className="font-mono">{r.lecture.course.code}</bdi></Badge>
+          </div>
+          <div className="dash-resume-lecture">
+            المحاضرة <bdi>{r.lecture.ordinal}</bdi> · {r.lecture.title}
+          </div>
+          {continuing && (
+            <div className="dash-resume-progress">
+              <ProgressBar value={r.progressPct} label="تقدّم المشاهدة" ariaLabel="نسبة مشاهدة المحاضرة المتوقّفة" />
+            </div>
+          )}
+        </div>
+        <Link
+          to={`/student/lectures/${r.lecture.id}`}
+          className="btn primary dash-resume-cta"
+        >
+          <Icon icon={Play} size={15} />
+          {continuing ? 'متابعة المحاضرة' : 'ابدأ أول محاضرة'}
+        </Link>
+      </Card>
+    </section>
+  );
+}
+
 export default function StudentDashboardPage() {
   const user = useAuthStore((s) => s.user);
   const greeting = useGreeting();
   const dash = useStudentDashboard();
+  // Independent of the dashboard aggregate — the hero renders (or not)
+  // the moment ITS payload lands, and never blocks the KPIs above.
+  const resume = useResume();
   // Remounts every Chart.js canvas when the light/dark theme flips, so
   // canvas colours are re-resolved instead of staying stale.
   const themeKey = useChartThemeKey();
@@ -219,18 +277,21 @@ export default function StudentDashboardPage() {
   const agenda: AgendaItem[] = [
     ...d.agenda.classes.slice(0, 4).map<AgendaItem>((c) => ({
       kind: 'class', id: `c-${c.id}`,
+      to: `/student/courses/${c.offeringId}`,
       title: `${c.courseName}${c.room ? ` — ${c.room}` : ''}`,
       meta: <>{DAY_LABEL[c.when]} · <bdi>{c.startTime}–{c.endTime}</bdi></>,
       icon: Presentation, tone: c.when === 'today' ? 'accent' : 'gold',
     })),
     ...d.agenda.assignments.slice(0, 3).map<AgendaItem>((a) => ({
       kind: 'assign', id: `a-${a.id}`,
+      to: `/student/courses/${a.offeringId}`,
       title: <>{ASSIGNMENT_KIND_LABEL[a.type]}: {a.title} (<bdi>{a.courseCode}</bdi>)</>,
       meta: <>تسليم {formatDue(a.dueAt)}</>,
       icon: ASSIGNMENT_ICON[a.type], tone: 'gold',
     })),
     ...d.agenda.live.slice(0, 2).map<AgendaItem>((l) => ({
       kind: 'live', id: `l-${l.id}`,
+      to: '/student/live',
       title: <>بثّ مباشر: {l.title}</>,
       meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
       icon: Radio, tone: 'red',
@@ -249,6 +310,11 @@ export default function StudentDashboardPage() {
             : 'لوحة متابعة تقدّمك الأكاديمي.'}
         </p>
       </header>
+
+      {/* Continue-learning hero (PP-X2 / audit P0-3) — the page's
+          primary action, above the KPI row: course + code chip + lecture
+          + watched share + ONE dominant CTA to the exact lecture. */}
+      <ResumeHero resume={resume} />
 
       {/* At-a-glance KPI row — real values; the count-up reveal rides the
           grid's entrance stagger (polish grid children) as the page moment */}
@@ -401,7 +467,14 @@ export default function StudentDashboardPage() {
         ) : (
           <div className="dash-agenda-list">
             {agenda.map((item) => (
-              <Card key={item.id} className="dash-agenda-item">
+              /* PP-X2 (audit P1-8): the row is the link — the same
+                 .card .dash-agenda-item anatomy, now navigable. The
+                 chevron points inline-end (LEFT in RTL = forward). */
+              <Link
+                key={item.id}
+                to={item.to}
+                className="card dash-agenda-item agenda-row"
+              >
                 {/* data-tone rides the icon well — Card doesn't spread
                     unknown props, so the old root-level data-tone never
                     reached the DOM (silently dead since inception). */}
@@ -412,7 +485,8 @@ export default function StudentDashboardPage() {
                   <div className="dash-agenda-title">{item.title}</div>
                   <div className="dash-agenda-meta">{item.meta}</div>
                 </div>
-              </Card>
+                <Icon icon={ChevronLeft} size={16} className="agenda-row-chevron" aria-hidden />
+              </Link>
             ))}
           </div>
         )}

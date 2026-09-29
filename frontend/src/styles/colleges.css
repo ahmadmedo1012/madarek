@@ -80,8 +80,10 @@
   box-shadow: var(--shadow-sm);
 }
 .college-card:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  /* Premium-polish (ONE focus language): the old `outline:none` + weak
+     ~32%-alpha halo (≈1.5:1 on cream) killed the platform's canonical
+     2px ring — the global :focus-visible contract now paints it, and
+     the accent border stays as the color cue. */
   border-color: var(--accent);
 }
 
@@ -1106,7 +1108,7 @@ a.comp-card:focus-visible .comp-go {
 }
 .admin-students-search:focus-within {
   border-color: var(--accent);
-  box-shadow: var(--focus-ring);
+  box-shadow: var(--state-input-focus-halo);
 }
 .admin-students-search input {
   /* 13-17 (D14 dedupe): border/background/height/outline deleted —
@@ -1135,7 +1137,7 @@ a.comp-card:focus-visible .comp-go {
 .admin-students-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: var(--focus-ring);
+  box-shadow: var(--state-input-focus-halo);
 }
 
 .admin-students-table-wrap {
@@ -1189,23 +1191,6 @@ a.comp-card:focus-visible .comp-go {
 }
 
 /* Digital page */
-.digital-stat-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-}
-.digital-stat-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--sp-2);
-  border-radius: var(--r-sm);
-  background: var(--surface-2);
-}
-
 /* Analysis page */
 .trend-table-wrap { overflow-x: auto; }
 .trend-table {
@@ -1226,34 +1211,7 @@ a.comp-card:focus-visible .comp-go {
   font-size: var(--fs-xs);
 }
 
-.top-courses-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-}
-.top-courses-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-2);
-  border-radius: var(--r-sm);
-}
 .top-courses-row:hover { background: var(--surface-2); }
-.top-courses-rank {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--r-full);
-  background: var(--surface-2);
-  color: var(--text-muted);
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-xs);
-}
 .top-courses-body { flex: 1 1 auto; min-width: 0; }
 .top-courses-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); }
 .top-courses-meta { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
@@ -1769,18 +1727,10 @@ a.comp-card:focus-visible .comp-go {
   border-radius: var(--r-md);
 }
 
-/* The extras' authored moment — a subtle one-shot stagger for the
-   digital stat rows and the analysis top-courses list (capped at
-   --motion-stagger-cap by the TSX via --stagger-i). */
-.digital-stat-row,
-.top-courses-row {
-  animation: madarek-admin-extras-in var(--motion-duration-short) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(var(--motion-stagger-step) * var(--stagger-i, 0));
-}
-@keyframes madarek-admin-extras-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: none; }
-}
+/* (Premium-polish dead-code sweep): the .digital-stat-* / .top-courses-*
+   families + their madarek-admin-extras-in stagger keyframes lived here —
+   AdminExtraPages renders .admin-students-* (the stale ownership comment
+   above lied); removed with zero TSX consumers. */
 
 /* The wrapper-as-pill search field: polish.css's pages-layer bare-input
    reset (height:auto / padding:0, higher specificity than the base

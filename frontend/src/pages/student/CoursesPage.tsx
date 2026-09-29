@@ -1,8 +1,8 @@
 import { useState, type CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
-  BookOpen,
+  BookOpen, ArrowLeft,
 } from 'lucide-react';
 import { Card, MetricCard, ProgressBar, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
@@ -10,9 +10,11 @@ import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
 import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL } from '../../lib/courseMeta';
+import { countAr } from '../../lib/format';
 import {
   useMyEnrollments,
   useStudentDashboard,
+  useOfferingLectures,
   useSubmitAssignment,
   validateSubmissionDraft,
   apiErrorMessage,
@@ -88,6 +90,74 @@ function CourseGridSkeleton() {
         </div>
       ))}
     </div>
+  );
+}
+
+/** PP-X2 (audit P2-9) — the course card as its own component: it needs
+ *  a per-offering lectures query (the count scent «٣ محاضرات») + a
+ *  nested CTA, neither of which can live in a map callback. */
+function CourseCard({ e, i }: { e: MyEnrollment; i: number }) {
+  const c = e.offering.course;
+  const Cmp = courseIcon(c.code ?? c.name);
+  const tint = courseTint(c.themeColor);
+  const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
+  const navigate = useNavigate();
+  // Lecture count — the same cached list the lecture player's prev/next
+  // bar reads (['offerings', id, 'lectures']), so the card's request is
+  // amortized across the visit. Fail-soft: no count line on error.
+  const lecturesQ = useOfferingLectures(e.offering.id);
+  const lectureCount = lecturesQ.data?.length;
+  const to = `/student/courses/${e.offering.id}`;
+  return (
+    <Link
+      to={to}
+      className="thumb-card"
+      style={{ '--cc-i': i, '--course-tint': tint } as CSSProperties}
+    >
+      <div className="thumb-card-image">
+        <span>
+          <Icon icon={Cmp} size={28} strokeWidth={1.6} />
+        </span>
+      </div>
+      <div className="thumb-card-body">
+        {/* Scent row (P2-9): the course CODE chip (Badge + mono bdi, the
+            CourseDetail hero grammar) + the counted lecture noun — six
+            same-teacher same-% cards are told apart by code + workload. */}
+        <div className="thumb-card-meta">
+          <Badge><bdi className="font-mono">{c.code}</bdi></Badge>
+          {lectureCount !== undefined && (
+            <span className="thumb-card-count">
+              {countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
+            </span>
+          )}
+        </div>
+        <div className="thumb-card-title" title={c.name}>{c.name}</div>
+        <div className="thumb-card-sub" title={teacher}>{teacher}</div>
+        <div className="thumb-card-cta">
+          {/* 21-c (A12 P1-3): `color` is the BAR FILL hue
+              (decorative, rides the track) — the primitive
+              paints the 12px % readout in --text-secondary
+              (8.44:1) after the raw themeColor text measured
+              1.88–3.60:1 on the white cards. */}
+          <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
+          {/* Labeled CTA (P2-9): the whole card already links — this names
+              WHERE it goes. stopPropagation + navigate because a nested
+              interactive control can't ride the parent anchor's click. */}
+          <button
+            type="button"
+            className="btn ghost sm thumb-card-go"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+              navigate(to);
+            }}
+          >
+            {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
+            <Icon icon={ArrowLeft} size={12} />
+          </button>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -181,38 +251,9 @@ export default function StudentCoursesPage() {
           {/* key={filter} remounts the grid on filter change so the CSS
               re-stagger replays — data refetches alone never replay it. */}
           <div className="grid-3 courses-grid" key={filter} data-stagger={stagger ? '' : undefined}>
-            {filtered.length ? filtered.map((e, i) => {
-              const c = e.offering.course;
-              const Cmp = courseIcon(c.code ?? c.name);
-              const tint = courseTint(c.themeColor);
-              const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
-              return (
-                <Link
-                  to={`/student/courses/${e.offering.id}`}
-                  className="thumb-card"
-                  key={e.id}
-                  style={{ '--cc-i': i, '--course-tint': tint } as CSSProperties}
-                >
-                  <div className="thumb-card-image">
-                    <span>
-                      <Icon icon={Cmp} size={28} strokeWidth={1.6} />
-                    </span>
-                  </div>
-                  <div className="thumb-card-body">
-                    <div className="thumb-card-title" title={c.name}>{c.name}</div>
-                    <div className="thumb-card-sub" title={teacher}>{teacher}</div>
-                    <div style={{ marginTop: 'var(--sp-2)' }}>
-                      {/* 21-c (A12 P1-3): `color` is the BAR FILL hue
-                          (decorative, rides the track) — the primitive
-                          paints the 12px % readout in --text-secondary
-                          (8.44:1) after the raw themeColor text measured
-                          1.88–3.60:1 on the white cards. */}
-                      <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
-                    </div>
-                  </div>
-                </Link>
-              );
-            }) : (
+            {filtered.length ? filtered.map((e, i) => (
+              <CourseCard key={e.id} e={e} i={i} />
+            )) : (
               <div className="courses-grid-empty">
                 <EmptyState
                   icon={BookOpen}

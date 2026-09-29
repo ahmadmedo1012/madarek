@@ -74,6 +74,12 @@ export interface VideoPlayerChromeProps {
   onSeek?: (sec: number) => void;
   /** Frame class for the host element (e.g. "lecture-video-wrap"). */
   className?: string;
+  /** PP-X2 (audit P2-12): focus the chrome container on mount so the
+   *  media keys (Space/K/arrows) work from the first keypress. Only the
+   *  lecture player passes this; the focus is taken ONLY when nothing
+   * else holds it (document.activeElement === body) — a user who
+   * tabbed into the page keeps their focus context. */
+  autoFocusOnMount?: boolean;
   /** The `<video>` element (plus any siblings it needs, e.g. tracks). */
   children: ReactNode;
 }
@@ -83,6 +89,7 @@ export function VideoPlayerChrome({
   checkpointTimes,
   onSeek,
   className,
+  autoFocusOnMount = false,
   children,
 }: VideoPlayerChromeProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -183,6 +190,31 @@ export function VideoPlayerChrome({
       document.removeEventListener('webkitfullscreenchange', onFsChange);
     };
   }, []);
+
+  /* PP-X2 (audit P2-12): keyboard users' first Space used to scroll the
+     page — the keys live on this container (tabIndex 0) and nothing
+     focused it. Claim focus on mount, but ONLY when no USER intent
+     holds it. Two "unclaimed" states exist in this app:
+       - <body> — cold loads (AppShell's focus rescue skips the first
+         mount) and genuinely orphaned focus;
+       - the topbar page-title shim (.topbar-title, tabindex=-1) — the
+         AppShell's focus-rescue parks EVERY SPA navigation's focus
+         there programmatically, so a keyboard user who followed a link
+         never chose it. Claiming it replaces one programmatic focus
+         with another — the player (the page's main content) then gets
+         the announcement instead of the title.
+     A focus the user actually chose (a link, a control, the skip
+     target) is never taken. preventScroll — the player sits at the top
+     of the page; no jump needed. */
+  useEffect(() => {
+    if (!autoFocusOnMount) return;
+    const active = document.activeElement;
+    const unclaimed =
+      active === document.body ||
+      (active instanceof HTMLElement && active.classList.contains('topbar-title'));
+    if (!unclaimed) return;
+    hostRef.current?.focus({ preventScroll: true });
+  }, [autoFocusOnMount]);
 
   /* Speed menu: close on outside pointer-down (capture phase). */
   useEffect(() => {
@@ -356,6 +388,15 @@ export function VideoPlayerChrome({
     }
   };
 
+  /* Click surface: toggle play, double-click fullscreen. PP-X2
+     (P2-12): a pointer click on the video also parks focus on the
+     chrome container, so the keys (Space/K/arrows) answer the SECOND
+     interaction without a Tab first — the click left focus on <body>. */
+  const onSurfaceClick = useCallback(() => {
+    hostRef.current?.focus();
+    togglePlay();
+  }, [togglePlay]);
+
   /* ── Derived ────────────────────────────────────────────────────── */
 
   const position = scrubPct !== null
@@ -381,7 +422,7 @@ export function VideoPlayerChrome({
       {/* Click surface: toggle play; double-click fullscreen. */}
       <div
         className="vpc-surface"
-        onClick={togglePlay}
+        onClick={onSurfaceClick}
         onDoubleClick={toggleFullscreen}
         aria-hidden
       />

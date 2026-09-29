@@ -435,8 +435,24 @@ router.get('/me/dashboard', async (req, res, next) => {
 
     const offeringIds = enrollments.map((e) => e.offering.id);
     const courseCount = enrollments.length;
-    const avgProgressPct = enrollments.length
-      ? Math.round(enrollments.reduce((s, e) => s + e.progressPct, 0) / enrollments.length)
+    // Progress truth (premium-polish P0-2): the average must only span
+    // offerings that actually have lectures — an offering with nothing to
+    // watch can never progress, so including it turns «متوسط تقدّمك» into
+    // a number permanently dragged toward zero no matter how much the
+    // student watches (the frozen-seed era hid this by lying 60% flat).
+    const lectureCounts = await prisma.lecture.groupBy({
+      by: ['offeringId'],
+      where: { offeringId: { in: offeringIds } },
+      _count: { _all: true },
+    });
+    const lectureCountByOffering = new Map(
+      lectureCounts.map((r) => [r.offeringId, r._count._all]),
+    );
+    const measurableEnrollments = enrollments.filter(
+      (e) => (lectureCountByOffering.get(e.offering.id) ?? 0) > 0,
+    );
+    const avgProgressPct = measurableEnrollments.length
+      ? Math.round(measurableEnrollments.reduce((s, e) => s + e.progressPct, 0) / measurableEnrollments.length)
       : 0;
 
     // ── Attendance % (whole-history; one groupBy per status) ──

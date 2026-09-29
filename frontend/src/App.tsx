@@ -146,7 +146,6 @@ const MatrixPage = lazyWithRetry(() => import('./pages/student/MatrixPage'));
 const StudentResearchPage = lazyWithRetry(() => import('./pages/student/ResearchPage'));
 const ProfilePage = lazyWithRetry(() => import('./pages/student/ProfilePage'));
 const WebinarsPage = lazyWithRetry(() => import('./pages/student/WebinarsPage'));
-const ExamsPage = lazyWithRetry(() => import('./pages/student/ExamsPage'));
 const DocumentViewerPage = lazyWithRetry(() => import('./pages/DocumentViewerPage'));
 const LabsPage = lazyWithRetry(() => import('./pages/student/LabsPage'));
 const LivePage = lazyWithRetry(() => import('./pages/student/LivePage'));
@@ -354,7 +353,11 @@ export default function App() {
                 <Route path="/student/research" element={<StudentResearchPage />} />
                 <Route path="/student/profile" element={<ProfilePage />} />
                 <Route path="/student/webinars" element={<WebinarsPage />} />
-                <Route path="/student/exams" element={<ExamsPage />} />
+                {/* PP-X2 (audit P3-25): the /student/exams hub was 4
+                    cards — 3 repeating sidebar destinations + 1 «قيد
+                    الإعداد». The hub page is deleted; old bookmarks land
+                    on the real exams list. */}
+                <Route path="/student/exams" element={<Navigate to="/student/online-exams" replace />} />
                 <Route path="/training" element={<TrainingCatalogPage />} />
                 <Route path="/training/:slug" element={<TrainingTrackPage />} />
                 <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />

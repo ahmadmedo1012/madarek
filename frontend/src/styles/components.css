@@ -1,6 +1,6 @@
 /* ═════════════════════════════════════════════════════════════════════
    MADARK — Components & Patterns (Notion-flavored)
-   Bold buttons · soft cards · sticker icons · pill badges · friendly tabs
+   Bold buttons · soft cards · pill badges · friendly tabs
    ════════════════════════════════════════════════════════════════════ */
 
 @layer components {
@@ -116,6 +116,19 @@
     min-inline-size: 0;
   }
   .card-title-icon { inline-size: 16px; block-size: 16px; color: var(--accent); flex-shrink: 0; }
+  /* Premium-polish (semantic card headings): when Card renders its title
+     as a real <h2>/<h3> (heading prop), the browser's default heading
+     font-size/margin would break the row — reset them so the semantic
+     upgrade is pixel-identical to the old <span>. */
+  .card-title-text {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    margin: 0;
+    padding: 0;
+    min-inline-size: 0;
+  }
   .card-subtitle {
     font-size: var(--type-label-size);
     color: var(--text-muted);
@@ -124,63 +137,9 @@
   }
   .card-actions { display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; }
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STICKER ICON — Notion's signature: bold emoji-like visual     ║
-     ║  inside a soft pastel circle. Use for sections, features, etc. ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .sticker {
-    inline-size: 56px;
-    block-size: 56px;
-    border-radius: var(--r-xl);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--c-copper-bg);
-    color: var(--c-copper-deep);
-    flex-shrink: 0;
-    transition: transform var(--t-base) var(--ease-spring);
-  }
-  /* T3-F4 — radii tokenised to the --r-* scale (was 12/20/24 raw px). */
-  .sticker.sm { inline-size: 40px; block-size: 40px; border-radius: var(--r-lg); }
-  .sticker.lg { inline-size: 72px; block-size: 72px; border-radius: var(--r-2xl); }
-  .sticker.xl { inline-size: 96px; block-size: 96px; border-radius: var(--r-3xl); }
-  .sticker.peach    { background: var(--c-peach-bg);    color: var(--c-peach-deep); }
-  .sticker.mint     { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
-  .sticker.lavender { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
-  .sticker.sky      { background: var(--c-sky-bg);      color: var(--c-sky-deep); }
-  .sticker.yellow   { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
-  .sticker.rose     { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
-  .sticker.sand     { background: var(--c-sand-bg);     color: var(--c-sand-deep); }
-  .sticker.grey     { background: var(--c-grey-bg);     color: var(--c-grey-deep); }
-  .sticker.copper   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
-  .sticker.dark     { background: var(--neutral-900);   color: var(--neutral-50); }
-  .sticker:hover { transform: rotate(-4deg) scale(1.04); }
-
-  /* sticker idle wiggle — only when in a card with .sticker-wiggle */
-  .sticker-wiggle .sticker {
-    /* 5-C1: 5s → the ambient drift band (6s) — the gate debt entry
-       is gone; the wiggle beat lands once per ~6s instead of 5. */
-    animation: madarek-sticker-idle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
-    animation-delay: var(--wiggle-delay, 0s);
-  }
-  .sticker-wiggle:nth-child(2) .sticker { --wiggle-delay: 0.6s; }
-  .sticker-wiggle:nth-child(3) .sticker { --wiggle-delay: 1.2s; }
-  .sticker-wiggle:nth-child(4) .sticker { --wiggle-delay: 1.8s; }
-  .sticker-wiggle:nth-child(5) .sticker { --wiggle-delay: 2.4s; }
-  .sticker-wiggle:nth-child(6) .sticker { --wiggle-delay: 3.0s; }
-  @keyframes madarek-sticker-idle {
-    0%, 88%, 100% { transform: rotate(0) scale(1); }
-    92%           { transform: rotate(-3deg) scale(1.03); }
-    96%           { transform: rotate(2deg) scale(1.02); }
-  }
-  .sticker-wiggle:hover .sticker { animation: none; transform: rotate(-4deg) scale(1.06); }
-
-  /* Guardrail #6 — the idle wiggle is this file's keyframe, so it
-     gets its own off-switch here (5-C1; polish.css's overrides-layer
-     kill already covered it — this makes the switch local + explicit). */
-  @media (prefers-reduced-motion: reduce) {
-    .sticker-wiggle .sticker { animation: none; }
-  }
+  /* STICKER family — RETIRED (premium-polish dead-code sweep): the
+     Notion-style .sticker/.sticker-wiggle family + its idle keyframes
+     had zero TSX consumers; the wiggle off-switch went with it. */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  METRIC / KPI                                                  ║
@@ -348,7 +307,10 @@
   @media (hover: hover) and (pointer: fine) {
     .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); }
   }
-  .btn:active { transform: translateY(1px); }
+  .btn:active { transform: scale(var(--press-scale)); }
+  /* (Premium-polish: the components-layer sink retired — the pages layer
+     owns the press register via --press-scale; kept here as an aliased
+     fallback so a missing polish layer still presses consistently.) */
   .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
 
   .btn.primary {
@@ -3613,20 +3575,6 @@
        token like .page-subtitle (taste floor 45–75ch). */
     max-inline-size: var(--type-body-max-measure);
   }
-  .dropzone-ghost {
-    border: 2px dashed var(--border-strong);
-    border-radius: var(--r-lg);
-    padding: var(--sp-10);
-    text-align: center;
-    background: var(--surface-2);
-  }
-  .dropzone-ghost-title {
-    color: var(--text);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    margin-block-start: var(--sp-2);
-  }
-
   /* ── Profile rows — title line inside .cert-row/.publication-row
      (3-c owns the row chrome), plus the bio paragraph. */
   .cert-row-title {

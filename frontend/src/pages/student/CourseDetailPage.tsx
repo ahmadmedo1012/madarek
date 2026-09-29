@@ -111,6 +111,13 @@ export default function CourseDetailPage() {
   // exclusively as color-mix washes over var(--surface) with --text ink.
   const tint = courseTint(data.course.themeColor);
 
+  /* PP-X2 (audit P1-7b): the first uncompleted lecture is the "continue
+   * here" row — the same affordance grammar the training track list
+   * uses (.lesson-row.next): accent wash + inline-start edge + a named
+   * badge, so a returning student sees WHERE to resume without reading
+   * every row. -1 when the whole curriculum is complete. */
+  const nextLecIdx = data.lectures.findIndex((l) => !l.watchEvents?.[0]?.completed);
+
   return (
     <div className="page course-page" style={{ '--course-tint': tint } as CSSProperties}>
       {/* Hero header — .course-hero (§lists) carries the tinted band.
@@ -187,8 +194,11 @@ export default function CourseDetailPage() {
       </div>
 
       {/* Lectures — the curriculum; rows reveal with a capped stagger
-          (Reveal/RevealGroup primitives, reduced-motion aware). */}
-      <Card title="المحاضرات" icon={Play} className="course-lectures" subtitle={`أكملت ${watchedCount} من ${countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}`}>
+          (Reveal/RevealGroup primitives, reduced-motion aware).
+          heading="h2" (PP-X2 / audit P3-24): SR heading navigation can
+          jump between the page's sections instead of meeting a single
+          H1 + anonymous card titles. */}
+      <Card heading="h2" title="المحاضرات" icon={Play} className="course-lectures" subtitle={`أكملت ${watchedCount} من ${countAr(data.lectures.length, ['محاضرة واحدة', 'محاضرتين', 'محاضرات', 'محاضرة'])}`}>
         {!data.lectures.length ? (
           <EmptyState
             icon={Play}
@@ -197,15 +207,17 @@ export default function CourseDetailPage() {
           />
         ) : (
           <RevealGroup className="flex-col gap-2">
-            {data.lectures.map((lec) => {
+            {data.lectures.map((lec, lecIdx) => {
               const we = lec.watchEvents?.[0];
               const watchedPct = we && we.totalSec > 0 ? Math.round((we.watchedSec / we.totalSec) * 100) : 0;
               const completed = we?.completed ?? false;
+              // The "continue here" row (see nextLecIdx above).
+              const isNext = lecIdx === nextLecIdx;
               return (
                 <Reveal key={lec.id}>
                   <Link
                     to={`/student/lectures/${lec.id}`}
-                    className="list-row"
+                    className={`list-row course-lec-row${isNext ? ' next' : ''}`}
                     style={{ textDecoration: 'none' }}
                   >
                     <div className={completed ? 'course-lec-well done' : 'course-lec-well'} aria-hidden>
@@ -234,7 +246,11 @@ export default function CourseDetailPage() {
                       )}
                     </div>
                     {completed && <Badge color="green">مكتملة</Badge>}
-                    {!completed && watchedPct > 0 && <Badge color="brand">{watchedPct}%</Badge>}
+                    {/* The next row's affordance replaces the raw % — the
+                        verb names the action, the inline progress bar above
+                        already carries the number. */}
+                    {isNext && <Badge color="brand">تابع من هنا</Badge>}
+                    {!completed && watchedPct > 0 && !isNext && <Badge color="brand">{watchedPct}%</Badge>}
                   </Link>
                 </Reveal>
               );
@@ -245,7 +261,7 @@ export default function CourseDetailPage() {
 
       {/* Materials + Assignments + Schedule */}
       <div className="grid-2-1">
-        <Card title="المواد المرفقة" icon={FileText}>
+        <Card heading="h2" title="المواد المرفقة" icon={FileText}>
           {!data.materials.length ? (
             <EmptyState
               icon={FileText}
@@ -271,7 +287,7 @@ export default function CourseDetailPage() {
           )}
         </Card>
 
-        <Card title="الجدول الأسبوعي" icon={Calendar}>
+        <Card heading="h2" title="الجدول الأسبوعي" icon={Calendar}>
           {!data.schedule.length ? (
             <EmptyState
               icon={Calendar}
@@ -294,7 +310,7 @@ export default function CourseDetailPage() {
         </Card>
       </div>
 
-      <Card title="الواجبات" icon={ClipboardList}>
+      <Card heading="h2" title="الواجبات" icon={ClipboardList}>
         {!data.assignments.length ? (
           <EmptyState
             icon={ClipboardList}

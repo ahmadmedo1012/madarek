@@ -245,13 +245,25 @@
      compete with nav labels). Fully paint-only: zero layout, zero
      motion (the shell is Tier-2 calm — entrances belong to pages). */
   [data-theme="dark"] .has-shell > .sidebar {
-    position: sticky; /* keeps base.css sticky contract explicit here */
     background:
       radial-gradient(340px 200px at 82% -60px, rgb(233 180 76 / 0.06), transparent 72%),
       radial-gradient(280px 220px at -20% 108%, rgb(111 168 255 / 0.05), transparent 70%),
       linear-gradient(180deg, var(--neutral-100) 0%, var(--neutral-50) 34%, var(--neutral-50) 100%);
   }
-  [data-theme="dark"] .sidebar { position: relative; }
+  /* PP-fix (premium-polish P0-1): the night shell's position declarations
+     must never reach the ≤920px mobile drawer. Inside @layer layout the
+     dark pair ([data-theme] .has-shell > .sidebar = 0,3,0 sticky and
+     [data-theme] .sidebar = 0,2,0 relative) used to out-rank the drawer's
+     .sidebar { position: fixed } (0,1,0) — so on every dark-mode phone the
+     sidebar stayed in flow, the shell grid collapsed to `0px <content>` and
+     hide-on-scroll / topbar elevation / scroll restoration all silently
+     died. Desktop-only now: base.css already owns the sticky contract
+     there, and on mobile `position: fixed` is itself a containing block
+     for the ::before constellation, so nothing else changes. */
+  @media (min-width: 921px) {
+    [data-theme="dark"] .has-shell > .sidebar { position: sticky; }
+    [data-theme="dark"] .sidebar { position: relative; }
+  }
   [data-theme="dark"] .sidebar::before {
     content: '';
     position: absolute;

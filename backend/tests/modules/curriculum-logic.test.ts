@@ -15,6 +15,7 @@ import {
   createChapterBodySchema,
   createCheckpointBodySchema,
   createLectureBodySchema,
+  isSanctionedMediaUrl,
   nextOrdinal,
   resolveCorrectIndex,
   updateChapterBodySchema,
@@ -75,10 +76,18 @@ describe('createLectureBodySchema', () => {
     expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, description: 'a'.repeat(4000) }).success).toBe(true);
   });
 
-  it('rejects http:// and arbitrary-path videoUrls (https or internal only)', () => {
+  it('rejects http:// and dangerous videoUrls (https or same-origin only)', () => {
     expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: 'http://cdn.example.com/a.mp4' }).success).toBe(false);
-    expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: '/uploads/a.mp4' }).success).toBe(false);
     expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: 'ftp://x/a.mp4' }).success).toBe(false);
+    // protocol-relative = cross-origin trap
+    expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: '//evil.com/a.mp4' }).success).toBe(false);
+    // traversal
+    expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: '/lectures/../../etc/passwd' }).success).toBe(false);
+  });
+
+  it('accepts same-origin static asset paths (self-hosted sample lectures)', () => {
+    expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: '/lectures/se301-01-intro.mp4' }).success).toBe(true);
+    expect(createLectureBodySchema.safeParse({ ...VALID_LECTURE, videoUrl: '/uploads/a.mp4' }).success).toBe(true);
   });
 
   it('rejects durationSec out of bounds or non-integer', () => {
@@ -124,6 +133,26 @@ describe('CURRICULUM_MEDIA_URL_PATTERN', () => {
     expect(CURRICULUM_MEDIA_URL_PATTERN.test('http://example.com/a.mp4')).toBe(false);
     expect(CURRICULUM_MEDIA_URL_PATTERN.test('/api/v1/files/../a.mp4')).toBe(false);
     expect(CURRICULUM_MEDIA_URL_PATTERN.test('javascript:alert(1)')).toBe(false);
+  });
+});
+
+describe('isSanctionedMediaUrl (same-origin static assets)', () => {
+  it('accepts root-relative static asset paths (self-hosted sample lectures)', () => {
+    expect(isSanctionedMediaUrl('/lectures/se301-01-intro.mp4')).toBe(true);
+    expect(isSanctionedMediaUrl('/brand/madarek-mark.svg')).toBe(true);
+  });
+
+  it('still accepts the classic prefixes', () => {
+    expect(isSanctionedMediaUrl('https://example.com/a.mp4')).toBe(true);
+    expect(isSanctionedMediaUrl('/api/v1/files/papers/a.pdf')).toBe(true);
+  });
+
+  it('rejects protocol-relative, scheme, traversal and empty-root paths', () => {
+    expect(isSanctionedMediaUrl('//evil.com/a.mp4')).toBe(false);
+    expect(isSanctionedMediaUrl('javascript:alert(1)')).toBe(false);
+    expect(isSanctionedMediaUrl('http://example.com/a.mp4')).toBe(false);
+    expect(isSanctionedMediaUrl('/../etc/passwd')).toBe(false);
+    expect(isSanctionedMediaUrl('/')).toBe(false);
   });
 });
 

@@ -9,19 +9,20 @@
    What the app actually uses (verified by grepping every
    font-family / --fw-* / font-style usage in src/):
    · IBM Plex Sans Arabic 400/500/600/700 — body text + display
-     headings + chart.js labels. (The old <link> also loaded 300,
-     which no rule ever requests.) The family has NO true 800 cut
-     anywhere (not even on Google Fonts), and 700 is the heaviest
-     file that ships here — so `font-weight: 800` never painted an
-     800: CSS font matching selects the closest available face (the
-     REAL 700 file) and, because a face matched, applies NO
+     headings + chart.js labels + the landing's Arabic mono fallback
+     (premium-polish P1-4: mono labels continue their Arabic runs in
+     this face via the landing's --ln-mono stack). The family has NO
+     true 800 cut anywhere (not even on Google Fonts), and 700 is the
+     heaviest file that ships here — so `font-weight: 800` never
+     painted an 800: CSS font matching selects the closest available
+     face (the REAL 700 file) and, because a face matched, applies NO
      synthetic bold (synthesis only happens when no face of the
      family matches at all). Every --fw-black consumer therefore
      always rendered the 700 cut. wave 2-a: tokens.css now resolves
      --fw-black to var(--fw-bold) (700) so the heaviest display
      weight is what the tokens actually say — zero visual delta,
-     same woff2, and the fallback stacks get a real 700 instead of
-     a synthetic 800 while the webfont swaps in.
+     same woff2, and the fallback stacks get a real 700 instead of a
+     synthetic 800 while the webfont swaps in.
    · IBM Plex Serif italic 400/500 — SANCTIONED LATIN RUNS ONLY
      (21-c, A12 P1-6): Arabic was never in Plex Serif (latin-only
      unicode-range below), so every Arabic em that asked for the
@@ -37,8 +38,11 @@
    the browser downloads only what the page paints.
    All weights/subsets = exact woff2 files the Google Fonts CSS2
    API serves. font-display: swap on every face.
-   Total: 12 files ≈ 322 KB on disk; a typical first paint needs
-   only the two preloaded arabic subsets (~86 KB).
+   Total: 12 files ≈ 329 KB on disk (premium-polish P3: the dead
+   Noto Kufi Arabic ×6, Amiri and Rubik families — zero consumers
+   since the round-3 Orbit Ink rebuild replaced the old landing
+   wave, 51% of the shipped font bytes — were deleted). A typical
+   first paint needs only the two preloaded arabic subsets (~86 KB).
    ═════════════════════════════════════════════════════════════════ */
 
 /* ── IBM Plex Sans Arabic — arabic subset ─────────────────────────── */
@@ -143,67 +147,4 @@
   font-display: swap;
   src: url('/fonts/plex-mono-500-normal-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* ── Noto Kufi Arabic — monumental display face (landing «أطلس المعرفة»).
-   Kufi is the geometric manuscript hand of early Arabic scholarship —
-   the right voice for the atlas/astrolabe world. arabic subset for the
-   words, latin subset so the real digits (25, 1988…) share the face. ── */
-@font-face {
-  font-family: 'Noto Kufi Arabic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/noto-kufi-arabic-500-normal-arabic.woff2') format('woff2');
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+1EE00-1EEBB, U+1EEF0-1EEF1;
-}
-@font-face {
-  font-family: 'Noto Kufi Arabic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/noto-kufi-arabic-700-normal-arabic.woff2') format('woff2');
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+1EE00-1EEBB, U+1EEF0-1EEF1;
-}
-@font-face {
-  font-family: 'Noto Kufi Arabic';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('/fonts/noto-kufi-arabic-800-normal-arabic.woff2') format('woff2');
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+1EE00-1EEBB, U+1EEF0-1EEF1;
-}
-@font-face {
-  font-family: 'Noto Kufi Arabic';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/noto-kufi-arabic-500-normal-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+2000-206F, U+2212, U+FEFF;
-}
-@font-face {
-  font-family: 'Noto Kufi Arabic';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/noto-kufi-arabic-700-normal-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+2000-206F, U+2212, U+FEFF;
-}
-@font-face {
-  font-family: 'Noto Kufi Arabic';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url('/fonts/noto-kufi-arabic-800-normal-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+2000-206F, U+2212, U+FEFF;
-}
-
-/* ── Amiri — classical Naskh, quotes only (manuscript heritage voice). ── */
-@font-face {
-  font-family: 'Amiri';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/amiri-400-normal-arabic.woff2') format('woff2');
-  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+1EE00-1EEBB;
 }
