@@ -122,7 +122,9 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-shell">
-      <div className="auth-top">
+      {/* a11y: page-level chrome as a banner landmark (matches AuthPage's
+          imm-5 fix — axe "all content in landmarks"). */}
+      <header className="auth-top">
         {role ? (
           <button type="button" className="auth-back-home" onClick={backToRoles}>
             <Icon icon={ArrowRight} size={14} />
@@ -142,7 +144,7 @@ export default function RegisterPage() {
         ) : (
           <span className="auth-context">إنشاء حساب جديد</span>
         )}
-      </div>
+      </header>
 
       <main className="auth-center">
         {/* One card for BOTH steps (same width, same chrome) — stepping
@@ -254,9 +256,9 @@ export default function RegisterPage() {
         </div>
       </main>
 
-      <div className="auth-bottom">
+      <footer className="auth-bottom">
         دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
-      </div>
+      </footer>
     </div>
   );
 }
