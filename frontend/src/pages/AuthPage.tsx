@@ -124,7 +124,10 @@ export default function AuthPage() {
   return (
     <div className="auth-shell">
 
-      <div className="auth-top">
+      {/* header/footer landmarks — axe region rule: the funnel's top
+          bar and ministry strip must live in landmark regions, not
+          bare divs (7-A a11y gate: 0 violations on /auth). */}
+      <header className="auth-top">
         <Link to="/" className="auth-back-home">
           <Icon icon={Home} size={14} />
           الصفحة الرئيسية
@@ -132,14 +135,17 @@ export default function AuthPage() {
         <span className="auth-context">
           <LibyaFlag size={14} /> جامعة الزاوية
         </span>
-      </div>
+      </header>
 
       <main className="auth-center">
         <div className="auth-card">
 
-          <div className="auth-brand-mini">
-            <span className="auth-brand-mini-mark">م</span>
-            <span className="auth-brand-mini-text">مدارك</span>
+          {/* 7-A identity bridge — the landing's .ln-nav-brand wordmark
+              treatment: «مدارك» + «جامعة الزاوية» open the funnel the
+              same way the landing opens (auth.css §2 .auth-brand). */}
+          <div className="auth-brand">
+            <span className="auth-brand-mark" aria-hidden="true">مدارك</span>
+            <span className="auth-brand-sub">جامعة الزاوية</span>
           </div>
 
           <div className="auth-form-header">
@@ -294,9 +300,9 @@ export default function AuthPage() {
         </div>
       </main>
 
-      <div className="auth-bottom">
+      <footer className="auth-bottom">
         دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
-      </div>
+      </footer>
     </div>
   );
 }

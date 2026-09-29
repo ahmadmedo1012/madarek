@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SystemLinksArt } from '../../../lib/illustrations/landing-film';
 
 /**
  * Scene 2 — المنظومة: تسع قوى في نظامٍ واحد.
@@ -59,15 +60,7 @@ export function SceneSystem() {
       </header>
 
       <div className="sc-system-stage">
-        <svg className="sc-system-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          {FN_NODES.map((n) => (
-            <line
-              key={n.id}
-              className={`sc-system-link ${active === n.id ? 'is-lit' : ''}`}
-              x1={HUB.x} y1={HUB.y} x2={n.x} y2={n.y}
-            />
-          ))}
-        </svg>
+        <SystemLinksArt links={FN_NODES.map((n) => ({ id: n.id, x: n.x, y: n.y }))} hub={HUB} activeId={active} />
 
         <div className="sc-system-hub" style={{ left: `${HUB.x}%`, top: `${HUB.y}%` }}>
           <span className="sc-system-hub-core" aria-hidden="true" />

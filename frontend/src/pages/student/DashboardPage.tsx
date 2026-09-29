@@ -321,7 +321,14 @@ export default function StudentDashboardPage() {
                     labels: ['منجز', 'متبقي'],
                     datasets: [{
                       data: [courseProgressPct, remainingPct],
-                      backgroundColor: [cc.accent, cc.surfaceMuted],
+                      /* 7-A identity link: the progress ring takes the
+                         landing's knowledge-light gold (same family as
+                         the navy welcome band above). The value stays
+                         textually conveyed (center % + ChartFrame
+                         summary/table), matching the ProgressBar fill
+                         convention. The remaining arc stays the quiet
+                         theme track (cc.surfaceMuted). */
+                      backgroundColor: ['#E9B44C', cc.surfaceMuted],
                       borderWidth: 0,
                       spacing: 2,
                     }],

@@ -41,8 +41,8 @@
   --ln-hairline-strong: rgb(142 151 184 / 0.3);
   --ln-card: rgb(13 19 40 / 0.58);
   --ln-card-strong: rgb(13 19 40 / 0.78);
-  --ln-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ln-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ln-ease-out: var(--ease-out);
+  --ln-ease-soft: var(--ease);
   --ln-role-tint: var(--ln-gold);
   --ln-rt: 233 180 76; /* active role rgb triplet — retuned by data-role below */
 
@@ -187,9 +187,9 @@
   text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 0.35s var(--ln-ease-out), box-shadow 0.35s var(--ln-ease-out),
-    background 0.35s var(--ln-ease-soft), border-color 0.35s var(--ln-ease-soft),
-    color 0.35s var(--ln-ease-soft);
+  transition: transform var(--t-slow) var(--ln-ease-out), box-shadow var(--t-slow) var(--ln-ease-out),
+    background var(--t-slow) var(--ln-ease-soft), border-color var(--t-slow) var(--ln-ease-soft),
+    color var(--t-slow) var(--ln-ease-soft);
 }
 
 .ln-btn:focus-visible {
@@ -236,7 +236,7 @@
   height: 2px;
   border-radius: 2px;
   background: currentColor;
-  transition: transform 0.35s var(--ln-ease-out);
+  transition: transform var(--t-slow) var(--ln-ease-out);
 }
 
 /* RTL arrow: points left */
@@ -257,8 +257,8 @@
   justify-content: space-between;
   gap: 18px;
   padding: 18px clamp(20px, 4vw, 52px);
-  transition: background 0.4s var(--ln-ease-soft), border-color 0.4s var(--ln-ease-soft),
-    padding 0.4s var(--ln-ease-soft);
+  transition: background var(--t-slow) var(--ln-ease-soft), border-color var(--t-slow) var(--ln-ease-soft),
+    padding var(--t-slow) var(--ln-ease-soft);
   border-bottom: 1px solid transparent;
 }
 
@@ -307,7 +307,7 @@
   padding: 9px 14px;
   border-radius: var(--r-full);
   cursor: pointer;
-  transition: color 0.25s, background 0.25s;
+  transition: color var(--t-base), background var(--t-base);
 }
 
 .ln-nav-links button:hover { color: var(--ln-ink); background: rgb(242 239 230 / 0.06); }
@@ -319,7 +319,7 @@
   color: var(--ln-ink-dim);
   text-decoration: none;
   font-size: 15px;
-  transition: color 0.25s;
+  transition: color var(--t-base);
 }
 
 .ln-nav-login:hover { color: var(--ln-ink); }
@@ -336,7 +336,7 @@
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
-  transition: border-color 0.3s, background 0.3s, transform 0.3s var(--ln-ease-out);
+  transition: border-color var(--t-slow), background var(--t-slow), transform var(--t-slow) var(--ln-ease-out);
 }
 
 .ln-nav-start:hover {
@@ -361,7 +361,7 @@
 .kt .kt-w {
   opacity: 0;
   transform: translateY(0.62em);
-  transition: opacity 0.7s var(--ln-ease-out), transform 0.85s var(--ln-ease-out);
+  transition: opacity var(--t-cinema) var(--ln-ease-out), transform var(--t-cinema) var(--ln-ease-out);
 }
 
 .kt.kt-run .kt-w {
@@ -470,7 +470,7 @@
   stroke: rgb(142 151 184 / 0.22);
   stroke-width: 0.28;
   vector-effect: non-scaling-stroke;
-  transition: stroke 0.4s var(--ln-ease-soft);
+  transition: stroke var(--t-slow) var(--ln-ease-soft);
 }
 
 .sc-system-link.is-lit {
@@ -494,7 +494,7 @@
   border-radius: 50%;
   background: radial-gradient(circle at 38% 32%, rgb(245 212 138 / 0.95) 0%, rgb(233 180 76 / 0.75) 42%, rgb(201 150 47 / 0.12) 78%, transparent 100%);
   box-shadow: 0 0 34px rgb(233 180 76 / 0.5), 0 0 90px rgb(233 180 76 / 0.22);
-  animation: ln-hub-breathe 4.6s ease-in-out infinite;
+  animation: ln-hub-breathe 4.6s var(--ease) infinite;
 }
 
 @keyframes ln-hub-breathe {
@@ -526,8 +526,8 @@
   cursor: pointer;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: border-color 0.3s var(--ln-ease-soft), color 0.3s, box-shadow 0.4s var(--ln-ease-soft),
-    transform 0.4s var(--ln-ease-out), background 0.3s;
+  transition: border-color var(--t-slow) var(--ln-ease-soft), color var(--t-slow), box-shadow var(--t-slow) var(--ln-ease-soft),
+    transform var(--t-slow) var(--ln-ease-out), background var(--t-slow);
 }
 
 .sc-node-dot {
@@ -537,7 +537,7 @@
   background: var(--ln-mist);
   box-shadow: 0 0 10px rgb(142 151 184 / 0.8);
   flex: none;
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background var(--t-slow), box-shadow var(--t-slow);
 }
 
 .sc-node-xl { font-size: 16.5px; padding: 13px 22px 13px 18px; }
@@ -577,7 +577,7 @@
   color: var(--ln-ink-dim);
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.45s var(--ln-ease-soft), transform 0.45s var(--ln-ease-out);
+  transition: opacity var(--t-slower) var(--ln-ease-soft), transform var(--t-slower) var(--ln-ease-out);
 }
 
 .sc-system-caption.is-on {
@@ -623,7 +623,7 @@
   align-items: flex-start;
   opacity: 0.42;
   transform: translateY(8px);
-  transition: opacity 0.6s var(--ln-ease-soft), transform 0.6s var(--ln-ease-out);
+  transition: opacity var(--t-slower) var(--ln-ease-soft), transform var(--t-slower) var(--ln-ease-out);
 }
 
 .sc-jm.is-lit {
@@ -643,7 +643,7 @@
   color: var(--ln-ink-dim);
   background: rgb(10 15 31 / 0.85);
   border: 1px solid var(--ln-hairline);
-  transition: border-color 0.4s, color 0.4s, box-shadow 0.5s;
+  transition: border-color var(--t-slow), color var(--t-slow), box-shadow var(--t-slower);
 }
 
 .sc-jm.is-lit .sc-jm-index {
@@ -693,7 +693,7 @@
   background:
     radial-gradient(46% 50% at 70% 46%, rgb(122 217 201 / 0.13) 0%, transparent 72%),
     radial-gradient(60% 64% at 18% 62%, rgb(111 168 255 / 0.07) 0%, transparent 70%);
-  animation: ln-oasis-breathe 7s ease-in-out infinite;
+  animation: ln-oasis-breathe 7s var(--ease) infinite;
 }
 
 @keyframes ln-oasis-breathe {
@@ -759,7 +759,7 @@
   line-height: 1.8;
   opacity: 0;
   transform: translateY(10px) scale(0.98);
-  transition: opacity 0.5s var(--ln-ease-soft), transform 0.55s var(--ln-ease-out);
+  transition: opacity var(--t-slower) var(--ln-ease-soft), transform var(--t-slower) var(--ln-ease-out);
 }
 
 .sc-bubble.is-in { opacity: 1; transform: translateY(0) scale(1); }
@@ -787,7 +787,7 @@
   height: 7px;
   border-radius: 50%;
   background: var(--ln-teal);
-  animation: ln-typing 1.2s ease-in-out infinite;
+  animation: ln-typing var(--motion-duration-skeleton) var(--ease) infinite;
 }
 
 .sc-typing span:nth-child(2) { animation-delay: 0.18s; }
@@ -817,8 +817,8 @@
   border: 1px solid var(--ln-hairline);
   opacity: 0.45;
   transform: translateY(4px);
-  transition: opacity 0.5s var(--ln-ease-soft), transform 0.5s var(--ln-ease-out),
-    color 0.5s, border-color 0.5s, box-shadow 0.6s;
+  transition: opacity var(--t-slower) var(--ln-ease-soft), transform var(--t-slower) var(--ln-ease-out),
+    color var(--t-slower), border-color var(--t-slower), box-shadow var(--t-slower);
 }
 
 .sc-spark.is-lit {
@@ -845,7 +845,7 @@
   inset: -18% -10%;
   pointer-events: none;
   background: radial-gradient(46% 52% at 68% 48%, rgb(var(--ln-rt) / 0.11) 0%, transparent 72%);
-  transition: background 0.9s var(--ln-ease-soft);
+  transition: background var(--t-cinema) var(--ln-ease-soft);
 }
 
 .sc-roles-mark {
@@ -858,7 +858,7 @@
   color: rgb(var(--ln-rt) / 0.055);
   pointer-events: none;
   user-select: none;
-  transition: color 0.9s var(--ln-ease-soft);
+  transition: color var(--t-cinema) var(--ln-ease-soft);
 }
 
 .sc-roles-dial {
@@ -897,8 +897,8 @@
   font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  transition: color 0.35s, border-color 0.35s, background 0.35s, box-shadow 0.45s var(--ln-ease-soft),
-    transform 0.35s var(--ln-ease-out);
+  transition: color var(--t-slow), border-color var(--t-slow), background var(--t-slow), box-shadow var(--t-slower) var(--ln-ease-soft),
+    transform var(--t-slow) var(--ln-ease-out);
 }
 
 .sc-seat-dot {
@@ -907,7 +907,7 @@
   border-radius: 50%;
   background: var(--ln-mist);
   opacity: 0.5;
-  transition: background 0.35s, box-shadow 0.35s, opacity 0.35s;
+  transition: background var(--t-slow), box-shadow var(--t-slow), opacity var(--t-slow);
 }
 
 .sc-seat:hover { color: var(--ln-ink); transform: translateY(-2px); }
@@ -937,7 +937,7 @@
   font-weight: 800;
   line-height: 1.35;
   color: var(--ln-ink);
-  animation: ln-role-in 0.55s var(--ln-ease-out) both;
+  animation: ln-role-in var(--t-slower) var(--ln-ease-out) both;
 }
 
 .sc-roles-points { margin: 0 0 28px; padding: 0; list-style: none; display: grid; gap: 14px; }
@@ -949,7 +949,7 @@
   font-size: 15.5px;
   line-height: 1.8;
   color: var(--ln-ink-dim);
-  animation: ln-role-in 0.55s var(--ln-ease-out) both;
+  animation: ln-role-in var(--t-slower) var(--ln-ease-out) both;
 }
 
 .sc-role-point:nth-child(2) { animation-delay: 0.07s; }
@@ -978,7 +978,7 @@
   transform: rotate(45deg);
 }
 
-.sc-roles-cta { animation: ln-role-in 0.55s var(--ln-ease-out) 0.2s both; align-self: flex-start; }
+.sc-roles-cta { animation: ln-role-in var(--t-slower) var(--ln-ease-out) 0.2s both; align-self: flex-start; }
 
 @keyframes ln-role-in {
   from { opacity: 0; transform: translateY(12px); }
@@ -1004,8 +1004,8 @@
   border: 1px solid var(--ln-hairline);
   opacity: 0.38;
   transform: translateY(10px);
-  transition: opacity 0.65s var(--ln-ease-soft), transform 0.65s var(--ln-ease-out),
-    border-color 0.65s, box-shadow 0.8s;
+  transition: opacity var(--t-cinema) var(--ln-ease-soft), transform var(--t-cinema) var(--ln-ease-out),
+    border-color var(--t-cinema), box-shadow 0.8s;
 }
 
 .sc-qs.is-lit {
@@ -1032,7 +1032,7 @@
   height: 12px;
   border-radius: 50%;
   background: var(--ln-mist);
-  transition: background 0.5s, box-shadow 0.6s;
+  transition: background var(--t-slower), box-shadow var(--t-slower);
 }
 
 .sc-qs.is-lit .sc-qs-core {
@@ -1060,7 +1060,7 @@
 }
 
 .sc-quality-pipe.is-flowing .sc-qs-flow i {
-  animation: ln-flow 1.5s ease-in-out infinite;
+  animation: ln-flow 1.5s var(--ease) infinite;
 }
 
 .sc-qs-flow i:nth-child(2) { animation-delay: 0.22s; }
@@ -1147,7 +1147,7 @@
   text-decoration: none;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: transform 0.4s var(--ln-ease-out), border-color 0.4s, box-shadow 0.5s;
+  transition: transform var(--t-slow) var(--ln-ease-out), border-color var(--t-slow), box-shadow var(--t-slower);
 }
 
 .sc-path:hover {
@@ -1198,7 +1198,7 @@
   font-size: 13.5px;
   padding: 8px 12px;
   border-radius: var(--r-full);
-  transition: color 0.25s, background 0.25s;
+  transition: color var(--t-base), background var(--t-base);
 }
 
 .ln-footer-nav a:hover { color: var(--ln-ink); background: rgb(242 239 230 / 0.06); }
@@ -1315,3 +1315,6 @@
 
   .ln-btn, .sc-node, .sc-seat, .sc-path, .ln-nav-start { transition: none !important; }
 }
+
+/* oasis palm sigil sizing (Illustration component) */
+.sc-oasis-palm { width: 20px; height: 20px; color: var(--ln-teal); }

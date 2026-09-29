@@ -120,7 +120,8 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-shell">
-      <div className="auth-top">
+      {/* header/footer landmarks — same axe region fix as AuthPage. */}
+      <header className="auth-top">
         {role ? (
           <button type="button" className="auth-back-home" onClick={backToRoles}>
             <Icon icon={ArrowRight} size={14} />
@@ -140,15 +141,16 @@ export default function RegisterPage() {
         ) : (
           <span className="auth-context">إنشاء حساب جديد</span>
         )}
-      </div>
+      </header>
 
       <main className="auth-center">
         {/* One card for BOTH steps (same width, same chrome) — stepping
             never reflows the layout; only the keyed panel slides. */}
         <div className="auth-card auth-card--wide">
-          <div className="auth-brand-mini">
-            <span className="auth-brand-mini-mark">م</span>
-            <span className="auth-brand-mini-text">مدارك</span>
+          {/* 7-A identity bridge — same .auth-brand wordmark as AuthPage. */}
+          <div className="auth-brand">
+            <span className="auth-brand-mark" aria-hidden="true">مدارك</span>
+            <span className="auth-brand-sub">جامعة الزاوية</span>
           </div>
 
           <ol className="auth-steps" aria-label="مراحل إنشاء الحساب">
@@ -252,9 +254,9 @@ export default function RegisterPage() {
         </div>
       </main>
 
-      <div className="auth-bottom">
+      <footer className="auth-bottom">
         دولة ليبيا · <strong>وزارة التعليم العالي والبحث العلمي</strong> · جامعة الزاوية
-      </div>
+      </footer>
     </div>
   );
 }

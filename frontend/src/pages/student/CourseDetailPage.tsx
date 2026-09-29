@@ -145,7 +145,11 @@ export default function CourseDetailPage() {
               <span className="course-hero-progress-label">تقدّمك في المنهج</span>
               <span className="course-hero-progress-value">{progressValue}%</span>
             </div>
-            <ProgressBar value={lecProgress} color={tint} showValue={false} ariaLabel="نسبة إكمال محاضرات المقرر" />
+            {/* 7-A identity band: the hero fill is the knowledge-light
+                gold (brand band first). The per-course --course-tint
+                keeps the lecture rows + KPI cards below on the light
+                page — only the band's accents are gold. */}
+            <ProgressBar value={lecProgress} color="#E9B44C" showValue={false} ariaLabel="نسبة إكمال محاضرات المقرر" />
             <div className="course-hero-progress-note">
               {countAr(watchedCount, ['محاضرة مكتملة', 'محاضرتان مكتملتان', 'محاضرات مكتملة', 'محاضرة مكتملة'])} من {data.lectures.length}
             </div>

@@ -748,35 +748,57 @@
     to { opacity: 1; transform: none; }
   }
 
-  /* ═══ CourseDetailPage — tinted hero + curriculum progress ═══
-     Same anatomy as the training track-hero: hierarchy via tint wash +
-     hairline, never a colored side-stripe (ruling #4). --course-tint
-     is set inline on the .course-page root and simply inherits here —
-     no class-level default (it would beat the inherited value). */
+  /* ═══ CourseDetailPage — navy identity band (7-A) + curriculum ═══
+     The tinted light-blue band becomes the course's «identity moment»:
+     the landing's navy + warm ink + gold (a FIXED brand band — same
+     colors in light and dark themes, like the landing hero). The rest
+     of the page stays light and calm — this band is the bridge between
+     the immersive landing and the workspace (docs/execution-gap.md
+     gap #9). --course-tint keeps driving the LECTURE rows below; inside
+     the band the accents are the knowledge-light gold. */
   .course-hero {
     display: flex;
     flex-direction: column;
     gap: var(--sp-4);
     padding: var(--sp-6);
-    background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
+    position: relative;
+    background: linear-gradient(160deg, #101731, #0A0F1F);
+    border: 1px solid rgb(142 151 184 / 0.22);
     border-radius: var(--r-xl);
+    box-shadow: 0 18px 50px rgb(10 15 31 / 0.26);
+    color: #F2EFE6; /* warm ink default for anything unstyled below */
   }
-  /* 21-c (A3 P2-7): the 7% tint wash read near-invisible in dark —
-     measured dark hero rgb(34,39,45) vs card rgb(31,31,30) vs page
-     rgb(25,25,24): ~3 RGB points of separation, the hero survived on
-     its border alone (VLM: "card edges dissolve"). Dark raises the
-     wash to 12% + border to 35% per the audit's sketch. */
-  [data-theme="dark"] .course-hero {
-    background: color-mix(in srgb, var(--course-tint) 12%, var(--surface));
-    border-color: color-mix(in srgb, var(--course-tint) 35%, var(--rule));
+  /* faint star grain on the band — the funnel's ::after technique at a
+     whisper (static, CSS-only). Content rides above it (z-index 1). */
+  .course-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 82% 22%, rgb(242 239 230 / 0.22) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 68% 74%, rgb(233 180 76 / 0.2) 50%, transparent 51%),
+      radial-gradient(1px 1px at 92% 56%, rgb(111 168 255 / 0.18) 50%, transparent 51%),
+      radial-gradient(0.9px 0.9px at 55% 16%, rgb(242 239 230 / 0.16) 50%, transparent 51%);
   }
+  .course-hero > * { position: relative; z-index: 1; }
   .course-hero-row {
     display: flex;
     align-items: center;
     gap: var(--sp-5);
     flex-wrap: wrap;
   }
+  /* back link — ghost button retuned to the band's glass */
+  .course-hero .btn.ghost {
+    --_btn-bg: rgb(16 23 49 / 0.4);
+    --_btn-fg: #AAB2CB;
+    --_btn-bd: rgb(142 151 184 / 0.3);
+    --_btn-bg-hover: rgb(22 30 60 / 0.55);
+    --_btn-bd-hover: rgb(233 180 76 / 0.5);
+    --_btn-shadow: none;
+  }
+  .course-hero .btn.ghost:hover { --_btn-fg: #F2EFE6; }
   .course-hero-icon {
     inline-size: 64px;
     block-size: 64px;
@@ -785,9 +807,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--course-tint) 14%, var(--surface));
-    color: var(--course-tint);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--course-tint) 30%, transparent);
+    /* gold knowledge-light well — 10.1:1 icon on the wash over navy */
+    background: rgb(233 180 76 / 0.12);
+    color: #E9B44C;
+    box-shadow: inset 0 0 0 1.5px rgb(233 180 76 / 0.32);
   }
   .course-hero-main {
     flex: 1;
@@ -801,23 +824,30 @@
     align-items: center;
     gap: var(--sp-2);
   }
+  /* meta chips — gold accents on the navy band (code badge + dept) */
+  .course-hero .badge {
+    background: rgb(233 180 76 / 0.14);
+    color: #F5D48A;
+    border: 1px solid rgb(233 180 76 / 0.35);
+  }
+  .course-hero .text-subtle { color: #AAB2CB; }
   .course-hero-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-md);
     font-weight: var(--type-headline-weight);
     line-height: var(--type-headline-line-height);
     letter-spacing: var(--type-headline-letter-spacing);
-    color: var(--text);
+    color: #F2EFE6; /* warm ink on navy — 14.9:1 */
     margin: 0;
   }
   .course-hero-sub {
     font-size: var(--type-body-size);
     line-height: var(--lh-base);
-    color: var(--text-muted);
+    color: #AAB2CB;
   }
-  /* progress panel — hosts the count-up readout (authored moment #2:
-     the % value animates in JS over --motion-duration-stat; CSS pins
-     the metric role + tabular numerals so digits never shift width) */
+  /* progress panel — dark glass INSIDE the band; the fill turns gold
+     (the course tint keeps the lecture rows below — brand band first).
+     The % readout rides the metric role + tabular numerals. */
   .course-hero-progress {
     margin-inline-start: auto;
     flex: 0 1 240px;
@@ -826,8 +856,8 @@
     flex-direction: column;
     gap: var(--sp-2);
     padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
+    background: rgb(13 19 40 / 0.58);
+    border: 1px solid rgb(142 151 184 / 0.3);
     border-radius: var(--r-md);
   }
   .course-hero-progress-head {
@@ -838,22 +868,36 @@
   }
   .course-hero-progress-label {
     font-size: var(--type-label-size);
-    color: var(--text-muted);
+    color: #AAB2CB;
   }
   .course-hero-progress-value {
     font-family: var(--font-mono);
     font-size: var(--type-metric-size);
     font-weight: var(--type-metric-weight);
     line-height: var(--type-metric-line-height);
-    color: var(--text);
+    color: #E9B44C; /* gold metric — 9.3:1 on the glass panel */
     font-variant-numeric: tabular-nums;
     font-feature-settings: var(--type-metric-feature-settings);
   }
   .course-hero-progress-note {
     font-size: var(--type-label-size-sm);
-    color: var(--text-secondary);
+    color: #AAB2CB;
     font-variant-numeric: tabular-nums;
   }
+  .course-hero .progress-track { background: rgb(242 239 230 / 0.14); }
+
+  /* ═══ StudentDashboardPage — navy welcome band (7-A) ═══════════
+     The greeting header joins the course-hero identity band: fixed
+     navy + warm ink + gold — the landing world's palette, identical in
+     light and dark themes. The rest of the dashboard stays light and
+     calm; this band is the “identity moment” at the top of the
+     student's day (the platform rule: marketing immersive · work
+     calm). The band's background + decorative washes ride the
+     OVERRIDES layer block at the bottom of this file — polish's D15
+     photo block + breathing washes live in that layer and a pages-
+     layer rule can never win the cascade. */
+  .page.student-dashboard .welcome-card .page-title { color: #F2EFE6; }
+  .page.student-dashboard .welcome-card .page-subtitle { color: #AAB2CB; }
   /* lecture icon wells (was ~10 lines of inline style per row) —
      inherits --course-tint from the .course-page root */
   .course-lec-well {
@@ -2245,4 +2289,30 @@
     .event-actions .btn { min-block-size: 44px; }
   }
 
+}
+
+/* ═══ 7-A · Student welcome band — overrides layer ═══════════════════
+   The welcome-card's painted layers (D15 campus-photo block, the
+   breathing radial ::after, the corner dot grid ::before) all live in
+   polish.css's OVERRIDES layer — a pages-layer rule can never win that
+   cascade. The band repaints them in the landing world's fixed navy +
+   gold. The header-qualified selector (0,4,1) out-ranks polish's
+   [data-theme="dark"] .student-dashboard .page-header.welcome-card
+   (0,4,0), so the band renders identically in BOTH theme modes.
+   (polish's D15 photo block is now fully covered — candidate for
+   deletion by the polish owner; the asset test keeps the reference.) */
+@layer overrides {
+  .page.student-dashboard header.page-header.welcome-card {
+    background: linear-gradient(160deg, #101731, #0A0F1F);
+    border: 1px solid rgb(142 151 184 / 0.22);
+    box-shadow: 0 18px 50px rgb(10 15 31 / 0.22);
+  }
+  /* breathing radial ::after → the .ln-sky gold fog */
+  .page.student-dashboard .page-header.welcome-card::after {
+    background: radial-gradient(circle at 80% 20%, rgb(233 180 76 / 0.1) 0%, transparent 60%);
+  }
+  /* corner dot grid ::before → gold grains */
+  .page.student-dashboard .welcome-card::before {
+    background-image: radial-gradient(circle, rgb(233 180 76 / 0.4) 1px, transparent 1.5px);
+  }
 }

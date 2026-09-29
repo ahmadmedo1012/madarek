@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { JourneyThreadArt } from '../../../lib/illustrations/landing-film';
 
 /**
  * Scene 3 — رحلة الطالب: من أول محاضرة إلى سدِّ الفجوة.
@@ -77,9 +78,7 @@ export function SceneJourney() {
             </div>
           </li>
         ))}
-        <svg className="sc-journey-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path ref={pathRef} className="sc-journey-draw" d="M4,8 L30,22 L10,38 L34,52 L12,68 L38,80 L16,94 L46,96" />
-        </svg>
+        <JourneyThreadArt pathRef={pathRef} />
       </ol>
     </div>
   );

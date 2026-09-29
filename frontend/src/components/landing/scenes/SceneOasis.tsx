@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { OasisPalmMark } from '../../../lib/illustrations/landing-film';
 
 /**
  * Scene 4 — Oasis: واحةٌ تهدأ فيها الأسئلة.
@@ -15,7 +16,7 @@ const CHAT: { from: 'student' | 'oasis'; text: string }[] = [
   { from: 'student', text: 'لم أفهم نقاط الفحص الأخيرة من محاضرة «مقدمة في الخوارزميات». تلخّصها لي؟' },
   { from: 'oasis', text: 'ركّز على ثلاثة مفاهيم: التعقيد الزمني، الحلقات المتداخلة، وأنماط البحث. أخبرك بأهمّها بالترتيب…' },
   { from: 'student', text: 'فهمت! اختبرني فيهم' },
-  { from: 'oasis', text: 'جهّزت لك اختبارًا قصيرًا من 5 أسئلة من نقاط الفحص نفسها. بالتوفيق 🌴' },
+  { from: 'oasis', text: 'جهّزت لك اختبارًا قصيرًا من 5 أسئلة من نقاط الفحص نفسها. بالتوفيق' },
 ];
 
 const CAPABILITIES = ['يلخّص المحاضرات', 'يبسّط المفاهيم', 'يولّد اختبارات', 'يوجّه حسب أدائك'];
@@ -62,7 +63,7 @@ export function SceneOasis() {
 
       <div className="sc-oasis-panel">
         <div className="sc-oasis-panel-head">
-          <span className="sc-oasis-avatar" aria-hidden="true">🌴</span>
+          <span className="sc-oasis-avatar" aria-hidden="true"><OasisPalmMark className="sc-oasis-palm" /></span>
           <div>
             <p className="sc-oasis-name">واحة · Oasis</p>
             <p className="sc-oasis-status">يفهم سياق مقرّرك</p>
