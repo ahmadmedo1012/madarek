@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { cloneElement, isValidElement } from 'react';
+import type { CSSProperties, ReactElement, ReactNode } from 'react';
 
 /** Column headers + data rows for the screen-reader fallback table. */
 export type ChartTable = {
@@ -66,6 +67,13 @@ export type ChartFrameProps = {
  * `.visually-hidden` utility from base.css.
  *
  * See specs/012-design-graphics-uplift/contracts/chart-treatment.md.
+ *
+ * a11y: react-chartjs-2 hardcodes role="img" on every <canvas> it
+ * renders — an image role without an accessible name is an axe
+ * `role-img-alt` (serious) violation even when the wrapper div above
+ * is labeled, because the canvas itself carries the role. The label
+ * is therefore also cloned onto the chart element (react-chartjs-2
+ * spreads rest props onto the canvas), so the canvas is named too.
  */
 export function ChartFrame({
   ariaLabel,
@@ -83,10 +91,15 @@ export function ChartFrame({
     height: height !== undefined ? height : '100%',
   };
 
+  const chart =
+    isValidElement(children)
+      ? cloneElement(children as ReactElement<Record<string, unknown>>, { 'aria-label': ariaLabel } as Record<string, unknown>)
+      : children;
+
   return (
     <div className={className} data-chart-frame="">
       <div role="img" aria-label={ariaLabel} style={chartBoxStyle}>
-        {children}
+        {chart}
       </div>
       {(summary !== undefined || table !== undefined) && (
         <div className="visually-hidden">
