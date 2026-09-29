@@ -81,20 +81,16 @@ describe('hero image optimization (perf fix: 2 MB PNG)', () => {
     expect(v.size).toBeLessThan(60 * 1024);
   });
 
-  it('LandingPage renders the responsive <picture> art with intrinsic dimensions', () => {
+  it('LandingPage ships zero raster hero art (v3 «منظومة المعرفة»)', () => {
+    // v3 rebuild (docs/execution-gap.md): the hero is a WebGL knowledge
+    // field over a CSS sky — no <picture> art, no PNG/WebP/JPG bytes at
+    // all. The perf intent of this suite (never again a 2 MB PNG) is
+    // preserved in the strongest form: the asset is simply absent.
     const src = read('src/pages/LandingPage.tsx');
-    expect(src).toContain('<picture>');
-    expect(src).toContain('srcSet="/main_photo-750.webp 750w, /main_photo.webp 1377w"');
-    expect(src).toContain('src="/main_photo.jpg"');
-    expect(src).toMatch(/width=\{1377\}/);
-    expect(src).toMatch(/height=\{768\}/);
-    // sizes mirrors the marketing-container gutters (20px mobile / 48px
-    // desktop, 1200px container cap → 1104px max frame width)
-    expect(src).toContain(
-      'sizes="(max-width: 920px) calc(100vw - 40px), (max-width: 1296px) calc(100vw - 96px), 1104px"',
-    );
-    expect(src).toContain('loading="lazy"');
-    expect(src).toContain('decoding="async"');
+    expect(src).not.toContain('<picture>');
+    expect(src).not.toContain('main_photo');
+    // the field must degrade gracefully: fail → CSS sky (no image src)
+    expect(src).not.toMatch(/src=["']\/.*\.(png|webp|jpg|jpeg)/);
   });
 
   it('no source file references the deleted PNG anymore', () => {
