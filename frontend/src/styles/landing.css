@@ -1382,13 +1382,16 @@
   font-weight: var(--fw-semibold);
   margin-block-end: var(--sp-3);
 }
-/* generous leading = comfortable ≈44px rows (spec §4.3) */
+/* generous leading = comfortable ≈44px rows (spec §4.3) — 14px × 2.2
+   line-height + 2×7px padding = 44.8px touch target (was 4px → 38.8px,
+   under the spec the comment promised); mobile thumbs get the room
+   the spec intended without changing rhythm or visual identity. */
 .landing .landing-footer-link {
   color: var(--ln-cream-dim);
   text-decoration: none;
   font-size: 14px;
   line-height: 2.2;
-  padding-block: 4px;
+  padding-block: 7px;
   width: fit-content;
   transition: color var(--ln-t-fast) var(--ln-ease-soft);
 }
