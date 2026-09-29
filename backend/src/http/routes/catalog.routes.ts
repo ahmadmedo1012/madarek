@@ -464,6 +464,38 @@ router.post('/posts/:id/react', validate(reactSchema), async (req, res, next) =>
   }
 });
 
+/**
+ * DELETE /posts/:id/react — real un-like/un-save (C4 deferred debt, A5
+ * P2-2 hand-off: the react route was upsert-only, so the FE un-like was
+ * an aria-disabled lie). Mirrors the POST contract exactly — same URL,
+ * same { kind } body — and is OWN-REACTION-ONLY BY CONSTRUCTION: the
+ * (postId, userId, kind) compound key pins the userId to the caller, so
+ * no request can ever address another viewer's reaction (a stronger
+ * guarantee than a runtime 403 ownership check — cross-user deletion
+ * has no code path). 404 when the post is missing or the caller has no
+ * such reaction; 200 {data:{ok:true}} per the platform delete shape
+ * (D17-5 — no 204s). Live-verified: user B's DELETE of A's like 404s
+ * and A's row survives.
+ */
+router.delete('/posts/:id/react', validate(reactSchema), async (req, res, next) => {
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: req.params.id! },
+      select: { id: true },
+    });
+    if (!post) throw AppError.notFound('المنشور غير موجود');
+    // Own-row claim only — the where carries the caller's id, so this
+    // can never remove someone else's reaction.
+    const deleted = await prisma.postReaction.deleteMany({
+      where: { postId: post.id, userId: req.user!.id, kind: req.body.kind },
+    });
+    if (deleted.count === 0) throw AppError.notFound('لم تسجّل هذا التفاعل على المنشور');
+    res.json({ data: { ok: true } });
+  } catch (e) {
+    next(e);
+  }
+});
+
 // ════════════════════════════════════════════════════
 // ACHIEVEMENTS / SKILLS / CERTIFICATES (read-mostly for users)
 // ════════════════════════════════════════════════════
@@ -761,21 +793,67 @@ const adminCourseInclude = Prisma.validator<Prisma.CourseInclude>()({
   },
 });
 
+/**
+ * GET /admin/courses query envelope (audit 5-A8 P2-1, backend half):
+ * the shared pagination schema (page/limit≤100/q≤120) plus a `facultyId`
+ * filter. `q` used to be accepted by paginationSchema and then silently
+ * ignored by the handler — the same accepted-but-ignored bug class the
+ * /posts fix closed (audit P2-8) — so it now really filters (course code
+ * or name, case-insensitive). Exported for unit tests.
+ */
+export const adminCoursesQuerySchema = paginationSchema.extend({
+  facultyId: z.string().cuid().optional(),
+});
+
+/**
+ * The /admin/courses list filter (5-A8 P2-1 / §5 row 4): a search term
+ * matches course code OR name; a faculty filter matches through the
+ * course's home department. Empty params → {} → the unfiltered list the
+ * endpoint always shipped (backward compatible). Exported for unit tests.
+ */
+export function adminCoursesWhere(
+  q: string | undefined,
+  facultyId: string | undefined,
+): Prisma.CourseWhereInput {
+  return {
+    ...(q
+      ? {
+          OR: [
+            { code: { contains: q, mode: 'insensitive' } },
+            { name: { contains: q, mode: 'insensitive' } },
+          ],
+        }
+      : {}),
+    ...(facultyId ? { department: { facultyId } } : {}),
+  };
+}
+
 router.get(
   '/admin/courses',
   requireRole(Role.ADMIN, Role.OWNER),
-  validate(paginationSchema, 'query'),
+  validate(adminCoursesQuerySchema, 'query'),
   async (req, res, next) => {
     try {
-      const { page, limit } = req.query as unknown as { page: number; limit: number };
+      const { page, limit, q, facultyId } = req.query as unknown as {
+        page: number;
+        limit: number;
+        q?: string;
+        facultyId?: string;
+      };
+      // Server-side filters (5-A8 P2-1) — and the SAME where feeds the
+      // count, so meta.total is the filtered total the FE pagination
+      // footer needs (it used to be the global course count even when a
+      // filter was applied, breaking every page count after page 1).
+      const where = adminCoursesWhere(q, facultyId);
       const [courses, total] = await Promise.all([
         prisma.course.findMany({
+          where,
           skip: (page - 1) * limit,
           take: limit,
           orderBy: [{ code: 'asc' }],
           include: adminCourseInclude,
         }),
-        prisma.course.count(),
+        prisma.course.count({ where }),
       ]);
 
       // Real per-course totals across ALL of each course's offerings

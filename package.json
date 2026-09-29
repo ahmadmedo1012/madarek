@@ -24,9 +24,17 @@
     "validate:colleges": "tsx scripts/validate-college-identity.ts",
     "check:motion-tokens": "bash scripts/check-motion-tokens.sh",
     "check:icons": "bash scripts/check-icons.sh",
+    "check:csp-hash": "bash scripts/check-csp-hash.sh",
     "check:i18n": "bash scripts/check-i18n-coverage.sh"
   },
   "devDependencies": {
     "tsx": "^4.22.4"
+  },
+  "allowScripts": {
+    "@prisma/client": true,
+    "@prisma/engines": true,
+    "prisma": true,
+    "argon2": true,
+    "esbuild": true
   }
 }

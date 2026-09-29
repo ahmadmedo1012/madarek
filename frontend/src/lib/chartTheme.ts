@@ -245,9 +245,18 @@ export function chartColors() {
     /** Slightly raised surface — used for "remaining/inactive" chart segments. */
     surfaceMuted: cssVar('--surface-3', '#EDEDF0'),
     success: cssVar('--success', '#3DD68C'),
-    warning: cssVar('--warning', '#F5A623'),
+    /* 5-D1 (A11 P2-4): gold/warning series resolve the chart-series
+     * amber (--chart-6) instead of the base --gold/--warning fills —
+     * #D6A330 measured 2.30:1 on the white plot cards (WCAG 1.4.11
+     * non-text needs 3:1); --chart-6 is #A67A22 light (3.87:1 on
+     * --surface) / #F2C766 dark (11.01:1), documented in tokens.css.
+     * Consumers: admin analysis line, quality + governance donuts,
+     * student grades threshold, owner workload meters. (Light already
+     * rendered gold ≡ warning — both were --c-yellow-ink — so the two
+     * keys stay equally distinguishable as before.) */
+    warning: cssVar('--chart-6', '#F5A623'),
     danger: cssVar('--danger', '#F55353'),
-    gold: cssVar('--gold', '#e9c349'),
+    gold: cssVar('--chart-6', '#e9c349'),
   };
 }
 

@@ -50,6 +50,18 @@
     --font-serif:   'IBM Plex Serif', Georgia, serif;
     --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
+    --fw-cine:       800;
+    --fw-cine-heavy: 900;
+    /* reference-bar display sizes: 130–200px headline class, 1:1–1:1.1 leading */
+    --fs-cine-hero:  clamp(56px, 9.2vw, 148px);
+    --fs-cine-xl:    clamp(44px, 6.4vw, 104px);
+    --fs-cine-lg:    clamp(34px, 4.6vw, 72px);
+    --lh-cine: 1.06;
+    --lh-cine-tight: 1.02;
+    /* mono eyebrow grammar — «// الفصل الأول» engineered labels */
+    --fs-eyebrow: 12px;
+
+
     /* fluid display — Notion goes BIG on hero */
     --fs-mega:       clamp(48px, 8.4vw, 104px);
     --fs-display-xl: clamp(40px, 6.0vw, 72px);
@@ -83,7 +95,8 @@
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
-    --fw-black: 800;
+    --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800 */
+    /* NOTE: --fw-cine (800) + --fw-cine-heavy (900) above are REAL weights —
 
     /* line-heights — Arabic-comfortable, headline-tight.
        21-c (A12 P2-7): --lh-tight (1.05) is the RAW Latin-tuned scale
@@ -115,13 +128,29 @@
     --ease:        cubic-bezier(0.4, 0, 0.2, 1);
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
-    /* constant speed — the only correct curve for infinite loops
-       (spinners, skeleton sweeps) and scroll-linked progress; this
-       token is the only legal spelling of `linear` outside this file. */
+    /* constant speed — the correct curve for CONTINUOUS infinite
+       loops (spinners, skeleton sweeps, shimmer drifts) and
+       scroll-linked progress. Beat-family loops (heartbeat, breathe,
+       pulse dots) are exempt — a beat needs its attack-and-settle, so
+       they ease (5-C1 reconciled this wording with the pulse loops'
+       long-standing eased reality — A2 P3-12); the token remains the
+       only legal spelling of `linear` outside this file. */
     --ease-linear: linear;
     --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
-    --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);
+    /* Spring vocabulary — 5-C1 (A2 §1b): the three polish.css-authored
+       springs are adopted here verbatim so every sheet consumes them
+       from the token source (the polish re-definitions die with the
+       adoption; values unchanged, so the cascade outcome is identical).
+       Overshoot tiers: soft 1.18 (settle), spring 1.36 (pop),
+       bounce 1.56 (playful), snappy (0.5,1.6,0.4,1) (quick rebound).
+       --ease-bounce used to duplicate --ease-spring curve-for-curve
+       (both 1.36, zero consumers) — it now deliberately names the
+       bouncier tier instead of shadowing it. */
+    --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
+    --ease-spring:        cubic-bezier(0.34, 1.36, 0.64, 1);
+    --ease-bounce:        cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
 
     --t-clean:      all var(--t-base) var(--ease);
     --t-cinema-all: all var(--t-slow) var(--ease-out);
@@ -148,6 +177,31 @@
     --motion-duration-reveal:   360ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
+
+    /* Ambient loop durations — 5-C1 (A2 §1a, 4-A11 §1.3 P1-5): the
+       dedicated scale for INFINITE decorative loops (breathe / sway /
+       float / pulse / drift). These are perceptual RHYTHM, not UI
+       transition time, so they live on their own ladder above the
+       interaction scale — never use them for a hover/press/entrance.
+       Six bands cover every ambient loop in the app (21 declarations
+       normalized onto them; outliers 7.5s float-2 / 5s sticker-idle /
+       1.2s typing / 1.4s hydration fold to their nearest band — the
+       cadence shifts are ≤0.4s on decorative idles):
+         pulse  1.6s — throb / typing blink / hydration / loading
+         (base) 2.4s — heartbeat / bell pulse / live pulse
+         slow   3.6s — bar breathe / shimmer sweep / hero glow / breathe
+         drift  6s   — floats / sway / empty wiggle / sticker idle
+         cinema 9s   — welcome-card gradient breathe
+         scene  22s   — landing hero backdrop drift
+       Belt-independence: motion.css zeroes this family under
+       prefers-reduced-motion (its semantic RM block is the single
+       owner of --motion-duration-* kills). */
+    --motion-duration-ambient-pulse:  1.6s;
+    --motion-duration-ambient:        2.4s;
+    --motion-duration-ambient-slow:   3.6s;
+    --motion-duration-ambient-drift:  6s;
+    --motion-duration-ambient-cinema: 9s;
+    --motion-duration-ambient-scene:  22s;
 
     --motion-ease-standard:    var(--ease);
     --motion-ease-decelerate:  var(--ease-out);
@@ -218,7 +272,14 @@
        typeset guidance: light-on-dark wants slightly more leading).
        Landing's mega already rode calc(display-lh + .05) → 1.20. */
     --type-display-line-height:    1.15;
-    --type-display-letter-spacing: var(--ls-mega);         /* -0.032em */
+    /* 5-C2 (A3 P1-1 / 21-c headline precedent): was --ls-mega
+       (-0.032em) — every consumer of the display role is Arabic
+       landing display text (mega/section/band/final-CTA headings +
+       .landing-role-name), and -0.032em measured -1.28px @40px on
+       «الطالب». Tracking breaks Arabic cursive joins (ruling #2); the
+       role now says what renders. polish.css's :lang(ar) reset keeps
+       guarding the h1–h6 consumers regardless. */
+    --type-display-letter-spacing: var(--ls-normal);      /* 0 */
 
     /* Headline — page titles, section titles, modal headers. */
     --type-headline-size-lg:        var(--fs-h1);          /* 30px */
@@ -284,6 +345,69 @@
     --section-gap:  var(--sp-12);
     --page-gutter:  var(--sp-9);
     --page-gutter-mobile: var(--sp-5);
+
+    /* ─── Orbit Ink — round-3 landing palette (R3-W2-6) ─────────────
+       Madarek "Orbit Ink" — round-3 pivot: inspired by the reference's
+       discipline, 100% original. The landing page's own scene family —
+       flat deep-ink grounds, warm cream type, lime + violet accents.
+       Declared on plain :root like --gold-soft: the landing paints these
+       exact values in BOTH data-themes (its dark stage is intentional),
+       so a single definition is correct and the theme blocks never
+       remap it. Landing-scoped by consumption (the --ln-* namespace is
+       only referenced from landing.css), not by selector.
+
+       WCAG duty (relative luminance, WCAG 2.1 — node-verified, see
+       worklog R3-W2-6):
+       · --ln-cream #F5F3E7 (L=0.8928) on --ln-ink #252A3E (L=0.0240) →
+         12.75:1 ✓ AAA body text (14.48:1 on --ln-ink-2).
+       · --ln-cream-dim #C9C6B4 (L=0.5610) on --ln-ink → 8.26:1 ✓ AAA
+         (9.39:1 on --ln-ink-2) — no adjustment needed.
+       · --ln-lime #DFEDB2 (L=0.7947) on --ln-ink → 11.42:1 ✓ AAA;
+         --ln-lime-deep #B9D778 → 8.82:1 ✓ AAA. Hover buttons invert the
+         pair (ink text on lime fill) at the same 11.42:1.
+       · --ln-violet #7A6BF2 on --ln-ink → 3.52:1 — accent / large-text
+         use only, never body copy; --ln-violet-deep #4E2FB8 → 1.64:1 —
+         decorative depth fills only, never text or icon strokes. */
+
+    --ln-ink:        #252A3E;   /* primary flat ground (ink family) */
+    --ln-ink-2:      #1C2032;   /* darker step — scene separation */
+    --ln-cream:      #F5F3E7;   /* primary text on ink — 12.75:1 AAA */
+    --ln-cream-dim:  #C9C6B4;   /* secondary text — 8.26:1 AAA on ink */
+    --ln-lime:       #DFEDB2;   /* accent 1 (pistachio) */
+    --ln-lime-deep:  #B9D778;   /* hover/active lime — 8.82:1 on ink */
+    --ln-violet:     #7A6BF2;   /* accent 2 — large-text/accent only */
+    --ln-violet-deep:#4E2FB8;   /* depth — decorative fill only */
+    --ln-line:       rgba(245,243,231,0.14);  /* 1px hairline on ink */
+    --ln-line-soft:  rgba(245,243,231,0.07);  /* resting card border */
+    --ln-grain-op:   0.05;      /* grain overlay opacity */
+    --ln-radius-pill: var(--r-full);  /* pills via --r-full (WS-D2) */
+    --ln-h1:         clamp(2.75rem, 8.2vw, 6.75rem);  /* hero, ≤108px */
+    --ln-h1-lh:      1.04;      /* hero leading; mobile lifts to 1.12
+                                   in landing.css (round-3 spec §4.3) */
+
+    /* Orbit Ink motion vocabulary — the legal forms landing.css
+       consumes so every landing motion value stays token-legal
+       (guardrail 1). The --ln-t-* and --ln-ease-* aliases chain the
+       canonical tokens above, so the reduced-motion zeroing of --t-*
+       flows through automatically. --ln-dur-marquee is the one raw
+       literal: an infinite ambient loop duration with no canonical
+       token yet (same gap as the --motion-duration-ambient debt
+       family) — legal HERE because tokens.css IS the token source
+       (wholesale allowlist in scripts/check-motion-tokens.sh).
+       Consumers must reference it as var(--ln-dur-marquee), never
+       re-spell 42s. Marquee keyframes still need their own
+       prefers-reduced-motion off-switch in landing.css (guardrail 6:
+       token zeroing does not stop a raw-duration loop). */
+    --ln-t-fast:      var(--t-fast);    /* 160ms */
+    --ln-t-base:      var(--t-base);    /* 240ms */
+    --ln-t-slow:      var(--t-slow);    /* 380ms */
+    --ln-t-cinema:    var(--t-cinema);  /* 720ms */
+    --ln-t-reveal:    var(--motion-duration-reveal);  /* 360ms */
+    --ln-ease-out:    var(--ease-out);    /* exponential settle */
+    --ln-ease-soft:   var(--ease-soft);   /* gentle emphasis */
+    --ln-ease-spring: var(--ease-spring); /* playful pop */
+    --ln-ease-linear: var(--ease-linear); /* constant speed — marquee */
+    --ln-dur-marquee: 42s;  /* one marquee loop pass — slow read */
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
@@ -356,6 +480,16 @@
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(25,25,24,0.06);
     --rule:          var(--neutral-200);
+    /* 5-C1 (A2 P1-2): --rule-strong was consumed in five places
+       (--state-card-hover-border fallback chain + polish.css ×2 +
+       colleges.css ×2) but NEVER defined — every consumer silently
+       resolved to --rule ≡ --border, making the topbar-search hover
+       border a visual no-op. One step stronger than --rule on the
+       documented hairline→divider ramp (neutral-200 #E9E7E2 →
+       neutral-300 #D9D6D0, the same step --border→--border-strong
+       takes). Referencing the token (not the hex) keeps the
+       prefers-contrast overrides + dark remap working for free. */
+    --rule-strong:   var(--border-strong);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens.
        (13-17: .surface-card was deleted in the dead sweep, so
        --surface-border currently has no component consumer; kept for
@@ -487,10 +621,30 @@
        (today's only consumer slices to 4, so the fix is latent-safe).
        #A67A22 = 3.71:1 on --bg #FBFAF9, 3.87:1 on --surface #FFFFFF
        (cards), 3.58:1 on --surface-2 #F7F6F3 — clears 3:1 on every
-       light plot surface. Dark keeps #F2C766 (11.01:1 on --bg). */
+       light plot surface. Dark keeps #F2C766 (11.01:1 on --bg).
+       5-D1 (A11 P2-4): this is now also the SERIES amber —
+       chartColors().gold/.warning resolve it (the base --gold/--warning
+       fills measured 2.30:1 on white plot cards) and the amber
+       .alert-dot paints it (graphics on light cards). Same tier, one
+       documented home. */
     --chart-6: #A67A22;
     --chart-7: #3F8B8B;   /* teal */
     --chart-8: #A65D8A;   /* mauve */
+
+    /* ─── Immersive journey scene (ConstellationCanvas + landing
+       bands — docs/immersive-redesign-plan.md §7). Paint-only,
+       decorative: these feed canvas strokes and ambient washes, never
+       body text, so the 3:1 non-text floor is the bar. Light theme:
+       copper threads on cream — node 3.65:1 on --bg, line alpha
+       tuned for atmosphere, not contrast. */
+    --journey-node:        var(--accent);        /* #B57438 copper */
+    --journey-node-major:  var(--accent-strong); /* #8F5A2B deep copper */
+    --journey-line:        rgba(181, 116, 56, 0.30);
+    --journey-core:        var(--ink);           /* #191918 */
+    --journey-glow:        rgba(181, 116, 56, 0.10);   /* ambient wash */
+    /* Marquee ticker + scrub choreography */
+    --journey-ticker-ink:  var(--neutral-500);
+    --journey-ticker-sep:  var(--accent);
   }
 
   /* ════════════════════════════════════════════════════════════════════
@@ -503,28 +657,31 @@
        the legal one). Landing mega rides calc(display-lh + .05) → 1.25. */
     --type-display-line-height: 1.2;
 
-    --neutral-0:   #1F1F1E;
-    --neutral-50:  #191918;
-    --neutral-100: #232322;
-    --neutral-150: #2A2A28;
-    --neutral-200: #353532;
-    --neutral-300: #46453F;
-    --neutral-400: #6E6B61;
-    --neutral-500: #9A968A;
-    --neutral-700: #C8C2B2;
-    --neutral-800: #DDD7C5;
-    --neutral-900: #F2EAD8;
+    --neutral-0:   #0D1428;
+    --neutral-50:  #070B16;
+    --neutral-100: #121A36;
+    --neutral-150: #182142;
+    --neutral-200: #1B2444;
+    --neutral-300: #263052;
+    --neutral-400: #7A83A0;
+    --neutral-500: #8E97B8;
+    --neutral-700: #C3C8DC;
+    --neutral-800: #DDE1EE;
+    --neutral-900: #F2EFE6;
 
-    /* same hue families, darker grounds + slightly brighter inks */
-    --c-peach-bg:     #3D2A23;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
-    --c-mint-bg:      #1F3429;   --c-mint-ink:     #82CB99;   --c-mint-deep:    #C9EAD3;
-    --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
-    --c-sky-bg:       #1F2F45;   --c-sky-ink:      #92B4DC;   --c-sky-deep:     #C9DCEE;
-    --c-yellow-bg:    #3A3017;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
-    --c-rose-bg:      #3D2126;   --c-rose-ink:     #F09BA3;   --c-rose-deep:    #FACDD2;
-    --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
-    --c-grey-bg:      #2A2823;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
-    --c-copper-bg:    #3D2D1B;   --c-copper-ink:   #E0A067;   --c-copper-deep:  #F8DDBC;
+    /* مدارك night (v3): hue families re-grounded on the indigo night —
+       deep space-tinted bgs + luminous inks. Contrast on --bg #070B16
+       (night-contrast-check.py, 26/26 pass): mint 10.94, rose 8.68,
+       sky 9.88, yellow 12.37, lavender 8.75 — all clear text-AA. */
+    --c-peach-bg:     #2C1A16;   --c-peach-ink:    #F2A07F;   --c-peach-deep:   #FCD9C4;
+    --c-mint-bg:      #0F241C;   --c-mint-ink:     #7FD39A;   --c-mint-deep:    #C9EAD3;
+    --c-lavender-bg:  #221B3A;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
+    --c-sky-bg:       #14213A;   --c-sky-ink:      #8FBBF2;   --c-sky-deep:     #C9DCEE;
+    --c-yellow-bg:    #2C2410;   --c-yellow-ink:   #ECC97D;   --c-yellow-deep:  #F8E5B5;
+    --c-rose-bg:      #2C1620;   --c-rose-ink:     #F0938F;   --c-rose-deep:    #FACDD2;
+    --c-sand-bg:      #241F14;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
+    --c-grey-bg:      #161D33;   --c-grey-ink:     #A9B0C8;   --c-grey-deep:    #D5DAE8;
+    --c-copper-bg:    #2C2312;   --c-copper-ink:   #E9B44C;   --c-copper-deep:  #F5D48A;
 
     --bg:               var(--neutral-50);
     --bg-soft:          var(--neutral-100);
@@ -538,39 +695,39 @@
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  var(--neutral-500);
-    /* 15-g P1-3 — the light T3-F4 lift was never mirrored here: dark
-       --text-faint resolved --neutral-400 #6E6B61 = 3.30:1 on --bg
-       #191918 (body-size AA needs 4.5; real consumers: every input
-       ::placeholder, locked-lesson numbers, .trend-rank, .perm-row-key,
-       .scan-cell-meta…). #8E8A7E → 5.10:1 on --bg, 4.78:1 on --surface
-       #1F1F1E (what dark inputs paint), 4.56:1 on --surface-2 #232322
-       — AA-safe on every dark text surface while staying one step
-       fainter than --text-muted #9A968A (5.95:1 on --bg). One RGB step
-       above the audit's #8D897C, whose surface-2 ratio is 4.4959:1 — a
-       hair under AA that 2-dp rounding hid; --neutral-400 itself stays
-       untouched (ramp intact for non-text uses, mirroring light). */
-    --text-faint:  #8E8A7E;
-    --text-on-accent: #191918;
+    /* 15-g P1-3 night mirror: --text-faint = landing's axe-verified
+       #7A83A0 → 5.22:1 on --bg #070B16, 4.86:1 on --surface #0D1428
+       (AA on every night text surface; one step fainter than
+       --text-muted #8E97B8 at 6.80:1). */
+    --text-faint:  #7A83A0;
+    --text-on-accent: #05070F;
     --text-on-dark:   var(--neutral-900);
 
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
-    --border-faint:  rgba(242,234,216,0.08);
+    --border-faint:  rgba(142,151,184,0.10);
     --rule:          var(--neutral-200);
+    /* 5-C1 (A2 P1-2) — see the light block: the dead-token fix is
+       theme-agnostic (references --border-strong, which remaps to
+       night's #263052 divider here). */
+    --rule-strong:   var(--border-strong);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
-    --surface-border:  rgba(255,255,255,0.10);
-    --surface-divider: rgba(255,255,255,0.06);
+    --surface-border:  rgba(142,151,184,0.14);
+    --surface-divider: rgba(142,151,184,0.08);
 
-    --accent:        var(--c-copper-ink);
-    --accent-hover:  #F2B782;
+    /* مدارك night: the accent becomes the landing's gold — the single
+       strongest identity bridge between سماء مدارك and the product.
+       #E9B44C = 10.39:1 as text on --bg; void ink on gold = 10.63:1. */
+    --accent:        #E9B44C;
+    --accent-hover:  #F5D48A;
     --accent-soft:   var(--c-copper-bg);
-    --accent-strong: var(--c-copper-deep);
-    --accent-fg:     #191918;
-    --focus-ring:    rgba(224, 160, 103, 0.36);
+    --accent-strong: #C9962F;
+    --accent-fg:     #05070F;
+    --focus-ring:    rgba(233,180,76,0.42);
 
-    /* Dark theme passes as-is: the -ink family clears AA on dark
-       surfaces (--success 9.18:1, --warning 11.07:1, --danger 8.31:1,
-       --info 8.20:1, --accent 7.87:1 on --bg #191918), so -ink maps to
+    /* Night theme passes as-is: the -ink family clears AA on the night
+       ground (--success 10.94:1, --warning 12.37:1, --danger 8.68:1,
+       --info 9.88:1, --accent 10.39:1 on --bg #070B16), so -ink maps to
        the same values the base tokens already resolve to. */
     --accent-ink:   var(--accent);
     --success-ink:  var(--c-mint-ink);
@@ -579,10 +736,9 @@
     --info-ink:     var(--c-sky-ink);
 
     /* 21-c (A12 P1-5): dark-side pair of the light block's --danger-fg
-       (the value is theme-identical #191918 — on dark's brighter rose
-       fill it measures 8.31:1). Consumed by .btn.danger / notif badge
-       when 21-b swaps their white ink. */
-    --danger-fg:    #191918;
+       (night: void ink on the luminous rose fill = 8.68:1 inverted
+       pair). Consumed by .btn.danger / notif badge. */
+    --danger-fg:    #05070F;
 
     --success:      var(--c-mint-ink);
     --success-soft: var(--c-mint-bg);
@@ -596,34 +752,34 @@
     --brand:         var(--accent);
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--accent);
-    --gold-ink:      var(--c-yellow-ink);   /* T3-F4 — dark gold text ink (11.07:1 on --bg) */
+    --gold-ink:      var(--c-yellow-ink);   /* T3-F4 — dark gold text ink (12.37:1 on --bg) */
     --primary:       var(--accent);
-    --primary-fg:    #191918;
+    --primary-fg:    #05070F;
 
-    --shadow-card:    0 1px 2px rgba(0,0,0,0.32);
-    --shadow-card-h:  0 1px 2px rgba(0,0,0,0.32), 0 6px 18px rgba(0,0,0,0.40);
-    --shadow-pop:     0 1px 2px rgba(0,0,0,0.40), 0 8px 24px rgba(0,0,0,0.50);
-    --shadow-modal:   0 12px 32px rgba(0,0,0,0.55), 0 32px 80px rgba(0,0,0,0.60);
-    --shadow-mockup:  0 1px 2px rgba(0,0,0,0.32), 0 12px 32px rgba(0,0,0,0.40), 0 32px 80px rgba(0,0,0,0.42);
+    --shadow-card:    0 1px 2px rgba(2,4,12,0.50), 0 0 0 1px rgba(142,151,184,0.05);
+    --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
+    --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
+    --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);
+    --shadow-mockup:  0 1px 2px rgba(2,4,12,0.50), 0 12px 32px rgba(2,4,12,0.55), 0 32px 80px rgba(2,4,12,0.60), 0 0 0 1px rgba(142,151,184,0.10);
 
-    --glass-bg:    rgba(25,25,24,0.78);
+    --glass-bg:    rgba(11,16,32,0.78);
     --glass-blur:  16px;
-    --glass-border: rgba(242,234,216,0.06);
+    --glass-border: rgba(142,151,184,0.12);
     --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
 
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
     --sidebar-item:      var(--neutral-700);
     --sidebar-item-hover-bg:    var(--neutral-100);
-    --sidebar-item-active-bg:   var(--neutral-150);
+    --sidebar-item-active-bg:   rgb(233 180 76 / 0.10);  /* مدارك night: gold wash — the traveller's current orbit */
     --sidebar-item-active-text: var(--neutral-900);
     --sidebar-active-bar:       var(--accent);
 
-    --topbar-bg:    rgba(25,25,24,0.86);
+    --topbar-bg:    rgba(7,11,22,0.86);
     --topbar-border:var(--neutral-200);
 
-    --scrollbar-thumb: rgba(242,234,216,0.16);
-    --scrollbar-thumb-hover: rgba(242,234,216,0.28);
+    --scrollbar-thumb: rgba(142,151,184,0.20);
+    --scrollbar-thumb-hover: rgba(142,151,184,0.34);
 
     /* (dark block of the 21-c dead-alias sweep — see the light block's
        banner; the same 25 paper/ink/gold-{100,300,500,700,900}/
@@ -637,7 +793,7 @@
     --shadow-2xl: var(--shadow-modal);
 
     --chart-text: var(--neutral-500);
-    --chart-grid: rgba(242,234,216,0.10);
+    --chart-grid: rgba(142,151,184,0.10);
     --chart-1: var(--c-copper-ink);
     --chart-2: var(--c-mint-ink);
     --chart-3: var(--c-sky-ink);
@@ -646,6 +802,21 @@
     --chart-6: #F2C766;   /* gold accent (lifted for dark) */
     --chart-7: #5FAFAF;   /* teal (lifted for dark) */
     --chart-8: #C57DA9;   /* mauve (lifted for dark) */
+
+    /* ─── Immersive journey scene — مدارك night variants. The node
+       family rides the gold accent (#E9B44C = 10.39:1 on the night
+       ground) so the journey thread reads as the same golden light
+       that stitches the landing's chapters. Non-text 3:1 floor
+       cleared with headroom. */
+    --journey-node:        var(--accent);        /* #E9B44C bright gold */
+    --journey-node-major:  var(--accent-strong);
+    --journey-line:        rgba(233,180,76,0.34);
+    --journey-core:        var(--ink);
+    --journey-glow:        rgba(233,180,76,0.14);
+    /* night: mist ink #8E97B8 = 6.80:1 on --bg — clears AA at the
+       ticker's 13px with the cool register kept. */
+    --journey-ticker-ink:  var(--neutral-500);
+    --journey-ticker-sep:  var(--accent);
   }
 
   @media (prefers-reduced-motion: reduce) {

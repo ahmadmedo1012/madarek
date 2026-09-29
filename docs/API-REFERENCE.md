@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 190 endpoints (189 route registrations + `/health`), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 189 endpoints (188 route registrations + `/health`; the pre-C5 count of 190 included a `router.post(` match inside a rateLimit.ts doc comment), one row each
 
 ## Conventions
 
@@ -182,7 +182,7 @@ All `requireCapability('QUALITY_VIEW')`.
 |--------|------|-------------|
 | GET | `/quality/alerts` | Derived alerts (attendance rates, stale offerings, engagement) — computed fresh, no persisted rows |
 | GET | `/quality/overview` | Quality overview metrics |
-| GET | `/quality/courses` | Per-course quality data |
+| GET | `/quality/courses` | Per-course quality data (`?metric=attendance|completion` — pure rollups, worst-first sort, honest nulls; C5) |
 | GET | `/quality/professors` | Professor performance (deterministic order + stable per-teacher seed) |
 | GET | `/quality/engagement` | Engagement metrics |
 | GET | `/quality/curriculum` | Curriculum review data |
@@ -244,7 +244,8 @@ Mounted at `/api/v1/teacher` (router: `authMiddleware + requireRole(TEACHER, ADM
 | GET | `/exams/templates/:id` | Bearer | Template detail |
 | POST | `/exams/templates/:id/moderate` | EXAMS_MODERATE | Moderate template |
 | POST | `/exams/templates/:id/publish` | EXAMS_AUTHOR | Publish exam |
-| GET | `/exams/me` | STUDENT | My attempts |
+| GET | `/exams/me` | STUDENT | My attempts (latest attempt per template — deterministic (startedAt, id) fold, C5) |
+| GET | `/exams/attempts/:id/review` | STUDENT | Own-attempt review (GRADED-only; questions + own answers + correct answers + awarded points + feedback) — C5 |
 | POST | `/exams/templates/:id/start` | STUDENT | Start attempt (timed; Fisher-Yates shuffle when randomized). **Resume:** a live IN_PROGRESS attempt within the grace window returns 200 with the full fresh-start shape plus `resumed: true` and `attempt: { id, status, expiresAt, answers: [{ questionId, value }] }` (value = choiceIndex number \| answerText string; no reshuffle). Closed attempts (GRADED/EXPIRED/SUBMITTED) → `{ attemptId, status, alreadyAttempted: true }`. Expired-but-unflipped rows are flipped to EXPIRED inside the start transaction. One attempt per exam — EXPIRED included (PRACTICE retakeable while no live attempt) |
 | POST | `/exams/attempts/:id/answer` | STUDENT | Answer question (saves only the provided dimension — text-only retry keeps a saved choice; type-appropriate field required) |
 | POST | `/exams/attempts/:id/submit` | STUDENT | Submit attempt. Short answers graded by exact match (trim + case-fold, never substring); unanswered ESSAY / keyless SHORT park the attempt as SUBMITTED for manual grading. `passed` is `boolean\|null` (null while manual grading pending); late EXPIRED flip is claim-guarded (concurrently graded attempts are never overwritten) |
@@ -265,12 +266,13 @@ Mounted at `/api/v1/teacher` (router: `authMiddleware + requireRole(TEACHER, ADM
 | POST | `/competitions/:id/close` | COMPETITIONS_RUN | Close & judge (must be closed before judging; at least one scored entry unless empty) |
 | POST | `/competitions/:id/entries/:entryId/score` | COMPETITIONS_RUN | Score an entry — **409 once the competition is JUDGED** (scores are final) |
 | POST | `/competitions/:id/judge` | COMPETITIONS_RUN | Finalize judging (≥1 scored entry required, or no entries at all) |
-| GET | `/events` | Bearer | List events (take 50, expiry-aware) |
+| GET | `/events` | Bearer | List events (take 50, expiry-aware; per-viewer `myRsvp`, capacity count = GOING only — C5) |
 | POST | `/events` | EVENTS_RUN | Create event (capacity bounds, endsAt > startsAt) |
 | POST | `/events/:id/rsvp` | Bearer | RSVP (GOING/MAYBE/NO) — capacity serialized via a row lock on the event; only GOING consumes a seat |
 | GET | `/posts` | Bearer | Social feed (paginated; `q` filters by body) |
 | POST | `/posts` | Bearer | Create post (hashtags) |
 | POST | `/posts/:id/react` | Bearer | React (like \| save) |
+| DELETE | `/posts/:id/react` | Bearer | Un-react (own reaction only, by compound-key construction — cross-user deletes have no code path; C5) |
 
 There is **no** `POST /posts/:id/comment` route — comments are read via the post payload only (`_count: comments`).
 
@@ -296,7 +298,8 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 | GET | `/admin/stats` | ADMIN/OWNER | Platform stats |
 | GET | `/admin/faculties` | ADMIN/OWNER | Faculty management data |
 | GET | `/admin/reports` | ADMIN/OWNER | KPI reports (topCourses aggregated per course — enrollment counts, deterministic order) |
-| GET | `/admin/courses` | ADMIN/OWNER | Course management data (totals aggregated across ALL of each page course's offerings, not the take:3 preview) |
+| GET | `/admin/courses` | ADMIN/OWNER | Course management data (totals aggregated across ALL of each page course's offerings, not the take:3 preview; paginated `{data, meta}` with server-side `q` code/name search + `facultyId` scope — C5) |
+| GET | `/admin/papers` | ADMIN/OWNER | Institution-wide research list, `{data, meta}` paginated, `?status=` filter (PENDING\|SCANNED\|PUBLISHED\|REJECTED), `q` title search — no file bytes, no PII beyond author name (C5) |
 
 ## Search
 

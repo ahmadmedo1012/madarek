@@ -13,6 +13,7 @@ import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
 import { Skeleton } from '../components/motion';
 import { useThemeSync } from '../components/layout/ThemeToggle';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { AppRole } from '../stores/auth.store';
 
 /**
@@ -68,6 +69,7 @@ type StepDir = 'forward' | 'back';
 
 export default function RegisterPage() {
   useThemeSync();
+  usePageTitle('إنشاء حساب جامعي');
   const navigate = useNavigate();
   const register = useRegister();
   const facultiesQ = useFaculties();

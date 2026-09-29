@@ -12,12 +12,22 @@
  * row lock, attendance upserts, ownership guards, the conditional
  * updateMany claims themselves) needs a DB harness the project does not
  * have yet.
+ *
+ * 5-B1 additions (audit 5-A8 §5 row 11, minimal backend ask #2): the
+ * /quality/courses?metric= drill-down — the query envelope, the two
+ * per-offering metric rollups (attendance via the canonical
+ * attendancePctFromStatusCounts formula; completion via the
+ * /quality/engagement watch-time ratio) and the worst-first sort.
  */
 import { describe, expect, it } from 'vitest';
+import { AttendanceStatus } from '@prisma/client';
 import {
   ATTENDANCE_ALERT_MIN_RECORDS,
+  attendanceRateByOffering,
+  completionRateByOffering,
   GRADEABLE_PAPER_STATUSES,
   PUBLISHABLE_PAPER_STATUSES,
+  qualityCoursesQuerySchema,
   RESEARCH_DEDUPE_WINDOW_MS,
   SCANNABLE_PAPER_STATUSES,
   attendanceAlertSeverity,
@@ -33,6 +43,7 @@ import {
   stableSeed,
   watchProgressCompletes,
   watchSchema,
+  worstFirstMetricSort,
 } from '../../src/http/routes/learning.routes';
 
 describe('watchSchema', () => {
@@ -385,5 +396,136 @@ describe('stableSeed (estimated-metric determinism)', () => {
     }
     expect(satisfaction.size).toBeGreaterThan(5);
     expect(responseHours.size).toBeGreaterThan(10);
+  });
+});
+
+// ── /quality/courses?metric= drill-down (5-A8 §5 row 11) ──────────
+
+describe('qualityCoursesQuerySchema (5-A8 §5 row 11)', () => {
+  it('accepts an empty query (the historical unfiltered shape)', () => {
+    const r = qualityCoursesQuerySchema.safeParse({});
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.metric).toBeUndefined();
+  });
+
+  it('accepts exactly the two drill-down metrics', () => {
+    expect(qualityCoursesQuerySchema.safeParse({ metric: 'attendance' }).success).toBe(true);
+    expect(qualityCoursesQuerySchema.safeParse({ metric: 'completion' }).success).toBe(true);
+  });
+
+  it('rejects unknown metrics and unknown keys (strict)', () => {
+    expect(qualityCoursesQuerySchema.safeParse({ metric: 'grades' }).success).toBe(false);
+    expect(qualityCoursesQuerySchema.safeParse({ metric: 'ATTENDANCE' }).success).toBe(false);
+    expect(qualityCoursesQuerySchema.safeParse({ level: 300 }).success).toBe(false);
+  });
+});
+
+describe('attendanceRateByOffering (canonical formula, per offering)', () => {
+  const sessions = [
+    { id: 'ses1', offeringId: 'off1' },
+    { id: 'ses2', offeringId: 'off1' },
+    { id: 'ses3', offeringId: 'off2' },
+  ];
+
+  it('aggregates across sessions: LATE earns half credit, EXCUSED excluded', () => {
+    const rates = attendanceRateByOffering(sessions, [
+      // off1 via ses1: 3 PRESENT + 1 LATE + 1 ABSENT
+      { sessionId: 'ses1', status: AttendanceStatus.PRESENT, count: 3 },
+      { sessionId: 'ses1', status: AttendanceStatus.LATE, count: 1 },
+      { sessionId: 'ses1', status: AttendanceStatus.ABSENT, count: 1 },
+      // off1 via ses2: 2 PRESENT + 2 EXCUSED (excused never dilutes)
+      { sessionId: 'ses2', status: AttendanceStatus.PRESENT, count: 2 },
+      { sessionId: 'ses2', status: AttendanceStatus.EXCUSED, count: 2 },
+    ]);
+    // Summed per status across BOTH sessions: (5 + 0.5·1) / (5+1+1) = 78.6 → 79.
+    // The accumulation itself is the pin: passing the rows through
+    // un-summed would overwrite PRESENT (3 ← 2) and answer 63.
+    expect(rates.get('off1')).toBe(79);
+    expect(rates.has('off2')).toBe(false);
+  });
+
+  it('an offering with only EXCUSED marks has no countable data → null, not a fabricated score', () => {
+    const rates = attendanceRateByOffering(sessions, [
+      { sessionId: 'ses3', status: AttendanceStatus.EXCUSED, count: 4 },
+    ]);
+    expect(rates.get('off2')).toBeNull();
+  });
+
+  it('counts for sessions outside the offering map are ignored (defensive)', () => {
+    const rates = attendanceRateByOffering(
+      [{ id: 'ses1', offeringId: 'off1' }],
+      [
+        { sessionId: 'ses1', status: AttendanceStatus.PRESENT, count: 2 },
+        { sessionId: 'ses-elsewhere', status: AttendanceStatus.ABSENT, count: 50 },
+      ],
+    );
+    expect(rates.get('off1')).toBe(100);
+    expect(rates.size).toBe(1);
+  });
+
+  it('no sessions at all → empty map (every row renders the honest «—»)', () => {
+    expect(attendanceRateByOffering([], [
+      { sessionId: 'ses1', status: AttendanceStatus.PRESENT, count: 1 },
+    ]).size).toBe(0);
+  });
+});
+
+describe('completionRateByOffering (watch-time ratio, per offering)', () => {
+  const lectures = [
+    { id: 'lec1', offeringId: 'off1' },
+    { id: 'lec2', offeringId: 'off1' },
+    { id: 'lec3', offeringId: 'off2' },
+  ];
+
+  it('sums watch time across an offering lectures: round(100·Σwatched/Σtotal)', () => {
+    const rates = completionRateByOffering(lectures, [
+      { lectureId: 'lec1', watchedSec: 500, totalSec: 1000 },
+      { lectureId: 'lec2', watchedSec: 250, totalSec: 1000 },
+    ]);
+    expect(rates.get('off1')).toBe(38); // 750/2000
+  });
+
+  it('zero watchable time → null (no fabricated 0% or 100%)', () => {
+    const rates = completionRateByOffering(lectures, [
+      { lectureId: 'lec3', watchedSec: 0, totalSec: 0 },
+    ]);
+    expect(rates.get('off2')).toBeNull();
+  });
+
+  it('sums for lectures outside the offering map are ignored (defensive)', () => {
+    const rates = completionRateByOffering(
+      [{ id: 'lec1', offeringId: 'off1' }],
+      [
+        { lectureId: 'lec1', watchedSec: 100, totalSec: 200 },
+        { lectureId: 'lec-elsewhere', watchedSec: 9999, totalSec: 10000 },
+      ],
+    );
+    expect(rates.get('off1')).toBe(50);
+    expect(rates.size).toBe(1);
+  });
+});
+
+describe('worstFirstMetricSort (drill-down order)', () => {
+  it('ascending — the neediest course first', () => {
+    expect(worstFirstMetricSort(80, 40)).toBeGreaterThan(0);
+    expect(worstFirstMetricSort(10, 90)).toBeLessThan(0);
+    expect(worstFirstMetricSort(50, 50)).toBe(0);
+  });
+
+  it('nulls (no data) sort last against every value and against each other', () => {
+    expect(worstFirstMetricSort(null, 5)).toBeGreaterThan(0);
+    expect(worstFirstMetricSort(100, null)).toBeLessThan(0);
+    expect(worstFirstMetricSort(null, null)).toBe(0);
+  });
+
+  it('a stable sort keeps the deterministic query order for equal values', () => {
+    const rows = [
+      { id: 'a', m: 50 as number | null },
+      { id: 'b', m: 20 as number | null },
+      { id: 'c', m: 50 as number | null },
+      { id: 'd', m: null as number | null },
+    ];
+    const sorted = [...rows].sort((x, y) => worstFirstMetricSort(x.m, y.m));
+    expect(sorted.map((r) => r.id)).toEqual(['b', 'a', 'c', 'd']);
   });
 });

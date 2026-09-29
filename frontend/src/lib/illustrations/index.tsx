@@ -11,8 +11,9 @@
  *   empty-notifs         → NotificationDropdown empty state (the
  *                          notifications panel's inbox)
  *   empty-search         → LibraryPage filtered/book empty states
- *   milestone-section    → MilestoneScene celebration + LandingPage
- *                          pilot-study anchor (decorative reuse)
+ *   milestone-section    → MilestoneScene celebration (the landing's
+ *                          proof-head mount was dropped in 5-B2 — the
+ *                          page keeps one scene, the hero's)
  *   onboarding-frame-1..3 → OnboardingFlow frames 0–2
  *   onboarding-role-intro → OnboardingFlow frame 3 (5 role motifs)
  *
@@ -31,6 +32,7 @@ import type { ComponentType, ReactElement } from 'react';
 import type { AppRole } from '../../stores/auth.store';
 import { SceneEmptyNotifs } from './scenes/empty-notifs';
 import { SceneEmptySearch } from './scenes/empty-search';
+import { SceneEmptyConstellation } from './scenes/empty-constellation';
 import { SceneError404 } from './scenes/error-404';
 import { SceneHomepageHero } from './scenes/homepage-hero';
 import { SceneMilestoneSection } from './scenes/milestone-section';
@@ -44,6 +46,7 @@ export type IllustrationName =
   | 'error-404'
   | 'empty-notifs'
   | 'empty-search'
+  | 'empty-constellation'
   | 'milestone-section'
   | 'onboarding-frame-1'
   | 'onboarding-frame-2'
@@ -55,6 +58,7 @@ export const V1_ILLUSTRATION_NAMES: ReadonlyArray<IllustrationName> = [
   'error-404',
   'empty-notifs',
   'empty-search',
+  'empty-constellation',
   'milestone-section',
   'onboarding-frame-1',
   'onboarding-frame-2',
@@ -87,6 +91,7 @@ export const SCENE_REGISTRY: Record<IllustrationName, SceneComponent | null> = {
   'error-404': SceneError404 as SceneComponent,
   'empty-notifs': SceneEmptyNotifs as SceneComponent,
   'empty-search': SceneEmptySearch as SceneComponent,
+  'empty-constellation': SceneEmptyConstellation as SceneComponent,
   'milestone-section': SceneMilestoneSection as SceneComponent,
   'onboarding-frame-1': SceneOnboardingFrame1 as SceneComponent,
   'onboarding-frame-2': SceneOnboardingFrame2 as SceneComponent,

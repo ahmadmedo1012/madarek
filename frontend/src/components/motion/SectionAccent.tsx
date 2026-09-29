@@ -27,6 +27,10 @@ export interface SectionAccentProps {
   threshold?: number;
   className?: string;
   children?: ReactNode;
+  /** Optional element id (5-B2: bento cards double as anchor targets
+   *  for the landing journey rail + footer links; additive opt-in —
+   *  existing consumers are unaffected). */
+  id?: string;
 }
 
 export function SectionAccent({
@@ -35,6 +39,7 @@ export function SectionAccent({
   threshold,
   className,
   children,
+  id,
 }: SectionAccentProps) {
   const { ref, fired } = useSectionAccent<HTMLElement>(kind, { threshold });
   const cls = [
@@ -46,7 +51,7 @@ export function SectionAccent({
     .filter(Boolean)
     .join(' ');
   return (
-    <Tag ref={ref as React.Ref<HTMLElement>} className={cls} data-accent-kind={kind}>
+    <Tag ref={ref as React.Ref<HTMLElement>} className={cls} data-accent-kind={kind} id={id}>
       {children}
     </Tag>
   );

@@ -141,6 +141,29 @@
     .auth-center { padding: var(--sp-4) var(--page-gutter-mobile) var(--sp-9); }
   }
 
+  /* Journey cue (imm-5): the landing's ambient copper wash behind the
+     card — the same --journey-glow the hero and close scenes float on
+     (tokens.css; theme-calibrated alpha: 10% copper light / 12% dark,
+     so no extra opacity gating). Decorative by construction: a pseudo
+     element never enters the accessibility tree and pointer-events is
+     none, so the cue stays CSS-only (no TSX chrome). z-index: -1 keeps
+     it inside .auth-center's stacking context and UNDER the card's
+     opaque --surface — atmosphere around the card, never through it.
+     The card stays the single elevated surface (no glow halo ON it).
+     Static paint — no motion, so no reduced-motion clause is owed. */
+  .auth-center::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse 55% 45% at 50% 46%,
+      var(--journey-glow),
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
   .auth-bottom {
     position: relative; z-index: 1; /* above the sky + dust — local */
     padding: var(--sp-5) var(--page-gutter);
@@ -229,6 +252,28 @@
   }
 
   /* ══ 3 · HEADER + REGISTER STEP INDICATOR ══════════════════════════ */
+
+  /* Coded metadata voice (imm-5): the quiet mono eyebrow the landing
+     scenes open with (.journey-meta / .bento-meta register) — metric-
+     role figures at the 12px mono-badge floor, muted ink, zero tracking
+     (the phrase is joined Arabic prose, ruling #2 — metric-role
+     letter-spacing is only safe on isolated letter+digit codes such as
+     ( ن-٠١ )). The font stack is the documented mixed-script composite
+     from landing-bento.css .bento-meta (a token-guardrail note there):
+     self-hosted IBM Plex Mono is latin-only, so the Arabic words must
+     resolve to the Arabic face BEFORE generic monospace — platform
+     mono (Courier New on Windows) carries Arabic glyphs and would
+     steal them. --text-muted on --surface is the T3-F4 pair: 5.26:1
+     light / AA dark. */
+  .auth-meta {
+    font-family: 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, monospace;
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-medium);
+    line-height: var(--type-metric-line-height);
+    letter-spacing: var(--ls-normal);
+    font-feature-settings: var(--type-metric-feature-settings);
+    color: var(--text-muted);
+  }
 
   .auth-form-header {
     display: flex; flex-direction: column; gap: var(--sp-2);

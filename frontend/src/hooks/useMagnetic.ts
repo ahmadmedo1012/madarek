@@ -5,8 +5,11 @@ import { useEffect, useRef } from 'react';
  *
  * Desktop-hover devices only: the element drifts a few pixels toward the
  * cursor (max 6px) and springs back on leave. Disabled entirely for
- * touch devices, reduced-motion users, and when the element is offscreen.
- * Uses transform only — no layout cost, compositor-friendly.
+ * touch devices (`(hover: none)`), reduced-motion users, and while the
+ * element is offscreen (IntersectionObserver). Transform only — the
+ * pull is written as `--mag-x` / `--mag-y` custom properties consumed
+ * by a `translate()` in CSS, so there is no layout cost; pointermove
+ * is rAF-throttled to one write per frame.
  */
 export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 6) {
   const ref = useRef<T | null>(null);
@@ -21,17 +24,18 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 6) {
     let raf = 0;
     let visible = true;
 
+    const reset = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      el.style.setProperty('--mag-x', '0px');
+      el.style.setProperty('--mag-y', '0px');
+    };
+
     const io = new IntersectionObserver((entries) => {
       visible = entries[0]?.isIntersecting ?? true;
       if (!visible) reset();
     });
     io.observe(el);
-
-    const reset = () => {
-      cancelAnimationFrame(raf);
-      el.style.setProperty('--mag-x', '0px');
-      el.style.setProperty('--mag-y', '0px');
-    };
 
     const onMove = (e: MouseEvent) => {
       if (!visible) return;
@@ -52,8 +56,8 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 6) {
 
     const onLeave = () => reset();
 
-    el.addEventListener('mousemove', onMove);
-    el.addEventListener('mouseleave', onLeave);
+    el.addEventListener('mousemove', onMove, { passive: true });
+    el.addEventListener('mouseleave', onLeave, { passive: true });
     return () => {
       io.disconnect();
       cancelAnimationFrame(raf);

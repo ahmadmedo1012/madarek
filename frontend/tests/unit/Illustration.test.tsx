@@ -11,12 +11,15 @@ import {
 } from '../../src/lib/illustrations';
 
 describe('Illustration registry', () => {
-  it('declares all 9 V1 names', () => {
-    expect(V1_ILLUSTRATION_NAMES).toHaveLength(9);
+  it('declares all 10 registered names', () => {
+    expect(V1_ILLUSTRATION_NAMES).toHaveLength(10);
     expect(V1_ILLUSTRATION_NAMES).toContain('homepage-hero');
     expect(V1_ILLUSTRATION_NAMES).toContain('error-404');
     expect(V1_ILLUSTRATION_NAMES).toContain('empty-notifs');
     expect(V1_ILLUSTRATION_NAMES).toContain('empty-search');
+    // مدارك v3 wave C — the signature empty state (exams first; the
+    // constellation scene lights one gold star per the family rules).
+    expect(V1_ILLUSTRATION_NAMES).toContain('empty-constellation');
     expect(V1_ILLUSTRATION_NAMES).toContain('milestone-section');
     expect(V1_ILLUSTRATION_NAMES).toContain('onboarding-frame-1');
     expect(V1_ILLUSTRATION_NAMES).toContain('onboarding-frame-2');

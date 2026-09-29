@@ -31,8 +31,10 @@ import type { LucideIcon } from 'lucide-react';
 import { Icon } from '../Icon';
 import { EmojiIcon } from '../EmojiIcon';
 import { api, unwrap } from '../../lib/api';
+import { matchesQueryTokens } from '../../lib/search';
 import { useAuthStore } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
+import { useUiStore } from '../../stores/ui.store';
 import { NAV_BY_ROLE } from '../../lib/nav';
 
 /* ── Focus-trapped overlay guard (11-e P1-6) ─────────────────────
@@ -100,19 +102,12 @@ const SECTION_LABEL: Record<keyof SearchResults, string> = {
   tracks: 'مسارات تدريب',
 };
 
-/* SR result-count announcement, Arabic counted-noun rules: 0 → none,
+/* SR option-count announcement, Arabic counted-noun rules: 0 → none,
    1 → singular, 2 → dual, 3–10 → plural, 11+ → singular again.
-   Latin digits per the platform's ar-LY numeral convention. */
-function resultsCountAr(n: number): string {
-  if (n === 0) return 'لم نعثر على نتائج';
-  if (n === 1) return 'نتيجة واحدة';
-  if (n === 2) return 'نتيجتان';
-  if (n <= 10) return `${n} نتائج`;
-  return `${n} نتيجة`;
-}
-
-/* Same counted-noun rules for the palette's mixed action+result list —
-   nav destinations are «خيارات», not «نتائج». */
+   Latin digits per the platform's ar-LY numeral convention. Both
+   surfaces (pill + palette) list actions and results in ONE listbox,
+   so both count «خيارات» (5-B5, A4 P2-4 — the pill used to count
+   «نتائج» only, silently ignoring its own action rows). */
 function optionsCountAr(n: number): string {
   if (n === 0) return 'لا توجد خيارات';
   if (n === 1) return 'خيار واحد';
@@ -130,6 +125,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const listboxId = useId();
+  const role = useAuthStore((s) => s.user?.role);
 
   // Debounce the query
   useEffect(() => {
@@ -173,7 +169,33 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
     ];
   }, [results]);
 
-  useEffect(() => { setActiveIdx(0); }, [flatHits.length]);
+  /* 5-B5 (A4 P2-4): the pill answers with the SAME quick-action source
+     the palette uses (NAV_BY_ROLE). Queries the live index can't answer
+     («اختبار»/«محاضرة» — no people/competitions rows server-side) used
+     to dead-end here while ⌘K answered with nav actions; both surfaces
+     now speak with one voice. 5-C4 (A10 P2-4): the filter runs the
+     word-level matcher — multiword queries match word-order-free
+     (same predicate as the palette below; one matcher, three
+     surfaces). */
+  const navActions = useMemo(() => {
+    if (!role || !debounced) return [];
+    return NAV_BY_ROLE[role]
+      .flatMap((g) => g.items)
+      .filter((item) => matchesQueryTokens(item.label, debounced));
+  }, [role, debounced]);
+
+  /* One flat keyboard order across both sources — actions first, then
+     live results (the palette's order, so ↑/↓ behave identically in
+     both surfaces). */
+  const flatOptions = useMemo(
+    () => [
+      ...navActions.map((item) => ({ kind: 'action' as const, to: item.to })),
+      ...flatHits.map((hit) => ({ kind: 'hit' as const, href: hit.href })),
+    ],
+    [navActions, flatHits],
+  );
+
+  useEffect(() => { setActiveIdx(0); }, [flatOptions.length]);
 
   // ≤920px band: the pill is display:none (layout.css) — a focus() on
   // the hidden input is a no-op, so the "/" chord must route to the
@@ -241,19 +263,26 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       setOpen(false);
+      /* 5-B5 (A4 P2-3): clear the term too — Escape used to leave the
+         stale query behind, so the next "/" refocus reopened the
+         dropdown with the old results and fresh typing concatenated
+         onto the old term (measured «هندسةاختبار»). */
+      setQuery('');
+      setDebounced('');
       inputRef.current?.blur();
       return;
     }
-    if (!flatHits.length) return;
+    if (!flatOptions.length) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setActiveIdx((i) => (i + 1) % flatHits.length);
+      setActiveIdx((i) => (i + 1) % flatOptions.length);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setActiveIdx((i) => (i - 1 + flatHits.length) % flatHits.length);
-    } else if (e.key === 'Enter' && flatHits[activeIdx]) {
+      setActiveIdx((i) => (i - 1 + flatOptions.length) % flatOptions.length);
+    } else if (e.key === 'Enter' && flatOptions[activeIdx]) {
       e.preventDefault();
-      goTo(flatHits[activeIdx]!.href);
+      const opt = flatOptions[activeIdx]!;
+      goTo(opt.kind === 'action' ? opt.to : opt.href);
     }
   };
 
@@ -266,25 +295,22 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
 
   const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
   const totalHits = flatHits.length;
+  const totalOptions = flatOptions.length;
   const showDropdown = open && (loading || enabled);
   /* aria-activedescendant must resolve to a live option — only when the
      listbox is rendered and the active row exists. */
   const activeOptionId =
-    showDropdown && flatHits[activeIdx] ? `${listboxId}-opt-${activeIdx}` : undefined;
+    showDropdown && flatOptions[activeIdx] ? `${listboxId}-opt-${activeIdx}` : undefined;
 
-  /* SR announcement (15-g P1-1): keyboard focus never leaves the input
-     while ↑/↓ move aria-activedescendant, so the only proactive signal
-     a screen-reader user gets is this polite status region — the
-     Arabic result count once loading settles, the error verdict on
-     failure, silence while idle or below the 2-char gate. */
+  /* SR announcement (15-g P1-1): the combined option count — actions
+     and results share ONE listbox now, so the palette's counted-noun
+     grammar («خيارات») applies here too (5-B5, A4 P2-4 consistency). */
   const announcement =
     !enabled || loading
       ? ''
       : isError && !results
         ? 'تعذَّر إتمام البحث'
-        : results
-          ? resultsCountAr(totalHits)
-          : '';
+        : optionsCountAr(totalOptions);
 
   let runningIdx = 0;
 
@@ -369,7 +395,41 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
             </div>
           )}
 
-          {!loading && !isError && enabled && totalHits === 0 && (
+          {/* 5-B5 (A4 P2-4): quick actions first — the palette's order. */}
+          {!loading && navActions.length > 0 && (
+            <div
+              className="search-section"
+              role="group"
+              aria-labelledby={`${listboxId}-sec-actions`}
+            >
+              <div className="search-section-label" id={`${listboxId}-sec-actions`}>إجراءات سريعة</div>
+              {navActions.map((item, idx) => {
+                const isActive = idx === activeIdx;
+                return (
+                  <button
+                    key={`act-${item.to}`}
+                    id={`${listboxId}-opt-${idx}`}
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    className={`search-row${isActive ? ' active' : ''}`}
+                    onMouseEnter={() => setActiveIdx(idx)}
+                    onClick={() => goTo(item.to)}
+                  >
+                    <span className="search-row-icon">
+                      <Icon icon={item.icon} size={16} />
+                    </span>
+                    <span className="search-row-body">
+                      <span className="search-row-title">{item.label}</span>
+                    </span>
+                    <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {!loading && !isError && enabled && totalOptions === 0 && (
             <div className="search-empty" role="presentation">
               <div className="search-empty-title">لم نعثر على نتائج لـ«{debounced}»</div>
               <div className="search-empty-tips">
@@ -397,7 +457,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
               >
                 <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
                 {items.map((hit) => {
-                  const idx = runningIdx++;
+                  const idx = navActions.length + runningIdx++;
                   const isActive = idx === activeIdx;
                   /* wave 2-b (0-c P2-9): `${accent}1a` produced invalid CSS
                      whenever themeColor was null (`var(--accent)1a`). A
@@ -435,7 +495,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
             );
           })}
 
-          {!loading && !isError && totalHits > 0 && (
+          {!loading && !isError && totalOptions > 0 && (
             <div className="search-footer" role="presentation">
               <span className="kbd">↑</span><span className="kbd">↓</span> للتنقّل
               <span className="kbd">↵</span> للفتح
@@ -470,7 +530,13 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
    listbox of labelled groups, ↑/↓/Enter keyboard loop, and a polite
    counted-noun live region announcing the combined option count.
    Opens for every role; fully keyboard-operable; rows carry a 44px
-   touch floor (layout.css, hover:none band). */
+   touch floor (layout.css, hover:none band).
+
+   5-D3 (A10 P3-5): a «الأخيرة» recents section rides above the quick
+   actions on the empty query — the last-run action ids persisted in
+   the ui store (localStorage), resolved against the current role's
+   list. Keyboard order starts at the recents; quick actions exclude
+   them so no row renders twice. */
 const PALETTE_ACTIONS_EMPTY_CAP = 7;
 
 interface PaletteAction {
@@ -492,6 +558,9 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
   const themeMode = useThemeStore((s) => s.mode);
   const setThemeMode = useThemeStore((s) => s.setMode);
   const resolvedTheme = resolveTheme(themeMode);
+  // 5-D3 (A10 P3-5): the persisted last-run palette actions.
+  const recentIds = useUiStore((s) => s.recentPaletteIds);
+  const pushRecent = useUiStore((s) => s.pushRecentPalette);
 
   // Debounce — same cadence as the pill so the shared cache key only
   // sees settled terms.
@@ -517,16 +586,28 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
   const goTo = (href: string) => {
     onClose();
     navigate(href);
+    /* 5-B5 (A4 §7): release focus from the input NOW. The palette
+       unmounts asynchronously (exit window) — without this, the input
+       keeps focus through the navigation commit and only releases it
+       to <body> at the final unmount, AFTER the shell's pathname-keyed
+       focus rescue already checked. Blurring here makes the orphan
+       visible in time, so the shell lands focus on the new page's
+       topbar title. */
+    inputRef.current?.blur();
   };
 
   // Quick actions: the role's nav destinations + the theme toggle.
-  const actions = useMemo<PaletteAction[]>(() => {
+  // Every run records its id in the recents (5-D3) before firing.
+  const allActions = useMemo<PaletteAction[]>(() => {
     const navItems = role
       ? NAV_BY_ROLE[role].flatMap((g) => g.items).map((item) => ({
           id: `nav:${item.to}`,
           label: item.label,
           icon: item.icon,
-          run: () => goTo(item.to),
+          run: () => {
+            pushRecent(`nav:${item.to}`);
+            goTo(item.to);
+          },
         }))
       : [];
     const theme: PaletteAction = {
@@ -534,16 +615,46 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
       label: resolvedTheme === 'dark' ? 'التبديل إلى الوضع الفاتح' : 'التبديل إلى الوضع الداكن',
       icon: resolvedTheme === 'dark' ? Sun : Moon,
       run: () => {
+        pushRecent('action:theme');
         setThemeMode(resolvedTheme === 'dark' ? 'light' : 'dark');
         onClose();
       },
     };
-    const all = [...navItems, theme];
-    const q = debounced; // settled term — matching on the raw keystroke flickers
-    if (!q) return all.slice(0, PALETTE_ACTIONS_EMPTY_CAP);
-    return all.filter((a) => a.label.includes(q));
+    return [...navItems, theme];
     // eslint-disable-next-line react-hooks/exhaustive-deps -- goTo closes over navigate only
-  }, [role, debounced, resolvedTheme, setThemeMode, onClose, navigate]);
+  }, [role, resolvedTheme, setThemeMode, onClose, navigate, pushRecent]);
+
+  /* 5-D3 (A10 P3-5): the recents — persisted ids resolved against THIS
+   * role's action list; a stale id (another role's route, a renamed
+   * destination) never resolves and never renders. Only on the empty
+   * query — with a term typed, the same items answer through the
+   * filter, and matching against two lists would double-count. */
+  const visibleRecents = useMemo(() => {
+    if (debounced) return [];
+    const byId = new Map(allActions.map((a) => [a.id, a]));
+    return recentIds
+      .map((id) => byId.get(id))
+      .filter((a): a is PaletteAction => a !== undefined);
+  }, [debounced, recentIds, allActions]);
+
+  const actions = useMemo<PaletteAction[]>(() => {
+    /* 5-B5 (A4 P2-6): raw includes() missed hamza/diacritic variants —
+       «الاختبارات» never found «الاختبارات الإلكترونية» if the user's
+       keyboard produced أ/إ variants. The shared normalizer (lib/search.ts)
+       makes the palette's action filter answer exactly like the backend
+       search route (and now the pill's — one matcher, three surfaces).
+       5-C4 (A10 P2-4): multiword goes through the word-level matcher —
+       word order no longer decides («الاختبارات بنك» → بنك الأسئلة
+       والاختبارات), 4+-letter words tolerate one edit («الطالب» →
+       «الطلاب»), and the colloquial «امتحان*» folds to the product
+       vocabulary «اختبار*» (nav.ts D17-1). */
+    if (debounced) return allActions.filter((a) => matchesQueryTokens(a.label, debounced));
+    // Empty query: the curated cap, minus the recents already shown in
+    // their own section — section sizes stay stable, no row twice.
+    return allActions
+      .filter((a) => !recentIds.includes(a.id))
+      .slice(0, PALETTE_ACTIONS_EMPTY_CAP);
+  }, [allActions, debounced, recentIds]);
 
   const flatHits = useMemo(() => {
     if (!results) return [];
@@ -555,8 +666,11 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
     ];
   }, [results]);
 
-  // One flat keyboard order across both sources.
-  const flatOptions = useMemo(() => [...actions, ...flatHits], [actions, flatHits]);
+  // One flat keyboard order across all three sources — recents first.
+  const flatOptions = useMemo(
+    () => [...visibleRecents, ...actions, ...flatHits],
+    [visibleRecents, actions, flatHits],
+  );
   useEffect(() => { setActiveIdx(0); }, [flatOptions.length]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -586,9 +700,36 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
 
   const sections: Array<keyof SearchResults> = ['courses', 'lectures', 'papers', 'tracks'];
   const showEmpty =
-    !loading && !isError && actions.length === 0 && (!enabled || flatHits.length === 0);
+    !loading && !isError && actions.length === 0 && visibleRecents.length === 0 && (!enabled || flatHits.length === 0);
 
   let runningIdx = 0;
+
+  /* One row renderer for both action sections (5-D3): identical
+   * markup, the recents and the quick list only differ by offset in
+   * the flat keyboard order. */
+  const actionRow = (action: PaletteAction, idx: number) => {
+    const isActive = idx === activeIdx;
+    return (
+      <button
+        key={action.id}
+        id={`${listboxId}-opt-${idx}`}
+        type="button"
+        role="option"
+        aria-selected={isActive}
+        className={`search-row cmd-row${isActive ? ' active' : ''}`}
+        onMouseEnter={() => setActiveIdx(idx)}
+        onClick={() => action.run()}
+      >
+        <span className="search-row-icon cmd-row-icon">
+          <Icon icon={action.icon} size={15} />
+        </span>
+        <span className="search-row-body">
+          <span className="search-row-title">{action.label}</span>
+        </span>
+        <Icon icon={CornerDownLeft} size={12} className="search-row-arrow" />
+      </button>
+    );
+  };
 
   return (
     <div className="cmd-body">
@@ -635,32 +776,17 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
+        {visibleRecents.length > 0 && (
+          <div className="search-section" role="group" aria-labelledby={`${listboxId}-sec-recents`}>
+            <div className="search-section-label" id={`${listboxId}-sec-recents`}>الأخيرة</div>
+            {visibleRecents.map((action, idx) => actionRow(action, idx))}
+          </div>
+        )}
+
         {actions.length > 0 && (
           <div className="search-section" role="group" aria-labelledby={`${listboxId}-sec-actions`}>
             <div className="search-section-label" id={`${listboxId}-sec-actions`}>إجراءات سريعة</div>
-            {actions.map((action, idx) => {
-              const isActive = idx === activeIdx;
-              return (
-                <button
-                  key={action.id}
-                  id={`${listboxId}-opt-${idx}`}
-                  type="button"
-                  role="option"
-                  aria-selected={isActive}
-                  className={`search-row cmd-row${isActive ? ' active' : ''}`}
-                  onMouseEnter={() => setActiveIdx(idx)}
-                  onClick={() => action.run()}
-                >
-                  <span className="search-row-icon cmd-row-icon">
-                    <Icon icon={action.icon} size={15} />
-                  </span>
-                  <span className="search-row-body">
-                    <span className="search-row-title">{action.label}</span>
-                  </span>
-                  <Icon icon={CornerDownLeft} size={12} className="search-row-arrow" />
-                </button>
-              );
-            })}
+            {actions.map((action, idx) => actionRow(action, visibleRecents.length + idx))}
           </div>
         )}
 
@@ -672,7 +798,7 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
             <div key={section} className="search-section" role="group" aria-labelledby={sectionLabelId}>
               <div className="search-section-label" id={sectionLabelId}>{SECTION_LABEL[section]}</div>
               {items.map((hit) => {
-                const idx = actions.length + runningIdx++;
+                const idx = visibleRecents.length + actions.length + runningIdx++;
                 const isActive = idx === activeIdx;
                 const accent = hit.themeColor ?? 'var(--accent)';
                 return (

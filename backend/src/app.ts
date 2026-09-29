@@ -57,20 +57,31 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
 
 /**
- * CSP (decision D7) — conservative allow-list. The one deliberate
- * addition to D7's raw directive list is a sha256 pin for the inline
- * theme-bootstrap <script> in frontend/index.html (the attribute-less
- * <script> block): without it, script-src 'self' would block that
- * script and dark-theme users would get a light flash on every load.
- * The hash covers the exact bytes between <script> and </script>. If
- * that block is ever edited, recompute the hash the same way:
+ * CSP (decision D7) — conservative allow-list. The deliberate additions
+ * to D7's raw directive list are sha256 pins for the TWO inline script
+ * blocks in frontend/index.html:
+ *   1. the theme bootstrap (the attribute-less <script> block): without
+ *      its pin, script-src 'self' blocks the pre-paint theme resolver
+ *      and dark-theme users get a light flash on every load;
+ *   2. the JSON-LD structured-data block
+ *      (<script type="application/ld+json">): browsers enforce
+ *      script-src on it too, so without a pin the site silently loses
+ *      its schema.org metadata.
+ * Each hash covers the exact text between the opening and closing tag
+ * (leading/trailing whitespace included — that is how browsers compute
+ * it). If either block is ever edited, recompute the hash the same way:
  *
  *   const html = fs.readFileSync('frontend/index.html', 'utf8');
  *   const start = html.indexOf('<script>') + '<script>'.length;
  *   const end = html.indexOf('</script>', start);
  *   crypto.createHash('sha256').update(html.slice(start, end)).digest('base64');
+ *
+ * Drift guard (R3-W2-5): `bash scripts/check-csp-hash.sh` recomputes
+ * both hashes from frontend/index.html and fails when either pin below
+ * stops matching — after editing an inline script, refresh these pins.
  */
-const THEME_BOOTSTRAP_SHA256 = 'vZhJuNUG5QI+pIb0CuXTThoCbDbkvVP7QhluuwJrybY=';
+const THEME_BOOTSTRAP_SHA256 = '9aiIJ7GqHujctt3TmPyC5y1Tmmc1Dvrpzlm0NhWmtQs=';
+const JSON_LD_SHA256 = 'GAYSjtUnNib298VwQUIkYNYTt+UtlJ1hOQU4tThmKz0=';
 
 export function createApp() {
   const app = express();
@@ -88,7 +99,11 @@ export function createApp() {
         useDefaults: false,
         directives: {
           'default-src': ["'self'"],
-          'script-src': ["'self'", `'sha256-${THEME_BOOTSTRAP_SHA256}'`],
+          'script-src': [
+            "'self'",
+            `'sha256-${THEME_BOOTSTRAP_SHA256}'`,
+            `'sha256-${JSON_LD_SHA256}'`,
+          ],
           'style-src': ["'self'", "'unsafe-inline'"],
           'img-src': ["'self'", 'data:', 'blob:'],
           'font-src': ["'self'"],
@@ -131,7 +146,7 @@ export function createApp() {
   // BUILD_ID is bumped on every deploy that needs a force-rebuild.
   // Curl /api/v1/health to check whether Render is serving the
   // latest commit. If the buildId matches, the fix is live.
-  const BUILD_ID = '2026-09-25T00:00Z-edge-cache-csp-gzip';
+  const BUILD_ID = '2026-09-28T11:15Z-round3-orbit-ink-60fps';
   app.get('/api/v1/health', async (_req, res) => {
     const start = Date.now();
     // Race the DB ping against a 5s timeout so a sleepy Neon

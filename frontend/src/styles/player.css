@@ -1,0 +1,422 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — player.css · VideoPlayerChrome (`.vpc`) — branded player
+   skin (R2-B, «ليل مدارك» v3 family)
+   ─────────────────────────────────────────────────────────────────────
+   The chrome for the core learning surface: the lecture video player.
+   Same product family as the v3 night shell — calm + focused, a WORK
+   surface (not marketing): night frame, mist hairlines, ONE gold
+   accent reserved for progress + play, no elevation, the only gradient
+   is the bottom legibility scrim.
+
+   Scope: everything lives under `.vpc` (video-player-chrome). The HOST
+   element (the consumer's frame class, here `.lecture-video-wrap` via
+   the className prop) supplies geometry — aspect-ratio, radius,
+   overflow clipping; `.vpc` re-skins it night + layers the chrome.
+   Styles travel with the component (side-effect import inside
+   VideoPlayerChrome.tsx → the lazy page chunk), per the D11 css split.
+
+   Direction contract: the product document is `dir="rtl"`. The
+   progress rail fills RIGHT→LEFT via logical properties
+   (`inset-inline-start` + `inline-size` — the .lecture-progress-*
+   idiom from student.css), so playback starts at the right edge and
+   flows leftward, matching Arabic reading. The scrub math mirrors
+   this in JS (VideoPlayerChrome · pctFromPointer). Physical
+   left/right offsets are never used on the rail.
+
+   Icon mirroring: media glyphs are deliberately NOT mirrored in RTL
+   (Material "do not mirror media controls" + YouTube-ar precedent);
+   only their POSITION mirrors via the RTL flex flow.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── Host + night tokens ─────────────────────────────────────────
+     The v3 family values (landing's ln- tokens): void #05070F /
+     ink #F2EFE6 / mist #8E97B8 / gold #E9B44C. The player is a night
+     surface in BOTH themes — a video stage is a physical matte (the
+     documented #000 rationale on .lecture-video), never a theme card. */
+  .vpc {
+    --vpc-void: #05070F;
+    --vpc-navy: #0B1020;
+    --vpc-ink: #F2EFE6;
+    --vpc-mist: #8E97B8;
+    --vpc-gold: #E9B44C;
+    --vpc-gold-soft: #F5D48A;
+    --vpc-glow: rgb(233 180 76 / 0.24);
+    --vpc-hairline: rgb(142 151 184 / 0.16);
+    --vpc-danger: #F0938F;
+
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Page-frame re-skin (the host keeps .lecture-video-wrap's geometry):
+     night ground, mist hairline, NO card shadow — a work surface. */
+  .vpc.lecture-video-wrap {
+    box-shadow: none;
+    background: var(--vpc-navy);
+    border-color: var(--vpc-hairline);
+  }
+
+  /* The video slot — generic so the chrome works with any <video>,
+     not just the .lecture-video-skinned one. */
+  .vpc > video {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+    /* True letterbox black — physical matte, not a theme color
+       (same rationale as student.css .lecture-video). */
+    background: #000;
+  }
+
+  /* Fullscreen: the HOST is the fullscreen element so the chrome stays
+     visible (a body-level portal would vanish — that is why the speed
+     menu renders inline, not via the Popover primitive). */
+  .vpc:fullscreen,
+  .vpc:-webkit-full-screen {
+    aspect-ratio: auto;
+    inline-size: 100%;
+    block-size: 100%;
+    border-color: transparent;
+    border-radius: 0;
+    background: var(--vpc-void);
+  }
+
+  /* ── Click surface (toggle play / double-click fullscreen) ─────── */
+  .vpc-surface {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  /* ── Bottom legibility scrim (the one sanctioned gradient) ─────── */
+  .vpc-scrim {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 104px;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to top, rgb(5 7 15 / 0.82), transparent);
+    opacity: 0;
+    transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
+  }
+
+  /* ── Control bar (slides up; paused/scrub/hover/focus reveal) ──── */
+  .vpc-bar {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 0 var(--sp-3) var(--sp-2);
+    transform: translateY(calc(100% + 6px));
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform var(--motion-duration-medium) var(--motion-ease-emphasized),
+      opacity var(--motion-duration-short) var(--motion-ease-standard),
+      visibility 0s linear var(--motion-duration-medium);
+  }
+  .vpc:hover .vpc-bar,
+  .vpc:focus-within .vpc-bar,
+  .vpc[data-paused="true"] .vpc-bar,
+  .vpc[data-scrubbing="true"] .vpc-bar {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .vpc:hover .vpc-scrim,
+  .vpc:focus-within .vpc-scrim,
+  .vpc[data-paused="true"] .vpc-scrim,
+  .vpc[data-scrubbing="true"] .vpc-scrim {
+    opacity: 1;
+  }
+  /* Touch: no hover to reveal with — the chrome stays put. */
+  @media (hover: none) and (pointer: coarse) {
+    .vpc .vpc-bar {
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      transition: none;
+    }
+    .vpc .vpc-scrim { opacity: 1; }
+  }
+
+  /* ── Progress track ──────────────────────────────────────────────
+     4px rail + generous block padding = an ~24px hit area. Full-bleed
+     (negates the bar's inline padding) so the rail spans the frame. */
+  .vpc-track {
+    position: relative;
+    display: block;
+    inline-size: calc(100% + var(--sp-6));
+    margin-inline: calc(-1 * var(--sp-3));
+    padding-block: 10px;
+    margin-block-end: -2px;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .vpc-rail {
+    position: relative;
+    display: block;
+    block-size: 4px;
+    border-radius: var(--r-full);
+    background: rgb(142 151 184 / 0.20);          /* mist 20% */
+  }
+  .vpc-buffered {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-radius: inherit;
+    background: rgb(142 151 184 / 0.35);          /* mist 35% */
+  }
+  .vpc-played {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-radius: inherit;
+    background: var(--vpc-gold);
+  }
+  /* Playhead — gold dot with the family glow; grows on hover/drag.
+     `inset-inline-start` is set inline (RTL: measured from the RIGHT
+     edge — the reading start). */
+  .vpc-head {
+    position: absolute;
+    inset-block-start: 50%;
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: var(--r-full);
+    background: var(--vpc-gold);
+    box-shadow: 0 0 10px 1px var(--vpc-glow);
+    transform: translateY(-50%);
+    transition: transform var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .vpc-track:hover .vpc-head,
+  .vpc-track:focus-visible .vpc-head {
+    transform: translateY(-50%) scale(1.3);
+  }
+  .vpc[data-scrubbing="true"] .vpc-head {
+    transform: translateY(-50%) scale(1.3);
+  }
+  /* Checkpoint markers — 8px gold-outlined dots on the rail
+     (decorative: the sidebar note + the quiz itself carry the info
+     accessibly, mirroring .lecture-progress-mark). */
+  .vpc-mark {
+    position: absolute;
+    inset-block-start: 50%;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: var(--r-full);
+    background: var(--vpc-navy);
+    border: 1.5px solid var(--vpc-gold);
+    box-sizing: border-box;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  /* ── Controls row ──────────────────────────────────────────────── */
+  .vpc-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding-block-start: var(--sp-1);
+  }
+  .vpc-btn {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    inline-size: 40px;                            /* ≥40px hit target */
+    block-size: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-full);
+    background: transparent;
+    color: var(--vpc-ink);
+    cursor: pointer;
+    transition: background var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+  .vpc-btn:hover { background: rgb(142 151 184 / 0.16); }
+  .vpc-btn:active { background: rgb(142 151 184 / 0.26); }
+  /* The one gold action — play/pause (the accent is reserved for
+     progress + the primary action). */
+  .vpc-btn-play { color: var(--vpc-gold); }
+  .vpc-btn-play:hover { background: rgb(233 180 76 / 0.14); }
+
+  /* Time — mono, LTR run, current ink / total mist. */
+  .vpc-time {
+    direction: ltr;
+    font-family: var(--font-mono);
+    font-size: var(--type-label-size-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--vpc-ink);
+    padding-inline: var(--sp-2);
+    white-space: nowrap;
+  }
+  .vpc-time-total { color: var(--vpc-mist); }
+
+  /* ── Playback-speed menu (inline, NOT portaled: must survive
+     fullscreen, where only the fullscreened subtree renders) ─────── */
+  .vpc-speed { position: relative; }
+  .vpc-btn-rate {
+    inline-size: auto;
+    min-inline-size: 40px;
+    padding-inline: var(--sp-2);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .vpc-menu {
+    position: absolute;
+    inset-block-end: calc(100% + 10px);
+    inset-inline-end: 0;
+    z-index: 4;
+    min-inline-size: 104px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--sp-1);
+    border: 1px solid var(--vpc-hairline);
+    border-radius: var(--r-lg);
+    background: rgb(11 16 32 / 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: vpc-menu-in var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  @keyframes vpc-menu-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+  .vpc-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+    block-size: 36px;
+    padding-inline: var(--sp-3);
+    border: 0;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--vpc-ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .vpc-menu-item:hover { background: rgb(142 151 184 / 0.14); }
+  .vpc-menu-item[aria-checked="true"] { color: var(--vpc-gold); }
+
+  /* ── Poster / ended gates — the 64px gold play ─────────────────── */
+  .vpc-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    background: rgb(5 7 15 / 0.45);
+  }
+  .vpc-play-big {
+    display: grid;
+    place-items: center;
+    inline-size: 64px;
+    block-size: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-full);
+    background: var(--vpc-gold);
+    color: var(--vpc-void);                       /* dark icon on gold */
+    cursor: pointer;
+    transition: transform var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .vpc-play-big:hover { transform: scale(1.06); }
+  .vpc-play-big:active { transform: scale(0.97); }
+  .vpc-play-big:focus-visible {
+    outline: 2px solid var(--vpc-gold-soft);
+    outline-offset: 4px;
+  }
+
+  /* ── Loading spinner (2px ring) — status, kept under reduced
+     motion (essential affordance, WCAG 2.3.3 exception) ──────────── */
+  .vpc-busy {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+  .vpc-spinner {
+    inline-size: 34px;
+    block-size: 34px;
+    border-radius: var(--r-full);
+    border: 2px solid rgb(142 151 184 / 0.25);
+    border-top-color: var(--vpc-gold);
+    animation: vpc-spin var(--t-slow) var(--ease-linear) infinite;
+  }
+  @keyframes vpc-spin { to { transform: rotate(360deg); } }
+
+  /* ── Error gate ────────────────────────────────────────────────── */
+  .vpc-error {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-4);
+    padding: var(--sp-6);
+    text-align: center;
+    background: rgb(5 7 15 / 0.84);
+  }
+  .vpc-error-icon { color: var(--vpc-danger); }
+  .vpc-error-msg {
+    font-size: var(--type-label-size);
+    line-height: var(--lh-base);
+    color: var(--vpc-ink);
+  }
+  .vpc-retry {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    block-size: 40px;
+    padding-inline: var(--sp-6);
+    border: 0;
+    border-radius: var(--r-full);
+    background: var(--vpc-gold);
+    color: var(--vpc-void);
+    font-size: var(--type-label-size);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: background var(--motion-duration-micro) var(--motion-ease-standard);
+  }
+  .vpc-retry:hover { background: var(--vpc-gold-soft); }
+
+  /* ── Phone tuning ────────────────────────────────────────────────
+     The meta line under the player already carries the clock; drop
+     the inline time on very narrow frames — except fullscreen, where
+     the bar is the only clock. */
+  @media (max-width: 480px) {
+    .vpc:not(:fullscreen):not(:-webkit-full-screen) .vpc-time { display: none; }
+  }
+
+  /* ── Reduced motion — no slide, opacity-only chrome (the spinner
+     stays: loading status is essential feedback) ──────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .vpc-bar {
+      transform: none;
+      transition:
+        opacity var(--motion-duration-page) linear,
+        visibility 0s linear var(--motion-duration-page);
+    }
+    .vpc-scrim { transition: opacity var(--motion-duration-page) var(--ease-linear); }
+    .vpc-menu { animation: none; }
+    .vpc-play-big,
+    .vpc-btn,
+    .vpc-head { transition: none; }
+  }
+}

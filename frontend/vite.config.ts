@@ -37,6 +37,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    // Render free tier = 512 MB RAM: skip the gzip-size pass (it holds every
+    // chunk in memory) and keep minify on esbuild — both keep peak RSS low.
+    reportCompressedSize: false,
     // No production sourcemaps: the repo has no error-tracking consumer
     // (no sentry/bugsnag), so public .map files only added ~5.9 MB to the
     // deploy and exposed the full client source. Local debugging can
@@ -57,6 +60,14 @@ export default defineConfig({
           react: ['react', 'react-dom', 'react-router-dom'],
           query: ['@tanstack/react-query'],
           charts: ['chart.js', 'react-chartjs-2'],
+          // NOTE: the v4 cinematic kit (gsap/@gsap/react/lenis/three/@react-three/fiber)
+          // was listed here without ever being added to frontend/package.json —
+          // Rollup treats manualChunks entries as entry modules, so their mere
+          // presence broke the production build on Render ("Could not resolve
+          // entry module gsap"). The «أطلس المعرفة» landing ships its own
+          // zero-dependency canvas/motion kit, so these chunks are removed.
+          // If a cinematic lib is ever adopted: add it to package.json FIRST,
+          // then re-add its chunk entry in the same commit.
         },
       },
     },

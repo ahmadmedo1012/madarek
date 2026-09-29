@@ -4,7 +4,9 @@
  * Coverage:
  *   - renders only when open
  *   - portal mount + role=dialog + aria-modal + aria-label
- *   - focuses first focusable on open (close button by default)
+ *   - initial focus lands on the dialog surface (A10 P2-1: the close
+ *     button is a dismiss affordance, not the opening context); the
+ *     close button stays the first Tab stop
  *   - Esc dismisses (default) + opt-out
  *   - overlay click dismisses (default) + opt-out
  *   - clicks inside the content do NOT dismiss
@@ -40,13 +42,22 @@ describe('Lightbox', () => {
     expect(screen.getByTestId('img')).toBeInTheDocument();
   });
 
-  it('focuses the close button on open (first focusable)', async () => {
+  it('focuses the dialog surface on open — the close button is a Tab stop, not the context (A10 P2-1)', async () => {
     render(
       <Lightbox open onClose={() => {}} ariaLabel="Image" closeLabel="dismiss">
         <img alt="" src="" />
       </Lightbox>,
     );
     await flush();
+    // The lightbox has no field controls and no content focusables —
+    // the trap's fallback focuses the dialog surface (tabIndex -1).
+    expect(document.activeElement).toBe(screen.getByRole('dialog', { name: 'Image' }));
+    // The close affordance stays reachable: a Tab from <body> (a click
+    // on the media chrome parks focus there) is reclaimed into the
+    // cycle — onto the close button, the only focusable inside.
+    (document.activeElement as HTMLElement | null)?.blur();
+    expect(document.activeElement).toBe(document.body);
+    fireEvent.keyDown(document, { key: 'Tab' });
     expect(document.activeElement).toBe(
       screen.getByRole('button', { name: 'dismiss' }),
     );

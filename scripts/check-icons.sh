@@ -47,7 +47,12 @@ cd "$ROOT"
 violations=0
 
 # Files we scan: every .ts/.tsx under frontend/src EXCEPT the allowlist.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration)\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
+# components/landing/ — immersive v2 «سماء مدارك» scene components
+# (CollegeConstellation / JourneyLightPath): their raw <svg> is
+# illustrative diagram authoring (a constellation map, a computed light
+# path), the same category as lib/illustrations — NOT UI iconography.
+# UI icons inside the landing still go through <Icon icon={...} />.
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration)\.tsx|frontend/src/components/landing/|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):

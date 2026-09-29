@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -11,7 +11,7 @@ import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { UserAvatar } from '../../components/primitives';
 import { Card, MetricCard } from '../../components/primitives';
-import { EmptyState, ErrorState, LoadingState, DetailSkeleton } from '../../components/primitives/States';
+import { EmptyState, ErrorState, DetailSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Reveal, Skeleton } from '../../components/motion';
 import { SectionAccent } from '../../components/motion/SectionAccent';
 import { api, unwrap } from '../../lib/api';
@@ -24,7 +24,7 @@ import { gateCollegeAccent } from '../../lib/theme';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
 import { useUrlQueryState } from '../../hooks/useUrlQueryState';
-import type { AcademicPosition } from '../../stores/auth.store';
+import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
 // D14 CSS split (13-17): this sheet also styles the .comp-* competitions
 // grid rendered by the page below and is shared with five other lazy
 // consumers, so it lands in the chunk-shared CSS.
@@ -148,9 +148,90 @@ function formatRelative(iso: string): string {
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
+/* ── Document titles (A12 P2-6 / P3-6) ─────────────────────────────
+ * The docTitle effect lives inside the AppShell, which never mounts
+ * for guests — the app's ONLY crawlable pages shipped the static
+ * index.html title. This local effect mirrors the shell's exact
+ * grammar (title + « · مدارك», base restore on unmount) for the guest
+ * branch on the listing surfaces, and carries the PAYLOAD name on the
+ * detail pages for everyone (the shell resolves titles from the
+ * pathname alone and cannot know the record's name — «كلّيّة» for
+ * every college). The set rides a 0ms macrotask: a static/cached
+ * payload can land in the SAME commit as the shell's pathname effect,
+ * and child effects run BEFORE the parent's — the task schedules
+ * after every effect in that commit, so the payload title survives. */
+const GUEST_TITLE_BASE = 'مدارك · منصة التعليم الذكي · جامعة الزاوية'; // AppShell's DOC_TITLE_BASE (keep in sync)
+function useDocTitle(title: string | null) {
+  useEffect(() => {
+    if (title === null) return;
+    const set = window.setTimeout(() => {
+      document.title = `${title} · مدارك`;
+    }, 0);
+    return () => {
+      window.clearTimeout(set);
+      document.title = GUEST_TITLE_BASE;
+    };
+  }, [title]);
+}
+
 /* ───────────────────────── Index page ───────────────────────── */
 
+/* ── Guest funnel chrome (5-A12 P1-2) ──────────────────────────────
+ * The public colleges pages are the university's front door, yet a
+ * guest who found their faculty had NO path to registration — 0 auth
+ * CTAs on gallery/detail/leaderboard (A12 link census) and the
+ * landing's colleges entry sits below the fold. Two restrained
+ * affordances close the funnel: this compact join row on the listing
+ * surfaces, and one closing band on the college detail (the «I found
+ * my faculty» conversion moment). Labels mirror the landing's exact
+ * pair (ghost «تسجيل الدخول» + primary «أنشئ حسابك الجامعي» — one
+ * label per intent), and both carry `state.from` so a login
+ * round-trip lands the new member back on the page that earned the
+ * click (AuthPage readFromPath contract). Authed visitors keep the
+ * app shell and never see these. */
+function GuestJoinRow() {
+  const { pathname } = useLocation();
+  const from = { from: { pathname } };
+  return (
+    <div className="guest-join-row">
+      <span className="guest-join-note">طالب جديد في الجامعة؟</span>
+      <Link to="/auth" state={from} className="btn ghost sm">تسجيل الدخول</Link>
+      <Link to="/auth" state={from} className="btn primary sm">أنشئ حسابك الجامعي</Link>
+    </div>
+  );
+}
+
+/* The closing band — college detail only, at the end of the story
+ * the page tells. One persuasive line, one CTA pair, soft accent
+ * ground; the college's own identity stays above it. */
+function GuestClosingBand() {
+  const { pathname } = useLocation();
+  const from = { from: { pathname } };
+  return (
+    <section className="guest-cta-band" aria-labelledby="guest-cta-title">
+      <h2 id="guest-cta-title" className="guest-cta-title">هل هذه كلّيتك؟</h2>
+      <p className="guest-cta-note">
+        أنشئ حسابك الجامعي وابدأ رحلتك الأكاديميّة على منصّة مدارك.
+      </p>
+      <div className="guest-cta-actions">
+        <Link to="/auth" state={from} className="btn primary">أنشئ حسابك الجامعي</Link>
+        <Link to="/auth" state={from} className="btn ghost">تسجيل الدخول</Link>
+      </div>
+    </section>
+  );
+}
+
 export function CollegesIndexPage() {
+  const user = useAuthStore((s) => s.user);
+  // Public-zeros ruling (A8 P2-6): for guests, a «0 طالب / 0 عضو هيئة»
+  // chip on 24 of 25 cards reads as a dead campus, not as honesty
+  // about internal data (FR-010 keeps rendering genuine zeros for
+  // authed roles, who see the working university tool).
+  const isGuest = !user;
+  // Guests get no AppShell → no docTitle effect (A12 P2-6). Authed
+  // visitors keep the shell's own resolution (NAV_TITLES carries
+  // /colleges — same label, one source in nav.ts).
+  useDocTitle(isGuest ? 'كلّيّات الجامعة' : null);
   const q = useQuery({
     queryKey: ['colleges'],
     queryFn: () => unwrap<CollegeListItem[]>(api.get('/colleges')),
@@ -198,8 +279,11 @@ export function CollegesIndexPage() {
   return (
     <div className="page colleges-index">
       <SectionAccent kind="scene-paint" as="header" className="page-header">
-        <h1 className="page-title">كلّيّات جامعة الزاوية</h1>
-        <p className="page-subtitle">استكشف الكلّيّات والأقسام، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطتها.</p>
+        <div className="page-title-block">
+          <h1 className="page-title">كلّيّات جامعة الزاوية</h1>
+          <p className="page-subtitle">استكشف الكلّيّات والأقسام، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطتها.</p>
+        </div>
+        {isGuest && <GuestJoinRow />}
       </SectionAccent>
 
       {q.isLoading && (
@@ -226,7 +310,12 @@ export function CollegesIndexPage() {
           {/* Toolbar: search + campus chip strip + clear-filters. */}
           <div className="gallery-toolbar" role="search">
             <label className="visually-hidden" htmlFor="gallery-search">ابحث عن كلّيّة</label>
-            <div style={{ flex: '1 1 240px', position: 'relative' }}>
+            {/* A5 P1-1: the flex sizing lives in .gallery-search-wrap
+                (colleges.css) — the old inline `flex: 1 1 240px` was
+                written for the desktop row layout and, in the mobile
+                column direction, put a 240px BASIS ON THE VERTICAL
+                axis (a 196px dead gap under a 44px input). */}
+            <div className="gallery-search-wrap">
               <Icon
                 icon={Search}
                 size={16}
@@ -337,15 +426,38 @@ export function CollegesIndexPage() {
                           </span>
                           <div className="college-card-titles">
                             <div className="college-card-name">{c.name}</div>
-                            {c.nameEn && <div className="college-card-sub">{c.nameEn}</div>}
+                            {/* P3-2: the English sub single-lines with the
+                                full name on title — long names (Physical
+                                Education & Sports) wrapped and split the
+                                grid into two card heights. */}
+                            {c.nameEn && (
+                              <div className="college-card-sub" title={c.nameEn}>{c.nameEn}</div>
+                            )}
                           </div>
                           <span className="college-card-arrow"><Icon icon={ArrowLeft} size={18} /></span>
                         </div>
                         <div className="college-card-stats">
-                          <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
-                          <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
-                          <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
-                          <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
+                          {/* Guest zero-chip suppression (A8 P2-6): the
+                              audit sketch assumed dept/course counts are
+                              non-zero — the seed has 21 colleges where
+                              they are 0 too, so a «0 قسم · 0 مقرّر» pair
+                              still read as a dead campus (VLM frame-1
+                              catch, re-measured). For guests EVERY
+                              zero chip drops; a card with no real
+                              numbers shows none at all. Authed roles
+                              keep the full FR-010 view. */}
+                          {(!isGuest || c.departmentCount > 0) && (
+                            <CollegeStatChip icon={Building2} value={c.departmentCount} label="قسم" />
+                          )}
+                          {(!isGuest || c.studentCount > 0) && (
+                            <CollegeStatChip icon={GraduationCap} value={c.studentCount} label="طالب" />
+                          )}
+                          {(!isGuest || c.teacherCount > 0) && (
+                            <CollegeStatChip icon={Users} value={c.teacherCount} label="عضو هيئة" />
+                          )}
+                          {(!isGuest || c.courseCount > 0) && (
+                            <CollegeStatChip icon={BookOpen} value={c.courseCount} label="مقرّر" />
+                          )}
                         </div>
                         <span className="college-card-cta">
                           <span>زيارة الصفحة</span>
@@ -405,12 +517,16 @@ export function CollegeDetailPage() {
   // and the detail page crashed on every first visit (audit 0-f
   // P0-1). Every hook must run unconditionally above the gates.
   const themeMode = useThemeStore((s) => s.mode);
+  const user = useAuthStore((s) => s.user);
   const q = useQuery({
     queryKey: ['colleges', id],
     queryFn: () => unwrap<CollegeDetail>(api.get(`/colleges/${id}`)),
     enabled: !!id,
     staleTime: 60_000,
   });
+  // Payload title (A12 P3-6): the college's real name beats the shell's
+  // generic «كلّيّة» pattern — applies once data lands, guest or authed.
+  useDocTitle(q.data?.name ?? null);
 
   if (q.isLoading) {
     return <div className="page"><DetailSkeleton /></div>;
@@ -420,6 +536,39 @@ export function CollegeDetailPage() {
   }
 
   const c = q.data;
+  /* Public-zeros ruling (A8 P1-2, orchestrator): the college detail is
+   * the university's front door, and 24/25 seeded colleges are
+   * data-thin — a GUEST's first page must not be a wall of «لا توجد…
+   * بعد» internal-workflow empties («لم يتمّ تعيين قيادة…», four zero
+   * KPI tiles). For guests, zero-data sections collapse entirely and
+   * zero KPIs drop out of the strip; what remains is the college's
+   * real story (name, city, departments, whatever activity exists) +
+   * ONE honest «قريباً» line when the board is thin. Authed roles keep
+   * the full honest view (FR-010 — genuine zeros stay visible to the
+   * people who run the university). */
+  const isGuest = !user;
+  const guestStats = isGuest
+    ? [
+        { label: 'عدد الأقسام', value: c.stats.departmentCount, icon: Building2, color: 'brand' as const },
+        { label: 'إجمالي الطلاب', value: c.stats.studentCount, icon: GraduationCap, color: 'green' as const },
+        { label: 'هيئة التدريس', value: c.stats.teacherCount, icon: Users, color: 'purple' as const },
+        { label: 'عدد المقرّرات', value: c.stats.courseCount, icon: BookOpen, color: 'amber' as const },
+      ].filter((m) => m.value > 0)
+    : null;
+  const showLeadership = !isGuest || c.leadership.length > 0;
+  const showDepartments = !isGuest || c.departments.length > 0;
+  const showTopStudents = !isGuest || c.topStudents.length > 0;
+  const showAnnouncements = !isGuest || c.announcements.length > 0;
+  const showEvents = !isGuest || c.upcomingEvents.length > 0;
+  const showLive = !isGuest || c.upcomingLive.length > 0;
+  const showCompetitions = !isGuest || c.activeCompetitions.length > 0;
+  // In each 2-col pairing, a lone surviving card spans the full row —
+  // a half-width orphan unbalances the page (taste: no trailing empty
+  // grid cell). Only computed for guests; authed always see both.
+  const soloPair1 = showLeadership !== showDepartments;
+  const soloPair2 = showTopStudents !== showAnnouncements;
+  const soloPair3 = showEvents !== showLive;
+  const soloSpan = { gridColumn: '1 / -1' } as const;
   // Resolve the college identity profile (accent, hero, icon). The API
   // record is id-keyed, so the deterministic (nameAr, city) bridge maps it
   // onto the slug-keyed registry. When no profile matches, the page falls
@@ -493,17 +642,45 @@ export function CollegeDetailPage() {
         </div>
       </SectionAccent>
 
-      {/* Stats row */}
-      <section className="grid-4">
-        <MetricCard label="عدد الأقسام" value={c.stats.departmentCount.toLocaleString('ar-LY')} icon={Building2} color="brand" />
-        <MetricCard label="إجمالي الطلاب" value={c.stats.studentCount.toLocaleString('ar-LY')} icon={GraduationCap} color="green" />
-        <MetricCard label="هيئة التدريس" value={c.stats.teacherCount.toLocaleString('ar-LY')} icon={Users} color="purple" />
-        <MetricCard label="عدد المقرّرات" value={c.stats.courseCount.toLocaleString('ar-LY')} icon={BookOpen} color="amber" />
-      </section>
+      {/* Stats row — guests see only the real numbers (A8 P1-2 ruling);
+          authed roles keep the full four-tile strip including zeros.
+          The grid always matches the count: no trailing empty cell. */}
+      {isGuest ? (
+        guestStats && guestStats.length === 1 ? (
+          <section className="college-stat-solo">
+            <MetricCard label={guestStats[0]!.label} value={guestStats[0]!.value.toLocaleString('ar-LY')} icon={guestStats[0]!.icon} color={guestStats[0]!.color} />
+          </section>
+        ) : guestStats && guestStats.length >= 2 ? (
+          <section className={guestStats.length === 2 ? 'grid-2' : guestStats.length === 3 ? 'grid-3' : 'grid-4'}>
+            {guestStats.map((m) => (
+              <MetricCard key={m.label} label={m.label} value={m.value.toLocaleString('ar-LY')} icon={m.icon} color={m.color} />
+            ))}
+          </section>
+        ) : null
+      ) : (
+        <section className="grid-4">
+          <MetricCard label="عدد الأقسام" value={c.stats.departmentCount.toLocaleString('ar-LY')} icon={Building2} color="brand" />
+          <MetricCard label="إجمالي الطلاب" value={c.stats.studentCount.toLocaleString('ar-LY')} icon={GraduationCap} color="green" />
+          <MetricCard label="هيئة التدريس" value={c.stats.teacherCount.toLocaleString('ar-LY')} icon={Users} color="purple" />
+          <MetricCard label="عدد المقرّرات" value={c.stats.courseCount.toLocaleString('ar-LY')} icon={BookOpen} color="amber" />
+        </section>
+      )}
 
+      {/* Guests on a college whose OWN four counters are all zero: one
+          honest institutional line replaces the zero strip (A8 P1-2's
+          exact sketch) — university-wide activity below stays visible
+          because it is real. */}
+      {isGuest && guestStats !== null && guestStats.length === 0 && (
+        <p className="college-coming-soon text-sm text-muted">
+          كلّيّة حديثة التأسيس — تُحدَّث بياناتها مع بدء التسجيل.
+        </p>
+      )}
+
+      {(showLeadership || showDepartments) && (
       <div className="college-grid-2">
         {/* Leadership */}
-        <Card title="القيادة الأكاديميّة" subtitle="المعيَّنون لهذه الكلّيّة">
+        {showLeadership && (
+        <Card title="القيادة الأكاديميّة" subtitle="المعيَّنون لهذه الكلّيّة" style={soloPair1 ? soloSpan : undefined}>
           {c.leadership.length === 0 ? (
             <p className="text-muted text-sm">لم يتمّ تعيين قيادة لهذه الكلّيّة بعد.</p>
           ) : (
@@ -527,9 +704,15 @@ export function CollegeDetailPage() {
             </ul>
           )}
         </Card>
+        )}
 
         {/* Departments */}
-        <Card title="الأقسام" subtitle={countAr(c.departments.length, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}>
+        {showDepartments && (
+        <Card
+          title="الأقسام"
+          subtitle={countAr(c.departments.length, ['قسم واحد', 'قسمان', 'أقسام', 'قسماً'])}
+          style={soloPair1 ? soloSpan : undefined}
+        >
           {c.departments.length === 0 ? (
             <p className="text-muted text-sm">لم تُضَف أقسام بعد.</p>
           ) : (
@@ -550,11 +733,15 @@ export function CollegeDetailPage() {
             </ul>
           )}
         </Card>
+        )}
       </div>
+      )}
 
+      {(showTopStudents || showAnnouncements) && (
       <div className="college-grid-2">
         {/* Top students */}
-        <Card title="الطلّاب المتميّزون" subtitle="حسب نقاط الخبرة" icon={Trophy}>
+        {showTopStudents && (
+        <Card title="الطلّاب المتميّزون" subtitle="حسب نقاط الخبرة" icon={Trophy} style={soloPair2 ? soloSpan : undefined}>
           {c.topStudents.length === 0 ? (
             <p className="text-muted text-sm">لا توجد بيانات طلّاب بعد.</p>
           ) : (
@@ -580,9 +767,11 @@ export function CollegeDetailPage() {
             </ol>
           )}
         </Card>
+        )}
 
         {/* Announcements */}
-        <Card title="الإعلانات" subtitle="آخر التحديثات" icon={Megaphone}>
+        {showAnnouncements && (
+        <Card title="الإعلانات" subtitle="آخر التحديثات" icon={Megaphone} style={soloPair2 ? soloSpan : undefined}>
           {c.announcements.length === 0 ? (
             <p className="text-muted text-sm">لا توجد إعلانات حاليّاً.</p>
           ) : (
@@ -604,11 +793,15 @@ export function CollegeDetailPage() {
             </ul>
           )}
         </Card>
+        )}
       </div>
+      )}
 
+      {(showEvents || showLive) && (
       <div className="college-grid-2">
         {/* Upcoming events */}
-        <Card title="فعاليّات قادمة" icon={Calendar}>
+        {showEvents && (
+        <Card title="فعاليّات قادمة" icon={Calendar} style={soloPair3 ? soloSpan : undefined}>
           {c.upcomingEvents.length === 0 ? (
             <p className="text-muted text-sm">لا توجد فعاليّات قادمة.</p>
           ) : (
@@ -621,7 +814,10 @@ export function CollegeDetailPage() {
                     <div className="event-meta">
                       <span><Icon icon={MapPin} size={12} /> {e.location}</span>
                       <span><Icon icon={Clock} size={12} /> {formatDateTimeAr(e.startsAt)}</span>
-                      <span>{e._count.rsvps}/{e.capacity}</span>
+                      {/* 5-B1: the count is GOING-only — a decline never
+                          occupied a seat; the tooltip says exactly what the
+                          pair measures. */}
+                      <span title="الحضور المؤكّدون من إجمالي السعة">{e._count.rsvps}/{e.capacity}</span>
                     </div>
                   </div>
                 </li>
@@ -629,9 +825,11 @@ export function CollegeDetailPage() {
             </ul>
           )}
         </Card>
+        )}
 
         {/* Live broadcasts */}
-        <Card title="البثّ المباشر" icon={Radio}>
+        {showLive && (
+        <Card title="البثّ المباشر" icon={Radio} style={soloPair3 ? soloSpan : undefined}>
           {c.upcomingLive.length === 0 ? (
             <p className="text-muted text-sm">لا توجد جلسات بثّ مجدولة.</p>
           ) : (
@@ -650,31 +848,58 @@ export function CollegeDetailPage() {
             </ul>
           )}
         </Card>
+        )}
       </div>
+      )}
 
-      {/* Competitions */}
+      {/* Competitions — real links, not a dead-end list (A12 P1-2:
+          the college detail was a hub where nothing onward was
+          clickable; the comp cards now route to the competition page
+          — for a guest that's the register wall with return-to, for
+          everyone else it's the competition itself). */}
+      {showCompetitions && (
       <Card title="مسابقات نشطة" subtitle="على مستوى الجامعة" icon={Trophy}>
+        {/* Guests only see this card when a competition exists; the
+            empty branch is the authed (internal) view. */}
         {c.activeCompetitions.length === 0 ? (
           <p className="text-muted text-sm">لا توجد مسابقات نشطة.</p>
         ) : (
-          <div className="comp-grid">
-            {c.activeCompetitions.map((comp) => (
-              <div key={comp.id} className="comp-card" style={comp.themeColor ? { borderInlineStartColor: comp.themeColor } : undefined}>
-                <div className="comp-emoji" aria-hidden><EmojiIcon emoji={comp.iconEmoji ?? '🏆'} size={22} /></div>
-                <div className="comp-body">
-                  <div className="comp-title">{comp.title}</div>
-                  <div className="comp-meta">
-                    <span>{comp.category}</span>
-                    <span>· الإغلاق {formatRelative(comp.deadline)}</span>
-                    <span>· {comp._count.entries} مشترك</span>
-                  </div>
-                  {comp.prize && <div className="comp-prize">الجائزة: {comp.prize}</div>}
+        <div className="comp-grid">
+          {c.activeCompetitions.map((comp) => (
+            <Link
+              key={comp.id}
+              to={`/competitions/${comp.id}`}
+              className="comp-card"
+              style={comp.themeColor ? { borderInlineStartColor: comp.themeColor } : undefined}
+            >
+              <div className="comp-emoji" aria-hidden><EmojiIcon emoji={comp.iconEmoji ?? '🏆'} size={22} /></div>
+              <div className="comp-body">
+                <div className="comp-title">{comp.title}</div>
+                <div className="comp-meta">
+                  <span>{comp.category}</span>
+                  <span>· الإغلاق {formatRelative(comp.deadline)}</span>
+                  {/* A8 §7.7: an invitation while entries are possible,
+                      the honest absence after (same derived state as the
+                      competitions index). */}
+                  <span>· {comp._count.entries === 0
+                    ? (new Date(comp.deadline).getTime() > Date.now() ? 'كن أول المشاركين' : 'لا مشاركات')
+                    : `${comp._count.entries} مشترك`}</span>
                 </div>
+                {comp.prize && <div className="comp-prize">الجائزة: {comp.prize}</div>}
               </div>
-            ))}
-          </div>
+              <span className="comp-go" aria-hidden>
+                <Icon icon={ArrowLeft} size={14} />
+              </span>
+            </Link>
+          ))}
+        </div>
         )}
       </Card>
+      )}
+
+      {/* The guest funnel's closing band — «I found my faculty, now I
+          sign up» (A12 P1-2). Last element of the page by design. */}
+      {isGuest && <GuestClosingBand />}
     </div>
   );
 }
@@ -731,6 +956,14 @@ const METRICS = [
 type MetricKey = (typeof METRICS)[number]['key'];
 
 export function CollegesLeaderboardPage() {
+  const user = useAuthStore((s) => s.user);
+  // Public-zeros ruling (A8 P2-6): for guests, «٠ طلاب · ٠ أساتذة» on
+  // 24 of 25 rows reads as a dead campus; authed roles keep the full
+  // honest meta (FR-010).
+  const isGuest = !user;
+  // Guest title (A12 P2-6) — matches AppShell's PAGE_TITLES entry for
+  // this route (same label, one source there).
+  useDocTitle(isGuest ? 'منافسة الكلّيّات' : null);
   const q = useQuery({
     queryKey: ['colleges', 'leaderboard'],
     queryFn: () => unwrap<LeaderboardData>(api.get('/colleges/leaderboard')),
@@ -763,12 +996,29 @@ export function CollegesLeaderboardPage() {
 
   return (
     <div className="page colleges-leaderboard">
+      {/* Gallery back-link (A12 P1-2): leaderboard ↔ gallery used to be
+          one-way — the gallery CTA brought you here and the ONLY link
+          out was the landing. Same ghost idiom as the detail page. */}
+      <Link to="/colleges" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
+        <Icon icon={ChevronRight} size={13} />
+        كلّيّات الجامعة
+      </Link>
       <header className="page-header">
-        <h1 className="page-title">منافسة الكلّيّات</h1>
-        <p className="page-subtitle">مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ.</p>
+        <div className="page-title-block">
+          <h1 className="page-title">منافسة الكلّيّات</h1>
+          <p className="page-subtitle">مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ.</p>
+        </div>
+        {isGuest && <GuestJoinRow />}
       </header>
 
-      {q.isLoading && <LoadingState />}
+      {/* Shape-matched skeleton (A9 P2-2, 5-C3 hand-off): the payload
+          is a 25-row × 7-col table — a bare spinner left the page
+          structureless until data landed. */}
+      {q.isLoading && (
+        <Card title="لوحة المتصدّرين" icon={Trophy}>
+          <TableSkeleton rows={8} cols={7} />
+        </Card>
+      )}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && q.data.colleges.length === 0 && (
         <EmptyState
@@ -826,7 +1076,13 @@ export function CollegesLeaderboardPage() {
                         <div>
                           <div className="leaderboard-college-name">{c.name}</div>
                           <div className="leaderboard-college-meta">
-                            {c.city} · {countedGroupedAr(c.studentCount, 'طالب واحد', 'طالبان', 'طلاب', 'طالباً')} · {countedGroupedAr(c.teacherCount, 'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً')}
+                            {c.city}
+                            {(!isGuest || c.studentCount > 0) && (
+                              <> · {countedGroupedAr(c.studentCount, 'طالب واحد', 'طالبان', 'طلاب', 'طالباً')}</>
+                            )}
+                            {(!isGuest || c.teacherCount > 0) && (
+                              <> · {countedGroupedAr(c.teacherCount, 'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً')}</>
+                            )}
                           </div>
                         </div>
                       </Link>

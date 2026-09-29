@@ -11,12 +11,21 @@
  * payload's `appliedJobIds` derivation (15-d P2-10) and the posts feed
  * item's `viewerReacted` flag (15-d P2-13-reaction).
  *
+ * 5-B1 additions (audit 5-A8 P2-1, backend half): the /admin/courses
+ * query envelope + list filter — `q` really filters now (it used to be
+ * accepted by the shared schema and silently ignored by the handler,
+ * the bug class the /posts fix closed) and `facultyId` scopes through
+ * the course's home department, so the FE can build server-side
+ * pagination + pre-filtered landings.
+ *
  * DB-free: everything here is pure. The loan claim/dedupe transaction,
  * the pagination wiring and the guarded inventory writes need a DB
  * harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
 import {
+  adminCoursesQuerySchema,
+  adminCoursesWhere,
   borrowBookSchema,
   buildPaperTrend,
   createPostSchema,
@@ -332,5 +341,60 @@ describe('postFeedItem', () => {
       _count: { comments: 2, reactions: 5 },
       viewerReacted: true,
     });
+  });
+});
+
+// ── /admin/courses query envelope + filter (5-A8 P2-1, backend half) ──
+
+describe('adminCoursesQuerySchema (5-A8 P2-1)', () => {
+  it('accepts an empty query with the platform defaults (page 1, limit 20)', () => {
+    const parsed = adminCoursesQuerySchema.parse({});
+    expect(parsed).toMatchObject({ page: 1, limit: 20 });
+    expect(parsed.q).toBeUndefined();
+    expect(parsed.facultyId).toBeUndefined();
+  });
+
+  it('coerces page/limit strings and keeps the shared caps (limit ≤ 100, q ≤ 120)', () => {
+    expect(adminCoursesQuerySchema.parse({ page: '2', limit: '50' })).toMatchObject({ page: 2, limit: 50 });
+    expect(adminCoursesQuerySchema.safeParse({ limit: '101' }).success).toBe(false);
+    expect(adminCoursesQuerySchema.safeParse({ q: 'x'.repeat(121) }).success).toBe(false);
+    expect(adminCoursesQuerySchema.parse({ limit: '100' }).limit).toBe(100);
+  });
+
+  it('rejects a non-cuid facultyId (stray unknown keys are stripped, shared-schema behavior)', () => {
+    expect(adminCoursesQuerySchema.safeParse({ facultyId: 'it-faculty' }).success).toBe(false);
+    // The shared pagination schema is not .strict() — unknown keys are
+    // stripped by the parse (and dropped from req.query by validate()),
+    // exactly like every other paginationSchema-based endpoint.
+    const r = adminCoursesQuerySchema.safeParse({ sneaky: true });
+    expect(r.success).toBe(true);
+    if (r.success) expect('sneaky' in r.data).toBe(false);
+    expect(adminCoursesQuerySchema.safeParse({ facultyId: `c${'x'.repeat(24)}` }).success).toBe(true);
+  });
+});
+
+describe('adminCoursesWhere (the /admin/courses list filter)', () => {
+  it('no params → {} — the unfiltered list the endpoint always shipped', () => {
+    expect(adminCoursesWhere(undefined, undefined)).toEqual({});
+  });
+
+  it('a search term matches course code OR name, case-insensitive', () => {
+    expect(adminCoursesWhere('هندسة', undefined)).toEqual({
+      OR: [
+        { code: { contains: 'هندسة', mode: 'insensitive' } },
+        { name: { contains: 'هندسة', mode: 'insensitive' } },
+      ],
+    });
+  });
+
+  it('a faculty filter scopes through the course home department', () => {
+    const facultyId = `c${'f'.repeat(24)}`;
+    expect(adminCoursesWhere(undefined, facultyId)).toEqual({ department: { facultyId } });
+  });
+
+  it('both params compose (AND of the search OR-block and the faculty scope)', () => {
+    const facultyId = `c${'f'.repeat(24)}`;
+    const where = adminCoursesWhere('CS', facultyId);
+    expect(Object.keys(where).sort()).toEqual(['OR', 'department']);
   });
 });

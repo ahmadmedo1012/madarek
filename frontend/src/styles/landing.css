@@ -442,7 +442,7 @@
   width: 1px;
   height: 46px;
   background: linear-gradient(180deg, var(--ln-gold) 0%, transparent 100%);
-  animation: ln-scroll-pulse 2.2s var(--ln-ease-soft) infinite;
+  animation: ln-scroll-pulse var(--motion-duration-ambient) var(--ln-ease-soft) infinite;
   transform-origin: top;
 }
 
@@ -494,7 +494,7 @@
   border-radius: 50%;
   background: radial-gradient(circle at 38% 32%, rgb(245 212 138 / 0.95) 0%, rgb(233 180 76 / 0.75) 42%, rgb(201 150 47 / 0.12) 78%, transparent 100%);
   box-shadow: 0 0 34px rgb(233 180 76 / 0.5), 0 0 90px rgb(233 180 76 / 0.22);
-  animation: ln-hub-breathe 4.6s var(--ease) infinite;
+  animation: ln-hub-breathe var(--motion-duration-ambient-drift) var(--ease) infinite;
 }
 
 @keyframes ln-hub-breathe {
@@ -693,7 +693,7 @@
   background:
     radial-gradient(46% 50% at 70% 46%, rgb(122 217 201 / 0.13) 0%, transparent 72%),
     radial-gradient(60% 64% at 18% 62%, rgb(111 168 255 / 0.07) 0%, transparent 70%);
-  animation: ln-oasis-breathe 7s var(--ease) infinite;
+  animation: ln-oasis-breathe var(--motion-duration-ambient-cinema) var(--ease) infinite;
 }
 
 @keyframes ln-oasis-breathe {
@@ -1060,7 +1060,7 @@
 }
 
 .sc-quality-pipe.is-flowing .sc-qs-flow i {
-  animation: ln-flow 1.5s var(--ease) infinite;
+  animation: ln-flow var(--motion-duration-ambient-pulse) var(--ease) infinite;
 }
 
 .sc-qs-flow i:nth-child(2) { animation-delay: 0.22s; }

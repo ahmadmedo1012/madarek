@@ -12,6 +12,7 @@ import { Icon } from '../components/Icon';
 import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { AppRole } from '../stores/auth.store';
 import type { AxiosError } from 'axios';
 
@@ -88,6 +89,7 @@ function readFromPath(state: unknown): string | null {
 
 export default function AuthPage() {
   useThemeSync();
+  usePageTitle('تسجيل الدخول');
   const navigate = useNavigate();
   const location = useLocation();
   const login = useLogin();
@@ -149,6 +151,12 @@ export default function AuthPage() {
           </div>
 
           <div className="auth-form-header">
+            {/* imm-5 journey alignment: the landing scenes' coded
+                metadata voice as a quiet eyebrow over the title
+                (.auth-meta, mono metric role). A real Arabic phrase —
+                journey-meta precedent — so it stays in the accessibility
+                tree, unlike the bento's purely decorative code badges. */}
+            <span className="auth-meta">( بوابة الجامعة )</span>
             <h1 className="auth-form-title">مرحباً بعودتك</h1>
             <p className="auth-form-sub">
               سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.

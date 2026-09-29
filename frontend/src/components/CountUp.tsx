@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * CountUp — animates the numeric part of a marketing stat (e.g. "+50K", "#6",
@@ -8,10 +8,33 @@ import { useEffect, useRef, useState } from 'react';
  * fallback. Animation only ever replaces it temporarily; it can never get
  * stuck at 0 (the previous bug). Honours prefers-reduced-motion.
  * Marketing/hero use only — never for live in-app data.
+ *
+ * Perf (audit R3 D#13): the value is written straight into the rendered
+ * text node via the span ref — no React state, so no re-render per frame
+ * across the 7 landing counters. Formatting uses one cached
+ * Intl.NumberFormat instance per decimal count (`toLocaleString` is
+ * specified as a NumberFormat call, so the output is byte-identical
+ * while skipping the per-frame locale-object construction). The
+ * animation writes mutate the text NODE React owns rather than
+ * replacing it (textContent would orphan React's host instance and
+ * break a later prop change).
  */
+const formatters = new Map<number, Intl.NumberFormat>();
+
+function formatterFor(decimals: number): Intl.NumberFormat {
+  let fmt = formatters.get(decimals);
+  if (!fmt) {
+    fmt = new Intl.NumberFormat('ar-LY', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+    formatters.set(decimals, fmt);
+  }
+  return fmt;
+}
+
 export function CountUp({ value, duration = 1100 }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState(value); // always start with the real value
 
   useEffect(() => {
     const el = ref.current;
@@ -30,8 +53,15 @@ export function CountUp({ value, duration = 1100 }: { value: string; duration?: 
     const decimals = numStr.includes('.') ? (numStr.split('.')[1]?.length ?? 0) : 0;
     if (Number.isNaN(target)) return;
 
-    const fmt = (n: number) =>
-      `${prefix}${n.toLocaleString('ar-LY', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}${suffix}`;
+    const fmt = formatterFor(decimals);
+    const write = (text: string) => {
+      const node = el.firstChild;
+      if (node && node.nodeType === Node.TEXT_NODE) {
+        node.nodeValue = text;
+      } else {
+        el.textContent = text; // firstChild missing — plain DOM fallback
+      }
+    };
 
     let raf = 0;
     let started = false;
@@ -43,7 +73,8 @@ export function CountUp({ value, duration = 1100 }: { value: string; duration?: 
         if (!start) start = t;
         const p = Math.min((t - start) / duration, 1);
         const eased = 1 - Math.pow(1 - p, 3);
-        setDisplay(p < 1 ? fmt(target * eased) : value); // always settle on the real value
+        // always settle on the real value
+        write(p < 1 ? `${prefix}${fmt.format(target * eased)}${suffix}` : value);
         if (p < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);
@@ -61,5 +92,5 @@ export function CountUp({ value, duration = 1100 }: { value: string; duration?: 
     return () => { obs.disconnect(); cancelAnimationFrame(raf); };
   }, [value, duration]);
 
-  return <span ref={ref} data-numeric="true">{display}</span>;
+  return <span ref={ref} data-numeric="true">{value}</span>;
 }

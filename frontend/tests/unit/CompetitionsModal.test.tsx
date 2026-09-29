@@ -110,4 +110,27 @@ describe('CompetitionsIndexPage — migrated create-competition modal', () => {
     expect(screen.queryByRole('dialog', { name: 'تعديلات غير محفوظة' })).toBeNull();
     expect(screen.queryByRole('dialog', { name: 'مسابقة جديدة' })).toBeNull();
   });
+
+  // 5-C4 (A10 P2-3): the fields ride the platform FormField — a
+  // failed submit marks the controls aria-invalid and points
+  // aria-describedby at the rendered alerts (the audit measured
+  // invalid:null + described:null on العنوان/الوصف/الموعد).
+  it('a failed submit wires aria-invalid + aria-describedby on the invalid controls', async () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /مسابقة جديدة/ }));
+    // Empty submit → RHF (async zod resolver) renders the errors.
+    fireEvent.click(screen.getByRole('button', { name: 'إنشاء' }));
+    await screen.findByText('العنوان قصير جدّاً');
+    const title = screen.getByLabelText('العنوان');
+    const description = screen.getByLabelText('الوصف');
+    const deadline = screen.getByLabelText('الموعد النهائي');
+    for (const control of [title, description, deadline]) {
+      expect(control).toHaveAttribute('aria-invalid', 'true');
+      const describedBy = control.getAttribute('aria-describedby');
+      expect(describedBy).toBeTruthy();
+      const alert = document.getElementById(describedBy!.split(' ')[0]!);
+      expect(alert).not.toBeNull();
+      expect(alert).toHaveAttribute('role', 'alert');
+    }
+  });
 });

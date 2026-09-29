@@ -19,8 +19,8 @@
  * Heavy children (GlobalSearch, NotificationDropdown) and the auth
  * data hooks are stubbed so these tests isolate the shell chrome.
  */
-import { describe, expect, it, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('../../src/components/layout/GlobalSearch', () => ({
@@ -168,6 +168,118 @@ describe('Sidebar — Ctrl+B chord guard (15-e P1-4)', () => {
     fireEvent.keyDown(input, { key: 'b', ctrlKey: true });
     expect(useUiStore.getState().sidebarCollapsed).toBe(true);
     input.remove();
+  });
+});
+
+describe('Sidebar — drawer focus containment (5-B5, A4 P2-5)', () => {
+  beforeEach(() => {
+    // The drawer only exists on the ≤920px band; jsdom's default
+    // matchMedia stub answers desktop. Claim the mobile band (same
+    // override shape as the global installDefaults).
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query.includes('920'),
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+    // Expanded rail: the collapse button is the FIRST focusable and
+    // its label («طيّ القائمة») is distinct from the close button.
+    useUiStore.setState({ sidebarOpen: false, sidebarCollapsed: false });
+  });
+
+  it('focus lands on the close button on open and returns to the opener on close', async () => {
+    // A real opener element (the burger lives in Topbar, not rendered
+    // in this suite — and jsdom cannot refocus <body> directly, which
+    // is a jsdom quirk, not the contract: the restore must land focus
+    // back on whatever opened the drawer).
+    const opener = document.createElement('button');
+    opener.textContent = 'الفتّاحة';
+    document.body.appendChild(opener);
+    opener.focus();
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    // Initial focus moved INTO the drawer (the Sheet contract) — A4
+    // measured activeElement stuck on the burger before.
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'إغلاق القائمة' })).toHaveFocus(),
+    );
+    act(() => {
+      useUiStore.getState().closeSidebar();
+    });
+    // Restore-on-close: focus returns to the opener.
+    expect(opener).toHaveFocus();
+    opener.remove();
+  });
+
+  it('Tab from the last focusable wraps to the first — focus never escapes the scrim', async () => {
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'إغلاق القائمة' })).toHaveFocus(),
+    );
+    const logout = screen.getByRole('button', { name: 'تسجيل الخروج' });
+    logout.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+    // Wrapped to the first focusable inside the aside.
+    expect(screen.getByRole('button', { name: 'طيّ القائمة' })).toHaveFocus();
+  });
+
+  it('Shift+Tab from the first focusable wraps to the last', async () => {
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    const collapse = screen.getByRole('button', { name: 'طيّ القائمة' });
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'إغلاق القائمة' })).toHaveFocus(),
+    );
+    collapse.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(screen.getByRole('button', { name: 'تسجيل الخروج' })).toHaveFocus();
+  });
+
+  it('reclaims focus when a click parks it on <body> behind the scrim', async () => {
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'إغلاق القائمة' })).toHaveFocus(),
+    );
+    (document.activeElement as HTMLElement).blur();
+    expect(document.activeElement).toBe(document.body);
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(screen.getByRole('button', { name: 'طيّ القائمة' })).toHaveFocus();
+  });
+
+  it('a layer opened above the drawer owns Tab (topmost-only rule)', async () => {
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'إغلاق القائمة' })).toHaveFocus(),
+    );
+    overlayStack.register('test-layer-above-drawer', 'dropdown');
+    const logout = screen.getByRole('button', { name: 'تسجيل الخروج' });
+    logout.focus();
+    // The anchored layer above owns Tab: the drawer's cycle stays
+    // silent and focus is not yanked (jsdom applies no native move).
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(logout).toHaveFocus();
+    overlayStack.unregister('test-layer-above-drawer');
   });
 });
 
