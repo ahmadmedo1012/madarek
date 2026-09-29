@@ -250,6 +250,12 @@ export function Sidebar() {
                     to={item.to}
                     className={({ isActive }) => `nav-item${isActive ? ' on' : ''}`}
                     onClick={closeSidebar}
+                    /* Collapsed rail a11y (axe link-name, serious): the
+                       visible .nav-label is display:none when collapsed and
+                       the portaled Tooltip only wires aria-describedby —
+                       a description, not an accessible name. aria-label
+                       restores the name exactly when the text is hidden. */
+                    aria-label={sidebarCollapsed ? item.label : undefined}
                   >
                     <span className="nav-icon">
                       <Icon icon={item.icon} size={17} />
