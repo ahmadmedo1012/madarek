@@ -431,10 +431,7 @@ export function AttendancePage() {
               ))}
             </div>
           ) : students.length === 0 ? (
-            <div className="empty-state">
-              <Icon icon={ClipboardCheck} size={24} className="text-subtle" />
-              <p className="text-sm text-muted">لا طلاب في هذا المقرّر بعد — لا إحصائيّات لعرضها.</p>
-            </div>
+            <EmptyState icon={ClipboardCheck} title="لا طلاب في هذا المقرّر بعد" description="لا إحصائيّات لعرضها — سجّل طالبًا أول لعرض حضوره وتأخّره." />
           ) : (
             <div className="flex-col gap-4">
               <div style={{ opacity: counts.p === 0 ? 0.55 : 1, transition: 'opacity var(--t-fast) var(--ease)' }}>
