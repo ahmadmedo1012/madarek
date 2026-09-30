@@ -142,7 +142,8 @@ export default function CampusMapPage() {
         <EmptyState
           icon={Building2}
           title="لا توجد كلّيّات في هذه المدينة"
-          description="جرِّب اختيار مدينة أخرى من انتشار الكليّات بالأعلى."
+          illustration="empty-search"
+          description="جرِّب اختيار مدينة أخرى من انتشار الكليّات الأعلى."
         />
       ) : (
         <Card

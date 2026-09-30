@@ -168,6 +168,7 @@ export default function LecturePlayerPage() {
         <EmptyState
           icon={ListVideo}
           title="لم يتم تحديد محاضرة"
+          illustration="empty-search"
           description="الرابط لا يتضمّن محاضرة — اختر محاضرة من المقرر للمتابعة."
           action={<Link className="btn ghost sm" to="/student/courses">العودة إلى مقرراتي</Link>}
         />
