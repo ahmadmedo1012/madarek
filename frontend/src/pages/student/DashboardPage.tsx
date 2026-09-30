@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, Badge, MetricCard, ProgressBar } from '../../components/primitives';
-import { ErrorState, KpiSkeleton, CardSkeleton, Skeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, CardSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
@@ -453,9 +453,11 @@ export default function StudentDashboardPage() {
         </header>
         {agenda.length === 0 ? (
           <Card>
-            <p className="text-muted text-sm" style={{ padding: 'var(--sp-3) 0' }}>
-              لا حصص أو مهام قادمة في أجندتك حالياً.
-            </p>
+            <EmptyState
+              illustration="empty-constellation"
+              title="أجندتك فارغة"
+              description="لا حصص أو مهام قادمة في أجندك بعد — سجّل في مقرّر أو طَلِب مهمة لظهورها هنا."
+            />
           </Card>
         ) : (
           <div className="dash-agenda-list">
