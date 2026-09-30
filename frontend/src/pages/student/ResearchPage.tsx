@@ -144,6 +144,7 @@ export default function StudentResearchPage() {
             icon={BookMarked}
             title="لم ترفع أي بحث بعد"
             description="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
+            illustration="empty-search"
             action={
               <button type="button" className="btn primary" onClick={() => setUploadOpen(true)}>
                 <Icon icon={Upload} size={14} />
