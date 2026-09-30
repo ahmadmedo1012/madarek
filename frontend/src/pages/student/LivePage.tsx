@@ -141,6 +141,7 @@ export default function LivePage() {
               <Card title="جلسات قادمة" icon={Calendar}>
                 {upcoming.length === 0 ? (
                   <EmptyState
+                    illustration="empty-constellation"
                     icon={Calendar}
                     title="لا توجد جلسات مجدولة"
                     description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
