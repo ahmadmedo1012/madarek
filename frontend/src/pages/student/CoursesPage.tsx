@@ -199,7 +199,7 @@ export default function StudentCoursesPage() {
       ) : isError ? (
         <Card><ErrorState error={error} onRetry={() => refetch()} /></Card>
       ) : !data?.length ? (
-        <Card><EmptyState icon={BookOpen} title="لم تُسجَّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." /></Card>
+        <Card><EmptyState illustration="empty-search" icon={BookOpen} title="لم تسجّل في أي مقرّر بعد" description="تواصل مع إدارة الكلّيّة لإكمال تسجيل مقرّرات الفصل — ستظهر هنا فور اعتمادها." /></Card>
       ) : (
         <>
           <div className="grid-4">
