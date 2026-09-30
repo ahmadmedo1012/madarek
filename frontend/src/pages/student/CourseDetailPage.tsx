@@ -199,6 +199,7 @@ export default function CourseDetailPage() {
           <EmptyState
             icon={Play}
             title="لم تُرفع محاضرات بعد"
+            illustration="empty-search"
             description="سيقوم الأستاذ بإضافة المحاضرات تباعاً مع تقدّم الفصل."
           />
         ) : (
@@ -262,6 +263,7 @@ export default function CourseDetailPage() {
             <EmptyState
               icon={FileText}
               title="الأستاذ لم يرفع مواد بعد"
+              illustration="empty-search"
               description="ستظهر هنا الملفات والمراجع فور رفعها — العروض التقديمية، أوراق العمل، والقراءات."
             />
           ) : (
