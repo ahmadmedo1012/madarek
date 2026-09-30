@@ -112,6 +112,7 @@ export default function LivePage() {
           {list.length === 0 ? (
             <Card>
               <EmptyState
+                illustration="empty-search"
                 icon={Video}
                 title="لا توجد بثوث بعد"
                 description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
@@ -126,9 +127,10 @@ export default function LivePage() {
               >
                 {live.length === 0 ? (
                   <EmptyState
+                    illustration="empty-search"
                     icon={Radio}
-                    title="لا بثّ مباشر الآن"
-                    description="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
+                    title="لا بثّ مباشرة الآن"
+                    description="لا توجد جلسات نشطة مقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
                   />
                 ) : (
                   <div className="flex-col gap-2">

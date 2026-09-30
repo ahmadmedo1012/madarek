@@ -195,7 +195,7 @@ export default function LabsPage() {
             </div>
           ) :
            labs.isError ? <Card><ErrorState error={labs.error} onRetry={() => labs.refetch()} /></Card> :
-           !labs.data?.length ? <Card><EmptyState icon={FlaskConical} title="لا معامل متاحة" /></Card> : (
+           !labs.data?.length ? <Card><EmptyState icon={FlaskConical} illustration="empty-search" title="لا معامل متاحة" /></Card> : (
             <div className="grid-3">
               {labs.data.map((l) => {
                 const cat = inferCategory(l);

@@ -393,7 +393,7 @@ export function AlertsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : items.length === 0 ? (
-          <EmptyState title="لا توجد إشعارات بعد" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
+          <EmptyState title="لا توجد إشعارات بعد" illustration="empty-search" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
           <div className="flex-col gap-2">
             {items.slice(0, 30).map((n) => (
@@ -494,8 +494,9 @@ export function SchedulePage() {
 
       {daysWithItems.length === 0 ? (
         <EmptyState
-          title="لا يوجد جدول مسجَّل"
-          description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول لمقرّراتك."
+          illustration="empty-search"
+          title="لا يوجد جدول مسجّل"
+          description="ستظهر محاضراتك هنا فور أن يُسجَّد الجدول مقرّراتك."
         />
       ) : (
         <div className="flex-col gap-5">
@@ -1033,6 +1034,7 @@ export function SocialPage() {
           ) : !posts.data?.length ? (
             <Card>
               <EmptyState
+                illustration="empty-search"
                 icon={MessageCircle}
                 title="لا منشورات بعد"
                 description="كن أول من يشارك تجربته أو سؤاله."
@@ -1178,6 +1180,7 @@ export function DownloadsPage() {
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
           <EmptyState
+          illustration="empty-search"
             title="لا توجد ملفّات بعد"
             description="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
           />
