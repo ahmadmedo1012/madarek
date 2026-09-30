@@ -163,7 +163,7 @@ export function AdminSyncPage() {
           </div>
         </header>
         <Card>
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={Database}
             title="لم تُنفَّذ أي مزامنة بعد"
             description="شغّل المزامنة الأولى لاستيراد بيانات الجامعة العامة من موقعها الرسمي."
@@ -280,7 +280,7 @@ export function AdminSyncPage() {
       {/* Run history — .table system, stacks to cards on phones (tbl-stack) */}
       <Card title="سجلّ المزامنات" icon={Clock} subtitle="آخر 10 عمليات">
         {data.runHistory.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={Clock}
             title="لا يوجد سجلّ مزامنات بعد"
             description="ستظهر العمليات هنا فور تشغيل المزامنة الأولى."
@@ -333,7 +333,7 @@ export function AdminSyncPage() {
       <div ref={categoriesRef} style={{ scrollMarginBlockStart: 'var(--sp-4)' }}>
       <Card title="البيانات المُزامنة" icon={Database} subtitle="مجمّعة حسب الفئة — انقر للتوسيع">
         {data.categories.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={Database}
             title="لا توجد بيانات مُزامنة بعد"
             description="شغّل المزامنة لاستيراد حقول الجامعة وتصنيفها هنا."

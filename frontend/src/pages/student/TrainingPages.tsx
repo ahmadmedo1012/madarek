@@ -804,7 +804,7 @@ export function AchievementsPage() {
             </Card>
           ) : !badgesQ.data?.length ? (
             <Card>
-              <EmptyState
+              <EmptyState illustration="empty-search"
                 icon={Award}
                 title="لا توجد أوسمة بعد"
                 description="ابدأ بدروس التطوير الذاتي لتحصد أول وسام."
@@ -847,7 +847,7 @@ export function AchievementsPage() {
             </Card>
           ) : !certsQ.data?.length ? (
             <Card>
-              <EmptyState
+              <EmptyState illustration="empty-search"
                 icon={Medal}
                 title="لم تحصل على شهادات بعد"
                 description="أكمل أول مسار تدريبي للحصول على شهادتك الأولى."
@@ -898,7 +898,7 @@ export function AchievementsPage() {
             ) : lbQ.isError ? (
               <ErrorState message="تعذَّر تحميل الترتيب" error={lbQ.error} onRetry={() => lbQ.refetch()} />
             ) : !lbQ.data?.length ? (
-              <EmptyState
+              <EmptyState illustration="empty-search"
                 icon={Crown}
                 title="لا يوجد ترتيب بعد"
                 description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."

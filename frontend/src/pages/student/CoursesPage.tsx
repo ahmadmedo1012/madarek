@@ -255,7 +255,7 @@ export default function StudentCoursesPage() {
               <CourseCard key={e.id} e={e} i={i} />
             )) : (
               <div className="courses-grid-empty">
-                <EmptyState
+                <EmptyState illustration="empty-search"
                   icon={BookOpen}
                   title="لا توجد مقرّرات في هذا التصنيف"
                   description="جرّب تصنيفاً آخر من الأزرار أعلاه لعرض مقرّراتك."
@@ -272,7 +272,7 @@ export default function StudentCoursesPage() {
         ) : dashboard.isError ? (
           <ErrorState error={dashboard.error} onRetry={() => dashboard.refetch()} />
         ) : !upcoming.length ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={ClipboardList}
             title="لا توجد واجبات قادمة"
             description="ستظهر هنا الواجبات المستحقة فور إضافتها من أساتذة مقرّراتك."

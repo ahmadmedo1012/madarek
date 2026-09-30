@@ -185,7 +185,7 @@ export default function CommunityPage() {
           </> :
            comps.isError ? <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} /> :
            (comps.data?.length ?? 0) === 0 ? (
-            <EmptyState title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />
+            <EmptyState illustration="empty-search" title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />
           ) : comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
         </div>
       )}
@@ -197,7 +197,7 @@ export default function CommunityPage() {
           </> :
            events.isError ? <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} /> :
            (events.data?.length ?? 0) === 0 ? (
-            <EmptyState title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />
+            <EmptyState illustration="empty-search" title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />
           ) : events.data?.map((e) => <EventCard key={e.id} event={e} />)}
         </div>
       )}

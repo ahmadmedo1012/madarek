@@ -461,7 +461,7 @@ export function QualityDashboardPage() {
               }
             />
           ) : !al.data || al.data.alerts.length === 0 ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               icon={CheckCircle2}
               title="لا توجد تنبيهات"
               description="كل المؤشرات ضمن النطاق الطبيعي حالياً."
@@ -523,7 +523,7 @@ export function QualityCoursesPage() {
         <Card title="المقرّرات النشطة" icon={BookOpen}><TableSkeleton rows={4} cols={8} /></Card>
       ) :
        c.isError ? <ErrorState error={c.error} onRetry={() => c.refetch()} /> :
-       !c.data?.length ? <Card><EmptyState icon={BookOpen} title="لا توجد مقرّرات نشطة بعد" description="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ." /></Card> : (
+       !c.data?.length ? <Card><EmptyState illustration="empty-search" icon={BookOpen} title="لا توجد مقرّرات نشطة بعد" description="ستظهر المقرّرات وعروضها الدراسية هنا فور اعتمادها وربطها بالفصل الحاليّ." /></Card> : (
         <Card
           title="المقرّرات النشطة"
           icon={BookOpen}

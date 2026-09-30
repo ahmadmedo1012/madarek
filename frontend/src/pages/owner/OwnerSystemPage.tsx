@@ -168,7 +168,7 @@ export function OwnerSystemPage() {
             onRetry={() => sys.refetch()}
           />
         ) : !sysData || sysData.sync.recent.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             title="لا توجد عمليّات مزامنة بعد"
             description="ستظهر آخر عمليّات المزامنة هنا فور تشغيلها."
           />
@@ -218,7 +218,7 @@ export function OwnerSystemPage() {
         <div className="owner-list-pad">
           {flagsQuery.isPending && <ListSkeleton rows={3} />}
           {!flagsQuery.isPending && featureFlags.length === 0 && (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               title="لا توجد أعلام مُعرَّفة"
               /* 22-b (4-A7 P2-9): the old copy pointed at "إعدادات النظام"
                * as the creation path — no such affordance exists on this
@@ -255,7 +255,7 @@ export function OwnerSystemPage() {
               onRetry={() => sys.refetch()}
             />
           ) : !sysData || sysData.alerts.open.length === 0 ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               icon={CheckCircle2}
               title="لا توجد تنبيهات مفتوحة"
               description="كل أنظمة المنصّة في حالة طبيعيّة الآن."
@@ -308,7 +308,7 @@ export function OwnerSystemPage() {
           {settingsQuery.isPending ? (
             <ListSkeleton rows={3} />
           ) : settings.length === 0 ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               title="لا توجد إعدادات مُعرَّفة"
               description="لا توجد إعدادات مخصّصة بعد؛ القيم الافتراضية تعمل."
             />

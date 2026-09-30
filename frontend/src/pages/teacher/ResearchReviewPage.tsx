@@ -117,7 +117,7 @@ export default function ResearchReviewPage() {
                 onRetry={() => queue.refetch()}
               />
             ) : !passed.length ? (
-              <EmptyState
+              <EmptyState illustration="empty-search"
                 icon={CheckCircle2}
                 title="لا بحوث في الانتظار"
                 description="ستظهر هنا بحوث الطلاب فور اجتيازها فحص الانتحال والذكاء الاصطناعي."
@@ -487,7 +487,7 @@ function MyPublications() {
       </div>
       <Card title="منشوراتي" icon={Microscope}>
         {publications.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={Microscope}
             title="لم تُسجَّل منشورات بعد"
             description="حدِّث ملفك الأكاديميّ لإضافة بحوثك المنشورة."

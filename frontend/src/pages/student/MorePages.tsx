@@ -203,7 +203,7 @@ export function GamificationPage() {
             </div>
           ) : lb.isError ? <ErrorState error={lb.error} onRetry={() => lb.refetch()} /> :
            !lb.data?.length ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               icon={Crown}
               title="لا يوجد ترتيب بعد"
               description="اكسب النقاط بإكمال الدروس والمسارات — يظهر ترتيبك فور تسجيل أول نقطة."
@@ -279,7 +279,7 @@ export function SkillsPage() {
           </div>
         ) : skills.isError ? <ErrorState error={skills.error} onRetry={() => skills.refetch()} /> :
          !skills.data?.length ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={Target}
             title="لم تُسجَّل أي مهارة بعد"
             description="تُحتسب المهارات تلقائياً من إنجازاتك الأكاديمية ومسارات التطوير."
@@ -622,7 +622,7 @@ export function ResultsPage() {
           so the page's one data visualization starts at the fold. */}
       <Card title="درجاتك حسب المقرّر" icon={Activity} subtitle={hasGrades ? 'النسبة المرجَّحة لكل مقرّر' : 'ستظهر درجاتك هنا فور تسجيلها'} className="results-chart-card">
         {!hasGrades ? (
-          <EmptyState title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
+          <EmptyState illustration="empty-search" title="لم تُسجَّل أي درجات بعد" description="يبدأ الحساب فور رصد أوّل تقييم في أي مقرّر." />
         ) : (
           // 5-A6 P1-2 — ChartFrame: the canvas gains role=img + an
           // accessible name, a prose summary and a visually-hidden data
@@ -745,7 +745,7 @@ export function ArVrPage() {
       ) : q.isError ? (
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
-        <EmptyState
+        <EmptyState illustration="empty-search"
           title="لا توجد تجارب AR/VR بعد"
           description="ستظهر هنا حين يقوم الإداريّون بإضافتها."
         />
@@ -1333,7 +1333,7 @@ export function UniversityInfoPage() {
                 ))}
               </div>
             ) : insideCampus.length === 0 ? (
-              <EmptyState title="لا توجد بيانات" description="لم تُسجَّل كلّيّات داخل الحرم بعد." />
+              <EmptyState illustration="empty-search" title="لا توجد بيانات" description="لم تُسجَّل كلّيّات داخل الحرم بعد." />
             ) : (
               <div className="grid-auto-200" style={{ gap: 'var(--sp-2)' }}>
                 {insideCampus.map((f) => (
@@ -1368,7 +1368,7 @@ export function UniversityInfoPage() {
                 ))}
               </div>
             ) : outsideCampus.length === 0 ? (
-              <EmptyState title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل مدينة الزاوية." />
+              <EmptyState illustration="empty-search" title="لا توجد فروع خارج الحرم" description="كل الكليّات المسجَّلة داخل مدينة الزاوية." />
             ) : (
               <div className="grid-auto-260" style={{ gap: 'var(--sp-2)' }}>
                 {outsideCampus.map((f) => (

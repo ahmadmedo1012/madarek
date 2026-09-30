@@ -105,7 +105,7 @@ export function OwnerAlertsPage() {
         ) : alertsQuery.isError ? (
           <ErrorState error={alertsQuery.error} onRetry={() => alertsQuery.refetch()} />
         ) : alerts.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={CheckCircle2}
             title="لا توجد تنبيهات مفتوحة"
             description="كل أنظمة المنصّة تعمل بشكل طبيعيّ — تابع آخر العمليّات من سجلّ النشاط."

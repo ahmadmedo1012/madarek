@@ -87,7 +87,7 @@ export default function TeacherProfilePage() {
           </div>
         </header>
         <Card>
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={AlertCircle}
             title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"
             description="تواصل مع إدارة شؤون أعضاء هيئة التدريس لربط ملفك الأكاديمي بهذا الحساب."
@@ -345,7 +345,7 @@ export default function TeacherProfilePage() {
       {/* Publications & awards */}
       <Card title="المنشورات العلمية" icon={FileText} subtitle={`${profile.publications.length} منشور`}>
         {profile.publications.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={FileText}
             title="لم تُضف منشورات بعد"
             description="تُدار منشوراتك من ملفك الأكاديمي لدى إدارة الجامعة."
@@ -372,7 +372,7 @@ export default function TeacherProfilePage() {
 
       <Card title="التكريمات والجوائز" icon={Award} subtitle={`${profile.awards.length} جائزة`}>
         {profile.awards.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={Award}
             title="لم تُضف جوائز بعد"
             description="تُدار تكريماتك وجوائزك من ملفك الأكاديمي لدى إدارة الجامعة."
@@ -397,7 +397,7 @@ export default function TeacherProfilePage() {
       {/* Courses currently teaching */}
       <Card title="المقرّرات الحالية" icon={BookOpen} subtitle={countAr(profile.courses.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])}>
         {profile.courses.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={BookOpen}
             title="لم يُسند إليك أي مقرّر بعد"
             description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."

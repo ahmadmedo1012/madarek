@@ -146,7 +146,7 @@ export default function TeacherIntelligencePage() {
             onRetry={() => offerings.refetch()}
           />
         ) : offerings.data.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={BookOpen}
             title="لم تُسند إليك مقرّرات بعد"
             description="ستظهر مقرّراتك هنا فور إسنادها من قِبَل إدارة الشؤون الأكاديمية."
@@ -366,7 +366,7 @@ export function TeacherOfferingDetailPage() {
               onRetry={() => students.refetch()}
             />
           ) : students.data.length === 0 ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               icon={Users}
               title="لا يوجد طلاب مسجَّلون"
               description="ستظهر قائمة الطلاب هنا فور تسجيلهم في المقرّر."

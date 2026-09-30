@@ -423,7 +423,7 @@ export function OwnerDashboardPage() {
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : events.length === 0 ? (
-          <EmptyState title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
+          <EmptyState illustration="empty-search" title="لا توجد أحداث بعد" description="ستظهر أحدث العمليّات هنا فور حدوثها." icon={FileWarning} />
         ) : (
           /* 22-b (4-A7 P1-5): the shared .table.tbl-stack migration (the
            * users page's pattern) — the bare .owner-table overflowed its

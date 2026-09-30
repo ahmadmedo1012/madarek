@@ -181,7 +181,7 @@ export function OwnerGovernancePage() {
               onRetry={() => governance.refetch()}
             />
           ) : govData.weeklyGrowth.length === 0 ? (
-            <EmptyState title="لا توجد بيانات نموّ بعد" description="سيُرسم المنحنى فور تسجيل أوّل مستخدم." />
+            <EmptyState illustration="empty-search" title="لا توجد بيانات نموّ بعد" description="سيُرسم المنحنى فور تسجيل أوّل مستخدم." />
           ) : (
             <ChartFrame
               className="owner-chart-container"
@@ -210,7 +210,7 @@ export function OwnerGovernancePage() {
               onRetry={() => loginAnalytics.refetch()}
             />
           ) : loginData.total === 0 ? (
-            <EmptyState title="لا توجد محاولات دخول بعد" description="سيظهر التوزيع فور أوّل محاولة تسجيل دخول." />
+            <EmptyState illustration="empty-search" title="لا توجد محاولات دخول بعد" description="سيظهر التوزيع فور أوّل محاولة تسجيل دخول." />
           ) : (
             <ChartFrame
               className="owner-chart-container"
@@ -242,7 +242,7 @@ export function OwnerGovernancePage() {
               onRetry={() => loginAnalytics.refetch()}
             />
           ) : loginData.daily.length === 0 ? (
-            <EmptyState title="لا توجد بيانات يوميّة" description="تُسجَّل المحاولات يوماً بيوم فور حدوثها." />
+            <EmptyState illustration="empty-search" title="لا توجد بيانات يوميّة" description="تُسجَّل المحاولات يوماً بيوم فور حدوثها." />
           ) : (
             <div className="table-wrap">
               <table className="table tbl-stack">

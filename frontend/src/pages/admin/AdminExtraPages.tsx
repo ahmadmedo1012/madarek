@@ -162,7 +162,7 @@ export function AdminStudentsPage() {
                 </thead>
                 <tbody>
                   {studentsQ.data.data.length === 0 && (
-                    <tr><td colSpan={7}><EmptyState title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
+                    <tr><td colSpan={7}><EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
                       <button type="button" className="btn ghost sm" onClick={clearSearch}>
                         <Icon icon={X} size={13} />
                         مسح البحث

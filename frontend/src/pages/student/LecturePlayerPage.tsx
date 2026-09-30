@@ -436,7 +436,7 @@ export default function LecturePlayerPage() {
         {/* Sidebar: Chapters */}
         <Card title="فصول المحاضرة" icon={ListOrdered}>
           {!data.chapters.length ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               icon={ListVideo}
               title="لم تُقسَّم هذه المحاضرة بعد"
               description="لم يُضف المدرّس فصولاً لهذه المحاضرة — شاهدها كاملة دون تنقّل."

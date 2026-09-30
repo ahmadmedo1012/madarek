@@ -441,7 +441,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
       ) : q.isError ? (
         <ErrorState message="تعذَّر تحميل قوالبك" error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
-        <EmptyState
+        <EmptyState illustration="empty-search"
           icon={FileQuestion}
           title="لم تُنشئ قوالب اختبارات بعد"
           description="ابدأ ببناء قالب من أسئلة البنك المعتمدة، ثم أرسله لمراجعة الجودة ونشره لطلابك."
@@ -1639,7 +1639,7 @@ function ModerationQueueSection() {
       ) : q.isError ? (
         <ErrorState message="تعذَّر تحميل قائمة المراجعة" error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (
-        <EmptyState
+        <EmptyState illustration="empty-search"
           icon={CheckCircle2}
           title="لا شيء بانتظار المراجعة"
           description="كل قوالب الاختبارات المرسلة اجتازت المراجعة — ستظهر القوالب الجديدة هنا فور إرسالها."
@@ -1824,7 +1824,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
         subtitle={countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
       >
         {template.questions.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={FileQuestion}
             title="لا أسئلة في هذا القالب"
             description="ربما أُوقفت أسئلته من البنك بعد بنائه."
@@ -1912,7 +1912,7 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
       ) : q.isError ? (
         <ErrorState message="تعذَّر تحميل المحاولات" error={q.error} onRetry={() => q.refetch()} />
       ) : visible.length === 0 ? (
-        <EmptyState
+        <EmptyState illustration="empty-search"
           icon={onlyPending ? ClipboardCheck : FileQuestion}
           title={onlyPending ? 'لا محاولات بانتظار التصحيح' : 'لا محاولات بعد'}
           description={

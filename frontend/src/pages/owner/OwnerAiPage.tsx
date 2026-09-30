@@ -128,7 +128,7 @@ export function OwnerAiPage() {
           <div className="owner-ai-chart-grid">
             <Card title="الطلبات حسب الميزة">
               {data.byFeature.length === 0 ? (
-                <EmptyState
+                <EmptyState illustration="empty-search"
                   icon={Bot}
                   title="لا توجد طلبات لعرضها"
                   description="تُفعَّل خدمات الذكاء الاصطناعيّ عبر أعلام الميزات وإعدادات المنصّة، وتظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب."
@@ -157,7 +157,7 @@ export function OwnerAiPage() {
 
             <Card title="اتّجاه الاستخدام (7 أيّام)">
               {data.trend.length === 0 ? (
-                <EmptyState title="لا توجد بيانات بعد" description="يُرسم الاتّجاه فور تسجيل أوّل طلب." />
+                <EmptyState illustration="empty-search" title="لا توجد بيانات بعد" description="يُرسم الاتّجاه فور تسجيل أوّل طلب." />
               ) : (
                 <ChartFrame
                   ariaLabel="مخطط خطّي لاتّجاه الاستخدام — الطلبات اليوميّة على مدى 7 أيّام"

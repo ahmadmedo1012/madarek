@@ -287,7 +287,7 @@ export default function CourseDetailPage() {
 
         <Card heading="h2" title="الجدول الأسبوعي" icon={Calendar}>
           {!data.schedule.length ? (
-            <EmptyState
+            <EmptyState illustration="empty-search"
               icon={Calendar}
               title="لم يُنشَر جدول هذا المقرّر بعد"
               description="سيظهر هنا فور تثبيت مواعيد المحاضرات الأسبوعيّة."
@@ -310,7 +310,7 @@ export default function CourseDetailPage() {
 
       <Card heading="h2" title="الواجبات" icon={ClipboardList}>
         {!data.assignments.length ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             icon={ClipboardList}
             title="لا توجد واجبات نشطة"
             description="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."

@@ -177,7 +177,7 @@ export function OwnerEducationPage() {
 
       <Card title="المقرّرات حسب الكلّيّة" subtitle="عدد المقرّرات المُدرَّجة في كل كلّيّة">
         {byFaculty.length === 0 ? (
-          <EmptyState title="لا مقرّرات بعد" description="ستظهر هنا حين تُسجَّل مقرّرات على نظام الكلّيّات." />
+          <EmptyState illustration="empty-search" title="لا مقرّرات بعد" description="ستظهر هنا حين تُسجَّل مقرّرات على نظام الكلّيّات." />
         ) : (
           <ChartFrame
             ariaLabel="مخطط أعمدة أفقي — عدد المقرّرات في كل كلّيّة"
@@ -196,7 +196,7 @@ export function OwnerEducationPage() {
 
       <Card title="أكثر المقرّرات تسجيلاً">
         {topCourses.length === 0 ? (
-          <EmptyState title="لا تسجيلات بعد" description="ستظهر المقرّرات الأكثر تسجيلاً فور تسجيل الطلاب في العروض." />
+          <EmptyState illustration="empty-search" title="لا تسجيلات بعد" description="ستظهر المقرّرات الأكثر تسجيلاً فور تسجيل الطلاب في العروض." />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -228,7 +228,7 @@ export function OwnerEducationPage() {
         subtitle="نسبة الأساتذة حسب عدد العروض التي يُدرِّسونها هذا الفصل"
       >
         {totalTeachers === 0 ? (
-          <EmptyState title="لا يوجد أساتذة بعد" description="يُحسب التوزيع فور إسناد أوّل عرض لمقرّر." />
+          <EmptyState illustration="empty-search" title="لا يوجد أساتذة بعد" description="يُحسب التوزيع فور إسناد أوّل عرض لمقرّر." />
         ) : (
           <div className="owner-workload">
             {buckets.map((b, i) => (
@@ -247,7 +247,7 @@ export function OwnerEducationPage() {
 
       <Card title="اتّجاه الحضور" subtitle="آخر 6 أشهر — يُحسب من سجلات الحضور الفعليّة">
         {!trendHasData ? (
-          <EmptyState title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور تسجيل أوّل جلسة حضور على المنصّة." />
+          <EmptyState illustration="empty-search" title="لا توجد سجلّات حضور بعد" description="يبدأ الحساب فور تسجيل أوّل جلسة حضور على المنصّة." />
         ) : (
           <ChartFrame
             ariaLabel="مخطط خطّي لاتّجاه نسبة الحضور الشهريّة على مدى آخر ستة أشهر"

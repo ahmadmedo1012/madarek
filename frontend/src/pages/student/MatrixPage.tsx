@@ -193,7 +193,7 @@ export default function MatrixPage() {
           />
         </Card>
       ) : !matrix.data?.length ? (
-        <Card><EmptyState
+        <Card><EmptyState illustration="empty-search"
           icon={Compass}
           title="لم تتشكّل مصفوفتك بعد"
           description="شاهد أول محاضرة وأجب عن نقاط التفاعل فيها، وستبدأ المصفوفة برسم خريطة معرفتك تلقائياً."

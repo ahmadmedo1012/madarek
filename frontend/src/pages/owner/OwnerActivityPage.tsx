@@ -234,7 +234,7 @@ export function OwnerActivityPage() {
         ) : activity.isError ? (
           <ErrorState error={activity.error} onRetry={() => activity.refetch()} />
         ) : filtered.length === 0 ? (
-          <EmptyState
+          <EmptyState illustration="empty-search"
             title={filter === 'all' ? 'لا توجد أحداث مسجَّلة بعد' : 'لا أحداث في هذا التبويب'}
             description={filter === 'all'
               ? 'تُسجَّل الأحداث تلقائياً فور أول عمليّة على المنصّة.'
