@@ -172,7 +172,7 @@ export default function CommunityPage() {
           {ann.isPending ? <ListSkeleton rows={4} /> :
            ann.isError ? <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} /> :
            (ann.data?.length ?? 0) === 0 ? (
-            <EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." />
+            <EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." illustration="empty-notifs" />
           ) : ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
         </div>
       )}
