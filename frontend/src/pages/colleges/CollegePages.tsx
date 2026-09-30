@@ -743,7 +743,10 @@ export function CollegeDetailPage() {
         {showTopStudents && (
         <Card title="الطلّاب المتميّزون" subtitle="حسب نقاط الخبرة" icon={Trophy} style={soloPair2 ? soloSpan : undefined}>
           {c.topStudents.length === 0 ? (
-            <p className="text-muted text-sm">لا توجد بيانات طلّاب بعد.</p>
+            <EmptyState
+              illustration="empty-constellation"
+              title="لا توجد بيانات طلّاب بعد."
+            />
           ) : (
             <ol className="student-rank-list">
               {c.topStudents.map((s, i) => (
@@ -773,7 +776,10 @@ export function CollegeDetailPage() {
         {showAnnouncements && (
         <Card title="الإعلانات" subtitle="آخر التحديثات" icon={Megaphone} style={soloPair2 ? soloSpan : undefined}>
           {c.announcements.length === 0 ? (
-            <p className="text-muted text-sm">لا توجد إعلانات حاليّاً.</p>
+            <EmptyState
+              illustration="empty-notifs"
+              title="لا توجد إعلانات حاليّاً."
+            />
           ) : (
             <ul className="announce-list">
               {c.announcements.slice(0, 5).map((a) => (
@@ -803,7 +809,10 @@ export function CollegeDetailPage() {
         {showEvents && (
         <Card title="فعاليّات قادمة" icon={Calendar} style={soloPair3 ? soloSpan : undefined}>
           {c.upcomingEvents.length === 0 ? (
-            <p className="text-muted text-sm">لا توجد فعاليّات قادمة.</p>
+            <EmptyState
+              illustration="empty-constellation"
+              title="لا توجد فعاليّات قادمة."
+            />
           ) : (
             <ul className="event-list">
               {c.upcomingEvents.map((e) => (
