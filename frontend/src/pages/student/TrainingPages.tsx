@@ -228,6 +228,7 @@ export default function TrainingCatalogPage() {
           <EmptyState
             icon={BookOpen}
             title={filter === 'all' ? 'لا توجد مسارات منشورة بعد' : 'لا توجد مسارات في هذه الفئة بعد'}
+            illustration="empty-search"
             description="ستظهر المسارات الجديدة هنا فور نشرها من فريق الجامعة."
           />
         </Card>
