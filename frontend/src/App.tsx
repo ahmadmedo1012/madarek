@@ -282,195 +282,192 @@ function CollegesLayout() {
   );
 }
 
+export function AppRoutes() {
+  return (
+    <RouteErrorBoundary>
+      <Suspense fallback={<PageSkeleton />}>
+        <Routes>
+    <Route path="/auth" element={<AuthPage />} />
+    {/* /auth is the canonical login route; /login is a legacy alias. */}
+    <Route path="/login" element={<Navigate to="/auth" replace />} />
+    <Route path="/auth/register" element={<RegisterPage />} />
+    <Route path="/" element={<HomeRedirect />} />
+
+    {/* Labs preview — role-permissive mount (A6 P1, wave 22-a).
+        /student/labs used to sit inside the STUDENT-only block,
+        which made «معاينة كطالب» — the ONLY per-card CTA on
+        /teacher/labs — silently bounce every teacher back to
+        their dashboard. The page is the same labs explorer for
+        both roles: the catalog endpoint is unscoped and the
+        /me/lab-sessions KPI endpoint is auth-only with a
+        graceful empty shape for users without a student
+        profile (student-dashboard.routes.ts), so a teacher
+        gets an honest preview (0 recorded sessions) and can
+        run the client-side experiments. Documented deviation:
+        this is the single intentional widening of a
+        /student/* path; the shell/nav stay role-based. */}
+    <Route element={<ProtectedRoute allow={['STUDENT', 'TEACHER']} />}>
+      <Route element={<AppShell />}>
+        <Route path="/student/labs" element={<LabsPage />} />
+      </Route>
+    </Route>
+
+    {/* Student */}
+    <Route element={<ProtectedRoute allow={['STUDENT']} />}>
+      <Route element={<AppShell />}>
+        <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+        <Route path="/student/courses" element={<StudentCoursesPage />} />
+        <Route path="/student/schedule" element={<SchedulePage />} />
+        <Route path="/student/results" element={<ResultsPage />} />
+        <Route path="/student/library" element={<LibraryPage />} />
+        <Route path="/student/mooc" element={<MoocPage />} />
+        <Route path="/student/jobs" element={<JobsPage />} />
+        <Route path="/student/ai" element={<AiAssistantPage />} />
+        <Route path="/student/gamification" element={<GamificationPage />} />
+        <Route path="/student/skills" element={<SkillsPage />} />
+        <Route path="/student/alerts" element={<AlertsPage />} />
+        <Route path="/student/ar" element={<ArVrPage />} />
+        <Route path="/student/social" element={<SocialPage />} />
+        <Route path="/student/downloads" element={<DownloadsPage />} />
+        <Route path="/student/university" element={<UniversityInfoPage />} />
+        <Route path="/student/live" element={<LivePage />} />
+        <Route path="/student/payment" element={<PaymentPage />} />
+        <Route path="/student/map" element={<CampusMapPage />} />
+        <Route path="/student/courses/:offeringId" element={<CourseDetailPage />} />
+        <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />
+        <Route path="/student/matrix" element={<MatrixPage />} />
+        <Route path="/student/research" element={<StudentResearchPage />} />
+        <Route path="/student/profile" element={<ProfilePage />} />
+        <Route path="/student/webinars" element={<WebinarsPage />} />
+        {/* PP-X2 (audit P3-25): the /student/exams hub was 4
+            cards — 3 repeating sidebar destinations + 1 «قيد
+            الإعداد». The hub page is deleted; old bookmarks land
+            on the real exams list. */}
+        <Route path="/student/exams" element={<Navigate to="/student/online-exams" replace />} />
+        <Route path="/training" element={<TrainingCatalogPage />} />
+        <Route path="/training/:slug" element={<TrainingTrackPage />} />
+        <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />
+        <Route path="/achievements" element={<AchievementsPage />} />
+        <Route path="/student/online-exams" element={<OnlineExamsPage />} />
+        <Route path="/student/online-exams/:id" element={<ExamTakerPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+      </Route>
+    </Route>
+
+    {/* Teacher */}
+    <Route element={<ProtectedRoute allow={['TEACHER']} />}>
+      <Route element={<AppShell />}>
+        <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
+        <Route path="/teacher/schedule" element={<TeacherSchedulePage />} />
+        <Route path="/teacher/attendance" element={<AttendancePage />} />
+        <Route path="/teacher/grades" element={<GradesPage />} />
+        <Route path="/teacher/materials" element={<MaterialsPage />} />
+        <Route path="/teacher/research" element={<ResearchPage />} />
+        <Route path="/teacher/students" element={<StudentsListPage />} />
+        <Route path="/teacher/performance" element={<PerformancePage />} />
+        <Route path="/teacher/assignments" element={<AssignmentsPage />} />
+        <Route path="/teacher/exams" element={<ExamAuthoringPage />} />
+        <Route path="/teacher/exams/:templateId" element={<ExamTemplateDetailPage />} />
+        <Route path="/teacher/messages" element={<MessagesPage />} />
+        <Route path="/teacher/ai" element={<AiAssistantPage />} />
+        <Route path="/teacher/library" element={<LibraryPage />} />
+        <Route path="/teacher/alerts" element={<AlertsPage />} />
+        <Route path="/teacher/intelligence" element={<TeacherIntelligencePage />} />
+        <Route path="/teacher/intelligence/:offeringId" element={<TeacherOfferingDetailPage />} />
+        <Route path="/teacher/profile" element={<TeacherProfilePage />} />
+        <Route path="/teacher/live" element={<TeacherLivePage />} />
+        <Route path="/teacher/labs" element={<TeacherLabsPage />} />
+        <Route path="/teacher/community" element={<CommunityPage />} />
+      </Route>
+    </Route>
+
+    {/* Admin */}
+    <Route element={<ProtectedRoute allow={['ADMIN']} />}>
+      <Route element={<AppShell />}>
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin/students" element={<AdminStudentsPage />} />
+        <Route path="/admin/teachers" element={<AdminTeachersPage />} />
+        <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
+        <Route path="/admin/sync" element={<AdminSyncPage />} />
+        <Route path="/admin/community" element={<CommunityPage />} />
+        <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
+        <Route path="/admin/courses" element={<AdminCoursesPage />} />
+        <Route path="/admin/analysis" element={<AdminAnalysisPage />} />
+        <Route path="/admin/digital" element={<AdminDigitalPage />} />
+        <Route path="/admin/reports" element={<AdminReportsPage />} />
+        <Route path="/admin/settings" element={<AdminSettingsPage />} />
+        <Route path="/admin/alerts" element={<AlertsPage />} />
+      </Route>
+    </Route>
+
+    {/* Quality */}
+    <Route element={<ProtectedRoute allow={['QUALITY', 'ADMIN']} />}>
+      <Route element={<AppShell />}>
+        <Route path="/quality/dashboard" element={<QualityDashboardPage />} />
+        <Route path="/quality/courses" element={<QualityCoursesPage />} />
+        <Route path="/quality/professors" element={<QualityProfessorsPage />} />
+        <Route path="/quality/engagement" element={<QualityEngagementPage />} />
+        <Route path="/quality/reports" element={<QualityReportsPage />} />
+        <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
+        <Route path="/quality/alerts" element={<QualityAlertsPage />} />
+        <Route path="/quality/exam-moderation" element={<ExamModerationPage />} />
+        <Route path="/quality/community" element={<CommunityPage />} />
+      </Route>
+    </Route>
+
+    {/* Owner */}
+    <Route element={<ProtectedRoute allow={['OWNER']} />}>
+      <Route element={<AppShell />}>
+        <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
+        <Route path="/owner/users" element={<OwnerUsersPage />} />
+        <Route path="/owner/activity" element={<OwnerActivityPage />} />
+        <Route path="/owner/content" element={<OwnerContentPage />} />
+        <Route path="/owner/system" element={<OwnerSystemPage />} />
+        <Route path="/owner/education" element={<OwnerEducationPage />} />
+        <Route path="/owner/realtime" element={<OwnerRealtimePage />} />
+        <Route path="/owner/ai" element={<OwnerAiPage />} />
+        <Route path="/owner/alerts" element={<OwnerAlertsPage />} />
+        <Route path="/owner/governance" element={<OwnerGovernancePage />} />
+      </Route>
+    </Route>
+
+    {/* Vision (any authenticated role) */}
+    <Route element={<ProtectedRoute />}>
+      <Route element={<AppShell />}>
+        <Route path="/vision" element={<VisionGalleryPage />} />
+        <Route path="/vision/:slug" element={<VisionDetailPage />} />
+        <Route path="/document/:filename" element={<DocumentViewerPage />} />
+        <Route path="/competitions" element={<CompetitionsIndexPage />} />
+        <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
+      </Route>
+    </Route>
+
+    {/* Colleges — PUBLIC university info (ruling #9). Same shell for
+        signed-in users; guests get a chrome-less container. */}
+    <Route element={<CollegesLayout />}>
+      <Route path="/colleges" element={<CollegesIndexPage />} />
+      <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
+      <Route path="/colleges/:id" element={<CollegeDetailPage />} />
+    </Route>
+
+    {/* Unknown URLs render the designed 404 surface (no soft-404
+        redirect); /404 stays as the explicit harness entry point. */}
+    <Route path="/404" element={<NotFoundPage />} />
+    <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </RouteErrorBoundary>
+  );
+}
+
+/** App entry — providers + global overlays, then the router + route table. */
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Global toast region — mounted once at the root so any page
-          can fire lib/toast.ts feedback (ruling #3, audit 0-c P1-7). */}
       <ToastStack />
-      {/* ?grid=1 design QA overlay (immersive wave 3) — mounts
-          only when the flag is present; see components/GridOverlay. */}
       <GridOverlay />
       <BrowserRouter>
-        {/* Route-level error boundary (audit 4-A14 P1-3): a render
-            crash in ANY route now shows the designed recovery surface
-            (reload + home) instead of blanking the whole app; it clears
-            itself on navigation so a crash on one route never holds
-            the app hostage. Placed OUTSIDE the Suspense so lazy
-            chunk-load failures (stale deploys) are caught too. */}
-        <RouteErrorBoundary>
-          <Suspense fallback={<PageSkeleton />}>
-            <Routes>
-            <Route path="/auth" element={<AuthPage />} />
-            {/* /auth is the canonical login route; /login is a legacy alias. */}
-            <Route path="/login" element={<Navigate to="/auth" replace />} />
-            <Route path="/auth/register" element={<RegisterPage />} />
-            <Route path="/" element={<HomeRedirect />} />
-
-            {/* Labs preview — role-permissive mount (A6 P1, wave 22-a).
-                /student/labs used to sit inside the STUDENT-only block,
-                which made «معاينة كطالب» — the ONLY per-card CTA on
-                /teacher/labs — silently bounce every teacher back to
-                their dashboard. The page is the same labs explorer for
-                both roles: the catalog endpoint is unscoped and the
-                /me/lab-sessions KPI endpoint is auth-only with a
-                graceful empty shape for users without a student
-                profile (student-dashboard.routes.ts), so a teacher
-                gets an honest preview (0 recorded sessions) and can
-                run the client-side experiments. Documented deviation:
-                this is the single intentional widening of a
-                /student/* path; the shell/nav stay role-based. */}
-            <Route element={<ProtectedRoute allow={['STUDENT', 'TEACHER']} />}>
-              <Route element={<AppShell />}>
-                <Route path="/student/labs" element={<LabsPage />} />
-              </Route>
-            </Route>
-
-            {/* Student */}
-            <Route element={<ProtectedRoute allow={['STUDENT']} />}>
-              <Route element={<AppShell />}>
-                <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-                <Route path="/student/courses" element={<StudentCoursesPage />} />
-                <Route path="/student/schedule" element={<SchedulePage />} />
-                <Route path="/student/results" element={<ResultsPage />} />
-                <Route path="/student/library" element={<LibraryPage />} />
-                <Route path="/student/mooc" element={<MoocPage />} />
-                <Route path="/student/jobs" element={<JobsPage />} />
-                <Route path="/student/ai" element={<AiAssistantPage />} />
-                <Route path="/student/gamification" element={<GamificationPage />} />
-                <Route path="/student/skills" element={<SkillsPage />} />
-                <Route path="/student/alerts" element={<AlertsPage />} />
-                <Route path="/student/ar" element={<ArVrPage />} />
-                <Route path="/student/social" element={<SocialPage />} />
-                <Route path="/student/downloads" element={<DownloadsPage />} />
-                <Route path="/student/university" element={<UniversityInfoPage />} />
-                <Route path="/student/live" element={<LivePage />} />
-                <Route path="/student/payment" element={<PaymentPage />} />
-                <Route path="/student/map" element={<CampusMapPage />} />
-                <Route path="/student/courses/:offeringId" element={<CourseDetailPage />} />
-                <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />
-                <Route path="/student/matrix" element={<MatrixPage />} />
-                <Route path="/student/research" element={<StudentResearchPage />} />
-                <Route path="/student/profile" element={<ProfilePage />} />
-                <Route path="/student/webinars" element={<WebinarsPage />} />
-                {/* PP-X2 (audit P3-25): the /student/exams hub was 4
-                    cards — 3 repeating sidebar destinations + 1 «قيد
-                    الإعداد». The hub page is deleted; old bookmarks land
-                    on the real exams list. */}
-                <Route path="/student/exams" element={<Navigate to="/student/online-exams" replace />} />
-                <Route path="/training" element={<TrainingCatalogPage />} />
-                <Route path="/training/:slug" element={<TrainingTrackPage />} />
-                <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />
-                <Route path="/achievements" element={<AchievementsPage />} />
-                <Route path="/student/online-exams" element={<OnlineExamsPage />} />
-                <Route path="/student/online-exams/:id" element={<ExamTakerPage />} />
-                <Route path="/community" element={<CommunityPage />} />
-              </Route>
-            </Route>
-
-            {/* Teacher */}
-            <Route element={<ProtectedRoute allow={['TEACHER']} />}>
-              <Route element={<AppShell />}>
-                <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
-                <Route path="/teacher/schedule" element={<TeacherSchedulePage />} />
-                <Route path="/teacher/attendance" element={<AttendancePage />} />
-                <Route path="/teacher/grades" element={<GradesPage />} />
-                <Route path="/teacher/materials" element={<MaterialsPage />} />
-                <Route path="/teacher/research" element={<ResearchPage />} />
-                <Route path="/teacher/students" element={<StudentsListPage />} />
-                <Route path="/teacher/performance" element={<PerformancePage />} />
-                <Route path="/teacher/assignments" element={<AssignmentsPage />} />
-                <Route path="/teacher/exams" element={<ExamAuthoringPage />} />
-                <Route path="/teacher/exams/:templateId" element={<ExamTemplateDetailPage />} />
-                <Route path="/teacher/messages" element={<MessagesPage />} />
-                <Route path="/teacher/ai" element={<AiAssistantPage />} />
-                <Route path="/teacher/library" element={<LibraryPage />} />
-                <Route path="/teacher/alerts" element={<AlertsPage />} />
-                <Route path="/teacher/intelligence" element={<TeacherIntelligencePage />} />
-                <Route path="/teacher/intelligence/:offeringId" element={<TeacherOfferingDetailPage />} />
-                <Route path="/teacher/profile" element={<TeacherProfilePage />} />
-                <Route path="/teacher/live" element={<TeacherLivePage />} />
-                <Route path="/teacher/labs" element={<TeacherLabsPage />} />
-                <Route path="/teacher/community" element={<CommunityPage />} />
-              </Route>
-            </Route>
-
-            {/* Admin */}
-            <Route element={<ProtectedRoute allow={['ADMIN']} />}>
-              <Route element={<AppShell />}>
-                <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-                <Route path="/admin/students" element={<AdminStudentsPage />} />
-                <Route path="/admin/teachers" element={<AdminTeachersPage />} />
-                <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
-                <Route path="/admin/sync" element={<AdminSyncPage />} />
-                <Route path="/admin/community" element={<CommunityPage />} />
-                <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
-                <Route path="/admin/courses" element={<AdminCoursesPage />} />
-                <Route path="/admin/analysis" element={<AdminAnalysisPage />} />
-                <Route path="/admin/digital" element={<AdminDigitalPage />} />
-                <Route path="/admin/reports" element={<AdminReportsPage />} />
-                <Route path="/admin/settings" element={<AdminSettingsPage />} />
-                <Route path="/admin/alerts" element={<AlertsPage />} />
-              </Route>
-            </Route>
-
-            {/* Quality */}
-            <Route element={<ProtectedRoute allow={['QUALITY', 'ADMIN']} />}>
-              <Route element={<AppShell />}>
-                <Route path="/quality/dashboard" element={<QualityDashboardPage />} />
-                <Route path="/quality/courses" element={<QualityCoursesPage />} />
-                <Route path="/quality/professors" element={<QualityProfessorsPage />} />
-                <Route path="/quality/engagement" element={<QualityEngagementPage />} />
-                <Route path="/quality/reports" element={<QualityReportsPage />} />
-                <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
-                <Route path="/quality/alerts" element={<QualityAlertsPage />} />
-                <Route path="/quality/exam-moderation" element={<ExamModerationPage />} />
-                <Route path="/quality/community" element={<CommunityPage />} />
-              </Route>
-            </Route>
-
-            {/* Owner */}
-            <Route element={<ProtectedRoute allow={['OWNER']} />}>
-              <Route element={<AppShell />}>
-                <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
-                <Route path="/owner/users" element={<OwnerUsersPage />} />
-                <Route path="/owner/activity" element={<OwnerActivityPage />} />
-                <Route path="/owner/content" element={<OwnerContentPage />} />
-                <Route path="/owner/system" element={<OwnerSystemPage />} />
-                <Route path="/owner/education" element={<OwnerEducationPage />} />
-                <Route path="/owner/realtime" element={<OwnerRealtimePage />} />
-                <Route path="/owner/ai" element={<OwnerAiPage />} />
-                <Route path="/owner/alerts" element={<OwnerAlertsPage />} />
-                <Route path="/owner/governance" element={<OwnerGovernancePage />} />
-              </Route>
-            </Route>
-
-            {/* Vision (any authenticated role) */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<AppShell />}>
-                <Route path="/vision" element={<VisionGalleryPage />} />
-                <Route path="/vision/:slug" element={<VisionDetailPage />} />
-                <Route path="/document/:filename" element={<DocumentViewerPage />} />
-                <Route path="/competitions" element={<CompetitionsIndexPage />} />
-                <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
-              </Route>
-            </Route>
-
-            {/* Colleges — PUBLIC university info (ruling #9). Same shell for
-                signed-in users; guests get a chrome-less container. */}
-            <Route element={<CollegesLayout />}>
-              <Route path="/colleges" element={<CollegesIndexPage />} />
-              <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
-              <Route path="/colleges/:id" element={<CollegeDetailPage />} />
-            </Route>
-
-            {/* Unknown URLs render the designed 404 surface (no soft-404
-                redirect); /404 stays as the explicit harness entry point. */}
-            <Route path="/404" element={<NotFoundPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-          </Suspense>
-        </RouteErrorBoundary>
+        <AppRoutes />
       </BrowserRouter>
     </QueryClientProvider>
   );
