@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
+import { Illustration } from '../../components/Illustration';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
@@ -169,6 +170,7 @@ export default function TeacherLabsPage() {
           {labs && labs.length === 0 ? (
             <Card>
               <div className="empty-state">
+                <Illustration name="empty-search" decorative />
                 <Icon icon={FlaskConical} size={28} className="text-subtle" />
                 <p className="text-sm text-muted">
                   لم تُضف معامل بعد — تواصل مع إدارة المنصة لإضافة معامل لكليتك.

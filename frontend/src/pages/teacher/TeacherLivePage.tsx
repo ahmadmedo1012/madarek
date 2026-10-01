@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
+import { Illustration } from '../../components/Illustration';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -342,6 +343,7 @@ export default function TeacherLivePage() {
           <Card title="جلسات قادمة" icon={Calendar} subtitle={`${scheduled.length} جلسة مجدولة`}>
             {scheduled.length === 0 ? (
               <div className="empty-state">
+                <Illustration name="empty-search" decorative />
                 <Icon icon={Calendar} size={24} className="text-subtle" />
                 <p className="text-sm text-muted">لا توجد جلسات قادمة. أنشئ جلسة جديدة لتظهر هنا.</p>
               </div>
