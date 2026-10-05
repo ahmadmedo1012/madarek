@@ -20,9 +20,9 @@ const installDefaults = () => {
         get length() { return store.size; },
         keys() { return Array.from(store.keys()); },
         key(n) { return Array.from(store.keys())[n] ?? ''; },
-        getItem(k) { return store.get(k) ?? null; },
-        setItem(k, v) { store.set(k, v); },
-        removeItem(k) { store.delete(k); },
+        getItem(k: string) { return store.get(k) ?? null; },
+        setItem(k: string, v: string) { store.set(k, v); },
+        removeItem(k: string) { store.delete(k); },
         clear() { store.clear(); },
       } as unknown as Storage,
     });
