@@ -1048,7 +1048,11 @@
   .dash-progress-body { display: flex; flex-direction: column; gap: var(--sp-3); }
   .dash-progress-text { font-size: var(--fs-sm); color: var(--text-secondary); }
   .dash-progress-value { font-size: var(--fs-h2); font-weight: var(--fw-black); color: var(--text); font-variant-numeric: tabular-nums; }
-  .dash-progress-note { font-size: var(--fs-xs); color: var(--text-muted); }
+  .dash-progress-note {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    padding-inline-start: 2px;
+  }
 
   .dash-doughnut {
     position: relative;
