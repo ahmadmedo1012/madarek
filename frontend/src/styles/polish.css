@@ -722,6 +722,11 @@
        taste floor: body measure 45–75ch. Wires the existing
        --type-body-max-measure token (72ch) that nothing consumed. */
     max-inline-size: var(--type-body-max-measure);
+    color: var(--text-secondary);
+    transition: color var(--t-base) var(--ease);
+  }
+  .page-header:hover .page-subtitle {
+    color: var(--text);
   }
 
   /* ── Card title icon — subtle accent tint ──────────────────── */
