@@ -376,11 +376,24 @@
   background: var(--ln-lime);
   color: var(--ln-ink);
   transform: translate(var(--mag-x, 0), var(--mag-y, 0));
+  position: relative;
 }
 .landing .ln-btn-gold:hover { background: var(--ln-lime-deep); }
 .landing .ln-btn-gold:active {
   transform: translate(var(--mag-x, 0), calc(var(--mag-y, 0) + 1px));
 }
+/* Premium glow — world-class button depth on hover */
+.landing .ln-btn-gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+  pointer-events: none;
+}
+.landing .ln-btn-gold:hover::after { opacity: 1; }
 .landing .ln-btn-gold.xl { padding: 12px 34px; font-size: 16px; min-block-size: 48px; }
 
 /* the outline pill — transparent, 1px hairline, faint tracking; hover is
