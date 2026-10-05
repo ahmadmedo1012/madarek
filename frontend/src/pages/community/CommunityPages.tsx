@@ -281,7 +281,7 @@ function CompetitionCard({ competition: c }: { competition: CompetitionRow }) {
      * tracks are Links through the same family). */
     <Link
       to={`/competitions/${c.id}`}
-      className="track-card"
+      className="track-card glass"
       style={{ ['--track-accent' as never]: accent }}
     >
       <div className="track-card-icon" style={{ background: `color-mix(in srgb, ${accent} 12%, transparent)`, color: accent }}>
