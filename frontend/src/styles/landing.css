@@ -1652,6 +1652,14 @@
   outline-offset: 3px;
 }
 
+.landing .ln-btn-ghost:focus-visible,
+.landing .btn.ghost:focus-visible {
+  outline-color: var(--ln-cream);
+}
+.landing .btn.primary:focus-visible {
+  outline-color: var(--ln-ink);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .landing .ln-hero-canvas { animation: none; opacity: var(--ln-canvas-op, 1); }
   .landing .ln-marquee-track { animation: none; } /* raw-duration loop: explicit off-switch */

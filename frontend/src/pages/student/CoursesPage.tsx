@@ -441,6 +441,8 @@ export function SubmitAssignmentModal({
                 onChange={(e) => setTextAnswer(e.target.value)}
                 disabled={submit.isPending}
                 maxLength={8000}
+                aria-invalid={validationError ? true : undefined}
+                aria-describedby={validationError ? 'submit-text-err' : undefined}
                 style={{ resize: 'vertical', fontFamily: 'inherit' }}
               />
             </div>
@@ -457,15 +459,17 @@ export function SubmitAssignmentModal({
                 disabled={submit.isPending}
                 dir="ltr"
                 maxLength={500}
+                aria-invalid={validationError ? true : undefined}
+                aria-describedby={validationError ? 'submit-file-err' : undefined}
                 style={{ fontFamily: 'var(--font-mono)' }}
               />
-              <div className="text-xxs text-subtle">
+              <div className="text-xxs text-subtle" id="submit-file-err">
                 يجب أن يبدأ الرابط بـ https:// أو أن يكون مسار ملف داخل المنصة (/api/v1/files/papers/).
               </div>
             </div>
 
             {validationError && (
-              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+              <p role="alert" id="submit-text-err" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
                 {validationError}
               </p>
             )}

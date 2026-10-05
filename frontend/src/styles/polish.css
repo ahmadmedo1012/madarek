@@ -2386,6 +2386,8 @@
       border-color var(--t-base) var(--ease),
       box-shadow var(--t-base) var(--ease),
       transform var(--t-base) var(--ease-out);
+    /* A9 P1-2: pin min-height so PageSkeleton→real swap doesn't shift layout */
+    min-block-size: 132px;
   }
   @media (hover: hover) {
     .metric:hover {

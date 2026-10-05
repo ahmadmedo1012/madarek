@@ -413,7 +413,12 @@ function UploadModal({
             placeholder="مثال: تطبيق أنماط التصميم في تطبيقات الويب"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            aria-invalid={title.trim().length > 0 && title.trim().length < 3 ? true : undefined}
+            aria-describedby={`${titleId}-err`}
           />
+          {title.trim().length > 0 && title.trim().length < 3 && (
+            <span id={`${titleId}-err`} className="form-field-hint" style={{ color: 'var(--danger)' }}>يجب أن يكون 3 أحرف على الأقل.</span>
+          )}
         </div>
 
         <div className="auth-field">
