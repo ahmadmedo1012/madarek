@@ -856,6 +856,14 @@
     font-size: clamp(var(--fs-2xl), 4.5vw, var(--fs-3xl, 32px));
     line-height: 1.18;
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
+    background: linear-gradient(135deg, var(--text) 0%, color-mix(in srgb, var(--accent) 70%, var(--text)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: opacity var(--t-base) var(--ease);
+  }
+  .welcome-card:hover .page-title {
+    opacity: 0.95;
   }
   .welcome-card .page-subtitle {
     color: var(--text-muted);
