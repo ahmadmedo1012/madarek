@@ -1129,8 +1129,16 @@
     display: flex; align-items: center; gap: var(--sp-3);
     padding: var(--sp-3) var(--sp-4);
     border-radius: var(--r-md);
-    transition: background var(--t-fast) var(--ease);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    transition: background var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
     cursor: pointer;
+    box-shadow: var(--shadow-card);
+  }
+  .dash-agenda-item:hover {
+    background: var(--surface-2);
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-1px);
   }
   .dash-agenda-item:hover { background: var(--surface-2); }
   .dash-agenda-icon {
