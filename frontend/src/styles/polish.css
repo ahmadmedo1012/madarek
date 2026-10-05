@@ -4138,7 +4138,8 @@
   .vision-card,
   .vision-detail-hero {
     overflow: hidden;
-    transition: transform var(--motion-duration-page) var(--ease-spring-soft);
+    transition: transform var(--motion-duration-page) var(--ease-spring-soft), box-shadow var(--t-base) var(--ease);
+    box-shadow: var(--shadow-card);
   }
   /* (4-A11 P2-11 / craft floor: images are not action targets — the
      img used to scale 1.05 over 720ms on card hover. The container
@@ -4146,6 +4147,7 @@
   @media (hover: hover) {
     .vision-card:hover {
       transform: scale(1.02);
+      box-shadow: var(--shadow-card-premium-h);
     }
   }
 
