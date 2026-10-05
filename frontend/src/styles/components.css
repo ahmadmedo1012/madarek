@@ -319,6 +319,12 @@
     --_btn-shadow: var(--elev-1);
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-card-premium);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  }
+  .btn.primary:hover {
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-2px);
   }
   .btn.primary::before {
     content: '';
