@@ -204,7 +204,7 @@ export default function LabsPage() {
                 const tint = courseTint(l.themeColor);
                 const hasExperiment = !!EXPERIMENT_LIBRARY[cat];
                 return (
-                  <div key={l.id} className="thumb-card">
+                  <div key={l.id} className="thumb-card glass">
                     <div
                       className="thumb-card-image"
                       style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 96 }}
