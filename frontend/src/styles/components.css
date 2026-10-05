@@ -2333,6 +2333,8 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
+    box-shadow: var(--shadow-card);
+    transition: border-color var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .run-row-status (the 32px
      status puck) deleted — zero TSX consumers; .run-row stays
