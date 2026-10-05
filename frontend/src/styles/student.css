@@ -1226,6 +1226,11 @@
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
   }
+  .table-wrap {
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
   .job-title-cell {
     display: flex;
     align-items: center;
