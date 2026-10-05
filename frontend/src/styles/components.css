@@ -3162,7 +3162,7 @@
   .admin-faculty-card:hover {
     transform: translateY(-2px);
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h);
+    box-shadow: var(--shadow-card-premium-h);
   }
   .admin-faculty-head {
     display: flex;
@@ -3300,6 +3300,11 @@
     border-radius: var(--r-md);
     background: var(--surface-2);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--t-base) var(--ease);
+  }
+  .gov-scope-card:hover {
+    box-shadow: var(--shadow-card-premium-h);
   }
   .gov-scope-head {
     display: flex;
