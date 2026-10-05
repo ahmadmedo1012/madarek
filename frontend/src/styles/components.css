@@ -982,6 +982,17 @@
     color: var(--text);
     letter-spacing: var(--ls-snug);
     margin-block-end: var(--sp-4);
+    position: relative;
+  }
+  .dash-section-title::after {
+    content: "";
+    display: block;
+    inline-size: 48px;
+    block-size: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+    border-radius: var(--r-full);
+    margin-block-start: var(--sp-2);
+    opacity: 0.85;
   }
   .dash-hero-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-5); }
   @media (max-width: 1100px) { .dash-hero-row { grid-template-columns: 1fr; } }
