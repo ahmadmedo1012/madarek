@@ -166,14 +166,9 @@
        cascade). Keeps --shadow-card as the legacy fallback. */
     box-shadow: var(--elev-1, var(--shadow-card));
   }
-  .metric.green  { --_metric-color: var(--c-mint-ink);     --_metric-bg: var(--c-mint-bg); }
-  .metric.amber  { --_metric-color: var(--c-yellow-ink);   --_metric-bg: var(--c-yellow-bg); }
-  .metric.red    { --_metric-color: var(--c-rose-ink);     --_metric-bg: var(--c-rose-bg); }
-  .metric.purple { --_metric-color: var(--c-lavender-ink); --_metric-bg: var(--c-lavender-bg); }
-  .metric.gold   { --_metric-color: var(--c-copper-ink);   --_metric-bg: var(--c-copper-bg); }
   .metric:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--elev-2, var(--shadow-card-h));
+    box-shadow: var(--shadow-card-premium-h);
     transform: translateY(-2px);
   }
 
