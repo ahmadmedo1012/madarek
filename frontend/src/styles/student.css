@@ -2041,14 +2041,16 @@
   .fact-error .btn { flex-shrink: 0; }
 
   /* ═══ Payment — the fees-status panel + today's-steps checklist.
-     Clarity over decoration: flat surface, no invented figures. ═══ */
+     Clarity over decoration: flat surface with subtle depth, no invented figures. ═══ */
   .payment-panel {
     display: flex;
     flex-direction: column;
     gap: var(--sp-3);
     padding: var(--sp-4);
     background: var(--surface-2);
-    border-radius: var(--r-md);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card);
   }
   .payment-checklist {
     display: flex;
