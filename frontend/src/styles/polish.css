@@ -793,9 +793,9 @@
      rules. See audits/0-a-foundation.md P0-7 + P1-10.) */
 
   /* ═══════════════════════════════════════════════════════════════
-     Welcome card — student dashboard greeting hero
+     Welcome card — student dashboard greeting hero (premium)
      ═══════════════════════════════════════════════════════════════ */
-  .welcome-card {
+  .welcome-card {\
     position: relative;
     overflow: hidden;
     padding: var(--sp-5) var(--sp-6) var(--sp-5);
@@ -803,15 +803,21 @@
     background:
       radial-gradient(
         at 90% 0%,
-        color-mix(in srgb, var(--accent) 9%, transparent) 0%,
-        transparent 50%
+        color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+        transparent 55%
       ),
       linear-gradient(
         135deg,
         var(--surface) 0%,
-        color-mix(in srgb, var(--accent) 3%, var(--surface-2)) 100%
+        color-mix(in srgb, var(--accent) 4%, var(--surface-2)) 100%
       );
-    border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--rule));
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--rule));
+    box-shadow: var(--shadow-card-premium);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  }
+  .welcome-card:hover {
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-1px);
   }
   .welcome-card::after {
     /* Subtle decorative dot grid in the inline-end corner */
@@ -823,17 +829,12 @@
     height: 100%;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
+      color-mix(in srgb, var(--accent) 30%, transparent) 1px,
       transparent 1.5px
     );
     background-size: 14px 14px;
     background-position: 0 0;
-    opacity: 0.35;
-    /* (Wave 1-a invalid-CSS fix: `linear-gradient(to inline-start, …)` is
-       not valid syntax — the mask was silently dropped by every browser.
-       The corner dot-grid + its RTL-correct fade now live on
-       .welcome-card::before in v22; v13 later re-styled this ::after as
-       the breathing radial, which is why the dots never showed here.) */
+    opacity: 0.5;
     pointer-events: none;
   }
   [data-theme="dark"] .welcome-card {
