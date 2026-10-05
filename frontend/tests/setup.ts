@@ -19,7 +19,7 @@ const installDefaults = () => {
       value: {
         get length() { return store.size; },
         keys() { return Array.from(store.keys()); },
-        key(n) { return Array.from(store.keys())[n] ?? ''; },
+        key(n: number) { return Array.from(store.keys())[n] ?? ''; },
         getItem(k: string) { return store.get(k) ?? null; },
         setItem(k: string, v: string) { store.set(k, v); },
         removeItem(k: string) { store.delete(k); },
