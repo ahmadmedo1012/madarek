@@ -1056,6 +1056,15 @@
     block-size: 168px;
     flex-shrink: 0;
     margin-inline: auto;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 180deg,
+      var(--accent) 0deg,
+      color-mix(in srgb, var(--accent) 20%, var(--surface)) 60deg,
+      color-mix(in srgb, var(--accent) 5%, var(--surface)) 300deg,
+      transparent 360deg
+    );
+    opacity: 0; /* JS-driven canvas replaces this */
   }
   .dash-doughnut canvas { inline-size: 100% !important; block-size: 100% !important; }
   .dash-doughnut-center {
