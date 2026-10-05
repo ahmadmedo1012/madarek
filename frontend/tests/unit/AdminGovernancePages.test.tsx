@@ -281,6 +281,32 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
     expect(screen.getByRole('button', { name: 'الصفحة السابقة' })).toBeEnabled();
   });
 
+  it('keeps page 2 open when it is reached inside the mount debounce window (no snap back to 1)', async () => {
+    getMock.mockImplementation(async (url: string, config?: { params?: Record<string, unknown> }) => {
+      if (url !== '/admin/users') throw new Error(`unexpected GET ${url}`);
+      const params = config!.params as { page: number; limit: number };
+      if (params.limit === 1) {
+        return { data: usersBody([], { page: 1, limit: 1, total: 87, totalPages: 87 }) };
+      }
+      return { data: usersBody([teacherRow('t1', 'سالم'), teacherRow('t2', 'مريم')], { page: params.page, limit: 20, total: 87, totalPages: 5 }) };
+    });
+
+    renderTeachersPage();
+    expect(await screen.findByText('سالم الفيتوري')).toBeInTheDocument();
+
+    // Open page 2 immediately — still inside the 300ms mount debounce window.
+    fireEvent.click(screen.getByRole('button', { name: 'الصفحة التالية' }));
+    await waitFor(() => expect(rosterCalls().some((p) => p.page === 2)).toBe(true));
+
+    // Let the mount-time debounce timer fire: it must be a no-op when the
+    // search term never changed, not a silent setPage(1) that bounces the
+    // admin back to the first page.
+    await new Promise((r) => setTimeout(r, 450));
+
+    expect(screen.getByRole('button', { name: 'الصفحة 2' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByText(/الصفحة 2 من 5/)).toBeInTheDocument();
+  });
+
   it('degrades honestly when the API is down (retryable error, KPI — never a fake zero)', async () => {
     getMock.mockRejectedValue(new Error('network down'));
 

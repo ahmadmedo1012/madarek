@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   Users, GraduationCap, BookOpen, ShieldCheck, Search,
   ChevronLeft, ChevronRight, X, AlertCircle,
@@ -109,10 +109,16 @@ export function OwnerUsersPage() {
 
   // Debounce the search input (250–300ms of idle typing) so the users
   // query fires once typing pauses instead of on every keystroke —
-  // mirrors the LibraryPage pattern.
+  // mirrors the LibraryPage pattern. The mount-time run carries an
+  // unchanged term and must not reset pagination (a page opened inside
+  // the first 300ms would silently bounce back to page 1).
+  const appliedSearch = useRef(debouncedSearch);
   useEffect(() => {
     const t = setTimeout(() => {
-      setDebouncedSearch(search.trim());
+      const next = search.trim();
+      if (next === appliedSearch.current) return;
+      appliedSearch.current = next;
+      setDebouncedSearch(next);
       setPage(1);
     }, 300);
     return () => clearTimeout(t);

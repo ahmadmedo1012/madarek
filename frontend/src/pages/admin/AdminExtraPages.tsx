@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -82,10 +82,16 @@ export function AdminStudentsPage() {
   };
 
   // Debounce the search input (OwnerUsersPage pattern) so the server query
-  // fires once typing pauses instead of on every keystroke.
+  // fires once typing pauses instead of on every keystroke. The mount-time
+  // run carries an unchanged term and must not reset pagination (a page
+  // opened inside the first 300ms would silently bounce back to page 1).
+  const appliedQ = useRef(debouncedQ);
   useEffect(() => {
     const t = setTimeout(() => {
-      setDebouncedQ(q.trim());
+      const next = q.trim();
+      if (next === appliedQ.current) return;
+      appliedQ.current = next;
+      setDebouncedQ(next);
       setPage(1);
     }, 300);
     return () => clearTimeout(t);

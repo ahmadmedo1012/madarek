@@ -11,7 +11,7 @@
  * editors reset only on identity change, so an invalidation refetch can no
  * longer clobber selects the admin is editing toward the next save.
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   ShieldCheck, GraduationCap, Award, ChevronLeft, ChevronRight, CheckCircle2,
@@ -216,9 +216,16 @@ export function AdminTeachersPage() {
 
   // Debounce the search input (OwnerUsersPage pattern) so the roster
   // query fires once typing pauses instead of on every keystroke.
+  // The timer also runs once ~300ms after mount with an unchanged term;
+  // that run must be a no-op — otherwise opening page 2 straight after
+  // mount silently bounces the admin back to page 1.
+  const appliedSearch = useRef(debouncedSearch);
   useEffect(() => {
     const t = setTimeout(() => {
-      setDebouncedSearch(search.trim());
+      const next = search.trim();
+      if (next === appliedSearch.current) return;
+      appliedSearch.current = next;
+      setDebouncedSearch(next);
       setPage(1);
     }, 300);
     return () => clearTimeout(t);

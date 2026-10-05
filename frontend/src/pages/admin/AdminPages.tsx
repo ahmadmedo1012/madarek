@@ -1131,9 +1131,16 @@ export function AdminCoursesPage() {
   const [facultyId, setFacultyId] = useState('');
   const facQ = useFaculties();
 
+  // The mount-time run carries an unchanged term and must not reset
+  // pagination (a page opened inside the first 300ms would silently
+  // bounce back to page 1).
+  const appliedQ = useRef(debouncedQ);
   useEffect(() => {
     const t = setTimeout(() => {
-      setDebouncedQ(q.trim());
+      const next = q.trim();
+      if (next === appliedQ.current) return;
+      appliedQ.current = next;
+      setDebouncedQ(next);
       setPage(1);
     }, 300);
     return () => clearTimeout(t);
