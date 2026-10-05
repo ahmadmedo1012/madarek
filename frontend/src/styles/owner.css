@@ -604,11 +604,13 @@
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   margin-bottom: var(--sp-3);
-  transition: border-color var(--t-fast) var(--ease);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease);
 }
 
 .owner-alert-card:hover {
   border-color: var(--border-strong);
+  box-shadow: var(--shadow-card-premium-h);
 }
 
 .owner-alert-card.critical {
