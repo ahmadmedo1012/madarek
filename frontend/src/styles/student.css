@@ -1521,6 +1521,16 @@
     background: var(--surface-2);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
+    box-shadow: var(--shadow-card);
+    transition:
+      border-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease),
+      transform var(--t-base) var(--ease);
+  }
+  .process-step:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-2px);
   }
   .process-step-head {
     display: flex;
