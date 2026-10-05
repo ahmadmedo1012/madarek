@@ -995,7 +995,15 @@
     border-radius: var(--r-xl);
     padding: var(--sp-6);
     display: flex; flex-direction: column; gap: var(--sp-4);
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-card-premium);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  }
+  .dash-gpa-card:hover,
+  .dash-progress-card:hover,
+  .dash-term-card:hover,
+  .dash-agenda:hover {
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-2px);
   }
   .dash-gpa-card,
   .dash-progress-card { min-block-size: 156px; }
