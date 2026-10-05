@@ -1124,6 +1124,20 @@
     background: var(--c-copper-bg); color: var(--c-copper-deep);
     display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 2px 8px -4px color-mix(in srgb, var(--c-copper-deep) 35%, transparent);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  }
+  .dash-agenda-icon[data-tone="brand"] {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface-3));
+    color: var(--accent-ink, var(--accent-strong));
+  }
+  .dash-agenda-icon[data-tone="green"] {
+    background: var(--c-mint-bg);
+    color: var(--c-mint-deep);
+  }
+  .dash-agenda-icon[data-tone="red"] {
+    background: var(--c-rose-bg);
+    color: var(--c-rose-deep);
   }
   .dash-agenda-text { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1; }
   .dash-agenda-title { font-weight: var(--fw-semibold); font-size: var(--fs-sm); color: var(--text); }
