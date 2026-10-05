@@ -527,8 +527,16 @@
      overrides below (cursor: default + rest-only hover) are reverted —
      the pointer + surface-2 hover + chevron now tell the truth. Focus
      rides the platform's global :focus-visible ring. */
-  .dash-agenda-item.agenda-row { cursor: pointer; }
-  .dash-agenda-item.agenda-row:hover { background: var(--surface-2); }
+  .dash-agenda-item.agenda-row {
+    cursor: pointer;
+    border-radius: var(--r-lg);
+    transition: background var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease);
+    box-shadow: var(--shadow-card);
+  }
+  .dash-agenda-item.agenda-row:hover {
+    background: var(--surface-2);
+    box-shadow: var(--shadow-card-premium-h);
+  }
   .agenda-row-chevron {
     flex-shrink: 0;
     color: var(--text-muted);
