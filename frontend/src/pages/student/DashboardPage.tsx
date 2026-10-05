@@ -351,10 +351,10 @@ export default function StudentDashboardPage() {
 
       {/* Hero KPIs — GPA + Progress side-by-side, stacks on phone */}
       <section className="dash-hero-row">
-        <Card className="dash-gpa-card">
+        <Card className="dash-gpa-card card-glass-premium">
           <div className="dash-gpa-body">
             <div className="dash-gpa-text">
-              <div className="dash-eyebrow">المعدل التراكمي</div>
+              <div className="dash-eyebrow gradient-text">المعدل التراكمي</div>
               <div className="dash-gpa-value" data-numeric="true">{formatNum(d.profile.gpa, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               <Badge color={tone.color}>{tone.label}</Badge>
             </div>
@@ -364,7 +364,7 @@ export default function StudentDashboardPage() {
           </div>
         </Card>
 
-        <Card className="dash-progress-card">
+        <Card className="dash-progress-card card-glass-premium">
           <div className="dash-progress-body">
             <div className="dash-doughnut">
               <ChartFrame

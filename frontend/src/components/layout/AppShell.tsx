@@ -13,6 +13,7 @@ import { PageSkeleton } from '../primitives/States';
 import { useAuthStore, type AppRole } from '../../stores/auth.store';
 import { useRoleAccent } from '../../hooks/useRoleAccent';
 import { useThemeProfileSync } from '../../hooks/useThemeProfileSync';
+import { ScrollProgress } from './ScrollProgress';
 import { useOnboardingState } from '../../hooks/useOnboardingState';
 import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
@@ -335,6 +336,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
       </a>
       <Sidebar />
       <main className="main" id="main" tabIndex={-1}>
+        <ScrollProgress />
         <Topbar title={title} scrolled={scrolled} onOpenCommandPalette={openPalette} />
         <div className="content" ref={contentRef}>
           <PageTransition>
