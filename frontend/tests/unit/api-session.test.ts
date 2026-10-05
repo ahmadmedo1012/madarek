@@ -191,3 +191,47 @@ describe('refresh request hardening (15-d P2-6)', () => {
     expect(refreshTimeout).toBe(15_000);
   });
 });
+
+describe('search term honours the backend q contract (≤ 120 chars)', () => {
+  it('clamps an over-long q at the transport boundary without mutating the caller params', async () => {
+    const seen: Array<Record<string, unknown> | undefined> = [];
+    installAdapter((config) => {
+      seen.push(config.params as Record<string, unknown> | undefined);
+      return respond(config, 200, { data: [] });
+    });
+
+    // The unfixed path: a pasted paragraph / a deep-linked ?q= reached
+    // paginationSchema's `.max(120)` and every roster page answered
+    // 400 VALIDATION_ERROR — a permanently retryable error state.
+    const callerParams = { page: 1, limit: 20, q: 'x'.repeat(150) };
+    await api.get('/admin/users', { params: callerParams });
+    expect(String(seen[0]?.q)).toHaveLength(120);
+    // The caller's own object (often a literal a query key reads) stays intact.
+    expect(callerParams.q).toHaveLength(150);
+
+    // Sane terms and absent terms pass through untouched.
+    await api.get('/admin/users', { params: { page: 1, limit: 20, q: 'سالم' } });
+    expect(seen[1]?.q).toBe('سالم');
+
+    await api.get('/admin/users', { params: { page: 2, limit: 20 } });
+    expect(seen[2]).toEqual({ page: 2, limit: 20 });
+    expect(seen[2]).not.toHaveProperty('q');
+  });
+
+  it('never rewrites non-plain params (URLSearchParams must arrive intact)', async () => {
+    const seen: unknown[] = [];
+    installAdapter((config) => {
+      seen.push(config.params);
+      return respond(config, 200, { data: [] });
+    });
+
+    // The clamp copies with `{ ...params }`, which would spread a
+    // URLSearchParams into `{}` and silently drop every parameter —
+    // so that shape is skipped. No current caller sends one, and none
+    // sends an over-long `q` in that shape either.
+    const search = new URLSearchParams({ q: 'hello' });
+    await api.get('/search/global', { params: search });
+    expect(seen[0]).toBe(search);
+    expect((seen[0] as URLSearchParams).get('q')).toBe('hello');
+  });
+});

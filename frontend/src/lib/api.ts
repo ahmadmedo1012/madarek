@@ -19,6 +19,33 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// ── Request: honour the backend's `q` contract ───────────────────
+/**
+ * `paginationSchema.q` (backend/src/lib/pagination.ts) is `.max(120)`:
+ * past it EVERY paginated route answers 400 VALIDATION_ERROR. Nothing
+ * on the client enforced that — the roster/search inputs carry no
+ * `maxLength`, and the students roster even hydrates its term from a
+ * deep-linked `?q=` — so a pasted paragraph (or a crafted URL) turned
+ * the page into a permanently retryable error state instead of a
+ * search. Clamp once at the transport boundary so every caller (typed
+ * input, URL deep link, future queryFn) honours the contract without
+ * remembering to, and without mutating the caller's params object (it
+ * is often a literal that a query key or a test still reads).
+ */
+const QUERY_PARAM_MAX_LENGTH = 120;
+
+api.interceptors.request.use((config) => {
+  const params = config.params;
+  if (params === null || typeof params !== 'object' || params instanceof URLSearchParams) {
+    return config;
+  }
+  const q = (params as Record<string, unknown>).q;
+  if (typeof q === 'string' && q.length > QUERY_PARAM_MAX_LENGTH) {
+    config.params = { ...params, q: q.slice(0, QUERY_PARAM_MAX_LENGTH) };
+  }
+  return config;
+});
+
 // ── Response: handle 401 by refreshing once ──────────────────────
 let refreshPromise: Promise<string | null> | null = null;
 
