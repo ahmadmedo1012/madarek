@@ -1137,9 +1137,19 @@
     min-block-size: 44px; /* touch target */
     padding: var(--sp-2) var(--sp-3);
     border-radius: var(--r-md);
-    transition: background var(--motion-duration-short) var(--motion-ease-standard);
+    background: var(--surface);
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-card);
+    transition:
+      background var(--motion-duration-short) var(--motion-ease-standard),
+      border-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease);
   }
-  .webinar-row:hover { background: var(--surface-2); }
+  .webinar-row:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-premium-h);
+  }
   .webinar-row.live {
     /* quiet broadcast-red wash — the same family as the LIVE badge */
     background: color-mix(in srgb, var(--danger) 6%, var(--surface));
