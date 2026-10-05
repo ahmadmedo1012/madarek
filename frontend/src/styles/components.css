@@ -1024,6 +1024,14 @@
     color: var(--c-copper-deep);
     display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-copper-deep) 15%, transparent),
+                0 8px 32px -8px color-mix(in srgb, var(--c-copper-deep) 40%, transparent);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  }
+  .dash-gpa-orb:hover {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-copper-deep) 25%, transparent),
+                0 12px 40px -8px color-mix(in srgb, var(--c-copper-deep) 50%, transparent);
+    transform: scale(1.05);
   }
   .dash-gpa-text { display: flex; flex-direction: column; gap: 2px; }
   .dash-gpa-value {
