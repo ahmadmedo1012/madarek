@@ -5539,4 +5539,135 @@
       border-color: transparent;
     }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     PREMIUM VISUAL LAYER — World-class polish (5-WAVE)
+     ───────────────────────────────────────────────────────────────────
+     Glassmorphism · Gradient accents · Micro-interactions · Staggered reveals
+     ══════════════════════════════════════════════════════════════════ */
+
+  /* ── Premium glass cards — inner light border + glow on hover ───── */
+  .card.glass-premium {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: var(--shadow-card-premium);
+    position: relative;
+    overflow: hidden;
+  }
+  .card.glass-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .card.glass-premium:hover {
+    box-shadow: var(--shadow-card-glow);
+    border-color: rgba(255,255,255,0.18);
+  }
+
+  /* ── Gradient text utility ─────────────────────────────────────── */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Gradient border utility ───────────────────────────────────── */
+  .gradient-border {
+    position: relative;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent-soft, rgba(37,99,235,0.3)) 0%, transparent 60%);
+    -webkit-mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+    mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ── Button micro-interactions — press + glow ─────────────────── */
+  .btn-glow {
+    position: relative;
+    transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  }
+  .btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.25), 0 2px 4px rgba(37,99,235,0.15);
+  }
+  .btn-glow:active {
+    transform: scale(0.97) translateY(0);
+    transition-duration: var(--t-micro);
+  }
+
+  /* ── Enhanced staggered reveals — 6-step cascade ─────────────── */
+  .stagger-grid > * {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity var(--t-slower) var(--ease-out),
+                transform var(--t-slower) var(--ease-out);
+  }
+  .stagger-grid.in-view > *:nth-child(1) { transition-delay: 40ms;   opacity: 1; transform: translateY(0); }
+  .stagger-grid.in-view > *:nth-child(2) { transition-delay: 80ms;   opacity: 1; transform: translateY(0); }
+  .stagger-grid.in-view > *:nth-child(3) { transition-delay: 120ms;  opacity: 1; transform: translateY(0); }
+  .stagger-grid.in.view > *:nth-child(4) { transition-delay: 160ms;  opacity: 1; transform: translateY(0); }
+  .stagger-grid.in-view > *:nth-child(5) { transition-delay: 200ms;  opacity: 1; transform: translateY(0); }
+  .stagger-grid.in-view > *:nth-child(6) { transition-delay: 240ms;  opacity: 1; transform: translateY(0); }
+  .stagger-grid.in-view > *:nth-child(n+7) { transition-delay: 280ms; opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card.glass-premium::before { animation: none; }
+    .btn-glow:hover { transform: none; }
+    .stagger-grid > * { opacity: 1; transform: none; }
+  }
+
+  /* ── Metric card — premium depth on hover ─────────────────────── */
+  .metric-premium {
+    transition: box-shadow var(--t-base) var(--ease),
+                transform var(--t-fast) var(--ease);
+  }
+  .metric-premium:hover {
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-2px);
+  }
+
+  /* ── Scroll progress indicator ────────────────────────────────── */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 1000;
+    transition: transform var(--t-fast) linear;
+  }
+
+  /* ── Skeleton premium shimmer ─────────────────────────────────── */
+  .skeleton-premium {
+    background: linear-gradient(90deg,
+      var(--surface-2) 0%,
+      var(--surface-3) 40%,
+      var(--surface-2) 60%,
+      var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer-premium var(--motion-duration-skeleton) linear infinite;
+  }
+  @keyframes skeleton-shimmer-premium {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
 }
