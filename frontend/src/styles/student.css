@@ -567,6 +567,12 @@
     flex-wrap: wrap;
     border-inline-start: 3px solid var(--accent);
     background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+    box-shadow: var(--shadow-card-premium);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+  }
+  .dash-resume-card:hover {
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-1px);
   }
   /* Dark: the 5% wash reads near-invisible against the dark card —
      same raise the .course-hero dark override applies (12%). */
