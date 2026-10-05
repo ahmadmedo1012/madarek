@@ -60,11 +60,19 @@
       border-color var(--t-fast) var(--ease),
       box-shadow var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
+    /* Premium depth — multi-layer shadow for world-class elevation */
+    box-shadow: var(--shadow-card);
+  }
+  .track-card.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border-color: rgba(255,255,255,0.12);
   }
   .track-card:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h);
-    transform: translateY(-1px);
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-2px);
   }
   .track-card:active { transform: scale(0.995); }
 
