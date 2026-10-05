@@ -234,6 +234,8 @@
     gap: var(--sp-3); padding: var(--sp-4);
     background: var(--surface-2);
     border: 1px solid var(--rule); border-radius: var(--r-lg);
+    /* Premium depth — multi-layer shadow for world-class elevation */
+    box-shadow: var(--shadow-card-premium);
   }
   .compact-kpi { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-2); }
   .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
