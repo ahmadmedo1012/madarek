@@ -2934,6 +2934,11 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--t-base) var(--ease);
+  }
+  .exam-card-skel:hover {
+    box-shadow: var(--shadow-card-premium-h);
   }
   .exam-card-skel .exam-card-skel-icon {
     flex-shrink: 0;
