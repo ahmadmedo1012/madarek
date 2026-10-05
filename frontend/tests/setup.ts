@@ -7,6 +7,25 @@ afterEach(() => {
 });
 
 const installDefaults = () => {
+  // jsdom ships a localStorage that throws SecurityError on opaque origins;
+  // replace it with a Map-backed polyfill so zustand persist and every test
+  // that touches the storage API get a working surface. Tests that need a
+  // different shape (quota-exhaustion, corruption) override this in beforeEach/it.
+  if (typeof window !== 'undefined') {
+    const store = new Map<string, string>();
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      writable: true,
+      value: {
+        get length() { return store.size; },
+        keys() { return Array.from(store.keys()); },
+        getItem(k) { return store.get(k) ?? null; },
+        setItem(k, v) { store.set(k, v); },
+        removeItem(k) { store.delete(k); },
+        clear() { store.clear(); },
+      } as Storage,
+    });
+  }
   // Always reinstall a working matchMedia default. Tests that need a
   // different return value override this in beforeEach; we re-install
   // here so a previous test's vi.restoreAllMocks() doesn't leave us
