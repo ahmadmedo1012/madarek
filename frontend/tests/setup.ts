@@ -19,11 +19,12 @@ const installDefaults = () => {
       value: {
         get length() { return store.size; },
         keys() { return Array.from(store.keys()); },
+        key(n) { return Array.from(store.keys())[n] ?? ''; },
         getItem(k) { return store.get(k) ?? null; },
         setItem(k, v) { store.set(k, v); },
         removeItem(k) { store.delete(k); },
         clear() { store.clear(); },
-      } as Storage,
+      } as unknown as Storage,
     });
   }
   // Always reinstall a working matchMedia default. Tests that need a
