@@ -141,7 +141,7 @@ export default function AuthPage() {
       </header>
 
       <main className="auth-center">
-        <div className="auth-card">
+        <div className="auth-card glass">
 
           <div className="auth-brand-mini">
             <span className="auth-brand-mini-mark">م</span>
