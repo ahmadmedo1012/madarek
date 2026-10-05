@@ -2098,7 +2098,7 @@
   }
   .thumb-card:hover {
     border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h);
+    box-shadow: var(--shadow-card-premium-h);
   }
   /* 5-C1 (A2 P2-8): the hover LIFT rides the hover-capable gate —
      with it ungated, iOS sticky-hover pinned the −2px lift on every

@@ -1544,13 +1544,17 @@
     background: var(--surface-1);
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
-    transition: border-color var(--motion-duration-short) var(--motion-ease-standard);
+    box-shadow: var(--shadow-card);
+    transition: border-color var(--motion-duration-short) var(--motion-ease-standard), box-shadow var(--t-base) var(--ease);
     animation: research-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
     animation-delay: calc(
       var(--motion-stagger-step) * min(var(--rs-i, 0), var(--motion-stagger-cap))
     );
   }
-  .research-card:hover { border-color: var(--border-strong); }
+  .research-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-premium-h);
+  }
   .research-card-head {
     display: flex;
     align-items: flex-start;
