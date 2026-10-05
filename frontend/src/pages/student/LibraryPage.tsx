@@ -387,7 +387,7 @@ export default function LibraryPage() {
                 // Shared default tint: lib/courseMeta.ts (wave 9-a).
                 const tint = courseTint(b.themeColor);
                 return (
-                  <div className="thumb-card" key={b.id}>
+                  <div className="thumb-card glass" key={b.id}>
                     <div
                       className="thumb-card-image"
                       style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 100 }}
@@ -509,7 +509,7 @@ export default function LibraryPage() {
                 return (
                 <article
                   key={p.id}
-                  className="research-card"
+                  className="research-card glass"
                   style={{ '--rs-i': i } as CSSProperties}
                 >
                   <div className="research-card-head">
