@@ -2312,6 +2312,17 @@
     padding: var(--sp-5);
     background: var(--surface);
     border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-card);
+    transition:
+      border-color var(--t-base) var(--ease),
+      box-shadow var(--t-base) var(--ease),
+      transform var(--t-base) var(--ease);
+  }
+  .announcement-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-2px);
   }
   /* Pinned — the platform's "on" grammar (tinted ground + accent-mixed
      border), scannable without the craft-floor-banned >1px side stripe. */
