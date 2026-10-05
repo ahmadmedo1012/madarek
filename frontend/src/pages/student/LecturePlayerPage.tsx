@@ -64,7 +64,7 @@ function LectureSkeleton() {
             <Skeleton width="55%" height={12} />
           </div>
         </div>
-        <div className="card">
+        <div className="card glass">
           <Skeleton width={120} height={16} />
           <div className="flex-col gap-3" style={{ marginTop: 'var(--sp-4)' }}>
             {[0, 1, 2, 3].map((i) => (
