@@ -20,14 +20,12 @@ export function RevealOnScroll({
   delay = 0,
   threshold = 0.15,
   rootMargin = '0px 0px -50px 0px',
-  stagger = false,
   className = '',
 }: {
   children: ReactNode;
   delay?: number;
   threshold?: number;
   rootMargin?: string;
-  stagger?: boolean;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -50,6 +48,12 @@ export function RevealOnScroll({
     observer.observe(el);
     return () => observer.disconnect();
   }, [delay, threshold, rootMargin]);
+
+  useEffect(() => {
+    if (inView) {
+      ref.current?.classList.add('in-view');
+    }
+  }, [inView]);
 
   return (
     <div ref={ref} className={className}>
