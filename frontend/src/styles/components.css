@@ -1100,7 +1100,13 @@
   .dash-term-head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
   .dash-term-foot { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-muted); }
   .dash-term-pct { font-family: var(--font-display); font-size: var(--fs-h2); color: var(--text); font-variant-numeric: tabular-nums; font-weight: var(--fw-black); }
-  .dash-term-bar { block-size: 8px; background: var(--surface-3); border-radius: var(--r-full); overflow: clip; }
+  .dash-term-bar {
+    block-size: 10px;
+    background: var(--surface-3);
+    border-radius: var(--r-full);
+    overflow: clip;
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.08);
+  }
 
   .dash-agenda-head { display: flex; align-items: center; justify-content: space-between; }
   .dash-agenda-list { display: flex; flex-direction: column; gap: var(--sp-2); }
