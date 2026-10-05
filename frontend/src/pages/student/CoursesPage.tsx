@@ -111,7 +111,7 @@ function CourseCard({ e, i }: { e: MyEnrollment; i: number }) {
   return (
     <Link
       to={to}
-      className="thumb-card"
+      className="thumb-card glass"
       style={{ '--cc-i': i, '--course-tint': tint } as CSSProperties}
     >
       <div className="thumb-card-image">
