@@ -248,7 +248,7 @@ function TrackCard({ track }: { track: TrainingTrackCard }) {
   return (
     <Link
       to={`/training/${track.slug}`}
-      className="track-card"
+      className="track-card glass"
       style={{ ['--track-accent' as never]: accent }}
     >
       <div className="track-card-icon" aria-hidden>
