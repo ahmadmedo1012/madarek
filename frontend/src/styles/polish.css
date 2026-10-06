@@ -800,7 +800,7 @@
   /* ═══════════════════════════════════════════════════════════════
      Welcome card — student dashboard greeting hero (premium)
      ═══════════════════════════════════════════════════════════════ */
-  .welcome-card {\
+  .welcome-card {
     position: relative;
     overflow: hidden;
     padding: var(--sp-5) var(--sp-6) var(--sp-5);
