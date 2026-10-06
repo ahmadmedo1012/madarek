@@ -5672,6 +5672,15 @@
     transition: transform var(--t-fast) linear;
   }
 
+  /* P4-22: Landing-specific scroll progress — subtle ink gradient, no accent.
+     The hero is the only place where a colored bar would compete with
+     the narrative. Use cream-dim at low opacity for a quiet presence. */
+  .landing .scroll-progress {
+    background: linear-gradient(90deg, var(--ln-cream) 0%, var(--ln-cream-dim) 100%);
+    height: 2px;
+    opacity: 0.5;
+  }
+
   /* ── Skeleton premium shimmer ─────────────────────────────────── */
   .skeleton-premium {
     background: linear-gradient(90deg,

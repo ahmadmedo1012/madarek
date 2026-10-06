@@ -715,6 +715,18 @@
   padding: var(--sp-6) max(5vw, 16px);
   border-block: 1px solid var(--ln-line);
   background: var(--ln-ink-2);
+  /* P4-21: subtle top gradient for depth — trust band feels grounded */
+  position: relative;
+}
+.landing .ln-trust::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 100%;
+  inline-size: 100%;
+  block-size: 40px;
+  background: linear-gradient(180deg, transparent 0%, rgba(245,243,231,0.03) 100%);
+  pointer-events: none;
 }
 .landing .ln-trust-inner {
   max-inline-size: 1280px;
@@ -744,6 +756,22 @@
   /* P3-27: subtle bottom hairline to separate chapters visually */
   border-block-end: 1px solid var(--ln-line-soft);
 }
+
+/* P4-18: Chapter label glow — the lime mono label gets a faint halo so it
+   reads as the visual anchor without competing with the title. Uses a
+   box-shadow spread on an ::before pseudo-element (avoids layout shift).
+   One accent per chapter, per the lime roster discipline. */
+.landing .ln-label::before {
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+  background: radial-gradient(ellipse at center, var(--ln-lime) 0%, transparent 70%);
+  opacity: 0.12;
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: -1;
+}
+.landing .ln-label { position: relative; }
 .landing .ln-chapter-head {
   max-inline-size: 1280px;
   margin-inline: auto;
