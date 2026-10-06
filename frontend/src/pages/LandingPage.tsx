@@ -20,6 +20,7 @@ import { colleges } from '../data/colleges.config';
 import { OrbitScene } from '../components/landing/OrbitScene';
 import { CollegeConstellation } from '../components/landing/CollegeConstellation';
 import { JourneyLightPath } from '../components/landing/JourneyLightPath';
+import { HeroDepthLayer } from '../components/landing/HeroDepthLayer';
 import { Parallax } from '../components/motion/Parallax';
 // landing.css is this page's own sheet (dark immersive world, scoped to
 // .landing); colleges.css rides here for the popover surfaces.
@@ -341,6 +342,7 @@ export default function LandingPage() {
       <section className="ln-hero" aria-label="مدارك — منصة التعليم الذكي">
         {/* living scene (fails safe to the CSS sky below) */}
         <div className="ln-hero-sky" aria-hidden>
+          <HeroDepthLayer />
           <OrbitScene className="ln-hero-canvas" biasX={-0.35} />
           <span className="ln-hero-horizon" />
         </div>

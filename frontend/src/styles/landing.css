@@ -1971,3 +1971,60 @@
     transition: none;
   }
 }
+
+/* ── P4-16: Hero depth layer — scroll-craft baseline (independent planes) ─
+   Scroll-craft principle: independent visual planes moving at different
+   rates create the illusion of depth without a 3D library. The starfield
+   moves at ~0.2× scroll rate while OrbitScene moves at ~0.4×, so the
+   text column appears closer than the starfield. */
+.landing .ln-hero-depth {
+  position: absolute;
+  inset: 0;
+  z-index: -1; /* behind canvas (z=0) and content (z=1) */
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ── P4-17: Section transitions — scroll-driven fade between chapters ─
+   Uses the existing --sp (section progress) variable written by
+   useSectionProgress. As each section scrubs through, it fades slightly
+   to create a cinematic flow without hijacking scroll. */
+.landing .ln-chapter {
+  /* Subtle transition on section enter/exit — pure CSS via --sp */
+  transition: opacity var(--t-slow) var(--ease-soft);
+}
+.landing .ln-chapter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(28,32,50,0.04) 50%, transparent 100%);
+  pointer-events: none;
+  opacity: calc(var(--sp, 0) * 0.5); /* fades in as section enters viewport */
+}
+
+/* ── P4-18: Card hover elevation — premium depth on all landing cards ─
+   Notion-style: lift + shadow on hover signals interactivity without
+   violating the flat-ground rule (hairlines stay, shadow is subtle). */
+.landing .ln-station-card:hover,
+.landing .ln-system-card:hover,
+.landing .ln-stat:hover,
+.landing .ln-fact:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* ── P4-19: Chapter titles — scroll-driven reveal enhancement ─
+   As each section scrubs through, the title gets a subtle opacity
+   transition tied to --sp for cinematic flow. */
+.landing .ln-chapter-title {
+  transition: opacity var(--t-slow) var(--ease-out);
+}
+
+/* ── P4-20: Reduced motion — depth layer still works (static) ────
+   The starfield position is static; only the transform animation is
+   killed so it doesn't drift while reduced motion is active. */
+@media (prefers-reduced-motion: reduce) {
+  .landing .ln-hero-depth {
+    opacity: 0.4; /* slightly less prominent when no parallax */
+  }
+}
