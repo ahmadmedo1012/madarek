@@ -599,7 +599,11 @@
   position: relative;
   white-space: nowrap;
 }
-.landing .ln-hero-title .ln-hero-gold { color: var(--ln-lime); }
+.landing .ln-hero-title .ln-hero-gold {
+  color: var(--ln-lime);
+  /* P3-34: subtle glow on accent word for premium depth */
+  text-shadow: 0 0 20px rgba(245,243,231,0.25), 0 0 40px rgba(245,243,231,0.08);
+}
 
 .landing .ln-hero-sub {
   margin: 0 0 var(--sp-9);
@@ -1248,7 +1252,12 @@
     background var(--ln-t-base) var(--ln-ease),
     border-color var(--ln-t-base) var(--ln-ease);
 }
-.landing .ln-role-row:hover { background: rgb(245 243 231 / 0.03); border-color: var(--ln-line-soft); }
+.landing .ln-role-row:hover {
+  background: rgb(245 243 231 / 0.03);
+  border-color: var(--ln-line-soft);
+  /* P3-35: subtle depth on hover */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
 .landing .ln-role-row:hover .ln-role-index { color: var(--ln-cream); }
 @media (min-width: 921px) {
   .landing .ln-role-row { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); align-items: start; }
@@ -1402,6 +1411,8 @@
 .landing .ln-cta-title em { font-style: normal; color: var(--ln-cream); }
 .landing .ln-cta-lede { margin: 0; color: var(--ln-cream-dim); font-size: clamp(15px, 1.5vw, 16.5px); line-height: 1.6; max-inline-size: 54ch; }
 .landing .ln-cta-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-4); margin-block-start: var(--sp-2); }
+/* P3-36: CTA buttons get a subtle lift on hover */
+.landing .ln-cta-actions .ln-btn-gold:hover { transform: translateY(-1px) translate(var(--mag-x, 0), calc(var(--mag-y, 0) - 1px)); }
 .landing .ln-cta-meta {
   margin: var(--sp-4) 0 0;
   display: inline-flex;
