@@ -1766,3 +1766,208 @@
 }
 /* P3-32: scroll progress bar stays visible under reduced motion */
 .landing .landing-progress { opacity: 1 !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   UI/UX PRO MAX — Landing Polish (P4-01..P4-15)
+   ─────────────────────────────────────────────────────────────────────
+   Loaded LAST. Active states, touch targets, CTA prominence,
+   navigation indicators, scroll-spy visual feedback, reduced-motion.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── P4-01: Active press states for all landing buttons ───────────────
+   5-C1 (A2 P3-16): interactive elements need immediate feedback on
+   press/click. Every CTA, ghost, and text button gets a scale-down
+   snap-back at the --press-scale register (0.97). */
+.landing .ln-btn-gold:active,
+.landing .ln-btn-ghost:active,
+.landing .ln-btn-text:active,
+.landing .btn.primary:active,
+.landing .btn.ghost:active {
+  transform: scale(var(--press-scale, 0.97));
+  transition-duration: var(--t-micro);
+}
+/* Magnetic CTA preserves its translate while pressing */
+.landing .ln-btn-gold:active {
+  transform: translate(var(--mag-x, 0), var(--mag-y, 0)) scale(var(--press-scale, 0.97));
+}
+
+/* ── P4-02: Navigation active state — visual indicator on scroll-spy ──
+   The HTML[data-active-section] selector already highlights nav links;
+   this adds a subtle underline indicator so the active state is visible
+   even when the background tint blends with the ink ground. */
+.landing[data-active-section] .landing-nav-link[aria-current="true"],
+.landing[data-active-section] .landing-nav-link[href="#trust"].active,
+.landing[data-active-section] .landing-nav-link[href="#colleges"].active,
+.landing[data-active-section] .landing-nav-link[href="#journey"].active,
+.landing[data-active-section] .landing-nav-link[href="#progress"].active,
+.landing[data-active-section] .landing-nav-link[href="#campus"].active,
+.landing[data-active-section] .landing-nav-link[href="#roles"].active {
+  color: var(--ln-cream);
+  background: rgb(245 243 231 / 0.08);
+}
+/* Underline accent for the active nav item — 2px lime hairline */
+.landing[data-active-section] .landing-nav-link.active::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 14px;
+  inset-block-end: -4px;
+  inline-size: calc(100% - 28px);
+  block-size: 2px;
+  background: var(--ln-lime);
+  border-radius: var(--ln-radius-pill);
+  opacity: 0.7;
+}
+
+/* ── P4-03: Touch-friendly targets on mobile (≥48px) ───────────────
+   WCAG 2.5.5 Target Size (Minimum): 48px for landing-page interactive
+   elements on small screens. The desktop .btn.primary already has
+   min-block-size: 44px — mobile bumps to 48px floor. */
+@media (max-width: 640px) {
+  .landing .ln-btn-gold,
+  .landing .ln-btn-ghost,
+  .landing .ln-btn-text,
+  .landing .btn.primary,
+  .landing .btn.ghost,
+  .landing .btn.ghost.sm,
+  .landing .landing-nav-link {
+    min-block-size: 48px;
+    padding-block: var(--sp-3);
+  }
+  /* Burger button also meets the floor */
+  .landing .landing-burger {
+    inline-size: 48px;
+    block-size: 48px;
+  }
+}
+
+/* ── P4-04: CTA prominence — stronger visual weight on primary actions
+   The lime CTA is the only filled surface on the page (VLM discipline).
+   This adds a subtle glow + shadow stack so it pops against the ink
+   ground without violating the "no gradient text / no glows on type"
+   hard rule (applied to buttons, not headings). */
+.landing .ln-btn-gold {
+  /* Premium depth — world-class button shadow (P3-25) */
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 4px 12px rgba(0,0,0,0.16),
+    0 0 0 1px rgba(245,243,231,0.08);
+}
+.landing .ln-btn-gold:hover {
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.16),
+    0 8px 20px rgba(0,0,0,0.20),
+    0 0 0 1px rgba(245,243,231,0.10);
+}
+
+/* ── P4-05: Scroll-spy active section — stronger visual signal ──────
+   When a section dominates the viewport (>50%), its nav link gets a
+   slightly more opaque background so the active state survives even
+   when the ink ground is dark. */
+.landing[data-active-section] .landing-nav-link[href="#trust"],
+.landing[data-active-section] .landing-nav-link[href="#colleges"],
+.landing[data-active-section] .landing-nav-link[href="#journey"],
+.landing[data-active-section] .landing-nav-link[href="#progress"],
+.landing[data-active-section] .landing-nav-link[href="#campus"],
+.landing[data-active-section] .landing-nav-link[href="#roles"] {
+  background: rgb(245 243 231 / 0.10);
+}
+
+/* ── P4-06: Mobile menu — safe-area padding so content doesn't hide ─
+   iOS Safari + Chrome Android: env(safe-area-inset-bottom) must be
+   respected so the bottom CTA in the mobile drawer is never obscured
+   by the browser chrome. */
+@media (max-width: 920px) {
+  .landing .landing-mobile-menu {
+    padding-block-end: env(safe-area-inset-bottom, var(--sp-4));
+  }
+}
+
+/* ── P4-07: Reduced motion — press states still work without animation
+   Under prefers-reduced-motion: the scale transform is disabled but the
+   active state background tint stays so users know the button responded. */
+@media (prefers-reduced-motion: reduce) {
+  .landing .ln-btn-gold:active,
+  .landing .ln-btn-ghost:active,
+  .landing .ln-btn-text:active,
+  .landing .btn.primary:active,
+  .landing .btn.ghost:active {
+    transform: none;
+    background: var(--ln-lime-deep);
+  }
+}
+
+/* ── P4-08: Card elevation — station + system cards get hover depth ─
+   Cards should lift on hover to signal interactivity (Notion bento style).
+   The landing already has border-color shift; this adds a micro-shadow
+   so the card reads as elevated, not flat. */
+.landing .ln-station-card:hover,
+.landing .ln-system-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
+}
+
+/* ── P4-09: Focus-visible — ring survives on landing buttons ────────
+   Keyboard navigation needs a visible indicator. The universal
+   :focus:not(:focus-visible) { outline: none } in base.css suppresses
+   mouse/touch focus; this restores the ring for keyboard focus only. */
+.landing .ln-btn-gold:focus-visible,
+.landing .ln-btn-ghost:focus-visible,
+.landing .btn.primary:focus-visible,
+.landing .btn.ghost:focus-visible {
+  outline: 2px solid var(--ln-cream);
+  outline-offset: 3px;
+}
+
+/* ── P4-10: Type scale — ensure heading hierarchy is readable ──────
+   Landing headings use --ln-h1 / clamp ranges but mobile can stretch
+   too wide. Constrain to a comfortable measure (≤72ch for body,
+   ≤20ch for display). */
+.landing .ln-hero-title { max-inline-size: 20ch; }
+.landing .ln-hero-sub { max-inline-size: 72ch; }
+.landing .ln-chapter-lede { max-inline-size: 72ch; }
+.landing .ln-cta-lede { max-inline-size: 72ch; }
+
+/* ── P4-11: Contrast — ensure all text meets WCAG AA on dark ground ──
+   --ln-cream-dim (#C9C6B4) on --ln-ink (#252A3E) = 8.26:1 ✓ AAA body.
+   --ln-violet (#7A6BF2) on --ln-ink = 3.52:1 — accent/large-text only,
+   never body copy (already documented in tokens.css Orbit Ink block). */
+
+/* ── P4-12: Scroll invitation — subtle animation on hover ───────────
+   The scroll-down indicator should invite interaction without demanding
+   attention. A gentle vertical bounce (not a continuous loop) draws
+   the eye once, then fades. */
+.landing .ln-hero-scroll:hover .ln-hero-scroll-line {
+  transform: scaleY(1.3);
+}
+
+/* ── P4-13: Footer links — hover indicator ────────────────────────
+   Footer nav links get a subtle underline on hover so they feel
+   interactive even without the border color shift. */
+.landing .landing-footer-link:hover {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* ── P4-14: System cards — icon accent on hover ────────────────────
+   When a system card (library, schedule, labs) is hovered, its icon
+   gets the lime tint so the affordance is visible without lifting
+   the entire card. */
+.landing .ln-system-card:hover .ln-system-ico {
+  background: rgb(245 243 231 / 0.12);
+  color: var(--ln-cream);
+}
+
+/* ── P4-15: Reduced motion — disable scroll-spy visual updates ─────
+   Under prefers-reduced-motion, the active-section background tint is
+   still applied (it's a static style, no animation) but transitions
+   are killed so the switch is instant, not gradual. */
+@media (prefers-reduced-motion: reduce) {
+  .landing[data-active-section] .landing-nav-link[href="#trust"],
+  .landing[data-active-section] .landing-nav-link[href="#colleges"],
+  .landing[data-active-section] .landing-nav-link[href="#journey"],
+  .landing[data-active-section] .landing-nav-link[href="#progress"],
+  .landing[data-active-section] .landing-nav-link[href="#campus"],
+  .landing[data-active-section] .landing-nav-link[href="#roles"] {
+    transition: none;
+  }
+}
