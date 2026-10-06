@@ -1480,6 +1480,18 @@
   border-block-start: 1px solid var(--ln-line);
   background: var(--ln-ink-2);
   padding-block: clamp(44px, 6vh, 64px) var(--sp-6);
+  /* P4-24: subtle top gradient for ground plate depth */
+  position: relative;
+}
+.landing .landing-footer::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 100%;
+  inline-size: 100%;
+  block-size: 60px;
+  background: linear-gradient(180deg, transparent 0%, rgba(245,243,231,0.03) 100%);
+  pointer-events: none;
 }
 .landing .landing-footer-grid {
   display: grid;
