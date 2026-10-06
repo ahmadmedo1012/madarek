@@ -314,14 +314,17 @@
 
 .landing .landing-burger {
   display: none;
-  inline-size: 44px;
-  block-size: 44px;
+  inline-size: 48px;
+  block-size: 48px;
   border-radius: var(--ln-radius-pill);
   border: 1px solid var(--ln-line);
   background: transparent;
   color: var(--ln-cream);
   place-items: center;
   cursor: pointer;
+  /* P3-33: generous touch target for mobile */
+  min-width: 48px;
+  min-height: 48px;
   transition:
     background var(--ln-t-base) var(--ln-ease),
     color var(--ln-t-base) var(--ln-ease),
@@ -375,10 +378,24 @@
   min-block-size: 46px;
   background: var(--ln-lime);
   color: var(--ln-ink);
+  border-radius: var(--ln-radius-pill);
   transform: translate(var(--mag-x, 0), var(--mag-y, 0));
   position: relative;
+  /* Premium depth — world-class button shadow (P3-25) */
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.12),
+    0 4px 12px rgba(0,0,0,0.16),
+    0 0 0 1px rgba(245,243,231,0.08);
 }
-.landing .ln-btn-gold:hover { background: var(--ln-lime-deep); }
+.landing .ln-btn-gold:hover {
+  background: var(--ln-lime-deep);
+  /* Elevated hover state */
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.16),
+    0 8px 20px rgba(0,0,0,0.20),
+    0 0 0 1px rgba(245,243,231,0.10);
+  transform: translate(var(--mag-x, 0), calc(var(--mag-y, 0) - 1px));
+}
 .landing .ln-btn-gold:active {
   transform: translate(var(--mag-x, 0), calc(var(--mag-y, 0) + 1px));
 }
@@ -408,11 +425,16 @@
   /* GAP-3: the old 0.14 hairline read as a disabled field — the pill
      SHAPE must be visible before the text inside it can feel clickable. */
   border: 1px solid rgb(245 243 231 / 0.34);
+  border-radius: var(--ln-radius-pill);
+  /* Subtle depth on ghost buttons for premium feel */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 .landing .ln-btn-ghost:hover {
   background: rgb(245 243 231 / 0.07);
   color: var(--ln-cream);
   border-color: rgb(245 243 231 / 0.52);
+  /* Elevated ghost on hover */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 .landing .ln-btn-ghost.xl { padding: 12px 32px; font-size: 16px; min-block-size: 48px; }
 
@@ -543,6 +565,8 @@
   color: var(--ln-cream);
   max-inline-size: 13ch;
   text-wrap: balance;
+  /* P3-26: subtle text glow for premium depth on dark ink ground */
+  text-shadow: 0 2px 8px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15);
 }
 .landing .ln-hero-line { display: block; }
 .landing .ln-hero-title .ln-hero-line.reveal-up { transform: translateY(26px); }
@@ -700,6 +724,8 @@
 .landing .ln-chapter {
   position: relative;
   padding: clamp(96px, 12vh, 140px) var(--page-gutter); /* 96–140 rhythm (spec §4.2.10) */
+  /* P3-27: subtle bottom hairline to separate chapters visually */
+  border-block-end: 1px solid var(--ln-line-soft);
 }
 .landing .ln-chapter-head {
   max-inline-size: 1280px;
@@ -975,6 +1001,8 @@
   background: rgb(245 243 231 / 0.03); /* card recipe (spec §4.2.6) */
   border: 1px solid var(--ln-line-soft);
   transition: border-color var(--ln-t-base) var(--ln-ease);
+  /* P3-28: subtle depth for station cards */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 .landing .ln-station-card:hover { border-color: var(--ln-line); }
 .landing .ln-station-head {
@@ -1027,7 +1055,13 @@
    four milestones ignite staggered as the chapter passes. Reduced
    motion: the hook pins --sp: 1 (complete final state); no-JS fallback
    0.65 reads as a half-expanded, fully-legible system. */
-.landing .ln-progress-visual { display: grid; place-items: center; min-block-size: 340px; }
+.landing .ln-progress-visual {
+  display: grid;
+  place-items: center;
+  min-block-size: 340px;
+  /* P3-29: subtle depth for progress visual */
+  box-shadow: inset 0 1px 0 rgba(245,243,231,0.04);
+}
 .landing .ln-progress-orbits {
   position: relative;
   inline-size: min(380px, 78vw);
@@ -1103,6 +1137,8 @@
   background: rgb(245 243 231 / 0.03);
   border: 1px solid var(--ln-line-soft);
   transition: border-color var(--ln-t-base) var(--ln-ease);
+  /* P3-30: subtle depth for stat cards */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 .landing .ln-stat:hover { border-color: var(--ln-line); }
 .landing .ln-stat-value {
@@ -1270,6 +1306,8 @@
   gap: var(--sp-3);
   align-content: start;
   transition: border-color var(--ln-t-base) var(--ln-ease);
+  /* P3-31: subtle depth for system cards */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 .landing .ln-system-card:hover { border-color: var(--ln-line); }
 .landing .ln-system-ico {
@@ -1702,3 +1740,5 @@
   .landing .ln-constellation-browse,
   .landing .ln-constellation-dot { transition: none; }
 }
+/* P3-32: scroll progress bar stays visible under reduced motion */
+.landing .landing-progress { opacity: 1 !important; }
