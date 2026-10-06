@@ -149,6 +149,56 @@ export default function LandingPage() {
     };
   }, []);
 
+  // Scroll-spy — active section highlight in the nav. Zero setState: written
+  // to a data attribute on the header via imperative DOM, same rAF pattern
+  // as the chrome above. One layout pass per frame for all sections + nav.
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(
+      '#trust, #colleges, #journey, #progress, #campus, #roles'
+    ));
+    if (sections.length === 0) return;
+
+    let raf = 0;
+    const observer = new IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
+        // Collect all entries first, then pick the one with most overlap.
+        // Flush reads all rects BEFORE writing — one layout pass per frame.
+        const visible: Array<{ id: string; ratio: number }> = [];
+        for (const entry of entries) {
+          if (entry.intersectionRatio > 0.35) {
+            visible.push({ id: entry.target.id, ratio: entry.intersectionRatio });
+          }
+        }
+        // Pick the section with the most viewport coverage; tie-break by order.
+        visible.sort((a, b) => b.ratio - a.ratio);
+        if (visible.length > 0) {
+          header.dataset.activeSection = visible[0]!.id;
+        } else {
+          delete header.dataset.activeSection;
+        }
+      },
+      { threshold: [0, 0.35, 0.5, 0.65, 1], rootMargin: '-20% 0px -40% 0px' },
+    );
+
+    for (const s of sections) observer.observe(s);
+
+    const onScrollSpy = () => {
+      if (!raf) raf = requestAnimationFrame(() => { raf = 0; });
+    };
+    window.addEventListener('scroll', onScrollSpy, { passive: true });
+    window.addEventListener('resize', onScrollSpy, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScrollSpy);
+      window.removeEventListener('resize', onScrollSpy);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   // Scroll-scrubbed chapters (native scrolling — no hijacking).
   const journeyRef = useSectionProgress<HTMLElement>();
   const progressRef = useSectionProgress<HTMLElement>();

@@ -256,6 +256,17 @@
 }
 .landing .landing-nav-link:hover { color: var(--ln-cream); background: rgb(245 243 231 / 0.04); }
 .landing .landing-nav-link:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; border-radius: var(--ln-radius-pill); }
+/* Scroll-spy active state — nav link highlighted when its section is visible */
+.landing[data-active-section] .landing-nav-link[href$="#${() => ''}"]:not([href^="#"]) { /* selector reset */ }
+.landing[data-active-section="trust"] .landing-nav-link[href="#trust"],
+.landing[data-active-section="colleges"] .landing-nav-link[href="#colleges"],
+.landing[data-active-section="journey"] .landing-nav-link[href="#journey"],
+.landing[data-active-section="progress"] .landing-nav-link[href="#progress"],
+.landing[data-active-section="campus"] .landing-nav-link[href="#campus"],
+.landing[data-active-section="roles"] .landing-nav-link[href="#roles"] {
+  color: var(--ln-cream);
+  background: rgb(245 243 231 / 0.08);
+}
 .landing .landing-nav-link svg { transition: transform var(--ln-t-fast) var(--ln-ease-out); }
 
 .landing .landing-nav-group { position: relative; }
