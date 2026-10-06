@@ -255,6 +255,7 @@
     background var(--ln-t-fast) var(--ln-ease-soft);
 }
 .landing .landing-nav-link:hover { color: var(--ln-cream); background: rgb(245 243 231 / 0.04); }
+.landing .landing-nav-link:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; border-radius: var(--ln-radius-pill); }
 .landing .landing-nav-link svg { transition: transform var(--ln-t-fast) var(--ln-ease-out); }
 
 .landing .landing-nav-group { position: relative; }
@@ -331,6 +332,7 @@
     border-color var(--ln-t-base) var(--ln-ease);
 }
 .landing .landing-burger:hover { background: rgb(245 243 231 / 0.04); color: var(--ln-cream); }
+.landing .landing-burger:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; }
 
 .landing .landing-mobile-menu {
   flex-direction: column;
