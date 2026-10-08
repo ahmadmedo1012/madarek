@@ -256,14 +256,19 @@
 }
 .landing .landing-nav-link:hover { color: var(--ln-cream); background: rgb(245 243 231 / 0.04); }
 .landing .landing-nav-link:focus-visible { outline: 2px solid var(--ln-cream); outline-offset: 3px; border-radius: var(--ln-radius-pill); }
-/* Scroll-spy active state — nav link highlighted when its section is visible */
+/* Scroll-spy active state — nav link highlighted when its section is visible.
+   The observer in LandingPage.tsx writes data-active-section on the header
+   element; these rules read it there (r128 canonical fix — they were
+   mis-scoped to the .landing root, where the attribute never existed, so
+   the active highlight never rendered). Each rule matches its anchor by
+   href; the no-op "selector reset" line above is carried over verbatim. */
 .landing[data-active-section] .landing-nav-link[href$="#${() => ''}"]:not([href^="#"]) { /* selector reset */ }
-.landing[data-active-section="trust"] .landing-nav-link[href="#trust"],
-.landing[data-active-section="colleges"] .landing-nav-link[href="#colleges"],
-.landing[data-active-section="journey"] .landing-nav-link[href="#journey"],
-.landing[data-active-section="progress"] .landing-nav-link[href="#progress"],
-.landing[data-active-section="campus"] .landing-nav-link[href="#campus"],
-.landing[data-active-section="roles"] .landing-nav-link[href="#roles"] {
+.landing header[data-active-section="trust"] .landing-nav-link[href="#trust"],
+.landing header[data-active-section="colleges"] .landing-nav-link[href="#colleges"],
+.landing header[data-active-section="journey"] .landing-nav-link[href="#journey"],
+.landing header[data-active-section="progress"] .landing-nav-link[href="#progress"],
+.landing header[data-active-section="campus"] .landing-nav-link[href="#campus"],
+.landing header[data-active-section="roles"] .landing-nav-link[href="#roles"] {
   color: var(--ln-cream);
   background: rgb(245 243 231 / 0.08);
 }

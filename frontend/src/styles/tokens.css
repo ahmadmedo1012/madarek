@@ -414,6 +414,12 @@
     --ln-t-slow:      var(--t-slow);    /* 380ms */
     --ln-t-cinema:    var(--t-cinema);  /* 720ms */
     --ln-t-reveal:    var(--motion-duration-reveal);  /* 360ms */
+    /* --ln-ease — the standard state-transition ease for landing surfaces
+       (buttons/cards, ~21 consumers in landing.css). Aliases the canonical
+       --ease exactly as the app-wide components.css recipes alias --ease —
+       r128 canonical fix: it was referenced but never defined, so every
+       transition using it silently resolved to `none`. */
+    --ln-ease:       var(--ease);         /* standard state ease (0.4,0,0.2,1) */
     --ln-ease-out:    var(--ease-out);    /* exponential settle */
     --ln-ease-soft:   var(--ease-soft);   /* gentle emphasis */
     --ln-ease-spring: var(--ease-spring); /* playful pop */
