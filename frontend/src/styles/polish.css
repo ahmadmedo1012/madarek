@@ -5669,7 +5669,10 @@
     transform-origin: left;
     transform: scaleX(0);
     z-index: 1000;
-    transition: transform var(--t-fast) linear;
+    /* r127-F1 motion-gate fix: constant-speed scroll-linked motion —
+       `linear` spelled via the token (tokens.css: --ease-linear is the
+       only legal spelling of `linear` outside the token files). */
+    transition: transform var(--t-fast) var(--ease-linear);
   }
 
   /* P4-22: Landing-specific scroll progress — subtle ink gradient, no accent.
@@ -5689,7 +5692,9 @@
       var(--surface-2) 60%,
       var(--surface-2) 100%);
     background-size: 200% 100%;
-    animation: skeleton-shimmer-premium var(--motion-duration-skeleton) linear infinite;
+    /* r127-F1 motion-gate fix: infinite shimmer sweep = constant speed —
+       var(--ease-linear) per the 15-k P1-2 ruling. */
+    animation: skeleton-shimmer-premium var(--motion-duration-skeleton) var(--ease-linear) infinite;
   }
   @keyframes skeleton-shimmer-premium {
     0%   { background-position: 200% 0; }

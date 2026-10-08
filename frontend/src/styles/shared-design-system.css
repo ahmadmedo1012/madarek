@@ -1,8 +1,28 @@
 /* ═════════════════════════════════════════════════════════════════════
-   SHARED DESIGN SYSTEM — Premium Design Layer (madarek parity)
+   SHARED DESIGN SYSTEM — structural skeleton (madarek parity, r127-F1)
    ─────────────────────────────────────────────────────────────────────
-   Extracted from madarek's 24K-line design system. Applied to all three
-   Smart projects for visual parity without code duplication.
+   Companion to unified-smart-parity.css. This file is the STRUCTURAL
+   (non-color) skeleton: spacing, radius, type scale, motion ladder,
+   z-order, layout dimensions, type roles, and the structural component
+   recipes (card / btn / badge / metric / stagger / reveal / skeleton).
+
+   COLOR ALWAYS COMES FROM THE PARITY FILE — unified-smart-parity.css
+   owns both theme blocks (light cream+copper, dark night+gold), the
+   status/accent families, the elevation recipes and the glass
+   surfaces. Where the two files overlap (radius, motion, z values,
+   structural recipes) they are value-identical by contract; verify
+   with: node scripts/verify-parity-export.mjs
+
+   Load order:  unified-smart-parity.css   (color + motion + state source)
+                shared-design-system.css   (this structural layer)
+
+   Host aliases tolerated ONLY when the parity file is absent
+   (shadcn-style): --foreground, --muted-foreground, --card,
+   --card-muted, --ring. Everything else resolves from the pair.
+
+   NOT imported by madarek's own app (main.tsx) — export artifacts,
+   not applied to any Smart repo; the Smart repos carry their own
+   pin-verified token bridges (worklog r127-A6).
 
    Architecture:
      @layer tokens, base, layout, components, polish
@@ -15,7 +35,7 @@
     --sp-1:  4px;   --sp-2:  8px;   --sp-3: 12px;   --sp-4: 16px;
     --sp-5: 20px;   --sp-6: 24px;   --sp-7: 32px;   --sp-8: 40px;
     --sp-9: 48px;   --sp-10:56px;   --sp-11:72px;   --sp-12:96px;
-    --sp-13:128px;  --sp-14:160px;  --sp-15:192px;
+    --sp-13:128px;  --sp-14:160px;  --sp-15:192px;  --sp-16:240px;
 
     /* aliases */
     --sp-2x: var(--sp-2); --sp-3x: var(--sp-3); --sp-4x: var(--sp-4);
@@ -67,8 +87,11 @@
     --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
     --ease-linear: linear;
     --ease-soft:   cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
-    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring-soft:   cubic-bezier(0.34, 1.18, 0.64, 1);
+    --ease-spring:        cubic-bezier(0.34, 1.36, 0.64, 1);
+    --ease-bounce:        cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
 
     --t-clean:      all var(--t-base) var(--ease);
     --transition-fast:   var(--t-fast) var(--ease);
@@ -80,7 +103,9 @@
     --motion-duration-short:    var(--t-fast);
     --motion-duration-medium:   var(--t-base);
     --motion-duration-long:     var(--t-slow);
+    --motion-duration-page:     320ms;
     --motion-duration-reveal:   360ms;
+    --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
 
     --motion-ease-standard:    var(--ease);
@@ -88,6 +113,10 @@
     --motion-ease-emphasized:  var(--ease-soft);
 
     --motion-stagger-step:     60ms;
+    --motion-stagger-cap:      6;
+
+    /* direction multiplier — flipped under [dir="rtl"] below */
+    --motion-direction:        1;
 
     /* ─── Interaction state tokens ─────────────────────────────────── */
     --press-scale: 0.97;
@@ -122,7 +151,7 @@
     --type-display-size-md:        var(--fs-display-md);
     --type-display-size-lg:        var(--fs-display-lg);
     --type-display-size-xl:        var(--fs-display-xl);
-    --type-display-weight:         var(--fw-bold);
+    --type-display-weight:         var(--fw-black);   /* → 700, same as parity file */
     --type-display-line-height:    1.15;
 
     --type-headline-size-lg:       var(--fs-h1);
@@ -158,9 +187,17 @@
   /* ─── Reduced motion ────────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
     :root {
+      /* raw ladder — ALL six rungs (parity-file contract) */
       --t-fast: 0ms;   --t-base: 0ms;   --t-slow: 0ms;
       --t-slower: 0ms; --t-cinema: 0ms; --t-micro: 0ms;
-      --motion-duration-reveal: 80ms;
+      /* semantic layer — page keeps its cross-fade affordance */
+      --motion-duration-micro:    0ms;
+      --motion-duration-short:    0ms;
+      --motion-duration-medium:   0ms;
+      --motion-duration-long:     0ms;
+      --motion-duration-page:     80ms;
+      --motion-duration-reveal:   80ms;
+      --motion-duration-stat:     0ms;
       --motion-duration-skeleton: 0ms;
     }
   }
@@ -169,7 +206,7 @@
 @layer base {
   /* ─── Typography reset ─────────────────────────────────────────── */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading, var(--font-sans));
+    font-family: var(--font-display, var(--font-sans));
     font-weight: var(--fw-black);
     color: var(--text, var(--foreground));
     line-height: var(--lh-snug);
@@ -184,8 +221,9 @@
 
   /* ─── Focus visible ring ───────────────────────────────────────── */
   :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
+    /* parity-file focus tokens first; --ring stays as the host fallback */
+    outline: var(--state-focus-ring-width, 2px) solid var(--state-focus-ring-color, var(--ring));
+    outline-offset: var(--state-focus-ring-offset, 2px);
   }
 
   /* ─── Scroll architecture ──────────────────────────────────────── */
@@ -230,7 +268,7 @@
   /* Card header */
   .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-4); margin-block-end: var(--sp-5); padding-block-end: var(--sp-4); border-block-end: 1px solid var(--border); }
   .card-title-block { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; }
-  .card-title { font-family: var(--font-heading, var(--font-sans)); font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); letter-spacing: var(--ls-snug); line-height: 1.3; display: inline-flex; align-items: center; gap: var(--sp-2); min-inline-size: 0; }
+  .card-title { font-family: var(--font-display, var(--font-sans)); font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); letter-spacing: var(--ls-snug); line-height: 1.3; display: inline-flex; align-items: center; gap: var(--sp-2); min-inline-size: 0; }
   .card-subtitle { font-size: var(--type-label-size); color: var(--text-muted, var(--muted-foreground)); line-height: var(--lh-base); }
   .card-actions { display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; }
 
@@ -249,7 +287,7 @@
     box-shadow: var(--shadow-card, 0 1px 2px rgba(0,0,0,0.04));
   }
   .btn:hover { background: var(--surface-3, var(--card-muted)); border-color: var(--border-strong); transform: translateY(-1px); }
-  .btn.primary { background: var(--primary); color: var(--primary-foreground, #fff); border-color: transparent; }
+  .btn.primary { background: var(--primary); color: var(--primary-fg, #fff); border-color: transparent; }
   .btn.primary:hover { box-shadow: var(--shadow-pop, 0 4px 8px rgba(0,0,0,0.06)); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
@@ -262,7 +300,7 @@
     border: 1px solid var(--border);
   }
   .badge.accent { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); border-color: transparent; }
-  .badge.success { background: color-mix(in srgb, var(--success) 12%, transparent); color: var(--success-foreground); }
+  .badge.success { background: var(--success-soft, color-mix(in srgb, var(--success) 12%, transparent)); color: var(--success-ink, var(--success)); }
 
   /* ─── Metric / KPI card ────────────────────────────────────────── */
   .metric {
@@ -277,18 +315,18 @@
   }
   .metric:hover { border-color: var(--border-strong); box-shadow: var(--shadow-pop); transform: translateY(-2px); }
   .metric-label { font-size: var(--type-label-size-sm); color: var(--text-muted); font-weight: var(--fw-semibold); line-height: 1.3; }
-  .metric-value { font-family: var(--font-heading, var(--font-sans)); font-size: var(--type-metric-size-lg); font-weight: var(--type-metric-weight); color: var(--text); line-height: 1.10; letter-spacing: -0.022em; font-variant-numeric: tabular-nums; }
+  .metric-value { font-family: var(--font-display, var(--font-sans)); font-size: var(--type-metric-size-lg); font-weight: var(--type-metric-weight); color: var(--text); line-height: 1.10; letter-spacing: -0.022em; font-variant-numeric: tabular-nums; }
   .metric-icon { inline-size: 44px; block-size: 44px; border-radius: var(--r-lg); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--_metric-bg); color: var(--_metric-color); }
 
   /* ─── Stagger grid (cascade reveal) ────────────────────────────── */
   .stagger-grid { display: grid; gap: var(--sp-5); }
   .stagger-grid > * { opacity: 0; transform: translateY(16px); transition: opacity var(--motion-duration-medium) var(--motion-ease-decelerate), transform var(--motion-duration-medium) var(--motion-ease-decelerate); }
   @media (prefers-reduced-motion: reduce) { .stagger-grid > * { opacity: 1; transform: none; } }
-  /* Stagger steps — 6-step cascade, 40ms→280ms */
+  /* Stagger steps — 6-step cascade, 60ms→300ms (step token, cap 6) */
   @keyframes stagger-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   .stagger-grid > *:nth-child(1) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 0); }
   .stagger-grid > *:nth-child(2) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 1); }
-  .stagger-grid > *:nth-child(3) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decalerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 2); }
+  .stagger-grid > *:nth-child(3) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 2); }
   .stagger-grid > *:nth-child(4) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 3); }
   .stagger-grid > *:nth-child(5) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 4); }
   .stagger-grid > *:nth-child(6) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 5); }
@@ -299,8 +337,8 @@
   /* ─── Glass premium card ───────────────────────────────────────── */
   .card.glass-premium {
     background: var(--glass-bg, rgba(251,250,249,0.78));
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(var(--glass-blur, 16px)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(180%);
     border-color: var(--glass-border, rgba(25,25,24,0.06));
   }
   .card.glass-premium::before {
@@ -321,7 +359,7 @@
 
   /* ─── Skeleton shimmer ────────────────────────────────────────── */
   @keyframes skeleton-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-  .skeleton { --skeleton-base: var(--neutral-100, rgb(0 0 0 / 0.04)); --skeleton-highlight: var(--neutral-200, rgb(0 0 0 / 0.08)); background-color: var(--skeleton-base); background-image: linear-gradient(90deg, var(--skeleton-base) 0%, var(--skeleton-highlight) 50%, var(--skeleton-base) 100%); background-size: 200% 100%; animation: skeleton-shimmer var(--motion-duration-skeleton) linear infinite; border-radius: var(--r-md, 8px); }
+  .skeleton { --skeleton-base: var(--neutral-100, rgb(0 0 0 / 0.04)); --skeleton-highlight: var(--neutral-200, rgb(0 0 0 / 0.08)); background-color: var(--skeleton-base); background-image: linear-gradient(90deg, var(--skeleton-base) 0%, var(--skeleton-highlight) 50%, var(--skeleton-base) 100%); background-size: 200% 100%; animation: skeleton-shimmer var(--motion-duration-skeleton) linear infinite; border-radius: var(--r-md, 10px); }
   @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; background-image: none; } }
 
   /* ─── Page enter animation ────────────────────────────────────── */

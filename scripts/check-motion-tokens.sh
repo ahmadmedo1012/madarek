@@ -53,6 +53,17 @@
 #   frontend/tests/**                (test fixtures — outside the scan
 #                                    root)
 #
+# r127-F1 additions (the parity-export pair — token-DEFINITION
+# foundations in their own right, same rationale as tokens.css above:
+# raw durations/easings are their job):
+#   frontend/src/styles/unified-smart-parity.css
+#   frontend/src/styles/shared-design-system.css
+#   Both are NOT imported by the app (export artifacts, unwired from
+#   main.tsx); their values are gated instead by
+#   scripts/verify-parity-export.mjs, which pins 163 tokens to
+#   tokens.css, audits every var() reference, and scans for retired
+#   divergent values.
+#
 # polish.css NO LONGER has a wholesale exemption (20-c: its violations
 # were fixed or demoted to the explicit DEBT list below). Each debt
 # entry is a reviewed, reason-carrying pattern — edit the offending
@@ -90,6 +101,11 @@ WHOLESALE = {
     'frontend/src/styles/motion.css',
     'frontend/src/styles/base.css',
     'frontend/src/styles/landing.css',
+    # r127-F1: the parity-export pair — token-definition foundations
+    # (see the header note). Unwired from the app; value-gated by
+    # scripts/verify-parity-export.mjs instead.
+    'frontend/src/styles/unified-smart-parity.css',
+    'frontend/src/styles/shared-design-system.css',
 }
 
 # ── reviewed debt (file:line:text regex → reason) ─────────────────────
