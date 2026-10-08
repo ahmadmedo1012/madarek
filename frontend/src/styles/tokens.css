@@ -165,9 +165,14 @@
        (buttons/pills/filter pills/player big-play — the value the v13
        "BUTTON PRESS" section made canonical). --press-translate (the
        losing sink recipe) and --interactive-transition (an `all`
-       smuggler — see the --t-clean note) are RETIRED: buttons scale,
-       cards use --state-card-pressed-scale (0.99), and only the
-       bottom-nav keeps its deliberately stronger 0.93 thumb press. */
+       smuggler — see the --t-clean note) are RETIRED: buttons scale.
+       r130-W2-7 press-register unification — one token per register,
+       no more 0.99-vs-0.995 drift: cards 0.99 via
+       --state-card-pressed-scale (below), controls 0.97 via
+       --press-scale, and the bottom-nav's deliberately stronger 0.93
+       thumb press via --state-nav-pressed-scale (below). Every card
+       family (.card / .metric / .track-card / .thumb-card) consumes
+       the card token; nothing hardcodes a press scale anymore. */
     --hover-lift: -1px;
     --hover-lift-lg: -3px;
 
@@ -246,6 +251,11 @@
     --state-card-hover-translate: -1px;
     --state-card-hover-border:    var(--rule-strong, var(--rule, var(--neutral-200)));
     --state-card-pressed-scale:   0.99;
+    /* r130-W2-7: the bottom-nav thumb press — the one deliberately
+       stronger register (mobile thumb ergonomics). Was a raw 0.93 in
+       polish.css; now the third press token, consumed by
+       .bottom-nav-item:active there. */
+    --state-nav-pressed-scale:    0.93;
     --state-card-selected-ring:   inset 0 0 0 2px var(--accent);
     --state-card-disabled-opacity: 0.5;
 
@@ -478,6 +488,13 @@
     --text:        var(--neutral-900);
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
+    /* r130-W2-7: --ink was referenced by --journey-core ("the ink slab")
+       but defined in NO theme block — var(--ink) was guaranteed-invalid
+       at computed-value time, so --journey-core silently fell back to
+       inherit. Defined as the raw ink primitive both theme blocks
+       document: light #191918 = --neutral-900 (the export's documented
+       binding); night mirror below resolves to the sand #F2EFE6. */
+    --ink:         var(--neutral-900);
     /* T3-F4 WCAG fix — --text-muted was var(--neutral-500) #898680.
        Math (WCAG 2.1 relative luminance): #898680 L=0.2392 on --bg
        #FBFAF9 L=0.9572 → (0.9572+0.05)/(0.2392+0.05) = 3.48:1 ✗ AA.
@@ -722,6 +739,11 @@
     --text:        var(--neutral-900);
     --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
+    /* r130-W2-7 night mirror of the light block's --ink: on night the
+       ink slab inverts to the sand text #F2EFE6 (= --neutral-900 here),
+       the documented dark value the parity export binds --journey-core
+       to. */
+    --ink:         var(--neutral-900);
     --text-muted:  var(--neutral-500);
     /* 15-g P1-3 night mirror: --text-faint = landing's axe-verified
        #7A83A0 → 5.22:1 on --bg #070B16, 4.86:1 on --surface #0D1428

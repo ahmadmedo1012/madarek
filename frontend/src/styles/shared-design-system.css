@@ -129,6 +129,11 @@
 
     --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
     --state-card-hover-translate: -1px;
+    /* r130-W2-7 press-register unification (canonical tokens.css):
+       cards 0.99 / controls 0.97 (--press-scale above) / bottom-nav
+       0.93 — one token per register, no hardcoded scales. */
+    --state-card-pressed-scale: 0.99;
+    --state-nav-pressed-scale:  0.93;
 
     /* ─── Z-order tokens ───────────────────────────────────────────── */
     --z-base: 0;           --z-dropdown: 100;   --z-popover: 200;
@@ -263,7 +268,7 @@
     box-shadow: var(--shadow-card-h, 0 1px 2px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.06));
     transform: translateY(-1px);
   }
-  .card.interactive:active, a > .card:active { transform: scale(0.995); transition-duration: var(--t-micro); }
+  .card.interactive:active, a > .card:active { transform: scale(var(--state-card-pressed-scale, 0.99)); transition-duration: var(--t-micro); }
 
   /* Card header */
   .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-4); margin-block-end: var(--sp-5); padding-block-end: var(--sp-4); border-block-end: 1px solid var(--border); }

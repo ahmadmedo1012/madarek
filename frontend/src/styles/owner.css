@@ -929,6 +929,9 @@
 }
 
 @keyframes owner-row-in {
+  /* r130-W2-7: this definition governs again — the users-table's
+     same-name keyframes (later in this file, translateY 4px) used to
+     override it document-wide; that one is now `owner-users-row-in`. */
   from { opacity: 0; transform: translateX(calc(6px * var(--motion-direction))); }
   to { opacity: 1; transform: none; }
 }
@@ -1118,13 +1121,19 @@
    .table-row-actions hover/focus reveal (components.css). One-shot:
    fill-mode backwards never pins the row transform, the ladder is
    capped at 8 so long first pages don't crawl, and rows remount on
-   every page flip so the moment repeats per page, not per hover. */
+   every page flip so the moment repeats per page, not per hover.
+   r130-W2-7: renamed from `owner-row-in` — it collided with the
+   activity-feed keyframes at the top of this file (same name, both
+   @layer pages: same-name keyframes do NOT merge; this later
+   definition was silently overriding the timeline's authored
+   RTL-aware translateX entrance for the whole document). Distinct
+   names, both authored moments render now. */
 .owner-users-table tbody tr {
-  animation: owner-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
+  animation: owner-users-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
   animation-delay: calc(min(var(--row-i, 0), 8) * var(--motion-stagger-step));
 }
 
-@keyframes owner-row-in {
+@keyframes owner-users-row-in {
   from { opacity: 0; transform: translateY(4px); }
 }
 

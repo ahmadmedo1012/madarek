@@ -74,7 +74,10 @@
     box-shadow: var(--shadow-card-premium-h);
     transform: translateY(-2px);
   }
-  .track-card:active { transform: scale(0.995); }
+  /* r130-W2-7: joins the card press register — 0.995 hardcode →
+     --state-card-pressed-scale (0.99), the same token every other
+     card family consumes. */
+  .track-card:active { transform: scale(var(--state-card-pressed-scale)); }
 
   .track-card-icon {
     inline-size: 48px;

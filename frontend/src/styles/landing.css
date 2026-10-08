@@ -261,8 +261,9 @@
    element; these rules read it there (r128 canonical fix — they were
    mis-scoped to the .landing root, where the attribute never existed, so
    the active highlight never rendered). Each rule matches its anchor by
-   href; the no-op "selector reset" line above is carried over verbatim. */
-.landing[data-active-section] .landing-nav-link[href$="#${() => ''}"]:not([href^="#"]) { /* selector reset */ }
+   href. (r130-W2-7: the corrupted no-op "selector reset" line that used
+   to sit here — [href$="#${() => ''}"], codegen residue carrying zero
+   declarations — was deleted; it matched nothing.) */
 .landing header[data-active-section="trust"] .landing-nav-link[href="#trust"],
 .landing header[data-active-section="colleges"] .landing-nav-link[href="#colleges"],
 .landing header[data-active-section="journey"] .landing-nav-link[href="#journey"],
@@ -1920,13 +1921,16 @@
 /* ── P4-05: Scroll-spy active section — stronger visual signal ──────
    When a section dominates the viewport (>50%), its nav link gets a
    slightly more opaque background so the active state survives even
-   when the ink ground is dark. */
-.landing[data-active-section] .landing-nav-link[href="#trust"],
-.landing[data-active-section] .landing-nav-link[href="#colleges"],
-.landing[data-active-section] .landing-nav-link[href="#journey"],
-.landing[data-active-section] .landing-nav-link[href="#progress"],
-.landing[data-active-section] .landing-nav-link[href="#campus"],
-.landing[data-active-section] .landing-nav-link[href="#roles"] {
+   when the ink ground is dark. (r130-W2-7: re-scoped from the .landing
+   root to header[data-active-section] — the same mis-scope r128 fixed
+   on the base block above; the attribute only ever exists on the
+   header, so this 0.10 bump never rendered while scoped to the root.) */
+.landing header[data-active-section="trust"] .landing-nav-link[href="#trust"],
+.landing header[data-active-section="colleges"] .landing-nav-link[href="#colleges"],
+.landing header[data-active-section="journey"] .landing-nav-link[href="#journey"],
+.landing header[data-active-section="progress"] .landing-nav-link[href="#progress"],
+.landing header[data-active-section="campus"] .landing-nav-link[href="#campus"],
+.landing header[data-active-section="roles"] .landing-nav-link[href="#roles"] {
   background: rgb(245 243 231 / 0.10);
 }
 
@@ -2021,12 +2025,12 @@
    still applied (it's a static style, no animation) but transitions
    are killed so the switch is instant, not gradual. */
 @media (prefers-reduced-motion: reduce) {
-  .landing[data-active-section] .landing-nav-link[href="#trust"],
-  .landing[data-active-section] .landing-nav-link[href="#colleges"],
-  .landing[data-active-section] .landing-nav-link[href="#journey"],
-  .landing[data-active-section] .landing-nav-link[href="#progress"],
-  .landing[data-active-section] .landing-nav-link[href="#campus"],
-  .landing[data-active-section] .landing-nav-link[href="#roles"] {
+  .landing header[data-active-section="trust"] .landing-nav-link[href="#trust"],
+  .landing header[data-active-section="colleges"] .landing-nav-link[href="#colleges"],
+  .landing header[data-active-section="journey"] .landing-nav-link[href="#journey"],
+  .landing header[data-active-section="progress"] .landing-nav-link[href="#progress"],
+  .landing header[data-active-section="campus"] .landing-nav-link[href="#campus"],
+  .landing header[data-active-section="roles"] .landing-nav-link[href="#roles"] {
     transition: none;
   }
 }

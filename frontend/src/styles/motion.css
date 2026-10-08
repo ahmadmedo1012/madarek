@@ -320,23 +320,19 @@
    change.
    ═══════════════════════════════════════════════════════════════════ */
 /* SHEET BOTTOM ENTRANCE — the authored spring (audit 4-A11 P2-8).
-   `madarek-sheet-slide-bottom` is defined twice: this settle-overshoot
-   spring (wave 2-a) and a plain `translateY(100%)` slide at
-   components.css:1280 (whose comment — like motion.css's old one —
-   claims the keyframe "was never defined anywhere"; both were added
-   independently). Same-name keyframes do not merge: within one
-   cascade layer the later import wins, and components.css is imported
-   after motion.css, so the plain slide silently overrode the authored
-   spring for the entire document. Placing the spring in @layer
-   overrides — which the layer order at the top of this file puts
-   AFTER components — makes the authored choreography win
-   deterministically, independent of import order. When the duplicate
-   in components.css is deleted by its file owner, this definition
-   continues to govern: translateY only, so the entrance is identical
-   in LTR and RTL (no --motion-direction multiplier); the easing comes
-   from the consumer (.sheet-panel-bottom passes
-   --motion-ease-decelerate); the 62% mid-keyframe supplies the spring.
-   The reduced-motion kill for .sheet-panel-bottom stays in the
+   r130-W2-7: the duplicate-keyframe collision is CLOSED — the plain
+   `translateY(100%)` slide that components.css also declared under
+   this exact name (added independently; same-name keyframes do not
+   merge, and within equal layer order the later import — components.css
+   — would have won) was deleted there. This settle-overshoot spring
+   (wave 2-a) is now the ONE canonical definition, and its @layer
+   overrides placement no longer carries the collision: it simply keeps
+   the authored choreography ahead of any future components-layer
+   re-declaration, independent of import order. translateY only, so the
+   entrance is identical in LTR and RTL (no --motion-direction
+   multiplier); the easing comes from the consumer (.sheet-panel-bottom
+   passes --motion-ease-decelerate); the 62% mid-keyframe supplies the
+   spring. The reduced-motion kill for .sheet-panel-bottom stays in the
    components block above (plus base.css's global belt). */
 @layer overrides {
   @keyframes madarek-sheet-slide-bottom {

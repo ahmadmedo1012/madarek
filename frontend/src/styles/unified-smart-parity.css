@@ -42,11 +42,11 @@
      · The illustration palette (--ill-*) and its prefers-contrast
        stroke thickening are illustration-layer vocabulary and stay
        with the illustration system.
-     · Canonical wrinkle preserved: tokens.css spells
-       --journey-core: var(--ink), but --ink is defined nowhere in the
-       canonical cascade (its comment documents #191918). The export
-       binds it to var(--neutral-900) — the documented value, and the
-       sand ink in dark.
+     · Canonical wrinkle RESOLVED (r130-W2-7): tokens.css used to spell
+       --journey-core: var(--ink) with --ink defined nowhere (its comment
+       documented #191918). Canonical now defines --ink in both theme
+       blocks (= --neutral-900); the export's binding below is the same
+       value: #191918 light, the sand #F2EFE6 dark.
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer tokens, base, layout, components, pages, overrides;
@@ -238,10 +238,15 @@
     --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
     --state-card-hover-translate: -1px;
     --state-card-hover-border:    var(--rule-strong, var(--rule, var(--neutral-200)));
-    /* canonical wrinkle, preserved: the token says 0.99 (tokens.css) but
-       the rendered card press is 0.995 (components.css :active hardcodes
-       it) — the .card rule below paints 0.995, exactly like canonical. */
+    /* r130-W2-7: canonical unified the card press on this token — the
+       0.995 hardcodes in components.css/polish.css v6/.metric/.track-
+       card are gone; every card family consumes 0.99 (the value the
+       .card rule below paints, now token-driven like canonical). */
     --state-card-pressed-scale:   0.99;
+    /* r130-W2-7: third press register — the bottom-nav's deliberate
+       0.93 thumb press (consumed as var(--state-nav-pressed-scale) in
+       canonical polish.css .bottom-nav-item:active). */
+    --state-nav-pressed-scale:    0.93;
     --state-card-selected-ring:   inset 0 0 0 2px var(--accent);
     --state-card-disabled-opacity: 0.5;
 
@@ -492,7 +497,7 @@
     --journey-node:        var(--accent);        /* #B57438 copper */
     --journey-node-major:  var(--accent-strong); /* #5C3416 deep copper */
     --journey-line:        rgba(181, 116, 56, 0.30);
-    --journey-core:        var(--neutral-900);   /* canonical: var(--ink), undefined → documented #191918 */
+    --journey-core:        var(--neutral-900);   /* = --ink (defined r130) → #191918 */
     --journey-glow:        rgba(181, 116, 56, 0.10);
     --journey-ticker-ink:  var(--neutral-500);
     --journey-ticker-sep:  var(--accent);
@@ -643,7 +648,7 @@
     --journey-node:        var(--accent);        /* #E9B44C bright gold */
     --journey-node-major:  var(--accent-strong);
     --journey-line:        rgba(233,180,76,0.34);
-    --journey-core:        var(--neutral-900);   /* canonical: var(--ink), undefined → sand */
+    --journey-core:        var(--neutral-900);   /* = --ink (defined r130) → sand #F2EFE6 */
     --journey-glow:        rgba(233,180,76,0.14);
     --journey-ticker-ink:  var(--neutral-500);
     --journey-ticker-sep:  var(--accent);
@@ -749,7 +754,7 @@
    ════════════════════════════════════════════════════════════════════ */
 @layer components {
 
-  /* ─── CARD — 16px radius, press 0.995 + --t-micro ──────────────── */
+  /* ─── CARD — 16px radius, press 0.99 (--state-card-pressed-scale) + --t-micro ── */
   .card {
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -785,9 +790,9 @@
   .card.interactive:active,
   a > .card:active,
   button > .card:active {
-    /* canonical card press (components.css): 0.995 + micro snap-back
-       — cards do NOT use the 0.97 control press */
-    transform: scale(0.995);
+    /* canonical card press (r130-W2-7 unified): the token value 0.99 +
+       micro snap-back — cards do NOT use the 0.97 control press */
+    transform: scale(var(--state-card-pressed-scale));
     transition-duration: var(--t-micro);
   }
 

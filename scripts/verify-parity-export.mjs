@@ -264,11 +264,11 @@ const maps = {
    theme 'root' = primitives (looked up on the light/base map).
    Pinned values double-assert the CANONICAL side against its documented
    value, so tokens.css drift fails loudly.
-   opts.canonicalUnresolved: for the ONE canonical wrinkle — a token whose
-   canonical value references an undefined var (tokens.css spells
-   --journey-core: var(--ink); --ink is defined nowhere). There the gate
-   asserts canonical is STILL unresolvable and the export binds the value
-   the canonical comment documents. */
+   opts.canonicalUnresolved: mechanism for documented canonical wrinkles
+   — a token whose canonical value references an undefined var. Its one
+   use is RETIRED (r130-W2-7): tokens.css spelled --journey-core:
+   var(--ink) with --ink defined nowhere; --ink is now defined in both
+   theme blocks, so those rows assert through the normal path. */
 const CHECKS = [
   // ── :root primitives — radius ladder ──
   ['root', '--r-xs', '6px', 'radius rung 1'],
@@ -407,7 +407,7 @@ const CHECKS = [
     'modal shadow (warm rgba, not oklch)',
   ],
   ['light', '--journey-node', '#b57438', 'journey: copper node'],
-  ['light', '--journey-core', '#191918', 'journey core: canonical var(--ink) is UNDEFINED — export binds the documented ink', { canonicalUnresolved: true }],
+  ['light', '--journey-core', '#191918', 'journey core: ink — r130-W2-7: --ink now defined in tokens.css (= --neutral-900)'],
 
   // ── DARK theme — the night indigo ramp ──
   ['dark', '--neutral-0', '#0d1428', 'night surface 0 (divergent: #151515)'],
@@ -479,7 +479,7 @@ const CHECKS = [
   ['dark', '--state-focus-ring-color', '#c9962f', 'canonical cascade: dark ring → accent-strong'],
   ['dark', '--journey-node', '#e9b44c', 'night journey: gold node'],
   ['dark', '--journey-line', 'rgba(233,180,76,0.34)', 'night journey: gold thread'],
-  ['dark', '--journey-core', '#f2efe6', 'journey core: canonical var(--ink) is UNDEFINED — export binds the night sand', { canonicalUnresolved: true }],
+  ['dark', '--journey-core', '#f2efe6', 'journey core: night sand — r130-W2-7: --ink now defined in tokens.css'],
 ];
 
 /* ── Gate 3: forbidden retired values (scanned on the FULL text) ────── */

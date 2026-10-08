@@ -77,7 +77,11 @@
   .card.interactive:active,
   a > .card:active,
   button > .card:active {
-    transform: scale(0.995);
+    /* r130-W2-7: 0.995 hardcode → the card press token (0.99), the
+       value polish.css v9's overrides-layer rule already painted; the
+       registers are now single-token (cards 0.99 / controls 0.97 /
+       bottom-nav 0.93). */
+    transform: scale(var(--state-card-pressed-scale));
     transition-duration: var(--t-micro);
   }
 
@@ -1672,12 +1676,15 @@
     from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -8%)); }
     to   { opacity: 1; transform: none; }
   }
-  /* wave 2-b (0-c P1-4): referenced by .sheet-panel-bottom since T061
-     but never defined — mobile bottom sheets popped in with no motion. */
-  @keyframes madarek-sheet-slide-bottom {
-    from { opacity: 0; transform: translateY(100%); }
-    to   { opacity: 1; transform: none; }
-  }
+  /* r130-W2-7: @keyframes madarek-sheet-slide-bottom deleted HERE.
+     It collided with motion.css's authored settle-overshoot spring under
+     the same name — same-name keyframes do not merge; within equal layer
+     order the later import (this file) silently overrode the spring, and
+     only motion.css's @layer overrides placement kept the authored
+     choreography winning. The duplicate is gone: the single canonical
+     definition is the spring in motion.css @layer overrides (audit
+     4-A11 P2-8), and the rendered entrance is unchanged. */
+
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TOAST — 012-design-graphics-uplift T064.                      ║
      ║  Passive notification surface. --elev-3 + --r-lg + --z-toast,  ║
