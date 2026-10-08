@@ -1024,7 +1024,11 @@
   }
   .course-lec-well.done {
     background: var(--success-soft);
-    color: var(--success);
+    /* R131-F12 (audit A7 §5-1, WCAG 1.4.11 advisory): light --success
+       (#4FA66D) on the mint well measured 2.53:1 — the done-state icon
+       now consumes the -ink tier (7.99:1 in light; in dark --success-ink
+       ≡ --success #7FD39A, so dark renders unchanged). */
+    color: var(--success-ink);
   }
   /* PP-X2 (audit P1-7b): the "continue here" row — the training list's
      .lesson-row.next grammar (training.css): course-tint wash + tinted

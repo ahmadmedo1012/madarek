@@ -63,7 +63,13 @@
 
 .owner-event-icon.green {
   background: var(--success-soft);
-  color: var(--success);
+  /* R131-F12 (audit A7 §5-1, WCAG 1.4.11 advisory): light --success
+     (mint-ink #4FA66D) on the mint well measured 2.53:1. The icon now
+     takes the -ink tier — the -deep value in light (7.99:1), the same
+     grammar notifications.css already uses for .notif-item-icon.
+     Dark is untouched: its --success-ink resolves to the same mint
+     #7FD39A as --success (tokens.css dark block). */
+  color: var(--success-ink);
 }
 
 .owner-event-icon.blue {
@@ -78,12 +84,16 @@
 
 .owner-event-icon.amber {
   background: var(--warning-soft);
-  color: var(--warning);
+  /* R131-F12: 2.04:1 light (worst well pair) → 6.98:1 via -ink; dark
+     --warning-ink ≡ --warning (#ECC97D) — pixel-identical. */
+  color: var(--warning-ink);
 }
 
 .owner-event-icon.red {
   background: var(--danger-soft);
-  color: var(--danger);
+  /* R131-F12: 2.57:1 light → 9.02:1 via -ink; dark --danger-ink ≡
+     --danger (#F0938F) — pixel-identical. */
+  color: var(--danger-ink);
 }
 
 /* ── Toggle Switch ─────────────────────────────────────────── */

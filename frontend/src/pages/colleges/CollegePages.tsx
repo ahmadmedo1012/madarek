@@ -845,7 +845,11 @@ export function CollegeDetailPage() {
             <ul className="live-list">
               {c.upcomingLive.map((l) => (
                 <li key={l.id} className="live-row">
-                  {l.status === 'LIVE' && <span className="pill on" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>مباشر الآن</span>}
+                  {/* R131-F12b (A7 §5-1 sweep): the LIVE badge ink chains
+                      through --danger-ink — base --danger on the rose
+                      wash measured 2.57:1 in light (text, 1.4.3);
+                      dark --danger-ink ≡ --danger, so dark is unchanged. */}
+                  {l.status === 'LIVE' && <span className="pill on" style={{ background: 'var(--danger-soft)', color: 'var(--danger-ink)' }}>مباشر الآن</span>}
                   <div className="live-body">
                     <div className="live-title">{l.title}</div>
                     <div className="live-meta">

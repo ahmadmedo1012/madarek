@@ -412,7 +412,11 @@ export function SubmitAssignmentModal({
               padding: 'var(--sp-4)',
               borderRadius: 'var(--r-md)',
               background: late ? 'var(--warning-soft)' : 'var(--success-soft)',
-              color: late ? 'var(--warning)' : 'var(--success)',
+              // R131-F12b (A7 §5-1 sweep): banner ink chains through the
+              // -ink tier — base --success/--warning on the soft washes
+              // measured 2.53/2.04:1 in light (text, 1.4.3); dark -ink ≡
+              // base, so dark is unchanged.
+              color: late ? 'var(--warning-ink)' : 'var(--success-ink)',
               display: 'flex',
               flexDirection: 'column',
               gap: 4,

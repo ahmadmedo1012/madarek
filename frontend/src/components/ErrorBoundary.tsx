@@ -108,7 +108,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           {/* ErrorState's danger icon grammar, sized for the
               full-viewport scene (no bespoke crash illustration in
               the V1 scene registry — the 404 telescope reads as
-              "page missing", a different meaning). */}
+              "page missing", a different meaning). R131-F12b: the
+              icon chains through --danger-ink to match the
+              ErrorState/States.tsx grammar (5-D1) — base --danger
+              measured 2.57:1 on the rose well in light (1.4.11);
+              dark --danger-ink ≡ --danger, so dark is unchanged. */}
           <div
             className="state-icon"
             aria-hidden
@@ -116,7 +120,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               inlineSize: 72,
               blockSize: 72,
               background: 'var(--danger-soft)',
-              color: 'var(--danger)',
+              color: 'var(--danger-ink)',
             }}
           >
             <Icon icon={AlertTriangle} size={30} />
@@ -155,7 +159,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               inlineSize: 72,
               blockSize: 72,
               background: offline ? 'var(--warning-soft)' : 'var(--danger-soft)',
-              color: offline ? 'var(--warning)' : 'var(--danger)',
+              color: offline ? 'var(--warning-ink)' : 'var(--danger-ink)',
             }}
           >
             <Icon icon={offline ? WifiOff : AlertTriangle} size={30} />
