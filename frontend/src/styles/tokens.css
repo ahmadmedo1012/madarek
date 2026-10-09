@@ -1,9 +1,9 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Notion-flavored Design System
+   «مدارك» — Notion-flavored Design System
    ─────────────────────────────────────────────────────────────────────
    Warm cream ground · big bold type · multi-color pastel sections
    Soft shadows · rounded surfaces · sticker icons · friendly motion
-   Plex Sans Arabic 800 display · upright weight-accent emphasis · Plex Mono nums
+   Plex Sans Arabic 700 display · upright weight-accent emphasis · Plex Mono nums
    (21-c: the stated “Plex Serif italic accent” was a phantom on Arabic —
    IBM Plex Serif ships latin-only, so every Arabic em fell to an OS naskh
    + synthetic slant. The platform accent is now upright weight + ink;
@@ -50,20 +50,22 @@
     --font-serif:   'IBM Plex Serif', Georgia, serif;
     --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-    --fw-cine:       800;
-    --fw-cine-heavy: 900;
-    /* reference-bar display sizes: 130–200px headline class, 1:1–1:1.1 leading */
-    --fs-cine-hero:  clamp(56px, 9.2vw, 148px);
-    --fs-cine-xl:    clamp(44px, 6.4vw, 104px);
-    --fs-cine-lg:    clamp(34px, 4.6vw, 72px);
-    --lh-cine: 1.06;
-    --lh-cine-tight: 1.02;
-    /* mono eyebrow grammar — «// الفصل الأول» engineered labels */
-    --fs-eyebrow: 12px;
-
+    /* (r132-F5 dead-token sweep: the cine/eyebrow/mega display families
+       were deleted from here — zero consumers since their authored wave
+       (rg-verified across tsx + css), mirrored in unified-smart-parity.css
+       + shared-design-system.css so the export stays a faithful
+       distillation. Deleted: --fw-cine/-heavy (800/900), --fs-cine-hero/
+       xl/lg, --lh-cine(-tight), --fs-eyebrow, --fs-mega,
+       --type-display-size-lg/xl/mega. The truncated NOTE that claimed the
+       cine weights were “REAL” went with them — Plex ships 400-700 only,
+       which is why --fw-black resolves to 700 (wave 2-a). Survivors:
+       --fs-display-md (live — the auth/base display roles consume
+       --type-display-size-md, and it feeds the --fs-3xl alias),
+       --fs-display-lg (feeds the --fs-4xl legacy alias) and
+       --fs-display-xl (no in-app consumer) — the two top rungs stay
+       because the parity-export product scale pins the full ladder.) */
 
     /* fluid display — Notion goes BIG on hero */
-    --fs-mega:       clamp(48px, 8.4vw, 104px);
     --fs-display-xl: clamp(40px, 6.0vw, 72px);
     --fs-display-lg: clamp(34px, 4.8vw, 56px);
     --fs-display-md: clamp(28px, 3.6vw, 40px);
@@ -96,7 +98,6 @@
     --fw-semibold: 600;
     --fw-bold: 700;
     --fw-black: 800; /* resolves to 700 at runtime below — Plex has no 800 */
-    /* NOTE: --fw-cine (800) + --fw-cine-heavy (900) above are REAL weights —
 
     /* line-heights — Arabic-comfortable, headline-tight.
        21-c (A12 P2-7): --lh-tight (1.05) is the RAW Latin-tuned scale
@@ -283,10 +284,7 @@
 
     /* Display — hero headlines only. One per page max. */
     --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
-    --type-display-size-lg:        var(--fs-display-lg);   /* 34..56px */
-    --type-display-size-xl:        var(--fs-display-xl);   /* 40..72px */
-    --type-display-size-mega:      var(--fs-mega);         /* 48..104px */
-    --type-display-weight:         var(--fw-black);        /* 800 */
+    --type-display-weight:         var(--fw-black);        /* → 700: Plex has no 800 */
     /* 21-c (A12 P2-7 — the P1-12 “Arabic-leading study”): 1.05 was
        Latin-tuned and clipped Arabic diacritic stacks at display
        sizes; 1.15 is the Arabic floor (dark adds one more step —
@@ -400,7 +398,15 @@
     --ln-violet-deep:#4E2FB8;   /* depth — decorative fill only */
     --ln-line:       rgba(245,243,231,0.14);  /* 1px hairline on ink */
     --ln-line-soft:  rgba(245,243,231,0.07);  /* resting card border */
-    --ln-grain-op:   0.05;      /* grain overlay opacity */
+    --ln-grain-op:   0.075;    /* grain veil opacity. P3-22 lifted the base
+                                 0.05 → 0.075 — “the one permanent texture
+                                 must be perceivable, not theoretical” — and
+                                 r132-F5 unified it here: the value lived as
+                                 a landing.css local override while the base
+                                 said 0.05 (the split-brain the family clones
+                                 never saw — they pin the rendered 0.075).
+                                 The .landing override was deleted; the only
+                                 consumer is the landing .ln-grain veil. */
     --ln-radius-pill: var(--r-full);  /* pills via --r-full (WS-D2) */
     --ln-h1:         clamp(2.75rem, 8.2vw, 6.75rem);  /* hero, ≤108px */
     --ln-h1-lh:      1.04;      /* hero leading; mobile lifts to 1.12

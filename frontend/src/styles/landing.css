@@ -52,10 +52,9 @@
      Per-character fallback: Latin + digits keep Plex Mono, Arabic
      continues in IBM Plex Sans Arabic, monospace last. */
   --ln-mono: 'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, monospace;
-  /* P3-22: grain lifted 0.05 → 0.075 — the one permanent texture must be
-     perceivable, not theoretical (local override; tokens.css keeps 0.05
-     for any future non-landing consumer). */
-  --ln-grain-op: 0.075;
+  /* (r132-F5: the --ln-grain-op local override that used to live here was
+     deleted — tokens.css now defines the veil at 0.075 directly (single
+     source). See the --ln-grain-op comment in tokens.css.) */
 }
 
 /* selection rides the violet depth pair (7.78:1) — lime stays rare */
@@ -63,7 +62,8 @@
 
 /* Film grain — the one permanent texture. Fixed veil above the whole
    landing (below native dialog overlays, which live in the top layer),
-   5% white feTurbulence noise on a 200px stitchable tile. */
+   white feTurbulence noise on a 200px stitchable tile at the tokenized
+   veil opacity (var(--ln-grain-op) = 0.075, tokens.css base). */
 .landing .ln-grain {
   position: fixed;
   inset: 0;
@@ -238,6 +238,10 @@
 }
 .landing .landing-nav-link {
   display: inline-flex;
+  /* r132-F5: positioning context for the P4-02 active-link underline
+     ::after (an abs-positioned pseudo must anchor to the link, not to
+     the sticky header or the .landing-nav-group megamenu anchor). */
+  position: relative;
   align-items: center;
   gap: 6px;
   padding: 9px 14px;
@@ -1850,22 +1854,24 @@
   transform: translate(var(--mag-x, 0), var(--mag-y, 0)) scale(var(--press-scale, 0.97));
 }
 
-/* ── P4-02: Navigation active state — visual indicator on scroll-spy ──
-   The HTML[data-active-section] selector already highlights nav links;
-   this adds a subtle underline indicator so the active state is visible
-   even when the background tint blends with the ink ground. */
-.landing[data-active-section] .landing-nav-link[aria-current="true"],
-.landing[data-active-section] .landing-nav-link[href="#trust"].active,
-.landing[data-active-section] .landing-nav-link[href="#colleges"].active,
-.landing[data-active-section] .landing-nav-link[href="#journey"].active,
-.landing[data-active-section] .landing-nav-link[href="#progress"].active,
-.landing[data-active-section] .landing-nav-link[href="#campus"].active,
-.landing[data-active-section] .landing-nav-link[href="#roles"].active {
-  color: var(--ln-cream);
-  background: rgb(245 243 231 / 0.08);
-}
-/* Underline accent for the active nav item — 2px lime hairline */
-.landing[data-active-section] .landing-nav-link.active::after {
+/* ── P4-02: Navigation active state — underline indicator on scroll-spy ──
+   A 2px lime hairline under the active nav link so the active state is
+   visible even when the background tint blends with the ink ground.
+   (r132-F5: this block was the last scroll-spy survivor still scoped to
+   the .landing ROOT — the pre-r128 world — and it matched links by an
+   .active class / [aria-current] that the markup never carries, so the
+   underline NEVER rendered. It now follows the same canonical mechanism
+   as the base block (:259), P4-05 and P4-15: the observer writes
+   data-active-section on the header and each rule matches its anchor by
+   href. The redundant tint half — identical declarations to the base
+   block — was deleted with the re-scope; the underline is the half that
+   had no live equivalent.) */
+.landing header[data-active-section="trust"] .landing-nav-link[href="#trust"]::after,
+.landing header[data-active-section="colleges"] .landing-nav-link[href="#colleges"]::after,
+.landing header[data-active-section="journey"] .landing-nav-link[href="#journey"]::after,
+.landing header[data-active-section="progress"] .landing-nav-link[href="#progress"]::after,
+.landing header[data-active-section="campus"] .landing-nav-link[href="#campus"]::after,
+.landing header[data-active-section="roles"] .landing-nav-link[href="#roles"]::after {
   content: "";
   position: absolute;
   inset-inline-start: 14px;

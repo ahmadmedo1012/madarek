@@ -398,7 +398,10 @@
   transition: transform var(--t-fast) var(--ease);
 }
 .annotation-color:hover .annotation-color-dot { transform: scale(1.15); }
-.annotation-color:active .annotation-color-dot { transform: scale(0.95); }
+/* r132-F5: was a raw scale(0.95) — adjudicated to the controls register
+   (--press-scale 0.97): the swatch is a tappable control, not a card or
+   a bottom-nav thumb target (r130-W2-7 one-token-per-register ladder). */
+.annotation-color:active .annotation-color-dot { transform: scale(var(--press-scale)); }
 .annotation-color.on .annotation-color-dot {
   border-color: var(--text);
   outline: 2px solid var(--accent);

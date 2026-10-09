@@ -3620,7 +3620,10 @@
       color var(--t-fast) var(--ease);
   }
   .att-toggle:hover { background: var(--surface-2); border-color: var(--border-strong); }
-  .att-toggle:active { transform: scale(0.97); }
+  /* r132-G5: raw 0.97 (register-correct value, pre-token spelling — a 4th
+     F6-class straggler the audit's oddball-value sweep didn't surface);
+     controls press register via the token, r130-W2-7 ladder. */
+  .att-toggle:active { transform: scale(var(--press-scale)); }
   .att-toggle:focus-visible { outline: var(--state-focus-ring); outline-offset: var(--state-focus-ring-offset, 1px); }
   .att-toggle[aria-pressed='true'][data-tone='success'] {
     background: var(--success-soft);

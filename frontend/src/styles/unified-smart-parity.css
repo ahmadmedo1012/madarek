@@ -93,25 +93,16 @@
     --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
 
     /* weights — the self-hosted Plex set ships 400/500/600/700 only.
-       --fw-cine/-heavy are the REAL 800/900 reference-bar weights. */
+       (r132-F5: --fw-cine/-heavy 800/900 + the cine/eyebrow/mega display
+       families were deleted — mirrored from tokens.css, zero consumers
+       in the reference; see the dead-token sweep note there.) */
     --fw-regular: 400;
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
     --fw-black: var(--fw-bold); /* → 700: Plex has no true 800 */
-    --fw-cine: 800;
-    --fw-cine-heavy: 900;
-
-    /* cine display + mono eyebrow grammar */
-    --fs-cine-hero:  clamp(56px, 9.2vw, 148px);
-    --fs-cine-xl:    clamp(44px, 6.4vw, 104px);
-    --fs-cine-lg:    clamp(34px, 4.6vw, 72px);
-    --lh-cine: 1.06;
-    --lh-cine-tight: 1.02;
-    --fs-eyebrow: 12px;
 
     /* fluid display — Notion goes BIG on hero */
-    --fs-mega:       clamp(48px, 8.4vw, 104px);
     --fs-display-xl: clamp(40px, 6.0vw, 72px);
     --fs-display-lg: clamp(34px, 4.8vw, 56px);
     --fs-display-md: clamp(28px, 3.6vw, 40px);
@@ -268,9 +259,6 @@
 
     /* ─── Type roles — role-locked semantic typography ────────────── */
     --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
-    --type-display-size-lg:        var(--fs-display-lg);   /* 34..56px */
-    --type-display-size-xl:        var(--fs-display-xl);   /* 40..72px */
-    --type-display-size-mega:      var(--fs-mega);         /* 48..104px */
     --type-display-weight:         var(--fw-black);        /* → 700 */
     --type-display-line-height:    1.15;
     --type-display-letter-spacing: var(--ls-normal);       /* 0 */

@@ -1,20 +1,30 @@
 # Design System Master File
 
+> ## ⚠️ SUPERSEDED — READ THIS FIRST
+>
+> This file is an **auto-generated draft from 2026-05-29** (SpeckKit
+> "Analytics Dashboard" template: blue `#1E40AF` / Inter / Google Fonts).
+> **None of its color, font, or shadow values ever shipped.** It is kept
+> for archaeology only — do not build from it.
+>
+> - **Live source of truth:** `frontend/src/styles/tokens.css` (values,
+>   WCAG math, decision history — the single authored token source), plus
+>   the governed export pair `unified-smart-parity.css` /
+>   `shared-design-system.css` (`node scripts/verify-parity-export.mjs`).
+> - **Human-readable design reference:** [`DESIGN.md`](../../DESIGN.md) at
+>   the repo root — the family design reference. It states the canon
+>   (Orbit Ink landing world, copper-on-cream / gold-on-night product
+>   theme, IBM Plex Sans Arabic 400-700, motion ladder, grain, elevation,
+>   component recipes), with values extracted from code. Start there.
+> - The correction banner that used to sit here was itself stale (it
+>   still promised "IBM Plex Serif italic accents" — the 21-c ruling
+>   established that accent as a phantom on Arabic; the platform accent
+>   is upright weight + ink, with serif italic sanctioned for Latin runs
+>   only).
+
 > **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
 > If that file exists, its rules **override** this Master file.
 > If not, strictly follow the rules below.
-
-> **⚠️ SUPERSEDED VISUAL WORLD (wave-9 docs correction):** the palette/typography
-> tables below describe the ORIGINAL 2026-05 draft (blue/Inter/Google Fonts).
-> The platform has since shipped a **Notion-flavored warm world** — the
-> authoritative tokens live in `frontend/src/styles/tokens.css`:
-> cream ground `#FBFAF9` / ink `#191918` / copper accent `#B57438`,
-> 9 pastel section families (`--c-peach…copper` with `-bg/-ink/-deep`),
-> IBM Plex Sans Arabic (self-hosted, 400-700) display + body,
-> IBM Plex Serif italic accents, IBM Plex Mono numerals, soft shadows
-> (`--shadow-card/pop/modal`, `--elev-1..5`), radii 6-28px.
-> The structural guidance below (spacing scale, component anatomy, states)
-> remains valid; treat every color/font literal below as historical.
 
 ---
 

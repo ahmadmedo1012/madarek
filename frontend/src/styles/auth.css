@@ -442,7 +442,9 @@
     transition: var(--t-clean);
   }
   .auth-input-toggle:hover { color: var(--text); background: var(--surface-2); }
-  .auth-input-toggle:active { transform: scale(0.94); }
+  /* r132-F5: was a raw scale(0.94) — a 4th press register; the controls
+     register token (0.97) owns every control press (r130-W2-7 ladder). */
+  .auth-input-toggle:active { transform: scale(var(--press-scale)); }
   /* Clears the toggle (4px inset + 44px wide + 4px breathing) so text
      never runs under the glyph. */
   .auth-input-wrap.has-toggle .auth-input {

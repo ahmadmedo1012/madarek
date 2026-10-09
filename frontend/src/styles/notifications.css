@@ -255,9 +255,11 @@
     background var(--motion-duration-short) var(--ease-out),
     transform var(--motion-duration-micro) var(--ease-out);
 }
-.bottom-nav-item:active {
-  transform: scale(0.96);
-}
+/* (r132-F5: `.bottom-nav-item:active { transform: scale(0.96) }` deleted
+   here — dead rule. The bottom nav renders only ≤640px, inside
+   polish.css's ≤920px overrides-layer block whose
+   `scale(var(--state-nav-pressed-scale))` (0.93) always won; the 0.96 was
+   misleading residue from before the r130-W2-7 press unification.) */
 .bottom-nav-item:hover { color: var(--text); }
 
 /* Active item — branded chip with floating icon */
