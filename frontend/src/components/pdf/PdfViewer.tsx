@@ -26,12 +26,22 @@ type PdfLoadingTask = ReturnType<PdfjsModule['getDocument']>;
 let pdfjsPromise: Promise<PdfjsModule> | null = null;
 
 /** Load pdfjs-dist once per session (memoized) and arm the self-hosted
- * worker URL before the module is ever used to open a document. */
+ * worker URL before the module is ever used to open a document.
+ * r134 (V1 P3): a rejected chunk load used to poison the memo forever —
+ * clear the slot on failure so a retry (ErrorState / remount) can fetch
+ * again instead of hanging in the loading state with an unhandled
+ * rejection. */
 function loadPdfjs(): Promise<PdfjsModule> {
-  pdfjsPromise ??= import('pdfjs-dist').then((pdfjs) => {
-    pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
-    return pdfjs;
-  });
+  pdfjsPromise ??= import('pdfjs-dist').then(
+    (pdfjs) => {
+      pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+      return pdfjs;
+    },
+    (err) => {
+      pdfjsPromise = null; // un-poison the memo — next call retries
+      throw err;
+    },
+  );
   return pdfjsPromise;
 }
 
@@ -190,7 +200,15 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         },
       );
     };
-    void loadPdfjs().then(start);
+    // r134 (V1 P3): a failed lazy chunk used to leave the viewer spinning
+    // forever with an unhandled rejection — surface the honest error state
+    // (same message as the corrupt-PDF path above; the memo self-heals so
+    // the retry button genuinely re-fetches).
+    void loadPdfjs().then(start, (err) => {
+      if (cancelled) return;
+      setError({ message: 'تعذّر تحميل المستند', cause: err });
+      setLoading(false);
+    });
 
     return () => {
       cancelled = true;
