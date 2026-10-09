@@ -80,7 +80,7 @@ const FRONTEND_DIST = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
  * both hashes from frontend/index.html and fails when either pin below
  * stops matching — after editing an inline script, refresh these pins.
  */
-const THEME_BOOTSTRAP_SHA256 = '9aiIJ7GqHujctt3TmPyC5y1Tmmc1Dvrpzlm0NhWmtQs=';
+const THEME_BOOTSTRAP_SHA256 = '6ptbvPv0RVee+PT27T70VT/K9H6EVIE6x1AeCFuiPTk=';
 const JSON_LD_SHA256 = 'GAYSjtUnNib298VwQUIkYNYTt+UtlJ1hOQU4tThmKz0=';
 
 export function createApp() {

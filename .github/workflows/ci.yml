@@ -135,6 +135,11 @@ jobs:
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
       - run: node scripts/verify-parity-export.mjs
+      # r136: was manual-only since R3-W2-5 — the guard protects the LIVE
+      # CSP pins (theme bootstrap + JSON-LD in backend/src/app.ts); a stale
+      # pin means production browsers block dark-theme pre-paint. Zero
+      # dependencies (bash + sha256sum), so it belongs in this job.
+      - run: bash scripts/check-csp-hash.sh
 
   surface-drift:
     name: Surface drift

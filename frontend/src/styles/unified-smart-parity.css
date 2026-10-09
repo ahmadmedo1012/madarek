@@ -63,10 +63,7 @@
     --sp-9: 48px;   --sp-10: 56px;  --sp-11: 72px;  --sp-12: 96px;
     --sp-13: 128px; --sp-14: 160px; --sp-15: 192px; --sp-16: 240px;
 
-    /* aliases retained for legacy code */
-    --sp-2x: var(--sp-2); --sp-3x: var(--sp-3); --sp-4x: var(--sp-4);
-    --sp-5x: var(--sp-5); --sp-6x: var(--sp-6); --sp-8x: var(--sp-7);
-    --sp-12x: var(--sp-9); --sp-16x: var(--sp-13);
+    /* (r136: --sp-*x legacy aliases deleted with the canon — see tokens.css) */
 
     /* ─── Radius — Notion-soft, 7 rungs + full ────────────────────── */
     --r-xs: 6px;
@@ -81,9 +78,7 @@
     --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
     --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
     --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
-    --st-r-default: var(--r-sm); --st-r-lg: var(--r-md);
-    --st-r-xl: var(--r-lg);      --st-r-2xl: var(--r-xl);
-    --st-r-full: var(--r-full);
+    /* (r136: --st-r-* deleted with the canon — see tokens.css) */
 
     /* ─── Type — IBM Plex Sans Arabic first ───────────────────────── */
     --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
