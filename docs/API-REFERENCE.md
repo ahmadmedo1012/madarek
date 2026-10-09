@@ -2,7 +2,7 @@
 
 **Base URL:** `/api/v1`
 **Envelope:** `{ data: T }` on success, `{ error: { code, message, details? } }` on error
-**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 189 endpoints (188 route registrations + `/health`; the pre-C5 count of 190 included a `router.post(` match inside a rateLimit.ts doc comment), one row each
+**Generated from:** `backend/src/app.ts` route mounts + `backend/src/http/routes/*.ts` + `backend/src/modules/{theme,onboarding,milestones}/router.ts` — 193 endpoints (188 route registrations in the 25 route files + 4 module-router endpoints + `/health`; the pre-C5 count of 190 included a `router.post(` match inside a rateLimit.ts doc comment), one row each
 
 ## Conventions
 
@@ -91,6 +91,7 @@
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
+| GET | `/offerings` | TEACHER/ADMIN/OWNER/QUALITY | Paginated offerings list (scope-picker for announcement authors): role-scoped via `offeringVisibilityFilter`, `q` filter over course name/code, `{ data, meta }` envelope |
 | GET | `/offerings/:id` | access-checked | Offering detail (course, teacher, schedule); clean 404 on unknown id |
 | GET | `/offerings/:id/materials` | access-checked | Materials (take 200, newest first) |
 | POST | `/offerings/:id/materials` | TEACHER/ADMIN/OWNER | Upload material record (`{ name, type, sizeBytes, url, description? }`) |

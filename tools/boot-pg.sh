@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Boot portable PostgreSQL for madarek dev (mirrors previous session's tools/pgsql setup)
 set -e
-TOOLS=/home/z/my-project/madarek/tools
+# Resolve tools/ from the script's own location (works from any checkout path).
+TOOLS="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PGBIN="$TOOLS/node_modules/@embedded-postgres/linux-x64/native/bin"
 PGDATA="$TOOLS/pgdata"
 SOCK="$TOOLS/pgsock"

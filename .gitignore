@@ -38,6 +38,7 @@ Thumbs.db
 # Testing
 coverage/
 .nyc_output/
+playwright-report/
 
 # Prisma
 backend/prisma/migrations/dev/
@@ -92,8 +93,11 @@ test-results/
 .gstack/
 
 # portable dev PG runtime artifacts (tools/boot-pg.sh)
+# NOTE: tools/package.json is intentionally TRACKED (boot-pg.sh needs it to
+# install @embedded-postgres on a fresh clone); only its generated lockfile
+# is local-only.
 tools/pgdata/
 tools/pgsock/
 tools/pg.log
 tools/node_modules/
-tools/package*.json
+tools/package-lock.json

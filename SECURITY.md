@@ -1,7 +1,7 @@
 # الأمان | Security Policy
 
-> سياسة إفصاح مسؤول واحدة لكل مشاريع منظومة مدارك.
-> One responsible-disclosure policy for the whole Madarek ecosystem.
+> سياسة الإفصاح المسؤول لمنصة مدارك.
+> The responsible-disclosure policy for the Madarek platform.
 
 ## النسخ المدعومة | Supported Versions
 
@@ -23,14 +23,12 @@ a description, reproduction steps, and expected impact. Target response: 72h.
 
 ## النطاق | Scope
 
-**داخل النطاق | In scope** — التطبيقات الخمسة للمنظومة (مدارك، سمارت لينك،
-سمارت منيو، سمارت بوت، سمارت أوردر) وجميع مساراتها: كل واجهات `/api`، المصادقة
-والجلسات، المدفوعات وخطوط المال، الـ Webhooks (ماسنجر/تيليجرام)، عزل المستأجرين
-(tenant isolation)، وقواعد البيانات ومعالجة البيانات الشخصية.
+**داخل النطاق | In scope** — منصة مدارك وجميع مساراتها: كل واجهات `/api`،
+المصادقة والجلسات، عزل نطاق الكليات (college scope)، تخزين الملفات وتقديم
+البحوث، وقاعدة البيانات ومعالجة البيانات الشخصية.
 
-The five ecosystem apps (madarek, Smart-Link, Smart-Menu, SmartBot,
-Smart-Order): all `/api` routes, auth & sessions, payments & money paths,
-Messenger/Telegram webhooks, tenant isolation, data storage & PII handling.
+The Madarek platform: all `/api` routes, auth & sessions, college-scope
+isolation, file storage & research submissions, data storage & PII handling.
 
 **خارج النطاق | Out of scope** — هجمات حجب الخدمة، الهندسة الاجتماعية، التقارير
 الآلية بلا إثبات عملي، والثغرات في نسخ معدَّلة غير منشورة. | DoS, social
@@ -42,13 +40,8 @@ deployments.
 | المستودع / Repo | CSP | تحديد المعدل / Rate limit | فحص الأسرار / Secret scan |
 |---|---|---|---|
 | مدارك / madarek | ✓ helmet + فحص هاش | ✓ وسيط الخلفية | — |
-| سمارت منيو / Smart-Menu | — | ✓ قاعدي (DB) | ✓ CI |
-| سمارت لينك / Smart-Link | ✓ قائمة سماح | ✓ مسار الاتصال | — |
-| سمارت بوت / SmartBot | ✓ middleware | ✓ FastAPI | ✓ CI |
-| سمارت أوردر / Smart-Order | — | ✓ (+ e2e) | — |
 
-ملفات `.env` غير متتبَّعة في كل المستودعات الخمسة. | `.env` files are untracked
-in all five repositories.
+ملف `.env` غير متتبَّع. | `.env` files are untracked.
 
 ## الإفصاح | Disclosure
 

@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-02
 
-**Status**: Draft
+**Status**: Shipped — التنفيذ مكتمل واندُمج (الحالة المرجعية: `docs/SPECS-REFERENCE.md`)
 
 **Input**: User description: "اريد اضافة لما انقر على الكليات يظهر لي كل الكليات التي بالجامعة كاضافة منظمة وجميلة" (When I click on Colleges, show me all the colleges in the university as an organized and beautiful addition).
 

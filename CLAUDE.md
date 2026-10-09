@@ -1,4 +1,8 @@
 <!-- SPECKIT START -->
+> **AI agents:** start from **`AGENTS.md`** (repo root) — it maps every
+> source of truth, the exact commands, and the mandatory verification
+> steps. This file is only the SpeckKit feature-status banner.
+
 Status: feature 012 (**Design, Theming & Graphics Uplift — World-Class Tier**,
 `012-design-graphics-uplift`) **shipped** — campaigns 1–2 landed it end to
 end (see `specs/012-design-graphics-uplift/plan.md`; wave-14

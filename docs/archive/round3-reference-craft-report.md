@@ -1,3 +1,5 @@
+> **[توثيق تاريخي — Historical]** تقرير جولة تصميم منقضية (2026-09) أُبقي كدليل زمني فقط. الحالة الحالية للمنتج في `DESIGN.md` و`docs/PROJECT-REFERENCE.md` وسجل الالتزامات (rNNN). لا يُحدَّث هذا الملف.
+
 # Round 3 — Reference-Craft Gap Analysis (browser-evidence-based)
 
 **التاريخ:** 2026-09-28 · **الفرع:** `feat/immersive-redesign-v2` (merged `feat/round3-reference-craft` @ 783d6a2)

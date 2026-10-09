@@ -50,7 +50,7 @@
 
     /* (r132-F5 dead-token sweep: the cine/eyebrow/mega display families
        were deleted from here — zero consumers since their authored wave
-       (rg-verified across tsx + css), mirrored in unified-smart-parity.css
+       (rg-verified across tsx + css), mirrored in unified-parity.css
        + shared-design-system.css so the export stays a faithful
        distillation. Deleted: --fw-cine/-heavy (800/900), --fs-cine-hero/
        xl/lg, --lh-cine(-tight), --fs-eyebrow, --fs-mega,

@@ -2,15 +2,14 @@
    Canonical Madarek parity export v1 — faithful distillation of
    tokens.css @ cc03c2e.
 
-   Reference artifact for future reconciliation; the Smart repos carry
-   their own pin-verified token bridges (916+ parity pins — see
-   worklog r127-A6). This file is NOT imported by madarek's own app
-   (main.tsx chain: fonts/tokens/motion/base/components/layout/auth/
-   notifications/student/polish) and is NOT applied to any Smart repo.
+   Reference artifact for the design canon — the verification surface
+   the parity gate diffs against tokens.css. This file is NOT imported
+   by madarek's own app (main.tsx chain: fonts/tokens/motion/base/
+   components/layout/auth/notifications/student/polish).
 
    HISTORY (r127-F1): the first revision of this file (added in cc03c2e
-   with the claim "Applied to: Smart-Link, Smart-Bot, Smart-Menu" — a
-   false claim; it was never applied anywhere) diverged from canonical
+   with a false claim of external application — it was never applied
+   anywhere) diverged from canonical
    tokens.css in 40+ tokens: a generic near-black dark ground instead
    of the night indigo, a 100/200/300ms motion scale instead of the
    80/160/240/380/520/720 ladder, a saffron/ember light accent instead
@@ -37,8 +36,7 @@
      · Landing-scoped Orbit Ink (--ln-* family + the 42s marquee) is
        landing-only vocabulary; it stays out of the product export.
      · Role-accent / college-accent slots (:root… body[data-role]) are
-       madarek-app identity slots; the Smart products carry no
-       data-role contract.
+       madarek-app identity slots; they stay out of the export.
      · The illustration palette (--ill-*) and its prefers-contrast
        stroke thickening are illustration-layer vocabulary and stay
        with the illustration system.

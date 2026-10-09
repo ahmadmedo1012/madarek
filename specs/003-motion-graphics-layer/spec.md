@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-02
 
-**Status**: Draft
+**Status**: Spec-only — غير منفَّذ؛ المواصفة مرجع مستقبلي (الحالة المرجعية: `docs/SPECS-REFERENCE.md`)
 
 **Input**: User description: "Add elegant, lively, premium motion graphics and subtle animated visual elements across the product to make the experience feel more alive, modern, and polished without becoming distracting or noisy."
 

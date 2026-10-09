@@ -1,3 +1,5 @@
+> **[توثيق تاريخي — Historical]** تقرير جولة تصميم منقضية (2026-09) أُبقي كدليل زمني فقط. الحالة الحالية للمنتج في `DESIGN.md` و`docs/PROJECT-REFERENCE.md` وسجل الالتزامات (rNNN). لا يُحدَّث هذا الملف.
+
 # Final Polish — Gap List (evidence-based, priority-ordered)
 
 **التاريخ**: 2026-09-28 · **البناء الحي وقت الفحص**: `2026-09-28T11:15Z-round3-orbit-ink-60fps` (مُتحقَّق عبر `/api/v1/health`)

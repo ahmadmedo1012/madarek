@@ -3,7 +3,9 @@
 Express 4.22.3 (TypeScript, ESM) + Prisma 5.22 over Neon PostgreSQL.
 All endpoints are mounted under the base path **`/api/v1`** and return a
 `{ data: T }` envelope (errors return `{ error: { code, message } }`).
-The complete, code-accurate endpoint table (188 endpoints) lives in
+The complete, code-accurate endpoint table (193 endpoints — 188 route
+registrations in the 25 route files + 4 module-router endpoints + `GET
+/health`) lives in
 [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — the tables below are a
 condensed overview.
 

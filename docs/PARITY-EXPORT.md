@@ -1,6 +1,6 @@
-# Parity Export — the family bridge · جسر التكافؤ
+# Parity Export — the design-canon gate · بوابة تكافؤ التصميم
 
-**Contract:** how the Madarek design canon ([`DESIGN.md`](../DESIGN.md)) crosses from this reference repo to the four Smart products (Smart-Menu · Smart-Link · SmartBot · Smart-Order), and what the verify gate enforces.
+**Contract:** what the Madarek design-canon export pair ([`DESIGN.md`](../DESIGN.md)) is, and what the verify gate enforces.
 
 **One command, four gates:**
 
@@ -17,17 +17,17 @@ Dependency-free (`node:fs` / `node:path` / `node:url` only) — runs anywhere No
 
 | File | Role | Lines |
 |---|---|---|
-| `frontend/src/styles/unified-smart-parity.css` | **Canonical export** — a faithful distillation of `tokens.css` / `motion.css` / `components.css`: both theme blocks (light cream + copper, dark night + gold), status/accent families, elevation recipes, glass surfaces, structural component recipes | ~1193 |
+| `frontend/src/styles/unified-parity.css` | **Canonical export** — a faithful distillation of `tokens.css` / `motion.css` / `components.css`: both theme blocks (light cream + copper, dark night + gold), status/accent families, elevation recipes, glass surfaces, structural component recipes | ~1193 |
 | `frontend/src/styles/shared-design-system.css` | **Structural skeleton** — the non-color layer: spacing, radius, type scale, motion ladder, z-order, layout dimensions, type roles. **Color always comes from the parity file.** | ~399 |
 
 **The two hard facts about the pair:**
 
 1. **It is NOT imported by madarek's own app.** The app chain is `fonts → tokens → motion → base → components → layout → auth → notifications → student → polish` — the export pair sits outside it, as reference artifacts.
-2. **It is NOT applied to any Smart repo.** Each product carries its **own pin-verified token bridge** (hundreds of pinned assertions per repo). The export pair is what those bridges are diffed *against* — the reconciliation surface, not a runtime dependency.
+2. **It is not a runtime dependency of anything.** The pair exists as the reference distillate the verify gate diffs against canonical `tokens.css` — pinning the canon so silent drift fails loudly.
 
-> **History (why this contract exists):** the first revision of the parity file (added in cc03c2e with the claim *"Applied to: Smart-Link, Smart-Bot, Smart-Menu"* — a false claim; it was never applied anywhere) diverged from canonical `tokens.css` in 40+ tokens: a generic near-black dark ground instead of night indigo, a 100/200/300ms motion scale instead of the 80/160/240/380/520/720 ladder, a saffron/ember light accent instead of copper-on-cream, an invented 24px radius rung, Tailwind-gray neutrals, a dark `.btn.primary` referencing an un-inverted neutral ramp, a reduced-motion hole (raw `--t-*` never zeroed), and an invented ten-band z-scale. The r127-F1 rewrite corrected every divergence, and the verify script now pins the export to the canonical source so it can never silently drift again.
+> **History (why this contract exists):** the first revision of the parity file (added in cc03c2e with a false claim of external application — it was never applied anywhere) diverged from canonical `tokens.css` in 40+ tokens: a generic near-black dark ground instead of night indigo, a 100/200/300ms motion scale instead of the 80/160/240/380/520/720 ladder, a saffron/ember light accent instead of copper-on-cream, an invented 24px radius rung, Tailwind-gray neutrals, a dark `.btn.primary` referencing an un-inverted neutral ramp, a reduced-motion hole (raw `--t-*` never zeroed), and an invented ten-band z-scale. The r127-F1 rewrite corrected every divergence, and the verify script now pins the export to the canonical source so it can never silently drift again.
 
-**Load order (for products that choose to adopt the pair as their bridge base):** `unified-smart-parity.css` first (color + motion + state source), then `shared-design-system.css` (structural layer). Host aliases are tolerated **only** when the parity file is absent (shadcn-style hosts): `--foreground`, `--muted-foreground`, `--card`, `--card-muted`, `--ring`. Everything else resolves from the pair.
+**Load order (if the pair is ever consumed outside the app):** `unified-parity.css` first (color + motion + state source), then `shared-design-system.css` (structural layer). Host aliases are tolerated **only** when the parity file is absent (shadcn-style hosts): `--foreground`, `--muted-foreground`, `--card`, `--card-muted`, `--ring`. Everything else resolves from the pair.
 
 ---
 
@@ -48,7 +48,7 @@ Documented canonical wrinkle: `--journey-core` historically spelled `var(--ink)`
 
 ## 3. The 43 retired values · القيم المُحالة للتقاعد
 
-These spellings are **retired from the family forever**. They must never reappear in the export pair, and products should treat them as anti-patterns (the values that never shipped):
+These spellings are **retired forever**. They must never reappear in the export pair — treat them as anti-patterns (the values that never shipped):
 
 | Group | Retired values |
 |---|---|
@@ -70,16 +70,16 @@ These spellings are **retired from the family forever**. They must never reappea
 
 | Stays out of the export | Why |
 |---|---|
-| **Orbit Ink (`--ln-*` family + the 42s marquee)** | Landing-only vocabulary — the marketing world is madarek's own; products have their own landing language. Reference doc: `DESIGN.md` §1a. |
-| **Role-accent / college-accent slots** (`body[data-role]`) | Madarek-app identity slots; the Smart products carry no `data-role` contract. |
+| **Orbit Ink (`--ln-*` family + the 42s marquee)** | Landing-only vocabulary — the marketing world is madarek's own. Reference doc: `DESIGN.md` §1a. |
+| **Role-accent / college-accent slots** (`body[data-role]`) | Madarek-app identity slots — stay out of the export. |
 | **Illustration palette (`--ill-*)`** | Illustration-layer vocabulary (incl. its `prefers-contrast` stroke thickening) — stays with the illustration system. |
 
 ---
 
-## 5. How a product consumes this · كيف تتبنّى
+## 5. Rules of engagement · قواعد التعامل
 
-1. **Do not import the pair as-is into a product.** Carry your own pin-verified token bridge (as all four Smart repos do) and diff it against this pair when reconciling.
-2. **A product that needs a different value is proposing a family change** — open an issue here; don't fork the token silently.
+1. **Do not import the pair into the app.** The app consumes `tokens.css` / `motion.css` / `components.css` directly — the pair is the verification surface only.
+2. **A changed value belongs in `tokens.css` first** — open an issue/PR against the canonical source; never fork a token into the export by hand.
 3. **Run the gate after any reference token change** — `node scripts/verify-parity-export.mjs` must stay green (`163/163`) before a change to `tokens.css` ships.
 4. The canon in human-readable form is [`DESIGN.md`](../DESIGN.md); the authored values live in `frontend/src/styles/tokens.css`.
 

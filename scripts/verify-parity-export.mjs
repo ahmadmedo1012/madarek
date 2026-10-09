@@ -3,7 +3,7 @@
    verify-parity-export.mjs — canonical parity gate for the export pair
    ─────────────────────────────────────────────────────────────────────
    r127-F1 companion to:
-     frontend/src/styles/unified-smart-parity.css   (canonical export)
+     frontend/src/styles/unified-parity.css          (canonical export)
      frontend/src/styles/shared-design-system.css   (structural skeleton)
 
    Dependency-free (node:fs / node:path / node:url only). Gates:
@@ -39,7 +39,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const PATHS = {
   canonical: join(ROOT, 'frontend/src/styles/tokens.css'),
-  parity: join(ROOT, 'frontend/src/styles/unified-smart-parity.css'),
+  parity: join(ROOT, 'frontend/src/styles/unified-parity.css'),
   shared: join(ROOT, 'frontend/src/styles/shared-design-system.css'),
 };
 const read = (p) => readFileSync(p, 'utf8');
@@ -513,7 +513,7 @@ let passCount = 0;
 
 console.log('verify-parity-export — canonical parity gate (r127-F1)');
 console.log(`  canonical: frontend/src/styles/tokens.css (${lineCount(read(PATHS.canonical))} lines)`);
-console.log(`  export:    frontend/src/styles/unified-smart-parity.css (${lineCount(read(PATHS.parity))} lines)`);
+console.log(`  export:    frontend/src/styles/unified-parity.css (${lineCount(read(PATHS.parity))} lines)`);
 console.log(`  companion: frontend/src/styles/shared-design-system.css (${lineCount(read(PATHS.shared))} lines)`);
 console.log('');
 
@@ -575,7 +575,7 @@ const parityDefs = collectDefs(read(PATHS.parity));
 const sharedDefs = collectDefs(read(PATHS.shared));
 const HOST_ALIASES = new Set(['--foreground', '--muted-foreground', '--card', '--card-muted', '--ring']);
 
-const auditParity = auditVars(read(PATHS.parity), parityDefs, 'unified-smart-parity.css (self-contained)');
+const auditParity = auditVars(read(PATHS.parity), parityDefs, 'unified-parity.css (self-contained)');
 const auditShared = auditVars(read(PATHS.shared), new Set([...sharedDefs, ...parityDefs]), 'shared-design-system.css (∪ parity defs)', HOST_ALIASES);
 
 const auditFail =
@@ -595,7 +595,7 @@ if (auditFail) process.exitCode = 1;
 const scanText = (css) => css.replace(/\s+/g, ' ');
 const forbiddenHits = [];
 for (const [file, css] of [
-  ['unified-smart-parity.css', read(PATHS.parity)],
+  ['unified-parity.css', read(PATHS.parity)],
   ['shared-design-system.css', read(PATHS.shared)],
 ]) {
   const text = scanText(css);
@@ -610,7 +610,7 @@ for (const h of forbiddenHits) console.log(`      ${h}`);
 /* Gate 4 — brace balance */
 const braceIssues = [];
 for (const [file, css] of [
-  ['unified-smart-parity.css', read(PATHS.parity)],
+  ['unified-parity.css', read(PATHS.parity)],
   ['shared-design-system.css', read(PATHS.shared)],
 ]) {
   const text = stripComments(css);

@@ -94,7 +94,7 @@ madarek/
   logins for 15 minutes.
 - **Roles** — `STUDENT`, `TEACHER`, `ADMIN`, `QUALITY`, `OWNER`.
 - **Capabilities** — fine‑grained permissions layered on roles; effective set =
-  role defaults + per‑user grants − revokes. See [BACKEND.md](./BACKEND.md).
+  role defaults + per‑user grants − revokes. See [BACKEND.md](../../BACKEND.md).
 
 ---
 
@@ -116,7 +116,7 @@ production `DATABASE_URL` (see the root `README.md`).
 
 ## 7. Related documents
 
-- [BACKEND.md](./BACKEND.md) — API reference, middleware, auth, env, scripts
+- [BACKEND.md](../../BACKEND.md) — API reference, middleware, auth, env, scripts
 - [DATA-MODEL.md](./DATA-MODEL.md) — Prisma models, relations, enums
 - [FRONTEND.md](./FRONTEND.md) — routing, pages, state, CSS, theming, components
 - [FEATURES.md](./FEATURES.md) — all features with backing models and pages

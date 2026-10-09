@@ -12,12 +12,12 @@ Zawia.
 | Document | Covers |
 |----------|--------|
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | System overview, stack, repo layout, request lifecycle, auth summary, deployment |
-| [BACKEND.md](./BACKEND.md) | Full API reference, middleware chain, auth, permissions, env vars, scripts |
-| [docs/API-REFERENCE.md](./docs/API-REFERENCE.md) | Complete endpoint-by-endpoint API table (the source of truth for routes) |
+| [BACKEND.md](../../BACKEND.md) | Full API reference, middleware chain, auth, permissions, env vars, scripts |
+| [docs/API-REFERENCE.md](../API-REFERENCE.md) | Complete endpoint-by-endpoint API table (the source of truth for routes) |
 | [DATA-MODEL.md](./DATA-MODEL.md) | All Prisma models by domain, key relations, enums |
 | [FRONTEND.md](./FRONTEND.md) | Routing, state, data layer, CSS architecture, theming, components, page inventory |
 | [FEATURES.md](./FEATURES.md) | All 27 features with backing models, pages, and a roles matrix |
-| [docs/ux-rules-applied.md](./docs/ux-rules-applied.md) | UX rules adopted from the ui‑ux‑pro‑max toolkit |
+| [docs/ux-rules-applied.md](./ux-rules-applied.md) | UX rules adopted from the ui‑ux‑pro‑max toolkit |
 
 ## At a glance
 

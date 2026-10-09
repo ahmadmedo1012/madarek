@@ -9,7 +9,7 @@
 **Forms/Validation:** react-hook-form 7.54.2 + Zod 3.23.8
 **Icons:** lucide-react 0.469 (Lucide-only discipline)
 **PDF:** pdfjs-dist 4.10 (lazy-loaded chunk)
-**CSS:** vanilla design-token system — 15 files, `@layer tokens, base, layout, components, pages, overrides;` (no framework)
+**CSS:** vanilla design-token system — 18 files (10 eager + 6 page-scoped + 2 export-only parity pair), `@layer tokens, base, layout, components, pages, overrides;` (no framework)
 
 ---
 
@@ -233,6 +233,9 @@ Role-based navigation groups defined per role:
 | 13 | `pdf.css` | 17KB | DocumentViewerPage chunk | PDF viewer |
 | 14 | `owner.css` | 37KB | OwnerPages chunk (+3 borrowers) | Owner panel |
 | 15 | `training.css` | 29KB | 12 lazy consumers | Track/leaderboard/XP families (shared across many pages) |
+| 16 | `player.css` | 15KB | LecturePlayerPage chunk | Branded player chrome, checkpoint modal, chapters sidebar |
+| 17 | `unified-parity.css` | 50KB | **export pair — NOT imported by the app** | Canonical parity distillation (gated by `scripts/verify-parity-export.mjs`) |
+| 18 | `shared-design-system.css` | 25KB | **export pair — NOT imported by the app** | Second half of the parity export pair |
 
 All stylesheets write inside the cascade layers declared by `tokens.css` (`@layer tokens, base, layout, components, pages, overrides`).
 

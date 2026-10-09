@@ -9,10 +9,10 @@
 >
 > - **Live source of truth:** `frontend/src/styles/tokens.css` (values,
 >   WCAG math, decision history — the single authored token source), plus
->   the governed export pair `unified-smart-parity.css` /
+>   the governed export pair `unified-parity.css` /
 >   `shared-design-system.css` (`node scripts/verify-parity-export.mjs`).
 > - **Human-readable design reference:** [`DESIGN.md`](../../DESIGN.md) at
->   the repo root — the family design reference. It states the canon
+>   the repo root — the design reference. It states the canon
 >   (Orbit Ink landing world, copper-on-cream / gold-on-night product
 >   theme, IBM Plex Sans Arabic 400-700, motion ladder, grain, elevation,
 >   component recipes), with values extracted from code. Start there.

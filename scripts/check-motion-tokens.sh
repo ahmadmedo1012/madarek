@@ -56,7 +56,7 @@
 # r127-F1 additions (the parity-export pair — token-DEFINITION
 # foundations in their own right, same rationale as tokens.css above:
 # raw durations/easings are their job):
-#   frontend/src/styles/unified-smart-parity.css
+#   frontend/src/styles/unified-parity.css
 #   frontend/src/styles/shared-design-system.css
 #   Both are NOT imported by the app (export artifacts, unwired from
 #   main.tsx); their values are gated instead by
@@ -104,7 +104,7 @@ WHOLESALE = {
     # r127-F1: the parity-export pair — token-definition foundations
     # (see the header note). Unwired from the app; value-gated by
     # scripts/verify-parity-export.mjs instead.
-    'frontend/src/styles/unified-smart-parity.css',
+    'frontend/src/styles/unified-parity.css',
     'frontend/src/styles/shared-design-system.css',
 }
 

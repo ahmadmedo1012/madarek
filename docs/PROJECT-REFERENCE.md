@@ -67,7 +67,7 @@ madarek/
 - react-hook-form 7.54.2 + Zod 3.23.8
 - lucide-react 0.469 (icons — Lucide-only discipline)
 - pdfjs-dist 4.10 (PDF viewer, lazy-loaded chunk)
-- Testing: Vitest (855 unit/contract/gallery tests), Playwright + axe-core (audit harness)
+- Testing: Vitest (1015 unit/contract/gallery tests), Playwright + axe-core (audit harness)
 - TypeScript strict posture: `strict` + `noUncheckedIndexedAccess` + `noFallthroughCasesInSwitch` + `noImplicitOverride` + `noUnusedLocals` + `noUnusedParameters` + `verbatimModuleSyntax` — all ON in both workspaces (src + tests; the 5 flag additions landed wave 17, CI-enforced)
 
 The UI is Arabic-first RTL with no i18n runtime — there is **no** i18next/react-i18next dependency (the locale layer from spec 011 US7 was never implemented).
@@ -82,7 +82,7 @@ The UI is Arabic-first RTL with no i18n runtime — there is **no** i18next/reac
 - helmet 8.0.0 (CSP enabled — D7 allow-list), cors 2.8.5, cookie-parser 1.4.7
 - express-rate-limit 7.4.1
 - pdf-parse 1.1 (text extraction)
-- Testing: Vitest (970 DB-free tests; `NODE_ENV=test`, no DB calls)
+- Testing: Vitest (1021 DB-free tests; `NODE_ENV=test`, no DB calls)
 
 ### Database
 - Neon (serverless PostgreSQL)
@@ -155,7 +155,7 @@ Effective = (role defaults) ∪ (grants) ∖ (revokes)
 | `npm run typecheck` | Aggregate typecheck: backend + frontend, src **and** tests (the same 4 commands CI runs) |
 | `npm run db:migrate` | Apply Prisma migrations |
 | `npm run db:seed` | Seed production data |
-| `npm test` | Run all tests (frontend 855, then backend 970) |
+| `npm test` | Run all tests (frontend 1015, then backend 1021) |
 | `npm run check:motion-tokens` / `check:icons` / `check:i18n` | Design gates (motion-token + Lucide-icon discipline; i18n is a documented loud-skip) |
 | `npm run validate:colleges` | College identity profiles (WCAG contrast, assets, lucide validity) — **runs in CI** (typecheck job) and manually |
 
@@ -225,7 +225,7 @@ Campaign 3 fixed the Arabic copy register (wave 17). When writing UI copy:
 
 ## Campaign 3 (التعميق الكلي)
 
-The current maintenance phase ran as four waves of parallel, file-disjoint batches: **wave 15** — 11 read-only dimension audits (visual, correctness, data-layer, copy, a11y, config/DX, …) producing the `audits/15-*.md` findings; **wave 16** — correctness & safety sweep (transactional claim-guards, race fixes, pure-logic extractions + test pins, dead-code deletions, a11y platform work); **wave 17** — consistency sweep (Arabic error messages, zod trim platform, glossary/numeral rulings, DELETE 200 convention, 5 strict tsconfig flags, CI/DX truth); **wave 18** — feature completion + this docs-truth pass. Every number in this file is re-measured, not carried forward.
+The current maintenance phase ran as four waves of parallel, file-disjoint batches: **wave 15** — 11 read-only dimension audits (visual, correctness, data-layer, copy, a11y, config/DX, …) producing the `audits/4-A*.md` findings; **wave 16** — correctness & safety sweep (transactional claim-guards, race fixes, pure-logic extractions + test pins, dead-code deletions, a11y platform work); **wave 17** — consistency sweep (Arabic error messages, zod trim platform, glossary/numeral rulings, DELETE 200 convention, 5 strict tsconfig flags, CI/DX truth); **wave 18** — feature completion + this docs-truth pass. Every number in this file is re-measured, not carried forward.
 
 ## Middleware Chain
 

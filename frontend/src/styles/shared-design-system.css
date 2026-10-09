@@ -1,28 +1,27 @@
 /* ═════════════════════════════════════════════════════════════════════
    SHARED DESIGN SYSTEM — structural skeleton (madarek parity, r127-F1)
    ─────────────────────────────────────────────────────────────────────
-   Companion to unified-smart-parity.css. This file is the STRUCTURAL
+   Companion to unified-parity.css. This file is the STRUCTURAL
    (non-color) skeleton: spacing, radius, type scale, motion ladder,
    z-order, layout dimensions, type roles, and the structural component
    recipes (card / btn / badge / metric / stagger / reveal / skeleton).
 
-   COLOR ALWAYS COMES FROM THE PARITY FILE — unified-smart-parity.css
+   COLOR ALWAYS COMES FROM THE PARITY FILE — unified-parity.css
    owns both theme blocks (light cream+copper, dark night+gold), the
    status/accent families, the elevation recipes and the glass
    surfaces. Where the two files overlap (radius, motion, z values,
    structural recipes) they are value-identical by contract; verify
    with: node scripts/verify-parity-export.mjs
 
-   Load order:  unified-smart-parity.css   (color + motion + state source)
+   Load order:  unified-parity.css         (color + motion + state source)
                 shared-design-system.css   (this structural layer)
 
    Host aliases tolerated ONLY when the parity file is absent
    (shadcn-style): --foreground, --muted-foreground, --card,
    --card-muted, --ring. Everything else resolves from the pair.
 
-   NOT imported by madarek's own app (main.tsx) — export artifacts,
-   not applied to any Smart repo; the Smart repos carry their own
-   pin-verified token bridges (worklog r127-A6).
+   NOT imported by madarek's own app (main.tsx) — export artifacts
+   gated by scripts/verify-parity-export.mjs.
 
    Architecture:
      @layer tokens, base, layout, components, polish

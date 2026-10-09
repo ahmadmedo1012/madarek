@@ -134,6 +134,11 @@ jobs:
       # default working-directory is correct.
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
+      # CSP pin drift guard (dependency-free, like the gates above): r133
+      # changed the inline theme-bootstrap script without refreshing its
+      # sha256 pin, and nothing in CI caught it — the drift guard only
+      # existed as a local npm script. Wire it in so pin drift fails CI.
+      - run: bash scripts/check-csp-hash.sh
       - run: node scripts/verify-parity-export.mjs
       # r136: was manual-only since R3-W2-5 — the guard protects the LIVE
       # CSP pins (theme bootstrap + JSON-LD in backend/src/app.ts); a stale

@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-02
 
-**Status**: Draft
+**Status**: Shipped — التنفيذ مكتمل واندُمج (الحالة المرجعية: `docs/SPECS-REFERENCE.md`)
 
 **Input**: User description: "Major visual and experiential upgrade of the entire Madrak platform so the result is dramatically more beautiful, modern, polished, coherent, and globally competitive — premium product feel inspired by Notion, Linear, Stripe, Framer, Samsung; still academic, university-centered, credible, role-aware, intelligent."
 

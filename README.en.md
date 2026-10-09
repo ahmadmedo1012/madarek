@@ -1,57 +1,104 @@
-# Madarek — مدارك
+<div dir="ltr">
 
-> **Zawia University Smart Learning Platform** — the official Arabic-RTL LMS of the University of Zawia (Libya), and the design-system **reference** for the Smart family (Smart-Menu · Smart-Link · SmartBot · Smart-Order).
+# Madarek — Zawia University Smart Learning Platform
 
-> 🌐 **English** · the full bilingual README (with the condensed العربية section, deployment guide, environment reference and scripts table) is the canonical doc: [`README.md`](./README.md)
+**Arabic-primary README lives here: [`README.md`](README.md).** This file
+is the English mirror for international readers and tooling.
 
-![Madarek landing — the Orbit Ink hero over the live OrbitScene canvas](docs/screenshots/landing-hero.png)
+**Madarek** is the official smart-learning platform of **University of
+Zawia** (Ministry of Higher Education & Scientific Research, Libya).
 
-## What is this?
+## What it is
 
-Madarek is two things at once:
+One platform serving students, teachers, admins, the quality office and
+the platform owner: flipped classrooms with embedded checkpoints, a
+per-concept mastery matrix, a full research-papers workflow with inline
+PDF annotations, Arabic-normalized cross-document library search, a
+read-only quality-oversight sector, and DB-driven administration with a
+capability-based governance model and a full audit log — all Arabic-RTL,
+with a bespoke two-theme design system (night/gold · cream/copper).
 
-1. **A bilingual academy platform** — a complete LMS: flipped classrooms, a per-concept mastery matrix, a research-papers workflow with PDF annotations, cross-document library search, a read-only quality-oversight sector, and DB-driven admin reporting.
-2. **The family's design reference** — every Smart product clones its design canon from here: the copper-on-cream / gold-on-night product theme, the IBM Plex Sans Arabic type ladder, the motion canon, elevation, component recipes, and RTL rules. The canon is stated in [`DESIGN.md`](./DESIGN.md) and machine-enforced by the parity gate (163/163 token checks).
+**Stack:** Express + TypeScript + Prisma 5 backend serving `/api/v1/*`
+*and* the built React 18 + Vite SPA as a single service; PostgreSQL on
+Neon; deployed on Render with auto-deploy from `main`.
 
-## Screenshots
+## Current state (honest)
 
-The two design worlds as they ship — 1440×900 stills from the live app:
-
-| | |
+| Item | State |
 |---|---|
-| **Orbit Ink landing** | ![Landing hero](docs/screenshots/landing-hero.png) |
-| **Colleges constellation** — the 25-college ring | ![Landing colleges section](docs/screenshots/landing-colleges.png) |
-| **Sign-in · light** — copper on cream | ![Sign-in, light theme](docs/screenshots/auth-light.png) |
-| **Sign-in · dark** — gold on night | ![Sign-in, dark theme](docs/screenshots/auth-dark.png) |
-| **Owner dashboard · light** — KPIs, doughnut chart, activity feed | ![Owner dashboard, light](docs/screenshots/owner-dashboard-light.png) |
-| **Owner dashboard · dark** | ![Owner dashboard, dark](docs/screenshots/owner-dashboard-dark.png) |
+| Core features, all five roles | **Shipped** — 1015 frontend + 1021 backend unit tests green (2026-10-10) |
+| Design system | Documented in `DESIGN.md` — parity gate 163/163 green |
+| AI assistant & plagiarism scan | **Deterministic local simulation, openly labeled** — see `docs/02-features.md` |
+| English i18n, real E2E, file uploads | Not implemented — full list in `docs/16-decisions-and-limitations.md` |
 
-*Full captions and capture notes: [`docs/screenshots/README.md`](docs/screenshots/README.md) · captions in العربية too.*
+## Documentation hub
+
+The Arabic documentation hub: [`docs/README.md`](docs/README.md)
+(numbered guides 01–16 + per-sector modules). Key references (English,
+generated from code): [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
+(193 endpoints), [`docs/DATABASE-REFERENCE.md`](docs/DATABASE-REFERENCE.md)
+(75 models / 30 enums), [`docs/FRONTEND-REFERENCE.md`](docs/FRONTEND-REFERENCE.md),
+[`docs/PROJECT-REFERENCE.md`](docs/PROJECT-REFERENCE.md),
+[`docs/SECRETS-REFERENCE.md`](docs/SECRETS-REFERENCE.md).
+AI agents must read [`AGENTS.md`](AGENTS.md) first.
+
+## Quick start
+
+Prereqs: **Node `>=20 <25`**, **npm**, a PostgreSQL (free Neon works).
+Full guide: `docs/05-setup.md`.
+
+```bash
+git clone https://github.com/ahmadmedo1012/madarek.git && cd madarek
+cp .env.example backend/.env       # fill DATABASE_URL + both JWT secrets
+npm install
+npm run db:migrate                 # apply schema
+npm run db:seed                    # demo data
+
+# two terminals:
+npm run dev                        # backend :4000
+npm run dev:web                    # frontend :5173 (proxies /api → :4000)
+```
+
+**Demo accounts** after seeding (password `Madarek2026!` — public demo
+credential, re-seeding resets it): `student@`, `teacher@`, `admin@`,
+`quality@`, `owner@zu.edu.ly`.
 
 ## Verify it yourself
 
 ```bash
-npm test                               # frontend + backend unit suites (no DB needed)
-node scripts/verify-parity-export.mjs  # design-parity gate — 163/163 token checks
+npm run lint                          # ESLint — 0 errors
+npm run typecheck                     # tsc — src + tests, both sides (no DB)
+npm test                              # 1015 FE + 1021 BE (no DB)
+node scripts/verify-parity-export.mjs # design-parity gate 163/163
+bash scripts/check-csp-hash.sh        # CSP pin drift guard (now in CI)
+npm run validate:colleges             # 25 college identities (WCAG AA)
 ```
 
-## Quick facts
+## Deploy on Render (3 steps)
 
-- **Live:** <https://madarek.onrender.com> · **Deploy:** Render blueprint (`render.yaml`), Neon PostgreSQL
-- **Demo accounts** (password `Madarek2026!` after seeding): `student@` / `teacher@` / `admin@` / `quality@` / `owner@zu.edu.ly`
-- **Stack:** React 18 + Vite + TypeScript · Express + Prisma · TanStack Query · Zustand · Chart.js — zero animation libraries (CSS-first motion canon)
-- **Local dev, gates, env vars, structure:** see the canonical [`README.md`](./README.md)
+1. Render → **New + → Blueprint** → pick this repo (`render.yaml` creates
+   the service and auto-generates both JWT secrets).
+2. Environment tab: set **`DATABASE_URL`** to your Neon **pooler** string
+   (`?sslmode=require&channel_binding=require`).
+3. Push to `main` — build applies migrations (`prisma migrate deploy`),
+   then one Node service serves API + SPA with health check
+   `/api/v1/health`. Details: `docs/12-deployment.md`.
 
----
+## Environment variables (required only)
 
-## 🛰️ Part of the Madarek Ecosystem
+| Variable | Notes |
+|---|---|
+| `DATABASE_URL` | Neon PostgreSQL pooler string (`sslmode=require&channel_binding=require`) |
+| `JWT_ACCESS_SECRET` | 64 bytes random hex — `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
+| `JWT_REFRESH_SECRET` | a *different* 64-byte random hex |
 
-> One design system across all projects · the Madarek identity: night/gold `#070B16`/`#E9B44C` dark — cream/copper `#FBFAF9`/`#B57438` light — IBM Plex Sans Arabic
+Optional vars (`CORS_ORIGINS` — *replaces* the default list when set,
+`INTERNAL_SERVICE_TOKEN`, `DIRECT_DATABASE_URL`, `PORT`): full table and
+exact behavior in `docs/06-configuration.md`.
 
-| Project | Role | GitHub | Live |
-|---|---|---|---|
-| 🎓 **Madarek / مدارك** | Smart-learning platform for University of Zawia — the design-system reference | [github.com/ahmadmedo1012/madarek](https://github.com/ahmadmedo1012/madarek) | [madarek.onrender.com](https://madarek.onrender.com) |
-| 🔗 **Smart-Link / سمارت لينك** | Digital umbrella for Libyan businesses | [github.com/ahmadmedo1012/Smart-Link](https://github.com/ahmadmedo1012/Smart-Link) | [smart-link.ly](https://smart-link.ly) |
-| 🍽️ **Smart Menu / سمارت منيو** | Digital menu & WhatsApp ordering for restaurants | [github.com/ahmadmedo1012/Smart-Menu](https://github.com/ahmadmedo1012/Smart-Menu) | [menu.smart-link.ly](https://menu.smart-link.ly) |
-| 🤖 **SmartBot / سمارت بوت** | Messenger bot & automation for Facebook pages | [github.com/ahmadmedo1012/SmartBot](https://github.com/ahmadmedo1012/SmartBot) | [bot.smart-link.ly](https://bot.smart-link.ly) |
-| 🛍️ **Smart Order / سمارت أوردر** | Digital storefront, orders & delivery for businesses | [github.com/ahmadmedo1012/Smart-Order](https://github.com/ahmadmedo1012/Smart-Order) | [order.smart-link.ly](https://order.smart-link.ly) |
+## License
+
+Proprietary — see [`LICENSE`](LICENSE). Security reports: private
+channels only, per [`SECURITY.md`](SECURITY.md).
+
+</div>

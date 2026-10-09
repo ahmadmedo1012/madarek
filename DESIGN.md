@@ -1,6 +1,6 @@
-# Madarek Design System — the Smart-family reference
+# Madarek Design System
 
-> **مدارك** — منصة التعليم الذكي لجامعة الزاوية · the design source-of-truth for the Smart family (Smart-Menu · Smart-Link · SmartBot · Smart-Order).
+> **مدارك** — منصة التعليم الذكي لجامعة الزاوية · the design canon as it ships in code.
 
 This document states the canon as it **ships in code**. Every value below was extracted from `frontend/src/styles/` at the audited tree (r131/r132) — not from specs (those carry plan-time values, kept as archaeology) and not from memory. When this file and `tokens.css` disagree, `tokens.css` wins; file an issue.
 
@@ -16,14 +16,14 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
-| **CI** | `.github/workflows/ci.yml` | 6 jobs: typecheck · build · frontend tests · backend tests · design gates · surface drift. |
+| **CI** | `.github/workflows/ci.yml` | 7 jobs: lint · typecheck · build · frontend tests · backend tests · design gates (icons + motion tokens + CSP pins + parity export) · surface drift. |
 
-**What ships to the products vs what stays reference:**
+**What the export pair distills vs what stays outside it:**
 
-| Ships (via the export pair) | Stays reference-only |
+| Distilled in the export pair | Stays outside the export |
 |---|---|
-| Product theme (copper/gold), pastel families, elevation, motion ladder, z-scale, structural recipes — distilled in `frontend/src/styles/unified-smart-parity.css` (canonical export) + `shared-design-system.css` (structural skeleton) | Orbit Ink landing world (`--ln-*`, grain, 42s marquee) — landing-only vocabulary |
-| Each Smart repo consumes its **own pin-verified token bridge** — the export pair is a reference artifact, **not imported by madarek's app and not applied to any Smart repo** | Role/college accent slots (`body[data-role]`) — madarek-app identity; the products carry no `data-role` contract |
+| Product theme (copper/gold), pastel families, elevation, motion ladder, z-scale, structural recipes — distilled in `frontend/src/styles/unified-parity.css` (canonical export) + `shared-design-system.css` (structural skeleton) | Orbit Ink landing world (`--ln-*`, grain, 42s marquee) — landing-only vocabulary |
+| The export pair is a **reference artifact** — not imported by madarek's app; the parity gate diffs it against `tokens.css` so silent drift fails loudly | Role/college accent slots (`body[data-role]`) — madarek-app identity slots, outside the export |
 | | Illustration palette (`--ill-*`) — illustration-layer vocabulary |
 
 Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens live in one place: `frontend/src/styles/tokens.css` (values + inline WCAG math + decision history).
@@ -42,7 +42,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `polish.css` | overrides layer — the last word on layered surfaces |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
 | `colleges.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages |
-| `unified-smart-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
+| `unified-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
 
 (10 eager via `main.tsx` + 6 page-scoped = the 16 in-app sheets; the export pair makes 18 on disk.)
 
@@ -221,13 +221,13 @@ Arabic is the first-class direction; LTR is the port.
 
 ---
 
-## 8. Adoption — قواعد التبنّي (for the four products)
+## 8. Rules for evolving the system — قواعد تطوير النظام
 
 1. **Consume tokens and roles, never literals** — `var(--accent)`, `--type-body-*`, `--elev-1`, `--t-base`; hex/px literals belong only in `tokens.css`.
 2. **Extend at the composition layer only** — new surfaces compose existing tokens/primitives; the token files are closed for casual edits (gate-protected).
-3. **Products carry their own pin-verified token bridge** — the export pair (`unified-smart-parity.css` + `shared-design-system.css`) is the reference distillate to diff against, **not a file to import**. See [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md).
-4. **What clones take:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What clones leave:** Orbit Ink (`--ln-*`), role/college accent slots, `--ill-*`.
-5. **Drift is a bug** — report or fix upstream; a product that needs a different value is proposing a family change, not a local override.
+3. **The export pair (`unified-parity.css` + `shared-design-system.css`) is the verification surface, not a file to import** — the app consumes `tokens.css` / `motion.css` / `components.css` directly. See [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md).
+4. **What the export covers:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What it excludes:** Orbit Ink (`--ln-*`), role/college accent slots, `--ill-*`.
+5. **Drift is a bug** — the parity gate fails loudly on any divergence between `tokens.css` and the export pair; fix the canonical source first, never hand-patch the export.
 
 ---
 

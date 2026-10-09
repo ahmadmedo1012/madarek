@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-02
 
-**Status**: Draft
+**Status**: Partial — أجزاء نُفِّذت ولم يُبنَ طبقة i18n (الحالة المرجعية: `docs/SPECS-REFERENCE.md`)
 
 **Input**: User description: "@madarek_audit_report00.md — comprehensive UX/UI audit (SkyClaw AI Agent, 2026-06-02) identifying gaps between Madarek's promised landing page experience and the delivered experience. Critical findings: (1) inner application routes (`/dashboard`, `/courses`, `/faculties`) return the landing page rather than functional pages; (2) Render free-tier cold starts produce 30–60s first-load waits with the generic Render splash; (3) no observable scroll animations, micro-interactions, or branded loading states; (4) static Oasis AI demo on the landing page; (5) hamburger-only navigation with no breadcrumbs, no global search, no sticky header; (6) no notification center; (7) no dark mode; (8) WCAG 2.1 AA accessibility unverified (contrast risk on cream/gold, no skip-link, focus indicators undocumented); (9) Arabic-only UI with no English option; (10) discussion forums absent. This feature responds to the audit by closing the launch-blocking gaps and lifting visible polish to a level comparable to Idraak / Canvas / Notion."
 

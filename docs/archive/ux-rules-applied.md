@@ -1,3 +1,5 @@
+> **[توثيق تاريخي — Historical]** تقرير جولة تصميم منقضية (2026-09) أُبقي كدليل زمني فقط. الحالة الحالية للمنتج في `DESIGN.md` و`docs/PROJECT-REFERENCE.md` وسجل الالتزامات (rNNN). لا يُحدَّث هذا الملف.
+
 # UX rules applied — lineage from `ui-ux-pro-max-skill`
 
 This polish pass adopts specific rules from the
