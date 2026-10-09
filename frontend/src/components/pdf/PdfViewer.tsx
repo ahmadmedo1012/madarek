@@ -7,16 +7,33 @@ import { Icon } from '../Icon';
 import { ErrorState } from '../primitives/States';
 import { useAuthStore } from '../../stores/auth.store';
 import { toast } from '../../lib/toast';
-// pdfjs-dist v4 ships ESM. Use named imports so Vite/Rollup can tree-shake
-// the rest of the public surface out of the bundle. Previously a namespace
-// import (`import * as pdfjsLib`) pulled in everything pdfjs-dist exports
-// (sizable), even though only GlobalWorkerOptions + getDocument + TextLayer
-// are used here.
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
+// pdfjs-dist v4 ships ESM; only three exports are used here
+// (GlobalWorkerOptions + getDocument + TextLayer). r134 (audit R134-W1-M
+// P2): the module is now imported DYNAMICALLY-ONLY — it was previously
+// ALSO statically imported, which baked the ~590KB pdf.mjs into the
+// PdfViewer route chunk at evaluation time and made the TextLayer
+// dynamic import below a no-op (it resolved to that same chunk, as its
+// old comment admitted). Dynamic-only keeps the chunk out of the eager
+// graph entirely and defers the fetch until a document actually loads;
+// the memoized loader also sets the worker URL exactly once, on first
+// use (the old module-level side effect).
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-GlobalWorkerOptions.workerSrc = workerUrl;
+type PdfjsModule = typeof import('pdfjs-dist');
+type PdfLoadingTask = ReturnType<PdfjsModule['getDocument']>;
+
+let pdfjsPromise: Promise<PdfjsModule> | null = null;
+
+/** Load pdfjs-dist once per session (memoized) and arm the self-hosted
+ * worker URL before the module is ever used to open a document. */
+function loadPdfjs(): Promise<PdfjsModule> {
+  pdfjsPromise ??= import('pdfjs-dist').then((pdfjs) => {
+    pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+    return pdfjs;
+  });
+  return pdfjsPromise;
+}
 
 interface PdfViewerProps {
   /** PDF source: relative path (e.g. /api/v1/files/papers/x.pdf) or absolute URL. */
@@ -126,51 +143,64 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
     // document 401'd. Pass the header explicitly; same-origin requests
     // already carry the refresh cookie, so no withCredentials is needed.
     const token = useAuthStore.getState().accessToken;
-    const task = getDocument({
-      url: src,
-      ...(token ? { httpHeaders: { Authorization: `Bearer ${token}` } } : {}),
-      // Self-hosted assets (public/pdfjs/*) — no runtime dependency on unpkg.com
-      cMapUrl: '/pdfjs/cmaps/',
-      cMapPacked: true,
-      standardFontDataUrl: '/pdfjs/standard_fonts/',
-    });
+    // r134: pdf.mjs is fetched HERE (dynamic-only) — the task is created
+    // once the module resolves; if the effect is torn down first, the
+    // cancelled flag keeps it from ever starting (no task, nothing to
+    // destroy).
+    let task: PdfLoadingTask | null = null;
+    const start = (pdfjs: PdfjsModule): void => {
+      if (cancelled) return;
+      const t = pdfjs.getDocument({
+        url: src,
+        ...(token ? { httpHeaders: { Authorization: `Bearer ${token}` } } : {}),
+        // Self-hosted assets (public/pdfjs/*) — no runtime dependency on unpkg.com
+        cMapUrl: '/pdfjs/cmaps/',
+        cMapPacked: true,
+        standardFontDataUrl: '/pdfjs/standard_fonts/',
+      });
+      task = t;
 
-    task.promise.then(
-      (pdf) => {
-        if (cancelled) { pdf.destroy(); return; }
-        const next: DocState = { pdf, numPages: pdf.numPages };
-        docRef.current = next;
-        setDoc(next);
-        setPage(1);
-        // A superseded render of the previous document may have planted a
-        // stale page error after this effect's initial reset — clear it
-        // again so the fresh document starts clean (audit 11-f P2-9).
-        setError(null);
-        setLoading(false);
-        onDocumentLoaded?.(pdf.numPages);
-      },
-      (err) => {
-        if (cancelled) return;
-        // Password-protected PDF: pdfjs rejects with PasswordException and
-        // re-running the same no-credential load can never succeed — show
-        // the honest message without a retry affordance (audit 11-f P2-8).
-        if ((err as { name?: string } | null)?.name === 'PasswordException') {
-          setError({ message: 'هذا المستند محمي بكلمة مرور', cause: err, kind: 'password' });
-        } else {
-          // Missing / corrupt PDF: surface an honest error state with retry
-          // (orchestrator ruling #14) — the detail line comes from ErrorState.
-          setError({ message: 'تعذّر تحميل المستند', cause: err });
-        }
-        setLoading(false);
-      },
-    );
+      t.promise.then(
+        (pdf) => {
+          if (cancelled) { pdf.destroy(); return; }
+          const next: DocState = { pdf, numPages: pdf.numPages };
+          docRef.current = next;
+          setDoc(next);
+          setPage(1);
+          // A superseded render of the previous document may have planted a
+          // stale page error after this effect's initial reset — clear it
+          // again so the fresh document starts clean (audit 11-f P2-9).
+          setError(null);
+          setLoading(false);
+          onDocumentLoaded?.(pdf.numPages);
+        },
+        (err) => {
+          if (cancelled) return;
+          // Password-protected PDF: pdfjs rejects with PasswordException and
+          // re-running the same no-credential load can never succeed — show
+          // the honest message without a retry affordance (audit 11-f P2-8).
+          if ((err as { name?: string } | null)?.name === 'PasswordException') {
+            setError({ message: 'هذا المستند محمي بكلمة مرور', cause: err, kind: 'password' });
+          } else {
+            // Missing / corrupt PDF: surface an honest error state with retry
+            // (orchestrator ruling #14) — the detail line comes from ErrorState.
+            setError({ message: 'تعذّر تحميل المستند', cause: err });
+          }
+          setLoading(false);
+        },
+      );
+    };
+    void loadPdfjs().then(start);
 
     return () => {
       cancelled = true;
       // Orphan any search walk mid-flight on this document (src switch or
       // unmount) before destroying the doc underneath it.
       searchGenRef.current += 1;
-      task.destroy();
+      // Null-safe since r134: if the module never resolved (fast unmount /
+      // src switch), no task was created — the cancelled flag above keeps
+      // it that way.
+      task?.destroy();
     };
     // retryToken: the retry button re-runs this effect for the same src.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -263,11 +293,10 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
           // pdfjs-dist v4 exposes TextLayer as a named export at runtime,
           // but its type surface marks it optional in some build modes, so
           // the constructor is resolved with a runtime lookup + truthiness
-          // check. Note this dynamic import does NOT shave anything off
-          // the bundle — the module is already statically imported above
-          // (getDocument), so this resolves to the same chunk; it is kept
-          // only because it works and degrades cleanly (audit 11-f P2-11).
-          const TextLayerCtor = (await import('pdfjs-dist')).TextLayer;
+          // check. Since r134 (dynamic-only import) this resolves the SAME
+          // memoized chunk loadPdfjs() already fetched for getDocument —
+          // zero extra network cost — and still degrades cleanly.
+          const TextLayerCtor = (await loadPdfjs()).TextLayer;
           if (TextLayerCtor) {
             const textLayer = new TextLayerCtor({
               textContentSource: textContent,

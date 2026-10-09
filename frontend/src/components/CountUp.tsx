@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { readMotionDurationMs } from './overlays/useDelayedUnmount';
 
 /**
  * CountUp — animates the numeric part of a marketing stat (e.g. "+50K", "#6",
@@ -33,12 +34,20 @@ function formatterFor(decimals: number): Intl.NumberFormat {
   return fmt;
 }
 
-export function CountUp({ value, duration = 1100 }: { value: string; duration?: number }) {
+export function CountUp({ value, duration }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // r134 (audit R134-W1-M P2): the raw 1100ms default escaped the token
+    // system and contradicted canon §3's 700ms stat rung. Consume the
+    // --motion-duration-stat token (same helper the overlay family uses);
+    // an explicit prop still wins, and the RM belt zeroes the token so the
+    // climb collapses to the settled value even if the matchMedia check
+    // below ever misses.
+    const ms = duration ?? readMotionDurationMs('--motion-duration-stat', 700);
 
     const m = value.match(/([^\d]*)([\d.,]+)(.*)/);
     const reduced =
@@ -71,7 +80,7 @@ export function CountUp({ value, duration = 1100 }: { value: string; duration?: 
       let start = 0;
       const tick = (t: number) => {
         if (!start) start = t;
-        const p = Math.min((t - start) / duration, 1);
+        const p = Math.min((t - start) / ms, 1);
         const eased = 1 - Math.pow(1 - p, 3);
         // always settle on the real value
         write(p < 1 ? `${prefix}${fmt.format(target * eased)}${suffix}` : value);

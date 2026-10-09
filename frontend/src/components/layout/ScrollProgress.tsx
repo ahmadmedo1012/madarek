@@ -34,8 +34,11 @@ export function ScrollProgress({ className = 'scroll-progress' }: { className?: 
     <div
       className={className}
       style={{ transform: `scaleX(${progress})`, opacity: visible ? 1 : 0 }}
+      // Decorative scroll indicator: the page's own scrollbar conveys the
+      // same position, so the bar is aria-hidden and carries no progressbar
+      // role (r134, audit R134-W1-M P2 — role on an aria-hidden element
+      // contradicted itself in the accessibility tree).
       aria-hidden="true"
-      role="progressbar"
     />
   );
 }

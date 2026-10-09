@@ -22,7 +22,11 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
   SCANNING: 'جارٍ الفحص',
   CHECKS_PASSED: 'بانتظار تقييم الأستاذ',
-  CHECKS_FAILED: 'فشل الفحص',
+  // r134 فشل→تعذّر family canon: «فشل الفحص» named the CHECKS_FAILED
+  // bucket with the banned verb; تعذّر اجتياز keeps the meaning (the
+  // paper could not pass) and stays distinct from the operational
+  // «تعذّر إجراء الفحص» alert below (the scan itself could not run).
+  CHECKS_FAILED: 'تعذّر اجتياز الفحص',
   GRADED: 'مُقيَّم',
   PUBLISHED: 'مُنشور في المكتبة',
 };
@@ -119,7 +123,7 @@ export default function StudentResearchPage() {
         <MetricCard icon={BookMarked} label="إجمالي البحوث" value={counts.total} color="brand" />
         <MetricCard icon={Clock} label="قيد المراجعة" value={counts.pending} color="amber" />
         <MetricCard icon={CheckCircle2} label="مُقيَّمة" value={counts.graded} color="green" />
-        <MetricCard icon={XCircle} label="فشل الفحص" value={counts.rejected} color="red" />
+        <MetricCard icon={XCircle} label="تعذّر اجتياز الفحص" value={counts.rejected} color="red" />
       </div>
 
       <Card title="بحوثك" icon={BookMarked} subtitle="جميع البحوث التي رفعتها على المنصة">

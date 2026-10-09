@@ -68,6 +68,12 @@ export type MadarekCenterLabelOptions = {
 };
 
 declare module 'chart.js' {
+  // (r134 lint adoption: the <TType> parameter mirrors chart.js's own
+  // PluginOptionsByType<TType> signature — the declaration merge needs
+  // it, but this body never references it, so the unused-vars rule is
+  // disabled for the interface. Name kept identical to chart.js for
+  // readability.)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface PluginOptionsByType<TType extends ChartType> {
     /** Consumed by madarekGradientFillPlugin (globally registered). */
     madarekGradientFill?: Partial<MadarekGradientFillOptions>;

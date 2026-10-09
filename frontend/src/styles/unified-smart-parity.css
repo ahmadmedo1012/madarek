@@ -221,8 +221,9 @@
 
     --state-button-hover-bg-shift:   4%;
     --state-button-hover-translate:  -1px;
-    --state-button-pressed-scale:    0.98;
-    --state-button-pressed-duration: var(--motion-duration-micro);
+    /* r134: --state-button-pressed-scale 0.98 and
+       --state-button-pressed-duration (µ) deleted with the canonical
+       tokens (zero consumers everywhere — controls press via --press-scale). */
     --state-button-disabled-opacity: 0.5;
 
     --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);

@@ -154,7 +154,7 @@ export default function AuthPage() {
                 (.auth-meta, mono metric role). A real Arabic phrase —
                 journey-meta precedent — so it stays in the accessibility
                 tree, unlike the bento's purely decorative code badges. */}
-            <span className="auth-meta">( بوابة الجامعة )</span>
+            <span className="auth-meta">(بوابة الجامعة)</span>
             <h1 className="auth-form-title">مرحباً بعودتك</h1>
             <p className="auth-form-sub">
               سجِّل دخولك للوصول إلى مقرَّراتك ومواردك الأكاديمية في جامعة الزاوية.

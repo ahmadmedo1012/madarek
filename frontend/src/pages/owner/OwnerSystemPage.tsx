@@ -94,7 +94,9 @@ export function OwnerSystemPage() {
       );
       toast.error(
         `تعذّر حفظ ${failedSavesLabel(failedKeys.size)} — أُبقيت قيمه في المحرّر، حاول مجدداً.`,
-        { title: 'فشل حفظ الإعدادات' },
+        // r134 فشل→تعذّر family canon (cross-repo audit): the toast title
+        // was the last فشل error verb on this surface.
+        { title: 'تعذّر حفظ الإعدادات' },
       );
     }
     setSavingSettings(false);

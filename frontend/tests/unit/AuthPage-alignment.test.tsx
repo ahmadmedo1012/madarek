@@ -66,7 +66,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
   it('opens the card with the quiet mono gateway eyebrow over the title', () => {
     renderPage();
 
-    const meta = screen.getByText('( بوابة الجامعة )');
+    const meta = screen.getByText('(بوابة الجامعة)');
     expect(meta).toHaveClass('auth-meta');
     // A real Arabic phrase (journey-meta precedent) — NOT hidden from
     // assistive tech, unlike the bento's purely decorative code badges.

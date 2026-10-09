@@ -200,7 +200,9 @@ export function OwnerGovernancePage() {
           )}
         </Card>
 
-        <Card title="تسجيلات الدخول: نجاح / فشل">
+        {/* r134 فشل→تعذّر family canon: the title pairs the adjectives the
+            doughnut legend and the daily table already use (ناجحة/فاشلة). */}
+        <Card title="تسجيلات الدخول: ناجحة / فاشلة">
           {loginAnalytics.isPending ? (
             <ChartSkeleton height={236} />
           ) : loginAnalytics.isError || !loginData ? (
@@ -215,7 +217,7 @@ export function OwnerGovernancePage() {
             <ChartFrame
               className="owner-chart-container"
               ariaLabel={`توزيع محاولات تسجيل الدخول: ${countAr(loginData.successCount, ['محاولة ناجحة واحدة', 'محاولتان ناجحتان', 'محاولات ناجحة', 'محاولة ناجحة'])} و${countAr(loginData.failureCount, ['محاولة فاشلة واحدة', 'محاولتان فاشلتان', 'محاولات فاشلة', 'محاولة فاشلة'])}`}
-              summary={`نجحت ${countAr(loginData.successCount, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])} وفشلت ${countAr(loginData.failureCount, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}.`}
+              summary={`نجحت ${countAr(loginData.successCount, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])} وتعذّرت ${countAr(loginData.failureCount, ['محاولة واحدة', 'محاولتان', 'محاولات', 'محاولة'])}.`}
               table={{
                 caption: 'محاولات تسجيل الدخول',
                 columns: ['النتيجة', 'العدد'],
@@ -269,7 +271,7 @@ export function OwnerGovernancePage() {
       </div>
 
       {loginData && loginData.topReasons.length > 0 && (
-        <Card title="أسباب فشل تسجيل الدخول">
+        <Card title="أسباب تعذّر تسجيل الدخول">
           <div className="table-wrap">
             <table className="table tbl-stack">
               <thead>

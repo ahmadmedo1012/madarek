@@ -245,8 +245,11 @@
 
     --state-button-hover-bg-shift:   4%;
     --state-button-hover-translate:  -1px;
-    --state-button-pressed-scale:    0.98;
-    --state-button-pressed-duration: var(--motion-duration-micro);
+    /* r134 (cross-repo audit): --state-button-pressed-scale 0.98 AND
+       --state-button-pressed-duration (µ) deleted — rg-verified zero
+       consumers across css+tsx since audit 4-A11 (controls press via
+       --press-scale above); the export pair dropped both in the same
+       change. */
     --state-button-disabled-opacity: 0.5;
 
     --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
@@ -451,6 +454,20 @@
     --motion-direction: -1;
   }
 
+  /* r134 (audit R134-W1-M P2): hoisted from below the dark block so the
+     raw-ladder reduced-motion kill is VISIBLY theme-independent — DESIGN.md
+     §3 claims “raw --t-* all zeroed” for both themes, and the old placement
+     (after [data-theme="dark"]) read as dark-scoped. Rules are identical:
+     neither theme block re-declares a --t-* value, so the cascade outcome
+     is unchanged in light, dark and no-JS. (--t-micro has its own appended
+     kill at the file's tail — wave 2-a, kept append-only.) */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --t-fast: 0ms; --t-base: 0ms; --t-slow: 0ms;
+      --t-slower: 0ms; --t-cinema: 0ms;
+    }
+  }
+
   /* ════════════════════════════════════════════════════════════════════
      LIGHT THEME — Notion's signature warm cream
      ════════════════════════════════════════════════════════════════════ */
@@ -547,8 +564,10 @@
     /* T3-F4 WCAG fix — was #FFFFFF: 3.80:1 on --accent #B57438 (L=0.2260)
        ✗ AA for 13–15px button labels. #1A0F06 L=0.0057 →
        (0.2260+0.05)/(0.0057+0.05) = 4.95:1 ✓ AA. This mirrors Dark's
-       incumbent pattern (dark ink on copper: #191918 on #E0A067 = 7.87:1),
-       so accent buttons read as one family across themes. */
+       incumbent pattern (void ink on gold: #05070F on #E9B44C = 10.63:1,
+       see the dark block below), so accent buttons read as one family
+       across themes. (r134: previously quoted the retired #191918 on
+       #E0A067 = 7.87:1 — the night accent moved to #E9B44C.) */
     --accent-fg:     #1A0F06;
     /* --focus-ring retired (premium-polish): the ~32%-alpha halo measured
        ≈1.5:1 on cream and survived only by losing layer order to the v22
@@ -563,7 +582,11 @@
     /* 001 interaction-tokens self-rule: the focus ring MUST clear 4.5:1
        against the background. Light --accent #B57438 is 3.65:1 on --bg,
        so the light ring uses the deep copper (10.29:1). Dark --accent
-       #E0A067 clears 7.87:1 and keeps the shared :root default. */
+       #E9B44C clears 10.39:1 as text; and because this block's grouped
+       `:root, [data-theme="light"]` selector is inherited by dark, the
+       declaration below resolves there to --accent-strong #C9962F
+       (7.38:1 on the night ground — the parity gate pins that cascade).
+       (r134: previously quoted the retired #E0A067 = 7.87:1.) */
     --state-focus-ring-color: var(--accent-strong);
 
     --success:      var(--c-mint-ink);
@@ -876,12 +899,6 @@
     --journey-ticker-sep:  var(--accent);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    :root {
-      --t-fast: 0ms; --t-base: 0ms; --t-slow: 0ms;
-      --t-slower: 0ms; --t-cinema: 0ms;
-    }
-  }
 }
 
 /* ═════════════════════════════════════════════════════════════════════

@@ -30,7 +30,8 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   UPLOADED: 'بانتظار الفحص',
   SCANNING: 'جارٍ الفحص',
   CHECKS_PASSED: 'بانتظار التقييم',
-  CHECKS_FAILED: 'فشل الفحص',
+  // r134 فشل→تعذّر family canon — see the student twin (ResearchPage).
+  CHECKS_FAILED: 'تعذّر اجتياز الفحص',
   GRADED: 'مُقيَّم',
   PUBLISHED: 'مُنشور',
 };
@@ -89,7 +90,7 @@ export default function ResearchReviewPage() {
           ) : (
             <div className="grid-3">
               <MetricCard icon={CheckCircle2} label="بانتظار تقييمك" value={kpiValue(passed.length)} color="amber" />
-              <MetricCard icon={X} label="فشل الفحص" value={kpiValue(failed.length)} color="red" />
+              <MetricCard icon={X} label="تعذّر اجتياز الفحص" value={kpiValue(failed.length)} color="red" />
               <MetricCard icon={BookMarked} label="جاهزة للنشر" value={kpiValue(readyToPublish)} color="purple" />
             </div>
           )}

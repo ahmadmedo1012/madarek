@@ -607,7 +607,6 @@ export function ExamTakerPage() {
   useEffect(() => {
     if (!attempt) return;
     const expiry = new Date(attempt.expiresAt).getTime();
-    let intervalId: ReturnType<typeof setInterval> | undefined;
     const readClock = () => {
       const s = Math.max(0, Math.round((expiry - Date.now()) / 1000));
       setSecondsLeft(s);
@@ -624,7 +623,10 @@ export function ExamTakerPage() {
         }
       }
     };
-    intervalId = setInterval(readClock, 1000);
+    // (r134 lint adoption: prefer-const — declared here instead of a
+    // `let` + later single assignment; readClock only reads it at call
+    // time, after this line has run.)
+    const intervalId: ReturnType<typeof setInterval> = setInterval(readClock, 1000);
     // Background tabs throttle setInterval to a minute or more — on
     // returning to the tab, re-read the wall clock immediately so the
     // countdown (and the 00:00 auto-submit) are never minutes stale.

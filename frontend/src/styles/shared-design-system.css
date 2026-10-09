@@ -124,7 +124,8 @@
 
     --state-button-hover-bg-shift:   4%;
     --state-button-hover-translate:  -1px;
-    --state-button-pressed-scale:    0.98;
+    /* r134: --state-button-pressed-scale 0.98 deleted with the canonical
+       token (zero consumers everywhere — controls press via --press-scale). */
 
     --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
     --state-card-hover-translate: -1px;

@@ -17,6 +17,7 @@
     "dev": "npm run dev -w backend",
     "dev:web": "npm run dev -w frontend",
     "test": "npm run test -w frontend && npm run test -w backend",
+    "lint": "eslint frontend/src backend/src",
     "typecheck": "npm run typecheck -w backend && npm run typecheck -w frontend && npm run typecheck:tests -w backend && npm run typecheck:tests -w frontend",
     "db:migrate": "npm run prisma:migrate -w backend",
     "db:deploy": "npm run prisma:deploy -w backend",
@@ -28,7 +29,11 @@
     "check:i18n": "bash scripts/check-i18n-coverage.sh"
   },
   "devDependencies": {
-    "tsx": "^4.22.4"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "tsx": "^4.22.4",
+    "typescript-eslint": "^8.71.1"
   },
   "allowScripts": {
     "@prisma/client": true,

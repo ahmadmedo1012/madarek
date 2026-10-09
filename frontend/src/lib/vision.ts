@@ -24,7 +24,7 @@ export const VISION_CONCEPTS: VisionConcept[] = [
   {
     slug: 'ai-predictor',
     title: 'AI Predictor',
-    subtitle: 'تنبؤ بمسار الطالب الأكاديمي وفرص التخرج مبنيًّا على بياناته',
+    subtitle: 'تنبؤ بمسار الطالب الأكاديمي وفرص التخرج مبنيّاً على بياناته',
     icon: Sparkles,
     status: 'prototype',
     gradient: ['#3D6BD6', '#5B3CA8'],

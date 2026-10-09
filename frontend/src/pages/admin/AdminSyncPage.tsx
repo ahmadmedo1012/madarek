@@ -264,7 +264,7 @@ export function AdminSyncPage() {
         <AlertRow
           color="red"
           icon={AlertCircle}
-          title={lastRun.status === 'FAILED' ? 'التشغيل الأخير فشل' : 'التشغيل الأخير اكتمل جزئياً'}
+          title={lastRun.status === 'FAILED' ? 'تعذّر إكمال التشغيل الأخير' : 'التشغيل الأخير اكتمل جزئياً'}
           description={<span className="font-mono text-xs"><bdi>{lastRun.errorMsg}</bdi></span>}
         />
       )}

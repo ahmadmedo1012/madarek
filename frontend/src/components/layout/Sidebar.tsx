@@ -111,7 +111,9 @@ export function Sidebar() {
       document.removeEventListener('keydown', onKey, true);
       previousActive?.focus?.();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- drawerId is stable per open
+    // (r134 lint adoption: the old `eslint-disable-next-line
+    // react-hooks/exhaustive-deps` here became an unused directive under
+    // the adopted plugin version — removed.)
   }, [sidebarOpen, drawerBand, drawerId]);
 
   // Lock body scroll only while the mobile drawer is open. Goes through

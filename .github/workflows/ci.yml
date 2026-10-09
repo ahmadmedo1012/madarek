@@ -22,6 +22,24 @@ env:
   NODE_VERSION: '22'
 
 jobs:
+  lint:
+    name: Lint (eslint, src trees)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      # r134 (audit R134-W1-M P1): the repo shipped with no ESLint
+      # anywhere. Flat config at the root (eslint.config.mjs) covers
+      # frontend/src + backend/src; tests are excluded for the initial
+      # adoption (documented TODO in the config). Warnings are allowed —
+      # the documented exhaustive-deps exemptions — errors fail here.
+      - run: npm run lint
+
   typecheck:
     name: Typecheck (src + tests)
     runs-on: ubuntu-latest
@@ -102,14 +120,21 @@ jobs:
       - run: npm --prefix backend run test
 
   design-gates:
-    name: Design gates (icons + motion tokens)
+    name: Design gates (icons + motion tokens + parity export)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      # Pure bash/grep/python3 gates — no node_modules required.
+      # bash/grep/python3 gates plus the node parity gate — none of them
+      # need node_modules (verify-parity-export.mjs is dependency-free:
+      # node:fs / node:path / node:url only), so no install step here.
+      # r134 (audit R134-W1-M P1): the flagship parity gate
+      # (verify-parity-export.mjs) was missing from CI — it only ran
+      # locally. It reads the working tree from the repo root, so the
+      # default working-directory is correct.
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
+      - run: node scripts/verify-parity-export.mjs
 
   surface-drift:
     name: Surface drift

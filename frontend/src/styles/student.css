@@ -1115,7 +1115,11 @@
   .mooc-card-image {
     block-size: 96px;
     background: var(--accent-soft);
-    color: var(--accent);
+    /* r134 (audit R134-W1-M P2): was var(--accent) — 3.06:1 on the
+       copper soft well, borderline under WCAG 1.4.11. Hardened like the
+       sibling wells (chapter-row / uni-accredit / exam-grade): light
+       resolves the deep copper (8.62:1 on --accent-soft, tokens.css). */
+    color: var(--accent-strong);
   }
   .mooc-card-meta {
     display: flex;

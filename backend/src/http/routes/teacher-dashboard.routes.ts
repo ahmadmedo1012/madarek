@@ -191,7 +191,9 @@ export function researchFeedItem(p: ResearchPaperFeedRow): {
       ? 'لم يُفحص بعد — بانتظار فحص الانتحال'
       : p.status === ResearchPaperStatus.CHECKS_PASSED
         ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}%، AI ${p.aiContentPct ?? '—'}%)`
-        : 'فشل في فحص الانتحال — يحتاج توجيهاً'}`,
+        // r134 فشل→تعذّر family canon: «فشل في فحص الانتحال» was the last
+        // فشل verb in backend user-facing copy.
+        : 'تعذّر اجتياز فحص الانتحال — يحتاج توجيهاً'}`,
     actionTo: TEACHER_FEED_ACTIONS.research,
   };
 }

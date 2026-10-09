@@ -3120,7 +3120,9 @@
   /* Numeric values get tabular alignment globally */
   .metric-value {
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
+    /* r134 (audit R134-W1-M P2): raw -0.02em → the tracking token
+       (tokens.css --ls-tight = -0.022em) so the ladder has one source. */
+    letter-spacing: var(--ls-tight);
   }
 
 
@@ -5691,6 +5693,21 @@
     background: linear-gradient(90deg, var(--ln-cream) 0%, var(--ln-cream-dim) 100%);
     height: 2px;
     opacity: 0.5;
+  }
+
+  /* r134 (audit R134-W1-M P1): RTL fill direction. The bar is a physical
+     left-anchored scaleX — under [dir="rtl"] it grew left→right, against
+     the reading direction. Mirror both the origin (scalex now grows from
+     the right edge) and the gradient (270deg) so the leading edge keeps
+     the accent end and the fill reads right→left. Covers the landing
+     variant too — it re-declares the background, so it needs its own
+     mirrored gradient or the override above would win. */
+  [dir="rtl"] .scroll-progress {
+    transform-origin: right;
+    background: linear-gradient(270deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
+  }
+  [dir="rtl"] .landing .scroll-progress {
+    background: linear-gradient(270deg, var(--ln-cream) 0%, var(--ln-cream-dim) 100%);
   }
 
   /* ── Skeleton premium shimmer ─────────────────────────────────── */
