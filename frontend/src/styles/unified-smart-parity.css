@@ -113,7 +113,6 @@
 
     --fs-body-lg: 17px;
     --fs-body:    15px;
-    --fs-body-md: 15px;
     --fs-sm:      13px;
     --fs-xs:      12px;
     --fs-xxs:     11px;
@@ -874,7 +873,11 @@
   }
   .btn.primary:hover {
     box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
+  }
+  /* r133-F7: −2px lift rides the hover-capable gate (iOS sticky-hover);
+     shadow stays ungated like .btn:hover. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover { transform: translateY(-2px); }
   }
   .btn.primary::before {
     content: '';

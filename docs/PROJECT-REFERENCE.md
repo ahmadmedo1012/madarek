@@ -38,7 +38,7 @@ madarek/
 │   │   ├── stores/          # Zustand (auth, theme, ui, onboarding)
 │   │   ├── lib/             # api, queryClient, nav, overlayStack, scrollLock, format,
 │   │   │                    # gamification, courseMeta, chartTheme, toast, illustrations
-│   │   └── styles/          # 15 CSS files (10 eager + 5 page-scoped)
+│   │   └── styles/          # 18 CSS files (10 eager + 6 page-scoped + 2 export artifacts)
 ├── backend/             # Express API (TypeScript ESM)
 │   ├── src/
 │   │   ├── http/routes/        # 25 route modules

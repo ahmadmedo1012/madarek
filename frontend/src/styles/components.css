@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Components & Patterns (Notion-flavored)
+   MADAREK — Components & Patterns (Notion-flavored)
    Bold buttons · soft cards · pill badges · friendly tabs
    ════════════════════════════════════════════════════════════════════ */
 
@@ -328,7 +328,13 @@
   }
   .btn.primary:hover {
     box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
+  }
+  /* N1 (r133-F7): the primary −2px lift rides the same 5-C1 hover-capable
+     gate as the −1px above — ungated (this rule originally sat at equal
+     specificity after the gate, so it won everywhere and iOS sticky-hover
+     pinned the lift on first tap); shadow stays ungated like .btn:hover. */
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover { transform: translateY(-2px); }
   }
   .btn.primary::before {
     content: '';

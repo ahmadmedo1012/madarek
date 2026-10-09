@@ -76,7 +76,8 @@
 
     --fs-body-lg: 17px;
     --fs-body:    15px;
-    --fs-body-md: 15px;
+    /* (--fs-body-md: 15px deleted r133-F7 — byte-duplicate of --fs-body,
+       zero consumers repo-wide; mirrored out of both export files) */
     --fs-sm:      13px;
     --fs-xs:      12px;
     --fs-xxs:     11px;
@@ -538,7 +539,7 @@
     --surface-border:  rgba(0,0,0,0.08);
     --surface-divider: rgba(0,0,0,0.05);
 
-    /* primary brand accent — Notion-orange-with-Madark-copper energy */
+    /* primary brand accent — Notion-orange-with-Madarek-copper energy */
     --accent:        var(--c-copper-ink);
     --accent-hover:  #9A5F25;
     --accent-soft:   var(--c-copper-bg);

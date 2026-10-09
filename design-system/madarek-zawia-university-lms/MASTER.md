@@ -21,10 +21,10 @@
 >   established that accent as a phantom on Arabic; the platform accent
 >   is upright weight + ink, with serif italic sanctioned for Latin runs
 >   only).
-
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+>
+> (The old "LOGIC" pointer — "check `design-system/pages/[page-name].md`,
+> else strictly follow the rules below" — was removed r133-F7: the
+> `pages/` directory never existed, and nothing below is canon.)
 
 ---
 

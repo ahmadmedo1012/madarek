@@ -56,7 +56,7 @@
     --fs-display-md: clamp(28px, 3.6vw, 40px);
 
     --fs-h1: 30px;    --fs-h2: 22px;    --fs-h3: 18px;
-    --fs-body-lg: 17px; --fs-body: 15px; --fs-body-md: 15px;
+    --fs-body-lg: 17px; --fs-body: 15px;
     --fs-sm: 13px;    --fs-xs: 12px;    --fs-xxs: 11px;
 
     /* legacy aliases */

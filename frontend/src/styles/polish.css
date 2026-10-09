@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Polish Bundle (consolidated v6 → v21)
+   MADAREK — Polish Bundle (consolidated v6 → v21)
    ─────────────────────────────────────────────────────────────────────
    Loaded LAST. Sequence preserved exactly as the historical v6..v21
    ordering. Each section retains its original @layer banner. The
@@ -13,7 +13,7 @@
    ▶ Section: polish-v6.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Visual Polish v6
+   MADAREK — Visual Polish v6
    ─────────────────────────────────────────────────────────────────────
    Loaded LAST. Refines the existing system; does not redefine it.
    No `!important`. All transitions respect prefers-reduced-motion.
@@ -454,7 +454,7 @@
    ▶ Section: polish-v7.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Visual Polish v7 (Notion-flavoured liveliness)
+   MADAREK — Visual Polish v7 (Notion-flavoured liveliness)
    ─────────────────────────────────────────────────────────────────────
    Loaded LAST. Adds scroll-driven and pointer-driven motion to the
    landing page, plus widens hover/active feedback to whole pages of
@@ -539,7 +539,7 @@
    ▶ Section: polish-v8.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Visual Polish v8 (cohesion + premium feel)
+   MADAREK — Visual Polish v8 (cohesion + premium feel)
    ─────────────────────────────────────────────────────────────────────
    Loaded LAST. Adds:
    - Cursor-follow highlight on every Card across the app
@@ -1964,7 +1964,7 @@
    ▶ Section: polish-v11.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v11
+   MADAREK — polish v11
    ─────────────────────────────────────────────────────────────────────
    Focused improvements that build on v6–v10:
    · Loading/empty/error state variants (inline/page/card)
@@ -2244,7 +2244,7 @@
    ▶ Section: polish-v12.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v12 · vitality
+   MADAREK — polish v12 · vitality
    ─────────────────────────────────────────────────────────────────────
    Motion + atmosphere for the landing page. CSS-only — no extra JS,
    no extra hooks. Falls back gracefully under prefers-reduced-motion.
@@ -2267,7 +2267,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (Wave 9-b dead-selector sweep: the .landing-cta-stack entries
      removed — zero TSX consumers; the hero CTA row is .landing-cta-row
-  @keyframes madark-breathe {
+  @keyframes madarek-breathe {
     0%, 100% { opacity: 0; transform: scale(0.9); }
     50%      { opacity: 0.55; transform: scale(1.04); }
   }
@@ -2276,7 +2276,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  EYEBROW CHIP — one-time shimmer to draw the eye to "جديد"    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  @keyframes madark-sweep {
+  @keyframes madarek-sweep {
     0%   { transform: translateX(-110%); }
     65%  { transform: translateX(110%); }
     100% { transform: translateX(110%); }
@@ -2325,7 +2325,7 @@
    ▶ Section: polish-v13.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v13 · site-wide vitality
+   MADAREK — polish v13 · site-wide vitality
    ─────────────────────────────────────────────────────────────────────
    Calm, Notion-style motion across every page. The goal is "alive but
    not noisy" — every interactive surface has a little micro-interaction,
@@ -2357,7 +2357,7 @@
   }
 
 
-  /* (5-C1 entrance diet, A2 P1-1): v16's `.page { madark-page-in }`
+  /* (5-C1 entrance diet, A2 P1-1): v16's `.page { madarek-page-in }`
      is GONE. It double-faded the route — .content-inner already
      plays `page-enter` (160ms) on the keyed PageTransition remount,
      and this second container fade (380ms, `both` fill) compounded
@@ -2385,13 +2385,13 @@
      via student.css). `backwards` fill stays — the wave-5 fix that
      keeps hover-lifts alive after the entrance. */
   .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > * {
-    animation: madark-stagger-up var(--motion-duration-medium) var(--ease-out) backwards;
+    animation: madarek-stagger-up var(--motion-duration-medium) var(--ease-out) backwards;
   }
   .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(2) { animation-delay: 50ms; }
   .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(3) { animation-delay: 100ms; }
   .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(4) { animation-delay: 150ms; }
   .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260) > *:nth-child(n+5) { animation-delay: 150ms; }
-  @keyframes madark-stagger-up {
+  @keyframes madarek-stagger-up {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
   }
@@ -2419,9 +2419,9 @@
     }
   }
   .metric-value {
-    animation: madark-pop-in var(--t-slower) var(--ease-spring) both;
+    animation: madarek-pop-in var(--t-slower) var(--ease-spring) both;
   }
-  @keyframes madark-pop-in {
+  @keyframes madarek-pop-in {
     from { opacity: 0; transform: scale(0.92); }
     to   { opacity: 1; transform: none; }
   }
@@ -2493,9 +2493,9 @@
      ║  TOPBAR — slides down on first paint                           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar {
-    animation: madark-topbar-in var(--motion-duration-long) var(--ease-out) both;
+    animation: madarek-topbar-in var(--motion-duration-long) var(--ease-out) both;
   }
-  @keyframes madark-topbar-in {
+  @keyframes madarek-topbar-in {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: none; }
   }
@@ -2519,10 +2519,10 @@
       color-mix(in srgb, var(--accent) 18%, transparent) 0%,
       transparent 60%
     );
-    animation: madark-welcome-breathe var(--motion-duration-ambient-cinema) var(--motion-ease-standard) infinite alternate;
+    animation: madarek-welcome-breathe var(--motion-duration-ambient-cinema) var(--motion-ease-standard) infinite alternate;
     pointer-events: none;
   }
-  @keyframes madark-welcome-breathe {
+  @keyframes madarek-welcome-breathe {
     from { transform: translate3d(0, 0, 0) scale(1);     opacity: 0.7; }
     to   { transform: translate3d(-30px, 18px, 0) scale(1.06); opacity: 1; }
   }
@@ -2605,9 +2605,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-doughnut,
   .owner-chart-container {
-    animation: madark-chart-in var(--t-slower) var(--ease-out) both;
+    animation: madarek-chart-in var(--t-slower) var(--ease-out) both;
   }
-  @keyframes madark-chart-in {
+  @keyframes madarek-chart-in {
     from { opacity: 0; transform: scale(0.96); }
     to   { opacity: 1; transform: none; }
   }
@@ -2641,7 +2641,7 @@
    ▶ Section: polish-v14.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v14 · foundation
+   MADAREK — polish v14 · foundation
    ─────────────────────────────────────────────────────────────────────
    First phase of the comprehensive design polish plan. Adds:
    · Token system (elevation, spring eases, focus rings, glass blur)
@@ -2841,7 +2841,7 @@
   /* (Wave 1-a dead-code sweep: the floating campus-chip family deleted
      (~70 lines: .landing-campus-chip, -1/-2 position variants, the
      --linked interactive variant, -arrow, the 720px sizing pass and the
-     madark-chip-float keyframes). Grep evidence: zero TSX consumers —
+     madarek-chip-float keyframes). Grep evidence: zero TSX consumers —
      LandingPage renders the campus frame/photo/vignette/grain/caption/
      eyebrow/line, but no chip markup. See 0-b P2 + 0-a mission item G.) */
 
@@ -2877,10 +2877,10 @@
      pruned from the group; .landing-megamenu remains — and v21 later
      pins it back off with animation: none !important.) */
   .landing-megamenu {
-    animation: madark-popover-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
+    animation: madarek-megamenu-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     transform-origin: top center;
   }
-  @keyframes madark-popover-in {
+  @keyframes madarek-megamenu-in {
     from {
       opacity: 0;
       transform: translateY(-6px) scale(0.97);
@@ -2914,9 +2914,9 @@
          item color and the ::before ring (below, v23 section) — it was
          the last bottom-nav surface still reading raw copper. */
       background: var(--role-accent, var(--accent));
-      animation: madark-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both;
+      animation: madarek-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both;
     }
-    @keyframes madark-dot-in {
+    @keyframes madarek-dot-in {
       from { transform: translateX(-50%) scale(0); }
       to   { transform: translateX(-50%) scale(1); }
     }
@@ -2978,7 +2978,7 @@
    ▶ Section: polish-v15.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v15 · primitives refinement
+   MADAREK — polish v15 · primitives refinement
    ─────────────────────────────────────────────────────────────────────
    Phase 1: lift every reusable primitive — Card, Button, MetricCard,
    Pill, Badge, Tabs, Input, Select, Skeleton, Tooltip — without
@@ -3084,9 +3084,9 @@
     opacity: 0;
   }
   .btn:active:not(:disabled)::after {
-    animation: madark-ripple var(--t-slower) var(--ease-out) both;
+    animation: madarek-ripple var(--t-slower) var(--ease-out) both;
   }
-  @keyframes madark-ripple {
+  @keyframes madarek-ripple {
     from { transform: scale(0); opacity: 0.6; }
     to   { transform: scale(1); opacity: 0; }
   }
@@ -3154,10 +3154,10 @@
      ║  BADGE — pop-in on first paint                                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .badge {
-    animation: madark-badge-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
+    animation: madarek-badge-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     transition: transform var(--motion-duration-short) var(--ease);
   }
-  @keyframes madark-badge-in {
+  @keyframes madarek-badge-in {
     from { opacity: 0; transform: scale(0.85); }
     to   { opacity: 1; transform: none; }
   }
@@ -3197,22 +3197,22 @@
       var(--surface-3) 100%
     );
     background-size: 200% 100%;
-    /* (4-A11 P2-9: was `madark-shimmer-rtl 1600ms
+    /* (4-A11 P2-9: was `madarek-shimmer-rtl 1600ms
        var(--motion-ease-standard)` — a raw duration AND an eased
        infinite sweep (visible velocity pulse each iteration). The
        RTL-aware direction stays (genuinely good); duration + easing
        now follow the skeleton token and the linear-loop doctrine
        (tokens.css:110–113).) */
-    animation: madark-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
+    animation: madarek-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
   }
   [dir="ltr"] .skeleton {
-    animation-name: madark-shimmer-ltr;
+    animation-name: madarek-shimmer-ltr;
   }
-  @keyframes madark-shimmer-rtl {
+  @keyframes madarek-shimmer-rtl {
     0%   { background-position: -200% 0; }
     100% { background-position: 0% 0; }
   }
-  @keyframes madark-shimmer-ltr {
+  @keyframes madarek-shimmer-ltr {
     0%   { background-position: 0% 0; }
     100% { background-position: -200% 0; }
   }
@@ -3270,7 +3270,7 @@
    ▶ Section: polish-v16.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v16 · layout shell
+   MADAREK — polish v16 · layout shell
    ─────────────────────────────────────────────────────────────────────
    Phase 2: lift the layout chrome — sidebar drawer, topbar, bottom nav,
    user menu, search dropdown. Each shell surface gets calmer motion,
@@ -3301,9 +3301,9 @@
     /* accent halo ring around the active-rail dot — not elevation
        (premium-polish: shared --state-input-focus-halo token) */
     box-shadow: var(--state-input-focus-halo);
-    animation: madark-rail-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both 80ms;
+    animation: madarek-rail-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both 80ms;
   }
-  @keyframes madark-rail-dot-in {
+  @keyframes madarek-rail-dot-in {
     from { transform: translateY(-50%) scale(0); opacity: 0; }
     to   { transform: translateY(-50%) scale(1); opacity: 1; }
   }
@@ -3342,7 +3342,7 @@
       transition: transform var(--motion-duration-long) var(--ease-spring-soft);
     }
     .sidebar.open .nav-item {
-      animation: madark-drawer-item-in var(--motion-duration-long) var(--ease-out) both;
+      animation: madarek-drawer-item-in var(--motion-duration-long) var(--ease-out) both;
     }
     .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(1) { animation-delay: 60ms; }
     .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(2) { animation-delay: 90ms; }
@@ -3353,7 +3353,7 @@
     .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(3) { animation-delay: 240ms; }
     .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(4) { animation-delay: 270ms; }
     .sidebar.open .nav-group:nth-of-type(3) .nav-item { animation-delay: 300ms; }
-    @keyframes madark-drawer-item-in {
+    @keyframes madarek-drawer-item-in {
       from {
         opacity: 0;
         transform: translateY(8px);
@@ -3428,7 +3428,7 @@
      ║  USER MENU ITEMS — stagger entrance                            ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (WS-D2 orphan sweep: the .topbar-user-menu(-item) stagger + hover
-     rules and madark-menu-item-in(-rtl) keyframes were dead — Topbar's
+     rules and madarek-menu-item-in(-rtl) keyframes were dead — Topbar's
      Dropdown primitive renders its own menu items.) */
 
 
@@ -3449,7 +3449,7 @@
 
 
   /* (5-C1 entrance diet, A2 P1-1): the title-block spring is GONE.
-     `madark-page-title-in` (520ms + 80ms delay, off-token spring)
+     `madarek-page-title-in` (520ms + 80ms delay, off-token spring)
      was the FOURTH stacked entrance on every route — the title
      re-faded on top of the page fade on top of the content fade.
      The title now arrives with the page-enter fade like every other
@@ -3506,7 +3506,7 @@
    ▶ Section: polish-v17.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v17 · pages
+   MADAREK — polish v17 · pages
    ─────────────────────────────────────────────────────────────────────
    Phase 3 of the design polish plan: page-specific motion + visual
    richness across landing sections, dashboards, list rows, table rows,
@@ -3582,7 +3582,7 @@
      ║  STUDENT DASHBOARD — agenda items glide in                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .dash-agenda-list .dash-agenda-item {
-    animation: madark-agenda-in var(--motion-duration-long) var(--ease-out) both;
+    animation: madarek-agenda-in var(--motion-duration-long) var(--ease-out) both;
   }
   .dash-agenda-list .dash-agenda-item:nth-child(1) { animation-delay: 80ms; }
   .dash-agenda-list .dash-agenda-item:nth-child(2) { animation-delay: 140ms; }
@@ -3590,18 +3590,18 @@
   .dash-agenda-list .dash-agenda-item:nth-child(4) { animation-delay: 260ms; }
   .dash-agenda-list .dash-agenda-item:nth-child(5) { animation-delay: 320ms; }
   .dash-agenda-list .dash-agenda-item:nth-child(n+6) { animation-delay: 380ms; }
-  @keyframes madark-agenda-in {
+  @keyframes madarek-agenda-in {
     from { opacity: 0; transform: translateX(-8px); }
     to   { opacity: 1; transform: none; }
   }
   /* RTL variant as a separate name (a selector cannot prefix @keyframes —
      that syntax is invalid CSS and gets dropped by the minifier) */
-  @keyframes madark-agenda-in-rtl {
+  @keyframes madarek-agenda-in-rtl {
     from { opacity: 0; transform: translateX(8px); }
     to   { opacity: 1; transform: none; }
   }
   [dir="rtl"] .dash-agenda-list .dash-agenda-item {
-    animation-name: madark-agenda-in-rtl;
+    animation-name: madarek-agenda-in-rtl;
   }
 
 
@@ -3619,7 +3619,7 @@
      ║  TEACHER FEED — items glide in from the start side             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .feed .feed-item {
-    animation: madark-feed-in var(--motion-duration-long) var(--ease-out) both;
+    animation: madarek-feed-in var(--motion-duration-long) var(--ease-out) both;
   }
   .feed .feed-item:nth-child(1) { animation-delay: 60ms; }
   .feed .feed-item:nth-child(2) { animation-delay: 120ms; }
@@ -3628,7 +3628,7 @@
   .feed .feed-item:nth-child(5) { animation-delay: 300ms; }
   .feed .feed-item:nth-child(6) { animation-delay: 360ms; }
   .feed .feed-item:nth-child(n+7) { animation-delay: 420ms; }
-  @keyframes madark-feed-in {
+  @keyframes madarek-feed-in {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
   }
@@ -3679,7 +3679,7 @@
   .owner-health-dot.green,
   .owner-live-pulse {
     position: relative;
-    animation: madark-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
+    animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
   }
   .owner-health-dot.green::after,
   .owner-live-pulse::after {
@@ -3689,14 +3689,14 @@
     border-radius: inherit;
     background: inherit;
     opacity: 0.6;
-    animation: madark-pulse-ring var(--motion-duration-ambient) var(--motion-ease-decelerate) infinite;
+    animation: madarek-pulse-ring var(--motion-duration-ambient) var(--motion-ease-decelerate) infinite;
     pointer-events: none;
   }
-  @keyframes madark-heartbeat {
+  @keyframes madarek-heartbeat {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.06); }
   }
-  @keyframes madark-pulse-ring {
+  @keyframes madarek-pulse-ring {
     0%   { transform: scale(1); opacity: 0.6; }
     80%  { transform: scale(2.2); opacity: 0; }
     100% { transform: scale(2.2); opacity: 0; }
@@ -3714,10 +3714,10 @@
     box-shadow:
       0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent),
       var(--elev-1);
-    animation: madark-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
+    animation: madarek-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
   }
   /* Keyframe states of the warning glow above — off-token by design. */
-  @keyframes madark-alert-glow {
+  @keyframes madarek-alert-glow {
     0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning, #c97a18) 18%, transparent), var(--elev-1); }
     50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning, #c97a18) 28%, transparent), var(--elev-2); }
   }
@@ -3731,9 +3731,9 @@
   .owner-chart-container canvas,
   .dash-doughnut canvas,
   [class*="chart-container"] canvas {
-    animation: madark-canvas-in var(--t-slower) var(--ease-out) both;
+    animation: madarek-canvas-in var(--t-slower) var(--ease-out) both;
   }
-  @keyframes madark-canvas-in {
+  @keyframes madarek-canvas-in {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
@@ -3764,14 +3764,14 @@
       inline-size: 3px;
       background: var(--accent);
       border-radius: 0 var(--r-xs) var(--r-xs) 0;
-      animation: madark-row-bar-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
+      animation: madarek-row-bar-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     }
     [dir="rtl"] .owner-table tbody tr:hover td:first-child::before,
     [dir="rtl"] .admin-students-table tbody tr:hover td:first-child::before,
     [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before {
       border-radius: var(--r-xs) 0 0 var(--r-xs);
     }
-    @keyframes madark-row-bar-in {
+    @keyframes madarek-row-bar-in {
       from { transform: scaleY(0); }
       to   { transform: scaleY(1); }
     }
@@ -3820,9 +3820,9 @@
     border-radius: var(--r-full);
     transform: scaleY(0);
     transform-origin: top;
-    animation: madark-hero-bar-draw var(--t-slower) var(--ease-spring-soft) 240ms both;
+    animation: madarek-hero-bar-draw var(--t-slower) var(--ease-spring-soft) 240ms both;
   }
-  @keyframes madark-hero-bar-draw {
+  @keyframes madarek-hero-bar-draw {
     from { transform: scaleY(0); }
     to   { transform: scaleY(1); }
   }
@@ -3882,7 +3882,7 @@
    ▶ Section: polish-v18.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v18 · overlays
+   MADAREK — polish v18 · overlays
    ─────────────────────────────────────────────────────────────────────
    Phase 5: lift every overlay surface — notification dropdown, global
    search results, competition modals, sidebar drawer (mobile), and
@@ -3895,7 +3895,7 @@
      ║  NOTIFICATION DROPDOWN — items stagger + unread pulse          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (WS-D2 orphan sweep: the .notification-dropdown container + li/
-     .notif-item stagger rules and the madark-notif-in keyframes were dead
+     .notif-item stagger rules and the madarek-notif-in keyframes were dead
      (the NotificationPanel primitive renders its own items).) */
   /* (Wave 1-a dead-code sweep: the unread pulse deleted. Both selectors
      were dead — `.notif-item.unread::before` lost its 3px stripe to the
@@ -3915,7 +3915,7 @@
      ║  COMPETITION / GENERIC MODALS — backdrop blur ramp + spring    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (WS-D2 orphan sweep: .comp-modal-backdrop / .comp-modal and the
-     madark-modal-in keyframes were dead — the <Modal> primitive owns the
+     madarek-modal-in keyframes were dead — the <Modal> primitive owns the
      overlay. Only .comp-modal-close below is still referenced.) */
   .comp-modal-close {
     transition:
@@ -3939,7 +3939,7 @@
     border-radius: var(--r-md);
     background: var(--surface);
     border: 1px solid var(--rule);
-    /* (4-A11 P2-13: the entrance animation override + madark-toast-in
+    /* (4-A11 P2-13: the entrance animation override + madarek-toast-in
        keyframes were deleted — they fought the DESIGNED entrance in
        notifications.css (.toast-stack .toast: madarek-toast-in 240ms
        --motion-ease-decelerate) and, living here in the overrides
@@ -3955,13 +3955,13 @@
      ║  MEGA-MENU (landing) — items stagger                           ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-megamenu .landing-megamenu-item {
-    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both;
+    animation: madarek-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both;
   }
   .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
   .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
   .landing-megamenu .landing-megamenu-item:nth-child(3) { animation-delay: 100ms; }
   .landing-megamenu .landing-megamenu-item:nth-child(4) { animation-delay: 130ms; }
-  @keyframes madark-megamenu-item-in {
+  @keyframes madarek-megamenu-item-in {
     from { opacity: 0; transform: translateY(-4px); }
     to   { opacity: 1; transform: none; }
   }
@@ -3971,7 +3971,7 @@
      ║  SHEET / BOTTOM-SHEET (forward-compatible)                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (Wave 9-b dead-selector sweep: the `.sheet` / `.bottom-sheet`
-     entrance + madark-sheet-in keyframes deleted — zero TSX
+     entrance + madarek-sheet-in keyframes deleted — zero TSX
      consumers; the Sheet primitive renders `.sheet-overlay` /
      `.sheet-panel`, whose entrances (madarek-sheet-slide-*) live in
      components.css.) */
@@ -4014,7 +4014,7 @@
    ▶ Section: polish-v19.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v19 · states, auth, thumbnails, micro-fixes
+   MADAREK — polish v19 · states, auth, thumbnails, micro-fixes
    ─────────────────────────────────────────────────────────────────────
    Phase 6 of the design polish plan. Empty/error/loading state polish,
    auth pages, thumb-card hover refinement, and a final pass over
@@ -4069,10 +4069,10 @@
      ║  EMPTY STATE — idle wiggle on the icon every 6s                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-empty .state-icon {
-    animation: madark-empty-wiggle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
+    animation: madarek-empty-wiggle var(--motion-duration-ambient-drift) var(--motion-ease-standard) infinite;
     transform-origin: center;
   }
-  @keyframes madark-empty-wiggle {
+  @keyframes madarek-empty-wiggle {
     0%, 92%, 100% { transform: rotate(0deg); }
     94%   { transform: rotate(-6deg); }
     96%   { transform: rotate(6deg); }
@@ -4084,16 +4084,16 @@
      ║  ERROR STATE — icon throbs gently, retry button bounces in     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-error .state-icon {
-    animation: madark-error-throb var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
+    animation: madarek-error-throb var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
   }
-  @keyframes madark-error-throb {
+  @keyframes madarek-error-throb {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.05); }
   }
   .state.state-error .btn {
-    animation: madark-retry-pop var(--motion-duration-reveal) var(--ease-spring-bounce) both 200ms;
+    animation: madarek-retry-pop var(--motion-duration-reveal) var(--ease-spring-bounce) both 200ms;
   }
-  @keyframes madark-retry-pop {
+  @keyframes madarek-retry-pop {
     from { opacity: 0; transform: scale(0.85); }
     to   { opacity: 1; transform: none; }
   }
@@ -4108,9 +4108,9 @@
     position: relative;
   }
   .auth-card {
-    animation: madark-auth-card-in var(--t-slower) var(--ease-spring-soft) both;
+    animation: madarek-auth-card-in var(--t-slower) var(--ease-spring-soft) both;
   }
-  @keyframes madark-auth-card-in {
+  @keyframes madarek-auth-card-in {
     from { opacity: 0; transform: translateY(12px) scale(0.98); }
     to   { opacity: 1; transform: none; }
   }
@@ -4187,9 +4187,9 @@
   /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
      zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
   .pdf-toolbar {
-    animation: madark-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
+    animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
   }
-  @keyframes madark-pdf-controls-in {
+  @keyframes madarek-pdf-controls-in {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: none; }
   }
@@ -4299,7 +4299,7 @@
    ▶ Section: polish-v20.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v20 · accessibility + final pass
+   MADAREK — polish v20 · accessibility + final pass
    ─────────────────────────────────────────────────────────────────────
    Phase 7: a11y polish that doesn't fight the visual layer.
    · prefers-contrast support
@@ -4440,9 +4440,9 @@
      ║  Native lazy-loaded images fade in once decoded.               ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   img[loading="lazy"] {
-    animation: madark-img-in var(--motion-duration-long) var(--ease-out) both;
+    animation: madarek-img-in var(--motion-duration-long) var(--ease-out) both;
   }
-  @keyframes madark-img-in {
+  @keyframes madarek-img-in {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
@@ -4461,12 +4461,12 @@
    ▶ Section: polish-v21.css
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v21 · regression fixes + search polish
+   MADAREK — polish v21 · regression fixes + search polish
    ─────────────────────────────────────────────────────────────────────
    Fixes three concrete regressions visible in user screenshots:
 
    1. Mega-menu stuck open
-      polish-v14 added `animation: madark-popover-in ... both` to
+      polish-v14 added `animation: madarek-megamenu-in ... both` to
       .landing-megamenu. The `both` fill-mode pins the keyframes' final
       state (opacity: 1; transform: none) after the run, overriding the
       original CSS-hover toggle that hides it via opacity: 0. Result:
@@ -4498,7 +4498,7 @@
      ║  FIX 1 — MEGAMENU never gets pinned open                       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .landing-megamenu {
-    /* explicit none beats the v14 `madark-popover-in both` rule */
+    /* explicit none beats the v14 `madarek-megamenu-in both` rule */
     animation: none !important;
   }
   /* Item-level stagger on hover instead of permanent fill — only run
@@ -4508,7 +4508,7 @@
   }
   .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
   .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
-    animation: madark-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both !important;
+    animation: madarek-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both !important;
   }
 
 
@@ -4543,10 +4543,10 @@
     border-radius: var(--r-lg);
     overflow: hidden;
     /* Override any generic popover animation; this one's bespoke */
-    animation: madark-search-pop var(--motion-duration-medium) var(--ease-spring-soft) both;
+    animation: madarek-search-pop var(--motion-duration-medium) var(--ease-spring-soft) both;
     transform-origin: top center;
   }
-  @keyframes madark-search-pop {
+  @keyframes madarek-search-pop {
     from { opacity: 0; transform: translateY(-4px) scale(0.99); }
     to   { opacity: 1; transform: none; }
   }
@@ -4699,13 +4699,13 @@
     );
     background-size: 200% 100%;
     /* (4-A11 P2-9: raw 1400ms + eased loop → skeleton token + linear.) */
-    animation: madark-search-shimmer var(--motion-duration-skeleton) var(--ease-linear) infinite;
+    animation: madarek-search-shimmer var(--motion-duration-skeleton) var(--ease-linear) infinite;
     display: block;
   }
   .search-shimmer:nth-child(1) { inline-size: 100%; }
   .search-shimmer:nth-child(2) { inline-size: 80%; animation-delay: 120ms; }
   .search-shimmer:nth-child(3) { inline-size: 60%; animation-delay: 240ms; }
-  @keyframes madark-search-shimmer {
+  @keyframes madarek-search-shimmer {
     0%   { background-position: 200% 0; }
     100% { background-position: -100% 0; }
   }
@@ -4814,7 +4814,7 @@
     opacity: 0.35;
     pointer-events: none;
     z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    animation: madark-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
+    animation: madarek-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
   }
   .card > .state.state-loading,
   .card > .state.state-inline {
@@ -4822,7 +4822,7 @@
     isolation: isolate;
     overflow: hidden;
   }
-  @keyframes madark-loadingstate-pulse {
+  @keyframes madarek-loadingstate-pulse {
     0%, 100% { opacity: 0.25; }
     50%      { opacity: 0.45; }
   }
@@ -4878,7 +4878,7 @@
    ▶ Section: polish-v22.css — foundation consolidation (wave 1-a)
    ═══════════════════════════════════════════════════════════════════ */
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — polish v22 · foundation consolidation (wave 1-a)
+   MADAREK — polish v22 · foundation consolidation (wave 1-a)
    ─────────────────────────────────────────────────────────────────────
    Implements audits/0-a-foundation.md inside polish.css only:
    · A  ONE focus-ring system — visible, AA-safe, token-driven

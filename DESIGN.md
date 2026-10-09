@@ -33,13 +33,18 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | File | Owns |
 |---|---|
 | `tokens.css` | ALL tokens — primitives, light/dark theme blocks, Orbit Ink `--ln-*`, pastel families, elevation, z, state tokens |
+| `fonts.css` | self-hosted Plex subsets (woff2) + `@font-face` declarations |
 | `motion.css` | reveal / skeleton / spinner motion grammar, semantic durations |
+| `base.css` | element reset, heading styles, reduced-motion belt, autofill/caret polish |
 | `components.css` | the component recipes (§5) — buttons, inputs, cards, tables, sheets, dialogs, toasts' kin |
 | `layout.css` | sidebar / nav recipes |
-| `notifications.css` | toasts, bottom-nav |
+| `auth.css` · `notifications.css` · `student.css` | eager remainder — auth-page recipes, toasts/bottom-nav, student-surface patches |
 | `polish.css` | overrides layer — the last word on layered surfaces |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
+| `colleges.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages |
 | `unified-smart-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
+
+(10 eager via `main.tsx` + 6 page-scoped = the 16 in-app sheets; the export pair makes 18 on disk.)
 
 ---
 
@@ -116,7 +121,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | `--type-label-*` | 500 · 1.50 |
 | `--type-metric-*` | 700 · 1.10 · `tnum lnum` |
 
-- **Mono voice:** `--ln-mono = 'IBM Plex Mono' → 'IBM Plex Sans Arabic'` fallback — per character: Latin+digits render mono, Arabic continues in the brand sans (12px / 0.08em / tabular).
+- **Mono voice:** `--ln-mono = 'IBM Plex Mono' → 'IBM Plex Sans Arabic'` fallback — per character: Latin+digits render mono, Arabic continues in the brand sans (12px / 0 tracking / tabular). Tracking is 0 even on the mono classes: their live runs mix Arabic (ruling #2, r133-F7) and `tabular-nums` carries the alignment role.
 
 ---
 
@@ -140,7 +145,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | Springs | soft `1.18` · spring `1.36` · bounce `1.56` · snappy `(0.5,1.6,0.4,1)` |
 | Linear | **only via `--ease-linear`** — continuous loops only (spinner, skeleton, marquee) |
 | Press registers | controls `0.97` @80ms (`--press-scale`) · cards `0.99` · bottom-nav thumb `0.93` |
-| Hover lift | primary button **−2px** (hover-capable gate) · ghosts −1px |
+| Hover lift | primary **−2px** · accent **−1px** (both hover-capable-gated — `@media (hover:hover) and (pointer: fine)`, iOS never pins) · cards −1px · KPI −2px · ghost buttons lift **never** (border-shift only)
 | Entrances | modal pop 240ms decel (8px + 0.98) · sheet slide 240ms decel · toast in 240 decel / out 160 accel · reveal 360 (14px, one-shot IO) · stagger step 60ms, cap 6 |
 
 **Reduced motion (`prefers-reduced-motion`):** raw `--t-*` all zeroed (including `--t-micro`), semantic family zeroed in `motion.css`, per-pattern kills (marquee, presses). `--motion-direction` is unaffected — RTL mirroring survives RM.
@@ -174,7 +179,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 |---|---|
 | Radius `--r-*` | xs **6** · sm **8** · md **10** · lg **12** · xl **16** · 2xl **20** · 3xl **28** · full **9999px** (pill) |
 | Spacing `--sp-*` | 4px base — `sp-1` 4 · `sp-4` 16 · `sp-7` 32 · `sp-8` 40 · `sp-10` 56 · `sp-16` 240 |
-| Weights `--fw-*` | light 400 · regular 400 · medium 500 · semibold 600 · bold 700 · `--fw-black` **resolves 700** (Plex has no 800) |
+| Weights `--fw-*` | regular 400 · medium 500 · semibold 600 · bold 700 · `--fw-black` **resolves 700** (Plex has no 800) |
 
 | Component | Recipe |
 |---|---|
@@ -211,6 +216,7 @@ Arabic is the first-class direction; LTR is the port.
 - **Role accents:** `body[data-role]` — 7 roles × 2 themes, hexes **pinned by token-snapshot tests**; college accent slot carries a runtime contrast gate.
 - **Contrast tiers:** status/badge text always uses the `-ink`/`-deep` tier of its pastel family (AA); fills keep base tokens. Light-mode icon wells use the **`-ink` tier** (r131 hardening: 6.98–9.02:1; dark untouched).
 - **`prefers-contrast: more`:** elevations become rings, borders strengthened, glass de-blurred, illustration strokes 1.5 → 2.
+- **Focus rings — two worlds:** product = universal `:where()` 2px/2px ring in `--accent-strong` (light) / gold (dark); **Orbit Ink landing = 2px `--ln-cream` outline, offset 3px** on every `.landing :focus-visible`, with the primary CTA swapping its ring to `--ln-ink` (deliberate sub-language, never mixes with the product ring).
 - **Reduced motion:** full kill-belt in `base.css` + token zeroing (§3) — motion never survives RM; direction mirroring does.
 
 ---

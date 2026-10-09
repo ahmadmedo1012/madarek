@@ -10,6 +10,7 @@
 
 - **الإنتاج:** <https://madarek.onrender.com> · **النشر:** Render (3 خطوات، انظر أدناه) · **حسابات تجريبية:** أدناه (كلمة المرور `Madarek2026!`)
 - **مرجع التصميم:** مدارك هي المرجع الأم لنظام تصميم العائلة — لغة التصميم الكاملة في [`DESIGN.md`](DESIGN.md) (العربية الأصلية في المنتج، والإنجليزية لغة التوثيق).
+- **لقطات الشاشة:** الواجهة التعريفية، صفحة الدخول بالنسقين، ولوحة تحكم المالك — في قسم [Screenshots · لقطات الشاشة](#screenshots--لقطات-الشاشة) أدناه.
 
 ---
 
@@ -35,6 +36,21 @@ node scripts/verify-parity-export.mjs # design-parity gate — 163/163 token che
 | Motion tokens | `npm run check:motion-tokens` |
 | Icon discipline | `npm run check:icons` |
 | Full unit suites | `npm test` |
+
+## Screenshots · لقطات الشاشة
+
+The two design worlds as they ship — captured at 1440×900 from the live app (العالمَان كما يُشحَنان فعليًا — لقطات 1440×900 من التطبيق الحيّ):
+
+| | |
+|---|---|
+| **Orbit Ink landing** · الواجهة التعريفية | ![Landing hero — hero headline over the live OrbitScene canvas](docs/screenshots/landing-hero.png) |
+| **Colleges constellation** · كوكبة الكليات (25 كلية) | ![Landing colleges section — the 25-college constellation ring](docs/screenshots/landing-colleges.png) |
+| **Sign-in · light** · الدخول — النسق الفاتح (كريمي/نحاسي) | ![Sign-in page, copper-on-cream light theme](docs/screenshots/auth-light.png) |
+| **Sign-in · dark** · الدخول — النسق الداكن (ليلي/ذهبي) | ![Sign-in page, gold-on-night dark theme](docs/screenshots/auth-dark.png) |
+| **Owner dashboard · light** · لوحة المالك — الفاتح | ![Owner dashboard with KPI cards, doughnut chart and activity feed, light theme](docs/screenshots/owner-dashboard-light.png) |
+| **Owner dashboard · dark** · لوحة المالك — الداكن | ![Owner dashboard with KPI cards, doughnut chart and activity feed, dark theme](docs/screenshots/owner-dashboard-dark.png) |
+
+*Full captions, sizes and capture notes: [`docs/screenshots/README.md`](docs/screenshots/README.md). Captions and file list in both languages · التعليقات الكاملة والقائمة بالعربية والإنجليزية.*
 
 ## Demo accounts
 

@@ -170,8 +170,8 @@
   /* WS-D2 — was #fff in both themes. Routed through the always-light
      ink token so the thumb stays visible in Dark too: Light resolves to
      --neutral-50 #FBFAF9 (≈#fff, imperceptible), Dark to the warm sand
-     --neutral-900 #F2EAD8 which reads on both the off-track
-     (--surface-3 #2A2A28) and the copper on-state (#E0A067). A
+     --neutral-900 #F2EFE6 which reads on both the off-track
+     (--surface-3 #182142) and the copper on-state (#E0A067). A
      --surface mapping would render the thumb near-invisible on the
      Dark off-track, so the light-ink family is the correct slot. */
   background: var(--text-on-dark);

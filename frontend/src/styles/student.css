@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Student experience pages (Notion-product flavor)
+   MADAREK — Student experience pages (Notion-product flavor)
    Lecture player · training & gamification · research · library · live
    Owned by the student-page waves. Append-only: add sections, never
    rewrite other waves' sections. Import order: before polish.css.
@@ -831,7 +831,7 @@
 
   /* ═══ CoursesPage — filter → grid re-stagger (the authored moment) ═══
      The polish overrides layer staggers EVERY .grid-3 child on every
-     mount (madark-stagger-up, fill both) — which fires an entrance on
+     mount (madarek-stagger-up, fill both) — which fires an entrance on
      the first data render (the antipattern this page avoids) AND pins
      transform:none forever, silently killing the shared .thumb-card
      hover lift. The courses grid opts out of the global rule and owns

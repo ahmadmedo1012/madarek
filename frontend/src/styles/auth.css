@@ -1,5 +1,5 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADARK — Auth + Register + 404 pages (Notion-clean)
+   MADAREK — Auth + Register + 404 pages (Notion-clean)
    Single centered column · large fields · soft card · friendly tone
    ─────────────────────────────────────────────────────────────────────
    Wave 8-b reorganization notes:
@@ -11,7 +11,7 @@
    · Focus language is NOT declared here: polish v15 owns the input
      accent border + halo, v22 owns the single AA-safe :focus-visible
      ring (ruling #13 — the overrides layer has the final word).
-   · The card rise-in entrance is owned by polish (madark-auth-card-in,
+   · The card rise-in entrance is owned by polish (madarek-auth-card-in,
      with its own reduced-motion kill). Nothing animates the card here.
    · The classes consumed outside these pages (community / curriculum /
      student forms: .auth-input, .auth-field, .auth-error,

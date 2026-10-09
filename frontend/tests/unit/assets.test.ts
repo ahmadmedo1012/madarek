@@ -151,9 +151,13 @@ describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4)',
 });
 
 describe('theme-color metas match the real canvas tokens', () => {
-  it('dark meta = #191918, light meta = #FBFAF9 (tokens.css --bg)', () => {
+  it('dark meta = #070B16 (fleet ruling R13 — the dark --bg ground), light meta = #FBFAF9 (tokens.css --bg)', () => {
     const html = read('index.html');
-    expect(html).toContain('<meta name="theme-color" content="#191918" media="(prefers-color-scheme: dark)"');
+    expect(html).toContain('<meta name="theme-color" content="#070B16" media="(prefers-color-scheme: dark)"');
     expect(html).toContain('<meta name="theme-color" content="#FBFAF9" media="(prefers-color-scheme: light)"');
+    // the runtime sync script must paint the same dark ground (r133-F7:
+    // was #191918 — light-theme ink that matches no dark surface)
+    expect(html.match(/['"]#070B16['"]/g)?.length ?? 0).toBeGreaterThanOrEqual(2);
+    expect(html).not.toContain('#191918');
   });
 });
