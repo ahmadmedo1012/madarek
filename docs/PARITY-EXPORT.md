@@ -76,7 +76,34 @@ These spellings are **retired forever**. They must never reappear in the export 
 
 ---
 
-## 5. Rules of engagement · قواعد التعامل
+## 5. المستهلكون · العلاقة الفعلية مع المنظومة
+
+عقد r137 (صدق): زوج التصدير ليس مرجعًا نظريًا — أربعة منتجات شقيقة
+نسخت قيمه فعليًا إلى داخل مستودعاتها، كلٌّ عبر مِحكّ تكافؤ (parity
+harness) مستقل يُقارن نسخًا يدوية من القيم المرجعية بقيم ملفاتها هي،
+ويُفشل الـCI عند أي انحراف:
+
+| المنتج | المِحكّ | ما يُثبّت |
+|---|---|---|
+| Smart-Link | `tests/parity.mjs` | **530 دبوسًا** (الأعمق في المنظومة؛ مرجعه المعلن: `tokens.css` مباشرة) — الحلقة اليدوية الأكبر، وكل تعديل توكن في مدارك يُفشل مِحكّها حتى يُعاد التدبيس |
+| Smart-Menu | `tests/design/parity.test.ts` + `mobile/tests/design/parity.mjs` | نسخة القيم المرجعية مقابل `globals.css` (+توأم الجوال) — مِحكّان للمنتج الواحد |
+| Smart-Order | `tests/parity.mjs` | نفس النمط، مع جسر أسماء shadcn (`--background`/`--card`…) فوق القيم المداركية |
+| SmartBot | `fb_dashboard/frontend/tests/parity.mjs` + `src/test/MadarekParity.test.ts` | مِحكّ + منافذ حرفية من ملفات مدارك (سجل الضغط من `shared-design-system.css`، توست `notifications.css`، قاعدة المتصفح من `base.css`) |
+
+**حقيقة الصيانة (لا إطار تجاريًا — علاقة صيانة معلنة):** لا يستورد أي منتج
+شقيق ملفات مدارك وقت البناء؛ النسخ يدوية ويجري تحديثها على جولات كل
+مستودع بنفسه. لذلك أي تغيير قيمة يمر بالترتيب نفسه دائمًا:
+
+1. **`tokens.css` أولًا** — المصدر المُؤلَّف هو وحده مكان التعديل (قاعدة §6 أدناه).
+2. **إعادة توليد زوج التصدير في نفس الجولة** — `node scripts/verify-parity-export.mjs` يجب أن يبقى 163/163 أخضر قبل الدفع.
+3. **الأشقاء يُعيدون التدبيس في جولاتهم** — مِحكّاتهم تفشل جهرةً حتى تُحدّث النسخ اليدوية؛ هذا هو التعاقد، لا إشعار يدوي.
+
+> هذه الفقرة وحدها — دون الجدول — هي الحد الأدنى الذي يجب أن يبقى صادقًا
+> عند أي تعديل مستقبلي على العلاقة: من يستهلك القيم، وكيف يُزامنها.
+
+---
+
+## 6. Rules of engagement · قواعد التعامل
 
 1. **Do not import the pair into the app.** The app consumes `tokens.css` / `motion.css` / `components.css` directly — the pair is the verification surface only.
 2. **A changed value belongs in `tokens.css` first** — open an issue/PR against the canonical source; never fork a token into the export by hand.
