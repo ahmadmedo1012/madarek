@@ -31,8 +31,8 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 - [X] T001 [P] Add frontend i18n dependencies — run `npm install --workspace frontend i18next@^23 react-i18next@^14 i18next-http-backend@^2` and commit `frontend/package.json` + lockfile.
 - [X] T002 [P] Add frontend a11y CI deps — run `npm install --workspace frontend --save-dev @playwright/test@^1 @axe-core/playwright@^4` and commit `frontend/package.json` + lockfile.
 - [X] T003 [P] Create `frontend/playwright.config.ts` with one project per `{light, dark} × {ar, en}` (4 projects), `baseURL: 'http://localhost:5173'`, and a single shared `specDir: './tests/e2e'`.
-- [X] T004 [P] Create `scripts/check-i18n-coverage.sh` per `contracts/locale.md` (greps for literal Arabic/English strings in JSX, compares `ar.json` vs `en.json` keys, fails on divergence).
-- [X] T005 Wire `npm run check:i18n` in repo-root `package.json` scripts pointing at `scripts/check-i18n-coverage.sh`.
+- [X] T004 [P] Create `scripts/check-i18n-coverage.sh` per `contracts/locale.md` (greps for literal Arabic/English strings in JSX, compares `ar.json` vs `en.json` keys, fails on divergence). **r137: retired — the script and `contracts/locale.md` were deleted** (zero-bloat + D17-3; the i18n layer never shipped, so the gate was dead scaffolding).
+- [X] T005 Wire `npm run check:i18n` in repo-root `package.json` scripts pointing at `scripts/check-i18n-coverage.sh`. **r137: retired with T004 — the npm alias was removed with the script.**
 
 **Checkpoint**: Dependencies installed; CI hooks ready; nothing user-visible has changed yet.
 
@@ -195,6 +195,8 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 
 ## Phase 9: User Story 7 — English UI + i18n layer (Priority: P3)
 
+> **r137 — phase closed without implementation.** The locale contract (`contracts/locale.md`) was retired by deletion; per D17-3 the platform is Arabic-only by explicit decision, not by omission. The tasks below are kept as the historical plan only.
+
 **Goal**: Greenfield i18n. Switching to English flips `dir="ltr"` and `lang="en"`, every static string is translated, content stays in its original language.
 
 **Independent Test**: Toggle to English; every visible label, button, nav, error message, and date/number format is English; reload — language persists; switch back to Arabic — full RTL restoration.
@@ -203,7 +205,7 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 - [ ] T074 [P] [US7] Create canonical `frontend/src/i18n/catalog/ar.json` with namespaces `common, nav, auth, dashboard, course, lecture, assignment, notifications, search, profile, settings, errors` populated from existing JSX literals (initial pass).
 - [ ] T075 [P] [US7] Create `frontend/src/i18n/catalog/en.json` mirroring every key in `ar.json` with English translations.
 - [ ] T076 [US7] Create `frontend/src/components/layout/LocaleSwitcher.tsx` — segmented control in `Topbar` calling `setLocale()` and `PATCH /api/v1/me/locale`.
-- [ ] T077 [US7] Implement `PATCH /api/v1/me/locale` in `backend/src/modules/me/routes.ts` per `contracts/locale.md`; write `AuditLog { action: LOCALE_CHANGED }`.
+- [ ] T077 [US7] Implement `PATCH /api/v1/me/locale` in `backend/src/modules/me/routes.ts` per `contracts/locale.md`; write `AuditLog { action: LOCALE_CHANGED }`. **r137: `contracts/locale.md` retired — see the phase note above.**
 - [ ] T078 [US7] Update `GET /api/v1/me` to return `locale`.
 - [ ] T079 [US7] Add inline bootstrap script to `frontend/index.html` resolving locale (URL param → cookie → `navigator.languages` → default `AR`) BEFORE React mounts; sets `<html lang dir>` to avoid flash-of-incorrect-language.
 - [ ] T080 [US7] Migrate every literal Arabic / English string in `frontend/src/components/layout/**` (`Topbar`, `Sidebar`, `BottomNav`, `GlobalSearch`, `NotificationDropdown`) through `t()`. Add keys to both catalog files.
@@ -213,7 +215,7 @@ Web app monorepo: `frontend/src/`, `backend/src/`, `backend/prisma/`, `scripts/`
 - [ ] T084 [US7] Switch `frontend/src/components/layout/NotificationDropdown.tsx` and `frontend/src/pages/student/NotificationsPage.tsx` to prefer `bodyKey + bodyParams` (and `titleKey + titleParams` where applicable) via `t()` when present on the wire shape, falling back to the existing `body` / `title` plain-text fields for legacy rows. Add the corresponding `notifications.<category>.title` and `notifications.<category>.body` entries to `ar.json` (T074) and `en.json` (T075). Server-side emission of the keys is already in place from T060.
 - [ ] T085 [P] [US7] Update `frontend/src/lib/numbers.ts` to render Arabic-Indic numerals when locale is `AR` and Western numerals when `EN` via `Intl.NumberFormat`. Update existing call sites that render numbers as plain JS strings.
 - [ ] T086 [P] [US7] Add `frontend/tests/e2e/i18n-switch.spec.ts` — toggle to English, assert every visible string is English; assert `<html dir>` and `<html lang>` flipped; reload, assert persistence.
-- [ ] T087 [US7] Run `scripts/check-i18n-coverage.sh` and address any remaining violations; gate CI on it.
+- [ ] T087 [US7] Run `scripts/check-i18n-coverage.sh` and address any remaining violations; gate CI on it. **r137: script deleted — see the phase note above.**
 
 **Checkpoint**: English UI shipped; SC-006 verifiable.
 
@@ -322,7 +324,7 @@ Add P2 stories one at a time, each independently testable. Each PR brings the pl
 
 After P2 stories land:
 
-1. US7 (English i18n) — large refactor across the shell + page literals; gated by `check:i18n` CI.
+1. US7 (English i18n) — large refactor across the shell + page literals; gated by `check:i18n` CI. **r137: gate + locale contract deleted (zero-bloat, D17-3) — this refactor is no longer planned under spec 011.**
 2. US8 (motion + Oasis demo) — visible polish; shipping last gives it the cleanest substrate.
 
 ### Parallel Team Strategy

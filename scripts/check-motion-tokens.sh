@@ -76,7 +76,8 @@
 # `--ease-linear` token from tokens.css instead.
 #
 # Scanner hardening (15-k P1-2; campaign-2 parity with
-# check-i18n-coverage.sh): the scan runs in one python3 pass so every
+# check-i18n-coverage.sh [deleted r137]): the scan runs in one python3
+# pass so every
 # check sees comment-stripped source (comment prose quoting
 # `animation-duration: 0.01ms` no longer false-positives) and so a
 # scanner crash fails the gate with exit 4 instead of being swallowed

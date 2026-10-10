@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-02
 
-**Status**: Partial — أجزاء نُفِّذت ولم يُبنَ طبقة i18n (الحالة المرجعية: `docs/SPECS-REFERENCE.md`)
+**Status**: Partial — أجزاء نُفّذت ولم يُبنَ طبقة i18n؛ أُغلقت بوابة i18n نهائيًا في r137 بالحذف (مبدأ zero-bloat + D17-3: العربية هي حقيقة المنتج) — (الحالة المرجعية: `docs/SPECS-REFERENCE.md`)
 
 **Input**: User description: "@madarek_audit_report00.md — comprehensive UX/UI audit (SkyClaw AI Agent, 2026-06-02) identifying gaps between Madarek's promised landing page experience and the delivered experience. Critical findings: (1) inner application routes (`/dashboard`, `/courses`, `/faculties`) return the landing page rather than functional pages; (2) Render free-tier cold starts produce 30–60s first-load waits with the generic Render splash; (3) no observable scroll animations, micro-interactions, or branded loading states; (4) static Oasis AI demo on the landing page; (5) hamburger-only navigation with no breadcrumbs, no global search, no sticky header; (6) no notification center; (7) no dark mode; (8) WCAG 2.1 AA accessibility unverified (contrast risk on cream/gold, no skip-link, focus indicators undocumented); (9) Arabic-only UI with no English option; (10) discussion forums absent. This feature responds to the audit by closing the launch-blocking gaps and lifting visible polish to a level comparable to Idraak / Canvas / Notion."
 
@@ -45,7 +45,7 @@ The Clarification 1 answer ("greenfield") referred to the user's perception that
 4. **US4 partly satisfied** — `Notification` model + dropdown + 60s polling exist; the gaps are the mark-all-read flow, preferences UI, and the "≤30s without manual refresh" SC-007 target (currently 60-second poll).
 5. **US5 mostly unverified** — accessibility tooling (`@axe-core/react` is already in `frontend/package.json`); the gap is running it, fixing findings, adding skip-link and verifying focus indicators across both themes.
 6. **US6 partly satisfied** — theme store + `[data-theme]` exist; the gap is contrast verification across both themes for every in-scope page.
-7. **US7 not yet implemented** — the i18n layer to support an English UI does not exist; this is greenfield work.
+7. **US7 not yet implemented** — the i18n layer to support an English UI does not exist; this is greenfield work. r137: the suspended layer is now formally closed — `contracts/locale.md` and `scripts/check-i18n-coverage.sh` were deleted (zero-bloat + D17-3: Arabic-only explicit); any future English UI is a new spec, not a resurrection of this one.
 8. **US8 partly satisfied** — `useReveal` (IntersectionObserver) and `CountUp` exist; the gaps are landing-page motion choreography, page-transition smoothness, branded skeleton states everywhere a back-end cold call lives, and the interactive Oasis demo.
 
 FR-001 is reconciled with the existing implementation in §Functional Requirements below: 15-minute access token + 7-day refresh stays as the operational contract; the user-perceived "12-hour" lifetime in Clarification 4 is delivered by the silent-refresh interceptor; the "30-day remember-me" extends the refresh-cookie lifetime; the "30-minute idle on sensitive routes" is added as a step-up re-authentication gate, not a wholesale session shortening.

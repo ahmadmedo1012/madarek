@@ -184,7 +184,7 @@ The login form gains a single checkbox below the password field:
 [ ] Keep me signed in for 30 days
 ```
 
-Default: unchecked. The label is keyed at `auth.remember_me` (see `locale.md`). Selecting it sends `rememberMe: true` on the next login post.
+Default: unchecked. The label is keyed at `auth.remember_me` (the i18n key convention lived in `locale.md`, retired at r137 — Arabic-only per D17-3). Selecting it sends `rememberMe: true` on the next login post.
 
 The user-perceived behavior:
 

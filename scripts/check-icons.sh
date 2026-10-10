@@ -24,7 +24,8 @@
 # the same line.
 #
 # Scanner hardening (17-c hand-off #1, wave 18-G; parity with
-# check-motion-tokens.sh / check-i18n-coverage.sh): every scanner runs
+# check-motion-tokens.sh / check-i18n-coverage.sh [deleted r137]): every
+# scanner runs
 # ALONE so its own exit status is inspectable — 0 (matches) and 1 (no
 # match) are the only legitimate outcomes; any other failure (bad
 # pattern, unreadable path, python3 crash) FAILS the gate with exit 4

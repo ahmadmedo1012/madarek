@@ -285,7 +285,8 @@ condensed overview.
 **Root:** `build` (frontend + backend + `db:deploy`), `start`, `dev`, `dev:web`,
 `test` (both workspaces), `typecheck` (src + tests, both workspaces),
 `db:migrate`, `db:deploy`, `db:seed`, `validate:colleges`,
-`check:motion-tokens` / `check:icons` / `check:i18n`.
+`check:motion-tokens` / `check:icons` / `check:csp-hash`
+(the suspended `check:i18n` gate was deleted at r137 — Arabic-only per D17-3).
 **Backend:** `dev` (tsx watch), `build` (tsc → `dist/`), `start`, `typecheck`,
 `prisma:generate|migrate|deploy|seed`, `postinstall` (prisma generate).
 

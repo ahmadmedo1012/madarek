@@ -156,7 +156,7 @@ Effective = (role defaults) ∪ (grants) ∖ (revokes)
 | `npm run db:migrate` | Apply Prisma migrations |
 | `npm run db:seed` | Seed production data |
 | `npm test` | Run all tests (frontend 1015, then backend 1021) |
-| `npm run check:motion-tokens` / `check:icons` / `check:i18n` | Design gates (motion-token + Lucide-icon discipline; i18n is a documented loud-skip) |
+| `npm run check:motion-tokens` / `check:icons` | Design gates (motion-token + Lucide-icon discipline) — **run in CI** (design-gates job) |
 | `npm run validate:colleges` | College identity profiles (WCAG contrast, assets, lucide validity) — **runs in CI** (typecheck job) and manually |
 
 ### Backend

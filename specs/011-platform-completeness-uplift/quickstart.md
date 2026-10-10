@@ -81,11 +81,13 @@ A workstream maps a user story to its primary touchpoints. Pick the one that mat
 
 ### US7 — English i18n (P3)
 
+> **r137 — retired without implementation.** The locale contract and the i18n coverage gate were deleted (zero-bloat + D17-3: Arabic-only explicit). The steps below are the historical plan; a future English UI is a new spec.
+
 1. Install `i18next`, `react-i18next`, `i18next-http-backend`. R-003 is binding.
 2. Create `frontend/src/i18n/` per the project structure in `plan.md`.
 3. Migrate every literal string in JSX to `t('key.name')` — start with the global shell (`Topbar`, `Sidebar`, `BottomNav`), then per page. Add the keys to `ar.json` (canonical) and `en.json` (translation).
-4. Build `<LocaleSwitcher>` and wire `PATCH /api/v1/me/locale` per `contracts/locale.md`.
-5. Add `scripts/check-i18n-coverage.sh` and wire it to CI.
+4. Build `<LocaleSwitcher>` and wire `PATCH /api/v1/me/locale` per `contracts/locale.md` (contract retired r137).
+5. ~~Add `scripts/check-i18n-coverage.sh` and wire it to CI.~~ (deleted r137)
 6. Locale resolution at first paint goes through the bootstrap inline script in `index.html` — it must run before React mounts to avoid flash-of-incorrect-language.
 
 ### US8 — Motion polish + Oasis demo (P3)
@@ -128,7 +130,7 @@ The new feature work additionally requires:
 
 1. After pulling: `npm run db:migrate` (the three 011 migrations are additive).
 2. Optional: run the search backfill once per database — `tsx backend/scripts/backfill-search-normalized.ts`.
-3. After the i18n layer lands: `npm run check:i18n` (alias for `scripts/check-i18n-coverage.sh`) to verify no untranslated strings.
+3. ~~After the i18n layer lands: `npm run check:i18n`~~ — retired r137; the layer will not land under this spec (Arabic-only per D17-3).
 
 ---
 
@@ -139,7 +141,7 @@ The new feature work additionally requires:
 | Frontend unit | `frontend/src/**/*.test.ts(x)` (Vitest 2.1, jsdom) |
 | Frontend a11y | `frontend/tests/a11y.spec.ts` (Playwright + axe) |
 | Backend integration | `backend/src/modules/<module>/__tests__/` (new — minimal happy-path coverage per the constitution) |
-| i18n key coverage | `scripts/check-i18n-coverage.sh` (CI) |
+| i18n key coverage | retired r137 — gate deleted (Arabic-only per D17-3) |
 | SSE | Integration test boots the server, opens an EventSource, asserts notification arrives within 1s |
 | Search | `backend/src/modules/search/search.test.ts` covering the matrix in `contracts/search.md` |
 
