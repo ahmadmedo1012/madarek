@@ -231,4 +231,4 @@ Arabic is the first-class direction; LTR is the port.
 
 ---
 
-*Decision history and WCAG derivations live inline in `frontend/src/styles/tokens.css` (the authored source). Process archaeology lives in `specs/`; the historical SpeckKit draft lives in `design-system/` (superseded).*
+*Decision history and WCAG derivations live inline in `frontend/src/styles/tokens.css` (the authored source). Process archaeology lives in `specs/`; the historical SpeckKit draft lives in `docs/archive/MASTER.md` (superseded, archived at r137).*

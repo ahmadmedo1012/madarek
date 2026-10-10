@@ -14,7 +14,10 @@ Three groups, all **read-only history — do not update these files**:
    `DOCUMENTATION.md`, `Madarek_PRD_v2.md`, `PROJECT_OVERVIEW.md`,
    `FEATURE_012_DESIGN_UPLIFT.md`, `viewer_documentation.md`) — early
    hand-written references that were later replaced by the generated,
-   code-accurate living references above.
+   code-accurate living references above. Also `MASTER.md` — the
+   auto-generated 2026-05-29 SpeckKit design draft (blue/Inter values that
+   never shipped); moved here from `design-system/` at r137, the canon
+   lives in `frontend/src/styles/tokens.css` + `DESIGN.md`.
 2. **Research & audit history** (`zu.edu.ly.md`, `zu_university_report.md`,
    `madarek_audit_report00.md`, `madarek_audit_report01.md`) — university fact
    research and the first two full-repo audits that drove early hardening.

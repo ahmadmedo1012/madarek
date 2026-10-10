@@ -14,7 +14,7 @@
 #   - frontend/src/styles/                         (CSS / decorative)
 #   - frontend/public/                             (static assets)
 #   - frontend/tests/                              (fixtures)
-#   - backend/, scripts/, design-system/           (not user-facing chrome)
+#   - backend/, scripts/                       (not user-facing chrome; design-system/ deleted r137)
 #
 # The svg check shares this allowlist — it matches AGENTS-BRIEF §3.2's
 # documented exception set (Illustration.tsx and lib/illustrations/**

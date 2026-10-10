@@ -60,10 +60,9 @@ madarek/
 │   └── screenshots/       ← لقطات README + ملاحظات الالتقاط
 ├── specs/                 ← مواصفات الميزات 001–012 (نية زمنية — الحالة في SPECS-REFERENCE)
 ├── audits/                ← 27 تقرير تدقيق بصري (جولتا 4 و5) — أدلة تاريخية
-├── scripts/               ← بوابات جودة (csp-hash، icons، motion، parity، i18n، colleges)
+├── scripts/               ← بوابات جودة (csp-hash، icons، motion، parity، colleges)
 │                            + أدوات لقطات Playwright المحلية (snap*.mjs)
 ├── tools/                 ← boot-pg.sh: PostgreSQL مدمج للتطوير بلا Neon (:5433)
-├── design-system/         ← مسودة SpeckKit قديمة (لافتة SUPERSEDED — لا تستخدمها)
 └── .github/               ← ci.yml (7 وظائف) + قوالب Issues/PR ثنائية اللغة
 ```
 
@@ -97,7 +96,7 @@ madarek/
 | `node_modules/`، `backend/dist/`، `frontend/dist/` | مولّدة/اعتماديات — `.gitignore` يغطيها |
 | `backend/prisma/migrations/` | ترحيلات مطبقة تاريخيًا — أنشئ ترحيلًا جديدًا لا تعدّل القديم |
 | `docs/archive/`، `audits/`، `specs/*/` | مواد تاريخية بأدلة زمنية — لا تُحدَّث retrospectively |
-| `design-system/madarek-zawia-university-lms/` | مسودة مُستبدلة بلافتة — المرجع `DESIGN.md` |
+| `docs/archive/MASTER.md` | مسودة SpeckKit مُستبدلة (كانت `design-system/` — أُرشفت r137) — المرجع `DESIGN.md` |
 | `frontend/src/styles/unified-parity.css` + `shared-design-system.css` | زوج تصدير التكافؤ — مرجع داخلي **غير مستورد في التطبيق**؛ تتحقق منه بوابة parity 163/163 |
 | `backend/storage/papers/` | ملفات مُقدَّمة تخدمها واجهة `/files/papers` — إضافة ملفات تتم عبر مسار مراجعة، لا يدويًا في الإنتاج |
 | `.zcode/` | شخصيات وكلاء عامة غير خاصة بمشروع مدارك (انظر `.zcode/README.md`) |

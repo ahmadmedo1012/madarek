@@ -51,9 +51,8 @@ madarek/
 │   │   ├── schema.prisma       # 75 models, 30 enums
 │   │   └── seed.ts
 ├── specs/                # Feature specifications (001, 002, 003, 004, 011, 012)
-├── design-system/        # UI-UX design spec
 ├── scripts/              # Validation & maintenance scripts
-├── docs/                 # Documentation (this file)
+├── docs/                 # Documentation (this file; archive/ holds the superseded MASTER.md draft)
 └── render.yaml           # Render Blueprint
 ```
 
