@@ -27,7 +27,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AttendancePage, AssignmentsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage } from '../../src/pages/teacher/TeacherPages';
+import { AttendancePage, AssignmentsPage, MaterialsPage, MessagesPage, GradesPage, StudentsListPage, TeacherSchedulePage } from '../../src/pages/teacher/TeacherPages';
 import { useAuthStore } from '../../src/stores/auth.store';
 import type { AuthUser } from '../../src/stores/auth.store';
 
@@ -50,6 +50,20 @@ const mocks = vi.hoisted(() => ({
   },
   assignments: [] as unknown[],
   grade: {
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+  },
+  /* r144 — the authoring mutations (AssignmentFormModal /
+   * MaterialFormModal). */
+  createAssignment: {
+    mutateAsync: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+  },
+  createMaterial: {
     mutateAsync: vi.fn(),
     isPending: false,
     isError: false,
@@ -90,7 +104,18 @@ vi.mock('../../src/hooks/useResources', () => ({
     error: null,
     refetch: vi.fn(),
   }),
+  /* r144 — MaterialsPage's read model (the page renders its table off
+   * it; empty is fine for the modal-only assertions here). */
+  useTeacherMaterials: () => ({
+    data: [],
+    isPending: false,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
   useGradeSubmission: () => mocks.grade,
+  useCreateAssignment: () => mocks.createAssignment,
+  useCreateMaterial: () => mocks.createMaterial,
   useMyMessages: (page: number, limit: number) => {
     mocks.messages.calls.push([page, limit]);
     return {
@@ -320,6 +345,8 @@ beforeEach(() => {
   mocks.dashboard = { data: null, isPending: false, isError: false, error: null, refetch: vi.fn() };
   mocks.assignments = [];
   mocks.grade = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
+  mocks.createAssignment = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
+  mocks.createMaterial = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
   mocks.messages = { pages: {}, total: 0, totalPages: 1, calls: [] };
 });
 
@@ -959,6 +986,141 @@ describe('GradesPage + StudentsListPage — one student, one band chip (22-a / A
     ).toBeInTheDocument();
     // …and the old full-Card wrapper is gone.
     expect(screen.queryByText('اختر المقرّر لعرض درجاته')).toBeNull();
+    unmount();
+  });
+});
+
+/* ─── r144 — the teaching loop's authoring half (T1-h F1/F2) ──────
+ * AssignmentsPage and MaterialsPage gained their creation affordances
+ * (POST /offerings/:id/{assignments,materials} shipped backend-only
+ * until now). These pins hold the contract the modals promise:
+ * validation blocks bad input inline, a landed save closes the modal,
+ * and the empty-state copy points at the button that exists. */
+describe('r144 — AssignmentFormModal + MaterialFormModal (authoring half)', () => {
+  it('AssignmentsPage renders the «واجب جديد» affordance the copy points at', () => {
+    mocks.offerings = [OFFERING];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole('button', { name: /واجب جديد/ })).toBeInTheDocument();
+    unmount();
+  });
+
+  it('AssignmentFormModal validates before submitting — empty due date blocks with an Arabic message', async () => {
+    mocks.offerings = [OFFERING];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /واجب جديد/ }));
+
+    const dialog = await screen.findByRole('dialog', { name: 'إنشاء واجب جديد' });
+    expect(dialog).toBeInTheDocument();
+
+    // Fill title but leave the due date empty → the submit must be
+    // blocked inline, not sent to the backend.
+    fireEvent.change(screen.getByLabelText(/العنوان/), { target: { value: 'واجب الأسبوع الأول' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إنشاء الواجب' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('حدّد الموعد النهائي للتسليم.')).toBeInTheDocument();
+    });
+    expect(mocks.createAssignment.mutateAsync).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('AssignmentFormModal submits the backend contract and closes on success', async () => {
+    mocks.offerings = [OFFERING];
+    mocks.createAssignment.mutateAsync.mockResolvedValueOnce({});
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /واجب جديد/ }));
+    await screen.findByRole('dialog', { name: 'إنشاء واجب جديد' });
+
+    fireEvent.change(screen.getByLabelText(/العنوان/), { target: { value: 'واجب الأسبوع الأول' } });
+    fireEvent.change(screen.getByLabelText(/الموعد النهائي للتسليم/), { target: { value: '2026-12-01T23:59' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إنشاء الواجب' }));
+
+    await waitFor(() => {
+      expect(mocks.createAssignment.mutateAsync).toHaveBeenCalledTimes(1);
+    });
+    const call = mocks.createAssignment.mutateAsync.mock.calls[0]![0] as Record<string, unknown>;
+    expect(call.offeringId).toBe('off1');
+    expect(call.title).toBe('واجب الأسبوع الأول');
+    expect(call.type).toBe('HOMEWORK');
+    expect(call.maxScore).toBe(100);
+    // The wire contract is an ISO date, not the datetime-local string.
+    expect(String(call.dueAt)).toMatch(/^2026-12-01T/);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'إنشاء واجب جديد' })).toBeNull();
+    });
+    unmount();
+  });
+
+  it('MaterialFormModal rejects a non-https link inline (the r142 backend guard, mirrored client-side)', async () => {
+    mocks.offerings = [OFFERING];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <MaterialsPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /إضافة مادة/ }));
+    await screen.findByRole('dialog', { name: 'إضافة مادة تعليمية بالرابط' });
+
+    fireEvent.change(screen.getByLabelText(/اسم المادة/), { target: { value: 'شرائح الأسبوع الثالث' } });
+    fireEvent.change(screen.getByLabelText(/الرابط \(https\)/), { target: { value: 'javascript:alert(1)' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة المادة' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('الرابط يجب أن يبدأ بـ https://')).toBeInTheDocument();
+    });
+    expect(mocks.createMaterial.mutateAsync).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('MaterialFormModal submits the backend contract and closes on success', async () => {
+    mocks.offerings = [OFFERING];
+    mocks.createMaterial.mutateAsync.mockResolvedValueOnce({});
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <MaterialsPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /إضافة مادة/ }));
+    await screen.findByRole('dialog', { name: 'إضافة مادة تعليمية بالرابط' });
+
+    fireEvent.change(screen.getByLabelText(/اسم المادة/), { target: { value: 'شرائح الأسبوع الثالث' } });
+    fireEvent.change(screen.getByLabelText(/الرابط \(https\)/), { target: { value: 'https://cdn.example.com/lec3.pdf' } });
+    fireEvent.click(screen.getByRole('button', { name: 'إضافة المادة' }));
+
+    await waitFor(() => {
+      expect(mocks.createMaterial.mutateAsync).toHaveBeenCalledTimes(1);
+    });
+    const call = mocks.createMaterial.mutateAsync.mock.calls[0]![0] as Record<string, unknown>;
+    expect(call.offeringId).toBe('off1');
+    expect(call.type).toBe('PDF');
+    expect(call.url).toBe('https://cdn.example.com/lec3.pdf');
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'إضافة مادة تعليمية بالرابط' })).toBeNull();
+    });
     unmount();
   });
 });

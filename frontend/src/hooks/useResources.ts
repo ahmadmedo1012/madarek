@@ -1041,7 +1041,7 @@ export interface OfferingFull {
   };
   teacher: { id: string; firstName: string; lastName: string; avatarInitials?: string | null; avatarColor?: string | null };
   schedule: Array<{ id: string; dayOfWeek: number; startTime: string; endTime: string; room?: string | null }>;
-  materials: Array<{ id: string; name: string; type: string; sizeBytes: string; createdAt: string }>;
+  materials: Array<{ id: string; name: string; type: string; url: string; sizeBytes: string; createdAt: string }>;
   assignments: Array<{ id: string; title: string; type: string; dueAt: string; weight: number; maxScore: number }>;
   lectures: Array<Lecture & { _count: { chapters: number; checkpoints: number } }>;
   _count: { enrollments: number };
@@ -1680,6 +1680,55 @@ export function useTeacherAssignments() {
     queryKey: ['teacher', 'me', 'assignments'],
     queryFn: () => unwrap<TeacherAssignmentRow[]>(api.get('/teacher/me/assignments')),
     staleTime: 60_000,
+  });
+}
+
+/* ── r144: the teaching loop's authoring half — POST /offerings/:id/
+ * assignments and /materials shipped in the backend with ZERO frontend
+ * consumers (audit T1-h F1/F2), so a teacher on a clean environment
+ * could never run create → submit → grade. Both mutations invalidate
+ * the same read models the pages render. ──────────────────────── */
+
+export interface CreateAssignmentInput {
+  offeringId: string;
+  title: string;
+  description?: string;
+  type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+  dueAt: string; // ISO
+  weight?: number;
+  maxScore?: number;
+}
+
+export function useCreateAssignment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offeringId, ...payload }: CreateAssignmentInput) =>
+      unwrap<unknown>(api.post(`/offerings/${offeringId}/assignments`, payload)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['teacher', 'me', 'assignments'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+    },
+  });
+}
+
+export interface CreateMaterialInput {
+  offeringId: string;
+  name: string;
+  description?: string;
+  type: 'PDF' | 'PPT' | 'VIDEO' | 'DOC' | 'ZIP' | 'IMAGE' | 'OTHER';
+  url: string;
+}
+
+export function useCreateMaterial() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offeringId, ...payload }: CreateMaterialInput) =>
+      unwrap<unknown>(api.post(`/offerings/${offeringId}/materials`, payload)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['teacher', 'me', 'materials'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+    },
   });
 }
 

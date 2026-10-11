@@ -270,15 +270,28 @@ export default function CourseDetailPage() {
             <div className="flex-col gap-2">
               {data.materials.map((m) => {
                 const label = MATERIAL_TYPE_LABEL[m.type as keyof typeof MATERIAL_TYPE_LABEL] ?? m.type;
+                /* r144 (T1-h F8): the row is a real link now — the
+                 * student could see the material in context but never
+                 * open it (dead-end row). Same contract as
+                 * DownloadsPage: external https opens a new tab;
+                 * /api/v1/files/papers/ routes through the document
+                 * viewer like every other internal paper link. */
+                const isExternal = /^https:\/\//.test(m.url);
+                const paperName = m.url.startsWith('/api/v1/files/papers/') ? m.url.split('/').pop() : null;
                 return (
-                  <div key={m.id} className="list-row">
+                  <a
+                    key={m.id}
+                    className="list-row"
+                    href={isExternal ? m.url : paperName ? `/document/${encodeURIComponent(paperName)}` : m.url}
+                    {...(isExternal ? { target: '_blank', rel: 'noreferrer' } : {})}
+                  >
                     <Icon icon={FileText} size={16} className="text-muted" />
                     <div className="list-row-body">
                       <div className="list-row-title" title={m.name}>{m.name}</div>
                       <div className="list-row-sub"><bdi>{label}</bdi> · {formatDateAr(m.createdAt)}</div>
                     </div>
                     <Badge><bdi>{label}</bdi></Badge>
-                  </div>
+                  </a>
                 );
               })}
             </div>

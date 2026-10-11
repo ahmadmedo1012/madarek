@@ -20,6 +20,8 @@ import {
   useTeacherAssignments,
   useTeacherDashboard,
   useGradeSubmission,
+  useCreateAssignment,
+  useCreateMaterial,
   apiErrorMessage,
   type TeacherDashboard,
   useMyMessages,
@@ -577,24 +579,181 @@ function formatSize(bytes: number): string {
   return `${(bytes / 1024 / 1024 / 1024).toFixed(1)} GB`;
 }
 
+/* ─── r144: add-material-by-URL — the backend's POST /offerings/:id/
+ * materials contract (by-link, no multipart — AGENTS §5.6). Replaces
+ * the old «قيد التطوير» dead-end card with the actual channel. */
+function MaterialFormModal({ onClose }: { onClose: () => void }) {
+  const offerings = useTeacherOfferings();
+  const create = useCreateMaterial();
+
+  const [offeringId, setOfferingId] = useState('');
+  const [name, setName] = useState('');
+  const [type, setType] = useState<'PDF' | 'PPT' | 'VIDEO' | 'DOC' | 'ZIP' | 'IMAGE' | 'OTHER'>('PDF');
+  const [url, setUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const dirty = name.trim() !== '' || url.trim() !== '' || description.trim() !== '';
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty,
+    pending: create.isPending,
+    onClose,
+  });
+
+  const list = offerings.data ?? [];
+  const effectiveOfferingId = offeringId || list[0]?.id || '';
+
+  const onSubmit = async () => {
+    const err =
+      !effectiveOfferingId ? 'اختر المقرّر أولاً.' :
+      name.trim().length < 1 ? 'اسم الملف مطلوب.' :
+      !/^https:\/\//.test(url.trim()) ? 'الرابط يجب أن يبدأ بـ https://' :
+      null;
+    setValidationError(err);
+    if (err) return;
+    try {
+      await create.mutateAsync({
+        offeringId: effectiveOfferingId,
+        name: name.trim(),
+        type,
+        url: url.trim(),
+        description: description.trim() || undefined,
+      });
+      toast.success('أُضيف الملف إلى المقرّر وسيظهر لطلابه فوراً.', { title: 'تمّت الإضافة' });
+      onClose();
+    } catch {
+      // surfaced inline from create.isError below
+    }
+  };
+
+  return (
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel="إضافة مادة تعليمية بالرابط"
+      closeOnOverlayClick={!create.isPending}
+      closeOnEscape={!escapeLocked}
+    >
+      <div className="modal-header">
+        <div className="modal-title">إضافة مادة بالرابط</div>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
+          <Icon icon={X} size={16} />
+        </button>
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
+        <div className="modal-body">
+          <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع الإدارة.' : undefined}>
+            <select
+              className="input"
+              value={effectiveOfferingId}
+              onChange={(e) => setOfferingId(e.target.value)}
+              disabled={create.isPending || list.length === 0}
+            >
+              {list.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.course.name} · <bdi>{o.course.code}</bdi>
+                </option>
+              ))}
+            </select>
+          </FormField>
+
+          <FormField label="اسم المادة" error={validationError && name.trim().length < 1 ? validationError : undefined}>
+            <input
+              className="input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="مثال: محاضرة الأسبوع الثالث — الشرائح"
+              maxLength={200}
+              disabled={create.isPending}
+            />
+          </FormField>
+
+          <FormField label="النوع">
+            <select
+              className="input"
+              value={type}
+              onChange={(e) => setType(e.target.value as typeof type)}
+              disabled={create.isPending}
+            >
+              <option value="PDF">PDF</option>
+              <option value="PPT">PPT</option>
+              <option value="VIDEO">فيديو</option>
+              <option value="DOC">DOC</option>
+              <option value="ZIP">ZIP</option>
+              <option value="IMAGE">صورة</option>
+              <option value="OTHER">أخرى</option>
+            </select>
+          </FormField>
+
+          <FormField
+            label="الرابط (https)"
+            hint="رابط مباشر للملف على خدمة خارجية، أو مسار ملف ورقة من المنصة."
+            error={validationError && !/^https:\/\//.test(url.trim()) ? validationError : undefined}
+          >
+            <input
+              className="input" dir="ltr" style={{ textAlign: 'start' }}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://…"
+              maxLength={500}
+              disabled={create.isPending}
+              spellCheck={false}
+            />
+          </FormField>
+
+          <FormField label="الوصف (اختياري)">
+            <textarea
+              className="input" rows={3} maxLength={2000}
+              placeholder="وصف مختصر يساعد الطالب على معرفة محتوى المادة…"
+              value={description} onChange={(e) => setDescription(e.target.value)}
+              disabled={create.isPending} style={{ resize: 'vertical', fontFamily: 'inherit' }}
+            />
+          </FormField>
+
+          {create.isError && (
+            <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
+              {apiErrorMessage(create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
+            </p>
+          )}
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>
+            إلغاء
+          </button>
+          <button type="submit" className="btn primary" disabled={create.isPending}>
+            {create.isPending ? 'جارٍ الإضافة…' : 'إضافة المادة'}
+          </button>
+        </div>
+      </form>
+      {guard}
+    </Modal>
+  );
+}
+
 export function MaterialsPage() {
   const q = useTeacherMaterials();
+  const [adding, setAdding] = useState(false);
 
   return (
     <div className="page">
-      <PageHeader title="الملفات التعليمية" subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ." />
+      <PageHeader
+        title="الملفات التعليمية"
+        subtitle="ملفّاتك المرفوعة على مقرّراتك — مع عدد المشاهدات والتحميلات الفعليّ."
+        actions={(
+          /* r144 (T1-h F2): the channel the old dead-end card pointed
+           * at without providing. By-link creation (no multipart). */
+          <button type="button" className="btn primary" onClick={() => setAdding(true)}>
+            <Icon icon={Upload} size={15} /> إضافة مادة
+          </button>
+        )}
+      />
 
-      {/* A6 P3 (22-a): an honest notice, not a dashed drop target — the
-          old .dropzone-ghost shape invited real drag-and-drop onto a
-          surface that can't receive it. No upload channel ships in the
-          FE yet, so the copy names the reality instead of pointing at
-          a destination that doesn't exist. */}
-      <Card title="رفع ملفات جديدة" icon={Upload}>
+      <Card title="إضافة مادة بالرابط" icon={Upload}>
         <div className="flex items-center gap-3">
           <Icon icon={Upload} size={18} style={{ color: 'var(--accent)', flexShrink: 0 }} />
           <div className="text-xs text-muted">
-            <strong>الرفع المباشر من هذه الصفحة قيد التطوير.</strong>{' '}
-            لا توجد قناة رفع متاحة حالياً — الملفات أدناه هي ما أُضيف إلى مقرّراتك.
+            <strong>أضف مواد مقرّراتك برابط مباشر (https).</strong>{' '}
+            الرفع المباشر للملفات يتطلب مساحة تخزين دائمة (قيد التخطيط) — حتى ذلك الحين، ارفع الملف على أي خدمة خارجية وأضف رابطه هنا، أو أرفقه كملف ورقة بحثية من صفحة البحوث.
           </div>
         </div>
       </Card>
@@ -605,7 +764,7 @@ export function MaterialsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لم ترفع ملفات بعد" description="ستظهر هنا فور رفع أيّ ملفّ على أحد مقرّراتك." illustration="empty-search" />
+          <EmptyState title="لم ترفع ملفات بعد" description="أضف أول مادة بزر «إضافة مادة» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-search" />
         ) : (
           <div className="table-wrap">
             <table className="table tbl-stack">
@@ -641,6 +800,8 @@ export function MaterialsPage() {
           </div>
         )}
       </Card>
+
+      {adding && <MaterialFormModal onClose={() => setAdding(false)} />}
     </div>
   );
 }
@@ -909,11 +1070,179 @@ function formatDue(iso: string): string {
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
+/* ─── r144: the teaching loop's authoring half ─────────────────────
+ * A modal on the backend's existing POST /offerings/:id/assignments
+ * contract (title / description / type / dueAt / weight / maxScore).
+ * Mirrors GradeSubmissionModal's structure: real <form>, FormField
+ * wiring, discard guard, inline errors, toast on success. */
+function AssignmentFormModal({ onClose }: { onClose: () => void }) {
+  const offerings = useTeacherOfferings();
+  const create = useCreateAssignment();
+
+  const [offeringId, setOfferingId] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState<'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM'>('HOMEWORK');
+  const [dueAt, setDueAt] = useState('');
+  const [weight, setWeight] = useState('10');
+  const [maxScore, setMaxScore] = useState('100');
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const dirty = title.trim() !== '' || description.trim() !== '' || dueAt !== ''
+    || weight !== '10' || maxScore !== '100';
+  const { requestClose, escapeLocked, guard } = useDiscardGuard({
+    dirty,
+    pending: create.isPending,
+    onClose,
+  });
+
+  const list = offerings.data ?? [];
+  const effectiveOfferingId = offeringId || list[0]?.id || '';
+
+  const onSubmit = async () => {
+    const err =
+      !effectiveOfferingId ? 'اختر المقرّر أولاً.' :
+      title.trim().length < 2 ? 'العنوان حرفان على الأقل.' :
+      !dueAt ? 'حدّد الموعد النهائي للتسليم.' :
+      Number.isNaN(Date.parse(dueAt)) ? 'قيمة الموعد النهائي غير صالحة.' :
+      Number(weight) < 0 || Number(weight) > 100 ? 'الوزن بين 0 و100.' :
+      Number(maxScore) <= 0 ? 'الدرجة العظمى أكبر من صفر.' :
+      null;
+    setValidationError(err);
+    if (err) return;
+    try {
+      await create.mutateAsync({
+        offeringId: effectiveOfferingId,
+        title: title.trim(),
+        description: description.trim() || undefined,
+        type,
+        dueAt: new Date(dueAt).toISOString(),
+        weight: Number(weight),
+        maxScore: Number(maxScore),
+      });
+      toast.success('أُنشئ الواجب وسيظهر لطلاب المقرّر فوراً.', { title: 'تمّ الإنشاء' });
+      onClose();
+    } catch {
+      // surfaced inline from create.isError below
+    }
+  };
+
+  return (
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel="إنشاء واجب جديد"
+      closeOnOverlayClick={!create.isPending}
+      closeOnEscape={!escapeLocked}
+    >
+      <div className="modal-header">
+        <div className="modal-title">واجب جديد</div>
+        <button type="button" className="icon-btn" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
+          <Icon icon={X} size={16} />
+        </button>
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); void onSubmit(); }} noValidate>
+        <div className="modal-body">
+          <FormField label="المقرّر" error={list.length === 0 ? 'لا توجد مقرّرات مرتبطة بحسابك — تواصل مع الإدارة.' : undefined}>
+            <select
+              className="input"
+              value={effectiveOfferingId}
+              onChange={(e) => setOfferingId(e.target.value)}
+              disabled={create.isPending || list.length === 0}
+            >
+              {list.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.course.name} · <bdi>{o.course.code}</bdi>
+                </option>
+              ))}
+            </select>
+          </FormField>
+
+          <FormField label="العنوان" error={validationError && title.trim().length < 2 ? validationError : undefined}>
+            <input
+              className="input"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="مثال: واجب الأسبوع الأول — مقدمة في الموضوع"
+              maxLength={200}
+              disabled={create.isPending}
+            />
+          </FormField>
+
+          <FormField label="النوع">
+            <select
+              className="input"
+              value={type}
+              onChange={(e) => setType(e.target.value as typeof type)}
+              disabled={create.isPending}
+            >
+              <option value="HOMEWORK">واجب</option>
+              <option value="QUIZ">اختبار قصير</option>
+              <option value="PROJECT">مشروع</option>
+              <option value="EXAM">اختبار</option>
+            </select>
+          </FormField>
+
+          <FormField label="الموعد النهائي للتسليم" error={validationError && !dueAt ? validationError : undefined}>
+            <input
+              type="datetime-local"
+              className="input"
+              value={dueAt}
+              onChange={(e) => setDueAt(e.target.value)}
+              disabled={create.isPending}
+            />
+          </FormField>
+
+          <div className="flex gap-3" style={{ gap: 'var(--sp-3)' }}>
+            <FormField label="الوزن (٪ من الدرجات)">
+              <input
+                type="number" className="input input-narrow" min={0} max={100} step={1}
+                value={weight} onChange={(e) => setWeight(e.target.value)} disabled={create.isPending}
+              />
+            </FormField>
+            <FormField label="الدرجة العظمى">
+              <input
+                type="number" className="input input-narrow" min={1} step={1}
+                value={maxScore} onChange={(e) => setMaxScore(e.target.value)} disabled={create.isPending}
+              />
+            </FormField>
+          </div>
+
+          <FormField label="الوصف (اختياري)">
+            <textarea
+              className="input" rows={3} maxLength={4000}
+              placeholder="تعليمات التسليم، المراجع، معايير التقييم…"
+              value={description} onChange={(e) => setDescription(e.target.value)}
+              disabled={create.isPending} style={{ resize: 'vertical', fontFamily: 'inherit' }}
+            />
+          </FormField>
+
+          {create.isError && (
+            <p role="alert" className="text-xs text-red" style={{ marginBlockStart: 'var(--sp-2)' }}>
+              {apiErrorMessage(create.error, 'تعذّر إنشاء الواجب — حاول مرة أخرى.')}
+            </p>
+          )}
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>
+            إلغاء
+          </button>
+          <button type="submit" className="btn primary" disabled={create.isPending}>
+            {create.isPending ? 'جارٍ الإنشاء…' : 'إنشاء الواجب'}
+          </button>
+        </div>
+      </form>
+      {guard}
+    </Modal>
+  );
+}
+
 export function AssignmentsPage() {
   const q = useTeacherAssignments();
   const dashboard = useTeacherDashboard();
 
   const [gradeTarget, setGradeTarget] = useState<GradeTarget | null>(null);
+  const [creating, setCreating] = useState(false);
 
   /* 5-B6 (audit 5-A7 P1-2): the queue is derived in the PAGE so the
    * modal's «تقييم التالي» can walk the same list the rows render —
@@ -951,7 +1280,18 @@ export function AssignmentsPage() {
 
   return (
     <div className="page">
-      <PageHeader title="الواجبات والاختبارات" subtitle="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك." />
+      <PageHeader
+        title="الواجبات والاختبارات"
+        subtitle="كلّ الواجبات الموزَّعة على مقرّراتك، والتسليمات بانتظار تقييمك."
+        actions={(
+          /* r144 (T1-h F1): the teaching loop's missing authoring half —
+           * the copy used to promise «ستظهر هنا فور إنشاء أيّ واجب» with
+           * no creation affordance anywhere in the product. */
+          <button type="button" className="btn primary" onClick={() => setCreating(true)}>
+            <Icon icon={ClipboardList} size={15} /> واجب جديد
+          </button>
+        )}
+      />
 
       <NeedsReviewCard
         pending={pending}
@@ -969,7 +1309,7 @@ export function AssignmentsPage() {
         ) : q.isError ? (
           <ErrorState error={q.error} onRetry={() => q.refetch()} />
         ) : !q.data || q.data.length === 0 ? (
-          <EmptyState title="لا توجد واجبات بعد" description="ستظهر هنا فور إنشاء أيّ واجب على أحد مقرّراتك." illustration="empty-search" />
+          <EmptyState title="لا توجد واجبات بعد" description="أنشئ أول واجب بزر «واجب جديد» بالأعلى — سيظهر لطلاب المقرّر فوراً." illustration="empty-search" />
         ) : (
           <div className="flex-col gap-2">
             {q.data.map((a) => {
@@ -1032,6 +1372,8 @@ export function AssignmentsPage() {
           onNext={() => nextTarget && setGradeTarget(nextTarget)}
         />
       )}
+
+      {creating && <AssignmentFormModal onClose={() => setCreating(false)} />}
     </div>
   );
 }
