@@ -6,6 +6,8 @@ import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import { useAuthStore, type AppRole } from './stores/auth.store';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
+import { RouteErrorBoundary } from './components/ErrorBoundary';
+import { ToastStack } from './components/overlays/Toast';
 import NotFoundPage from './pages/NotFoundPage';
 
 /* ───────────────────────────────────────────────────────────
@@ -60,6 +62,12 @@ const TeacherLabsPage = lazy(() => import('./pages/teacher/TeacherLabsPage'));
 const OnlineExamsPage = lazy(() => import('./pages/exams/OnlineExamsPages'));
 const ExamTakerPage = lazy(() => import('./pages/exams/OnlineExamsPages').then((m) => ({ default: m.ExamTakerPage })));
 const ExamModerationPage = lazy(() => import('./pages/exams/OnlineExamsPages').then((m) => ({ default: m.ExamModerationPage })));
+
+// 18-F1 — unified exam authoring (question bank + templates + moderation).
+// r141: restored after 761eaf4 dropped the two route rows (nav kept its
+// entry → dead click). Pinned by tests/unit/nav-routes-consistency.test.tsx.
+const ExamAuthoringPage = lazy(() => import('./pages/teacher/ExamAuthorPages'));
+const ExamTemplateDetailPage = lazy(() => import('./pages/teacher/ExamAuthorPages').then((m) => ({ default: m.ExamTemplateDetailPage })));
 
 const CommunityPage = lazy(() => import('./pages/community/CommunityPages'));
 
@@ -199,6 +207,8 @@ export function AppRoutes() {
             <Route path="/teacher/students" element={<StudentsListPage />} />
             <Route path="/teacher/performance" element={<PerformancePage />} />
             <Route path="/teacher/assignments" element={<AssignmentsPage />} />
+            <Route path="/teacher/exams" element={<ExamAuthoringPage />} />
+            <Route path="/teacher/exams/:templateId" element={<ExamTemplateDetailPage />} />
             <Route path="/teacher/messages" element={<MessagesPage />} />
             <Route path="/teacher/ai" element={<AiAssistantPage />} />
             <Route path="/teacher/library" element={<LibraryPage />} />
@@ -287,7 +297,16 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AppRoutes />
+        {/* r141: one router-aware boundary around the route tree — a
+         * render error now lands on the tested fallback (retry / home)
+         * instead of a white screen, and clears itself on navigation.
+         * ToastStack sits OUTSIDE the boundary on purpose: toasts raised
+         * just before a crash (e.g. a failed mutation) must stay visible
+         * while the fallback renders. */}
+        <RouteErrorBoundary>
+          <AppRoutes />
+        </RouteErrorBoundary>
+        <ToastStack />
       </BrowserRouter>
     </QueryClientProvider>
   );
