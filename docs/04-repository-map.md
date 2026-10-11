@@ -1,7 +1,8 @@
 # 04 — خريطة المستودع
 
-> 859 ملفًا متتبعًا. هذه الخريطة تركز على ما له قيمة هندسية — ليس فهرسًا
-> أعمى لكل ملف. للاستكشاف: `git ls-files` أو محررك.
+> 884 ملفًا متتبعًا (r147 — العدد يقيس لحظة الجولة؛ للتردد الحي:
+> `git ls-files | wc -l`). هذه الخريطة تركز على ما له قيمة هندسية — ليس
+> فهرسًا أعمى لكل ملف. للاستكشاف: `git ls-files` أو محررك.
 
 ## الشجرة الجذرية
 
@@ -26,16 +27,17 @@ madarek/
 │   ├── src/http/routes/   ← 25 ملف مسارات (188 endpoint مسجلًا) + 3 راوترات وحدات (4 مسارات)
 │   ├── src/http/middleware/ ← auth، rate limits، errorHandler، validate
 │   ├── src/modules/       ← auth (جلسات/أقفال/سياسة كلمات)، search (تطبيع عربي)،
-│   │                        theme، onboarding، milestones، zu-sync
+│   │                        theme، onboarding، milestones
 │   ├── src/lib/           ← jwt، password، permissions، governance، dates،
-│   │                        risk، grading، compression، pagination، pdf، errors
+│   │                        risk، grading، compression، pagination، pdf، errors،
+│   │                        zu-sync (مزامنة حقائق الجامعة)، operational-alerts
 │   ├── src/scheduler.ts   ← مهام يومية داخلية (zu-sync + تسريح LoginEvent)
 │   ├── prisma/schema.prisma ← 75 نموذجًا و30 enum (مصدر الحقيقة للبيانات)
-│   ├── prisma/migrations/ ← 16 ترحيلًا مطبقًا (لا تُعدّل)
+│   ├── prisma/migrations/ ← 17 ترحيلًا مطبقًا (لا تُعدّل)
 │   ├── prisma/seed.ts     ← بذر تجريبي idempotent (حسابات demo الخمسة)
 │   ├── scripts/migrate-deploy.mjs ← ترحيل صامد للنشر (pooler/direct ذكي)
 │   ├── storage/papers/    ← ملفات PDF للبحوث (تُقرأ من المستودع؛ لا رفع تشغيلي)
-│   └── tests/             ← 38 ملف اختبار (vitest، بلا DB) — 1021 اختبارًا
+│   └── tests/             ← 39 ملف اختبار (vitest، بلا DB) — 1032 اختبارًا
 │
 ├── frontend/              ← الواجهة (React 18 + Vite + TS)          [03-architecture]
 │   ├── index.html         ← القشرة: RTL، SEO، JSON-LD للكليات، bootstrap السمة الداخلي

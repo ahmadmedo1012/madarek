@@ -16,9 +16,12 @@
  * (session-scoped — no persist middleware; toasts are ephemeral).
  */
 import { create } from 'zustand';
-import type { ToastVariant } from '../components/overlays/Toast';
-
-export type { ToastVariant };
+// r147 (T1-g F5): the type lives HERE — its old home
+// (components/overlays/Toast.tsx) importing it back from lib/toast.ts
+// was the repo's only dependency cycle (type-only edge one way,
+// runtime edge the other). Canonical location = the store that owns
+// the toast contract; the component re-exports for compatibility.
+export type ToastVariant = 'info' | 'success' | 'warning' | 'error';
 
 export interface ToastAction {
   /** Action-named Arabic label for the inline action button. */

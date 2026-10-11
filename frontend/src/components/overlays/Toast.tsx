@@ -42,10 +42,12 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { Icon } from '../Icon';
-import { useToastStore, type ToastItem } from '../../lib/toast';
+import { useToastStore, type ToastItem, type ToastVariant } from '../../lib/toast';
 import { readMotionDurationMs } from './useDelayedUnmount';
 
-export type ToastVariant = 'info' | 'success' | 'warning' | 'error';
+// r147: canonical home is lib/toast.ts (broke the repo's only cycle);
+// re-exported so existing `from './Toast'` type imports keep working.
+export type { ToastVariant };
 
 export interface ToastProps {
   open: boolean;

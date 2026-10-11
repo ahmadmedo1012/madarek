@@ -21,7 +21,14 @@ Never commit `.env` or real secrets.
 | typecheck | `npm run typecheck` |
 | tests | `npm test` |
 | colleges parity | `npm run validate:colleges` |
+| icons (Lucide فقط) | `bash scripts/check-icons.sh` |
+| motion tokens (لا قيم خام) | `bash scripts/check-motion-tokens.sh` |
+| بصمات CSP | `bash scripts/check-csp-hash.sh` |
+| تكافؤ التصدير | `node scripts/verify-parity-export.mjs` |
 | build | `npm run build -w backend && npm run build -w frontend` |
+
+(القائمة الكاملة بأوامرها في AGENTS.md §4 — r147: استُكمل الجدول ليطابق ما
+يفرضه CI فعلًا.)
 
 البوابات خضراء قبل كل دفعة، والـ CI يفرضها على كل PR. | All gates green
 before every push; CI enforces them on every PR.
