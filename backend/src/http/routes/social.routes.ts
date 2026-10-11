@@ -6,6 +6,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireCapability } from '../middleware/requireCapability.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 import { assertCapability } from '../../lib/permissions.js';
 
 const router = Router();
@@ -461,10 +462,17 @@ router.post('/competitions', requireCapability('COMPETITIONS_RUN'), validate(cre
   } catch (e) { next(e); }
 });
 
-const enterCompSchema = z.object({
+export const enterCompSchema = z.object({
   title: z.string().trim().min(3).max(200),
   body: z.string().trim().min(10).max(4000),
-  fileUrl: z.string().trim().max(500).optional(),
+  // r142 (T1a-01): was a free-form string — a javascript:/data: URL
+  // could be stored and rendered as an <a href>. Scheme-guarded now
+  // (defense-in-depth under the CSP pin).
+  fileUrl: z.string().trim().max(500)
+    .refine((s) => isSanctionedMediaUrl(s), {
+      message: 'fileUrl must start with https:// or /api/v1/files/papers/ or be a safe same-origin path',
+    })
+    .optional(),
 }).strict();
 
 router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, res, next) => {
@@ -483,7 +491,7 @@ router.post('/competitions/:id/enter', validate(enterCompSchema), async (req, re
       const comp = rows[0];
       if (!comp) throw AppError.notFound('المسابقة غير موجودة');
       if (comp.status !== 'OPEN') throw new AppError('BAD_REQUEST', 'أُغلقت المسابقة أمام المشاركات', 400);
-      if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'Competition deadline has passed', 400);
+      if (comp.deadline < new Date()) throw new AppError('BAD_REQUEST', 'انتهى موعد التسليم في هذه المسابقة', 400);
 
       return tx.competitionEntry.upsert({
         where: { competitionId_userId: { competitionId: comp.id, userId } },
@@ -598,10 +606,10 @@ router.post(
       if (!comp) throw AppError.notFound('المسابقة غير موجودة');
       if (req.user!.role !== Role.OWNER && comp.organizerId !== req.user!.id) throw AppError.forbidden('هذه المسابقة ليست من تنظيمك');
       if (comp.status !== 'CLOSED') {
-        throw new AppError('BAD_REQUEST', 'Competition must be closed before judging', 400);
+        throw new AppError('BAD_REQUEST', 'يجب إغلاق المسابقة قبل تحكيمها', 400);
       }
       if (!canFinalizeJudging(comp.entries)) {
-        throw new AppError('BAD_REQUEST', 'No entry has been scored yet', 400);
+        throw new AppError('BAD_REQUEST', 'لم تُقيّم أي مشاركة بعد', 400);
       }
 
       // Conditional claim (audit 15-b P2-1): judging claims exactly CLOSED.

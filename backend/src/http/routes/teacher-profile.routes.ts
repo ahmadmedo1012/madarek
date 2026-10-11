@@ -7,6 +7,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
+import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -104,7 +105,7 @@ const profileYearSchema = z
     message: 'year is too far in the future',
   });
 
-const updateProfileSchema = z.object({
+export const updateProfileSchema = z.object({
   bio: z.string().trim().max(2000).nullable().optional(),
   officeLocation: z.string().trim().max(200).nullable().optional(),
   officeHours: z.string().trim().max(200).nullable().optional(),
@@ -113,7 +114,13 @@ const updateProfileSchema = z.object({
     title: z.string().trim().min(2).max(300),
     venue: z.string().trim().max(200).optional(),
     year: profileYearSchema,
-    url: z.string().trim().max(500).optional(),
+    // r142 (T1a-02): was a free-form string — publications are rendered
+    // as <a href> on the public profile; scheme-guarded now.
+    url: z.string().trim().max(500)
+      .refine((s) => isSanctionedMediaUrl(s), {
+        message: 'url must start with https:// or /api/v1/files/papers/ or be a safe same-origin path',
+      })
+      .optional(),
   })).max(50).optional(),
   awards: z.array(z.object({
     title: z.string().trim().min(2).max(200),

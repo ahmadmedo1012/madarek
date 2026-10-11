@@ -54,7 +54,10 @@ router.get('/offerings/:id/full', async (req, res, next) => {
         teacher: { select: { id: true, firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
         schedule: true,
         materials: { orderBy: { createdAt: 'desc' }, take: 10 },
-        assignments: { orderBy: { dueAt: 'asc' } },
+        // r142 (T1a-06): cap the assignments feed like every other
+        // bounded read in this payload (audit P2-18 convention — 200 is
+        // the offerings.routes.ts roster ceiling).
+        assignments: { orderBy: { dueAt: 'asc' }, take: 200 },
         lectures: {
           orderBy: { ordinal: 'asc' },
           include: {
@@ -663,7 +666,7 @@ router.post('/me/research', validate(createPaperSchema), async (req, res, next) 
         select: { id: true },
       });
       if (!enrolled) {
-        throw new AppError('BAD_REQUEST', 'offeringId must be an offering you are enrolled in', 400);
+        throw new AppError('BAD_REQUEST', 'يجب أن تكون مسجلاً في هذا المقرر', 400);
       }
     }
     const created = await prisma.$transaction(async (tx) => {

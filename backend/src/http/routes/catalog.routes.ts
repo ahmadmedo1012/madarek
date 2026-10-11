@@ -7,6 +7,7 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 
 const router = Router();
 
@@ -433,7 +434,13 @@ export const createPostSchema = z
   .object({
     body: z.string().trim().min(1).max(2000),
     hashtags: z.array(z.string().trim().min(1).max(40)).max(10).default([]),
-    imageUrl: z.string().trim().url().optional(),
+    // r142 (T1a-02): z.string().url() accepts javascript:/data: schemes
+    // (RFC-3986-valid) — guard to the sanctioned-URL policy instead.
+    imageUrl: z.string().trim().max(500)
+      .refine((s) => isSanctionedMediaUrl(s), {
+        message: 'imageUrl must start with https:// or /api/v1/files/papers/ or be a safe same-origin path',
+      })
+      .optional(),
   })
   .strict();
 
@@ -453,9 +460,17 @@ export const reactSchema = z.object({ kind: z.enum(['like', 'save']) }).strict()
 
 router.post('/posts/:id/react', validate(reactSchema), async (req, res, next) => {
   try {
+    // r142 (T1a-04): the DELETE twin checks post existence and 404s;
+    // the POST used to fall into P2003 → 400 «related record not
+    // found» — an inconsistent error contract for the same resource.
+    const post = await prisma.post.findUnique({
+      where: { id: req.params.id! },
+      select: { id: true },
+    });
+    if (!post) throw AppError.notFound('المنشور غير موجود');
     const created = await prisma.postReaction.upsert({
-      where: { postId_userId_kind: { postId: req.params.id!, userId: req.user!.id, kind: req.body.kind } },
-      create: { postId: req.params.id!, userId: req.user!.id, kind: req.body.kind },
+      where: { postId_userId_kind: { postId: post.id, userId: req.user!.id, kind: req.body.kind } },
+      create: { postId: post.id, userId: req.user!.id, kind: req.body.kind },
       update: {},
     });
     res.status(201).json({ data: created });

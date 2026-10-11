@@ -6,6 +6,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { assertOfferingAccess } from '../../lib/permissions.js';
+import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 import { AppError } from '../../lib/errors.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 // The list-side role/visibility twin of assertOfferingAccess — shared
@@ -154,7 +155,12 @@ export const materialCreateSchema = z
     description: z.string().trim().max(2000).optional(),
     type: z.nativeEnum(MaterialType),
     sizeBytes: z.number().int().nonnegative().default(0),
-    url: z.string().trim().url().max(500),
+    // r142 (T1a-02): .url() alone accepts javascript:/data: — guard to
+    // the sanctioned-URL policy (https / files API / same-origin static).
+    url: z.string().trim().max(500)
+      .refine((s) => isSanctionedMediaUrl(s), {
+        message: 'url must start with https:// or /api/v1/files/papers/ or be a safe same-origin path',
+      }),
   })
   .strict();
 

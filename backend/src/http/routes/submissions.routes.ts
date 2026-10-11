@@ -35,6 +35,9 @@ export function submissionStatusFor(dueAt: Date, at: Date = new Date()): Submiss
 }
 
 /** Submissions may reference an external https URL or a paper served by our own files API. */
+// r142: policy body lives in lib/sanctioned-url.ts (isSanctionedSubmissionUrl);
+// this re-export keeps the historical name for tests + sibling routes.
+export { isSanctionedSubmissionUrl } from '../../lib/sanctioned-url.js';
 export const SUBMISSION_FILE_URL_PATTERN = /^https:\/\/|^\/api\/v1\/files\/papers\//;
 
 export const submitBodySchema = z

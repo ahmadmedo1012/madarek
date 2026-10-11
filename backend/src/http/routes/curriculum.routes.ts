@@ -51,11 +51,16 @@ router.use(authMiddleware);
  * sample lectures). Protocol-relative "//evil.com" stays rejected: only a
  * root-relative path with a safe first segment is same-origin.
  */
+// r142: single source of truth moved to lib/sanctioned-url.ts — these
+// re-exports keep the historical names (tests + sibling routes import
+// them from here).
+export {
+  isSanctionedMediaUrl,
+  SANCTIONED_FILES_API_PATTERN as CURRICULUM_MEDIA_FILES_API_PATTERN,
+  SAME_ORIGIN_STATIC_PATTERN as CURRICULUM_MEDIA_SAME_ORIGIN_PATTERN,
+} from '../../lib/sanctioned-url.js';
+import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 export const CURRICULUM_MEDIA_URL_PATTERN = /^https:\/\/|^\/api\/v1\/files\/papers\//;
-export const CURRICULUM_MEDIA_SAME_ORIGIN_PATTERN = /^\/[A-Za-z0-9][A-Za-z0-9\-._~/]*$/;
-export const isSanctionedMediaUrl = (s: string): boolean =>
-  CURRICULUM_MEDIA_URL_PATTERN.test(s) ||
-  (CURRICULUM_MEDIA_SAME_ORIGIN_PATTERN.test(s) && !s.includes('..'));
 
 /** Upper bound for durationSec / triggerSec: one full day. */
 export const MAX_MEDIA_SEC = 86_400;

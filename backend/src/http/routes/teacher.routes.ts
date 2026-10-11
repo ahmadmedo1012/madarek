@@ -163,11 +163,24 @@ router.get('/teacher/offerings/:id/students', requireRole(Role.TEACHER, Role.ADM
     // submissions — audit 11-d P1-6).
     const gradePcts = gradePctsByStudent({ grades: offering.grades, assignments: offering.assignments });
 
+    // r142 (T1-e F1): attendance records grouped in ONE pass — the old
+    // per-student flatMap+filter over every session was O(S²·N) (a 200-
+    // student roster × 45 sessions ≈ 1.8M iterations per request); this
+    // is the same Map pattern as eventsByStudent above.
+    const attendanceByStudent = new Map<string, typeof offering.attendance[number]['records'][number][]>();
+    for (const session of offering.attendance) {
+      for (const record of session.records) {
+        const bucket = attendanceByStudent.get(record.studentId);
+        if (bucket) bucket.push(record);
+        else attendanceByStudent.set(record.studentId, [record]);
+      }
+    }
+
     const students: StudentRow[] = offering.enrollments.map((enr) => {
       const stu = enr.student;
       // Attendance breakdown (unified formula: late = half credit,
       // excused excluded — audit 11-d P1-5/P2-2)
-      const myAttendance = offering.attendance.flatMap((s) => s.records.filter((r) => r.studentId === stu.id));
+      const myAttendance = attendanceByStudent.get(stu.id) ?? [];
       const absences = myAttendance.filter((r) => r.status === AttendanceStatus.ABSENT).length;
       const lateCount = myAttendance.filter((r) => r.status === AttendanceStatus.LATE).length;
       const attPct = attendancePct(myAttendance.map((r) => r.status), totalSessions);

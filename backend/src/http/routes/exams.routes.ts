@@ -242,7 +242,10 @@ router.get('/question-bank', async (req, res, next) => {
     const categoryId = typeof req.query.categoryId === 'string' ? req.query.categoryId : undefined;
     const difficulty = typeof req.query.difficulty === 'string' ? req.query.difficulty : undefined;
     const type = typeof req.query.type === 'string' ? req.query.type : undefined;
-    const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+    // r142 (T1a-05): cap q at the platform-wide 120-char ceiling
+    // (paginationSchema / sanitizeSearchQuery convention) — an
+    // unbounded q flowed straight into a case-insensitive `contains`.
+    const q = typeof req.query.q === 'string' ? req.query.q.trim().slice(0, 120) : '';
 
     const questions = await prisma.question.findMany({
       where: {
@@ -610,6 +613,10 @@ router.post('/exams/templates/:id/publish', requireCapability('EXAMS_AUTHOR'), a
       throw AppError.conflict('لم يعد القالب معتمداً — حدّث الصفحة ثم أعد المحاولة');
     }
     const updated = await prisma.examTemplate.findUnique({ where: { id: t.id } });
+    // r142 (T1a-07): every sibling conditional-claim route guards the
+    // re-read (learning.routes.ts:777/843/920) — keeps `data: null`
+    // impossible in the response envelope.
+    if (!updated) throw AppError.notFound('قالب الاختبار غير موجود');
     res.json({ data: updated });
   } catch (e) { next(e); }
 });
