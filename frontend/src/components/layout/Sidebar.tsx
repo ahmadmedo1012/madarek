@@ -201,7 +201,12 @@ export function Sidebar() {
 
   return (
     <>
-      <aside ref={asideRef} className={cls} aria-label="القائمة الرئيسية" data-collapsed={sidebarCollapsed ? 'true' : 'false'}>
+      {/* r143 (T1-f F3): <nav>, not <aside> — the sidebar is the
+          PRIMARY navigation surface on desktop (the <nav> bottom-bar
+          is display:none >640px), and aside landmarks don't show under
+          the NVDA/JAWS navigation list. No CSS impact: every rule
+          targets .sidebar, never the tag. */}
+      <nav ref={asideRef} className={cls} aria-label="القائمة الرئيسية" data-collapsed={sidebarCollapsed ? 'true' : 'false'}>
         <div className="sidebar-brand">
           <div className="sidebar-brand-mark">
             <BrandMark size={24} />
@@ -328,7 +333,7 @@ export function Sidebar() {
             </button>
           </div>
         </div>
-      </aside>
+      </nav>
 
       <div
         className={`sidebar-backdrop${sidebarOpen ? ' show' : ''}`}

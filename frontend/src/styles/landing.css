@@ -1774,7 +1774,10 @@
 .landing .ln-skip-link {
   position: fixed;
   inset-block-start: 8px;
-  inset-inline-start: 50%;
+  /* r143 (T1-f F1): physical left pairs with the physical -50%
+     translate — inset-inline-start flips to right:50% under RTL and
+     the pill lands a full width off-center (see polish.css .skip-link). */
+  left: 50%;
   translate: -50% -150%;
   z-index: 2100;
   padding: 10px 18px;

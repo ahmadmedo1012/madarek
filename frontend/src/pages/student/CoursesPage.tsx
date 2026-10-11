@@ -282,11 +282,11 @@ export default function StudentCoursesPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>المقرّر</th>
-                  <th>الواجب</th>
-                  <th>الموعد النهائي</th>
-                  <th>الحالة</th>
-                  <th>تسليم</th>
+                  <th scope="col">المقرّر</th>
+                  <th scope="col">الواجب</th>
+                  <th scope="col">الموعد النهائي</th>
+                  <th scope="col">الحالة</th>
+                  <th scope="col">تسليم</th>
                 </tr>
               </thead>
               <tbody>

@@ -545,17 +545,17 @@ export function QualityCoursesPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>المقرّر</th>
-                  <th>الأستاذ</th>
-                  <th>الفصل</th>
-                  <th>الطلاب</th>
-                  <th>المحاضرات</th>
-                  <th>الملفات</th>
-                  {metric && <th className="tbl-num">{metricLabel}</th>}
+                  <th scope="col">المقرّر</th>
+                  <th scope="col">الأستاذ</th>
+                  <th scope="col">الفصل</th>
+                  <th scope="col">الطلاب</th>
+                  <th scope="col">المحاضرات</th>
+                  <th scope="col">الملفات</th>
+                  {metric && <th scope="col" className="tbl-num">{metricLabel}</th>}
                   {/* A8 P2-4: this is an estimated completion index, not
                       a measured “quality” — renamed + weights surfaced so
                       the number names its own formula. */}
-                  <th title="تقدير اكتمال المحتوى: كل محاضرة 20 نقطة، كل ملف 5، كل واجب 10 — بحدّ أقصى 100">اكتمال المحتوى</th>
+                  <th scope="col" title="تقدير اكتمال المحتوى: كل محاضرة 20 نقطة، كل ملف 5، كل واجب 10 — بحدّ أقصى 100">اكتمال المحتوى</th>
                 </tr>
               </thead>
               <tbody>
@@ -702,14 +702,14 @@ export function QualityProfessorsPage() {
           <table className="table tbl-stack">
             <thead>
               <tr>
-                <th>الأستاذ</th>
-                <th>الكلّيّة / القسم</th>
-                {!compact && <th>الرتبة</th>}
-                {!compact ? <th>المقرّرات</th> : <th title="المقرّرات التي يدرّسها والملفات المرفوعة">النشاط التعليميّ</th>}
-                {!compact && <th>الملفات المرفوعة</th>}
-                <th>رضا الطلاب</th>
-                <th>زمن الاستجابة</th>
-                <th>الالتزام</th>
+                <th scope="col">الأستاذ</th>
+                <th scope="col">الكلّيّة / القسم</th>
+                {!compact && <th scope="col">الرتبة</th>}
+                {!compact ? <th scope="col">المقرّرات</th> : <th scope="col" title="المقرّرات التي يدرّسها والملفات المرفوعة">النشاط التعليميّ</th>}
+                {!compact && <th scope="col">الملفات المرفوعة</th>}
+                <th scope="col">رضا الطلاب</th>
+                <th scope="col">زمن الاستجابة</th>
+                <th scope="col">الالتزام</th>
               </tr>
             </thead>
             <tbody>

@@ -167,12 +167,12 @@ export default function JobsPage() {
             <table className="table tbl-stack jobs-table">
               <thead>
                 <tr>
-                  <th>الوظيفة</th>
-                  <th>الموقع</th>
-                  <th>النوع</th>
-                  <th>الراتب</th>
-                  <th>نُشرت</th>
-                  <th>الإجراء</th>
+                  <th scope="col">الوظيفة</th>
+                  <th scope="col">الموقع</th>
+                  <th scope="col">النوع</th>
+                  <th scope="col">الراتب</th>
+                  <th scope="col">نُشرت</th>
+                  <th scope="col">الإجراء</th>
                 </tr>
               </thead>
               <tbody>

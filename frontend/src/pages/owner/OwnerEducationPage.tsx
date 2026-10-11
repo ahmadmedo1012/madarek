@@ -202,10 +202,10 @@ export function OwnerEducationPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>الرمز</th>
-                  <th>اسم المقرّر</th>
-                  <th>الكلّيّة</th>
-                  <th>المسجَّلون</th>
+                  <th scope="col">الرمز</th>
+                  <th scope="col">اسم المقرّر</th>
+                  <th scope="col">الكلّيّة</th>
+                  <th scope="col">المسجَّلون</th>
                 </tr>
               </thead>
               <tbody>

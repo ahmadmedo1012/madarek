@@ -287,7 +287,11 @@ export function AppRoutes() {
         </Route>
 
         <Route path="/404" element={<NotFoundPage />} />
-        <Route path="*" element={<HomeRedirect />} />
+        {/* r143 (T1-h F6): unknown URLs land on the real 404 page — the
+         * old catch-all silently bounced to the role home, so a typo or
+         * stale link "disappeared" instead of saying it doesn't exist.
+         * Authenticated users still reach their dashboard from there. */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );

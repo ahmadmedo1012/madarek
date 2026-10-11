@@ -290,12 +290,12 @@ export function AdminSyncPage() {
             <table className="table tbl-stack admin-sync-runs">
               <thead>
                 <tr>
-                  <th>الحالة</th>
-                  <th>وقت البدء</th>
-                  <th>المصدر</th>
-                  <th className="admin-table-num">حقول جديدة</th>
-                  <th className="admin-table-num">حقول محدّثة</th>
-                  <th className="admin-table-num">المدة</th>
+                  <th scope="col">الحالة</th>
+                  <th scope="col">وقت البدء</th>
+                  <th scope="col">المصدر</th>
+                  <th scope="col" className="admin-table-num">حقول جديدة</th>
+                  <th scope="col" className="admin-table-num">حقول محدّثة</th>
+                  <th scope="col" className="admin-table-num">المدة</th>
                 </tr>
               </thead>
               <tbody>

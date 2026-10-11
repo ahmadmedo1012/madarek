@@ -931,10 +931,10 @@ export function AdminReportsPage() {
             <table className="trend-table">
               <thead>
                 <tr>
-                  <th>الشهر</th>
-                  <th>مُقدَّم</th>
-                  <th>تمّ تقييمه</th>
-                  <th>منشور</th>
+                  <th scope="col">الشهر</th>
+                  <th scope="col">مُقدَّم</th>
+                  <th scope="col">تمّ تقييمه</th>
+                  <th scope="col">منشور</th>
                 </tr>
               </thead>
               <tbody>
@@ -1057,11 +1057,11 @@ export function AdminReportsPage() {
               <table className="table tbl-stack">
                 <thead>
                   <tr>
-                    <th>البحث</th>
-                    <th>الطالب</th>
-                    <th>الحالة</th>
-                    <th className="admin-table-num" style={{ width: 110 }}>نسبة الاقتباس</th>
-                    <th style={{ width: 130 }}>تاريخ الرفع</th>
+                    <th scope="col">البحث</th>
+                    <th scope="col">الطالب</th>
+                    <th scope="col">الحالة</th>
+                    <th scope="col" className="admin-table-num" style={{ width: 110 }}>نسبة الاقتباس</th>
+                    <th scope="col" style={{ width: 130 }}>تاريخ الرفع</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1094,10 +1094,10 @@ export function AdminReportsPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th style={{ width: 110 }}>الكود</th>
-                  <th>اسم المقرّر</th>
-                  <th className="admin-table-num" style={{ width: 130 }}>طلاب مسجَّلون</th>
-                  <th className="admin-table-num" style={{ width: 110 }}>المحاضرات</th>
+                  <th scope="col" style={{ width: 110 }}>الكود</th>
+                  <th scope="col">اسم المقرّر</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 130 }}>طلاب مسجَّلون</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 110 }}>المحاضرات</th>
                 </tr>
               </thead>
               <tbody>
@@ -1218,13 +1218,13 @@ export function AdminCoursesPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th style={{ width: 100 }}>الكود</th>
-                  <th>اسم المقرّر</th>
-                  <th>الكلّيّة / القسم</th>
-                  <th className="admin-table-num" style={{ width: 70 }}>س.م</th>
-                  <th className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>
-                  <th className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
-                  <th className="admin-table-num" style={{ width: 100 }}>الفصول</th>
+                  <th scope="col" style={{ width: 100 }}>الكود</th>
+                  <th scope="col">اسم المقرّر</th>
+                  <th scope="col">الكلّيّة / القسم</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 70 }}>س.م</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
+                  <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>
                 </tr>
               </thead>
               <tbody>

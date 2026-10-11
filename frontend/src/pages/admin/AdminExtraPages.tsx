@@ -157,13 +157,13 @@ export function AdminStudentsPage() {
               <table className="admin-students-table tbl-stack">
                 <thead>
                   <tr>
-                    <th>الطالب</th>
-                    <th>رقم القيد</th>
-                    <th>الكلّيّة / القسم</th>
-                    <th>السنة</th>
-                    <th>المعدّل</th>
-                    <th>المستوى</th>
-                    <th>الحالة</th>
+                    <th scope="col">الطالب</th>
+                    <th scope="col">رقم القيد</th>
+                    <th scope="col">الكلّيّة / القسم</th>
+                    <th scope="col">السنة</th>
+                    <th scope="col">المعدّل</th>
+                    <th scope="col">المستوى</th>
+                    <th scope="col">الحالة</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -317,9 +317,9 @@ export function AdminDigitalPage() {
               <table className="table tbl-stack">
                 <thead>
                   <tr>
-                    <th>المكوّن</th>
-                    <th>المؤشّر</th>
-                    <th className="admin-table-num" style={{ width: 120 }}>القيمة</th>
+                    <th scope="col">المكوّن</th>
+                    <th scope="col">المؤشّر</th>
+                    <th scope="col" className="admin-table-num" style={{ width: 120 }}>القيمة</th>
                   </tr>
                 </thead>
                 <tbody>

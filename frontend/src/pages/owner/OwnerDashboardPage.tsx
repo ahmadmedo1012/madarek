@@ -432,10 +432,10 @@ export function OwnerDashboardPage() {
             <table className="table tbl-stack owner-events-table">
               <thead>
                 <tr>
-                  <th>الحدث</th>
-                  <th>المستخدم</th>
-                  <th>المورد</th>
-                  <th>الوقت</th>
+                  <th scope="col">الحدث</th>
+                  <th scope="col">المستخدم</th>
+                  <th scope="col">المورد</th>
+                  <th scope="col">الوقت</th>
                 </tr>
               </thead>
               <tbody>

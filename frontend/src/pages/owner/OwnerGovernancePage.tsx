@@ -250,9 +250,9 @@ export function OwnerGovernancePage() {
               <table className="table tbl-stack">
                 <thead>
                   <tr>
-                    <th>التاريخ</th>
-                    <th>ناجحة</th>
-                    <th>فاشلة</th>
+                    <th scope="col">التاريخ</th>
+                    <th scope="col">ناجحة</th>
+                    <th scope="col">فاشلة</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -276,8 +276,8 @@ export function OwnerGovernancePage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>السبب</th>
-                  <th>العدد</th>
+                  <th scope="col">السبب</th>
+                  <th scope="col">العدد</th>
                 </tr>
               </thead>
               <tbody>

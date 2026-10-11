@@ -319,7 +319,7 @@ export default function CourseDetailPage() {
           <div className="table-wrap">
             <table className="table tbl-stack">
               <thead>
-                <tr><th>العنوان</th><th>النوع</th><th>الموعد النهائي</th><th>الوزن</th></tr>
+                <tr><th scope="col">العنوان</th><th scope="col">النوع</th><th scope="col">الموعد النهائي</th><th scope="col">الوزن</th></tr>
               </thead>
               <tbody>
                 {data.assignments.map((a) => (

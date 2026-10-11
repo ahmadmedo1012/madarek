@@ -102,9 +102,9 @@ export function OwnerRealtimePage() {
             <table className="owner-table">
               <thead>
                 <tr>
-                  <th>المؤشّر</th>
-                  <th>القيمة</th>
-                  <th>الحالة</th>
+                  <th scope="col">المؤشّر</th>
+                  <th scope="col">القيمة</th>
+                  <th scope="col">الحالة</th>
                 </tr>
               </thead>
               <tbody>

@@ -181,10 +181,10 @@ export function OwnerAiPage() {
                 <table className="table tbl-stack">
                   <thead>
                     <tr>
-                      <th>الميزة</th>
-                      <th>الطلبات</th>
-                      <th>التوكنات</th>
-                      <th>الحصة من التوكنات</th>
+                      <th scope="col">الميزة</th>
+                      <th scope="col">الطلبات</th>
+                      <th scope="col">التوكنات</th>
+                      <th scope="col">الحصة من التوكنات</th>
                     </tr>
                   </thead>
                   <tbody>

@@ -331,12 +331,12 @@ export function OwnerUsersPage() {
             <table className="table tbl-stack owner-users-table">
               <thead>
                 <tr>
-                  <th>المستخدم</th>
-                  <th>البريد الإلكتروني</th>
-                  <th>الدور</th>
-                  <th>الحالة</th>
-                  <th>تاريخ الانضمام</th>
-                  <th>إجراءات</th>
+                  <th scope="col">المستخدم</th>
+                  <th scope="col">البريد الإلكتروني</th>
+                  <th scope="col">الدور</th>
+                  <th scope="col">الحالة</th>
+                  <th scope="col">تاريخ الانضمام</th>
+                  <th scope="col">إجراءات</th>
                 </tr>
               </thead>
               <tbody>

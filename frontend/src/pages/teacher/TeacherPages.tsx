@@ -529,11 +529,11 @@ export function GradesPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>الطالب</th>
-                  <th>الرقم الجامعيّ</th>
-                  <th>متوسّط الدرجات</th>
-                  <th>الحضور</th>
-                  <th>التقدير</th>
+                  <th scope="col">الطالب</th>
+                  <th scope="col">الرقم الجامعيّ</th>
+                  <th scope="col">متوسّط الدرجات</th>
+                  <th scope="col">الحضور</th>
+                  <th scope="col">التقدير</th>
                 </tr>
               </thead>
               <tbody>
@@ -611,13 +611,13 @@ export function MaterialsPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>الملفّ</th>
-                  <th>المقرّر</th>
-                  <th>النوع</th>
-                  <th>الحجم</th>
-                  <th>المشاهدات</th>
-                  <th>التحميلات</th>
-                  <th>التاريخ</th>
+                  <th scope="col">الملفّ</th>
+                  <th scope="col">المقرّر</th>
+                  <th scope="col">النوع</th>
+                  <th scope="col">الحجم</th>
+                  <th scope="col">المشاهدات</th>
+                  <th scope="col">التحميلات</th>
+                  <th scope="col">التاريخ</th>
                 </tr>
               </thead>
               <tbody>
@@ -715,15 +715,15 @@ export function StudentsListPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>الاسم</th>
-                  <th>الرقم الجامعيّ</th>
-                  <th>الحضور</th>
-                  <th>المتوسّط</th>
+                  <th scope="col">الاسم</th>
+                  <th scope="col">الرقم الجامعيّ</th>
+                  <th scope="col">الحضور</th>
+                  <th scope="col">المتوسّط</th>
                   {/* A6 P2 (22-a): «التقدير» — the same column name and
                       the same gradeBand chip as the grades table; the
                       old «الحالة» column carried a private vocabulary
                       (متفوّق/متوسّط) that disagreed with its sisters. */}
-                  <th>التقدير</th>
+                  <th scope="col">التقدير</th>
                 </tr>
               </thead>
               <tbody>

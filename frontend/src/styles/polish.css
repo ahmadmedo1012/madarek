@@ -2599,6 +2599,20 @@
     transform: translateX(1px);
   }
 
+  /* r143 (T1-f F5): the Send paper-plane is the ONE directional glyph
+     that ships un-mirrored — it points right, i.e. "back" in Arabic
+     reading order, on every إرسال/نشر/تقييم/تسليم button. Mirrored
+     fleet-wide with one rule instead of 10 call sites (the repo's
+     RTL convention: forward = ArrowLeft, back = ArrowRight). */
+  [dir="rtl"] .lucide-send {
+    transform: scaleX(-1);
+  }
+  /* the RTL button-hover nudge above re-declares `transform` on svg —
+     compose it with the mirror so the flip survives the hover state. */
+  [dir="rtl"] .btn:hover svg.lucide-send {
+    transform: scaleX(-1) translateX(1px);
+  }
+
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  DOUGHNUT / CHARTS — fade up so they don't pop in cold         ║
@@ -4338,7 +4352,12 @@
   .skip-link {
     position: fixed;
     inset-block-start: 8px;
-    inset-inline-start: 50%;
+    /* r143 (T1-f F1): PHYSICAL left, not inset-inline-start — under
+       dir="rtl" the logical property resolves to right:50% and the
+       physical translateX(-50%) then parks the pill a full width left
+       of center (clipped off-screen ≤~600px). Same coupling as the
+       .ln-hero-scroll pattern in landing.css. */
+    left: 50%;
     transform: translateX(-50%) translateY(-150%);
     background: var(--accent);
     color: var(--accent-fg, white);

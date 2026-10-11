@@ -1189,12 +1189,12 @@ export function DownloadsPage() {
             <table className="table tbl-stack">
               <thead>
                 <tr>
-                  <th>الملفّ</th>
-                  <th>المقرّر</th>
-                  <th>النوع</th>
-                  <th>الحجم</th>
-                  <th>التاريخ</th>
-                  <th aria-label="إجراءات" />
+                  <th scope="col">الملفّ</th>
+                  <th scope="col">المقرّر</th>
+                  <th scope="col">النوع</th>
+                  <th scope="col">الحجم</th>
+                  <th scope="col">التاريخ</th>
+                  <th scope="col" aria-label="إجراءات" />
                 </tr>
               </thead>
               <tbody>

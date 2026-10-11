@@ -184,10 +184,10 @@ export function OwnerSystemPage() {
             <table className="table tbl-stack owner-sync-table">
               <thead>
                 <tr>
-                  <th>التاريخ</th>
-                  <th>النوع</th>
-                  <th>المنفِّذ</th>
-                  <th>منذ</th>
+                  <th scope="col">التاريخ</th>
+                  <th scope="col">النوع</th>
+                  <th scope="col">المنفِّذ</th>
+                  <th scope="col">منذ</th>
                 </tr>
               </thead>
               <tbody>

@@ -1049,12 +1049,12 @@ export function CollegesLeaderboardPage() {
             <table className="leaderboard-table tbl-stack">
               <thead>
                 <tr>
-                  <th className="leaderboard-college">الكلّيّة</th>
+                  <th scope="col" className="leaderboard-college">الكلّيّة</th>
                   {METRICS.map((m) => {
                     const active = sort.key === m.key;
                     const ariaSort = active ? (sort.dir === -1 ? 'descending' : 'ascending') : 'none';
                     return (
-                      <th
+                      <th scope="col"
                         key={m.key}
                         title={m.label}
                         aria-sort={ariaSort}
