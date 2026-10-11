@@ -616,6 +616,11 @@ model Notification {
   createdAt DateTime         @default(now())
 
   @@index([userId, readAt])
+  // r146 (T1-c F5): the notifications list (GET /me/notifications — the
+  // most-polled route) sorts by createdAt desc per user; (userId, readAt)
+  // serves only the unread counter — this turns the sort into an index
+  // range scan instead of a sort step.
+  @@index([userId, createdAt])
   @@index([createdAt])
 }
 
@@ -1257,6 +1262,11 @@ model UserBadge {
   earnedAt DateTime @default(now())
 
   @@id([userId, badgeId])
+  // r146 (T1-c F3): FK badgeId is ON DELETE RESTRICT with no index —
+  // deleting a Badge scan-joins UserBadge; the PK (userId, badgeId)
+  // does NOT cover badgeId. Same gap class the 20260924000000
+  // hardening round closed for the sibling FKs.
+  @@index([badgeId])
 }
 
 model PointsLedger {
@@ -1304,6 +1314,10 @@ model UserPermission {
   reason      String?
 
   @@unique([userId, capability])
+  // r146 (T1-c F3): FK grantedById is ON DELETE SET NULL with no index
+  // — deleting a granter User scan-joins this table; the unique
+  // (userId, capability) does not cover grantedById.
+  @@index([grantedById])
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1425,7 +1439,10 @@ model ExamAttempt {
 
   @@index([templateId])
   @@index([studentId])
-  @@index([status])
+  // r146 (T1-c F4): the standalone [status] index is dropped — fully
+  // covered by the [status, expiresAt] prefix (same redundant-prefix
+  // class the 20260924050000 orphan-index round removed); one less
+  // btree write per exam attempt.
   @@index([status, expiresAt])
 }
 

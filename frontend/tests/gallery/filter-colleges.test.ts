@@ -64,6 +64,23 @@ describe('filterColleges', () => {
     expect(out.total).toBe(1);
   });
 
+  /* r146 (T1-c F8): the canonical fold closes the inconsistency with
+   * /search/global — a user typing the colloquial spelling «هندسه»
+   * (ة→ه) now finds كلية الهندسة on the gallery too, not only in the
+   * global search; and alif-maqsura ى in a name matches a query typed
+   * with plain ي. The page-local normalizer this suite used to pin
+   * folded diacritics only. */
+  it('r146 — colloquial ة→ه and ى→ي spellings match via the canonical fold (parity with /search/global)', () => {
+    const list: FilterableCollege[] = [
+      { city: 'الزاوية', name: 'كلية الهندسة', nameEn: null },
+      { city: 'الزاوية', name: 'كلية التقنى الطبية', nameEn: null },
+    ];
+    // ة typed as ه…
+    expect(filterColleges(list, { query: 'هندسه', campus: null }).total).toBe(1);
+    // ى in the name matched by a query typed with plain ي.
+    expect(filterColleges(list, { query: 'التقني', campus: null }).total).toBe(1);
+  });
+
   it('English match is case-insensitive', () => {
     const out = filterColleges(colleges, { query: 'engineering', campus: null });
     // "College of Engineering" + "Natural Resources Engineering"

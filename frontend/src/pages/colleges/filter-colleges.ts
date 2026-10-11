@@ -7,6 +7,15 @@
  * No DOM, no network, no React. Trivially testable in isolation.
  */
 
+// r146 (T1-c F8): the Arabic/English folding is the CANONICAL mirror
+// from lib/search.ts (itself the mirror of
+// backend/src/modules/search/normalize.ts) — AGENTS.md §6 requires ONE
+// normalization across the product. The page-local variant this replaces
+// folded only diacritics/tatweel, so «هندسه» failed to find «كلية الهندسة»
+// (ة≠ه) while /search/global found it — inconsistent search behavior
+// between two surfaces of the same product.
+import { normalizeArabicSearch } from '../../lib/search';
+
 export type CityName =
   | 'الزاوية'
   | 'العجيلات'
@@ -35,17 +44,9 @@ export const CAMPUS_ORDER: ReadonlyArray<CityName> = [
   'مناطق أخرى',
 ];
 
-/** Strip Arabic diacritics + tatweel for diacritic-insensitive search. */
-function normalizeArabic(s: string): string {
-  // NFD normalization splits composed Arabic into base + diacritics; then we
-  // drop diacritic codepoints (U+064B–U+065F) and tatweel (U+0640).
-  return s.normalize('NFD').replace(/[ً-ٟـ]/g, '');
-}
-
-/** Lowercase English / Latin for case-insensitive search. */
-function normalizeEnglish(s: string): string {
-  return s.toLowerCase();
-}
+/** r146: canonical folding (NFC + lowercase + diacritics/tatweel strip
+ *  + alif/hamza/ة/ى folds) — see lib/search.ts; covers Latin case too. */
+const normalizeQuery = normalizeArabicSearch;
 
 /** Normalize an unknown city name to a canonical CityName, or fall back. */
 function normalizeCity(city: string | null | undefined): CityName {
@@ -76,8 +77,8 @@ export function filterColleges<T extends FilterableCollege>(
   state: FilterState,
 ): FilterResult<T> {
   const trimmedQuery = state.query.trim();
-  const queryAr = trimmedQuery ? normalizeArabic(trimmedQuery) : '';
-  const queryEn = trimmedQuery ? normalizeEnglish(trimmedQuery) : '';
+  const queryAr = trimmedQuery ? normalizeQuery(trimmedQuery) : '';
+  const queryEn = queryAr; // one canonical fold covers both scripts
 
   // 1 + 2: campus + query filter in a single pass.
   const survivors: T[] = [];
@@ -86,8 +87,8 @@ export function filterColleges<T extends FilterableCollege>(
     if (state.campus !== null && cityNorm !== state.campus) continue;
 
     if (trimmedQuery) {
-      const arHit = normalizeArabic(c.name).includes(queryAr);
-      const enHit = c.nameEn ? normalizeEnglish(c.nameEn).includes(queryEn) : false;
+      const arHit = normalizeQuery(c.name).includes(queryAr);
+      const enHit = c.nameEn ? normalizeQuery(c.nameEn).includes(queryEn) : false;
       if (!arHit && !enHit) continue;
     }
 
