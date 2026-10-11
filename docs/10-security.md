@@ -16,7 +16,7 @@
 | إبطال الجلسات | `tokenVersion` bump ذري (conditional updateMany) عند: خروج، تغيير كلمة، تغيير دور، تعطيل — العدّ 0 يعني كاتبًا أحدث سبقه | `modules/auth/rotation.ts` |
 | سياسة كلمة المرور | 8–72 محرفًا + قائمة كلمات شائعة محظورة (~90)؛ بلا تعقيد صفّي؛ لا trim | `modules/auth/password-policy.ts` |
 | الدخول | بريد أو رقم جامعي (تمييز بـ`@`)؛ تسجيل ذاتي للطالب/الأستاذ فقط (حارس خدمة + Zod) | `auth.routes.ts`، `auth.dto.ts` |
-| تخزين الواجهة | access في sessionStorage (مقايضة D4 معلنة) والـrefresh كوكي httpOnly؛ `queryClient.clear()` عند كل حدود الجلسة | `stores/auth.store.ts` |
+| تخزين الواجهة | access في localStorage (r145: صُحّح التوثيق — الشيفرة دائمًا استخدمت localStorage، لا sessionStorage كما قال هذا الصف تاريخيًا؛ المقايضة المعلنة: توكن قصير العمر قابل للقراءة من سكربت محقون حتى انتهائه، والـrefresh كوكي httpOnly لا يُقرأ) + `queryClient.clear()` عند كل حدود الجلسة | `stores/auth.store.ts` |
 
 ## التفويض والحاكمية
 

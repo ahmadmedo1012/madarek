@@ -8,7 +8,7 @@
 | القرار | المضمون | المرجع |
 |---|---|---|
 | **D3 — جلسة انزلاقية** | الـrefresh لا يرفع `tokenVersion`؛ الإبطال الفوري فقط عند خروج/تغيير كلمة/دور/تعطيل. بلا جدول `RefreshToken` | `modules/auth/rotation.ts` |
-| **D4 — access في sessionStorage** | مقايضة XSS معلنة: توكن قصير العمر + refresh كوكي httpOnly + تنظيف ذاكرة الاستعلام عند حدود الجلسة | `stores/auth.store.ts` |
+| **D4 — access في localStorage** (r145: صُحّح اسم القرار — التنفيذ كان دائمًا localStorage بينما وثّق هذا الجدول sessionStorage تاريخيًا؛ الشيفرة تفوز وفق AGENTS.md) | مقايضة XSS معلنة: توكن قصير العمر قابل للقراءة من سكربت محقون حتى انتهاء صلاحيته (دقائق) + refresh كوكي httpOnly لا يُقرأ من الشيفرة + تنظيف ذاكرة الاستعلام عند حدود الجلسة | `stores/auth.store.ts` |
 | **D7 — CSP صارم** | `default-src 'self'` وبصمتا sha256 للسكربتات الداخلية؛ `check-csp-hash` في CI | `app.ts`، `.github/workflows/ci.yml` |
 | **D12 — تقييم بالمطابقة التامة** | لا substring بالاتجاهين؛ تطبيع متسامح فواصل للتدريب فقط | `lib/grading.ts` |
 | **D17-3 — سياسة اللغة** | أكواد أخطاء إنجليزية، رسائل مستخدم عربية | `lib/errors.ts`، `http/validate.ts` |

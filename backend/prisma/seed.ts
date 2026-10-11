@@ -1500,6 +1500,19 @@ async function main() {
   console.log('✅ Seed complete.');
 }
 
+// r145 (T1-c F2): a hard fail-closed guard — the seed WIPES exam
+// content (examAnswer → question), curriculum chapters/lessons, and
+// the announcement/competition/event tables, then resets the five
+// demo accounts' passwords. Running it against production destroys
+// real student exam attempts silently. NODE_ENV=production now
+// refuses before a single query fires.
+if (process.env.NODE_ENV === 'production') {
+  console.error(
+    '✖ رفض التشغيل: هذا السكربت يمسح بيانات الاختبارات والمنهج والإعلانات ويعيد ضبط كلمات مرور الحسابات التجريبية — لا يُشغَّل على الإنتاج. (seed refuses to run with NODE_ENV=production)',
+  );
+  process.exit(1);
+}
+
 main()
   .catch(async (err) => {
     console.error(err);
