@@ -29,7 +29,7 @@
 |---|---|---|
 | `check-csp-hash.sh` يفشل: «theme-bootstrap changed» | عدّلت سكربتًا داخليًا في `frontend/index.html` دون تحديث البصمة **[مؤكد — وقع فعليًا في r133 وأصلح]** | أعد حساب البصمة بالوصفة المعلقة فوق `THEME_BOOTSTRAP_SHA256` في `backend/src/app.ts` وحدّثها |
 | وميض فاتح قبل الداكن في الإنتاج | بصمة CSP قديمة تمنع bootstrap السمة | نفس الحل أعلاه — البوابة في CI الآن تمنع تكراره |
-| بوابة parity تفشل (163) | عدّلت `tokens.css` دون زوج التصدير، أو قيمة مرجعية مضبوطة | حدّث `unified-parity.css`/`shared-design-system.css` وفق رفض البوابة (يطبع الفحص المتوقع) |
+| بوابة parity تفشل (168) | عدّلت `tokens.css` دون زوج التصدير، أو قيمة مرجعية مضبوطة | حدّث `unified-parity.css`/`shared-design-system.css` وفق رفض البوابة (يطبع الفحص المتوقع) |
 | بوابة icons/motion ترفض | emoji/raw svg خارج القائمة، أو مدة/easing خام | انقل القيمة إلى `tokens.css`/`motion.css` أو استخدم `Icon.tsx` |
 | `validate:colleges` يفشل | لون كلية تحت AA أو أصل مفقود | صحّح `frontend/src/data/colleges.config.ts` (البوابة تطبع المخالفة) |
 | قائمة «بنك الأسئلة» عند الأستاذ تعود للوحة | مسار `/teacher/exams` غير مسجل في `App.tsx` رغم وجود الصفحة **[مؤكد — فجوة موثقة في 16]** | لا حلة اليوم من الواجهة؛ الميزة تُدار من مصادر أخرى حتى يُسجَّل المسار |

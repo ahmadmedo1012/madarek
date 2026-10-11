@@ -100,7 +100,7 @@ npm start                    # يشغل backend/dist/index.js — يخدم API +
 ```bash
 npm run typecheck                     # tsc للجهتين (لا DB)
 npm test                              # 1015 واجهة + 1021 خلفية (لا DB)
-node scripts/verify-parity-export.mjs # بوابة التصميم 163/163
+node scripts/verify-parity-export.mjs # بوابة التصميم 168/168
 ```
 
 نتائج فعلية موثقة لهذه الأوامر: [11-testing.md](11-testing.md).

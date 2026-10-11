@@ -12,7 +12,7 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Gate | Command | What it asserts |
 |---|---|---|
-| **Parity export** | `node scripts/verify-parity-export.mjs` | **163/163 token checks** — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
+| **Parity export** | `node scripts/verify-parity-export.mjs` | **168/168 token checks** — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
@@ -94,11 +94,15 @@ Painted identically in **both** `data-theme`s; landing-scoped `--ln-*` tokens. I
 
 Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono for numerals · Plex Serif italic **sanctioned Latin runs only** (the serif-italic accent was ruled a phantom on Arabic — the platform accent is upright weight + ink).
 
+**حزمة الأسطولة = 10 وجوه (بلا Serif italic)** — حذف موثق r132 في SM/SL (وجود الـSerif في الاستنساخ بلا قرار)؛ **الـSerif مدارك-فقط** — الاستنساخ الأسطولي لا يشحن وجهًا مائلًا قط. مدارك نفسها تشحن الوجوه الاثني عشر كاملة.
+
 **Ladder (`--fs-*`):**
 
-| xxs | xs | sm | body | body-lg | h3 | h2 | h1 |
-|---|---|---|---|---|---|---|---|
-| 11 | 12 | 13 | 15 | 17 | 18 | 22 | 30 |
+| xxs | xs | sm | chrome | body | body-lg | h3 | h2 | h1 |
+|---|---|---|---|---|---|---|---|---|
+| 11 | 12 | 13 | **14** | 15 | 17 | 18 | 22 | 30 |
+
+**`--fs-chrome` (14px / `0.875rem`)** — درجة الكروم: اتفاق أسطولة r133 (SL R16) شرعنها الكنون في r140 — SL/SO/SB كانت تستخدم 14px خامًا لمقاطع كروم الواجهة (روابط التنقل، أعمدة التذييل، تسميات النماذج، صناديق الحالة، الطوابع الزمنية)؛ نثر المتن يبقى على `--fs-body` 15px.
 
 | Companion scale | Values |
 |---|---|
@@ -167,7 +171,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 **Z-scale (fixed, never improvised):** `dropdown 100 < popover 200 < tooltip 250 < sheet 300 < modal 400 < toast 500 < lightbox 600`.
 
-**Glass:** `--glass-blur 16px` (surfaces) · `--scrim-blur 4px` (dimming scrims) — **the landing bans glass entirely.**
+**Glass:** `--glass-blur 16px` (surfaces) · **strong tier:** `--glass-bg-strong` opacity **0.92** + `--glass-blur-strong 16px` (r140 — توحيد الطبقة القوية التي استخدمتها ثلاثة منتجات بقيم متباعدة 0.90/0.92/0.94؛ الضباب يبقى 16px — لا ضباب أقوى من 16) · `--scrim-blur 4px` (dimming scrims) — **the landing bans glass entirely.**
 
 ---
 

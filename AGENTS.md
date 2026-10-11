@@ -53,7 +53,7 @@ npm run build -w frontend    # بناء الواجهة فقط (لا يحتاج D
 npm run build -w backend     # بناء الخلفية فقط (prisma generate + tsc)
 npm run db:migrate           # prisma migrate dev محليًا — يحتاج DATABASE_URL حية
 npm run db:seed              # بذر البيانات التجريبية — يحتاج DATABASE_URL حية
-node scripts/verify-parity-export.mjs   # بوابة التكافؤ 163/163 (بلا اعتماديات)
+node scripts/verify-parity-export.mjs   # بوابة التكافؤ 168/168 (بلا اعتماديات)
 bash scripts/check-icons.sh             # انضباط الأيقونات (Lucide فقط)
 bash scripts/check-motion-tokens.sh     # منع قيم الحركة الخام
 bash scripts/check-csp-hash.sh          # مطابقة بصمات CSP بعد أي تعديل على frontend/index.html

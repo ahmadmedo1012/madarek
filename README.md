@@ -24,7 +24,7 @@
 | البند | الحالة |
 |---|---|
 | ميزات الأدوار الخمسة | **منفَّذة ومشحَنة** — 1015 اختبار واجهة + 1021 خلفية خضراء (2026-10-10) |
-| نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 163/163 خضراء |
+| نظام التصميم | موثّق في [`DESIGN.md`](DESIGN.md) — بوابة تكافؤ 168/168 خضراء |
 | مساعد الذكاء وفحص الانتحال | **محاكاة حتمية معلنة** (بلا خدمات خارجية) — التفصيل: [docs/02](docs/02-features.md) |
 | i18n إنجليزي، E2E، رفع ملفات | غير منفَّذة — القائمة الكاملة: [docs/16](docs/16-decisions-and-limitations.md) |
 
@@ -112,7 +112,7 @@ npm run dev:web                    # الواجهة :5173 (proxy ‏/api → :40
 npm run lint                         # ESLint — 0 أخطاء إلزامية
 npm run typecheck                    # tsc — src + tests، الجهتان (بلا DB)
 npm test                             # 1015 واجهة + 1021 خلفية (بلا DB)
-node scripts/verify-parity-export.mjs  # بوابة التكافؤ 163/163
+node scripts/verify-parity-export.mjs  # بوابة التكافؤ 168/168
 bash scripts/check-icons.sh            # انضباط Lucide
 bash scripts/check-motion-tokens.sh    # رموز الحركة
 bash scripts/check-csp-hash.sh         # بصمات CSP

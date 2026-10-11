@@ -45,7 +45,7 @@
   (لا تحذف).
 - **زوج التصدير**: `unified-parity.css` + `shared-design-system.css`
   غير مستوردَين في التطبيق — مرجع تقطير داخلي يمنع انحراف رموز التصميم،
-  تفرضه بوابة parity 163/163. التفصيل: `DESIGN.md` + `docs/PARITY-EXPORT.md`.
+  تفرضه بوابة parity 168/168. التفصيل: `DESIGN.md` + `docs/PARITY-EXPORT.md`.
 
 ## 4) الإشعارات والرسائل
 

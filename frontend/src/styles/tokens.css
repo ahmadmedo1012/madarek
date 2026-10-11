@@ -76,6 +76,11 @@
     --fs-body:    15px;
     /* (--fs-body-md: 15px deleted r133-F7 — byte-duplicate of --fs-body,
        zero consumers repo-wide; mirrored out of both export files) */
+    /* r140 — درجة الكروم (chrome): اتفاق أسطولة r133 (SL R16) — SL/SO/SB
+       تستخدم 14px خامًا لمقاطع كروم الواجهة (روابط التنقل، أعمدة التذييل،
+       تسميات النماذج، صناديق الحالة، الطوابع الزمنية)؛ الكنون يشرعنها
+       كدرجة مسماة في السلّم. نثر المتن يبقى على --fs-body 15px. */
+    --fs-chrome:  0.875rem;   /* = 14px */
     --fs-sm:      13px;
     --fs-xs:      12px;
     --fs-xxs:     11px;
@@ -645,6 +650,12 @@
     --glass-bg:    rgba(251,250,249,0.78);
     --glass-blur:  16px;
     --glass-border: rgba(25,25,24,0.06);
+    /* r140 — تبنّي الكنون للطبقة القوية: ثلاثة منتجات استخدمتها بقيم
+       متباعدة 0.90/0.92/0.94 بضباب 20 و24 — الكنون يوحّدها. الطبقة القوية
+       = خلفية أكثر عتامة (0.92)، والضباب يبقى 16px الكنوني (قرار r140:
+       لا ضباب أقوى من 16). */
+    --glass-bg-strong:   rgba(251,250,249,0.92);
+    --glass-blur-strong: 16px;
     /* T3-F4 — scrim blur for dimming overlays (modal/sheet/dialog
        backdrops). Consolidates the six ad-hoc blur values
        (2/4/6/8/10/14px) onto two tokens: --glass-blur for glass
@@ -843,6 +854,10 @@
     --glass-bg:    rgba(11,16,32,0.78);
     --glass-blur:  16px;
     --glass-border: rgba(142,151,184,0.12);
+    /* r140 — الطبقة القوية في الليل (انظر تعليق الثيم الفاتح): توحيد
+       0.90/0.92/0.94 الأسطولية على 0.92، والضباب 16px — لا أقوى. */
+    --glass-bg-strong:   rgba(11,16,32,0.92);
+    --glass-blur-strong: 16px;
     --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
 
     --sidebar-bg:        var(--neutral-50);

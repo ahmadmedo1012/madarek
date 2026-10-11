@@ -60,7 +60,7 @@
 #   frontend/src/styles/shared-design-system.css
 #   Both are NOT imported by the app (export artifacts, unwired from
 #   main.tsx); their values are gated instead by
-#   scripts/verify-parity-export.mjs, which pins 163 tokens to
+#   scripts/verify-parity-export.mjs, which pins 168 tokens to
 #   tokens.css, audits every var() reference, and scans for retired
 #   divergent values.
 #

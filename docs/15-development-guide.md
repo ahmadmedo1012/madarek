@@ -70,7 +70,7 @@ npm test                # تأكد أن الوحدات النقية لم تنك�
 1. أضف المتغير في `frontend/src/styles/tokens.css` بنسختي `[data-theme]`
    مع تعليق تباين WCAG إن كان لونًا.
 2. انعكس في زوج التصدير (`unified-parity.css` +
-   `shared-design-system.css`) — بوابة `verify-parity-export` (163 فحصًا)
+   `shared-design-system.css`) — بوابة `verify-parity-export` (168 فحصًا)
    تفرض التطابق وتطبع الفروق.
 3. حدّث `DESIGN.md` بقيمة الشحن الفعلية (tokens هي المصدر).
 

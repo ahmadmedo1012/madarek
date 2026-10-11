@@ -335,6 +335,7 @@ const CHECKS = [
   ['root', '--lh-base', '1.65', 'divergent revision: 1.6'],
   ['root', '--lh-loose', '1.85', 'divergent revision invented 1.75 "relaxed"'],
   ['root', '--fs-xxs', '11px', 'divergent revision invented 10px here'],
+  ['root', '--fs-chrome', '0.875rem', 'fleet chrome step 14px (r133 fleet accord — canonized r140)'],
   ['root', '--fs-h1', '30px', 'divergent revision: 24px fs-2xl'],
   ['root', '--type-display-line-height', '1.15', 'Arabic display leading floor'],
   // ── :root primitives — layout ──
@@ -387,6 +388,8 @@ const CHECKS = [
   // ── LIGHT theme — glass, elevation, charts ──
   ['light', '--glass-bg', 'rgba(251,250,249,0.78)', 'cream glass (divergent: white 0.82)'],
   ['light', '--glass-blur', '16px', 'glass blur (divergent: 20px)'],
+  ['light', '--glass-bg-strong', 'rgba(251,250,249,0.92)', 'strong glass ground (r140 fleet unification: 0.90/0.92/0.94 → 0.92)'],
+  ['light', '--glass-blur-strong', '16px', 'strong tier keeps the canonical 16px blur (r140 ruling: nothing stronger than 16)'],
   ['light', '--chart-6', '#a67a22', 'series amber'],
   ['light', '--chart-text', '#6e6c65', 'chart text ink'],
   [
@@ -451,6 +454,8 @@ const CHECKS = [
   // ── DARK theme — glass, surfaces, charts, motion ──
   ['dark', '--glass-bg', 'rgba(11,16,32,0.78)', 'night glass (divergent: rgba(15,15,15,0.9))'],
   ['dark', '--glass-blur', '16px', 'glass blur'],
+  ['dark', '--glass-bg-strong', 'rgba(11,16,32,0.92)', 'night strong glass ground (r140 fleet unification)'],
+  ['dark', '--glass-blur-strong', '16px', 'night strong tier keeps the canonical 16px blur'],
   ['dark', '--sidebar-item-active-bg', 'rgb(233 180 76/0.10)', 'sidebar gold wash'],
   ['dark', '--topbar-bg', 'rgba(7,11,22,0.86)', 'night topbar'],
   ['dark', '--chart-6', '#f2c766', 'night gold series'],
