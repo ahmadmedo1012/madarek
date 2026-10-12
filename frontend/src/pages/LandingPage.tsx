@@ -494,6 +494,27 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ═══ جسر التحويل — r149 (R3-A6 #2) ═══ */}
+      {/* 65% من تمرير الجوال كان بلا أي فعل /auth بين الـhero والخاتمة
+          (ي≈600 → ي≈7,572 على 390px) — كل صفحة مرجعية تعيد العرض بعد
+          كل كتلة إثبات. شريط نحيف على أرض ink-2، لا يزاحم الفصول. */}
+      <section className="ln-chapter ln-cta-bridge" aria-label="ابدأ رحلتك">
+        <div className="ln-cta-bridge-inner">
+          <span className="ln-label">المدار مفتوح</span>
+          <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
+            جاهز لبدء <em>مدارك</em>؟
+          </RevealCssClass>
+          <RevealCssClass as="p" className="ln-chapter-lede" delay={2}>
+            إنشاء الحساب الجامعي يستغرق دقائق — ثم المحاضرات والاختبارات
+            والمكتبة والمعامل بين يديك.
+          </RevealCssClass>
+          <RevealCssClass as="div" className="ln-cta-bridge-actions" delay={3}>
+            <Link to="/auth" className="ln-btn-gold">ابدأ رحلتك</Link>
+            <a href="#progress" className="ln-btn-ghost">شاهد كيف تتّسع المدارك</a>
+          </RevealCssClass>
+        </div>
+      </section>
+
       {/* ═══ الفصل ٤ — قصّة التقدّم ═══ */}
       <section id="progress" ref={progressRef} className="ln-chapter ln-progress">
         <div className="ln-progress-grid">
@@ -559,8 +580,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ الفصل ٥ — الأرض: الحرم الحقيقي ═══ */}
+      {/* ═══ الفصل ٤ — الأرض: الحرم الحقيقي ═══ */}
       <section id="campus" className="ln-chapter ln-campus" aria-label="جامعة الزاوية">
+        {/* r149 (R3-A6 #8): الفصل الرابع كان الوحيد بلا سطر افتتاحي —
+            يقرأ كفاصل يتيم بين فصلين على الأرض نفسها. معالجة ضمنية
+            (تسمية فقط) كي لا تنافس الصورة الفوتوغرافية عنوانًا. */}
+        <div className="ln-chapter-head">
+          <span className="ln-label">{`04 — الأرض · CAMPUS`}</span>
+        </div>
         <RevealCssClass as="figure" className="ln-campus-frame">
           <Parallax amount={9} direction="up">
             <picture>
@@ -615,7 +642,7 @@ export default function LandingPage() {
       {/* ═══ الفصل ٦ — الأدوار ═══ */}
       <section id="roles" className="ln-chapter ln-roles">
         <div className="ln-chapter-head">
-          <span className="ln-label">{`04 — المجتمع`}</span>
+          <span className="ln-label">{`05 — المجتمع`}</span>
           <RevealCssClass as="h2" className="ln-chapter-title" delay={1}>
             أربعة <em>أدوار</em>، تجربة موحَّدة
           </RevealCssClass>
@@ -658,7 +685,8 @@ export default function LandingPage() {
               <p className="ln-role-desc">{r.desc}</p>
               {r.quote && (
                 <blockquote className="ln-role-quote">
-                  <span className="ln-role-quote-mark" aria-hidden>”</span>
+                  {/* r149 (R3-A4 #6): علامة اقتباس عربية بدل اللاتينية ” */}
+                  <span className="ln-role-quote-mark" aria-hidden>«</span>
                   {r.quote}
                 </blockquote>
               )}
@@ -705,7 +733,7 @@ export default function LandingPage() {
           <span className="ln-cta-orbit o2" />
         </div>
         <div className="ln-cta-inner">
-          <span className="ln-label">{`05 — الوصول · ACCESS`}</span>
+          <span className="ln-label">{`06 — الوصول · ACCESS`}</span>
           <RevealCssClass as="h2" className="ln-cta-title" delay={1}>
             نقطتك من الضوء <em>تبدأ من هنا</em>
           </RevealCssClass>
@@ -763,7 +791,15 @@ export default function LandingPage() {
             <div className="landing-footer-col">
               <div className="landing-footer-heading">المؤسسة</div>
               <a href="#campus" className="landing-footer-link">جامعة الزاوية</a>
-              <Link to="/colleges" className="landing-footer-link">الكليّات</Link>
+              {/* r149 (R3-A6 #6): كان الرابط يقفز بضيف إلى /auth — نفس
+                  بيانات الكليات متاحة مجهولة الهوية عبر النافذة المنبثقة. */}
+              <button
+                type="button"
+                className="landing-footer-link"
+                onClick={() => setCollegesOpen(true)}
+              >
+                الكليّات
+              </button>
               <a href="#roles" className="landing-footer-link">عن المنصّة</a>
             </div>
           </div>

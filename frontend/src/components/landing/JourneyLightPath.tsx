@@ -24,8 +24,10 @@ import type { CSSProperties } from 'react';
 
 type Pt = { x: number; y: number };
 
-/** Lit thread — bright lime, legible without any glow filter. */
-const LIGHT_STROKE = 'rgba(223,237,178,0.85)';
+/** Lit thread — r149 (R3-A6 #4c): cream كالكلاس في landing.css —
+ * كان هذا السطر الـinline الوحيد خارج انضباط اللون الواحد
+ * (lime غير مسجل في قائمة المشهد). الكريمة على الحبر = تباين كامل. */
+const LIGHT_STROKE = 'var(--ln-cream)';
 /** Un-lit track — cream hairline. */
 const BASE_STROKE = 'rgba(245,243,231,0.14)';
 /** Reduced motion: static ~35% progress (dashoffset = 1 − 0.35). */

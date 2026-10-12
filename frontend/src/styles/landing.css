@@ -603,8 +603,8 @@
   color: var(--ln-cream);
   max-inline-size: 13ch;
   text-wrap: balance;
-  /* P3-26: subtle text glow for premium depth on dark ink ground */
-  text-shadow: 0 2px 8px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15);
+  /* (r149 R3-A6 #4b): حُذف توهج النص P3-26 — الورقة نفسها تحظر
+     glows على النص؛ العمق يأتي من الحجم والوزن لا من الظلال. */
 }
 .landing .ln-hero-line { display: block; }
 .landing .ln-hero-title .ln-hero-line.reveal-up { transform: translateY(26px); }
@@ -639,8 +639,7 @@
 }
 .landing .ln-hero-title .ln-hero-gold {
   color: var(--ln-lime);
-  /* P3-34: subtle glow on accent word for premium depth */
-  text-shadow: 0 0 20px rgba(245,243,231,0.25), 0 0 40px rgba(245,243,231,0.08);
+  /* (r149 R3-A6 #4b): حُذف توهج P3-34 — نفس حظر glows على النص. */
 }
 
 .landing .ln-hero-sub {
@@ -1540,6 +1539,15 @@
   transition: color var(--ln-t-fast) var(--ln-ease-soft);
 }
 .landing .landing-footer-link:hover { color: var(--ln-cream); }
+/* r149 (R3-A6 #6): زر «الكليّات» يفتح النافذة — نفس اللغة، تصفير
+   زر حتى لا يرسم الكروم الافتراضي فوقها. */
+button.landing-footer-link {
+  background: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+}
 .landing .landing-footer-bottom {
   margin-block-start: var(--sp-6);
   padding-block-start: var(--sp-4);
@@ -1597,7 +1605,10 @@
 @media (max-width: 1080px) {
   .landing .landing-nav-links { display: none; }
   .landing .landing-burger { display: grid; margin-inline-start: auto; }
-  .landing .landing-header-cta { display: none; }
+  /* r149 (R3-A6 #5): كان الـCTA يختفي كليًا ≤1080 — الأجهزة اللوحية
+     والجوال يفقدان مرساة التحويل الدائمة. يبقى الزر الذهبي المدمج
+     بجوار البرغر؛ الشبحي يختفي (المساحة). */
+  .landing .landing-header-cta .btn.ghost { display: none; }
   .landing .landing-mobile-menu { display: flex; }
 }
 @media (min-width: 1081px) {
@@ -1975,15 +1986,9 @@
   }
 }
 
-/* ── P4-08: Card elevation — station + system cards get hover depth ─
-   Cards should lift on hover to signal interactivity (Notion bento style).
-   The landing already has border-color shift; this adds a micro-shadow
-   so the card reads as elevated, not flat. */
-.landing .ln-station-card:hover,
-.landing .ln-system-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06);
-  transform: translateY(-2px);
-}
+/* ── P4-08 (r149 R3-A6 #4a): حُذف رفع البطاقات — الكنون (DESIGN.md
+   §1a) يقول hover = إزاحة حد فقط، لا رفع؛ الكتل كانت تقفز (snap)
+   لأن قوائم transition لا تشمل transform/box-shadow أصلًا. */
 
 /* ── P4-09: Focus-visible — ring survives on landing buttons ────────
    Keyboard navigation needs a visible indicator. The universal
@@ -1999,9 +2004,9 @@
 
 /* ── P4-10: Type scale — ensure heading hierarchy is readable ──────
    Landing headings use --ln-h1 / clamp ranges but mobile can stretch
-   too wide. Constrain to a comfortable measure (≤72ch for body,
-   ≤20ch for display). */
-.landing .ln-hero-title { max-inline-size: 20ch; }
+   too wide. Constrain to a comfortable measure (≤72ch for body).
+   (r149 R3-A6: حُذف سطر ln-hero-title 20ch — كان يتجاوز بصمتٍ
+   القيمة المؤلفة 13ch في §1 ويعطّل قاعدة ‎≤768 none.) */
 .landing .ln-hero-sub { max-inline-size: 72ch; }
 .landing .ln-chapter-lede { max-inline-size: 72ch; }
 .landing .ln-cta-lede { max-inline-size: 72ch; }
@@ -2082,16 +2087,8 @@
   opacity: calc(var(--sp, 0) * 0.5); /* fades in as section enters viewport */
 }
 
-/* ── P4-18: Card hover elevation — premium depth on all landing cards ─
-   Notion-style: lift + shadow on hover signals interactivity without
-   violating the flat-ground rule (hairlines stay, shadow is subtle). */
-.landing .ln-station-card:hover,
-.landing .ln-system-card:hover,
-.landing .ln-stat:hover,
-.landing .ln-fact:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.06);
-}
+/* ── P4-18 (r149 R3-A6 #4a): حُذف — نفس حكم P4-08 (رفع كاذبsnap
+   يناقض الكنون). إزاحة الحد موجودة في القواعد الأساسية. */
 
 /* ── P4-19: Chapter titles — scroll-driven reveal enhancement ─
    As each section scrubs through, the title gets a subtle opacity
@@ -2107,4 +2104,46 @@
   .landing .ln-hero-depth {
     opacity: 0.4; /* slightly less prominent when no parallax */
   }
+}
+
+/* ── 19 · r149 — CTA bridge + contrast belt ────────────────────────── */
+
+/* جسر التحويل (R3-A6 #2): شريط نحيف بين «الطريق» و«التقدّم» — كان
+   65% من تمرير الجوال بلا أي فعل /auth. أرض ink-2 بطبقة hairline
+   كي يقرأ كمحطة لا كفصل كامل. */
+.landing .ln-cta-bridge {
+  padding-block: clamp(56px, 7vh, 84px);
+  background: var(--ln-ink-2);
+}
+.landing .ln-cta-bridge-inner {
+  max-inline-size: 720px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--sp-5);
+}
+.landing .ln-cta-bridge-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-2);
+}
+@media (max-width: 560px) {
+  .landing .ln-cta-bridge-actions .ln-btn-gold,
+  .landing .ln-cta-bridge-actions .ln-btn-ghost {
+    inline-size: 100%;
+  }
+}
+
+/* حزام التباين (R3-A6 #9): عالم المنتج يحترم prefers-contrast
+   (DESIGN.md §7) — مشهد Orbit Ink كان الاستثناء: خطوط 0.07α
+   تختفي كليًا لذوي التباين العالي. */
+@media (prefers-contrast: more) {
+  .landing { --ln-line-soft: rgb(245 243 231 / 0.22); }
+  .landing .ln-btn-ghost { border-color: rgb(245 243 231 / 0.6); }
+  .landing .ln-hero-canvas { --ln-canvas-op: 0.2; }
+  .landing .ln-grain { opacity: 0.3; }
 }
