@@ -98,6 +98,7 @@ const STYLESHEET_FILES = [
   'components.css',
   'landing.css',
   'colleges.css',
+  'colleges-popover.css',
   'admin.css',
   'layout.css',
   'notifications.css',

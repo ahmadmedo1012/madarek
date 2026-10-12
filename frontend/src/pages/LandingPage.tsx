@@ -23,9 +23,10 @@ import { JourneyLightPath } from '../components/landing/JourneyLightPath';
 import { HeroDepthLayer } from '../components/landing/HeroDepthLayer';
 import { Parallax } from '../components/motion/Parallax';
 // landing.css is this page's own sheet (dark immersive world, scoped to
-// .landing); colleges.css rides here for the popover surfaces.
+// .landing); since r151h the colleges popover surfaces ride their own
+// dedicated sheet (colleges-popover.css, imported by <CollegesPopover />)
+// so this chunk no longer carries the college-gallery CSS.
 import '../styles/landing.css';
-import '../styles/colleges.css';
 
 /**
  * Landing — «سماء مدارك» immersive v2 (docs/immersive-redesign-plan.md).

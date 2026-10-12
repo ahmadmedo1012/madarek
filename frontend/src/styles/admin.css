@@ -212,7 +212,9 @@
   }
 }
 
-/* (r150e): the .digital-stat-*/.top-courses-* reduced-motion switch
+/* (r150e): the .digital-stat-* / .top-courses-* reduced-motion switch
    died here rather than moving — both families are dead (zero TSX
-   consumers, rg-verified). */
+   consumers, rg-verified). (r151h: the old comment spelled the family
+   names with a bare asterisk-slash between them, which closed the
+   comment early and fed the minifier garbage.) */
 }

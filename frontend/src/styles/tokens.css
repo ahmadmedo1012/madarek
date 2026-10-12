@@ -188,7 +188,9 @@
     --t-clean:      all var(--t-base) var(--ease);
     /* (r148-d: --t-cinema-all + the --transition-fast/normal/slow/all
        shorthands deleted — zero consumers; sheets enumerate properties
-       and consume --t-*/--ease-* rungs directly. --t-clean stays live.) */
+       and consume the --t-* / --ease-* rungs directly. --t-clean stays
+       live.) (r151h: the old comment joined the two rung families with
+       a bare asterisk-slash, which closed this comment early.) */
 
     /* ─── UI/UX PRO MAX — interactive feedback tokens ─────────── */
     --press-scale: 0.97;

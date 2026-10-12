@@ -6,6 +6,10 @@ import { Icon } from './Icon';
 import { Skeleton } from './motion';
 import { api, unwrap } from '../lib/api';
 import { collegeIcon, getCollegeIdentityByRecord } from '../data/colleges.config';
+// r151h: the popover family's own sheet — same @layer pages cascade it
+// had inside colleges.css, split so the landing route stops shipping
+// the whole college-gallery CSS for the picker's sake.
+import '../styles/colleges-popover.css';
 import { filterColleges, type FilterableCollege } from '../pages/colleges/filter-colleges';
 
 /**
