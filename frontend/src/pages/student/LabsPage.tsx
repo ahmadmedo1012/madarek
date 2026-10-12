@@ -323,7 +323,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </div>
           <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>أحسنت!</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            أكملت "<bdi>{exp.title}</bdi>" بنجاح.
+            أكملت «<bdi>{exp.title}</bdi>» بنجاح.
           </div>
           <div className="lab-done-chip" style={{ marginTop: 'var(--sp-5)' }}>
             <Icon icon={Award} size={18} />

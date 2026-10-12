@@ -82,7 +82,7 @@
                     'Segoe UI', Roboto, sans-serif;
     --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
     /* (--font-serif retired r148-d — zero consumers, see tokens.css) */
-    --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+    --font-mono:    'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
 
     /* weights — the self-hosted Plex set ships 400/500/600/700 only.
        (r132-F5: --fw-cine/-heavy 800/900 + the cine/eyebrow/mega display

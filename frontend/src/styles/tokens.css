@@ -68,7 +68,13 @@
     /* (--font-serif retired r148-d — zero consumers; the sanctioned
        Latin serif runs are a fonts.css @font-face policy, not a token
        slot, and nothing in app css/tsx asked for the family.) */
-    --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+    /* r149 (R3-A4 F3.1 — أعيب طباعي واحد حقيقي): العربية داخل سياق
+       mono كانت تسقط إلى خط نظام (Plex Mono لا يحمل حروفًا عربية):
+       رواتب الوظائف «2,500 ل.د»، هوامش PDF «صفحة 3»، طرفية المختبرات.
+       النمط المسبق في auth.css:234 و‎--ln-mono (landing.css:54):
+       fallback لكل حرف — اللاتينية والأرقام mono، والعربية تستمر
+       في خط العلامة. */
+    --font-mono:    'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
 
     /* (r132-F5 dead-token sweep: the cine/eyebrow/mega display families
        were deleted from here — zero consumers since their authored wave

@@ -1751,7 +1751,9 @@
   .landing .ln-hero-eyebrow { margin-block-end: 10px; }
   .landing .ln-hero-title {
     font-size: clamp(2rem, 9vh, 3.25rem);
-    line-height: 1.12;
+    /* r149 (R3-A4 F4.1): 1.12 → 1.2 — نفس صنف القصّ الذي استأصله
+       r148 في الـhero الأساسي؛ المنظر الأفقي القصير لا يستثنى. */
+    line-height: 1.2;
     margin-block-end: 14px;
   }
   .landing .ln-hero-sub {

@@ -106,7 +106,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 | Companion scale | Values |
 |---|---|
-| Metric rungs | **22 / 30 / 44** — `tnum lnum` (tabular + lining numerals) on all three |
+| Metric rungs | **22 / 30 / 44** — fixed-width figures by design (600/1000 UPM in the shipped woff2s; `tnum`/`lnum`/`ss01` features do not exist in the shipped faces — r149 fontTools audit). `tabular-nums` declarations remain as harmless insurance |
 | Landing hero | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh 1.2 — the exception, §1a (r148: was 1.04 — clipped Arabic diacritics) |
 | Display clamps | `--fs-display-md 28–40 · --fs-display-lg 34–56 · --fs-display-xl 40–72` — rungs exist; only `-md` has live consumers (top rungs stay: the parity-export scale pins the full ladder; the phantom `--fs-mega 48–104` listed here before was retired with r132-F5) |
 | Line heights | `--lh-tight 1.05` · `--lh-snug 1.20` · `--lh-base 1.65` · `--lh-loose 1.85` |

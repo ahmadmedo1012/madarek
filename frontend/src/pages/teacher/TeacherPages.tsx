@@ -1196,7 +1196,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
           </FormField>
 
           <div className="flex gap-3" style={{ gap: 'var(--sp-3)' }}>
-            <FormField label="الوزن (٪ من الدرجات)">
+            <FormField label="الوزن (% من الدرجات)">
               <input
                 type="number" className="input input-narrow" min={0} max={100} step={1}
                 value={weight} onChange={(e) => setWeight(e.target.value)} disabled={create.isPending}

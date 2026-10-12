@@ -480,7 +480,7 @@ export default function LibraryPage() {
               </div>
               <div className="lib-count" style={{ marginInlineStart: 'auto' }}>
                 {researchInUse
-                  ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ "{debouncedQ}"</>
+                  ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
                   : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
               </div>
             </div>

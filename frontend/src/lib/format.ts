@@ -158,8 +158,8 @@ export function formatMmSs(sec: number): string {
  * (3 * 1.4 = 4.199999999999999) reached the papers table verbatim.
  * Percentages are user-facing data on many surfaces; every render
  * rounds to one decimal and strips float noise. Bilingual-safe: the
- * digits stay latn (platform numeric convention) with the ٪ added
- * by the caller so chips keep their own glyph.
+ * digits stay latn (platform numeric convention) with the Latin %
+ * added by the caller so chips keep their own glyph.
  */
 export function formatPct(value: number | null | undefined): string | null {
   if (value == null || Number.isNaN(value)) return null;
