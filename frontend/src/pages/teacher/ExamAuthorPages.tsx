@@ -1081,7 +1081,9 @@ function ChoicesEditor({
   const optionsLabel = `${isTF ? 'الخياران' : `الخيارات (${draft.choices.length}/20)`}`;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <span className="form-label">{optionsLabel}</span>
+      {/* r150c: canonical label grammar (was .form-label) — a group
+          caption, not a field label, so no FormField wrapper. */}
+      <span className="form-field-label">{optionsLabel}</span>
       <div role="group" aria-label={optionsLabel} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
         {draft.choices.map((choice, index) => (
           <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-2)' }}>
@@ -1504,7 +1506,9 @@ function QuestionPicker({
       }}
     >
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <span className="form-label" style={{ margin: 0 }}>أسئلة القالب</span>
+        {/* r150c: canonical label grammar (was .form-label with a
+            zeroed margin) — a toolbar heading, not a field label. */}
+        <span className="form-field-label">أسئلة القالب</span>
         {/* Live selection state — count + running points total, the two
             numbers the author balances while building. */}
         <span className="text-xs text-muted" role="status">
@@ -2357,18 +2361,18 @@ function TemplateModerationPanel({ template }: { template: ExamTemplateDetail })
     <Card title="قرار المراجعة" icon={ShieldCheck} subtitle={EXAM_STATUS_LABEL[template.status]}>
       {template.status === 'PENDING_REVIEW' ? (
         <>
-          <label className="form-label" htmlFor="mod-note">ملاحظة للمؤلف (اختياري)</label>
-          <textarea
-            id="mod-note"
-            className="input"
-            rows={2}
-            maxLength={500}
-            placeholder="تصل الملاحظة للمؤلف مع قرار الاعتماد أو الرفض…"
-            aria-label="ملاحظة المراجعة للمؤلف"
-            style={{ resize: 'vertical', fontFamily: 'inherit', marginBlockEnd: 'var(--sp-3)' }}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-          />
+          <FormField label="ملاحظة للمؤلف (اختياري)" id="mod-note" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            <textarea
+              className="input"
+              rows={2}
+              maxLength={500}
+              placeholder="تصل الملاحظة للمؤلف مع قرار الاعتماد أو الرفض…"
+              aria-label="ملاحظة المراجعة للمؤلف"
+              style={{ resize: 'vertical', fontFamily: 'inherit' }}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </FormField>
           <div className="flex gap-2 flex-wrap">
             <Button
               variant="primary"

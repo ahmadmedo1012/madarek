@@ -15,7 +15,7 @@ import {
   Radio, Plus, Play, Square, X, Calendar, Clock, AlertCircle,
   CheckCircle2, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, MetricCard } from '../../components/primitives';
+import { Card, Badge, MetricCard, FormField } from '../../components/primitives';
 import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -198,8 +198,7 @@ export default function TeacherLivePage() {
                   </div>
                 )}
                 <div className="form-grid-2">
-                  <label>
-                    <span className="form-label">المقرّر</span>
+                  <FormField label="المقرّر">
                     <select
                       className="input"
                       value={form.offeringId}
@@ -216,7 +215,7 @@ export default function TeacherLivePage() {
                         </option>
                       ))}
                     </select>
-                  </label>
+                  </FormField>
                   {/* The hint sits OUTSIDE the label so it never leaks
                       into the input's accessible name (A6 P2, 22-a):
                       Chromium paints datetime-local in the browser's
@@ -226,27 +225,24 @@ export default function TeacherLivePage() {
                       actually picked (datetime-local values carry no
                       offset, so the echo renders in the same local
                       time). */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-                    <label htmlFor="live-when"><span className="form-label">موعد الجلسة</span></label>
+                  <FormField
+                    label="موعد الجلسة"
+                    id="live-when"
+                    hint={form.scheduledAt
+                      ? <>المحدَّد: {formatDateTimeAr(form.scheduledAt)}</>
+                      : 'اختر التاريخ والوقت من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
+                  >
                     <input
-                      id="live-when"
                       type="datetime-local"
                       className="input"
                       dir="ltr"
                       value={form.scheduledAt}
                       onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
                       required
-                      aria-describedby="live-when-hint"
                     />
-                    <span id="live-when-hint" className="form-field-hint">
-                      {form.scheduledAt
-                        ? <>المحدَّد: {formatDateTimeAr(form.scheduledAt)}</>
-                        : 'اختر التاريخ والوقت من تقويم الحقل — ترتيب الصيغة داخله يتبع إعدادات المتصفح.'}
-                    </span>
-                  </div>
+                  </FormField>
                 </div>
-                <label>
-                  <span className="form-label">عنوان الجلسة</span>
+                <FormField label="عنوان الجلسة">
                   <input
                     type="text"
                     className="input"
@@ -256,9 +252,8 @@ export default function TeacherLivePage() {
                     required
                     maxLength={200}
                   />
-                </label>
-                <label>
-                  <span className="form-label">الموضوع الفرعي (اختياري)</span>
+                </FormField>
+                <FormField label="الموضوع الفرعي (اختياري)">
                   <input
                     type="text"
                     className="input"
@@ -267,9 +262,8 @@ export default function TeacherLivePage() {
                     onChange={(e) => setForm({ ...form, topic: e.target.value })}
                     maxLength={200}
                   />
-                </label>
-                <label>
-                  <span className="form-label">رابط الانضمام (Zoom / BigBlueButton / Jitsi)</span>
+                </FormField>
+                <FormField label="رابط الانضمام (Zoom / BigBlueButton / Jitsi)">
                   <input
                     type="url"
                     className="input"
@@ -279,9 +273,8 @@ export default function TeacherLivePage() {
                     onChange={(e) => setForm({ ...form, joinUrl: e.target.value })}
                     maxLength={500}
                   />
-                </label>
-                <label>
-                  <span className="form-label">وصف (اختياري)</span>
+                </FormField>
+                <FormField label="وصف (اختياري)">
                   <textarea
                     className="input"
                     rows={3}
@@ -290,7 +283,7 @@ export default function TeacherLivePage() {
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                     maxLength={2000}
                   />
-                </label>
+                </FormField>
                 {/* Mutation errors sit ABOVE the actions — the old placement
                     below the buttons hid them (audit 0-e P2-48). */}
                 {createError && (
