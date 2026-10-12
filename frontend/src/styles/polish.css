@@ -5093,6 +5093,12 @@
       --text-on-accent: #FFFFFF;
       --accent-hover:   #9A5F25;
       --accent-fg:      #1A0F06;
+      /* r148 (AUDIT-5 M3): التعبئات/الحدود الذهبية الداكنة (#E9B44C على
+         ورق أبيض = ~1.8:1) كانت تُطبع باهتة — إعادة ربط عائلة النحاس
+         الفاتحة للحبر الورقي. --accent-ink أدناه يبقى الأعمق للنصوص. */
+      --accent:          #B57438;
+      --accent-strong:   #5C3416;
+      --state-focus-ring-color: var(--accent-strong);
       --border-faint:   rgba(25,25,24,0.06);
       --surface-border: rgba(0,0,0,0.08);
       --surface-divider: rgba(0,0,0,0.05);
@@ -5594,16 +5600,23 @@
      ══════════════════════════════════════════════════════════════════ */
 
   /* ── Premium glass cards — inner light border + glow on hover ───── */
-  .card.glass-premium {
+  /* r148 (AUDIT-5 M2): القاعدة كانت .card.glass-premium بينما TSX يمرر
+     card-glass-premium (بدون .card الأصل على نفس العنصر — Card يضيف
+     className إلى .metric-wrapper الظرفية) — الصنف لم يكن يطابق أبدًا
+     فبطاقتا GPA/التقدم تسقطان على dash-gpa-card العادية. أضيف المرآة
+     بصنف TSX الفعلي وأصلح الحد الخام أيضًا ( AUDIT-5 K2 عائلة). */
+  .card.glass-premium,
+  .card-glass-premium {
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-card-premium);
     position: relative;
     overflow: hidden;
   }
-  .card.glass-premium::before {
+  .card.glass-premium::before,
+  .card-glass-premium::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -5611,9 +5624,10 @@
     background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
     pointer-events: none;
   }
-  .card.glass-premium:hover {
+  .card.glass-premium:hover,
+  .card-glass-premium:hover {
     box-shadow: var(--shadow-card-glow);
-    border-color: rgba(255,255,255,0.18);
+    border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
   }
 
   /* ── Gradient text utility ─────────────────────────────────────── */
