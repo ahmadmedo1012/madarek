@@ -191,7 +191,7 @@
     color: var(--accent-fg);
   }
   .filter-pill:disabled {
-    opacity: 0.5;
+    opacity: var(--state-btn-disabled-opacity);
     cursor: not-allowed;
   }
   @media (max-width: 640px) {
@@ -473,7 +473,7 @@
     color: var(--text);
   }
   .lesson-quiz input:disabled {
-    opacity: 0.7;
+    opacity: var(--state-input-disabled-opacity);
     cursor: not-allowed;
   }
 

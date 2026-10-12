@@ -65,7 +65,12 @@
     /* wave 2-a — Arabic-appropriate underline metrics for every context
        that re-enables underlines (print, helper links): 0.18em clears
        the descenders of ج/ع/ي without detaching the stroke; 1px keeps
-       the hairline language. Inert while links are undecorated. */
+       the hairline language. Inert while links are undecorated.
+       (r149 R3-A5 #9 — documented decision: text-decoration-skip-ink
+       stays at the browser default (auto) on purpose — skip-ink would
+       punch gaps through the Arabic descenders this offset was tuned
+       to clear. Do NOT "fix" this by adding skip-ink: none either;
+       auto + 0.18em offset is the calibrated pair.) */
     text-underline-offset: 0.18em;
     text-decoration-thickness: 1px;
     transition: color var(--t-fast) var(--ease);
@@ -83,7 +88,7 @@
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
-  button:disabled { cursor: not-allowed; opacity: 0.55; }
+  button:disabled { cursor: not-allowed; opacity: var(--state-btn-disabled-opacity); }
 
   input, textarea, select { font: inherit; color: inherit; }
   ul, ol { list-style: none; }

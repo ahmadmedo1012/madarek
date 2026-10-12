@@ -294,6 +294,10 @@
     --state-input-focus-border:   var(--accent);
     --state-input-error-border:   var(--danger, #dc2626);
     --state-input-disabled-opacity: 0.6;
+    /* r149 (R3-A5 #2): سلم عتامة التعطيل كان ست قيم متناثرة
+       (0.4/0.45/0.5/0.55/0.6/0.7) لنفس الدلالة — الآن ركزتان:
+       الأزرار/الحبوب/الأفعال هنا، وعناصر الإدخال في السطر أعلاه. */
+    --state-btn-disabled-opacity: 0.55;
     --state-input-loading-cursor: progress;
 
     --state-loading-spinner-size:  1em;

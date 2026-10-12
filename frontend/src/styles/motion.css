@@ -73,10 +73,10 @@
        orchestrator in the 2-a worklog entry rather than edited here. */
   }
 
-  /* Forms that already render a custom focus ring may opt out. */
-  :where([data-focus-ring="custom"]):focus-visible {
-    outline: none;
-  }
+  /* Forms that already render a custom focus ring may opt out.
+     (r149 R3-A5 #5: حُذف — كان مخرجًا معطوبًا: صفر مستهلكين في TSX،
+     وحتى لو استُخدم فالقاعدة هنا في طبقة base تخسر دائمًا لحلقة
+     overrides في v22. المخرج الوحيد الآمن هو التخصيص داخل overrides.) */
 }
 
 @layer components {

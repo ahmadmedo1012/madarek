@@ -1007,7 +1007,7 @@
 
   input[type="checkbox"]:disabled,
   input[type="radio"]:disabled {
-    opacity: 0.5;
+    opacity: var(--state-input-disabled-opacity);
     cursor: not-allowed;
   }
 
@@ -1711,7 +1711,7 @@
     /* accent-tinted send glow — not elevation */
     box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 50%, transparent);
   }
-  .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+  .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 
   /* ═══════════════════════════════════════════════════════════════
      MATRIX (knowledge map) — courses + cells + legend
@@ -2192,8 +2192,9 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Subtle text smoothing for Plex Arabic on retina */
-  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  /* Subtle text smoothing for Plex Arabic on retina
+     (r149 R3-A5 #6: حُذف الإعلان المكرر — base.css:11-16 هو البيت
+     الوحيد لمعالجة النص؛ التكرار هنا كان يعيش منذ v7 بلا قيمة). */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -5243,6 +5244,19 @@
 
     /* D8. Illustrations: capped and crisp on paper. */
     .illustration > svg { max-block-size: 160px; }
+
+    /* D9. r149 (R3-A5 #3): الألوان الدلالية تُطبع فعلًا — بدون هذا
+       تُسقط المتصفحات تعبئات الحالة افتراضيًا («بلا خلفيات») فتخرج
+       الدرجات والجداول بلا شارات ملونة. النطاق ضيق عمدًا (شارات،
+       رؤوس جداول، أيقونات الحالة، حبوب مفعّلة) — الحبر يُوفَّر
+       في كل ما عداها. */
+    .badge,
+    .pill.on,
+    .state-icon,
+    thead th {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
   }
 
 

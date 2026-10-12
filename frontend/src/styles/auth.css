@@ -555,7 +555,7 @@
   /* Premium-polish: joins the platform's single press register —
      buttons scale (0.97), they don't sink. */
   .auth-submit:active { transform: scale(var(--press-scale)); }
-  .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .auth-submit:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; transform: none; }
   /* currentColor spins on both themes (ink-on-cream light, ink-on-
      copper dark) — the old raw rgba/#fff pair is gone. */
   .auth-submit-spinner {

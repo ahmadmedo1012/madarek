@@ -72,7 +72,7 @@
 .pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
 .pdf-btn:active:not(:disabled) { background: var(--surface-3); }
 .pdf-btn.on { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
-.pdf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pdf-btn:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 .pdf-btn.sm { width: 28px; height: 28px; }
 
 .pdf-scale-pill {

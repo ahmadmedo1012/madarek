@@ -732,7 +732,7 @@
     font-size: var(--fs-md);
     padding: var(--sp-2) 0;
   }
-  .cmd-input::placeholder { color: var(--text-muted); }
+  .cmd-input::placeholder { color: var(--text-faint); } /* r149 (R3-A5 #4): وحّد مع كل placeholder في المنصة (كان --text-muted درجة أغمق) */
   .cmd-input:focus { outline: none; }
   .cmd-input-esc { color: var(--text-muted); flex-shrink: 0; display: inline-flex; }
   .cmd-list {

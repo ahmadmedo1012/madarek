@@ -159,7 +159,7 @@
 }
 
 .owner-toggle-track.disabled {
-  opacity: 0.5;
+  opacity: var(--state-input-disabled-opacity);
   cursor: not-allowed;
 }
 

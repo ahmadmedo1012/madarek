@@ -321,7 +321,7 @@
      الآن، مع تثبيت حالة hover كي لا تُضاء وهي معطلة. aria-disabled
      البديلة تبقى inert تمامًا (مسار ARIA لا native disabled). */
   .btn:disabled {
-    opacity: 0.55;
+    opacity: var(--state-btn-disabled-opacity);
     pointer-events: auto;
     cursor: not-allowed;
   }
@@ -331,7 +331,7 @@
     box-shadow: var(--_btn-shadow, none);
     transform: none;
   }
-  .btn[aria-disabled="true"]:not(:disabled) { opacity: 0.55; pointer-events: none; }
+  .btn[aria-disabled="true"]:not(:disabled) { opacity: var(--state-btn-disabled-opacity); pointer-events: none; }
 
   .btn.primary {
     --_btn-bg: var(--neutral-900);
@@ -971,7 +971,7 @@
     border-color: var(--accent);
     font-weight: var(--fw-semibold);
   }
-  .table-pagination-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .table-pagination-actions button:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
   @media (max-width: 640px) {
     /* 44px touch targets on phones (craft floor). */
     .table-pagination-actions button { min-inline-size: 44px; min-block-size: 44px; }
@@ -1555,7 +1555,7 @@
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
   .modal-title  { font-family: var(--font-display); font-size: var(--type-headline-size-md); font-weight: var(--type-headline-weight); color: var(--text); letter-spacing: var(--type-headline-letter-spacing); }
-  .modal-body   { padding: var(--sp-6); overflow-y: auto; }
+  .modal-body   { padding: var(--sp-6); overflow-y: auto; overscroll-behavior: contain; } /* r149 (R3-A5 #1): آخر سطح تمريري بلا احتواء — الإصبع كان يسلّس التمرير للخلف عند قاع المودال */
   .modal-footer { padding: var(--sp-4) var(--sp-6); border-block-start: 1px solid var(--rule); display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
