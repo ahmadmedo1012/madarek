@@ -1,5 +1,7 @@
 import rateLimit, { type Options, type RateLimitRequestHandler } from 'express-rate-limit';
 
+export const GLOBAL_RATE = { max: 1000, windowMinutes: 15 };
+export const AUTH_RATE = { max: 10, windowMinutes: 15 };
 const FIFTEEN_MIN = 15 * 60 * 1000;
 
 /**

@@ -448,7 +448,7 @@ export function AdminSettingsPage() {
           <div className="settings-row">
             <div>
               <div className="settings-label">معدّل الطلبات</div>
-              <div className="settings-value">حدّ عامّ 200 طلب في الدقيقة · مصادقة 30 طلباً في الدقيقة</div>
+              <div className="settings-value">حدّ عامّ 1000 طلب كل 15 دقيقة · مصادقة 10 محاولات لكل 15 دقيقة</div>
             </div>
           </div>
         </Card>
