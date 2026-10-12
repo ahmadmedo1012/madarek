@@ -1318,9 +1318,12 @@
   @media (max-width: 920px) {
     /* PP-X2 (audit P2-14): the floor was 640px — a landscape phone
        (844×390) escaped it with 36px pills + a 32px «تسليم» button.
-       The 920px band is the app's own mobile breakpoint; !important
-       still required to beat the components layer (same precedence
-       flip as the entrance opt-outs above). Font sizes unchanged.
+       The 920px band is the app's own mobile breakpoint. (r151d: the
+       bang retired — min-block-size composes over the components-
+       layer block-size at used-value time; it only ever fought the
+       pre-9-b 32px pin, which no longer exists. This rule is now the
+       ONLY floor in the 641-920 band — polish's ≤640 block covers
+       phones — so the rule itself stays.) Font sizes unchanged.
        PP-X2 live-census follow-up: the course card's nested «تابع/ابدأ»
        CTA (.thumb-card-go, a .btn.ghost.sm → 32px) joined the list —
        the whole card is the primary target, but the labeled CTA must
@@ -1329,7 +1332,7 @@
     .courses-assignments td .btn,
     .webinar-kpis .metric-change .btn,
     .jobs-table .table-row-actions .btn,
-    .thumb-card .thumb-card-go { min-block-size: 44px !important; }
+    .thumb-card .thumb-card-go { min-block-size: 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
     /* same-or-higher specificity + !important — the entrances above are

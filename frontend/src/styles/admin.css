@@ -197,17 +197,18 @@
 }
 
 /* Mobile touch floor (craft floor: ≥44px) for the students toolbar
-   (the pill + the 36px select) and the pagination buttons. The pill
-   rule wins on specificity; the pagination !important is the same
-   documented layer-precedence exception wave 5-c used — polish's
-   overrides-layer mobile block pins .btn.sm at min-block-size 32px
-   and a pages-layer rule can never win without it. */
+   (the pill + the 36px select) and the pagination buttons. (r151d:
+   bangs retired — the stale comment claimed polish pins .btn.sm at
+   32px; the wave 9-b consolidation made polish's ≤640 block the ONE
+   owner of the .btn floors, so these same-value pins were dead
+   weight. The pill rule wins on specificity; min-inline-size stays
+   for the icon-only pagination arrows.) */
 @media (max-width: 640px) {
   .admin-students-input,
   .admin-students-search { min-block-size: 44px; }
   .admin-pagination-actions .btn {
     min-inline-size: 44px;
-    min-block-size: 44px !important;
+    min-block-size: 44px;
   }
 }
 

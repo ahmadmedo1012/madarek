@@ -898,14 +898,9 @@
   font-size: var(--fs-xs);
 }
 
-@media (max-width: 640px) {
-  /* !important is a documented layer-precedence exception (wave 5-a
-     precedent): polish.css (overrides layer) pins .btn at
-     min-block-size 40px — a pages-layer rule can never win it. */
-  .owner-alert-card .actions .btn {
-    min-block-size: 44px !important;
-  }
-}
+/* (r151d: the alert-actions mobile floor deleted — polish's
+   overrides-layer ≤640 block owns the .btn height floor; the stale
+   comment described a 40px pin that no longer exists.) */
 
 /* ── Activity feed ────────────────────────────────────────────
    Row stagger (the page's authored moment, capped with the shared
@@ -1036,19 +1031,11 @@
   gap: var(--sp-2);
 }
 
-/* Mobile 44px touch floors for this wave's own controls. !important
-   is the documented layer-precedence exception (wave 5-a precedent):
-   polish.css (overrides layer) pins .btn at 40px / .btn.sm at 32px
-   inside its own max-640 block — pages-layer rules can never win
-   without it. (The ErrorState/EmptyState retry buttons remain 32px —
-   a shared-primitive gap flagged by waves 3-b/4/5, not owned here.) */
-@media (max-width: 640px) {
-  .owner-live-tools .btn.sm,
-  .owner-alert-card .inline-retry .btn.sm,
-  .owner-activity-footer-actions .btn.sm {
-    min-block-size: 44px !important;
-  }
-}
+/* (r151d: the owner-live-tools mobile floor block deleted — the
+   stale comment described polish pinning .btn at 40px / .btn.sm at
+   32px; the wave 9-b consolidation retired that pin and made
+   polish's ≤640 block the ONE owner of the floor. The
+   ErrorState/EmptyState retry buttons ride it like every .btn.) */
 
 /* Shape-matched skeleton for the activity timeline — the 32px icon
    well, the title/meta lines and the trailing time stamp. */
@@ -1303,15 +1290,12 @@
 }
 
 /* ── Touch floors + narrow viewports (craft floor: ≥44px) ──── */
-/* .btn.sm is pinned at 32px inside the polish overrides layer, so
-   page-local floors need !important to win the layer contest — the
-   documented 4-a/5-a/5-c precedent. */
+/* (r151d: the four .btn/.btn.sm bang pins retired — polish's ≤640
+   overrides block owns those floors. The .pill / spacer / swatch
+   lines below are non-.btn elements polish never touches — they
+   stay.) */
 @media (max-width: 640px) {
   .owner-filter-pills .pill { min-block-size: 44px; }
-  .owner-row-actions .btn,
-  .owner-users-card .alert .btn,
-  .owner-users-card .state .btn,
-  .owner-content-page .btn.sm { min-block-size: 44px !important; }
   .owner-page-gap { min-inline-size: 44px; block-size: 44px; }
   .owner-swatch-grid { grid-template-columns: 1fr; }
 }

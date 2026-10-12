@@ -3304,20 +3304,15 @@
   }
 
   /* ── Mobile touch floor (craft floor: ≥44px) for the competitions
-     modal controls + moderation actions. 21-b correction: the ONE
-     general mobile floor is polish.css's overrides-layer block
-     (.btn.sm → min-block-size 44px, wave 9-b consolidation) — the
-     older comments claiming a 32px pin there are stale. These
-     same-value !important pins stay as local belt-and-braces:
-     colleges.css (pages layer) pins .comp-icon-btn at 36×36, a
-     same-layer rule can never win, and min-block-size composes with
-     (never fights) the pinned sizes. ── */
+     modal controls. (r151d: the .btn.sm !important pins retired —
+     polish's overrides-layer ≤640 block has been the ONE owner of
+     the .btn/.btn.sm block-size floor since wave 9-b; these
+     same-value bangs were belt-and-braces that no longer earn
+     their noise. The non-.btn pair below stays: colleges.css pins
+     .comp-icon-btn at 36×36 and min-* composes over it.) ── */
   @media (max-width: 640px) {
     .comp-icon-btn,
     .comp-modal-close { min-inline-size: 44px; min-block-size: 44px; }
-    .comp-score-input .btn.sm,
-    .moderation-actions .btn.sm,
-    .moderation-panel .btn.sm { min-block-size: 44px !important; }
   }
 
   /* ── Reduced-motion off-switches (guardrail #6 — the global token
@@ -3590,17 +3585,10 @@
     to { opacity: 1; transform: none; }
   }
 
-  /* ── Mobile touch floor (craft floor: ≥44px) for the governance
-     card actions. !important is a documented layer-precedence
-     exception (same as wave 5-c): polish's overrides-layer mobile
-     block now pins .btn at 40px / .btn.sm at 44px (wave 9-b), so
-     this same-value !important pin is belt-and-braces, not the
-     load-bearing floor the older comment described. (.teacher-row
-     already carries a 48px min from wave 3-c.) ──────────────────── */
-  @media (max-width: 640px) {
-    .perm-row-actions .btn.sm,
-    .gov-form-actions .btn { min-block-size: 44px !important; }
-  }
+  /* (r151d: the governance mobile .btn floor block deleted — polish's
+     overrides-layer ≤640 block owns the 44px floor wholesale; the
+     same-value bang here was belt-and-braces. .teacher-row keeps its
+     own 48px min from wave 3-c.) */
 
   /* ── Reduced-motion off-switches (guardrail #6). ───────────────── */
   @media (prefers-reduced-motion: reduce) {
@@ -3849,20 +3837,19 @@
     margin-block-start: var(--sp-3);
   }
 
-  /* ── Live sessions — action cluster on run rows (3-c owns the row);
-     44px floor on phones for the start/end/cancel controls. !important
-     flips precedence over polish's overrides-layer `.btn.sm` 32px rule
-     (same technique the wave 3-c/4-a mobile floors use). */
+  /* ── Live sessions — action cluster on run rows (3-c owns the row).
+     (r151d: the min-block-size bang retired — polish's ≤640 block
+     owns the .btn height floor. min-inline-size stays un-banged and
+     load-bearing: the icon-only «إلغاء» cancel button needs its
+     ≥44px inline floor, and no rule in any layer writes width on
+     .btn.) */
   .run-row-actions {
     display: flex;
     align-items: center;
     gap: 6px;
   }
   @media (max-width: 640px) {
-    .run-row-actions .btn {
-      min-block-size: 44px !important;
-      min-inline-size: 44px !important;
-    }
+    .run-row-actions .btn { min-inline-size: 44px; }
   }
 
   /* ── Research review — the scan-metric meta line on paper rows
@@ -4333,16 +4320,10 @@
      and the wave 5-a feed-slide flip. */
   .form-label { letter-spacing: normal !important; }
 
-  /* ErrorState / PermissionDeniedState / EmptyState action buttons
-     (.btn.sm inside .state) reach the 44px touch floor on phones
-     (craft floor; flagged by 3-b / 4-a / 4-b / 5-a / 6-b). 21-b
-     correction: polish's overrides-layer mobile block has pinned
-     .btn.sm at 44px since the wave 9-b consolidation — this same-
-     value !important pin is belt-and-braces, not the only floor.
-     Desktop keeps the compact 32px row. */
-  @media (max-width: 640px) {
-    .state .btn.sm { min-block-size: 44px !important; }
-  }
+  /* (r151d: the .state .btn.sm mobile floor deleted — polish's
+     overrides-layer ≤640 block has owned the .btn.sm 44px floor
+     since wave 9-b; this same-value bang was belt-and-braces.
+     Desktop keeps the compact 32px row.) */
 }
 
 
