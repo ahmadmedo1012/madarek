@@ -191,7 +191,6 @@
     button.card:hover {
       transform: none;
     }
-    .skeleton { animation: none; opacity: 0.6; }
     .btn:active:not(:disabled) { transform: none; }
   }
 
@@ -3099,35 +3098,16 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SKELETON — directional shimmer (RTL-aware) + softer stops     ║
+     ║  SKELETON — retired into the foundation (r150b)                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--surface-3) 0%,
-      color-mix(in srgb, var(--surface-2) 80%, white 8%) 50%,
-      var(--surface-3) 100%
-    );
-    background-size: 200% 100%;
-    /* (4-A11 P2-9: was `madarek-shimmer-rtl 1600ms
-       var(--motion-ease-standard)` — a raw duration AND an eased
-       infinite sweep (visible velocity pulse each iteration). The
-       RTL-aware direction stays (genuinely good); duration + easing
-       now follow the skeleton token and the linear-loop doctrine
-       (tokens.css:110–113).) */
-    animation: madarek-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
-  }
-  [dir="ltr"] .skeleton {
-    animation-name: madarek-shimmer-ltr;
-  }
-  @keyframes madarek-shimmer-rtl {
-    0%   { background-position: -200% 0; }
-    100% { background-position: 0% 0; }
-  }
-  @keyframes madarek-shimmer-ltr {
-    0%   { background-position: 0% 0; }
-    100% { background-position: -200% 0; }
-  }
+  /* (r150b six-shimmer unification): this overrides-layer block was the
+     de-facto winner of a three-way `.skeleton` cascade fight (motion.css
+     + components.css + this). Its tuned recipe — surface-3 ground, 8%
+     white highlight stop, RTL-aware sweep, token duration, linear loop —
+     was promoted VERBATIM into motion.css (keyframes renamed
+     skeleton-shimmer-rtl/ltr per the motion contract). Deleted here;
+     the display/min-height/r-sm essentials it relied on travel with
+     the canonical definition. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3170,7 +3150,6 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
     .badge,
-    .skeleton,
     .btn:active:not(:disabled)::after {
       animation: none !important;
     }
@@ -4619,17 +4598,16 @@
       var(--surface-3) 100%
     );
     background-size: 200% 100%;
-    /* (4-A11 P2-9: raw 1400ms + eased loop → skeleton token + linear.) */
-    animation: madarek-search-shimmer var(--motion-duration-skeleton) var(--ease-linear) infinite;
+    /* r150b: rides the canonical skeleton-shimmer pair (was its own
+       200%→-100% math — a fourth grammar). RTL-aware like every other
+       skeleton now; the stagger delays stay. */
+    animation: skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
     display: block;
   }
+  [dir="ltr"] .search-shimmer { animation-name: skeleton-shimmer-ltr; }
   .search-shimmer:nth-child(1) { inline-size: 100%; }
   .search-shimmer:nth-child(2) { inline-size: 80%; animation-delay: 120ms; }
   .search-shimmer:nth-child(3) { inline-size: 60%; animation-delay: 240ms; }
-  @keyframes madarek-search-shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -100% 0; }
-  }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4953,7 +4931,6 @@
       transition-delay: 0s !important;
       scroll-behavior: auto !important;
     }
-    .skeleton { animation: none; opacity: 0.5; }
   }
 
 

@@ -128,37 +128,49 @@
      Subtle linear-gradient sweep, low contrast. Loops at the skeleton
      duration token. Static under reduced motion.
      ─────────────────────────────────────────────────────────────────── */
-  @keyframes skeleton-shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
+  /* r150b — ONE skeleton grammar (the six-shimmer unification).
+     The tuned recipe the overrides layer had been winning the cascade
+     with — surface-3 ground, 8% white highlight stop, RTL-aware sweep —
+     is promoted here VERBATIM; the two rival `.skeleton` definitions
+     (components.css + polish.css) and their keyframes are deleted, and
+     .search-shimmer rides the same pair. Keyframes carry the
+     `skeleton-shimmer-*` names the motion contract always implied.
+     (--skeleton-base/--skeleton-highlight retired with the dead
+     foundation recipe: the canonical paints surfaces directly, and the
+     parity export defines its own pair internally.) */
+  @keyframes skeleton-shimmer-rtl {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 0% 0; }
+  }
+  @keyframes skeleton-shimmer-ltr {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
   }
 
   .skeleton {
-    --skeleton-base: var(--neutral-100);
-    --skeleton-highlight: var(--neutral-200);
-    background-color: var(--skeleton-base);
+    display: inline-block;               /* span primitives take dimension */
+    min-height: 1em;                     /* variants override */
+    border-radius: var(--r-sm);
+    background-color: var(--surface-3);  /* static/RM ground */
     background-image: linear-gradient(
       90deg,
-      var(--skeleton-base) 0%,
-      var(--skeleton-highlight) 50%,
-      var(--skeleton-base) 100%
+      var(--surface-3) 0%,
+      color-mix(in srgb, var(--surface-2) 80%, var(--white) 8%) 50%,
+      var(--surface-3) 100%
     );
     background-size: 200% 100%;
     background-repeat: no-repeat;
-    animation: skeleton-shimmer var(--motion-duration-skeleton) linear infinite;
-    border-radius: var(--r-md, 8px);
-    /* default min height — variants override */
-    min-height: 1em;
+    animation: skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
+  }
+  [dir="ltr"] .skeleton {
+    animation-name: skeleton-shimmer-ltr;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .skeleton {
       animation: none;
-      background-image: none;
+      background-position: 0% 0;
+      opacity: 0.6;  /* the contract's "static muted block" */
     }
   }
 

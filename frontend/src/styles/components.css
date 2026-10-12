@@ -1405,16 +1405,10 @@
   [data-theme="dark"] .spinner { border-block-start-color: var(--accent); }
   @keyframes madarek-spin { to { transform: rotate(360deg); } }
 
-  .skeleton {
-    display: inline-block;
-    background: linear-gradient(90deg, var(--surface-3), var(--surface-2), var(--surface-3));
-    background-size: 200% 100%;
-    border-radius: var(--r-sm);
-    /* r149 (R3-A3 R3): العقيدة — حلقات الالتهاب اللانهائية خطية
-       (--ease-linear)؛ eased sweep = نبضة سرعة مع كل تكرار. */
-    animation: madarek-shimmer var(--motion-duration-skeleton) var(--ease-linear) infinite;
-  }
-  @keyframes madarek-shimmer { 0%{background-position:0% 0;} 100%{background-position:-200% 0;} }
+  /* r150b: the `.skeleton` redefinition + `madarek-shimmer` keyframes
+     that lived here were one of three rival grammars — cascade-shadowed
+     by the overrides layer, structurally dead. Deleted in the
+     six-shimmer unification; the ONE grammar lives in motion.css. */
 
   .hydration-splash {
     position: fixed; inset: 0;
