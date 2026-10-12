@@ -420,7 +420,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
                       <Icon icon={item.icon} size={16} />
                     </span>
                     <span className="search-row-body">
-                      <span className="search-row-title">{item.label}</span>
+                      <span className="search-row-title" title={item.label}>{item.label}</span>
                     </span>
                     <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
                   </button>
@@ -484,7 +484,7 @@ export function GlobalSearch({ onOpenCommandPalette }: { onOpenCommandPalette?: 
                         <EmojiIcon emoji={hit.iconEmoji} size={16} fallback={Search} />
                       </span>
                       <span className="search-row-body">
-                        <span className="search-row-title">{hit.title}</span>
+                        <span className="search-row-title" title={hit.title}>{hit.title}</span>
                         <span className="search-row-sub">{hit.subtitle}</span>
                       </span>
                       <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />
@@ -724,7 +724,7 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
           <Icon icon={action.icon} size={15} />
         </span>
         <span className="search-row-body">
-          <span className="search-row-title">{action.label}</span>
+          <span className="search-row-title" title={action.label}>{action.label}</span>
         </span>
         <Icon icon={CornerDownLeft} size={12} className="search-row-arrow" />
       </button>
@@ -822,7 +822,7 @@ export function CommandPaletteBody({ onClose }: { onClose: () => void }) {
                       <EmojiIcon emoji={hit.iconEmoji} size={16} fallback={Search} />
                     </span>
                     <span className="search-row-body">
-                      <span className="search-row-title">{hit.title}</span>
+                      <span className="search-row-title" title={hit.title}>{hit.title}</span>
                       <span className="search-row-sub">{hit.subtitle}</span>
                     </span>
                     <Icon icon={ArrowLeft} size={12} className="search-row-arrow" />

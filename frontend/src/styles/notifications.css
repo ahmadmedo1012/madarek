@@ -467,12 +467,19 @@
 }
 
 /* Mobile: full-measure toasts, centered stack, above the bottom-nav
-   dock + home-indicator safe area (the dock is ≤640px — same band). */
+   dock + home-indicator safe area. r148 (AUDIT-3 M2): النطاق كان ≤640px
+   بينما الدوك توسّع إلى ≤920px (polish.css:5277) — في 641–920px كان
+   التوست يرسم فوق الدوك ويحجب نقراته حتى انتهائه. التمديد الكامل
+   يبقى ≤640؛ 641–920 يرفع المكدس فقط فوق الدوك دون تغيير عرضه. */
+@media (max-width: 920px) {
+  .toast-stack {
+    inset-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
 @media (max-width: 640px) {
   .toast-stack {
     inset-inline: var(--sp-3);
     align-items: stretch;
-    inset-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
   }
   .toast-stack .toast {
     min-inline-size: 0;

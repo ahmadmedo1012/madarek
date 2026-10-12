@@ -19,7 +19,9 @@ const VISION_H2_STYLE: React.CSSProperties = {
   fontSize: 'var(--type-headline-size-sm)',
   fontWeight: 'var(--fw-bold)',
   color: 'var(--text)',
-  letterSpacing: 'var(--ls-snug)',
+  /* r148 (AUDIT-4 C2): --ls-snug سالب (-0.012em) على عناوين عربية —
+     inline يتغلب على @layer overrides كله فاجتياح 21-c عاجز بنيويًا.
+     الحذف يعيدها لقاعدة h1–h6 المُصفّرة (polish.css:5502). */
   lineHeight: '1.3',
   margin: '0 0 var(--sp-4)',
 };

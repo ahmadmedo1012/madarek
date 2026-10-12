@@ -416,8 +416,11 @@
                                  consumer is the landing .ln-grain veil. */
     --ln-radius-pill: var(--r-full);  /* pills via --r-full (WS-D2) */
     --ln-h1:         clamp(2.75rem, 8.2vw, 6.75rem);  /* hero, ≤108px */
-    --ln-h1-lh:      1.04;      /* hero leading; mobile lifts to 1.12
-                                   in landing.css (round-3 spec §4.3) */
+    --ln-h1-lh:      1.2;       /* r148 (AUDIT-4 C3): كان 1.04 — أضيق قيادة
+                                   لعرض عربي ضخم متعدد الأسطر بمدّات وتشكيل
+                                   («مدارًا»، «نقطتك»): الأسطر تتلامس مع أكوام
+                                   الشدة/التنوين. 1.2 يحاذي أدنى أرضية موثقة
+                                   في المنصة (polish.css:716-720). */
 
     /* Orbit Ink motion vocabulary — the legal forms landing.css
        consumes so every landing motion value stays token-legal
@@ -850,6 +853,13 @@
     --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
     --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);
     --shadow-mockup:  0 1px 2px rgba(2,4,12,0.50), 0 12px 32px rgba(2,4,12,0.55), 0 32px 80px rgba(2,4,12,0.60), 0 0 0 1px rgba(142,151,184,0.10);
+    /* r148 (AUDIT-5 K1): العائلة premium كانت ساقطة على قيم الفاتح
+       (rgba(15,15,15,0.04–0.10) على #070B16 = غير مرئية) في ~35 موقعًا.
+       إعادة تعريف بلغة الليل نفسها: ظل أعمق + حلقة mist — تُحاكي
+       منطق --shadow-card-h أعلاه بعمق إضافي للبطاقات البارزة. */
+    --shadow-card-premium:  0 1px 2px rgba(2,4,12,0.45), 0 8px 22px rgba(2,4,12,0.52), 0 0 0 1px rgba(142,151,184,0.07), inset 0 1px 0 rgba(255,255,255,0.04);
+    --shadow-card-premium-h: 0 2px 4px rgba(2,4,12,0.52), 0 12px 32px rgba(2,4,12,0.60), 0 0 0 1px rgba(142,151,184,0.10), inset 0 1px 0 rgba(255,255,255,0.05);
+    --shadow-card-glow:     0 0 0 1px var(--accent-soft), 0 1px 2px rgba(2,4,12,0.45), 0 8px 22px rgba(2,4,12,0.52), inset 0 1px 0 rgba(255,255,255,0.04);
 
     --glass-bg:    rgba(11,16,32,0.78);
     --glass-blur:  16px;

@@ -97,7 +97,11 @@
              painted light and flipped to dark ~1–2s later once `me`
              resolved). A cached 'SYSTEM' means the profile made no
              explicit choice — the local mode governs. */
-          var mode = 'system', modeUpdatedAt = 0;
+          var mode = 'dark', modeUpdatedAt = 0; /* r148 (AUDIT-5 M1): كان 'system' —
+             زائر جديد بلا localStorage وOS فاتح يُرسم فاتحًا ثم ينقلب داكنًا
+             بعد إقلاع React (المخزن الافتراضي 'dark' — theme.store.ts:38
+             «night is the flagship») = وميض مرئي على الشبكات البطيئة.
+             محاذاة افتراضي السكربت مع افتراضي المخزن تُلغي الانقلاب. */
           try {
             var stored = JSON.parse(localStorage.getItem('madarek-theme'));
             if (stored && stored.state) {
@@ -121,7 +125,7 @@
             : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', resolved);
         } catch (_) {
-          document.documentElement.setAttribute('data-theme', 'light');
+          document.documentElement.setAttribute('data-theme', 'dark'); /* r148 (AUDIT-5 M1): كان 'light' — نفس محاذاة الافتراضي */
         }
         /* wave 2-a — theme-color follows the RESOLVED theme (stored
              preference + runtime toggles via useThemeSync), not just the

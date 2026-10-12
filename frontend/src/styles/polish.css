@@ -66,21 +66,9 @@
      dead third shimmer system.) */
 
   /* ── Topbar scrolled shadow refinement ─────────────────────────────
-     The .topbar.scrolled state was a flat border underline. A whisper
-     of shadow reads as actual depth. Honors theme via color-mix. */
-  .topbar.scrolled {
-    /* Off-token by design: hairline edge + downward whisper tied to the
-       topbar border token; not an elevation step. */
-    box-shadow:
-      0 1px 0 var(--border, var(--rule)),
-      0 6px 16px -8px color-mix(in srgb, var(--text) 12%, transparent);
-  }
-  [data-theme="dark"] .topbar.scrolled {
-    /* Off-token by design: dark-theme twin of the light whisper above. */
-    box-shadow:
-      0 1px 0 var(--border, var(--rule)),
-      0 6px 18px -10px rgb(0 0 0 / 0.55);
-  }
+     r148 (AUDIT-1 H5): القاعدتان اللتان كانتا هنا (pages-layer whisper
+     shadow فاتح/داكن) مغلوبتان كليًا من .topbar.scrolled في overrides
+     أدناه (var(--elev-2)) — حُذفتا كجثتين داخل الشلال. */
 
   /* ── Sidebar nav items — refined hover & active state ─────────── */
   .nav-item {
@@ -610,7 +598,7 @@
       border-color var(--t-fast) var(--ease),
       box-shadow var(--t-fast) var(--ease);
   }
-  .metric:hover {
+  .metric.metric-link:hover { /* r148 (AUDIT-2 H1): نطاق التفاعل على القابل للنقر فقط */
     transform: translateY(-1px);
     border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
     /* Off-token by design: accent-tinted hover glow, weaker + softer than
@@ -621,7 +609,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .metric { transition: none; }
-    .metric:hover { transform: none; }
+    .metric.metric-link:hover { transform: none; }
   }
 
   /* ── Sidebar collapse button — refined ───────────────────────
@@ -717,7 +705,9 @@
        study lands") parked at 1.1 — 1.15 clears diacritic stacks
        (شدّة + تنوين) at 28–40px. */
     letter-spacing: var(--ls-normal);
-    line-height: 1.15;
+    /* r148 (AUDIT-4 I2): استهلاك رمز الدور بدل الحرفي 1.15 — يُشغّل
+       التعويض الداكن 1.2 (tokens.css:745) الذي كان معرّفًا ولا يعمل. */
+    line-height: var(--type-display-line-height);
   }
   .page-subtitle {
     line-height: 1.55;
@@ -1590,7 +1580,7 @@
     justify-content: center;
     flex-shrink: 0;
     background: var(--accent-soft);
-    color: var(--accent);
+    color: var(--accent-ink); /* r148 (AUDIT-1 H3): --accent كان 3.06:1 — حافة 3:1 هشة */
   }
 
   .chat-bubble {
@@ -2034,9 +2024,13 @@
      ║  CARD HOVER — gentler lift, faster snap-back                   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (hover: hover) {
-    .card.interactive,
-    a > .card,
-    button > .card {
+    /* r148 (AUDIT-6 P1): will-change:transform كان دائمًا على كل بطاقة
+       تفاعلية — كل بطاقة في كل شبكة (12+ في المقررات، 30 صف معلم) تحتجز
+       طبقة GPU دائمة — قاتل الذاكرة على أندرويد الضعيف. الحصر الآن
+       على حالة hover فقط: الطبقة تُنشأ عند الحاجة وتُحرّر بعدها. */
+    .card.interactive:hover,
+    a > .card:hover,
+    button > .card:hover {
       will-change: transform;
     }
     .card.interactive:hover,
@@ -2409,7 +2403,7 @@
     min-block-size: 132px;
   }
   @media (hover: hover) {
-    .metric:hover {
+    .metric.metric-link:hover { /* r148 (AUDIT-2 H1): نطاق التفاعل على القابل للنقر فقط */
       transform: translateY(-2px);
       border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
       /* Off-token by design: accent glow layered on the card shadow token. */
@@ -5508,6 +5502,16 @@
      backdoor (measured: hero em dropped 800→600 when this rule carried
      fw-semibold). The reset's single job is killing the synthetic
      slant; emphasis stays whatever the surface authored. */
+  /* r148 (AUDIT-4 I5): العقد كان يعد بـ«weight+accent emphasis» ولم يُنفّذ —
+     em عربي خارج الـ landing كان يُعرض بلا أي تمييز. النطاق يستثني عالم
+     الـlanding كليًا (:not(.landing *)) لأن قياسًا موثقًا أعلاه أثبت أن
+     الوزن هنا يكسر hero em (800→600). الوزن + حبر النحاس هما المحوران
+     القانونيان للعربية (لا ميل ولا تتبّع). */
+  :lang(ar) em:not(.landing-serif-latin):not(.landing *) {
+    font-style: normal;
+    font-weight: var(--fw-semibold);
+    color: var(--accent-ink, var(--text));
+  }
   :lang(ar) em:not(.landing-serif-latin) {
     font-style: normal;
   }

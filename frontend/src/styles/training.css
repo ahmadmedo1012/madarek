@@ -67,7 +67,9 @@
     background: var(--glass-bg);
     backdrop-filter: blur(16px) saturate(150%);
     -webkit-backdrop-filter: blur(16px) saturate(150%);
-    border-color: rgba(255,255,255,0.12);
+    /* r148 (AUDIT-5 K2): حد أبيض خام 12% غير مرئي على الزجاج الكريمي في الفاتح —
+       --glass-border معاد تعريفه في السمتين. */
+    border-color: var(--glass-border);
   }
   .track-card:hover {
     border-color: var(--border-strong);

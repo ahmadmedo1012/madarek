@@ -214,7 +214,7 @@ export default function LabsPage() {
                       </span>
                     </div>
                     <div className="thumb-card-body">
-                      <div className="thumb-card-title">{l.name}</div>
+                      <div className="thumb-card-title" title={l.name}>{l.name}</div>
                       <div className="thumb-card-sub">
                         <bdi>{l.platform ?? '—'}</bdi> · <bdi>{l.totalExperiments}</bdi> تجربة
                       </div>

@@ -158,7 +158,9 @@
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-color: rgba(255,255,255,0.15);
+    /* r148 (AUDIT-5 K2): حد أبيض خام 15% يختفي على الزجاج الكريمي في الفاتح —
+       --glass-border متكيف بالسمتين (mist 12% داكن / حبر 6% فاتح). */
+    border-color: var(--glass-border);
     box-shadow: var(--shadow-card-premium);
   }
   .auth-card.glass::after {
@@ -247,10 +249,9 @@
     font-weight: var(--type-display-weight);
     color: var(--text);
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    /* 21-c (A12 P2-7): Arabic display leading floor — 1.1 was the
-       base.css-parked compromise; 1.15 clears diacritic stacks at
-       28–40px display sizes. */
-    line-height: 1.15;
+    /* r148 (AUDIT-4 I2): رمز الدور بدل الحرفي 1.15 — يشغّل التعويض
+       الداكن 1.2 (tokens.css:745). */
+    line-height: var(--type-display-line-height);
   }
   .auth-form-sub {
     font-size: var(--type-body-size);
@@ -768,8 +769,8 @@
     font-size: var(--type-display-size-md);
     font-weight: var(--type-display-weight);
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    /* 21-c (A12 P2-7): Arabic display leading floor (was 1.1). */
-    line-height: 1.15;
+    /* r148 (AUDIT-4 I2): رمز الدور بدل الحرفي 1.15 — يشغّل الداكن 1.2. */
+    line-height: var(--type-display-line-height);
     color: var(--text);
   }
   .nf-sub {

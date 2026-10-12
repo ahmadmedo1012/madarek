@@ -72,14 +72,17 @@
   color: var(--success-ink);
 }
 
+/* r148 (AUDIT-1 H3): الأزرق والبنفسجي كانا على حافة 3:1 (3.06 / 3.18)
+   في انتهاك هشّ لـ WCAG 1.4.11 — مواءمة مع إخوتهما المصلحة بقرار
+   R131-F12 (green → --success-ink بـ7.99:1، amber → --warning-ink بـ6.98:1). */
 .owner-event-icon.blue {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .owner-event-icon.purple {
   background: var(--c-lavender-bg);
-  color: var(--c-lavender-ink);
+  color: var(--c-lavender-deep);
 }
 
 .owner-event-icon.amber {
@@ -284,6 +287,9 @@
   gap: var(--sp-3);
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
+  /* r148 (AUDIT-3 M7): على 360px كان code (min-width:160) + input بلا
+     min-width:0 يفيضان أفقياً — الالتفاف مع تصغير حد الـ code. */
+  flex-wrap: wrap;
 }
 
 .owner-kv-row:last-child {
@@ -298,8 +304,13 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 480px) {
+  .owner-kv-row code { min-width: 120px; }
+}
+
 .owner-kv-row input {
   flex: 1;
+  min-width: 0;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
@@ -977,6 +988,8 @@
   flex-shrink: 0;
 }
 
+/* r148 (AUDIT-1 C1): 12px نص بلون --accent = 3.80:1 — يفشل AA للنص الصغير.
+   --accent-ink هو الحل الموثق أصلًا (base.css:66) — 10.29:1 فاتح / 10.39 داكن. */
 .owner-detail-toggle {
   display: inline-flex;
   align-items: center;
@@ -987,7 +1000,7 @@
   border: none;
   border-radius: var(--r-xs);
   cursor: pointer;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
   transition: color var(--t-fast) var(--ease);

@@ -170,7 +170,11 @@
        cascade). Keeps --shadow-card as the legacy fallback. */
     box-shadow: var(--elev-1, var(--shadow-card));
   }
-  .metric:hover {
+  /* r148 (AUDIT-2 H1): الرفع/touch كان يضيء كل بلاطات KPI كأنها قابلة
+     للنقر بينما 162 من 170 موقع استدعاء غير تفاعلية — إشارة كاذبة.
+     النطاق الآن على الصنف الدلالي metric-link الذي يرسمه MetricCard
+     عند وجود to/onClick فقط. */
+  .metric.metric-link:hover {
     border-color: var(--border-strong);
     box-shadow: var(--shadow-card-premium-h);
     transform: translateY(-2px);
@@ -309,10 +313,23 @@
     .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); }
   }
   .btn:active { transform: scale(var(--press-scale)); }
-  /* (Premium-polish: the components-layer sink retired — the pages layer
-     owns the press register via --press-scale; kept here as an aliased
-     fallback so a missing polish layer still presses consistently.) */
-  .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
+  /* r148 (AUDIT-2 H3): pointer-events:none كان يُلغي عمليًا مؤشر not-allowed
+     (العنصر يخرج من hit-test فلا يُعرض المؤشر أصلًا) — مئات الأزرار
+     المعطلة كانت تُظهر عتامة فقط بلا إشارة سبب التعطيل. المؤشر يُعرض
+     الآن، مع تثبيت حالة hover كي لا تُضاء وهي معطلة. aria-disabled
+     البديلة تبقى inert تمامًا (مسار ARIA لا native disabled). */
+  .btn:disabled {
+    opacity: 0.55;
+    pointer-events: auto;
+    cursor: not-allowed;
+  }
+  .btn:disabled:hover {
+    background: var(--_btn-bg, var(--surface));
+    border-color: var(--_btn-bd, var(--border));
+    box-shadow: var(--_btn-shadow, none);
+    transform: none;
+  }
+  .btn[aria-disabled="true"]:not(:disabled) { opacity: 0.55; pointer-events: none; }
 
   .btn.primary {
     --_btn-bg: var(--neutral-900);
@@ -324,7 +341,17 @@
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-card-premium);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+    /* r148 (AUDIT-2 H2 + AUDIT-6 §3): القاعدة كانت تستبدل transition كاملة
+       بـ box-shadow + transform فقط على --t-base (240ms) — تبديل --_btn-bg-hover
+       يقع بلا انتقال (snap) بينما .btn/.ghost/.outline تتلاشى بنعومة.
+       الآن: الخصائص الثلاث الغائبة مستعادة، والسجل موحّد على --t-fast
+       (160ms) كعقد الحركة (hover = --motion-duration-short). */
+    transition:
+      box-shadow var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease),
+      background-color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease);
   }
   .btn.primary:hover {
     box-shadow: var(--shadow-card-premium-h);
@@ -514,10 +541,8 @@
     box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
   }
-  .badge:hover {
-    box-shadow: 0 2px 8px -2px rgb(0 0 0 / 0.12);
-    transform: translateY(-1px);
-  }
+  /* r148 (AUDIT-2 L2): .badge:hover كان يرفع span غير تفاعلي (عرض خالص —
+     primitives/index.tsx:217) — إشارة كاذبة. الحذف. */
   .badge.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
   .badge.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
   .badge.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
@@ -657,7 +682,7 @@
     background: var(--surface);
     transition: var(--t-clean);
   }
-  .alert:hover { border-color: var(--border-strong); }
+  /* r148 (AUDIT-2 L4): .alert:hover كان يضيء صف تنبيه ساكنًا — الحذف. */
   .alert-dot {
     inline-size: 8px; block-size: 8px;
     border-radius: 50%;
@@ -691,7 +716,7 @@
     color: var(--c-copper-deep);
     font-weight: var(--fw-bold);
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): أحرف أولى عربية — لا تتبّع سالب */
     flex-shrink: 0;
   }
 
@@ -992,7 +1017,10 @@
   .dash-eyebrow {
     font-size: var(--fs-xs);
     text-transform: uppercase;
-    letter-spacing: 0.10em;
+    /* r148 (AUDIT-3 M1): 0.10em على نص عربي صريح («أكمل من حيث توقفت»)
+       يفكك اتصال الحروف — مخالف ruling #2 (notifications.css:298
+       «no letter-spacing on Arabic, ever»). uppercase بلا أثر على العربي. */
+    letter-spacing: 0;
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
     margin-block-end: var(--sp-2);
@@ -1002,7 +1030,7 @@
     font-size: var(--fs-h2);
     font-weight: var(--fw-black);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين عربية — لا تتبّع سالب */
     margin-block-end: var(--sp-4);
     position: relative;
   }
@@ -1202,7 +1230,10 @@
     transition: background var(--t-fast) var(--ease);
   }
   .list-row:last-child { border-block-end: 0; }
-  .list-row:hover { background: var(--surface-2); }
+  /* r148 (AUDIT-2 L3): التمييز التفاعلي للصفوف القابلة للنقر فقط
+     (label/button/a داخل ExamAuthorPages) — الصفوف الساكنة
+     (TemplateRow/QuestionBankRow/المحاولات) لا تُضاء كاذبة. */
+  label.list-row:hover, button.list-row:hover, a.list-row:hover { background: var(--surface-2); }
   .list-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; }
   .list-row-title { font-weight: var(--fw-semibold); font-size: var(--type-label-size); color: var(--text); }
   .list-row-sub   { font-size: var(--type-label-size-sm); color: var(--text-muted); }
@@ -1737,6 +1768,15 @@
     font-size: 18px;
     line-height: 1;
     transition: color var(--t-fast) var(--ease);
+    /* r148 (AUDIT-3 C1): الهدف الفعلي كان ~22×14px — أصغر من بصمة إصبع،
+       وتوستات الأخطاء لا تُغلق تلقائيًا أبدًا (Toast.tsx:91) فالزر هو
+       المخرج الوحيد. نفس أرضية 44px التي حصل عليها .toast-action
+       (notifications.css:451-453) — الشفافية تجعل التوسيع غير مرئي. */
+    min-block-size: 44px;
+    min-inline-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .toast-close:hover { color: var(--text); }
   .toast-close:focus-visible {
@@ -1796,6 +1836,9 @@
     gap: var(--sp-2);
     inline-size: 100%;
     padding: var(--sp-2) var(--sp-3);
+    /* r148 (AUDIT-3 M3): قائمة حساب المستخدم هي مسار الثيم/تسجيل الخروج
+       الوحيد على 360px — كانت ~38px. نفس أرضية .cmd-row (layout.css:751). */
+    min-block-size: 44px;
     background: transparent;
     border: 0;
     border-radius: var(--r-sm);
@@ -1902,16 +1945,22 @@
     inset-inline-end: 0;
     background: transparent;
     border: 0;
-    color: rgba(255,255,255,0.86);
+    color: var(--text-on-dark, rgba(255,255,255,0.86)); /* r148 (AUDIT-2 L6): توكن بدل حرفي */
     cursor: pointer;
     padding: var(--sp-1);
     font-size: 22px;
     line-height: 1;
+    /* r148 (AUDIT-3 M4): كان ~30×30 — عارض الصور على الهاتف. */
+    min-block-size: 44px;
+    min-inline-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: color var(--t-fast) var(--ease);
   }
-  .lightbox-close:hover { color: #fff; }
+  .lightbox-close:hover { color: var(--text-on-dark, #fff); }
   .lightbox-close:focus-visible {
-    outline: 2px solid #fff;
+    outline: 2px solid var(--text-on-dark, #fff);
     outline-offset: 2px;
   }
 
@@ -1937,6 +1986,8 @@
     cursor: pointer;
     font: inherit;
     padding: var(--sp-1) var(--sp-2);
+    /* r148 (AUDIT-3 M5): كان ~26px — أول تجربة مستخدم جديد على الهاتف. */
+    min-block-size: 44px;
     border-radius: var(--r-sm);
     transition: color var(--t-fast) var(--ease);
   }

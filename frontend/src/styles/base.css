@@ -43,10 +43,13 @@
     font-weight: var(--fw-black);
     color: var(--text);
     line-height: var(--lh-snug);
-    letter-spacing: var(--ls-snug);
+    /* r148 (AUDIT-3 M8): التتبّع السالب يفسد اتصال الحروف العربية
+        («العناوين» كلها عربية هنا) — تصفير كما في unified-parity.css:260.
+        يبقى لأي لاتيني مستقبلي عبر أدوار type-role اللاتينية. */
+    letter-spacing: 0;
     text-wrap: balance;
   }
-  h1 { font-size: var(--fs-h1); letter-spacing: var(--ls-tight); line-height: 1.12; }
+  h1 { font-size: var(--fs-h1); line-height: 1.12; }
   h2 { font-size: var(--fs-h2); line-height: 1.2; }
   h3 { font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.3; }
 
@@ -258,12 +261,12 @@
     font-family: var(--font-display);
     /* wave 2-a (0-a P1-6) — was raw clamp(28px, 3.4vw, 40px); now the
        display-size role (28..40px, 3.6vw mid-band — a ≤2px normalization
-       at laptop widths). Line-height deliberately NOT the display role
-       (1.05 is Latin-tuned): Arabic display keeps 1.1 until the P1-12
-       Arabic-leading study lands. */
+       at laptop widths). r148 (AUDIT-4 I2): line-height الآن يستهلك رمز
+       الدور فعليًا — التعويض الداكن (+0.05) كان معرّفًا ولا يُطبّق
+       قط (صفر مستهلكين). */
     font-size: var(--type-display-size-md);
     font-weight: var(--fw-black);
-    line-height: 1.1;
+    line-height: var(--type-display-line-height);
     letter-spacing: var(--ls-tight);
     color: var(--text);
   }

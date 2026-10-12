@@ -397,7 +397,7 @@ export default function LibraryPage() {
                       </span>
                     </div>
                     <div className="thumb-card-body">
-                      <div className="thumb-card-title" style={{ minHeight: 36 }}>{b.title}</div>
+                      <div className="thumb-card-title" style={{ minHeight: 36 }} title={b.title}>{b.title}</div>
                       <div className="thumb-card-sub">{b.author}</div>
                       <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
                         <span className="text-xs text-subtle flex items-center gap-1 font-mono">

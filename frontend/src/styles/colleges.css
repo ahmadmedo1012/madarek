@@ -344,7 +344,9 @@
   font-size: var(--type-label-size);
   font-weight: var(--fw-semibold);
   color: var(--text);
-  letter-spacing: 0.02em;
+  /* r148 (AUDIT-4 I1): 0.02em على أسماء مدن عربية («الزاوية») — تصفير
+     التتبع حفاظًا على اتصال الحروف. */
+  letter-spacing: 0;
 }
 .colleges-popover-group-count {
   font-size: var(--type-label-size-sm);
@@ -596,7 +598,9 @@
   font-size: var(--type-headline-size-md);
   font-weight: var(--fw-bold);
   color: var(--text);
-  letter-spacing: var(--ls-snug);
+  /* r148 (AUDIT-4 I1): تتبّع سالب على h2 عربي («هل هذه كلّيتك؟») — الشدة
+     في «كلّيتك» أسوأ حالة ممكنة للتتبّع السالب. */
+  letter-spacing: 0;
   line-height: 1.2;
   margin: 0;
   text-wrap: balance;
@@ -1230,7 +1234,8 @@ a.comp-card:focus-visible .comp-go {
   font-size: var(--fs-xxs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  /* r148 (AUDIT-3 M1): 0.05em على تسميات عربية — تصفير التتبع. */
+  letter-spacing: 0;
 }
 .settings-value {
   font-size: var(--fs-sm);
