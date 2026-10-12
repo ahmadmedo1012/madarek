@@ -341,17 +341,11 @@
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-card-premium);
-    /* r148 (AUDIT-2 H2 + AUDIT-6 §3): القاعدة كانت تستبدل transition كاملة
-       بـ box-shadow + transform فقط على --t-base (240ms) — تبديل --_btn-bg-hover
-       يقع بلا انتقال (snap) بينما .btn/.ghost/.outline تتلاشى بنعومة.
-       الآن: الخصائص الثلاث الغائبة مستعادة، والسجل موحّد على --t-fast
-       (160ms) كعقد الحركة (hover = --motion-duration-short). */
-    transition:
-      box-shadow var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease),
-      background-color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease);
+    /* r149 (R3-A3 §4): حُذف إعلان transition من هنا — كان ميتًا في
+       الترتيب الطبقي (طبقة overrides في polish v15 تملك transition
+       الخاص بـ.btn وتتقدم طبقة components مهما علت الخصوصية)، فعلّق
+       r148 (H2) كان يوهم بأن السجل موحّد من هنا. نُفِّذ العقد فعليًا
+       هناك: كل خصائص hover على --t-fast. */
   }
   .btn.primary:hover {
     box-shadow: var(--shadow-card-premium-h);
@@ -960,7 +954,8 @@
     transition:
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
+      border-color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .table-pagination-actions button:hover:not(:disabled) {
     background: var(--surface-2);
@@ -1401,7 +1396,9 @@
     background: linear-gradient(90deg, var(--surface-3), var(--surface-2), var(--surface-3));
     background-size: 200% 100%;
     border-radius: var(--r-sm);
-    animation: madarek-shimmer var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
+    /* r149 (R3-A3 R3): العقيدة — حلقات الالتهاب اللانهائية خطية
+       (--ease-linear)؛ eased sweep = نبضة سرعة مع كل تكرار. */
+    animation: madarek-shimmer var(--motion-duration-skeleton) var(--ease-linear) infinite;
   }
   @keyframes madarek-shimmer { 0%{background-position:0% 0;} 100%{background-position:-200% 0;} }
 
@@ -1480,6 +1477,8 @@
     /* Arabic descender clearance — same metric base.css pins on <a>. */
     text-underline-offset: 0.18em;
     cursor: pointer;
+    /* r149 (R3-A3 §3): لون التسطير كان يتبدل فوريًا (snap). */
+    transition: text-decoration-color var(--t-fast) var(--ease);
   }
   .text-link:hover { text-decoration-color: var(--accent-ink); }
   .hide-on-mobile { display: revert; }
@@ -1767,7 +1766,10 @@
     padding: 0 var(--sp-1);
     font-size: 18px;
     line-height: 1;
-    transition: color var(--t-fast) var(--ease);
+    /* r149 (R3-A3 §4): transform ينضم — سجل الضغط 0.97 (v13). */
+    transition:
+      color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
     /* r148 (AUDIT-3 C1): الهدف الفعلي كان ~22×14px — أصغر من بصمة إصبع،
        وتوستات الأخطاء لا تُغلق تلقائيًا أبدًا (Toast.tsx:91) فالزر هو
        المخرج الوحيد. نفس أرضية 44px التي حصل عليها .toast-action
@@ -1846,7 +1848,10 @@
     font: inherit;
     text-align: start;
     cursor: pointer;
-    transition: background var(--t-fast) var(--ease);
+    /* r149 (R3-A3 §4): transform ينضم — سجل الضغط 0.985 (v13). */
+    transition:
+      background var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .dropdown-item:hover,
   .dropdown-item[data-active="true"] {
@@ -3076,10 +3081,8 @@
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
     box-shadow: var(--shadow-card);
-    transition: box-shadow var(--t-base) var(--ease);
-  }
-  .exam-card-skel:hover {
-    box-shadow: var(--shadow-card-premium-h);
+    /* r149 (R3-A3 M2): حُذف hover الظل وانتقاله — الهيكل العظمي ليس
+       هدفًا قابلًا للنقر (affordance كاذبة؛ ذيل r148 المتبقي). */
   }
   .exam-card-skel .exam-card-skel-icon {
     flex-shrink: 0;

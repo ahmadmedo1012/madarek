@@ -371,8 +371,18 @@
     border-radius: var(--r-sm);
     align-items: center; justify-content: center;
     color: var(--text-secondary);
+    /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال (snap) — زر
+       الهامبرغر الوحيد في الترويسة. */
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
+  .topbar-mobile-toggle:active {
+    transform: scale(0.97);
+    transition-duration: var(--motion-duration-micro);
+  }
   @media (max-width: 920px) {
     .topbar-mobile-toggle { display: inline-flex; }
     /* 4-A2 P2-6: 44px touch floor — min-* grows the hit area over the

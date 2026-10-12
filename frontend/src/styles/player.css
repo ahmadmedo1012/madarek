@@ -306,6 +306,12 @@
     font-size: 13px;
     font-variant-numeric: tabular-nums;
     cursor: pointer;
+    /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال — آخر صفوف القوائم
+       في المنصة بلا transition. */
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .vpc-menu-item:hover { background: rgb(142 151 184 / 0.14); }
   .vpc-menu-item[aria-checked="true"] { color: var(--vpc-gold); }

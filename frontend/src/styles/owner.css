@@ -141,7 +141,9 @@
   inset-inline: 2px;
   border-radius: var(--r-full);
   background: var(--surface-3);
-  transition: background var(--t-base) var(--ease);
+  /* r149 (R3-A3 M5): 240ms → 160ms — قلب المفتاح كان يقرأ كسولًا
+     (3× أبطأ من سجل الضغط 80ms في بقية المنصة). */
+  transition: background var(--motion-duration-short) var(--ease);
 }
 
 .owner-toggle-track.on::before {
@@ -189,7 +191,9 @@
      transform; --motion-direction keeps it flowing toward the
      inline-end edge in RTL exactly like the inset it replaced
      (5px → 23px = 18px of travel). */
-  transition: transform var(--t-base) var(--ease);
+  /* r149 (R3-A3 M5): spring-soft على 160ms — إحساس مفتاح حقيقي
+     بدل انزلاق محايد (كان 240ms standard). */
+  transition: transform var(--motion-duration-short) var(--ease-spring-soft);
   /* small-control thumb shadow — needs more local pop than --elev-1
      (alpha 0.2 vs 0.04/0.06); off-token by design */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -197,6 +201,11 @@
 
 .owner-toggle-track.on .owner-toggle-thumb {
   transform: translateX(calc(var(--motion-direction) * 18px));
+}
+/* r149 (R3-A3 M5): لمسة الضغط — الخاصية المستقلة scale تتراكب مع
+   translateX دون تعارض (لا تحتاج معرفة حالة on/off). */
+.owner-toggle-track:not(.disabled):active .owner-toggle-thumb {
+  scale: 0.88;
 }
 
 .owner-toggle-label {

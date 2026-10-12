@@ -236,13 +236,10 @@
     vertical-align: -0.125em;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .motion-spinner {
-      /* keep the rotation but slow it dramatically so screen-reader users
-         and reduced-motion users still get a "busy" cue without distraction */
-      animation-duration: 2s;
-    }
-  }
+  /* r149 (R3-A3 R4): حُذف تعديل الـ2s تحت reduced-motion — كان ميتًا
+     أصلًا: حزام base.css العالمي (animation-duration: 0.01ms
+     !important) يبتلعه دائمًا، فلم تظهر «إشارة الانشغال البطيئة»
+     قط. الحزام هو المالك الوحيد؛ لا حاجة لمُكمّل هنا. */
 
   /* ───────────────────────────────────────────────────────────────────
      Button + Input loading states — used by canonical Button / Input

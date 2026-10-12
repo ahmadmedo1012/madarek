@@ -253,6 +253,24 @@
     transition-duration: var(--motion-duration-micro);
   }
 
+  /* ── Row-action controls: press feedback ─────────────────────
+     r149 (R3-A3 §3/§4): صفوف القوائم المنسدلة وبحث الأوامر وزر إغلاق
+     التوست وأزرار الترقيم وقائمة إعدادات المشغّل — كلها صمّمت hover
+     بلا ردّ ضغط. السجل كان موجودًا فقط على .btn/.card/.pill/.nav-item/
+     .icon-btn. الصفوف تأخذ 0.985 مثل nav؛ الأزرار المنفردة 0.97 مثل
+     icon-btn. */
+  .dropdown-item:active,
+  .search-row:active {
+    transform: scale(0.985);
+    transition-duration: var(--motion-duration-micro);
+  }
+  .table-pagination-actions button:active:not(:disabled),
+  .toast-close:active,
+  .vpc-menu-item:active {
+    transform: scale(0.97);
+    transition-duration: var(--motion-duration-micro);
+  }
+
   /* ── Sidebar collapse btn: icon-only 44px touch target ───────── */
   /* (Wave 9-b dead-selector sweep: .topbar-icon-btn + .sidebar-toggle-btn
      deleted — zero TSX consumers; the toggles render .icon-btn /
@@ -2562,9 +2580,12 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TABLE ROWS — quiet zebra-on-hover                             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
+  .table tbody tr,
   .owner-table tbody tr,
   .admin-students-table tbody tr,
   .leaderboard-table tbody tr {
+    /* r149 (R3-A3 §3): .table tbody tr ينضم — خلفيته hover موجودة
+       (components.css) لكنها كانت تقفز بالتوقيت الافتراضي (snap). */
     transition: background var(--t-fast) var(--ease);
   }
   @media (hover: hover) {
@@ -2581,7 +2602,9 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .btn .icon,
   .btn svg {
-    transition: transform var(--motion-duration-medium) var(--ease);
+    /* r149 (R3-A3 §4): 240ms → 160ms — مزامنة مع خلفية الزر (كانت
+     الأيقونة تتأخر عن الزر في كل .btn يحمل svg). */
+    transition: transform var(--t-fast) var(--ease);
   }
   .btn:hover .icon,
   .btn:hover svg {
@@ -3045,12 +3068,15 @@
   .btn {
     position: relative;
     overflow: hidden;
+    /* r149 (R3-A3 §4): إيماءة واحدة للـhover — box-shadow تنضم إلى
+       bg/border/color على --t-fast (كانت 240ms: التوهج يتأخر عن اللون).
+       transform يبقى على سجل الضغط micro؛ ‎.btn:active يثبّت مدته بنفسه. */
     transition:
       background var(--t-fast) var(--ease),
       border-color var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease),
       transform var(--motion-duration-micro) var(--ease),
-      box-shadow var(--motion-duration-medium) var(--ease);
+      box-shadow var(--t-fast) var(--ease);
   }
   /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
      removed — zero TSX consumers; only the .btn.primary variant is
@@ -3124,7 +3150,10 @@
     transform-origin: bottom;
     transition: transform var(--motion-duration-page) var(--ease-spring-soft);
   }
-  .metric:hover::before { transform: scaleY(1); }
+  /* r149 (R3-A3 M2): ذيل r148 المتبقي — القضيب الرئيس كان يضيء على
+     162 بلاطة KPI غير قابلة للنقر. الآن محصور على .metric-link
+     مثل .metric:hover نفسه (حكم r148 H1). */
+  .metric.metric-link:hover::before { transform: scaleY(1); }
   /* Numeric values get tabular alignment globally */
   .metric-value {
     font-variant-numeric: tabular-nums;
@@ -3154,8 +3183,10 @@
 
   /* Tab underline becomes spring-easy */
   .tab::after {
+    /* r149 (R3-A3 §4): 320ms → 240ms (النطاق الموثق) — كان مؤشر التبويب
+       يسافر بضعف سرعة تغير لون التسمية (160/320). */
     transition:
-      transform var(--motion-duration-page) var(--ease-spring-soft),
+      transform var(--motion-duration-medium) var(--ease-spring-soft),
       opacity var(--motion-duration-short) var(--ease);
   }
 
@@ -3171,7 +3202,8 @@
     from { opacity: 0; transform: scale(0.85); }
     to   { opacity: 1; transform: none; }
   }
-  .badge:hover { transform: scale(1.05); }
+  /* r149 (R3-A3 M2): حُذف .badge:hover scale — الشارات غير تفاعلية؛
+     حذف r148 للنسخة في components.css بقيت له هذه التوأمة في overrides. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4605,7 +4637,11 @@
        line-based gate cannot see in multi-line form. The row now
        stays put; the icon nudges toward the content exactly like
        .notif-item above (compositor-only, direction-aware).) */
-    transition: background var(--motion-duration-short) var(--ease);
+    /* r149 (R3-A3 §4): transform ينضم — الصف يضغط الآن (0.985 عبر سجل
+     v13) بدل القفز. */
+    transition:
+      background var(--motion-duration-short) var(--ease),
+      transform var(--motion-duration-short) var(--ease);
     position: relative;
   }
   .search-row::before {

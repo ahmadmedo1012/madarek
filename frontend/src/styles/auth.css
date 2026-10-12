@@ -494,6 +494,8 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     border-radius: var(--r-sm);
+    /* r149 (R3-A3 §3): انزياح الشفافية كان فوريًا (snap). */
+    transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
   }
   .auth-retry-link:hover { opacity: 0.8; }
 

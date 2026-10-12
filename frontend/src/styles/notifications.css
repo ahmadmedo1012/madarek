@@ -49,7 +49,7 @@
   font-weight: 600;
   cursor: pointer;
   border-radius: var(--r-sm);
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
 }
 .notif-panel-action:hover { background: var(--accent-soft); }
 .notif-panel-close {
@@ -62,7 +62,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
 }
 .notif-panel-close:hover { background: var(--surface-2); color: var(--text); }
 
@@ -107,7 +107,7 @@
   text-align: start;
   cursor: pointer;
   border-radius: var(--r-md);
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
   position: relative;
 }
 .notif-item:hover { background: var(--surface-2); }
@@ -188,7 +188,7 @@
   font-weight: 600;
   color: var(--accent-ink, var(--accent));
   text-decoration: none;
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
 }
 .notif-panel-viewall:hover {
   background: color-mix(in srgb, var(--accent) 6%, transparent);
@@ -251,9 +251,9 @@
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
   transition:
-    color var(--motion-duration-short) var(--ease-out),
-    background var(--motion-duration-short) var(--ease-out),
-    transform var(--motion-duration-micro) var(--ease-out);
+    color var(--motion-duration-short) var(--ease),
+    background var(--motion-duration-short) var(--ease),
+    transform var(--motion-duration-micro) var(--ease);
 }
 /* (r132-F5: `.bottom-nav-item:active { transform: scale(0.96) }` deleted
    here — dead rule. The bottom nav renders only ≤640px, inside
@@ -279,9 +279,9 @@
   border-radius: var(--r-full);
   will-change: background;
   transition:
-    background var(--motion-duration-medium) var(--ease-out),
-    transform var(--motion-duration-medium) var(--ease-out),
-    box-shadow var(--motion-duration-medium) var(--ease-out);
+    background var(--motion-duration-medium) var(--ease),
+    transform var(--motion-duration-medium) var(--ease),
+    box-shadow var(--motion-duration-medium) var(--ease);
 }
 
 .bottom-nav-item.active .bottom-nav-icon {

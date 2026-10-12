@@ -69,10 +69,12 @@
      longest name (303px inside a 270px grid at 320 viewport, a 3px
      document overflow). */
   min-width: 0;
+  /* r149 (R3-A3 R1): أُلحقت var(--ease) — كانت الحركات كلها تركب
+     منحنى المتصفح الافتراضي ease(0.25,0.1,0.25,1) بدل منحنى النظام. */
   transition:
-    transform var(--t-fast),
-    border-color var(--t-fast),
-    box-shadow var(--t-fast);
+    transform var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
 }
 .college-card:hover {
   transform: translateY(-1px);
@@ -133,7 +135,7 @@
 }
 .college-card-arrow {
   color: var(--text-subtle);
-  transition: transform var(--t-fast), color var(--t-fast);
+  transition: transform var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   flex: 0 0 auto;
 }
 .college-card:hover .college-card-arrow {
@@ -894,7 +896,7 @@
   gap: var(--sp-3);
   padding: var(--sp-2);
   border-radius: var(--r-sm);
-  transition: background var(--t-fast);
+  transition: background var(--t-fast) var(--ease);
 }
 .student-rank-row:hover { background: var(--surface-2); }
 .student-rank-num {
@@ -1263,7 +1265,7 @@ a.comp-card:focus-visible .comp-go {
   color: var(--accent-ink, var(--accent));
   text-decoration: none;
   font-size: var(--fs-sm);
-  transition: background var(--t-fast);
+  transition: background var(--t-fast) var(--ease);
 }
 .settings-links a:hover { background: var(--surface-2); }
 
@@ -1313,7 +1315,7 @@ a.comp-card:focus-visible .comp-go {
   font-weight: inherit;
   cursor: pointer;
   border-radius: var(--r-sm);
-  transition: color var(--t-fast);
+  transition: color var(--t-fast) var(--ease);
 }
 .leaderboard-sort:hover { color: var(--text); }
 .leaderboard-sort-on { color: var(--accent-strong); }
@@ -1335,7 +1337,7 @@ a.comp-card:focus-visible .comp-go {
   gap: var(--sp-3);
   text-decoration: none;
   color: inherit;
-  transition: color var(--t-fast);
+  transition: color var(--t-fast) var(--ease);
 }
 .leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
 .leaderboard-emoji {
@@ -1352,7 +1354,7 @@ a.comp-card:focus-visible .comp-go {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text);
-  transition: color var(--t-fast);
+  transition: color var(--t-fast) var(--ease);
 }
 .leaderboard-college-meta {
   font-size: var(--fs-xxs);
@@ -1636,7 +1638,7 @@ a.comp-card:focus-visible .comp-go {
   color: var(--text-muted);
   padding: var(--sp-2);
   border-radius: var(--r-sm);
-  transition: background var(--t-fast);
+  transition: background var(--t-fast) var(--ease);
 }
 .comp-modal-close:hover { background: var(--surface-2); color: var(--text); }
 .comp-modal-form {
@@ -1680,7 +1682,8 @@ a.comp-card:focus-visible .comp-go {
   border: 1px solid var(--border);
   font-size: 18px;
   cursor: pointer;
-  transition: var(--t-fast);
+  /* r149 (R3-A3 R2): var(--ease) — كان المنحنى الافتراضي. */
+  transition: var(--t-fast) var(--ease);
 }
 .comp-icon-btn:hover { border-color: var(--accent); }
 .comp-icon-btn.on {
