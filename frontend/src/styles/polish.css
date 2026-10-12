@@ -498,13 +498,9 @@
   }
 
   /* ── Eyebrow pulse — make "جديد" badge actually feel live ─── */
-  @keyframes polish-shimmer-sweep {
-    0%, 60%   { transform: translateX(-100%); }
-    80%, 100% { transform: translateX(100%); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .landing-hero-eyebrow strong::after { animation: none; opacity: 0; }
-  }
+  /* (r151c: @keyframes polish-shimmer-sweep + the .landing-hero-eyebrow
+     RM kill deleted — zero animation: consumers anywhere (the landing
+     hero renders .ln-hero-eyebrow, which landing.css styles). */
 
   /* ── Pilot stats: count-up entrance via grid stagger already in v6 ── */
   /* (Wave 9-b dead-selector sweep: the .landing-pilot-num rules deleted
@@ -512,10 +508,12 @@
      inside .landing-pilot-stat.) */
 
   /* ── Feature cards: subtle inner highlight on hover (Notion bento) ── */
-  .landing-feature-card,
-  .landing-feature-card::after,
-  .landing-feature-card:hover::after,
-  .landing-feature-card > *,
+  /* (r151c: the .landing-feature-card / ::after / :hover::after / > *
+     selector entries deleted from the smooth-scroll group below —
+     zero TSX consumers since the landing redesign (LandingPage
+     renders .ln-feature-*); the group now correctly reads as the
+     html-only smooth-scroll rule it always executed as.) */
+
   /* ── Pages without a .page-header convention still benefit from
         the page-enter, but their card grids weren't always
         .grid-{2,3,4}. Make custom-named grids ride the same cascade.  */
@@ -1419,14 +1417,12 @@
   /* (Wave 9-b dead-selector sweep: .invoice-card, .speaker-chip and
      .webinar-card removed from the group — zero TSX consumers.) */
   .post,
-  .testimonial-card,
   .announcement-card {
     border-radius: var(--r-lg);
     transition: transform var(--t-fast) var(--ease),
                 box-shadow var(--t-fast) var(--ease);
   }
   .post:hover,
-  .testimonial-card:hover,
   .announcement-card:hover {
     transform: translateY(-1px);
     /* Off-token by design: soft diffuse hover shadow — composite sits
@@ -1991,8 +1987,10 @@
      ║  STATE VARIANTS                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .state.state-inline { padding: var(--sp-7) var(--sp-5); }
-  .state.state-page   { padding: var(--sp-11) var(--sp-6); }
-  .state.state-card   { padding: var(--sp-7) var(--sp-5); }
+  /* (r151c: .state.state-page / .state.state-card deleted — the only
+     state-variant constructor is LoadingState's `state-${variant}` and
+     no call site passes "page" or "card" (default inline + one
+     minimal); the LoadingVariant union was narrowed with them.) */
   .state.state-error .state-icon {
     background: var(--danger-soft);
     /* 5-D1 (A11 P2-3): --danger on --danger-soft measured 2.59:1 light
@@ -2241,17 +2239,9 @@
      ║  LandingPage already writes --mx/--my on cards. Add a soft     ║
      ║  3D tilt that follows the cursor.                              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FEATURE CARDS — magnetic glow on cursor                       ║
-     ║  LandingPage exposes --mx, --my via mousemove. Render a soft   ║
-     ║  spotlight that follows the cursor inside each card.           ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (hover: hover) {
-    .landing-feature-card,
-    .landing-feature-card::before,
-    .landing-feature-card:hover::before,
-    .landing-bento-card:hover::before { opacity: 1; }
-  }
+  /* (r151c: the FEATURE CARDS magnetic-glow block deleted — all four
+     selectors (.landing-feature-card family + .landing-bento-card)
+     have had zero TSX consumers since the landing redesign.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2803,7 +2793,6 @@
      ║  REDUCED MOTION — kill all the moving parts                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
-    .landing-campus-photo,
     .landing-megamenu {
       animation: none !important;
     }
@@ -3348,33 +3337,12 @@
      ║  Each major section gets a tinted backdrop that subtly fades   ║
      ║  to bg at the seams. Creates visual rhythm down the page.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  #features {
-    position: relative;
-    isolation: isolate;
-  }
-  #features::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      color-mix(in srgb, var(--c-peach-bg) 35%, transparent) 30%,
-      color-mix(in srgb, var(--c-peach-bg) 35%, transparent) 70%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-  [data-theme="dark"] #features::before {
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      color-mix(in srgb, var(--accent) 4%, transparent) 30%,
-      color-mix(in srgb, var(--accent) 4%, transparent) 70%,
-      transparent 100%
-    );
-  }
+  /* (r151c: the #features stripe trio deleted — no id="features"
+     exists in any TSX (the landing renders section classes, not
+     anchors); the peach-gradient recipe died with the pre-redesign
+     landing. The scroll-margin note further down still mentions
+     #features generically — anchor targets come and go with
+     redesigns; the html-level rule covers whatever lands.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4089,7 +4057,6 @@
      ║  helps them feel weightier without changing colors             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   [data-theme="dark"] .page-title,
-  [data-theme="dark"] .landing-section-title,
   [data-theme="dark"] .college-hero-name {
     text-shadow: 0 1px 2px color-mix(in srgb, var(--black) 25%, transparent);
   }
@@ -4340,10 +4307,9 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  FIX 2 — pilot stat numbers visible again                      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-pilot-value > * { color: inherit; }
+  /* (r151c: FIX 2 block deleted — .landing-pilot-value > * had zero
+     TSX consumers; the CountUp-in-gradient fix it described died with
+     the pre-redesign pilot section. LandingPage renders .ln-pilot-*.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -5249,13 +5215,15 @@
       heading/title roles only.
       5-C2 (A3 P1-1/P2-1..4): the reset list is extended to the
       CLASS-STYLED Arabic display/label text the 21-c heading list
-      missed — .landing-role-name (measured -1.28px @40px «الطالب»),
-      .card-title (-0.216px @18px), .section-title + .thumb-card-title
-      (same --ls-snug family, div-rendered so the h1–h6 list never
-      matched), .sidebar-brand-name (-0.156px @13px «مدارك»), .avatar
-      (-0.12px Arabic initials), .btn (-0.06px on every Arabic button
-      label — source also fixed at components.css:324) and
-      .settings-label (colleges.css +0.55px, admin settings, swept).
+      missed — .card-title (-0.216px @18px), .section-title +
+      .thumb-card-title (same --ls-snug family, div-rendered so the
+      h1–h6 list never matched), .sidebar-brand-name (-0.156px @13px
+      «مدارك»), .avatar (-0.12px Arabic initials), .btn (-0.06px on
+      every Arabic button label — source also fixed at
+      components.css:324) and .settings-label (colleges.css +0.55px,
+      admin settings, swept). (.landing-role-name was in this list
+      until r151c — its consumer died with the landing redesign;
+      the class entry went with it.)
       Belt+braces: the landing/auth source declarations are also fixed
       at their sites; this overrides-layer list guards the
       sibling-owned components/layout/colleges sources in one place.
@@ -5269,7 +5237,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 @layer overrides {
   :lang(ar) :is(h1, h2, h3, h4, h5, h6, .page-title, .dash-section-title,
-                .onboarding-flow-headline, .landing-role-name, .card-title,
+                .onboarding-flow-headline, .card-title,
                 .section-title, .thumb-card-title, .sidebar-brand-name,
                 .avatar, .btn, .settings-label) {
     letter-spacing: normal;

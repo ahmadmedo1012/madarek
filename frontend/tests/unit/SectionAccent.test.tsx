@@ -88,12 +88,15 @@ afterEach(() => {
 
 describe('SectionAccent', () => {
   it('starts unfired and applies the accent kind class', () => {
-    render(<SectionAccent kind="underline-draw">hi</SectionAccent>);
+    // (r151c: the kind vocabulary narrowed to scene-paint — the retired
+    // kinds had zero consumers; these behavior tests never depended on
+    // which kind they drove.)
+    render(<SectionAccent kind="scene-paint">hi</SectionAccent>);
     const el = screen.getByText('hi');
     expect(el.className).toContain('section-accent');
-    expect(el.className).toContain('section-accent-underline-draw');
+    expect(el.className).toContain('section-accent-scene-paint');
     expect(el.className).not.toContain('is-fired');
-    expect(el.dataset.accentKind).toBe('underline-draw');
+    expect(el.dataset.accentKind).toBe('scene-paint');
   });
 
   it('fires once when the IntersectionObserver reports the element in view', () => {
@@ -125,7 +128,7 @@ describe('SectionAccent', () => {
 
   it('does NOT fire while document.hidden is true', () => {
     Object.defineProperty(document, 'hidden', { configurable: true, value: true });
-    render(<SectionAccent kind="quote-fade">hi</SectionAccent>);
+    render(<SectionAccent kind="scene-paint">hi</SectionAccent>);
     const el = screen.getByText('hi');
     act(() => {
       fireEntries(el, true);
@@ -147,7 +150,7 @@ describe('SectionAccent', () => {
         dispatchEvent: () => false,
       }),
     );
-    render(<SectionAccent kind="parallax-shift">hi</SectionAccent>);
+    render(<SectionAccent kind="scene-paint">hi</SectionAccent>);
     const el = screen.getByText('hi');
     expect(el.className).toContain('is-fired');
     expect(el.dataset.accentFired).toBe('true');
@@ -155,7 +158,7 @@ describe('SectionAccent', () => {
 
   it('useSectionAccent returns a fired flag matching the data attribute', () => {
     function Probe() {
-      const { ref, fired } = useSectionAccent<HTMLDivElement>('underline-draw');
+      const { ref, fired } = useSectionAccent<HTMLDivElement>('scene-paint');
       return (
         <div ref={ref as Ref<HTMLDivElement>} data-testid="probe" data-fired={fired ? 'true' : 'false'}>
           x
@@ -173,7 +176,7 @@ describe('SectionAccent', () => {
 
   it('disabled=true skips observation', () => {
     function Probe() {
-      const { ref } = useSectionAccent<HTMLDivElement>('underline-draw', { disabled: true });
+      const { ref } = useSectionAccent<HTMLDivElement>('scene-paint', { disabled: true });
       return <div ref={ref as Ref<HTMLDivElement>} data-testid="probe">x</div>;
     }
     render(<Probe />);

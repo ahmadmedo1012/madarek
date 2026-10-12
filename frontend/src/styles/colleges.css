@@ -157,22 +157,9 @@
 .landing-colleges-trigger {
   position: relative;
 }
-.landing-colleges-trigger-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-inline-size: 28px;
-  block-size: 22px;
-  padding-inline: 8px;
-  margin-inline-start: var(--sp-2);
-  border-radius: var(--r-full);
-  background: var(--accent);
-  color: var(--accent-fg, white);
-  font-size: var(--type-label-size-sm);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-}
+/* (r151c: .landing-colleges-trigger-badge deleted — dead-dead twin: the
+   TSX renders .ln-btn-text-badge (LandingPage) and nothing ever mounted
+   this class; landing.css's override twin died with it.) */
 
 /* ═══════════════════════════════════════════════════════════════
    Colleges Popover — opened from the homepage hero CTA.

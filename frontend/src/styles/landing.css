@@ -1561,11 +1561,9 @@ button.landing-footer-link {
 }
 .landing .ln-footer-cluster { display: inline-flex; align-items: center; gap: 8px; }
 
-/* popover trigger badge rides the quiet mist system inside the landing */
-.landing .landing-colleges-trigger-badge {
-  background: color-mix(in srgb, var(--ln-cream) 8%, transparent);
-  color: var(--ln-cream-dim);
-}
+/* (r151c: the .landing-colleges-trigger-badge override deleted — the
+   base class in colleges.css was a dead-dead twin (TSX renders
+   .ln-btn-text-badge); nothing mounted this selector either.) */
 
 /* ── 15 · top progress ribbon ──────────────────────────────────────── */
 .landing .landing-progress {

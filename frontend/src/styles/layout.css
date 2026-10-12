@@ -417,16 +417,12 @@
     /* A9 P1-2: pin height so the skeleton→real swap doesn't shift layout */
     min-block-size: 48px;
   }
+  /* (r151c dead-twin sweep, R5-A1b declaration-level proof): this
+     rule used to carry 9 declarations — polish.css's overrides-layer
+     .topbar-scope re-specifies every one except font-family, so only
+     the family survives here. The ≤920px display:none below is live.) */
   .topbar-scope {
     font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    padding: 3px 10px; /* r149 (R3-A2 R9): محاذاة مع القيمة الحية في polish (كانت 9 خامًا ميتة) */
-    border-radius: var(--r-full);
-    font-weight: var(--fw-medium);
-    white-space: nowrap;
   }
   @media (max-width: 920px) {
     .topbar { grid-template-columns: auto 1fr auto; }
@@ -578,56 +574,35 @@
     .topbar-search-clear { inline-size: 44px; block-size: 44px; }
   }
 
+  /* (r151c dead-twin sweep: the search family below is the layout-layer
+     base of a system polish v21 fully re-specified in @layer overrides.
+     Declaration-by-declaration comparison kept ONLY the survivors —
+     everything polish also sets is dead here by layer order. The fully
+     shadowed rules (.search-section, .search-row:hover, -body, -title,
+     -sub, -arrow, -empty-title, -empty-hint, -empty-tips, -tip-pill,
+     -footer) were deleted outright. When v21 migrates home (r151-m3)
+     it becomes a pure move.) */
   .search-dropdown {
     position: absolute;
     inset-block-start: calc(100% + 6px);
     inset-inline-start: 0; inset-inline-end: 0;
     background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-pop);
-    max-block-size: 480px; overflow-y: auto;
+    max-block-size: 480px;
     z-index: var(--z-popover);
     padding: var(--sp-2);
   }
-  .search-section { padding: var(--sp-2) 0; }
   .search-section-label {
-    padding: 0 var(--sp-3);
-    font-size: var(--fs-xxs);
-    text-transform: uppercase;
-    /* r148 (AUDIT-4 C1): 0.06em على تسميات عربية («إجراءات سريعة»، «الأخيرة»)
-       يقطع الاتصال الحرفي — تصفير التتبع كما فُعل بـ .nav-section-label (layout.css:118). */
-    letter-spacing: 0;
-    color: var(--text-muted);
-    font-weight: var(--fw-semibold);
     margin-block-end: 4px;
   }
   .search-row {
-    display: flex; align-items: center; gap: var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
     border-radius: var(--r-sm);
-    cursor: pointer;
   }
-  .search-row:hover, .search-row[aria-selected="true"] { background: var(--surface-2); }
   .search-row-icon {
-    inline-size: 28px; block-size: 28px;
-    border-radius: var(--r-sm);
     background: var(--c-grey-bg);
     color: var(--c-grey-deep);
-    display: inline-flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
   }
-  .search-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; }
-  .search-row-title { font-size: var(--fs-sm); color: var(--text); font-weight: var(--fw-semibold); }
-  .search-row-sub { font-size: var(--fs-xs); color: var(--text-muted); }
-  .search-row-arrow { color: var(--text-muted); flex-shrink: 0; }
-  .search-empty { padding: var(--sp-7) var(--sp-5); text-align: center; display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
-  .search-empty-title { font-size: var(--fs-body); color: var(--text); font-weight: var(--fw-bold); }
-  .search-empty-hint { font-size: var(--fs-sm); color: var(--text-muted); }
-  .search-empty-tips { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: center; margin-block-start: var(--sp-3); }
-  .search-tip-pill { padding: 4px 10px; border: 1px solid var(--rule); border-radius: var(--r-full); font-size: var(--fs-xxs); color: var(--text-muted); }
-  .search-loading, .search-shimmer { display: flex; align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
-  .search-footer { padding: var(--sp-3); border-block-start: 1px solid var(--rule); font-size: var(--fs-xxs); color: var(--text-muted); display: flex; gap: var(--sp-3); justify-content: center; }
+  .search-empty { display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
+  .search-loading, .search-shimmer { align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BOTTOM NAV (mobile only)                                      ║
