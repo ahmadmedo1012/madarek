@@ -421,19 +421,19 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
     renderPage(<AdminReportsPage />);
 
     await screen.findByText('حركة البحوث العلمية');
-    expect(document.querySelector('table.trend-table')).toBeNull();
+    expect(document.querySelector('.trend-table-wrap table')).toBeNull();
 
     fireEvent.click(screen.getByRole('tab', { name: 'جدول' }));
     await waitFor(() => {
       expect(screen.getByRole('tab', { name: 'جدول' }).getAttribute('aria-selected')).toBe('true');
     });
-    expect(document.querySelector('table.trend-table')).not.toBeNull();
-    expect(within(document.querySelector('table.trend-table') as HTMLElement).getAllByRole('row'))
+    expect(document.querySelector('.trend-table-wrap table')).not.toBeNull();
+    expect(within(document.querySelector('.trend-table-wrap table') as HTMLElement).getAllByRole('row'))
       .toHaveLength(REPORTS.paperTrend.length + 1); // header + 2 months
 
     fireEvent.click(screen.getByRole('tab', { name: 'أعمدة' }));
     await waitFor(() => {
-      expect(document.querySelector('table.trend-table')).toBeNull();
+      expect(document.querySelector('.trend-table-wrap table')).toBeNull();
     });
   });
 

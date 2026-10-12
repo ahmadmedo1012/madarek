@@ -423,40 +423,13 @@
 }
 
 /* ── Table enhancements ────────────────────────────────────── */
-.owner-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-
-.owner-table th {
-  text-align: start;
-  /* r149 (R3-A2 R2/R3): كثافة خلايا الجداول الكنونية 12/16 — كانت
-     10/12 درجة أوكد من كل جداول المنصة */
-  padding: var(--sp-3) var(--sp-4);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-strong);
-  white-space: nowrap;
-}
-
-.owner-table td {
-  /* r149 (R3-V3): الخلية فاتتها هجرة r149d — th هاجرت وtd لا. الآن
-     الكثافة الكنونية 12/16 في الرأس والجسم معًا. */
-  padding: var(--sp-3) var(--sp-4);
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: middle;
-}
-
-.owner-table tr:last-child td {
-  border-bottom: none;
-}
-
-.owner-table tr:hover td {
-  background: var(--surface-2);
-}
+/* (r150d): the .owner-table family RETIRED onto the canonical .table —
+   the realtime monitor was its last consumer (now
+   .table.tbl-stack.owner-realtime-table). Density had already reached
+   the canonical 12/16 in r149; the remaining drift (no th wash, th
+   fs-xs, border-strong head rule) dies with the family. The num
+   utility re-scopes below; td.muted had zero consumers and is
+   deleted. */
 
 /* ── User row ──────────────────────────────────────────────── */
 .owner-user-cell {
@@ -828,13 +801,9 @@
 /* ── owner-table utilities (audit 0-e P3: the per-cell inline
    fontFamily/fontSize/color repeats → classes; shared family, the
    cells opt in from the four core pages) ───────────────────── */
-.owner-table td.num {
+.owner-realtime-table td.num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-}
-
-.owner-table td.muted {
-  color: var(--text-muted);
 }
 
 /* Inline health dot inside a summary-table cell (was an inline

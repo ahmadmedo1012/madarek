@@ -1151,29 +1151,10 @@ a.comp-card:focus-visible .comp-go {
   overflow-x: auto;
   margin-inline: calc(-1 * var(--sp-2));
 }
-.admin-students-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-.admin-students-table thead th {
-  text-align: start;
-  padding: var(--sp-2) var(--sp-3);
-  background: var(--surface-2);
-  color: var(--text-muted);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  border-block-end: 1px solid var(--border);
-  white-space: nowrap;
-}
-.admin-students-table tbody td {
-  padding: var(--sp-2) var(--sp-3);
-  border-block-end: 1px solid var(--border);
-  vertical-align: middle;
-}
-.admin-students-table tbody tr:hover {
-  background: var(--surface-1);
-}
+/* (r150d): the .admin-students-table family RETIRED onto the canonical
+   .table — density steps up to the canonical 12/16 and the hover joins
+   the platform-wide surface-2 zebra. The -wrap/-name/-email content
+   classes stay (they are cell anatomy, not table chrome). */
 .admin-students-name {
   display: inline-flex;
   align-items: center;
@@ -1200,23 +1181,8 @@ a.comp-card:focus-visible .comp-go {
 /* Digital page */
 /* Analysis page */
 .trend-table-wrap { overflow-x: auto; }
-.trend-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-.trend-table th,
-.trend-table td {
-  padding: var(--sp-2) var(--sp-3);
-  text-align: start;
-  border-block-end: 1px solid var(--border);
-}
-.trend-table th {
-  background: var(--surface-2);
-  color: var(--text-muted);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-}
+/* (r150d): the .trend-table family RETIRED onto the canonical .table
+   (tbl-stack rides now; the -wrap keeps its overflow-x duty). */
 
 .top-courses-row:hover { background: var(--surface-2); }
 .top-courses-body { flex: 1 1 auto; min-width: 0; }

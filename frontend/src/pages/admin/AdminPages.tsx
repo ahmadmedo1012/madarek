@@ -925,7 +925,7 @@ export function AdminReportsPage() {
           />
         ) : trendView === 'table' ? (
           <div className="trend-table-wrap">
-            <table className="trend-table">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col">الشهر</th>

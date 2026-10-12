@@ -2153,25 +2153,17 @@
      .tbl-stack). NOTE for a future wave: .table itself is not in this
      fallback list — see worklog 5-a follow-up #3.) */
   @media (max-width: 640px) {
-    .owner-table:not(.tbl-stack),
-    .admin-students-table:not(.tbl-stack),
-    .leaderboard-table:not(.tbl-stack),
-    .trend-table:not(.tbl-stack) {
+    /* (r150d: owner/admin-students/trend retired onto .table+tbl-stack —
+       their names leave this fallback; the leaderboard keeps its own.) */
+    .leaderboard-table:not(.tbl-stack) {
       display: block;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       max-inline-size: 100%;
       white-space: nowrap;
     }
-    /* Bring the inner thead/tbody back to table layout inside the scroller */
-    .owner-table:not(.tbl-stack) thead,
-    .admin-students-table:not(.tbl-stack) thead,
-    .leaderboard-table:not(.tbl-stack) thead,
-    .trend-table:not(.tbl-stack) thead { display: table-header-group; }
-    .owner-table:not(.tbl-stack) tbody,
-    .admin-students-table:not(.tbl-stack) tbody,
-    .leaderboard-table:not(.tbl-stack) tbody,
-    .trend-table:not(.tbl-stack) tbody { display: table-row-group; }
+    .leaderboard-table:not(.tbl-stack) thead { display: table-header-group; }
+    .leaderboard-table:not(.tbl-stack) tbody { display: table-row-group; }
   }
 
 
@@ -2581,16 +2573,12 @@
      ║  TABLE ROWS — quiet zebra-on-hover                             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   .table tbody tr,
-  .owner-table tbody tr,
-  .admin-students-table tbody tr,
   .leaderboard-table tbody tr {
     /* r149 (R3-A3 §3): .table tbody tr ينضم — خلفيته hover موجودة
        (components.css) لكنها كانت تقفز بالتوقيت الافتراضي (snap). */
     transition: background var(--t-fast) var(--ease);
   }
   @media (hover: hover) {
-    .owner-table tbody tr:hover,
-    .admin-students-table tbody tr:hover,
     .leaderboard-table tbody tr:hover {
       background: var(--surface-2);
     }
@@ -3634,19 +3622,16 @@
      ║  TABLE ROWS — leading dot indicator on hover                   ║
      ║  Adds a small accent dot at the start of the row when hovered. ║
      ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (r150d: owner/admin-students left this flourish with their retired
+     families — the canonical .table hover is the quiet zebra the canon
+     documents; the leaderboard keeps its own dot identity.) */
   @media (hover: hover) {
-    .owner-table tbody tr,
-    .admin-students-table tbody tr,
     .leaderboard-table tbody tr {
       position: relative;
     }
-    .owner-table tbody tr td:first-child,
-    .admin-students-table tbody tr td:first-child,
     .leaderboard-table tbody tr td:first-child {
       position: relative;
     }
-    .owner-table tbody tr:hover td:first-child::before,
-    .admin-students-table tbody tr:hover td:first-child::before,
     .leaderboard-table tbody tr:hover td:first-child::before {
       content: '';
       position: absolute;
@@ -3657,8 +3642,6 @@
       border-radius: 0 var(--r-xs) var(--r-xs) 0;
       animation: madarek-row-bar-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
     }
-    [dir="rtl"] .owner-table tbody tr:hover td:first-child::before,
-    [dir="rtl"] .admin-students-table tbody tr:hover td:first-child::before,
     [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before {
       border-radius: var(--r-xs) 0 0 var(--r-xs);
     }
@@ -5154,8 +5137,6 @@
   .comp-hero::before { inline-size: 2px; }
   @media (hover: hover) {
     .list-row::before { inline-size: 2px; }
-    .owner-table tbody tr:hover td:first-child::before,
-    .admin-students-table tbody tr:hover td:first-child::before,
     .leaderboard-table tbody tr:hover td:first-child::before { inline-size: 2px; }
   }
   /* Deliberately KEPT at 3px as standalone accent BAR elements (not card

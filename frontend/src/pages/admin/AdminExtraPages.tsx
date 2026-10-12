@@ -154,7 +154,7 @@ export function AdminStudentsPage() {
         {studentsQ.data && (
           <>
             <div className="admin-students-table-wrap">
-              <table className="admin-students-table tbl-stack">
+              <table className="table tbl-stack">
                 <thead>
                   <tr>
                     <th scope="col">الطالب</th>

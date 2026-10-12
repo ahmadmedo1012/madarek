@@ -101,7 +101,7 @@ export function OwnerRealtimePage() {
           </section>
 
           <Card title="ملخّص النشاط الحيّ" icon={Radio}>
-            <table className="owner-table">
+            <table className="table tbl-stack owner-realtime-table">
               <thead>
                 <tr>
                   <th scope="col">المؤشّر</th>
