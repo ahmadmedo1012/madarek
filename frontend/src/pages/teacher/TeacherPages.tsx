@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import {
@@ -112,7 +112,9 @@ function OfferingPickerSelect({
 
 export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
-  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><LoadingState /></div>;
+  /* r148 (AUDIT-2 L8): سبينر صفحي مكان هيكل مطابق الشكل — القائمة
+     النهائية جدول حصص أسبوعي؛ TableSkeleton يحافظ على الإيقاع. */
+  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><Card><TableSkeleton rows={5} cols={4} /></Card></div>;
   if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
 
   // Group all schedule slots by dayOfWeek across the teacher's offerings.

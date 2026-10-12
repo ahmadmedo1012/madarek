@@ -23,6 +23,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, X, ChevronLeft, AlertTriangle, Info, GraduationCap, Users, Check, RefreshCw } from 'lucide-react';
 import { Icon } from '../Icon';
 import { Illustration } from '../Illustration';
+import { Skeleton } from '../primitives/States';
 import { NotificationPanel } from '../overlays';
 import { useFocusTrap } from '../overlays/useFocusTrap';
 import { useNotifications, useUnreadNotifications, useMarkNotifRead, useMarkAllNotifsRead, type Notification } from '../../hooks/useResources';
@@ -192,9 +193,20 @@ function NotificationPanelContent({
 
     <div className="notif-panel-list">
       {listQ.isPending ? (
-        <div className="notif-empty">
-          <div className="notif-empty-icon"><Icon icon={Bell} size={20} /></div>
-          <p className="notif-empty-text">جارٍ التحميل…</p>
+        /* r148 (AUDIT-2 L1): التحميل كان يعيد استخدام قالب الحالة الفارغة
+           (جرس + «جارٍ التحميل…») — الصفوف النهائية أزرار 44px بأيقونة +
+           سطرين، وهذا الهيكل العظمي مطابق الشكل (craft floor: skeleton
+           مطابق للقوائم) بدل غلاف الفراغ. */
+        <div className="flex-col gap-2" aria-busy="true">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="notif-item" aria-hidden style={{ cursor: 'default', pointerEvents: 'none' }}>
+              <span className="notif-item-icon"><Skeleton width={14} height={14} rounded="50%" /></span>
+              <span className="notif-item-body">
+                <Skeleton width="62%" height={12} />
+                <Skeleton width="88%" height={10} />
+              </span>
+            </div>
+          ))}
         </div>
       ) : listQ.isError ? (
         /* 5-C3 (A9 P1-1): an aborted / failed /notifications used to

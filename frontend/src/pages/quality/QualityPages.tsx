@@ -16,7 +16,7 @@ import {
 import { Card, MetricCard, Badge, AlertRow, ProgressBar } from '../../components/primitives';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
-import { LoadingState, ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -1186,7 +1186,9 @@ export function QualityAlertsPage() {
       </header>
 
       {q.isPending ? (
-        <LoadingState />
+        /* r148 (AUDIT-2 L8): قائمة تنبيهات (نقطة خطورة + سطران) —
+           ListSkeleton مطابق الشكل بدل السبينر الصفحي. */
+        <Card><ListSkeleton rows={4} /></Card>
       ) : q.isError ? (
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.alerts.length === 0 ? (

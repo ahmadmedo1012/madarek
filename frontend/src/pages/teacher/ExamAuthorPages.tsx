@@ -699,7 +699,14 @@ function QuestionBankSection() {
               <Button variant="primary" onClick={() => setCreating(true)}>
                 <Icon icon={Plus} size={14} /> سؤال جديد
               </Button>
-            ) : undefined
+            ) : (
+              /* r148 (AUDIT-2 L7): الحالة الفارغة المُصفّاة كانت بلا مخرج —
+                 الأسطح الشقيقة (admin/students، owner/users) توفر مسح
+                 البحث والفلاتر. نفس النمط. */
+              <Button variant="ghost" onClick={() => { setQ(''); setDebouncedQ(''); setCategoryId(''); setType(''); setDifficulty(''); }}>
+                <Icon icon={X} size={13} /> مسح البحث والتصفية
+              </Button>
+            )
           }
         />
       ) : (
