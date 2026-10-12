@@ -1158,7 +1158,6 @@ export function AdminCoursesPage() {
     setEditing(c);
   };
   const submit = () => {
-    if (!form.code || !form.name || !form.departmentId) return;
     if (editing?.id) {
       updateCourse.mutate(form as Partial<CourseFormInput>);
     } else {
