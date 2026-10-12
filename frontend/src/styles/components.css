@@ -933,6 +933,64 @@
   .table tbody tr:focus-within .table-row-actions { opacity: 1; }
   @media (hover: none) { .table-row-actions { opacity: 1; } }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOBILE — the .table fallback ladder (≤640)                    ║
+     ║  Rung 1 STACK (the recipe): tag a table `tbl-stack` and every  ║
+     ║  row becomes a vertical card; each <td> picks its label from   ║
+     ║  the data-label attribute set in the JSX (labels sit at the    ║
+     ║  inline-start edge — first-read in RTL).                       ║
+     ║  Rung 2 SCROLL (the safety net): a .table that didn't opt in   ║
+     ║  keeps its table layout and scrolls inside itself — never      ║
+     ║  squishes, never drags the page.                               ║
+     ║  (r151b closes worklog 5-a #3: .table itself carries the       ║
+     ║  fallback. Moved verbatim from polish v11's overrides block —  ║
+     ║  selectors unchanged so .leaderboard-table keeps riding rung 1 ║
+     ║  via its own tbl-stack opt-in. Deliberate deltas vs the old    ║
+     ║  overrides home: ::before keyed on [data-label] so cells       ║
+     ║  without a label render no empty pseudo, and no white-space    ║
+     ║  nowrap on rung 2 — Arabic prose wraps; scrolling kicks in     ║
+     ║  only when min-content truly exceeds the viewport.)            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 640px) {
+    .tbl-stack { display: block; }
+    .tbl-stack thead { display: none; }
+    .tbl-stack tbody, .tbl-stack tr { display: block; }
+    .tbl-stack tr {
+      border: 1px solid var(--rule);
+      border-radius: var(--r-md);
+      padding: var(--sp-3);
+      margin-block-end: var(--sp-3);
+      background: var(--surface);
+    }
+    /* Cards don't zebra — parity with the old overrides-layer home
+       (the wrap-scroller's hover never applied to stacked cards). */
+    .table.tbl-stack tbody tr:hover { background: var(--surface); }
+    .tbl-stack td {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--sp-3);
+      padding: var(--sp-2) 0;
+      border-block-end: 1px dashed var(--rule);
+    }
+    .tbl-stack td:last-child { border-block-end: 0; }
+    .tbl-stack td[data-label]::before {
+      content: attr(data-label);
+      flex-shrink: 0;
+      color: var(--text-muted);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-medium);
+    }
+    .table:not(.tbl-stack) {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-inline-size: 100%;
+    }
+    .table:not(.tbl-stack) thead { display: table-header-group; }
+    .table:not(.tbl-stack) tbody { display: table-row-group; }
+  }
+
   /* Pagination footer of the table system. NOTE (13-17): OwnerUsersPage
      finished the ruling-#5 migration — it renders .table-pagination with
      ChevronLeft/ChevronRight icons, and the legacy .owner-pagination
@@ -985,6 +1043,11 @@
   @media (max-width: 640px) {
     /* 44px touch targets on phones (craft floor). */
     .table-pagination-actions button { min-inline-size: 44px; min-block-size: 44px; }
+    /* r151b (R5-A4 probe): the 7×44px button cluster (25 pages of the
+       papers roster) measured 329px wide inside a 274px wrap at 360 —
+       «التالي» was cut off the RTL leading edge. Wrap the cluster so
+       the buttons reflow onto a second line instead of overflowing. */
+    .table-pagination-actions { flex-wrap: wrap; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗

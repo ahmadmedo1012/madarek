@@ -2105,66 +2105,15 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MOBILE — table → cards transformation helper                  ║
-     ║  Tag a table with class `tbl-stack` to make every row become a ║
-     ║  vertical card on phones. Each <td> picks its label from       ║
-     ║  data-label attribute set in the JSX.                          ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (max-width: 640px) {
-    .tbl-stack { display: block; }
-    .tbl-stack thead { display: none; }
-    .tbl-stack tbody, .tbl-stack tr { display: block; }
-    .tbl-stack tr {
-      border: 1px solid var(--rule);
-      border-radius: var(--r-md);
-      padding: var(--sp-3);
-      margin-block-end: var(--sp-3);
-      background: var(--surface);
-    }
-    .tbl-stack td {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: var(--sp-3);
-      padding: var(--sp-2) 0;
-      border-block-end: 1px dashed var(--rule);
-    }
-    .tbl-stack td:last-child { border-block-end: 0; }
-    .tbl-stack td::before {
-      content: attr(data-label);
-      flex-shrink: 0;
-      color: var(--text-muted);
-      font-size: var(--fs-xs);
-      font-weight: var(--fw-medium);
-    }
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MOBILE — universal table fallback                             ║
-     ║  Any table that didn't opt into `tbl-stack` gets horizontal    ║
-     ║  scroll on phones, so it stays usable instead of overflowing   ║
-     ║  the page or squeezing into unreadable cells.                  ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: the .tbl entries removed from this
-     fallback — zero TSX consumers render the legacy .tbl table name
-     (ruling #5 migrated every table to .table, each shipping
-     .tbl-stack). NOTE for a future wave: .table itself is not in this
-     fallback list — see worklog 5-a follow-up #3.) */
-  @media (max-width: 640px) {
-    /* (r150d: owner/admin-students/trend retired onto .table+tbl-stack —
-       their names leave this fallback; the leaderboard keeps its own.) */
-    .leaderboard-table:not(.tbl-stack) {
-      display: block;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      max-inline-size: 100%;
-      white-space: nowrap;
-    }
-    .leaderboard-table:not(.tbl-stack) thead { display: table-header-group; }
-    .leaderboard-table:not(.tbl-stack) tbody { display: table-row-group; }
-  }
+  /* (r151b — the mobile table→cards helper and the universal table
+     fallback moved to their canon home: components.css §TABLE now
+     owns the whole ≤640px fallback ladder (rung 1 stack via
+     .tbl-stack + data-label, rung 2 self-scroll for plain .table).
+     Closes worklog 5-a #3 — .table itself carries the fallback, so
+     the overrides layer no longer needs a word about it. The old
+     .leaderboard-table:not(.tbl-stack) orphan went with it: every
+     leaderboard ships tbl-stack (CollegePages), so rung 2's .table
+     safety net covers any future opt-out.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗

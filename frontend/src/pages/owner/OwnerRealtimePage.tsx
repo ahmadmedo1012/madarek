@@ -101,6 +101,10 @@ export function OwnerRealtimePage() {
           </section>
 
           <Card title="ملخّص النشاط الحيّ" icon={Radio}>
+            {/* r151b (R5-A4): the 23 sibling tables all ship a .table-wrap
+                scroller + per-td data-labels — this one missed both in the
+                r150d retirement (stacked bare values, no labels, no border). */}
+            <div className="table-wrap">
             <table className="table tbl-stack owner-realtime-table">
               <thead>
                 <tr>
@@ -116,39 +120,40 @@ export function OwnerRealtimePage() {
                      بشكل طبيعيّ». Quiet = neutral (the unknown/pending
                      tone); amber stays reserved for real thresholds. */}
                 <tr>
-                  <td>الجلسات المتّصلة</td>
-                  <td className="num"><bdi>{data.activeSessions.toLocaleString('ar-LY')}</bdi></td>
-                  <td>
+                  <td data-label="المؤشّر">الجلسات المتّصلة</td>
+                  <td className="num" data-label="القيمة"><bdi>{data.activeSessions.toLocaleString('ar-LY')}</bdi></td>
+                  <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.activeSessions > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.activeSessions > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
                 <tr>
-                  <td>طلبات الذكاء الاصطناعيّ</td>
-                  <td className="num"><bdi>{data.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>/دقيقة</td>
-                  <td>
+                  <td data-label="المؤشّر">طلبات الذكاء الاصطناعيّ</td>
+                  <td className="num" data-label="القيمة"><bdi>{data.aiRequestsPerMin.toLocaleString('ar-LY')}</bdi>/دقيقة</td>
+                  <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.aiRequestsPerMin > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.aiRequestsPerMin > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
                 <tr>
-                  <td>غرف البثّ المباشر</td>
-                  <td className="num"><bdi>{data.liveBroadcasts.toLocaleString('ar-LY')}</bdi></td>
-                  <td>
+                  <td data-label="المؤشّر">غرف البثّ المباشر</td>
+                  <td className="num" data-label="القيمة"><bdi>{data.liveBroadcasts.toLocaleString('ar-LY')}</bdi></td>
+                  <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.liveBroadcasts > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.liveBroadcasts > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
                 <tr>
-                  <td>اختبارات قيد التنفيذ</td>
-                  <td className="num"><bdi>{data.activeExams.toLocaleString('ar-LY')}</bdi></td>
-                  <td>
+                  <td data-label="المؤشّر">اختبارات قيد التنفيذ</td>
+                  <td className="num" data-label="القيمة"><bdi>{data.activeExams.toLocaleString('ar-LY')}</bdi></td>
+                  <td data-label="الحالة">
                     <span className={`owner-health-dot ${data.activeExams > 0 ? 'green' : 'neutral'} inline`} />
                     <span className="visually-hidden">{data.activeExams > 0 ? 'نشط' : 'هادئ'}</span>
                   </td>
                 </tr>
               </tbody>
             </table>
+            </div>
           </Card>
         </>
       )}

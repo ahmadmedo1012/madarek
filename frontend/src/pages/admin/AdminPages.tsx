@@ -937,10 +937,13 @@ export function AdminReportsPage() {
               <tbody>
                 {data.paperTrend.map((row, i) => (
                   <tr key={i}>
-                    <td>{row.month}</td>
-                    <td className="font-mono">{row.submitted}</td>
-                    <td className="font-mono">{row.graded}</td>
-                    <td className="font-mono">{row.published}</td>
+                    {/* r151b (R5-A4): labels restored — the r150d retirement
+                        onto .table+tbl-stack left these four tds bare on
+                        phones («12 / 8 / 5» with no column names). */}
+                    <td data-label="الشهر">{row.month}</td>
+                    <td className="font-mono" data-label="مُقدَّم">{row.submitted}</td>
+                    <td className="font-mono" data-label="تمّ تقييمه">{row.graded}</td>
+                    <td className="font-mono" data-label="منشور">{row.published}</td>
                   </tr>
                 ))}
               </tbody>

@@ -428,8 +428,18 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
       expect(screen.getByRole('tab', { name: 'جدول' }).getAttribute('aria-selected')).toBe('true');
     });
     expect(document.querySelector('.trend-table-wrap table')).not.toBeNull();
-    expect(within(document.querySelector('.trend-table-wrap table') as HTMLElement).getAllByRole('row'))
-      .toHaveLength(REPORTS.paperTrend.length + 1); // header + 2 months
+    const trendRows = within(document.querySelector('.trend-table-wrap table') as HTMLElement).getAllByRole('row');
+    expect(trendRows).toHaveLength(REPORTS.paperTrend.length + 1); // header + 2 months
+    // r151b (R5-A4): every data cell carries its column name — the
+    // r150d retirement left the trend tds bare on phones.
+    const trendCells = Array.from(
+      document.querySelectorAll('.trend-table-wrap table td'),
+    );
+    expect(trendCells).toHaveLength(REPORTS.paperTrend.length * 4);
+    for (const td of trendCells) {
+      expect(td.getAttribute('data-label')).toBeTruthy();
+    }
+    expect(trendCells.some((td) => td.getAttribute('data-label') === 'الشهر')).toBe(true);
 
     fireEvent.click(screen.getByRole('tab', { name: 'أعمدة' }));
     await waitFor(() => {
