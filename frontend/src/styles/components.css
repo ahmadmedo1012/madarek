@@ -825,6 +825,11 @@
     .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-4)); }
   }
 
+  /* r149 (R3-A1 #2): داخل شريط تصفية، حبة البحث تمتد لارتفاع مدخلات
+     الاختيار المجاورة (44px) — كانت 38px بجانب 44px في ExamAuthor
+     (شريطان) والمكتبة. خارج أشرطة التصفية تبقى الحبة 38px كروم ترويسة. */
+  .filter-bar .topbar-search input { block-size: 44px; }
+
   .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
   @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
   .form-label {

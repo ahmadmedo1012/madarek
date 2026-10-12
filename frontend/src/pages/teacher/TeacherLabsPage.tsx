@@ -24,8 +24,7 @@ import {
   ExternalLink, ChevronLeft, AlertCircle, type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
-import { ErrorState, Skeleton } from '../../components/primitives/States';
-import { Illustration } from '../../components/Illustration';
+import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
 import '../../styles/training.css'; // shared .track-grid/.track-card family (D11 css split, 12-15)
@@ -169,13 +168,12 @@ export default function TeacherLabsPage() {
 
           {labs && labs.length === 0 ? (
             <Card>
-              <div className="empty-state">
-                <Illustration name="empty-search" decorative />
-                <Icon icon={FlaskConical} size={28} className="text-subtle" />
-                <p className="text-sm text-muted">
-                  لم تُضف معامل بعد — تواصل مع إدارة المنصة لإضافة معامل لكليتك.
-                </p>
-              </div>
+              {/* r149 (R3-A1 #6): EmptyState الكنونية — كانت يدوية بعلامة مزدوجة. */}
+              <EmptyState
+                illustration="empty-search"
+                title="لم تُضف معامل بعد"
+                description="تواصل مع إدارة المنصة لإضافة معامل لكليتك."
+              />
             </Card>
           ) : (
             <Card title="المعامل المتاحة" icon={FlaskConical}>

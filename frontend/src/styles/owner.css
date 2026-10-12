@@ -735,17 +735,8 @@
 }
 
 /* ── Command Center: Realtime Grid ────────────────────────── */
-.owner-realtime-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--sp-3);
-}
-
-@media (max-width: 768px) {
-  .owner-realtime-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+/* (r149 R3-A1 #9: حُذفت الشبكة الخاصة — القسم يركب ‎.grid-4 الكنونية
+   الآن بنفس فجوة وكسر كل شرائط KPI في المنصة.) */
 
 /* ── Command Center: Governance Timeline ──────────────────── */
 .owner-governance-section {
@@ -1388,14 +1379,8 @@
   padding-block-start: var(--sp-4);
 }
 
-/* 4-A7 P3-9: at 390px the 2×2 live tiles squeeze to ~171px each and
-   the longest label wraps awkwardly; under 360px the grid goes
-   single-column so every live tile gets the full track. */
-@media (max-width: 360px) {
-  .owner-realtime-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* (r149 R3-A1 #9: حُذف — grid-4 الكنونية تكسر عندها بنفسها؛
+   تعليق 4-A7 P3-9 القديم كان يخص الشبكة الخاصة.) */
 
 /* 4-A7 P1-2 touch floor: the alert disclosure is now a real button —
    it gets the console's 44px mobile floor like every other control. */

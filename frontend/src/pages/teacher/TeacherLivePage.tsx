@@ -16,8 +16,7 @@ import {
   CheckCircle2, RefreshCw,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
-import { ErrorState, Skeleton } from '../../components/primitives/States';
-import { Illustration } from '../../components/Illustration';
+import { ErrorState, Skeleton, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
@@ -342,11 +341,13 @@ export default function TeacherLivePage() {
           {/* Scheduled */}
           <Card title="جلسات قادمة" icon={Calendar} subtitle={`${scheduled.length} جلسة مجدولة`}>
             {scheduled.length === 0 ? (
-              <div className="empty-state">
-                <Illustration name="empty-search" decorative />
-                <Icon icon={Calendar} size={24} className="text-subtle" />
-                <p className="text-sm text-muted">لا توجد جلسات قادمة. أنشئ جلسة جديدة لتظهر هنا.</p>
-              </div>
+              /* r149 (R3-A1 #6): EmptyState الكنونية — كانت يدوية بعلامة
+                 مزدوجة (رسم + أيقونة معًا) وبلا تشريح العنوان/الدور. */
+              <EmptyState
+                illustration="empty-search"
+                title="لا توجد جلسات قادمة"
+                description="أنشئ جلسة جديدة لتظهر هنا."
+              />
             ) : (
               <div className="flex-col gap-2">
                 {scheduled.map((s) => (

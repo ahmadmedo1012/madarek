@@ -9,6 +9,7 @@ import { Card, MetricCard, Badge } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
+import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
 import { formatDateWithYearAr } from '../../lib/format';
@@ -31,14 +32,9 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   PUBLISHED: 'مُنشور في المكتبة',
 };
 
-const STATUS_TONE: Record<PaperStatus, 'brand' | 'green' | 'amber' | 'red' | 'gold' | 'purple'> = {
-  UPLOADED: 'amber',
-  SCANNING: 'brand',
-  CHECKS_PASSED: 'brand',
-  CHECKS_FAILED: 'red',
-  GRADED: 'green',
-  PUBLISHED: 'purple',
-};
+/* r149 (R3-A1 #1): السلّم الكنوني المشترك — كان هنا انقسام دلالي
+ * (CHECKS_PASSED brand/GRADED green/PUBLISHED purple) يخالف ما يراه
+ * الإداري لنفس الورقة. الآن تعريف واحد في lib/paperStatus.ts. */
 
 /* fmtDate (short ar-LY date with year, '—' for missing values) is
  * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
@@ -223,7 +219,7 @@ function PaperRow({
           )}
         </div>
         <div className="paper-row-side">
-          <Badge color={STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
+          <Badge color={PAPER_STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
           <span className="text-xxs text-subtle">رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
         </div>
       </div>

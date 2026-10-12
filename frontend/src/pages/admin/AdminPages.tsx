@@ -15,6 +15,7 @@ import {
   KpiSkeleton, CardSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
+import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useReducedMotion } from '../../components/motion';
@@ -697,14 +698,8 @@ const PAPER_STATUS_LABEL: Record<ResearchStatus, string> = {
   GRADED: 'مقيَّمة',
   PUBLISHED: 'منشورة',
 };
-const PAPER_STATUS_TONE: Record<ResearchStatus, 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand'> = {
-  UPLOADED: 'amber',
-  SCANNING: 'brand',
-  CHECKS_PASSED: 'purple',
-  CHECKS_FAILED: 'red',
-  GRADED: 'gold',
-  PUBLISHED: 'green',
-};
+/* r149 (R3-A1 #1): انتقل التعريف إلى lib/paperStatus.ts — سلّم واحد
+ * للطالب والإداري (هذه كانت النسخة الأغنى فاعتُمدت كما هي). */
 
 /** One register row — status badge + the moderation-relevant numbers. */
 function PaperRow({ p }: { p: AdminPaper }) {

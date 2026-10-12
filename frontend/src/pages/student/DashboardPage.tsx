@@ -6,7 +6,7 @@ import {
 import {
   GraduationCap, Presentation, FileText, FlaskConical,
   BookOpen, CalendarCheck, ClipboardList, Trophy, Radio,
-  Play, ChevronLeft,
+  Play, ChevronLeft, Eye,
   type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -253,14 +253,15 @@ export default function StudentDashboardPage() {
           </p>
         </header>
         <Card>
-          <div className="empty-state">
-            <p className="text-sm text-muted">
-              لوحة التحكّم هذه مخصّصة للطلّاب. أنت مسجَّل دخول كحساب{' '}
-              {user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'}، لذلك تظهر
-              لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم
-              حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.
-            </p>
-          </div>
+          {/* r149 (R3-A1 #6): EmptyState الكنونية — كانت فقرة مجردة بلا
+              تشريح (لا بئر، لا عنوان، لا role=status). */}
+          <EmptyState
+            icon={Eye}
+            title="عرض معاينة"
+            description={`لوحة التحكّم هذه مخصّصة للطلّاب. أنت مسجَّل دخول كحساب ${
+              user?.role === 'OWNER' ? 'مالك المنصّة' : 'إداريّ'
+            }، لذلك تظهر لك صفحة معاينة فارغة. للاطّلاع على لوحة طالب حقيقيّة، استخدم حساب طالب مسجَّل أو زر صفحة كلّيّة من قائمة الكلّيّات.`}
+          />
         </Card>
       </div>
     );

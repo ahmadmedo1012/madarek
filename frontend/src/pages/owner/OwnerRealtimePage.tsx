@@ -90,8 +90,10 @@ export function OwnerRealtimePage() {
           </div>
 
           {/* Live region: value changes are announced politely; the
-              values remount (keyed) so each change re-settles. */}
-          <section className="owner-realtime-grid" aria-live="polite" aria-label="مؤشرات المراقبة الحيّة للمنصّة">
+              values remount (keyed) so each change re-settles.
+              r149 (R3-A1 #9): grid-4 الكنونية — كانت شبكة خاصة بفجوة
+              وكسر مختلفين عن كل شرائط KPI في المنصة. */}
+          <section className="grid-4" aria-live="polite" aria-label="مؤشرات المراقبة الحيّة للمنصّة">
             <MetricCard icon={Activity} label={liveLabel('الجلسات النشطة')} value={tickValue(data.activeSessions)} color="brand" />
             <MetricCard icon={Bot} label={liveLabel('طلبات AI / دقيقة')} value={tickValue(data.aiRequestsPerMin)} color="gold" />
             <MetricCard icon={MonitorPlay} label={liveLabel('بثّ مباشر')} value={tickValue(data.liveBroadcasts)} color="purple" />
