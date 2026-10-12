@@ -1090,151 +1090,13 @@ a.comp-card:focus-visible .comp-go {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Admin extra pages (Sub-project D) — students table, digital,
-   analysis, settings
-   ═══════════════════════════════════════════════════════════════ */
-
-.admin-students-toolbar {
-  display: flex;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-3);
-  flex-wrap: wrap;
-}
-.admin-students-search {
-  position: relative;
-  flex: 1 1 240px;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-}
-.admin-students-search:focus-within {
-  border-color: var(--accent);
-  box-shadow: var(--state-input-focus-halo);
-}
-.admin-students-search input {
-  /* 13-17 (D14 dedupe): border/background/height/outline deleted —
-     polish.css's pages-layer bare-input reset (height: auto, padding: 0)
-     is the approved final for this wrapper-as-pill surface and no longer
-     depends on this file loading first. Colleges keeps only what polish
-     does not set: flow, family, size and ink.
-     21-c (A10 P1 cross-ref): 13px → 16px — iOS Safari zooms the
-     viewport on any <16px input focus. */
-  flex: 1 1 auto;
-  font-family: inherit;
-  font-size: 16px;
-  color: var(--text);
-}
-.admin-students-input {
-  height: 36px;
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor. */
-  font-size: 16px;
-  font-family: inherit;
-}
-.admin-students-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: var(--state-input-focus-halo);
-}
-
-.admin-students-table-wrap {
-  overflow-x: auto;
-  margin-inline: calc(-1 * var(--sp-2));
-}
-/* (r150d): the .admin-students-table family RETIRED onto the canonical
-   .table — density steps up to the canonical 12/16 and the hover joins
-   the platform-wide surface-2 zebra. The -wrap/-name/-email content
-   classes stay (they are cell anatomy, not table chrome). */
-.admin-students-name {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-.admin-students-email {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-}
-
-.admin-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding-block-start: var(--sp-3);
-  border-block-start: 1px solid var(--border);
-}
-.admin-pagination-actions {
-  display: inline-flex;
-  gap: var(--sp-2);
-}
-
-/* Digital page */
-/* Analysis page */
-.trend-table-wrap { overflow-x: auto; }
-/* (r150d): the .trend-table family RETIRED onto the canonical .table
-   (tbl-stack rides now; the -wrap keeps its overflow-x duty). */
-
-.top-courses-row:hover { background: var(--surface-2); }
-.top-courses-body { flex: 1 1 auto; min-width: 0; }
-.top-courses-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); }
-.top-courses-meta { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
-
-/* Settings page */
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding: var(--sp-3) 0;
-  border-block-end: 1px dashed var(--border);
-}
-.settings-row:last-child { border-block-end: 0; }
-.settings-label {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  /* r148 (AUDIT-3 M1): 0.05em على تسميات عربية — تصفير التتبع. */
-  letter-spacing: 0;
-}
-.settings-value {
-  font-size: var(--fs-sm);
-  color: var(--text);
-  margin-block-start: 2px;
-}
-.settings-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
-.settings-links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-}
-.settings-links a {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--sp-2);
-  border-radius: var(--r-sm);
-  color: var(--accent-ink, var(--accent));
-  text-decoration: none;
-  font-size: var(--fs-sm);
-  transition: background var(--t-fast) var(--ease);
-}
-.settings-links a:hover { background: var(--surface-2); }
+/* ==================================================================
+   Admin extra pages — MOVED to admin.css (r150e)
+   ------------------------------------------------------------------
+   (Sub-project D lived here: students table, digital, analysis,
+   settings. The r150e split moved it verbatim to admin.css — the
+   colleges sheet now owns only the colleges world. The dead
+   .top-courses-* residue died rather than moving.) */
 
 /* ═══════════════════════════════════════════════════════════════
    Colleges leaderboard (Sub-project C) — inter-college comparison
@@ -1680,75 +1542,13 @@ a.comp-card:focus-visible .comp-go {
   .comp-index-card:hover { transform: none; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   wave 5-b: admin-extras (append-only)
-
-   OWNERSHIP DOCUMENTATION (audit 0-e, CSS ownership map): colleges.css
-   has secretly owned the admin extra pages — .admin-students-*,
-   .admin-pagination*, .digital-stat-*, .trend-table, .settings-*,
-   .top-courses-* — since "Sub-project D" (the section above). That
-   section stays untouched per this wave's append-only constraint; this
-   section documents the ownership and layers the wave 5-b refinements
-   on top (audit 0-e P2-37/38 + craft-floor fixes). If a future wave
-   splits the admin-extras sheet into admin.css, move BOTH sections
-   together.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Ruling #2 — the settings labels are Arabic; uppercase is a no-op and
-   0.05em letter-spacing breaks cursive joining. Same specificity as
-   the base rule, later source order wins. */
-.settings-label {
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-/* Settings resource links: real 44px hit area (craft floor) + the
-   page-level padding rhythm. Links are <Link> now (no full reloads),
-   still rendered as <a> so the base rules above keep applying. */
-.settings-links a {
-  min-block-size: 44px;
-  align-items: center;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-md);
-}
-
-/* (Premium-polish dead-code sweep): the .digital-stat-* / .top-courses-*
-   families + their madarek-admin-extras-in stagger keyframes lived here —
-   AdminExtraPages renders .admin-students-* (the stale ownership comment
-   above lied); removed with zero TSX consumers. */
-
-/* The wrapper-as-pill search field: polish.css's pages-layer bare-input
-   reset (height:auto / padding:0, higher specificity than the base
-   .admin-students-input rule) leaves the pill content-sized (~20px)
-   next to the 36px faculty select. Size the PILL — the wrapper owns
-   the surface — and let the bare input fill it (0,2,0 out-specifies
-   the polish reset's 0,1,1 across the same layer). */
-.admin-students-search { min-block-size: 36px; }
-.admin-students-search .admin-students-input {
-  align-self: stretch;
-  padding-inline: 0;
-}
-
-/* Mobile touch floor (craft floor: ≥44px) for the students toolbar
-   (the pill + the 36px select) and the pagination buttons. The pill
-   rule wins on specificity; the pagination !important is the same
-   documented layer-precedence exception wave 5-c used — polish's
-   overrides-layer mobile block pins .btn.sm at min-block-size 32px
-   and a pages-layer rule can never win without it. */
-@media (max-width: 640px) {
-  .admin-students-input,
-  .admin-students-search { min-block-size: 44px; }
-  .admin-pagination-actions .btn {
-    min-inline-size: 44px;
-    min-block-size: 44px !important;
-  }
-}
-
-/* Reduced-motion off-switch (guardrail #6). */
-@media (prefers-reduced-motion: reduce) {
-  .digital-stat-row,
-  .top-courses-row { animation: none; }
-}
+/* ==================================================================
+   wave 5-b: admin-extras — MOVED to admin.css (r150e)
+   ------------------------------------------------------------------
+   (The admin-extras refinements lived here: settings-label/links
+   corrections, the students-search pill sizing, the mobile touch
+   floor. Moved verbatim to admin.css with the Sub-project D body —
+   the split the banner itself prescribed.) */
 
 /* ═══════════════════════════════════════════════════════════════
    wave 6-c — identity registry live (append-only)

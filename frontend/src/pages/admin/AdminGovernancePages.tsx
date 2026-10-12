@@ -38,6 +38,7 @@ import { countAr } from '../../lib/format';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
 import '../../styles/colleges.css'; // borrowed .comp-form-field (D14 css split, 13-17)
+import '../../styles/admin.css'; // r150e: the borrowed admin-students-search chrome moved home
 
 const DEGREE_LABEL: Record<string, string> = {
   BACHELORS: 'بكالوريوس', MASTERS: 'ماجستير', PHD: 'دكتوراه',

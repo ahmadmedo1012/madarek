@@ -16,7 +16,7 @@ import { useFaculties } from '../../hooks/useResources';
 // .settings-*, .top-courses-*) since "Sub-project D" — see its ownership
 // banner. It lands in the chunk shared with CollegePages / CompetitionsPages /
 // LandingPage (the other consumers).
-import '../../styles/colleges.css';
+import '../../styles/admin.css'; // r150e: admin-extras surfaces own their sheet now
 
 /* ───────────────────────── /admin/students ─────────────────────────
  *

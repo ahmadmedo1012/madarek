@@ -37,7 +37,7 @@ import { cartesianOptions, valueLabels, chartColors, useChartThemeKey } from '..
 // 5-B4: the admin roster chrome lives in colleges.css since "Sub-project D"
 // (its ownership banner) — the students-toolbar/pagination/trend-table
 // families the courses page + papers register now consume too.
-import '../../styles/colleges.css';
+import '../../styles/admin.css'; // r150e: the roster chrome left colleges.css
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
