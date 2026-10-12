@@ -3266,7 +3266,7 @@
 
   /* Curriculum heatmap legend — key dots mirror the .matrix-cell
      level washes (the heatmap grid itself reuses .matrix-cells /
-     .matrix-cell + .lvl-* from polish.css — one heatmap language
+     .matrix-cell + .lvl-* from student.css (migrated r151i) — one heatmap language
      across the student matrix and the quality oversight view). */
   .heat-legend {
     display: flex;
