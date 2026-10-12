@@ -649,6 +649,49 @@ export function useAdminCourses(
   });
 }
 
+// ── Course CRUD (16-decisions #5: API existed, page was read-only) ──
+// The backend already routes POST/PATCH/DELETE with role + FK guards
+// (courses.routes.ts); these are the frontend half — the hooks the
+// /admin/courses page never had.
+export interface CourseFormInput {
+  code: string;
+  name: string;
+  nameEn?: string;
+  description?: string;
+  credits: number;
+  iconEmoji?: string;
+  themeColor?: string;
+  departmentId: string;
+}
+function invalidateCourses(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: ['admin', 'courses'] });
+}
+/** POST /admin/courses — create (16-decisions #5). */
+export function useCreateCourse() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: CourseFormInput) => unwrap(api.post('/admin/courses', body)),
+    onSuccess: () => invalidateCourses(qc),
+  });
+}
+/** PATCH /admin/courses/:id — edit (the list had no edit path). */
+export function useUpdateCourse(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationKey: ['course', id],
+    mutationFn: (body: Partial<CourseFormInput>) => unwrap(api.patch(`/admin/courses/${id}`, body)),
+    onSuccess: () => invalidateCourses(qc),
+  });
+}
+/** DELETE /admin/courses/:id — delete with the FK-conflict guard. */
+export function useDeleteCourse() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => unwrap(api.delete(`/admin/courses/${id}`)),
+    onSuccess: () => invalidateCourses(qc),
+  });
+}
+
 // ── Admin papers (institution-wide research register) ──────────
 // 5-B4 (audit 5-A8 §5 row 8): the admin research drill-down. The
 // backend endpoint (5-B1) is a projection of the research routes —

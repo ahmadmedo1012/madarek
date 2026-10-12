@@ -7,9 +7,9 @@ import {
   Award, Microscope, ClipboardCheck,
   AlertTriangle, Database, Search, X,
   ChevronLeft, ChevronRight, ChevronDown, ArrowLeft,
-  type LucideIcon,
+  Plus, Trash2, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge, Tabs, UserAvatar } from '../../components/primitives';
+import { Card, MetricCard, Badge, Tabs, UserAvatar, AlertRow } from '../../components/primitives';
 import {
   EmptyState, ErrorState, PageSkeleton,
   KpiSkeleton, CardSkeleton, TableSkeleton,
@@ -18,11 +18,14 @@ import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useReducedMotion } from '../../components/motion';
+import { Modal } from '../../components/overlays';
 import {
   useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses, useAdminPapers,
   useFaculties,
   RESEARCH_STATUSES,
-  type ResearchStatus, type AdminPaper, type AdminFaculty,
+  type ResearchStatus, type AdminPaper, type AdminFaculty, type AdminCourse, type CourseFormInput,
+  useCreateCourse, useUpdateCourse, useDeleteCourse,
+  apiErrorMessage,
 } from '../../hooks/useResources';
 import { pageList } from './AdminGovernancePages';
 import { api, unwrap } from '../../lib/api';
@@ -1131,9 +1134,45 @@ export function AdminCoursesPage() {
   const [facultyId, setFacultyId] = useState('');
   const facQ = useFaculties();
 
-  // The mount-time run carries an unchanged term and must not reset
-  // pagination (a page opened inside the first 300ms would silently
-  // bounce back to page 1).
+  // ── Course CRUD (16-decisions #5: the page was display-only) ──────
+  const [editing, setEditing] = useState<AdminCourse | null>(null);
+  const [form, setForm] = useState<CourseFormInput>({
+    code: '', name: '', credits: 3, departmentId: '',
+  });
+  const createCourse = useCreateCourse();
+  const updateCourse = useUpdateCourse(editing?.id ?? '');
+  const deleteCourse = useDeleteCourse();
+  const closeForm = () => { setEditing(null); };
+
+  const openCreate = () => {
+    setForm({ code: '', name: '', credits: 3, departmentId: '' });
+    setEditing({} as AdminCourse);
+  };
+  const openEdit = (c: AdminCourse) => {
+    setForm({
+      code: c.code,
+      name: c.name,
+      credits: c.credits,
+      departmentId: c.department ?? '',
+    });
+    setEditing(c);
+  };
+  const submit = () => {
+    if (!form.code || !form.name || !form.departmentId) return;
+    if (editing?.id) {
+      updateCourse.mutate(form as Partial<CourseFormInput>);
+    } else {
+      createCourse.mutate(form);
+    }
+    closeForm();
+  };
+  const remove = (c: AdminCourse) => {
+    if (confirm(`حذف "${c.name}"؟`)) {
+      deleteCourse.mutate(c.id);
+    }
+  };
+
+  // ── End of CRUD ────────────────────────────────────────────────
   const appliedQ = useRef(debouncedQ);
   useEffect(() => {
     const t = setTimeout(() => {
@@ -1188,6 +1227,15 @@ export function AdminCoursesPage() {
               aria-label="البحث في المقرّرات"
             />
           </div>
+          <button
+            type="button"
+            className="btn primary sm"
+            onClick={openCreate}
+            aria-label="إضافة مقرّر جديد"
+          >
+            <Icon icon={Plus} size={14} />
+            إضافة مقرّر
+          </button>
           <select
             className="admin-students-input"
             value={facultyId}
@@ -1270,6 +1318,28 @@ export function AdminCoursesPage() {
                     <td className="admin-table-num font-mono" data-label="تسجيلات">{c.totalEnrollments}</td>
                     <td className="admin-table-num font-mono" data-label="محاضرات">{c.totalLectures}</td>
                     <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
+                    <td className="admin-table-num font-mono" data-label="الإجراءات">
+                      <div className="flex items-center gap-2 justify-end">
+                        <button
+                          type="button"
+                          className="btn ghost sm"
+                          onClick={() => openEdit(c)}
+                          aria-label={`تعديل ${c.name}`}
+                        >
+                          <Icon icon={ArrowLeft} size={13} />
+                          تعديل
+                        </button>
+                        <button
+                          type="button"
+                          className="btn ghost sm text-subtle"
+                          onClick={() => remove(c)}
+                          aria-label={`حذف ${c.name}`}
+                        >
+                          <Icon icon={Trash2} size={13} />
+                          حذف
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -1285,6 +1355,104 @@ export function AdminCoursesPage() {
           </div>
         )}
       </Card>
+
+      {/* Course create/edit form — 16-decisions #5. The modal is keyed
+          off editing, so switching between create and edit remounts it and
+          resets the local draft (the same per-item pattern the governance
+          cards use). DepartmentId is required by the backend; the submit
+          button stays disabled until it is chosen. */}
+      <Modal
+        open={editing !== null}
+        onClose={closeForm}
+        ariaLabel={editing?.id ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
+      >
+        <div className="modal-header">
+          <h3 className="modal-title">
+            {editing?.id ? 'تعديل المقرّر' : 'إضافة مقرّر جديد'}
+          </h3>
+          <button type="button" className="modal-close" onClick={closeForm} aria-label="إغلاق">
+            <Icon icon={X} size={18} />
+          </button>
+        </div>
+        <div className="modal-body" style={{ maxWidth: 480 }}>
+          <div className="comp-form-field">
+            <label htmlFor="course-code">كود المقرّر *</label>
+            <input
+              id="course-code"
+              className="input"
+              value={form.code}
+              onChange={(e) => setForm({ ...form, code: e.target.value })}
+              placeholder="مثال: CS101"
+            />
+          </div>
+          <div className="comp-form-field">
+            <label htmlFor="course-name">اسم المقرّر *</label>
+            <input
+              id="course-name"
+              className="input"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="مقدمة في علوم الحاسب"
+            />
+          </div>
+          <div className="comp-form-field">
+            <label htmlFor="course-dept">القسم *</label>
+            <select
+              id="course-dept"
+              className="input"
+              value={form.departmentId}
+              onChange={(e) => setForm({ ...form, departmentId: e.target.value })}
+              disabled={facQ.isPending}
+            >
+              <option value="">اختر القسم…</option>
+              {facQ.data?.flatMap((f) =>
+                f.departments.map((d) => (
+                  <option key={d.id} value={d.id}>{f.name} · {d.name}</option>
+                )),
+              )}
+            </select>
+          </div>
+          <div className="comp-form-field">
+            <label htmlFor="course-credits">الساعات المعتمدة</label>
+            <input
+              id="course-credits"
+              className="input"
+              type="number"
+              min={1}
+              max={10}
+              value={form.credits}
+              onChange={(e) => setForm({ ...form, credits: Number(e.target.value) })}
+            />
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn ghost" onClick={closeForm}>
+            إلغاء
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={submit}
+            disabled={!form.code || !form.name || !form.departmentId ||
+              createCourse.isPending || updateCourse.isPending}
+          >
+            {createCourse.isPending || updateCourse.isPending
+              ? 'جارٍ الحفظ…'
+              : editing?.id ? 'حفظ التعديلات' : 'إضافة المقرّر'}
+          </button>
+        </div>
+        {(createCourse.isError || updateCourse.isError) && (
+          <AlertRow
+            color="red"
+            icon={AlertTriangle}
+            title="تعذّر حفظ المقرّر"
+            description={apiErrorMessage(
+              createCourse.isError ? createCourse.error : updateCourse.error,
+              'لم يستجب الخادم للطلب. إعادة المحاولة.',
+            )}
+          />
+        )}
+      </Modal>
     </div>
   );
 }
