@@ -1149,11 +1149,14 @@ export function AdminCoursesPage() {
     setEditing({} as AdminCourse);
   };
   const openEdit = (c: AdminCourse) => {
+    const deptId =
+      c.department &&
+      (facQ.data?.flatMap((f) => f.departments).find((d) => d.name === c.department)?.id ?? '');
     setForm({
       code: c.code,
       name: c.name,
       credits: c.credits,
-      departmentId: c.department ?? '',
+      departmentId: deptId ?? '',
     });
     setEditing(c);
   };
