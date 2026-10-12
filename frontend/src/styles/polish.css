@@ -2709,22 +2709,13 @@
      ║  DROPDOWNS / POPOVERS — spring-pop entrance                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (WS-D2 orphan sweep: .topbar-user-menu / .notification-dropdown
-     pruned from the group; .landing-megamenu remains — and v21 later
-     pins it back off with animation: none !important.) */
-  .landing-megamenu {
-    animation: madarek-megamenu-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
-    transform-origin: top center;
-  }
-  @keyframes madarek-megamenu-in {
-    from {
-      opacity: 0;
-      transform: translateY(-6px) scale(0.97);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
+     pruned from the group. r151g: .landing-megamenu pruned too —
+     v14's animation-both entrance here was the ROOT of the stuck-open
+     bug v21 later fought with THREE !importants; deleting the rule
+     at the source returns show/hide to landing.css's transition
+     toggle, which never had an animation write. The whole FIX-1
+     chain (v21's kill + re-assert pair) retired with it — see the
+     r151g tombstone in the v21 section.) */
   /* Reverse origin for menus that hang from the start side
      (WS-D2 orphan sweep: both [dir] .topbar-user-menu rules were dead.) */
 
@@ -3755,15 +3746,27 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MEGA-MENU (landing) — items stagger                           ║
+     ║  MEGA-MENU (landing) — items stagger, only while shown        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-megamenu .landing-megamenu-item {
+  /* (r151g root fix, implementing v21's intent without the bangs:
+     the stagger is scoped to :hover/:focus-within on the group — the
+     menu opens via the .open class from TSX state, and pointer or
+     keyboard focus is inside the group whenever it is meaningfully
+     open. No other rule writes animation on the items (landing.css
+     uses a transition toggle only), so no !important is needed. The
+     RM belt below still kills it under prefers-reduced-motion.) */
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
     animation: madarek-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both;
   }
-  .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
-  .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
-  .landing-megamenu .landing-megamenu-item:nth-child(3) { animation-delay: 100ms; }
-  .landing-megamenu .landing-megamenu-item:nth-child(4) { animation-delay: 130ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(1),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(2),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(3),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(3) { animation-delay: 100ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(4),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(4) { animation-delay: 130ms; }
   @keyframes madarek-megamenu-item-in {
     from { opacity: 0; transform: translateY(-4px); }
     to   { opacity: 1; transform: none; }
@@ -4311,19 +4314,12 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  FIX 1 — MEGAMENU never gets pinned open                       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .landing-megamenu {
-    /* explicit none beats the v14 `madarek-megamenu-in both` rule */
-    animation: none !important;
-  }
-  /* Item-level stagger on hover instead of permanent fill — only run
-     while the megamenu is actually being shown. */
-  .landing-megamenu .landing-megamenu-item {
-    animation: none !important;
-  }
-  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
-  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
-    animation: madarek-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both !important;
-  }
+  /* (r151g: this FIX-1 block deleted — the war is over at the root.
+  v14's animation-both entrance (the stuck-open cause) was deleted
+  at its source, so the `animation: none !important` kills and the
+  hover re-assert bang below had nothing left to fight. The item
+  stagger now lives hover/focus-scoped in the v17 section, un-banged.
+  Show/hide is landing.css's transition toggle alone, as designed.) */
 
 
   /* (r151c: FIX 2 block deleted — .landing-pilot-value > * had zero
