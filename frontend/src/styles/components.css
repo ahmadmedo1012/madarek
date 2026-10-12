@@ -3612,17 +3612,10 @@
 
   /* ── Teacher feed — the authored entrance: rows stagger in from
      inline-start (direction-aware via --motion-direction). polish.css
-     v8 owns the stagger machinery (duration + easing + the nth-child
-     delay ladder) but its keyframe rises from below; the wave-5 mission
-     pins the direction to inline-start, so ONLY the animation-name is
-     flipped. The !important flips author-layer precedence over the
-     overrides layer — the same documented technique as the wave 3-c
-     anchor-underline opt-outs above. */
-  .feed .feed-item { animation-name: madarek-feed-slide !important; }
-  @keyframes madarek-feed-slide {
-    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -12px)); }
-    to   { opacity: 1; transform: none; }
-  }
+     v8 owns the WHOLE machinery since r151f — duration, easing, the
+     nth-child delay ladder AND the direction-aware keyframes (the
+     old animation-name !important flip + duplicate madarek-feed-slide
+     keyframes were merged into the owner verbatim). */
   /* Filter pills inside the feed toolbar hit the 44px touch floor on
      phones (shared class — Competitions' toolbar benefits equally). */
   @media (max-width: 640px) {

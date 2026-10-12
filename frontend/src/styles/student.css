@@ -861,12 +861,16 @@
     font-variant-numeric: tabular-nums;
   }
   .pill.on .courses-filter-count { color: inherit; }
-  .courses-grid > .thumb-card { animation: none !important; }
+  /* (r151f: bang retired — the v6 stagger's five selectors carry
+     :not(.courses-grid):not(.mooc-grid) at the source now, so this
+     rule fights nothing; kept as the documented belt that pins the
+     page's authored entrance order below.) */
+  .courses-grid > .thumb-card { animation: none; }
   .courses-grid[data-stagger] > .thumb-card {
-    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
+    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
     animation-delay: calc(
       var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
-    ) !important;
+    );
   }
   .courses-grid-empty { grid-column: 1 / -1; }
   /* API course tint rides on --course-tint (set inline by TSX) and is
@@ -1108,10 +1112,10 @@
      visual behavior is unchanged. The page's AUTHORED moment remains
      the CTA confirmation pulse below. */
   .mooc-grid > .thumb-card {
-    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
+    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
     animation-delay: calc(
       var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
-    ) !important;
+    );
   }
   .mooc-card-image {
     block-size: 96px;
