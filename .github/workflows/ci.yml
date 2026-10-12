@@ -140,6 +140,10 @@ jobs:
       # r147 removed the literal duplicate step a merge had left behind.
       - run: bash scripts/check-csp-hash.sh
       - run: node scripts/verify-parity-export.mjs
+      # r149 (R3-A8): بوابة الألوان الساكنة — طور تقرير أولًا: censüs
+      # مرئي في كل CI بلا حجب؛ يتحول إلى --strict بعد فرز الفئة (a)
+      # إلى رموز/تعليقات allowlist (خطة r149 الموثقة).
+      - run: bash scripts/check-colors.sh
 
   surface-drift:
     name: Surface drift

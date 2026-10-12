@@ -5688,73 +5688,13 @@
     background-clip: text;
   }
 
-  /* ── Gradient border utility ───────────────────────────────────── */
-  .gradient-border {
-    position: relative;
-    border-radius: var(--r-xl);
-    overflow: hidden;
-  }
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--accent-soft, rgba(37,99,235,0.3)) 0%, transparent 60%);
-    -webkit-mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
-    mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
 
-  /* ── Button micro-interactions — press + glow ─────────────────── */
-  .btn-glow {
-    position: relative;
-    transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-  }
-  .btn-glow:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(37,99,235,0.25), 0 2px 4px rgba(37,99,235,0.15);
-  }
-  .btn-glow:active {
-    transform: scale(0.97) translateY(0);
-    transition-duration: var(--t-micro);
-  }
 
-  /* ── Enhanced staggered reveals — 6-step cascade ─────────────── */
-  .stagger-grid > * {
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity var(--t-slower) var(--ease-out),
-                transform var(--t-slower) var(--ease-out);
-  }
-  .stagger-grid.in-view > *:nth-child(1) { transition-delay: 40ms;   opacity: 1; transform: translateY(0); }
-  .stagger-grid.in-view > *:nth-child(2) { transition-delay: 80ms;   opacity: 1; transform: translateY(0); }
-  .stagger-grid.in-view > *:nth-child(3) { transition-delay: 120ms;  opacity: 1; transform: translateY(0); }
-  /* r130-W2-7: `.in.view` → `.in-view` — the 4th step was a selector
-     typo (dead since birth), leaving the 4th child stuck at the
-     opacity:0 base state while 1-3 and 5+ revealed. */
-  .stagger-grid.in-view > *:nth-child(4) { transition-delay: 160ms;  opacity: 1; transform: translateY(0); }
-  .stagger-grid.in-view > *:nth-child(5) { transition-delay: 200ms;  opacity: 1; transform: translateY(0); }
-  .stagger-grid.in-view > *:nth-child(6) { transition-delay: 240ms;  opacity: 1; transform: translateY(0); }
-  .stagger-grid.in-view > *:nth-child(n+7) { transition-delay: 280ms; opacity: 1; transform: translateY(0); }
 
   @media (prefers-reduced-motion: reduce) {
     .card.glass-premium::before { animation: none; }
-    .btn-glow:hover { transform: none; }
-    .stagger-grid > * { opacity: 1; transform: none; }
   }
 
-  /* ── Metric card — premium depth on hover ─────────────────────── */
-  .metric-premium {
-    transition: box-shadow var(--t-base) var(--ease),
-                transform var(--t-fast) var(--ease);
-  }
-  .metric-premium:hover {
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-2px);
-  }
 
   /* ── Scroll progress indicator ────────────────────────────────── */
   .scroll-progress {
@@ -5797,20 +5737,4 @@
     background: linear-gradient(270deg, var(--ln-cream) 0%, var(--ln-cream-dim) 100%);
   }
 
-  /* ── Skeleton premium shimmer ─────────────────────────────────── */
-  .skeleton-premium {
-    background: linear-gradient(90deg,
-      var(--surface-2) 0%,
-      var(--surface-3) 40%,
-      var(--surface-2) 60%,
-      var(--surface-2) 100%);
-    background-size: 200% 100%;
-    /* r127-F1 motion-gate fix: infinite shimmer sweep = constant speed —
-       var(--ease-linear) per the 15-k P1-2 ruling. */
-    animation: skeleton-shimmer-premium var(--motion-duration-skeleton) var(--ease-linear) infinite;
-  }
-  @keyframes skeleton-shimmer-premium {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
 }
