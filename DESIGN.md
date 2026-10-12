@@ -15,8 +15,9 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 | **Parity export** | `node scripts/verify-parity-export.mjs` | **163/163 token checks** (168 before the r148-d dead-token sweep) — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
+| **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
-| **CI** | `.github/workflows/ci.yml` | 7 jobs: lint · typecheck · build · frontend tests · backend tests · design gates (icons + motion tokens + CSP pins + parity export) · surface drift. |
+| **CI** | `.github/workflows/ci.yml` | 7 jobs: lint · typecheck · build · frontend tests · backend tests · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict**) · surface drift. |
 
 **What the export pair distills vs what stays outside it:**
 
@@ -32,7 +33,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 
 | File | Owns |
 |---|---|
-| `tokens.css` | ALL tokens — primitives, light/dark theme blocks, Orbit Ink `--ln-*`, pastel families, elevation, z, state tokens |
+| `tokens.css` | ALL tokens — primitives, light/dark theme blocks, Orbit Ink `--ln-*`, pastel families, elevation, z, state tokens, the r150a basis constants (`--black`/`--white`/`--warm-ink`, theme-fixed), the overlay-veil ramp (`--overlay-veil[-deep/-max]`, per theme) and the print light-lock remap |
 | `fonts.css` | self-hosted Plex subsets (woff2) + `@font-face` declarations |
 | `motion.css` | reveal / skeleton / spinner motion grammar, semantic durations |
 | `base.css` | element reset, heading styles, reduced-motion belt, autofill/caret polish |
@@ -228,6 +229,7 @@ Arabic is the first-class direction; LTR is the port.
 ## 8. Rules for evolving the system — قواعد تطوير النظام
 
 1. **Consume tokens and roles, never literals** — `var(--accent)`, `--type-body-*`, `--elev-1`, `--t-base`; hex/px literals belong only in `tokens.css`.
+1a. **Alpha variants are derivations, not new colors (r150a)** — `rgb(C / 0.04)`-style translucency of an existing token C is written `color-mix(in srgb, var(--token) 4%, transparent)` (mathematically exact in srgb). Achromatic extremes route through the fixed basis `--black` / `--white`; the theme-flip-immune warm ink is `--warm-ink`. The only raw literals downstream of `tokens.css` are documented `/* color-gate: allow — reason */` lines (statutory flag colours, video mattes, mask paints, the player's sealed island).
 2. **Extend at the composition layer only** — new surfaces compose existing tokens/primitives; the token files are closed for casual edits (gate-protected).
 3. **The export pair (`unified-parity.css` + `shared-design-system.css`) is the verification surface, not a file to import** — the app consumes `tokens.css` / `motion.css` / `components.css` directly. See [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md).
 4. **What the export covers:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What it excludes:** Orbit Ink (`--ln-*`), role/college accent slots, `--ill-*`.

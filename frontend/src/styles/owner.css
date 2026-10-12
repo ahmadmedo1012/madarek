@@ -196,7 +196,7 @@
   transition: transform var(--motion-duration-short) var(--ease-spring-soft);
   /* small-control thumb shadow — needs more local pop than --elev-1
      (alpha 0.2 vs 0.04/0.06); off-token by design */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--black) 20%, transparent);
 }
 
 .owner-toggle-track.on .owner-toggle-thumb {
@@ -726,7 +726,7 @@
   /* T3-F4 — was #fff in both themes: 3.19:1 on light --danger #DD6E78
      and ~1.9:1 on dark --danger #F09BA3. A fixed near-black ink passes
      BOTH: #191918 on #DD6E78 = 5.51:1, on #F09BA3 = 8.31:1. */
-  color: #191918;
+  color: var(--warm-ink);
   font-size: 11px;
   font-weight: var(--fw-bold);
   line-height: 1;

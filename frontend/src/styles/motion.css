@@ -138,8 +138,8 @@
   }
 
   .skeleton {
-    --skeleton-base: var(--neutral-100, rgb(0 0 0 / 0.04));
-    --skeleton-highlight: var(--neutral-200, rgb(0 0 0 / 0.08));
+    --skeleton-base: var(--neutral-100);
+    --skeleton-highlight: var(--neutral-200);
     background-color: var(--skeleton-base);
     background-image: linear-gradient(
       90deg,
@@ -179,7 +179,7 @@
   .skeleton-still-loading {
     grid-column: 1 / -1;
     text-align: center;
-    color: var(--neutral-500, #898680);
+    color: var(--neutral-500);
     font-size: var(--fs-sm, 13px);
     padding: var(--sp-3, 12px) 0;
     opacity: 0;

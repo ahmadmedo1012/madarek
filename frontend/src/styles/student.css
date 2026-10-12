@@ -57,7 +57,7 @@
     /* True letterbox black — a genuinely physical video matte, not a
        theme color: the neutral ramp flips with the theme and must
        never tint the bars. Documented raw value per brief §3.4. */
-    background: #000;
+    background: #000;  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */
   }
 
   /* ── Meta block under the player ── */
@@ -1752,16 +1752,16 @@
 
   /* ── Terminal — an always-dark physical console ──
      The neutral ramp is theme-flipped (dark theme's "ink" is sand), so
-     no theme token can express "dark ground in BOTH themes". The ground
-     below pins the canonical ink hex #191918 from the ramp (not a new
-     color); text uses --text-on-dark which is light in both themes
-     (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). Same documented-raw-hex
-     exception as the §LecturePlayerPage video matte. */
+     no theme token can express "dark ground in BOTH themes". (r150a:
+     one CAN now — --warm-ink pins the same canonical ramp hex as a
+     fixed token; the ground below consumes it.) Text uses
+     --text-on-dark which is light in both themes
+     (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). */
   .terminal {
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #191918;
+    background: var(--warm-ink);
     border: 1px solid color-mix(in srgb, var(--text-on-dark) 14%, transparent);
     border-radius: var(--r-lg);
     overflow: clip;
@@ -1785,7 +1785,7 @@
     align-items: center;
     gap: var(--sp-3);
     padding: var(--sp-2) var(--sp-4);
-    background: color-mix(in srgb, var(--text-on-dark) 6%, #191918);
+    background: color-mix(in srgb, var(--text-on-dark) 6%, var(--warm-ink));
     border-block-end: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent);
   }
   .terminal-dots { display: flex; gap: 6px; }
@@ -1797,7 +1797,7 @@
     margin-inline-start: auto;
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
-    color: color-mix(in srgb, var(--text-on-dark) 55%, #191918);
+    color: color-mix(in srgb, var(--text-on-dark) 55%, var(--warm-ink));
   }
   .terminal-body {
     block-size: 280px;
@@ -1825,7 +1825,7 @@
   /* idle hint line — the quiet system voice, centered */
   .terminal-hint {
     text-align: center;
-    color: color-mix(in srgb, var(--text-on-dark) 55%, #191918);
+    color: color-mix(in srgb, var(--text-on-dark) 55%, var(--warm-ink));
   }
   .terminal-cursor {
     display: inline-block;

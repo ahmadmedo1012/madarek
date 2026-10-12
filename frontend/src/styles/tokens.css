@@ -480,6 +480,26 @@
     --ln-ease-spring: var(--ease-spring); /* playful pop */
     --ln-ease-linear: var(--ease-linear); /* constant speed — marquee */
     --ln-dur-marquee: 42s;  /* one marquee loop pass — slow read */
+
+    /* ─── r150a color-gate basis constants ──────────────────────────
+       The three achromatic extremes the alpha derivations route
+       through. Theme-independent BY DEFINITION, so they live on plain
+       :root exactly like the --ln-* family (the theme blocks never
+       remap them):
+       · --black  — pure black: the basis for every color-mix() veil /
+         shadow / matte alpha (overlay scrims, bevel hairlines, hero
+         scrims). Both worlds consume it (app + Orbit Ink landing).
+       · --white  — pure white: specular sheens, grain dots, text on
+         rose fills in themes where the neutral ramp has flipped dark.
+       · --warm-ink — the ramp's #191918, quoted as a FIXED value: the
+         warm near-black that must NOT flip with the theme (terminal
+         ground in both themes, ink on luminous mint/rose fills in
+         dark, the owner badge counter). Replaces the former
+         "documented raw hex" exceptions — a token CAN now express
+         "dark ground in both themes" (student.css terminal note). */
+    --black:     #000000;
+    --white:     #FFFFFF;
+    --warm-ink:  #191918;
   }
 
   /* RTL flips the direction multiplier so logical motion expressions
@@ -689,6 +709,14 @@
        surfaces, --scrim-blur for dimming scrims. */
     --scrim-blur:  4px;
 
+    /* r150a — overlay veil ramp (one grammar for every dimming
+       backdrop; dark remaps below). modal + sheet ride the base,
+       the sidebar backdrop the deep step, the command palette the
+       max step. Values are the exact literals they replace. */
+    --overlay-veil:      rgb(15 15 15 / 0.40);
+    --overlay-veil-deep: rgb(15 15 15 / 0.45);
+    --overlay-veil-max:  rgb(15 15 15 / 0.50);
+
     /* sidebar / topbar */
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
@@ -882,6 +910,18 @@
     --glass-bg-strong:   rgba(11,16,32,0.92);
     --glass-blur-strong: 16px;
     --scrim-blur:  4px;   /* T3-F4 — dimming-scrim blur (see light block) */
+
+    /* r150a — dark remap of the overlay veil ramp (see the light
+       block): night scrims go pure black, a touch heavier so the same
+       UI feels equally "closed" against luminous dark surfaces. */
+    --overlay-veil:      rgb(0 0 0 / 0.62);
+    --overlay-veil-deep: rgb(0 0 0 / 0.65);
+    --overlay-veil-max:  rgb(0 0 0 / 0.66);
+
+    /* r150a — the night shell's azure aurora wash (layout.css dark
+       sidebar). One-off ambient accent at 5% alpha; quoted as a token
+       so the gate census stays honest and the wash is retunable. */
+    --shell-aurora-azure: #6FA8FF;
 
     --sidebar-bg:        var(--neutral-50);
     --sidebar-rule:      var(--neutral-200);
@@ -1168,5 +1208,68 @@
     --elev-3: 0 8px 16px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.05);
     --elev-4: 0 16px 32px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.06);
     --elev-5: 0 32px 64px rgba(0,0,0,0.12), 0 16px 32px rgba(0,0,0,0.08);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     PRINT LIGHT-LOCK (moved verbatim from polish.css, r150a) —
+     "color-scheme: light" alone is not enough: this dark-theme
+     remap re-points the dark block's custom properties at the Light
+     values so dark-theme users printing on white paper get readable
+     grades/schedules. Raw hex is unavoidable here — it IS the light
+     palette, quoted by value because var() would resolve dark.
+     Placed AFTER the dark block inside this layer so source order
+     wins during print; verified no pages/overrides-layer rule
+     defines any remapped property (color-gate triage r150a).
+     The color-scheme: light lock itself stays in polish.css. ═════ */
+  @media print {
+    :root[data-theme="dark"] {
+      /* light neutral ramp */
+      --neutral-0:   #FFFFFF;
+      --neutral-50:  #FBFAF9;
+      --neutral-100: #F7F6F3;
+      --neutral-150: #F1EFEC;
+      --neutral-200: #E9E7E2;
+      --neutral-300: #D9D6D0;
+      --neutral-400: #8E8A82;
+      --neutral-500: #6F6C66;
+      --neutral-700: #4F4D48;
+      --neutral-800: #322F2A;
+      --neutral-900: #191918;
+      /* light pastel families */
+      --c-peach-bg:     #FFE9DC;  --c-peach-ink:    #E07856;  --c-peach-deep:    #6B2D1A;
+      --c-mint-bg:      #DCF1E2;  --c-mint-ink:     #4FA66D;  --c-mint-deep:     #1F4F30;
+      --c-lavender-bg:  #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
+      --c-sky-bg:       #DDEBF7;  --c-sky-ink:      #5C8FCE;  --c-sky-deep:      #1F3D63;
+      --c-yellow-bg:    #FCF1CD;  --c-yellow-ink:   #D6A330;  --c-yellow-deep:   #6B4C0B;
+      --c-rose-bg:      #FCE0E2;  --c-rose-ink:     #DD6E78;  --c-rose-deep:     #6B2128;
+      --c-sand-bg:      #F1ECDF;  --c-sand-ink:     #B59868;  --c-sand-deep:     #5A4623;
+      --c-grey-bg:      #EFECE7;  --c-grey-ink:     #6B665E;  --c-grey-deep:     #2D2A24;
+      --c-copper-bg:    #F4E4D2;  --c-copper-ink:   #B57438;  --c-copper-deep:   #5C3416;
+      /* literals the dark block hardcodes (not chained to neutrals) */
+      --text-muted:     #6E6C65;
+      --text-faint:     #74706A;
+      --text-on-accent: #FFFFFF;
+      --accent-hover:   #9A5F25;
+      --accent-fg:      #1A0F06;
+      /* r148 (AUDIT-5 M3): التعبئات/الحدود الذهبية الداكنة (#E9B44C على
+         ورق أبيض = ~1.8:1) كانت تُطبع باهتة — إعادة ربط عائلة النحاس
+         الفاتحة للحبر الورقي. --accent-ink أدناه يبقى الأعمق للنصوص. */
+      --accent:          #B57438;
+      --accent-strong:   #5C3416;
+      --state-focus-ring-color: var(--accent-strong);
+      --border-faint:   rgba(25,25,24,0.06);
+      --surface-border: rgba(0,0,0,0.08);
+      --surface-divider: rgba(0,0,0,0.05);
+      --chart-text:     #6E6C65;
+      --gold:           var(--c-yellow-ink);
+      /* text-safe inks: dark maps them to the -ink shades; light uses
+         the deeper -deep shades so status text stays ≥4.5:1 on paper */
+      --accent-ink:  var(--c-copper-deep);
+      --success-ink: var(--c-mint-deep);
+      --warning-ink: var(--c-yellow-deep);
+      --danger-ink:  var(--c-rose-deep);
+      --info-ink:    var(--c-sky-deep);
+      --gold-ink:    var(--c-yellow-deep);
+    }
   }
 }

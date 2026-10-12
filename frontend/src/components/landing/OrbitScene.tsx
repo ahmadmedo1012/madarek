@@ -127,7 +127,7 @@ function makeGlowSprite(size: number, rgb: readonly number[], coreAlpha: number)
   grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${coreAlpha})`);
   grad.addColorStop(0.25, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${coreAlpha * 0.55})`);
   grad.addColorStop(0.6, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${coreAlpha * 0.14})`);
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'transparent');
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
   return c;
@@ -237,12 +237,12 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
         const rr = orbitR * 1.6;
         const grad = ng.createRadialGradient(systemCx, systemCy, 0, systemCx, systemCy, rr);
         grad.addColorStop(0, `rgba(${VIOLET[0]},${VIOLET[1]},${VIOLET[2]},0.25)`);
-        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        grad.addColorStop(1, 'transparent');
         ng.fillStyle = grad;
         ng.fillRect(0, 0, w, h);
         const hz = ng.createRadialGradient(w * 0.5, h * 1.18, 0, w * 0.5, h * 1.18, h * 0.75);
         hz.addColorStop(0, `rgba(${CREAM[0]},${CREAM[1]},${CREAM[2]},0.14)`);
-        hz.addColorStop(1, 'rgba(0,0,0,0)');
+        hz.addColorStop(1, 'transparent');
         ng.fillStyle = hz;
         ng.fillRect(0, 0, w, h);
       }

@@ -436,13 +436,17 @@
      same hover/press states. */
   [data-theme="dark"] .btn.accent,
   [data-theme="dark"] .btn.gold {
-    --_btn-bg: linear-gradient(145deg, #E9B44C 0%, #C9962F 100%);
-    --_btn-bg-hover: linear-gradient(145deg, #F5D48A 0%, #E9B44C 100%);
-    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.30), 0 6px 20px -8px rgb(233 180 76 / 0.35);
+    /* r150a: the night accent family IS this metal gold (--accent
+       #E9B44C / --accent-hover #F5D48A / --accent-strong #C9962F in
+       the dark block) — the literals below were the tokens, spelled
+       raw. Same values, now retunable from one place. */
+    --_btn-bg: linear-gradient(145deg, var(--accent) 0%, var(--accent-strong) 100%);
+    --_btn-bg-hover: linear-gradient(145deg, var(--accent-hover) 0%, var(--accent) 100%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
   }
   [data-theme="dark"] .btn.accent:hover,
   [data-theme="dark"] .btn.gold:hover {
-    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.45), 0 8px 26px -8px rgb(233 180 76 / 0.45);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
   /* T3-F4 WCAG — in LIGHT theme the accent pair is copper + deep
@@ -483,14 +487,14 @@
        near-black ink to 3.24:1 in light; the brightened mix clears
        6.6:1 / 9.3:1. The Button primitive's `danger` variant inherits
        this via the class map. */
-    --_btn-fg: #191918;
+    --_btn-fg: var(--danger-fg);  /* r150a: the documented 21-c one-line swap */
     --_btn-bd: var(--danger);
     --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
     --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
   }
   [data-theme='dark'] .btn.danger {
-    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, #fff);
-    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, #fff);
+    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
+    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
   }
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
@@ -534,7 +538,7 @@
     color: var(--text-secondary);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 6%, transparent);
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
   }
   /* r148 (AUDIT-2 L2): .badge:hover كان يرفع span غير تفاعلي (عرض خالص —
@@ -1175,7 +1179,7 @@
     background: var(--surface-3);
     border-radius: var(--r-full);
     overflow: clip;
-    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.08);
+    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 8%, transparent);
   }
 
   .dash-agenda-head { display: flex; align-items: center; justify-content: space-between; }
@@ -1523,7 +1527,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.40);
+    background: var(--overlay-veil);
     backdrop-filter: blur(var(--scrim-blur));
     -webkit-backdrop-filter: blur(var(--scrim-blur));
     display: flex; align-items: center; justify-content: center;
@@ -1532,7 +1536,6 @@
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     padding: var(--sp-4);
   }
-  [data-theme="dark"] .modal-overlay { background: rgba(0,0,0,0.62); }
   @keyframes madarek-fade { from { opacity: 0; } to { opacity: 1; } }
 
   .modal-card {
@@ -1571,14 +1574,13 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sheet-overlay {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.40);
+    background: var(--overlay-veil);
     backdrop-filter: blur(var(--scrim-blur));
     -webkit-backdrop-filter: blur(var(--scrim-blur));
     display: flex;
     z-index: var(--z-sheet, 300);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
-  [data-theme="dark"] .sheet-overlay { background: rgba(0,0,0,0.62); }
   .sheet-overlay-bottom { align-items: flex-end; }
   .sheet-overlay-end    { justify-content: flex-end; }
   .sheet-overlay-start  { justify-content: flex-start; }
@@ -1941,7 +1943,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .lightbox-overlay {
     position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: color-mix(in srgb, var(--black) 85%, transparent);
     display: flex; align-items: center; justify-content: center;
     z-index: var(--z-lightbox, 600);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
@@ -1951,7 +1953,7 @@
     position: relative;
     max-inline-size: 100%;
     max-block-size: calc(100dvh - var(--sp-9));
-    box-shadow: var(--elev-5, 0 32px 64px rgba(0,0,0,0.5));
+    box-shadow: var(--elev-5);
     animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
   .lightbox-close {
@@ -1960,7 +1962,7 @@
     inset-inline-end: 0;
     background: transparent;
     border: 0;
-    color: var(--text-on-dark, rgba(255,255,255,0.86)); /* r148 (AUDIT-2 L6): توكن بدل حرفي */
+    color: var(--text-on-dark); /* r148 (AUDIT-2 L6): توكن بدل حرفي */
     cursor: pointer;
     padding: var(--sp-1);
     font-size: 22px;
@@ -1973,9 +1975,9 @@
     justify-content: center;
     transition: color var(--t-fast) var(--ease);
   }
-  .lightbox-close:hover { color: var(--text-on-dark, #fff); }
+  .lightbox-close:hover { color: var(--text-on-dark); }
   .lightbox-close:focus-visible {
-    outline: 2px solid var(--text-on-dark, #fff);
+    outline: 2px solid var(--text-on-dark);
     outline-offset: 2px;
   }
 
@@ -2130,7 +2132,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .cmd-palette-overlay {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.50);
+    background: var(--overlay-veil-max);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
     display: flex; align-items: flex-start; justify-content: center;
@@ -2139,7 +2141,6 @@
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     padding-inline: var(--sp-4);
   }
-  [data-theme="dark"] .cmd-palette-overlay { background: rgba(0,0,0,0.66); }
   .cmd-palette-card {
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -3049,15 +3050,15 @@
      (T3-F4 WCAG math). The two raw literals mirror .btn.danger's. ── */
   .btn.success {
     --_btn-bg: var(--success-ink);
-    --_btn-fg: #fff;
+    --_btn-fg: var(--white);
     --_btn-bd: var(--success-ink);
     --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
     --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
   }
   [data-theme='dark'] .btn.success {
-    --_btn-fg: #191918;
-    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, #fff);
-    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, #fff);
+    --_btn-fg: var(--warm-ink);
+    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--white));
+    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--white));
   }
 
   /* ── Exam taker details (OnlineExamsPages; the chrome bases live in

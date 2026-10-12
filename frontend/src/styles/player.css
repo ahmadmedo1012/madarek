@@ -36,15 +36,15 @@
      surface in BOTH themes — a video stage is a physical matte (the
      documented #000 rationale on .lecture-video), never a theme card. */
   .vpc {
-    --vpc-void: #05070F;
-    --vpc-navy: #0B1020;
-    --vpc-ink: #F2EFE6;
-    --vpc-mist: #8E97B8;
-    --vpc-gold: #E9B44C;
-    --vpc-gold-soft: #F5D48A;
-    --vpc-glow: rgb(233 180 76 / 0.24);
-    --vpc-hairline: rgb(142 151 184 / 0.16);
-    --vpc-danger: #F0938F;
+    --vpc-void: #05070F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-navy: #0B1020;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-ink: #F2EFE6;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-mist: #8E97B8;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-gold: #E9B44C;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-gold-soft: #F5D48A;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
+    --vpc-glow: color-mix(in srgb, var(--vpc-gold) 24%, transparent);
+    --vpc-hairline: color-mix(in srgb, var(--vpc-mist) 16%, transparent);
+    --vpc-danger: #F0938F;  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */  /* color-gate: allow — player design island: sealed night palette, scoped to the video chrome */
 
     position: relative;
     user-select: none;
@@ -68,7 +68,7 @@
     object-fit: contain;
     /* True letterbox black — physical matte, not a theme color
        (same rationale as student.css .lecture-video). */
-    background: #000;
+    background: #000;  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte: the theme ramp must never tint video bars */
   }
 
   /* Fullscreen: the HOST is the fullscreen element so the chrome stays
@@ -100,7 +100,7 @@
     block-size: 104px;
     z-index: 2;
     pointer-events: none;
-    background: linear-gradient(to top, rgb(5 7 15 / 0.82), transparent);
+    background: linear-gradient(to top, color-mix(in srgb, var(--vpc-void) 82%, transparent), transparent);
     opacity: 0;
     transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
   }
@@ -166,14 +166,14 @@
     display: block;
     block-size: 4px;
     border-radius: var(--r-full);
-    background: rgb(142 151 184 / 0.20);          /* mist 20% */
+    background: color-mix(in srgb, var(--vpc-mist) 20%, transparent);          /* mist 20% */
   }
   .vpc-buffered {
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
     border-radius: inherit;
-    background: rgb(142 151 184 / 0.35);          /* mist 35% */
+    background: color-mix(in srgb, var(--vpc-mist) 35%, transparent);          /* mist 35% */
   }
   .vpc-played {
     position: absolute;
@@ -240,12 +240,12 @@
     cursor: pointer;
     transition: background var(--motion-duration-micro) var(--motion-ease-standard);
   }
-  .vpc-btn:hover { background: rgb(142 151 184 / 0.16); }
-  .vpc-btn:active { background: rgb(142 151 184 / 0.26); }
+  .vpc-btn:hover { background: color-mix(in srgb, var(--vpc-mist) 16%, transparent); }
+  .vpc-btn:active { background: color-mix(in srgb, var(--vpc-mist) 26%, transparent); }
   /* The one gold action — play/pause (the accent is reserved for
      progress + the primary action). */
   .vpc-btn-play { color: var(--vpc-gold); }
-  .vpc-btn-play:hover { background: rgb(233 180 76 / 0.14); }
+  .vpc-btn-play:hover { background: color-mix(in srgb, var(--vpc-gold) 14%, transparent); }
 
   /* Time — mono, LTR run, current ink / total mist. */
   .vpc-time {
@@ -282,7 +282,7 @@
     padding: var(--sp-1);
     border: 1px solid var(--vpc-hairline);
     border-radius: var(--r-lg);
-    background: rgb(11 16 32 / 0.92);
+    background: color-mix(in srgb, var(--vpc-navy) 92%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     animation: vpc-menu-in var(--motion-duration-short) var(--motion-ease-standard);
@@ -313,7 +313,7 @@
       color var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .vpc-menu-item:hover { background: rgb(142 151 184 / 0.14); }
+  .vpc-menu-item:hover { background: color-mix(in srgb, var(--vpc-mist) 14%, transparent); }
   .vpc-menu-item[aria-checked="true"] { color: var(--vpc-gold); }
 
   /* ── Poster / ended gates — the 64px gold play ─────────────────── */
@@ -323,7 +323,7 @@
     z-index: 2;
     display: grid;
     place-items: center;
-    background: rgb(5 7 15 / 0.45);
+    background: color-mix(in srgb, var(--vpc-void) 45%, transparent);
   }
   .vpc-play-big {
     display: grid;
@@ -359,7 +359,7 @@
     inline-size: 34px;
     block-size: 34px;
     border-radius: var(--r-full);
-    border: 2px solid rgb(142 151 184 / 0.25);
+    border: 2px solid color-mix(in srgb, var(--vpc-mist) 25%, transparent);
     border-top-color: var(--vpc-gold);
     animation: vpc-spin var(--t-cinema) var(--ease-linear) infinite; /* 720ms — the nearest duration token (premium-polish: gate-clean) */
   }
@@ -377,7 +377,7 @@
     gap: var(--sp-4);
     padding: var(--sp-6);
     text-align: center;
-    background: rgb(5 7 15 / 0.84);
+    background: color-mix(in srgb, var(--vpc-void) 84%, transparent);
   }
   .vpc-error-icon { color: var(--vpc-danger); }
   .vpc-error-msg {

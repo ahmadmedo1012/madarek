@@ -81,7 +81,8 @@ export function HeroDepthLayer() {
           cx={s.cx}
           cy={s.cy}
           r={s.r}
-          fill="rgba(245,243,231,0.6)"
+          fill="var(--ln-cream)"
+          fillOpacity="0.6"
           opacity={s.op}
         />
       ))}

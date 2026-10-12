@@ -194,7 +194,7 @@
   margin: auto;
 }
 .colleges-popover::backdrop {
-  background: rgb(0 0 0 / 0.42);
+  background: color-mix(in srgb, var(--black) 42%, transparent);
   backdrop-filter: blur(var(--scrim-blur));
   -webkit-backdrop-filter: blur(var(--scrim-blur));
 }
@@ -220,7 +220,7 @@
   /* Off-token by design: full-height mega-popover needs a cinematic single
      layer drop (0 24px 60px / .18); composite intensity sits between
      --elev-4 and --elev-5 (alpha .18 exceeds the ±.05 equivalence band). */
-  box-shadow: 0 24px 60px rgb(0 0 0 / 0.18);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--black) 18%, transparent);
   overflow: hidden;
 }
 
@@ -304,8 +304,8 @@
   background:
     linear-gradient(var(--surface), var(--surface)) top / 100% 8px no-repeat,
     linear-gradient(var(--surface), var(--surface)) bottom / 100% 8px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.03), transparent) top / 100% 16px no-repeat,
-    linear-gradient(transparent, rgb(0 0 0 / 0.03)) bottom / 100% 16px no-repeat;
+    linear-gradient(color-mix(in srgb, var(--black) 3%, transparent), transparent) top / 100% 16px no-repeat,
+    linear-gradient(transparent, color-mix(in srgb, var(--black) 3%, transparent)) bottom / 100% 16px no-repeat;
   background-attachment: local, local, scroll, scroll;
 }
 

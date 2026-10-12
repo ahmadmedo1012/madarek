@@ -86,7 +86,7 @@ function ConceptChip({ concept, box, glyph }: { concept: VisionConcept; box: num
         blockSize: box,
         borderRadius: 'var(--r-md)',
         background: `linear-gradient(135deg, ${concept.gradient[0]}, ${concept.gradient[1]})`,
-        color: '#fff',
+        color: 'var(--white)',
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',

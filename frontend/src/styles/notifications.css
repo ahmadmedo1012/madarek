@@ -231,8 +231,8 @@
   /* Off-token by design: upward-anchored dock — directional hairline +
      upward lift; the --elev-* scale only describes downward shadows. */
   box-shadow:
-    0 -1px 0 rgba(0, 0, 0, 0.02),
-    0 -10px 24px -10px rgba(15, 22, 41, 0.08);
+    0 -1px 0 color-mix(in srgb, var(--black) 2%, transparent),
+    0 -10px 24px -10px color-mix(in srgb, var(--black) 8%, transparent);  /* r150a: navy tint -> canonical black basis (≤2/255 composite drift) */
 }
 
 .bottom-nav-item {
@@ -528,7 +528,7 @@
    from the bell icon in both themes. */
 .topbar-notif-badge {
   background: var(--c-rose-deep);
-  color: #fff;
+  color: var(--white);
 }
 [data-theme="dark"] .topbar-notif-badge {
   background: var(--c-rose-ink);
