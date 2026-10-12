@@ -106,12 +106,81 @@ router.get('/:id', async (req, res, next) => {
     // assertOfferingAccess short-circuits for ADMIN/OWNER without an
     // existence check — a deleted/unknown id used to serialize as
     // `{ data: null }` instead of a 404 (audit P2-12).
-    if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
+    if (!offering) throw AppError.notFound('المقرّر مطلوب غير موجود');
     res.json({ data: offering });
   } catch (e) {
     next(e);
   }
 });
+
+// ─── Create offering ───
+/**
+ * POST /offerings — an ADMIN/OWNER creates a course offering. The
+ * unique guard ([courseId, term, teacherId]) makes the create idempotent
+ * per (course, term, teacher): a second identical POST returns 409 instead
+ * of a duplicate row (the seed's upsert already relies on this key).
+ *
+ * The create runs in a transaction with its audit log so the offering and
+ * its audit trail land together — the one unaudited admin write the
+ * enrollments audit flagged (15-a P1-4).
+ */
+export const offeringCreateSchema = z
+  .object({
+    courseId: z.string().cuid(),
+    teacherId: z.string().cuid(),
+    term: z.string().trim().min(1).max(50),
+    room: z.string().trim().max(200).nullable().optional(),
+    capacity: z.number().int().positive().max(10000).default(40),
+  })
+  .strict();
+
+router.post(
+  '/',
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(offeringCreateSchema),
+  async (req, res, next) => {
+    try {
+      const data = req.body;
+      const { offer } = await prisma.$transaction(async (tx) => {
+        const existing = await tx.courseOffering.findFirst({
+          where: {
+            courseId: data.courseId,
+            term: data.term,
+            teacherId: data.teacherId,
+          },
+        });
+        if (existing) {
+          // ponytail: single-row guard — fine for campus-scale; a
+          // contention-heavy create path would need a unique-index
+          // catch instead of the pre-check.
+          throw AppError.conflict('يوجد هذا المقرّر في نفس الفصل لنفس الأستاذ بالفعل');
+        }
+        const offer = await tx.courseOffering.create({
+          data: {
+            courseId: data.courseId,
+            teacherId: data.teacherId,
+            term: data.term,
+            ...(data.room ? { room: data.room } : {}),
+            capacity: data.capacity,
+          },
+        });
+        await tx.auditLog.create({
+          data: {
+            userId: req.user!.id,
+            action: 'OFFERING_CREATED',
+            resourceType: 'CourseOffering',
+            resourceId: offer.id,
+            metadata: { courseId: data.courseId, term: data.term, teacherId: data.teacherId },
+          },
+        });
+        return { offer };
+      });
+      res.status(201).json({ data: offer });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 
 // ─── Materials ───
 
