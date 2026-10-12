@@ -527,7 +527,7 @@
     gap: 4px;
     font-size: var(--fs-xxs);
     font-weight: var(--fw-semibold);
-    padding: 4px 10px;
+    padding: 4px var(--sp-3); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
     border-radius: var(--r-full);
     line-height: 1.4;
     background: var(--surface-3);
@@ -557,7 +557,7 @@
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
     padding: 7px 14px;
     border-radius: var(--r-full);
     font-size: var(--type-label-size-sm);
@@ -579,7 +579,7 @@
 
   .reward-pill {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 4px 10px; border-radius: var(--r-full);
+    padding: 4px var(--sp-3); border-radius: var(--r-full); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
     background: var(--accent-soft); color: var(--accent-strong);
     font-size: var(--fs-xxs); font-weight: var(--fw-semibold);
   }
@@ -636,7 +636,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROGRESS                                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .progress { display: flex; flex-direction: column; gap: 6px; }
+  .progress { display: flex; flex-direction: column; gap: var(--sp-1-5); } /* r149 (R3-A2 #1): 6px → النصف-درجة */
   .progress-head {
     display: flex; align-items: center; justify-content: space-between;
     font-size: var(--type-label-size-sm); color: var(--text-muted);
@@ -837,7 +837,8 @@
        (auth.css neutralizes it locally where the field gap owns the
        rhythm). Kept verbatim — snapping to the 4px scale would shift
        every form app-wide. */
-    margin-block-end: 6px;
+    /* r149 (R3-A2 #1): النصف-درجة الموثقة --sp-1-5 — كان خامًا. */
+    margin-block-end: var(--sp-1-5);
     /* wave 9-a (ruling #2, 8-b flag): Latin tracking removed — labels
        are Arabic and the joins must stay untracked. (The wave 9-a
        section at the end of this file re-asserts this with !important
@@ -1255,7 +1256,7 @@
   .queue-group-head {
     display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
   }
-  .queue-group-main { display: flex; flex-direction: column; gap: 1px; flex: 1; min-inline-size: 0; }
+  .queue-group-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
   .queue-group-title {
     font-weight: var(--fw-semibold);
     font-size: var(--type-label-size);

@@ -112,7 +112,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
 
@@ -294,7 +294,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
   /* r148 (AUDIT-3 M7): على 360px كان code (min-width:160) + input بلا
      min-width:0 يفيضان أفقياً — الالتفاف مع تصغير حد الـ code. */
@@ -323,7 +323,8 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  padding: 6px 10px;
+  /* r149 (R3-A2 #12): على السلم — كانت 6/10 خامًا */
+  padding: var(--sp-2) var(--sp-4);
   /* 5-C2 (A3 1d, 21-b pattern): was var(--fs-sm) 13px — iOS Safari
      zooms the whole page on any <16px control focus (the components.css
      global input recipe already floors at 16; this pages-layer override
@@ -334,7 +335,7 @@
 
 /* ── Error Entry ───────────────────────────────────────────── */
 .owner-error-entry {
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
 
@@ -430,7 +431,9 @@
 
 .owner-table th {
   text-align: start;
-  padding: 10px 12px;
+  /* r149 (R3-A2 R2/R3): كثافة خلايا الجداول الكنونية 12/16 — كانت
+     10/12 درجة أوكد من كل جداول المنصة */
+  padding: var(--sp-3) var(--sp-4);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-xs);
   color: var(--text-muted);
@@ -482,7 +485,8 @@
 .owner-search-bar input {
   flex: 1;
   max-width: 360px;
-  padding: 8px 14px;
+  /* r149 (R3-A2 #11): المحاذاة الكنونية 16px (كانت 14 خامًا) */
+  padding: 8px var(--sp-4);
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
@@ -513,7 +517,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
 

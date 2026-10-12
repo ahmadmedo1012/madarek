@@ -740,7 +740,8 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 12px 14px;
+    /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
+    padding: 10px 14px;
     border-radius: var(--r-xl);
     /* bot-bubble tail corner — the polish chat language */
     border-start-start-radius: 4px;

@@ -1442,7 +1442,7 @@
     font-weight: var(--fw-bold);
     background: var(--surface-2);
     color: var(--text-muted);
-    padding: 1px 6px;
+    padding: 2px var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 1/6) */
     border-radius: var(--r-full);
     font-variant-numeric: tabular-nums;
   }

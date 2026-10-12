@@ -50,7 +50,8 @@
 .college-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--sp-4);
+  /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px عبر الصفحات */
+  gap: var(--sp-5);
 }
 
 .college-card {
@@ -1401,7 +1402,8 @@ a.comp-card:focus-visible .comp-go {
 .comp-index-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--sp-4);
+  /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px */
+  gap: var(--sp-5);
   margin-block-start: var(--sp-4);
 }
 .comp-index-card {
@@ -1547,7 +1549,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-hero-stats > div {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
 }
 .comp-hero-actions {
   display: flex;
@@ -1658,7 +1660,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r149 (R3-A2 #1): نفس نصف-درجة .form-label */
 }
 .comp-form-field label {
   font-size: var(--fs-xs);

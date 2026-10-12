@@ -101,7 +101,9 @@
   align-items: flex-start;
   gap: 12px;
   width: 100%;
-  padding: 10px 12px;
+  /* r149 (R3-A2 R9): محاذاة مع القيمة الحية في polish (كانت النسخة
+     هنا ميتة طبقيًا بقيم 10/12 — مصيدة تراجع) */
+  padding: var(--sp-3) var(--sp-4);
   border: 0;
   background: transparent;
   text-align: start;
@@ -217,7 +219,9 @@
   -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
           backdrop-filter: saturate(160%) blur(var(--glass-blur));
   border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-  padding: 8px 10px max(10px, env(safe-area-inset-bottom)) 10px;
+  /* r149 (R3-A2 R9): محاذاة مع القيمة الحية في polish v22 (كانت
+     8/10/10/10 ميتة طبقيًا) */
+  padding: 6px max(var(--sp-2), env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
   align-items: stretch;
   justify-content: space-around;
   gap: 4px;
