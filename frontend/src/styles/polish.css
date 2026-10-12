@@ -741,9 +741,10 @@
 
   /* ── Card title icon — subtle accent tint ──────────────────── */
   .card-title-icon {
-    color: color-mix(in srgb, var(--accent) 70%, var(--text-muted)) !important;
-    /* `!important` only because components.css sets card-title-icon to
-       var(--accent) — we want a softer, more cohesive reading. */
+    color: color-mix(in srgb, var(--accent) 70%, var(--text-muted));
+    /* (r151e: bang retired — this pages-layer rule already beats the
+       components-layer base by layer order; the !important fought a
+       precedence war that never existed.) */
   }
 
   /* ── Loading spinner — cleaner */
@@ -1091,8 +1092,10 @@
   @media (max-width: 920px) {
     /* X button visible only in the mobile drawer */
     .sidebar-mobile-close { display: inline-flex; }
-    /* No collapse rail on mobile — only open vs closed */
-    .sidebar-collapse-btn { display: none !important; }
+    /* No collapse rail on mobile — only open vs closed. (r151e: bang
+       retired — this rule already beats the earlier v6 base by source
+       order within the same pages layer.) */
+    .sidebar-collapse-btn { display: none; }
     /* Brand row becomes a sticky drawer header */
     .sidebar-brand {
       position: sticky;
@@ -1390,7 +1393,9 @@
      + the ≤920px reveal) — zero TSX consumers; only .hide-on-mobile is
      rendered by the shell components.) */
   @media (max-width: 920px) {
-    .hide-on-mobile { display: none !important; }
+    /* (r151e: bang retired — the pages layer already beats the
+       components-layer .hide-on-mobile pair by layer order.) */
+    .hide-on-mobile { display: none; }
     .sidebar-mobile-close {
       inline-size: 36px;
       block-size: 36px;
@@ -2166,7 +2171,9 @@
      ║     Ctrl+B shortcut — invisible to most users.                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (min-width: 921px) {
-    .sidebar-mobile-close { display: none !important; }
+    /* (r151e: bang retired — the overrides layer already beats the
+       pages-layer base by layer order, and the value matches it.) */
+    .sidebar-mobile-close { display: none; }
 
     /* The shell's grid track shrinks to var(--sidebar-w-collapsed) = 64px
        when collapsed, but .sidebar itself still claimed inline-size:
@@ -2178,9 +2185,10 @@
 
     /* Override polish-v6's `display: none` on the collapse button when
        collapsed. Recenter so the chevron sits below the brand mark
-       inside the narrow icon rail. */
+       inside the narrow icon rail. (r151e: bang retired — overrides
+       beats pages by layer order, same band.) */
     .sidebar.collapsed .sidebar-collapse-btn {
-      display: inline-flex !important;
+      display: inline-flex;
       margin-block-start: var(--sp-2);
     }
     .sidebar.collapsed .sidebar-brand {
@@ -4027,7 +4035,14 @@
     position: relative;
     transition: color var(--motion-duration-short) var(--ease);
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link)::after {
+  /* (r151d/r151e: :not(.back-link):not(.track-card) added to the four
+     ::after selectors — those card-like chip anchors opt out of the
+     drawn underline at the source now (the wave 3-c components-layer
+     `content: none !important` pair retired with this change). The
+     BASE rule above deliberately stays un-guarded so those anchors
+     keep position:relative + the color transition they receive
+     today.) */
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card)::after {
     content: '';
     position: absolute;
     inset-block-end: -2px;
@@ -4040,14 +4055,14 @@
     transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
     pointer-events: none;
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link)::after {
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card)::after {
     transform-origin: left;
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
+  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card):hover::after {
     transform: scaleX(1);
     transform-origin: left;
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):hover::after {
+  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card):hover::after {
     transform-origin: right;
   }
 

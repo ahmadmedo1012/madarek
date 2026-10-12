@@ -1609,7 +1609,10 @@ button.landing-footer-link {
   .landing .landing-mobile-menu { display: flex; }
 }
 @media (min-width: 1081px) {
-  .landing .landing-mobile-menu { display: none !important; }
+  /* (r151e: bang retired — the base rule above already sets
+     display:none and the only flex write is scoped ≤1080; a layered
+     rule can't beat unlayered landing.css anyway.) */
+  .landing .landing-mobile-menu { display: none; }
 }
 
 @media (max-width: 1024px) {
@@ -1846,8 +1849,10 @@ button.landing-footer-link {
   .landing .ln-constellation-browse,
   .landing .ln-constellation-dot { transition: none; }
 }
-/* P3-32: scroll progress bar stays visible under reduced motion */
-.landing .landing-progress { opacity: 1 !important; }
+/* P3-32: scroll progress bar stays visible under reduced motion.
+   (r151e: the `opacity: 1 !important` zombie deleted — no rule
+   anywhere writes opacity on .landing-progress outside the print
+   belt, so nothing can hide the bar in the first place.) */
 
 /* ════════════════════════════════════════════════════════════════════
    UI/UX PRO MAX — Landing Polish (P4-01..P4-15)

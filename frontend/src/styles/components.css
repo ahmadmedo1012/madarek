@@ -2374,13 +2374,11 @@
      OWNERSHIP NOTE (wave 3-c): the layout/family rules live in
      training.css §track-detail (pages layer — authored by the parallel
      wave 3-b, which explicitly serves the teacher/admin/exams pages
-     rendering the same markup). Only the additive rule below lives
-     here: the polish v19 animated-underline opt-out — this is a
-     card-like chip anchor, not a text link (the v19 :not() exclusion
-     list predates the class; !important flips author-layer precedence
-     so the components layer beats the overrides layer). Focus shows
-     the universal v22 ring like every anchor. */
-  .back-link::after { content: none !important; }
+     rendering the same markup). Nothing lives here anymore: the v19
+     underline opt-out moved to the source — polish's universal
+     ::after selectors carry :not(.back-link) since r151e (the
+     `content: none !important` flip retired). Focus shows the
+     universal v22 ring like every anchor. */
 
   /* ── Track grid + track cards — the shared course/lab/exam/training
      tile (TeacherIntelligence, TeacherLabs, TeacherProfile, OnlineExams,
@@ -2388,10 +2386,10 @@
      OWNERSHIP NOTE (wave 3-c): the family — .track-grid, .track-card,
      -icon/-body/-cat/-title/-summary/-meta — is owned by training.css
      §track-catalog (pages layer, parallel wave 3-b; it applies globally
-     and serves every consumer above). Only the additive rules below
-     live here: the v19 underline opt-out for the linked variant and
-     the v22 focus border cue (training.css declares neither). */
-  a.track-card::after { content: none !important; }
+     and serves every consumer above). The v19 underline opt-out moved
+     to the source — polish's universal ::after selectors carry
+     :not(.track-card) since r151e. The v22 focus border cue stays
+     (training.css declares neither). */
   .track-card:focus-visible { border-color: var(--accent); }
 
   /* ── Track hero — per-course detail header (TeacherIntelligence) ──
@@ -4310,15 +4308,10 @@
    ╚═══════════════════════════════════════════════════════════════╝ */
 @layer components {
 
-  /* Arabic form labels must never carry tracking (ruling #2 — it
-     breaks cursive joins; 8-b flagged the shared class). The in-place
-     edit above fixes this layer, but polish.css's pages-layer block
-     (~:1107, "Form labels — subtle weight bump") re-asserts
-     letter-spacing: -0.005em and a components-layer rule can never
-     win the layer order. The !important flips precedence — the same
-     documented technique as the wave 3-c anchor-underline opt-outs
-     and the wave 5-a feed-slide flip. */
-  .form-label { letter-spacing: normal !important; }
+  /* (r151e: .form-label bang deleted — the competitor it described no
+     longer exists: 21-c fixed polish's pages-layer block to
+     letter-spacing: var(--ls-normal), so the winner is polish's
+     normal — the identical computed value — with no war to flip.) */
 
   /* (r151d: the .state .btn.sm mobile floor deleted — polish's
      overrides-layer ≤640 block has owned the .btn.sm 44px floor
