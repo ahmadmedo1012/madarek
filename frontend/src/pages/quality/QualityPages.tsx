@@ -70,7 +70,14 @@ interface ProfessorRow {
   offerings: number;
   totals: { enrollments: number; materials: number; lectures: number; assignments: number; attendance: number };
   satisfaction: number;
+  // r151a (R5-A5): honesty flags the backend already sends — satisfaction
+  // and response time are deterministic placeholders, not survey
+  // measurements (learning.routes.ts marks both *Estimated: true). The
+  // engagement page already honors its analogous weeklyActiveEstimated;
+  // these columns deserve the same treatment instead of posing as measured.
+  satisfactionEstimated?: boolean;
   responseHours: number;
+  responseHoursEstimated?: boolean;
   compliance: number;
 }
 const useProfessors = () => useQuery({
@@ -661,7 +668,12 @@ export function QualityProfessorsPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">تقييم الأساتذة</h1>
-          <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
+          <p className="page-subtitle">
+            رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.
+            {p.data.some((t) => t.satisfactionEstimated || t.responseHoursEstimated)
+              ? ' رضا الطلاب وزمن الاستجابة قيم تقديرية حتى تفعيل قياسها الفعلي.'
+              : ''}
+          </p>
         </div>
       </header>
 
@@ -707,8 +719,8 @@ export function QualityProfessorsPage() {
                 {!compact && <th scope="col">الرتبة</th>}
                 {!compact ? <th scope="col">المقرّرات</th> : <th scope="col" title="المقرّرات التي يدرّسها والملفات المرفوعة">النشاط التعليميّ</th>}
                 {!compact && <th scope="col">الملفات المرفوعة</th>}
-                <th scope="col">رضا الطلاب</th>
-                <th scope="col">زمن الاستجابة</th>
+                <th scope="col" title="قيمة تقديرية — ليست قياساً فعلياً حتى تفعيل استطلاعات الطلاب">رضا الطلاب <span className="text-xxs text-subtle">تقديري</span></th>
+                <th scope="col" title="قيمة تقديرية — ليست قياساً فعلياً حتى تفعيل قياس أزمنة الردّ">زمن الاستجابة <span className="text-xxs text-subtle">تقديري</span></th>
                 <th scope="col">الالتزام</th>
               </tr>
             </thead>
