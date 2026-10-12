@@ -12,7 +12,7 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Gate | Command | What it asserts |
 |---|---|---|
-| **Parity export** | `node scripts/verify-parity-export.mjs` | **168/168 token checks** — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
+| **Parity export** | `node scripts/verify-parity-export.mjs` | **163/163 token checks** (168 before the r148-d dead-token sweep) — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
@@ -66,7 +66,7 @@ Painted identically in **both** `data-theme`s; landing-scoped `--ln-*` tokens. I
 | `--ln-violet` / `--ln-violet-deep` | `#7A6BF2` / `#4E2FB8` | accent-2 large-text only / decorative depth only |
 | `--ln-line` / `--ln-line-soft` | `rgba(245,243,231,0.14)` / `0.07` | 1px hairlines |
 | Landing cards | `rgba(245,243,231,0.03)` fill + 1px line-soft + 20px radius | border-shift hovers, **no lift** |
-| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.04** (mobile 1.12) | the only display-size surface in the family |
+| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.2** (mobile 1.18) | the only display-size surface in the family — r148 (AUDIT-4 C3): 1.04 clipped Arabic diacritic stacks; 1.2 matches the platform's display-leading floor |
 | Primary CTA | `min-block-size 46px` **pill** (xl variant 48px) — lime fill, the one lime-filled surface | ghost + text variants stay cream |
 | Marquee | `--ln-dur-marquee: 42s` linear, one slow pass (college ring) | spelled only via the token |
 | Grain veil | `--ln-grain-op: 0.075` | see §4 |
@@ -107,8 +107,8 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | Companion scale | Values |
 |---|---|
 | Metric rungs | **22 / 30 / 44** — `tnum lnum` (tabular + lining numerals) on all three |
-| Landing hero | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh 1.04 — the exception, §1a |
-| Display clamps | `--fs-display-md 28–40 … --fs-mega 48–104` — rungs exist; only `-md` has live consumers |
+| Landing hero | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh 1.2 — the exception, §1a (r148: was 1.04 — clipped Arabic diacritics) |
+| Display clamps | `--fs-display-md 28–40 · --fs-display-lg 34–56 · --fs-display-xl 40–72` — rungs exist; only `-md` has live consumers (top rungs stay: the parity-export scale pins the full ladder; the phantom `--fs-mega 48–104` listed here before was retired with r132-F5) |
 | Line heights | `--lh-tight 1.05` · `--lh-snug 1.20` · `--lh-base 1.65` · `--lh-loose 1.85` |
 | Font stack | `--font-sans: 'ibm plex sans arabic', 'tajawal', system-ui, …` — self-hosted woff2 subsets, no external CDN |
 

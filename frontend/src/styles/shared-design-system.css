@@ -42,9 +42,8 @@
     --r-xs: 6px;    --r-sm: 8px;    --r-md: 10px;   --r-lg: 12px;
     --r-xl: 16px;   --r-2xl: 20px;  --r-3xl: 28px;  --r-full: 9999px;
 
-    --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
-    --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
-    --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
+    /* (r148-d: the --radius-sm…full alias pair deleted with the canon —
+       zero consumers; the ladder speaks --r-* directly) */
 
     /* ─── Typography scale ─────────────────────────────────────────── */
     --fs-display-xl: clamp(40px, 6.0vw, 72px);
@@ -58,11 +57,11 @@
     --fs-chrome: 0.875rem;
     --fs-sm: 13px;    --fs-xs: 12px;    --fs-xxs: 11px;
 
-    /* legacy aliases */
-    --fs-base: var(--fs-body);   --fs-md: var(--fs-body);
+    /* legacy aliases (r148-d: --fs-base/-4xl deleted with the canon —
+       zero consumers) */
+    --fs-md: var(--fs-body);
     --fs-lg: var(--fs-h3);      --fs-xl: var(--fs-h2);
     --fs-2xl: var(--fs-h1);     --fs-3xl: var(--fs-display-md);
-    --fs-4xl: var(--fs-display-lg);
 
     --fs-metric-xl: 44px; --fs-metric-lg: 30px; --fs-metric-md: 22px;
 
@@ -74,7 +73,8 @@
     --lh-tight: 1.05;   --lh-snug: 1.20;   --lh-base: 1.65;  --lh-loose: 1.85;
 
     /* ─── Letter spacing ───────────────────────────────────────────── */
-    --ls-tight: -0.022em;  --ls-snug: -0.012em;  --ls-normal: 0;  --ls-wide: 0.06em;
+    --ls-tight: -0.022em;  --ls-snug: -0.012em;  --ls-normal: 0;
+    /* (r148-d: --ls-wide deleted with the canon — zero consumers) */
 
     /* ─── Motion timing ────────────────────────────────────────────── */
     --t-micro:   80ms;   --t-fast:  160ms;   --t-base:  240ms;
@@ -92,9 +92,8 @@
     --ease-spring-snappy: cubic-bezier(0.5, 1.6, 0.4, 1);
 
     --t-clean:      all var(--t-base) var(--ease);
-    --transition-fast:   var(--t-fast) var(--ease);
-    --transition-normal: var(--t-base) var(--ease);
-    --transition-slow:   var(--t-slow) var(--ease);
+    /* (r148-d: the --transition-fast/normal/slow shorthands deleted
+       with the canon — zero consumers) */
 
     /* ─── Motion semantic tokens ───────────────────────────────────── */
     --motion-duration-micro:    var(--t-micro);
@@ -119,15 +118,12 @@
     /* ─── Interaction state tokens ─────────────────────────────────── */
     --press-scale: 0.97;
     --hover-lift: -1px;
-    --hover-lift-lg: -3px;
+    /* (r148-d: --hover-lift-lg + the button/card hover-shift/-translate
+       pairs deleted with the canon — zero consumers) */
 
-    --state-button-hover-bg-shift:   4%;
-    --state-button-hover-translate:  -1px;
     /* r134: --state-button-pressed-scale 0.98 deleted with the canonical
        token (zero consumers everywhere — controls press via --press-scale). */
 
-    --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
-    --state-card-hover-translate: -1px;
     /* r130-W2-7 press-register unification (canonical tokens.css):
        cards 0.99 / controls 0.97 (--press-scale above) / bottom-nav
        0.93 — one token per register, no hardcoded scales. */
@@ -147,9 +143,10 @@
 
     /* ─── Composition ──────────────────────────────────────────────── */
     --card-padding: var(--sp-6);
-    --section-gap:  var(--sp-12);
     --page-gutter:  var(--sp-9);
     --page-gutter-mobile: var(--sp-5);
+    /* (r148-d: --section-gap deleted with the canon; --sp-12 stays a
+       raw rung of the 4px ladder) */
 
     /* ─── Type roles (semantic typography) ─────────────────────────── */
     --type-display-size-md:        var(--fs-display-md);
@@ -180,7 +177,7 @@
 
     /* ─── Section rhythm ───────────────────────────────────────────── */
     --section-pad-y-narrow: clamp(var(--sp-9), 6vw, var(--sp-11));
-    --section-pad-y-wide:   clamp(var(--sp-11), 8vw, var(--sp-13));
+    /* (r148-d: --section-pad-y-wide deleted with the canon) */
   }
 
   /* RTL motion flip */
