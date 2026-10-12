@@ -26,7 +26,7 @@ import {
 } from '../../hooks/useResources';
 import { pageList } from './AdminGovernancePages';
 import { api, unwrap } from '../../lib/api';
-import { countAr, formatRelativeArShort } from '../../lib/format';
+import { countAr, formatPct, formatRelativeArShort } from '../../lib/format';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
@@ -730,7 +730,9 @@ function PaperRow({ p }: { p: AdminPaper }) {
         <Badge color={PAPER_STATUS_TONE[p.status]}>{PAPER_STATUS_LABEL[p.status]}</Badge>
       </td>
       <td className="admin-table-num font-mono" data-label="نسبة الاقتباس">
-        {p.plagiarismPct != null ? <bdi>{p.plagiarismPct}%</bdi> : '—'}
+        {/* r148 (VLM-C VC-1): تنسيق دفاعي — عشري JS الخام (4.1999…)
+             وصل الجدول حرفيًا من حاصل ضرب عائم في الواجهة الخلفية. */}
+        {p.plagiarismPct != null ? <bdi>{formatPct(p.plagiarismPct)}%</bdi> : '—'}
       </td>
       <td data-label="تاريخ الرفع">{formatRelativeArShort(p.uploadedAt)}</td>
     </tr>

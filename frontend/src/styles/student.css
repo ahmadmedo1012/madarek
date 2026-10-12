@@ -1257,6 +1257,10 @@
     font-size: var(--type-label-size);
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
+    /* r148 (VLM-A VA-6): العدّاد عنصر flex مستقل داخل .page{gap:sp-8=40px}
+       فيتضاعف الفاصل. الهامش السالب المضاد يلصقه بالجدول كتسمية توضيحية:
+       الفعلي تحت العدّاد 8px بدل 40px. */
+    margin-block-end: calc(var(--sp-2) - var(--sp-8));
   }
   .table-wrap {
     border-radius: var(--r-xl);

@@ -13,7 +13,7 @@ import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
-import { countAr } from '../../lib/format';
+import { countAr, formatPct } from '../../lib/format';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -574,10 +574,10 @@ export default function LibraryPage() {
                         mono costume now rides the numeric <bdi> only,
                         mirroring the correct pattern at :394/:402. */}
                     {p.plagiarismPct != null && (
-                      <span>انتحال: <bdi className="font-mono">{p.plagiarismPct}%</bdi></span>
+                      <span>انتحال: <bdi className="font-mono">{formatPct(p.plagiarismPct)}%</bdi></span>
                     )}
                     {p.aiContentPct != null && (
-                      <span>ذكاء اصطناعي: <bdi className="font-mono">{p.aiContentPct}%</bdi></span>
+                      <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(p.aiContentPct)}%</bdi></span>
                     )}
                     <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
