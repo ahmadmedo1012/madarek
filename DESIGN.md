@@ -42,10 +42,10 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `auth.css` · `notifications.css` · `student.css` | eager remainder — auth-page recipes, toasts/bottom-nav, student-surface patches |
 | `polish.css` | overrides layer — the last word on layered surfaces |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
-| `colleges.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages |
+| `colleges.css` · `admin.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages (admin.css born r150e — the colleges.css split; 10 eager via `main.tsx` + 7 page-scoped = the 17 in-app sheets) |
 | `unified-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
 
-(10 eager via `main.tsx` + 6 page-scoped = the 16 in-app sheets; the export pair makes 18 on disk.)
+(10 eager via `main.tsx` + 7 page-scoped = the 17 in-app sheets; the export pair makes 19 on disk.)
 
 ---
 
