@@ -442,7 +442,9 @@
 }
 
 .owner-table td {
-  padding: 10px 12px;
+  /* r149 (R3-V3): الخلية فاتتها هجرة r149d — th هاجرت وtd لا. الآن
+     الكثافة الكنونية 12/16 في الرأس والجسم معًا. */
+  padding: var(--sp-3) var(--sp-4);
   border-bottom: 1px solid var(--border);
   color: var(--text);
   vertical-align: middle;

@@ -1008,9 +1008,8 @@
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
-/* lit thread reads cream here; JourneyLightPath.tsx still pins its own
-   inline lime stroke (out of this sheet's scope) — TSX follow-up should
-   adopt var(--ln-cream) to finish the one-pop discipline */
+/* lit thread — r149 (R3-A6 #4c): TSX اعتمد var(--ln-cream) فأُغلق
+   التعليق المتقادم — الكلاس والـinline على لون واحد الآن. */
 .landing .ln-journey-path-light {
   fill: none;
   stroke: var(--ln-cream);
