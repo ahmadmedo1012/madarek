@@ -1296,12 +1296,18 @@ export function AdminCoursesPage() {
                   <th scope="col" className="admin-table-num" style={{ width: 110 }}>تسجيلات</th>
                   <th scope="col" className="admin-table-num" style={{ width: 100 }}>محاضرات</th>
                   <th scope="col" className="admin-table-num" style={{ width: 100 }}>الفصول</th>
+                  {/* r155c: the rows already carried an 8th data-label cell
+                      (الإجراءات — تعديل/حذف) with no matching header, and the
+                      empty-state row spanned 7 of 8 columns. Follows the
+                      established actions-header pattern (AdminExtraPages
+                      students table / OwnerUsersPage). */}
+                  <th scope="col">إجراءات</th>
                 </tr>
               </thead>
               <tbody>
                 {courses.length === 0 && (
                   <tr>
-                    <td colSpan={7}>
+                    <td colSpan={8}>
                       <EmptyState illustration="empty-search"
                         title="لا توجد نتائج"
                         description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع."

@@ -196,6 +196,31 @@ export function AppRoutes() {
         <Route path="/auth/register" element={<RegisterPage />} />
         <Route path="/" element={<HomeRedirect />} />
 
+        {/* Labs preview — role-permissive mount (A6 P1, wave 22-a;
+            restored r155c). /student/labs used to sit inside the
+            STUDENT-only block, which made «معاينة كطالب» — the ONLY
+            per-card CTA on /teacher/labs — silently bounce every
+            teacher back to their dashboard. 761eaf4 dropped this
+            widened mount in an unrelated aria-invalid polish commit
+            while TeacherLabsPage.tsx's own doc comment still
+            documented it, so the CTA shipped as a dead link. The
+            page is the same labs explorer for both roles: the
+            catalog endpoint is unscoped and the /me/lab-sessions
+            KPI endpoint is auth-only with a graceful empty shape
+            for users without a student profile
+            (student-dashboard.routes.ts), so a teacher gets an
+            honest preview (0 recorded sessions) and can run the
+            client-side experiments. Documented deviation: this is
+            the single intentional widening of a /student/* path;
+            the shell/nav stay role-based. Pinned by
+            tests/unit/App-routes.test.tsx (teacher labs preview
+            access). */}
+        <Route element={<ProtectedRoute allow={['STUDENT', 'TEACHER']} />}>
+          <Route element={<AppShell />}>
+            <Route path="/student/labs" element={<LabsPage />} />
+          </Route>
+        </Route>
+
         {/* Student */}
         <Route element={<ProtectedRoute allow={['STUDENT']} />}>
           <Route element={<AppShell />}>
@@ -210,7 +235,6 @@ export function AppRoutes() {
             <Route path="/student/gamification" element={<GamificationPage />} />
             <Route path="/student/skills" element={<SkillsPage />} />
             <Route path="/student/alerts" element={<AlertsPage />} />
-            <Route path="/student/labs" element={<LabsPage />} />
             <Route path="/student/ar" element={<ArVrPage />} />
             <Route path="/student/social" element={<SocialPage />} />
             <Route path="/student/downloads" element={<DownloadsPage />} />

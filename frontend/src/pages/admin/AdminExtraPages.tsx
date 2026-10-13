@@ -603,10 +603,11 @@ export function AdminSettingsPage() {
             عمليّات تنفيذيّة على مستوى المنصّة. للتنفيذ الفعليّ، استخدم لوحة المالك.
           </p>
           <div className="settings-actions">
-            <button type="button" className="btn ghost sm" disabled>
-              <Icon icon={RefreshCw} size={14} />
-              مزامنة بيانات الجامعة
-            </button>
+            {/* r155c: أُزيل زر «مزامنة بيانات الجامعة» المعطَّل — كانت
+                بطاقة «الموارد المرتبطة» أدناه تصل مباشرة إلى ‎/admin/sync
+                المتاح فعلياً للإدارة، فيكون الزر المعطَّل مع تعليته
+                «لوحة المالك» تضليلاً. بقية الأزرار (التصدير/البثّ/فحص
+                الصحّة) ما تزال ملك لوحة المالك — التعليقة صادقة بشأنها. */}
             <button type="button" className="btn ghost sm" disabled>
               <Icon icon={Download} size={14} />
               تصدير سجلّ النشاط

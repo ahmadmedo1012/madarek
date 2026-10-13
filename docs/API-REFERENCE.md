@@ -309,7 +309,7 @@ There is **no** `POST /posts/:id/comment` route — comments are read via the po
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/search/global?q=` | Bearer | Cross-entity autocomplete (courses, lectures, papers, tracks — Arabic-normalized, parallel queries, deterministic ordering) |
+| GET | `/search/global?q=` | Bearer | Cross-entity autocomplete (courses, lectures, papers, tracks — Arabic-normalized, parallel queries, deterministic ordering). Every hit carries a role-openable `href`: course → `/teacher/intelligence/:offeringId` (TEACHER) / `/student/courses/:offeringId` (STUDENT) / `/admin/courses` (ADMIN) / `/quality/courses` (QUALITY) / `/owner/education` (OWNER); paper → `/document/<fileUrl basename>?paper=<paperId>` (papers without a `fileUrl` are not returned); lecture → `/student/lectures/:id` (STUDENT) or `/teacher/intelligence/:offeringId` (TEACHER); track → `/training/:slug` |
 
 ## Sync / University Facts
 

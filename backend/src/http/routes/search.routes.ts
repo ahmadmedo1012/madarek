@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import type { Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { normalizeArabicSearch, matchesNormalizedQuery } from '../../modules/search/normalize.js';
@@ -31,6 +32,25 @@ export function searchHit(haystacks: string[], q: string, qN: string): boolean {
 }
 
 /**
+ * r155c: role → course-hit destination in the SPA. TEACHER/STUDENT keep
+ * their deep links; the oversight roles land on their own course
+ * surfaces — the old catch-all `/admin/courses` requires ADMIN, so
+ * QUALITY/OWNER clicks were silently bounced by the route guard (dead
+ * click). All five destinations exist in frontend/src/App.tsx:
+ * /admin/courses (ADMIN block), /quality/courses (QUALITY/ADMIN block),
+ * /owner/education (OWNER block).
+ */
+export function courseHitHref(role: Role, offeringId: string): string {
+  switch (role) {
+    case 'TEACHER': return `/teacher/intelligence/${offeringId}`;
+    case 'STUDENT': return `/student/courses/${offeringId}`;
+    case 'ADMIN': return '/admin/courses';
+    case 'QUALITY': return '/quality/courses';
+    case 'OWNER': return '/owner/education';
+  }
+}
+
+/**
  * GET /search/global?q=...
  *
  * Cross-cutting search across courses, lectures, research papers, and training tracks.
@@ -53,6 +73,16 @@ export function searchHit(haystacks: string[], q: string, qN: string): boolean {
  * schema-level half of the contract (searchable_normalized columns +
  * pg_trgm fuzzy matching) needs a migration and is owned by another
  * workstream; this route does everything possible without schema changes.
+ *
+ * Response hrefs (r155c): every hit carries an in-SPA destination the
+ * requesting role can actually open. Course hits map role → surface
+ * (courseHitHref). Paper hits point at the document viewer with the
+ * file's basename + `?paper=` id — the viewer route is
+ * /document/:filename and /files/papers/:filename only serves .pdf
+ * basenames, so the pre-r155c `/document/${paperId}` (a cuid) was a
+ * guaranteed 400. Papers without a fileUrl are not returned at all:
+ * every other consumer suppresses the link for those rows, and a
+ * dropdown row IS a link (nothing to render unlinked).
  */
 router.get('/search/global', async (req, res, next) => {
   try {
@@ -130,10 +160,13 @@ router.get('/search/global', async (req, res, next) => {
       }),
 
       // Published research papers (anyone authenticated can search the
-      // library) — publishedAt desc, like /research/library.
+      // library) — publishedAt desc, like /research/library. Only rows
+      // with a fileUrl: the hit's href opens the document viewer, and
+      // consumers without a file have no linkable destination (r155c).
       prisma.researchPaper.findMany({
         where: {
           status: 'PUBLISHED',
+          fileUrl: { not: null },
           OR: [
             ...variants.map((v) => ({ title: ic(v) })),
             { abstract: ic(q) },
@@ -176,10 +209,7 @@ router.get('/search/global', async (req, res, next) => {
           subtitle: `${o.course.code} · ${o.term}`,
           iconEmoji: o.course.iconEmoji,
           themeColor: o.course.themeColor,
-          href:
-            role === 'TEACHER' ? `/teacher/intelligence/${o.id}` :
-            role === 'STUDENT' ? `/student/courses/${o.id}` :
-            `/admin/courses`,
+          href: courseHitHref(role, o.id),
         })),
         lectures: lectures.map((l) => ({
           id: l.id,
@@ -193,7 +223,12 @@ router.get('/search/global', async (req, res, next) => {
           title: p.title,
           subtitle: `بحث منشور · ${p.student.firstName} ${p.student.lastName}`,
           iconEmoji: '📄',
-          href: `/document/${p.id}`,
+          // r155c: same grammar as every paper consumer (LibraryPage /
+          // ResearchReviewPage / ResearchPage): the viewer route is
+          // /document/:filename, so the href must carry the fileUrl
+          // basename, and `?paper=` is what mounts the annotations
+          // panel. fileUrl is non-null by the where filter above.
+          href: `/document/${encodeURIComponent(p.fileUrl!.split('/').pop() ?? '')}?paper=${encodeURIComponent(p.id)}`,
         })),
         tracks: tracks.map((t) => ({
           id: t.id,
