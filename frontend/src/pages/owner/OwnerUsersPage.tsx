@@ -55,6 +55,11 @@ const ROLE_COLORS: Record<string, 'brand' | 'green' | 'purple' | 'gold' | 'amber
   OWNER: 'amber',
 };
 
+/** r154e: roles the owner may assign from this console. OWNER is excluded —
+ *  the backend blocks owner-role changes here (owner.routes.ts guards the
+ *  last-active owner), and creating new owners is not this UI's purpose. */
+const ELIGIBLE_ROLES: readonly string[] = ['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY'];
+
 /** Pages rendered either side of the current one before an ellipsis gap. */
 const PAGE_NEIGHBORS = 2;
 
@@ -90,7 +95,7 @@ function usersCountLabel(n: number): string {
 }
 
 /** A pending mutation targets at most one row — only that row waits. */
-type Attempt = { kind: 'role' | 'status'; user: UserRow };
+type Attempt = { kind: 'role'; user: UserRow; role: string } | { kind: 'status'; user: UserRow };
 
 export function OwnerUsersPage() {
   const stats = useOwnerStats();
@@ -151,6 +156,10 @@ export function OwnerUsersPage() {
   const [confirmConfig, setConfirmConfig] = useState<{
     title: string; message: string; danger: boolean; onConfirm: () => void | Promise<void>;
   }>({ title: '', message: '', danger: false, onConfirm: () => {} });
+  /** r154e: the pending role change (select → confirm). While set, the row's
+   *  select shows the pending role; on cancel it reverts to the user's real
+   *  role. One pending change at a time — the confirm dialog is modal. */
+  const [pendingRole, setPendingRole] = useState<{ user: UserRow; role: string } | null>(null);
 
   /** Runs a row action; failures surface inline with a retry (never a
    *  silent unhandled rejection). */
@@ -159,8 +168,7 @@ export function OwnerUsersPage() {
     const name = `${attempt.user.firstName} ${attempt.user.lastName}`;
     try {
       if (attempt.kind === 'role') {
-        const newRole = attempt.user.role === 'STUDENT' ? 'TEACHER' : 'STUDENT';
-        await changeRole.mutateAsync({ userId: attempt.user.id, role: newRole });
+        await changeRole.mutateAsync({ userId: attempt.user.id, role: attempt.role });
       } else {
         await toggleStatus.mutateAsync({ userId: attempt.user.id, isActive: !attempt.user.isActive });
       }
@@ -175,15 +183,24 @@ export function OwnerUsersPage() {
     }
   };
 
-  const handleRoleChange = (user: UserRow) => {
-    const newRole = user.role === 'STUDENT' ? 'TEACHER' : 'STUDENT';
+  /** r154e: role picker — replaces the binary STUDENT↔TEACHER toggle. The
+   *  owner picks any eligible role from the select; promotions to
+   *  ADMIN/QUALITY and any demotion from those roles are flagged dangerous
+   *  (red confirm) because they change the user's governance capabilities. */
+  const handleRoleSelect = (user: UserRow, role: string) => {
+    if (role === user.role) return;
+    setPendingRole({ user, role });
+    const isSensitive =
+      role === 'ADMIN' || role === 'QUALITY' ||
+      user.role === 'ADMIN' || user.role === 'QUALITY';
     setConfirmConfig({
       title: 'تغيير الدور',
-      message: `هل تريد تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[newRole]}؟`,
-      danger: false,
+      message: `هل تريد تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[role]}؟`,
+      danger: isSensitive,
       onConfirm: async () => {
-        await runAttempt({ kind: 'role', user });
+        await runAttempt({ kind: 'role', user, role });
         setConfirmOpen(false);
+        setPendingRole(null);
       },
     });
     setConfirmOpen(true);
@@ -380,14 +397,31 @@ export function OwnerUsersPage() {
                             focused (CSS .table-row-actions — persistent on
                             touch); part of the page's authored moment. */}
                         <span className="table-row-actions owner-row-actions">
-                          <button
-                            type="button"
-                            className="btn ghost sm"
-                            onClick={() => handleRoleChange(user)}
-                            disabled={rowBusy(user)}
-                          >
-                            تغيير الدور
-                          </button>
+                          {/* r154e: role picker replaces the binary
+                              STUDENT↔TEACHER toggle. The select exposes
+                              STUDENT/TEACHER/ADMIN/QUALITY (OWNER excluded —
+                              backend blocks it, and this UI doesn't create
+                              owners). A confirm dialog guards every change;
+                              promotions to ADMIN/QUALITY and demotions from
+                              those roles are flagged dangerous. */}
+                          {user.role === 'OWNER' ? (
+                            <span className="text-xs text-subtle" title="دور المالك لا يُغيَّر من هذه الواجهة">
+                              {ROLE_LABELS.OWNER}
+                            </span>
+                          ) : (
+                            <select
+                              className="input"
+                              style={{ width: 'auto', minWidth: 120 }}
+                              value={pendingRole?.user.id === user.id ? pendingRole.role : user.role}
+                              onChange={(e) => handleRoleSelect(user, e.target.value)}
+                              disabled={rowBusy(user)}
+                              aria-label={`دور ${user.firstName} ${user.lastName}`}
+                            >
+                              {ELIGIBLE_ROLES.map((r) => (
+                                <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                              ))}
+                            </select>
+                          )}
                           <button
                             type="button"
                             className="btn ghost sm"
@@ -459,7 +493,7 @@ export function OwnerUsersPage() {
         message={confirmConfig.message}
         danger={confirmConfig.danger}
         onConfirm={confirmConfig.onConfirm}
-        onCancel={() => setConfirmOpen(false)}
+        onCancel={() => { setConfirmOpen(false); setPendingRole(null); }}
       />
     </div>
   );
