@@ -729,7 +729,7 @@ function PaperRow({ p }: { p: AdminPaper }) {
       <td data-label="الحالة">
         <Badge color={PAPER_STATUS_TONE[p.status]}>{PAPER_STATUS_LABEL[p.status]}</Badge>
       </td>
-      <td className="admin-table-num font-mono" data-label="نسبة الاقتباس">
+      <td className="admin-table-num font-mono" data-label="نسبة الاقتباس (محاكاة)">
         {/* r148 (VLM-C VC-1): تنسيق دفاعي — عشري JS الخام (4.1999…)
              وصل الجدول حرفيًا من حاصل ضرب عائم في الواجهة الخلفية. */}
         {p.plagiarismPct != null ? <bdi>{formatPct(p.plagiarismPct)}%</bdi> : '—'}
@@ -1065,7 +1065,7 @@ export function AdminReportsPage() {
                     <th scope="col">البحث</th>
                     <th scope="col">الطالب</th>
                     <th scope="col">الحالة</th>
-                    <th scope="col" className="admin-table-num" style={{ width: 110 }}>نسبة الاقتباس</th>
+                    <th scope="col" className="admin-table-num" style={{ width: 110 }} title="قيمة محاكاة تجريبية — ليست قياساً فعلياً حتى تفعيل كشف حقيقي">نسبة الاقتباس <span className="text-xxs text-subtle">محاكاة</span></th>
                     <th scope="col" style={{ width: 130 }}>تاريخ الرفع</th>
                   </tr>
                 </thead>

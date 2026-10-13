@@ -579,6 +579,9 @@ export default function LibraryPage() {
                     {p.aiContentPct != null && (
                       <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(p.aiContentPct)}%</bdi></span>
                     )}
+                    {(p.plagiarismPct != null || p.aiContentPct != null) && (
+                      <span className="text-xxs text-subtle">محاكاة</span>
+                    )}
                     <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       <Icon icon={ShieldCheck} size={11} strokeWidth={2} />
                       تم التحقق من النشر

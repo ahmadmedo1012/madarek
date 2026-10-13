@@ -1275,7 +1275,7 @@ router.get('/quality/alerts', requireCapability('QUALITY_VIEW'), async (_req, re
         id: `plag-${p.id}`,
         severity: pct >= 40 ? 'critical' : 'warning',
         category: 'plagiarism',
-        title: `بحث بنسبة انتحال ${pct.toFixed(1)}%`,
+        title: `بحث بنسبة انتحال تجريبية ${pct.toFixed(1)}% (محاكاة)`,
         description: `«${p.title}» — ${p.student.firstName} ${p.student.lastName}`,
         occurredAt: p.uploadedAt,
       });

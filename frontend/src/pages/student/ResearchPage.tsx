@@ -242,14 +242,14 @@ function PaperRow({
                 <Icon icon={ShieldCheck} size={11} /> فحص الانتحال
               </span>
               <span className="scan-cell-run" aria-hidden />
-              <span className="scan-cell-meta">جارٍ المقارنة مع الأبحاث المنشورة ومصادر الإنترنت…</span>
+              <span className="scan-cell-meta">جارٍ احتساب نسبة الانتحال التجريبية…</span>
             </div>
             <div className="scan-cell">
               <span className="scan-cell-label">
                 <Icon icon={BotIcon} size={11} /> كشف الذكاء الاصطناعي
               </span>
               <span className="scan-cell-run" aria-hidden />
-              <span className="scan-cell-meta">جارٍ تحليل أنماط الكتابة…</span>
+              <span className="scan-cell-meta">جارٍ احتساب نسبة المحتوى الآلي التجريبية…</span>
             </div>
             <p className="scan-pulse">
               <span className="scan-pulse-dot" aria-hidden />
@@ -283,6 +283,11 @@ function PaperRow({
           </div>
         </div>
       )}
+      {!isScanning && hasResults && (
+        <p className="text-xxs text-subtle" role="note" style={{ marginTop: 'var(--sp-2)' }}>
+          نسب الفحص قيم محاكاة تجريبية — ليست قياساً فعلياً حتى تفعيل كشف حقيقي.
+        </p>
+      )}
 
       {/* Graded */}
       {(paper.status === 'GRADED' || paper.status === 'PUBLISHED') && paper.grade != null && (
@@ -311,7 +316,7 @@ function PaperRow({
         <div className="paper-row-failed" role="alert">
           <div className="flex items-center gap-2 font-semibold">
             <Icon icon={AlertCircle} size={14} />
-            تجاوز البحث الحدود المسموح بها — يُرجى مراجعة المحتوى وإعادة الرفع.
+            تجاوز البحث الحدود التجريبية المسموح بها (محاكاة) — يُرجى مراجعة المحتوى وإعادة الرفع.
           </div>
         </div>
       )}

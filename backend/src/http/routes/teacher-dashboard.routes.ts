@@ -190,7 +190,7 @@ export function researchFeedItem(p: ResearchPaperFeedRow): {
     title: `«${p.title}» — ${p.status === ResearchPaperStatus.UPLOADED
       ? 'لم يُفحص بعد — بانتظار فحص الانتحال'
       : p.status === ResearchPaperStatus.CHECKS_PASSED
-        ? `اجتاز الفحص (انتحال ${p.plagiarismPct ?? '—'}%، AI ${p.aiContentPct ?? '—'}%)`
+        ? `اجتاز الفحص التجريبي (محاكاة — انتحال ${p.plagiarismPct ?? '—'}%، AI ${p.aiContentPct ?? '—'}%)`
         // r134 فشل→تعذّر family canon: «فشل في فحص الانتحال» was the last
         // فشل verb in backend user-facing copy.
         : 'تعذّر اجتياز فحص الانتحال — يحتاج توجيهاً'}`,

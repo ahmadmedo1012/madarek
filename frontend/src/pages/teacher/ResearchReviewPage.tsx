@@ -95,7 +95,7 @@ export default function ResearchReviewPage() {
             </div>
           )}
 
-          <Card title="قائمة المراجعة" icon={ScanSearch} subtitle="بحوث الطلاب التي اجتازت الفحص الأوتوماتيكي وبانتظار تقييمك">
+          <Card title="قائمة المراجعة" icon={ScanSearch} subtitle="بحوث الطلاب التي اجتازت الفحص التجريبي (محاكاة) وبانتظار تقييمك">
             {queue.isPending ? (
               <div className="flex-col gap-3" aria-busy="true" aria-live="polite">
                 {[0, 1].map((i) => (
@@ -121,7 +121,7 @@ export default function ResearchReviewPage() {
               <EmptyState illustration="empty-search"
                 icon={CheckCircle2}
                 title="لا بحوث في الانتظار"
-                description="ستظهر هنا بحوث الطلاب فور اجتيازها فحص الانتحال والذكاء الاصطناعي."
+                description="ستظهر هنا بحوث الطلاب فور اجتيازها الفحص التجريبي (محاكاة) للانتحال والمحتوى الآلي."
               />
             ) : (
               <div className="flex-col gap-3">
@@ -133,7 +133,7 @@ export default function ResearchReviewPage() {
           </Card>
 
           {failed.length > 0 && (
-            <Card title="رفضها الفحص الأوتوماتيكي" icon={X} subtitle="بحوث تجاوزت الحدود المسموحة — لا تحتاج تقييماً">
+            <Card title="رفضها الفحص التجريبي (محاكاة)" icon={X} subtitle="بحوث تجاوزت الحدود التجريبية — لا تحتاج تقييماً">
               <div className="flex-col gap-3">
                 {failed.map((p) => (
                   <ReviewRow key={p.id} paper={p} onOpen={() => setReviewing(p)} />
@@ -184,6 +184,7 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
           <Icon icon={BotIcon} size={12} />
           <bdi>AI</bdi>: <bdi className="font-mono">{paper.aiContentPct?.toFixed(1) ?? '—'}%</bdi>
         </span>
+        <span className="text-xxs text-subtle">محاكاة</span>
         <span className="text-subtle">·</span>
         <span className="text-subtle">رُفع {formatDateAr(paper.uploadedAt)}</span>
       </div>

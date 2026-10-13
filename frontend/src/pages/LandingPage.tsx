@@ -728,7 +728,7 @@ export default function LandingPage() {
           {[
             {
               icon: BookOpen, tone: 'gold', title: 'مكتبة وبحوث',
-              desc: 'فهرس بحثيّ بفحص نزاهة علمية تلقائي (انتحال + AI) ومراجعة معلَّمة على الـPDF.',
+              desc: 'فهرس بحثيّ بفحص نزاهة تجريبي (انتحال + AI — محاكاة حتى تفعيل كشف حقيقي) ومراجعة معلَّمة على الـPDF.',
             },
             {
               icon: Calendar, tone: 'azure', title: 'جدول ذكي',
