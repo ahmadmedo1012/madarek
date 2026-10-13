@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  BookMarked, Upload, ShieldCheck, Bot as BotIcon, FileText,
+  BookMarked, Upload, ShieldCheck, Bot as BotIcon,
   CheckCircle2, XCircle, AlertCircle, ScanSearch, X, Workflow,
   Sparkles, BarChart3, Clock, MessageSquare, type LucideIcon,
 } from 'lucide-react';
@@ -334,7 +334,7 @@ function PaperRow({
 /* ─── Process explainer (helps demo storytelling) ──────── */
 function ProcessExplainer() {
   const STEPS: Array<{ n: number; title: string; desc: string; icon: LucideIcon }> = [
-    { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، الملف، والمقرّر المرتبط.', icon: Upload },
+    { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، والمقرّر المرتبط.', icon: Upload },
     { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ.', icon: ScanSearch },
     { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: BarChart3 },
     { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة وResearchGate.', icon: BookMarked },
@@ -371,7 +371,6 @@ function UploadModal({
   const [title, setTitle] = useState('');
   const [abstractText, setAbstractText] = useState('');
   const [offeringId, setOfferingId] = useState<string>('');
-  const [fileName, setFileName] = useState<string>('');
   const canSubmit = title.trim().length >= 3 && !isPending;
   // Label↔control wiring (same useId pattern as the register form):
   // bare <label> text is invisible to assistive tech.
@@ -388,8 +387,7 @@ function UploadModal({
     dirty:
       title.trim() !== '' ||
       abstractText.trim() !== '' ||
-      offeringId !== '' ||
-      fileName !== '',
+      offeringId !== '',
     pending: isPending,
     onClose,
   });
@@ -456,19 +454,20 @@ function UploadModal({
         </FormField>
 
         <FormField label="الملف" id={fileId}>
-          <button
-            type="button"
-            className={`upload-dropzone${fileName ? ' has-file' : ''}`}
-            onClick={() => setFileName('research_paper_demo.pdf')}
-          >
-            <Icon icon={fileName ? FileText : Upload} size={24} className={fileName ? '' : 'text-muted'} />
-            <span className="text-sm" style={{ color: 'var(--text)' }}>
-              {fileName ? <bdi>{fileName}</bdi> : 'اضغط لاختيار ملف PDF (محاكاة للعرض)'}
+          {/* r154d: direct file upload is not available — Render's disk is
+              ephemeral (docs/16 §ج). The old control faked a file picker and
+              sent `https://example.invalid/<name>` as the fileUrl, which made
+              the teacher's review link open a 404. Now the UI is honest: the
+              student registers the title + abstract + offering, the scan runs
+              (hash-based, fileUrl-independent), and the teacher review link
+              renders only when a real fileUrl exists (it never does today). */}
+          <div className="upload-disclosure">
+            <Icon icon={Upload} size={20} className="text-muted" />
+            <span className="text-sm text-muted">
+              رفع الملفات غير متاح بعد — قرص الخدمة زائل. سجّل عنوان البحث
+              والملخّص الآن، ويُرفق الملف لاحقاً عند توفّر التخزين الدائم.
             </span>
-            <span className="text-xxs text-subtle">
-              الحد الأقصى 20 MB · PDF / DOCX
-            </span>
-          </button>
+          </div>
         </FormField>
 
         {error && (
@@ -489,7 +488,6 @@ function UploadModal({
             title: title.trim(),
             abstract: abstractText.trim() || undefined,
             offeringId: offeringId || undefined,
-            fileUrl: fileName ? `https://example.invalid/${fileName}` : undefined,
           })}
         >
           <Icon icon={Upload} size={14} />

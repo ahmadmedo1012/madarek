@@ -91,6 +91,19 @@ export function useMyLabSessions() {
   });
 }
 
+/** r154d: record a completed lab experiment. The LabsPage runner calls this
+ *  on the final step so the «تجارب مكتملة» KPI (sourced from GET /me/lab-sessions)
+ *  reflects real persistence instead of staying at 0. Invalidates the
+ *  sessions family so the KPI + recent list refresh on success. */
+export function useCompleteLabSession() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { labId: string; experimentName: string }) =>
+      unwrap<{ id: string; completedAt: string }>(api.post('/me/lab-sessions', input)),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['me', 'lab-sessions'] }),
+  });
+}
+
 // ── MOOCs ──────────────────────────────────────────────────────
 export interface MoocCourse {
   id: string;

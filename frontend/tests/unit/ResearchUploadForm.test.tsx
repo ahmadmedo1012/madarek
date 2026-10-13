@@ -64,7 +64,10 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
     expect(screen.getByLabelText('عنوان البحث')).toBeInstanceOf(HTMLInputElement);
     expect(screen.getByLabelText('الملخّص (اختياري)')).toBeInstanceOf(HTMLTextAreaElement);
     expect(screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)')).toBeInstanceOf(HTMLSelectElement);
-    expect(screen.getByLabelText('الملف')).toBeInstanceOf(HTMLButtonElement);
+    // r154d: the file field is no longer a fake upload button — it's an
+    // honest disclosure that direct upload is unavailable (ephemeral disk).
+    // The disclosure text must be present and visible to assistive tech.
+    expect(screen.getByText(/رفع الملفات غير متاح بعد/)).toBeTruthy();
   });
 
   it('wires the short-title error as a live, non-dangling association', async () => {

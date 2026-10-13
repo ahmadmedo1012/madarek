@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import { z } from 'zod';
 import { Role, SubmissionStatus, Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { validate } from '../validate.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { AppError } from '../../lib/errors.js';
 import { attendancePctFromStatusCounts } from '../../lib/risk.js';
 import { tripoliDayDow } from '../../lib/dates.js';
@@ -375,6 +378,58 @@ router.get('/me/lab-sessions', async (req, res, next) => {
     });
   } catch (e) { next(e); }
 });
+
+/**
+ * r154d: body schema for POST /me/lab-sessions — a student records a
+ * completed virtual-lab experiment. labId must be a cuid that resolves to
+ * an existing VirtualLab; experimentName is the human title the runner
+ * showed (3–200 chars). Exported for unit tests.
+ */
+export const createLabSessionSchema = z.object({
+  labId: z.string().cuid(),
+  experimentName: z.string().trim().min(3).max(200),
+}).strict();
+
+/**
+ * POST /me/lab-sessions — persist a completed lab experiment (r154d).
+ *
+ * The LabsPage runner used to call `setDone(true)` on the last step and
+ * show «أحسنت! أكملت التجربة بنجاح» without ever writing a row — the
+ * «تجارب مكتملة» KPI stayed at 0 forever. This endpoint creates the
+ * LabSession the KPI already aggregates (GET /me/lab-sessions above).
+ *
+ * Redoing an experiment is legitimate (each completion is its own
+ * session), so there is no dedupe — a per-user rate limiter (10/min)
+ * bounds accidental double-clicks and client loops. progressPct is 100
+ * and completedAt is now: the runner only reaches this endpoint after
+ * stepping through every step of the experiment.
+ */
+router.post(
+  '/me/lab-sessions',
+  createRouteLimiter({ max: 10 }),
+  validate(createLabSessionSchema),
+  async (req, res, next) => {
+    try {
+      const { labId, experimentName } = req.body as z.infer<typeof createLabSessionSchema>;
+      const lab = await prisma.virtualLab.findUnique({
+        where: { id: labId },
+        select: { id: true },
+      });
+      if (!lab) throw AppError.notFound('المعمل غير موجود');
+      const session = await prisma.labSession.create({
+        data: {
+          labId,
+          userId: req.user!.id,
+          experimentName,
+          progressPct: 100,
+          completedAt: new Date(),
+        },
+        select: { id: true, completedAt: true },
+      });
+      res.status(201).json({ data: session });
+    } catch (e) { next(e); }
+  },
+);
 
 router.get('/me/dashboard', async (req, res, next) => {
   try {

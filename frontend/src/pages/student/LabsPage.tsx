@@ -3,13 +3,14 @@ import type { CSSProperties } from 'react';
 import {
   FlaskConical, Network, Cpu, Atom, Zap, Bot as BotIcon, Microscope,
   CheckCircle2, ChevronRight, ChevronLeft, Play, Award, Check,
+  AlertCircle,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Badge, ProgressBar } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { useReducedMotion } from '../../components/motion/useReducedMotion';
-import { useLabs, useMyLabSessions, type VirtualLab } from '../../hooks/useResources';
+import { useLabs, useMyLabSessions, useCompleteLabSession, type VirtualLab } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
 
@@ -251,6 +252,12 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
   const reducedMotion = useReducedMotion();
+  // r154d: persist the completion. The runner used to setDone(true) on the
+  // last step and show «أحسنت!» without ever writing a row — the KPI stayed
+  // at 0. Now the session is created on the server; the success screen
+  // renders only after the mutation lands, and a network failure shows an
+  // honest error state instead of a false «بنجاح».
+  const completeSession = useCompleteLabSession();
 
   // Animate terminal output line by line. Declared BEFORE the !exp early
   // return below — hooks must never be conditional (audit 0-d P2).
@@ -310,7 +317,14 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
       setTerminalLines([]);
       setRunning(false);
     } else {
-      setDone(true);
+      // r154d: final step — persist the completion. The success screen
+      // renders only after the mutation lands; a failure shows an error
+      // state with a retry instead of a false «بنجاح».
+      if (!exp || completeSession.isPending) return;
+      completeSession.mutate(
+        { labId: lab.id, experimentName: exp.title },
+        { onSuccess: () => setDone(true) },
+      );
     }
   };
 
@@ -323,7 +337,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </div>
           <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>أحسنت!</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            أكملت «<bdi>{exp.title}</bdi>» بنجاح.
+            أكملت «<bdi>{exp.title}</bdi>» بنجاح — أُحتسبت في إحصائيّاتك.
           </div>
           <div className="lab-done-chip" style={{ marginTop: 'var(--sp-5)' }}>
             <Icon icon={Award} size={18} />
@@ -336,6 +350,39 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
             </button>
             <button type="button" className="btn primary" onClick={() => { setDone(false); setStepIndex(0); setTerminalLines([]); }}>
               إعادة التجربة
+            </button>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  if (completeSession.isError) {
+    return (
+      <Card>
+        <div className="state state-error">
+          <div className="state-icon">
+            <Icon icon={AlertCircle} size={28} />
+          </div>
+          <div className="text-lg font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>
+            تعذَّر تسجيل الإكمال
+          </div>
+          <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
+            وصلت إلى نهاية التجربة لكن لم يُسجَّل الإكمال على الخادم. يمكنك إعادة المحاولة أو العودة لاحقاً.
+          </div>
+          <div className="flex gap-2" style={{ marginTop: 'var(--sp-5)' }}>
+            <button type="button" className="btn" onClick={onExit}>
+              <Icon icon={ChevronRight} size={13} />
+              العودة للمعامل
+            </button>
+            <button
+              type="button"
+              className="btn primary"
+              onClick={() => completeSession.reset()}
+              disabled={completeSession.isPending}
+            >
+              <Icon icon={Play} size={13} />
+              إعادة المحاولة
             </button>
           </div>
         </div>
@@ -408,8 +455,10 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
               </button>
             )}
             {!running && terminalLines.length > 0 && (
-              <button type="button" className="btn primary" onClick={nextStep}>
-                {stepIndex < exp.steps.length - 1 ? 'الخطوة التالية' : 'إنهاء التجربة'}
+              <button type="button" className="btn primary" onClick={nextStep} disabled={completeSession.isPending}>
+                {completeSession.isPending
+                  ? 'جارٍ التسجيل…'
+                  : stepIndex < exp.steps.length - 1 ? 'الخطوة التالية' : 'إنهاء التجربة'}
                 <Icon icon={ChevronLeft} size={13} />
               </button>
             )}
