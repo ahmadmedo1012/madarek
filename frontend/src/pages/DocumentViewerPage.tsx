@@ -61,7 +61,10 @@ export default function DocumentViewerPage() {
   const src = `/api/v1/files/papers/${encodeURIComponent(params.filename)}`;
 
   return (
-    <div className="page document-viewer-page" style={{ height: 'calc(100vh - var(--topbar-h))', paddingBottom: 0 }}>
+    // r152i (A3): the height moved to pdf.css (.document-viewer-page)
+    // — the inline calc(100vh) hid content behind the iOS URL bar and
+    // forced the print block to fight an inline style with !important.
+    <div className="page document-viewer-page">
       <header className="page-header" style={{ marginBottom: 'var(--sp-3)' }}>
         <div className="page-title-block">
           {/* document-viewer-back: app chrome — hidden by the viewer-page

@@ -43,7 +43,7 @@
   background: var(--ln-ink);
   color: var(--ln-cream);
   font-family: var(--font-sans);
-  min-block-size: 100vh;
+  min-block-size: 100svh; /* r152i: fold-stable like the :696 precedent (was 100vh) */
   overflow-x: clip; /* RTL overflow guard (spec §4.3) */
   /* P1-4 (audit): an Arabic-capable mono voice. --font-mono is IBM Plex
      Mono, which ships latin-only — every Arabic run inside .ln-mono /

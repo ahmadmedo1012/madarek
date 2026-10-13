@@ -10,31 +10,33 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--sp-5); }
-  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-6); }
   .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: var(--sp-6); }
   .grid-auto-200 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: var(--sp-5); }
   .grid-auto-260 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: var(--sp-5); }
 
-  @media (max-width: 1100px) {
+  /* r152i (A3): .grid-4's responsive flip now reads its CONTAINER,
+     not the viewport — the 1px cliff at 1100/1101px (4 cramped 172px
+     tiles vs 2×445px) and the sidebar-state-dependent tile width both
+     die with the container query. One band replaces the 1100 media
+     line, the 640 stack line AND the 23-b ≤480 patch (2×2 at any
+     narrow container — phone, modal, side column). */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); container: grid4 / inline-size; }
+  @container grid4 (max-width: 860px) {
     .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
+
+  @media (max-width: 1100px) {
     .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
-    .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--sp-3); }
+    .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--sp-3); }
     .grid-auto-200, .grid-auto-260 { grid-template-columns: 1fr; gap: var(--sp-3); }
   }
-  /* 23-b (A8 P3-9): every live .grid-4 consumer is a compact KPI strip
-     (MetricCard / KpiStripSkeleton — 30+ mounts, census 23-b), so four
-     stacked full-width cards pushed all page content below the small-
-     phone fold (390px probe: 4×340px cards). 2×2 at ≤480px keeps the
-     strip a strip; grid-3/grid-2 keep their 1-column stack, and a row
-     that genuinely needs full-width cards opts into .grid-2 + stacked
-     children or its own section rule (dash-progress-card etc.). */
-  @media (max-width: 480px) {
-    .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
+  /* 23-b (A8 P3-9) — retired into the container band above: every live
+     .grid-4 consumer is a compact KPI strip, and the 2×2 floor now
+     holds in ANY narrow container (not just ≤480px viewports). */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  CARD — Notion-soft. Subtle border, soft shadow on hover.      ║
@@ -241,13 +243,19 @@
     border: 1px solid var(--rule); border-radius: var(--r-lg);
     /* Premium depth — multi-layer shadow for world-class elevation */
     box-shadow: var(--shadow-card-premium);
+    /* r152i (A3): the strip reads ITSELF, not the viewport — the same
+       1152px viewport measured 180px tiles with the rail collapsed and
+       228px expanded (a 48px delta no media query can see). */
+    container: kpis / inline-size;
   }
   .compact-kpi { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-2); }
   .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
   .compact-kpi-value { font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
   .compact-kpi-trend { font-size: var(--fs-xxs); color: var(--text-muted); }
 
-  @media (max-width: 640px)  {
+  /* r152i: was @media (max-width: 640px) — the restyle now follows the
+     strip's own width (phones AND narrow side-columns alike). */
+  @container kpis (max-width: 480px)  {
     .compact-kpis {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--sp-2);
@@ -2377,16 +2385,29 @@
     --w-input-filter-search: 260px;
     --w-input-filter-select: 170px;
     display: flex; align-items: center; flex-wrap: wrap;
-    gap: var(--sp-2);
+    /* r152h: 6px — the v10 polish twin's only live declaration, merged
+       home as the sanctioned half-step token (the twin retired; the
+       computed value is unchanged). */
+    gap: var(--sp-1-5);
     padding: var(--sp-3) var(--sp-4);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
     background: var(--surface-2);
+    /* r152i (A3): the bar reads ITSELF — full-page rows AND narrow
+       containers (modals, side columns) get the right layout without
+       the viewport guessing for them. */
+    container: filterbar / inline-size;
   }
   .filter-bar .topbar-search {
     /* .topbar-search is inline-size:100% by default (layout.css) — the
        cap keeps it a pill beside the selects instead of a full row. */
     max-inline-size: var(--w-input-filter-search);
+  }
+  @container filterbar (max-width: 480px) {
+    /* Narrow bar: the search pill takes the whole first row and the
+       selects wrap after it (flex-wrap already owns the wrapping).
+       Sits AFTER the cap on purpose — same specificity, later source. */
+    .filter-bar .topbar-search { max-inline-size: none; }
   }
   .filter-bar > .input {
     max-inline-size: var(--w-input-filter-select);
@@ -3879,7 +3900,9 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--sp-3);
   }
-  @media (max-width: 900px) {
+  /* r152i (A3): 900→920 — joins the shell band (the sidebar collapse)
+     instead of floating 20px below it. */
+  @media (max-width: 920px) {
     .form-row-3 { grid-template-columns: 1fr; }
   }
   .course-select { max-inline-size: 360px; }

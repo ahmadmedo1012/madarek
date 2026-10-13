@@ -537,6 +537,15 @@
   .document-viewer-layout { flex-direction: column; }
 }
 
+/* ─── The viewer route page — viewport-locked with dvh ──────
+   r152i (A3): was an inline style on the route div (calc(100vh) —
+   iOS URL-bar trap + forced the print block into an !important fight).
+   dvh tracks the dynamic viewport; the print override below stays. */
+.document-viewer-page {
+  height: calc(100dvh - var(--topbar-h));
+  padding-block-end: 0;
+}
+
 /* ─── Print — the paper, not the chrome ────────────────────
    Scoped to the document-viewer route only. The GLOBAL print
    contract (chrome hiding, dark→light lock, effect freeze, link

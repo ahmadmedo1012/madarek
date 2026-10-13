@@ -396,7 +396,9 @@
 }
 
 /* Mobile: stack cards single-column, sticky toolbar with backdrop blur. */
-@media (max-width: 767px) {
+/* r152i (A3): 767→768 — off-by-one vs the 768 family used by the same
+   file (:520) and everywhere else; dvh per the iOS URL-bar canon. */
+@media (max-width: 768px) {
   .gallery-toolbar {
     position: sticky;
     top: var(--topbar-h);

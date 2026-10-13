@@ -1578,41 +1578,27 @@
 
 
 
-  /* ═══════════════════════════════════════════════════════════════
-     Gap rows (matrix recommendations on /student/exams)
-     ═══════════════════════════════════════════════════════════════ */
-  /* (Wave 9-b dead-selector sweep: the .gap-row family deleted —
-     zero TSX consumers; the matrix gap recommendations render the
-     designed .matrix-gap-in / .ai-gap-card families in student.css
-     (wave 4-a).) */
+  /* (r152h: the v10 gap-rows tombstone folded into the v10 section
+     header — the .gap-row family was deleted in wave 9-b (zero TSX
+     consumers; the matrix gaps render student.css's
+     .matrix-gap-in / .ai-gap-card families).) */
 
   /* ═══════════════════════════════════════════════════════════════
      Thumb cards (Library, AR/VR, Labs grid)
      ═══════════════════════════════════════════════════════════════ */
-  /* The base style exists in components.css; we add interactivity */
-  .thumb-card {
-    transition: transform var(--t-fast) var(--ease),
-                border-color var(--t-fast) var(--ease),
-                box-shadow var(--t-fast) var(--ease);
-  }
-  .thumb-card:hover {
-    /* Off-token by design: accent-tinted hover glow, not elevation.
-       5-C1 (A2 P2-8): the −2px transform LIFT that used to live here
-       moved into the (hover: hover) gate at the v18 block below —
-       ungated, iOS sticky-hover pinned it after the first tap. The
-       paint-only wash + glow are safe to keep ungated. */
-    box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--accent) 14%, color-mix(in srgb, var(--black) 8%, transparent));
-  }
+  /* (r152h: the v10 thumb-card pair — transition + accent hover glow —
+     deleted as cascade-dead: the v19 thumb-card family below (same
+     overrides layer, later source, same specificity) re-sets both the
+     transition and the hover box-shadow, so these two rules never
+     computed. The v19 family stays as the single owner.) */
 
   /* ═══════════════════════════════════════════════════════════════
      Filter bar (campus map, matrix legend, etc.)
      ═══════════════════════════════════════════════════════════════ */
-  .filter-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
+  /* (r152h: the v10 twin retired — its only live declaration was the
+     6px gap (the rest duplicated components.css verbatim); the 6px
+     now lives in the canonical .filter-bar as var(--sp-1-5), so the
+     computed value is unchanged and the override is gone.) */
   /* ═══════════════════════════════════════════════════════════════
      Misc — small surfaces that were inheriting browser defaults
      ═══════════════════════════════════════════════════════════════ */

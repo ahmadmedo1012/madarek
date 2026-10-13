@@ -1247,7 +1247,9 @@
     gap: var(--sp-3);
     padding-block: var(--sp-3);
   }
-  @media (max-width: 680px) {
+  /* r152i (A3): 680→640 — joins the dominant phone band (nothing else
+     uses 680; nearest ladder rungs are 640/768). */
+  @media (max-width: 640px) {
     .webinar-dest-grid { grid-template-columns: 1fr; }
   }
   .webinar-dest {
