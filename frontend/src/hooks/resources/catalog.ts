@@ -3,7 +3,7 @@
 // placeholderData and invalidation is byte-identical to the
 // original sections; the public surface is frozen by the barrel.
 
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 
 // ── Courses (admin) ────────────────────────────────────────────
@@ -155,9 +155,17 @@ export function useJobs() {
 /** Apply to a job posting — real POST /jobs/:id/apply (upserts the
  *  application server-side). Backs the «تقدّم الآن» button. */
 export function useApplyJob() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (jobId: string) =>
       unwrap<{ id: string; jobId: string; userId: string }>(api.post(`/jobs/${jobId}/apply`)),
+    /* r153g: the payload carries appliedJobIds (18-G) — without this
+     * invalidation the «تمّ التقديم» badge was client-local fiction
+     * that vanished on every remount until the 30s stale window
+     * lapsed on a later mount. */
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['jobs'] });
+    },
   });
 }
 

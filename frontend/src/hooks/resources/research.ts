@@ -148,6 +148,10 @@ export function useGradePaper() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['research', 'queue'] });
       qc.invalidateQueries({ queryKey: ['me', 'research'] });
+      /* r153g: the admin research drill-down (useAdminPapers) shows the
+       * paper's status — a teacher's grade left it stale until a later
+       * mount's 30s stale window lapsed. */
+      qc.invalidateQueries({ queryKey: ['admin', 'papers'] });
     },
   });
 }
@@ -163,6 +167,10 @@ export function usePublishPaper() {
       // publish must appear there immediately, not after the 30s stale
       // window lapses on a later mount.
       qc.invalidateQueries({ queryKey: ['research', 'published'] });
+      /* r153g: same admin drill-down freshness contract as grading
+       * above — the status column flips to PUBLISHED on the admin
+       * register too. */
+      qc.invalidateQueries({ queryKey: ['admin', 'papers'] });
     },
   });
 }

@@ -200,10 +200,15 @@ export function useCreateAssignment() {
   return useMutation({
     mutationFn: ({ offeringId, ...payload }: CreateAssignmentInput) =>
       unwrap<unknown>(api.post(`/offerings/${offeringId}/assignments`, payload)),
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       qc.invalidateQueries({ queryKey: ['teacher', 'me', 'assignments'] });
       qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
       qc.invalidateQueries({ queryKey: ['teacher', 'dashboard'] });
+      /* r153g: the student-facing course detail embeds the assignments
+       * list (useOfferingFull) — the targeted full key keeps a fresh
+       * create visible on the next CourseDetail visit without
+       * refetching every offering in the cache. */
+      qc.invalidateQueries({ queryKey: ['offerings', vars.offeringId, 'full'] });
     },
   });
 }
@@ -221,9 +226,12 @@ export function useCreateMaterial() {
   return useMutation({
     mutationFn: ({ offeringId, ...payload }: CreateMaterialInput) =>
       unwrap<unknown>(api.post(`/offerings/${offeringId}/materials`, payload)),
-    onSuccess: () => {
+    onSuccess: (_data, vars) => {
       qc.invalidateQueries({ queryKey: ['teacher', 'me', 'materials'] });
       qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+      /* r153g: same student-facing freshness contract as assignments —
+       * the materials list lives inside the offering-full projection. */
+      qc.invalidateQueries({ queryKey: ['offerings', vars.offeringId, 'full'] });
     },
   });
 }

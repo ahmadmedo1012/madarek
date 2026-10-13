@@ -37,6 +37,11 @@ import {
   useGradeSubmission,
   useMarkAllNotifsRead,
   useFinishExam,
+  useApplyJob,
+  useCreateAssignment,
+  useCreateMaterial,
+  useGradePaper,
+  usePublishPaper,
   type StartExamResponse,
 } from '../../src/hooks/useResources';
 import { api } from '../../src/lib/api';
@@ -258,5 +263,76 @@ describe('useFinishExam verdict honesty (15-c P1-1)', () => {
     });
 
     expect(post).toHaveBeenCalledWith('/exams/attempts/att-1/submit', {});
+  });
+});
+
+/* ── r153g — cross-surface freshness invalidation pins ──────────────
+ * Three mutations write data that OTHER surfaces read from cache;
+ * each used to leave those surfaces stale until a later mount's 30s
+ * stale window lapsed:
+ *   1. useApplyJob → ['jobs'] (the payload carries appliedJobIds —
+ *      the «تمّ التقديم» badge was remount-fiction).
+ *   2. useCreateAssignment / useCreateMaterial → the targeted
+ *      ['offerings', id, 'full'] (the student course detail embeds
+ *      both lists).
+ *   3. useGradePaper / usePublishPaper → ['admin', 'papers'] (the
+ *      admin research drill-down's status column).
+ */
+describe('r153g — cross-surface invalidations', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('useApplyJob invalidates the jobs family once', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const { result } = renderHook(() => useApplyJob(), { wrapper });
+
+    await act(async () => {
+      await result.current.mutateAsync('job-9');
+    });
+
+    const jobs = invalidatedKeys().filter((k) => k[0] === 'jobs');
+    expect(jobs).toHaveLength(1);
+    expect(post).toHaveBeenCalledWith('/jobs/job-9/apply');
+  });
+
+  it('useCreateAssignment refreshes the offering-full projection for THAT offering', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const { result } = renderHook(() => useCreateAssignment(), { wrapper });
+
+    await act(async () => {
+      await result.current.mutateAsync({ offeringId: 'off-7', title: 'واجب 1', type: 'HOMEWORK', dueAt: '2026-11-01T23:59:00.000Z', maxScore: 10 });
+    });
+
+    const full = invalidatedKeys().filter((k) => k[0] === 'offerings' && k[2] === 'full');
+    expect(full).toEqual([['offerings', 'off-7', 'full']]);
+    // the teacher-side families refresh too (pre-existing contract)
+    expect(invalidatedKeys().some((k) => k[0] === 'teacher' && k[1] === 'dashboard')).toBe(true);
+  });
+
+  it('useCreateMaterial refreshes the same offering-full projection', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const { result } = renderHook(() => useCreateMaterial(), { wrapper });
+
+    await act(async () => {
+      await result.current.mutateAsync({ offeringId: 'off-3', name: 'شرح الفصل الثاني', type: 'PDF', url: 'https://x.example/p.pdf' });
+    });
+
+    expect(invalidatedKeys()).toContainEqual(['offerings', 'off-3', 'full']);
+  });
+
+  it('useGradePaper and usePublishPaper both refresh the admin papers register', async () => {
+    const { wrapper, invalidatedKeys } = makeClient();
+    const grade = renderHook(() => useGradePaper(), { wrapper });
+    await act(async () => {
+      await grade.result.current.mutateAsync({ id: 'res-1', grade: 88 });
+    });
+    const publish = renderHook(() => usePublishPaper(), { wrapper });
+    await act(async () => {
+      await publish.result.current.mutateAsync('res-1');
+    });
+
+    const adminPapers = invalidatedKeys().filter((k) => k[0] === 'admin' && k[1] === 'papers');
+    expect(adminPapers).toHaveLength(2);
   });
 });
