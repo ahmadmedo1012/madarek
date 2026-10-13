@@ -20,7 +20,7 @@ import {
   ShieldCheck, AlertCircle, Edit3, Save, X, FileText, Sparkles,
   ChevronLeft,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
+import { Card, Badge, MetricCard, UserAvatar, FormField } from '../../components/primitives';
 import { DetailSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -240,13 +240,18 @@ export default function TeacherProfilePage() {
       {/* Bio + contact (editable) */}
       <Card title="نبذة شخصية" icon={FileText}>
         {editing && draft ? (
-          <textarea
-            className="input"
-            rows={5}
-            placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
-            value={draft.bio}
-            onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
-          />
+          /* r152c (A2): the four edit-mode controls were placeholder-ONLY
+             — no accessible name at all. FormField gives each a real
+             (visually matching) label. */
+          <FormField label="نبذة" id="teacher-bio-field">
+            <textarea
+              className="input"
+              rows={5}
+              placeholder="اكتب نبذة عن خبرتك الأكاديمية والبحثية وأهم اهتماماتك العلمية…"
+              value={draft.bio}
+              onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
+            />
+          </FormField>
         ) : profile.bio ? (
           <p className="profile-bio">{profile.bio}</p>
         ) : (
@@ -258,18 +263,22 @@ export default function TeacherProfilePage() {
         <Card title="المكتب وساعات العمل" icon={MapPin}>
           {editing && draft ? (
             <div className="flex-col gap-2">
-              <input
-                className="input"
-                placeholder="موقع المكتب — مثال: مبنى الكلّيّة - مكتب 305"
-                value={draft.officeLocation}
-                onChange={(e) => setDraft({ ...draft, officeLocation: e.target.value })}
-              />
-              <input
-                className="input"
-                placeholder="ساعات العمل — مثال: الأحد والثلاثاء 10-12"
-                value={draft.officeHours}
-                onChange={(e) => setDraft({ ...draft, officeHours: e.target.value })}
-              />
+              <FormField label="موقع المكتب" id="teacher-office-location-field">
+                <input
+                  className="input"
+                  placeholder="مثال: مبنى الكلّيّة - مكتب 305"
+                  value={draft.officeLocation}
+                  onChange={(e) => setDraft({ ...draft, officeLocation: e.target.value })}
+                />
+              </FormField>
+              <FormField label="ساعات العمل" id="teacher-office-hours-field">
+                <input
+                  className="input"
+                  placeholder="مثال: الأحد والثلاثاء 10-12"
+                  value={draft.officeHours}
+                  onChange={(e) => setDraft({ ...draft, officeHours: e.target.value })}
+                />
+              </FormField>
             </div>
           ) : (
             <div className="flex-col gap-2">
@@ -295,13 +304,15 @@ export default function TeacherProfilePage() {
 
         <Card title="الموقع الإلكتروني" icon={Globe}>
           {editing && draft ? (
-            <input
-              className="input"
-              dir="ltr"
-              placeholder="https://example.com/profile"
-              value={draft.websiteUrl}
-              onChange={(e) => setDraft({ ...draft, websiteUrl: e.target.value })}
-            />
+            <FormField label="الموقع الإلكتروني" id="teacher-website-field">
+              <input
+                className="input"
+                dir="ltr"
+                placeholder="https://example.com/profile"
+                value={draft.websiteUrl}
+                onChange={(e) => setDraft({ ...draft, websiteUrl: e.target.value })}
+              />
+            </FormField>
           ) : profile.websiteUrl ? (
             <a href={profile.websiteUrl} target="_blank" rel="noreferrer" className="font-mono text-xs" dir="ltr">
               {profile.websiteUrl}

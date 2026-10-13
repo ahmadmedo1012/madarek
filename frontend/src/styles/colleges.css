@@ -1186,20 +1186,9 @@ a.comp-card:focus-visible .comp-go {
   flex-direction: column;
   gap: var(--sp-4);
 }
-.comp-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1-5); /* r149 (R3-A2 #1): نفس نصف-درجة .form-label */
-}
-.comp-form-field label {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  color: var(--text);
-}
-.comp-form-field textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+/* r152c (A2): .comp-form-field retired — AdminGovernancePages was its
+   last consumer and its six selects now ride the canonical FormField
+   (.form-field in components.css). Tombstone kept per house convention. */
 .comp-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
