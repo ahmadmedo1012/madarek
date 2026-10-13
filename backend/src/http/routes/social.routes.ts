@@ -223,8 +223,11 @@ router.get('/announcements/feed', async (req, res, next) => {
       where: { userId },
       select: { facultyId: true, departmentId: true },
     }) : null;
+    // r155a (audit finding 5): only ACTIVE enrollments contribute
+    // OFFERING-scoped announcements (the platform-wide 'active'
+    // convention — see lib/permissions.ts decideOfferingAccess).
     const enrollments = role === Role.STUDENT ? await prisma.enrollment.findMany({
-      where: { studentId: userId }, select: { offeringId: true },
+      where: { studentId: userId, status: 'active' }, select: { offeringId: true },
     }) : [];
 
     const teacherProfile = role === Role.TEACHER ? await prisma.teacherProfile.findUnique({

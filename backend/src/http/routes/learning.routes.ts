@@ -308,65 +308,129 @@ router.post('/lectures/:id/watch', validate(watchSchema), async (req, res, next)
 // checked in the handler after the checkpoint is loaded (zod can't know it).
 const answerSchema = z.object({ answerIndex: z.number().int().min(0) }).strict();
 
-router.post('/lectures/:lid/checkpoints/:cid/answer', validate(answerSchema), async (req, res, next) => {
-  try {
-    const cp = await prisma.lectureCheckpoint.findUnique({
-      where: { id: req.params.cid! },
-      include: { lecture: { select: { offeringId: true } } },
-    });
-    if (!cp) throw AppError.notFound();
-    // Enrollment check: same guard as the watch endpoint. Without
-    // this, any student could inflate their StudentMastery for
-    // concepts in courses they aren't enrolled in.
-    await assertOfferingAccess(cp.lecture.offeringId, req.user!.id, req.user!.role);
-    // Validate the answer against THIS checkpoint's options length —
-    // a hardcoded .max(10) accepted indices that point past the options.
-    const optionCount = Array.isArray(cp.options) ? cp.options.length : 0;
-    const answerIndex = (req.body as z.infer<typeof answerSchema>).answerIndex;
-    if (answerIndex >= optionCount) {
-      throw AppError.badRequest('رقم الإجابة المرسل غير صالح لهذا السؤال التفاعلي');
-    }
-    const correct = cp.correctIndex === answerIndex;
+/**
+ * Maximum checkpoint answers that count toward one (student, concept)
+ * mastery row (r155a — audit finding 3). Attempts beyond the cap are
+ * still graded and answered with full feedback; they simply stop
+ * moving attempts / correct / level.
+ */
+export const MASTERY_ATTEMPT_CAP = 4;
 
-    // Update student mastery if checkpoint is concept-tagged.
-    if (cp.conceptId && req.user!.role === Role.STUDENT) {
-      // Atomic increment (upsert with {increment}) instead of the old
-      // read-modify-write, which lost concurrent answers on the same
-      // concept. level is then recomputed from the post-increment row.
-      await prisma.studentMastery.upsert({
-        where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
-        create: {
-          studentId: req.user!.id,
-          conceptId: cp.conceptId,
-          level: correct ? 1 : 0,
-          attempts: 1,
-          correct: correct ? 1 : 0,
-        },
-        update: {
-          attempts: { increment: 1 },
-          correct: { increment: correct ? 1 : 0 },
-          lastUpdatedAt: new Date(),
-        },
+export type MasteryUpdateDecision =
+  | { counts: true; correctDelta: 0 | 1 }
+  | { counts: false };
+
+/**
+ * Pure decision — does this checkpoint answer still count into the
+ * (student, concept) mastery statistics? (r155a — audit finding 3:
+ * mastery inflation guard.)
+ *
+ * Only the first MASTERY_ATTEMPT_CAP answers per (student, concept)
+ * count. The response keeps disclosing correctIndex (that is the
+ * pedagogical feedback — the "which option was right" moment), so an
+ * unlimited retry loop could previously probe each option and then
+ * drive level to 1.0 with unlimited correct-only retries. After the
+ * cap, answers are graded and answered exactly as before, but the
+ * counters stay frozen.
+ *
+ * `currentAttempts === null` means no row exists yet — the answer is
+ * attempt #1 and counts. Right and wrong answers count EQUALLY toward
+ * the cap (a learner must not reset the counter by answering wrong on
+ * purpose), so `isCorrect` never changes whether an attempt counts —
+ * it only becomes the `correct` delta / first-row seed level the
+ * caller writes. Exported for unit tests.
+ */
+export function decideMasteryUpdate(
+  currentAttempts: number | null,
+  isCorrect: boolean,
+): MasteryUpdateDecision {
+  if (currentAttempts !== null && currentAttempts >= MASTERY_ATTEMPT_CAP) {
+    return { counts: false };
+  }
+  return { counts: true, correctDelta: isCorrect ? 1 : 0 };
+}
+
+// Per-user route limiter (r155a): the answer endpoint discloses
+// correctIndex by design (feedback), so a script probing every option
+// needs bounded request velocity too — 20 answers / 60 s is generous
+// for a human working through a lecture and closes the machine-gun
+// probe path (the same createRouteLimiter treatment /me/lab-sessions
+// and /research/:id/scan get).
+router.post(
+  '/lectures/:lid/checkpoints/:cid/answer',
+  createRouteLimiter({ max: 20 }),
+  validate(answerSchema),
+  async (req, res, next) => {
+    try {
+      const cp = await prisma.lectureCheckpoint.findUnique({
+        where: { id: req.params.cid! },
+        include: { lecture: { select: { offeringId: true } } },
       });
-      // NOTE: the level recompute below is deliberately a read-modify-write.
-      // The increment above is atomic; the ratio recompute can interleave
-      // with a concurrent answer and briefly store a stale ratio, but the
-      // next answer always converges — cosmetic staleness only, not worth
-      // a row lock on this hot path.
-      const fresh = await prisma.studentMastery.findUnique({
-        where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
-        select: { attempts: true, correct: true },
-      });
-      if (fresh && fresh.attempts > 0) {
-        await prisma.studentMastery.update({
-          where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
-          data: { level: Math.max(0, Math.min(1, fresh.correct / fresh.attempts)) },
-        });
+      if (!cp) throw AppError.notFound();
+      // Enrollment check: same guard as the watch endpoint. Without
+      // this, any student could inflate their StudentMastery for
+      // concepts in courses they aren't enrolled in.
+      await assertOfferingAccess(cp.lecture.offeringId, req.user!.id, req.user!.role);
+      // Validate the answer against THIS checkpoint's options length —
+      // a hardcoded .max(10) accepted indices that point past the options.
+      const optionCount = Array.isArray(cp.options) ? cp.options.length : 0;
+      const answerIndex = (req.body as z.infer<typeof answerSchema>).answerIndex;
+      if (answerIndex >= optionCount) {
+        throw AppError.badRequest('رقم الإجابة المرسل غير صالح لهذا السؤال التفاعلي');
       }
-    }
-    res.json({ data: { correct, correctIndex: cp.correctIndex, explanation: cp.explanation } });
-  } catch (e) { next(e); }
-});
+      const correct = cp.correctIndex === answerIndex;
+
+      // Update student mastery if checkpoint is concept-tagged.
+      if (cp.conceptId && req.user!.role === Role.STUDENT) {
+        // r155a: only the first MASTERY_ATTEMPT_CAP answers per
+        // (student, concept) move the statistics — read the current
+        // attempt count first, then upsert only while below the cap.
+        // The answer's feedback below is identical either way.
+        const prior = await prisma.studentMastery.findUnique({
+          where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
+          select: { attempts: true },
+        });
+        const decision = decideMasteryUpdate(prior?.attempts ?? null, correct);
+        if (decision.counts) {
+          // Atomic increment (upsert with {increment}) instead of a
+          // read-modify-write, which lost concurrent answers on the same
+          // concept. level is then recomputed from the post-increment row.
+          await prisma.studentMastery.upsert({
+            where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
+            create: {
+              studentId: req.user!.id,
+              conceptId: cp.conceptId,
+              level: decision.correctDelta,
+              attempts: 1,
+              correct: decision.correctDelta,
+            },
+            update: {
+              attempts: { increment: 1 },
+              correct: { increment: decision.correctDelta },
+              lastUpdatedAt: new Date(),
+            },
+          });
+          // NOTE: the level recompute below is deliberately a read-modify-write.
+          // The increment above is atomic; the ratio recompute can interleave
+          // with a concurrent answer and briefly store a stale ratio, but the
+          // next answer always converges — cosmetic staleness only, not worth
+          // a row lock on this hot path.
+          const fresh = await prisma.studentMastery.findUnique({
+            where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
+            select: { attempts: true, correct: true },
+          });
+          if (fresh && fresh.attempts > 0) {
+            await prisma.studentMastery.update({
+              where: { studentId_conceptId: { studentId: req.user!.id, conceptId: cp.conceptId } },
+              data: { level: Math.max(0, Math.min(1, fresh.correct / fresh.attempts)) },
+            });
+          }
+        }
+      }
+      res.json({ data: { correct, correctIndex: cp.correctIndex, explanation: cp.explanation } });
+    } catch (e) { next(e); }
+  },
+);
 
 // ════════════════════════════════════════════════════════════════
 // Educational Matrix (per-student)
@@ -1510,7 +1574,15 @@ router.get(
         offeringIds.length
           ? prisma.watchEvent.groupBy({
               by: ['lectureId'],
-              where: { lecture: { offeringId: { in: offeringIds } } },
+              // r155a (audit finding 4): staff preview WatchEvents are
+              // excluded from the quality completion KPI — the write path
+              // records them (teachers previewing their own lectures is
+              // legitimate), but a teacher watching their own lecture is
+              // not student engagement.
+              where: {
+                lecture: { offeringId: { in: offeringIds } },
+                student: { role: Role.STUDENT },
+              },
               _sum: { watchedSec: true, totalSec: true },
             })
           : [],
@@ -1619,10 +1691,16 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
   try {
     // SQL aggregation: sums/counts computed in the database instead of
     // loading the whole WatchEvent table into memory.
+    // r155a (audit finding 4): every WatchEvent aggregate below filters
+    // student-role rows — teachers previewing their own lectures
+    // (WatchEvent rows are recorded for any authenticated viewer) were
+    // polluting the engagement KPIs. The write path is unchanged; only
+    // the quality aggregates narrow to actual students.
+    const studentWatchEvents = { student: { role: Role.STUDENT } };
     const [attendance, watchTotals, completedLectures, lectures, enrollments, totalStudents, papersByStatus, weeklyActiveEvents] = await withRetry(() => Promise.all([
       prisma.attendanceRecord.groupBy({ by: ['status'], _count: { _all: true } }),
-      prisma.watchEvent.aggregate({ _sum: { watchedSec: true, totalSec: true }, _count: { _all: true } }),
-      prisma.watchEvent.count({ where: { completed: true } }),
+      prisma.watchEvent.aggregate({ where: studentWatchEvents, _sum: { watchedSec: true, totalSec: true }, _count: { _all: true } }),
+      prisma.watchEvent.count({ where: { completed: true, ...studentWatchEvents } }),
       prisma.lecture.count(),
       prisma.enrollment.count(),
       prisma.user.count({ where: { role: Role.STUDENT } }),
@@ -1630,7 +1708,7 @@ router.get('/quality/engagement', requireCapability('QUALITY_VIEW'), async (_req
       // Distinct (student, day) pairs in the last 7 days for the weekly-active curve.
       // Bounded to a 7-day window — never the full table.
       prisma.watchEvent.findMany({
-        where: { lastSeenAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+        where: { lastSeenAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }, ...studentWatchEvents },
         select: { studentId: true, lastSeenAt: true },
       }),
     ]));

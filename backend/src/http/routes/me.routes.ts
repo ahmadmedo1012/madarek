@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { NotificationType } from '@prisma/client';
+import { NotificationType, Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -111,7 +111,7 @@ router.post(
       const [recipient, sender] = await Promise.all([
         prisma.user.findUnique({
           where: { id: toUserId },
-          select: { id: true, firstName: true, isActive: true },
+          select: { id: true, firstName: true, isActive: true, role: true },
         }),
         prisma.user.findUnique({
           where: { id: req.user!.id },
@@ -129,6 +129,12 @@ router.post(
           data: { fromUserId: req.user!.id, toUserId, body },
         });
         // Mirror the seed notification copy style (Arabic, icon, short body).
+        // r155a (audit finding 2): the link used to point at '/messages' —
+        // no such SPA route exists (the only inbox tree is
+        // /teacher/messages, TEACHER-only). Teachers get the real route;
+        // every other role gets no link (Notification.link is nullable —
+        // same null-handling as the seed rows) until an inbox exists for
+        // them. A dead deep link is worse than none: it strands the click.
         await tx.notification.create({
           data: {
             userId: recipient.id,
@@ -136,7 +142,7 @@ router.post(
             icon: '💬',
             title: `رسالة جديدة من ${sender?.firstName ?? 'مستخدم'}`,
             body: body.slice(0, 80),
-            link: '/messages',
+            link: recipient.role === Role.TEACHER ? '/teacher/messages' : null,
           },
         });
         return message;

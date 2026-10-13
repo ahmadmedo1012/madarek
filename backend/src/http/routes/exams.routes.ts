@@ -107,6 +107,24 @@ export type ManualGradeReconciliation =
   | { ok: false; message: string; answerIds: string[] };
 
 /**
+ * Pure decision (r155a — audit finding 6): may this author create a
+ * template scoped to NEITHER an offering NOR a faculty? The student
+ * scoping on list/start/detail matches a published template on either
+ * field, so an unscoped template is visible to every student
+ * platform-wide — a cross-faculty reach reserved for EXAMS_MODERATE
+ * holders (the same reach the facultyId guard grants moderators).
+ * Exported for unit tests.
+ */
+export function mayAuthorUnscopedTemplate(
+  hasOfferingId: boolean,
+  hasFacultyId: boolean,
+  capabilities: ReadonlySet<string>,
+): boolean {
+  if (hasOfferingId || hasFacultyId) return true;
+  return capabilities.has('EXAMS_MODERATE');
+}
+
+/**
  * A manual-grading payload must grade exactly the pending answers:
  * every pending answer once, nothing the auto-grader already scored.
  */
@@ -446,6 +464,25 @@ router.post('/exams/templates', requireCapability('EXAMS_AUTHOR'), validate(crea
         throw AppError.forbidden('لا يمكن استهداف كلّيّة غير الكلّيّة التي تنتمي إليها');
       }
     }
+    /* r155a (audit finding 6): a template with BOTH offeringId and
+     * facultyId null is unscoped — every student platform-wide matches
+     * the published-template student scoping (list/start/detail check
+     * either field), so minting one is gated on EXAMS_MODERATE, the
+     * same cross-faculty reach the facultyId guard above grants
+     * moderators. The zod schema stays permissive (a minimal template
+     * with neither field parses) because the capability context lives
+     * here, not in the schema. */
+    if (
+      !mayAuthorUnscopedTemplate(
+        Boolean(body.offeringId),
+        Boolean(body.facultyId),
+        await getEffectiveCapabilities(req.user!.id, req.user!.role),
+      )
+    ) {
+      throw AppError.badRequest(
+        'يجب ربط قالب الاختبار بمقرر أو كلّيّة — إنشاء قالب غير مرتبط متاح لمراقبي الاختبارات فقط',
+      );
+    }
     // Template authoring is gated on question-level moderation too: a
     // template built from unapproved (or unknown) questions would bypass
     // the question moderation queue once the template itself is
@@ -493,8 +530,11 @@ router.get('/exams/templates', async (req, res, next) => {
       // Same scoping as /exams/me: published templates for offerings I'm
       // enrolled in OR my own faculty. Without this, students could list
       // every published template platform-wide (cross-faculty leak).
+      // r155a (audit finding 5): only ACTIVE enrollments scope a student
+      // (the platform-wide convention — decideOfferingAccess grants
+      // content access on 'active' rows only).
       const enrollments = await prisma.enrollment.findMany({
-        where: { studentId: req.user!.id },
+        where: { studentId: req.user!.id, status: 'active' },
         select: { offeringId: true },
       });
       const myFaculty = await prisma.studentProfile.findUnique({
@@ -551,6 +591,10 @@ router.get('/exams/templates/:id', async (req, res, next) => {
     // Scoping for students — mirror /exams/me: the template must belong to
     // an offering the student is enrolled in, or to the student's faculty.
     // Without this, any student could fetch any published template by ID.
+    // r155a (audit finding 6, defensive): a legacy template with NEITHER
+    // an offering nor a faculty is unscoped → treat as visible to every
+    // student and deny (the authoring guard above stops new ones; this
+    // closes any already-published legacy rows).
     if (req.user!.role === 'STUDENT') {
       if (template.offeringId) {
         await assertOfferingAccess(template.offeringId, req.user!.id, Role.STUDENT);
@@ -562,6 +606,8 @@ router.get('/exams/templates/:id', async (req, res, next) => {
         if (!profile || profile.facultyId !== template.facultyId) {
           throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
         }
+      } else {
+        throw AppError.forbidden('هذا الاختبار غير مرتبط بمقرر أو كلّيّة — لا يمكن الوصول إليه');
       }
     }
 
@@ -659,8 +705,10 @@ router.get('/exams/me', async (req, res, next) => {
     }
     const userId = req.user!.id;
     // Find published exams for offerings I'm enrolled in OR faculty-wide
+    // r155a (audit finding 5): only ACTIVE enrollments scope a student
+    // (the platform-wide 'active' convention — see assertOfferingAccess).
     const enrollments = await prisma.enrollment.findMany({
-      where: { studentId: userId },
+      where: { studentId: userId, status: 'active' },
       select: { offeringId: true },
     });
     const offeringIds = enrollments.map((e) => e.offeringId);
@@ -750,6 +798,9 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
     // belong to an offering they're enrolled in, or a faculty they
     // belong to. Without this, any student could start any published
     // exam by ID (even ones for a faculty they're not in).
+    // r155a (audit finding 6, defensive): BOTH null = a legacy unscoped
+    // template → deny (the route is STUDENT-only via requireRole, so
+    // every caller here is a student; non-students never reach this).
     if (template.offeringId) {
       await assertOfferingAccess(template.offeringId, userId, Role.STUDENT);
     } else if (template.facultyId) {
@@ -760,6 +811,8 @@ router.post('/exams/templates/:id/start', requireRole(Role.STUDENT), async (req,
       if (!profile || profile.facultyId !== template.facultyId) {
         throw AppError.forbidden('هذا الاختبار مخصص لكلّيّة أخرى');
       }
+    } else {
+      throw AppError.forbidden('هذا الاختبار غير مرتبط بمقرر أو كلّيّة — لا يمكن أداؤه');
     }
 
     // Two concurrent starts used to race past the findFirst and create
