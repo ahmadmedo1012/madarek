@@ -12,7 +12,7 @@
 | `/student/lectures/:lectureId` | `LecturePlayerPage` | `pages/student/LecturePlayerPage.tsx` | قلب الفصول المقلوبة (تتبع 10 ثوانٍ، إدماجيات) |
 | `/student/matrix` | `MatrixPage` | `pages/student/MatrixPage.tsx` | خريطة حرارية + مرشحات مستويات |
 | `/student/research` | `ResearchPage` | `pages/student/ResearchPage.tsx` | آلة حالات البحث بالتسميات العربية |
-| `/student/library` | `LibraryPage` | `pages/student/LibraryPage.tsx` | تبويبا كتب/بحوث + بحث مطبّع 250ms |
+| `/student/library` | `LibraryPage` | `pages/student/LibraryPage.tsx` | تبويبا كتب/بحوث + بحث مطبّع 250ms + استعارة/إرجاع فعليّان (r155b) |
 | `/student/online-exams` (+`/:id`) | `OnlineExamsPage`/`ExamTakerPage` | `pages/exams/OnlineExamsPages.tsx` | استعادة إجابات + دفع متأخر كل 10 ثوانٍ |
 | `/training`, `/:slug`, `/:slug/lesson/:lessonId` | `TrainingPages` | `pages/student/TrainingPages.tsx` | 11 مسارًا عربيًا + دروس/اختبارات |
 | `/achievements`, `/student/gamification`, `/student/skills` | `TrainingPages`/`MorePages` | كما أعلاه | نقاط/شارات/مهارات |
@@ -23,7 +23,7 @@
 | المجموعة | الملف | أبرز المسارات |
 |---|---|---|
 | لوحة/نتائج/مواد | `student-dashboard.routes.ts` | `GET /me/dashboard`، `/me/results`، `/me/materials`، `/me/lab-sessions` |
-| التعلم | `learning.routes.ts` | `GET /offerings/:id/full`، `POST /lectures/:id/watch`، إدماجيات، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
+| التعلم | `learning.routes.ts` | `GET /offerings/:id/full`، `POST /lectures/:id/watch`، إدماجيات (حدّ 20/د + سقف احتساب 4 محاولات/مفهوم r155a)، `GET/POST /me/research`، `POST /research/:id/scan` (10/د)، annotations، `/me/matrix`، `/me/gaps` |
 | التدريب | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `lessons/:lessonId/complete`، `me/badges`، `certificates`، `leaderboard` |
 | اختبارات | نماذج `Question/ExamTemplate/ExamAttempt` | الطالب يتخذ فقط (البناء للإدارة/الأستاذ) |
 | إشعارات/رسائل | `me.routes.ts` | قراءة/قراءة الكل (رسائل بحد 30/د) |

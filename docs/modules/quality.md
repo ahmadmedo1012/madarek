@@ -16,11 +16,11 @@
 | `/quality/dashboard` | `QualityDashboardPage` | نظرة مجمعة: حلقي/أعمدة/خطوط عبر `ChartFrame` (كل رسم `role="img"` + جدول بديل مخفي) |
 | `/quality/courses` | `QualityCoursesPage` | جودة المقررات بمقاييس فرز |
 | `/quality/professors` | `QualityProfessorsPage` | رضا/التزام لكل أستاذ |
-| `/quality/engagement` | `QualityEngagementPage` | منحنى تفاعل + مؤشر صدق `weeklyActiveEstimated` (تقدير معلن لا حقيقة مقيسة) |
+| `/quality/engagement` | `QualityEngagementPage` | منحنى تفاعل + مؤشر صدق `weeklyActiveEstimated` (تقدير معلن لا حقيقة مقيسة) — أحداث مشاهدة الطلاب فقط (r155a) |
 | `/quality/curriculum` | `QualityCurriculumPage` | شجرة كلية→قسم→مقرر |
 | `/quality/reports` | `QualityReportsPage` | تقارير |
 | `/quality/alerts` | `QualityAlertsPage` | تنبيهات (مثل أعلام نسب فحص — بمدى المحاكاة المعلن) |
-| `/quality/exam-moderation` | `ExamModerationPage` — في `pages/exams/OnlineExamsPages.tsx` | رقابة قوالب الاختبارات (قدرة `EXAMS_MODERATE`) |
+| `/quality/exam-moderation` | `ExamModerationPage` — في `pages/exams/OnlineExamsPages.tsx` | رقابة قوالب الاختبارات (قدرة `EXAMS_MODERATE`) مع معاينة الأسئلة والإجابات النموذجيّة قبل القرار (r155b) |
 | `/quality/community` | مشترك | إعلانات |
 
 ## الـendpoints (الخلفية)

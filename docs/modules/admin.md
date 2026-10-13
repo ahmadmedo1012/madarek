@@ -24,7 +24,7 @@
 | `catalog.routes.ts` (23) | الكتب/الاستعارة/إرجاع، MOOC وتسجيله، الوظائف والتقديم، المنشورات والتفاعلات، مختبرات/AR، وحزمة إدارة `/admin/stats|faculties|reports|courses` |
 | `admin-extras.routes.ts` (3) | `/admin/students`، `/admin/papers` (**لا يُشحن `extractedText` أبدًا**)، `/admin/digital` |
 | `sync.routes.ts` | `GET /admin/sync` (قدرة `USERS_MANAGE|QUALITY_VIEW`)، `POST /admin/sync/trigger` (حرس تزامن مشترك مع المجدول → 409 عند التعارض) |
-| `enrollments.routes.ts` | تسجيل/إلغاء (إداري): سعة بـ`SELECT … FOR UPDATE`، إلغاء مدقّق |
+| `enrollments.routes.ts` | تسجيل/إلغاء (إداري): سعة بـ`SELECT … FOR UPDATE`، إلغاء مدقّق، ونطاق حاكمية الكليّة كالأخوات (r155a — المحدَّد نطاقًا يعرض/يُسجّل/يُلغي داخل كليّته فقط) |
 
 ## النماذج المرتبطة
 
