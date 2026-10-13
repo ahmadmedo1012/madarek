@@ -2,7 +2,7 @@
  * Testimonials content registry (r153k / r153-D) — the content model for
  * FUTURE authorized social proof on the landing page.
  *
- * ⚠️ INTENTIONALLY EMPTY. Real, named testimonials require real people
+ * INTENTIONALLY EMPTY. Real, named testimonials require real people
  * and documented consent (docs/16 هـ — the externally-blocked item).
  * Fabricating names, quotes, roles, or affiliations is FORBIDDEN by the
  * platform's honesty rules (audits 4-A1 praised the landing's
