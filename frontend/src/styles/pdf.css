@@ -39,6 +39,23 @@
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  Controls-bar fade-in — home since r152e (was polish v19)      ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PDF VIEWER — controls bar fades in                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
+     zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
+  .pdf-toolbar {
+    animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
+  }
+  @keyframes madarek-pdf-controls-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
 .pdf-toolbar-group {
   display: inline-flex;
   align-items: center;

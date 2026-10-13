@@ -3422,32 +3422,9 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  MEGA-MENU (landing) — items stagger, only while shown        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (r151g root fix, implementing v21's intent without the bangs:
-     the stagger is scoped to :hover/:focus-within on the group — the
-     menu opens via the .open class from TSX state, and pointer or
-     keyboard focus is inside the group whenever it is meaningfully
-     open. No other rule writes animation on the items (landing.css
-     uses a transition toggle only), so no !important is needed. The
-     RM belt below still kills it under prefers-reduced-motion.) */
-  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
-  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
-    animation: madarek-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both;
-  }
-  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(1),
-  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
-  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(2),
-  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
-  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(3),
-  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(3) { animation-delay: 100ms; }
-  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(4),
-  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(4) { animation-delay: 130ms; }
-  @keyframes madarek-megamenu-item-in {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: none; }
-  }
+  /* (r152e: the v18 megamino item stagger moved home to landing.css
+     (pages layer) — it rides the .open/.transition toggle grammar there.
+     The RM belt entries for .landing-megamenu stay here on purpose.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3582,25 +3559,6 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  AUTH PAGES — calmer ambient gradient + form lift              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: .auth-page removed — zero TSX
-     consumers; AuthPage renders .auth-card.) */
-  .auth-card {
-    position: relative;
-  }
-  .auth-card {
-    animation: madarek-auth-card-in var(--t-slower) var(--ease-spring-soft) both;
-  }
-  @keyframes madarek-auth-card-in {
-    from { opacity: 0; transform: translateY(12px) scale(0.98); }
-    to   { opacity: 1; transform: none; }
-  }
-  /* Auth submit button gets the same primary breathe as landing */
-  .auth-card .btn.primary {
-    position: relative;
-  }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3627,6 +3585,10 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROFILE PAGES — avatar ring on hover                          ║
+  /* (r152e: the v19 auth-card entrance (madarek-auth-card-in) moved
+     home to auth.css — completing the handoff its own header documents.
+     The redundant `.auth-card{position:relative}` twin was deleted,
+     not moved: auth.css:151 already owns it. RM belt entry stays.) */
      ╚═══════════════════════════════════════════════════════════════╝ */
   /* (Wave 9-b dead-selector sweep: this avatar-ring block deleted —
      .profile-avatar / .profile-page / .teacher-profile-avatar all
@@ -3664,18 +3626,6 @@
      polish.css:4642 in the audit numbering.) */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PDF VIEWER — controls bar fades in                            ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
-     zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
-  .pdf-toolbar {
-    animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
-  }
-  @keyframes madarek-pdf-controls-in {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: none; }
-  }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3721,6 +3671,8 @@
   }
   /* (r151d/r151e: :not(.back-link):not(.track-card) added to the four
      ::after selectors — those card-like chip anchors opt out of the
+  /* (r152e: the v19 .pdf-toolbar fade-in (madarek-pdf-controls-in)
+     moved home to pdf.css. RM belt entry stays.) */
      drawn underline at the source now (the wave 3-c components-layer
      `content: none !important` pair retired with this change). The
      BASE rule above deliberately stays un-guarded so those anchors

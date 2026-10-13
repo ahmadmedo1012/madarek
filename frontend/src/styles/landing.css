@@ -323,6 +323,43 @@
 }
 .landing .landing-megamenu-item:hover,
 .landing .landing-megamenu-item:focus-visible { background: color-mix(in srgb, var(--ln-cream) 5%, transparent); }
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  MEGA-MENU item stagger — home since r152e (was polish v18)   ║
+   ╚═══════════════════════════════════════════════════════════════╝
+   (r151g root fix, implemented here without bangs: the stagger is
+   scoped to :hover/:focus-within on the group — the menu opens via
+   the .open class from TSX state, and pointer or keyboard focus is
+   inside the group whenever it is meaningfully open. No other rule
+   writes animation on the items (the toggle above is a transition);
+   polish's RM belt still kills it under prefers-reduced-motion.) */
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MEGA-MENU (landing) — items stagger, only while shown        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (r151g root fix, implementing v21's intent without the bangs:
+     the stagger is scoped to :hover/:focus-within on the group — the
+     menu opens via the .open class from TSX state, and pointer or
+     keyboard focus is inside the group whenever it is meaningfully
+     open. No other rule writes animation on the items (landing.css
+     uses a transition toggle only), so no !important is needed. The
+     RM belt below still kills it under prefers-reduced-motion.) */
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item,
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item {
+    animation: madarek-megamenu-item-in var(--motion-duration-medium) var(--ease-out) both;
+  }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(1),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(1) { animation-delay: 40ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(2),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(2) { animation-delay: 70ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(3),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(3) { animation-delay: 100ms; }
+  .landing-nav-group:hover .landing-megamenu .landing-megamenu-item:nth-child(4),
+  .landing-nav-group:focus-within .landing-megamenu .landing-megamenu-item:nth-child(4) { animation-delay: 130ms; }
+  @keyframes madarek-megamenu-item-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+
 .landing .ln-menu-ico {
   inline-size: 38px;
   block-size: 38px;
