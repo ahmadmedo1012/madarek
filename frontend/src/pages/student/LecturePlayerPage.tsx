@@ -107,6 +107,17 @@ export default function LecturePlayerPage() {
   const [answerError, setAnswerError] = useState(false);
   // Set when the video ENDS — drives the next-lecture pulse (below).
   const [pulseNext, setPulseNext] = useState(false);
+  /* r152a (A4 P3): the onEnded report is the ONLY event that marks the
+   * lecture complete — a network blip at video end used to silently
+   * lose the «مكتملة» badge, XP and invalidations (the 10s ticker
+   * never retries after `ended`). The failed completion payload is
+   * kept here so the notice below can retry it verbatim. */
+  const [failedReport, setFailedReport] = useState<{
+    lectureId: string;
+    watchedSec: number;
+    totalSec: number;
+    completed: boolean;
+  } | null>(null);
 
   /* PP-X2: prev/next navigation changes ONLY the :lectureId param, so
    * the component instance SURVIVES the navigation — every per-lecture
@@ -121,6 +132,7 @@ export default function LecturePlayerPage() {
     setRevealResult(null);
     setAnswerError(false);
     setPulseNext(false);
+    setFailedReport(null);
     resumeSeekedRef.current = false;
   }, [lectureId]);
 
@@ -318,11 +330,14 @@ export default function LecturePlayerPage() {
                   // completable, mirroring the server-side D9 rule — the
                   // server stays the authority on what counts as done).
                   const watched = Math.round(e.currentTarget.currentTime);
-                  reportWatch.mutate({
+                  const payload = {
                     lectureId: data.id,
                     watchedSec: watched,
                     totalSec: data.durationSec,
                     completed: data.durationSec > 0,
+                  };
+                  reportWatch.mutate(payload, {
+                    onError: () => setFailedReport(payload),
                   });
                 }
                 // PP-X2 (audit P1-7): the moment the lecture ends, the
@@ -336,6 +351,26 @@ export default function LecturePlayerPage() {
                 captionsUrl, render <track kind="captions" srcLang="ar">
                 here. Data-model gap, documented per audit 0-d. */}
           </VideoPlayerChrome>
+
+          {failedReport && (
+            <div className="lecture-report-retry" role="alert">
+              <span>تعذّر تسجيل اكتمال المحاضرة — قد لا يُحتسب تقدّمك للمحاضرة.</span>
+              <button
+                type="button"
+                className="btn sm"
+                onClick={() => {
+                  reportWatch.mutate(failedReport, {
+                    onSuccess: () => setFailedReport(null),
+                    // Keep the notice up on a second failure — retry stays available.
+                    onError: () => undefined,
+                  });
+                }}
+                disabled={reportWatch.isPending}
+              >
+                {reportWatch.isPending ? 'يُعيد المحاولة…' : 'إعادة تسجيل الاكتمال'}
+              </button>
+            </div>
+          )}
 
           <div className="lecture-meta">
             <div className="lecture-meta-badges">

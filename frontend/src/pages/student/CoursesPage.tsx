@@ -473,12 +473,12 @@ export function SubmitAssignmentModal({
             </div>
 
             {validationError && (
-              <p role="alert" id="submit-text-err" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+              <p role="alert" id="submit-text-err" className="text-xs" style={{ color: 'var(--danger-ink)', marginTop: 'var(--sp-2)' }}>
                 {validationError}
               </p>
             )}
             {submit.isError && (
-              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+              <p role="alert" className="text-xs" style={{ color: 'var(--danger-ink)', marginTop: 'var(--sp-2)' }}>
                 {apiErrorMessage(submit.error, 'تعذَّر تسليم الواجب — تحقّق من اتصالك وحاول مرة أخرى.')}
               </p>
             )}

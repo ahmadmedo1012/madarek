@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../lib/api';
+import { toast } from '../lib/toast';
 
 // ── Types ────────────────────────────────────────────────────────
 interface OwnerStats {
@@ -294,6 +295,14 @@ export function useToggleFeatureFlag() {
       unwrap<FeatureFlag>(api.put(`/owner/feature-flags/${slug}`, { enabled })),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['owner', 'feature-flags'] });
+    },
+    // r152a (A4 P2): the switch is fully controlled by server data — a
+    // failed PUT used to be a dead click (no movement, no message, no
+    // retry). Surface it like the sibling settings-save flow does.
+    onError: () => {
+      toast.error('تعذّر تغيير حالة الميزة — حاول مجدداً.', {
+        title: 'تعذّر التطبيق',
+      });
     },
   });
 }

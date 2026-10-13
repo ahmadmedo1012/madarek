@@ -380,7 +380,10 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
               </div>
               <div className="terminal-title"><bdi>{lab.platform ?? 'simulator'}</bdi></div>
             </div>
-            <div className="terminal-body" role="log" aria-live="polite" aria-label="مخرجات المحاكاة">
+            {/* tabIndex (r152a A6 P2-2): zero focusable children inside
+                the scroller — a tab stop is the only keyboard path to
+                arrow-scroll the simulation output. */}
+            <div className="terminal-body" role="log" tabIndex={0} aria-live="polite" aria-label="مخرجات المحاكاة">
               {terminalLines.length === 0 && !running ? (
                 <div className="terminal-hint">— اضغط "تشغيل الخطوة" لتنفيذ الأوامر —</div>
               ) : (

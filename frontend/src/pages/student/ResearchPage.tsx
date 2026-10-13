@@ -417,7 +417,7 @@ function UploadModal({
             aria-describedby={`${titleId}-err`}
           />
           {title.trim().length > 0 && title.trim().length < 3 && (
-            <span id={`${titleId}-err`} className="form-field-hint" style={{ color: 'var(--danger)' }}>يجب أن يكون 3 أحرف على الأقل.</span>
+            <span id={`${titleId}-err`} className="form-field-hint" style={{ color: 'var(--danger-ink)' }}>يجب أن يكون 3 أحرف على الأقل.</span>
           )}
         </div>
 

@@ -446,6 +446,12 @@ const announcementSchema = z.object({
 type AnnouncementInputs = z.infer<typeof announcementSchema>;
 
 const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '🗓️']; // allow-emoji: admin icon-picker palette
+/* r152a (A6 P3-5): controlled Arabic names so SR announcements stay in
+ * the app's language instead of the SR's emoji localization. */
+const ANN_ICON_NAMES_AR: Record<string, string> = {
+  '📢': 'مكبّر صوت', '📌': 'دبوس', '🎓': 'قبعة تخرّج', '🏆': 'كأس',
+  '⚠️': 'تنبيه', '✨': 'بريق', '📝': 'ملاحظة', '🗓️': 'تقويم',
+};
 
 function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
   canPlatform: boolean;
@@ -572,6 +578,7 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
                 <button
                   key={ic} type="button"
                   aria-pressed={form.watch('iconEmoji') === ic}
+                  aria-label={ANN_ICON_NAMES_AR[ic] ?? 'أيقونة'}
                   className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
                   onClick={() => form.setValue('iconEmoji', ic)}
                 >{ic}</button>
@@ -656,6 +663,11 @@ const eventSchema = z.object({
 type EventInputs = z.infer<typeof eventSchema>;
 
 const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫', '🤝']; // allow-emoji: admin icon-picker palette
+/* r152a (A6 P3-5): controlled Arabic names for SR announcements. */
+const EVENT_ICON_NAMES_AR: Record<string, string> = {
+  '📅': 'تقويم', '🎤': 'ميكروفون', '🎓': 'قبعة تخرّج', '🔬': 'مجهر',
+  '⚽': 'كرة قدم', '🎨': 'لوحة ألوان', '🧑‍🏫': 'مدرّس', '🤝': 'مصافحة',
+};
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCampusEvent();
@@ -737,6 +749,7 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
                 <button
                   key={ic} type="button"
                   aria-pressed={form.watch('iconEmoji') === ic}
+                  aria-label={EVENT_ICON_NAMES_AR[ic] ?? 'أيقونة'}
                   className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
                   onClick={() => form.setValue('iconEmoji', ic)}
                 >{ic}</button>

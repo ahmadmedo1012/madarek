@@ -17,11 +17,17 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
+const { registerResetSpy } = vi.hoisted(() => ({ registerResetSpy: vi.fn() }));
+
 vi.mock('../../src/hooks/useAuth', () => ({
   useRegister: () => ({
     mutateAsync: vi.fn(async () => ({ user: { role: 'STUDENT' } })),
     isPending: false,
     isError: false,
+    // r152a (A4 P3): chooseRole/backToRoles reset the shared mutation so
+    // a failed submission's error state never leaks onto the other
+    // role's form.
+    reset: registerResetSpy,
   }),
 }));
 
@@ -117,6 +123,20 @@ describe('RegisterPage — step persistence (audit 4-A13 P2-3)', () => {
     fireEvent.click(screen.getByRole('button', { name: /عضو هيئة تدريس/ }));
     expect((screen.getByLabelText('الاسم الأول') as HTMLInputElement).value).toBe('أمل');
     expect((screen.getByLabelText('التخصص العلمي') as HTMLInputElement).value).toBe('قواعد بيانات');
+  });
+
+  it('resets the shared register mutation on every role transition (r152a A4 P3)', () => {
+    registerResetSpy.mockClear();
+    renderPage();
+    // Forward into a role, back to the picker, into the other role —
+    // every transition resets the mutation so a failed submission on
+    // one form can never render its error state on the other.
+    chooseStudent();
+    expect(registerResetSpy).toHaveBeenCalledTimes(1);
+    backToRoles();
+    expect(registerResetSpy).toHaveBeenCalledTimes(2);
+    fireEvent.click(screen.getByRole('button', { name: /عضو هيئة تدريس/ }));
+    expect(registerResetSpy).toHaveBeenCalledTimes(3);
   });
 });
 

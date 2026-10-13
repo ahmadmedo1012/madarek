@@ -91,9 +91,19 @@ api.interceptors.response.use(
   async (error: AxiosError<{ error?: { code?: string } }>) => {
     const original = error.config as (AxiosRequestConfig & { __retried?: boolean }) | undefined;
     const status = error.response?.status;
-    const code = error.response?.data?.error?.code;
 
-    if (status === 401 && code === 'TOKEN_EXPIRED' && original && !original.__retried) {
+    /* r152a (A4 P3-suspected): recovery used to fire ONLY on TOKEN_EXPIRED.
+     * A structurally-invalid access token (UNAUTHENTICATED — e.g. after a
+     * JWT secret rotation or an env switch with a stale persisted token)
+     * never refreshed, never cleared, never redirected: every query just
+     * kept erroring until the user found the logout button — even though
+     * the refresh cookie may be perfectly valid and would fix it. Now ANY
+     * 401 on a non-auth endpoint gets one single-shot refresh attempt
+     * (the __retried guard keeps it bounded). Auth endpoints are exempt:
+     * their 401s are answers, not session failures — a wrong password
+     * must not mint a refresh round-trip. */
+    const isAuthEndpoint = typeof original?.url === 'string' && original.url.includes('/auth/');
+    if (status === 401 && !isAuthEndpoint && original && !original.__retried) {
       original.__retried = true;
       const token = await tryRefresh();
       if (token) {

@@ -112,10 +112,18 @@ export default function RegisterPage() {
   }, [role]);
 
   const chooseRole = (r: AcademicRole) => {
+    // r152a (A4 P3): both step-2 forms share ONE mutation instance — a
+    // failed student submission used to carry its error state onto the
+    // teacher form (and vice versa) the moment the user switched roles,
+    // showing "تعذَّر إنشاء الحساب" for a form never submitted. Reset
+    // the mutation on every role transition; TanStack only clears it on
+    // the next mutate otherwise.
+    register.reset();
     setStepDir('forward');
     setRole(r);
   };
   const backToRoles = () => {
+    register.reset();
     setStepDir('back');
     setRole(null);
   };

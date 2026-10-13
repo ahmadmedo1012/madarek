@@ -88,6 +88,25 @@
     color: var(--text-secondary);
   }
 
+  /* ── Completion-report retry notice (r152a A4 P3) ──
+     Surfaces a failed end-of-video watch report with a one-tap retry —
+     same visual grammar as the inline error banners (soft danger
+     surface + ink), 44px button per the touch-floor canon. */
+  .lecture-report-retry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    border: 1px solid var(--danger);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--type-label-size);
+  }
+  .lecture-report-retry .btn { min-block-size: 44px; }
+
   /* ── Watch progress ──
      Plain-block fill anchors at inline-start → the fill direction is
      RTL-correct by construction (same anatomy as .progress-track). */
