@@ -17,6 +17,8 @@ import { useSectionProgress } from '../hooks/useSectionProgress';
 import { useMagnetic } from '../hooks/useMagnetic';
 import { CountUp } from '../components/CountUp';
 import { colleges } from '../data/colleges.config';
+import { UNIVERSITY_FACTS, CAMPUS_CITIES } from '../data/university.facts';
+import { TestimonialSection } from '../components/landing/TestimonialSection';
 import { OrbitScene } from '../components/landing/OrbitScene';
 import { CollegeConstellation } from '../components/landing/CollegeConstellation';
 import { JourneyLightPath } from '../components/landing/JourneyLightPath';
@@ -392,7 +394,7 @@ export default function LandingPage() {
           </RevealCssClass>
 
           <RevealCssClass as="ul" className="ln-hero-meta" delay={4}>
-            <li><Icon icon={Check} size={13} /> بإيميلك الجامعي</li>
+            <li><Icon icon={Check} size={13} /> بريدك الجامعي أو رقم قيدك</li>
             <li aria-hidden className="ln-hero-meta-dot" />
             <li><Icon icon={Keyboard} size={13} /> يعمل بلوحة المفاتيح</li>
             <li aria-hidden className="ln-hero-meta-dot" />
@@ -428,7 +430,10 @@ export default function LandingPage() {
           <span className="ln-trust-sep" aria-hidden />
           <span className="ln-mono">{`${String(COLLEGES_COUNT).padStart(2, '0')} كلية`}</span>
           <span className="ln-trust-sep" aria-hidden />
-          <span className="ln-mono">4 مدن وفروع</span>
+          {/* r153k: derived from the registry (5 named cities) — the old
+              hardcoded «4» contradicted both the registry and the
+              colleges popover's campus count. */}
+          <span className="ln-mono">{`${CAMPUS_CITIES.length} مدن وفروع`}</span>
         </div>
       </section>
 
@@ -562,24 +567,36 @@ export default function LandingPage() {
                 <div className="ln-stat-note">داخل الحلقات النقاشية</div>
               </RevealCssClass>
               <RevealCssClass as="div" className="ln-stat" delay={2}>
-                <div className="ln-stat-value"><CountUp value="30" /><span className="ln-stat-unit">%</span></div>
-                <div className="ln-stat-label">تحسُّن الالتزام</div>
-                <div className="ln-stat-note">بمتابعة الجلسات</div>
-              </RevealCssClass>
-              <RevealCssClass as="div" className="ln-stat" delay={3}>
                 <div className="ln-stat-value"><CountUp value="90" /><span className="ln-stat-unit">%</span></div>
                 <div className="ln-stat-label">تحقيق أهداف التعلّم</div>
                 <div className="ln-stat-note">ضمن الإطار الزمني</div>
               </RevealCssClass>
+              {/* r153k: the fourth card («30% تحسّن الالتزام») is DELETED —
+                  it traced to no source anywhere in the repo (not even the
+                  seeded lesson the other three numbers come from). The
+                  invented-stat class is exactly what the vision-page audit
+                  (A8 P1-1) purged. */}
             </div>
 
             <RevealCssClass as="p" className="ln-progress-source" delay={3}>
-              دراسة ميدانية: استراتيجية الصفّ المعكوس على مقرّر اللغة الإنجليزية
-              مع طلّاب من جنوب ليبيا — هذه أرقام التجربة الفعلية.
+              {/* r153k: honest framing (docs/16 ب — declared, never
+                  presented as real): these are the flipped-classroom
+                  module's own illustrative numbers from the self-development
+                  track inside the platform — NOT a field study the
+                  platform conducted. */}
+              أرقام توضيحية من وحدة استراتيجية الصفّ المعكوس في مسار التطوير
+              الذاتي داخل المنصة — لأغراض العرض، لا نتائج قياس مؤسسي.
             </RevealCssClass>
           </div>
         </div>
       </section>
+
+      {/* r153k: slot 5-A1 act-6 «evidence with a face» — renders NOTHING
+          while the testimonials registry is empty (docs/16 هـ: externally
+          blocked on real people + documented consent; fabrication
+          forbidden). The trust architecture above carries only verified
+          institutional facts. */}
+      <TestimonialSection />
 
       {/* ═══ الفصل ٤ — الأرض: الحرم الحقيقي ═══ */}
       <section id="campus" className="ln-chapter ln-campus" aria-label="جامعة الزاوية">
@@ -620,22 +637,28 @@ export default function LandingPage() {
           <RevealCssClass as="div" className="ln-fact">
             <div className="ln-fact-value"><CountUp value={String(COLLEGES_COUNT)} /></div>
             <div className="ln-fact-label">كلية أكاديمية</div>
-            <div className="ln-fact-note">حسب الموقع الرسمي للجامعة</div>
+            {/* r153k: the registry is the platform's canonical count
+                (validated by npm run validate:colleges) — the official
+                site's own prose header disagrees with itself (26 vs 25). */}
+            <div className="ln-fact-note">حسب سجلّ الكليات المعتمد في المنصة</div>
           </RevealCssClass>
           <RevealCssClass as="div" className="ln-fact" delay={1}>
-            <div className="ln-fact-value"><CountUp value="4" /></div>
+            <div className="ln-fact-value"><CountUp value={String(CAMPUS_CITIES.length)} /></div>
             <div className="ln-fact-label">مدن وفروع</div>
-            <div className="ln-fact-note">الزاوية، العجيلات، زوارة وأخرى</div>
+            <div className="ln-fact-note">{CAMPUS_CITIES.join('، ')}</div>
           </RevealCssClass>
           <RevealCssClass as="div" className="ln-fact" delay={2}>
             <div className="ln-fact-value">1988</div>
             <div className="ln-fact-label">عام التأسيس</div>
-            <div className="ln-fact-note">بقرار رقم 135</div>
+            <div className="ln-fact-note">بقرار رقم {UNIVERSITY_FACTS.decreeNumber}</div>
           </RevealCssClass>
           <RevealCssClass as="div" className="ln-fact" delay={3}>
-            <div className="ln-fact-value"><CountUp value="3" /></div>
+            <div className="ln-fact-value"><CountUp value={String(UNIVERSITY_FACTS.memberships.length)} /></div>
             <div className="ln-fact-label">عضويّات دوليّة</div>
-            <div className="ln-fact-note">عربيّة، أفريقيّة، إسلاميّة</div>
+            {/* r153k: factual fix — the curated source (static-source.ts
+                `memberships`) says the MEDITERRANEAN union, not the
+                Islamic one. Retyping the fact is what broke it. */}
+            <div className="ln-fact-note">{UNIVERSITY_FACTS.memberships.map((m) => m.label).join('، ')}</div>
           </RevealCssClass>
         </div>
       </section>
