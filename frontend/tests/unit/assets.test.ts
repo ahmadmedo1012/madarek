@@ -114,7 +114,9 @@ describe('welcome-card background + dead brand assets (audit 11-g P2-3 / P1-4)',
     // decorative low-visibility role: ≪ the 99.6 KB hero it replaced
     expect(v.size).toBeLessThan(32 * 1024);
 
-    const css = read('src/styles/polish.css');
+    // r153f: the photo overlay moved home with the welcome-card family
+    // (polish.css → student.css §WELCOME-CARD).
+    const css = read('src/styles/student.css');
     expect(css).toContain("url('/main_photo-card.webp')");
     expect(css).not.toContain("url('/main_photo.webp')");
   });

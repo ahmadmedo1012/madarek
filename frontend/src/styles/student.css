@@ -3205,4 +3205,130 @@
     background: color-mix(in srgb, var(--accent) 6%, var(--surface));
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     WELCOME CARD — the student dashboard greeting hero (r153f)
+     ═══════════════════════════════════════════════════════════════ */
+  /* Consolidated from seven polish.css waves (v8 premium · v9 stack ·
+     v11 surface · v13 isolation · v17 photo overlay · v22 dots) — the
+     family's ONLY consumer is this dashboard (DashboardPage.tsx ×4
+     states), so student.css owns it (the r151i/r152d ownership
+     standard; student.css already owned its mobile `order`). Every
+     value below is the RENDERED truth measured before the move
+     (probe r153w1: margin 24px · padding 32/24 → 20/16 @640 ·
+     radius 20px · photo overlay both themes · ::before dots 200px/.35
+     → 110px/.22 @640 · title clamp(20→28px) lh 1.22). Dead
+     declarations died with the move (v9's padding-inline-end clamp,
+     v9's align-items:stretch, v13's invisible breathing ::after).
+     The generic .page-header rules in polish scope themselves off
+     .welcome-card via :not() so this pages-layer rule-set needs no
+     overrides-layer pin. */
+
+  .student-dashboard .page-header.welcome-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--sp-2);
+    padding: var(--sp-7) var(--sp-6);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2xl);
+    box-shadow: var(--shadow-card-premium);
+    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+    margin-block-end: var(--sp-6);
+    /* v17 photo overlay (D15 / audit 11-g P2-3): the 640px q55 WebP cut
+       (~25KB) — never the 99.6KB full-res hero. Theme-aware gradients
+       keep the text readable over the campus photo in both modes. */
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--accent-soft) 95%, transparent) 0%,
+        color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
+        transparent 100%
+      ),
+      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
+  }
+  [data-theme="dark"] .student-dashboard .page-header.welcome-card {
+    background:
+      linear-gradient(135deg,
+        color-mix(in srgb, var(--bg) 92%, var(--accent) 8%) 0%,
+        color-mix(in srgb, var(--bg) 75%, transparent) 60%,
+        var(--bg) 100%
+      ),
+      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
+  }
+  .student-dashboard .page-header.welcome-card:hover {
+    box-shadow: var(--shadow-card-premium-h);
+    transform: translateY(-1px);
+  }
+
+  /* Title above the decorative layers: the stack's only child grows to
+     fill the row and holds a local paint-order z-index (not a --z-*
+     layer). */
+  .welcome-card .page-title-block {
+    inline-size: 100%;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .welcome-card .page-title,
+  .welcome-card .page-subtitle {
+    position: relative;
+    z-index: 1;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  .welcome-card .page-title {
+    font-size: clamp(20px, 3.4vw, 28px);
+    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
+    line-height: 1.22;
+    /* hero gradient text (v8) — the greeting is the page's hero */
+    background: linear-gradient(135deg, var(--text) 0%, color-mix(in srgb, var(--accent) 70%, var(--text)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: opacity var(--t-base) var(--ease);
+  }
+  .welcome-card:hover .page-title {
+    opacity: 0.95;
+  }
+  .welcome-card .page-subtitle {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+
+  /* Corner dot grid on ::before (v22's re-home from the v8/v13 ::after
+     conflict) with the valid RTL-correct fade: dots sit at the
+     inline-end corner, opaque at the edge, fading toward the content —
+     `to left` for LTR (inline-end = right), `to right` for RTL. */
+  .welcome-card::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    width: 200px;
+    height: 100%;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
+      transparent 1.5px
+    );
+    background-size: 14px 14px;
+    background-position: 0 0;
+    opacity: 0.35;
+    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 100%);
+    mask-image: linear-gradient(to left, black 30%, transparent 100%);
+    pointer-events: none;
+  }
+  [dir="rtl"] .welcome-card::before {
+    -webkit-mask-image: linear-gradient(to right, black 30%, transparent 100%);
+    mask-image: linear-gradient(to right, black 30%, transparent 100%);
+  }
+  @media (max-width: 640px) {
+    .student-dashboard .page-header.welcome-card { padding: var(--sp-5) var(--sp-4); }
+    .welcome-card::before { width: 110px; opacity: 0.22; }
+    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); }
+  }
+
 }

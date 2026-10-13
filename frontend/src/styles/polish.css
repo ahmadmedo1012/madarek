@@ -703,15 +703,10 @@
     border-block-end: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
     margin-block-end: var(--sp-2);
   }
-  /* Welcome card and any header that's its own surface shouldn't get
-     the hairline rule — the surface already separates it from below.
-     (Wave 9-b dead-selector sweep: the [data-flush="true"] entry
-     removed — zero TSX consumers.) */
-  .page-header.welcome-card {
-    border-block-end: 0;
-    padding-block-end: var(--sp-5);
-    margin-block-end: 0;
-  }
+  /* (r153f: the v8 welcome-card hairline exemption moved home to
+     student.css §WELCOME-CARD — the family's only consumer is the
+     student dashboard. Every rule below was the measured rendered
+     truth before the move; probe r153w1 pins it byte-identical.) */
   .page-title {
     /* 21-c (A3 P2-4 / A12 ruling #2): the -0.012em tracking broke
        Arabic cursive joins on every page title («مقرّراتي الدراسية»…).
@@ -803,75 +798,16 @@
   /* ═══════════════════════════════════════════════════════════════
      Welcome card — student dashboard greeting hero (premium)
      ═══════════════════════════════════════════════════════════════ */
-  .welcome-card {
-    position: relative;
-    overflow: hidden;
-    padding: var(--sp-5) var(--sp-6) var(--sp-5);
-    border-radius: var(--r-xl);
-    background:
-      radial-gradient(
-        at 90% 0%,
-        color-mix(in srgb, var(--accent) 12%, transparent) 0%,
-        transparent 55%
-      ),
-      linear-gradient(
-        135deg,
-        var(--surface) 0%,
-        color-mix(in srgb, var(--accent) 4%, var(--surface-2)) 100%
-      );
-    border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--rule));
-    box-shadow: var(--shadow-card-premium);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
-  }
-  .welcome-card:hover {
-    box-shadow: var(--shadow-card-premium-h);
-    transform: translateY(-1px);
-  }
-  .welcome-card::after {
-    /* Subtle decorative dot grid in the inline-end corner */
-    content: "";
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    width: 200px;
-    height: 100%;
-    background-image: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--accent) 30%, transparent) 1px,
-      transparent 1.5px
-    );
-    background-size: 14px 14px;
-    background-position: 0 0;
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  [data-theme="dark"] .welcome-card {
-    background:
-      radial-gradient(
-        at 90% 0%,
-        color-mix(in srgb, var(--accent) 14%, transparent) 0%,
-        transparent 55%
-      ),
-      var(--surface);
-  }
-  .welcome-card .page-title {
-    /* Make the greeting feel like the hero of the page. */
-    font-size: clamp(var(--fs-2xl), 4.5vw, var(--fs-3xl, 32px));
-    line-height: 1.18;
-    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    background: linear-gradient(135deg, var(--text) 0%, color-mix(in srgb, var(--accent) 70%, var(--text)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transition: opacity var(--t-base) var(--ease);
-  }
-  .welcome-card:hover .page-title {
-    opacity: 0.95;
-  }
-  .welcome-card .page-subtitle {
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-  }
+  /* (r153f grave: the whole v8 family — premium surface, hover lift,
+     ::after dots, dark variant, hero title gradient — moved home to
+     student.css §WELCOME-CARD, consolidated with v9/v11/v13/v17/v22
+     into one owning rule-set. The v8 ::after dot grid itself was a
+     zombie since v13 restyled the same pseudo; the dots that render
+     are v22's ::before, which moved too. The v13 "breathing radial"
+     ::after is deleted, not moved: it painted NOTHING (over-constrained
+     geometry + RTL inset drop placed it entirely outside the card,
+     clipped by overflow:hidden — a 9s infinite loop animating an
+     invisible box). */
 
   /* ═══════════════════════════════════════════════════════════════
      Topbar polish — title weight + subtle scroll shadow refinement
@@ -1447,53 +1383,15 @@
   /* ═══════════════════════════════════════════════════════════════
      WELCOME CARD — keep the title above the dot pattern + title sizing
      ═══════════════════════════════════════════════════════════════ */
-  /* Root issue:
-     .welcome-card inherits .page-header which is `display: flex;
-     justify-content: space-between`. Combined with the welcome card's
-     own `overflow: hidden` and the absolutely-positioned dot pattern
-     overlay, the title-block was getting squashed and cropped.
-
-     Fix:
-     - Stack layout (column) instead of space-between row
-     - title-block grows to fill the row
-     - explicit padding-inline-end so text never collides with the
-       decorative dot pattern in the corner
-     - overflow-wrap break-word to avoid horizontal overflow on long
-       names while keeping single-line breaks normal */
-  .welcome-card {
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    padding-inline-end: clamp(var(--sp-6), 14vw, 200px);
-    gap: var(--sp-2);
-  }
-  .welcome-card .page-title-block {
-    inline-size: 100%;
-    flex: 1 1 auto;
-    min-inline-size: 0;
-    position: relative;
-    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-  }
-  .welcome-card .page-title,
-  .welcome-card .page-subtitle {
-    position: relative;
-    z-index: 1; /* local paint-order above sibling pseudo-layers — not a --z-* layer */
-    overflow-wrap: break-word;
-    word-break: normal;
-  }
-  .welcome-card .page-title {
-    font-size: clamp(20px, 3.4vw, 28px);
-    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    line-height: 1.22;
-  }
-  @media (max-width: 640px) {
-    .welcome-card {
-      padding: var(--sp-4);
-      padding-inline-end: clamp(var(--sp-4), 30vw, 120px);
-    }
-    .welcome-card::after { width: 110px; opacity: 0.22; }
-    .welcome-card .page-title { font-size: clamp(18px, 5.5vw, 22px); }
-  }
+  /* (r153f grave: the v9 stack — column layout, title-block z-index
+     paint-order, the clamp(20px,3.4vw,28px) sizing and the ≤640 title
+     clamp — moved home to student.css §WELCOME-CARD. The dead
+     declarations died with the move: padding-inline-end clamp (beaten
+     by v11's higher-specificity padding shorthand since v11 shipped)
+     and align-items:stretch (beaten by the generic .page-header
+     flex-start 37 lines below — in the same layer at equal
+     specificity). The ≤640 ::after line was misaimed since v22 moved
+     the dots to ::before.) */
 
   /* Generic page-header — also force column layout when there's no
      right-slot content, so the title-block always gets the full width */
@@ -1501,7 +1399,11 @@
     align-items: flex-start;
     flex-wrap: wrap;
   }
-  .page-title-block {
+  /* r153f root fix: scoped off the welcome card — the owning rule in
+     student.css (pages layer) must not be beaten by this overrides-
+     layer flex-basis (320px would stretch the column-stack's only
+     child). Same :not() source-guard precedent as r151e. */
+  .page-header:not(.welcome-card) .page-title-block {
     flex: 1 1 320px;
     min-inline-size: 0;
   }
@@ -1654,18 +1556,16 @@
      ║  Tighter vertical rhythm between header and first content row, ║
      ║  more generous horizontal breathing on welcome cards.          ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .page > .page-header { margin-block-end: var(--sp-5); }
+  .page > .page-header:not(.welcome-card) { margin-block-end: var(--sp-5); }
 
-  .page-header.welcome-card {
-    background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 65%);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-2xl);
-    padding: var(--sp-7) var(--sp-6);
-    margin-block-end: var(--sp-6);
-  }
-  @media (max-width: 640px) {
-    .page-header.welcome-card { padding: var(--sp-5) var(--sp-4); }
-  }
+  /* (r153f grave: the v11 welcome-card surface — accent-soft gradient
+     bg (dead since v17's photo overlay), rule border, r-2xl radius,
+     sp-7/sp-6 padding, the RECONCILED margin-block-end: var(--sp-6)
+     (the v9-margin conflict's surviving value — v8's 0 and the generic
+     sp-5 both lost to it), and the ≤640 padding — moved home to
+     student.css §WELCOME-CARD. The generic page rule above now scopes
+     itself off the welcome card via :not() so the pages-layer owning
+     rule provides the 24px without a pin.) */
 
   /* Subtle, non-noisy section spacing inside a page */
   .page > * + * { margin-block-start: var(--sp-5); }
@@ -2089,28 +1989,15 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  WELCOME CARD — soft gradient breathing                        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .page-header.welcome-card {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .page-header.welcome-card::after {
-    content: '';
-    position: absolute;
-    inset: -40%;
-    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    background: radial-gradient(
-      circle at 80% 20%,
-      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
-      transparent 60%
-    );
-    animation: madarek-welcome-breathe var(--motion-duration-ambient-cinema) var(--motion-ease-standard) infinite alternate;
-    pointer-events: none;
-  }
-  @keyframes madarek-welcome-breathe {
-    from { transform: translate3d(0, 0, 0) scale(1);     opacity: 0.7; }
-    to   { transform: translate3d(-30px, 18px, 0) scale(1.06); opacity: 1; }
-  }
+  /* (r153f grave: v13's isolation trio moved home with the family;
+     the "breathing radial" ::after + its keyframes are DELETED, not
+     moved — it painted nothing (its inset:-40% box, over-constrained
+     by v8's surviving 200px/100% geometry, sat entirely outside the
+     card in RTL and was clipped by overflow:hidden — measured
+     visibleWidthInsideCard: 0 at 1280 AND 390). A 9s infinite
+     cinema-duration loop animating an invisible box is pure waste;
+     restoring a visible breathing effect would be a separate taste
+     ruling, not an ownership migration.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2222,7 +2109,6 @@
     .grid-auto-200 > *, .grid-auto-260 > *,
     .metric-value,
     .topbar,
-    .page-header.welcome-card::after,
     .dash-doughnut,
     .owner-chart-container {
       animation: none !important;
@@ -2980,31 +2866,11 @@
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STUDENT DASHBOARD — welcome card photo overlay                ║
-     ║  Subtle campus photo bleeds into the background of the welcome ║
-     ║  card at low opacity, theme-aware so it never crushes text.    ║
-     ║  (D15 / audit 11-g P2-3: uses main_photo-card.webp — a 640px   ║
-     ║  q55 WebP (~25KB) cut for this decorative role — instead of    ║
-     ║  the 99.6KB full-res hero photo the authed landing was paying  ║
-     ║  for behind near-opaque gradients.)                            ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .student-dashboard .page-header.welcome-card {
-    background:
-      linear-gradient(135deg,
-        color-mix(in srgb, var(--accent-soft) 95%, transparent) 0%,
-        color-mix(in srgb, var(--accent-soft) 30%, transparent) 60%,
-        transparent 100%
-      ),
-      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
-  }
-  [data-theme="dark"] .student-dashboard .page-header.welcome-card {
-    background:
-      linear-gradient(135deg,
-        color-mix(in srgb, var(--bg) 92%, var(--accent) 8%) 0%,
-        color-mix(in srgb, var(--bg) 75%, transparent) 60%,
-        var(--bg) 100%
-      ),
-      url('/main_photo-card.webp') 50% 30% / cover no-repeat;
-  }
+  /* (r153f grave: v17's photo overlay — light + dark, main_photo-card.webp
+     640px q55 cut (D15 / audit 11-g P2-3) — moved home to student.css
+     §WELCOME-CARD verbatim; it was the family's rendered background in
+     BOTH themes. The assets.test pin followed it.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3940,39 +3806,10 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  B2. Welcome-card corner dot grid — re-homed + valid mask      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  /* v8 drew the dot grid on ::after, but v13 later re-styled the same
-     pseudo as the breathing radial — the dots' background was replaced
-     and the (invalid) mask dropped. The grid moves to ::before (free on
-     .welcome-card, which is a .page-header, not a .card) with a valid
-     RTL-correct fade: the dots sit at the inline-end corner, opaque at
-     the corner edge and fading toward the content — `to left` for LTR
-     (inline-end = right), `to right` for RTL (inline-end = left). */
-  .welcome-card::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    width: 200px;
-    height: 100%;
-    background-image: radial-gradient(
-      circle,
-      color-mix(in srgb, var(--accent) 22%, transparent) 1px,
-      transparent 1.5px
-    );
-    background-size: 14px 14px;
-    background-position: 0 0;
-    opacity: 0.35;
-    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 100%);
-    mask-image: linear-gradient(to left, black 30%, transparent 100%);
-    pointer-events: none;
-  }
-  [dir="rtl"] .welcome-card::before {
-    -webkit-mask-image: linear-gradient(to right, black 30%, transparent 100%);
-    mask-image: linear-gradient(to right, black 30%, transparent 100%);
-  }
-  @media (max-width: 640px) {
-    .welcome-card::before { width: 110px; opacity: 0.22; }
-  }
+  /* (r153f grave: v22's ::before dot grid + RTL-correct mask + ≤640
+     shrink moved home to student.css §WELCOME-CARD verbatim. It was
+     the ONLY dot renderer since v13 — the v8 ::after grid it
+     "re-homed" was already dead there.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
