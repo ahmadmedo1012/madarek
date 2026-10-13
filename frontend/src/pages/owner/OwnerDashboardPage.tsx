@@ -16,6 +16,7 @@ import { Icon } from '../../components/Icon';
 import { radialOptions, chartPalette, useChartThemeKey } from '../../lib/chartTheme';
 import { useOwnerStats, useOwnerRealtime, useOwnerAlerts, useOwnerActivity, useOwnerEducation, type OperationalAlert } from '../../hooks/useOwner';
 import { countAr, formatRelativeAr } from '../../lib/format';
+import { isCriticalAlert } from '../../lib/ownerLabels';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -107,12 +108,10 @@ const IDLE_TEACHER_FORMS: [string, string, string, string] = [
   'أستاذ واحد', 'أستاذان', 'أساتذة', 'أستاذاً',
 ];
 
-/** The dashboard's server-side critical severities (the system route
- *  counts the same pair for its criticalCount). */
-function isCriticalAlert(a: OperationalAlert): boolean {
-  return a.severity === 'critical' || a.severity === 'error';
-}
-
+/* 6A10-2: isCriticalAlert (the critical OR error pair) is the SHARED
+ * filter from lib/ownerLabels.ts — the dashboard's strip badge, the
+ * alerts page's critical KPI and the backend's criticalCount all
+ * compute the same pair; the former local copy was deleted. */
 /**
  * The owner's "what needs a decision" list — 5-B4's admin-strip
  * pattern, on data the OWNER role actually carries: the open
@@ -367,7 +366,11 @@ export function OwnerDashboardPage() {
               </span>
             </div>
             <div className="owner-health-row">
-              <div className="owner-health-dot green" />
+              {/* 6A10-4: zero live sessions is a QUIET campus, not a
+                  healthy one — the dot mirrors the neighboring quiet
+                  rows (بثّ/اختبارات/طلبات AI all gate on > 0 since
+                  22-b 4-A7 P2-1); green claims actual presence. */}
+              <div className={`owner-health-dot ${realtimeData.activeSessions > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">جلسات نشطة الآن</span>
               <span className="owner-health-value">
                 <bdi>{realtimeData.activeSessions.toLocaleString('ar-LY')}</bdi>
@@ -404,7 +407,12 @@ export function OwnerDashboardPage() {
               <span className="owner-health-value">{lastActivityLabel}</span>
             </div>
             <div className="owner-health-row">
-              <div className="owner-health-dot green" />
+              {/* 6A10-4: an empty 7-day log is the absence of signal, not
+                  a health verdict — zero recorded events can equally
+                  mean "nothing happened" or "the logger isn't
+                  writing"; green only when events actually exist, the
+                  same > 0 gate the sessions row above now uses. */}
+              <div className={`owner-health-dot ${data.recentAuditLogs > 0 ? 'green' : 'neutral'}`} />
               <span className="owner-health-label">سجلّات آخر 7 أيام</span>
               <span className="owner-health-value">
                 <bdi>{data.recentAuditLogs.toLocaleString('ar-LY')}</bdi>
@@ -427,9 +435,12 @@ export function OwnerDashboardPage() {
         ) : (
           /* 22-b (4-A7 P1-5): the shared .table.tbl-stack migration (the
            * users page's pattern) — the bare .owner-table overflowed its
-           * card at 390px; on phones each row becomes a labelled card. */
+           * card at 390px; on phones each row becomes a labelled card.
+           * (6A10-7: the trailing owner-events-table class was dead —
+           * no rule in owner.css ever matched it; the shared classes
+           * carry the whole contract.) */
           <div className="table-wrap">
-            <table className="table tbl-stack owner-events-table">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col">الحدث</th>

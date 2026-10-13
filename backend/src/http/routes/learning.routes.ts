@@ -101,6 +101,24 @@ router.get('/offerings/:id/lectures', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/**
+ * r157 (W2-F7 / audit 6A5): answers projection for the GET
+ * /lectures/:id checkpoints select. STUDENTs get a filtered relation —
+ * only THEIR CheckpointAnswer rows, only the checkpointId field (never
+ * answerIndex/correct — the player just needs "was it answered" to
+ * seed its resume set; the attempts themselves are private). Every
+ * other role gets false (no extra join on the teacher/oversight read;
+ * a teacher's own preview answers were never written to begin with —
+ * see the STUDENT gate in the answer route). Exported for unit tests.
+ */
+export function checkpointAttemptsProjection(role: Role, studentId: string) {
+  if (role !== Role.STUDENT) return false;
+  return {
+    select: { checkpointId: true },
+    where: { studentId },
+  };
+}
+
 router.get('/lectures/:id', async (req, res, next) => {
   try {
     // Single fetch: the full lecture row already carries offeringId, so
@@ -126,6 +144,10 @@ router.get('/lectures/:id', async (req, res, next) => {
           orderBy: { triggerSec: 'asc' },
           select: {
             id: true, triggerSec: true, question: true, options: true, conceptId: true,
+            // r157 (W2-F7 / 6A5): students get their own answer ids back
+            // so a resumed session can seed answeredCheckpointIds (never
+            // re-quiz); teachers/oversight get false (see the helper).
+            answers: checkpointAttemptsProjection(req.user!.role, req.user!.id),
             // hide correctIndex from the wire — answered via separate endpoint
           },
         },
@@ -426,6 +448,29 @@ router.post(
             });
           }
         }
+      }
+      // r157 (W2-F7 / audit 6A5): persist the LAST answer (one row per
+      // student+checkpoint, upsert) so a resumed session never re-quiz —
+      // GET /lectures/:id projects these rows back as answers ids.
+      // STUDENT-only: teachers/admins can preview-grade an answer (the
+      // feedback contract below is identical) without writing answer
+      // memory that would then follow THEIR user row. Response contract
+      // unchanged — the upsert is a side effect, not a payload.
+      if (req.user!.role === Role.STUDENT) {
+        await prisma.checkpointAnswer.upsert({
+          where: { checkpointId_studentId: { checkpointId: cp.id, studentId: req.user!.id } },
+          create: {
+            checkpointId: cp.id,
+            studentId: req.user!.id,
+            answerIndex,
+            correct,
+          },
+          update: {
+            answerIndex,
+            correct,
+            updatedAt: new Date(),
+          },
+        });
       }
       res.json({ data: { correct, correctIndex: cp.correctIndex, explanation: cp.explanation } });
     } catch (e) { next(e); }
@@ -935,16 +980,43 @@ router.post('/research/:id/grade', requireCapability('RESEARCH_GRADE_OWN', 'RESE
   } catch (e) { next(e); }
 });
 
+/**
+ * The review queue's state set (r157 / 6A8 — the HIGH finding): the
+ * queue used to filter ['CHECKS_PASSED','CHECKS_FAILED'] only, so a
+ * GRADED paper vanished from the teacher's own queue the moment it
+ * was graded — the "publish" affordance (which requires GRADED) then
+ * pointed at a row the queue never shows, the FE's «جاهزة للنشر» KPI
+ * read 0 forever, and the publish loop was dead end-to-end. GRADED
+ * rides the queue until the paper is published (or re-graded).
+ * Exported for unit tests + shared with the FE queue grammar.
+ */
+export const RESEARCH_QUEUE_STATUSES = ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] as const;
+
+/**
+ * The review-queue scope for a role (r157 / 6A8): a TEACHER sees only
+ * papers tied to offerings they teach (the same per-row ownership the
+ * grade/publish steps enforce); ADMIN/OWNER keep the institution-wide
+ * oversight view. Pure so the unit suite can pin BOTH branches — the
+ * live route consumes this directly (never a re-inlined twin).
+ */
+export function researchQueueWhere(
+  role: Role,
+  userId: string,
+): Prisma.ResearchPaperWhereInput {
+  return role === Role.TEACHER
+    ? { status: { in: [...RESEARCH_QUEUE_STATUSES] }, offering: { teacherId: userId } }
+    : { status: { in: [...RESEARCH_QUEUE_STATUSES] } };
+}
+
 // Teacher / admin queue: papers passing checks, awaiting grade.
 router.get('/research/queue', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
   try {
     const data = await prisma.researchPaper.findMany({
       // Scoped like the teacher dashboard feed: a TEACHER sees only
       // papers tied to offerings they teach; ADMIN/OWNER keep the
-      // institution-wide oversight view.
-      where: req.user!.role === Role.TEACHER
-        ? { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] }, offering: { teacherId: req.user!.id } }
-        : { status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] } },
+      // institution-wide oversight view. GRADED included (6A8) — the
+      // publish step is reachable from the queue rows themselves.
+      where: researchQueueWhere(req.user!.role, req.user!.id),
       // Explicit select: NEVER ship extractedText (full PDF text — huge).
       select: {
         id: true, studentId: true, reviewerId: true, offeringId: true,

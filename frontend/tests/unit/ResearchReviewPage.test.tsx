@@ -18,9 +18,15 @@
  * stays the REAL re-export (spread from the actual module) so the
  * language guard is exercised end-to-end. Flow pattern follows
  * CurriculumAuthoringPanel's dirty-close suite.
+ *
+ * r157 / 6A8 additions — the publish loop's missing half: GRADED papers
+ * render in their own queue card (purple tone + «نشر في المكتبة» CTA)
+ * and the review modal is form-wrapped (Enter submits the grade; in
+ * GRADED mode Enter no-ops BY DESIGN — publishing is an explicit
+ * footer action, never an implicit submit away from the public archive).
  */
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ResearchReviewPage from '../../src/pages/teacher/ResearchReviewPage';
 
@@ -62,6 +68,17 @@ const PAPER = {
   aiContentPct: 12,
   uploadedAt: '2026-03-10T09:00:00.000Z',
   student: { id: 's1', firstName: 'سالم', lastName: 'الطاهر' },
+};
+
+/* r157 / 6A8 — a graded paper riding the queue (RESEARCH_QUEUE_STATUSES
+ * includes GRADED now): the publish loop's reachable target. */
+const GRADED_PAPER = {
+  ...PAPER,
+  id: 'p2',
+  status: 'GRADED',
+  grade: 17,
+  feedback: 'بحث متين منهجياً.',
+  gradedAt: '2026-03-12T10:00:00.000Z',
 };
 
 function renderPage() {
@@ -151,6 +168,86 @@ describe('ReviewModal — discard guard (15-e P1-6)', () => {
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'مراجعة بحث' })).toBeNull();
     });
+  });
+});
+
+/* ── r157 / 6A8 — GRADED rides the queue; the publish loop is reachable ── */
+describe('ResearchReviewPage — the GRADED queue card (r157 / 6A8)', () => {
+  it('a GRADED paper renders the «مُقيَّمة — جاهزة للنشر» card with the purple badge, the publish CTA and an honest KPI', () => {
+    mocks.queue.data = [GRADED_PAPER];
+    renderPage();
+
+    // The card (label per the queue grammar)…
+    expect(screen.getByText('مُقيَّمة — جاهزة للنشر')).toBeInTheDocument();
+    // …the purple status badge…
+    const badge = screen.getByText('مُقيَّم').closest('.badge');
+    expect(badge).not.toBeNull();
+    // …the row CTA that makes publishing reachable…
+    expect(screen.getByRole('button', { name: 'نشر في المكتبة' })).toBeInTheDocument();
+    // …and the KPI finally counts something (the queue used to exclude
+    // GRADED, so «جاهزة للنشر» was forever 0).
+    expect(screen.getByText('جاهزة للنشر').closest('.metric')).toHaveTextContent('1');
+    // The score travels on the row: «الدرجة: 17 / 20» (the numbers ride
+    // <bdi> children — match the whole meta span).
+    expect(
+      screen.getByText((_c, el) =>
+        el instanceof HTMLElement
+        && (el.textContent ?? '').replace(/\s+/g, ' ').trim() === 'الدرجة: 17 / 20'),
+    ).toBeInTheDocument();
+  });
+
+  it('the row CTA opens the review modal in graded mode — score read-only, publish explicit', () => {
+    mocks.queue.data = [GRADED_PAPER];
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: 'نشر في المكتبة' }));
+    const dialog = screen.getByRole('dialog', { name: 'مراجعة بحث' });
+    expect(dialog).toBeInTheDocument();
+
+    // Graded mode: the score box is disabled (read-only)…
+    expect(screen.getByLabelText('الدرجة (من 20)')).toBeDisabled();
+    // …the grade submit button is gone…
+    expect(screen.queryByRole('button', { name: 'تأكيد التقييم' })).toBeNull();
+    // …and the modal's own explicit publish action is present (scoped to
+    // the dialog — the ROW CTA shares the name by design).
+    expect(within(dialog).getByRole('button', { name: 'نشر في المكتبة' })).toBeInTheDocument();
+  });
+});
+
+/* ── r157 / 6A9 — the review modal's form contract ── */
+describe('ReviewModal — form contract (r157 / 6A9)', () => {
+  it('the fields live inside a real form — a submit event saves the grade (Enter)', async () => {
+    mocks.queue.data = [PAPER];
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'مراجعة وتقييم' }));
+
+    const score = screen.getByLabelText('الدرجة (من 20)') as HTMLInputElement;
+    const form = score.closest('form');
+    expect(form).not.toBeNull();
+
+    fireEvent.change(score, { target: { value: '18' } });
+    fireEvent.submit(form!);
+
+    // The Enter path lands the grade with the typed score.
+    expect(mocks.grade.mutateAsync).toHaveBeenCalledWith({ id: 'p1', grade: 18, feedback: undefined });
+  });
+
+  it('GRADED mode: a submit event no-ops BY DESIGN — publish is an explicit click, never an Enter', async () => {
+    mocks.queue.data = [GRADED_PAPER];
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'نشر في المكتبة' }));
+    await screen.findByRole('dialog', { name: 'مراجعة بحث' });
+
+    const form = screen.getByLabelText('الدرجة (من 20)').closest('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form!);
+
+    // Enter in graded mode fires NOTHING — neither a re-grade…
+    expect(mocks.grade.mutateAsync).not.toHaveBeenCalled();
+    // …nor a publish to the public archive (the explicit footer button
+    // is the only path).
+    expect(mocks.publish.mutateAsync).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog', { name: 'مراجعة بحث' })).toBeInTheDocument();
   });
 });
 

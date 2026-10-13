@@ -279,10 +279,15 @@ export function AdminTeachersPage() {
       {/* Metrics — real values only: '…' while loading, '—' on error
           (never a fake zero). The old «نشطون» KPI counted the fetched
           slice; no endpoint counts active teachers, so it left with the
-          client-side filter instead of lying at scale (audit 15-d P1-1). */}
+          client-side filter instead of lying at scale (audit 15-d P1-1).
+          r157 (6A9 #8): the «نظام التوثيق: فعّال · مطابق» KPI that sat
+          beside it is deleted — there is no verification-system signal
+          anywhere in the /admin/users payload (verification is
+          per-teacher via TEACHERS_VERIFY), and a hardcoded «فعّال»
+          fakes a platform-wide status the backend never asserts. The
+          honest server-backed count stays. */}
       <div className="grid-2">
         <MetricCard icon={Users} label="عدد الأساتذة" value={teacherCount} color="brand" />
-        <MetricCard icon={ShieldCheck} label="نظام التوثيق" value="فعّال" color="purple" change="مطابق لمتطلبات الجودة" />
       </div>
 
       <div className="grid-2-1">

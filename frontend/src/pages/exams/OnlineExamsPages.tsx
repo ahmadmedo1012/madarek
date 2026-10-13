@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown,
-  Sparkles, ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft,
+  ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft,
   ListChecks, Info, Ban,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
@@ -142,6 +142,15 @@ function withQid(prev: ReadonlySet<string>, qid: string, present: boolean): Read
   return next;
 }
 
+/* 6A6-finding-3 — the taker's begin / completed / result screens are
+   each a page whose heading IS the page title, so the tag must be h1
+   for the document outline. base.css differentiates h1 from h2 by
+   size, so the inline style pins the promoted h1 back to the authored
+   h2 metrics (--fs-h2 = 22px, --lh-snug = 1.2 → 26.4px; the weight
+   is the shared heading rule) — visual parity without touching any
+   CSS file. */
+const H1_AS_H2_STYLE = { fontSize: 'var(--fs-h2)', lineHeight: 'var(--lh-snug)' } as const;
+
 /* ═══════════════ Student exam list ═══════════════ */
 export default function OnlineExamsPage() {
   const q = useMyExams();
@@ -150,7 +159,13 @@ export default function OnlineExamsPage() {
   // a windowed exam that has not opened yet or whose submission window
   // has shut is never offered as startable (it renders in the dated
   // group below instead of failing with a raw error on click).
-  const startable = (e: MyExam) => !e.myAttempt || e.myAttempt.status === 'IN_PROGRESS';
+  // 6A6-finding-2 — the mirror is per kind, like the backend: a finished
+  // PRACTICE attempt earns a freshStart (decideExamStart) and only a
+  // live IN_PROGRESS one blocks it (attemptBlockingStatuses), so
+  // practice is always startable; graded kinds stay startable only
+  // without an attempt (or with a resumable live one).
+  const startable = (e: MyExam) =>
+    !e.myAttempt || e.myAttempt.status === 'IN_PROGRESS' || e.kind === 'PRACTICE';
   const available = useMemo(
     // D5: an IN_PROGRESS attempt is resumable, not taken — keep the
     // card linked so a mid-exam reload can find its way back to the
@@ -163,7 +178,10 @@ export default function OnlineExamsPage() {
     [exams],
   );
   const taken = useMemo(
-    () => (exams ?? []).filter((e) => e.myAttempt && e.myAttempt.status !== 'IN_PROGRESS'),
+    // 6A6-finding-2: practice retakes are real — a finished practice
+    // attempt never sinks its card into dead "taken" history (it stays
+    // startable above, window permitting).
+    () => (exams ?? []).filter((e) => e.myAttempt && e.myAttempt.status !== 'IN_PROGRESS' && e.kind !== 'PRACTICE'),
     [exams],
   );
 
@@ -173,7 +191,7 @@ export default function OnlineExamsPage() {
         <div className="page-title-block">
           <h1 className="page-title">الاختبارات الإلكترونية</h1>
           <p className="page-subtitle">
-            اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم.
+            اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية.
           </p>
         </div>
       </header>
@@ -296,15 +314,27 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
             </Badge>
           </div>
         )}
-        {exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
+        {exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && exam.kind !== 'PRACTICE' && (
           <div style={{ marginTop: 8 }}>
             {/* 5-A6 P1-1 companion — a finished attempt is not a dead end:
               the taker renders the honest done-state (score or awaiting
-              grading) for this deep link, so history stays reachable. */}
+              grading) for this deep link, so history stays reachable.
+              6A6-finding-2: practice is excluded — its deep link lands on
+              the BEGIN screen (the server grants a retake), so a «عرض
+              النتيجة» link there would promise what it never shows. */}
             <Link to={`/student/online-exams/${exam.id}`} className="btn ghost sm">
               <Icon icon={ArrowLeft} size={13} />
               عرض النتيجة
             </Link>
+          </div>
+        )}
+        {/* 6A6-finding-2 — the retake badge says what the score badge
+            cannot: a finished practice attempt is retakeable NOW. Open
+            window only — a shut window shows «أغلق باب التسليم» above,
+            and that is the truth for a retake too. */}
+        {exam.kind === 'PRACTICE' && ws === 'open' && exam.myAttempt && exam.myAttempt.status !== 'IN_PROGRESS' && (
+          <div style={{ marginTop: 8 }}>
+            <Badge color="brand">تدريبي — إعادة المحاولة متاحة</Badge>
           </div>
         )}
         {ws === 'upcoming' && exam.openAt && (
@@ -504,13 +534,24 @@ export function ExamTakerPage() {
   const hasLiveAttempt = listedExam?.myAttempt?.status === 'IN_PROGRESS';
   // 5-A6 P1-1 — the list payload already knows this exam is finished for
   // this student (GRADED / SUBMITTED / EXPIRED are exactly the statuses
-  // decideExamStart refuses). Render the honest done-state up front
-  // instead of offering a begin the server will reject a round-trip
-  // later. Practice exams are retakeable server-side and never carry a
-  // finished attempt in the list payload — the guard keeps the mirror
-  // of the start rule exact.
+  // decideExamStart refuses for graded kinds). Render the honest
+  // done-state up front instead of offering a begin the server will
+  // reject a round-trip later. 6A6-finding-2: /exams/me DOES return the
+  // latest attempt for practice templates too (the myAttempt collapse
+  // is kind-agnostic) — the PRACTICE exclusion below is deliberate, not
+  // a missing payload: decideExamStart grants a finished practice
+  // attempt a freshStart, so the begin screen is the truth for it.
   const hasFinishedAttempt =
     !!listedExam?.myAttempt && listedExam.myAttempt.status !== 'IN_PROGRESS' && listedExam.kind !== 'PRACTICE';
+  // 6A6-finding-2 — the submit dialog's finality note mirrors the same
+  // start rule: a finished PRACTICE attempt earns a freshStart
+  // (decideExamStart), so the practice note must never claim a retake is
+  // impossible. Graded kinds keep the hard truth. Derived from the list
+  // payload — a rare deep link before the list resolves keeps the
+  // conservative non-practice copy.
+  const finalityNote = listedExam?.kind === 'PRACTICE'
+    ? 'بعد التسليم لا يمكنك تعديل إجاباتك — يمكنك بدء محاولة تدريبية جديدة لاحقاً.'
+    : 'بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.';
 
   const onStart = async () => {
     if (!id) return;
@@ -561,6 +602,16 @@ export function ExamTakerPage() {
     finishingRef.current = true;
     setSubmitError(null);
     try {
+      // 6A6-finding-1: the 00:00 auto-submit fires while a text draft can
+      // still sit un-blurred in the focused textarea — its save has not
+      // been registered yet, so the flush below would race straight past
+      // it and the draft would vanish from grading. Blur the active
+      // textarea FIRST: its synchronous onBlur (runAnswerSave) registers
+      // the save into pendingSavesRef before the flush consumes it. The
+      // manual path was already safe — clicking any button moves focus
+      // off the field and blurs it on the way.
+      const active = document.activeElement;
+      if (active instanceof HTMLTextAreaElement) active.blur();
       // 15-e P0-1: flush every in-flight answer save first — the finish
       // request must never overtake an autosave (the wait is bounded by
       // SUBMIT_FLUSH_MS so a hung save cannot block the submit).
@@ -814,7 +865,7 @@ export function ExamTakerPage() {
               are a single decision), generous break before the action. */}
           <div className="empty-state exam-result">
             <Icon icon={CheckCircle2} size={32} style={{ color: 'var(--accent)' }} />
-            <h2 className="exam-result-title">لقد أكملت هذا الاختبار مسبقاً</h2>
+            <h1 className="exam-result-title" style={H1_AS_H2_STYLE}>لقد أكملت هذا الاختبار مسبقاً</h1>
             {exam && myAttempt && score !== null && score !== undefined ? (
               <>
                 <div className="exam-result-lockup">
@@ -870,13 +921,13 @@ export function ExamTakerPage() {
         <Card>
           <div className="empty-state">
             <Icon icon={ClipboardCheck} size={32} style={{ color: 'var(--accent)' }} />
-            <h2 style={{ margin: 'var(--sp-3) 0 var(--sp-2)' }}>
+            <h1 style={{ margin: 'var(--sp-3) 0 var(--sp-2)', ...H1_AS_H2_STYLE }}>
               {hasLiveAttempt ? 'متابعة الاختبار' : 'هل أنت مستعد للبدء؟'}
-            </h2>
+            </h1>
             <p className="text-sm text-muted" style={{ maxWidth: 480, textAlign: 'center' }}>
               {hasLiveAttempt
                 ? 'لديك محاولة قيد التقدم لهذا الاختبار — الوقت لم يتوقف منذ البدء، وإجاباتك المحفوظة ستظهر كما تركتها.'
-                : 'بمجرد الضغط على «بدء الاختبار» سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. الأسئلة تُسجَّل تلقائياً عند تغيير الإجابة.'}
+                : 'بمجرد الضغط على «بدء الاختبار» سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل — ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت.'}
             </p>
             {startError && (
               <div className="form-error" role="alert" style={{ marginTop: 'var(--sp-3)', maxWidth: 480 }}>
@@ -924,9 +975,9 @@ export function ExamTakerPage() {
               size={36}
               style={{ color: awaitingManual ? 'var(--info)' : result.passed ? 'var(--success)' : 'var(--warning)' }}
             />
-            <h2 className="exam-result-title">
+            <h1 className="exam-result-title" style={H1_AS_H2_STYLE}>
               {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
-            </h2>
+            </h1>
             {/* The authored moment — the grade reveal: the real score
                 lands as the visual anchor (same exam-grade language as
                 the student results card; one-shot rise + state ring). */}
@@ -1165,8 +1216,8 @@ export function ExamTakerPage() {
           unanswered > 0
             /* 22-c (A4 P2-3) counted-noun convention — the dialog speaks
                the same «سؤال واحد بدون إجابة» grammar as the sticky bar. */
-            ? `لديك ${countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])}. بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.`
-            : 'بعد التسليم لا يمكنك تعديل إجاباتك أو إعادة المحاولة.'
+            ? `لديك ${countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])}. ${finalityNote}`
+            : finalityNote
         }
         confirmLabel="تسليم نهائي"
         cancelLabel="مراجعة إجاباتي"
@@ -1403,7 +1454,25 @@ export function ExamModerationPage() {
           value={queueQ.isPending ? '…' : queueQ.isError ? 'تعذّر الاتصال' : 'نشط'}
           color={queueQ.isError ? 'red' : 'green'}
         />
-        <MetricCard icon={Sparkles} label="نموذج الجودة" value="رؤية 2024–2028" color="purple" change="معايير الجودة المحلية والدولية" />
+        {/* 6A9-finding-8 — the static «نموذج الجودة: رؤية 2024–2028» tile
+            was invented content (no such data source exists). The honest
+            third KPI derives from the queue itself: the questions awaiting
+            review, summed over the pending rows ('…' while loading, '—' on
+            error — never a fake zero). No decision timestamps exist in the
+            page payload (PENDING queue only), so no «decisions this
+            month» was invented either. */}
+        <MetricCard
+          icon={ListChecks}
+          label="أسئلة بانتظار الفحص"
+          value={
+            queueQ.isPending
+              ? '…'
+              : queueQ.isError
+                ? '—'
+                : `${(queue ?? []).reduce((sum, item) => sum + item._count.questions, 0)}`
+          }
+          color="purple"
+        />
       </div>
 
       <Card title="قائمة الانتظار" icon={ClipboardCheck}>

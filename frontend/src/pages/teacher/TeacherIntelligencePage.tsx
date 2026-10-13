@@ -12,9 +12,9 @@ import { Link, useParams } from 'react-router-dom';
 import {
   AlertTriangle, BookOpen, Sparkles, ChevronRight,
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
-  CheckCircle2, AlertCircle, ListVideo, RefreshCw,
+  CheckCircle2, AlertCircle, RefreshCw,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar } from '../../components/primitives';
+import { Card, Badge, MetricCard, UserAvatar, Tabs } from '../../components/primitives';
 import { DetailSkeleton, ErrorState, EmptyState, KpiSkeleton, ListSkeleton, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -244,6 +244,21 @@ export function TeacherOfferingDetailPage() {
   const role = useAuthStore((s) => s.user?.role);
   const canAuthor = role === 'TEACHER' || role === 'ADMIN' || role === 'OWNER';
 
+  // r157 / 6A9 — the intelligence Tabs ride the SHARED Tabs primitive
+  // (role=tab + aria-selected + roving tabindex + RTL arrows). Tradeoff,
+  // documented: the primitive is label-only, so the per-tab icons the
+  // hand-rolled buttons carried are dropped — three short Arabic labels
+  // read fine without them, and every other tab strip in the product
+  // (research review, library, alerts…) is icon-less the same way.
+  const tabItems = useMemo(() => {
+    const items: Array<{ value: 'students' | 'curriculum' | 'authoring'; label: string }> = [
+      { value: 'students', label: 'الطلاب وتقييم المخاطر' },
+      { value: 'curriculum', label: 'مساعد المنهج' },
+    ];
+    if (canAuthor) items.push({ value: 'authoring', label: 'إدارة المنهج' });
+    return items;
+  }, [canAuthor]);
+
   // Honest tri-state (audit 0-e P0-5): pending → skeleton, error → retry,
   // resolved-but-unknown id → a real 404 state — never an infinite skeleton.
   if (offerings.isPending) return <DetailSkeleton />;
@@ -343,19 +358,11 @@ export function TeacherOfferingDetailPage() {
         </div>
       )}
 
-      <div className="tabs">
-        <button type="button" className={`tab${tab === 'students' ? ' on' : ''}`} onClick={() => setTab('students')}>
-          <Icon icon={Users} size={13} /> الطلاب وتقييم المخاطر
-        </button>
-        <button type="button" className={`tab${tab === 'curriculum' ? ' on' : ''}`} onClick={() => setTab('curriculum')}>
-          <Icon icon={Brain} size={13} /> مساعد المنهج
-        </button>
-        {canAuthor && (
-          <button type="button" className={`tab${tab === 'authoring' ? ' on' : ''}`} onClick={() => setTab('authoring')}>
-            <Icon icon={ListVideo} size={13} /> إدارة المنهج
-          </button>
-        )}
-      </div>
+      <Tabs
+        value={tab}
+        onChange={setTab}
+        items={tabItems}
+      />
 
       {tab === 'students' && (
         <Card title="قائمة الطلاب — تحليل لحظي" icon={Users}>

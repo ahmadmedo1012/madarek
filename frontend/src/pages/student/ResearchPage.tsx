@@ -75,6 +75,15 @@ export default function StudentResearchPage() {
   const upload = useUploadPaper();
   const scan = useScanPaper();
   const [uploadOpen, setUploadOpen] = useState(false);
+  /* r157 (F8): تعبئة مسبقة لإعادة الرفع — «رفع نسخة جديدة» على ورقة
+   * فاشلة يفتح النموذج معبّأً ببياناتها (العنوان/الملخّص/المقرّر).
+   * الفتح العادي (الترويسة/الحالة الفارغة) يصفّرها؛ الإغلاق يصفّرها
+   * أيضاً كي لا يتسرّب بحثٌ سابق إلى فتحٍ لاحق غير مقصود. */
+  const [resubmitPrefill, setResubmitPrefill] = useState<{
+    title: string;
+    abstract?: string;
+    offeringId?: string;
+  } | null>(null);
   const [scanningId, setScanningId] = useState<string | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -99,6 +108,24 @@ export default function StudentResearchPage() {
     }
   };
 
+  /* Opens the upload modal EMPTY (the normal path — header button and
+     the empty-state CTA both route here). */
+  const openFreshUpload = () => {
+    setResubmitPrefill(null);
+    setUploadOpen(true);
+  };
+  /* Opens the upload modal PREFILLED from a failed paper — the student
+     keeps the title/abstract/offering they already authored instead of
+     retyping them from memory. */
+  const openResubmit = (paper: ResearchPaper) => {
+    setResubmitPrefill({
+      title: paper.title,
+      abstract: paper.abstract ?? undefined,
+      offeringId: paper.offering?.id,
+    });
+    setUploadOpen(true);
+  };
+
   return (
     <div className="page">
       <header className="page-header">
@@ -109,7 +136,7 @@ export default function StudentResearchPage() {
             ثم أرسلها لأستاذك للتقييم والنشر في مكتبة الجامعة.
           </p>
         </div>
-        <button type="button" className="btn primary" onClick={() => setUploadOpen(true)}>
+        <button type="button" className="btn primary" onClick={openFreshUpload}>
           <Icon icon={Upload} size={14} />
           رفع بحث جديد
         </button>
@@ -146,7 +173,7 @@ export default function StudentResearchPage() {
             description="ابدأ برفع أول بحث لك ليتم فحصه ثم تقييمه من قبل الأستاذ."
             illustration="empty-search"
             action={
-              <button type="button" className="btn primary" onClick={() => setUploadOpen(true)}>
+              <button type="button" className="btn primary" onClick={openFreshUpload}>
                 <Icon icon={Upload} size={14} />
                 رفع بحث جديد
               </button>
@@ -160,6 +187,7 @@ export default function StudentResearchPage() {
                 paper={p}
                 isScanning={scanningId === p.id || (p.status === 'SCANNING')}
                 onScan={() => void startScan(p.id)}
+                onResubmit={() => openResubmit(p)}
               />
             ))}
           </div>
@@ -174,7 +202,8 @@ export default function StudentResearchPage() {
           enrollmentsPending={enrollments.isPending}
           isPending={upload.isPending}
           error={uploadError}
-          onClose={() => { setUploadOpen(false); setUploadError(null); }}
+          initial={resubmitPrefill}
+          onClose={() => { setUploadOpen(false); setUploadError(null); setResubmitPrefill(null); }}
           onSubmit={async (input) => {
             setUploadError(null);
             try {
@@ -197,11 +226,12 @@ export default function StudentResearchPage() {
 
 /* ─── Paper row ─────────────────────────────────────────── */
 function PaperRow({
-  paper, isScanning, onScan,
+  paper, isScanning, onScan, onResubmit,
 }: {
   paper: ResearchPaper;
   isScanning: boolean;
   onScan: () => void;
+  onResubmit: () => void;
 }) {
   const hasResults = paper.plagiarismPct != null || paper.aiContentPct != null;
   return (
@@ -318,6 +348,19 @@ function PaperRow({
             <Icon icon={AlertCircle} size={14} />
             تجاوز البحث الحدود التجريبية المسموح بها (محاكاة) — يُرجى مراجعة المحتوى وإعادة الرفع.
           </div>
+          {/* r157 (F8): الإرشاد السابق كان بلا فعل — «راجع وأعد الرفع»
+              ثم يفتح الطالب النموذج فارغاً ويسترجع بياناته من ذاكرته.
+              الزرّ يفتح UploadModal معبّأً من الورقة الفاشلة
+              (العنوان/الملخّص/المقرّر — see openResubmit above). */}
+          <button
+            type="button"
+            className="btn outline sm"
+            onClick={onResubmit}
+            style={{ alignSelf: 'flex-start', marginTop: 'var(--sp-1)' }}
+          >
+            <Icon icon={Upload} size={13} />
+            رفع نسخة جديدة
+          </button>
         </div>
       )}
 
@@ -337,7 +380,7 @@ function ProcessExplainer() {
     { n: 1, title: 'ارفع بحثك', desc: 'العنوان، الملخّص، والمقرّر المرتبط.', icon: Upload },
     { n: 2, title: 'فحص أوتوماتيكي', desc: 'كشف الانتحال + كشف توليد الذكاء الاصطناعي خلال ثوانٍ.', icon: ScanSearch },
     { n: 3, title: 'تقييم الأستاذ', desc: 'بعد اجتياز الفحص، يُقيِّم الأستاذ البحث من 20.', icon: BarChart3 },
-    { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة وResearchGate.', icon: BookMarked },
+    { n: 4, title: 'النشر في المكتبة', desc: 'البحوث المتميزة تُضاف إلى مكتبة الجامعة.', icon: BookMarked },
   ];
   return (
     <Card title="كيف يعمل النظام" icon={Workflow} subtitle="أربع مراحل أوتوماتيكية بالكامل">
@@ -359,18 +402,22 @@ function ProcessExplainer() {
 
 /* ─── Upload modal (shared Modal primitive: focus trap, Esc, portal) ── */
 function UploadModal({
-  enrollments, enrollmentsPending, isPending, error, onClose, onSubmit,
+  enrollments, enrollmentsPending, isPending, error, initial, onClose, onSubmit,
 }: {
   enrollments: Array<{ offering: { id: string; course: { name: string; code: string } } }>;
   enrollmentsPending: boolean;
   isPending: boolean;
   error: string | null;
+  /** r157 (F8): prefilled values for a resubmit (CHECKS_FAILED paper) —
+   * null on a fresh open; the modal only mounts while open, so the
+   * state re-initializes on every open/close cycle (no leakage). */
+  initial: { title: string; abstract?: string; offeringId?: string } | null;
   onClose: () => void;
   onSubmit: (input: { title: string; abstract?: string; offeringId?: string; fileUrl?: string }) => Promise<void>;
 }) {
-  const [title, setTitle] = useState('');
-  const [abstractText, setAbstractText] = useState('');
-  const [offeringId, setOfferingId] = useState<string>('');
+  const [title, setTitle] = useState(initial?.title ?? '');
+  const [abstractText, setAbstractText] = useState(initial?.abstract ?? '');
+  const [offeringId, setOfferingId] = useState<string>(initial?.offeringId ?? '');
   const canSubmit = title.trim().length >= 3 && !isPending;
   // Label↔control wiring (same useId pattern as the register form):
   // bare <label> text is invisible to assistive tech.
@@ -462,7 +509,9 @@ function UploadModal({
               (hash-based, fileUrl-independent), and the teacher review link
               renders only when a real fileUrl exists (it never does today). */}
           <div className="upload-disclosure">
-            <Icon icon={Upload} size={20} className="text-muted" />
+            <span className="upload-disclosure-icon" aria-hidden>
+              <Icon icon={Upload} size={16} />
+            </span>
             <span className="text-sm text-muted">
               رفع الملفات غير متاح بعد — قرص الخدمة زائل. سجّل عنوان البحث
               والملخّص الآن، ويُرفق الملف لاحقاً عند توفّر التخزين الدائم.

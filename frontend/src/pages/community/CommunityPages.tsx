@@ -376,7 +376,7 @@ function EventCard({ event: e }: { event: CampusEventRow }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* Title demoted from h3 to a styled div (15-g P2-5 heading
               skip) — inline styles keep the exact rendered look. */}
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-md)', margin: '0 0 6px 0' }}>{e.title}</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 'var(--fw-bold)', fontSize: 'var(--fs-md)', margin: '0 0 var(--sp-1-5) 0' /* r157: 6px → token */ }}>{e.title}</div>
           <p className="text-sm text-muted" style={{ margin: '0 0 var(--sp-2) 0' }}>{e.description}</p>
           <div className="event-meta">
             <span><Icon icon={CalendarDays} size={11} /> {fmtDateVal(start)}</span>

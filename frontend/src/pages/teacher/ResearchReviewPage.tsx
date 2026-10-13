@@ -61,8 +61,13 @@ export default function ResearchReviewPage() {
 
   const passed = (queue.data ?? []).filter((p) => p.status === 'CHECKS_PASSED');
   const failed = (queue.data ?? []).filter((p) => p.status === 'CHECKS_FAILED');
-  // Real count replacing the old dead "—" KPI (audit 0-e P2-40).
-  const readyToPublish = (queue.data ?? []).filter((p) => p.status === 'GRADED').length;
+  // r157 / 6A8 — GRADED papers stay in the queue until published: they
+  // render in their own card below with the publish CTA (the backend
+  // RESEARCH_QUEUE_STATUSES now includes GRADED, so this list is real).
+  const graded = (queue.data ?? []).filter((p) => p.status === 'GRADED');
+  // Real count replacing the old dead "—" KPI (audit 0-e P2-40) — and
+  // r157 / 6A8: it can finally be non-zero (the queue carries GRADED).
+  const readyToPublish = graded.length;
   // KPIs never show a masked "0" on API-down (ruling #14).
   const kpiValue = (n: number) => (queue.isError ? '—' : n);
 
@@ -141,6 +146,23 @@ export default function ResearchReviewPage() {
               </div>
             </Card>
           )}
+
+          {/* r157 / 6A8 — the publish loop's missing half: GRADED papers
+              render here (purple tone) with the publish CTA; the KPI
+              «جاهزة للنشر» finally counts something reachable. */}
+          {graded.length > 0 && (
+            <Card
+              title="مُقيَّمة — جاهزة للنشر"
+              icon={BookMarked}
+              subtitle="بحوث قُيِّمت ويمكن نشرها في مكتبة الجامعة — النشر خطوة صريحة من مراجعة كل بحث"
+            >
+              <div className="flex-col gap-3">
+                {graded.map((p) => (
+                  <GradedRow key={p.id} paper={p} onOpen={() => setReviewing(p)} />
+                ))}
+              </div>
+            </Card>
+          )}
         </>
       ) : (
         <MyPublications />
@@ -192,6 +214,52 @@ function ReviewRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void
         <button type="button" className="btn primary sm" onClick={onOpen}>
           <Icon icon={FileText} size={13} />
           مراجعة وتقييم
+        </button>
+        {paper.fileUrl && (
+          <RouterLink
+            to={`/document/${encodeURIComponent(paper.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(paper.title)}&back=${encodeURIComponent('/teacher/research')}&paper=${encodeURIComponent(paper.id)}`}
+            className="btn outline sm"
+          >
+            <Icon icon={MessageSquare} size={13} />
+            قراءة وكتابة ملاحظات
+          </RouterLink>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* r157 / 6A8 — one GRADED row: the purple tone mirrors the «جاهزة
+ * للنشر» KPI, the score travels on the row, and the CTA opens the
+ * review modal where publishing stays an EXPLICIT footer action (an
+ * accidental Enter must never publish a paper to the public archive). */
+function GradedRow({ paper, onOpen }: { paper: ResearchPaper; onOpen: () => void }) {
+  const initials = paper.student.avatarInitials ?? `${paper.student.firstName[0]}${paper.student.lastName[0]}`;
+  return (
+    // .paper-row family is owned by student.css §research (shared grammar)
+    <div className="paper-row">
+      <div className="paper-row-head">
+        <div className="flex items-center gap-3">
+          <UserAvatar initials={initials} color={paper.student.avatarColor ?? undefined} size={36} />
+          <div className="paper-row-main">
+            <div className="paper-row-title">{paper.title}</div>
+            <div className="paper-row-course">
+              {paper.student.firstName} {paper.student.lastName}
+              {paper.offering && (<> · {paper.offering.course.name} (<bdi className="font-mono">{paper.offering.course.code}</bdi>)</>)}
+            </div>
+          </div>
+        </div>
+        <Badge color="purple">{STATUS_LABEL[paper.status]}</Badge>
+      </div>
+      <div className="review-row-meta">
+        <span>الدرجة: <bdi className="font-mono">{paper.grade ?? '—'}</bdi> / <bdi className="font-mono">20</bdi></span>
+        <span className="text-subtle">·</span>
+        <span className="text-subtle">قيِّم {paper.gradedAt ? formatDateAr(paper.gradedAt) : formatDateAr(paper.uploadedAt)}</span>
+      </div>
+      <div className="flex items-center gap-2 flex-wrap">
+        <button type="button" className="btn primary sm" onClick={onOpen}>
+          <Icon icon={Sparkles} size={13} />
+          نشر في المكتبة
         </button>
         {paper.fileUrl && (
           <RouterLink
@@ -260,6 +328,18 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
     }
   };
 
+  // r157 / 6A9 — the form contract: the grade fields live inside a real
+  // <form>, so Enter in the score/notes submits the grade (the
+  // GradeSubmissionModal contract; every long-form grading surface now
+  // agrees). In GRADED/PUBLISHED mode Enter no-ops BY DESIGN: publishing
+  // is an EXPLICIT footer action — an accidental Enter must never be one
+  // keystroke away from the public archive.
+  const onFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (busy || isGraded) return;
+    void submit();
+  };
+
   const annotationRows = annotations.data
     ? [...annotations.data].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     : [];
@@ -272,6 +352,9 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
           <Icon icon={X} size={16} />
         </button>
       </div>
+      {/* r157 / 6A9 — fields + actions ride one <form> (Enter submits
+          the grade; graded-mode Enter is the guarded no-op above). */}
+      <form onSubmit={onFormSubmit} noValidate>
       <div className="modal-body">
         <div className="text-xs text-subtle">{paper.student.firstName} {paper.student.lastName}</div>
         <div className="text-md font-semibold" style={{ color: 'var(--text)', marginBlockEnd: 'var(--sp-4)' }}>{paper.title}</div>
@@ -406,7 +489,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
         {!isGraded ? (
           <>
             <button type="button" className="btn ghost" onClick={requestClose} disabled={busy}>إلغاء</button>
-            <button type="button" className="btn primary" onClick={() => void submit()} disabled={busy}>
+            <button type="submit" className="btn primary" disabled={busy}>
               <Icon icon={CheckCircle2} size={14} />
               {grade.isPending ? 'جارٍ الحفظ…' : 'تأكيد التقييم'}
             </button>
@@ -414,6 +497,8 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
         ) : (
           <>
             <button type="button" className="btn ghost" onClick={requestClose} disabled={busy}>إغلاق</button>
+            {/* Publish stays type=button — an explicit click, never an
+                implicit form submit (the same guard as onFormSubmit). */}
             {paper.status === 'GRADED' && (
               <button type="button" className="btn primary" onClick={() => void publishNow()} disabled={busy}>
                 <Icon icon={Sparkles} size={14} />
@@ -423,6 +508,7 @@ function ReviewModal({ paper, onClose }: { paper: ResearchPaper; onClose: () => 
           </>
         )}
       </div>
+      </form>
       {guard}
     </Modal>
   );

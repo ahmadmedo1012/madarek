@@ -106,6 +106,15 @@
     font-size: var(--type-label-size);
   }
   .lecture-report-retry .btn { min-block-size: 44px; }
+  /* r157 (W2-F7): the two CTAs (retry + «اذهب إلى مقرّراتك») sit side by
+     * side and wrap under the copy on narrow screens — the dashboard's
+     * ResumeHero error card reuses this grammar. */
+  .lecture-report-retry-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    flex-shrink: 0;
+  }
 
   /* ── Watch progress ──
      Plain-block fill anchors at inline-start → the fill direction is
@@ -296,7 +305,7 @@
     align-items: center;
     gap: var(--sp-1);
     align-self: flex-start;
-    padding: 4px var(--sp-3);
+    padding: var(--sp-1) var(--sp-3);
     border-radius: var(--r-full);
     background: var(--accent-soft);
     color: var(--accent-strong);
@@ -443,9 +452,21 @@
   }
   .checkpoint-actions {
     display: flex;
-    justify-content: flex-end;
+    /* r157 (W2-F7): «تخطّي» (always visible) at the inline-start edge,
+       «متابعة المحاضرة» (only after an answer) at the inline-end — the
+       primary verb keeps the corner, the quiet escape gets the other. */
+    justify-content: space-between;
+    align-items: center;
     gap: var(--sp-2);
   }
+  /* Touch floor (44px) for BOTH quiz actions — «تخطّي» was a 32px sm
+     ghost chip before, under the WCAG 2.5.5 target the rest of the
+     player chrome honors. */
+  .checkpoint-actions .btn { min-block-size: 44px; }
+  /* Quiet ghost ink: the skip CTA reads as text-secondary on the
+     transparent ghost base (via --_btn-fg, the button family's ink
+     channel) — present, honest, never competing with the primary. */
+  .btn.checkpoint-skip { --_btn-fg: var(--text-secondary); }
   .checkpoint-actions:empty { display: none; }
 
   /* ── Keyframes (reduced-motion off-switch below — guardrail #6) ── */
@@ -1191,7 +1212,11 @@
       border-color var(--t-base) var(--ease),
       box-shadow var(--t-base) var(--ease);
   }
-  .webinar-row:hover {
+  /* r157 (F8): the premium hover belongs to rows that DO something —
+     LIVE rows carry the join action (WebinarsPage.tsx); passive
+     upcoming rows keep their quiet rest state (a lift that promises
+     interactivity the row cannot deliver is a dead affordance). */
+  .webinar-row.live:hover {
     background: var(--surface-2);
     border-color: var(--border-strong);
     box-shadow: var(--shadow-card-premium-h);
@@ -1544,9 +1569,33 @@
   /* (r155d dead-selector sweep: the .upload-dropzone family — base +
      :hover/:active/.has-file, 27 lines — deleted. rg-verified zero TSX
      consumers repo-wide since r154d replaced the fake file picker with
-     the honest .upload-disclosure note (ResearchPage.tsx:464,
-     ephemeral-disk ruling). The .upload-error alert below stays live —
-     ResearchPage.tsx:474.) */
+     the honest .upload-disclosure note (ResearchPage.tsx, ephemeral-disk
+     ruling). The .upload-error alert below stays live —
+     ResearchPage.tsx.) */
+  /* r157 (F8): the disclosure note gets its designed recipe — surface-2
+     ground + hairline rule + a 32px icon well (the .degree-card-icon
+     pattern) so the honest «رفع الملفات غير متاح بعد» reads as one
+     quiet unit instead of a bare icon floating beside text. */
+  .upload-disclosure {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-md);
+  }
+  .upload-disclosure-icon {
+    inline-size: 32px;
+    block-size: 32px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-sm);
+    background: var(--surface-3);
+    color: var(--text-muted);
+  }
   .upload-error {
     font-size: var(--fs-xs);
     color: var(--danger-ink);
@@ -2076,7 +2125,7 @@
   .fact-tile {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--sp-1);
     padding: var(--sp-3);
     background: var(--surface-2);
     border-radius: var(--r-md);
@@ -2214,7 +2263,7 @@
   .profile-link-saved {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     color: var(--success-ink);
     font-size: var(--type-label-size-sm);
     animation: profile-save-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
@@ -2367,7 +2416,7 @@
   .event-rsvp-fail {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     color: var(--danger-ink);
     font-size: var(--type-label-size-sm);
   }
@@ -2459,7 +2508,7 @@
   .announcement-pin {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     flex-shrink: 0;
     margin-inline-start: auto;
     padding: 3px var(--sp-3);
@@ -3079,7 +3128,7 @@
   .matrix-meta {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     margin-block-start: 2px;
     font-size: 11px;
     color: var(--text-subtle);
@@ -3162,10 +3211,10 @@
   .post-action {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     background: transparent;
     border: 0;
-    padding: 4px 8px;
+    padding: var(--sp-1) 8px;
     border-radius: var(--r-sm);
     font-size: 12px;
     color: var(--text-muted);

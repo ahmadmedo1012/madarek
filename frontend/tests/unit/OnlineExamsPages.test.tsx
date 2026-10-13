@@ -41,6 +41,19 @@
  *     open / not-yet-open / closed exams, the cards carry window chips,
  *     and the start path speaks the backend's Arabic window guards
  *     (17-b D17-3) with the real opening date when the list knows it.
+ * 15. 6A6-finding-1: the 00:00 auto-submit blurs the focused textarea
+ *     BEFORE the flush — an un-blurred text draft registers its save and
+ *     flies before finish (invocationCallOrder).
+ * 16. 6A6-finding-2: the FE mirrors the backend practice contract
+ *     (decideExamStart grants a finished PRACTICE attempt a freshStart;
+ *     attemptBlockingStatuses(PRACTICE)=[IN_PROGRESS] only): a finished
+ *     practice exam keeps its begin CTA + startable linked card with the
+ *     retake badge (open window only, latest score stays) and never dead
+ *     history or a lying «عرض النتيجة» deep link; the submit dialog’s
+ *     finalityNote is practice-specific; the begin copy tells the real
+ *     autosave contract.
+ * 17. 6A6-finding-3: begin / completed / result screens carry h1 page
+ *     titles pinned back to the h2 metrics inline (H1_AS_H2_STYLE).
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent, within } from '@testing-library/react';
@@ -277,6 +290,32 @@ describe('ExamTakerPage resume (D5)', () => {
     expect(screen.queryByText(/\d+ \/ \d+/)).toBeNull();
   });
 
+  it('keeps the begin screen + start CTA for a FINISHED practice attempt — the mirror of decideExamStart (6A6)', () => {
+    // The backend contract (read from exams.routes.ts): a finished
+    // PRACTICE attempt earns a freshStart — attemptBlockingStatuses(
+    // PRACTICE) = [IN_PROGRESS] only. /exams/me DOES return that latest
+    // attempt (the myAttempt collapse is kind-agnostic), so the taker
+    // must still offer the begin, never the graded-kind done state.
+    mocks.exams = [
+      examFixture({
+        kind: 'PRACTICE',
+        myAttempt: { id: 'a-pr', status: 'GRADED', score: 80, maxScore: 100, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+    ];
+
+    renderTaker();
+
+    expect(screen.getByText('هل أنت مستعد للبدء؟')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'بدء الاختبار' })).toBeTruthy();
+    expect(screen.queryByText('لقد أكملت هذا الاختبار مسبقاً')).toBeNull();
+    // 6A6-finding-1: the begin copy tells the real autosave contract —
+    // choices save on pick, text saves on leaving the field, and the
+    // exam auto-submits when the clock runs out.
+    expect(screen.getByText(/تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل/)).toBeTruthy();
+    expect(screen.getByText(/ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت/)).toBeTruthy();
+    expect(screen.queryByText(/الأسئلة تُسجَّل تلقائياً عند تغيير الإجابة/)).toBeNull();
+  });
+
   it('keeps the terminal "already taken" UI for a server-side alreadyAttempted the list could not pre-empt', async () => {
     // Deep link the list knows nothing about (fresh cache / other
     // template) — the begin path still surfaces the server truth.
@@ -378,7 +417,13 @@ describe('ExamTakerPage resume (D5)', () => {
 
     expect(screen.getByRole('button', { name: 'متابعة الاختبار' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'بدء الاختبار' })).toBeNull();
-    expect(screen.getByText('متابعة الاختبار', { selector: 'h2' })).toBeTruthy();
+    // 6A6-finding-3: the begin screen's title is an h1 (page outline)
+    // pinned back to the h2 metrics inline — the tag and both style
+    // declarations are pinned (jsdom resolves no CSS custom properties,
+    // so the authored var() strings are the computed truth here).
+    const beginTitle = screen.getByText('متابعة الاختبار', { selector: 'h1' });
+    expect(beginTitle.style.fontSize).toBe('var(--fs-h2)');
+    expect(beginTitle.style.lineHeight).toBe('var(--lh-snug)');
     expect(screen.getByText(/الوقت لم يتوقف منذ البدء/)).toBeTruthy();
   });
 });
@@ -549,6 +594,53 @@ describe('OnlineExamsPage list (D5 reachability)', () => {
     expect(screen.getByRole('link', { name: /اختبار جديد/ })).toBeTruthy();
     expect(screen.getByText('اختبار منتهٍ')).toBeTruthy();
   });
+
+  it('a finished practice card stays a retake link — badge + score, no dead «عرض النتيجة», never history (6A6)', () => {
+    mocks.exams = [
+      examFixture({
+        id: 'practice',
+        title: 'اختبار تدريبي',
+        kind: 'PRACTICE',
+        myAttempt: { id: 'a-pr', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+      examFixture({
+        id: 'practice-shut',
+        title: 'اختبار تدريبي مغلق',
+        kind: 'PRACTICE',
+        openAt: new Date(Date.now() - 172_800_000).toISOString(),
+        closeAt: new Date(Date.now() - 3_600_000).toISOString(),
+        myAttempt: { id: 'a-pr2', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+    ];
+
+    render(
+      <MemoryRouter>
+        <OnlineExamsPage />
+      </MemoryRouter>,
+    );
+
+    // The list header stops lying about retakes — the warning now
+    // carves out practice explicitly.
+    expect(screen.getByText(/لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية/)).toBeTruthy();
+
+    // The open-window practice card is startable: a linked retake, the
+    // retake badge, and the latest attempt score still visible on both
+    // cards (a retake does not erase the last result).
+    const card = screen.getByRole('link', { name: /اختبار تدريبي/ });
+    expect(card.getAttribute('href')).toBe('/student/online-exams/practice');
+    expect(screen.getByText('تدريبي — إعادة المحاولة متاحة')).toBeTruthy();
+    expect(screen.getAllByText('7 / 10')).toHaveLength(2);
+
+    // …while the shut-window one keeps the honest «أغلق باب التسليم»
+    // truth and NO retake promise — a retake cannot fly through a shut
+    // submission window.
+    expect(screen.getByText('أغلق باب التسليم')).toBeTruthy();
+
+    // Practice is never dead history, and the «عرض النتيجة» deep link
+    // is hidden — it would land on the begin screen, not a result.
+    expect(screen.queryByText('اختبارات أجريتها')).toBeNull();
+    expect(screen.queryByRole('link', { name: 'عرض النتيجة' })).toBeNull();
+  });
 });
 
 describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
@@ -631,6 +723,44 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     });
     expect(mocks.finish).toHaveBeenCalledTimes(1);
     expect(mocks.finish).toHaveBeenCalledWith('a1');
+  });
+
+  it('auto-submit at 00:00 flushes the un-blurred text draft — the save flies before finish (6A6)', async () => {
+    vi.useFakeTimers();
+    mocks.start.mockResolvedValue(startedPayload({ expiresAt: new Date(Date.now() + 3_000).toISOString() }));
+    mocks.finish.mockResolvedValue({ score: 5, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+
+    await startExam();
+
+    // The student typed a SHORT draft and never left the field — no
+    // blur, so no save has registered yet.
+    const draft = screen.getByPlaceholderText('اكتب إجابتك هنا…');
+    await act(async () => {
+      draft.focus();
+      fireEvent.change(draft, { target: { value: 'مسودة لم تُغادر الحقل بعد' } });
+    });
+    expect(mocks.answer).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(draft);
+
+    // 00:00 → auto-submit. The taker blurs the focused textarea FIRST,
+    // so the draft's save registers into pendingSavesRef before the
+    // flush consumes it — finish can never beat the draft.
+    await act(async () => {
+      vi.advanceTimersByTime(3_000);
+    });
+    expect(mocks.answer).toHaveBeenCalledTimes(1);
+    expect(mocks.answer).toHaveBeenCalledWith(
+      { attemptId: 'a1', questionId: 'q2', answerText: 'مسودة لم تُغادر الحقل بعد' },
+    );
+    expect(mocks.finish).toHaveBeenCalledTimes(1);
+    // invocationCallOrder: the draft save (q2, full text) strictly
+    // before the finish call.
+    expect(mocks.answer.mock.invocationCallOrder[0]!).toBeLessThan(mocks.finish.mock.invocationCallOrder[0]!);
+
+    // The blur really happened — the field no longer owns focus — and
+    // the real result screen rendered.
+    expect(document.activeElement).not.toBe(draft);
+    expect(screen.getByText('مبروك — لقد اجتزت الاختبار!')).toBeTruthy();
   });
 
   it('a manual submit settles the attempt — no second finish, timer + beforeunload torn down (15-e P0-2)', async () => {
@@ -791,6 +921,31 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(screen.queryByRole('button', { name: 'مراجعة الأسئلة' })).toBeNull();
   });
 
+  it('the submit dialog speaks the practice retake truth — the finalityNote is kind-aware (6A6)', async () => {
+    vi.useFakeTimers();
+    // The list payload knows this taker page is a PRACTICE template —
+    // the dialog's finality note must mirror decideExamStart's
+    // freshStart and promise the retake, never the graded-kind
+    // refusal.
+    mocks.exams = [
+      examFixture({
+        kind: 'PRACTICE',
+        myAttempt: { id: 'a-pr', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-01-02T00:00:00.000Z' },
+      }),
+    ];
+    mocks.start.mockResolvedValue(startedPayload());
+
+    await startExam();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'تسليم الاختبار' }));
+    });
+    expect(
+      screen.getByText(/بعد التسليم لا يمكنك تعديل إجاباتك — يمكنك بدء محاولة تدريبية جديدة لاحقاً./),
+    ).toBeTruthy();
+    expect(screen.queryByText(/أو إعادة المحاولة/)).toBeNull();
+  });
+
   it('names the answer fields after their question prompts (15-g P1-5)', async () => {
     vi.useFakeTimers();
     mocks.start.mockResolvedValue(startedPayload());
@@ -799,6 +954,40 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
 
     expect(screen.getByRole('radiogroup', { name: /سؤال اختيار من متعدد/ })).toBeTruthy();
     expect(screen.getByRole('textbox', { name: /سؤال قصير/ })).toBeTruthy();
+  });
+
+  it('promotes the done/result page titles to h1 pinned to the h2 metrics inline (6A6)', async () => {
+    vi.useFakeTimers();
+
+    // The deep-link completed screen (GRADED attempt, graded kind).
+    mocks.exams = [
+      examFixture({ myAttempt: { id: 'a-done', status: 'GRADED', score: 7, maxScore: 10, submittedAt: '2026-06-01T09:40:00.000Z' } }),
+    ];
+    const done = renderTaker();
+    const doneH1 = screen.getByText('لقد أكملت هذا الاختبار مسبقاً', { selector: 'h1' });
+    expect(doneH1.className).toBe('exam-result-title');
+    expect(doneH1.style.fontSize).toBe('var(--fs-h2)');
+    expect(doneH1.style.lineHeight).toBe('var(--lh-snug)');
+    done.unmount();
+
+    // The post-submit result screen.
+    mocks.exams = [];
+    mocks.start.mockResolvedValue(startedPayload());
+    mocks.finish.mockResolvedValue({ score: 7, maxScore: 10, status: 'GRADED', needsManual: 0, passed: true });
+    renderTaker();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'بدء الاختبار' }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'تسليم الاختبار' }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'تسليم نهائي' }));
+    });
+    const resultH1 = screen.getByText('مبروك — لقد اجتزت الاختبار!', { selector: 'h1' });
+    expect(resultH1.className).toBe('exam-result-title');
+    expect(resultH1.style.fontSize).toBe('var(--fs-h2)');
+    expect(resultH1.style.lineHeight).toBe('var(--lh-snug)');
   });
 
   it('speaks the server’s window guards in Arabic on the start path (15-h P1-5)', async () => {

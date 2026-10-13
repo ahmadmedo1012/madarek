@@ -19,7 +19,7 @@
 | الملف | المسارات |
 |---|---|
 | `teacher.routes.ts` (10) | `/teacher/me/offerings`، `/teacher/offerings/:id/students` (نموذج مخاطرة)، `/:id/analytics`، `/teacher/risks`، `/:id/attendance`، `POST /:id/curriculum/suggest` — **ويستضيف أيضًا 4 مسارات حاكمية إدارية** (`/admin/teachers/...`, `/admin/users/:id/scope`) — بقايا ترتيب موثقة (11-d P2-19) |
-| `teacher-dashboard.routes.ts` (3) | `/teacher/dashboard`، `/teacher/me/materials`، `/teacher/me/assignments` (بوابة TEACHER\|ADMIN\|OWNER) |
+| `teacher-dashboard.routes.ts` (4) | `/teacher/dashboard`، `/teacher/me/materials`، `/teacher/me/assignments`، `/teacher/me/pending-submissions` (طابور التصحيح: SUBMITTED+LATE، الأقدم أولًا، 100 صف — r157) (بوابة TEACHER\|ADMIN\|OWNER) |
 | `teacher-profile.routes.ts` (5) | `GET/PATCH /me/teacher-profile`، `GET/POST /live/sessions`، `POST /live/sessions/:id/lifecycle` (آلة حالات أمامية + مطالبة بـ`updateMany` شرطي) |
 | `curriculum.routes.ts` (9) | CRUD للمحاضرات/الفصول/الإدماجيات تحت `/offerings/:offeringId/lectures` و`/lectures/:lectureId/...` — حذف محاضرة بسجل مشاهدة يرد 409 |
 | `submissions.routes.ts` (2) | `POST /offerings/:offeringId/assignments/:assignmentId/submit` (طالب)، `POST /submissions/:id/grade` (تصحيح) |

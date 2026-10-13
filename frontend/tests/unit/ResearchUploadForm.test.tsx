@@ -14,14 +14,14 @@
  *
  * Data hooks are mocked at the useResources boundary (house pattern).
  */
-import { describe, expect, it, vi, afterEach } from 'vitest';
+import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest';
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import StudentResearchPage from '../../src/pages/student/ResearchPage';
 
 const mocks = vi.hoisted(() => ({
-  my: { data: [], isPending: false, isError: false, error: null, refetch: () => undefined },
-  enrollments: { data: [], isPending: false, isError: false, error: null, refetch: () => undefined },
+  my: { data: [] as unknown[], isPending: false, isError: false, error: null as unknown, refetch: () => undefined },
+  enrollments: { data: [] as unknown[], isPending: false, isError: false, error: null as unknown, refetch: () => undefined },
   upload: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
   scan: { isPending: false, isError: false, error: null, mutateAsync: vi.fn() },
 }));
@@ -103,6 +103,83 @@ describe('ResearchPage upload modal — FormField wiring (r152c)', () => {
       expect(title.getAttribute('aria-invalid')).toBeNull();
       expect(title.getAttribute('aria-describedby')).toBeNull();
     });
+  });
+});
+
+/* ────────────────────────────────────────────────────────────────
+ * r157 (F8) — resubmit prefill: «رفع نسخة جديدة» on a CHECKS_FAILED
+ * paper opens the upload modal carrying the failed paper's
+ * title/abstract/offering, so the student fixes content instead of
+ * retyping metadata from memory. A fresh open (the header CTA) resets
+ * the fields — no leakage from the previous resubmit.
+ * ──────────────────────────────────────────────────────────────── */
+describe('ResearchPage resubmit — CHECKS_FAILED prefill (r157)', () => {
+  const FAILED_PAPER = {
+    id: 'p1',
+    title: 'تحليل أداء قواعد البيانات الموزعة',
+    abstract: 'دراسة تجريبية لأداء النسخ المتماثلة تحت حمل متغيّر.',
+    fileUrl: null,
+    status: 'CHECKS_FAILED',
+    plagiarismPct: 41.2,
+    aiContentPct: 55.5,
+    grade: null,
+    feedback: null,
+    uploadedAt: new Date(Date.now() - 86_400_000).toISOString(),
+    scannedAt: new Date(Date.now() - 43_200_000).toISOString(),
+    gradedAt: null,
+    publishedAt: null,
+    student: { id: 'st1', firstName: 'آمنة', lastName: 'العبيدي', avatarInitials: null, avatarColor: null },
+    reviewer: null,
+    offering: { id: 'off1', course: { name: 'هندسة البرمجيات', code: 'SE301' } },
+  };
+
+  beforeEach(() => {
+    mocks.my.data = [FAILED_PAPER];
+    mocks.enrollments.data = [
+      { offering: { id: 'off1', course: { name: 'هندسة البرمجيات', code: 'SE301' } } },
+    ];
+  });
+
+  it('«رفع نسخة جديدة» opens the modal PREFILLED with the failed paper (title/abstract/offering)', async () => {
+    renderPage();
+
+    // The failed paper's banner carries the resubmit action…
+    const resubmit = screen.getByRole('button', { name: 'رفع نسخة جديدة' });
+    fireEvent.click(resubmit);
+
+    await screen.findByRole('dialog');
+
+    // …and the modal opens carrying the paper's own metadata.
+    const title = screen.getByLabelText('عنوان البحث') as HTMLInputElement;
+    const abstract = screen.getByLabelText('الملخّص (اختياري)') as HTMLTextAreaElement;
+    const offering = screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)') as HTMLSelectElement;
+    expect(title.value).toBe('تحليل أداء قواعد البيانات الموزعة');
+    expect(abstract.value).toBe('دراسة تجريبية لأداء النسخ المتماثلة تحت حمل متغيّر.');
+    expect(offering.value).toBe('off1');
+  });
+
+  it('a fresh open after close resets the fields — no prefill leakage', async () => {
+    renderPage();
+
+    // Open the prefilled resubmit modal, then close it (dirty → confirm).
+    fireEvent.click(screen.getByRole('button', { name: 'رفع نسخة جديدة' }));
+    await screen.findByRole('dialog');
+    fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'التخلّي عن التعديلات' }));
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull();
+    });
+
+    // The header CTA opens a FRESH modal — empty fields.
+    fireEvent.click(screen.getByRole('button', { name: 'رفع بحث جديد' }));
+    await screen.findByRole('dialog');
+
+    const title = screen.getByLabelText('عنوان البحث') as HTMLInputElement;
+    const abstract = screen.getByLabelText('الملخّص (اختياري)') as HTMLTextAreaElement;
+    const offering = screen.getByLabelText('المقرّر الأكاديمي المرتبط (اختياري)') as HTMLSelectElement;
+    expect(title.value).toBe('');
+    expect(abstract.value).toBe('');
+    expect(offering.value).toBe('');
   });
 });
 

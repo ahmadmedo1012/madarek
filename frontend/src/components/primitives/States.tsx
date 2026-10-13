@@ -297,7 +297,9 @@ export function ListSkeleton({ rows = 5 }: { rows?: number }) {
 export function ChartSkeleton({ height = 220 }: { height?: number }) {
   return (
     <div
-      style={{ height, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8 }}
+      /* r157 (audit 6A11 #9): gap joined the spacing ladder — var(--sp-2)
+         = 8px (tokens.css), the same step the KpiSkeleton rows breathe. */
+      style={{ height, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 'var(--sp-2)' }}
       aria-busy="true"
       aria-live="polite"
     >

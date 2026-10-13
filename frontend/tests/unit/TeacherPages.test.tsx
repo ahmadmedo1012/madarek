@@ -48,6 +48,15 @@ const mocks = vi.hoisted(() => ({
     error: null as unknown,
     refetch: vi.fn(),
   },
+  /* r157 / 6A8 — the pending-submissions queue the AssignmentsPage
+   * consumes (its own endpoint, not the 6-row dashboard feed). */
+  pending: {
+    data: [] as unknown[],
+    isPending: false,
+    isError: false,
+    error: null as unknown,
+    refetch: vi.fn(),
+  },
   assignments: [] as unknown[],
   grade: {
     mutateAsync: vi.fn(),
@@ -55,6 +64,11 @@ const mocks = vi.hoisted(() => ({
     isError: false,
     error: null as unknown,
   },
+  /* r157 / 6A9 — the post-grade queue invalidation (GradeSubmissionModal
+   * calls useQueryClient; the stub exposes one asserted spy). */
+  invalidate: vi.fn(),
+  /* r157 / 6A9 — the messages mark-all-read mutation. */
+  markAll: { mutate: vi.fn(), isPending: false, isError: false, error: null as unknown },
   /* r144 — the authoring mutations (AssignmentFormModal /
    * MaterialFormModal). */
   createAssignment: {
@@ -73,9 +87,21 @@ const mocks = vi.hoisted(() => ({
     pages: {} as Record<number, Array<Record<string, unknown>>>,
     total: 0,
     totalPages: 1,
+    unread: 0,
     calls: [] as Array<[number, number]>,
   },
 }));
+
+// GradeSubmissionModal uses useQueryClient for the post-save queue
+// invalidation — stub the client (the hooks themselves are mocked at
+// the useResources boundary, so no QueryClientProvider is mounted).
+vi.mock('@tanstack/react-query', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tanstack/react-query')>();
+  return {
+    ...actual,
+    useQueryClient: () => ({ invalidateQueries: mocks.invalidate }),
+  };
+});
 
 // Only the hooks the rendered pages call are mocked; everything else the
 // TeacherPages module pulls from useResources (materials/analytics/research
@@ -97,6 +123,8 @@ vi.mock('../../src/hooks/useResources', () => ({
   }),
   useRecordAttendance: () => mocks.record,
   useTeacherDashboard: () => mocks.dashboard,
+  usePendingSubmissions: () => mocks.pending,
+  useMarkAllMessagesRead: () => mocks.markAll,
   useTeacherAssignments: () => ({
     data: mocks.assignments,
     isPending: false,
@@ -126,6 +154,8 @@ vi.mock('../../src/hooks/useResources', () => ({
           page,
           limit,
           totalPages: mocks.messages.totalPages,
+          // r157 / 6A9 — the teacher inbox consumes the unread count.
+          unread: mocks.messages.unread,
         },
       },
       isPending: false,
@@ -179,35 +209,48 @@ const STUDENT = {
   suggestion: '',
 };
 
-const FEED_SUBMISSION = {
-  kind: 'submissions',
-  id: 's-sub1',
-  author: { firstName: 'آمنة', lastName: 'العبيدي', avatarInitials: null, avatarColor: null },
-  meta: 'هندسة البرمجيات · SE101',
-  when: new Date(Date.now() - 3_600_000).toISOString(),
-  title: 'سلّم مشروع UML',
-  actionTo: '/grades',
+/* r157 / 6A8 — queue rows (GET /teacher/me/pending-submissions), the
+ * payload shape the AssignmentsPage consumes now. The old FEED_*
+ * fixtures were dashboard feed items (6-row window + «سلّم»-prefixed
+ * titles); the queue row carries the assignment title/maxScore as
+ * real fields. */
+const QUEUE_SUBMISSION = {
+  id: 'sub1',
+  submittedAt: new Date(Date.now() - 3_600_000).toISOString(),
+  status: 'SUBMITTED',
+  textAnswer: null,
+  fileUrl: null,
+  student: { firstName: 'آمنة', lastName: 'العبيدي', avatarInitials: null, avatarColor: null },
+  assignment: {
+    title: 'مشروع UML',
+    type: 'PROJECT',
+    maxScore: 10,
+    dueAt: new Date(Date.now() + 86_400_000).toISOString(),
+    offering: { course: { code: 'SE101', name: 'هندسة البرمجيات' } },
+  },
 };
 
-/* 5-B6 (A7 P1-2): the feed item carries the student's answer — the
- * projection the backend hand-off adds. Used by the answer-surface
- * tests below. */
-const FEED_SUBMISSION_WITH_ANSWER = {
-  ...FEED_SUBMISSION,
+/* 5-B6 (A7 P1-2): the queue row carries the student's answer — the
+ * projection the backend ships. Used by the answer-surface tests. */
+const QUEUE_SUBMISSION_WITH_ANSWER = {
+  ...QUEUE_SUBMISSION,
   textAnswer: 'حللت التمرين بالاعتماد على نمط المراقب، والرسم في الصفحة الثانية.',
   fileUrl: '/api/v1/files/papers/hw1-answer.pdf',
 };
 
 /* A second pending submission on a DIFFERENT assignment — drives the
  * grouping (two groups) and the «تقييم التالي» flow. */
-const FEED_SUBMISSION_2 = {
-  kind: 'submissions',
-  id: 's-sub2',
-  author: { firstName: 'آمنة', lastName: 'العبيدي', avatarInitials: null, avatarColor: null },
-  meta: 'هندسة البرمجيات · SE101',
-  when: new Date(Date.now() - 1_800_000).toISOString(),
-  title: 'سلّم تمرين الشبكات',
-  actionTo: '/grades',
+const QUEUE_SUBMISSION_2 = {
+  ...QUEUE_SUBMISSION,
+  id: 'sub2',
+  submittedAt: new Date(Date.now() - 1_800_000).toISOString(),
+  assignment: {
+    title: 'تمرين الشبكات',
+    type: 'HOMEWORK',
+    maxScore: 20,
+    dueAt: new Date(Date.now() + 3 * 86_400_000).toISOString(),
+    offering: { course: { code: 'SE101', name: 'هندسة البرمجيات' } },
+  },
 };
 
 const ASSIGNMENT = {
@@ -250,54 +293,28 @@ function seedMessages() {
   mocks.messages.pages = { 1: p1, 2: p2 };
   mocks.messages.total = 45;
   mocks.messages.totalPages = 2;
+  mocks.messages.unread = 0;
   mocks.messages.calls = [];
 }
 
+/* r157 / 6A8 — the seeds feed the QUEUE mock now (the dashboard feed
+ * no longer drives the grading queue; it stays mocked for the other
+ * pages). */
 function seedGradeFeed() {
-  mocks.dashboard = {
-    data: {
-      kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
-      trend: [],
-      feed: [FEED_SUBMISSION],
-    },
-    isPending: false,
-    isError: false,
-    error: null,
-    refetch: vi.fn(),
-  };
+  mocks.pending = { data: [QUEUE_SUBMISSION], isPending: false, isError: false, error: null, refetch: vi.fn() };
   mocks.assignments = [ASSIGNMENT];
 }
 
-/** 5-B6 (A7 P1-2/P2-2): the queue with the student's answer projected
- *  — the payload shape the backend hand-off ships. */
+/** 5-B6 (A7 P1-2/P2-2): the queue row with the student's answer
+ *  projected — the payload shape the backend ships. */
 function seedGradeFeedWithAnswer() {
-  mocks.dashboard = {
-    data: {
-      kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
-      trend: [],
-      feed: [FEED_SUBMISSION_WITH_ANSWER],
-    },
-    isPending: false,
-    isError: false,
-    error: null,
-    refetch: vi.fn(),
-  };
+  mocks.pending = { data: [QUEUE_SUBMISSION_WITH_ANSWER], isPending: false, isError: false, error: null, refetch: vi.fn() };
   mocks.assignments = [ASSIGNMENT];
 }
 
 /** Two pending submissions on two assignments — grouping + next-flow. */
 function seedGradeFeedMulti() {
-  mocks.dashboard = {
-    data: {
-      kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 2 },
-      trend: [],
-      feed: [FEED_SUBMISSION, FEED_SUBMISSION_2],
-    },
-    isPending: false,
-    isError: false,
-    error: null,
-    refetch: vi.fn(),
-  };
+  mocks.pending = { data: [QUEUE_SUBMISSION, QUEUE_SUBMISSION_2], isPending: false, isError: false, error: null, refetch: vi.fn() };
   mocks.assignments = [ASSIGNMENT, ASSIGNMENT_2];
 }
 
@@ -343,11 +360,14 @@ beforeEach(() => {
   mocks.students = [];
   mocks.record = { mutate: vi.fn(), isPending: false, isError: false, isSuccess: false, error: null };
   mocks.dashboard = { data: null, isPending: false, isError: false, error: null, refetch: vi.fn() };
+  mocks.pending = { data: [], isPending: false, isError: false, error: null, refetch: vi.fn() };
   mocks.assignments = [];
   mocks.grade = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
+  mocks.invalidate = vi.fn();
+  mocks.markAll = { mutate: vi.fn(), isPending: false, isError: false, error: null };
   mocks.createAssignment = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
   mocks.createMaterial = { mutateAsync: vi.fn(), isPending: false, isError: false, error: null };
-  mocks.messages = { pages: {}, total: 0, totalPages: 1, calls: [] };
+  mocks.messages = { pages: {}, total: 0, totalPages: 1, unread: 0, calls: [] };
 });
 
 afterEach(() => {
@@ -564,14 +584,9 @@ describe('GradeSubmissionModal — FormField aria wiring (23-b)', () => {
 
 describe('NeedsReviewCard — the late-submission chip (18-G feed flag, 18-F2 consumption)', () => {
   it('badges a LATE submission «متأخر» beside the title — never inside it', () => {
-    // A late submission: the same shape the dashboard now serves, with
-    // the marker on its own field.
-    mocks.dashboard = {
-      data: {
-        kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
-        trend: [],
-        feed: [{ ...FEED_SUBMISSION, late: true }],
-      },
+    // A late queue row: status LATE rides as its own field (16-B1).
+    mocks.pending = {
+      data: [{ ...QUEUE_SUBMISSION, status: 'LATE' }],
       isPending: false,
       isError: false,
       error: null,
@@ -645,12 +660,8 @@ describe('GradeSubmissionModal — the answer surface (5-B6 / A7 P1-2)', () => {
   });
 
   it('links an external https file to a new tab instead of the viewer', async () => {
-    mocks.dashboard = {
-      data: {
-        kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 1 },
-        trend: [],
-        feed: [{ ...FEED_SUBMISSION, textAnswer: null, fileUrl: 'https://cdn.example.com/hw.pdf' }],
-      },
+    mocks.pending = {
+      data: [{ ...QUEUE_SUBMISSION, textAnswer: null, fileUrl: 'https://cdn.example.com/hw.pdf' }],
       isPending: false,
       isError: false,
       error: null,
@@ -734,13 +745,7 @@ describe('GradeSubmissionModal — form + next-submission flow (5-B6 / A7 P2-2)'
 /* ── 5-B6 (audit 5-A7 P2-1): countAr zero-cases ── */
 describe('NeedsReviewCard — queue zero-case + grouping (5-B6 / A7 P2-1)', () => {
   it('renders the honest zero subtitle instead of «0 تسليماً بانتظار درجتك»', () => {
-    mocks.dashboard = {
-      data: { kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 0 }, trend: [], feed: [] },
-      isPending: false,
-      isError: false,
-      error: null,
-      refetch: vi.fn(),
-    };
+    mocks.pending = { data: [], isPending: false, isError: false, error: null, refetch: vi.fn() };
     mocks.assignments = [ASSIGNMENT];
     render(
       <MemoryRouter>
@@ -753,13 +758,12 @@ describe('NeedsReviewCard — queue zero-case + grouping (5-B6 / A7 P2-1)', () =
   });
 
   it('groups same-assignment submissions under one header with a shared ceiling', () => {
-    mocks.dashboard = {
-      data: {
-        kpi: { studentCount: 2, avgGradePct: 70, attendancePct: 90, needsReview: 2 },
-        trend: [],
+    mocks.pending = {
+      data: [
         // Two submissions on the SAME assignment → one group, 2 rows
-        feed: [FEED_SUBMISSION, { ...FEED_SUBMISSION, id: 's-sub3' }],
-      },
+        QUEUE_SUBMISSION,
+        { ...QUEUE_SUBMISSION, id: 'sub3' },
+      ],
       isPending: false,
       isError: false,
       error: null,
@@ -785,6 +789,55 @@ describe('NeedsReviewCard — queue zero-case + grouping (5-B6 / A7 P2-1)', () =
     expect(screen.getByText('تسليمان')).toBeInTheDocument();
     // …and two grade buttons for the two student rows
     expect(screen.getAllByRole('button', { name: 'تقييم' })).toHaveLength(2);
+  });
+});
+
+/* ── r157 / 6A8 — the queue is the QUEUE endpoint, not the 6-row feed ── */
+describe('NeedsReviewCard — the pending-submissions queue (r157 / 6A8)', () => {
+  it('renders 8 pending submissions — beyond the old 6-row dashboard feed window', async () => {
+    // THE regression: the queue used to derive from the dashboard feed
+    // (take: 6), so the 7th and 8th pending submission never rendered
+    // anywhere. The page consumes usePendingSubmissions now — every row
+    // of the (100-row) queue is gradeable.
+    mocks.pending = {
+      data: Array.from({ length: 8 }, (_, i) => ({
+        ...QUEUE_SUBMISSION,
+        id: `sub-${i + 1}`,
+        student: { firstName: 'طالب', lastName: `رقم ${i + 1}`, avatarInitials: null, avatarColor: null },
+      })),
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    };
+    mocks.assignments = [ASSIGNMENT];
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    render(
+      <MemoryRouter>
+        <AssignmentsPage />
+      </MemoryRouter>,
+    );
+
+    // 8 rows → 8 grade buttons (the old feed window capped at 6).
+    expect(await screen.findAllByRole('button', { name: 'تقييم' })).toHaveLength(8);
+    // The subtitle counts the full queue honestly.
+    expect(screen.getByText('8 تسليمات بانتظار درجتك')).toBeInTheDocument();
+  });
+
+  it('a landed save invalidates the queue key — the graded row drops without a refetch wait', async () => {
+    seedGradeFeed();
+    mocks.grade.mutateAsync.mockResolvedValueOnce({ id: 'sub1', status: 'GRADED' });
+    await openGradeModal();
+
+    fireEvent.change(screen.getByLabelText('الدرجة (من 0 إلى 10)'), { target: { value: '8' } });
+    fireEvent.click(screen.getByRole('button', { name: 'حفظ الدرجة' }));
+    await screen.findByText('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.');
+
+    // GradeSubmissionModal refreshes ['teacher','me','pending-submissions']
+    // after the save (useGradeSubmission only covers the dashboards).
+    expect(mocks.invalidate).toHaveBeenCalledWith({
+      queryKey: ['teacher', 'me', 'pending-submissions'],
+    });
   });
 });
 
@@ -862,6 +915,36 @@ describe('AssignmentsPage + TeacherSchedulePage — countAr zero-cases (5-B6 / A
       ),
     ).toBeInTheDocument();
     expect(screen.queryByText('0 طالباً')).toBeNull();
+  });
+});
+
+/* ── r157 / 6A9 — the teacher inbox unread surface ── */
+describe('MessagesPage — unread count + mark-all-read (r157 / 6A9)', () => {
+  it('unread > 0: the subtitle carries the unread count and «تعليم الكل كمقروء» fires the sweep', () => {
+    seedMessages();
+    // 3 of the 45 are incoming + unread (the server meta contract).
+    mocks.messages.unread = 3;
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    renderMessages();
+
+    // The subtitle names the unread share (countAr)…
+    expect(screen.getByText('45 رسالة · 3 رسائل غير مقروءة')).toBeInTheDocument();
+    // …and the action exists.
+    const markAll = screen.getByRole('button', { name: 'تعليم الكل كمقروء' });
+    fireEvent.click(markAll);
+    expect(mocks.markAll.mutate).toHaveBeenCalledTimes(1);
+  });
+
+  it('unread = 0: the sweep button hides — no dead affordance on a read inbox', () => {
+    seedMessages();
+    mocks.messages.unread = 0;
+    act(() => { useAuthStore.setState({ user: TEACHER }); });
+    renderMessages();
+
+    // The subtitle stays the plain count…
+    expect(screen.getByText('45 رسالة')).toBeInTheDocument();
+    // …and the button never renders (hidden at unread = 0).
+    expect(screen.queryByRole('button', { name: 'تعليم الكل كمقروء' })).toBeNull();
   });
 });
 

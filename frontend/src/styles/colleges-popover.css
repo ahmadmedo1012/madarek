@@ -301,7 +301,11 @@
      within the ≤2px blur / ±.05 alpha equivalence band). */
   box-shadow: var(--elev-3);
 }
-[dir="rtl"] .colleges-popover-foot-link svg { transform: scaleX(-1); }
+/* r157 (F2-3): كان القلب على [dir="rtl"] — الأيقونة ArrowLeft تشير في
+   RTL أصلًا إلى الأمام (اتجاه القراءة) فكان الانعكاس يوجّهها إلى
+   الخلف؛ القلب الآن على [dir="ltr"] حيث يشير السهم إلى الخلف فيحتاج
+   المرآة ليتجه أمامًا. */
+[dir="ltr"] .colleges-popover-foot-link svg { transform: scaleX(-1); }
 
 @media (max-width: 640px) {
   .colleges-popover {

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import {
-  Calendar, Globe, Mic2, Video, ArrowLeft, MessageSquare, Radio, Clock,
+  Calendar, Globe, Mic2, Video, ArrowLeft, MessageSquare, Radio, Clock, ExternalLink,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
@@ -98,6 +98,12 @@ export default function WebinarsPage() {
           <div className="flex-col gap-2">
             {sessions.map((s) => {
               const isLive = s.status === 'LIVE';
+              /* r157 (F8): فعل الانضمام لصفوف البثّ المباشر — كانت الصفوف
+               * كلها استعراضاً بلا نقر. joinUrl خارجي (http/https) → مرساة
+               * تبويب جديد؛ وبدونه (أو بمسار غير خارجي) → رابط صفحة البثّ
+               * الداخلي حيث تجري الجلسة فعلاً. الصفوف القادمة لا تحمل
+                 الفعل — ليست مباشرة بعد. */
+              const externalJoin = s.joinUrl && /^https?:\/\//i.test(s.joinUrl) ? s.joinUrl : null;
               return (
                 <div className={`webinar-row${isLive ? ' live' : ''}`} key={s.id}>
                   {isLive ? (
@@ -111,7 +117,23 @@ export default function WebinarsPage() {
                     <div className="webinar-row-sub">{s.offering.course.name} · {fmtSessionWhen(s.scheduledAt)}</div>
                   </div>
                   {isLive ? (
-                    <Badge color="red"><Icon icon={Radio} size={11} /> مباشر الآن</Badge>
+                    <>
+                      <Badge color="red"><Icon icon={Radio} size={11} /> مباشر الآن</Badge>
+                      {externalJoin ? (
+                        <a
+                          href={externalJoin}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="btn primary sm"
+                        >
+                          <Icon icon={ExternalLink} size={12} /> انضمام
+                        </a>
+                      ) : (
+                        <Link to="/student/live" className="btn primary sm">
+                          <Icon icon={Video} size={12} /> انضمام
+                        </Link>
+                      )}
+                    </>
                   ) : (
                     <Badge>قادمة</Badge>
                   )}

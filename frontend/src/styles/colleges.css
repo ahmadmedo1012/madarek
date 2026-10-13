@@ -373,7 +373,7 @@
 .college-card-cta {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   margin-block-start: var(--sp-2);
   font-size: var(--type-label-size);
   color: var(--accent-strong);
@@ -414,7 +414,14 @@
 @media (max-width: 768px) {
   .gallery-toolbar {
     position: sticky;
-    top: var(--topbar-h);
+    /* r157 (w2-F6): base 0 — guests browse /colleges inside the
+       chrome-less CollegesLayout (AppShell never mounts, so no
+       .topbar exists) and the former unconditional --topbar-h left
+       the sticky toolbar pinned to a bar that isn't rendered, eating
+       a dead band at the top of the public funnel. Authed visitors
+       get the offset back via the :has() guard below — same :has()
+       precedent as .college-hero's motif scoping near the file tail. */
+    top: 0;
     z-index: var(--z-dropdown);
     flex-direction: column;
     /* A5 P1-1: the base `flex-wrap: wrap` was never reset for the
@@ -436,6 +443,12 @@
     background: color-mix(in srgb, var(--surface) 88%, transparent);
   }
 
+  /* The authed offset: .topbar renders only inside AppShell (rg: the
+     single emitter is Topbar.tsx), so the toolbar sticks to the bar's
+     bottom edge exactly when the bar exists. Consumes --topbar-h as a
+     token — the token's own value belongs to layout owners (wave 3). */
+  body:has(.topbar) .gallery-toolbar { top: var(--topbar-h); }
+
   /* The column-direction twin of the A5 P1-1 fix: no vertical basis,
      height collapses to the 44px input. */
   .gallery-search-wrap { flex: none; }
@@ -447,7 +460,7 @@
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding-block-end: 4px; /* leave room for the snap */
+    padding-block-end: var(--sp-1); /* leave room for the snap */
   }
   .gallery-chip-strip::-webkit-scrollbar { display: none; }
   .gallery-chip { scroll-snap-align: start; flex-shrink: 0; }
@@ -679,7 +692,7 @@
 .student-rank-xp {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   font-size: var(--fs-xs);
   color: var(--accent-ink, var(--accent));
   flex: 0 0 auto;
@@ -770,7 +783,7 @@
 .comp-meta {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--sp-1);
   margin-block-start: 4px;
   font-size: var(--fs-xxs);
   color: var(--text-muted);
@@ -881,7 +894,7 @@ a.comp-card:focus-visible .comp-go {
 .leaderboard-sort {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   padding: var(--sp-1) var(--sp-2);
   margin-inline: calc(var(--sp-2) * -1);
   border: none;
@@ -1060,7 +1073,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-index-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--sp-1);
   font-size: var(--fs-xxs);
   color: var(--text-muted);
   margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
@@ -1068,7 +1081,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-index-meta span {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 
 /* Detail */
@@ -1183,7 +1196,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-entry-file {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   margin-block-start: var(--sp-2);
   font-size: var(--fs-xs);
   color: var(--accent-ink, var(--accent));
@@ -1198,7 +1211,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-score-input {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
   margin-block-start: var(--sp-3);
   padding-block-start: var(--sp-2);
   border-block-start: 1px dashed var(--border);

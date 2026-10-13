@@ -5,7 +5,6 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
-
 // ── Teacher dashboard aggregate ───────────────────────────────
 export interface TeacherDashboard {
   kpi: {
@@ -33,11 +32,11 @@ export interface TeacherDashboard {
      *  stripped title, so the marker rides its own field. */
     late?: boolean;
     /** Submissions only (5-B6 / audit 5-A7 P1-2): the student's answer,
-     *  so the grading modal can show the work it is grading. OPTIONAL —
-     *  the backend feed select does not project these columns yet
-     *  (teacher-dashboard.routes.ts PendingSubmissionFeedRow); the FE
-     *  renders the answer surface the moment they arrive. Hand-off
-     *  filed in the 5-B6 worklog entry. */
+     *  so the grading modal can show the work it is grading. PROJECTED
+     *  by the backend feed since 5-B6 landed (teacher-dashboard.routes.ts
+     *  PendingSubmissionFeedRow selects textAnswer + fileUrl) — the old
+     *  "dormant hand-off" comment was stale; the answer surface renders
+     *  live (r157 / 6A8 note). */
     textAnswer?: string | null;
     fileUrl?: string | null;
   }>;
@@ -176,6 +175,55 @@ export function useTeacherAssignments() {
     queryKey: ['teacher', 'me', 'assignments'],
     queryFn: () => unwrap<TeacherAssignmentRow[]>(api.get('/teacher/me/assignments')),
     staleTime: 60_000,
+  });
+}
+
+/* ── r157 / 6A8: the pending-submissions queue (the grading loop's
+ * missing discovery surface). GET /teacher/me/pending-submissions
+ * walks the FULL shared set (SUBMITTED + LATE, oldest-first, capped
+ * at 100 server-side) — the dashboard feed only ever previewed 6
+ * rows, so the 7th+ pending submission was invisible on the one page
+ * built to grade them. ───────────────────────────────────────── */
+export interface PendingSubmissionRow {
+  id: string;
+  submittedAt: string;
+  /** LATE rides as its own field — never a title suffix (16-B1: the
+   *  grading modal matches assignments by title). */
+  status: 'SUBMITTED' | 'LATE';
+  /** The answer the grading modal renders (5-B6 P1-2). */
+  textAnswer: string | null;
+  fileUrl: string | null;
+  student: { firstName: string; lastName: string; avatarInitials: string | null; avatarColor: string | null };
+  assignment: {
+    title: string;
+    type: 'HOMEWORK' | 'QUIZ' | 'PROJECT' | 'EXAM';
+    /** The grading ceiling travels with the row — no FE
+     *  title-matching guesswork on the queue surface. */
+    maxScore: number;
+    dueAt: string;
+    offering: { course: { code: string; name: string } };
+  };
+}
+export function usePendingSubmissions() {
+  return useQuery({
+    queryKey: ['teacher', 'me', 'pending-submissions'],
+    queryFn: () => unwrap<PendingSubmissionRow[]>(api.get('/teacher/me/pending-submissions')),
+    staleTime: 30_000,
+  });
+}
+
+/* ── r157 (6A9 messages): bulk mark-incoming-read for the teacher
+ * inbox — POST /messages/read-all (the backend sweep exists; the FE
+ * inbox was honest read-only with no way to clear the unread badge).
+ * Invalidates every ['me','messages',page,limit] page key (prefix
+ * match) so the unread count + rows refetch together. ──────────── */
+export function useMarkAllMessagesRead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => unwrap<{ updated: number }>(api.post('/messages/read-all', {})),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['me', 'messages'] });
+    },
   });
 }
 

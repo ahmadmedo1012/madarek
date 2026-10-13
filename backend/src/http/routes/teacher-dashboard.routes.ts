@@ -77,6 +77,42 @@ const toGradeGroup = (group: {
   count: group._count.assignmentId,
 });
 
+// ─── Pending-submissions queue (r157 / 6A8) ─────────────────────
+
+/**
+ * Submissions that wait on the teacher's grade: SUBMITTED + LATE (audit
+ * 15-a P0-1 — submissions.routes.ts writes LATE for anything after
+ * dueAt, so a SUBMITTED-only filter silently hid late work from the
+ * entire grading-discovery surface). Exported for unit tests; the ONE
+ * set shared by the needsReview KPI, the dashboard feed AND the
+ * /me/pending-submissions queue below (audit P2-5's drift class — the
+ * three surfaces can never count different state sets again).
+ */
+export const PENDING_SUBMISSION_STATUSES = [
+  SubmissionStatus.SUBMITTED,
+  SubmissionStatus.LATE,
+] as const;
+
+/** Queue ceiling — the oldest-first take for /me/pending-submissions.
+ * Matches the /me/materials + /me/assignments sibling ceiling (100). */
+export const PENDING_QUEUE_TAKE = 100;
+
+/**
+ * The shared pending-submissions scope (r157 / 6A8): rows in
+ * PENDING_SUBMISSION_STATUSES on assignments of the given offerings.
+ * Pure + exported so the unit suite can pin it, and so the KPI count,
+ * the dashboard feed and the queue endpoint consume the EXACT same
+ * filter (3 call-sites — no drift; pinned by source-scan wiring tests).
+ */
+export function pendingSubmissionWhere(
+  offeringIds: readonly string[],
+): Prisma.SubmissionWhereInput {
+  return {
+    assignment: { offeringId: { in: [...offeringIds] } },
+    status: { in: [...PENDING_SUBMISSION_STATUSES] },
+  };
+}
+
 /**
  * Papers that wait on the teacher: uploaded but not yet scanned, or
  * finished automatic checks (passed or failed) and awaiting grading.
@@ -126,6 +162,12 @@ export const TEACHER_FEED_ACTIONS = {
   grades: '/teacher/grades',
   research: '/teacher/research',
   attendance: '/teacher/attendance',
+  /** r157 / 6A8: submissions land on the Assignments page — the one
+   * surface that walks the full pending queue (the new
+   * /me/pending-submissions). The dashboard CTA used to route to
+   * /teacher/grades, where the analytic table shows averages, not the
+   * rows that await a grade. */
+  submissions: '/teacher/assignments',
 } as const;
 
 export function submissionFeedItem(s: PendingSubmissionFeedRow): {
@@ -149,7 +191,10 @@ export function submissionFeedItem(s: PendingSubmissionFeedRow): {
     meta: `${s.assignment.offering.course.name} · ${s.assignment.offering.course.code}`,
     when: s.submittedAt,
     title: `سلّم${s.assignment.type === AssignmentType.EXAM ? '/ت' : ''} ${s.assignment.title}`,
-    actionTo: TEACHER_FEED_ACTIONS.grades,
+    // r157 / 6A8: the pending-submission CTA walks the full queue —
+    // /teacher/assignments (the page that consumes
+    // /me/pending-submissions), not the grades analytics table.
+    actionTo: TEACHER_FEED_ACTIONS.submissions,
     late: s.status === SubmissionStatus.LATE,
     textAnswer: s.textAnswer,
     fileUrl: s.fileUrl,
@@ -311,6 +356,57 @@ router.get('/me/assignments', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/**
+ * GET /teacher/me/pending-submissions (r157 / 6A8) — the dedicated
+ * grading queue the Assignments page consumes. The dashboard feed only
+ * ever carried 6 rows (take: 6), so the 7th+ pending submission was
+ * invisible on the one page built to grade them. This endpoint walks
+ * the FULL shared pendingSubmissionWhere set (call-site 3 of 3 — the
+ * same rows the needsReview KPI counts and the feed previews),
+ * oldest-first: the submission that has waited the longest tops the
+ * queue, capped at PENDING_QUEUE_TAKE (matches the /me/materials and
+ * /me/assignments sibling ceiling).
+ */
+router.get('/me/pending-submissions', async (req, res, next) => {
+  try {
+    const teacherId = req.user!.id;
+    const offeringIds = (await prisma.courseOffering.findMany({
+      where: { teacherId }, select: { id: true },
+    })).map((o) => o.id);
+    if (offeringIds.length === 0) {
+      res.json({ data: [] });
+      return;
+    }
+    const rows = await prisma.submission.findMany({
+      // Call-site 3 of pendingSubmissionWhere (the queue itself).
+      where: pendingSubmissionWhere(offeringIds),
+      // Oldest first — the ungraded work that has waited the longest.
+      orderBy: { submittedAt: 'asc' },
+      take: PENDING_QUEUE_TAKE,
+      select: {
+        id: true,
+        submittedAt: true,
+        // Drives the FE «متأخر» chip (LATE, 16-B1 hand-off) — a marker
+        // field, never a title suffix (the FE matches by title).
+        status: true,
+        // 5-B6 P1-2 — the answer the grading modal renders.
+        textAnswer: true,
+        fileUrl: true,
+        student: { select: { firstName: true, lastName: true, avatarInitials: true, avatarColor: true } },
+        assignment: {
+          select: {
+            // The grading ceiling travels with the row — no FE
+            // title-matching guesswork on the queue surface.
+            title: true, type: true, maxScore: true, dueAt: true,
+            offering: { select: { course: { select: { code: true, name: true } } } },
+          },
+        },
+      },
+    });
+    res.json({ data: rows });
+  } catch (e) { next(e); }
+});
+
 router.get('/dashboard', async (req, res, next) => {
   try {
     const teacherId = req.user!.id;
@@ -406,15 +502,14 @@ router.get('/dashboard', async (req, res, next) => {
         where: { session: { offeringId: { in: offeringIds } } },
         _count: { status: true },
       }),
-      // "Needs review" — pending submissions. SUBMITTED + LATE (audit
-      // 15-a P0-1): submissions.routes.ts writes LATE for anything after
-      // dueAt, so a SUBMITTED-only filter silently hid late work from the
+      // "Needs review" — pending submissions. The shared
+      // PENDING_SUBMISSION_STATUSES set (audit 15-a P0-1):
+      // submissions.routes.ts writes LATE for anything after dueAt,
+      // so a SUBMITTED-only filter silently hid late work from the
       // teacher's entire grading-discovery surface — it never got graded.
+      // Call-site 1 of pendingSubmissionWhere (KPI).
       prisma.submission.count({
-        where: {
-          assignment: { offeringId: { in: offeringIds } },
-          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.LATE] },
-        },
+        where: pendingSubmissionWhere(offeringIds),
       }),
       // …+ papers awaiting the teacher (same set as the feed — P2-5)
       prisma.researchPaper.count({
@@ -456,13 +551,11 @@ router.get('/dashboard', async (req, res, next) => {
 
     // ── Activity feed — real items, sorted by recency ──
     const [recentSubs, recentPapers, lowAttendanceStudents] = await Promise.all([
-      // Pending submissions waiting for grading — SUBMITTED + LATE, the
-      // exact set the needsReview KPI counts above (audit 15-a P0-1).
+      // Pending submissions waiting for grading — the exact set the
+      // needsReview KPI counts above (shared filter, audit 15-a P0-1).
+      // Call-site 2 of pendingSubmissionWhere (dashboard feed).
       prisma.submission.findMany({
-        where: {
-          assignment: { offeringId: { in: offeringIds } },
-          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.LATE] },
-        },
+        where: pendingSubmissionWhere(offeringIds),
         orderBy: { submittedAt: 'desc' },
         take: 6,
         select: {

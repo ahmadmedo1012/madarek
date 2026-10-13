@@ -45,14 +45,32 @@ vi.mock('../../src/components/layout/AppShell', async (importOriginal) => {
 
 // Guard bounces land on role dashboards — stub them so the pin never
 // mounts the heavy real pages (charts, live queries) in a unit test.
+// r157 (6A4-11): the student dashboard joined the stub set (the
+// GuestRoute pin bounces a STUDENT there), and the teacher mock
+// gained the NAMED export App.tsx's lazy wrapper reads
+// (m.TeacherDashboardPage) — a default-only mock made the lazy
+// component resolve to undefined the moment a test actually landed
+// on /teacher/dashboard.
+vi.mock('../../src/pages/student/DashboardPage', () => ({
+  default: () => <div data-testid="student-dashboard" />,
+}));
 vi.mock('../../src/pages/teacher/TeacherDashboardPage', () => ({
   default: () => <div data-testid="teacher-dashboard" />,
+  TeacherDashboardPage: () => <div data-testid="teacher-dashboard" />,
 }));
 vi.mock('../../src/pages/admin/AdminPages', () => ({
   AdminDashboardPage: () => <div data-testid="admin-dashboard" />,
   AdminFacultiesPage: () => <div data-testid="admin-faculties" />,
   AdminReportsPage: () => <div data-testid="admin-reports" />,
   AdminCoursesPage: () => <div data-testid="admin-courses" />,
+}));
+
+// Quality pages stub — the r157 (6A9 #1) guard pin below cares that the
+// route table lets a QUALITY user THROUGH to /quality/dashboard, not the
+// dashboard's internals (same convention as the AuthPage stub above).
+// The named export matches App.tsx's lazy wrapper (m.QualityDashboardPage).
+vi.mock('../../src/pages/quality/QualityPages', () => ({
+  QualityDashboardPage: () => <div data-testid="quality-dashboard" />,
 }));
 
 function LocationProbe() {
@@ -72,6 +90,17 @@ function renderAt(path: string) {
 }
 
 describe('AppRoutes', () => {
+  beforeEach(() => {
+    // /auth now lives behind GuestRoute (r157, 6A4-11) — it reads
+    // isHydrated like every guard; claim it so the guest view renders
+    // instead of a HydrationSplash.
+    useAuthStore.setState({ user: null, isHydrated: true });
+  });
+
+  afterEach(() => {
+    useAuthStore.setState({ user: null });
+  });
+
   it('redirects the legacy /login alias to the canonical /auth route', async () => {
     renderAt('/login');
     await screen.findByTestId('auth-page');
@@ -116,6 +145,49 @@ describe('AppRoutes — public colleges (r154a, audit 4-A14 P1-2)', () => {
     renderAt('/colleges');
     await screen.findByTestId('colleges-page');
     expect(screen.getByText('العودة إلى الصفحة الرئيسية')).toBeTruthy();
+  });
+});
+
+/* r157 (6A4-11) REGRESSION PIN — GuestRoute on the guest surfaces.
+ *
+ * /auth and /auth/register used to render the login/registration form
+ * for ALREADY-AUTHED users (stale bookmark, browser back after
+ * login) — and submitting the form re-logged them in. GuestRoute
+ * follows the ProtectedRoute discipline: HydrationSplash first, then
+ * a `replace` bounce to ROLE_HOME[role]. These pins hold the bounce
+ * for both guest routes; a silent guard deletion would drop users
+ * back onto the login form while signed in.
+ */
+describe('AppRoutes — GuestRoute bounces authed users off guest surfaces (r157, 6A4-11)', () => {
+  const userWithRole = (role: AppRole): AuthUser => ({
+    id: `guest-pin-${role.toLowerCase()}`,
+    email: 'guest-pin@uoz.edu',
+    firstName: 'زائر',
+    lastName: 'الجولة',
+    role,
+  });
+
+  beforeEach(() => {
+    useAuthStore.setState({ user: null, isHydrated: true });
+  });
+
+  afterEach(() => {
+    useAuthStore.setState({ user: null });
+  });
+
+  it('bounces an authed STUDENT at /auth to /student/dashboard — no login form while signed in', async () => {
+    useAuthStore.setState({ user: userWithRole('STUDENT') });
+    renderAt('/auth');
+    await screen.findByTestId('student-dashboard');
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/student/dashboard');
+    expect(screen.queryByTestId('auth-page')).toBeNull();
+  });
+
+  it('bounces an authed TEACHER at /auth/register to /teacher/dashboard', async () => {
+    useAuthStore.setState({ user: userWithRole('TEACHER') });
+    renderAt('/auth/register');
+    await screen.findByTestId('teacher-dashboard');
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/teacher/dashboard');
   });
 });
 
@@ -169,5 +241,50 @@ describe('AppRoutes — teacher labs preview access (/student/labs, r155c)', () 
     await screen.findByTestId('admin-dashboard');
     expect(screen.queryByTestId('labs-page')).toBeNull();
     expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/admin/dashboard');
+  });
+});
+
+/* r157 (6A9 #1) REGRESSION PIN — /quality is QUALITY-only.
+ *
+ * The guard used to read allow={['QUALITY', 'ADMIN']}, but the backend
+ * truth is stricter: all six /quality/* data routes require the
+ * QUALITY_VIEW capability, ADMIN's default capability set does NOT
+ * include it (lib/permissions.ts — «No QUALITY_VIEW — separate
+ * role»), and ADMIN_NAV carries zero /quality links. The dual allow
+ * shipped pages whose every query 403'd on arrival. Documented
+ * exception: an ADMIN granted QUALITY_VIEW by the OWNER does get data
+ * from the backend, but the FE guard represents the default-role
+ * truth — the bounce. These pins hold both sides of that contract.
+ */
+describe('AppRoutes — /quality guard is QUALITY-only (r157, 6A9 #1)', () => {
+  const userWithRole = (role: AppRole): AuthUser => ({
+    id: `quality-pin-${role.toLowerCase()}`,
+    email: 'quality-pin@uoz.edu',
+    firstName: 'ضمان',
+    lastName: 'الجودة',
+    role,
+  });
+
+  beforeEach(() => {
+    useAuthStore.setState({ user: null, isHydrated: true });
+  });
+
+  afterEach(() => {
+    useAuthStore.setState({ user: null });
+  });
+
+  it('bounces an ADMIN visiting /quality/dashboard to /admin/dashboard — no 403-wall pages', async () => {
+    useAuthStore.setState({ user: userWithRole('ADMIN') });
+    renderAt('/quality/dashboard');
+    await screen.findByTestId('admin-dashboard');
+    expect(screen.queryByTestId('quality-dashboard')).toBeNull();
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/admin/dashboard');
+  });
+
+  it('lands a QUALITY user on /quality/dashboard (the sector\'s native audience)', async () => {
+    useAuthStore.setState({ user: userWithRole('QUALITY') });
+    renderAt('/quality/dashboard');
+    await screen.findByTestId('quality-dashboard');
+    expect(screen.getByTestId('location')).toHaveAttribute('data-path', '/quality/dashboard');
   });
 });

@@ -135,11 +135,27 @@ export function OwnerGovernancePage() {
       : undefined,
   }), [loginData, themeKey, reducedMotion]);
 
-  // 22-b (4-A7 P1-4): one week of signups is not a trend — the card
-  // title drops its «(8 أسابيع)» window claim until a second week
-  // exists, the lone point draws larger, and the summary states
-  // exactly how much data there is.
+  /* 22-b (4-A7 P1-4): one week of signups is not a trend — the card
+   * title drops its window claim until a second week exists, the lone
+   * point draws larger, and the summary states exactly how much data
+   * there is.
+   *
+   * 6A10-8: the window is COMPUTED from weeklyGrowth.length for both
+   * the visible title and the chart's aria-label — the old hard-coded
+   * «(8 أسابيع)» claimed 8 weeks even when the API returned fewer
+   * (a young platform, or a quiet log); a single week claims no
+   * window at all on either surface. */
   const growthWeeks = govData?.weeklyGrowth.length ?? 0;
+  const WEEK_WINDOW_FORMS: [string, string, string, string] = [
+    'أسبوع واحد', 'أسبوعين', 'أسابيع', 'أسبوعاً',
+  ];
+  const growthWindow = growthWeeks > 1
+    ? `آخر ${countAr(growthWeeks, WEEK_WINDOW_FORMS)}`
+    : null;
+  const growthTitle = growthWindow ? `نموّ المستخدمين (${growthWindow})` : 'نموّ المستخدمين';
+  const growthAriaLabel = growthWindow
+    ? `مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً على مدى ${growthWindow}`
+    : 'مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً';
 
   return (
     <div className="page">
@@ -171,7 +187,7 @@ export function OwnerGovernancePage() {
       )}
 
       <div className="owner-ai-chart-grid">
-        <Card title={growthWeeks > 1 ? 'نموّ المستخدمين (8 أسابيع)' : 'نموّ المستخدمين'}>
+        <Card title={growthTitle}>
           {governance.isPending ? (
             <ChartSkeleton height={236} />
           ) : governance.isError || !govData ? (
@@ -185,7 +201,7 @@ export function OwnerGovernancePage() {
           ) : (
             <ChartFrame
               className="owner-chart-container"
-              ariaLabel="مخطط خطّي لنموّ المستخدمين — مستخدمون جدد أسبوعياً على مدى 8 أسابيع"
+              ariaLabel={growthAriaLabel}
               summary={govData.weeklyGrowth.length === 1
                 ? `أسبوع واحد من البيانات حتى الآن — ${countAr(govData.weeklyGrowth[0]!.count, ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوعه الأول، ويُرسم المنحنى فور تسجيل الأسبوع القادم.`
                 : `أعلى نموّ ${countAr(Math.max(...govData.weeklyGrowth.map((w) => w.count)), ['مستخدم جديد واحد', 'مستخدمان جديدان', 'مستخدمين جدد', 'مستخدماً جديداً'])} في أسبوع واحد.`}

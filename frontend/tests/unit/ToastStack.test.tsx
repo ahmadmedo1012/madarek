@@ -8,8 +8,14 @@
  *   - dismiss marks closing (idempotent); remove unmounts
  *   - the stack caps visible toasts (oldest start exiting)
  *
- * ToastStack:
- *   - renders nothing while the store is empty
+ * ToastStack (r157, audit 6A11 #4):
+ *   - the REGION mounts permanently — the container exists (and carries
+ *     aria-live="polite") even while the store is empty: a live region
+ *     inserted WITH its first content is ignored by NVDA/JAWS, so the
+ *     container must already exist when the first toast arrives
+ *   - the container NODE is stable across push/pop (same element before,
+ *     during and after a toast's life — the insertion of a card, not the
+ *     insertion of the region, is the announced change)
  *   - success/info/warning → role=status + polite; error → role=alert
  *     + assertive (contract pin)
  *   - non-error toasts auto-dismiss after durationMs, then unmount
@@ -86,10 +92,38 @@ describe('ToastStack', () => {
     vi.useRealTimers();
   });
 
-  it('renders nothing while the store is empty', () => {
+  it('the region exists while empty — a permanent polite live region (r157)', () => {
     const { container } = render(<ToastStack />);
-    expect(container.firstChild).toBeNull();
-    expect(document.querySelector('.toast-stack')).toBeNull();
+    // The container is permanently in the DOM, empty while idle. A live
+    // region inserted together with its first content is ignored by
+    // NVDA/JAWS — the region must pre-exist so the card insertion is
+    // the announced change. (.toast-stack has no background: an empty
+    // region draws nothing.)
+    expect(container.firstChild).toBeNull(); // the portal host renders nothing…
+    const region = document.querySelector('.toast-stack');
+    expect(region).not.toBeNull(); // …but the portal keeps the region alive
+    expect(region).toHaveAttribute('aria-live', 'polite');
+    expect(region!.children).toHaveLength(0);
+  });
+
+  it('keeps the SAME region node across a push/pop cycle', () => {
+    render(<ToastStack />);
+    const regionBefore = document.querySelector('.toast-stack');
+    act(() => {
+      toast.info('hello');
+    });
+    const regionDuring = document.querySelector('.toast-stack');
+    expect(regionDuring).toBe(regionBefore);
+    expect(regionDuring!.children).toHaveLength(1);
+    // Pop the toast (manual dismiss + exit window) → the region persists.
+    fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }));
+    act(() => {
+      vi.advanceTimersByTime(EXIT_FALLBACK_MS);
+    });
+    expect(screen.queryByRole('status')).toBeNull();
+    const regionAfter = document.querySelector('.toast-stack');
+    expect(regionAfter).toBe(regionBefore);
+    expect(regionAfter!.children).toHaveLength(0);
   });
 
   it('renders a success toast with role=status and polite live region', () => {

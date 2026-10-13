@@ -40,10 +40,10 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `components.css` | the component recipes (§5) — buttons, inputs, cards, tables, sheets, dialogs, toasts' kin |
 | `layout.css` | sidebar / nav recipes |
 | `auth.css` · `notifications.css` · `student.css` | eager remainder — auth-page recipes, toasts/bottom-nav, student-surface patches |
-| `polish.css` | overrides layer — the last word on layered surfaces |
+| `polish.css` | overrides layer — the last word on layered surfaces (legacy sections v6–v8 remain `@layer pages` by design — census pinned in the file's Layer-hygiene banner; v9+ are overrides) |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
 | `colleges.css` · `colleges-popover.css` · `admin.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages (admin.css born r150e — the colleges.css split; colleges-popover.css born r151h — the popover split, rides the LandingPage chunk; 10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets) |
-| r152 ownership wave | the search family (v21) → `layout.css`; the megamino stagger (v18) → `landing.css`; the auth-card entrance + pdf-toolbar fade (v19) → `auth.css` / `pdf.css`; the whole `.state` family (v8+v11+v21) → `components.css` §STATE; the a11y utilities core (sr-only / skip-link / :target / tap-highlight / img-lazy) → `base.css` — polish.css keeps ONLY true overrides, belts and pins (5446 → ~4680 lines over r151–r152) |
+| r152 ownership wave | the search family (v21) → `layout.css`; the megamino stagger (v18) → `landing.css`; the auth-card entrance + pdf-toolbar fade (v19) → `auth.css` / `pdf.css`; the whole `.state` family (v8+v11+v21) → `components.css` §STATE; the a11y utilities core (sr-only / skip-link / :target / tap-highlight / img-lazy) → `base.css` — polish.css keeps ONLY true overrides, belts and pins (5446 → ~4680 lines over r151–r152); r152j retired the dead Plex Serif italic pair (12 → 10 faces, zero live consumers) |
 | r153 ownership wave | the welcome-card family (v8 premium · v9 stack · v11 surface · v13 isolation · v17 photo overlay · v22 dots — 7 waves consolidated) → `student.css` §WELCOME-CARD, with the generic `.page-header` rules scoped off via `:not(.welcome-card)` so the pages-layer rule needs no pin; the owner realtime pulse (v17 heartbeat + ring + alert glow) → `owner.css` (restoring the frozen-dot honesty contract for is-pending/is-degraded); the colleges hero bar-draw + card emoji motion → `colleges.css` — polish shrinks to ~4470 lines; the last 68 raw `6px` literals migrated to `--sp-1-5` / `--motion-distance-small` (r153h — zero spacing/motion raw violations remain; 16 intentional raw uses documented as geometry/shadow) |
 | `unified-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
 
@@ -95,9 +95,9 @@ Painted identically in **both** `data-theme`s; landing-scoped `--ln-*` tokens. I
 
 ## 2. Typography — سلم الحروف
 
-Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono for numerals · Plex Serif italic **sanctioned Latin runs only** (the serif-italic accent was ruled a phantom on Arabic — the platform accent is upright weight + ink).
+Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono for numerals · Plex Serif italic **retired r152j** — it shipped as a sanctioned Latin-runs-only accent but the audit found zero live font-family consumers, so both woff2 files and @font-face rules were deleted (the serif-italic accent was ruled a phantom on Arabic anyway — the platform accent is upright weight + ink).
 
-**حزمة الأسطولة = 10 وجوه (بلا Serif italic)** — حذف موثق r132 في SM/SL (وجود الـSerif في الاستنساخ بلا قرار)؛ **الـSerif مدارك-فقط** — الاستنساخ الأسطولي لا يشحن وجهًا مائلًا قط. مدارك نفسها تشحن الوجوه الاثني عشر كاملة.
+**حزمة الأسطولة = 10 وجوه (بلا Serif italic)** — حذف موثق r132 في SM/SL (وجود الـSerif في الاستنساخ بلا قرار)؛ **الـSerif مُحال للتقاعد في مدارك أيضًا (r152j)** — صفر مستهلكين أحياء للعائلة، فحُذف الوجهان المائلان وملفا woff2 معًا؛ مدارك نفسها تشحن **عشرة وجوه** كاملة (fonts.css — تحقّق ls+du).
 
 **Ladder (`--fs-*`):**
 

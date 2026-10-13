@@ -15,7 +15,8 @@ import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSke
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useMarkNotifRead, useMarkAllNotifsRead, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post, type StudentMaterial } from '../../hooks/useResources';
+import { materialHref } from '../../lib/materialHref';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
@@ -252,6 +253,12 @@ export function SkillsPage() {
   const skills = useMySkills();
   const themeKey = useChartThemeKey();
   const cc = chartColors();
+  /* Highest-mastery skill feeds the ChartFrame prose summary. Undefined
+     in the pending/empty/error branches (this JSX block renders only
+     with data present). */
+  const topSkill = skills.data?.length
+    ? skills.data.reduce((a, b) => (b.progressPct > a.progressPct ? b : a))
+    : undefined;
   return (
     <div className="page">
       <header className="page-header">
@@ -287,7 +294,21 @@ export function SkillsPage() {
           />
         ) : (
           <div className="grid-1-2" style={{ alignItems: 'center' }}>
-            <div style={{ height: 300, position: 'relative' }}>
+            {/* 5-A6 (A11 P2-10): ChartFrame — the radar canvas gains
+                role=img + an accessible name, a prose summary naming the
+                top skill, and a visually-hidden data table (a bare
+                <canvas> is opaque to screen readers; same treatment as
+                the results bar chart further down the file). */}
+            <ChartFrame
+              ariaLabel="خريطة مهاراتك التقنية — مستوى الإتقان لكل مهارة"
+              summary={topSkill ? `أعلى إتقان: ${topSkill.skill.name} — ${topSkill.progressPct}%` : undefined}
+              height={300}
+              table={{
+                caption: 'مستوى الإتقان لكل مهارة',
+                columns: ['المهارة', 'مستوى الإتقان'],
+                rows: skills.data.map((s) => [s.skill.name, `${s.progressPct}%`]),
+              }}
+            >
               <Radar
                 key={themeKey}
                 data={{
@@ -323,7 +344,7 @@ export function SkillsPage() {
                   },
                 }}
               />
-            </div>
+            </ChartFrame>
             <div className="flex-col gap-4">
               {skills.data.map((s) => (
                 <div key={s.skill.id} className="flex-col gap-2">
@@ -348,14 +369,24 @@ export function SkillsPage() {
  * NotificationDropdown (الخطّ العلوي): تعليم صفّ فردي عبر hook
  * useMarkNotifRead، و«تعليم الكل» عبر useMarkAllNotifsRead (طلب
  * POST واحد)، والصفوف غير المقروءة تحمل شارة «غير مقروء» بنفس لون
- * العلامة (brand) الذي يحمله العدّاد في الترويسة. */
+ * العلامة (brand) الذي يحمله العدّاد في الترويسة.
+ *
+ * r157 (F8, 6A6): القصّ slice(0,30) كان يُخفي كل إشعار بعد الثلاثين
+ * (الاستعلام نفسه limit=50). الآن صفحة كاملة عبر useNotificationsFeed
+ * («عرض المزيد» تُلحق الصفحات)، وعدّاد غير المقروء يقرأه من meta الخادم
+ * لا من الصفوف المحمّلة، وسطر «آخر N من M» يقول بصدق كم بقي مخفيّاً. */
 export function AlertsPage() {
-  const q = useNotifications();
+  const feed = useNotificationsFeed();
   const markRead = useMarkNotifRead();
   const markAllRead = useMarkAllNotifsRead();
 
-  const items = q.data ?? [];
-  const unreadCount = items.filter((n) => !n.readAt).length;
+  const items = feed.data?.pages.flatMap((p) => p.data) ?? [];
+  /* Server truth: the unread badge reads the LAST page's meta.unread —
+     a client-side filter would under-count as soon as pagination loads
+     more rows than the first page (and lie about rows never fetched). */
+  const meta = feed.data?.pages.at(-1)?.meta;
+  const unreadCount = meta?.unread ?? 0;
+  const total = meta?.total ?? items.length;
 
   const toneFor = (type: 'URGENT' | 'ACADEMIC' | 'SYSTEM' | 'SOCIAL'): 'red' | 'brand' | 'amber' | 'green' => {
     if (type === 'URGENT') return 'red';
@@ -399,7 +430,7 @@ export function AlertsPage() {
           )}
         </div>
       }>
-        {q.isPending ? (
+        {feed.isPending ? (
           /* shape-matched skeleton: alert rows (dot + two lines) */
           <div className="flex-col gap-2" aria-busy="true">
             {[0, 1, 2, 3].map((i) => (
@@ -412,14 +443,18 @@ export function AlertsPage() {
               </div>
             ))}
           </div>
-        ) : q.isError ? (
-          <ErrorState error={q.error} onRetry={() => q.refetch()} />
+        ) : feed.isError ? (
+          <ErrorState error={feed.error} onRetry={() => feed.refetch()} />
         ) : items.length === 0 ? (
           <EmptyState title="لا توجد إشعارات بعد" illustration="empty-search" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
           <div className="flex-col gap-2">
-            {items.slice(0, 30).map((n) => {
+            {items.map((n) => {
               const unread = !n.readAt;
+              /* variables-gating (the likeInFlight idiom): only the row
+                 whose id is in flight goes pending — a shared isPending
+                 would freeze every row's button + flip its label. */
+              const rowPending = markRead.isPending && markRead.variables === n.id;
               return (
                 <AlertRow
                   key={n.id}
@@ -445,16 +480,37 @@ export function AlertsPage() {
                       type="button"
                       className="btn ghost sm"
                       onClick={() => markRead.mutate(n.id)}
-                      disabled={markRead.isPending}
+                      disabled={rowPending}
                       aria-label={`تعليم «${n.title}» كمقروء`}
                     >
                       <Icon icon={Check} size={13} />
-                      {markRead.isPending ? 'جارٍ التعليم…' : 'تعليم كمقروء'}
+                      {rowPending ? 'جارٍ التعليم…' : 'تعليم كمقروء'}
                     </button>
                   ) : undefined}
                 />
               );
             })}
+            {/* r157 (F8): الصفحات الإضافية — سطر الإفصاح يقول بصدق كم
+                إشعاراً محمّلاً من أصل الكل، و«عرض المزيد» تُلحق الصفحة
+                التالية. عند استنفاد الصفحات يسقط العنصران معاً (لا زر
+                ميّت ولا سطر يوهم بوجود المزيد). */}
+            {feed.hasNextPage && (
+              <div className="flex-col gap-2" style={{ alignItems: 'center', marginTop: 'var(--sp-2)' }}>
+                {items.length < total && (
+                  <p className="text-xxs text-subtle" style={{ margin: 0 }} role="note">
+                    آخر <bdi>{formatNum(items.length)}</bdi> من <bdi>{formatNum(total)}</bdi>
+                  </p>
+                )}
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => void feed.fetchNextPage()}
+                  disabled={feed.isFetchingNextPage}
+                >
+                  {feed.isFetchingNextPage ? 'جارٍ التحميل…' : 'عرض المزيد'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </Card>
@@ -545,7 +601,7 @@ export function SchedulePage() {
         <EmptyState
           illustration="empty-search"
           title="لا يوجد جدول مسجّل"
-          description="ستظهر محاضراتك هنا فور أن يُسجَّد الجدول مقرّراتك."
+          description="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول مقرّراتك."
         />
       ) : (
         <div className="flex-col gap-5">
@@ -646,21 +702,21 @@ export function ResultsPage() {
         <MetricCard
           icon={Award}
           label="أعلى درجة"
-          value={d.headline.highest ? `${d.headline.highest.gradePct}` : '—'}
+          value={d.headline.highest ? <bdi>{d.headline.highest.gradePct}%</bdi> : '—'}
           change={d.headline.highest?.courseName ?? 'لا توجد درجات بعد'}
           color="green"
         />
         <MetricCard
           icon={Activity}
           label="المتوسّط"
-          value={d.headline.avgGradePct !== null ? `${d.headline.avgGradePct}` : '—'}
+          value={d.headline.avgGradePct !== null ? <bdi>{d.headline.avgGradePct}%</bdi> : '—'}
           change={d.headline.courseCount > 0 ? `عبر ${countAr(d.headline.courseCount, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}` : 'لا تقييمات بعد'}
           color={d.headline.avgGradePct !== null && d.headline.avgGradePct >= 70 ? 'brand' : 'amber'}
         />
         <MetricCard
           icon={AlertTriangle}
           label="أدنى درجة"
-          value={d.headline.lowest ? `${d.headline.lowest.gradePct}` : '—'}
+          value={d.headline.lowest ? <bdi>{d.headline.lowest.gradePct}%</bdi> : '—'}
           change={d.headline.lowest?.courseName ?? '—'}
           color={d.headline.lowest && d.headline.lowest.gradePct < 60 ? 'red' : 'amber'}
         />
@@ -1216,6 +1272,33 @@ function formatShortDate(iso: string): string {
   return new Date(iso).toLocaleDateString('ar-LY', { day: 'numeric', month: 'short' });
 }
 
+/* r157 (F8, 6A7): فعل التحميل كان رابطاً خاماً واحداً لكل الصفوف —
+ * مع بذور example.invalid ذلك رابط ميّت يفتح تبويب خطأ. الحقل
+ * الحقيقي الآن يُحسم عبر materialHref (lib/materialHref.ts):
+ * مسار ملفات الأبحاث الداخلي → عارض /document داخل التطبيق (يرسل
+ * PdfViewer رمز Bearer)، https حقيقي → تبويب خارجي جديد، وكل ما لا
+ * يمكن فتحه بصدق → «غير متوفر بعد» بلا أي رابط. */
+function MaterialAction({ material }: { material: StudentMaterial }) {
+  const target = materialHref({ url: material.url, name: material.name });
+  if (target.kind === 'viewer') {
+    return (
+      <Link to={target.to} className="btn ghost sm">
+        <Icon icon={BookOpen} size={13} /> فتح
+      </Link>
+    );
+  }
+  if (target.kind === 'external') {
+    return (
+      <a href={target.href} target="_blank" rel="noreferrer" className="btn ghost sm">
+        <Icon icon={Download} size={13} /> تحميل
+      </a>
+    );
+  }
+  /* المحجوزات (RFC 2606) والروابط غير الآمنة — الحالة الصادقة:
+     نص بلا مرساة؛ مرساة ميّتة أسوأ من لا مرساة. */
+  return <span className="text-xs text-subtle" role="note">غير متوفر بعد</span>;
+}
+
 export function DownloadsPage() {
   const q = useStudentMaterials();
 
@@ -1261,9 +1344,7 @@ export function DownloadsPage() {
                     <td className="tbl-num" data-label="الحجم">{f.sizeBytes > 0 ? formatSize(f.sizeBytes) : '—'}</td>
                     <td className="text-subtle" data-label="التاريخ">{formatShortDate(f.createdAt)}</td>
                     <td data-label="التحميل">
-                      <a href={f.url} target="_blank" rel="noreferrer" className="btn ghost sm">
-                        <Icon icon={Download} size={13} /> تحميل
-                      </a>
+                      <MaterialAction material={f} />
                     </td>
                   </tr>
                 ))}

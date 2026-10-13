@@ -275,11 +275,26 @@ export function QualityDashboardPage() {
     );
   }
   if (ov.isError || !ov.data || eg.isError || !eg.data) {
+    // r157 (6A9 #5): the early-error return keeps the page chrome
+    // (.page + header + h1) — the retry used to land on a chrome-less
+    // wall, so an API blip stripped the centre's bearings before the
+    // retry offer. (QualityCourses below keeps its in-page ternary
+    // below the header — chrome by construction.)
     return (
-      <ErrorState
-        error={ov.error ?? eg.error}
-        onRetry={() => { ov.refetch(); eg.refetch(); }}
-      />
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">مركز ضمان الجودة</h1>
+            <p className="page-subtitle">رؤية لحظية لسير العملية التعليمية في الجامعة.</p>
+          </div>
+        </header>
+        <Card>
+          <ErrorState
+            error={ov.error ?? eg.error}
+            onRetry={() => { ov.refetch(); eg.refetch(); }}
+          />
+        </Card>
+      </div>
     );
   }
   const d = ov.data;
@@ -656,7 +671,24 @@ export function QualityProfessorsPage() {
       </div>
     );
   }
-  if (p.isError || !p.data) return <ErrorState error={p.error} onRetry={() => p.refetch()} />;
+  // r157 (6A9 #5): same chrome-keeping discipline as the dashboard —
+  // the early-error return wraps .page + header + h1 so the retry sits
+  // inside the page the specialist landed on, not a chrome-less wall.
+  if (p.isError || !p.data) {
+    return (
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">تقييم الأساتذة</h1>
+            <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
+          </div>
+        </header>
+        <Card>
+          <ErrorState error={p.error} onRetry={() => p.refetch()} />
+        </Card>
+      </div>
+    );
+  }
 
   const avgSat = p.data.length ? p.data.reduce((s, t) => s + t.satisfaction, 0) / p.data.length : 0;
   const avgResp = p.data.length ? p.data.reduce((s, t) => s + t.responseHours, 0) / p.data.length : 0;

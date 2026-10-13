@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import {
   Search, Library as LibraryIcon, BookOpen, Clock,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap, X,
@@ -123,21 +124,9 @@ function ResearchListSkeleton({ rows = 3 }: { rows?: number }) {
    tray rides the bottom presentation — the ≤640px band is where the
    old full-height inline-end panel measured a 571px void. Conditional
    rendering instead of CSS so the pills stay in the DOM on desktop
-   and the Sheet mounts only where it can open. */
-function useIsNarrowLayout(maxWidthPx = 640): boolean {
-  const [narrow, setNarrow] = useState(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-    return window.matchMedia(`(max-width: ${maxWidthPx}px)`).matches;
-  });
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const mq = window.matchMedia(`(max-width: ${maxWidthPx}px)`);
-    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, [maxWidthPx]);
-  return narrow;
-}
+   and the Sheet mounts only where it can open.
+   r157 (F8): the local useIsNarrowLayout copy moved to
+   hooks/useIsNarrowLayout.ts (shared extraction) — this page imports it. */
 
 /* r155b: بطاقة كتاب مكوّن مستقل (كانت خريطةً داخل الصفحة) لأن زر
  * «استعارة» يحتاج طفرةً خاصة بكل بطاقة — نمط JobRow في صفحة الوظائف
@@ -581,7 +570,7 @@ export default function LibraryPage() {
             />
             <MetricCard
               icon={BookOpen}
-              label="منشورة هذا الفصل"
+              label="منشورة هذا العام"
               value={
                 research.isPending ? <Skeleton width={48} height={24} /> :
                 (research.data?.filter((p) => p.publishedAt && new Date(p.publishedAt).getFullYear() >= new Date().getFullYear()).length ?? '—')

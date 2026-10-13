@@ -288,6 +288,7 @@ model User {
   aiConversations     AiConversation[]
   auditLogs           AuditLog[]
   watchEvents         WatchEvent[]         @relation("StudentWatchEvents")
+  checkpointAnswers   CheckpointAnswer[]   @relation("StudentCheckpointAnswers")
   masteries           StudentMastery[]     @relation("StudentMasteries")
   researchPapers      ResearchPaper[]      @relation("StudentPapers")
   reviewedPapers      ResearchPaper[]      @relation("ProfessorReviewedPapers")
@@ -1022,6 +1023,35 @@ model LectureCheckpoint {
 
   @@index([lectureId])
   @@index([conceptId])
+  // r157 (W2-F7 / audit 6A5): the student's per-checkpoint answer memory
+  // (one row per student+checkpoint). Cascade — deleting a checkpoint
+  // (or its lecture) takes its answers with it.
+  answers CheckpointAnswer[]
+}
+
+// r157 (W2-F7 / audit 6A5): server memory for checkpoint answers.
+// Checkpoints had NO persisted answer: every page reload re-fired every
+// quiz, and re-answering burned the r155a MASTERY_ATTEMPT_CAP (a
+// student who reloaded 4 times could no longer move their mastery
+// while the checkpoints kept quizzing). One row per (student,
+// checkpoint) — unique below — upserted by the answer route (last
+// answer wins) and projected back as bare checkpointIds by
+// GET /lectures/:id so the player can seed answeredCheckpointIds.
+// answerIndex/correct never travel to the wire (privacy of attempts).
+model CheckpointAnswer {
+  id           String            @id @default(cuid())
+  checkpointId String
+  checkpoint   LectureCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      User              @relation("StudentCheckpointAnswers", fields: [studentId], references: [id], onDelete: Cascade)
+  // The LAST answer (upsert semantics — a re-answer overwrites).
+  answerIndex  Int
+  correct      Boolean
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([checkpointId, studentId])
+  @@index([studentId])
 }
 
 model WatchEvent {

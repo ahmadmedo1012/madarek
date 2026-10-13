@@ -13,6 +13,7 @@
  *    offering 404s without leaking existence.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { Role } from '@prisma/client';
 
 vi.mock('../../src/db.js', () => ({
@@ -25,6 +26,15 @@ vi.mock('../../src/db.js', () => ({
 
 import { assertOfferingAccess, decideOfferingAccess } from '../../src/lib/permissions';
 import { prisma } from '../../src/db.js';
+
+/* The live permissions route source, scanned for the self-modification
+ * wiring pins (r157 / 6A9 — the checkpoint-attempts.test.ts technique:
+ * the file is the contract). The pure guards above pass while a dropped
+ * route-level guard would only fail here. */
+const routesSource = readFileSync(
+  new URL('../../src/http/routes/permissions.routes.ts', import.meta.url),
+  'utf8',
+);
 
 const findUnique = vi.mocked(prisma.courseOffering.findUnique);
 
@@ -150,5 +160,42 @@ describe('assertOfferingAccess — DB-bound wrapper (mocked prisma)', () => {
         select: { id: true },
       },
     });
+  });
+});
+
+/* ── 3. Self-modification guard — POST /admin/users/:id/permissions ──
+ *
+ * r157 / 6A9: an ADMIN holding ROLES_ASSIGN could aim the capability
+ * editor at their OWN row and self-grant USERS_MANAGE/ROLES_ASSIGN in
+ * one request. The guard rejects self-edits with 403 — wired BEFORE
+ * the governance-target read so a self-edit never even resolves its
+ * own row. Source-scan pins (the route file is the contract): the
+ * pure merge/decision layers above stay green if this wiring drifts,
+ * exactly the drift class the checkpoint-attempts round hit.
+ */
+describe('self-modification guard on POST /admin/users/:id/permissions (r157 / 6A9)', () => {
+  it('the capability-override route is wired: ROLES_ASSIGN + the override schema', () => {
+    expect(routesSource).toMatch(
+      /router\.post\(\s*'\/admin\/users\/:id\/permissions',\s*requireCapability\('ROLES_ASSIGN'\),\s*validate\(setOverrideSchema\),\s*async \(req, res, next\)/,
+    );
+  });
+
+  it('rejects self-edits with 403 «لا يمكنك تعديل صلاحياتك بنفسك» — the sibling role-guard family', () => {
+    expect(routesSource).toContain(
+      "if (userId === req.user!.id) {\n        throw AppError.forbidden('لا يمكنك تعديل صلاحياتك بنفسك');",
+    );
+    // The sibling guard on POST /admin/users/:id/role (the pattern this
+    // one mirrors) stays in place — the family must not drift apart.
+    expect(routesSource).toContain(
+      "if (id === req.user!.id) {\n        throw AppError.forbidden('لا يمكنك تغيير دورك بنفسك');",
+    );
+  });
+
+  it('runs BEFORE the governance-target read (a self-edit never resolves its own row)', () => {
+    const guard = routesSource.indexOf('if (userId === req.user!.id)');
+    const read = routesSource.indexOf('const target = await loadGovernanceTarget(userId)');
+    expect(guard).toBeGreaterThan(-1);
+    expect(read).toBeGreaterThan(-1);
+    expect(guard).toBeLessThan(read);
   });
 });

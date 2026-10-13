@@ -259,3 +259,40 @@ describe('QualityDashboardPage — alerts card error path retries in place (A8 P
     expect(link).toHaveAttribute('href', '/quality/alerts');
   });
 });
+
+/* r157 (6A9 #5) REGRESSION PIN — early-error returns keep the page chrome.
+ *
+ * QualityDashboardPage and QualityProfessorsPage used to early-return a
+ * bare <ErrorState/> on a failed primary query — an API blip stripped
+ * the h1 (which page am I on?) and offered a retry on a chrome-less
+ * wall. Both now wrap .page + header + h1 around the error card, so
+ * the chrome stays ABOVE the retry button. QualityCoursesPage keeps
+ * its in-page ternary BELOW the header (chrome by construction — its
+ * roster tests above already pin the header's presence).
+ */
+describe('QualityDashboardPage / QualityProfessorsPage — error states keep the page chrome (r157, 6A9 #5)', () => {
+  it('dashboard error: the h1 «مركز ضمان الجودة» stays above the retry', async () => {
+    delete FIXTURES['/quality/overview']; // → the mocked api rejects
+    renderPage(<QualityDashboardPage />);
+
+    // Await the error settle (the pending skeleton carries the same
+    // h1 — the retry button is the error-state marker).
+    const retry = await screen.findByRole('button', { name: /إعادة المحاولة/ });
+    const h1 = screen.getByRole('heading', { level: 1, name: 'مركز ضمان الجودة' });
+    // DOM order: the header (h1) renders before the retry button.
+    expect(
+      h1.compareDocumentPosition(retry) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  it('professors error: the h1 «تقييم الأساتذة» stays above the retry', async () => {
+    delete FIXTURES['/quality/professors'];
+    renderPage(<QualityProfessorsPage />);
+
+    const retry = await screen.findByRole('button', { name: /إعادة المحاولة/ });
+    const h1 = screen.getByRole('heading', { level: 1, name: 'تقييم الأساتذة' });
+    expect(
+      h1.compareDocumentPosition(retry) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+});

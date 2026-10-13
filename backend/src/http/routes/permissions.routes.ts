@@ -149,6 +149,18 @@ router.post(
     try {
       const userId = req.params.id!;
       const { capability, grant, reason } = req.body as z.infer<typeof setOverrideSchema>;
+
+      // Self-modification guard (r157 / 6A9): the editor is ROLES_ASSIGN-
+      // gated, but an ADMIN holding that capability could still point it
+      // at their own row — self-granting USERS_MANAGE/ROLES_ASSIGN in one
+      // request and locking the governance loop open for themselves.
+      // Same protection the role endpoint below enforces; it runs BEFORE
+      // the governance-target read so a self-edit never even resolves
+      // its own row.
+      if (userId === req.user!.id) {
+        throw AppError.forbidden('لا يمكنك تعديل صلاحياتك بنفسك');
+      }
+
       // Pre-validate the target: without this, a grant against a
       // non-existent user surfaced as a P2003 foreign-key 500 instead
       // of a clean 404.

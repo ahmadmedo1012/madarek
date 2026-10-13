@@ -38,7 +38,9 @@
  * the chrome itself is focused (e.target === e.currentTarget) — the
  * controls handle their own keys, and the checkpoint quiz lives in a
  * body-level Modal portal whose inputs can never be hijacked from
- * here (defense in depth on top of that guarantee).
+ * here (defense in depth on top of that guarantee). The speed menu
+ * owns its own full keyboard on the .vpc-speed host (arrows with
+ * wrap, Home/End, Esc/Tab close — see onSpeedKeyDown).
  */
 import {
   useCallback, useEffect, useRef, useState,
@@ -95,6 +97,7 @@ export function VideoPlayerChrome({
   const hostRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const rateBtnRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const scrubbingRef = useRef(false);
 
   // UI state — all mirrored FROM the video element via listeners.
@@ -380,11 +383,56 @@ export function VideoPlayerChrome({
     }
   };
 
-  const onMenuKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') {
+  /* r157 (W2-F7 / audit 6A11): full speed-menu keyboard, on the
+   * .vpc-speed HOST — keydowns from the menu items bubble here, so one
+   * handler owns the whole menu while it is open:
+   *   ArrowDown/ArrowUp — roving focus with WRAP (last→first, first→last)
+   *   Home/End — first/last item
+   *   Escape / Tab — close and refocus the trigger (the menu unmounts,
+   *   so Tab would otherwise strand focus on <body>)
+   *   Enter/Space — the items are native buttons; their own click
+   *   activation is the whole handler (no re-implementation).
+   * Still inline-by-design (NOT a portal): the menu must survive
+   * fullscreen — see the speed block below. */
+  const onSpeedKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (!menuOpen) return;
+    const closeAndRefocus = () => {
+      e.preventDefault();
       e.stopPropagation();
       setMenuOpen(false);
       rateBtnRef.current?.focus();
+    };
+    if (e.key === 'Escape' || e.key === 'Tab') {
+      closeAndRefocus();
+      return;
+    }
+    const items = Array.from(
+      menuRef.current?.querySelectorAll<HTMLButtonElement>('.vpc-menu-item') ?? [],
+    );
+    if (!items.length) return;
+    const currentIdx = items.indexOf(document.activeElement as HTMLButtonElement);
+    const focusAt = (i: number) => {
+      const item = items[((i % items.length) + items.length) % items.length];
+      item?.focus();
+    };
+    // From the trigger itself (currentIdx -1): ArrowDown opens on the
+    // first item, ArrowUp on the last — the two edges of the wrap.
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      e.stopPropagation();
+      focusAt(currentIdx + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      e.stopPropagation();
+      focusAt(currentIdx === -1 ? items.length - 1 : currentIdx - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      e.stopPropagation();
+      focusAt(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      e.stopPropagation();
+      focusAt(items.length - 1);
     }
   };
 
@@ -540,8 +588,11 @@ export function VideoPlayerChrome({
             <span className="vpc-time-total">/ {formatMmSs(duration)}</span>
           </span>
 
-          {/* Speed — inline menu (NOT a portal: must survive fullscreen). */}
-          <div className="vpc-speed">
+          {/* Speed — inline menu (NOT a portal: must survive fullscreen).
+              Full keyboard lives on this host (onSpeedKeyDown — see
+              its docblock): roving arrows with wrap, Home/End,
+              Esc/Tab close + refocus the trigger. */}
+          <div className="vpc-speed" onKeyDown={onSpeedKeyDown}>
             <button
               ref={rateBtnRef}
               type="button"
@@ -555,7 +606,7 @@ export function VideoPlayerChrome({
               <span dir="ltr">{rateLabel}</span>
             </button>
             {menuOpen && (
-              <div className="vpc-menu" role="menu" aria-label="سرعة التشغيل" onKeyDown={onMenuKeyDown}>
+              <div ref={menuRef} className="vpc-menu" role="menu" aria-label="سرعة التشغيل">
                 {RATES.map((r) => (
                   <button
                     key={r}

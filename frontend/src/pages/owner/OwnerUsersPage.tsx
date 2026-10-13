@@ -154,7 +154,12 @@ export function OwnerUsersPage() {
   // Confirm dialog state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState<{
-    title: string; message: string; danger: boolean; onConfirm: () => void | Promise<void>;
+    /* 6A10-6: per-action confirm verb. Optional so the ConfirmDialog
+     * keeps its «تأكيد» default for the 16 other consumers; the three
+     * user actions below always pass their own verb so the button
+     * names WHAT it does, not a generic "yes". */
+    title: string; message: string; danger: boolean; confirmLabel?: string;
+    onConfirm: () => void | Promise<void>;
   }>({ title: '', message: '', danger: false, onConfirm: () => {} });
   /** r154e: the pending role change (select → confirm). While set, the row's
    *  select shows the pending role; on cancel it reverts to the user's real
@@ -195,6 +200,7 @@ export function OwnerUsersPage() {
       user.role === 'ADMIN' || user.role === 'QUALITY';
     setConfirmConfig({
       title: 'تغيير الدور',
+      confirmLabel: 'تغيير الدور',
       message: `هل تريد تغيير دور «${user.firstName} ${user.lastName}» من ${ROLE_LABELS[user.role] ?? user.role} إلى ${ROLE_LABELS[role]}؟`,
       danger: isSensitive,
       onConfirm: async () => {
@@ -209,6 +215,7 @@ export function OwnerUsersPage() {
   const handleToggleStatus = (user: UserRow) => {
     setConfirmConfig({
       title: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
+      confirmLabel: user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب',
       message: user.isActive
         ? `هل تريد تعطيل حساب «${user.firstName} ${user.lastName}»؟ لن يتمكّن من الدخول إلى المنصّة.`
         : `هل تريد إعادة تفعيل حساب «${user.firstName} ${user.lastName}»؟ سيتمكّن من الدخول مجدداً.`,
@@ -395,8 +402,12 @@ export function OwnerUsersPage() {
                       <td data-label="إجراءات">
                         {/* Actions stay quiet until the row is hovered /
                             focused (CSS .table-row-actions — persistent on
-                            touch); part of the page's authored moment. */}
-                        <span className="table-row-actions owner-row-actions">
+                            touch); part of the page's authored moment.
+                            (6A10-7: the trailing owner-row-actions class
+                            was dead — no rule in owner.css ever matched
+                            it; the shared .table-row-actions carries the
+                            whole reveal contract.) */}
+                        <span className="table-row-actions">
                           {/* r154e: role picker replaces the binary
                               STUDENT↔TEACHER toggle. The select exposes
                               STUDENT/TEACHER/ADMIN/QUALITY (OWNER excluded —
@@ -492,6 +503,7 @@ export function OwnerUsersPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         danger={confirmConfig.danger}
+        confirmLabel={confirmConfig.confirmLabel}
         onConfirm={confirmConfig.onConfirm}
         onCancel={() => { setConfirmOpen(false); setPendingRole(null); }}
       />

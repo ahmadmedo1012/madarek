@@ -41,8 +41,12 @@ export function validateSubmissionDraft(draft: SubmitAssignmentInput): string | 
   if (!text && !file) {
     return 'أدخل إجابة نصية أو رابط ملف على الأقل قبل التسليم.';
   }
+  // r158 (lead): the error copy no longer teaches the internal
+  // /api/v1/files/papers/ namespace (a student cannot produce it — the
+  // hint now says what they can actually do). The internal path STAYS
+  // accepted here for compatibility with server-shaped links.
   if (file && !(/^https:\/\//.test(file) || file.startsWith('/api/v1/files/papers/'))) {
-    return 'رابط الملف يجب أن يبدأ بـ https:// أو أن يكون مسار ملف داخل المنصة (/api/v1/files/papers/).';
+    return 'رابط الملف يجب أن يبدأ بـ https:// — وإجابتك النصيّة وحدها تكفي للتسليم.';
   }
   return null;
 }

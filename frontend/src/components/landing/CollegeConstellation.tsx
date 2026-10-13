@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { colleges } from '../../data/colleges.config';
 import { Icon } from '../Icon';
+import { useReducedMotion } from '../motion/useReducedMotion';
 
 /**
  * CollegeConstellation — «كوكبة الكلّيّات» (Orbit Ink edition)
@@ -200,17 +201,21 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
   const [active, setActive] = useState<Node | null>(null);
   /** Index of the resting-highlight college (-1 = none) — P2-13 life. */
   const [restIdx, setRestIdx] = useState(-1);
+  // r157 (F2-14): the shared reactive hook — the resting cycle now
+  // stops/restarts on the OS-level RM toggle (was a one-shot matchMedia
+  // gate that froze whatever state it happened to sample at mount).
+  const reducedMotion = useReducedMotion();
   const stageRef = useRef<HTMLDivElement | null>(null);
   const { nodes, rings } = useMemo(buildConstellation, []);
   const count = colleges.length;
 
   // Resting-highlight cycle: rotate one gently lit college every ~4s so
-  // the sky reads as alive without hover. NEVER runs under
-  // prefers-reduced-motion; paused while the stage is offscreen (IO);
-  // fully torn down on unmount.
+  // the sky reads as alive without hover. Never runs while
+  // prefers-reduced-motion is on — reactive since r157 (F2-14): stops
+  // mid-flight + restarts on the OS toggle; paused while the stage is
+  // offscreen (IO); fully torn down on unmount.
   useEffect(() => {
-    if (typeof window.matchMedia === 'function'
-      && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (reducedMotion) return;
     const stage = stageRef.current;
     if (!stage || typeof IntersectionObserver === 'undefined') return;
     let inView = false;
@@ -237,7 +242,7 @@ export function CollegeConstellation({ onBrowse }: { onBrowse: () => void }) {
       io.disconnect();
       stop();
     };
-  }, [nodes.length]);
+  }, [nodes.length, reducedMotion]);
 
   return (
     <div className="ln-constellation" data-count={count}>

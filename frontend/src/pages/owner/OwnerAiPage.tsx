@@ -121,8 +121,12 @@ export function OwnerAiPage() {
                 : <bdi>{data.totalTokens.toLocaleString('ar-LY')}</bdi>}
               color="purple"
             />
-            <MetricCard icon={CheckCircle2} label="معدّل النجاح" value={<bdi>{data.successRate}%</bdi>} color="green" />
-            <MetricCard icon={Clock} label="متوسّط الاستجابة" value={<bdi>{data.avgLatencyMs}ms</bdi>} color="gold" />
+            {/* 6A10-3: KPIs render whole numbers — 97.4% and 812.6ms
+                carried false precision (the backend's aggregates are
+                ratios/averages, not measured to the tenth); Math.round
+                keeps the tiles honest: 97.4→97, 812.6→813. */}
+            <MetricCard icon={CheckCircle2} label="معدّل النجاح" value={<bdi>{Math.round(data.successRate)}%</bdi>} color="green" />
+            <MetricCard icon={Clock} label="متوسّط الاستجابة" value={<bdi>{Math.round(data.avgLatencyMs)}ms</bdi>} color="gold" />
           </div>
 
           <div className="owner-ai-chart-grid">

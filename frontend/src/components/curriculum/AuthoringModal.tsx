@@ -217,7 +217,8 @@ export function useFieldId(prefix: string) {
  * true and no mutation is pending, `requestClose` reroutes those paths
  * into a blocking ConfirmDialog instead, and a `beforeunload` listener
  * covers browser-level navigation (reload / tab close) for the same
- * window.
+ * window. While `pending` is true `requestClose` is a NO-OP (r157): the
+ * form must not unmount with a mutation still in flight.
  *
  * While the discard-confirm is stacked, `escapeLocked` is true — pass it
  * to AuthoringModal's closeOnEscape so a stray Esc cannot dismiss both
@@ -247,7 +248,15 @@ export function useDiscardGuard({
   const [confirming, setConfirming] = useState(false);
 
   const requestClose = useCallback(() => {
-    if (dirty && !pending) {
+    // r157 (audit 6A11 #2): a no-op while a mutation is in flight —
+    // closing the form mid-request would drop the teacher's draft with
+    // the mutation still unresolved (its onClose path is exactly the
+    // silent drop this guard exists to prevent). ModalActions already
+    // disables the cancel button while pending; this closes the Esc /
+    // header-X / overlay legs of the same contract (the builders wire
+    // closeOnEscape={!escapeLocked && !pending} for the Esc leg).
+    if (pending) return;
+    if (dirty) {
       setConfirming(true);
       return;
     }

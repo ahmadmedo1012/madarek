@@ -220,6 +220,28 @@ describe('AdminTeachersPage — server-side roster (15-d P1-1)', () => {
     expect(rosterCalls()[0]).toMatchObject({ page: 1, limit: 20 });
   });
 
+  it('r157 (6A9 #8): no fake «نظام التوثيق» KPI — the honest server count is the only KPI left', async () => {
+    getMock.mockImplementation(async (url: string, config?: { params?: Record<string, unknown> }) => {
+      if (url !== '/admin/users') throw new Error(`unexpected GET ${url}`);
+      const { limit } = config!.params as { limit: number };
+      return limit === 1
+        ? { data: usersBody([], { page: 1, limit: 1, total: 87, totalPages: 87 }) }
+        : { data: usersBody([teacherRow('t1', 'سالم')], { page: 1, limit: 20, total: 87, totalPages: 5 }) };
+    });
+
+    renderTeachersPage();
+    expect(await screen.findByText('سالم الفيتوري')).toBeInTheDocument();
+
+    // The hardcoded «نظام التوثيق: فعّال · مطابق» tile is GONE — no
+    // verification-system signal exists in the /admin/users payload
+    // (verification is per-teacher via TEACHERS_VERIFY), and it faked a
+    // platform-wide status the backend never asserts.
+    expect(screen.queryByText('نظام التوثيق')).toBeNull();
+    expect(screen.queryByText('مطابق لمتطلبات الجودة')).toBeNull();
+    // The honest server-backed count remains.
+    expect(kpiValue('عدد الأساتذة')('87')).toBeInTheDocument();
+  });
+
   it('sends the debounced search term server-side, resets to page 1, and offers a clear path', async () => {
     getMock.mockImplementation(async (url: string, config?: { params?: Record<string, unknown> }) => {
       if (url !== '/admin/users') throw new Error(`unexpected GET ${url}`);

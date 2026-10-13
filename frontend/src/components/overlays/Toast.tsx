@@ -296,14 +296,21 @@ function ToastCard({ item }: { item: ToastItem }) {
 
 /**
  * The global toast region — mount ONCE (App root). Reads the toast
- * store; renders nothing when the stack is empty so it costs nothing
- * on pages that never toast.
+ * store; the CONTAINER stays mounted for the whole session, empty while
+ * idle (r157, audit 6A11 #4): a live region that is inserted into the
+ * DOM together with its first content is ignored by NVDA/JAWS — the
+ * insertion itself is what gets announced, so the container must
+ * already exist when the first toast arrives. Cards mount as its
+ * children so each addition is a live-region content change and gets
+ * announced; each card keeps its own role (status/alert) per variant.
+ * Empty costs nothing visually: .toast-stack has no background and
+ * draws nothing (notifications.css).
  */
 export function ToastStack() {
   const items = useToastStore((s) => s.items);
-  if (items.length === 0 || typeof document === 'undefined') return null;
+  if (typeof document === 'undefined') return null;
   return createPortal(
-    <div className="toast-stack">
+    <div className="toast-stack" aria-live="polite">
       {items.map((item) => (
         <ToastCard key={item.id} item={item} />
       ))}

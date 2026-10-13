@@ -4,7 +4,8 @@ import { lazy, Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
-import { useAuthStore, type AppRole } from './stores/auth.store';
+import { useAuthStore } from './stores/auth.store';
+import { ROLE_HOME } from './lib/nav';
 import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
@@ -133,20 +134,34 @@ const CollegesLeaderboardPage = lazy(() => import('./pages/colleges/CollegePages
 const CompetitionsIndexPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionsIndexPage })));
 const CompetitionDetailPage = lazy(() => import('./pages/competitions/CompetitionsPages').then((m) => ({ default: m.CompetitionDetailPage })));
 
-/** Resolves the home path for an authenticated user, or `/` for guests. */
+/** Resolves the home path for an authenticated user, or `/` for guests.
+ *
+ *  r157 (6A4-7): the local HOME map folded onto the exported
+ *  ROLE_HOME in lib/nav.ts — the guard bounce, the guest bounce and
+ *  the post-login landing now share one map by import, not by copy. */
 function HomeRedirect() {
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
   if (!isHydrated) return <HydrationSplash />;
   if (!user) return <LandingPage />;
-  const HOME: Record<AppRole, string> = {
-    STUDENT: '/student/dashboard',
-    TEACHER: '/teacher/dashboard',
-    ADMIN: '/admin/dashboard',
-    QUALITY: '/quality/dashboard',
-    OWNER: '/owner/dashboard',
-  };
-  return <Navigate to={HOME[user.role]} replace />;
+  return <Navigate to={ROLE_HOME[user.role]} replace />;
+}
+
+/** Guest-only guard (r157, 6A4-11): /auth + /auth/register.
+ *
+ *  An authed user landing on a guest surface (stale bookmark, browser
+ *  back after login, retyping the URL) used to see the full login form
+ *  while already signed in — and submitting it re-logged them in.
+ *  Same discipline as ProtectedRoute: HydrationSplash first (the store
+ *  decides after rehydrate, never mid-hydration), then a `replace`
+ *  bounce to the role home. No loops: every ROLE_HOME target is an
+ *  authed route that ProtectedRoute happily serves back. */
+function GuestRoute() {
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+  const user = useAuthStore((s) => s.user);
+  if (!isHydrated) return <HydrationSplash />;
+  if (user) return <Navigate to={ROLE_HOME[user.role]} replace />;
+  return <Outlet />;
 }
 
 /** Public colleges layout (audit 4-A14 P1-2, restored r154a).
@@ -190,10 +205,14 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<PageSkeleton />}>
       <Routes>
-        <Route path="/auth" element={<AuthPage />} />
+        {/* r157 (6A4-11): guest surfaces — authed users bounce to
+            their role home after hydration (GuestRoute). */}
+        <Route element={<GuestRoute />}>
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
+        </Route>
         {/* /auth is the canonical login route; /login is a legacy alias. */}
         <Route path="/login" element={<Navigate to="/auth" replace />} />
-        <Route path="/auth/register" element={<RegisterPage />} />
         <Route path="/" element={<HomeRedirect />} />
 
         {/* Labs preview — role-permissive mount (A6 P1, wave 22-a;
@@ -305,8 +324,16 @@ export function AppRoutes() {
           </Route>
         </Route>
 
-        {/* Quality */}
-        <Route element={<ProtectedRoute allow={['QUALITY', 'ADMIN']} />}>
+        {/* Quality — r157 (6A9 #1): حارس QUALITY فقط.
+            الحقيقة الخلفية: كل مسارات ‎/quality/*‎ الستة تمرّ بقدرة
+            QUALITY_VIEW، وقدرات ADMIN الافتراضية لا تحملها
+            (lib/permissions.ts — «No QUALITY_VIEW — separate role»)،
+            وADMIN_NAV لا يحمل أي رابط /quality؛ فالقائمة المزدوجة
+            القديمة (QUALITY+ADMIN) كانت تفتح صفحاتٍ ترتدّ بياناتها 403
+            فور وصولها. الاستثناء الموثّق: ADMIN مُنح QUALITY_VIEW يدويًا
+            من المالك يحصل على البيانات من الخلفية، لكنّ حارس الواجهة
+            يمثّل حقيقة الدور الافتراضية — الارتداد إلى لوحة الإدارة. */}
+        <Route element={<ProtectedRoute allow={['QUALITY']} />}>
           <Route element={<AppShell />}>
             <Route path="/quality/dashboard" element={<QualityDashboardPage />} />
             <Route path="/quality/courses" element={<QualityCoursesPage />} />

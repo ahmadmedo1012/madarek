@@ -47,7 +47,12 @@ export const submitBodySchema = z
       .string()
       .max(500)
       .refine((s) => SUBMISSION_FILE_URL_PATTERN.test(s), {
-        message: 'fileUrl must start with https:// or /api/v1/files/papers/',
+        // r158 (6A14 P1): honest copy — no student-facing flow can mint a
+        // /api/v1/files/papers/ URL (no upload endpoint exists), so the
+        // actionable remedy is an external https link; the pattern keeps
+        // accepting the internal path for compat. The text answer alone
+        // always suffices (the schema-level refine below).
+        message: 'fileUrl must be an external https:// link — the text answer alone is sufficient',
       })
       .optional(),
   })

@@ -119,6 +119,9 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     const password = screen.getByLabelText('كلمة المرور');
     expect(password).toHaveAttribute('type', 'password');
     expect(password).toHaveAttribute('autocomplete', 'current-password');
+    // r157 F5: passwords are Latin runs too — the caret/masked glyphs
+    // must not bidi-flip inside the RTL form.
+    expect(password).toHaveAttribute('dir', 'ltr');
   });
 
   it('visual order is the keyboard order: home → email → password → toggle → forgot → submit → register', () => {
@@ -141,18 +144,28 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(register).toHaveAttribute('href', '/auth/register');
   });
 
-  it('an empty submit surfaces both field errors as alerts with wired descriptions', async () => {
+  it('an empty submit demotes field errors to describedby-only + ONE polite countAr summary (r157 F5 alert-storm fix)', async () => {
     renderPage();
 
     const email = screen.getByLabelText('البريد الإلكتروني أو رقم القيد');
     const password = screen.getByLabelText('كلمة المرور');
     fireEvent.click(screen.getByRole('button', { name: 'تسجيل الدخول' }));
 
-    const alerts = await screen.findAllByRole('alert');
-    expect(alerts).toHaveLength(2);
-    expect(alerts[0]).toHaveTextContent('الحقل قصير جداً');
-    expect(alerts[1]).toHaveTextContent('مطلوب');
+    // ZERO role="alert" — the per-field alert choir is gone (the
+    // submit-level server banner is the only alert the form may use,
+    // and no server error is present here).
+    await waitFor(() => {
+      expect(screen.queryAllByRole('alert')).toHaveLength(0);
+    });
 
+    // ONE polite summary line counts both problems with countAr.
+    const summary = screen.getByRole('status');
+    expect(summary).toHaveAttribute('aria-live', 'polite');
+    expect(summary).toHaveTextContent('مشكلتان');
+
+    // The field errors are still rendered and still wired — announced
+    // on focus via aria-describedby instead of shouted via role=alert.
+    expect(screen.getAllByText('مطلوب')).toHaveLength(2);
     await waitFor(() => {
       expect(email).toHaveAttribute('aria-invalid', 'true');
       expect(email).toHaveAttribute('aria-describedby', 'auth-email-error');
@@ -176,6 +189,10 @@ describe('AuthPage — journey alignment (imm-5)', () => {
   it('dev demo buttons FILL the form — they never submit it', async () => {
     renderPage();
 
+    // r157 F5: the panel starts collapsed — reopen it first via the
+    // quiet chip (see the collapsed-pin test below).
+    fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
+
     const email = screen.getByLabelText('البريد الإلكتروني أو رقم القيد') as HTMLInputElement;
     const password = screen.getByLabelText('كلمة المرور') as HTMLInputElement;
 
@@ -187,11 +204,25 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     // One-click FILL only — the visitor submits the form themselves.
     expect(loginState.current.mutateAsync).not.toHaveBeenCalled();
 
-    // The panel is dismissible.
+    // The panel is dismissible (and the quiet reopen chip returns).
     fireEvent.click(screen.getByRole('button', { name: 'إخفاء لوحة الحسابات التجريبية' }));
     await waitFor(() => {
       expect(screen.queryByText('حسابات تجريبية — بيئة التطوير')).toBeNull();
     });
+    expect(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' })).toBeInTheDocument();
+  });
+
+  it('the demo hint panel starts collapsed (r157 F5) with a quiet reopen chip', () => {
+    renderPage();
+
+    // Dev convenience, never the first thing a visitor reads.
+    expect(screen.queryByText('حسابات تجريبية — بيئة التطوير')).toBeNull();
+    const reopen = screen.getByRole('button', { name: 'عرض الحسابات التجريبية' });
+    expect(reopen).toHaveClass('auth-demo-hint-reopen');
+
+    // One honest click brings it back.
+    fireEvent.click(reopen);
+    expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
   });
 
   it('a pending login disables the submit button and says so honestly', () => {
@@ -200,6 +231,21 @@ describe('AuthPage — journey alignment (imm-5)', () => {
 
     const submit = screen.getByRole('button', { name: /جارٍ الدخول/ });
     expect(submit).toBeDisabled();
+  });
+
+  it('a pending submit is aria-busy with an sr-only polite pending mirror (r157 F5)', () => {
+    loginState.current.isPending = true;
+    renderPage();
+
+    const submit = screen.getByRole('button', { name: /جارٍ الدخول/ });
+    expect(submit).toHaveAttribute('aria-busy', 'true');
+
+    // aria-busy alone is silent: the mirror is the polite announcement.
+    const mirror = screen.getByText('جارٍ التحقق…');
+    expect(mirror).toHaveClass('sr-only');
+    expect(mirror).toHaveAttribute('role', 'status');
+    expect(mirror).toHaveAttribute('aria-live', 'polite');
+    // No mirror while idle — the announcement fires on the flip only.
   });
 
   it('page chrome lives in landmarks — banner, main, contentinfo (axe: all content in landmarks)', () => {

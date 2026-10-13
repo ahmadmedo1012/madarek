@@ -401,6 +401,11 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
 
     expect(await screen.findByText('بحث مقيَّم أول')).toBeInTheDocument();
     expect(screen.getByText(/الصفحة 1 من 2/)).toBeInTheDocument();
+    // r157 (6A9 #2): the footer's counted noun is the papers unit —
+    // «22 ورقة» (countAr many-form) in the footer count line itself
+    // (the card subtitle carries its own copy; scope to .table-pagination).
+    const papersFooter = document.querySelector('.table-pagination span');
+    expect(papersFooter?.textContent).toContain('22 ورقة');
 
     // التالي requests page 2 from the server (meta pagination, not a slice).
     fireEvent.click(screen.getByRole('button', { name: 'الصفحة التالية' }));
@@ -426,19 +431,26 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
     renderPage(<AdminReportsPage />);
 
     await screen.findByText('حركة البحوث العلمية');
-    expect(document.querySelector('.trend-table-wrap table')).toBeNull();
+    // r157 (6A9 #6): the trend table sits in the shared .table-wrap now
+    // (the .trend-table-wrap rule is deleted) — the page has THREE
+    // .table-wrap tables, so scope by the trend table's leading column
+    // («الشهر») instead of the retired class name.
+    const trendTable = () =>
+      Array.from(document.querySelectorAll('.table-wrap table'))
+        .find((t) => t.querySelector('th')?.textContent === 'الشهر') ?? null;
+    expect(trendTable()).toBeNull();
 
     fireEvent.click(screen.getByRole('tab', { name: 'جدول' }));
     await waitFor(() => {
       expect(screen.getByRole('tab', { name: 'جدول' }).getAttribute('aria-selected')).toBe('true');
     });
-    expect(document.querySelector('.trend-table-wrap table')).not.toBeNull();
-    const trendRows = within(document.querySelector('.trend-table-wrap table') as HTMLElement).getAllByRole('row');
+    expect(trendTable()).not.toBeNull();
+    const trendRows = within(trendTable() as HTMLElement).getAllByRole('row');
     expect(trendRows).toHaveLength(REPORTS.paperTrend.length + 1); // header + 2 months
     // r151b (R5-A4): every data cell carries its column name — the
     // r150d retirement left the trend tds bare on phones.
     const trendCells = Array.from(
-      document.querySelectorAll('.trend-table-wrap table td'),
+      (trendTable() as HTMLElement).querySelectorAll('td'),
     );
     expect(trendCells).toHaveLength(REPORTS.paperTrend.length * 4);
     for (const td of trendCells) {
@@ -448,7 +460,7 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: 'أعمدة' }));
     await waitFor(() => {
-      expect(document.querySelector('.trend-table-wrap table')).toBeNull();
+      expect(trendTable()).toBeNull();
     });
   });
 
@@ -553,6 +565,14 @@ describe('AdminCoursesPage — server-side filters + meta pagination (P2-1)', ()
     renderPage(<AdminCoursesPage />);
 
     expect(await screen.findByText(/الصفحة 1 من 2/)).toBeInTheDocument();
+    // r157 (6A9 #2): the footer reads its OWN roster's noun — «22
+    // مقرّراً» for courses, and the papers unit must never leak into
+    // the footer (the pre-unit-prop footer hardcoded «ورقة» for every
+    // consumer). Scoped to the footer count line; the subtitle carries
+    // its own copy.
+    const coursesFooter = document.querySelector('.table-pagination span');
+    expect(coursesFooter?.textContent).toContain('22 مقرّراً');
+    expect(coursesFooter?.textContent).not.toContain('ورقة');
     fireEvent.click(screen.getByRole('button', { name: 'الصفحة التالية' }));
     await screen.findByText('قواعد البيانات');
     expect(coursesCalls().some((p) => p.page === 2)).toBe(true);

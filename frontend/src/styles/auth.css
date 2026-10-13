@@ -462,11 +462,40 @@
     border-radius: var(--r-md);
   }
 
+  /* r157 F5 (finding 1): honest NO_DEPARTMENTS state — 21 of 25 live
+     faculties ship zero departments; the dead select promised a choice
+     that doesn't exist. Dashed border ("empty, not an error"), the
+     48px select floor, and the quiet ink of the page's empty states. */
+  .auth-dept-empty {
+    display: flex;
+    align-items: center;
+    min-block-size: 48px; /* matches .auth-select-skeleton + the select */
+    padding: var(--sp-2) var(--sp-3);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--r-md);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--type-label-size-sm);
+    line-height: var(--type-label-line-height);
+  }
+
   .auth-field-error {
     font-size: var(--type-label-size-sm);
     font-weight: var(--fw-medium);
     line-height: var(--type-label-line-height);
     color: var(--danger-ink); /* rose-deep light / rose-ink dark — AA both */
+  }
+
+  /* r157 F5 (finding 5 — alert storm): the ONE polite validation
+     summary (role=status, countAr «N مشاكل») that replaces the per-field
+     role="alert" choir. Quiet muted ink — the per-field errors above
+     carry the detail via aria-describedby. */
+  .auth-form-summary {
+    font-size: var(--type-label-size-sm);
+    line-height: var(--type-label-line-height);
+    font-weight: var(--fw-medium);
+    color: var(--text-muted);
+    margin-block-start: var(--sp-1);
   }
 
   /* Submit-level banner: danger-ink on danger-soft (status text
@@ -499,6 +528,26 @@
     transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
   }
   .auth-retry-link:hover { opacity: 0.8; }
+
+  /* r157 F5 (finding 2): the 409 «سجِّل الدخول» link inside the register
+     error banner — inline with the server's own message («البريد
+     الإلكتروني مسجّل مسبقاً — سجِّل الدخول»), inherits the banner's
+     danger ink, never pushed to the end like .auth-retry-link. */
+  .auth-error-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    font-weight: var(--fw-bold);
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    border-radius: var(--r-sm);
+    /* r149 (R3-A3 §3): انزياح الشفافية كان فوريًا (snap). */
+    transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .auth-error-link:hover { opacity: 0.8; }
 
   /* ══ 5 · LOGIN EXTRAS ══════════════════════════════════════════════ */
 
@@ -626,6 +675,28 @@
     .auth-demo-hint-close { inline-size: 44px; block-size: 44px; }
     .auth-demo-btn { min-block-size: 44px; } /* touch floor */
   }
+
+  /* r157 F5 (finding 14): the demo panel starts COLLAPSED — dev
+     convenience, never the first thing a real visitor reads. This quiet
+     reopen chip keeps it one honest click away; the 44px touch floor is
+     unconditional (quiet ink, not a quiet target). */
+  .auth-demo-hint-reopen {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    min-block-size: 44px; /* touch floor — unconditional */
+    padding-inline: var(--sp-1);
+    background: transparent;
+    border: 0;
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+    font-size: var(--type-label-size-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: color var(--motion-duration-short) var(--motion-ease-standard);
+  }
+  .auth-demo-hint-reopen:hover { color: var(--text-secondary); }
 
   .auth-register-prompt {
     text-align: center;
@@ -809,10 +880,10 @@
     from { opacity: 0; transform: translateY(12px) scale(0.98); }
     to   { opacity: 1; transform: none; }
   }
-  /* Auth submit button gets the same primary breathe as landing */
-  .auth-card .btn.primary {
-    position: relative;
-  }
+  /* (r157 F5 — قاعدة ميتة حُذفت: ‎.auth-card .btn.primary‎ — لا يوجد أي
+     عنصر ‎.btn‎ داخل ‎.auth-card‎ في صفحتي الدخول والتسجيل؛ زرّ الإرسال
+     ‎.auth-submit‎ خاصٌّ بهذه الورقة وبطاقات الأدوار ليست ‎.btn‎. القواعد
+     العامة لـ‎.btn‎ في components.css هي المرجع الوحيد.) */
 
 
 
@@ -825,7 +896,9 @@
     .auth-forgot,
     .auth-input-toggle,
     .auth-demo-btn,
-    .auth-demo-hint-close { transition: none; }
+    .auth-demo-hint-close,
+    .auth-demo-hint-reopen,
+    .auth-error-link { transition: none; }
     .role-card:hover { transform: none; }
     .role-card:active,
     .auth-input-toggle:active { transform: none; }

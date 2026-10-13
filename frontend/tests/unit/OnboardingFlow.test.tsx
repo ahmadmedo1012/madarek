@@ -129,6 +129,44 @@ describe('OnboardingFlow — shared-store wiring', () => {
   });
 });
 
+describe('OnboardingFlow frame announcements (r157 F5)', () => {
+  beforeEach(() => {
+    resetStore();
+  });
+
+  it('announces «الإطار N من 4» from a PERSISTENT live region — the keyed remount must not recreate it', () => {
+    renderFlow();
+    act(() => { useOnboardingStore.getState().start(); });
+
+    const region = document.querySelector('.onboarding-flow .sr-only[role="status"]') as HTMLElement;
+    expect(region).not.toBeNull();
+    expect(region).toHaveAttribute('aria-live', 'polite');
+
+    // The announcement mirrors the frame copy (headline + body), with
+    // latin digits — built from the DOM's own text so the pin can't
+    // drift from the component's copy.
+    const expectAnnounces = (frameNo: number) => {
+      const headline = document.querySelector('.onboarding-flow-headline')!.textContent;
+      const body = document.querySelector('.onboarding-flow-body')!.textContent;
+      expect(region.textContent).toBe(`الإطار ${frameNo} من 4: ${headline}. ${body}`);
+    };
+    expectAnnounces(1);
+
+    // Advance a frame: the keyed frame body remounts (slide animation),
+    // but the live region must be the SAME node — a region recreated
+    // per frame announces nothing.
+    fireEvent.click(screen.getByRole('button', { name: 'التالي' }));
+    const regionAfter = document.querySelector('.onboarding-flow .sr-only[role="status"]') as HTMLElement;
+    expect(regionAfter).toBe(region);
+    expectAnnounces(2);
+
+    // And back — still the same node, frame 1 again.
+    fireEvent.click(screen.getByRole('button', { name: 'السابق' }));
+    expect(document.querySelector('.onboarding-flow .sr-only[role="status"]')).toBe(region);
+    expectAnnounces(1);
+  });
+});
+
 describe('OnboardingFlow role frame', () => {
   beforeEach(() => {
     resetStore();

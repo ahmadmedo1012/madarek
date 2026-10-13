@@ -382,7 +382,7 @@
     }
     .sidebar.collapsed .sidebar-brand {
       justify-content: center;
-      padding-inline: 4px;
+      padding-inline: var(--sp-1); /* r157: 4px → --sp-1 */
       gap: 0;
     }
     .sidebar.collapsed .sidebar-brand-text,
@@ -401,8 +401,12 @@
     .sidebar.collapsed .nav-icon {
       margin-inline: auto;
     }
-    .sidebar.collapsed .nav-item.on::before,
-    .sidebar.collapsed .nav-item.active::before {
+    /* (r157 .on/.active vocabulary sweep: the dead .active twin
+       selectors at 7 sites in this file deleted — nav items render .on
+       only (Sidebar.tsx; rg: zero TSX producers of nav-item.active /
+       tab.active). BottomNav's bottom-nav-item.active family is a
+       different, live component and stays.) */
+    .sidebar.collapsed .nav-item.on::before {
       inset-inline-start: 0;
       border-radius: 0 2px 2px 0;
     }
@@ -1053,7 +1057,12 @@
      TOPBAR — height + better chrome
      ═══════════════════════════════════════════════════════════════ */
   .topbar {
-    block-size: 60px;
+    /* r158: consumes the token — was a raw 60px while --topbar-h said
+       64px, so every var(--topbar-h) sticky consumer (pdf viewer,
+       colleges toolbar) floated 4px low. The token now carries the
+       real rendered height (60px); this override stays the last word
+       on the bar's box without forking the value. */
+    block-size: var(--topbar-h);
     /* Increase opacity so the page-title underneath never bleeds through.
        The user reported page titles appearing cut by the topbar — that
        was caused by the previous 86% mix being too transparent against
@@ -1111,7 +1120,7 @@
   .topbar-actions .btn.primary.sm {
     height: 32px;
     padding-inline: 12px;
-    font-size: 12.5px;
+    font-size: var(--fs-xs); /* r157: 12.5px → --fs-xs (تقريب نصف بكسل مقصود) */
     font-weight: 600;
   }
 
@@ -1153,11 +1162,11 @@
     inset-inline-end: 2px;
     min-inline-size: 16px;
     block-size: 16px;
-    padding: 0 4px;
+    padding: 0 var(--sp-1); /* r157: 4px → --sp-1 */
     border-radius: var(--r-full);
     background: var(--danger);
     color: var(--white);
-    font-size: 10px;
+    font-size: var(--fs-xxs); /* r157: 10px → --fs-xxs (تقريب مقصود لأرقام الشارة) */
     font-weight: 700;
     line-height: 16px;
     text-align: center;
@@ -1191,7 +1200,7 @@
   .notif-panel-title {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: 14px;
+    font-size: var(--fs-chrome); /* r157: 14px → --fs-chrome (exact) */
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     color: var(--text);
   }
@@ -1222,14 +1231,14 @@
     margin-block-start: 2px;
   }
   .notif-item-title {
-    font-size: 13px;
+    font-size: var(--fs-sm); /* r157: 13px → --fs-sm (exact) */
     font-weight: var(--fw-semibold);
     color: var(--text);
     line-height: 1.35;
   }
   .notif-item-desc {
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: var(--fs-xs); /* r157: 12px → --fs-xs (exact) */
     line-height: 1.5;
     margin-block-start: 2px;
     /* Clamp to 2 lines so a noisy notification doesn't blow up the panel */
@@ -1241,7 +1250,7 @@
   }
   .notif-item-time {
     color: var(--text-subtle);
-    font-size: 11px;
+    font-size: var(--fs-xxs); /* r157: 11px → --fs-xxs (exact) */
     margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     font-variant-numeric: tabular-nums;
   }
@@ -1269,7 +1278,7 @@
 
   /* Empty state — centred, calmer */
   .notif-empty {
-    padding: 40px 20px;
+    padding: var(--sp-8) var(--sp-5); /* r157: 40px/20px → --sp-8/--sp-5 (exact rungs) */
     text-align: center;
   }
   .notif-empty-icon {
@@ -1296,8 +1305,8 @@
   .notif-panel-viewall {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12.5px;
+    gap: var(--sp-1); /* r157: 4px → --sp-1 */
+    font-size: var(--fs-xs); /* r157: 12.5px → --fs-xs (تقريب نصف بكسل مقصود) */
     font-weight: var(--fw-semibold);
     color: var(--accent-strong);
     text-decoration: none;
@@ -1364,7 +1373,7 @@
   /* Tab counts get a calm pill style instead of inline numbers */
   .tab-count {
     margin-inline-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    font-size: 10px;
+    font-size: var(--fs-xxs); /* r157: 10px → --fs-xxs (تقريب مقصود لأرقام العدّاد) */
     font-weight: var(--fw-bold);
     background: var(--surface-2);
     color: var(--text-muted);
@@ -1764,14 +1773,9 @@
   } */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  EYEBROW CHIP — one-time shimmer to draw the eye to "جديد"    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @keyframes madarek-sweep {
-    0%   { transform: translateX(-110%); }
-    65%  { transform: translateX(110%); }
-    100% { transform: translateX(110%); }
-  }
+  /* (r157 dead-keyframe sweep: @keyframes madarek-sweep + its EYEBROW
+     CHIP banner deleted — rg across frontend/src: zero `animation`
+     consumers reference the name.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1951,7 +1955,7 @@
       transform var(--t-base) var(--ease-out),
       opacity var(--t-fast) var(--ease);
   }
-  .nav-item:not(.on):not(.active)::before {
+  .nav-item:not(.on)::before {
     opacity: 0;
     transform: scaleY(0.4);
   }
@@ -1959,8 +1963,7 @@
     opacity: 0.5;
     transform: scaleY(0.7);
   }
-  .nav-item.on::before,
-  .nav-item.active::before {
+  .nav-item.on::before {
     opacity: 1;
     transform: scaleY(1);
   }
@@ -2008,7 +2011,7 @@
       border-color var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .pill.on, .tab.on, .tab.active {
+  .pill.on, .tab.on {
     /* soft accent selection halo — interaction state, not elevation */
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 14%, transparent);
   }
@@ -2281,7 +2284,8 @@
      cream in light theme, a hard WCAG 2.4.7/1.4.11 fail on every
      a/button/input/link in the app. The single AA-safe ring, built on
      --state-focus-ring-color (= --accent-strong, 10.29:1 light /
-     7.87:1 dark), lives in v22. See 0-a P0-1.) */
+     7.38:1 dark — #C9962F on the night ground, r158), lives in v22.
+     See 0-a P0-1.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2393,9 +2397,11 @@
   /* (Wave 9-b dead-selector sweep: .btn-primary and .btn.accent
      removed — zero TSX consumers; only the .btn.primary variant is
      rendered.) */
-  .btn.primary:hover {
+  .btn.primary:hover:not(:disabled) {
     /* Off-token by design: strong accent glow + contact layer, not
-       elevation. */
+       elevation. (r157: :not(:disabled) gate — the glow no longer
+       paints on disabled primary buttons, mirroring the v16 gate
+       at .btn.primary:hover:not(:disabled) above.) */
     box-shadow:
       0 6px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent),
       0 2px 4px color-mix(in srgb, var(--black) 6%, transparent);
@@ -2621,8 +2627,7 @@
   .nav-item {
     position: relative;
   }
-  .nav-item.on::after,
-  .nav-item.active::after {
+  .nav-item.on::after {
     content: '';
     position: absolute;
     inset-inline-start: 6px;
@@ -2642,8 +2647,7 @@
     to   { transform: translateY(-50%) scale(1); opacity: 1; }
   }
   /* RTL flips */
-  [dir="ltr"] .nav-item.on::after,
-  [dir="ltr"] .nav-item.active::after { inset-inline-start: 6px; }
+  [dir="ltr"] .nav-item.on::after { inset-inline-start: 6px; }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2828,7 +2832,6 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   @media (prefers-reduced-motion: reduce) {
     .nav-item.on::after,
-    .nav-item.active::after,
     .sidebar.open .nav-item {
       animation: none !important;
     }
@@ -3547,8 +3550,7 @@
     }
     .btn,
     .pill,
-    .nav-item.on,
-    .nav-item.active {
+    .nav-item.on {
       forced-color-adjust: auto;
     }
     :focus-visible {
@@ -3733,7 +3735,7 @@
      ║  Mirrors motion.css's universal ring but lives in the last     ║
      ║  layer, so polish.css owns the final word (ruling #13).        ║
      ║  --state-focus-ring-color resolves to --accent-strong:         ║
-     ║  #5C3416 = 10.29:1 on cream (light) / #F8DDBC = 7.87:1 on ink  ║
+     ║  #5C3416 = 10.29:1 on cream (light) / #C9962F = 7.38:1 on ink  ║
      ║  (dark) — WCAG 2.4.7 + 1.4.11 safe. The old 30%-alpha copper   ║
      ║  halo measured ≈1.5:1 on cream.                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
@@ -4109,12 +4111,12 @@
      pseudo-element and wins the cascade on .on/.active anyway) keeps
      rendering while the active item is hovered. */
   @media (min-width: 921px) {
-    .sidebar.collapsed .nav-item:not(.on):not(.active):hover::after {
+    .sidebar.collapsed .nav-item:not(.on):hover::after {
       content: none;
     }
     /* The portaled tooltip supersedes the v8 pseudo entirely on
        focus-visible too (defense against attr(title) leftovers). */
-    .sidebar.collapsed .nav-item:not(.on):not(.active):focus-visible::after {
+    .sidebar.collapsed .nav-item:not(.on):focus-visible::after {
       content: none;
     }
   }
@@ -4232,9 +4234,10 @@
    2. NO PHANTOM ITALIC ON ARABIC <em> (A12 P1-6): Arabic has no
       italic; the browser's default synthetic slant on cursive script
       is the same machine-made tell wave 20-a killed on landing. <em>
-      keeps its semantics and gains weight+accent emphasis. Latin runs
-      that explicitly opt into serif italic (em.landing-serif-latin,
-      «Oasis») are excluded by class.
+      keeps its semantics and gains weight+accent emphasis. (The
+      em.landing-serif-latin opt-out class retired with the serif
+      faces in r152j — zero TSX consumers; its :not() guards below
+      went with it.)
    ═══════════════════════════════════════════════════════════════════ */
 @layer overrides {
   :lang(ar) :is(h1, h2, h3, h4, h5, h6, .page-title, .dash-section-title,
@@ -4255,12 +4258,12 @@
      الـlanding كليًا (:not(.landing *)) لأن قياسًا موثقًا أعلاه أثبت أن
      الوزن هنا يكسر hero em (800→600). الوزن + حبر النحاس هما المحوران
      القانونيان للعربية (لا ميل ولا تتبّع). */
-  :lang(ar) em:not(.landing-serif-latin):not(.landing *) {
+  :lang(ar) em:not(.landing *) {
     font-style: normal;
     font-weight: var(--fw-semibold);
     color: var(--accent-ink, var(--text));
   }
-  :lang(ar) em:not(.landing-serif-latin) {
+  :lang(ar) em {
     font-style: normal;
   }
 }

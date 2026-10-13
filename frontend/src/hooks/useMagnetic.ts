@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from '../components/motion/useReducedMotion';
 
 /**
  * useMagnetic — a subtle magnetic pull for primary CTAs.
@@ -13,13 +14,15 @@ import { useEffect, useRef } from 'react';
  */
 export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 6) {
   const ref = useRef<T | null>(null);
+  // r157 (lead): reactive RM — a mid-session OS toggle now disarms the pull
+  // (the one-shot read could leave a live magnet on a newly-reduced user).
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const canHover = window.matchMedia('(hover: hover)').matches;
-    if (reduced || !canHover) return;
+    if (reducedMotion || !canHover) return;
 
     let raf = 0;
     let visible = true;
@@ -65,7 +68,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 6) {
       el.removeEventListener('mouseleave', onLeave);
       reset();
     };
-  }, [strength]);
+  }, [strength, reducedMotion]);
 
   return ref;
 }

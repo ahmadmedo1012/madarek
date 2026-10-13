@@ -23,25 +23,22 @@
      weight is what the tokens actually say — zero visual delta,
      same woff2, and the fallback stacks get a real 700 instead of a
      synthetic 800 while the webfont swaps in.
-   · IBM Plex Serif italic 400/500 — SANCTIONED LATIN RUNS ONLY
-     (21-c, A12 P1-6): Arabic was never in Plex Serif (latin-only
-     unicode-range below), so every Arabic em that asked for the
-     serif-italic "accent" silently fell to an OS naskh face +
-     synthetic slant — an uncontrolled phantom on the flagship
-     accent. Platform ruling since 20-a/21-c: Arabic emphasis is
-     UPRIGHT weight + accent ink (see polish.css's :lang(ar) em
-     reset); these italic cuts load only for the explicitly-tagged
-     Latin survivors (em.landing-serif-latin, «Oasis»). No Arabic
-     glyph can reach them.
+   · IBM Plex Serif italic 400/500 — RETIRED (r152j, A7): see the
+     retirement note at the serif section below. The pair shipped as
+     “sanctioned Latin-runs-only” but had zero live font-family
+     consumers, so the browser never fetched the files — both woff2s
+     and both @font-face rules were deleted. Arabic emphasis remains
+     upright weight + accent ink (polish.css :lang(ar) em reset).
    · IBM Plex Mono 400/500 — codes, IDs, numbers, emails (latin).
    Subsets: arabic + latin for Sans Arabic, latin for the rest —
    the browser downloads only what the page paints.
    All weights/subsets = exact woff2 files the Google Fonts CSS2
    API serves. font-display: swap on every face.
-   Total: 12 files ≈ 329 KB on disk (premium-polish P3: the dead
-   Noto Kufi Arabic ×6, Amiri and Rubik families — zero consumers
-   since the round-3 Orbit Ink rebuild replaced the old landing
-   wave, 51% of the shipped font bytes — were deleted). A typical
+   Total: 10 files ≈ 287 KB on disk (premium-polish P3 deleted the
+   dead Noto Kufi Arabic ×6, Amiri and Rubik families — zero
+   consumers since the round-3 Orbit Ink rebuild replaced the old
+   landing wave, 51% of the shipped font bytes; r152j then deleted
+   the dead Serif italic ×2 — the remaining 42.6 KB). A typical
    first paint needs only the two preloaded arabic subsets (~86 KB).
    ═════════════════════════════════════════════════════════════════ */
 

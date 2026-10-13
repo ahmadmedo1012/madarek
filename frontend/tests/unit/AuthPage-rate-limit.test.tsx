@@ -11,6 +11,15 @@
  * state is injected exactly the way the backend would deliver it
  * (`{ error: { code: 'TOO_MANY_REQUESTS', message } }` on an
  * AxiosError-shaped object).
+ *
+ * r157 F5 extension: the REST of the banner contract via authErrorView
+ * (lib/authErrors.ts) — when the backend DID answer, ITS Arabic message
+ * shows verbatim: 401 «البريد الإلكتروني أو كلمة المرور غير صحيحة»
+ * (backend/src/lib/errors.ts:42), 403 «هذا الحساب معطّل — تواصل مع
+ * إدارة الجامعة» (auth.service.ts:291). The authored generic survives
+ * only for network silence (no `error.response`) and for Latin-only
+ * transport prose the Arabic guard (apiErrorDetail, 15-j P0-1)
+ * rejects.
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -92,14 +101,63 @@ describe('AuthPage — 429 lockout copy (4-A13 P2-1)', () => {
     expect(screen.getByRole('alert')).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
   });
 
-  it('a plain 401 (wrong password) keeps the honest generic banner', () => {
+  it('a 401 (wrong password) surfaces the backend\'s own Arabic message verbatim (D17-3)', () => {
     loginState.current.isError = true;
-    loginState.current.error = axError(401, 'INVALID_CREDENTIALS', 'بيانات الدخول غير صحيحة');
+    loginState.current.error = axError(
+      401,
+      'INVALID_CREDENTIALS',
+      // The real default from backend/src/lib/errors.ts:42 — the
+      // server's own words, not a rewritten generic.
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+    );
+    renderPage();
+
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+    // The generic refusal no longer masks the server's answer.
+    expect(alert).not.toHaveTextContent('تعذَّر تسجيل الدخول');
+    expect(alert).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+  });
+
+  it('a 403 (disabled account) surfaces the backend\'s own Arabic message verbatim', () => {
+    loginState.current.isError = true;
+    // The exact sentence auth.service.ts:291 rejects with.
+    loginState.current.error = axError(403, 'FORBIDDEN', 'هذا الحساب معطّل — تواصل مع إدارة الجامعة');
+    renderPage();
+
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent('هذا الحساب معطّل — تواصل مع إدارة الجامعة');
+    expect(alert).not.toHaveTextContent('تعذَّر تسجيل الدخول');
+    expect(alert).not.toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+  });
+
+  it('a network failure (no response) keeps the authored generic — nothing to quote', () => {
+    loginState.current.isError = true;
+    loginState.current.error = {
+      name: 'AxiosError',
+      message: 'Network Error',
+      isAxiosError: true,
+      config: {},
+    } as unknown as AxiosError;
     renderPage();
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('تعذَّر تسجيل الدخول');
-    expect(alert).toHaveTextContent('تحقَّق من البريد وكلمة المرور');
+    expect(alert).toHaveTextContent('اتصالك بالشبكة');
+    // The raw Latin transport prose never reaches the RTL UI.
+    expect(alert).not.toHaveTextContent('Network Error');
+  });
+
+  it('a Latin-only "message" from the transport is guarded out — generic wins (15-j P0-1)', () => {
+    loginState.current.isError = true;
+    loginState.current.error = axError(401, 'INVALID_CREDENTIALS', 'Request failed with status code 401');
+    renderPage();
+
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent('تعذَّر تسجيل الدخول');
+    expect(alert).not.toHaveTextContent('Request failed with status code 401');
+    // Not a rate limit — the credential-generic grammar is correct here.
+    expect(alert).not.toHaveTextContent('محاولات دخول كثيرة');
   });
 
   it('no error state renders no banner', () => {

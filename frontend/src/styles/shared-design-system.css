@@ -138,7 +138,7 @@
     /* ─── Layout dimensions ────────────────────────────────────────── */
     --sidebar-w: 256px;
     --sidebar-w-collapsed: 64px;
-    --topbar-h: 64px;
+    --topbar-h: 60px; /* r158: synced with tokens.css (the rendered topbar) */
     --content-max-w: 1280px;
 
     /* ─── Composition ──────────────────────────────────────────────── */

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { useReducedMotion } from '../motion/useReducedMotion';
 
 /**
  * JourneyLightPath — the lime thread of the journey chapter.
@@ -66,9 +67,10 @@ function buildD(pts: Pt[]): string {
 export function JourneyLightPath() {
   const stageRef = useRef<SVGSVGElement | null>(null);
   const [geo, setGeo] = useState<{ d: string; w: number; h: number } | null>(null);
-  const [reducedMotion] = useState(
-    () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  );
+  // r157 (F2-14): the shared reactive hook — the thread style flips live
+  // on the OS-level RM toggle (was a one-shot initial-state read that
+  // froze whichever style the mount happened to sample).
+  const reducedMotion = useReducedMotion();
 
   const measure = useCallback(() => {
     const svg = stageRef.current;

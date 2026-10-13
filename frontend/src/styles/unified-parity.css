@@ -277,7 +277,7 @@
     /* ─── Layout ──────────────────────────────────────────────────── */
     --sidebar-w: 256px;
     --sidebar-w-collapsed: 64px;
-    --topbar-h: 64px;
+    --topbar-h: 60px; /* r158: synced with tokens.css (the rendered topbar) */
     --content-max-w: 1280px;
     --marketing-max-w: 1200px;
     /* (r148-d: the --st-* layout set deleted with the canon — zero
@@ -842,13 +842,14 @@
     box-shadow: var(--shadow-card-premium);
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
   }
-  .btn.primary:hover {
+  .btn.primary:hover:not(:disabled) {
     box-shadow: var(--shadow-card-premium-h);
   }
   /* r133-F7: −2px lift rides the hover-capable gate (iOS sticky-hover);
-     shadow stays ungated like .btn:hover. */
+     shadow stays ungated like .btn:hover. r157: gated on
+     :not(:disabled) — a busy/disabled button must not lift. */
   @media (hover: hover) and (pointer: fine) {
-    .btn.primary:hover { transform: translateY(-2px); }
+    .btn.primary:hover:not(:disabled) { transform: translateY(-2px); }
   }
   .btn.primary::before {
     content: '';
@@ -866,7 +867,7 @@
     transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.primary:hover::before { background-position: -60% 0; }
+  .btn.primary:hover:not(:disabled)::before { background-position: -60% 0; }
   [data-theme="dark"] .btn.primary {
     /* night: the quiet elevated action — sky-2 ground #182142, ink
        text, hairline border — so the gold accent stays the one loud
@@ -904,8 +905,8 @@
     transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.accent:hover::before,
-  .btn.gold:hover::before { background-position: -60% 0; }
+  .btn.accent:hover:not(:disabled)::before,
+  .btn.gold:hover:not(:disabled)::before { background-position: -60% 0; }
 
   /* night — the gold CTA becomes metal: the landing's exact treatment */
   [data-theme="dark"] .btn.accent,
@@ -914,8 +915,8 @@
     --_btn-bg-hover: linear-gradient(145deg, #F5D48A 0%, #E9B44C 100%);
     box-shadow: 0 0 0 1px rgb(233 180 76 / 0.30), 0 6px 20px -8px rgb(233 180 76 / 0.35);
   }
-  [data-theme="dark"] .btn.accent:hover,
-  [data-theme="dark"] .btn.gold:hover {
+  [data-theme="dark"] .btn.accent:hover:not(:disabled),
+  [data-theme="dark"] .btn.gold:hover:not(:disabled) {
     box-shadow: 0 0 0 1px rgb(233 180 76 / 0.45), 0 8px 26px -8px rgb(233 180 76 / 0.45);
   }
 
@@ -925,6 +926,14 @@
   :root:not([data-theme="dark"]) .btn.gold {
     --_btn-bg-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
     --_btn-bd-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
+  }
+
+  /* in-flight freeze (r157): a busy button keeps its base shadow and
+     never lifts under the cursor — same contract the canonical sheet
+     asserts locally (components.css) on top of motion.css. */
+  .btn[data-loading="true"]:hover {
+    transform: none;
+    box-shadow: var(--_btn-shadow);
   }
 
   .btn.ghost {
@@ -955,9 +964,9 @@
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
   .btn.lg  { block-size: 48px; padding-inline: var(--sp-6); font-size: var(--type-body-size); border-radius: var(--r-md); }
-  .btn.xl  { block-size: 56px; padding-inline: var(--sp-7); font-size: var(--type-body-size-lg); border-radius: var(--r-md); font-weight: var(--fw-semibold); }
   .btn.full { inline-size: 100%; }
-  .btn.pill { border-radius: var(--r-full); }
+  /* r157 dead-selector sweep (synced with components.css): .btn.xl and
+     .btn.pill deleted — zero consumers render either modifier. */
 
   /* ─── ICON BUTTON — explicit transition properties, never `all`
      (canonical consumes the --t-clean `all` shorthand here; the
@@ -1009,14 +1018,9 @@
   .badge.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
   .badge.brand,
   .badge.gold   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
-  .badge.peach  { background: var(--c-peach-bg);    color: var(--c-peach-deep); }
-  .badge.sky    { background: var(--c-sky-bg);      color: var(--c-sky-deep); }
-  .badge.dot::before {
-    content: '';
-    inline-size: 6px; block-size: 6px;
-    border-radius: 50%;
-    background: currentColor;
-  }
+  /* r157 dead-selector sweep (synced with components.css):
+     .badge.peach / .badge.sky / .badge.dot::before deleted — zero
+     consumers render any of the three. */
 
   /* ─── INPUT — 44px touch height, 16px iOS-zoom floor ──────────── */
   .input,

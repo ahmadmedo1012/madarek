@@ -14,8 +14,9 @@ import { createRoot } from 'react-dom/client';
 // .admin-students-search input): landing.css rides the LandingPage
 // chunk; SectionAccent's cascade rules moved to motion.css (eager)
 // because CollegePages renders that primitive too. colleges.css is
-// imported by its five lazy consumers (CollegePages, CompetitionsPages,
-// AdminExtraPages, CommunityPages, AdminGovernancePages) and lands in
+// imported by its three lazy consumers (CollegePages, CompetitionsPages,
+// CommunityPages — r157: the admin roster chrome moved to admin.css,
+// r150e/r152c) and lands in
 // their shared chunk; the landing's colleges POPOVER split to its own
 // colleges-popover.css in r151h (imported by <CollegesPopover />, so
 // it rides the LandingPage chunk — the public route no longer

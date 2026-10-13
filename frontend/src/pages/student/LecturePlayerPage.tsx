@@ -104,6 +104,13 @@ export default function LecturePlayerPage() {
   const [currentSec, setCurrentSec] = useState(0);
   const [activeCheckpoint, setActiveCheckpoint] = useState<LectureCheckpoint | null>(null);
   const [answeredCheckpointIds, setAnsweredCheckpointIds] = useState<Set<string>>(new Set());
+  /* r157 (W2-F7 / audit 6A5): session-local skips — a skipped
+   * checkpoint must NOT re-fire while the playhead sits past its
+   * trigger (currentSec still ≥ triggerSec), or the quiz the student
+   * just declined would instantly slam back open. Session-local BY
+   * DESIGN: skip ≠ answer, so nothing goes to the server and an
+   * unanswered checkpoint honestly re-fires in the NEXT session. */
+  const [skippedCheckpointIds, setSkippedCheckpointIds] = useState<Set<string>>(new Set());
   const [pickedIndex, setPickedIndex] = useState<number | null>(null);
   const [revealResult, setRevealResult] = useState<{ correct: boolean; correctIndex: number; explanation?: string } | null>(null);
   const [answerError, setAnswerError] = useState(false);
@@ -130,6 +137,7 @@ export default function LecturePlayerPage() {
     setCurrentSec(0);
     setActiveCheckpoint(null);
     setAnsweredCheckpointIds(new Set());
+    setSkippedCheckpointIds(new Set());
     setPickedIndex(null);
     setRevealResult(null);
     setAnswerError(false);
@@ -137,6 +145,29 @@ export default function LecturePlayerPage() {
     setFailedReport(null);
     resumeSeekedRef.current = false;
   }, [lectureId]);
+
+  /* r157 (W2-F7 / audit 6A5): server answer memory seed — checkpoints
+   * answered in a PREVIOUS session (CheckpointAnswer rows, projected
+   * by GET /lectures/:id as answers: [{checkpointId}]) MERGE into the
+   * live set so the page never re-quizzes an answered checkpoint on
+   * resume (the bug that burned the r155a mastery cap: reload → re-quiz
+   * → re-answer → attempts frozen). Merge, never replace: the watch
+   * completion invalidation refetches this query mid-lecture, and
+   * in-flight answers (answered seconds ago, POST already landed but
+   * the refetch predates it) must survive the refetch. */
+  useEffect(() => {
+    const serverIds = (data?.checkpoints ?? [])
+      .flatMap((c) => c.answers ?? [])
+      .map((a) => a.checkpointId);
+    if (!serverIds.length) return;
+    setAnsweredCheckpointIds((prev) => {
+      const next = new Set(prev);
+      for (const id of serverIds) next.add(id);
+      // Same-size → same set: return the old object so React skips
+      // the re-render (the effect runs on every refetch).
+      return next.size === prev.size ? prev : next;
+    });
+  }, [data]);
 
   // Periodic watch-event reporting (every 10 sec while playing)
   // r153b in-flight guard: on a slow network the previous POST can
@@ -212,10 +243,15 @@ export default function LecturePlayerPage() {
   }, []);
 
   // Trigger a checkpoint when crossing its time, once per lecture session.
+  // r157 (W2-F7): answered (server-seeded or this-session) AND skipped
+  // (this-session) checkpoints both stay silent — a skip while the
+  // playhead already passed the trigger must not re-fire instantly.
   useEffect(() => {
     if (!data || activeCheckpoint) return;
     const due = data.checkpoints.find(
-      (c) => currentSec >= c.triggerSec && !answeredCheckpointIds.has(c.id),
+      (c) => currentSec >= c.triggerSec
+        && !answeredCheckpointIds.has(c.id)
+        && !skippedCheckpointIds.has(c.id),
     );
     if (due) {
       setActiveCheckpoint(due);
@@ -224,7 +260,7 @@ export default function LecturePlayerPage() {
       setAnswerError(false);
       videoRef.current?.pause();
     }
-  }, [currentSec, data, activeCheckpoint, answeredCheckpointIds]);
+  }, [currentSec, data, activeCheckpoint, answeredCheckpointIds, skippedCheckpointIds]);
 
   // No lecture id in the URL — the route normally guarantees one; this
   // branch keeps a malformed deep link honest instead of pending forever
@@ -289,6 +325,22 @@ export default function LecturePlayerPage() {
   const closeCheckpoint = () => {
     if (!activeCheckpoint) return;
     setAnsweredCheckpointIds((prev) => new Set(prev).add(activeCheckpoint.id));
+    setActiveCheckpoint(null);
+    setPickedIndex(null);
+    setRevealResult(null);
+    setAnswerError(false);
+    void videoRef.current?.play();
+  };
+
+  /* r157 (W2-F7): honest skip — close WITHOUT counting the checkpoint
+   * as answered (the «أُجيب عن N» note and the rail mark stay honest)
+   * and remember the skip for THIS session (see skippedCheckpointIds)
+   * so the playhead sitting past the trigger doesn't re-open the modal
+   * instantly. Esc / onClose / «تخطّي» all route here; only «متابعة
+   * المحاضرة» (after a real answer) counts via closeCheckpoint. */
+  const skipCheckpoint = () => {
+    if (!activeCheckpoint) return;
+    setSkippedCheckpointIds((prev) => new Set(prev).add(activeCheckpoint.id));
     setActiveCheckpoint(null);
     setPickedIndex(null);
     setRevealResult(null);
@@ -572,8 +624,8 @@ export default function LecturePlayerPage() {
           stranding keyboard / screen-reader users. */}
       <Modal
         open={!!activeCheckpoint}
-        onClose={closeCheckpoint}
-        ariaLabel="نقطة تفاعل"
+        onClose={skipCheckpoint}
+        ariaLabel={activeCheckpoint ? `نقطة تفاعل: ${activeCheckpoint.question}` : 'نقطة تفاعل'}
         closeOnOverlayClick={false}
       >
         <div className="checkpoint-card">
@@ -633,6 +685,15 @@ export default function LecturePlayerPage() {
           )}
 
           <div className="checkpoint-actions">
+            {/* r157 (W2-F7): «تخطّي» is ALWAYS visible — a student who
+                doesn't know an answer needs an honest exit that isn't
+                «guess and look wrong», and closing via Esc used to
+                silently COUNT as answered (the dishonest branch). Ghost
+                chip (checkpoint-skip) — the primary verb stays
+                «متابعة المحاضرة» after a real answer. */}
+            <button type="button" className="btn ghost sm checkpoint-skip" onClick={skipCheckpoint}>
+              تخطّي
+            </button>
             {revealResult && (
               <button type="button" className="btn primary" onClick={closeCheckpoint}>
                 متابعة المحاضرة

@@ -59,7 +59,7 @@
 .pdf-toolbar-group {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 .pdf-toolbar-actions { margin-inline-start: auto; }
 .pdf-title {
@@ -112,7 +112,7 @@
 .pdf-pageinfo {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   font-size: var(--fs-xs);
   color: var(--text-muted);
 }

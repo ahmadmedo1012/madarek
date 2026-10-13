@@ -19,21 +19,12 @@ import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
 import { HydrationSplash } from '../HydrationSplash';
 import { overlayStack } from '../../lib/overlayStack';
-import { NAV_BY_ROLE } from '../../lib/nav';
-
-/* ───────────────────────────────────────────────────────────
-   ROLE HOME — the single map for guard redirects (ProtectedRoute)
-   AND the onboarding auto-start gate (A13 P1-1). Keeping one map
-   means the tour can never aim at a different route than the guard
-   bounces users to.
-   ─────────────────────────────────────────────────────────── */
-const ROLE_HOME: Record<AppRole, string> = {
-  STUDENT: '/student/dashboard',
-  TEACHER: '/teacher/dashboard',
-  ADMIN:   '/admin/dashboard',
-  QUALITY: '/quality/dashboard',
-  OWNER:   '/owner/dashboard',
-};
+import { NAV_BY_ROLE, ROLE_HOME } from '../../lib/nav';
+// CONCRETE module import (r157 6A4-2/6A13-3): shell tests mock the
+// motion BARREL with PageTransition only — importing useReducedMotion
+// from '../motion' would resolve to the mock's undefined. The landing
+// components already follow this concrete-module precedent.
+import { useReducedMotion } from '../motion/useReducedMotion';
 
 /* ───────────────────────────────────────────────────────────
    PAGE TITLES — single source: nav.ts (5-B5, A4 P3-1/P3-2)
@@ -133,10 +124,15 @@ function useThemeTransitionGuard() {
    handlers, no work when the cursor isn't on a card.
    ─────────────────────────────────────────────────────────── */
 function useCardPointerGlow() {
+  // r157 (6A13-3): reactive reduced-motion — the old one-shot
+  // matchMedia read froze the decision at mount, so toggling the OS
+  // setting mid-session left the glow armed (or disarmed) forever.
+  // [reducedMotion] in the deps re-arms the listener on every flip.
+  const reducedMotion = useReducedMotion();
+
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isTouch = window.matchMedia('(hover: none)').matches;
-    if (reduced || isTouch) return;
+    if (reducedMotion || isTouch) return;
 
     let raf = 0;
     let lastCard: HTMLElement | null = null;
@@ -167,7 +163,7 @@ function useCardPointerGlow() {
       document.removeEventListener('pointermove', onMove);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [reducedMotion]);
 }
 
 export function AppShell({ children }: { children?: ReactNode }) {

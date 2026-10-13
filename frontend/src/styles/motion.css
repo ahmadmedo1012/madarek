@@ -181,22 +181,10 @@
   .skeleton[data-variant="list-row"] { height: 56px;  border-radius: var(--r-md, 8px); }
   .skeleton[data-variant="avatar"]   { width: 40px; height: 40px; border-radius: var(--r-full, 9999px); }
 
-  .skeleton-group {
-    display: grid;
-    gap: var(--sp-4, 16px);
-  }
-
-  /* "Still loading…" reassurance cue — appears after 4 s via JS. */
-  .skeleton-still-loading {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: var(--neutral-500);
-    font-size: var(--fs-sm, 13px);
-    padding: var(--sp-3, 12px) 0;
-    opacity: 0;
-    transition: opacity var(--motion-duration-medium) var(--motion-ease-standard);
-  }
-  .skeleton-still-loading[data-visible="true"] { opacity: 1; }
+  /* (r157: .skeleton-group / .skeleton-still-loading deleted — dead
+     rules. F4 removed the <SkeletonGroup> primitive itself (rg: zero
+     consumers ever rendered it, see components/motion/index.ts), so
+     nothing can mount these classes anymore.) */
 
   /* (wave 7-b — route-transition block deleted: the shell's route change
      is now ONE animation, the keyed .content-inner remount playing
@@ -243,7 +231,7 @@
     border: var(--state-loading-spinner-stroke) solid currentColor;
     border-right-color: transparent;
     border-radius: var(--r-full, 9999px);
-    animation: motion-spin 0.7s linear infinite;
+    animation: motion-spin var(--motion-duration-stat) var(--ease-linear) infinite;
     vertical-align: -0.125em;
   }
 

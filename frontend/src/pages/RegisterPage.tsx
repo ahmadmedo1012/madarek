@@ -14,6 +14,9 @@ import { useFaculties } from '../hooks/useResources';
 import { Skeleton } from '../components/motion';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { ROLE_HOME } from '../lib/nav';
+import { countAr } from '../lib/format';
+import { authErrorView } from '../lib/authErrors';
 import type { AppRole } from '../stores/auth.store';
 
 /**
@@ -22,14 +25,6 @@ import type { AppRole } from '../stores/auth.store';
  * appointed by the university — they don't sign up through this form.
  */
 type AcademicRole = Extract<AppRole, 'STUDENT' | 'TEACHER'>;
-
-const ROLE_HOME: Record<AppRole, string> = {
-  STUDENT: '/student/dashboard',
-  TEACHER: '/teacher/dashboard',
-  ADMIN:   '/admin/dashboard',
-  QUALITY: '/quality/dashboard',
-  OWNER:   '/owner/dashboard',
-};
 
 const studentSchema = z.object({
   // D17-4 parity with the backend register schema (auth.dto.ts):
@@ -46,7 +41,11 @@ const studentSchema = z.object({
   universityId: z.string().trim().min(3, 'مطلوب').max(40),
   facultyId: z.string().min(1, 'اختر الكلّيّة'),
   departmentId: z.string().min(1, 'اختر القسم'),
-  year: z.coerce.number().int().min(1).max(7),
+  // r157 F5: year max mirrors the backend contract (auth.dto.ts:42 —
+  // `.max(8)`), not the legacy 7: an 8th-year student (e.g. a bridging
+  // / transferred cohort) used to be rejected FE-side while the backend
+  // would have accepted the payload.
+  year: z.coerce.number().int().min(1).max(8),
 });
 
 const teacherSchema = z.object({
@@ -66,6 +65,42 @@ type TeacherInputs = z.infer<typeof teacherSchema>;
  *  step 2 always enters from the reading-ahead edge and step 1 comes
  *  back from where it came (RTL-aware via --motion-direction). */
 type StepDir = 'forward' | 'back';
+
+/** Generic refusal ONLY for failures the server never answered (network)
+ *  — or Latin transport prose the Arabic guard rejected. When the backend
+ *  DID answer, its own Arabic message shows verbatim (authErrorView,
+ *  r157 F5 / D17-3), and a 409 adds the login link. */
+const GENERIC_REGISTER_ERROR =
+  'تعذَّر إنشاء الحساب. راجع البيانات المدخلة وتأكَّد من اتصالك بالشبكة ثم أعد المحاولة.';
+
+/** r157 F5: honest empty state for a faculty whose department list is
+ *  empty — 21 of 25 live faculties ship zero departments; the old dead
+ *  select promised a choice that does not exist. */
+const NO_DEPARTMENTS_TEXT =
+  'لا توجد أقسام مسجّلة في هذه الكلّيّة بعد — اختر كلّيّة أخرى أو تواصل مع إدارة الجامعة.';
+
+/** Submit-level banner (r157 F5 finding 5 keeps role="alert" here — the
+ *  server's answer IS worth an announcement). D17-3 via authErrorView:
+ *  the backend's Arabic message verbatim; a 409 conflict (email already
+ *  registered) appends the login link, so the visitor's next step is one
+ *  honest click away instead of a guess. */
+function RegisterErrorBanner({ error }: { error: unknown }) {
+  const { serverMessage, isConflict } = authErrorView(error);
+  return (
+    <div className="auth-error" role="alert">
+      <Icon icon={AlertCircle} size={14} />
+      <span>
+        {serverMessage ?? GENERIC_REGISTER_ERROR}
+        {isConflict && (
+          <>
+            {' — '}
+            <Link to="/auth" className="auth-error-link">سجِّل الدخول</Link>
+          </>
+        )}
+      </span>
+    </div>
+  );
+}
 
 export default function RegisterPage() {
   useThemeSync();
@@ -144,11 +179,11 @@ export default function RegisterPage() {
             تسجيل الدخول
           </Link>
         )}
+        {/* r157 F5: on step 2 the login link is demoted to a quiet
+            .auth-context chip — the header carries ONE pill («تغيير
+            نوع الحساب»); a second loud action competed with it. */}
         {role ? (
-          <Link to="/auth" className="auth-back-home">
-            تسجيل الدخول
-            <Icon icon={ArrowLeft} size={14} />
-          </Link>
+          <Link to="/auth" className="auth-context">تسجيل الدخول</Link>
         ) : (
           <span className="auth-context">إنشاء حساب جديد</span>
         )}
@@ -197,8 +232,8 @@ export default function RegisterPage() {
                 {role === 'STUDENT' ? (
                   <StudentForm
                     form={studentForm}
+                    error={register.error}
                     isPending={register.isPending}
-                    isError={register.isError}
                     faculties={facultiesState}
                     onSubmit={async (values) => {
                       try {
@@ -210,8 +245,8 @@ export default function RegisterPage() {
                 ) : (
                   <TeacherForm
                     form={teacherForm}
+                    error={register.error}
                     isPending={register.isPending}
-                    isError={register.isError}
                     faculties={facultiesState}
                     onSubmit={async (values) => {
                       try {
@@ -282,24 +317,48 @@ interface FacultiesState {
   retry: () => void;
 }
 
-interface StudentFormProps {
-  /** Injected from RegisterPage — the RHF state must live ABOVE the
-   *  keyed step panel so step changes never destroy typed data
-   *  (audit 4-A13 P2-3). */
-  form: UseFormReturn<StudentInputs>;
-  faculties: FacultiesState;
+/** r157 F5: the failed mutation's error object (not a bare boolean) so
+ *  RegisterErrorBanner can read the backend's Arabic message verbatim
+ *  and detect the 409 conflict; `error` is null while idle/never-
+ *  submitted, `isPending` drives the submit button's busy state. */
+interface RegisterFormProps {
+  error: unknown;
   isPending: boolean;
-  isError: boolean;
+  faculties: FacultiesState;
+}
+
+interface StudentFormProps extends RegisterFormProps {
+  form: UseFormReturn<StudentInputs>;
   onSubmit: (values: StudentInputs) => Promise<void>;
 }
 
-function StudentForm({ form, faculties, isPending, isError, onSubmit }: StudentFormProps) {
+function StudentForm({ form, error, isPending, faculties, onSubmit }: StudentFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   const departments = useMemo(
     () => faculties.items.find((f) => f.id === facultyId)?.departments ?? [],
     [faculties, facultyId],
   );
+
+  // r157 F5: a chosen faculty with ZERO departments gets the honest
+  // NO_DEPARTMENTS box instead of a dead select that promises options.
+  const deptEmpty = faculties.status === 'ready' && !!facultyId && departments.length === 0;
+
+  // r157 F5: departmentId must reset when facultyId changes — the old
+  // department belongs to the old faculty; keeping it silently submitted
+  // a cross-faculty id the backend rejects with a generic 400.
+  const prevFacultyRef = useRef(facultyId);
+  useEffect(() => {
+    if (prevFacultyRef.current === facultyId) return;
+    prevFacultyRef.current = facultyId;
+    if (form.getValues('departmentId')) {
+      form.setValue('departmentId', '', { shouldValidate: false });
+    }
+  }, [facultyId, form]);
+
+  // ONE polite summary (r157 F5 finding 5): counts validation problems
+  // with countAr — field errors themselves stay describedby-only.
+  const issueCount = Object.values(form.formState.errors).filter(Boolean).length;
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="auth-form">
@@ -321,7 +380,9 @@ function StudentForm({ form, faculties, isPending, isError, onSubmit }: StudentF
 
       <Field label="كلمة المرور (8 أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-        <input className="input auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
+        {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
+            and masked glyphs must not bidi-flip in RTL. */}
+        <input className="input auth-input" type={showPassword ? 'text' : 'password'} dir="ltr" autoComplete="new-password" {...form.register('password')} />
         <button
           type="button"
           className="auth-input-toggle"
@@ -342,7 +403,12 @@ function StudentForm({ form, faculties, isPending, isError, onSubmit }: StudentF
 
       <div className="auth-row-2">
         <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
-          {faculties.status === 'loading' && <Skeleton className="auth-select-skeleton" />}
+          {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
+              itself — role=status + aria-busy via the Wave-1 Skeleton
+              aria-label contract. */}
+          {faculties.status === 'loading' && (
+            <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل الكليات" />
+          )}
           {faculties.status === 'error' && (
             <div className="auth-error" role="alert">
               <Icon icon={AlertCircle} size={14} />
@@ -359,28 +425,37 @@ function StudentForm({ form, faculties, isPending, isError, onSubmit }: StudentF
           </select>
           )}
         </Field>
-        <Field label="القسم" error={form.formState.errors.departmentId?.message}>
-          <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
-            <option value="">اختر…</option>
-            {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
+        <Field
+          label="القسم"
+          /* r157 F5: while the honest empty state is showing, the
+             «اختر القسم» error would name a control that doesn't exist —
+             the empty box IS the explanation, so the field error is
+             suppressed (the summary still counts the blocked field). */
+          error={deptEmpty ? undefined : form.formState.errors.departmentId?.message}
+        >
+          {deptEmpty ? (
+            <div className="auth-dept-empty">{NO_DEPARTMENTS_TEXT}</div>
+          ) : (
+            <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
+              <option value="">اختر…</option>
+              {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+          )}
         </Field>
       </div>
 
       <Field label="السنة الدراسية" error={form.formState.errors.year?.message}>
         <select className="auth-input" {...form.register('year')}>
-          {[1, 2, 3, 4, 5, 6, 7].map((y) => <option key={y} value={y}>السنة {y}</option>)}
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((y) => <option key={y} value={y}>السنة {y}</option>)}
         </select>
       </Field>
 
-      {isError && (
-        <div className="auth-error" role="alert">
-          <Icon icon={AlertCircle} size={14} />
-          <span>
-            تعذَّر إنشاء الحساب. راجع البيانات المدخلة وتأكَّد من اتصالك بالشبكة ثم أعد
-            المحاولة — وإن كان بريدك مسجَّلاً مسبقاً فجرِّب تسجيل الدخول.
-          </span>
-        </div>
+      {error != null && <RegisterErrorBanner error={error} />}
+
+      {issueCount > 0 && (
+        <p className="auth-form-summary" role="status" aria-live="polite">
+          {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
+        </p>
       )}
 
       <button type="submit" className="auth-submit" disabled={isPending}>
@@ -391,23 +466,33 @@ function StudentForm({ form, faculties, isPending, isError, onSubmit }: StudentF
   );
 }
 
-interface TeacherFormProps {
-  /** Injected from RegisterPage — same hoisting rationale as
-   *  StudentFormProps.form (audit 4-A13 P2-3). */
+interface TeacherFormProps extends RegisterFormProps {
   form: UseFormReturn<TeacherInputs>;
-  faculties: FacultiesState;
-  isPending: boolean;
-  isError: boolean;
   onSubmit: (values: TeacherInputs) => Promise<void>;
 }
 
-function TeacherForm({ form, faculties, isPending, isError, onSubmit }: TeacherFormProps) {
+function TeacherForm({ form, error, isPending, faculties, onSubmit }: TeacherFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const facultyId = form.watch('facultyId');
   const departments = useMemo(
     () => faculties.items.find((f) => f.id === facultyId)?.departments ?? [],
     [faculties, facultyId],
   );
+
+  // r157 F5: same honest empty state + departmentId reset as the student
+  // form — both step-2 paths share the contract.
+  const deptEmpty = faculties.status === 'ready' && !!facultyId && departments.length === 0;
+
+  const prevFacultyRef = useRef(facultyId);
+  useEffect(() => {
+    if (prevFacultyRef.current === facultyId) return;
+    prevFacultyRef.current = facultyId;
+    if (form.getValues('departmentId')) {
+      form.setValue('departmentId', '', { shouldValidate: false });
+    }
+  }, [facultyId, form]);
+
+  const issueCount = Object.values(form.formState.errors).filter(Boolean).length;
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="auth-form">
@@ -429,7 +514,9 @@ function TeacherForm({ form, faculties, isPending, isError, onSubmit }: TeacherF
 
       <Field label="كلمة المرور (8 أحرف على الأقل)" error={form.formState.errors.password?.message}>
         <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
-        <input className="input auth-input" type={showPassword ? 'text' : 'password'} autoComplete="new-password" {...form.register('password')} />
+        {/* dir="ltr": passwords are overwhelmingly Latin runs; the caret
+            and masked glyphs must not bidi-flip in RTL. */}
+        <input className="input auth-input" type={showPassword ? 'text' : 'password'} dir="ltr" autoComplete="new-password" {...form.register('password')} />
         <button
           type="button"
           className="auth-input-toggle"
@@ -443,7 +530,12 @@ function TeacherForm({ form, faculties, isPending, isError, onSubmit }: TeacherF
 
       <div className="auth-row-2">
         <Field label="الكلّيّة" error={form.formState.errors.facultyId?.message}>
-          {faculties.status === 'loading' && <Skeleton className="auth-select-skeleton" />}
+          {/* r157 F5 (6A11 #5 opt-in): the faculties skeleton announces
+              itself — role=status + aria-busy via the Wave-1 Skeleton
+              aria-label contract. */}
+          {faculties.status === 'loading' && (
+            <Skeleton className="auth-select-skeleton" aria-label="جارٍ تحميل الكليات" />
+          )}
           {faculties.status === 'error' && (
             <div className="auth-error" role="alert">
               <Icon icon={AlertCircle} size={14} />
@@ -460,11 +552,18 @@ function TeacherForm({ form, faculties, isPending, isError, onSubmit }: TeacherF
           </select>
           )}
         </Field>
-        <Field label="القسم" error={form.formState.errors.departmentId?.message}>
-          <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
-            <option value="">اختر…</option>
-            {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
+        <Field
+          label="القسم"
+          error={deptEmpty ? undefined : form.formState.errors.departmentId?.message}
+        >
+          {deptEmpty ? (
+            <div className="auth-dept-empty">{NO_DEPARTMENTS_TEXT}</div>
+          ) : (
+            <select className="auth-input" disabled={!facultyId} {...form.register('departmentId')}>
+              <option value="">اختر…</option>
+              {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+          )}
         </Field>
       </div>
 
@@ -480,14 +579,12 @@ function TeacherForm({ form, faculties, isPending, isError, onSubmit }: TeacherF
         </span>
       </div>
 
-      {isError && (
-        <div className="auth-error" role="alert">
-          <Icon icon={AlertCircle} size={14} />
-          <span>
-            تعذَّر إنشاء الحساب. راجع البيانات المدخلة وتأكَّد من اتصالك بالشبكة ثم أعد
-            المحاولة — وإن كان بريدك مسجَّلاً مسبقاً فجرِّب تسجيل الدخول.
-          </span>
-        </div>
+      {error != null && <RegisterErrorBanner error={error} />}
+
+      {issueCount > 0 && (
+        <p className="auth-form-summary" role="status" aria-live="polite">
+          {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
+        </p>
       )}
 
       <button type="submit" className="auth-submit" disabled={isPending}>
@@ -506,8 +603,18 @@ interface FieldProps {
 
 /** Labeled form field. The label is programmatically associated with the
  *  single input/select child (useId), and validation errors are wired via
- *  aria-describedby + aria-invalid so they are announced on focus, not only
- *  through the role="alert" live region (audit 0-b P0-3 / P1-6). */
+ *  aria-describedby + aria-invalid so they are announced on focus (audit
+ *  0-b P0-3 / P1-6).
+ *
+ *  DEVIATION (r157 F5, documented): this scaffold is intentionally NOT
+ *  migrated to primitives/Form.tsx's FormField — FormField hardwires
+ *  role="alert" on every field error, which would recreate the exact
+ *  alert storm finding 5 removed (7 simultaneous alerts on a failed
+ *  submit). The hand-rolled Field keeps the SAME ARIA contract
+ *  (useId + htmlFor + aria-invalid + aria-describedby) minus the
+ *  per-field role="alert"; the ONE polite countAr summary carries the
+ *  announcement instead. Migrate only after FormField grows a quiet
+ *  error variant (wave-3 hand-off). */
 function Field({ label, error, children }: FieldProps) {
   const id = useId();
   const errorId = `${id}-error`;
@@ -525,7 +632,7 @@ function Field({ label, error, children }: FieldProps) {
     <div className="auth-field">
       <label htmlFor={id} className="form-label">{label}</label>
       <div className="auth-input-wrap">{wired}</div>
-      {error && <span id={errorId} className="auth-field-error" role="alert">{error}</span>}
+      {error && <span id={errorId} className="auth-field-error">{error}</span>}
     </div>
   );
 }

@@ -220,11 +220,25 @@ export function AdminDashboardPage() {
 
   if (stats.isPending || facs.isPending || reports.isPending) return <PageSkeleton />;
   if (stats.isError || facs.isError || reports.isError) {
+    // r157 (6A9 #5): the early-error return keeps the page chrome
+    // (.page + header + h1) — the retry used to land on a chrome-less
+    // wall, so an API blip stripped the admin's bearings (which page
+    // am I on?) before offering the retry.
     return (
-      <ErrorState
-        error={stats.error ?? facs.error ?? reports.error}
-        onRetry={() => { stats.refetch(); facs.refetch(); reports.refetch(); }}
-      />
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">لوحة الإدارة</h1>
+            <p className="page-subtitle">إحصائيات حيّة عن طلاب وأساتذة جامعة الزاوية.</p>
+          </div>
+        </header>
+        <Card>
+          <ErrorState
+            error={stats.error ?? facs.error ?? reports.error}
+            onRetry={() => { stats.refetch(); facs.refetch(); reports.refetch(); }}
+          />
+        </Card>
+      </div>
     );
   }
   const s = stats.data!;
@@ -739,15 +753,34 @@ function PaperRow({ p }: { p: AdminPaper }) {
   );
 }
 
+/** countAr forms for the papers register — the footer's birth noun,
+ *  kept as the unit default (r157 / 6A9 #2). */
+const PAPER_UNIT: [string, string, string, string] = ['ورقة واحدة', 'ورقتان', 'أوراق', 'ورقة'];
+
 /** The pagination footer convention (OwnerUsersPage): bounded windowed
- *  page list inside .table-wrap, RTL-correct chevrons. */
-function TablePaginationFooter({
-  page, totalPages, total, onPage,
-}: { page: number; totalPages: number; total: number; onPage: (p: number) => void }) {
+ *  page list inside .table-wrap, RTL-correct chevrons.
+ *
+ *  r157 (6A9 #2): the counted-noun unit is a prop now — the countAr
+ *  [one, two, few, many] forms every call site already uses — so the
+ *  footer reads its roster's noun (papers «ورقة», courses «مقرّر»,
+ *  students «طالب») instead of the hardcoded «ورقة» it shipped with
+ *  back when the papers register was its only consumer. Exported: the
+ *  students roster (AdminExtraPages) joined the family this round. */
+export function TablePaginationFooter({
+  page, totalPages, total, unit = PAPER_UNIT, onPage,
+}: {
+  page: number;
+  totalPages: number;
+  total: number;
+  /** countAr forms — [one, two, few (3–10), many (11+)]. Defaults to
+   *  the papers noun (the register this footer was born on). */
+  unit?: [string, string, string, string];
+  onPage: (p: number) => void;
+}) {
   return (
     <div className="table-pagination">
       <span>
-        الصفحة {page} من {totalPages} · {countAr(total, ['ورقة واحدة', 'ورقتان', 'أوراق', 'ورقة'])}
+        الصفحة {page} من {totalPages} · {countAr(total, unit)}
       </span>
       <div className="table-pagination-actions">
         <button
@@ -929,7 +962,11 @@ export function AdminReportsPage() {
             description="ستظهر حركة البحوث هنا بعد رفع أول بحث."
           />
         ) : trendView === 'table' ? (
-          <div className="trend-table-wrap">
+          <div className="table-wrap">
+            {/* r157 (6A9 #6): the shared .table-wrap — the local
+                .trend-table-wrap rule (overflow-x only) is deleted from
+                admin.css; the canonical wrap adds the framed surface +
+                radius every sibling table already sits in. */}
             <table className="table tbl-stack">
               <thead>
                 <tr>
@@ -1078,6 +1115,7 @@ export function AdminReportsPage() {
                   page={papersMeta.page}
                   totalPages={papersMeta.totalPages}
                   total={papersMeta.total}
+                  unit={PAPER_UNIT}
                   onPage={setPapersPage}
                 />
               )}
@@ -1276,7 +1314,9 @@ export function AdminCoursesPage() {
           )}
         </div>
 
-        {coursesQ.isPending && <TableSkeleton rows={6} cols={7} />}
+        {/* 8 columns now — the r155c actions header made the skeleton's
+            cols={7} under-advertise the table it stands in for. */}
+        {coursesQ.isPending && <TableSkeleton rows={6} cols={8} />}
         {coursesQ.isError && (
           <ErrorState
             error={coursesQ.error}
@@ -1347,7 +1387,10 @@ export function AdminCoursesPage() {
                     <td className="admin-table-num font-mono" data-label="تسجيلات">{c.totalEnrollments}</td>
                     <td className="admin-table-num font-mono" data-label="محاضرات">{c.totalLectures}</td>
                     <td className="admin-table-num font-mono" data-label="الفصول">{c.offeringCount}</td>
-                    <td className="admin-table-num font-mono" data-label="الإجراءات">
+                    {/* r157 (6A9 #9): font-mono dropped — the actions cell
+                        carries Arabic button labels, not figures; the mono
+                        face was a copy-paste from the numeric neighbors. */}
+                    <td className="admin-table-num" data-label="الإجراءات">
                       <div className="flex items-center gap-2 justify-end">
                         <button
                           type="button"
@@ -1378,6 +1421,7 @@ export function AdminCoursesPage() {
                 page={meta.page}
                 totalPages={meta.totalPages}
                 total={meta.total}
+                unit={['مقرّر واحد', 'مقرّران', 'مقرّرات', 'مقرّراً']}
                 onPage={setPage}
               />
             )}

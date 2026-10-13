@@ -41,18 +41,18 @@
      overrides layer owns the render), margin:0 stays unique-live. */
   margin: 0;
 }
-.notif-panel-actions { display: flex; align-items: center; gap: 4px; }
+.notif-panel-actions { display: flex; align-items: center; gap: var(--sp-1); } /* r157: 4px → --sp-1 */
 .notif-panel-action {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1); /* r157: 4px → --sp-1 */
   padding: var(--sp-1-5) 8px; /* r153h: 6px → --sp-1-5 (الـ8px = --sp-2 — دين منفصل) */
   border: 0;
   background: transparent;
   color: var(--accent-ink, var(--accent));
   /* r155d: raw 12px → --fs-xs (exact rung). */
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold */
   cursor: pointer;
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
@@ -76,7 +76,7 @@
   max-height: 420px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 4px;
+  padding: var(--sp-1); /* r157: 4px → --sp-1 */
 }
 
 .notif-empty {
@@ -84,7 +84,9 @@
   flex-direction: column;
   align-items: center;
   gap: var(--sp-2);
-  padding: 48px 20px;
+  /* (r157 dead-declaration sweep: padding 48px/20px deleted — dead
+     since polish.css's overrides-layer .notif-empty re-specifies the
+     rendered 40px/20px (→ --sp-8/--sp-5 there, the live owner).) */
   text-align: center;
 }
 .notif-empty-icon {
@@ -101,7 +103,7 @@
   justify-content: center;
 }
 .notif-empty-text {
-  font-size: 13px;
+  font-size: var(--fs-sm); /* r157: 13px → --fs-sm (exact rung) */
   color: var(--text-muted);
   margin: 0;
 }
@@ -171,11 +173,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  /* (r157 dead-declaration sweep: gap 4px / font-size 13px /
+     font-weight 600 deleted — polish.css's overrides-layer
+     .notif-panel-viewall re-specifies all three (→ --sp-1/--fs-xs/
+     --fw-semibold there, the live owner). justify-content/padding/
+     transition below are properties polish does NOT own — they stay.) */
   /* r155d: raw 12px/16px → --sp-3/--sp-4 (exact rungs). */
   padding: var(--sp-3) var(--sp-4);
-  font-size: 13px;
-  font-weight: 600;
   color: var(--accent-ink, var(--accent));
   text-decoration: none;
   transition: background var(--t-fast) var(--ease);
@@ -204,7 +208,7 @@
      .bottom-nav (grid, topbar-bg, rule border). What survives here is
      exactly what polish never sets: the grid gap and the upward-anchored
      dock shadow.) */
-  gap: 4px;
+  gap: var(--sp-1); /* r157: 4px → --sp-1 */
   /* A subtle gradient line accent across the very top of the bar — looks
      like a hairline of light. Removes the hard slab feel of a flat top
      border. */
@@ -221,7 +225,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--sp-1); /* r157: 4px → --sp-1 */
   padding: var(--sp-1-5) 2px 4px; /* r153h: 6px → --sp-1-5 */
   border: 0;
   background: transparent;
@@ -230,7 +234,7 @@
   /* 5-C2 (A3 P3-8): font-size 10.5px + letter-spacing 0.01em removed —
      dead since the label re-declares both on itself (.bottom-nav-label
      is the item's only text; BottomNav.tsx renders icon + label spans). */
-  font-weight: 600;
+  font-weight: var(--fw-semibold); /* r157: 600 → --fw-semibold */
   border-radius: var(--r-lg);
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
@@ -277,7 +281,7 @@
 }
 
 .bottom-nav-label {
-  font-size: 11px;
+  font-size: var(--fs-xxs); /* r157: 11px → --fs-xxs (exact rung) */
   font-weight: 600;
   /* 5-C2 (A3 P2-5 / ruling #2): tracking removed (+0.055px rendered on
      «الرئيسية») — no letter-spacing on Arabic, ever. */
@@ -296,7 +300,7 @@
 
 .bottom-nav-item.active .bottom-nav-label {
   color: var(--accent-ink, var(--accent));
-  font-weight: 700;
+  font-weight: var(--fw-bold); /* r157: 700 → --fw-bold */
 }
 
 /* On tighter phones the labels can be condensed — the icon and gaps
@@ -380,6 +384,7 @@
 .toast-stack .toast[data-closing="true"] {
   animation: madarek-toast-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
 }
+/* المسافة 12px سعةُ حركةٍ بين درجتي ‎--motion-distance-small (6px) و‎--motion-distance-medium (16px) — ليست فراغًا ولا درجة حركة، فتبقى خامًا عمدًا ولا تُستبدل بـ‎--sp-3. */
 @keyframes madarek-toast-in {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: none; }

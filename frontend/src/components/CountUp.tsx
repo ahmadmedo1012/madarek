@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { readMotionDurationMs } from './overlays/useDelayedUnmount';
+import { useReducedMotion } from './motion/useReducedMotion';
 
 /**
  * CountUp — animates the numeric part of a marketing stat (e.g. "+50K", "#6",
@@ -36,6 +37,9 @@ function formatterFor(decimals: number): Intl.NumberFormat {
 
 export function CountUp({ value, duration }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
+  // r157 (lead): the one-shot matchMedia check missed an OS-level RM toggle
+  // mid-session; the reactive shared hook re-runs the engine on flip.
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
@@ -50,10 +54,7 @@ export function CountUp({ value, duration }: { value: string; duration?: number 
     const ms = duration ?? readMotionDurationMs('--motion-duration-stat', 700);
 
     const m = value.match(/([^\d]*)([\d.,]+)(.*)/);
-    const reduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!m || !m[2] || reduced) return; // keep real value, no animation
+    if (!m || !m[2] || reducedMotion) return; // keep real value, no animation
 
     const prefix = m[1] ?? '';
     const numStr = m[2];
@@ -99,7 +100,7 @@ export function CountUp({ value, duration }: { value: string; duration?: number 
     if (rect.top < window.innerHeight && rect.bottom > 0) run();
 
     return () => { obs.disconnect(); cancelAnimationFrame(raf); };
-  }, [value, duration]);
+  }, [value, duration, reducedMotion]);
 
   return <span ref={ref} data-numeric="true">{value}</span>;
 }

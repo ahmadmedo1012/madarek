@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Users, BookOpen, Activity, ShieldCheck, Server,
   Wifi, Radio, Settings, Search,
-  Download, RefreshCw, Mail, ChevronLeft, ChevronRight, X,
+  Download, RefreshCw, Mail, X,
   GraduationCap, UserMinus, AlertCircle,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
@@ -14,11 +14,17 @@ import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { toast } from '../../lib/toast';
 import { useFaculties, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
+import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
+import { TablePaginationFooter } from './AdminPages';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
-// (.admin-students-*, .admin-pagination, .digital-stat-*, .trend-table,
-// .settings-*, .top-courses-*) since "Sub-project D" — see its ownership
-// banner. It lands in the chunk shared with CollegePages / CompetitionsPages /
+// (.admin-students-*, .digital-stat-*, .settings-*, .top-courses-*)
+// since "Sub-project D" — see its ownership banner. It lands in the chunk
+// shared with CollegePages / CompetitionsPages /
 // LandingPage (the other consumers).
+// r157 (6A9 #6): .admin-pagination and .trend-table left the family list —
+// the pagination footer rides the shared .table-pagination system and the
+// trend table the canonical .table-wrap (both local rules deleted this
+// round from admin.css).
 import '../../styles/admin.css'; // r150e: admin-extras surfaces own their sheet now
 
 /* ───────────────────────── /admin/students ─────────────────────────
@@ -52,15 +58,11 @@ interface PaginatedStudents {
   meta: { total: number; page: number; limit: number; totalPages: number };
 }
 
-/** Grouped counted plural for the roster footer — ar-LY grouping like
- *  the OwnerUsersPage/AdminGovernancePages footers (countAr renders raw
- *  digits; a five-digit students total wants the separators). */
-function studentsCountLabel(n: number): string {
-  if (n === 1) return 'طالب واحد';
-  if (n === 2) return 'طالبان';
-  if (n >= 3 && n <= 10) return `${n.toLocaleString('ar-LY')} طلاب`;
-  return `${n.toLocaleString('ar-LY')} طالباً`;
-}
+/** Grouped counted plural for the roster footer — retired in r157
+ *  (6A9 #7): the footer is the shared TablePaginationFooter now, whose
+ *  count line uses countAr digits (the family convention — the old
+ *  ar-LY grouping label is gone; five-digit totals render ungrouped
+ *  like every sibling roster). */
 
 export function AdminStudentsPage() {
   const [searchParams] = useSearchParams();
@@ -154,11 +156,17 @@ export function AdminStudentsPage() {
           )}
         </div>
 
-        {studentsQ.isPending && <TableSkeleton rows={6} cols={7} />}
+        {/* 8 columns — the actions header makes the skeleton advertise the
+            full column count (r157 / 6A9 #9). */}
+        {studentsQ.isPending && <TableSkeleton rows={6} cols={8} />}
         {studentsQ.isError && <ErrorState error={studentsQ.error} message="تعذّر تحميل قائمة الطلاب" onRetry={() => studentsQ.refetch()} />}
         {studentsQ.data && (
           <>
-            <div className="admin-students-table-wrap">
+            {/* r157 (6A9 #6): the shared .table-wrap — the local
+                .admin-students-table-wrap rule (overflow-x + bleed edge)
+                is deleted from admin.css; the canonical wrap adds the
+                framed surface + radius every sibling roster sits in. */}
+            <div className="table-wrap">
               <table className="table tbl-stack">
                 <thead>
                   <tr>
@@ -223,36 +231,23 @@ export function AdminStudentsPage() {
                   ))}
                 </tbody>
               </table>
+              {/* r157 (6A9 #7): the shared TablePaginationFooter — the
+                  local .admin-pagination block is gone (dead rule in
+                  admin.css); the family footer brings the bounded
+                  pageList + aria-current=page + the countAr «طالب»
+                  count + server-side page requests. Rendered while rows
+                  exist so the roster total stays visible on single-page
+                  results (the old footer's contract). */}
+              {studentsQ.data.data.length > 0 && (
+                <TablePaginationFooter
+                  page={studentsQ.data.meta.page}
+                  totalPages={studentsQ.data.meta.totalPages}
+                  total={studentsQ.data.meta.total}
+                  unit={['طالب واحد', 'طالبان', 'طلاب', 'طالباً']}
+                  onPage={setPage}
+                />
+              )}
             </div>
-
-            {studentsQ.data.data.length > 0 && (
-              <div className="admin-pagination">
-                <span className="text-xs text-muted">
-                  الصفحة {studentsQ.data.meta.page} من {studentsQ.data.meta.totalPages} ·
-                  {' '}{studentsCountLabel(studentsQ.data.meta.total)}
-                </span>
-                <div className="admin-pagination-actions">
-                  <button
-                    type="button"
-                    className="btn ghost sm"
-                    disabled={studentsQ.data.meta.page === 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  >
-                    <Icon icon={ChevronRight} size={14} />
-                    السابق
-                  </button>
-                  <button
-                    type="button"
-                    className="btn ghost sm"
-                    disabled={studentsQ.data.meta.page >= studentsQ.data.meta.totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    التالي
-                    <Icon icon={ChevronLeft} size={14} />
-                  </button>
-                </div>
-              </div>
-            )}
           </>
         )}
       </Card>
@@ -274,6 +269,14 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
   const drop = useDropEnrollment();
   const [selectedOffering, setSelectedOffering] = useState('');
   const [error, setError] = useState<string | null>(null);
+  // r157 (6A9 #4): the enrollment whose drop is awaiting confirmation
+  // (null = dialog closed). Dropping deletes the enrollment AND the
+  // student's progress in the course — a ConfirmDialog gate, not a
+  // one-click button.
+  const [confirmingDrop, setConfirmingDrop] = useState<{
+    enrollmentId: string;
+    courseName: string;
+  } | null>(null);
   const busy = enroll.isPending || drop.isPending;
 
   const handleEnroll = async () => {
@@ -288,20 +291,12 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
     }
   };
 
-  const handleDrop = async (enrollmentId: string) => {
-    setError(null);
-    try {
-      await drop.mutateAsync({ enrollmentId, studentId: student.id });
-      toast.success('تمّ إلغاء التسجيل');
-    } catch (e) {
-      setError(apiErrorMessage(e, 'تعذَّر إلغاء التسجيل — حاول مرة أخرى.'));
-    }
-  };
-
   return (
     <Modal open onClose={onClose} ariaLabel={`تسجيلات ${student.firstName} ${student.lastName}`} closeOnOverlayClick={!busy} closeOnEscape={!busy}>
       <div className="modal-header">
-        <div className="modal-title">تسجيلات {student.firstName} {student.lastName}</div>
+        {/* r157 (6A9 #4): h3 — parity with the AdminPages course modal's
+            title; a dialog heading is a heading, not a styled div. */}
+        <h3 className="modal-title">تسجيلات {student.firstName} {student.lastName}</h3>
         <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={busy}>
           <Icon icon={X} size={16} />
         </button>
@@ -327,11 +322,13 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
                 <button
                   type="button"
                   className="btn ghost sm"
-                  onClick={() => void handleDrop(e.id)}
+                  onClick={() => setConfirmingDrop({ enrollmentId: e.id, courseName: e.offering.course.name })}
                   disabled={busy}
                 >
                   <Icon icon={UserMinus} size={13} />
-                  إلغاء التسجيل
+                  {/* Per-row pending via drop.variables — only the row
+                      whose drop is in flight reads «جارٍ الإلغاء…». */}
+                  {drop.isPending && drop.variables?.enrollmentId === e.id ? 'جارٍ الإلغاء…' : 'إلغاء التسجيل'}
                 </button>
               </div>
             ))
@@ -385,6 +382,35 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
           )}
         </div>
       </div>
+
+      {/* r157 (6A9 #4): the drop gate — a destructive, irreversible
+          delete (enrollment + the student's progress in the course)
+          behind the accessible ConfirmDialog (focus trap + Escape +
+          aria), danger tone, the course named in the message, and the
+          per-row pending state above carrying the in-flight signal.
+          Cancel closes the dialog only; nothing is deleted. */}
+      <ConfirmDialog
+        open={confirmingDrop !== null}
+        title="إلغاء التسجيل"
+        message={confirmingDrop
+          ? `سيُحذف تسجيل الطالب في «${confirmingDrop.courseName}» وتقدُّمه نهائيًا. لا يمكن التراجع عن هذا الإجراء.`
+          : ''}
+        confirmLabel="إلغاء نهائي"
+        danger
+        onCancel={() => setConfirmingDrop(null)}
+        onConfirm={async () => {
+          if (!confirmingDrop) return;
+          const target = confirmingDrop;
+          setConfirmingDrop(null);
+          setError(null);
+          try {
+            await drop.mutateAsync({ enrollmentId: target.enrollmentId, studentId: student.id });
+            toast.success('تمّ إلغاء التسجيل');
+          } catch (e) {
+            setError(apiErrorMessage(e, 'تعذَّر إلغاء التسجيل — حاول مرة أخرى.'));
+          }
+        }}
+      />
     </Modal>
   );
 }

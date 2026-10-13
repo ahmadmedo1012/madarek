@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from '../motion/useReducedMotion';
 
 /**
  * OrbitScene — «مدارات المعرفة» canvas engine (Orbit Ink edition).
@@ -136,6 +137,10 @@ function makeGlowSprite(size: number, rgb: readonly number[], coreAlpha: number)
 export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSceneProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [failed, setFailed] = useState(false);
+  // r157 (F2-14): the shared reactive hook — an OS-level RM toggle tears
+  // down + rebuilds the engine via the effect dep below (was a one-shot
+  // matchMedia read that froze the mode for the component's lifetime).
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const canvasNode = canvasRef.current;
@@ -151,7 +156,6 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     const ctx: CanvasRenderingContext2D = context;
 
     // ── environment tiers ─────────────────────────────────────────────
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const canHover = window.matchMedia('(hover: hover)').matches;
     const conn = (navigator as { connection?: { saveData?: boolean } }).connection;
     const saveData = Boolean(conn?.saveData);
@@ -628,7 +632,7 @@ export function OrbitScene({ className, density, biasX = 0, speed = 1 }: OrbitSc
     scheduleJump();
     setRunning(true);
     return teardown;
-  }, [density, biasX, speed]);
+  }, [density, biasX, speed, reducedMotion]);
 
   if (failed) return null;
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;

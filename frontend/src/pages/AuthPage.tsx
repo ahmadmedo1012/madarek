@@ -13,6 +13,9 @@ import { LibyaFlag } from '../components/LibyaFlag';
 import { useLogin } from '../hooks/useAuth';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { ROLE_HOME } from '../lib/nav';
+import { countAr } from '../lib/format';
+import { authErrorView } from '../lib/authErrors';
 import type { AppRole } from '../stores/auth.store';
 import type { AxiosError } from 'axios';
 
@@ -26,7 +29,8 @@ type LoginErrorBody = { error?: { code?: string; message?: string } };
  *  password that was fine). Detect the lockout — by status OR by the
  *  backend's TOO_MANY_REQUESTS code — and surface the honest Arabic
  *  message the backend already sends («محاولات دخول كثيرة — انتظر
- *  قليلاً ثم أعد المحاولة»). */
+ *  قليلاً ثم أعد المحاولة»). Ordered FIRST: the lockout branch wins
+ *  before the generic authErrorView path (r157 F5 finding 3). */
 function isRateLimitError(error: unknown): boolean {
   const ax = error as AxiosError<LoginErrorBody> | null;
   return ax?.response?.status === 429 || ax?.response?.data?.error?.code === 'TOO_MANY_REQUESTS';
@@ -38,10 +42,24 @@ function rateLimitMessage(error: unknown): string {
   return serverMessage ?? 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.';
 }
 
+/** Generic refusal ONLY for failures the server never answered (network)
+ *  — or Latin transport prose the Arabic guard rejected. When the backend
+ *  DID answer, its own Arabic message shows verbatim (authErrorView,
+ *  r157 F5 / D17-3). */
+const GENERIC_LOGIN_ERROR =
+  'تعذَّر تسجيل الدخول. تحقَّق من البريد وكلمة المرور وتأكَّد من اتصالك بالشبكة، ثم أعد المحاولة.';
+
 const loginSchema = z.object({
+  // Validation-first «مطلوب» (r157 F5): empty / whitespace-only input is
+  // answered with the ONE word that names the problem, before any shape
+  // check — same grammar as the register schema (D17-4). The value is
+  // trimmed before length (the identifier is sent trimmed, matching the
+  // backend's loginSchema), and email SHAPE is only checked when the
+  // field contains '@' (it also accepts university reg numbers).
   email: z
     .string()
-    .min(3, 'الحقل قصير جداً')
+    .trim()
+    .min(1, 'مطلوب')
     .max(120, 'الحقل طويل جداً')
     .refine(
       (v) => v.includes('@') ? z.string().email().safeParse(v).success : true,
@@ -50,14 +68,6 @@ const loginSchema = z.object({
   password: z.string().min(1, 'مطلوب'),
 });
 type LoginInputs = z.infer<typeof loginSchema>;
-
-const ROLE_HOME: Record<AppRole, string> = {
-  STUDENT: '/student/dashboard',
-  TEACHER: '/teacher/dashboard',
-  ADMIN:   '/admin/dashboard',
-  QUALITY: '/quality/dashboard',
-  OWNER:   '/owner/dashboard',
-};
 
 /** Demo credentials are a dev-only convenience. Gating on
  *  import.meta.env.DEV keeps known emails/passwords out of production
@@ -95,7 +105,10 @@ export default function AuthPage() {
   const login = useLogin();
   const [forgotNotice, setForgotNotice] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [demoHintOpen, setDemoHintOpen] = useState(true);
+  // r157 F5: the demo panel starts COLLAPSED — it is a dev convenience,
+  // never the first thing a real visitor should read. A quiet reopen
+  // chip (.auth-demo-hint-reopen) keeps it one honest click away.
+  const [demoHintOpen, setDemoHintOpen] = useState(false);
 
   const loginForm = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
@@ -123,13 +136,25 @@ export default function AuthPage() {
     loginForm.setValue('password', DEMO_PASSWORD, { shouldValidate: false });
   };
 
+  // r157 F5 (finding 5 — alert storm): field-level errors are
+  // aria-describedby-ONLY now (announced on focus, never shouted); ONE
+  // polite summary line below counts them with countAr.
+  const errors = loginForm.formState.errors;
+  const issueCount = [errors.email, errors.password].filter(Boolean).length;
+
+  // D17-3 via authErrorView: when the backend answered, ITS Arabic
+  // message wins verbatim (401 «البريد الإلكتروني أو كلمة المرور غير
+  // صحيحة», 403 «هذا الحساب معطّل…»); the generic line is for network
+  // silence only.
+  const authFailure = authErrorView(login.error);
+
   return (
     <div className="auth-shell">
 
       {/* imm-5 a11y fix (axe "all content in landmarks" — was a bare
           div): the page-level chrome reads as banner / contentinfo
           landmarks; <main> above already carried the form. RegisterPage
-          shares this structure but is outside this task's file scope. */}
+          shares this structure. */}
       <header className="auth-top">
         <Link to="/" className="auth-back-home">
           <Icon icon={Home} size={14} />
@@ -180,8 +205,11 @@ export default function AuthPage() {
                   {...loginForm.register('email')}
                 />
               </div>
+              {/* describedby-only (r157 F5): the span keeps its id/contract
+                  for aria-describedby wiring, but no longer role="alert" —
+                  the ONE summary line below is the announcement. */}
               {loginForm.formState.errors.email && (
-                <span id="auth-email-error" className="auth-field-error" role="alert">
+                <span id="auth-email-error" className="auth-field-error">
                   {loginForm.formState.errors.email.message}
                 </span>
               )}
@@ -191,9 +219,12 @@ export default function AuthPage() {
               <label htmlFor="auth-password" className="form-label">كلمة المرور</label>
               <div className="auth-input-wrap has-toggle">
                 <span className="auth-input-icon" aria-hidden><Icon icon={Lock} size={16} /></span>
+                {/* dir="ltr": passwords are overwhelmingly Latin runs; the
+                    caret and masked glyphs must not bidi-flip in RTL. */}
                 <input
                   id="auth-password"
                   type={showPassword ? 'text' : 'password'}
+                  dir="ltr"
                   className="input auth-input"
                   placeholder="••••••••"
                   autoComplete="current-password"
@@ -212,7 +243,7 @@ export default function AuthPage() {
                 </button>
               </div>
               {loginForm.formState.errors.password && (
-                <span id="auth-password-error" className="auth-field-error" role="alert">
+                <span id="auth-password-error" className="auth-field-error">
                   {loginForm.formState.errors.password.message}
                 </span>
               )}
@@ -234,16 +265,32 @@ export default function AuthPage() {
               <div className="auth-error" role="alert">
                 <Icon icon={AlertCircle} size={14} />
                 <span>
-                  {/* A13 P2-1: the lockout copy must name the lockout —
-                      credential advice during a 429 window is a lie. */}
+                  {/* A13 P2-1 first (the lockout copy must name the lockout);
+                      then D17-3: the backend's own Arabic message verbatim;
+                      the generic line only when the server never answered. */}
                   {isRateLimitError(login.error)
                     ? rateLimitMessage(login.error)
-                    : 'تعذَّر تسجيل الدخول. تحقَّق من البريد وكلمة المرور وتأكَّد من اتصالك بالشبكة، ثم أعد المحاولة.'}
+                    : (authFailure.serverMessage ?? GENERIC_LOGIN_ERROR)}
                 </span>
               </div>
             )}
 
-            <button type="submit" className="auth-submit" disabled={login.isPending}>
+            {/* ONE polite summary (r157 F5 finding 5): a single status
+                line counts the validation problems — instead of every
+                field error firing its own role="alert" (a 7-alert storm
+                on the register page). */}
+            {issueCount > 0 && (
+              <p className="auth-form-summary" role="status" aria-live="polite">
+                {countAr(issueCount, ['مشكلة واحدة', 'مشكلتان', 'مشاكل', 'مشكلة'])} في النموذج — راجع الحقول المعلّمة ثم أعد المحاولة.
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="auth-submit"
+              disabled={login.isPending}
+              aria-busy={login.isPending}
+            >
               {login.isPending ? (
                 <>
                   <span className="auth-submit-spinner" aria-hidden />
@@ -256,6 +303,27 @@ export default function AuthPage() {
                 </>
               )}
             </button>
+
+            {/* sr-only pending mirror (r157 F5): aria-busy alone is silent;
+                this polite region mounts with «جارٍ التحقق…» while the
+                request is in flight, so the flip to busy is announced —
+                without adding visible chrome. */}
+            {login.isPending && (
+              <span className="sr-only" role="status" aria-live="polite">
+                جارٍ التحقق…
+              </span>
+            )}
+
+            {SHOW_DEMO_LOGIN && !demoHintOpen && (
+              <button
+                type="button"
+                className="auth-demo-hint-reopen"
+                onClick={() => setDemoHintOpen(true)}
+              >
+                <Icon icon={FlaskConical} size={14} />
+                <span>عرض الحسابات التجريبية</span>
+              </button>
+            )}
 
             {SHOW_DEMO_LOGIN && demoHintOpen && (
               <div className="auth-demo-hint">

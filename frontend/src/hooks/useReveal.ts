@@ -39,6 +39,7 @@
  *        where scrollend is unsupported) reconcile anything the IO
  *        never saw. Content must never stay hidden behind a one-shot.
  */
+import { useReducedMotion } from '../components/motion/useReducedMotion';
 import { createElement, useEffect, useRef, type ReactNode, type ElementType } from 'react';
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -201,16 +202,16 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
   once?: boolean;
 }) {
   const ref = useRef<T | null>(null);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // Honour reduced-motion preference — show content immediately, no animation
-    const reducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
+    // Honour reduced-motion preference — show content immediately, no
+    // animation. r157 (lead): the reactive hook (see import) re-arms this
+    // effect when the OS preference flips mid-session — the one-shot
+    // matchMedia read used to leave stale animation state behind.
     if (reducedMotion) {
       el.classList.add('in-view');
       return;
@@ -252,7 +253,7 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
     attachBelt();
 
     return () => unregister(entry);
-  }, [options?.threshold, options?.rootMargin, options?.once]);
+  }, [options?.threshold, options?.rootMargin, options?.once, reducedMotion]);
 
   return ref;
 }

@@ -165,6 +165,18 @@ Course materials attached to an offering (consumed by `/offerings/:id/materials`
 | options | Json | Array of choices |
 | correctIndex | Int | |
 
+### CheckpointAnswer
+Last checkpoint answer per (student, checkpoint) — server memory so a resumed lecture never re-quizzes (r157 / 6A5). Upserted by the answer route; only checkpointId is ever projected back to the student (`GET /lectures/:id` → `answers`).
+
+| Field | Type | Notes |
+|-------|------|-------|
+| checkpointId | String | FK→Lecture (ON DELETE CASCADE) |
+| studentId | String | FK→User ("StudentCheckpointAnswers", ON DELETE CASCADE) |
+| answerIndex | Int | The last answer |
+| correct | Boolean | |
+| createdAt / updatedAt | DateTime | updatedAt moves on re-answer |
+| **Unique** | [checkpointId, studentId] | One row per (student, checkpoint) |
+
 ### WatchEvent
 | Field | Type | Notes |
 |-------|------|-------|
@@ -604,6 +616,7 @@ Course ──1:N── CourseOffering ──1:N── Enrollment / Material / Li
 CourseOffering ──1:N── Lecture ──1:N── LectureChapter
 CourseOffering ──1:N── Assignment ──1:N── Submission
 Lecture ──1:N── WatchEvent ──N:1── User
+LectureCheckpoint ──1:N── CheckpointAnswer ──N:1── User (r157 — checkpoint answer memory)
 KnowledgeConcept ──self:N:1── parent (hierarchical tree)
 CourseOffering ──1:N── ResearchPaper ──1:N── PaperAnnotation
 ExamTemplate ──N:M── Question (via ExamTemplateQuestion)

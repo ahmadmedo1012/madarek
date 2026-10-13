@@ -179,9 +179,12 @@ export function OwnerSystemPage() {
            * pattern (the users page's reference migration) — the bare
            * .owner-table clipped its 4 columns inside the card at
            * 390px; the stack pattern turns every row into a labelled
-           * card on phones instead. */
+           * card on phones instead. (6A10-7: the trailing
+           * owner-sync-table class was dead — no rule in owner.css
+           * ever matched it after the tbl-stack migration; the shared
+           * classes carry the whole contract.) */
           <div className="table-wrap">
-            <table className="table tbl-stack owner-sync-table">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col">التاريخ</th>
@@ -218,8 +221,19 @@ export function OwnerSystemPage() {
       {/* Feature Flags — already real data */}
       <Card title="أعلام الميزات (Feature Flags)" icon={Settings}>
         <div className="owner-list-pad">
-          {flagsQuery.isPending && <ListSkeleton rows={3} />}
-          {!flagsQuery.isPending && featureFlags.length === 0 && (
+          {/* 6A10-1: the error branch sits BEFORE the length check — a
+              failing flags query must never masquerade as "no flags
+              defined" (ruling #14, error ≠ empty; the sync + alerts
+              cards above already follow this order). */}
+          {flagsQuery.isPending ? (
+            <ListSkeleton rows={3} />
+          ) : flagsQuery.isError ? (
+            <ErrorState
+              message="تعذّر جلب أعلام الميزات"
+              error={flagsQuery.error}
+              onRetry={() => flagsQuery.refetch()}
+            />
+          ) : featureFlags.length === 0 ? (
             <EmptyState illustration="empty-search"
               title="لا توجد أعلام مُعرَّفة"
               /* 22-b (4-A7 P2-9): the old copy pointed at "إعدادات النظام"
@@ -229,17 +243,20 @@ export function OwnerSystemPage() {
                * end. */
               description="لم تُعرَّف أعلام ميزات بعد؛ تُدار حالياً مباشرةً من قاعدة بيانات المنصّة."
             />
+          ) : (
+            <>
+              {featureFlags.map((flag) => (
+                <ToggleSwitch
+                  key={flag.slug}
+                  label={flag.name}
+                  description={flag.description ?? undefined}
+                  checked={flag.enabled}
+                  onChange={() => handleFlagToggle(flag)}
+                  disabled={toggleFlag.isPending}
+                />
+              ))}
+            </>
           )}
-          {featureFlags.map((flag) => (
-            <ToggleSwitch
-              key={flag.slug}
-              label={flag.name}
-              description={flag.description ?? undefined}
-              checked={flag.enabled}
-              onChange={() => handleFlagToggle(flag)}
-              disabled={toggleFlag.isPending}
-            />
-          ))}
         </div>
       </Card>
 
@@ -307,8 +324,17 @@ export function OwnerSystemPage() {
       {/* Platform settings — already real data */}
       <Card title="إعدادات المنصّة" icon={Settings}>
         <div className="owner-list-pad">
+          {/* 6A10-1: same ordering contract as the flags card above —
+              error state (with retry) BEFORE the empty state, never a
+              failed fetch dressed up as "no settings defined". */}
           {settingsQuery.isPending ? (
             <ListSkeleton rows={3} />
+          ) : settingsQuery.isError ? (
+            <ErrorState
+              message="تعذّر جلب إعدادات المنصّة"
+              error={settingsQuery.error}
+              onRetry={() => settingsQuery.refetch()}
+            />
           ) : settings.length === 0 ? (
             <EmptyState illustration="empty-search"
               title="لا توجد إعدادات مُعرَّفة"

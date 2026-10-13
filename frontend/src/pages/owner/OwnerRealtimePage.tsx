@@ -22,9 +22,17 @@ function liveLabel(text: string) {
   );
 }
 
-function tickValue(n: number) {
+function tickValue(n: number, label: string) {
   return (
     <bdi key={n} className="owner-value-tick">
+      {/* 6A10-5: the value node carries its own label — the keyed
+          remount (re-anchored bdi) is what the polite live region
+          announces, and a bare «١٢٤٠» means nothing out of context.
+          The sr-only span makes the announcement «التسمية: القيمة»;
+          the tile's visible label above is unchanged for sighted
+          users (the label is NOT re-announced on tick — only the
+          changed value subtree is). */}
+      <span className="sr-only">{`${label}: `}</span>
       {n.toLocaleString('ar-LY')}
     </bdi>
   );
@@ -38,6 +46,13 @@ export function OwnerRealtimePage() {
   // "Healthy" is only claimed after the alerts query answered — the
   // band degrades honestly on error/pending instead of a fake "live".
   const hasAlerts = alerts.isSuccess && unresolvedAlerts.length > 0;
+  /* 6A10-9: a failed REFRESH keeps the last reading — TanStack Query
+   * retains the last successful data through a refetch error, so the
+   * page degrades its status band instead of blanking to a full-page
+   * error. The full clear is reserved for the INITIAL load failure
+   * (no data ever landed — nothing honest to keep). */
+  const refreshFailed = realtime.isError && !!data;
+  const anyDegraded = refreshFailed || alerts.isError;
 
   return (
     <div className="page">
@@ -54,27 +69,38 @@ export function OwnerRealtimePage() {
           <KpiSkeleton />
           <CardSkeleton lines={5} />
         </>
-      ) : realtime.isError || !data ? (
+      ) : !data ? (
+        /* 6A10-9: initial load failure (no data ever landed) — the
+           ONLY path that full-clears the page. */
         <ErrorState error={realtime.error} onRetry={() => realtime.refetch()} />
       ) : (
         <>
           <div
-            className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}${alerts.isPending ? ' is-pending' : ''}${alerts.isError ? ' is-degraded' : ''}`}
-            role={alerts.isError ? 'alert' : undefined}
+            className={`owner-live-status${hasAlerts ? ' has-alerts' : ''}${alerts.isPending ? ' is-pending' : ''}${anyDegraded ? ' is-degraded' : ''}`}
+            role={anyDegraded ? 'alert' : undefined}
           >
             <div className="owner-live-pulse" />
             <span className="status-text">
-              {alerts.isPending
-                ? 'جارٍ جلب حالة التنبيهات…'
-                : alerts.isError
-                  ? 'تعذّر جلب حالة التنبيهات'
-                  : hasAlerts
-                    ? `يوجد ${countAr(unresolvedAlerts.length, ACTIVE_ALERT_FORMS)}`
-                    : 'النظام يعمل بشكل طبيعيّ'}
+              {refreshFailed
+                ? 'تعذّر تحديث القراءات — آخر قراءة محفوظة'
+                : alerts.isPending
+                  ? 'جارٍ جلب حالة التنبيهات…'
+                  : alerts.isError
+                    ? 'تعذّر جلب حالة التنبيهات'
+                    : hasAlerts
+                      ? `يوجد ${countAr(unresolvedAlerts.length, ACTIVE_ALERT_FORMS)}`
+                      : 'النظام يعمل بشكل طبيعيّ'}
             </span>
             <div className="owner-live-tools">
-              {alerts.isError && (
-                <button type="button" className="btn ghost sm" onClick={() => alerts.refetch()}>
+              {anyDegraded && (
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => {
+                    if (refreshFailed) void realtime.refetch();
+                    if (alerts.isError) void alerts.refetch();
+                  }}
+                >
                   <Icon icon={RefreshCw} size={12} />
                   إعادة المحاولة
                 </button>
@@ -94,10 +120,10 @@ export function OwnerRealtimePage() {
               r149 (R3-A1 #9): grid-4 الكنونية — كانت شبكة خاصة بفجوة
               وكسر مختلفين عن كل شرائط KPI في المنصة. */}
           <section className="grid-4" aria-live="polite" aria-label="مؤشرات المراقبة الحيّة للمنصّة">
-            <MetricCard icon={Activity} label={liveLabel('الجلسات النشطة')} value={tickValue(data.activeSessions)} color="brand" />
-            <MetricCard icon={Bot} label={liveLabel('طلبات AI / دقيقة')} value={tickValue(data.aiRequestsPerMin)} color="gold" />
-            <MetricCard icon={MonitorPlay} label={liveLabel('بثّ مباشر')} value={tickValue(data.liveBroadcasts)} color="purple" />
-            <MetricCard icon={FileCheck} label={liveLabel('اختبارات جارية')} value={tickValue(data.activeExams)} color="green" />
+            <MetricCard icon={Activity} label={liveLabel('الجلسات النشطة')} value={tickValue(data.activeSessions, 'الجلسات النشطة')} color="brand" />
+            <MetricCard icon={Bot} label={liveLabel('طلبات AI / دقيقة')} value={tickValue(data.aiRequestsPerMin, 'طلبات AI / دقيقة')} color="gold" />
+            <MetricCard icon={MonitorPlay} label={liveLabel('بثّ مباشر')} value={tickValue(data.liveBroadcasts, 'بثّ مباشر')} color="purple" />
+            <MetricCard icon={FileCheck} label={liveLabel('اختبارات جارية')} value={tickValue(data.activeExams, 'اختبارات جارية')} color="green" />
           </section>
 
           <Card title="ملخّص النشاط الحيّ" icon={Radio}>

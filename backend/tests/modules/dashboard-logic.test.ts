@@ -31,11 +31,15 @@
  * needs a DB harness the project does not have yet.
  */
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { AssignmentType, AttendanceStatus, Prisma, ResearchPaperStatus, SubmissionStatus } from '@prisma/client';
 import {
   attendancePctFromStatusCounts as teacherAttendancePct,
   attendanceAlertFeedItem,
   avgGradePctFromGroups,
+  PENDING_QUEUE_TAKE,
+  PENDING_SUBMISSION_STATUSES,
+  pendingSubmissionWhere,
   researchFeedItem,
   submissionFeedItem,
   TEACHER_FEED_ACTIONS,
@@ -353,7 +357,9 @@ describe('submissionFeedItem (pending-submissions feed, `late` flag)', () => {
       meta: 'مقرّر CS101 · CS101',
       when: row.submittedAt,
       title: 'سلّم واجب الفصل الأول',
-      actionTo: '/teacher/grades',
+      // r157 / 6A8 — the submissions CTA walks the full queue on the
+      // Assignments page, not the grades analytics table.
+      actionTo: '/teacher/assignments',
       late: false,
       textAnswer: 'حلّ الواجب بالكامل مع الشرح.',
       fileUrl: null,
@@ -402,6 +408,8 @@ describe('TEACHER_FEED_ACTIONS + feed item actionTo prefixes (5-A4/5-A7 P1-1)', 
       grades: '/teacher/grades',
       research: '/teacher/research',
       attendance: '/teacher/attendance',
+      // r157 / 6A8 — the pending-submissions CTA walks the full queue.
+      submissions: '/teacher/assignments',
     });
     for (const path of Object.values(TEACHER_FEED_ACTIONS)) {
       expect(path.startsWith('/teacher/')).toBe(true);
@@ -409,10 +417,85 @@ describe('TEACHER_FEED_ACTIONS + feed item actionTo prefixes (5-A4/5-A7 P1-1)', 
   });
 
   it('every feed bucket builder stamps its action with the prefixed route', () => {
-    expect(submissionFeedItem(pendingSub()).actionTo).toBe(TEACHER_FEED_ACTIONS.grades);
+    expect(submissionFeedItem(pendingSub()).actionTo).toBe(TEACHER_FEED_ACTIONS.submissions);
     expect(researchFeedItem(pendingPaper()).actionTo).toBe(TEACHER_FEED_ACTIONS.research);
     expect(attendanceAlertFeedItem({ studentId: 'st1', _count: { studentId: 3 } }, ABSENT_STUDENT, new Date()).actionTo)
       .toBe(TEACHER_FEED_ACTIONS.attendance);
+  });
+
+  it('r157 / 6A8 — the submissions CTA walks the queue: /teacher/assignments, never the grades table', () => {
+    // The explicit pin: the dashboard's pending-submission CTA must land
+    // on the one page that consumes /me/pending-submissions. The old
+    // TEACHER_FEED_ACTIONS.grades target showed averages, not the rows
+    // awaiting a grade.
+    expect(TEACHER_FEED_ACTIONS.submissions).toBe('/teacher/assignments');
+    expect(submissionFeedItem(pendingSub()).actionTo).toBe('/teacher/assignments');
+  });
+});
+
+// ─── r157 / 6A8 — the pending-submissions queue (shared filter) ──────────────
+
+/* The live route source, scanned for the wiring pins (same technique as
+ * checkpoint-attempts.test.ts — the file is the contract). */
+const dashboardRouteSource = readFileSync(
+  new URL('../../src/http/routes/teacher-dashboard.routes.ts', import.meta.url),
+  'utf8',
+);
+
+describe('pendingSubmissionWhere (r157 / 6A8 — the ONE shared pending set)', () => {
+  it('PENDING_SUBMISSION_STATUSES is exactly SUBMITTED + LATE (audit 15-a P0-1)', () => {
+    // GRADED rows leave the set (graded = done); RETURNED/anything else
+    // never rides the teacher's grading-discovery surface.
+    expect([...PENDING_SUBMISSION_STATUSES]).toEqual(['SUBMITTED', 'LATE']);
+  });
+
+  it('scopes rows to the given offerings, in the shared status set', () => {
+    expect(pendingSubmissionWhere(['off1', 'off2'])).toEqual({
+      assignment: { offeringId: { in: ['off1', 'off2'] } },
+      status: { in: ['SUBMITTED', 'LATE'] },
+    });
+  });
+
+  it('an empty offering list degrades to the impossible membership (matches zero rows, never throws)', () => {
+    // The zero-offering teacher: the routes short-circuit before the
+    // query, but the filter itself must stay well-formed either way.
+    expect(pendingSubmissionWhere([])).toEqual({
+      assignment: { offeringId: { in: [] } },
+      status: { in: ['SUBMITTED', 'LATE'] },
+    });
+  });
+
+  it('PENDING_QUEUE_TAKE is the documented 100-row queue ceiling', () => {
+    expect(PENDING_QUEUE_TAKE).toBe(100);
+  });
+});
+
+describe('pending-submissions wiring (source-scan pins — 6A8, no drift)', () => {
+  it('GET /teacher/me/pending-submissions exists and consumes the shared filter', () => {
+    expect(dashboardRouteSource).toContain("router.get('/me/pending-submissions'");
+    // The queue consumes the exported helper — a re-inlined twin would
+    // pass pure-function tests while drifting from the KPI/feed.
+    expect(dashboardRouteSource).toMatch(
+      /router\.get\('\/me\/pending-submissions',[\s\S]*?where: pendingSubmissionWhere\(offeringIds\),/,
+    );
+  });
+
+  it('the queue is oldest-first and capped at PENDING_QUEUE_TAKE', () => {
+    // Oldest first: the work that has waited the longest tops the
+    // queue (the dashboard feed stays newest-first — different
+    // purpose, pinned separately below).
+    expect(dashboardRouteSource).toMatch(
+      /router\.get\('\/me\/pending-submissions',[\s\S]*?orderBy: \{ submittedAt: 'asc' \},\s*take: PENDING_QUEUE_TAKE,/,
+    );
+  });
+
+  it('THREE call-sites of pendingSubmissionWhere — the KPI count, the dashboard feed, and the queue can never drift', () => {
+    const callSites = dashboardRouteSource.match(/pendingSubmissionWhere\(offeringIds\)/g) ?? [];
+    expect(callSites.length).toBe(3);
+    // …and the old inline twin is gone from the file entirely.
+    expect(dashboardRouteSource).not.toContain(
+      'status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.LATE] }',
+    );
   });
 });
 

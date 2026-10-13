@@ -212,7 +212,15 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
                 {resolved === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}
               </DropdownItem>
               <DropdownSeparator />
-              <DropdownItem onSelect={() => { setMenuOpen(false); logoutM.mutate(); navigate('/'); }}>
+              {/* r157 (6A4-4): unified with the Sidebar's logout — the
+                  redirect rides onSettled (both success and error
+                  paths) so it fires strictly AFTER useLogout's
+                  hook-level onSettled has cleared the auth store +
+                  query cache. The old click handler navigated to '/'
+                  immediately, racing the async POST /auth/logout: the
+                  dashboard re-rendered mid-flight and the landing
+                  flash replaced whatever the user was looking at. */}
+              <DropdownItem onSelect={() => { setMenuOpen(false); logoutM.mutate(undefined, { onSettled: () => navigate('/auth', { replace: true }) }); }}>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--c-rose-deep)' }}>
                   <Icon icon={LogOut} size={14} />
                   تسجيل الخروج

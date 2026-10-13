@@ -13,7 +13,7 @@
  *   6. Publications & awards
  *   7. Courses currently teaching
  */
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   GraduationCap, Award, BookOpen, Users2, MapPin, Clock, Globe,
@@ -24,6 +24,7 @@ import { Card, Badge, MetricCard, UserAvatar, FormField } from '../../components
 import { DetailSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
+import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import {
   useMyTeacherProfile, useUpdateTeacherProfile, apiErrorMessage,
 } from '../../hooks/useResources';
@@ -58,6 +59,33 @@ export default function TeacherProfilePage() {
   // stuck + an unhandled rejection.
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+
+  /* r157 / 6A9 — cancelEdit routes through the shared useDiscardGuard
+   * (the same confirm the curriculum builders and both grading modals
+   * use): the four inline fields are minutes of typing the old cancel
+   * dropped silently. Dirty → confirm → «متابعة التحرير» keeps the
+   * draft, «التخلّي عن التعديلات» discards it.
+   *
+   * HOOK ORDER: this block runs BEFORE the pending/error/no-profile
+   * early returns below — a hook after an early return is the LabsPage
+   * conditional-skip crash pattern (never skip a hook). */
+  const dirty = editing
+    && draft !== null
+    && profile != null
+    && (draft.bio !== (profile.bio ?? '')
+      || draft.officeLocation !== (profile.officeLocation ?? '')
+      || draft.officeHours !== (profile.officeHours ?? '')
+      || draft.websiteUrl !== (profile.websiteUrl ?? ''));
+  const discardDraft = useCallback(() => {
+    setDraft(null);
+    setSaveError(null);
+    setEditing(false);
+  }, []);
+  const { requestClose: requestCancelEdit, guard: discardGuard } = useDiscardGuard({
+    dirty,
+    pending: update.isPending,
+    onClose: discardDraft,
+  });
 
   if (isPending) return <DetailSkeleton />;
   if (isError) {
@@ -109,11 +137,9 @@ export default function TeacherProfilePage() {
     setEditing(true);
   };
 
-  const cancelEdit = () => {
-    setDraft(null);
-    setSaveError(null);
-    setEditing(false);
-  };
+  // r157 / 6A9 — cancelEdit IS requestCancelEdit (the discard guard
+  // above); a clean form cancels directly, a dirty one confirms first.
+  const cancelEdit = requestCancelEdit;
 
   const saveEdit = async () => {
     if (!draft) return;
@@ -334,7 +360,16 @@ export default function TeacherProfilePage() {
             </div>
           )}
         </Card>
-        <Card title="الشهادات والاعتمادات" icon={GraduationCap} subtitle={`${profile.certifications.length} شهادة`}>
+        <Card
+          title="الشهادات والاعتمادات"
+          icon={GraduationCap}
+          /* r157 / 6A9 — countAr grammar: «3 شهادات» (the old
+           * `${n} شهادة` template broke at 0 and 2); the zero case
+           * names the reality like the body copy does. */
+          subtitle={profile.certifications.length === 0
+            ? 'لم تُضف شهادة'
+            : countAr(profile.certifications.length, ['شهادة واحدة', 'شهادتان', 'شهادات', 'شهادة'])}
+        >
           {profile.certifications.length === 0 ? (
             <div className="text-sm text-muted">لم تُضف شهادات.</div>
           ) : (
@@ -354,7 +389,13 @@ export default function TeacherProfilePage() {
       </div>
 
       {/* Publications & awards */}
-      <Card title="المنشورات العلمية" icon={FileText} subtitle={`${profile.publications.length} منشور`}>
+      <Card
+        title="المنشورات العلمية"
+        icon={FileText}
+        subtitle={profile.publications.length === 0
+          ? 'لم تُضف منشورات'
+          : countAr(profile.publications.length, ['منشور واحد', 'منشوران', 'منشورات', 'منشوراً'])}
+      >
         {profile.publications.length === 0 ? (
           <EmptyState illustration="empty-search"
             icon={FileText}
@@ -381,7 +422,13 @@ export default function TeacherProfilePage() {
         )}
       </Card>
 
-      <Card title="التكريمات والجوائز" icon={Award} subtitle={`${profile.awards.length} جائزة`}>
+      <Card
+        title="التكريمات والجوائز"
+        icon={Award}
+        subtitle={profile.awards.length === 0
+          ? 'لم تُضف جائزة'
+          : countAr(profile.awards.length, ['جائزة واحدة', 'جائزتان', 'جوائز', 'جائزة'])}
+      >
         {profile.awards.length === 0 ? (
           <EmptyState illustration="empty-search"
             icon={Award}
@@ -440,6 +487,9 @@ export default function TeacherProfilePage() {
           </div>
         )}
       </Card>
+
+      {/* r157 / 6A9 — the discard-confirm for cancelEdit (portal-mounted). */}
+      {discardGuard}
     </div>
   );
 }

@@ -5,6 +5,8 @@
  *   - interactive pills are buttons that expose their toggle state
  *     via aria-pressed (not just the visual `on` class)
  *   - a pill without onClick renders as a span — never a fake control
+ *   - the trailing slot (r157, audit 6A11 #6) renders AFTER children,
+ *     as-is, in both the interactive and passive forms
  * UserAvatar:
  *   - no aria-label: initials are not a name, and an aria-label on a
  *     generic span is ignored by the accessibility tree anyway; the
@@ -14,6 +16,10 @@
  *     into a visually-hidden span; aria-busy flags the request) —
  *     NOT a generic "جارٍ التحميل…" replacement
  *   - loading disables the button (native disabled + aria-disabled)
+ * Button[variant] (r157, audit 6A11 #8):
+ *   - the 'success' variant maps to the live .btn.success class (the
+ *     rule exists since wave 5-c; its raw consumer is the exams
+ *     moderation surface)
  */
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -54,6 +60,27 @@ describe('Pill', () => {
     render(<Pill onClick={onClick}>اضغط</Pill>);
     fireEvent.click(screen.getByRole('button', { name: 'اضغط' }));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the trailing slot AFTER children, as-is (r157)', () => {
+    // Passive form: span → children → trailing (the consumer owns the
+    // trailing node's own contract, e.g. a page-level count badge).
+    const { container } = render(
+      <Pill trailing={<span className="filter-pill-count">3</span>}>
+        المكتبة
+      </Pill>,
+    );
+    const pill = container.querySelector('.pill')!;
+    expect(pill.lastElementChild).toHaveClass('filter-pill-count');
+    expect(pill.lastElementChild).toHaveTextContent('3');
+    // children come before the trailing slot
+    expect(pill.textContent).toBe('المكتبة3');
+
+    // Interactive form keeps the same order (the only button in scope).
+    render(<Pill onClick={() => {}} trailing={<span>7</span>}>مراجَعة</Pill>);
+    const btn = screen.getByRole('button');
+    expect(btn).toHaveTextContent('مراجَعة');
+    expect(btn.lastElementChild).toHaveTextContent('7');
   });
 });
 
@@ -112,6 +139,17 @@ describe('Button[loading]', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: 'إرسال' }));
     expect(onClick).not.toHaveBeenCalled();
+  });
+});
+
+describe('Button[variant=success] (r157 — .btn.success joins the map)', () => {
+  it('maps the success variant onto the live .btn.success class', () => {
+    render(<Button variant="success">اعتماد</Button>);
+    const btn = screen.getByRole('button', { name: 'اعتماد' });
+    expect(btn.className).toBe('btn success');
+    // Idle (not loading): no busy contract fired.
+    expect(btn.getAttribute('aria-busy')).toBeNull();
+    expect(btn.getAttribute('data-loading')).toBeNull();
   });
 });
 

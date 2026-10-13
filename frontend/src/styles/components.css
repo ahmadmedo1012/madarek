@@ -115,7 +115,7 @@
     padding-block-end: 0;
     margin-block-end: var(--sp-4);
   }
-  .card-title-block { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; }
+  .card-title-block { display: flex; flex-direction: column; gap: var(--sp-1); min-inline-size: 0; }
   .card-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-sm);
@@ -216,7 +216,7 @@
     color: var(--text-muted);
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     font-variant-numeric: tabular-nums;
   }
   /* 16-E8: .metric-change .up/.dn deleted with MetricCard.changeDirection —
@@ -273,7 +273,7 @@
       background: var(--surface);
       border: 1px solid var(--rule);
       border-radius: var(--r-md);
-      gap: 4px;
+      gap: var(--sp-1);
     }
     .compact-kpi-value { font-size: var(--type-metric-size); line-height: 1.1; }
   }
@@ -364,15 +364,23 @@
        r148 (H2) كان يوهم بأن السجل موحّد من هنا. نُفِّذ العقد فعليًا
        هناك: كل خصائص hover على --t-fast. */
   }
-  .btn.primary:hover {
+  /* r157 (audit 6A11 #3): the hover choreography is now :not(:disabled)-
+     gated (premium-h shadow, the −2px lift, the sheen below) — a busy
+     or disabled button must not lift/glow under the cursor. The polish
+     layer's .btn.primary:hover:not(:disabled) gates complete the pair
+     on the overrides layer; this is the components-layer half. */
+  .btn.primary:hover:not(:disabled) {
     box-shadow: var(--shadow-card-premium-h);
   }
   /* N1 (r133-F7): the primary −2px lift rides the same 5-C1 hover-capable
      gate as the −1px above — ungated (this rule originally sat at equal
      specificity after the gate, so it won everywhere and iOS sticky-hover
-     pinned the lift on first tap); shadow stays ungated like .btn:hover. */
+     pinned the lift on first tap); shadow stays ungated like .btn:hover.
+     r157: gated on :not(:disabled) — the .btn:disabled:hover freeze
+     above was defeated layer-order-wise by this later
+     equal-specificity rule. */
   @media (hover: hover) and (pointer: fine) {
-    .btn.primary:hover { transform: translateY(-2px); }
+    .btn.primary:hover:not(:disabled) { transform: translateY(-2px); }
   }
   .btn.primary::before {
     content: '';
@@ -400,7 +408,7 @@
     transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.primary:hover::before { background-position: -60% 0; }
+  .btn.primary:hover:not(:disabled)::before { background-position: -60% 0; }
   [data-theme="dark"] .btn.primary {
     /* مدارك night: the old ink-slab (#F2EFE6 cream on charcoal) reads
        as a glaring white highlighter on the night ground. Primary
@@ -441,8 +449,8 @@
     transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.accent:hover::before,
-  .btn.gold:hover::before { background-position: -60% 0; }
+  .btn.accent:hover:not(:disabled)::before,
+  .btn.gold:hover:not(:disabled)::before { background-position: -60% 0; }
 
   /* مدارك night — the gold CTA becomes metal: the landing's exact CTA
      treatment (145° gold → deep-gold gradient + soft outer glow), so
@@ -459,8 +467,8 @@
     --_btn-bg-hover: linear-gradient(145deg, var(--accent-hover) 0%, var(--accent) 100%);
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
   }
-  [data-theme="dark"] .btn.accent:hover,
-  [data-theme="dark"] .btn.gold:hover {
+  [data-theme="dark"] .btn.accent:hover:not(:disabled),
+  [data-theme="dark"] .btn.gold:hover:not(:disabled) {
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
@@ -473,6 +481,21 @@
   :root:not([data-theme="dark"]) .btn.gold {
     --_btn-bg-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
     --_btn-bd-hover: color-mix(in oklab, var(--accent) 86%, var(--neutral-0));
+  }
+
+  /* r157 (audit 6A11 #3): the in-flight freeze, LOCALLY. motion.css owns
+     the contract (.btn[data-loading="true"]:hover in @layer components)
+     but loads BEFORE this sheet — every equal-specificity hover rule
+     above (the elev-2 glow, the lifts, the halo) defeated it
+     layer-wise, so a busy button still lifted/glowed under the cursor.
+     Re-asserted at the end of the button family so the freeze wins
+     inside this layer too; the polish.css :not(:disabled) gates
+     complete the pair on the overrides layer. transform+shadow only —
+     the bg/border hover tint may keep painting (it is the busy state's
+     own affordance). */
+  .btn[data-loading="true"]:hover {
+    transform: none;
+    box-shadow: var(--_btn-shadow);
   }
 
   .btn.ghost {
@@ -514,9 +537,11 @@
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
   .btn.lg  { block-size: 48px; padding-inline: var(--sp-6); font-size: var(--type-body-size); border-radius: var(--r-md); }
-  .btn.xl  { block-size: 56px; padding-inline: var(--sp-7); font-size: var(--type-body-size-lg); border-radius: var(--r-md); font-weight: var(--fw-semibold); }
   .btn.full { inline-size: 100%; }
-  .btn.pill { border-radius: var(--r-full); }
+  /* r157 dead-selector sweep (audit 6A11 #8, fresh-rg verified): .btn.xl
+     and .btn.pill deleted — zero TSX consumers render either modifier
+     (the Button primitive caps at sm/md/lg; pill radii live on
+     .pill/.icon-btn families). */
 
   .icon-btn {
     inline-size: 38px;
@@ -543,10 +568,10 @@
   .badge {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     font-size: var(--fs-xxs);
     font-weight: var(--fw-semibold);
-    padding: 4px var(--sp-3); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
+    padding: var(--sp-1) var(--sp-3); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
     border-radius: var(--r-full);
     line-height: 1.4;
     background: var(--surface-3);
@@ -564,14 +589,10 @@
   .badge.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
   .badge.brand,
   .badge.gold   { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
-  .badge.peach  { background: var(--c-peach-bg);    color: var(--c-peach-deep); }
-  .badge.sky    { background: var(--c-sky-bg);      color: var(--c-sky-deep); }
-  .badge.dot::before {
-    content: '';
-    inline-size: 6px; block-size: 6px;
-    border-radius: 50%;
-    background: currentColor;
-  }
+  /* r157 dead-selector sweep (audit 6A11 #8, fresh-rg verified):
+     .badge.peach / .badge.sky / .badge.dot::before deleted — zero TSX
+     consumers render any of the three (the Badge primitive's ThemeColor
+     set is green/amber/red/purple/gold/brand; no dot variant exists). */
 
   .pill {
     display: inline-flex;
@@ -597,8 +618,8 @@
   [data-theme="dark"] .pill.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 
   .reward-pill {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 4px var(--sp-3); border-radius: var(--r-full); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
+    display: inline-flex; align-items: center; gap: var(--sp-1);
+    padding: var(--sp-1) var(--sp-3); border-radius: var(--r-full); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
     background: var(--accent-soft); color: var(--accent-strong);
     font-size: var(--fs-xxs); font-weight: var(--fw-semibold);
   }
@@ -716,7 +737,7 @@
   .alert.amber  .alert-dot { background: var(--chart-6); }
   .alert.green  .alert-dot { background: var(--success); }
   .alert.purple .alert-dot { background: var(--c-lavender-ink); }
-  .alert-body { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; flex: 1; }
+  .alert-body { display: flex; flex-direction: column; gap: var(--sp-1); min-inline-size: 0; flex: 1; }
   .alert-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--type-label-size); }
   .alert-desc  { font-size: var(--type-label-size); color: var(--text-secondary); line-height: var(--lh-base); }
   .alert-time  { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
@@ -2587,7 +2608,7 @@
   .feed-item-body {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--sp-1);
     flex: 1;
     min-inline-size: 0;
   }
@@ -2647,7 +2668,7 @@
   .risk-row-meta span {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
   }
   .risk-row-suggestion {
     display: flex;
@@ -2703,7 +2724,7 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: var(--sp-1);
   }
 
   /* ── Teacher rows — selectable list buttons (AdminGovernance) ───── */
@@ -2810,7 +2831,7 @@
   .scan-cell-label {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     font-size: var(--fs-xs);
     color: var(--text-muted);
   }
@@ -3023,7 +3044,7 @@
   .teacher-verified {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     padding: 3px var(--sp-2);
     border-radius: var(--r-full);
     background: var(--success-soft);
@@ -3570,7 +3591,7 @@
     border-radius: var(--r-sm);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--sp-1);
   }
   .admin-faculty-dept-name {
     font-size: var(--fs-sm);
@@ -3625,7 +3646,7 @@
     border-radius: var(--r-md);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--sp-1);
     min-inline-size: 0;
   }
   .gov-fact-label { font-size: var(--fs-xxs); color: var(--text-subtle); }
@@ -3686,7 +3707,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
+    gap: var(--sp-1);
   }
 
   /* ── Permissions confirm pulse — the governance authored moment:
@@ -4000,7 +4021,7 @@
     gap: var(--sp-1) var(--sp-3);
     font-size: var(--fs-xs);
   }
-  .review-row-meta > span { display: inline-flex; align-items: center; gap: 4px; }
+  .review-row-meta > span { display: inline-flex; align-items: center; gap: var(--sp-1); }
 
   /* ── Annotation rows — margin notes inside the review modal. THE
      authored moment of the research page: the newest annotation lands

@@ -386,7 +386,11 @@
     /* ─── Layout ────────────────────────────────────────────────────── */
     --sidebar-w: 256px;
     --sidebar-w-collapsed: 64px;
-    --topbar-h: 64px;
+    /* r158: 60px — the polish-rendered topbar's real height. Was 64px,
+       so every var(--topbar-h) sticky consumer (pdf viewer, colleges
+       toolbar) floated 4px low. tokens.css wins; the parity pair below
+       carries the same value. */
+    --topbar-h: 60px;
     --content-max-w: 1280px;
     --marketing-max-w: 1200px;
     /* (r148-d: the --st-* layout set — container-max, gutter,

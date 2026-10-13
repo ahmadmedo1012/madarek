@@ -43,6 +43,12 @@ export interface LectureCheckpoint {
   question: string;
   options: string[];
   conceptId: string | null;
+  /** r157 (W2-F7 / 6A5): the student's own CheckpointAnswer rows,
+   * projected by GET /lectures/:id as bare checkpointIds (one per
+   * answered checkpoint). Optional — only STUDENTs get the field;
+   * teacher/oversight reads carry no answers at all. Never contains
+   * answerIndex/correct (privacy of attempts). */
+  answers?: Array<{ checkpointId: string }>;
 }
 export interface LectureDetail extends Lecture {
   chapters: LectureChapter[];

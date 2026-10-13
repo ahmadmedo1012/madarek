@@ -7,7 +7,9 @@
  *   - stable tab ids via useId; NO aria-controls is emitted — every
  *     app consumer renders Tabs as a segmented filter control with no
  *     role="tabpanel", so panel references would dangle (11-e P2-2)
- *   - roving tabindex (selected tab is the tab stop, others −1)
+ *   - roving tabindex (selected tab is the tab stop, others −1);
+ *     an orphan value (matches no tab) keeps the FIRST tab as the
+ *     tab-stop instead of −1-ing everything (r157, audit 6A11 #7)
  *   - ArrowLeft/ArrowRight follow the writing direction (RTL: Left advances)
  *     and wrap around
  *   - Home / End jump to first / last
@@ -77,6 +79,24 @@ describe('Tabs', () => {
     expect(tab('الثاني')).toHaveAttribute('tabindex', '0');
     expect(tab('الأول')).toHaveAttribute('tabindex', '-1');
     expect(tab('الثالث')).toHaveAttribute('tabindex', '-1');
+  });
+
+  it('an orphan value keeps the FIRST tab as the tab-stop (r157)', () => {
+    // A value that matches no item used to strip the tab stop from
+    // EVERY tab (tabindex=-1 for all) — a keyboard dead zone until a
+    // pointer click. The first tab becomes the tab-stop instead,
+    // mirroring the ARIA pattern's "none selected → first is tabbable".
+    const onChange = vi.fn();
+    render(<Tabs value={'zzz' as Val} onChange={onChange} items={ITEMS} />);
+    expect(tab('الأول')).toHaveAttribute('tabindex', '0');
+    expect(tab('الثاني')).toHaveAttribute('tabindex', '-1');
+    expect(tab('الثالث')).toHaveAttribute('tabindex', '-1');
+    for (const it of ITEMS) {
+      expect(tab(it.label)).toHaveAttribute('aria-selected', 'false');
+    }
+    // Selection still works from the orphan state.
+    fireEvent.click(tab('الثاني'));
+    expect(onChange).toHaveBeenCalledWith('b');
   });
 
   it('RTL: ArrowLeft advances selection + focus, with wrap-around', () => {

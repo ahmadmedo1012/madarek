@@ -1,5 +1,3 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-
 export type SkeletonVariant = 'text' | 'kpi' | 'card' | 'chart' | 'list-row' | 'avatar';
 
 type SkeletonProps = {
@@ -11,6 +9,16 @@ type SkeletonProps = {
   /** For 'text' / 'list-row' variants — number of repeated rows. */
   rows?: number;
   className?: string;
+  /**
+   * Opt-in busy semantics (r157, audit 6A11 #5): without it the bars are
+   * aria-hidden — decorative layout placeholders, the same contract the
+   * States.tsx skeleton family keeps (its bars are aria-hidden inside an
+   * explicit aria-busy wrapper). Pass an Arabic label to mark the real
+   * loading state for the surface that needs it announced (the role=
+   * status + aria-busy land on the element, or on the rows wrapper for
+   * repeated rows).
+   */
+  'aria-label'?: string;
   /** Test hook. */
   'data-testid'?: string;
 };
@@ -18,6 +26,12 @@ type SkeletonProps = {
 /**
  * Skeleton — variant-driven layout-shape-preserving placeholder.
  * Visual rules live in motion.css (.skeleton + .skeleton[data-variant]).
+ *
+ * aria contract (r157): the bars are SILENT by default (aria-hidden) —
+ * pure layout scaffolding, never a status announcement. The consumer
+ * that needs a screen-reader loading cue passes `aria-label`, which
+ * upgrades the element (or the rows wrapper) to role="status" +
+ * aria-busy with that name.
  *
  * See specs/001-premium-motion-system/contracts/motion-primitives.tsx.md
  */
@@ -27,6 +41,7 @@ export function Skeleton({
   height,
   rows = 1,
   className,
+  'aria-label': ariaLabel,
   ...rest
 }: SkeletonProps): JSX.Element {
   const cls = ['skeleton', className].filter(Boolean).join(' ');
@@ -37,9 +52,10 @@ export function Skeleton({
   if ((variant === 'text' || variant === 'list-row') && rows > 1) {
     return (
       <span
-        role="status"
-        aria-label="جارٍ التحميل…"
-        aria-busy="true"
+        role={ariaLabel ? 'status' : undefined}
+        aria-label={ariaLabel}
+        aria-busy={ariaLabel ? 'true' : undefined}
+        aria-hidden={ariaLabel ? undefined : true}
         style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2, 8px)' }}
         {...rest}
       >
@@ -48,6 +64,7 @@ export function Skeleton({
             key={i}
             className={cls}
             data-variant={variant}
+            aria-hidden
             // last text row is a bit shorter — visual rhythm
             style={
               variant === 'text' && i === rows - 1 && !width
@@ -62,54 +79,14 @@ export function Skeleton({
 
   return (
     <span
-      role="status"
-      aria-label="جارٍ التحميل…"
-      aria-busy="true"
+      role={ariaLabel ? 'status' : undefined}
+      aria-label={ariaLabel}
+      aria-busy={ariaLabel ? 'true' : undefined}
+      aria-hidden={ariaLabel ? undefined : true}
       className={cls}
       data-variant={variant}
       style={style}
       {...rest}
     />
-  );
-}
-
-type SkeletonGroupProps = {
-  children: ReactNode;
-  className?: string;
-  /** Threshold (ms) before the "still loading" cue appears. Default 4000. */
-  stillLoadingAfterMs?: number;
-};
-
-/**
- * SkeletonGroup — wraps a set of Skeletons in a grid with the canonical
- * gap, and emits the "still loading…" reassurance cue after the
- * configured threshold (FR Edge Case: 4 seconds).
- */
-export function SkeletonGroup({
-  children,
-  className,
-  stillLoadingAfterMs = 4000,
-}: SkeletonGroupProps): JSX.Element {
-  const [stillLoading, setStillLoading] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    timerRef.current = setTimeout(() => setStillLoading(true), stillLoadingAfterMs);
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [stillLoadingAfterMs]);
-
-  const cls = ['skeleton-group', className].filter(Boolean).join(' ');
-  return (
-    <div className={cls} aria-live="polite">
-      {children}
-      <div
-        className="skeleton-still-loading"
-        data-visible={stillLoading || undefined}
-      >
-        لا يزال التحميل جارياً…
-      </div>
-    </div>
   );
 }

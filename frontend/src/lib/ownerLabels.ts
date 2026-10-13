@@ -34,6 +34,21 @@ export const SEVERITY_COLORS: Record<string, 'red' | 'amber' | 'brand'> = {
   info: 'brand',
 };
 
+/**
+ * The critical pair, mirrored from the backend's own counting rule —
+ * owner.routes.ts GET /system counts critical alerts with
+ * `severity: { in: ['critical', 'error'] }`, and the owner's console
+ * must never disagree with its own server about what counts as urgent
+ * (audit 6A10-2): an 'error'-severity alert IS a critical alert on
+ * every owner surface (the alerts-page critical KPI, the dashboard's
+ * action-strip badge), the same way the system page's criticalCount
+ * already includes it. Structural `{ severity }` argument so any alert
+ * shape (OperationalAlert, the system feed's rows) filters point-free.
+ */
+export function isCriticalAlert(alert: { severity: string }): boolean {
+  return alert.severity === 'critical' || alert.severity === 'error';
+}
+
 /** category enum → Arabic label (what the alert is about). */
 export const CATEGORY_LABELS: Record<string, string> = {
   infrastructure: 'البنية التحتية',

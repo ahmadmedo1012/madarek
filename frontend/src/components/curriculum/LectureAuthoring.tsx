@@ -104,7 +104,7 @@ export function LectureFormModal({
       title={isEdit ? 'تعديل المحاضرة' : 'محاضرة جديدة'}
       onClose={requestClose}
       closeOnOverlayClick={!pending}
-      closeOnEscape={!escapeLocked}
+      closeOnEscape={!escapeLocked && !pending}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>

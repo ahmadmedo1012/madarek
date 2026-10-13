@@ -275,6 +275,24 @@ export const NAV_BY_ROLE: Record<AppRole, NavGroup[]> = {
   OWNER: OWNER_NAV,
 };
 
+/* ───────────────────────────────────────────────────────────────────
+   ROLE_HOME — the single map for guard redirects (ProtectedRoute,
+   GuestRoute, HomeRedirect) AND the onboarding auto-start gate
+   (A13 P1-1). r157 (6A4-7 dedup): this map used to live as three
+   private copies (AppShell.tsx, App.tsx, AuthPage.tsx +
+   RegisterPage.tsx) — keeping it here means the guard bounce, the
+   guest bounce, the post-login landing and the tour target can
+   never drift apart. The auth pages' own copies are scheduled to
+   fold onto this export in their own wave.
+   ─────────────────────────────────────────────────────────────────── */
+export const ROLE_HOME: Record<AppRole, string> = {
+  STUDENT: '/student/dashboard',
+  TEACHER: '/teacher/dashboard',
+  ADMIN:   '/admin/dashboard',
+  QUALITY: '/quality/dashboard',
+  OWNER:   '/owner/dashboard',
+};
+
 export const ROLE_LABELS: Record<AppRole, string> = {
   STUDENT: 'طالب',
   TEACHER: 'أستاذ',

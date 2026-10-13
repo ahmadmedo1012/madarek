@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import {
-  Sparkles, ArrowLeft, ChevronLeft, Bell,
+  Sparkles, ArrowLeft, ChevronRight, Bell,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
 import { EmptyState } from '../../components/primitives/States';
@@ -235,8 +235,11 @@ export function VisionDetailPage() {
 
   return (
     <div className="page">
+      {/* Back — ChevronRight is the RTL back direction (mirrors the
+          colleges detail / leaderboard idiom, CollegePages ~:600/:1015);
+          the old ChevronLeft pointed «forward» in RTL. */}
       <Link to="/vision" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
-        <Icon icon={ChevronLeft} size={13} />
+        <Icon icon={ChevronRight} size={13} />
         كل الابتكارات
       </Link>
 
@@ -373,7 +376,7 @@ export function VisionDetailPage() {
             <div className="text-md font-semibold" style={{ color: 'var(--text)' }}>
               نبّهني عند إطلاق هذه الميزة
             </div>
-            <div className="text-xs text-subtle" style={{ marginBlockStart: 2 }}>
+            <div className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-1)' /* r157: 2px → token */ }}>
               خدمة التنبيه على البريد قيد التطوير — تابع صفحة الرؤية: حالة كل ابتكار تُحدَّث هنا فور تغيّرها.
             </div>
           </div>

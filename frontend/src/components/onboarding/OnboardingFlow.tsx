@@ -224,6 +224,19 @@ export function OnboardingFlow({
         </div>
 
         <DotStrip current={currentFrame} total={4} />
+
+        {/* r157 F5: persistent sr-only live region — deliberately OUTSIDE
+            the keyed frame remount above (a region that is recreated with
+            each frame announces nothing: screen readers only speak when
+            EXISTING live-region content changes). The SAME node stays
+            mounted while the tour is open, so every frame advance is
+            announced as «الإطار N من 4: {headline}. {body}». Digits stay
+            latin (platform numeric convention); total assumes the
+            default 4-frame set (3 generic + the role frame) — custom
+            frame sets must keep the role frame. */}
+        <p className="sr-only" role="status" aria-live="polite">
+          {`الإطار ${currentFrame + 1} من ${frames.length + 1}: ${headline}. ${body}`}
+        </p>
       </div>
     </Modal>
   );

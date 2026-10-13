@@ -10,6 +10,16 @@
  *     guard ⌘K uses), and still toggles the desktop collapse when
  *     the stack is empty
  *
+ * r157 (6A4-3): the drawer auto-closes when the ≤920px band flips
+ * to desktop while open (ghost-drawer effect) — "drawer open on the
+ * desktop band" is now an IMPOSSIBLE state, so every drawer test
+ * must claim the mobile band. A controllable mobile-band matchMedia
+ * stub is hoisted FILE-WIDE (live `matches` getter + captured change
+ * listeners): tests flip the band with resizeViewport() and the
+ * component's mq listener actually fires, exactly like a browser
+ * resize. Default band state: mobile (true) — the drawer is this
+ * suite's subject; the chord/Topbar tests are band-agnostic.
+ *
  * Topbar (15-g P2-7 / P2-9):
  *   - the burger reflects the drawer state: aria-expanded + a label
  *     that follows open/closed («فتح القائمة» / «إغلاق القائمة»)
@@ -22,6 +32,7 @@
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { isScrollLocked } from '../../src/lib/scrollLock';
 
 vi.mock('../../src/components/layout/GlobalSearch', () => ({
   GlobalSearch: () => <div data-testid="global-search" />,
@@ -75,12 +86,69 @@ function renderTopbar() {
 const pressChord = () =>
   fireEvent.keyDown(window, { key: 'b', ctrlKey: true });
 
+/* ── controllable mobile-band matchMedia (file-wide, r157 6A4-3) ─── */
+let mobileBand = true;
+const bandListeners = new Set<(e: { matches: boolean }) => void>();
+
+function installBandMatchMedia() {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: (query: string) => {
+      if (query.includes('920')) {
+        return {
+          get matches() {
+            return mobileBand;
+          },
+          media: query,
+          onchange: null,
+          addEventListener: (_: string, cb: (e: { matches: boolean }) => void) => {
+            bandListeners.add(cb);
+          },
+          removeEventListener: (_: string, cb: (e: { matches: boolean }) => void) => {
+            bandListeners.delete(cb);
+          },
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        };
+      }
+      // Non-band queries (hover, reduced-motion…): inert default.
+      return {
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      };
+    },
+  });
+}
+
+/** Resize across the 920px band edge — flips the live `matches`
+ *  getter AND notifies every captured change listener. */
+function resizeViewport(mobile: boolean) {
+  mobileBand = mobile;
+  for (const cb of bandListeners) cb({ matches: mobile });
+}
+
+beforeEach(() => {
+  installBandMatchMedia();
+  mobileBand = true;
+  bandListeners.clear();
+});
+
 afterEach(() => {
   // Reset shell state and drain any layer a failing test leaked.
   act(() => {
     useUiStore.setState({ sidebarOpen: false, sidebarCollapsed: true });
     useAuthStore.setState({ user: null });
   });
+  bandListeners.clear();
+  mobileBand = true;
 });
 
 describe('Sidebar — drawer overlay-stack membership (15-g P2-7)', () => {
@@ -173,25 +241,10 @@ describe('Sidebar — Ctrl+B chord guard (15-e P1-4)', () => {
 
 describe('Sidebar — drawer focus containment (5-B5, A4 P2-5)', () => {
   beforeEach(() => {
-    // The drawer only exists on the ≤920px band; jsdom's default
-    // matchMedia stub answers desktop. Claim the mobile band (same
-    // override shape as the global installDefaults).
-    Object.defineProperty(window, 'matchMedia', {
-      configurable: true,
-      writable: true,
-      value: vi.fn().mockImplementation((query: string) => ({
-        matches: query.includes('920'),
-        media: query,
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })),
-    });
-    // Expanded rail: the collapse button is the FIRST focusable and
-    // its label («طيّ القائمة») is distinct from the close button.
+    // The file-wide stub claims the mobile band by default (see the
+    // header note — the drawer tests own it); expanded rail so the
+    // collapse button is the FIRST focusable and its label («طيّ
+    // القائمة») is distinct from the close button.
     useUiStore.setState({ sidebarOpen: false, sidebarCollapsed: false });
   });
 
@@ -280,6 +333,43 @@ describe('Sidebar — drawer focus containment (5-B5, A4 P2-5)', () => {
     fireEvent.keyDown(document, { key: 'Tab' });
     expect(logout).toHaveFocus();
     overlayStack.unregister('test-layer-above-drawer');
+  });
+});
+
+describe('Sidebar — ghost drawer auto-close (r157, 6A4-3)', () => {
+  beforeEach(() => {
+    useUiStore.setState({ sidebarOpen: false, sidebarCollapsed: true });
+  });
+
+  it('closes the drawer when the band flips to desktop while open — no ghost layer, no leaked scroll lock', () => {
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    expect(useUiStore.getState().sidebarOpen).toBe(true);
+    expect(overlayStack.count()).toBe(1);
+    expect(isScrollLocked()).toBe(true);
+
+    // Rotate/resize past 920px while the drawer is open: the CSS
+    // drawer stops existing, so the open state must not survive.
+    act(() => {
+      resizeViewport(false);
+    });
+    expect(useUiStore.getState().sidebarOpen).toBe(false);
+    expect(overlayStack.isEmpty()).toBe(true); // ⌘K is live again
+    expect(isScrollLocked()).toBe(false); // body scroll released
+  });
+
+  it('keeps the drawer open while the band stays mobile (same-band change events are not a resize out)', () => {
+    renderSidebar();
+    act(() => {
+      useUiStore.getState().openSidebar();
+    });
+    act(() => {
+      resizeViewport(true); // still ≤920px
+    });
+    expect(useUiStore.getState().sidebarOpen).toBe(true);
+    expect(overlayStack.count()).toBe(1);
   });
 });
 

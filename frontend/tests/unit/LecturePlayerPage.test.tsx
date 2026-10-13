@@ -11,7 +11,7 @@
  * 4. Resume-seek fires once, on the first loadedmetadata only.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { act, render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LecturePlayerPage, { isWatchComplete, resumeSeekSec } from '../../src/pages/student/LecturePlayerPage';
@@ -427,5 +427,163 @@ describe('r153b — watch flush on pagehide/hidden', () => {
     fireEvent(window, new Event('pagehide'));
 
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+/* ── r157 (W2-F7 / audit 6A5 + 6A11): checkpoint answer memory ────
+ * The server now remembers answered checkpoints (CheckpointAnswer
+ * rows, projected back by GET /lectures/:id as answers:
+ * [{checkpointId}]). The player SEEDS its answered set from them
+ * (merge — in-flight answers survive refetches), so a resumed
+ * lecture never re-quizzes. Skip (button / Esc) is honest: it never
+ * counts as answered and only suppresses the re-fire for THIS
+ * session; only answer → «متابعة المحاضرة» counts. */
+describe('r157 — checkpoint answer memory (seed) + honest skip', () => {
+  beforeEach(() => {
+    mocks.reportWatch.mockClear();
+    mocks.answerCheckpoint.mockReset();
+    mocks.answerCheckpoint.mockResolvedValue({ correct: true, correctIndex: 0, explanation: 'شرح الإجابة' });
+    mocks.lectures = null;
+  });
+  afterEach(() => {
+    mocks.lectures = null;
+  });
+
+  /* jsdom keeps the Modal mounted through its exit-animation window
+     (useDelayedUnmount). jsdom has no AnimationEvent constructor, and
+     fireEvent.animationEnd's fallback Event carries animationName
+     undefined — so the Modal's exit handler would never run. Build the
+     event by hand (the name rides a defined property, exactly as a
+     real browser's animationend carries it) and end the exit window
+     the way the runtime would. */
+  const finishModalExit = () => {
+    const overlay = document.querySelector('.modal-overlay');
+    if (!overlay) return;
+    const e = new Event('animationend', { bubbles: true });
+    Object.defineProperty(e, 'animationName', { value: 'madarek-overlay-out' });
+    // act() — the exit sets state (setRendered(false)); without it the
+    // update defers past the assertions (raw dispatch ≠ RTL fireEvent).
+    act(() => {
+      overlay.dispatchEvent(e);
+    });
+  };
+
+  const seekTo = (video: HTMLVideoElement, sec: number) => {
+    Object.defineProperty(video, 'currentTime', { value: sec, configurable: true, writable: true });
+    fireEvent(video, new Event('timeupdate'));
+  };
+
+  const oneCheckpointLecture = () => ({
+    ...baseLecture,
+    checkpoints: [
+      {
+        id: 'cp1', triggerSec: 100, question: 'السؤال الأول',
+        options: ['نافذة واحدة', 'عشر نوافذ'], conceptId: null, answers: [],
+      },
+    ],
+  });
+
+  it('the server answer seed suppresses the re-quiz (6A5)', () => {
+    mocks.lecture = {
+      ...baseLecture,
+      checkpoints: [
+        {
+          id: 'cp100', triggerSec: 100, question: 'السؤال الأول',
+          options: ['أ', 'ب'], conceptId: null,
+          // Server memory: answered in a PREVIOUS session.
+          answers: [{ checkpointId: 'cp100' }],
+        },
+        {
+          id: 'cp200', triggerSec: 200, question: 'السؤال الثاني',
+          options: ['أ', 'ب'], conceptId: null, answers: [],
+        },
+      ],
+    };
+    renderPlayer();
+    const video = getVideo();
+
+    // Past the ANSWERED checkpoint's trigger: pre-r157 this modal
+    // slammed open on every reload, and each re-answer burned the
+    // r155a mastery cap. The seed keeps it silent.
+    seekTo(video, 150);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByText(/أُجيب عن 1 من/)).toBeInTheDocument();
+
+    // The UNANSWERED checkpoint still fires honestly.
+    seekTo(video, 250);
+    expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الثاني' })).toBeInTheDocument();
+  });
+
+  it('the checkpoint dialog carries the question in its accessible name', () => {
+    mocks.lecture = oneCheckpointLecture();
+    renderPlayer();
+    seekTo(getVideo(), 150);
+
+    // Pre-r157 the dialog was named «نقطة تفاعل» — one unnamed-quiz
+    // announcement for every checkpoint on the page.
+    expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الأول' })).toBeInTheDocument();
+  });
+
+  it('«تخطّي» closes without counting and suppresses the re-fire for this session', () => {
+    mocks.lecture = oneCheckpointLecture();
+    renderPlayer();
+    const video = getVideo();
+    seekTo(video, 150);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Always visible — even before an answer.
+    fireEvent.click(screen.getByRole('button', { name: 'تخطّي' }));
+    finishModalExit();
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    // Honest: skip ≠ answer — the count stayed 0.
+    expect(screen.getByText(/أُجيب عن 0 من/)).toBeInTheDocument();
+
+    // Session suppression: the playhead still sits past the trigger
+    // (150 ≥ 100) — a later tick must not slam the quiz back open.
+    seekTo(video, 160);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('Esc routes to skip — closes the dialog without counting it answered', () => {
+    mocks.lecture = oneCheckpointLecture();
+    renderPlayer();
+    const video = getVideo();
+    seekTo(video, 150);
+    expect(screen.getByRole('dialog', { name: 'نقطة تفاعل: السؤال الأول' })).toBeInTheDocument();
+
+    // Pre-r157 Esc called closeCheckpoint — it silently COUNTED the
+    // checkpoint as answered (an honest-sounding lie).
+    fireEvent.keyDown(document, { key: 'Escape' });
+    finishModalExit();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByText(/أُجيب عن 0 من/)).toBeInTheDocument();
+
+    // And suppressed for the session (no instant re-fire).
+    seekTo(video, 160);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('answer → «متابعة المحاضرة» counts the checkpoint', async () => {
+    mocks.lecture = oneCheckpointLecture();
+    renderPlayer();
+    const video = getVideo();
+    seekTo(video, 150);
+
+    const options = within(screen.getByRole('group', { name: 'خيارات الإجابة' })).getAllByRole('button');
+    await act(async () => {
+      fireEvent.click(options[0]!);
+    });
+
+    // The answer landed (server memory row exists) → the primary CTA.
+    fireEvent.click(await screen.findByRole('button', { name: 'متابعة المحاضرة' }));
+    finishModalExit();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByText(/أُجيب عن 1 من/)).toBeInTheDocument();
+
+    // Counted → suppressed for the session (no re-fire at the same
+    // playhead; the next session seeds from the server row).
+    seekTo(video, 160);
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 });

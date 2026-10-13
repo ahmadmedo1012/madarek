@@ -15,7 +15,8 @@ frontend/src/components/motion/
 ├── PageTransition.tsx
 ├── Reveal.tsx                    (exports Reveal + RevealGroup)
 ├── AnimatedNumber.tsx
-├── Skeleton.tsx                  (exports Skeleton + SkeletonGroup)
+├── Skeleton.tsx                  (exports Skeleton — see the retirement
+│                                  note below: SkeletonGroup is gone)
 └── useReducedMotion.ts
 ```
 
@@ -187,6 +188,18 @@ export function AnimatedNumber(props: AnimatedNumberProps): JSX.Element;
 
 Render a layout-shape-preserving placeholder while data is loading.
 
+> **RETIRED — `SkeletonGroup` (r157 rebuild).** The component was
+> deleted: rg across `src` + `tests` found zero consumers that ever
+> rendered it, and its `.skeleton-group` / `.skeleton-still-loading`
+> CSS rules were dead weight. The **`Skeleton` aria contract is the
+> successor**: bars are `aria-hidden` by default (pure layout
+> scaffolding, never a status announcement); the surface that needs a
+> screen-reader loading cue passes `aria-label`, which upgrades the
+> element (or the rows wrapper) to `role="status"` + `aria-busy` with
+> that name. Compose multiple `Skeleton` bars directly; wrap the
+> surface's busy semantics yourself (`aria-busy` on the container), the
+> way `States.tsx` skeleton family and the pages already do.
+
 ### API
 
 ```ts
@@ -201,24 +214,29 @@ type SkeletonProps = {
   rows?: number;
   /** Class forwarding. */
   className?: string;
+  /**
+   * Opt-in busy semantics (the successor contract, r157): without it
+   * the bars are aria-hidden — decorative layout placeholders. Pass an
+   * Arabic label to mark the real loading state for the surface that
+   * needs it announced (role="status" + aria-busy land on the element,
+   * or on the rows wrapper for repeated rows).
+   */
+  'aria-label'?: string;
 };
 
 export function Skeleton(props: SkeletonProps): JSX.Element;
 
-type SkeletonGroupProps = {
-  children: React.ReactNode;
-  className?: string;
-};
-
-export function SkeletonGroup(props: SkeletonGroupProps): JSX.Element;
+// SkeletonGroup — DELETED (r157 rebuild). Compose Skeleton bars
+// directly; the container carries its own aria-busy semantics.
 ```
 
 ### Behavior
 
 - Renders a calm shimmer animation using `--motion-duration-skeleton`.
 - Reduced-motion: shimmer is replaced by a static muted block (no animation).
-- After 4 seconds, an inline "still loading…" cue appears as a subtle
-  caption below the skeleton group.
+- (The 4-second "still loading…" caption was SkeletonGroup's — deleted
+  with it. A surface that needs a long-wait cue announces it on its own
+  container.)
 - Skeleton MUST roughly match the final layout's outer dimensions to keep
   CLS ≈ 0 when real content swaps in.
 
@@ -226,11 +244,11 @@ export function SkeletonGroup(props: SkeletonGroupProps): JSX.Element;
 
 ```tsx
 {isLoading ? (
-  <SkeletonGroup>
+  <div aria-busy="true">
     <Skeleton variant="kpi" />
     <Skeleton variant="kpi" />
     <Skeleton variant="chart" height="240px" />
-  </SkeletonGroup>
+  </div>
 ) : (
   <DashboardContent data={data} />
 )}

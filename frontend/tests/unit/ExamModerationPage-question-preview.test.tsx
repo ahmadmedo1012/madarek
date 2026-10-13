@@ -16,15 +16,25 @@
  *      no mutation fired by opening the panel);
  *   4. a failed preview surfaces an honest retryable error, never an
  *      empty-as-success state.
+ *   5. 6A9-finding-8 (r157): the third KPI is «أسئلة بانتظار الفحص» —
+ *      the sum of _count.questions over the pending queue rows, '…'
+ *      while loading, '—' on error. The invented static «نموذج الجودة:
+ *      رؤية 2024–2028» tile is gone; no decision timestamps exist in
+ *      the page payload (PENDING queue only), so none were invented.
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ExamModerationPage } from '../../src/pages/exams/OnlineExamsPages';
 
 const mocks = vi.hoisted(() => ({
   queue: [] as Array<Record<string, unknown>>,
+  // 6A9-finding-8: the KPI derives from the queue query itself — the
+  // pending / error flags are controllable so every KPI state is
+  // pinnable.
+  queuePending: false,
+  queueError: false,
   moderate: vi.fn(async () => ({})),
   template: {
     data: null as Record<string, unknown> | null,
@@ -43,9 +53,9 @@ vi.mock('../../src/hooks/useResources', () => ({
   useFinishExam: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useExamModerationQueue: () => ({
     data: mocks.queue,
-    isPending: false,
-    isError: false,
-    error: null,
+    isPending: mocks.queuePending,
+    isError: mocks.queueError,
+    error: mocks.queueError ? new Error('network') : null,
     refetch: vi.fn(),
   }),
   useModerateExam: () => ({ mutateAsync: mocks.moderate, isPending: false }),
@@ -125,6 +135,8 @@ function renderPage() {
 
 beforeEach(() => {
   mocks.queue = [QUEUE_ITEM];
+  mocks.queuePending = false;
+  mocks.queueError = false;
   mocks.template.data = TEMPLATE_DETAIL;
   mocks.template.isPending = false;
   mocks.template.isError = false;
@@ -199,5 +211,45 @@ describe('ExamModerationPage — question preview (r155b)', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'مراجعة' }));
 
     expect(await screen.findByText('لا أسئلة في هذا القالب')).toBeInTheDocument();
+  });
+
+  it('the third KPI is the queue’s own question count — honest in every state, «نموذج الجودة» gone (6A9-finding-8)', () => {
+    // Two pending templates — 3 + 5 questions awaiting review.
+    mocks.queue = [
+      { ...QUEUE_ITEM, _count: { questions: 3 } },
+      {
+        ...QUEUE_ITEM,
+        id: 'tpl-2',
+        title: 'اختبار قصير — الشبكات',
+        kind: 'QUIZ',
+        durationMin: 30,
+        offering: null,
+        _count: { questions: 5 },
+      },
+    ];
+    const loaded = renderPage();
+
+    // The KPI is the sum over the pending queue rows — scoped to the
+    // tile so the other KPIs' values never collide with it.
+    const loadedTile = screen.getByText('أسئلة بانتظار الفحص').closest('.metric') as HTMLElement;
+    expect(within(loadedTile).getByText('8')).toBeInTheDocument();
+    // The invented static tile is gone — no «نموذج الجودة», no vision.
+    expect(screen.queryByText('نموذج الجودة')).toBeNull();
+    expect(screen.queryByText('رؤية 2024–2028')).toBeNull();
+    loaded.unmount();
+
+    // '…' while the queue itself is loading — never a fake zero.
+    mocks.queuePending = true;
+    const pending = renderPage();
+    const pendingTile = screen.getByText('أسئلة بانتظار الفحص').closest('.metric') as HTMLElement;
+    expect(within(pendingTile).getByText('…')).toBeInTheDocument();
+    pending.unmount();
+
+    // '—' when the queue request failed.
+    mocks.queuePending = false;
+    mocks.queueError = true;
+    renderPage();
+    const errorTile = screen.getByText('أسئلة بانتظار الفحص').closest('.metric') as HTMLElement;
+    expect(within(errorTile).getByText('—')).toBeInTheDocument();
   });
 });

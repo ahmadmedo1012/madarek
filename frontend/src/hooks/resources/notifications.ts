@@ -3,7 +3,7 @@
 // placeholderData and invalidation is byte-identical to the
 // original sections; the public surface is frozen by the barrel.
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '../../lib/api';
 
 // ── Notifications ──────────────────────────────────────────────
@@ -53,5 +53,50 @@ export function useUnreadNotifications() {
     },
     refetchInterval: 60_000, // refresh every minute
     refetchIntervalInBackground: false, // don't poll a hidden tab
+  });
+}
+
+// ── Notifications feed (r157/F8 — AlertsPage pagination) ────────
+/** One server page of the notifications feed, envelope included.
+ *  GET /me/notifications (me.routes.ts) answers:
+ *  `{ data: Notification[], meta: { page, limit, total, totalPages, unread } }`
+ *  (meta built by lib/pagination.buildMeta; `unread` rides the meta). */
+export interface NotificationsFeedPage {
+  data: Notification[];
+  meta: { page: number; limit: number; total: number; totalPages: number; unread: number };
+}
+
+/** Page size for the feed query. 30 keeps the first paint close to the
+ *  old slice(0,30) truncation while staying ≤ the backend's hard
+ *  paginationSchema cap of 100 (lib/pagination.ts). */
+export const NOTIFICATIONS_FEED_LIMIT = 30;
+
+/**
+ * The paginated notifications feed — the full AlertsPage previously
+ * fetched limit=50 and then truncated the render with slice(0,30),
+ * silently hiding every notification past #30 (audit 6A6 overlap).
+ *
+ * - `['notifications', 'feed']` sits UNDER the plain `['notifications']`
+ *   key, so the existing markRead / markAllRead invalidations
+ *   (queryKey: ['notifications']) prefix-match and refresh the feed
+ *   too — one umbrella, no extra wiring.
+ * - getNextPageParam is guarded by `page < totalPages` (buildMeta
+ *   floors totalPages at 1) → undefined at the end: no infinite
+ *   refetch loop on the last page.
+ * - `unread` rides each page's meta — the badge reads the LAST page's
+ *   meta.unread (server truth) instead of filtering the loaded slice.
+ */
+export function useNotificationsFeed() {
+  return useInfiniteQuery({
+    queryKey: ['notifications', 'feed'],
+    queryFn: ({ pageParam }) =>
+      unwrap<NotificationsFeedPage>(
+        api.get(`/notifications?page=${pageParam}&limit=${NOTIFICATIONS_FEED_LIMIT}`),
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage.meta;
+      return page < totalPages ? page + 1 : undefined;
+    },
   });
 }

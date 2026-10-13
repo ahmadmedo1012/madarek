@@ -192,7 +192,7 @@ export function CheckpointFormModal({
       title={isEdit ? 'تعديل سؤال التفاعل' : 'سؤال تفاعلي جديد'}
       onClose={requestClose}
       closeOnOverlayClick={!pending}
-      closeOnEscape={!escapeLocked}
+      closeOnEscape={!escapeLocked && !pending}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>

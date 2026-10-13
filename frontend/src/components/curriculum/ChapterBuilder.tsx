@@ -130,7 +130,7 @@ export function ChapterFormModal({
       title={isEdit ? 'تعديل الفصل' : 'فصل جديد'}
       onClose={requestClose}
       closeOnOverlayClick={!pending}
-      closeOnEscape={!escapeLocked}
+      closeOnEscape={!escapeLocked && !pending}
     >
       <form onSubmit={onSubmit} noValidate>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>

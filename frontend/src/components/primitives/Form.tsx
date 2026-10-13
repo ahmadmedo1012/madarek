@@ -37,7 +37,8 @@ export type ButtonVariant =
   | 'gold'
   | 'ghost'
   | 'outline'
-  | 'danger';
+  | 'danger'
+  | 'success';
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -57,6 +58,12 @@ const VARIANT_CLASS: Record<Exclude<ButtonVariant, 'default'>, string> = {
   ghost: 'ghost',
   outline: 'outline',
   danger: 'danger',
+  // r157 (audit 6A11 #8): the .btn.success rule has been live since
+  // the wave-5-c sweep (components.css, audit 0-e P1-28) — its only
+  // consumer (OnlineExamsPages moderation) still hand-writes the
+  // className; the primitive now carries the variant so the map is
+  // honest about the full set.
+  success: 'success',
 };
 
 const SIZE_CLASS: Partial<Record<ButtonSize, string>> = {

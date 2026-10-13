@@ -18,6 +18,14 @@
  * or the TSX — plus pins the r132-F5 grain unification (single source:
  * tokens.css 0.075, no landing re-declaration).
  *
+ * r157 (F2-2): + the byte-level anti-corruption pin — the scroll-spy
+ * selectors' `[href="#…"]` runs are intact on disk. The r157 audit's
+ * "12 corrupted selectors" was a display-layer artifact: cat/sed-style
+ * output eats `[hre`-like runs, so an intact
+ * `.landing-nav-link[href="#trust"]` line *displays* as
+ * `.landing-nav-linkref="#trust"]`. od -c / node fs read the real
+ * bytes. This pin fails on any FUTURE real corruption.
+ *
  * Pure fs assertions (assets.test.ts pattern) — no jsdom interaction.
  */
 import { describe, expect, it } from 'vitest';
@@ -89,6 +97,22 @@ describe('landing scroll-spy contract (r132-F5)', () => {
     // The anchors the CSS matches (desktop nav).
     for (const s of PLAIN_NAV_SECTIONS) {
       expect(tsx).toContain(`href="#${s}" className="landing-nav-link"`);
+    }
+  });
+
+  it('byte-level anti-corruption pin (r157 F2-2): the href runs are real on disk', () => {
+    // The r157 audit's "corrupted selectors" were a display-layer artifact
+    // (see the file header). This test reads the RAW bytes, so a real
+    // corruption can never hide behind that artifact again: the mangled
+    // substring must not exist, and every header[data-active-section]
+    // selector line must carry a well-formed [href="#…"] attribute selector.
+    expect(css).not.toContain('landing-nav-linkref');
+    const selectorLines = css
+      .split('\n')
+      .filter((line) => line.includes('header[data-active-section='));
+    expect(selectorLines).toHaveLength(SECTIONS.length * 4);
+    for (const line of selectorLines) {
+      expect(line).toMatch(/\.landing-nav-link\[href="#[a-z]+"\]/);
     }
   });
 });

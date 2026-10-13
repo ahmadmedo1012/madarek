@@ -620,7 +620,9 @@ describe('TeacherOfferingDetailPage — إدارة المنهج tab role gate', 
     useAuthStore.setState({ user: TEACHER_USER, isHydrated: true });
     renderDetailPage();
 
-    const tab = await screen.findByRole('button', { name: 'إدارة المنهج' });
+    // r157 (W2-F9): the intelligence tabs joined the shared Tabs primitive —
+    // the tab is now role='tab' (on a native <button>), not a bare button.
+    const tab = await screen.findByRole('tab', { name: 'إدارة المنهج' });
     fireEvent.click(tab);
 
     expect(await screen.findByText('المحاضرة الأولى: مدخل الشبكات')).toBeInTheDocument();
@@ -632,6 +634,6 @@ describe('TeacherOfferingDetailPage — إدارة المنهج tab role gate', 
     renderDetailPage();
 
     await screen.findByText('شبكات الحاسوب'); // page rendered
-    expect(screen.queryByRole('button', { name: 'إدارة المنهج' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: 'إدارة المنهج' })).toBeNull();
   });
 });

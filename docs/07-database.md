@@ -2,7 +2,7 @@
 
 - المحرك: **PostgreSQL** مُدار على **Neon** (إقليم قريب من Render virginia).
 - ORM: **Prisma 5.22.0** — المخطط في `backend/prisma/schema.prisma`
-  (مصدر الحقيقة): **75 نموذجًا، 30 enum، 16 ترحيلًا** مطبقًا.
+  (مصدر الحقيقة): **76 نموذجًا، 30 enum، 17 ترحيلًا** مطبقًا.
 - المرجع النموذج-بنموذج المولّد: [`DATABASE-REFERENCE.md`](DATABASE-REFERENCE.md).
 
 ## مجموعات النماذج (خريطة مجردة)
@@ -12,7 +12,7 @@
 | الهوية والحاكمية | `User`، `StudentProfile`، `TeacherProfile`، `RolePermission`، `UserPermission`، `Faculty`، `Department` | حسابات، قدرات، نطاق كليات، `tokenVersion` للإبطال |
 | الكتالوج والتدريس | `Course`، `CourseOffering`، `Enrollment`، `ScheduleSlot`، `Material`، `Assignment`، `Submission`، `Grade` | المقررات وشعبها والتسجيل (سعة بحرس `FOR UPDATE`) والواجبات والدرجات |
 | الحضور | `AttendanceSession`، `AttendanceRecord` | حضور ذكي من إتمام المشاهدة؛ تفرد `(offeringId, date)` بمفتاح يوم UTC |
-| التعلم | `Lecture`، `LectureChapter`، `LectureCheckpoint`، `WatchEvent`، `KnowledgeConcept`، `StudentMastery` | الفصول المقلوبة ومصفوفة الإتقان (`progressPct` حقيقة مشتقة — ترحيل backfill الأخير) |
+| التعلم | `Lecture`، `LectureChapter`، `LectureCheckpoint`، `CheckpointAnswer`، `WatchEvent`، `KnowledgeConcept`، `StudentMastery` | الفصول المقلوبة ومصفوفة الإتقان (`progressPct` حقيقة مشتقة — ترحيل backfill)؛ `CheckpointAnswer` ذاكرة إجابات نقاط التحقّق (ترحيل r157 الأخير) |
 | البحوث | `ResearchPaper`، `PaperAnnotation` | آلة حالات UPLOADED→…→PUBLISHED + شروح داخلية؛ `extractedText` للبحث النصي |
 | الاختبارات | `Question`، `QuestionCategory`، `ExamTemplate(Question)`، `ExamAttempt`، `ExamAnswer` | بنك أسئلة وقوالب ومحاولات |
 | التدريب والألعاب | `TrainingTrack/Lesson/Enrollment`، `LessonProgress`، `Badge`، `PointsLedger` | 11 مسارًا عربيًا + نقاط وشارات |
@@ -47,7 +47,8 @@ P1017/P1001/P1002 العابرة (`backend/src/db.ts`).
 
 ## الترحيلات
 
-- 16 ترحيلًا من `20260523171735_init` حتى `20260929000000_progress_truth_backfill`.
+- 17 ترحيلًا من `20260523171735_init` حتى `20261013150858_checkpoint_answer_memory`
+  (r157: `CheckpointAnswer` — ذاكرة إجابات نقاط التحقّق).
 - محليًا: `npm run db:migrate` (`prisma migrate dev`). الإنتاج: تطبيق
   `prisma migrate deploy` **أثناء خطوة بناء Render** (لا عند الإقلاع).
 - **لا تعدّل ترحيلًا مطبقًا** — أنشئ ترحيلًا جديدًا دائمًا (التفصيل في

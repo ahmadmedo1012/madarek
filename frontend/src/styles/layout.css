@@ -125,7 +125,12 @@
     gap: var(--sp-2);
     padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
     border-radius: var(--r-sm);
-    font-size: var(--fs-sm);
+    /* r157 (6A4-9): nav links are chrome surface — DESIGN.md §2 maps
+       «روابط التنقل» onto --fs-chrome (14px), the r133 fleet decision
+       raw-14px sites consolidated. (Sidebar user names stay at
+       --fs-sm: the canon wording covers nav links / footer columns /
+       form labels / status boxes / timestamps — not user names.) */
+    font-size: var(--fs-chrome);
     color: var(--sidebar-item);
     font-weight: var(--fw-medium);
     transition: background var(--t-fast) var(--ease),
@@ -142,18 +147,22 @@
   .nav-label { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nav-item:hover { background: var(--sidebar-item-hover-bg); color: var(--text); }
   .nav-item:hover .nav-icon { color: var(--text); }
-  .nav-item.on, .nav-item.active {
+  /* r157 (6A4-5, F3 half): the .active twins are gone — Sidebar writes
+     exactly one boolean, the `on` class. (.search-row.active below and
+     BottomNav's bottom-nav-item active are separate live families;
+     polish.css twins are F1's parallel half. Gate:
+     tests/unit/nav-active-vocabulary.test.tsx.) */
+  .nav-item.on {
     background: var(--sidebar-item-active-bg);
     color: var(--sidebar-item-active-text);
     font-weight: var(--fw-semibold);
   }
   /* مدارك night — the active orbit glows: a soft gold halo breathing
      around the traveller's current station (paint-only, calm tier). */
-  [data-theme="dark"] .nav-item.on,
-  [data-theme="dark"] .nav-item.active {
+  [data-theme="dark"] .nav-item.on {
     box-shadow: 0 0 18px -4px color-mix(in srgb, var(--accent) 16%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent);
   }
-  .nav-item.on::before, .nav-item.active::before {
+  .nav-item.on::before {
     content: '';
     position: absolute;
     inset-inline-start: -3px;
@@ -171,7 +180,7 @@
     from { transform: translateY(-50%) scaleY(0.4); opacity: 0; }
     to   { transform: translateY(-50%) scaleY(1);    opacity: 1; }
   }
-  .nav-item.on .nav-icon, .nav-item.active .nav-icon { color: var(--role-accent, var(--accent)); }
+  .nav-item.on .nav-icon { color: var(--role-accent, var(--accent)); }
 
   .nav-badge {
     /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
@@ -186,8 +195,9 @@
   }
   .nav-badge.brand,
   .nav-badge.gold { background: var(--accent-soft); color: var(--accent-strong); }
-  .nav-badge.red  { background: var(--c-rose-bg); color: var(--c-rose-deep); }
-  .nav-badge.amber{ background: var(--c-yellow-bg); color: var(--c-yellow-deep); }
+  /* r157 (6A4-6): .nav-badge.red / .nav-badge.amber deleted — Sidebar is
+     the only badge producer and nav.ts tones are brand/gold/default
+     only (verified by rg); the rose/yellow twins were dead rules. */
 
   .sidebar-footer {
     margin-block-start: var(--sp-3);
@@ -319,6 +329,20 @@
       /* Content sits on the drawer's inline-END side in both
          directions — that edge carries the hairline now. */
       border-inline-end: 1px solid var(--sidebar-rule);
+      /* r157 (6A4-1): the closed drawer is off-screen via transform
+         ONLY — it stayed in the accessibility tree, focusable and
+         Tab-reachable behind the page. visibility:hidden removes it
+         from tab order + a11y tree. (The visibility TIMING lives in
+         the unlayered block at the end of this file — the overrides
+         layer redefines this whole transition shorthand for .sidebar
+         in this band, so any transition entry written here would be
+         dead code; see that block's comment.) */
+      visibility: hidden;
+      /* (original in-layer slide — the overrides layer's spring
+         shorthand wins this band today; this line is the fallback
+         that keeps the drawer animated if that override is ever
+         retired. The unlayered block at the end of the file widens
+         whichever wins to include visibility.) */
       transition: transform var(--t-base) var(--ease-out);
       box-shadow: var(--shadow-modal);
       /* 012 elevation-language: the mobile drawer is a side sheet. */
@@ -331,7 +355,14 @@
      (to the right) in RTL and -100% (to the left) in LTR. */
     [dir="rtl"] .sidebar { transform: translateX(100%); }
     [dir="ltr"] .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
+    .sidebar.open {
+      transform: translateX(0);
+      /* r157 (6A4-1): visible (and focusable) from the first frame
+         of the slide-in — the unlayered transition-property block at
+         the end of this file makes visibility interpolate as visible
+         for the whole open transition. */
+      visibility: visible;
+    }
     .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
 
     /* 4-A2 P2-6 (partial, in-file surfaces): 44px touch floor for the
@@ -998,3 +1029,52 @@
   /* The card's own max-block-size (calc(76dvh), components.css) plus
      the sticky input/footer rows means the LIST is the scroller. */
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   UNLAYERED — mobile drawer visibility timing (r157, 6A4-1)
+   ═══════════════════════════════════════════════════════════════════
+   The drawer's visibility pair lives in @layer layout above
+   (.sidebar → hidden closed / .sidebar.open → visible). The TIMING
+   for that flip cannot live there: polish.css's "SIDEBAR DRAWER —
+   mobile slide-in with spring" section redefines the entire
+   transition shorthand for .sidebar inside @media (max-width: 920px)
+   in @layer overrides, and cascade layers outrank specificity —
+   verified live at 390px: computed transition was `transform 380ms
+   …spring`, with every visibility entry written in @layer layout
+   inert (dead code, which this repo's no-dead-code floor rejects).
+
+   House precedent (notifications.css 4-A2 P2-7): an UNLAYERED normal
+   declaration beats every layer without !important. These blocks
+   re-declare ONLY the transition longhands, per property:
+
+     · transform keeps polish's exact timing — duration
+       var(--motion-duration-long) (380ms, the same token polish
+       uses), zero delay, and the spring easing stays polish's (not
+       re-declared here);
+     · visibility flips with a 0s duration (zero-ish — kills motion,
+       doesn't author it) DELAYED by the full slide length, so the
+       hide lands exactly when the slide-out finishes — the a11y
+       tree keeps the drawer through the whole exit, then it is
+       gone (the worklog's spec named --t-base 240ms for this delay,
+       but the live slide is the overrides-layer 380ms: --t-base
+       would hide the drawer 140ms early, mid-slide);
+     · .sidebar.open re-declares zero delay for the open direction —
+       the drawer is visible (focusable) from the slide-in's first
+       frame;
+     · no `linear` keyword, no raw durations (delay slots are
+       token-exempt by the motion gate's own policy); the
+       reduced-motion 0.01ms belt (base.css) collapses the timing to
+       an instant flip in both directions. */
+@media (max-width: 920px) {
+  .sidebar {
+    transition-property: transform, visibility;
+    transition-duration: var(--motion-duration-long), 0s;
+    transition-delay: 0s, var(--motion-duration-long);
+  }
+  .sidebar.open {
+    transition-property: transform, visibility;
+    transition-duration: var(--motion-duration-long), 0s;
+    transition-delay: 0s, 0s;
+  }
+}
+

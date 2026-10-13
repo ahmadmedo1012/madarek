@@ -137,7 +137,7 @@
   .track-card-meta > span {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     white-space: nowrap;
   }
   .track-card-body .progress {
@@ -220,7 +220,7 @@
   .back-link {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     min-block-size: 40px;
     padding: var(--sp-2) var(--sp-3);
     /* negative inline-start so the label optically aligns with the
@@ -741,7 +741,7 @@
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--sp-1);
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     color: var(--gold-ink);

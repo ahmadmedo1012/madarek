@@ -1,10 +1,11 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
   AlertTriangle, Calendar, Upload,
   TrendingUp, MessageSquare, Send, FileText, X, CheckCircle2,
-  ChevronRight, ChevronLeft, ExternalLink,
+  ChevronRight, ChevronLeft, ExternalLink, MailOpen,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
@@ -18,12 +19,13 @@ import {
   useRecordAttendance,
   useTeacherMaterials,
   useTeacherAssignments,
-  useTeacherDashboard,
+  usePendingSubmissions,
+  useMarkAllMessagesRead,
   useGradeSubmission,
   useCreateAssignment,
   useCreateMaterial,
   apiErrorMessage,
-  type TeacherDashboard,
+  type PendingSubmissionRow,
   useMyMessages,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
@@ -1232,25 +1234,18 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
 
 export function AssignmentsPage() {
   const q = useTeacherAssignments();
-  const dashboard = useTeacherDashboard();
+  /* r157 / 6A8: the queue rides its OWN endpoint — the dashboard feed
+   * only ever previewed 6 rows, so the 7th+ pending submission was
+   * invisible on the very page built to grade it. The new hook walks
+   * the full shared set (SUBMITTED + LATE, oldest-first, take 100). */
+  const pendingQ = usePendingSubmissions();
 
   const [gradeTarget, setGradeTarget] = useState<GradeTarget | null>(null);
   const [creating, setCreating] = useState(false);
 
-  /* 5-B6 (audit 5-A7 P1-2): the queue is derived in the PAGE so the
-   * modal's «تقييم التالي» can walk the same list the rows render —
-   * grading N submissions becomes N × (open → type → save → next)
-   * instead of N × (open → type → save → close → hunt the next row). */
-  const maxScoreFor = useCallback((title: string, courseCode?: string) => {
-    const match = (q.data ?? []).find(
-      (a) => a.title === title && (!courseCode || a.course.code === courseCode),
-    );
-    return match?.maxScore;
-  }, [q.data]);
-
   /* The queue group header carries the assignment's due date (VLM
    * residue, re-measured valid): urgency context per group, from the
-   * same assignment rows the ceiling lookup uses. */
+   * same assignment rows the fallback ceiling lookup uses. */
   const dueFor = useCallback((title: string, courseCode?: string) => {
     const match = (q.data ?? []).find(
       (a) => a.title === title && (!courseCode || a.course.code === courseCode),
@@ -1259,13 +1254,13 @@ export function AssignmentsPage() {
   }, [q.data]);
 
   const pending = useMemo(
-    () => feedToPending(dashboard.data?.feed ?? [], maxScoreFor),
-    [dashboard.data, maxScoreFor],
+    () => queueToPending(pendingQ.data ?? []),
+    [pendingQ.data],
   );
 
   /* The next row after the one on screen — computed from the same
    * pending list, skipping the submission being graded. After a save
-   * the dashboard refetch (useGradeSubmission invalidation) drops the
+   * the queue refetch (the modal's post-save invalidation drops the
    * graded row, so this stays honest even mid-refetch. */
   const nextTarget = gradeTarget
     ? pending.find((p) => p.submissionId !== gradeTarget.submissionId) ?? null
@@ -1288,10 +1283,10 @@ export function AssignmentsPage() {
 
       <NeedsReviewCard
         pending={pending}
-        isPending={dashboard.isPending}
-        isError={dashboard.isError}
-        error={dashboard.error}
-        onRetry={() => dashboard.refetch()}
+        isPending={pendingQ.isPending}
+        isError={pendingQ.isError}
+        error={pendingQ.error}
+        onRetry={() => pendingQ.refetch()}
         dueFor={dueFor}
         onGrade={(target) => setGradeTarget(target)}
       />
@@ -1378,45 +1373,34 @@ interface GradeTarget {
   courseCode?: string;
   maxScore?: number;
   submittedAt: string;
-  /** LATE submissions (18-G's feed flag) — drives the «متأخر» chip on
-   *  the row. Never folded into assignmentTitle: the maxScore lookup
-   *  matches by the stripped title. */
+  /** LATE submissions (the queue row's status) — drives the «متأخر» chip
+   *  on the row. Never folded into assignmentTitle: groupPending keys
+   *  by title. */
   late: boolean;
-  /** 5-B6 (audit 5-A7 P1-2): the student's answer, carried from the
-   *  dashboard feed item when the backend projects it (see
-   *  TeacherDashboard['feed'] — the select currently omits these
-   *  columns; the modal renders the surface the moment they arrive). */
+  /** 5-B6 (audit 5-A7 P1-2): the student's answer, carried by the
+   *  queue row (the backend projects textAnswer + fileUrl). */
   textAnswer?: string | null;
   fileUrl?: string | null;
 }
 
-/** The dashboard feed prefixes submission ids with "s-" (papers use
- *  "p-", attendance "att-"). Only submissions are gradeable here.
- *  Exported for the unit suite; strips the «سلّم / سلّم/ت» title prefix
- *  the same way the maxScore lookup expects. */
-export function feedToPending(
-  feed: TeacherDashboard['feed'],
-  maxScoreFor: (title: string, courseCode?: string) => number | undefined,
-): GradeTarget[] {
-  return feed
-    .filter((f) => f.kind === 'submissions' && f.id.startsWith('s-'))
-    .map((f) => {
-      const assignmentTitle = f.title
-        .replace(/^سلّم\/ت /, '')
-        .replace(/^سلّم /, '');
-      const courseCode = f.meta.split(' · ').pop()?.trim();
-      return {
-        submissionId: f.id.slice(2),
-        studentName: f.author ? `${f.author.firstName} ${f.author.lastName}` : 'طالب',
-        assignmentTitle,
-        courseCode,
-        maxScore: maxScoreFor(assignmentTitle, courseCode),
-        submittedAt: f.when,
-        late: f.late ?? false,
-        textAnswer: f.textAnswer ?? null,
-        fileUrl: f.fileUrl ?? null,
-      } satisfies GradeTarget;
-    });
+/** r157 / 6A8 — the pending-queue row → GradeTarget mapping. The
+ * dedicated queue endpoint ships the assignment's title/maxScore (and
+ * course code) as real fields, so the old feed-path hacks — the
+ * "s-" prefix strip and the «سلّم / سلّم/ت» title strip the maxScore
+ * lookup needed — are gone: the queue row IS the target. Exported for
+ * the unit suite. */
+export function queueToPending(rows: PendingSubmissionRow[]): GradeTarget[] {
+  return rows.map((r) => ({
+    submissionId: r.id,
+    studentName: `${r.student.firstName} ${r.student.lastName}`,
+    assignmentTitle: r.assignment.title,
+    courseCode: r.assignment.offering.course.code,
+    maxScore: r.assignment.maxScore,
+    submittedAt: r.submittedAt,
+    late: r.status === 'LATE',
+    textAnswer: r.textAnswer,
+    fileUrl: r.fileUrl,
+  }));
 }
 
 /* ─── Pending submissions awaiting grading ───────────────── */
@@ -1600,6 +1584,7 @@ function GradeSubmissionModal({
   onNext: () => void;
 }) {
   const grade = useGradeSubmission(target.submissionId);
+  const qc = useQueryClient();
   const [score, setScore] = useState('');
   const [feedback, setFeedback] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -1645,6 +1630,11 @@ function GradeSubmissionModal({
         grade: value,
         feedback: feedback.trim() || undefined,
       });
+      // r157 / 6A8: useGradeSubmission refreshes the dashboards — but the
+      // QUEUE this page now renders is its own query key. Drop the graded
+      // row from ['teacher','me','pending-submissions'] so «تقييم التالي»
+      // and the NeedsReviewCard counts stay honest immediately.
+      void qc.invalidateQueries({ queryKey: ['teacher', 'me', 'pending-submissions'] });
       setDone(true);
       toast.success('تمّ حفظ الدرجة وسيصل الطالب إشعار بالنتيجة.', { title: 'تمّ التقييم' });
     } catch {
@@ -1680,11 +1670,10 @@ function GradeSubmissionModal({
             {target.courseCode ? <> · <bdi>{target.courseCode}</bdi></> : null} · وصل {formatRelativeArShort(target.submittedAt)}
           </div>
 
-          {/* A7 P1-2 — the answer the teacher is grading. Rendered only
-              when the feed payload carries it (see GradeTarget); a
-              submission always has at least one of textAnswer/fileUrl
-              server-side, so an absent pair means the projection hasn't
-              shipped yet, not an empty answer. */}
+          {/* A7 P1-2 — the answer the teacher is grading. Carried by the
+              queue row (see GradeTarget); a submission always has at
+              least one of textAnswer/fileUrl server-side, so an absent
+              pair means a legacy payload, not an empty answer. */}
           {(target.textAnswer != null && target.textAnswer !== '') || target.fileUrl != null ? (
             <div className="grade-answer">
               <div className="grade-answer-head">
@@ -1786,6 +1775,11 @@ const MESSAGES_PAGE_SIZE = 30;
 export function MessagesPage() {
   const [page, setPage] = useState(1);
   const q = useMyMessages(page, MESSAGES_PAGE_SIZE);
+  /* r157 (6A9 messages): the unread sweep — POST /messages/read-all,
+  * invalidating every ['me','messages',…] page key so the subtitle
+  * count + rows refetch together. Hidden while unread = 0 (a
+  * mark-all button with nothing to mark is noise). */
+  const markAll = useMarkAllMessagesRead();
   // Read the current user's ID directly from the auth store. Previously
   // this code tried to *infer* `meId` by picking the first message's
   // `toUser.id` — which breaks for sent messages (where the current
@@ -1794,6 +1788,7 @@ export function MessagesPage() {
   const meId = useAuthStore((s) => s.user?.id) ?? null;
 
   const meta = q.data?.meta;
+  const unread = meta?.unread ?? 0;
   const totalPages = Math.max(1, meta?.totalPages ?? 1);
   const messages = q.data?.data ?? [];
 
@@ -1812,10 +1807,32 @@ export function MessagesPage() {
       <Card
         title="سجلّ الرسائل"
         icon={MessageSquare}
+        actions={unread > 0 ? (
+          <button
+            type="button"
+            className="btn outline sm"
+            onClick={() => markAll.mutate()}
+            disabled={markAll.isPending}
+          >
+            <Icon icon={MailOpen} size={13} /> {markAll.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
+          </button>
+        ) : undefined}
         /* P2-1: countAr(0) renders the broken «0 رسالة» — the zero case
-            gets its own honest copy. */
-        subtitle={meta ? (meta.total === 0 ? 'لا رسائل' : countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])) : undefined}
+            gets its own honest copy. The unread tail rides the same
+            subtitle (r157 / 6A9): «… · 3 رسائل غير مقروءة». */
+        subtitle={meta ? (meta.total === 0
+          ? 'لا رسائل'
+          : `${countAr(meta.total, ['رسالة واحدة', 'رسالتان', 'رسائل', 'رسالة'])}${unread > 0 ? ` · ${countAr(unread, ['رسالة غير مقروءة واحدة', 'رسالتان غير مقروءتان', 'رسائل غير مقروءة', 'رسالة غير مقروءة'])}` : ''}`) : undefined}
       >
+        {markAll.isError && (
+          <div className="form-feedback fail" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
+            <Icon icon={X} size={14} />
+            <span className="flex-1">تعذَّر تعليم الرسائل كمقروءة — تحقّق من اتصالك ثم أعد المحاولة.</span>
+            <button type="button" className="btn ghost sm" onClick={() => markAll.mutate()} disabled={markAll.isPending}>
+              <Icon icon={MailOpen} size={12} /> إعادة المحاولة
+            </button>
+          </div>
+        )}
         {q.isPending ? (
           <ListSkeleton rows={6} />
         ) : q.isError ? (

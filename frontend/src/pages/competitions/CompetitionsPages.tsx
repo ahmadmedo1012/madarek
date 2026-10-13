@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -96,7 +96,26 @@ function formatDeadline(iso: string): string {
 export function CompetitionsIndexPage() {
   const q = useCompetitions();
   const perms = useMyPermissions();
-  const [filter, setFilter] = useState<'all' | 'OPEN' | 'CLOSED' | 'JUDGED'>('all');
+  /* Status filter is URL-synced (?status=OPEN…) — a filtered view is
+   * deep-linkable and survives reload / browser back. DEVIATION NOTE
+   * (r157 w2-F6, authorized): hooks/useUrlQueryState is NOT reused —
+   * that hook is colleges-domain typed (FilterState/CityName, q/campus
+   * params). The immediate setSearchParams write below IS the idiom
+   * that hook itself builds on (same behavior as colleges' campus
+   * chips: no debounce, one history entry per click). 'all' deletes
+   * the param so the canonical URL stays clean. */
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rawStatus = searchParams.get('status');
+  const filter: 'all' | 'OPEN' | 'CLOSED' | 'JUDGED' =
+    rawStatus === 'OPEN' || rawStatus === 'CLOSED' || rawStatus === 'JUDGED' ? rawStatus : 'all';
+  const setFilter = (v: 'all' | 'OPEN' | 'CLOSED' | 'JUDGED') => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (v === 'all') next.delete('status');
+      else next.set('status', v);
+      return next;
+    });
+  };
   const [creating, setCreating] = useState(false);
 
   const canRun = perms.data?.capabilities.includes('COMPETITIONS_RUN') ?? false;
@@ -250,7 +269,6 @@ export function CompetitionsIndexPage() {
 export function CompetitionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const q = useCompetition(id);
-  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   // Payload title (A12 P3-6) — the competition's real name in the tab.
   useDocTitle(q.data?.title ?? null);
@@ -303,15 +321,15 @@ export function CompetitionDetailPage() {
   // future payload drift degrades to an empty list, never a crash.
   const entries = Array.isArray(c.entries) ? c.entries : [];
   const isOrganizer = !!user && c.organizerId === user.id;
-  // myEntry — prefer an exact id match when the payload carries one
-  // (the organizer path AND the author's own entry both return the
-  // raw row incl. userId — 5-B1's entryViewForViewer), and fall back
-  // to a full first+last-name comparison otherwise (third-party
-  // entries ship neither userId nor body/fileUrl).
-  const myEntry = entries.find((e) => {
-    if (e.userId) return e.userId === user?.id;
-    return e.user.firstName === user?.firstName && e.user.lastName === user?.lastName;
-  });
+  // myEntry — exact userId match ONLY (r157 w2-F6): the former name
+  // fallback matched the FIRST third-party entry sharing the viewer's
+  // first+last name and prefilled «تعديل مشاركتي» with a stranger's
+  // submission. The truthy userId guard also protects guests — a naive
+  // `e.userId === user?.id` would match undefined === undefined on
+  // third-party rows (which ship no userId) for a null user. userId
+  // rides the organizer path AND the author's own entry (5-B1
+  // entryViewForViewer); every other row is someone else's.
+  const myEntry = entries.find((e) => e.userId && e.userId === user?.id);
   /* 5-A12 P2-3: an OPEN competition whose deadline has passed is
    * «انتهى التقديم» — the organizer hasn't closed it yet, but it is
    * NOT «مفتوحة» either. One derived display status drives the hero
@@ -329,10 +347,13 @@ export function CompetitionDetailPage() {
 
   return (
     <div className="page comp-detail">
-      <button type="button" className="btn ghost sm" style={{ alignSelf: 'flex-start' }} onClick={() => navigate('/competitions')}>
+      {/* Back (A14 P2-3 family): a real Link, not a navigate() button —
+          middle-click / open-in-new-tab works, and the ghost sm idiom
+          mirrors the colleges detail back. */}
+      <Link to="/competitions" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
         <Icon icon={ChevronRight} size={14} />
         كل المسابقات
-      </button>
+      </Link>
 
       {/* Hero */}
       <header className="comp-hero">
@@ -609,7 +630,7 @@ function ScoreInput({
       {/* Save failures were completely silent before (audit 0-e
           P1-30) — surface inline with a working retry. */}
       {score.isError && (
-        <div className="form-error" id={`${inputId}-err`} role="alert" style={{ marginBlockStart: 6 }}>
+        <div className="form-error" id={`${inputId}-err`} role="alert" style={{ marginBlockStart: 'var(--sp-1-5)' /* r157: 6px → token */ }}>
           <Icon icon={AlertTriangle} size={13} />
           <span className="form-error-msg">تعذَّر حفظ التقييم.</span>
           <button type="button" className="btn ghost sm" onClick={save}>إعادة المحاولة</button>

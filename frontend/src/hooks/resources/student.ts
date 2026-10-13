@@ -227,7 +227,10 @@ export function useMyMessages(page: number = 1, limit: number = 30) {
   return useQuery({
     queryKey: ['me', 'messages', page, limit],
     queryFn: async () => {
-      const res = await api.get<{ data: MessageRow[]; meta: { total: number; page: number; limit: number; totalPages: number } }>(
+      // r157 / 6A9: the meta carries `unread` (incoming, readAt null) —
+      // the same contract as /notifications; the teacher inbox consumes
+      // it for the unread subtitle + mark-all-read affordance.
+      const res = await api.get<{ data: MessageRow[]; meta: { total: number; page: number; limit: number; totalPages: number; unread: number } }>(
         '/messages', { params: { page, limit } });
       return res.data;
     },

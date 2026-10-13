@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Play, FileText, ClipboardList, Calendar, Users,
-  Clock, CheckCircle2, ChevronRight,
+  Clock, CheckCircle2, ChevronRight, Presentation, Video, FileArchive, Image,
+  type LucideIcon,
 } from 'lucide-react';
 import { Card, Badge, ProgressBar, MetricCard } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, ListSkeleton } from '../../components/primitives/States';
@@ -10,7 +11,7 @@ import { Reveal, RevealGroup, useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useOfferingFull } from '../../hooks/useResources';
 import { countAr, formatDateAr, WEEKDAY_NAMES_AR } from '../../lib/format';
-import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind } from '../../lib/courseMeta';
+import { courseIcon, courseTint, ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, type AssignmentKind, type MaterialType } from '../../lib/courseMeta';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts; countAr, formatDateAr + WEEKDAY_NAMES_AR
@@ -21,6 +22,22 @@ function fmtDuration(sec: number) {
   const m = Math.round(sec / 60);
   return `${m}د`;
 }
+
+/* r157 (W2-F7 / audit 6A13): per-format material icons — every row
+ * wore the same FileText glyph, so a 50MB lecture recording and a
+ * 2-slide handout were visually identical in a list the student
+ * scans by format. PPT→Presentation, VIDEO→Video, ZIP→FileArchive,
+ * IMAGE→Image; the document formats (PDF/DOC/OTHER) stay FileText.
+ * Unknown types (schema drift) fall back to FileText. */
+const MATERIAL_TYPE_ICON: Record<MaterialType, LucideIcon> = {
+  PPT: Presentation,
+  VIDEO: Video,
+  ZIP: FileArchive,
+  IMAGE: Image,
+  PDF: FileText,
+  DOC: FileText,
+  OTHER: FileText,
+};
 
 /* fmtDate (short ar-LY date) is lib/format.formatDateAr (13-15 fold).
  * The weekday names + assignment-kind labels are imported above. */
@@ -238,7 +255,11 @@ export default function CourseDetailPage() {
                       </div>
                       {watchedPct > 0 && watchedPct < 100 && (
                         <div style={{ marginTop: 6, maxWidth: 240 }}>
-                          <ProgressBar value={watchedPct} color={tint} showValue={false} />
+                          {/* r157 (W2-F7): named per-lecture bar — every
+                              progressbar on the page needs its own accessible
+                              name (the hero's has one; these rows had none,
+                              so a screen reader met N unnamed sliders). */}
+                          <ProgressBar value={watchedPct} color={tint} showValue={false} ariaLabel={`تقدّم المحاضرة ${lec.ordinal}`} />
                         </div>
                       )}
                     </div>
@@ -285,12 +306,14 @@ export default function CourseDetailPage() {
                     href={isExternal ? m.url : paperName ? `/document/${encodeURIComponent(paperName)}` : m.url}
                     {...(isExternal ? { target: '_blank', rel: 'noreferrer' } : {})}
                   >
-                    <Icon icon={FileText} size={16} className="text-muted" />
+                    <Icon icon={MATERIAL_TYPE_ICON[m.type as MaterialType] ?? FileText} size={16} className="text-muted" />
                     <div className="list-row-body">
                       <div className="list-row-title" title={m.name}>{m.name}</div>
                       <div className="list-row-sub"><bdi>{label}</bdi> · {formatDateAr(m.createdAt)}</div>
                     </div>
-                    <Badge><bdi>{label}</bdi></Badge>
+                    {/* r157 (W2-F7): the trailing type Badge is deleted — the
+                        sub line already carries the same label (and now the
+                        icon encodes it too); the row read “PDF · PDF”. */}
                   </a>
                 );
               })}

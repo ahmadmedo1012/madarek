@@ -437,11 +437,18 @@ export function Pill({
   on,
   icon,
   children,
+  trailing,
   onClick,
 }: {
   on?: boolean;
   icon?: LucideIcon;
   children: ReactNode;
+  /** Optional trailing slot rendered AFTER children, as-is (r157,
+   *  audit 6A11 #6): the page-level count badges (`.filter-pill-count`
+   *  family in training.css) have no shared home in the components
+   *  layer — the consumer provides its own trailing contract; the
+   *  wave-2/3 filter migration moves them onto this slot. */
+  trailing?: ReactNode;
   onClick?: () => void;
 }) {
   const cls = `pill${on ? ' on' : ''}`;
@@ -449,6 +456,7 @@ export function Pill({
     <>
       {icon && <Icon icon={icon} size={13} />}
       {children}
+      {trailing}
     </>
   );
   // Without a handler a <button> would be a fake control, so passive
@@ -495,6 +503,13 @@ export function Tabs<T extends string>({
     tabRefs.current[index]?.focus();
   };
 
+  // r157 (audit 6A11 #7): an orphan `value` (matches no item) used to
+  // strip the tab stop from EVERY tab (tabindex=-1 for all) — a
+  // keyboard dead zone until the user clicked one with a pointer. The
+  // first tab becomes the tab-stop instead, mirroring the ARIA tabs
+  // pattern's "none selected → first is tabbable" rule.
+  const hasSelection = items.some((it) => it.value === value);
+
   const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
     const count = items.length;
     if (count === 0) return;
@@ -529,6 +544,7 @@ export function Tabs<T extends string>({
     <div className="tabs" role="tablist">
       {items.map((it, i) => {
         const selected = value === it.value;
+        const tabStop = selected || (!hasSelection && i === 0);
         return (
           <button
             key={it.value}
@@ -537,7 +553,7 @@ export function Tabs<T extends string>({
             role="tab"
             id={`${uid}-tab-${it.value}`}
             aria-selected={selected}
-            tabIndex={selected ? 0 : -1}
+            tabIndex={tabStop ? 0 : -1}
             className={`tab${selected ? ' on' : ''}`}
             onClick={() => onChange(it.value)}
             onKeyDown={(e) => handleKeyDown(e, i)}

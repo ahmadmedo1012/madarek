@@ -23,7 +23,7 @@ import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,
 } from '../../hooks/useResources';
-import { formatDateTimeAr } from '../../lib/format';
+import { formatDateTimeAr, countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 
 const STATUS_LABEL: Record<LiveSessionRow['status'], string> = {
@@ -331,8 +331,16 @@ export default function TeacherLivePage() {
             </Card>
           )}
 
-          {/* Scheduled */}
-          <Card title="جلسات قادمة" icon={Calendar} subtitle={`${scheduled.length} جلسة مجدولة`}>
+          {/* Scheduled — r157 / 6A9: countAr grammar (the old `${n} جلسة
+              مجدولة` template broke at 0 and 2 — «0 جلسة مجدولة» / «2
+              جلسة مجدولة»); the zero case names the reality. */}
+          <Card
+            title="جلسات قادمة"
+            icon={Calendar}
+            subtitle={scheduled.length === 0
+              ? 'لا جلسات مجدولة'
+              : countAr(scheduled.length, ['جلسة مجدولة واحدة', 'جلستان مجدولتان', 'جلسات مجدولة', 'جلسة مجدولة'])}
+          >
             {scheduled.length === 0 ? (
               /* r149 (R3-A1 #6): EmptyState الكنونية — كانت يدوية بعلامة
                  مزدوجة (رسم + أيقونة معًا) وبلا تشريح العنوان/الدور. */
@@ -356,7 +364,9 @@ export default function TeacherLivePage() {
             )}
           </Card>
 
-          {/* Past */}
+          {/* Past — capped at 10 rows; the disclosure (r157 / 6A9)
+              names the truncation honestly: «أحدث 10 جلسات من أصل N».
+              The old silent .slice(0, 10) hid the rest. */}
           {past.length > 0 && (
             <Card title="جلسات سابقة" icon={CheckCircle2}>
               <div className="flex-col gap-2">
@@ -364,6 +374,11 @@ export default function TeacherLivePage() {
                   <SessionRow key={s.id} session={s} />
                 ))}
               </div>
+              {past.length > 10 && (
+                <div className="text-xs text-subtle" style={{ marginBlockStart: 'var(--sp-3)' }}>
+                  أحدث <bdi>10</bdi> جلسات من أصل <bdi>{past.length}</bdi>
+                </div>
+              )}
             </Card>
           )}
         </>

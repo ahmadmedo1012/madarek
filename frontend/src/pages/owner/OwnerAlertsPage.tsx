@@ -6,7 +6,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { useOwnerAlerts, useResolveAlert } from '../../hooks/useOwner';
-import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS } from '../../lib/ownerLabels';
+import { SEVERITY_LABELS, SEVERITY_COLORS, CATEGORY_LABELS, isCriticalAlert } from '../../lib/ownerLabels';
 import { toast } from '../../lib/toast';
 
 /* severity 'error' added 17-a2 (15-a P1-6) and the maps hoisted to
@@ -60,7 +60,12 @@ export function OwnerAlertsPage() {
       onSuccess: () => toast.success('أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.', { title: 'تمّ حلّ التنبيه' }),
     });
 
-  const criticalCount = alerts.filter((a) => a.severity === 'critical').length;
+  /* 6A10-2: the critical KPI counts the critical PAIR (critical OR
+   * error) via the shared lib/ownerLabels filter — the same pair
+   * owner.routes.ts counts for the system page's criticalCount, so
+   * the alerts board and the server can never disagree about what is
+   * urgent (an 'error'-severity alert turns this KPI red too). */
+  const criticalCount = alerts.filter(isCriticalAlert).length;
   const warningCount = alerts.filter((a) => a.severity === 'warning').length;
 
   // Honest KPIs (audit 0-e P2-46): '…' while loading, '—' when the

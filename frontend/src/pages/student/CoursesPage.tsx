@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
   BookOpen, ArrowLeft,
@@ -46,7 +46,13 @@ const FILTERS: Array<{ key: CourseFilter; label: string }> = [
 function matchesFilter(e: MyEnrollment, f: CourseFilter): boolean {
   if (f === 'done') return e.progressPct >= 100;
   if (f === 'active') return e.progressPct > 0 && e.progressPct < 100;
-  if (f === 'attention') return e.progressPct < 30;
+  /* r157 (W2-F7 / 6A11): attention = started but stalling —
+   * 0 < progressPct < 30. A zero-progress course (enrolled, never
+   * opened — most of a new term) is «ابدأ» territory, not an alert,
+   * and an empty course can never be the student's fault. Both were
+   * previously swept into the flag, drowning the 2-3 genuinely
+   * stalled cards the filter exists for. */
+  if (f === 'attention') return e.progressPct > 0 && e.progressPct < 30;
   return true;
 }
 
@@ -101,7 +107,6 @@ function CourseCard({ e, i }: { e: MyEnrollment; i: number }) {
   const Cmp = courseIcon(c.code ?? c.name);
   const tint = courseTint(c.themeColor);
   const teacher = `د. ${e.offering.teacher.firstName} ${e.offering.teacher.lastName}`;
-  const navigate = useNavigate();
   // Lecture count — the same cached list the lecture player's prev/next
   // bar reads (['offerings', id, 'lectures']), so the card's request is
   // amortized across the visit. Fail-soft: no count line on error.
@@ -125,7 +130,11 @@ function CourseCard({ e, i }: { e: MyEnrollment; i: number }) {
             same-teacher same-% cards are told apart by code + workload. */}
         <div className="thumb-card-meta">
           <Badge><bdi className="font-mono">{c.code}</bdi></Badge>
-          {lectureCount !== undefined && (
+          {lectureCount === 0 ? (
+            /* r157 (W2-F7): an honest noun for the 0-lecture card —
+               * countAr(0, …) would have rendered «0 محاضرة». */
+            <span className="thumb-card-count">بانتظار محتوى المقرّر</span>
+          ) : lectureCount !== undefined && (
             <span className="thumb-card-count">
               {countAr(lectureCount, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
             </span>
@@ -140,21 +149,17 @@ function CourseCard({ e, i }: { e: MyEnrollment; i: number }) {
               (8.44:1) after the raw themeColor text measured
               1.88–3.60:1 on the white cards. */}
           <ProgressBar value={e.progressPct} color={tint} label="الإنجاز" />
-          {/* Labeled CTA (P2-9): the whole card already links — this names
-              WHERE it goes. stopPropagation + navigate because a nested
-              interactive control can't ride the parent anchor's click. */}
-          <button
-            type="button"
-            className="btn ghost sm thumb-card-go"
-            onClick={(ev) => {
-              ev.stopPropagation();
-              ev.preventDefault();
-              navigate(to);
-            }}
-          >
+          {/* Labeled CTA (P2-9): a VISUAL chip only — the whole card
+              anchor is the interactive element (a nested interactive
+              control can't ride a parent anchor: it hijacked the click
+              and worked around it with stopPropagation + navigate,
+              leaving two competing “where does this click go” paths and
+              a broken middle-click/keyboard story). The span wears the
+              same .btn grammar so the visual contract is unchanged. */}
+          <span className="btn ghost sm thumb-card-go">
             {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
             <Icon icon={ArrowLeft} size={12} />
-          </button>
+          </span>
         </div>
       </div>
     </Link>
@@ -460,7 +465,7 @@ export function SubmitAssignmentModal({
             <FormField
               label="رابط ملف (اختياري)"
               id="submit-file"
-              hint="يجب أن يبدأ الرابط بـ https:// أو أن يكون مسار ملف داخل المنصة (/api/v1/files/papers/)."
+              hint="رابط خارجي اختياري يبدأ بـ https:// إن توفّر لديك (مثل ملف على Drive) — إجابتك النصيّة وحدها تكفي للتسليم."
             >
               <input
                 type="text"

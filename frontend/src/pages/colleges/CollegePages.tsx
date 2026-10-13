@@ -26,8 +26,10 @@ import { filterColleges, CAMPUS_ORDER, type CityName } from './filter-colleges';
 import { useUrlQueryState } from '../../hooks/useUrlQueryState';
 import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
 // D14 CSS split (13-17): this sheet also styles the .comp-* competitions
-// grid rendered by the page below and is shared with five other lazy
-// consumers, so it lands in the chunk-shared CSS.
+// grid rendered by the page below and is shared with two other lazy
+// consumers (CompetitionsPages + CommunityPages — rg-verified, r157;
+// AdminExtra/AdminGovernance dropped their imports), so it lands in the
+// chunk-shared CSS.
 import '../../styles/colleges.css';
 
 interface CollegeListItem {
@@ -144,7 +146,7 @@ function formatRelative(iso: string): string {
   if (Math.abs(days) < 1) return 'اليوم';
   if (days === 1) return 'غداً';
   if (days === -1) return 'أمس';
-  if (days > 1 && days < 7) return `بعد ${days} أيّام`;
+  if (days > 1 && days < 7) return `بعد ${countAr(days, ['يوم', 'يومين', 'أيام', 'يوماً'])}`;
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
@@ -339,11 +341,15 @@ export function CollegesIndexPage() {
               />
             </div>
 
-            <div className="gallery-chip-strip" role="tablist" aria-label="فلترة حسب الحرم">
+            {/* r157 (w2-F6): role=group + aria-pressed, not tablist —
+                these are single-select FILTER chips (no tab panels are
+                keyed to them), and a bare tablist without arrow-key
+                handling + aria-controls is an ARIA violation. Mirrors
+                CompetitionsPages' status pills. */}
+            <div className="gallery-chip-strip" role="group" aria-label="فلترة حسب الحرم">
               <button
                 type="button"
-                role="tab"
-                aria-selected={state.campus === null}
+                aria-pressed={state.campus === null}
                 className={`gallery-chip${state.campus === null ? ' gallery-chip-on' : ''}`}
                 onClick={() => setCampus(null)}
               >
@@ -358,8 +364,7 @@ export function CollegesIndexPage() {
                   <button
                     key={city}
                     type="button"
-                    role="tab"
-                    aria-selected={active}
+                    aria-pressed={active}
                     className={`gallery-chip${active ? ' gallery-chip-on' : ''}`}
                     onClick={() => setCampus(active ? null : city)}
                   >

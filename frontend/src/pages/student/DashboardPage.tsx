@@ -69,6 +69,44 @@ function formatDue(iso: string): string {
   return d.toLocaleDateString('ar-LY', { dateStyle: 'medium' });
 }
 
+/* r158 (6A14 P2) — agenda chronology. The agenda used to concatenate
+ * its three sources BY KIND, so a live broadcast could render below
+ * tomorrow's class. Every item now carries a numeric whenMs and the
+ * merged list sorts ascending by it. Both helpers are PURE (exported
+ * for tests/unit/DashboardPage-agenda.test.ts) and never return NaN:
+ *   - classWhenMs anchors today/tomorrow to the slot's own startTime;
+ *     a malformed time falls back to END-OF-DAY (23:59:59.999 of the
+ *     SAME day — after every well-formed slot of that day, before the
+ *     next day). Empty parts ("", "09:", "9") and out-of-range values
+ *     fail the guard below, so the result is never NaN.
+ *   - safeMs parses ISO dates (dueAt / scheduledAt); a malformed string
+ *     sorts LAST (MAX_SAFE_INTEGER — no parseable ISO exceeds it). */
+export function classWhenMs(
+  slot: { when: 'today' | 'tomorrow'; startTime: string },
+  now: Date = new Date(),
+): number {
+  const day = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (slot.when === 'tomorrow') day.setDate(day.getDate() + 1);
+  const parts = slot.startTime.split(':');
+  const h = Number(parts[0]);
+  const m = Number(parts[1]);
+  const wellFormed =
+    parts.length >= 2 && parts[0] !== '' && parts[1] !== '' &&
+    Number.isFinite(h) && Number.isFinite(m) &&
+    h >= 0 && h < 24 && m >= 0 && m < 60;
+  if (wellFormed) {
+    day.setHours(h, m, 0, 0);
+  } else {
+    day.setHours(23, 59, 59, 999);
+  }
+  return day.getTime();
+}
+
+export function safeMs(iso: string): number {
+  const t = Date.parse(iso);
+  return Number.isFinite(t) ? t : Number.MAX_SAFE_INTEGER;
+}
+
 function gpaTone(gpa: number): { label: string; color: 'green' | 'amber' | 'red' } {
   if (gpa >= 3.5) return { label: 'ممتاز', color: 'green' };
   if (gpa >= 3.0) return { label: 'جيد جدّاً', color: 'green' };
@@ -141,6 +179,10 @@ type AgendaTone = 'accent' | 'gold' | 'red';
 type AgendaItem = {
   kind: 'class' | 'assign' | 'live';
   id: string;
+  /** r158 (6A14 P2): the chronology key — classes anchor to their
+   *  start time (classWhenMs), assignments/live to their ISO date
+   *  (safeMs). The merged list below sorts ascending by this. */
+  whenMs: number;
   /** PP-X2 (audit P1-8): every agenda row is now a link — classes and
    *  assignments deep-link to their course (the course page carries the
    *  schedule + the upcoming-assignments table), live rows go to the
@@ -164,6 +206,28 @@ function ResumeHero({ resume }: { resume: ReturnType<typeof useResume> }) {
     return (
       <section className="dash-resume" aria-busy="true">
         <Skeleton width="100%" height={88} rounded="var(--r-xl)" />
+      </section>
+    );
+  }
+  /* r157 (W2-F7): honest error branch — a failed /me/resume used to
+   * render NOTHING here (the `!r` return swallowed the query error),
+   * so the dashboard's PRIMARY action silently vanished on a network
+   * blip. Same grammar as the player's completion-report retry
+   * (.lecture-report-retry: role=alert + retry + escape hatch). */
+  if (resume.isError) {
+    return (
+      <section className="dash-resume">
+        <div className="lecture-report-retry" role="alert">
+          <span>تعذّر تحميل بطاقة «أكمل من حيث توقفت» — يمكنك إعادة المحاولة الآن، أو الانتقال إلى مقرّراتك مباشرةً.</span>
+          <span className="lecture-report-retry-actions">
+            <button type="button" className="btn sm" onClick={() => resume.refetch()}>
+              إعادة المحاولة
+            </button>
+            <Link className="btn ghost sm" to="/student/courses">
+              اذهب إلى مقرّراتك
+            </Link>
+          </span>
+        </div>
       </section>
     );
   }
@@ -272,12 +336,16 @@ export default function StudentDashboardPage() {
   const remainingPct = Math.max(0, 100 - courseProgressPct);
   const cc = chartColors();
 
-  // Compose the agenda from three real sources, sorted by recency.
+  // Compose the agenda from three real sources, then merge them into
+  // ONE chronological stream — ascending whenMs (r158 6A14 P2: the old
+  // kind-concatenation let a live broadcast render below tomorrow's
+  // class; equal keys keep the stable per-kind order).
   // Latin runs (course codes, time ranges) are bdi-wrapped so the bidi
   // algorithm never scrambles them inside the Arabic sentence.
   const agenda: AgendaItem[] = [
     ...d.agenda.classes.slice(0, 4).map<AgendaItem>((c) => ({
       kind: 'class', id: `c-${c.id}`,
+      whenMs: classWhenMs(c),
       to: `/student/courses/${c.offeringId}`,
       title: `${c.courseName}${c.room ? ` — ${c.room}` : ''}`,
       meta: <>{DAY_LABEL[c.when]} · <bdi>{c.startTime}–{c.endTime}</bdi></>,
@@ -285,6 +353,7 @@ export default function StudentDashboardPage() {
     })),
     ...d.agenda.assignments.slice(0, 3).map<AgendaItem>((a) => ({
       kind: 'assign', id: `a-${a.id}`,
+      whenMs: safeMs(a.dueAt),
       to: `/student/courses/${a.offeringId}`,
       title: <>{ASSIGNMENT_KIND_LABEL[a.type]}: {a.title} (<bdi>{a.courseCode}</bdi>)</>,
       meta: <>تسليم {formatDue(a.dueAt)}</>,
@@ -292,12 +361,16 @@ export default function StudentDashboardPage() {
     })),
     ...d.agenda.live.slice(0, 2).map<AgendaItem>((l) => ({
       kind: 'live', id: `l-${l.id}`,
+      whenMs: safeMs(l.scheduledAt),
       to: '/student/live',
+      /* A LIVE broadcast that has already started belongs at the very
+         top of the stream: its whenMs (scheduledAt) has already passed,
+         so ascending sort puts it there naturally. */
       title: <>بثّ مباشر: {l.title}</>,
       meta: <><bdi>{l.offering.course.code}</bdi> · {formatDue(l.scheduledAt)}</>,
       icon: Radio, tone: 'red',
     })),
-  ];
+  ].sort((a, b) => a.whenMs - b.whenMs);
 
   return (
     <div className="page student-dashboard">

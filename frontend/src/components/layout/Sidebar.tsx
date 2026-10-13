@@ -66,6 +66,20 @@ export function Sidebar() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  // ── Ghost drawer (r157, 6A4-3) ────────────────────────────
+  // The drawer's CSS only exists inside the ≤920px band. When the
+  // user resizes/rotates past 920px while the drawer is open, the
+  // 'open' class used to survive the band flip: no drawer rendered
+  // (desktop sidebar chrome took over) yet the scroll lock stayed
+  // held, the overlay-stack layer stayed registered (⌘K stayed
+  // inert!), and the burger's aria-expanded kept announcing a drawer
+  // no one could see or close. Close it the moment the band leaves
+  // while open — resizing back re-opens nothing (same as Esc).
+  useEffect(() => {
+    if (drawerBand || !sidebarOpen) return;
+    closeSidebar();
+  }, [drawerBand, sidebarOpen, closeSidebar]);
+
   useEffect(() => {
     if (!sidebarOpen || !drawerBand) return;
     const previousActive = document.activeElement as HTMLElement | null;
@@ -206,7 +220,11 @@ export function Sidebar() {
           is display:none >640px), and aside landmarks don't show under
           the NVDA/JAWS navigation list. No CSS impact: every rule
           targets .sidebar, never the tag. */}
-      <nav ref={asideRef} className={cls} aria-label="القائمة الرئيسية" data-collapsed={sidebarCollapsed ? 'true' : 'false'}>
+      {/* (r157 6A4-8: data-collapsed attribute dropped — the collapse
+          channel consumers read is html[data-sidebar-collapsed],
+          written by the useLayoutEffect above; this attr had zero
+          readers.) */}
+      <nav ref={asideRef} className={cls} aria-label="القائمة الرئيسية">
         <div className="sidebar-brand">
           <div className="sidebar-brand-mark">
             <BrandMark size={24} />
@@ -322,9 +340,19 @@ export function Sidebar() {
             <button
               type="button"
               className="sidebar-logout"
+              /* r157 (6A4-4): the redirect rides the mutation's
+                 onSettled, NOT the click — useLogout's hook-level
+                 onSettled clears the auth store + query cache first
+                 (react-query v5 runs hook callbacks before per-mutate
+                 ones), so the /auth frame can never render on top of
+                 a still-authed store (no dashboard flash, no
+                 auth-page-while-signed-in). The navigate() used to
+                 fire on click, racing the async POST /auth/logout —
+                 a slow network left the shell unmounted mid-flight. */
               onClick={() => {
-                logout.mutate();
-                navigate('/auth', { replace: true });
+                logout.mutate(undefined, {
+                  onSettled: () => navigate('/auth', { replace: true }),
+                });
               }}
               title="تسجيل الخروج"
               aria-label="تسجيل الخروج"

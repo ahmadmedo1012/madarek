@@ -147,7 +147,25 @@ export function AdminSyncPage() {
 
   if (isPending) return <PageSkeleton />;
   // Distinguish error (retry) from "no sync ever run" (empty state).
-  if (isError) return <ErrorState error={error} onRetry={() => refetch()} />;
+  // r157 (6A9 #5): the early-error return keeps the page chrome
+  // (.page + header + h1) — the retry used to land on a chrome-less
+  // wall, so an API blip stripped the admin's bearings before the
+  // retry offer.
+  if (isError) {
+    return (
+      <div className="page">
+        <header className="page-header">
+          <div className="page-title-block">
+            <h1 className="page-title">المزامنة مع البيانات الرسمية</h1>
+            <p className="page-subtitle">استيراد البيانات العامة من الموقع الرسمي للجامعة.</p>
+          </div>
+        </header>
+        <Card>
+          <ErrorState error={error} onRetry={() => refetch()} />
+        </Card>
+      </div>
+    );
+  }
 
   const lastRun = data?.latestRun ?? null;
   const lastSuccess = data?.runHistory.find((r) => r.status === 'SUCCESS') ?? null;

@@ -8,6 +8,7 @@ import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/St
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
+import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout'; // r157 (lead): shared extraction (F8) — local copy retired
 import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
 
 type LinkKind = 'research-gate' | 'google-scholar' | 'orcid';
@@ -80,20 +81,6 @@ type ProfileTab = 'academic' | 'links' | 'achievements';
    exactly this strip (inline style wins the cascade over the media
    query; the ≤640px `gap: var(--sp-3)` from the utility still
    applies, which is the right rhythm for half-width cards). */
-function useIsNarrowLayout(maxWidthPx = 640): boolean {
-  const [narrow, setNarrow] = useState(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
-    return window.matchMedia(`(max-width: ${maxWidthPx}px)`).matches;
-  });
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const mq = window.matchMedia(`(max-width: ${maxWidthPx}px)`);
-    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, [maxWidthPx]);
-  return narrow;
-}
 
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);

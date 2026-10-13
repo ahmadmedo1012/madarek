@@ -10,10 +10,15 @@
    admin surfaces finally own their sheet the way every other page
    family does.
 
+   r157 (6A9 #6) sweep: .admin-students-table-wrap, .admin-pagination,
+   .admin-pagination-actions and .trend-table-wrap died here — the
+   students roster + the reports trend table sit in the canonical
+   .table-wrap, and the students footer rides the shared
+   .table-pagination system (components.css). Zero TSX consumers.
+
    Consumers: AdminExtraPages (students/digital/analysis/settings),
-   AdminPages (students roster + trend), AdminGovernancePages (the
-   borrowed search chrome — it still imports colleges.css for
-   .comp-form-field, the documented D14 borrow).
+   AdminPages (the borrowed toolbar chrome + the paper-row cell
+   anatomy), AdminGovernancePages (the borrowed search chrome).
    Layer: pages (same as every page-scoped sheet).
    ================================================================== */
 
@@ -71,14 +76,12 @@
   box-shadow: var(--state-input-focus-halo);
 }
 
-.admin-students-table-wrap {
-  overflow-x: auto;
-  margin-inline: calc(-1 * var(--sp-2));
-}
 /* (r150d): the .admin-students-table family RETIRED onto the canonical
    .table — density steps up to the canonical 12/16 and the hover joins
-   the platform-wide surface-2 zebra. The -wrap/-name/-email content
-   classes stay (they are cell anatomy, not table chrome). */
+   the platform-wide surface-2 zebra. (r157 / 6A9 #6): the -wrap died
+   too — the roster sits in the shared .table-wrap like every sibling;
+   the -name/-email content classes stay (cell anatomy, not table
+   chrome). */
 .admin-students-name {
   display: inline-flex;
   align-items: center;
@@ -89,24 +92,13 @@
   color: var(--text-muted);
 }
 
-.admin-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding-block-start: var(--sp-3);
-  border-block-start: 1px solid var(--border);
-}
-.admin-pagination-actions {
-  display: inline-flex;
-  gap: var(--sp-2);
-}
-
 /* Digital page */
 /* Analysis page */
-.trend-table-wrap { overflow-x: auto; }
 /* (r150d): the .trend-table family RETIRED onto the canonical .table
-   (tbl-stack rides now; the -wrap keeps its overflow-x duty). */
+   (tbl-stack rides now). (r157 / 6A9 #6): the -wrap followed it — the
+   trend table view sits in the shared .table-wrap (framed surface +
+   radius), so the local overflow-x-only rule is deleted; zero TSX
+   consumers, rg-verified. */
 
 /* (r150e): the .top-courses-* family died here rather than moving —
    zero TSX consumers since the premium-polish sweep (rg-verified;
@@ -197,19 +189,17 @@
 }
 
 /* Mobile touch floor (craft floor: ≥44px) for the students toolbar
-   (the pill + the 36px select) and the pagination buttons. (r151d:
-   bangs retired — the stale comment claimed polish pins .btn.sm at
-   32px; the wave 9-b consolidation made polish's ≤640 block the ONE
-   owner of the .btn floors, so these same-value pins were dead
-   weight. The pill rule wins on specificity; min-inline-size stays
-   for the icon-only pagination arrows.) */
+   (the pill + the 36px select). (r151d: bangs retired — the stale
+   comment claimed polish pins .btn.sm at 32px; the wave 9-b
+   consolidation made polish's ≤640 block the ONE owner of the .btn
+   floors, so these same-value pins were dead weight. The pill rule
+   wins on specificity.) (r157 / 6A9 #6): the .admin-pagination-actions
+   44px arrows pin died here — the students footer rides the shared
+   .table-pagination system now, whose own ≤640 block owns the 44px
+   button floor (components.css). */
 @media (max-width: 640px) {
   .admin-students-input,
   .admin-students-search { min-block-size: 44px; }
-  .admin-pagination-actions .btn {
-    min-inline-size: 44px;
-    min-block-size: 44px;
-  }
 }
 
 /* (r150e): the .digital-stat-* / .top-courses-* reduced-motion switch

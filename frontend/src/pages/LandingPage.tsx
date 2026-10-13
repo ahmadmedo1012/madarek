@@ -97,6 +97,9 @@ export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [megamenuOpen, setMegamenuOpen] = useState(false);
   const megamenuTriggerRef = useRef<HTMLButtonElement>(null);
+  // F2-5 (r157): mobile-menu contract mirrors the megamenu — Escape
+  // closes + refocuses the burger (its aria-label flips with the state).
+  const burgerRef = useRef<HTMLButtonElement>(null);
   // Scroll chrome lives on refs and is written imperatively below — a React
   // re-render per scroll event was the round-3 performance regression.
   const headerRef = useRef<HTMLElement>(null);
@@ -154,8 +157,9 @@ export default function LandingPage() {
   }, []);
 
   // Scroll-spy — active section highlight in the nav. Zero setState: written
-  // to a data attribute on the header via imperative DOM, same rAF pattern
-  // as the chrome above. One layout pass per frame for all sections + nav.
+  // to a data attribute on the header via imperative DOM. Observer-only
+  // since r157 (F2-8): the old scroll/resize rAF pair scheduled frames that
+  // did nothing — the IntersectionObserver already re-fires on its own.
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
@@ -165,7 +169,6 @@ export default function LandingPage() {
     ));
     if (sections.length === 0) return;
 
-    let raf = 0;
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
         // Collect all entries first, then pick the one with most overlap.
@@ -189,18 +192,7 @@ export default function LandingPage() {
 
     for (const s of sections) observer.observe(s);
 
-    const onScrollSpy = () => {
-      if (!raf) raf = requestAnimationFrame(() => { raf = 0; });
-    };
-    window.addEventListener('scroll', onScrollSpy, { passive: true });
-    window.addEventListener('resize', onScrollSpy, { passive: true });
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', onScrollSpy);
-      window.removeEventListener('resize', onScrollSpy);
-      if (raf) cancelAnimationFrame(raf);
-    };
+    return () => observer.disconnect();
   }, []);
 
   // Scroll-scrubbed chapters (native scrolling — no hijacking).
@@ -245,7 +237,7 @@ export default function LandingPage() {
             </span>
           </Link>
 
-          <nav className="landing-nav-links">
+          <nav className="landing-nav-links" aria-label="التنقل الرئيسي">
             <div
               className={`landing-nav-group${megamenuOpen ? ' open' : ''}`}
               onBlur={(e) => {
@@ -318,6 +310,7 @@ export default function LandingPage() {
           <button
             type="button"
             className="landing-burger"
+            ref={burgerRef}
             aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
@@ -327,7 +320,22 @@ export default function LandingPage() {
         </div>
 
         {menuOpen && (
-          <nav className="landing-mobile-menu" onClick={() => setMenuOpen(false)}>
+          <nav
+            className="landing-mobile-menu"
+            aria-label="قائمة الجوال"
+            onClick={() => setMenuOpen(false)}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                setMenuOpen(false);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setMenuOpen(false);
+                burgerRef.current?.focus();
+              }
+            }}
+          >
             <a href="#colleges" className="btn ghost">الكلّيّات</a>
             <a href="#journey" className="btn ghost">رحلة التعلّم</a>
             <a href="#roles" className="btn ghost">الأدوار</a>
@@ -347,7 +355,6 @@ export default function LandingPage() {
         <div className="ln-hero-sky" aria-hidden>
           <HeroDepthLayer />
           <OrbitScene className="ln-hero-canvas" biasX={-0.35} />
-          <span className="ln-hero-horizon" />
         </div>
 
         <div className="ln-hero-content">
@@ -607,7 +614,7 @@ export default function LandingPage() {
           <span className="ln-label">{`04 — الأرض · CAMPUS`}</span>
         </div>
         <RevealCssClass as="figure" className="ln-campus-frame">
-          <Parallax amount={9} direction="up">
+          <Parallax amount={8} direction="up">
             <picture>
               <source
                 type="image/webp"

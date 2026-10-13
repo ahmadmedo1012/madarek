@@ -170,7 +170,7 @@ Workflow: UPLOADED → SCANNING → CHECKS_PASSED/FAILED → GRADED → PUBLISHE
 | POST | `/me/research` | Bearer | Submit paper (registers `{ title, abstract?, fileUrl, offeringId? }` — no multipart upload; files are served from `backend/storage/papers/`) |
 | POST | `/research/:id/scan` | Bearer (10/min) | Simulated plagiarism + AI scan (parses the PDF); TEACHER gated by paper ownership |
 | POST | `/research/:id/grade` | RESEARCH_GRADE_OWN/ANY | Grade paper (only gradeable statuses; PUBLISHED → 409) |
-| GET | `/research/queue` | TEACHER/ADMIN/OWNER | Review queue — student emails stripped from the payload; TEACHER view scoped to their offerings |
+| GET | `/research/queue` | TEACHER/ADMIN/OWNER | Review queue (CHECKS_PASSED/CHECKS_FAILED/GRADED — r157: GRADED included so the publish loop is reachable) — student emails stripped from the payload; TEACHER view scoped to their offerings |
 | POST | `/research/:id/publish` | TEACHER/ADMIN/OWNER | Publish to library (sets publishedAt) |
 | GET | `/research/published` | Bearer | Published papers |
 | GET | `/research/search` | Bearer | Full-text search (title + abstract + extractedText; `meta.total` is a real count) |
@@ -234,6 +234,7 @@ Mounted at `/api/v1/teacher` (router: `authMiddleware + requireRole(TEACHER, ADM
 | GET | `/teacher/dashboard` | TEACHER/ADMIN/OWNER | Teacher dashboard aggregate (KPI averages via SQL groupBy, not row hydration) |
 | GET | `/teacher/me/materials` | TEACHER/ADMIN/OWNER | Teacher's materials |
 | GET | `/teacher/me/assignments` | TEACHER/ADMIN/OWNER | Teacher's assignments feed |
+| GET | `/teacher/me/pending-submissions` | TEACHER/ADMIN/OWNER | Pending grading queue (SUBMITTED+LATE, oldest-first, take 100 — r157) |
 
 ## Exams & Question Bank
 

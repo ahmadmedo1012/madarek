@@ -20,7 +20,8 @@
  * /quality/engagement watch-time ratio) and the worst-first sort.
  */
 import { describe, expect, it } from 'vitest';
-import { AttendanceStatus } from '@prisma/client';
+import { readFileSync } from 'node:fs';
+import { AttendanceStatus, Role } from '@prisma/client';
 import {
   ATTENDANCE_ALERT_MIN_RECORDS,
   attendanceRateByOffering,
@@ -29,6 +30,7 @@ import {
   PUBLISHABLE_PAPER_STATUSES,
   qualityCoursesQuerySchema,
   RESEARCH_DEDUPE_WINDOW_MS,
+  RESEARCH_QUEUE_STATUSES,
   SCANNABLE_PAPER_STATUSES,
   attendanceAlertSeverity,
   buildSnippet,
@@ -39,6 +41,7 @@ import {
   isPaperPublishable,
   isPaperScannable,
   recentDuplicatePaperWhere,
+  researchQueueWhere,
   scanResultsFor,
   stableSeed,
   watchProgressCompletes,
@@ -295,6 +298,64 @@ describe('research pipeline step × status acceptance matrix (terminal-state reg
     expect(isPaperGradeable('CHECKS_FAILED')).toBe(true);
     expect(isPaperGradeable('GRADED')).toBe(true); // re-grade before publish
     expect(isPaperPublishable('GRADED')).toBe(true);
+  });
+});
+
+// ─── r157 / 6A8 — the review queue includes GRADED (the publish loop) ──────
+
+/* The live route source, scanned for the wiring pin (the checkpoint-
+ * attempts technique — the file is the contract). */
+const learningRouteSource = readFileSync(
+  new URL('../../src/http/routes/learning.routes.ts', import.meta.url),
+  'utf8',
+);
+
+describe('researchQueueWhere (r157 / 6A8 — the review-queue scope)', () => {
+  it('RESEARCH_QUEUE_STATUSES carries GRADED — the graded paper stays in the queue until published', () => {
+    // THE regression: the queue used to filter CHECKS_* only, so the
+    // graded paper vanished from the teacher's own queue and the
+    // publish affordance pointed at a row the queue never showed.
+    expect([...RESEARCH_QUEUE_STATUSES]).toEqual(['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED']);
+    // UPLOADED/SCANNING stay out (nothing actionable yet), PUBLISHED is
+    // out (it lives in the public archive feed, not the review queue).
+    expect(RESEARCH_QUEUE_STATUSES).not.toContain('PUBLISHED');
+    expect(RESEARCH_QUEUE_STATUSES).not.toContain('UPLOADED');
+  });
+
+  it('TEACHER → papers tied to offerings they teach (the same ownership the grade/publish steps enforce)', () => {
+    expect(researchQueueWhere(Role.TEACHER, 'teacher_1')).toEqual({
+      status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] },
+      offering: { teacherId: 'teacher_1' },
+    });
+  });
+
+  it('ADMIN/OWNER → the institution-wide oversight view (no per-row ownership)', () => {
+    expect(researchQueueWhere(Role.ADMIN, 'admin_1')).toEqual({
+      status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] },
+    });
+    expect(researchQueueWhere(Role.OWNER, 'owner_1')).toEqual({
+      status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED', 'GRADED'] },
+    });
+    // A QUALITY/STUDENT caller never reaches the route (requireRole
+    // TEACHER|ADMIN|OWNER), but the branch is safe by construction:
+    // no `offering` key leaks for oversight roles.
+    expect(researchQueueWhere(Role.QUALITY, 'q_1')).not.toHaveProperty('offering');
+  });
+});
+
+describe('research queue wiring (source-scan pin — the route must CONSUME the helper)', () => {
+  it('GET /research/queue consumes researchQueueWhere — never a re-inlined GRADED-less twin', () => {
+    // The exact drift class the r155a round hit: a function can pass
+    // its pure tests while the live route re-inlines the old filter.
+    // This pin fails the moment the route stops routing its where
+    // through the exported helper.
+    expect(learningRouteSource).toMatch(
+      /router\.get\('\/research\/queue',[\s\S]*?where: researchQueueWhere\(req\.user!\.role, req\.user!\.id\),/,
+    );
+    // And the GRADED-less inline twin is gone from the file entirely.
+    expect(learningRouteSource).not.toContain(
+      "{ status: { in: ['CHECKS_PASSED', 'CHECKS_FAILED'] }, offering: { teacherId: req.user!.id } }",
+    );
   });
 });
 
