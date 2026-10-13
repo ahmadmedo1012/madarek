@@ -1430,6 +1430,116 @@
     padding: var(--sp-9) var(--sp-6);
     gap: var(--sp-2);
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STATE family — consolidated here since r152f                  ║
+     ║  (v8 padding-breathe + v11 variants + v21 loading skeletons;   ║
+     ║  order preserved so the computed cascade is byte-identical)    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ── Empty states — softer + breathing ──────────────────────── */
+  .state {
+    padding-block: var(--sp-7);
+  }
+  .state-icon {
+    transition: transform var(--motion-duration-reveal) var(--ease-out);
+  }
+  .state:hover .state-icon {
+    transform: scale(1.05);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STATE VARIANTS                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .state.state-inline { padding: var(--sp-7) var(--sp-5); }
+  /* (r151c: .state.state-page / .state.state-card deleted — the only
+     state-variant constructor is LoadingState's `state-${variant}` and
+     no call site passes "page" or "card" (default inline + one
+     minimal); the LoadingVariant union was narrowed with them.) */
+  .state.state-error .state-icon {
+    background: var(--danger-soft);
+    /* 5-D1 (A11 P2-3): --danger on --danger-soft measured 2.59:1 light
+       (non-text floor is 3:1). The -deep ink pair mirrors the
+       .state-icon-success grammar (components.css) and the base
+       .state-icon's own -deep pairing; dark's -ink maps to the same
+       value the base token already resolves to (no dark change). */
+    color: var(--danger-ink, var(--danger));
+  }
+  .state.state-empty .state-icon {
+    background: var(--surface-2);
+    color: var(--text-muted);
+  }
+
+  /* Spinner size variants (wave 9-b: .spinner-lg deleted — zero TSX
+     consumers; only spinner-sm is rendered by the States primitive.) */
+  .spinner.spinner-sm { inline-size: 14px; block-size: 14px; border-width: 2px; }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LOADINGSTATE — calmer fallback when wrapped in cards          ║
+     ║  When LoadingState renders inside a Card (`.card > .state`)   ║
+     ║  show a soft skeleton-bar pattern alongside the spinner so    ║
+     ║  users see content shape forming, not just a spinner.         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .card > .state.state-loading,
+  .card > .state.state-inline {
+    padding: var(--sp-6) var(--sp-4);
+  }
+  .card > .state.state-loading::before,
+  .card > .state.state-inline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg,
+        transparent 0%,
+        transparent 35%,
+        var(--surface-2) 35%,
+        var(--surface-2) 38%,
+        transparent 38%,
+        transparent 50%,
+        var(--surface-2) 50%,
+        var(--surface-2) 53%,
+        transparent 53%,
+        transparent 65%,
+        var(--surface-2) 65%,
+        var(--surface-2) 68%,
+        transparent 68%
+      );
+    border-radius: inherit;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
+    animation: madarek-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
+  }
+  .card > .state.state-loading,
+  .card > .state.state-inline {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  @keyframes madarek-loadingstate-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.45; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE-LEVEL LOADINGSTATE — show a structured fallback         ║
+     ║  When LoadingState appears as the top child of a .page (i.e.  ║
+     ║  the page hasn't booted yet), don't just spin — also show a   ║
+     ║  faint skeleton block so the layout doesn't feel broken.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page > .state.state-loading,
+  .page > .state.state-inline {
+    padding: var(--sp-9) var(--sp-6);
+    border-radius: var(--r-xl);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface-2) 80%, transparent) 0%,
+      color-mix(in srgb, var(--surface) 90%, transparent) 100%
+    );
+    border: 1px solid var(--rule);
+  }
+
   .state-icon {
     inline-size: 56px; block-size: 56px;
     border-radius: var(--r-xl);

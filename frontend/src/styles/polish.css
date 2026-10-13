@@ -778,16 +778,8 @@
     box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 10%, transparent);
   }
 
-  /* ── Empty states — softer + breathing ──────────────────────── */
-  .state {
-    padding-block: var(--sp-7);
-  }
-  .state-icon {
-    transition: transform var(--motion-duration-reveal) var(--ease-out);
-  }
-  .state:hover .state-icon {
-    transform: scale(1.05);
-  }
+  /* (r152f: the v8 .state padding-block + .state-icon breathe moved
+     home to components.css §STATE — one family, one sheet, one layer.) */
 
   /* ── Mobile — reduce vertical noise on small screens ────────── */
   @media (max-width: 640px) {
@@ -1665,31 +1657,10 @@
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  STATE VARIANTS                                                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .state.state-inline { padding: var(--sp-7) var(--sp-5); }
-  /* (r151c: .state.state-page / .state.state-card deleted — the only
-     state-variant constructor is LoadingState's `state-${variant}` and
-     no call site passes "page" or "card" (default inline + one
-     minimal); the LoadingVariant union was narrowed with them.) */
-  .state.state-error .state-icon {
-    background: var(--danger-soft);
-    /* 5-D1 (A11 P2-3): --danger on --danger-soft measured 2.59:1 light
-       (non-text floor is 3:1). The -deep ink pair mirrors the
-       .state-icon-success grammar (components.css) and the base
-       .state-icon's own -deep pairing; dark's -ink maps to the same
-       value the base token already resolves to (no dark change). */
-    color: var(--danger-ink, var(--danger));
-  }
-  .state.state-empty .state-icon {
-    background: var(--surface-2);
-    color: var(--text-muted);
-  }
-
-  /* Spinner size variants (wave 9-b: .spinner-lg deleted — zero TSX
-     consumers; only spinner-sm is rendered by the States primitive.) */
-  .spinner.spinner-sm { inline-size: 14px; block-size: 14px; border-width: 2px; }
+  /* (r152f: the v11 STATE VARIANTS (.state-inline padding + error/
+     empty icon tints + .spinner-sm) moved home to components.css
+     §STATE. v19's later refinements of the same tints stay below —
+     they still win by layer order, as before.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3753,65 +3724,16 @@
 
 @layer overrides {
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SR-ONLY — visually hide content, keep it for screen readers   ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .sr-only {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
+  /* (r152f: .sr-only moved home to base.css utilities.) */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  SKIP-TO-CONTENT LINK                                          ║
-     ║  Forward-compatible: any <a class="skip-link" href="#main">    ║
-     ║  becomes a visible button when focused.                        ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .skip-link {
-    position: fixed;
-    inset-block-start: 8px;
-    /* r143 (T1-f F1): PHYSICAL left, not inset-inline-start — under
-       dir="rtl" the logical property resolves to right:50% and the
-       physical translateX(-50%) then parks the pill a full width left
-       of center (clipped off-screen ≤~600px). Same coupling as the
-       .ln-hero-scroll pattern in landing.css. */
-    left: 50%;
-    transform: translateX(-50%) translateY(-150%);
-    background: var(--accent);
-    color: var(--accent-fg, white);
-    padding: 10px 18px;
-    border-radius: var(--r-md);
-    text-decoration: none;
-    font-weight: var(--fw-semibold);
-    /* T3-F4 — was var(--elev-3)/var(--ease-spring-soft) (the polish
-       private token island); canonical 012 tokens: --elev-3 + --ease-spring. */
-    box-shadow: var(--elev-3);
-    z-index: var(--z-toast);
-    transition: transform var(--motion-duration-medium) var(--ease-spring);
-  }
-  /* The universal :focus-visible ring (motion.css) supplies the outline;
-     the transform swap makes the pill appear in the safe top margin. */
-  .skip-link:focus,
-  .skip-link:focus-visible {
-    transform: translateX(-50%) translateY(0);
-  }
+  /* (r152f: the .skip-link pill + focus reveal moved home to base.css
+     utilities — its physical left:50% RTL coupling documented there.
+     The v19 underline family's :not(.skip-link) guards below keep
+     excluding it by name.) */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  ANCHOR SCROLL MARGIN                                          ║
-     ║  When jumping to #features etc., leave room for the sticky     ║
-     ║  topbar so the heading isn't hidden underneath it.             ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  :target {
-    scroll-margin-block-start: calc(64px + var(--sp-4));
-  }
+  /* (r152f: the :target scroll-margin moved home to base.css.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3872,26 +3794,10 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  TAP HIGHLIGHT — disable the default mobile tap halo           ║
-     ║  Our own focus rings already handle the feedback.              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  a, button, [role="button"], .nav-item, .bottom-nav-item, .pill, .tab {
-    -webkit-tap-highlight-color: transparent;
-  }
+  /* (r152f: the global tap-highlight kill moved home to base.css.) */
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  IMAGE LAZY-LOAD FADE                                          ║
-     ║  Native lazy-loaded images fade in once decoded.               ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  img[loading="lazy"] {
-    animation: madarek-img-in var(--motion-duration-long) var(--ease-out) both;
-  }
-  @keyframes madarek-img-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
+  /* (r152f: the img[loading=lazy] fade moved home to base.css.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3981,72 +3887,10 @@
      press group stay here on purpose: they must keep beating the
      layout-layer family by layer order, exactly as before.) */
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  LOADINGSTATE — calmer fallback when wrapped in cards          ║
-     ║  When LoadingState renders inside a Card (`.card > .state`)   ║
-     ║  show a soft skeleton-bar pattern alongside the spinner so    ║
-     ║  users see content shape forming, not just a spinner.         ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .card > .state.state-loading,
-  .card > .state.state-inline {
-    padding: var(--sp-6) var(--sp-4);
-  }
-  .card > .state.state-loading::before,
-  .card > .state.state-inline::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg,
-        transparent 0%,
-        transparent 35%,
-        var(--surface-2) 35%,
-        var(--surface-2) 38%,
-        transparent 38%,
-        transparent 50%,
-        var(--surface-2) 50%,
-        var(--surface-2) 53%,
-        transparent 53%,
-        transparent 65%,
-        var(--surface-2) 65%,
-        var(--surface-2) 68%,
-        transparent 68%
-      );
-    border-radius: inherit;
-    opacity: 0.35;
-    pointer-events: none;
-    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    animation: madarek-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
-  }
-  .card > .state.state-loading,
-  .card > .state.state-inline {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
-  @keyframes madarek-loadingstate-pulse {
-    0%, 100% { opacity: 0.25; }
-    50%      { opacity: 0.45; }
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  PAGE-LEVEL LOADINGSTATE — show a structured fallback         ║
-     ║  When LoadingState appears as the top child of a .page (i.e.  ║
-     ║  the page hasn't booted yet), don't just spin — also show a   ║
-     ║  faint skeleton block so the layout doesn't feel broken.      ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .page > .state.state-loading,
-  .page > .state.state-inline {
-    padding: var(--sp-9) var(--sp-6);
-    border-radius: var(--r-xl);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--surface-2) 80%, transparent) 0%,
-      color-mix(in srgb, var(--surface) 90%, transparent) 100%
-    );
-    border: 1px solid var(--rule);
-  }
+  /* (r152f: the v21 LOADINGSTATE pair — .card > .state skeletons
+     + page-level fallback — moved home to components.css §STATE with
+     the whole .state family (v8 + v11 + v21 together, closing the
+     layer-trap pair). The RM belt entries stay here.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗

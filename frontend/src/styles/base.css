@@ -117,6 +117,86 @@
      under the overrides layer (0-a P1-2). */
 
   /* ─── browser surfaces (wave 2-a) ─────────────────────────────
+  /* ─── a11y utilities — home since r152f (was polish v20) ──────── */
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SR-ONLY — visually hide content, keep it for screen readers   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SKIP-TO-CONTENT LINK                                          ║
+     ║  Forward-compatible: any <a class="skip-link" href="#main">    ║
+     ║  becomes a visible button when focused.                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .skip-link {
+    position: fixed;
+    inset-block-start: 8px;
+    /* r143 (T1-f F1): PHYSICAL left, not inset-inline-start — under
+       dir="rtl" the logical property resolves to right:50% and the
+       physical translateX(-50%) then parks the pill a full width left
+       of center (clipped off-screen ≤~600px). Same coupling as the
+       .ln-hero-scroll pattern in landing.css. */
+    left: 50%;
+    transform: translateX(-50%) translateY(-150%);
+    background: var(--accent);
+    color: var(--accent-fg, white);
+    padding: 10px 18px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+    /* T3-F4 — was var(--elev-3)/var(--ease-spring-soft) (the polish
+       private token island); canonical 012 tokens: --elev-3 + --ease-spring. */
+    box-shadow: var(--elev-3);
+    z-index: var(--z-toast);
+    transition: transform var(--motion-duration-medium) var(--ease-spring);
+  }
+  /* The universal :focus-visible ring (motion.css) supplies the outline;
+     the transform swap makes the pill appear in the safe top margin. */
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ANCHOR SCROLL MARGIN                                          ║
+     ║  When jumping to #features etc., leave room for the sticky     ║
+     ║  topbar so the heading isn't hidden underneath it.             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  :target {
+    scroll-margin-block-start: calc(64px + var(--sp-4));
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TAP HIGHLIGHT — disable the default mobile tap halo           ║
+     ║  Our own focus rings already handle the feedback.              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  a, button, [role="button"], .nav-item, .bottom-nav-item, .pill, .tab {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  IMAGE LAZY-LOAD FADE                                          ║
+     ║  Native lazy-loaded images fade in once decoded.               ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  img[loading="lazy"] {
+    animation: madarek-img-in var(--motion-duration-long) var(--ease-out) both;
+  }
+  @keyframes madarek-img-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
      Audit 0-a P2-1/2/3: caret / autofill / underline-offset were
      completely absent. All themed from the palette so native chrome
      stops flashing white/blue on themed inputs. */
