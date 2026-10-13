@@ -51,6 +51,30 @@ export function courseHitHref(role: Role, offeringId: string): string {
 }
 
 /**
+ * r156 — lecture-hit destination for the searching role, or null when the
+ * role has no lecture surface to open (the hit is then suppressed — the
+ * file-less-paper convention from r155c: a dropdown row IS a link, so
+ * roles with no destination see no row). The lecture player
+ * /student/lectures/:id is STUDENT-only in App.tsx, so the old catch-all
+ * sent ADMIN/QUALITY/OWNER clicks into the guard's silent bounce; a
+ * teacher's deep link goes to their course intelligence page for the
+ * lecture's offering (the pre-r156 behavior, kept verbatim).
+ */
+export function lectureHitHref(
+  role: Role,
+  lectureId: string,
+  offeringId: string,
+): string | null {
+  switch (role) {
+    case 'TEACHER': return `/teacher/intelligence/${offeringId}`;
+    case 'STUDENT': return `/student/lectures/${lectureId}`;
+    case 'ADMIN':
+    case 'QUALITY':
+    case 'OWNER': return null;
+  }
+}
+
+/**
  * GET /search/global?q=...
  *
  * Cross-cutting search across courses, lectures, research papers, and training tracks.
@@ -211,13 +235,19 @@ router.get('/search/global', async (req, res, next) => {
           themeColor: o.course.themeColor,
           href: courseHitHref(role, o.id),
         })),
-        lectures: lectures.map((l) => ({
-          id: l.id,
-          title: l.title,
-          subtitle: l.offering.course.name,
-          iconEmoji: l.offering.course.iconEmoji,
-          href: role === 'TEACHER' ? `/teacher/intelligence/${l.offering.id}` : `/student/lectures/${l.id}`,
-        })),
+        lectures: lectures
+          // r156: suppress lecture hits for roles with no openable
+          // lecture surface (lectureHitHref above) — never emit a row
+          // whose click the route guard will silently bounce.
+          .map((l) => ({ l, href: lectureHitHref(role, l.id, l.offering.id) }))
+          .filter((x): x is { l: (typeof lectures)[number]; href: string } => x.href !== null)
+          .map(({ l, href }) => ({
+            id: l.id,
+            title: l.title,
+            subtitle: l.offering.course.name,
+            iconEmoji: l.offering.course.iconEmoji,
+            href,
+          })),
         papers: papers.map((p) => ({
           id: p.id,
           title: p.title,

@@ -692,6 +692,28 @@ describe('TemplateBuilderModal — picker sum + payload', () => {
     expect(await screen.findByText('موعد الإغلاق يجب أن يكون بعد موعد الفتح.')).toBeInTheDocument();
     expect(postsTo('/exams/templates')).toHaveLength(0);
   });
+
+  it('r156 — the «عام (كل الكلّيّات)» scope is offered ONLY to EXAMS_MODERATE holders', async () => {
+    // state.perms defaults to author-only; the backend (r155a) rejects an
+    // unscoped template for non-moderators with a clean 400 — the picker
+    // must not offer the dead choice.
+    renderAt('/teacher/exams');
+    fireEvent.click(await screen.findByRole('button', { name: 'قالب اختبار جديد' }));
+    await screen.findByLabelText('النطاق');
+    const scope = screen.getByLabelText('النطاق');
+    expect(within(scope).queryByRole('option', { name: 'عام (كل الكلّيّات)' })).toBeNull();
+    expect(within(scope).getByRole('option', { name: 'مقرّر من مقرّراتي' })).toBeInTheDocument();
+    expect(within(scope).getByRole('option', { name: 'كلّيّة محدَّدة' })).toBeInTheDocument();
+  });
+
+  it('r156 — a moderator sees the general scope option', async () => {
+    state.perms = ['EXAMS_AUTHOR', 'EXAMS_MODERATE'];
+    renderAt('/teacher/exams');
+    fireEvent.click(await screen.findByRole('button', { name: 'قالب اختبار جديد' }));
+    await screen.findByLabelText('النطاق');
+    const scope = screen.getByLabelText('النطاق');
+    expect(within(scope).getByRole('option', { name: 'عام (كل الكلّيّات)' })).toBeInTheDocument();
+  });
 });
 
 /* ── 6. Moderation review ─────────────────────────────────────── */

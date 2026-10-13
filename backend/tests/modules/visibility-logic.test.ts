@@ -28,8 +28,36 @@ import {
   type LiveSessionAction,
 } from '../../src/http/routes/teacher-profile.routes';
 import { offeringVisibilityFilter } from '../../src/http/routes/courses.routes';
-import { sanitizeSearchQuery, searchHit } from '../../src/http/routes/search.routes';
+import {
+  courseHitHref,
+  lectureHitHref,
+  sanitizeSearchQuery,
+  searchHit,
+} from '../../src/http/routes/search.routes';
 import { normalizeArabicSearch } from '../../src/modules/search/normalize';
+
+describe('search hit hrefs (r155c course matrix + r156 lecture suppression)', () => {
+  it('courseHitHref — every role lands on a surface it can open (no /admin/courses dead clicks)', () => {
+    expect(courseHitHref(Role.TEACHER, 'off_1')).toBe('/teacher/intelligence/off_1');
+    expect(courseHitHref(Role.STUDENT, 'off_1')).toBe('/student/courses/off_1');
+    expect(courseHitHref(Role.ADMIN, 'off_1')).toBe('/admin/courses');
+    expect(courseHitHref(Role.QUALITY, 'off_1')).toBe('/quality/courses');
+    expect(courseHitHref(Role.OWNER, 'off_1')).toBe('/owner/education');
+  });
+
+  it('lectureHitHref — TEACHER deep-links their offering, STUDENT opens the player', () => {
+    expect(lectureHitHref(Role.TEACHER, 'lec_1', 'off_1')).toBe('/teacher/intelligence/off_1');
+    expect(lectureHitHref(Role.STUDENT, 'lec_1', 'off_1')).toBe('/student/lectures/lec_1');
+  });
+
+  it('lectureHitHref — ADMIN/QUALITY/OWNER get null (the hit is suppressed, not bounced)', () => {
+    // /student/lectures/:id is STUDENT-only in App.tsx — emitting the old
+    // catch-all href for oversight roles was a guaranteed silent bounce.
+    expect(lectureHitHref(Role.ADMIN, 'lec_1', 'off_1')).toBeNull();
+    expect(lectureHitHref(Role.QUALITY, 'lec_1', 'off_1')).toBeNull();
+    expect(lectureHitHref(Role.OWNER, 'lec_1', 'off_1')).toBeNull();
+  });
+});
 
 describe('offeringVisibilityFilter (audit 15-i TOP-10 — the shared role branch)', () => {
   it('TEACHER → only the offerings they teach', () => {

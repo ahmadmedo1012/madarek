@@ -403,7 +403,7 @@ export default function ExamAuthoringPage() {
         </>
       )}
 
-      {building && <TemplateBuilderModal onClose={() => setBuilding(false)} />}
+      {building && <TemplateBuilderModal onClose={() => setBuilding(false)} canModerate={canModerate} />}
     </div>
   );
 }
@@ -1151,7 +1151,7 @@ function ChoicesEditor({
 
 /* ═══════════════ Template builder modal ═══════════════ */
 
-function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
+function TemplateBuilderModal({ onClose, canModerate }: { onClose: () => void; canModerate: boolean }) {
   const create = useCreateExamTemplate();
   const offerings = useTeacherOfferings();
   const faculties = useFaculties();
@@ -1269,7 +1269,13 @@ function TemplateBuilderModal({ onClose }: { onClose: () => void }) {
                 >
                   <option value="offering">مقرّر من مقرّراتي</option>
                   <option value="faculty">كلّيّة محدَّدة</option>
-                  <option value="general">عام (كل الكلّيّات)</option>
+                  {/* r156: the backend (r155a) rejects an unscoped template
+                      (no offering and no faculty) for authors without
+                      EXAMS_MODERATE — a clean Arabic 400. Offering the
+                      option to a non-moderator is a dead choice: hide it,
+                      and the 400 stays as the honest backstop for
+                      capability changes mid-draft. */}
+                  {canModerate && <option value="general">عام (كل الكلّيّات)</option>}
                 </select>
               </Field>
             </div>
