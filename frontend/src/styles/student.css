@@ -1288,9 +1288,15 @@
        الفعلي تحت العدّاد 8px بدل 40px. */
     margin-block-end: calc(var(--sp-2) - var(--sp-8));
   }
-  .table-wrap {
-    border-radius: var(--r-xl);
-    overflow: hidden;
+  /* r155d (integrity F1): this was the unscoped `.table-wrap` override
+     sitting in @layer pages — it beat components.css's shared scroll
+     contract (overflow-x: auto, the .sticky scrollport) for EVERY
+     .table-wrap consumer app-wide (27 pages). Renamed to the
+     JobsPage-local class; the radius declaration (byte-identical to the
+     components.css base) and the contract-breaking `overflow: hidden`
+     were dropped — the base .table-wrap keeps owning scroll + radius +
+     border, and this pages-layer rule adds only the card elevation. */
+  .jobs-table-wrap {
     box-shadow: var(--shadow-card);
   }
   .job-title-cell {
@@ -1535,33 +1541,12 @@
   }
 
   /* ── Upload modal body (the shared Modal owns chrome + focus trap) ── */
-  .upload-dropzone {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-1);
-    inline-size: 100%;
-    min-block-size: 116px;
-    padding: var(--sp-5);
-    background: var(--surface-2);
-    border: 2px dashed var(--border-strong);
-    border-radius: var(--r-lg);
-    font: inherit;
-    color: inherit;
-    text-align: center;
-    cursor: pointer;
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  .upload-dropzone:hover { border-color: var(--accent); background: var(--surface-3); }
-  .upload-dropzone:active { transform: translateY(1px); }
-  .upload-dropzone.has-file {
-    border-style: solid;
-    border-color: color-mix(in srgb, var(--success) 45%, var(--border));
-    background: var(--success-soft);
-  }
+  /* (r155d dead-selector sweep: the .upload-dropzone family — base +
+     :hover/:active/.has-file, 27 lines — deleted. rg-verified zero TSX
+     consumers repo-wide since r154d replaced the fake file picker with
+     the honest .upload-disclosure note (ResearchPage.tsx:464,
+     ephemeral-disk ruling). The .upload-error alert below stays live —
+     ResearchPage.tsx:474.) */
   .upload-error {
     font-size: var(--fs-xs);
     color: var(--danger-ink);
@@ -2080,10 +2065,15 @@
     align-items: flex-start;
   }
 
-  /* ═══ Fact rows — one shared grammar for the label/value tiles on
-     Payment / UniversityInfo / CampusMap contact (the audit's three
-     private FactRow copies, unified at the CSS layer). ═══ */
-  .fact-row {
+  /* ═══ Fact tiles — one shared grammar for the label/value tiles on
+     Payment / UniversityInfo / CampusMap contact / Profile (the audit's
+     private FactRow copies, unified at the CSS layer).
+     r155d (integrity F2): renamed `.fact-row` → `.fact-tile` — the old
+     name collided with components.css's AdminSync `.fact-row`
+     (flex row, gap sp-1/sp-3, transparent) and the pages layer won
+     globally, silently restyling AdminSyncPage's rows. Same recipe,
+     new collision-free name. ═══ */
+  .fact-tile {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -2093,7 +2083,7 @@
     min-inline-size: 0;
   }
   /* inline variant — leading icon + label/value column (ProfilePage) */
-  .fact-row--field {
+  .fact-tile--field {
     flex-direction: row;
     align-items: center;
     gap: var(--sp-3);
@@ -2290,13 +2280,18 @@
     padding: 0;
     list-style: none;
   }
-  .trend-row {
+  /* r155d (integrity F7, lead-integrated): renamed `.trend-row` →
+     `.trend-item` — the old name collided with components.css's
+     AdminReports `.trend-row` (paper pipeline bars) and the pages
+     layer won globally, silently re-densifying the admin rows.
+     Same recipe, collision-free name. */
+  .trend-item {
     display: flex;
     align-items: center;
     gap: var(--sp-2);
     min-block-size: 40px;
   }
-  .trend-row + .trend-row { border-block-start: 1px solid var(--surface-divider); }
+  .trend-item + .trend-item { border-block-start: 1px solid var(--surface-divider); }
   .trend-rank {
     flex-shrink: 0;
     min-inline-size: 18px;

@@ -143,7 +143,7 @@ function FactRow({
   label, value, mono, pending,
 }: { label: string; value: string | null; mono?: boolean; pending?: boolean }) {
   return (
-    <div className="fact-row">
+    <div className="fact-tile">
       <span className="text-xxs text-subtle">{label}</span>
       {pending ? (
         <Skeleton width="62%" height={14} />

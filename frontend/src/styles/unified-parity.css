@@ -771,7 +771,10 @@
     font-size: var(--type-headline-size-sm);
     font-weight: var(--fw-bold);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    /* r155d declaration-level sync: --ls-snug → --ls-normal, mirrors
+       components.css .card-title (r149 zeroed the negative tracking on
+       the Arabic card title at the source). */
+    letter-spacing: var(--ls-normal);
     line-height: 1.3;
     display: inline-flex;
     align-items: center;

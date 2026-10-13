@@ -163,7 +163,7 @@ export default function JobsPage() {
       ) : (
         <>
           <p className="jobs-count" aria-live="polite">{openJobsLabel(jobs.length)}</p>
-          <div className="table-wrap">
+          <div className="table-wrap jobs-table-wrap">
             <table className="table tbl-stack jobs-table">
               <thead>
                 <tr>

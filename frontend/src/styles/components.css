@@ -26,7 +26,14 @@
     .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
   }
 
-  @media (max-width: 1100px) {
+  /* r155d: 1100 → 1024 — folds to the documented tablet rung (r152i
+     ladder; 1024 is the landing/student sheet's rung too, and nothing
+     else in-app uses 1100). The r152i comment above treats 1100 as the
+     dead grid-4 cliff, not a designed rung; the 1025-1100 band now
+     keeps 3-col .grid-3 / split .grid-2-1 layouts — ≥224px tiles at the
+     band's narrowest (1025px viewport, 256px sidebar, 48px gutters),
+     above the system's own 220px grid-auto floor. */
+  @media (max-width: 1024px) {
     .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
   }
@@ -1125,7 +1132,10 @@
     opacity: 0.85;
   }
   .dash-hero-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--sp-5); }
-  @media (max-width: 1100px) { .dash-hero-row { grid-template-columns: 1fr; } }
+  /* r155d: 1100 → 1024 — same fold as the grid-helpers block above
+     (r152i ladder; 1024 is the documented rung, 1100 had no other
+     consumers). The 1025-1100 band keeps the two-panel hero row. */
+  @media (max-width: 1024px) { .dash-hero-row { grid-template-columns: 1fr; } }
 
   .dash-gpa-card,
   .dash-progress-card,
@@ -1201,7 +1211,12 @@
     block-size: 168px;
     flex-shrink: 0;
     margin-inline: auto;
-    border-radius: 50%;
+    /* r155d: was 50% — a latent declaration: the overrides layer wins
+       this property with var(--r-md) + overflow hidden (polish.css
+       chart-canvas glow block), and the JS-driven canvas paints its own
+       circle inside, so the container's box shape never showed anyway.
+       Aligned to the winner so the recipe says what renders. */
+    border-radius: var(--r-md);
     background: conic-gradient(
       from 180deg,
       var(--accent) 0deg,

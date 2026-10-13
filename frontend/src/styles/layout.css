@@ -477,7 +477,10 @@
   .topbar-user-trigger:hover { border-color: var(--border-strong); background: var(--surface-2); }
   .topbar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
-    line-height: 1; padding-inline-end: var(--sp-1);
+    /* r155d: was 1 — the single-line box clipped Arabic descenders on the
+       13px semibold (the same defect class notifications.css documents
+       on .bottom-nav-label); --lh-snug (1.2) is the documented floor. */
+    line-height: var(--lh-snug); padding-inline-end: var(--sp-1);
   }
   /* (.topbar-user-menu container + -item/-divider rules removed in the
      WS-D2 orphan sweep: Topbar now mounts the <Dropdown> primitive with

@@ -1070,12 +1070,11 @@
        there's still a hint of the blur effect without bleed. */
     background: color-mix(in srgb, var(--surface) 94%, transparent);
   }
-  /* T3-F4 — elevation token (was raw two-layer shadows with a separate
-     dark override); --elev-2 is already theme-aware and the hairline is
-     carried by the top border itself. */
-  .topbar.scrolled {
-    box-shadow: var(--elev-2);
-  }
+  /* (r155d dead-twin sweep: `.topbar.scrolled { box-shadow: var(--elev-2) }`
+     deleted here — byte-identical to layout.css's rule (T3-F4's
+     theme-aware token; the raw two-layer shadows it replaced are
+     history there). layout.css is the documented topbar owner; the
+     overrides-layer twin painted nothing it didn't already paint.) */
 
   /* SWITCH from grid to flex. Grid + auto-placement was producing huge
      gaps between the title (which slid to far inline-start because
@@ -1284,11 +1283,10 @@
     align-items: center;
     justify-content: center;
   }
-  .notif-empty-text {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin: 0;
-  }
+  /* (r155d dead-twin sweep: `.notif-empty-text` deleted here — identical
+     to notifications.css's rule (13px/muted/margin 0); the toast/bottom-
+     nav sheet is the documented owner. The -icon rule above stays: it
+     is the overrides-layer winner for the well's geometry/radius.) */
 
   .notif-panel-foot {
     padding: 10px 16px;
@@ -4400,7 +4398,13 @@
     background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
     transform-origin: left;
     transform: scaleX(0);
-    z-index: 1000;
+    /* r155d (integrity F4): was raw 1000 — above the toast(500)/lightbox
+       (600) rungs with no justification. The bar is a fixed 3px strip at
+       the viewport's top edge: it only needs to clear the topbar chrome
+       (sticky at --z-dropdown: 100, base.css) — the popover rung (200)
+       is the lowest documented step strictly above that chrome, and
+       sheets/modals/toasts/lightboxes (300+) still paint over it. */
+    z-index: var(--z-popover);
     /* r127-F1 motion-gate fix: constant-speed scroll-linked motion —
        `linear` spelled via the token (tokens.css: --ease-linear is the
        only legal spelling of `linear` outside the token files). */
@@ -4410,25 +4414,24 @@
   /* P4-22: Landing-specific scroll progress — subtle ink gradient, no accent.
      The hero is the only place where a colored bar would compete with
      the narrative. Use cream-dim at low opacity for a quiet presence. */
-  .landing .scroll-progress {
-    background: linear-gradient(90deg, var(--ln-cream) 0%, var(--ln-cream-dim) 100%);
-    height: 2px;
-    opacity: 0.5;
-  }
+  /* (r155d dead-selector sweep: the .landing .scroll-progress variant
+     deleted — zero consumers: LandingPage renders its own
+     .landing-progress ribbon (landing.css §15) and the AppShell's
+     ScrollProgress never mounts inside .landing. The [dir="rtl"]
+     twin below went with it.) */
 
   /* r134 (audit R134-W1-M P1): RTL fill direction. The bar is a physical
      left-anchored scaleX — under [dir="rtl"] it grew left→right, against
      the reading direction. Mirror both the origin (scalex now grows from
      the right edge) and the gradient (270deg) so the leading edge keeps
-     the accent end and the fill reads right→left. Covers the landing
-     variant too — it re-declares the background, so it needs its own
-     mirrored gradient or the override above would win. */
+     the accent end and the fill reads right→left. */
   [dir="rtl"] .scroll-progress {
     transform-origin: right;
     background: linear-gradient(270deg, var(--accent) 0%, var(--accent-strong, var(--accent)) 100%);
   }
-  [dir="rtl"] .landing .scroll-progress {
-    background: linear-gradient(270deg, var(--ln-cream) 0%, var(--ln-cream-dim) 100%);
-  }
+  /* (r155d dead-selector sweep: the [dir="rtl"] .landing .scroll-progress
+     twin deleted with its base above — the landing variant no longer
+     exists; the RTL comment's "covers the landing variant too" sentence
+     retired with it.) */
 
 }

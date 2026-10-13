@@ -1184,7 +1184,7 @@ export function SocialPage() {
           >
             <ol className="trend-list">
               {trending.map((t, i) => (
-                <li className="trend-row" key={t.tag}>
+                <li className="trend-item" key={t.tag}>
                   <span className="trend-rank" aria-hidden>{i + 1}</span>
                   <span className="trend-tag" title={`#${t.tag}`}>
                     <bdi>#{t.tag}</bdi>
@@ -1527,7 +1527,7 @@ export function UniversityInfoPage() {
 
 function FactRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="fact-row">
+    <div className="fact-tile">
       <span className="text-xxs text-subtle">{label}</span>
       {mono ? (
         /* bidi-isolated LTR run — phone numbers / emails / domains keep

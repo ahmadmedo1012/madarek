@@ -469,7 +469,7 @@ function ProfileField({
   label, value, icon, mono,
 }: { label: string; value: string; icon: LucideIcon; mono?: boolean }) {
   return (
-    <div className="fact-row fact-row--field">
+    <div className="fact-tile fact-tile--field">
       <Icon icon={icon} size={16} className="text-subtle" aria-hidden />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="text-xxs text-subtle">{label}</div>

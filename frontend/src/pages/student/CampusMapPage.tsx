@@ -177,12 +177,12 @@ export default function CampusMapPage() {
 
       <Card title="معلومات التواصل" icon={Phone}>
         <div className="grid-2" style={{ gap: 'var(--sp-3)' }}>
-          <div className="fact-row">
+          <div className="fact-tile">
             <span className="text-xxs text-subtle">الهاتف</span>
             <bdi dir="ltr" className="font-mono text-sm">+218 23 762659</bdi>
             <bdi dir="ltr" className="font-mono text-sm">+218 23 762882</bdi>
           </div>
-          <div className="fact-row">
+          <div className="fact-tile">
             <span className="text-xxs text-subtle">البريد الإلكتروني</span>
             <bdi dir="ltr" className="font-mono text-sm">info@zu.edu.ly</bdi>
             <bdi dir="ltr" className="font-mono text-sm">ico@zu.edu.ly</bdi>

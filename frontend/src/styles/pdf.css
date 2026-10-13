@@ -307,8 +307,12 @@
 }
 
 /* Mobile — 44px touch floor on every control (craft floor), toolbar
-   groups wrap as units at 320px (flex-wrap on .pdf-toolbar). */
-@media (max-width: 600px) {
+   groups wrap as units at 320px (flex-wrap on .pdf-toolbar).
+   r155d: 600 → 640 — folds to the dominant phone-band rung (the r152i
+   ladder, student.css:1250; nearest rungs 480/640, 640 is 40px away).
+   The 601-640 band joins the touch floor: toolbar buttons and the
+   scale pill grow to 44px slightly earlier. */
+@media (max-width: 640px) {
   .pdf-toolbar { padding: var(--sp-1-5) var(--sp-2); gap: var(--sp-2); } /* r153h: 6px → --sp-1-5 */
   .pdf-title { display: none; }
   .pdf-btn,
@@ -317,7 +321,7 @@
   .pdf-pageinfo input { height: 44px; }
   .pdf-canvas-wrap { padding: var(--sp-2); }
 }
-@media (max-width: 600px) and (pointer: coarse) {
+@media (max-width: 640px) and (pointer: coarse) {
   .pdf-touch-hint { display: inline-flex; }
 }
 
@@ -510,7 +514,13 @@
 .annotation-delete:hover { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
 .annotation-delete:active { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
 
-@media (max-width: 800px) {
+/* r155d: 800 → 920 — folds to the app's own mobile-shell rung (the
+   r152i ladder; nothing else uses 800). The split document/annotations
+   view belongs to the desktop shell: ≤920 is exactly where the app
+   swaps the sidebar for the mobile drawer, so the viewer stacks at the
+   same boundary; the 801-920 band (small tablets in portrait) joins
+   the stacked layout and the full-width annotations panel. */
+@media (max-width: 920px) {
   .annotations-panel { width: 100%; max-height: 320px; }
   /* 44px touch floor: chips/jump/delete grow for real (visual weight
      on a touch surface beats pseudo-element hit hacks here — the
@@ -536,7 +546,7 @@
   display: flex;
   flex-direction: column;
 }
-@media (max-width: 800px) {
+@media (max-width: 920px) {
   .document-viewer-layout { flex-direction: column; }
 }
 

@@ -55,6 +55,32 @@
   /* (r132-F5: the --ln-grain-op local override that used to live here was
      deleted — tokens.css now defines the veil at 0.075 directly (single
      source). See the --ln-grain-op comment in tokens.css.) */
+
+  /* r155d (integrity F4) — landing-local z rungs. The landing world's
+     stacking was written as raw 60/61/90/2000/2100: off the platform
+     --z-* ladder with no documented home. The landing paints no
+     platform overlays of its own (no dropdown/sheet/modal/toast — the
+     one popover it mounts, the colleges popover, rides the platform
+     --z-dropdown: 100), so its stacking is a closed five-rung ladder
+     scoped to .landing (same home as --ln-mono above; not tokens.css —
+     this sheet is the family's only consumer):
+       chrome   60  — the sticky header rail
+       strip    61  — the ministry strip slides out ABOVE the rail
+       progress 90  — the fixed top progress ribbon, above all chrome
+       grain   2000 — the fixed film-grain veil: a landing-local overlay
+                      rung ABOVE the platform top (--z-lightbox: 600)
+                      because the landing world paints no overlays —
+                      the veil textures the whole world, nothing on it
+                      may escape (native dialogs still win: top layer)
+       skip    2100 — the a11y skip link: the ONE thing above the grain
+                      (a focused skip link must never be textured away)
+     Values and relative order are identical to the raw declarations
+     they replace (zero computed-value change). */
+  --ln-z-chrome: 60;
+  --ln-z-strip: 61;
+  --ln-z-progress: 90;
+  --ln-z-grain: 2000;
+  --ln-z-skip: 2100;
 }
 
 /* selection rides the violet depth pair (7.78:1) — lime stays rare */
@@ -67,7 +93,7 @@
 .landing .ln-grain {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: var(--ln-z-grain);
   pointer-events: none;
   opacity: var(--ln-grain-op);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23m)'/%3E%3C/svg%3E");
@@ -169,7 +195,7 @@
   line-height: 1.5;
   border-block-end: 1px solid var(--ln-line-soft);
   position: relative;
-  z-index: 61;
+  z-index: var(--ln-z-strip);
   padding-inline: 16px; /* nothing touches the edge — always (spec §4.3) */
 }
 .landing .ministry-strip-inner {
@@ -188,7 +214,7 @@
 .landing .landing-header {
   position: sticky;
   top: 0;
-  z-index: 60;
+  z-index: var(--ln-z-chrome);
   background: transparent;
   border-block-end: 1px solid transparent;
   transition:
@@ -226,7 +252,10 @@
   color: var(--ln-cream);
   font-size: 16px;
   font-weight: var(--fw-bold);
-  line-height: 1.15;
+  /* r155d: was 1.15 — lifted to 1.2, the documented display-leading
+     floor (the --ln-h1-lh / display-role Arabic floor; 1.15 clipped
+     bold Arabic descenders at 16px). */
+  line-height: 1.2;
 }
 .landing .landing-brand-sub {
   display: block;
@@ -1608,7 +1637,7 @@ button.landing-footer-link {
   inset-inline: 0;
   top: 0;
   block-size: 2px;
-  z-index: 90;
+  z-index: var(--ln-z-progress);
   background: color-mix(in srgb, var(--ln-cream) 8%, transparent);
   pointer-events: none;
 }
@@ -1761,7 +1790,13 @@ button.landing-footer-link {
   .landing .ln-role-row { padding: var(--sp-5) var(--sp-4); }
 }
 
-@media (max-width: 560px) {
+/* r155d: 560 → 640 — fold to the phone-band rung (r152i ladder,
+   student.css:1250). 560 sat equidistant between the 480/640 rungs;
+   640 wins the tie because it is THIS sheet's own phone band (the 48px
+   touch-floor block below) — 480 has zero other consumers in landing.
+   The 561-640 band joins the deep-phone pass: full-width hero/CTA
+   buttons, the 1-col constellation strip and the 2×2 stats grid. */
+@media (max-width: 640px) {
   .landing .ln-hero-actions { gap: var(--sp-3); }
   .landing .ln-hero-actions .ln-btn-gold,
   .landing .ln-hero-actions .ln-btn-ghost,
@@ -1779,7 +1814,10 @@ button.landing-footer-link {
   .landing .ln-cta-actions .ln-btn-ghost.xl { inline-size: 100%; }
 }
 
-@media (max-width: 390px) {
+/* r155d: 390 → 420 — fold to the nearest documented rung (equidistant
+   to 360/420; 420 is the app's tiny-phone rung, polish.css/layout.css
+   already ride it). The 391-420 band joins the tightened trust strip. */
+@media (max-width: 420px) {
   .landing .ln-trust-inner { gap: var(--sp-3); font-size: 12.5px; }
 }
 
@@ -1829,7 +1867,7 @@ button.landing-footer-link {
      the pill lands a full width off-center (see polish.css .skip-link). */
   left: 50%;
   translate: -50% -150%;
-  z-index: 2100;
+  z-index: var(--ln-z-skip);
   padding: 10px 18px;
   border-radius: var(--ln-radius-pill);
   background: var(--ln-lime);
@@ -2170,7 +2208,9 @@ button.landing-footer-link {
   gap: var(--sp-3);
   margin-block-start: var(--sp-2);
 }
-@media (max-width: 560px) {
+/* r155d: 560 → 640 — same fold as the hero block above (r152i ladder;
+   640 is this sheet's phone band). */
+@media (max-width: 640px) {
   .landing .ln-cta-bridge-actions .ln-btn-gold,
   .landing .ln-cta-bridge-actions .ln-btn-ghost {
     inline-size: 100%;
