@@ -26,6 +26,7 @@ import offeringsRouter, {
   gradeItemSchema,
   gradesUpsertSchema,
   materialCreateSchema,
+  offeringCreateSchema,
   offeringListRow,
   offeringsListQuerySchema,
   serializeMaterial,
@@ -363,6 +364,13 @@ describe('route inventory (the dead roll-call twin stays deleted — 15-h P2-8)'
     expect(attendance[0]?.methods.post).toBeFalsy();
   });
 
+  it('POST / (the r153b create) is registered alongside the GET list', () => {
+    const root = routes.filter((r) => r.path === '/');
+    const methods = root.flatMap((r) => Object.keys(r.methods));
+    expect(methods).toContain('get');
+    expect(methods).toContain('post');
+  });
+
   it('the material/assignment/grade writes are untouched by the deletion', () => {
     // Express registers GET and POST on the same path as SEPARATE
     // layers — probe for the method, don't grab the first layer by path.
@@ -430,5 +438,56 @@ describe('OFFERINGS_LIST_ROLES (the catalog list door)', () => {
     // (/teacher/me/offerings is TEACHER+OWNER only); STUDENT reaches
     // offerings through their enrolled surfaces.
     expect([...OFFERINGS_LIST_ROLES]).toEqual([Role.TEACHER, Role.ADMIN, Role.OWNER, Role.QUALITY]);
+  });
+});
+
+/* ── r153j — the merge-era create schema + inventory pin ───────────
+ * offeringCreateSchema shipped with the POST / create (3e199b6) as the
+ * only schema in this file without a describe block, and the route
+ * inventory never pinned the new registration. */
+describe('offeringCreateSchema (r153j — the create contract)', () => {
+  const COURSE_ID = 'c1234567890123456';
+  const TEACHER_ID = 'c2234567890123456';
+  const valid = {
+    courseId: COURSE_ID,
+    teacherId: TEACHER_ID,
+    term: '2026-خريف',
+  };
+
+  it('accepts the minimal create and defaults capacity to 40', () => {
+    const parsed = offeringCreateSchema.parse(valid);
+    expect(parsed.capacity).toBe(40);
+    expect(parsed.room).toBeUndefined();
+    expect(parsed.term).toBe('2026-خريف');
+  });
+
+  it('rejects unknown keys (strict — spoofed fields never reach prisma)', () => {
+    expect(() =>
+      offeringCreateSchema.parse({ ...valid, status: 'ACTIVE', id: 'c9999999999999999' }),
+    ).toThrow();
+  });
+
+  it('requires cuid-shaped courseId and teacherId', () => {
+    expect(() => offeringCreateSchema.parse({ ...valid, courseId: 'not-a-cuid' })).toThrow();
+    expect(() => offeringCreateSchema.parse({ ...valid, teacherId: 42 })).toThrow();
+  });
+
+  it('bounds the term (1..50 after trim) and rejects empty', () => {
+    expect(() => offeringCreateSchema.parse({ ...valid, term: '   ' })).toThrow();
+    expect(() => offeringCreateSchema.parse({ ...valid, term: 'x'.repeat(51) })).toThrow();
+    expect(offeringCreateSchema.parse({ ...valid, term: '  2026-ربيع  ' }).term).toBe('2026-ربيع');
+  });
+
+  it('bounds capacity to a positive int ≤ 10000', () => {
+    expect(() => offeringCreateSchema.parse({ ...valid, capacity: 0 })).toThrow();
+    expect(() => offeringCreateSchema.parse({ ...valid, capacity: -5 })).toThrow();
+    expect(() => offeringCreateSchema.parse({ ...valid, capacity: 2.5 })).toThrow();
+    expect(() => offeringCreateSchema.parse({ ...valid, capacity: 10_001 })).toThrow();
+    expect(offeringCreateSchema.parse({ ...valid, capacity: 120 }).capacity).toBe(120);
+  });
+
+  it('room is optional and nullable, capped at 200 chars', () => {
+    expect(offeringCreateSchema.parse({ ...valid, room: null }).room).toBeNull();
+    expect(() => offeringCreateSchema.parse({ ...valid, room: 'ق'.repeat(201) })).toThrow();
   });
 });

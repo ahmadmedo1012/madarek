@@ -142,6 +142,16 @@ router.post(
     try {
       const data = req.body;
       const { offer } = await prisma.$transaction(async (tx) => {
+        // r153j: a cuid-shaped id alone lets ANY user through the FK —
+        // offerings are taught by TEACHERs. Same role-guard pattern as
+        // the enrollments foreign-student check (TOP-11's sibling).
+        const teacher = await tx.user.findUnique({
+          where: { id: data.teacherId },
+          select: { role: true },
+        });
+        if (teacher?.role !== Role.TEACHER) {
+          throw AppError.badRequest('تُسند الشُّعب الدراسية إلى أعضاء هيئة التدريس فقط');
+        }
         const existing = await tx.courseOffering.findFirst({
           where: {
             courseId: data.courseId,

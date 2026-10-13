@@ -112,7 +112,23 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', requireRole(Role.ADMIN, Role.OWNER), validate(createCourseSchema), async (req, res, next) => {
   try {
-    const created = await prisma.course.create({ data: req.body });
+    /* r153j: catalogue writes are governance-visible — the audit row
+     * lands in the SAME transaction (the 15-a P1-4 class the offerings
+     * create closed for itself; the course-CRUD merge had re-opened
+     * exactly that class here: 15 unaudited admin writes). */
+    const created = await prisma.$transaction(async (tx) => {
+      const course = await tx.course.create({ data: req.body });
+      await tx.auditLog.create({
+        data: {
+          action: 'COURSE_CREATED',
+          resourceType: 'Course',
+          resourceId: course.id,
+          userId: req.user!.id,
+          metadata: { code: course.code, name: course.name, departmentId: course.departmentId },
+        },
+      });
+      return course;
+    });
     res.status(201).json({ data: created });
   } catch (e) {
     next(e);
@@ -125,7 +141,19 @@ router.patch(
   validate(createCourseSchema.partial()),
   async (req, res, next) => {
     try {
-      const updated = await prisma.course.update({ where: { id: req.params.id! }, data: req.body });
+      const updated = await prisma.$transaction(async (tx) => {
+        const course = await tx.course.update({ where: { id: req.params.id! }, data: req.body });
+        await tx.auditLog.create({
+          data: {
+            action: 'COURSE_UPDATED',
+            resourceType: 'Course',
+            resourceId: course.id,
+            userId: req.user!.id,
+            metadata: { fields: Object.keys(req.body) },
+          },
+        });
+        return course;
+      });
       res.json({ data: updated });
     } catch (e) {
       next(e);
@@ -154,7 +182,18 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
       if (conceptCount > 0) {
         throw AppError.conflict('لا يمكن حذف المقرر: ما زالت له مفاهيم في مصفوفة المفاهيم');
       }
-      await tx.course.delete({ where: { id: courseId } });
+      const removed = await tx.course.delete({ where: { id: courseId } });
+      // r153j: destructive catalogue writes carry their audit row out in
+      // the same transaction as the delete + its FK guards.
+      await tx.auditLog.create({
+        data: {
+          action: 'COURSE_DELETED',
+          resourceType: 'Course',
+          resourceId: removed.id,
+          userId: req.user!.id,
+          metadata: { code: removed.code, name: removed.name },
+        },
+      });
     });
 
     // 200 + envelope (not 204) — the platform's dominant delete shape
