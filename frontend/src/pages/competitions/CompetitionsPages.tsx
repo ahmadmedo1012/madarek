@@ -61,8 +61,8 @@ const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '�
  * SR's OWN language (often English) — these controlled Arabic names
  * keep the picker announcements in the app's language. */
 const ICON_NAMES_AR: Record<string, string> = {
-  '🏆': 'كأس', '🎯': 'هدف', '🔬': 'مجهر', '💡': 'فكرة',
-  '💻': 'حاسوب', '🎨': 'لوحة ألوان', '🎤': 'ميكروفون', '📊': 'مخطط بياني',
+  '🏆': 'كأس', '🎯': 'هدف', '🔬': 'مجهر', '💡': 'فكرة', // allow-emoji: a11y name map for the admin-picker palette above
+  '💻': 'حاسوب', '🎨': 'لوحة ألوان', '🎤': 'ميكروفون', '📊': 'مخطط بياني', // allow-emoji: a11y name map for the admin-picker palette above
 };
 
 /** JS cadence (not CSS motion): how long the rank-change pulse class

@@ -449,8 +449,8 @@ const ANN_ICONS = ['📢', '📌', '🎓', '🏆', '⚠️', '✨', '📝', '�
 /* r152a (A6 P3-5): controlled Arabic names so SR announcements stay in
  * the app's language instead of the SR's emoji localization. */
 const ANN_ICON_NAMES_AR: Record<string, string> = {
-  '📢': 'مكبّر صوت', '📌': 'دبوس', '🎓': 'قبعة تخرّج', '🏆': 'كأس',
-  '⚠️': 'تنبيه', '✨': 'بريق', '📝': 'ملاحظة', '🗓️': 'تقويم',
+  '📢': 'مكبّر صوت', '📌': 'دبوس', '🎓': 'قبعة تخرّج', '🏆': 'كأس', // allow-emoji: a11y name map for the admin-picker palette above
+  '⚠️': 'تنبيه', '✨': 'بريق', '📝': 'ملاحظة', '🗓️': 'تقويم', // allow-emoji: a11y name map for the admin-picker palette above
 };
 
 function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
@@ -665,8 +665,8 @@ type EventInputs = z.infer<typeof eventSchema>;
 const EVENT_ICONS = ['📅', '🎤', '🎓', '🔬', '⚽', '🎨', '🧑‍🏫', '🤝']; // allow-emoji: admin icon-picker palette
 /* r152a (A6 P3-5): controlled Arabic names for SR announcements. */
 const EVENT_ICON_NAMES_AR: Record<string, string> = {
-  '📅': 'تقويم', '🎤': 'ميكروفون', '🎓': 'قبعة تخرّج', '🔬': 'مجهر',
-  '⚽': 'كرة قدم', '🎨': 'لوحة ألوان', '🧑‍🏫': 'مدرّس', '🤝': 'مصافحة',
+  '📅': 'تقويم', '🎤': 'ميكروفون', '🎓': 'قبعة تخرّج', '🔬': 'مجهر', // allow-emoji: a11y name map for the admin-picker palette above
+  '⚽': 'كرة قدم', '🎨': 'لوحة ألوان', '🧑‍🏫': 'مدرّس', '🤝': 'مصافحة', // allow-emoji: a11y name map for the admin-picker palette above
 };
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
