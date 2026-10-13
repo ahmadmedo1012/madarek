@@ -17,11 +17,11 @@ interface ChatMsg {
 }
 
 const SUGGESTIONS = [
-  'كيف أحسّن درجتي في الذكاء الاصطناعي؟',
-  'اشرح لي خوارزمية الفرز السريع',
-  'ما الفرق بين SQL و NoSQL؟',
-  'نصائح لإدارة الوقت أثناء الاختبارات',
-  'كيف أبني محفظة مشاريع قوية؟',
+  'ما المفاهيم التي أحتاج إلى مراجعتها؟',
+  'اقترح لي خطّة مذاكرة لفجواتي المعرفيّة',
+  'كيف أحسّن درجتي في أضعف مفاهيمي؟',
+  'ما خطوتي الدراسيّة التالية؟',
+  'راجع معي المفاهيم التي أتعثّر فيها',
 ];
 
 /** Render text with newlines preserved (chat replies use \n). */
@@ -43,11 +43,13 @@ export default function AiAssistantPage() {
   const gaps = useGaps();
   const reducedMotion = useReducedMotion();
   const [conversationId, setConversationId] = useState<string | undefined>();
+  const isStudent = user?.role === 'STUDENT';
   const [messages, setMessages] = useState<ChatMsg[]>([
     {
       role: 'bot',
-      text:
-        'مرحباً! أنا مساعدك الدراسيّ الذكيّ. لديّ صورة كاملة عن مستواك في كلّ مفهوم — يمكنني شرح ما تحتاجه، اقتراح خطّة مذاكرة، أو تحليل فجواتك المعرفيّة. كيف أساعدك؟',
+      text: isStudent
+        ? 'مرحباً! أنا مساعدك الدراسيّ. أحلّل بيانات إتقانك محليّاً (بلا نموذج لغويّ خارجيّ) لأقترح خطوات مذاكرة تركّز على فجواتك المعرفيّة. كيف أساعدك؟'
+        : 'مرحباً! أنا مساعد تحليليّ محليّ (بلا نموذج لغويّ خارجيّ). لا أملك بيانات إتقان للمقرّرات التي تدرّسها، فإجاباتي عامّة. كيف أساعدك؟',
     },
   ]);
   const [input, setInput] = useState('');
@@ -91,7 +93,7 @@ export default function AiAssistantPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المساعد الذكيّ</h1>
-          <p className="page-subtitle">يفهم مستواك المعرفيّ ويوصي بأفضل خطوة تالية في رحلتك الدراسيّة.</p>
+          <p className="page-subtitle">يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.</p>
         </div>
         <Badge color="gold" icon={Sparkles}>AI</Badge>
       </header>

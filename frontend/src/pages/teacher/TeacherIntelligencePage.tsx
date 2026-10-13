@@ -414,7 +414,7 @@ export function TeacherOfferingDetailPage() {
 
       {tab === 'curriculum' && (
         <Card
-          title="مساعد المنهج بالذكاء الاصطناعي"
+          title="اقتراح هيكل منهج (محاكاة قالبية)"
           icon={Brain}
           actions={
             <button
@@ -423,14 +423,14 @@ export function TeacherOfferingDetailPage() {
               onClick={onSuggest}
               disabled={suggest.isPending}
             >
-              {suggest.isPending ? 'جارٍ التحليل…' : suggest.data ? 'إعادة التوليد' : 'توليد هيكل المنهج'}
+              {suggest.isPending ? 'جارٍ الاقتراح…' : suggest.data ? 'إعادة الاقتراح' : 'اقتراح هيكل المنهج'}
               <Icon icon={Sparkles} size={13} />
             </button>
           }
         >
           {suggest.isError && (
             <div className="inline-retry" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-              <span className="text-sm text-muted">تعذَّر توليد هيكل المنهج.</span>
+              <span className="text-sm text-muted">تعذَّر اقتراح هيكل المنهج.</span>
               <button type="button" className="btn ghost sm" onClick={onSuggest}>
                 <Icon icon={RefreshCw} size={12} /> إعادة المحاولة
               </button>
@@ -441,7 +441,7 @@ export function TeacherOfferingDetailPage() {
             <EmptyState
               icon={Lightbulb}
               title="ابدأ باقتراح ذكي"
-              description="اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرّر، القسم، والمحاضرات الموجودة بالفعل."
+              description="اقتراح قالبيّ لهيكل منهج بمطابقة اسم المقرّر — لا تحليل ذكيّ للمحتوى (محاكاة حتى نموذج حقيقي)."
             />
           )}
           {suggest.data && (
