@@ -23,9 +23,10 @@
 | `DIRECT_DATABASE_URL` | Neon **direct** (non-pooled) connection. When set, `prisma migrate deploy` uses it directly. When unset, the migrate script derives it from `DATABASE_URL` by stripping the `-pooler` hostname suffix + `pgbouncer`/`connection_limit` query params. |
 | `STORAGE_DRIVER` | Upload storage driver: `local` (default, filesystem — **ephemeral on Render**) or `s3` (persistent object storage). See `docs/12-deployment.md` |
 | `S3_ENDPOINT` / `S3_REGION` / `S3_BUCKET` / `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | S3-compatible object storage (AWS S3 / Cloudflare R2 / MinIO) for uploaded PDFs. Create a bucket-scoped API token from your provider's dashboard (R2: Manage API Tokens → Object Storage scope). When `STORAGE_DRIVER=s3`, the four marked vars are REQUIRED (boot fails closed naming any missing one) |
+| `AI_PROVIDER` / `AI_BASE_URL` / `AI_API_KEY` / `AI_MODEL` | AI chat provider: `local` (default — in-process composer, no external calls) or `openai` (any OpenAI-compatible LLM: OpenAI, Groq, OpenRouter, DeepSeek, vLLM, Ollama). When `AI_PROVIDER=openai`, `AI_API_KEY` + `AI_MODEL` are REQUIRED (boot fails closed naming any missing one). See `docs/12-deployment.md` |
 
 
-> The optional vars above (`CORS_ORIGINS`, `INTERNAL_SERVICE_TOKEN`, `DIRECT_DATABASE_URL`, and the `STORAGE_*`/`S3_*` storage group) are declared in `render.yaml` with `sync: false` — visible in IaC, never required by Render. `TZ` is also pinned to `UTC` there (not a secret — see the timezone-model note in `BACKEND.md` / `docs/PROJECT-REFERENCE.md`).
+> The optional vars above (`CORS_ORIGINS`, `INTERNAL_SERVICE_TOKEN`, `DIRECT_DATABASE_URL`, the `STORAGE_*`/`S3_*` storage group, and the `AI_*` provider group) are declared in `render.yaml` with `sync: false` — visible in IaC, never required by Render. `TZ` is also pinned to `UTC` there (not a secret — see the timezone-model note in `BACKEND.md` / `docs/PROJECT-REFERENCE.md`).
 
 ## Neon Connection Strategy (Render deployment)
 

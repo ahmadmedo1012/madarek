@@ -5,7 +5,7 @@ import { Skeleton } from '../../components/primitives/States';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
-import { useAiChat, useGaps } from '../../hooks/useResources';
+import { useAiChat, useAiConfig, useGaps } from '../../hooks/useResources';
 
 interface ChatMsg {
   role: 'bot' | 'user';
@@ -24,6 +24,19 @@ const SUGGESTIONS = [
   'راجع معي المفاهيم التي أتعثّر فيها',
 ];
 
+/* P4: the two engines' copy. The page NEVER claims an LLM while the
+ * template composer replies (or vice versa) — /ai/config decides.
+ * Unknown (pending/error) renders the LOCAL copy: the honest default
+ * when the mode is unverifiable. */
+const LOCAL_GREETING_STUDENT =
+  'مرحبًا! أنا مساعدك الدراسيّ. أحلّل بيانات إتقانك محليّاً (بلا نموذج لغويّ خارجيّ) لأقترح خطوات مذاكرة تركّز على فجواتك المعرفيّة. كيف أساعدك؟';
+const LOCAL_GREETING_OTHER =
+  'مرحبًا! أنا مساعد تحليليّ محليّ (بلا نموذج لغويّ خارجيّ). لا أملك بيانات إتقان للمقرّرات التي تدرّسها، فإجاباتي عامّة. كيف أساعدك؟';
+const REAL_GREETING_STUDENT =
+  'مرحبًا! أنا مساعدك الدراسيّ المدعوم بنموذج لغويّ حقيقيّ. أرى بيانات إتقانك في المنصّة لتركّز إجاباتي على فجواتك المعرفيّة. كيف أساعدك؟';
+const REAL_GREETING_OTHER =
+  'مرحبًا! أنا مساعدك المدعوم بنموذج لغويّ حقيقيّ. لا أملك بيانات إتقان للمقرّرات التي تدرّسها، لكن أستطيع مساعدتك في أسئلة التدريس والتقييم وتنظيم المقرّرات. كيف أساعدك؟';
+
 /** Render text with newlines preserved (chat replies use \n). */
 function Multiline({ children }: { children: string }) {
   return (
@@ -41,17 +54,29 @@ export default function AiAssistantPage() {
   const user = useAuthStore((s) => s.user);
   const chat = useAiChat();
   const gaps = useGaps();
+  /* P4: which engine answers — drives the badge, the subtitle, and the
+   * greeting (the initial bot message renders derived, so the copy
+   * flips the moment the config resolves — no flash, no state surgery). */
+  const aiConfig = useAiConfig();
+  const isRealLlm = aiConfig.data?.provider === 'openai';
   const reducedMotion = useReducedMotion();
   const [conversationId, setConversationId] = useState<string | undefined>();
   const isStudent = user?.role === 'STUDENT';
-  const [messages, setMessages] = useState<ChatMsg[]>([
-    {
-      role: 'bot',
-      text: isStudent
-        ? 'مرحباً! أنا مساعدك الدراسيّ. أحلّل بيانات إتقانك محليّاً (بلا نموذج لغويّ خارجيّ) لأقترح خطوات مذاكرة تركّز على فجواتك المعرفيّة. كيف أساعدك؟'
-        : 'مرحباً! أنا مساعد تحليليّ محليّ (بلا نموذج لغويّ خارجيّ). لا أملك بيانات إتقان للمقرّرات التي تدرّسها، فإجاباتي عامّة. كيف أساعدك؟',
-    },
-  ]);
+  const greeting = isRealLlm
+    ? isStudent
+      ? REAL_GREETING_STUDENT
+      : REAL_GREETING_OTHER
+    : isStudent
+      ? LOCAL_GREETING_STUDENT
+      : LOCAL_GREETING_OTHER;
+  const [messages, setMessages] = useState<ChatMsg[]>([{ role: 'bot', text: greeting }]);
+  /* The transcript's initial greeting renders DERIVED from the config
+   * (the state row is a placeholder instance): once the user sends
+   * anything, the state-owned transcript takes over for good. */
+  const transcript: ChatMsg[] =
+    messages.length === 1 && messages[0]!.role === 'bot' && !messages[0]!.error
+      ? [{ role: 'bot', text: greeting }]
+      : messages;
   const [input, setInput] = useState('');
   const scroller = useRef<HTMLDivElement>(null);
 
@@ -93,9 +118,15 @@ export default function AiAssistantPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">المساعد الذكيّ</h1>
-          <p className="page-subtitle">يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.</p>
+          <p className="page-subtitle">
+            {isRealLlm
+              ? 'مساعدك الدراسيّ مدعوم بنموذج لغويّ حقيقيّ يرى بيانات إتقانك ويعطي إجابات مخصّصة لك.'
+              : 'يحلّل بيانات إتقانك محليّاً ويقترح خطوة مذاكرة تالية — مساعد تحليليّ محليّ، لا نموذج لغويّ خارجيّ.'}
+          </p>
         </div>
-        <Badge color="gold" icon={Sparkles}>AI</Badge>
+        {/* The badge names the real model when one answers — an LLM
+            badge on template replies (or the reverse) would be a lie. */}
+        <Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>
       </header>
 
       {/* Gap-aware starter cards — real data from /me/gaps. The card is a
@@ -172,7 +203,7 @@ export default function AiAssistantPage() {
               stop, keyboard-only users could never arrow-scroll the
               transcript. The universal :focus-visible ring applies. */}
           <div className="chat-area" ref={scroller} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد">
-            {messages.map((m, i) => (
+            {transcript.map((m, i) => (
               <div key={i} className={`chat-msg ${m.role}`}>
                 {m.role === 'bot' ? (
                   <div className="chat-avatar"><Icon icon={Bot} size={14} /></div>

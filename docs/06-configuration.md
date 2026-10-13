@@ -31,6 +31,10 @@
 | `S3_BUCKET` | مطلوب مع `s3` | — | اسم الحاوية |
 | `S3_ACCESS_KEY_ID` | مطلوب مع `s3` | — | مفتاح الوصول (يُدار في Render/بيئة التطوير — لا في الشيفرة) |
 | `S3_SECRET_ACCESS_KEY` | مطلوب مع `s3` | — | مفتاح الوصول السري (كذلك — أسرار فقط عبر البيئة) |
+| `AI_PROVIDER` | اختياري | `local` | محرك ردود المساعد الذكيّ (`backend/src/lib/ai.ts`): `local` تأليف محلي واعٍ بالإتقان (بلا استدعاءات خارجية)، أو `openai` لنموذج لغوي حقيقي متوافق مع OpenAI. اختيار `openai` دون `AI_API_KEY`+`AI_MODEL` **يمنع الإقلاع** مسمّيًا الناقص (يفشل مغلقًا) |
+| `AI_BASE_URL` | اختياري مع `openai` | `https://api.openai.com/v1` | عنوان خدمة متوافقة (OpenAI / Groq / OpenRouter / DeepSeek / vLLM / Ollama) — أبقِ لاحقة الإصدار؛ العميل يضيف `/chat/completions` |
+| `AI_API_KEY` | مطلوب مع `openai` | — | مفتاح المزوّد (يُدار في Render/بيئة التطوير — لا في الشيفرة) |
+| `AI_MODEL` | مطلوب مع `openai` | — | اسم النموذج الفعلي (مثل `gpt-4o-mini`) — يوثَّق في AiTelemetry وتعرضه الواجهة في الشارة |
 | `NODE_ENV` | اختياري | `development` | `production` يفعّل خدمة SPA من Express + كوكي Secure |
 | `PORT` | اختياري | `4000` | منفذ الاستماع |
 | `TZ` | يثبته `render.yaml` = `UTC` | منطقة الخادم | لا تغيّره في الإنتاج: مفاتيح أيام الحضور تُبنى على UTC والتسميات على Africa/Tripoli حسابيًا |

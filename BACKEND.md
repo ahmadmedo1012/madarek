@@ -283,6 +283,7 @@ condensed overview.
 | `STORAGE_DRIVER` | ❌ | `local` | Upload storage driver (`lib/storage.ts`): `local` filesystem or `s3` (any S3-compatible store). `s3` without the four `S3_*` vars → boot fails closed naming them; `local` in production logs a one-time ephemeral-disk warning |
 | `STORAGE_DIR` | ❌ | `backend/storage` | Local driver root (absolute path); ignored for `s3` |
 | `S3_ENDPOINT` / `S3_REGION` / `S3_BUCKET` / `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` | with `STORAGE_DRIVER=s3` | `S3_REGION=auto` | Object-store config (path-style addressing; AWS S3 / Cloudflare R2 / MinIO). Secrets only via the environment — never in code/docs |
+| `AI_PROVIDER` / `AI_BASE_URL` / `AI_API_KEY` / `AI_MODEL` | with `AI_PROVIDER=openai` | `AI_PROVIDER=local`, `AI_BASE_URL=https://api.openai.com/v1` | AI chat provider (`lib/ai.ts`): `local` in-process composer, or `openai` = any OpenAI-compatible LLM. `openai` without key+model → boot fails closed naming them. Secrets only via the environment — never in code/docs |
 
 ---
 
@@ -323,4 +324,13 @@ condensed overview.
   `papers/<cuid>.pdf` / `materials/<cuid>.pdf` (validated + dir-pinned).
   Serving always flows through the gated `/files/*` routes — objects are
   never public.
+- **AI provider** (`lib/ai.ts`, P4): the chat-assistant engine switch —
+  `local` (default; the route's mastery-aware composer answers) or
+  `openai` (any OpenAI-compatible chat-completions endpoint: OpenAI,
+  Groq, OpenRouter, DeepSeek, vLLM, Ollama; global fetch + AbortSignal,
+  zero new deps). Pure helpers (windowing, message assembly, completion
+  parsing, Arabic system prompts with anti-fabrication guardrails) are
+  test-pinned; `getAiProvider()` is boot-frozen; provider failures map
+  to one honest Arabic error (no silent template fallback) and
+  telemetry records the real model + token usage verbatim.
 

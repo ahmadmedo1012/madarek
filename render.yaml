@@ -68,3 +68,16 @@ services:
         sync: false
       - key: S3_SECRET_ACCESS_KEY
         sync: false
+      # AI-provider vars (chat assistant). All optional: unset → 'local'
+      # mode (in-process mastery-aware templates, zero external calls).
+      # Set AI_PROVIDER=openai + AI_API_KEY + AI_MODEL for a real
+      # OpenAI-compatible LLM; AI_BASE_URL defaults to OpenAI's v1.
+      # sync:false so Render never requires any of them.
+      - key: AI_PROVIDER
+        sync: false
+      - key: AI_BASE_URL
+        sync: false
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_MODEL
+        sync: false

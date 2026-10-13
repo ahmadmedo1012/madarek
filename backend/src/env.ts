@@ -48,6 +48,17 @@ const schema = z
     S3_BUCKET: z.string().min(1).optional(),
     S3_ACCESS_KEY_ID: z.string().min(1).optional(),
     S3_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+    // ── AI provider (chat assistant: backend/src/lib/ai.ts) ── The
+    // default 'local' mode composes replies in-process (zero cost,
+    // zero external calls). Selecting 'openai' opts into a real
+    // OpenAI-compatible LLM (OpenAI, Groq, OpenRouter, DeepSeek,
+    // vLLM, Ollama…) — and fails closed without its key+model below.
+    AI_PROVIDER: z.enum(['local', 'openai']).default('local'),
+    // OpenAI-compatible base URL. Keep the /v1 (or provider
+    // equivalent) suffix — the client appends /chat/completions.
+    AI_BASE_URL: z.string().url().optional(),
+    AI_API_KEY: z.string().min(1).optional(),
+    AI_MODEL: z.string().min(1).optional(),
   })
   .superRefine((cfg, ctx) => {
     // Fail-closed: a half-configured s3 driver must stop boot with a
@@ -65,6 +76,21 @@ const schema = z
         code: z.ZodIssueCode.custom,
         message: `STORAGE_DRIVER=s3 requires: ${missing.join(', ')}`,
       });
+    }
+    // Same ruling for the AI provider: openai mode without key+model
+    // would silently degrade to the local composer at request time
+    // (getAiProvider's defensive branch) — the owner asked for a real
+    // model, so boot must say what's missing instead.
+    if (cfg.AI_PROVIDER === 'openai' && !isTest) {
+      const aiMissing: string[] = [];
+      if (!cfg.AI_API_KEY) aiMissing.push('AI_API_KEY');
+      if (!cfg.AI_MODEL) aiMissing.push('AI_MODEL');
+      if (aiMissing.length > 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `AI_PROVIDER=openai requires: ${aiMissing.join(', ')}`,
+        });
+      }
     }
   });
 

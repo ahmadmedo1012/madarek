@@ -1,8 +1,8 @@
 # 08 — واجهات API
 
 > الجدول endpoint-ب-endpoint الموثق من الشيفرة:
-> [`API-REFERENCE.md`](API-REFERENCE.md) (196 مسارًا). هذه الوثيقة تشرح
-> **اتفاقية الاستخدام** وخريطة القطاعات حتى لا تضيع في 196 صفًا.
+> [`API-REFERENCE.md`](API-REFERENCE.md) (197 مسارًا). هذه الوثيقة تشرح
+> **اتفاقية الاستخدام** وخريطة القطاعات حتى لا تضيع في 197 صفًا.
 
 ## الأساسيات
 
@@ -44,7 +44,7 @@
 | التعلم المشترك | `/offerings/*`، `/research/*` | `learning.routes.ts`، `offerings.routes.ts`، `curriculum.routes.ts` | `offerings/:id/full`، `research/:id/scan`، `research/:id/grade`، `research/published`، `research/search` |
 | التدريب | `/training/*` | `training.routes.ts` | `catalog`، `tracks/:slug/enroll`، `leaderboard`، `me/badges` |
 | الإشعارات والرسائل | `/me/notifications*`، `/me/dms*` | `me.routes.ts` | قائمة/قراءة/قراءة الكل (معاملة واحدة رسالة+إشعار) |
-| الذكاء | `/ai/*` | `ai.routes.ts` | `ai/chat` (مؤلف محلي `gap-aware-composer`) |
+| الذكاء | `/ai/*` | `ai.routes.ts` | `ai/chat` (مؤلف محلي `gap-aware-composer` افتراضيًا أو LLM حقيقي مع `AI_PROVIDER=openai`) و`ai/config` (أي محرك يجيب — السطح الصادق) |
 | البحث الشامل | `/search/global` | `search.routes.ts` | تطبيع عربي، ≤5 نتائج/كيان، مقيد بالدور |
 | الأستاذ | `/teacher/*` | `teacher.routes.ts` + `teacher-dashboard` + `teacher-profile` | `offerings/:id/analytics`، `risks`، `curriculum/suggest`، `live/sessions` |
 | الواجبات | `/offerings/:id/assignments/*`، `/submissions/:id/grade` | `submissions.routes.ts` | تسليم بحالة تأخر + تصحيح |

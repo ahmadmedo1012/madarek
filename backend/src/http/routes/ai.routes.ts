@@ -7,6 +7,18 @@ import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
+import {
+  getAiProvider,
+  buildChatMessages,
+  buildStudentSystemPrompt,
+  buildGenericSystemPrompt,
+  masteryContextLines,
+  windowHistory,
+  callOpenAiCompatible,
+  AI_HISTORY_TURNS,
+  type AiChatMessage,
+  type MasteryFact,
+} from '../../lib/ai.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -188,24 +200,36 @@ async function composeReply(userId: string, message: string, role: Role): Promis
  * AI telemetry writer — the writer side of /owner/ai-metrics.
  * BEST-EFFORT: a telemetry failure must never fail the chat request.
  *
- * Honest metrics note: the chat reply is composed locally by
- * `composeReply` (mastery-aware templates) — no external LLM is called,
- * so there are no real token counts. We record the real latency and
- * model tag; token fields stay at their 0 defaults rather than
- * fabricating estimates. Accepts either the root client or a
- * transaction client.
+ * Honest metrics note: in the default local mode the chat reply is
+ * composed locally by `composeReply` (mastery-aware templates) — no
+ * external LLM is called, so token counts stay at their 0 defaults
+ * rather than fabricating estimates. In openai mode (P4) the model
+ * tag is the REAL model string and token counts come from the
+ * provider's usage block verbatim (0 when the provider omits usage).
+ * Accepts either the root client or a transaction client.
  */
 const AI_CHAT_MODEL = 'gap-aware-composer';
 const writeAiTelemetry = async (
   client: Prisma.TransactionClient,
-  data: { userId: string; latencyMs: number; success: boolean; errorMessage?: string },
+  data: {
+    userId: string;
+    latencyMs: number;
+    success: boolean;
+    errorMessage?: string;
+    /** Which engine produced (or failed to produce) the reply. */
+    model?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+  },
 ): Promise<void> => {
   try {
     await client.aiTelemetry.create({
       data: {
         userId: data.userId,
         feature: 'chat',
-        model: AI_CHAT_MODEL,
+        model: data.model ?? AI_CHAT_MODEL,
+        inputTokens: data.inputTokens ?? 0,
+        outputTokens: data.outputTokens ?? 0,
         latencyMs: data.latencyMs,
         success: data.success,
         errorMessage: data.errorMessage ?? null,
@@ -215,6 +239,62 @@ const writeAiTelemetry = async (
     logger.warn({ err }, 'aiTelemetry write failed (non-blocking)');
   }
 };
+
+/* ── P4: the real-provider path's data loaders (ai.routes local) ──
+ *
+ * composeReply (below) keeps its own prisma query untouched — its
+ * template logic and tests predate P4 and must not churn. The real
+ * provider path needs a PLAIN projection of the same mastery rows
+ * for the system prompt, so it gets its own loader here. Same include
+ * shape, mapped to MasteryFact (no prisma types cross into lib/ai). */
+async function loadMasteryFacts(userId: string): Promise<MasteryFact[]> {
+  const masteries = await prisma.studentMastery.findMany({
+    where: { studentId: userId },
+    include: {
+      concept: {
+        select: { name: true },
+        include: {
+          course: { select: { name: true } },
+          chapters: { take: 1, include: { lecture: { select: { title: true } } } },
+        },
+      },
+    },
+  });
+  return masteries.map((m) => ({
+    conceptName: m.concept.name,
+    courseName: m.concept.course.name,
+    level: Number(m.level),
+    lectureTitle: m.concept.chapters[0]?.lecture?.title ?? undefined,
+  }));
+}
+
+/** Boot-frozen provider resolution: null = local composer mode. */
+const aiProvider = getAiProvider();
+
+/** The real-provider reply. NO silent fallback on failure — the owner
+ * configured a real model, so an honest Arabic error + retry (the FE
+ * already renders one) beats a template reply wearing an LLM badge.
+ * Failure telemetry is written by the route's catch (one place). */
+async function composeReplyWithProvider(
+  userId: string,
+  message: string,
+  role: Role,
+  history: readonly AiChatMessage[],
+): Promise<{ reply: string; inputTokens: number; outputTokens: number; model: string }> {
+  const system = isMasteryAwareRole(role)
+    ? buildStudentSystemPrompt(masteryContextLines(await loadMasteryFacts(userId)))
+    : buildGenericSystemPrompt();
+  const completion = await callOpenAiCompatible(
+    aiProvider!,
+    buildChatMessages(system, history, message),
+  );
+  return {
+    reply: completion.content,
+    inputTokens: completion.inputTokens,
+    outputTokens: completion.outputTokens,
+    model: aiProvider!.model,
+  };
+}
 
 router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => {
   const startedAt = Date.now();
@@ -231,7 +311,37 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       : null;
     if (conversationId && !conv) throw AppError.notFound('المحادثة غير موجودة');
 
-    const reply = await composeReply(userId, message, req.user!.role);
+    /* P4 mode switch: openai mode loads the conversation's recent
+     * turns (newest-first bounded read, re-oriented chronologically —
+     * the /conversations/:id/messages pattern) so the model gets real
+     * context. Local mode ignores history exactly as before. */
+    let history: AiChatMessage[] = [];
+    if (aiProvider && conv) {
+      const rows = await prisma.aiMessage.findMany({
+        where: { conversationId: conv.id },
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        take: AI_HISTORY_TURNS,
+      });
+      history = windowHistory(rows, AI_HISTORY_TURNS)
+        .map((row): AiChatMessage =>
+          row.role === AiMessageRole.USER
+            ? { role: 'user', content: row.content }
+            : row.role === AiMessageRole.ASSISTANT
+              ? { role: 'assistant', content: row.content }
+              : { role: 'system', content: row.content },
+        )
+        // A stored SYSTEM row (none are written today) would collide
+        // with the fresh system prompt above — drop them.
+        .filter((m) => m.role !== 'system');
+    }
+
+    /* The reply engine: real provider when configured, local composer
+     * otherwise. On provider failure the catch below writes failure
+     * telemetry (with the attempted model) and surfaces one honest
+     * Arabic error — no silent template fallback (see composeReplyWithProvider). */
+    const engine = aiProvider
+      ? await composeReplyWithProvider(userId, message, req.user!.role, history)
+      : { reply: await composeReply(userId, message, req.user!.role), model: AI_CHAT_MODEL, inputTokens: 0, outputTokens: 0 };
 
     // All chat writes (conversation create + both messages + telemetry)
     // in ONE transaction — previously three separate non-transactional
@@ -244,12 +354,22 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
           data: { conversationId: conversation.id, role: AiMessageRole.USER, content: message },
         });
         const assistantMsg = await tx.aiMessage.create({
-          data: { conversationId: conversation.id, role: AiMessageRole.ASSISTANT, content: reply },
+          // AiMessage.tokens: the provider's real output-token count in
+          // openai mode; 0 in local mode (honest — nothing was counted).
+          data: {
+            conversationId: conversation.id,
+            role: AiMessageRole.ASSISTANT,
+            content: engine.reply,
+            tokens: engine.outputTokens,
+          },
         });
         await writeAiTelemetry(tx, {
           userId,
           latencyMs: Date.now() - startedAt,
           success: true,
+          model: engine.model,
+          inputTokens: engine.inputTokens,
+          outputTokens: engine.outputTokens,
         });
         return { conversationId: conversation.id, assistantContent: assistantMsg.content };
       },
@@ -267,9 +387,34 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       latencyMs: Date.now() - startedAt,
       success: false,
       errorMessage: e instanceof Error ? e.message.slice(0, 200) : 'unknown error',
+      // P4: a provider failure is attributed to the model that was
+      // attempted (local-mode failures keep the composer tag).
+      model: aiProvider?.model,
     });
+    // P4: provider transport/HTTP failures get one calm client-safe
+    // Arabic message (the provider detail stays in the server log via
+    // the error handler); everything else flows through unchanged.
+    if (e instanceof Error && e.name === 'AiProviderError') {
+      logger.warn({ err: e }, 'AI provider call failed');
+      next(AppError.internal('تعذّر الوصول إلى نموذج المساعد الآن — حاول مرة أخرى'));
+      return;
+    }
     next(e);
   }
+});
+
+/* P4: the honest-surface endpoint — the FE badge/subtitle must state
+ * which engine is answering (a template composer is NOT an LLM, and
+ * an LLM badge on template replies would be a lie). Returns the mode
+ * + the real model string when configured; model stays null in local
+ * mode so no surface can render a fake model name. */
+router.get('/config', (_req, res) => {
+  res.json({
+    data: {
+      provider: aiProvider ? 'openai' : 'local',
+      model: aiProvider?.model ?? null,
+    },
+  });
 });
 
 router.get('/conversations', async (req, res, next) => {
