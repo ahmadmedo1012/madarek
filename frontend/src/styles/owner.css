@@ -509,6 +509,26 @@
 
 .owner-health-dot.green { background: var(--success); }
 
+/* (r153e: the green dot's half of the v17 heartbeat family moved
+   home from polish.css — the same authored moment as
+   .owner-live-pulse in the Live Pulse section, declarations
+   verbatim; the keyframes live there.) */
+.owner-health-dot.green {
+  position: relative;
+  animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
+}
+
+.owner-health-dot.green::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.6;
+  animation: madarek-pulse-ring var(--motion-duration-ambient) var(--motion-ease-decelerate) infinite;
+  pointer-events: none;
+}
+
 /* 22-b (4-A7 P2-2): the raw --warning fill measured 2.30:1 on the
    white card — under the 3:1 WCAG 1.4.11 floor for meaningful
    graphics (the dots carry state). Deepening 38% toward the
@@ -562,22 +582,48 @@
 }
 
 /* ── Command Center: Live Pulse ────────────────────────────── */
-@keyframes pulse-live {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.4); }
-}
-
+/* (r153e: the v17 heartbeat family moved home from polish.css's
+   overrides layer — declarations verbatim. The old `pulse-live`
+   keyframes were DEAD CODE (polish v17's madarek-heartbeat beat
+   this rule on layer order alone, so nothing rendered them) and are
+   deleted with this move. Render-neutral for the normal state
+   (probe-verified at HEAD 3dacc23); leaving the overrides layer also
+   revives the is-pending/is-degraded freezes in the wave 6-a section
+   below — the frozen-dot honesty contract, see the bug note there.) */
 .owner-live-pulse {
+  position: relative;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: var(--success);
-  /* 5-C1: 2s → the ambient base band (2.4s) — the gate debt entry is
-     gone; polish.css's overrides-layer RM block (v18 owner list) still
-     kills this loop under reduced motion, and the local switch below
-     makes it self-contained (guardrail #6). */
-  animation: pulse-live var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
+  /* 5-C1: the ambient base band (2.4s) — the gate debt entry is
+     gone; polish.css's overrides-layer RM belt (v18 owner list) still
+     kills this loop under reduced motion, and the local switch at
+     the bottom of this sheet keeps it self-contained (guardrail #6). */
+  animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
   flex-shrink: 0;
+}
+
+.owner-live-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.6;
+  animation: madarek-pulse-ring var(--motion-duration-ambient) var(--motion-ease-decelerate) infinite;
+  pointer-events: none;
+}
+
+@keyframes madarek-heartbeat {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.06); }
+}
+
+@keyframes madarek-pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  80%  { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
 }
 
 .owner-live-status {
@@ -747,7 +793,16 @@
    dot, error = degraded danger band with a retry, success = the
    honest count. The warning wash (DESIGN_POLISH_PLAN phase 3
    "alert glow") paints ONLY on a confirmed count > 0 — never on
-   pending or error, so the glow can never lie. */
+   pending or error, so the glow can never lie.
+   ── r153e BUG FIX (the frozen dot is restored) ──
+   The `animation: none` freezes below were DEAD from the moment
+   polish v17 shipped: its overrides-layer .owner-live-pulse
+   heartbeat beat them on layer order alone, so pending/degraded
+   dots kept beating (probe-documented at HEAD 3dacc23: forced
+   is-pending still computed madarek-heartbeat). The heartbeat
+   moved home to THIS sheet, so specificity wins again — and the
+   ::after ring freeze below is new: the v17 ring pulsed through
+   pending/degraded too; both layers of the dot are honest now. */
 .owner-live-status.is-pending .owner-live-pulse {
   background: var(--text-faint);
   animation: none;
@@ -766,6 +821,13 @@
   animation: none;
 }
 
+/* r153e: the v17 ::after pulse ring must freeze with its dot —
+   pending/degraded honesty on both layers of the element. */
+.owner-live-status.is-pending .owner-live-pulse::after,
+.owner-live-status.is-degraded .owner-live-pulse::after {
+  animation: none;
+}
+
 .owner-live-status.is-degraded .status-text {
   color: var(--danger-ink, var(--danger));
 }
@@ -777,6 +839,24 @@
 
 .owner-live-status.has-alerts .owner-live-pulse {
   background: var(--warning);
+}
+
+/* (r153e: the v17 warning glow moved home from polish.css's
+   overrides layer, beside its border/background siblings above —
+   declarations verbatim. Off-token by design: warning glow ring
+   composited over the (local) --elevation-1 island — status
+   attention, not pure elevation.) */
+.owner-live-status.has-alerts {
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--warning) 18%, transparent),
+    var(--elev-1);
+  animation: madarek-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
+}
+
+/* Keyframe states of the warning glow above — off-token by design. */
+@keyframes madarek-alert-glow {
+  0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning) 18%, transparent), var(--elev-1); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning) 28%, transparent), var(--elev-2); }
 }
 
 /* Trailing tools (retry chip + "آخر تحديث" stamp) pinned to the
@@ -1055,8 +1135,16 @@
 }
 
 /* ── wave 6-a reduced-motion off-switches (guardrail #6) ───── */
+/* (r153e: .owner-live-pulse::after, .owner-health-dot.green(+::after)
+   and .owner-live-status.has-alerts joined the list — the v17 family
+   now lives in this sheet, so the local switch mirrors the polish
+   overrides-layer belt's owner coverage for self-containment.) */
 @media (prefers-reduced-motion: reduce) {
   .owner-live-pulse,
+  .owner-live-pulse::after,
+  .owner-health-dot.green,
+  .owner-health-dot.green::after,
+  .owner-live-status.has-alerts,
   .owner-live-tick,
   .owner-value-tick,
   .owner-alert-card,

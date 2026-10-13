@@ -3106,54 +3106,23 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  OWNER REALTIME — heartbeat pulse on green dots                ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .owner-health-dot.green,
-  .owner-live-pulse {
-    position: relative;
-    animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
-  }
-  .owner-health-dot.green::after,
-  .owner-live-pulse::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: inherit;
-    opacity: 0.6;
-    animation: madarek-pulse-ring var(--motion-duration-ambient) var(--motion-ease-decelerate) infinite;
-    pointer-events: none;
-  }
-  @keyframes madarek-heartbeat {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.06); }
-  }
-  @keyframes madarek-pulse-ring {
-    0%   { transform: scale(1); opacity: 0.6; }
-    80%  { transform: scale(2.2); opacity: 0; }
-    100% { transform: scale(2.2); opacity: 0; }
-  }
+  /* (r153e: the v17 OWNER REALTIME heartbeat family — .owner-live-pulse +
+     .owner-health-dot.green, their ::after rings and the madarek-heartbeat /
+     madarek-pulse-ring keyframes — moved home to owner.css (the Live Pulse
+     + health-dot sections). Pure move for the normal state (probe-verified),
+     plus the documented bug fix it unlocks: owner.css's is-pending /
+     is-degraded `animation: none` freezes were dead under this
+     overrides-layer rule (layer order beat their specificity, so
+     pending/degraded dots kept beating); same sheet now, the frozen-dot
+     honesty contract wins again and a matching ::after ring freeze was
+     added there. The RM belt entries below stay here on purpose — they
+     must keep beating the pages-layer family by layer order, exactly
+     as before.) */
 
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  OWNER ALERT TILE — glow when count > 0                        ║
-     ║  Targets the live-status banner that already exists in the     ║
-     ║  owner dashboard markup.                                       ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .owner-live-status.has-alerts {
-    /* Off-token by design: warning glow ring composited over the (local)
-       --elevation-1 island — status attention, not pure elevation. */
-    box-shadow:
-      0 0 0 4px color-mix(in srgb, var(--warning) 18%, transparent),
-      var(--elev-1);
-    animation: madarek-alert-glow var(--motion-duration-ambient-slow) var(--motion-ease-standard) infinite;
-  }
-  /* Keyframe states of the warning glow above — off-token by design. */
-  @keyframes madarek-alert-glow {
-    0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning) 18%, transparent), var(--elev-1); }
-    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warning) 28%, transparent), var(--elev-2); }
-  }
+  /* (r153e: the v17 ALERT TILE glow — .owner-live-status.has-alerts
+     box-shadow pulse + madarek-alert-glow keyframes — moved home to
+     owner.css beside its border/background siblings. RM belt entry
+     stays here.) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3229,57 +3198,18 @@
   }
 
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  DETAIL HEADERS — colored leading bar that draws in            ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  .college-hero,
-  .comp-hero {
-    position: relative;
-    isolation: isolate;
-  }
-  .college-hero::before,
-  .comp-hero::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 4px;
-    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, transparent));
-    border-radius: var(--r-full);
-    transform: scaleY(0);
-    transform-origin: top;
-    animation: madarek-hero-bar-draw var(--t-slower) var(--ease-spring-soft) 240ms both;
-  }
-  @keyframes madarek-hero-bar-draw {
-    from { transform: scaleY(0); }
-    to   { transform: scaleY(1); }
-  }
+  /* (r153e: the v17 DETAIL HEADERS bar-draw — .college-hero/.comp-hero
+     positioning + ::before gradient rails + madarek-hero-bar-draw —
+     moved home to colleges.css (hero section). The v22 2px stroke pin
+     (the wave 7-b sweep below) and the RM belt entries stay here on
+     purpose: they must keep beating the pages-layer family by layer
+     order, exactly as before.) */
 
+  /* (r153e: the v17 comp-index emoji bob moved home to colleges.css
+     (Competitions section).) */
 
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  COMPETITION INDEX CARDS — hover glow + emoji bob              ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (hover: hover) {
-    .comp-index-card .comp-index-emoji {
-      transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
-    }
-    .comp-index-card:hover .comp-index-emoji {
-      transform: scale(1.12) rotate(-6deg);
-    }
-  }
-
-
-  /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  COLLEGE CARDS — emoji breathe inside hover                    ║
-     ╚═══════════════════════════════════════════════════════════════╝ */
-  @media (hover: hover) {
-    .college-card .college-card-emoji {
-      transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
-    }
-    .college-card:hover .college-card-emoji {
-      transform: scale(1.1) rotate(4deg);
-    }
-  }
+  /* (r153e: the v17 college-card emoji breathe moved home to
+     colleges.css (cards section).) */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗

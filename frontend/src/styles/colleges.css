@@ -106,6 +106,19 @@
   background: var(--surface-2);
   flex: 0 0 auto;
 }
+
+/* (r153e: the v17 emoji breathe moved home from polish.css's
+   overrides layer — declarations verbatim, hover guard preserved.
+   Render-neutral: nothing else competes on these properties.
+   Reduced motion rides the global base.css belt.) */
+@media (hover: hover) {
+  .college-card .college-card-emoji {
+    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
+  }
+  .college-card:hover .college-card-emoji {
+    transform: scale(1.1) rotate(4deg);
+  }
+}
 .college-card-titles {
   flex: 1 1 auto;
   min-width: 0;
@@ -474,6 +487,36 @@
   background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
   border: 1px solid var(--border);
   border-block-start: 3px solid var(--college-accent, var(--rule));
+}
+
+/* (r153e: the v17 detail-header bar-draw moved home from polish.css's
+   overrides layer — declarations verbatim, for both heroes (the comp
+   twin lives in the Competitions section below). Render-neutral: the
+   v22 2px stroke pin for these ::before rails stays in polish's
+   overrides layer, so the rendered width is unchanged; the RM belt
+   entries also stay there — they must keep beating this pages-layer
+   family by layer order, exactly as before.) */
+.college-hero,
+.comp-hero {
+  position: relative;
+  isolation: isolate;
+}
+.college-hero::before,
+.comp-hero::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 4px;
+  background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, transparent));
+  border-radius: var(--r-full);
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: madarek-hero-bar-draw var(--t-slower) var(--ease-spring-soft) 240ms both;
+}
+@keyframes madarek-hero-bar-draw {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
 }
 .college-hero-emoji {
   font-size: 48px;
@@ -963,6 +1006,18 @@ a.comp-card:focus-visible .comp-go {
   border-radius: var(--r-md);
   background: var(--surface-2);
   flex: 0 0 auto;
+}
+
+/* (r153e: the v17 emoji bob moved home from polish.css's overrides
+   layer — declarations verbatim, hover guard preserved. The local RM
+   belt at the bottom of this file kills the card's own motion.) */
+@media (hover: hover) {
+  .comp-index-card .comp-index-emoji {
+    transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
+  }
+  .comp-index-card:hover .comp-index-emoji {
+    transform: scale(1.12) rotate(-6deg);
+  }
 }
 .comp-index-body {
   flex: 1 1 auto;
