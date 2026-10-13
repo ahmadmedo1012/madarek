@@ -1,6 +1,7 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import { useAuthStore, type AppRole } from './stores/auth.store';
@@ -8,6 +9,7 @@ import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays/Toast';
+import { Icon } from './components/Icon';
 
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
@@ -147,6 +149,39 @@ function HomeRedirect() {
   return <Navigate to={HOME[user.role]} replace />;
 }
 
+/** Public colleges layout (audit 4-A14 P1-2, restored r154a).
+ *
+ * The colleges gallery / leaderboard / detail pages are world-readable
+ * (public university info — the landing page already previews them).
+ * Signed-in visitors keep the full app shell; guests get the same page
+ * content in a chrome-less container, because the shell's sidebar and
+ * bottom-nav are auth-only and the shell grid reserves a sidebar track
+ * that would otherwise render as a blank column. The back link keeps
+ * the guest funnel from dead-ending.
+ *
+ * r154a: this layout was deleted silently by 761eaf4 (an aria-invalid
+ * polish commit whose message never mentioned colleges), which pushed
+ * the three /colleges* routes under a bare <ProtectedRoute/> and
+ * bounced every guest to /auth — killing the public funnel the backend
+ * still serves. Restored verbatim. */
+function CollegesLayout() {
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+  const user = useAuthStore((s) => s.user);
+  if (!isHydrated) return <HydrationSplash />;
+  if (user) return <AppShell />;
+  return (
+    <main id="main" className="content-inner">
+      <div style={{ marginBlockEnd: 'var(--sp-6)' }}>
+        <Link to="/" className="btn ghost sm">
+          <Icon icon={ArrowRight} size={14} />
+          العودة إلى الصفحة الرئيسية
+        </Link>
+      </div>
+      <Outlet />
+    </main>
+  );
+}
+
 /**
  * The route table, extracted so it can be rendered under a `MemoryRouter`
  * in unit tests (see tests/unit/App-routes.test.tsx).
@@ -277,15 +312,24 @@ export function AppRoutes() {
           </Route>
         </Route>
 
+        {/* Colleges — PUBLIC (audit 4-A14 P1-2, r154a): guests reach the
+            gallery / leaderboard / detail pages in a chrome-less container;
+            signed-in visitors keep the full app shell. The backend serves
+            public + PII-narrowed data (colleges.routes.ts, mounted before
+            the authed routers). 761eaf4 had silently pushed these under a
+            bare <ProtectedRoute/> and bounced every guest to /auth. */}
+        <Route element={<CollegesLayout />}>
+          <Route path="/colleges" element={<CollegesIndexPage />} />
+          <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
+          <Route path="/colleges/:id" element={<CollegeDetailPage />} />
+        </Route>
+
         {/* Vision (any authenticated role) */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
             <Route path="/vision" element={<VisionGalleryPage />} />
             <Route path="/vision/:slug" element={<VisionDetailPage />} />
             <Route path="/document/:filename" element={<DocumentViewerPage />} />
-            <Route path="/colleges" element={<CollegesIndexPage />} />
-            <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
-            <Route path="/colleges/:id" element={<CollegeDetailPage />} />
             <Route path="/competitions" element={<CompetitionsIndexPage />} />
             <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
           </Route>
