@@ -62,6 +62,72 @@ router.get('/me', async (req, res, next) => {
   }
 });
 
+/**
+ * GET /enrollments?studentId=X — admin/owner list of a student's
+ * enrollments with offering/course/teacher detail (r154e.2). The student's
+ * own view is GET /me above; this is the admin-side mirror for the
+ * enrollment-management modal on AdminStudentsPage.
+ */
+router.get('/', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
+  try {
+    const studentId = req.query.studentId;
+    if (typeof studentId !== 'string' || !studentId) {
+      throw AppError.badRequest('studentId مطلوب');
+    }
+    const data = await prisma.enrollment.findMany({
+      where: { studentId },
+      select: {
+        id: true,
+        progressPct: true,
+        status: true,
+        enrolledAt: true,
+        offering: {
+          select: {
+            id: true,
+            term: true,
+            room: true,
+            capacity: true,
+            course: { select: { id: true, name: true, code: true, iconEmoji: true } },
+            teacher: { select: { id: true, firstName: true, lastName: true } },
+          },
+        },
+      },
+      orderBy: { enrolledAt: 'desc' },
+    });
+    res.json({ data });
+  } catch (e) {
+    next(e);
+  }
+});
+
+/**
+ * GET /enrollments/offerings — admin/owner picker list of offerings with
+ * course + teacher names + live seat counts (r154e.2). The enrollment-
+ * management modal's "enroll in a new course" select consumes this.
+ * Bounded to 100 rows (the catalog is small); capacity-vs-count drives
+ * the "مكتمل" disabled state on options.
+ */
+router.get('/offerings', requireRole(Role.ADMIN, Role.OWNER), async (_req, res, next) => {
+  try {
+    const data = await prisma.courseOffering.findMany({
+      select: {
+        id: true,
+        term: true,
+        room: true,
+        capacity: true,
+        course: { select: { id: true, name: true, code: true, iconEmoji: true } },
+        teacher: { select: { id: true, firstName: true, lastName: true } },
+        _count: { select: { enrollments: { where: { status: 'active' } } } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+    res.json({ data });
+  } catch (e) {
+    next(e);
+  }
+});
+
 const enrollSchema = z
   .object({
     studentId: z.string().cuid(),

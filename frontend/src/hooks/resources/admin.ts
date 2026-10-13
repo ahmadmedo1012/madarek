@@ -273,3 +273,73 @@ export function useAssignUserScope(userId: string) {
     },
   });
 }
+
+// ── Enrollment CRUD (r154e.2: API existed, page was browse-only — docs/16 §د5) ──
+// The backend already routes POST/DELETE with capacity + dedupe + audit
+// (enrollments.routes.ts); these are the frontend half — the hooks the
+// /admin/students page never had.
+
+export interface StudentEnrollment {
+  id: string;
+  progressPct: number;
+  status: string;
+  enrolledAt: string;
+  offering: {
+    id: string; term: string; room: string | null; capacity: number;
+    course: { id: string; name: string; code: string; iconEmoji: string | null };
+    teacher: { id: string; firstName: string; lastName: string };
+  };
+}
+
+/** Admin-side list of a student's enrollments (GET /enrollments?studentId). */
+export function useStudentEnrollments(studentId: string | null) {
+  return useQuery({
+    queryKey: ['enrollments', 'student', studentId],
+    queryFn: () => unwrap<StudentEnrollment[]>(api.get('/enrollments', { params: { studentId } })),
+    enabled: !!studentId,
+  });
+}
+
+export interface EnrollmentOffering {
+  id: string; term: string; room: string | null; capacity: number;
+  course: { id: string; name: string; code: string; iconEmoji: string | null };
+  teacher: { id: string; firstName: string; lastName: string };
+  _count: { enrollments: number };
+}
+
+/** Picker list of offerings with live seat counts (GET /enrollments/offerings). */
+export function useEnrollmentOfferings() {
+  return useQuery({
+    queryKey: ['enrollments', 'offerings'],
+    queryFn: () => unwrap<EnrollmentOffering[]>(api.get('/enrollments/offerings')),
+    staleTime: 60_000,
+  });
+}
+
+/** Enroll a student in an offering (POST /enrollments). Backend enforces
+ *  capacity (FOR UPDATE lock) + dedupe (@@unique) + audit log. */
+export function useEnrollStudent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { studentId: string; offeringId: string }) =>
+      unwrap<{ id: string }>(api.post('/enrollments', input)),
+    onSuccess: (_d, { studentId }) => {
+      qc.invalidateQueries({ queryKey: ['enrollments', 'student', studentId] });
+      qc.invalidateQueries({ queryKey: ['enrollments', 'offerings'] });
+    },
+  });
+}
+
+/** Drop a student's enrollment (DELETE /enrollments/:id). studentId is
+ *  carried for invalidation (the DELETE response is { ok: true }). */
+export function useDropEnrollment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ enrollmentId }: { enrollmentId: string; studentId: string }) =>
+      unwrap<{ ok: boolean }>(api.delete(`/enrollments/${enrollmentId}`)),
+    onSuccess: (_d, { studentId }) => {
+      qc.invalidateQueries({ queryKey: ['enrollments', 'student', studentId] });
+      qc.invalidateQueries({ queryKey: ['enrollments', 'offerings'] });
+    },
+  });
+}

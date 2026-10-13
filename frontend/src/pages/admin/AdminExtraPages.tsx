@@ -5,12 +5,15 @@ import {
   Users, BookOpen, Activity, ShieldCheck, Server,
   Wifi, Radio, Settings, Search,
   Download, RefreshCw, Mail, ChevronLeft, ChevronRight, X,
+  GraduationCap, UserMinus, AlertCircle,
 } from 'lucide-react';
 import { Card, MetricCard, Badge } from '../../components/primitives';
-import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, KpiSkeleton, TableSkeleton, Skeleton } from '../../components/primitives/States';
+import { Modal } from '../../components/overlays/Modal';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
-import { useFaculties } from '../../hooks/useResources';
+import { toast } from '../../lib/toast';
+import { useFaculties, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
 // (.admin-students-*, .admin-pagination, .digital-stat-*, .trend-table,
 // .settings-*, .top-courses-*) since "Sub-project D" — see its ownership
@@ -71,6 +74,8 @@ export function AdminStudentsPage() {
   const [debouncedQ, setDebouncedQ] = useState(() => searchParams.get('q') ?? '');
   const [facultyId, setFacultyId] = useState(() => searchParams.get('facultyId') ?? '');
   const facQ = useFaculties();
+  // r154e.2: the student whose enrollment modal is open (null = closed).
+  const [enrollmentStudent, setEnrollmentStudent] = useState<AdminStudentRow | null>(null);
   // A8 P3-4: the empty-search state gets the same reset affordance its
   // teachers twin has — a dead end otherwise.
   const hasActiveFilters = debouncedQ !== '' || facultyId !== '';
@@ -164,11 +169,12 @@ export function AdminStudentsPage() {
                     <th scope="col">المعدّل</th>
                     <th scope="col">المستوى</th>
                     <th scope="col">الحالة</th>
+                    <th scope="col">إجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
                   {studentsQ.data.data.length === 0 && (
-                    <tr><td colSpan={7}><EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
+                    <tr><td colSpan={8}><EmptyState illustration="empty-search" title="لا توجد نتائج" description="جرّب تعديل البحث أو الفلتر لعرض نتائج أوسع." action={hasActiveFilters ? (
                       <button type="button" className="btn ghost sm" onClick={clearSearch}>
                         <Icon icon={X} size={13} />
                         مسح البحث
@@ -202,6 +208,16 @@ export function AdminStudentsPage() {
                         <span className={`pill ${s.isActive ? 'on' : ''}`}>
                           {s.isActive ? 'نشط' : 'موقوف'}
                         </span>
+                      </td>
+                      <td data-label="إجراءات">
+                        <button
+                          type="button"
+                          className="btn ghost sm"
+                          onClick={() => setEnrollmentStudent(s)}
+                        >
+                          <Icon icon={GraduationCap} size={13} />
+                          تسجيلات
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -240,7 +256,136 @@ export function AdminStudentsPage() {
           </>
         )}
       </Card>
+      {enrollmentStudent && (
+        <EnrollmentModal
+          student={enrollmentStudent}
+          onClose={() => setEnrollmentStudent(null)}
+        />
+      )}
     </div>
+  );
+}
+
+/* ─── r154e.2: Enrollment management modal (AdminStudentsPage) ─── */
+function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClose: () => void }) {
+  const enrollments = useStudentEnrollments(student.id);
+  const offerings = useEnrollmentOfferings();
+  const enroll = useEnrollStudent();
+  const drop = useDropEnrollment();
+  const [selectedOffering, setSelectedOffering] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const busy = enroll.isPending || drop.isPending;
+
+  const handleEnroll = async () => {
+    if (!selectedOffering) return;
+    setError(null);
+    try {
+      await enroll.mutateAsync({ studentId: student.id, offeringId: selectedOffering });
+      toast.success('تمّ التسجيل في المقرّر');
+      setSelectedOffering('');
+    } catch (e) {
+      setError(apiErrorMessage(e, 'تعذَّر التسجيل — حاول مرة أخرى.'));
+    }
+  };
+
+  const handleDrop = async (enrollmentId: string) => {
+    setError(null);
+    try {
+      await drop.mutateAsync({ enrollmentId, studentId: student.id });
+      toast.success('تمّ إلغاء التسجيل');
+    } catch (e) {
+      setError(apiErrorMessage(e, 'تعذَّر إلغاء التسجيل — حاول مرة أخرى.'));
+    }
+  };
+
+  return (
+    <Modal open onClose={onClose} ariaLabel={`تسجيلات ${student.firstName} ${student.lastName}`} closeOnOverlayClick={!busy}>
+      <div className="modal-header">
+        <div className="modal-title">تسجيلات {student.firstName} {student.lastName}</div>
+        <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={busy}>
+          <Icon icon={X} size={16} />
+        </button>
+      </div>
+      <div className="modal-body">
+        {/* Current enrollments */}
+        <div className="flex-col gap-2" style={{ marginBlockEnd: 'var(--sp-4)' }}>
+          <div className="text-sm font-semibold">التسجيلات الحالية</div>
+          {enrollments.isPending ? (
+            <div className="flex-col gap-2"><Skeleton width="100%" height={40} /><Skeleton width="100%" height={40} /></div>
+          ) : enrollments.isError ? (
+            <ErrorState error={enrollments.error} message="تعذّر تحميل التسجيلات" onRetry={() => enrollments.refetch()} />
+          ) : !enrollments.data?.length ? (
+            <div className="text-sm text-muted">لا تسجيلات حاليًا.</div>
+          ) : (
+            enrollments.data.map((e) => (
+              <div key={e.id} className="flex items-center gap-2" style={{ padding: 'var(--sp-2)', background: 'var(--surface-2)', borderRadius: 'var(--r-sm)' }}>
+                <Icon icon={BookOpen} size={14} className="text-muted" />
+                <div className="flex-1">
+                  <div className="text-sm">{e.offering.course.name} (<bdi className="font-mono">{e.offering.course.code}</bdi>)</div>
+                  <div className="text-xxs text-subtle">{e.offering.term} · {e.offering.teacher.firstName} {e.offering.teacher.lastName}</div>
+                </div>
+                <button
+                  type="button"
+                  className="btn ghost sm"
+                  onClick={() => void handleDrop(e.id)}
+                  disabled={busy}
+                >
+                  <Icon icon={UserMinus} size={13} />
+                  إلغاء التسجيل
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Enroll in a new offering */}
+        <div className="flex-col gap-2">
+          <div className="text-sm font-semibold">تسجيل في مقرّر جديد</div>
+          {offerings.isPending ? (
+            <Skeleton width="100%" height={40} />
+          ) : offerings.isError ? (
+            <ErrorState error={offerings.error} message="تعذّر تحميل المقرّرات" onRetry={() => offerings.refetch()} />
+          ) : !offerings.data?.length ? (
+            <div className="text-sm text-muted">لا توجد مقرّرات متاحة للتسجيل.</div>
+          ) : (
+            <>
+              <select
+                className="input"
+                value={selectedOffering}
+                onChange={(ev) => setSelectedOffering(ev.target.value)}
+                disabled={busy}
+                aria-label="اختر مقرًّا للتسجيل"
+              >
+                <option value="">— اختر مقرًّا —</option>
+                {offerings.data.map((o) => {
+                  const full = o._count.enrollments >= o.capacity;
+                  return (
+                    <option key={o.id} value={o.id} disabled={full}>
+                      {o.course.name} ({o.course.code}) · {o.term} · {o.teacher.firstName} {o.teacher.lastName}
+                      {full ? ' — مكتمل' : ` — ${o._count.enrollments}/${o.capacity}`}
+                    </option>
+                  );
+                })}
+              </select>
+              <button
+                type="button"
+                className="btn primary"
+                onClick={() => void handleEnroll()}
+                disabled={!selectedOffering || busy}
+              >
+                <Icon icon={GraduationCap} size={14} />
+                {enroll.isPending ? 'جارٍ التسجيل…' : 'تسجيل'}
+              </button>
+            </>
+          )}
+          {error && (
+            <p role="alert" className="text-sm" style={{ color: 'var(--danger)' }}>
+              <Icon icon={AlertCircle} size={13} /> {error}
+            </p>
+          )}
+        </div>
+      </div>
+    </Modal>
   );
 }
 
