@@ -228,6 +228,31 @@ export function AppShell({ children }: { children?: ReactNode }) {
     };
   }, [title]);
 
+  /* r152j (A7 #1): every role's dashboard pulls charts + chartTheme
+     (~75-95KB gz) AFTER the post-login navigation — the fetch lands on
+     the critical path of the most common navigation in the app (slow
+     Libyan mobile networks doubly so). Warm it during shell idle: the
+     dynamic import fetches the chunk and runs its module init once
+     (Chart.register is idempotent and the theme observer is a
+     singleton by design); the later dashboard mount reuses the warm
+     module. Production only — dev has no chunk splitting to warm. */
+  useEffect(() => {
+    if (!import.meta.env.PROD) return;
+    // Feature-detect without optional chaining: the DOM lib types
+    // requestIdleCallback as always-defined, so `?.bind()` + a truthy
+    // check trip TS2774. A typeof guard narrows honestly.
+    const ric =
+      typeof window.requestIdleCallback === 'function'
+        ? window.requestIdleCallback.bind(window)
+        : undefined;
+    const warm = () => { void import('../../lib/chartTheme').catch(() => undefined); };
+    const idleId = ric ? ric(warm, { timeout: 4000 }) : window.setTimeout(warm, 2500);
+    return () => {
+      if (ric) window.cancelIdleCallback(idleId as number);
+      else window.clearTimeout(idleId as number);
+    };
+  }, []);
+
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;

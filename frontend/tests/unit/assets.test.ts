@@ -38,11 +38,11 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('every @font-face in fonts.css points to an existing woff2 file', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const urls = [...css.matchAll(/url\('?(\/fonts\/[^)']+\.woff2)'?\)/g)].map((m) => m[1]!);
-    // 12 IBM Plex (Sans Arabic 400-700 arabic+latin, Serif italic ×2,
-    // Mono ×2) — premium-polish PP-X1 deleted the dead Noto Kufi ×6 +
-    // Amiri + Rubik families (zero font-family consumers; 51% of the
-    // shipped font bytes).
-    expect(urls.length).toBe(12);
+    // 10 IBM Plex (Sans Arabic 400-700 arabic+latin + Mono ×2) —
+    // premium-polish PP-X1 deleted the dead Noto Kufi ×6 + Amiri +
+    // Rubik families; r152j (A7) deleted the dead Serif italic ×2
+    // (zero font-family consumers — the browser never fetched them).
+    expect(urls.length).toBe(10);
     for (const u of urls) {
       const file = path.join(root, 'public', u.replace(/^\//, ''));
       expect(existsSync(file), `${u} missing from public/fonts`).toBe(true);
@@ -52,7 +52,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('all font faces use font-display: swap', () => {
     const css = stripComments(read('src/styles/fonts.css'));
     const faces = css.match(/@font-face\s*\{/g)?.length ?? 0;
-    expect(faces).toBe(12);
+    expect(faces).toBe(10);
     expect(css.match(/font-display:\s*swap/g)?.length).toBe(faces);
   });
 
