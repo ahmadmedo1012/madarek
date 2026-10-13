@@ -376,7 +376,9 @@ describe('r153b — watch flush on pagehide/hidden', () => {
     fireEvent(window, new Event('pagehide'));
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchMock.mock.calls[0];
+    const call = fetchMock.mock.calls[0];
+    if (!call) throw new Error('pagehide flush: expected one fetch call');
+    const [url, init] = call;
     expect(url).toBe('/api/v1/lectures/lec1/watch');
     expect(init.method).toBe('POST');
     expect(init.keepalive).toBe(true);
@@ -410,7 +412,9 @@ describe('r153b — watch flush on pagehide/hidden', () => {
 
     fireEvent(window, new Event('pagehide'));
 
-    expect(JSON.parse(fetchMock.mock.calls[0][1].body).completed).toBe(true);
+    const doneCall = fetchMock.mock.calls[0];
+    if (!doneCall) throw new Error('pagehide flush: expected one fetch call');
+    expect(JSON.parse(doneCall[1].body).completed).toBe(true);
   });
 
   it('removes its listeners on unmount (no flush after leaving the page)', () => {
