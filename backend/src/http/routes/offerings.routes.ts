@@ -106,7 +106,7 @@ router.get('/:id', async (req, res, next) => {
     // assertOfferingAccess short-circuits for ADMIN/OWNER without an
     // existence check — a deleted/unknown id used to serialize as
     // `{ data: null }` instead of a 404 (audit P2-12).
-    if (!offering) throw AppError.notFound('المقرّر مطلوب غير موجود');
+    if (!offering) throw AppError.notFound('المقرّر المطلوب غير موجود');
     res.json({ data: offering });
   } catch (e) {
     next(e);
