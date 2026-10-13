@@ -43,6 +43,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `polish.css` | overrides layer — the last word on layered surfaces |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
 | `colleges.css` · `colleges-popover.css` · `admin.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages (admin.css born r150e — the colleges.css split; colleges-popover.css born r151h — the popover split, rides the LandingPage chunk; 10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets) |
+| r152 ownership wave | the search family (v21) → `layout.css`; the megamino stagger (v18) → `landing.css`; the auth-card entrance + pdf-toolbar fade (v19) → `auth.css` / `pdf.css`; the whole `.state` family (v8+v11+v21) → `components.css` §STATE; the a11y utilities core (sr-only / skip-link / :target / tap-highlight / img-lazy) → `base.css` — polish.css keeps ONLY true overrides, belts and pins (5446 → ~4680 lines over r151–r152) |
 | `unified-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
 
 (10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets; the export pair makes 20 on disk.)
