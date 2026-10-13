@@ -19,6 +19,7 @@ import {
   nextOrdinal,
   resolveCorrectIndex,
   updateChapterBodySchema,
+  reorderBodySchema,
   updateCheckpointBodySchema,
   updateLectureBodySchema,
   withinLectureDuration,
@@ -374,5 +375,44 @@ describe('resolveCorrectIndex', () => {
 
   it('returns null when existing options are corrupt (empty)', () => {
     expect(resolveCorrectIndex({ options: [], correctIndex: 0 }, {})).toBeNull();
+  });
+});
+
+/* ── r152b (A5 P2): atomic reorder contract ─────────────────────── */
+
+describe('reorderBodySchema (r152b)', () => {
+  it('accepts a full ordered id list', () => {
+    expect(
+      reorderBodySchema.safeParse({ ids: ['a', 'b', 'c'] }).success,
+    ).toBe(true);
+  });
+
+  it('accepts a single-item list', () => {
+    expect(reorderBodySchema.safeParse({ ids: ['a'] }).success).toBe(true);
+  });
+
+  it('rejects an empty list (a reorder must carry the full set)', () => {
+    expect(reorderBodySchema.safeParse({ ids: [] }).success).toBe(false);
+  });
+
+  it('rejects duplicate ids (two rows would share a slot)', () => {
+    expect(
+      reorderBodySchema.safeParse({ ids: ['a', 'b', 'a'] }).success,
+    ).toBe(false);
+  });
+
+  it('rejects lists over the 500 ceiling', () => {
+    const ids = Array.from({ length: 501 }, (_, i) => `id-${i}`);
+    expect(reorderBodySchema.safeParse({ ids }).success).toBe(false);
+  });
+
+  it('rejects unknown keys (strict envelope)', () => {
+    expect(
+      reorderBodySchema.safeParse({ ids: ['a'], extra: true }).success,
+    ).toBe(false);
+  });
+
+  it('rejects empty-string ids', () => {
+    expect(reorderBodySchema.safeParse({ ids: [''] }).success).toBe(false);
   });
 });

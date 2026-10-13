@@ -59,7 +59,9 @@ router.get('/offerings/:id/full', async (req, res, next) => {
         // the offerings.routes.ts roster ceiling).
         assignments: { orderBy: { dueAt: 'asc' }, take: 200 },
         lectures: {
-          orderBy: { ordinal: 'asc' },
+          // r152b (A5 P2): deterministic tiebreakers — ordinals are not
+          // unique-constrained and legacy swaps could leave duplicates.
+          orderBy: [{ ordinal: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
           include: {
             _count: { select: { chapters: true, checkpoints: true } },
             watchEvents: req.user!.role === Role.STUDENT
@@ -86,7 +88,8 @@ router.get('/offerings/:id/lectures', async (req, res, next) => {
     await assertOfferingAccess(offeringId, req.user!.id, req.user!.role);
     const data = await prisma.lecture.findMany({
       where: { offeringId },
-      orderBy: { ordinal: 'asc' },
+      // r152b (A5 P2): deterministic tiebreakers (see above).
+      orderBy: [{ ordinal: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
       include: {
         _count: { select: { chapters: true, checkpoints: true } },
         watchEvents: req.user!.role === Role.STUDENT
@@ -114,7 +117,9 @@ router.get('/lectures/:id', async (req, res, next) => {
           },
         },
         chapters: {
-          orderBy: { ordinal: 'asc' },
+          // r152b (A5 P2): deterministic tiebreaker (no createdAt on
+          // LectureChapter — the cuid id is the stable fallback).
+          orderBy: [{ ordinal: 'asc' }, { id: 'asc' }],
           include: { concept: { select: { id: true, name: true } } },
         },
         checkpoints: {
@@ -137,8 +142,12 @@ router.get('/lectures/:id', async (req, res, next) => {
 });
 
 export const watchSchema = z.object({
-  watchedSec: z.number().int().nonnegative(),
-  totalSec: z.number().int().nonnegative(),
+  // r152b (A5 P3): cap both clocks — a crafted totalSec skewed the
+  // platform-wide /quality/engagement completionRate to ~100% with one
+  // POST. 900_000s ≈ 250h comfortably exceeds any real lecture (the
+  // authored-duration bound is MAX_MEDIA_SEC = 86_400).
+  watchedSec: z.number().int().nonnegative().max(900_000),
+  totalSec: z.number().int().nonnegative().max(900_000),
   completed: z.boolean().optional(),
 }).strict();
 
@@ -473,7 +482,8 @@ router.get('/me/resume', async (req, res, next) => {
           include: {
             course: { select: { id: true, name: true, code: true, themeColor: true } },
             lectures: {
-              orderBy: { ordinal: 'asc' },
+              // r152b (A5 P2): deterministic tiebreakers (see above).
+              orderBy: [{ ordinal: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
               include: {
                 watchEvents: { where: { studentId: req.user!.id }, select: { completed: true } },
               },
@@ -589,7 +599,20 @@ router.get('/me/gaps', async (req, res, next) => {
 // ════════════════════════════════════════════════════════════════
 router.get('/me/research', async (req, res, next) => {
   try {
-    const where = req.user!.role === Role.STUDENT ? { studentId: req.user!.id } : {};
+    /* r152b (A5 P2): the old non-student branch where:{} handed the
+     * institution-wide archive (grades, feedback, plagiarism scores,
+     * student names) to ANY staff token. Scope it like the sibling
+     * /research/queue: TEACHER → only papers tied to offerings they
+     * teach; QUALITY → the oversight view (they need it); ADMIN/OWNER
+     * keep the institutional view. The FE consumers of this route are
+     * student-only, so this branch is API-hygiene, not a UI change. */
+    const role = req.user!.role;
+    const where =
+      role === Role.STUDENT
+        ? { studentId: req.user!.id }
+        : role === Role.TEACHER
+          ? { offering: { teacherId: req.user!.id } }
+          : {};
     const data = await prisma.researchPaper.findMany({
       where,
       // Explicit select: NEVER ship extractedText (full PDF text — huge).
@@ -603,8 +626,8 @@ router.get('/me/research', async (req, res, next) => {
         offering: { include: { course: { select: { name: true, code: true } } } },
       },
       orderBy: { uploadedAt: 'desc' },
-      // Non-students see the institutional archive — bound it.
-      ...(req.user!.role === Role.STUDENT ? {} : { take: 50 }),
+      // Non-students see a scoped archive — bound it.
+      ...(role === Role.STUDENT ? {} : { take: 50 }),
     });
     res.json({ data: decToNum(data) });
   } catch (e) { next(e); }

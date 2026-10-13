@@ -723,6 +723,12 @@ router.post('/events/:id/rsvp', validate(rsvpSchema), async (req, res, next) => 
     const userId = req.user!.id;
     const event = await prisma.campusEvent.findUnique({ where: { id: req.params.id } });
     if (!event) throw AppError.notFound('الفعالية غير موجودة');
+    // r152b (A5 P3): the read side filters endsAt >= now — a past event
+    // must not accept new RSVPs or status flips that would mutate
+    // historical seat counts. Small grace window absorbs clock skew.
+    if (event.endsAt.getTime() < Date.now() - 60_000) {
+      throw AppError.badRequest('انتهت هذه الفعالية — لا يمكن تعديل الحجز');
+    }
     // Capacity check + upsert in one transaction, serialized per event via
     // SELECT … FOR UPDATE on the parent row (same pattern as POST
     // /enrollments). Without the row lock, two concurrent GOING rsvps can
