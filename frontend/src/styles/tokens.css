@@ -235,7 +235,6 @@
          (base) 2.4s — heartbeat / bell pulse / live pulse
          slow   3.6s — bar breathe / shimmer sweep / hero glow / breathe
          drift  6s   — floats / sway / empty wiggle / sticker idle
-         cinema 9s   — welcome-card gradient breathe
          scene  22s   — landing hero backdrop drift
        Belt-independence: motion.css zeroes this family under
        prefers-reduced-motion (its semantic RM block is the single
@@ -244,7 +243,6 @@
     --motion-duration-ambient:        2.4s;
     --motion-duration-ambient-slow:   3.6s;
     --motion-duration-ambient-drift:  6s;
-    --motion-duration-ambient-cinema: 9s;
     --motion-duration-ambient-scene:  22s;
 
     --motion-ease-standard:    var(--ease);

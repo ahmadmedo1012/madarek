@@ -183,7 +183,6 @@
     --motion-duration-ambient:        2.4s;
     --motion-duration-ambient-slow:   3.6s;
     --motion-duration-ambient-drift:  6s;
-    --motion-duration-ambient-cinema: 9s;
     --motion-duration-ambient-scene:  22s;
 
     --motion-ease-standard:    var(--ease);
@@ -633,7 +632,6 @@
       --motion-duration-ambient:        0ms;
       --motion-duration-ambient-slow:   0ms;
       --motion-duration-ambient-drift:  0ms;
-      --motion-duration-ambient-cinema: 0ms;
       --motion-duration-ambient-scene:  0ms;
     }
   }
