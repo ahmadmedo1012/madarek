@@ -386,7 +386,7 @@
   /* ─── scene-paint — fade + 6 px lift, matches Reveal cadence. */
   .section-accent-scene-paint {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(var(--motion-distance-small)); /* r153h: 6px → --motion-distance-small */
     transition: opacity var(--motion-duration-reveal) var(--motion-ease-decelerate),
                 transform var(--motion-duration-reveal) var(--motion-ease-decelerate);
   }

@@ -31,7 +31,7 @@
      hero grid only, scoped in the v16 block below. The polish-rise
      keyframes stay: [data-numeric] count-up reveals ride them. */
   @keyframes polish-rise {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to   { opacity: 1; transform: translateY(0); }
   }
 
@@ -407,7 +407,7 @@
       border-radius: 0 2px 2px 0;
     }
     .sidebar.collapsed .sidebar-user {
-      padding: 6px;
+      padding: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
       justify-content: center;
     }
     .sidebar.collapsed .sidebar-logout {
@@ -1243,7 +1243,7 @@
   .notif-item-time {
     color: var(--text-subtle);
     font-size: 11px;
-    margin-block-start: 6px;
+    margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     font-variant-numeric: tabular-nums;
   }
 
@@ -1365,7 +1365,7 @@
 
   /* Tab counts get a calm pill style instead of inline numbers */
   .tab-count {
-    margin-inline-start: 6px;
+    margin-inline-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     font-size: 10px;
     font-weight: var(--fw-bold);
     background: var(--surface-2);
@@ -1981,7 +1981,7 @@
     animation: madarek-topbar-in var(--motion-duration-long) var(--ease-out) both;
   }
   @keyframes madarek-topbar-in {
-    from { opacity: 0; transform: translateY(-6px); }
+    from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small */
     to   { opacity: 1; transform: none; }
   }
 
@@ -4012,7 +4012,8 @@
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
     border-block-start: 1px solid var(--rule);
     z-index: var(--z-dropdown);
-    padding: 6px max(var(--sp-2), env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
+    /* r153h: 6px → --sp-1-5 (both slots) */
+    padding: var(--sp-1-5) max(var(--sp-2), env(safe-area-inset-left)) max(var(--sp-1-5), env(safe-area-inset-bottom));
     grid-template-columns: repeat(5, 1fr);
     transition: transform var(--t-base) var(--ease);
   }

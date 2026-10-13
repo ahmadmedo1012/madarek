@@ -2637,7 +2637,7 @@
   .risk-row-suggestion {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     margin-block-start: var(--sp-2);
     padding: var(--sp-2) var(--sp-3);
     background: var(--gold-soft);
@@ -3298,7 +3298,7 @@
   .exam-save-warn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     padding: var(--sp-1) var(--sp-3);
     border-radius: var(--r-full);
     background: var(--warning-soft);
@@ -3336,7 +3336,7 @@
   .comp-score-row {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .comp-score-row .input { max-inline-size: 110px; }
 
@@ -3411,7 +3411,7 @@
   .heat-legend-key {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .heat-legend-dot {
     inline-size: 10px;
@@ -3581,7 +3581,7 @@
   .trend-legend-item {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .trend-legend-dot {
     inline-size: 10px;
@@ -3710,7 +3710,7 @@
     animation-delay: calc(var(--motion-stagger-step) * min(var(--run-i, 0), var(--motion-stagger-cap)));
   }
   @keyframes madarek-sync-run-in {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to { opacity: 1; transform: none; }
   }
 
@@ -3947,7 +3947,7 @@
   .page-profile > *:nth-child(6) { --lab-i: 5; }
   .page-profile > *:nth-child(n+7) { --lab-i: 6; }
   @keyframes madarek-section-in {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to   { opacity: 1; transform: none; }
   }
   /* Lab cards are informational (no navigation) — the shared .track-card
@@ -3970,7 +3970,7 @@
   .run-row-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   @media (max-width: 640px) {
     .run-row-actions .btn { min-inline-size: 44px; }

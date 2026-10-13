@@ -280,7 +280,7 @@
 .owner-action-bar .btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
 }
 
 /* ── Color Swatch ──────────────────────────────────────────── */
@@ -570,8 +570,9 @@
 
 /* ── Metadata preview ──────────────────────────────────────── */
 .owner-meta-preview {
-  margin-top: 6px;
-  padding: 6px 10px;
+  /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
+  margin-top: var(--sp-1-5);
+  padding: var(--sp-1-5) 10px;
   background: var(--surface-2);
   border-radius: var(--r-sm);
   font-family: var(--font-mono);
@@ -739,7 +740,7 @@
   justify-content: center;
   min-width: 20px;
   height: 20px;
-  padding: 0 6px;
+  padding: 0 var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   border-radius: var(--r-full);
   background: var(--danger);
   /* T3-F4 — was #fff in both themes: 3.19:1 on light --danger #DD6E78
@@ -913,7 +914,7 @@
 .owner-live-label {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
 }
 
 .owner-live-tick {
@@ -969,7 +970,7 @@
 }
 
 @keyframes owner-alert-in {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
   to { opacity: 1; transform: none; }
 }
 
@@ -1003,7 +1004,7 @@
   /* r130-W2-7: this definition governs again — the users-table's
      same-name keyframes (later in this file, translateY 4px) used to
      override it document-wide; that one is now `owner-users-row-in`. */
-  from { opacity: 0; transform: translateX(calc(6px * var(--motion-direction))); }
+  from { opacity: 0; transform: translateX(calc(var(--motion-distance-small) * var(--motion-direction))); } /* r153h: 6px → --motion-distance-small (سابقة training.css:552) */
   to { opacity: 1; transform: none; }
 }
 
@@ -1214,7 +1215,7 @@
 .owner-joined {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   font-size: var(--fs-xs);
   color: var(--text-muted);
 }

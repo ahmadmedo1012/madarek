@@ -41,7 +41,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 8px;
+  padding: var(--sp-1-5) 8px; /* r153h: 6px → --sp-1-5 (الـ8px = --sp-2 — دين منفصل) */
   border: 0;
   background: transparent;
   color: var(--accent-ink, var(--accent));
@@ -211,7 +211,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 6px 2px 4px;
+  padding: var(--sp-1-5) 2px 4px; /* r153h: 6px → --sp-1-5 */
   border: 0;
   background: transparent;
   color: var(--text-subtle);

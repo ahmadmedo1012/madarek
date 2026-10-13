@@ -52,7 +52,7 @@
     animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
   }
   @keyframes madarek-pdf-controls-in {
-    from { opacity: 0; transform: translateY(-6px); }
+    from { opacity: 0; transform: translateY(calc(var(--motion-distance-small) * -1)); } /* r153h: -6px → --motion-distance-small */
     to   { opacity: 1; transform: none; }
   }
 
@@ -142,8 +142,9 @@
 .pdf-searchbar {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px var(--sp-3);
+  /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5);
+  padding: var(--sp-1-5) var(--sp-3);
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
@@ -266,8 +267,9 @@
   margin: 0 auto;
   width: max-content;
   align-items: center;
-  gap: 6px;
-  padding: 6px var(--sp-3);
+  /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5);
+  padding: var(--sp-1-5) var(--sp-3);
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--r-full);
@@ -307,7 +309,7 @@
 /* Mobile — 44px touch floor on every control (craft floor), toolbar
    groups wrap as units at 320px (flex-wrap on .pdf-toolbar). */
 @media (max-width: 600px) {
-  .pdf-toolbar { padding: 6px var(--sp-2); gap: var(--sp-2); }
+  .pdf-toolbar { padding: var(--sp-1-5) var(--sp-2); gap: var(--sp-2); } /* r153h: 6px → --sp-1-5 */
   .pdf-title { display: none; }
   .pdf-btn,
   .pdf-btn.sm { width: 44px; height: 44px; }
@@ -373,7 +375,7 @@
 .annotation-page-input {
   width: 56px;
   height: 28px;
-  padding: 0 6px;
+  padding: 0 var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   text-align: center;
   background: var(--surface-1);
   border: 1px solid var(--border);
@@ -389,7 +391,7 @@
    on the dot, focus is the global ring on the button. */
 .annotation-colors {
   display: inline-flex;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   margin-inline-start: auto;
   flex-wrap: wrap;
 }
@@ -467,7 +469,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 6px 10px;
+  padding: var(--sp-1-5) 10px; /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
   background: var(--accent-soft);
   color: var(--accent-ink, var(--accent));
   border: 0;
@@ -490,8 +492,9 @@
 }
 .annotation-delete {
   position: absolute;
-  top: 6px;
-  inset-inline-end: 6px;
+  /* r153h: 6px → --sp-1-5 */
+  top: var(--sp-1-5);
+  inset-inline-end: var(--sp-1-5);
   width: 22px;
   height: 22px;
   border: 0;

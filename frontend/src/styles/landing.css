@@ -248,7 +248,7 @@
      the sticky header or the .landing-nav-group megamenu anchor). */
   position: relative;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   padding: 9px 14px;
   border-radius: var(--ln-radius-pill);
   color: var(--ln-cream-dim);
@@ -707,7 +707,7 @@
   color: var(--ln-cream-dim);
   font-size: 13px;
 }
-.landing .ln-hero-meta li { display: inline-flex; align-items: center; gap: 12px; padding-block: 6px; }
+.landing .ln-hero-meta li { display: inline-flex; align-items: center; gap: 12px; padding-block: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
 .landing .ln-hero-meta li svg { color: var(--ln-cream-dim); }
 .landing .ln-hero-meta-dot {
   inline-size: 3px;
@@ -1333,7 +1333,7 @@
   font-variant-numeric: tabular-nums;
   direction: ltr;
 }
-.landing .ln-fact-label { margin-block-start: 6px; color: var(--ln-cream); font-weight: var(--fw-semibold); font-size: 14.5px; }
+.landing .ln-fact-label { margin-block-start: var(--sp-1-5); color: var(--ln-cream); font-weight: var(--fw-semibold); font-size: 14.5px; } /* r153h: 6px → --sp-1-5 */
 .landing .ln-fact-note { margin-block-start: 3px; color: var(--ln-cream-dim); font-size: 12px; line-height: 1.6; }
 
 /* ── 12 · roles ledger ─────────────────────────────────────────────── */
@@ -1395,7 +1395,7 @@
   line-height: 1.7;
   max-inline-size: 64ch;
 }
-.landing .ln-role-quote-mark { color: var(--ln-cream-dim); font-size: 20px; margin-inline-end: 6px; }
+.landing .ln-role-quote-mark { color: var(--ln-cream-dim); font-size: 20px; margin-inline-end: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
 
 /* P3-20: the trio carries its own ln-label mini-head — it closes the
    roles chapter as a sub-section instead of reading as an appendix. */

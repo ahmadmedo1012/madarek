@@ -458,7 +458,7 @@
   .lesson-quiz-eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     font-size: var(--fs-xxs);
     font-weight: var(--fw-semibold);
     color: color-mix(in srgb, var(--track-accent) 55%, var(--text));

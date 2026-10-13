@@ -123,7 +123,7 @@
     grid-template-columns: 22px 1fr auto;
     align-items: center;
     gap: var(--sp-2);
-    padding: 6px var(--sp-3);
+    padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
     border-radius: var(--r-sm);
     font-size: var(--fs-sm);
     color: var(--sidebar-item);
@@ -584,7 +584,7 @@
      it becomes a pure move.) */
   .search-dropdown {
     position: absolute;
-    inset-block-start: calc(100% + 6px);
+    inset-block-start: calc(100% + var(--sp-1-5)); /* r153h: 6px → --sp-1-5 */
     inset-inline-start: 0; inset-inline-end: 0;
     background: var(--surface);
     max-block-size: 480px;

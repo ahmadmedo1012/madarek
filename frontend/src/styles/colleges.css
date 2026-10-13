@@ -457,8 +457,9 @@
 .college-stat-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px var(--sp-2);
+  /* r153h: 6px → --sp-1-5 */
+  gap: var(--sp-1-5);
+  padding: var(--sp-1-5) var(--sp-2);
   border-radius: var(--r-sm);
   background: var(--surface-2);
   color: var(--text-muted);
@@ -611,7 +612,7 @@
 .dept-row-name {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   color: var(--text);
@@ -720,7 +721,7 @@
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text);
@@ -775,7 +776,7 @@
   color: var(--text-muted);
 }
 .comp-prize {
-  margin-block-start: 6px;
+  margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   font-size: var(--fs-xxs);
   color: var(--accent-ink, var(--accent));
   font-weight: var(--fw-medium);
@@ -903,7 +904,7 @@ a.comp-card:focus-visible .comp-go {
 .leaderboard-th {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
 }
 .leaderboard-college { width: 28%; }
 .leaderboard-college-link {
@@ -953,7 +954,7 @@ a.comp-card:focus-visible .comp-go {
    tinted gold/silver/bronze through text-grade tokens (each ≥3:1 on
    the card surface — measured, not a raw hex). */
 .leaderboard-medal {
-  margin-inline-start: 6px;
+  margin-inline-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
@@ -1062,7 +1063,7 @@ a.comp-card:focus-visible .comp-go {
   gap: 4px;
   font-size: var(--fs-xxs);
   color: var(--text-muted);
-  margin-block-start: 6px;
+  margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
 }
 .comp-index-meta span {
   display: inline-flex;
@@ -1257,7 +1258,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-icon-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
 }
 .comp-icon-btn {
   width: 36px;

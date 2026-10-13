@@ -450,7 +450,7 @@
 
   /* ── Keyframes (reduced-motion off-switch below — guardrail #6) ── */
   @keyframes lecture-row-in {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to { opacity: 1; transform: none; }
   }
   @keyframes lecture-correct-pulse {
@@ -462,7 +462,7 @@
     to { opacity: 1; transform: none; }
   }
   @keyframes lecture-result-in {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to { opacity: 1; transform: none; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1103,7 +1103,7 @@
     font-feature-settings: var(--type-metric-feature-settings);
   }
   @keyframes exam-grade-in {
-    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); } /* r153h: 6px → --motion-distance-small */
     to { opacity: 1; transform: none; }
   }
   @keyframes exam-grade-ring {
@@ -1667,7 +1667,7 @@
   }
   .research-snippet { margin-block-end: var(--sp-2); }
   @keyframes research-card-in {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to   { opacity: 1; transform: none; }
   }
   /* shape-matched loading skeletons (books shelf + research rows) */
@@ -1816,7 +1816,7 @@
     background: color-mix(in srgb, var(--text-on-dark) 6%, var(--warm-ink));
     border-block-end: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent);
   }
-  .terminal-dots { display: flex; gap: 6px; }
+  .terminal-dots { display: flex; gap: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
   .terminal-dot { inline-size: 10px; block-size: 10px; border-radius: 50%; }
   .terminal-dot.r { background: var(--danger); }
   .terminal-dot.y { background: var(--warning); }
@@ -2198,7 +2198,7 @@
     line-height: var(--lh-base);
   }
   .profile-link-value {
-    margin-block-start: 6px;
+    margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     color: var(--accent-strong);
     overflow-wrap: anywhere;
   }
@@ -2366,7 +2366,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     margin-block-start: var(--sp-3);
   }
   .event-rsvp-fail {
@@ -2677,7 +2677,7 @@
   .exam-submit-status {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
   }
@@ -2934,18 +2934,18 @@
   }
 
   .chat-bubble p { margin: 0; }
-  .chat-bubble p + p { margin-block-start: 6px; }
+  .chat-bubble p + p { margin-block-start: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
 
   .ai-quick-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     padding: var(--sp-3) var(--sp-2) var(--sp-2);
     border-block-start: 1px solid var(--rule);
     margin-block-start: var(--sp-1);
   }
   .ai-quick-chip {
-    padding: 6px 12px;
+    padding: var(--sp-1-5) 12px; /* r153h: 6px → --sp-1-5 */
     border-radius: var(--r-full);
     border: 1px solid var(--border);
     background: var(--surface);
@@ -3026,7 +3026,7 @@
   .matrix-legend-item {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     font-size: var(--fs-xs);
     color: var(--text-muted);
     font-weight: var(--fw-medium);
@@ -3099,7 +3099,7 @@
   .matrix-cells {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 6px;
+    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
   }
   .matrix-cell {
     padding: 8px 10px;
@@ -3160,7 +3160,7 @@
   .post-actions {
     display: flex;
     gap: var(--sp-3);
-    margin-block-start: 6px;
+    margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
     padding-block-start: var(--sp-2);
     border-block-start: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
   }
