@@ -16,12 +16,10 @@ export interface Course {
   credits: number;
   department?: { id: string; name: string };
 }
-export function useCourses() {
-  return useQuery({
-    queryKey: ['courses'],
-    queryFn: () => unwrap<Course[]>(api.get('/courses?limit=100')),
-  });
-}
+/* (r153l grave: useCourses — the ['courses'] query — had ZERO consumers
+ * in src and tests since the admin list moved to useAdminCourses's
+ * paginated envelope; only the Course TYPE is consumed (student.ts's
+ * MyEnrollment). Dead export deleted; type kept.) */
 
 // ── Library ────────────────────────────────────────────────────
 export interface Book {

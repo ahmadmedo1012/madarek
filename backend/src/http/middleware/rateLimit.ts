@@ -1,8 +1,12 @@
 import rateLimit, { type Options, type RateLimitRequestHandler } from 'express-rate-limit';
 
+/* r153l: these constants ARE the limiters' source (they were drifted
+ * documentation — exported, unconsumed, while the limiters repeated the
+ * literals below). The admin settings display (AdminExtraPages) and
+ * any future docs quote THEM, not retyped digits. */
 export const GLOBAL_RATE = { max: 1000, windowMinutes: 15 };
 export const AUTH_RATE = { max: 10, windowMinutes: 15 };
-const FIFTEEN_MIN = 15 * 60 * 1000;
+const FIFTEEN_MIN = GLOBAL_RATE.windowMinutes * 60 * 1000;
 
 /**
  * 1000 req / 15 min / IP — global API limit.
@@ -16,7 +20,7 @@ const FIFTEEN_MIN = 15 * 60 * 1000;
  */
 export const globalRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
-  max: 1000,
+  max: GLOBAL_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { error: { code: 'TOO_MANY_REQUESTS', message: 'طلبات كثيرة — انتظر قليلاً ثم أعد المحاولة' } },
@@ -29,7 +33,7 @@ export const globalRateLimiter = rateLimit({
  */
 export const authRateLimiter = rateLimit({
   windowMs: FIFTEEN_MIN,
-  max: 10,
+  max: AUTH_RATE.max,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   skipSuccessfulRequests: true,
