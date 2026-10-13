@@ -435,8 +435,8 @@ async function main() {
 
   // ─── Jobs ───────────────────────────────────────────────────
   const jobs = [
-    { title: 'مطور ويب Full Stack', company: 'شركة تقنية الزاوية', location: 'الزاوية · حضوري', type: JobType.FULL_TIME, salary: '2,500 ل.د', category: 'tech', iconEmoji: '💻' },
-    { title: 'محلل بيانات Data Analyst', company: 'البنك التجاري الليبي', location: 'طرابلس · هجين', type: JobType.FULL_TIME, salary: '3,200 ل.د', category: 'tech', iconEmoji: '📊' },
+    { title: 'مطور ويب Full Stack', company: 'شركة تقنية الزاوية', location: 'الزاوية · حضوري', type: JobType.FULL_TIME, salary: '2.500 ل.د', category: 'tech', iconEmoji: '💻' },
+    { title: 'محلل بيانات Data Analyst', company: 'البنك التجاري الليبي', location: 'طرابلس · هجين', type: JobType.FULL_TIME, salary: '3.200 ل.د', category: 'tech', iconEmoji: '📊' },
     { title: 'تدريب صيفي — برمجة Python', company: 'ليبيا تك هاب', location: 'مصراتة · عن بُعد', type: JobType.INTERNSHIP, salary: 'مدفوع', category: 'intern', iconEmoji: '🐍' },
     { title: 'مصمم UI/UX', company: 'وكالة إبداع رقمي', location: 'عن بُعد', type: JobType.FREELANCE, salary: 'بالمشروع', category: 'remote', iconEmoji: '🎨' },
   ];

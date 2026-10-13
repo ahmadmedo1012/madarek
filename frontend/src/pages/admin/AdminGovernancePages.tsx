@@ -18,7 +18,7 @@ import {
   AlertCircle, Sparkles, Briefcase, Building2, Users, Crown, BookOpen,
   Search, X,
 } from 'lucide-react';
-import { Card, Badge, MetricCard, UserAvatar, AlertRow } from '../../components/primitives';
+import { Card, Badge, MetricCard, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import {
   CardSkeleton, DetailSkeleton, ErrorState, EmptyState, Skeleton,
 } from '../../components/primitives/States';
@@ -37,7 +37,10 @@ import { api, unwrap } from '../../lib/api';
 import { countAr } from '../../lib/format';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import '../../styles/training.css'; // .back-link family (D11 css split, 12-15)
-import '../../styles/colleges.css'; // borrowed .comp-form-field (D14 css split, 13-17)
+// r152c (A2): the colleges.css import is GONE — it existed only for
+// .comp-form-field, and the six governance selects now ride the
+// FormField canon (components.css .form-field) like the rest of the app.
+import '../../styles/admin.css'; // r150e: the borrowed admin-students-search chrome moved home
 
 const DEGREE_LABEL: Record<string, string> = {
   BACHELORS: 'بكالوريوس', MASTERS: 'ماجستير', PHD: 'دكتوراه',
@@ -284,9 +287,8 @@ export function AdminTeachersPage() {
 
       <div className="grid-2-1">
         <Card title="قائمة الأساتذة" icon={Users}>
-          {/* Borrowed admin-family search chrome from colleges.css (the
-              AdminStudentsPage look) — the sheet is already imported for
-              .comp-form-field. */}
+          {/* Borrowed admin-family search chrome (the AdminStudentsPage
+              look) — admin.css owns it since r150e. */}
           <div className="admin-students-search">
             <Icon icon={Search} size={14} />
             <input
@@ -643,10 +645,12 @@ function PositionAssignmentCard({
       )}
 
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
-        <div className="comp-form-field">
-          <label htmlFor={`pos-${teacher.id}`}>المنصب</label>
+        {/* r152c (A2): the six governance selects join the FormField
+            canon — the last hand-rolled .comp-form-field copies in the
+            app (the r151 deferred item). Label text and explicit ids are
+            preserved so every getByLabelText pin keeps passing. */}
+        <FormField label="المنصب" id={`pos-${teacher.id}`}>
           <select
-            id={`pos-${teacher.id}`}
             className="input"
             value={position}
             onChange={(e) => setPosition(e.target.value as typeof position)}
@@ -656,13 +660,11 @@ function PositionAssignmentCard({
             <option value="ASSOCIATE_DEAN">وكيل العميد</option>
             <option value="DEPARTMENT_HEAD">رئيس قسم</option>
           </select>
-        </div>
+        </FormField>
 
         {(position === 'DEAN' || position === 'ASSOCIATE_DEAN') && (
-          <div className="comp-form-field">
-            <label htmlFor={`pos-fac-${teacher.id}`}>الكلّيّة</label>
+          <FormField label="الكلّيّة" id={`pos-fac-${teacher.id}`}>
             <select
-              id={`pos-fac-${teacher.id}`}
               className="input"
               value={facultyId}
               onChange={(e) => setFacultyId(e.target.value)}
@@ -671,15 +673,13 @@ function PositionAssignmentCard({
                 <option key={f.id} value={f.id}>{f.name}</option>
               ))}
             </select>
-          </div>
+          </FormField>
         )}
 
         {position === 'DEPARTMENT_HEAD' && (
           <>
-            <div className="comp-form-field">
-              <label htmlFor={`pos-dfac-${teacher.id}`}>الكلّيّة</label>
+            <FormField label="الكلّيّة" id={`pos-dfac-${teacher.id}`}>
               <select
-                id={`pos-dfac-${teacher.id}`}
                 className="input"
                 value={facultyId}
                 onChange={(e) => {
@@ -692,11 +692,9 @@ function PositionAssignmentCard({
                   <option key={f.id} value={f.id}>{f.name}</option>
                 ))}
               </select>
-            </div>
-            <div className="comp-form-field">
-              <label htmlFor={`pos-dep-${teacher.id}`}>القسم</label>
+            </FormField>
+            <FormField label="القسم" id={`pos-dep-${teacher.id}`}>
               <select
-                id={`pos-dep-${teacher.id}`}
                 className="input"
                 value={departmentId}
                 onChange={(e) => setDepartmentId(e.target.value)}
@@ -705,7 +703,7 @@ function PositionAssignmentCard({
                   <option key={d.id} value={d.id}>{d.name}</option>
                 ))}
               </select>
-            </div>
+            </FormField>
           </>
         )}
       </div>
@@ -794,10 +792,8 @@ function ScopeAssignmentCard({
         النطاق الافتراضيّ على مستوى الجامعة. يمكن قَصره على كلّيّة واحدة فقط للحدّ من نطاق الإشراف.
       </p>
       <div className="grid-2" style={{ gap: 'var(--sp-2)' }}>
-        <div className="comp-form-field">
-          <label htmlFor={`scope-${userId}`}>النطاق</label>
+        <FormField label="النطاق" id={`scope-${userId}`}>
           <select
-            id={`scope-${userId}`}
             className="input"
             value={scope}
             onChange={(e) => setScope(e.target.value as 'UNIVERSITY' | 'FACULTY')}
@@ -805,12 +801,10 @@ function ScopeAssignmentCard({
             <option value="UNIVERSITY">على مستوى الجامعة</option>
             <option value="FACULTY">كلّيّة محدَّدة</option>
           </select>
-        </div>
+        </FormField>
         {scope === 'FACULTY' && (
-          <div className="comp-form-field">
-            <label htmlFor={`scope-fac-${userId}`}>الكلّيّة</label>
+          <FormField label="الكلّيّة" id={`scope-fac-${userId}`}>
             <select
-              id={`scope-fac-${userId}`}
               className="input"
               value={facultyId}
               onChange={(e) => setFacultyId(e.target.value)}
@@ -820,7 +814,7 @@ function ScopeAssignmentCard({
                 <option key={f.id} value={f.id}>{f.name}</option>
               ))}
             </select>
-          </div>
+          </FormField>
         )}
       </div>
       {scopeFacultyName && (

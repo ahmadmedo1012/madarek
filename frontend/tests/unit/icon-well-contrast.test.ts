@@ -136,13 +136,16 @@ describe('status icon wells — WCAG 1.4.11 (R131-F12, audit A7 §5-1)', () => {
     expect(body).toContain('color: var(--success-ink);');
   });
 
-  it('the passing wells stay untouched (blue 3.06:1, purple 3.18:1 — no restyle)', () => {
-    // The audit's failing range was 2.04–2.57:1; copper and lavender
-    // already clear 3:1, so their rules keep their original tokens.
+  it('the fragile-edge wells now use the ink tiers (r148 AUDIT-1 H3)', () => {
+    // r148 (AUDIT-1 H3): blue 3.06:1 and purple 3.18:1 cleared 3:1 by a
+    // 2–6% margin only — any future darkening of the theme or lift of
+    // --accent-soft would silently break 1.4.11. Aligned with the fixed
+    // siblings (green --success-ink 7.99:1, amber --warning-ink 6.98:1):
+    // blue → --accent-ink (10.29:1), purple → --c-lavender-deep (9.24:1).
     const css = read('src/styles/owner.css');
     const kept: Array<[string, string]> = [
-      ['.owner-event-icon.blue', 'color: var(--accent);'],
-      ['.owner-event-icon.purple', 'color: var(--c-lavender-ink);'],
+      ['.owner-event-icon.blue', 'color: var(--accent-ink);'],
+      ['.owner-event-icon.purple', 'color: var(--c-lavender-deep);'],
     ];
     for (const [selector, decl] of kept) {
       const idx = css.indexOf(`${selector} {`);
@@ -150,9 +153,9 @@ describe('status icon wells — WCAG 1.4.11 (R131-F12, audit A7 §5-1)', () => {
       const body = css.slice(idx, css.indexOf('}', idx));
       expect(body, selector).toContain(decl);
     }
-    // And their computed ratios still clear the bar today.
-    expect(ratio('copper light', light, '--accent-soft', '--accent')).toBeGreaterThanOrEqual(3);
-    expect(ratio('lavender light', light, '--c-lavender-bg', '--c-lavender-ink')).toBeGreaterThanOrEqual(3);
+    // And the new pairs clear the bar with real headroom.
+    expect(ratio('copper-ink light', light, '--accent-soft', '--accent-ink')).toBeGreaterThanOrEqual(3);
+    expect(ratio('lavender-deep light', light, '--c-lavender-bg', '--c-lavender-deep')).toBeGreaterThanOrEqual(3);
   });
 
   /* ── R131-F12b completion: the two INLINE wells the css sweep missed ── */

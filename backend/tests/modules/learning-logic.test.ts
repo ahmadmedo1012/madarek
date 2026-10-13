@@ -529,3 +529,25 @@ describe('worstFirstMetricSort (drill-down order)', () => {
     expect(sorted.map((r) => r.id)).toEqual(['b', 'a', 'c', 'd']);
   });
 });
+
+/* ── r152b (A5 P3): watch-report clock ceilings ─────────────────── */
+
+describe('watchSchema ceilings (r152b)', () => {
+  it('rejects a crafted totalSec beyond the 900_000 cap', () => {
+    expect(
+      watchSchema.safeParse({ watchedSec: 100, totalSec: 1e15, completed: true }).success,
+    ).toBe(false);
+  });
+
+  it('rejects a watchedSec beyond the cap', () => {
+    expect(
+      watchSchema.safeParse({ watchedSec: 900_001, totalSec: 900_001 }).success,
+    ).toBe(false);
+  });
+
+  it('accepts the cap boundary itself', () => {
+    expect(
+      watchSchema.safeParse({ watchedSec: 900_000, totalSec: 900_000 }).success,
+    ).toBe(true);
+  });
+});

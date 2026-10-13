@@ -11,8 +11,9 @@
    · Focus language is NOT declared here: polish v15 owns the input
      accent border + halo, v22 owns the single AA-safe :focus-visible
      ring (ruling #13 — the overrides layer has the final word).
-   · The card rise-in entrance is owned by polish (madarek-auth-card-in,
-     with its own reduced-motion kill). Nothing animates the card here.
+   · The card rise-in entrance (madarek-auth-card-in) lives at the end
+     of this sheet since r152e — it used to be polish v19. Nothing else
+     animates the card.
    · The classes consumed outside these pages (community / curriculum /
      student forms: .auth-input, .auth-field, .auth-error,
      .auth-field-error, .auth-row) keep their contracts.
@@ -158,7 +159,9 @@
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-color: rgba(255,255,255,0.15);
+    /* r148 (AUDIT-5 K2): حد أبيض خام 15% يختفي على الزجاج الكريمي في الفاتح —
+       --glass-border متكيف بالسمتين (mist 12% داكن / حبر 6% فاتح). */
+    border-color: var(--glass-border);
     box-shadow: var(--shadow-card-premium);
   }
   .auth-card.glass::after {
@@ -166,7 +169,7 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--white) 6%, transparent) 0%, transparent 60%);
     pointer-events: none;
   }
   .auth-card:hover { box-shadow: var(--shadow-card-glow); }
@@ -247,10 +250,9 @@
     font-weight: var(--type-display-weight);
     color: var(--text);
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    /* 21-c (A12 P2-7): Arabic display leading floor — 1.1 was the
-       base.css-parked compromise; 1.15 clears diacritic stacks at
-       28–40px display sizes. */
-    line-height: 1.15;
+    /* r148 (AUDIT-4 I2): رمز الدور بدل الحرفي 1.15 — يشغّل التعويض
+       الداكن 1.2 (tokens.css:745). */
+    line-height: var(--type-display-line-height);
   }
   .auth-form-sub {
     font-size: var(--type-body-size);
@@ -493,6 +495,8 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     border-radius: var(--r-sm);
+    /* r149 (R3-A3 §3): انزياح الشفافية كان فوريًا (snap). */
+    transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
   }
   .auth-retry-link:hover { opacity: 0.8; }
 
@@ -552,7 +556,7 @@
   /* Premium-polish: joins the platform's single press register —
      buttons scale (0.97), they don't sink. */
   .auth-submit:active { transform: scale(var(--press-scale)); }
-  .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .auth-submit:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; transform: none; }
   /* currentColor spins on both themes (ink-on-cream light, ink-on-
      copper dark) — the old raw rgba/#fff pair is gone. */
   .auth-submit-spinner {
@@ -768,8 +772,8 @@
     font-size: var(--type-display-size-md);
     font-weight: var(--type-display-weight);
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    /* 21-c (A12 P2-7): Arabic display leading floor (was 1.1). */
-    line-height: 1.15;
+    /* r148 (AUDIT-4 I2): رمز الدور بدل الحرفي 1.15 — يشغّل الداكن 1.2. */
+    line-height: var(--type-display-line-height);
     color: var(--text);
   }
   .nf-sub {
@@ -790,6 +794,27 @@
   }
 
   /* ══ REDUCED MOTION — local off-switches for this file's keyframes ═ */
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  Card entrance — home since r152e (was polish v19)              ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  AUTH PAGES — calmer ambient gradient + form lift              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (Wave 9-b dead-selector sweep: .auth-page removed — zero TSX
+     consumers; AuthPage renders .auth-card.) */
+  .auth-card {
+    animation: madarek-auth-card-in var(--t-slower) var(--ease-spring-soft) both;
+  }
+  @keyframes madarek-auth-card-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* Auth submit button gets the same primary breathe as landing */
+  .auth-card .btn.primary {
+    position: relative;
+  }
+
+
 
   @media (prefers-reduced-motion: reduce) {
     .auth-step-panel,

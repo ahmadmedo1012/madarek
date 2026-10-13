@@ -24,6 +24,7 @@ import {
   apiErrorMessage,
   useCreateChapter,
   useDeleteChapter,
+  useReorderChapters,
   useUpdateChapter,
   type Lecture,
   type LectureChapter,
@@ -188,7 +189,7 @@ export function ChapterList({
   chapters: LectureChapter[];
 }) {
   const del = useDeleteChapter();
-  const update = useUpdateChapter();
+  const reorder = useReorderChapters();
   const [editing, setEditing] = useState<LectureChapter | null>(null);
   const [adding, setAdding] = useState(false);
   const [deleting, setDeleting] = useState<LectureChapter | null>(null);
@@ -201,19 +202,21 @@ export function ChapterList({
     [chapters],
   );
 
-  /* 5-D3 (5-B6 hand-off #2): chapter reorder — the same neighbor-swap
-   * through PATCH /chapters/:id the lectures use (ordinal joined the
-   * update schema in wave 26). movingId locks every move button so two
-   * swaps can never interleave their two-PATCH sequence. */
+  /* 5-D3 (5-B6 hand-off #2): chapter reorder — r152b (A5 P2) makes it
+   * ONE atomic POST (full ordered id list) exactly like the lectures;
+   * a partial failure can no longer leave duplicate ordinals behind.
+   * movingId locks every move button so two moves never interleave. */
   const [movingId, setMovingId] = useState<string | null>(null);
   const move = async (chapter: LectureChapter, dir: -1 | 1) => {
     const index = sorted.findIndex((c) => c.id === chapter.id);
     const neighbor = sorted[index + dir];
     if (!neighbor) return;
+    const next = [...sorted];
+    next[index] = neighbor;
+    next[index + dir] = chapter;
     setMovingId(chapter.id);
     try {
-      await update.mutateAsync({ chapterId: chapter.id, ordinal: neighbor.ordinal });
-      await update.mutateAsync({ chapterId: neighbor.id, ordinal: chapter.ordinal });
+      await reorder.mutateAsync({ lectureId: lecture.id, ids: next.map((c) => c.id) });
     } catch (error) {
       toast.error(
         apiErrorMessage(error, 'تعذَّر تحديث ترتيب الفصول — حاول مرة أخرى.'),

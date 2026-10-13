@@ -945,6 +945,24 @@ export function useUpdateLecture() {
     },
   });
 }
+/* r152b (A5 P2): atomic full-list reorder — replaces the FE's old
+ * two-PATCH neighbor swap, whose partial failure left two lectures
+ * sharing one ordinal (the list then shuffles non-deterministically).
+ * The server rewrites every ordinal 0..n-1 in one transaction. */
+export function useReorderLectures() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ offeringId, ids }: { offeringId: string; ids: string[] }) =>
+      unwrap<{ ok: true; count: number }>(
+        api.post(`/offerings/${offeringId}/lectures/reorder`, { ids }),
+      ),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+      qc.invalidateQueries({ queryKey: ['teacher', 'offerings'] });
+    },
+  });
+}
 export function useDeleteLecture() {
   const qc = useQueryClient();
   return useMutation({
@@ -992,6 +1010,20 @@ export function useUpdateChapter() {
   return useMutation({
     mutationFn: ({ chapterId, ...patch }: ChapterPatchInput) =>
       unwrap<LectureChapter>(api.patch(`/chapters/${chapterId}`, patch)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['lectures'] });
+      qc.invalidateQueries({ queryKey: ['offerings'] });
+    },
+  });
+}
+/* r152b (A5 P2): atomic full-list chapter reorder — see useReorderLectures. */
+export function useReorderChapters() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ lectureId, ids }: { lectureId: string; ids: string[] }) =>
+      unwrap<{ ok: true; count: number }>(
+        api.post(`/lectures/${lectureId}/chapters/reorder`, { ids }),
+      ),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['lectures'] });
       qc.invalidateQueries({ queryKey: ['offerings'] });

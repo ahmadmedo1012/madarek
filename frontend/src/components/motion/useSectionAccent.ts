@@ -8,11 +8,14 @@
  * exactly one accent animation when the section enters the viewport.
  * The accent kind is selected per call site:
  *
- *   underline-draw  — a 0..1 line that draws itself across the section
- *   number-tick     — counts a numeric child up from 0 to its value
  *   scene-paint     — fades + lifts an illustration scene into place
- *   quote-fade      — a calm fade for blockquote / aphorism content
- *   parallax-shift  — bounded translation (≤ 8 px) on scroll
+ *
+ * (r151c vocabulary sweep: underline-draw / number-tick / quote-fade /
+ * parallax-shift retired — their CSS and this union narrowed together
+ * after the landing redesigns left exactly two mounts, both
+ * scene-paint. Audit 4-A11's 5-kind × 7-consumer era is preserved in
+ * git history; re-add the CSS half in the same commit as any new
+ * kind.)
  *
  * Behaviours that hold across every kind:
  *   - One-shot. Once data-accent-fired is on the element, the observer
@@ -21,25 +24,18 @@
  *     advances. Re-paints resume on visibilitychange.
  *   - prefers-reduced-motion: skips the cascade and renders the final
  *     state immediately.
- *   - RTL: directional kinds (underline-draw, parallax-shift) flip via
- *     a mirrored CSS variable rather than re-running.
  *
  * The hook returns a ref to attach to the wrapper element + a `fired`
  * flag for components that need to react after the animation lands.
  *
  * Usage:
- *   const { ref, fired } = useSectionAccent('underline-draw')
+ *   const { ref, fired } = useSectionAccent('scene-paint')
  *   <section ref={ref} className={fired ? 'is-fired' : ''}>...</section>
  */
 import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 
-export type AccentKind =
-  | 'underline-draw'
-  | 'number-tick'
-  | 'scene-paint'
-  | 'quote-fade'
-  | 'parallax-shift';
+export type AccentKind = 'scene-paint';
 
 export interface UseSectionAccentOpts {
   /** IntersectionObserver threshold. Default 0.4. */

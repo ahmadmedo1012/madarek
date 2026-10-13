@@ -40,11 +40,11 @@
      · The illustration palette (--ill-*) and its prefers-contrast
        stroke thickening are illustration-layer vocabulary and stay
        with the illustration system.
-     · Canonical wrinkle RESOLVED (r130-W2-7): tokens.css used to spell
-       --journey-core: var(--ink) with --ink defined nowhere (its comment
-       documented #191918). Canonical now defines --ink in both theme
-       blocks (= --neutral-900); the export's binding below is the same
-       value: #191918 light, the sand #F2EFE6 dark.
+     · Journey scene (r148-d): the node/line/core/ticker family +
+       its --ink slab retired with the canon (zero consumers — the
+       ConstellationCanvas scene is gone); only the --journey-glow
+       wash survives (auth card). The r130-W2-7 --journey-core/--ink
+       wrinkle note went with them.
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer tokens, base, layout, components, pages, overrides;
@@ -57,6 +57,7 @@
   :root {
     /* ─── Spacing — 4px base, sp-1..sp-16 = 4..240 ────────────────── */
     --sp-1:  4px;   --sp-2:  8px;   --sp-3: 12px;   --sp-4: 16px;
+    --sp-1-5: 6px;
     --sp-5: 20px;   --sp-6: 24px;   --sp-7: 32px;   --sp-8: 40px;
     --sp-9: 48px;   --sp-10: 56px;  --sp-11: 72px;  --sp-12: 96px;
     --sp-13: 128px; --sp-14: 160px; --sp-15: 192px; --sp-16: 240px;
@@ -73,17 +74,16 @@
     --r-3xl: 28px;
     --r-full: 9999px;
 
-    --radius-sm: var(--r-sm);   --radius-md: var(--r-md);
-    --radius-lg: var(--r-lg);   --radius-xl: var(--r-xl);
-    --radius-2xl: var(--r-2xl); --radius-full: var(--r-full);
-    /* (r136: --st-r-* deleted with the canon — see tokens.css) */
+    /* (r136: --st-r-* deleted with the canon — see tokens.css.
+       r148-d: the --radius-sm…full alias pair deleted with it — same
+       zero-consumer verdict, mirrored from tokens.css.) */
 
     /* ─── Type — IBM Plex Sans Arabic first ───────────────────────── */
     --font-sans:    'IBM Plex Sans Arabic', 'Tajawal', system-ui, -apple-system,
                     'Segoe UI', Roboto, sans-serif;
     --font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-    --font-serif:   'IBM Plex Serif', Georgia, serif;
-    --font-mono:    'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+    /* (--font-serif retired r148-d — zero consumers, see tokens.css) */
+    --font-mono:    'IBM Plex Mono', 'IBM Plex Sans Arabic', ui-monospace, 'SFMono-Regular', monospace;
 
     /* weights — the self-hosted Plex set ships 400/500/600/700 only.
        (r132-F5: --fw-cine/-heavy 800/900 + the cine/eyebrow/mega display
@@ -113,13 +113,11 @@
     --fs-xs:      12px;
     --fs-xxs:     11px;
 
-    /* legacy aliases */
-    --fs-base: var(--fs-body); --fs-md: var(--fs-body);
+    /* legacy aliases (r148-d: --fs-base/-4xl + headline/label pairs
+       deleted with the canon — zero consumers) */
+    --fs-md: var(--fs-body);
     --fs-lg: var(--fs-h3); --fs-xl: var(--fs-h2);
     --fs-2xl: var(--fs-h1); --fs-3xl: var(--fs-display-md);
-    --fs-4xl: var(--fs-display-lg);
-    --fs-headline-md: var(--fs-h2); --fs-headline-sm: var(--fs-h3);
-    --fs-label-md: var(--fs-sm); --fs-label-sm: var(--fs-xs);
     --text-2xl: var(--fs-2xl);
 
     --fs-metric-xl: 44px;
@@ -132,13 +130,11 @@
     --lh-base:  1.65;
     --lh-loose: 1.85;
 
-    /* letter spacing — slightly tighter on big type */
+    /* letter spacing — slightly tighter on big type
+       (r148-d: --ls-wide/-mega/-display deleted with the canon) */
     --ls-tight:  -0.022em;
     --ls-snug:   -0.012em;
     --ls-normal: 0;
-    --ls-wide:   0.06em;
-    --ls-mega:    -0.032em;
-    --ls-display: -0.026em;
 
     /* ─── Motion — raw ladder 80/160/240/380/520/720 ──────────────── */
     --t-micro: 80ms;
@@ -164,16 +160,13 @@
     /* composed transitions — --t-clean is an `all` shorthand; consumers
        that can enumerate properties (see .icon-btn) should. */
     --t-clean:      all var(--t-base) var(--ease);
-    --t-cinema-all: all var(--t-slow) var(--ease-out);
-    --transition-fast:   var(--t-fast) var(--ease);
-    --transition-normal: var(--t-base) var(--ease);
-    --transition-slow:   var(--t-slow) var(--ease);
-    --transition-all:    var(--t-clean);
+    /* (r148-d: --t-cinema-all + the --transition-* shorthands deleted
+       with the canon — zero consumers; --t-clean stays live) */
 
     /* ─── Interactive feedback ────────────────────────────────────── */
     --press-scale: 0.97;
     --hover-lift: -1px;
-    --hover-lift-lg: -3px;
+    /* (r148-d: --hover-lift-lg deleted with the canon — zero consumers) */
 
     /* ─── Motion — semantic layer ─────────────────────────────────── */
     --motion-duration-micro:    var(--t-micro);   /*  80ms */
@@ -215,15 +208,14 @@
     --state-focus-ring:        0 0 0 var(--state-focus-ring-width) var(--state-focus-ring-color);
     --state-input-focus-halo:  0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 
-    --state-button-hover-bg-shift:   4%;
-    --state-button-hover-translate:  -1px;
     /* r134: --state-button-pressed-scale 0.98 and
        --state-button-pressed-duration (µ) deleted with the canonical
-       tokens (zero consumers everywhere — controls press via --press-scale). */
-    --state-button-disabled-opacity: 0.5;
-
-    --state-card-hover-elevation: 0 4px 12px rgb(0 0 0 / 0.06);
-    --state-card-hover-translate: -1px;
+       tokens (zero consumers everywhere — controls press via --press-scale).
+       r148-d (AUDIT-1 H1): the button hover-shift/-translate + disabled-
+       opacity, the card hover-elevation/-translate + disabled-opacity,
+       --state-input-focus-ring, the tab-indicator trio, --state-link-
+       hover-underline and --state-loading-spinner-color retired with
+       the canon — same zero-consumer verdict, mirrored here. */
     --state-card-hover-border:    var(--rule-strong, var(--rule, var(--neutral-200)));
     /* r130-W2-7: canonical unified the card press on this token — the
        0.995 hardcodes in components.css/polish.css v6/.metric/.track-
@@ -235,23 +227,15 @@
        canonical polish.css .bottom-nav-item:active). */
     --state-nav-pressed-scale:    0.93;
     --state-card-selected-ring:   inset 0 0 0 2px var(--accent);
-    --state-card-disabled-opacity: 0.5;
 
-    --state-input-focus-ring:     var(--state-focus-ring);
     --state-input-focus-border:   var(--accent);
     --state-input-error-border:   var(--danger);
     --state-input-disabled-opacity: 0.6;
+    --state-btn-disabled-opacity: 0.55;
     --state-input-loading-cursor: progress;
-
-    --state-tab-active-indicator:   2px solid var(--accent);
-    --state-tab-indicator-duration: var(--motion-duration-medium);
-    --state-tab-indicator-ease:     var(--motion-ease-emphasized);
-
-    --state-link-hover-underline:  1.5px solid currentColor;
 
     --state-loading-spinner-size:  1em;
     --state-loading-spinner-stroke: 2px;
-    --state-loading-spinner-color: currentColor;
 
     /* ─── Type roles — role-locked semantic typography ────────────── */
     --type-display-size-md:        var(--fs-display-md);   /* 28..40px */
@@ -289,7 +273,7 @@
 
     /* ─── Section rhythm ──────────────────────────────────────────── */
     --section-pad-y-narrow: clamp(var(--sp-9), 6vw, var(--sp-11));   /* 48..72px */
-    --section-pad-y-wide:   clamp(var(--sp-11), 8vw, var(--sp-13));  /* 72..128px */
+    /* (r148-d: --section-pad-y-wide deleted with the canon) */
 
     /* ─── Layout ──────────────────────────────────────────────────── */
     --sidebar-w: 256px;
@@ -297,17 +281,15 @@
     --topbar-h: 64px;
     --content-max-w: 1280px;
     --marketing-max-w: 1200px;
-    --st-container-max: 1280px;
-    --st-gutter: var(--sp-6);
-    --st-margin-desktop: var(--sp-9);
-    --st-margin-mobile: var(--sp-5);
-    --st-unit: 4px;
+    /* (r148-d: the --st-* layout set deleted with the canon — zero
+       consumers; layout speaks --content-max-w + --sp-*) */
 
-    /* ─── Composition ─────────────────────────────────────────────── */
+    /* ─── Composition ───────────────────────────────────────────── */
     --card-padding: var(--sp-6);
-    --section-gap:  var(--sp-12);
     --page-gutter:  var(--sp-9);
     --page-gutter-mobile: var(--sp-5);
+    /* (r148-d: --section-gap deleted with the canon; --sp-12 stays a
+       raw rung of the 4px ladder) */
 
     /* ─── Z-order — canonical ladder (theme-independent) ──────────── */
     --z-base: 0;
@@ -360,15 +342,13 @@
 
     /* ─── ROLE TOKENS ─────────────────────────────────────────────── */
     --bg:               var(--neutral-50);
-    --bg-soft:          var(--neutral-100);
     --surface:          var(--neutral-0);
     --surface-1:        var(--neutral-0);
     --surface-2:        var(--neutral-100);
     --surface-3:        var(--neutral-150);
-    --surface-elevated: var(--neutral-0);
+    /* (r148-d: --bg-soft/--surface-elevated retired with the canon) */
 
     --text:        var(--neutral-900);
-    --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  #6E6C65;   /* 5.04:1 on cream */
     --text-faint:  #74706A;   /* 4.72:1 on cream */
@@ -413,7 +393,8 @@
     /* ink on a --danger fill (both themes) */
     --danger-fg:   #191918;
 
-    --brand:         var(--accent);
+    /* (r148-d: --brand retired with the canon — zero consumers;
+       --brand-purple stays, the one live brand slot) */
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--c-yellow-ink);
     --gold-ink:      var(--c-yellow-deep);
@@ -425,7 +406,7 @@
     --shadow-card-h:  0 1px 2px rgba(15,15,15,0.04), 0 6px 18px rgba(15,15,15,0.06);
     --shadow-pop:     0 1px 2px rgba(15,15,15,0.04), 0 8px 24px rgba(15,15,15,0.08);
     --shadow-modal:   0 12px 36px rgba(15,15,15,0.10), 0 32px 80px rgba(15,15,15,0.14);
-    --shadow-mockup:  0 1px 2px rgba(15,15,15,0.04), 0 12px 32px rgba(15,15,15,0.08), 0 32px 80px rgba(15,15,15,0.06);
+    /* (r148-d: --shadow-mockup retired with the canon) */
     --shadow-card-premium:  0 2px 4px rgba(15,15,15,0.04), 0 8px 24px rgba(15,15,15,0.08), 0 2px 8px rgba(15,15,15,0.04);
     --shadow-card-premium-h: 0 4px 8px rgba(15,15,15,0.06), 0 12px 32px rgba(15,15,15,0.10), 0 4px 12px rgba(15,15,15,0.05);
     --shadow-card-glow:     0 0 0 1px var(--accent-soft), 0 2px 4px rgba(15,15,15,0.04), 0 8px 24px rgba(15,15,15,0.08);
@@ -454,7 +435,7 @@
     --sidebar-item-hover-bg:    var(--neutral-100);
     --sidebar-item-active-bg:   var(--neutral-150);
     --sidebar-item-active-text: var(--neutral-900);
-    --sidebar-active-bar:       var(--accent);
+    /* (r148-d: --sidebar-active-bar retired with the canon) */
 
     --topbar-bg:    rgba(251,250,249,0.86);
     --topbar-border: var(--neutral-200);
@@ -466,10 +447,7 @@
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);
-    --shadow-md: var(--shadow-pop);
-    --shadow-lg: var(--shadow-pop);
-    --shadow-xl: var(--shadow-modal);
-    --shadow-2xl: var(--shadow-modal);
+    /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
 
     --chart-text: #6E6C65;
     --chart-grid: rgba(25,25,24,0.08);
@@ -482,14 +460,10 @@
     --chart-7: #3F8B8B;   /* teal */
     --chart-8: #A65D8A;   /* mauve */
 
-    /* journey scene — copper threads on cream (paint-only, decorative) */
-    --journey-node:        var(--accent);        /* #B57438 copper */
-    --journey-node-major:  var(--accent-strong); /* #5C3416 deep copper */
-    --journey-line:        rgba(181, 116, 56, 0.30);
-    --journey-core:        var(--neutral-900);   /* = --ink (defined r130) → #191918 */
+    /* journey scene — r148-d: the node/line/core/ticker family retired
+       with the canon (zero consumers; ConstellationCanvas is gone);
+       the copper glow wash survives for the auth card. */
     --journey-glow:        rgba(181, 116, 56, 0.10);
-    --journey-ticker-ink:  var(--neutral-500);
-    --journey-ticker-sep:  var(--accent);
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -524,15 +498,13 @@
     --c-copper-bg:    #2C2312;   --c-copper-ink:   #E9B44C;   --c-copper-deep:  #F5D48A;
 
     --bg:               var(--neutral-50);
-    --bg-soft:          var(--neutral-100);
     --surface:          var(--neutral-0);
     --surface-1:        var(--neutral-0);
     --surface-2:        var(--neutral-100);
     --surface-3:        var(--neutral-150);
-    --surface-elevated: var(--neutral-100);
+    /* (r148-d: --bg-soft/--surface-elevated retired with the canon) */
 
     --text:        var(--neutral-900);
-    --text-strong: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  var(--neutral-500);
     --text-faint:  #7A83A0;
@@ -573,7 +545,8 @@
     --info:         var(--c-sky-ink);
     --info-soft:    var(--c-sky-bg);
 
-    --brand:         var(--accent);
+    /* (r148-d: --brand retired with the canon — zero consumers;
+       --brand-purple stays, the one live brand slot) */
     --brand-purple:  var(--c-lavender-ink);
     --gold:          var(--accent);
     --gold-ink:      var(--c-yellow-ink);
@@ -585,7 +558,7 @@
     --shadow-card-h:  0 1px 2px rgba(2,4,12,0.50), 0 8px 22px rgba(2,4,12,0.55), 0 0 0 1px rgba(142,151,184,0.08);
     --shadow-pop:     0 2px 4px rgba(2,4,12,0.55), 0 10px 28px rgba(2,4,12,0.62), 0 0 0 1px rgba(142,151,184,0.10);
     --shadow-modal:   0 12px 32px rgba(2,4,12,0.66), 0 32px 80px rgba(2,4,12,0.70), 0 0 0 1px rgba(142,151,184,0.12);
-    --shadow-mockup:  0 1px 2px rgba(2,4,12,0.50), 0 12px 32px rgba(2,4,12,0.55), 0 32px 80px rgba(2,4,12,0.60), 0 0 0 1px rgba(142,151,184,0.10);
+    /* (r148-d: --shadow-mockup retired with the canon) */
 
     /* elevation language — dark (fill-led, shadow muted, hairline top) */
     --elev-1: 0 1px 2px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04);
@@ -609,7 +582,7 @@
     --sidebar-item-hover-bg:    var(--neutral-100);
     --sidebar-item-active-bg:   rgb(233 180 76 / 0.10);  /* gold wash */
     --sidebar-item-active-text: var(--neutral-900);
-    --sidebar-active-bar:       var(--accent);
+    /* (r148-d: --sidebar-active-bar retired with the canon) */
 
     --topbar-bg:    rgba(7,11,22,0.86);
     --topbar-border: var(--neutral-200);
@@ -620,10 +593,7 @@
     --text-subtle: var(--text-muted);
     --accent-border: var(--accent);
     --shadow-sm: var(--shadow-card);
-    --shadow-md: var(--shadow-pop);
-    --shadow-lg: var(--shadow-pop);
-    --shadow-xl: var(--shadow-modal);
-    --shadow-2xl: var(--shadow-modal);
+    /* (r148-d: --shadow-md/lg/xl/2xl retired with the canon) */
 
     --chart-text: var(--neutral-500);
     --chart-grid: rgba(142,151,184,0.10);
@@ -636,14 +606,9 @@
     --chart-7: #5FAFAF;   /* teal (lifted for dark) */
     --chart-8: #C57DA9;   /* mauve (lifted for dark) */
 
-    /* journey scene — night variants ride the gold thread */
-    --journey-node:        var(--accent);        /* #E9B44C bright gold */
-    --journey-node-major:  var(--accent-strong);
-    --journey-line:        rgba(233,180,76,0.34);
-    --journey-core:        var(--neutral-900);   /* = --ink (defined r130) → sand #F2EFE6 */
+    /* journey scene — r148-d: night node/line/core/ticker retired with
+       the canon; the gold-thread glow survives for the auth card. */
     --journey-glow:        rgba(233,180,76,0.14);
-    --journey-ticker-ink:  var(--neutral-500);
-    --journey-ticker-sep:  var(--accent);
   }
 
   /* ─── Reduced motion — zero ALL raw --t-* rungs (not just the

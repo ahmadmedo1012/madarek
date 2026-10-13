@@ -433,13 +433,19 @@ router.get('/teacher/risks', requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), 
 //  Manual attendance roll-call
 // ════════════════════════════════════════════════════════════════
 const recordAttSchema = z.object({
-  date: z.coerce.date(),
+  // r152b (A5 P3): sanity-window the date (a 1970/3000 key forks the
+  // unique day forever) and cap the array — the 1MB body cap alone
+  // allowed ~10k rows per call (contrast gradesUpsertSchema .max(200)).
+  date: z.coerce.date().refine(
+    (d) => Math.abs(d.getTime() - Date.now()) < 366 * 24 * 3600 * 1000,
+    { message: 'date must be within a year of today' },
+  ),
   topic: z.string().trim().max(200).optional(),
   records: z.array(z.object({
     studentId: z.string().cuid(),
     status: z.nativeEnum(AttendanceStatus),
     notes: z.string().trim().max(300).optional(),
-  })).min(1),
+  })).min(1).max(500),
 }).strict();
 
 router.post(
@@ -516,7 +522,9 @@ router.post('/teacher/offerings/:id/curriculum/suggest', requireCapability('CURR
       where: { id: offeringId },
       include: {
         course: { include: { department: { include: { faculty: true } } } },
-        lectures: { orderBy: { ordinal: 'asc' } },
+        // r152b (A5 P2): deterministic tiebreakers — ordinals are not
+        // unique-constrained and legacy swaps could leave duplicates.
+        lectures: { orderBy: [{ ordinal: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }] },
       },
     });
     if (!offering) throw AppError.notFound('المقرر المطلوب غير موجود');
@@ -593,6 +601,28 @@ router.post('/teacher/offerings/:id/curriculum/suggest', requireCapability('CURR
 //  Smart professor onboarding suggestions
 // ════════════════════════════════════════════════════════════════
 
+/* r152b (A5 P3): these three teacher-governance routes (suggestions,
+ * verify, position) were capability-gated but skipped the faculty-scope
+ * model every other user-targeting admin route enforces ("what you
+ * cannot govern, you do not list" — users.routes.ts:38). A faculty-
+ * scoped ADMIN could read a teacher's email/certifications and verify
+ * or appoint out-of-faculty teachers. University-wide actors pass
+ * through untouched (scope === null). */
+async function assertTeacherWithinGovernanceScope(teacherId: string, actorId: string): Promise<void> {
+  const scopeFacultyId = await getGovernanceScope(actorId);
+  if (scopeFacultyId === null) return;
+  const target = await prisma.teacherProfile.findUnique({
+    where: { userId: teacherId },
+    select: { department: { select: { facultyId: true } } },
+  });
+  if (!target) throw AppError.notFound('الملف الأكاديمي للأستاذ غير موجود');
+  assertWithinScope(scopeFacultyId, {
+    role: Role.TEACHER,
+    studentFacultyId: null,
+    teacherFacultyId: target.department.facultyId,
+  });
+}
+
 /** GET /admin/teachers/:id/suggestions — courses this teacher should teach */
 router.get(
   '/admin/teachers/:id/suggestions',
@@ -600,6 +630,7 @@ router.get(
   async (req, res, next) => {
     try {
       const teacherId = req.params.id!;
+      await assertTeacherWithinGovernanceScope(teacherId, req.user!.id);
       const profile = await prisma.teacherProfile.findUnique({
         where: { userId: teacherId },
         include: {
@@ -702,6 +733,8 @@ router.post(
   async (req, res, next) => {
     try {
       const targetId = req.params.id!;
+      // r152b (A5 P3): faculty-scope guard (see helper above).
+      await assertTeacherWithinGovernanceScope(targetId, req.user!.id);
       // Wrap update + audit in a transaction so governance never
       // loses the audit trail if the auditLog.create fails (or vice
       // versa — if audit fails, the verify is rolled back).
@@ -779,6 +812,9 @@ router.post(
     try {
       const body = req.body as z.infer<typeof assignPositionSchema>;
       const targetId = req.params.id!;
+
+      // r152b (A5 P3): faculty-scope guard (see helper above).
+      await assertTeacherWithinGovernanceScope(targetId, req.user!.id);
 
       const existing = await prisma.teacherProfile.findUnique({
         where: { userId: targetId },

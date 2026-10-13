@@ -132,7 +132,25 @@ describe('single-flight refresh', () => {
     expect(useAuthStore.getState().accessToken).toBe('tok');
   });
 
-  it('does not refresh when the 401 code is not TOKEN_EXPIRED', async () => {
+  it('attempts ONE refresh on any non-auth 401 (r152a A4 P3): a structurally-invalid token (UNAUTHENTICATED) used to strand the session forever', async () => {
+    let refreshCalls = 0;
+    installAdapter((config) => {
+      if ((config.url ?? '').includes('/auth/refresh')) {
+        refreshCalls += 1;
+      }
+      rejectWith(config, 401, { error: { code: 'UNAUTHENTICATED' } });
+    });
+
+    useAuthStore.getState().setSession(USER_A, 'tok');
+
+    // Refresh is attempted once (the __retried guard), it also 401s,
+    // the session clears and the original request rejects — the user
+    // is never left in a zombie-error state with a valid refresh cookie.
+    await expect(unwrap(api.get('/anything'))).rejects.toMatchObject({ response: { status: 401 } });
+    expect(refreshCalls).toBe(1);
+  });
+
+  it('never refreshes for auth-endpoint 401s (a wrong password is an answer, not a session failure)', async () => {
     let refreshCalls = 0;
     installAdapter((config) => {
       if ((config.url ?? '').includes('/auth/refresh')) {
@@ -143,8 +161,9 @@ describe('single-flight refresh', () => {
 
     useAuthStore.getState().setSession(USER_A, 'tok');
 
-    await expect(unwrap(api.get('/anything'))).rejects.toMatchObject({ response: { status: 401 } });
+    await expect(unwrap(api.post('/auth/login', {}))).rejects.toMatchObject({ response: { status: 401 } });
     expect(refreshCalls).toBe(0);
+    expect(useAuthStore.getState().accessToken).toBe('tok');
   });
 
   it('retries a request at most once (no refresh loop)', async () => {

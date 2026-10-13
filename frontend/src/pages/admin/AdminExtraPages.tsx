@@ -16,7 +16,7 @@ import { useFaculties } from '../../hooks/useResources';
 // .settings-*, .top-courses-*) since "Sub-project D" — see its ownership
 // banner. It lands in the chunk shared with CollegePages / CompetitionsPages /
 // LandingPage (the other consumers).
-import '../../styles/colleges.css';
+import '../../styles/admin.css'; // r150e: admin-extras surfaces own their sheet now
 
 /* ───────────────────────── /admin/students ─────────────────────────
  *
@@ -154,7 +154,7 @@ export function AdminStudentsPage() {
         {studentsQ.data && (
           <>
             <div className="admin-students-table-wrap">
-              <table className="admin-students-table tbl-stack">
+              <table className="table tbl-stack">
                 <thead>
                   <tr>
                     <th scope="col">الطالب</th>

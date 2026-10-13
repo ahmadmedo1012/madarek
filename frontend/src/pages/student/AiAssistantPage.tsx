@@ -164,8 +164,12 @@ export default function AiAssistantPage() {
       <div className="grid-2-1">
         <Card title="محادثتك مع المساعد" icon={Bot}>
           {/* role=log + aria-live: screen readers hear every reply and
-              error as the conversation grows (audit 0-d P1). */}
-          <div className="chat-area" ref={scroller} role="log" aria-live="polite" aria-label="سجلّ المحادثة مع المساعد">
+              error as the conversation grows (audit 0-d P1).
+              tabIndex (r152a A6 P2-2): the scroller has no focusable
+              children and the input lives outside it — without a tab
+              stop, keyboard-only users could never arrow-scroll the
+              transcript. The universal :focus-visible ring applies. */}
+          <div className="chat-area" ref={scroller} role="log" tabIndex={0} aria-live="polite" aria-label="سجلّ المحادثة مع المساعد">
             {messages.map((m, i) => (
               <div key={i} className={`chat-msg ${m.role}`}>
                 {m.role === 'bot' ? (

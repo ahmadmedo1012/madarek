@@ -123,7 +123,9 @@ router.get('/search/global', async (req, res, next) => {
             },
           },
         },
-        orderBy: { ordinal: 'asc' },
+        // r152b (A5 P2): deterministic tiebreakers — ordinals are not
+        // unique-constrained and legacy swaps could leave duplicates.
+        orderBy: [{ ordinal: 'asc' }, { createdAt: 'asc' }, { id: 'asc' }],
         take: CANDIDATE_TAKE,
       }),
 

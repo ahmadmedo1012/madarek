@@ -154,6 +154,19 @@ export function formatMmSs(sec: number): string {
 }
 
 /**
+ * Percentage display — r148 (VLM-C VC-1/VC-2): a raw API float
+ * (3 * 1.4 = 4.199999999999999) reached the papers table verbatim.
+ * Percentages are user-facing data on many surfaces; every render
+ * rounds to one decimal and strips float noise. Bilingual-safe: the
+ * digits stay latn (platform numeric convention) with the Latin %
+ * added by the caller so chips keep their own glyph.
+ */
+export function formatPct(value: number | null | undefined): string | null {
+  if (value == null || Number.isNaN(value)) return null;
+  return String(Math.round(value * 10) / 10);
+}
+
+/**
  * Arabic-script detection — the 15-j P0-1 guard. An API/JS message is
  * user-presentable in the RTL UI only when it carries Arabic script
  * anywhere in the string; Latin-only messages are language leaks and

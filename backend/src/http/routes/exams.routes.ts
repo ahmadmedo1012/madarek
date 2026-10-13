@@ -424,6 +424,28 @@ router.post('/exams/templates', requireCapability('EXAMS_AUTHOR'), validate(crea
     if (body.offeringId) {
       await assertOwnsOffering(body.offeringId, req.user!.id, req.user!.role);
     }
+    /* r152b (A5 P3): facultyId was written as-is — a TEACHER author
+     * could target ANY faculty and, once moderated+published, surface
+     * the exam to every student of that faculty. A non-moderator may
+     * only target their home faculty (teacherProfile → department →
+     * facultyId); moderators keep the cross-faculty reach their job
+     * needs. */
+    if (body.facultyId) {
+      const [homeFaculty, caps] = await Promise.all([
+        prisma.teacherProfile.findUnique({
+          where: { userId: req.user!.id },
+          select: { department: { select: { facultyId: true } } },
+        }),
+        getEffectiveCapabilities(req.user!.id, req.user!.role),
+      ]);
+      if (
+        homeFaculty &&
+        homeFaculty.department.facultyId !== body.facultyId &&
+        !caps.has('EXAMS_MODERATE')
+      ) {
+        throw AppError.forbidden('لا يمكن استهداف كلّيّة غير الكلّيّة التي تنتمي إليها');
+      }
+    }
     // Template authoring is gated on question-level moderation too: a
     // template built from unapproved (or unknown) questions would bypass
     // the question moderation queue once the template itself is

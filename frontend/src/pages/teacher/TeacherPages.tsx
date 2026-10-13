@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Card, MetricCard, Badge, ProgressBar, UserAvatar, SectionTitle, FormField } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, KpiSkeleton, CardSkeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import {
@@ -94,8 +94,7 @@ function OfferingPickerSelect({
   label: string;
 }) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)', minInlineSize: 0 }}>
-      <span className="form-label" style={{ margin: 0 }}>{label}</span>
+    <FormField label={label}>
       <select
         className="input course-select"
         value={effectiveOfferingId}
@@ -106,13 +105,15 @@ function OfferingPickerSelect({
           <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
         ))}
       </select>
-    </label>
+    </FormField>
   );
 }
 
 export function TeacherSchedulePage() {
   const offsQ = useTeacherOfferings();
-  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><LoadingState /></div>;
+  /* r148 (AUDIT-2 L8): سبينر صفحي مكان هيكل مطابق الشكل — القائمة
+     النهائية جدول حصص أسبوعي؛ TableSkeleton يحافظ على الإيقاع. */
+  if (offsQ.isPending) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><Card><TableSkeleton rows={5} cols={4} /></Card></div>;
   if (offsQ.isError) return <div className="page"><PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." /><ErrorState error={offsQ.error} onRetry={() => offsQ.refetch()} /></div>;
 
   // Group all schedule slots by dayOfWeek across the teacher's offerings.
@@ -308,51 +309,43 @@ export function AttendancePage() {
 
       <Card title="الجلسة" icon={Calendar}>
         <div className="form-row-3">
-          <label>
-            <span className="form-label">المقرّر</span>
+          <FormField label="المقرّر">
             <select className="input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
               {offerings.length === 0 && <option value="">— لا توجد مقرّرات —</option>}
               {offerings.map((o) => (
                 <option key={o.id} value={o.id}>{o.course.name} ({o.course.code})</option>
               ))}
             </select>
-          </label>
+          </FormField>
           {/* The hint sits OUTSIDE the label — a wrapping label would
               fold the hint into the input's accessible name (the
               15-h test suite pins the name to «تاريخ الجلسة»). */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-            <label htmlFor="att-date"><span className="form-label">تاريخ الجلسة</span></label>
+          <FormField
+            label="تاريخ الجلسة"
+            id="att-date"
+            hint={date
+              /* Local-noon anchor: a bare YYYY-MM-DD parses as UTC
+               * midnight and would echo the previous day west of
+               * Greenwich; the teacher picked a calendar DAY. */
+              ? <>المحدَّد: {formatDateWithYearAr(`${date}T12:00:00`)}</>
+              : 'اختر التاريخ من تقويم الحقل — ترتيب الصيغة داخل الحقل يتبع إعدادات المتصفح.'}
+          >
             <input
-              id="att-date"
               type="date"
               className="input"
               dir="ltr"
               value={date}
               aria-invalid={dateError ? true : undefined}
-              aria-describedby={dateError ? 'att-date-error' : 'att-date-hint'}
+              aria-describedby={dateError ? 'att-date-error' : undefined}
               onChange={(e) => {
                 setDate(e.target.value);
                 setDateError(null);
               }}
             />
-            {/* A6 P2 (22-a): Chromium paints native date fields in the
-                browser's locale (en-US → mm/dd/yyyy) inside this Arabic
-                form. The hint names the calendar as the safe path and the
-                Arabic echo below verifies what was actually picked —
-                the value renders localized whatever the field shows. */}
-            <span id="att-date-hint" className="form-field-hint">
-              {date
-                /* Local-noon anchor: a bare YYYY-MM-DD parses as UTC
-                 * midnight and would echo the previous day west of
-                 * Greenwich; the teacher picked a calendar DAY. */
-                ? <>المحدَّد: {formatDateWithYearAr(`${date}T12:00:00`)}</>
-                : 'اختر التاريخ من تقويم الحقل — ترتيب الصيغة داخل الحقل يتبع إعدادات المتصفح.'}
-            </span>
-          </div>
-          <label>
-            <span className="form-label">الموضوع (اختياريّ)</span>
+          </FormField>
+          <FormField label="الموضوع (اختياريّ)">
             <input type="text" className="input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="مثال: مقدّمة في UML" />
-          </label>
+          </FormField>
         </div>
         {dateError && (
           <div id="att-date-error" className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-3)' }}>
@@ -1194,7 +1187,7 @@ function AssignmentFormModal({ onClose }: { onClose: () => void }) {
           </FormField>
 
           <div className="flex gap-3" style={{ gap: 'var(--sp-3)' }}>
-            <FormField label="الوزن (٪ من الدرجات)">
+            <FormField label="الوزن (% من الدرجات)">
               <input
                 type="number" className="input input-narrow" min={0} max={100} step={1}
                 value={weight} onChange={(e) => setWeight(e.target.value)} disabled={create.isPending}

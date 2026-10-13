@@ -89,13 +89,13 @@
     font-size: 14px;
   }
   [data-theme="dark"] .sidebar-brand-mark { background: var(--accent); color: var(--accent-fg); }
-  .sidebar-brand-text { display: flex; flex-direction: column; gap: 1px; min-inline-size: 0; flex: 1; }
+  .sidebar-brand-text { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
   .sidebar-brand-name {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
     font-size: var(--fs-sm);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): «مدارك» عربية — لا تتبّع سالب */
     line-height: 1.2;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
@@ -107,7 +107,7 @@
   .nav-group {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px; /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية */
     padding-block: var(--sp-2);
   }
   .nav-section-label {
@@ -151,7 +151,7 @@
      around the traveller's current station (paint-only, calm tier). */
   [data-theme="dark"] .nav-item.on,
   [data-theme="dark"] .nav-item.active {
-    box-shadow: 0 0 18px -4px rgb(233 180 76 / 0.16), inset 0 0 0 1px rgb(233 180 76 / 0.10);
+    box-shadow: 0 0 18px -4px color-mix(in srgb, var(--accent) 16%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent);
   }
   .nav-item.on::before, .nav-item.active::before {
     content: '';
@@ -177,7 +177,7 @@
     /* wave 2-b: was the raw 10px sub-token floor — lifted to --fs-xxs
        (11px) per the craft-floor font sweep. */
     font-size: var(--fs-xxs);
-    padding: 2px 7px;
+    padding: 2px var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 2/7) */
     border-radius: var(--r-full);
     background: var(--surface-3);
     color: var(--text-muted);
@@ -210,7 +210,7 @@
     transition: background var(--t-fast) var(--ease);
   }
   .sidebar-user:hover { background: var(--sidebar-item-hover-bg); }
-  .sidebar-user-info { display: flex; flex-direction: column; gap: 1px; flex: 1; min-inline-size: 0; }
+  .sidebar-user-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px */
   .sidebar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -227,14 +227,13 @@
 
   .sidebar-backdrop {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.45);
+    background: var(--overlay-veil-deep);
     backdrop-filter: blur(var(--scrim-blur));
     opacity: 0; pointer-events: none;
     transition: opacity var(--t-base) var(--ease);
     /* Sits just under the mobile drawer (a --z-sheet surface). */
     z-index: calc(var(--z-sheet) - 1);
   }
-  [data-theme="dark"] .sidebar-backdrop { background: rgba(0,0,0,0.65); }
 
   /* ═══ مدارك night shell (v3 wave B) — the sky you carry with you ═══
      The sidebar stops being a flat dark panel and becomes a slice of
@@ -246,8 +245,8 @@
      motion (the shell is Tier-2 calm — entrances belong to pages). */
   [data-theme="dark"] .has-shell > .sidebar {
     background:
-      radial-gradient(340px 200px at 82% -60px, rgb(233 180 76 / 0.06), transparent 72%),
-      radial-gradient(280px 220px at -20% 108%, rgb(111 168 255 / 0.05), transparent 70%),
+      radial-gradient(340px 200px at 82% -60px, color-mix(in srgb, var(--accent) 6%, transparent), transparent 72%),
+      radial-gradient(280px 220px at -20% 108%, color-mix(in srgb, var(--shell-aurora-azure) 5%, transparent), transparent 70%),
       linear-gradient(180deg, var(--neutral-100) 0%, var(--neutral-50) 34%, var(--neutral-50) 100%);
   }
   /* PP-fix (premium-polish P0-1): the night shell's position declarations
@@ -272,14 +271,14 @@
     /* Constellation points — physical coordinates, direction-agnostic
        (a sky has no reading order). Sizes 1–1.5px, alpha 0.08–0.14. */
     background-image:
-      radial-gradient(1.8px 1.8px at 21% 12%, rgb(242 239 230 / 0.22), transparent 100%),
-      radial-gradient(1px 1px at 68% 7%,  rgb(142 151 184 / 0.16), transparent 100%),
-      radial-gradient(1.5px 1.5px at 87% 21%, rgb(242 239 230 / 0.15), transparent 100%),
-      radial-gradient(1px 1px at 42% 30%, rgb(142 151 184 / 0.12), transparent 100%),
-      radial-gradient(1.8px 1.8px at 9% 44%,  rgb(233 180 76 / 0.18), transparent 100%),
-      radial-gradient(1px 1px at 76% 58%, rgb(142 151 184 / 0.11), transparent 100%),
-      radial-gradient(1.5px 1.5px at 28% 74%, rgb(242 239 230 / 0.14), transparent 100%),
-      radial-gradient(1.2px 1.2px at 58% 88%,  rgb(233 180 76 / 0.12), transparent 100%);
+      radial-gradient(1.8px 1.8px at 21% 12%, color-mix(in srgb, var(--neutral-900) 22%, transparent), transparent 100%),
+      radial-gradient(1px 1px at 68% 7%,  color-mix(in srgb, var(--neutral-500) 16%, transparent), transparent 100%),
+      radial-gradient(1.5px 1.5px at 87% 21%, color-mix(in srgb, var(--neutral-900) 15%, transparent), transparent 100%),
+      radial-gradient(1px 1px at 42% 30%, color-mix(in srgb, var(--neutral-500) 12%, transparent), transparent 100%),
+      radial-gradient(1.8px 1.8px at 9% 44%,  color-mix(in srgb, var(--accent) 18%, transparent), transparent 100%),
+      radial-gradient(1px 1px at 76% 58%, color-mix(in srgb, var(--neutral-500) 11%, transparent), transparent 100%),
+      radial-gradient(1.5px 1.5px at 28% 74%, color-mix(in srgb, var(--neutral-900) 14%, transparent), transparent 100%),
+      radial-gradient(1.2px 1.2px at 58% 88%,  color-mix(in srgb, var(--accent) 12%, transparent), transparent 100%);
     background-repeat: no-repeat;
   }
   /* The mobile drawer rides the same sky (it paints its own bg in the
@@ -287,7 +286,7 @@
   @media (max-width: 920px) {
     [data-theme="dark"] .sidebar {
       background:
-        radial-gradient(340px 200px at 82% -60px, rgb(233 180 76 / 0.06), transparent 72%),
+        radial-gradient(340px 200px at 82% -60px, color-mix(in srgb, var(--accent) 6%, transparent), transparent 72%),
         linear-gradient(180deg, var(--neutral-100) 0%, var(--neutral-50) 34%, var(--neutral-50) 100%);
     }
   }
@@ -371,8 +370,18 @@
     border-radius: var(--r-sm);
     align-items: center; justify-content: center;
     color: var(--text-secondary);
+    /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال (snap) — زر
+       الهامبرغر الوحيد في الترويسة. */
+    transition:
+      background var(--t-fast) var(--ease),
+      color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .topbar-mobile-toggle:hover { background: var(--surface-3); color: var(--text); }
+  .topbar-mobile-toggle:active {
+    transform: scale(0.97);
+    transition-duration: var(--motion-duration-micro);
+  }
   @media (max-width: 920px) {
     .topbar-mobile-toggle { display: inline-flex; }
     /* 4-A2 P2-6: 44px touch floor — min-* grows the hit area over the
@@ -401,23 +410,19 @@
     font-size: var(--fs-h3);
     font-weight: var(--fw-bold);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين صفحات عربية — لا تتبّع سالب */
     line-height: 1.2;
     display: flex; align-items: baseline; gap: var(--sp-3);
     min-inline-size: 0; overflow: hidden;
     /* A9 P1-2: pin height so the skeleton→real swap doesn't shift layout */
     min-block-size: 48px;
   }
+  /* (r151c dead-twin sweep, R5-A1b declaration-level proof): this
+     rule used to carry 9 declarations — polish.css's overrides-layer
+     .topbar-scope re-specifies every one except font-family, so only
+     the family survives here. The ≤920px display:none below is live.) */
   .topbar-scope {
     font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    padding: 3px 9px;
-    border-radius: var(--r-full);
-    font-weight: var(--fw-medium);
-    white-space: nowrap;
   }
   @media (max-width: 920px) {
     .topbar { grid-template-columns: auto 1fr auto; }
@@ -569,53 +574,290 @@
     .topbar-search-clear { inline-size: 44px; block-size: 44px; }
   }
 
+  /* (r151c dead-twin sweep: the search family below is the layout-layer
+     base of a system polish v21 fully re-specified in @layer overrides.
+     Declaration-by-declaration comparison kept ONLY the survivors —
+     everything polish also sets is dead here by layer order. The fully
+     shadowed rules (.search-section, .search-row:hover, -body, -title,
+     -sub, -arrow, -empty-title, -empty-hint, -empty-tips, -tip-pill,
+     -footer) were deleted outright. When v21 migrates home (r151-m3)
+     it becomes a pure move.) */
   .search-dropdown {
     position: absolute;
     inset-block-start: calc(100% + 6px);
     inset-inline-start: 0; inset-inline-end: 0;
     background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-pop);
-    max-block-size: 480px; overflow-y: auto;
+    max-block-size: 480px;
     z-index: var(--z-popover);
     padding: var(--sp-2);
   }
-  .search-section { padding: var(--sp-2) 0; }
   .search-section-label {
-    padding: 0 var(--sp-3);
-    font-size: var(--fs-xxs);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--text-muted);
-    font-weight: var(--fw-semibold);
     margin-block-end: 4px;
   }
   .search-row {
-    display: flex; align-items: center; gap: var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
     border-radius: var(--r-sm);
-    cursor: pointer;
   }
-  .search-row:hover, .search-row[aria-selected="true"] { background: var(--surface-2); }
   .search-row-icon {
-    inline-size: 28px; block-size: 28px;
-    border-radius: var(--r-sm);
     background: var(--c-grey-bg);
     color: var(--c-grey-deep);
-    display: inline-flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
   }
-  .search-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; }
-  .search-row-title { font-size: var(--fs-sm); color: var(--text); font-weight: var(--fw-semibold); }
-  .search-row-sub { font-size: var(--fs-xs); color: var(--text-muted); }
-  .search-row-arrow { color: var(--text-muted); flex-shrink: 0; }
-  .search-empty { padding: var(--sp-7) var(--sp-5); text-align: center; display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
-  .search-empty-title { font-size: var(--fs-body); color: var(--text); font-weight: var(--fw-bold); }
-  .search-empty-hint { font-size: var(--fs-sm); color: var(--text-muted); }
-  .search-empty-tips { display: flex; flex-wrap: wrap; gap: var(--sp-2); justify-content: center; margin-block-start: var(--sp-3); }
-  .search-tip-pill { padding: 4px 10px; border: 1px solid var(--rule); border-radius: var(--r-full); font-size: var(--fs-xxs); color: var(--text-muted); }
-  .search-loading, .search-shimmer { display: flex; align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
-  .search-footer { padding: var(--sp-3); border-block-start: 1px solid var(--rule); font-size: var(--fs-xxs); color: var(--text-muted); display: flex; gap: var(--sp-3); justify-content: center; }
+  .search-empty { display: flex; flex-direction: column; gap: var(--sp-2); align-items: center; }
+  .search-loading, .search-shimmer { align-items: center; justify-content: center; padding: var(--sp-5); color: var(--text-muted); font-size: var(--fs-sm); }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH DROPDOWN — the v21 presentation, home since r152d      ║
+     ╚═══════════════════════════════════════════════════════════════╝
+     (r151c kept only the property-disjoint base above; r152d moved
+     the full presentation grammar here from polish v21 — a pure move,
+     internal order preserved. The RM belt + craft-floor sweep still
+     live in polish and keep winning by layer order, as designed.) */
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH DROPDOWN — richer presentation                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-dropdown {
+    box-shadow: var(--elev-4);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    /* Override any generic popover animation; this one's bespoke */
+    animation: madarek-search-pop var(--motion-duration-medium) var(--ease-spring-soft) both;
+    transform-origin: top center;
+  }
+  @keyframes madarek-search-pop {
+    from { opacity: 0; transform: translateY(-4px) scale(0.99); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .search-section {
+    padding-block: var(--sp-2);
+  }
+  .search-section + .search-section {
+    border-block-start: 1px solid var(--rule);
+  }
+  .search-section-label {
+    padding: var(--sp-2) var(--sp-4);
+    font-size: var(--fs-xxs);
+    /* 21-c ruling #2: the section labels are Arabic («مقررات»، «محاضرات»…)
+       — uppercase is a Latin-only concept here and 0.12em tracking
+       broke the cursive joins (same call as .landing-campus-eyebrow). */
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+    background: linear-gradient(90deg, var(--surface-2), transparent);
+  }
+  [dir="rtl"] .search-section-label {
+    background: linear-gradient(-90deg, var(--surface-2), transparent);
+  }
+
+  .search-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    inline-size: 100%;
+    padding: var(--sp-3) var(--sp-4);
+    border: none;
+    background: transparent;
+    color: var(--text);
+    text-align: start;
+    cursor: pointer;
+    /* (5-C1, 4-A11 P2-10 family: the hover affordance used to grow
+       padding-inline-start 16→20px — text reflow on every hover of
+       every search/command row, and a layout-property transition the
+       line-based gate cannot see in multi-line form. The row now
+       stays put; the icon nudges toward the content exactly like
+       .notif-item above (compositor-only, direction-aware).) */
+    /* r149 (R3-A3 §4): transform ينضم — الصف يضغط الآن (0.985 عبر سجل
+     v13) بدل القفز. */
+    transition:
+      background var(--motion-duration-short) var(--ease),
+      transform var(--motion-duration-short) var(--ease);
+    position: relative;
+  }
+  .search-row::before {
+    content: '';
+    position: absolute;
+    inset-block: 8px;
+    inset-inline-start: 0;
+    inline-size: 3px;
+    background: var(--accent);
+    border-radius: 0 var(--r-xs) var(--r-xs) 0;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform var(--motion-duration-short) var(--ease-spring-soft);
+  }
+  [dir="rtl"] .search-row::before {
+    border-radius: var(--r-xs) 0 0 var(--r-xs);
+  }
+  .search-row:hover,
+  .search-row.active,
+  .search-row[aria-selected="true"] {
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+  }
+  .search-row:hover .search-row-icon,
+  .search-row.active .search-row-icon,
+  .search-row[aria-selected="true"] .search-row-icon {
+    transform: translateX(calc(2px * var(--motion-direction)));
+  }
+  .search-row:hover::before,
+  .search-row.active::before,
+  .search-row[aria-selected="true"]::before {
+    transform: scaleY(1);
+  }
+
+  .search-row-icon {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    transition: transform var(--motion-duration-short) var(--ease);
+  }
+  .search-row-body {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .search-row-title {
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    font-size: var(--fs-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search-row-sub {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .search-row-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: transform var(--motion-duration-short) var(--ease), opacity var(--motion-duration-short) var(--ease);
+  }
+  .search-row:hover .search-row-arrow,
+  .search-row.active .search-row-arrow {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+  [dir="rtl"] .search-row:hover .search-row-arrow,
+  [dir="rtl"] .search-row.active .search-row-arrow {
+    transform: translateX(2px) rotate(180deg);
+  }
+  /* If arrow has no rtl flip applied, we still want its base transform
+     to point in the start direction in rtl */
+  [dir="rtl"] .search-row-arrow {
+    transform: rotate(180deg);
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH LOADING — friendlier shimmer rows                      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-loading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    padding: var(--sp-4);
+  }
+  .search-shimmer {
+    block-size: 36px;
+    border-radius: var(--r-md);
+    background: linear-gradient(
+      90deg,
+      var(--surface-3) 0%,
+      color-mix(in srgb, var(--surface-2) 80%, white 8%) 50%,
+      var(--surface-3) 100%
+    );
+    background-size: 200% 100%;
+    /* r150b: rides the canonical skeleton-shimmer pair (was its own
+       200%→-100% math — a fourth grammar). RTL-aware like every other
+       skeleton now; the stagger delays stay. */
+    animation: skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
+    display: block;
+  }
+  [dir="ltr"] .search-shimmer { animation-name: skeleton-shimmer-ltr; }
+  .search-shimmer:nth-child(1) { inline-size: 100%; }
+  .search-shimmer:nth-child(2) { inline-size: 80%; animation-delay: 120ms; }
+  .search-shimmer:nth-child(3) { inline-size: 60%; animation-delay: 240ms; }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH EMPTY — bigger, more confident                         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-empty {
+    padding: var(--sp-6) var(--sp-4);
+    text-align: center;
+  }
+  .search-empty-title {
+    font-weight: var(--fw-bold);
+    color: var(--text);
+    font-size: var(--fs-body);
+    margin-block-end: var(--sp-3);
+  }
+  .search-empty-tips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-block: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .search-tip-pill {
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    border-radius: var(--r-full);
+    font-size: var(--fs-xs);
+    cursor: pointer;
+    transition:
+      background var(--motion-duration-short) var(--ease),
+      color var(--motion-duration-short) var(--ease),
+      border-color var(--motion-duration-short) var(--ease),
+      transform var(--motion-duration-short) var(--ease-spring-soft);
+  }
+  .search-tip-pill:hover {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    border-color: var(--accent);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+  .search-empty-hint {
+    margin-block-start: var(--sp-3);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SEARCH FOOTER — keyboard hints                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .search-footer {
+    padding: var(--sp-3) var(--sp-4);
+    border-block-start: 1px solid var(--rule);
+    background: var(--surface-2);
+    font-size: var(--fs-xxs);
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-3);
+    justify-content: center;
+  }
+
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BOTTOM NAV (mobile only)                                      ║
@@ -719,7 +961,7 @@
     font-size: var(--fs-md);
     padding: var(--sp-2) 0;
   }
-  .cmd-input::placeholder { color: var(--text-muted); }
+  .cmd-input::placeholder { color: var(--text-faint); } /* r149 (R3-A5 #4): وحّد مع كل placeholder في المنصة (كان --text-muted درجة أغمق) */
   .cmd-input:focus { outline: none; }
   .cmd-input-esc { color: var(--text-muted); flex-shrink: 0; display: inline-flex; }
   .cmd-list {
@@ -730,7 +972,6 @@
     scrollbar-width: thin;
     scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent;
   }
-  .cmd-row .search-row-title { font-size: var(--fs-sm); }
   .cmd-row-icon {
     inline-size: 28px;
     block-size: 28px;

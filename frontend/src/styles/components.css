@@ -10,31 +10,33 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--sp-5); }
-  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-6); }
   .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: var(--sp-6); }
   .grid-auto-200 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: var(--sp-5); }
   .grid-auto-260 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: var(--sp-5); }
 
-  @media (max-width: 1100px) {
+  /* r152i (A3): .grid-4's responsive flip now reads its CONTAINER,
+     not the viewport — the 1px cliff at 1100/1101px (4 cramped 172px
+     tiles vs 2×445px) and the sidebar-state-dependent tile width both
+     die with the container query. One band replaces the 1100 media
+     line, the 640 stack line AND the 23-b ≤480 patch (2×2 at any
+     narrow container — phone, modal, side column). */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); container: grid4 / inline-size; }
+  @container grid4 (max-width: 860px) {
     .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
+
+  @media (max-width: 1100px) {
     .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
-    .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--sp-3); }
+    .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--sp-3); }
     .grid-auto-200, .grid-auto-260 { grid-template-columns: 1fr; gap: var(--sp-3); }
   }
-  /* 23-b (A8 P3-9): every live .grid-4 consumer is a compact KPI strip
-     (MetricCard / KpiStripSkeleton — 30+ mounts, census 23-b), so four
-     stacked full-width cards pushed all page content below the small-
-     phone fold (390px probe: 4×340px cards). 2×2 at ≤480px keeps the
-     strip a strip; grid-3/grid-2 keep their 1-column stack, and a row
-     that genuinely needs full-width cards opts into .grid-2 + stacked
-     children or its own section rule (dash-progress-card etc.). */
-  @media (max-width: 480px) {
-    .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
+  /* 23-b (A8 P3-9) — retired into the container band above: every live
+     .grid-4 consumer is a compact KPI strip, and the 2×2 floor now
+     holds in ANY narrow container (not just ≤480px viewports). */
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  CARD — Notion-soft. Subtle border, soft shadow on hover.      ║
@@ -112,7 +114,9 @@
     font-size: var(--type-headline-size-sm);
     font-weight: var(--fw-bold);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    /* r149 (R3-A4 F2): تتبع سالب عند المنبع لعنوان عربي — كان يعتمد
+       كليًا على حارس polish 21-c؛ الآن صفر عند المنبع. */
+    letter-spacing: var(--ls-normal);
     line-height: 1.3;
     display: inline-flex;
     align-items: center;
@@ -170,7 +174,11 @@
        cascade). Keeps --shadow-card as the legacy fallback. */
     box-shadow: var(--elev-1, var(--shadow-card));
   }
-  .metric:hover {
+  /* r148 (AUDIT-2 H1): الرفع/touch كان يضيء كل بلاطات KPI كأنها قابلة
+     للنقر بينما 162 من 170 موقع استدعاء غير تفاعلية — إشارة كاذبة.
+     النطاق الآن على الصنف الدلالي metric-link الذي يرسمه MetricCard
+     عند وجود to/onClick فقط. */
+  .metric.metric-link:hover {
     border-color: var(--border-strong);
     box-shadow: var(--shadow-card-premium-h);
     transform: translateY(-2px);
@@ -235,13 +243,19 @@
     border: 1px solid var(--rule); border-radius: var(--r-lg);
     /* Premium depth — multi-layer shadow for world-class elevation */
     box-shadow: var(--shadow-card-premium);
+    /* r152i (A3): the strip reads ITSELF, not the viewport — the same
+       1152px viewport measured 180px tiles with the rail collapsed and
+       228px expanded (a 48px delta no media query can see). */
+    container: kpis / inline-size;
   }
   .compact-kpi { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-2); }
   .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
   .compact-kpi-value { font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
   .compact-kpi-trend { font-size: var(--fs-xxs); color: var(--text-muted); }
 
-  @media (max-width: 640px)  {
+  /* r152i: was @media (max-width: 640px) — the restyle now follows the
+     strip's own width (phones AND narrow side-columns alike). */
+  @container kpis (max-width: 480px)  {
     .compact-kpis {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--sp-2);
@@ -309,10 +323,23 @@
     .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); }
   }
   .btn:active { transform: scale(var(--press-scale)); }
-  /* (Premium-polish: the components-layer sink retired — the pages layer
-     owns the press register via --press-scale; kept here as an aliased
-     fallback so a missing polish layer still presses consistently.) */
-  .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
+  /* r148 (AUDIT-2 H3): pointer-events:none كان يُلغي عمليًا مؤشر not-allowed
+     (العنصر يخرج من hit-test فلا يُعرض المؤشر أصلًا) — مئات الأزرار
+     المعطلة كانت تُظهر عتامة فقط بلا إشارة سبب التعطيل. المؤشر يُعرض
+     الآن، مع تثبيت حالة hover كي لا تُضاء وهي معطلة. aria-disabled
+     البديلة تبقى inert تمامًا (مسار ARIA لا native disabled). */
+  .btn:disabled {
+    opacity: var(--state-btn-disabled-opacity);
+    pointer-events: auto;
+    cursor: not-allowed;
+  }
+  .btn:disabled:hover {
+    background: var(--_btn-bg, var(--surface));
+    border-color: var(--_btn-bd, var(--border));
+    box-shadow: var(--_btn-shadow, none);
+    transform: none;
+  }
+  .btn[aria-disabled="true"]:not(:disabled) { opacity: var(--state-btn-disabled-opacity); pointer-events: none; }
 
   .btn.primary {
     --_btn-bg: var(--neutral-900);
@@ -324,7 +351,11 @@
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-card-premium);
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+    /* r149 (R3-A3 §4): حُذف إعلان transition من هنا — كان ميتًا في
+       الترتيب الطبقي (طبقة overrides في polish v15 تملك transition
+       الخاص بـ.btn وتتقدم طبقة components مهما علت الخصوصية)، فعلّق
+       r148 (H2) كان يوهم بأن السجل موحّد من هنا. نُفِّذ العقد فعليًا
+       هناك: كل خصائص hover على --t-fast. */
   }
   .btn.primary:hover {
     box-shadow: var(--shadow-card-premium-h);
@@ -413,13 +444,17 @@
      same hover/press states. */
   [data-theme="dark"] .btn.accent,
   [data-theme="dark"] .btn.gold {
-    --_btn-bg: linear-gradient(145deg, #E9B44C 0%, #C9962F 100%);
-    --_btn-bg-hover: linear-gradient(145deg, #F5D48A 0%, #E9B44C 100%);
-    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.30), 0 6px 20px -8px rgb(233 180 76 / 0.35);
+    /* r150a: the night accent family IS this metal gold (--accent
+       #E9B44C / --accent-hover #F5D48A / --accent-strong #C9962F in
+       the dark block) — the literals below were the tokens, spelled
+       raw. Same values, now retunable from one place. */
+    --_btn-bg: linear-gradient(145deg, var(--accent) 0%, var(--accent-strong) 100%);
+    --_btn-bg-hover: linear-gradient(145deg, var(--accent-hover) 0%, var(--accent) 100%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
   }
   [data-theme="dark"] .btn.accent:hover,
   [data-theme="dark"] .btn.gold:hover {
-    box-shadow: 0 0 0 1px rgb(233 180 76 / 0.45), 0 8px 26px -8px rgb(233 180 76 / 0.45);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
   /* T3-F4 WCAG — in LIGHT theme the accent pair is copper + deep
@@ -460,14 +495,14 @@
        near-black ink to 3.24:1 in light; the brightened mix clears
        6.6:1 / 9.3:1. The Button primitive's `danger` variant inherits
        this via the class map. */
-    --_btn-fg: #191918;
+    --_btn-fg: var(--danger-fg);  /* r150a: the documented 21-c one-line swap */
     --_btn-bd: var(--danger);
     --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
     --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
   }
   [data-theme='dark'] .btn.danger {
-    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, #fff);
-    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, #fff);
+    --_btn-bg-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
+    --_btn-bd-hover: color-mix(in oklab, var(--danger) 86%, var(--white));
   }
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
@@ -504,20 +539,18 @@
     gap: 4px;
     font-size: var(--fs-xxs);
     font-weight: var(--fw-semibold);
-    padding: 4px 10px;
+    padding: 4px var(--sp-3); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
     border-radius: var(--r-full);
     line-height: 1.4;
     background: var(--surface-3);
     color: var(--text-secondary);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 6%, transparent);
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
   }
-  .badge:hover {
-    box-shadow: 0 2px 8px -2px rgb(0 0 0 / 0.12);
-    transform: translateY(-1px);
-  }
+  /* r148 (AUDIT-2 L2): .badge:hover كان يرفع span غير تفاعلي (عرض خالص —
+     primitives/index.tsx:217) — إشارة كاذبة. الحذف. */
   .badge.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
   .badge.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
   .badge.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
@@ -536,7 +569,7 @@
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
     padding: 7px 14px;
     border-radius: var(--r-full);
     font-size: var(--type-label-size-sm);
@@ -558,7 +591,7 @@
 
   .reward-pill {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 4px 10px; border-radius: var(--r-full);
+    padding: 4px var(--sp-3); border-radius: var(--r-full); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
     background: var(--accent-soft); color: var(--accent-strong);
     font-size: var(--fs-xxs); font-weight: var(--fw-semibold);
   }
@@ -615,7 +648,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROGRESS                                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .progress { display: flex; flex-direction: column; gap: 6px; }
+  .progress { display: flex; flex-direction: column; gap: var(--sp-1-5); } /* r149 (R3-A2 #1): 6px → النصف-درجة */
   .progress-head {
     display: flex; align-items: center; justify-content: space-between;
     font-size: var(--type-label-size-sm); color: var(--text-muted);
@@ -657,7 +690,7 @@
     background: var(--surface);
     transition: var(--t-clean);
   }
-  .alert:hover { border-color: var(--border-strong); }
+  /* r148 (AUDIT-2 L4): .alert:hover كان يضيء صف تنبيه ساكنًا — الحذف. */
   .alert-dot {
     inline-size: 8px; block-size: 8px;
     border-radius: 50%;
@@ -691,7 +724,7 @@
     color: var(--c-copper-deep);
     font-weight: var(--fw-bold);
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): أحرف أولى عربية — لا تتبّع سالب */
     flex-shrink: 0;
   }
 
@@ -804,6 +837,11 @@
     .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-4)); }
   }
 
+  /* r149 (R3-A1 #2): داخل شريط تصفية، حبة البحث تمتد لارتفاع مدخلات
+     الاختيار المجاورة (44px) — كانت 38px بجانب 44px في ExamAuthor
+     (شريطان) والمكتبة. خارج أشرطة التصفية تبقى الحبة 38px كروم ترويسة. */
+  .filter-bar .topbar-search input { block-size: 44px; }
+
   .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
   @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
   .form-label {
@@ -816,7 +854,8 @@
        (auth.css neutralizes it locally where the field gap owns the
        rhythm). Kept verbatim — snapping to the 4px scale would shift
        every form app-wide. */
-    margin-block-end: 6px;
+    /* r149 (R3-A2 #1): النصف-درجة الموثقة --sp-1-5 — كان خامًا. */
+    margin-block-end: var(--sp-1-5);
     /* wave 9-a (ruling #2, 8-b flag): Latin tracking removed — labels
        are Arabic and the joins must stay untracked. (The wave 9-a
        section at the end of this file re-asserts this with !important
@@ -902,6 +941,64 @@
   .table tbody tr:focus-within .table-row-actions { opacity: 1; }
   @media (hover: none) { .table-row-actions { opacity: 1; } }
 
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  MOBILE — the .table fallback ladder (≤640)                    ║
+     ║  Rung 1 STACK (the recipe): tag a table `tbl-stack` and every  ║
+     ║  row becomes a vertical card; each <td> picks its label from   ║
+     ║  the data-label attribute set in the JSX (labels sit at the    ║
+     ║  inline-start edge — first-read in RTL).                       ║
+     ║  Rung 2 SCROLL (the safety net): a .table that didn't opt in   ║
+     ║  keeps its table layout and scrolls inside itself — never      ║
+     ║  squishes, never drags the page.                               ║
+     ║  (r151b closes worklog 5-a #3: .table itself carries the       ║
+     ║  fallback. Moved verbatim from polish v11's overrides block —  ║
+     ║  selectors unchanged so .leaderboard-table keeps riding rung 1 ║
+     ║  via its own tbl-stack opt-in. Deliberate deltas vs the old    ║
+     ║  overrides home: ::before keyed on [data-label] so cells       ║
+     ║  without a label render no empty pseudo, and no white-space    ║
+     ║  nowrap on rung 2 — Arabic prose wraps; scrolling kicks in     ║
+     ║  only when min-content truly exceeds the viewport.)            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  @media (max-width: 640px) {
+    .tbl-stack { display: block; }
+    .tbl-stack thead { display: none; }
+    .tbl-stack tbody, .tbl-stack tr { display: block; }
+    .tbl-stack tr {
+      border: 1px solid var(--rule);
+      border-radius: var(--r-md);
+      padding: var(--sp-3);
+      margin-block-end: var(--sp-3);
+      background: var(--surface);
+    }
+    /* Cards don't zebra — parity with the old overrides-layer home
+       (the wrap-scroller's hover never applied to stacked cards). */
+    .table.tbl-stack tbody tr:hover { background: var(--surface); }
+    .tbl-stack td {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--sp-3);
+      padding: var(--sp-2) 0;
+      border-block-end: 1px dashed var(--rule);
+    }
+    .tbl-stack td:last-child { border-block-end: 0; }
+    .tbl-stack td[data-label]::before {
+      content: attr(data-label);
+      flex-shrink: 0;
+      color: var(--text-muted);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-medium);
+    }
+    .table:not(.tbl-stack) {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-inline-size: 100%;
+    }
+    .table:not(.tbl-stack) thead { display: table-header-group; }
+    .table:not(.tbl-stack) tbody { display: table-row-group; }
+  }
+
   /* Pagination footer of the table system. NOTE (13-17): OwnerUsersPage
      finished the ruling-#5 migration — it renders .table-pagination with
      ChevronLeft/ChevronRight icons, and the legacy .owner-pagination
@@ -935,7 +1032,8 @@
     transition:
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
+      border-color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .table-pagination-actions button:hover:not(:disabled) {
     background: var(--surface-2);
@@ -949,10 +1047,15 @@
     border-color: var(--accent);
     font-weight: var(--fw-semibold);
   }
-  .table-pagination-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .table-pagination-actions button:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
   @media (max-width: 640px) {
     /* 44px touch targets on phones (craft floor). */
     .table-pagination-actions button { min-inline-size: 44px; min-block-size: 44px; }
+    /* r151b (R5-A4 probe): the 7×44px button cluster (25 pages of the
+       papers roster) measured 329px wide inside a 274px wrap at 360 —
+       «التالي» was cut off the RTL leading edge. Wrap the cluster so
+       the buttons reflow onto a second line instead of overflowing. */
+    .table-pagination-actions { flex-wrap: wrap; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -963,7 +1066,9 @@
     font-size: var(--type-headline-size-md);
     font-weight: var(--fw-black);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    /* r149 (R3-A4 F2): ‎--ls-snug → --ls-normal — عنوان عربي بلا تتبع
+       عند المنبع (كان محروسًا فقط في overrides). */
+    letter-spacing: var(--ls-normal);
     line-height: 1.2;
     margin-block-end: var(--sp-4);
     display: flex; align-items: center; gap: var(--sp-3);
@@ -992,7 +1097,10 @@
   .dash-eyebrow {
     font-size: var(--fs-xs);
     text-transform: uppercase;
-    letter-spacing: 0.10em;
+    /* r148 (AUDIT-3 M1): 0.10em على نص عربي صريح («أكمل من حيث توقفت»)
+       يفكك اتصال الحروف — مخالف ruling #2 (notifications.css:298
+       «no letter-spacing on Arabic, ever»). uppercase بلا أثر على العربي. */
+    letter-spacing: 0;
     color: var(--text-muted);
     font-weight: var(--fw-semibold);
     margin-block-end: var(--sp-2);
@@ -1002,7 +1110,7 @@
     font-size: var(--fs-h2);
     font-weight: var(--fw-black);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين عربية — لا تتبّع سالب */
     margin-block-end: var(--sp-4);
     position: relative;
   }
@@ -1142,7 +1250,7 @@
     background: var(--surface-3);
     border-radius: var(--r-full);
     overflow: clip;
-    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.08);
+    box-shadow: inset 0 1px 2px color-mix(in srgb, var(--black) 8%, transparent);
   }
 
   .dash-agenda-head { display: flex; align-items: center; justify-content: space-between; }
@@ -1202,7 +1310,10 @@
     transition: background var(--t-fast) var(--ease);
   }
   .list-row:last-child { border-block-end: 0; }
-  .list-row:hover { background: var(--surface-2); }
+  /* r148 (AUDIT-2 L3): التمييز التفاعلي للصفوف القابلة للنقر فقط
+     (label/button/a داخل ExamAuthorPages) — الصفوف الساكنة
+     (TemplateRow/QuestionBankRow/المحاولات) لا تُضاء كاذبة. */
+  label.list-row:hover, button.list-row:hover, a.list-row:hover { background: var(--surface-2); }
   .list-row-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; }
   .list-row-title { font-weight: var(--fw-semibold); font-size: var(--type-label-size); color: var(--text); }
   .list-row-sub   { font-size: var(--type-label-size-sm); color: var(--text-muted); }
@@ -1225,7 +1336,7 @@
   .queue-group-head {
     display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
   }
-  .queue-group-main { display: flex; flex-direction: column; gap: 1px; flex: 1; min-inline-size: 0; }
+  .queue-group-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
   .queue-group-title {
     font-weight: var(--fw-semibold);
     font-size: var(--type-label-size);
@@ -1327,6 +1438,116 @@
     padding: var(--sp-9) var(--sp-6);
     gap: var(--sp-2);
   }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STATE family — consolidated here since r152f                  ║
+     ║  (v8 padding-breathe + v11 variants + v21 loading skeletons;   ║
+     ║  order preserved so the computed cascade is byte-identical)    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ── Empty states — softer + breathing ──────────────────────── */
+  .state {
+    padding-block: var(--sp-7);
+  }
+  .state-icon {
+    transition: transform var(--motion-duration-reveal) var(--ease-out);
+  }
+  .state:hover .state-icon {
+    transform: scale(1.05);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  STATE VARIANTS                                                ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .state.state-inline { padding: var(--sp-7) var(--sp-5); }
+  /* (r151c: .state.state-page / .state.state-card deleted — the only
+     state-variant constructor is LoadingState's `state-${variant}` and
+     no call site passes "page" or "card" (default inline + one
+     minimal); the LoadingVariant union was narrowed with them.) */
+  .state.state-error .state-icon {
+    background: var(--danger-soft);
+    /* 5-D1 (A11 P2-3): --danger on --danger-soft measured 2.59:1 light
+       (non-text floor is 3:1). The -deep ink pair mirrors the
+       .state-icon-success grammar (components.css) and the base
+       .state-icon's own -deep pairing; dark's -ink maps to the same
+       value the base token already resolves to (no dark change). */
+    color: var(--danger-ink, var(--danger));
+  }
+  .state.state-empty .state-icon {
+    background: var(--surface-2);
+    color: var(--text-muted);
+  }
+
+  /* Spinner size variants (wave 9-b: .spinner-lg deleted — zero TSX
+     consumers; only spinner-sm is rendered by the States primitive.) */
+  .spinner.spinner-sm { inline-size: 14px; block-size: 14px; border-width: 2px; }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  LOADINGSTATE — calmer fallback when wrapped in cards          ║
+     ║  When LoadingState renders inside a Card (`.card > .state`)   ║
+     ║  show a soft skeleton-bar pattern alongside the spinner so    ║
+     ║  users see content shape forming, not just a spinner.         ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .card > .state.state-loading,
+  .card > .state.state-inline {
+    padding: var(--sp-6) var(--sp-4);
+  }
+  .card > .state.state-loading::before,
+  .card > .state.state-inline::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg,
+        transparent 0%,
+        transparent 35%,
+        var(--surface-2) 35%,
+        var(--surface-2) 38%,
+        transparent 38%,
+        transparent 50%,
+        var(--surface-2) 50%,
+        var(--surface-2) 53%,
+        transparent 53%,
+        transparent 65%,
+        var(--surface-2) 65%,
+        var(--surface-2) 68%,
+        transparent 68%
+      );
+    border-radius: inherit;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
+    animation: madarek-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
+  }
+  .card > .state.state-loading,
+  .card > .state.state-inline {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  @keyframes madarek-loadingstate-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%      { opacity: 0.45; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PAGE-LEVEL LOADINGSTATE — show a structured fallback         ║
+     ║  When LoadingState appears as the top child of a .page (i.e.  ║
+     ║  the page hasn't booted yet), don't just spin — also show a   ║
+     ║  faint skeleton block so the layout doesn't feel broken.      ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .page > .state.state-loading,
+  .page > .state.state-inline {
+    padding: var(--sp-9) var(--sp-6);
+    border-radius: var(--r-xl);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface-2) 80%, transparent) 0%,
+      color-mix(in srgb, var(--surface) 90%, transparent) 100%
+    );
+    border: 1px solid var(--rule);
+  }
+
   .state-icon {
     inline-size: 56px; block-size: 56px;
     border-radius: var(--r-xl);
@@ -1365,14 +1586,10 @@
   [data-theme="dark"] .spinner { border-block-start-color: var(--accent); }
   @keyframes madarek-spin { to { transform: rotate(360deg); } }
 
-  .skeleton {
-    display: inline-block;
-    background: linear-gradient(90deg, var(--surface-3), var(--surface-2), var(--surface-3));
-    background-size: 200% 100%;
-    border-radius: var(--r-sm);
-    animation: madarek-shimmer var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
-  }
-  @keyframes madarek-shimmer { 0%{background-position:0% 0;} 100%{background-position:-200% 0;} }
+  /* r150b: the `.skeleton` redefinition + `madarek-shimmer` keyframes
+     that lived here were one of three rival grammars — cascade-shadowed
+     by the overrides layer, structurally dead. Deleted in the
+     six-shimmer unification; the ONE grammar lives in motion.css. */
 
   .hydration-splash {
     position: fixed; inset: 0;
@@ -1449,6 +1666,8 @@
     /* Arabic descender clearance — same metric base.css pins on <a>. */
     text-underline-offset: 0.18em;
     cursor: pointer;
+    /* r149 (R3-A3 §3): لون التسطير كان يتبدل فوريًا (snap). */
+    transition: text-decoration-color var(--t-fast) var(--ease);
   }
   .text-link:hover { text-decoration-color: var(--accent-ink); }
   .hide-on-mobile { display: revert; }
@@ -1483,7 +1702,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.40);
+    background: var(--overlay-veil);
     backdrop-filter: blur(var(--scrim-blur));
     -webkit-backdrop-filter: blur(var(--scrim-blur));
     display: flex; align-items: center; justify-content: center;
@@ -1492,7 +1711,6 @@
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     padding: var(--sp-4);
   }
-  [data-theme="dark"] .modal-overlay { background: rgba(0,0,0,0.62); }
   @keyframes madarek-fade { from { opacity: 0; } to { opacity: 1; } }
 
   .modal-card {
@@ -1521,7 +1739,7 @@
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
   .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
   .modal-title  { font-family: var(--font-display); font-size: var(--type-headline-size-md); font-weight: var(--type-headline-weight); color: var(--text); letter-spacing: var(--type-headline-letter-spacing); }
-  .modal-body   { padding: var(--sp-6); overflow-y: auto; }
+  .modal-body   { padding: var(--sp-6); overflow-y: auto; overscroll-behavior: contain; } /* r149 (R3-A5 #1): آخر سطح تمريري بلا احتواء — الإصبع كان يسلّس التمرير للخلف عند قاع المودال */
   .modal-footer { padding: var(--sp-4) var(--sp-6); border-block-start: 1px solid var(--rule); display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1531,14 +1749,13 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .sheet-overlay {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.40);
+    background: var(--overlay-veil);
     backdrop-filter: blur(var(--scrim-blur));
     -webkit-backdrop-filter: blur(var(--scrim-blur));
     display: flex;
     z-index: var(--z-sheet, 300);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
-  [data-theme="dark"] .sheet-overlay { background: rgba(0,0,0,0.62); }
   .sheet-overlay-bottom { align-items: flex-end; }
   .sheet-overlay-end    { justify-content: flex-end; }
   .sheet-overlay-start  { justify-content: flex-start; }
@@ -1736,7 +1953,19 @@
     padding: 0 var(--sp-1);
     font-size: 18px;
     line-height: 1;
-    transition: color var(--t-fast) var(--ease);
+    /* r149 (R3-A3 §4): transform ينضم — سجل الضغط 0.97 (v13). */
+    transition:
+      color var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
+    /* r148 (AUDIT-3 C1): الهدف الفعلي كان ~22×14px — أصغر من بصمة إصبع،
+       وتوستات الأخطاء لا تُغلق تلقائيًا أبدًا (Toast.tsx:91) فالزر هو
+       المخرج الوحيد. نفس أرضية 44px التي حصل عليها .toast-action
+       (notifications.css:451-453) — الشفافية تجعل التوسيع غير مرئي. */
+    min-block-size: 44px;
+    min-inline-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .toast-close:hover { color: var(--text); }
   .toast-close:focus-visible {
@@ -1796,6 +2025,9 @@
     gap: var(--sp-2);
     inline-size: 100%;
     padding: var(--sp-2) var(--sp-3);
+    /* r148 (AUDIT-3 M3): قائمة حساب المستخدم هي مسار الثيم/تسجيل الخروج
+       الوحيد على 360px — كانت ~38px. نفس أرضية .cmd-row (layout.css:751). */
+    min-block-size: 44px;
     background: transparent;
     border: 0;
     border-radius: var(--r-sm);
@@ -1803,7 +2035,10 @@
     font: inherit;
     text-align: start;
     cursor: pointer;
-    transition: background var(--t-fast) var(--ease);
+    /* r149 (R3-A3 §4): transform ينضم — سجل الضغط 0.985 (v13). */
+    transition:
+      background var(--t-fast) var(--ease),
+      transform var(--t-fast) var(--ease);
   }
   .dropdown-item:hover,
   .dropdown-item[data-active="true"] {
@@ -1883,7 +2118,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .lightbox-overlay {
     position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: color-mix(in srgb, var(--black) 85%, transparent);
     display: flex; align-items: center; justify-content: center;
     z-index: var(--z-lightbox, 600);
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
@@ -1893,7 +2128,7 @@
     position: relative;
     max-inline-size: 100%;
     max-block-size: calc(100dvh - var(--sp-9));
-    box-shadow: var(--elev-5, 0 32px 64px rgba(0,0,0,0.5));
+    box-shadow: var(--elev-5);
     animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
   }
   .lightbox-close {
@@ -1902,16 +2137,22 @@
     inset-inline-end: 0;
     background: transparent;
     border: 0;
-    color: rgba(255,255,255,0.86);
+    color: var(--text-on-dark); /* r148 (AUDIT-2 L6): توكن بدل حرفي */
     cursor: pointer;
     padding: var(--sp-1);
     font-size: 22px;
     line-height: 1;
+    /* r148 (AUDIT-3 M4): كان ~30×30 — عارض الصور على الهاتف. */
+    min-block-size: 44px;
+    min-inline-size: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: color var(--t-fast) var(--ease);
   }
-  .lightbox-close:hover { color: #fff; }
+  .lightbox-close:hover { color: var(--text-on-dark); }
   .lightbox-close:focus-visible {
-    outline: 2px solid #fff;
+    outline: 2px solid var(--text-on-dark);
     outline-offset: 2px;
   }
 
@@ -1937,6 +2178,8 @@
     cursor: pointer;
     font: inherit;
     padding: var(--sp-1) var(--sp-2);
+    /* r148 (AUDIT-3 M5): كان ~26px — أول تجربة مستخدم جديد على الهاتف. */
+    min-block-size: 44px;
     border-radius: var(--r-sm);
     transition: color var(--t-fast) var(--ease);
   }
@@ -2064,7 +2307,7 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .cmd-palette-overlay {
     position: fixed; inset: 0;
-    background: rgba(15,15,15,0.50);
+    background: var(--overlay-veil-max);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
     display: flex; align-items: flex-start; justify-content: center;
@@ -2073,7 +2316,6 @@
     animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
     padding-inline: var(--sp-4);
   }
-  [data-theme="dark"] .cmd-palette-overlay { background: rgba(0,0,0,0.66); }
   .cmd-palette-card {
     background: var(--surface);
     border: 1px solid var(--rule);
@@ -2143,16 +2385,29 @@
     --w-input-filter-search: 260px;
     --w-input-filter-select: 170px;
     display: flex; align-items: center; flex-wrap: wrap;
-    gap: var(--sp-2);
+    /* r152h: 6px — the v10 polish twin's only live declaration, merged
+       home as the sanctioned half-step token (the twin retired; the
+       computed value is unchanged). */
+    gap: var(--sp-1-5);
     padding: var(--sp-3) var(--sp-4);
     border: 1px solid var(--rule);
     border-radius: var(--r-md);
     background: var(--surface-2);
+    /* r152i (A3): the bar reads ITSELF — full-page rows AND narrow
+       containers (modals, side columns) get the right layout without
+       the viewport guessing for them. */
+    container: filterbar / inline-size;
   }
   .filter-bar .topbar-search {
     /* .topbar-search is inline-size:100% by default (layout.css) — the
        cap keeps it a pill beside the selects instead of a full row. */
     max-inline-size: var(--w-input-filter-search);
+  }
+  @container filterbar (max-width: 480px) {
+    /* Narrow bar: the search pill takes the whole first row and the
+       selects wrap after it (flex-wrap already owns the wrapping).
+       Sits AFTER the cap on purpose — same specificity, later source. */
+    .filter-bar .topbar-search { max-inline-size: none; }
   }
   .filter-bar > .input {
     max-inline-size: var(--w-input-filter-select);
@@ -2216,7 +2471,8 @@
     font-size: var(--fs-h3);
     font-weight: var(--fw-bold);
     color: var(--text);
-    letter-spacing: var(--ls-snug);
+    /* r149 (R3-A4 F2): ‎--ls-snug → --ls-normal — مثل سابقيه عند المنبع. */
+    letter-spacing: var(--ls-normal);
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2249,13 +2505,11 @@
      OWNERSHIP NOTE (wave 3-c): the layout/family rules live in
      training.css §track-detail (pages layer — authored by the parallel
      wave 3-b, which explicitly serves the teacher/admin/exams pages
-     rendering the same markup). Only the additive rule below lives
-     here: the polish v19 animated-underline opt-out — this is a
-     card-like chip anchor, not a text link (the v19 :not() exclusion
-     list predates the class; !important flips author-layer precedence
-     so the components layer beats the overrides layer). Focus shows
-     the universal v22 ring like every anchor. */
-  .back-link::after { content: none !important; }
+     rendering the same markup). Nothing lives here anymore: the v19
+     underline opt-out moved to the source — polish's universal
+     ::after selectors carry :not(.back-link) since r151e (the
+     `content: none !important` flip retired). Focus shows the
+     universal v22 ring like every anchor. */
 
   /* ── Track grid + track cards — the shared course/lab/exam/training
      tile (TeacherIntelligence, TeacherLabs, TeacherProfile, OnlineExams,
@@ -2263,10 +2517,10 @@
      OWNERSHIP NOTE (wave 3-c): the family — .track-grid, .track-card,
      -icon/-body/-cat/-title/-summary/-meta — is owned by training.css
      §track-catalog (pages layer, parallel wave 3-b; it applies globally
-     and serves every consumer above). Only the additive rules below
-     live here: the v19 underline opt-out for the linked variant and
-     the v22 focus border cue (training.css declares neither). */
-  a.track-card::after { content: none !important; }
+     and serves every consumer above). The v19 underline opt-out moved
+     to the source — polish's universal ::after selectors carry
+     :not(.track-card) since r151e. The v22 focus border cue stays
+     (training.css declares neither). */
   .track-card:focus-visible { border-color: var(--accent); }
 
   /* ── Track hero — per-course detail header (TeacherIntelligence) ──
@@ -2982,15 +3236,15 @@
      (T3-F4 WCAG math). The two raw literals mirror .btn.danger's. ── */
   .btn.success {
     --_btn-bg: var(--success-ink);
-    --_btn-fg: #fff;
+    --_btn-fg: var(--white);
     --_btn-bd: var(--success-ink);
     --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
     --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
   }
   [data-theme='dark'] .btn.success {
-    --_btn-fg: #191918;
-    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, #fff);
-    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, #fff);
+    --_btn-fg: var(--warm-ink);
+    --_btn-bg-hover: color-mix(in oklab, var(--success-ink) 86%, var(--white));
+    --_btn-bd-hover: color-mix(in oklab, var(--success-ink) 86%, var(--white));
   }
 
   /* ── Exam taker details (OnlineExamsPages; the chrome bases live in
@@ -3025,10 +3279,8 @@
     border: 1px solid var(--rule);
     border-radius: var(--r-lg);
     box-shadow: var(--shadow-card);
-    transition: box-shadow var(--t-base) var(--ease);
-  }
-  .exam-card-skel:hover {
-    box-shadow: var(--shadow-card-premium-h);
+    /* r149 (R3-A3 M2): حُذف hover الظل وانتقاله — الهيكل العظمي ليس
+       هدفًا قابلًا للنقر (affordance كاذبة؛ ذيل r148 المتبقي). */
   }
   .exam-card-skel .exam-card-skel-icon {
     flex-shrink: 0;
@@ -3145,7 +3397,7 @@
 
   /* Curriculum heatmap legend — key dots mirror the .matrix-cell
      level washes (the heatmap grid itself reuses .matrix-cells /
-     .matrix-cell + .lvl-* from polish.css — one heatmap language
+     .matrix-cell + .lvl-* from student.css (migrated r151i) — one heatmap language
      across the student matrix and the quality oversight view). */
   .heat-legend {
     display: flex;
@@ -3181,20 +3433,15 @@
   }
 
   /* ── Mobile touch floor (craft floor: ≥44px) for the competitions
-     modal controls + moderation actions. 21-b correction: the ONE
-     general mobile floor is polish.css's overrides-layer block
-     (.btn.sm → min-block-size 44px, wave 9-b consolidation) — the
-     older comments claiming a 32px pin there are stale. These
-     same-value !important pins stay as local belt-and-braces:
-     colleges.css (pages layer) pins .comp-icon-btn at 36×36, a
-     same-layer rule can never win, and min-block-size composes with
-     (never fights) the pinned sizes. ── */
+     modal controls. (r151d: the .btn.sm !important pins retired —
+     polish's overrides-layer ≤640 block has been the ONE owner of
+     the .btn/.btn.sm block-size floor since wave 9-b; these
+     same-value bangs were belt-and-braces that no longer earn
+     their noise. The non-.btn pair below stays: colleges.css pins
+     .comp-icon-btn at 36×36 and min-* composes over it.) ── */
   @media (max-width: 640px) {
     .comp-icon-btn,
     .comp-modal-close { min-inline-size: 44px; min-block-size: 44px; }
-    .comp-score-input .btn.sm,
-    .moderation-actions .btn.sm,
-    .moderation-panel .btn.sm { min-block-size: 44px !important; }
   }
 
   /* ── Reduced-motion off-switches (guardrail #6 — the global token
@@ -3467,17 +3714,10 @@
     to { opacity: 1; transform: none; }
   }
 
-  /* ── Mobile touch floor (craft floor: ≥44px) for the governance
-     card actions. !important is a documented layer-precedence
-     exception (same as wave 5-c): polish's overrides-layer mobile
-     block now pins .btn at 40px / .btn.sm at 44px (wave 9-b), so
-     this same-value !important pin is belt-and-braces, not the
-     load-bearing floor the older comment described. (.teacher-row
-     already carries a 48px min from wave 3-c.) ──────────────────── */
-  @media (max-width: 640px) {
-    .perm-row-actions .btn.sm,
-    .gov-form-actions .btn { min-block-size: 44px !important; }
-  }
+  /* (r151d: the governance mobile .btn floor block deleted — polish's
+     overrides-layer ≤640 block owns the 44px floor wholesale; the
+     same-value bang here was belt-and-braces. .teacher-row keeps its
+     own 48px min from wave 3-c.) */
 
   /* ── Reduced-motion off-switches (guardrail #6). ───────────────── */
   @media (prefers-reduced-motion: reduce) {
@@ -3503,17 +3743,10 @@
 
   /* ── Teacher feed — the authored entrance: rows stagger in from
      inline-start (direction-aware via --motion-direction). polish.css
-     v8 owns the stagger machinery (duration + easing + the nth-child
-     delay ladder) but its keyframe rises from below; the wave-5 mission
-     pins the direction to inline-start, so ONLY the animation-name is
-     flipped. The !important flips author-layer precedence over the
-     overrides layer — the same documented technique as the wave 3-c
-     anchor-underline opt-outs above. */
-  .feed .feed-item { animation-name: madarek-feed-slide !important; }
-  @keyframes madarek-feed-slide {
-    from { opacity: 0; transform: translateX(calc(var(--motion-direction) * -12px)); }
-    to   { opacity: 1; transform: none; }
-  }
+     v8 owns the WHOLE machinery since r151f — duration, easing, the
+     nth-child delay ladder AND the direction-aware keyframes (the
+     old animation-name !important flip + duplicate madarek-feed-slide
+     keyframes were merged into the owner verbatim). */
   /* Filter pills inside the feed toolbar hit the 44px touch floor on
      phones (shared class — Competitions' toolbar benefits equally). */
   @media (max-width: 640px) {
@@ -3667,7 +3900,9 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--sp-3);
   }
-  @media (max-width: 900px) {
+  /* r152i (A3): 900→920 — joins the shell band (the sidebar collapse)
+     instead of floating 20px below it. */
+  @media (max-width: 920px) {
     .form-row-3 { grid-template-columns: 1fr; }
   }
   .course-select { max-inline-size: 360px; }
@@ -3726,20 +3961,19 @@
     margin-block-start: var(--sp-3);
   }
 
-  /* ── Live sessions — action cluster on run rows (3-c owns the row);
-     44px floor on phones for the start/end/cancel controls. !important
-     flips precedence over polish's overrides-layer `.btn.sm` 32px rule
-     (same technique the wave 3-c/4-a mobile floors use). */
+  /* ── Live sessions — action cluster on run rows (3-c owns the row).
+     (r151d: the min-block-size bang retired — polish's ≤640 block
+     owns the .btn height floor. min-inline-size stays un-banged and
+     load-bearing: the icon-only «إلغاء» cancel button needs its
+     ≥44px inline floor, and no rule in any layer writes width on
+     .btn.) */
   .run-row-actions {
     display: flex;
     align-items: center;
     gap: 6px;
   }
   @media (max-width: 640px) {
-    .run-row-actions .btn {
-      min-block-size: 44px !important;
-      min-inline-size: 44px !important;
-    }
+    .run-row-actions .btn { min-inline-size: 44px; }
   }
 
   /* ── Research review — the scan-metric meta line on paper rows
@@ -4200,26 +4434,15 @@
    ╚═══════════════════════════════════════════════════════════════╝ */
 @layer components {
 
-  /* Arabic form labels must never carry tracking (ruling #2 — it
-     breaks cursive joins; 8-b flagged the shared class). The in-place
-     edit above fixes this layer, but polish.css's pages-layer block
-     (~:1107, "Form labels — subtle weight bump") re-asserts
-     letter-spacing: -0.005em and a components-layer rule can never
-     win the layer order. The !important flips precedence — the same
-     documented technique as the wave 3-c anchor-underline opt-outs
-     and the wave 5-a feed-slide flip. */
-  .form-label { letter-spacing: normal !important; }
+  /* (r151e: .form-label bang deleted — the competitor it described no
+     longer exists: 21-c fixed polish's pages-layer block to
+     letter-spacing: var(--ls-normal), so the winner is polish's
+     normal — the identical computed value — with no war to flip.) */
 
-  /* ErrorState / PermissionDeniedState / EmptyState action buttons
-     (.btn.sm inside .state) reach the 44px touch floor on phones
-     (craft floor; flagged by 3-b / 4-a / 4-b / 5-a / 6-b). 21-b
-     correction: polish's overrides-layer mobile block has pinned
-     .btn.sm at 44px since the wave 9-b consolidation — this same-
-     value !important pin is belt-and-braces, not the only floor.
-     Desktop keeps the compact 32px row. */
-  @media (max-width: 640px) {
-    .state .btn.sm { min-block-size: 44px !important; }
-  }
+  /* (r151d: the .state .btn.sm mobile floor deleted — polish's
+     overrides-layer ≤640 block has owned the .btn.sm 44px floor
+     since wave 9-b; this same-value bang was belt-and-braces.
+     Desktop keeps the compact 32px row.) */
 }
 
 

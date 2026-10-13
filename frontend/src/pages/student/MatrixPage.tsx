@@ -156,12 +156,12 @@ export default function MatrixPage() {
                 key={g.conceptId}
                 style={{ '--gap-i': i } as CSSProperties}
               >
-                <span style={{ color: 'var(--warning)' }}><Icon icon={AlertCircle} size={16} /></span>
+                <span style={{ color: 'var(--warning-ink)' }}><Icon icon={AlertCircle} size={16} /></span>
                 <div className="list-row-body">
                   <div className="list-row-title">{g.conceptName}</div>
                   <div className="list-row-sub">{g.courseName}</div>
                 </div>
-                <span className="font-mono text-xs" style={{ color: 'var(--warning)' }}>
+                <span className="font-mono text-xs" style={{ color: 'var(--warning-ink)' }}>
                   {Math.round(g.level * 100)}%
                 </span>
                 {g.recommendedLectureId ? (

@@ -15,6 +15,7 @@ import {
   KpiSkeleton, CardSkeleton, TableSkeleton,
 } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
+import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useReducedMotion } from '../../components/motion';
@@ -29,7 +30,7 @@ import {
 } from '../../hooks/useResources';
 import { pageList } from './AdminGovernancePages';
 import { api, unwrap } from '../../lib/api';
-import { countAr, formatRelativeArShort } from '../../lib/format';
+import { countAr, formatPct, formatRelativeArShort } from '../../lib/format';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
@@ -39,7 +40,7 @@ import { cartesianOptions, valueLabels, chartColors, useChartThemeKey } from '..
 // 5-B4: the admin roster chrome lives in colleges.css since "Sub-project D"
 // (its ownership banner) — the students-toolbar/pagination/trend-table
 // families the courses page + papers register now consume too.
-import '../../styles/colleges.css';
+import '../../styles/admin.css'; // r150e: the roster chrome left colleges.css
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
 
@@ -700,14 +701,8 @@ const PAPER_STATUS_LABEL: Record<ResearchStatus, string> = {
   GRADED: 'مقيَّمة',
   PUBLISHED: 'منشورة',
 };
-const PAPER_STATUS_TONE: Record<ResearchStatus, 'green' | 'amber' | 'red' | 'purple' | 'gold' | 'brand'> = {
-  UPLOADED: 'amber',
-  SCANNING: 'brand',
-  CHECKS_PASSED: 'purple',
-  CHECKS_FAILED: 'red',
-  GRADED: 'gold',
-  PUBLISHED: 'green',
-};
+/* r149 (R3-A1 #1): انتقل التعريف إلى lib/paperStatus.ts — سلّم واحد
+ * للطالب والإداري (هذه كانت النسخة الأغنى فاعتُمدت كما هي). */
 
 /** One register row — status badge + the moderation-relevant numbers. */
 function PaperRow({ p }: { p: AdminPaper }) {
@@ -733,7 +728,9 @@ function PaperRow({ p }: { p: AdminPaper }) {
         <Badge color={PAPER_STATUS_TONE[p.status]}>{PAPER_STATUS_LABEL[p.status]}</Badge>
       </td>
       <td className="admin-table-num font-mono" data-label="نسبة الاقتباس">
-        {p.plagiarismPct != null ? <bdi>{p.plagiarismPct}%</bdi> : '—'}
+        {/* r148 (VLM-C VC-1): تنسيق دفاعي — عشري JS الخام (4.1999…)
+             وصل الجدول حرفيًا من حاصل ضرب عائم في الواجهة الخلفية. */}
+        {p.plagiarismPct != null ? <bdi>{formatPct(p.plagiarismPct)}%</bdi> : '—'}
       </td>
       <td data-label="تاريخ الرفع">{formatRelativeArShort(p.uploadedAt)}</td>
     </tr>
@@ -931,7 +928,7 @@ export function AdminReportsPage() {
           />
         ) : trendView === 'table' ? (
           <div className="trend-table-wrap">
-            <table className="trend-table">
+            <table className="table tbl-stack">
               <thead>
                 <tr>
                   <th scope="col">الشهر</th>
@@ -943,10 +940,13 @@ export function AdminReportsPage() {
               <tbody>
                 {data.paperTrend.map((row, i) => (
                   <tr key={i}>
-                    <td>{row.month}</td>
-                    <td className="font-mono">{row.submitted}</td>
-                    <td className="font-mono">{row.graded}</td>
-                    <td className="font-mono">{row.published}</td>
+                    {/* r151b (R5-A4): labels restored — the r150d retirement
+                        onto .table+tbl-stack left these four tds bare on
+                        phones («12 / 8 / 5» with no column names). */}
+                    <td data-label="الشهر">{row.month}</td>
+                    <td className="font-mono" data-label="مُقدَّم">{row.submitted}</td>
+                    <td className="font-mono" data-label="تمّ تقييمه">{row.graded}</td>
+                    <td className="font-mono" data-label="منشور">{row.published}</td>
                   </tr>
                 ))}
               </tbody>

@@ -13,7 +13,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "kern", "liga", "calt", "ss01", "tnum";
+    font-feature-settings: "kern", "liga", "calt";
+    /* r149 (R3-A4 F1.1): حُذفت "ss01" و"tnum" — غير موجودتين في
+       ملفات woff2 المشحونة (فحص fontTools: لا ss02/tnum/lnum في أي وجه؛
+       الأرقام ثابتة العرض بتصميم 600/1000 UPM). kern/liga/calt
+       افتراضية التشغيل لكن يبقى إعلانها توثيقًا للنية. */
     /* wave 2-a — kill the grey tap flash on every touch target (button
        already had it; the document-level rule covers links, cards and
        all the click-handled non-button chrome). */
@@ -43,10 +47,13 @@
     font-weight: var(--fw-black);
     color: var(--text);
     line-height: var(--lh-snug);
-    letter-spacing: var(--ls-snug);
+    /* r148 (AUDIT-3 M8): التتبّع السالب يفسد اتصال الحروف العربية
+        («العناوين» كلها عربية هنا) — تصفير كما في unified-parity.css:260.
+        يبقى لأي لاتيني مستقبلي عبر أدوار type-role اللاتينية. */
+    letter-spacing: 0;
     text-wrap: balance;
   }
-  h1 { font-size: var(--fs-h1); letter-spacing: var(--ls-tight); line-height: 1.12; }
+  h1 { font-size: var(--fs-h1); line-height: var(--type-display-line-height); }
   h2 { font-size: var(--fs-h2); line-height: 1.2; }
   h3 { font-size: var(--fs-h3); font-weight: var(--fw-bold); line-height: 1.3; }
 
@@ -58,7 +65,12 @@
     /* wave 2-a — Arabic-appropriate underline metrics for every context
        that re-enables underlines (print, helper links): 0.18em clears
        the descenders of ج/ع/ي without detaching the stroke; 1px keeps
-       the hairline language. Inert while links are undecorated. */
+       the hairline language. Inert while links are undecorated.
+       (r149 R3-A5 #9 — documented decision: text-decoration-skip-ink
+       stays at the browser default (auto) on purpose — skip-ink would
+       punch gaps through the Arabic descenders this offset was tuned
+       to clear. Do NOT "fix" this by adding skip-ink: none either;
+       auto + 0.18em offset is the calibrated pair.) */
     text-underline-offset: 0.18em;
     text-decoration-thickness: 1px;
     transition: color var(--t-fast) var(--ease);
@@ -76,7 +88,7 @@
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
-  button:disabled { cursor: not-allowed; opacity: 0.55; }
+  button:disabled { cursor: not-allowed; opacity: var(--state-btn-disabled-opacity); }
 
   input, textarea, select { font: inherit; color: inherit; }
   ul, ol { list-style: none; }
@@ -105,6 +117,86 @@
      under the overrides layer (0-a P1-2). */
 
   /* ─── browser surfaces (wave 2-a) ─────────────────────────────
+  /* ─── a11y utilities — home since r152f (was polish v20) ──────── */
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SR-ONLY — visually hide content, keep it for screen readers   ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  SKIP-TO-CONTENT LINK                                          ║
+     ║  Forward-compatible: any <a class="skip-link" href="#main">    ║
+     ║  becomes a visible button when focused.                        ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  .skip-link {
+    position: fixed;
+    inset-block-start: 8px;
+    /* r143 (T1-f F1): PHYSICAL left, not inset-inline-start — under
+       dir="rtl" the logical property resolves to right:50% and the
+       physical translateX(-50%) then parks the pill a full width left
+       of center (clipped off-screen ≤~600px). Same coupling as the
+       .ln-hero-scroll pattern in landing.css. */
+    left: 50%;
+    transform: translateX(-50%) translateY(-150%);
+    background: var(--accent);
+    color: var(--accent-fg, white);
+    padding: 10px 18px;
+    border-radius: var(--r-md);
+    text-decoration: none;
+    font-weight: var(--fw-semibold);
+    /* T3-F4 — was var(--elev-3)/var(--ease-spring-soft) (the polish
+       private token island); canonical 012 tokens: --elev-3 + --ease-spring. */
+    box-shadow: var(--elev-3);
+    z-index: var(--z-toast);
+    transition: transform var(--motion-duration-medium) var(--ease-spring);
+  }
+  /* The universal :focus-visible ring (motion.css) supplies the outline;
+     the transform swap makes the pill appear in the safe top margin. */
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  ANCHOR SCROLL MARGIN                                          ║
+     ║  When jumping to #features etc., leave room for the sticky     ║
+     ║  topbar so the heading isn't hidden underneath it.             ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  :target {
+    scroll-margin-block-start: calc(64px + var(--sp-4));
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  TAP HIGHLIGHT — disable the default mobile tap halo           ║
+     ║  Our own focus rings already handle the feedback.              ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  a, button, [role="button"], .nav-item, .bottom-nav-item, .pill, .tab {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  IMAGE LAZY-LOAD FADE                                          ║
+     ║  Native lazy-loaded images fade in once decoded.               ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  img[loading="lazy"] {
+    animation: madarek-img-in var(--motion-duration-long) var(--ease-out) both;
+  }
+  @keyframes madarek-img-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
      Audit 0-a P2-1/2/3: caret / autofill / underline-offset were
      completely absent. All themed from the palette so native chrome
      stops flashing white/blue on themed inputs. */
@@ -258,13 +350,16 @@
     font-family: var(--font-display);
     /* wave 2-a (0-a P1-6) — was raw clamp(28px, 3.4vw, 40px); now the
        display-size role (28..40px, 3.6vw mid-band — a ≤2px normalization
-       at laptop widths). Line-height deliberately NOT the display role
-       (1.05 is Latin-tuned): Arabic display keeps 1.1 until the P1-12
-       Arabic-leading study lands. */
+       at laptop widths). r148 (AUDIT-4 I2): line-height الآن يستهلك رمز
+       الدور فعليًا — التعويض الداكن (+0.05) كان معرّفًا ولا يُطبّق
+       قط (صفر مستهلكين). */
     font-size: var(--type-display-size-md);
     font-weight: var(--fw-black);
-    line-height: 1.1;
-    letter-spacing: var(--ls-tight);
+    line-height: var(--type-display-line-height);
+    /* r149 (R3-A4 F2): ‎--ls-tight → --ls-normal عند المنبع — كان الأمان
+       كله معلقًا بحارس overrides واحد (polish 21-c)؛ العنوان عربي
+       والقاعدة تقول صفر تتبع. الحارس يبقى كحزام إضافي. */
+    letter-spacing: var(--ls-normal);
     color: var(--text);
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .page-lede and .page-actions

@@ -73,10 +73,10 @@
        orchestrator in the 2-a worklog entry rather than edited here. */
   }
 
-  /* Forms that already render a custom focus ring may opt out. */
-  :where([data-focus-ring="custom"]):focus-visible {
-    outline: none;
-  }
+  /* Forms that already render a custom focus ring may opt out.
+     (r149 R3-A5 #5: حُذف — كان مخرجًا معطوبًا: صفر مستهلكين في TSX،
+     وحتى لو استُخدم فالقاعدة هنا في طبقة base تخسر دائمًا لحلقة
+     overrides في v22. المخرج الوحيد الآمن هو التخصيص داخل overrides.) */
 }
 
 @layer components {
@@ -128,37 +128,49 @@
      Subtle linear-gradient sweep, low contrast. Loops at the skeleton
      duration token. Static under reduced motion.
      ─────────────────────────────────────────────────────────────────── */
-  @keyframes skeleton-shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
+  /* r150b — ONE skeleton grammar (the six-shimmer unification).
+     The tuned recipe the overrides layer had been winning the cascade
+     with — surface-3 ground, 8% white highlight stop, RTL-aware sweep —
+     is promoted here VERBATIM; the two rival `.skeleton` definitions
+     (components.css + polish.css) and their keyframes are deleted, and
+     .search-shimmer rides the same pair. Keyframes carry the
+     `skeleton-shimmer-*` names the motion contract always implied.
+     (--skeleton-base/--skeleton-highlight retired with the dead
+     foundation recipe: the canonical paints surfaces directly, and the
+     parity export defines its own pair internally.) */
+  @keyframes skeleton-shimmer-rtl {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 0% 0; }
+  }
+  @keyframes skeleton-shimmer-ltr {
+    0%   { background-position: 0% 0; }
+    100% { background-position: -200% 0; }
   }
 
   .skeleton {
-    --skeleton-base: var(--neutral-100, rgb(0 0 0 / 0.04));
-    --skeleton-highlight: var(--neutral-200, rgb(0 0 0 / 0.08));
-    background-color: var(--skeleton-base);
+    display: inline-block;               /* span primitives take dimension */
+    min-height: 1em;                     /* variants override */
+    border-radius: var(--r-sm);
+    background-color: var(--surface-3);  /* static/RM ground */
     background-image: linear-gradient(
       90deg,
-      var(--skeleton-base) 0%,
-      var(--skeleton-highlight) 50%,
-      var(--skeleton-base) 100%
+      var(--surface-3) 0%,
+      color-mix(in srgb, var(--surface-2) 80%, var(--white) 8%) 50%,
+      var(--surface-3) 100%
     );
     background-size: 200% 100%;
     background-repeat: no-repeat;
-    animation: skeleton-shimmer var(--motion-duration-skeleton) linear infinite;
-    border-radius: var(--r-md, 8px);
-    /* default min height — variants override */
-    min-height: 1em;
+    animation: skeleton-shimmer-rtl var(--motion-duration-skeleton) var(--ease-linear) infinite;
+  }
+  [dir="ltr"] .skeleton {
+    animation-name: skeleton-shimmer-ltr;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .skeleton {
       animation: none;
-      background-image: none;
+      background-position: 0% 0;
+      opacity: 0.6;  /* the contract's "static muted block" */
     }
   }
 
@@ -179,7 +191,7 @@
   .skeleton-still-loading {
     grid-column: 1 / -1;
     text-align: center;
-    color: var(--neutral-500, #898680);
+    color: var(--neutral-500);
     font-size: var(--fs-sm, 13px);
     padding: var(--sp-3, 12px) 0;
     opacity: 0;
@@ -236,13 +248,10 @@
     vertical-align: -0.125em;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .motion-spinner {
-      /* keep the rotation but slow it dramatically so screen-reader users
-         and reduced-motion users still get a "busy" cue without distraction */
-      animation-duration: 2s;
-    }
-  }
+  /* r149 (R3-A3 R4): حُذف تعديل الـ2s تحت reduced-motion — كان ميتًا
+     أصلًا: حزام base.css العالمي (animation-duration: 0.01ms
+     !important) يبتلعه دائمًا، فلم تظهر «إشارة الانشغال البطيئة»
+     قط. الحزام هو المالك الوحيد؛ لا حاجة لمُكمّل هنا. */
 
   /* ───────────────────────────────────────────────────────────────────
      Button + Input loading states — used by canonical Button / Input
@@ -367,38 +376,12 @@
     position: relative;
   }
 
-  /* ─── underline-draw ────────────────────────────────────────────── */
-  .section-accent-underline-draw::after {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-end: 0;
-    block-size: 2px;
-    inline-size: 100%;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform var(--motion-duration-long) var(--motion-ease-emphasized);
-  }
-  .section-accent-underline-draw.is-fired::after {
-    transform: scaleX(1);
-  }
-  [dir="rtl"] .section-accent-underline-draw::after {
-    transform-origin: right center;
-  }
-
-  /* ─── number-tick — gentle scale-in (number animation itself is in
-        AnimatedNumber from 001-*; this is the surface treatment). */
-  .section-accent-number-tick {
-    opacity: 0;
-    transform: scale(0.96);
-    transition: opacity var(--motion-duration-medium) var(--motion-ease-decelerate),
-                transform var(--motion-duration-medium) var(--motion-ease-decelerate);
-  }
-  .section-accent-number-tick.is-fired {
-    opacity: 1;
-    transform: none;
-  }
+  /* (r151c vocabulary sweep: the underline-draw / number-tick /
+     quote-fade / parallax-shift kind rules were deleted — audit
+     4-A11 documented 5 kinds across 7 consumers, but the landing
+     redesigns since left exactly TWO SectionAccent mounts, both
+     scene-paint (CollegePages ×2). The AccentKind union was narrowed
+     with them; re-add both halves together when a consumer returns.) */
 
   /* ─── scene-paint — fade + 6 px lift, matches Reveal cadence. */
   .section-accent-scene-paint {
@@ -412,37 +395,12 @@
     transform: none;
   }
 
-  /* ─── quote-fade — calm fade only, no translation. */
-  .section-accent-quote-fade {
-    opacity: 0;
-    transition: opacity var(--motion-duration-long) var(--motion-ease-standard);
-  }
-  .section-accent-quote-fade.is-fired {
-    opacity: 1;
-  }
-
-  /* ─── parallax-shift — bounded translation (≤ 8 px), one-shot. */
-  .section-accent-parallax-shift {
-    transform: translateY(8px);
-    opacity: 0;
-    transition: opacity var(--motion-duration-long) var(--motion-ease-emphasized),
-                transform var(--motion-duration-long) var(--motion-ease-emphasized);
-  }
-  .section-accent-parallax-shift.is-fired {
-    transform: none;
-    opacity: 1;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .section-accent,
     .section-accent::after {
       transition: none !important;
     }
-    .section-accent-underline-draw::after,
-    .section-accent-number-tick,
-    .section-accent-scene-paint,
-    .section-accent-quote-fade,
-    .section-accent-parallax-shift {
+    .section-accent-scene-paint {
       transform: none;
       opacity: 1;
     }

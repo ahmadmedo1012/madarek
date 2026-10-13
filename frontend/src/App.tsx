@@ -8,7 +8,6 @@ import { HydrationSplash } from './components/HydrationSplash';
 import { PageSkeleton } from './components/primitives/States';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays/Toast';
-import NotFoundPage from './pages/NotFoundPage';
 
 /* ───────────────────────────────────────────────────────────
    Lazy-load every route component. Each `lazy(...)` boundary
@@ -16,6 +15,12 @@ import NotFoundPage from './pages/NotFoundPage';
    only ships the shell + the first page the user lands on.
    ─────────────────────────────────────────────────────────── */
 const LandingPage = lazy(() => import('./pages/LandingPage'));
+/* r152j (A7): NotFoundPage used to be the ONE static route import —
+   violating this file's own lazy contract and dragging the
+   Illustration + the whole 10-scene registry into the entry chunk
+   (~10-15KB gz on every first paint, the public landing included).
+   It now rides the same lazy boundary as its siblings. */
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 

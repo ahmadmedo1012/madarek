@@ -57,7 +57,7 @@
     /* True letterbox black — a genuinely physical video matte, not a
        theme color: the neutral ramp flips with the theme and must
        never tint the bars. Documented raw value per brief §3.4. */
-    background: #000;
+    background: #000;  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */
   }
 
   /* ── Meta block under the player ── */
@@ -87,6 +87,25 @@
     line-height: var(--lh-loose);
     color: var(--text-secondary);
   }
+
+  /* ── Completion-report retry notice (r152a A4 P3) ──
+     Surfaces a failed end-of-video watch report with a one-tap retry —
+     same visual grammar as the inline error banners (soft danger
+     surface + ink), 44px button per the touch-floor canon. */
+  .lecture-report-retry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    border: 1px solid var(--danger);
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+    font-size: var(--type-label-size);
+  }
+  .lecture-report-retry .btn { min-block-size: 44px; }
 
   /* ── Watch progress ──
      Plain-block fill anchors at inline-start → the fill direction is
@@ -644,7 +663,7 @@
   /* THE signature: on a filter change, non-matching cells recede (shade
      desaturates + fades) while the matching level keeps its color — the
      map stays whole and the filter reads instantly. The shade movement
-     rides .matrix-cell's existing transition (polish owns it). */
+     rides .matrix-cell's existing transition (owned here since r151i). */
   .matrix-cell.is-dim {
     opacity: 0.38;
     filter: saturate(0.25);
@@ -740,7 +759,8 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 12px 14px;
+    /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
+    padding: 10px 14px;
     border-radius: var(--r-xl);
     /* bot-bubble tail corner — the polish chat language */
     border-start-start-radius: 4px;
@@ -860,12 +880,16 @@
     font-variant-numeric: tabular-nums;
   }
   .pill.on .courses-filter-count { color: inherit; }
-  .courses-grid > .thumb-card { animation: none !important; }
+  /* (r151f: bang retired — the v6 stagger's five selectors carry
+     :not(.courses-grid):not(.mooc-grid) at the source now, so this
+     rule fights nothing; kept as the documented belt that pins the
+     page's authored entrance order below.) */
+  .courses-grid > .thumb-card { animation: none; }
   .courses-grid[data-stagger] > .thumb-card {
-    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
+    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
     animation-delay: calc(
       var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
-    ) !important;
+    );
   }
   .courses-grid-empty { grid-column: 1 / -1; }
   /* API course tint rides on --course-tint (set inline by TSX) and is
@@ -1107,10 +1131,10 @@
      visual behavior is unchanged. The page's AUTHORED moment remains
      the CTA confirmation pulse below. */
   .mooc-grid > .thumb-card {
-    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards !important;
+    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
     animation-delay: calc(
       var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
-    ) !important;
+    );
   }
   .mooc-card-image {
     block-size: 96px;
@@ -1223,7 +1247,9 @@
     gap: var(--sp-3);
     padding-block: var(--sp-3);
   }
-  @media (max-width: 680px) {
+  /* r152i (A3): 680→640 — joins the dominant phone band (nothing else
+     uses 680; nearest ladder rungs are 640/768). */
+  @media (max-width: 640px) {
     .webinar-dest-grid { grid-template-columns: 1fr; }
   }
   .webinar-dest {
@@ -1257,6 +1283,10 @@
     font-size: var(--type-label-size);
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
+    /* r148 (VLM-A VA-6): العدّاد عنصر flex مستقل داخل .page{gap:sp-8=40px}
+       فيتضاعف الفاصل. الهامش السالب المضاد يلصقه بالجدول كتسمية توضيحية:
+       الفعلي تحت العدّاد 8px بدل 40px. */
+    margin-block-end: calc(var(--sp-2) - var(--sp-8));
   }
   .table-wrap {
     border-radius: var(--r-xl);
@@ -1313,9 +1343,12 @@
   @media (max-width: 920px) {
     /* PP-X2 (audit P2-14): the floor was 640px — a landscape phone
        (844×390) escaped it with 36px pills + a 32px «تسليم» button.
-       The 920px band is the app's own mobile breakpoint; !important
-       still required to beat the components layer (same precedence
-       flip as the entrance opt-outs above). Font sizes unchanged.
+       The 920px band is the app's own mobile breakpoint. (r151d: the
+       bang retired — min-block-size composes over the components-
+       layer block-size at used-value time; it only ever fought the
+       pre-9-b 32px pin, which no longer exists. This rule is now the
+       ONLY floor in the 641-920 band — polish's ≤640 block covers
+       phones — so the rule itself stays.) Font sizes unchanged.
        PP-X2 live-census follow-up: the course card's nested «تابع/ابدأ»
        CTA (.thumb-card-go, a .btn.ghost.sm → 32px) joined the list —
        the whole card is the primary target, but the labeled CTA must
@@ -1324,7 +1357,7 @@
     .courses-assignments td .btn,
     .webinar-kpis .metric-change .btn,
     .jobs-table .table-row-actions .btn,
-    .thumb-card .thumb-card-go { min-block-size: 44px !important; }
+    .thumb-card .thumb-card-go { min-block-size: 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
     /* same-or-higher specificity + !important — the entrances above are
@@ -1747,16 +1780,16 @@
 
   /* ── Terminal — an always-dark physical console ──
      The neutral ramp is theme-flipped (dark theme's "ink" is sand), so
-     no theme token can express "dark ground in BOTH themes". The ground
-     below pins the canonical ink hex #191918 from the ramp (not a new
-     color); text uses --text-on-dark which is light in both themes
-     (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). Same documented-raw-hex
-     exception as the §LecturePlayerPage video matte. */
+     no theme token can express "dark ground in BOTH themes". (r150a:
+     one CAN now — --warm-ink pins the same canonical ramp hex as a
+     fixed token; the ground below consumes it.) Text uses
+     --text-on-dark which is light in both themes
+     (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). */
   .terminal {
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #191918;
+    background: var(--warm-ink);
     border: 1px solid color-mix(in srgb, var(--text-on-dark) 14%, transparent);
     border-radius: var(--r-lg);
     overflow: clip;
@@ -1780,7 +1813,7 @@
     align-items: center;
     gap: var(--sp-3);
     padding: var(--sp-2) var(--sp-4);
-    background: color-mix(in srgb, var(--text-on-dark) 6%, #191918);
+    background: color-mix(in srgb, var(--text-on-dark) 6%, var(--warm-ink));
     border-block-end: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent);
   }
   .terminal-dots { display: flex; gap: 6px; }
@@ -1792,7 +1825,7 @@
     margin-inline-start: auto;
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
-    color: color-mix(in srgb, var(--text-on-dark) 55%, #191918);
+    color: color-mix(in srgb, var(--text-on-dark) 55%, var(--warm-ink));
   }
   .terminal-body {
     block-size: 280px;
@@ -1820,7 +1853,7 @@
   /* idle hint line — the quiet system voice, centered */
   .terminal-hint {
     text-align: center;
-    color: color-mix(in srgb, var(--text-on-dark) 55%, #191918);
+    color: color-mix(in srgb, var(--text-on-dark) 55%, var(--warm-ink));
   }
   .terminal-cursor {
     display: inline-block;
@@ -2816,6 +2849,360 @@
      (guardrail #6 — joins the wave-4d block at the top of this list). */
   @media (prefers-reduced-motion: reduce) {
     .exam-q-state { animation: none; }
+  }
+
+
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  polish v10 page systems — migrated home (r151i, R5-A2 m1)    ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* Moved verbatim from polish.css @layer overrides — these were
+     primary ownership in the wrong layer (nothing overrode them; the
+     only true override, v22's .chat-input:focus-visible, stayed in
+     polish). Appended AFTER this sheet's own chat/matrix refinements
+     so the v10 base keeps its authority over them, exactly as the
+     overrides layer guaranteed before. The .post border-radius
+     matches v8's mockup-lift pair by value (--r-lg) — the lift's
+     transition/hover rules remain in polish's pages layer and keep
+     winning by source order, as they always did. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     AI ASSISTANT — chat bubbles + quick actions
+     ═══════════════════════════════════════════════════════════════ */
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    min-block-size: 320px;
+    max-block-size: 480px;
+    overflow-y: auto;
+    padding: var(--sp-4) var(--sp-2) var(--sp-3);
+    scroll-behavior: smooth;
+  }
+
+  .chat-msg {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+  .chat-msg.bot { justify-content: flex-start; }
+  .chat-msg.user { flex-direction: row-reverse; }
+
+  .chat-avatar {
+    inline-size: 28px;
+    block-size: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--accent-soft);
+    color: var(--accent-ink); /* r148 (AUDIT-1 H3): --accent كان 3.06:1 — حافة 3:1 هشة */
+  }
+
+  .chat-bubble {
+    max-inline-size: min(640px, 78%);
+    padding: 10px 14px;
+    border-radius: var(--r-xl);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border-faint);
+    /* subtle entrance */
+    animation: chat-in var(--motion-duration-medium) var(--ease-out) both;
+  }
+  @keyframes chat-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chat-bubble { animation: none; }
+  }
+
+  .chat-msg.bot .chat-bubble {
+    /* bubble tail corner — asymmetric shape detail, off-scale */
+    border-start-start-radius: 4px;
+  }
+  .chat-msg.user .chat-bubble {
+    background: linear-gradient(135deg,
+      var(--accent) 0%,
+      color-mix(in srgb, var(--accent) 96%, var(--accent-strong)) 100%);
+    color: var(--accent-fg);
+    border-color: transparent;
+    /* bubble tail corner — asymmetric shape detail, off-scale */
+    border-end-end-radius: 4px;
+  }
+
+  .chat-bubble p { margin: 0; }
+  .chat-bubble p + p { margin-block-start: 6px; }
+
+  .ai-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: var(--sp-3) var(--sp-2) var(--sp-2);
+    border-block-start: 1px solid var(--rule);
+    margin-block-start: var(--sp-1);
+  }
+  .ai-quick-chip {
+    padding: 6px 12px;
+    border-radius: var(--r-full);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition: var(--t-clean);
+  }
+  .ai-quick-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+  }
+
+  .chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-3) var(--sp-2) var(--sp-1);
+  }
+  .chat-input {
+    flex: 1;
+    min-inline-size: 0;
+    block-size: 40px;
+    padding-inline: var(--sp-3);
+    border-radius: var(--r-full);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: inherit;
+    /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
+       zooms the viewport on any <16px input focus. 16px floor
+       (components.css's shared .input takes the same fix from 21-b). */
+    font-size: 16px;
+    transition: var(--t-clean);
+  }
+  .chat-input:focus {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--accent);
+    /* soft accent focus halo — interaction ring, not elevation */
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .chat-send {
+    inline-size: 40px;
+    block-size: 40px;
+    border-radius: 50%;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--accent-fg);
+    cursor: pointer;
+    transition: var(--t-clean);
+    flex-shrink: 0;
+  }
+  .chat-send:hover:not(:disabled) {
+    transform: scale(1.05);
+    /* accent-tinted send glow — not elevation */
+    box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+  .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
+  /* ═══════════════════════════════════════════════════════════════
+     MATRIX (knowledge map) — courses + cells + legend
+     ═══════════════════════════════════════════════════════════════ */
+  .matrix-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    margin-block-end: var(--sp-4);
+  }
+  .matrix-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    font-weight: var(--fw-medium);
+  }
+  .matrix-legend-dot {
+    inline-size: 10px;
+    block-size: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* (Wave 6-c dead-selector sweep: .matrix-grid deleted — its only
+     consumer (MatrixPage concept grid) switched to the designed
+     .matrix-cells in wave 4-a; rg over frontend/src = 0 hits since.
+     See worklog 4-a follow-up #1.) */
+
+  .matrix-course {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    padding: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    transition: var(--t-clean);
+  }
+  .matrix-course:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+    /* Off-token by design: accent-tinted hover glow, not elevation. */
+    box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--accent) 12%, color-mix(in srgb, var(--black) 5%, transparent));
+  }
+  .matrix-course-head {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .matrix-course-icon {
+    inline-size: 36px;
+    block-size: 36px;
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .matrix-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .matrix-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-block-start: 2px;
+    font-size: 11px;
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .matrix-meta-pct {
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* Per-concept tile */
+  .matrix-cells {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+  }
+  .matrix-cell {
+    padding: 8px 10px;
+    border-radius: var(--r-xs);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    text-align: start;
+    cursor: default;
+    line-height: 1.3;
+    transition: var(--t-clean);
+  }
+  .matrix-cell.lvl-strong   { background: color-mix(in srgb, var(--success) 14%, var(--surface)); border-color: color-mix(in srgb, var(--success) 26%, transparent); color: var(--c-mint-deep); }
+  .matrix-cell.lvl-good     { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent-strong); }
+  .matrix-cell.lvl-weak     { background: color-mix(in srgb, var(--warning) 14%, var(--surface)); border-color: color-mix(in srgb, var(--warning) 28%, transparent); color: var(--c-yellow-deep); }
+  .matrix-cell.lvl-poor     { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 24%, transparent); color: var(--c-rose-deep); }
+  .matrix-cell.lvl-untouched { color: var(--text-subtle); border-style: dashed; }
+  .matrix-cell:hover {
+    transform: translateY(-1px);
+    /* 012 elevation-language: tile hover → --elev-2 (was 0 2px 6px -2px .08;
+     within the ≤2px blur / ±.05 alpha equivalence band). */
+    box-shadow: var(--elev-2);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     POSTS (social feed)
+     ═══════════════════════════════════════════════════════════════ */
+  .post {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    padding: var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+  .post-author {
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    color: var(--text);
+  }
+  .post-time {
+    font-size: 11px;
+    color: var(--text-subtle);
+  }
+  .post-body {
+    color: var(--text);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    white-space: pre-wrap;
+  }
+  .post-actions {
+    display: flex;
+    gap: var(--sp-3);
+    margin-block-start: 6px;
+    padding-block-start: var(--sp-2);
+    border-block-start: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+  }
+  .post-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: 0;
+    padding: 4px 8px;
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--t-clean);
+  }
+  .post-action:hover { background: var(--surface-2); color: var(--text); }
+  .post-action.on {
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+  }
+  /* 22-c (A5 P2-2): a reacted heart is a STATE, not an available
+     action (the backend cannot un-react) — the pointer cursor would
+     keep promising the click the handler refuses. */
+  .post-action[aria-disabled="true"] { cursor: default; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     Faculty / city chips inside University Info
+     ═══════════════════════════════════════════════════════════════ */
+  .faculty-chip-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: 8px var(--sp-3);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    border: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
+    transition: var(--t-fast) var(--ease);
+  }
+  .faculty-chip-row:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
   }
 
 }

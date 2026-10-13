@@ -13,7 +13,7 @@ import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
-import { countAr } from '../../lib/format';
+import { countAr, formatPct } from '../../lib/format';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -397,7 +397,7 @@ export default function LibraryPage() {
                       </span>
                     </div>
                     <div className="thumb-card-body">
-                      <div className="thumb-card-title" style={{ minHeight: 36 }}>{b.title}</div>
+                      <div className="thumb-card-title" style={{ minHeight: 36 }} title={b.title}>{b.title}</div>
                       <div className="thumb-card-sub">{b.author}</div>
                       <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
                         <span className="text-xs text-subtle flex items-center gap-1 font-mono">
@@ -480,7 +480,7 @@ export default function LibraryPage() {
               </div>
               <div className="lib-count" style={{ marginInlineStart: 'auto' }}>
                 {researchInUse
-                  ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ "{debouncedQ}"</>
+                  ? <><bdi>{visibleResearch.length}</bdi> نتيجة لـ «<bdi>{debouncedQ}</bdi>»</>
                   : <><bdi>{visibleResearch.length}</bdi> بحث منشور</>}
               </div>
             </div>
@@ -574,10 +574,10 @@ export default function LibraryPage() {
                         mono costume now rides the numeric <bdi> only,
                         mirroring the correct pattern at :394/:402. */}
                     {p.plagiarismPct != null && (
-                      <span>انتحال: <bdi className="font-mono">{p.plagiarismPct}%</bdi></span>
+                      <span>انتحال: <bdi className="font-mono">{formatPct(p.plagiarismPct)}%</bdi></span>
                     )}
                     {p.aiContentPct != null && (
-                      <span>ذكاء اصطناعي: <bdi className="font-mono">{p.aiContentPct}%</bdi></span>
+                      <span>ذكاء اصطناعي: <bdi className="font-mono">{formatPct(p.aiContentPct)}%</bdi></span>
                     )}
                     <span style={{ marginInlineStart: 'auto', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       <Icon icon={ShieldCheck} size={11} strokeWidth={2} />

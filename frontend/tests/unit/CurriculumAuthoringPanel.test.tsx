@@ -210,7 +210,7 @@ describe('LectureAuthoringList — up/down reorder (5-B6 / A7 P2-3)', () => {
     ).toBeEnabled();
   });
 
-  it('swaps ordinals with the neighbor through two PATCHes', async () => {
+  it('sends the FULL swapped id list through ONE atomic reorder POST (r152b A5 P2)', async () => {
     const { api } = await import('../../src/lib/api');
     renderPanel();
     await screen.findByText('المحاضرة الأولى: مدخل الشبكات');
@@ -220,16 +220,20 @@ describe('LectureAuthoringList — up/down reorder (5-B6 / A7 P2-3)', () => {
     );
 
     await waitFor(() => {
-      expect(api.patch).toHaveBeenCalledTimes(2);
+      expect(api.post).toHaveBeenCalledTimes(1);
     });
-    // The pair swap: lec1 takes lec2's ordinal, then lec2 takes lec1's
-    expect(api.patch).toHaveBeenNthCalledWith(1, '/lectures/lec1', { ordinal: 2 });
-    expect(api.patch).toHaveBeenNthCalledWith(2, '/lectures/lec2', { ordinal: 1 });
+    // ONE call, the whole list in its new order — a partial failure can
+    // never leave two lectures sharing an ordinal anymore.
+    expect(api.post).toHaveBeenCalledWith(
+      '/offerings/off1/lectures/reorder',
+      { ids: ['lec2', 'lec1'] },
+    );
+    expect(api.patch).not.toHaveBeenCalled();
   });
 
-  it('reports a failed swap as an error toast and unlocks the buttons', async () => {
+  it('reports a failed reorder as an error toast and unlocks the buttons', async () => {
     const { api } = await import('../../src/lib/api');
-    vi.mocked(api.patch).mockRejectedValueOnce({
+    vi.mocked(api.post).mockRejectedValueOnce({
       response: { data: { error: { message: 'انتهت صلاحية الجلسة' } } },
     });
     renderPanel();
@@ -303,11 +307,11 @@ describe('ChapterList — up/down reorder (5-D3 / 5-B6 hand-off #2)', () => {
     ).toBeEnabled();
   });
 
-  it('swaps ordinals with the neighbor through two PATCHes', async () => {
+  it('sends the FULL swapped id list through ONE atomic reorder POST (r152b A5 P2)', async () => {
     const { api } = await import('../../src/lib/api');
     // The lecture-reorder suite above shares this module-level mock —
-    // count only THIS swap's calls.
-    vi.mocked(api.patch).mockClear();
+    // count only THIS move's calls.
+    vi.mocked(api.post).mockClear();
     await openStructure();
 
     fireEvent.click(
@@ -315,16 +319,19 @@ describe('ChapterList — up/down reorder (5-D3 / 5-B6 hand-off #2)', () => {
     );
 
     await waitFor(() => {
-      expect(api.patch).toHaveBeenCalledTimes(2);
+      expect(api.post).toHaveBeenCalledTimes(1);
     });
-    // The pair swap: chA takes chB's ordinal, then chB takes chA's
-    expect(api.patch).toHaveBeenNthCalledWith(1, '/chapters/chA', { ordinal: 2 });
-    expect(api.patch).toHaveBeenNthCalledWith(2, '/chapters/chB', { ordinal: 1 });
+    // ONE call, the whole chapter list in its new order.
+    expect(api.post).toHaveBeenCalledWith(
+      '/lectures/lec1/chapters/reorder',
+      { ids: ['chB', 'chA'] },
+    );
+    expect(api.patch).not.toHaveBeenCalled();
   });
 
-  it('reports a failed swap as an error toast and unlocks the pair', async () => {
+  it('reports a failed reorder as an error toast and unlocks the pair', async () => {
     const { api } = await import('../../src/lib/api');
-    vi.mocked(api.patch).mockRejectedValueOnce({
+    vi.mocked(api.post).mockRejectedValueOnce({
       response: { data: { error: { message: 'انتهت صلاحية الجلسة' } } },
     });
     await openStructure();

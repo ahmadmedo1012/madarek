@@ -110,6 +110,11 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  /* r152a (A6 P3-4): closing the search bar unmounts the focused
+   * input/close button — without an explicit restore, keyboard users
+   * land on <body>. Focus returns to the search toggle that opened
+   * the bar, but only when focus actually lived inside it. */
+  const searchToggleRef = useRef<HTMLButtonElement>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const fullscreenBtnRef = useRef<HTMLButtonElement>(null);
   const renderTaskRef = useRef<{ cancel: () => void; promise: Promise<void> } | null>(null);
@@ -424,9 +429,16 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
   const closeSearch = useCallback(() => {
     searchGenRef.current += 1;
     setIsSearching(false);
+    // Focus restore BEFORE the unmount (r152a A6 P3-4): after the bar
+    // is gone, document.activeElement has already fallen to <body> and
+    // the origin is unrecoverable.
+    const active = document.activeElement;
+    const wasInsideBar =
+      active instanceof HTMLElement && active.closest('.pdf-searchbar') !== null;
     setSearchOpen(false);
     setSearchHits([]);
     setSearchTerm('');
+    if (wasInsideBar) searchToggleRef.current?.focus();
   }, []);
 
   // ── Keyboard shortcuts ───────────────────────────────────────────
@@ -672,7 +684,7 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
         </div>
 
         <div className="pdf-toolbar-group pdf-toolbar-actions">
-          <button type="button" className={`pdf-btn${searchOpen ? ' on' : ''}`} onClick={() => setSearchOpen((v) => !v)} aria-pressed={searchOpen} title="بحث في المستند" aria-label="بحث في المستند">
+          <button type="button" ref={searchToggleRef} className={`pdf-btn${searchOpen ? ' on' : ''}`} onClick={() => setSearchOpen((v) => !v)} aria-pressed={searchOpen} title="بحث في المستند" aria-label="بحث في المستند">
             <Icon icon={Search} size={16} />
           </button>
           <button
@@ -711,7 +723,17 @@ export default function PdfViewer({ src, title, fill = true, controlRef, onPageC
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ابحث في المستند…"
             aria-label="البحث في المستند"
-            onKeyDown={(e) => { if (e.key === 'Enter') runSearch(); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') runSearch();
+              // Escape inside the input (r152a A6 P3-4): the global
+              // viewer handler bails on editable targets, so typing
+              // Escape in the box used to do nothing — now it closes
+              // the bar and focus returns to the search toggle.
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                closeSearch();
+              }
+            }}
             autoFocus
           />
           {isSearching ? (

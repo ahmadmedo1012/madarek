@@ -275,5 +275,5 @@ function RoleBadge({ role }: { role: AppRole }) {
     role === 'QUALITY' ? 'أخصائي جودة' :
     role === 'OWNER' ? 'مالك المنصة' :
     'طالب';
-  return <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{label}</span>;
+  return <span style={{ color: 'var(--accent-ink)', fontWeight: 600 }}>{label}</span>;
 }

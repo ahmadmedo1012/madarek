@@ -214,7 +214,7 @@ export default function LabsPage() {
                       </span>
                     </div>
                     <div className="thumb-card-body">
-                      <div className="thumb-card-title">{l.name}</div>
+                      <div className="thumb-card-title" title={l.name}>{l.name}</div>
                       <div className="thumb-card-sub">
                         <bdi>{l.platform ?? '—'}</bdi> · <bdi>{l.totalExperiments}</bdi> تجربة
                       </div>
@@ -323,7 +323,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
           </div>
           <div className="text-2xl font-bold" style={{ color: 'var(--text)', marginTop: 'var(--sp-3)' }}>أحسنت!</div>
           <div className="text-sm text-muted" style={{ maxWidth: 460, marginTop: 'var(--sp-2)' }}>
-            أكملت "<bdi>{exp.title}</bdi>" بنجاح.
+            أكملت «<bdi>{exp.title}</bdi>» بنجاح.
           </div>
           <div className="lab-done-chip" style={{ marginTop: 'var(--sp-5)' }}>
             <Icon icon={Award} size={18} />
@@ -380,7 +380,10 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
               </div>
               <div className="terminal-title"><bdi>{lab.platform ?? 'simulator'}</bdi></div>
             </div>
-            <div className="terminal-body" role="log" aria-live="polite" aria-label="مخرجات المحاكاة">
+            {/* tabIndex (r152a A6 P2-2): zero focusable children inside
+                the scroller — a tab stop is the only keyboard path to
+                arrow-scroll the simulation output. */}
+            <div className="terminal-body" role="log" tabIndex={0} aria-live="polite" aria-label="مخرجات المحاكاة">
               {terminalLines.length === 0 && !running ? (
                 <div className="terminal-hint">— اضغط "تشغيل الخطوة" لتنفيذ الأوامر —</div>
               ) : (

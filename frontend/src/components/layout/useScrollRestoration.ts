@@ -3,6 +3,28 @@ import { useLocation, useNavigationType, type NavigationType } from 'react-route
 
 const SCROLL_STORAGE_KEY_PREFIX = 'madarek.scroll:';
 
+/* r152a (A4 P3): hardened browsers and embedded webviews can throw on
+ * sessionStorage access itself (the app already guards this in
+ * auth.store / LandingPage / ProfilePage) — an unguarded throw inside
+ * this effect would land the whole app on the error boundary on every
+ * navigation. Persistence and restore silently degrade instead. */
+const readStoredScroll = (key: string): number | null => {
+  try {
+    const stored = sessionStorage.getItem(SCROLL_STORAGE_KEY_PREFIX + key);
+    return stored ? Number(stored) : null;
+  } catch {
+    return null;
+  }
+};
+
+const persistScroll = (key: string, scrollTop: number): void => {
+  try {
+    sessionStorage.setItem(SCROLL_STORAGE_KEY_PREFIX + key, String(scrollTop));
+  } catch {
+    /* storage blocked — skip persisting */
+  }
+};
+
 /**
  * useScrollRestoration — saves the content scroll position per history
  * entry, restores it on POP (browser back/forward), scrolls to top on
@@ -39,17 +61,14 @@ export function useScrollRestoration(scrollRef: React.RefObject<HTMLElement | nu
 
     // Save the OUTGOING key's scroll position.
     if (previousKey.current && previousKey.current !== location.key) {
-      sessionStorage.setItem(
-        SCROLL_STORAGE_KEY_PREFIX + previousKey.current,
-        String(previousScrollTop.current),
-      );
+      persistScroll(previousKey.current, previousScrollTop.current);
     }
 
     // Decide what to do for the INCOMING key.
     if (navigationType === 'POP') {
       // Browser back/forward: restore.
-      const stored = sessionStorage.getItem(SCROLL_STORAGE_KEY_PREFIX + location.key);
-      const top = stored ? Number(stored) : 0;
+      const stored = readStoredScroll(location.key);
+      const top = stored ?? 0;
       // Run after layout so the content is in place.
       requestAnimationFrame(() => {
         node.scrollTo({ top, behavior: 'instant' as ScrollBehavior });

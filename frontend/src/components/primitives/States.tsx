@@ -5,7 +5,10 @@ import { Illustration } from '../Illustration';
 import type { IllustrationName } from '../../lib/illustrations';
 import { apiErrorDetail, apiErrorCode, isArabicText } from '../../lib/format';
 
-type LoadingVariant = 'inline' | 'page' | 'card' | 'minimal';
+// r151c: 'page' | 'card' retired — no call site ever passed them (default
+// is inline, one minimal consumer), and their .state.state-* CSS rules
+// were dead weight deleted in the same sweep. Re-add both halves together.
+type LoadingVariant = 'inline' | 'minimal';
 
 export function LoadingState({
   label = 'جارٍ التحميل…',

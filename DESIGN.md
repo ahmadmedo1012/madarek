@@ -12,11 +12,12 @@ A design reference is gates, not a gallery. Madarek's canon is machine-enforced 
 
 | Gate | Command | What it asserts |
 |---|---|---|
-| **Parity export** | `node scripts/verify-parity-export.mjs` | **168/168 token checks** — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
+| **Parity export** | `node scripts/verify-parity-export.mjs` | **163/163 token checks** (168 before the r148-d dead-token sweep) — the export pair distills `tokens.css` faithfully; headline pins (night `#070B16`, gold `#E9B44C`, copper `#B57438`, cream `#FBFAF9`, sand `#F2EFE6`) fail loudly if the reference itself drifts. 4 gates: token parity · undefined-var audit (0 broken; 2 sanctioned opt-in hooks) · 43 retired values absent · brace balance. |
 | **Motion tokens** | `npm run check:motion-tokens` | No raw motion values outside the canonical token files. |
 | **Icon discipline** | `npm run check:icons` | Lucide-only — no other icon source. |
+| **Color tokens** | `npm run check:colors` (`--strict` in CI) | No raw hex/rgb()/hsl() outside the sanctioned zones (tokens.css · fonts.css · the export pair · documented `color-gate: allow` lines). r150a sorted the last 269 literals into tokens / `color-mix()` derivations / documented allows — the census is zero and the gate is strict. |
 | **Token snapshots** | `frontend` vitest suite | Role-accent hexes pinned per theme (7 roles × 2), drift + route-title + a11y nets. |
-| **CI** | `.github/workflows/ci.yml` | 7 jobs: lint · typecheck · build · frontend tests · backend tests · design gates (icons + motion tokens + CSP pins + parity export) · surface drift. |
+| **CI** | `.github/workflows/ci.yml` | 7 jobs: lint · typecheck · build · frontend tests · backend tests · design gates (icons + motion tokens + CSP pins + parity export + **color gate, strict**) · surface drift. |
 
 **What the export pair distills vs what stays outside it:**
 
@@ -32,7 +33,7 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 
 | File | Owns |
 |---|---|
-| `tokens.css` | ALL tokens — primitives, light/dark theme blocks, Orbit Ink `--ln-*`, pastel families, elevation, z, state tokens |
+| `tokens.css` | ALL tokens — primitives, light/dark theme blocks, Orbit Ink `--ln-*`, pastel families, elevation, z, state tokens, the r150a basis constants (`--black`/`--white`/`--warm-ink`, theme-fixed), the overlay-veil ramp (`--overlay-veil[-deep/-max]`, per theme) and the print light-lock remap |
 | `fonts.css` | self-hosted Plex subsets (woff2) + `@font-face` declarations |
 | `motion.css` | reveal / skeleton / spinner motion grammar, semantic durations |
 | `base.css` | element reset, heading styles, reduced-motion belt, autofill/caret polish |
@@ -41,10 +42,11 @@ Full export contract: [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md). Tokens l
 | `auth.css` · `notifications.css` · `student.css` | eager remainder — auth-page recipes, toasts/bottom-nav, student-surface patches |
 | `polish.css` | overrides layer — the last word on layered surfaces |
 | `landing.css` | Orbit Ink world (§1a) — the only place `--ln-*` is consumed at scale |
-| `colleges.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages |
+| `colleges.css` · `colleges-popover.css` · `admin.css` · `owner.css` · `training.css` · `pdf.css` · `player.css` | page-scoped sheets, imported by their lazy pages (admin.css born r150e — the colleges.css split; colleges-popover.css born r151h — the popover split, rides the LandingPage chunk; 10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets) |
+| r152 ownership wave | the search family (v21) → `layout.css`; the megamino stagger (v18) → `landing.css`; the auth-card entrance + pdf-toolbar fade (v19) → `auth.css` / `pdf.css`; the whole `.state` family (v8+v11+v21) → `components.css` §STATE; the a11y utilities core (sr-only / skip-link / :target / tap-highlight / img-lazy) → `base.css` — polish.css keeps ONLY true overrides, belts and pins (5446 → ~4680 lines over r151–r152) |
 | `unified-parity.css` + `shared-design-system.css` | the **export pair** — reference distillate, not imported by the app (§0, §8) |
 
-(10 eager via `main.tsx` + 6 page-scoped = the 16 in-app sheets; the export pair makes 18 on disk.)
+(10 eager via `main.tsx` + 8 page-scoped = the 18 in-app sheets; the export pair makes 20 on disk.)
 
 ---
 
@@ -66,7 +68,7 @@ Painted identically in **both** `data-theme`s; landing-scoped `--ln-*` tokens. I
 | `--ln-violet` / `--ln-violet-deep` | `#7A6BF2` / `#4E2FB8` | accent-2 large-text only / decorative depth only |
 | `--ln-line` / `--ln-line-soft` | `rgba(245,243,231,0.14)` / `0.07` | 1px hairlines |
 | Landing cards | `rgba(245,243,231,0.03)` fill + 1px line-soft + 20px radius | border-shift hovers, **no lift** |
-| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.04** (mobile 1.12) | the only display-size surface in the family |
+| Hero headline | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh **1.2** (mobile 1.18) | the only display-size surface in the family — r148 (AUDIT-4 C3): 1.04 clipped Arabic diacritic stacks; 1.2 matches the platform's display-leading floor |
 | Primary CTA | `min-block-size 46px` **pill** (xl variant 48px) — lime fill, the one lime-filled surface | ghost + text variants stay cream |
 | Marquee | `--ln-dur-marquee: 42s` linear, one slow pass (college ring) | spelled only via the token |
 | Grain veil | `--ln-grain-op: 0.075` | see §4 |
@@ -106,9 +108,9 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 
 | Companion scale | Values |
 |---|---|
-| Metric rungs | **22 / 30 / 44** — `tnum lnum` (tabular + lining numerals) on all three |
-| Landing hero | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh 1.04 — the exception, §1a |
-| Display clamps | `--fs-display-md 28–40 … --fs-mega 48–104` — rungs exist; only `-md` has live consumers |
+| Metric rungs | **22 / 30 / 44** — fixed-width figures by design (600/1000 UPM in the shipped woff2s; `tnum`/`lnum`/`ss01` features do not exist in the shipped faces — r149 fontTools audit). `tabular-nums` declarations remain as harmless insurance |
+| Landing hero | `--ln-h1: clamp(44px, 8.2vw, 108px)` · lh 1.2 — the exception, §1a (r148: was 1.04 — clipped Arabic diacritics) |
+| Display clamps | `--fs-display-md 28–40 · --fs-display-lg 34–56 · --fs-display-xl 40–72` — rungs exist; only `-md` has live consumers (top rungs stay: the parity-export scale pins the full ladder; the phantom `--fs-mega 48–104` listed here before was retired with r132-F5) |
 | Line heights | `--lh-tight 1.05` · `--lh-snug 1.20` · `--lh-base 1.65` · `--lh-loose 1.85` |
 | Font stack | `--font-sans: 'ibm plex sans arabic', 'tajawal', system-ui, …` — self-hosted woff2 subsets, no external CDN |
 
@@ -195,7 +197,7 @@ Self-hosted **IBM Plex Sans Arabic 400–700** (no external CDN) · Plex Mono fo
 | **Empty state** | `.state-icon` **56×56 grey well** (`--c-grey-bg`/`-deep`, r-xl) · icon 20 · title **18px / 700** · desc 13 muted 42ch · actionable default copy · opt-in 160px illustration |
 | **Sidebar** | 256px (64 collapsed) · item min-30px · r-sm 8 · active = wash bg + **3×16px role-accent bar at inline-start −3px** + 240ms pop · night: gold wash + constellation gradients |
 | **KPI card** | min-block **132px** · value **30px / 700 `tnum lnum`** lh 1.10 · label 12/600 muted · icon well **44px** r-lg + 1.5px role-accent rim (30%) · hover −2px |
-| **Table** | wrap r-xl + rule border · thead **11px** / 600 / muted / UPPERCASE on **surface-2** · body 13px · **zebra-on-hover** (`tr:hover → surface-2`) — hover shift, *not* static stripes · last row borderless · pagination 44px targets |
+| **Table** | wrap r-xl + rule border · thead **11px** / 600 / muted / UPPERCASE on **surface-2** · body 13px · **zebra-on-hover** (`tr:hover → surface-2`) — hover shift, *not* static stripes · last row borderless · pagination 44px targets · **≤640px ladder** (r151b): `tbl-stack` + per-td `data-label` → row-cards (label at inline-start, first-read RTL); a plain `.table` keeps its layout and self-scrolls — never squishes, never drags the page; pagination cluster wraps |
 | **Spinner** | 22px · 2px · accent top arc · **700ms linear** (sm 14px) |
 | **Skeleton** | `--motion-duration-skeleton 1200ms` · `--ease-linear` · RTL-aware shimmer · r-sm |
 | **Badge/status** | solid pastel · 11 / 600 · `tnum` (`-bg` ground + `-deep`/`-ink` text) |
@@ -228,6 +230,7 @@ Arabic is the first-class direction; LTR is the port.
 ## 8. Rules for evolving the system — قواعد تطوير النظام
 
 1. **Consume tokens and roles, never literals** — `var(--accent)`, `--type-body-*`, `--elev-1`, `--t-base`; hex/px literals belong only in `tokens.css`.
+1a. **Alpha variants are derivations, not new colors (r150a)** — `rgb(C / 0.04)`-style translucency of an existing token C is written `color-mix(in srgb, var(--token) 4%, transparent)` (mathematically exact in srgb). Achromatic extremes route through the fixed basis `--black` / `--white`; the theme-flip-immune warm ink is `--warm-ink`. The only raw literals downstream of `tokens.css` are documented `/* color-gate: allow — reason */` lines (statutory flag colours, video mattes, mask paints, the player's sealed island).
 2. **Extend at the composition layer only** — new surfaces compose existing tokens/primitives; the token files are closed for casual edits (gate-protected).
 3. **The export pair (`unified-parity.css` + `shared-design-system.css`) is the verification surface, not a file to import** — the app consumes `tokens.css` / `motion.css` / `components.css` directly. See [`docs/PARITY-EXPORT.md`](docs/PARITY-EXPORT.md).
 4. **What the export covers:** §1b product theme, §2 typography, §3 motion, §4 elevation, §5 recipes, §6 RTL, §7 a11y. **What it excludes:** Orbit Ink (`--ln-*`), role/college accent slots, `--ill-*`.

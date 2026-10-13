@@ -56,7 +56,11 @@ function contrastRatio(a: RGB, b: RGB): number {
  */
 const CHROME_BG: Record<ThemeSurface, RGB> = {
   light: { r: 251, g: 250, b: 249 },
-  dark:  { r: 25, g: 25, b: 24 },
+  /* r148 (AUDIT-5 M4): كان #191918 (حبر الفاتح القديم) بينما أرضية الليل
+     الفعلية #070B16 (tokens.css dark --bg) — تقديرات gateCollegeAccent
+     في الداكن كانت تنحرف ضد سطح غير موجود. الاتجاه محافظ (يرفض ألوانًا
+     قد تجتاز) لكن الثابت الآن يطابق السطح الحقيقي. */
+  dark:  { r: 7, g: 11, b: 22 },
 };
 
 /**

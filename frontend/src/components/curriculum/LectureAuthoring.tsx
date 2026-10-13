@@ -21,6 +21,7 @@ import {
   apiErrorMessage,
   useCreateLecture,
   useDeleteLecture,
+  useReorderLectures,
   useUpdateLecture,
   type Lecture,
 } from '../../hooks/useResources';
@@ -164,26 +165,33 @@ export function LectureAuthoringList({
   onEdit: (lecture: Lecture) => void;
 }) {
   const del = useDeleteLecture();
-  const update = useUpdateLecture();
+  const reorder = useReorderLectures();
   const [deleting, setDeleting] = useState<Lecture | null>(null);
   /* 5-B6 (A7 P2-3): the id mid-reorder — locks every move button so
-   * two swaps can never interleave their two-PATCH sequence. */
+   * two moves can never interleave. */
   const [movingId, setMovingId] = useState<string | null>(null);
 
-  /* Reordering = swapping ordinals with the neighbor through the
-   * existing PATCH /lectures/:id (ordinal is already part of the
-   * update schema). The list re-sorts from the refetched data — no
-   * local ordering fiction; a failure surfaces as a toast and the
+  /* r152b (A5 P2): reordering is ONE atomic POST now — the full
+   * ordered id list travels together, so a network blip mid-move can
+   * never leave two lectures sharing one ordinal (the old two-PATCH
+   * swap's partial failure corrupted the order with no deterministic
+   * tiebreak). The list re-sorts from the refetched data — no local
+   * ordering fiction; a failure surfaces as a toast and the
    * invalidation restores the server truth. The «الترتيب» numeric
    * field in the edit modal stays as the power path. */
   const move = async (lecture: Lecture, dir: -1 | 1) => {
     const index = lectures.findIndex((l) => l.id === lecture.id);
     const neighbor = lectures[index + dir];
     if (!neighbor) return;
+    const next = [...lectures];
+    next[index] = neighbor;
+    next[index + dir] = lecture;
     setMovingId(lecture.id);
     try {
-      await update.mutateAsync({ lectureId: lecture.id, ordinal: neighbor.ordinal });
-      await update.mutateAsync({ lectureId: neighbor.id, ordinal: lecture.ordinal });
+      await reorder.mutateAsync({
+        offeringId: lecture.offeringId,
+        ids: next.map((l) => l.id),
+      });
     } catch (error) {
       toast.error(
         apiErrorMessage(error, 'تعذَّر تحديث ترتيب المحاضرات — حاول مرة أخرى.'),

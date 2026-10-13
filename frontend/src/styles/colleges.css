@@ -50,7 +50,8 @@
 .college-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--sp-4);
+  /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px عبر الصفحات */
+  gap: var(--sp-5);
 }
 
 .college-card {
@@ -69,10 +70,12 @@
      longest name (303px inside a 270px grid at 320 viewport, a 3px
      document overflow). */
   min-width: 0;
+  /* r149 (R3-A3 R1): أُلحقت var(--ease) — كانت الحركات كلها تركب
+     منحنى المتصفح الافتراضي ease(0.25,0.1,0.25,1) بدل منحنى النظام. */
   transition:
-    transform var(--t-fast),
-    border-color var(--t-fast),
-    box-shadow var(--t-fast);
+    transform var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
 }
 .college-card:hover {
   transform: translateY(-1px);
@@ -133,7 +136,7 @@
 }
 .college-card-arrow {
   color: var(--text-subtle);
-  transition: transform var(--t-fast), color var(--t-fast);
+  transition: transform var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   flex: 0 0 auto;
 }
 .college-card:hover .college-card-arrow {
@@ -147,314 +150,17 @@
   gap: var(--sp-2);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Hero CTA trigger for the colleges popover. Inherits .btn ghost
-   styling; the count chip sits at the trailing edge.
-   ═══════════════════════════════════════════════════════════════ */
-.landing-colleges-trigger {
-  position: relative;
-}
-.landing-colleges-trigger-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-inline-size: 28px;
-  block-size: 22px;
-  padding-inline: 8px;
-  margin-inline-start: var(--sp-2);
-  border-radius: var(--r-full);
-  background: var(--accent);
-  color: var(--accent-fg, white);
-  font-size: var(--type-label-size-sm);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-}
 
 /* ═══════════════════════════════════════════════════════════════
-   Colleges Popover — opened from the homepage hero CTA.
-   Native <dialog> + ::backdrop. Native focus-trap, ESC-close,
-   backdrop styling for free.
+   (r151h): the colleges POPOVER family — the hero CTA trigger, the
+   native <dialog> picker and its skeleton — moved verbatim to its
+   own sheet, colleges-popover.css (imported by <CollegesPopover />,
+   riding the LandingPage chunk). The landing route no longer
+   downloads this gallery sheet for the popover's sake. The gallery,
+   detail, leaderboard, comp-* and KPI-strip families below are
+   unchanged.
    ═══════════════════════════════════════════════════════════════ */
 
-.colleges-popover {
-  /* reset native dialog box */
-  border: none;
-  padding: 0;
-  background: transparent;
-  /* sizing */
-  inline-size: min(640px, calc(100vw - var(--sp-7)));
-  max-inline-size: 640px;
-  block-size: auto;
-  max-block-size: min(720px, calc(100vh - var(--sp-9)));
-  /* center */
-  margin: auto;
-}
-.colleges-popover::backdrop {
-  background: rgb(0 0 0 / 0.42);
-  backdrop-filter: blur(var(--scrim-blur));
-  -webkit-backdrop-filter: blur(var(--scrim-blur));
-}
-.colleges-popover[open] {
-  animation: colleges-popover-in var(--motion-duration-medium) var(--motion-ease-decelerate);
-}
-@keyframes colleges-popover-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)   scale(1);    }
-}
-@media (prefers-reduced-motion: reduce) {
-  .colleges-popover[open] { animation: none; }
-}
-
-.colleges-popover-inner {
-  display: flex;
-  flex-direction: column;
-  block-size: 100%;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-2xl);
-  /* Off-token by design: full-height mega-popover needs a cinematic single
-     layer drop (0 24px 60px / .18); composite intensity sits between
-     --elev-4 and --elev-5 (alpha .18 exceeds the ±.05 equivalence band). */
-  box-shadow: 0 24px 60px rgb(0 0 0 / 0.18);
-  overflow: hidden;
-}
-
-.colleges-popover-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  padding: var(--sp-5) var(--sp-6) var(--sp-3);
-  border-block-end: 1px solid var(--rule);
-}
-.colleges-popover-titles { flex: 1 1 auto; min-inline-size: 0; }
-.colleges-popover-title {
-  margin: 0;
-  font-size: var(--type-headline-size-md);
-  font-weight: var(--type-headline-weight);
-  line-height: var(--type-headline-line-height);
-  letter-spacing: var(--type-headline-letter-spacing);
-  color: var(--text);
-}
-.colleges-popover-sub {
-  margin: 4px 0 0;
-  font-size: var(--type-label-size);
-  color: var(--text-muted);
-}
-.colleges-popover-sub strong {
-  color: var(--text);
-  font-weight: var(--fw-semibold);
-  font-variant-numeric: tabular-nums;
-}
-.colleges-popover-close {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 36px;
-  block-size: 36px;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-full);
-  background: var(--surface);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition:
-    background var(--motion-duration-short) var(--motion-ease-standard),
-    color var(--motion-duration-short) var(--motion-ease-standard),
-    border-color var(--motion-duration-short) var(--motion-ease-standard);
-}
-.colleges-popover-close:hover {
-  background: var(--surface-2);
-  color: var(--text);
-  border-color: var(--rule-strong, var(--rule));
-}
-
-.colleges-popover-search {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-6);
-  border-block-end: 1px solid var(--rule);
-  background: var(--surface-2);
-}
-.colleges-popover-search > svg { flex-shrink: 0; color: var(--text-muted); }
-.colleges-popover-search input {
-  flex: 1 1 auto;
-  inline-size: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  /* 21-c (A10 P1 cross-ref): 15px → 16px iOS-zoom floor. */
-  font-size: 16px;
-  font-family: inherit;
-  min-block-size: 28px;
-}
-.colleges-popover-search input::placeholder { color: var(--text-faint); }
-
-.colleges-popover-body {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding: var(--sp-3) var(--sp-4);
-  /* subtle scroll-edge */
-  background:
-    linear-gradient(var(--surface), var(--surface)) top / 100% 8px no-repeat,
-    linear-gradient(var(--surface), var(--surface)) bottom / 100% 8px no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.03), transparent) top / 100% 16px no-repeat,
-    linear-gradient(transparent, rgb(0 0 0 / 0.03)) bottom / 100% 16px no-repeat;
-  background-attachment: local, local, scroll, scroll;
-}
-
-.colleges-popover-state {
-  padding: var(--sp-7) var(--sp-4);
-  text-align: center;
-  color: var(--text-muted);
-  font-size: var(--type-body-size);
-}
-.colleges-popover-state-err { color: var(--danger-ink, var(--danger)); }
-
-.colleges-popover-group { padding-block: var(--sp-2); }
-.colleges-popover-group-head {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-2);
-  position: sticky;
-  inset-block-start: 0;
-  background: linear-gradient(to bottom,
-    var(--surface) 0%,
-    var(--surface) 70%,
-    color-mix(in srgb, var(--surface) 0%, transparent) 100%);
-  z-index: 1; /* local paint-order: sticky group header above the scrolling list — not a --z-* layer */
-}
-.colleges-popover-group-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 22px;
-  block-size: 22px;
-  border-radius: var(--r-sm);
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-.colleges-popover-group-title {
-  margin: 0;
-  flex: 1 1 auto;
-  font-size: var(--type-label-size);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-.colleges-popover-group-count {
-  font-size: var(--type-label-size-sm);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-  background: var(--surface-2);
-  padding: 2px 8px;
-  border-radius: var(--r-full);
-}
-
-.colleges-popover-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
-}
-.colleges-popover-row {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-md);
-  text-decoration: none;
-  color: var(--text);
-  transition:
-    background var(--motion-duration-short) var(--motion-ease-standard);
-  /* leave room for the optional sub-title in the cell */
-  min-block-size: 40px;
-}
-.colleges-popover-row:hover {
-  background: var(--surface-2);
-}
-.colleges-popover-row:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.colleges-popover-row-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 22px;
-  block-size: 22px;
-  color: var(--text-muted);
-}
-.colleges-popover-row-name {
-  font-size: var(--type-body-size);
-  font-weight: var(--fw-medium);
-  line-height: 1.3;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.colleges-popover-row-sub {
-  grid-column: 2;
-  font-size: var(--type-label-size-sm);
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.colleges-popover-foot {
-  padding: var(--sp-3) var(--sp-6);
-  border-block-start: 1px solid var(--rule);
-  background: var(--surface-2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.colleges-popover-foot-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: 8px var(--sp-3);
-  border-radius: var(--r-md);
-  background: var(--accent);
-  color: var(--accent-fg, white);
-  font-size: var(--type-label-size);
-  font-weight: var(--fw-semibold);
-  text-decoration: none;
-  transition:
-    transform var(--motion-duration-short) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-short) var(--motion-ease-standard);
-}
-.colleges-popover-foot-link:hover {
-  transform: translateY(-1px);
-  /* 012 elevation-language: hover lift → --elev-3 (was 0 4px 14px .12;
-     within the ≤2px blur / ±.05 alpha equivalence band). */
-  box-shadow: var(--elev-3);
-}
-[dir="rtl"] .colleges-popover-foot-link svg { transform: scaleX(-1); }
-
-@media (max-width: 640px) {
-  .colleges-popover {
-    inline-size: 100vw;
-    max-inline-size: 100vw;
-    max-block-size: 100vh;
-    block-size: 100vh;
-    margin: 0;
-  }
-  .colleges-popover-inner {
-    border-radius: 0;
-    border: none;
-  }
-  .colleges-popover-list { grid-template-columns: 1fr; }
-}
 
 /* ═══════════════════════════════════════════════════════════════
    Gallery toolbar + filter chips + accent stripe + skeleton.
@@ -596,7 +302,9 @@
   font-size: var(--type-headline-size-md);
   font-weight: var(--fw-bold);
   color: var(--text);
-  letter-spacing: var(--ls-snug);
+  /* r148 (AUDIT-4 I1): تتبّع سالب على h2 عربي («هل هذه كلّيتك؟») — الشدة
+     في «كلّيتك» أسوأ حالة ممكنة للتتبّع السالب. */
+  letter-spacing: 0;
   line-height: 1.2;
   margin: 0;
   text-wrap: balance;
@@ -688,7 +396,9 @@
 }
 
 /* Mobile: stack cards single-column, sticky toolbar with backdrop blur. */
-@media (max-width: 767px) {
+/* r152i (A3): 767→768 — off-by-one vs the 768 family used by the same
+   file (:520) and everywhere else; dvh per the iOS URL-bar canon. */
+@media (max-width: 768px) {
   .gallery-toolbar {
     position: sticky;
     top: var(--topbar-h);
@@ -890,7 +600,7 @@
   gap: var(--sp-3);
   padding: var(--sp-2);
   border-radius: var(--r-sm);
-  transition: background var(--t-fast);
+  transition: background var(--t-fast) var(--ease);
 }
 .student-rank-row:hover { background: var(--surface-2); }
 .student-rank-num {
@@ -1083,184 +793,13 @@ a.comp-card:focus-visible .comp-go {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Admin extra pages (Sub-project D) — students table, digital,
-   analysis, settings
-   ═══════════════════════════════════════════════════════════════ */
-
-.admin-students-toolbar {
-  display: flex;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-3);
-  flex-wrap: wrap;
-}
-.admin-students-search {
-  position: relative;
-  flex: 1 1 240px;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-}
-.admin-students-search:focus-within {
-  border-color: var(--accent);
-  box-shadow: var(--state-input-focus-halo);
-}
-.admin-students-search input {
-  /* 13-17 (D14 dedupe): border/background/height/outline deleted —
-     polish.css's pages-layer bare-input reset (height: auto, padding: 0)
-     is the approved final for this wrapper-as-pill surface and no longer
-     depends on this file loading first. Colleges keeps only what polish
-     does not set: flow, family, size and ink.
-     21-c (A10 P1 cross-ref): 13px → 16px — iOS Safari zooms the
-     viewport on any <16px input focus. */
-  flex: 1 1 auto;
-  font-family: inherit;
-  font-size: 16px;
-  color: var(--text);
-}
-.admin-students-input {
-  height: 36px;
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  /* 21-c (A10 P1 cross-ref): 13px → 16px iOS-zoom floor. */
-  font-size: 16px;
-  font-family: inherit;
-}
-.admin-students-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: var(--state-input-focus-halo);
-}
-
-.admin-students-table-wrap {
-  overflow-x: auto;
-  margin-inline: calc(-1 * var(--sp-2));
-}
-.admin-students-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-.admin-students-table thead th {
-  text-align: start;
-  padding: var(--sp-2) var(--sp-3);
-  background: var(--surface-2);
-  color: var(--text-muted);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  border-block-end: 1px solid var(--border);
-  white-space: nowrap;
-}
-.admin-students-table tbody td {
-  padding: var(--sp-2) var(--sp-3);
-  border-block-end: 1px solid var(--border);
-  vertical-align: middle;
-}
-.admin-students-table tbody tr:hover {
-  background: var(--surface-1);
-}
-.admin-students-name {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-.admin-students-email {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-}
-
-.admin-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding-block-start: var(--sp-3);
-  border-block-start: 1px solid var(--border);
-}
-.admin-pagination-actions {
-  display: inline-flex;
-  gap: var(--sp-2);
-}
-
-/* Digital page */
-/* Analysis page */
-.trend-table-wrap { overflow-x: auto; }
-.trend-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-.trend-table th,
-.trend-table td {
-  padding: var(--sp-2) var(--sp-3);
-  text-align: start;
-  border-block-end: 1px solid var(--border);
-}
-.trend-table th {
-  background: var(--surface-2);
-  color: var(--text-muted);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-}
-
-.top-courses-row:hover { background: var(--surface-2); }
-.top-courses-body { flex: 1 1 auto; min-width: 0; }
-.top-courses-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); }
-.top-courses-meta { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: 2px; }
-
-/* Settings page */
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding: var(--sp-3) 0;
-  border-block-end: 1px dashed var(--border);
-}
-.settings-row:last-child { border-block-end: 0; }
-.settings-label {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.settings-value {
-  font-size: var(--fs-sm);
-  color: var(--text);
-  margin-block-start: 2px;
-}
-.settings-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
-.settings-links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-}
-.settings-links a {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--sp-2);
-  border-radius: var(--r-sm);
-  color: var(--accent-ink, var(--accent));
-  text-decoration: none;
-  font-size: var(--fs-sm);
-  transition: background var(--t-fast);
-}
-.settings-links a:hover { background: var(--surface-2); }
+/* ==================================================================
+   Admin extra pages — MOVED to admin.css (r150e)
+   ------------------------------------------------------------------
+   (Sub-project D lived here: students table, digital, analysis,
+   settings. The r150e split moved it verbatim to admin.css — the
+   colleges sheet now owns only the colleges world. The dead
+   .top-courses-* residue died rather than moving.) */
 
 /* ═══════════════════════════════════════════════════════════════
    Colleges leaderboard (Sub-project C) — inter-college comparison
@@ -1308,7 +847,7 @@ a.comp-card:focus-visible .comp-go {
   font-weight: inherit;
   cursor: pointer;
   border-radius: var(--r-sm);
-  transition: color var(--t-fast);
+  transition: color var(--t-fast) var(--ease);
 }
 .leaderboard-sort:hover { color: var(--text); }
 .leaderboard-sort-on { color: var(--accent-strong); }
@@ -1330,7 +869,7 @@ a.comp-card:focus-visible .comp-go {
   gap: var(--sp-3);
   text-decoration: none;
   color: inherit;
-  transition: color var(--t-fast);
+  transition: color var(--t-fast) var(--ease);
 }
 .leaderboard-college-link:hover .leaderboard-college-name { color: var(--accent-ink, var(--accent)); }
 .leaderboard-emoji {
@@ -1347,7 +886,7 @@ a.comp-card:focus-visible .comp-go {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text);
-  transition: color var(--t-fast);
+  transition: color var(--t-fast) var(--ease);
 }
 .leaderboard-college-meta {
   font-size: var(--fs-xxs);
@@ -1394,7 +933,8 @@ a.comp-card:focus-visible .comp-go {
 .comp-index-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--sp-4);
+  /* r149 (R3-A2 R4): فجوة جدران البطاقات الموحدة 20px */
+  gap: var(--sp-5);
   margin-block-start: var(--sp-4);
 }
 .comp-index-card {
@@ -1540,7 +1080,7 @@ a.comp-card:focus-visible .comp-go {
 .comp-hero-stats > div {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-1-5); /* r149 (R3-A2 #1) */
 }
 .comp-hero-actions {
   display: flex;
@@ -1616,12 +1156,19 @@ a.comp-card:focus-visible .comp-go {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--sp-4) var(--sp-5);
+  /* r149 (R3-A1 #5 / R3-A2 R5): إيقاع المودال الكنوني — كان 16/20
+     درجة أرخص من ‎.modal-header (20/24). */
+  padding: var(--sp-5) var(--sp-6);
   border-block-end: 1px solid var(--border);
 }
 .comp-modal-head h2 {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
+  /* r149 (R3-A4 #10): وصفة ‎.modal-title الكنونية — كان 18/600
+     بينما نفس المستوى الدلالي في بقية المنصة 22/700. */
+  font-family: var(--font-display);
+  font-size: var(--type-headline-size-md);
+  font-weight: var(--type-headline-weight);
+  color: var(--text);
+  letter-spacing: var(--type-headline-letter-spacing);
   margin: 0;
 }
 .comp-modal-close {
@@ -1631,29 +1178,19 @@ a.comp-card:focus-visible .comp-go {
   color: var(--text-muted);
   padding: var(--sp-2);
   border-radius: var(--r-sm);
-  transition: background var(--t-fast);
+  transition: background var(--t-fast) var(--ease);
 }
 .comp-modal-close:hover { background: var(--surface-2); color: var(--text); }
 .comp-modal-form {
-  padding: var(--sp-5);
+  /* r149 (R3-A2 R5): ‎24px كإيقاع ‎.modal-body الكنوني (كان 20). */
+  padding: var(--sp-6);
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
 }
-.comp-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.comp-form-field label {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  color: var(--text);
-}
-.comp-form-field textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+/* r152c (A2): .comp-form-field retired — AdminGovernancePages was its
+   last consumer and its six selects now ride the canonical FormField
+   (.form-field in components.css). Tombstone kept per house convention. */
 .comp-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1675,7 +1212,8 @@ a.comp-card:focus-visible .comp-go {
   border: 1px solid var(--border);
   font-size: 18px;
   cursor: pointer;
-  transition: var(--t-fast);
+  /* r149 (R3-A3 R2): var(--ease) — كان المنحنى الافتراضي. */
+  transition: var(--t-fast) var(--ease);
 }
 .comp-icon-btn:hover { border-color: var(--accent); }
 .comp-icon-btn.on {
@@ -1686,7 +1224,8 @@ a.comp-card:focus-visible .comp-go {
   display: flex;
   justify-content: flex-end;
   gap: var(--sp-2);
-  padding-block-start: var(--sp-2);
+  /* r149 (R3-A2 R5): تذييل كنوني — 16px فوق الحد (كان 8). */
+  padding-block-start: var(--sp-4);
   border-block-start: 1px solid var(--border);
 }
 
@@ -1695,75 +1234,13 @@ a.comp-card:focus-visible .comp-go {
   .comp-index-card:hover { transform: none; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   wave 5-b: admin-extras (append-only)
-
-   OWNERSHIP DOCUMENTATION (audit 0-e, CSS ownership map): colleges.css
-   has secretly owned the admin extra pages — .admin-students-*,
-   .admin-pagination*, .digital-stat-*, .trend-table, .settings-*,
-   .top-courses-* — since "Sub-project D" (the section above). That
-   section stays untouched per this wave's append-only constraint; this
-   section documents the ownership and layers the wave 5-b refinements
-   on top (audit 0-e P2-37/38 + craft-floor fixes). If a future wave
-   splits the admin-extras sheet into admin.css, move BOTH sections
-   together.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Ruling #2 — the settings labels are Arabic; uppercase is a no-op and
-   0.05em letter-spacing breaks cursive joining. Same specificity as
-   the base rule, later source order wins. */
-.settings-label {
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-/* Settings resource links: real 44px hit area (craft floor) + the
-   page-level padding rhythm. Links are <Link> now (no full reloads),
-   still rendered as <a> so the base rules above keep applying. */
-.settings-links a {
-  min-block-size: 44px;
-  align-items: center;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-md);
-}
-
-/* (Premium-polish dead-code sweep): the .digital-stat-* / .top-courses-*
-   families + their madarek-admin-extras-in stagger keyframes lived here —
-   AdminExtraPages renders .admin-students-* (the stale ownership comment
-   above lied); removed with zero TSX consumers. */
-
-/* The wrapper-as-pill search field: polish.css's pages-layer bare-input
-   reset (height:auto / padding:0, higher specificity than the base
-   .admin-students-input rule) leaves the pill content-sized (~20px)
-   next to the 36px faculty select. Size the PILL — the wrapper owns
-   the surface — and let the bare input fill it (0,2,0 out-specifies
-   the polish reset's 0,1,1 across the same layer). */
-.admin-students-search { min-block-size: 36px; }
-.admin-students-search .admin-students-input {
-  align-self: stretch;
-  padding-inline: 0;
-}
-
-/* Mobile touch floor (craft floor: ≥44px) for the students toolbar
-   (the pill + the 36px select) and the pagination buttons. The pill
-   rule wins on specificity; the pagination !important is the same
-   documented layer-precedence exception wave 5-c used — polish's
-   overrides-layer mobile block pins .btn.sm at min-block-size 32px
-   and a pages-layer rule can never win without it. */
-@media (max-width: 640px) {
-  .admin-students-input,
-  .admin-students-search { min-block-size: 44px; }
-  .admin-pagination-actions .btn {
-    min-inline-size: 44px;
-    min-block-size: 44px !important;
-  }
-}
-
-/* Reduced-motion off-switch (guardrail #6). */
-@media (prefers-reduced-motion: reduce) {
-  .digital-stat-row,
-  .top-courses-row { animation: none; }
-}
+/* ==================================================================
+   wave 5-b: admin-extras — MOVED to admin.css (r150e)
+   ------------------------------------------------------------------
+   (The admin-extras refinements lived here: settings-label/links
+   corrections, the students-search pill sizing, the mobile touch
+   floor. Moved verbatim to admin.css with the Sub-project D body —
+   the split the banner itself prescribed.) */
 
 /* ═══════════════════════════════════════════════════════════════
    wave 6-c — identity registry live (append-only)
@@ -1811,16 +1288,6 @@ a.comp-card:focus-visible .comp-go {
 [dir="rtl"] .college-hero-motif {
   mask-image: linear-gradient(to right, black 30%, transparent);
   -webkit-mask-image: linear-gradient(to right, black 30%, transparent);
-}
-
-/* Popover loading state — shape-matched 3-row skeleton replacing the
-   plain-text placeholder (audit 0-f P3-27, craft floor: data surfaces
-   get skeletons). */
-.colleges-popover-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
 }
 
 /* ═══════════════════════════════════════════════════════════════

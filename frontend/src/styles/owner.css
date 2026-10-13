@@ -72,14 +72,17 @@
   color: var(--success-ink);
 }
 
+/* r148 (AUDIT-1 H3): الأزرق والبنفسجي كانا على حافة 3:1 (3.06 / 3.18)
+   في انتهاك هشّ لـ WCAG 1.4.11 — مواءمة مع إخوتهما المصلحة بقرار
+   R131-F12 (green → --success-ink بـ7.99:1، amber → --warning-ink بـ6.98:1). */
 .owner-event-icon.blue {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .owner-event-icon.purple {
   background: var(--c-lavender-bg);
-  color: var(--c-lavender-ink);
+  color: var(--c-lavender-deep);
 }
 
 .owner-event-icon.amber {
@@ -109,7 +112,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
 
@@ -138,7 +141,9 @@
   inset-inline: 2px;
   border-radius: var(--r-full);
   background: var(--surface-3);
-  transition: background var(--t-base) var(--ease);
+  /* r149 (R3-A3 M5): 240ms → 160ms — قلب المفتاح كان يقرأ كسولًا
+     (3× أبطأ من سجل الضغط 80ms في بقية المنصة). */
+  transition: background var(--motion-duration-short) var(--ease);
 }
 
 .owner-toggle-track.on::before {
@@ -154,7 +159,7 @@
 }
 
 .owner-toggle-track.disabled {
-  opacity: 0.5;
+  opacity: var(--state-input-disabled-opacity);
   cursor: not-allowed;
 }
 
@@ -186,14 +191,21 @@
      transform; --motion-direction keeps it flowing toward the
      inline-end edge in RTL exactly like the inset it replaced
      (5px → 23px = 18px of travel). */
-  transition: transform var(--t-base) var(--ease);
+  /* r149 (R3-A3 M5): spring-soft على 160ms — إحساس مفتاح حقيقي
+     بدل انزلاق محايد (كان 240ms standard). */
+  transition: transform var(--motion-duration-short) var(--ease-spring-soft);
   /* small-control thumb shadow — needs more local pop than --elev-1
      (alpha 0.2 vs 0.04/0.06); off-token by design */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--black) 20%, transparent);
 }
 
 .owner-toggle-track.on .owner-toggle-thumb {
   transform: translateX(calc(var(--motion-direction) * 18px));
+}
+/* r149 (R3-A3 M5): لمسة الضغط — الخاصية المستقلة scale تتراكب مع
+   translateX دون تعارض (لا تحتاج معرفة حالة on/off). */
+.owner-toggle-track:not(.disabled):active .owner-toggle-thumb {
+  scale: 0.88;
 }
 
 .owner-toggle-label {
@@ -282,8 +294,11 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
+  /* r148 (AUDIT-3 M7): على 360px كان code (min-width:160) + input بلا
+     min-width:0 يفيضان أفقياً — الالتفاف مع تصغير حد الـ code. */
+  flex-wrap: wrap;
 }
 
 .owner-kv-row:last-child {
@@ -298,12 +313,18 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 480px) {
+  .owner-kv-row code { min-width: 120px; }
+}
+
 .owner-kv-row input {
   flex: 1;
+  min-width: 0;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
-  padding: 6px 10px;
+  /* r149 (R3-A2 #12): على السلم — كانت 6/10 خامًا */
+  padding: var(--sp-2) var(--sp-4);
   /* 5-C2 (A3 1d, 21-b pattern): was var(--fs-sm) 13px — iOS Safari
      zooms the whole page on any <16px control focus (the components.css
      global input recipe already floors at 16; this pages-layer override
@@ -314,7 +335,7 @@
 
 /* ── Error Entry ───────────────────────────────────────────── */
 .owner-error-entry {
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
 
@@ -402,36 +423,13 @@
 }
 
 /* ── Table enhancements ────────────────────────────────────── */
-.owner-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-sm);
-}
-
-.owner-table th {
-  text-align: start;
-  padding: 10px 12px;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-strong);
-  white-space: nowrap;
-}
-
-.owner-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: middle;
-}
-
-.owner-table tr:last-child td {
-  border-bottom: none;
-}
-
-.owner-table tr:hover td {
-  background: var(--surface-2);
-}
+/* (r150d): the .owner-table family RETIRED onto the canonical .table —
+   the realtime monitor was its last consumer (now
+   .table.tbl-stack.owner-realtime-table). Density had already reached
+   the canonical 12/16 in r149; the remaining drift (no th wash, th
+   fs-xs, border-strong head rule) dies with the family. The num
+   utility re-scopes below; td.muted had zero consumers and is
+   deleted. */
 
 /* ── User row ──────────────────────────────────────────────── */
 .owner-user-cell {
@@ -462,7 +460,8 @@
 .owner-search-bar input {
   flex: 1;
   max-width: 360px;
-  padding: 8px 14px;
+  /* r149 (R3-A2 #11): المحاذاة الكنونية 16px (كانت 14 خامًا) */
+  padding: 8px var(--sp-4);
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
@@ -493,7 +492,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 10px 0;
+  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
   border-bottom: 1px solid var(--border);
 }
 
@@ -700,7 +699,7 @@
   /* T3-F4 — was #fff in both themes: 3.19:1 on light --danger #DD6E78
      and ~1.9:1 on dark --danger #F09BA3. A fixed near-black ink passes
      BOTH: #191918 on #DD6E78 = 5.51:1, on #F09BA3 = 8.31:1. */
-  color: #191918;
+  color: var(--warm-ink);
   font-size: 11px;
   font-weight: var(--fw-bold);
   line-height: 1;
@@ -711,17 +710,8 @@
 }
 
 /* ── Command Center: Realtime Grid ────────────────────────── */
-.owner-realtime-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--sp-3);
-}
-
-@media (max-width: 768px) {
-  .owner-realtime-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+/* (r149 R3-A1 #9: حُذفت الشبكة الخاصة — القسم يركب ‎.grid-4 الكنونية
+   الآن بنفس فجوة وكسر كل شرائط KPI في المنصة.) */
 
 /* ── Command Center: Governance Timeline ──────────────────── */
 .owner-governance-section {
@@ -811,13 +801,9 @@
 /* ── owner-table utilities (audit 0-e P3: the per-cell inline
    fontFamily/fontSize/color repeats → classes; shared family, the
    cells opt in from the four core pages) ───────────────────── */
-.owner-table td.num {
+.owner-realtime-table td.num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-}
-
-.owner-table td.muted {
-  color: var(--text-muted);
 }
 
 /* Inline health dot inside a summary-table cell (was an inline
@@ -912,14 +898,9 @@
   font-size: var(--fs-xs);
 }
 
-@media (max-width: 640px) {
-  /* !important is a documented layer-precedence exception (wave 5-a
-     precedent): polish.css (overrides layer) pins .btn at
-     min-block-size 40px — a pages-layer rule can never win it. */
-  .owner-alert-card .actions .btn {
-    min-block-size: 44px !important;
-  }
-}
+/* (r151d: the alert-actions mobile floor deleted — polish's
+   overrides-layer ≤640 block owns the .btn height floor; the stale
+   comment described a 40px pin that no longer exists.) */
 
 /* ── Activity feed ────────────────────────────────────────────
    Row stagger (the page's authored moment, capped with the shared
@@ -977,6 +958,8 @@
   flex-shrink: 0;
 }
 
+/* r148 (AUDIT-1 C1): 12px نص بلون --accent = 3.80:1 — يفشل AA للنص الصغير.
+   --accent-ink هو الحل الموثق أصلًا (base.css:66) — 10.29:1 فاتح / 10.39 داكن. */
 .owner-detail-toggle {
   display: inline-flex;
   align-items: center;
@@ -987,7 +970,7 @@
   border: none;
   border-radius: var(--r-xs);
   cursor: pointer;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
   transition: color var(--t-fast) var(--ease);
@@ -1048,19 +1031,11 @@
   gap: var(--sp-2);
 }
 
-/* Mobile 44px touch floors for this wave's own controls. !important
-   is the documented layer-precedence exception (wave 5-a precedent):
-   polish.css (overrides layer) pins .btn at 40px / .btn.sm at 32px
-   inside its own max-640 block — pages-layer rules can never win
-   without it. (The ErrorState/EmptyState retry buttons remain 32px —
-   a shared-primitive gap flagged by waves 3-b/4/5, not owned here.) */
-@media (max-width: 640px) {
-  .owner-live-tools .btn.sm,
-  .owner-alert-card .inline-retry .btn.sm,
-  .owner-activity-footer-actions .btn.sm {
-    min-block-size: 44px !important;
-  }
-}
+/* (r151d: the owner-live-tools mobile floor block deleted — the
+   stale comment described polish pinning .btn at 40px / .btn.sm at
+   32px; the wave 9-b consolidation retired that pin and made
+   polish's ≤640 block the ONE owner of the floor. The
+   ErrorState/EmptyState retry buttons ride it like every .btn.) */
 
 /* Shape-matched skeleton for the activity timeline — the 32px icon
    well, the title/meta lines and the trailing time stamp. */
@@ -1315,15 +1290,12 @@
 }
 
 /* ── Touch floors + narrow viewports (craft floor: ≥44px) ──── */
-/* .btn.sm is pinned at 32px inside the polish overrides layer, so
-   page-local floors need !important to win the layer contest — the
-   documented 4-a/5-a/5-c precedent. */
+/* (r151d: the four .btn/.btn.sm bang pins retired — polish's ≤640
+   overrides block owns those floors. The .pill / spacer / swatch
+   lines below are non-.btn elements polish never touches — they
+   stay.) */
 @media (max-width: 640px) {
   .owner-filter-pills .pill { min-block-size: 44px; }
-  .owner-row-actions .btn,
-  .owner-users-card .alert .btn,
-  .owner-users-card .state .btn,
-  .owner-content-page .btn.sm { min-block-size: 44px !important; }
   .owner-page-gap { min-inline-size: 44px; block-size: 44px; }
   .owner-swatch-grid { grid-template-columns: 1fr; }
 }
@@ -1362,14 +1334,8 @@
   padding-block-start: var(--sp-4);
 }
 
-/* 4-A7 P3-9: at 390px the 2×2 live tiles squeeze to ~171px each and
-   the longest label wraps awkwardly; under 360px the grid goes
-   single-column so every live tile gets the full track. */
-@media (max-width: 360px) {
-  .owner-realtime-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* (r149 R3-A1 #9: حُذف — grid-4 الكنونية تكسر عندها بنفسها؛
+   تعليق 4-A7 P3-9 القديم كان يخص الشبكة الخاصة.) */
 
 /* 4-A7 P1-2 touch floor: the alert disclosure is now a real button —
    it gets the console's 44px mobile floor like every other control. */

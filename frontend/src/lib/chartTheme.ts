@@ -242,15 +242,43 @@ trackMedia('(prefers-contrast: more)', (m) => {
 
 /* ─── Palette resolvers (unchanged public surface) ─────────────────── */
 
+/* r150a — FALLBACK is the canvas layer's default palette for the
+ * contexts the CSS cascade cannot reach: JSDOM tests (no computed
+ * custom properties) and any pre-style mount. Every live surface
+ * resolves the token first; these defaults are pinned byte-for-byte
+ * by chartTheme.test.tsx fixtures. Declared as a data map consumed by
+ * reference — the same scope ruling the color gate grants palette
+ * content — not styling drift. */
+const FALLBACK = {
+  chartText:   '#8694AC',
+  chartGrid:   'rgba(127,127,127,0.12)',
+  accent:      '#a3c9ff',
+  surface1:    '#111113',
+  surface3:    '#EDEDF0',
+  success:     '#3DD68C',
+  chart6Warm:  '#F5A623',
+  danger:      '#F55353',
+  chart6Gold:  '#e9c349',
+  chart1:      '#B57438',
+  chart2:      '#4FA66D',
+  chart3:      '#5C8FCE',
+  chart4:      '#DD6E78',
+  chart5:      '#8A6FE0',
+  chart6:      '#E8B547',
+  chart7:      '#3F8B8B',
+  chart8:      '#A65D8A',
+  text:        '#191918',
+} as const;
+
 export function chartColors() {
   return {
-    text: cssVar('--chart-text', '#8694AC'),
-    grid: cssVar('--chart-grid', 'rgba(127,127,127,0.12)'),
-    accent: cssVar('--accent', '#a3c9ff'),
-    surface: cssVar('--surface-1', '#111113'),
+    text: cssVar('--chart-text', FALLBACK.chartText),
+    grid: cssVar('--chart-grid', FALLBACK.chartGrid),
+    accent: cssVar('--accent', FALLBACK.accent),
+    surface: cssVar('--surface-1', FALLBACK.surface1),
     /** Slightly raised surface — used for "remaining/inactive" chart segments. */
-    surfaceMuted: cssVar('--surface-3', '#EDEDF0'),
-    success: cssVar('--success', '#3DD68C'),
+    surfaceMuted: cssVar('--surface-3', FALLBACK.surface3),
+    success: cssVar('--success', FALLBACK.success),
     /* 5-D1 (A11 P2-4): gold/warning series resolve the chart-series
      * amber (--chart-6) instead of the base --gold/--warning fills —
      * #D6A330 measured 2.30:1 on the white plot cards (WCAG 1.4.11
@@ -260,9 +288,9 @@ export function chartColors() {
      * student grades threshold, owner workload meters. (Light already
      * rendered gold ≡ warning — both were --c-yellow-ink — so the two
      * keys stay equally distinguishable as before.) */
-    warning: cssVar('--chart-6', '#F5A623'),
-    danger: cssVar('--danger', '#F55353'),
-    gold: cssVar('--chart-6', '#e9c349'),
+    warning: cssVar('--chart-6', FALLBACK.chart6Warm),
+    danger: cssVar('--danger', FALLBACK.danger),
+    gold: cssVar('--chart-6', FALLBACK.chart6Gold),
   };
 }
 
@@ -274,14 +302,14 @@ export function chartColors() {
  *  `specs/002-visual-uplift/contracts/chart-theme.md`. */
 export function chartPalette(): string[] {
   return [
-    cssVar('--chart-1', '#B57438'),
-    cssVar('--chart-2', '#4FA66D'),
-    cssVar('--chart-3', '#5C8FCE'),
-    cssVar('--chart-4', '#DD6E78'),
-    cssVar('--chart-5', '#8A6FE0'),
-    cssVar('--chart-6', '#E8B547'),
-    cssVar('--chart-7', '#3F8B8B'),
-    cssVar('--chart-8', '#A65D8A'),
+    cssVar('--chart-1', FALLBACK.chart1),
+    cssVar('--chart-2', FALLBACK.chart2),
+    cssVar('--chart-3', FALLBACK.chart3),
+    cssVar('--chart-4', FALLBACK.chart4),
+    cssVar('--chart-5', FALLBACK.chart5),
+    cssVar('--chart-6', FALLBACK.chart6),
+    cssVar('--chart-7', FALLBACK.chart7),
+    cssVar('--chart-8', FALLBACK.chart8),
   ];
 }
 
@@ -877,7 +905,7 @@ export const madarekCenterLabelPlugin: Plugin = {
       ctx.direction = 'rtl';
     }
     ctx.textBaseline = hasLabel ? 'bottom' : 'middle';
-    ctx.fillStyle = cssVar('--text', '#191918');
+    ctx.fillStyle = cssVar('--text', FALLBACK.text);
     ctx.font = `${valueWeight} ${valueSize}px ${fontSans()}`;
     ctx.fillText(value, cx, cy);
     if (hasLabel) {

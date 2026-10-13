@@ -421,19 +421,29 @@ describe('AdminReportsPage — papers register + the analysis fold', () => {
     renderPage(<AdminReportsPage />);
 
     await screen.findByText('حركة البحوث العلمية');
-    expect(document.querySelector('table.trend-table')).toBeNull();
+    expect(document.querySelector('.trend-table-wrap table')).toBeNull();
 
     fireEvent.click(screen.getByRole('tab', { name: 'جدول' }));
     await waitFor(() => {
       expect(screen.getByRole('tab', { name: 'جدول' }).getAttribute('aria-selected')).toBe('true');
     });
-    expect(document.querySelector('table.trend-table')).not.toBeNull();
-    expect(within(document.querySelector('table.trend-table') as HTMLElement).getAllByRole('row'))
-      .toHaveLength(REPORTS.paperTrend.length + 1); // header + 2 months
+    expect(document.querySelector('.trend-table-wrap table')).not.toBeNull();
+    const trendRows = within(document.querySelector('.trend-table-wrap table') as HTMLElement).getAllByRole('row');
+    expect(trendRows).toHaveLength(REPORTS.paperTrend.length + 1); // header + 2 months
+    // r151b (R5-A4): every data cell carries its column name — the
+    // r150d retirement left the trend tds bare on phones.
+    const trendCells = Array.from(
+      document.querySelectorAll('.trend-table-wrap table td'),
+    );
+    expect(trendCells).toHaveLength(REPORTS.paperTrend.length * 4);
+    for (const td of trendCells) {
+      expect(td.getAttribute('data-label')).toBeTruthy();
+    }
+    expect(trendCells.some((td) => td.getAttribute('data-label') === 'الشهر')).toBe(true);
 
     fireEvent.click(screen.getByRole('tab', { name: 'أعمدة' }));
     await waitFor(() => {
-      expect(document.querySelector('table.trend-table')).toBeNull();
+      expect(document.querySelector('.trend-table-wrap table')).toBeNull();
     });
   });
 

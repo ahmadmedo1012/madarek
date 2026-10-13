@@ -57,6 +57,13 @@ const STATUS_COLOR: Record<CompetitionRow['status'], 'green' | 'amber' | 'gold'>
 
 const CATEGORIES = ['بحث', 'برمجة', 'ابتكار', 'تصميم', 'محاضرة', 'ريادة أعمال', 'أخرى'];
 const ICON_CHOICES = ['🏆', '🎯', '🔬', '💡', '💻', '🎨', '🎤', '📊']; // allow-emoji: admin icon-picker palette (user-supplied content)
+/* r152a (A6 P3-5): screen readers announce a raw emoji glyph in the
+ * SR's OWN language (often English) — these controlled Arabic names
+ * keep the picker announcements in the app's language. */
+const ICON_NAMES_AR: Record<string, string> = {
+  '🏆': 'كأس', '🎯': 'هدف', '🔬': 'مجهر', '💡': 'فكرة', // allow-emoji: a11y name map for the admin-picker palette above
+  '💻': 'حاسوب', '🎨': 'لوحة ألوان', '🎤': 'ميكروفون', '📊': 'مخطط بياني', // allow-emoji: a11y name map for the admin-picker palette above
+};
 
 /** JS cadence (not CSS motion): how long the rank-change pulse class
  *  stays on a leaderboard row before it is cleared so a later change
@@ -704,6 +711,7 @@ function CreateCompetitionModal({ onClose }: { onClose: () => void }) {
                   key={ic}
                   type="button"
                   aria-pressed={form.watch('iconEmoji') === ic}
+                  aria-label={ICON_NAMES_AR[ic] ?? 'أيقونة'}
                   className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
                   onClick={() => form.setValue('iconEmoji', ic)}
                 >{ic}</button>

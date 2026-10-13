@@ -39,6 +39,23 @@
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  Controls-bar fade-in — home since r152e (was polish v19)      ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+  /* ╔═══════════════════════════════════════════════════════════════╗
+     ║  PDF VIEWER — controls bar fades in                            ║
+     ╚═══════════════════════════════════════════════════════════════╝ */
+  /* (Wave 9-b dead-selector sweep: .pdf-viewer-controls removed —
+     zero TSX consumers; PdfViewer renders .pdf-toolbar.) */
+  .pdf-toolbar {
+    animation: madarek-pdf-controls-in var(--motion-duration-long) var(--ease-out) both 100ms;
+  }
+  @keyframes madarek-pdf-controls-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+
 .pdf-toolbar-group {
   display: inline-flex;
   align-items: center;
@@ -72,7 +89,7 @@
 .pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
 .pdf-btn:active:not(:disabled) { background: var(--surface-3); }
 .pdf-btn.on { background: var(--accent-soft); color: var(--accent-ink, var(--accent)); }
-.pdf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pdf-btn:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 .pdf-btn.sm { width: 28px; height: 28px; }
 
 .pdf-scale-pill {
@@ -518,6 +535,15 @@
 }
 @media (max-width: 800px) {
   .document-viewer-layout { flex-direction: column; }
+}
+
+/* ─── The viewer route page — viewport-locked with dvh ──────
+   r152i (A3): was an inline style on the route div (calc(100vh) —
+   iOS URL-bar trap + forced the print block into an !important fight).
+   dvh tracks the dynamic viewport; the print override below stays. */
+.document-viewer-page {
+  height: calc(100dvh - var(--topbar-h));
+  padding-block-end: 0;
 }
 
 /* ─── Print — the paper, not the chrome ────────────────────

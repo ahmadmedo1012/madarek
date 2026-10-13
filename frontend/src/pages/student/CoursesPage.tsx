@@ -4,7 +4,7 @@ import {
   CheckCircle2, Clock, AlertTriangle, ClipboardList, Send, X,
   BookOpen, ArrowLeft,
 } from 'lucide-react';
-import { Card, MetricCard, ProgressBar, Badge } from '../../components/primitives';
+import { Card, MetricCard, ProgressBar, Badge, FormField } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton, KpiSkeleton, TableSkeleton } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
@@ -434,10 +434,18 @@ export function SubmitAssignmentModal({
           </div>
         ) : (
           <>
-            <div className="auth-field">
-              <label htmlFor="submit-text">إجابتك النصيّة</label>
+            {/* r152c (A2): both fields join the FormField canon. The
+                shared validation error lives on the primary answer field
+                (single role=alert contract preserved for the test pins);
+                the URL format copy moves to the hint slot so it is
+                ALWAYS associated — the old conditional aria-describedby
+                pointed at a hint that rendered unconditionally. */}
+            <FormField
+              label="إجابتك النصيّة"
+              id="submit-text"
+              error={validationError ?? undefined}
+            >
               <textarea
-                id="submit-text"
                 className="input"
                 rows={5}
                 placeholder="اكتب إجابتك هنا…"
@@ -445,16 +453,16 @@ export function SubmitAssignmentModal({
                 onChange={(e) => setTextAnswer(e.target.value)}
                 disabled={submit.isPending}
                 maxLength={8000}
-                aria-invalid={validationError ? true : undefined}
-                aria-describedby={validationError ? 'submit-text-err' : undefined}
                 style={{ resize: 'vertical', fontFamily: 'inherit' }}
               />
-            </div>
+            </FormField>
 
-            <div className="auth-field">
-              <label htmlFor="submit-file">رابط ملف (اختياري)</label>
+            <FormField
+              label="رابط ملف (اختياري)"
+              id="submit-file"
+              hint="يجب أن يبدأ الرابط بـ https:// أو أن يكون مسار ملف داخل المنصة (/api/v1/files/papers/)."
+            >
               <input
-                id="submit-file"
                 type="text"
                 className="input"
                 placeholder="https://…"
@@ -463,22 +471,12 @@ export function SubmitAssignmentModal({
                 disabled={submit.isPending}
                 dir="ltr"
                 maxLength={500}
-                aria-invalid={validationError ? true : undefined}
-                aria-describedby={validationError ? 'submit-file-err' : undefined}
                 style={{ fontFamily: 'var(--font-mono)' }}
               />
-              <div className="text-xxs text-subtle" id="submit-file-err">
-                يجب أن يبدأ الرابط بـ https:// أو أن يكون مسار ملف داخل المنصة (/api/v1/files/papers/).
-              </div>
-            </div>
+            </FormField>
 
-            {validationError && (
-              <p role="alert" id="submit-text-err" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
-                {validationError}
-              </p>
-            )}
             {submit.isError && (
-              <p role="alert" className="text-xs" style={{ color: 'var(--danger)', marginTop: 'var(--sp-2)' }}>
+              <p role="alert" className="text-xs" style={{ color: 'var(--danger-ink)', marginTop: 'var(--sp-2)' }}>
                 {apiErrorMessage(submit.error, 'تعذَّر تسليم الواجب — تحقّق من اتصالك وحاول مرة أخرى.')}
               </p>
             )}

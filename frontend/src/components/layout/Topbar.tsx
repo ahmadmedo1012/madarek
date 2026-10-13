@@ -139,11 +139,12 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
             onClick={onOpenCommandPalette}
             aria-label="البحث والأوامر"
             title="البحث والأوامر (Ctrl+K)"
-            /* Premium-polish a11y: sibling topbar triggers (notifications,
-               account menu) expose their expanded state — the search toggle
-               launches the same labelled dialog, so it announces it too. */
+            /* Premium-polish a11y: haspopup announces the dialog this
+               launches. aria-expanded is deliberately absent (r152a A6
+               P3-1): the palette's open state lives in AppShell, so a
+               hardcoded aria-expanded="false" kept lying while ⌘K was
+               open — an honest launcher attribute beats a frozen one. */
             aria-haspopup="dialog"
-            aria-expanded="false"
           >
             <Icon icon={Search} size={18} />
           </button>
@@ -190,7 +191,9 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
                     {user.firstName} {user.lastName}
                   </div>
                   <div className="text-xxs font-mono text-subtle" style={{ marginTop: 2 }}>
-                    {user.email}
+                    {/* r148 (AUDIT-3 M6): البريد بلا bdi قد يعرض بترتيب خاطئ في
+                        سياق RTL — نفس عرف ProfilePage/OwnerUsersPage. */}
+                    <bdi dir="ltr">{user.email}</bdi>
                   </div>
                 </div>
               }

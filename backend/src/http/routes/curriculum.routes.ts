@@ -159,6 +159,23 @@ export const updateChapterBodySchema = chapterFields
     ordinal: z.number().int().min(0).max(500).optional(),
   });
 
+// ─── Atomic reorder (r152b A5 P2) ─────────────────────────────────
+// The old reorder contract was "client sends two PATCHes that swap the
+// neighbors' ordinals" — a partial failure leaves two rows sharing one
+// ordinal and (with no unique constraint and no read tiebreaker) the
+// student-visible order silently shuffles. The FE now sends the FULL
+// ordered id list once; the server rewrites every ordinal 0..n-1 inside
+// a single transaction, which also heals any pre-existing duplicate
+// ordinals on the offering.
+export const reorderBodySchema = z
+  .object({
+    ids: z.array(z.string().min(1).max(64)).min(1).max(500),
+  })
+  .strict()
+  .refine((b) => new Set(b.ids).size === b.ids.length, {
+    message: 'ids must not contain duplicates',
+  });
+
 const checkpointFields = z
   .object({
     // Model field is `question` (the spec's "prompt"); triggerSec is required.
@@ -277,6 +294,49 @@ router.patch(
 
       logger.info({ lectureId, userId: req.user!.id }, 'curriculum: lecture updated');
       res.json({ data: updated });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// Atomic full-list lecture reorder (r152b A5 P2) — replaces the FE's
+// two-PATCH neighbor swap. See reorderBodySchema for the contract.
+router.post(
+  '/offerings/:offeringId/lectures/reorder',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
+  validate(reorderBodySchema),
+  async (req, res, next) => {
+    try {
+      const offeringId = req.params.offeringId!;
+      const { ids } = req.body as z.infer<typeof reorderBodySchema>;
+
+      await assertOwnsOffering(offeringId, req.user!.id, req.user!.role);
+
+      const written = await prisma.$transaction(async (tx) => {
+        const rows = await tx.lecture.findMany({
+          where: { offeringId },
+          select: { id: true },
+        });
+        const known = new Set(rows.map((r) => r.id));
+        if (rows.length !== ids.length || ids.some((id) => !known.has(id))) {
+          throw AppError.badRequest(
+            'قائمة الترتيب يجب أن تطابق محاضرات المقرر الحالية بالكامل',
+          );
+        }
+        await Promise.all(
+          ids.map((id, ordinal) =>
+            tx.lecture.update({ where: { id }, data: { ordinal } }),
+          ),
+        );
+        return ids.length;
+      });
+
+      logger.info(
+        { offeringId, count: written, userId: req.user!.id },
+        'curriculum: lectures reordered',
+      );
+      res.json({ data: { ok: true, count: written } });
     } catch (e) {
       next(e);
     }
@@ -424,6 +484,54 @@ router.patch(
 
       logger.info({ chapterId, userId: req.user!.id }, 'curriculum: chapter updated');
       res.json({ data: updated });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// Atomic full-list chapter reorder (r152b A5 P2) — same contract as the
+// lecture reorder above; heals duplicate ordinals on the lecture.
+router.post(
+  '/lectures/:lectureId/chapters/reorder',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
+  validate(reorderBodySchema),
+  async (req, res, next) => {
+    try {
+      const lectureId = req.params.lectureId!;
+      const { ids } = req.body as z.infer<typeof reorderBodySchema>;
+
+      const lecture = await prisma.lecture.findUnique({
+        where: { id: lectureId },
+        select: { offeringId: true },
+      });
+      if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
+      await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
+
+      const written = await prisma.$transaction(async (tx) => {
+        const rows = await tx.lectureChapter.findMany({
+          where: { lectureId },
+          select: { id: true },
+        });
+        const known = new Set(rows.map((r) => r.id));
+        if (rows.length !== ids.length || ids.some((id) => !known.has(id))) {
+          throw AppError.badRequest(
+            'قائمة الترتيب يجب أن تطابق فصول المحاضرة الحالية بالكامل',
+          );
+        }
+        await Promise.all(
+          ids.map((id, ordinal) =>
+            tx.lectureChapter.update({ where: { id }, data: { ordinal } }),
+          ),
+        );
+        return ids.length;
+      });
+
+      logger.info(
+        { lectureId, count: written, userId: req.user!.id },
+        'curriculum: chapters reordered',
+      );
+      res.json({ data: { ok: true, count: written } });
     } catch (e) {
       next(e);
     }

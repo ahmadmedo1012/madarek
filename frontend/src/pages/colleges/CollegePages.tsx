@@ -853,7 +853,7 @@ export function CollegeDetailPage() {
                   <div className="live-body">
                     <div className="live-title">{l.title}</div>
                     <div className="live-meta">
-                      {l.offering.course.code} · {l.teacher.firstName} {l.teacher.lastName} · {formatDateTimeAr(l.scheduledAt)}
+                      <bdi>{l.offering.course.code}</bdi> · {l.teacher.firstName} {l.teacher.lastName} · {formatDateTimeAr(l.scheduledAt)}
                     </div>
                   </div>
                 </li>

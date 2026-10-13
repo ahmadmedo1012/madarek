@@ -5,10 +5,11 @@ import {
   CheckCircle2, XCircle, AlertCircle, ScanSearch, X, Workflow,
   Sparkles, BarChart3, Clock, MessageSquare, type LucideIcon,
 } from 'lucide-react';
-import { Card, MetricCard, Badge } from '../../components/primitives';
+import { Card, MetricCard, Badge, FormField } from '../../components/primitives';
 import { Skeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
+import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
 import { formatDateWithYearAr } from '../../lib/format';
@@ -31,14 +32,9 @@ const STATUS_LABEL: Record<PaperStatus, string> = {
   PUBLISHED: 'مُنشور في المكتبة',
 };
 
-const STATUS_TONE: Record<PaperStatus, 'brand' | 'green' | 'amber' | 'red' | 'gold' | 'purple'> = {
-  UPLOADED: 'amber',
-  SCANNING: 'brand',
-  CHECKS_PASSED: 'brand',
-  CHECKS_FAILED: 'red',
-  GRADED: 'green',
-  PUBLISHED: 'purple',
-};
+/* r149 (R3-A1 #1): السلّم الكنوني المشترك — كان هنا انقسام دلالي
+ * (CHECKS_PASSED brand/GRADED green/PUBLISHED purple) يخالف ما يراه
+ * الإداري لنفس الورقة. الآن تعريف واحد في lib/paperStatus.ts. */
 
 /* fmtDate (short ar-LY date with year, '—' for missing values) is
  * lib/format.formatDateWithYearAr (13-15 fold, audit 11-f P2-1). */
@@ -223,7 +219,7 @@ function PaperRow({
           )}
         </div>
         <div className="paper-row-side">
-          <Badge color={STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
+          <Badge color={PAPER_STATUS_TONE[paper.status]}>{STATUS_LABEL[paper.status]}</Badge>
           <span className="text-xxs text-subtle">رُفع: {formatDateWithYearAr(paper.uploadedAt)}</span>
         </div>
       </div>
@@ -408,27 +404,29 @@ function UploadModal({
         </button>
       </div>
       <div className="modal-body">
-        <div className="auth-field">
-          <label htmlFor={titleId}>عنوان البحث</label>
+        {/* r152c (A2): the four upload-modal fields join the FormField
+            canon. This also fixes the dangling aria-describedby — the
+            old markup pointed at the error id unconditionally while the
+            message rendered conditionally; FormField wires the
+            association only while the error exists. */}
+        <FormField
+          label="عنوان البحث"
+          id={titleId}
+          error={title.trim().length > 0 && title.trim().length < 3
+            ? 'يجب أن يكون 3 أحرف على الأقل.'
+            : undefined}
+        >
           <input
-            id={titleId}
             type="text"
             className="input"
             placeholder="مثال: تطبيق أنماط التصميم في تطبيقات الويب"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            aria-invalid={title.trim().length > 0 && title.trim().length < 3 ? true : undefined}
-            aria-describedby={`${titleId}-err`}
           />
-          {title.trim().length > 0 && title.trim().length < 3 && (
-            <span id={`${titleId}-err`} className="form-field-hint" style={{ color: 'var(--danger)' }}>يجب أن يكون 3 أحرف على الأقل.</span>
-          )}
-        </div>
+        </FormField>
 
-        <div className="auth-field">
-          <label htmlFor={abstractId}>الملخّص (اختياري)</label>
+        <FormField label="الملخّص (اختياري)" id={abstractId}>
           <textarea
-            id={abstractId}
             className="input"
             rows={4}
             placeholder="اكتب ملخصاً مختصراً عن الفكرة، المنهج، والنتائج…"
@@ -436,11 +434,10 @@ function UploadModal({
             onChange={(e) => setAbstractText(e.target.value)}
             style={{ resize: 'vertical', fontFamily: 'inherit' }}
           />
-        </div>
+        </FormField>
 
-        <div className="auth-field">
-          <label htmlFor={offeringFieldId}>المقرّر الأكاديمي المرتبط (اختياري)</label>
-          <select id={offeringFieldId} className="input" value={offeringId} onChange={(e) => setOfferingId(e.target.value)}>
+        <FormField label="المقرّر الأكاديمي المرتبط (اختياري)" id={offeringFieldId}>
+          <select className="input" value={offeringId} onChange={(e) => setOfferingId(e.target.value)}>
             <option value="">— غير مرتبط بمقرّر محدّد —</option>
             {enrollmentsPending && (
               <option value="" disabled>جارٍ تحميل مقرراتك المسجَّلة…</option>
@@ -451,12 +448,10 @@ function UploadModal({
               </option>
             ))}
           </select>
-        </div>
+        </FormField>
 
-        <div className="auth-field">
-          <label htmlFor={fileId}>الملف</label>
+        <FormField label="الملف" id={fileId}>
           <button
-            id={fileId}
             type="button"
             className={`upload-dropzone${fileName ? ' has-file' : ''}`}
             onClick={() => setFileName('research_paper_demo.pdf')}
@@ -469,7 +464,7 @@ function UploadModal({
               الحد الأقصى 20 MB · PDF / DOCX
             </span>
           </button>
-        </div>
+        </FormField>
 
         {error && (
           <p role="alert" className="upload-error">

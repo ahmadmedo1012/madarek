@@ -11,7 +11,7 @@ import {
 import { Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler } from 'chart.js';
 import { Card, MetricCard, ProgressBar, Badge, UserAvatar, AlertRow, SectionTitle } from '../../components/primitives';
-import { LoadingState, ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, KpiSkeleton } from '../../components/primitives/States';
+import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSkeleton, KpiSkeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -741,7 +741,13 @@ export function ArVrPage() {
       </header>
 
       {q.isPending ? (
-        <LoadingState />
+        /* r148 (AUDIT-2 L8): شبكة بطاقات AR/VR — هيكل بطاقات مطابق
+           الشكل بدل السبينر الصفحي. */
+        <div className="grid-3" aria-busy="true">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="card"><CardSkeleton lines={2} /></div>
+          ))}
+        </div>
       ) : q.isError ? (
         <ErrorState error={q.error} onRetry={() => q.refetch()} />
       ) : !q.data || q.data.length === 0 ? (

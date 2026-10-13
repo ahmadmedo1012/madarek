@@ -140,6 +140,18 @@ export const registerUser = async (input: RegisterInput) => {
       if (!input.facultyId || !input.departmentId || !input.universityId) {
         throw AppError.badRequest('بيانات الطالب غير مكتملة — الكلية والقسم والرقم الجامعي مطلوبة');
       }
+      /* r152b (A5 P3): both FKs were individually valid but nothing
+       * checked the PAIR — a cross-faculty student profile forked the
+       * two scope predicates (buildScopedUserWhere matches students by
+       * studentProfile.facultyId alone). Verify the department actually
+       * belongs to the supplied faculty before creating the profile. */
+      const dept = await tx.department.findUnique({
+        where: { id: input.departmentId },
+        select: { facultyId: true },
+      });
+      if (!dept || dept.facultyId !== input.facultyId) {
+        throw AppError.badRequest('القسم المختار لا ينتمي إلى الكلّيّة المحددة');
+      }
       await tx.studentProfile.create({
         data: {
           userId: created.id,

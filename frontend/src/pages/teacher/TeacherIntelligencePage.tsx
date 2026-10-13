@@ -94,10 +94,12 @@ export default function TeacherIntelligencePage() {
             onRetry={() => risks.refetch()}
           />
         ) : risks.data.length === 0 ? (
-          <div className="empty-state">
-            <Icon icon={CheckCircle2} size={28} style={{ color: 'var(--success-ink)' }} />
-            <p className="text-sm text-muted">جميع طلابك في وضع جيد. لا حاجة لتدخّل عاجل.</p>
-          </div>
+          /* r149 (R3-A1 #6): EmptyState الكنونية بدل اليدوية. */
+          <EmptyState
+            icon={CheckCircle2}
+            title="جميع طلابك في وضع جيد"
+            description="لا حاجة لتدخّل عاجل."
+          />
         ) : (
           <div className="flex-col gap-2">
             {risks.data.map((r) => (
@@ -435,13 +437,12 @@ export function TeacherOfferingDetailPage() {
             </div>
           )}
           {!suggest.data && !suggest.isPending && (
-            <div className="empty-state">
-              <Icon icon={Lightbulb} size={28} style={{ color: 'var(--gold-ink)' }} />
-              <p className="text-sm text-muted">
-                اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرّر، القسم،
-                والمحاضرات الموجودة بالفعل.
-              </p>
-            </div>
+            /* r149 (R3-A1 #6): EmptyState الكنونية — حالة «كيف تبدأ». */
+            <EmptyState
+              icon={Lightbulb}
+              title="ابدأ باقتراح ذكي"
+              description="اضغط الزر أعلاه ليقوم النظام باقتراح هيكل منهج كامل بناءً على اسم المقرّر، القسم، والمحاضرات الموجودة بالفعل."
+            />
           )}
           {suggest.data && (
             <>

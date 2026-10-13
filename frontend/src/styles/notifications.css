@@ -49,7 +49,7 @@
   font-weight: 600;
   cursor: pointer;
   border-radius: var(--r-sm);
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
 }
 .notif-panel-action:hover { background: var(--accent-soft); }
 .notif-panel-close {
@@ -62,7 +62,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
 }
 .notif-panel-close:hover { background: var(--surface-2); color: var(--text); }
 
@@ -101,26 +101,25 @@
   align-items: flex-start;
   gap: 12px;
   width: 100%;
-  padding: 10px 12px;
   border: 0;
   background: transparent;
   text-align: start;
   cursor: pointer;
   border-radius: var(--r-md);
-  transition: background var(--t-fast) var(--ease-out);
   position: relative;
+  /* (r151c dead-twin sweep: padding + transition deleted — polish's
+     overrides-layer .notif-item re-specifies both with the identical
+     values; the r149 alignment note retired with them.) */
 }
 .notif-item:hover { background: var(--surface-2); }
-.notif-item.unread { background: var(--accent-soft); }
 .notif-item.unread:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
 
 .notif-item-icon {
-  width: 32px; height: 32px;
-  border-radius: var(--r-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  /* (r151c: width/height/border-radius/flex-shrink deleted — polish's
+     overrides-layer icon rule re-specifies all four.) */
 }
 /* 5-D1 (A11 P2-3): the tone wells painted the BASE status tokens —
    2.53-3.06:1 on their -soft grounds in light (non-text floor 3:1).
@@ -140,38 +139,18 @@
   flex-direction: column;
   gap: 2px;
 }
+/* (r151c dead-twin sweep: .notif-item-title / -desc / -time rules
+   deleted here — polish's overrides layer re-specifies every
+   declaration of all three (title keeps ONLY overflow-wrap, which
+   polish never sets, so that one survivor moved up into the rule
+   below); .notif-item-dot's sizing declarations (6px/50%/accent)
+   likewise lost to polish's absolute-positioned 8px dot, and the
+   unread background lost to polish's color-mix wash — only the
+   hover-tint variant above stays, which polish never touches.) */
 .notif-item-title {
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.35;
-  /* 5-C2 (A3 P3-8 + ruling #2): font-size 13.5px + letter-spacing
-     -0.005em removed — size superseded by polish.css:1422 (13px), and
-     the tracking rendered -0.065px on Arabic titles (polish sets no
-     ls, so the pages-layer value was live, not dead). */
-  /* Long titles wrap, never overflow */
+  /* Long titles wrap, never overflow — the one declaration polish
+     does NOT own (r151c survivor). */
   overflow-wrap: anywhere;
-}
-.notif-item-desc {
-  color: var(--text-muted);
-  line-height: 1.45;
-  /* 5-C2 (A3 P3-8): font-size 12.5px removed — superseded by
-     polish.css:1428 (12px); the private px scale entry never rendered. */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.notif-item-time {
-  font-size: 11px;
-  color: var(--text-subtle);
-  margin-top: 2px;
-}
-.notif-item-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  flex-shrink: 0;
-  align-self: center;
 }
 
 .notif-panel-foot {
@@ -188,7 +167,7 @@
   font-weight: 600;
   color: var(--accent-ink, var(--accent));
   text-decoration: none;
-  transition: background var(--t-fast) var(--ease-out);
+  transition: background var(--t-fast) var(--ease);
 }
 .notif-panel-viewall:hover {
   background: color-mix(in srgb, var(--accent) 6%, transparent);
@@ -208,18 +187,12 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .bottom-nav {
-  display: none;
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: var(--z-dropdown);
-  background: color-mix(in srgb, var(--surface-1) 92%, transparent);
-  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
-          backdrop-filter: saturate(160%) blur(var(--glass-blur));
-  border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-  padding: 8px 10px max(10px, env(safe-area-inset-bottom)) 10px;
-  align-items: stretch;
-  justify-content: space-around;
+  /* (r151c dead-twin sweep: the container's geometry — display,
+     position, insets, z-index, background, glass, border, padding,
+     align/justify — is owned wholesale by polish v22's overrides-layer
+     .bottom-nav (grid, topbar-bg, rule border). What survives here is
+     exactly what polish never sets: the grid gap and the upward-anchored
+     dock shadow.) */
   gap: 4px;
   /* A subtle gradient line accent across the very top of the bar — looks
      like a hairline of light. Removes the hard slab feel of a flat top
@@ -227,8 +200,8 @@
   /* Off-token by design: upward-anchored dock — directional hairline +
      upward lift; the --elev-* scale only describes downward shadows. */
   box-shadow:
-    0 -1px 0 rgba(0, 0, 0, 0.02),
-    0 -10px 24px -10px rgba(15, 22, 41, 0.08);
+    0 -1px 0 color-mix(in srgb, var(--black) 2%, transparent),
+    0 -10px 24px -10px color-mix(in srgb, var(--black) 8%, transparent);  /* r150a: navy tint -> canonical black basis (≤2/255 composite drift) */
 }
 
 .bottom-nav-item {
@@ -251,9 +224,9 @@
   min-height: 52px;
   -webkit-tap-highlight-color: transparent;
   transition:
-    color var(--motion-duration-short) var(--ease-out),
-    background var(--motion-duration-short) var(--ease-out),
-    transform var(--motion-duration-micro) var(--ease-out);
+    color var(--motion-duration-short) var(--ease),
+    background var(--motion-duration-short) var(--ease),
+    transform var(--motion-duration-micro) var(--ease);
 }
 /* (r132-F5: `.bottom-nav-item:active { transform: scale(0.96) }` deleted
    here — dead rule. The bottom nav renders only ≤640px, inside
@@ -279,9 +252,9 @@
   border-radius: var(--r-full);
   will-change: background;
   transition:
-    background var(--motion-duration-medium) var(--ease-out),
-    transform var(--motion-duration-medium) var(--ease-out),
-    box-shadow var(--motion-duration-medium) var(--ease-out);
+    background var(--motion-duration-medium) var(--ease),
+    transform var(--motion-duration-medium) var(--ease),
+    box-shadow var(--motion-duration-medium) var(--ease);
 }
 
 .bottom-nav-item.active .bottom-nav-icon {
@@ -322,12 +295,15 @@
    ≤360 band only buys back space via the smaller icon/padding.
    (5 items × 11px labels + 32px icons still fit the 320px viewport.) */
 @media (max-width: 360px) {
-  .bottom-nav { padding: 6px 6px max(8px, env(safe-area-inset-bottom)) 6px; gap: 2px; }
+  /* (r151c: padding deleted — polish's overrides-layer container owns
+     it; the ≤360 gap tightening is the one live declaration.) */
+  .bottom-nav { gap: 2px; }
   .bottom-nav-icon { width: 32px; height: 26px; }
 }
 
 @media (max-width: 640px) {
-  .bottom-nav { display: flex; }
+  /* (r151c: `.bottom-nav { display: flex }` deleted — polish's ≤920px
+     overrides-layer `display: grid` always won.) */
   /* Push content above the bottom nav so it isn't clipped */
   .content { padding-bottom: max(80px, calc(72px + env(safe-area-inset-bottom))); }
 }
@@ -467,12 +443,19 @@
 }
 
 /* Mobile: full-measure toasts, centered stack, above the bottom-nav
-   dock + home-indicator safe area (the dock is ≤640px — same band). */
+   dock + home-indicator safe area. r148 (AUDIT-3 M2): النطاق كان ≤640px
+   بينما الدوك توسّع إلى ≤920px (polish.css:5277) — في 641–920px كان
+   التوست يرسم فوق الدوك ويحجب نقراته حتى انتهائه. التمديد الكامل
+   يبقى ≤640؛ 641–920 يرفع المكدس فقط فوق الدوك دون تغيير عرضه. */
+@media (max-width: 920px) {
+  .toast-stack {
+    inset-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
 @media (max-width: 640px) {
   .toast-stack {
     inset-inline: var(--sp-3);
     align-items: stretch;
-    inset-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
   }
   .toast-stack .toast {
     min-inline-size: 0;
@@ -517,7 +500,7 @@
    from the bell icon in both themes. */
 .topbar-notif-badge {
   background: var(--c-rose-deep);
-  color: #fff;
+  color: var(--white);
 }
 [data-theme="dark"] .topbar-notif-badge {
   background: var(--c-rose-ink);

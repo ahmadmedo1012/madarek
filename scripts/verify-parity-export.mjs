@@ -409,8 +409,10 @@ const CHECKS = [
     '0 12px 36px rgba(15,15,15,0.10),0 32px 80px rgba(15,15,15,0.14)',
     'modal shadow (warm rgba, not oklch)',
   ],
-  ['light', '--journey-node', '#b57438', 'journey: copper node'],
-  ['light', '--journey-core', '#191918', 'journey core: ink — r130-W2-7: --ink now defined in tokens.css (= --neutral-900)'],
+  // (r148-d: the journey scene CHECKS rows — node/core light+dark, line
+  // dark — retired with the canonical tokens: zero consumers since
+  // ConstellationCanvas went away; only --journey-glow survives, on
+  // auth.css, and it was never a pinned row.)
 
   // ── DARK theme — the night indigo ramp ──
   ['dark', '--neutral-0', '#0d1428', 'night surface 0 (divergent: #151515)'],
@@ -482,9 +484,6 @@ const CHECKS = [
   ],
   ['dark', '--type-display-line-height', '1.2', 'dark display leading step'],
   ['dark', '--state-focus-ring-color', '#c9962f', 'canonical cascade: dark ring → accent-strong'],
-  ['dark', '--journey-node', '#e9b44c', 'night journey: gold node'],
-  ['dark', '--journey-line', 'rgba(233,180,76,0.34)', 'night journey: gold thread'],
-  ['dark', '--journey-core', '#f2efe6', 'journey core: night sand — r130-W2-7: --ink now defined in tokens.css'],
 ];
 
 /* ── Gate 3: forbidden retired values (scanned on the FULL text) ────── */
