@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import {
   FlaskConical, Network, Cpu, Atom, Zap, Bot as BotIcon, Microscope,
@@ -258,6 +258,17 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   // renders only after the mutation lands, and a network failure shows an
   // honest error state instead of a false «بنجاح».
   const completeSession = useCompleteLabSession();
+  // r154g: focus management for the outcome screens. When the done/error
+  // screen mounts, the focused «إنهاء التجربة» button is removed from the
+  // DOM — focus falls to <body> and screen readers never announce the
+  // outcome. Move focus to the outcome container + give it an aria-live
+  // role so SR users hear the success/error immediately.
+  const outcomeRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (done || completeSession.isError) {
+      outcomeRef.current?.focus();
+    }
+  }, [done, completeSession.isError]);
 
   // Animate terminal output line by line. Declared BEFORE the !exp early
   // return below — hooks must never be conditional (audit 0-d P2).
@@ -331,7 +342,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   if (done) {
     return (
       <Card>
-        <div className="state">
+        <div className="state" ref={outcomeRef} tabIndex={-1} role="status" aria-live="polite" aria-label="اكتملت التجربة بنجاح">
           <div className="state-icon state-icon-success">
             <Icon icon={CheckCircle2} size={28} />
           </div>
@@ -360,7 +371,7 @@ function LabRunner({ lab, onExit }: { lab: VirtualLab; onExit: () => void }) {
   if (completeSession.isError) {
     return (
       <Card>
-        <div className="state state-error">
+        <div className="state state-error" ref={outcomeRef} tabIndex={-1} role="alert" aria-live="assertive" aria-label="تعذَّر تسجيل إكمال التجربة">
           <div className="state-icon">
             <Icon icon={AlertCircle} size={28} />
           </div>

@@ -234,8 +234,8 @@ router.delete('/:id', requireRole(Role.ADMIN, Role.OWNER), async (req, res, next
     });
     // 200 + envelope (not 204) — D17-5: the platform's dominant delete
     // shape ({data:{ok:true}} — courses, curriculum, learning annotation
-    // deletes). No FE consumer exists for this route today (latent,
-    // admin-only), so the convention flip is client-safe.
+    // deletes). r154e.2 wired the FE consumer (useDropEnrollment on
+    // AdminStudentsPage's enrollment modal); the convention is client-safe.
     res.json({ data: { ok: true } });
   } catch (e) {
     next(e);

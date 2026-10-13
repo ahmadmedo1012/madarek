@@ -299,7 +299,7 @@ function EnrollmentModal({ student, onClose }: { student: AdminStudentRow; onClo
   };
 
   return (
-    <Modal open onClose={onClose} ariaLabel={`تسجيلات ${student.firstName} ${student.lastName}`} closeOnOverlayClick={!busy}>
+    <Modal open onClose={onClose} ariaLabel={`تسجيلات ${student.firstName} ${student.lastName}`} closeOnOverlayClick={!busy} closeOnEscape={!busy}>
       <div className="modal-header">
         <div className="modal-title">تسجيلات {student.firstName} {student.lastName}</div>
         <button type="button" className="icon-btn" onClick={onClose} aria-label="إغلاق" disabled={busy}>

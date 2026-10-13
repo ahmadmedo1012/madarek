@@ -84,6 +84,8 @@
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/enrollments/me` | STUDENT | My enrollments (narrow select: progress + offering/course/teacher/schedule cards) |
+| GET | `/enrollments?studentId=X` | ADMIN/OWNER | Admin-side list of a student's enrollments with offering/course/teacher detail (r154e.2 — the enrollment-management modal's list) |
+| GET | `/enrollments/offerings` | ADMIN/OWNER | Picker list of offerings with course + teacher names + live seat counts (r154e.2 — the enrollment modal's offering select) |
 | POST | `/enrollments` | ADMIN/OWNER | Enroll a STUDENT — pre-validates the target inside the capacity transaction (unknown student 404, non-STUDENT target 400, capacity full 409, duplicate 409); seat count filters `status:'active'`; writes an `ENROLLMENT_CREATED` audit row |
 | DELETE | `/enrollments/:id` | ADMIN/OWNER | Remove enrollment (hard delete; 404 unknown) + `ENROLLMENT_REMOVED` audit row in one transaction. Returns `200 {data:{ok:true}}` |
 
@@ -156,6 +158,7 @@
 | GET | `/me/results` | Bearer | Results — folds GRADED submission work into the per-course rollup alongside Grade rows |
 | GET | `/me/materials` | Bearer | Student's materials |
 | GET | `/me/lab-sessions` | Bearer | Lab sessions (totals from real count() queries, not the page slice) |
+| POST | `/me/lab-sessions` | Bearer | Record a completed lab experiment (r154d — `{ labId, experimentName }` → creates a `LabSession` with `progressPct:100` + `completedAt:now`; 10/min per-user rate limit; 404 unknown lab) |
 
 ## Research
 
