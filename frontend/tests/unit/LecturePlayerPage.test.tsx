@@ -354,3 +354,74 @@ describe('LecturePlayerPage prev/next bar (P1-7)', () => {
     expect(screen.getByRole('link', { name: /المحاضرة التالية/ })).not.toHaveClass('pulse');
   });
 });
+
+/* ── r153b: unload flush ──────────────────────────────────────────
+ * The 10s ticker loses the session tail when the tab closes between
+ * ticks. The pagehide/visibility flush sends ONE keepalive fetch with
+ * the live position — keepalive (not sendBeacon) because the endpoint
+ * needs the Authorization header. */
+describe('r153b — watch flush on pagehide/hidden', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('flushes the live position with a keepalive POST on pagehide', () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+    mocks.lecture = { ...baseLecture, durationSec: 600 };
+    renderPlayer();
+    const video = getVideo();
+    pretendPlaying(video, 237);
+
+    fireEvent(window, new Event('pagehide'));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('/api/v1/lectures/lec1/watch');
+    expect(init.method).toBe('POST');
+    expect(init.keepalive).toBe(true);
+    expect(init.headers['Content-Type']).toBe('application/json');
+    expect(JSON.parse(init.body)).toEqual({
+      watchedSec: 237,
+      totalSec: 600,
+      completed: false,
+    });
+  });
+
+  it('does not flush when the video is paused (jsdom default)', () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+    mocks.lecture = { ...baseLecture, durationSec: 600 };
+    renderPlayer();
+    // no pretendPlaying — paused is jsdom's honest default
+
+    fireEvent(window, new Event('pagehide'));
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('marks completion honestly in the flush (≥95% of a set duration)', () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+    mocks.lecture = { ...baseLecture, durationSec: 600 };
+    renderPlayer();
+    const video = getVideo();
+    pretendPlaying(video, 594);
+
+    fireEvent(window, new Event('pagehide'));
+
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).completed).toBe(true);
+  });
+
+  it('removes its listeners on unmount (no flush after leaving the page)', () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+    mocks.lecture = { ...baseLecture, durationSec: 600 };
+    const { unmount } = renderPlayer();
+    unmount();
+
+    fireEvent(window, new Event('pagehide'));
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});

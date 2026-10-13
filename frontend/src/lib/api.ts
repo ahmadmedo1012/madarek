@@ -2,7 +2,11 @@ import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from '
 import { useAuthStore } from '../stores/auth.store';
 import { queryClient } from './queryClient';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+/* r153b: exported for the few out-of-axios calls that must survive
+ * page unload (keepalive fetch in the lecture player's watch flush) —
+ * they need the SAME base URL the axios instance resolves. */
+export const apiBaseURL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+const baseURL = apiBaseURL;
 
 export const api = axios.create({
   baseURL,

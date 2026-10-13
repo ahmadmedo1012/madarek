@@ -10,6 +10,8 @@ import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
 import { useLecture, useOfferingLectures, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
+import { useAuthStore } from '../../stores/auth.store';
+import { apiBaseURL } from '../../lib/api';
 import { countAr, formatMmSs } from '../../lib/format';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
@@ -137,11 +139,19 @@ export default function LecturePlayerPage() {
   }, [lectureId]);
 
   // Periodic watch-event reporting (every 10 sec while playing)
+  // r153b in-flight guard: on a slow network the previous POST can
+  // still be pending when the next tick fires — React Query queues
+  // mutations, so a stalled link piled requests. The ref reads the
+  // LIVE mutation state (the interval's closure froze the render it
+  // was created in; data?.id is its only legitimate dependency).
+  const reportWatchRef = useRef(reportWatch);
+  reportWatchRef.current = reportWatch;
   useEffect(() => {
     if (!data) return;
     const id = setInterval(() => {
       const v = videoRef.current;
       if (!v || v.paused || v.ended) return;
+      if (reportWatchRef.current.isPending) return;
       reportWatch.mutate({
         lectureId: data.id,
         watchedSec: Math.round(v.currentTime),
@@ -155,6 +165,51 @@ export default function LecturePlayerPage() {
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.id]);
+
+  /* r153b unload flush — the 10s ticker loses every session's tail:
+   * closing the tab (or backgrounding the app) between ticks silently
+   * dropped up to 10 seconds of watch time, and a completion that
+   * happened after the last tick never reached the server until the
+   * student came back. One keepalive fetch on pagehide/hidden —
+   * keepalive rather than sendBeacon because /lectures/:id/watch
+   * requires the Authorization header, which sendBeacon cannot carry.
+   * The high-water clamp in the backend (learning.routes.ts) makes a
+   * duplicate report harmless. Refs only: the listener must never
+   * re-subscribe, and it reads the freshest render through the ref. */
+  const flushWatchOnHide = useRef(() => {});
+  flushWatchOnHide.current = () => {
+    const v = videoRef.current;
+    if (!data || !v || v.paused || v.ended) return;
+    const token = useAuthStore.getState().accessToken;
+    void fetch(`${apiBaseURL}/lectures/${data.id}/watch`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        watchedSec: Math.round(v.currentTime),
+        totalSec: data.durationSec,
+        completed: isWatchComplete(v.currentTime, data.durationSec),
+      }),
+    }).catch(() => {
+      /* page is going away — the next session's resume-seek and the
+       * 10s ticker re-report from the server's high-water mark. */
+    });
+  };
+  useEffect(() => {
+    const flush = () => flushWatchOnHide.current();
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') flush();
+    };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   // Trigger a checkpoint when crossing its time, once per lecture session.
   useEffect(() => {
