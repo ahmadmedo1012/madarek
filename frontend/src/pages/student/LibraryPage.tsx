@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
 import type { CSSProperties, KeyboardEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Search, Library as LibraryIcon, BookOpen, Clock,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, Award, GraduationCap, X,
-  SlidersHorizontal,
+  SlidersHorizontal, Undo2,
   type LucideIcon,
 } from 'lucide-react';
 import { Card, MetricCard, Pill, Badge, UserAvatar } from '../../components/primitives';
-import { Skeleton, EmptyState, ErrorState } from '../../components/primitives/States';
+import { Skeleton, EmptyState, ErrorState, ListSkeleton } from '../../components/primitives/States';
 import { Sheet } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
-import { useBooks, usePublishedResearch, useResearchSearch, useMyLoans, type ResearchSearchHit } from '../../hooks/useResources';
+import {
+  useBooks, usePublishedResearch, useResearchSearch, useMyLoans,
+  useBorrowBook, useReturnLoan,
+  type ResearchSearchHit, type Book, type MyLoan,
+} from '../../hooks/useResources';
 import { courseTint } from '../../lib/courseMeta';
-import { countAr, formatPct } from '../../lib/format';
+import { countAr, formatPct, apiErrorMessage, formatDateAr } from '../../lib/format';
+import { toast } from '../../lib/toast';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },
@@ -134,8 +139,130 @@ function useIsNarrowLayout(maxWidthPx = 640): boolean {
   return narrow;
 }
 
+/* r155b: بطاقة كتاب مكوّن مستقل (كانت خريطةً داخل الصفحة) لأن زر
+ * «استعارة» يحتاج طفرةً خاصة بكل بطاقة — نمط JobRow في صفحة الوظائف
+ * (useBorrowBook داخل الصف فpending معزول عن بقية الشبكة). */
+function BookCard({ book }: { book: Book }) {
+  const borrow = useBorrowBook();
+  const unavailable = book.availableCopies === 0;
+  const Cmp = categoryIcon(book.category);
+  // Shared default tint: lib/courseMeta.ts (wave 9-a).
+  const tint = courseTint(book.themeColor);
+
+  const onBorrow = async () => {
+    try {
+      const loan = await borrow.mutateAsync(book.id);
+      // موعد الإرجاع يصل من الخلفية (14 يوماً) — نقوله للطالب فوراً.
+      toast.success(`موعد إرجاع «${book.title}»: ${formatDateAr(loan.dueAt)}.`, {
+        title: 'تمّت الاستعارة',
+      });
+    } catch (e) {
+      // 409ات الخلفية عربية (ازدواج الاستعارة/نفاد النسخ) — تُعرض كما هي.
+      toast.error(apiErrorMessage(e, 'تعذَّرت الاستعارة — تحقّق من اتصالك وحاول مرة أخرى.'));
+    }
+  };
+
+  return (
+    <div className="thumb-card glass">
+      <div
+        className="thumb-card-image"
+        style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 100 }}
+      >
+        <span style={{ color: `color-mix(in srgb, ${tint} 70%, var(--text))` }}>
+          <Icon icon={Cmp} size={32} strokeWidth={1.6} />
+        </span>
+      </div>
+      <div className="thumb-card-body">
+        <div className="thumb-card-title" style={{ minHeight: 36 }} title={book.title}>{book.title}</div>
+        <div className="thumb-card-sub">{book.author}</div>
+        <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
+          <span className="text-xs text-subtle flex items-center gap-1 font-mono">
+            <Icon icon={Star} size={11} strokeWidth={2.2} />
+            <bdi>{book.rating ?? '—'}</bdi>
+          </span>
+          <Badge color={book.availableCopies > 0 ? 'green' : undefined}>
+            {book.availableCopies > 0 ? 'متاح' : 'مستعار'}
+          </Badge>
+        </div>
+        <div className="text-xxs text-subtle">{categoryLabel(book.category)}</div>
+        <button
+          type="button"
+          className="btn primary sm"
+          style={{ width: '100%', marginTop: 'var(--sp-2)' }}
+          onClick={() => void onBorrow()}
+          disabled={unavailable || borrow.isPending}
+          title={unavailable ? 'لا توجد نسخ متاحة للاستعارة حالياً' : undefined}
+          aria-label={
+            unavailable
+              ? `استعارة ${book.title} — لا توجد نسخ متاحة حالياً`
+              : `استعارة ${book.title}`
+          }
+        >
+          {borrow.isPending ? 'جارٍ الاستعارة…' : 'استعارة'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* r155b: صفّ استعارة نشطة داخل بطاقة «استعاراتي» — الطفرة (الإرجاع)
+ * خاصة بالصف (نمط JobRow)، وحالة الاستحقاق تعيد استعمال منطق dueSoon
+ * نفسه الذي تغذّيه KPI «تنتهي قريباً» (≤3 أيام) وتضيف المتأخر (< 0
+ * أو حالة OVERDUE من السلك — الخلفية تعدّها حيازةً غير مُعادة). */
+function LoanRow({ loan }: { loan: MyLoan }) {
+  const returnLoan = useReturnLoan();
+  const daysLeft = (new Date(loan.dueAt).getTime() - Date.now()) / 86_400_000;
+  const overdue = daysLeft < 0 || loan.status === 'OVERDUE';
+  const dueSoon = !overdue && daysLeft <= 3;
+  const state = overdue
+    ? { color: 'red' as const, label: 'متأخر الإرجاع' }
+    : dueSoon
+      ? { color: 'amber' as const, label: 'ينتهي قريباً' }
+      : { color: 'green' as const, label: 'نشطة' };
+
+  const onReturn = async () => {
+    try {
+      await returnLoan.mutateAsync(loan.id);
+      toast.success(`أُعيد «${loan.book.title}» إلى المكتبة.`, { title: 'تمّ الإرجاع' });
+    } catch (e) {
+      toast.error(apiErrorMessage(e, 'تعذَّر الإرجاع — تحقّق من اتصالك وحاول مرة أخرى.'));
+    }
+  };
+
+  return (
+    <div className="list-row">
+      <div className="list-row-body">
+        <div className="list-row-title" title={loan.book.title}>{loan.book.title}</div>
+        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+          <Badge color={state.color}>{state.label}</Badge>
+          <span>موعد الإرجاع: <bdi className="font-mono">{formatDateAr(loan.dueAt)}</bdi></span>
+          <span className="text-xxs text-subtle">استُعير: {formatDateAr(loan.borrowedAt)}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="btn ghost sm"
+        onClick={() => void onReturn()}
+        disabled={returnLoan.isPending}
+        aria-label={`إرجاع ${loan.book.title}`}
+      >
+        <Icon icon={Undo2} size={13} />
+        {returnLoan.isPending ? 'جارٍ الإرجاع…' : 'إرجاع'}
+      </button>
+    </div>
+  );
+}
+
 export default function LibraryPage() {
-  const [tab, setTab] = useState<Tab>('books');
+  // r155b: ‎?tab=research|books يفتح التبويب المقصود مباشرة (رجوع عارض
+  // المستندات وأي رابط عميق) — يُقرأ مرة عند الوصل فقط (دلالة
+  // Deep-link، نمط AdminStudentsPage) حتى لا تُنازع نقرات المستخدم
+  // لاحقاً؛ أي قيمة خارج اتحاد Tab تسقط إلى 'books'.
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState<Tab>(() => {
+    const t = searchParams.get('tab');
+    return t === 'research' || t === 'books' ? t : 'books';
+  });
   const [cat, setCat] = useState('all');
   const [q, setQ] = useState('');
   const [debouncedQ, setDebouncedQ] = useState('');
@@ -176,6 +303,10 @@ export default function LibraryPage() {
 
   // Loan-derived KPIs
   const activeLoans = loans.data?.filter((l) => l.status === 'ACTIVE') ?? [];
+  /* r155b: الاستعارات «الفتوحة» للبطاقة أدناه — ACTIVE و OVERDUE معاً
+   * (الخلفية تعُدّ OVERDUE حيازةً غير مُعادة في حرس ازدواج الاستعارة،
+   * فلا يختفي كتابٌ متأخر من قائمة المستعارات دون إرجاع فعلي). */
+  const openLoans = loans.data?.filter((l) => l.status !== 'RETURNED') ?? [];
   const dueSoon = activeLoans.filter((l) => {
     const days = (new Date(l.dueAt).getTime() - Date.now()) / 86400000;
     return days >= 0 && days <= 3;
@@ -270,6 +401,38 @@ export default function LibraryPage() {
               color={dueSoon > 0 ? 'amber' : 'green'}
             />
           </div>
+
+          {/* r155b: الاستعارات النشطة — كانت KPIs بلا قائمة ولا إجراء؛
+              البطاقة تجعل العنوان وموعد الإرجاع وزر «إرجاع» مرئيّة،
+              والحالة الفارغة تُسمّي الميزة بدل تجاهلها (نمط EmptyState
+              الكنوني في هذه الصفحة). */}
+          <Card
+            title="استعاراتي النشطة"
+            icon={BookOpen}
+            subtitle={
+              loans.isPending
+                ? 'جارٍ التحميل…'
+                : countAr(openLoans.length, ['استعارة واحدة', 'استعارتان', 'استعارات', 'استعارة'])
+            }
+          >
+            {loans.isPending ? (
+              <ListSkeleton rows={2} />
+            ) : loans.isError ? (
+              <ErrorState error={loans.error} onRetry={() => loans.refetch()} />
+            ) : openLoans.length === 0 ? (
+              <EmptyState
+                icon={BookOpen}
+                title="لا استعارات نشطة"
+                description="اضغط «استعارة» على أي كتاب متاح ليظهر هنا مع موعد إرجاعه خلال ١٤ يوماً."
+              />
+            ) : (
+              <div className="flex-col">
+                {openLoans.map((l) => (
+                  <LoanRow key={l.id} loan={l} />
+                ))}
+              </div>
+            )}
+          </Card>
 
           <Card compact>
             <div className="flex gap-3 items-center flex-wrap">
@@ -382,37 +545,11 @@ export default function LibraryPage() {
             </Card>
           ) : (
             <div className="grid-auto-200">
-              {books.data.map((b) => {
-                const Cmp = categoryIcon(b.category);
-                // Shared default tint: lib/courseMeta.ts (wave 9-a).
-                const tint = courseTint(b.themeColor);
-                return (
-                  <div className="thumb-card glass" key={b.id}>
-                    <div
-                      className="thumb-card-image"
-                      style={{ background: `color-mix(in srgb, ${tint} 10%, transparent)`, height: 100 }}
-                    >
-                      <span style={{ color: `color-mix(in srgb, ${tint} 70%, var(--text))` }}>
-                        <Icon icon={Cmp} size={32} strokeWidth={1.6} />
-                      </span>
-                    </div>
-                    <div className="thumb-card-body">
-                      <div className="thumb-card-title" style={{ minHeight: 36 }} title={b.title}>{b.title}</div>
-                      <div className="thumb-card-sub">{b.author}</div>
-                      <div className="flex items-center justify-between" style={{ marginTop: 'var(--sp-2)' }}>
-                        <span className="text-xs text-subtle flex items-center gap-1 font-mono">
-                          <Icon icon={Star} size={11} strokeWidth={2.2} />
-                          <bdi>{b.rating ?? '—'}</bdi>
-                        </span>
-                        <Badge color={b.availableCopies > 0 ? 'green' : undefined}>
-                          {b.availableCopies > 0 ? 'متاح' : 'مستعار'}
-                        </Badge>
-                      </div>
-                      <div className="text-xxs text-subtle">{categoryLabel(b.category)}</div>
-                    </div>
-                  </div>
-                );
-              })}
+              {/* r155b: البطاقة مكوّن BookCard (زرّ الاستعارة يحتاج طفرة
+                  لكل صف). البنية البصرية كما كانت حرفياً. */}
+              {books.data.map((b) => (
+                <BookCard key={b.id} book={b} />
+              ))}
             </div>
           )}
         </div>
@@ -589,7 +726,7 @@ export default function LibraryPage() {
                   </div>
                   {p.fileUrl && (
                     <Link
-                      to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library')}&paper=${encodeURIComponent(p.id)}`}
+                      to={`/document/${encodeURIComponent(p.fileUrl.split('/').pop() ?? '')}?title=${encodeURIComponent(p.title)}&back=${encodeURIComponent('/student/library?tab=research')}&paper=${encodeURIComponent(p.id)}`}
                       className="btn primary sm"
                     >
                       <Icon icon={FileText} size={13} />

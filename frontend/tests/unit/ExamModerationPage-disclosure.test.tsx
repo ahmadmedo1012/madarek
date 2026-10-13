@@ -37,6 +37,10 @@ vi.mock('../../src/hooks/useResources', () => ({
     refetch: vi.fn(),
   }),
   useModerateExam: () => ({ mutateAsync: mocks.moderate, isPending: false }),
+  // r155b: the panel now previews the template's questions — stubbed
+  // pending-free so the panel renders the note surface (the preview's
+  // own wiring is pinned in ExamModerationPage-question-preview.test.tsx).
+  useExamTemplate: () => ({ data: undefined, isPending: false, isError: false, error: null, refetch: vi.fn() }),
   apiErrorMessage: (_e: unknown, fallback: string) => fallback,
 }));
 

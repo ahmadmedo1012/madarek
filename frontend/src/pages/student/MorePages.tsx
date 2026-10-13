@@ -5,7 +5,7 @@ import {
   Trophy, Star, Medal, Award, Activity, Crown,
   Target, Headset,
   Bell, AlertTriangle, BookOpen, Download,
-  CheckCircle2, MessageCircle, Heart, GraduationCap,
+  CheckCircle2, Check, MessageCircle, Heart, GraduationCap,
   TrendingUp, Building2, Users2, Microscope,
 } from 'lucide-react';
 import { Bar, Radar } from 'react-chartjs-2';
@@ -15,7 +15,8 @@ import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSke
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotifications, useMarkNotifRead, useMarkAllNotifsRead, useArExperiences, useStudentMaterials, useFaculties, useStudentDashboard, useTrainingMe, type Post } from '../../hooks/useResources';
+import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum } from '../../utils/numbers';
 import { useAuthStore } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
@@ -342,8 +343,16 @@ export function SkillsPage() {
 }
 
 /* ─── Alerts ───────────────────────────────────────────── */
+/* r155b: صفحة الإشعارات الكاملة كانت تُعرض «للقراءة فقط» — عدد غير
+ * المقروء بلا تمييز بصري ولا سبيل للتعليم. تُضيف نفس قدرات
+ * NotificationDropdown (الخطّ العلوي): تعليم صفّ فردي عبر hook
+ * useMarkNotifRead، و«تعليم الكل» عبر useMarkAllNotifsRead (طلب
+ * POST واحد)، والصفوف غير المقروءة تحمل شارة «غير مقروء» بنفس لون
+ * العلامة (brand) الذي يحمله العدّاد في الترويسة. */
 export function AlertsPage() {
   const q = useNotifications();
+  const markRead = useMarkNotifRead();
+  const markAllRead = useMarkAllNotifsRead();
 
   const items = q.data ?? [];
   const unreadCount = items.filter((n) => !n.readAt).length;
@@ -371,11 +380,24 @@ export function AlertsPage() {
       </header>
 
       <Card title="إشعاراتي" icon={Bell} actions={
-        unreadCount > 0 ? (
-          <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>
-        ) : (
-          <Badge color="green">الكلّ مقروء</Badge>
-        )
+        <div className="flex items-center gap-2 flex-wrap">
+          {unreadCount > 0 ? (
+            <>
+              <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>
+              <button
+                type="button"
+                className="btn ghost sm"
+                onClick={() => markAllRead.mutate()}
+                disabled={markAllRead.isPending}
+              >
+                <Icon icon={Check} size={13} />
+                {markAllRead.isPending ? 'جارٍ التعليم…' : 'تعليم الكل كمقروء'}
+              </button>
+            </>
+          ) : (
+            <Badge color="green">الكلّ مقروء</Badge>
+          )}
+        </div>
       }>
         {q.isPending ? (
           /* shape-matched skeleton: alert rows (dot + two lines) */
@@ -396,16 +418,43 @@ export function AlertsPage() {
           <EmptyState title="لا توجد إشعارات بعد" illustration="empty-search" description="ستظهر التذكيرات والتحديثات الأكاديميّة هنا." />
         ) : (
           <div className="flex-col gap-2">
-            {items.slice(0, 30).map((n) => (
-              <AlertRow
-                key={n.id}
-                color={toneFor(n.type)}
-                icon={iconFor(n.type)}
-                title={n.title}
-                description={n.body ?? undefined}
-                time={timeAgoAr(n.createdAt)}
-              />
-            ))}
+            {items.slice(0, 30).map((n) => {
+              const unread = !n.readAt;
+              return (
+                <AlertRow
+                  key={n.id}
+                  color={toneFor(n.type)}
+                  icon={iconFor(n.type)}
+                  title={
+                    unread ? (
+                      /* الشارة تُميّز الصفّ غير المقروء بصرياً (اللافتة
+                         brand نفسها التي يحملها العدّاد أعلاه) — عائلة
+                         .notif-item.unread في CSS محصورة بصفوف اللوحة
+                         المنسدلة التفاعليّة، فالتزامن هنا يمرّ عبر مكوّن
+                         Badge الكنوني دون أي CSS جديد. */
+                      <span className="flex items-center gap-2 flex-wrap">
+                        {n.title}
+                        <Badge color="brand">غير مقروء</Badge>
+                      </span>
+                    ) : n.title
+                  }
+                  description={n.body ?? undefined}
+                  time={timeAgoAr(n.createdAt)}
+                  actions={unread ? (
+                    <button
+                      type="button"
+                      className="btn ghost sm"
+                      onClick={() => markRead.mutate(n.id)}
+                      disabled={markRead.isPending}
+                      aria-label={`تعليم «${n.title}» كمقروء`}
+                    >
+                      <Icon icon={Check} size={13} />
+                      {markRead.isPending ? 'جارٍ التعليم…' : 'تعليم كمقروء'}
+                    </button>
+                  ) : undefined}
+                />
+              );
+            })}
           </div>
         )}
       </Card>
@@ -1229,12 +1278,6 @@ export function DownloadsPage() {
 
 /* ─── University Info ──────────────────────────────────── */
 
-const MEMBERSHIPS = [
-  { ar: 'اتحاد الجامعات العربية', en: 'AARU' },
-  { ar: 'اتحاد الجامعات الأفريقية', en: 'AAU' },
-  { ar: 'اتحاد الجامعات الإسلامية', en: 'FUIW' },
-];
-
 export function UniversityInfoPage() {
   const facs = useFaculties();
   const faculties = facs.data ?? [];
@@ -1398,12 +1441,18 @@ export function UniversityInfoPage() {
 
       <Card title="العضويّات الدوليّة" icon={Crown}>
         <div className="flex-col gap-2">
-          {MEMBERSHIPS.map((m) => (
-            <div key={m.en} className="flex items-center justify-between" style={{
+          {/* r155b: العضويّات تُقرأ من UNIVERSITY_FACTS (data/university.facts.ts
+              — مصدر الحقيقة الوحيد المعتمد على static-source.ts). النسخة
+              المحليّة السابقة أعادت إنتاج خطأ إعادة الكتابة الموثّق هناك:
+              «اتحاد الجامعات الإسلامية» بدل المتوسطيّة. الشارة تحمل تصنيف
+              العضويّة (label) — الاختصارات اللاتينيّة القديمة لم تكن ضمن
+              المصدر المعتمد أصلاً. */}
+          {UNIVERSITY_FACTS.memberships.map((m) => (
+            <div key={m.label} className="flex items-center justify-between" style={{
               padding: 'var(--sp-3)', background: 'var(--surface-2)', borderRadius: 'var(--r-md)',
             }}>
-              <span className="text-sm">{m.ar}</span>
-              <Badge color="gold">{m.en}</Badge>
+              <span className="text-sm">{m.full}</span>
+              <Badge color="gold">{m.label}</Badge>
             </div>
           ))}
         </div>

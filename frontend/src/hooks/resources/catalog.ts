@@ -69,6 +69,54 @@ export function useMyLoans() {
   });
 }
 
+/* r155b: نصفي الواجهة لمساري الاستعارة/الإرجاع — الخلفية كانت مكتملة
+ * (catalog.routes.ts: POST /library/loans و POST /library/loans/:id/return)
+ * والصفحة تعلن «الاستعارة الفورية» بلا أي زر. الإبطال يشمل عائلة
+ * ['books'] (المطابقة بالبادئة تغطي كل مفتاح مُعامَل) لأن الاستعارة
+ * تنقص availableCopies، و ['me','loans'] لأن القائمة/KPI تتبدّل فوراً. */
+
+/** ردّ POST /library/loans و POST /library/loans/:id/return — صفّ Loan
+ *  المجرد (لا علاقة `book` على السلك؛ الواجهة تعيد الجلب عبر
+ *  GET /me/loans بعد الإبطال). */
+export interface LoanWriteResult {
+  id: string;
+  bookId: string;
+  status: MyLoan['status'];
+  borrowedAt: string;
+  dueAt: string;
+  returnedAt: string | null;
+}
+
+/** استعارة نسخة من كتاب — الجسم يطابق borrowBookSchema في الخلفية
+ *  حرفياً ({ bookId } فقط؛ z.string().cuid()). 409ات الخلفية عربية
+ *  («استعرت هذا الكتاب مسبقاً…» / «لا توجد نسخ متاحة…») والصفحة
+ *  تعرضها كما هي عبر apiErrorMessage. */
+export function useBorrowBook() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (bookId: string) =>
+      unwrap<LoanWriteResult>(api.post('/library/loans', { bookId })),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['books'] });
+      qc.invalidateQueries({ queryKey: ['me', 'loans'] });
+    },
+  });
+}
+
+/** إرجاع استعارة نشطة — الخلفية تحرّر النسخة (increment) داخل معاملة
+ *  محروسة، والردّ هو الصفّ المحدَّث. */
+export function useReturnLoan() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (loanId: string) =>
+      unwrap<LoanWriteResult>(api.post(`/library/loans/${loanId}/return`, {})),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['books'] });
+      qc.invalidateQueries({ queryKey: ['me', 'loans'] });
+    },
+  });
+}
+
 export interface MyLabStats {
   active: number;
   completed: number;

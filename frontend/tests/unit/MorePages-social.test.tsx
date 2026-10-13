@@ -74,6 +74,11 @@ vi.mock('../../src/hooks/useResources', () => ({
   useStudentResults: () => ({ data: null, isPending: false, isError: false }),
   useMyEnrollments: () => ({ data: [], isPending: false, isError: false }),
   useNotifications: () => ({ data: [], isPending: false, isError: false }),
+  // r155b: MorePages imports the mark-read hooks for AlertsPage — stubbed
+  // at the module boundary (their wiring is pinned in
+  // AlertsPage-mark-read.test.tsx).
+  useMarkNotifRead: () => ({ mutate: vi.fn(), isPending: false }),
+  useMarkAllNotifsRead: () => ({ mutate: vi.fn(), isPending: false }),
   useArExperiences: () => ({ data: [], isPending: false, isError: false }),
   useStudentMaterials: () => ({ data: [], isPending: false, isError: false }),
   useFaculties: () => ({ data: [], isPending: false, isError: false }),

@@ -11,6 +11,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown,
   Sparkles, ShieldCheck, FileText, Hourglass, CalendarClock, ArrowLeft,
+  ListChecks, Info, Ban,
 } from 'lucide-react';
 import { Card, Badge, MetricCard } from '../../components/primitives';
 import { Icon } from '../../components/Icon';
@@ -20,8 +21,9 @@ import { useReducedMotion } from '../../components/motion';
 import { courseIcon } from '../../lib/courseMeta';
 import {
   useMyExams, useStartExam, useSubmitAnswer, useFinishExam, useExamReview,
-  useExamModerationQueue, useModerateExam,
+  useExamModerationQueue, useModerateExam, useExamTemplate,
   type MyExam, type StartedAttempt, type ResumedAttempt, type AttemptReviewQuestion,
+  type ExamTemplateDetail, type QType, type Difficulty,
 } from '../../hooks/useResources';
 import { apiErrorDetailRaw, apiErrorMessage, countAr, formatDateTimeAr } from '../../lib/format';
 import { overlayStack } from '../../lib/overlayStack';
@@ -1179,6 +1181,149 @@ export function ExamTakerPage() {
 }
 
 /* ═══════════════ Quality moderation queue ═══════════════ */
+
+/* r155b: خرائط تسميات السؤال للمعاينة داخل لوحة المراجعة — توائم
+ * حرفيّة لخرائط ExamAuthorPages (نفس سابقة KIND_LABEL المتطابقة بين
+ * الملفين؛ الاستيراد المباشر من صفحة المؤلف يسحب قطاع الأستاذ كاملاً
+ * إلى حزمة الطالب/الجودة). أي تعديل يُطبّق على الجهتين. */
+const QTYPE_LABEL: Record<QType, string> = {
+  MCQ: 'اختيار من متعدد',
+  TRUE_FALSE: 'صح أم خطأ',
+  SHORT: 'إجابة قصيرة',
+  ESSAY: 'سؤال مقالي',
+};
+const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  EASY: 'سهل',
+  MEDIUM: 'متوسط',
+  HARD: 'صعب',
+};
+const DIFFICULTY_COLOR: Record<Difficulty, 'green' | 'amber' | 'red'> = {
+  EASY: 'green',
+  MEDIUM: 'amber',
+  HARD: 'red',
+};
+
+/* توأم محلي دقيق للدالة النقية answerKeySummary في ExamAuthorPages —
+ * يستقرئ مفتاح الإجابة البشري بحسب نوع السؤال (أو null حين لا يُخدم
+ * المفتاح للعارض). المراجع بجودة+EXAMS_MODERATE يصله correctAnswer من
+ * الخلفية (canSeeAnswers في exams.routes.ts)؛ null يعني غياباً
+ * صادقاً لا مفتاحاً مزيّفاً. */
+function answerKeySummary(q: {
+  type: QType;
+  choices: string[] | null;
+  correctAnswer: string | number | boolean | null;
+}): string | null {
+  if (q.correctAnswer === null || q.correctAnswer === undefined) return null;
+  if (q.type === 'MCQ' || q.type === 'TRUE_FALSE') {
+    if (typeof q.correctAnswer === 'boolean') return null;
+    const idx = typeof q.correctAnswer === 'number' ? q.correctAnswer : Number(q.correctAnswer);
+    if (!Number.isInteger(idx) || idx < 0) return null;
+    const choice = q.choices?.[idx];
+    return choice !== undefined ? `الإجابة الصحيحة: ${choice}` : null;
+  }
+  if (typeof q.correctAnswer === 'string' && q.correctAnswer.trim() !== '') {
+    return q.type === 'SHORT' ? `الإجابة النموذجية: ${q.correctAnswer}` : `معيار التصحيح: ${q.correctAnswer}`;
+  }
+  return null;
+}
+
+/* r155b: معاينة أسئلة القالب داخل لوحة المراجعة — كانت اللوحة تعرض
+ * البيانات الوصفية والملاحظة فقط فيعتمد/يرفض المراجع «على العمى».
+ * التحكم يركّب فقط عند فتح اللوحة (الاستعلام يجري عند الفتح، وذاكرة
+ * ['exams','templates',id] تخدم الفتح التالي فوراً) — نفس بيانات
+ * ExamTemplateDetailPage التي يراها المؤلف. */
+function TemplateQuestionsPreview({ templateId }: { templateId: string }) {
+  const tplQ = useExamTemplate(templateId);
+  const questions = tplQ.data?.questions ?? [];
+
+  return (
+    <div style={{ marginBlockEnd: 'var(--sp-3)' }}>
+      <div className="flex items-center gap-2" style={{ marginBlockEnd: 'var(--sp-2)' }}>
+        <Icon icon={ListChecks} size={13} />
+        <span className="text-xs text-muted">
+          أسئلة القالب —{' '}
+          {tplQ.isPending
+            ? 'جارٍ التحميل…'
+            : tplQ.data
+              ? countAr(questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])
+              : '—'}
+        </span>
+      </div>
+      {tplQ.isPending ? (
+        <ListSkeleton rows={3} />
+      ) : tplQ.isError ? (
+        <div className="form-error" role="alert">
+          <Icon icon={AlertTriangle} size={14} />
+          <span className="form-error-msg">
+            {apiErrorMessage(tplQ.error, 'تعذَّر تحميل أسئلة القالب — راجع الأسئلة قبل القرار.')}
+          </span>
+          <button type="button" className="btn ghost sm" onClick={() => void tplQ.refetch()}>
+            إعادة المحاولة
+          </button>
+        </div>
+      ) : questions.length === 0 ? (
+        <EmptyState
+          illustration="empty-search"
+          icon={FileText}
+          title="لا أسئلة في هذا القالب"
+          description="ربما أُوقفت أسئلته من البنك بعد بنائه."
+        />
+      ) : (
+        <div className="flex-col">
+          {questions.map((eq, i) => (
+            <ModerationQuestionRow key={eq.id} order={i + 1} row={eq} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* صفّ سؤال للمعاينة — نحو صفوف TemplateQuestionRow في صفحة تفصيل
+ * القالب (list-row + شارات النوع/الصعوبة + سطر مفتاح الإجابة)، بلا
+ * إجراءات لكل سؤال: القرار هنا على القالب ككل. */
+function ModerationQuestionRow({
+  order,
+  row,
+}: {
+  order: number;
+  row: ExamTemplateDetail['questions'][number];
+}) {
+  const q = row.question;
+  const points = row.pointsOverride ?? q.points;
+  const key = answerKeySummary(q);
+  return (
+    <div className="list-row" style={{ alignItems: 'flex-start' }}>
+      <bdi className="list-row-meta font-mono">{order}</bdi>
+      <div className="list-row-body">
+        <div className="list-row-title" title={q.prompt}>{q.prompt}</div>
+        <div className="list-row-sub" style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', alignItems: 'center' }}>
+          <Badge>{QTYPE_LABEL[q.type]}</Badge>
+          <Badge color={DIFFICULTY_COLOR[q.difficulty]}>{DIFFICULTY_LABEL[q.difficulty]}</Badge>
+          {q.category && <span>{q.category.title}</span>}
+          <span>
+            {countAr(points, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}
+            {row.pointsOverride !== null && ' (معدَّلة)'}
+          </span>
+          {!q.isApproved && <Badge color="red" icon={Ban}>موقوف</Badge>}
+        </div>
+        {/* مفتاح الإجابة — الخلفية تُخفيه (null) عن كل عارض ليس من
+            أجله؛ null لا يُعرض إطلاقاً (لا مفتاحاً مزيّفاً). */}
+        {key && (
+          <div className="text-xs" style={{ color: 'var(--success-ink)', marginBlockStart: 2 }}>
+            <Icon icon={CheckCircle2} size={11} /> {key}
+          </div>
+        )}
+        {!q.isApproved && q.moderationNote && (
+          <div className="text-xs" style={{ color: 'var(--danger-ink)', marginBlockStart: 2 }}>
+            <Icon icon={Info} size={11} /> {q.moderationNote}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ExamModerationPage() {
   const queueQ = useExamModerationQueue();
   const moderate = useModerateExam();
@@ -1315,6 +1460,10 @@ export function ExamModerationPage() {
                       role="region"
                       aria-label={`مراجعة ${item.title}`}
                     >
+                      {/* r155b: الأسئلة قبل الملاحظة والقرار — المراجع
+                          يقرأ ما يعتمده بدل الاعتماد على العنوان والمدة
+                          فقط. مسار الاعتماد/الرفض نفسه لم يتغيّر. */}
+                      <TemplateQuestionsPreview templateId={item.id} />
                       <textarea
                         className="input"
                         rows={2}

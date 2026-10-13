@@ -2,6 +2,7 @@ import { lazy, Suspense, useRef, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { Icon } from '../components/Icon';
+import { apiBaseURL } from '../lib/api';
 import '../styles/pdf.css'; // pdf viewer + annotations surfaces (D11 css split, 12-15)
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.
@@ -58,7 +59,10 @@ export default function DocumentViewerPage() {
     );
   }
 
-  const src = `/api/v1/files/papers/${encodeURIComponent(params.filename)}`;
+  /* r155b: العنوان يُبنى من apiBaseURL (lib/api) — الثابت الصريح
+   * '/api/v1' كان يتجاهل VITE_API_BASE_URL (نمط LecturePlayerPage
+   * في نداء keepalive نفسه). */
+  const src = `${apiBaseURL}/files/papers/${encodeURIComponent(params.filename)}`;
 
   return (
     // r152i (A3): the height moved to pdf.css (.document-viewer-page)

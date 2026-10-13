@@ -103,6 +103,9 @@ vi.mock('../../src/hooks/useResources', () => ({
     refetch: vi.fn(),
   }),
   useModerateExam: () => ({ mutateAsync: vi.fn() }),
+  // r155b: ExamModerationPage previews template questions — stubbed
+  // pending-free (the taker pages this file pins never call it).
+  useExamTemplate: () => ({ data: undefined, isPending: false, isError: false, error: null, refetch: vi.fn() }),
   apiErrorMessage: (_e: unknown, fallback: string) => fallback,
 }));
 

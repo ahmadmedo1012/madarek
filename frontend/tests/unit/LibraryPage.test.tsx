@@ -24,6 +24,11 @@ vi.mock('../../src/hooks/useResources', () => ({
   usePublishedResearch: () => ({ data: [], isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useResearchSearch: () => ({ data: undefined, isPending: false, isError: false, error: null, refetch: vi.fn() }),
   useMyLoans: () => ({ data: [], isPending: false, isError: false, error: null, refetch: vi.fn() }),
+  // r155b: LibraryPage gained the borrow/return mutations — stubbed at
+  // the module boundary (the loans wiring itself is pinned in
+  // LibraryPage-loans.test.tsx).
+  useBorrowBook: () => ({ mutateAsync: vi.fn(), mutate: vi.fn(), isPending: false }),
+  useReturnLoan: () => ({ mutateAsync: vi.fn(), mutate: vi.fn(), isPending: false }),
 }));
 
 const lastBooksQ = () => booksCalls.mock.calls.at(-1)?.[0]?.q;
